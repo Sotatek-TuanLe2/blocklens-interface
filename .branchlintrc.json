@@ -1,0 +1,7 @@
+{
+  "disallowed": ["master"],
+  "allowed": ["develop"],
+  "prefixes": ["feature", "fix", "hotfix", "release"],
+  "separator": "/",
+  "maxSections": 2
+}

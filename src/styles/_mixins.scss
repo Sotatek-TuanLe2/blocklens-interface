@@ -1,0 +1,212 @@
+@import 'src/styles/_variables.scss';
+
+@mixin media($width) {
+  @media (min-width: $width) {
+    @content;
+  }
+}
+
+@mixin mobile {
+  @include media($mobile-width) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @include media($tablet-width) {
+    @content;
+  }
+}
+
+@mixin laptop {
+  @include media($laptop-width) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @include media($desktop-width) {
+    @content;
+  }
+}
+
+@mixin pc {
+  @include media($pc-width) {
+    @content;
+  }
+}
+
+@mixin flex-items-center {
+  display: flex;
+  align-items: center;
+}
+
+@mixin flex-items-start {
+  display: flex;
+  align-items: flex-start;
+}
+
+@mixin flex-items-end {
+  display: flex;
+  align-items: flex-end;
+}
+
+@mixin flex-items-stretch {
+  display: flex;
+  align-items: stretch;
+}
+
+@mixin flex-justify-center {
+  display: flex;
+  justify-content: center;
+}
+
+@mixin flex-justify-start {
+  display: flex;
+  justify-content: flex-start;
+}
+
+@mixin flex-justify-end {
+  display: flex;
+  justify-content: flex-end;
+}
+
+@mixin flex-justify-stretch {
+  display: flex;
+  justify-content: stretch;
+}
+
+@mixin flex-wrap {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+@mixin flex-centered {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin mix-padding($position: false) {
+  @if $position == left {
+    padding-left: 16px;
+    @include tablet {
+      padding-left: 20px;
+    }
+  } @else if $position == bottom {
+    padding-bottom: 16px;
+    @include tablet {
+      padding-bottom: 20px;
+    }
+  } @else if $position == right {
+    padding-right: 16px;
+    @include tablet {
+      padding-right: 20px;
+    }
+  } @else if $position == top {
+    padding-top: 16px;
+    @include tablet {
+      padding-top: 20px;
+    }
+  } @else {
+    padding: 16px;
+    @include laptop {
+      padding: 20px;
+    }
+  }
+}
+
+@mixin font-sm-regular {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+@mixin font-md-regular {
+  font-size: 16px;
+  font-weight: 400;
+}
+
+@mixin font-lg-regular {
+  font-size: 18px;
+  font-weight: 400;
+}
+
+@mixin font-xl-regular {
+  font-size: 20px;
+  font-weight: 400;
+}
+
+@mixin font-xl-regular {
+  font-size: 24px;
+  font-weight: 400;
+}
+
+@mixin font-3xl-regular {
+  font-size: 34px;
+  font-weight: 400;
+}
+
+@mixin font-sm-semibold {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+@mixin font-md-semibold {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+@mixin font-lg-semibold {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+@mixin font-xl-semibold {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+@mixin font-2xl-semibold {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+@mixin font-3xl-semibold {
+  font-size: 34px;
+  font-weight: 600;
+}
+
+@mixin font-sm-bold {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+@mixin font-md-bold {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+@mixin font-lg-bold {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+@mixin font-xl-bold {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+@mixin font-2xl-bold {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+@mixin font-3xl-bold {
+  font-size: 34px;
+  font-weight: 700;
+}

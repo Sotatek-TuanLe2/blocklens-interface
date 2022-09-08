@@ -1,0 +1,8 @@
+{
+  "auth": {
+    "domain": "Buni Lens"
+  },
+  "api": {
+    "baseUrlApi": "https://stg-launchpad-api.metaversestarter.io"
+  }
+}
