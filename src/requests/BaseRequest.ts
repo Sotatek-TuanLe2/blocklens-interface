@@ -1,17 +1,9 @@
 import config from 'src/config';
 import axios from 'axios';
-import { setAuthorizationToRequest } from 'src/utils/utils-auth';
-import Storage from 'src/utils/storage';
 
 export default class BaseRequest {
   protected accessToken = '';
-  constructor() {
-    const accessToken = Storage.getAccessToken();
-    if (accessToken) {
-      this.accessToken = accessToken;
-      setAuthorizationToRequest(this.accessToken, Storage.getChainId());
-    }
-  }
+  constructor() {}
 
   getUrlPrefix() {
     return config.api.baseUrlApi;

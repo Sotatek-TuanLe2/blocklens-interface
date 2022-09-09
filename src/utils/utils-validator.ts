@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js';
 import SimpleReactValidator from 'simple-react-validator';
 
 type IRule =
@@ -72,22 +71,6 @@ export const createValidator = (options?: IOptions | undefined) => {
       videoUrl: {
         message: 'The video must end in “mp4”, “wmv”, “mov”, “avi” or “webm”',
         rule: (val: string): boolean => /^.+\.(mp4|wmv|mov|avi|webm)$/.test(val),
-      },
-      minValue: {
-        message: 'The :attribute must be greater than or equal :value.',
-        rule: (val: string, params: string | number | BigNumber) => {
-          return +val >= +params;
-        },
-        // @ts-ignore
-        messageReplace: (message, params) => message.replace(':value', params),
-      },
-      maxValue: {
-        message: 'The :attribute must be less than :value.',
-        rule: (val: string, params: string | number | BigNumber) => {
-          return +val <= +params;
-        },
-        // @ts-ignore
-        messageReplace: (message, params) => message.replace(':value', params),
       },
       maxDigits: {
         message: 'Please enter :params digits only.',

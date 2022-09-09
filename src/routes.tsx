@@ -9,6 +9,8 @@ import {
 import { useLocation } from 'react-router';
 import React from 'react';
 import HomePage from './pages/HomePage';
+import SignUpPage from './pages/SignUpPage';
+import LoginPage from './pages/LoginPage';
 
 /**
  * Main App routes.
@@ -24,6 +26,8 @@ const Routes: FC<RouteComponentProps> = () => {
   return (
     <>
       <Switch>
+        <Route path={'/login'} component={LoginPage} />
+        <Route path={'/sign-up'} component={SignUpPage} />
         <Route path={'/'} component={HomePage} />
       </Switch>
     </>
