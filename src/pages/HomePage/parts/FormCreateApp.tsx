@@ -1,0 +1,164 @@
+import { FC, useRef, useState, useEffect } from 'react';
+import React from 'react';
+import Card from 'src/components/Card';
+import Field from 'src/components/Field';
+import AppInput from 'src/components/AppInput';
+import {
+  Flex,
+  Text,
+  Heading
+} from '@chakra-ui/react';
+import AppTextarea from 'src/components/AppTextarea';
+import AppSelect from 'src/components/AppSelect';
+import AppButton from 'src/components/AppButton';
+import { createValidator } from 'src/utils/utils-validator';
+
+const chains = [
+  {
+    name: 'Ethereum',
+    value: 'GOERLI_TESTNET'
+  },
+  {
+    name: 'Binance Smart Chain',
+    value: 'BSC_TESTNET'
+  },
+  {
+    name: 'Polygon',
+    value: 'POLYGON_TESTNET'
+  },
+  {
+    name: 'Avalanche FUJI C-Chain',
+    value: 'AVAX_TESTNET'
+  }
+];
+
+const networks = [
+  {
+    name: 'Testnet',
+    value: 'TESTNET'
+  },
+  {
+    name: 'Mainnet',
+    value: 'MAINNET'
+  },
+];
+
+interface IDataForm {
+  name: string;
+  chainId: string;
+  network: string;
+  description: string;
+}
+
+const FormCreateApp = () => {
+  const initDataCreateApp = {
+    name: '',
+    chainId: '',
+    network: '',
+    description: '',
+  };
+
+  const [dataForm, setDataForm] = useState<IDataForm>(initDataCreateApp);
+  const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
+  const validator = useRef(
+    createValidator({
+      element: (message: string) => <Text color={'red.500'}>{message}</Text>,
+    }),
+  );
+
+  useEffect(() => {
+    const isDisabled = !validator.current.allValid();
+    setIsDisableSubmit(isDisabled);
+  }, [dataForm]);
+
+  return (
+    <Card>
+      <Heading as="h3" size="lg" mb={5}>
+        Create app
+      </Heading>
+      <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
+        <Field label={"NAME"} customWidth={'100%'}>
+          <AppInput
+            fontSize={'16px'}
+            placeholder="Gavin"
+            size="lg"
+            value={dataForm.name}
+            onChange={(e) =>
+              setDataForm({
+                ...dataForm,
+                name: e.target.value,
+              })
+            }
+            validate={{
+              name: `name`,
+              validator: validator.current,
+              rule: 'required',
+            }}
+          />
+        </Field>
+        <Field label={"CHAIN"} customWidth={'49%'}>
+          <AppSelect
+            variant={'main'}
+            value={dataForm.chainId}
+            onChange={(e) =>
+              setDataForm({
+                ...dataForm,
+                chainId: e?.target.value,
+              })}
+          >
+            {chains.map((network, index) => (
+              <option key={index} value={network.value}>
+                {network.name}
+              </option>
+            ))}
+          </AppSelect>
+        </Field>
+        <Field label={"NETWORK"} customWidth={'49%'}>
+          <AppSelect
+            variant={'main'}
+            value={dataForm.network}
+            onChange={(e) =>
+              setDataForm({
+                ...dataForm,
+                network: e?.target.value,
+              })}
+          >
+            {networks.map((network, index) => (
+              <option key={index} value={network.value}>
+                {network.name}
+              </option>
+            ))}
+          </AppSelect>
+        </Field>
+        <Field label={"DESCRIPTION"} customWidth={'100%'}>
+          <AppTextarea
+            fontSize={'16px'}
+            placeholder="Gavin"
+            size="lg"
+            value={dataForm.description}
+            onChange={(e) =>
+              setDataForm({
+                ...dataForm,
+                description: e.target.value,
+              })
+            }
+          />
+        </Field>
+      </Flex>
+
+      <Flex justifyContent={'flex-end'}>
+        <AppButton
+          disabled={isDisableSubmit}
+          onClick={() => console.log("dataForm", dataForm)}
+          borderRadius={'4px'}
+          size={'lg'}
+          textTransform={'uppercase'}
+        >
+          Create app
+        </AppButton>
+      </Flex>
+    </Card>
+  );
+};
+
+export default FormCreateApp;

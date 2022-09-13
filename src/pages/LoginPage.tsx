@@ -1,4 +1,4 @@
-import {FC, useRef, useState} from 'react';
+import { FC, useRef, useState } from 'react';
 import React from 'react';
 import { Box, Flex, useColorModeValue, Text } from '@chakra-ui/react';
 import Card from 'src/components/Card';
@@ -17,8 +17,6 @@ interface IDataForm {
 
 const LoginPage: FC = () => {
   const initDataLogin = {
-    firstName: '',
-    lastName: '',
     email: '',
     password: '',
   };
@@ -35,18 +33,23 @@ const LoginPage: FC = () => {
 
   return (
     <Box>
-      <Flex justifyContent={'center'} my={5} >
-        <Sotalabs width={"200px"} />
+      <Flex justifyContent={'center'} my={5}>
+        <Sotalabs width={'200px'} />
       </Flex>
 
       <Flex justifyContent={'center'} minH={'calc(100vh - 160px)'} mt={8}>
-        <Card width={['100%', '550px']} p={'30px'} mx={['15px', 0]} height={'max-content'}>
+        <Card
+          width={['100%', '550px']}
+          p={'30px'}
+          mx={['15px', 0]}
+          height={'max-content'}
+        >
           <Box
             textAlign={'center'}
             pb={6}
             fontSize={'24px'}
-            borderBottom={"1px solid #E9EDF7"}
-            margin={"0 -30px"}
+            borderBottom={'1px solid #E9EDF7'}
+            margin={'0 -30px'}
             fontWeight={500}
           >
             Login
@@ -65,15 +68,13 @@ const LoginPage: FC = () => {
           </AppButton>
 
           <Flex justifyContent={'space-between'} alignItems={'center'}>
-            <Box borderBottom={"1px solid #E9EDF7"} width={'45%'}/>
-            <Box color={colorText}>
-              or
-            </Box>
-            <Box borderBottom={"1px solid #E9EDF7"} width={'45%'}/>
+            <Box borderBottom={'1px solid #E9EDF7'} width={'45%'} />
+            <Box color={colorText}>or</Box>
+            <Box borderBottom={'1px solid #E9EDF7'} width={'45%'} />
           </Flex>
 
           <Box mt={4} color={colorText}>
-            <Field label={"EMAIL"}>
+            <Field label={'EMAIL'}>
               <AppInput
                 fontSize={'16px'}
                 placeholder="gavin@sotatek.com"
@@ -93,7 +94,7 @@ const LoginPage: FC = () => {
               />
             </Field>
 
-            <Field label={"PASSWORD"}>
+            <Field label={'PASSWORD'}>
               <AppInput
                 fontSize={'16px'}
                 type="password"
@@ -105,22 +106,18 @@ const LoginPage: FC = () => {
                   })
                 }
                 size="lg"
-                placeholder={"••••••••"}
+                placeholder={'••••••••'}
                 validate={{
                   name: `password`,
                   validator: validator.current,
-                  rule: [
-                    'required',
-                  ],
+                  rule: ['required'],
                 }}
               />
-              <AppLink to={"#"}>
-                Forgot your password?
-              </AppLink>
+              <AppLink to={'#'}>Forgot your password?</AppLink>
             </Field>
 
             <AppButton
-              onClick={() => console.log(dataForm, "dataForm")}
+              onClick={() => console.log(dataForm, 'dataForm')}
               borderRadius={'4px'}
               size={'lg'}
               width={'full'}
@@ -130,14 +127,15 @@ const LoginPage: FC = () => {
 
             <Box mt={2}>
               Don't have an account?
-              <AppLink to={"/sign-up"} fontWeight={500}>
+              <AppLink to={'/sign-up'} fontWeight={500}>
                 Sign up
               </AppLink>
             </Box>
 
             <Box mt={4} fontSize={'13px'}>
-              This site is protected by reCAPTCHA and the Google <AppLink to={"#"}>Privacy
-              Policy </AppLink> and <AppLink to={"#"}>Terms of Service</AppLink> apply.
+              This site is protected by reCAPTCHA and the Google{' '}
+              <AppLink to={'#'}>Privacy Policy </AppLink> and{' '}
+              <AppLink to={'#'}>Terms of Service</AppLink> apply.
             </Box>
           </Box>
         </Card>

@@ -12,12 +12,12 @@ interface AppSelectPops extends SelectProps {
     | 'auth'
     | 'authSecondary'
     | 'search';
-  size?: 'sm' | 'md';
+  size?: 'sm' | 'md' | 'lg';
 }
 
 const AppSelect: FC<AppSelectPops> = ({
   variant = 'main',
-  size = 'md',
+  size = 'lg',
   children,
   ...props
 }: AppSelectPops) => {
@@ -44,6 +44,9 @@ export const appSelectStyles = {
     md: {
       height: '42px',
     },
+    lg: {
+      height: '48px',
+    },
   },
   variants: {
     main: (props: StyleProps) => ({
@@ -52,7 +55,7 @@ export const appSelectStyles = {
         border: '1px solid',
         color: mode('secondaryGray.900', 'white')(props),
         borderColor: mode('secondaryGray.100', 'whiteAlpha.100')(props),
-        borderRadius: '16px',
+        borderRadius: '4px',
         _placeholder: { color: 'secondaryGray.600' },
       },
       icon: {

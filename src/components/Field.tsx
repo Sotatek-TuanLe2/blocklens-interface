@@ -18,7 +18,7 @@ const Field = ({
   return (
     <Flex alignItems={'flex-start'} w={['full', customWidth]} mb={4}>
       <Stack w={'full'} spacing={1}>
-        <Text whiteSpace={'nowrap'} mr={2} textTransform={"uppercase"}>
+        <Text whiteSpace={'nowrap'} mr={2} textTransform={"uppercase"} fontWeight={500}>
           {label}{' '}
           {isRequired && (
             <Text as={'span'} color={'red.500'}>

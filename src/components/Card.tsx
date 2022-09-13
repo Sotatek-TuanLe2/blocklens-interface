@@ -19,12 +19,12 @@ const Card = forwardRef<CardProps, 'div'>(
 
 export const cardStyles = {
   baseStyle: () => ({
-    p: '20px',
+    p: ['20px', '30px'],
     display: 'flex',
     flexDirection: 'column',
     width: '100%',
     position: 'relative',
-    borderRadius: '20px',
+    borderRadius: '10px',
     minWidth: '0px',
     wordWrap: 'break-word',
     backgroundClip: 'border-box',

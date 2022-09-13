@@ -53,7 +53,7 @@ export const appTextareaStyles = {
       border: '1px solid',
       color: mode('secondaryGray.900', 'white')(props),
       borderColor: mode('secondaryGray.100', 'whiteAlpha.100')(props),
-      borderRadius: '16px',
+      borderRadius: '4px',
       fontSize: 'sm',
       p: '20px',
       _placeholder: {
