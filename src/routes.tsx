@@ -11,6 +11,7 @@ import React from 'react';
 import HomePage from './pages/HomePage';
 import SignUpPage from './pages/SignUpPage';
 import LoginPage from './pages/LoginPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 
 /**
  * Main App routes.
@@ -28,6 +29,7 @@ const Routes: FC<RouteComponentProps> = () => {
       <Switch>
         <Route path={'/login'} component={LoginPage} />
         <Route path={'/sign-up'} component={SignUpPage} />
+        <Route path={'/reset-password'} component={ResetPasswordPage} />
         <Route path={'/'} component={HomePage} />
       </Switch>
     </>

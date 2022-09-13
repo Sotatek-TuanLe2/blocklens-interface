@@ -1,30 +1,25 @@
-import { FC, useRef, useState, useEffect } from 'react';
+import {FC, useEffect, useRef, useState} from 'react';
 import React from 'react';
 import { Box, Flex, useColorModeValue, Text } from '@chakra-ui/react';
 import Card from 'src/components/Card';
 import Field from 'src/components/Field';
 import AppInput from 'src/components/AppInput';
 import AppButton from 'src/components/AppButton';
-import AppLink from 'src/components/AppLink';
 import { Sotalabs } from 'src/assets/icons';
 import Footer from 'src/layouts/Footer';
 import { createValidator } from 'src/utils/utils-validator';
-import GoogleLoginButton from 'src/components/GoogleLoginButton';
+import AppLink from '../components/AppLink';
 
 interface IDataForm {
   email: string;
-  password: string;
 }
 
-const LoginPage: FC = () => {
-  const initDataLogin = {
-    firstName: '',
-    lastName: '',
+const RestPasswordPage: FC = () => {
+  const initDataRestPassword = {
     email: '',
-    password: '',
   };
 
-  const [dataForm, setDataForm] = useState<IDataForm>(initDataLogin);
+  const [dataForm, setDataForm] = useState<IDataForm>(initDataRestPassword);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
   const colorText = useColorModeValue('gray.500', 'white');
 
@@ -55,23 +50,25 @@ const LoginPage: FC = () => {
           <Box
             textAlign={'center'}
             pb={6}
-            fontSize={'24px'}
             borderBottom={'1px solid #E9EDF7'}
             margin={'0 -30px'}
-            fontWeight={500}
           >
-            Login
+            <Text fontSize={'24px'} fontWeight={500} pb={3}>
+              Reset password.
+            </Text>
+
+            <Text
+              color={colorText}
+              fontSize={'16px'}
+              maxW={'300px'}
+              margin={'0 auto'}
+            >
+              Enter your account's email address and we will send you password
+              reset link.
+            </Text>
           </Box>
 
-          <GoogleLoginButton />
-
-          <Flex justifyContent={'space-between'} alignItems={'center'}>
-            <Box borderBottom={'1px solid #E9EDF7'} width={'45%'} />
-            <Box color={colorText}>or</Box>
-            <Box borderBottom={'1px solid #E9EDF7'} width={'45%'} />
-          </Flex>
-
-          <Box mt={4} color={colorText}>
+          <Box mt={5} color={colorText}>
             <Field label={'EMAIL'}>
               <AppInput
                 fontSize={'16px'}
@@ -92,50 +89,22 @@ const LoginPage: FC = () => {
               />
             </Field>
 
-            <Field label={'PASSWORD'}>
-              <AppInput
-                fontSize={'16px'}
-                type="password"
-                value={dataForm.password}
-                onChange={(e) =>
-                  setDataForm({
-                    ...dataForm,
-                    password: e.target.value,
-                  })
-                }
-                size="lg"
-                placeholder={'••••••••'}
-                validate={{
-                  name: `password`,
-                  validator: validator.current,
-                  rule: ['required'],
-                }}
-              />
-              <AppLink to={'/reset-password'}>Forgot your password?</AppLink>
-            </Field>
-
             <AppButton
               onClick={() => console.log(dataForm, 'dataForm')}
               borderRadius={'4px'}
               size={'lg'}
               width={'full'}
+              mt={3}
               disabled={isDisableSubmit}
             >
-              Log in
+              Send reset email
             </AppButton>
 
-            <Box mt={2}>
-              Don't have an account?
-              <AppLink to={'/sign-up'} fontWeight={500}>
-                Sign up
+            <Flex justifyContent={'center'} mt={5}>
+              <AppLink to={'/login'} fontWeight={500}>
+                Return to Login
               </AppLink>
-            </Box>
-
-            <Box mt={4} fontSize={'13px'}>
-              This site is protected by reCAPTCHA and the Google{' '}
-              <AppLink to={'#'}>Privacy Policy </AppLink> and{' '}
-              <AppLink to={'#'}>Terms of Service</AppLink> apply.
-            </Box>
+            </Flex>
           </Box>
         </Card>
       </Flex>
@@ -144,4 +113,4 @@ const LoginPage: FC = () => {
   );
 };
 
-export default LoginPage;
+export default RestPasswordPage;
