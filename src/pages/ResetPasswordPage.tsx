@@ -1,4 +1,4 @@
-import { FC, useRef, useState } from 'react';
+import {FC, useEffect, useRef, useState} from 'react';
 import React from 'react';
 import { Box, Flex, useColorModeValue, Text } from '@chakra-ui/react';
 import Card from 'src/components/Card';
@@ -20,7 +20,7 @@ const RestPasswordPage: FC = () => {
   };
 
   const [dataForm, setDataForm] = useState<IDataForm>(initDataRestPassword);
-
+  const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
   const colorText = useColorModeValue('gray.500', 'white');
 
   const validator = useRef(
@@ -28,6 +28,11 @@ const RestPasswordPage: FC = () => {
       element: (message: string) => <Text color={'red.500'}>{message}</Text>,
     }),
   );
+
+  useEffect(() => {
+    const isDisabled = !validator.current.allValid();
+    setIsDisableSubmit(isDisabled);
+  }, [dataForm]);
 
   return (
     <Box>
@@ -90,6 +95,7 @@ const RestPasswordPage: FC = () => {
               size={'lg'}
               width={'full'}
               mt={3}
+              disabled={isDisableSubmit}
             >
               Send reset email
             </AppButton>

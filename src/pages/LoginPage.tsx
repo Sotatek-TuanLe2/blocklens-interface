@@ -1,4 +1,4 @@
-import {FC, useRef, useState} from 'react';
+import { FC, useRef, useState, useEffect } from 'react';
 import React from 'react';
 import { Box, Flex, useColorModeValue, Text } from '@chakra-ui/react';
 import Card from 'src/components/Card';
@@ -24,7 +24,7 @@ const LoginPage: FC = () => {
   };
 
   const [dataForm, setDataForm] = useState<IDataForm>(initDataLogin);
-
+  const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
   const colorText = useColorModeValue('gray.500', 'white');
 
   const validator = useRef(
@@ -32,6 +32,11 @@ const LoginPage: FC = () => {
       element: (message: string) => <Text color={'red.500'}>{message}</Text>,
     }),
   );
+
+  useEffect(() => {
+    const isDisabled = !validator.current.allValid();
+    setIsDisableSubmit(isDisabled);
+  }, [dataForm]);
 
   return (
     <Box>
@@ -124,6 +129,7 @@ const LoginPage: FC = () => {
               borderRadius={'4px'}
               size={'lg'}
               width={'full'}
+              disabled={isDisableSubmit}
             >
               Log in
             </AppButton>
