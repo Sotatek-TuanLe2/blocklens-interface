@@ -1,4 +1,4 @@
-import { FC, useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import React from 'react';
 import Card from 'src/components/Card';
 import Field from 'src/components/Field';
@@ -6,7 +6,7 @@ import AppInput from 'src/components/AppInput';
 import {
   Flex,
   Text,
-  Heading
+  Heading,
 } from '@chakra-ui/react';
 import AppTextarea from 'src/components/AppTextarea';
 import AppSelect from 'src/components/AppSelect';
@@ -15,31 +15,32 @@ import { createValidator } from 'src/utils/utils-validator';
 
 const chains = [
   {
-    name: 'Ethereum',
-    value: 'GOERLI_TESTNET'
+    label: 'Ethereum',
+    value: 'GOERLI_TESTNET',
+    icon: '/images/eth.svg',
   },
   {
-    name: 'Binance Smart Chain',
-    value: 'BSC_TESTNET'
+    label: 'Binance Smart Chain',
+    value: 'BSC_TESTNET',
+    icon: '/images/bnb.svg',
   },
   {
-    name: 'Polygon',
-    value: 'POLYGON_TESTNET'
+    label: 'Polygon',
+    value: 'POLYGON_TESTNET',
+    icon: '/images/polygon.svg',
   },
-  {
-    name: 'Avalanche FUJI C-Chain',
-    value: 'AVAX_TESTNET'
-  }
 ];
 
 const networks = [
   {
-    name: 'Testnet',
-    value: 'TESTNET'
+    label: 'Testnet',
+    value: 'TESTNET',
+    icon: '/images/eth.svg',
   },
   {
-    name: 'Mainnet',
-    value: 'MAINNET'
+    label: 'Mainnet',
+    value: 'MAINNET',
+    icon: '/images/eth.svg',
   },
 ];
 
@@ -98,36 +99,29 @@ const FormCreateApp = () => {
         </Field>
         <Field label={"CHAIN"} customWidth={'49%'}>
           <AppSelect
-            variant={'main'}
-            value={dataForm.chainId}
-            onChange={(e) =>
+            onChange={(e: any) => {
               setDataForm({
                 ...dataForm,
-                chainId: e?.target.value,
-              })}
+                chainId: e.value,
+              })
+            }}
+            options={chains}
+            defaultValue={chains[0]}
           >
-            {chains.map((network, index) => (
-              <option key={index} value={network.value}>
-                {network.name}
-              </option>
-            ))}
           </AppSelect>
         </Field>
+
         <Field label={"NETWORK"} customWidth={'49%'}>
           <AppSelect
-            variant={'main'}
-            value={dataForm.network}
-            onChange={(e) =>
+            onChange={(e: any) => {
               setDataForm({
                 ...dataForm,
-                network: e?.target.value,
-              })}
+                network: e.value,
+              })
+            }}
+            options={networks}
+            defaultValue={networks[0]}
           >
-            {networks.map((network, index) => (
-              <option key={index} value={network.value}>
-                {network.name}
-              </option>
-            ))}
           </AppSelect>
         </Field>
         <Field label={"DESCRIPTION"} customWidth={'100%'}>

@@ -1,41 +1,41 @@
-import { FC, useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import React from 'react';
 import Card from 'src/components/Card';
 import Field from 'src/components/Field';
 import AppInput from 'src/components/AppInput';
 import { Flex, Text, Heading } from '@chakra-ui/react';
-import AppTextarea from 'src/components/AppTextarea';
 import AppSelect from 'src/components/AppSelect';
 import AppButton from 'src/components/AppButton';
 import { createValidator } from 'src/utils/utils-validator';
 
 const chains = [
   {
-    name: 'Ethereum',
+    label: 'Ethereum',
     value: 'GOERLI_TESTNET',
+    icon: '/images/eth.svg',
   },
   {
-    name: 'Binance Smart Chain',
+    label: 'Binance Smart Chain',
     value: 'BSC_TESTNET',
+    icon: '/images/bnb.svg',
   },
   {
-    name: 'Polygon',
+    label: 'Polygon',
     value: 'POLYGON_TESTNET',
-  },
-  {
-    name: 'Avalanche FUJI C-Chain',
-    value: 'AVAX_TESTNET',
+    icon: '/images/polygon.svg',
   },
 ];
 
 const networks = [
   {
-    name: 'Testnet',
+    label: 'Testnet',
     value: 'TESTNET',
+    icon: '/images/eth.svg',
   },
   {
-    name: 'Mainnet',
+    label: 'Mainnet',
     value: 'MAINNET',
+    icon: '/images/eth.svg',
   },
 ];
 
@@ -78,38 +78,29 @@ const FormCreateWebHook = () => {
         <Flex width={['100%', '49%']} flexWrap={'wrap'} justifyContent={'space-between'}>
           <Field label={'CHAIN'} customWidth={'48%'}>
             <AppSelect
-              variant={'main'}
-              value={dataForm.chainId}
-              onChange={(e) =>
+              onChange={(e: any) => {
                 setDataForm({
                   ...dataForm,
-                  chainId: e?.target.value,
+                  chainId: e.value,
                 })
-              }
+              }}
+              options={chains}
+              defaultValue={chains[0]}
             >
-              {chains.map((network, index) => (
-                <option key={index} value={network.value}>
-                  {network.name}
-                </option>
-              ))}
             </AppSelect>
           </Field>
+
           <Field label={'NETWORK'} customWidth={'48%'}>
             <AppSelect
-              variant={'main'}
-              value={dataForm.network}
-              onChange={(e) =>
+              onChange={(e: any) => {
                 setDataForm({
                   ...dataForm,
-                  network: e?.target.value,
+                  network: e.value,
                 })
-              }
+              }}
+              options={networks}
+              defaultValue={networks[0]}
             >
-              {networks.map((network, index) => (
-                <option key={index} value={network.value}>
-                  {network.name}
-                </option>
-              ))}
             </AppSelect>
           </Field>
         </Flex>
