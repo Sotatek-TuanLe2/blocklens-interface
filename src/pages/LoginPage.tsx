@@ -114,7 +114,7 @@ const LoginPage: FC = () => {
                   ],
                 }}
               />
-              <AppLink to={"#"}>
+              <AppLink  to={'/reset-password'}>
                 Forgot your password?
               </AppLink>
             </Field>
