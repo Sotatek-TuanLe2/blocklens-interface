@@ -9,6 +9,7 @@ import AppLink from 'src/components/AppLink';
 import { Sotalabs } from 'src/assets/icons';
 import Footer from 'src/layouts/Footer';
 import { createValidator } from 'src/utils/utils-validator';
+import GoogleLoginButton from 'src/components/GoogleLoginButton';
 
 interface IDataForm {
   email: string;
@@ -60,17 +61,7 @@ const LoginPage: FC = () => {
             Login
           </Box>
 
-          <AppButton
-            onClick={() => console.log('sdsd')}
-            borderRadius={'4px'}
-            variant={'outline'}
-            size={'lg'}
-            width={'full'}
-            mt={6}
-            mb={3}
-          >
-            Login with Google
-          </AppButton>
+          <GoogleLoginButton />
 
           <Flex justifyContent={'space-between'} alignItems={'center'}>
             <Box borderBottom={'1px solid #E9EDF7'} width={'45%'} />
@@ -118,9 +109,7 @@ const LoginPage: FC = () => {
                   rule: ['required'],
                 }}
               />
-              <AppLink  to={'/reset-password'}>
-                Forgot your password?
-              </AppLink>
+              <AppLink to={'/reset-password'}>Forgot your password?</AppLink>
             </Field>
 
             <AppButton
