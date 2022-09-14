@@ -2,13 +2,14 @@ import {FC, useEffect, useRef, useState} from 'react';
 import React from 'react';
 import { Box, Flex, useColorModeValue,Text } from '@chakra-ui/react';
 import Card from 'src/components/Card';
-import Field from 'src/components/Field';
+import AppField from 'src/components/AppField';
 import AppInput from 'src/components/AppInput';
 import AppButton from 'src/components/AppButton';
 import AppLink from 'src/components/AppLink';
 import Footer from 'src/layouts/Footer';
 import { Sotalabs } from 'src/assets/icons';
 import { createValidator } from 'src/utils/utils-validator';
+import 'src/styles/pages/LoginPage.scss'
 
 interface IDataForm {
   firstName: string;
@@ -45,22 +46,14 @@ const SignUpPage: FC = () => {
         <Sotalabs width={"200px"} />
       </Flex>
 
-      <Flex justifyContent={'center'} minH={'calc(100vh - 160px)'} mt={8}>
-        <Card width={['100%', '550px']} p={'30px'} mx={['15px', 0]} height={'max-content'}>
-          <Box
-            textAlign={'center'}
-            pb={6}
-            fontSize={'24px'}
-            borderBottom={"1px solid #E9EDF7"}
-            margin={"0 -30px"}
-            fontWeight={500}
-          >
+      <Flex className="box-login">
+        <Card className="box-form">
+          <Box className="title">
             Sign up
           </Box>
 
           <AppButton
             onClick={() => console.log('sdsd')}
-            borderRadius={'4px'}
             variant={'outline'}
             size={'lg'}
             width={'full'}
@@ -70,17 +63,15 @@ const SignUpPage: FC = () => {
             Sign up with Google
           </AppButton>
 
-          <Flex justifyContent={'space-between'} alignItems={'center'}>
-            <Box borderBottom={"1px solid #E9EDF7"} width={'45%'}/>
-            <Box color={colorText}>
-              or
-            </Box>
-            <Box borderBottom={"1px solid #E9EDF7"} width={'45%'}/>
+          <Flex className="divider">
+            <Box className="border" />
+            <Box color={colorText}>or</Box>
+            <Box className="border" />
           </Flex>
-          <Box mt={4} color={colorText}>
-            <Field label={"FIRST NAME"}>
+
+          <Box color={colorText}>
+            <AppField label={"FIRST NAME"}>
               <AppInput
-                fontSize={'16px'}
                 placeholder="Gavin"
                 value={dataForm.firstName}
                 onChange={(e) =>
@@ -89,7 +80,6 @@ const SignUpPage: FC = () => {
                     firstName: e.target.value,
                   })
                 }
-                size="lg"
                 validate={{
                   name: `firstName`,
                   validator: validator.current,
@@ -98,10 +88,9 @@ const SignUpPage: FC = () => {
                   ],
                 }}
               />
-            </Field>
-            <Field label={"LAST NAME"}>
+            </AppField>
+            <AppField label={"LAST NAME"}>
               <AppInput
-                fontSize={'16px'}
                 placeholder="Belson"
                 value={dataForm.lastName}
                 onChange={(e) =>
@@ -110,7 +99,6 @@ const SignUpPage: FC = () => {
                     lastName: e.target.value,
                   })
                 }
-                size="lg"
                 validate={{
                   name: `lastName`,
                   validator: validator.current,
@@ -119,11 +107,10 @@ const SignUpPage: FC = () => {
                   ],
                 }}
               />
-            </Field>
+            </AppField>
 
-            <Field label={"EMAIL"}>
+            <AppField label={"EMAIL"}>
               <AppInput
-                fontSize={'16px'}
                 value={dataForm.email}
                 placeholder="gavin@sotatek.com"
                 onChange={(e) =>
@@ -132,7 +119,6 @@ const SignUpPage: FC = () => {
                     email: e.target.value,
                   })
                 }
-                size="lg"
                 validate={{
                   name: `email`,
                   validator: validator.current,
@@ -142,11 +128,10 @@ const SignUpPage: FC = () => {
                   ],
                 }}
               />
-            </Field>
+            </AppField>
 
-            <Field label={"PASSWORD"}>
+            <AppField label={"PASSWORD"}>
               <AppInput
-                fontSize={'16px'}
                 value={dataForm.password}
                 type="password"
                 placeholder={"••••••••"}
@@ -156,19 +141,17 @@ const SignUpPage: FC = () => {
                     password: e.target.value,
                   })
                 }
-                size="lg"
                 validate={{
                   name: `password`,
                   validator: validator.current,
                   rule: 'required|min:8',
                 }}
               />
-            </Field>
+            </AppField>
 
             <AppButton
               mt={5}
               onClick={() => console.log(dataForm, "dataForm")}
-              borderRadius={'4px'}
               size={'lg'}
               width={'full'}
               disabled={isDisableSubmit}
@@ -176,7 +159,7 @@ const SignUpPage: FC = () => {
               Sign up
             </AppButton>
 
-            <Flex justifyContent={'center'} mt={5}>
+            <Flex className="link-back">
               <AppLink to={"/login"} fontWeight={500}>
                 Return to Login
               </AppLink>

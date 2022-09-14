@@ -30,7 +30,7 @@ export default AppButton;
 
 export const appButtonStyles = {
   baseStyle: {
-    borderRadius: '16px',
+    borderRadius: '4px',
     boxShadow: '45px 76px 113px 7px rgba(112, 144, 176, 0.08)',
     transition: '.25s all ease',
     boxSizing: 'border-box',
@@ -43,7 +43,7 @@ export const appButtonStyles = {
   },
   variants: {
     outline: () => ({
-      borderRadius: '16px',
+      borderRadius: '4px',
     }),
     brand: (props: StyleProps) => ({
       bg: mode('brand.500', 'brand.400')(props),

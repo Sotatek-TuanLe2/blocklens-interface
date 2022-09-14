@@ -22,7 +22,7 @@ interface AppInputProps extends InputProps {
 }
 
 const AppInput = forwardRef(
-  ({ variant = 'main', size = 'md', readOnly, validate, ...props }: AppInputProps, ref) => {
+  ({ variant = 'main', size = 'lg', readOnly, validate, ...props }: AppInputProps, ref) => {
     const forceRender = useForceRender();
     const onBlur = () => {
       validate?.validator.showMessageFor(validate.name);
@@ -75,7 +75,7 @@ export const appInputStyles = {
         color: mode('secondaryGray.900', 'white')(props),
         borderColor: mode('secondaryGray.100', 'whiteAlpha.100')(props),
         borderRadius: '4px',
-        fontSize: 'sm',
+        fontSize: '16px',
         p: '20px',
         _placeholder: {
           color: mode('secondaryGray.500', 'whiteAlpha.300')(props),

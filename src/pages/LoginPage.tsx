@@ -2,7 +2,7 @@ import { FC, useRef, useState, useEffect } from 'react';
 import React from 'react';
 import { Box, Flex, useColorModeValue, Text } from '@chakra-ui/react';
 import Card from 'src/components/Card';
-import Field from 'src/components/Field';
+import AppField from 'src/components/AppField';
 import AppInput from 'src/components/AppInput';
 import AppButton from 'src/components/AppButton';
 import AppLink from 'src/components/AppLink';
@@ -10,6 +10,7 @@ import { Sotalabs } from 'src/assets/icons';
 import Footer from 'src/layouts/Footer';
 import { createValidator } from 'src/utils/utils-validator';
 import GoogleLoginButton from 'src/components/GoogleLoginButton';
+import 'src/styles/pages/LoginPage.scss'
 
 interface IDataForm {
   email: string;
@@ -45,36 +46,23 @@ const LoginPage: FC = () => {
         <Sotalabs width={'200px'} />
       </Flex>
 
-      <Flex justifyContent={'center'} minH={'calc(100vh - 160px)'} mt={8}>
-        <Card
-          width={['100%', '550px']}
-          p={'30px'}
-          mx={['15px', 0]}
-          height={'max-content'}
-        >
-          <Box
-            textAlign={'center'}
-            pb={6}
-            fontSize={'24px'}
-            borderBottom={'1px solid #E9EDF7'}
-            margin={'0 -30px'}
-            fontWeight={500}
-          >
+      <Flex className="box-login">
+        <Card className="box-form">
+          <Box className="title">
             Login
           </Box>
 
           <GoogleLoginButton />
 
-          <Flex justifyContent={'space-between'} alignItems={'center'}>
-            <Box borderBottom={'1px solid #E9EDF7'} width={'45%'} />
+          <Flex className="divider">
+            <Box className="border" />
             <Box color={colorText}>or</Box>
-            <Box borderBottom={'1px solid #E9EDF7'} width={'45%'} />
+            <Box className="border" />
           </Flex>
 
-          <Box mt={4} color={colorText}>
-            <Field label={'EMAIL'}>
+          <Box color={colorText}>
+            <AppField label={'EMAIL'}>
               <AppInput
-                fontSize={'16px'}
                 placeholder="gavin@sotatek.com"
                 value={dataForm.email}
                 onChange={(e) =>
@@ -83,18 +71,16 @@ const LoginPage: FC = () => {
                     email: e.target.value,
                   })
                 }
-                size="lg"
                 validate={{
                   name: `email`,
                   validator: validator.current,
                   rule: 'required|email',
                 }}
               />
-            </Field>
+            </AppField>
 
-            <Field label={'PASSWORD'}>
+            <AppField label={'PASSWORD'}>
               <AppInput
-                fontSize={'16px'}
                 type="password"
                 value={dataForm.password}
                 onChange={(e) =>
@@ -103,7 +89,6 @@ const LoginPage: FC = () => {
                     password: e.target.value,
                   })
                 }
-                size="lg"
                 placeholder={'••••••••'}
                 validate={{
                   name: `password`,
@@ -112,11 +97,10 @@ const LoginPage: FC = () => {
                 }}
               />
               <AppLink to={'/reset-password'}>Forgot your password?</AppLink>
-            </Field>
+            </AppField>
 
             <AppButton
               onClick={() => console.log(dataForm, 'dataForm')}
-              borderRadius={'4px'}
               size={'lg'}
               width={'full'}
               disabled={isDisableSubmit}
@@ -131,7 +115,7 @@ const LoginPage: FC = () => {
               </AppLink>
             </Box>
 
-            <Box mt={4} fontSize={'13px'}>
+            <Box className="note">
               This site is protected by reCAPTCHA and the Google{' '}
               <AppLink to={'#'}>Privacy Policy </AppLink> and{' '}
               <AppLink to={'#'}>Terms of Service</AppLink> apply.

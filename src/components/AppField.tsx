@@ -9,7 +9,7 @@ interface IField {
   customWidth?: string;
 }
 
-const Field = ({
+const AppField = ({
    children,
    label,
    isRequired,
@@ -32,4 +32,4 @@ const Field = ({
   );
 };
 
-export default Field;
+export default AppField;
