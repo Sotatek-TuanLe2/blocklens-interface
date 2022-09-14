@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import React from 'react';
 import Card from 'src/components/Card';
-import Field from 'src/components/Field';
+import AppField from 'src/components/AppField';
 import AppInput from 'src/components/AppInput';
 import { Flex, Text, Heading } from '@chakra-ui/react';
 import AppSelect from 'src/components/AppSelect';
@@ -76,7 +76,7 @@ const FormCreateWebHook = () => {
       </Heading>
       <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
         <Flex width={['100%', '49%']} flexWrap={'wrap'} justifyContent={'space-between'}>
-          <Field label={'CHAIN'} customWidth={'48%'}>
+          <AppField label={'CHAIN'} customWidth={'48%'}>
             <AppSelect
               onChange={(e: any) => {
                 setDataForm({
@@ -88,9 +88,9 @@ const FormCreateWebHook = () => {
               defaultValue={chains[0]}
             >
             </AppSelect>
-          </Field>
+          </AppField>
 
-          <Field label={'NETWORK'} customWidth={'48%'}>
+          <AppField label={'NETWORK'} customWidth={'48%'}>
             <AppSelect
               onChange={(e: any) => {
                 setDataForm({
@@ -102,15 +102,13 @@ const FormCreateWebHook = () => {
               defaultValue={networks[0]}
             >
             </AppSelect>
-          </Field>
+          </AppField>
         </Flex>
 
-        <Field label={'WEBHOOK URL'} customWidth={'49%'}>
+        <AppField label={'WEBHOOK URL'} customWidth={'49%'}>
           <Flex>
             <AppInput
-              fontSize={'16px'}
               placeholder="https://yourapp.com/webhook/data/12345"
-              size="lg"
               borderRightRadius={0}
               value={dataForm.url}
               onChange={(e) =>
@@ -122,7 +120,6 @@ const FormCreateWebHook = () => {
             />
             <AppButton
               onClick={() => console.log('test')}
-              borderRadius={'4px'}
               size={'lg'}
               textTransform={'uppercase'}
               backgroundColor={'green.500'}
@@ -132,10 +129,9 @@ const FormCreateWebHook = () => {
               Test webhook
             </AppButton>
           </Flex>
-        </Field>
-        <Field label={'NFT ADDRESSES'} customWidth={'49%'}>
+        </AppField>
+        <AppField label={'NFT ADDRESSES'} customWidth={'49%'}>
           <AppInput
-            fontSize={'16px'}
             placeholder="0xbb.."
             size="lg"
             value={dataForm.addressNFT}
@@ -151,10 +147,9 @@ const FormCreateWebHook = () => {
               rule: 'required',
             }}
           />
-        </Field>
-        <Field label={'TOKEN IDS'} customWidth={'49%'}>
+        </AppField>
+        <AppField label={'TOKEN IDS'} customWidth={'49%'}>
           <AppInput
-            fontSize={'16px'}
             placeholder="12 or 0xc"
             size="lg"
             value={dataForm.tokenIDs}
@@ -170,14 +165,13 @@ const FormCreateWebHook = () => {
               rule: 'required',
             }}
           />
-        </Field>
+        </AppField>
       </Flex>
 
       <Flex justifyContent={'flex-end'}>
         <AppButton
           disabled={isDisableSubmit}
           onClick={() => console.log('dataForm', dataForm)}
-          borderRadius={'4px'}
           size={'lg'}
           textTransform={'uppercase'}
         >

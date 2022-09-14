@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import React from 'react';
 import Card from 'src/components/Card';
-import Field from 'src/components/Field';
+import AppField from 'src/components/AppField';
 import AppInput from 'src/components/AppInput';
 import {
   Flex,
@@ -78,11 +78,9 @@ const FormCreateApp = () => {
         Create app
       </Heading>
       <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
-        <Field label={"NAME"} customWidth={'100%'}>
+        <AppField label={"NAME"} customWidth={'100%'}>
           <AppInput
-            fontSize={'16px'}
             placeholder="Gavin"
-            size="lg"
             value={dataForm.name}
             onChange={(e) =>
               setDataForm({
@@ -96,8 +94,8 @@ const FormCreateApp = () => {
               rule: 'required',
             }}
           />
-        </Field>
-        <Field label={"CHAIN"} customWidth={'49%'}>
+        </AppField>
+        <AppField label={"CHAIN"} customWidth={'49%'}>
           <AppSelect
             onChange={(e: any) => {
               setDataForm({
@@ -109,9 +107,9 @@ const FormCreateApp = () => {
             defaultValue={chains[0]}
           >
           </AppSelect>
-        </Field>
+        </AppField>
 
-        <Field label={"NETWORK"} customWidth={'49%'}>
+        <AppField label={"NETWORK"} customWidth={'49%'}>
           <AppSelect
             onChange={(e: any) => {
               setDataForm({
@@ -123,12 +121,10 @@ const FormCreateApp = () => {
             defaultValue={networks[0]}
           >
           </AppSelect>
-        </Field>
-        <Field label={"DESCRIPTION"} customWidth={'100%'}>
+        </AppField>
+        <AppField label={"DESCRIPTION"} customWidth={'100%'}>
           <AppTextarea
-            fontSize={'16px'}
             placeholder="Gavin"
-            size="lg"
             value={dataForm.description}
             onChange={(e) =>
               setDataForm({
@@ -137,14 +133,13 @@ const FormCreateApp = () => {
               })
             }
           />
-        </Field>
+        </AppField>
       </Flex>
 
       <Flex justifyContent={'flex-end'}>
         <AppButton
           disabled={isDisableSubmit}
           onClick={() => console.log("dataForm", dataForm)}
-          borderRadius={'4px'}
           size={'lg'}
           textTransform={'uppercase'}
         >
