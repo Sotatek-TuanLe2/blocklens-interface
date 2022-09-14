@@ -4,6 +4,6 @@ services:
     container_name: buni-lens-interface
     build: .
     ports:
-      - '8666:8666'
+      - '8688:8688'
     volumes:
       - .:/app
