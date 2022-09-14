@@ -11,6 +11,7 @@ const Header: FC = () => {
       right={0}
       left={0}
       top={0}
+      zIndex={999}
     >
       <Flex
         maxWidth={'1240px'}
