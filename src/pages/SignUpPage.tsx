@@ -1,15 +1,17 @@
-import {FC, useEffect, useRef, useState} from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import React from 'react';
-import { Box, Flex, useColorModeValue,Text } from '@chakra-ui/react';
-import Card from 'src/components/Card';
-import AppField from 'src/components/AppField';
-import AppInput from 'src/components/AppInput';
-import AppButton from 'src/components/AppButton';
-import AppLink from 'src/components/AppLink';
+import { Box, Flex, useColorModeValue, Text } from '@chakra-ui/react';
+import {
+  AppField,
+  AppCard,
+  AppInput,
+  AppButton,
+  AppLink,
+} from 'src/components';
 import Footer from 'src/layouts/Footer';
 import { Sotalabs } from 'src/assets/icons';
 import { createValidator } from 'src/utils/utils-validator';
-import 'src/styles/pages/LoginPage.scss'
+import 'src/styles/pages/LoginPage.scss';
 
 interface IDataForm {
   firstName: string;
@@ -42,15 +44,13 @@ const SignUpPage: FC = () => {
 
   return (
     <Box>
-      <Flex justifyContent={'center'} my={5} >
-        <Sotalabs width={"200px"} />
+      <Flex justifyContent={'center'} my={5}>
+        <Sotalabs width={'200px'} />
       </Flex>
 
       <Flex className="box-login">
-        <Card className="box-form">
-          <Box className="title">
-            Sign up
-          </Box>
+        <AppCard className="box-form">
+          <Box className="title">Sign up</Box>
 
           <AppButton
             onClick={() => console.log('sdsd')}
@@ -70,7 +70,7 @@ const SignUpPage: FC = () => {
           </Flex>
 
           <Box color={colorText}>
-            <AppField label={"FIRST NAME"}>
+            <AppField label={'FIRST NAME'}>
               <AppInput
                 placeholder="Gavin"
                 value={dataForm.firstName}
@@ -83,13 +83,11 @@ const SignUpPage: FC = () => {
                 validate={{
                   name: `firstName`,
                   validator: validator.current,
-                  rule: [
-                    'required',
-                  ],
+                  rule: ['required'],
                 }}
               />
             </AppField>
-            <AppField label={"LAST NAME"}>
+            <AppField label={'LAST NAME'}>
               <AppInput
                 placeholder="Belson"
                 value={dataForm.lastName}
@@ -102,14 +100,12 @@ const SignUpPage: FC = () => {
                 validate={{
                   name: `lastName`,
                   validator: validator.current,
-                  rule: [
-                    'required',
-                  ],
+                  rule: ['required'],
                 }}
               />
             </AppField>
 
-            <AppField label={"EMAIL"}>
+            <AppField label={'EMAIL'}>
               <AppInput
                 value={dataForm.email}
                 placeholder="gavin@sotatek.com"
@@ -122,19 +118,16 @@ const SignUpPage: FC = () => {
                 validate={{
                   name: `email`,
                   validator: validator.current,
-                  rule: [
-                    'required',
-                    'email'
-                  ],
+                  rule: ['required', 'email'],
                 }}
               />
             </AppField>
 
-            <AppField label={"PASSWORD"}>
+            <AppField label={'PASSWORD'}>
               <AppInput
                 value={dataForm.password}
                 type="password"
-                placeholder={"••••••••"}
+                placeholder={'••••••••'}
                 onChange={(e) =>
                   setDataForm({
                     ...dataForm,
@@ -151,7 +144,7 @@ const SignUpPage: FC = () => {
 
             <AppButton
               mt={5}
-              onClick={() => console.log(dataForm, "dataForm")}
+              onClick={() => console.log(dataForm, 'dataForm')}
               size={'lg'}
               width={'full'}
               disabled={isDisableSubmit}
@@ -160,12 +153,12 @@ const SignUpPage: FC = () => {
             </AppButton>
 
             <Flex className="link-back">
-              <AppLink to={"/login"} fontWeight={500}>
+              <AppLink to={'/login'} fontWeight={500}>
                 Return to Login
               </AppLink>
             </Flex>
           </Box>
-        </Card>
+        </AppCard>
       </Flex>
       <Footer />
     </Box>

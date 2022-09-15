@@ -1,14 +1,16 @@
 import {FC, useEffect, useRef, useState} from 'react';
 import React from 'react';
 import { Box, Flex, useColorModeValue, Text } from '@chakra-ui/react';
-import Card from 'src/components/Card';
-import AppField from 'src/components/AppField';
-import AppInput from 'src/components/AppInput';
-import AppButton from 'src/components/AppButton';
+import {
+  AppField,
+  AppCard,
+  AppInput,
+  AppButton,
+  AppLink,
+} from 'src/components';
 import { Sotalabs } from 'src/assets/icons';
 import Footer from 'src/layouts/Footer';
 import { createValidator } from 'src/utils/utils-validator';
-import AppLink from '../components/AppLink';
 import 'src/styles/pages/LoginPage.scss'
 
 interface IDataForm {
@@ -42,7 +44,7 @@ const RestPasswordPage: FC = () => {
       </Flex>
 
       <Flex className="box-login">
-        <Card className="box-form">
+        <AppCard className="box-form">
           <Box className="title">
             <Text pb={3}>
               Reset password.
@@ -92,7 +94,7 @@ const RestPasswordPage: FC = () => {
               </AppLink>
             </Flex>
           </Box>
-        </Card>
+        </AppCard>
       </Flex>
       <Footer />
     </Box>
