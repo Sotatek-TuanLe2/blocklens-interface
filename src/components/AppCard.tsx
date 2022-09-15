@@ -8,7 +8,7 @@ interface CardProps extends BoxProps {
 
 const AppCard = forwardRef<CardProps, 'div'>(
   ({ variant = 'main', children, ...props }, ref) => {
-    const styles = useStyleConfig('AppCard', { variant });
+    const styles = useStyleConfig('Card', { variant });
     return (
       <Box __css={styles} variant={variant} ref={ref} {...props}>
         {children}

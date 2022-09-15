@@ -3,7 +3,9 @@ import axios from 'axios';
 
 export default class BaseRequest {
   protected accessToken = '';
-  constructor() {}
+  constructor() {
+    // TODO need create constructor
+  }
 
   getUrlPrefix() {
     return config.api.baseUrlApi;
