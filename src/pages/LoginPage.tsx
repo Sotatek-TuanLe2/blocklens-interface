@@ -20,8 +20,6 @@ interface IDataForm {
 
 const LoginPage: FC = () => {
   const initDataLogin = {
-    firstName: '',
-    lastName: '',
     email: '',
     password: '',
   };
