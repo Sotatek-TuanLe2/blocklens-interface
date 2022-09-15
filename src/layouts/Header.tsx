@@ -3,11 +3,7 @@ import { Box } from '@chakra-ui/react';
 import React from 'react';
 
 const Header: FC = () => {
-  return (
-    <Box>
-      Header
-    </Box>
-  );
+  return <Box>Header</Box>;
 };
 
 export default Header;

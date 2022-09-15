@@ -22,7 +22,16 @@ interface AppInputProps extends InputProps {
 }
 
 const AppInput = forwardRef(
-  ({ variant = 'main', size = 'lg', readOnly, validate, ...props }: AppInputProps, ref) => {
+  (
+    {
+      variant = 'main',
+      size = 'lg',
+      readOnly,
+      validate,
+      ...props
+    }: AppInputProps,
+    ref,
+  ) => {
     const forceRender = useForceRender();
     const onBlur = () => {
       validate?.validator.showMessageFor(validate.name);
