@@ -18,6 +18,7 @@ export const LIST_ICONS = {
   SHIELD: 'shield',
   SOLANA_BLACK: 'solana_black',
   SOLANA_BLUE: 'solana_blue',
+  GRAY_DOWN_ARROW: 'gray_down_arrow',
 };
 
 interface IAppIcon {

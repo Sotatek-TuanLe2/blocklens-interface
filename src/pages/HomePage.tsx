@@ -7,7 +7,7 @@ const HomePage: FC = () => {
   return (
     <BasePage>
       Home Page
-      <AppIcon icon={LIST_ICONS.ETHEREUM_BLUE} />
+      <AppIcon icon={LIST_ICONS.GRAY_DOWN_ARROW} />
     </BasePage>
   );
 };
