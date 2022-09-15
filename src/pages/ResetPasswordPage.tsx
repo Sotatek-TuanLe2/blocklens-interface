@@ -1,4 +1,4 @@
-import {FC, useEffect, useRef, useState} from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import React from 'react';
 import { Box, Flex, useColorModeValue, Text } from '@chakra-ui/react';
 import {
@@ -11,7 +11,7 @@ import {
 import { Sotalabs } from 'src/assets/icons';
 import Footer from 'src/layouts/Footer';
 import { createValidator } from 'src/utils/utils-validator';
-import 'src/styles/pages/LoginPage.scss'
+import 'src/styles/pages/LoginPage.scss';
 
 interface IDataForm {
   email: string;
@@ -46,14 +46,9 @@ const RestPasswordPage: FC = () => {
       <Flex className="box-login">
         <AppCard className="box-form">
           <Box className="title">
-            <Text pb={3}>
-              Reset password.
-            </Text>
+            <Text pb={3}>Reset password.</Text>
 
-            <Text
-              color={colorText}
-              className="sub-text"
-            >
+            <Text color={colorText} className="sub-text">
               Enter your account's email address and we will send you password
               reset link.
             </Text>

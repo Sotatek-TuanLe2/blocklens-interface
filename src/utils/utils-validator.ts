@@ -57,7 +57,7 @@ interface IOptions {
   validators?: IRules;
   messages?: string;
   className?: string;
-  element?: (message: string) => string;
+  element?: (message: string) => string | JSX.Element;
   locale?: string;
 }
 
@@ -70,7 +70,8 @@ export const createValidator = (options?: IOptions | undefined) => {
       },
       videoUrl: {
         message: 'The video must end in “mp4”, “wmv”, “mov”, “avi” or “webm”',
-        rule: (val: string): boolean => /^.+\.(mp4|wmv|mov|avi|webm)$/.test(val),
+        rule: (val: string): boolean =>
+          /^.+\.(mp4|wmv|mov|avi|webm)$/.test(val),
       },
       maxDigits: {
         message: 'Please enter :params digits only.',

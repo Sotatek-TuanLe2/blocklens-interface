@@ -142,11 +142,7 @@ const AppDataTable = forwardRef(
     };
 
     const _renderLoading = () => {
-      return (
-        <div>
-          Loading...
-        </div>
-      );
+      return <div>Loading...</div>;
     };
 
     const _renderLoadMore = () => {
