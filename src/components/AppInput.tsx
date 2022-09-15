@@ -73,7 +73,7 @@ export const appInputStyles = {
         bg: mode('transparent', 'navy.800')(props),
         border: '1px solid',
         color: mode('secondaryGray.900', 'white')(props),
-        borderColor: mode('secondaryGray.100', 'whiteAlpha.100')(props),
+        borderColor: mode('secondaryGray.100', 'whiteAlpha.300')(props),
         borderRadius: '4px',
         fontSize: '16px',
         p: '20px',

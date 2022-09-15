@@ -1,4 +1,5 @@
 import SimpleReactValidator from 'simple-react-validator';
+import { ReactNode } from 'react';
 
 type IRule =
   | 'accepted'
@@ -57,7 +58,7 @@ interface IOptions {
   validators?: IRules;
   messages?: string;
   className?: string;
-  element?: (message: string) => string;
+  element?: (message: string) => ReactNode;
   locale?: string;
 }
 

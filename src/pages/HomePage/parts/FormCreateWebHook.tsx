@@ -1,11 +1,13 @@
 import { useRef, useState, useEffect } from 'react';
 import React from 'react';
-import Card from 'src/components/Card';
-import AppField from 'src/components/AppField';
-import AppInput from 'src/components/AppInput';
+import {
+  AppField,
+  AppCard,
+  AppInput,
+  AppButton,
+  AppSelect,
+} from 'src/components';
 import { Flex, Text, Heading } from '@chakra-ui/react';
-import AppSelect from 'src/components/AppSelect';
-import AppButton from 'src/components/AppButton';
 import { createValidator } from 'src/utils/utils-validator';
 
 const chains = [
@@ -70,7 +72,7 @@ const FormCreateWebHook = () => {
   }, [dataForm]);
 
   return (
-    <Card mt={5}>
+    <AppCard mt={5}>
       <Heading as="h3" size="lg" mb={5}>
         Create webhook
       </Heading>
@@ -178,7 +180,7 @@ const FormCreateWebHook = () => {
           Create webhook
         </AppButton>
       </Flex>
-    </Card>
+    </AppCard>
   );
 };
 

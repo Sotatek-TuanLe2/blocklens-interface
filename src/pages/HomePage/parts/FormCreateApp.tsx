@@ -1,16 +1,18 @@
 import { useRef, useState, useEffect } from 'react';
 import React from 'react';
-import Card from 'src/components/Card';
-import AppField from 'src/components/AppField';
-import AppInput from 'src/components/AppInput';
+import {
+  AppField,
+  AppCard,
+  AppInput,
+  AppButton,
+  AppSelect,
+  AppTextarea
+} from 'src/components';
 import {
   Flex,
   Text,
   Heading,
 } from '@chakra-ui/react';
-import AppTextarea from 'src/components/AppTextarea';
-import AppSelect from 'src/components/AppSelect';
-import AppButton from 'src/components/AppButton';
 import { createValidator } from 'src/utils/utils-validator';
 
 const chains = [
@@ -73,7 +75,7 @@ const FormCreateApp = () => {
   }, [dataForm]);
 
   return (
-    <Card>
+    <AppCard>
       <Heading as="h3" size="lg" mb={5}>
         Create app
       </Heading>
@@ -146,7 +148,7 @@ const FormCreateApp = () => {
           Create app
         </AppButton>
       </Flex>
-    </Card>
+    </AppCard>
   );
 };
 
