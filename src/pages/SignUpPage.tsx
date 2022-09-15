@@ -8,8 +8,7 @@ import {
   AppButton,
   AppLink,
 } from 'src/components';
-import Footer from 'src/layouts/Footer';
-import { Sotalabs } from 'src/assets/icons';
+import BasePage from 'src/layouts/BasePage';
 import { createValidator } from 'src/utils/utils-validator';
 import 'src/styles/pages/LoginPage.scss';
 
@@ -43,11 +42,7 @@ const SignUpPage: FC = () => {
   }, [dataForm]);
 
   return (
-    <Box>
-      <Flex justifyContent={'center'} my={5}>
-        <Sotalabs width={'200px'} />
-      </Flex>
-
+    <BasePage>
       <Flex className="box-login">
         <AppCard className="box-form">
           <Box className="title">Sign up</Box>
@@ -160,8 +155,7 @@ const SignUpPage: FC = () => {
           </Box>
         </AppCard>
       </Flex>
-      <Footer />
-    </Box>
+    </BasePage>
   );
 };
 

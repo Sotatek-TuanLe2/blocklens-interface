@@ -8,8 +8,7 @@ import {
   AppButton,
   AppLink,
 } from 'src/components';
-import { Sotalabs } from 'src/assets/icons';
-import Footer from 'src/layouts/Footer';
+import BasePage from 'src/layouts/BasePage';
 import { createValidator } from 'src/utils/utils-validator';
 import GoogleLoginButton from 'src/components/GoogleLoginButton';
 import 'src/styles/pages/LoginPage.scss';
@@ -43,11 +42,7 @@ const LoginPage: FC = () => {
   }, [dataForm]);
 
   return (
-    <Box>
-      <Flex justifyContent={'center'} my={5}>
-        <Sotalabs width={'200px'} />
-      </Flex>
-
+    <BasePage>
       <Flex className="box-login">
         <AppCard className="box-form">
           <Box className="title">Login</Box>
@@ -123,8 +118,7 @@ const LoginPage: FC = () => {
           </Box>
         </AppCard>
       </Flex>
-      <Footer />
-    </Box>
+    </BasePage>
   );
 };
 
