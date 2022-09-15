@@ -49,15 +49,15 @@ export type Rules = IRule | CustomRule;
 interface IRules {
   [key: Rules | string]: {
     message: string;
-    rule: (val: any, params?: any) => boolean;
+    rule: (val: string, params?: string) => boolean;
   };
 }
 
 interface IOptions {
   validators?: IRules;
-  messages?: any;
-  className?: any;
-  element?: (message: string) => any;
+  messages?: string;
+  className?: string;
+  element?: (message: string) => string;
   locale?: string;
 }
 

@@ -7,13 +7,7 @@ import AppInput from 'src/components/AppInput';
 import { useForceRender } from 'src/hooks/useForceRender';
 import SimpleReactValidator from 'simple-react-validator';
 
-enum SizePickerEnum {
-  MEDIUM = 'medium',
-  LARGE = 'large',
-}
-
 interface AppDatePicketProps extends ReactDatePickerProps {
-  size?: SizePickerEnum;
   placeholder?: string;
   readOnly?: boolean;
   validate?: ValidatorProps;
@@ -27,8 +21,7 @@ interface ValidatorProps {
 }
 
 const AppDatePicker: FC<AppDatePicketProps> = ({
-  size = SizePickerEnum.LARGE,
-  placeholder,
+  placeholder= 'Select time',
   validate,
   readOnly,
   ...props
@@ -66,7 +59,7 @@ const AppDatePicker: FC<AppDatePicketProps> = ({
               onClick={onClick}
               ref={ref}
               readOnly
-              placeholder={'Select time'}
+              placeholder={placeholder}
             />
             <InputRightElement
               zIndex={0}

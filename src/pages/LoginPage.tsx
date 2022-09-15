@@ -1,16 +1,18 @@
 import { FC, useRef, useState, useEffect } from 'react';
 import React from 'react';
 import { Box, Flex, useColorModeValue, Text } from '@chakra-ui/react';
-import Card from 'src/components/Card';
-import AppField from 'src/components/AppField';
-import AppInput from 'src/components/AppInput';
-import AppButton from 'src/components/AppButton';
-import AppLink from 'src/components/AppLink';
+import {
+  AppField,
+  AppCard,
+  AppInput,
+  AppButton,
+  AppLink,
+} from 'src/components';
 import { Sotalabs } from 'src/assets/icons';
 import Footer from 'src/layouts/Footer';
 import { createValidator } from 'src/utils/utils-validator';
 import GoogleLoginButton from 'src/components/GoogleLoginButton';
-import 'src/styles/pages/LoginPage.scss'
+import 'src/styles/pages/LoginPage.scss';
 
 interface IDataForm {
   email: string;
@@ -45,10 +47,8 @@ const LoginPage: FC = () => {
       </Flex>
 
       <Flex className="box-login">
-        <Card className="box-form">
-          <Box className="title">
-            Login
-          </Box>
+        <AppCard className="box-form">
+          <Box className="title">Login</Box>
 
           <GoogleLoginButton />
 
@@ -119,7 +119,7 @@ const LoginPage: FC = () => {
               <AppLink to={'#'}>Terms of Service</AppLink> apply.
             </Box>
           </Box>
-        </Card>
+        </AppCard>
       </Flex>
       <Footer />
     </Box>
