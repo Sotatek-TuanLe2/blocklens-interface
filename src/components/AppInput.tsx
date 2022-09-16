@@ -1,4 +1,9 @@
-import { Input, InputProps, InputGroup } from '@chakra-ui/react';
+import {
+  Input,
+  InputProps,
+  InputGroup,
+  InputRightElement,
+} from '@chakra-ui/react';
 import { mode } from '@chakra-ui/theme-tools';
 import { StyleProps, forwardRef } from '@chakra-ui/system';
 import SimpleReactValidator from 'simple-react-validator';
@@ -22,7 +27,17 @@ interface AppInputProps extends InputProps {
 }
 
 const AppInput = forwardRef(
-  ({ variant = 'main', size = 'lg', readOnly, validate, ...props }: AppInputProps, ref) => {
+  (
+    {
+      variant = 'main',
+      size = 'lg',
+      readOnly,
+      validate,
+      endAdornment,
+      ...props
+    }: AppInputProps,
+    ref,
+  ) => {
     const forceRender = useForceRender();
     const onBlur = () => {
       validate?.validator.showMessageFor(validate.name);
@@ -38,7 +53,8 @@ const AppInput = forwardRef(
             ref={ref}
             readOnly={readOnly}
           />
-          {props.endAdornment}
+
+          {endAdornment && <InputRightElement children={<>{endAdornment}</>} />}
         </InputGroup>
 
         {validate &&
