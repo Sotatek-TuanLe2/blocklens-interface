@@ -7,28 +7,28 @@ import { AppLink, AppButton } from 'src/components';
 const MyProfile: FC = () => {
   return (
     <Box className="my-profile">
-      <Box className="title">ABCD</Box>
+      <Box className="title">Truong Mac</Box>
       <Box className="profile-detail">
         <Flex className="info-item" borderBottom="1px solid #CACED4">
           <Flex>
             <Box className="info-title">Email</Box>
-            <Box>anh.hoang3@sotatek.com</Box>
+            <Box>truong.mac@sotatek.com</Box>
           </Flex>
-          <Box className="bg-edit" />
+          <Box className="icon-edit" />
         </Flex>
         <Flex className="info-item">
           <Flex>
             <Box className="info-title">First Name</Box>
             <Box>Mac</Box>
           </Flex>
-          <Box className="bg-edit" />
+          <Box className="icon-edit" />
         </Flex>
         <Flex className="info-item">
           <Flex>
             <Box className="info-title">Last Name</Box>
             <Box>Truong</Box>
           </Flex>
-          <Box className="bg-edit" />
+          <Box className="icon-edit" />
         </Flex>
 
         <Flex className="info-item">
@@ -36,21 +36,21 @@ const MyProfile: FC = () => {
             <Box className="info-title">Role</Box>
             <Box></Box>
           </Flex>
-          <Box className="bg-edit" />
+          <Box className="icon-edit" />
         </Flex>
         <Flex className="info-item">
           <Flex>
             <Box className="info-title">Telegram Username</Box>
             <Box></Box>
           </Flex>
-          <Box className="bg-edit" />
+          <Box className="icon-edit" />
         </Flex>
         <Flex className="info-item">
           <Flex>
             <Box className="info-title">Discord Username</Box>
             <Box></Box>
           </Flex>
-          <Box className="bg-edit" />
+          <Box className="icon-edit" />
         </Flex>
       </Box>
 

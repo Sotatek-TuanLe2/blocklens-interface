@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import React from 'react';
-import BasePage from '../../layouts/BasePage';
+import BasePage from 'src/layouts/BasePage';
 import { Box } from '@chakra-ui/react';
 import {
   Tabs,
@@ -32,10 +32,13 @@ const ProfilePage: FC = () => {
                 <MyProfile />
               </TabPanel>
               <TabPanel>
-                <p>two!</p>
+                <p>Team!</p>
               </TabPanel>
               <TabPanel>
-                <p>three!</p>
+                <p>Billing!</p>
+              </TabPanel>
+              <TabPanel>
+                <p>Cost Estimator!</p>
               </TabPanel>
             </TabPanels>
           </Tabs>
