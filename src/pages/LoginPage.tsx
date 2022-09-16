@@ -12,6 +12,9 @@ import BasePage from 'src/layouts/BasePage';
 import { createValidator } from 'src/utils/utils-validator';
 import GoogleLoginButton from 'src/components/GoogleLoginButton';
 import 'src/styles/pages/LoginPage.scss';
+import { useDispatch } from 'react-redux';
+import { setAccessToken, } from 'src/store/authentication';
+import { useHistory } from 'react-router';
 
 interface IDataForm {
   email: string;
@@ -23,6 +26,9 @@ const LoginPage: FC = () => {
     email: '',
     password: '',
   };
+
+  const dispatch = useDispatch();
+  const history = useHistory();
 
   const [dataForm, setDataForm] = useState<IDataForm>(initDataLogin);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
@@ -38,6 +44,12 @@ const LoginPage: FC = () => {
     const isDisabled = !validator.current.allValid();
     setIsDisableSubmit(isDisabled);
   }, [dataForm]);
+
+  const onLogin = async () => {
+    //TODO: handle call API
+    await dispatch(setAccessToken('sdasdsadhklsdjklsjdlsjdl'));
+    history.push('/');
+  };
 
   return (
     <BasePage>
@@ -93,7 +105,7 @@ const LoginPage: FC = () => {
             </AppField>
 
             <AppButton
-              onClick={() => console.log(dataForm, 'dataForm')}
+              onClick={onLogin}
               size={'lg'}
               width={'full'}
               disabled={isDisableSubmit}
