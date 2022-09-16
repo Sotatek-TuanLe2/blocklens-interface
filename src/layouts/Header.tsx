@@ -8,7 +8,7 @@ import 'src/styles/layout/Header.scss';
 const Header: FC = () => {
   const history = useHistory();
   return (
-    <Box bgColor={'blue.500'} className={'header'}>
+    <Box className={'header'}>
       <Flex className={'content-header'}>
         BLOCKLENS
         <Flex>
