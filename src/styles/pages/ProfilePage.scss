@@ -1,8 +1,16 @@
+.profile-page {
+  justify-content: center;
+  min-height: calc(100vh - 135px);
+  margin-top: 70px;
+  align-items: center;
+}
+
 .profile {
   border: 1px solid #E0E0E0;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
   border-radius: 3px;
   margin: 0 20px;
+  width: 1180px;
 
   .menu-left {
     width: 300px;
@@ -60,6 +68,10 @@
         font-size: 13px;
         line-height: 18px;
         color: #A0A4AC;
+      }
+
+      .bg-edit {
+        cursor: pointer;
       }
     }
   }

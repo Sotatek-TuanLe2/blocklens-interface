@@ -7,98 +7,59 @@ import { AppLink, AppButton } from 'src/components';
 const MyProfile: FC = () => {
   return (
     <Box className="my-profile">
-      <Box className="title">
-        ABCD
-      </Box>
-
+      <Box className="title">ABCD</Box>
       <Box className="profile-detail">
         <Flex className="info-item" borderBottom="1px solid #CACED4">
           <Flex>
-            <Box className="info-title">
-              Email
-            </Box>
-            <Box>
-              anh.hoang3@sotatek.com
-            </Box>
+            <Box className="info-title">Email</Box>
+            <Box>anh.hoang3@sotatek.com</Box>
           </Flex>
-          <Box>
-
-          </Box>
+          <Box className="bg-edit" />
         </Flex>
         <Flex className="info-item">
           <Flex>
-            <Box className="info-title">
-              First Name
-            </Box>
-            <Box>
-              Mac
-            </Box>
+            <Box className="info-title">First Name</Box>
+            <Box>Mac</Box>
           </Flex>
-          <Box>
-
-          </Box>
+          <Box className="bg-edit" />
         </Flex>
         <Flex className="info-item">
           <Flex>
-            <Box className="info-title">
-              Last Name
-            </Box>
-            <Box>
-              Truong
-            </Box>
+            <Box className="info-title">Last Name</Box>
+            <Box>Truong</Box>
           </Flex>
-          <Box>
-
-          </Box>
+          <Box className="bg-edit" />
         </Flex>
 
         <Flex className="info-item">
           <Flex>
-            <Box className="info-title">
-              Role
-            </Box>
-            <Box>
-
-            </Box>
+            <Box className="info-title">Role</Box>
+            <Box></Box>
           </Flex>
-          <Box>
-
-          </Box>
+          <Box className="bg-edit" />
         </Flex>
         <Flex className="info-item">
           <Flex>
-            <Box className="info-title">
-              Telegram Username
-            </Box>
-            <Box>
-
-            </Box>
+            <Box className="info-title">Telegram Username</Box>
+            <Box></Box>
           </Flex>
-          <Box>
-
-          </Box>
+          <Box className="bg-edit" />
         </Flex>
         <Flex className="info-item">
           <Flex>
-            <Box className="info-title">
-              Discord Username
-            </Box>
-            <Box>
-
-            </Box>
+            <Box className="info-title">Discord Username</Box>
+            <Box></Box>
           </Flex>
-          <Box>
-
-          </Box>
+          <Box className="bg-edit" />
         </Flex>
       </Box>
 
-      <AppLink to={"#"} className="link-change-password" >Change password</AppLink>
+      <AppLink to={'#'} className="link-change-password">
+        Change password
+      </AppLink>
 
-      <Box className={'btn-sign-out'}>
-        <AppButton>
-          Sign out
-        </AppButton>
+      <Box className="btn-sign-out">
+        <AppButton>Sign out</AppButton>
       </Box>
     </Box>
   );

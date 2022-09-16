@@ -1,4 +1,3 @@
-import { ComponentStyleConfig } from '@chakra-ui/react';
 import { mode, StyleFunctionProps } from '@chakra-ui/theme-tools';
 
 export const globalStyles = {
