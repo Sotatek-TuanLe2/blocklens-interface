@@ -12,6 +12,7 @@ import React from 'react';
 import HomePage from './pages/HomePage';
 import SignUpPage from './pages/SignUpPage';
 import LoginPage from './pages/LoginPage';
+import ProfilePage from './pages/ProfilePage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import Storage from 'src/utils/storage';
 
@@ -32,6 +33,7 @@ const Routes: FC<RouteComponentProps> = () => {
         <Route path={'/login'} component={LoginPage} />
         <Route path={'/sign-up'} component={SignUpPage} />
         <Route path={'/reset-password'} component={ResetPasswordPage} />
+        <Route path={'/profile'} component={ProfilePage} />
         <PrivateRoute path={'/'} component={HomePage} />
       </Switch>
     </>
