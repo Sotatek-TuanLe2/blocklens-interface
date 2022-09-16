@@ -33,7 +33,7 @@ const Routes: FC<RouteComponentProps> = () => {
         <Route path={'/login'} component={LoginPage} />
         <Route path={'/sign-up'} component={SignUpPage} />
         <Route path={'/reset-password'} component={ResetPasswordPage} />
-        <Route path={'/profile'} component={ProfilePage} />
+        <PrivateRoute path={'/profile'} component={ProfilePage} />
         <PrivateRoute path={'/'} component={HomePage} />
       </Switch>
     </>
