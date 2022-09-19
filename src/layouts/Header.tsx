@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import React from 'react';
 import { AppButton } from 'src/components';
 import { useHistory } from 'react-router';
@@ -16,15 +16,34 @@ import {
   Avatar,
 } from '@chakra-ui/react';
 import { useLocation } from 'react-router-dom';
+import { setUserInfo, clearAuth } from 'src/store/authentication';
+import rf from 'src/requests/RequestFactory';
 
 const Header: FC = () => {
   const history = useHistory();
   const accessToken = Storage.getAccessToken();
   const { userInfo } = useSelector((state: RootState) => state.authentication);
   const location = useLocation();
+  const dispatch = useDispatch();
+
+  const getUser = async () => {
+    try {
+      const user = await rf.getRequest('AuthRequest').getInfoUser();
+      dispatch(setUserInfo(user));
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    if (accessToken) {
+      getUser().then();
+    }
+  }, [accessToken]);
 
   const onLogout = () => {
     Storage.logout();
+    dispatch(clearAuth());
     history.push('/login');
   };
 
@@ -61,8 +80,7 @@ const Header: FC = () => {
         <Menu>
           <MenuButton>
             <Avatar
-              src={userInfo?.avatar}
-              name={userInfo?.username}
+              name={userInfo?.firstName}
               size="sm"
             />
           </MenuButton>

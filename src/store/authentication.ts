@@ -3,9 +3,9 @@ import Storage from 'src/utils/storage';
 
 interface IUserInfo {
   userId?: string;
-  username?: string;
-  email?: string;
-  avatar?: string,
+  firstName?: string;
+  isEmailVerified?: boolean;
+  lastName?: string,
   address?: string
 }
 

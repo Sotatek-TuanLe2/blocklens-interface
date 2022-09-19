@@ -15,4 +15,9 @@ export default class AuthRequest extends BaseRequest {
     const url = `/public/users/signin`;
     return this.post(url, params);
   }
+
+  getInfoUser() {
+    const url = `/my/users/profile`;
+    return this.get(url);
+  }
 }

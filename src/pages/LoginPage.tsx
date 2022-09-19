@@ -13,7 +13,7 @@ import { createValidator } from 'src/utils/utils-validator';
 import GoogleLoginButton from 'src/components/GoogleLoginButton';
 import 'src/styles/pages/LoginPage.scss';
 import { useDispatch } from 'react-redux';
-import { setAccessToken } from 'src/store/authentication';
+import { setAccessToken, setUserInfo } from 'src/store/authentication';
 import { useHistory } from 'react-router';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
@@ -52,9 +52,10 @@ const LoginPage: FC = () => {
       const res = await rf.getRequest('AuthRequest').login(dataForm);
       toastSuccess({ message: 'Welcome to Blocklens!' });
       await dispatch(setAccessToken(res.accessToken));
+      dispatch(setUserInfo(res.user));
       history.push('/');
     } catch (e: any) {
-      toastError({ message: e?.message || 'Oops. Something went wrong!' });
+      toastError({ message: e?.message || 'Oops. Something went wrong' });
     }
   };
 
