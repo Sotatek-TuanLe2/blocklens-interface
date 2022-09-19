@@ -84,8 +84,9 @@ const Header: FC = () => {
               size="sm"
             />
           </MenuButton>
-          <MenuList color={'red.400'} fontSize={'16px'}>
-            <MenuItem onClick={onLogout}>Logout</MenuItem>
+          <MenuList fontSize={'16px'} color={'black'}>
+            <MenuItem>👋&nbsp; Welcome {userInfo?.firstName + ' ' + userInfo?.lastName}!</MenuItem>
+            <MenuItem color={'red.400'} onClick={onLogout}>Logout</MenuItem>
           </MenuList>
         </Menu>
       </Box>
