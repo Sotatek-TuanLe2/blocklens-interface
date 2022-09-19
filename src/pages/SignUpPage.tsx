@@ -11,6 +11,9 @@ import {
 import BasePage from 'src/layouts/BasePage';
 import { createValidator } from 'src/utils/utils-validator';
 import 'src/styles/pages/LoginPage.scss';
+import rf from 'src/requests/RequestFactory';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
+import { useHistory } from 'react-router';
 
 interface IDataForm {
   firstName: string;
@@ -26,6 +29,7 @@ const SignUpPage: FC = () => {
     email: '',
     password: '',
   };
+  const history = useHistory();
 
   const [dataForm, setDataForm] = useState<IDataForm>(initDataSignUp);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
@@ -40,6 +44,16 @@ const SignUpPage: FC = () => {
     const isDisabled = !validator.current.allValid();
     setIsDisableSubmit(isDisabled);
   }, [dataForm]);
+
+  const onSignUp = async () => {
+    try {
+      await rf.getRequest('AuthRequest').signUp(dataForm);
+      toastSuccess({ message: 'Sign up successfully!' });
+      history.push('/login');
+    } catch (e: any) {
+      toastError({ message: e?.message || 'Oops. Something went wrong!' });
+    }
+  };
 
   return (
     <BasePage>
@@ -139,7 +153,7 @@ const SignUpPage: FC = () => {
 
             <AppButton
               mt={5}
-              onClick={() => console.log(dataForm, 'dataForm')}
+              onClick={onSignUp}
               size={'lg'}
               width={'full'}
               disabled={isDisableSubmit}

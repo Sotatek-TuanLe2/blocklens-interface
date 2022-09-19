@@ -1,5 +1,7 @@
+import AuthRequest from './AuthRequest';
+
 const requestMap = {
-  // Request
+  AuthRequest
 };
 
 const instances = {};

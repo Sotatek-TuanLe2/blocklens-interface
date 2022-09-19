@@ -29,12 +29,33 @@ const Routes: FC<RouteComponentProps> = () => {
   return (
     <>
       <Switch>
-        <Route path={'/login'} component={LoginPage} />
-        <Route path={'/sign-up'} component={SignUpPage} />
-        <Route path={'/reset-password'} component={ResetPasswordPage} />
+        <PublicRoute path={'/login'} component={LoginPage} />
+        <PublicRoute path={'/sign-up'} component={SignUpPage} />
+        <PublicRoute path={'/reset-password'} component={ResetPasswordPage} />
         <PrivateRoute path={'/'} component={HomePage} />
       </Switch>
     </>
+  );
+};
+
+const PublicRoute = ({ component: Component, ...rest }: any) => {
+  const accessToken = Storage.getAccessToken();
+
+  return (
+    <Route
+      {...rest}
+      render={(props) =>
+        !accessToken ? (
+          <Component {...props} />
+        ) : (
+          <Redirect
+            to={{
+              pathname: '/',
+            }}
+          />
+        )
+      }
+    />
   );
 };
 
