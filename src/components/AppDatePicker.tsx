@@ -21,7 +21,7 @@ interface ValidatorProps {
 }
 
 const AppDatePicker: FC<AppDatePicketProps> = ({
-  placeholder= 'Select time',
+  placeholder = 'Select time',
   validate,
   readOnly,
   ...props

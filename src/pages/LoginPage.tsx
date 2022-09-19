@@ -8,11 +8,13 @@ import {
   AppButton,
   AppLink,
 } from 'src/components';
-import { Sotalabs } from 'src/assets/icons';
-import Footer from 'src/layouts/Footer';
+import BasePage from 'src/layouts/BasePage';
 import { createValidator } from 'src/utils/utils-validator';
 import GoogleLoginButton from 'src/components/GoogleLoginButton';
 import 'src/styles/pages/LoginPage.scss';
+import { useDispatch } from 'react-redux';
+import { setAccessToken, } from 'src/store/authentication';
+import { useHistory } from 'react-router';
 
 interface IDataForm {
   email: string;
@@ -24,6 +26,9 @@ const LoginPage: FC = () => {
     email: '',
     password: '',
   };
+
+  const dispatch = useDispatch();
+  const history = useHistory();
 
   const [dataForm, setDataForm] = useState<IDataForm>(initDataLogin);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
@@ -40,12 +45,14 @@ const LoginPage: FC = () => {
     setIsDisableSubmit(isDisabled);
   }, [dataForm]);
 
-  return (
-    <Box>
-      <Flex justifyContent={'center'} my={5}>
-        <Sotalabs width={'200px'} />
-      </Flex>
+  const onLogin = async () => {
+    //TODO: handle call API
+    await dispatch(setAccessToken('sdasdsadhklsdjklsjdlsjdl'));
+    history.push('/');
+  };
 
+  return (
+    <BasePage>
       <Flex className="box-login">
         <AppCard className="box-form">
           <Box className="title">Login</Box>
@@ -98,7 +105,7 @@ const LoginPage: FC = () => {
             </AppField>
 
             <AppButton
-              onClick={() => console.log(dataForm, 'dataForm')}
+              onClick={onLogin}
               size={'lg'}
               width={'full'}
               disabled={isDisableSubmit}
@@ -121,8 +128,7 @@ const LoginPage: FC = () => {
           </Box>
         </AppCard>
       </Flex>
-      <Footer />
-    </Box>
+    </BasePage>
   );
 };
 

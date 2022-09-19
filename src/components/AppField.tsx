@@ -10,15 +10,15 @@ interface IField {
 }
 
 const AppField = ({
-   children,
-   label,
-   isRequired,
-   customWidth = '100%',
- }: IField) => {
+  children,
+  label,
+  isRequired,
+  customWidth = '100%',
+}: IField) => {
   return (
     <Flex alignItems={'flex-start'} w={['full', customWidth]} mb={4}>
       <Stack w={'full'} spacing={1}>
-        <Text whiteSpace={'nowrap'} mr={2} textTransform={"uppercase"} fontWeight={500}>
+        <Text whiteSpace={'nowrap'} mr={2} textTransform={'uppercase'}>
           {label}{' '}
           {isRequired && (
             <Text as={'span'} color={'red.500'}>
