@@ -83,7 +83,7 @@ const FormCreateApp = () => {
           console.log('Learn More');
         }}
         textActionLeft="LEARN MORE"
-        styleHeader={{ bgColor: 'blue.200', color: 'White', paddingY: '20px' }}
+        className="modal-blocklens"
       >
         <Box flexDirection={'column'} pt={'20px'}>
           <AppField label={'API KEY'}>
@@ -92,16 +92,11 @@ const FormCreateApp = () => {
               endAdornment={
                 <Box
                   onClick={() => copyToClipboard('copy')}
-                  flexDirection={'row'}
-                  display="flex"
-                  mr={'33px'}
-                  cursor={'pointer'}
+                  className="field-info"
                 >
                   {' '}
                   <div className="icon-copy_blue" />{' '}
-                  <Text color={'blue.100'} pl={'3px'} fontSize={'12px'}>
-                    Copy
-                  </Text>
+                  <Text className="button-copy">Copy</Text>
                 </Box>
               }
             />
@@ -112,16 +107,11 @@ const FormCreateApp = () => {
               endAdornment={
                 <Box
                   onClick={() => copyToClipboard('copy')}
-                  flexDirection={'row'}
-                  display="flex"
-                  mr={'33px'}
-                  cursor={'pointer'}
+                  className="field-info"
                 >
                   {' '}
                   <div className="icon-copy_blue" />{' '}
-                  <Text color={'blue.100'} pl={'3px'} fontSize={'12px'}>
-                    Copy
-                  </Text>
+                  <Text className="button-copy">Copy</Text>
                 </Box>
               }
             />
@@ -132,16 +122,11 @@ const FormCreateApp = () => {
               endAdornment={
                 <Box
                   onClick={() => copyToClipboard('copy')}
-                  cursor={'pointer'}
-                  flexDirection={'row'}
-                  display="flex"
-                  mr={'33px'}
+                  className="field-info"
                 >
                   {' '}
                   <div className="icon-copy_blue" />{' '}
-                  <Text color={'blue.100'} pl={'3px'} fontSize={'12px'}>
-                    Copy
-                  </Text>
+                  <Text className="button-copy">Copy</Text>
                 </Box>
               }
             />
