@@ -1,7 +1,7 @@
 import config from 'src/config';
 import axios from 'axios';
-import { setAuthorizationToRequest } from 'src/utils/utils-auth';
 import Storage from 'src/utils/storage';
+import { setAuthorizationToRequest } from 'src/utils/utils-auth';
 
 export default class BaseRequest {
   protected accessToken = '';
@@ -9,7 +9,7 @@ export default class BaseRequest {
     const accessToken = Storage.getAccessToken();
     if (accessToken) {
       this.accessToken = accessToken;
-      setAuthorizationToRequest(this.accessToken, Storage.getChainId());
+      setAuthorizationToRequest(this.accessToken);
     }
   }
 

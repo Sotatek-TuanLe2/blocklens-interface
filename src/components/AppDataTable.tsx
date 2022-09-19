@@ -14,7 +14,7 @@ import { debounce } from 'lodash';
 import AppPagination from './AppPagination';
 import 'src/styles/components/AppDataTable.scss';
 import AppButton from './AppButton';
-import { Table, TableContainer, useColorMode, Flex } from '@chakra-ui/react';
+import { Table, TableContainer, Flex } from '@chakra-ui/react';
 
 // For more params, please define them below with ? mark
 export interface RequestParams {
@@ -142,12 +142,7 @@ const AppDataTable = forwardRef(
     };
 
     const _renderLoading = () => {
-      const width = isMobile ? 100 : 150;
-      return (
-        <div>
-          Loading...
-        </div>
-      );
+      return <div>Loading...</div>;
     };
 
     const _renderLoadMore = () => {

@@ -17,11 +17,21 @@ interface AppInputProps extends InputProps {
   variant?: 'main' | 'auth' | 'authSecondary' | 'search';
   validate?: ValidatorProps;
   readOnly?: boolean;
+  size?: string;
   endAdornment?: ReactNode;
 }
 
 const AppInput = forwardRef(
-  ({ variant = 'main', readOnly, validate, ...props }: AppInputProps, ref) => {
+  (
+    {
+      variant = 'main',
+      size = 'lg',
+      readOnly,
+      validate,
+      ...props
+    }: AppInputProps,
+    ref,
+  ) => {
     const forceRender = useForceRender();
     const onBlur = () => {
       validate?.validator.showMessageFor(validate.name);
@@ -29,7 +39,7 @@ const AppInput = forwardRef(
     };
     return (
       <>
-        <InputGroup size="md">
+        <InputGroup size={size}>
           <Input
             {...props}
             variant={variant}
@@ -73,8 +83,8 @@ export const appInputStyles = {
         border: '1px solid',
         color: mode('secondaryGray.900', 'white')(props),
         borderColor: mode('secondaryGray.100', 'whiteAlpha.100')(props),
-        borderRadius: '16px',
-        fontSize: 'sm',
+        borderRadius: '4px',
+        fontSize: '16px',
         p: '20px',
         _placeholder: {
           color: mode('secondaryGray.500', 'whiteAlpha.300')(props),
@@ -91,7 +101,7 @@ export const appInputStyles = {
           'secondaryGray.100',
           'rgba(135, 140, 189, 0.3)',
         )(props),
-        borderRadius: '16px',
+        borderRadius: '4px',
         _placeholder: { color: 'secondaryGray.600', fontWeight: '400' },
       },
     }),
@@ -100,7 +110,7 @@ export const appInputStyles = {
         bg: 'transparent',
         border: '1px solid',
         borderColor: 'secondaryGray.100',
-        borderRadius: '16px',
+        borderRadius: '4px',
         _placeholder: { color: 'secondaryGray.600' },
       },
     }),

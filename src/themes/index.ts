@@ -5,7 +5,7 @@ import { appInputStyles } from 'src/components/AppInput';
 import { appTextareaStyles } from 'src/components/AppTextarea';
 import { appSelectStyles } from 'src/components/AppSelect';
 import { appSwitchStyles } from 'src/components/AppSwitch';
-import { cardStyles } from 'src/components/Card';
+import { cardStyles } from 'src/components/AppCard';
 import { appLinkStyles } from 'src/components/AppLink';
 
 // Add your color mode config

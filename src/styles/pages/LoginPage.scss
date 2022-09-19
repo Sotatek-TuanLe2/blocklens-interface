@@ -1,0 +1,51 @@
+@import 'src/styles/abstracts/variables';
+
+.box-login {
+  justify-content: center;
+  min-height: calc(100vh - 130px);
+  margin-top: 65px;
+  align-items: center;
+
+  .box-form {
+    max-width: 550px;
+    padding: 30px;
+    height: max-content;
+    margin: 15px 0;
+
+    .title {
+      text-align: center;
+      padding-bottom: 20px;
+      font-size: 24px;
+      border-bottom: 1px solid #E9EDF7;
+      margin: 0 -30px;
+      font-weight: 500;
+    }
+
+    .sub-text {
+      font-size: 16px;
+      max-width: 300px;
+      margin: 0 auto;
+    }
+
+    .divider {
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+
+      .border {
+        border: 1px solid #E9EDF7;
+        width: 45%;
+      }
+    }
+
+    .note {
+      font-size: 13px;
+      margin-top: 16px;
+    }
+
+    .link-back {
+      justify-content: center;
+      margin-top: 20px;
+    }
+  }
+}

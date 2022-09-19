@@ -1,6 +1,7 @@
 import { FC, useEffect } from 'react';
 import {
   BrowserRouter as Router,
+  Redirect,
   Route,
   RouteComponentProps,
   Switch,
@@ -9,6 +10,10 @@ import {
 import { useLocation } from 'react-router';
 import React from 'react';
 import HomePage from './pages/HomePage';
+import SignUpPage from './pages/SignUpPage';
+import LoginPage from './pages/LoginPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
+import Storage from 'src/utils/storage';
 
 /**
  * Main App routes.
@@ -24,9 +29,33 @@ const Routes: FC<RouteComponentProps> = () => {
   return (
     <>
       <Switch>
-        <Route path={'/'} component={HomePage} />
+        <Route path={'/login'} component={LoginPage} />
+        <Route path={'/sign-up'} component={SignUpPage} />
+        <Route path={'/reset-password'} component={ResetPasswordPage} />
+        <PrivateRoute path={'/'} component={HomePage} />
       </Switch>
     </>
+  );
+};
+
+const PrivateRoute = ({ component: Component, ...rest }: any) => {
+  const accessToken = Storage.getAccessToken();
+
+  return (
+    <Route
+      {...rest}
+      render={(props) =>
+        !!accessToken ? (
+          <Component {...props} />
+        ) : (
+          <Redirect
+            to={{
+              pathname: '/login',
+            }}
+          />
+        )
+      }
+    />
   );
 };
 
