@@ -4,6 +4,7 @@ const PREFERENCES = `blocklens-preferences-${env}`;
 
 type StorageInterface = {
   accessToken?: string;
+  refreshToken?: string;
 };
 
 function getStorage(): StorageInterface {
@@ -29,9 +30,20 @@ class Storage {
     return accessToken;
   }
 
+  static getRefreshToken(): string | undefined {
+    const { refreshToken } = getStorage();
+    return refreshToken;
+  }
+
   static setAccessToken(accessToken: string) {
     const preferences = getStorage();
     preferences.accessToken = accessToken;
+    setStorage(PREFERENCES, preferences);
+  }
+
+  static setRefreshToken(refreshToken: string) {
+    const preferences = getStorage();
+    preferences.refreshToken = refreshToken;
     setStorage(PREFERENCES, preferences);
   }
 
@@ -41,8 +53,15 @@ class Storage {
     setStorage(PREFERENCES, preferences);
   }
 
+  static clearRefreshToken() {
+    const preferences = getStorage();
+    delete preferences.refreshToken;
+    setStorage(PREFERENCES, preferences);
+  }
+
   static logout() {
     Storage.clearAccessToken();
+    Storage.clearRefreshToken();
   }
 }
 

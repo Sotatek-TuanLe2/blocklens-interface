@@ -51,7 +51,7 @@ const LoginPage: FC = () => {
     try {
       const res = await rf.getRequest('AuthRequest').login(dataForm);
       toastSuccess({ message: 'Welcome to Blocklens!' });
-      await dispatch(setAccessToken(res.accessToken));
+      await dispatch(setAccessToken(res));
       dispatch(setUserInfo(res.user));
       history.push('/');
     } catch (e: any) {
