@@ -50,9 +50,9 @@ const LoginPage: FC = () => {
   const onLogin = async () => {
     try {
       const res = await rf.getRequest('AuthRequest').login(dataForm);
-      toastSuccess({ message: 'Welcome to Blocklens!' });
-      await dispatch(setAccessToken(res));
+      dispatch(setAccessToken(res));
       dispatch(setUserInfo(res.user));
+      toastSuccess({ message: 'Welcome to Blocklens!' });
       history.push('/');
     } catch (e: any) {
       toastError({ message: e?.message || 'Oops. Something went wrong' });

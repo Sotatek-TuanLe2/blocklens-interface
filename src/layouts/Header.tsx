@@ -16,8 +16,7 @@ import {
   Avatar,
 } from '@chakra-ui/react';
 import { useLocation } from 'react-router-dom';
-import { setUserInfo, clearAuth } from 'src/store/authentication';
-import rf from 'src/requests/RequestFactory';
+import { clearAuth } from 'src/store/authentication';
 
 const Header: FC = () => {
   const history = useHistory();
@@ -25,21 +24,6 @@ const Header: FC = () => {
   const { userInfo } = useSelector((state: RootState) => state.authentication);
   const location = useLocation();
   const dispatch = useDispatch();
-
-  const getUser = async () => {
-    try {
-      const user = await rf.getRequest('AuthRequest').getInfoUser();
-      dispatch(setUserInfo(user));
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  useEffect(() => {
-    if (accessToken) {
-      getUser().then();
-    }
-  }, [accessToken]);
 
   const onLogout = () => {
     Storage.logout();
@@ -79,14 +63,15 @@ const Header: FC = () => {
       <Box>
         <Menu>
           <MenuButton>
-            <Avatar
-              name={userInfo?.firstName}
-              size="sm"
-            />
+            <Avatar name={userInfo?.firstName} size="sm" />
           </MenuButton>
           <MenuList fontSize={'16px'} color={'black'}>
-            <MenuItem>👋&nbsp; Welcome {userInfo?.firstName + ' ' + userInfo?.lastName}!</MenuItem>
-            <MenuItem color={'red.400'} onClick={onLogout}>Logout</MenuItem>
+            <MenuItem>
+              👋&nbsp; Welcome {userInfo?.firstName + ' ' + userInfo?.lastName}!
+            </MenuItem>
+            <MenuItem color={'red.400'} onClick={onLogout}>
+              Logout
+            </MenuItem>
           </MenuList>
         </Menu>
       </Box>

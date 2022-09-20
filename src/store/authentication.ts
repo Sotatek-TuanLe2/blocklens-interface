@@ -11,13 +11,10 @@ interface IUserInfo {
 
 interface AuthenticationState {
   userInfo: IUserInfo,
-  accessToken: string
-  refreshToken: string
 }
 
 const initialState = {
   userInfo: {},
-  accessToken: ''
 } as AuthenticationState;
 
 const authenticationSlice = createSlice({
@@ -31,9 +28,8 @@ const authenticationSlice = createSlice({
       state.userInfo = action.payload;
     },
     setAccessToken: (state, action) => {
-      state = action.payload;
-      Storage.setAccessToken(state.accessToken);
-      Storage.setRefreshToken(state.refreshToken);
+      Storage.setAccessToken(action.payload.accessToken);
+      Storage.setRefreshToken(action.payload.refreshToken);
     },
   },
 });
