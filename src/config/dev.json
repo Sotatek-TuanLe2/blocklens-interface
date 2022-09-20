@@ -5,6 +5,36 @@
     "secretKey": "0xA84Df05A9F758eca47A7060a9A6C004578F6E65B"
   },
   "api": {
-    "baseUrlApi": "https://stg-launchpad-api.metaversestarter.io"
-  }
+    "baseUrlApi": "https://stg-launchpad-api.metaversestarter.io",
+    "appsApi": "https://buni-dev-api.sotatek.works/api/blocklens-users"
+  },
+  "chains": [
+    {
+      "label": "Ethereum",
+      "value": "GOERLI_TESTNET",
+      "icon": "/images/eth.svg"
+    },
+    {
+      "label": "Binance Smart Chain",
+      "value": "BSC_TESTNET",
+      "icon": "/images/bnb.svg"
+    },
+    {
+      "label": "Polygon",
+      "value": "POLYGON_TESTNET",
+      "icon": "/images/polygon.svg"
+    }
+  ],
+  "networks": [
+    {
+      "label": "Testnet",
+      "value": "TESTNET",
+      "icon": "/images/eth.svg"
+    },
+    {
+      "label": "Mainnet",
+      "value": "MAINNET",
+      "icon": "/images/eth.svg"
+    }
+  ]
 }

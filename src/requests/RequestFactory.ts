@@ -1,5 +1,8 @@
+import AppRequest from './AppRequest';
+
 const requestMap = {
   // Request
+  AppRequest,
 };
 
 const instances = {};

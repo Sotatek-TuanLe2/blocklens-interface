@@ -42,6 +42,7 @@ interface DataTableProps {
 
 export interface DataTableRef {
   tableData: any[];
+  fetchTableData: any;
 }
 
 export interface Pagination {
@@ -99,7 +100,7 @@ const AppDataTable = forwardRef(
     ) => {
       const setLoading = isLoadMore ? setIsLoadingMore : setIsLoading;
       setLoading(true);
-      const response: IResponseType = await fetchData({
+      const response: IResponseType | any[] = await fetchData({
         ...params,
         ...tablePagination,
       });

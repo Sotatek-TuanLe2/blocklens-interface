@@ -1,49 +1,21 @@
-import { useRef, useState, useEffect } from 'react';
-import React from 'react';
+import { Flex, Heading, Text } from '@chakra-ui/react';
+import { Dispatch, useEffect, useRef, useState } from 'react';
 import {
-  AppField,
-  AppCard,
-  AppInput,
   AppButton,
+  AppCard,
+  AppField,
+  AppInput,
   AppSelect,
   AppTextarea,
 } from 'src/components';
-import { Flex, Text, Heading, Box, Divider } from '@chakra-ui/react';
 import { createValidator } from 'src/utils/utils-validator';
-import BaseModal from 'src/modals/BaseModal';
-import { copyToClipboard } from 'src/utils/utils-helper';
+import rf from 'src/requests/RequestFactory';
+import _ from 'lodash';
+import config from 'src/config';
 
-const chains = [
-  {
-    label: 'Ethereum',
-    value: 'GOERLI_TESTNET',
-    icon: '/images/eth.svg',
-  },
-  {
-    label: 'Binance Smart Chain',
-    value: 'BSC_TESTNET',
-    icon: '/images/bnb.svg',
-  },
-  {
-    label: 'Polygon',
-    value: 'POLYGON_TESTNET',
-    icon: '/images/polygon.svg',
-  },
-];
-
-const networks = [
-  {
-    label: 'Testnet',
-    value: 'TESTNET',
-    icon: '/images/eth.svg',
-  },
-  {
-    label: 'Mainnet',
-    value: 'MAINNET',
-    icon: '/images/eth.svg',
-  },
-];
-
+interface IFormCreateApp {
+  setSearchListApp: Dispatch<any>;
+}
 interface IDataForm {
   name: string;
   chainId: string;
@@ -51,14 +23,15 @@ interface IDataForm {
   description: string;
 }
 
-const FormCreateApp = () => {
+const FormCreateApp: React.FC<IFormCreateApp> = ({ setSearchListApp }) => {
   const initDataCreateApp = {
     name: '',
-    chainId: '',
-    network: '',
+    chainId: 'Ethereum',
+    network: 'Testnet',
+
     description: '',
   };
-  const [isOpen, setIsOpen] = useState<boolean>(true);
+
   const [dataForm, setDataForm] = useState<IDataForm>(initDataCreateApp);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
   const validator = useRef(
@@ -72,71 +45,13 @@ const FormCreateApp = () => {
     setIsDisableSubmit(isDisabled);
   }, [dataForm]);
 
-  const _renderModalConnectBlockLens = () => {
-    return (
-      <BaseModal
-        size="2xl"
-        title="Connect to Blocklens"
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-        onActionLeft={() => {
-          console.log('Learn More');
-        }}
-        textActionLeft="LEARN MORE"
-        className="modal-blocklens"
-      >
-        <Box flexDirection={'column'} pt={'20px'}>
-          <AppField label={'API KEY'}>
-            <AppInput
-              isDisabled
-              endAdornment={
-                <Box
-                  onClick={() => copyToClipboard('copy')}
-                  className="field-info"
-                >
-                  {' '}
-                  <div className="icon-copy_blue" />{' '}
-                  <Text className="button-copy">Copy</Text>
-                </Box>
-              }
-            />
-          </AppField>
-          <AppField label={'HTTPS'}>
-            <AppInput
-              isDisabled
-              endAdornment={
-                <Box
-                  onClick={() => copyToClipboard('copy')}
-                  className="field-info"
-                >
-                  {' '}
-                  <div className="icon-copy_blue" />{' '}
-                  <Text className="button-copy">Copy</Text>
-                </Box>
-              }
-            />
-          </AppField>
-          <AppField label={'WEBSOKECTS'}>
-            <AppInput
-              isDisabled
-              endAdornment={
-                <Box
-                  onClick={() => copyToClipboard('copy')}
-                  className="field-info"
-                >
-                  {' '}
-                  <div className="icon-copy_blue" />{' '}
-                  <Text className="button-copy">Copy</Text>
-                </Box>
-              }
-            />
-          </AppField>
-          <Divider />
-        </Box>
-      </BaseModal>
-    );
+  const handleSubmitForm = async () => {
+    await rf.getRequest('AppRequest').createApp(_.omitBy(dataForm, _.isEmpty));
+    setSearchListApp((pre: any) => {
+      return { ...pre };
+    });
+    return;
   };
-
   return (
     <AppCard>
       <Heading as="h3" size="lg" mb={5}>
@@ -168,8 +83,8 @@ const FormCreateApp = () => {
                 chainId: e.value,
               });
             }}
-            options={chains}
-            defaultValue={chains[0]}
+            options={config.chains}
+            defaultValue={config.chains[0]}
           ></AppSelect>
         </AppField>
 
@@ -181,8 +96,8 @@ const FormCreateApp = () => {
                 network: e.value,
               });
             }}
-            options={networks}
-            defaultValue={networks[0]}
+            options={config.networks}
+            defaultValue={config.networks[0]}
           ></AppSelect>
         </AppField>
         <AppField label={'DESCRIPTION'} customWidth={'100%'}>
@@ -202,7 +117,7 @@ const FormCreateApp = () => {
         <AppButton
           disabled={isDisableSubmit}
           onClick={() => {
-            console.log('dataForm', dataForm);
+            handleSubmitForm();
           }}
           size={'lg'}
           textTransform={'uppercase'}
@@ -210,7 +125,6 @@ const FormCreateApp = () => {
           Create app
         </AppButton>
       </Flex>
-      {isOpen && _renderModalConnectBlockLens()}
     </AppCard>
   );
 };

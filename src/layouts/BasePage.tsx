@@ -10,10 +10,14 @@ interface IBasePage {
 
 const BasePage: FC<IBasePage> = ({ children }) => {
   return (
-    <Box>
-      <Header />
-      <Box minH={'calc(100vh - 130px)'}>{children}</Box>
-      <Footer />
+    <Box display={'flex'} justifyContent={'center'}>
+      <Box maxW="1240px">
+        <Header />
+        <Box pt={'135px'} minH={'calc(100vh - 130px)'}>
+          {children}
+        </Box>
+        <Footer />
+      </Box>
     </Box>
   );
 };

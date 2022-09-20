@@ -14,6 +14,7 @@ import SignUpPage from './pages/SignUpPage';
 import LoginPage from './pages/LoginPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import Storage from 'src/utils/storage';
+import AppDetail from './pages/AppDetail';
 
 /**
  * Main App routes.
@@ -32,6 +33,7 @@ const Routes: FC<RouteComponentProps> = () => {
         <Route path={'/login'} component={LoginPage} />
         <Route path={'/sign-up'} component={SignUpPage} />
         <Route path={'/reset-password'} component={ResetPasswordPage} />
+        <PrivateRoute path={'/app-detail'} component={AppDetail} />
         <PrivateRoute path={'/'} component={HomePage} />
       </Switch>
     </>
