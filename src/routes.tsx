@@ -16,8 +16,7 @@ import ProfilePage from './pages/ProfilePage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import Storage from 'src/utils/storage';
 import VerifyAccountPage from './pages/VerifyAccountPage';
-import rf from './requests/RequestFactory';
-import { setUserInfo } from './store/authentication';
+import { getInfoUser } from 'src/store/authentication';
 import { useDispatch } from 'react-redux';
 
 /**
@@ -26,25 +25,16 @@ import { useDispatch } from 'react-redux';
 
 const Routes: FC<RouteComponentProps> = () => {
   const { pathname } = useLocation();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<any>();
   const accessToken = Storage.getAccessToken();
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
 
-  const getUser = async () => {
-    try {
-      const user = await rf.getRequest('UserRequest').getInfoUser();
-      dispatch(setUserInfo(user));
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
   useEffect(() => {
     if (!accessToken) return;
-    getUser().then();
+    dispatch(getInfoUser());
   }, []);
 
   return (
@@ -54,8 +44,8 @@ const Routes: FC<RouteComponentProps> = () => {
         <PublicRoute path={'/sign-up'} component={SignUpPage} />
         <PublicRoute path={'/verify-email'} component={VerifyAccountPage} />
         <PublicRoute path={'/reset-password'} component={ResetPasswordPage} />
-        <PrivateRoute path={'/'} component={HomePage} />
         <PrivateRoute path={'/profile'} component={ProfilePage} />
+        <PrivateRoute path={'/'} component={HomePage} />
       </Switch>
     </>
   );

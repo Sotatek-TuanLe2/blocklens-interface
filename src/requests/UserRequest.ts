@@ -10,4 +10,9 @@ export default class UserRequest extends BaseRequest {
     const url = `/my/users/profile`;
     return this.get(url);
   }
+
+  editInfoUser(params: any) {
+    const url = `/my/users/profile`;
+    return this.put(url, params);
+  }
 }

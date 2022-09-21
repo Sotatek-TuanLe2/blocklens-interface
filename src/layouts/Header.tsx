@@ -69,6 +69,9 @@ const Header: FC = () => {
             <MenuItem>
               👋&nbsp; Welcome {userInfo?.firstName + ' ' + userInfo?.lastName}!
             </MenuItem>
+            <MenuItem onClick={() => history.push('/profile')}>
+              Profile
+            </MenuItem>
             <MenuItem color={'red.400'} onClick={onLogout}>
               Logout
             </MenuItem>

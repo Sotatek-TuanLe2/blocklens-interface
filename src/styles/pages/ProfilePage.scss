@@ -51,7 +51,7 @@
 
 .my-profile {
   .profile-detail {
-    margin: 40px 30px 16px 30px;
+    margin: 0 30px 16px 30px;
     border: 1px solid #CACED4;
     border-radius: 8px 8px 0 0;
 
@@ -70,8 +70,9 @@
         color: #A0A4AC;
       }
 
-      .icon-edit {
-        cursor: pointer;
+      .input-field {
+        font-size: 14px;
+        min-width: 300px;
       }
     }
   }

@@ -1,5 +1,6 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import Storage from 'src/utils/storage';
+import rf from 'src/requests/RequestFactory';
 
 interface IUserInfo {
   userId?: string;
@@ -7,6 +8,7 @@ interface IUserInfo {
   isEmailVerified?: boolean;
   lastName?: string,
   address?: string
+  email?: string
 }
 
 interface AuthenticationState {
@@ -16,6 +18,14 @@ interface AuthenticationState {
 const initialState = {
   userInfo: {},
 } as AuthenticationState;
+
+export const getInfoUser = createAsyncThunk(
+  'myAccount/getUser',
+  async (params, thunkApi) => {
+    const res = await rf.getRequest('UserRequest').getInfoUser();
+    thunkApi.dispatch(setUserInfo(res));
+  },
+);
 
 const authenticationSlice = createSlice({
   name: 'authentication',
