@@ -12,6 +12,7 @@ import { createValidator } from 'src/utils/utils-validator';
 import rf from 'src/requests/RequestFactory';
 import _ from 'lodash';
 import config from 'src/config';
+import { toastSuccess } from 'src/utils/utils-notify';
 
 interface IFormCreateApp {
   setSearchListApp: Dispatch<any>;
@@ -80,6 +81,7 @@ const FormCreateApp: React.FC<IFormCreateApp> = ({ setSearchListApp }) => {
       .createApp(_.omitBy(dataSubmit, _.isEmpty));
     if (res.key) {
       setDataForm({ ...initDataCreateApp });
+      toastSuccess({ message: 'Create app success!' });
       setSearchListApp((pre: any) => {
         return { ...pre };
       });

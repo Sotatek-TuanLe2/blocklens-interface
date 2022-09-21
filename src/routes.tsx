@@ -35,7 +35,7 @@ const Routes: FC<RouteComponentProps> = () => {
 
   const getUser = async () => {
     try {
-      const user = await rf.getRequest('AuthRequest').getInfoUser();
+      const user = await rf.getRequest('UserRequest').getInfoUser();
       dispatch(setUserInfo(user));
     } catch (e) {
       console.log(e);

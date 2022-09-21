@@ -11,6 +11,7 @@ export interface Config {
     domain: string;
     message: string;
     secretKey: string;
+    googleClientId: string;
   };
   api: {
     baseUrlApi: string;

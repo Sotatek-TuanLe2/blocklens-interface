@@ -1,10 +1,12 @@
 import AppRequest from './AppRequest';
 import AuthRequest from './AuthRequest';
+import UserRequest from './UserRequest';
 
 const requestMap = {
   // Request
   AppRequest,
   AuthRequest,
+  UserRequest,
 };
 
 const instances = {};
