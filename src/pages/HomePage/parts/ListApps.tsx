@@ -21,6 +21,7 @@ import {
   DataTableRef,
 } from 'src/components';
 import BaseModal from 'src/modals/BaseModal';
+import ConnectBlocklensModal from 'src/modals/ConnectBlocklensModal';
 import rf from 'src/requests/RequestFactory';
 import { IAppResponse, IListAppResponse } from 'src/utils/common';
 import { copyToClipboard } from 'src/utils/utils-helper';
@@ -59,14 +60,14 @@ const ListApps: React.FC<IListApps> = ({ searchListApp }) => {
         <Tr>
           <Th>NAME</Th>
           <Th>NETWORK</Th>
-          <Th>DESCRIPTION</Th>
+
           <Th>CUPS LIMIT</Th>
           <Th>
             CONCURRENT
             <br /> REQUEST LIMIT
           </Th>
           <Th>DAYS ON ALCHEMY</Th>
-          <Th>CREATED BY</Th>
+
           <Th>ACTIONS</Th>
           <Th></Th>
         </Tr>
@@ -113,10 +114,9 @@ const ListApps: React.FC<IListApps> = ({ searchListApp }) => {
               <Td>{_renderCellName(app.name || '', index % 2 === 0)}</Td>
               <Td>{app.network}</Td>
               <Td>{app.description || ''}</Td>
-              <Td>NaN</Td>
-              <Td>NaN</Td>
-              <Td>NaN</Td>
-              <Td>NaN</Td>
+              <Td>n/a</Td>
+              <Td>n/a</Td>
+
               <Td>{_renderCellAction(app)}</Td>
               <Td>
                 <AppButton
@@ -130,74 +130,6 @@ const ListApps: React.FC<IListApps> = ({ searchListApp }) => {
           );
         })}
       </Tbody>
-    );
-  };
-
-  const _renderModalConnectBlockLens = () => {
-    return (
-      <BaseModal
-        size="2xl"
-        title="Connect to Blocklens"
-        isOpen={isOpenAppModal}
-        onClose={() => setIsOpenAppModal(false)}
-        onActionLeft={() => {
-          console.log('Learn More');
-        }}
-        textActionLeft="LEARN MORE"
-        className="modal-blocklens"
-      >
-        <Box flexDirection={'column'} pt={'20px'}>
-          <AppField label={'API KEY'}>
-            <AppInput
-              isDisabled
-              value={dataConnectBlocklens?.key || ''}
-              endAdornment={
-                <Box
-                  onClick={() =>
-                    copyToClipboard(dataConnectBlocklens?.key || '')
-                  }
-                  className="field-info"
-                >
-                  {' '}
-                  <div className="icon-copy_blue" />{' '}
-                  <Text className="button-copy">Copy</Text>
-                </Box>
-              }
-            />
-          </AppField>
-          <AppField label={'HTTPS'}>
-            <AppInput
-              isDisabled
-              endAdornment={
-                <Box
-                  onClick={() => copyToClipboard('copy')}
-                  className="field-info"
-                >
-                  {' '}
-                  <div className="icon-copy_blue" />{' '}
-                  <Text className="button-copy">Copy</Text>
-                </Box>
-              }
-            />
-          </AppField>
-          <AppField label={'WEBSOKECTS'}>
-            <AppInput
-              isDisabled
-              endAdornment={
-                <Box
-                  onClick={() => copyToClipboard('copy')}
-                  className="field-info"
-                >
-                  {' '}
-                  <div className="icon-copy_blue" />{' '}
-                  <Text className="button-copy">Copy</Text>
-                </Box>
-              }
-            />
-          </AppField>
-          <Divider />
-        </Box>
-      </BaseModal>
     );
   };
 
@@ -216,7 +148,13 @@ const ListApps: React.FC<IListApps> = ({ searchListApp }) => {
           limit={10}
         />
       </AppCard>
-      {isOpenAppModal && _renderModalConnectBlockLens()}
+      {isOpenAppModal && (
+        <ConnectBlocklensModal
+          isOpenAppModal={isOpenAppModal}
+          setIsOpenAppModal={setIsOpenAppModal}
+          dataConnectBlocklens={dataConnectBlocklens}
+        />
+      )}
     </Box>
   );
 };

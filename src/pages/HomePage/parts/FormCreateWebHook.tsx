@@ -9,37 +9,23 @@ import {
 } from 'src/components';
 import { Flex, Text, Heading } from '@chakra-ui/react';
 import { createValidator } from 'src/utils/utils-validator';
+import config from 'src/config';
+import { IChain } from './FormCreateApp';
 
-const chains = [
-  {
-    label: 'Ethereum',
-    value: 'GOERLI_TESTNET',
-    icon: '/images/eth.svg',
-  },
-  {
-    label: 'Binance Smart Chain',
-    value: 'BSC_TESTNET',
-    icon: '/images/bnb.svg',
-  },
-  {
-    label: 'Polygon',
-    value: 'POLYGON_TESTNET',
-    icon: '/images/polygon.svg',
-  },
-];
+export const CHAINS = config.chains.map((chain: IChain) => {
+  const networksClone = chain.networks.map(
+    (network: { name: string; id: string; icon: string }) => {
+      return { label: network.name, value: network.id, icon: network.icon };
+    },
+  );
 
-const networks = [
-  {
-    label: 'Testnet',
-    value: 'TESTNET',
-    icon: '/images/eth.svg',
-  },
-  {
-    label: 'Mainnet',
-    value: 'MAINNET',
-    icon: '/images/eth.svg',
-  },
-];
+  return {
+    label: chain.name,
+    value: chain.id,
+    icon: chain.icon,
+    networks: [...networksClone],
+  };
+});
 
 interface IDataForm {
   chainId: string;
@@ -51,8 +37,8 @@ interface IDataForm {
 
 const FormCreateWebHook = () => {
   const initDataCreateWebHook = {
-    chainId: '',
-    network: '',
+    chainId: CHAINS[0].value,
+    network: CHAINS[0].networks[0].value,
     url: '',
     addressNFT: '',
     tokenIDs: '',
@@ -60,11 +46,23 @@ const FormCreateWebHook = () => {
 
   const [dataForm, setDataForm] = useState<IDataForm>(initDataCreateWebHook);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
+  const [chainSelected, setChainSelected] = useState<any>(CHAINS[0]);
+  const [networkSelected, setNetworkSelected] = useState<any>(
+    CHAINS[0].networks[0],
+  );
   const validator = useRef(
     createValidator({
       element: (message: string) => <Text color={'red.500'}>{message}</Text>,
     }),
   );
+  const handleSubmitForm = async () => {
+    const dataSubmit = {
+      ...dataForm,
+      chainId: chainSelected.value,
+      network: networkSelected.value,
+    };
+    console.log('dataForm', dataForm);
+  };
 
   useEffect(() => {
     const isDisabled = !validator.current.allValid();
@@ -85,26 +83,30 @@ const FormCreateWebHook = () => {
           <AppField label={'CHAIN'} customWidth={'48%'}>
             <AppSelect
               onChange={(e: any) => {
-                setDataForm({
-                  ...dataForm,
-                  chainId: e.value,
-                });
+                setChainSelected(
+                  CHAINS.find((chain) => chain.value === e.value),
+                );
+                setNetworkSelected(
+                  CHAINS.find((chain) => chain.value === e.value)?.networks[0],
+                );
               }}
-              options={chains}
-              defaultValue={chains[0]}
+              options={CHAINS}
+              defaultValue={chainSelected}
             ></AppSelect>
           </AppField>
 
           <AppField label={'NETWORK'} customWidth={'48%'}>
             <AppSelect
               onChange={(e: any) => {
-                setDataForm({
-                  ...dataForm,
-                  network: e.value,
-                });
+                setNetworkSelected(
+                  chainSelected.networks.find(
+                    (network: any) => network.value === e.value,
+                  ),
+                );
               }}
-              options={networks}
-              defaultValue={networks[0]}
+              options={chainSelected.networks}
+              defaultValue={CHAINS[0].networks[0]}
+              value={networkSelected}
             ></AppSelect>
           </AppField>
         </Flex>
@@ -175,7 +177,7 @@ const FormCreateWebHook = () => {
       <Flex justifyContent={'flex-end'}>
         <AppButton
           disabled={isDisableSubmit}
-          onClick={() => console.log('dataForm', dataForm)}
+          onClick={() => handleSubmitForm()}
           size={'lg'}
           textTransform={'uppercase'}
         >

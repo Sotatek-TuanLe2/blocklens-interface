@@ -17,11 +17,12 @@ export interface Config {
     appsApi: string;
   };
   chains: {
-    label: string;
-    value: string;
+    name: string;
+    id: string;
     icon: string;
+    networks: { name: string; id: string; icon: string }[];
   }[];
-  networks: { label: string; value: string; icon: string }[];
+  networks: { name: string; id: string; icon: string }[];
 }
 
 export default config;

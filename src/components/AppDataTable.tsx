@@ -143,7 +143,11 @@ const AppDataTable = forwardRef(
     };
 
     const _renderLoading = () => {
-      return <div>Loading...</div>;
+      return (
+        <div style={{ marginTop: '25px', width: '100%', textAlign: 'center' }}>
+          Loading...
+        </div>
+      );
     };
 
     const _renderLoadMore = () => {

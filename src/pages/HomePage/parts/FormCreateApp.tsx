@@ -23,12 +23,33 @@ interface IDataForm {
   description: string;
 }
 
+export interface IChain {
+  name: string;
+  id: string;
+  icon: string;
+  networks: { name: string; id: string; icon: string }[];
+}
+
+export const CHAINS = config.chains.map((chain: IChain) => {
+  const networksClone = chain.networks.map(
+    (network: { name: string; id: string; icon: string }) => {
+      return { label: network.name, value: network.id, icon: network.icon };
+    },
+  );
+
+  return {
+    label: chain.name,
+    value: chain.id,
+    icon: chain.icon,
+    networks: [...networksClone],
+  };
+});
+
 const FormCreateApp: React.FC<IFormCreateApp> = ({ setSearchListApp }) => {
   const initDataCreateApp = {
     name: '',
-    chainId: 'Ethereum',
-    network: 'Testnet',
-
+    chainId: CHAINS[0].value,
+    network: CHAINS[0].networks[0].value,
     description: '',
   };
 
@@ -39,17 +60,30 @@ const FormCreateApp: React.FC<IFormCreateApp> = ({ setSearchListApp }) => {
       element: (message: string) => <Text color={'red.500'}>{message}</Text>,
     }),
   );
-
+  const [chainSelected, setChainSelected] = useState<any>(CHAINS[0]);
+  const [networkSelected, setNetworkSelected] = useState<any>(
+    CHAINS[0].networks[0],
+  );
   useEffect(() => {
     const isDisabled = !validator.current.allValid();
     setIsDisableSubmit(isDisabled);
   }, [dataForm]);
 
   const handleSubmitForm = async () => {
-    await rf.getRequest('AppRequest').createApp(_.omitBy(dataForm, _.isEmpty));
-    setSearchListApp((pre: any) => {
-      return { ...pre };
-    });
+    const dataSubmit = {
+      ...dataForm,
+      chainId: chainSelected.value,
+      network: networkSelected.value,
+    };
+    const res = await rf
+      .getRequest('AppRequest')
+      .createApp(_.omitBy(dataSubmit, _.isEmpty));
+    if (res.key) {
+      setDataForm({ ...initDataCreateApp });
+      setSearchListApp((pre: any) => {
+        return { ...pre };
+      });
+    }
     return;
   };
   return (
@@ -78,26 +112,28 @@ const FormCreateApp: React.FC<IFormCreateApp> = ({ setSearchListApp }) => {
         <AppField label={'CHAIN'} customWidth={'49%'}>
           <AppSelect
             onChange={(e: any) => {
-              setDataForm({
-                ...dataForm,
-                chainId: e.value,
-              });
+              setChainSelected(CHAINS.find((chain) => chain.value === e.value));
+              setNetworkSelected(
+                CHAINS.find((chain) => chain.value === e.value)?.networks[0],
+              );
             }}
-            options={config.chains}
-            defaultValue={config.chains[0]}
+            options={CHAINS}
+            defaultValue={chainSelected}
           ></AppSelect>
         </AppField>
 
         <AppField label={'NETWORK'} customWidth={'49%'}>
           <AppSelect
             onChange={(e: any) => {
-              setDataForm({
-                ...dataForm,
-                network: e.value,
-              });
+              setNetworkSelected(
+                chainSelected.networks.find(
+                  (network: any) => network.value === e.value,
+                ),
+              );
             }}
-            options={config.networks}
-            defaultValue={config.networks[0]}
+            options={chainSelected.networks}
+            defaultValue={CHAINS[0].networks[0]}
+            value={networkSelected}
           ></AppSelect>
         </AppField>
         <AppField label={'DESCRIPTION'} customWidth={'100%'}>

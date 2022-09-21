@@ -9,31 +9,32 @@
   },
   "chains": [
     {
-      "label": "Ethereum",
-      "value": "GOERLI_TESTNET",
-      "icon": "/images/eth.svg"
+      "name": "Ethereum",
+      "id": "GOERLI_TESTNET",
+      "icon": "icon-ethereum_blue",
+      "networks": [
+        { "name": "Mainnet", "id": "MAINNET", "icon": "icon-ethereum_blue" },
+        { "name": "Goerli", "id": "GOERLI", "icon": "icon-ethereum_black" }
+      ]
     },
     {
-      "label": "Binance Smart Chain",
-      "value": "BSC_TESTNET",
-      "icon": "/images/bnb.svg"
+      "name": "Binance Smart Chain",
+      "id": "BSC_TESTNET",
+      "icon": "icon-bsc_blue",
+      "networks": [
+        { "name": "Mainnet", "id": "MAINNET", "icon": "icon-bsc_blue" },
+        { "name": "Testnet", "id": "TESTNET", "icon": "icon-bsc_blue" }
+      ]
     },
     {
-      "label": "Polygon",
-      "value": "POLYGON_TESTNET",
-      "icon": "/images/polygon.svg"
-    }
-  ],
-  "networks": [
-    {
-      "label": "Testnet",
-      "value": "TESTNET",
-      "icon": "/images/eth.svg"
-    },
-    {
-      "label": "Mainnet",
-      "value": "MAINNET",
-      "icon": "/images/eth.svg"
+      "name": "Solana",
+      "id": "SOLANA_TESTNET",
+      "icon": "icon-solana_blue",
+      "networks": [
+        { "name": "Mainnet", "id": "MAINNET", "icon": "icon-solana_blue" },
+        { "name": "Devnet", "id": "DEVNET", "icon": "icon-solana_black" },
+        { "name": "Testnet", "id": "TESTNET", "icon": "icon-solana_black" }
+      ]
     }
   ]
 }
