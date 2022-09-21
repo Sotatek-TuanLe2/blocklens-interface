@@ -53,7 +53,7 @@ const FormCreateApp: React.FC<IFormCreateApp> = ({ setSearchListApp }) => {
     return;
   };
   return (
-    <AppCard>
+    <AppCard maxW={'1240px'}>
       <Heading as="h3" size="lg" mb={5}>
         Create app
       </Heading>

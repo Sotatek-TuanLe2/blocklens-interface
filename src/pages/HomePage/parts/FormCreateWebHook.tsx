@@ -72,24 +72,27 @@ const FormCreateWebHook = () => {
   }, [dataForm]);
 
   return (
-    <AppCard mt={5}>
+    <AppCard mt={5} maxW={'1240px'}>
       <Heading as="h3" size="lg" mb={5}>
         Create webhook
       </Heading>
       <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
-        <Flex width={['100%', '49%']} flexWrap={'wrap'} justifyContent={'space-between'}>
+        <Flex
+          width={['100%', '49%']}
+          flexWrap={'wrap'}
+          justifyContent={'space-between'}
+        >
           <AppField label={'CHAIN'} customWidth={'48%'}>
             <AppSelect
               onChange={(e: any) => {
                 setDataForm({
                   ...dataForm,
                   chainId: e.value,
-                })
+                });
               }}
               options={chains}
               defaultValue={chains[0]}
-            >
-            </AppSelect>
+            ></AppSelect>
           </AppField>
 
           <AppField label={'NETWORK'} customWidth={'48%'}>
@@ -98,12 +101,11 @@ const FormCreateWebHook = () => {
                 setDataForm({
                   ...dataForm,
                   network: e.value,
-                })
+                });
               }}
               options={networks}
               defaultValue={networks[0]}
-            >
-            </AppSelect>
+            ></AppSelect>
           </AppField>
         </Flex>
 

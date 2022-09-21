@@ -3,7 +3,7 @@ import BaseRequest from './BaseRequest';
 
 export default class AppRequest extends BaseRequest {
   getUrlPrefix(): string {
-    return config.api.appsApi;
+    return config.api.baseUrlApi;
   }
 
   getListApp(params: any) {
