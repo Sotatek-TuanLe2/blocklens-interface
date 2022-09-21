@@ -8,8 +8,9 @@ import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
 import AppButton from './AppButton';
 import { Box } from '@chakra-ui/react';
+import config from 'src/config';
 
-const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID || '';
+const clientId = config.auth.googleClientId;
 
 const GoogleLoginButton = () => {
   const dispatch = useDispatch();
