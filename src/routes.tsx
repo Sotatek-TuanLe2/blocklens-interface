@@ -14,6 +14,10 @@ import SignUpPage from './pages/SignUpPage';
 import LoginPage from './pages/LoginPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import Storage from 'src/utils/storage';
+import VerifyAccountPage from './pages/VerifyAccountPage';
+import rf from './requests/RequestFactory';
+import { setUserInfo } from './store/authentication';
+import { useDispatch } from 'react-redux';
 
 /**
  * Main App routes.
@@ -21,20 +25,58 @@ import Storage from 'src/utils/storage';
 
 const Routes: FC<RouteComponentProps> = () => {
   const { pathname } = useLocation();
+  const dispatch = useDispatch();
+  const accessToken = Storage.getAccessToken();
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
 
+  const getUser = async () => {
+    try {
+      const user = await rf.getRequest('UserRequest').getInfoUser();
+      dispatch(setUserInfo(user));
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    if (!accessToken) return;
+    getUser().then();
+  }, []);
+
   return (
     <>
       <Switch>
-        <Route path={'/login'} component={LoginPage} />
-        <Route path={'/sign-up'} component={SignUpPage} />
-        <Route path={'/reset-password'} component={ResetPasswordPage} />
+        <PublicRoute path={'/login'} component={LoginPage} />
+        <PublicRoute path={'/sign-up'} component={SignUpPage} />
+        <PublicRoute path={'/verify-email'} component={VerifyAccountPage} />
+        <PublicRoute path={'/reset-password'} component={ResetPasswordPage} />
         <PrivateRoute path={'/'} component={HomePage} />
       </Switch>
     </>
+  );
+};
+
+const PublicRoute = ({ component: Component, ...rest }: any) => {
+  const accessToken = Storage.getAccessToken();
+
+  return (
+    <Route
+      {...rest}
+      render={(props) =>
+        !accessToken ? (
+          <Component {...props} />
+        ) : (
+          <Redirect
+            to={{
+              pathname: '/',
+            }}
+          />
+        )
+      }
+    />
   );
 };
 
