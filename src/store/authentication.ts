@@ -3,20 +3,18 @@ import Storage from 'src/utils/storage';
 
 interface IUserInfo {
   userId?: string;
-  username?: string;
-  email?: string;
-  avatar?: string,
+  firstName?: string;
+  isEmailVerified?: boolean;
+  lastName?: string,
   address?: string
 }
 
 interface AuthenticationState {
   userInfo: IUserInfo,
-  accessToken: string
 }
 
 const initialState = {
   userInfo: {},
-  accessToken: ''
 } as AuthenticationState;
 
 const authenticationSlice = createSlice({
@@ -30,8 +28,8 @@ const authenticationSlice = createSlice({
       state.userInfo = action.payload;
     },
     setAccessToken: (state, action) => {
-      state.accessToken = action.payload;
-      Storage.setAccessToken(state.accessToken);
+      Storage.setAccessToken(action.payload.accessToken);
+      Storage.setRefreshToken(action.payload.refreshToken);
     },
   },
 });

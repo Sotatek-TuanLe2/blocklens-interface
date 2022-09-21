@@ -5,6 +5,6 @@
     "secretKey": "0xA84Df05A9F758eca47A7060a9A6C004578F6E65B"
   },
   "api": {
-    "baseUrlApi": "https://stg-launchpad-api.metaversestarter.io"
+    "baseUrlApi": "https://buni-dev-api.sotatek.works/api/blocklens-users"
   }
 }
