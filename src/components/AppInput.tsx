@@ -24,6 +24,7 @@ interface AppInputProps extends InputProps {
   readOnly?: boolean;
   size?: string;
   endAdornment?: ReactNode;
+  hiddenErrorText?: boolean;
 }
 
 const AppInput = forwardRef(
@@ -34,6 +35,7 @@ const AppInput = forwardRef(
       readOnly,
       validate,
       endAdornment,
+      hiddenErrorText = false,
       ...props
     }: AppInputProps,
     ref,
@@ -57,7 +59,8 @@ const AppInput = forwardRef(
           {endAdornment && <InputRightElement children={<>{endAdornment}</>} />}
         </InputGroup>
 
-        {validate &&
+        {!hiddenErrorText &&
+          validate &&
           !readOnly &&
           validate.validator.message(
             validate.name,

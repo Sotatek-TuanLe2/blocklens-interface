@@ -56,6 +56,7 @@ const FormCreateApp: React.FC<IFormCreateApp> = ({ setSearchListApp }) => {
 
   const [dataForm, setDataForm] = useState<IDataForm>(initDataCreateApp);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
+  const [hiddenErrorText, setHiddenErrorText] = useState(false);
   const validator = useRef(
     createValidator({
       element: (message: string) => <Text color={'red.500'}>{message}</Text>,
@@ -76,6 +77,7 @@ const FormCreateApp: React.FC<IFormCreateApp> = ({ setSearchListApp }) => {
       chainId: chainSelected.value,
       network: networkSelected.value,
     };
+    setHiddenErrorText(true);
     const res = await rf
       .getRequest('AppRequest')
       .createApp(_.omitBy(dataSubmit, _.isEmpty));
@@ -98,12 +100,14 @@ const FormCreateApp: React.FC<IFormCreateApp> = ({ setSearchListApp }) => {
           <AppInput
             placeholder="Gavin"
             value={dataForm.name}
-            onChange={(e) =>
+            hiddenErrorText={hiddenErrorText}
+            onChange={(e) => {
+              setHiddenErrorText(false);
               setDataForm({
                 ...dataForm,
                 name: e.target.value,
-              })
-            }
+              });
+            }}
             validate={{
               name: `name`,
               validator: validator.current,
@@ -154,9 +158,7 @@ const FormCreateApp: React.FC<IFormCreateApp> = ({ setSearchListApp }) => {
       <Flex justifyContent={'flex-end'}>
         <AppButton
           disabled={isDisableSubmit}
-          onClick={() => {
-            handleSubmitForm();
-          }}
+          onClick={handleSubmitForm}
           size={'lg'}
           textTransform={'uppercase'}
         >
