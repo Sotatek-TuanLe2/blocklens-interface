@@ -13,7 +13,7 @@ import { createValidator } from 'src/utils/utils-validator';
 import GoogleLoginButton from 'src/components/GoogleLoginButton';
 import 'src/styles/pages/LoginPage.scss';
 import { useDispatch } from 'react-redux';
-import { setAccessToken, setUserInfo } from 'src/store/authentication';
+import { setAccessToken, setUserInfo } from 'src/store/auth';
 import { useHistory } from 'react-router';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';

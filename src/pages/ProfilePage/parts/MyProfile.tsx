@@ -8,7 +8,7 @@ import { RootState } from 'src/store';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { createValidator } from 'src/utils/utils-validator';
-import { getInfoUser } from 'src/store/authentication';
+import { getInfoUser } from 'src/store/auth';
 
 interface IDataForm {
   firstName?: string;
@@ -23,7 +23,7 @@ const MyProfile: FC = () => {
     email: '',
   };
 
-  const { userInfo } = useSelector((state: RootState) => state.authentication);
+  const { userInfo } = useSelector((state: RootState) => state.auth);
   const [dataForm, setDataForm] = useState<IDataForm>(initDataUpDate);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const dispatch = useDispatch<any>();
@@ -59,7 +59,6 @@ const MyProfile: FC = () => {
         dispatch(getInfoUser());
         toastSuccess({ message: 'Edit successfully!' });
         setIsEdit(false);
-
       } catch (e: any) {
         toastError({ message: e?.message || 'Oops. Something went wrong!' });
       }
