@@ -1,4 +1,3 @@
-import { ComponentStyleConfig } from '@chakra-ui/react';
 import { mode, StyleFunctionProps } from '@chakra-ui/theme-tools';
 
 export const globalStyles = {
@@ -136,44 +135,4 @@ export const globalStyles = {
       },
     }),
   },
-};
-
-export const tabsStyles: ComponentStyleConfig = {
-  parts: ['tab', 'tabpanel'],
-  baseStyle: (props: StyleFunctionProps) => ({
-    tab: {
-      px: 4,
-      pt: 2,
-      pb: 0,
-      display: 'flex',
-      flexDirection: 'column',
-      fontWeight: 'medium',
-      whiteSpace: 'nowrap',
-      color: mode('secondaryGray.600', 'secondaryGray.500')(props),
-      _focus: {
-        boxShadow: 'unset',
-      },
-      _after: {
-        content: `''`,
-        mt: 2,
-        display: 'block',
-        width: 'full',
-        height: '4px',
-        borderRadius: '4px',
-        bg: 'transparent',
-        transition: 'all .05s linear',
-      },
-      _selected: {
-        color: mode('secondaryGray.900', 'white')(props),
-        _after: {
-          bg: 'brand.500',
-        },
-      },
-    },
-    tabpanel: {
-      px: 0,
-      pt: 4,
-      pb: 0,
-    },
-  }),
 };

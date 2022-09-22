@@ -3,7 +3,7 @@ import { GoogleLogin } from 'react-google-login';
 import { gapi } from 'gapi-script';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import rf from 'src/requests/RequestFactory';
-import { setAccessToken, setUserInfo } from 'src/store/authentication';
+import { setAccessToken, setUserInfo } from 'src/store/auth';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
 import AppButton from './AppButton';

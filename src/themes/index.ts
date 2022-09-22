@@ -1,5 +1,5 @@
 import { extendTheme, ThemeConfig } from '@chakra-ui/react';
-import { globalStyles, tabsStyles } from 'src/themes/styles';
+import { globalStyles } from 'src/themes/styles';
 import { appButtonStyles } from 'src/components/AppButton';
 import { appInputStyles } from 'src/components/AppInput';
 import { appTextareaStyles } from 'src/components/AppTextarea';
@@ -24,6 +24,5 @@ export default extendTheme({
     Switch: appSwitchStyles,
     Card: cardStyles,
     Link: appLinkStyles,
-    Tabs: tabsStyles,
   },
 });

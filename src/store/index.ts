@@ -1,10 +1,10 @@
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
-import authentication from './authentication';
+import auth from './auth';
 
 const rootReducer = combineReducers({
-  authentication,
+  auth,
 });
 
 const initialState = {};
