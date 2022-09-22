@@ -70,7 +70,7 @@ const Header: FC = () => {
               👋&nbsp; Welcome {userInfo?.firstName + ' ' + userInfo?.lastName}!
             </MenuItem>
             <MenuItem onClick={() => history.push('/profile')}>
-              Profile
+              My Profile
             </MenuItem>
             <MenuItem color={'red.400'} onClick={onLogout}>
               Logout
@@ -84,7 +84,9 @@ const Header: FC = () => {
   return (
     <Box className={'header'}>
       <Flex className={'content-header'}>
-        BLOCKLENS
+        <Box onClick={() => history.push('/')} cursor={'pointer'}>
+          BLOCKLENS
+        </Box>
         {accessToken ? _renderAvatar() : _renderGroupButton()}
       </Flex>
     </Box>
