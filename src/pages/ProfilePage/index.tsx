@@ -30,13 +30,7 @@ const ProfilePage: FC = () => {
                 <MyProfile />
               </TabPanel>
               <TabPanel>
-                <p>Team!</p>
-              </TabPanel>
-              <TabPanel>
                 <p>Billing!</p>
-              </TabPanel>
-              <TabPanel>
-                <p>Cost Estimator!</p>
               </TabPanel>
             </TabPanels>
           </Tabs>

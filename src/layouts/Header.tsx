@@ -16,17 +16,24 @@ import {
   Avatar,
 } from '@chakra-ui/react';
 import { useLocation } from 'react-router-dom';
-import { clearAuth } from 'src/store/authentication';
+import { clearAuth } from 'src/store/auth';
+import { AppBroadcast } from '../utils/utils-broadcast';
 
 const Header: FC = () => {
   const history = useHistory();
   const accessToken = Storage.getAccessToken();
-  const { userInfo } = useSelector((state: RootState) => state.authentication);
+  const { userInfo } = useSelector((state: RootState) => state.auth);
   const location = useLocation();
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    AppBroadcast.on('LOGOUT_USER', onLogout);
+    return () => {
+      AppBroadcast.remove('LOGOUT_USER');
+    };
+  }, []);
+
   const onLogout = () => {
-    Storage.logout();
     dispatch(clearAuth());
     history.push('/login');
   };

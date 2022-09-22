@@ -2,6 +2,7 @@ import config from 'src/config';
 import axios from 'axios';
 import Storage from 'src/utils/storage';
 import { setAuthorizationToRequest } from 'src/utils/utils-auth';
+import { AppBroadcast } from 'src/utils/utils-broadcast';
 
 export default class BaseRequest {
   protected accessToken = '';
@@ -72,21 +73,14 @@ export default class BaseRequest {
     return response.data;
   }
 
-  _errorNavigator(err: any) {
-    if (!err.response || !err.response.status) {
-      return;
-    }
-    switch (err.response.status) {
-      case 403:
-        window.location.pathname = '/403';
-        break;
-      default:
-        break;
-    }
+  _error403Handler() {
+    return AppBroadcast.dispatch('LOGOUT_USER');
   }
 
   async _errorHandler(err: any) {
-    this._errorNavigator(err);
+    if (err.response.status === 403) {
+      return this._error403Handler();
+    }
     if (err.response) {
       console.log('===errorHandler', JSON.stringify(err.response));
       console.log('===errorHandler data', JSON.stringify(err.response.data));

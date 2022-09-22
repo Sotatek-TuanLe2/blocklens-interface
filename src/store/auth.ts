@@ -1,24 +1,24 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import Storage from 'src/utils/storage';
 import rf from 'src/requests/RequestFactory';
-import { deleteAuthorization } from 'src/utils/utils-auth';
+import { setAuthorizationToRequest } from 'src/utils/utils-auth';
 
 interface IUserInfo {
   userId?: string;
   firstName?: string;
   isEmailVerified?: boolean;
-  lastName?: string,
-  address?: string
-  email?: string
+  lastName?: string;
+  address?: string;
+  email?: string;
 }
 
-interface AuthenticationState {
-  userInfo: IUserInfo,
+interface AuthState {
+  userInfo: IUserInfo;
 }
 
 const initialState = {
   userInfo: {},
-} as AuthenticationState;
+} as AuthState;
 
 export const getInfoUser = createAsyncThunk(
   'myAccount/getUser',
@@ -28,13 +28,14 @@ export const getInfoUser = createAsyncThunk(
   },
 );
 
-const authenticationSlice = createSlice({
+const authSlice = createSlice({
   name: 'authentication',
   initialState,
   reducers: {
     clearAuth: (state) => {
       state.userInfo = {};
-      deleteAuthorization();
+      setAuthorizationToRequest(null);
+      Storage.logout();
     },
     setUserInfo: (state, action) => {
       state.userInfo = action.payload;
@@ -46,10 +47,6 @@ const authenticationSlice = createSlice({
   },
 });
 
-export const {
-  clearAuth,
-  setAccessToken,
-  setUserInfo
-} = authenticationSlice.actions;
+export const { clearAuth, setAccessToken, setUserInfo } = authSlice.actions;
 
-export default authenticationSlice.reducer;
+export default authSlice.reducer;

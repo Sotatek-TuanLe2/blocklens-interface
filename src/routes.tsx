@@ -17,7 +17,7 @@ import ResetPasswordPage from './pages/ResetPasswordPage';
 import Storage from 'src/utils/storage';
 import AppDetail from './pages/AppDetail';
 import VerifyAccountPage from './pages/VerifyAccountPage';
-import { getInfoUser } from 'src/store/authentication';
+import { getInfoUser } from 'src/store/auth';
 import { useDispatch } from 'react-redux';
 
 /**
