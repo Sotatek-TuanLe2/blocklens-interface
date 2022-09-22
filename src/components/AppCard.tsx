@@ -19,12 +19,12 @@ const AppCard = forwardRef<CardProps, 'div'>(
 
 export const cardStyles = {
   baseStyle: () => ({
-    p: '20px',
+    p: ['20px', '30px'],
     display: 'flex',
     flexDirection: 'column',
     width: '100%',
     position: 'relative',
-    borderRadius: '20px',
+    borderRadius: '10px',
     minWidth: '0px',
     wordWrap: 'break-word',
     backgroundClip: 'border-box',
@@ -32,17 +32,12 @@ export const cardStyles = {
   variants: {
     main: (props: StyleProps) => ({
       bg: mode('#ffffff', 'navy.800')(props),
-      boxShadow: mode(
-        'rgba(112, 144, 176, 0.08) 14px 4px 40px 4px',
-        'unset',
-      )(props),
+      boxShadow: mode('rgba(0, 0, 0, 0.05) 0px 5px 10px', 'unset')(props),
+      border: mode('1px solid #E0E0E0', 'unset')(props),
     }),
     sub: (props: StyleProps) => ({
       bg: mode('#ffffff', 'navy.700')(props),
-      boxShadow: mode(
-        'rgba(112, 144, 176, 0.14) 14px 4px 40px 4px',
-        'unset',
-      )(props),
+      boxShadow: mode('rgba(0, 0, 0, 0.05) 0px 5px 10px', 'unset')(props),
     }),
   },
 };

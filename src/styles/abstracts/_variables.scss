@@ -20,6 +20,7 @@ $brand-color-100: linear-gradient(91.08deg, #0030ff 31.36%, #37defe 99.07%);
 $brand-color-200: #37defe;
 $brand-color-300: #0078ff;
 $color-white: #fff;
+
 $text-color-50: #caccd1;
 $text-color-100: #999ba5;
 $text-color-200: #696b79;
@@ -38,7 +39,7 @@ $bg-green-200: rgb(42 220 151 / 20%);
 $bg-orange-200: rgb(240 116 22 / 20%);
 $bg-skyblue-200: rgb(55 222 254 / 20%);
 $bg-red-200: rgb(250 34 86 / 20%);
-$bg-blue-200: rgb(0 48 255 / 30%);
+$bg-blue-200: #2e5bff;
 $color-green-100: #58bd7d;
 $color-hover-btn: linear-gradient(0deg, rgb(0 0 0 / 20%), rgb(0 0 0 / 20%)),
   linear-gradient(265.56deg, #246cf9 -0.27%, #1e68f6 -0.26%, #0030ff 98.59%);
@@ -71,6 +72,7 @@ $color-text-2: #999ba5;
 $color-text-3: #696b79;
 $color-text-4: #373a4d;
 $color-text-5: #1e2237;
+$color-text-6: #4c84ff;
 $color-text-neutrals-6: #f4f5f6;
 
 /* text color */
@@ -87,6 +89,7 @@ $bg-brand-3: #0078ff;
 $bg-brand-4: #fff;
 $bg-gray-2: #fcfcfd;
 $bg-gray-8: #23262f;
+$bg-gray-3: #a0a0a0;
 $bg-accent-1: #b53efa;
 $bg-accent-2: #f07416;
 $bg-accent-3: #ff98e5;
@@ -100,8 +103,10 @@ $bg-4: #151b38;
 $bg-5: #1a203f;
 $bg-6: #1f2646;
 $bg-8: #2c3561;
+$bg-9: #f9f9f9;
 $bg-badge-1: #40c36d33;
 $bg-badge-2: #f0741633;
+$bg-badge-3: #f1be6e;
 
 /* background */
 $hover-brand-0: linear-gradient(0deg, rgb(0 0 0 / 20%), rgb(0 0 0 / 20%)),
@@ -116,3 +121,5 @@ $bg-accent-8-disable: linear-gradient(
   #b53efa 0%,
   rgb(181 62 250 / 50%) 100%
 );
+
+$border-color-1: #f0f0f0;

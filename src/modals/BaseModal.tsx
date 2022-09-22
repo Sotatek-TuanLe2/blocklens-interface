@@ -7,10 +7,11 @@ import {
   ModalBody,
   ModalCloseButton,
   Box,
+  ButtonProps,
 } from '@chakra-ui/react';
 import React, { FC, ReactNode } from 'react';
 import AppButton from 'src/components/AppButton';
-import { ModalProps } from '@chakra-ui/modal/src/modal';
+import { ModalProps, ModalHeaderProps } from '@chakra-ui/modal/src/modal';
 
 export interface BaseModalProps extends ModalProps {
   title: string;
@@ -35,6 +36,7 @@ export interface BaseModalProps extends ModalProps {
   textActionRight?: string | ReactNode;
   className?: string;
   isLoadingButtonRight?: boolean;
+  styleHeader?: ModalHeaderProps;
 }
 
 const BaseModal: FC<BaseModalProps> = ({
@@ -52,6 +54,7 @@ const BaseModal: FC<BaseModalProps> = ({
   isLoadingButtonRight = false,
   closeOnOverlayClick = false,
   className,
+  styleHeader,
 }) => {
   return (
     <>
@@ -64,17 +67,25 @@ const BaseModal: FC<BaseModalProps> = ({
       >
         <ModalOverlay />
         <ModalContent className={className}>
-          <ModalHeader sx={{ textAlign: isHideCloseIcon ? 'center' : 'left' }}>
+          <ModalHeader
+            sx={{ textAlign: isHideCloseIcon ? 'center' : 'left' }}
+            {...styleHeader}
+          >
             {title}
           </ModalHeader>
-          {!isHideCloseIcon && <ModalCloseButton />}
+          {!isHideCloseIcon && <ModalCloseButton color={'white'} />}
 
           <ModalBody>{children}</ModalBody>
 
-          <ModalFooter>
+          <ModalFooter justifyContent={'flex-start'}>
             {onActionLeft && (
               <Box mr={2}>
-                <AppButton onClick={onActionLeft} variant="outline">
+                <AppButton
+                  onClick={onActionLeft}
+                  variant="brand"
+                  fontSize={'12px'}
+                  fontWeight={400}
+                >
                   {textActionLeft}
                 </AppButton>
               </Box>

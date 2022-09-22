@@ -42,6 +42,7 @@ interface DataTableProps {
 
 export interface DataTableRef {
   tableData: any[];
+  fetchTableData: any;
 }
 
 export interface Pagination {
@@ -99,7 +100,7 @@ const AppDataTable = forwardRef(
     ) => {
       const setLoading = isLoadMore ? setIsLoadingMore : setIsLoading;
       setLoading(true);
-      const response: IResponseType = await fetchData({
+      const response: IResponseType | any[] = await fetchData({
         ...params,
         ...tablePagination,
       });
@@ -142,7 +143,11 @@ const AppDataTable = forwardRef(
     };
 
     const _renderLoading = () => {
-      return <div>Loading...</div>;
+      return (
+        <div style={{ marginTop: '25px', width: '100%', textAlign: 'center' }}>
+          Loading...
+        </div>
+      );
     };
 
     const _renderLoadMore = () => {

@@ -3,7 +3,6 @@ import { globalStyles, tabsStyles } from 'src/themes/styles';
 import { appButtonStyles } from 'src/components/AppButton';
 import { appInputStyles } from 'src/components/AppInput';
 import { appTextareaStyles } from 'src/components/AppTextarea';
-import { appSelectStyles } from 'src/components/AppSelect';
 import { appSwitchStyles } from 'src/components/AppSwitch';
 import { cardStyles } from 'src/components/AppCard';
 import { appLinkStyles } from 'src/components/AppLink';
@@ -22,7 +21,6 @@ export default extendTheme({
     Button: appButtonStyles,
     Input: appInputStyles,
     Textarea: appTextareaStyles,
-    Select: appSelectStyles,
     Switch: appSwitchStyles,
     Card: cardStyles,
     Link: appLinkStyles,

@@ -1,4 +1,9 @@
-import { Input, InputProps, InputGroup } from '@chakra-ui/react';
+import {
+  Input,
+  InputProps,
+  InputGroup,
+  InputRightElement,
+} from '@chakra-ui/react';
 import { mode } from '@chakra-ui/theme-tools';
 import { StyleProps, forwardRef } from '@chakra-ui/system';
 import SimpleReactValidator from 'simple-react-validator';
@@ -19,6 +24,7 @@ interface AppInputProps extends InputProps {
   readOnly?: boolean;
   size?: string;
   endAdornment?: ReactNode;
+  hiddenErrorText?: boolean;
 }
 
 const AppInput = forwardRef(
@@ -28,6 +34,8 @@ const AppInput = forwardRef(
       size = 'lg',
       readOnly,
       validate,
+      endAdornment,
+      hiddenErrorText = false,
       ...props
     }: AppInputProps,
     ref,
@@ -47,10 +55,12 @@ const AppInput = forwardRef(
             ref={ref}
             readOnly={readOnly}
           />
-          {props.endAdornment}
+
+          {endAdornment && <InputRightElement children={<>{endAdornment}</>} />}
         </InputGroup>
 
-        {validate &&
+        {!hiddenErrorText &&
+          validate &&
           !readOnly &&
           validate.validator.message(
             validate.name,
@@ -82,7 +92,7 @@ export const appInputStyles = {
         bg: mode('transparent', 'navy.800')(props),
         border: '1px solid',
         color: mode('secondaryGray.900', 'white')(props),
-        borderColor: mode('secondaryGray.100', 'whiteAlpha.100')(props),
+        borderColor: mode('secondaryGray.100', 'whiteAlpha.300')(props),
         borderRadius: '4px',
         fontSize: '16px',
         p: '20px',

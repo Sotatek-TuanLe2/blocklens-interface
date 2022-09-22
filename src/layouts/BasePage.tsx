@@ -12,7 +12,9 @@ const BasePage: FC<IBasePage> = ({ children }) => {
   return (
     <Box>
       <Header />
-      <Box minH={'calc(100vh - 130px)'}>{children}</Box>
+      <Box pt={'65px'} minH={'calc(100vh - 130px)'}>
+        {children}
+      </Box>
       <Footer />
     </Box>
   );

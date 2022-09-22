@@ -14,6 +14,7 @@ import SignUpPage from './pages/SignUpPage';
 import LoginPage from './pages/LoginPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import Storage from 'src/utils/storage';
+import AppDetail from './pages/AppDetail';
 import VerifyAccountPage from './pages/VerifyAccountPage';
 import rf from './requests/RequestFactory';
 import { setUserInfo } from './store/authentication';
@@ -49,6 +50,7 @@ const Routes: FC<RouteComponentProps> = () => {
   return (
     <>
       <Switch>
+        <PrivateRoute path={'/app-detail'} component={AppDetail} />
         <PublicRoute path={'/login'} component={LoginPage} />
         <PublicRoute path={'/sign-up'} component={SignUpPage} />
         <PublicRoute path={'/verify-email'} component={VerifyAccountPage} />
