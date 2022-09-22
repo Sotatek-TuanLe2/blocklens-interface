@@ -15,7 +15,15 @@ export interface Config {
   };
   api: {
     baseUrlApi: string;
+    appsApi: string;
   };
+  chains: {
+    name: string;
+    id: string;
+    icon: string;
+    networks: { name: string; id: string; icon: string }[];
+  }[];
+  networks: { name: string; id: string; icon: string }[];
 }
 
 export default config;

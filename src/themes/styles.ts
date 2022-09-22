@@ -53,6 +53,8 @@ export const globalStyles = {
     },
     blue: {
       50: '#EFF4FB',
+      100: '#4C84FF',
+      200: '#2E5BFF',
       500: '#3965FF',
     },
     orange: {
@@ -83,7 +85,7 @@ export const globalStyles = {
     global: (props: StyleFunctionProps) => ({
       body: {
         overflowX: 'hidden',
-        bg: mode('secondaryGray.300', 'navy.900')(props),
+        bg: mode('white', 'navy.900')(props),
         fontFamily: 'DM Sans',
         letterSpacing: '-0.5px',
       },

@@ -15,6 +15,7 @@ import LoginPage from './pages/LoginPage';
 import ProfilePage from './pages/ProfilePage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import Storage from 'src/utils/storage';
+import AppDetail from './pages/AppDetail';
 import VerifyAccountPage from './pages/VerifyAccountPage';
 import { getInfoUser } from 'src/store/authentication';
 import { useDispatch } from 'react-redux';
@@ -40,6 +41,7 @@ const Routes: FC<RouteComponentProps> = () => {
   return (
     <>
       <Switch>
+        <PrivateRoute path={'/app-detail'} component={AppDetail} />
         <PublicRoute path={'/login'} component={LoginPage} />
         <PublicRoute path={'/sign-up'} component={SignUpPage} />
         <PublicRoute path={'/verify-email'} component={VerifyAccountPage} />

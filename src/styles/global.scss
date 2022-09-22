@@ -42,3 +42,11 @@
 iframe {
   display: none !important;
 }
+
+.select-app {
+  &__control {
+    height: 48px;
+    border-color: #E0E5F2 !important;
+    cursor: pointer;
+  }
+}

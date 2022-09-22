@@ -1,4 +1,5 @@
 import SimpleReactValidator from 'simple-react-validator';
+import { ReactNode } from 'react';
 
 type IRule =
   | 'accepted'
