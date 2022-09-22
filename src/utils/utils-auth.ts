@@ -9,3 +9,7 @@ export const setAuthorizationToRequest = (
   axios.defaults.headers.common['x-app-version'] = 2;
   axios.defaults.headers.common['x-app-message'] = config.auth.message;
 };
+
+export const deleteAuthorization = () => {
+  delete axios.defaults.headers.common['Authorization'];
+};

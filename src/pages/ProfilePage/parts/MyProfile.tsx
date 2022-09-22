@@ -53,6 +53,7 @@ const MyProfile: FC = () => {
 
   const _renderButtonSave = () => {
     const onSave = async () => {
+      if (!validator.current.allValid()) return;
       try {
         await rf.getRequest('UserRequest').editInfoUser(dataForm);
         dispatch(getInfoUser());

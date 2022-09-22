@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import Storage from 'src/utils/storage';
 import rf from 'src/requests/RequestFactory';
+import { deleteAuthorization } from 'src/utils/utils-auth';
 
 interface IUserInfo {
   userId?: string;
@@ -33,6 +34,7 @@ const authenticationSlice = createSlice({
   reducers: {
     clearAuth: (state) => {
       state.userInfo = {};
+      deleteAuthorization();
     },
     setUserInfo: (state, action) => {
       state.userInfo = action.payload;
