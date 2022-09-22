@@ -79,7 +79,7 @@ export default class BaseRequest {
 
   async _errorHandler(err: any) {
     if (err.response.status === 403) {
-     return this._error403Handler();
+      return this._error403Handler();
     }
     if (err.response) {
       console.log('===errorHandler', JSON.stringify(err.response));

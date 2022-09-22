@@ -17,7 +17,7 @@ import {
 } from '@chakra-ui/react';
 import { useLocation } from 'react-router-dom';
 import { clearAuth } from 'src/store/auth';
-import {AppBroadcast} from "../utils/utils-broadcast";
+import { AppBroadcast } from '../utils/utils-broadcast';
 
 const Header: FC = () => {
   const history = useHistory();
