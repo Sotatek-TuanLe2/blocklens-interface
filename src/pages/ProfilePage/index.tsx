@@ -22,9 +22,7 @@ const ProfilePage: FC = () => {
             <TabList flexDirection={'column'} className="menu-left">
               <Box className={'title'}>Settings</Box>
               <Tab className="tab-item">My profile</Tab>
-              <Tab className="tab-item">Team</Tab>
               <Tab className="tab-item">Billing</Tab>
-              <Tab className="tab-item">Cost Estimator</Tab>
             </TabList>
 
             <TabPanels>
