@@ -23,7 +23,7 @@ interface INFTResponse {
   type: string;
   contractAddress: string;
   tokenIds: string[];
-};
+}
 
 const ListNTF: FC<IListNTF> = ({ appInfo }) => {
   const [isOpenCreateNFTModal, setIsOpenCreateNFTModal] =

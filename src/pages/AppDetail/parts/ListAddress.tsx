@@ -22,7 +22,7 @@ interface IAddressResponse {
   network: string;
   type: string;
   walletAddress: string;
-};
+}
 
 const ListAddress: FC<IListAddress> = ({ appInfo }) => {
   const [isOpenCreateAddressModal, setIsOpenCreateAddressModal] =
