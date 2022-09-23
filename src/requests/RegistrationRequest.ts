@@ -20,4 +20,9 @@ export default class RegistrationRequest extends BaseRequest {
     const url = `/my/registrations/address-activity`;
     return this.get(url, params);
   }
+
+  addAddressActivity(params: any) {
+    const url = `/my/registrations/address-activity`;
+    return this.post(url, params);
+  }
 }

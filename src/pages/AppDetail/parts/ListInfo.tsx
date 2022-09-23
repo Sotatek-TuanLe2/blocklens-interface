@@ -1,11 +1,13 @@
-import {
-  Box,
-  SimpleGrid,
-} from '@chakra-ui/react';
-import React from 'react';
+import { Box, SimpleGrid } from '@chakra-ui/react';
+import React, { FC } from 'react';
 import { AppCard } from 'src/components';
+import { IAppInfo } from '../index';
 
-const ListInfo = () => {
+interface IListInfo {
+  appInfo: IAppInfo;
+}
+
+const ListInfo:FC<IListInfo> = ({ appInfo }) => {
   return (
     <SimpleGrid
       className="infos"

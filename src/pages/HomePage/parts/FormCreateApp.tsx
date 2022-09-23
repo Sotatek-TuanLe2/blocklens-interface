@@ -19,7 +19,7 @@ interface IFormCreateApp {
 }
 interface IDataForm {
   name: string;
-  chainId: string;
+  chain: string;
   network: string;
   description: string;
 }
@@ -40,7 +40,7 @@ export const CHAINS = config.chains.map((chain: IChain) => {
 
   return {
     label: chain.name,
-    value: chain.id,
+    value: chain.name,
     icon: chain.icon,
     networks: [...networksClone],
   };
@@ -49,7 +49,7 @@ export const CHAINS = config.chains.map((chain: IChain) => {
 const FormCreateApp: React.FC<IFormCreateApp> = ({ setSearchListApp }) => {
   const initDataCreateApp = {
     name: '',
-    chainId: CHAINS[0].value,
+    chain: CHAINS[0].value,
     network: CHAINS[0].networks[0].value,
     description: '',
   };
@@ -74,7 +74,7 @@ const FormCreateApp: React.FC<IFormCreateApp> = ({ setSearchListApp }) => {
   const handleSubmitForm = async () => {
     const dataSubmit = {
       ...dataForm,
-      chainId: chainSelected.value,
+      chain: chainSelected.value,
       network: networkSelected.value,
     };
     setHiddenErrorText(true);

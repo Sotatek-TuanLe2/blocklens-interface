@@ -1,15 +1,35 @@
-import { Flex, Tbody, Th, Thead, Tr, Td, Box } from '@chakra-ui/react';
+import { Flex, Tbody, Th, Thead, Tr, Td, Box, Tag } from '@chakra-ui/react';
 import { SmallAddIcon } from '@chakra-ui/icons';
-import React from 'react';
-import { useHistory } from 'react-router';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { AppButton, AppCard, AppDataTable } from 'src/components';
 import rf from 'src/requests/RequestFactory';
-import { IAppResponse, IListAppResponse } from 'src/utils/common';
+import { IListAppResponse } from 'src/utils/common';
+import CreateAddressActivityModal from 'src/modals/CreateAddressActivityModal';
+import { IAppInfo } from '../index';
+import { getLogoChainByName } from 'src/utils/utils-network';
 
-const ListAddress = () => {
-  const history = useHistory();
+interface IListAddress {
+  appInfo: IAppInfo;
+}
 
-  const fetchDataTable: any = async (params: any) => {
+interface IParams {
+  appId?: number;
+}
+
+interface IAddressResponse {
+  userId: number;
+  registrationId: number;
+  network: string;
+  type: string;
+  walletAddress: string;
+};
+
+const ListAddress: FC<IListAddress> = ({ appInfo }) => {
+  const [isOpenCreateAddressModal, setIsOpenCreateAddressModal] =
+    useState<boolean>(false);
+  const [params, setParams] = useState<IParams>({});
+
+  const fetchDataTable: any = useCallback(async (params: any) => {
     try {
       const res: IListAppResponse = await rf
         .getRequest('RegistrationRequest')
@@ -18,7 +38,14 @@ const ListAddress = () => {
     } catch (error) {
       return error;
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    setParams({
+      ...params,
+      appId: appInfo.appId,
+    });
+  }, [appInfo]);
 
   const _renderHeader = () => {
     return (
@@ -29,31 +56,61 @@ const ListAddress = () => {
           <Th>App/Network</Th>
           <Th>Status</Th>
           <Th>Webhook URL</Th>
-          <Th>Ethereum Address</Th>
+          <Th>{appInfo.chain} Address</Th>
         </Tr>
       </Thead>
     );
   };
 
-  const _renderBody = (data?: IAppResponse[]) => {
+  const _renderStatus = () => {
+    return (
+      <Tag
+        size={'sm'}
+        borderRadius="full"
+        variant="solid"
+        colorScheme="green"
+        px={5}
+      >
+        ACTIVE
+      </Tag>
+    );
+  };
+
+  const _renderVersion = () => {
+    return (
+      <Tag
+        size={'sm'}
+        borderRadius="full"
+        variant="solid"
+        colorScheme="green"
+        px={5}
+      >
+        V1
+      </Tag>
+    );
+  };
+
+  const _renderNetwork = (address: IAddressResponse) => {
+    return (
+      <Flex alignItems={'center'}>
+        <Box mr={2} className={getLogoChainByName(appInfo.chain)}></Box>
+        {address.network}
+      </Flex>
+    );
+  };
+
+  const _renderBody = (data?: IAddressResponse[]) => {
     return (
       <Tbody>
-        {data?.map((app: IAppResponse, index: number) => {
+        {data?.map((address: IAddressResponse, index: number) => {
           return (
-            <Tr key={index} className="tr-list-app">
-              <Td>{app.network}</Td>
-              <Td>{app.description || ''}</Td>
-              <Td>n/a</Td>
-              <Td>n/a</Td>
-
-              <Td>
-                <AppButton
-                  size={'sm'}
-                  onClick={() => history.push(`/app-detail/${app.appId}`)}
-                >
-                  Detail App
-                </AppButton>
-              </Td>
+            <Tr key={index}>
+              <Td>{_renderVersion()}</Td>
+              <Td>N/A</Td>
+              <Td>{_renderNetwork(address)}</Td>
+              <Td>{_renderStatus()}</Td>
+              <Td>N/A</Td>
+              <Td>N/A</Td>
             </Tr>
           );
         })}
@@ -62,32 +119,50 @@ const ListAddress = () => {
   };
 
   return (
-    <AppCard mt={10} className="list-nft" p={0} pb={5}>
-      <Flex justifyContent="space-between" py={5} px={8} alignItems="center">
-        <Flex alignItems="center">
-          <Box className="icon-app-address" mr={4} />
-          <Box className="name">
-            NFT Activity
-            <Box
-              className="description"
-              textTransform="uppercase"
-              fontSize={'13px'}
-            >
-              Get notified whenever an address sends/receives ETH or any Token
+    <>
+      <AppCard mt={10} className="list-nft" p={0} pb={5}>
+        <Flex justifyContent="space-between" py={5} px={8} alignItems="center">
+          <Flex alignItems="center">
+            <Box className="icon-app-address" mr={4} />
+            <Box className="name">
+              Address Activity
+              <Box
+                className="description"
+                textTransform="uppercase"
+                fontSize={'13px'}
+              >
+                Get notified whenever an address sends/receives ETH or any Token
+              </Box>
             </Box>
-          </Box>
+          </Flex>
+          <AppButton
+            textTransform="uppercase"
+            size={'md'}
+            onClick={() => setIsOpenCreateAddressModal(true)}
+          >
+            <SmallAddIcon mr={1} /> Create webhook
+          </AppButton>
         </Flex>
-        <AppButton textTransform="uppercase">
-          <SmallAddIcon /> Create webhook
-        </AppButton>
-      </Flex>
-      <AppDataTable
-        fetchData={fetchDataTable}
-        renderBody={_renderBody}
-        renderHeader={_renderHeader}
-        limit={10}
+        <AppDataTable
+          requestParams={params}
+          fetchData={fetchDataTable}
+          renderBody={_renderBody}
+          renderHeader={_renderHeader}
+          limit={10}
+        />
+      </AppCard>
+
+      <CreateAddressActivityModal
+        open={isOpenCreateAddressModal}
+        onClose={() => setIsOpenCreateAddressModal(false)}
+        appInfo={appInfo}
+        onReloadData={() =>
+          setParams((pre: any) => {
+            return { ...pre };
+          })
+        }
       />
-    </AppCard>
+    </>
   );
 };
 

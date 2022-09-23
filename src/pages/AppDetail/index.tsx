@@ -7,9 +7,20 @@ import 'src/styles/pages/AppDetail.scss';
 import ListNTF from './parts/ListNFT';
 import ListInfo from './parts/ListInfo';
 import ListAddress from './parts/ListAddress';
+import { getLogoChainByName } from 'src/utils/utils-network';
+
+export interface IAppInfo {
+  name?: string;
+  chain?: string;
+  network?: string;
+  description?: string;
+  key?: string;
+  appId?: number;
+  userId?: number;
+}
 
 const AppDetail = () => {
-  const [appInfo, setAppInfo] = useState<any>({});
+  const [appInfo, setAppInfo] = useState<IAppInfo>({});
   const [loading, setLoading] = useState<boolean>(false);
 
   const { id: appId } = useParams<{ id: string }>();
@@ -39,14 +50,18 @@ const AppDetail = () => {
             <Flex alignItems={'center'}>
               <Box className="name">{appInfo.name}</Box>
               <Box className="icon-edit" cursor="pointer"></Box>
+              <Flex ml={5} alignItems={'center'}>
+                <Box mr={2} className={getLogoChainByName(appInfo?.chain)}>
+                </Box>
+                {appInfo.chain}
+              </Flex>
             </Flex>
-
             <Box className="description">{appInfo.description}</Box>
           </Box>
 
-          <ListInfo />
-          <ListNTF />
-          <ListAddress />
+          <ListInfo appInfo={appInfo} />
+          <ListNTF appInfo={appInfo} />
+          <ListAddress appInfo={appInfo} />
         </Box>
       </Box>
     </BasePage>
