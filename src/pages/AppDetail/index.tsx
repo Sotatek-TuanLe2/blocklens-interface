@@ -4,11 +4,11 @@ import BasePage from 'src/layouts/BasePage';
 import rf from 'src/requests/RequestFactory';
 import { useParams } from 'react-router';
 import 'src/styles/pages/AppDetail.scss';
-import ListNTF from './parts/ListNFT';
-import ListInfo from './parts/ListInfo';
-import ListAddress from './parts/ListAddress';
+import PartNFTWebhooks from './parts/PartNFTWebhooks';
+import PartAppStatics from './parts/PartAppStatics';
+import PartAddressWebhooks from './parts/PartAddressWebhooks';
 import { getLogoChainByName } from 'src/utils/utils-network';
-import ListContract from './parts/ListContract';
+import PartContractWebhooks from './parts/PartContractWebhooks';
 
 export interface IAppInfo {
   name?: string;
@@ -60,10 +60,10 @@ const AppDetail = () => {
             <Box className="description">{appInfo.description}</Box>
           </Box>
 
-          <ListInfo appInfo={appInfo} />
-          <ListNTF appInfo={appInfo} />
-          <ListAddress appInfo={appInfo} />
-          <ListContract appInfo={appInfo} />
+          <PartAppStatics appInfo={appInfo} />
+          <PartNFTWebhooks appInfo={appInfo} />
+          <PartAddressWebhooks appInfo={appInfo} />
+          <PartContractWebhooks appInfo={appInfo} />
         </Box>
       </Box>
     </BasePage>

@@ -63,7 +63,7 @@ const FormCreateAddress: FC<IFormCreateAddress> = ({
   return (
     <>
       <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
-        <AppField label={'WEBHOOK URL'} customWidth={'100%'}>
+        <AppField label={'WEBHOOK URL'} customWidth={'100%'} isRequired>
           <AppInput
             placeholder="https://yourapp.com/webhook/data/12345"
             borderRightRadius={0}
@@ -87,6 +87,7 @@ const FormCreateAddress: FC<IFormCreateAddress> = ({
               label={`${appInfo.chain} ADDRESS`}
               customWidth={'100%'}
               key={index}
+              isRequired
             >
               <AppInput
                 placeholder="0xbb.."

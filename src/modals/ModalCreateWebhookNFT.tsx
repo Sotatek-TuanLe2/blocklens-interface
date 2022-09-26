@@ -1,17 +1,17 @@
 import { Box } from '@chakra-ui/react';
 import React, { FC } from 'react';
 import BaseModal from './BaseModal';
-import FormCreateAddress from 'src/pages/AppDetail/parts/FormCreateAddress';
+import FormCreateNFT from 'src/pages/AppDetail/parts/FormCreateNFT';
 import { IAppInfo } from 'src/pages/AppDetail';
 
-interface ICreateAddressActivityModal {
+interface ICreateNFTModal {
   open: boolean;
   onClose: () => void;
-  onReloadData: () => void;
   appInfo: IAppInfo;
+  onReloadData: () => void;
 }
 
-const CreateAddressActivityModal: FC<ICreateAddressActivityModal> = ({
+const ModalCreateWebhookNFT: FC<ICreateNFTModal> = ({
   open,
   onClose,
   appInfo,
@@ -20,13 +20,13 @@ const CreateAddressActivityModal: FC<ICreateAddressActivityModal> = ({
   return (
     <BaseModal
       size="2xl"
-      title="Create Address Activity"
+      title="Create NFT Activity"
       isOpen={open}
       onClose={onClose}
       textActionLeft="Create Webhook"
     >
       <Box flexDirection={'column'} pt={'20px'}>
-        <FormCreateAddress
+        <FormCreateNFT
           appInfo={appInfo}
           onClose={onClose}
           onReloadData={onReloadData}
@@ -36,4 +36,4 @@ const CreateAddressActivityModal: FC<ICreateAddressActivityModal> = ({
   );
 };
 
-export default CreateAddressActivityModal;
+export default ModalCreateWebhookNFT;

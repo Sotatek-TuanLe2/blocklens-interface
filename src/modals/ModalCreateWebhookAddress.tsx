@@ -1,17 +1,17 @@
 import { Box } from '@chakra-ui/react';
 import React, { FC } from 'react';
 import BaseModal from './BaseModal';
+import FormCreateAddress from 'src/pages/AppDetail/parts/FormCreateAddress';
 import { IAppInfo } from 'src/pages/AppDetail';
-import FormCreateContract from 'src/pages/AppDetail/parts/FormCreateContract';
 
-interface ICreateNFTModal {
+interface ICreateAddressActivityModal {
   open: boolean;
   onClose: () => void;
-  appInfo: IAppInfo;
   onReloadData: () => void;
+  appInfo: IAppInfo;
 }
 
-const CreateContractActivityModal: FC<ICreateNFTModal> = ({
+const ModalCreateWebhookAddress: FC<ICreateAddressActivityModal> = ({
   open,
   onClose,
   appInfo,
@@ -20,13 +20,13 @@ const CreateContractActivityModal: FC<ICreateNFTModal> = ({
   return (
     <BaseModal
       size="2xl"
-      title="Create Contract"
+      title="Create Address Activity"
       isOpen={open}
       onClose={onClose}
       textActionLeft="Create Webhook"
     >
       <Box flexDirection={'column'} pt={'20px'}>
-        <FormCreateContract
+        <FormCreateAddress
           appInfo={appInfo}
           onClose={onClose}
           onReloadData={onReloadData}
@@ -36,4 +36,4 @@ const CreateContractActivityModal: FC<ICreateNFTModal> = ({
   );
 };
 
-export default CreateContractActivityModal;
+export default ModalCreateWebhookAddress;

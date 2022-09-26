@@ -64,7 +64,7 @@ const FormCreateNFT: FC<IFormCreateNFT> = ({
   return (
     <>
       <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
-        <AppField label={'WEBHOOK URL'} customWidth={'100%'}>
+        <AppField label={'WEBHOOK URL'} customWidth={'100%'} isRequired>
           <AppInput
             placeholder="https://yourapp.com/webhook/data/12345"
             borderRightRadius={0}
@@ -82,7 +82,7 @@ const FormCreateNFT: FC<IFormCreateNFT> = ({
             }}
           />
         </AppField>
-        <AppField label={'NFT ADDRESSES'} customWidth={'49%'}>
+        <AppField label={'NFT ADDRESSES'} customWidth={'49%'} isRequired>
           <AppInput
             placeholder="0xbb.."
             size="lg"
@@ -100,7 +100,7 @@ const FormCreateNFT: FC<IFormCreateNFT> = ({
             }}
           />
         </AppField>
-        <AppField label={'TOKEN IDS'} customWidth={'49%'}>
+        <AppField label={'TOKEN IDS'} customWidth={'49%'} isRequired>
           <AppInput
             placeholder="12, 0xc"
             size="lg"
@@ -118,7 +118,7 @@ const FormCreateNFT: FC<IFormCreateNFT> = ({
             }}
           />
         </AppField>
-        <Flex  alignItems={'center'}>
+        <Flex alignItems={'center'}>
           <Text>ABI</Text>
           <AppButton
             onClick={() => console.log('dfdfdf')}

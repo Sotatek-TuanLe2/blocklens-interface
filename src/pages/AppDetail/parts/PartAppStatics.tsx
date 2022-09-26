@@ -7,7 +7,7 @@ interface IListInfo {
   appInfo: IAppInfo;
 }
 
-const ListInfo:FC<IListInfo> = ({ appInfo }) => {
+const PartAppStatics:FC<IListInfo> = ({ appInfo }) => {
   return (
     <SimpleGrid
       className="infos"
@@ -39,4 +39,4 @@ const ListInfo:FC<IListInfo> = ({ appInfo }) => {
   );
 };
 
-export default ListInfo;
+export default PartAppStatics;

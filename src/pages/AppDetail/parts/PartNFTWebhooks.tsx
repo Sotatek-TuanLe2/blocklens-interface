@@ -4,7 +4,7 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { AppButton, AppCard, AppDataTable } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import { IAppResponse, IListAppResponse } from 'src/utils/common';
-import CreateNFTActivityModal from 'src/modals/CreateNFTActivityModal';
+import ModalCreateWebhookNFT from 'src/modals/ModalCreateWebhookNFT';
 import { IAppInfo } from '../index';
 import { getLogoChainByName } from 'src/utils/utils-network';
 
@@ -26,7 +26,7 @@ interface INFTResponse {
   tokenIds: string[];
 }
 
-const ListNTF: FC<IListNTF> = ({ appInfo }) => {
+const PartNFTWebhooks: FC<IListNTF> = ({ appInfo }) => {
   const [isOpenCreateNFTModal, setIsOpenCreateNFTModal] =
     useState<boolean>(false);
   const [params, setParams] = useState<IParams>({});
@@ -139,7 +139,7 @@ const ListNTF: FC<IListNTF> = ({ appInfo }) => {
         />
       </AppCard>
 
-      <CreateNFTActivityModal
+      <ModalCreateWebhookNFT
         open={isOpenCreateNFTModal}
         onClose={() => setIsOpenCreateNFTModal(false)}
         appInfo={appInfo}
@@ -153,4 +153,4 @@ const ListNTF: FC<IListNTF> = ({ appInfo }) => {
   );
 };
 
-export default ListNTF;
+export default PartNFTWebhooks;

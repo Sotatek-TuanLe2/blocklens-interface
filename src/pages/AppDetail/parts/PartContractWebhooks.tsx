@@ -1,14 +1,14 @@
 import { Flex, Tbody, Th, Thead, Tr, Td, Box, Tag } from '@chakra-ui/react';
 import { SmallAddIcon } from '@chakra-ui/icons';
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import { AppButton, AppCard, AppDataTable } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import { IListAppResponse } from 'src/utils/common';
-import CreateAddressActivityModal from 'src/modals/CreateAddressActivityModal';
 import { IAppInfo } from '../index';
 import { getLogoChainByName } from 'src/utils/utils-network';
+import ModalCreateWebhookContract from 'src/modals/ModalCreateWebhookContract';
 
-interface IListAddress {
+interface IListContract {
   appInfo: IAppInfo;
 }
 
@@ -16,17 +16,18 @@ interface IParams {
   appId?: number;
 }
 
-interface IAddressResponse {
+interface IContractResponse {
   userId: number;
   registrationId: number;
   network: string;
   type: string;
   status?: string;
-  walletAddress: string;
+  contractAddress: string;
+  abi: string[];
 }
 
-const ListAddress: FC<IListAddress> = ({ appInfo }) => {
-  const [isOpenCreateAddressModal, setIsOpenCreateAddressModal] =
+const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
+  const [isOpenCreateContractModal, setIsOpenCreateContractModal] =
     useState<boolean>(false);
   const [params, setParams] = useState<IParams>({});
 
@@ -34,7 +35,7 @@ const ListAddress: FC<IListAddress> = ({ appInfo }) => {
     try {
       const res: IListAppResponse = await rf
         .getRequest('RegistrationRequest')
-        .getAddressActivity(params);
+        .getContractActivity(params);
       return res;
     } catch (error) {
       return error;
@@ -56,14 +57,14 @@ const ListAddress: FC<IListAddress> = ({ appInfo }) => {
           <Th>App/Network</Th>
           <Th>Status</Th>
           <Th>Webhook URL</Th>
-          <Th>{appInfo.chain} Address</Th>
+          <Th>Address</Th>
         </Tr>
       </Thead>
     );
   };
 
-  const _renderStatus = (address: IAddressResponse) => {
-    if (!address.status) return 'N/A';
+  const _renderStatus = (contract: IContractResponse) => {
+    if (!contract.status) return 'N/A';
     return (
       <Tag
         size={'sm'}
@@ -72,24 +73,24 @@ const ListAddress: FC<IListAddress> = ({ appInfo }) => {
         colorScheme="green"
         px={5}
       >
-        {address.status}
+        {contract.status}
       </Tag>
     );
   };
 
-  const _renderNetwork = (address: IAddressResponse) => {
+  const _renderNetwork = (contract: IContractResponse) => {
     return (
       <Flex alignItems={'center'}>
         <Box mr={2} className={getLogoChainByName(appInfo.chain)}></Box>
-        {address.network}
+        {contract.network}
       </Flex>
     );
   };
 
-  const _renderBody = (data?: IAddressResponse[]) => {
+  const _renderBody = (data?: IContractResponse[]) => {
     return (
       <Tbody>
-        {data?.map((address: IAddressResponse, index: number) => {
+        {data?.map((address: IContractResponse, index: number) => {
           return (
             <Tr key={index}>
               <Td>N/A</Td>
@@ -109,22 +110,21 @@ const ListAddress: FC<IListAddress> = ({ appInfo }) => {
       <AppCard mt={10} className="list-nft" p={0} pb={5}>
         <Flex justifyContent="space-between" py={5} px={8} alignItems="center">
           <Flex alignItems="center">
-            <Box className="icon-app-address" mr={4} />
+            <Box className="icon-app-nft" mr={4} />
             <Box className="name">
-              Address Activity
+              Contract Activity
               <Box
                 className="description"
                 textTransform="uppercase"
                 fontSize={'13px'}
               >
-                Get notified whenever an address sends/receives ETH or any Token
               </Box>
             </Box>
           </Flex>
           <AppButton
             textTransform="uppercase"
             size={'md'}
-            onClick={() => setIsOpenCreateAddressModal(true)}
+            onClick={() => setIsOpenCreateContractModal(true)}
           >
             <SmallAddIcon mr={1} /> Create webhook
           </AppButton>
@@ -138,9 +138,9 @@ const ListAddress: FC<IListAddress> = ({ appInfo }) => {
         />
       </AppCard>
 
-      <CreateAddressActivityModal
-        open={isOpenCreateAddressModal}
-        onClose={() => setIsOpenCreateAddressModal(false)}
+      <ModalCreateWebhookContract
+        open={isOpenCreateContractModal}
+        onClose={() => setIsOpenCreateContractModal(false)}
         appInfo={appInfo}
         onReloadData={() =>
           setParams((pre: any) => {
@@ -152,4 +152,4 @@ const ListAddress: FC<IListAddress> = ({ appInfo }) => {
   );
 };
 
-export default ListAddress;
+export default PartContractWebhooks;

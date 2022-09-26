@@ -59,7 +59,7 @@ const FormCreateContract: FC<IFormCreateContract> = ({
   return (
     <>
       <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
-        <AppField label={'WEBHOOK URL'} customWidth={'100%'}>
+        <AppField label={'WEBHOOK URL'} customWidth={'100%'} isRequired>
           <AppInput
             placeholder="https://yourapp.com/webhook/data/12345"
             borderRightRadius={0}
@@ -77,7 +77,7 @@ const FormCreateContract: FC<IFormCreateContract> = ({
             }}
           />
         </AppField>
-        <AppField label={'ADDRESS'} customWidth={'100%'}>
+        <AppField label={'ADDRESS'} customWidth={'100%'} isRequired>
           <AppInput
             placeholder="0xbb.."
             size="lg"
