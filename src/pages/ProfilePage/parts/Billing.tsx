@@ -8,6 +8,7 @@ import {
   Tabs,
 } from '@chakra-ui/react';
 import React from 'react';
+import { AppButton } from 'src/components';
 import MyPlan from './MyPlan';
 
 const Billing = () => {
@@ -15,8 +16,13 @@ const Billing = () => {
     <Box>
       <Tabs variant={'unstyled'} colorScheme="transparent">
         <TabList className="bill-tabs">
-          <Tab className="bill-tab">My Plan</Tab>
-          <Tab className="bill-tab"> Past Invoices</Tab>
+          <Flex w={'100%'}>
+            <Tab className="bill-tab">My Plan</Tab>
+            <Tab className="bill-tab"> Past Invoices</Tab>
+            <Box flex={1} display="flex" justifyContent={'flex-end'}>
+              <AppButton disabled>Save Changes</AppButton>
+            </Box>
+          </Flex>
         </TabList>
 
         <TabPanels>
