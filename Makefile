@@ -1,5 +1,17 @@
+init:
+	npm run docker-init
+
 eslint:
-	npm run lint && npm run format
+	npm run docker-eslint
+
+start:
+	npm run docker-start
+
+build:
+	npm run docker-build
+
+connect:
+	npm run docker-connect
 
 deploy-dev:
 	cp .env.dev.example .env
