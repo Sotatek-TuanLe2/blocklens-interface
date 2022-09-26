@@ -90,7 +90,11 @@ const FormCreateAddress: FC<IFormCreateAddress> = ({
         </AppField>
         {dataForm.address.map((item: string, index: number) => {
           return (
-            <AppField label={`${appInfo.chain} ADDRESS`} customWidth={'100%'}>
+            <AppField
+              label={`${appInfo.chain} ADDRESS`}
+              customWidth={'100%'}
+              key={index}
+            >
               <AppInput
                 placeholder="0xbb.."
                 size="lg"

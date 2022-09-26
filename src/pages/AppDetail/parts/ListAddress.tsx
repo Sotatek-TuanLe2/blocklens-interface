@@ -21,6 +21,7 @@ interface IAddressResponse {
   registrationId: number;
   network: string;
   type: string;
+  status?: string;
   walletAddress: string;
 }
 
@@ -51,7 +52,6 @@ const ListAddress: FC<IListAddress> = ({ appInfo }) => {
     return (
       <Thead>
         <Tr>
-          <Th>Version</Th>
           <Th>ID</Th>
           <Th>App/Network</Th>
           <Th>Status</Th>
@@ -62,7 +62,8 @@ const ListAddress: FC<IListAddress> = ({ appInfo }) => {
     );
   };
 
-  const _renderStatus = () => {
+  const _renderStatus = (address: IAddressResponse) => {
+    if (!address.status) return 'N/A';
     return (
       <Tag
         size={'sm'}
@@ -71,21 +72,7 @@ const ListAddress: FC<IListAddress> = ({ appInfo }) => {
         colorScheme="green"
         px={5}
       >
-        ACTIVE
-      </Tag>
-    );
-  };
-
-  const _renderVersion = () => {
-    return (
-      <Tag
-        size={'sm'}
-        borderRadius="full"
-        variant="solid"
-        colorScheme="green"
-        px={5}
-      >
-        V1
+        {address.status}
       </Tag>
     );
   };
@@ -105,10 +92,9 @@ const ListAddress: FC<IListAddress> = ({ appInfo }) => {
         {data?.map((address: IAddressResponse, index: number) => {
           return (
             <Tr key={index}>
-              <Td>{_renderVersion()}</Td>
               <Td>N/A</Td>
               <Td>{_renderNetwork(address)}</Td>
-              <Td>{_renderStatus()}</Td>
+              <Td>{_renderStatus(address)}</Td>
               <Td>N/A</Td>
               <Td>N/A</Td>
             </Tr>

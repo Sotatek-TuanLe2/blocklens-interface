@@ -21,6 +21,7 @@ interface INFTResponse {
   registrationId: number;
   network: string;
   type: string;
+  status?: string;
   contractAddress: string;
   tokenIds: string[];
 }
@@ -52,7 +53,6 @@ const ListNTF: FC<IListNTF> = ({ appInfo }) => {
     return (
       <Thead>
         <Tr>
-          <Th>Version</Th>
           <Th>ID</Th>
           <Th>Network</Th>
           <Th>Status</Th>
@@ -63,7 +63,8 @@ const ListNTF: FC<IListNTF> = ({ appInfo }) => {
     );
   };
 
-  const _renderStatus = () => {
+  const _renderStatus = (nft: INFTResponse) => {
+    if (!nft.status) return 'N/A';
     return (
       <Tag
         size={'sm'}
@@ -72,21 +73,7 @@ const ListNTF: FC<IListNTF> = ({ appInfo }) => {
         colorScheme="green"
         px={5}
       >
-        ACTIVE
-      </Tag>
-    );
-  };
-
-  const _renderVersion = () => {
-    return (
-      <Tag
-        size={'sm'}
-        borderRadius="full"
-        variant="solid"
-        colorScheme="green"
-        px={5}
-      >
-        V1
+        {nft.status}
       </Tag>
     );
   };
@@ -106,10 +93,9 @@ const ListNTF: FC<IListNTF> = ({ appInfo }) => {
         {data?.map((nft: INFTResponse, index: number) => {
           return (
             <Tr key={index}>
-              <Td>{_renderVersion()}</Td>
               <Td>N/A</Td>
               <Td>{_renderNetwork(nft)}</Td>
-              <Td>{_renderStatus()}</Td>
+              <Td>{_renderStatus(nft)}</Td>
               <Td>N/A</Td>
               <Td>N/A</Td>
             </Tr>
