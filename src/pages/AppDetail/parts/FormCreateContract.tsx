@@ -10,16 +10,15 @@ import { toastError, toastSuccess } from 'src/utils/utils-notify';
 interface IDataForm {
   webhook: string;
   address: string;
-  tokenIds: string;
 }
 
-interface IFormCreateNFT {
+interface IFormCreateContract {
   appInfo: IAppInfo;
   onClose: () => void;
   onReloadData: () => void;
 }
 
-const FormCreateNFT: FC<IFormCreateNFT> = ({
+const FormCreateContract: FC<IFormCreateContract> = ({
   appInfo,
   onClose,
   onReloadData,
@@ -27,7 +26,6 @@ const FormCreateNFT: FC<IFormCreateNFT> = ({
   const initDataCreateWebHook = {
     webhook: '',
     address: '',
-    tokenIds: '',
   };
 
   const [dataForm, setDataForm] = useState<IDataForm>(initDataCreateWebHook);
@@ -41,12 +39,9 @@ const FormCreateNFT: FC<IFormCreateNFT> = ({
 
   const handleSubmitForm = async () => {
     try {
-      await rf.getRequest('RegistrationRequest').addNFTActivity({
+      await rf.getRequest('RegistrationRequest').addContractActivity({
         appId: appInfo.appId,
         ...dataForm,
-        tokenIds: dataForm.tokenIds
-          .split(',')
-          .map((item: string) => item.trim()),
       });
       toastSuccess({ message: 'Add Successfully!' });
       onReloadData();
@@ -82,7 +77,7 @@ const FormCreateNFT: FC<IFormCreateNFT> = ({
             }}
           />
         </AppField>
-        <AppField label={'NFT ADDRESSES'} customWidth={'49%'}>
+        <AppField label={'ADDRESS'} customWidth={'100%'}>
           <AppInput
             placeholder="0xbb.."
             size="lg"
@@ -94,31 +89,13 @@ const FormCreateNFT: FC<IFormCreateNFT> = ({
               })
             }
             validate={{
-              name: `addressNft`,
+              name: `address`,
               validator: validator.current,
               rule: 'required',
             }}
           />
         </AppField>
-        <AppField label={'TOKEN IDS'} customWidth={'49%'}>
-          <AppInput
-            placeholder="12, 0xc"
-            size="lg"
-            value={dataForm.tokenIds}
-            onChange={(e) =>
-              setDataForm({
-                ...dataForm,
-                tokenIds: e.target.value,
-              })
-            }
-            validate={{
-              name: `tokenIds`,
-              validator: validator.current,
-              rule: 'required',
-            }}
-          />
-        </AppField>
-        <Flex  alignItems={'center'}>
+        <Flex alignItems={'center'}>
           <Text>ABI</Text>
           <AppButton
             onClick={() => console.log('dfdfdf')}
@@ -146,4 +123,4 @@ const FormCreateNFT: FC<IFormCreateNFT> = ({
   );
 };
 
-export default FormCreateNFT;
+export default FormCreateContract;

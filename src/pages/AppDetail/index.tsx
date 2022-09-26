@@ -8,6 +8,7 @@ import ListNTF from './parts/ListNFT';
 import ListInfo from './parts/ListInfo';
 import ListAddress from './parts/ListAddress';
 import { getLogoChainByName } from 'src/utils/utils-network';
+import ListContract from './parts/ListContract';
 
 export interface IAppInfo {
   name?: string;
@@ -62,6 +63,7 @@ const AppDetail = () => {
           <ListInfo appInfo={appInfo} />
           <ListNTF appInfo={appInfo} />
           <ListAddress appInfo={appInfo} />
+          <ListContract appInfo={appInfo} />
         </Box>
       </Box>
     </BasePage>

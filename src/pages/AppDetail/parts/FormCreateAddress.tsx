@@ -64,29 +64,22 @@ const FormCreateAddress: FC<IFormCreateAddress> = ({
     <>
       <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
         <AppField label={'WEBHOOK URL'} customWidth={'100%'}>
-          <Flex>
-            <AppInput
-              placeholder="https://yourapp.com/webhook/data/12345"
-              borderRightRadius={0}
-              value={dataForm.webhook}
-              onChange={(e) =>
-                setDataForm({
-                  ...dataForm,
-                  webhook: e.target.value,
-                })
-              }
-            />
-            <AppButton
-              onClick={() => console.log('test')}
-              size={'lg'}
-              textTransform={'uppercase'}
-              backgroundColor={'green.500'}
-              fontSize={'14px'}
-              borderLeftRadius={0}
-            >
-              Test webhook
-            </AppButton>
-          </Flex>
+          <AppInput
+            placeholder="https://yourapp.com/webhook/data/12345"
+            borderRightRadius={0}
+            value={dataForm.webhook}
+            onChange={(e) =>
+              setDataForm({
+                ...dataForm,
+                webhook: e.target.value,
+              })
+            }
+            validate={{
+              name: `webhook`,
+              validator: validator.current,
+              rule: ['required', 'url'],
+            }}
+          />
         </AppField>
         {dataForm.address.map((item: string, index: number) => {
           return (

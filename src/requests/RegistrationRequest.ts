@@ -25,4 +25,14 @@ export default class RegistrationRequest extends BaseRequest {
     const url = `/my/registrations/address-activity`;
     return this.post(url, params);
   }
+
+  getContractActivity(params: any) {
+    const url = `/my/registrations/contract-activity`;
+    return this.get(url, params);
+  }
+
+  addContractActivity(params: any) {
+    const url = `/my/registrations/contract-activity`;
+    return this.post(url, params);
+  }
 }
