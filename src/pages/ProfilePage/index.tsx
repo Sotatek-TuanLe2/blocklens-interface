@@ -11,7 +11,7 @@ import {
   Flex,
 } from '@chakra-ui/react';
 import 'src/styles/pages/ProfilePage.scss';
-import MyProfile from './parts/MyProfile';
+import MyProfile from 'src/pages/ProfilePage/parts/MyProfile';
 
 const ProfilePage: FC = () => {
   return (
