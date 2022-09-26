@@ -12,6 +12,7 @@ import {
 } from '@chakra-ui/react';
 import 'src/styles/pages/ProfilePage.scss';
 import MyProfile from './parts/MyProfile';
+import Billing from './parts/Billing';
 
 const ProfilePage: FC = () => {
   return (
@@ -30,7 +31,7 @@ const ProfilePage: FC = () => {
                 <MyProfile />
               </TabPanel>
               <TabPanel>
-                <p>Billing!</p>
+                <Billing />
               </TabPanel>
             </TabPanels>
           </Tabs>

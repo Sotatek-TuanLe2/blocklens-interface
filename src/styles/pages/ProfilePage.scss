@@ -1,10 +1,11 @@
+@import 'src/styles/abstracts/variables';
 .profile-page {
   justify-content: center;
   min-height: calc(100vh - 135px);
 }
 
 .profile {
-  border: 1px solid #E0E0E0;
+  border: 1px solid #e0e0e0;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
   border-radius: 3px;
   margin: 0 20px;
@@ -15,15 +16,15 @@
 
   .menu-left {
     width: 300px;
-    border-right: 1px solid #E0E0E0;
+    border-right: 1px solid #e0e0e0;
 
     .tab-item {
       outline: none;
-      border-bottom: 1px solid #E0E0E0;
+      border-bottom: 1px solid #e0e0e0;
       font-weight: 400;
       font-size: 13px;
       line-height: 18px;
-      color: #4C84FF;
+      color: #4c84ff;
       border-radius: 0;
       padding: 16px 21px;
       justify-content: flex-start;
@@ -33,8 +34,8 @@
         border-bottom: 0;
       }
 
-      &[aria-selected=true] {
-        background: #254CDD;
+      &[aria-selected='true'] {
+        background: #254cdd;
         color: #ffffff;
       }
     }
@@ -46,14 +47,14 @@
   font-size: 18px;
   line-height: 25px;
   padding: 25px 20px 20px 21px;
-  border-bottom: 1px solid #E0E0E0;
-  color: #4B4B4B;
+  border-bottom: 1px solid #e0e0e0;
+  color: #4b4b4b;
 }
 
 .my-profile {
   .profile-detail {
     margin: 0 30px 16px 30px;
-    border: 1px solid #CACED4;
+    border: 1px solid #caced4;
     border-radius: 8px 8px 0 0;
 
     .info-item {
@@ -68,7 +69,7 @@
         width: 200px;
         font-size: 13px;
         line-height: 18px;
-        color: #A0A4AC;
+        color: #a0a4ac;
       }
 
       .input-field {
@@ -85,24 +86,136 @@
     font-weight: 400;
     font-size: 13px;
     line-height: 18px;
-    color: #4C84FF;
+    color: #4c84ff;
   }
 
   .btn-sign-out {
     padding-top: 30px;
-    border-top: 1px solid #CACED4;
+    border-top: 1px solid #caced4;
     margin-left: 30px;
     margin-bottom: 40px;
 
     button {
       text-transform: uppercase;
-      background: #F0F0F0;
-      border: 1px solid #E0E0E0;
+      background: #f0f0f0;
+      border: 1px solid #e0e0e0;
       border-radius: 5px;
       color: #656565;
       font-weight: 400;
       font-size: 12px;
       line-height: 17px;
+    }
+  }
+}
+
+.tab-plan {
+  .plans-wrap {
+    .upgrade-plans {
+      margin-top: 34px;
+      margin-bottom: 25px;
+    }
+    .plan-item-container {
+      padding: 0;
+      .status-plan {
+        min-height: 37px;
+        padding-top: 10px;
+        padding-left: 10px;
+        .next-plan {
+          color: #46cd92;
+          font-size: 10px;
+          display: flex;
+          align-items: flex-end;
+          gap: 8px;
+          letter-spacing: 0.5px;
+        }
+      }
+      .plan-item {
+        position: relative;
+        padding: 0px 32px 36px 32px;
+        .plan-item-desc {
+          text-align: center;
+        }
+        .price-per-month {
+          color: $color-accent-7;
+          font-size: 14px;
+        }
+        .allow-title {
+          font-size: 12px;
+          color: $color-accent-7;
+        }
+        .allow-list {
+          font-size: 13px;
+          color: $color-accent-7;
+        }
+        .currency {
+          font-size: 24px;
+          position: absolute;
+          left: 0;
+          bottom: 0;
+          transform: translate(-13px, -8px);
+        }
+        .price-plan {
+          font-size: 48px;
+          position: relative;
+        }
+      }
+    }
+    .plan-item-container.plan-container-bought {
+      border: 1px solid #254cdd;
+      .plan-item-desc {
+        color: #254cdd;
+      }
+    }
+  }
+}
+
+.bill-tabs {
+  .bill-tab {
+    &[aria-selected='true'] {
+      box-shadow: none;
+      border-bottom: 3px solid #171717;
+    }
+    transition: border 0.5s ease;
+    border-bottom: 3px solid #ececec;
+  }
+}
+.stripe-wrap {
+  margin-top: 40px;
+  .stripe-detail {
+    display: flex;
+    background-color: #f8f7f7;
+    padding: 15px 5px;
+    align-items: flex-start;
+    border-radius: 4px;
+    margin-top: 10px;
+    .stripe-title {
+      width: 20%;
+      color: #a0a4ac;
+    }
+    .stripe-status {
+      width: 60%;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      .badge-package {
+        background-color: #caced4;
+        font-size: 8px;
+        padding: 2px;
+        border-radius: 999px;
+        color: #fff;
+      }
+    }
+    .stripe-action {
+      display: flex;
+      justify-content: end;
+      width: 20%;
+    }
+    .stripe-price {
+      width: 60%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
     }
   }
 }
