@@ -21,6 +21,7 @@ interface INFTResponse {
   registrationId: number;
   network: string;
   type: string;
+  webhook: string;
   status?: string;
   contractAddress: string;
   tokenIds: string[];
@@ -96,7 +97,7 @@ const PartNFTWebhooks: FC<IListNTF> = ({ appInfo }) => {
               <Td>N/A</Td>
               <Td>{_renderNetwork(nft)}</Td>
               <Td>{_renderStatus(nft)}</Td>
-              <Td>N/A</Td>
+              <Td>{nft.webhook}</Td>
               <Td>N/A</Td>
             </Tr>
           );

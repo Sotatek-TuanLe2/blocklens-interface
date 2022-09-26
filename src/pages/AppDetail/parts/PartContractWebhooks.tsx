@@ -21,6 +21,7 @@ interface IContractResponse {
   registrationId: number;
   network: string;
   type: string;
+  webhook: string;
   status?: string;
   contractAddress: string;
   abi: string[];
@@ -90,13 +91,13 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
   const _renderBody = (data?: IContractResponse[]) => {
     return (
       <Tbody>
-        {data?.map((address: IContractResponse, index: number) => {
+        {data?.map((contract: IContractResponse, index: number) => {
           return (
             <Tr key={index}>
               <Td>N/A</Td>
-              <Td>{_renderNetwork(address)}</Td>
-              <Td>{_renderStatus(address)}</Td>
-              <Td>N/A</Td>
+              <Td>{_renderNetwork(contract)}</Td>
+              <Td>{_renderStatus(contract)}</Td>
+              <Td>{contract.webhook}</Td>
               <Td>N/A</Td>
             </Tr>
           );

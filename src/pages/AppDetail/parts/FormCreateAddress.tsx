@@ -9,7 +9,7 @@ import { toastError, toastSuccess } from 'src/utils/utils-notify';
 
 interface IDataForm {
   webhook: string;
-  address: string[];
+  addresses: string[];
 }
 
 interface IFormCreateAddress {
@@ -25,7 +25,7 @@ const FormCreateAddress: FC<IFormCreateAddress> = ({
 }) => {
   const initDataCreateAddress = {
     webhook: '',
-    address: [''],
+    addresses: [''],
   };
 
   const [dataForm, setDataForm] = useState<IDataForm>(initDataCreateAddress);
@@ -40,7 +40,7 @@ const FormCreateAddress: FC<IFormCreateAddress> = ({
   const handleSubmitForm = async () => {
     const data = {
       ...dataForm,
-      address: dataForm.address.filter((item: string) => !!item),
+      addresses: dataForm.addresses.filter((item: string) => !!item),
     };
 
     try {
@@ -81,7 +81,7 @@ const FormCreateAddress: FC<IFormCreateAddress> = ({
             }}
           />
         </AppField>
-        {dataForm.address.map((item: string, index: number) => {
+        {dataForm.addresses.map((item: string, index: number) => {
           return (
             <AppField
               label={`${appInfo.chain} ADDRESS`}
@@ -94,13 +94,13 @@ const FormCreateAddress: FC<IFormCreateAddress> = ({
                 size="lg"
                 value={item}
                 onChange={(e) => {
-                  const newAddresses = dataForm.address.map(
+                  const newAddresses = dataForm.addresses.map(
                     (value: string, id: number) =>
                       index === id ? e.target.value : value,
                   );
                   setDataForm({
                     ...dataForm,
-                    address: newAddresses,
+                    addresses: newAddresses,
                   });
                 }}
                 validate={{
@@ -119,7 +119,7 @@ const FormCreateAddress: FC<IFormCreateAddress> = ({
           onClick={() =>
             setDataForm({
               ...dataForm,
-              address: [...dataForm.address, ''],
+              addresses: [...dataForm.addresses, ''],
             })
           }
         >

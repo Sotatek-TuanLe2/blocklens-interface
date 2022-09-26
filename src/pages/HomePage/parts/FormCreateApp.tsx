@@ -96,7 +96,7 @@ const FormCreateApp: React.FC<IFormCreateApp> = ({ setSearchListApp }) => {
         Create app
       </Heading>
       <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
-        <AppField label={'NAME'} customWidth={'100%'}>
+        <AppField label={'NAME'} customWidth={'100%'} isRequired>
           <AppInput
             placeholder="Gavin"
             value={dataForm.name}
@@ -115,7 +115,7 @@ const FormCreateApp: React.FC<IFormCreateApp> = ({ setSearchListApp }) => {
             }}
           />
         </AppField>
-        <AppField label={'CHAIN'} customWidth={'49%'}>
+        <AppField label={'CHAIN'} customWidth={'49%'} isRequired>
           <AppSelect
             onChange={(e: any) => {
               setChainSelected(CHAINS.find((chain) => chain.value === e.value));
@@ -128,7 +128,7 @@ const FormCreateApp: React.FC<IFormCreateApp> = ({ setSearchListApp }) => {
           ></AppSelect>
         </AppField>
 
-        <AppField label={'NETWORK'} customWidth={'49%'}>
+        <AppField label={'NETWORK'} customWidth={'49%'} isRequired>
           <AppSelect
             onChange={(e: any) => {
               setNetworkSelected(

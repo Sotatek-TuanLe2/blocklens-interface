@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import React, { FC } from 'react';
 import { AppField, AppInput, AppButton } from 'src/components';
-import { Flex, Text } from '@chakra-ui/react';
+import { Flex, Text, Box } from '@chakra-ui/react';
 import { createValidator } from 'src/utils/utils-validator';
 import { IAppInfo } from '../index';
 import rf from 'src/requests/RequestFactory';
@@ -61,6 +61,16 @@ const FormCreateNFT: FC<IFormCreateNFT> = ({
     setIsDisableSubmit(isDisabled);
   }, [dataForm]);
 
+  const handleFileSelect = (evt: any) => {
+    const files = evt.target.files;
+    const file = files[0];
+    const reader = new FileReader();
+    reader.onload = function (e: any) {
+      console.log(e.target.result, 'data');
+    };
+    reader.readAsText(file);
+  };
+
   return (
     <>
       <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
@@ -119,15 +129,20 @@ const FormCreateNFT: FC<IFormCreateNFT> = ({
           />
         </AppField>
         <Flex alignItems={'center'}>
-          <Text>ABI</Text>
-          <AppButton
-            onClick={() => console.log('dfdfdf')}
-            size={'sm'}
-            ml={10}
-            textTransform={'uppercase'}
-          >
-            Upload
-          </AppButton>
+          <Text mr={10}>ABI</Text>
+          <label>
+            <Box
+              px={3}
+              cursor={'pointer'}
+              borderRadius={'10px'}
+              py={1}
+              bgColor={'blue.500'}
+              color={'white'}
+            >
+              Upload
+            </Box>
+            <AppInput type="file" onChange={handleFileSelect} display="none" />
+          </label>
         </Flex>
       </Flex>
 

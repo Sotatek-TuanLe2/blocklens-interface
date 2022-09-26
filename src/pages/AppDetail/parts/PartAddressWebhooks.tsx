@@ -21,8 +21,9 @@ interface IAddressResponse {
   registrationId: number;
   network: string;
   type: string;
+  webhook: string;
   status?: string;
-  walletAddress: string;
+  addresses: string[];
 }
 
 const PartAddressWebhooks: FC<IListAddress> = ({ appInfo }) => {
@@ -95,8 +96,8 @@ const PartAddressWebhooks: FC<IListAddress> = ({ appInfo }) => {
               <Td>N/A</Td>
               <Td>{_renderNetwork(address)}</Td>
               <Td>{_renderStatus(address)}</Td>
-              <Td>N/A</Td>
-              <Td>N/A</Td>
+              <Td>{address.webhook}</Td>
+              <Td>{address.addresses.length} {address.addresses.length > 1 ? 'Addresses' : 'Address'}</Td>
             </Tr>
           );
         })}
