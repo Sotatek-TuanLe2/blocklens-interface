@@ -73,7 +73,7 @@ const BaseModal: FC<BaseModalProps> = ({
           >
             {title}
           </ModalHeader>
-          {!isHideCloseIcon && <ModalCloseButton color={'white'} />}
+          {!isHideCloseIcon && <ModalCloseButton />}
 
           <ModalBody>{children}</ModalBody>
 
