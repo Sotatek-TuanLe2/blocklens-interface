@@ -121,7 +121,7 @@ const ListApps: React.FC<IListApps> = ({ searchListApp }) => {
               <Td>
                 <AppButton
                   size={'sm'}
-                  onClick={() => history.push('/app-detail')}
+                  onClick={() => history.push(`/app-detail/${app.appId}`)}
                 >
                   Detail App
                 </AppButton>

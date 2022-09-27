@@ -27,6 +27,7 @@ export interface RequestParams {
   searchKey?: string;
   poolId?: string;
   projectId?: string;
+  appId?: number;
 }
 
 interface DataTableProps {
