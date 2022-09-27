@@ -13,20 +13,24 @@ import {
 import 'src/styles/pages/ProfilePage.scss';
 import MyProfile from 'src/pages/ProfilePage/parts/MyProfile';
 import Billing from './parts/Billing';
-import { useLocation } from 'react-router';
+import { useLocation, useParams } from 'react-router';
 
-const TabsIndex = {
-  Profile_tab: 0,
-  Billing_tab: 1,
-};
+const TABS = [
+  { NAME: 'profile', INDEX: 0 },
+  {
+    NAME: 'billing',
+    INDEX: 1,
+  },
+];
 
 const ProfilePage: FC = () => {
   const location = useLocation();
+  const { tab } = useParams() as any;
   const [tabIndex, setTabIndex] = useState(0);
   const handleDefaultTab = () => {
-    if (+location.pathname.slice(-1) === TabsIndex.Billing_tab) {
-      setTabIndex(TabsIndex.Billing_tab);
-    } else setTabIndex(TabsIndex.Profile_tab);
+    if (tab === TABS[1].NAME) {
+      setTabIndex(TABS[1].INDEX);
+    } else setTabIndex(TABS[0].INDEX);
   };
   useEffect(() => {
     handleDefaultTab();
@@ -40,13 +44,13 @@ const ProfilePage: FC = () => {
               <Box className={'title'}>Settings</Box>
               <Tab
                 className="tab-item"
-                onClick={() => setTabIndex(TabsIndex.Profile_tab)}
+                onClick={() => setTabIndex(TABS[0].INDEX)}
               >
                 My profile
               </Tab>
               <Tab
                 className="tab-item"
-                onClick={() => setTabIndex(TabsIndex.Billing_tab)}
+                onClick={() => setTabIndex(TABS[1].INDEX)}
               >
                 Billing
               </Tab>
