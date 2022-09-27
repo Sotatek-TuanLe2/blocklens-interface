@@ -15,4 +15,9 @@ export default class AppRequest extends BaseRequest {
     const url = '/my/apps';
     return this.post(url, params);
   }
+
+  getAppDetail(id: number) {
+    const url = `/my/apps/${id}`;
+    return this.get(url);
+  }
 }
