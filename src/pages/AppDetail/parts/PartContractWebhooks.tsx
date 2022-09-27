@@ -113,12 +113,13 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
           <Flex alignItems="center">
             <Box className="icon-app-nft" mr={4} />
             <Box className="name">
-              Contract Activity
+              Contract Notifications
               <Box
                 className="description"
                 textTransform="uppercase"
                 fontSize={'13px'}
               >
+                Get notified when YOUR Contract occurs activities
               </Box>
             </Box>
           </Flex>
