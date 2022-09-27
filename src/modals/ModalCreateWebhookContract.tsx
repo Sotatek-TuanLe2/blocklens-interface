@@ -6,11 +6,12 @@ import { AppButton, AppField, AppInput } from 'src/components';
 import { createValidator } from 'src/utils/utils-validator';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
+import AppUploadABI from 'src/components/AppUploadABI';
 
 interface IDataForm {
   webhook: string;
   address: string;
-  abi: any
+  abi: any;
 }
 
 interface ICreateNFTModal {
@@ -29,7 +30,7 @@ const ModalCreateWebhookContract: FC<ICreateNFTModal> = ({
   const initDataCreateWebHook = {
     webhook: '',
     address: '',
-    abi: []
+    abi: [],
   };
 
   const [dataForm, setDataForm] = useState<IDataForm>(initDataCreateWebHook);
@@ -114,17 +115,9 @@ const ModalCreateWebhookContract: FC<ICreateNFTModal> = ({
               }}
             />
           </AppField>
-          <Flex alignItems={'center'}>
-            <Text>ABI</Text>
-            <AppButton
-              onClick={() => console.log('dfdfdf')}
-              size={'sm'}
-              ml={10}
-              textTransform={'uppercase'}
-            >
-              Upload
-            </AppButton>
-          </Flex>
+          <AppUploadABI
+            onChange={(value) => setDataForm({ ...dataForm, abi: value })}
+          />
         </Flex>
 
         <Flex justifyContent={'flex-end'}>
