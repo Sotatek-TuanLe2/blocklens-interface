@@ -58,11 +58,11 @@ const ModalCreateWebhookAddress: FC<ICreateAddressActivityModal> = ({
   };
 
   useEffect(() => {
-    const isDisabled =
-      !validator.current.allValid() ||
-      !Object.values(validator.current.fields).length;
-    setIsDisableSubmit(isDisabled);
-  }, [dataForm]);
+    setTimeout(() => {
+      const isDisabled = !validator.current.allValid();
+      setIsDisableSubmit(isDisabled);
+    }, 0);
+  }, [dataForm, open]);
 
   const onCloseModal = () => {
     onClose();
