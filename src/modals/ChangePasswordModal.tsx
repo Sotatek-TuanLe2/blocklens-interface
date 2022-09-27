@@ -38,10 +38,10 @@ const ChangePasswordModal: React.FC<IChangePasswordModal> = ({
   };
 
   useEffect(() => {
-    const isDisable =
-      !validators.current.allValid() ||
-      !Object.values(validators.current.fields).length;
-    setIsDisableSubmit(isDisable);
+    setTimeout(() => {
+      const isDisable = !validators.current.allValid();
+      setIsDisableSubmit(isDisable);
+    }, 0);
   }, [dataForm]);
 
   return (
