@@ -8,6 +8,9 @@
   "api": {
     "baseUrlApi": "https://buni-dev-api.sotatek.works/api/blocklens-users"
   },
+  "stripe": {
+    "publishableKey": "pk_test_51Ljx2qF4Iczr6ngs4zx9wLMG1wlxVR2RrGGMkeGQndyZSoidulS0aLSETfQQoOAmL7tfJHQfWPsBUzIdykgJm6y400SL9AErt9"
+  },
   "chains": [
     {
       "name": "Ethereum",

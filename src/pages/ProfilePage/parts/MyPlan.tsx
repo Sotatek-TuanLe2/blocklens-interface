@@ -1,44 +1,67 @@
-import { Badge, Box, Flex, Text } from '@chakra-ui/react';
+import { Box, Flex, Text } from '@chakra-ui/react';
 import React, { useState } from 'react';
-import { AppButton, AppCard } from 'src/components';
+import { AppButton } from 'src/components';
 import PlanItem from './PlanItem';
 
-const MyPlan = () => {
-  return (
-    <Box paddingX={'60px'} className="plans-wrap">
-      <Text className="upgrade-plans">Upgrade Plan</Text>
-      <Flex gap={'16px'}>
-        <PlanItem />
-        <PlanItem />
-        <AppCard className="plan-item-container ">
-          <div className="status-plan">
-            <div className="icon-done"></div>
-            {/* <div className="next-plan">
-          <div className="icon-lock"></div>
-          <span>ADD PAYMENT INFO TO UNLOCK!</span>
-        </div> */}
-          </div>
+export interface IPlan {
+  name: string;
+  price?: string;
+  features: {
+    app: number | string;
+    message: string;
+  };
+}
 
-          <Box className="plan-item">
-            <Box className="plan-item-desc">
-              <Text>FREE FOREVER</Text>
-              <span className="price-plan">
-                0<span className="currency">$</span>
-              </span>
-            </Box>
-            <Text className="price-per-month">300,000,000 CU / month</Text>
-            <div>
-              <span className="allow-title">Free access to:</span>
-              <br />
-              <Text paddingX={'20px'} className="allow-list">
-                Supernode, Build, <br />
-                Monitor, and Notify <br /> Enhanced APIs <br /> Full Archive
-                Data
-                <br /> 5 Apps
-              </Text>
-            </div>
-          </Box>
-        </AppCard>
+const plans = [
+  {
+    name: 'Free',
+    price: '0',
+    features: {
+      app: 5,
+      message: '3,000,000',
+    },
+  },
+  {
+    name: 'Starter',
+    price: '29',
+    features: {
+      app: 15,
+      message: '6,000,000',
+    },
+  },
+  {
+    name: 'Growth',
+    price: '49',
+    features: {
+      app: 30,
+      message: '12,000,000',
+    },
+  },
+  {
+    name: 'Enterprise',
+    features: {
+      app: 'Unlimited',
+      message: 'Custom',
+    },
+  },
+];
+
+const MyPlan = () => {
+  const [isSelect, setIsSelect] = useState<string>('');
+  return (
+    <Box px={'60px'} className="plans-wrap">
+      <Flex gap={'16px'}>
+        {plans.map((plan: IPlan, index) => {
+          return (
+            <PlanItem
+              plan={plan}
+              key={index}
+              isActive={plan.name === 'Free'}
+              isSelect={isSelect}
+              setIsSelect={setIsSelect}
+            />
+          );
+        })}
       </Flex>
 
       <div className="stripe-wrap">

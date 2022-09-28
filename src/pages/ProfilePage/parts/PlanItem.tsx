@@ -1,33 +1,63 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
-import React from 'react';
-import { AppCard } from 'src/components';
+import React, { FC, useMemo } from 'react';
+import { AppCard, AppLink } from 'src/components';
+import { IPlan } from './MyPlan';
 
-const PlanItem = () => {
+interface IPlanItem {
+  plan: IPlan;
+  isActive?: boolean;
+  isSelect: string;
+  setIsSelect: (value: string) => void;
+}
+
+const PlanItem: FC<IPlanItem> = ({ plan, isActive, isSelect, setIsSelect }) => {
+  const isSelected = useMemo(() => isSelect === plan.name, [isSelect]);
+
   return (
-    <AppCard className="plan-item-container plan-container-bought">
+    <AppCard
+      className={`plan-item-container ${isActive ? 'active' : ''} ${
+        isSelected ? 'selected' : ''
+      } `}
+      onClick={() => setIsSelect(plan.name)}
+    >
       <div className="status-plan">
-        {/* <div className="icon-done"></div> */}
-        <div className="next-plan">
-          <div className="icon-lock"></div>
-          <span>ADD PAYMENT INFO TO UNLOCK!</span>
-        </div>
+        {isActive && (
+          <>
+            <div className="icon-done"></div>
+            <Text className="active">Active </Text>
+          </>
+        )}
+
+        {isSelected && !isActive && (
+          <Text className="selected"> Selecting</Text>
+        )}
       </div>
 
       <Box className="plan-item">
         <Box className="plan-item-desc">
-          <Text>FREE FOREVER</Text>
-          <span className="price-plan">
-            0<span className="currency">$</span>
-          </span>
+          <Text textTransform="uppercase">{plan.name}</Text>
+          {plan.price ? (
+            <>
+              <Flex className="price-plan">
+                <Text className="currency">$</Text>
+                {plan.price}
+                {+plan.price > 0 && <Text className="currency">/mo</Text>}
+              </Flex>
+            </>
+          ) : (
+            <AppLink to={'/#'} className="link-contact">
+              Contact us
+            </AppLink>
+          )}
         </Box>
-        <Text className="price-per-month">300,000,000 CU / month</Text>
         <div>
-          <span className="allow-title">Free access to:</span>
+          <span className="allow-title">Features:</span>
           <br />
-          <Text paddingX={'20px'} className="allow-list">
-            Supernode, Build, <br />
-            Monitor, and Notify <br /> Enhanced APIs <br /> Full Archive Data
-            <br /> 5 Apps
+          <Text pl={'20px'} className="allow-list">
+            {plan.features.app} Apps
+          </Text>
+          <Text pl={'20px'} className="allow-list">
+            {plan.features.message} messages
           </Text>
         </div>
       </Box>
