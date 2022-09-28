@@ -26,6 +26,7 @@
     "framer-motion": "^4.1.17",
     "gapi-script": "^1.2.0",
     "husky": "^4.3.8",
+    "jsonschema": "^1.4.1",
     "moment": "^2.29.3",
     "npm": "^8.14.0",
     "react": "^17.0.1",
@@ -57,7 +58,7 @@
     "docker-init": "docker-compose up -d && docker exec -it buni-lens-interface npm i && npm run build",
     "docker-build": "docker-compose up -d && docker exec -it buni-lens-interface npm run build",
     "docker-start": "docker-compose up -d && docker exec -it buni-lens-interface npm run start",
-    "docker-eslint": "docker-compose up -d && docker exec -t buni-lens-interface make eslint"
+    "docker-eslint": "docker-compose up -d && docker exec -t buni-lens-interface npm run lint && npm run format"
   },
   "eslintConfig": {
     "extends": [
