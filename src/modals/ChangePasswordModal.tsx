@@ -3,6 +3,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { AppButton, AppField, AppInput } from 'src/components';
 import { createValidator } from 'src/utils/utils-validator';
 import BaseModal from './BaseModal';
+import rf from 'src/requests/RequestFactory';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
 
 interface IFormChangePass {
   currentPassword: string;
@@ -31,17 +33,31 @@ const ChangePasswordModal: React.FC<IChangePasswordModal> = ({
       element: (message: string) => <Text color={'red.500'}>{message}</Text>,
     }),
   );
-  const handleOnSubmit = () => {
-    setDataForm({ ...initialData });
-    setIsOpenModal(false);
+  const handleOnSubmit = async () => {
+    const dataSubmit = {
+      newPassword: dataForm.newPassword,
+      oldPassword: dataForm.currentPassword,
+    };
+    try {
+      await rf.getRequest('AuthRequest').changePassword(dataSubmit);
+      setDataForm({ ...initialData });
+      setIsOpenModal(false);
+      toastSuccess({ message: 'Update password was successfully' });
+    } catch (error: any) {
+      console.log('error', error);
+      if (error?.message) {
+        toastError({ message: error?.message });
+      }
+    }
     return;
   };
 
   useEffect(() => {
-    setTimeout(() => {
+    const statusSubmitBtn = setTimeout(() => {
       const isDisable = !validators.current.allValid();
       setIsDisableSubmit(isDisable);
     }, 0);
+    return () => clearTimeout(statusSubmitBtn);
   }, [dataForm]);
 
   return (
@@ -58,6 +74,7 @@ const ChangePasswordModal: React.FC<IChangePasswordModal> = ({
         <AppInput
           placeholder="Current password"
           value={dataForm.currentPassword}
+          type="password"
           onChange={(e) => {
             setDataForm({
               ...dataForm,
@@ -76,6 +93,7 @@ const ChangePasswordModal: React.FC<IChangePasswordModal> = ({
         <AppInput
           placeholder="New password"
           value={dataForm.newPassword}
+          type="password"
           onChange={(e) => {
             setDataForm({
               ...dataForm,
@@ -85,7 +103,7 @@ const ChangePasswordModal: React.FC<IChangePasswordModal> = ({
           validate={{
             name: `newPassword`,
             validator: validators.current,
-            rule: 'required|min:8',
+            rule: 'required|min:6|max:50',
           }}
         />
       </AppField>
@@ -94,6 +112,7 @@ const ChangePasswordModal: React.FC<IChangePasswordModal> = ({
         <AppInput
           placeholder="Confirm password"
           value={dataForm.confirmPassword}
+          type="password"
           onChange={(e) => {
             setDataForm({
               ...dataForm,

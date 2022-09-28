@@ -1,30 +1,20 @@
 import {
+  Badge,
+  Box,
   Flex,
   Tbody,
+  Td,
   Text,
   Th,
   Thead,
   Tr,
-  Td,
-  Box,
-  Badge,
-  Divider,
 } from '@chakra-ui/react';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router';
-import {
-  AppButton,
-  AppCard,
-  AppDataTable,
-  AppField,
-  AppInput,
-  DataTableRef,
-} from 'src/components';
-import BaseModal from 'src/modals/BaseModal';
+import { AppButton, AppCard, AppDataTable } from 'src/components';
 import ConnectBlocklensModal from 'src/modals/ConnectBlocklensModal';
 import rf from 'src/requests/RequestFactory';
 import { IAppResponse, IListAppResponse } from 'src/utils/common';
-import { copyToClipboard } from 'src/utils/utils-helper';
 
 interface IListApps {
   searchListApp: any;

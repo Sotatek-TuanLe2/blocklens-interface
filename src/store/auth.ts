@@ -41,6 +41,7 @@ const authSlice = createSlice({
       state.userInfo = action.payload;
     },
     setAccessToken: (state, action) => {
+      setAuthorizationToRequest(action.payload.accessToken);
       Storage.setAccessToken(action.payload.accessToken);
       Storage.setRefreshToken(action.payload.refreshToken);
     },
