@@ -1,7 +1,8 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
 import React, { useState } from 'react';
-import { AppButton } from 'src/components';
+import { AppButton, AppSwitch } from 'src/components';
 import PlanItem from './PlanItem';
+import ModalPayment from 'src/modals/ModalPayment';
 
 export interface IPlan {
   name: string;
@@ -48,9 +49,15 @@ const plans = [
 
 const MyPlan = () => {
   const [isSelect, setIsSelect] = useState<string>('');
-  return (
-    <Box px={'60px'} className="plans-wrap">
-      <Flex gap={'16px'}>
+  const [isPaid, setIsPaid] = useState<boolean>(false);
+  const [isChangePlan, setIsChangePlan] = useState<boolean>(false);
+
+  const [isOpenModalChangePaymentMethod, setIsOpenModalChangePaymentMethod] =
+    useState<boolean>(false);
+
+  const _renderPlans = (isChange?: boolean) => {
+    return (
+      <Flex gap={'16px'} my={5}>
         {plans.map((plan: IPlan, index) => {
           return (
             <PlanItem
@@ -59,53 +66,85 @@ const MyPlan = () => {
               isActive={plan.name === 'Free'}
               isSelect={isSelect}
               setIsSelect={setIsSelect}
+              isChange={isChange}
             />
           );
         })}
       </Flex>
+    );
+  };
 
+  const _renderCardDetail = () => {
+    return (
       <div className="stripe-wrap">
         <Text className="upgrade-plans">Card Details</Text>
-
         <Box className="stripe-detail">
           <div className="stripe-title">Plan</div>
           <div className="stripe-status">
             <span>Growth</span> <span className="badge-package">Monthly</span>
           </div>
           <div className="stripe-action">
-            <AppButton size={'sm'}>Change</AppButton>
+            <AppButton
+              variant={isChangePlan ? 'outline' : 'brand'}
+              size={'sm'}
+              onClick={() => setIsChangePlan(!isChangePlan)}
+            >
+              {isChangePlan ? 'Cancel' : 'Change'}
+            </AppButton>
           </div>
         </Box>
+
+        {isChangePlan && _renderPlans(true)}
         <Box className="stripe-detail">
           <div className="stripe-title">Subscription</div>
           <div className="stripe-price">
             <span>$49</span>
             <span>Billing at Aug 30 2022 - Sep 30 2022</span>
           </div>
-          <div className="stripe-action">
-            {/* <AppButton size={'sm'}>Change</AppButton> */}
-          </div>
         </Box>
         <Box className="stripe-detail">
           <div className="stripe-title">Payment method</div>
           <div className="stripe-status">
-            <span>
-              &#8226;&#8226;&#8226;&#8226; &#8226;&#8226;&#8226;&#8226;
-              &#8226;&#8226;&#8226;&#8226; 1145
-            </span>
+            <span>•••• •••• •••• 1145</span>
           </div>
           <div className="stripe-action">
-            <AppButton size={'sm'}>Change</AppButton>
+            <AppButton
+              size={'sm'}
+              onClick={() => setIsOpenModalChangePaymentMethod(true)}
+            >
+              Change
+            </AppButton>
           </div>
         </Box>
         <Box className="stripe-detail">
           <div className="stripe-title">Billing email</div>
           <div className="stripe-status">dev@buni.finance</div>
-          <div className="stripe-action">
-            <AppButton size={'sm'}>Change</AppButton>
-          </div>
         </Box>
       </div>
+    );
+  };
+
+  return (
+    <Box px={'60px'} className="plans-wrap">
+      <Flex mb={5}>
+        <AppSwitch
+          onChange={() => {
+            setIsPaid(!isPaid);
+            setIsChangePlan(false);
+          }}
+          isChecked={isPaid}
+          mr={4}
+        />
+        IsPaid
+      </Flex>
+
+      {!isPaid ? _renderPlans() : _renderCardDetail()}
+
+      <ModalPayment
+        open={isOpenModalChangePaymentMethod}
+        onClose={() => setIsOpenModalChangePaymentMethod(false)}
+        isChangePaymentMethod
+      />
     </Box>
   );
 };

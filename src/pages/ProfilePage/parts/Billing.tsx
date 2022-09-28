@@ -19,9 +19,6 @@ const Billing = () => {
           <Flex w={'100%'}>
             <Tab className="bill-tab">My Plan</Tab>
             <Tab className="bill-tab"> Past Invoices</Tab>
-            <Box flex={1} display="flex" justifyContent={'flex-end'}>
-              <AppButton disabled>Save Changes</AppButton>
-            </Box>
           </Flex>
         </TabList>
 

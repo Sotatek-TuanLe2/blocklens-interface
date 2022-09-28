@@ -109,14 +109,17 @@
 }
 
 .tab-plan {
+  margin-bottom: 50px;
   .plans-wrap {
     .upgrade-plans {
-      margin-top: 34px;
       margin-bottom: 25px;
     }
     .plan-item-container {
       cursor: pointer;
       padding: 0;
+      &:hover {
+        border: 1px solid #a246cd;
+      }
       .status-plan {
         min-height: 37px;
         padding-top: 10px;
@@ -195,11 +198,11 @@
   }
 }
 .stripe-wrap {
-  margin-top: 40px;
+  margin-top: 20px;
   .stripe-detail {
     display: flex;
     background-color: #f8f7f7;
-    padding: 15px 5px;
+    padding: 15px;
     align-items: flex-start;
     border-radius: 4px;
     margin-top: 10px;
@@ -215,7 +218,7 @@
       .badge-package {
         background-color: #caced4;
         font-size: 8px;
-        padding: 2px;
+        padding: 2px 6px;
         border-radius: 999px;
         color: #fff;
       }
