@@ -95,7 +95,7 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
           return (
             <Tr key={index}>
               <Td>
-                <AppLink to={`/log/${contract.registrationId}`}>{contract.registrationId}</AppLink>
+                <AppLink to={`/logs/${contract.registrationId}`}>{contract.registrationId}</AppLink>
               </Td>
               <Td>{_renderNetwork(contract)}</Td>
               <Td>{_renderStatus(contract)}</Td>

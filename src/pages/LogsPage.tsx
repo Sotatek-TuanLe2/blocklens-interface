@@ -1,13 +1,13 @@
-import { Flex, Tbody, Text, Th, Thead, Tr, Td, Box } from '@chakra-ui/react';
+import { Flex, Tbody, Text, Th, Thead, Tr, Td } from '@chakra-ui/react';
 import React from 'react';
-import { useHistory } from 'react-router';
+import { useParams } from 'react-router';
 import { AppCard, AppDataTable } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import { IAppResponse, IListAppResponse } from 'src/utils/common';
 import { BasePageContainer } from 'src/layouts/';
 
 const LogsPage = () => {
-  const history = useHistory();
+  const { id: appId } = useParams<{ id: string }>();
 
   const fetchDataTable: any = async (param: any) => {
     try {
@@ -58,9 +58,9 @@ const LogsPage = () => {
   return (
     <BasePageContainer>
       <>
-        <Flex className="title-list-app">
-          <Text className="text-title">Logs</Text>
-        </Flex>
+        <Text fontSize={'24px'} mb={8}>
+          Logs
+        </Text>
         <AppCard className="list-app-table-wrap">
           <AppDataTable
             fetchData={fetchDataTable}
