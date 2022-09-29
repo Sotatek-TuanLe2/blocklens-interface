@@ -62,7 +62,7 @@ const ProfilePage: FC = () => {
               <TabPanel p={0}>
                 <MyProfile />
               </TabPanel>
-              <TabPanel>
+              <TabPanel p={0}>
                 <Billing />
               </TabPanel>
             </TabPanels>

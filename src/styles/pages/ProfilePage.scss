@@ -21,7 +21,7 @@
     .tab-item {
       outline: none;
       border-bottom: 1px solid #e0e0e0;
-      font-weight: 400;
+      font-weight: 500;
       font-size: 13px;
       line-height: 18px;
       color: #4c84ff;
@@ -43,7 +43,7 @@
 }
 
 .title {
-  font-weight: 400;
+  font-weight: 500;
   font-size: 18px;
   line-height: 25px;
   padding: 25px 20px 20px 21px;
@@ -152,20 +152,32 @@
           font-size: 14px;
         }
         .allow-title {
-          font-size: 12px;
-          color: $color-accent-7;
+          font-size: 14px;
+          font-weight: 600;
+          color: #1B2559;
         }
-        .allow-list {
+        .features {
           font-size: 13px;
-          color: $color-accent-7;
+          margin-left: 20px;
+          margin-top: 5px;
+          li {
+            font-weight: 600;
+            padding: 3px 0;
+            color: #1B2559;
+          }
         }
-        .currency {
+        .currency, .time {
           font-size: 24px;
+        }
+        .time {
+          color: $text-color-100;
         }
         .price-plan {
           font-size: 48px;
           align-items: baseline;
           justify-content: center;
+          color: #1B2559;
+          font-weight: 600;
         }
 
         .link-contact {
@@ -188,11 +200,14 @@
 }
 
 .bill-tabs {
+  margin-top: 16px;
   .bill-tab {
+    padding: 10px 25px 20px;
     &[aria-selected='true'] {
       box-shadow: none;
       border-bottom: 3px solid #171717;
     }
+    font-weight: 500;
     transition: border 0.5s ease;
     border-bottom: 3px solid #ececec;
   }

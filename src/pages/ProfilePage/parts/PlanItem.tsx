@@ -56,7 +56,7 @@ const PlanItem: FC<IPlanItem> = ({ isChange,  plan, isActive, isSelect, setIsSel
                 <Flex className="price-plan">
                   <Text className="currency">$</Text>
                   {plan.price}
-                  {+plan.price > 0 && <Text className="currency">/mo</Text>}
+                  {+plan.price > 0 && <Text className="time">/mo</Text>}
                 </Flex>
               </>
             ) : (
@@ -66,14 +66,11 @@ const PlanItem: FC<IPlanItem> = ({ isChange,  plan, isActive, isSelect, setIsSel
             )}
           </Box>
           <div>
-            <span className="allow-title">Features:</span>
-            <br />
-            <Text pl={'20px'} className="allow-list">
-              {plan.features.app} Apps
-            </Text>
-            <Text pl={'20px'} className="allow-list">
-              {plan.features.message} messages
-            </Text>
+            <Box className="allow-title">Features:</Box>
+            <ul className="features">
+              <li> {plan.features.app} Apps</li>
+              <li> {plan.features.message} messages</li>
+            </ul>
           </div>
         </Box>
       </AppCard>
