@@ -1,12 +1,11 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
-import React, { FC, useEffect, useMemo, useRef, useState } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import BaseModal from './BaseModal';
 import { IAppInfo } from 'src/pages/AppDetail';
 import { AppButton, AppField, AppInput, AppTextarea } from 'src/components';
 import { createValidator } from 'src/utils/utils-validator';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
-import FormCreateApp from '../pages/HomePage/parts/FormCreateApp';
 
 interface IModalEditApp {
   open: boolean;
@@ -21,7 +20,12 @@ interface IDataForm {
 }
 
 const ModalEditApp: FC<IModalEditApp> = ({ open, onClose, appInfo, reloadData }) => {
-  const [dataForm, setDataForm] = useState<IDataForm>({});
+  const initData = {
+    name: appInfo?.name,
+    description: appInfo?.description,
+  };
+
+  const [dataForm, setDataForm] = useState<IDataForm>(initData);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
 
   const validator = useRef(
@@ -32,11 +36,7 @@ const ModalEditApp: FC<IModalEditApp> = ({ open, onClose, appInfo, reloadData })
 
   useEffect(() => {
     if (!appInfo) return;
-    setDataForm({
-      ...dataForm,
-      name: appInfo?.name,
-      description: appInfo?.description,
-    });
+    setDataForm(initData);
   }, [appInfo]);
 
 
@@ -63,10 +63,11 @@ const ModalEditApp: FC<IModalEditApp> = ({ open, onClose, appInfo, reloadData })
   const onCloseModal = () => {
     onClose();
     validator.current.visibleFields = [];
+    setDataForm(initData);
   };
 
   return (
-    <BaseModal size="2xl" title="Update App" isOpen={open} onClose={onClose}>
+    <BaseModal size="2xl" title="Update App" isOpen={open} onClose={onCloseModal}>
       <Box>
         <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
           <AppField label={'NAME'} customWidth={'100%'} isRequired>
