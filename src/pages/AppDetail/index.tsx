@@ -9,6 +9,7 @@ import PartAppStatics from './parts/PartAppStatics';
 import PartAddressWebhooks from './parts/PartAddressWebhooks';
 import { getLogoChainByName } from 'src/utils/utils-network';
 import PartContractWebhooks from './parts/PartContractWebhooks';
+import { BasePageContainer } from 'src/layouts';
 
 export interface IAppInfo {
   name?: string;
@@ -44,29 +45,26 @@ const AppDetail = () => {
   }, []);
 
   return (
-    <BasePage>
-      <Box className="app-detail">
-        <Box mx={5}>
-          <Box className="app-info">
-            <Flex alignItems={'center'}>
-              <Box className="name">{appInfo.name}</Box>
-              <Box className="icon-edit" cursor="pointer"></Box>
-              <Flex ml={5} alignItems={'center'}>
-                <Box mr={2} className={getLogoChainByName(appInfo?.chain)}>
-                </Box>
-                {appInfo.chain}
-              </Flex>
+    <BasePageContainer className="app-detail">
+      <>
+        <Box className="app-info">
+          <Flex alignItems={'center'}>
+            <Box className="name">{appInfo.name}</Box>
+            <Box className="icon-edit" cursor="pointer"></Box>
+            <Flex ml={5} alignItems={'center'}>
+              <Box mr={2} className={getLogoChainByName(appInfo?.chain)}></Box>
+              {appInfo.chain}
             </Flex>
-            <Box className="description">{appInfo.description}</Box>
-          </Box>
-
-          <PartAppStatics appInfo={appInfo} />
-          <PartNFTWebhooks appInfo={appInfo} />
-          <PartAddressWebhooks appInfo={appInfo} />
-          <PartContractWebhooks appInfo={appInfo} />
+          </Flex>
+          <Box className="description">{appInfo.description}</Box>
         </Box>
-      </Box>
-    </BasePage>
+
+        <PartAppStatics appInfo={appInfo} />
+        <PartNFTWebhooks appInfo={appInfo} />
+        <PartAddressWebhooks appInfo={appInfo} />
+        <PartContractWebhooks appInfo={appInfo} />
+      </>
+    </BasePageContainer>
   );
 };
 

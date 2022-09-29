@@ -1,7 +1,7 @@
 import { Flex, Tbody, Th, Thead, Tr, Td, Box, Tag } from '@chakra-ui/react';
 import { SmallAddIcon } from '@chakra-ui/icons';
 import React, { FC, useCallback, useEffect, useState } from 'react';
-import { AppButton, AppCard, AppDataTable } from 'src/components';
+import { AppButton, AppCard, AppDataTable, AppLink } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import { IListAppResponse } from 'src/utils/common';
 import { IAppInfo } from '../index';
@@ -94,7 +94,9 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
         {data?.map((contract: IContractResponse, index: number) => {
           return (
             <Tr key={index}>
-              <Td>N/A</Td>
+              <Td>
+                <AppLink to={`/log/${contract.registrationId}`}>{contract.registrationId}</AppLink>
+              </Td>
               <Td>{_renderNetwork(contract)}</Td>
               <Td>{_renderStatus(contract)}</Td>
               <Td>{contract.webhook}</Td>
