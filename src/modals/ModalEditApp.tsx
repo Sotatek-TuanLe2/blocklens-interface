@@ -1,5 +1,5 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
-import React, { FC, useEffect, useRef, useState } from 'react';
+import React, { FC, useEffect, useCallback, useRef, useState } from 'react';
 import BaseModal from './BaseModal';
 import { IAppInfo } from 'src/pages/AppDetail';
 import { AppButton, AppField, AppInput, AppTextarea } from 'src/components';
@@ -27,6 +27,8 @@ const ModalEditApp: FC<IModalEditApp> = ({ open, onClose, appInfo, reloadData })
 
   const [dataForm, setDataForm] = useState<IDataForm>(initData);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
+  const [, updateState] = useState<any>();
+  const forceUpdate = useCallback(() => updateState({}), []);
 
   const validator = useRef(
     createValidator({
@@ -41,15 +43,18 @@ const ModalEditApp: FC<IModalEditApp> = ({ open, onClose, appInfo, reloadData })
 
 
   const handleSubmitForm = async () => {
-    try {
-      await rf
-        .getRequest('AppRequest')
-        .updateApp(appInfo.appId, dataForm );
-      toastSuccess({ message: 'Update Successfully!' });
-      onClose();
-      reloadData();
-    } catch (e: any) {
-      toastError({ message: e?.message || 'Oops. Something went wrong!' });
+    if (validator.current.allValid()) {
+      try {
+        await rf.getRequest('AppRequest').updateApp(appInfo.appId, dataForm);
+        toastSuccess({ message: 'Update Successfully!' });
+        onClose();
+        reloadData();
+      } catch (e: any) {
+        toastError({ message: e?.message || 'Oops. Something went wrong!' });
+      }
+    } else {
+      validator.current.showMessages();
+      forceUpdate();
     }
   };
 
