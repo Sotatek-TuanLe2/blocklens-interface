@@ -78,13 +78,12 @@ const BaseModal: FC<BaseModalProps> = ({
 
           <ModalBody>{children}</ModalBody>
 
-          <ModalFooter justifyContent={'flex-start'}>
+          <ModalFooter>
             {onActionLeft && (
               <Box mr={2}>
                 <AppButton
                   onClick={onActionLeft}
-                  variant="brand"
-                  fontSize={'12px'}
+                  variant="outline"
                   fontWeight={400}
                 >
                   {textActionLeft}
