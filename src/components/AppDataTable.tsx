@@ -28,6 +28,7 @@ export interface RequestParams {
   poolId?: string;
   projectId?: string;
   appId?: number;
+  registrationId?: number
 }
 
 interface DataTableProps {

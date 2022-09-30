@@ -159,7 +159,7 @@ const FormCreateApp: React.FC<IFormCreateApp> = ({ setSearchListApp }) => {
         <AppButton
           disabled={isDisableSubmit}
           onClick={handleSubmitForm}
-          size={'lg'}
+          size={'md'}
           textTransform={'uppercase'}
         >
           Create app

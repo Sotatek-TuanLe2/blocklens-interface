@@ -95,7 +95,7 @@ const PartNFTWebhooks: FC<IListNTF> = ({ appInfo }) => {
           return (
             <Tr key={index}>
               <Td>
-                <AppLink to={`/logs/${nft.registrationId}`}>{nft.registrationId}</AppLink>
+                <AppLink to={`/notifications/${nft.registrationId}`}>{nft.registrationId}</AppLink>
               </Td>
               <Td>{_renderNetwork(nft)}</Td>
               <Td>{_renderStatus(nft)}</Td>

@@ -15,7 +15,7 @@ export interface Config {
   };
   api: {
     baseUrlApi: string;
-    appsApi: string;
+    notificationsApi: string;
   };
   chains: {
     name: string;

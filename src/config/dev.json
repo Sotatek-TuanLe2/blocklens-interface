@@ -6,7 +6,8 @@
     "googleClientId": "130485616803-c05jc0gd898m975gt9spv73v71u15ti1.apps.googleusercontent.com"
   },
   "api": {
-    "baseUrlApi": "https://buni-dev-api.sotatek.works/api/blocklens-users"
+    "baseUrlApi": "https://buni-dev-api.sotatek.works/api/blocklens-users",
+    "notificationsApi": "https://buni-dev-api.sotatek.works/api/blocklens-notifications"
   },
   "chains": [
     {
