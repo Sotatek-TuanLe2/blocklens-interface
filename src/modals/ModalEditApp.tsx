@@ -87,13 +87,13 @@ const ModalEditApp: FC<IModalEditApp> = ({ open, onClose, appInfo, reloadData })
               validate={{
                 name: `name`,
                 validator: validator.current,
-                rule: 'required',
+                rule: ['required', 'max:20']
               }}
             />
           </AppField>
           <AppField label={'DESCRIPTION'} customWidth={'100%'} isRequired>
             <AppTextarea
-              placeholder="Gavin"
+              placeholder="Write something about this app in 50 characters!"
               value={dataForm.description}
               onChange={(e) =>
                 setDataForm({
@@ -101,6 +101,11 @@ const ModalEditApp: FC<IModalEditApp> = ({ open, onClose, appInfo, reloadData })
                   description: e.target.value,
                 })
               }
+              validate={{
+                name: 'description',
+                validator: validator.current,
+                rule: ['required', 'max:50'],
+              }}
             />
           </AppField>
         </Flex>

@@ -111,7 +111,7 @@ const FormCreateApp: React.FC<IFormCreateApp> = ({ setSearchListApp }) => {
             validate={{
               name: `name`,
               validator: validator.current,
-              rule: 'required',
+              rule: ['required', 'max:20']
             }}
           />
         </AppField>
@@ -144,7 +144,7 @@ const FormCreateApp: React.FC<IFormCreateApp> = ({ setSearchListApp }) => {
         </AppField>
         <AppField label={'DESCRIPTION'} customWidth={'100%'}>
           <AppTextarea
-            placeholder="Gavin"
+            placeholder="Write something about this app in 50 characters!"
             value={dataForm.description}
             onChange={(e) =>
               setDataForm({
@@ -152,6 +152,11 @@ const FormCreateApp: React.FC<IFormCreateApp> = ({ setSearchListApp }) => {
                 description: e.target.value,
               })
             }
+            validate={{
+              name: 'description',
+              validator: validator.current,
+              rule: ['required', 'max:50'],
+            }}
           />
         </AppField>
       </Flex>
