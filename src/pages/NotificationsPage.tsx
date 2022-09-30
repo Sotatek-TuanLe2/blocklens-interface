@@ -90,7 +90,7 @@ const NotificationItem: FC<INotificationItem> = ({ notification }) => {
           </a>
         </Td>
         <Td>{_renderStatus(notification)}</Td>
-        <Td>{notification.remainRetry}</Td>
+        <Td textAlign="right">{notification.remainRetry}</Td>
         <Td fontSize={'18px'} >
           {isShowDetail ? <ChevronDownIcon /> : <ChevronUpIcon /> }
 
@@ -105,6 +105,7 @@ const NotificationItem: FC<INotificationItem> = ({ notification }) => {
             <ReactJson
               src={notification.metadata}
               displayDataTypes={false}
+              displayObjectSize={false}
               name={null}
               theme="monokai"
               style={{ padding: '20px' }}
@@ -135,7 +136,7 @@ const NotificationsPage = () => {
           <Th>Updated At</Th>
           <Th>Webhook</Th>
           <Th>Status</Th>
-          <Th>Remain time</Th>
+          <Th textAlign="right">Remain time</Th>
           <Th></Th>
         </Tr>
       </Thead>
