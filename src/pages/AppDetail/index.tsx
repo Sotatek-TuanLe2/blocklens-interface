@@ -9,6 +9,7 @@ import PartAppStatics from './parts/PartAppStatics';
 import PartAddressWebhooks from './parts/PartAddressWebhooks';
 import { getLogoChainByName } from 'src/utils/utils-network';
 import PartContractWebhooks from './parts/PartContractWebhooks';
+import ModalEditApp from 'src/modals/ModalEditApp';
 
 export interface IAppInfo {
   name?: string;
@@ -23,6 +24,7 @@ export interface IAppInfo {
 const AppDetail = () => {
   const [appInfo, setAppInfo] = useState<IAppInfo>({});
   const [loading, setLoading] = useState<boolean>(false);
+  const [isOpenModalEditApp, setIsOpenModalEditApp] = useState<boolean>(false);
 
   const { id: appId } = useParams<{ id: string }>();
 
@@ -50,14 +52,19 @@ const AppDetail = () => {
           <Box className="app-info">
             <Flex alignItems={'center'}>
               <Box className="name">{appInfo.name}</Box>
-              <Box className="icon-edit" cursor="pointer"></Box>
+              <Box
+                className="icon-edit"
+                cursor="pointer"
+                onClick={() => setIsOpenModalEditApp(true)}
+              ></Box>
               <Flex ml={5} alignItems={'center'}>
-                <Box mr={2} className={getLogoChainByName(appInfo?.chain)}>
-                </Box>
+                <Box
+                  mr={2}
+                  className={getLogoChainByName(appInfo?.chain)}
+                ></Box>
                 {appInfo.chain}
               </Flex>
             </Flex>
-            <Box className="description">{appInfo.description}</Box>
           </Box>
 
           <PartAppStatics appInfo={appInfo} />
@@ -66,6 +73,13 @@ const AppDetail = () => {
           <PartContractWebhooks appInfo={appInfo} />
         </Box>
       </Box>
+
+      <ModalEditApp
+        open={isOpenModalEditApp}
+        onClose={() => setIsOpenModalEditApp(false)}
+        appInfo={appInfo}
+        reloadData={getAppInfo}
+      />
     </BasePage>
   );
 };
