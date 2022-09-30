@@ -59,7 +59,7 @@ const AppInput = forwardRef(
 
           {endAdornment && <InputRightElement children={<>{endAdornment}</>} />}
         </InputGroup>
-        <Box height={'24px'}>
+        <Box>
           {!hiddenErrorText &&
             validate &&
             !readOnly &&

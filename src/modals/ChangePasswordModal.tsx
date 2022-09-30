@@ -1,5 +1,5 @@
 import { Text } from '@chakra-ui/react';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { AppButton, AppField, AppInput } from 'src/components';
 import { createValidator } from 'src/utils/utils-validator';
 import BaseModal from './BaseModal';
@@ -28,12 +28,18 @@ const ChangePasswordModal: React.FC<IChangePasswordModal> = ({
   };
   const [dataForm, setDataForm] = useState<IFormChangePass>(initialData);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
+  const [, updateState] = useState<any>();
+  const forceUpdate = useCallback(() => updateState({}), []);
   const validators = useRef(
     createValidator({
       element: (message: string) => <Text color={'red.500'}>{message}</Text>,
     }),
   );
   const handleOnSubmit = async () => {
+    if (!validators.current.allValid()) {
+      validators.current.showMessages();
+      return forceUpdate();
+    }
     const dataSubmit = {
       newPassword: dataForm.newPassword,
       oldPassword: dataForm.currentPassword,
@@ -44,11 +50,10 @@ const ChangePasswordModal: React.FC<IChangePasswordModal> = ({
       setIsOpenModal(false);
       toastSuccess({ message: 'Update password was successfully' });
     } catch (error: any) {
-      if (error?.message) {
-        toastError({ message: error?.message });
-      }
+      toastError({
+        message: error?.message || 'Oops. Something went wrong!',
+      });
     }
-    return;
   };
 
   useEffect(() => {
@@ -63,18 +68,13 @@ const ChangePasswordModal: React.FC<IChangePasswordModal> = ({
     <BaseModal
       isOpen={isOpenModal}
       onClose={() => setIsOpenModal(false)}
-      size="xl"
+      size="lg"
       title="Change Password"
       isHideCloseIcon
       closeOnOverlayClick
       styleHeader={{ fontSize: '24px' }}
     >
-      <AppField
-        label={'CURRENT PASSWORD'}
-        customWidth={'100%'}
-        isRequired
-        customFlex={{ mb: 0 }}
-      >
+      <AppField label={'CURRENT PASSWORD'} customWidth={'100%'} isRequired>
         <AppInput
           placeholder="Current password"
           value={dataForm.currentPassword}
@@ -93,12 +93,7 @@ const ChangePasswordModal: React.FC<IChangePasswordModal> = ({
         />
       </AppField>
 
-      <AppField
-        label={'NEW PASSWORD'}
-        customWidth={'100%'}
-        isRequired
-        customFlex={{ mb: 0 }}
-      >
+      <AppField label={'NEW PASSWORD'} customWidth={'100%'} isRequired>
         <AppInput
           placeholder="New password"
           value={dataForm.newPassword}
@@ -117,12 +112,7 @@ const ChangePasswordModal: React.FC<IChangePasswordModal> = ({
         />
       </AppField>
 
-      <AppField
-        label={'CONFIRM PASSWORD'}
-        customWidth={'100%'}
-        isRequired
-        customFlex={{ mb: 0 }}
-      >
+      <AppField label={'CONFIRM PASSWORD'} customWidth={'100%'} isRequired>
         <AppInput
           placeholder="Confirm password"
           value={dataForm.confirmPassword}
