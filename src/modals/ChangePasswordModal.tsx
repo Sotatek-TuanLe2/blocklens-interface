@@ -44,7 +44,6 @@ const ChangePasswordModal: React.FC<IChangePasswordModal> = ({
       setIsOpenModal(false);
       toastSuccess({ message: 'Update password was successfully' });
     } catch (error: any) {
-      console.log('error', error);
       if (error?.message) {
         toastError({ message: error?.message });
       }
@@ -64,13 +63,18 @@ const ChangePasswordModal: React.FC<IChangePasswordModal> = ({
     <BaseModal
       isOpen={isOpenModal}
       onClose={() => setIsOpenModal(false)}
-      size="2xl"
+      size="xl"
       title="Change Password"
       isHideCloseIcon
       closeOnOverlayClick
       styleHeader={{ fontSize: '24px' }}
     >
-      <AppField label={'CURRENT PASSWORD'} customWidth={'100%'} isRequired>
+      <AppField
+        label={'CURRENT PASSWORD'}
+        customWidth={'100%'}
+        isRequired
+        customFlex={{ mb: 0 }}
+      >
         <AppInput
           placeholder="Current password"
           value={dataForm.currentPassword}
@@ -89,7 +93,12 @@ const ChangePasswordModal: React.FC<IChangePasswordModal> = ({
         />
       </AppField>
 
-      <AppField label={'NEW PASSWORD'} customWidth={'100%'} isRequired>
+      <AppField
+        label={'NEW PASSWORD'}
+        customWidth={'100%'}
+        isRequired
+        customFlex={{ mb: 0 }}
+      >
         <AppInput
           placeholder="New password"
           value={dataForm.newPassword}
@@ -108,7 +117,12 @@ const ChangePasswordModal: React.FC<IChangePasswordModal> = ({
         />
       </AppField>
 
-      <AppField label={'CONFIRM PASSWORD'} customWidth={'100%'} isRequired>
+      <AppField
+        label={'CONFIRM PASSWORD'}
+        customWidth={'100%'}
+        isRequired
+        customFlex={{ mb: 0 }}
+      >
         <AppInput
           placeholder="Confirm password"
           value={dataForm.confirmPassword}
