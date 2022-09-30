@@ -17,6 +17,9 @@ export interface Config {
     baseUrlApi: string;
     notificationsApi: string;
   };
+  stripe: {
+    publishableKey: string
+  }
   chains: {
     name: string;
     id: string;
