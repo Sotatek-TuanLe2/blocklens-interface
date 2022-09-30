@@ -65,7 +65,6 @@ const AppDetail = () => {
                 {appInfo.chain}
               </Flex>
             </Flex>
-            <Box className="description">{appInfo.description}</Box>
           </Box>
 
           <PartAppStatics appInfo={appInfo} />

@@ -41,20 +41,19 @@ const ModalEditApp: FC<IModalEditApp> = ({ open, onClose, appInfo, reloadData })
     setDataForm(initData);
   }, [appInfo]);
 
-
   const handleSubmitForm = async () => {
-    if (validator.current.allValid()) {
-      try {
-        await rf.getRequest('AppRequest').updateApp(appInfo.appId, dataForm);
-        toastSuccess({ message: 'Update Successfully!' });
-        onClose();
-        reloadData();
-      } catch (e: any) {
-        toastError({ message: e?.message || 'Oops. Something went wrong!' });
-      }
-    } else {
+    if (!validator.current.allValid()) {
       validator.current.showMessages();
-      forceUpdate();
+      return forceUpdate();
+    }
+
+    try {
+      await rf.getRequest('AppRequest').updateApp(appInfo.appId, dataForm);
+      toastSuccess({ message: 'Update Successfully!' });
+      onClose();
+      reloadData();
+    } catch (e: any) {
+      toastError({ message: e?.message || 'Oops. Something went wrong!' });
     }
   };
 
