@@ -1,9 +1,9 @@
 import { Flex, Tbody, Th, Thead, Tr, Td, Box, Tag } from '@chakra-ui/react';
 import { SmallAddIcon } from '@chakra-ui/icons';
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { AppButton, AppCard, AppDataTable } from 'src/components';
+import React, { FC, useCallback, useEffect, useState } from 'react';
+import { AppButton, AppCard, AppDataTable, AppLink } from 'src/components';
 import rf from 'src/requests/RequestFactory';
-import { IAppResponse, IListAppResponse } from 'src/utils/common';
+import { IListAppResponse } from 'src/utils/common';
 import ModalCreateWebhookNFT from 'src/modals/ModalCreateWebhookNFT';
 import { IAppInfo } from '../index';
 import { getLogoChainByName } from 'src/utils/utils-network';
@@ -94,7 +94,9 @@ const PartNFTWebhooks: FC<IListNTF> = ({ appInfo }) => {
         {data?.map((nft: INFTResponse, index: number) => {
           return (
             <Tr key={index}>
-              <Td>N/A</Td>
+              <Td>
+                <AppLink to={`/notifications/${nft.registrationId}`}>{nft.registrationId}</AppLink>
+              </Td>
               <Td>{_renderNetwork(nft)}</Td>
               <Td>{_renderStatus(nft)}</Td>
               <Td>{nft.webhook}</Td>

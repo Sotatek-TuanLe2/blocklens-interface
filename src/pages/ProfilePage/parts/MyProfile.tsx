@@ -39,7 +39,7 @@ const MyProfile: FC = () => {
 
   const validator = useRef(
     createValidator({
-      element: (message: string) => <Text color={'red.500'}>{message}</Text>,
+      element: (message: string) => <Text className="text-error">{message}</Text>,
     }),
   );
 

@@ -59,7 +59,7 @@ const FormCreateApp: React.FC<IFormCreateApp> = ({ setSearchListApp }) => {
   const [hiddenErrorText, setHiddenErrorText] = useState(false);
   const validator = useRef(
     createValidator({
-      element: (message: string) => <Text color={'red.500'}>{message}</Text>,
+      element: (message: string) => <Text className="text-error">{message}</Text>,
     }),
   );
   const [chainSelected, setChainSelected] = useState<any>(CHAINS[0]);
@@ -164,7 +164,7 @@ const FormCreateApp: React.FC<IFormCreateApp> = ({ setSearchListApp }) => {
         <AppButton
           disabled={isDisableSubmit}
           onClick={handleSubmitForm}
-          size={'lg'}
+          size={'md'}
           textTransform={'uppercase'}
         >
           Create app

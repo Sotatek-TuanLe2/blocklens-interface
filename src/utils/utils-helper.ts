@@ -1,4 +1,5 @@
 import { toastError, toastSuccess, toastWarning } from './utils-notify';
+import moment from 'moment';
 
 export const copyToClipboard = (message: string) => {
   if (!navigator.clipboard) {
@@ -10,4 +11,14 @@ export const copyToClipboard = (message: string) => {
   } catch (error: any) {
     toastError({ message: 'Oops. Something went wrong' });
   }
+};
+
+export const formatTimestamp = (
+  timestamp: number,
+  format = 'DD/MM/YYYY HH:mm:ss',
+): string => {
+  if (!timestamp) {
+    return 'TBA';
+  }
+  return moment(timestamp).format(format);
 };
