@@ -1,6 +1,6 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
-import { AppButton, AppSwitch } from 'src/components';
+import { AppButton } from 'src/components';
 import PlanItem from './PlanItem';
 import ModalPayment from 'src/modals/ModalPayment';
 import rf from 'src/requests/RequestFactory';
@@ -16,19 +16,19 @@ export interface IBillingPlan {
   currency: string;
   periodByDay: number;
   appLimitation: number;
-  notificationLimitation:number
+  notificationLimitation: number;
 }
 
 export interface IPaymentMethod {
-  id: string,
+  id: string;
   card: {
-  brand: string,
-    country: string,
-    exp_month: number,
-    exp_year: number,
-    funding: string,
-    last4: string
-},
+    brand: string;
+    country: string;
+    exp_month: number;
+    exp_year: number;
+    funding: string;
+    last4: string;
+  };
   livemode: boolean;
 }
 
@@ -103,7 +103,8 @@ const MyPlan = () => {
         <Box className="stripe-detail">
           <div className="stripe-title">Plan</div>
           <div className="stripe-status">
-            <span>{currentPlan.name}</span> <span className="badge-package">Monthly</span>
+            <span>{currentPlan.name}</span>{' '}
+            <span className="badge-package">Monthly</span>
           </div>
           <div className="stripe-action">
             <AppButton
@@ -121,7 +122,7 @@ const MyPlan = () => {
         <Box className="stripe-detail">
           <div className="stripe-title">Subscription</div>
           <div className="stripe-price">
-            <span>$49</span>
+            <span>${currentPlan?.price}</span>
             <span>Billing at Aug 30 2022 - Sep 30 2022</span>
           </div>
         </Box>
@@ -149,7 +150,9 @@ const MyPlan = () => {
 
   return (
     <Box px={'60px'} className="plans-wrap">
-      {Object.keys(paymentMethod).length ? _renderPlans() : _renderCardDetail()}
+      {!Object.keys(paymentMethod).length
+        ? _renderPlans()
+        : _renderCardDetail()}
 
       <ModalPayment
         open={isOpenModalChangePaymentMethod}

@@ -26,12 +26,14 @@ const PlanItem: FC<IPlanItem> = ({ isChange,  plan, isActive, isSelect, setIsSel
         } `}
         onClick={() => {
           setIsSelect(plan.name);
-          if (isChange) {
-            setIsOpenModalChangePaymentMethod(true);
-            return;
-          }
-          if (plan.name === 'STARTER' || plan.name === 'GROWTH') {
+          if (plan.name.toUpperCase() === 'STARTER' || plan.name.toUpperCase() === 'GROWTH') {
+            if (isChange) {
+              setIsOpenModalChangePaymentMethod(true);
+              return;
+            }
+
             setIsOpenModalPayment(true);
+            return;
           }
         }}
       >

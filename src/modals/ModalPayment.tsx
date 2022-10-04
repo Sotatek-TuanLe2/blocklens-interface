@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useMemo, useState } from 'react';
+import React, { FC, useMemo, useState } from 'react';
 import BaseModal from './BaseModal';
 import { Box, Flex } from '@chakra-ui/react';
 import { loadStripe } from '@stripe/stripe-js';
@@ -12,6 +12,8 @@ import {
 import { AppButton } from 'src/components';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/store';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
+import rf from 'src/requests/RequestFactory';
 
 interface IModalPayment {
   open: boolean;
@@ -58,8 +60,19 @@ const CheckoutForm: FC<ICheckoutForm> = ({ onClose }) => {
     // [0]: https://stripe.com/docs/payments/payment-methods#payment-notification
     switch (result.setupIntent.status) {
       case 'succeeded': {
-        //handle success
-        onClose();
+        try {
+          await rf
+            .getRequest('BillingRequest')
+            .confirmPaymentMethod({
+              paymentMethodId: result.setupIntent.payment_method as string,
+            });
+          toastSuccess({ message: 'Successfully!' });
+          onClose();
+        } catch (e: any) {
+          toastError({ message: e?.message || 'Oops. Something went wrong!' });
+        } finally {
+          onClose();
+        }
         break;
       }
 
@@ -115,15 +128,16 @@ const ModalPayment: FC<IModalPayment> = ({
     >
       <Box flexDirection={'column'} pt={'20px'}>
         <Box className="stripe-details">
-          <Elements
-            stripe={stripePromise}
-            options={{
-              locale: 'en',
-              clientSecret: paymentIntent.client_secret,
-            }}
-          >
-            <CheckoutForm onClose={onClose} />
-          </Elements>
+          {!!paymentIntent && <Elements
+              stripe={stripePromise}
+              options={{
+                locale: 'en',
+                clientSecret: paymentIntent.client_secret,
+              }}
+            >
+              <CheckoutForm onClose={onClose} />
+            </Elements>
+          }
         </Box>
       </Box>
     </BaseModal>
