@@ -119,7 +119,7 @@ const ModalPayment: FC<IModalPayment> = ({
             stripe={stripePromise}
             options={{
               locale: 'en',
-              clientSecret: paymentIntent.clientSecret,
+              clientSecret: paymentIntent.client_secret,
             }}
           >
             <CheckoutForm onClose={onClose} />

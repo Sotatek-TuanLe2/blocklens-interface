@@ -5,6 +5,8 @@ import PlanItem from './PlanItem';
 import ModalPayment from 'src/modals/ModalPayment';
 import rf from 'src/requests/RequestFactory';
 import { toastError } from 'src/utils/utils-notify';
+import { useDispatch } from 'react-redux';
+import { getPaymentIntent } from 'src/store/billing-plan';
 
 export interface IBillingPlan {
   code: string;
@@ -26,6 +28,7 @@ const MyPlan = () => {
   const [isOpenModalChangePaymentMethod, setIsOpenModalChangePaymentMethod] =
     useState<boolean>(false);
 
+  const dispatch = useDispatch<any>();
 
   const getBillingPlans = async () => {
     try {
@@ -49,6 +52,7 @@ const MyPlan = () => {
   useEffect(() => {
     getBillingPlans().then();
     getCurrentPlan().then();
+    dispatch(getPaymentIntent());
   }, []);
 
   const _renderPlans = (isChange?: boolean) => {
