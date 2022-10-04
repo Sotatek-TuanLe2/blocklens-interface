@@ -3,13 +3,15 @@ import AuthRequest from './AuthRequest';
 import UserRequest from './UserRequest';
 import RegistrationRequest from './RegistrationRequest';
 import NotificationRequest from './NotificationRequest';
+import BillingRequest from './BillingRequest';
 
 const requestMap = {
   AppRequest,
   AuthRequest,
   UserRequest,
   RegistrationRequest,
-  NotificationRequest
+  NotificationRequest,
+  BillingRequest
 };
 
 const instances = {};

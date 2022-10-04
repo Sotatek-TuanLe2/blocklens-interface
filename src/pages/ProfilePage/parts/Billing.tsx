@@ -8,7 +8,6 @@ import {
   Tabs,
 } from '@chakra-ui/react';
 import React from 'react';
-import { AppButton } from 'src/components';
 import MyPlan from './MyPlan';
 
 const Billing = () => {

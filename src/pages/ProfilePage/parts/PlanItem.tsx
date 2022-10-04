@@ -1,12 +1,12 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
 import React, { FC, useMemo, useState } from 'react';
 import { AppCard, AppLink } from 'src/components';
-import { IPlan } from './MyPlan';
+import { IBillingPlan } from './MyPlan';
 import ModalPayment from 'src/modals/ModalPayment';
-import ModalChangePaymentMethod from '../../../modals/ModalChangePaymentMethod';
+import ModalChangePaymentMethod from 'src/modals/ModalChangePaymentMethod';
 
 interface IPlanItem {
-  plan: IPlan;
+  plan: IBillingPlan;
   isActive?: boolean;
   isChange?: boolean;
   isSelect: string;
@@ -26,11 +26,11 @@ const PlanItem: FC<IPlanItem> = ({ isChange,  plan, isActive, isSelect, setIsSel
         } `}
         onClick={() => {
           setIsSelect(plan.name);
-          if(isChange) {
+          if (isChange) {
             setIsOpenModalChangePaymentMethod(true);
             return;
           }
-          if (plan.name === 'Starter' || plan.name === 'Growth') {
+          if (plan.name === 'STARTER' || plan.name === 'GROWTH') {
             setIsOpenModalPayment(true);
           }
         }}
@@ -51,7 +51,7 @@ const PlanItem: FC<IPlanItem> = ({ isChange,  plan, isActive, isSelect, setIsSel
         <Box className="plan-item">
           <Box className="plan-item-desc">
             <Text textTransform="uppercase">{plan.name}</Text>
-            {plan.price ? (
+            {plan.price !== null ? (
               <>
                 <Flex className="price-plan">
                   <Text className="currency">$</Text>
@@ -66,11 +66,7 @@ const PlanItem: FC<IPlanItem> = ({ isChange,  plan, isActive, isSelect, setIsSel
             )}
           </Box>
           <div>
-            <Box className="allow-title">Features:</Box>
-            <ul className="features">
-              <li> {plan.features.app} Apps</li>
-              <li> {plan.features.message} messages</li>
-            </ul>
+            <Box className="allow-title">{plan.description}</Box>
           </div>
         </Box>
       </AppCard>

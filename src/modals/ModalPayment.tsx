@@ -1,4 +1,4 @@
-import React, { FC, useMemo, useState } from 'react';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 import BaseModal from './BaseModal';
 import { Box, Flex } from '@chakra-ui/react';
 import { loadStripe } from '@stripe/stripe-js';
@@ -10,15 +10,14 @@ import {
   useStripe,
 } from '@stripe/react-stripe-js';
 import { AppButton } from 'src/components';
+import { useSelector } from 'react-redux';
+import { RootState } from 'src/store';
 
 interface IModalPayment {
   open: boolean;
   isChangePaymentMethod?: boolean;
   onClose: () => void;
 }
-
-const clientSecret =
-  'seti_1LmuczF4Iczr6ngsBwFH2Tny_secret_MVwWeTsvxcPnzlaqZGpM2mFqlTepjv4';
 
 interface ICheckoutForm {
   onClose: () => void;
@@ -101,10 +100,12 @@ const ModalPayment: FC<IModalPayment> = ({
   open,
   onClose,
 }) => {
+  const { paymentIntent } = useSelector((state: RootState) => state.billing);
   const stripePromise = useMemo(
     () => loadStripe(config.stripe.publishableKey),
     [],
   );
+
   return (
     <BaseModal
       size="2xl"
@@ -118,7 +119,7 @@ const ModalPayment: FC<IModalPayment> = ({
             stripe={stripePromise}
             options={{
               locale: 'en',
-              clientSecret: clientSecret,
+              clientSecret: paymentIntent.clientSecret,
             }}
           >
             <CheckoutForm onClose={onClose} />

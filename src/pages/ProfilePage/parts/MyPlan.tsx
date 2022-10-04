@@ -1,69 +1,65 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AppButton, AppSwitch } from 'src/components';
 import PlanItem from './PlanItem';
 import ModalPayment from 'src/modals/ModalPayment';
+import rf from 'src/requests/RequestFactory';
+import { toastError } from 'src/utils/utils-notify';
 
-export interface IPlan {
+export interface IBillingPlan {
+  code: string;
   name: string;
-  price?: string;
-  features: {
-    app: number | string;
-    message: string;
-  };
+  description: string;
+  price: number;
+  currency: string;
+  periodByDay: number;
+  appLimitation: number;
+  notificationLimitation:number
 }
-
-const plans = [
-  {
-    name: 'Free',
-    price: '0',
-    features: {
-      app: 5,
-      message: '3,000,000',
-    },
-  },
-  {
-    name: 'Starter',
-    price: '29',
-    features: {
-      app: 15,
-      message: '6,000,000',
-    },
-  },
-  {
-    name: 'Growth',
-    price: '49',
-    features: {
-      app: 30,
-      message: '12,000,000',
-    },
-  },
-  {
-    name: 'Enterprise',
-    features: {
-      app: 'Unlimited',
-      message: 'Custom',
-    },
-  },
-];
 
 const MyPlan = () => {
   const [isSelect, setIsSelect] = useState<string>('');
   const [isPaid, setIsPaid] = useState<boolean>(false);
   const [isChangePlan, setIsChangePlan] = useState<boolean>(false);
-
+  const [billingPlans, setBillingPlans] = useState<IBillingPlan[]>([]);
+  const [currentPlan, setCurrentPlan] = useState<IBillingPlan | any>({});
   const [isOpenModalChangePaymentMethod, setIsOpenModalChangePaymentMethod] =
     useState<boolean>(false);
+
+
+  const getBillingPlans = async () => {
+    try {
+      const res = await rf.getRequest('BillingRequest').getBillingPlans();
+      setBillingPlans(res);
+    } catch (e: any) {
+      toastError({ message: e?.message || 'Oops. Something went wrong!' });
+    }
+  };
+
+  const getCurrentPlan = async () => {
+    try {
+      const res = await rf.getRequest('BillingRequest').getCurrentPlan();
+      setCurrentPlan(res);
+    } catch (e: any) {
+      toastError({ message: e?.message || 'Oops. Something went wrong!' });
+    }
+  };
+
+
+  useEffect(() => {
+    getBillingPlans().then();
+    getCurrentPlan().then();
+  }, []);
 
   const _renderPlans = (isChange?: boolean) => {
     return (
       <Flex gap={'16px'} my={5}>
-        {plans.map((plan: IPlan, index) => {
+        {billingPlans.map((plan: IBillingPlan, index) => {
           return (
             <PlanItem
               plan={plan}
               key={index}
-              isActive={plan.name === 'Free'}
+              isActive={plan.code === currentPlan.code}
               isSelect={isSelect}
               setIsSelect={setIsSelect}
               isChange={isChange}

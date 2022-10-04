@@ -140,7 +140,7 @@
       }
       .plan-item {
         position: relative;
-        padding: 0 16px 70px 16px;
+        padding: 0 13px 70px 13px;
         .plan-item-desc {
           text-align: center;
         }
@@ -152,16 +152,7 @@
           font-size: 14px;
           font-weight: 600;
           color: #1B2559;
-        }
-        .features {
-          font-size: 13px;
-          margin-left: 20px;
-          margin-top: 5px;
-          li {
-            font-weight: 600;
-            padding: 3px 0;
-            color: #1B2559;
-          }
+          white-space: pre-wrap;
         }
         .currency, .time {
           font-size: 24px;
