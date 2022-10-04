@@ -19,12 +19,25 @@ export interface IBillingPlan {
   notificationLimitation:number
 }
 
+export interface IPaymentMethod {
+  id: string,
+  card: {
+  brand: string,
+    country: string,
+    exp_month: number,
+    exp_year: number,
+    funding: string,
+    last4: string
+},
+  livemode: boolean;
+}
+
 const MyPlan = () => {
   const [isSelect, setIsSelect] = useState<string>('');
-  const [isPaid, setIsPaid] = useState<boolean>(false);
   const [isChangePlan, setIsChangePlan] = useState<boolean>(false);
   const [billingPlans, setBillingPlans] = useState<IBillingPlan[]>([]);
   const [currentPlan, setCurrentPlan] = useState<IBillingPlan | any>({});
+  const [paymentMethod, setPaymentMethod] = useState<IPaymentMethod | any>({});
   const [isOpenModalChangePaymentMethod, setIsOpenModalChangePaymentMethod] =
     useState<boolean>(false);
 
@@ -48,10 +61,19 @@ const MyPlan = () => {
     }
   };
 
+  const getPaymentMethod = async () => {
+    try {
+      const res = await rf.getRequest('BillingRequest').getPaymentMethod();
+      setPaymentMethod(res);
+    } catch (e: any) {
+      toastError({ message: e?.message || 'Oops. Something went wrong!' });
+    }
+  };
 
   useEffect(() => {
     getBillingPlans().then();
     getCurrentPlan().then();
+    getPaymentMethod().then();
     dispatch(getPaymentIntent());
   }, []);
 
@@ -81,7 +103,7 @@ const MyPlan = () => {
         <Box className="stripe-detail">
           <div className="stripe-title">Plan</div>
           <div className="stripe-status">
-            <span>Growth</span> <span className="badge-package">Monthly</span>
+            <span>{currentPlan.name}</span> <span className="badge-package">Monthly</span>
           </div>
           <div className="stripe-action">
             <AppButton
@@ -95,6 +117,7 @@ const MyPlan = () => {
         </Box>
 
         {isChangePlan && _renderPlans(true)}
+
         <Box className="stripe-detail">
           <div className="stripe-title">Subscription</div>
           <div className="stripe-price">
@@ -105,7 +128,7 @@ const MyPlan = () => {
         <Box className="stripe-detail">
           <div className="stripe-title">Payment method</div>
           <div className="stripe-status">
-            <span>•••• •••• •••• 1145</span>
+            <span>•••• •••• •••• {paymentMethod?.card?.last4}</span>
           </div>
           <div className="stripe-action">
             <AppButton
@@ -126,19 +149,7 @@ const MyPlan = () => {
 
   return (
     <Box px={'60px'} className="plans-wrap">
-      <Flex mb={5}>
-        <AppSwitch
-          onChange={() => {
-            setIsPaid(!isPaid);
-            setIsChangePlan(false);
-          }}
-          isChecked={isPaid}
-          mr={4}
-        />
-        IsPaid
-      </Flex>
-
-      {!isPaid ? _renderPlans() : _renderCardDetail()}
+      {Object.keys(paymentMethod).length ? _renderPlans() : _renderCardDetail()}
 
       <ModalPayment
         open={isOpenModalChangePaymentMethod}

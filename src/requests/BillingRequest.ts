@@ -20,4 +20,19 @@ export default class BillingRequest extends BaseRequest {
     const url = '/my/billing-plans/payment-intent';
     return this.get(url);
   }
+
+  getPaymentMethod() {
+    const url = '/my/billing-plans/payment-method';
+    return this.get(url);
+  }
+
+  confirmPaymentMethod(params: { paymentMethodId : string }) {
+    const url = '/my/billing-plans/payment-method/confirm';
+    return this.put(url, params);
+  }
+
+  updateBillingPlan(params: { code : string }) {
+    const url = '/my/billing-plans/update-billing-plan';
+    return this.put(url, params);
+  }
 }

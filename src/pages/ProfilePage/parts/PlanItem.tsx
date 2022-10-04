@@ -79,6 +79,7 @@ const PlanItem: FC<IPlanItem> = ({ isChange,  plan, isActive, isSelect, setIsSel
       <ModalChangePaymentMethod
         open={isOpenModalChangePaymentMethod}
         onClose={() => setIsOpenModalChangePaymentMethod(false)}
+        code={plan.code}
       />
     </>
   );
