@@ -149,7 +149,7 @@ const MyPlan = () => {
   };
 
   return (
-    <Box px={'60px'} className="plans-wrap">
+    <Box px={5} className="plans-wrap">
       {!Object.keys(paymentMethod).length
         ? _renderPlans()
         : _renderCardDetail()}

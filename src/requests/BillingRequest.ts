@@ -35,4 +35,9 @@ export default class BillingRequest extends BaseRequest {
     const url = '/my/billing-plans/update-billing-plan';
     return this.put(url, params);
   }
+
+  getInvoiceList(params: any) {
+    const url = '/my/billing-plans/invoice';
+    return this.get(url, { ...params });
+  }
 }
