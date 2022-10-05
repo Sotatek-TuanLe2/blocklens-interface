@@ -7,7 +7,7 @@ import rf from 'src/requests/RequestFactory';
 import { toastError } from 'src/utils/utils-notify';
 import { useDispatch } from 'react-redux';
 import { getPaymentIntent } from 'src/store/billing-plan';
-import { formatTimestamp } from '../../../utils/utils-helper';
+import { formatTimestamp } from 'src/utils/utils-helper';
 
 export interface IBillingPlan {
   code: string;
