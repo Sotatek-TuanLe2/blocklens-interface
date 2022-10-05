@@ -5,9 +5,10 @@ import PlanItem from './PlanItem';
 import ModalPayment from 'src/modals/ModalPayment';
 import rf from 'src/requests/RequestFactory';
 import { toastError } from 'src/utils/utils-notify';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getPaymentIntent } from 'src/store/billing-plan';
 import { formatTimestamp } from 'src/utils/utils-helper';
+import { RootState } from '../../../store';
 
 export interface IBillingPlan {
   code: string;
@@ -43,6 +44,7 @@ const MyPlan = () => {
   const [paymentMethod, setPaymentMethod] = useState<IPaymentMethod | any>({});
   const [isOpenModalChangePaymentMethod, setIsOpenModalChangePaymentMethod] =
     useState<boolean>(false);
+  const { userInfo } = useSelector((state: RootState) => state.auth);
 
   const dispatch = useDispatch<any>();
 
@@ -149,7 +151,7 @@ const MyPlan = () => {
         </Box>
         <Box className="stripe-detail">
           <div className="stripe-title">Billing email</div>
-          <div className="stripe-status">dev@buni.finance</div>
+          <div className="stripe-status">{userInfo.email}</div>
         </Box>
       </div>
     );
