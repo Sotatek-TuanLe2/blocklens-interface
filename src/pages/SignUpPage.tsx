@@ -13,6 +13,7 @@ import { createValidator } from 'src/utils/utils-validator';
 import 'src/styles/pages/LoginPage.scss';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
+import { GoogleLoginButton } from 'src/components';
 
 interface IDataForm {
   firstName: string;
@@ -70,16 +71,7 @@ const SignUpPage: FC = () => {
     return (
       <AppCard className="box-form">
         <Box className="title">Sign up</Box>
-        <AppButton
-          onClick={() => console.log('sdsd')}
-          variant={'outline'}
-          size={'lg'}
-          width={'full'}
-          mt={6}
-          mb={3}
-        >
-          Sign up with Google
-        </AppButton>
+        <GoogleLoginButton isSignUp />
 
         <Flex className="divider">
           <Box className="border" />

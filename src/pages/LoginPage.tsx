@@ -7,10 +7,10 @@ import {
   AppInput,
   AppButton,
   AppLink,
+  GoogleLoginButton
 } from 'src/components';
 import BasePage from 'src/layouts/BasePage';
 import { createValidator } from 'src/utils/utils-validator';
-import GoogleLoginButton from 'src/components/GoogleLoginButton';
 import 'src/styles/pages/LoginPage.scss';
 import { useDispatch } from 'react-redux';
 import { setAccessToken, setUserInfo } from 'src/store/auth';
