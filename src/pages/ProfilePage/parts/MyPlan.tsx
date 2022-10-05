@@ -8,7 +8,7 @@ import { toastError } from 'src/utils/utils-notify';
 import { useDispatch, useSelector } from 'react-redux';
 import { getPaymentIntent } from 'src/store/billing-plan';
 import { formatTimestamp } from 'src/utils/utils-helper';
-import { RootState } from '../../../store';
+import { RootState } from 'src/store';
 
 export interface IBillingPlan {
   code: string;
@@ -159,7 +159,7 @@ const MyPlan = () => {
 
   return (
     <Box px={5} className="plans-wrap">
-      {Object.keys(paymentMethod).length
+      {!Object.keys(paymentMethod).length
         ? _renderPlans()
         : _renderCardDetail()}
 
