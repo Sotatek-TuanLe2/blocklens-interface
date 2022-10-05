@@ -7,6 +7,7 @@ import rf from 'src/requests/RequestFactory';
 import { toastError } from 'src/utils/utils-notify';
 import { useDispatch } from 'react-redux';
 import { getPaymentIntent } from 'src/store/billing-plan';
+import { formatTimestamp } from '../../../utils/utils-helper';
 
 export interface IBillingPlan {
   code: string;
@@ -17,6 +18,8 @@ export interface IBillingPlan {
   periodByDay: number;
   appLimitation: number;
   notificationLimitation: number;
+  startTime: number;
+  endTime: number;
 }
 
 export interface IPaymentMethod {
@@ -123,7 +126,11 @@ const MyPlan = () => {
           <div className="stripe-title">Subscription</div>
           <div className="stripe-price">
             <span>${currentPlan?.price}</span>
-            <span>Billing at Aug 30 2022 - Sep 30 2022</span>
+            <span>
+              Billing at{' '}
+              {formatTimestamp(currentPlan?.startTime*1000, 'MMM DD, YYYY')} -{' '}
+              {formatTimestamp(currentPlan?.endTime*1000, 'MMM DD, YYYY')}
+            </span>
           </div>
         </Box>
         <Box className="stripe-detail">
@@ -150,7 +157,7 @@ const MyPlan = () => {
 
   return (
     <Box px={5} className="plans-wrap">
-      {!Object.keys(paymentMethod).length
+      {Object.keys(paymentMethod).length
         ? _renderPlans()
         : _renderCardDetail()}
 
