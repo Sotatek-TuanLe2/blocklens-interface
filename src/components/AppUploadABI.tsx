@@ -74,13 +74,13 @@ const ListSelect: FC<IListSelect> = ({
     let dataFiltered = data;
 
     if (!!valueSearch) {
-      dataFiltered = data.filter((item: any) =>
+      dataFiltered = dataFiltered.filter((item: any) =>
         item.name.includes(valueSearch),
       );
     }
 
     if (valueSort === 'az') {
-      dataFiltered = data.sort((a: any, b: any) => {
+      dataFiltered = dataFiltered.sort((a: any, b: any) => {
         if (a.name.toLowerCase() < b.name.toLowerCase()) {
           return -1;
         }
@@ -92,7 +92,7 @@ const ListSelect: FC<IListSelect> = ({
     }
 
     if (valueSort === 'za') {
-      dataFiltered = data.sort((a: any, b: any) => {
+      dataFiltered = dataFiltered.sort((a: any, b: any) => {
         if (a.name.toLowerCase() < b.name.toLowerCase()) {
           return 1;
         }
