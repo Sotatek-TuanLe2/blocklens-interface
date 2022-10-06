@@ -10,6 +10,7 @@ export { default as AppSelect } from './AppSelect';
 export { default as AppSwitch } from './AppSwitch';
 export { default as AppSilder } from './AppSilder';
 export { default as AppTextarea } from './AppTextarea';
+export { default as GoogleAuthButton } from './GoogleAuthButton';
 
 export * from './AppCard';
 export * from './AppButton';
@@ -23,3 +24,4 @@ export * from './AppSelect';
 export * from './AppSwitch';
 export * from './AppSilder';
 export * from './AppTextarea';
+export * from './GoogleAuthButton';

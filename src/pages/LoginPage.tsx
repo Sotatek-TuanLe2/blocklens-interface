@@ -7,10 +7,10 @@ import {
   AppInput,
   AppButton,
   AppLink,
+  GoogleAuthButton
 } from 'src/components';
 import BasePage from 'src/layouts/BasePage';
 import { createValidator } from 'src/utils/utils-validator';
-import GoogleLoginButton from 'src/components/GoogleLoginButton';
 import 'src/styles/pages/LoginPage.scss';
 import { useDispatch } from 'react-redux';
 import { setAccessToken, setUserInfo } from 'src/store/auth';
@@ -65,7 +65,9 @@ const LoginPage: FC = () => {
         <AppCard className="box-form">
           <Box className="title">Login</Box>
 
-          <GoogleLoginButton />
+          <GoogleAuthButton>
+            <Box>Login with google</Box>
+          </GoogleAuthButton>
 
           <Flex className="divider">
             <Box className="border" />
