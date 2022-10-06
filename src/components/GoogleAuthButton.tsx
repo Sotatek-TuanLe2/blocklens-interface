@@ -12,11 +12,11 @@ import config from 'src/config';
 
 const clientId = config.auth.googleClientId;
 
-interface IGoogleLoginButton {
+interface IGoogleAuthButton {
   children: ReactElement;
 }
 
-const GoogleAuthButton: FC<IGoogleLoginButton> = ({ children }) => {
+const GoogleAuthButton: FC<IGoogleAuthButton> = ({ children }) => {
   const dispatch = useDispatch();
   const history = useHistory();
 
