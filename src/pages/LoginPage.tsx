@@ -7,7 +7,7 @@ import {
   AppInput,
   AppButton,
   AppLink,
-  GoogleLoginButton
+  GoogleAuthButton
 } from 'src/components';
 import BasePage from 'src/layouts/BasePage';
 import { createValidator } from 'src/utils/utils-validator';
@@ -65,7 +65,9 @@ const LoginPage: FC = () => {
         <AppCard className="box-form">
           <Box className="title">Login</Box>
 
-          <GoogleLoginButton />
+          <GoogleAuthButton>
+            <Box>Login with google</Box>
+          </GoogleAuthButton>
 
           <Flex className="divider">
             <Box className="border" />

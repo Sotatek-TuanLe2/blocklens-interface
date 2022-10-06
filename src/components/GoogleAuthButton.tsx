@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, ReactElement, useEffect } from 'react';
 import { GoogleLogin } from 'react-google-login';
 import { gapi } from 'gapi-script';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
@@ -13,10 +13,10 @@ import config from 'src/config';
 const clientId = config.auth.googleClientId;
 
 interface IGoogleLoginButton {
-  isSignUp?: boolean;
+  children: ReactElement;
 }
 
-const GoogleLoginButton: FC<IGoogleLoginButton> = ({ isSignUp }) => {
+const GoogleAuthButton: FC<IGoogleLoginButton> = ({ children }) => {
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -65,8 +65,7 @@ const GoogleLoginButton: FC<IGoogleLoginButton> = ({ isSignUp }) => {
           mt={6}
           mb={3}
         >
-          <Box as={'span'} className="icon-google" mr={4} />{' '}
-          {isSignUp ? 'Sign up' : 'Login'} with google
+          <Box as={'span'} className="icon-google" mr={4} /> {children}
         </AppButton>
       )}
       cookiePolicy={'single_host_origin'}
@@ -74,4 +73,4 @@ const GoogleLoginButton: FC<IGoogleLoginButton> = ({ isSignUp }) => {
   );
 };
 
-export default GoogleLoginButton;
+export default GoogleAuthButton;
