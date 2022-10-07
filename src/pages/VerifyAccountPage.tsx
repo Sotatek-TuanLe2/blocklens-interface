@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 import React from 'react';
 import { Box, Flex } from '@chakra-ui/react';
 import { AppCard, AppButton } from 'src/components';
@@ -19,25 +19,39 @@ const VerifyAccountPage: FC = () => {
   const query = useQuery();
   const uid = query.get('uid');
   const vid = query.get('vid');
+  const [isVerifyFail, setIsVerifyFail] = useState<boolean>(false);
 
   const onVerify = async () => {
     if (!uid || !vid) return;
     try {
       await rf.getRequest('AuthRequest').verifyMail(+uid, vid);
+      setIsVerifyFail(false);
       toastSuccess({ message: 'Verify Successfully!' });
-      history.push('/login');
     } catch (e: any) {
       toastError({ message: e?.message || 'Oops. Something went wrong!' });
+      setIsVerifyFail(true);
     }
   };
+  useEffect(() => {
+    onVerify();
+  }, []);
 
   return (
     <BasePage>
       <Flex className="box-login">
         <AppCard className="box-form" borderRadius={'4px'}>
-          <Box textAlign={'center'}>Click Verify to create your account.</Box>
-          <AppButton mt={5} onClick={onVerify} size={'lg'} width={'full'}>
-            Verify
+          <Box textAlign={'center'}>
+            {isVerifyFail
+              ? 'Failed to complete verify email.'
+              : 'Verify email is successfully'}{' '}
+          </Box>
+          <AppButton
+            mt={5}
+            onClick={() => history.push('/login')}
+            size={'lg'}
+            width={'full'}
+          >
+            Return to login
           </AppButton>
         </AppCard>
       </Flex>
