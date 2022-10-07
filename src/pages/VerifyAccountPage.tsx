@@ -22,7 +22,11 @@ const VerifyAccountPage: FC = () => {
   const [isVerifyFail, setIsVerifyFail] = useState<boolean>(false);
 
   const onVerify = async () => {
-    if (!uid || !vid) return;
+    if (!uid || !vid) {
+      toastError({ message: 'Oops. Something went wrong!' });
+      setIsVerifyFail(true);
+      return;
+    }
     try {
       await rf.getRequest('AuthRequest').verifyMail(+uid, vid);
       setIsVerifyFail(false);
