@@ -8,14 +8,16 @@ import React, {
   ChangeEvent,
   useEffect,
 } from 'react';
-import { AppPagination, AppCard, AppInput, AppSelect } from 'src/components';
+import { AppCard, AppInput, AppSelect } from 'src/components';
 import { CloseIcon } from '@chakra-ui/icons';
+import ERC721 from 'src/abi/ERC-721.json';
 
 const Validator = require('jsonschema').Validator;
 const validateJson = new Validator();
 
 interface IAppUploadABI {
   onChange: (abi: any[], abiFilter: any[]) => void;
+  type?: string;
 }
 
 interface IListSelect {
@@ -38,8 +40,6 @@ const options = [
   },
 ];
 
-const itemsPerPage = 10;
-
 const ListSelect: FC<IListSelect> = ({
   title,
   data,
@@ -48,8 +48,6 @@ const ListSelect: FC<IListSelect> = ({
   valueSearch,
   valueSort,
 }) => {
-  const [page, setPage] = useState<number>(0);
-  const [totalPages, setTotalPages] = useState<number>(0);
   const [itemSelected, setItemSelected] = useState<any>([]);
 
   const onChangeSelect = (e: ChangeEvent<HTMLInputElement>, name: string) => {
@@ -68,10 +66,6 @@ const ListSelect: FC<IListSelect> = ({
       ]);
     }
     setItemSelected(newItemsSelected);
-  };
-
-  const onChangePagination = (event: { selected: number }) => {
-    setPage(event.selected);
   };
 
   const dataShow = useMemo(() => {
@@ -107,53 +101,40 @@ const ListSelect: FC<IListSelect> = ({
       });
     }
 
-    setTotalPages(Math.ceil(dataFiltered.length / itemsPerPage));
-
-    return dataFiltered.slice(
-      page * itemsPerPage,
-      page * itemsPerPage + itemsPerPage,
-    );
-  }, [data, page, valueSearch, valueSort]);
+    return dataFiltered;
+  }, [data, valueSearch, valueSort]);
 
   return (
     <AppCard mt={5} pt={0}>
       <Box fontSize={'18px'} mb={5}>
         {title}
       </Box>
-      {!!dataShow.length ? (
-        dataShow?.map((item: any, index: number) => {
-          return (
-            <Box key={index} my={2}>
-              <Checkbox
-                value={item.name}
-                isChecked={itemSelected.includes(item.name)}
-                onChange={(e) => onChangeSelect(e, item.name)}
-              >
-                {item.name}
-              </Checkbox>
-            </Box>
-          );
-        })
-      ) : (
-        <Flex justifyContent={'center'}>
-          <Box> No data...</Box>
-        </Flex>
-      )}
-
-      {totalPages > 0 && (
-        <Flex justifyContent={'flex-end'}>
-          <AppPagination
-            pageCount={totalPages}
-            forcePage={page}
-            onPageChange={onChangePagination}
-          />
-        </Flex>
-      )}
+      <Box maxH={'320px'} overflowY={'auto'} ml={5}>
+        {!!dataShow.length ? (
+          dataShow?.map((item: any, index: number) => {
+            return (
+              <Box key={index} my={2}>
+                <Checkbox
+                  value={item.name}
+                  isChecked={itemSelected.includes(item.name)}
+                  onChange={(e) => onChangeSelect(e, item.name)}
+                >
+                  {item.name}
+                </Checkbox>
+              </Box>
+            );
+          })
+        ) : (
+          <Flex justifyContent={'center'}>
+            <Box> No data...</Box>
+          </Flex>
+        )}
+      </Box>
     </AppCard>
   );
 };
 
-const AppUploadABI: FC<IAppUploadABI> = ({ onChange }) => {
+const AppUploadABI: FC<IAppUploadABI> = ({ onChange, type }) => {
   const [fileSelected, setFileSelected] = useState<any>({});
   const [ABIData, setABIData] = useState<any>([]);
   const [dataSelected, setDataSelected] = useState<any>([]);
@@ -234,7 +215,12 @@ const AppUploadABI: FC<IAppUploadABI> = ({ onChange }) => {
     reader.readAsText(file);
   };
 
-  const events = useMemo(
+  useEffect(() => {
+    if (type !== 'NFT') return;
+    setABIData(ERC721.abi);
+  }, []);
+
+  const listEvent = useMemo(
     () =>
       ABIData.filter((item: any) => {
         return item.type === 'event';
@@ -242,10 +228,10 @@ const AppUploadABI: FC<IAppUploadABI> = ({ onChange }) => {
     [ABIData],
   );
 
-  const functions = useMemo(
+  const listFunction = useMemo(
     () =>
       ABIData.filter((item: any) => {
-        return item.type === 'function';
+        return item.type === 'function' && item.stateMutability !== 'view';
       }),
     [ABIData],
   );
@@ -255,9 +241,16 @@ const AppUploadABI: FC<IAppUploadABI> = ({ onChange }) => {
   }, [ABIData, dataSelected]);
 
   const onClearFile = () => {
-    setDataSelected([]);
-    setABIData([]);
+    if (type !== 'NFT') {
+      setDataSelected([]);
+      setABIData([]);
+      setFileSelected({});
+      inputRef.current.value = null;
+      return;
+    }
+
     setFileSelected({});
+    setABIData(ERC721.abi);
     inputRef.current.value = null;
   };
 
@@ -294,15 +287,20 @@ const AppUploadABI: FC<IAppUploadABI> = ({ onChange }) => {
         <>
           <Flex justifyContent={'space-between'} alignItems={'center'}>
             <Box mt={2}>
-              {fileSelected?.name}
-              <CloseIcon
-                cursor={'pointer'}
-                onClick={onClearFile}
-                fontSize={'13px'}
-                color={'red'}
-                ml={3}
-              />
+              {fileSelected?.name && (
+                <>
+                  {fileSelected?.name}
+                  <CloseIcon
+                    cursor={'pointer'}
+                    onClick={onClearFile}
+                    fontSize={'13px'}
+                    color={'red'}
+                    ml={3}
+                  />
+                </>
+              )}
             </Box>
+
             <Flex>
               <Box width={'200px'}>
                 <AppSelect
@@ -325,7 +323,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({ onChange }) => {
 
           <ListSelect
             title={'Functions'}
-            data={functions}
+            data={listFunction}
             dataSelected={dataSelected}
             onSelectData={setDataSelected}
             valueSearch={valueSearch}
@@ -334,7 +332,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({ onChange }) => {
 
           <ListSelect
             title={'Events'}
-            data={events}
+            data={listEvent}
             dataSelected={dataSelected}
             onSelectData={setDataSelected}
             valueSearch={valueSearch}

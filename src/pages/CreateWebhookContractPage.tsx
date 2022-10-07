@@ -1,5 +1,5 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { AppButton, AppField, AppInput } from 'src/components';
 import { createValidator } from 'src/utils/utils-validator';
 import rf from 'src/requests/RequestFactory';
@@ -27,6 +27,8 @@ const CreateWebhookContractPage = () => {
   const { id: appId } = useParams<{ id: string }>();
   const [dataForm, setDataForm] = useState<IDataForm>(initDataCreateWebHook);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
+  const [, updateState] = useState<any>();
+  const forceUpdate = useCallback(() => updateState({}), []);
 
   const validator = useRef(
     createValidator({
@@ -37,6 +39,11 @@ const CreateWebhookContractPage = () => {
   );
 
   const handleSubmitForm = async () => {
+    if (!validator.current.allValid()) {
+      validator.current.showMessages();
+      return forceUpdate();
+    }
+
     try {
       await rf.getRequest('RegistrationRequest').addContractActivity({
         appId,
