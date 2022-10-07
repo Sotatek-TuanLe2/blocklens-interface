@@ -1,17 +1,21 @@
 import { Box, Flex, Text, Checkbox } from '@chakra-ui/react';
 import { toastError } from 'src/utils/utils-notify';
-import React, { useState, FC, useMemo, ChangeEvent } from 'react';
-import {
-  AppPagination,
-  AppCard,
-  AppInput,
-  AppSelect,
-} from 'src/components';
+import React, {
+  useState,
+  FC,
+  useMemo,
+  useRef,
+  ChangeEvent,
+  useEffect,
+} from 'react';
+import { AppPagination, AppCard, AppInput, AppSelect } from 'src/components';
+import { CloseIcon } from '@chakra-ui/icons';
+
 const Validator = require('jsonschema').Validator;
 const validateJson = new Validator();
 
 interface IAppUploadABI {
-  onChange?: (value: any) => void;
+  onChange: (abi: any[], abiFilter: any[]) => void;
 }
 
 interface IListSelect {
@@ -155,6 +159,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({ onChange }) => {
   const [dataSelected, setDataSelected] = useState<any>([]);
   const [valueSearch, setValueSearch] = useState<string>('');
   const [valueSort, setValueSort] = useState<string>('az');
+  const inputRef = useRef<any>(null);
 
   const handleFileSelect = (evt: any) => {
     const file = evt.target.files[0];
@@ -245,8 +250,19 @@ const AppUploadABI: FC<IAppUploadABI> = ({ onChange }) => {
     [ABIData],
   );
 
+  useEffect(() => {
+    onChange(ABIData, dataSelected);
+  }, [ABIData, dataSelected]);
+
+  const onClearFile = () => {
+    setDataSelected([]);
+    setABIData([]);
+    setFileSelected({});
+    inputRef.current.value = null;
+  };
+
   return (
-    <Box>
+    <Box width={'full'}>
       <Flex alignItems={'center'}>
         <Text mr={6}>
           ABI
@@ -265,14 +281,28 @@ const AppUploadABI: FC<IAppUploadABI> = ({ onChange }) => {
           >
             Upload
           </Box>
-          <AppInput type="file" onChange={handleFileSelect} display="none" />
+          <AppInput
+            type="file"
+            onChange={handleFileSelect}
+            display="none"
+            ref={inputRef}
+          />
         </label>
       </Flex>
 
       {ABIData && !!ABIData.length && (
         <>
-          <Flex justifyContent={'space-between'}>
-            <Box mt={2}>{fileSelected?.name}</Box>
+          <Flex justifyContent={'space-between'} alignItems={'center'}>
+            <Box mt={2}>
+              {fileSelected?.name}
+              <CloseIcon
+                cursor={'pointer'}
+                onClick={onClearFile}
+                fontSize={'13px'}
+                color={'red'}
+                ml={3}
+              />
+            </Box>
             <Flex>
               <Box width={'200px'}>
                 <AppSelect

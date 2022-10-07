@@ -4,9 +4,9 @@ import React, { FC, useCallback, useEffect, useState } from 'react';
 import { AppButton, AppCard, AppDataTable, AppLink } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import { IListAppResponse } from 'src/utils/common';
-import ModalCreateWebhookNFT from 'src/modals/ModalCreateWebhookNFT';
 import { IAppInfo } from '../index';
 import { getLogoChainByName } from 'src/utils/utils-network';
+import { useHistory } from 'react-router';
 
 interface IListNTF {
   appInfo: IAppInfo;
@@ -28,9 +28,8 @@ interface INFTResponse {
 }
 
 const PartNFTWebhooks: FC<IListNTF> = ({ appInfo }) => {
-  const [isOpenCreateNFTModal, setIsOpenCreateNFTModal] =
-    useState<boolean>(false);
   const [params, setParams] = useState<IParams>({});
+  const history = useHistory();
 
   const fetchDataTable: any = useCallback(async (params: any) => {
     try {
@@ -128,7 +127,7 @@ const PartNFTWebhooks: FC<IListNTF> = ({ appInfo }) => {
           <AppButton
             textTransform="uppercase"
             size={'md'}
-            onClick={() => setIsOpenCreateNFTModal(true)}
+            onClick={() => history.push(`/create-webhook-nft/${appInfo.appId}`)}
           >
             <SmallAddIcon mr={1} /> Create webhook
           </AppButton>
@@ -141,17 +140,6 @@ const PartNFTWebhooks: FC<IListNTF> = ({ appInfo }) => {
           limit={10}
         />
       </AppCard>
-
-      <ModalCreateWebhookNFT
-        open={isOpenCreateNFTModal}
-        onClose={() => setIsOpenCreateNFTModal(false)}
-        appInfo={appInfo}
-        onReloadData={() =>
-          setParams((pre: any) => {
-            return { ...pre };
-          })
-        }
-      />
     </>
   );
 };

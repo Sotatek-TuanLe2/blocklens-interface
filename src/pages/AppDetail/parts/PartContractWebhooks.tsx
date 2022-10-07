@@ -6,7 +6,7 @@ import rf from 'src/requests/RequestFactory';
 import { IListAppResponse } from 'src/utils/common';
 import { IAppInfo } from '../index';
 import { getLogoChainByName } from 'src/utils/utils-network';
-import ModalCreateWebhookContract from 'src/modals/ModalCreateWebhookContract';
+import { useHistory } from 'react-router';
 
 interface IListContract {
   appInfo: IAppInfo;
@@ -28,8 +28,7 @@ interface IContractResponse {
 }
 
 const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
-  const [isOpenCreateContractModal, setIsOpenCreateContractModal] =
-    useState<boolean>(false);
+  const history = useHistory();
   const [params, setParams] = useState<IParams>({});
 
   const fetchDataTable: any = useCallback(async (params: any) => {
@@ -128,7 +127,7 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
           <AppButton
             textTransform="uppercase"
             size={'md'}
-            onClick={() => setIsOpenCreateContractModal(true)}
+            onClick={() => history.push(`/create-webhook-contract/${appInfo.appId}`)}
           >
             <SmallAddIcon mr={1} /> Create webhook
           </AppButton>
@@ -141,17 +140,6 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
           limit={10}
         />
       </AppCard>
-
-      <ModalCreateWebhookContract
-        open={isOpenCreateContractModal}
-        onClose={() => setIsOpenCreateContractModal(false)}
-        appInfo={appInfo}
-        onReloadData={() =>
-          setParams((pre: any) => {
-            return { ...pre };
-          })
-        }
-      />
     </>
   );
 };
