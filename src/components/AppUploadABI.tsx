@@ -20,6 +20,20 @@ interface IAppUploadABI {
   type?: string;
 }
 
+const listFunctionAndEventOfNFT = [
+  'balanceOf',
+  'ownerOf',
+  'safeTransferFrom',
+  'transferFrom',
+  'approve',
+  'getApproved',
+  'setApprovalForAll',
+  'isApprovedForAll',
+  'Transfer',
+  'Approval',
+  'ApprovalForAll',
+];
+
 interface IListSelect {
   data: any;
   title: string;
@@ -205,12 +219,25 @@ const AppUploadABI: FC<IAppUploadABI> = ({ onChange, type }) => {
     const reader = new FileReader();
     reader.onload = (e: any) => {
       const data = e.target.result;
+      const abi = JSON.parse(data).abi;
+
+      const isCorrectFunctionAndEventOfNFT = listFunctionAndEventOfNFT.every(
+        (name: string) =>
+          abi.some((abiItem: any) => abiItem.name === name),
+      );
+
       if (!validateJson.validate(JSON.parse(data), schema).valid) {
         toastError({ message: 'The ABI file must be correct format' });
         return;
       }
+
+      if (type === 'NFT' && !isCorrectFunctionAndEventOfNFT) {
+        toastError({ message: 'The ABI file must be correct format' });
+        return;
+      }
+
       setFileSelected(evt.target.files[0]);
-      setABIData(JSON.parse(data).abi);
+      setABIData(abi);
     };
     reader.readAsText(file);
   };
