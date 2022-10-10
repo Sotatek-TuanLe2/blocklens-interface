@@ -213,23 +213,26 @@ const AppUploadABI: FC<IAppUploadABI> = ({ onChange, type }) => {
             required: ['type'],
           },
         },
+        required: ['abi'],
       },
     };
 
     const reader = new FileReader();
     reader.onload = (e: any) => {
       const data = e.target.result;
+
+
+      if (!validateJson.validate(JSON.parse(data), schema).valid) {
+        toastError({ message: 'The ABI file must be correct format' });
+        return;
+      }
+
       const abi = JSON.parse(data).abi;
 
       const isCorrectFunctionAndEventOfNFT = listFunctionAndEventOfNFT.every(
         (name: string) =>
           abi.some((abiItem: any) => abiItem.name === name),
       );
-
-      if (!validateJson.validate(JSON.parse(data), schema).valid) {
-        toastError({ message: 'The ABI file must be correct format' });
-        return;
-      }
 
       if (type === 'NFT' && !isCorrectFunctionAndEventOfNFT) {
         toastError({ message: 'The ABI file must be correct format' });
