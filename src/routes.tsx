@@ -17,7 +17,7 @@ import ResetPasswordPage from './pages/ResetPasswordPage';
 import Storage from 'src/utils/storage';
 import AppDetail from './pages/AppDetail';
 import VerifyAccountPage from './pages/VerifyAccountPage';
-import NotificationsPage from './pages/NotificationsPage';
+import WebhookActivitiesPage from './pages/WebhookActivitiesPage';
 import { getInfoUser } from 'src/store/auth';
 import { useDispatch } from 'react-redux';
 
@@ -48,7 +48,7 @@ const Routes: FC<RouteComponentProps> = () => {
         <PublicRoute path={'/verify-email'} component={VerifyAccountPage} />
         <PublicRoute path={'/reset-password'} component={ResetPasswordPage} />
         <PrivateRoute path={'/setting/:tab'} component={ProfilePage} />
-        <PrivateRoute path={'/notifications/:id'} component={NotificationsPage} />
+        <PrivateRoute path={'/webhook-activities/:id'} component={WebhookActivitiesPage} />
         <PrivateRoute path={'/'} component={HomePage} />
       </Switch>
     </>

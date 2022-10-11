@@ -106,7 +106,7 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
               <Td>{contract.webhook}</Td>
               <Td>N/A</Td>
               <Td>
-                <AppLink to={`/notifications/${contract.registrationId}`}>
+                <AppLink to={`/webhook-activities/${contract.registrationId}`}>
                   View
                 </AppLink>
               </Td>
@@ -142,7 +142,7 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
           </AppButton>
         </Flex>
 
-        <Box bgColor={'#FAFAFA'} pb={8}>
+        <Box bgColor={'#FAFAFA'} borderBottomRadius={'10px'} pb={8}>
           <AppDataTable
             requestParams={params}
             fetchData={fetchDataTable}

@@ -86,15 +86,13 @@ const PartNFTWebhooks: FC<IListNTF> = ({ appInfo }) => {
         {data?.map((nft: INFTResponse, index: number) => {
           return (
             <Tr key={index}>
-              <Td>
-                  {nft.registrationId}
-              </Td>
+              <Td>{nft.registrationId}</Td>
               <Td>{_renderStatus(nft)}</Td>
               <Td>{nft.webhook}</Td>
               <Td>N/A Address</Td>
               <Td>
-                <AppLink to={`/notifications/${nft.registrationId}`}>
-                 View
+                <AppLink to={`/webhook-activities/${nft.registrationId}`}>
+                  View
                 </AppLink>
               </Td>
             </Tr>
@@ -142,7 +140,7 @@ const PartNFTWebhooks: FC<IListNTF> = ({ appInfo }) => {
           </AppButton>
         </Flex>
 
-        <Box bgColor={'#FAFAFA'} pb={8}>
+        <Box bgColor={'#FAFAFA'} borderBottomRadius={'10px'} pb={8}>
           <AppDataTable
             requestParams={params}
             fetchData={fetchDataTable}

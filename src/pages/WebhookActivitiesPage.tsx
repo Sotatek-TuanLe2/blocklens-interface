@@ -1,4 +1,14 @@
-import { Tag, Tbody, Td, Text, Th, Thead, Tr, Box } from '@chakra-ui/react';
+import {
+  Tag,
+  Tbody,
+  Td,
+  Text,
+  Th,
+  Thead,
+  Tr,
+  Box,
+  SimpleGrid,
+} from '@chakra-ui/react';
 import React, { FC, useState } from 'react';
 import { useParams } from 'react-router';
 import { AppCard, AppDataTable } from 'src/components';
@@ -8,7 +18,8 @@ import { formatTimestamp } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import 'src/styles/pages/NotificationPage.scss';
 import ReactJson from 'react-json-view';
-import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons'
+import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
+import 'src/styles/pages/AppDetail.scss';
 
 interface INotificationResponse {
   hash: string;
@@ -61,6 +72,41 @@ const getColorBrandStatus = (status: number) => {
   }
 };
 
+const PartWebhookStatics = () => {
+  return (
+    <SimpleGrid
+      className="infos"
+      columns={{ base: 1, sm: 2, lg: 4 }}
+      gap="20px"
+    >
+      <AppCard p={4} className="box-info">
+        <Box className="label">
+          Webhook’s Notifications <br />
+          This Month
+        </Box>
+        <Box className="value">--</Box>
+      </AppCard>
+
+      <AppCard p={4} className="box-info">
+        <Box className="label">
+          Webhook’s Notifications
+          <br />
+          Last 24 Hour
+        </Box>
+        <Box className="value">--</Box>
+      </AppCard>
+
+      <AppCard p={4} className="box-info">
+        <Box className="label">
+          Webhook’s Success %<br />
+          Last 24 hour
+        </Box>
+        <Box className="value">--</Box>
+      </AppCard>
+    </SimpleGrid>
+  );
+};
+
 const NotificationItem: FC<INotificationItem> = ({ notification }) => {
   const [isShowDetail, setIsShowDetail] = useState<boolean>(false);
 
@@ -84,24 +130,24 @@ const NotificationItem: FC<INotificationItem> = ({ notification }) => {
       <Tr cursor={'pointer'} onClick={() => setIsShowDetail(!isShowDetail)}>
         <Td>{formatTimestamp(notification.createdAt * 1000)}</Td>
         <Td>{formatTimestamp(notification.updatedAt * 1000)}</Td>
-        <Td color={'brand.500'} className={'link-webhook'}>
-          <a href={notification.webhook} target={'_blank'}>
-            {notification.webhook}
-          </a>
-        </Td>
+        <Td>N/A</Td>
         <Td>{_renderStatus(notification)}</Td>
         <Td textAlign="right">{notification.remainRetry}</Td>
-        <Td fontSize={'18px'} >
-          {isShowDetail ? <ChevronDownIcon /> : <ChevronUpIcon /> }
-
+        <Td color={'#4C84FF'}>
+          {isShowDetail ? (
+            <>
+              Hide <ChevronDownIcon />
+            </>
+          ) : (
+            <>
+              Show <ChevronUpIcon />
+            </>
+          )}
         </Td>
       </Tr>
       {isShowDetail && (
         <Tr>
           <Td colSpan={6} bg={'#E9EDF7'}>
-            <Text fontSize={'16px'} mb={3}>
-              Request Body:
-            </Text>
             <ReactJson
               src={notification.metadata}
               displayDataTypes={false}
@@ -117,7 +163,7 @@ const NotificationItem: FC<INotificationItem> = ({ notification }) => {
   );
 };
 
-const NotificationsPage = () => {
+const WebhookActivitiesPage = () => {
   const { id: registrationId } = useParams<{ id: string }>();
 
   const fetchDataTable: any = async (param: any) => {
@@ -134,10 +180,10 @@ const NotificationsPage = () => {
         <Tr>
           <Th>Created At</Th>
           <Th>Updated At</Th>
-          <Th>Webhook</Th>
+          <Th>HTTP code</Th>
           <Th>Status</Th>
-          <Th textAlign="right">Remain time</Th>
-          <Th></Th>
+          <Th textAlign="right">Remain Retries</Th>
+          <Th>Request Body</Th>
         </Tr>
       </Thead>
     );
@@ -153,9 +199,11 @@ const NotificationsPage = () => {
     <BasePageContainer>
       <>
         <Text fontSize={'24px'} mb={5}>
-          Notifications
+          Webhook Activities
         </Text>
-        <AppCard p={0} pb={10} className={'notification-table'}>
+
+        <PartWebhookStatics />
+        <AppCard p={0} pb={10} mt={10} className={'notification-table'}>
           <AppDataTable
             requestParams={{ registrationId }}
             fetchData={fetchDataTable}
@@ -169,4 +217,4 @@ const NotificationsPage = () => {
   );
 };
 
-export default NotificationsPage;
+export default WebhookActivitiesPage;

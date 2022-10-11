@@ -93,7 +93,7 @@ const PartAddressWebhooks: FC<IListAddress> = ({ appInfo }) => {
                 {address.addresses.length > 1 ? 'Addresses' : 'Address'}
               </Td>
               <Td>
-                <AppLink to={`/notifications/${address.registrationId}`}>
+                <AppLink to={`/webhook-activities/${address.registrationId}`}>
                   View
                 </AppLink>
               </Td>
@@ -142,7 +142,7 @@ const PartAddressWebhooks: FC<IListAddress> = ({ appInfo }) => {
           </AppButton>
         </Flex>
 
-        <Box bgColor={'#FAFAFA'} pb={8}>
+        <Box bgColor={'#FAFAFA'} borderBottomRadius={'10px'} pb={8}>
           <AppDataTable
             requestParams={params}
             fetchData={fetchDataTable}
