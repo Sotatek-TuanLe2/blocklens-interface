@@ -1,6 +1,5 @@
 import { Box, Flex } from '@chakra-ui/react';
 import React, { useEffect, useState, useCallback } from 'react';
-import BasePage from 'src/layouts/BasePage';
 import rf from 'src/requests/RequestFactory';
 import { useParams } from 'react-router';
 import 'src/styles/pages/AppDetail.scss';
@@ -59,7 +58,7 @@ const AppDetail = () => {
             ></Box>
             <Flex ml={5} alignItems={'center'}>
               <Box mr={2} className={getLogoChainByName(appInfo?.chain)}></Box>
-              {appInfo.chain}
+              {appInfo.network}
             </Flex>
           </Flex>
         </Box>

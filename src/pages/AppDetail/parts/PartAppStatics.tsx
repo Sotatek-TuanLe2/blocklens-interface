@@ -15,24 +15,28 @@ const PartAppStatics:FC<IListInfo> = ({ appInfo }) => {
       gap="20px"
     >
       <AppCard p={4} className="box-info">
-        <Box className="label">Number of webhooks</Box>
+        <Box className="label">User’s Notifications <br/>
+          This Month</Box>
         <Box className="value">--</Box>
       </AppCard>
 
       <AppCard p={4} className="box-info">
-        <Box className="label">Number of Notifications</Box>
+        <Box className="label">App’s Notifications <br/>
+          This Month</Box>
         <Box className="value">--</Box>
       </AppCard>
 
       <AppCard p={4} className="box-info">
         <Box className="label">
-          Number of Notifications <br /> This Month
+          App’s Notifications <br/>
+          Last 24 Hour
         </Box>
         <Box className="value">--</Box>
       </AppCard>
 
       <AppCard p={4} className="box-info">
-        <Box className="label">Success % (Last 1 h)</Box>
+        <Box className="label">App’s Success % <br/>
+          Last 24 hour</Box>
         <Box className="value">--</Box>
       </AppCard>
     </SimpleGrid>

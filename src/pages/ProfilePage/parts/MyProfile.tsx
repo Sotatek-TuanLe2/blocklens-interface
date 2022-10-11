@@ -149,10 +149,6 @@ const MyProfile: FC = () => {
       <AppLink to={'#'} className="link-change-password">
         Change password
       </AppLink>
-
-      <Box className="btn-sign-out">
-        <AppButton>Sign out</AppButton>
-      </Box>
     </Box>
   );
 };

@@ -41,9 +41,23 @@
   .list-nft {
     .description {
       margin-top: 0;
+      font-size: 13px;
+      text-transform: uppercase;
     }
     table th {
       background: #f9f9f9;
     }
+    table tr {
+      background-color: white;
+    }
+  }
+
+  .button-create-webhook {
+    text-align: center;
+    color: #597DFF;
+    width: fit-content;
+    border-bottom: 1px solid #597DFF;
+    text-transform: uppercase;
+    cursor: pointer;
   }
 }

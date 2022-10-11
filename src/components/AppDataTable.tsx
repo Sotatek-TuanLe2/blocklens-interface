@@ -28,7 +28,7 @@ export interface RequestParams {
   poolId?: string;
   projectId?: string;
   appId?: number;
-  registrationId?: string
+  registrationId?: string;
 }
 
 interface DataTableProps {
@@ -40,6 +40,7 @@ interface DataTableProps {
   renderHeader?: () => ReactNode;
   renderNoData?: () => ReactNode;
   loading?: boolean;
+  isNotShowNoData?: boolean;
 }
 
 export interface DataTableRef {
@@ -78,6 +79,7 @@ const AppDataTable = forwardRef(
       renderBody,
       renderHeader,
       renderNoData,
+      isNotShowNoData = false,
     } = props;
 
     const initialPagination: Pagination = { limit, page: 1 };
@@ -186,11 +188,13 @@ const AppDataTable = forwardRef(
       }
       return isMobile ? _renderLoadMore() : _renderPagination();
     };
+
     const _renderNoResultOrLoading = () => {
       if (isLoading || props.loading) {
         return _renderLoading();
       }
-      if (!tableData.length) {
+
+      if (!tableData.length && !isNotShowNoData) {
         return renderNoData ? (
           renderNoData()
         ) : (
@@ -202,6 +206,7 @@ const AppDataTable = forwardRef(
         );
       }
     };
+
     const _renderBody = () => {
       if (!tableData.length || isLoading || props.loading) {
         return;
