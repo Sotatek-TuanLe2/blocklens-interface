@@ -9,7 +9,9 @@ import PartAddressWebhooks from './parts/PartAddressWebhooks';
 import { getLogoChainByName } from 'src/utils/utils-network';
 import PartContractWebhooks from './parts/PartContractWebhooks';
 import ModalEditApp from 'src/modals/ModalEditApp';
+import ModalDeleteApp from 'src/modals/ModalDeleteApp';
 import { BasePageContainer } from 'src/layouts';
+import { AppButton } from 'src/components';
 
 export interface IAppInfo {
   name?: string;
@@ -25,6 +27,8 @@ const AppDetail = () => {
   const [appInfo, setAppInfo] = useState<IAppInfo>({});
   const [loading, setLoading] = useState<boolean>(false);
   const [isOpenModalEditApp, setIsOpenModalEditApp] = useState<boolean>(false);
+  const [isOpenModalDeleteApp, setIsOpenModalDeleteApp] =
+    useState<boolean>(false);
 
   const { id: appId } = useParams<{ id: string }>();
 
@@ -48,7 +52,7 @@ const AppDetail = () => {
   return (
     <BasePageContainer className="app-detail">
       <>
-        <Box className="app-info">
+        <Flex className="app-info">
           <Flex alignItems={'center'}>
             <Box className="name">{appInfo.name}</Box>
             <Box
@@ -61,17 +65,38 @@ const AppDetail = () => {
               {appInfo.network}
             </Flex>
           </Flex>
-        </Box>
+
+          <Flex>
+            <AppButton size={'md'} variant="outline" mr={5}>
+              DEACTIVATE APP
+            </AppButton>
+            <AppButton
+              size={'md'}
+              variant="outline"
+              className={'btn-delete'}
+              onClick={() => setIsOpenModalDeleteApp(true)}
+            >
+              DELETE APP
+            </AppButton>
+          </Flex>
+        </Flex>
 
         <PartAppStatics appInfo={appInfo} />
         <PartNFTWebhooks appInfo={appInfo} />
         <PartAddressWebhooks appInfo={appInfo} />
         <PartContractWebhooks appInfo={appInfo} />
+
         <ModalEditApp
           open={isOpenModalEditApp}
           onClose={() => setIsOpenModalEditApp(false)}
           appInfo={appInfo}
           reloadData={getAppInfo}
+        />
+
+        <ModalDeleteApp
+          open={isOpenModalDeleteApp}
+          onClose={() => setIsOpenModalDeleteApp(false)}
+          appInfo={appInfo}
         />
       </>
     </BasePageContainer>

@@ -21,6 +21,11 @@ export default class AppRequest extends BaseRequest {
     return this.patch(url, params);
   }
 
+  deleteApp(appId: string) {
+    const url = `/my/apps/${appId}`;
+    return this.delete(url);
+  }
+
   getAppDetail(id: number) {
     const url = `/my/apps/${id}`;
     return this.get(url);

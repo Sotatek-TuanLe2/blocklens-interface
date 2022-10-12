@@ -94,6 +94,7 @@ const BaseModal: FC<BaseModalProps> = ({
               <AppButton
                 isLoading={isLoadingButtonRight}
                 onClick={onActionRight}
+                fontWeight={400}
               >
                 {textActionRight}
               </AppButton>

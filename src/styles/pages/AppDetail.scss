@@ -1,6 +1,16 @@
 @import 'src/styles/abstracts/variables';
 
 .app-detail {
+  .app-info {
+    justify-content: space-between;
+  }
+
+  .btn-delete {
+    color: #e31a1a;
+    &:hover {
+      border: 1px solid #e31a1a;
+    }
+  }
   .name {
     font-size: 17px;
     line-height: 25px;
@@ -31,9 +41,9 @@
 
   .button-create-webhook {
     text-align: center;
-    color: #597DFF;
+    color: #597dff;
     width: fit-content;
-    border-bottom: 1px solid #597DFF;
+    border-bottom: 1px solid #597dff;
     text-transform: uppercase;
     cursor: pointer;
   }
