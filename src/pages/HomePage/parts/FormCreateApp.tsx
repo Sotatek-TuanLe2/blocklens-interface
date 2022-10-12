@@ -140,7 +140,7 @@ const FormCreateApp: React.FC<IFormCreateApp> = ({ setSearchListApp }) => {
             value={networkSelected}
           ></AppSelect>
         </AppField>
-        <AppField label={'DESCRIPTION'} customWidth={'100%'}>
+        <AppField label={'DESCRIPTION'} customWidth={'100%'} isRequired>
           <AppTextarea
             placeholder="Write something about this app in 50 characters!"
             value={dataForm.description}

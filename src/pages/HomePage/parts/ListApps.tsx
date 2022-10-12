@@ -7,7 +7,7 @@ import {
   Tr,
   Td,
   Box,
-  Badge,
+  Tag,
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { AppCard, AppDataTable, AppLink } from 'src/components';
@@ -17,6 +17,36 @@ import { IAppResponse, IListAppResponse } from 'src/utils/common';
 interface IListApps {
   searchListApp: any;
 }
+
+const STATUS = {
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE',
+};
+
+export const _renderStatus = (status?: string) => {
+  const getColorBrandStatus = () => {
+    switch (status) {
+      case STATUS.ACTIVE:
+        return 'green';
+      case STATUS.INACTIVE:
+        return 'red';
+    }
+  };
+
+  if (!status) return 'N/A';
+  return (
+    <Tag
+      size={'sm'}
+      borderRadius="full"
+      variant="solid"
+      colorScheme={getColorBrandStatus()}
+      px={5}
+    >
+      {status}
+    </Tag>
+  );
+};
+
 
 const ListApps: React.FC<IListApps> = ({ searchListApp }) => {
   const [totalApps, setTotalApps] = useState<number>(0);
@@ -59,7 +89,7 @@ const ListApps: React.FC<IListApps> = ({ searchListApp }) => {
               <Td>{app.chain + ' ' + app.network}</Td>
               <Td>{app.description || ''}</Td>
               <Td textAlign={'right'}>N/A</Td>
-              <Td>N/A</Td>
+              <Td>{_renderStatus(app.status)}</Td>
               <Td>N/A</Td>
             </Tr>
           );
