@@ -39,7 +39,7 @@ const ProfilePage: FC = () => {
   return (
     <BasePageContainer>
       <Box className="profile">
-        <Tabs display={'flex'} variant="soft-rounded">
+        <Tabs display={'flex'} variant="soft-rounded" index={tabIndex}>
           <TabList flexDirection={'column'} className="menu-left">
             <Box className={'title'}>Settings</Box>
             <Tab
