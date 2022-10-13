@@ -30,4 +30,9 @@ export default class AuthRequest extends BaseRequest {
     const url = `/public/users/verify-email/?uid=${uid}&vid=${vid}`;
     return this.get(url);
   }
+
+  changePassword(params: { newPassword: string; oldPassword: string }) {
+    const url = '/my/users/profile/password';
+    return this.put(url, params);
+  }
 }
