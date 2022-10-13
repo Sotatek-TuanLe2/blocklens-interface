@@ -155,9 +155,6 @@ const MyProfile: FC = () => {
         Change password
       </AppLink>
 
-      <Box className="btn-sign-out">
-        <AppButton>Sign out</AppButton>
-      </Box>
       {isOpenModal && (
         <ChangePasswordModal
           isOpenModal={isOpenModal}
