@@ -64,6 +64,7 @@ const BaseModal: FC<BaseModalProps> = ({
         size={size}
         isCentered={isCentered}
         closeOnOverlayClick={closeOnOverlayClick}
+        autoFocus={false}
       >
         <ModalOverlay />
         <ModalContent className={className}>

@@ -9,6 +9,7 @@ import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { createValidator } from 'src/utils/utils-validator';
 import { getInfoUser } from 'src/store/auth';
+import ChangePasswordModal from 'src/modals/ChangePasswordModal';
 
 interface IDataForm {
   firstName?: string;
@@ -24,6 +25,7 @@ const MyProfile: FC = () => {
   const { userInfo } = useSelector((state: RootState) => state.auth);
   const [dataForm, setDataForm] = useState<IDataForm>(initDataUpDate);
   const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const dispatch = useDispatch<any>();
 
   useEffect(() => {
@@ -39,7 +41,6 @@ const MyProfile: FC = () => {
       element: (message: string) => <Text className="text-error">{message}</Text>,
     }),
   );
-
   const _renderButtonEdit = () => {
     return (
       <Box onClick={() => setIsEdit(true)} cursor="pointer">
@@ -146,9 +147,23 @@ const MyProfile: FC = () => {
         </Flex>
       </Box>
 
-      <AppLink to={'#'} className="link-change-password">
+      <AppLink
+        to={'#'}
+        className="link-change-password"
+        onClick={() => setIsOpenModal(true)}
+      >
         Change password
       </AppLink>
+
+      <Box className="btn-sign-out">
+        <AppButton>Sign out</AppButton>
+      </Box>
+      {isOpenModal && (
+        <ChangePasswordModal
+          isOpenModal={isOpenModal}
+          setIsOpenModal={setIsOpenModal}
+        />
+      )}
     </Box>
   );
 };
