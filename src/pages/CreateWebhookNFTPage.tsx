@@ -112,7 +112,7 @@ const CreateWebhookNFTPage = () => {
                 }}
               />
             </AppField>
-            <AppField label={'TOKEN IDS'} customWidth={'49%'} isRequired>
+            <AppField label={'TOKEN IDS'} customWidth={'49%'}>
               <AppInput
                 placeholder="12, 0xc"
                 size="lg"
@@ -123,11 +123,6 @@ const CreateWebhookNFTPage = () => {
                     tokenIds: e.target.value,
                   })
                 }
-                validate={{
-                  name: `tokenIds`,
-                  validator: validator.current,
-                  rule: 'required',
-                }}
               />
             </AppField>
             <AppUploadABI

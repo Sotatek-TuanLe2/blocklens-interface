@@ -19,7 +19,8 @@ export const TYPE_ABI = {
   CONTRACT: 'CONTRACT',
 };
 
-const LINK_ABI_NFT = '/abi/ERC-721.json';
+const FILE_TEMPLATE_NFT = '/abi/ERC-721.json';
+const FILE_TEMPLATE_CONTRACT = '/abi/ERC-20.json';
 
 const Validator = require('jsonschema').Validator;
 const validateJson = new Validator();
@@ -307,22 +308,23 @@ const AppUploadABI: FC<IAppUploadABI> = ({ onChange, type }) => {
       );
     }
 
-    if (type === TYPE_ABI.NFT) {
-      return (
-        <Link as={ReactLink} to={LINK_ABI_NFT} target="_blank" download>
-          <AppButton
-            size={'sm'}
-            variant={'outline'}
-            borderColor={'green'}
-            color={'green'}
-          >
-            TEMPLATE
-          </AppButton>
-        </Link>
-      );
-    }
-
-    return <> </>;
+    return (
+      <Link
+        as={ReactLink}
+        to={type !== TYPE_ABI.NFT ? FILE_TEMPLATE_CONTRACT : FILE_TEMPLATE_NFT}
+        target="_blank"
+        download
+      >
+        <AppButton
+          size={'sm'}
+          variant={'outline'}
+          borderColor={'green'}
+          color={'green'}
+        >
+          TEMPLATE
+        </AppButton>
+      </Link>
+    );
   };
 
   const _renderNoticeUpload = () => {

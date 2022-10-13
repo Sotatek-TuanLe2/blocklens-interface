@@ -1,6 +1,6 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { AppButton, AppField, AppInput } from 'src/components';
+import { AppButton, AppField, AppInput, AppCard } from 'src/components';
 import { createValidator } from 'src/utils/utils-validator';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
@@ -69,60 +69,63 @@ const CreateWebhookContractPage = () => {
         <Box mb={4} fontSize={'20px'}>
           Create Webhook Contract
         </Box>
-        <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
-          <AppField label={'WEBHOOK URL'} customWidth={'49%'} isRequired>
-            <AppInput
-              placeholder="https://yourapp.com/webhook/data/12345"
-              borderRightRadius={0}
-              value={dataForm.webhook}
-              onChange={(e) =>
-                setDataForm({
-                  ...dataForm,
-                  webhook: e.target.value,
-                })
-              }
-              validate={{
-                name: `webhook`,
-                validator: validator.current,
-                rule: ['required', 'url'],
-              }}
-            />
-          </AppField>
-          <AppField label={'CONTRACT ADDRESS'} customWidth={'49%'} isRequired>
-            <AppInput
-              placeholder="0xbb.."
-              value={dataForm.address}
-              onChange={(e) =>
-                setDataForm({
-                  ...dataForm,
-                  address: e.target.value,
-                })
-              }
-              validate={{
-                name: `contractAddress`,
-                validator: validator.current,
-                rule: 'required',
-              }}
-            />
-          </AppField>
-          <AppUploadABI
-            onChange={(abi, abiFilter) =>
-              setDataForm({ ...dataForm, abi, abiFilter })
-            }
-          />
-        </Flex>
 
-        <Flex justifyContent={'flex-end'}>
-          <AppButton
-            disabled={isDisableSubmit}
-            onClick={() => handleSubmitForm()}
-            size={'md'}
-            mt={5}
-            textTransform={'uppercase'}
-          >
-            Create webhook
-          </AppButton>
-        </Flex>
+        <AppCard>
+          <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
+            <AppField label={'WEBHOOK URL'} customWidth={'49%'} isRequired>
+              <AppInput
+                placeholder="https://yourapp.com/webhook/data/12345"
+                borderRightRadius={0}
+                value={dataForm.webhook}
+                onChange={(e) =>
+                  setDataForm({
+                    ...dataForm,
+                    webhook: e.target.value,
+                  })
+                }
+                validate={{
+                  name: `webhook`,
+                  validator: validator.current,
+                  rule: ['required', 'url'],
+                }}
+              />
+            </AppField>
+            <AppField label={'CONTRACT ADDRESS'} customWidth={'49%'} isRequired>
+              <AppInput
+                placeholder="0xbb.."
+                value={dataForm.address}
+                onChange={(e) =>
+                  setDataForm({
+                    ...dataForm,
+                    address: e.target.value,
+                  })
+                }
+                validate={{
+                  name: `contractAddress`,
+                  validator: validator.current,
+                  rule: 'required',
+                }}
+              />
+            </AppField>
+            <AppUploadABI
+              onChange={(abi, abiFilter) =>
+                setDataForm({ ...dataForm, abi, abiFilter })
+              }
+            />
+          </Flex>
+
+          <Flex justifyContent={'flex-end'}>
+            <AppButton
+              disabled={isDisableSubmit}
+              onClick={() => handleSubmitForm()}
+              size={'md'}
+              mt={5}
+              textTransform={'uppercase'}
+            >
+              Create webhook
+            </AppButton>
+          </Flex>
+        </AppCard>
       </Box>
     </BasePageContainer>
   );
