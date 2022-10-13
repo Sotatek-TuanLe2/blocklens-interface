@@ -4,7 +4,7 @@ import { AppButton, AppCard, AppField, AppInput } from 'src/components';
 import { createValidator } from 'src/utils/utils-validator';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
-import AppUploadABI from 'src/components/AppUploadABI';
+import AppUploadABI, { TYPE_ABI } from 'src/components/AppUploadABI';
 import { BasePageContainer } from 'src/layouts';
 import { useHistory, useParams } from 'react-router';
 
@@ -63,7 +63,7 @@ const CreateWebhookNFTPage = () => {
 
   useEffect(() => {
     setTimeout(() => {
-      const isDisabled = !validator.current.allValid() || !dataForm.abi.length;
+      const isDisabled = !validator.current.allValid();
       setIsDisableSubmit(isDisabled);
     }, 0);
   }, [dataForm, open]);
@@ -134,7 +134,7 @@ const CreateWebhookNFTPage = () => {
               onChange={(abi, abiFilter) =>
                 setDataForm({ ...dataForm, abi, abiFilter })
               }
-              type="NFT"
+              type={TYPE_ABI.NFT}
             />
           </Flex>
           <Flex justifyContent={'flex-end'}>

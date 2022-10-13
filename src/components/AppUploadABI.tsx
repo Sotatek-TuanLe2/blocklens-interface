@@ -1,4 +1,4 @@
-import { Box, Flex, Text, Checkbox } from '@chakra-ui/react';
+import { Box, Flex, Link, Text, Checkbox, Tooltip } from '@chakra-ui/react';
 import { toastError } from 'src/utils/utils-notify';
 import React, {
   useState,
@@ -11,6 +11,15 @@ import React, {
 import { AppCard, AppInput, AppSelect } from 'src/components';
 import { CloseIcon } from '@chakra-ui/icons';
 import ERC721 from 'src/abi/ERC-721.json';
+import AppButton from './AppButton';
+import { Link as ReactLink } from 'react-router-dom';
+
+export const TYPE_ABI = {
+  NFT: 'NFT',
+  CONTRACT: 'CONTRACT',
+};
+
+const LINK_ABI_NFT = '/abi/ERC-721.json';
 
 const Validator = require('jsonschema').Validator;
 const validateJson = new Validator();
@@ -87,7 +96,7 @@ const ListSelect: FC<IListSelect> = ({
 
     if (!!valueSearch) {
       dataFiltered = dataFiltered.filter((item: any) =>
-        item.name.includes(valueSearch),
+        item.name.toLowerCase().includes(valueSearch.toLowerCase()),
       );
     }
 
@@ -221,7 +230,6 @@ const AppUploadABI: FC<IAppUploadABI> = ({ onChange, type }) => {
     reader.onload = (e: any) => {
       const data = e.target.result;
 
-
       if (!validateJson.validate(JSON.parse(data), schema).valid) {
         toastError({ message: 'The ABI file must be correct format' });
         return;
@@ -230,11 +238,10 @@ const AppUploadABI: FC<IAppUploadABI> = ({ onChange, type }) => {
       const abi = JSON.parse(data).abi;
 
       const isCorrectFunctionAndEventOfNFT = listFunctionAndEventOfNFT.every(
-        (name: string) =>
-          abi.some((abiItem: any) => abiItem.name === name),
+        (name: string) => abi.some((abiItem: any) => abiItem.name === name),
       );
 
-      if (type === 'NFT' && !isCorrectFunctionAndEventOfNFT) {
+      if (type === TYPE_ABI.NFT && !isCorrectFunctionAndEventOfNFT) {
         toastError({ message: 'The ABI file must be correct format' });
         return;
       }
@@ -246,7 +253,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({ onChange, type }) => {
   };
 
   useEffect(() => {
-    if (type !== 'NFT') return;
+    if (type !== TYPE_ABI.NFT) return;
     setABIData(ERC721.abi);
   }, []);
 
@@ -271,7 +278,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({ onChange, type }) => {
   }, [ABIData, dataSelected]);
 
   const onClearFile = () => {
-    if (type !== 'NFT') {
+    if (type !== TYPE_ABI.NFT) {
       setDataSelected([]);
       setABIData([]);
       setFileSelected({});
@@ -284,73 +291,117 @@ const AppUploadABI: FC<IAppUploadABI> = ({ onChange, type }) => {
     inputRef.current.value = null;
   };
 
+  const _renderNameFile = () => {
+    if (fileSelected?.name) {
+      return (
+        <>
+          {fileSelected?.name}
+          <CloseIcon
+            cursor={'pointer'}
+            onClick={onClearFile}
+            fontSize={'13px'}
+            color={'red'}
+            ml={3}
+          />
+        </>
+      );
+    }
+
+    if (type === TYPE_ABI.NFT) {
+      return (
+        <Link as={ReactLink} to={LINK_ABI_NFT} target="_blank" download>
+          <AppButton
+            size={'sm'}
+            variant={'outline'}
+            borderColor={'green'}
+            color={'green'}
+          >
+            TEMPLATE
+          </AppButton>
+        </Link>
+      );
+    }
+
+    return <> </>;
+  };
+
+  const _renderNoticeUpload = () => {
+    if (type !== TYPE_ABI.NFT) {
+      return (
+        <Text as={'span'} color={'red.500'}>
+          *
+        </Text>
+      );
+    }
+
+    return (
+      <Tooltip
+        p={2}
+        label={`This is an optional function. If you don't upload a custom ABI file, we would use default ERC-721 file.`}
+      >
+        <Box className="icon-detail_info" ml={2} cursor={'pointer'}></Box>
+      </Tooltip>
+    );
+  };
+
   return (
     <Box width={'full'}>
-      <Flex alignItems={'center'}>
-        <Text mr={6}>
-          ABI
-          <Text as={'span'} color={'red.500'}>
-            *
-          </Text>
-        </Text>
-        <label>
-          <Box
-            px={3}
-            cursor={'pointer'}
-            borderRadius={'10px'}
-            py={1}
-            bgColor={'blue.500'}
-            color={'white'}
-          >
-            Upload
-          </Box>
-          <AppInput
-            type="file"
-            onChange={handleFileSelect}
-            display="none"
-            ref={inputRef}
-          />
-        </label>
+      <Flex justifyContent={'space-between'} alignItems={'center'}>
+        <Flex alignItems={'center'}>
+          <Flex mr={6} alignItems={'center'}>
+            ABI
+            {_renderNoticeUpload()}
+          </Flex>
+
+          <label>
+            <Box
+              px={3}
+              cursor={'pointer'}
+              borderRadius={'4px'}
+              fontSize={'14px'}
+              py={'6px'}
+              bgColor={'#4C84FF'}
+              color={'white'}
+              mr={5}
+            >
+              UPLOAD
+            </Box>
+
+            <AppInput
+              type="file"
+              onChange={handleFileSelect}
+              display="none"
+              ref={inputRef}
+            />
+          </label>
+
+          {_renderNameFile()}
+        </Flex>
+
+        {ABIData && !!ABIData.length && (
+          <Flex>
+            <Box width={'200px'}>
+              <AppSelect
+                onChange={(e: any) => {
+                  setValueSort(e.value);
+                }}
+                options={options}
+                defaultValue={options[0]}
+              />
+            </Box>
+            <AppInput
+              ml={10}
+              type="text"
+              placeholder={'Search'}
+              value={valueSearch}
+              onChange={(e) => setValueSearch(e.target.value.trim())}
+            />
+          </Flex>
+        )}
       </Flex>
 
       {ABIData && !!ABIData.length && (
         <>
-          <Flex justifyContent={'space-between'} alignItems={'center'}>
-            <Box mt={2}>
-              {fileSelected?.name && (
-                <>
-                  {fileSelected?.name}
-                  <CloseIcon
-                    cursor={'pointer'}
-                    onClick={onClearFile}
-                    fontSize={'13px'}
-                    color={'red'}
-                    ml={3}
-                  />
-                </>
-              )}
-            </Box>
-
-            <Flex>
-              <Box width={'200px'}>
-                <AppSelect
-                  onChange={(e: any) => {
-                    setValueSort(e.value);
-                  }}
-                  options={options}
-                  defaultValue={options[0]}
-                />
-              </Box>
-              <AppInput
-                ml={10}
-                type="text"
-                placeholder={'Search'}
-                value={valueSearch}
-                onChange={(e) => setValueSearch(e.target.value.trim())}
-              />
-            </Flex>
-          </Flex>
-
           <ListSelect
             title={'Functions'}
             data={listFunction}
