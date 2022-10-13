@@ -14,14 +14,12 @@ import ChangePasswordModal from 'src/modals/ChangePasswordModal';
 interface IDataForm {
   firstName?: string;
   lastName?: string;
-  email?: string;
 }
 
 const MyProfile: FC = () => {
   const initDataUpDate = {
     firstName: '',
     lastName: '',
-    email: '',
   };
 
   const { userInfo } = useSelector((state: RootState) => state.auth);
@@ -34,14 +32,13 @@ const MyProfile: FC = () => {
     const data = {
       firstName: userInfo.firstName,
       lastName: userInfo.lastName,
-      email: userInfo.email,
     };
     setDataForm(data);
   }, [userInfo, isEdit]);
 
   const validator = useRef(
     createValidator({
-      element: (message: string) => <Text color={'red.500'}>{message}</Text>,
+      element: (message: string) => <Text className="text-error">{message}</Text>,
     }),
   );
   const _renderButtonEdit = () => {
@@ -90,26 +87,7 @@ const MyProfile: FC = () => {
           <Flex alignItems={'center'}>
             <Box className="info-title">Email</Box>
             <Box>
-              {isEdit ? (
-                <AppInput
-                  className="input-field"
-                  size={'sm'}
-                  value={dataForm.email}
-                  onChange={(e) =>
-                    setDataForm({
-                      ...dataForm,
-                      email: e.target.value,
-                    })
-                  }
-                  validate={{
-                    name: `email`,
-                    validator: validator.current,
-                    rule: ['required', 'email'],
-                  }}
-                />
-              ) : (
-                <Box>{userInfo.email}</Box>
-              )}
+              {userInfo.email}
             </Box>
           </Flex>
         </Flex>

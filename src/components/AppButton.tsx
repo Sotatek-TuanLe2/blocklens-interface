@@ -46,18 +46,12 @@ export const appButtonStyles = {
       borderRadius: '4px',
     }),
     brand: (props: StyleProps) => ({
-      bg: mode('blue.100', 'blue.100')(props),
+      bg: '#4C84FF',
       color: 'white',
-      _focus: {
-        bg: mode('blue.100', 'blue.100')(props),
-      },
-      _active: {
-        bg: mode('blue.100', 'blue.100')(props),
-      },
       _hover: {
-        bg: mode('blue.100', 'blue.100')(props),
+        bg: '#3965FF',
         _disabled: {
-          bg: mode('blue.100', 'blue.100')(props),
+          bg: '#4C84FF',
         },
       },
     }),

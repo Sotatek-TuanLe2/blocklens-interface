@@ -1,7 +1,7 @@
 import { Flex, Tbody, Th, Thead, Tr, Td, Box, Tag } from '@chakra-ui/react';
 import { SmallAddIcon } from '@chakra-ui/icons';
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { AppButton, AppCard, AppDataTable } from 'src/components';
+import React, { FC, useCallback, useEffect, useState } from 'react';
+import { AppButton, AppCard, AppDataTable, AppLink } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import { IListAppResponse } from 'src/utils/common';
 import ModalCreateWebhookAddress from 'src/modals/ModalCreateWebhookAddress';
@@ -93,7 +93,7 @@ const PartAddressWebhooks: FC<IListAddress> = ({ appInfo }) => {
         {data?.map((address: IAddressResponse, index: number) => {
           return (
             <Tr key={index}>
-              <Td>N/A</Td>
+              <Td><AppLink to={`/notifications/${address.registrationId}`}>{address.registrationId}</AppLink></Td>
               <Td>{_renderNetwork(address)}</Td>
               <Td>{_renderStatus(address)}</Td>
               <Td>{address.webhook}</Td>

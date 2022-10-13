@@ -1,18 +1,17 @@
 import {
-  Badge,
-  Box,
   Flex,
   Tbody,
-  Td,
   Text,
   Th,
   Thead,
   Tr,
+  Td,
+  Box,
+  Badge,
 } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React from 'react';
 import { useHistory } from 'react-router';
 import { AppButton, AppCard, AppDataTable } from 'src/components';
-import ConnectBlocklensModal from 'src/modals/ConnectBlocklensModal';
 import rf from 'src/requests/RequestFactory';
 import { IAppResponse, IListAppResponse } from 'src/utils/common';
 
@@ -21,12 +20,7 @@ interface IListApps {
 }
 
 const ListApps: React.FC<IListApps> = ({ searchListApp }) => {
-  const [isOpenAppModal, setIsOpenAppModal] = useState<boolean>(false);
-
   const history = useHistory();
-
-  const [dataConnectBlocklens, setDataConnectBlocklens] =
-    useState<IAppResponse | null>();
 
   const fetchDataTable: any = async (param: any) => {
     try {
@@ -37,11 +31,6 @@ const ListApps: React.FC<IListApps> = ({ searchListApp }) => {
     } catch (error) {
       return error;
     }
-  };
-
-  const handleOnClickViewKey = (value: IAppResponse) => {
-    setDataConnectBlocklens(value);
-    setIsOpenAppModal(true);
   };
 
   const _renderHeader = () => {
@@ -59,7 +48,6 @@ const ListApps: React.FC<IListApps> = ({ searchListApp }) => {
           <Th>DAYS ON ALCHEMY</Th>
 
           <Th>ACTIONS</Th>
-          <Th></Th>
         </Tr>
       </Thead>
     );
@@ -76,25 +64,6 @@ const ListApps: React.FC<IListApps> = ({ searchListApp }) => {
     } else return <Text className="name-column">{name}</Text>;
   };
 
-  const _renderCellAction = (value: IAppResponse) => {
-    if (!value) {
-      return <AppButton variant="no-effects">DELETE APP</AppButton>;
-    } else
-      return (
-        <Flex alignItems={'center'}>
-          <Text
-            className="button-no-effect"
-            pr={'16px'}
-            onClick={() => handleOnClickViewKey(value)}
-          >
-            VIEW KEY
-          </Text>
-          <Text className="button-no-effect gray-dot">SECURITY </Text>
-          <Text ml={'4px'} className="icon-shield"></Text>
-        </Flex>
-      );
-  };
-
   const _renderBody = (data?: IAppResponse[]) => {
     return (
       <Tbody>
@@ -106,8 +75,6 @@ const ListApps: React.FC<IListApps> = ({ searchListApp }) => {
               <Td>{app.description || ''}</Td>
               <Td>n/a</Td>
               <Td>n/a</Td>
-
-              <Td>{_renderCellAction(app)}</Td>
               <Td>
                 <AppButton
                   size={'sm'}
@@ -138,13 +105,6 @@ const ListApps: React.FC<IListApps> = ({ searchListApp }) => {
           limit={10}
         />
       </AppCard>
-      {isOpenAppModal && (
-        <ConnectBlocklensModal
-          isOpenAppModal={isOpenAppModal}
-          setIsOpenAppModal={setIsOpenAppModal}
-          dataConnectBlocklens={dataConnectBlocklens}
-        />
-      )}
     </Box>
   );
 };

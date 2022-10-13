@@ -16,6 +16,11 @@ export default class AppRequest extends BaseRequest {
     return this.post(url, params);
   }
 
+  updateApp(appId: string, params: any) {
+    const url = `/my/apps/${appId}`;
+    return this.patch(url, params);
+  }
+
   getAppDetail(id: number) {
     const url = `/my/apps/${id}`;
     return this.get(url);

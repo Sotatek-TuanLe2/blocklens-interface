@@ -1,0 +1,13 @@
+.notification-table {
+  div:first-child {
+    border-radius: 10px;
+  }
+
+  .link-webhook {
+    width: 350px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: block;
+  }
+}

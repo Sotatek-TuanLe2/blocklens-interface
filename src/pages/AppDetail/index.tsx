@@ -9,6 +9,8 @@ import PartAppStatics from './parts/PartAppStatics';
 import PartAddressWebhooks from './parts/PartAddressWebhooks';
 import { getLogoChainByName } from 'src/utils/utils-network';
 import PartContractWebhooks from './parts/PartContractWebhooks';
+import ModalEditApp from 'src/modals/ModalEditApp';
+import { BasePageContainer } from 'src/layouts';
 
 export interface IAppInfo {
   name?: string;
@@ -23,6 +25,7 @@ export interface IAppInfo {
 const AppDetail = () => {
   const [appInfo, setAppInfo] = useState<IAppInfo>({});
   const [loading, setLoading] = useState<boolean>(false);
+  const [isOpenModalEditApp, setIsOpenModalEditApp] = useState<boolean>(false);
 
   const { id: appId } = useParams<{ id: string }>();
 
@@ -44,29 +47,35 @@ const AppDetail = () => {
   }, []);
 
   return (
-    <BasePage>
-      <Box className="app-detail">
-        <Box mx={5}>
-          <Box className="app-info">
-            <Flex alignItems={'center'}>
-              <Box className="name">{appInfo.name}</Box>
-              <Box className="icon-edit" cursor="pointer"></Box>
-              <Flex ml={5} alignItems={'center'}>
-                <Box mr={2} className={getLogoChainByName(appInfo?.chain)}>
-                </Box>
-                {appInfo.chain}
-              </Flex>
+    <BasePageContainer className="app-detail">
+      <>
+        <Box className="app-info">
+          <Flex alignItems={'center'}>
+            <Box className="name">{appInfo.name}</Box>
+            <Box
+              className="icon-edit"
+              cursor="pointer"
+              onClick={() => setIsOpenModalEditApp(true)}
+            ></Box>
+            <Flex ml={5} alignItems={'center'}>
+              <Box mr={2} className={getLogoChainByName(appInfo?.chain)}></Box>
+              {appInfo.chain}
             </Flex>
-            <Box className="description">{appInfo.description}</Box>
-          </Box>
-
-          <PartAppStatics appInfo={appInfo} />
-          <PartNFTWebhooks appInfo={appInfo} />
-          <PartAddressWebhooks appInfo={appInfo} />
-          <PartContractWebhooks appInfo={appInfo} />
+          </Flex>
         </Box>
-      </Box>
-    </BasePage>
+
+        <PartAppStatics appInfo={appInfo} />
+        <PartNFTWebhooks appInfo={appInfo} />
+        <PartAddressWebhooks appInfo={appInfo} />
+        <PartContractWebhooks appInfo={appInfo} />
+        <ModalEditApp
+          open={isOpenModalEditApp}
+          onClose={() => setIsOpenModalEditApp(false)}
+          appInfo={appInfo}
+          reloadData={getAppInfo}
+        />
+      </>
+    </BasePageContainer>
   );
 };
 

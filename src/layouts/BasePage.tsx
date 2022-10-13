@@ -1,6 +1,5 @@
 import { ReactNode, FC } from 'react';
-import Footer from 'src/layouts/Footer';
-import Header from 'src/layouts/Header';
+import { Footer, Header } from 'src/layouts';
 import { Box } from '@chakra-ui/react';
 import React from 'react';
 

@@ -46,7 +46,13 @@ iframe {
 .select-app {
   &__control {
     height: 48px;
-    border-color: #E0E5F2 !important;
+    border-color: #e0e5f2 !important;
     cursor: pointer;
   }
+}
+
+.text-error {
+  font-weight: 400;
+  color: #ee5d50;
+  font-size: 14px;
 }
