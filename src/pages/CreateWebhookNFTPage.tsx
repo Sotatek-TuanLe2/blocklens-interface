@@ -48,7 +48,7 @@ const CreateWebhookNFTPage = () => {
 
     try {
       await rf.getRequest('RegistrationRequest').addNFTActivity({
-        appId,
+        appId: +appId,
         ...dataForm,
         tokenIds: dataForm.tokenIds
           .split(',')
@@ -84,7 +84,7 @@ const CreateWebhookNFTPage = () => {
                 onChange={(e) =>
                   setDataForm({
                     ...dataForm,
-                    webhook: e.target.value,
+                    webhook: e.target.value.trim(),
                   })
                 }
                 validate={{
@@ -102,7 +102,7 @@ const CreateWebhookNFTPage = () => {
                 onChange={(e) =>
                   setDataForm({
                     ...dataForm,
-                    address: e.target.value,
+                    address: e.target.value.trim(),
                   })
                 }
                 validate={{

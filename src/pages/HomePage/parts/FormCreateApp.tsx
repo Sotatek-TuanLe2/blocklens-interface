@@ -59,7 +59,9 @@ const FormCreateApp: React.FC<IFormCreateApp> = ({ setSearchListApp }) => {
   const [hiddenErrorText, setHiddenErrorText] = useState(false);
   const validator = useRef(
     createValidator({
-      element: (message: string) => <Text className="text-error">{message}</Text>,
+      element: (message: string) => (
+        <Text className="text-error">{message}</Text>
+      ),
     }),
   );
   const [chainSelected, setChainSelected] = useState<any>(CHAINS[0]);
@@ -73,7 +75,8 @@ const FormCreateApp: React.FC<IFormCreateApp> = ({ setSearchListApp }) => {
 
   const handleSubmitForm = async () => {
     const dataSubmit = {
-      ...dataForm,
+      name: dataForm.name.trim(),
+      description: dataForm.description.trim(),
       chain: chainSelected.value,
       network: networkSelected.value,
     };
@@ -111,7 +114,7 @@ const FormCreateApp: React.FC<IFormCreateApp> = ({ setSearchListApp }) => {
             validate={{
               name: `name`,
               validator: validator.current,
-              rule: ['required', 'max:20']
+              rule: ['required', 'max:20'],
             }}
           />
         </AppField>
@@ -144,14 +147,16 @@ const FormCreateApp: React.FC<IFormCreateApp> = ({ setSearchListApp }) => {
         </AppField>
         <AppField label={'DESCRIPTION'} customWidth={'100%'}>
           <AppTextarea
+            hiddenErrorText={hiddenErrorText}
             placeholder="Write something about this app in 50 characters!"
             value={dataForm.description}
-            onChange={(e) =>
+            onChange={(e) => {
+              setHiddenErrorText(false);
               setDataForm({
                 ...dataForm,
                 description: e.target.value,
-              })
-            }
+              });
+            }}
             validate={{
               name: 'description',
               validator: validator.current,

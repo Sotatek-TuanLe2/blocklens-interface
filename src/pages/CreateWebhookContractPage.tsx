@@ -80,7 +80,7 @@ const CreateWebhookContractPage = () => {
                 onChange={(e) =>
                   setDataForm({
                     ...dataForm,
-                    webhook: e.target.value,
+                    webhook: e.target.value.trim(),
                   })
                 }
                 validate={{
@@ -97,7 +97,7 @@ const CreateWebhookContractPage = () => {
                 onChange={(e) =>
                   setDataForm({
                     ...dataForm,
-                    address: e.target.value,
+                    address: e.target.value.trim(),
                   })
                 }
                 validate={{
