@@ -88,7 +88,7 @@ export const globalStyles = {
         bg: mode('white', 'navy.900')(props),
         fontFamily: 'DM Sans',
         letterSpacing: '0.2px',
-        fontWeight: 500
+        fontWeight: 500,
       },
       input: {
         color: 'gray.700',

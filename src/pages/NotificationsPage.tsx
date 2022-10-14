@@ -8,7 +8,7 @@ import { formatTimestamp } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import 'src/styles/pages/NotificationPage.scss';
 import ReactJson from 'react-json-view';
-import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons'
+import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
 
 interface INotificationResponse {
   hash: string;
@@ -91,9 +91,8 @@ const NotificationItem: FC<INotificationItem> = ({ notification }) => {
         </Td>
         <Td>{_renderStatus(notification)}</Td>
         <Td textAlign="right">{notification.remainRetry}</Td>
-        <Td fontSize={'18px'} >
-          {isShowDetail ? <ChevronDownIcon /> : <ChevronUpIcon /> }
-
+        <Td fontSize={'18px'}>
+          {isShowDetail ? <ChevronDownIcon /> : <ChevronUpIcon />}
         </Td>
       </Tr>
       {isShowDetail && (

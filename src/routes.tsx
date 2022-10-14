@@ -48,7 +48,10 @@ const Routes: FC<RouteComponentProps> = () => {
         <PublicRoute path={'/verify-email'} component={VerifyAccountPage} />
         <PublicRoute path={'/reset-password'} component={ResetPasswordPage} />
         <PrivateRoute path={'/setting/:tab'} component={ProfilePage} />
-        <PrivateRoute path={'/notifications/:id'} component={NotificationsPage} />
+        <PrivateRoute
+          path={'/notifications/:id'}
+          component={NotificationsPage}
+        />
         <PrivateRoute path={'/'} component={HomePage} />
       </Switch>
     </>
