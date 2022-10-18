@@ -7,7 +7,7 @@ import {
   AppInput,
   AppButton,
   AppLink,
-  GoogleAuthButton
+  GoogleAuthButton,
 } from 'src/components';
 import BasePage from 'src/layouts/BasePage';
 import { createValidator } from 'src/utils/utils-validator';

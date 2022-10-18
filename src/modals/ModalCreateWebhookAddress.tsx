@@ -35,7 +35,9 @@ const ModalCreateWebhookAddress: FC<ICreateAddressActivityModal> = ({
 
   const validator = useRef(
     createValidator({
-      element: (message: string) => <Text className="text-error">{message}</Text>,
+      element: (message: string) => (
+        <Text className="text-error">{message}</Text>
+      ),
     }),
   );
 
