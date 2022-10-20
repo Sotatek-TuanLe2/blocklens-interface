@@ -14,17 +14,20 @@ import { BasePageContainer } from 'src/layouts';
 import { AppButton } from 'src/components';
 
 export interface IAppInfo {
-  name?: string;
-  chain?: string;
-  network?: string;
+  name: string;
+  chain: string;
+  network: string;
   description?: string;
-  key?: string;
-  appId?: number;
-  userId?: number;
+  key: string;
+  appId: number;
+  totalUserNotification: number;
+  totalAppNotification: number;
+  totalAppNotificationLast24Hours: number;
+  totalAppNotificationSuccessLast24Hours: number;
 }
 
 const AppDetail = () => {
-  const [appInfo, setAppInfo] = useState<IAppInfo>({});
+  const [appInfo, setAppInfo] = useState<any>({});
   const [loading, setLoading] = useState<boolean>(false);
   const [isOpenModalEditApp, setIsOpenModalEditApp] = useState<boolean>(false);
   const [isOpenModalDeleteApp, setIsOpenModalDeleteApp] =
@@ -62,7 +65,7 @@ const AppDetail = () => {
             ></Box>
             <Flex ml={5} alignItems={'center'}>
               <Box mr={2} className={getLogoChainByName(appInfo?.chain)}></Box>
-              {appInfo.chain +' ' +appInfo.network}
+              {appInfo.chain + ' ' + appInfo.network}
             </Flex>
           </Flex>
 
