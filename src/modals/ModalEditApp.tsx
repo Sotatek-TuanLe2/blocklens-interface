@@ -55,7 +55,10 @@ const ModalEditApp: FC<IModalEditApp> = ({
     }
 
     try {
-      await rf.getRequest('AppRequest').updateApp(appInfo.appId, dataForm);
+      await rf.getRequest('AppRequest').updateApp(appInfo.appId, {
+        name: dataForm.name?.trim(),
+        description: dataForm.description?.trim(),
+      });
       toastSuccess({ message: 'Update Successfully!' });
       onClose();
       reloadData();

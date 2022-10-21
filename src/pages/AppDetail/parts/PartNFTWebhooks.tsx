@@ -4,8 +4,8 @@ import React, { FC, useCallback, useEffect, useState } from 'react';
 import { AppButton, AppCard, AppDataTable, AppLink } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import { IListAppResponse } from 'src/utils/common';
-import ModalCreateWebhookNFT from 'src/modals/ModalCreateWebhookNFT';
 import { IAppInfo } from '../index';
+import { useHistory } from 'react-router';
 
 interface IListNTF {
   appInfo: IAppInfo;
@@ -27,9 +27,8 @@ interface INFTResponse {
 }
 
 const PartNFTWebhooks: FC<IListNTF> = ({ appInfo }) => {
-  const [isOpenCreateNFTModal, setIsOpenCreateNFTModal] =
-    useState<boolean>(false);
   const [params, setParams] = useState<IParams>({});
+  const history = useHistory();
   const [totalWebhook, setTotalWebhook] = useState<any>();
 
   const fetchDataTable: any = useCallback(async (params: any) => {
@@ -91,7 +90,7 @@ const PartNFTWebhooks: FC<IListNTF> = ({ appInfo }) => {
               <Td>{nft.webhook}</Td>
               <Td>N/A Address</Td>
               <Td>
-                <AppLink to={`/webhooks/nfy-activity/${nft.registrationId}`}>
+                <AppLink to={`/webhooks/nft-activity/${nft.registrationId}`}>
                   View
                 </AppLink>
               </Td>
@@ -109,7 +108,7 @@ const PartNFTWebhooks: FC<IListNTF> = ({ appInfo }) => {
         <Box
           className="button-create-webhook"
           mt={2}
-          onClick={() => setIsOpenCreateNFTModal(true)}
+          onClick={() => history.push(`/create-webhook-nft/${appInfo.appId}`)}
         >
           + Create webhook
         </Box>
@@ -133,8 +132,7 @@ const PartNFTWebhooks: FC<IListNTF> = ({ appInfo }) => {
           <AppButton
             textTransform="uppercase"
             size={'md'}
-            fontWeight={'400'}
-            onClick={() => setIsOpenCreateNFTModal(true)}
+            onClick={() => history.push(`/create-webhook-nft/${appInfo.appId}`)}
           >
             <SmallAddIcon mr={1} /> Create webhook
           </AppButton>
@@ -153,17 +151,6 @@ const PartNFTWebhooks: FC<IListNTF> = ({ appInfo }) => {
           {totalWebhook === 0 && _renderNoData()}
         </Box>
       </AppCard>
-
-      <ModalCreateWebhookNFT
-        open={isOpenCreateNFTModal}
-        onClose={() => setIsOpenCreateNFTModal(false)}
-        appInfo={appInfo}
-        onReloadData={() =>
-          setParams((pre: any) => {
-            return { ...pre };
-          })
-        }
-      />
     </>
   );
 };

@@ -75,7 +75,8 @@ const FormCreateApp: React.FC<IFormCreateApp> = ({ setSearchListApp }) => {
 
   const handleSubmitForm = async () => {
     const dataSubmit = {
-      ...dataForm,
+      name: dataForm.name.trim(),
+      description: dataForm.description.trim(),
       chain: chainSelected.value,
       network: networkSelected.value,
     };
@@ -144,14 +145,16 @@ const FormCreateApp: React.FC<IFormCreateApp> = ({ setSearchListApp }) => {
         </AppField>
         <AppField label={'DESCRIPTION'} customWidth={'100%'} isRequired>
           <AppTextarea
+            hiddenErrorText={hiddenErrorText}
             placeholder="Write something about this app in 50 characters!"
             value={dataForm.description}
-            onChange={(e) =>
+            onChange={(e) => {
+              setHiddenErrorText(false);
               setDataForm({
                 ...dataForm,
                 description: e.target.value,
-              })
-            }
+              });
+            }}
             validate={{
               name: 'description',
               validator: validator.current,

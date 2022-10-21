@@ -90,7 +90,7 @@ const ModalCreateWebhookAddress: FC<ICreateAddressActivityModal> = ({
               onChange={(e) =>
                 setDataForm({
                   ...dataForm,
-                  webhook: e.target.value,
+                  webhook: e.target.value.trim(),
                 })
               }
               validate={{
@@ -115,7 +115,7 @@ const ModalCreateWebhookAddress: FC<ICreateAddressActivityModal> = ({
                   onChange={(e) => {
                     const newAddresses = dataForm.addresses.map(
                       (value: string, id: number) =>
-                        index === id ? e.target.value : value,
+                        index === id ? e.target.value.trim() : value,
                     );
                     setDataForm({
                       ...dataForm,

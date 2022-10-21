@@ -5,7 +5,8 @@ import { AppButton, AppCard, AppDataTable, AppLink } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import { IListAppResponse } from 'src/utils/common';
 import { IAppInfo } from '../index';
-import ModalCreateWebhookContract from 'src/modals/ModalCreateWebhookContract';
+import { getLogoChainByName } from 'src/utils/utils-network';
+import { useHistory } from 'react-router';
 
 interface IListContract {
   appInfo: IAppInfo;
@@ -27,8 +28,7 @@ interface IContractResponse {
 }
 
 const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
-  const [isOpenCreateContractModal, setIsOpenCreateContractModal] =
-    useState<boolean>(false);
+  const history = useHistory();
   const [params, setParams] = useState<IParams>({});
   const [totalWebhook, setTotalWebhook] = useState<any>();
 
@@ -87,7 +87,7 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
         <Box
           className="button-create-webhook"
           mt={2}
-          onClick={() => setIsOpenCreateContractModal(true)}
+          onClick={() => history.push(`/create-webhook-contract/${appInfo.appId}`)}
         >
           + Create webhook
         </Box>
@@ -136,7 +136,7 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
             textTransform="uppercase"
             fontWeight={'400'}
             size={'md'}
-            onClick={() => setIsOpenCreateContractModal(true)}
+            onClick={() => history.push(`/create-webhook-contract/${appInfo.appId}`)}
           >
             <SmallAddIcon mr={1} /> Create webhook
           </AppButton>
@@ -155,17 +155,6 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
           {totalWebhook === 0 && _renderNoData()}
         </Box>
       </AppCard>
-
-      <ModalCreateWebhookContract
-        open={isOpenCreateContractModal}
-        onClose={() => setIsOpenCreateContractModal(false)}
-        appInfo={appInfo}
-        onReloadData={() =>
-          setParams((pre: any) => {
-            return { ...pre };
-          })
-        }
-      />
     </>
   );
 };
