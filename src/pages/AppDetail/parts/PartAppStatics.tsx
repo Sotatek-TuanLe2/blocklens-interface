@@ -2,6 +2,7 @@ import { Box, SimpleGrid } from '@chakra-ui/react';
 import React, { FC } from 'react';
 import { AppCard } from 'src/components';
 import { IAppInfo } from '../index';
+import { formatLargeNumber } from 'src/utils/utils-helper';
 
 interface IListInfo {
   appInfo: IAppInfo;
@@ -10,7 +11,7 @@ interface IListInfo {
 const PartAppStatics: FC<IListInfo> = ({ appInfo }) => {
   const getPercentNotificationSuccess = () => {
     if (!appInfo.totalAppNotificationSuccessLast24Hours) {
-      return '0';
+      return '--';
     }
 
     return (
@@ -31,7 +32,7 @@ const PartAppStatics: FC<IListInfo> = ({ appInfo }) => {
           User’s Notifications <br />
           This Month
         </Box>
-        <Box className="value">{appInfo.totalUserNotification}</Box>
+        <Box className="value">{formatLargeNumber(appInfo.totalUserNotification)}</Box>
       </AppCard>
 
       <AppCard p={4} className="box-info">
@@ -39,7 +40,7 @@ const PartAppStatics: FC<IListInfo> = ({ appInfo }) => {
           App’s Notifications <br />
           This Month
         </Box>
-        <Box className="value">{appInfo.totalAppNotification}</Box>
+        <Box className="value">{formatLargeNumber(appInfo.totalAppNotification)}</Box>
       </AppCard>
 
       <AppCard p={4} className="box-info">
@@ -47,7 +48,7 @@ const PartAppStatics: FC<IListInfo> = ({ appInfo }) => {
           App’s Notifications <br />
           Last 24 Hour
         </Box>
-        <Box className="value">{appInfo.totalAppNotificationLast24Hours}</Box>
+        <Box className="value">{formatLargeNumber(appInfo.totalAppNotificationLast24Hours)}</Box>
       </AppCard>
 
       <AppCard p={4} className="box-info">
