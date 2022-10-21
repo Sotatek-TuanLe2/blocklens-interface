@@ -19,7 +19,12 @@ interface IDataForm {
   description?: string;
 }
 
-const ModalEditApp: FC<IModalEditApp> = ({ open, onClose, appInfo, reloadData }) => {
+const ModalEditApp: FC<IModalEditApp> = ({
+  open,
+  onClose,
+  appInfo,
+  reloadData,
+}) => {
   const initData = {
     name: appInfo?.name,
     description: appInfo?.description,
@@ -32,7 +37,9 @@ const ModalEditApp: FC<IModalEditApp> = ({ open, onClose, appInfo, reloadData })
 
   const validator = useRef(
     createValidator({
-      element: (message: string) => <Text className="text-error">{message}</Text>,
+      element: (message: string) => (
+        <Text className="text-error">{message}</Text>
+      ),
     }),
   );
 
@@ -71,7 +78,12 @@ const ModalEditApp: FC<IModalEditApp> = ({ open, onClose, appInfo, reloadData })
   };
 
   return (
-    <BaseModal size="2xl" title="Update App" isOpen={open} onClose={onCloseModal}>
+    <BaseModal
+      size="2xl"
+      title="Update App"
+      isOpen={open}
+      onClose={onCloseModal}
+    >
       <Box>
         <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
           <AppField label={'NAME'} customWidth={'100%'} isRequired>
@@ -87,7 +99,7 @@ const ModalEditApp: FC<IModalEditApp> = ({ open, onClose, appInfo, reloadData })
               validate={{
                 name: `name`,
                 validator: validator.current,
-                rule: ['required', 'max:20']
+                rule: ['required', 'max:20'],
               }}
             />
           </AppField>

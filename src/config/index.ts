@@ -18,8 +18,8 @@ export interface Config {
     notificationsApi: string;
   };
   stripe: {
-    publishableKey: string
-  }
+    publishableKey: string;
+  };
   chains: {
     name: string;
     id: string;

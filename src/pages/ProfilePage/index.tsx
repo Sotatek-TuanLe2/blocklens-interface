@@ -2,13 +2,7 @@ import { FC, useState, useEffect } from 'react';
 import React from 'react';
 import { BasePageContainer } from 'src/layouts';
 import { Box } from '@chakra-ui/react';
-import {
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
-} from '@chakra-ui/react';
+import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
 import 'src/styles/pages/ProfilePage.scss';
 import MyProfile from 'src/pages/ProfilePage/parts/MyProfile';
 import Billing from './parts/Billing';

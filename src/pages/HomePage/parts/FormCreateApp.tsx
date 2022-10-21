@@ -59,7 +59,9 @@ const FormCreateApp: React.FC<IFormCreateApp> = ({ setSearchListApp }) => {
   const [hiddenErrorText, setHiddenErrorText] = useState(false);
   const validator = useRef(
     createValidator({
-      element: (message: string) => <Text className="text-error">{message}</Text>,
+      element: (message: string) => (
+        <Text className="text-error">{message}</Text>
+      ),
     }),
   );
   const [chainSelected, setChainSelected] = useState<any>(CHAINS[0]);
@@ -109,7 +111,7 @@ const FormCreateApp: React.FC<IFormCreateApp> = ({ setSearchListApp }) => {
             validate={{
               name: `name`,
               validator: validator.current,
-              rule: ['required', 'max:20']
+              rule: ['required', 'max:20'],
             }}
           />
         </AppField>
