@@ -106,7 +106,7 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
               <Td>{contract.webhook}</Td>
               <Td>N/A</Td>
               <Td>
-                <AppLink to={`/webhook-activities/${contract.registrationId}`}>
+                <AppLink to={`/webhooks/contract-activity/${contract.registrationId}`}>
                   View
                 </AppLink>
               </Td>

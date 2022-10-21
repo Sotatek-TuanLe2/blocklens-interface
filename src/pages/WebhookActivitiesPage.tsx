@@ -9,12 +9,12 @@ import {
   Box,
   SimpleGrid,
 } from '@chakra-ui/react';
-import React, { FC, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { AppCard, AppDataTable } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import { BasePageContainer } from 'src/layouts/';
-import { formatTimestamp } from 'src/utils/utils-helper';
+import { formatLargeNumber, formatTimestamp } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import 'src/styles/pages/NotificationPage.scss';
 import ReactJson from 'react-json-view';
@@ -35,8 +35,18 @@ interface INotificationResponse {
   updatedAt: number;
 }
 
+interface IWebhook {
+  totalWebHookNotificationsThisMonth: number;
+  totalWebhookNotificationsLast24Hours: number;
+  totalWebhookNotificationsSuccessLast24Hours: number;
+}
+
 interface INotificationItem {
   notification: INotificationResponse;
+}
+
+interface IPartWebhookStatics {
+  webhookInfo: IWebhook;
 }
 
 const enum STATUS {
@@ -72,7 +82,19 @@ const getColorBrandStatus = (status: number) => {
   }
 };
 
-const PartWebhookStatics = () => {
+const PartWebhookStatics: FC<IPartWebhookStatics> = ({ webhookInfo }) => {
+  const getPercentNotificationSuccess = () => {
+    if (!webhookInfo.totalWebhookNotificationsSuccessLast24Hours) {
+      return '--';
+    }
+
+    return (
+      (webhookInfo?.totalWebhookNotificationsSuccessLast24Hours /
+        webhookInfo?.totalWebhookNotificationsLast24Hours) *
+      100
+    ).toFixed(2);
+  };
+
   return (
     <SimpleGrid
       className="infos"
@@ -84,7 +106,9 @@ const PartWebhookStatics = () => {
           Webhook’s Notifications <br />
           This Month
         </Box>
-        <Box className="value">--</Box>
+        <Box className="value">
+          {formatLargeNumber(webhookInfo.totalWebHookNotificationsThisMonth)}
+        </Box>
       </AppCard>
 
       <AppCard p={4} className="box-info">
@@ -93,7 +117,9 @@ const PartWebhookStatics = () => {
           <br />
           Last 24 Hour
         </Box>
-        <Box className="value">--</Box>
+        <Box className="value">
+          {formatLargeNumber(webhookInfo.totalWebhookNotificationsLast24Hours)}
+        </Box>
       </AppCard>
 
       <AppCard p={4} className="box-info">
@@ -101,7 +127,7 @@ const PartWebhookStatics = () => {
           Webhook’s Success %<br />
           Last 24 hour
         </Box>
-        <Box className="value">--</Box>
+        <Box className="value">{getPercentNotificationSuccess()}</Box>
       </AppCard>
     </SimpleGrid>
   );
@@ -164,7 +190,26 @@ const NotificationItem: FC<INotificationItem> = ({ notification }) => {
 };
 
 const WebhookActivitiesPage = () => {
-  const { id: registrationId } = useParams<{ id: string }>();
+  const { id: registrationId, type } = useParams<{
+    id: string;
+    type: string;
+  }>();
+  const [webhookInfo, setWebhookInfo] = useState<any>({});
+
+  const getWebhookInfo = useCallback(async () => {
+    try {
+      const res = (await rf
+        .getRequest('RegistrationRequest')
+        .getWebhookDetail(type, registrationId)) as any;
+      setWebhookInfo(res);
+    } catch (error: any) {
+      setWebhookInfo({});
+    }
+  }, [registrationId, type]);
+
+  useEffect(() => {
+    getWebhookInfo().then();
+  }, []);
 
   const fetchDataTable: any = async (param: any) => {
     try {
@@ -202,7 +247,7 @@ const WebhookActivitiesPage = () => {
           Webhook Activities
         </Text>
 
-        <PartWebhookStatics />
+        <PartWebhookStatics webhookInfo={webhookInfo} />
         <AppCard p={0} pb={10} mt={10} className={'notification-table'}>
           <AppDataTable
             requestParams={{ registrationId }}

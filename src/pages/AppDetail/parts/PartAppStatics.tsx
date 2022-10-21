@@ -16,7 +16,7 @@ const PartAppStatics: FC<IListInfo> = ({ appInfo }) => {
 
     return (
       (appInfo?.totalAppNotificationSuccessLast24Hours /
-        appInfo?.totalAppNotificationSuccessLast24Hours) *
+        appInfo?.totalAppNotificationLast24Hours) *
       100
     ).toFixed(2);
   };

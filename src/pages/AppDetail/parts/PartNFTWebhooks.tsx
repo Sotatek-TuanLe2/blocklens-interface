@@ -91,7 +91,7 @@ const PartNFTWebhooks: FC<IListNTF> = ({ appInfo }) => {
               <Td>{nft.webhook}</Td>
               <Td>N/A Address</Td>
               <Td>
-                <AppLink to={`/webhook-activities/${nft.registrationId}`}>
+                <AppLink to={`/webhooks/nfy-activity/${nft.registrationId}`}>
                   View
                 </AppLink>
               </Td>

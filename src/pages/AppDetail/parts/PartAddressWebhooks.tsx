@@ -93,7 +93,7 @@ const PartAddressWebhooks: FC<IListAddress> = ({ appInfo }) => {
                 {address.addresses.length > 1 ? 'Addresses' : 'Address'}
               </Td>
               <Td>
-                <AppLink to={`/webhook-activities/${address.registrationId}`}>
+                <AppLink to={`/webhooks/address-activity/${address.registrationId}`}>
                   View
                 </AppLink>
               </Td>
