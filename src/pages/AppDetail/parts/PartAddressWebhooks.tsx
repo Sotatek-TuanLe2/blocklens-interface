@@ -6,7 +6,6 @@ import rf from 'src/requests/RequestFactory';
 import { IListAppResponse } from 'src/utils/common';
 import ModalCreateWebhookAddress from 'src/modals/ModalCreateWebhookAddress';
 import { IAppInfo } from '../index';
-import { getLogoChainByName } from 'src/utils/utils-network';
 
 interface IListAddress {
   appInfo: IAppInfo;
@@ -30,12 +29,14 @@ const PartAddressWebhooks: FC<IListAddress> = ({ appInfo }) => {
   const [isOpenCreateAddressModal, setIsOpenCreateAddressModal] =
     useState<boolean>(false);
   const [params, setParams] = useState<IParams>({});
+  const [totalWebhook, setTotalWebhook] = useState<any>();
 
   const fetchDataTable: any = useCallback(async (params: any) => {
     try {
       const res: IListAppResponse = await rf
         .getRequest('RegistrationRequest')
         .getAddressActivity(params);
+      setTotalWebhook(res.totalDocs);
       return res;
     } catch (error) {
       return error;
@@ -54,10 +55,10 @@ const PartAddressWebhooks: FC<IListAddress> = ({ appInfo }) => {
       <Thead>
         <Tr>
           <Th>ID</Th>
-          <Th>App/Network</Th>
           <Th>Status</Th>
           <Th>Webhook URL</Th>
-          <Th>{appInfo.chain} Address</Th>
+          <Th>Address</Th>
+          <Th>Activities</Th>
         </Tr>
       </Thead>
     );
@@ -78,26 +79,24 @@ const PartAddressWebhooks: FC<IListAddress> = ({ appInfo }) => {
     );
   };
 
-  const _renderNetwork = (address: IAddressResponse) => {
-    return (
-      <Flex alignItems={'center'}>
-        <Box mr={2} className={getLogoChainByName(appInfo.chain)}></Box>
-        {address.network}
-      </Flex>
-    );
-  };
-
   const _renderBody = (data?: IAddressResponse[]) => {
     return (
       <Tbody>
         {data?.map((address: IAddressResponse, index: number) => {
           return (
             <Tr key={index}>
-              <Td><AppLink to={`/notifications/${address.registrationId}`}>{address.registrationId}</AppLink></Td>
-              <Td>{_renderNetwork(address)}</Td>
+              <Td>{address.registrationId}</Td>
               <Td>{_renderStatus(address)}</Td>
               <Td>{address.webhook}</Td>
-              <Td>{address.addresses.length} {address.addresses.length > 1 ? 'Addresses' : 'Address'}</Td>
+              <Td>
+                {address.addresses.length}{' '}
+                {address.addresses.length > 1 ? 'Addresses' : 'Address'}
+              </Td>
+              <Td>
+                <AppLink to={`/webhooks/address-activity/${address.registrationId}`}>
+                  View
+                </AppLink>
+              </Td>
             </Tr>
           );
         })}
@@ -105,19 +104,30 @@ const PartAddressWebhooks: FC<IListAddress> = ({ appInfo }) => {
     );
   };
 
+  const _renderNoData = () => {
+    return (
+      <Flex alignItems={'center'} my={10} flexDirection={'column'}>
+        Set up your first address webhook!
+        <Box
+          className="button-create-webhook"
+          mt={2}
+          onClick={() => setIsOpenCreateAddressModal(true)}
+        >
+          + Create webhook
+        </Box>
+      </Flex>
+    );
+  };
+
   return (
     <>
-      <AppCard mt={10} className="list-nft" p={0} pb={5}>
+      <AppCard mt={10} className="list-nft" p={0}>
         <Flex justifyContent="space-between" py={5} px={8} alignItems="center">
           <Flex alignItems="center">
             <Box className="icon-app-address" mr={4} />
             <Box className="name">
               Address Activity
-              <Box
-                className="description"
-                textTransform="uppercase"
-                fontSize={'13px'}
-              >
+              <Box className="description">
                 Get notified whenever an address sends/receives ETH or any Token
               </Box>
             </Box>
@@ -125,18 +135,25 @@ const PartAddressWebhooks: FC<IListAddress> = ({ appInfo }) => {
           <AppButton
             textTransform="uppercase"
             size={'md'}
+            fontWeight={'400'}
             onClick={() => setIsOpenCreateAddressModal(true)}
           >
             <SmallAddIcon mr={1} /> Create webhook
           </AppButton>
         </Flex>
-        <AppDataTable
-          requestParams={params}
-          fetchData={fetchDataTable}
-          renderBody={_renderBody}
-          renderHeader={_renderHeader}
-          limit={10}
-        />
+
+        <Box bgColor={'#FAFAFA'} borderBottomRadius={'10px'} pb={8}>
+          <AppDataTable
+            requestParams={params}
+            fetchData={fetchDataTable}
+            renderBody={_renderBody}
+            isNotShowNoData
+            renderHeader={totalWebhook > 0 ? _renderHeader : undefined}
+            limit={10}
+          />
+
+          {totalWebhook === 0 && _renderNoData()}
+        </Box>
       </AppCard>
 
       <ModalCreateWebhookAddress

@@ -5,7 +5,7 @@
   left: 0;
   height: 65px;
   z-index: 99;
-  background-color: #4C84FF;
+  background-color: #4c84ff;
 
   .content-header {
     max-width: 1240px;
@@ -21,6 +21,12 @@
     .button {
       border-radius: 16px;
       font-size: 14px;
+    }
+    .user-name {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      display: inline-block;
     }
   }
 }

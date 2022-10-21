@@ -1,5 +1,5 @@
-import { Flex, Heading, Text } from '@chakra-ui/react';
-import { Dispatch, useEffect, useRef, useState } from 'react';
+import { Flex, Text } from '@chakra-ui/react';
+import React, { Dispatch, useEffect, useRef, useState } from 'react';
 import {
   AppButton,
   AppCard,
@@ -59,7 +59,9 @@ const FormCreateApp: React.FC<IFormCreateApp> = ({ setSearchListApp }) => {
   const [hiddenErrorText, setHiddenErrorText] = useState(false);
   const validator = useRef(
     createValidator({
-      element: (message: string) => <Text className="text-error">{message}</Text>,
+      element: (message: string) => (
+        <Text className="text-error">{message}</Text>
+      ),
     }),
   );
   const [chainSelected, setChainSelected] = useState<any>(CHAINS[0]);
@@ -73,7 +75,8 @@ const FormCreateApp: React.FC<IFormCreateApp> = ({ setSearchListApp }) => {
 
   const handleSubmitForm = async () => {
     const dataSubmit = {
-      ...dataForm,
+      name: dataForm.name.trim(),
+      description: dataForm.description.trim(),
       chain: chainSelected.value,
       network: networkSelected.value,
     };
@@ -92,9 +95,7 @@ const FormCreateApp: React.FC<IFormCreateApp> = ({ setSearchListApp }) => {
   };
   return (
     <AppCard maxW={'1240px'}>
-      <Heading as="h3" size="lg" mb={5}>
-        Create app
-      </Heading>
+      <Text fontSize={'24px'} mb={4}>Create App</Text>
       <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
         <AppField label={'NAME'} customWidth={'100%'} isRequired>
           <AppInput
@@ -111,7 +112,7 @@ const FormCreateApp: React.FC<IFormCreateApp> = ({ setSearchListApp }) => {
             validate={{
               name: `name`,
               validator: validator.current,
-              rule: ['required', 'max:20']
+              rule: ['required', 'max:20'],
             }}
           />
         </AppField>
@@ -142,16 +143,18 @@ const FormCreateApp: React.FC<IFormCreateApp> = ({ setSearchListApp }) => {
             value={networkSelected}
           ></AppSelect>
         </AppField>
-        <AppField label={'DESCRIPTION'} customWidth={'100%'}>
+        <AppField label={'DESCRIPTION'} customWidth={'100%'} isRequired>
           <AppTextarea
+            hiddenErrorText={hiddenErrorText}
             placeholder="Write something about this app in 50 characters!"
             value={dataForm.description}
-            onChange={(e) =>
+            onChange={(e) => {
+              setHiddenErrorText(false);
               setDataForm({
                 ...dataForm,
                 description: e.target.value,
-              })
-            }
+              });
+            }}
             validate={{
               name: 'description',
               validator: validator.current,

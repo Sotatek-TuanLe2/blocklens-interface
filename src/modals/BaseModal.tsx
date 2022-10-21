@@ -64,6 +64,7 @@ const BaseModal: FC<BaseModalProps> = ({
         size={size}
         isCentered={isCentered}
         closeOnOverlayClick={closeOnOverlayClick}
+        autoFocus={false}
       >
         <ModalOverlay />
         <ModalContent className={className}>
@@ -94,6 +95,7 @@ const BaseModal: FC<BaseModalProps> = ({
               <AppButton
                 isLoading={isLoadingButtonRight}
                 onClick={onActionRight}
+                fontWeight={400}
               >
                 {textActionRight}
               </AppButton>

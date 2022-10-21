@@ -13,10 +13,17 @@ interface IPlanItem {
   setIsSelect: (value: string) => void;
 }
 
-const PlanItem: FC<IPlanItem> = ({ isChange,  plan, isActive, isSelect, setIsSelect }) => {
+const PlanItem: FC<IPlanItem> = ({
+  isChange,
+  plan,
+  isActive,
+  isSelect,
+  setIsSelect,
+}) => {
   const isSelected = useMemo(() => isSelect === plan.name, [isSelect]);
   const [isOpenModalPayment, setIsOpenModalPayment] = useState<boolean>(false);
-  const [isOpenModalChangePaymentMethod, setIsOpenModalChangePaymentMethod] = useState<boolean>(false);
+  const [isOpenModalChangePaymentMethod, setIsOpenModalChangePaymentMethod] =
+    useState<boolean>(false);
 
   return (
     <>

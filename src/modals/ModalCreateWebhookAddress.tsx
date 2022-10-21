@@ -35,7 +35,9 @@ const ModalCreateWebhookAddress: FC<ICreateAddressActivityModal> = ({
 
   const validator = useRef(
     createValidator({
-      element: (message: string) => <Text className="text-error">{message}</Text>,
+      element: (message: string) => (
+        <Text className="text-error">{message}</Text>
+      ),
     }),
   );
 
@@ -88,7 +90,7 @@ const ModalCreateWebhookAddress: FC<ICreateAddressActivityModal> = ({
               onChange={(e) =>
                 setDataForm({
                   ...dataForm,
-                  webhook: e.target.value,
+                  webhook: e.target.value.trim(),
                 })
               }
               validate={{
@@ -113,7 +115,7 @@ const ModalCreateWebhookAddress: FC<ICreateAddressActivityModal> = ({
                   onChange={(e) => {
                     const newAddresses = dataForm.addresses.map(
                       (value: string, id: number) =>
-                        index === id ? e.target.value : value,
+                        index === id ? e.target.value.trim() : value,
                     );
                     setDataForm({
                       ...dataForm,
@@ -126,6 +128,26 @@ const ModalCreateWebhookAddress: FC<ICreateAddressActivityModal> = ({
                     rule: 'required',
                   }}
                 />
+                {dataForm.addresses.length > 1 && (
+                  <Box
+                    position={'absolute'}
+                    right={'25px'}
+                    color={'#4C84FF'}
+                    cursor={'pointer'}
+                    onClick={() =>
+                      setDataForm({
+                        ...dataForm,
+                        addresses: [
+                          ...dataForm.addresses.filter(
+                            (address: string, i: number) => i !== index,
+                          ),
+                        ],
+                      })
+                    }
+                  >
+                    REMOVE
+                  </Box>
+                )}
               </AppField>
             );
           })}

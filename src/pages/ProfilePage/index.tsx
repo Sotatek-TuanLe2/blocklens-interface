@@ -2,13 +2,7 @@ import { FC, useState, useEffect } from 'react';
 import React from 'react';
 import { BasePageContainer } from 'src/layouts';
 import { Box } from '@chakra-ui/react';
-import {
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
-} from '@chakra-ui/react';
+import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
 import 'src/styles/pages/ProfilePage.scss';
 import MyProfile from 'src/pages/ProfilePage/parts/MyProfile';
 import Billing from './parts/Billing';
@@ -39,7 +33,7 @@ const ProfilePage: FC = () => {
   return (
     <BasePageContainer>
       <Box className="profile">
-        <Tabs display={'flex'} variant="soft-rounded">
+        <Tabs display={'flex'} variant="soft-rounded" index={tabIndex}>
           <TabList flexDirection={'column'} className="menu-left">
             <Box className={'title'}>Settings</Box>
             <Tab

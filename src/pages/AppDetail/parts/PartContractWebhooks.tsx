@@ -6,7 +6,7 @@ import rf from 'src/requests/RequestFactory';
 import { IListAppResponse } from 'src/utils/common';
 import { IAppInfo } from '../index';
 import { getLogoChainByName } from 'src/utils/utils-network';
-import ModalCreateWebhookContract from 'src/modals/ModalCreateWebhookContract';
+import { useHistory } from 'react-router';
 
 interface IListContract {
   appInfo: IAppInfo;
@@ -28,15 +28,16 @@ interface IContractResponse {
 }
 
 const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
-  const [isOpenCreateContractModal, setIsOpenCreateContractModal] =
-    useState<boolean>(false);
+  const history = useHistory();
   const [params, setParams] = useState<IParams>({});
+  const [totalWebhook, setTotalWebhook] = useState<any>();
 
   const fetchDataTable: any = useCallback(async (params: any) => {
     try {
       const res: IListAppResponse = await rf
         .getRequest('RegistrationRequest')
         .getContractActivity(params);
+      setTotalWebhook(res.totalDocs);
       return res;
     } catch (error) {
       return error;
@@ -55,10 +56,10 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
       <Thead>
         <Tr>
           <Th>ID</Th>
-          <Th>App/Network</Th>
           <Th>Status</Th>
           <Th>Webhook URL</Th>
           <Th>Address</Th>
+          <Th>Activities</Th>
         </Tr>
       </Thead>
     );
@@ -79,11 +80,17 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
     );
   };
 
-  const _renderNetwork = (contract: IContractResponse) => {
+  const _renderNoData = () => {
     return (
-      <Flex alignItems={'center'}>
-        <Box mr={2} className={getLogoChainByName(appInfo.chain)}></Box>
-        {contract.network}
+      <Flex alignItems={'center'} my={10} flexDirection={'column'}>
+        Set up your first contract activity webhook!
+        <Box
+          className="button-create-webhook"
+          mt={2}
+          onClick={() => history.push(`/create-webhook-contract/${appInfo.appId}`)}
+        >
+          + Create webhook
+        </Box>
       </Flex>
     );
   };
@@ -94,13 +101,15 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
         {data?.map((contract: IContractResponse, index: number) => {
           return (
             <Tr key={index}>
-              <Td>
-                <AppLink to={`/notifications/${contract.registrationId}`}>{contract.registrationId}</AppLink>
-              </Td>
-              <Td>{_renderNetwork(contract)}</Td>
+              <Td>{contract.registrationId}</Td>
               <Td>{_renderStatus(contract)}</Td>
               <Td>{contract.webhook}</Td>
               <Td>N/A</Td>
+              <Td>
+                <AppLink to={`/webhooks/contract-activity/${contract.registrationId}`}>
+                  View
+                </AppLink>
+              </Td>
             </Tr>
           );
         })}
@@ -110,7 +119,7 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
 
   return (
     <>
-      <AppCard mt={10} className="list-nft" p={0} pb={5}>
+      <AppCard mt={10} className="list-nft" p={0}>
         <Flex justifyContent="space-between" py={5} px={8} alignItems="center">
           <Flex alignItems="center">
             <Box className="icon-app-nft" mr={4} />
@@ -118,8 +127,6 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
               Contract Notifications
               <Box
                 className="description"
-                textTransform="uppercase"
-                fontSize={'13px'}
               >
                 Get notified when YOUR Contract occurs activities
               </Box>
@@ -127,31 +134,27 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
           </Flex>
           <AppButton
             textTransform="uppercase"
+            fontWeight={'400'}
             size={'md'}
-            onClick={() => setIsOpenCreateContractModal(true)}
+            onClick={() => history.push(`/create-webhook-contract/${appInfo.appId}`)}
           >
             <SmallAddIcon mr={1} /> Create webhook
           </AppButton>
         </Flex>
-        <AppDataTable
-          requestParams={params}
-          fetchData={fetchDataTable}
-          renderBody={_renderBody}
-          renderHeader={_renderHeader}
-          limit={10}
-        />
-      </AppCard>
 
-      <ModalCreateWebhookContract
-        open={isOpenCreateContractModal}
-        onClose={() => setIsOpenCreateContractModal(false)}
-        appInfo={appInfo}
-        onReloadData={() =>
-          setParams((pre: any) => {
-            return { ...pre };
-          })
-        }
-      />
+        <Box bgColor={'#FAFAFA'} borderBottomRadius={'10px'} pb={8}>
+          <AppDataTable
+            requestParams={params}
+            fetchData={fetchDataTable}
+            renderBody={_renderBody}
+            isNotShowNoData
+            renderHeader={totalWebhook > 0 ? _renderHeader : undefined}
+            limit={10}
+          />
+
+          {totalWebhook === 0 && _renderNoData()}
+        </Box>
+      </AppCard>
     </>
   );
 };

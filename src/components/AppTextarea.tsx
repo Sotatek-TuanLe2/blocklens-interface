@@ -14,11 +14,13 @@ interface ValidatorProps {
 interface AppTextareaProps extends TextareaProps {
   variant?: 'main' | 'auth' | 'authSecondary' | 'search';
   validate?: ValidatorProps;
+  hiddenErrorText?: boolean;
 }
 
 const AppTextarea: FC<AppTextareaProps> = ({
   variant = 'main',
   validate,
+  hiddenErrorText = false,
   ...props
 }) => {
   const forceRender = useForceRender();
@@ -29,7 +31,7 @@ const AppTextarea: FC<AppTextareaProps> = ({
   return (
     <>
       <Textarea variant={variant} onBlur={onBlur} {...props} />
-      {validate &&
+      {!hiddenErrorText && validate &&
         validate.validator.message(
           validate.name,
           props.value,

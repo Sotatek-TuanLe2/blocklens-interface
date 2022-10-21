@@ -72,8 +72,8 @@ const Header: FC = () => {
           <MenuButton>
             <Avatar name={userInfo?.firstName} size="sm" />
           </MenuButton>
-          <MenuList fontSize={'16px'} color={'black'}>
-            <MenuItem>
+          <MenuList fontSize={'16px'} color={'black'} maxW="200px">
+            <MenuItem className="user-name">
               👋&nbsp; Welcome {userInfo?.firstName + ' ' + userInfo?.lastName}!
             </MenuItem>
             <MenuItem onClick={() => history.push('/setting/profile')}>

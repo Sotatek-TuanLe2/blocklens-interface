@@ -11,7 +11,7 @@ const requestMap = {
   UserRequest,
   RegistrationRequest,
   NotificationRequest,
-  BillingRequest
+  BillingRequest,
 };
 
 const instances = {};
