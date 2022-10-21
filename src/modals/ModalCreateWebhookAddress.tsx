@@ -128,6 +128,26 @@ const ModalCreateWebhookAddress: FC<ICreateAddressActivityModal> = ({
                     rule: 'required',
                   }}
                 />
+                {dataForm.addresses.length > 1 && (
+                  <Box
+                    position={'absolute'}
+                    right={'25px'}
+                    color={'#4C84FF'}
+                    cursor={'pointer'}
+                    onClick={() =>
+                      setDataForm({
+                        ...dataForm,
+                        addresses: [
+                          ...dataForm.addresses.filter(
+                            (address: string, i: number) => i !== index,
+                          ),
+                        ],
+                      })
+                    }
+                  >
+                    REMOVE
+                  </Box>
+                )}
               </AppField>
             );
           })}

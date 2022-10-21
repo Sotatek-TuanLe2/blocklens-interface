@@ -1,5 +1,5 @@
-import { Flex, Heading, Text } from '@chakra-ui/react';
-import { Dispatch, useEffect, useRef, useState } from 'react';
+import { Flex, Text } from '@chakra-ui/react';
+import React, { Dispatch, useEffect, useRef, useState } from 'react';
 import {
   AppButton,
   AppCard,
@@ -94,9 +94,7 @@ const FormCreateApp: React.FC<IFormCreateApp> = ({ setSearchListApp }) => {
   };
   return (
     <AppCard maxW={'1240px'}>
-      <Heading as="h3" size="lg" mb={5}>
-        Create app
-      </Heading>
+      <Text fontSize={'24px'} mb={4}>Create App</Text>
       <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
         <AppField label={'NAME'} customWidth={'100%'} isRequired>
           <AppInput
@@ -144,7 +142,7 @@ const FormCreateApp: React.FC<IFormCreateApp> = ({ setSearchListApp }) => {
             value={networkSelected}
           ></AppSelect>
         </AppField>
-        <AppField label={'DESCRIPTION'} customWidth={'100%'}>
+        <AppField label={'DESCRIPTION'} customWidth={'100%'} isRequired>
           <AppTextarea
             placeholder="Write something about this app in 50 characters!"
             value={dataForm.description}
