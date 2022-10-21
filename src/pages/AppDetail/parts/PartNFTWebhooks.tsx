@@ -5,7 +5,6 @@ import { AppButton, AppCard, AppDataTable, AppLink } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import { IListAppResponse } from 'src/utils/common';
 import { IAppInfo } from '../index';
-import { getLogoChainByName } from 'src/utils/utils-network';
 import { useHistory } from 'react-router';
 
 interface IListNTF {
@@ -30,12 +29,14 @@ interface INFTResponse {
 const PartNFTWebhooks: FC<IListNTF> = ({ appInfo }) => {
   const [params, setParams] = useState<IParams>({});
   const history = useHistory();
+  const [totalWebhook, setTotalWebhook] = useState<any>();
 
   const fetchDataTable: any = useCallback(async (params: any) => {
     try {
       const res: IListAppResponse = await rf
         .getRequest('RegistrationRequest')
         .getNFTActivity(params);
+      setTotalWebhook(res.totalDocs);
       return res;
     } catch (error) {
       return error;
@@ -54,10 +55,10 @@ const PartNFTWebhooks: FC<IListNTF> = ({ appInfo }) => {
       <Thead>
         <Tr>
           <Th>ID</Th>
-          <Th>Network</Th>
           <Th>Status</Th>
           <Th>Webhook URL</Th>
-          <Th>Nfts</Th>
+          <Th>Address</Th>
+          <Th>Activities</Th>
         </Tr>
       </Thead>
     );
@@ -78,30 +79,21 @@ const PartNFTWebhooks: FC<IListNTF> = ({ appInfo }) => {
     );
   };
 
-  const _renderNetwork = (nft: INFTResponse) => {
-    return (
-      <Flex alignItems={'center'}>
-        <Box mr={2} className={getLogoChainByName(appInfo.chain)}></Box>
-        {nft.network}
-      </Flex>
-    );
-  };
-
   const _renderBody = (data?: INFTResponse[]) => {
     return (
       <Tbody>
         {data?.map((nft: INFTResponse, index: number) => {
           return (
             <Tr key={index}>
-              <Td>
-                <AppLink to={`/notifications/${nft.registrationId}`}>
-                  {nft.registrationId}
-                </AppLink>
-              </Td>
-              <Td>{_renderNetwork(nft)}</Td>
+              <Td>{nft.registrationId}</Td>
               <Td>{_renderStatus(nft)}</Td>
               <Td>{nft.webhook}</Td>
-              <Td>N/A</Td>
+              <Td>N/A Address</Td>
+              <Td>
+                <AppLink to={`/webhooks/nft-activity/${nft.registrationId}`}>
+                  View
+                </AppLink>
+              </Td>
             </Tr>
           );
         })}
@@ -109,19 +101,30 @@ const PartNFTWebhooks: FC<IListNTF> = ({ appInfo }) => {
     );
   };
 
+  const _renderNoData = () => {
+    return (
+      <Flex alignItems={'center'} my={10} flexDirection={'column'}>
+        Set up your first NFT activity webhook!
+        <Box
+          className="button-create-webhook"
+          mt={2}
+          onClick={() => history.push(`/create-webhook-nft/${appInfo.appId}`)}
+        >
+          + Create webhook
+        </Box>
+      </Flex>
+    );
+  };
+
   return (
     <>
-      <AppCard mt={10} className="list-nft" p={0} pb={5}>
+      <AppCard mt={10} className="list-nft" p={0}>
         <Flex justifyContent="space-between" py={5} px={8} alignItems="center">
           <Flex alignItems="center">
             <Box className="icon-app-nft" mr={4} />
             <Box className="name">
               NFT Activity
-              <Box
-                className="description"
-                textTransform="uppercase"
-                fontSize={'13px'}
-              >
+              <Box className="description">
                 Get notified when an NFT is transferred
               </Box>
             </Box>
@@ -134,13 +137,19 @@ const PartNFTWebhooks: FC<IListNTF> = ({ appInfo }) => {
             <SmallAddIcon mr={1} /> Create webhook
           </AppButton>
         </Flex>
-        <AppDataTable
-          requestParams={params}
-          fetchData={fetchDataTable}
-          renderBody={_renderBody}
-          renderHeader={_renderHeader}
-          limit={10}
-        />
+
+        <Box bgColor={'#FAFAFA'} borderBottomRadius={'10px'} pb={8}>
+          <AppDataTable
+            requestParams={params}
+            fetchData={fetchDataTable}
+            renderBody={_renderBody}
+            isNotShowNoData
+            renderHeader={totalWebhook > 0 ? _renderHeader : undefined}
+            limit={10}
+          />
+
+          {totalWebhook === 0 && _renderNoData()}
+        </Box>
       </AppCard>
     </>
   );

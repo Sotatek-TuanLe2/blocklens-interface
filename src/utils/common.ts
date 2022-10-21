@@ -13,6 +13,7 @@ export interface IAppResponse {
   appId: number;
   userId: number;
   name?: string;
+  status?: string;
   description?: string;
   chain: string;
   network: string;
