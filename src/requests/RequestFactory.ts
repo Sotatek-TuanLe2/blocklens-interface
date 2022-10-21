@@ -9,7 +9,7 @@ const requestMap = {
   AuthRequest,
   UserRequest,
   RegistrationRequest,
-  NotificationRequest
+  NotificationRequest,
 };
 
 const instances = {};

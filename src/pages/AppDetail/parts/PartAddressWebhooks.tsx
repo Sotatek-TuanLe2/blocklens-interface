@@ -93,11 +93,18 @@ const PartAddressWebhooks: FC<IListAddress> = ({ appInfo }) => {
         {data?.map((address: IAddressResponse, index: number) => {
           return (
             <Tr key={index}>
-              <Td><AppLink to={`/notifications/${address.registrationId}`}>{address.registrationId}</AppLink></Td>
+              <Td>
+                <AppLink to={`/notifications/${address.registrationId}`}>
+                  {address.registrationId}
+                </AppLink>
+              </Td>
               <Td>{_renderNetwork(address)}</Td>
               <Td>{_renderStatus(address)}</Td>
               <Td>{address.webhook}</Td>
-              <Td>{address.addresses.length} {address.addresses.length > 1 ? 'Addresses' : 'Address'}</Td>
+              <Td>
+                {address.addresses.length}{' '}
+                {address.addresses.length > 1 ? 'Addresses' : 'Address'}
+              </Td>
             </Tr>
           );
         })}

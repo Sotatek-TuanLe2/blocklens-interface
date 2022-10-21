@@ -42,7 +42,8 @@ type CustomRule =
   | 'minValue'
   | 'maxValue'
   | 'isPositive'
-  | 'maxDigits';
+  | 'maxDigits'
+  | 'isSame';
 
 export type Rules = IRule | CustomRule;
 
@@ -88,6 +89,12 @@ export const createValidator = (options?: IOptions | undefined) => {
         message: 'The value must be greater than 0',
         rule: (val: string) => {
           return +val > 0;
+        },
+      },
+      isSame: {
+        message: 'The value must be same password',
+        rule: (value: string, params: string) => {
+          return value === params[0];
         },
       },
     },

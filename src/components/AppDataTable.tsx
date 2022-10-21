@@ -28,7 +28,7 @@ export interface RequestParams {
   poolId?: string;
   projectId?: string;
   appId?: number;
-  registrationId?: string
+  registrationId?: string;
 }
 
 interface DataTableProps {

@@ -3,6 +3,7 @@ import {
   InputProps,
   InputGroup,
   InputRightElement,
+  Box,
 } from '@chakra-ui/react';
 import { mode } from '@chakra-ui/theme-tools';
 import { StyleProps, forwardRef } from '@chakra-ui/system';
@@ -58,16 +59,17 @@ const AppInput = forwardRef(
 
           {endAdornment && <InputRightElement children={<>{endAdornment}</>} />}
         </InputGroup>
-
-        {!hiddenErrorText &&
-          validate &&
-          !readOnly &&
-          validate.validator.message(
-            validate.name,
-            props.value,
-            validate.rule,
-            validate.options,
-          )}
+        <Box>
+          {!hiddenErrorText &&
+            validate &&
+            !readOnly &&
+            validate.validator.message(
+              validate.name,
+              props.value,
+              validate.rule,
+              validate.options,
+            )}
+        </Box>
       </>
     );
   },
