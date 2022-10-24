@@ -50,6 +50,12 @@
       font-size: 12px;
     }
     .tr-list-app {
+
+      &:hover {
+        background-color: $bg-gray-2;
+        cursor: pointer;
+      }
+
       td {
         border-bottom: 1px solid $border-color-1;
       }

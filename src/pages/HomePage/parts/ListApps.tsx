@@ -13,6 +13,7 @@ import React, { useState } from 'react';
 import { AppCard, AppDataTable, AppLink } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import { IAppResponse, IListAppResponse } from 'src/utils/common';
+import { useHistory } from 'react-router';
 
 interface IListApps {
   searchListApp: any;
@@ -48,6 +49,7 @@ export const _renderStatus = (status?: string) => {
 };
 
 const ListApps: React.FC<IListApps> = ({ searchListApp }) => {
+  const history = useHistory();
   const [totalApps, setTotalApps] = useState<number>(0);
   const fetchDataTable: any = async (param: any) => {
     try {
@@ -81,7 +83,11 @@ const ListApps: React.FC<IListApps> = ({ searchListApp }) => {
       <Tbody>
         {data?.map((app: IAppResponse, index: number) => {
           return (
-            <Tr key={index} className="tr-list-app">
+            <Tr
+              key={index}
+              className="tr-list-app"
+              onClick={() => history.push(`/app-detail/${app.appId}`)}
+            >
               <Td>
                 <AppLink to={`/app-detail/${app.appId}`}>{app.name}</AppLink>
               </Td>
