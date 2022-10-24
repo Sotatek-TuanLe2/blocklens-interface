@@ -7,7 +7,7 @@ import {
   AppInput,
   AppButton,
   AppLink,
-  GoogleAuthButton
+  GoogleAuthButton,
 } from 'src/components';
 import BasePage from 'src/layouts/BasePage';
 import { createValidator } from 'src/utils/utils-validator';
@@ -111,7 +111,7 @@ const LoginPage: FC = () => {
                   rule: ['required'],
                 }}
               />
-              <AppLink to={'/reset-password'}>Forgot your password?</AppLink>
+              <AppLink to={'/forgot-password'}>Forgot your password?</AppLink>
             </AppField>
 
             <AppButton

@@ -35,4 +35,14 @@ export default class AuthRequest extends BaseRequest {
     const url = '/my/users/profile/password';
     return this.put(url, params);
   }
+
+  forgotPassword(data: any) {
+    const url = '/public/users/forgot-password';
+    return this.post(url, data);
+  }
+
+  resetPassword(data: any) {
+    const url = '/my/users/password';
+    return this.put(url, data);
+  }
 }

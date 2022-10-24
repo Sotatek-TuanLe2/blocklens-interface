@@ -1,29 +1,53 @@
+import { Box, Flex, Text, useColorModeValue } from '@chakra-ui/react';
 import { FC, useEffect, useRef, useState } from 'react';
-import React from 'react';
-import { Box, Flex, useColorModeValue, Text } from '@chakra-ui/react';
-import {
-  AppField,
-  AppCard,
-  AppInput,
-  AppButton,
-  AppLink,
-} from 'src/components';
+import { useHistory, useLocation } from 'react-router';
+import { AppButton, AppCard, AppField, AppInput } from 'src/components';
 import BasePage from 'src/layouts/BasePage';
-import { createValidator } from 'src/utils/utils-validator';
+import rf from 'src/requests/RequestFactory';
 import 'src/styles/pages/LoginPage.scss';
+import { setAuthorizationToRequest } from 'src/utils/utils-auth';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
+import { createValidator } from 'src/utils/utils-validator';
 
 interface IDataForm {
-  email: string;
+  newPassword: string;
+  confirmPassword: string;
 }
 
-const RestPasswordPage: FC = () => {
-  const initDataRestPassword = {
-    email: '',
+const ResetPasswordPage: FC = () => {
+  const initDataResetPassword = {
+    newPassword: '',
+    confirmPassword: '',
   };
 
-  const [dataForm, setDataForm] = useState<IDataForm>(initDataRestPassword);
+  const [dataForm, setDataForm] = useState<IDataForm>(initDataResetPassword);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
   const colorText = useColorModeValue('gray.500', 'white');
+
+  const history = useHistory();
+  const location = useLocation();
+  const param: any = new URLSearchParams(location.search);
+  console.log('location', param.get('id'));
+
+  const handleSubmitResetPassword = async () => {
+    if (!dataForm.confirmPassword || dataForm.newPassword) {
+      toastError({
+        message: `${'Oops. Something went wrong!'}`,
+      });
+      return;
+    }
+    try {
+      await rf.getRequest('AuthRequest').resetPassword(dataForm);
+      toastSuccess({ message: 'Reset password is successfully.' });
+      setAuthorizationToRequest('');
+      setDataForm({ ...initDataResetPassword });
+      history.replace('/login');
+    } catch (error: any) {
+      toastError({
+        message: `${error.message || 'Oops. Something went wrong!'}`,
+      });
+    }
+  };
 
   const validator = useRef(
     createValidator({
@@ -36,53 +60,72 @@ const RestPasswordPage: FC = () => {
     setIsDisableSubmit(isDisabled);
   }, [dataForm]);
 
+  useEffect(() => {
+    if (param.get('id')) {
+      setAuthorizationToRequest(param.get('id'));
+    } else history.replace('/login');
+  }, []);
+
   return (
     <BasePage>
       <Flex className="box-login">
         <AppCard className="box-form">
           <Box className="title">
-            <Text pb={3}>Reset password.</Text>
+            <Text pb={3}>Choose new password</Text>
 
             <Text color={colorText} className="sub-text">
-              Enter your account's email address and we will send you password
-              reset link.
+              Enter a new password to complete password reset.
             </Text>
           </Box>
 
           <Box mt={5} color={colorText}>
-            <AppField label={'EMAIL'}>
+            <AppField label={'NEW PASSWORD'}>
               <AppInput
-                placeholder="gavin@sotatek.com"
-                value={dataForm.email}
+                type={'password'}
+                placeholder="********"
+                value={dataForm.newPassword}
                 onChange={(e) =>
                   setDataForm({
                     ...dataForm,
-                    email: e.target.value,
+                    newPassword: e.target.value,
+                  })
+                }
+                validate={{
+                  name: `newPassword`,
+                  validator: validator.current,
+                  rule: 'required|min:6|max:50',
+                }}
+              />
+            </AppField>
+
+            <AppField label={'CONFIRM PASSWORD'}>
+              <AppInput
+                type={'password'}
+                placeholder="********"
+                value={dataForm.confirmPassword}
+                onChange={(e) =>
+                  setDataForm({
+                    ...dataForm,
+                    confirmPassword: e.target.value,
                   })
                 }
                 validate={{
                   name: `email`,
                   validator: validator.current,
-                  rule: 'required|email',
+                  rule: ['required', `isSame:${dataForm.newPassword}`],
                 }}
               />
             </AppField>
 
             <AppButton
-              onClick={() => console.log(dataForm, 'dataForm')}
+              onClick={handleSubmitResetPassword}
               size={'lg'}
               width={'full'}
               mt={3}
               disabled={isDisableSubmit}
             >
-              Send reset email
+              Set password
             </AppButton>
-
-            <Flex className="link-back">
-              <AppLink to={'/login'} fontWeight={500}>
-                Return to Login
-              </AppLink>
-            </Flex>
           </Box>
         </AppCard>
       </Flex>
@@ -90,4 +133,4 @@ const RestPasswordPage: FC = () => {
   );
 };
 
-export default RestPasswordPage;
+export default ResetPasswordPage;

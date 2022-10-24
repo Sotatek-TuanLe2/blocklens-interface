@@ -13,13 +13,14 @@ import HomePage from './pages/HomePage';
 import SignUpPage from './pages/SignUpPage';
 import LoginPage from './pages/LoginPage';
 import ProfilePage from './pages/ProfilePage';
-import ResetPasswordPage from './pages/ResetPasswordPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import Storage from 'src/utils/storage';
 import AppDetail from './pages/AppDetail';
 import VerifyAccountPage from './pages/VerifyAccountPage';
 import NotificationsPage from './pages/NotificationsPage';
 import { getInfoUser } from 'src/store/auth';
 import { useDispatch } from 'react-redux';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 
 /**
  * Main App routes.
@@ -46,9 +47,13 @@ const Routes: FC<RouteComponentProps> = () => {
         <PublicRoute path={'/login'} component={LoginPage} />
         <PublicRoute path={'/sign-up'} component={SignUpPage} />
         <PublicRoute path={'/verify-email'} component={VerifyAccountPage} />
+        <PublicRoute path={'/forgot-password'} component={ForgotPasswordPage} />
         <PublicRoute path={'/reset-password'} component={ResetPasswordPage} />
         <PrivateRoute path={'/setting/:tab'} component={ProfilePage} />
-        <PrivateRoute path={'/notifications/:id'} component={NotificationsPage} />
+        <PrivateRoute
+          path={'/notifications/:id'}
+          component={NotificationsPage}
+        />
         <PrivateRoute path={'/'} component={HomePage} />
       </Switch>
     </>
