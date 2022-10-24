@@ -47,7 +47,6 @@ export const _renderStatus = (status?: string) => {
   );
 };
 
-
 const ListApps: React.FC<IListApps> = ({ searchListApp }) => {
   const [totalApps, setTotalApps] = useState<number>(0);
   const fetchDataTable: any = async (param: any) => {
@@ -105,7 +104,8 @@ const ListApps: React.FC<IListApps> = ({ searchListApp }) => {
         <div>
           <Text as={'span'} mr={5}>
             ACTIVE APPS
-          </Text> N/A / {totalApps}
+          </Text>{' '}
+          N/A / {totalApps}
         </div>
       </Flex>
       <AppCard className="list-app-table-wrap">

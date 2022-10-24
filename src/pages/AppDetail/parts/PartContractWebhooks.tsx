@@ -87,7 +87,9 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
         <Box
           className="button-create-webhook"
           mt={2}
-          onClick={() => history.push(`/create-webhook-contract/${appInfo.appId}`)}
+          onClick={() =>
+            history.push(`/create-webhook-contract/${appInfo.appId}`)
+          }
         >
           + Create webhook
         </Box>
@@ -106,7 +108,9 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
               <Td>{contract.webhook}</Td>
               <Td>N/A</Td>
               <Td>
-                <AppLink to={`/webhooks/contract-activity/${contract.registrationId}`}>
+                <AppLink
+                  to={`/webhooks/contract-activity/${contract.registrationId}`}
+                >
                   View
                 </AppLink>
               </Td>
@@ -125,9 +129,7 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
             <Box className="icon-app-nft" mr={4} />
             <Box className="name">
               Contract Notifications
-              <Box
-                className="description"
-              >
+              <Box className="description">
                 Get notified when YOUR Contract occurs activities
               </Box>
             </Box>
@@ -136,7 +138,9 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
             textTransform="uppercase"
             fontWeight={'400'}
             size={'md'}
-            onClick={() => history.push(`/create-webhook-contract/${appInfo.appId}`)}
+            onClick={() =>
+              history.push(`/create-webhook-contract/${appInfo.appId}`)
+            }
           >
             <SmallAddIcon mr={1} /> Create webhook
           </AppButton>

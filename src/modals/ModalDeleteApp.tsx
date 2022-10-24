@@ -36,7 +36,9 @@ const ModalDeleteApp: FC<IModalEditApp> = ({ open, onClose, appInfo }) => {
       textActionRight="Delete"
       textActionLeft="Cancel"
     >
-      <Box>Are you sure you want to delete <b>{appInfo.name}</b> ?</Box>
+      <Box>
+        Are you sure you want to delete <b>{appInfo.name}</b> ?
+      </Box>
     </BaseModal>
   );
 };

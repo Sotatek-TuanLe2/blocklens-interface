@@ -50,9 +50,18 @@ const Routes: FC<RouteComponentProps> = () => {
         <PublicRoute path={'/verify-email'} component={VerifyAccountPage} />
         <PublicRoute path={'/reset-password'} component={ResetPasswordPage} />
         <PrivateRoute path={'/setting/:tab'} component={ProfilePage} />
-        <PrivateRoute path={'/webhooks/:type/:id'} component={WebhookActivitiesPage} />
-        <PrivateRoute path={'/create-webhook-nft/:id'} component={CreateWebhookNFTPage} />
-        <PrivateRoute path={'/create-webhook-contract/:id'} component={CreateWebhookContractPage} />
+        <PrivateRoute
+          path={'/webhooks/:type/:id'}
+          component={WebhookActivitiesPage}
+        />
+        <PrivateRoute
+          path={'/create-webhook-nft/:id'}
+          component={CreateWebhookNFTPage}
+        />
+        <PrivateRoute
+          path={'/create-webhook-contract/:id'}
+          component={CreateWebhookContractPage}
+        />
         <PrivateRoute path={'/'} component={HomePage} />
       </Switch>
     </>

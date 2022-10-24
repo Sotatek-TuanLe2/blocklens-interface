@@ -32,7 +32,9 @@ const ChangePasswordModal: React.FC<IChangePasswordModal> = ({
   const forceUpdate = useCallback(() => updateState({}), []);
   const validators = useRef(
     createValidator({
-      element: (message: string) => <Text className="text-error">{message}</Text>,
+      element: (message: string) => (
+        <Text className="text-error">{message}</Text>
+      ),
     }),
   );
   const handleOnSubmit = async () => {
