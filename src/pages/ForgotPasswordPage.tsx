@@ -25,6 +25,7 @@ const ForgotPasswordPage: FC = () => {
 
   const [dataForm, setDataForm] = useState<IDataForm>(initDataRestPassword);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
+  const [hiddenErrorText, setHiddenErrorText] = useState(false);
   const colorText = useColorModeValue('gray.500', 'white');
 
   const validator = useRef(
@@ -42,6 +43,7 @@ const ForgotPasswordPage: FC = () => {
       await rf.getRequest('AuthRequest').forgotPassword(dataForm);
       toastSuccess({ message: 'Send mail is successfully.' });
       setDataForm({ ...initDataRestPassword });
+      setHiddenErrorText(true);
     } catch (error: any) {
       toastError({
         message: `${error.message || 'Oops. Something went wrong!'}`,
@@ -69,14 +71,17 @@ const ForgotPasswordPage: FC = () => {
           <Box mt={5} color={colorText}>
             <AppField label={'EMAIL'}>
               <AppInput
+                hiddenErrorText={hiddenErrorText}
                 placeholder="gavin@sotatek.com"
                 value={dataForm.email}
-                onChange={(e) =>
+                onChange={(e) => {
+                  setHiddenErrorText(false);
+
                   setDataForm({
                     ...dataForm,
                     email: e.target.value,
-                  })
-                }
+                  });
+                }}
                 validate={{
                   name: `email`,
                   validator: validator.current,

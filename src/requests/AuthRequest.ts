@@ -21,9 +21,9 @@ export default class AuthRequest extends BaseRequest {
     return this.post(url, params);
   }
 
-  resendMailVerify(userId: number) {
-    const url = `/public/users/resend-email-verify/${userId}`;
-    return this.post(url, {});
+  resendMailVerify(email: string) {
+    const url = `/public/users/resend-email`;
+    return this.post(url, { email });
   }
 
   verifyMail(uid: number, vid: string) {
@@ -32,7 +32,7 @@ export default class AuthRequest extends BaseRequest {
   }
 
   changePassword(params: { newPassword: string; oldPassword: string }) {
-    const url = '/my/users/profile/password';
+    const url = '/my/users/change-password';
     return this.put(url, params);
   }
 

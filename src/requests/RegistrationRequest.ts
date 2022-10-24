@@ -6,6 +6,11 @@ export default class RegistrationRequest extends BaseRequest {
     return config.api.baseUrlApi;
   }
 
+  getWebhookDetail(type: string, registrationId: string) {
+    const url = `/my/registrations/${type}/${registrationId}`;
+    return this.get(url);
+  }
+
   getNFTActivity(params: any) {
     const url = `/my/registrations/nft-activity`;
     return this.get(url, params);

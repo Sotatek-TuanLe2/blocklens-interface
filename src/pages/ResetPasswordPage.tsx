@@ -27,10 +27,9 @@ const ResetPasswordPage: FC = () => {
   const history = useHistory();
   const location = useLocation();
   const param: any = new URLSearchParams(location.search);
-  console.log('location', param.get('id'));
 
   const handleSubmitResetPassword = async () => {
-    if (!dataForm.confirmPassword || dataForm.newPassword) {
+    if (!dataForm.confirmPassword || !dataForm.newPassword) {
       toastError({
         message: `${'Oops. Something went wrong!'}`,
       });

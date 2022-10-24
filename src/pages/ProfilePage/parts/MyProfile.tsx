@@ -38,7 +38,9 @@ const MyProfile: FC = () => {
 
   const validator = useRef(
     createValidator({
-      element: (message: string) => <Text className="text-error">{message}</Text>,
+      element: (message: string) => (
+        <Text className="text-error">{message}</Text>
+      ),
     }),
   );
   const _renderButtonEdit = () => {
@@ -86,9 +88,7 @@ const MyProfile: FC = () => {
         <Flex className="info-item" borderBottom="1px solid #CACED4">
           <Flex alignItems={'center'}>
             <Box className="info-title">Email</Box>
-            <Box>
-              {userInfo.email}
-            </Box>
+            <Box>{userInfo.email}</Box>
           </Flex>
         </Flex>
         <Flex className="info-item">
@@ -155,9 +155,6 @@ const MyProfile: FC = () => {
         Change password
       </AppLink>
 
-      <Box className="btn-sign-out">
-        <AppButton>Sign out</AppButton>
-      </Box>
       {isOpenModal && (
         <ChangePasswordModal
           isOpenModal={isOpenModal}

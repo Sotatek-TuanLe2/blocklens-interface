@@ -17,10 +17,12 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import Storage from 'src/utils/storage';
 import AppDetail from './pages/AppDetail';
 import VerifyAccountPage from './pages/VerifyAccountPage';
-import NotificationsPage from './pages/NotificationsPage';
+import WebhookActivitiesPage from './pages/WebhookActivitiesPage';
 import { getInfoUser } from 'src/store/auth';
 import { useDispatch } from 'react-redux';
 import ResetPasswordPage from './pages/ResetPasswordPage';
+import CreateWebhookNFTPage from './pages/CreateWebhookNFTPage';
+import CreateWebhookContractPage from './pages/CreateWebhookContractPage';
 
 /**
  * Main App routes.
@@ -51,8 +53,16 @@ const Routes: FC<RouteComponentProps> = () => {
         <PublicRoute path={'/reset-password'} component={ResetPasswordPage} />
         <PrivateRoute path={'/setting/:tab'} component={ProfilePage} />
         <PrivateRoute
-          path={'/notifications/:id'}
-          component={NotificationsPage}
+          path={'/webhooks/:type/:id'}
+          component={WebhookActivitiesPage}
+        />
+        <PrivateRoute
+          path={'/create-webhook-nft/:id'}
+          component={CreateWebhookNFTPage}
+        />
+        <PrivateRoute
+          path={'/create-webhook-contract/:id'}
+          component={CreateWebhookContractPage}
         />
         <PrivateRoute path={'/'} component={HomePage} />
       </Switch>

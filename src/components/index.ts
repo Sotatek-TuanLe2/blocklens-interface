@@ -11,6 +11,7 @@ export { default as AppSwitch } from './AppSwitch';
 export { default as AppSilder } from './AppSilder';
 export { default as AppTextarea } from './AppTextarea';
 export { default as GoogleAuthButton } from './GoogleAuthButton';
+export { default as AppUploadABI } from './AppUploadABI';
 
 export * from './AppCard';
 export * from './AppButton';
@@ -25,3 +26,4 @@ export * from './AppSwitch';
 export * from './AppSilder';
 export * from './AppTextarea';
 export * from './GoogleAuthButton';
+export * from './AppUploadABI';
