@@ -142,9 +142,11 @@ export const ListApps: React.FC<IListApps> = ({ searchListApp, setSearchListApp 
         open={openModalChangeStatus}
         onClose={() => setOpenModalChangeStatus(false)}
         appInfo={appSelected}
-        reloadData={() => setSearchListApp((pre: any) => {
-          return { ...pre };
-        })}
+        reloadData={() => {
+          setSearchListApp((pre: any) => {
+            return { ...pre };
+          });
+        }}
       />
     </Box>
   );

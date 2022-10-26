@@ -3,7 +3,6 @@ import React, { FC } from 'react';
 import BaseModal from './BaseModal';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
-import { useHistory } from 'react-router';
 import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
 
 interface IModalChangeStatusApp {
@@ -19,13 +18,10 @@ const ModalChangeStatusApp: FC<IModalChangeStatusApp> = ({
   appInfo,
   reloadData,
 }) => {
-  const history = useHistory();
-
-  const onDelete = async () => {
+  const onChangeStatus = async () => {
     try {
       await rf.getRequest('AppRequest').toggleApp(appInfo?.appId);
       toastSuccess({ message: 'Update Successfully!' });
-      history.push('/');
       onClose();
       reloadData();
     } catch (e: any) {
@@ -51,7 +47,7 @@ const ModalChangeStatusApp: FC<IModalChangeStatusApp> = ({
       }
       isOpen={open}
       onClose={onClose}
-      onActionRight={onDelete}
+      onActionRight={onChangeStatus}
       onActionLeft={onClose}
       textActionRight="Confirm"
       textActionLeft="Cancel"

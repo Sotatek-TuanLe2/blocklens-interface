@@ -12,11 +12,15 @@ import ModalEditApp from 'src/modals/ModalEditApp';
 import ModalDeleteApp from 'src/modals/ModalDeleteApp';
 import { BasePageContainer } from 'src/layouts';
 import { AppButton } from 'src/components';
+import ModalChangeStatusApp from 'src/modals/ModalChangeStatusApp';
+import { APP_STATUS } from 'src/utils/utils-app';
 
 const AppDetail = () => {
   const [appInfo, setAppInfo] = useState<any>({});
   const [loading, setLoading] = useState<boolean>(false);
   const [isOpenModalEditApp, setIsOpenModalEditApp] = useState<boolean>(false);
+  const [isOpenModalChangeStatus, setIsOpenModalChangeStatus] =
+    useState<boolean>(false);
   const [isOpenModalDeleteApp, setIsOpenModalDeleteApp] =
     useState<boolean>(false);
 
@@ -57,8 +61,16 @@ const AppDetail = () => {
           </Flex>
 
           <Flex>
-            <AppButton size={'md'} variant="outline" mr={5}>
-              DEACTIVATE APP
+            <AppButton
+              size={'md'}
+              variant="outline"
+              mr={5}
+              onClick={() => setIsOpenModalChangeStatus(true)}
+            >
+              {appInfo.status === APP_STATUS.DISABLED
+                ? 'ACITVATE'
+                : 'DEACTIVATE'}{' '}
+              APP
             </AppButton>
             <AppButton
               size={'md'}
@@ -87,6 +99,13 @@ const AppDetail = () => {
           open={isOpenModalDeleteApp}
           onClose={() => setIsOpenModalDeleteApp(false)}
           appInfo={appInfo}
+        />
+
+        <ModalChangeStatusApp
+          open={isOpenModalChangeStatus}
+          onClose={() => setIsOpenModalChangeStatus(false)}
+          appInfo={appInfo}
+          reloadData={getAppInfo}
         />
       </>
     </BasePageContainer>
