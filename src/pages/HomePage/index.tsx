@@ -10,7 +10,10 @@ const HomePage = () => {
     <BasePageContainer>
       <>
         <FormCreateApp setSearchListApp={setSearchListApp} />
-        <ListApps searchListApp={searchListApp} />
+        <ListApps
+          searchListApp={searchListApp}
+          setSearchListApp={setSearchListApp}
+        />
       </>
     </BasePageContainer>
   );

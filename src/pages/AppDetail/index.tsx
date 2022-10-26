@@ -13,19 +13,6 @@ import ModalDeleteApp from 'src/modals/ModalDeleteApp';
 import { BasePageContainer } from 'src/layouts';
 import { AppButton } from 'src/components';
 
-export interface IAppInfo {
-  name: string;
-  chain: string;
-  network: string;
-  description?: string;
-  key: string;
-  appId: number;
-  totalUserNotification: number;
-  totalAppNotification: number;
-  totalAppNotificationLast24Hours: number;
-  totalAppNotificationSuccessLast24Hours: number;
-}
-
 const AppDetail = () => {
   const [appInfo, setAppInfo] = useState<any>({});
   const [loading, setLoading] = useState<boolean>(false);

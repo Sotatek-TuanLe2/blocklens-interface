@@ -1,11 +1,11 @@
 import { Box, SimpleGrid } from '@chakra-ui/react';
 import React, { FC } from 'react';
 import { AppCard } from 'src/components';
-import { IAppInfo } from '../index';
 import { formatLargeNumber } from 'src/utils/utils-helper';
+import { IAppResponse } from 'src/utils/utils-app';
 
 interface IListInfo {
-  appInfo: IAppInfo;
+  appInfo: IAppResponse;
 }
 
 const PartAppStatics: FC<IListInfo> = ({ appInfo }) => {
