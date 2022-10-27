@@ -39,7 +39,7 @@ export default class BaseRequest {
     }
   }
 
-  async patch(url: any, data: any) {
+  async patch(url: any, data?: any) {
     try {
       const response = await axios.patch(this.getUrlPrefix() + url, data);
       return this._responseHandler(response);
@@ -78,7 +78,7 @@ export default class BaseRequest {
   }
 
   async _errorHandler(err: any) {
-    if (err.response.status === 403) {
+    if (err.response?.status === 403) {
       return this._error403Handler();
     }
     if (err.response) {
@@ -86,7 +86,7 @@ export default class BaseRequest {
       console.log('===errorHandler data', JSON.stringify(err.response.data));
       console.log(
         '===errorHandler status',
-        JSON.stringify(err.response.status),
+        JSON.stringify(err.response?.status),
       );
       console.log(
         '===errorHandler headers',
@@ -95,12 +95,10 @@ export default class BaseRequest {
     } else {
       console.log('==errorHandler', JSON.stringify(err));
     }
-    if (
-      err.response &&
-      err.response.data &&
-      err.response.data.message &&
-      err.response.data.message[0]
-    ) {
+    if (err.response && err.response.data && err.response.data.message) {
+      if (typeof err.response.data.message === 'string') {
+        throw new Error(err.response.data.message);
+      }
       throw new Error(err.response.data.message[0]);
     }
     if (err.response && err.response.data && err.response.data.error) {

@@ -1,15 +1,15 @@
 import { Box } from '@chakra-ui/react';
 import React, { FC } from 'react';
 import BaseModal from './BaseModal';
-import { IAppInfo } from 'src/pages/AppDetail';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { useHistory } from 'react-router';
+import { IAppResponse } from '../utils/utils-app';
 
 interface IModalEditApp {
   open: boolean;
   onClose: () => void;
-  appInfo: IAppInfo;
+  appInfo: IAppResponse;
 }
 
 const ModalDeleteApp: FC<IModalEditApp> = ({ open, onClose, appInfo }) => {

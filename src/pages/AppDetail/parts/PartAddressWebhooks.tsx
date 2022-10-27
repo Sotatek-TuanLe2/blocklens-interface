@@ -5,10 +5,10 @@ import { AppButton, AppCard, AppDataTable, AppLink } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import { IListAppResponse } from 'src/utils/common';
 import ModalCreateWebhookAddress from 'src/modals/ModalCreateWebhookAddress';
-import { IAppInfo } from '../index';
+import { IAppResponse } from 'src/utils/utils-app';
 
 interface IListAddress {
-  appInfo: IAppInfo;
+  appInfo: IAppResponse;
 }
 
 interface IParams {
