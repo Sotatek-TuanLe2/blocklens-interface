@@ -1,45 +1,45 @@
 import {
+  Box,
   Flex,
+  Tag,
   Tbody,
+  Td,
   Text,
   Th,
   Thead,
   Tr,
-  Td,
-  Box,
-  Tag,
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { AppCard, AppDataTable, AppLink } from 'src/components';
 import rf from 'src/requests/RequestFactory';
-import { IAppResponse, IListAppResponse } from 'src/utils/common';
+import { IListAppResponse } from 'src/utils/common';
+import ModalChangeStatusApp from 'src/modals/ModalChangeStatusApp';
+import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
 
 interface IListApps {
   searchListApp: any;
+  setSearchListApp: (value: any) => void;
 }
 
-const STATUS = {
-  ACTIVE: 'ACTIVE',
-  INACTIVE: 'INACTIVE',
+const getColorBrandStatus = (status?: APP_STATUS) => {
+  switch (status) {
+    case APP_STATUS.ENABLE:
+      return 'green';
+    case APP_STATUS.DISABLED:
+      return 'red';
+    default:
+      return 'green';
+  }
 };
 
-export const _renderStatus = (status?: string) => {
-  const getColorBrandStatus = () => {
-    switch (status) {
-      case STATUS.ACTIVE:
-        return 'green';
-      case STATUS.INACTIVE:
-        return 'red';
-    }
-  };
-
+export const _renderStatus = (status?: APP_STATUS) => {
   if (!status) return 'N/A';
   return (
     <Tag
       size={'sm'}
       borderRadius="full"
       variant="solid"
-      colorScheme={getColorBrandStatus()}
+      colorScheme={getColorBrandStatus(status)}
       px={5}
     >
       {status}
@@ -47,8 +47,12 @@ export const _renderStatus = (status?: string) => {
   );
 };
 
-const ListApps: React.FC<IListApps> = ({ searchListApp }) => {
+export const ListApps: React.FC<IListApps> = ({ searchListApp, setSearchListApp }) => {
   const [totalApps, setTotalApps] = useState<number>(0);
+  const [appSelected, setAppSelected] = useState<IAppResponse | null>(null);
+  const [openModalChangeStatus, setOpenModalChangeStatus] =
+    useState<boolean>(false);
+
   const fetchDataTable: any = async (param: any) => {
     try {
       const res: IListAppResponse = await rf
@@ -77,6 +81,21 @@ const ListApps: React.FC<IListApps> = ({ searchListApp }) => {
   };
 
   const _renderBody = (data?: IAppResponse[]) => {
+    const _renderActionApp = (app: IAppResponse) => {
+      return (
+        <Box
+          cursor={'pointer'}
+          color={getColorBrandStatus(app.status)}
+          onClick={() => {
+            setOpenModalChangeStatus(true);
+            setAppSelected(app);
+          }}
+        >
+          {app.status === APP_STATUS.DISABLED ? 'Activate' : 'Deactivate' }
+        </Box>
+      );
+    };
+
     return (
       <Tbody>
         {data?.map((app: IAppResponse, index: number) => {
@@ -89,7 +108,7 @@ const ListApps: React.FC<IListApps> = ({ searchListApp }) => {
               <Td>{app.description || ''}</Td>
               <Td textAlign={'right'}>N/A</Td>
               <Td>{_renderStatus(app.status)}</Td>
-              <Td>N/A</Td>
+              <Td>{_renderActionApp(app)}</Td>
             </Tr>
           );
         })}
@@ -108,6 +127,7 @@ const ListApps: React.FC<IListApps> = ({ searchListApp }) => {
           N/A / {totalApps}
         </div>
       </Flex>
+
       <AppCard className="list-app-table-wrap">
         <AppDataTable
           requestParams={searchListApp}
@@ -117,6 +137,17 @@ const ListApps: React.FC<IListApps> = ({ searchListApp }) => {
           limit={10}
         />
       </AppCard>
+
+      <ModalChangeStatusApp
+        open={openModalChangeStatus}
+        onClose={() => setOpenModalChangeStatus(false)}
+        appInfo={appSelected}
+        reloadData={() => {
+          setSearchListApp((pre: any) => {
+            return { ...pre };
+          });
+        }}
+      />
     </Box>
   );
 };
