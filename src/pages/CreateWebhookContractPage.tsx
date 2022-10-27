@@ -46,7 +46,7 @@ const CreateWebhookContractPage = () => {
 
     try {
       await rf.getRequest('RegistrationRequest').addContractActivity({
-        appId,
+        appId: +appId,
         ...dataForm,
       });
       history.push(`/app-detail/${appId}`);

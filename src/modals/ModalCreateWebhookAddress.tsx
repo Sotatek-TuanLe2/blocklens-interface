@@ -50,7 +50,7 @@ const ModalCreateWebhookAddress: FC<ICreateAddressActivityModal> = ({
     try {
       await rf
         .getRequest('RegistrationRequest')
-        .addAddressActivity({ appId: appInfo.appId, ...data });
+        .addAddressActivity({ appId: +appInfo.appId, ...data });
       toastSuccess({ message: 'Add Successfully!' });
       onReloadData();
       onClose();
