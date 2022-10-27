@@ -151,19 +151,20 @@ const ModalCreateWebhookAddress: FC<ICreateAddressActivityModal> = ({
               </AppField>
             );
           })}
-
-          <Box
-            color={'brand.400'}
-            cursor={'pointer'}
-            onClick={() =>
-              setDataForm({
-                ...dataForm,
-                addresses: [...dataForm.addresses, ''],
-              })
-            }
-          >
-            ADD ADDRESS
-          </Box>
+          {dataForm.addresses.length <= 10 && (
+            <Box
+              color={'brand.400'}
+              cursor={'pointer'}
+              onClick={() =>
+                setDataForm({
+                  ...dataForm,
+                  addresses: [...dataForm.addresses, ''],
+                })
+              }
+            >
+              ADD ADDRESS
+            </Box>
+          )}
         </Flex>
         <Flex justifyContent={'flex-end'}>
           <AppButton

@@ -12,9 +12,10 @@ import {
 import React, { useState } from 'react';
 import { AppCard, AppDataTable, AppLink } from 'src/components';
 import rf from 'src/requests/RequestFactory';
-import { IListAppResponse } from 'src/utils/common';
 import ModalChangeStatusApp from 'src/modals/ModalChangeStatusApp';
 import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
+import { IListAppResponse } from 'src/utils/common';
+import { useHistory } from 'react-router';
 
 interface IListApps {
   searchListApp: any;
@@ -47,7 +48,8 @@ export const _renderStatus = (status?: APP_STATUS) => {
   );
 };
 
-export const ListApps: React.FC<IListApps> = ({ searchListApp, setSearchListApp }) => {
+const ListApps: React.FC<IListApps> = ({ searchListApp, setSearchListApp }) => {
+  const history = useHistory();
   const [totalApps, setTotalApps] = useState<number>(0);
   const [appSelected, setAppSelected] = useState<IAppResponse | null>(null);
   const [openModalChangeStatus, setOpenModalChangeStatus] =
@@ -86,7 +88,8 @@ export const ListApps: React.FC<IListApps> = ({ searchListApp, setSearchListApp 
         <Box
           cursor={'pointer'}
           color={getColorBrandStatus(app.status)}
-          onClick={() => {
+          onClick={(e: any) => {
+            e.stopPropagation();
             setOpenModalChangeStatus(true);
             setAppSelected(app);
           }}
@@ -100,7 +103,12 @@ export const ListApps: React.FC<IListApps> = ({ searchListApp, setSearchListApp 
       <Tbody>
         {data?.map((app: IAppResponse, index: number) => {
           return (
-            <Tr key={index} className="tr-list-app">
+            <Tr
+              key={index}
+              className="tr-list-app"
+              onClick={() =>
+                history.push(`/app-detail/${app.appId}`)}
+            >
               <Td>
                 <AppLink to={`/app-detail/${app.appId}`}>{app.name}</AppLink>
               </Td>
