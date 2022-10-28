@@ -6,6 +6,12 @@ import rf from 'src/requests/RequestFactory';
 import { IListAppResponse } from 'src/utils/common';
 import { useHistory } from 'react-router';
 import { IAppResponse } from 'src/utils/utils-app';
+import ListActionWebhook from './ListActionWebhook';
+import {
+  getStatusWebhook,
+  WEBHOOK_STATUS,
+  INFTWebhook,
+} from 'src/utils/utils-webhook';
 
 interface IListNTF {
   appInfo: IAppResponse;
@@ -13,17 +19,6 @@ interface IListNTF {
 
 interface IParams {
   appId?: number;
-}
-
-interface INFTResponse {
-  userId: number;
-  registrationId: number;
-  network: string;
-  type: string;
-  webhook: string;
-  status?: string;
-  contractAddress: string;
-  tokenIds: string[];
 }
 
 const PartNFTWebhooks: FC<IListNTF> = ({ appInfo }) => {
@@ -64,35 +59,44 @@ const PartNFTWebhooks: FC<IListNTF> = ({ appInfo }) => {
     );
   };
 
-  const _renderStatus = (nft: INFTResponse) => {
-    if (!nft.status) return 'N/A';
+  const _renderStatus = (nft: INFTWebhook) => {
     return (
       <Tag
         size={'sm'}
         borderRadius="full"
         variant="solid"
-        colorScheme="green"
+        colorScheme={nft.status === WEBHOOK_STATUS.ENABLE ? 'green' : 'red'}
         px={5}
       >
-        {nft.status}
+        {getStatusWebhook(nft.status)}
       </Tag>
     );
   };
 
-  const _renderBody = (data?: INFTResponse[]) => {
+  const _renderBody = (data?: INFTWebhook[]) => {
     return (
       <Tbody>
-        {data?.map((nft: INFTResponse, index: number) => {
+        {data?.map((nft: INFTWebhook, index: number) => {
           return (
             <Tr key={index}>
               <Td>{nft.registrationId}</Td>
               <Td>{_renderStatus(nft)}</Td>
               <Td>{nft.webhook}</Td>
-              <Td>N/A Address</Td>
+              <Td>1 Address</Td>
               <Td>
                 <AppLink to={`/webhooks/nft-activity/${nft.registrationId}`}>
-                  View
+                  View details
                 </AppLink>
+
+                <ListActionWebhook
+                  webhook={nft}
+                  type="nft-activity"
+                  reloadData={() =>
+                    setParams((pre: any) => {
+                      return { ...pre };
+                    })
+                  }
+                />
               </Td>
             </Tr>
           );

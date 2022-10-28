@@ -1,4 +1,4 @@
-import { Flex, Tbody, Th, Thead, Tr, Td, Box, Tag } from '@chakra-ui/react';
+import { Box, Flex, Tag, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
 import { SmallAddIcon } from '@chakra-ui/icons';
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { AppButton, AppCard, AppDataTable, AppLink } from 'src/components';
@@ -6,6 +6,8 @@ import rf from 'src/requests/RequestFactory';
 import { IListAppResponse } from 'src/utils/common';
 import { useHistory } from 'react-router';
 import { IAppResponse } from 'src/utils/utils-app';
+import ListActionWebhook from './ListActionWebhook';
+import { getStatusWebhook, WEBHOOK_STATUS, IContractWebhook } from 'src/utils/utils-webhook';
 
 interface IListContract {
   appInfo: IAppResponse;
@@ -13,17 +15,6 @@ interface IListContract {
 
 interface IParams {
   appId?: number;
-}
-
-interface IContractResponse {
-  userId: number;
-  registrationId: number;
-  network: string;
-  type: string;
-  webhook: string;
-  status?: string;
-  contractAddress: string;
-  abi: string[];
 }
 
 const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
@@ -64,17 +55,18 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
     );
   };
 
-  const _renderStatus = (contract: IContractResponse) => {
-    if (!contract.status) return 'N/A';
+  const _renderStatus = (contract: IContractWebhook) => {
     return (
       <Tag
         size={'sm'}
         borderRadius="full"
         variant="solid"
-        colorScheme="green"
+        colorScheme={
+          contract.status === WEBHOOK_STATUS.ENABLE ? 'green' : 'red'
+        }
         px={5}
       >
-        {contract.status}
+        {getStatusWebhook(contract.status)}
       </Tag>
     );
   };
@@ -96,10 +88,10 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
     );
   };
 
-  const _renderBody = (data?: IContractResponse[]) => {
+  const _renderBody = (data?: IContractWebhook[]) => {
     return (
       <Tbody>
-        {data?.map((contract: IContractResponse, index: number) => {
+        {data?.map((contract: IContractWebhook, index: number) => {
           return (
             <Tr key={index}>
               <Td>{contract.registrationId}</Td>
@@ -110,8 +102,17 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
                 <AppLink
                   to={`/webhooks/contract-activity/${contract.registrationId}`}
                 >
-                  View
+                  View details
                 </AppLink>
+                <ListActionWebhook
+                  webhook={contract}
+                  type="contract-activity"
+                  reloadData={() =>
+                    setParams((pre: any) => {
+                      return { ...pre };
+                    })
+                  }
+                />
               </Td>
             </Tr>
           );

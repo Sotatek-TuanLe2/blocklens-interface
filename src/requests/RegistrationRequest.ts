@@ -40,4 +40,9 @@ export default class RegistrationRequest extends BaseRequest {
     const url = `/my/registrations/contract-activity`;
     return this.post(url, params);
   }
+
+  toggleWebhook(type: string, registrationId: number) {
+    const url = `/my/registrations/${type}/${registrationId}/toggle`;
+    return this.patch(url);
+  }
 }
