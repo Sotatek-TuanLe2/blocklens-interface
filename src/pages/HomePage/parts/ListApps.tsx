@@ -62,7 +62,6 @@ const ListApps: React.FC<IListApps> = ({ searchListApp, setSearchListApp }) => {
         <Tr>
           <Th>NAME</Th>
           <Th>NETWORK</Th>
-          <Th>Description</Th>
           <Th textAlign={'right'}>Days on Blocklens</Th>
           <Th>Status</Th>
           <Th>ACTIONS</Th>
@@ -102,7 +101,6 @@ const ListApps: React.FC<IListApps> = ({ searchListApp, setSearchListApp }) => {
                 <AppLink to={`/app-detail/${app.appId}`}>{app.name}</AppLink>
               </Td>
               <Td>{app.chain + ' ' + app.network}</Td>
-              <Td>{app.description || ''}</Td>
               <Td textAlign={'right'}>N/A</Td>
               <Td>{_renderStatus(app.status)}</Td>
               <Td>{_renderActionApp(app)}</Td>
