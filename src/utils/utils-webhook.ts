@@ -11,17 +11,17 @@ interface IWebhook {
   status: WEBHOOK_STATUS;
 }
 
-export interface INFTWebhook extends IWebhook{
+export interface INFTWebhook extends IWebhook {
   contractAddress: string;
   tokenIds: string[];
 }
 
-export interface IContractWebhook extends IWebhook{
+export interface IContractWebhook extends IWebhook {
   contractAddress: string;
   abi: string[];
 }
 
-export interface IAddressWebhook extends IWebhook{
+export interface IAddressWebhook extends IWebhook {
   addresses: string[];
 }
 
