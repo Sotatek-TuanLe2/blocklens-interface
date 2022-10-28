@@ -12,7 +12,8 @@ interface AppButtonProps extends ButtonProps {
     | 'action'
     | 'setup'
     | 'outline'
-    | 'no-effects';
+    | 'no-effects'
+    | 'red';
 }
 
 const AppButton = forwardRef<HTMLButtonElement, AppButtonProps>(
@@ -52,6 +53,16 @@ export const appButtonStyles = {
         bg: '#3965FF',
         _disabled: {
           bg: '#4C84FF',
+        },
+      },
+    }),
+    red: (props: StyleProps) => ({
+      bg: 'red.400',
+      color: 'white',
+      _hover: {
+        bg: 'red.500',
+        _disabled: {
+          bg: 'red.500',
         },
       },
     }),
