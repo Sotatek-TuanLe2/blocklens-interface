@@ -1,14 +1,4 @@
-import {
-  Box,
-  Flex,
-  Tag,
-  Tbody,
-  Td,
-  Text,
-  Th,
-  Thead,
-  Tr,
-} from '@chakra-ui/react';
+import { Box, Flex, Tag, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { AppCard, AppDataTable, AppLink } from 'src/components';
 import rf from 'src/requests/RequestFactory';
@@ -34,7 +24,6 @@ const getColorBrandStatus = (status?: APP_STATUS) => {
 };
 
 export const _renderStatus = (status?: APP_STATUS) => {
-  if (!status) return 'N/A';
   return (
     <Tag
       size={'sm'}
@@ -43,7 +32,7 @@ export const _renderStatus = (status?: APP_STATUS) => {
       colorScheme={getColorBrandStatus(status)}
       px={5}
     >
-      {status}
+      {status === APP_STATUS.ENABLE ? 'ACTIVE' : 'INACTIVE'}
     </Tag>
   );
 };
@@ -87,7 +76,7 @@ const ListApps: React.FC<IListApps> = ({ searchListApp, setSearchListApp }) => {
       return (
         <Box
           cursor={'pointer'}
-          color={getColorBrandStatus(app.status)}
+          color={app.status === APP_STATUS.DISABLED ? 'green': 'red'}
           onClick={(e: any) => {
             e.stopPropagation();
             setOpenModalChangeStatus(true);
