@@ -211,26 +211,7 @@ const NotificationItem: FC<INotificationItem> = ({ notification }) => {
 };
 
 const WebhookActivitiesPage = () => {
-  const { id: registrationId, type } = useParams<{
-    id: string;
-    type: string;
-  }>();
-  const [webhookInfo, setWebhookInfo] = useState<any>({});
-
-  const getWebhookInfo = useCallback(async () => {
-    try {
-      const res = (await rf
-        .getRequest('RegistrationRequest')
-        .getWebhookDetail(type, registrationId)) as any;
-      setWebhookInfo(res);
-    } catch (error: any) {
-      setWebhookInfo({});
-    }
-  }, [registrationId, type]);
-
-  useEffect(() => {
-    getWebhookInfo().then();
-  }, []);
+  const { id: registrationId } = useParams<{ id: string }>();
 
   const fetchDataTable: any = async (param: any) => {
     try {
