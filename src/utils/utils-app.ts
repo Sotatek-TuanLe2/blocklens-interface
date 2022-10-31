@@ -11,9 +11,5 @@ export interface IAppResponse {
   chain: string;
   network: string;
   key: string;
-  totalUserNotification: number;
-  totalAppNotification: number;
-  totalAppNotificationLast24Hours: number;
-  totalAppNotificationSuccessLast24Hours: number;
   status: APP_STATUS;
 }

@@ -83,7 +83,7 @@ const AppDetail = () => {
           </Flex>
         </Flex>
 
-        <PartAppStatics appInfo={appInfo} />
+        <PartAppStatics />
         <PartNFTWebhooks appInfo={appInfo} />
         <PartAddressWebhooks appInfo={appInfo} />
         <PartContractWebhooks appInfo={appInfo} />
