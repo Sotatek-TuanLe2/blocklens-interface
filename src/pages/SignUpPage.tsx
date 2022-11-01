@@ -49,7 +49,7 @@ const SignUpPage: FC = () => {
   const onSignUp = async () => {
     try {
       const res = await rf.getRequest('AuthRequest').signUp(dataForm);
-      setUserId(res?.user?.userId || '');
+      setUserId(res?.userId || '');
       toastSuccess({ message: 'Sign up successfully!' });
       setIsSuccess(true);
     } catch (e: any) {
@@ -60,7 +60,7 @@ const SignUpPage: FC = () => {
   const onResendMail = async () => {
     if (!userId) return;
     try {
-      await rf.getRequest('AuthRequest').resendMailVerify(+userId);
+      await rf.getRequest('AuthRequest').resendMailVerify(dataForm.email);
       toastSuccess({ message: 'Successfully!' });
     } catch (e: any) {
       toastError({ message: e?.message || 'Oops. Something went wrong!' });
