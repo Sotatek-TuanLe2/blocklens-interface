@@ -82,7 +82,12 @@ const ModalCreateWebhookAddress: FC<ICreateAddressActivityModal> = ({
     >
       <Box flexDirection={'column'} pt={'20px'}>
         <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
-          <AppField label={'WEBHOOK URL'} customWidth={'100%'} isRequired>
+          <AppField
+            label={'WEBHOOK URL'}
+            customWidth={'100%'}
+            isRequired
+            note="The endpoint to send notifications to."
+          >
             <AppInput
               placeholder="https://yourapp.com/webhook/data/12345"
               borderRightRadius={0}
