@@ -10,4 +10,14 @@ export default class NotificationRequest extends BaseRequest {
     const url = '/my/notifications';
     return this.get(url, { ...params });
   }
+
+  getAppStatistics(appId: string) {
+    const url = `/my/notifications/app-${appId}/statistics`;
+    return this.get(url);
+  }
+
+  getWebhookStatistics(registrationId: string) {
+    const url = `/my/notifications/webhook-${registrationId}/statistics`;
+    return this.get(url);
+  }
 }

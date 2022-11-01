@@ -1,4 +1,4 @@
-import { Flex, Tbody, Th, Thead, Tr, Td, Box, Tag } from '@chakra-ui/react';
+import { Box, Flex, Tag, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
 import { SmallAddIcon } from '@chakra-ui/icons';
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { AppButton, AppCard, AppDataTable, AppLink } from 'src/components';
@@ -6,23 +6,21 @@ import rf from 'src/requests/RequestFactory';
 import { IListAppResponse } from 'src/utils/common';
 import ModalCreateWebhookAddress from 'src/modals/ModalCreateWebhookAddress';
 import { IAppResponse } from 'src/utils/utils-app';
+import {
+  getStatusWebhook,
+  WEBHOOK_STATUS,
+  IAddressWebhook,
+  WEBHOOK_TYPES,
+} from 'src/utils/utils-webhook';
+import ListActionWebhook from './ListActionWebhook';
 
 interface IListAddress {
   appInfo: IAppResponse;
 }
 
 interface IParams {
-  appId?: number;
-}
-
-interface IAddressResponse {
-  userId: number;
-  registrationId: number;
-  network: string;
-  type: string;
-  webhook: string;
-  status?: string;
-  addresses: string[];
+  appId?: string;
+  type?: string;
 }
 
 const PartAddressWebhooks: FC<IListAddress> = ({ appInfo }) => {
@@ -35,17 +33,18 @@ const PartAddressWebhooks: FC<IListAddress> = ({ appInfo }) => {
     try {
       const res: IListAppResponse = await rf
         .getRequest('RegistrationRequest')
-        .getAddressActivity(params);
+        .getRegistrations(appInfo.appId, params);
       setTotalWebhook(res.totalDocs);
       return res;
     } catch (error) {
       return error;
     }
-  }, []);
+  }, [appInfo, params]);
 
   useEffect(() => {
     setParams({
       ...params,
+      type: WEBHOOK_TYPES.ADDRESS_ACTIVITY,
       appId: appInfo.appId,
     });
   }, [appInfo]);
@@ -64,25 +63,24 @@ const PartAddressWebhooks: FC<IListAddress> = ({ appInfo }) => {
     );
   };
 
-  const _renderStatus = (address: IAddressResponse) => {
-    if (!address.status) return 'N/A';
+  const _renderStatus = (address: IAddressWebhook) => {
     return (
       <Tag
         size={'sm'}
         borderRadius="full"
         variant="solid"
-        colorScheme="green"
+        colorScheme={address.status === WEBHOOK_STATUS.ENABLE ? 'green' : 'red'}
         px={5}
       >
-        {address.status}
+        {getStatusWebhook(address.status)}
       </Tag>
     );
   };
 
-  const _renderBody = (data?: IAddressResponse[]) => {
+  const _renderBody = (data?: IAddressWebhook[]) => {
     return (
       <Tbody>
-        {data?.map((address: IAddressResponse, index: number) => {
+        {data?.map((address: IAddressWebhook, index: number) => {
           return (
             <Tr key={index}>
               <Td>{address.registrationId}</Td>
@@ -96,8 +94,17 @@ const PartAddressWebhooks: FC<IListAddress> = ({ appInfo }) => {
                 <AppLink
                   to={`/webhooks/address-activity/${address.registrationId}`}
                 >
-                  View
+                  View details
                 </AppLink>
+
+                <ListActionWebhook
+                  webhook={address}
+                  reloadData={() =>
+                    setParams((pre: any) => {
+                      return { ...pre };
+                    })
+                  }
+                />
               </Td>
             </Tr>
           );

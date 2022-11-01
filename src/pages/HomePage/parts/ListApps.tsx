@@ -34,7 +34,6 @@ const getColorBrandStatus = (status?: APP_STATUS) => {
 };
 
 export const _renderStatus = (status?: APP_STATUS) => {
-  if (!status) return 'N/A';
   return (
     <Tag
       size={'sm'}
@@ -43,7 +42,7 @@ export const _renderStatus = (status?: APP_STATUS) => {
       colorScheme={getColorBrandStatus(status)}
       px={5}
     >
-      {status}
+      {status === APP_STATUS.ENABLE ? 'ACTIVE' : 'INACTIVE'}
     </Tag>
   );
 };
@@ -73,7 +72,6 @@ const ListApps: React.FC<IListApps> = ({ searchListApp, setSearchListApp }) => {
         <Tr>
           <Th>NAME</Th>
           <Th>NETWORK</Th>
-          <Th>Description</Th>
           <Th textAlign={'right'}>Days on Blocklens</Th>
           <Th>Status</Th>
           <Th>ACTIONS</Th>
@@ -87,14 +85,14 @@ const ListApps: React.FC<IListApps> = ({ searchListApp, setSearchListApp }) => {
       return (
         <Box
           cursor={'pointer'}
-          color={getColorBrandStatus(app.status)}
+          color={app.status === APP_STATUS.DISABLED ? 'green' : 'red'}
           onClick={(e: any) => {
             e.stopPropagation();
             setOpenModalChangeStatus(true);
             setAppSelected(app);
           }}
         >
-          {app.status === APP_STATUS.DISABLED ? 'Activate' : 'Deactivate' }
+          {app.status === APP_STATUS.DISABLED ? 'Activate' : 'Deactivate'}
         </Box>
       );
     };
@@ -106,14 +104,12 @@ const ListApps: React.FC<IListApps> = ({ searchListApp, setSearchListApp }) => {
             <Tr
               key={index}
               className="tr-list-app"
-              onClick={() =>
-                history.push(`/app-detail/${app.appId}`)}
+              onClick={() => history.push(`/app-detail/${app.appId}`)}
             >
               <Td>
                 <AppLink to={`/app-detail/${app.appId}`}>{app.name}</AppLink>
               </Td>
               <Td>{app.chain + ' ' + app.network}</Td>
-              <Td>{app.description || ''}</Td>
               <Td textAlign={'right'}>N/A</Td>
               <Td>{_renderStatus(app.status)}</Td>
               <Td>{_renderActionApp(app)}</Td>

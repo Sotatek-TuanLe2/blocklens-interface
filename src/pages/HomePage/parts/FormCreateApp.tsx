@@ -145,7 +145,7 @@ const FormCreateApp: React.FC<IFormCreateApp> = ({ setSearchListApp }) => {
             value={networkSelected}
           ></AppSelect>
         </AppField>
-        <AppField label={'DESCRIPTION'} customWidth={'100%'} isRequired>
+        <AppField label={'DESCRIPTION'} customWidth={'100%'}>
           <AppTextarea
             hiddenErrorText={hiddenErrorText}
             placeholder="Write something about this app in 50 characters!"
@@ -160,7 +160,7 @@ const FormCreateApp: React.FC<IFormCreateApp> = ({ setSearchListApp }) => {
             validate={{
               name: 'description',
               validator: validator.current,
-              rule: ['required', 'max:50'],
+              rule: ['max:100'],
             }}
           />
         </AppField>

@@ -4,16 +4,12 @@ export enum APP_STATUS {
 }
 
 export interface IAppResponse {
-  appId: number;
-  userId: number;
+  appId: string;
+  userId: string;
   name?: string;
   description?: string;
   chain: string;
   network: string;
   key: string;
-  totalUserNotification: number;
-  totalAppNotification: number;
-  totalAppNotificationLast24Hours: number;
-  totalAppNotificationSuccessLast24Hours: number;
   status: APP_STATUS;
 }

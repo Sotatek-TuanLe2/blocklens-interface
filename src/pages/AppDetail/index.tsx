@@ -31,7 +31,7 @@ const AppDetail = () => {
     try {
       const res = (await rf
         .getRequest('AppRequest')
-        .getAppDetail(+appId)) as any;
+        .getAppDetail(appId)) as any;
       setAppInfo(res);
       setLoading(false);
     } catch (error: any) {
@@ -47,18 +47,24 @@ const AppDetail = () => {
     <BasePageContainer className="app-detail">
       <>
         <Flex className="app-info">
-          <Flex alignItems={'center'}>
-            <Box className="name">{appInfo.name}</Box>
-            <Box
-              className="icon-edit"
-              cursor="pointer"
-              onClick={() => setIsOpenModalEditApp(true)}
-            ></Box>
-            <Flex ml={5} alignItems={'center'}>
-              <Box mr={2} className={getLogoChainByName(appInfo?.chain)}></Box>
-              {appInfo.chain + ' ' + appInfo.network}
+          <Box>
+            <Flex alignItems={'center'}>
+              <Box className="name">{appInfo.name}</Box>
+              <Box
+                className="icon-edit"
+                cursor="pointer"
+                onClick={() => setIsOpenModalEditApp(true)}
+              ></Box>
+              <Flex ml={5} alignItems={'center'}>
+                <Box
+                  mr={2}
+                  className={getLogoChainByName(appInfo?.chain)}
+                ></Box>
+                {appInfo.chain + ' ' + appInfo.network}
+              </Flex>
             </Flex>
-          </Flex>
+            <Box className="description">{appInfo.description}</Box>
+          </Box>
 
           <Flex>
             <AppButton
@@ -83,7 +89,7 @@ const AppDetail = () => {
           </Flex>
         </Flex>
 
-        <PartAppStatics appInfo={appInfo} />
+        <PartAppStatics />
         <PartNFTWebhooks appInfo={appInfo} />
         <PartAddressWebhooks appInfo={appInfo} />
         <PartContractWebhooks appInfo={appInfo} />

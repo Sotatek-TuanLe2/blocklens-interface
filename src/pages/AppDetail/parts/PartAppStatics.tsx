@@ -1,22 +1,47 @@
 import { Box, SimpleGrid } from '@chakra-ui/react';
-import React, { FC } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import { AppCard } from 'src/components';
 import { formatLargeNumber } from 'src/utils/utils-helper';
-import { IAppResponse } from 'src/utils/utils-app';
+import rf from 'src/requests/RequestFactory';
+import { useParams } from 'react-router';
 
-interface IListInfo {
-  appInfo: IAppResponse;
+interface IAppStatistics {
+  totalOfUser?: number;
+  totalOfApp?: number;
+  totalLast24Hours?: number;
+  totalSuccessLast24Hours?: number;
 }
 
-const PartAppStatics: FC<IListInfo> = ({ appInfo }) => {
+const PartAppStatics = () => {
+  const { id: appId } = useParams<{ id: string }>();
+  const [appStatistics, setAppStatistics] = useState<IAppStatistics>({});
+
+  const getAppStatistics = useCallback(async () => {
+    try {
+      const res = (await rf
+        .getRequest('NotificationRequest')
+        .getAppStatistics(appId)) as any;
+      setAppStatistics(res);
+    } catch (error: any) {
+      setAppStatistics({});
+    }
+  }, [appId]);
+
+  useEffect(() => {
+    getAppStatistics().then();
+  }, []);
+
   const getPercentNotificationSuccess = () => {
-    if (!appInfo.totalAppNotificationSuccessLast24Hours) {
+    if (
+      !appStatistics?.totalLast24Hours ||
+      !appStatistics.totalSuccessLast24Hours
+    ) {
       return '--';
     }
 
     return (
-      (appInfo?.totalAppNotificationSuccessLast24Hours /
-        appInfo?.totalAppNotificationLast24Hours) *
+      (appStatistics?.totalSuccessLast24Hours /
+        appStatistics?.totalLast24Hours) *
       100
     ).toFixed(2);
   };
@@ -33,7 +58,7 @@ const PartAppStatics: FC<IListInfo> = ({ appInfo }) => {
           This Month
         </Box>
         <Box className="value">
-          {formatLargeNumber(appInfo.totalUserNotification)}
+          {formatLargeNumber(appStatistics.totalOfUser)}
         </Box>
       </AppCard>
 
@@ -43,7 +68,7 @@ const PartAppStatics: FC<IListInfo> = ({ appInfo }) => {
           This Month
         </Box>
         <Box className="value">
-          {formatLargeNumber(appInfo.totalAppNotification)}
+          {formatLargeNumber(appStatistics.totalOfApp)}
         </Box>
       </AppCard>
 
@@ -53,7 +78,7 @@ const PartAppStatics: FC<IListInfo> = ({ appInfo }) => {
           Last 24 Hour
         </Box>
         <Box className="value">
-          {formatLargeNumber(appInfo.totalAppNotificationLast24Hours)}
+          {formatLargeNumber(appStatistics.totalLast24Hours)}
         </Box>
       </AppCard>
 

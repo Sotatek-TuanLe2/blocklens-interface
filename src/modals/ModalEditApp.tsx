@@ -106,7 +106,7 @@ const ModalEditApp: FC<IModalEditApp> = ({
               }}
             />
           </AppField>
-          <AppField label={'DESCRIPTION'} customWidth={'100%'} isRequired>
+          <AppField label={'DESCRIPTION'} customWidth={'100%'}>
             <AppTextarea
               placeholder="Write something about this app in 50 characters!"
               value={dataForm.description}
@@ -119,7 +119,7 @@ const ModalEditApp: FC<IModalEditApp> = ({
               validate={{
                 name: 'description',
                 validator: validator.current,
-                rule: ['required', 'max:50'],
+                rule: ['max:100'],
               }}
             />
           </AppField>

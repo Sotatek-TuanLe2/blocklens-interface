@@ -31,15 +31,26 @@ const ModalChangeStatusApp: FC<IModalChangeStatusApp> = ({
 
   const getDescription = () => {
     if (appInfo?.status === APP_STATUS.DISABLED) {
-      return 'This app will become Active. You will start receiving Notify for webhooks in this app.';
+      return (
+        <div>
+          This app will become Active. You will start receiving <br /> Notify
+          for webhooks in this app
+        </div>
+      );
     }
 
-    return 'This app will become Inactive. You will stop receiving Notify for webhooks in this app.';
+    return (
+      <div>
+        This app will become Inactive. You will stop receiving <br /> Notify for
+        webhooks in this app.
+      </div>
+    );
   };
 
   return (
     <BaseModal
-      size="md"
+      size="lg"
+      isHideCloseIcon
       title={
         appInfo?.status === APP_STATUS.DISABLED
           ? 'Activate app'
