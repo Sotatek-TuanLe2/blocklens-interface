@@ -20,4 +20,9 @@ export default class RegistrationRequest extends BaseRequest {
     const url = `/app-${appId}/registrations/${registrationId}`;
     return this.patch(url, params);
   }
+
+  deleteRegistration(appId: string, registrationId: string,) {
+    const url = `/app-${appId}/registrations/${registrationId}`;
+    return this.delete(url);
+  }
 }

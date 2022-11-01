@@ -52,6 +52,7 @@ const CreateWebhookNFTPage = () => {
       type: WEBHOOK_TYPES.NFT_ACTIVITY,
       tokenIds: dataForm.tokenIds
         .split(',')
+        .filter((item: string) => !!item)
         .map((item: string) => +item.trim()),
     };
 
