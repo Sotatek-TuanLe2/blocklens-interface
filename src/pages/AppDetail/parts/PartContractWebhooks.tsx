@@ -7,14 +7,20 @@ import { IListAppResponse } from 'src/utils/common';
 import { useHistory } from 'react-router';
 import { IAppResponse } from 'src/utils/utils-app';
 import ListActionWebhook from './ListActionWebhook';
-import { getStatusWebhook, WEBHOOK_STATUS, IContractWebhook } from 'src/utils/utils-webhook';
+import {
+  getStatusWebhook,
+  WEBHOOK_STATUS,
+  IContractWebhook,
+  WEBHOOK_TYPES,
+} from 'src/utils/utils-webhook';
 
 interface IListContract {
   appInfo: IAppResponse;
 }
 
 interface IParams {
-  appId?: number;
+  appId?: string;
+  type?: string;
 }
 
 const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
@@ -26,17 +32,18 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
     try {
       const res: IListAppResponse = await rf
         .getRequest('RegistrationRequest')
-        .getContractActivity(params);
+        .getRegistrations(appInfo.appId, params);
       setTotalWebhook(res.totalDocs);
       return res;
     } catch (error) {
       return error;
     }
-  }, []);
+  }, [appInfo, params]);
 
   useEffect(() => {
     setParams({
       ...params,
+      type: WEBHOOK_TYPES.CONTRACT_ACTIVITY,
       appId: appInfo.appId,
     });
   }, [appInfo]);
@@ -106,7 +113,6 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
                 </AppLink>
                 <ListActionWebhook
                   webhook={contract}
-                  type="contract-activity"
                   reloadData={() =>
                     setParams((pre: any) => {
                       return { ...pre };

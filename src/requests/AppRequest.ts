@@ -31,7 +31,7 @@ export default class AppRequest extends BaseRequest {
     return this.patch(url);
   }
 
-  getAppDetail(id: number) {
+  getAppDetail(id: string) {
     const url = `/my/apps/${id}`;
     return this.get(url);
   }

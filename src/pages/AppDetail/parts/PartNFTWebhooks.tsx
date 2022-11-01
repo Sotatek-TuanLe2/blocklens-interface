@@ -11,6 +11,7 @@ import {
   getStatusWebhook,
   WEBHOOK_STATUS,
   INFTWebhook,
+  WEBHOOK_TYPES,
 } from 'src/utils/utils-webhook';
 
 interface IListNTF {
@@ -18,7 +19,8 @@ interface IListNTF {
 }
 
 interface IParams {
-  appId?: number;
+  appId?: string;
+  type?: string;
 }
 
 const PartNFTWebhooks: FC<IListNTF> = ({ appInfo }) => {
@@ -30,17 +32,18 @@ const PartNFTWebhooks: FC<IListNTF> = ({ appInfo }) => {
     try {
       const res: IListAppResponse = await rf
         .getRequest('RegistrationRequest')
-        .getNFTActivity(params);
+        .getRegistrations(appInfo.appId, params);
       setTotalWebhook(res.totalDocs);
       return res;
     } catch (error) {
       return error;
     }
-  }, []);
+  }, [appInfo, params]);
 
   useEffect(() => {
     setParams({
       ...params,
+      type: WEBHOOK_TYPES.NFT_ACTIVITY,
       appId: appInfo.appId,
     });
   }, [appInfo]);
@@ -90,7 +93,6 @@ const PartNFTWebhooks: FC<IListNTF> = ({ appInfo }) => {
 
                 <ListActionWebhook
                   webhook={nft}
-                  type="nft-activity"
                   reloadData={() =>
                     setParams((pre: any) => {
                       return { ...pre };

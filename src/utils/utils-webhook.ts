@@ -3,9 +3,16 @@ export enum WEBHOOK_STATUS {
   ENABLE = 1,
 }
 
+export const WEBHOOK_TYPES = {
+  NFT_ACTIVITY: 'NFT_ACTIVITY',
+  ADDRESS_ACTIVITY: 'ADDRESS_ACTIVITY',
+  CONTRACT_ACTIVITY: 'CONTRACT_ACTIVITY',
+};
+
 interface IWebhook {
-  userId: number;
-  registrationId: number;
+  appId: string
+  userId: string;
+  registrationId: string;
   network: string;
   webhook: string;
   status: WEBHOOK_STATUS;

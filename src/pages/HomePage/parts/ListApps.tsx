@@ -1,4 +1,14 @@
-import { Box, Flex, Tag, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
+import {
+  Box,
+  Flex,
+  Tag,
+  Tbody,
+  Td,
+  Text,
+  Th,
+  Thead,
+  Tr,
+} from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { AppCard, AppDataTable, AppLink } from 'src/components';
 import rf from 'src/requests/RequestFactory';
@@ -75,14 +85,14 @@ const ListApps: React.FC<IListApps> = ({ searchListApp, setSearchListApp }) => {
       return (
         <Box
           cursor={'pointer'}
-          color={app.status === APP_STATUS.DISABLED ? 'green': 'red'}
+          color={app.status === APP_STATUS.DISABLED ? 'green' : 'red'}
           onClick={(e: any) => {
             e.stopPropagation();
             setOpenModalChangeStatus(true);
             setAppSelected(app);
           }}
         >
-          {app.status === APP_STATUS.DISABLED ? 'Activate' : 'Deactivate' }
+          {app.status === APP_STATUS.DISABLED ? 'Activate' : 'Deactivate'}
         </Box>
       );
     };
@@ -94,8 +104,7 @@ const ListApps: React.FC<IListApps> = ({ searchListApp, setSearchListApp }) => {
             <Tr
               key={index}
               className="tr-list-app"
-              onClick={() =>
-                history.push(`/app-detail/${app.appId}`)}
+              onClick={() => history.push(`/app-detail/${app.appId}`)}
             >
               <Td>
                 <AppLink to={`/app-detail/${app.appId}`}>{app.name}</AppLink>

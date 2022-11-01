@@ -4,8 +4,8 @@ export enum APP_STATUS {
 }
 
 export interface IAppResponse {
-  appId: number;
-  userId: number;
+  appId: string;
+  userId: string;
   name?: string;
   description?: string;
   chain: string;

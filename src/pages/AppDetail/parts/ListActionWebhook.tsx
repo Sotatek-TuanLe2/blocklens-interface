@@ -13,20 +13,21 @@ import { toastError, toastSuccess } from 'src/utils/utils-notify';
 
 interface IListActionWebhook {
   webhook: INFTWebhook | IContractWebhook | IAddressWebhook;
-  type: string;
   reloadData: () => void;
 }
 
-const ListActionWebhook: FC<IListActionWebhook> = ({
-  webhook,
-  type,
-  reloadData,
-}) => {
+const ListActionWebhook: FC<IListActionWebhook> = ({ webhook, reloadData }) => {
   const onChangeStatus = async () => {
+    const newStatus =
+      webhook.status === WEBHOOK_STATUS.ENABLE
+        ? WEBHOOK_STATUS.DISABLED
+        : WEBHOOK_STATUS.ENABLE;
     try {
       await rf
         .getRequest('RegistrationRequest')
-        .toggleWebhook(type, webhook.registrationId);
+        .updateStatus(webhook.appId, webhook.registrationId, {
+          status: newStatus,
+        });
       toastSuccess({ message: 'Update Successfully!' });
       reloadData();
     } catch (e: any) {

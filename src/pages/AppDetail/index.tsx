@@ -31,7 +31,7 @@ const AppDetail = () => {
     try {
       const res = (await rf
         .getRequest('AppRequest')
-        .getAppDetail(+appId)) as any;
+        .getAppDetail(appId)) as any;
       setAppInfo(res);
       setLoading(false);
     } catch (error: any) {

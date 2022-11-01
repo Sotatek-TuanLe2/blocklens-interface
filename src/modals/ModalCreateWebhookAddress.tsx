@@ -6,6 +6,7 @@ import { createValidator } from 'src/utils/utils-validator';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { IAppResponse } from 'src/utils/utils-app';
+import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
 
 interface ICreateAddressActivityModal {
   open: boolean;
@@ -44,13 +45,14 @@ const ModalCreateWebhookAddress: FC<ICreateAddressActivityModal> = ({
   const handleSubmitForm = async () => {
     const data = {
       ...dataForm,
+      type: WEBHOOK_TYPES.ADDRESS_ACTIVITY,
       addresses: dataForm.addresses.filter((item: string) => !!item),
     };
 
     try {
       await rf
         .getRequest('RegistrationRequest')
-        .addAddressActivity({ appId: +appInfo.appId, ...data });
+        .addRegistrations(appInfo.appId, data);
       toastSuccess({ message: 'Add Successfully!' });
       onReloadData();
       onClose();

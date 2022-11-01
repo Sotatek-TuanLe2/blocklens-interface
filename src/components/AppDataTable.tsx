@@ -25,9 +25,7 @@ export interface RequestParams {
   name?: string;
   permissionName?: string;
   searchKey?: string;
-  poolId?: string;
-  projectId?: string;
-  appId?: number;
+  appId?: string;
   registrationId?: string;
 }
 

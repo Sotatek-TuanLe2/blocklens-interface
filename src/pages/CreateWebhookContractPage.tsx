@@ -7,6 +7,7 @@ import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import AppUploadABI from 'src/components/AppUploadABI';
 import { useHistory, useParams } from 'react-router';
 import { BasePageContainer } from 'src/layouts';
+import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
 
 interface IDataForm {
   webhook: string;
@@ -44,11 +45,13 @@ const CreateWebhookContractPage = () => {
       return forceUpdate();
     }
 
+    const data = {
+      ...dataForm,
+      type: WEBHOOK_TYPES.CONTRACT_ACTIVITY,
+    };
+
     try {
-      await rf.getRequest('RegistrationRequest').addContractActivity({
-        appId: +appId,
-        ...dataForm,
-      });
+      await rf.getRequest('RegistrationRequest').addRegistrations(appId, data);
       history.push(`/app-detail/${appId}`);
       toastSuccess({ message: 'Add Successfully!' });
     } catch (e: any) {

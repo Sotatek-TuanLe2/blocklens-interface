@@ -6,7 +6,12 @@ import rf from 'src/requests/RequestFactory';
 import { IListAppResponse } from 'src/utils/common';
 import ModalCreateWebhookAddress from 'src/modals/ModalCreateWebhookAddress';
 import { IAppResponse } from 'src/utils/utils-app';
-import { getStatusWebhook, WEBHOOK_STATUS, IAddressWebhook } from 'src/utils/utils-webhook';
+import {
+  getStatusWebhook,
+  WEBHOOK_STATUS,
+  IAddressWebhook,
+  WEBHOOK_TYPES,
+} from 'src/utils/utils-webhook';
 import ListActionWebhook from './ListActionWebhook';
 
 interface IListAddress {
@@ -14,7 +19,8 @@ interface IListAddress {
 }
 
 interface IParams {
-  appId?: number;
+  appId?: string;
+  type?: string;
 }
 
 const PartAddressWebhooks: FC<IListAddress> = ({ appInfo }) => {
@@ -27,17 +33,18 @@ const PartAddressWebhooks: FC<IListAddress> = ({ appInfo }) => {
     try {
       const res: IListAppResponse = await rf
         .getRequest('RegistrationRequest')
-        .getAddressActivity(params);
+        .getRegistrations(appInfo.appId, params);
       setTotalWebhook(res.totalDocs);
       return res;
     } catch (error) {
       return error;
     }
-  }, []);
+  }, [appInfo, params]);
 
   useEffect(() => {
     setParams({
       ...params,
+      type: WEBHOOK_TYPES.ADDRESS_ACTIVITY,
       appId: appInfo.appId,
     });
   }, [appInfo]);
@@ -92,7 +99,6 @@ const PartAddressWebhooks: FC<IListAddress> = ({ appInfo }) => {
 
                 <ListActionWebhook
                   webhook={address}
-                  type="address-activity"
                   reloadData={() =>
                     setParams((pre: any) => {
                       return { ...pre };
