@@ -1,4 +1,4 @@
-import { Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/react';
+import { Menu, MenuButton, Flex, MenuItem, MenuList } from '@chakra-ui/react';
 import { AppSwitch } from 'src/components';
 import {
   getActionWebhook,
@@ -7,9 +7,10 @@ import {
   INFTWebhook,
   WEBHOOK_STATUS,
 } from 'src/utils/utils-webhook';
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
+import ModalDeleteWebhook from 'src/modals/ModalDeleteWebhook';
 
 interface IListActionWebhook {
   webhook: INFTWebhook | IContractWebhook | IAddressWebhook;
@@ -17,6 +18,7 @@ interface IListActionWebhook {
 }
 
 const ListActionWebhook: FC<IListActionWebhook> = ({ webhook, reloadData }) => {
+  const [isOpenModalDelete, setIsOpenModalDelete] = useState<boolean>(false);
   const onChangeStatus = async () => {
     const newStatus =
       webhook.status === WEBHOOK_STATUS.ENABLE
@@ -36,21 +38,38 @@ const ListActionWebhook: FC<IListActionWebhook> = ({ webhook, reloadData }) => {
   };
 
   return (
-    <Menu>
-      <MenuButton ml={4} bg={'#EEF3F5'} px={4} py={2} borderRadius={'5px'}>
-        •••
-      </MenuButton>
-      <MenuList fontWeight={600} fontSize={'16px'} color={'black'} maxW="200px">
-        <MenuItem onClick={onChangeStatus}>
-          <AppSwitch
-            mr={2}
-            isChecked={webhook.status === WEBHOOK_STATUS.ENABLE}
-          />
-          {getActionWebhook(webhook.status)}
-        </MenuItem>
-        <MenuItem color={'red'}>Delete</MenuItem>
-      </MenuList>
-    </Menu>
+    <>
+      <Menu>
+        <MenuButton ml={4} bg={'#EEF3F5'} px={4} py={2} borderRadius={'5px'}>
+          •••
+        </MenuButton>
+        <MenuList
+          fontWeight={600}
+          fontSize={'16px'}
+          color={'black'}
+          maxW="200px"
+        >
+          <MenuItem>
+            <AppSwitch
+              mr={2}
+              isChecked={webhook.status === WEBHOOK_STATUS.ENABLE}
+              onChange={onChangeStatus}
+            />
+            {getActionWebhook(webhook.status)}
+          </MenuItem>
+          <MenuItem color={'red'} onClick={() => setIsOpenModalDelete(true)}>
+            Delete
+          </MenuItem>
+        </MenuList>
+      </Menu>
+
+      <ModalDeleteWebhook
+        onClose={() => setIsOpenModalDelete(false)}
+        open={isOpenModalDelete}
+        webhook={webhook}
+        reloadData={reloadData}
+      />
+    </>
   );
 };
 
