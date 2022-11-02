@@ -13,6 +13,7 @@ import {
   WEBHOOK_TYPES,
 } from 'src/utils/utils-webhook';
 import ListActionWebhook from './ListActionWebhook';
+import { formatShortText } from 'src/utils/utils-helper';
 
 interface IListAddress {
   appInfo: IAppResponse;
@@ -29,17 +30,20 @@ const PartAddressWebhooks: FC<IListAddress> = ({ appInfo }) => {
   const [params, setParams] = useState<IParams>({});
   const [totalWebhook, setTotalWebhook] = useState<any>();
 
-  const fetchDataTable: any = useCallback(async (params: any) => {
-    try {
-      const res: IListAppResponse = await rf
-        .getRequest('RegistrationRequest')
-        .getRegistrations(appInfo.appId, params);
-      setTotalWebhook(res.totalDocs);
-      return res;
-    } catch (error) {
-      return error;
-    }
-  }, [appInfo, params]);
+  const fetchDataTable: any = useCallback(
+    async (params: any) => {
+      try {
+        const res: IListAppResponse = await rf
+          .getRequest('RegistrationRequest')
+          .getRegistrations(appInfo.appId, params);
+        setTotalWebhook(res.totalDocs);
+        return res;
+      } catch (error) {
+        return error;
+      }
+    },
+    [appInfo, params],
+  );
 
   useEffect(() => {
     setParams({
@@ -83,12 +87,22 @@ const PartAddressWebhooks: FC<IListAddress> = ({ appInfo }) => {
         {data?.map((address: IAddressWebhook, index: number) => {
           return (
             <Tr key={index}>
-              <Td>{address.registrationId}</Td>
+              <Td>{formatShortText(address.registrationId)}</Td>
               <Td>{_renderStatus(address)}</Td>
-              <Td>{address.webhook}</Td>
+              <Td>
+                <a
+                  href={address.webhook}
+                  target="_blank"
+                  className="short-text"
+                >
+                  {address.webhook}
+                </a>
+              </Td>
               <Td>
                 {address.metadata.addresses.length}{' '}
-                {address.metadata.addresses.length > 1 ? 'Addresses' : 'Address'}
+                {address.metadata.addresses.length > 1
+                  ? 'Addresses'
+                  : 'Address'}
               </Td>
               <Td>
                 <AppLink

@@ -13,6 +13,7 @@ import {
   IContractWebhook,
   WEBHOOK_TYPES,
 } from 'src/utils/utils-webhook';
+import { formatShortText } from 'src/utils/utils-helper';
 
 interface IListContract {
   appInfo: IAppResponse;
@@ -28,17 +29,20 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
   const [params, setParams] = useState<IParams>({});
   const [totalWebhook, setTotalWebhook] = useState<any>();
 
-  const fetchDataTable: any = useCallback(async (params: any) => {
-    try {
-      const res: IListAppResponse = await rf
-        .getRequest('RegistrationRequest')
-        .getRegistrations(appInfo.appId, params);
-      setTotalWebhook(res.totalDocs);
-      return res;
-    } catch (error) {
-      return error;
-    }
-  }, [appInfo, params]);
+  const fetchDataTable: any = useCallback(
+    async (params: any) => {
+      try {
+        const res: IListAppResponse = await rf
+          .getRequest('RegistrationRequest')
+          .getRegistrations(appInfo.appId, params);
+        setTotalWebhook(res.totalDocs);
+        return res;
+      } catch (error) {
+        return error;
+      }
+    },
+    [appInfo, params],
+  );
 
   useEffect(() => {
     setParams({
@@ -101,9 +105,17 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
         {data?.map((contract: IContractWebhook, index: number) => {
           return (
             <Tr key={index}>
-              <Td>{contract.registrationId}</Td>
+              <Td>{formatShortText(contract.registrationId)}</Td>
               <Td>{_renderStatus(contract)}</Td>
-              <Td>{contract.webhook}</Td>
+              <Td>
+                <a
+                  href={contract.webhook}
+                  target="_blank"
+                  className="short-text"
+                >
+                  {contract.webhook}
+                </a>
+              </Td>
               <Td>1 Address</Td>
               <Td>
                 <AppLink

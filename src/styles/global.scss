@@ -56,3 +56,11 @@ iframe {
   color: #ee5d50;
   font-size: 14px;
 }
+
+.short-text {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: inline-block;
+  overflow: hidden;
+  width: 350px;
+}

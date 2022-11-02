@@ -13,6 +13,7 @@ import {
   INFTWebhook,
   WEBHOOK_TYPES,
 } from 'src/utils/utils-webhook';
+import { formatShortText } from '../../../utils/utils-helper';
 
 interface IListNTF {
   appInfo: IAppResponse;
@@ -28,17 +29,20 @@ const PartNFTWebhooks: FC<IListNTF> = ({ appInfo }) => {
   const history = useHistory();
   const [totalWebhook, setTotalWebhook] = useState<any>();
 
-  const fetchDataTable: any = useCallback(async (params: any) => {
-    try {
-      const res: IListAppResponse = await rf
-        .getRequest('RegistrationRequest')
-        .getRegistrations(appInfo.appId, params);
-      setTotalWebhook(res.totalDocs);
-      return res;
-    } catch (error) {
-      return error;
-    }
-  }, [appInfo, params]);
+  const fetchDataTable: any = useCallback(
+    async (params: any) => {
+      try {
+        const res: IListAppResponse = await rf
+          .getRequest('RegistrationRequest')
+          .getRegistrations(appInfo.appId, params);
+        setTotalWebhook(res.totalDocs);
+        return res;
+      } catch (error) {
+        return error;
+      }
+    },
+    [appInfo, params],
+  );
 
   useEffect(() => {
     setParams({
@@ -82,9 +86,13 @@ const PartNFTWebhooks: FC<IListNTF> = ({ appInfo }) => {
         {data?.map((nft: INFTWebhook, index: number) => {
           return (
             <Tr key={index}>
-              <Td>{nft.registrationId}</Td>
+              <Td>{formatShortText(nft.registrationId)}</Td>
               <Td>{_renderStatus(nft)}</Td>
-              <Td>{nft.webhook}</Td>
+              <Td>
+                <a href={nft.webhook} target="_blank" className="short-text">
+                  {nft.webhook}
+                </a>
+              </Td>
               <Td>1 Address</Td>
               <Td>
                 <AppLink to={`/webhooks/nft-activity/${nft.registrationId}`}>

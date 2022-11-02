@@ -40,7 +40,7 @@ export const CHAINS = config.chains.map((chain: IChain) => {
 
   return {
     label: chain.name,
-    value: chain.name,
+    value: chain.id,
     icon: chain.icon,
     networks: [...networksClone],
   };
