@@ -11,6 +11,7 @@ import React, { FC, useState } from 'react';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import ModalDeleteWebhook from 'src/modals/ModalDeleteWebhook';
+import { DeleteIcon } from '@chakra-ui/icons';
 
 interface IListActionWebhook {
   webhook: INFTWebhook | IContractWebhook | IAddressWebhook;
@@ -58,7 +59,7 @@ const ListActionWebhook: FC<IListActionWebhook> = ({ webhook, reloadData }) => {
             {getActionWebhook(webhook.status)}
           </MenuItem>
           <MenuItem color={'red'} onClick={() => setIsOpenModalDelete(true)}>
-            Delete
+            <DeleteIcon mr={2} /> Delete
           </MenuItem>
         </MenuList>
       </Menu>

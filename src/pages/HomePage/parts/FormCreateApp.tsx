@@ -12,7 +12,7 @@ import { createValidator } from 'src/utils/utils-validator';
 import rf from 'src/requests/RequestFactory';
 import _ from 'lodash';
 import config from 'src/config';
-import { toastSuccess } from 'src/utils/utils-notify';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
 
 interface IFormCreateApp {
   setSearchListApp: Dispatch<any>;
@@ -40,7 +40,7 @@ export const CHAINS = config.chains.map((chain: IChain) => {
 
   return {
     label: chain.name,
-    value: chain.name,
+    value: chain.id,
     icon: chain.icon,
     networks: [...networksClone],
   };
@@ -80,18 +80,21 @@ const FormCreateApp: React.FC<IFormCreateApp> = ({ setSearchListApp }) => {
       chain: chainSelected.value,
       network: networkSelected.value,
     };
-    setHiddenErrorText(true);
-    const res = await rf
-      .getRequest('AppRequest')
-      .createApp(_.omitBy(dataSubmit, _.isEmpty));
-    if (res.key) {
-      setDataForm({ ...initDataCreateApp });
-      toastSuccess({ message: 'Create app success!' });
-      setSearchListApp((pre: any) => {
-        return { ...pre };
-      });
+    try {
+      const res = await rf
+        .getRequest('AppRequest')
+        .createApp(_.omitBy(dataSubmit, _.isEmpty));
+      if (res.key) {
+        setHiddenErrorText(true);
+        setDataForm({ ...initDataCreateApp });
+        toastSuccess({ message: 'Create app success!' });
+        setSearchListApp((pre: any) => {
+          return { ...pre };
+        });
+      }
+    } catch (e: any) {
+      toastError({ message: e?.message || 'Oops. Something went wrong!' });
     }
-    return;
   };
   return (
     <AppCard maxW={'1240px'}>

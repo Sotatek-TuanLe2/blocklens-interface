@@ -77,10 +77,19 @@ export default class BaseRequest {
     return AppBroadcast.dispatch('LOGOUT_USER');
   }
 
+  _error401Handler() {
+    return AppBroadcast.dispatch('LOGOUT_USER');
+  }
+
   async _errorHandler(err: any) {
+    if (err.response?.status === 401) {
+      return this._error401Handler();
+    }
+
     if (err.response?.status === 403) {
       return this._error403Handler();
     }
+
     if (err.response) {
       console.log('===errorHandler', JSON.stringify(err.response));
       console.log('===errorHandler data', JSON.stringify(err.response.data));
