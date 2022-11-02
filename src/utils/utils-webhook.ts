@@ -19,17 +19,22 @@ interface IWebhook {
 }
 
 export interface INFTWebhook extends IWebhook {
-  contractAddress: string;
-  tokenIds: string[];
+  metadata: {
+    address: string;
+    tokenIds: string[];
+  }
 }
 
 export interface IContractWebhook extends IWebhook {
-  contractAddress: string;
-  abi: string[];
+  metadata: {
+    address: string;
+  }
 }
 
 export interface IAddressWebhook extends IWebhook {
-  addresses: string[];
+  metadata: {
+    addresses: string[];
+  }
 }
 
 export const getStatusWebhook = (status: WEBHOOK_STATUS) => {

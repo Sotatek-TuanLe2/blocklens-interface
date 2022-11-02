@@ -44,7 +44,7 @@ const ModalDeleteWebhook: FC<IModalEditApp> = ({
       onClose={onClose}
       onActionRight={onDelete}
       onActionLeft={onClose}
-      textActionRight="Confirm"
+      textActionRight="Delete"
       textActionLeft="Cancel"
     >
       <Box color={'gray.600'}>
