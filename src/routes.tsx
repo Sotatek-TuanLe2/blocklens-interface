@@ -53,7 +53,7 @@ const Routes: FC<RouteComponentProps> = () => {
         <PublicRoute path={'/reset-password'} component={ResetPasswordPage} />
         <PrivateRoute path={'/setting/:tab'} component={ProfilePage} />
         <PrivateRoute
-          path={'/webhooks/:type/:id'}
+          path={'/webhooks/:id'}
           component={WebhookActivitiesPage}
         />
         <PrivateRoute

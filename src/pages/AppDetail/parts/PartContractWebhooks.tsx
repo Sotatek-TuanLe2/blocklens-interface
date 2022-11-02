@@ -119,7 +119,7 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
               <Td>1 Address</Td>
               <Td>
                 <AppLink
-                  to={`/webhooks/contract-activity/${contract.registrationId}`}
+                  to={`/webhooks/${contract.registrationId}`}
                 >
                   View details
                 </AppLink>

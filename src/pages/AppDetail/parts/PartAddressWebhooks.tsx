@@ -106,7 +106,7 @@ const PartAddressWebhooks: FC<IListAddress> = ({ appInfo }) => {
               </Td>
               <Td>
                 <AppLink
-                  to={`/webhooks/address-activity/${address.registrationId}`}
+                  to={`/webhooks/${address.registrationId}`}
                 >
                   View details
                 </AppLink>
