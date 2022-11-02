@@ -37,7 +37,7 @@ const ModalDeleteApp: FC<IModalEditApp> = ({ open, onClose, appInfo }) => {
   return (
     <BaseModal
       size="xl"
-      title="Delete this app ?"
+      title="Delete Confirmation"
       isOpen={open}
       onClose={onCloseModal}
     >

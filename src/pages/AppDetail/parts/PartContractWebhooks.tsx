@@ -104,7 +104,7 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
               <Td>{contract.registrationId}</Td>
               <Td>{_renderStatus(contract)}</Td>
               <Td>{contract.webhook}</Td>
-              <Td>N/A</Td>
+              <Td>1 Address</Td>
               <Td>
                 <AppLink
                   to={`/webhooks/contract-activity/${contract.registrationId}`}

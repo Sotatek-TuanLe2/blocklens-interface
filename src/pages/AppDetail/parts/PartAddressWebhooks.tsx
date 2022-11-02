@@ -87,8 +87,8 @@ const PartAddressWebhooks: FC<IListAddress> = ({ appInfo }) => {
               <Td>{_renderStatus(address)}</Td>
               <Td>{address.webhook}</Td>
               <Td>
-                {address.addresses.length}{' '}
-                {address.addresses.length > 1 ? 'Addresses' : 'Address'}
+                {address.metadata.addresses.length}{' '}
+                {address.metadata.addresses.length > 1 ? 'Addresses' : 'Address'}
               </Td>
               <Td>
                 <AppLink
