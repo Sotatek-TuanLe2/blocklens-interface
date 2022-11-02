@@ -40,6 +40,7 @@ const ModalDeleteApp: FC<IModalEditApp> = ({ open, onClose, appInfo }) => {
       title="Delete Confirmation"
       isOpen={open}
       onClose={onCloseModal}
+      isWarning
     >
       <Box mb={6}>
         Any traffic going to deleted keys will stop working immediately. Please
