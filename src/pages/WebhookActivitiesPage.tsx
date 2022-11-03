@@ -35,10 +35,10 @@ interface INotificationResponse {
   updatedAt: number;
 }
 
-interface IWebhook {
-  totalWebHookNotificationsThisMonth: number;
-  totalWebhookNotificationsLast24Hours: number;
-  totalWebhookNotificationsSuccessLast24Hours: number;
+interface IWebhookStatistics {
+  totalThisMonth?: number;
+  totalLast24Hours?: number;
+  totalSuccessLast24Hours?: number;
 }
 
 interface INotificationItem {
@@ -46,7 +46,7 @@ interface INotificationItem {
 }
 
 interface IPartWebhookStatics {
-  webhookInfo: IWebhook;
+  registrationId: string;
 }
 
 const enum STATUS {
@@ -82,15 +82,36 @@ const getColorBrandStatus = (status: number) => {
   }
 };
 
-const PartWebhookStatics: FC<IPartWebhookStatics> = ({ webhookInfo }) => {
+const PartWebhookStatics: FC<IPartWebhookStatics> = ({ registrationId }) => {
+  const [webhookStatistics, setWebhookStatistics] =
+    useState<IWebhookStatistics>({});
+
+  const getWebhookStatistics = useCallback(async () => {
+    try {
+      const res = (await rf
+        .getRequest('NotificationRequest')
+        .getWebhookStatistics(registrationId)) as any;
+      setWebhookStatistics(res);
+    } catch (error: any) {
+      setWebhookStatistics({});
+    }
+  }, [registrationId]);
+
+  useEffect(() => {
+    getWebhookStatistics().then();
+  }, []);
+
   const getPercentNotificationSuccess = () => {
-    if (!webhookInfo.totalWebhookNotificationsSuccessLast24Hours) {
+    if (
+      !webhookStatistics.totalLast24Hours ||
+      !webhookStatistics.totalSuccessLast24Hours
+    ) {
       return '--';
     }
 
     return (
-      (webhookInfo?.totalWebhookNotificationsSuccessLast24Hours /
-        webhookInfo?.totalWebhookNotificationsLast24Hours) *
+      (webhookStatistics?.totalSuccessLast24Hours /
+        webhookStatistics?.totalLast24Hours) *
       100
     ).toFixed(2);
   };
@@ -107,7 +128,7 @@ const PartWebhookStatics: FC<IPartWebhookStatics> = ({ webhookInfo }) => {
           This Month
         </Box>
         <Box className="value">
-          {formatLargeNumber(webhookInfo.totalWebHookNotificationsThisMonth)}
+          {formatLargeNumber(webhookStatistics.totalThisMonth)}
         </Box>
       </AppCard>
 
@@ -118,7 +139,7 @@ const PartWebhookStatics: FC<IPartWebhookStatics> = ({ webhookInfo }) => {
           Last 24 Hour
         </Box>
         <Box className="value">
-          {formatLargeNumber(webhookInfo.totalWebhookNotificationsLast24Hours)}
+          {formatLargeNumber(webhookStatistics.totalLast24Hours)}
         </Box>
       </AppCard>
 
@@ -190,26 +211,7 @@ const NotificationItem: FC<INotificationItem> = ({ notification }) => {
 };
 
 const WebhookActivitiesPage = () => {
-  const { id: registrationId, type } = useParams<{
-    id: string;
-    type: string;
-  }>();
-  const [webhookInfo, setWebhookInfo] = useState<any>({});
-
-  const getWebhookInfo = useCallback(async () => {
-    try {
-      const res = (await rf
-        .getRequest('RegistrationRequest')
-        .getWebhookDetail(type, registrationId)) as any;
-      setWebhookInfo(res);
-    } catch (error: any) {
-      setWebhookInfo({});
-    }
-  }, [registrationId, type]);
-
-  useEffect(() => {
-    getWebhookInfo().then();
-  }, []);
+  const { id: registrationId } = useParams<{ id: string }>();
 
   const fetchDataTable: any = async (param: any) => {
     try {
@@ -247,7 +249,7 @@ const WebhookActivitiesPage = () => {
           Webhook Activities
         </Text>
 
-        <PartWebhookStatics webhookInfo={webhookInfo} />
+        <PartWebhookStatics registrationId={registrationId} />
         <AppCard p={0} pb={10} mt={10} className={'notification-table'}>
           <AppDataTable
             requestParams={{ registrationId }}

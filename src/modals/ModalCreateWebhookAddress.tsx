@@ -1,17 +1,18 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
 import React, { FC, useEffect, useRef, useState } from 'react';
 import BaseModal from './BaseModal';
-import { IAppInfo } from 'src/pages/AppDetail';
 import { AppButton, AppField, AppInput } from 'src/components';
 import { createValidator } from 'src/utils/utils-validator';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
+import { IAppResponse } from 'src/utils/utils-app';
+import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
 
 interface ICreateAddressActivityModal {
   open: boolean;
   onClose: () => void;
   onReloadData: () => void;
-  appInfo: IAppInfo;
+  appInfo: IAppResponse;
 }
 
 interface IDataForm {
@@ -44,13 +45,14 @@ const ModalCreateWebhookAddress: FC<ICreateAddressActivityModal> = ({
   const handleSubmitForm = async () => {
     const data = {
       ...dataForm,
+      type: WEBHOOK_TYPES.ADDRESS_ACTIVITY,
       addresses: dataForm.addresses.filter((item: string) => !!item),
     };
 
     try {
       await rf
         .getRequest('RegistrationRequest')
-        .addAddressActivity({ appId: appInfo.appId, ...data });
+        .addRegistrations(appInfo.appId, data);
       toastSuccess({ message: 'Add Successfully!' });
       onReloadData();
       onClose();
@@ -82,7 +84,12 @@ const ModalCreateWebhookAddress: FC<ICreateAddressActivityModal> = ({
     >
       <Box flexDirection={'column'} pt={'20px'}>
         <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
-          <AppField label={'WEBHOOK URL'} customWidth={'100%'} isRequired>
+          <AppField
+            label={'WEBHOOK URL'}
+            customWidth={'100%'}
+            isRequired
+            note="The endpoint to send notifications to."
+          >
             <AppInput
               placeholder="https://yourapp.com/webhook/data/12345"
               borderRightRadius={0}
@@ -151,19 +158,20 @@ const ModalCreateWebhookAddress: FC<ICreateAddressActivityModal> = ({
               </AppField>
             );
           })}
-
-          <Box
-            color={'brand.400'}
-            cursor={'pointer'}
-            onClick={() =>
-              setDataForm({
-                ...dataForm,
-                addresses: [...dataForm.addresses, ''],
-              })
-            }
-          >
-            ADD ADDRESS
-          </Box>
+          {dataForm.addresses.length <= 10 && (
+            <Box
+              color={'brand.400'}
+              cursor={'pointer'}
+              onClick={() =>
+                setDataForm({
+                  ...dataForm,
+                  addresses: [...dataForm.addresses, ''],
+                })
+              }
+            >
+              ADD ADDRESS
+            </Box>
+          )}
         </Flex>
         <Flex justifyContent={'flex-end'}>
           <AppButton

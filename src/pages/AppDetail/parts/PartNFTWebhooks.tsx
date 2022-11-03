@@ -4,26 +4,24 @@ import React, { FC, useCallback, useEffect, useState } from 'react';
 import { AppButton, AppCard, AppDataTable, AppLink } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import { IListAppResponse } from 'src/utils/common';
-import { IAppInfo } from '../index';
 import { useHistory } from 'react-router';
+import { IAppResponse } from 'src/utils/utils-app';
+import ListActionWebhook from './ListActionWebhook';
+import {
+  getStatusWebhook,
+  WEBHOOK_STATUS,
+  INFTWebhook,
+  WEBHOOK_TYPES,
+} from 'src/utils/utils-webhook';
+import { formatShortText } from '../../../utils/utils-helper';
 
 interface IListNTF {
-  appInfo: IAppInfo;
+  appInfo: IAppResponse;
 }
 
 interface IParams {
-  appId?: number;
-}
-
-interface INFTResponse {
-  userId: number;
-  registrationId: number;
-  network: string;
-  type: string;
-  webhook: string;
-  status?: string;
-  contractAddress: string;
-  tokenIds: string[];
+  appId?: string;
+  type?: string;
 }
 
 const PartNFTWebhooks: FC<IListNTF> = ({ appInfo }) => {
@@ -31,21 +29,25 @@ const PartNFTWebhooks: FC<IListNTF> = ({ appInfo }) => {
   const history = useHistory();
   const [totalWebhook, setTotalWebhook] = useState<any>();
 
-  const fetchDataTable: any = useCallback(async (params: any) => {
-    try {
-      const res: IListAppResponse = await rf
-        .getRequest('RegistrationRequest')
-        .getNFTActivity(params);
-      setTotalWebhook(res.totalDocs);
-      return res;
-    } catch (error) {
-      return error;
-    }
-  }, []);
+  const fetchDataTable: any = useCallback(
+    async (params: any) => {
+      try {
+        const res: IListAppResponse = await rf
+          .getRequest('RegistrationRequest')
+          .getRegistrations(appInfo.appId, params);
+        setTotalWebhook(res.totalDocs);
+        return res;
+      } catch (error) {
+        return error;
+      }
+    },
+    [appInfo, params],
+  );
 
   useEffect(() => {
     setParams({
       ...params,
+      type: WEBHOOK_TYPES.NFT_ACTIVITY,
       appId: appInfo.appId,
     });
   }, [appInfo]);
@@ -64,35 +66,47 @@ const PartNFTWebhooks: FC<IListNTF> = ({ appInfo }) => {
     );
   };
 
-  const _renderStatus = (nft: INFTResponse) => {
-    if (!nft.status) return 'N/A';
+  const _renderStatus = (nft: INFTWebhook) => {
     return (
       <Tag
         size={'sm'}
         borderRadius="full"
         variant="solid"
-        colorScheme="green"
+        colorScheme={nft.status === WEBHOOK_STATUS.ENABLE ? 'green' : 'red'}
         px={5}
       >
-        {nft.status}
+        {getStatusWebhook(nft.status)}
       </Tag>
     );
   };
 
-  const _renderBody = (data?: INFTResponse[]) => {
+  const _renderBody = (data?: INFTWebhook[]) => {
     return (
       <Tbody>
-        {data?.map((nft: INFTResponse, index: number) => {
+        {data?.map((nft: INFTWebhook, index: number) => {
           return (
             <Tr key={index}>
-              <Td>{nft.registrationId}</Td>
+              <Td>{formatShortText(nft.registrationId)}</Td>
               <Td>{_renderStatus(nft)}</Td>
-              <Td>{nft.webhook}</Td>
-              <Td>N/A Address</Td>
               <Td>
-                <AppLink to={`/webhooks/nft-activity/${nft.registrationId}`}>
-                  View
+                <a href={nft.webhook} target="_blank" className="short-text">
+                  {nft.webhook}
+                </a>
+              </Td>
+              <Td>1 Address</Td>
+              <Td>
+                <AppLink to={`/webhooks/${nft.registrationId}`}>
+                  View details
                 </AppLink>
+
+                <ListActionWebhook
+                  webhook={nft}
+                  reloadData={() =>
+                    setParams((pre: any) => {
+                      return { ...pre };
+                    })
+                  }
+                />
               </Td>
             </Tr>
           );

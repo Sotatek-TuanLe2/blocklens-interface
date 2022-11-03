@@ -13,13 +13,14 @@ import HomePage from './pages/HomePage';
 import SignUpPage from './pages/SignUpPage';
 import LoginPage from './pages/LoginPage';
 import ProfilePage from './pages/ProfilePage';
-import ResetPasswordPage from './pages/ResetPasswordPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import Storage from 'src/utils/storage';
 import AppDetail from './pages/AppDetail';
 import VerifyAccountPage from './pages/VerifyAccountPage';
 import WebhookActivitiesPage from './pages/WebhookActivitiesPage';
 import { getInfoUser } from 'src/store/auth';
 import { useDispatch } from 'react-redux';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 import CreateWebhookNFTPage from './pages/CreateWebhookNFTPage';
 import CreateWebhookContractPage from './pages/CreateWebhookContractPage';
 
@@ -48,11 +49,21 @@ const Routes: FC<RouteComponentProps> = () => {
         <PublicRoute path={'/login'} component={LoginPage} />
         <PublicRoute path={'/sign-up'} component={SignUpPage} />
         <PublicRoute path={'/verify-email'} component={VerifyAccountPage} />
+        <PublicRoute path={'/forgot-password'} component={ForgotPasswordPage} />
         <PublicRoute path={'/reset-password'} component={ResetPasswordPage} />
         <PrivateRoute path={'/setting/:tab'} component={ProfilePage} />
-        <PrivateRoute path={'/webhooks/:type/:id'} component={WebhookActivitiesPage} />
-        <PrivateRoute path={'/create-webhook-nft/:id'} component={CreateWebhookNFTPage} />
-        <PrivateRoute path={'/create-webhook-contract/:id'} component={CreateWebhookContractPage} />
+        <PrivateRoute
+          path={'/webhooks/:id'}
+          component={WebhookActivitiesPage}
+        />
+        <PrivateRoute
+          path={'/create-webhook-nft/:id'}
+          component={CreateWebhookNFTPage}
+        />
+        <PrivateRoute
+          path={'/create-webhook-contract/:id'}
+          component={CreateWebhookContractPage}
+        />
         <PrivateRoute path={'/'} component={HomePage} />
       </Switch>
     </>

@@ -7,6 +7,7 @@ import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import AppUploadABI, { TYPE_ABI } from 'src/components/AppUploadABI';
 import { BasePageContainer } from 'src/layouts';
 import { useHistory, useParams } from 'react-router';
+import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
 
 interface IDataForm {
   webhook: string;
@@ -46,14 +47,17 @@ const CreateWebhookNFTPage = () => {
       return forceUpdate();
     }
 
+    const data = {
+      ...dataForm,
+      type: WEBHOOK_TYPES.NFT_ACTIVITY,
+      tokenIds: dataForm.tokenIds
+        .split(',')
+        .filter((item: string) => !!item)
+        .map((item: string) => +item.trim()),
+    };
+
     try {
-      await rf.getRequest('RegistrationRequest').addNFTActivity({
-        appId: +appId,
-        ...dataForm,
-        tokenIds: dataForm.tokenIds
-          .split(',')
-          .map((item: string) => +item.trim()),
-      });
+      await rf.getRequest('RegistrationRequest').addRegistrations(appId, data);
       history.push(`/app-detail/${appId}`);
       toastSuccess({ message: 'Add Successfully!' });
     } catch (e: any) {
@@ -76,7 +80,12 @@ const CreateWebhookNFTPage = () => {
         </Box>
         <AppCard>
           <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
-            <AppField label={'WEBHOOK URL'} customWidth={'100%'} isRequired>
+            <AppField
+              label={'WEBHOOK URL'}
+              customWidth={'100%'}
+              isRequired
+              note="The endpoint to send notifications to."
+            >
               <AppInput
                 placeholder="https://yourapp.com/webhook/data/12345"
                 borderRightRadius={0}

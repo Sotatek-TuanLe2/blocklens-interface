@@ -7,11 +7,11 @@ import {
   ModalBody,
   ModalCloseButton,
   Box,
-  ButtonProps,
 } from '@chakra-ui/react';
 import React, { FC, ReactNode } from 'react';
 import AppButton from 'src/components/AppButton';
 import { ModalProps, ModalHeaderProps } from '@chakra-ui/modal/src/modal';
+import { WarningTwoIcon } from '@chakra-ui/icons';
 
 export interface BaseModalProps extends ModalProps {
   title: string;
@@ -37,6 +37,7 @@ export interface BaseModalProps extends ModalProps {
   className?: string;
   isLoadingButtonRight?: boolean;
   styleHeader?: ModalHeaderProps;
+  isWarning?: boolean;
 }
 
 const BaseModal: FC<BaseModalProps> = ({
@@ -55,6 +56,7 @@ const BaseModal: FC<BaseModalProps> = ({
   closeOnOverlayClick = false,
   className,
   styleHeader,
+  isWarning = false,
 }) => {
   return (
     <>
@@ -72,7 +74,7 @@ const BaseModal: FC<BaseModalProps> = ({
             sx={{ textAlign: isHideCloseIcon ? 'center' : 'left' }}
             {...styleHeader}
           >
-            {title}
+            {isWarning && <WarningTwoIcon mr={2} color={'red'} />} {title}
           </ModalHeader>
           {!isHideCloseIcon && <ModalCloseButton />}
 

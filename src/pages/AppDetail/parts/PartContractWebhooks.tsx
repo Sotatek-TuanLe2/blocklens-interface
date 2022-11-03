@@ -1,30 +1,27 @@
-import { Flex, Tbody, Th, Thead, Tr, Td, Box, Tag } from '@chakra-ui/react';
+import { Box, Flex, Tag, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
 import { SmallAddIcon } from '@chakra-ui/icons';
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { AppButton, AppCard, AppDataTable, AppLink } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import { IListAppResponse } from 'src/utils/common';
-import { IAppInfo } from '../index';
-import { getLogoChainByName } from 'src/utils/utils-network';
 import { useHistory } from 'react-router';
+import { IAppResponse } from 'src/utils/utils-app';
+import ListActionWebhook from './ListActionWebhook';
+import {
+  getStatusWebhook,
+  WEBHOOK_STATUS,
+  IContractWebhook,
+  WEBHOOK_TYPES,
+} from 'src/utils/utils-webhook';
+import { formatShortText } from 'src/utils/utils-helper';
 
 interface IListContract {
-  appInfo: IAppInfo;
+  appInfo: IAppResponse;
 }
 
 interface IParams {
-  appId?: number;
-}
-
-interface IContractResponse {
-  userId: number;
-  registrationId: number;
-  network: string;
-  type: string;
-  webhook: string;
-  status?: string;
-  contractAddress: string;
-  abi: string[];
+  appId?: string;
+  type?: string;
 }
 
 const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
@@ -32,21 +29,25 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
   const [params, setParams] = useState<IParams>({});
   const [totalWebhook, setTotalWebhook] = useState<any>();
 
-  const fetchDataTable: any = useCallback(async (params: any) => {
-    try {
-      const res: IListAppResponse = await rf
-        .getRequest('RegistrationRequest')
-        .getContractActivity(params);
-      setTotalWebhook(res.totalDocs);
-      return res;
-    } catch (error) {
-      return error;
-    }
-  }, []);
+  const fetchDataTable: any = useCallback(
+    async (params: any) => {
+      try {
+        const res: IListAppResponse = await rf
+          .getRequest('RegistrationRequest')
+          .getRegistrations(appInfo.appId, params);
+        setTotalWebhook(res.totalDocs);
+        return res;
+      } catch (error) {
+        return error;
+      }
+    },
+    [appInfo, params],
+  );
 
   useEffect(() => {
     setParams({
       ...params,
+      type: WEBHOOK_TYPES.CONTRACT_ACTIVITY,
       appId: appInfo.appId,
     });
   }, [appInfo]);
@@ -65,17 +66,18 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
     );
   };
 
-  const _renderStatus = (contract: IContractResponse) => {
-    if (!contract.status) return 'N/A';
+  const _renderStatus = (contract: IContractWebhook) => {
     return (
       <Tag
         size={'sm'}
         borderRadius="full"
         variant="solid"
-        colorScheme="green"
+        colorScheme={
+          contract.status === WEBHOOK_STATUS.ENABLE ? 'green' : 'red'
+        }
         px={5}
       >
-        {contract.status}
+        {getStatusWebhook(contract.status)}
       </Tag>
     );
   };
@@ -87,7 +89,9 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
         <Box
           className="button-create-webhook"
           mt={2}
-          onClick={() => history.push(`/create-webhook-contract/${appInfo.appId}`)}
+          onClick={() =>
+            history.push(`/create-webhook-contract/${appInfo.appId}`)
+          }
         >
           + Create webhook
         </Box>
@@ -95,20 +99,38 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
     );
   };
 
-  const _renderBody = (data?: IContractResponse[]) => {
+  const _renderBody = (data?: IContractWebhook[]) => {
     return (
       <Tbody>
-        {data?.map((contract: IContractResponse, index: number) => {
+        {data?.map((contract: IContractWebhook, index: number) => {
           return (
             <Tr key={index}>
-              <Td>{contract.registrationId}</Td>
+              <Td>{formatShortText(contract.registrationId)}</Td>
               <Td>{_renderStatus(contract)}</Td>
-              <Td>{contract.webhook}</Td>
-              <Td>N/A</Td>
               <Td>
-                <AppLink to={`/webhooks/contract-activity/${contract.registrationId}`}>
-                  View
+                <a
+                  href={contract.webhook}
+                  target="_blank"
+                  className="short-text"
+                >
+                  {contract.webhook}
+                </a>
+              </Td>
+              <Td>1 Address</Td>
+              <Td>
+                <AppLink
+                  to={`/webhooks/${contract.registrationId}`}
+                >
+                  View details
                 </AppLink>
+                <ListActionWebhook
+                  webhook={contract}
+                  reloadData={() =>
+                    setParams((pre: any) => {
+                      return { ...pre };
+                    })
+                  }
+                />
               </Td>
             </Tr>
           );
@@ -125,9 +147,7 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
             <Box className="icon-app-nft" mr={4} />
             <Box className="name">
               Contract Notifications
-              <Box
-                className="description"
-              >
+              <Box className="description">
                 Get notified when YOUR Contract occurs activities
               </Box>
             </Box>
@@ -136,7 +156,9 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
             textTransform="uppercase"
             fontWeight={'400'}
             size={'md'}
-            onClick={() => history.push(`/create-webhook-contract/${appInfo.appId}`)}
+            onClick={() =>
+              history.push(`/create-webhook-contract/${appInfo.appId}`)
+            }
           >
             <SmallAddIcon mr={1} /> Create webhook
           </AppButton>

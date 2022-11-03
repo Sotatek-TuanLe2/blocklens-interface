@@ -28,7 +28,7 @@ const VerifyAccountPage: FC = () => {
       return;
     }
     try {
-      await rf.getRequest('AuthRequest').verifyMail(+uid, vid);
+      await rf.getRequest('AuthRequest').verifyMail(uid, vid);
       setIsVerifyFail(false);
       toastSuccess({ message: 'Verify Successfully!' });
     } catch (e: any) {

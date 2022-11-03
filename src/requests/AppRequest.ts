@@ -26,7 +26,12 @@ export default class AppRequest extends BaseRequest {
     return this.delete(url);
   }
 
-  getAppDetail(id: number) {
+  toggleApp(appId: string) {
+    const url = `/my/apps/${appId}/toggle`;
+    return this.patch(url);
+  }
+
+  getAppDetail(id: string) {
     const url = `/my/apps/${id}`;
     return this.get(url);
   }

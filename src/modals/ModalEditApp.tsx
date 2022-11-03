@@ -1,17 +1,17 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
 import React, { FC, useEffect, useCallback, useRef, useState } from 'react';
 import BaseModal from './BaseModal';
-import { IAppInfo } from 'src/pages/AppDetail';
 import { AppButton, AppField, AppInput, AppTextarea } from 'src/components';
 import { createValidator } from 'src/utils/utils-validator';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
+import { IAppResponse } from 'src/utils/utils-app';
 
 interface IModalEditApp {
   open: boolean;
   onClose: () => void;
   reloadData: () => void;
-  appInfo: IAppInfo;
+  appInfo: IAppResponse;
 }
 
 interface IDataForm {
@@ -106,7 +106,7 @@ const ModalEditApp: FC<IModalEditApp> = ({
               }}
             />
           </AppField>
-          <AppField label={'DESCRIPTION'} customWidth={'100%'} isRequired>
+          <AppField label={'DESCRIPTION'} customWidth={'100%'}>
             <AppTextarea
               placeholder="Write something about this app in 50 characters!"
               value={dataForm.description}
@@ -119,7 +119,7 @@ const ModalEditApp: FC<IModalEditApp> = ({
               validate={{
                 name: 'description',
                 validator: validator.current,
-                rule: ['required', 'max:50'],
+                rule: ['max:100'],
               }}
             />
           </AppField>

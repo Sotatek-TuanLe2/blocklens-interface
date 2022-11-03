@@ -55,7 +55,10 @@ const MyProfile: FC = () => {
     const onSave = async () => {
       if (!validator.current.allValid()) return;
       try {
-        await rf.getRequest('UserRequest').editInfoUser(dataForm);
+        await rf.getRequest('UserRequest').editInfoUser({
+          firstName: dataForm.firstName?.trim(),
+          lastName: dataForm.lastName?.trim(),
+        });
         dispatch(getInfoUser());
         toastSuccess({ message: 'Edit successfully!' });
         setIsEdit(false);
@@ -134,7 +137,7 @@ const MyProfile: FC = () => {
                     })
                   }
                   validate={{
-                    name: `firstName`,
+                    name: `lastName`,
                     validator: validator.current,
                     rule: ['required'],
                   }}

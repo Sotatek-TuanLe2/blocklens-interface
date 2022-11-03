@@ -31,7 +31,8 @@ const AppTextarea: FC<AppTextareaProps> = ({
   return (
     <>
       <Textarea variant={variant} onBlur={onBlur} {...props} />
-      {!hiddenErrorText && validate &&
+      {!hiddenErrorText &&
+        validate &&
         validate.validator.message(
           validate.name,
           props.value,

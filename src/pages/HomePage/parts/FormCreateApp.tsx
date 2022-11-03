@@ -12,7 +12,7 @@ import { createValidator } from 'src/utils/utils-validator';
 import rf from 'src/requests/RequestFactory';
 import _ from 'lodash';
 import config from 'src/config';
-import { toastSuccess } from 'src/utils/utils-notify';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
 
 interface IFormCreateApp {
   setSearchListApp: Dispatch<any>;
@@ -40,7 +40,7 @@ export const CHAINS = config.chains.map((chain: IChain) => {
 
   return {
     label: chain.name,
-    value: chain.name,
+    value: chain.id,
     icon: chain.icon,
     networks: [...networksClone],
   };
@@ -80,22 +80,27 @@ const FormCreateApp: React.FC<IFormCreateApp> = ({ setSearchListApp }) => {
       chain: chainSelected.value,
       network: networkSelected.value,
     };
-    setHiddenErrorText(true);
-    const res = await rf
-      .getRequest('AppRequest')
-      .createApp(_.omitBy(dataSubmit, _.isEmpty));
-    if (res.key) {
-      setDataForm({ ...initDataCreateApp });
-      toastSuccess({ message: 'Create app success!' });
-      setSearchListApp((pre: any) => {
-        return { ...pre };
-      });
+    try {
+      const res = await rf
+        .getRequest('AppRequest')
+        .createApp(_.omitBy(dataSubmit, _.isEmpty));
+      if (res.key) {
+        setHiddenErrorText(true);
+        setDataForm({ ...initDataCreateApp });
+        toastSuccess({ message: 'Create app success!' });
+        setSearchListApp((pre: any) => {
+          return { ...pre };
+        });
+      }
+    } catch (e: any) {
+      toastError({ message: e?.message || 'Oops. Something went wrong!' });
     }
-    return;
   };
   return (
     <AppCard maxW={'1240px'}>
-      <Text fontSize={'24px'} mb={4}>Create App</Text>
+      <Text fontSize={'24px'} mb={4}>
+        Create App
+      </Text>
       <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
         <AppField label={'NAME'} customWidth={'100%'} isRequired>
           <AppInput
@@ -143,7 +148,7 @@ const FormCreateApp: React.FC<IFormCreateApp> = ({ setSearchListApp }) => {
             value={networkSelected}
           ></AppSelect>
         </AppField>
-        <AppField label={'DESCRIPTION'} customWidth={'100%'} isRequired>
+        <AppField label={'DESCRIPTION'} customWidth={'100%'}>
           <AppTextarea
             hiddenErrorText={hiddenErrorText}
             placeholder="Write something about this app in 50 characters!"
@@ -158,7 +163,7 @@ const FormCreateApp: React.FC<IFormCreateApp> = ({ setSearchListApp }) => {
             validate={{
               name: 'description',
               validator: validator.current,
-              rule: ['required', 'max:50'],
+              rule: ['max:100'],
             }}
           />
         </AppField>

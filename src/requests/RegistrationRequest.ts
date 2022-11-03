@@ -6,38 +6,23 @@ export default class RegistrationRequest extends BaseRequest {
     return config.api.baseUrlApi;
   }
 
-  getWebhookDetail(type: string, registrationId: string) {
-    const url = `/my/registrations/${type}/${registrationId}`;
-    return this.get(url);
-  }
-
-  getNFTActivity(params: any) {
-    const url = `/my/registrations/nft-activity`;
+  getRegistrations(appId: string, params: any) {
+    const url = `/app-${appId}/registrations`;
     return this.get(url, params);
   }
 
-  addNFTActivity(params: any) {
-    const url = `/my/registrations/nft-activity`;
+  addRegistrations(appId: string, params: any) {
+    const url = `/app-${appId}/registrations`;
     return this.post(url, params);
   }
 
-  getAddressActivity(params: any) {
-    const url = `/my/registrations/address-activity`;
-    return this.get(url, params);
+  updateStatus(appId: string, registrationId: string, params: any) {
+    const url = `/app-${appId}/registrations/${registrationId}`;
+    return this.patch(url, params);
   }
 
-  addAddressActivity(params: any) {
-    const url = `/my/registrations/address-activity`;
-    return this.post(url, params);
-  }
-
-  getContractActivity(params: any) {
-    const url = `/my/registrations/contract-activity`;
-    return this.get(url, params);
-  }
-
-  addContractActivity(params: any) {
-    const url = `/my/registrations/contract-activity`;
-    return this.post(url, params);
+  deleteRegistration(appId: string, registrationId: string,) {
+    const url = `/app-${appId}/registrations/${registrationId}`;
+    return this.delete(url);
   }
 }
