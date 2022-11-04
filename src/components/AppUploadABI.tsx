@@ -46,7 +46,7 @@ const listFunctionAndEventOfNFT = [
 
 interface IListSelect {
   data: any;
-  title: string;
+  type: string;
   valueSearch: string;
   valueSort: string;
   dataSelected: any;
@@ -65,7 +65,7 @@ const options = [
 ];
 
 const ListSelect: FC<IListSelect> = ({
-  title,
+  type,
   data,
   onSelectData,
   dataSelected,
@@ -138,27 +138,32 @@ const ListSelect: FC<IListSelect> = ({
     ) && !allChecked;
 
   const onSelectAll = () => {
+    const dataRest = dataSelected.filter((item: any) => item.type !== type);
     if (!allChecked) {
       const allData = dataShow.map((item: any) => item.name);
+      onSelectData([...dataRest, ...dataShow]);
       setItemSelected(allData);
       return;
     }
     setItemSelected([]);
+    onSelectData([...dataRest]);
   };
 
   return (
     <AppCard mt={5} pt={0}>
       <Box fontSize={'18px'} mb={5}>
-        {title}
+        {type === 'function' ? 'Functions' : 'Events'}
       </Box>
       <Box maxH={'320px'} overflowY={'auto'} ml={5}>
-        <Checkbox
-          isChecked={allChecked}
-          isIndeterminate={isIndeterminate}
-          onChange={onSelectAll}
-        >
-          All
-        </Checkbox>
+        {!!dataShow.length && (
+          <Checkbox
+            isChecked={allChecked}
+            isIndeterminate={isIndeterminate}
+            onChange={onSelectAll}
+          >
+            All
+          </Checkbox>
+        )}
 
         {!!dataShow.length ? (
           dataShow?.map((item: any, index: number) => {
@@ -431,7 +436,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({ onChange, type }) => {
       {ABIData && !!ABIData.length && (
         <>
           <ListSelect
-            title={'Functions'}
+            type={'function'}
             data={listFunction}
             dataSelected={dataSelected}
             onSelectData={setDataSelected}
@@ -440,7 +445,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({ onChange, type }) => {
           />
 
           <ListSelect
-            title={'Events'}
+            type={'event'}
             data={listEvent}
             dataSelected={dataSelected}
             onSelectData={setDataSelected}
