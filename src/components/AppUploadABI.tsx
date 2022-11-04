@@ -128,12 +128,38 @@ const ListSelect: FC<IListSelect> = ({
     return dataFiltered;
   }, [data, valueSearch, valueSort]);
 
+  const allChecked = dataShow.every((data: any) =>
+    itemSelected.some((name: string) => data.name === name),
+  );
+
+  const isIndeterminate =
+    dataShow.some((data: any) =>
+      itemSelected.some((name: string) => data.name === name),
+    ) && !allChecked;
+
+  const onSelectAll = () => {
+    if (!allChecked) {
+      const allData = dataShow.map((item: any) => item.name);
+      setItemSelected(allData);
+      return;
+    }
+    setItemSelected([]);
+  };
+
   return (
     <AppCard mt={5} pt={0}>
       <Box fontSize={'18px'} mb={5}>
         {title}
       </Box>
       <Box maxH={'320px'} overflowY={'auto'} ml={5}>
+        <Checkbox
+          isChecked={allChecked}
+          isIndeterminate={isIndeterminate}
+          onChange={onSelectAll}
+        >
+          All
+        </Checkbox>
+
         {!!dataShow.length ? (
           dataShow?.map((item: any, index: number) => {
             return (
