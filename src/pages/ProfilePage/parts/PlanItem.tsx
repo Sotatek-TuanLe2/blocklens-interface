@@ -3,14 +3,14 @@ import React, { FC, useMemo, useState } from 'react';
 import { AppCard, AppLink } from 'src/components';
 import { IBillingPlan } from './MyPlan';
 import ModalPayment from 'src/modals/ModalPayment';
-import ModalChangePaymentMethod from 'src/modals/ModalChangePaymentMethod';
+import ModalChangePlan from 'src/modals/ModalChangePlan';
 
 interface IPlanItem {
   plan: IBillingPlan;
   isActive?: boolean;
   isChange?: boolean;
   isSelect: string;
-  setIsSelect: (value: string) => void;
+  setIsSelect?: (value: string) => void;
 }
 
 const PlanItem: FC<IPlanItem> = ({
@@ -22,8 +22,10 @@ const PlanItem: FC<IPlanItem> = ({
 }) => {
   const isSelected = useMemo(() => isSelect === plan.name, [isSelect]);
   const [isOpenModalPayment, setIsOpenModalPayment] = useState<boolean>(false);
-  const [isOpenModalChangePaymentMethod, setIsOpenModalChangePaymentMethod] =
+  useState<boolean>(false);
+  const [isOpenModalChangePlan, setIsOpenModalChangePlan] =
     useState<boolean>(false);
+  useState<boolean>(false);
 
   return (
     <>
@@ -32,10 +34,13 @@ const PlanItem: FC<IPlanItem> = ({
           isSelected ? 'selected' : ''
         } `}
         onClick={() => {
-          setIsSelect(plan.name);
-          if (plan.name.toUpperCase() === 'STARTER' || plan.name.toUpperCase() === 'GROWTH') {
+          setIsSelect && setIsSelect(plan.name);
+          if (
+            plan.name.toUpperCase() === 'STARTER' ||
+            plan.name.toUpperCase() === 'GROWTH'
+          ) {
             if (isChange) {
-              setIsOpenModalChangePaymentMethod(true);
+              setIsOpenModalChangePlan(true);
               return;
             }
 
@@ -47,7 +52,7 @@ const PlanItem: FC<IPlanItem> = ({
         <div className="status-plan">
           {isActive && (
             <>
-              <div className="icon-done"></div>
+              <div className="icon-done" />
               <Text className="active">Active </Text>
             </>
           )}
@@ -85,10 +90,11 @@ const PlanItem: FC<IPlanItem> = ({
         onClose={() => setIsOpenModalPayment(false)}
       />
 
-      <ModalChangePaymentMethod
-        open={isOpenModalChangePaymentMethod}
-        onClose={() => setIsOpenModalChangePaymentMethod(false)}
-        code={plan.code}
+      <ModalChangePlan
+        isUpgrade
+        open={isOpenModalChangePlan}
+        onClose={() => setIsOpenModalChangePlan(false)}
+        plan={plan}
       />
     </>
   );

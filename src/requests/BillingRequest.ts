@@ -11,33 +11,43 @@ export default class BillingRequest extends BaseRequest {
     return this.get(url);
   }
 
+  getBillingInfo() {
+    const url = '/my/payment/billing-info';
+    return this.get(url);
+  }
+
+  updateBillingInfo(params: any) {
+    const url = '/my/payment/billing-info';
+    return this.put(url, params);
+  }
+
   getCurrentPlan() {
-    const url = '/my/billing-plans/current-plan';
+    const url = '/my/billing-plans/plan';
     return this.get(url);
   }
 
   getPaymentIntent() {
-    const url = '/my/billing-plans/payment-intent';
+    const url = '/my/payment/setup-payment-intent';
     return this.get(url);
   }
 
-  getPaymentMethod() {
-    const url = '/my/billing-plans/payment-method';
-    return this.get(url);
-  }
-
-  confirmPaymentMethod(params: { paymentMethodId : string }) {
-    const url = '/my/billing-plans/payment-method/confirm';
+  attachPaymentMethod(params: { paymentMethodId : string }) {
+    const url = '/my/payment/attach-payment-method';
     return this.put(url, params);
   }
 
   updateBillingPlan(params: { code : string }) {
-    const url = '/my/billing-plans/update-billing-plan';
+    const url = '/my/billing-plans/plan';
     return this.put(url, params);
   }
 
+  cancelSubscription() {
+    const url = '/my/billing-plans/cancel-subscription';
+    return this.put(url);
+  }
+
   getInvoiceList(params: any) {
-    const url = '/my/billing-plans/invoice';
+    const url = '/my/payment/invoice';
     return this.get(url, { ...params });
   }
 }

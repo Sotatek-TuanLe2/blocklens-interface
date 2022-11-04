@@ -30,7 +30,7 @@ export default class BaseRequest {
     }
   }
 
-  async put(url: any, data: any) {
+  async put(url: any, data?: any) {
     try {
       const response = await axios.put(this.getUrlPrefix() + url, data);
       return this._responseHandler(response);

@@ -9,11 +9,13 @@ import {
   useElements,
   useStripe,
 } from '@stripe/react-stripe-js';
-import { AppButton } from 'src/components';
+import { AppButton, AppField, AppInput, AppSelect } from 'src/components';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/store';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import rf from 'src/requests/RequestFactory';
+import { COUNTRIES } from 'src/constants';
+import _ from 'lodash';
 
 interface IModalPayment {
   open: boolean;
@@ -25,53 +27,70 @@ interface ICheckoutForm {
   onClose: () => void;
 }
 
+interface IDataFormBillingInfo {
+  name?: string;
+  country?: string;
+  address?: string;
+  email?: string;
+}
+
+const listCountry = COUNTRIES.map((item: { name: string }) => {
+  return {
+    label: item.name,
+    value: item.name,
+  };
+});
+
 const CheckoutForm: FC<ICheckoutForm> = ({ onClose }) => {
+  const { userInfo } = useSelector((state: RootState) => state.auth);
+
   const [isLoading, setIsLoading] = useState(false);
+  const initData = {
+    name: '',
+    country: '',
+    address: '',
+    email: userInfo.email,
+  };
+
+  const [dataForm, setDataForm] = useState<IDataFormBillingInfo>(initData);
 
   // Initialize an instance of stripe.
   const stripe = useStripe();
   const elements = useElements();
+
+  const updateMyBillingInfo = async () => {
+    try {
+      await rf.getRequest('BillingRequest').updateBillingInfo(dataForm);
+      toastSuccess({ message: 'Successfully!' });
+    } catch (e: any) {
+      toastError({ message: e?.message || 'Oops. Something went wrong!' });
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLInputElement>) => {
     setIsLoading(true);
     if (!stripe || !elements) return;
     e.preventDefault();
 
-    // Get a reference to a mounted CardElement. Elements knows how
-    // to find your CardElement because there can only ever be one of
-    // each type of element.
-
-    // Use card Element to tokenize payment details
     const result = await stripe.confirmSetup({
       elements,
       redirect: 'if_required',
     });
 
     if (result.error) {
-      // do something
       return;
     }
 
-    // Inspect the SetupIntent `status` to indicate the status of the payment
-    // to your customer.
-    //
-    // Some payment methods will [immediately succeed or fail][0] upon
-    // confirmation, while others will first enter a `processing` state.
-    //
-    // [0]: https://stripe.com/docs/payments/payment-methods#payment-notification
     switch (result.setupIntent.status) {
       case 'succeeded': {
         try {
-          await rf
-            .getRequest('BillingRequest')
-            .confirmPaymentMethod({
-              paymentMethodId: result.setupIntent.payment_method as string,
-            });
+          await rf.getRequest('BillingRequest').attachPaymentMethod({
+            paymentMethodId: result.setupIntent.payment_method as string,
+          });
           toastSuccess({ message: 'Successfully!' });
-          onClose();
         } catch (e: any) {
           toastError({ message: e?.message || 'Oops. Something went wrong!' });
         } finally {
-          onClose();
         }
         break;
       }
@@ -81,20 +100,77 @@ const CheckoutForm: FC<ICheckoutForm> = ({ onClose }) => {
       }
 
       case 'requires_payment_method': {
-        // Redirect your user back to your payment page to attempt collecting
-        // payment again
-
         break;
       }
       default:
         setIsLoading(false);
     }
+
+    updateMyBillingInfo().then();
+    onClose()
   };
 
   return (
     <Box>
       <form onSubmit={handleSubmit as any}>
+        <Box mb={3}>Payment method</Box>
         <PaymentElement />
+
+        <Box my={3}>Billing address</Box>
+
+        <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
+          <AppField label={'NAME'} customWidth={'49%'} isRequired>
+            <AppInput
+              value={dataForm.name}
+              onChange={(e) => {
+                setDataForm({
+                  ...dataForm,
+                  name: e.target.value,
+                });
+              }}
+            />
+          </AppField>
+          <AppField label={'COUNTRY'} customWidth={'49%'}>
+            <AppSelect
+              onChange={(e: any) => {
+                setDataForm({
+                  ...dataForm,
+                  country: e.value,
+                });
+              }}
+              options={listCountry}
+              value={
+                listCountry.find(
+                  (item) => item.value === dataForm.country,
+                ) as any
+              }
+            />
+          </AppField>
+          <AppField label={'ADDRESS'} customWidth={'100%'}>
+            <AppInput
+              value={dataForm.address}
+              onChange={(e) => {
+                setDataForm({
+                  ...dataForm,
+                  address: e.target.value,
+                });
+              }}
+            />
+          </AppField>
+
+          <AppField label={'BILLING EMAIL'} customWidth={'100%'}>
+            <AppInput
+              value={dataForm.email}
+              onChange={(e) => {
+                setDataForm({
+                  ...dataForm,
+                  email: e.target.value,
+                });
+              }}
+            />
+          </AppField>
+        </Flex>
+
         <Flex justifyContent={'flex-end'} alignItems="center" mt={2}>
           <AppButton onClick={onClose} variant="outline" mr={5}>
             Cancel
@@ -128,7 +204,8 @@ const ModalPayment: FC<IModalPayment> = ({
     >
       <Box flexDirection={'column'} pt={'20px'}>
         <Box className="stripe-details">
-          {!!paymentIntent && <Elements
+          {!!paymentIntent && (
+            <Elements
               stripe={stripePromise}
               options={{
                 locale: 'en',
@@ -137,7 +214,7 @@ const ModalPayment: FC<IModalPayment> = ({
             >
               <CheckoutForm onClose={onClose} />
             </Elements>
-          }
+          )}
         </Box>
       </Box>
     </BaseModal>

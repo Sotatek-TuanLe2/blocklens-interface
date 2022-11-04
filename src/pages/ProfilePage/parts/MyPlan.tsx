@@ -1,14 +1,14 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { AppButton } from 'src/components';
 import PlanItem from './PlanItem';
 import ModalPayment from 'src/modals/ModalPayment';
+import ModalCancelSubscription from 'src/modals/ModalCancelSubscription';
 import rf from 'src/requests/RequestFactory';
 import { toastError } from 'src/utils/utils-notify';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { getPaymentIntent } from 'src/store/billing-plan';
 import { formatTimestamp } from 'src/utils/utils-helper';
-import { RootState } from 'src/store';
 
 export interface IBillingPlan {
   code: string;
@@ -23,28 +23,15 @@ export interface IBillingPlan {
   endTime: number;
 }
 
-export interface IPaymentMethod {
-  id: string;
-  card: {
-    brand: string;
-    country: string;
-    exp_month: number;
-    exp_year: number;
-    funding: string;
-    last4: string;
-  };
-  livemode: boolean;
-}
-
 const MyPlan = () => {
   const [isSelect, setIsSelect] = useState<string>('');
-  const [isChangePlan, setIsChangePlan] = useState<boolean>(false);
   const [billingPlans, setBillingPlans] = useState<IBillingPlan[]>([]);
   const [currentPlan, setCurrentPlan] = useState<IBillingPlan | any>({});
-  const [paymentMethod, setPaymentMethod] = useState<IPaymentMethod | any>({});
+  const [billingInfo, setBillingInfo] = useState<any>({});
   const [isOpenModalChangePaymentMethod, setIsOpenModalChangePaymentMethod] =
     useState<boolean>(false);
-  const { userInfo } = useSelector((state: RootState) => state.auth);
+  const [isOpenModalCancelSubscription, setIsOpenModalCancelSubscription] =
+    useState<boolean>(false);
 
   const dispatch = useDispatch<any>();
 
@@ -66,10 +53,10 @@ const MyPlan = () => {
     }
   };
 
-  const getPaymentMethod = async () => {
+  const getBillingInfo = async () => {
     try {
-      const res = await rf.getRequest('BillingRequest').getPaymentMethod();
-      setPaymentMethod(res);
+      const res = await rf.getRequest('BillingRequest').getBillingInfo();
+      setBillingInfo(res || {});
     } catch (e: any) {
       toastError({ message: e?.message || 'Oops. Something went wrong!' });
     }
@@ -78,11 +65,15 @@ const MyPlan = () => {
   useEffect(() => {
     getBillingPlans().then();
     getCurrentPlan().then();
-    getPaymentMethod().then();
+    getBillingInfo().then();
     dispatch(getPaymentIntent());
   }, []);
 
-  const _renderPlans = (isChange?: boolean) => {
+  const isHasPaymentMethod = useMemo(() => {
+    return !Object.keys(billingInfo?.paymentMethod || {}).length;
+  }, [billingInfo]);
+
+  const _renderPlans = () => {
     return (
       <Flex gap={'16px'} my={5}>
         {billingPlans.map((plan: IBillingPlan, index) => {
@@ -93,7 +84,7 @@ const MyPlan = () => {
               isActive={plan.code === currentPlan.code}
               isSelect={isSelect}
               setIsSelect={setIsSelect}
-              isChange={isChange}
+              isChange={isHasPaymentMethod}
             />
           );
         })}
@@ -104,41 +95,12 @@ const MyPlan = () => {
   const _renderCardDetail = () => {
     return (
       <div className="stripe-wrap">
-        <Text className="upgrade-plans">Card Details</Text>
-        <Box className="stripe-detail">
-          <div className="stripe-title">Plan</div>
-          <div className="stripe-status">
-            <span>{currentPlan.name}</span>{' '}
-            <span className="badge-package">Monthly</span>
-          </div>
-          <div className="stripe-action">
-            <AppButton
-              variant={isChangePlan ? 'outline' : 'brand'}
-              size={'sm'}
-              onClick={() => setIsChangePlan(!isChangePlan)}
-            >
-              {isChangePlan ? 'Cancel' : 'Change'}
-            </AppButton>
-          </div>
-        </Box>
-
-        {isChangePlan && _renderPlans(true)}
-
-        <Box className="stripe-detail">
-          <div className="stripe-title">Subscription</div>
-          <div className="stripe-price">
-            <span>${currentPlan?.price}</span>
-            <span>
-              Billing at{' '}
-              {formatTimestamp(currentPlan?.startTime*1000, 'MMM DD, YYYY')} -{' '}
-              {formatTimestamp(currentPlan?.endTime*1000, 'MMM DD, YYYY')}
-            </span>
-          </div>
-        </Box>
         <Box className="stripe-detail">
           <div className="stripe-title">Payment method</div>
           <div className="stripe-status">
-            <span>•••• •••• •••• {paymentMethod?.card?.last4}</span>
+            <span>
+              •••• •••• •••• {billingInfo?.paymentMethod?.card?.last4}
+            </span>
           </div>
           <div className="stripe-action">
             <AppButton
@@ -149,24 +111,66 @@ const MyPlan = () => {
             </AppButton>
           </div>
         </Box>
+
+        <Box className="stripe-detail">
+          <div className="stripe-title">Billing address</div>
+          <div className="stripe-status">
+            <Box>{billingInfo?.name}</Box>
+            <Box>{billingInfo?.address}</Box>
+          </div>
+        </Box>
+
         <Box className="stripe-detail">
           <div className="stripe-title">Billing email</div>
-          <div className="stripe-status">{userInfo.email}</div>
+          <div className="stripe-status">{billingInfo.email}</div>
         </Box>
+
+        <Box className="stripe-detail">
+          <div className="stripe-title">Subscription</div>
+          <div className="stripe-price">
+            <span>${currentPlan?.price}</span>
+            <span>
+              Billing period{' '}
+              {formatTimestamp(currentPlan?.startTime * 1000, 'MMM DD, YYYY')} -{' '}
+              {formatTimestamp(currentPlan?.endTime * 1000, 'MMM DD, YYYY')}
+            </span>
+          </div>
+        </Box>
+
+        <Flex mt={3} justifyContent={'flex-end'}>
+          <AppButton
+            variant="outline"
+            onClick={() => setIsOpenModalCancelSubscription(true)}
+          >
+            Cancel Subscription
+          </AppButton>
+        </Flex>
       </div>
     );
   };
 
   return (
     <Box px={5} className="plans-wrap">
-      {!Object.keys(paymentMethod).length
-        ? _renderPlans()
-        : _renderCardDetail()}
+      <div className="stripe-wrap">
+        <Box className="stripe-detail">
+          <div className="stripe-title">Current Plan</div>
+          <div className="stripe-status">{currentPlan.name}</div>
+        </Box>
+      </div>
+
+      {_renderPlans()}
+
+      {isHasPaymentMethod && _renderCardDetail()}
 
       <ModalPayment
         open={isOpenModalChangePaymentMethod}
         onClose={() => setIsOpenModalChangePaymentMethod(false)}
         isChangePaymentMethod
+      />
+
+      <ModalCancelSubscription
+        onClose={() => setIsOpenModalCancelSubscription(false)}
+        open={isOpenModalCancelSubscription}
       />
     </Box>
   );
