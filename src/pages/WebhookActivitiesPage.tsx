@@ -20,6 +20,7 @@ import 'src/styles/pages/NotificationPage.scss';
 import ReactJson from 'react-json-view';
 import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
 import 'src/styles/pages/AppDetail.scss';
+import AppStatics from '../components/AppStats';
 
 interface INotificationResponse {
   hash: string;
@@ -35,17 +36,17 @@ interface INotificationResponse {
   updatedAt: number;
 }
 
-interface IWebhookStatistics {
+interface IWebhookStats {
   totalThisMonth?: number;
-  totalLast24Hours?: number;
-  totalSuccessLast24Hours?: number;
+  totalToday?: number;
+  totalSuccessToday?: number;
 }
 
 interface INotificationItem {
   notification: INotificationResponse;
 }
 
-interface IPartWebhookStatics {
+interface IPartWebhookStats {
   registrationId: string;
 }
 
@@ -82,76 +83,25 @@ const getColorBrandStatus = (status: number) => {
   }
 };
 
-const PartWebhookStatics: FC<IPartWebhookStatics> = ({ registrationId }) => {
-  const [webhookStatistics, setWebhookStatistics] =
-    useState<IWebhookStatistics>({});
+const PartWebhookStatics: FC<IPartWebhookStats> = ({ registrationId }) => {
+  const [webhookStats, setWebhookStats] = useState<IWebhookStats>({});
 
-  const getWebhookStatistics = useCallback(async () => {
+  const getWebhookStats = useCallback(async () => {
     try {
       const res = (await rf
         .getRequest('NotificationRequest')
-        .getWebhookStatistics(registrationId)) as any;
-      setWebhookStatistics(res);
+        .getWebhookStats(registrationId)) as any;
+      setWebhookStats(res);
     } catch (error: any) {
-      setWebhookStatistics({});
+      setWebhookStats({});
     }
   }, [registrationId]);
 
   useEffect(() => {
-    getWebhookStatistics().then();
+    getWebhookStats().then();
   }, []);
 
-  const getPercentNotificationSuccess = () => {
-    if (
-      !webhookStatistics.totalLast24Hours ||
-      !webhookStatistics.totalSuccessLast24Hours
-    ) {
-      return '--';
-    }
-
-    return (
-      (webhookStatistics?.totalSuccessLast24Hours /
-        webhookStatistics?.totalLast24Hours) *
-      100
-    ).toFixed(2);
-  };
-
-  return (
-    <SimpleGrid
-      className="infos"
-      columns={{ base: 1, sm: 2, lg: 4 }}
-      gap="20px"
-    >
-      <AppCard p={4} className="box-info">
-        <Box className="label">
-          Webhook’s Notifications <br />
-          This Month
-        </Box>
-        <Box className="value">
-          {formatLargeNumber(webhookStatistics.totalThisMonth)}
-        </Box>
-      </AppCard>
-
-      <AppCard p={4} className="box-info">
-        <Box className="label">
-          Webhook’s Notifications
-          <br />
-          Last 24 Hour
-        </Box>
-        <Box className="value">
-          {formatLargeNumber(webhookStatistics.totalLast24Hours)}
-        </Box>
-      </AppCard>
-
-      <AppCard p={4} className="box-info">
-        <Box className="label">
-          Webhook’s Success %<br />
-          Last 24 hour
-        </Box>
-        <Box className="value">{getPercentNotificationSuccess()}</Box>
-      </AppCard>
-    </SimpleGrid>
-  );
+  return <AppStatics type="WEBHOOK" stats={webhookStats} />;
 };
 
 const NotificationItem: FC<INotificationItem> = ({ notification }) => {
