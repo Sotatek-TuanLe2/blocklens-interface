@@ -8,6 +8,7 @@ import AppUploadABI, { TYPE_ABI } from 'src/components/AppUploadABI';
 import { BasePageContainer } from 'src/layouts';
 import { useHistory, useParams } from 'react-router';
 import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
+import { isValidChecksumAddress } from 'ethereumjs-util';
 
 interface IDataForm {
   webhook: string;
@@ -108,16 +109,16 @@ const CreateWebhookNFTPage = () => {
                 placeholder="0xbb.."
                 size="lg"
                 value={dataForm.address}
-                onChange={(e) =>
+                onChange={(e) => {
                   setDataForm({
                     ...dataForm,
                     address: e.target.value.trim(),
-                  })
-                }
+                  });
+                }}
                 validate={{
                   name: `addressNft`,
                   validator: validator.current,
-                  rule: 'required',
+                  rule: 'required|isAddress',
                 }}
               />
             </AppField>
