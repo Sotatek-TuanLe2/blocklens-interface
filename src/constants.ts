@@ -1,0 +1,6 @@
+export const CHAINS = {
+  ETHEREUM: 'ETHEREUM',
+  BSC: 'BSC',
+  POLYGON: 'POLYGON',
+  SOLANA: 'SOLANA',
+};

@@ -14,6 +14,7 @@ import { BasePageContainer } from 'src/layouts';
 import { AppButton } from 'src/components';
 import ModalChangeStatusApp from 'src/modals/ModalChangeStatusApp';
 import { APP_STATUS } from 'src/utils/utils-app';
+import { CHAINS } from 'src/constants';
 
 const AppDetail = () => {
   const [appInfo, setAppInfo] = useState<any>({});
@@ -74,7 +75,7 @@ const AppDetail = () => {
               onClick={() => setIsOpenModalChangeStatus(true)}
             >
               {appInfo.status === APP_STATUS.DISABLED
-                ? 'ACITVATE'
+                ? 'ACTIVATE'
                 : 'DEACTIVATE'}{' '}
               APP
             </AppButton>
@@ -90,9 +91,14 @@ const AppDetail = () => {
         </Flex>
 
         <PartAppStatics />
-        <PartNFTWebhooks appInfo={appInfo} />
+
+        {appInfo.chain !== CHAINS.SOLANA && (
+          <PartNFTWebhooks appInfo={appInfo} />
+        )}
         <PartAddressWebhooks appInfo={appInfo} />
-        <PartContractWebhooks appInfo={appInfo} />
+        {appInfo.chain !== CHAINS.SOLANA && (
+          <PartContractWebhooks appInfo={appInfo} />
+        )}
 
         <ModalEditApp
           open={isOpenModalEditApp}

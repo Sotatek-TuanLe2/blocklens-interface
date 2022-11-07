@@ -7,6 +7,7 @@ import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { IAppResponse } from 'src/utils/utils-app';
 import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
+import { CHAINS } from 'src/constants';
 
 interface ICreateAddressActivityModal {
   open: boolean;
@@ -132,7 +133,12 @@ const ModalCreateWebhookAddress: FC<ICreateAddressActivityModal> = ({
                   validate={{
                     name: `address ${index + 1}`,
                     validator: validator.current,
-                    rule: 'required',
+                    rule: [
+                      'required',
+                      appInfo.chain === CHAINS.SOLANA
+                        ? 'isAddressSolana'
+                        : 'noRule',
+                    ],
                   }}
                 />
                 {dataForm.addresses.length > 1 && (

@@ -1,4 +1,5 @@
 import SimpleReactValidator from 'simple-react-validator';
+import { PublicKey } from '@solana/web3.js';
 
 type IRule =
   | 'accepted'
@@ -43,6 +44,8 @@ type CustomRule =
   | 'maxValue'
   | 'isPositive'
   | 'maxDigits'
+  | 'isAddressSolana'
+  | 'noRule'
   | 'isSame';
 
 export type Rules = IRule | CustomRule;
@@ -65,6 +68,10 @@ interface IOptions {
 export const createValidator = (options?: IOptions | undefined) => {
   let defaultOptions = {
     validators: {
+      noRule: {
+        message: '',
+        rule: () => true,
+      },
       logoUrl: {
         message: 'The logo must end in “jpeg”, “jpg” or “png”',
         rule: (val: string): boolean => /^.+\.(jpeg|jpg|png)$/.test(val),
@@ -95,6 +102,17 @@ export const createValidator = (options?: IOptions | undefined) => {
         message: 'The value must be same password',
         rule: (value: string, params: string) => {
           return value === params[0];
+        },
+      },
+      isAddressSolana: {
+        message: 'The address must be in correct format',
+        rule: (value: string) => {
+          try {
+            new PublicKey(value);
+            return true;
+          } catch (e) {
+            return false;
+          }
         },
       },
     },
