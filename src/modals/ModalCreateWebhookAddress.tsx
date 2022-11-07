@@ -115,6 +115,11 @@ const ModalCreateWebhookAddress: FC<ICreateAddressActivityModal> = ({
                 customWidth={'100%'}
                 key={index}
                 isRequired
+                note={
+                  appInfo.chain === CHAINS.SOLANA
+                    ? 'Only accept Token Account (token which is minted by program id or wallet address).'
+                    : ''
+                }
               >
                 <AppInput
                   placeholder="0xbb.."
