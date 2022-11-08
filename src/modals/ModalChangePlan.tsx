@@ -1,15 +1,16 @@
 import React, { FC } from 'react';
 import BaseModal from './BaseModal';
-import { Box, Flex } from '@chakra-ui/react';
+import { Box, Flex, Text } from '@chakra-ui/react';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from '../utils/utils-notify';
 import { IBillingPlan } from 'src/pages/ProfilePage/parts/MyPlan';
-import PlanItem from 'src/pages/ProfilePage/parts/PlanItem';
 import 'src/styles/pages/ProfilePage.scss';
+import { AppCard } from '../components';
 
 interface IModalChangePaymentMethod {
   open: boolean;
   onClose: () => void;
+  reloadData: () => void;
   isUpgrade: boolean;
   plan: IBillingPlan;
 }
@@ -19,6 +20,7 @@ const ModalChangePlan: FC<IModalChangePaymentMethod> = ({
   onClose,
   isUpgrade,
   plan,
+  reloadData
 }) => {
   const changePlan = async () => {
     try {
@@ -26,6 +28,7 @@ const ModalChangePlan: FC<IModalChangePaymentMethod> = ({
         .getRequest('BillingRequest')
         .updateBillingPlan({ code: plan.code });
       toastSuccess({ message: 'Update Successfully!' });
+      reloadData();
     } catch (e: any) {
       toastError({ message: e?.message || 'Oops. Something went wrong!' });
     }
@@ -65,8 +68,24 @@ const ModalChangePlan: FC<IModalChangePaymentMethod> = ({
       isHideCloseIcon
     >
       <Flex>
-        <Box w={'45%'}>
-          <PlanItem plan={plan} isSelect={plan.name} />
+        <Box w={'38%'}>
+          <AppCard p={0} pt={4} border={'1px solid #a246cd'}>
+            <Box className="plan-item">
+              <Box className="plan-item-desc">
+                <Text textTransform="uppercase">{plan.name}</Text>
+                <>
+                  <Flex className="price-plan">
+                    <Text className="currency">$</Text>
+                    {plan.price}
+                    {+plan.price > 0 && <Text className="time">/mo</Text>}
+                  </Flex>
+                </>
+              </Box>
+              <div>
+                <Box className="allow-title">{plan.description}</Box>
+              </div>
+            </Box>
+          </AppCard>
         </Box>
         <Box w={'65%'} ml={10}>
           {isUpgrade

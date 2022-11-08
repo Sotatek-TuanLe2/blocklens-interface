@@ -2,30 +2,42 @@ import { Box, Flex, Text } from '@chakra-ui/react';
 import React, { FC, useMemo, useState } from 'react';
 import { AppCard, AppLink } from 'src/components';
 import { IBillingPlan } from './MyPlan';
-import ModalPayment from 'src/modals/ModalPayment';
-import ModalChangePlan from 'src/modals/ModalChangePlan';
 
 interface IPlanItem {
   plan: IBillingPlan;
   isActive?: boolean;
-  isChange?: boolean;
-  isSelect: string;
-  setIsSelect?: (value: string) => void;
+  isChangePaymentMethod: boolean;
+  planSelected: IBillingPlan;
+  setPlanSelected: (value: IBillingPlan) => void;
+  openModalChangePaymentMethod: (value: boolean) => void;
+  openModalChangePlan: (value: boolean) => void;
 }
 
 const PlanItem: FC<IPlanItem> = ({
-  isChange,
+  openModalChangePaymentMethod,
+  openModalChangePlan,
+  isChangePaymentMethod,
   plan,
   isActive,
-  isSelect,
-  setIsSelect,
+  planSelected,
+  setPlanSelected,
 }) => {
-  const isSelected = useMemo(() => isSelect === plan.name, [isSelect]);
-  const [isOpenModalPayment, setIsOpenModalPayment] = useState<boolean>(false);
-  useState<boolean>(false);
-  const [isOpenModalChangePlan, setIsOpenModalChangePlan] =
-    useState<boolean>(false);
-  useState<boolean>(false);
+  const isSelected = useMemo(
+    () => planSelected.name === plan.name,
+    [planSelected],
+  );
+
+  const onChoosePlan = () => {
+    if (isActive || plan.name.toUpperCase() === 'ENTERPRISE') return;
+    setPlanSelected(plan);
+
+    if (isChangePaymentMethod) {
+      openModalChangePlan(true);
+      return;
+    }
+    openModalChangePaymentMethod(true);
+    return;
+  };
 
   return (
     <>
@@ -33,21 +45,7 @@ const PlanItem: FC<IPlanItem> = ({
         className={`plan-item-container ${isActive ? 'active' : ''} ${
           isSelected ? 'selected' : ''
         } `}
-        onClick={() => {
-          setIsSelect && setIsSelect(plan.name);
-          if (
-            plan.name.toUpperCase() === 'STARTER' ||
-            plan.name.toUpperCase() === 'GROWTH'
-          ) {
-            if (isChange) {
-              setIsOpenModalChangePlan(true);
-              return;
-            }
-
-            setIsOpenModalPayment(true);
-            return;
-          }
-        }}
+        onClick={onChoosePlan}
       >
         <div className="status-plan">
           {isActive && (
@@ -58,7 +56,7 @@ const PlanItem: FC<IPlanItem> = ({
           )}
 
           {isSelected && !isActive && (
-            <Text className="selected"> Selecting</Text>
+            <Text className="selected"> Choose New plan</Text>
           )}
         </div>
 
@@ -84,18 +82,6 @@ const PlanItem: FC<IPlanItem> = ({
           </div>
         </Box>
       </AppCard>
-
-      <ModalPayment
-        open={isOpenModalPayment}
-        onClose={() => setIsOpenModalPayment(false)}
-      />
-
-      <ModalChangePlan
-        isUpgrade
-        open={isOpenModalChangePlan}
-        onClose={() => setIsOpenModalChangePlan(false)}
-        plan={plan}
-      />
     </>
   );
 };
