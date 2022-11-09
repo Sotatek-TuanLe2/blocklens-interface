@@ -102,6 +102,11 @@ const MyPlan = () => {
     setBillingEmail(billingInfo.email);
   }, [billingInfo, isEditEmail]);
 
+  const currentPlanData = useMemo(
+    () => billingPlans.find((item) => item.code === currentPlan.code),
+    [currentPlan, billingPlans],
+  );
+
   useEffect(() => {
     setPlanSelected(currentPlan);
   }, [currentPlan]);
@@ -237,7 +242,7 @@ const MyPlan = () => {
             <Box className="stripe-detail">
               <div className="stripe-title">Subscription</div>
               <div className="stripe-price">
-                <span>${currentPlan?.price || 0}</span>
+                <span>${currentPlanData?.price || 0}</span>
                 <Box as={'span'} color={'#a0a4ac'} fontSize={'13px'}>
                   Billing period{' '}
                   {formatTimestamp(currentPlan?.from, 'MMM DD, YYYY')} -{' '}
@@ -268,7 +273,7 @@ const MyPlan = () => {
         <Box className="stripe-detail">
           <div className="stripe-title">Current Plan</div>
           <div className="stripe-status">
-            {currentPlan.name || currentPlan.code}
+            {currentPlanData?.name}
           </div>
         </Box>
       </div>
