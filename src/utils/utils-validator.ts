@@ -1,4 +1,7 @@
 import SimpleReactValidator from 'simple-react-validator';
+import { isValidChecksumAddress } from 'ethereumjs-util';
+import BN from 'bn.js';
+import bs58 from 'bs58';
 
 type IRule =
   | 'accepted'
@@ -43,7 +46,8 @@ type CustomRule =
   | 'maxValue'
   | 'isPositive'
   | 'maxDigits'
-  | 'isSame';
+  | 'isSame'
+  | 'isAddress';
 
 export type Rules = IRule | CustomRule;
 
@@ -95,6 +99,23 @@ export const createValidator = (options?: IOptions | undefined) => {
         message: 'The value must be same password',
         rule: (value: string, params: string) => {
           return value === params[0];
+        },
+      },
+      isAddress: {
+        message: 'The value is wrong format address.',
+        rule: (value: string) => {
+          //eth
+          if (isValidChecksumAddress(value)) return true;
+          //solana
+          try {
+            const decoded = bs58.decode(value);
+            if (decoded.length != 32 || new BN(decoded).byteLength() > 32) {
+              return false;
+            }
+            return true;
+          } catch (error) {
+            return false;
+          }
         },
       },
     },

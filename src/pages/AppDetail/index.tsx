@@ -58,7 +58,7 @@ const AppDetail = () => {
               <Flex ml={5} alignItems={'center'}>
                 <Box
                   mr={2}
-                  className={getLogoChainByName(appInfo?.chain)}
+                  className={getLogoChainByName(appInfo?.chain) || ''}
                 ></Box>
                 {appInfo.chain + ' ' + appInfo.network}
               </Flex>
