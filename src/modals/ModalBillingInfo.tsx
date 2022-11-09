@@ -69,7 +69,7 @@ const ModalBillingInfo: FC<IModalBillingInfo> = ({
       country: billingInfo.country,
       address: billingInfo.address,
     });
-  }, [billingInfo]);
+  }, [billingInfo, open]);
 
   return (
     <BaseModal
