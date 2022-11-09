@@ -9,9 +9,8 @@ import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { useDispatch } from 'react-redux';
 import { getPaymentIntent } from 'src/store/billing-plan';
 import { formatTimestamp } from 'src/utils/utils-helper';
-import ModalBillingInfo from '../../../modals/ModalBillingInfo';
-import { log } from 'util';
-import ModalChangePlan from '../../../modals/ModalChangePlan';
+import ModalBillingInfo from 'src/modals/ModalBillingInfo';
+import ModalChangePlan from 'src/modals/ModalChangePlan';
 
 export interface IBillingPlan {
   code: string;
@@ -22,9 +21,17 @@ export interface IBillingPlan {
   periodByDay: number;
   appLimitation: number;
   notificationLimitation: number;
-  startTime: number;
-  endTime: number;
+  from: number;
+  to: number;
 }
+
+const planEnterprise = {
+  code: 'ENTERPRISE',
+  name: 'ENTERPRISE',
+  price: null,
+  description:
+    'Features:\n    • Custom Active Apps\n    • Custom messages/day\n    ',
+};
 
 const MyPlan = () => {
   const [planSelected, setPlanSelected] = useState<IBillingPlan | any>({});
@@ -47,7 +54,7 @@ const MyPlan = () => {
   const getBillingPlans = async () => {
     try {
       const res = await rf.getRequest('BillingRequest').getBillingPlans();
-      setBillingPlans(res);
+      setBillingPlans([...res, planEnterprise]);
     } catch (e: any) {
       toastError({ message: e?.message || 'Oops. Something went wrong!' });
     }
@@ -142,12 +149,25 @@ const MyPlan = () => {
           <div className="stripe-status">
             {billingInfo?.paymentMethod?.card && (
               <span>
+                <span
+                  style={{ textTransform: 'capitalize', marginRight: '10px' }}
+                >
+                  {billingInfo?.paymentMethod?.card.brand}
+                </span>
                 •••• •••• •••• {billingInfo?.paymentMethod?.card?.last4}
               </span>
             )}
           </div>
           <div className="stripe-action">
+            {billingInfo?.paymentMethod?.card && (
+              <>
+                Expiration: {billingInfo?.paymentMethod?.card.exp_month}/
+                {billingInfo?.paymentMethod?.card.exp_year}
+              </>
+            )}
+
             <AppButton
+              ml={4}
               size={'sm'}
               onClick={() => setIsOpenModalChangePaymentMethod(true)}
             >
@@ -217,27 +237,25 @@ const MyPlan = () => {
             <Box className="stripe-detail">
               <div className="stripe-title">Subscription</div>
               <div className="stripe-price">
-                <span>${currentPlan?.price}</span>
-                <span>
+                <span>${currentPlan?.price || 0}</span>
+                <Box as={'span'} color={'#a0a4ac'} fontSize={'13px'}>
                   Billing period{' '}
-                  {formatTimestamp(
-                    currentPlan?.startTime * 1000,
-                    'MMM DD, YYYY',
-                  )}{' '}
-                  -{' '}
-                  {formatTimestamp(currentPlan?.endTime * 1000, 'MMM DD, YYYY')}
-                </span>
+                  {formatTimestamp(currentPlan?.from, 'MMM DD, YYYY')} -{' '}
+                  {formatTimestamp(currentPlan?.to, 'MMM DD, YYYY')}
+                </Box>
               </div>
             </Box>
 
-            <Flex mt={3} justifyContent={'flex-end'}>
-              <AppButton
-                variant="outline"
-                onClick={() => setIsOpenModalCancelSubscription(true)}
-              >
-                Cancel Subscription
-              </AppButton>
-            </Flex>
+            {indexCurrentPlan > 0 && (
+              <Flex mt={3} justifyContent={'flex-end'}>
+                <AppButton
+                  variant="outline"
+                  onClick={() => setIsOpenModalCancelSubscription(true)}
+                >
+                  Cancel Subscription
+                </AppButton>
+              </Flex>
+            )}
           </>
         )}
       </div>
@@ -249,7 +267,9 @@ const MyPlan = () => {
       <div className="stripe-wrap">
         <Box className="stripe-detail">
           <div className="stripe-title">Current Plan</div>
-          <div className="stripe-status">{currentPlan.name}</div>
+          <div className="stripe-status">
+            {currentPlan.name || currentPlan.code}
+          </div>
         </Box>
       </div>
 
@@ -259,6 +279,7 @@ const MyPlan = () => {
 
       <ModalPayment
         open={isOpenModalChangePaymentMethod}
+        reloadData={getBillingInfo}
         onClose={() => setIsOpenModalChangePaymentMethod(false)}
       />
 

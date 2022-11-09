@@ -5,7 +5,7 @@ import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from '../utils/utils-notify';
 import { IBillingPlan } from 'src/pages/ProfilePage/parts/MyPlan';
 import 'src/styles/pages/ProfilePage.scss';
-import { AppCard } from '../components';
+import { AppCard } from 'src/components';
 
 interface IModalChangePaymentMethod {
   open: boolean;
@@ -20,7 +20,7 @@ const ModalChangePlan: FC<IModalChangePaymentMethod> = ({
   onClose,
   isUpgrade,
   plan,
-  reloadData
+  reloadData,
 }) => {
   const changePlan = async () => {
     try {
@@ -29,6 +29,7 @@ const ModalChangePlan: FC<IModalChangePaymentMethod> = ({
         .updateBillingPlan({ code: plan.code });
       toastSuccess({ message: 'Update Successfully!' });
       reloadData();
+      onClose();
     } catch (e: any) {
       toastError({ message: e?.message || 'Oops. Something went wrong!' });
     }

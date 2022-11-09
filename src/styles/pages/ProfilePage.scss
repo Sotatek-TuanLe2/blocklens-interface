@@ -216,7 +216,7 @@
       color: #a0a4ac;
     }
     .stripe-status {
-      width: 60%;
+      width: 50%;
       align-items: center;
       gap: 4px;
       .badge-package {
@@ -229,8 +229,9 @@
     }
     .stripe-action {
       display: flex;
+      align-items: center;
       justify-content: end;
-      width: 20%;
+      width: 30%;
     }
     .stripe-price {
       width: 60%;

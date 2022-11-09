@@ -18,13 +18,15 @@ import rf from 'src/requests/RequestFactory';
 interface IModalPayment {
   open: boolean;
   onClose: () => void;
+  reloadData: () => void;
 }
 
 interface ICheckoutForm {
   onClose: () => void;
+  reloadData: () => void;
 }
 
-const CheckoutForm: FC<ICheckoutForm> = ({ onClose }) => {
+const CheckoutForm: FC<ICheckoutForm> = ({ onClose, reloadData }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   // Initialize an instance of stripe.
@@ -52,6 +54,7 @@ const CheckoutForm: FC<ICheckoutForm> = ({ onClose }) => {
             paymentMethodId: result.setupIntent.payment_method as string,
           });
           toastSuccess({ message: 'Successfully!' });
+          reloadData();
         } catch (e: any) {
           toastError({ message: e?.message || 'Oops. Something went wrong!' });
         } finally {
@@ -89,10 +92,7 @@ const CheckoutForm: FC<ICheckoutForm> = ({ onClose }) => {
   );
 };
 
-const ModalPayment: FC<IModalPayment> = ({
-  open,
-  onClose,
-}) => {
+const ModalPayment: FC<IModalPayment> = ({ open, onClose, reloadData }) => {
   const { paymentIntent } = useSelector((state: RootState) => state.billing);
   const stripePromise = useMemo(
     () => loadStripe(config.stripe.publishableKey),
@@ -116,7 +116,7 @@ const ModalPayment: FC<IModalPayment> = ({
                 clientSecret: paymentIntent.client_secret,
               }}
             >
-              <CheckoutForm onClose={onClose} />
+              <CheckoutForm onClose={onClose} reloadData={reloadData} />
             </Elements>
           )}
         </Box>
