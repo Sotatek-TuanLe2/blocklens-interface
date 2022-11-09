@@ -44,6 +44,7 @@ const CheckoutForm: FC<ICheckoutForm> = ({ onClose, reloadData }) => {
     });
 
     if (result.error) {
+      setIsLoading(false);
       return;
     }
 
