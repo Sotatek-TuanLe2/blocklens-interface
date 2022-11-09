@@ -51,6 +51,7 @@ const ListApps: React.FC<IListApps> = ({ searchListApp, setSearchListApp }) => {
   const history = useHistory();
   const [totalApps, setTotalApps] = useState<number>(0);
   const [appSelected, setAppSelected] = useState<IAppResponse | null>(null);
+  const [totalAppActive, setTotalAppActive] = useState<number | undefined>(0);
   const [openModalChangeStatus, setOpenModalChangeStatus] =
     useState<boolean>(false);
 
@@ -60,6 +61,7 @@ const ListApps: React.FC<IListApps> = ({ searchListApp, setSearchListApp }) => {
         .getRequest('AppRequest')
         .getListApp(param);
       setTotalApps(res?.totalDocs);
+      setTotalAppActive(res?.totalAppActive);
       return res;
     } catch (error) {
       return error;
@@ -128,7 +130,7 @@ const ListApps: React.FC<IListApps> = ({ searchListApp, setSearchListApp }) => {
           <Text as={'span'} mr={5}>
             ACTIVE APPS
           </Text>{' '}
-          N/A / {totalApps}
+          {totalAppActive} / {totalApps}
         </div>
       </Flex>
 
