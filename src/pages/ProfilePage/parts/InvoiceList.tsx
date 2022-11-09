@@ -6,7 +6,7 @@ import { formatTimestamp } from 'src/utils/utils-helper';
 
 interface IInvoiceResponse {
   userId: number;
-  price: number;
+  receiptId: string;
   chargeAt: number;
   status: string;
 }
@@ -41,8 +41,8 @@ const InvoiceList = () => {
       <Thead>
         <Tr bg={'#f9f9f9'}>
           <Th>Date</Th>
-          <Th>price</Th>
           <Th>Status</Th>
+          <Th>Receipt</Th>
         </Tr>
       </Thead>
     );
@@ -74,8 +74,9 @@ const InvoiceList = () => {
           return (
             <Tr key={index}>
               <Td>{formatTimestamp(invoice.chargeAt)}</Td>
-              <Td>{invoice.price}</Td>
+
               <Td>{_renderStatus(invoice)}</Td>
+              <Td>{invoice.receiptId}</Td>
             </Tr>
           );
         })}
