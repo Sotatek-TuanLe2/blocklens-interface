@@ -9,32 +9,19 @@ export const WEBHOOK_TYPES = {
   CONTRACT_ACTIVITY: 'CONTRACT_ACTIVITY',
 };
 
-interface IWebhook {
-  appId: string
+export interface IWebhook {
+  appId: string;
   userId: string;
   registrationId: string;
   network: string;
   webhook: string;
   status: WEBHOOK_STATUS;
-}
-
-export interface INFTWebhook extends IWebhook {
-  metadata: {
-    address: string;
-    tokenIds: string[];
-  }
-}
-
-export interface IContractWebhook extends IWebhook {
-  metadata: {
-    address: string;
-  }
-}
-
-export interface IAddressWebhook extends IWebhook {
+  type: string;
   metadata: {
     addresses: string[];
-  }
+    address: string;
+    tokenIds: string[];
+  };
 }
 
 export const getStatusWebhook = (status: WEBHOOK_STATUS) => {
