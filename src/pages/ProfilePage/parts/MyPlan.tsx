@@ -1,72 +1,144 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
-import React, { useState } from 'react';
-import { AppButton, AppSwitch } from 'src/components';
+import React, { useEffect, useState, useMemo } from 'react';
+import { AppButton, AppInput } from 'src/components';
 import PlanItem from './PlanItem';
 import ModalPayment from 'src/modals/ModalPayment';
+import ModalCancelSubscription from 'src/modals/ModalCancelSubscription';
+import rf from 'src/requests/RequestFactory';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
+import { useDispatch } from 'react-redux';
+import { getPaymentIntent } from 'src/store/billing-plan';
+import { formatTimestamp } from 'src/utils/utils-helper';
+import ModalBillingInfo from 'src/modals/ModalBillingInfo';
+import ModalChangePlan from 'src/modals/ModalChangePlan';
 
-export interface IPlan {
+export interface IBillingPlan {
+  code: string;
   name: string;
-  price?: string;
-  features: {
-    app: number | string;
-    message: string;
-  };
+  description: string;
+  price: number;
+  currency: string;
+  periodByDay: number;
+  appLimitation: number;
+  notificationLimitation: number;
+  from: number;
+  to: number;
 }
 
-const plans = [
-  {
-    name: 'Free',
-    price: '0',
-    features: {
-      app: 5,
-      message: '3,000,000',
-    },
-  },
-  {
-    name: 'Starter',
-    price: '29',
-    features: {
-      app: 15,
-      message: '6,000,000',
-    },
-  },
-  {
-    name: 'Growth',
-    price: '49',
-    features: {
-      app: 30,
-      message: '12,000,000',
-    },
-  },
-  {
-    name: 'Enterprise',
-    features: {
-      app: 'Unlimited',
-      message: 'Custom',
-    },
-  },
-];
+const planEnterprise = {
+  code: 'ENTERPRISE',
+  name: 'ENTERPRISE',
+  price: null,
+  description:
+    'Features:\n    • Custom Active Apps\n    • Custom messages/day\n    ',
+};
 
 const MyPlan = () => {
-  const [isSelect, setIsSelect] = useState<string>('');
-  const [isPaid, setIsPaid] = useState<boolean>(false);
-  const [isChangePlan, setIsChangePlan] = useState<boolean>(false);
-
+  const [planSelected, setPlanSelected] = useState<IBillingPlan | any>({});
+  const [billingPlans, setBillingPlans] = useState<IBillingPlan[]>([]);
+  const [currentPlan, setCurrentPlan] = useState<IBillingPlan | any>({});
+  const [billingInfo, setBillingInfo] = useState<any>({});
   const [isOpenModalChangePaymentMethod, setIsOpenModalChangePaymentMethod] =
     useState<boolean>(false);
+  const [isOpenModalCancelSubscription, setIsOpenModalCancelSubscription] =
+    useState<boolean>(false);
+  const [isOpenModalUpdateBillingInfo, setIsOpenModalUpdateBillingInfo] =
+    useState<boolean>(false);
+  const [isEditEmail, setIsEditEmail] = useState<boolean>(false);
+  const [billingEmail, setBillingEmail] = useState<string>('');
+  const [isOpenModalChangePlan, setIsOpenModalChangePlan] =
+    useState<boolean>(false);
 
-  const _renderPlans = (isChange?: boolean) => {
+  const dispatch = useDispatch<any>();
+
+  const getBillingPlans = async () => {
+    try {
+      const res = await rf.getRequest('BillingRequest').getBillingPlans();
+      setBillingPlans([...res, planEnterprise]);
+    } catch (e: any) {
+      toastError({ message: e?.message || 'Oops. Something went wrong!' });
+    }
+  };
+
+  const getCurrentPlan = async () => {
+    try {
+      const res = await rf.getRequest('BillingRequest').getCurrentPlan();
+      setCurrentPlan(res);
+    } catch (e: any) {
+      toastError({ message: e?.message || 'Oops. Something went wrong!' });
+    }
+  };
+
+  const getBillingInfo = async () => {
+    try {
+      const res = await rf.getRequest('BillingRequest').getBillingInfo();
+      setBillingInfo(res || {});
+    } catch (e: any) {
+      toastError({ message: e?.message || 'Oops. Something went wrong!' });
+    }
+  };
+
+  const updateBillingInfo = async () => {
+    try {
+      await rf.getRequest('BillingRequest').updateBillingInfo({
+        email: billingEmail,
+      });
+      toastSuccess({ message: 'Update Successfully!' });
+      setIsEditEmail(false);
+      await getBillingInfo().then();
+    } catch (e: any) {
+      toastError({ message: e?.message || 'Oops. Something went wrong!' });
+    }
+  };
+
+  useEffect(() => {
+    getBillingPlans().then();
+    getCurrentPlan().then();
+    getBillingInfo().then();
+    dispatch(getPaymentIntent());
+  }, []);
+
+  useEffect(() => {
+    setBillingEmail(billingInfo.email);
+  }, [billingInfo, isEditEmail]);
+
+  const currentPlanData = useMemo(
+    () => billingPlans.find((item) => item.code === currentPlan.code),
+    [currentPlan, billingPlans],
+  );
+
+  useEffect(() => {
+    setPlanSelected(currentPlan);
+  }, [currentPlan]);
+
+  const isHasPaymentMethod = useMemo(() => {
+    return !!Object.keys(billingInfo?.paymentMethod || {}).length;
+  }, [billingInfo]);
+
+  const indexCurrentPlan = billingPlans.findIndex(
+    (item) => item.code === currentPlan.code,
+  );
+
+  const indexPlanSelected = billingPlans.findIndex(
+    (item) => item.code === planSelected.code,
+  );
+
+  const _renderPlans = () => {
     return (
       <Flex gap={'16px'} my={5}>
-        {plans.map((plan: IPlan, index) => {
+        {billingPlans.map((plan: IBillingPlan, index) => {
           return (
             <PlanItem
               plan={plan}
               key={index}
-              isActive={plan.name === 'Free'}
-              isSelect={isSelect}
-              setIsSelect={setIsSelect}
-              isChange={isChange}
+              openModalChangePaymentMethod={() =>
+                setIsOpenModalChangePaymentMethod(true)
+              }
+              openModalChangePlan={() => setIsOpenModalChangePlan(true)}
+              isActive={plan.code === currentPlan.code}
+              planSelected={planSelected}
+              setPlanSelected={setPlanSelected}
+              isChangePaymentMethod={isHasPaymentMethod}
             />
           );
         })}
@@ -77,38 +149,30 @@ const MyPlan = () => {
   const _renderCardDetail = () => {
     return (
       <div className="stripe-wrap">
-        <Text className="upgrade-plans">Card Details</Text>
-        <Box className="stripe-detail">
-          <div className="stripe-title">Plan</div>
-          <div className="stripe-status">
-            <span>Growth</span> <span className="badge-package">Monthly</span>
-          </div>
-          <div className="stripe-action">
-            <AppButton
-              variant={isChangePlan ? 'outline' : 'brand'}
-              size={'sm'}
-              onClick={() => setIsChangePlan(!isChangePlan)}
-            >
-              {isChangePlan ? 'Cancel' : 'Change'}
-            </AppButton>
-          </div>
-        </Box>
-
-        {isChangePlan && _renderPlans(true)}
-        <Box className="stripe-detail">
-          <div className="stripe-title">Subscription</div>
-          <div className="stripe-price">
-            <span>$49</span>
-            <span>Billing at Aug 30 2022 - Sep 30 2022</span>
-          </div>
-        </Box>
-        <Box className="stripe-detail">
+        <Box className="stripe-detail" alignItems={'center'}>
           <div className="stripe-title">Payment method</div>
           <div className="stripe-status">
-            <span>•••• •••• •••• 1145</span>
+            {billingInfo?.paymentMethod?.card && (
+              <span>
+                <span
+                  style={{ textTransform: 'capitalize', marginRight: '10px' }}
+                >
+                  {billingInfo?.paymentMethod?.card.brand}
+                </span>
+                •••• •••• •••• {billingInfo?.paymentMethod?.card?.last4}
+              </span>
+            )}
           </div>
           <div className="stripe-action">
+            {billingInfo?.paymentMethod?.card && (
+              <>
+                Expiration: {billingInfo?.paymentMethod?.card.exp_month}/
+                {billingInfo?.paymentMethod?.card.exp_year}
+              </>
+            )}
+
             <AppButton
+              ml={4}
               size={'sm'}
               onClick={() => setIsOpenModalChangePaymentMethod(true)}
             >
@@ -116,34 +180,132 @@ const MyPlan = () => {
             </AppButton>
           </div>
         </Box>
+
         <Box className="stripe-detail">
-          <div className="stripe-title">Billing email</div>
-          <div className="stripe-status">dev@buni.finance</div>
+          <div className="stripe-title">Billing address</div>
+          <div className="stripe-status">
+            <Box>{billingInfo?.name}</Box>
+            <Box>{billingInfo?.address}</Box>
+            <Box>{billingInfo?.country}</Box>
+          </div>
+          <div className="stripe-action">
+            <AppButton
+              size={'sm'}
+              onClick={() => setIsOpenModalUpdateBillingInfo(true)}
+            >
+              Change
+            </AppButton>
+          </div>
         </Box>
+
+        <Box className="stripe-detail" alignItems={'center'}>
+          <div className="stripe-title">Billing email</div>
+
+          {isEditEmail ? (
+            <AppInput
+              w={'300px'}
+              placeholder={'Billing address'}
+              value={billingEmail}
+              onChange={(e) => {
+                setBillingEmail(e.target.value);
+              }}
+            />
+          ) : (
+            <div className="stripe-status">{billingInfo.email}</div>
+          )}
+
+          <div className="stripe-action">
+            {isEditEmail ? (
+              <Flex>
+                <AppButton
+                  mr={4}
+                  variant={'outline'}
+                  size={'sm'}
+                  onClick={() => setIsEditEmail(false)}
+                >
+                  Cancel
+                </AppButton>
+                <AppButton size={'sm'} onClick={updateBillingInfo}>
+                  Submit
+                </AppButton>
+              </Flex>
+            ) : (
+              <AppButton size={'sm'} onClick={() => setIsEditEmail(true)}>
+                Change
+              </AppButton>
+            )}
+          </div>
+        </Box>
+
+        {isHasPaymentMethod && (
+          <>
+            <Box className="stripe-detail">
+              <div className="stripe-title">Subscription</div>
+              <div className="stripe-price">
+                <span>${currentPlanData?.price || 0}</span>
+                <Box as={'span'} color={'#a0a4ac'} fontSize={'13px'}>
+                  Billing period{' '}
+                  {formatTimestamp(currentPlan?.from, 'MMM DD, YYYY')} -{' '}
+                  {formatTimestamp(currentPlan?.to, 'MMM DD, YYYY')}
+                </Box>
+              </div>
+            </Box>
+
+            {indexCurrentPlan > 0 && (
+              <Flex mt={3} justifyContent={'flex-end'}>
+                <AppButton
+                  variant="outline"
+                  onClick={() => setIsOpenModalCancelSubscription(true)}
+                >
+                  Cancel Subscription
+                </AppButton>
+              </Flex>
+            )}
+          </>
+        )}
       </div>
     );
   };
 
   return (
-    <Box px={'60px'} className="plans-wrap">
-      <Flex mb={5}>
-        <AppSwitch
-          onChange={() => {
-            setIsPaid(!isPaid);
-            setIsChangePlan(false);
-          }}
-          isChecked={isPaid}
-          mr={4}
-        />
-        IsPaid
-      </Flex>
+    <Box px={5} className="plans-wrap">
+      <div className="stripe-wrap">
+        <Box className="stripe-detail">
+          <div className="stripe-title">Current Plan</div>
+          <div className="stripe-status">
+            {currentPlanData?.name}
+          </div>
+        </Box>
+      </div>
 
-      {!isPaid ? _renderPlans() : _renderCardDetail()}
+      {_renderPlans()}
+
+      {_renderCardDetail()}
 
       <ModalPayment
         open={isOpenModalChangePaymentMethod}
+        reloadData={getBillingInfo}
         onClose={() => setIsOpenModalChangePaymentMethod(false)}
-        isChangePaymentMethod
+      />
+
+      <ModalBillingInfo
+        onClose={() => setIsOpenModalUpdateBillingInfo(false)}
+        open={isOpenModalUpdateBillingInfo}
+        reloadData={getBillingInfo}
+        billingInfo={billingInfo}
+      />
+
+      <ModalCancelSubscription
+        onClose={() => setIsOpenModalCancelSubscription(false)}
+        open={isOpenModalCancelSubscription}
+      />
+
+      <ModalChangePlan
+        isUpgrade={indexPlanSelected > indexCurrentPlan}
+        open={isOpenModalChangePlan}
+        onClose={() => setIsOpenModalChangePlan(false)}
+        plan={planSelected}
+        reloadData={getCurrentPlan}
       />
     </Box>
   );
