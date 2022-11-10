@@ -31,12 +31,12 @@ export default class BillingRequest extends BaseRequest {
     return this.get(url);
   }
 
-  attachPaymentMethod(params: { paymentMethodId : string }) {
+  attachPaymentMethod(params: { paymentMethodId: string }) {
     const url = '/my/payment/attach-payment-method';
     return this.put(url, params);
   }
 
-  updateBillingPlan(params: { code : string }) {
+  updateBillingPlan(params: { code: string }) {
     const url = '/my/billing-plans/plan';
     return this.put(url, params);
   }
@@ -49,5 +49,10 @@ export default class BillingRequest extends BaseRequest {
   getInvoiceList(params: any) {
     const url = '/my/payment/invoice';
     return this.get(url, { ...params });
+  }
+
+  downloadInvoice(type: string, id: string) {
+    const url = `/my/payment/download-${type}`;
+    return this.get(url, { id });
   }
 }

@@ -3,11 +3,13 @@ import React from 'react';
 import { AppDataTable } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import { formatTimestamp } from 'src/utils/utils-helper';
+import { toastError } from '../../../utils/utils-notify';
 
 interface IInvoiceResponse {
   userId: number;
   receiptId: string;
-  chargeAt: number;
+  invoiceId: string;
+  createdAt: number;
   status: string;
 }
 const INVOICE_STATUS = {
@@ -40,8 +42,9 @@ const InvoiceList = () => {
     return (
       <Thead>
         <Tr bg={'#f9f9f9'}>
-          <Th>Date</Th>
+          <Th>Date of Issue</Th>
           <Th>Status</Th>
+          <Th>Invoice</Th>
           <Th>Receipt</Th>
         </Tr>
       </Thead>
@@ -64,7 +67,19 @@ const InvoiceList = () => {
   };
 
   const _renderNoData = () => {
-    return <Flex justifyContent={'center'} my={5}>No invoices yet.</Flex>;
+    return (
+      <Flex justifyContent={'center'} my={5}>
+        No invoices yet.
+      </Flex>
+    );
+  };
+
+  const onDownloadInvoice = async (type: string, id: string) => {
+    try {
+      await rf.getRequest('BillingRequest').downloadInvoice(type, id);
+    } catch (e: any) {
+      toastError({ message: e?.message || 'Oops. Something went wrong!' });
+    }
   };
 
   const _renderBody = (data?: IInvoiceResponse[]) => {
@@ -73,10 +88,38 @@ const InvoiceList = () => {
         {data?.map((invoice: IInvoiceResponse, index: number) => {
           return (
             <Tr key={index}>
-              <Td>{formatTimestamp(invoice.chargeAt)}</Td>
-
+              <Td>{formatTimestamp(invoice.createdAt, 'MMM DD YYYY')}</Td>
               <Td>{_renderStatus(invoice)}</Td>
-              <Td>{invoice.receiptId}</Td>
+              <Td>
+                {invoice.invoiceId ? (
+                  <Box
+                    onClick={() =>
+                      onDownloadInvoice('invoice', invoice.invoiceId)
+                    }
+                    cursor={'pointer'}
+                    color={'#4C84FF'}
+                  >
+                    Download
+                  </Box>
+                ) : (
+                  <Box>-</Box>
+                )}
+              </Td>
+              <Td>
+                {invoice.receiptId ? (
+                  <Box
+                    onClick={() =>
+                      onDownloadInvoice('receipt', invoice.receiptId)
+                    }
+                    cursor={'pointer'}
+                    color={'#4C84FF'}
+                  >
+                    Download
+                  </Box>
+                ) : (
+                  <Box>-</Box>
+                )}
+              </Td>
             </Tr>
           );
         })}
@@ -86,6 +129,7 @@ const InvoiceList = () => {
 
   return (
     <Box px={5} mt={5}>
+      <Box mb={5}>Recent Invoices</Box>
       <AppDataTable
         fetchData={fetchDataTable}
         renderBody={_renderBody}
