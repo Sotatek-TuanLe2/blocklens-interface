@@ -3,7 +3,7 @@ import React from 'react';
 import { AppDataTable } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import { formatTimestamp } from 'src/utils/utils-helper';
-import { toastError } from '../../../utils/utils-notify';
+import { toastError } from 'src/utils/utils-notify';
 
 interface IInvoiceResponse {
   userId: number;
