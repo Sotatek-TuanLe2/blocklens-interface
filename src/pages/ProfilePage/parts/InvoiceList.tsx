@@ -1,9 +1,19 @@
-import { Tbody, Th, Thead, Tr, Td, Box, Tag, Flex } from '@chakra-ui/react';
-import React from 'react';
+import {
+  Tbody,
+  Th,
+  Thead,
+  Tr,
+  Td,
+  Box,
+  Tag,
+  Flex,
+} from '@chakra-ui/react';
+import React, { useState } from 'react';
 import { AppDataTable } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import { formatTimestamp } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
+import fileDownload from 'js-file-download';
 
 interface IInvoiceResponse {
   userId: number;
@@ -30,6 +40,8 @@ const getColorBrandStatus = (status: string) => {
 };
 
 const InvoiceList = () => {
+  const [params, setParams] = useState<any>({});
+
   const fetchDataTable: any = async (param: any) => {
     try {
       return await rf.getRequest('BillingRequest').getInvoiceList(param);
@@ -51,18 +63,42 @@ const InvoiceList = () => {
     );
   };
 
+  const onRetryPayInvoice = async (invoiceId: any) => {
+    try {
+      await rf.getRequest('BillingRequest').payPendingInvoice(invoiceId);
+      setParams((pre: any) => {
+        return { ...pre };
+      });
+    } catch (e: any) {
+      toastError({ message: e?.message || 'Oops. Something went wrong!' });
+    }
+  };
+
   const _renderStatus = (invoice: IInvoiceResponse) => {
     if (!invoice.status) return 'N/A';
     return (
-      <Tag
-        size={'sm'}
-        borderRadius="full"
-        variant="solid"
-        colorScheme={getColorBrandStatus(invoice.status)}
-        px={5}
-      >
-        {invoice.status}
-      </Tag>
+      <Flex alignItems={'center'}>
+        <Tag
+          size={'sm'}
+          borderRadius="full"
+          variant="solid"
+          colorScheme={getColorBrandStatus(invoice.status)}
+          px={5}
+          mr={2}
+        >
+          {invoice.status}
+        </Tag>
+
+        {invoice.status === INVOICE_STATUS.PENDING && invoice.invoiceId && (
+          <Box
+            cursor={'pointer'}
+            color={'#4C84FF'}
+            onClick={() => onRetryPayInvoice(invoice.invoiceId)}
+          >
+            • Retry
+          </Box>
+        )}
+      </Flex>
     );
   };
 
@@ -74,9 +110,12 @@ const InvoiceList = () => {
     );
   };
 
-  const onDownloadInvoice = async (type: string, id: string) => {
+  const handleDownload = async (type: string, id: string) => {
     try {
-      await rf.getRequest('BillingRequest').downloadInvoice(type, id);
+      const res = await rf
+        .getRequest('BillingRequest')
+        .downloadInvoice(type, id);
+      fileDownload(res, 'receipt.pdf');
     } catch (e: any) {
       toastError({ message: e?.message || 'Oops. Something went wrong!' });
     }
@@ -93,9 +132,7 @@ const InvoiceList = () => {
               <Td>
                 {invoice.invoiceId ? (
                   <Box
-                    onClick={() =>
-                      onDownloadInvoice('invoice', invoice.invoiceId)
-                    }
+                    onClick={() => handleDownload('invoice', invoice.invoiceId)}
                     cursor={'pointer'}
                     color={'#4C84FF'}
                   >
@@ -108,9 +145,7 @@ const InvoiceList = () => {
               <Td>
                 {invoice.receiptId ? (
                   <Box
-                    onClick={() =>
-                      onDownloadInvoice('receipt', invoice.receiptId)
-                    }
+                    onClick={() => handleDownload('receipt', invoice.receiptId)}
                     cursor={'pointer'}
                     color={'#4C84FF'}
                   >
@@ -131,6 +166,7 @@ const InvoiceList = () => {
     <Box px={5} mt={5}>
       <Box mb={5}>Recent Invoices</Box>
       <AppDataTable
+        requestParams={params}
         fetchData={fetchDataTable}
         renderBody={_renderBody}
         renderHeader={_renderHeader}

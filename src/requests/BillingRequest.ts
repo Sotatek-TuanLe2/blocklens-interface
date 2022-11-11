@@ -52,7 +52,12 @@ export default class BillingRequest extends BaseRequest {
   }
 
   downloadInvoice(type: string, id: string) {
-    const url = `/my/payment/download-${type}`;
-    return this.get(url, { id });
+    const url = `/my/payment/download-${type}?id=${id}`;
+    return this.download(url);
+  }
+
+  payPendingInvoice(id: string) {
+    const url = `/my/payment/invoice/${id}`;
+    return this.put(url);
   }
 }
