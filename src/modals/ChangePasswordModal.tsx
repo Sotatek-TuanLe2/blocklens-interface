@@ -1,10 +1,13 @@
-import { Text } from '@chakra-ui/react';
+import { Box, Text } from '@chakra-ui/react';
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { AppButton, AppField, AppInput } from 'src/components';
+import { AppButton, AppField, AppInput, AppLink } from 'src/components';
 import { createValidator } from 'src/utils/utils-validator';
 import BaseModal from './BaseModal';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
+import { useHistory } from 'react-router';
+import { setAuthorizationToRequest } from 'src/utils/utils-auth';
+import Storage from 'src/utils/storage';
 
 interface IFormChangePass {
   currentPassword: string;
@@ -28,6 +31,7 @@ const ChangePasswordModal: React.FC<IChangePasswordModal> = ({
   };
   const [dataForm, setDataForm] = useState<IFormChangePass>(initialData);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
+  const history = useHistory();
   const [, updateState] = useState<any>();
   const forceUpdate = useCallback(() => updateState({}), []);
   const validators = useRef(
@@ -56,6 +60,10 @@ const ChangePasswordModal: React.FC<IChangePasswordModal> = ({
         message: error?.message || 'Oops. Something went wrong!',
       });
     }
+  };
+  const handleClickForgotPassword = () => {
+    Storage.logout();
+    history.push('/forgot-password');
   };
 
   useEffect(() => {
@@ -109,7 +117,7 @@ const ChangePasswordModal: React.FC<IChangePasswordModal> = ({
           validate={{
             name: `newPassword`,
             validator: validators.current,
-            rule: 'required|min:8|max:50',
+            rule: 'required|min:8|max:50|formatPassword',
           }}
         />
       </AppField>
@@ -132,7 +140,13 @@ const ChangePasswordModal: React.FC<IChangePasswordModal> = ({
           }}
         />
       </AppField>
-
+      <Box
+        onClick={handleClickForgotPassword}
+        style={{ cursor: 'pointer', color: '#422afb' }}
+        mb={3}
+      >
+        Forgot your password?
+      </Box>
       <AppButton w={'100%'} disabled={isDisableSubmit} onClick={handleOnSubmit}>
         Set password
       </AppButton>
