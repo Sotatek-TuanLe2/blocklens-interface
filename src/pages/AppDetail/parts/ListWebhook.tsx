@@ -2,8 +2,14 @@ import React, { useCallback, useEffect, FC, useState } from 'react';
 import { IListAppResponse } from 'src/utils/common';
 import rf from 'src/requests/RequestFactory';
 import { IWebhook, WEBHOOK_TYPES } from 'src/utils/utils-webhook';
-import { Th, Thead, Tr, Box, Tbody, Td, Flex } from '@chakra-ui/react';
-import { AppDataTable, AppField, AppInput, AppLink } from 'src/components';
+import { Th, Thead, Tr, Tbody, Td, Flex } from '@chakra-ui/react';
+import {
+  AppDataTable,
+  AppField,
+  AppInput,
+  AppLink,
+  AppUploadABI,
+} from 'src/components';
 import { formatShortText } from 'src/utils/utils-helper';
 import ListActionWebhook from './ListActionWebhook';
 import { StatusWebhook } from './PartAddressWebhooks';
@@ -35,6 +41,12 @@ const WebhookItem: FC<IWebhookItem> = ({
   isDetail,
 }) => {
   const [isShowDetail, setIsShowDetail] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (isDetail) {
+      setIsShowDetail(true);
+    }
+  }, [isDetail]);
 
   const _renderDetailAddressWebhook = () => {
     return (
@@ -77,6 +89,12 @@ const WebhookItem: FC<IWebhookItem> = ({
             isDisabled
           />
         </AppField>
+
+        <AppUploadABI
+          viewOnly
+          abi={webhook.metadata.abi}
+          abiFilter={webhook.metadata.abiFilter}
+        />
       </Flex>
     );
   };
@@ -91,6 +109,11 @@ const WebhookItem: FC<IWebhookItem> = ({
             isDisabled
           />
         </AppField>
+        <AppUploadABI
+          viewOnly
+          abi={webhook.metadata.abi}
+          abiFilter={webhook.metadata.abiFilter}
+        />
       </Flex>
     );
   };

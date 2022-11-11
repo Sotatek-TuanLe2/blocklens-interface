@@ -21,6 +21,8 @@ export interface IWebhook {
     addresses: string[];
     address: string;
     tokenIds: string[];
+    abi: any[];
+    abiFilter: any[];
   };
 }
 
