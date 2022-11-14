@@ -1,25 +1,19 @@
-import {
-  Tag,
-  Tbody,
-  Td,
-  Text,
-  Th,
-  Thead,
-  Tr,
-  Box,
-  SimpleGrid,
-} from '@chakra-ui/react';
+import { Tag, Tbody, Td, Th, Thead, Tr, Box, Flex } from '@chakra-ui/react';
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { AppCard, AppDataTable } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import { BasePageContainer } from 'src/layouts/';
-import { formatLargeNumber, formatTimestamp } from 'src/utils/utils-helper';
+import { formatTimestamp } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import 'src/styles/pages/NotificationPage.scss';
 import ReactJson from 'react-json-view';
 import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
 import 'src/styles/pages/AppDetail.scss';
+import AppStatics from 'src/components/AppStats';
+import { getLogoChainByName } from 'src/utils/utils-network';
+import 'src/styles/pages/AppDetail.scss';
+import ListWebhook from './AppDetail/parts/ListWebhook';
 
 interface INotificationResponse {
   hash: string;
@@ -35,17 +29,17 @@ interface INotificationResponse {
   updatedAt: number;
 }
 
-interface IWebhookStatistics {
+interface IWebhookStats {
   totalThisMonth?: number;
-  totalLast24Hours?: number;
-  totalSuccessLast24Hours?: number;
+  totalToday?: number;
+  totalSuccessToday?: number;
 }
 
 interface INotificationItem {
   notification: INotificationResponse;
 }
 
-interface IPartWebhookStatics {
+interface IPartWebhookStats {
   registrationId: string;
 }
 
@@ -82,76 +76,25 @@ const getColorBrandStatus = (status: number) => {
   }
 };
 
-const PartWebhookStatics: FC<IPartWebhookStatics> = ({ registrationId }) => {
-  const [webhookStatistics, setWebhookStatistics] =
-    useState<IWebhookStatistics>({});
+const PartWebhookStatics: FC<IPartWebhookStats> = ({ registrationId }) => {
+  const [webhookStats, setWebhookStats] = useState<IWebhookStats>({});
 
-  const getWebhookStatistics = useCallback(async () => {
+  const getWebhookStats = useCallback(async () => {
     try {
       const res = (await rf
         .getRequest('NotificationRequest')
-        .getWebhookStatistics(registrationId)) as any;
-      setWebhookStatistics(res);
+        .getWebhookStats(registrationId)) as any;
+      setWebhookStats(res);
     } catch (error: any) {
-      setWebhookStatistics({});
+      setWebhookStats({});
     }
   }, [registrationId]);
 
   useEffect(() => {
-    getWebhookStatistics().then();
+    getWebhookStats().then();
   }, []);
 
-  const getPercentNotificationSuccess = () => {
-    if (
-      !webhookStatistics.totalLast24Hours ||
-      !webhookStatistics.totalSuccessLast24Hours
-    ) {
-      return '--';
-    }
-
-    return (
-      (webhookStatistics?.totalSuccessLast24Hours /
-        webhookStatistics?.totalLast24Hours) *
-      100
-    ).toFixed(2);
-  };
-
-  return (
-    <SimpleGrid
-      className="infos"
-      columns={{ base: 1, sm: 2, lg: 4 }}
-      gap="20px"
-    >
-      <AppCard p={4} className="box-info">
-        <Box className="label">
-          Webhook’s Notifications <br />
-          This Month
-        </Box>
-        <Box className="value">
-          {formatLargeNumber(webhookStatistics.totalThisMonth)}
-        </Box>
-      </AppCard>
-
-      <AppCard p={4} className="box-info">
-        <Box className="label">
-          Webhook’s Notifications
-          <br />
-          Last 24 Hour
-        </Box>
-        <Box className="value">
-          {formatLargeNumber(webhookStatistics.totalLast24Hours)}
-        </Box>
-      </AppCard>
-
-      <AppCard p={4} className="box-info">
-        <Box className="label">
-          Webhook’s Success %<br />
-          Last 24 hour
-        </Box>
-        <Box className="value">{getPercentNotificationSuccess()}</Box>
-      </AppCard>
-    </SimpleGrid>
-  );
+  return <AppStatics type="WEBHOOK" stats={webhookStats} />;
 };
 
 const NotificationItem: FC<INotificationItem> = ({ notification }) => {
@@ -211,15 +154,42 @@ const NotificationItem: FC<INotificationItem> = ({ notification }) => {
 };
 
 const WebhookActivitiesPage = () => {
-  const { id: registrationId } = useParams<{ id: string }>();
+  const { id: registrationId, appId } = useParams<{
+    id: string;
+    appId: string;
+  }>();
+  const [params, setParams] = useState<any>({});
+  const [totalWebhook, setTotalWebhook] = useState<any>();
+  const [appInfo, setAppInfo] = useState<any>({});
 
-  const fetchDataTable: any = async (param: any) => {
+  const fetchDataTable: any = useCallback(async (param: any) => {
     try {
       return await rf.getRequest('NotificationRequest').getNotifications(param);
     } catch (error: any) {
-      toastError({ message: error?.message || 'Oops. Something went wrong!' });
+      toastError({
+        message: error?.message || 'Oops. Something went wrong!',
+      });
     }
-  };
+  }, []);
+
+  const getApp = useCallback(async () => {
+    try {
+      const res = (await rf
+        .getRequest('AppRequest')
+        .getAppDetail(appId)) as any;
+      setAppInfo(res);
+    } catch (error: any) {
+      setAppInfo({});
+    }
+  }, [appId]);
+
+  useEffect(() => {
+    getApp().then();
+  }, []);
+
+  useEffect(() => {
+    setParams({ registrationId });
+  }, [registrationId]);
 
   const _renderHeader = () => {
     return (
@@ -243,13 +213,41 @@ const WebhookActivitiesPage = () => {
   };
 
   return (
-    <BasePageContainer>
+    <BasePageContainer className={'app-detail'}>
       <>
-        <Text fontSize={'24px'} mb={5}>
+        <Flex className="app-info">
+          <Box>
+            <Flex alignItems={'center'}>
+              <Box className="name">{appInfo.name}</Box>
+              <Flex ml={5} alignItems={'center'}>
+                <Box
+                  mr={2}
+                  className={getLogoChainByName(appInfo?.chain) || ''}
+                />
+                {appInfo.chain + ' ' + appInfo.network}
+              </Flex>
+            </Flex>
+            <Box className="description">{appInfo.description}</Box>
+          </Box>
+        </Flex>
+
+        <Box className="name" my={5}>
           Webhook Activities
-        </Text>
+        </Box>
+
+        <Box my={10}>
+          <ListWebhook
+            setTotalWebhook={setTotalWebhook}
+            totalWebhook={totalWebhook}
+            params={params}
+            appInfo={appInfo}
+            setParams={setParams}
+            isDetail
+          />
+        </Box>
 
         <PartWebhookStatics registrationId={registrationId} />
+
         <AppCard p={0} pb={10} mt={10} className={'notification-table'}>
           <AppDataTable
             requestParams={{ registrationId }}

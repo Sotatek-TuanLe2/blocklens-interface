@@ -97,7 +97,7 @@ const FormCreateApp: React.FC<IFormCreateApp> = ({ setSearchListApp }) => {
     }
   };
   return (
-    <AppCard maxW={'1240px'}>
+    <AppCard maxW={'1240px'} mb={10}>
       <Text fontSize={'24px'} mb={4}>
         Create App
       </Text>

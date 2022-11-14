@@ -3,17 +3,13 @@ import React, { FC } from 'react';
 import BaseModal from './BaseModal';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
-import {
-  INFTWebhook,
-  IAddressWebhook,
-  IContractWebhook,
-} from 'src/utils/utils-webhook';
+import { IWebhook } from 'src/utils/utils-webhook';
 
 interface IModalEditApp {
   open: boolean;
   onClose: () => void;
   reloadData: () => void;
-  webhook: INFTWebhook | IContractWebhook | IAddressWebhook;
+  webhook: IWebhook;
 }
 
 const ModalDeleteWebhook: FC<IModalEditApp> = ({

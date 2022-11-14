@@ -26,8 +26,11 @@ const Validator = require('jsonschema').Validator;
 const validateJson = new Validator();
 
 interface IAppUploadABI {
-  onChange: (abi: any[], abiFilter: any[]) => void;
+  onChange?: (abi: any[], abiFilter: any[]) => void;
   type?: string;
+  viewOnly?: boolean;
+  abi?: any[];
+  abiFilter?: any[];
 }
 
 const listFunctionAndEventOfNFT = [
@@ -50,6 +53,7 @@ interface IListSelect {
   valueSearch: string;
   valueSort: string;
   dataSelected: any;
+  viewOnly?: boolean;
   onSelectData: (value: any) => void;
 }
 
@@ -71,6 +75,7 @@ const ListSelect: FC<IListSelect> = ({
   dataSelected,
   valueSearch,
   valueSort,
+  viewOnly,
 }) => {
   const [itemSelected, setItemSelected] = useState<any>([]);
 
@@ -128,6 +133,11 @@ const ListSelect: FC<IListSelect> = ({
     return dataFiltered;
   }, [data, valueSearch, valueSort]);
 
+  const nameSelected = useMemo(
+    () => dataSelected.map((item: any) => item.name),
+    [dataSelected],
+  );
+
   const allChecked = dataShow.every((data: any) =>
     itemSelected.some((name: string) => data.name === name),
   );
@@ -170,8 +180,12 @@ const ListSelect: FC<IListSelect> = ({
             return (
               <Box key={index} my={2}>
                 <Checkbox
+                  isDisabled={viewOnly}
                   value={item.name}
-                  isChecked={itemSelected.includes(item.name)}
+                  isChecked={
+                    itemSelected.includes(item.name) ||
+                    (viewOnly && nameSelected.includes(item.name))
+                  }
                   onChange={(e) => onChangeSelect(e, item.name)}
                 >
                   {item.name}
@@ -189,7 +203,13 @@ const ListSelect: FC<IListSelect> = ({
   );
 };
 
-const AppUploadABI: FC<IAppUploadABI> = ({ onChange, type }) => {
+const AppUploadABI: FC<IAppUploadABI> = ({
+  onChange,
+  type,
+  viewOnly,
+  abi,
+  abiFilter,
+}) => {
   const [fileSelected, setFileSelected] = useState<any>({});
   const [ABIData, setABIData] = useState<any>([]);
   const [dataSelected, setDataSelected] = useState<any>([]);
@@ -289,6 +309,13 @@ const AppUploadABI: FC<IAppUploadABI> = ({ onChange, type }) => {
     setABIData(ERC721.abi);
   }, []);
 
+  useEffect(() => {
+    if (viewOnly) {
+      setABIData(abi);
+      setDataSelected(abiFilter);
+    }
+  }, [abi, abiFilter, viewOnly]);
+
   const listEvent = useMemo(
     () =>
       ABIData.filter((item: any) => {
@@ -306,7 +333,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({ onChange, type }) => {
   );
 
   useEffect(() => {
-    onChange(ABIData, dataSelected);
+    onChange && onChange(ABIData, dataSelected);
   }, [ABIData, dataSelected]);
 
   const onClearFile = () => {
@@ -380,36 +407,45 @@ const AppUploadABI: FC<IAppUploadABI> = ({ onChange, type }) => {
   return (
     <Box width={'full'}>
       <Flex justifyContent={'space-between'} alignItems={'center'}>
-        <Flex alignItems={'center'}>
-          <Flex mr={6} alignItems={'center'}>
-            ABI
-            {_renderNoticeUpload()}
+        {!viewOnly ? (
+          <Flex alignItems={'center'}>
+            <Flex mr={6} alignItems={'center'}>
+              ABI
+              {_renderNoticeUpload()}
+            </Flex>
+
+            <label>
+              <Box
+                px={3}
+                cursor={'pointer'}
+                borderRadius={'4px'}
+                fontSize={'14px'}
+                py={'6px'}
+                bgColor={'#4C84FF'}
+                color={'white'}
+                mr={5}
+              >
+                UPLOAD
+              </Box>
+
+              <AppInput
+                type="file"
+                onChange={handleFileSelect}
+                display="none"
+                ref={inputRef}
+              />
+            </label>
+
+            {_renderNameFile()}
           </Flex>
-
-          <label>
-            <Box
-              px={3}
-              cursor={'pointer'}
-              borderRadius={'4px'}
-              fontSize={'14px'}
-              py={'6px'}
-              bgColor={'#4C84FF'}
-              color={'white'}
-              mr={5}
-            >
-              UPLOAD
-            </Box>
-
-            <AppInput
-              type="file"
-              onChange={handleFileSelect}
-              display="none"
-              ref={inputRef}
-            />
-          </label>
-
-          {_renderNameFile()}
-        </Flex>
+        ) : (
+          <Box>
+            ABI{' '}
+            <Text as={'span'} className="text-error">
+              *
+            </Text>
+          </Box>
+        )}
 
         {ABIData && !!ABIData.length && (
           <Flex>
@@ -442,6 +478,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({ onChange, type }) => {
             onSelectData={setDataSelected}
             valueSearch={valueSearch}
             valueSort={valueSort}
+            viewOnly={viewOnly}
           />
 
           <ListSelect
@@ -451,6 +488,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({ onChange, type }) => {
             onSelectData={setDataSelected}
             valueSearch={valueSearch}
             valueSort={valueSort}
+            viewOnly={viewOnly}
           />
         </>
       )}

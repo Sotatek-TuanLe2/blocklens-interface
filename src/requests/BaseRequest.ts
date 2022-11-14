@@ -30,7 +30,7 @@ export default class BaseRequest {
     }
   }
 
-  async put(url: any, data: any) {
+  async put(url: any, data?: any) {
     try {
       const response = await axios.put(this.getUrlPrefix() + url, data);
       return this._responseHandler(response);
@@ -63,6 +63,19 @@ export default class BaseRequest {
         data,
       };
       const response = await axios.delete(this.getUrlPrefix() + url, config);
+      return this._responseHandler(response);
+    } catch (error) {
+      return this._errorHandler(error);
+    }
+  }
+
+  async download(url: any, data?: any) {
+    try {
+      const config = {
+        ...data,
+        responseType: 'blob',
+      };
+      const response = await axios.get(this.getUrlPrefix() + url, config);
       return this._responseHandler(response);
     } catch (error) {
       return this._errorHandler(error);
