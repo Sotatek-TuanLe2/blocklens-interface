@@ -7,6 +7,7 @@ export interface IListAppResponse {
   limit?: number;
   page: number;
   docs: IListAppResponse;
+  totalAppActive?: number;
 }
 
 export interface IAppResponse {
