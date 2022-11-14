@@ -8,8 +8,8 @@ import {
   Tabs,
 } from '@chakra-ui/react';
 import React from 'react';
-import { AppButton } from 'src/components';
 import MyPlan from './MyPlan';
+import InvoiceList from './InvoiceList';
 
 const Billing = () => {
   return (
@@ -22,11 +22,13 @@ const Billing = () => {
           </Flex>
         </TabList>
 
-        <TabPanels>
+        <TabPanels minH={'470px'}>
           <TabPanel className="tab-plan">
             <MyPlan />
           </TabPanel>
-          <TabPanel>Past invoice</TabPanel>
+          <TabPanel>
+            <InvoiceList />
+          </TabPanel>
         </TabPanels>
       </Tabs>
     </Box>

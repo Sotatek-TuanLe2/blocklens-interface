@@ -1,5 +1,7 @@
 import SimpleReactValidator from 'simple-react-validator';
-import { PublicKey } from '@solana/web3.js';
+import { isValidChecksumAddress } from 'ethereumjs-util';
+import BN from 'bn.js';
+import bs58 from 'bs58';
 
 type IRule =
   | 'accepted'
@@ -44,9 +46,8 @@ type CustomRule =
   | 'maxValue'
   | 'isPositive'
   | 'maxDigits'
-  | 'isAddressSolana'
-  | 'noRule'
-  | 'isSame';
+  | 'isSame'
+  | 'isAddress';
 
 export type Rules = IRule | CustomRule;
 
@@ -68,10 +69,6 @@ interface IOptions {
 export const createValidator = (options?: IOptions | undefined) => {
   let defaultOptions = {
     validators: {
-      noRule: {
-        message: '',
-        rule: () => true,
-      },
       logoUrl: {
         message: 'The logo must end in “jpeg”, “jpg” or “png”',
         rule: (val: string): boolean => /^.+\.(jpeg|jpg|png)$/.test(val),
@@ -104,13 +101,19 @@ export const createValidator = (options?: IOptions | undefined) => {
           return value === params[0];
         },
       },
-      isAddressSolana: {
-        message: 'The address must be in correct format',
+      isAddress: {
+        message: 'The value is wrong format address.',
         rule: (value: string) => {
+          //eth
+          if (isValidChecksumAddress(value)) return true;
+          //solana
           try {
-            new PublicKey(value);
+            const decoded = bs58.decode(value);
+            if (decoded.length != 32 || new BN(decoded).byteLength() > 32) {
+              return false;
+            }
             return true;
-          } catch (e) {
+          } catch (error) {
             return false;
           }
         },

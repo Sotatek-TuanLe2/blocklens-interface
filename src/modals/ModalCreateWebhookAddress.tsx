@@ -138,12 +138,7 @@ const ModalCreateWebhookAddress: FC<ICreateAddressActivityModal> = ({
                   validate={{
                     name: `address ${index + 1}`,
                     validator: validator.current,
-                    rule: [
-                      'required',
-                      appInfo.chain === CHAINS.SOLANA
-                        ? 'isAddressSolana'
-                        : 'noRule',
-                    ],
+                    rule: 'required|isAddress',
                   }}
                 />
                 {dataForm.addresses.length > 1 && (
