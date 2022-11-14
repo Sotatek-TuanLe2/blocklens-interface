@@ -7,6 +7,7 @@ import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { IAppResponse } from 'src/utils/utils-app';
 import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
+import { CHAINS } from 'src/constants';
 
 interface ICreateAddressActivityModal {
   open: boolean;
@@ -114,6 +115,11 @@ const ModalCreateWebhookAddress: FC<ICreateAddressActivityModal> = ({
                 customWidth={'100%'}
                 key={index}
                 isRequired
+                note={
+                  appInfo.chain === CHAINS.SOLANA
+                    ? 'Only accept Token Account (token which is minted by program id or wallet address).'
+                    : ''
+                }
               >
                 <AppInput
                   placeholder="0xbb.."
