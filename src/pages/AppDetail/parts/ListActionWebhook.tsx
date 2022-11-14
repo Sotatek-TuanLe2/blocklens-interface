@@ -2,9 +2,7 @@ import { Menu, MenuButton, Flex, MenuItem, MenuList } from '@chakra-ui/react';
 import { AppSwitch } from 'src/components';
 import {
   getActionWebhook,
-  IAddressWebhook,
-  IContractWebhook,
-  INFTWebhook,
+  IWebhook,
   WEBHOOK_STATUS,
 } from 'src/utils/utils-webhook';
 import React, { FC, useState } from 'react';
@@ -14,7 +12,7 @@ import ModalDeleteWebhook from 'src/modals/ModalDeleteWebhook';
 import { DeleteIcon } from '@chakra-ui/icons';
 
 interface IListActionWebhook {
-  webhook: INFTWebhook | IContractWebhook | IAddressWebhook;
+  webhook: IWebhook;
   reloadData: () => void;
 }
 
