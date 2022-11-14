@@ -142,10 +142,26 @@ const ListSelect: FC<IListSelect> = ({
     itemSelected.some((name: string) => data.name === name),
   );
 
+  const allCheckedViewOnly =
+    viewOnly &&
+    dataShow.every((data: any) =>
+      nameSelected.some((name: string) => data.name === name),
+    );
+
   const isIndeterminate =
     dataShow.some((data: any) =>
       itemSelected.some((name: string) => data.name === name),
     ) && !allChecked;
+
+  const isIndeterminateViewOnly = useMemo(
+    () =>
+      dataShow.some((data: any) =>
+        nameSelected.some((name: string) => data.name === name),
+      ) &&
+      viewOnly &&
+      !allCheckedViewOnly,
+    [nameSelected, allCheckedViewOnly, viewOnly],
+  );
 
   const onSelectAll = () => {
     const dataRest = dataSelected.filter((item: any) => item.type !== type);
@@ -167,9 +183,10 @@ const ListSelect: FC<IListSelect> = ({
       <Box maxH={'320px'} overflowY={'auto'} ml={5}>
         {!!dataShow.length && (
           <Checkbox
-            isChecked={allChecked}
-            isIndeterminate={isIndeterminate}
+            isChecked={allCheckedViewOnly || allChecked}
+            isIndeterminate={isIndeterminateViewOnly || isIndeterminate}
             onChange={onSelectAll}
+            isDisabled={viewOnly}
           >
             All
           </Checkbox>
