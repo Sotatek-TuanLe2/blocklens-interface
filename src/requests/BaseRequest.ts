@@ -69,6 +69,19 @@ export default class BaseRequest {
     }
   }
 
+  async download(url: any, data?: any) {
+    try {
+      const config = {
+        ...data,
+        responseType: 'blob',
+      };
+      const response = await axios.get(this.getUrlPrefix() + url, config);
+      return this._responseHandler(response);
+    } catch (error) {
+      return this._errorHandler(error);
+    }
+  }
+
   async _responseHandler(response: any) {
     return response.data;
   }
