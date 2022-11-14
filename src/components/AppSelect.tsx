@@ -5,6 +5,7 @@ import Select, { components } from 'react-select';
 interface AppSelectPops extends SelectProps {
   defaultValue?: any;
   options: any;
+  isSearchable?: boolean;
 }
 
 export interface IOption {
@@ -27,13 +28,14 @@ const IconOption = (props: any) => (
 const AppSelect: FC<AppSelectPops> = ({
   defaultValue,
   options,
+  isSearchable = false,
   children,
   ...props
 }: AppSelectPops) => {
   return (
     <Select
       {...props}
-      isSearchable={false}
+      isSearchable={isSearchable}
       defaultValue={defaultValue}
       // @ts-ignore
       getOptionLabel={(e: IOption) => (

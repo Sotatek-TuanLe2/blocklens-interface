@@ -183,19 +183,19 @@ const MyPlan = () => {
 
         <Box className="stripe-detail">
           <div className="stripe-title">Billing address</div>
-          <div className="stripe-status">
+          <Box className="stripe-status" width={'65% !important'}>
             <Box>{billingInfo?.name}</Box>
             <Box>{billingInfo?.address}</Box>
             <Box>{billingInfo?.country}</Box>
-          </div>
-          <div className="stripe-action">
+          </Box>
+          <Box className="stripe-action" width={'15% !important'}>
             <AppButton
               size={'sm'}
               onClick={() => setIsOpenModalUpdateBillingInfo(true)}
             >
               Change
             </AppButton>
-          </div>
+          </Box>
         </Box>
 
         <Box className="stripe-detail" alignItems={'center'}>
