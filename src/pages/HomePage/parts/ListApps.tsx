@@ -16,6 +16,7 @@ import ModalChangeStatusApp from 'src/modals/ModalChangeStatusApp';
 import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
 import { IListAppResponse } from 'src/utils/common';
 import { useHistory } from 'react-router';
+import moment from 'moment';
 
 interface IListApps {
   searchListApp: any;
@@ -99,6 +100,10 @@ const ListApps: React.FC<IListApps> = ({ searchListApp, setSearchListApp }) => {
       );
     };
 
+    const getDaysOnBlocklens = (date: number) => {
+      return Math.floor(moment.duration(moment().diff(moment(date))).asDays());
+    };
+
     return (
       <Tbody>
         {data?.map((app: IAppResponse, index: number) => {
@@ -112,7 +117,7 @@ const ListApps: React.FC<IListApps> = ({ searchListApp, setSearchListApp }) => {
                 <AppLink to={`/app-detail/${app.appId}`}>{app.name}</AppLink>
               </Td>
               <Td>{app.chain + ' ' + app.network}</Td>
-              <Td textAlign={'right'}>N/A</Td>
+              <Td textAlign={'right'}>{getDaysOnBlocklens(app.createdAt)}</Td>
               <Td>{_renderStatus(app.status)}</Td>
               <Td>{_renderActionApp(app)}</Td>
             </Tr>
