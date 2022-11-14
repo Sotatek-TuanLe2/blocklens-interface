@@ -1,21 +1,10 @@
-import React, { FC, useEffect, useMemo, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import BaseModal from './BaseModal';
 import { Box, Flex } from '@chakra-ui/react';
-import { loadStripe } from '@stripe/stripe-js';
-import config from 'src/config';
-import {
-  Elements,
-  PaymentElement,
-  useElements,
-  useStripe,
-} from '@stripe/react-stripe-js';
-import { AppButton, AppField, AppInput, AppSelect } from 'src/components';
-import { useSelector } from 'react-redux';
-import { RootState } from 'src/store';
+import { AppField, AppInput, AppSelect } from 'src/components';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import rf from 'src/requests/RequestFactory';
 import { COUNTRIES } from 'src/constants';
-import _ from 'lodash';
 
 interface IModalBillingInfo {
   open: boolean;
@@ -54,7 +43,11 @@ const ModalBillingInfo: FC<IModalBillingInfo> = ({
 
   const updateMyBillingInfo = async () => {
     try {
-      await rf.getRequest('BillingRequest').updateBillingInfo(dataForm);
+      await rf.getRequest('BillingRequest').updateBillingInfo({
+        ...dataForm,
+        name: dataForm.name?.trim(),
+        address: dataForm.address?.trim(),
+      });
       toastSuccess({ message: 'Successfully!' });
       reloadData();
       onClose();
@@ -98,6 +91,7 @@ const ModalBillingInfo: FC<IModalBillingInfo> = ({
           </AppField>
           <AppField label={'COUNTRY'} customWidth={'49%'}>
             <AppSelect
+              isSearchable
               placeholder={'Billing country'}
               onChange={(e: any) => {
                 setDataForm({
