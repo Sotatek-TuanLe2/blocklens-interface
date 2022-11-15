@@ -89,7 +89,7 @@ const LoginPage: FC = () => {
                 validate={{
                   name: `email`,
                   validator: validator.current,
-                  rule: 'required|email',
+                  rule: 'required|email|max:100',
                 }}
               />
             </AppField>
@@ -108,7 +108,7 @@ const LoginPage: FC = () => {
                 validate={{
                   name: `password`,
                   validator: validator.current,
-                  rule: ['required'],
+                  rule: ['required', 'min:8', 'max:50'],
                 }}
               />
               <AppLink to={'/forgot-password'}>Forgot your password?</AppLink>

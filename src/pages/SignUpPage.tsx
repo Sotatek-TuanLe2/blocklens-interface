@@ -130,7 +130,7 @@ const SignUpPage: FC = () => {
               validate={{
                 name: `email`,
                 validator: validator.current,
-                rule: ['required', 'email'],
+                rule: ['required', 'email', 'max:100'],
               }}
             />
           </AppField>
