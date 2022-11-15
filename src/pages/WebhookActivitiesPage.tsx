@@ -20,7 +20,7 @@ interface INotificationResponse {
   userId: number;
   registrationId: number;
   type: string;
-  status: number;
+  status: string;
   webhook: string;
   metadata: any;
   errs: string[];
@@ -50,7 +50,7 @@ const enum STATUS {
   FAILED = 'FAILED',
 }
 
-const getColorBrandStatus = (status: number) => {
+const getColorBrandStatus = (status: string) => {
   switch (status) {
     case STATUS.WAITING:
       return 'blue';
