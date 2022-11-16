@@ -201,7 +201,7 @@ const ListSelect: FC<IListSelect> = ({
                   value={item.name}
                   isChecked={
                     itemSelected.includes(item.name) ||
-                    (viewOnly && nameSelected.includes(item.name))
+                    nameSelected.includes(item.name)
                   }
                   onChange={(e) => onChangeSelect(e, item.name)}
                 >
