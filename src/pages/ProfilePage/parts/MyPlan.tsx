@@ -247,6 +247,7 @@ const MyPlan = () => {
                   Billing period{' '}
                   {formatTimestamp(currentPlan?.from, 'MMM DD, YYYY')} -{' '}
                   {formatTimestamp(currentPlan?.to, 'MMM DD, YYYY')}
+                  {' '}(UTC)
                 </Box>
               </div>
             </Box>
