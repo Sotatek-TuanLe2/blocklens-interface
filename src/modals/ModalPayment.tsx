@@ -44,6 +44,9 @@ const CheckoutForm: FC<ICheckoutForm> = ({ onClose, reloadData }) => {
     });
 
     if (result.error) {
+      toastError({
+        message: result.error?.message || 'Oops. Something went wrong!',
+      });
       setIsLoading(false);
       return;
     }
