@@ -1,4 +1,4 @@
-import { Menu, MenuButton, Flex, MenuItem, MenuList } from '@chakra-ui/react';
+import { Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/react';
 import { AppSwitch } from 'src/components';
 import {
   getActionWebhook,
@@ -10,13 +10,19 @@ import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import ModalDeleteWebhook from 'src/modals/ModalDeleteWebhook';
 import { DeleteIcon } from '@chakra-ui/icons';
+import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
 
 interface IListActionWebhook {
+  appInfo: IAppResponse;
   webhook: IWebhook;
   reloadData: () => void;
 }
 
-const ListActionWebhook: FC<IListActionWebhook> = ({ webhook, reloadData }) => {
+const ListActionWebhook: FC<IListActionWebhook> = ({
+  webhook,
+  reloadData,
+  appInfo,
+}) => {
   const [isOpenModalDelete, setIsOpenModalDelete] = useState<boolean>(false);
   const onChangeStatus = async () => {
     const newStatus =
@@ -35,6 +41,7 @@ const ListActionWebhook: FC<IListActionWebhook> = ({ webhook, reloadData }) => {
       toastError({ message: e?.message || 'Oops. Something went wrong!' });
     }
   };
+  const isDisabledApp = appInfo.status === APP_STATUS.DISABLED;
 
   return (
     <>
@@ -50,13 +57,18 @@ const ListActionWebhook: FC<IListActionWebhook> = ({ webhook, reloadData }) => {
         >
           <MenuItem>
             <AppSwitch
+              isDisabled={isDisabledApp}
               mr={2}
               isChecked={webhook.status === WEBHOOK_STATUS.ENABLE}
               onChange={onChangeStatus}
             />
             {getActionWebhook(webhook.status)}
           </MenuItem>
-          <MenuItem color={'red'} onClick={() => setIsOpenModalDelete(true)}>
+          <MenuItem
+            isDisabled={isDisabledApp}
+            color={'red'}
+            onClick={() => setIsOpenModalDelete(true)}
+          >
             <DeleteIcon mr={2} /> Delete
           </MenuItem>
         </MenuList>

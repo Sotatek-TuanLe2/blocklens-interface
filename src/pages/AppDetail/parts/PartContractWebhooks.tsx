@@ -3,7 +3,7 @@ import { SmallAddIcon } from '@chakra-ui/icons';
 import React, { FC, useState } from 'react';
 import { AppButton, AppCard } from 'src/components';
 import { useHistory } from 'react-router';
-import { IAppResponse } from 'src/utils/utils-app';
+import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
 import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
 import ListWebhook from './ListWebhook';
 
@@ -20,6 +20,7 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
   const history = useHistory();
   const [params, setParams] = useState<IParams>({});
   const [totalWebhook, setTotalWebhook] = useState<any>();
+  const isDisabledApp = appInfo.status === APP_STATUS.DISABLED;
 
   const _renderNoData = () => {
     return (
@@ -28,9 +29,11 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
         <Box
           className="button-create-webhook"
           mt={2}
-          onClick={() =>
+          cursor={isDisabledApp ? 'not-allowed' : 'pointer'}
+          onClick={() => {
+            if (isDisabledApp) return;
             history.push(`/create-webhook-contract/${appInfo.appId}`)
-          }
+          }}
         >
           + Create webhook
         </Box>
@@ -55,6 +58,7 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
             textTransform="uppercase"
             fontWeight={'400'}
             size={'md'}
+            isDisabled={isDisabledApp}
             onClick={() =>
               history.push(`/create-webhook-contract/${appInfo.appId}`)
             }
