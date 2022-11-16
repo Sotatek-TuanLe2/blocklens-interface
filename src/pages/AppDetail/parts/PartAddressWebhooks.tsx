@@ -3,7 +3,7 @@ import { SmallAddIcon } from '@chakra-ui/icons';
 import React, { FC, useState } from 'react';
 import { AppButton, AppCard } from 'src/components';
 import ModalCreateWebhookAddress from 'src/modals/ModalCreateWebhookAddress';
-import { IAppResponse } from 'src/utils/utils-app';
+import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
 import {
   getStatusWebhook,
   WEBHOOK_STATUS,
@@ -39,6 +39,7 @@ const PartAddressWebhooks: FC<IListAddress> = ({ appInfo }) => {
     useState<boolean>(false);
   const [params, setParams] = useState<IParams>({});
   const [totalWebhook, setTotalWebhook] = useState<any>();
+  const isDisabledApp = appInfo.status === APP_STATUS.DISABLED;
 
   const _renderNoData = () => {
     return (
@@ -47,7 +48,11 @@ const PartAddressWebhooks: FC<IListAddress> = ({ appInfo }) => {
         <Box
           className="button-create-webhook"
           mt={2}
-          onClick={() => setIsOpenCreateAddressModal(true)}
+          cursor={isDisabledApp ? 'not-allowed' : 'pointer'}
+          onClick={() => {
+            if (isDisabledApp) return;
+            setIsOpenCreateAddressModal(true);
+          }}
         >
           + Create webhook
         </Box>
@@ -72,6 +77,7 @@ const PartAddressWebhooks: FC<IListAddress> = ({ appInfo }) => {
             textTransform="uppercase"
             size={'md'}
             fontWeight={'400'}
+            isDisabled={isDisabledApp}
             onClick={() => setIsOpenCreateAddressModal(true)}
           >
             <SmallAddIcon mr={1} /> Create webhook
