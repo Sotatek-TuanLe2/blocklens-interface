@@ -1,4 +1,4 @@
-import React, { FC, useMemo, useState } from 'react';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 import BaseModal from './BaseModal';
 import { Box, Flex } from '@chakra-ui/react';
 import { loadStripe } from '@stripe/stripe-js';
@@ -10,8 +10,6 @@ import {
   useStripe,
 } from '@stripe/react-stripe-js';
 import { AppButton } from 'src/components';
-import { useSelector } from 'react-redux';
-import { RootState } from 'src/store';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import rf from 'src/requests/RequestFactory';
 
@@ -97,11 +95,23 @@ const CheckoutForm: FC<ICheckoutForm> = ({ onClose, reloadData }) => {
 };
 
 const ModalPayment: FC<IModalPayment> = ({ open, onClose, reloadData }) => {
-  const { paymentIntent } = useSelector((state: RootState) => state.billing);
+  const [paymentIntent, setPaymentIntent] = useState<any>({});
   const stripePromise = useMemo(
     () => loadStripe(config.stripe.publishableKey),
     [],
   );
+
+  const getPaymentIntent = async () => {
+    try {
+      const res = await rf.getRequest('BillingRequest').getPaymentIntent();
+      setPaymentIntent(res);
+    } catch (e) {}
+  };
+
+  useEffect(() => {
+    if (!open) return;
+    getPaymentIntent().then();
+  }, [open]);
 
   return (
     <BaseModal
@@ -112,7 +122,7 @@ const ModalPayment: FC<IModalPayment> = ({ open, onClose, reloadData }) => {
     >
       <Box flexDirection={'column'} pt={'20px'}>
         <Box className="stripe-details">
-          {!!paymentIntent && (
+          {!!Object.keys(paymentIntent).length && (
             <Elements
               stripe={stripePromise}
               options={{
