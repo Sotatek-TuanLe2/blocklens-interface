@@ -3,7 +3,7 @@ import { SmallAddIcon } from '@chakra-ui/icons';
 import React, { FC, useState } from 'react';
 import { AppButton, AppCard } from 'src/components';
 import { useHistory } from 'react-router';
-import { IAppResponse } from 'src/utils/utils-app';
+import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
 import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
 import ListWebhook from './ListWebhook';
 
@@ -20,6 +20,7 @@ const PartNFTWebhooks: FC<IListNTF> = ({ appInfo }) => {
   const [params, setParams] = useState<IParams>({});
   const history = useHistory();
   const [totalWebhook, setTotalWebhook] = useState<any>();
+  const isDisabledApp = appInfo.status === APP_STATUS.DISABLED;
 
   const _renderNoData = () => {
     return (
@@ -27,8 +28,12 @@ const PartNFTWebhooks: FC<IListNTF> = ({ appInfo }) => {
         Set up your first NFT activity webhook!
         <Box
           className="button-create-webhook"
+          cursor={isDisabledApp ? 'not-allowed' : 'pointer'}
           mt={2}
-          onClick={() => history.push(`/create-webhook-nft/${appInfo.appId}`)}
+          onClick={() => {
+            if (isDisabledApp) return;
+            history.push(`/create-webhook-nft/${appInfo.appId}`);
+          }}
         >
           + Create webhook
         </Box>
@@ -52,6 +57,7 @@ const PartNFTWebhooks: FC<IListNTF> = ({ appInfo }) => {
           <AppButton
             textTransform="uppercase"
             size={'md'}
+            isDisabled={isDisabledApp}
             onClick={() => history.push(`/create-webhook-nft/${appInfo.appId}`)}
           >
             <SmallAddIcon mr={1} /> Create webhook

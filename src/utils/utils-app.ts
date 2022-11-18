@@ -12,4 +12,5 @@ export interface IAppResponse {
   network: string;
   key: string;
   status: APP_STATUS;
+  createdAt: number;
 }

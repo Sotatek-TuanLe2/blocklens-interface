@@ -7,7 +7,6 @@ import ModalCancelSubscription from 'src/modals/ModalCancelSubscription';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { useDispatch } from 'react-redux';
-import { getPaymentIntent } from 'src/store/billing-plan';
 import { formatTimestamp } from 'src/utils/utils-helper';
 import ModalBillingInfo from 'src/modals/ModalBillingInfo';
 import ModalChangePlan from 'src/modals/ModalChangePlan';
@@ -95,7 +94,6 @@ const MyPlan = () => {
     getBillingPlans().then();
     getCurrentPlan().then();
     getBillingInfo().then();
-    dispatch(getPaymentIntent());
   }, []);
 
   useEffect(() => {
@@ -247,6 +245,7 @@ const MyPlan = () => {
                   Billing period{' '}
                   {formatTimestamp(currentPlan?.from, 'MMM DD, YYYY')} -{' '}
                   {formatTimestamp(currentPlan?.to, 'MMM DD, YYYY')}
+                  {' '}(UTC)
                 </Box>
               </div>
             </Box>

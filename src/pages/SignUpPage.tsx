@@ -20,6 +20,7 @@ interface IDataForm {
   lastName: string;
   email: string;
   password: string;
+  confirmPassword: string;
 }
 
 const SignUpPage: FC = () => {
@@ -28,6 +29,7 @@ const SignUpPage: FC = () => {
     lastName: '',
     email: '',
     password: '',
+    confirmPassword: '',
   };
 
   const [dataForm, setDataForm] = useState<IDataForm>(initDataSignUp);
@@ -130,7 +132,7 @@ const SignUpPage: FC = () => {
               validate={{
                 name: `email`,
                 validator: validator.current,
-                rule: ['required', 'email'],
+                rule: ['required', 'email', 'max:100'],
               }}
             />
           </AppField>
@@ -150,6 +152,25 @@ const SignUpPage: FC = () => {
                 name: `password`,
                 validator: validator.current,
                 rule: 'required|min:6|max:50',
+              }}
+            />
+          </AppField>
+
+          <AppField label={'CONFIRM PASSWORD'}>
+            <AppInput
+              type={'password'}
+              placeholder={'••••••••'}
+              value={dataForm.confirmPassword}
+              onChange={(e) =>
+                setDataForm({
+                  ...dataForm,
+                  confirmPassword: e.target.value,
+                })
+              }
+              validate={{
+                name: `confirmPassword`,
+                validator: validator.current,
+                rule: ['required', `isSame:${dataForm.password}`],
               }}
             />
           </AppField>

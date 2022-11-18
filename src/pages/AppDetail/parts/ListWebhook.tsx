@@ -14,9 +14,10 @@ import { formatShortText } from 'src/utils/utils-helper';
 import ListActionWebhook from './ListActionWebhook';
 import { StatusWebhook } from './PartAddressWebhooks';
 import _ from 'lodash';
+import { IAppResponse } from 'src/utils/utils-app';
 
 interface IListWebhook {
-  appInfo: any;
+  appInfo: IAppResponse;
   setParams: (value: any) => void;
   params: any;
   setTotalWebhook: (value: number) => void;
@@ -27,7 +28,7 @@ interface IListWebhook {
 
 interface IWebhookItem {
   webhook: IWebhook;
-  appInfo: any;
+  appInfo: IAppResponse;
   setParams: (value: any) => void;
   type: string;
   isDetail?: boolean;
@@ -165,6 +166,7 @@ const WebhookItem: FC<IWebhookItem> = ({
           )}
 
           <ListActionWebhook
+            appInfo={appInfo}
             webhook={webhook}
             reloadData={() =>
               setParams((pre: any) => {

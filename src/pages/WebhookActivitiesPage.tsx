@@ -20,7 +20,7 @@ interface INotificationResponse {
   userId: number;
   registrationId: number;
   type: string;
-  status: number;
+  status: string;
   statusCode: number;
   webhook: string;
   metadata: any;
@@ -45,26 +45,13 @@ interface IPartWebhookStats {
 }
 
 const enum STATUS {
-  WAITING = 1,
-  PROCESSING = 2,
-  DONE = 3,
-  FAILED = 4,
+  WAITING = 'WAITING',
+  PROCESSING = 'PROCESSING',
+  DONE = 'DONE',
+  FAILED = 'FAILED',
 }
 
-const getStatus = (status: number) => {
-  switch (status) {
-    case STATUS.WAITING:
-      return 'WAITING';
-    case STATUS.PROCESSING:
-      return 'PROCESSING';
-    case STATUS.DONE:
-      return 'DONE';
-    case STATUS.FAILED:
-      return 'FAILED';
-  }
-};
-
-const getColorBrandStatus = (status: number) => {
+const getColorBrandStatus = (status: string) => {
   switch (status) {
     case STATUS.WAITING:
       return 'blue';
@@ -108,10 +95,11 @@ const NotificationItem: FC<INotificationItem> = ({ notification }) => {
         size={'sm'}
         borderRadius="full"
         variant="solid"
+        textTransform={'uppercase'}
         colorScheme={getColorBrandStatus(notification.status)}
         px={3}
       >
-        {getStatus(notification.status)}
+        {notification.status}
       </Tag>
     );
   };
