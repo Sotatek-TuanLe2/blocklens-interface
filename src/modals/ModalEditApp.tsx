@@ -108,7 +108,7 @@ const ModalEditApp: FC<IModalEditApp> = ({
           </AppField>
           <AppField label={'DESCRIPTION'} customWidth={'100%'}>
             <AppTextarea
-              placeholder="Write something about this app in 50 characters!"
+              placeholder="Write something about this app in 100 characters!"
               value={dataForm.description}
               onChange={(e) =>
                 setDataForm({
