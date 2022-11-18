@@ -17,6 +17,7 @@ interface IModalPayment {
   open: boolean;
   onClose: () => void;
   reloadData: () => void;
+  paymentIntent: any;
 }
 
 interface ICheckoutForm {
@@ -94,24 +95,16 @@ const CheckoutForm: FC<ICheckoutForm> = ({ onClose, reloadData }) => {
   );
 };
 
-const ModalPayment: FC<IModalPayment> = ({ open, onClose, reloadData }) => {
-  const [paymentIntent, setPaymentIntent] = useState<any>({});
+const ModalPayment: FC<IModalPayment> = ({
+  open,
+  onClose,
+  reloadData,
+  paymentIntent,
+}) => {
   const stripePromise = useMemo(
     () => loadStripe(config.stripe.publishableKey),
     [],
   );
-
-  const getPaymentIntent = async () => {
-    try {
-      const res = await rf.getRequest('BillingRequest').getPaymentIntent();
-      setPaymentIntent(res);
-    } catch (e) {}
-  };
-
-  useEffect(() => {
-    if (!open) return;
-    getPaymentIntent().then();
-  }, [open]);
 
   return (
     <BaseModal
