@@ -93,7 +93,7 @@ const MyPlan = () => {
     try {
       const res = await rf.getRequest('BillingRequest').getPaymentIntent();
       setPaymentIntent(res);
-    } catch (e) {
+    } catch (e: any) {
       toastError({ message: e?.message || 'Oops. Something went wrong!' });
     }
   };
