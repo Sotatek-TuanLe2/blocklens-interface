@@ -47,8 +47,7 @@ const MyPlan = () => {
   const [billingEmail, setBillingEmail] = useState<string>('');
   const [isOpenModalChangePlan, setIsOpenModalChangePlan] =
     useState<boolean>(false);
-
-  const dispatch = useDispatch<any>();
+  const [paymentIntent, setPaymentIntent] = useState<any>({});
 
   const getBillingPlans = async () => {
     try {
@@ -89,6 +88,17 @@ const MyPlan = () => {
       toastError({ message: e?.message || 'Oops. Something went wrong!' });
     }
   };
+
+  const getPaymentIntent = async () => {
+    try {
+      const res = await rf.getRequest('BillingRequest').getPaymentIntent();
+      setPaymentIntent(res);
+    } catch (e) {}
+  };
+
+  useEffect(() => {
+    getPaymentIntent().then();
+  }, [isOpenModalChangePaymentMethod]);
 
   useEffect(() => {
     getBillingPlans().then();
@@ -244,8 +254,7 @@ const MyPlan = () => {
                 <Box as={'span'} color={'#a0a4ac'} fontSize={'13px'}>
                   Billing period{' '}
                   {formatTimestamp(currentPlan?.from, 'MMM DD, YYYY')} -{' '}
-                  {formatTimestamp(currentPlan?.to, 'MMM DD, YYYY')}
-                  {' '}(UTC)
+                  {formatTimestamp(currentPlan?.to, 'MMM DD, YYYY')} (UTC)
                 </Box>
               </div>
             </Box>
@@ -271,9 +280,7 @@ const MyPlan = () => {
       <div className="stripe-wrap">
         <Box className="stripe-detail">
           <div className="stripe-title">Current Plan</div>
-          <div className="stripe-status">
-            {currentPlanData?.name}
-          </div>
+          <div className="stripe-status">{currentPlanData?.name}</div>
         </Box>
       </div>
 
@@ -281,11 +288,15 @@ const MyPlan = () => {
 
       {_renderCardDetail()}
 
-      <ModalPayment
-        open={isOpenModalChangePaymentMethod}
-        reloadData={getBillingInfo}
-        onClose={() => setIsOpenModalChangePaymentMethod(false)}
-      />
+      {!!Object.keys(paymentIntent).length &&
+        isOpenModalChangePaymentMethod && (
+          <ModalPayment
+            paymentIntent={paymentIntent}
+            open={isOpenModalChangePaymentMethod}
+            reloadData={getBillingInfo}
+            onClose={() => setIsOpenModalChangePaymentMethod(false)}
+          />
+        )}
 
       <ModalBillingInfo
         onClose={() => setIsOpenModalUpdateBillingInfo(false)}
