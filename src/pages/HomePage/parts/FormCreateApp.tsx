@@ -151,7 +151,7 @@ const FormCreateApp: React.FC<IFormCreateApp> = ({ setSearchListApp }) => {
         <AppField label={'DESCRIPTION'} customWidth={'100%'}>
           <AppTextarea
             hiddenErrorText={hiddenErrorText}
-            placeholder="Write something about this app in 50 characters!"
+            placeholder="Write something about this app in 100 characters!"
             value={dataForm.description}
             onChange={(e) => {
               setHiddenErrorText(false);
