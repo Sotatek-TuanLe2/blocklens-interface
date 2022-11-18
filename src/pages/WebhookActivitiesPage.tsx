@@ -21,6 +21,7 @@ interface INotificationResponse {
   registrationId: number;
   type: string;
   status: number;
+  statusCode: number;
   webhook: string;
   metadata: any;
   errs: string[];
@@ -120,7 +121,7 @@ const NotificationItem: FC<INotificationItem> = ({ notification }) => {
       <Tr cursor={'pointer'} onClick={() => setIsShowDetail(!isShowDetail)}>
         <Td>{formatTimestamp(notification.createdAt * 1000)}</Td>
         <Td>{formatTimestamp(notification.updatedAt * 1000)}</Td>
-        <Td>N/A</Td>
+        <Td>{notification.statusCode}</Td>
         <Td>{_renderStatus(notification)}</Td>
         <Td textAlign="right">{notification.remainRetry}</Td>
         <Td color={'#4C84FF'}>
