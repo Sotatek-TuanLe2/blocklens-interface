@@ -109,7 +109,7 @@ const ResetPasswordPage: FC = () => {
                   })
                 }
                 validate={{
-                  name: `email`,
+                  name: `confirmPassword`,
                   validator: validator.current,
                   rule: ['required', `isSame:${dataForm.newPassword}`],
                 }}
