@@ -7,7 +7,7 @@ export default class BillingRequest extends BaseRequest {
   }
 
   getBillingPlans() {
-    const url = '/public/billing-plans';
+    const url = '/public/plans';
     return this.get(url);
   }
 
