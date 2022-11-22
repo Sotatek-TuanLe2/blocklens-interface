@@ -16,62 +16,62 @@
     {
       "name": "Ethereum",
       "id": "ETHEREUM",
-      "icon": "icon-ethereum_blue",
+      "icon": "icon-ethereum",
       "networks": [
         {
-          "name": "Ethereum Mainnet",
+          "name": "Mainnet",
           "id": "MAINNET",
-          "icon": "icon-ethereum_blue"
+          "icon": "icon-ethereum"
         },
         {
-          "name": "Ethereum Goerli",
+          "name": "Goerli",
           "id": "GOERLI",
-          "icon": "icon-ethereum_black"
+          "icon": "icon-ethereum"
         }
       ]
     },
     {
-      "name": "Binance Smart Chain",
+      "name": "BSC",
       "id": "BSC",
-      "icon": "icon-bsc_blue",
+      "icon": "icon-bsc",
       "networks": [
-        { "name": "BSC Mainnet", "id": "MAINNET", "icon": "icon-bsc_blue" },
-        { "name": "BSC Testnet", "id": "TESTNET", "icon": "icon-bsc_blue" }
+        { "name": "BSC Mainnet", "id": "MAINNET", "icon": "icon-bsc" },
+        { "name": "BSC Testnet", "id": "TESTNET", "icon": "icon-bsc" }
       ]
     },
     {
       "name": "Polygon",
       "id": "POLYGON",
-      "icon": "icon-ethereum_blue",
+      "icon": "icon-polygon",
       "networks": [
         {
-          "name": "Polygon Mainnet",
+          "name": "Mainnet",
           "id": "MAINNET",
-          "icon": "icon-ethereum_blue"
+          "icon": "icon-polygon"
         },
         {
-          "name": "Polygon Mumbai",
+          "name": "Mumbai",
           "id": "MUMBAI",
-          "icon": "icon-ethereum_black"
+          "icon": "icon-polygon"
         }
       ]
     },
     {
       "name": "Solana",
       "id": "SOLANA",
-      "icon": "icon-solana_blue",
+      "icon": "icon-solana",
       "networks": [
         {
-          "name": "Solana Mainnet",
+          "name": "Mainnet",
           "id": "MAINNET",
-          "icon": "icon-solana_blue"
+          "icon": "icon-solana"
         },
         {
-          "name": "Solana Testnet",
+          "name": "Testnet",
           "id": "TESTNET",
-          "icon": "icon-solana_black"
+          "icon": "icon-solana"
         },
-        { "name": "Solana Devnet", "id": "DEVNET", "icon": "icon-solana_black" }
+        { "name": "Devnet", "id": "DEVNET", "icon": "icon-solana" }
       ]
     }
   ]

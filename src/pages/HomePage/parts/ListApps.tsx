@@ -2,7 +2,6 @@ import { Box, Flex, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { AppButton, AppCard, AppDataTable } from 'src/components';
 import rf from 'src/requests/RequestFactory';
-import ModalChangeStatusApp from 'src/modals/ModalChangeStatusApp';
 import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
 import { IListAppResponse } from 'src/utils/common';
 import { useHistory } from 'react-router';
@@ -31,9 +30,7 @@ const ListApps: React.FC<IListApps> = ({
   searchListApp,
 }) => {
   const history = useHistory();
-  const [appSelected, setAppSelected] = useState<IAppResponse | null>(null);
   const [totalAppActive, setTotalAppActive] = useState<number | undefined>(0);
-  const [openModalChangeStatus, setOpenModalChangeStatus] =
     useState<boolean>(false);
 
   const fetchDataTable: any = async (param: any) => {
@@ -110,7 +107,7 @@ const ListApps: React.FC<IListApps> = ({
               className={'btn-create'}
               onClick={setOpenModalCreateApp}
             >
-              <SmallAddIcon mr={1} /> Create
+              <Box className="icon-plus-circle" mr={2} /> Create
             </AppButton>
           </Flex>
         </Flex>
@@ -122,13 +119,6 @@ const ListApps: React.FC<IListApps> = ({
           limit={10}
         />
       </AppCard>
-
-      {/*<ModalChangeStatusApp*/}
-      {/*  open={openModalChangeStatus}*/}
-      {/*  onClose={() => setOpenModalChangeStatus(false)}*/}
-      {/*  appInfo={appSelected}*/}
-      {/*  reloadData={() => console.log('sdsds')}*/}
-      {/*/>*/}
     </Box>
   );
 };

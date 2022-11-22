@@ -1,11 +1,19 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
-import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+  FC,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import BaseModal from './BaseModal';
 import {
   AppButton,
   AppField,
   AppInput,
   AppSelect,
+  AppSelect2,
   AppTextarea,
 } from 'src/components';
 import { createValidator } from 'src/utils/utils-validator';
@@ -93,6 +101,7 @@ const ModalCreateApp: FC<IModalCreateApp> = ({ open, onClose, reloadData }) => {
       chain: chainSelected.value,
       network: networkSelected.value,
     };
+
     try {
       const res = await rf
         .getRequest('AppRequest')
@@ -160,32 +169,31 @@ const ModalCreateApp: FC<IModalCreateApp> = ({ open, onClose, reloadData }) => {
             />
           </AppField>
           <AppField label={'Chain'} customWidth={'49%'} isRequired>
-            <AppSelect
-              onChange={(e: any) => {
-                setChainSelected(
-                  CHAINS.find((chain) => chain.value === e.value),
-                );
+            <AppSelect2
+              size="large"
+              onChange={(value: string) => {
+                setChainSelected(CHAINS.find((chain) => chain.value === value));
                 setNetworkSelected(
-                  CHAINS.find((chain) => chain.value === e.value)?.networks[0],
+                  CHAINS.find((chain) => chain.value === value)?.networks[0],
                 );
               }}
               options={CHAINS}
-              defaultValue={chainSelected}
+              value={chainSelected.value}
             />
           </AppField>
 
           <AppField label={'Network'} customWidth={'49%'} isRequired>
-            <AppSelect
-              onChange={(e: any) => {
+            <AppSelect2
+              size="large"
+              onChange={(value: string) => {
                 setNetworkSelected(
                   chainSelected.networks.find(
-                    (network: any) => network.value === e.value,
+                    (network: any) => network.value === value,
                   ),
                 );
               }}
               options={chainSelected.networks}
-              defaultValue={CHAINS[0].networks[0]}
-              value={networkSelected}
+              value={networkSelected.value}
             />
           </AppField>
         </Flex>

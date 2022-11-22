@@ -29,7 +29,7 @@ const AppSelect2: FC<IAppSelectPops> = ({
 
   const optionSelected = useMemo(
     () => options.find((item: IOption) => item.value === value),
-    [value],
+    [value, options],
   );
 
   const handleClickOutside = (event: any) => {
@@ -45,13 +45,15 @@ const AppSelect2: FC<IAppSelectPops> = ({
     };
   }, []);
 
-
   return (
     <Box className={`app-select ${size}`} width={width} ref={ref}>
       <Flex className="app-select__btn-select" onClick={() => setOpen(!open)}>
-        {optionSelected?.icon && <Box className={`${optionSelected?.icon}`} />}
-        <Box>{optionSelected?.label ?? 'Select'}</Box>
-        <ChevronDownIcon ml={2} />
+        <Flex alignItems={'center'}>
+          {optionSelected?.icon && <Box className={`${optionSelected?.icon} icon`} />}
+          <Box>{optionSelected?.label ?? 'Select'}</Box>
+        </Flex>
+
+        <Box className="icon-arrow-down" ml={2} />
       </Flex>
       {open && (
         <Box className={'app-select__menu'}>
@@ -67,7 +69,7 @@ const AppSelect2: FC<IAppSelectPops> = ({
                 }}
               >
                 {optionSelected?.icon && (
-                  <Box className={`${optionSelected?.icon}`} />
+                  <Box className={`${option?.icon} icon`} />
                 )}
                 <Box>{option.label}</Box>
               </Flex>

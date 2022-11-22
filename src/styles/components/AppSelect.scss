@@ -32,6 +32,11 @@
     z-index: 2;
     background-color: $card;
     justify-content: space-between;
+    cursor: pointer;
+
+    .icon {
+      margin-right: 10px;
+    }
   }
 
   &.small {
@@ -66,16 +71,27 @@
     z-index: -1;
   }
 
+  &.large {
+    .app-select__menu {
+      top: 30px;
+    }
+  }
+
   &__menu-item {
     @include text-medium-regular;
     cursor: pointer;
     padding: 8px 18px;
+    align-items: center;
     &:hover {
       background-color: $bg2;
     }
 
     &.selected {
       background: $gradient;
+    }
+
+    .icon {
+      margin-right: 10px;
     }
   }
 }
