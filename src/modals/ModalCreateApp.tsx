@@ -3,7 +3,6 @@ import React, {
   FC,
   useCallback,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -12,7 +11,6 @@ import {
   AppButton,
   AppField,
   AppInput,
-  AppSelect,
   AppSelect2,
   AppTextarea,
 } from 'src/components';

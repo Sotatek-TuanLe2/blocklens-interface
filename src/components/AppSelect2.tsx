@@ -1,7 +1,6 @@
 import React, { FC, useMemo,useEffect,  useRef, useState } from 'react';
 import { Box, Flex } from '@chakra-ui/react';
 import 'src/styles/components/AppSelect.scss';
-import { ChevronDownIcon } from '@chakra-ui/icons';
 
 interface IAppSelectPops {
   options: IOption[];

@@ -6,7 +6,6 @@ import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
 import { IListAppResponse } from 'src/utils/common';
 import { useHistory } from 'react-router';
 import { getLogoChainByName } from 'src/utils/utils-network';
-import { SmallAddIcon } from '@chakra-ui/icons';
 
 interface IListApps {
   totalApps: number;
