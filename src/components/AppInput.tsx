@@ -91,13 +91,16 @@ export const appInputStyles = {
   variants: {
     main: (props: StyleProps) => ({
       field: {
-        bg: mode('transparent', 'navy.800')(props),
+        bg: mode('bg.200', 'bg.200')(props),
         border: '1px solid',
-        color: mode('secondaryGray.900', 'white')(props),
-        borderColor: mode('secondaryGray.100', 'whiteAlpha.300')(props),
-        borderRadius: '4px',
+        color: mode('white', 'white')(props),
+        borderColor: mode('line.100', 'line.300')(props),
+        borderRadius: '6px',
         fontSize: '16px',
         p: '20px',
+        _focus: {
+          borderColor: mode('main.100', 'main.300')(props),
+        },
         _placeholder: {
           color: mode('secondaryGray.500', 'whiteAlpha.300')(props),
         },

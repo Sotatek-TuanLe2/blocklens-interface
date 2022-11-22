@@ -1,4 +1,5 @@
-@import 'src/styles/abstracts/variables';
+@import '../color-variables.scss';
+@import '../mixins.scss';
 
 .box-login {
   justify-content: center;
@@ -7,41 +8,45 @@
   align-items: center;
 
   .box-form {
-    max-width: 550px;
-    padding: 30px;
+    max-width: 570px;
+    padding: 50px 67px;
     height: max-content;
-    margin: 15px;
+    color: $paragraph;
 
-    .title {
+    a {
+      @include text-medium-medium;
+      color: $link;
+    }
+
+    &__title {
+      @include heading-4;
+      color: $title;
       text-align: center;
-      padding-bottom: 30px;
-      padding-top: 0;
-      font-size: 24px;
-      border-bottom: 1px solid #e9edf7;
-      margin: 0 -30px;
-      font-weight: 500;
+      margin-bottom: 2px;
     }
 
     .sub-text {
-      font-size: 16px;
-      max-width: 300px;
-      margin: 0 auto;
+      @include text-medium-regular;
+      color: $paragraph;
     }
 
     .divider {
+      @include text-medium-regular;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 16px;
+      margin-top: 10px;
+      color: $paragraph;
 
       .border {
-        border: 1px solid #e9edf7;
+        border: 1px solid $border;
         width: 45%;
       }
     }
 
     .note {
-      font-size: 13px;
-      margin-top: 16px;
+      @include text-medium-regular;
+      color: $paragraph;
     }
 
     .link-back {

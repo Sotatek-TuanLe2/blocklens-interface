@@ -26,11 +26,10 @@ const ForgotPasswordPage: FC = () => {
   const [dataForm, setDataForm] = useState<IDataForm>(initDataRestPassword);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
   const [hiddenErrorText, setHiddenErrorText] = useState(false);
-  const colorText = useColorModeValue('gray.500', 'white');
 
   const validator = useRef(
     createValidator({
-      element: (message: string) => <Text color={'red.500'}>{message}</Text>,
+      element: (message: string) => <Text color={'red.100'}>{message}</Text>,
     }),
   );
 
@@ -59,20 +58,19 @@ const ForgotPasswordPage: FC = () => {
     <BasePage>
       <Flex className="box-login">
         <AppCard className="box-form">
-          <Box className="title">
+          <Box className="box-form__title">
             <Text pb={3}>Reset password</Text>
 
-            <Text color={colorText} className="sub-text">
+            <Text className="sub-text">
               Enter your account's email address and we will send you password
               reset link.
             </Text>
           </Box>
 
-          <Box mt={5} color={colorText}>
-            <AppField label={'EMAIL'}>
+          <Box mt={5}>
+            <AppField label={'Email'}>
               <AppInput
                 hiddenErrorText={hiddenErrorText}
-                placeholder="gavin@sotatek.com"
                 value={dataForm.email}
                 onChange={(e) => {
                   setHiddenErrorText(false);
@@ -100,11 +98,12 @@ const ForgotPasswordPage: FC = () => {
               Send reset email
             </AppButton>
 
-            <Flex className="link-back">
+            <Box className="note" mt={5} textAlign={'center'}>
+              Return to{' '}
               <AppLink to={'/login'} fontWeight={500}>
-                Return to Login
+                Login
               </AppLink>
-            </Flex>
+            </Box>
           </Box>
         </AppCard>
       </Flex>

@@ -13,6 +13,7 @@ interface AppButtonProps extends ButtonProps {
     | 'setup'
     | 'outline'
     | 'no-effects'
+    | 'cancel'
     | 'red';
 }
 
@@ -31,10 +32,11 @@ export default AppButton;
 
 export const appButtonStyles = {
   baseStyle: {
-    borderRadius: '4px',
+    borderRadius: '6px',
     boxShadow: '45px 76px 113px 7px rgba(112, 144, 176, 0.08)',
     transition: '.25s all ease',
     boxSizing: 'border-box',
+    fontWeight: 500,
     _focus: {
       boxShadow: 'none',
     },
@@ -43,17 +45,33 @@ export const appButtonStyles = {
     },
   },
   variants: {
-    outline: () => ({
-      borderRadius: '4px',
+    outline: (props: StyleProps) => ({
+      borderRadius: '6px',
+      bg: 'none',
+      color: 'main.100',
+      borderWidth: '1px',
+      borderColor: 'main.100',
+      _hover: {
+        bg: mode('main.100', 'main.100')(props),
+        color: 'white',
+        _disabled: {
+          bg: 'none',
+          color: 'main.100',
+        },
+      },
     }),
     brand: (props: StyleProps) => ({
-      bg: '#4C84FF',
+      bg: mode('main.100', 'main.100')(props),
       color: 'white',
+      fontSize: '16px',
       _hover: {
-        bg: '#3965FF',
+        bg: mode('pressed.100', 'pressed.100')(props),
         _disabled: {
-          bg: '#4C84FF',
+          bg: mode('line.100', 'line.100')(props),
         },
+      },
+      _disabled: {
+        bg: mode('line.100', 'line.100')(props),
       },
     }),
     red: (props: StyleProps) => ({
@@ -66,85 +84,20 @@ export const appButtonStyles = {
         },
       },
     }),
-    darkBrand: (props: StyleProps) => ({
-      bg: mode('brand.900', 'brand.400')(props),
+    cancel: (props: StyleProps) => ({
+      borderRadius: '6px',
+      bg: 'none',
+      fontSize: '16px',
+      fontWeight: 500,
       color: 'white',
-      _focus: {
-        bg: mode('brand.900', 'brand.400')(props),
-      },
-      _active: {
-        bg: mode('brand.900', 'brand.400')(props),
-      },
+      borderWidth: '1px',
+      borderColor: 'line.100',
       _hover: {
-        bg: mode('brand.800', 'brand.400')(props),
+        bg: mode('line.100', 'line.100')(props),
+        color: 'white',
         _disabled: {
-          bg: mode('brand.800', 'brand.400')(props),
-        },
-      },
-    }),
-    lightBrand: (props: StyleProps) => ({
-      bg: mode('#F2EFFF', 'whiteAlpha.100')(props),
-      color: mode('brand.500', 'white')(props),
-      _focus: {
-        bg: mode('#F2EFFF', 'whiteAlpha.100')(props),
-      },
-      _active: {
-        bg: mode('secondaryGray.300', 'whiteAlpha.100')(props),
-      },
-      _hover: {
-        bg: mode('secondaryGray.400', 'whiteAlpha.200')(props),
-        _disabled: {
-          bg: mode('secondaryGray.400', 'whiteAlpha.200')(props),
-        },
-      },
-    }),
-    light: (props: StyleProps) => ({
-      bg: mode('secondaryGray.300', 'whiteAlpha.100')(props),
-      color: mode('secondaryGray.900', 'white')(props),
-      _focus: {
-        bg: mode('secondaryGray.300', 'whiteAlpha.100')(props),
-      },
-      _active: {
-        bg: mode('secondaryGray.300', 'whiteAlpha.100')(props),
-      },
-      _hover: {
-        bg: mode('secondaryGray.400', 'whiteAlpha.200')(props),
-        _disabled: {
-          bg: mode('secondaryGray.400', 'whiteAlpha.200')(props),
-        },
-      },
-    }),
-    action: (props: StyleProps) => ({
-      fontWeight: '500',
-      borderRadius: '50px',
-      bg: mode('secondaryGray.300', 'brand.400')(props),
-      color: mode('brand.500', 'white')(props),
-      _focus: {
-        bg: mode('secondaryGray.300', 'brand.400')(props),
-      },
-      _active: { bg: mode('secondaryGray.300', 'brand.400')(props) },
-      _hover: {
-        bg: mode('secondaryGray.200', 'brand.400')(props),
-        _disabled: {
-          bg: mode('secondaryGray.200', 'brand.400')(props),
-        },
-      },
-    }),
-    setup: (props: StyleProps) => ({
-      fontWeight: '500',
-      borderRadius: '50px',
-      bg: mode('transparent', 'brand.400')(props),
-      border: mode('1px solid', '0px solid')(props),
-      borderColor: mode('secondaryGray.400', 'transparent')(props),
-      color: mode('secondaryGray.900', 'white')(props),
-      _focus: {
-        bg: mode('transparent', 'brand.400')(props),
-      },
-      _active: { bg: mode('transparent', 'brand.400')(props) },
-      _hover: {
-        bg: mode('secondaryGray.100', 'brand.400')(props),
-        _disabled: {
-          bg: mode('secondaryGray.100', 'brand.400')(props),
+          bg: 'none',
+          color: 'white',
         },
       },
     }),

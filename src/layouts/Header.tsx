@@ -1,6 +1,6 @@
 import { FC, useEffect } from 'react';
 import React from 'react';
-import { AppButton } from 'src/components';
+import { AppButton, AppLink } from 'src/components';
 import { useHistory } from 'react-router';
 import 'src/styles/layout/Header.scss';
 import Storage from 'src/utils/storage';
@@ -19,6 +19,21 @@ import { useLocation } from 'react-router-dom';
 import { clearAuth } from 'src/store/auth';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
 
+const menus = [
+  {
+    name: 'Dashboard',
+    path: '/',
+  },
+  {
+    name: 'Billing',
+    path: '/setting/billing',
+  },
+  {
+    name: 'Account',
+    path: '/setting/profile',
+  },
+];
+
 const Header: FC = () => {
   const history = useHistory();
   const accessToken = Storage.getAccessToken();
@@ -36,33 +51,6 @@ const Header: FC = () => {
   const onLogout = () => {
     dispatch(clearAuth());
     history.push('/login');
-  };
-
-  const _renderGroupButton = () => {
-    return (
-      <Flex>
-        {location.pathname !== '/login' && (
-          <AppButton
-            className={'button'}
-            size={'md'}
-            onClick={() => history.push('/login')}
-          >
-            Login
-          </AppButton>
-        )}
-
-        {location.pathname !== '/sign-up' && (
-          <AppButton
-            className={'button'}
-            ml={3}
-            size={'md'}
-            onClick={() => history.push('/sign-up')}
-          >
-            Sign up
-          </AppButton>
-        )}
-      </Flex>
-    );
   };
 
   const _renderAvatar = () => {
@@ -91,13 +79,36 @@ const Header: FC = () => {
     );
   };
 
+  const _renderMenu = () => {
+    return (
+      <Flex className="menu">
+        {menus.map((item, index: number) => {
+          return (
+            <AppLink
+              to={item.path}
+              key={index}
+              className={location.pathname === item.path ? 'active' : ''}
+            >
+              {item.name}
+            </AppLink>
+          );
+        })}
+      </Flex>
+    );
+  };
+
   return (
-    <Box className={'header'}>
+    <Box className="header">
       <Flex className={'content-header'}>
         <Box onClick={() => history.push('/')} cursor={'pointer'}>
-          BLOCKLENS
+          <img src="/images/logo.png" alt="logo" />
         </Box>
-        {accessToken ? _renderAvatar() : _renderGroupButton()}
+        {accessToken && (
+          <>
+            {_renderMenu()}
+            {_renderAvatar()}
+          </>
+        )}
       </Flex>
     </Box>
   );

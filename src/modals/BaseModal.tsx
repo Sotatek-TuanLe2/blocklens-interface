@@ -5,16 +5,18 @@ import {
   ModalHeader,
   ModalFooter,
   ModalBody,
-  ModalCloseButton,
   Box,
 } from '@chakra-ui/react';
 import React, { FC, ReactNode } from 'react';
 import AppButton from 'src/components/AppButton';
 import { ModalProps, ModalHeaderProps } from '@chakra-ui/modal/src/modal';
 import { WarningTwoIcon } from '@chakra-ui/icons';
+import 'src/styles/components/BaseModal.scss';
+import { CloseIcon } from '@chakra-ui/icons';
 
 export interface BaseModalProps extends ModalProps {
   title: string;
+  description?: string;
   size?:
     | 'xs'
     | 'sm'
@@ -42,6 +44,7 @@ export interface BaseModalProps extends ModalProps {
 
 const BaseModal: FC<BaseModalProps> = ({
   title,
+  description,
   isOpen,
   onClose,
   size = 'md',
@@ -69,14 +72,22 @@ const BaseModal: FC<BaseModalProps> = ({
         autoFocus={false}
       >
         <ModalOverlay />
-        <ModalContent className={className}>
-          <ModalHeader
-            sx={{ textAlign: isHideCloseIcon ? 'center' : 'left' }}
-            {...styleHeader}
-          >
+        <ModalContent className={`${className} modal`}>
+          {!isHideCloseIcon && (
+            <Box className={'modal__btn-close'} onClick={onClose}>
+              <CloseIcon />
+            </Box>
+          )}
+
+          <Box className={'modal__title'} {...styleHeader}>
             {isWarning && <WarningTwoIcon mr={2} color={'red'} />} {title}
-          </ModalHeader>
-          {!isHideCloseIcon && <ModalCloseButton />}
+          </Box>
+
+          {description && (
+            <Box className={'modal__description'}>
+              {description}
+            </Box>
+          )}
 
           <ModalBody>{children}</ModalBody>
 

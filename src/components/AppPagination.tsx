@@ -4,7 +4,6 @@ import 'src/styles/components/AppPagination.scss';
 import { ArrowDownIcon } from '../assets/icons';
 
 const AppPagination: FC<ReactPaginateProps> = ({ ...props }) => {
-  console.log(props.forcePage, 'xcxcx');
   return (
     <ReactPaginate
       breakLabel="..."

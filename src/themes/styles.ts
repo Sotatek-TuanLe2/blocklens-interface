@@ -2,6 +2,29 @@ import { mode, StyleFunctionProps } from '@chakra-ui/theme-tools';
 
 export const globalStyles = {
   colors: {
+    main: {
+      100: '#7367F0',
+    },
+    paragraph: {
+      100: '#B4B7BD',
+    },
+    line: {
+      100: '#69758C',
+    },
+    bg: {
+      100: '#171E31',
+      200: '#30384E',
+    },
+    pressed: {
+      100: '#4F43CA',
+    },
+    border: {
+      100: '#41495F',
+    },
+    yellow: {
+      100: '#FFB547',
+    },
+
     brand: {
       100: '#E9E3FF',
       200: '#422AFB',
@@ -47,9 +70,7 @@ export const globalStyles = {
       900: '#1B2559',
     },
     red: {
-      100: '#FEEFEE',
-      500: '#EE5D50',
-      600: '#E31A1A',
+      100: '#EE5D50',
     },
     blue: {
       50: '#EFF4FB',
@@ -62,8 +83,7 @@ export const globalStyles = {
       500: '#FFB547',
     },
     green: {
-      100: '#E6FAF5',
-      500: '#01B574',
+      100: '#28C76F',
     },
     navy: {
       50: '#d0dcfb',
@@ -80,15 +100,22 @@ export const globalStyles = {
     gray: {
       100: '#FAFCFE',
     },
+    white: {
+      100: '#FFFFFF',
+    },
+    card: {
+      100: '#283046',
+    },
   },
   styles: {
     global: (props: StyleFunctionProps) => ({
       body: {
         overflowX: 'hidden',
-        bg: mode('white', 'navy.900')(props),
+        bg: mode('bg.100', 'bg.100')(props),
         fontFamily: 'DM Sans',
         letterSpacing: '0.2px',
         fontWeight: 500,
+        color: 'white'
       },
       input: {
         color: 'gray.700',

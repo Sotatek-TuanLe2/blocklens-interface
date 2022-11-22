@@ -1,9 +1,14 @@
+@import '../color-variables.scss';
+@import '../mixins.scss';
+
 .app-pagination {
   list-style-type: none;
   display: flex;
-  margin: 25px 25px 0;
+  margin: 25px 40px 0;
+
   li {
-    border: 1px solid #422afb;
+    @include text-small-regular;
+    border: 1px solid $border;
     margin: 0 5px;
     width: 30px;
     height: 30px;
@@ -11,10 +16,16 @@
     justify-content: center;
     align-items: center;
     border-radius: 3px;
+    color: $paragraph;
 
     &.selected {
-      background-color: #422afb;
-      color: #ffffff;
+      background: $gradient;
+      color: $title;
+    }
+
+    &:hover {
+      background: $gradient;
+      color: $title;
     }
   }
 }

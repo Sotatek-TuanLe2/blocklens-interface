@@ -9,7 +9,7 @@ interface IAppStats {
     totalToday?: number;
     totalSuccessToday?: number;
   };
-  type: 'WEBHOOK' | 'APP' | 'USER';
+  type: 'WEBHOOK' | 'APP' | 'User';
 }
 
 const AppStatics: FC<IAppStats> = ({ stats, type }) => {
@@ -27,27 +27,23 @@ const AppStatics: FC<IAppStats> = ({ stats, type }) => {
       columns={{ base: 1, sm: 2, lg: 4 }}
       gap="20px"
     >
-      <AppCard p={4} className="box-info">
-        <Box className="label">
-          {type}’s Messages <br />
-          Today
-        </Box>
+      <AppCard className="box-info">
+        <Box className="label">{type}’s Messages (24h)</Box>
         <Box className="value">{formatLargeNumber(stats.totalToday)}</Box>
       </AppCard>
 
-      <AppCard p={4} className="box-info">
-        <Box className="label">
-          {type}’s Success % <br />
-          Today
-        </Box>
+      <AppCard className="box-info">
+        <Box className="label">{type}’s Events (24h)</Box>
+        <Box className="value">{formatLargeNumber(stats.totalToday)}</Box>
+      </AppCard>
+
+      <AppCard className="box-info">
+        <Box className="label">{type}’s Success (24h)</Box>
         <Box className="value">{getPercentNotificationSuccess()}</Box>
       </AppCard>
 
-      <AppCard p={4} className="box-info">
-        <Box className="label">
-          {type}’s Messages <br />
-          This Month
-        </Box>
+      <AppCard className="box-info">
+        <Box className="label">{type}’s Messages (month)</Box>
         <Box className="value">{formatLargeNumber(stats.totalThisMonth)}</Box>
       </AppCard>
     </SimpleGrid>

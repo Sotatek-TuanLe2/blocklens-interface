@@ -9,7 +9,7 @@
 @font-face {
   font-family: 'DM Sans';
   src: url('../assets/fonts/DMSans-Medium.ttf');
-  font-weight: 500;
+  font-weight: 400;
 }
 
 @font-face {
@@ -36,20 +36,13 @@
   font-family: 'DM Sans';
   src: url('../assets/fonts/DMSans-MediumItalic.ttf');
   font-style: italic;
-  font-weight: 500;
+  font-weight: 400;
 }
 
 iframe {
   display: none !important;
 }
 
-.select-app {
-  &__control {
-    height: 48px;
-    border-color: #e0e5f2 !important;
-    cursor: pointer;
-  }
-}
 
 .text-error {
   font-weight: 400;

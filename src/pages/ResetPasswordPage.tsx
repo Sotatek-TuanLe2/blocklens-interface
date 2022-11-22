@@ -22,7 +22,6 @@ const ResetPasswordPage: FC = () => {
 
   const [dataForm, setDataForm] = useState<IDataForm>(initDataResetPassword);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
-  const colorText = useColorModeValue('gray.500', 'white');
 
   const history = useHistory();
   const location = useLocation();
@@ -50,7 +49,7 @@ const ResetPasswordPage: FC = () => {
 
   const validator = useRef(
     createValidator({
-      element: (message: string) => <Text color={'red.500'}>{message}</Text>,
+      element: (message: string) => <Text color={'red.100'}>{message}</Text>,
     }),
   );
 
@@ -69,19 +68,19 @@ const ResetPasswordPage: FC = () => {
     <BasePage>
       <Flex className="box-login">
         <AppCard className="box-form">
-          <Box className="title">
+          <Box className="box-form__title">
             <Text pb={3}>Choose new password</Text>
 
-            <Text color={colorText} className="sub-text">
+            <Text className="sub-text">
               Enter a new password to complete password reset.
             </Text>
           </Box>
 
-          <Box mt={5} color={colorText}>
-            <AppField label={'NEW PASSWORD'}>
+          <Box mt={5}>
+            <AppField label={'New Password'}>
               <AppInput
                 type={'password'}
-                placeholder="********"
+                placeholder="••••••••"
                 value={dataForm.newPassword}
                 onChange={(e) =>
                   setDataForm({
@@ -97,10 +96,10 @@ const ResetPasswordPage: FC = () => {
               />
             </AppField>
 
-            <AppField label={'CONFIRM PASSWORD'}>
+            <AppField label={'Confirm Password'}>
               <AppInput
                 type={'password'}
-                placeholder="********"
+                placeholder="••••••••"
                 value={dataForm.confirmPassword}
                 onChange={(e) =>
                   setDataForm({

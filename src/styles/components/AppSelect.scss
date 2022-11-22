@@ -1,0 +1,81 @@
+@import '../color-variables.scss';
+@import '../mixins.scss';
+
+.select-app {
+  &__control {
+    @include text-medium-regular;
+    background-color: $bg2 !important;
+    border-color: $line !important;
+    height: 48px;
+    border-radius: 6px !important;
+    cursor: pointer;
+
+    &:focus {
+      border-color: $main;
+    }
+
+    .label-option {
+      color: $title;
+    }
+  }
+}
+
+.app-select {
+  position: relative;
+  z-index: 2;
+
+  &__btn-select {
+    @include text-medium-regular;
+    border: 1px solid $line;
+    align-items: center;
+    border-radius: 6px;
+    z-index: 2;
+    background-color: $card;
+    justify-content: space-between;
+  }
+
+  &.small {
+    .app-select__btn-select {
+      height: 32px;
+      padding: 0 16px;
+    }
+  }
+
+  &.medium {
+    .app-select__btn-select {
+      height: 40px;
+      padding: 0 20px;
+    }
+  }
+
+  &.large {
+    .app-select__btn-select {
+      height: 48px;
+      padding: 0 24px;
+    }
+  }
+
+  &__menu {
+    position: absolute;
+    background: $border;
+    border-radius: 0 0 8px 8px;
+    width: 100%;
+    padding-top: 30px;
+    padding-bottom: 10px;
+    top: 10px;
+    z-index: -1;
+  }
+
+  &__menu-item {
+    @include text-medium-regular;
+    cursor: pointer;
+    padding: 8px 18px;
+    &:hover {
+      background-color: $bg2;
+    }
+
+    &.selected {
+      background: $gradient;
+    }
+  }
+}

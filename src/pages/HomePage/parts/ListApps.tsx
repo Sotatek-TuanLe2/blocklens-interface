@@ -1,56 +1,36 @@
-import {
-  Box,
-  Flex,
-  Tag,
-  Tbody,
-  Td,
-  Text,
-  Th,
-  Thead,
-  Tr,
-} from '@chakra-ui/react';
+import { Box, Flex, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
 import React, { useState } from 'react';
-import { AppCard, AppDataTable, AppLink } from 'src/components';
+import { AppButton, AppCard, AppDataTable } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import ModalChangeStatusApp from 'src/modals/ModalChangeStatusApp';
 import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
 import { IListAppResponse } from 'src/utils/common';
 import { useHistory } from 'react-router';
-import moment from 'moment';
+import { getLogoChainByName } from 'src/utils/utils-network';
+import { SmallAddIcon } from '@chakra-ui/icons';
 
 interface IListApps {
+  totalApps: number;
   searchListApp: any;
-  setSearchListApp: (value: any) => void;
+  setOpenModalCreateApp: () => void;
 }
 
-const getColorBrandStatus = (status?: APP_STATUS) => {
-  switch (status) {
-    case APP_STATUS.ENABLE:
-      return 'green';
-    case APP_STATUS.DISABLED:
-      return 'red';
-    default:
-      return 'green';
-  }
-};
-
 export const _renderStatus = (status?: APP_STATUS) => {
+  const isActive = status === APP_STATUS.ENABLE;
+
   return (
-    <Tag
-      size={'sm'}
-      borderRadius="full"
-      variant="solid"
-      colorScheme={getColorBrandStatus(status)}
-      px={5}
-    >
-      {status === APP_STATUS.ENABLE ? 'ACTIVE' : 'INACTIVE'}
-    </Tag>
+    <Box className={`status ${isActive ? 'active' : 'inactive'}`}>
+      {isActive ? 'ACTIVE' : 'INACTIVE'}
+    </Box>
   );
 };
 
-const ListApps: React.FC<IListApps> = ({ searchListApp, setSearchListApp }) => {
+const ListApps: React.FC<IListApps> = ({
+  totalApps,
+  setOpenModalCreateApp,
+  searchListApp,
+}) => {
   const history = useHistory();
-  const [totalApps, setTotalApps] = useState<number>(0);
   const [appSelected, setAppSelected] = useState<IAppResponse | null>(null);
   const [totalAppActive, setTotalAppActive] = useState<number | undefined>(0);
   const [openModalChangeStatus, setOpenModalChangeStatus] =
@@ -61,7 +41,6 @@ const ListApps: React.FC<IListApps> = ({ searchListApp, setSearchListApp }) => {
       const res: IListAppResponse = await rf
         .getRequest('AppRequest')
         .getListApp(param);
-      setTotalApps(res?.totalDocs);
       setTotalAppActive(res?.totalAppActive);
       return res;
     } catch (error) {
@@ -75,35 +54,15 @@ const ListApps: React.FC<IListApps> = ({ searchListApp, setSearchListApp }) => {
         <Tr>
           <Th>NAME</Th>
           <Th>NETWORK</Th>
-          <Th textAlign={'right'}>Days on Blocklens</Th>
-          <Th>Status</Th>
-          <Th>ACTIONS</Th>
+          <Th textAlign={'center'}>Messages today</Th>
+          <Th textAlign={'center'}>number of webhook</Th>
+          <Th textAlign={'right'}>Status</Th>
         </Tr>
       </Thead>
     );
   };
 
   const _renderBody = (data?: IAppResponse[]) => {
-    const _renderActionApp = (app: IAppResponse) => {
-      return (
-        <Box
-          cursor={'pointer'}
-          color={app.status === APP_STATUS.DISABLED ? 'green' : 'red'}
-          onClick={(e: any) => {
-            e.stopPropagation();
-            setOpenModalChangeStatus(true);
-            setAppSelected(app);
-          }}
-        >
-          {app.status === APP_STATUS.DISABLED ? 'Activate' : 'Deactivate'}
-        </Box>
-      );
-    };
-
-    const getDaysOnBlocklens = (date: number) => {
-      return Math.floor(moment.duration(moment().diff(moment(date))).asDays());
-    };
-
     return (
       <Tbody>
         {data?.map((app: IAppResponse, index: number) => {
@@ -113,13 +72,19 @@ const ListApps: React.FC<IListApps> = ({ searchListApp, setSearchListApp }) => {
               className="tr-list-app"
               onClick={() => history.push(`/app-detail/${app.appId}`)}
             >
+              <Td>{app.name}</Td>
               <Td>
-                <AppLink to={`/app-detail/${app.appId}`}>{app.name}</AppLink>
+                <Flex alignItems={'center'}>
+                  <Box
+                    className={getLogoChainByName(app.chain) || ''}
+                    mr={2.5}
+                  />
+                  {app.chain}
+                </Flex>
               </Td>
-              <Td>{app.chain + ' ' + app.network}</Td>
-              <Td textAlign={'right'}>{getDaysOnBlocklens(app.createdAt)}</Td>
-              <Td>{_renderStatus(app.status)}</Td>
-              <Td>{_renderActionApp(app)}</Td>
+              <Td textAlign={'center'}>N/A</Td>
+              <Td textAlign={'center'}>N/A</Td>
+              <Td textAlign={'right'}>{_renderStatus(app.status)}</Td>
             </Tr>
           );
         })}
@@ -129,17 +94,26 @@ const ListApps: React.FC<IListApps> = ({ searchListApp, setSearchListApp }) => {
 
   return (
     <Box className="list-app-hp">
-      <Flex className="title-list-app">
-        <Text className="text-title">Apps</Text>
-        <div>
-          <Text as={'span'} mr={5}>
-            ACTIVE APPS
-          </Text>{' '}
-          {totalAppActive} / {totalApps}
-        </div>
-      </Flex>
-
       <AppCard className="list-app-table-wrap">
+        <Flex className="title-list-app">
+          <Text className="text-title">Apps</Text>
+          <Flex alignItems={'center'}>
+            <Box className="number-app">
+              <Text as={'span'}>Active Apps:</Text> {totalAppActive} /{' '}
+              {totalApps}
+            </Box>
+
+            <AppButton
+              size={'sm'}
+              px={4}
+              py={1}
+              className={'btn-create'}
+              onClick={setOpenModalCreateApp}
+            >
+              <SmallAddIcon mr={1} /> Create
+            </AppButton>
+          </Flex>
+        </Flex>
         <AppDataTable
           requestParams={searchListApp}
           fetchData={fetchDataTable}
@@ -149,16 +123,12 @@ const ListApps: React.FC<IListApps> = ({ searchListApp, setSearchListApp }) => {
         />
       </AppCard>
 
-      <ModalChangeStatusApp
-        open={openModalChangeStatus}
-        onClose={() => setOpenModalChangeStatus(false)}
-        appInfo={appSelected}
-        reloadData={() => {
-          setSearchListApp((pre: any) => {
-            return { ...pre };
-          });
-        }}
-      />
+      {/*<ModalChangeStatusApp*/}
+      {/*  open={openModalChangeStatus}*/}
+      {/*  onClose={() => setOpenModalChangeStatus(false)}*/}
+      {/*  appInfo={appSelected}*/}
+      {/*  reloadData={() => console.log('sdsds')}*/}
+      {/*/>*/}
     </Box>
   );
 };

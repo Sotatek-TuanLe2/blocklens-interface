@@ -13,7 +13,7 @@ interface AppLinkProps extends LinkProps {
 }
 
 const AppLink: FC<AppLinkProps> = ({ ...props }) => {
-  const colorLink = useColorModeValue('brand.500', 'brand.400');
+  const colorLink = useColorModeValue('paragraph.100', 'paragraph.100');
   return (
     <Link as={ReactLink} {...props} color={colorLink}>
       {props.children}
@@ -38,7 +38,7 @@ export const appLinkStyles = {
   },
   variants: {
     main: (props: StyleProps) => ({
-      color: mode('brand.500', 'brand.400')(props),
+      color: mode('paragraph.100', 'paragraph.100')(props),
       _hover: {
         textDecoration: 'underline',
       },

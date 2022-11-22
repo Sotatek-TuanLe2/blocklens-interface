@@ -13,7 +13,7 @@ const BasePageContainer: FC<IBasePageContainer> = ({ children, className }) => {
     <BasePage>
       <Flex
         justifyContent={'center'}
-        minH={'calc(100vh - 135px)'}
+        minH={'calc(100vh - 200px)'}
         className={className}
       >
         <Box marginTop={'70px'} maxW={'1240px'} width={'full'}>
