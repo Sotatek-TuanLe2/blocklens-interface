@@ -6,6 +6,9 @@ import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
 import { IListAppResponse } from 'src/utils/common';
 import { useHistory } from 'react-router';
 import { getLogoChainByName } from 'src/utils/utils-network';
+import { useSelector } from 'react-redux';
+import { RootState } from 'src/store';
+import ModalUpgradeCreateApp from 'src/modals/ModalUpgradeCreateApp';
 
 interface IListApps {
   totalApps: number;
@@ -29,7 +32,9 @@ const ListApps: React.FC<IListApps> = ({
   searchListApp,
 }) => {
   const history = useHistory();
+  const { myPlan } = useSelector((state: RootState) => state.billing);
   const [totalAppActive, setTotalAppActive] = useState<number | undefined>(0);
+  const [openModalUpgradeCreateApp, setOpenModalUpgradeCreateApp] =
     useState<boolean>(false);
 
   const fetchDataTable: any = async (param: any) => {
@@ -42,6 +47,15 @@ const ListApps: React.FC<IListApps> = ({
     } catch (error) {
       return error;
     }
+  };
+
+  const onCreateApp = () => {
+    if (myPlan?.appLimitation !== totalApps) {
+      setOpenModalUpgradeCreateApp(true);
+      return;
+    }
+
+    setOpenModalCreateApp();
   };
 
   const _renderHeader = () => {
@@ -103,7 +117,7 @@ const ListApps: React.FC<IListApps> = ({
               px={4}
               py={1}
               className={'btn-create'}
-              onClick={setOpenModalCreateApp}
+              onClick={onCreateApp}
             >
               <Box className="icon-plus-circle" mr={2} /> Create
             </AppButton>
@@ -117,6 +131,11 @@ const ListApps: React.FC<IListApps> = ({
           limit={10}
         />
       </AppCard>
+
+      <ModalUpgradeCreateApp
+        open={openModalUpgradeCreateApp}
+        onClose={() => setOpenModalUpgradeCreateApp(false)}
+      />
     </Box>
   );
 };

@@ -6,8 +6,8 @@ export default class BillingRequest extends BaseRequest {
     return config.api.baseUrlApi;
   }
 
-  getBillingPlans() {
-    const url = '/public/billing-plans';
+  getPlans() {
+    const url = '/public/plans';
     return this.get(url);
   }
 
@@ -22,7 +22,7 @@ export default class BillingRequest extends BaseRequest {
   }
 
   getCurrentPlan() {
-    const url = '/my/billing-plans/plan';
+    const url = '/my/plan';
     return this.get(url);
   }
 
@@ -37,12 +37,12 @@ export default class BillingRequest extends BaseRequest {
   }
 
   updateBillingPlan(params: { code: string }) {
-    const url = '/my/billing-plans/plan';
+    const url = '/my/plan';
     return this.put(url, params);
   }
 
   cancelSubscription() {
-    const url = '/my/billing-plans/cancel-subscription';
+    const url = '/my/plan/cancel-subscription';
     return this.put(url);
   }
 

@@ -19,6 +19,7 @@ import AppDetail from './pages/AppDetail';
 import VerifyAccountPage from './pages/VerifyAccountPage';
 import WebhookActivitiesPage from './pages/WebhookActivitiesPage';
 import { getInfoUser } from 'src/store/auth';
+import { getMyPlan, getPlans } from 'src/store/billing';
 import { useDispatch } from 'react-redux';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import CreateWebhookNFTPage from './pages/CreateWebhookNFTPage';
@@ -40,6 +41,8 @@ const Routes: FC<RouteComponentProps> = () => {
   useEffect(() => {
     if (!accessToken) return;
     dispatch(getInfoUser());
+    dispatch(getMyPlan());
+    dispatch(getPlans());
   }, []);
 
   return (

@@ -6,23 +6,12 @@ import ModalPayment from 'src/modals/ModalPayment';
 import ModalCancelSubscription from 'src/modals/ModalCancelSubscription';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
-import { useDispatch } from 'react-redux';
 import { formatTimestamp } from 'src/utils/utils-helper';
 import ModalBillingInfo from 'src/modals/ModalBillingInfo';
 import ModalChangePlan from 'src/modals/ModalChangePlan';
-
-export interface IBillingPlan {
-  code: string;
-  name: string;
-  description: string;
-  price: number;
-  currency: string;
-  periodByDay: number;
-  appLimitation: number;
-  notificationLimitation: number;
-  from: number;
-  to: number;
-}
+import { useSelector } from 'react-redux';
+import { RootState } from 'src/store';
+import { IPlan } from 'src/store/billing';
 
 const planEnterprise = {
   code: 'ENTERPRISE',
@@ -33,9 +22,7 @@ const planEnterprise = {
 };
 
 const MyPlan = () => {
-  const [planSelected, setPlanSelected] = useState<IBillingPlan | any>({});
-  const [billingPlans, setBillingPlans] = useState<IBillingPlan[]>([]);
-  const [currentPlan, setCurrentPlan] = useState<IBillingPlan | any>({});
+  const [planSelected, setPlanSelected] = useState<IPlan| any>({});
   const [billingInfo, setBillingInfo] = useState<any>({});
   const [isOpenModalChangePaymentMethod, setIsOpenModalChangePaymentMethod] =
     useState<boolean>(false);
@@ -49,23 +36,11 @@ const MyPlan = () => {
     useState<boolean>(false);
   const [paymentIntent, setPaymentIntent] = useState<any>({});
 
-  const getBillingPlans = async () => {
-    try {
-      const res = await rf.getRequest('BillingRequest').getBillingPlans();
-      setBillingPlans([...res, planEnterprise]);
-    } catch (e: any) {
-      toastError({ message: e?.message || 'Oops. Something went wrong!' });
-    }
-  };
+  const { myPlan: currentPlan, plans } = useSelector(
+    (state: RootState) => state.billing,
+  );
 
-  const getCurrentPlan = async () => {
-    try {
-      const res = await rf.getRequest('BillingRequest').getCurrentPlan();
-      setCurrentPlan(res);
-    } catch (e: any) {
-      toastError({ message: e?.message || 'Oops. Something went wrong!' });
-    }
-  };
+  const billingPlans = useMemo(() => [...plans, planEnterprise], [plans]);
 
   const getBillingInfo = async () => {
     try {
@@ -103,8 +78,6 @@ const MyPlan = () => {
   }, [isOpenModalChangePaymentMethod]);
 
   useEffect(() => {
-    getBillingPlans().then();
-    getCurrentPlan().then();
     getBillingInfo().then();
   }, []);
 
@@ -136,7 +109,7 @@ const MyPlan = () => {
   const _renderPlans = () => {
     return (
       <Flex gap={'16px'} my={5}>
-        {billingPlans.map((plan: IBillingPlan, index) => {
+        {billingPlans.map((plan: IPlan, index: number) => {
           return (
             <PlanItem
               plan={plan}
@@ -255,8 +228,8 @@ const MyPlan = () => {
                 <span>${currentPlanData?.price || 0}</span>
                 <Box as={'span'} color={'#a0a4ac'} fontSize={'13px'}>
                   Billing period{' '}
-                  {formatTimestamp(currentPlan?.from, 'MMM DD, YYYY')} -{' '}
-                  {formatTimestamp(currentPlan?.to, 'MMM DD, YYYY')} (UTC)
+                  {formatTimestamp(currentPlan?.from || 0, 'MMM DD, YYYY')} -{' '}
+                  {formatTimestamp(currentPlan?.to || 0, 'MMM DD, YYYY')} (UTC)
                 </Box>
               </div>
             </Box>
@@ -317,7 +290,6 @@ const MyPlan = () => {
         open={isOpenModalChangePlan}
         onClose={() => setIsOpenModalChangePlan(false)}
         plan={planSelected}
-        reloadData={getCurrentPlan}
       />
     </Box>
   );
