@@ -1,4 +1,4 @@
-import { Box, Flex, Text, useColorModeValue } from '@chakra-ui/react';
+import { Box, Flex, Text } from '@chakra-ui/react';
 import { FC, useEffect, useRef, useState } from 'react';
 import { useHistory, useLocation } from 'react-router';
 import { AppButton, AppCard, AppField, AppInput } from 'src/components';

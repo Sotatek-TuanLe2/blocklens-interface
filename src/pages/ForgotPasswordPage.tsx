@@ -1,6 +1,6 @@
 import { FC, useEffect, useRef, useState } from 'react';
 import React from 'react';
-import { Box, Flex, useColorModeValue, Text } from '@chakra-ui/react';
+import { Box, Flex, Text } from '@chakra-ui/react';
 import {
   AppField,
   AppCard,
@@ -12,8 +12,8 @@ import BasePage from 'src/layouts/BasePage';
 import { createValidator } from 'src/utils/utils-validator';
 import 'src/styles/pages/LoginPage.scss';
 import rf from 'src/requests/RequestFactory';
-import { toastError, toastSuccess } from 'src/utils/utils-notify';
-import ModalResendMail from '../modals/ModalResendMail';
+import { toastError } from 'src/utils/utils-notify';
+import ModalResendMail from 'src/modals/ModalResendMail';
 
 interface IDataForm {
   email: string;

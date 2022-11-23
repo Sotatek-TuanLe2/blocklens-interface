@@ -1,7 +1,6 @@
 import { Box, Flex } from '@chakra-ui/react';
 import React, { FC } from 'react';
 import BaseModal from './BaseModal';
-import { useHistory } from 'react-router';
 import AppButton from 'src/components/AppButton';
 
 interface ModalUpgradeCreateApp {

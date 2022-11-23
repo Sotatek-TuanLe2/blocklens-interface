@@ -36,7 +36,7 @@
     color: $title;
 
     span {
-      color: $paragraph;
+      color: $line;
     }
   }
 
@@ -89,6 +89,7 @@
       th {
         @include text-small-bold;
         border-bottom: 0;
+        color: $line;
 
         &:first-child {
           padding-left: 40px;

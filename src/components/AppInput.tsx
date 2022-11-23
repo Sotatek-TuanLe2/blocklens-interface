@@ -9,7 +9,7 @@ import { mode } from '@chakra-ui/theme-tools';
 import { StyleProps, forwardRef } from '@chakra-ui/system';
 import SimpleReactValidator from 'simple-react-validator';
 import { useForceRender } from 'src/hooks/useForceRender';
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import React from 'react';
 
 interface ValidatorProps {
@@ -24,6 +24,7 @@ interface AppInputProps extends InputProps {
   validate?: ValidatorProps;
   readOnly?: boolean;
   size?: string;
+  type?: string;
   endAdornment?: ReactNode;
   hiddenErrorText?: boolean;
 }
@@ -34,6 +35,7 @@ const AppInput = forwardRef(
       variant = 'main',
       size = 'lg',
       readOnly,
+      type = 'text',
       validate,
       endAdornment,
       hiddenErrorText = false,
@@ -42,14 +44,18 @@ const AppInput = forwardRef(
     ref,
   ) => {
     const forceRender = useForceRender();
+    const [isShowPassword, setIsShowPassword] = useState<boolean>(false);
+
     const onBlur = () => {
       validate?.validator.showMessageFor(validate.name);
       forceRender();
     };
+
     return (
       <>
         <InputGroup size={size}>
           <Input
+            type={type === 'password' && isShowPassword ? 'text' : type}
             {...props}
             variant={variant}
             onBlur={onBlur}
@@ -58,6 +64,19 @@ const AppInput = forwardRef(
           />
 
           {endAdornment && <InputRightElement children={<>{endAdornment}</>} />}
+          {type === 'password' && (
+            <InputRightElement
+              onClick={() => setIsShowPassword(!isShowPassword)}
+              children={
+                <Box
+                  cursor={'pointer'}
+                  className={`${
+                    isShowPassword ? 'icon-eye-close' : 'icon-eye'
+                  }`}
+                />
+              }
+            />
+          )}
         </InputGroup>
         <Box>
           {!hiddenErrorText &&
