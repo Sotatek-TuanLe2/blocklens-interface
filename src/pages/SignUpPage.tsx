@@ -14,6 +14,7 @@ import 'src/styles/pages/LoginPage.scss';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { GoogleAuthButton } from 'src/components';
+import ModalResendMail from 'src/modals/ModalResendMail';
 
 interface IDataForm {
   firstName: string;
@@ -34,7 +35,8 @@ const SignUpPage: FC = () => {
 
   const [dataForm, setDataForm] = useState<IDataForm>(initDataSignUp);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
-  const [isSuccess, setIsSuccess] = useState<boolean>(false);
+  const [openModalResendEmail, setOpenModalResendEmail] =
+    useState<boolean>(false);
   const [userId, setUserId] = useState<string>('');
   const validator = useRef(
     createValidator({
@@ -51,8 +53,7 @@ const SignUpPage: FC = () => {
     try {
       const res = await rf.getRequest('AuthRequest').signUp(dataForm);
       setUserId(res?.userId || '');
-      toastSuccess({ message: 'Sign up successfully!' });
-      setIsSuccess(true);
+      setOpenModalResendEmail(true);
     } catch (e: any) {
       toastError({ message: e?.message || 'Oops. Something went wrong!' });
     }
@@ -188,24 +189,18 @@ const SignUpPage: FC = () => {
     );
   };
 
-  const _renderNotificationSendMail = () => {
-    return (
-      <AppCard className="box-form" borderRadius={'4px'}>
-        <Box textAlign={'center'}>
-          An email has been sent to {dataForm.email}.<br />
-          Click the link in the email to complete signup.
-        </Box>
-        <AppButton mt={5} onClick={onResendMail} size={'lg'} width={'full'}>
-          Resend email
-        </AppButton>
-      </AppCard>
-    );
-  };
-
   return (
     <BasePage>
       <Flex className="box-login">
-        {!isSuccess ? _renderFormSignUp() : _renderNotificationSendMail()}
+        {_renderFormSignUp()}
+
+        <ModalResendMail
+          type="Sign up"
+          email={dataForm.email}
+          open={openModalResendEmail}
+          onClose={() => setOpenModalResendEmail(false)}
+          onResend={onResendMail}
+        />
       </Flex>
     </BasePage>
   );

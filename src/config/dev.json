@@ -73,6 +73,23 @@
         },
         { "name": "Devnet", "id": "DEVNET", "icon": "icon-solana" }
       ]
+    },
+    {
+      "name": "Bitcoin",
+      "id": "BITCOIN",
+      "icon": "icon-bitcoin",
+      "networks": [
+        {
+          "name": "Mainnet",
+          "id": "MAINNET",
+          "icon": "icon-bitcoin"
+        },
+        {
+          "name": "Testnet",
+          "id": "TESTNET",
+          "icon": "icon-bitcoin"
+        }
+      ]
     }
   ]
 }

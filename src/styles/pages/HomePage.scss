@@ -58,6 +58,8 @@
         color: $title;
         @include text-medium-regular;
 
+        padding: 13px 15px;
+
         &:first-child {
           padding-left: 40px;
         }

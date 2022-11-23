@@ -5,7 +5,7 @@
   background-color: $card !important;
   border-radius: 20px !important;
   padding: 8px;
-  max-width: 500px;
+  max-width: 500px !important;
 
   &__btn-close {
     position: absolute;
@@ -21,18 +21,30 @@
     cursor: pointer;
   }
 
+  &__icon {
+    margin: 50px auto 0;
+  }
+
   &__title {
     @include heading-4;
     margin-top: 50px;
     text-align: center;
     margin-bottom: 8px;
+
+    &.icon {
+      margin-top: 28px;
+    }
   }
 
   &__description {
     @include text-medium-regular;
     color: $paragraph;
-    margin-bottom: 28px;
-    padding: 0 32px;
+    margin-bottom: 18px;
+    padding: 0 28px;
     text-align: center;
+
+    .email {
+      color: $title;
+    }
   }
 }

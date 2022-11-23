@@ -13,6 +13,7 @@ import { createValidator } from 'src/utils/utils-validator';
 import 'src/styles/pages/LoginPage.scss';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
+import ModalResendMail from '../modals/ModalResendMail';
 
 interface IDataForm {
   email: string;
@@ -26,6 +27,8 @@ const ForgotPasswordPage: FC = () => {
   const [dataForm, setDataForm] = useState<IDataForm>(initDataRestPassword);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
   const [hiddenErrorText, setHiddenErrorText] = useState(false);
+  const [openModalResendEmail, setOpenModalResendEmail] =
+    useState<boolean>(false);
 
   const validator = useRef(
     createValidator({
@@ -40,9 +43,8 @@ const ForgotPasswordPage: FC = () => {
     }
     try {
       await rf.getRequest('AuthRequest').forgotPassword(dataForm);
-      toastSuccess({ message: 'Send mail is successfully.' });
       setDataForm({ ...initDataRestPassword });
-      setHiddenErrorText(true);
+      setOpenModalResendEmail(true);
     } catch (error: any) {
       toastError({
         message: `${error.message || 'Oops. Something went wrong!'}`,
@@ -106,6 +108,14 @@ const ForgotPasswordPage: FC = () => {
             </Box>
           </Box>
         </AppCard>
+
+        <ModalResendMail
+          type="Reset password"
+          email={dataForm.email}
+          open={openModalResendEmail}
+          onClose={() => setOpenModalResendEmail(false)}
+          onResend={() => console.log('send mail')}
+        />
       </Flex>
     </BasePage>
   );

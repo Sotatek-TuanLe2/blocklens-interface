@@ -18,7 +18,7 @@ export const _renderStatus = (status?: APP_STATUS) => {
 
   return (
     <Box className={`status ${isActive ? 'active' : 'inactive'}`}>
-      {isActive ? 'ACTIVE' : 'INACTIVE'}
+      {isActive ? 'Active' : 'Inactive'}
     </Box>
   );
 };
@@ -95,8 +95,7 @@ const ListApps: React.FC<IListApps> = ({
           <Text className="text-title">Apps</Text>
           <Flex alignItems={'center'}>
             <Box className="number-app">
-              <Text as={'span'}>Active Apps:</Text> {totalAppActive} /{' '}
-              {totalApps}
+              <Text as={'span'}>Active Apps:</Text> {totalAppActive}/{totalApps}
             </Box>
 
             <AppButton

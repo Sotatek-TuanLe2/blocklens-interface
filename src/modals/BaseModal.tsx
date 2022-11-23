@@ -2,7 +2,6 @@ import {
   Modal,
   ModalOverlay,
   ModalContent,
-  ModalHeader,
   ModalFooter,
   ModalBody,
   Box,
@@ -10,7 +9,6 @@ import {
 import React, { FC, ReactNode } from 'react';
 import AppButton from 'src/components/AppButton';
 import { ModalProps, ModalHeaderProps } from '@chakra-ui/modal/src/modal';
-import { WarningTwoIcon } from '@chakra-ui/icons';
 import 'src/styles/components/BaseModal.scss';
 import { CloseIcon } from '@chakra-ui/icons';
 
@@ -39,7 +37,7 @@ export interface BaseModalProps extends ModalProps {
   className?: string;
   isLoadingButtonRight?: boolean;
   styleHeader?: ModalHeaderProps;
-  isWarning?: boolean;
+  icon?: string;
 }
 
 const BaseModal: FC<BaseModalProps> = ({
@@ -47,6 +45,7 @@ const BaseModal: FC<BaseModalProps> = ({
   description,
   isOpen,
   onClose,
+  icon,
   size = 'md',
   isCentered = true,
   isHideCloseIcon = false,
@@ -59,7 +58,6 @@ const BaseModal: FC<BaseModalProps> = ({
   closeOnOverlayClick = false,
   className,
   styleHeader,
-  isWarning = false,
 }) => {
   return (
     <>
@@ -79,14 +77,16 @@ const BaseModal: FC<BaseModalProps> = ({
             </Box>
           )}
 
-          <Box className={'modal__title'} {...styleHeader}>
-            {isWarning && <WarningTwoIcon mr={2} color={'red'} />} {title}
+          {icon && (
+            <Box className={`modal__icon ${icon}`} />
+          )}
+
+          <Box className={`modal__title ${icon ? 'icon' : ''}`} {...styleHeader}>
+            {title}
           </Box>
 
           {description && (
-            <Box className={'modal__description'}>
-              {description}
-            </Box>
+            <Box className={'modal__description'}>{description}</Box>
           )}
 
           <ModalBody>{children}</ModalBody>
