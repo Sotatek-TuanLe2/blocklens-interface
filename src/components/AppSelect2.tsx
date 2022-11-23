@@ -56,9 +56,10 @@ const AppSelect2: FC<IAppSelectPops> = ({
       </Flex>
       {open && (
         <Box className={'app-select__menu'}>
-          {options.map((option: IOption) => {
+          {options.map((option: IOption, index: number) => {
             return (
               <Flex
+                key={index}
                 className={`app-select__menu-item ${
                   value === option.value ? 'selected' : ''
                 }`}
