@@ -60,7 +60,7 @@ const ListApps: React.FC<IListApps> = ({
 
   const _renderHeader = () => {
     return (
-      <Thead className="header-list-app">
+      <Thead className="header-list">
         <Tr>
           <Th>NAME</Th>
           <Th>NETWORK</Th>
@@ -79,7 +79,7 @@ const ListApps: React.FC<IListApps> = ({
           return (
             <Tr
               key={index}
-              className="tr-list-app"
+              className="tr-list"
               onClick={() => history.push(`/app-detail/${app.appId}`)}
             >
               <Td>{app.name}</Td>
@@ -104,7 +104,7 @@ const ListApps: React.FC<IListApps> = ({
 
   return (
     <Box className="list-app-hp">
-      <AppCard className="list-app-table-wrap">
+      <AppCard className="list-table-wrap">
         <Flex className="title-list-app">
           <Text className="text-title">Apps</Text>
           <Flex alignItems={'center'}>

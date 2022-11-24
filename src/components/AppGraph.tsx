@@ -1,5 +1,5 @@
 import { Box, Flex } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React, { FC, useState } from 'react';
 import { AppCard, AppSelect2 } from 'src/components';
 import {
   LineChart,
@@ -78,7 +78,7 @@ export const Chart = () => {
 
   return (
     <Box height={'500px'} px={5}>
-      <ResponsiveContainer width="100%" height="80%">
+      <ResponsiveContainer width="100%" height="85%">
         <LineChart
           width={500}
           height={300}
@@ -112,23 +112,26 @@ export const Chart = () => {
   );
 };
 
-const UserGraph = () => {
-  const [type, setType] = useState<string>('messages');
+interface IAppGraph {
+  type: 'user' | 'app' | 'webhook';
+}
+
+const AppGraph: FC<IAppGraph> = ({ type }) => {
+  const [typeData, setTypeData] = useState<string>('messages');
   const [duration, setDuration] = useState<string>('24h');
 
   return (
     <AppCard className="user-graph" p={0}>
       <Flex className={'title-list-app'}>
-        <Box className={'text-title'}>User’s Graph</Box>
+        <Box className={'text-title'}>{type}'s Graph</Box>
         <Flex>
           <Box mr={3}>
             <AppSelect2
               width={'230px'}
-              value={type}
-              onChange={setType}
+              value={typeData}
+              onChange={setTypeData}
               options={optionsFilterByType}
             />
-
           </Box>
 
           <AppSelect2
@@ -144,4 +147,4 @@ const UserGraph = () => {
   );
 };
 
-export default UserGraph;
+export default AppGraph;

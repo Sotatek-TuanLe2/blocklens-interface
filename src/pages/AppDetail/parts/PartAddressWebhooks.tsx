@@ -1,12 +1,9 @@
-import { Box, Flex, Tag } from '@chakra-ui/react';
-import { SmallAddIcon } from '@chakra-ui/icons';
+import { Box, Flex } from '@chakra-ui/react';
 import React, { FC, useState } from 'react';
-import { AppButton, AppCard } from 'src/components';
+import { AppButton } from 'src/components';
 import ModalCreateWebhookAddress from 'src/modals/ModalCreateWebhookAddress';
 import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
 import {
-  getStatusWebhook,
-  WEBHOOK_STATUS,
   WEBHOOK_TYPES,
 } from 'src/utils/utils-webhook';
 import ListWebhook from './ListWebhook';
@@ -20,20 +17,6 @@ interface IParams {
   type?: string;
 }
 
-export const StatusWebhook = ({ status }: any) => {
-  return (
-    <Tag
-      size={'sm'}
-      borderRadius="full"
-      variant="solid"
-      colorScheme={status === WEBHOOK_STATUS.ENABLE ? 'green' : 'red'}
-      px={5}
-    >
-      {getStatusWebhook(status)}
-    </Tag>
-  );
-};
-
 const PartAddressWebhooks: FC<IListAddress> = ({ appInfo }) => {
   const [isOpenCreateAddressModal, setIsOpenCreateAddressModal] =
     useState<boolean>(false);
@@ -43,59 +26,52 @@ const PartAddressWebhooks: FC<IListAddress> = ({ appInfo }) => {
 
   const _renderNoData = () => {
     return (
-      <Flex alignItems={'center'} my={10} flexDirection={'column'}>
+      <Flex className="box-create">
         Set up your first address webhook!
-        <Box
-          className="button-create-webhook"
-          mt={2}
-          cursor={isDisabledApp ? 'not-allowed' : 'pointer'}
+        <AppButton
+          isDisabled={isDisabledApp}
+          size={'md'}
           onClick={() => {
             if (isDisabledApp) return;
             setIsOpenCreateAddressModal(true);
           }}
         >
-          + Create webhook
-        </Box>
+          Create Webhook
+        </AppButton>
       </Flex>
     );
   };
 
   return (
     <>
-      <AppCard mt={10} className="list-nft" p={0}>
-        <Flex justifyContent="space-between" py={5} px={8} alignItems="center">
-          <Flex alignItems="center">
-            <Box className="icon-app-address" mr={4} />
-            <Box className="name">
-              Address Activity
-              <Box className="description">
-                Get notified whenever an address sends/receives ETH or any Token
-              </Box>
-            </Box>
-          </Flex>
+      <Flex justifyContent="space-between" alignItems="center" mx={10}>
+        <Box className="description">
+          Get notified whenever an address sends/receives any Token
+        </Box>
+        {totalWebhook > 0 && (
           <AppButton
-            textTransform="uppercase"
-            size={'md'}
-            fontWeight={'400'}
-            isDisabled={isDisabledApp}
+            size={'sm'}
+            px={4}
+            py={1}
+            className={'btn-create'}
             onClick={() => setIsOpenCreateAddressModal(true)}
           >
-            <SmallAddIcon mr={1} /> Create webhook
+            <Box className="icon-plus-circle" mr={2} /> Create
           </AppButton>
-        </Flex>
+        )}
+      </Flex>
 
-        <Box bgColor={'#FAFAFA'} borderBottomRadius={'10px'} pb={8}>
-          <ListWebhook
-            setTotalWebhook={setTotalWebhook}
-            totalWebhook={totalWebhook}
-            params={params}
-            appInfo={appInfo}
-            setParams={setParams}
-            type={WEBHOOK_TYPES.ADDRESS_ACTIVITY}
-          />
-          {totalWebhook === 0 && _renderNoData()}
-        </Box>
-      </AppCard>
+      <Box mt={3} className="list-table-wrap">
+        <ListWebhook
+          setTotalWebhook={setTotalWebhook}
+          totalWebhook={totalWebhook}
+          params={params}
+          appInfo={appInfo}
+          setParams={setParams}
+          type={WEBHOOK_TYPES.ADDRESS_ACTIVITY}
+        />
+        {totalWebhook === 0 && _renderNoData()}
+      </Box>
 
       <ModalCreateWebhookAddress
         open={isOpenCreateAddressModal}

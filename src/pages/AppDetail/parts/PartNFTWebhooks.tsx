@@ -1,7 +1,6 @@
 import { Flex, Box } from '@chakra-ui/react';
-import { SmallAddIcon } from '@chakra-ui/icons';
 import React, { FC, useState } from 'react';
-import { AppButton, AppCard } from 'src/components';
+import { AppButton } from 'src/components';
 import { useHistory } from 'react-router';
 import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
 import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
@@ -24,59 +23,49 @@ const PartNFTWebhooks: FC<IListNTF> = ({ appInfo }) => {
 
   const _renderNoData = () => {
     return (
-      <Flex alignItems={'center'} my={10} flexDirection={'column'}>
+      <Flex className="box-create">
         Set up your first NFT activity webhook!
-        <Box
-          className="button-create-webhook"
-          cursor={isDisabledApp ? 'not-allowed' : 'pointer'}
-          mt={2}
-          onClick={() => {
-            if (isDisabledApp) return;
-            history.push(`/create-webhook-nft/${appInfo.appId}`);
-          }}
+        <AppButton
+          isDisabled={isDisabledApp}
+          size={'md'}
+          onClick={() => history.push(`/create-webhook-nft/${appInfo.appId}`)}
         >
-          + Create webhook
-        </Box>
+          Create Webhook
+        </AppButton>
       </Flex>
     );
   };
 
   return (
     <>
-      <AppCard mt={10} className="list-nft" p={0}>
-        <Flex justifyContent="space-between" py={5} px={8} alignItems="center">
-          <Flex alignItems="center">
-            <Box className="icon-app-nft" mr={4} />
-            <Box className="name">
-              NFT Activity
-              <Box className="description">
-                Get notified when an NFT is transferred
-              </Box>
-            </Box>
-          </Flex>
+      <Flex justifyContent="space-between" alignItems="center" mx={10}>
+        <Box className="description">
+          Get notified when an NFT is transferred
+        </Box>
+        {totalWebhook > 0 && (
           <AppButton
-            textTransform="uppercase"
-            size={'md'}
-            isDisabled={isDisabledApp}
+            size={'sm'}
+            px={4}
+            py={1}
+            className={'btn-create'}
             onClick={() => history.push(`/create-webhook-nft/${appInfo.appId}`)}
           >
-            <SmallAddIcon mr={1} /> Create webhook
+            <Box className="icon-plus-circle" mr={2} /> Create
           </AppButton>
-        </Flex>
+        )}
+      </Flex>
+      <Box mt={3} className="list-table-wrap">
+        <ListWebhook
+          setTotalWebhook={setTotalWebhook}
+          totalWebhook={totalWebhook}
+          params={params}
+          appInfo={appInfo}
+          setParams={setParams}
+          type={WEBHOOK_TYPES.NFT_ACTIVITY}
+        />
 
-        <Box bgColor={'#FAFAFA'} borderBottomRadius={'10px'} pb={8}>
-          <ListWebhook
-            setTotalWebhook={setTotalWebhook}
-            totalWebhook={totalWebhook}
-            params={params}
-            appInfo={appInfo}
-            setParams={setParams}
-            type={WEBHOOK_TYPES.NFT_ACTIVITY}
-          />
-
-          {totalWebhook === 0 && _renderNoData()}
-        </Box>
-      </AppCard>
+        {totalWebhook === 0 && _renderNoData()}
+      </Box>
     </>
   );
 };

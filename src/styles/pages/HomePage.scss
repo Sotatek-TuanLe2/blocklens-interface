@@ -22,7 +22,7 @@
 .title-list-app {
   justify-content: space-between;
   align-items: center;
-  padding: 30px 40px;
+  padding: 30px 40px 20px 40px;
   .text-title {
     color: $title;
     @include heading-5;
@@ -43,61 +43,62 @@
   .btn-create {
     @include text-medium-medium;
   }
+}
 
-  .list-app-table-wrap {
-    padding: 0 0 40px 0;
+.list-table-wrap {
+  padding: 0 0 40px 0 !important;
 
-    .tr-list-app {
-      &:hover {
-        background-color: $bg2;
-        cursor: pointer;
+  .tr-list {
+    &:hover {
+      background-color: $bg2;
+      cursor: pointer;
+    }
+
+    td {
+      border-bottom: 1px solid $border;
+      color: $title;
+      @include text-medium-regular;
+
+      padding: 13px 15px;
+
+      &:first-child {
+        padding-left: 40px;
       }
 
-      td {
-        border-bottom: 1px solid $border;
-        color: $title;
-        @include text-medium-regular;
-
-        padding: 13px 15px;
-
-        &:first-child {
-          padding-left: 40px;
-        }
-
-        &:last-child {
-          padding-right: 40px;
-        }
-      }
-
-      .status {
-        padding: 6px 10px;
-        @include text-tiny-regular;
-        border-radius: 14px;
-        display: inline-block;
-        &.inactive {
-          background: rgba(234, 84, 85, 0.14);
-          color: $red;
-        }
-        &.active {
-          background: rgba(40, 199, 111, 0.14);
-          color: $green;
-        }
+      &:last-child {
+        padding-right: 40px;
       }
     }
 
-    .header-list-app {
-      th {
-        @include text-small-bold;
-        border-bottom: 0;
-        color: $line;
+    .status {
+      padding: 6px 10px;
+      @include text-tiny-regular;
+      border-radius: 14px;
+      display: inline-block;
+      &.inactive {
+        background: rgba(234, 84, 85, 0.14);
+        color: $red;
+      }
+      &.active {
+        background: rgba(40, 199, 111, 0.14);
+        color: $green;
+      }
+    }
+  }
 
-        &:first-child {
-          padding-left: 40px;
-        }
+  .header-list {
+    th {
+      @include text-small-bold;
+      border-bottom: 0;
+      color: $line;
+      padding: 13px 15px;
 
-        &:last-child {
-          padding-right: 40px;
-        }
+      &:first-child {
+        padding-left: 40px;
+      }
+
+      &:last-child {
+        padding-right: 40px;
       }
     }
   }
@@ -105,6 +106,10 @@
 
 .user-graph {
   margin-top: 30px;
+
+  .text-title {
+    text-transform: capitalize;
+  }
 }
 
 .legend {

@@ -1,20 +1,22 @@
 import React, { useCallback, useEffect, FC, useState } from 'react';
 import { IListAppResponse } from 'src/utils/common';
 import rf from 'src/requests/RequestFactory';
-import { IWebhook, WEBHOOK_TYPES } from 'src/utils/utils-webhook';
-import { Th, Thead, Tr, Tbody, Td, Flex } from '@chakra-ui/react';
+import {
+  IWebhook,
+  WEBHOOK_STATUS,
+  WEBHOOK_TYPES,
+} from 'src/utils/utils-webhook';
+import { Th, Thead, Tr, Tbody, Td, Flex, Box } from '@chakra-ui/react';
 import {
   AppDataTable,
   AppField,
   AppInput,
-  AppLink,
   AppUploadABI,
 } from 'src/components';
 import { formatShortText } from 'src/utils/utils-helper';
-import ListActionWebhook from './ListActionWebhook';
-import { StatusWebhook } from './PartAddressWebhooks';
 import _ from 'lodash';
 import { IAppResponse } from 'src/utils/utils-app';
+import { useHistory } from 'react-router';
 
 interface IListWebhook {
   appInfo: IAppResponse;
@@ -41,6 +43,7 @@ const WebhookItem: FC<IWebhookItem> = ({
   type,
   isDetail,
 }) => {
+  const history = useHistory();
   const [isShowDetail, setIsShowDetail] = useState<boolean>(false);
 
   useEffect(() => {
@@ -130,59 +133,42 @@ const WebhookItem: FC<IWebhookItem> = ({
     }
   };
 
+  const _renderStatus = (status?: WEBHOOK_STATUS) => {
+    const isActive = status === WEBHOOK_STATUS.ENABLE;
+
+    return (
+      <Box className={`status ${isActive ? 'active' : 'inactive'}`}>
+        {isActive ? 'Active' : 'Inactive'}
+      </Box>
+    );
+  };
+
   return (
     <Tbody>
-      <Tr>
+      <Tr
+        className="tr-list"
+        onClick={() =>
+          history.push(
+            `/apps/${appInfo.appId}/webhooks/${webhook.registrationId}`,
+          )
+        }
+      >
         <Td>{formatShortText(webhook.registrationId)}</Td>
         <Td>
-          <StatusWebhook status={webhook.status} />
+          <Box className="short-text">{webhook.webhook}</Box>
         </Td>
         <Td>
-          <a href={webhook.webhook} target="_blank" className="short-text">
-            {webhook.webhook}
-          </a>
-        </Td>
-        <Td
-          onClick={() => setIsShowDetail(!isShowDetail)}
-          color={'brand.500'}
-          cursor={'pointer'}
-        >
           {type === WEBHOOK_TYPES.ADDRESS_ACTIVITY ? (
             <>
               {webhook.metadata.addresses.length}{' '}
-              {webhook.metadata.addresses.length > 1 ? 'Addresses' : 'Address'}
+              {webhook.metadata.addresses.length > 1 ? 'addresses' : 'address'}
             </>
           ) : (
-            '1 Address'
+            '1 address'
           )}
         </Td>
-        <Td>
-          {!isDetail && (
-            <AppLink
-              to={`/apps/${appInfo.appId}/webhooks/${webhook.registrationId}`}
-            >
-              View details
-            </AppLink>
-          )}
-
-          <ListActionWebhook
-            appInfo={appInfo}
-            webhook={webhook}
-            reloadData={() =>
-              setParams((pre: any) => {
-                return { ...pre };
-              })
-            }
-          />
-        </Td>
+        <Td textAlign={'right'}>{_renderStatus(webhook.status)}</Td>
       </Tr>
-      {isShowDetail && (
-        <Tr>
-          <Td colSpan={6} bg={'#FAFAFA'}>
-            {_renderDetailWebhook()}
-          </Td>
-        </Tr>
-      )}
     </Tbody>
   );
 };
@@ -245,13 +231,12 @@ const ListWebhook: FC<IListWebhook> = ({
 
   const _renderHeader = () => {
     return (
-      <Thead>
-        <Tr bgColor={'#FAFAFA'}>
+      <Thead className="header-list">
+        <Tr>
           <Th>ID</Th>
-          <Th>Status</Th>
           <Th>Webhook URL</Th>
           <Th>Address</Th>
-          <Th>Activities</Th>
+          <Th textAlign={'right'}>Status</Th>
         </Tr>
       </Thead>
     );

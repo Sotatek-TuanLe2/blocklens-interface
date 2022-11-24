@@ -2,10 +2,9 @@ import React, { useEffect, useState } from 'react';
 import 'src/styles/pages/HomePage.scss';
 import { Flex, Box } from '@chakra-ui/react';
 import ListApps from './parts/ListApps';
-import UserGraph from './parts/UserGraph';
 import { BasePageContainer } from 'src/layouts';
 import PartUserStats from './parts/PartUserStats';
-import { AppButton, AppCard } from 'src/components';
+import { AppButton, AppCard, AppGraph } from 'src/components';
 import ModalCreateApp from 'src/modals/ModalCreateApp';
 import rf from 'src/requests/RequestFactory';
 import { toastError } from 'src/utils/utils-notify';
@@ -67,7 +66,7 @@ const HomePage = () => {
               setOpenModalCreateApp={() => setOpen(true)}
               searchListApp={searchListApp}
             />
-            <UserGraph />
+            <AppGraph type="user" />
           </>
         ) : (
           _renderNoApp()

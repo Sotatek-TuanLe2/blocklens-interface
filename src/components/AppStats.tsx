@@ -28,22 +28,22 @@ const AppStatics: FC<IAppStats> = ({ stats, type }) => {
       gap="20px"
     >
       <AppCard className="box-info">
-        <Box className="label">{type}’s Messages (24h)</Box>
+        <Box className="label">Total Messages (24h)</Box>
         <Box className="value">{formatLargeNumber(stats.totalToday)}</Box>
       </AppCard>
 
       <AppCard className="box-info">
-        <Box className="label">{type}’s Events (24h)</Box>
+        <Box className="label">Total Activities (24h)</Box>
         <Box className="value">{formatLargeNumber(stats.totalToday)}</Box>
       </AppCard>
 
       <AppCard className="box-info">
-        <Box className="label">{type}’s Success (24h)</Box>
+        <Box className="label">Success Rate (24h)</Box>
         <Box className="value">{getPercentNotificationSuccess()}</Box>
       </AppCard>
 
       <AppCard className="box-info">
-        <Box className="label">{type}’s Messages (month)</Box>
+        <Box className="label">Total Webhook</Box>
         <Box className="value">{formatLargeNumber(stats.totalThisMonth)}</Box>
       </AppCard>
     </SimpleGrid>
