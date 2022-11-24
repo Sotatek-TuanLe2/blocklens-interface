@@ -132,10 +132,12 @@ const ListApps: React.FC<IListApps> = ({
         />
       </AppCard>
 
-      <ModalUpgradeCreateApp
-        open={openModalUpgradeCreateApp}
-        onClose={() => setOpenModalUpgradeCreateApp(false)}
-      />
+      {openModalUpgradeCreateApp && (
+        <ModalUpgradeCreateApp
+          open={openModalUpgradeCreateApp}
+          onClose={() => setOpenModalUpgradeCreateApp(false)}
+        />
+      )}
     </Box>
   );
 };
