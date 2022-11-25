@@ -90,17 +90,24 @@ export const Chart = () => {
             bottom: 5,
           }}
         >
-          <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="name" tick={{ fill: '#B4B7BD' }} />
-          <YAxis tick={{ fill: '#B4B7BD' }} />
+          <YAxis tick={{ fill: '#B4B7BD' }} axisLine={false} />
           <Tooltip />
           <Line
             name="Numbers of messages"
             dataKey="average"
             stroke="#FFB547"
-            activeDot={{ r: 8 }}
+            strokeWidth={2}
+            dot={{ r: 8 }}
           />
-          <Line dataKey="daily" stroke="#3A95FF" name="Numbers of events" />
+          <Line
+            dot={{ r: 8 }}
+            strokeWidth={2}
+            dataKey="daily"
+            stroke="#3A95FF"
+            name="Numbers of events"
+          />
+          <CartesianGrid />
         </LineChart>
       </ResponsiveContainer>
 

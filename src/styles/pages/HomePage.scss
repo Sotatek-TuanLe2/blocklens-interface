@@ -83,7 +83,15 @@
         background: rgba(40, 199, 111, 0.14);
         color: $green;
       }
+      &.waiting {
+        background: rgba(255, 181, 71, 0.14);
+        color: $yellow;
+      }
     }
+  }
+
+  .dropdown-detail {
+    background-color: $bg2;
   }
 
   .header-list {
@@ -146,3 +154,4 @@
     }
   }
 }
+

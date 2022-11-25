@@ -179,6 +179,7 @@ const AppSettings: FC<IAppSettings> = ({ onBack, appInfo, reloadData }) => {
         <Flex justifyContent={'space-between'}>
           <Flex alignItems="center">
             <Box className="title-status">App Status</Box>
+            <Box className={isActive ? 'icon-active' : 'icon-inactive'} mr={2} />
             <Box>{isActive ? 'Active' : 'Inactive'}</Box>
           </Flex>
 

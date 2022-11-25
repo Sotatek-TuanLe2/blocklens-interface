@@ -24,6 +24,7 @@ import { useDispatch } from 'react-redux';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import CreateWebhookNFTPage from './pages/CreateWebhookNFTPage';
 import CreateWebhookContractPage from './pages/CreateWebhookContractPage';
+import WebhookDetail from './pages/WebhookDetail';
 
 /**
  * Main App routes.
@@ -43,7 +44,7 @@ const Routes: FC<RouteComponentProps> = () => {
     dispatch(getInfoUser());
     dispatch(getMyPlan());
     dispatch(getPlans());
-  }, []);
+  }, [accessToken]);
 
   return (
     <>
@@ -57,7 +58,7 @@ const Routes: FC<RouteComponentProps> = () => {
         <PrivateRoute path={'/setting/:tab'} component={ProfilePage} />
         <PrivateRoute
           path={'/apps/:appId/webhooks/:id'}
-          component={WebhookActivitiesPage}
+          component={WebhookDetail}
         />
         <PrivateRoute
           path={'/create-webhook-nft/:id'}

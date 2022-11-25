@@ -43,7 +43,6 @@ iframe {
   display: none !important;
 }
 
-
 .text-error {
   font-weight: 400;
   color: #ee5d50;
@@ -55,4 +54,8 @@ iframe {
   text-overflow: ellipsis;
   overflow: hidden;
   width: 350px;
+}
+
+.recharts-wrapper .recharts-cartesian-grid-vertical {
+  display: none;
 }
