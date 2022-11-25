@@ -6,13 +6,8 @@ import {
   WEBHOOK_STATUS,
   WEBHOOK_TYPES,
 } from 'src/utils/utils-webhook';
-import { Th, Thead, Tr, Tbody, Td, Flex, Box } from '@chakra-ui/react';
-import {
-  AppDataTable,
-  AppField,
-  AppInput,
-  AppUploadABI,
-} from 'src/components';
+import { Th, Thead, Tr, Tbody, Td, Box } from '@chakra-ui/react';
+import { AppDataTable } from 'src/components';
 import { formatShortText } from 'src/utils/utils-helper';
 import _ from 'lodash';
 import { IAppResponse } from 'src/utils/utils-app';
@@ -25,113 +20,16 @@ interface IListWebhook {
   setTotalWebhook: (value: number) => void;
   totalWebhook: number;
   type?: string;
-  isDetail?: boolean;
 }
 
 interface IWebhookItem {
   webhook: IWebhook;
   appInfo: IAppResponse;
-  setParams: (value: any) => void;
   type: string;
-  isDetail?: boolean;
 }
 
-const WebhookItem: FC<IWebhookItem> = ({
-  webhook,
-  appInfo,
-  setParams,
-  type,
-  isDetail,
-}) => {
+const WebhookItem: FC<IWebhookItem> = ({ webhook, appInfo, type }) => {
   const history = useHistory();
-  const [isShowDetail, setIsShowDetail] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (isDetail) {
-      setIsShowDetail(true);
-    }
-  }, [isDetail]);
-
-  const _renderDetailAddressWebhook = () => {
-    return (
-      <>
-        {webhook.metadata.addresses.map((item: string, index: number) => {
-          return (
-            <AppField
-              label={`${appInfo.chain} ADDRESS`}
-              customWidth={'100%'}
-              key={index}
-              isRequired
-            >
-              <AppInput
-                placeholder="0xbb.."
-                size="lg"
-                value={item}
-                isDisabled
-              />
-            </AppField>
-          );
-        })}
-      </>
-    );
-  };
-
-  const _renderDetailNFTWebhook = () => {
-    return (
-      <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
-        <AppField label={'NFT ADDRESS'} customWidth={'49%'} isRequired>
-          <AppInput
-            placeholder="0xbb.."
-            value={webhook.metadata.address}
-            isDisabled
-          />
-        </AppField>
-        <AppField label={'TOKEN IDS'} customWidth={'49%'} isRequired>
-          <AppInput
-            placeholder="0xbb.."
-            value={webhook.metadata.tokenIds.join(', ')}
-            isDisabled
-          />
-        </AppField>
-
-        <AppUploadABI
-          viewOnly
-          abi={webhook.metadata.abi}
-          abiFilter={webhook.metadata.abiFilter}
-        />
-      </Flex>
-    );
-  };
-
-  const _renderDetailContractWebhook = () => {
-    return (
-      <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
-        <AppField label={'CONTRACT ADDRESS'} customWidth={'100%'} isRequired>
-          <AppInput
-            placeholder="0xbb.."
-            value={webhook.metadata.address}
-            isDisabled
-          />
-        </AppField>
-        <AppUploadABI
-          viewOnly
-          abi={webhook.metadata.abi}
-          abiFilter={webhook.metadata.abiFilter}
-        />
-      </Flex>
-    );
-  };
-
-  const _renderDetailWebhook = () => {
-    switch (type) {
-      case WEBHOOK_TYPES.NFT_ACTIVITY:
-        return _renderDetailNFTWebhook();
-      case WEBHOOK_TYPES.ADDRESS_ACTIVITY:
-        return _renderDetailAddressWebhook();
-      case WEBHOOK_TYPES.CONTRACT_ACTIVITY:
-        return _renderDetailContractWebhook();
-    }
-  };
 
   const _renderStatus = (status?: WEBHOOK_STATUS) => {
     const isActive = status === WEBHOOK_STATUS.ENABLE;
@@ -180,7 +78,6 @@ const ListWebhook: FC<IListWebhook> = ({
   setTotalWebhook,
   totalWebhook,
   type,
-  isDetail,
 }) => {
   const fetchListWebhook: any = useCallback(
     async (params: any) => {
@@ -190,25 +87,6 @@ const ListWebhook: FC<IListWebhook> = ({
           .getRegistrations(appInfo.appId, params);
         setTotalWebhook(res.totalDocs);
         return res;
-      } catch (error) {
-        return error;
-      }
-    },
-    [appInfo.appId, params],
-  );
-
-  const fetchDetail: any = useCallback(
-    async (params: any) => {
-      try {
-        const res: IListAppResponse = await rf
-          .getRequest('RegistrationRequest')
-          .getRegistration(appInfo.appId, params);
-        setTotalWebhook(Object.keys(res).length);
-        return {
-          docs: [res],
-          page: 1,
-          totalPages: 1,
-        };
       } catch (error) {
         return error;
       }
@@ -249,9 +127,7 @@ const ListWebhook: FC<IListWebhook> = ({
           key={index}
           webhook={webhook}
           appInfo={appInfo}
-          setParams={setParams}
           type={webhook.type}
-          isDetail={isDetail}
         />
       );
     });
@@ -260,7 +136,7 @@ const ListWebhook: FC<IListWebhook> = ({
   return (
     <AppDataTable
       requestParams={params}
-      fetchData={isDetail ? fetchDetail : fetchListWebhook}
+      fetchData={fetchListWebhook}
       renderBody={_renderBody}
       isNotShowNoData
       renderHeader={totalWebhook > 0 ? _renderHeader : undefined}

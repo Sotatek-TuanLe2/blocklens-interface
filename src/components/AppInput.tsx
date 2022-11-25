@@ -123,6 +123,10 @@ export const appInputStyles = {
         _placeholder: {
           color: mode('secondaryGray.500', 'whiteAlpha.300')(props),
         },
+        _disabled: {
+          borderColor: mode('bg.200', 'bg.200')(props),
+          color: mode('paragraph.100', 'paragraph.100')(props),
+        }
       },
     }),
     auth: (props: StyleProps) => ({

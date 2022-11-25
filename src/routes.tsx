@@ -17,7 +17,6 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import Storage from 'src/utils/storage';
 import AppDetail from './pages/AppDetail';
 import VerifyAccountPage from './pages/VerifyAccountPage';
-import WebhookActivitiesPage from './pages/WebhookActivitiesPage';
 import { getInfoUser } from 'src/store/auth';
 import { getMyPlan, getPlans } from 'src/store/billing';
 import { useDispatch } from 'react-redux';
