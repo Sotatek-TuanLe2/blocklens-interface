@@ -8,11 +8,12 @@ import React, {
   ChangeEvent,
   useEffect,
 } from 'react';
-import { AppCard, AppInput, AppSelect } from 'src/components';
+import { AppCard, AppInput, AppSelect2 } from 'src/components';
 import { CloseIcon } from '@chakra-ui/icons';
 import ERC721 from 'src/abi/ERC-721.json';
 import AppButton from './AppButton';
 import { Link as ReactLink } from 'react-router-dom';
+import 'src/styles/components/AppUploadABI.scss';
 
 export const TYPE_ABI = {
   NFT: 'NFT',
@@ -176,8 +177,8 @@ const ListSelect: FC<IListSelect> = ({
   };
 
   return (
-    <AppCard mt={5} pt={0}>
-      <Box fontSize={'18px'} mb={5}>
+    <Flex className="box-events">
+      <Box className="label-events">
         {type === 'function' ? 'Functions' : 'Events'}
       </Box>
       <Box maxH={'320px'} overflowY={'auto'} ml={5}>
@@ -216,7 +217,7 @@ const ListSelect: FC<IListSelect> = ({
           </Flex>
         )}
       </Box>
-    </AppCard>
+    </Flex>
   );
 };
 
@@ -405,7 +406,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
   const _renderNoticeUpload = () => {
     if (type !== TYPE_ABI.NFT) {
       return (
-        <Text as={'span'} color={'red.500'}>
+        <Text as={'span'} color={'red.100'}>
           *
         </Text>
       );
@@ -416,17 +417,17 @@ const AppUploadABI: FC<IAppUploadABI> = ({
         p={2}
         label={`This is an optional function. If you don't upload a custom ABI file, we would use default ERC-721 file.`}
       >
-        <Box className="icon-detail_info" ml={2} cursor={'pointer'}></Box>
+        <Box className="icon-info" ml={2} cursor={'pointer'} />
       </Tooltip>
     );
   };
 
   return (
-    <Box width={'full'}>
+    <Box className="upload-abi">
       <Flex justifyContent={'space-between'} alignItems={'center'}>
         {!viewOnly ? (
           <Flex alignItems={'center'}>
-            <Flex mr={6} alignItems={'center'}>
+            <Flex mr={6} alignItems={'center'} className="label-abi">
               ABI
               {_renderNoticeUpload()}
             </Flex>
@@ -467,16 +468,13 @@ const AppUploadABI: FC<IAppUploadABI> = ({
         {ABIData && !!ABIData.length && (
           <Flex>
             <Box width={'200px'}>
-              <AppSelect
-                onChange={(e: any) => {
-                  setValueSort(e.value);
-                }}
+              <AppSelect2
+                onChange={setValueSort}
                 options={options}
-                defaultValue={options[0]}
+                value={valueSort}
               />
             </Box>
             <AppInput
-              ml={10}
               type="text"
               placeholder={'Search'}
               value={valueSearch}

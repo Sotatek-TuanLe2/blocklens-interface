@@ -1,0 +1,36 @@
+@import '../color-variables.scss';
+@import '../mixins.scss';
+
+.upload-abi {
+  padding: 24px 27px;
+  background-color: $bg2;
+  width: 100%;
+  border-radius: 6px;
+
+  .label-abi {
+    @include text-medium-regular;
+    color: $paragraph;
+  }
+
+  .box-events {
+    background-color: $card;
+    padding: 16px 24px;
+    margin-bottom: 4px;
+
+    &:nth-child(2) {
+      border-radius: 6px 6px 0 0;
+      margin-top: 15px;
+    }
+
+    &:last-child {
+      border-radius: 0 0 6px 6px;
+    }
+
+    .label-events {
+      @include text-small-bold;
+      text-transform: uppercase;
+      color: $line;
+      width: 120px;
+    }
+  }
+}
