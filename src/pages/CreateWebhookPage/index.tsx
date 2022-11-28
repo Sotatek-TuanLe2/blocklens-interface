@@ -10,6 +10,7 @@ import {
   AppInput,
   AppLink,
   AppSelect2,
+  AppTextarea,
   TYPE_ABI,
 } from 'src/components';
 import AppUploadABI from 'src/components/AppUploadABI';
@@ -56,6 +57,8 @@ const CreateWebhook = () => {
   const history = useHistory();
   const [dataForm, setDataForm] = useState<IDataForm>(initDataCreateWebHook);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
+  const [isInsertManuallyAddress, setIsInsertManuallyAddress] =
+    useState<boolean>(true);
   const [, updateState] = useState<any>();
   const forceUpdate = useCallback(() => updateState({}), []);
 
@@ -125,20 +128,35 @@ const CreateWebhook = () => {
     return (
       <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
         <AppField label={'Addresses'} customWidth={'100%'} isRequired>
-          <AppInput
-            value={dataForm.address}
-            onChange={(e) =>
-              setDataForm({
-                ...dataForm,
-                address: e.target.value.trim(),
-              })
-            }
-            validate={{
-              name: `contractAddress`,
-              validator: validator.current,
-              rule: 'required',
-            }}
-          />
+          <Box className='link type-upload-address' cursor="pointer"
+            onClick={() => setIsInsertManuallyAddress(!isInsertManuallyAddress)}
+          >
+            {!isInsertManuallyAddress ? 'Insert Manually' : 'Upload File'}
+          </Box>
+          {isInsertManuallyAddress ? (
+            <AppTextarea
+              rows={6}
+              value={dataForm.address}
+              onChange={(e) =>
+                setDataForm({
+                  ...dataForm,
+                  address: e.target.value.trim(),
+                })
+              }
+            />
+          ) : (
+            <label>
+              <Box className="box-upload">
+                <Box className="icon-upload" mb={4} />
+                <Box maxW={'365px'} textAlign={'center'}>
+                  Drag and drop your CSV file here or browse file from your
+                  computer.
+                </Box>
+              </Box>
+
+              <AppInput type="file" display="none" />
+            </label>
+          )}
         </AppField>
       </Flex>
     );

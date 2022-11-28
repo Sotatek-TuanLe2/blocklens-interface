@@ -107,7 +107,7 @@ export const Chart = () => {
             stroke="#3A95FF"
             name="Numbers of events"
           />
-          <CartesianGrid />
+          <CartesianGrid vertical={false} horizontal/>
         </LineChart>
       </ResponsiveContainer>
 
@@ -132,14 +132,16 @@ const AppGraph: FC<IAppGraph> = ({ type }) => {
       <Flex className={'title-list-app'}>
         <Box className={'text-title'}>{type}'s Graph</Box>
         <Flex>
-          <Box mr={3}>
-            <AppSelect2
-              width={'230px'}
-              value={typeData}
-              onChange={setTypeData}
-              options={optionsFilterByType}
-            />
-          </Box>
+          {type !== 'webhook' && (
+            <Box mr={3}>
+              <AppSelect2
+                width={'230px'}
+                value={typeData}
+                onChange={setTypeData}
+                options={optionsFilterByType}
+              />
+            </Box>
+          )}
 
           <AppSelect2
             width={'170px'}

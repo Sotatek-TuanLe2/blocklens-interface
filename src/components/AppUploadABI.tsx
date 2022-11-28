@@ -393,7 +393,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
 
   return (
     <Box className="upload-abi">
-      <Flex mb={1} className='label-abi'>
+      <Flex mb={1} className="label-abi">
         ABI{' '}
         <Text as={'span'} className="text-error" ml={1}>
           *
@@ -431,7 +431,10 @@ const AppUploadABI: FC<IAppUploadABI> = ({
               target="_blank"
               download
             >
-              <Box></Box>Download Example
+              <Flex>
+                <Box className="icon-download" mr={2} />
+                Download Example
+              </Flex>
             </Link>
           </Box>
         </>

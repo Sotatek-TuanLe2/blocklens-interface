@@ -95,61 +95,108 @@
 }
 
 .icon-delete {
-  width: 187px; height: 128px;
+  width: 187px;
+  height: 128px;
   background: url('../assets/icons/icon_modal.png') -10px -205px;
 }
 
 .icon-add-app {
-  width: 168px; height: 150px;
+  width: 168px;
+  height: 150px;
   background: url('../assets/icons/icon_modal.png') -259px -10px;
 }
 
 .icon-sent-mail {
-  width: 229px; height: 175px;
+  width: 229px;
+  height: 175px;
   background: url('../assets/icons/icon_modal.png') -10px -10px;
 }
 
 .icon-search {
-  width: 14px; height: 14px;
+  width: 14px;
+  height: 14px;
   background: url('../assets/icons/icon_app2.png') -46px -112px;
 }
 
 .icon-checkbox {
-  width: 24px; height: 24px;
+  width: 24px;
+  height: 24px;
   background: url('../assets/icons/icon_app2.png') -80px -10px;
 }
 
 .icon-checkbox-checked {
-  width: 24px; height: 24px;
+  width: 24px;
+  height: 24px;
   background: url('../assets/icons/icon_app2.png') -10px -68px;
 }
 
 .icon-inactive {
-  width: 18px; height: 18px;
+  width: 18px;
+  height: 18px;
   background: url('../assets/icons/icon_app2.png') -124px -10px;
 }
 
 .icon-active {
-   width: 18px; height: 18px;
-   background: url('../assets/icons/icon_app2.png') -124px -48px;
+  width: 18px;
+  height: 18px;
+  background: url('../assets/icons/icon_app2.png') -124px -48px;
 }
 
 .icon-arrow-right {
-  width: 16px; height: 16px;
-  background: url('../assets/icons/icon_app2.png') -10px -112px;
+  width: 12px;
+  height: 12px;
+  background: url('../assets/icons/icon_action.png') -10px -89px;
 }
 
 .icon-upload {
-  width: 50px; height: 38px;
+  width: 50px;
+  height: 38px;
   background: url('../assets/icons/icon_app2.png') -10px -10px;
 }
 
 .icon-info {
-  width: 18px; height: 20px;
+  width: 18px;
+  height: 20px;
   background: url('../assets/icons/icon_app2.png') -54px -68px;
 }
 
 .icon-filter {
-  width: 12px; height: 8px;
+  width: 12px;
+  height: 8px;
   background: url('../assets/icons/icon_app2.png') -92px -68px;
+}
+
+.icon-download {
+  width: 19px;
+  height: 19px;
+  background: url('../assets/icons/icon_action.png') -50px -10px;
+}
+
+.icon-link-top-active {
+  width: 19px;
+  height: 18px;
+  background: url('../assets/icons/icon_action.png') -10px -51px;
+}
+
+.icon-filter-table {
+  width: 18px;
+  height: 18px;
+  background: url('../assets/icons/icon_action.png') -89px -10px;
+}
+
+.icon-link {
+  width: 20px;
+  height: 21px;
+  background: url('../assets/icons/icon_action.png') -10px -10px;
+}
+
+.icon-link-top {
+  width: 19px;
+  height: 18px;
+  background: url('../assets/icons/icon_action.png') -49px -51px;
+}
+.icon-retry {
+  width: 18px;
+  height: 18px;
+  background: url('../assets/icons/icon_action.png') -89px -48px;
 }

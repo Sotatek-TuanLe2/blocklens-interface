@@ -63,7 +63,7 @@ const WebhookDetail = () => {
 
           <PartWebhookStats />
 
-          <WebhookActivities registrationId={webhook.registrationId} />
+          <WebhookActivities registrationId={webhook.registrationId} webhook={webhook} />
           <AppGraph type="webhook" />
         </>
       )}

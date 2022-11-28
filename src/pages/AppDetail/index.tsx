@@ -19,6 +19,7 @@ import { BasePageContainer } from 'src/layouts';
 import { AppButton, AppCard, AppGraph, AppLink } from 'src/components';
 import { CHAINS } from 'src/constants';
 import AppSettings from './parts/AppSettings';
+import { getLogoChainByName } from '../../utils/utils-network';
 
 const AppDetail = () => {
   const [appInfo, setAppInfo] = useState<any>({});
@@ -65,6 +66,11 @@ const AppDetail = () => {
             </Flex>
 
             <Flex>
+              <Flex alignItems={'center'} className="box-network">
+                <Box className={getLogoChainByName(appInfo.chain)} mr={2}>
+                </Box>
+                {appInfo.network}
+              </Flex>
               <AppButton
                 size={'md'}
                 variant="cancel"

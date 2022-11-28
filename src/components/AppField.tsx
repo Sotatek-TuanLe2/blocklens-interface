@@ -19,7 +19,7 @@ const AppField = ({
   note,
 }: IField) => {
   return (
-    <Flex alignItems={'flex-start'} w={['full', customWidth]} mb={4} className={'field'}>
+    <Flex alignItems={'flex-start'} w={['full', customWidth]} mb={4} className={'field'} position={'relative'}>
       <Stack w={'full'} spacing={1}>
         <Flex alignItems={'center'}>
           <Text whiteSpace={'nowrap'} mr={2} className={'label'}>
