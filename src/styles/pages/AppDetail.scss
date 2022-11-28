@@ -163,3 +163,11 @@
   border-radius: 6px;
   color: $paragraph;
 }
+
+.form-create {
+  background-color: $card;
+
+  .select-type-webhook {
+    background-color: $bg2;
+  }
+}

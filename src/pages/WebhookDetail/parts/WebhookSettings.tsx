@@ -7,6 +7,7 @@ import {
   AppField,
   AppInput,
   AppUploadABI,
+  TYPE_ABI,
 } from 'src/components';
 import {
   IWebhook,
@@ -64,20 +65,15 @@ const WebhookSettings: FC<IAppSettings> = ({ onBack, webhook, reloadData }) => {
     return (
       <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
         <AppField label={'NFT Address'} customWidth={'49%'}>
-          <AppInput
-            value={webhook.metadata.address}
-            isDisabled
-          />
+          <AppInput value={webhook.metadata.address} isDisabled />
         </AppField>
         <AppField label={'Token ID'} customWidth={'49%'}>
-          <AppInput
-            value={webhook.metadata.tokenIds.join(', ')}
-            isDisabled
-          />
+          <AppInput value={webhook.metadata.tokenIds.join(', ')} isDisabled />
         </AppField>
 
         <AppUploadABI
           viewOnly
+          type={TYPE_ABI.NFT}
           abi={webhook.metadata.abi}
           abiFilter={webhook.metadata.abiFilter}
         />
@@ -89,10 +85,7 @@ const WebhookSettings: FC<IAppSettings> = ({ onBack, webhook, reloadData }) => {
     return (
       <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
         <AppField label={'Contract address'} customWidth={'100%'}>
-          <AppInput
-            value={webhook.metadata.address}
-            isDisabled
-          />
+          <AppInput value={webhook.metadata.address} isDisabled />
         </AppField>
         <AppUploadABI
           viewOnly

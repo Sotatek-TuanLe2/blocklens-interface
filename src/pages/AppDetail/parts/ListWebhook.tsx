@@ -47,7 +47,7 @@ const WebhookItem: FC<IWebhookItem> = ({ webhook, appInfo, type }) => {
         className="tr-list"
         onClick={() =>
           history.push(
-            `/apps/${appInfo.appId}/webhooks/${webhook.registrationId}`,
+            `/app/${appInfo.appId}/webhooks/${webhook.registrationId}`,
           )
         }
       >

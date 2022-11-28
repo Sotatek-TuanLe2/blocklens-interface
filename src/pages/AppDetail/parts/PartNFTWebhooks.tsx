@@ -28,7 +28,7 @@ const PartNFTWebhooks: FC<IListNTF> = ({ appInfo }) => {
         <AppButton
           isDisabled={isDisabledApp}
           size={'md'}
-          onClick={() => history.push(`/create-webhook-nft/${appInfo.appId}`)}
+          onClick={() => history.push(`/create-webhook/${appInfo.appId}`)}
         >
           Create Webhook
         </AppButton>
@@ -48,7 +48,7 @@ const PartNFTWebhooks: FC<IListNTF> = ({ appInfo }) => {
             px={4}
             py={1}
             className={'btn-create'}
-            onClick={() => history.push(`/create-webhook-nft/${appInfo.appId}`)}
+            onClick={() => history.push(`/create-webhook/${appInfo.appId}`)}
           >
             <Box className="icon-plus-circle" mr={2} /> Create
           </AppButton>

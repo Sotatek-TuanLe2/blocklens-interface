@@ -1,4 +1,6 @@
 @import 'src/styles/Icons';
+@import './color-variables.scss';
+@import './mixins.scss';
 
 @font-face {
   font-family: 'DM Sans';
@@ -58,4 +60,31 @@ iframe {
 
 .recharts-wrapper .recharts-cartesian-grid-vertical {
   display: none;
+}
+
+.chakra-checkbox__control {
+  border: 1px solid $line !important;
+  border-radius: 4px !important;
+  height: 21px;
+  width: 21px;
+  background-color: inherit !important;
+
+  &[data-checked] {
+    background-color: $main !important;
+    border-color: $main !important;
+  }
+
+  &[data-indeterminate] {
+    background-color: $main !important;
+    border-color: $main !important;
+  }
+
+  &[data-focus] {
+    box-shadow: none !important;
+  }
+}
+
+.chakra-checkbox__label {
+  @include text-medium-regular;
+  font-size: 16px !important;
 }

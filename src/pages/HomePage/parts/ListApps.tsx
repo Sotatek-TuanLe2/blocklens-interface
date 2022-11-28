@@ -80,7 +80,7 @@ const ListApps: React.FC<IListApps> = ({
             <Tr
               key={index}
               className="tr-list"
-              onClick={() => history.push(`/app-detail/${app.appId}`)}
+              onClick={() => history.push(`/apps/${app.appId}`)}
             >
               <Td>{app.name}</Td>
               <Td>

@@ -1,12 +1,10 @@
 import { Box, Flex } from '@chakra-ui/react';
 import React, { FC, useState } from 'react';
 import { AppButton } from 'src/components';
-import ModalCreateWebhookAddress from 'src/modals/ModalCreateWebhookAddress';
 import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
-import {
-  WEBHOOK_TYPES,
-} from 'src/utils/utils-webhook';
+import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
 import ListWebhook from './ListWebhook';
+import { useHistory } from 'react-router';
 
 interface IListAddress {
   appInfo: IAppResponse;
@@ -18,11 +16,10 @@ interface IParams {
 }
 
 const PartAddressWebhooks: FC<IListAddress> = ({ appInfo }) => {
-  const [isOpenCreateAddressModal, setIsOpenCreateAddressModal] =
-    useState<boolean>(false);
   const [params, setParams] = useState<IParams>({});
   const [totalWebhook, setTotalWebhook] = useState<any>();
   const isDisabledApp = appInfo.status === APP_STATUS.DISABLED;
+  const history = useHistory();
 
   const _renderNoData = () => {
     return (
@@ -32,8 +29,7 @@ const PartAddressWebhooks: FC<IListAddress> = ({ appInfo }) => {
           isDisabled={isDisabledApp}
           size={'md'}
           onClick={() => {
-            if (isDisabledApp) return;
-            setIsOpenCreateAddressModal(true);
+            history.push(`/create-webhook/${appInfo.appId}`);
           }}
         >
           Create Webhook
@@ -54,7 +50,7 @@ const PartAddressWebhooks: FC<IListAddress> = ({ appInfo }) => {
             px={4}
             py={1}
             className={'btn-create'}
-            onClick={() => setIsOpenCreateAddressModal(true)}
+            onClick={() => history.push(`/create-webhook/${appInfo.appId}`)}
           >
             <Box className="icon-plus-circle" mr={2} /> Create
           </AppButton>
@@ -72,17 +68,6 @@ const PartAddressWebhooks: FC<IListAddress> = ({ appInfo }) => {
         />
         {totalWebhook === 0 && _renderNoData()}
       </Box>
-
-      <ModalCreateWebhookAddress
-        open={isOpenCreateAddressModal}
-        onClose={() => setIsOpenCreateAddressModal(false)}
-        appInfo={appInfo}
-        onReloadData={() =>
-          setParams((pre: any) => {
-            return { ...pre };
-          })
-        }
-      />
     </>
   );
 };

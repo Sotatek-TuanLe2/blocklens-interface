@@ -32,7 +32,7 @@ const AppField = ({
           </Text>
           {note && (
             <Tooltip p={2} label={note}>
-              <Box className="icon-detail_info" ml={1} cursor={'pointer'} />
+              <Box className="icon-info" ml={1} cursor={'pointer'} />
             </Tooltip>
           )}
         </Flex>

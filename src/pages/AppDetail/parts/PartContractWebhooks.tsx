@@ -30,7 +30,7 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
           isDisabled={isDisabledApp}
           size={'md'}
           onClick={() =>
-            history.push(`/create-webhook-contract/${appInfo.appId}`)
+            history.push(`/create-webhook/${appInfo.appId}`)
           }
         >
           Create Webhook
@@ -52,7 +52,7 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
             py={1}
             className={'btn-create'}
             onClick={() =>
-              history.push(`/create-webhook-contract/${appInfo.appId}`)
+              history.push(`/create-webhook/${appInfo.appId}`)
             }
           >
             <Box className="icon-plus-circle" mr={2} /> Create

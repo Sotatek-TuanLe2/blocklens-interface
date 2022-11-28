@@ -1,10 +1,11 @@
-import React, { FC, useMemo,useEffect,  useRef, useState } from 'react';
+import React, { FC, useMemo, useEffect, useRef, useState } from 'react';
 import { Box, Flex } from '@chakra-ui/react';
 import 'src/styles/components/AppSelect.scss';
 
 interface IAppSelectPops {
   options: IOption[];
   value: string;
+  className?: string;
   width?: string;
   size?: 'small' | 'medium' | 'large';
   onChange: (value: string) => void;
@@ -22,6 +23,7 @@ const AppSelect2: FC<IAppSelectPops> = ({
   onChange,
   width,
   size = 'small',
+  className,
 }) => {
   const [open, setOpen] = useState<boolean>(false);
   const ref = useRef<any>(null);
@@ -45,10 +47,12 @@ const AppSelect2: FC<IAppSelectPops> = ({
   }, []);
 
   return (
-    <Box className={`app-select ${size}`} width={width} ref={ref}>
+    <Box className={`app-select ${size} ${className}`} width={width} ref={ref}>
       <Flex className="app-select__btn-select" onClick={() => setOpen(!open)}>
         <Flex alignItems={'center'}>
-          {optionSelected?.icon && <Box className={`${optionSelected?.icon} icon`} />}
+          {optionSelected?.icon && (
+            <Box className={`${optionSelected?.icon} icon`} />
+          )}
           <Box>{optionSelected?.label ?? 'Select'}</Box>
         </Flex>
 

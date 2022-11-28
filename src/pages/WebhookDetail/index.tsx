@@ -43,7 +43,7 @@ const WebhookDetail = () => {
         <>
           <Flex className="app-info">
             <Flex className="name">
-              <AppLink to={`/app-detail/${appId}`}>
+              <AppLink to={`/apps/${appId}`}>
                 <Box className="icon-arrow-left" mr={6} />
               </AppLink>
               <Box>Webhook: {webhook.registrationId}</Box>

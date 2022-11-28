@@ -21,8 +21,7 @@ import { getInfoUser } from 'src/store/auth';
 import { getMyPlan, getPlans } from 'src/store/billing';
 import { useDispatch } from 'react-redux';
 import ResetPasswordPage from './pages/ResetPasswordPage';
-import CreateWebhookNFTPage from './pages/CreateWebhookNFTPage';
-import CreateWebhookContractPage from './pages/CreateWebhookContractPage';
+import CreateWebhookPage from './pages/CreateWebhookPage';
 import WebhookDetail from './pages/WebhookDetail';
 
 /**
@@ -48,7 +47,7 @@ const Routes: FC<RouteComponentProps> = () => {
   return (
     <>
       <Switch>
-        <PrivateRoute path={`/app-detail/:id`} component={AppDetail} />
+        <PrivateRoute path={`/apps/:id`} component={AppDetail} />
         <PublicRoute path={'/login'} component={LoginPage} />
         <PublicRoute path={'/sign-up'} component={SignUpPage} />
         <PublicRoute path={'/verify-email'} component={VerifyAccountPage} />
@@ -56,16 +55,12 @@ const Routes: FC<RouteComponentProps> = () => {
         <PublicRoute path={'/reset-password'} component={ResetPasswordPage} />
         <PrivateRoute path={'/setting/:tab'} component={ProfilePage} />
         <PrivateRoute
-          path={'/apps/:appId/webhooks/:id'}
+          path={'/app/:appId/webhooks/:id'}
           component={WebhookDetail}
         />
         <PrivateRoute
-          path={'/create-webhook-nft/:id'}
-          component={CreateWebhookNFTPage}
-        />
-        <PrivateRoute
-          path={'/create-webhook-contract/:id'}
-          component={CreateWebhookContractPage}
+          path={'/create-webhook/:id'}
+          component={CreateWebhookPage}
         />
         <PrivateRoute path={'/'} component={HomePage} />
       </Switch>

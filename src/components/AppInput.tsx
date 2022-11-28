@@ -3,6 +3,7 @@ import {
   InputProps,
   InputGroup,
   InputRightElement,
+  InputLeftElement,
   Box,
 } from '@chakra-ui/react';
 import { mode } from '@chakra-ui/theme-tools';
@@ -25,6 +26,7 @@ interface AppInputProps extends InputProps {
   readOnly?: boolean;
   size?: string;
   type?: string;
+  isSearch?: boolean;
   endAdornment?: ReactNode;
   hiddenErrorText?: boolean;
 }
@@ -36,6 +38,7 @@ const AppInput = forwardRef(
       size = 'lg',
       readOnly,
       type = 'text',
+      isSearch= false,
       validate,
       endAdornment,
       hiddenErrorText = false,
@@ -54,6 +57,7 @@ const AppInput = forwardRef(
     return (
       <>
         <InputGroup size={size}>
+          {isSearch && <InputLeftElement top={'-8px'} left={'5px'} children={<Box className="icon-search" />} />}
           <Input
             type={type === 'password' && isShowPassword ? 'text' : type}
             {...props}

@@ -8,13 +8,13 @@ import AppUploadABI, { TYPE_ABI } from 'src/components/AppUploadABI';
 import { BasePageContainer } from 'src/layouts';
 import { useHistory, useParams } from 'react-router';
 import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
-import { isValidChecksumAddress } from 'ethereumjs-util';
 
 interface IDataForm {
   webhook: string;
   address: string;
   tokenIds: string;
   abi: any[];
+  addresses: string[];
   abiFilter: any[];
 }
 
@@ -24,6 +24,7 @@ const CreateWebhookNFTPage = () => {
     address: '',
     tokenIds: '',
     abi: [],
+    addresses: [],
     abiFilter: [],
   };
 
