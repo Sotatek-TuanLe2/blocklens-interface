@@ -120,7 +120,7 @@ const CreateWebhook = () => {
             validate={{
               name: `contractAddress`,
               validator: validator.current,
-              rule: 'required',
+              rule: 'required|isAddress',
             }}
           />
         </AppField>
