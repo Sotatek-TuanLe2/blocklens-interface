@@ -383,6 +383,8 @@ const AppUploadABI: FC<IAppUploadABI> = ({
   const _renderNoticeUpload = () => {
     return (
       <Tooltip
+        placement={'top'}
+        hasArrow
         p={2}
         label={`This is an optional function. If you don't upload a custom ABI file, we would use default ERC-721 file.`}
       >

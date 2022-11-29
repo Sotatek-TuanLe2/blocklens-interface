@@ -201,5 +201,43 @@
     right: 0;
     top: -5px;
   }
+}
 
+.view-all {
+  &:hover {
+    .link {
+      text-decoration: underline;
+    }
+  }
+}
+
+.box-filter {
+  justify-content: flex-end;
+  margin: 30px 40px 20px 0;
+
+  .input-search {
+    @include text-medium-regular;
+    background-color: $card;
+    padding: 4px 35px;
+    height: 32px;
+    margin-left: 8px;
+
+    &::placeholder {
+      color: $paragraph;
+    }
+  }
+}
+
+.link-redirect {
+  color: $paragraph;
+  &:hover {
+    color: $link;
+  }
+}
+
+.filter-table {
+  &:hover {
+    cursor: pointer;
+    color: $title;
+  }
 }

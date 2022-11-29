@@ -1,5 +1,19 @@
 import { ReactComponent as CalendarIcon } from './CalendarIcon.svg';
 import { ReactComponent as ArrowDownIcon } from './ArrowDownIcon.svg';
 import { ReactComponent as Sotalabs } from './sotalabs-brand.svg';
+import { ReactComponent as LinkIcon } from './LinkIcon.svg';
+import { ReactComponent as LinkDetail } from './LinkDetail.svg';
+import { ReactComponent as FilterIcon } from './FilterIcon.svg';
+import { ReactComponent as InfoIcon } from './InfoIcon.svg';
+import { ReactComponent as RetryIcon } from './RetryIcon.svg';
 
-export { CalendarIcon, ArrowDownIcon, Sotalabs };
+export {
+  CalendarIcon,
+  ArrowDownIcon,
+  Sotalabs,
+  LinkIcon,
+  FilterIcon,
+  InfoIcon,
+  RetryIcon,
+  LinkDetail
+};

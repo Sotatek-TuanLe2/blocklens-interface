@@ -9,13 +9,26 @@ import {
   Flex,
   Tooltip,
 } from '@chakra-ui/react';
-import React, { FC, useCallback } from 'react';
-import { AppCard, AppDataTable, AppLink } from 'src/components';
+import React, { FC, useCallback, useState } from 'react';
+import {
+  AppCard,
+  AppDataTable,
+  AppInput,
+  AppLink,
+  AppSelect2,
+} from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import { formatTimestamp } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import 'src/styles/pages/NotificationPage.scss';
 import 'src/styles/pages/AppDetail.scss';
+import {
+  LinkIcon,
+  FilterIcon,
+  InfoIcon,
+  RetryIcon,
+  LinkDetail,
+} from 'src/assets/icons';
 import { IWebhook, WEBHOOK_TYPES } from 'src/utils/utils-webhook';
 
 interface INotificationResponse {
@@ -48,7 +61,28 @@ const enum STATUS {
 interface IWebhookActivities {
   registrationId: string;
   webhook: IWebhook;
+  onShowAll?: () => void;
+  isShowAll: boolean;
 }
+
+const optionsFilter = [
+  {
+    label: 'All status',
+    value: '',
+  },
+  {
+    label: 'Successful',
+    value: STATUS.DONE,
+  },
+  {
+    label: 'Failed',
+    value: STATUS.FAILED,
+  },
+  {
+    label: 'Retrying',
+    value: STATUS.WAITING,
+  },
+];
 
 const getColorBrandStatus = (status: string) => {
   switch (status) {
@@ -112,18 +146,28 @@ const NotificationItem: FC<INotificationItem> = ({ notification, webhook }) => {
           )}{' '}
           UTC
         </Td>
-        <Td>N/A</Td>
+        <Td>
+          <Flex alignItems="center">
+            N/A
+            <AppLink ml={3} to={'#'} className="link-redirect">
+              <LinkIcon />
+            </AppLink>
+          </Flex>
+        </Td>
         {_renderContentActivities()}
         <Td>{_renderStatus(notification)}</Td>
 
         <Td>
           <Flex>
             {notification.status === STATUS.WAITING && (
-              <Box className="icon-retry" />
+              <Box className="link-redirect">
+                <RetryIcon />
+              </Box>
             )}
 
-            <Box className="icon-link-top" mx={4} />
-            <Box className="icon-link" />
+            <Box className="link-redirect">
+              <LinkDetail />
+            </Box>
           </Flex>
         </Td>
       </Tr>
@@ -134,7 +178,12 @@ const NotificationItem: FC<INotificationItem> = ({ notification, webhook }) => {
 const WebhookActivities: FC<IWebhookActivities> = ({
   registrationId,
   webhook,
+  onShowAll,
+  isShowAll,
 }) => {
+  const [valueSearch, setValueSearch] = useState<string>('');
+  const [valueFilter, setValueFilter] = useState<string>('');
+
   const fetchDataTable: any = useCallback(async (param: any) => {
     try {
       return await rf.getRequest('NotificationRequest').getNotifications(param);
@@ -149,18 +198,58 @@ const WebhookActivities: FC<IWebhookActivities> = ({
     const _renderHeaderNFT = () => {
       return (
         <>
-          <Th>method</Th>
-          <Th textAlign="center">token id</Th>
+          <Th>
+            <Flex alignItems="center">
+              method{' '}
+              {isShowAll && (
+                <Box ml={2} className="filter-table">
+                  <FilterIcon />
+                </Box>
+              )}
+            </Flex>
+          </Th>
+          <Th textAlign="center">
+            <Flex alignItems="center">
+              token id
+              {isShowAll && (
+                <Box ml={2} className="filter-table">
+                  <FilterIcon />
+                </Box>
+              )}
+            </Flex>
+          </Th>
         </>
       );
     };
 
     const _renderHeaderAddress = () => {
-      return <Th>Address</Th>;
+      return (
+        <Th>
+          <Flex alignItems="center">
+            Address
+            {isShowAll && (
+              <Box ml={2} className="filter-table">
+                <FilterIcon />
+              </Box>
+            )}
+          </Flex>
+        </Th>
+      );
     };
 
     const _renderHeaderContract = () => {
-      return <Th textAlign="center">method</Th>;
+      return (
+        <Th textAlign="center">
+          <Flex alignItems="center">
+            method{' '}
+            {isShowAll && (
+              <Box ml={2} className="filter-table">
+                <FilterIcon />
+              </Box>
+            )}
+          </Flex>
+        </Th>
+      );
     };
 
     const _renderHeaderActivities = () => {
@@ -179,13 +268,24 @@ const WebhookActivities: FC<IWebhookActivities> = ({
       <Thead className="header-list">
         <Tr>
           <Th>Created At</Th>
-          <Th>activity id</Th>
+          <Th>
+            <Flex alignItems="center">
+              txn id{' '}
+              {isShowAll && (
+                <Box ml={2} className="filter-table">
+                  <FilterIcon />
+                </Box>
+              )}
+            </Flex>
+          </Th>
           {_renderHeaderActivities()}
           <Th>
             <Flex alignItems={'center'}>
               Status{' '}
-              <Tooltip p={2} label="Status">
-                <Box className="icon-info" ml={2} cursor={'pointer'} />
+              <Tooltip p={2} label="Status" placement={"top"} hasArrow>
+                <Box ml={2} cursor="pointer">
+                  <InfoIcon />
+                </Box>
               </Tooltip>
             </Flex>
           </Th>
@@ -207,20 +307,52 @@ const WebhookActivities: FC<IWebhookActivities> = ({
     });
   };
 
+  const _renderBoxFilter = () => {
+    return (
+      <Flex className="box-filter">
+        <Box width={'150px'}>
+          <AppSelect2
+            onChange={setValueFilter}
+            options={optionsFilter}
+            value={valueFilter}
+          />
+        </Box>
+        <Box width={'200px'}>
+          <AppInput
+            isSearch
+            className={'input-search'}
+            type="text"
+            placeholder={'Search...'}
+            value={valueSearch}
+            onChange={(e) => setValueSearch(e.target.value.trim())}
+          />
+        </Box>
+      </Flex>
+    );
+  };
+
   return (
     <AppCard className="list-table-wrap">
-      <Flex className="title-list-app">
-        <Text className="text-title">Recent Activies</Text>
-        <Flex alignItems={'center'}>
-          <AppLink to={'#'} className="link">
-            View More Activity
-          </AppLink>
-          <Box className="icon-arrow-right" ml={2} />
+      {isShowAll ? (
+        _renderBoxFilter()
+      ) : (
+        <Flex className="title-list-app">
+          <Text className="text-title">Recent Activies</Text>
+          <Flex alignItems={'center'} className="view-all">
+            <Box className="link" cursor={'pointer'} onClick={onShowAll}>
+              View More Activity
+            </Box>
+            <Box className="icon-arrow-right" ml={2} />
+          </Flex>
         </Flex>
-      </Flex>
+      )}
 
       <AppDataTable
-        requestParams={{ registrationId }}
+        requestParams={{
+          registrationId,
+          status: valueFilter,
+          search: valueSearch,
+        }}
         fetchData={fetchDataTable}
         renderBody={_renderBody}
         renderHeader={_renderHeader}

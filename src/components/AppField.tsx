@@ -31,7 +31,7 @@ const AppField = ({
             )}
           </Text>
           {note && (
-            <Tooltip p={2} label={note}>
+            <Tooltip p={2} label={note} placement={"top"} hasArrow>
               <Box className="icon-info" ml={1} cursor={'pointer'} />
             </Tooltip>
           )}
