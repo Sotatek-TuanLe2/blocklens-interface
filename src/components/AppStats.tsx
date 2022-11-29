@@ -78,19 +78,19 @@ const AppStatics: FC<IAppStats> = ({ stats, type }) => {
       gap="20px"
     >
       <AppCard className="box-info">
-        <Box className="label">Total Messages (24h)</Box>
+        <Box className="label">Total Messages (today)</Box>
         <Box className="value">{formatLargeNumber(stats.totalToday)}</Box>
         <ChartStatics />
       </AppCard>
 
       <AppCard className="box-info">
-        <Box className="label">Total Activities (24h)</Box>
+        <Box className="label">Total Activities (today)</Box>
         <Box className="value">{formatLargeNumber(stats.totalToday)}</Box>
         <ChartStatics />
       </AppCard>
 
       <AppCard className="box-info">
-        <Box className="label">Success Rate (24h)</Box>
+        <Box className="label">Success Rate (today)</Box>
         <Box className="value">{getPercentNotificationSuccess()}</Box>
         <ChartStatics />
       </AppCard>

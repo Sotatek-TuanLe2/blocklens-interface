@@ -29,7 +29,13 @@ import {
   RetryIcon,
   LinkDetail,
 } from 'src/assets/icons';
-import { IWebhook, WEBHOOK_TYPES } from 'src/utils/utils-webhook';
+import {
+  IWebhook,
+  WEBHOOK_TYPES,
+  STATUS,
+  getColorBrandStatus,
+  optionsFilter
+} from 'src/utils/utils-webhook';
 
 interface INotificationResponse {
   hash: string;
@@ -52,50 +58,12 @@ interface INotificationItem {
   webhook: IWebhook;
 }
 
-const enum STATUS {
-  WAITING = 'WAITING',
-  DONE = 'DONE',
-  FAILED = 'FAILED',
-}
-
 interface IWebhookActivities {
   registrationId: string;
   webhook: IWebhook;
   onShowAll?: () => void;
   isShowAll: boolean;
 }
-
-const optionsFilter = [
-  {
-    label: 'All status',
-    value: '',
-  },
-  {
-    label: 'Successful',
-    value: STATUS.DONE,
-  },
-  {
-    label: 'Failed',
-    value: STATUS.FAILED,
-  },
-  {
-    label: 'Retrying',
-    value: STATUS.WAITING,
-  },
-];
-
-const getColorBrandStatus = (status: string) => {
-  switch (status) {
-    case STATUS.WAITING:
-      return 'waiting';
-    case STATUS.DONE:
-      return 'active';
-    case STATUS.FAILED:
-      return 'inactive';
-    default:
-      return 'active';
-  }
-};
 
 const NotificationItem: FC<INotificationItem> = ({ notification, webhook }) => {
   const _renderStatus = (notification: INotificationResponse) => {
@@ -282,7 +250,7 @@ const WebhookActivities: FC<IWebhookActivities> = ({
           <Th>
             <Flex alignItems={'center'}>
               Status{' '}
-              <Tooltip p={2} label="Status" placement={"top"} hasArrow>
+              <Tooltip p={2} label="Status" placement={'top'} hasArrow>
                 <Box ml={2} cursor="pointer">
                   <InfoIcon />
                 </Box>
@@ -356,7 +324,7 @@ const WebhookActivities: FC<IWebhookActivities> = ({
         fetchData={fetchDataTable}
         renderBody={_renderBody}
         renderHeader={_renderHeader}
-        limit={10}
+        limit={isShowAll ? 15 : 10}
       />
     </AppCard>
   );

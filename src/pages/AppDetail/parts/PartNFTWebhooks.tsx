@@ -5,6 +5,7 @@ import { useHistory } from 'react-router';
 import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
 import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
 import ListWebhook from './ListWebhook';
+import { NoData } from 'src/assets/icons';
 
 interface IListNTF {
   appInfo: IAppResponse;
@@ -24,13 +25,15 @@ const PartNFTWebhooks: FC<IListNTF> = ({ appInfo }) => {
   const _renderNoData = () => {
     return (
       <Flex className="box-create">
-        Set up your first NFT activity webhook!
+        <NoData />
+        No data yet. Create your first NFT Activity webhook
+        to start experiencing Blocklens!
         <AppButton
           isDisabled={isDisabledApp}
           size={'md'}
           onClick={() => history.push(`/create-webhook/${appInfo.appId}`)}
         >
-          Create Webhook
+          Create
         </AppButton>
       </Flex>
     );
@@ -42,17 +45,6 @@ const PartNFTWebhooks: FC<IListNTF> = ({ appInfo }) => {
         <Box className="description">
           Get notified when an NFT is transferred
         </Box>
-        {totalWebhook > 0 && (
-          <AppButton
-            size={'sm'}
-            px={4}
-            py={1}
-            className={'btn-create'}
-            onClick={() => history.push(`/create-webhook/${appInfo.appId}`)}
-          >
-            <Box className="icon-plus-circle" mr={2} /> Create
-          </AppButton>
-        )}
       </Flex>
       <Box mt={3} className="list-table-wrap">
         <ListWebhook

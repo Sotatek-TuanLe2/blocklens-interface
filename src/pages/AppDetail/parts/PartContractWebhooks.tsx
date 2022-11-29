@@ -6,6 +6,7 @@ import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
 import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
 import ListWebhook from './ListWebhook';
 import 'src/styles/pages/HomePage.scss';
+import { NoData } from 'src/assets/icons';
 
 interface IListContract {
   appInfo: IAppResponse;
@@ -25,7 +26,9 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
   const _renderNoData = () => {
     return (
       <Flex className="box-create">
-        Set up your first contract activity webhook!
+        <NoData />
+        No data yet. Create your first Contract Activity webhook
+        to start experiencing Blocklens!
         <AppButton
           isDisabled={isDisabledApp}
           size={'md'}
@@ -33,7 +36,7 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
             history.push(`/create-webhook/${appInfo.appId}`)
           }
         >
-          Create Webhook
+          Create
         </AppButton>
       </Flex>
     );
@@ -45,19 +48,6 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
         <Box className="description">
           Get notified when your Contract occurs activities
         </Box>
-        {totalWebhook > 0 && (
-          <AppButton
-            size={'sm'}
-            px={4}
-            py={1}
-            className={'btn-create'}
-            onClick={() =>
-              history.push(`/create-webhook/${appInfo.appId}`)
-            }
-          >
-            <Box className="icon-plus-circle" mr={2} /> Create
-          </AppButton>
-        )}
       </Flex>
       <Box mt={3} className="list-table-wrap">
         <ListWebhook

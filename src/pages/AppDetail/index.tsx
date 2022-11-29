@@ -9,7 +9,7 @@ import {
 } from '@chakra-ui/react';
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import rf from 'src/requests/RequestFactory';
-import { useParams } from 'react-router';
+import { useHistory, useParams } from 'react-router';
 import 'src/styles/pages/AppDetail.scss';
 import PartNFTWebhooks from './parts/PartNFTWebhooks';
 import PartAppStatics from './parts/PartAppStatics';
@@ -19,11 +19,12 @@ import { BasePageContainer } from 'src/layouts';
 import { AppButton, AppCard, AppGraph, AppLink } from 'src/components';
 import { CHAINS } from 'src/constants';
 import AppSettings from './parts/AppSettings';
-import { getLogoChainByName } from '../../utils/utils-network';
+import { getLogoChainByName } from 'src/utils/utils-network';
 
 const AppDetail = () => {
   const [appInfo, setAppInfo] = useState<any>({});
   const [isShowSetting, setIsShowSetting] = useState<boolean>(false);
+  const history = useHistory();
 
   const { id: appId } = useParams<{ id: string }>();
 
@@ -85,6 +86,20 @@ const AppDetail = () => {
           <PartAppStatics />
 
           <AppCard className="list-webhook">
+            <Flex className={'title-list-app'} pt={0}>
+              <Box className={'text-title'}>Webhooks</Box>
+              <Box>
+                <AppButton
+                  size={'sm'}
+                  px={4}
+                  py={1}
+                  className={'btn-create'}
+                  onClick={() => history.push(`/create-webhook/${appInfo.appId}`)}
+                >
+                  <Box className="icon-plus-circle" mr={2} /> Create
+                </AppButton>
+              </Box>
+            </Flex>
             <Tabs variant={'unstyled'} colorScheme="transparent">
               <TabList className={`${isEVM ? '' : 'no-tab'} app-tabs`}>
                 <Flex w={'100%'}>

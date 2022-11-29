@@ -5,6 +5,7 @@ import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
 import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
 import ListWebhook from './ListWebhook';
 import { useHistory } from 'react-router';
+import { NoData } from 'src/assets/icons';
 
 interface IListAddress {
   appInfo: IAppResponse;
@@ -24,7 +25,9 @@ const PartAddressWebhooks: FC<IListAddress> = ({ appInfo }) => {
   const _renderNoData = () => {
     return (
       <Flex className="box-create">
-        Set up your first address webhook!
+        <NoData />
+        No data yet. Create your first Address Activity webhook to start
+        experiencing Blocklens!
         <AppButton
           isDisabled={isDisabledApp}
           size={'md'}
@@ -32,7 +35,7 @@ const PartAddressWebhooks: FC<IListAddress> = ({ appInfo }) => {
             history.push(`/create-webhook/${appInfo.appId}`);
           }}
         >
-          Create Webhook
+          Create
         </AppButton>
       </Flex>
     );
@@ -44,17 +47,6 @@ const PartAddressWebhooks: FC<IListAddress> = ({ appInfo }) => {
         <Box className="description">
           Get notified whenever an address sends/receives any Token
         </Box>
-        {totalWebhook > 0 && (
-          <AppButton
-            size={'sm'}
-            px={4}
-            py={1}
-            className={'btn-create'}
-            onClick={() => history.push(`/create-webhook/${appInfo.appId}`)}
-          >
-            <Box className="icon-plus-circle" mr={2} /> Create
-          </AppButton>
-        )}
       </Flex>
 
       <Box mt={3} className="list-table-wrap">

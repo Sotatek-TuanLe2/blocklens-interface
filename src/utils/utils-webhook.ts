@@ -1,3 +1,9 @@
+export const enum STATUS {
+  WAITING = 'WAITING',
+  DONE = 'DONE',
+  FAILED = 'FAILED',
+}
+
 export enum WEBHOOK_STATUS {
   DISABLED = 0,
   ENABLE = 1,
@@ -8,6 +14,26 @@ export const WEBHOOK_TYPES = {
   ADDRESS_ACTIVITY: 'ADDRESS_ACTIVITY',
   CONTRACT_ACTIVITY: 'CONTRACT_ACTIVITY',
 };
+
+
+export const optionsFilter = [
+  {
+    label: 'All status',
+    value: '',
+  },
+  {
+    label: 'Successful',
+    value: STATUS.DONE,
+  },
+  {
+    label: 'Failed',
+    value: STATUS.FAILED,
+  },
+  {
+    label: 'Retrying',
+    value: STATUS.WAITING,
+  },
+];
 
 export interface IWebhook {
   appId: string;
@@ -34,4 +60,17 @@ export const getStatusWebhook = (status: WEBHOOK_STATUS) => {
 export const getActionWebhook = (status: WEBHOOK_STATUS) => {
   if (status === WEBHOOK_STATUS.ENABLE) return 'Deactivate';
   return 'Activate';
+};
+
+export const getColorBrandStatus = (status: string) => {
+  switch (status) {
+    case STATUS.WAITING:
+      return 'waiting';
+    case STATUS.DONE:
+      return 'active';
+    case STATUS.FAILED:
+      return 'inactive';
+    default:
+      return 'active';
+  }
 };
