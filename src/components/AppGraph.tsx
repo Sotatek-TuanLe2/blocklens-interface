@@ -107,7 +107,11 @@ export const Chart = () => {
             stroke="#3A95FF"
             name="Numbers of events"
           />
-          <CartesianGrid vertical={false} horizontal/>
+          <CartesianGrid
+            vertical={false}
+            horizontal
+            stroke="#41495F"
+          />
         </LineChart>
       </ResponsiveContainer>
 
