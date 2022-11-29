@@ -22,6 +22,7 @@ import { toastError, toastSuccess } from 'src/utils/utils-notify';
 interface IDataForm {
   webhook: string;
   address: string;
+  addresses: string;
   tokenIds: string;
   abi: any[];
   type: string;
@@ -52,6 +53,7 @@ const CreateWebhook = () => {
     abi: [],
     type: WEBHOOK_TYPES.NFT_ACTIVITY,
     abiFilter: [],
+    addresses: '',
   };
 
   const history = useHistory();
@@ -82,6 +84,9 @@ const CreateWebhook = () => {
         .split(',')
         .filter((item: string) => !!item)
         .map((item: string) => +item.trim()),
+      addresses: dataForm.addresses
+        .split('\n')
+        .filter((item: string) => !!item),
     };
 
     try {
@@ -130,6 +135,11 @@ const CreateWebhook = () => {
   };
 
   const _renderFormAddressActivity = () => {
+    const onChange = (e: any) => {
+      const value = e.target.value.split(new RegExp(/,|;|\n|\s/));
+      setDataForm({ ...dataForm, addresses: value.join('\n') });
+    };
+
     return (
       <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
         <AppField label={'Addresses'} customWidth={'100%'} isRequired>
@@ -143,13 +153,13 @@ const CreateWebhook = () => {
           {isInsertManuallyAddress ? (
             <AppTextarea
               rows={6}
-              value={dataForm.address}
-              onChange={(e) =>
-                setDataForm({
-                  ...dataForm,
-                  address: e.target.value.trim(),
-                })
-              }
+              value={dataForm.addresses}
+              onChange={onChange}
+              validate={{
+                name: `addresses`,
+                validator: validator.current,
+                rule: 'required',
+              }}
             />
           ) : (
             <label>
