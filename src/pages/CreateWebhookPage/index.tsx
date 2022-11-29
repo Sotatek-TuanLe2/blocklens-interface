@@ -119,7 +119,12 @@ const CreateWebhook = () => {
             }}
           />
         </AppField>
-        <AppUploadABI type={TYPE_ABI.CONTRACT} />
+        <AppUploadABI
+          type={TYPE_ABI.CONTRACT}
+          onChange={(abi, abiFilter) =>
+            setDataForm({ ...dataForm, abi, abiFilter })
+          }
+        />
       </Flex>
     );
   };
@@ -128,7 +133,9 @@ const CreateWebhook = () => {
     return (
       <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
         <AppField label={'Addresses'} customWidth={'100%'} isRequired>
-          <Box className='link type-upload-address' cursor="pointer"
+          <Box
+            className="link type-upload-address"
+            cursor="pointer"
             onClick={() => setIsInsertManuallyAddress(!isInsertManuallyAddress)}
           >
             {!isInsertManuallyAddress ? 'Insert Manually' : 'Upload File'}
@@ -194,7 +201,12 @@ const CreateWebhook = () => {
             }
           />
         </AppField>
-        <AppUploadABI type={TYPE_ABI.NFT} />
+        <AppUploadABI
+          type={TYPE_ABI.NFT}
+          onChange={(abi, abiFilter) =>
+            setDataForm({ ...dataForm, abi, abiFilter })
+          }
+        />
       </Flex>
     );
   };
