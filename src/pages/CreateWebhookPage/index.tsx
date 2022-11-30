@@ -1,5 +1,21 @@
-import { Box, Flex, Text } from '@chakra-ui/react';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  Box,
+  Flex,
+  Table,
+  Tbody,
+  Td,
+  Text,
+  Th,
+  Thead,
+  Tr,
+} from '@chakra-ui/react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useHistory, useParams } from 'react-router';
 import 'src/styles/pages/AppDetail.scss';
 import { BasePageContainer } from 'src/layouts';
@@ -18,6 +34,7 @@ import { createValidator } from 'src/utils/utils-validator';
 import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
+import { isValidChecksumAddress } from 'ethereumjs-util';
 
 interface IDataForm {
   webhook: string;
@@ -104,7 +121,8 @@ const CreateWebhook = () => {
     setTimeout(() => {
       const isDisabled =
         !validator.current.allValid() ||
-        (type === WEBHOOK_TYPES.CONTRACT_ACTIVITY && !dataForm.abi.length);
+        (type === WEBHOOK_TYPES.CONTRACT_ACTIVITY && !dataForm.abi.length) ||
+        (type === WEBHOOK_TYPES.ADDRESS_ACTIVITY && isNotCorrectAddress);
       setIsDisableSubmit(isDisabled);
     }, 0);
   }, [dataForm, type]);
@@ -147,6 +165,29 @@ const CreateWebhook = () => {
     );
   };
 
+  const addresses = useMemo(() => {
+    return dataForm.addresses.split('\n');
+  }, [dataForm]);
+
+  const addressesInvalid = useMemo(() => {
+    return addresses.map((address: string, index: number) => ({
+      value: address,
+      index: !isValidChecksumAddress(address) ? index : -1,
+    }));
+  }, [dataForm]);
+
+  const onClearAddressInvalid = () => {
+    const addressValid = addresses.filter((address: string) =>
+      isValidChecksumAddress(address),
+    );
+    setDataForm({ ...dataForm, addresses: addressValid.join('\n') });
+  };
+
+  const isNotCorrectAddress = useMemo(
+    () => addressesInvalid.some(({ index }) => index > -1),
+    [addressesInvalid],
+  );
+
   const _renderFormAddressActivity = () => {
     const onChange = (e: any) => {
       const value = e.target.value.split(new RegExp(/,|;|\n|\s/));
@@ -159,22 +200,57 @@ const CreateWebhook = () => {
           <Box
             className="link type-upload-address"
             cursor="pointer"
-            onClick={() => setIsInsertManuallyAddress(!isInsertManuallyAddress)}
+            onClick={() => {
+              setIsInsertManuallyAddress(!isInsertManuallyAddress);
+              setDataForm({ ...dataForm, addresses: '' });
+            }}
           >
             {!isInsertManuallyAddress ? 'Insert Manually' : 'Upload File'}
           </Box>
           {isInsertManuallyAddress ? (
-            <AppTextarea
-              rows={6}
-              value={dataForm.addresses}
-              onChange={onChange}
-              hiddenErrorText={type !== WEBHOOK_TYPES.ADDRESS_ACTIVITY}
-              validate={{
-                name: `addresses`,
-                validator: validator.current,
-                rule: 'required',
-              }}
-            />
+            <>
+              <AppTextarea
+                rows={6}
+                value={dataForm.addresses}
+                onChange={onChange}
+                hiddenErrorText={type !== WEBHOOK_TYPES.ADDRESS_ACTIVITY}
+                validate={{
+                  name: `addresses`,
+                  validator: validator.current,
+                  rule: 'required',
+                }}
+              />
+
+              {!!dataForm.addresses && isNotCorrectAddress && (
+                <Box className={'box-invalid'}>
+                  <Flex justifyContent="space-between">
+                    <Box>These are invalid addresses:</Box>
+                    <Box className="link" onClick={onClearAddressInvalid}>
+                      Delete All Invalid
+                    </Box>
+                  </Flex>
+                  <Box className="table-valid-address">
+                    <Flex className="header-list">
+                      <Box>Address</Box>
+                      <Box>LINE</Box>
+                    </Flex>
+                    <>
+                      {addressesInvalid.map(({ value, index }) => {
+                        if (index === -1) {
+                          return null;
+                        }
+                        return (
+                          <Flex key={index} className="content-list">
+                            <Box>{value || 'Unknown'}</Box>
+                            <Box>{index + 1}</Box>
+                          </Flex>
+                        );
+                      })}
+                    </>
+                  </Box>
+                </Box>
+              )}
+            </>
           ) : (
             <label>
               <Box className="box-upload">

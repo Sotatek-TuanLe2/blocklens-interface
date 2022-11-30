@@ -249,3 +249,42 @@
     color: $title;
   }
 }
+
+.box-invalid {
+  margin-top: 26px !important;
+  @include text-medium-regular;
+}
+
+.table-valid-address {
+  background: rgba(238, 93, 80, 0.1);
+  border: 1px solid $red;
+  border-radius: 6px;
+
+  .header-list {
+    @include text-small-bold;
+    padding: 12px 40px;
+    color: $line;
+    text-transform: uppercase;
+  }
+
+  .header-list,
+  .content-list {
+    padding: 15px 40px;
+    div:first-child {
+      width: 60%;
+    }
+    div:last-child {
+      width: 40%;
+      text-align: center;
+    }
+  }
+
+  .content-list {
+    @include text-medium-regular;
+    border-bottom: 1px solid $border;
+
+    &:last-child {
+      border-radius: 0 0 6px 6px;
+    }
+  }
+}
