@@ -17,12 +17,13 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import Storage from 'src/utils/storage';
 import AppDetail from './pages/AppDetail';
 import VerifyAccountPage from './pages/VerifyAccountPage';
-import WebhookActivitiesPage from './pages/WebhookActivitiesPage';
 import { getInfoUser } from 'src/store/auth';
+import { getMyPlan, getPlans } from 'src/store/billing';
 import { useDispatch } from 'react-redux';
 import ResetPasswordPage from './pages/ResetPasswordPage';
-import CreateWebhookNFTPage from './pages/CreateWebhookNFTPage';
-import CreateWebhookContractPage from './pages/CreateWebhookContractPage';
+import CreateWebhookPage from './pages/CreateWebhookPage';
+import WebhookDetail from './pages/WebhookDetail';
+import MessagesHistory from './pages/MessagesHistoryPage';
 
 /**
  * Main App routes.
@@ -40,12 +41,14 @@ const Routes: FC<RouteComponentProps> = () => {
   useEffect(() => {
     if (!accessToken) return;
     dispatch(getInfoUser());
-  }, []);
+    dispatch(getMyPlan());
+    dispatch(getPlans());
+  }, [accessToken]);
 
   return (
     <>
       <Switch>
-        <PrivateRoute path={`/app-detail/:id`} component={AppDetail} />
+        <PrivateRoute path={`/apps/:id`} component={AppDetail} />
         <PublicRoute path={'/login'} component={LoginPage} />
         <PublicRoute path={'/sign-up'} component={SignUpPage} />
         <PublicRoute path={'/verify-email'} component={VerifyAccountPage} />
@@ -53,16 +56,16 @@ const Routes: FC<RouteComponentProps> = () => {
         <PublicRoute path={'/reset-password'} component={ResetPasswordPage} />
         <PrivateRoute path={'/setting/:tab'} component={ProfilePage} />
         <PrivateRoute
-          path={'/apps/:appId/webhooks/:id'}
-          component={WebhookActivitiesPage}
+          path={'/app/:appId/webhooks/:id'}
+          component={WebhookDetail}
         />
         <PrivateRoute
-          path={'/create-webhook-nft/:id'}
-          component={CreateWebhookNFTPage}
+          path={'/create-webhook/:id'}
+          component={CreateWebhookPage}
         />
         <PrivateRoute
-          path={'/create-webhook-contract/:id'}
-          component={CreateWebhookContractPage}
+          path={'/app/:appId/messages/:id'}
+          component={MessagesHistory}
         />
         <PrivateRoute path={'/'} component={HomePage} />
       </Switch>

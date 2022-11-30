@@ -34,11 +34,10 @@ const LoginPage: FC = () => {
 
   const [dataForm, setDataForm] = useState<IDataForm>(initDataLogin);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
-  const colorText = useColorModeValue('gray.500', 'white');
 
   const validator = useRef(
     createValidator({
-      element: (message: string) => <Text color={'red.500'}>{message}</Text>,
+      element: (message: string) => <Text color={'red.100'}>{message}</Text>,
     }),
   );
 
@@ -50,10 +49,12 @@ const LoginPage: FC = () => {
   const onLogin = async () => {
     try {
       const res = await rf.getRequest('AuthRequest').login(dataForm);
-      dispatch(setAccessToken(res));
-      dispatch(setUserInfo(res.user));
-      toastSuccess({ message: 'Welcome to Blocklens!' });
-      history.push('/');
+      if (res) {
+        dispatch(setAccessToken(res));
+        dispatch(setUserInfo(res.user));
+        toastSuccess({ message: 'Welcome to Blocklens!' });
+        history.push('/');
+      }
     } catch (e: any) {
       toastError({ message: e?.message || 'Oops. Something went wrong' });
     }
@@ -63,7 +64,7 @@ const LoginPage: FC = () => {
     <BasePage>
       <Flex className="box-login">
         <AppCard className="box-form">
-          <Box className="title">Login</Box>
+          <Box className="box-form__title">Login</Box>
 
           <GoogleAuthButton>
             <Box>Login with google</Box>
@@ -71,14 +72,13 @@ const LoginPage: FC = () => {
 
           <Flex className="divider">
             <Box className="border" />
-            <Box color={colorText}>or</Box>
+            <Box >or</Box>
             <Box className="border" />
           </Flex>
 
-          <Box color={colorText}>
-            <AppField label={'EMAIL'}>
+          <Box>
+            <AppField label={'Email'}>
               <AppInput
-                placeholder="gavin@sotatek.com"
                 value={dataForm.email}
                 onChange={(e) =>
                   setDataForm({
@@ -94,7 +94,7 @@ const LoginPage: FC = () => {
               />
             </AppField>
 
-            <AppField label={'PASSWORD'}>
+            <AppField label={'Password'}>
               <AppInput
                 type="password"
                 value={dataForm.password}
@@ -115,6 +115,7 @@ const LoginPage: FC = () => {
             </AppField>
 
             <AppButton
+              mt={2}
               onClick={onLogin}
               size={'lg'}
               width={'full'}
@@ -123,14 +124,14 @@ const LoginPage: FC = () => {
               Log in
             </AppButton>
 
-            <Box mt={2}>
-              Don't have an account?
-              <AppLink to={'/sign-up'} fontWeight={500}>
+            <Box mt={2} className={'note'}>
+              Don't have an account?{' '}
+              <AppLink to={'/sign-up'}>
                 Sign up
               </AppLink>
             </Box>
 
-            <Box className="note">
+            <Box className="note" mt={3}>
               This site is protected by reCAPTCHA and the Google{' '}
               <AppLink to={'#'}>Privacy Policy </AppLink> and{' '}
               <AppLink to={'#'}>Terms of Service</AppLink> apply.

@@ -5,7 +5,7 @@ import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { useHistory } from 'react-router';
 import { IAppResponse } from 'src/utils/utils-app';
-import { AppInput } from 'src/components';
+import { AppField, AppInput, AppTextarea } from 'src/components';
 import AppButton from 'src/components/AppButton';
 
 interface IModalEditApp {
@@ -37,41 +37,40 @@ const ModalDeleteApp: FC<IModalEditApp> = ({ open, onClose, appInfo }) => {
   return (
     <BaseModal
       size="xl"
+      icon="icon-delete"
       title="Delete Confirmation"
       isOpen={open}
+      description="Any traffic going to deleted keys will stop working immediately.
+       Please make sure that all processes using this app has been reconfigured before deleting."
       onClose={onCloseModal}
-      isWarning
     >
-      <Box mb={6}>
-        Any traffic going to deleted keys will stop working immediately. Please
-        make sure that all processes using this app have been reconfigured
-        before deleting.
-      </Box>
+      <AppField
+        label={'Type App Name below to confirm'}
+        customWidth={'100%'}
+        isRequired
+      >
+        <AppInput
+          value={nameApp}
+          onChange={(e) => setNameApp(e.target.value)}
+        />
+      </AppField>
 
-      <Box mb={2}>
-        If you're ready to delete this app, please type{' '}
-        <Box as={'span'} color={'red'}>
-          {appInfo.name}
-        </Box>{' '}
-        below to confirm
-      </Box>
-
-      <AppInput value={nameApp} onChange={(e) => setNameApp(e.target.value)} />
-
-      <Flex justifyContent={'flex-end'} mt={7}>
-        <Box mr={2}>
-          <AppButton onClick={onCloseModal} variant="outline" fontWeight={400}>
-            CANCEL
-          </AppButton>
-        </Box>
-
+      <Flex flexWrap={'wrap'} justifyContent={'space-between'} mt={4}>
         <AppButton
-          onClick={onDelete}
-          fontWeight={400}
-          variant={'red'}
-          isDisabled={nameApp !== appInfo.name}
+          width={'49%'}
+          size={'lg'}
+          variant={'cancel'}
+          onClick={onCloseModal}
         >
-          DELETE FOREVER
+          Cancel
+        </AppButton>
+        <AppButton
+          width={'49%'}
+          size={'lg'}
+          isDisabled={nameApp !== appInfo.name}
+          onClick={onDelete}
+        >
+          Delete Forever
         </AppButton>
       </Flex>
     </BaseModal>

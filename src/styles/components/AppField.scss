@@ -1,0 +1,9 @@
+@import '../color-variables.scss';
+@import '../mixins.scss';
+
+.field {
+  .label {
+    @include text-medium-regular;
+    color: $paragraph;
+  }
+}

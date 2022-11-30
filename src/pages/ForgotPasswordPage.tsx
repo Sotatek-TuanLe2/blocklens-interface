@@ -1,6 +1,6 @@
 import { FC, useEffect, useRef, useState } from 'react';
 import React from 'react';
-import { Box, Flex, useColorModeValue, Text } from '@chakra-ui/react';
+import { Box, Flex, Text } from '@chakra-ui/react';
 import {
   AppField,
   AppCard,
@@ -12,7 +12,8 @@ import BasePage from 'src/layouts/BasePage';
 import { createValidator } from 'src/utils/utils-validator';
 import 'src/styles/pages/LoginPage.scss';
 import rf from 'src/requests/RequestFactory';
-import { toastError, toastSuccess } from 'src/utils/utils-notify';
+import { toastError } from 'src/utils/utils-notify';
+import ModalResendMail from 'src/modals/ModalResendMail';
 
 interface IDataForm {
   email: string;
@@ -26,11 +27,12 @@ const ForgotPasswordPage: FC = () => {
   const [dataForm, setDataForm] = useState<IDataForm>(initDataRestPassword);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
   const [hiddenErrorText, setHiddenErrorText] = useState(false);
-  const colorText = useColorModeValue('gray.500', 'white');
+  const [openModalResendEmail, setOpenModalResendEmail] =
+    useState<boolean>(false);
 
   const validator = useRef(
     createValidator({
-      element: (message: string) => <Text color={'red.500'}>{message}</Text>,
+      element: (message: string) => <Text color={'red.100'}>{message}</Text>,
     }),
   );
 
@@ -41,9 +43,8 @@ const ForgotPasswordPage: FC = () => {
     }
     try {
       await rf.getRequest('AuthRequest').forgotPassword(dataForm);
-      toastSuccess({ message: 'Send mail is successfully.' });
       setDataForm({ ...initDataRestPassword });
-      setHiddenErrorText(true);
+      setOpenModalResendEmail(true);
     } catch (error: any) {
       toastError({
         message: `${error.message || 'Oops. Something went wrong!'}`,
@@ -59,20 +60,19 @@ const ForgotPasswordPage: FC = () => {
     <BasePage>
       <Flex className="box-login">
         <AppCard className="box-form">
-          <Box className="title">
+          <Box className="box-form__title">
             <Text pb={3}>Reset password</Text>
 
-            <Text color={colorText} className="sub-text">
+            <Text className="sub-text">
               Enter your account's email address and we will send you password
               reset link.
             </Text>
           </Box>
 
-          <Box mt={5} color={colorText}>
-            <AppField label={'EMAIL'}>
+          <Box mt={5}>
+            <AppField label={'Email'}>
               <AppInput
                 hiddenErrorText={hiddenErrorText}
-                placeholder="gavin@sotatek.com"
                 value={dataForm.email}
                 onChange={(e) => {
                   setHiddenErrorText(false);
@@ -100,13 +100,22 @@ const ForgotPasswordPage: FC = () => {
               Send reset email
             </AppButton>
 
-            <Flex className="link-back">
+            <Box className="note" mt={5} textAlign={'center'}>
+              Return to{' '}
               <AppLink to={'/login'} fontWeight={500}>
-                Return to Login
+                Login
               </AppLink>
-            </Flex>
+            </Box>
           </Box>
         </AppCard>
+
+        <ModalResendMail
+          type="Reset password"
+          email={dataForm.email}
+          open={openModalResendEmail}
+          onClose={() => setOpenModalResendEmail(false)}
+          onResend={() => console.log('send mail')}
+        />
       </Flex>
     </BasePage>
   );

@@ -1,28 +1,78 @@
-@import 'src/styles/abstracts/variables';
+@import '../color-variables.scss';
+@import '../mixins.scss';
 
 .app-detail {
   .app-info {
     justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
   }
 
-  .btn-delete {
-    color: #e31a1a;
-    &:hover {
-      border: 1px solid #e31a1a;
+  .name {
+    @include heading-5;
+    align-items: center;
+    margin-bottom: 3px;
+  }
+
+  .box-network {
+    @include text-medium-regular;
+    color: $title;
+    padding: 8px 18px;
+    background-color: $card;
+    border-radius: 20px;
+    margin-right: 12px;
+  }
+
+  .app-tabs {
+    margin: 0 40px;
+    border-bottom: 1px solid $border;
+
+    .app-tab {
+      @include text-large-bold;
+      padding: 0 0 8px 0;
+      margin-right: 40px;
+      color: $line;
+
+      &[aria-selected='true'] {
+        box-shadow: none;
+        border-bottom: 2px solid $title;
+        color: $title;
+      }
+
+      &:first-child {
+        padding-left: 0;
+      }
+    }
+
+    &.no-tab {
+      border-bottom: 0;
+      color: $title;
+
+      .app-tab {
+        padding-bottom: 0;
+        &[aria-selected='true'] {
+          border-bottom: 0;
+        }
+      }
     }
   }
-  .name {
-    font-size: 17px;
-    line-height: 25px;
-    font-weight: 500;
-    margin-right: 40px;
+
+  .content-tab-app {
+    padding: 0;
+    margin-top: 30px;
+
+    &.no-tab {
+      margin-top: 0;
+    }
+  }
+
+  .list-webhook {
+    padding: 30px 0 0 0 !important;
   }
 
   .description {
-    font-size: 14px;
-    line-height: 25px;
-    color: #8798ad;
-    margin-top: 10px;
+    @include text-medium-regular;
+    color: $paragraph;
   }
 
   .list-nft {
@@ -39,33 +89,163 @@
     }
   }
 
-  .button-create-webhook {
+  .box-create {
+    @include text-large-regular;
+    color: $paragraph;
+    max-width: 480px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 30px auto;
     text-align: center;
-    color: #597dff;
-    width: fit-content;
-    border-bottom: 1px solid #597dff;
-    text-transform: uppercase;
+
+    svg {
+      margin-bottom: 20px;
+    }
+
+    button {
+      margin-top: 20px;
+    }
   }
 }
 
 .infos {
-  margin-top: 15px;
+  margin-bottom: 30px;
+
   .box-info {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    background: $card;
+    border-radius: 18px;
+    padding: 28px 22px;
+    border: 1px solid $card;
+
+    &:hover {
+      background: rgba(115, 103, 240, 0.2);
+      box-shadow: 0 10px 40px rgba(107, 78, 255, 0.25);
+      cursor: pointer;
+      border: 1px solid $main;
+    }
+
     .label {
-      font-size: 14px;
-      line-height: 20px;
-      margin-bottom: 30px;
-      text-transform: uppercase;
-      font-weight: 500;
+      @include text-medium-regular;
+      margin-bottom: 4px;
+      color: $paragraph;
     }
 
     .value {
-      font-size: 50px;
-      font-weight: 500;
-      line-height: 1;
+      @include heading-6;
+      color: $title;
     }
+  }
+
+  .chart {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 0;
+  }
+}
+
+.app-status {
+  padding: 20px 40px !important;
+}
+
+.basic-setting {
+  margin-bottom: 30px;
+  padding-top: 30px !important;
+
+  .chain-app {
+    align-items: center;
+    border-radius: 6px;
+    background-color: $bg2;
+    width: 100%;
+    padding: 0 14px;
+    height: 48px;
+    color: $paragraph;
+  }
+}
+
+.title-status {
+  @include heading-6;
+  line-height: 30px;
+  margin-right: 50px;
+}
+
+.field-disabled {
+  @include text-medium-regular;
+  padding: 12px 16px;
+  background-color: $bg2;
+  border-radius: 6px;
+  color: $paragraph;
+}
+
+.form-create {
+  background-color: $card;
+
+  .select-type-webhook {
+    .app-select__btn-select {
+      background-color: $bg2;
+      z-index: 99;
+    }
+  }
+
+  .box-upload {
+    background-color: $bg2;
+    border: 1px dashed $line;
+    border-radius: 6px;
+    color: $paragraph;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 180px;
+    margin-bottom: 13px;
+  }
+
+  .type-upload-address {
+    position: absolute;
+    right: 0;
+    top: -5px;
+  }
+}
+
+.view-all {
+  &:hover {
+    .link {
+      text-decoration: underline;
+    }
+  }
+}
+
+.box-filter {
+  justify-content: flex-end;
+  margin: 30px 40px 20px 0;
+
+  .input-search {
+    @include text-medium-regular;
+    background-color: $card;
+    padding: 4px 35px;
+    height: 32px;
+    margin-left: 8px;
+
+    &::placeholder {
+      color: $paragraph;
+    }
+  }
+}
+
+.link-redirect {
+  color: $paragraph;
+  &:hover {
+    color: $link;
+  }
+}
+
+.filter-table {
+  &:hover {
+    cursor: pointer;
+    color: $title;
   }
 }

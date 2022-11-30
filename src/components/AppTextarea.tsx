@@ -52,37 +52,19 @@ export const appTextareaStyles = {
 
   variants: {
     main: (props: StyleProps) => ({
-      bg: mode('transparent', 'navy.800')(props),
+      bg: mode('bg.200', 'bg.200')(props),
       border: '1px solid',
-      color: mode('secondaryGray.900', 'white')(props),
-      borderColor: mode('secondaryGray.100', 'whiteAlpha.100')(props),
-      borderRadius: '4px',
-      fontSize: 'sm',
+      color: mode('white', 'white')(props),
+      borderColor: mode('line.100', 'line.300')(props),
+      borderRadius: '6px',
+      fontSize: '16px',
       p: '20px',
       _placeholder: {
         color: mode('secondaryGray.500', 'whiteAlpha.300')(props),
       },
-    }),
-    auth: () => ({
-      bg: 'white',
-      border: '1px solid',
-      borderColor: 'secondaryGray.100',
-      borderRadius: '16px',
-      _placeholder: { color: 'secondaryGray.600' },
-    }),
-    authSecondary: () => ({
-      bg: 'white',
-      border: '1px solid',
-
-      borderColor: 'secondaryGray.100',
-      borderRadius: '16px',
-      _placeholder: { color: 'secondaryGray.600' },
-    }),
-    search: () => ({
-      border: 'none',
-      py: '11px',
-      borderRadius: 'inherit',
-      _placeholder: { color: 'secondaryGray.600' },
+      _focus: {
+        borderColor: mode('main.100', 'main.300')(props),
+      },
     }),
   },
 };

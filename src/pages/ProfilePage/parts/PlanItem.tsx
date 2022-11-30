@@ -1,14 +1,14 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
-import React, { FC, useMemo, useState } from 'react';
+import React, { FC, useMemo } from 'react';
 import { AppCard, AppLink } from 'src/components';
-import { IBillingPlan } from './MyPlan';
+import { IPlan } from 'src/store/billing';
 
 interface IPlanItem {
-  plan: IBillingPlan;
+  plan: IPlan;
   isActive?: boolean;
   isChangePaymentMethod: boolean;
-  planSelected: IBillingPlan;
-  setPlanSelected: (value: IBillingPlan) => void;
+  planSelected: IPlan;
+  setPlanSelected: (value: IPlan) => void;
   openModalChangePaymentMethod: (value: boolean) => void;
   openModalChangePlan: (value: boolean) => void;
 }
@@ -68,7 +68,7 @@ const PlanItem: FC<IPlanItem> = ({
                 <Flex className="price-plan">
                   <Text className="currency">$</Text>
                   {plan.price}
-                  {+plan.price > 0 && <Text className="time">/mo</Text>}
+                  {+plan?.price > 0 && <Text className="time">/mo</Text>}
                 </Flex>
               </>
             ) : (

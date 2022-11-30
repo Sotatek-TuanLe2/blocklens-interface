@@ -1,9 +1,10 @@
-import { Box } from '@chakra-ui/react';
+import { Box, Flex } from '@chakra-ui/react';
 import React, { FC } from 'react';
 import BaseModal from './BaseModal';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
+import AppButton from 'src/components/AppButton';
 
 interface IModalChangeStatusApp {
   open: boolean;
@@ -33,7 +34,7 @@ const ModalChangeStatusApp: FC<IModalChangeStatusApp> = ({
     if (appInfo?.status === APP_STATUS.DISABLED) {
       return (
         <div>
-          This app will become Active. You will start receiving <br /> Notify
+          This app will become Active. You will start receiving <br /> notify
           for webhooks in this app
         </div>
       );
@@ -41,7 +42,7 @@ const ModalChangeStatusApp: FC<IModalChangeStatusApp> = ({
 
     return (
       <div>
-        This app will become Inactive. You will stop receiving <br /> Notify for
+        This app will become Inactive. You will stop receiving <br /> notify for
         webhooks in this app.
       </div>
     );
@@ -50,7 +51,6 @@ const ModalChangeStatusApp: FC<IModalChangeStatusApp> = ({
   return (
     <BaseModal
       size="lg"
-      isHideCloseIcon
       title={
         appInfo?.status === APP_STATUS.DISABLED
           ? 'Activate app'
@@ -58,12 +58,21 @@ const ModalChangeStatusApp: FC<IModalChangeStatusApp> = ({
       }
       isOpen={open}
       onClose={onClose}
-      onActionRight={onChangeStatus}
-      onActionLeft={onClose}
-      textActionRight="Confirm"
-      textActionLeft="Cancel"
     >
       <Box textAlign={'center'}>{getDescription()}</Box>
+      <Flex flexWrap={'wrap'} justifyContent={'space-between'} mt={10}>
+        <AppButton
+          width={'49%'}
+          size={'lg'}
+          variant={'cancel'}
+          onClick={onClose}
+        >
+          Cancel
+        </AppButton>
+        <AppButton width={'49%'} size={'lg'} onClick={onChangeStatus}>
+          Confirm
+        </AppButton>
+      </Flex>
     </BaseModal>
   );
 };

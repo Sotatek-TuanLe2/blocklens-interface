@@ -1,0 +1,85 @@
+@import '../color-variables.scss';
+@import '../mixins.scss';
+
+.upload-abi {
+  width: 100%;
+  border-radius: 6px;
+
+  .label-abi {
+    @include text-medium-regular;
+    color: $paragraph;
+  }
+
+  .box-events {
+    background-color: $card;
+    padding: 16px 24px;
+    margin-bottom: 4px;
+    border-radius: 6px 6px 0 0;
+
+    &:last-child {
+      border-radius: 0 0 6px 6px;
+    }
+
+    .label-events {
+      @include text-small-bold;
+      text-transform: uppercase;
+      color: $line;
+      width: 120px;
+    }
+  }
+
+  .file-name {
+    @include text-small-regular;
+    color: $title;
+    display: flex;
+    align-items: center;
+    padding: 6px 12px;
+    background-color: $card;
+    border-radius: 6px;
+
+    .icon-clear {
+      color: $paragraph;
+      font-size: 10px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  }
+
+  .input-search {
+    @include text-medium-regular;
+    background-color: $card;
+    padding: 4px 35px;
+    height: 32px;
+    margin-left: 8px;
+
+    &::placeholder {
+      color: $paragraph;
+    }
+  }
+
+  .box-upload {
+    background-color: $bg2;
+    border: 1px dashed $line;
+    border-radius: 6px;
+    color: $paragraph;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 180px;
+    margin-bottom: 13px;
+  }
+
+  .download-template {
+    @include text-medium-medium;
+    color: $link;
+    margin-bottom: 20px;
+    cursor: pointer;
+  }
+
+  .abi-detail {
+    background-color: $bg2;
+    padding: 22px 24px;
+    border-radius: 6px;
+  }
+}

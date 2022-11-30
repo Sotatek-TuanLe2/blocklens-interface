@@ -3,13 +3,14 @@ import {
   InputProps,
   InputGroup,
   InputRightElement,
+  InputLeftElement,
   Box,
 } from '@chakra-ui/react';
 import { mode } from '@chakra-ui/theme-tools';
 import { StyleProps, forwardRef } from '@chakra-ui/system';
 import SimpleReactValidator from 'simple-react-validator';
 import { useForceRender } from 'src/hooks/useForceRender';
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import React from 'react';
 
 interface ValidatorProps {
@@ -24,6 +25,8 @@ interface AppInputProps extends InputProps {
   validate?: ValidatorProps;
   readOnly?: boolean;
   size?: string;
+  type?: string;
+  isSearch?: boolean;
   endAdornment?: ReactNode;
   hiddenErrorText?: boolean;
 }
@@ -34,6 +37,8 @@ const AppInput = forwardRef(
       variant = 'main',
       size = 'lg',
       readOnly,
+      type = 'text',
+      isSearch= false,
       validate,
       endAdornment,
       hiddenErrorText = false,
@@ -42,14 +47,19 @@ const AppInput = forwardRef(
     ref,
   ) => {
     const forceRender = useForceRender();
+    const [isShowPassword, setIsShowPassword] = useState<boolean>(false);
+
     const onBlur = () => {
       validate?.validator.showMessageFor(validate.name);
       forceRender();
     };
+
     return (
       <>
         <InputGroup size={size}>
+          {isSearch && <InputLeftElement top={'-8px'} left={'5px'} children={<Box className="icon-search" />} />}
           <Input
+            type={type === 'password' && isShowPassword ? 'text' : type}
             {...props}
             variant={variant}
             onBlur={onBlur}
@@ -58,6 +68,19 @@ const AppInput = forwardRef(
           />
 
           {endAdornment && <InputRightElement children={<>{endAdornment}</>} />}
+          {type === 'password' && (
+            <InputRightElement
+              onClick={() => setIsShowPassword(!isShowPassword)}
+              children={
+                <Box
+                  cursor={'pointer'}
+                  className={`${
+                    isShowPassword ? 'icon-eye-close' : 'icon-eye'
+                  }`}
+                />
+              }
+            />
+          )}
         </InputGroup>
         <Box>
           {!hiddenErrorText &&
@@ -91,16 +114,23 @@ export const appInputStyles = {
   variants: {
     main: (props: StyleProps) => ({
       field: {
-        bg: mode('transparent', 'navy.800')(props),
+        bg: mode('bg.200', 'bg.200')(props),
         border: '1px solid',
-        color: mode('secondaryGray.900', 'white')(props),
-        borderColor: mode('secondaryGray.100', 'whiteAlpha.300')(props),
-        borderRadius: '4px',
+        color: mode('white', 'white')(props),
+        borderColor: mode('line.100', 'line.300')(props),
+        borderRadius: '6px',
         fontSize: '16px',
         p: '20px',
+        _focus: {
+          borderColor: mode('main.100', 'main.300')(props),
+        },
         _placeholder: {
           color: mode('secondaryGray.500', 'whiteAlpha.300')(props),
         },
+        _disabled: {
+          borderColor: mode('bg.200', 'bg.200')(props),
+          color: mode('paragraph.100', 'paragraph.100')(props),
+        }
       },
     }),
     auth: (props: StyleProps) => ({

@@ -58,8 +58,8 @@ const GoogleAuthButton: FC<IGoogleAuthButton> = ({ children }) => {
       render={(renderProps) => (
         <AppButton
           onClick={renderProps.onClick}
-          borderRadius={'4px'}
-          variant={'outline'}
+          borderRadius={'6px'}
+          variant={'cancel'}
           size={'lg'}
           width={'full'}
           mt={6}

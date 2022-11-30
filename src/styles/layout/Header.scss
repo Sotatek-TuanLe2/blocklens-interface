@@ -1,14 +1,22 @@
+@import '../color-variables.scss';
+@import '../mixins.scss';
+
+.main {
+  background-color: $bg1;
+}
+
 .header {
   position: fixed;
   top: 0;
   right: 0;
   left: 0;
-  height: 65px;
+  height: 80px;
   z-index: 99;
-  background-color: #4c84ff;
+  background-color: $bg1;
+  border: 1px solid $border;
 
   .content-header {
-    max-width: 1240px;
+    max-width: 1320px;
     padding: 0 20px;
     justify-content: space-between;
     align-items: center;
@@ -29,4 +37,35 @@
       display: inline-block;
     }
   }
+
+  .menu {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+
+    a {
+      @include text-large-regular;
+      display: block;
+      margin-right: 40px;
+      color: $paragraph;
+
+      &:hover {
+        color: $title;
+      }
+      &:last-child {
+        margin-right: 0;
+      }
+
+      &.active {
+        color: $title;
+      }
+    }
+  }
+}
+
+.footer {
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
 }

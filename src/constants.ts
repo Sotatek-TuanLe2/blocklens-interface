@@ -711,4 +711,5 @@ export const CHAINS = {
   BSC: 'BSC',
   POLYGON: 'POLYGON',
   SOLANA: 'SOLANA',
+  BITCOIN: 'BITCOIN',
 };

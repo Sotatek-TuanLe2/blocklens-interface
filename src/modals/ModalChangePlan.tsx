@@ -3,16 +3,16 @@ import BaseModal from './BaseModal';
 import { Box, Flex, Text } from '@chakra-ui/react';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from '../utils/utils-notify';
-import { IBillingPlan } from 'src/pages/ProfilePage/parts/MyPlan';
 import 'src/styles/pages/ProfilePage.scss';
 import { AppCard } from 'src/components';
+import { getMyPlan, IPlan } from 'src/store/billing';
+import { useDispatch } from 'react-redux';
 
 interface IModalChangePaymentMethod {
   open: boolean;
   onClose: () => void;
-  reloadData: () => void;
   isUpgrade: boolean;
-  plan: IBillingPlan;
+  plan: IPlan;
 }
 
 const ModalChangePlan: FC<IModalChangePaymentMethod> = ({
@@ -20,15 +20,16 @@ const ModalChangePlan: FC<IModalChangePaymentMethod> = ({
   onClose,
   isUpgrade,
   plan,
-  reloadData,
 }) => {
+  const dispatch = useDispatch<any>();
+
   const changePlan = async () => {
     try {
       await rf
         .getRequest('BillingRequest')
         .updateBillingPlan({ code: plan.code });
       toastSuccess({ message: 'Update Successfully!' });
-      reloadData();
+      dispatch(getMyPlan());
       onClose();
     } catch (e: any) {
       toastError({ message: e?.message || 'Oops. Something went wrong!' });
@@ -77,8 +78,10 @@ const ModalChangePlan: FC<IModalChangePaymentMethod> = ({
                 <>
                   <Flex className="price-plan">
                     <Text className="currency">$</Text>
-                    {plan.price}
-                    {+plan.price > 0 && <Text className="time">/mo</Text>}
+                    {plan?.price}
+                    {plan?.price && +plan?.price > 0 && (
+                      <Text className="time">/mo</Text>
+                    )}
                   </Flex>
                 </>
               </Box>

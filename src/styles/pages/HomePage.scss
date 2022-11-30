@@ -1,97 +1,198 @@
-@import 'src/styles/abstracts/variables';
-.modal-blocklens {
-  header {
-    padding-top: 20px;
-    padding-bottom: 20px;
-    color: $color-white;
-    background-color: $bg-blue-200;
+@import '../color-variables.scss';
+@import '../mixins.scss';
+
+.no-app {
+  &__title {
+    @include heading-4;
+    margin-bottom: 12px;
   }
-  .field-info {
-    display: flex;
-    flex-direction: row;
-    margin-right: 33px;
-    cursor: pointer;
-    .button-copy {
-      padding-left: 3px;
-      font-size: 12px;
-      color: $color-text-6;
+
+  &__description {
+    @include text-medium-regular;
+    margin-bottom: 40px;
+    color: $paragraph;
+  }
+
+  &__btn {
+    @include text-medium-medium;
+    padding: 12px 24px !important;
+  }
+}
+
+.title-list-app {
+  justify-content: space-between;
+  align-items: center;
+  padding: 30px 40px 20px 40px;
+  .text-title {
+    color: $title;
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 30px;
+  }
+}
+
+.list-app-hp {
+  .number-app {
+    @include text-medium-regular;
+    margin-right: 20px;
+    color: $title;
+
+    span {
+      color: $line;
+    }
+  }
+
+  .btn-create {
+    @include text-medium-medium;
+  }
+}
+
+.list-table-wrap {
+  padding: 0 0 40px 0 !important;
+
+  .tr-list {
+    &:hover {
+      background-color: $bg2;
+      cursor: pointer;
+    }
+
+    td {
+      border-bottom: 1px solid $border;
+      color: $title;
+      @include text-medium-regular;
+
+      padding: 13px 15px;
+
+      &:first-child {
+        padding-left: 40px;
+      }
+
+      &:last-child {
+        padding-right: 40px;
+      }
+    }
+
+    .status {
+      padding: 6px 10px;
+      @include text-tiny-regular;
+      border-radius: 14px;
+      display: inline-block;
+      &.inactive {
+        background: rgba(234, 84, 85, 0.14);
+        color: $red;
+      }
+      &.active {
+        background: rgba(40, 199, 111, 0.14);
+        color: $green;
+      }
+      &.waiting {
+        background: rgba(255, 181, 71, 0.14);
+        color: $yellow;
+      }
+    }
+
+    &.show {
+      background-color: $bg2;
+      td {
+        border-bottom: 0;
+      }
+    }
+
+    .icon-down {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .icon-down.open {
+      svg {
+        transform: rotate(-180deg);
+      }
+    }
+  }
+
+  .dropdown-detail {
+    background-color: $bg2;
+  }
+
+  .header-list {
+    th {
+      @include text-small-bold;
+      border-bottom: 0;
+      color: $line;
+      padding: 13px 15px;
+      font-family: 'DM Sans', sans-serif;
+
+      &:first-child {
+        padding-left: 40px;
+      }
+
+      &:last-child {
+        padding-right: 40px;
+      }
+    }
+  }
+
+  .box-detail {
+    background-color: $bg2;
+    border-bottom: 0;
+    border-bottom: 1px solid $border;
+    padding: 14px 40px 26px;
+
+    .label-detail {
+      @include text-small-bold;
+      color: $line;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    .content-detail {
+      @include text-medium-regular;
+      padding: 20px;
+      color: $title;
+      background-color: $card;
+      border-radius: 6px;
     }
   }
 }
-.list-app-hp {
-  max-width: 1240px;
-  margin-top: 60px;
-  width: 100%;
-  .title-list-app {
-    margin-left: 10px;
-    margin-right: 10px;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 25px;
-    .text-title {
-      color: #4b4b4b;
-      font-size: 24px;
-    }
+
+.user-graph {
+  margin-top: 30px;
+
+  .text-title {
+    text-transform: capitalize;
   }
-  .list-app-table-wrap {
-    padding: 0px;
-    padding-bottom: 30px;
-    & div {
-      &:first-child {
-        border-top-left-radius: 10px;
-        border-top-right-radius: 10px;
-      }
-    }
-    .button-no-effect {
-      color: $color-text-6;
-      font-weight: 400;
-      line-height: 16px;
-      cursor: pointer;
-      font-size: 12px;
-    }
-    .tr-list-app {
+}
 
-      &:hover {
-        background-color: $bg-9;
-        cursor: pointer;
-      }
+.legend {
+  margin-left: 60px;
 
-      td {
-        border-bottom: 1px solid $border-color-1;
-      }
-    }
-    .gray-dot {
-      position: relative;
-      &::before {
-        position: absolute;
-        content: '';
-        left: -8px;
-        bottom: 50%;
-        transform: translate(50%, 50%);
-        width: 4px;
-        height: 4px;
-        background-color: $bg-gray-3;
-        border-radius: 99px;
-      }
-    }
-    .name-column {
-      color: $color-text-6;
-    }
-    .badge-apps {
-      color: $color-white;
-      background-color: $bg-badge-3;
-      border-radius: 100px;
-      font-weight: 400;
-      font-size: 12px;
-      line-height: 20px;
-      text-transform: capitalize;
-      margin-left: 10px;
+  div {
+    @include text-medium-regular;
+    color: $paragraph;
+    margin-right: 30px;
+    position: relative;
+    padding-left: 23px;
+
+    &:before {
+      content: '';
+      width: 14px;
+      height: 14px;
+      position: absolute;
+
+      border-radius: 3px;
+      top: 5px;
+      left: 0;
     }
 
-    .header-list-app {
-      background-color: $bg-9;
-      th {
-        font-size: 11px;
+    &:first-child {
+      &:before {
+        background-color: $link;
+      }
+    }
+
+    &:last-child {
+      &:before {
+        background-color: $yellow;
       }
     }
   }

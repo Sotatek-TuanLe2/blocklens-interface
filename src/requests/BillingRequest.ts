@@ -6,7 +6,7 @@ export default class BillingRequest extends BaseRequest {
     return config.api.baseUrlApi;
   }
 
-  getBillingPlans() {
+  getPlans() {
     const url = '/public/plans';
     return this.get(url);
   }

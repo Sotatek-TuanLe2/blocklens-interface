@@ -121,92 +121,92 @@
   }
 }
 
-@mixin font-sm-regular {
-  font-size: 14px;
-  font-weight: 400;
+@mixin heading-1 {
+  font-weight: 700;
+  font-size: 60px;
+  line-height: 70px;
 }
 
-@mixin font-md-regular {
+@mixin heading-2 {
+  font-weight: 700;
+  font-size: 50px;
+  line-height: 60px;
+}
+
+@mixin heading-3 {
+  font-weight: 700;
+  font-size: 40px;
+  line-height: 48px;
+}
+
+@mixin heading-4 {
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 38px;
+}
+
+@mixin heading-5 {
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 38px;
+}
+
+@mixin heading-6 {
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 26px;
+}
+
+@mixin text-medium-medium {
+  font-weight: 500;
   font-size: 16px;
-  font-weight: 400;
+  line-height: 24px;
 }
 
-@mixin font-lg-regular {
+@mixin text-large-regular {
+  font-weight: 400;
   font-size: 18px;
+  line-height: 26px;
+}
+
+@mixin text-medium-regular {
   font-weight: 400;
-}
-
-@mixin font-xl-regular {
-  font-size: 20px;
-  font-weight: 400;
-}
-
-@mixin font-xl-regular {
-  font-size: 24px;
-  font-weight: 400;
-}
-
-@mixin font-3xl-regular {
-  font-size: 34px;
-  font-weight: 400;
-}
-
-@mixin font-sm-semibold {
-  font-size: 14px;
-  font-weight: 600;
-}
-
-@mixin font-md-semibold {
   font-size: 16px;
-  font-weight: 600;
+  line-height: 24px;
 }
 
-@mixin font-lg-semibold {
-  font-size: 18px;
-  font-weight: 600;
-}
-
-@mixin font-xl-semibold {
-  font-size: 20px;
-  font-weight: 600;
-}
-
-@mixin font-2xl-semibold {
-  font-size: 24px;
-  font-weight: 600;
-}
-
-@mixin font-3xl-semibold {
-  font-size: 34px;
-  font-weight: 600;
-}
-
-@mixin font-sm-bold {
+@mixin text-small-regular {
+  font-weight: 400;
   font-size: 14px;
-  font-weight: 700;
+  line-height: 20px;
 }
 
-@mixin font-md-bold {
-  font-size: 16px;
-  font-weight: 700;
+@mixin text-tiny-regular {
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
 }
 
-@mixin font-lg-bold {
+@mixin text-large-bold {
+  font-weight: 700;
   font-size: 18px;
-  font-weight: 700;
+  line-height: 26px;
 }
 
-@mixin font-xl-bold {
-  font-size: 20px;
+@mixin text-medium-bold {
   font-weight: 700;
+  font-size: 16px;
+  line-height: 26px;
 }
 
-@mixin font-2xl-bold {
-  font-size: 24px;
+@mixin text-small-bold {
   font-weight: 700;
+  font-size: 14px;
+  line-height: 26px;
 }
 
-@mixin font-3xl-bold {
-  font-size: 34px;
+@mixin text-tiny-bold {
   font-weight: 700;
+  font-size: 12px;
+  line-height: 26px;
 }

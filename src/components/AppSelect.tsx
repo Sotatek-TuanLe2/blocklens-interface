@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
-import { Avatar, Box, Flex, SelectProps } from '@chakra-ui/react';
+import { Box, Flex, SelectProps } from '@chakra-ui/react';
 import Select, { components } from 'react-select';
+import 'src/styles/components/AppSelect.scss';
 
 interface AppSelectPops extends SelectProps {
   defaultValue?: any;
@@ -18,8 +19,7 @@ const { Option } = components;
 const IconOption = (props: any) => (
   <Option {...props}>
     <Flex cursor={'pointer'} alignItems={'center'}>
-      {props.data.icon && <Box className={`${props.data.icon}`} mr={2} />}
-      {/* {props.data.icon && <Avatar src={props.data.icon} size="xs" mr={2} />} */}
+      {props.data.icon && <Box className={`${props.data.icon} label`} mr={2} />}
       {props.data.label}
     </Flex>
   </Option>
@@ -39,10 +39,9 @@ const AppSelect: FC<AppSelectPops> = ({
       defaultValue={defaultValue}
       // @ts-ignore
       getOptionLabel={(e: IOption) => (
-        <Flex alignItems={'center'}>
-          {e?.icon && <Flex className={`${e?.icon}`} mr={2} />}
-          {/* {e?.icon && <Avatar src={e?.icon} size="xs" mr={2} />} */}
-          {e.label}
+        <Flex alignItems={'center'} className={'label-option'}>
+          {e?.icon && <Flex className={`${e?.icon}`} />}
+          <Box ml={2}> {e.label}</Box>
         </Flex>
       )}
       options={options}

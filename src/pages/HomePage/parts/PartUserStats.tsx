@@ -26,7 +26,7 @@ const PartUserStats = () => {
     getUserStats().then();
   }, []);
 
-  return <AppStatics type="USER" stats={userStats} />;
+  return <AppStatics type="User" stats={userStats} />;
 };
 
 export default PartUserStats;

@@ -1,4 +1,6 @@
 @import 'src/styles/Icons';
+@import './color-variables.scss';
+@import './mixins.scss';
 
 @font-face {
   font-family: 'DM Sans';
@@ -9,7 +11,7 @@
 @font-face {
   font-family: 'DM Sans';
   src: url('../assets/fonts/DMSans-Medium.ttf');
-  font-weight: 500;
+  font-weight: 400;
 }
 
 @font-face {
@@ -36,19 +38,11 @@
   font-family: 'DM Sans';
   src: url('../assets/fonts/DMSans-MediumItalic.ttf');
   font-style: italic;
-  font-weight: 500;
+  font-weight: 400;
 }
 
 iframe {
   display: none !important;
-}
-
-.select-app {
-  &__control {
-    height: 48px;
-    border-color: #e0e5f2 !important;
-    cursor: pointer;
-  }
 }
 
 .text-error {
@@ -60,7 +54,37 @@ iframe {
 .short-text {
   white-space: nowrap;
   text-overflow: ellipsis;
-  display: inline-block;
   overflow: hidden;
   width: 350px;
+}
+
+.chakra-checkbox__control {
+  border: 1px solid $line !important;
+  border-radius: 4px !important;
+  height: 21px;
+  width: 21px;
+  background-color: inherit !important;
+
+  &[data-checked] {
+    background-color: $main !important;
+    border-color: $main !important;
+  }
+
+  &[data-indeterminate] {
+    background-color: $main !important;
+    border-color: $main !important;
+  }
+
+  &[data-focus] {
+    box-shadow: none !important;
+  }
+}
+
+.chakra-checkbox__label {
+  @include text-medium-regular;
+  font-size: 16px !important;
+}
+
+.link {
+  color: $link !important;
 }

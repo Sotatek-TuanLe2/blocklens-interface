@@ -20,7 +20,7 @@ export const formatTimestamp = (
   if (!timestamp) {
     return 'TBA';
   }
-  return moment(timestamp).format(format);
+  return moment(timestamp).utc().format(format);
 };
 
 export const formatLargeNumber = (number?: number) => {
