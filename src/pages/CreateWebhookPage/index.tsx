@@ -51,7 +51,7 @@ const CreateWebhook = () => {
     address: '',
     tokenIds: '',
     abi: [],
-    type: WEBHOOK_TYPES.NFT_ACTIVITY,
+    type: '',
     abiFilter: [],
     addresses: '',
   };
@@ -59,6 +59,7 @@ const CreateWebhook = () => {
   const history = useHistory();
   const [dataForm, setDataForm] = useState<IDataForm>(initDataCreateWebHook);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
+  const [type, setType] = useState<string>(WEBHOOK_TYPES.NFT_ACTIVITY);
   const [isInsertManuallyAddress, setIsInsertManuallyAddress] =
     useState<boolean>(true);
   const [, updateState] = useState<any>();
@@ -80,6 +81,7 @@ const CreateWebhook = () => {
 
     const data = {
       ...dataForm,
+      type,
       tokenIds: dataForm.tokenIds
         .split(',')
         .filter((item: string) => !!item)
@@ -103,7 +105,7 @@ const CreateWebhook = () => {
       const isDisabled = !validator.current.allValid();
       setIsDisableSubmit(isDisabled);
     }, 0);
-  }, [dataForm, open]);
+  }, [dataForm, type]);
 
   const _renderFormContractActivity = () => {
     return (
@@ -222,11 +224,11 @@ const CreateWebhook = () => {
   };
 
   const _renderFormWebhook = () => {
-    if (dataForm.type === WEBHOOK_TYPES.NFT_ACTIVITY) {
+    if (type === WEBHOOK_TYPES.NFT_ACTIVITY) {
       return _renderFormNFTActivity();
     }
 
-    if (dataForm.type === WEBHOOK_TYPES.CONTRACT_ACTIVITY) {
+    if (type === WEBHOOK_TYPES.CONTRACT_ACTIVITY) {
       return _renderFormContractActivity();
     }
 
@@ -251,8 +253,15 @@ const CreateWebhook = () => {
                 className="select-type-webhook"
                 size="large"
                 options={optionsWebhookType}
-                value={dataForm.type}
-                onChange={(type: string) => setDataForm({ ...dataForm, type })}
+                value={type}
+                onChange={(value: string) => {
+                  if (type === value) return;
+                  setDataForm(initDataCreateWebHook);
+                  validator.current.fields = [];
+                  validator.current.hideMessages();
+                  forceUpdate();
+                  setType(value);
+                }}
               />
             </AppField>
 

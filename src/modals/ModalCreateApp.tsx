@@ -40,7 +40,7 @@ export interface IChain {
   networks: { name: string; id: string; icon: string }[];
 }
 
-export const CHAINS = config.chains.map((chain: IChain) => {
+const CHAINS = config.chains.map((chain: IChain) => {
   const networksClone = chain.networks.map(
     (network: { name: string; id: string; icon: string }) => {
       return { label: network.name, value: network.id, icon: network.icon };

@@ -12,7 +12,7 @@ export const globalStyles = {
       100: '#69758C',
     },
     bg: {
-      100: '#171E31',
+      100: '#222736',
       200: '#30384E',
     },
     pressed: {

@@ -45,9 +45,9 @@ const AppSettings: FC<IAppSettings> = ({ onBack, appInfo, reloadData }) => {
   const [, updateState] = useState<any>();
   const forceUpdate = useCallback(() => updateState({}), []);
 
-  const [isOpenModalDeleteApp, setIsOpenModalDeleteApp] =
+  const [isOpenDeleteAppModal, setIsOpenDeleteAppModal] =
     useState<boolean>(false);
-  const [isOpenModalChangeStatus, setIsOpenModalChangeStatus] =
+  const [isOpenChangeStatusAppModal, setIsOpenChangeStatusAppModal] =
     useState<boolean>(false);
 
   const isActive = useMemo(
@@ -109,7 +109,7 @@ const AppSettings: FC<IAppSettings> = ({ onBack, appInfo, reloadData }) => {
             size={'md'}
             variant="cancel"
             mr={5}
-            onClick={() => setIsOpenModalDeleteApp(true)}
+            onClick={() => setIsOpenDeleteAppModal(true)}
           >
             <Box className="icon-trash" />
           </AppButton>
@@ -183,24 +183,24 @@ const AppSettings: FC<IAppSettings> = ({ onBack, appInfo, reloadData }) => {
             <Box>{isActive ? 'Active' : 'Inactive'}</Box>
           </Flex>
 
-          <AppButton onClick={() => setIsOpenModalChangeStatus(true)}>
+          <AppButton onClick={() => setIsOpenChangeStatusAppModal(true)}>
             {isActive ? 'Deactivate' : 'Activate'}
           </AppButton>
         </Flex>
       </AppCard>
 
-      {isOpenModalDeleteApp && (
+      {isOpenDeleteAppModal && (
         <ModalDeleteApp
-          open={isOpenModalDeleteApp}
-          onClose={() => setIsOpenModalDeleteApp(false)}
+          open={isOpenDeleteAppModal}
+          onClose={() => setIsOpenDeleteAppModal(false)}
           appInfo={appInfo}
         />
       )}
 
-      {isOpenModalChangeStatus && (
+      {isOpenChangeStatusAppModal && (
         <ModalChangeStatusApp
-          open={isOpenModalChangeStatus}
-          onClose={() => setIsOpenModalChangeStatus(false)}
+          open={isOpenChangeStatusAppModal}
+          onClose={() => setIsOpenChangeStatusAppModal(false)}
           reloadData={reloadData}
           appInfo={appInfo}
         />
