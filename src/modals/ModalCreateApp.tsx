@@ -58,8 +58,8 @@ const CHAINS = config.chains.map((chain: IChain) => {
 const ModalCreateApp: FC<IModalCreateApp> = ({ open, onClose, reloadData }) => {
   const initDataCreateApp = {
     name: '',
-    chain: CHAINS[0].value,
-    network: CHAINS[0].networks[0].value,
+    chain: '',
+    network: '',
     description: '',
   };
 

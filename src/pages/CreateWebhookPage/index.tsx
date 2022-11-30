@@ -109,6 +109,14 @@ const CreateWebhook = () => {
     }, 0);
   }, [dataForm, type]);
 
+  const onChangeWebhookType = (value: string) => {
+    if (type === value) return;
+    setDataForm(initDataCreateWebHook);
+    validator.current.fields = [];
+    forceUpdate();
+    setType(value);
+  };
+
   const _renderFormContractActivity = () => {
     return (
       <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
@@ -121,6 +129,7 @@ const CreateWebhook = () => {
                 address: e.target.value.trim(),
               })
             }
+            hiddenErrorText={type !== WEBHOOK_TYPES.CONTRACT_ACTIVITY}
             validate={{
               name: `contractAddress`,
               validator: validator.current,
@@ -159,6 +168,7 @@ const CreateWebhook = () => {
               rows={6}
               value={dataForm.addresses}
               onChange={onChange}
+              hiddenErrorText={type !== WEBHOOK_TYPES.ADDRESS_ACTIVITY}
               validate={{
                 name: `addresses`,
                 validator: validator.current,
@@ -196,6 +206,7 @@ const CreateWebhook = () => {
                 address: e.target.value.trim(),
               });
             }}
+            hiddenErrorText={type !== WEBHOOK_TYPES.NFT_ACTIVITY}
             validate={{
               name: `addressNft`,
               validator: validator.current,
@@ -256,14 +267,7 @@ const CreateWebhook = () => {
                 size="large"
                 options={optionsWebhookType}
                 value={type}
-                onChange={(value: string) => {
-                  if (type === value) return;
-                  setDataForm(initDataCreateWebHook);
-                  validator.current.fields = [];
-                  validator.current.hideMessages();
-                  forceUpdate();
-                  setType(value);
-                }}
+                onChange={onChangeWebhookType}
               />
             </AppField>
 
@@ -276,12 +280,12 @@ const CreateWebhook = () => {
               <AppInput
                 borderRightRadius={0}
                 value={dataForm.webhook}
-                onChange={(e) =>
+                onChange={(e) => {
                   setDataForm({
                     ...dataForm,
                     webhook: e.target.value.trim(),
-                  })
-                }
+                  });
+                }}
                 validate={{
                   name: `webhook`,
                   validator: validator.current,
