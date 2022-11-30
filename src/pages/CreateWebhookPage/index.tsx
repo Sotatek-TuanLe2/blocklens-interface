@@ -102,7 +102,9 @@ const CreateWebhook = () => {
 
   useEffect(() => {
     setTimeout(() => {
-      const isDisabled = !validator.current.allValid();
+      const isDisabled =
+        !validator.current.allValid() ||
+        (type === WEBHOOK_TYPES.CONTRACT_ACTIVITY && !dataForm.abi.length);
       setIsDisableSubmit(isDisabled);
     }, 0);
   }, [dataForm, type]);
