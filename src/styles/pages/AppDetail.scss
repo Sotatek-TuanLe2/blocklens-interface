@@ -288,3 +288,23 @@
     }
   }
 }
+
+.file-name {
+  @include text-small-regular;
+  color: $title;
+  display: flex;
+  align-items: center;
+  padding: 6px 12px;
+  background-color: $bg2;
+  border-radius: 6px;
+  width: max-content;
+  margin: 10px 0 !important;
+
+
+  .icon-clear {
+    color: $paragraph;
+    font-size: 10px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+}
