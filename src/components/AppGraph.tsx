@@ -10,15 +10,20 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
+import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
 
 const optionsFilterByType = [
   {
-    label: 'Numbers of messages',
-    value: 'messages',
+    label: 'NFT Activity',
+    value: WEBHOOK_TYPES.NFT_ACTIVITY,
   },
   {
-    label: 'Numbers of events',
-    value: 'events',
+    label: 'Address Activity',
+    value: WEBHOOK_TYPES.ADDRESS_ACTIVITY,
+  },
+  {
+    label: 'Contract Activity',
+    value: WEBHOOK_TYPES.CONTRACT_ACTIVITY,
   },
 ];
 
@@ -107,11 +112,7 @@ export const Chart = () => {
             stroke="#3A95FF"
             name="Numbers of events"
           />
-          <CartesianGrid
-            vertical={false}
-            horizontal
-            stroke="#41495F"
-          />
+          <CartesianGrid vertical={false} horizontal stroke="#41495F" />
         </LineChart>
       </ResponsiveContainer>
 
@@ -128,7 +129,7 @@ interface IAppGraph {
 }
 
 const AppGraph: FC<IAppGraph> = ({ type }) => {
-  const [typeData, setTypeData] = useState<string>('messages');
+  const [typeData, setTypeData] = useState<string>(WEBHOOK_TYPES.NFT_ACTIVITY);
   const [duration, setDuration] = useState<string>('24h');
 
   return (
@@ -136,10 +137,10 @@ const AppGraph: FC<IAppGraph> = ({ type }) => {
       <Flex className={'title-list-app'}>
         <Box className={'text-title'}>{type}'s Graph</Box>
         <Flex>
-          {type !== 'webhook' && (
+          {type === 'app' && (
             <Box mr={3}>
               <AppSelect2
-                width={'230px'}
+                width={'200px'}
                 value={typeData}
                 onChange={setTypeData}
                 options={optionsFilterByType}
