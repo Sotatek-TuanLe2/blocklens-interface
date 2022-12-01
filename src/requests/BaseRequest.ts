@@ -91,7 +91,7 @@ export default class BaseRequest {
   }
 
   _error401Handler() {
-    return AppBroadcast.dispatch('LOGOUT_USER');
+    return AppBroadcast.dispatch('REQUEST_SIGN_IN');
   }
 
   async _errorHandler(err: any) {
