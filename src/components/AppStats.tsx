@@ -1,17 +1,15 @@
 import { Box, SimpleGrid } from '@chakra-ui/react';
-import React, { FC } from 'react';
+import React, { FC, useCallback } from 'react';
 import { AppCard } from 'src/components';
 import { formatLargeNumber } from 'src/utils/utils-helper';
 import { LineChart, Line, ResponsiveContainer } from 'recharts';
+import { IUserStats } from 'src/pages/HomePage/parts/PartUserStats';
 
-interface IAppStats {
-  stats: {
-    totalThisMonth?: number;
-    totalToday?: number;
-    totalSuccessToday?: number;
-  };
-  type: 'WEBHOOK' | 'APP' | 'User';
-}
+type LabelStats =
+  | 'totalThisMonth'
+  | 'totalToday'
+  | 'totalSuccessToday'
+  | 'tottalActivities';
 
 const data = [
   {
@@ -44,6 +42,16 @@ const data = [
   },
 ];
 
+const getPercentNotificationSuccess = (userStats: any) => {
+  if (!userStats?.totalToday || !userStats?.totalSuccessToday) {
+    return '--';
+  }
+
+  return ((userStats?.totalSuccessToday / userStats?.totalToday) * 100).toFixed(
+    2,
+  );
+};
+
 export const ChartStatics = () => {
   return (
     <Box height={'50px'} width={'40%'} px={5} className="chart">
@@ -62,45 +70,35 @@ export const ChartStatics = () => {
   );
 };
 
-const AppStatics: FC<IAppStats> = ({ stats, type }) => {
-  const getPercentNotificationSuccess = () => {
-    if (!stats?.totalToday || !stats?.totalSuccessToday) {
-      return '--';
-    }
-
-    return ((stats?.totalSuccessToday / stats?.totalToday) * 100).toFixed(2);
-  };
+const AppStatics: FC<any> = ({ userStats, labelStats, stats }) => {
+  const getValueStats = useCallback(
+    (
+      userStats: IUserStats,
+      value: number,
+      stats: { key: string; label: string },
+    ) => {
+      if (stats.key === 'totalSuccessToday') {
+        return getPercentNotificationSuccess(userStats);
+      }
+      return formatLargeNumber(value);
+    },
+    [],
+  );
 
   return (
-    <SimpleGrid
-      className="infos"
-      columns={{ base: 1, sm: 2, lg: 4 }}
-      gap="20px"
-    >
+    <>
       <AppCard className="box-info">
-        <Box className="label">Total Messages (today)</Box>
-        <Box className="value">{formatLargeNumber(stats.totalToday)}</Box>
+        <Box className="label">{stats.label}</Box>
+        <Box className="value">
+          {getValueStats(
+            userStats,
+            userStats[labelStats.key as LabelStats],
+            stats,
+          )}
+        </Box>
         <ChartStatics />
       </AppCard>
-
-      <AppCard className="box-info">
-        <Box className="label">Total Activities (today)</Box>
-        <Box className="value">{formatLargeNumber(stats.totalToday)}</Box>
-        <ChartStatics />
-      </AppCard>
-
-      <AppCard className="box-info">
-        <Box className="label">Success Rate (today)</Box>
-        <Box className="value">{getPercentNotificationSuccess()}</Box>
-        <ChartStatics />
-      </AppCard>
-
-      <AppCard className="box-info">
-        <Box className="label">Total Webhook</Box>
-        <Box className="value">{formatLargeNumber(stats.totalThisMonth)}</Box>
-        <ChartStatics />
-      </AppCard>
-    </SimpleGrid>
+    </>
   );
 };
 

@@ -68,8 +68,7 @@ const AppDetail = () => {
 
             <Flex>
               <Flex alignItems={'center'} className="box-network">
-                <Box className={getLogoChainByName(appInfo.chain)} mr={2}>
-                </Box>
+                <Box className={getLogoChainByName(appInfo.chain)} mr={2}></Box>
                 {appInfo.network}
               </Flex>
               <AppButton
@@ -94,7 +93,9 @@ const AppDetail = () => {
                   px={4}
                   py={1}
                   className={'btn-create'}
-                  onClick={() => history.push(`/create-webhook/${appInfo.appId}`)}
+                  onClick={() =>
+                    history.push(`/create-webhook/${appInfo.appId}`)
+                  }
                 >
                   <Box className="icon-plus-circle" mr={2} /> Create
                 </AppButton>

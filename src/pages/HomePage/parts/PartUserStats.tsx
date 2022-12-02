@@ -1,22 +1,43 @@
+import { SimpleGrid } from '@chakra-ui/react';
 import React, { useCallback, useEffect, useState } from 'react';
-import rf from 'src/requests/RequestFactory';
 import AppStatics from 'src/components/AppStats';
+import rf from 'src/requests/RequestFactory';
 
-interface IUserStats {
+export interface IUserStats {
   totalThisMonth?: number;
   totalToday?: number;
   totalSuccessToday?: number;
+  tottalActivities?: number;
 }
+
+const listUserStats = [
+  {
+    key: 'totalToday',
+    label: 'Total Messages (today)',
+  },
+  {
+    key: 'totalThisMonth',
+    label: 'Total Webhook',
+  },
+  {
+    key: 'totalSuccessToday',
+    label: 'Success Rate (today)',
+  },
+  {
+    key: 'tottalActivities',
+    label: 'Total Activities (today)',
+  },
+];
 
 const PartUserStats = () => {
   const [userStats, setUserStats] = useState<IUserStats>({});
 
   const getUserStats = useCallback(async () => {
     try {
-      const res = (await rf
+      const res: IUserStats = await rf
         .getRequest('NotificationRequest')
-        .getUserStats()) as any;
-      setUserStats(res);
+        .getUserStats();
+      setUserStats({ ...res, tottalActivities: res.totalToday });
     } catch (error: any) {
       setUserStats({});
     }
@@ -26,7 +47,25 @@ const PartUserStats = () => {
     getUserStats().then();
   }, []);
 
-  return <AppStatics type="User" stats={userStats} />;
+  return (
+    <SimpleGrid
+      className="infos"
+      columns={{ base: 1, sm: 2, lg: 4 }}
+      gap="20px"
+    >
+      {listUserStats.map((stats, index: number) => {
+        return (
+          <React.Fragment key={`${index} stats`}>
+            <AppStatics
+              userStats={userStats}
+              labelStats={listUserStats}
+              stats={stats}
+            />
+          </React.Fragment>
+        );
+      })}
+    </SimpleGrid>
+  );
 };
 
 export default PartUserStats;
