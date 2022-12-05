@@ -56,7 +56,7 @@ const AppDetail = () => {
           <Flex className="app-info">
             <Flex className="name">
               <AppLink to={'/'}>
-                <Box className="icon-arrow-left" mr={isMobile ? 4 : 6} />
+                <Box className="icon-arrow-left" mr={isMobile ? 3 : 6} />
               </AppLink>
               <Box>{appInfo.name}</Box>
             </Flex>

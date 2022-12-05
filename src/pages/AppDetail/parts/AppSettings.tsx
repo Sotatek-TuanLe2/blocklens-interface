@@ -22,6 +22,7 @@ import { createValidator } from 'src/utils/utils-validator';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { getLogoChainByName } from 'src/utils/utils-network';
+import { isMobile } from 'react-device-detect';
 
 interface IAppSettings {
   onBack: () => void;
@@ -97,7 +98,7 @@ const AppSettings: FC<IAppSettings> = ({ onBack, appInfo, reloadData }) => {
         <Flex className="name">
           <Box
             className="icon-arrow-left"
-            mr={6}
+            mr={isMobile ? 3 : 6}
             onClick={onBack}
             cursor="pointer"
           />
@@ -108,6 +109,7 @@ const AppSettings: FC<IAppSettings> = ({ onBack, appInfo, reloadData }) => {
           <AppButton
             size={'md'}
             variant="cancel"
+            px={isMobile ? 3 : 4}
             onClick={() => setIsOpenDeleteAppModal(true)}
           >
             <Box className="icon-trash" />
@@ -116,10 +118,15 @@ const AppSettings: FC<IAppSettings> = ({ onBack, appInfo, reloadData }) => {
       </Flex>
 
       <AppCard className="basic-setting">
-        <Flex justifyContent={'space-between'}>
+        <Flex justifyContent={'space-between'} alignItems={'center'}>
           <Box className="title-status">Basic Settings</Box>
 
-          <AppButton onClick={handleSubmitForm} isDisabled={isDisableSubmit}>
+          <AppButton
+            size={isMobile ? 'sm' : 'md'}
+            onClick={handleSubmitForm}
+            isDisabled={isDisableSubmit}
+            className="btn-create"
+          >
             Save
           </AppButton>
         </Flex>
@@ -176,13 +183,24 @@ const AppSettings: FC<IAppSettings> = ({ onBack, appInfo, reloadData }) => {
 
       <AppCard className="app-status">
         <Flex justifyContent={'space-between'}>
-          <Flex alignItems="center">
+          <Flex
+            alignItems={isMobile ? 'flex-start' : 'center'}
+            flexDirection={isMobile ? 'column' : 'row'}
+          >
             <Box className="title-status">App Status</Box>
-            <Box className={isActive ? 'icon-active' : 'icon-inactive'} mr={2} />
-            <Box>{isActive ? 'Active' : 'Inactive'}</Box>
+            <Flex alignItems={'center'}>
+              <Box
+                className={isActive ? 'icon-active' : 'icon-inactive'}
+                mr={2}
+              />
+              <Box>{isActive ? 'Active' : 'Inactive'}</Box>
+            </Flex>
           </Flex>
 
-          <AppButton onClick={() => setIsOpenChangeStatusAppModal(true)}>
+          <AppButton
+            onClick={() => setIsOpenChangeStatusAppModal(true)}
+            size={isMobile ? 'sm' : 'md'}
+          >
             {isActive ? 'Deactivate' : 'Activate'}
           </AppButton>
         </Flex>

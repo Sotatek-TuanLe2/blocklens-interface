@@ -32,6 +32,11 @@
     @include tablet {
       margin: 0 20px;
       overflow-x: scroll;
+      -ms-overflow-style: none;  /* Internet Explorer 10+ */
+      scrollbar-width: none;  /* Firefox */
+      &::-webkit-scrollbar {
+        display: none;  /* Safari and Chrome */
+      }
 
       & > div {
         width: max-content;
@@ -58,6 +63,10 @@
 
       &:first-child {
         padding-left: 0;
+      }
+
+      &:last-child {
+        margin-right: 0;
       }
     }
 
@@ -123,6 +132,10 @@
     margin: 30px auto;
     text-align: center;
 
+    @include tablet {
+      padding: 0 15px;
+    }
+
     svg {
       margin-bottom: 20px;
     }
@@ -174,11 +187,19 @@
 
 .app-status {
   padding: 20px 40px !important;
+
+  @include tablet {
+    padding: 20px !important;
+  }
 }
 
 .basic-setting {
   margin-bottom: 30px;
   padding-top: 30px !important;
+
+  @include tablet {
+    padding: 20px !important;
+  }
 
   .chain-app {
     align-items: center;
@@ -195,6 +216,11 @@
   @include heading-6;
   line-height: 30px;
   margin-right: 50px;
+
+  @include tablet {
+    @include heading-8;
+    margin-bottom: 14px;
+  }
 }
 
 .field-disabled {
@@ -272,6 +298,10 @@
     cursor: pointer;
     color: $title;
   }
+}
+
+.btn-create {
+  @include text-medium-medium;
 }
 
 .box-invalid {

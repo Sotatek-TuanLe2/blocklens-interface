@@ -7,6 +7,7 @@ import { useHistory } from 'react-router';
 import { IAppResponse } from 'src/utils/utils-app';
 import { AppField, AppInput, AppTextarea } from 'src/components';
 import AppButton from 'src/components/AppButton';
+import { isMobile } from 'react-device-detect';
 
 interface IModalEditApp {
   open: boolean;
@@ -43,6 +44,7 @@ const ModalDeleteApp: FC<IModalEditApp> = ({ open, onClose, appInfo }) => {
       description="Any traffic going to deleted keys will stop working immediately.
        Please make sure that all processes using this app has been reconfigured before deleting."
       onClose={onCloseModal}
+      isFullScreen={isMobile}
     >
       <AppField
         label={'Type App Name below to confirm'}
