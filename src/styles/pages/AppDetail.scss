@@ -12,6 +12,9 @@
     @include heading-5;
     align-items: center;
     margin-bottom: 3px;
+    @include tablet {
+      @include heading-6;
+    }
   }
 
   .box-network {
@@ -26,12 +29,26 @@
   .app-tabs {
     margin: 0 40px;
     border-bottom: 1px solid $border;
+    @include tablet {
+      margin: 0 20px;
+      overflow-x: scroll;
+
+      & > div {
+        width: max-content;
+      }
+    }
 
     .app-tab {
       @include text-large-bold;
       padding: 0 0 8px 0;
       margin-right: 40px;
       color: $line;
+
+      @include tablet {
+        width: max-content;
+        margin-right: 20px;
+        @include text-medium-bold;
+      }
 
       &[aria-selected='true'] {
         box-shadow: none;
@@ -61,6 +78,10 @@
     padding: 0;
     margin-top: 30px;
 
+    @include tablet {
+      margin-top: 14px !important;
+    }
+
     &.no-tab {
       margin-top: 0;
     }
@@ -68,6 +89,9 @@
 
   .list-webhook {
     padding: 30px 0 0 0 !important;
+    @include tablet {
+      padding-top: 24px !important;
+    }
   }
 
   .description {
@@ -299,7 +323,6 @@
   border-radius: 6px;
   width: max-content;
   margin: 10px 0 !important;
-
 
   .icon-clear {
     color: $paragraph;

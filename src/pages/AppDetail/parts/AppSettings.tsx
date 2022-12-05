@@ -108,7 +108,6 @@ const AppSettings: FC<IAppSettings> = ({ onBack, appInfo, reloadData }) => {
           <AppButton
             size={'md'}
             variant="cancel"
-            mr={5}
             onClick={() => setIsOpenDeleteAppModal(true)}
           >
             <Box className="icon-trash" />

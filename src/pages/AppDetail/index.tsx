@@ -19,6 +19,7 @@ import { BasePageContainer } from 'src/layouts';
 import { AppButton, AppCard, AppGraph, AppLink } from 'src/components';
 import AppSettings from './parts/AppSettings';
 import { getLogoChainByName, isEVMNetwork } from 'src/utils/utils-network';
+import { isMobile } from 'react-device-detect';
 
 const AppDetail = () => {
   const [appInfo, setAppInfo] = useState<any>({});
@@ -55,23 +56,27 @@ const AppDetail = () => {
           <Flex className="app-info">
             <Flex className="name">
               <AppLink to={'/'}>
-                <Box className="icon-arrow-left" mr={6} />
+                <Box className="icon-arrow-left" mr={isMobile ? 4 : 6} />
               </AppLink>
               <Box>{appInfo.name}</Box>
             </Flex>
 
             <Flex>
-              <Flex alignItems={'center'} className="box-network">
-                <Box className={getLogoChainByName(appInfo.chain)} mr={2} />
-                {appInfo.network}
-              </Flex>
+              {!isMobile && (
+                <Flex alignItems={'center'} className="box-network">
+                  <Box className={getLogoChainByName(appInfo.chain)} mr={2} />
+                  {appInfo.network}
+                </Flex>
+              )}
+
               <AppButton
                 size={'md'}
+                px={isMobile ? 2.5 : 4}
                 variant="cancel"
-                mr={5}
                 onClick={() => setIsShowSetting(true)}
               >
-                <Box className="icon-settings" mr={2} /> Setting
+                <Box className="icon-settings" mr={isMobile ? 0 : 2} />
+                {isMobile ? '' : 'Setting'}
               </AppButton>
             </Flex>
           </Flex>
@@ -95,6 +100,7 @@ const AppDetail = () => {
                 </AppButton>
               </Box>
             </Flex>
+
             <Tabs variant={'unstyled'} colorScheme="transparent">
               <TabList
                 className={`${

@@ -1,5 +1,5 @@
 import { Box, Flex, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React, { useState, FC } from 'react';
 import { AppButton, AppCard, AppDataTable } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
@@ -15,6 +15,10 @@ interface IListApps {
   totalApps: number;
   searchListApp: any;
   setOpenModalCreateApp: () => void;
+}
+
+interface IAppMobile {
+  app: IAppResponse;
 }
 
 export const _renderStatus = (status?: APP_STATUS) => {
@@ -36,7 +40,7 @@ const _renderChainApp = (chain: string) => {
   );
 };
 
-const AppMobile = ({ app }: any) => {
+const AppMobile: FC<IAppMobile> = ({ app }) => {
   const history = useHistory();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   return (

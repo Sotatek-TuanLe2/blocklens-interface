@@ -19,6 +19,7 @@ import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import config from 'src/config';
 import _ from 'lodash';
+import { isMobile } from 'react-device-detect';
 
 interface IModalCreateApp {
   open: boolean;
@@ -128,6 +129,7 @@ const ModalCreateApp: FC<IModalCreateApp> = ({ open, onClose, reloadData }) => {
       description="We suggest you create an App and start experiencing our BlockLens API,
        which grants access to various blockchains WITHOUT running nodes anymore!"
       isOpen={open}
+      isFullScreen={isMobile}
       onClose={onCloseModal}
     >
       <Box>

@@ -7,6 +7,7 @@ import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
 import ListWebhook from './ListWebhook';
 import 'src/styles/pages/HomePage.scss';
 import { NoData } from 'src/assets/icons';
+import { isMobile } from 'react-device-detect';
 
 interface IListContract {
   appInfo: IAppResponse;
@@ -44,7 +45,7 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
 
   return (
     <>
-      <Flex justifyContent="space-between" alignItems="center" mx={10}>
+      <Flex justifyContent="space-between" alignItems="center" mx={isMobile ? 5 :  10}>
         <Box className="description">
           Get notified when your Contract occurs activities
         </Box>

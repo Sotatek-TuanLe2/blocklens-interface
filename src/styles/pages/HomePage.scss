@@ -32,6 +32,9 @@
 
   @include tablet {
     padding: 24px 20px;
+    .text-title {
+      @include heading-8;
+    }
   }
 }
 
@@ -208,7 +211,6 @@
 
 .legend {
   margin-left: 60px;
-
 
   div {
     @include text-medium-regular;
