@@ -29,6 +29,10 @@
     font-size: 24px;
     line-height: 30px;
   }
+
+  @include tablet {
+    padding: 24px 20px;
+  }
 }
 
 .list-app-hp {
@@ -49,6 +53,9 @@
 
 .list-table-wrap {
   padding: 0 0 40px 0 !important;
+  @include tablet {
+    padding-bottom: 10px !important;
+  }
 
   .tr-list {
     &:hover {
@@ -69,25 +76,6 @@
 
       &:last-child {
         padding-right: 40px;
-      }
-    }
-
-    .status {
-      padding: 6px 10px;
-      @include text-tiny-regular;
-      border-radius: 14px;
-      display: inline-block;
-      &.inactive {
-        background: rgba(234, 84, 85, 0.14);
-        color: $red;
-      }
-      &.active {
-        background: rgba(40, 199, 111, 0.14);
-        color: $green;
-      }
-      &.waiting {
-        background: rgba(255, 181, 71, 0.14);
-        color: $yellow;
       }
     }
 
@@ -163,8 +151,64 @@
   }
 }
 
+.status {
+  padding: 6px 10px;
+  @include text-tiny-regular;
+  border-radius: 14px;
+  display: inline-block;
+  &.inactive {
+    background: rgba(234, 84, 85, 0.14);
+    color: $red;
+  }
+  &.active {
+    background: rgba(40, 199, 111, 0.14);
+    color: $green;
+  }
+  &.waiting {
+    background: rgba(255, 181, 71, 0.14);
+    color: $yellow;
+  }
+}
+
+.list-card-mobile {
+  margin: 0 20px;
+  .card-mobile {
+    background: $card;
+    border: 1px solid $border;
+    border-radius: 12px;
+    padding: 16px 14px;
+    margin-bottom: 16px;
+
+    .info {
+      @include text-small-regular;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      color: $paragraph;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    .value {
+      color: $title;
+    }
+
+    .name-mobile {
+      @include text-medium-bold;
+      color: $title;
+    }
+
+    &.open {
+      background-color: $bg2;
+    }
+  }
+}
+
 .legend {
   margin-left: 60px;
+
 
   div {
     @include text-medium-regular;
@@ -194,6 +238,16 @@
       &:before {
         background-color: $yellow;
       }
+    }
+  }
+
+  @include tablet {
+    margin-left: 20px;
+    flex-direction: column;
+
+    div {
+      margin-bottom: 10px;
+      @include text-small-regular;
     }
   }
 }

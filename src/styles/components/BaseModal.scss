@@ -7,11 +7,17 @@
   padding: 8px;
   max-width: 500px !important;
 
+  &.full {
+    height: 100vh;
+    border-radius: 0 !important;
+    margin: 0 !important;
+  }
+
   &__btn-close {
     position: absolute;
     right: 20px;
     top: 20px;
-    border: 2px solid #41495f;
+    border: 2px solid $border;
     border-radius: 48px;
     width: 38px;
     height: 38px;
@@ -19,6 +25,11 @@
     justify-content: center;
     align-items: center;
     cursor: pointer;
+
+    @include tablet {
+      width: 30px;
+      height: 30px;
+    }
   }
 
   &__icon {
@@ -26,6 +37,7 @@
   }
 
   &__title {
+    position: relative;
     @include heading-4;
     margin-top: 50px;
     text-align: center;
@@ -33,6 +45,20 @@
 
     &.icon {
       margin-top: 28px;
+    }
+
+    @include tablet {
+      @include heading-6;
+    }
+
+    .icon-back {
+      cursor: pointer;
+      position: absolute;
+      top: 2px;
+      left: 5px;
+      width: 10px;
+      height: 18px;
+      transform: rotate(90deg);
     }
   }
 
@@ -72,5 +98,30 @@
     &:last-child {
       border-radius: 0 0 6px 6px;
     }
+  }
+}
+
+.label-filter {
+  @include text-small-bold;
+  color: $title;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+.list-option {
+  div {
+    color: $paragraph;
+    @include text-medium-regular;
+
+    .chakra-checkbox__label[data-checked] {
+      color: $title;
+    }
+  }
+}
+
+.chakra-modal__body {
+  @include tablet {
+    padding: 0 10px !important;
   }
 }

@@ -9,6 +9,7 @@ import { getLogoChainByName } from 'src/utils/utils-network';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/store';
 import ModalUpgradeCreateApp from 'src/modals/ModalUpgradeCreateApp';
+import { isMobile } from 'react-device-detect';
 
 interface IListApps {
   totalApps: number;
@@ -23,6 +24,79 @@ export const _renderStatus = (status?: APP_STATUS) => {
     <Box className={`status ${isActive ? 'active' : 'inactive'}`}>
       {isActive ? 'Active' : 'Inactive'}
     </Box>
+  );
+};
+
+const _renderChainApp = (chain: string) => {
+  return (
+    <Flex alignItems={'center'}>
+      <Box className={getLogoChainByName(chain) || ''} mr={2.5} />
+      {chain}
+    </Flex>
+  );
+};
+
+const AppMobile = ({ app }: any) => {
+  const history = useHistory();
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  return (
+    <>
+      <Box className={`${isOpen ? 'open' : ''} card-mobile`}>
+        <Flex
+          justifyContent="space-between"
+          alignItems="center"
+          className="info"
+        >
+          <Box
+            className="name-mobile"
+            onClick={() => history.push(`/apps/${app.appId}`)}
+          >
+            {app.name}
+          </Box>
+          <Box
+            className={isOpen ? 'icon-minus' : 'icon-plus'}
+            onClick={() => setIsOpen(!isOpen)}
+          />
+        </Flex>
+        <Flex
+          justifyContent="space-between"
+          alignItems="center"
+          className="info"
+        >
+          <Box>Status</Box>
+          <Box>{_renderStatus(app.status)}</Box>
+        </Flex>
+
+        {isOpen && (
+          <Box>
+            <Flex
+              justifyContent="space-between"
+              alignItems="center"
+              className="info"
+            >
+              <Box>Network</Box>
+              <Box className="value">{_renderChainApp(app.chain)}</Box>
+            </Flex>
+            <Flex
+              justifyContent="space-between"
+              alignItems="center"
+              className="info"
+            >
+              <Box>Message today</Box>
+              <Box className="value">N/A</Box>
+            </Flex>
+            <Flex
+              justifyContent="space-between"
+              alignItems="center"
+              className="info"
+            >
+              <Box>Number of webhook</Box>
+              <Box className="value">N/A</Box>
+            </Flex>
+          </Box>
+        )}
+      </Box>
+    </>
   );
 };
 
@@ -59,6 +133,8 @@ const ListApps: React.FC<IListApps> = ({
   };
 
   const _renderHeader = () => {
+    if (isMobile) return;
+
     return (
       <Thead className="header-list">
         <Tr>
@@ -72,7 +148,18 @@ const ListApps: React.FC<IListApps> = ({
     );
   };
 
+  const _renderListAppMobile = (data?: IAppResponse[]) => {
+    return (
+      <Box className="list-card-mobile">
+        {data?.map((app: IAppResponse, index: number) => {
+          return <AppMobile app={app} key={index} />;
+        })}
+      </Box>
+    );
+  };
+
   const _renderBody = (data?: IAppResponse[]) => {
+    if (isMobile) return _renderListAppMobile(data);
     return (
       <Tbody>
         {data?.map((app: IAppResponse, index: number) => {
@@ -83,15 +170,7 @@ const ListApps: React.FC<IListApps> = ({
               onClick={() => history.push(`/apps/${app.appId}`)}
             >
               <Td>{app.name}</Td>
-              <Td>
-                <Flex alignItems={'center'}>
-                  <Box
-                    className={getLogoChainByName(app.chain) || ''}
-                    mr={2.5}
-                  />
-                  {app.chain}
-                </Flex>
-              </Td>
+              <Td>{_renderChainApp(app.chain)}</Td>
               <Td textAlign={'center'}>N/A</Td>
               <Td textAlign={'center'}>N/A</Td>
               <Td textAlign={'right'}>{_renderStatus(app.status)}</Td>
@@ -102,16 +181,21 @@ const ListApps: React.FC<IListApps> = ({
     );
   };
 
+  const _renderTotalApp = () => {
+    return (
+      <Box className="number-app">
+        <Text as={'span'}>Active Apps:</Text> {totalAppActive}/{totalApps}
+      </Box>
+    );
+  };
+
   return (
     <Box className="list-app-hp">
       <AppCard className="list-table-wrap">
         <Flex className="title-list-app">
           <Text className="text-title">Apps</Text>
           <Flex alignItems={'center'}>
-            <Box className="number-app">
-              <Text as={'span'}>Active Apps:</Text> {totalAppActive}/{totalApps}
-            </Box>
-
+            {!isMobile && _renderTotalApp()}
             <AppButton
               size={'sm'}
               px={4}
@@ -123,6 +207,11 @@ const ListApps: React.FC<IListApps> = ({
             </AppButton>
           </Flex>
         </Flex>
+        {isMobile && (
+          <Box px={5} mb={3}>
+            {_renderTotalApp()}
+          </Box>
+        )}
         <AppDataTable
           requestParams={searchListApp}
           fetchData={fetchDataTable}

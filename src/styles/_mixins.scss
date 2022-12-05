@@ -1,7 +1,7 @@
-@import 'src/styles/_variables.scss';
+@import './_variables.scss';
 
 @mixin media($width) {
-  @media (min-width: $width) {
+  @media (max-width: $width) {
     @content;
   }
 }
