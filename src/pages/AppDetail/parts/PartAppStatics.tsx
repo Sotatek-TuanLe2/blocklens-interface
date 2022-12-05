@@ -1,8 +1,15 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import rf from 'src/requests/RequestFactory';
-import { useParams } from 'react-router';
-import AppStatics from 'src/components/AppStats';
 import { SimpleGrid } from '@chakra-ui/react';
+import { useCallback, useEffect, useState } from 'react';
+import { useParams } from 'react-router';
+import AppStatistical from 'src/components/AppStatistical';
+import rf from 'src/requests/RequestFactory';
+import { formatLargeNumber } from 'src/utils/utils-helper';
+import React from 'react';
+import {
+  data,
+  LabelStats,
+  listUserStats,
+} from 'src/pages/HomePage/parts/PartUserStats';
 
 interface IAppStats {
   totalThisMonth?: number;
@@ -11,28 +18,31 @@ interface IAppStats {
   tottalActivities?: number;
 }
 
-const listUserStats = [
-  {
-    key: 'totalToday',
-    label: 'Total Messages (today)',
-  },
-  {
-    key: 'totalThisMonth',
-    label: 'Total Webhook',
-  },
-  {
-    key: 'totalSuccessToday',
-    label: 'Success Rate (today)',
-  },
-  {
-    key: 'tottalActivities',
-    label: 'Total Activities (today)',
-  },
-];
+const formatPercent = (stats: any) => {
+  if (!stats?.totalToday || !stats?.totalSuccessToday) {
+    return '--';
+  }
+
+  return ((stats?.totalSuccessToday / stats?.totalToday) * 100).toFixed(2);
+};
 
 const PartAppStatics = () => {
   const { id: appId } = useParams<{ id: string }>();
   const [appStats, setAppStats] = useState<IAppStats>({});
+
+  const getValueStats = useCallback(
+    (
+      appStats: IAppStats,
+      value: number,
+      stats: { key: string; label: string },
+    ) => {
+      if (stats.key === 'totalSuccessToday') {
+        return formatPercent(appStats);
+      }
+      return formatLargeNumber(value);
+    },
+    [appStats],
+  );
 
   const getAppStats = useCallback(async () => {
     try {
@@ -57,11 +67,17 @@ const PartAppStatics = () => {
     >
       {listUserStats.map((stats, index: number) => {
         return (
-          <React.Fragment key={`${index} stats`}>
-            <AppStatics
-              userStats={appStats}
-              labelStats={listUserStats}
-              stats={stats}
+          <React.Fragment key={`${index} appStats`}>
+            <AppStatistical
+              label={stats.label}
+              value={
+                getValueStats(
+                  appStats,
+                  appStats[stats.label as LabelStats] || 0,
+                  stats,
+                ) || 0
+              }
+              dataChart={data}
             />
           </React.Fragment>
         );

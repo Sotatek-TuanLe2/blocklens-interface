@@ -1,7 +1,8 @@
 import { SimpleGrid } from '@chakra-ui/react';
 import React, { useCallback, useEffect, useState } from 'react';
-import AppStatics from 'src/components/AppStats';
+import AppStatistical from 'src/components/AppStatistical';
 import rf from 'src/requests/RequestFactory';
+import { formatLargeNumber } from 'src/utils/utils-helper';
 
 export interface IUserStats {
   totalThisMonth?: number;
@@ -10,7 +11,44 @@ export interface IUserStats {
   tottalActivities?: number;
 }
 
-const listUserStats = [
+export type LabelStats =
+  | 'totalThisMonth'
+  | 'totalToday'
+  | 'totalSuccessToday'
+  | 'tottalActivities';
+
+export const data = [
+  {
+    name: 'Page A',
+    pv: 2400,
+  },
+  {
+    name: 'Page B',
+    pv: 1398,
+  },
+  {
+    name: 'Page C',
+    pv: 9800,
+  },
+  {
+    name: 'Page D',
+    pv: 3908,
+  },
+  {
+    name: 'Page E',
+    pv: 4800,
+  },
+  {
+    name: 'Page F',
+    pv: 3800,
+  },
+  {
+    name: 'Page G',
+    pv: 4300,
+  },
+];
+
+export const listUserStats = [
   {
     key: 'totalToday',
     label: 'Total Messages (today)',
@@ -29,6 +67,14 @@ const listUserStats = [
   },
 ];
 
+const formatPercent = (stats: any) => {
+  if (!stats?.totalToday || !stats?.totalSuccessToday) {
+    return '--';
+  }
+
+  return ((stats?.totalSuccessToday / stats?.totalToday) * 100).toFixed(2);
+};
+
 const PartUserStats = () => {
   const [userStats, setUserStats] = useState<IUserStats>({});
 
@@ -43,6 +89,20 @@ const PartUserStats = () => {
     }
   }, []);
 
+  const getValueStats = useCallback(
+    (
+      userStats: IUserStats,
+      value: number,
+      stats: { key: string; label: string },
+    ) => {
+      if (stats.key === 'totalSuccessToday') {
+        return formatPercent(userStats);
+      }
+      return formatLargeNumber(value);
+    },
+    [userStats],
+  );
+
   useEffect(() => {
     getUserStats().then();
   }, []);
@@ -53,17 +113,24 @@ const PartUserStats = () => {
       columns={{ base: 1, sm: 2, lg: 4 }}
       gap="20px"
     >
-      {listUserStats.map((stats, index: number) => {
-        return (
-          <React.Fragment key={`${index} stats`}>
-            <AppStatics
-              userStats={userStats}
-              labelStats={listUserStats}
-              stats={stats}
-            />
-          </React.Fragment>
-        );
-      })}
+      {userStats &&
+        listUserStats.map((stats, index: number) => {
+          return (
+            <React.Fragment key={`${index} stats`}>
+              <AppStatistical
+                label={stats.label}
+                value={
+                  getValueStats(
+                    userStats,
+                    userStats[stats.label as LabelStats] || 0,
+                    stats,
+                  ) || 0
+                }
+                dataChart={data}
+              />
+            </React.Fragment>
+          );
+        })}
     </SimpleGrid>
   );
 };
