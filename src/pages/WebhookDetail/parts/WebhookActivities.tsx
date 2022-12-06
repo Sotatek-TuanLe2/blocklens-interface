@@ -18,7 +18,7 @@ import {
   AppSelect2,
 } from 'src/components';
 import rf from 'src/requests/RequestFactory';
-import { formatTimestamp } from 'src/utils/utils-helper';
+import { formatShortText, formatTimestamp } from 'src/utils/utils-helper';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import 'src/styles/pages/NotificationPage.scss';
 import 'src/styles/pages/AppDetail.scss';
@@ -36,9 +36,9 @@ import {
   getColorBrandStatus,
   optionsFilter,
 } from 'src/utils/utils-webhook';
-import { useParams } from 'react-router';
+import { useHistory, useParams } from 'react-router';
 import _ from 'lodash';
-import { isMobile } from "react-device-detect";
+import { isMobile } from 'react-device-detect';
 
 interface INotificationResponse {
   hash: string;
@@ -50,6 +50,8 @@ interface INotificationResponse {
   webhook: string;
   metadata: any;
   errs: string[];
+  tokenId: string[];
+  method: string;
   retryTime: number;
   createdAt: number;
   updatedAt: number;
@@ -61,6 +63,12 @@ interface INotificationItem {
   webhook: IWebhook;
 }
 
+interface INotificationItemMobile {
+  notification: INotificationResponse;
+  webhook: IWebhook;
+  isRetrying: boolean;
+}
+
 interface IWebhookActivities {
   registrationId: string;
   webhook: IWebhook;
@@ -68,34 +76,147 @@ interface IWebhookActivities {
   isShowAll: boolean;
 }
 
+const _renderStatus = (
+  notification: INotificationResponse,
+  isRetrying: boolean,
+) => {
+  if (!notification.status) return 'N/A';
+
+  if (isRetrying) {
+    return (
+      <Box className="status waiting">Retrying ${notification.retryTime}/5</Box>
+    );
+  }
+  return (
+    <Box className={`status ${getColorBrandStatus(notification.status)}`}>
+      {notification.status}
+    </Box>
+  );
+};
+
+const NotificationItemMobile: FC<INotificationItemMobile> = ({
+  notification,
+  webhook,
+  isRetrying,
+}) => {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const _renderInfos = () => {
+    const _renderInfoContractActivity = () => {
+      return (
+        <Flex
+          justifyContent="space-between"
+          alignItems="center"
+          className="info"
+        >
+          <Box>Method</Box>
+          <Box className="value">
+            <Flex alignItems="center">{notification.method}</Flex>
+          </Box>
+        </Flex>
+      );
+    };
+
+    if (webhook.type === WEBHOOK_TYPES.ADDRESS_ACTIVITY) {
+      return (
+        <Flex
+          justifyContent="space-between"
+          alignItems="center"
+          className="info"
+        >
+          <Box>Address</Box>
+          <Box className="value">
+            <Flex alignItems="center">
+              {formatShortText(notification.address || '')}
+            </Flex>
+          </Box>
+        </Flex>
+      );
+    }
+
+    if (webhook.type === WEBHOOK_TYPES.CONTRACT_ACTIVITY)
+      return _renderInfoContractActivity();
+
+    return (
+      <>
+        {_renderInfoContractActivity()}
+        <Flex
+          justifyContent="space-between"
+          alignItems="center"
+          className="info"
+        >
+          <Box>Token ID</Box>
+          <Box className="value">
+            <Flex alignItems="center">{notification.tokenId.join(', ')}</Flex>
+          </Box>
+        </Flex>
+      </>
+    );
+  };
+  return (
+    <>
+      <Box className={`${isOpen ? 'open' : ''} card-mobile`}>
+        <Flex
+          justifyContent="space-between"
+          alignItems="center"
+          className="info"
+        >
+          <Box className="name-mobile">
+            {formatTimestamp(
+              notification.createdAt * 1000,
+              'YYYY-MM-DD HH:mm:ss',
+            )}{' '}
+            UTC
+          </Box>
+          <Box
+            className={isOpen ? 'icon-minus' : 'icon-plus'}
+            onClick={() => setIsOpen(!isOpen)}
+          />
+        </Flex>
+        <Flex
+          justifyContent="space-between"
+          alignItems="center"
+          className="info"
+        >
+          <Box>Status</Box>
+          <Box>{_renderStatus(notification, isRetrying)}</Box>
+        </Flex>
+
+        {isOpen && (
+          <Box>
+            <Flex
+              justifyContent="space-between"
+              alignItems="center"
+              className="info"
+            >
+              <Box>TXN ID</Box>
+              <Box className="value">
+                <Flex alignItems="center">
+                  {formatShortText(notification.hash)}
+                  <AppLink ml={3} to={'#'} className="link-redirect">
+                    <LinkIcon />
+                  </AppLink>
+                </Flex>
+              </Box>
+            </Flex>
+          </Box>
+        )}
+      </Box>
+    </>
+  );
+};
+
 const NotificationItem: FC<INotificationItem> = ({ notification, webhook }) => {
   const isRetrying = useMemo(() => {
     return notification.retryTime < 5 && notification.status === STATUS.FAILED;
   }, [notification]);
-
-  const _renderStatus = (notification: INotificationResponse) => {
-    if (!notification.status) return 'N/A';
-
-    if (isRetrying) {
-      return (
-        <Box className="status waiting">
-          Retrying ${notification.retryTime}/5
-        </Box>
-      );
-    }
-    return (
-      <Box className={`status ${getColorBrandStatus(notification.status)}`}>
-        {notification.status}
-      </Box>
-    );
-  };
 
   const onRetry = useCallback(async () => {
     try {
       await rf
         .getRequest('NotificationRequest')
         .retryActivity(notification.hash);
-      toastSuccess({ message: 'Successfully!', });
+      toastSuccess({ message: 'Successfully!' });
     } catch (error: any) {
       toastError({
         message: error?.message || 'Oops. Something went wrong!',
@@ -132,6 +253,15 @@ const NotificationItem: FC<INotificationItem> = ({ notification, webhook }) => {
     return _renderContentAddress();
   };
 
+  if (isMobile)
+    return (
+      <NotificationItemMobile
+        notification={notification}
+        isRetrying={isRetrying}
+        webhook={webhook}
+      />
+    );
+
   return (
     <Tbody>
       <Tr className="tr-list">
@@ -144,15 +274,14 @@ const NotificationItem: FC<INotificationItem> = ({ notification, webhook }) => {
         </Td>
         <Td>
           <Flex alignItems="center">
-            {notification.hash}
+            {formatShortText(notification.hash)}
             <AppLink ml={3} to={'#'} className="link-redirect">
               <LinkIcon />
             </AppLink>
           </Flex>
         </Td>
         {_renderContentActivities()}
-        <Td>{_renderStatus(notification)}</Td>
-
+        <Td>{_renderStatus(notification, isRetrying)}</Td>
         <Td>
           <Flex>
             {isRetrying && (
@@ -161,7 +290,7 @@ const NotificationItem: FC<INotificationItem> = ({ notification, webhook }) => {
               </Box>
             )}
 
-            <AppLink to={`/message-histories/${notification.hash}`}>
+            <AppLink to={`/messages-history/${notification.hash}`}>
               <Box className="link-redirect">
                 <LinkDetail />
               </Box>
@@ -195,6 +324,7 @@ const WebhookActivities: FC<IWebhookActivities> = ({
   }, []);
 
   const _renderHeader = () => {
+    if (isMobile) return;
     const _renderHeaderNFT = () => {
       return (
         <>
@@ -338,12 +468,14 @@ const WebhookActivities: FC<IWebhookActivities> = ({
       ) : (
         <Flex className="title-list-app">
           <Text className="text-title">Recent Activies</Text>
-          <Flex alignItems={'center'} className="view-all">
-            <Box className="link" cursor={'pointer'} onClick={onShowAll}>
-              View More Activity
-            </Box>
-            <Box className="icon-arrow-right" ml={2} />
-          </Flex>
+          {!isMobile && (
+            <Flex alignItems={'center'} className="view-all">
+              <Box className="link" cursor={'pointer'} onClick={onShowAll}>
+                View More Activity
+              </Box>
+              <Box className="icon-arrow-right" ml={2} />
+            </Flex>
+          )}
         </Flex>
       )}
 
