@@ -118,7 +118,7 @@ const NotificationItem: FC<INotificationItem> = ({ notification, webhook }) => {
         </Td>
         <Td>
           <Flex alignItems="center">
-            N/A
+            {notification.hash}
             <AppLink ml={3} to={'#'} className="link-redirect">
               <LinkIcon />
             </AppLink>
@@ -172,7 +172,7 @@ const WebhookActivities: FC<IWebhookActivities> = ({
         <>
           <Th>
             <Flex alignItems="center">
-              method{' '}
+              method
               {isShowAll && (
                 <Box ml={2} className="filter-table">
                   <FilterIcon />

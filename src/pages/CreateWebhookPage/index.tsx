@@ -27,6 +27,7 @@ import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { isValidChecksumAddress } from 'ethereumjs-util';
 import { CloseIcon } from '@chakra-ui/icons';
 import { Link as ReactLink } from 'react-router-dom';
+import { isMobile } from 'react-device-detect';
 
 const FILE_CSV_EXAMPLE = '/abi/CSV_Example.csv';
 
@@ -445,12 +446,13 @@ const CreateWebhook = () => {
 
           {_renderFormWebhook()}
 
-          <Flex justifyContent={'flex-end'}>
+          <Flex justifyContent={isMobile ? 'center' : 'flex-end'}>
             <AppButton
               disabled={isDisableSubmit}
               onClick={handleSubmitForm}
               size={'md'}
-              mt={5}
+              mt={isMobile ? 2 : 5}
+              mb={isMobile ? 5 : 0}
               px={8}
               py={3}
             >

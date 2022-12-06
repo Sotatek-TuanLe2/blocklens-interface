@@ -233,6 +233,9 @@
 
 .form-create {
   background-color: $card;
+  @include tablet {
+    padding: 20px !important;
+  }
 
   .select-type-webhook {
     .app-select__btn-select {
@@ -252,6 +255,10 @@
     align-items: center;
     height: 180px;
     margin-bottom: 13px;
+
+    @include tablet {
+      @include text-medium-regular;
+    }
   }
 
   .type-upload-address {
