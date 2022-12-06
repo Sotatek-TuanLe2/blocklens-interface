@@ -34,8 +34,10 @@ import {
   WEBHOOK_TYPES,
   STATUS,
   getColorBrandStatus,
-  optionsFilter
+  optionsFilter,
 } from 'src/utils/utils-webhook';
+import { useParams } from 'react-router';
+import _ from 'lodash';
 
 interface INotificationResponse {
   hash: string;
@@ -144,17 +146,19 @@ const NotificationItem: FC<INotificationItem> = ({ notification, webhook }) => {
 };
 
 const WebhookActivities: FC<IWebhookActivities> = ({
-  registrationId,
   webhook,
   onShowAll,
   isShowAll,
 }) => {
   const [valueSearch, setValueSearch] = useState<string>('');
   const [valueFilter, setValueFilter] = useState<string>('');
+  const { id: webhookId } = useParams<{ id: string }>();
 
-  const fetchDataTable: any = useCallback(async (param: any) => {
+  const fetchDataTable: any = useCallback(async (params: any) => {
     try {
-      return await rf.getRequest('NotificationRequest').getNotifications(param);
+      return await rf
+        .getRequest('NotificationRequest')
+        .getActivities(webhookId, _.omitBy(params, _.isEmpty));
     } catch (error: any) {
       toastError({
         message: error?.message || 'Oops. Something went wrong!',
@@ -317,7 +321,6 @@ const WebhookActivities: FC<IWebhookActivities> = ({
 
       <AppDataTable
         requestParams={{
-          registrationId,
           status: valueFilter,
           search: valueSearch,
         }}

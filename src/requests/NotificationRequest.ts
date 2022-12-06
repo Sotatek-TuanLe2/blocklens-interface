@@ -6,23 +6,23 @@ export default class NotificationRequest extends BaseRequest {
     return config.api.notificationsApi;
   }
 
-  getNotifications(params: any) {
-    const url = '/my/notifications';
+  getActivities(registrationId: string, params: any) {
+    const url = `/activities/${registrationId}`;
     return this.get(url, { ...params });
   }
 
   getAppStats(appId: string) {
-    const url = `/my/notifications/app-${appId}/statistics`;
+    const url = `/activities/app-${appId}/statistics`;
     return this.get(url);
   }
 
   getWebhookStats(registrationId: string) {
-    const url = `/my/notifications/webhook-${registrationId}/statistics`;
+    const url = `/activities/webhook-${registrationId}/statistics`;
     return this.get(url);
   }
 
   getUserStats() {
-    const url = `/my/notifications/statistics`;
+    const url = `/activities/statistics`;
     return this.get(url);
   }
 }
