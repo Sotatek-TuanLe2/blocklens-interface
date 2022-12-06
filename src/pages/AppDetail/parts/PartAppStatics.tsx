@@ -10,6 +10,9 @@ import {
   LabelStats,
   listUserStats,
 } from 'src/pages/HomePage/parts/PartUserStats';
+import { isMobile } from 'react-device-detect';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/swiper.scss';
 
 interface IAppStats {
   totalThisMonth?: number;
@@ -59,31 +62,62 @@ const PartAppStatics = () => {
     getAppStats().then();
   }, []);
 
-  return (
-    <SimpleGrid
-      className="infos"
-      columns={{ base: 1, sm: 2, lg: 4 }}
-      gap="20px"
-    >
-      {listUserStats.map((stats, index: number) => {
-        return (
-          <React.Fragment key={`${index} appStats`}>
-            <AppStatistical
-              label={stats.label}
-              value={
-                getValueStats(
-                  appStats,
-                  appStats[stats.label as LabelStats] || 0,
-                  stats,
-                ) || 0
-              }
-              dataChart={data}
-            />
-          </React.Fragment>
-        );
-      })}
-    </SimpleGrid>
-  );
+  const _renderStatsDesktop = () => {
+    return (
+      <SimpleGrid
+        className="infos"
+        columns={{ base: 1, sm: 2, lg: 4 }}
+        gap="20px"
+      >
+        {appStats &&
+          listUserStats.map((stats, index: number) => {
+            return (
+              <React.Fragment key={`${index} stats`}>
+                <AppStatistical
+                  label={stats.label}
+                  value={
+                    getValueStats(
+                      appStats,
+                      appStats[stats.label as LabelStats] || 0,
+                      stats,
+                    ) || 0
+                  }
+                  dataChart={data}
+                />
+              </React.Fragment>
+            );
+          })}
+      </SimpleGrid>
+    );
+  };
+
+  const _renderStatsMobile = () => {
+    return (
+      <div className="infos">
+        <Swiper className="swiperMobile" slidesPerView={1.25}>
+          {appStats &&
+            listUserStats.map((stats, index: number) => {
+              return (
+                <SwiperSlide key={`${index} stats`}>
+                  <AppStatistical
+                    label={stats.label}
+                    value={
+                      getValueStats(
+                        appStats,
+                        appStats[stats.label as LabelStats] || 0,
+                        stats,
+                      ) || 0
+                    }
+                    dataChart={data}
+                  />
+                </SwiperSlide>
+              );
+            })}
+        </Swiper>
+      </div>
+    );
+  };
+  return <>{isMobile ? _renderStatsMobile() : _renderStatsDesktop()}</>;
 };
 
 export default PartAppStatics;

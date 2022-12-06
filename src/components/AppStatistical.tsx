@@ -1,5 +1,6 @@
 import { Box } from '@chakra-ui/react';
 import { FC } from 'react';
+import { isMobile } from 'react-device-detect';
 import { Line, LineChart, ResponsiveContainer } from 'recharts';
 import { AppCard } from 'src/components';
 interface IAppStatics {
@@ -11,7 +12,12 @@ interface IAppStatics {
 export const ChartStatics: FC<{ dataChart?: any[] }> = ({ dataChart }) => {
   if (dataChart?.length) {
     return (
-      <Box height={'50px'} width={'40%'} px={5} className="chart">
+      <Box
+        height={'50px'}
+        width={'40%'}
+        px={5}
+        className={isMobile ? 'chartMobile' : 'chart'}
+      >
         <ResponsiveContainer width="100%" height="100%">
           <LineChart width={500} height={300} data={dataChart}>
             <Line

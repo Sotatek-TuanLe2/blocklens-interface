@@ -111,6 +111,15 @@
 
 .infos {
   margin-bottom: 30px;
+  .swiperMobile {
+    .swiper-slide {
+      padding-right: 10px;
+      background-clip: content-box;
+    }
+    :last-child {
+      padding-right: 0px;
+    }
+  }
 
   .box-info {
     display: flex;
@@ -141,6 +150,12 @@
   }
 
   .chart {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 0;
+  }
+  .chartMobile {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);

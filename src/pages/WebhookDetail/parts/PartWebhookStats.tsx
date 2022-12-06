@@ -1,5 +1,6 @@
 import { SimpleGrid } from '@chakra-ui/react';
 import React, { useCallback, useEffect, useState } from 'react';
+import { isMobile } from 'react-device-detect';
 import { useParams } from 'react-router';
 import AppStatistical from 'src/components/AppStatistical';
 import {
@@ -9,6 +10,8 @@ import {
 } from 'src/pages/HomePage/parts/PartUserStats';
 import rf from 'src/requests/RequestFactory';
 import { formatLargeNumber } from 'src/utils/utils-helper';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/swiper.scss';
 
 interface IWebhookStats {
   totalThisMonth?: number;
@@ -57,32 +60,62 @@ const PartWebhookStats = () => {
   useEffect(() => {
     getWebhookStats().then();
   }, [webhookId]);
+  const _renderStatsDesktop = () => {
+    return (
+      <SimpleGrid
+        className="infos"
+        columns={{ base: 1, sm: 2, lg: 4 }}
+        gap="20px"
+      >
+        {webhookStats &&
+          listUserStats.map((stats, index: number) => {
+            return (
+              <React.Fragment key={`${index} stats`}>
+                <AppStatistical
+                  label={stats.label}
+                  value={
+                    getValueStats(
+                      webhookStats,
+                      webhookStats[stats.label as LabelStats] || 0,
+                      stats,
+                    ) || 0
+                  }
+                  dataChart={data}
+                />
+              </React.Fragment>
+            );
+          })}
+      </SimpleGrid>
+    );
+  };
 
-  return (
-    <SimpleGrid
-      className="infos"
-      columns={{ base: 1, sm: 2, lg: 4 }}
-      gap="20px"
-    >
-      {listUserStats.map((stats, index: number) => {
-        return (
-          <React.Fragment key={`${index} webhookStats`}>
-            <AppStatistical
-              label={stats.label}
-              value={
-                getValueStats(
-                  webhookStats,
-                  webhookStats[stats.label as LabelStats] || 0,
-                  stats,
-                ) || 0
-              }
-              dataChart={data}
-            />
-          </React.Fragment>
-        );
-      })}
-    </SimpleGrid>
-  );
+  const _renderStatsMobile = () => {
+    return (
+      <div className="infos">
+        <Swiper className="swiperMobile" slidesPerView={1.25}>
+          {webhookStats &&
+            listUserStats.map((stats, index: number) => {
+              return (
+                <SwiperSlide key={`${index} stats`}>
+                  <AppStatistical
+                    label={stats.label}
+                    value={
+                      getValueStats(
+                        webhookStats,
+                        webhookStats[stats.label as LabelStats] || 0,
+                        stats,
+                      ) || 0
+                    }
+                    dataChart={data}
+                  />
+                </SwiperSlide>
+              );
+            })}
+        </Swiper>
+      </div>
+    );
+  };
+  return <>{isMobile ? _renderStatsMobile() : _renderStatsDesktop()}</>;
 };
 
 export default PartWebhookStats;
