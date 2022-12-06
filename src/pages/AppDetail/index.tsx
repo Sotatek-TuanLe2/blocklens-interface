@@ -20,6 +20,7 @@ import { AppButton, AppCard, AppGraph, AppLink } from 'src/components';
 import AppSettings from './parts/AppSettings';
 import { getLogoChainByName, isEVMNetwork } from 'src/utils/utils-network';
 import { isMobile } from 'react-device-detect';
+import { APP_STATUS } from '../../utils/utils-app';
 
 const AppDetail = () => {
   const [appInfo, setAppInfo] = useState<any>({});
@@ -91,6 +92,7 @@ const AppDetail = () => {
                   size={'sm'}
                   px={4}
                   py={1}
+                  isDisabled={appInfo.status === APP_STATUS.DISABLED}
                   className={'btn-create'}
                   onClick={() =>
                     history.push(`/create-webhook/${appInfo.appId}`)

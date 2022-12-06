@@ -28,6 +28,7 @@ import { isValidChecksumAddress } from 'ethereumjs-util';
 import { CloseIcon } from '@chakra-ui/icons';
 import { Link as ReactLink } from 'react-router-dom';
 import { isMobile } from 'react-device-detect';
+import { APP_STATUS } from '../../utils/utils-app';
 
 const FILE_CSV_EXAMPLE = '/abi/CSV_Example.csv';
 
@@ -69,6 +70,7 @@ const CreateWebhook = () => {
   };
 
   const history = useHistory();
+  const [appInfo, setAppInfo] = useState<any>({});
   const [dataForm, setDataForm] = useState<IDataForm>(initDataCreateWebHook);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
   const [type, setType] = useState<string>(WEBHOOK_TYPES.NFT_ACTIVITY);
@@ -79,6 +81,21 @@ const CreateWebhook = () => {
   const [, updateState] = useState<any>();
   const forceUpdate = useCallback(() => updateState({}), []);
   const inputRef = useRef<any>(null);
+
+  const getAppInfo = useCallback(async () => {
+    try {
+      const res = (await rf
+        .getRequest('AppRequest')
+        .getAppDetail(appId)) as any;
+      setAppInfo(res);
+    } catch (error: any) {
+      setAppInfo({});
+    }
+  }, [appId]);
+
+  useEffect(() => {
+    getAppInfo().then();
+  }, []);
 
   const validator = useRef(
     createValidator({
@@ -244,7 +261,11 @@ const CreateWebhook = () => {
 
     return (
       <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
-        <AppField label={'Addresses'} customWidth={'100%'} isRequired>
+        <AppField
+          label={`${appInfo.chain} Addresses`}
+          customWidth={'100%'}
+          isRequired
+        >
           <Box
             className="link type-upload-address"
             cursor="pointer"
@@ -448,7 +469,9 @@ const CreateWebhook = () => {
 
           <Flex justifyContent={isMobile ? 'center' : 'flex-end'}>
             <AppButton
-              disabled={isDisableSubmit}
+              disabled={
+                isDisableSubmit || appInfo.status === APP_STATUS.DISABLED
+              }
               onClick={handleSubmitForm}
               size={'md'}
               mt={isMobile ? 2 : 5}

@@ -13,6 +13,11 @@
     height: max-content;
     color: $paragraph;
 
+    @include tablet {
+      padding: 40px 20px;
+      margin: 0 16px;
+    }
+
     a {
       @include text-medium-medium;
       color: $link;
@@ -23,6 +28,10 @@
       color: $title;
       text-align: center;
       margin-bottom: 2px;
+
+      @include tablet {
+        @include heading-6;
+      }
     }
 
     .sub-text {

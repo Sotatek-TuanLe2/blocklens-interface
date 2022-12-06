@@ -25,4 +25,14 @@ export default class NotificationRequest extends BaseRequest {
     const url = `/activities/statistics`;
     return this.get(url);
   }
+
+  getMessagesHistory(hash: string) {
+    const url = `/message-histories/${hash}`;
+    return this.get(url);
+  }
+
+  retryActivity(hash: string) {
+    const url = `/activities/${hash}/retry`;
+    return this.post(url);
+  }
 }

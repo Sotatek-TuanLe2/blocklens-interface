@@ -9,7 +9,7 @@ import {
   Flex,
   Tooltip,
 } from '@chakra-ui/react';
-import React, { FC, useCallback, useState } from 'react';
+import React, { FC, useCallback, useMemo, useState } from 'react';
 import {
   AppCard,
   AppDataTable,
@@ -19,7 +19,7 @@ import {
 } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import { formatTimestamp } from 'src/utils/utils-helper';
-import { toastError } from 'src/utils/utils-notify';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import 'src/styles/pages/NotificationPage.scss';
 import 'src/styles/pages/AppDetail.scss';
 import {
@@ -38,6 +38,7 @@ import {
 } from 'src/utils/utils-webhook';
 import { useParams } from 'react-router';
 import _ from 'lodash';
+import { isMobile } from "react-device-detect";
 
 interface INotificationResponse {
   hash: string;
@@ -49,7 +50,7 @@ interface INotificationResponse {
   webhook: string;
   metadata: any;
   errs: string[];
-  remainRetry: number;
+  retryTime: number;
   createdAt: number;
   updatedAt: number;
   address?: string;
@@ -68,14 +69,39 @@ interface IWebhookActivities {
 }
 
 const NotificationItem: FC<INotificationItem> = ({ notification, webhook }) => {
+  const isRetrying = useMemo(() => {
+    return notification.retryTime < 5 && notification.status === STATUS.FAILED;
+  }, [notification]);
+
   const _renderStatus = (notification: INotificationResponse) => {
     if (!notification.status) return 'N/A';
+
+    if (isRetrying) {
+      return (
+        <Box className="status waiting">
+          Retrying ${notification.retryTime}/5
+        </Box>
+      );
+    }
     return (
       <Box className={`status ${getColorBrandStatus(notification.status)}`}>
         {notification.status}
       </Box>
     );
   };
+
+  const onRetry = useCallback(async () => {
+    try {
+      await rf
+        .getRequest('NotificationRequest')
+        .retryActivity(notification.hash);
+      toastSuccess({ message: 'Successfully!', });
+    } catch (error: any) {
+      toastError({
+        message: error?.message || 'Oops. Something went wrong!',
+      });
+    }
+  }, []);
 
   const _renderContentNFT = () => {
     return (
@@ -129,15 +155,17 @@ const NotificationItem: FC<INotificationItem> = ({ notification, webhook }) => {
 
         <Td>
           <Flex>
-            {notification.status === STATUS.WAITING && (
+            {isRetrying && (
               <Box className="link-redirect">
-                <RetryIcon />
+                <RetryIcon onClick={onRetry} />
               </Box>
             )}
 
-            <Box className="link-redirect">
-              <LinkDetail />
-            </Box>
+            <AppLink to={`/message-histories/${notification.hash}`}>
+              <Box className="link-redirect">
+                <LinkDetail />
+              </Box>
+            </AppLink>
           </Flex>
         </Td>
       </Tr>
