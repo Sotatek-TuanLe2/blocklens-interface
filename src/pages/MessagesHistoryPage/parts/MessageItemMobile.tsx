@@ -5,6 +5,7 @@ import { formatShortText, formatTimestamp } from 'src/utils/utils-helper';
 import { LinkIcon } from 'src/assets/icons';
 import { AppButton } from 'src/components';
 import ReactJson from 'react-json-view';
+import { StatusMessages } from './MessageItem';
 
 const MessagesItemMobile = ({ message, webhook }: any) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -20,7 +21,7 @@ const MessagesItemMobile = ({ message, webhook }: any) => {
         >
           <Box>Method</Box>
           <Box className="value">
-            <Flex alignItems="center">{message?.method}</Flex>
+            <Flex alignItems="center">{message.metadata?.method}</Flex>
           </Box>
         </Flex>
       );
@@ -37,7 +38,9 @@ const MessagesItemMobile = ({ message, webhook }: any) => {
           >
             <Box>Token ID</Box>
             <Box className="value">
-              <Flex alignItems="center">{message?.tokenId?.join(', ')}</Flex>
+              <Flex alignItems="center">
+                {message.metadata?.tokenId?.join(', ')}
+              </Flex>
             </Box>
           </Flex>
         </>
@@ -110,7 +113,9 @@ const MessagesItemMobile = ({ message, webhook }: any) => {
           className="info"
         >
           <Box>Status</Box>
-          <Box> N/A</Box>
+          <Box>
+            <StatusMessages messages={message} />
+          </Box>
         </Flex>
 
         {isOpen && (

@@ -6,27 +6,26 @@ import { AppLink } from 'src/components';
 import { LinkIcon, ArrowDown } from 'src/assets/icons';
 import ReactJson from 'react-json-view';
 
+export const StatusMessages = ({ message }: any) => {
+  if (!!message.output?.error) {
+    return <Box className={`status inactive`}>Failed</Box>;
+  }
+
+  return <Box className={`status active`}>Successful</Box>;
+};
+
 const MessageItem = ({ message, webhook }: any) => {
   const [isShowDetail, setIsShowDetail] = useState<boolean>(false);
 
-  const _renderStatus = (message: any) => {
-    if (!message.status) return 'N/A';
-    return (
-      <Box className={`status ${getColorBrandStatus(message.status)}`}>
-        {message.status}
-      </Box>
-    );
-  };
-
   const _renderContentContract = () => {
-    return <Td textAlign="center">{message.method}</Td>;
+    return <Td textAlign="center">{message.metadata?.method}</Td>;
   };
 
   const _renderContentNFT = () => {
     return (
       <>
         {_renderContentContract()}
-        <Td textAlign="center">{message.tokenId.join(', ')}</Td>
+        <Td textAlign="center">{message.metadata?.tokenId.join(', ')}</Td>
       </>
     );
   };
@@ -66,7 +65,9 @@ const MessageItem = ({ message, webhook }: any) => {
           </Flex>
         </Td>
         {_renderContentActivities()}
-        <Td>{_renderStatus(message)}</Td>
+        <Td>
+          <StatusMessages message={message} />
+        </Td>
         <Td>
           <Box className={`icon-down ${isShowDetail ? 'open' : ''}`}>
             <ArrowDown />
@@ -94,7 +95,7 @@ const MessageItem = ({ message, webhook }: any) => {
                 <Box className="content-detail">
                   <Box
                     className={'content-output'}
-                    dangerouslySetInnerHTML={{ __html: message.output.error }}
+                    dangerouslySetInnerHTML={{ __html: message.output?.error }}
                   />
                 </Box>
               </Box>
