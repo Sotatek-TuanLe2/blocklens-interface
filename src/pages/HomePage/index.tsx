@@ -30,7 +30,6 @@ const HomePage = () => {
 
   useEffect(() => {
     if (totalApps === 0) {
-      console.log(totalApps);
       setOpen(true);
     }
   }, [totalApps]);

@@ -17,3 +17,9 @@ export const isEVMNetwork = (chainId?: string) => {
   if (!chainId) return false;
   return chainId !== CHAINS.SOLANA && chainId !== CHAINS.BITCOIN;
 };
+
+export const getBlockExplorerUrl = (chainId?: string, networkId?: string) => {
+  const chain = config.chains.find((chain) => chain.id === chainId);
+  const network = chain?.networks.find((item) => item.id === networkId);
+  return network?.blockExplorerUrl || '';
+};

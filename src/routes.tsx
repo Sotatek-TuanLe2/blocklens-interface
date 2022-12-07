@@ -64,7 +64,7 @@ const Routes: FC<RouteComponentProps> = () => {
           component={CreateWebhookPage}
         />
         <PrivateRoute
-          path={'/app/:appId/message-histories/:id'}
+          path={'/messages-histories/:id'}
           component={MessagesHistory}
         />
         <PrivateRoute path={'/'} component={HomePage} />

@@ -13,7 +13,7 @@
     align-items: center;
     margin-bottom: 3px;
     @include tablet {
-      @include heading-6;
+      @include heading-7;
     }
   }
 
@@ -289,6 +289,16 @@
 
     &::placeholder {
       color: $paragraph;
+    }
+  }
+
+  &.activities-all {
+    @include tablet {
+      margin: 20px;
+      justify-content: space-between;
+      div:first-child {
+        width: calc(100% - 40px);
+      }
     }
   }
 }

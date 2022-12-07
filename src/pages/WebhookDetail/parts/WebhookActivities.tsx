@@ -9,8 +9,9 @@ import {
   Flex,
   Tooltip,
 } from '@chakra-ui/react';
-import React, { FC, useCallback, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import {
+  AppButton,
   AppCard,
   AppDataTable,
   AppInput,
@@ -36,9 +37,12 @@ import {
   getColorBrandStatus,
   optionsFilter,
 } from 'src/utils/utils-webhook';
-import { useHistory, useParams } from 'react-router';
+import { useParams } from 'react-router';
 import _ from 'lodash';
 import { isMobile } from 'react-device-detect';
+import { getBlockExplorerUrl } from 'src/utils/utils-network';
+import { IAppResponse } from 'src/utils/utils-app';
+import 'src/styles/pages/HomePage.scss';
 
 interface INotificationResponse {
   hash: string;
@@ -55,18 +59,21 @@ interface INotificationResponse {
   retryTime: number;
   createdAt: number;
   updatedAt: number;
-  address?: string;
+  trackingAddress: string;
 }
 
 interface INotificationItem {
   notification: INotificationResponse;
   webhook: IWebhook;
+  appInfo: IAppResponse;
 }
 
 interface INotificationItemMobile {
   notification: INotificationResponse;
   webhook: IWebhook;
   isRetrying: boolean;
+  appInfo: IAppResponse;
+  onRetry: () => void;
 }
 
 interface IWebhookActivities {
@@ -74,6 +81,7 @@ interface IWebhookActivities {
   webhook: IWebhook;
   onShowAll?: () => void;
   isShowAll: boolean;
+  appInfo: IAppResponse;
 }
 
 const _renderStatus = (
@@ -98,6 +106,8 @@ const NotificationItemMobile: FC<INotificationItemMobile> = ({
   notification,
   webhook,
   isRetrying,
+  appInfo,
+  onRetry,
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
@@ -127,15 +137,16 @@ const NotificationItemMobile: FC<INotificationItemMobile> = ({
           <Box>Address</Box>
           <Box className="value">
             <Flex alignItems="center">
-              {formatShortText(notification.address || '')}
+              {formatShortText(notification.trackingAddress)}
             </Flex>
           </Box>
         </Flex>
       );
     }
 
-    if (webhook.type === WEBHOOK_TYPES.CONTRACT_ACTIVITY)
+    if (webhook.type === WEBHOOK_TYPES.CONTRACT_ACTIVITY) {
       return _renderInfoContractActivity();
+    }
 
     return (
       <>
@@ -192,11 +203,48 @@ const NotificationItemMobile: FC<INotificationItemMobile> = ({
               <Box>TXN ID</Box>
               <Box className="value">
                 <Flex alignItems="center">
-                  {formatShortText(notification.hash)}
-                  <AppLink ml={3} to={'#'} className="link-redirect">
-                    <LinkIcon />
-                  </AppLink>
+                  {formatShortText(notification.metadata?.transactionHash)}
+                  <Box ml={2}>
+                    <a
+                      href={`${
+                        getBlockExplorerUrl(appInfo.chain, appInfo.network) +
+                        `tx/${notification.metadata?.transactionHash}`
+                      }`}
+                      className="link-redirect"
+                      target="_blank"
+                    >
+                      <LinkIcon />
+                    </a>
+                  </Box>
                 </Flex>
+              </Box>
+            </Flex>
+            {_renderInfos()}
+
+            <Flex
+              flexWrap={'wrap'}
+              my={2}
+              justifyContent={isRetrying ? 'space-between' : 'center'}
+            >
+              {isRetrying && (
+                <Box width={'48%'}>
+                  <AppButton
+                    variant="cancel"
+                    size="sm"
+                    onClick={onRetry}
+                    w={'100%'}
+                  >
+                    Retry Now
+                  </AppButton>
+                </Box>
+              )}
+
+              <Box width={'48%'}>
+                <AppLink to={`/messages-histories/${notification.hash}`}>
+                  <AppButton variant="cancel" size="sm" w={'100%'}>
+                    More Details
+                  </AppButton>
+                </AppLink>
               </Box>
             </Flex>
           </Box>
@@ -206,7 +254,11 @@ const NotificationItemMobile: FC<INotificationItemMobile> = ({
   );
 };
 
-const NotificationItem: FC<INotificationItem> = ({ notification, webhook }) => {
+const NotificationItem: FC<INotificationItem> = ({
+  notification,
+  webhook,
+  appInfo,
+}) => {
   const isRetrying = useMemo(() => {
     return notification.retryTime < 5 && notification.status === STATUS.FAILED;
   }, [notification]);
@@ -224,21 +276,21 @@ const NotificationItem: FC<INotificationItem> = ({ notification, webhook }) => {
     }
   }, []);
 
+  const _renderContentContract = () => {
+    return <Td textAlign="center">{notification.method}</Td>;
+  };
+
   const _renderContentNFT = () => {
     return (
       <>
-        <Td>N/A</Td>
-        <Td textAlign="center">N/A</Td>
+        {_renderContentContract()}
+        <Td textAlign="center">{notification.tokenId.join(', ')}</Td>
       </>
     );
   };
 
   const _renderContentAddress = () => {
-    return <Td>N/A</Td>;
-  };
-
-  const _renderContentContract = () => {
-    return <Td textAlign="center">method</Td>;
+    return <Td>{formatShortText(notification.trackingAddress)}</Td>;
   };
 
   const _renderContentActivities = () => {
@@ -259,6 +311,8 @@ const NotificationItem: FC<INotificationItem> = ({ notification, webhook }) => {
         notification={notification}
         isRetrying={isRetrying}
         webhook={webhook}
+        appInfo={appInfo}
+        onRetry={onRetry}
       />
     );
 
@@ -274,10 +328,19 @@ const NotificationItem: FC<INotificationItem> = ({ notification, webhook }) => {
         </Td>
         <Td>
           <Flex alignItems="center">
-            {formatShortText(notification.hash)}
-            <AppLink ml={3} to={'#'} className="link-redirect">
-              <LinkIcon />
-            </AppLink>
+            {formatShortText(notification.metadata?.transactionHash)}
+            <Box ml={2}>
+              <a
+                href={`${
+                  getBlockExplorerUrl(appInfo.chain, appInfo.network) +
+                  `tx/${notification.metadata?.transactionHash}`
+                }`}
+                className="link-redirect"
+                target="_blank"
+              >
+                <LinkIcon />
+              </a>
+            </Box>
           </Flex>
         </Td>
         {_renderContentActivities()}
@@ -290,7 +353,7 @@ const NotificationItem: FC<INotificationItem> = ({ notification, webhook }) => {
               </Box>
             )}
 
-            <AppLink to={`/messages-history/${notification.hash}`}>
+            <AppLink to={`/messages-histories/${notification.hash}`}>
               <Box className="link-redirect">
                 <LinkDetail />
               </Box>
@@ -306,16 +369,20 @@ const WebhookActivities: FC<IWebhookActivities> = ({
   webhook,
   onShowAll,
   isShowAll,
+  appInfo,
 }) => {
   const [valueSearch, setValueSearch] = useState<string>('');
   const [valueFilter, setValueFilter] = useState<string>('');
   const { id: webhookId } = useParams<{ id: string }>();
+  const [totalActivities, setTotalActivities] = useState<any>({});
 
   const fetchDataTable: any = useCallback(async (params: any) => {
     try {
-      return await rf
+      const res = await rf
         .getRequest('NotificationRequest')
         .getActivities(webhookId, _.omitBy(params, _.isEmpty));
+      setTotalActivities(res?.totalDocs);
+      return res;
     } catch (error: any) {
       toastError({
         message: error?.message || 'Oops. Something went wrong!',
@@ -426,12 +493,30 @@ const WebhookActivities: FC<IWebhookActivities> = ({
   };
 
   const _renderBody = (data?: INotificationResponse[]) => {
+    if (isMobile) {
+      return (
+        <Box className="list-card-mobile">
+          {data?.map((notification: INotificationResponse, index: number) => {
+            return (
+              <NotificationItem
+                notification={notification}
+                key={index}
+                webhook={webhook}
+                appInfo={appInfo}
+              />
+            );
+          })}
+        </Box>
+      );
+    }
+
     return data?.map((notification: INotificationResponse, index: number) => {
       return (
         <NotificationItem
           notification={notification}
           key={index}
           webhook={webhook}
+          appInfo={appInfo}
         />
       );
     });
@@ -439,14 +524,17 @@ const WebhookActivities: FC<IWebhookActivities> = ({
 
   const _renderBoxFilter = () => {
     return (
-      <Flex className="box-filter">
-        <Box width={'150px'}>
-          <AppSelect2
-            onChange={setValueFilter}
-            options={optionsFilter}
-            value={valueFilter}
-          />
-        </Box>
+      <Flex className="box-filter activities-all" flex={'1 1 0'}>
+        {!isMobile && (
+          <Box width={'150px'}>
+            <AppSelect2
+              onChange={setValueFilter}
+              options={optionsFilter}
+              value={valueFilter}
+            />
+          </Box>
+        )}
+
         <Box width={'200px'}>
           <AppInput
             isSearch
@@ -457,6 +545,18 @@ const WebhookActivities: FC<IWebhookActivities> = ({
             onChange={(e) => setValueSearch(e.target.value.trim())}
           />
         </Box>
+        {isMobile && <Box className="icon-filter-mobile" />}
+      </Flex>
+    );
+  };
+
+  const _renderLinkShowAll = () => {
+    return (
+      <Flex alignItems={'center'} className="view-all">
+        <Box className="link" cursor={'pointer'} onClick={onShowAll}>
+          View More Activity
+        </Box>
+        <Box className="icon-arrow-right" ml={2} />
       </Flex>
     );
   };
@@ -468,14 +568,7 @@ const WebhookActivities: FC<IWebhookActivities> = ({
       ) : (
         <Flex className="title-list-app">
           <Text className="text-title">Recent Activies</Text>
-          {!isMobile && (
-            <Flex alignItems={'center'} className="view-all">
-              <Box className="link" cursor={'pointer'} onClick={onShowAll}>
-                View More Activity
-              </Box>
-              <Box className="icon-arrow-right" ml={2} />
-            </Flex>
-          )}
+          {!isMobile && totalActivities > 0 && _renderLinkShowAll()}
         </Flex>
       )}
 
@@ -484,11 +577,18 @@ const WebhookActivities: FC<IWebhookActivities> = ({
           status: valueFilter,
           search: valueSearch,
         }}
+        hidePagination={isMobile && !isShowAll}
         fetchData={fetchDataTable}
         renderBody={_renderBody}
         renderHeader={_renderHeader}
         limit={isShowAll ? 15 : 10}
       />
+
+      {isMobile && totalActivities > 0 && (
+        <Flex justifyContent={'center'} my={4}>
+          {_renderLinkShowAll()}
+        </Flex>
+      )}
     </AppCard>
   );
 };

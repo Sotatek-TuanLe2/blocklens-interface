@@ -19,6 +19,7 @@ import {
 import MessageItem from './parts/MessageItem';
 import { toastError } from 'src/utils/utils-notify';
 import { FilterIcon } from 'src/assets/icons';
+import _ from 'lodash';
 
 const MessagesHistory = () => {
   const { id: hashId } = useParams<{ id: string }>();
@@ -41,9 +42,11 @@ const MessagesHistory = () => {
     getWebhookInfo().then();
   }, []);
 
-  const fetchDataTable: any = useCallback(async (param: any) => {
+  const fetchDataTable: any = useCallback(async (params: any) => {
     try {
-      return await rf.getRequest('NotificationRequest').getNotifications(param);
+      return await rf
+        .getRequest('NotificationRequest')
+        .getMessagesHistory(hashId, _.omitBy(params, _.isEmpty));
     } catch (error: any) {
       toastError({
         message: error?.message || 'Oops. Something went wrong!',
