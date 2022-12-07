@@ -1,5 +1,11 @@
-import { Box, Flex, Text } from '@chakra-ui/react';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Box, Flex, Link, Text } from '@chakra-ui/react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useHistory, useParams } from 'react-router';
 import 'src/styles/pages/AppDetail.scss';
 import { BasePageContainer } from 'src/layouts';
@@ -18,11 +24,18 @@ import { createValidator } from 'src/utils/utils-validator';
 import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
+import { isValidChecksumAddress } from 'ethereumjs-util';
+import { CloseIcon } from '@chakra-ui/icons';
+import { Link as ReactLink } from 'react-router-dom';
+import { isMobile } from 'react-device-detect';
+import { APP_STATUS } from '../../utils/utils-app';
+
+const FILE_CSV_EXAMPLE = '/abi/CSV_Example.csv';
 
 interface IDataForm {
   webhook: string;
   address: string;
-  addresses: string;
+  addresses: string[];
   tokenIds: string;
   abi: any[];
   type: string;
@@ -51,18 +64,38 @@ const CreateWebhook = () => {
     address: '',
     tokenIds: '',
     abi: [],
-    type: WEBHOOK_TYPES.NFT_ACTIVITY,
+    type: '',
     abiFilter: [],
-    addresses: '',
+    addresses: [],
   };
 
   const history = useHistory();
+  const [appInfo, setAppInfo] = useState<any>({});
   const [dataForm, setDataForm] = useState<IDataForm>(initDataCreateWebHook);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
+  const [type, setType] = useState<string>(WEBHOOK_TYPES.NFT_ACTIVITY);
+  const [fileSelected, setFileSelected] = useState<any>({});
+  const [addressesValue, setAddressesValue] = useState<string>('');
   const [isInsertManuallyAddress, setIsInsertManuallyAddress] =
     useState<boolean>(true);
   const [, updateState] = useState<any>();
   const forceUpdate = useCallback(() => updateState({}), []);
+  const inputRef = useRef<any>(null);
+
+  const getAppInfo = useCallback(async () => {
+    try {
+      const res = (await rf
+        .getRequest('AppRequest')
+        .getAppDetail(appId)) as any;
+      setAppInfo(res);
+    } catch (error: any) {
+      setAppInfo({});
+    }
+  }, [appId]);
+
+  useEffect(() => {
+    getAppInfo().then();
+  }, []);
 
   const validator = useRef(
     createValidator({
@@ -80,13 +113,11 @@ const CreateWebhook = () => {
 
     const data = {
       ...dataForm,
+      type,
       tokenIds: dataForm.tokenIds
         .split(',')
         .filter((item: string) => !!item)
         .map((item: string) => +item.trim()),
-      addresses: dataForm.addresses
-        .split('\n')
-        .filter((item: string) => !!item),
     };
 
     try {
@@ -100,10 +131,31 @@ const CreateWebhook = () => {
 
   useEffect(() => {
     setTimeout(() => {
-      const isDisabled = !validator.current.allValid();
+      const isDisabled =
+        !validator.current.allValid() ||
+        (type === WEBHOOK_TYPES.CONTRACT_ACTIVITY && !dataForm.abi.length) ||
+        (type === WEBHOOK_TYPES.ADDRESS_ACTIVITY && isNotCorrectAddress);
       setIsDisableSubmit(isDisabled);
     }, 0);
-  }, [dataForm, open]);
+  }, [dataForm, addressesValue]);
+
+  const onClearFile = () => {
+    if (!isInsertManuallyAddress) {
+      setFileSelected({});
+      inputRef.current.value = null;
+      setAddressesValue('');
+      setDataForm({ ...dataForm, addresses: [] });
+    }
+  };
+
+  const onChangeWebhookType = (value: string) => {
+    if (type === value) return;
+    setDataForm(initDataCreateWebHook);
+    validator.current.fields = [];
+    forceUpdate();
+    setType(value);
+    onClearFile();
+  };
 
   const _renderFormContractActivity = () => {
     return (
@@ -117,6 +169,7 @@ const CreateWebhook = () => {
                 address: e.target.value.trim(),
               })
             }
+            hiddenErrorText={type !== WEBHOOK_TYPES.CONTRACT_ACTIVITY}
             validate={{
               name: `contractAddress`,
               validator: validator.current,
@@ -134,45 +187,176 @@ const CreateWebhook = () => {
     );
   };
 
+  const addressesInput = useMemo(() => {
+    return addressesValue.split('\n');
+  }, [addressesValue]);
+
+  const addressesInvalid = useMemo(() => {
+    return addressesInput.map((address: string, index: number) => ({
+      value: address,
+      index: !isValidChecksumAddress(address) ? index : -1,
+    }));
+  }, [addressesInput]);
+
+  const addressValid = useMemo(() => {
+    return addressesInput.filter((address: string) =>
+      isValidChecksumAddress(address),
+    );
+  }, [addressesInput]);
+
+  useEffect(() => {
+    setDataForm({ ...dataForm, addresses: addressValid });
+  }, [addressesInput]);
+
+  const onClearAddressInvalid = () => {
+    setDataForm({ ...dataForm, addresses: addressValid });
+    setAddressesValue(addressValid.join('\n'));
+  };
+
+  const isNotCorrectAddress = useMemo(
+    () => addressesInvalid.some(({ index }) => index > -1),
+    [addressesInvalid],
+  );
+
   const _renderFormAddressActivity = () => {
-    const onChange = (e: any) => {
+    const onChangeAddresses = (e: any) => {
       const value = e.target.value.split(new RegExp(/,|;|\n|\s/));
-      setDataForm({ ...dataForm, addresses: value.join('\n') });
+      setAddressesValue(value.join('\n'));
+    };
+
+    const handleFileSelect = (evt: any) => {
+      const file = evt.target.files[0];
+      if (file.type !== 'text/csv') {
+        toastError({ message: 'The file must be csv file type' });
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        const data = e.target.result;
+        setAddressesValue(data?.split('\r\n').slice(0, -1).join('\n'));
+        setFileSelected(evt.target.files[0]);
+      };
+
+      reader.readAsBinaryString(file);
+    };
+
+    const _renderNameFile = () => {
+      if (fileSelected?.name) {
+        return (
+          <>
+            <Box className="file-name">
+              {fileSelected?.name}
+              <CloseIcon
+                onClick={onClearFile}
+                className={'icon-clear'}
+                ml={3}
+              />
+            </Box>
+            <AppTextarea rows={6} isDisabled={true} value={addressesValue} />
+          </>
+        );
+      }
     };
 
     return (
       <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
-        <AppField label={'Addresses'} customWidth={'100%'} isRequired>
+        <AppField
+          label={`${appInfo.chain} Addresses`}
+          customWidth={'100%'}
+          isRequired
+        >
           <Box
             className="link type-upload-address"
             cursor="pointer"
-            onClick={() => setIsInsertManuallyAddress(!isInsertManuallyAddress)}
+            onClick={() => {
+              setIsInsertManuallyAddress(!isInsertManuallyAddress);
+              setDataForm({ ...dataForm, addresses: [] });
+              setAddressesValue('');
+              validator.current.fields = [];
+              forceUpdate();
+              onClearFile();
+            }}
           >
             {!isInsertManuallyAddress ? 'Insert Manually' : 'Upload File'}
           </Box>
           {isInsertManuallyAddress ? (
-            <AppTextarea
-              rows={6}
-              value={dataForm.addresses}
-              onChange={onChange}
-              validate={{
-                name: `addresses`,
-                validator: validator.current,
-                rule: 'required',
-              }}
-            />
+            <>
+              <AppTextarea
+                rows={6}
+                value={addressesValue}
+                onChange={onChangeAddresses}
+                hiddenErrorText={type !== WEBHOOK_TYPES.ADDRESS_ACTIVITY}
+                validate={{
+                  name: `addresses`,
+                  validator: validator.current,
+                  rule: 'required',
+                }}
+              />
+            </>
           ) : (
-            <label>
-              <Box className="box-upload">
-                <Box className="icon-upload" mb={4} />
-                <Box maxW={'365px'} textAlign={'center'}>
-                  Drag and drop your CSV file here or browse file from your
-                  computer.
+            <>
+              <label>
+                <Box className="box-upload">
+                  <Box className="icon-upload" mb={4} />
+                  <Box maxW={'365px'} textAlign={'center'}>
+                    Drag and drop your CSV file here or browse file from your
+                    computer.
+                  </Box>
                 </Box>
-              </Box>
 
-              <AppInput type="file" display="none" />
-            </label>
+                <AppInput
+                  type="file"
+                  display="none"
+                  onChange={handleFileSelect}
+                  ref={inputRef}
+                />
+              </label>
+              <Box className="download-template">
+                <Link
+                  as={ReactLink}
+                  to={FILE_CSV_EXAMPLE}
+                  target="_blank"
+                  download
+                  className="link"
+                >
+                  <Flex>
+                    <Box className="icon-download" mr={2} />
+                    Download Example
+                  </Flex>
+                </Link>
+              </Box>
+              {_renderNameFile()}
+            </>
+          )}
+          {!!addressesValue && isNotCorrectAddress && (
+            <Box className={'box-invalid'}>
+              <Flex justifyContent="space-between">
+                <Box>These are invalid addresses:</Box>
+                <Box className="link" onClick={onClearAddressInvalid}>
+                  Delete All Invalid
+                </Box>
+              </Flex>
+              <Box className="table-valid-address">
+                <Flex className="header-list">
+                  <Box>Address</Box>
+                  <Box>LINE</Box>
+                </Flex>
+                <>
+                  {addressesInvalid.map(({ value, index }) => {
+                    if (index === -1) {
+                      return null;
+                    }
+                    return (
+                      <Flex key={index} className="content-list">
+                        <Box>{value || 'Unknown'}</Box>
+                        <Box>{index + 1}</Box>
+                      </Flex>
+                    );
+                  })}
+                </>
+              </Box>
+            </Box>
           )}
         </AppField>
       </Flex>
@@ -192,6 +376,7 @@ const CreateWebhook = () => {
                 address: e.target.value.trim(),
               });
             }}
+            hiddenErrorText={type !== WEBHOOK_TYPES.NFT_ACTIVITY}
             validate={{
               name: `addressNft`,
               validator: validator.current,
@@ -222,11 +407,11 @@ const CreateWebhook = () => {
   };
 
   const _renderFormWebhook = () => {
-    if (dataForm.type === WEBHOOK_TYPES.NFT_ACTIVITY) {
+    if (type === WEBHOOK_TYPES.NFT_ACTIVITY) {
       return _renderFormNFTActivity();
     }
 
-    if (dataForm.type === WEBHOOK_TYPES.CONTRACT_ACTIVITY) {
+    if (type === WEBHOOK_TYPES.CONTRACT_ACTIVITY) {
       return _renderFormContractActivity();
     }
 
@@ -251,8 +436,8 @@ const CreateWebhook = () => {
                 className="select-type-webhook"
                 size="large"
                 options={optionsWebhookType}
-                value={dataForm.type}
-                onChange={(type: string) => setDataForm({ ...dataForm, type })}
+                value={type}
+                onChange={onChangeWebhookType}
               />
             </AppField>
 
@@ -265,12 +450,12 @@ const CreateWebhook = () => {
               <AppInput
                 borderRightRadius={0}
                 value={dataForm.webhook}
-                onChange={(e) =>
+                onChange={(e) => {
                   setDataForm({
                     ...dataForm,
                     webhook: e.target.value.trim(),
-                  })
-                }
+                  });
+                }}
                 validate={{
                   name: `webhook`,
                   validator: validator.current,
@@ -282,12 +467,15 @@ const CreateWebhook = () => {
 
           {_renderFormWebhook()}
 
-          <Flex justifyContent={'flex-end'}>
+          <Flex justifyContent={isMobile ? 'center' : 'flex-end'}>
             <AppButton
-              disabled={isDisableSubmit}
+              disabled={
+                isDisableSubmit || appInfo.status === APP_STATUS.DISABLED
+              }
               onClick={handleSubmitForm}
               size={'md'}
-              mt={5}
+              mt={isMobile ? 2 : 5}
+              mb={isMobile ? 5 : 0}
               px={8}
               py={3}
             >

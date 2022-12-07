@@ -6,6 +6,10 @@
   display: flex;
   margin: 25px 40px 0;
 
+  @include tablet {
+    margin: 15px 20px 10px 20px;
+  }
+
   li {
     @include text-small-regular;
     border: 1px solid $border;

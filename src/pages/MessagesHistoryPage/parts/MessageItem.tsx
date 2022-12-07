@@ -63,7 +63,6 @@ const MessageItem = ({ message, webhook }: any) => {
         </Td>
         <Td>
           <Flex alignItems="center">
-            N/A
             <AppLink ml={3} to={'#'} className="link-redirect">
               <LinkIcon />
             </AppLink>

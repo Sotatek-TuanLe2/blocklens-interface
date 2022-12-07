@@ -12,6 +12,9 @@
     @include heading-5;
     align-items: center;
     margin-bottom: 3px;
+    @include tablet {
+      @include heading-7;
+    }
   }
 
   .box-network {
@@ -26,12 +29,31 @@
   .app-tabs {
     margin: 0 40px;
     border-bottom: 1px solid $border;
+    @include tablet {
+      margin: 0 20px;
+      overflow-x: scroll;
+      -ms-overflow-style: none;  /* Internet Explorer 10+ */
+      scrollbar-width: none;  /* Firefox */
+      &::-webkit-scrollbar {
+        display: none;  /* Safari and Chrome */
+      }
+
+      & > div {
+        width: max-content;
+      }
+    }
 
     .app-tab {
       @include text-large-bold;
       padding: 0 0 8px 0;
       margin-right: 40px;
       color: $line;
+
+      @include tablet {
+        width: max-content;
+        margin-right: 20px;
+        @include text-medium-bold;
+      }
 
       &[aria-selected='true'] {
         box-shadow: none;
@@ -41,6 +63,10 @@
 
       &:first-child {
         padding-left: 0;
+      }
+
+      &:last-child {
+        margin-right: 0;
       }
     }
 
@@ -61,6 +87,10 @@
     padding: 0;
     margin-top: 30px;
 
+    @include tablet {
+      margin-top: 14px !important;
+    }
+
     &.no-tab {
       margin-top: 0;
     }
@@ -68,6 +98,9 @@
 
   .list-webhook {
     padding: 30px 0 0 0 !important;
+    @include tablet {
+      padding-top: 24px !important;
+    }
   }
 
   .description {
@@ -98,6 +131,10 @@
     align-items: center;
     margin: 30px auto;
     text-align: center;
+
+    @include tablet {
+      padding: 0 15px;
+    }
 
     svg {
       margin-bottom: 20px;
@@ -150,11 +187,19 @@
 
 .app-status {
   padding: 20px 40px !important;
+
+  @include tablet {
+    padding: 20px !important;
+  }
 }
 
 .basic-setting {
   margin-bottom: 30px;
   padding-top: 30px !important;
+
+  @include tablet {
+    padding: 20px !important;
+  }
 
   .chain-app {
     align-items: center;
@@ -171,6 +216,12 @@
   @include heading-6;
   line-height: 30px;
   margin-right: 50px;
+
+  @include tablet {
+    @include heading-8;
+    margin-bottom: 14px;
+    margin-right: 10px;
+  }
 }
 
 .field-disabled {
@@ -183,6 +234,9 @@
 
 .form-create {
   background-color: $card;
+  @include tablet {
+    padding: 20px !important;
+  }
 
   .select-type-webhook {
     .app-select__btn-select {
@@ -202,6 +256,10 @@
     align-items: center;
     height: 180px;
     margin-bottom: 13px;
+
+    @include tablet {
+      @include text-medium-regular;
+    }
   }
 
   .type-upload-address {
@@ -234,6 +292,16 @@
       color: $paragraph;
     }
   }
+
+  &.activities-all {
+    @include tablet {
+      margin: 20px;
+      justify-content: space-between;
+      div:first-child {
+        width: calc(100% - 40px);
+      }
+    }
+  }
 }
 
 .link-redirect {
@@ -247,5 +315,67 @@
   &:hover {
     cursor: pointer;
     color: $title;
+  }
+}
+
+.btn-create {
+  @include text-medium-medium;
+}
+
+.box-invalid {
+  margin-top: 26px !important;
+  @include text-medium-regular;
+}
+
+.table-valid-address {
+  background: rgba(238, 93, 80, 0.1);
+  border: 1px solid $red;
+  border-radius: 6px;
+
+  .header-list {
+    @include text-small-bold;
+    padding: 12px 40px;
+    color: $line;
+    text-transform: uppercase;
+  }
+
+  .header-list,
+  .content-list {
+    padding: 15px 40px;
+    div:first-child {
+      width: 60%;
+    }
+    div:last-child {
+      width: 40%;
+      text-align: center;
+    }
+  }
+
+  .content-list {
+    @include text-medium-regular;
+    border-bottom: 1px solid $border;
+
+    &:last-child {
+      border-radius: 0 0 6px 6px;
+    }
+  }
+}
+
+.file-name {
+  @include text-small-regular;
+  color: $title;
+  display: flex;
+  align-items: center;
+  padding: 6px 12px;
+  background-color: $bg2;
+  border-radius: 6px;
+  width: max-content;
+  margin: 10px 0 !important;
+
+  .icon-clear {
+    color: $paragraph;
+    font-size: 10px;
+    font-weight: bold;
+    cursor: pointer;
   }
 }

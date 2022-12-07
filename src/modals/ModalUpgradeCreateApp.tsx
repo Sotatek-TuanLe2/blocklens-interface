@@ -6,6 +6,7 @@ import AppButton from 'src/components/AppButton';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/store';
 import { IPlan } from 'src/store/billing';
+import { isMobile } from 'react-device-detect';
 
 interface ModalUpgradeCreateApp {
   open: boolean;
@@ -29,6 +30,7 @@ const ModalUpgradeCreateApp: FC<ModalUpgradeCreateApp> = ({
       icon="icon-add-app"
       title="Want To Create More Apps?"
       isOpen={open}
+      isFullScreen={isMobile}
       onClose={onClose}
     >
       <Box className={'modal__description'}>

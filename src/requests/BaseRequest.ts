@@ -48,7 +48,7 @@ export default class BaseRequest {
     }
   }
 
-  async post(url: any, data: any) {
+  async post(url: any, data?: any) {
     try {
       const response = await axios.post(this.getUrlPrefix() + url, data);
       return this._responseHandler(response);
@@ -91,7 +91,7 @@ export default class BaseRequest {
   }
 
   _error401Handler() {
-    return AppBroadcast.dispatch('LOGOUT_USER');
+    return AppBroadcast.dispatch('REQUEST_SIGN_IN');
   }
 
   async _errorHandler(err: any) {

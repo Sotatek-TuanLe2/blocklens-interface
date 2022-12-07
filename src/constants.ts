@@ -705,11 +705,3 @@ export const COUNTRIES = [
     name: 'Zimbabwe',
   },
 ];
-
-export const CHAINS = {
-  ETHEREUM: 'ETHEREUM',
-  BSC: 'BSC',
-  POLYGON: 'POLYGON',
-  SOLANA: 'SOLANA',
-  BITCOIN: 'BITCOIN',
-};
