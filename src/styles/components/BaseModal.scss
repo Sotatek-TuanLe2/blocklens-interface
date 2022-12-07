@@ -7,10 +7,27 @@
   padding: 8px;
   max-width: 500px !important;
 
+  &.modal-filter {
+    height: 100vh;
+    border-radius: 0 !important;
+    margin: 0 !important;
+  }
+
   &.full {
     height: 100vh;
     border-radius: 0 !important;
     margin: 0 !important;
+    display: flex;
+    justify-content: center;
+
+    .modal__title,
+    .modal__icon {
+      margin-top: 0;
+
+      &.icon {
+        margin-top: 20px;
+      }
+    }
   }
 
   &__btn-close {

@@ -9,7 +9,7 @@ import {
   Flex,
   Tooltip,
 } from '@chakra-ui/react';
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useMemo, useState } from 'react';
 import {
   AppButton,
   AppCard,
@@ -36,7 +36,6 @@ import {
   STATUS,
   getColorBrandStatus,
   optionsFilter,
-  WEBHOOK_STATUS,
 } from 'src/utils/utils-webhook';
 import { useParams } from 'react-router';
 import _ from 'lodash';
@@ -541,7 +540,7 @@ const WebhookActivities: FC<IWebhookActivities> = ({
           </Box>
         )}
 
-        <Box width={'200px'}>
+        <Box width={isMobile ? '85%' : '200px'}>
           <AppInput
             isSearch
             className={'input-search'}

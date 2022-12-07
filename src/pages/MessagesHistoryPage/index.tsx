@@ -1,4 +1,4 @@
-import { Box, Flex, Text, Th, Thead, Tooltip, Tr } from '@chakra-ui/react';
+import { Box, Flex, Th, Thead, Tr } from '@chakra-ui/react';
 import React, { useEffect, useState, useCallback } from 'react';
 import rf from 'src/requests/RequestFactory';
 import { useParams } from 'react-router';
@@ -15,13 +15,14 @@ import {
   WEBHOOK_TYPES,
   optionsFilter,
   IWebhook,
+  IMessages,
 } from 'src/utils/utils-webhook';
 import MessageItem from './parts/MessageItem';
 import { toastError } from 'src/utils/utils-notify';
 import { FilterIcon } from 'src/assets/icons';
 import _ from 'lodash';
 import { isMobile } from 'react-device-detect';
-import MessagesItemMobile from './parts/MessageItemMobile';
+import MessagesItemMobile from './parts/MessagesItemMobile';
 
 const MessagesHistory = () => {
   const {
@@ -148,7 +149,7 @@ const MessagesHistory = () => {
     );
   };
 
-  const _renderBody = (data?: any[]) => {
+  const _renderBody = (data?: IMessages[]) => {
     if (isMobile) {
       return (
         <Box className="list-card-mobile">
@@ -165,7 +166,7 @@ const MessagesHistory = () => {
       );
     }
 
-    return data?.map((message: any, index: number) => {
+    return data?.map((message: IMessages, index: number) => {
       return <MessageItem message={message} key={index} webhook={webhook} />;
     });
   };
@@ -182,7 +183,7 @@ const MessagesHistory = () => {
             />
           </Box>
         )}
-        <Box width={'200px'}>
+        <Box width={isMobile ? '85%' : '200px'}>
           <AppInput
             isSearch
             className={'input-search'}

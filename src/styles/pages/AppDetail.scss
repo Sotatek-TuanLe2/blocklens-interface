@@ -297,8 +297,9 @@
     @include tablet {
       margin: 20px;
       justify-content: space-between;
-      div:first-child {
-        width: calc(100% - 40px);
+      .input-search {
+        margin-left: 0;
+        padding: 4px 20px 4px 45px;
       }
     }
   }

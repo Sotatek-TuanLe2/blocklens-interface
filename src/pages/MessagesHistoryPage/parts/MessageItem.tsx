@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { FC, useState } from 'react';
 import { Box, Flex, Tbody, Td, Tr } from '@chakra-ui/react';
-import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
+import { IMessages, IWebhook, WEBHOOK_TYPES } from 'src/utils/utils-webhook';
 import { formatShortText, formatTimestamp } from 'src/utils/utils-helper';
 import { LinkIcon, ArrowDown } from 'src/assets/icons';
 import ReactJson from 'react-json-view';
@@ -14,7 +14,12 @@ export const StatusMessages = ({ message }: any) => {
   return <Box className={`status active`}>Successful</Box>;
 };
 
-const MessageItem = ({ message, webhook }: any) => {
+interface IMessageItem {
+  message: IMessages;
+  webhook: IWebhook;
+}
+
+const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
   const [isShowDetail, setIsShowDetail] = useState<boolean>(false);
 
   const _renderContentContract = () => {
@@ -31,7 +36,7 @@ const MessageItem = ({ message, webhook }: any) => {
   };
 
   const _renderContentAddress = () => {
-    return <Td>{formatShortText(message?.trackingAddrress)}</Td>;
+    return <Td>{formatShortText(message?.trackingAddress)}</Td>;
   };
 
   const _renderContentActivities = () => {

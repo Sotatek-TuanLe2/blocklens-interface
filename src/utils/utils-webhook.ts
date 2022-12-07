@@ -15,7 +15,6 @@ export const WEBHOOK_TYPES = {
   CONTRACT_ACTIVITY: 'CONTRACT_ACTIVITY',
 };
 
-
 export const optionsFilter = [
   {
     label: 'All status',
@@ -52,15 +51,20 @@ export interface IWebhook {
   };
 }
 
-export const getStatusWebhook = (status: WEBHOOK_STATUS) => {
-  if (status === WEBHOOK_STATUS.ENABLE) return 'ACTIVE';
-  return 'INACTIVE';
-};
-
-export const getActionWebhook = (status: WEBHOOK_STATUS) => {
-  if (status === WEBHOOK_STATUS.ENABLE) return 'Deactivate';
-  return 'Activate';
-};
+export interface IMessages {
+  appId: string;
+  registrationId: string;
+  txHash: string;
+  trackingAddress: string;
+  notificationHash: string;
+  output: any;
+  input: any;
+  startTime: number;
+  endTime: number;
+  createdAt: number;
+  updatedAt: number;
+  metadata: any;
+}
 
 export const getColorBrandStatus = (status: string) => {
   switch (status) {

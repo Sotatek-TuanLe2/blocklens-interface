@@ -1,13 +1,22 @@
 import React, { FC, useState } from 'react';
 import { Box, Flex } from '@chakra-ui/react';
-import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
+import { IWebhook, WEBHOOK_TYPES, IMessages } from 'src/utils/utils-webhook';
 import { formatShortText, formatTimestamp } from 'src/utils/utils-helper';
 import { LinkIcon } from 'src/assets/icons';
 import { AppButton } from 'src/components';
 import ReactJson from 'react-json-view';
 import { StatusMessages } from './MessageItem';
+import { getBlockExplorerUrl } from 'src/utils/utils-network';
 
-const MessagesItemMobile = ({ message, webhook }: any) => {
+interface IMessagesItemMobile {
+  message: IMessages;
+  webhook: IWebhook;
+}
+
+const MessagesItemMobile: FC<IMessagesItemMobile> = ({
+  message,
+  webhook,
+}: any) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isShowDetail, setIsShowDetail] = useState<boolean>(false);
 
@@ -56,7 +65,7 @@ const MessagesItemMobile = ({ message, webhook }: any) => {
         <Box>Address</Box>
         <Box className="value">
           <Flex alignItems="center">
-            {formatShortText(message?.trackingAddrress)}
+            {formatShortText(message?.trackingAddress)}
           </Flex>
         </Box>
       </Flex>
@@ -84,7 +93,9 @@ const MessagesItemMobile = ({ message, webhook }: any) => {
           <Box className="content-detail">
             <Box
               className={'content-output'}
-              dangerouslySetInnerHTML={{ __html: message.output.error }}
+              dangerouslySetInnerHTML={{
+                __html: message.output?.error || message.output?.responseData,
+              }}
             />
           </Box>
         </Box>
@@ -135,7 +146,16 @@ const MessagesItemMobile = ({ message, webhook }: any) => {
                 <Flex alignItems="center">
                   {formatShortText(message.txHash)}
                   <Box ml={2}>
-                    <a href={'#'} className="link-redirect" target="_blank">
+                    <a
+                      href={`${
+                        getBlockExplorerUrl(
+                          message?.input?.chain,
+                          message?.input?.network,
+                        ) + `tx/${message.txHash}`
+                      }`}
+                      className="link-redirect"
+                      target="_blank"
+                    >
                       <LinkIcon />
                     </a>
                   </Box>
