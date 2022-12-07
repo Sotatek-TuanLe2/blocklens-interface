@@ -81,16 +81,16 @@ const WebhookDetail = () => {
               <Box className="icon-arrow-left" mr={6} />
             </AppLink>
             <Box>
-              Webhook:{' '}
               {isMobile
-                ? formatShortText(webhook.registrationId)
-                : webhook.registrationId}
+                ? `wh: ${formatShortText(webhook.registrationId)}`
+                : `Webhook: ${webhook.registrationId}`}
             </Box>
           </Flex>
 
           <Flex>
             <AppButton
               size={'md'}
+              px={isMobile ? 2.5 : 4}
               variant="cancel"
               onClick={() => setIsShowSetting(true)}
             >

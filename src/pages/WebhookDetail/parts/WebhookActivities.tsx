@@ -567,7 +567,7 @@ const WebhookActivities: FC<IWebhookActivities> = ({
         _renderBoxFilter()
       ) : (
         <Flex className="title-list-app">
-          <Text className="text-title">Recent Activies</Text>
+          <Text className="text-title">Recent Activities</Text>
           {!isMobile && totalActivities > 0 && _renderLinkShowAll()}
         </Flex>
       )}
