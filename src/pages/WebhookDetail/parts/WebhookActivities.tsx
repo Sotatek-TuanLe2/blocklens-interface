@@ -36,6 +36,7 @@ import {
   STATUS,
   getColorBrandStatus,
   optionsFilter,
+  WEBHOOK_STATUS,
 } from 'src/utils/utils-webhook';
 import { useParams } from 'react-router';
 import _ from 'lodash';
@@ -95,9 +96,10 @@ const _renderStatus = (
       <Box className="status waiting">Retrying ${notification.retryTime}/5</Box>
     );
   }
+
   return (
     <Box className={`status ${getColorBrandStatus(notification.status)}`}>
-      {notification.status}
+      {notification.status === STATUS.DONE ? 'Successful' : 'Failed'}
     </Box>
   );
 };
@@ -240,7 +242,9 @@ const NotificationItemMobile: FC<INotificationItemMobile> = ({
               )}
 
               <Box width={'48%'}>
-                <AppLink to={`/webhook/${webhook.registrationId}/messages-histories/${notification.hash}`}>
+                <AppLink
+                  to={`/app/${appInfo.appId}/webhook/${webhook.registrationId}/activities/${notification.hash}`}
+                >
                   <AppButton variant="cancel" size="sm" w={'100%'}>
                     More Details
                   </AppButton>
@@ -353,7 +357,9 @@ const NotificationItem: FC<INotificationItem> = ({
               </Box>
             )}
 
-            <AppLink to={`/webhook/${webhook.registrationId}/messages-histories/${notification.hash}`}>
+            <AppLink
+              to={`/app/${appInfo.appId}/webhook/${webhook.registrationId}/activities/${notification.hash}`}
+            >
               <Box className="link-redirect">
                 <LinkDetail />
               </Box>

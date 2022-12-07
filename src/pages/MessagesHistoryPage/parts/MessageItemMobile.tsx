@@ -27,6 +27,10 @@ const MessagesItemMobile = ({ message, webhook }: any) => {
       );
     };
 
+    if (webhook.type === WEBHOOK_TYPES.CONTRACT_ACTIVITY) {
+      return _renderInfoContractActivity();
+    }
+
     if (webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY) {
       return (
         <>
@@ -67,6 +71,7 @@ const MessagesItemMobile = ({ message, webhook }: any) => {
           <Box className="content-detail">
             <ReactJson
               theme="monokai"
+              name={false}
               src={message.input}
               displayDataTypes={false}
               collapsed={false}

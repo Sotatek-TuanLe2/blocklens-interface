@@ -5,6 +5,7 @@ import { formatShortText, formatTimestamp } from 'src/utils/utils-helper';
 import { AppLink } from 'src/components';
 import { LinkIcon, ArrowDown } from 'src/assets/icons';
 import ReactJson from 'react-json-view';
+import { getBlockExplorerUrl } from '../../../utils/utils-network';
 
 export const StatusMessages = ({ message }: any) => {
   if (!!message.output?.error) {
@@ -59,9 +60,20 @@ const MessageItem = ({ message, webhook }: any) => {
         <Td>
           <Flex alignItems="center">
             {formatShortText(message.txHash)}
-            <AppLink ml={3} to={'#'} className="link-redirect">
-              <LinkIcon />
-            </AppLink>
+            <Box ml={2}>
+              <a
+                href={`${
+                  getBlockExplorerUrl(
+                    message.input?.chain,
+                    message.input?.network,
+                  ) + `tx/${message.txHash}`
+                }`}
+                className="link-redirect"
+                target="_blank"
+              >
+                <LinkIcon />
+              </a>
+            </Box>
           </Flex>
         </Td>
         {_renderContentActivities()}
@@ -82,6 +94,7 @@ const MessageItem = ({ message, webhook }: any) => {
                 <Box className="label-detail">input</Box>
                 <Box className="content-detail">
                   <ReactJson
+                    name={false}
                     theme="monokai"
                     src={message.input}
                     displayDataTypes={false}

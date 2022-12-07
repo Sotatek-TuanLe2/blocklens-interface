@@ -24,9 +24,14 @@ import { isMobile } from 'react-device-detect';
 import MessagesItemMobile from './parts/MessageItemMobile';
 
 const MessagesHistory = () => {
-  const { id: hashId, webhookId } = useParams<{
+  const {
+    id: hashId,
+    webhookId,
+    appId,
+  } = useParams<{
     webhookId: string;
     id: string;
+    appId: string;
   }>();
   const [valueSearch, setValueSearch] = useState<string>('');
   const [valueFilter, setValueFilter] = useState<string>('');
@@ -36,15 +41,15 @@ const MessagesHistory = () => {
     try {
       const res = (await rf
         .getRequest('RegistrationRequest')
-        .getRegistration(webhookId)) as any;
+        .getRegistration(appId, webhookId)) as any;
       setWebhook(res);
     } catch (error: any) {
       setWebhook({});
     }
-  }, []);
+  }, [webhookId]);
 
   useEffect(() => {
-    // getWebhookInfo().then();
+    getWebhookInfo().then();
   }, []);
 
   const fetchDataTable: any = useCallback(async (params: any) => {
@@ -196,7 +201,7 @@ const MessagesHistory = () => {
       <>
         <Flex className="app-info">
           <Flex className="name">
-            <AppLink to={`/`}>
+            <AppLink to={`/app/${appId}/webhooks/${webhookId}`}>
               <Box className="icon-arrow-left" mr={6} />
             </AppLink>
             <Box>Messages History</Box>
