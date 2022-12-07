@@ -1,18 +1,14 @@
 import React, { useState } from 'react';
 import { Box, Flex, Tbody, Td, Tr } from '@chakra-ui/react';
 import { WEBHOOK_TYPES, getColorBrandStatus } from 'src/utils/utils-webhook';
-import { formatTimestamp } from 'src/utils/utils-helper';
-import {
-  AppCard,
-  AppField,
-  AppInput,
-  AppLink,
-  AppSelect2,
-} from 'src/components';
+import { formatShortText, formatTimestamp } from 'src/utils/utils-helper';
+import { AppLink } from 'src/components';
 import { LinkIcon, ArrowDown } from 'src/assets/icons';
+import ReactJson from 'react-json-view';
 
 const MessageItem = ({ message, webhook }: any) => {
   const [isShowDetail, setIsShowDetail] = useState<boolean>(false);
+
   const _renderStatus = (message: any) => {
     if (!message.status) return 'N/A';
     return (
@@ -22,21 +18,21 @@ const MessageItem = ({ message, webhook }: any) => {
     );
   };
 
+  const _renderContentContract = () => {
+    return <Td textAlign="center">{message.method}</Td>;
+  };
+
   const _renderContentNFT = () => {
     return (
       <>
-        <Td>N/A</Td>
-        <Td textAlign="center">N/A</Td>
+        {_renderContentContract()}
+        <Td textAlign="center">{message.tokenId.join(', ')}</Td>
       </>
     );
   };
 
   const _renderContentAddress = () => {
-    return <Td>N/A</Td>;
-  };
-
-  const _renderContentContract = () => {
-    return <Td textAlign="center">method</Td>;
+    return <Td>{formatShortText(message.trackingAddrress)}</Td>;
   };
 
   const _renderContentActivities = () => {
@@ -63,6 +59,7 @@ const MessageItem = ({ message, webhook }: any) => {
         </Td>
         <Td>
           <Flex alignItems="center">
+            {formatShortText(message.txHash)}
             <AppLink ml={3} to={'#'} className="link-redirect">
               <LinkIcon />
             </AppLink>
@@ -82,11 +79,24 @@ const MessageItem = ({ message, webhook }: any) => {
             <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
               <Box width={'49%'}>
                 <Box className="label-detail">input</Box>
-                <Box className="content-detail">N/A</Box>
+                <Box className="content-detail">
+                  <ReactJson
+                    theme="monokai"
+                    src={message.input}
+                    displayDataTypes={false}
+                    collapsed={false}
+                    displayObjectSize={false}
+                  />
+                </Box>
               </Box>
               <Box width={'49%'}>
                 <Box className="label-detail">output</Box>
-                <Box className="content-detail">N/A</Box>
+                <Box className="content-detail">
+                  <Box
+                    className={'content-output'}
+                    dangerouslySetInnerHTML={{ __html: message.output.error }}
+                  />
+                </Box>
               </Box>
             </Flex>
           </Td>

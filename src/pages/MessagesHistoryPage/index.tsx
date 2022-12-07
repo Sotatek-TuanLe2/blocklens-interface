@@ -20,9 +20,14 @@ import MessageItem from './parts/MessageItem';
 import { toastError } from 'src/utils/utils-notify';
 import { FilterIcon } from 'src/assets/icons';
 import _ from 'lodash';
+import { isMobile } from 'react-device-detect';
+import MessagesItemMobile from './parts/MessageItemMobile';
 
 const MessagesHistory = () => {
-  const { id: hashId } = useParams<{ id: string }>();
+  const { id: hashId, webhookId } = useParams<{
+    webhookId: string;
+    id: string;
+  }>();
   const [valueSearch, setValueSearch] = useState<string>('');
   const [valueFilter, setValueFilter] = useState<string>('');
   const [webhook, setWebhook] = useState<IWebhook | any>({});
@@ -30,8 +35,8 @@ const MessagesHistory = () => {
   const getWebhookInfo = useCallback(async () => {
     try {
       const res = (await rf
-        .getRequest('NotificationRequest')
-        .getMessagesHistory(hashId)) as any;
+        .getRequest('RegistrationRequest')
+        .getRegistration(webhookId)) as any;
       setWebhook(res);
     } catch (error: any) {
       setWebhook({});
@@ -39,7 +44,7 @@ const MessagesHistory = () => {
   }, []);
 
   useEffect(() => {
-    getWebhookInfo().then();
+    // getWebhookInfo().then();
   }, []);
 
   const fetchDataTable: any = useCallback(async (params: any) => {
@@ -55,6 +60,8 @@ const MessagesHistory = () => {
   }, []);
 
   const _renderHeader = () => {
+    if (isMobile) return;
+
     const _renderHeaderNFT = () => {
       return (
         <>
@@ -137,6 +144,22 @@ const MessagesHistory = () => {
   };
 
   const _renderBody = (data?: any[]) => {
+    if (isMobile) {
+      return (
+        <Box className="list-card-mobile">
+          {data?.map((message: any, index: number) => {
+            return (
+              <MessagesItemMobile
+                message={message}
+                key={index}
+                webhook={webhook}
+              />
+            );
+          })}
+        </Box>
+      );
+    }
+
     return data?.map((message: any, index: number) => {
       return <MessageItem message={message} key={index} webhook={webhook} />;
     });
@@ -144,14 +167,16 @@ const MessagesHistory = () => {
 
   const _renderBoxFilter = () => {
     return (
-      <Flex className="box-filter">
-        <Box width={'150px'}>
-          <AppSelect2
-            onChange={setValueFilter}
-            options={optionsFilter}
-            value={valueFilter}
-          />
-        </Box>
+      <Flex className="box-filter activities-all">
+        {!isMobile && (
+          <Box width={'150px'}>
+            <AppSelect2
+              onChange={setValueFilter}
+              options={optionsFilter}
+              value={valueFilter}
+            />
+          </Box>
+        )}
         <Box width={'200px'}>
           <AppInput
             isSearch
@@ -162,6 +187,7 @@ const MessagesHistory = () => {
             onChange={(e) => setValueSearch(e.target.value.trim())}
           />
         </Box>
+        {isMobile && <Box className="icon-filter-mobile" />}
       </Flex>
     );
   };

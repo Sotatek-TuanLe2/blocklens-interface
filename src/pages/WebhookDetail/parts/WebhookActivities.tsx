@@ -240,7 +240,7 @@ const NotificationItemMobile: FC<INotificationItemMobile> = ({
               )}
 
               <Box width={'48%'}>
-                <AppLink to={`/messages-histories/${notification.hash}`}>
+                <AppLink to={`/webhook/${webhook.registrationId}/messages-histories/${notification.hash}`}>
                   <AppButton variant="cancel" size="sm" w={'100%'}>
                     More Details
                   </AppButton>
@@ -353,7 +353,7 @@ const NotificationItem: FC<INotificationItem> = ({
               </Box>
             )}
 
-            <AppLink to={`/messages-histories/${notification.hash}`}>
+            <AppLink to={`/webhook/${webhook.registrationId}/messages-histories/${notification.hash}`}>
               <Box className="link-redirect">
                 <LinkDetail />
               </Box>
