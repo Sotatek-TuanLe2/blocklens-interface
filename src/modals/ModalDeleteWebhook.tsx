@@ -6,6 +6,7 @@ import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { IWebhook } from 'src/utils/utils-webhook';
 import { AppButton } from 'src/components';
 import { useHistory } from 'react-router';
+import { isMobile } from 'react-device-detect';
 
 interface IModalDeleteWebhook {
   open: boolean;
@@ -39,6 +40,7 @@ const ModalDeleteWebhook: FC<IModalDeleteWebhook> = ({
       title="Delete This Webhook?"
       icon="icon-delete"
       isOpen={open}
+      isFullScreen={isMobile}
       onClose={onClose}
     >
       <Box className={'infos'}>

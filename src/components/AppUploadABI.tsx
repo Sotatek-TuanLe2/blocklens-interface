@@ -13,6 +13,7 @@ import { CloseIcon } from '@chakra-ui/icons';
 import ERC721 from 'src/abi/ERC-721.json';
 import { Link as ReactLink } from 'react-router-dom';
 import 'src/styles/components/AppUploadABI.scss';
+import { isMobile } from 'react-device-detect';
 
 export const TYPE_ABI = {
   NFT: 'NFT',
@@ -445,21 +446,25 @@ const AppUploadABI: FC<IAppUploadABI> = ({
       {ABIData && !!ABIData.length && (
         <Box className="abi-detail">
           <Flex
+            flexDirection={isMobile ? 'column' : 'row'}
             justifyContent={fileSelected?.name ? 'space-between' : 'flex-end'}
-            alignItems={'center'}
+            alignItems={isMobile ? 'flex-start' : 'center'}
             mb={3}
           >
             {_renderNameFile()}
 
             <Flex>
-              <Box width={'100px'}>
-                <AppSelect2
-                  onChange={setValueSort}
-                  options={options}
-                  value={valueSort}
-                />
-              </Box>
-              <Box width={'200px'}>
+              {!isMobile && (
+                <Box width={'100px'}>
+                  <AppSelect2
+                    onChange={setValueSort}
+                    options={options}
+                    value={valueSort}
+                  />
+                </Box>
+              )}
+
+              <Box width={'215px'}>
                 <AppInput
                   isSearch
                   className={'input-search'}
@@ -469,6 +474,8 @@ const AppUploadABI: FC<IAppUploadABI> = ({
                   onChange={(e) => setValueSearch(e.target.value.trim())}
                 />
               </Box>
+
+              {isMobile && <Box ml={2.5} className="icon-filter-mobile" />}
             </Flex>
           </Flex>
 

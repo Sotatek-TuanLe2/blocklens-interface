@@ -10,6 +10,7 @@
   top: 0;
   right: 0;
   left: 0;
+  width: 100vw;
   height: 80px;
   z-index: 99;
   background-color: $bg1;
@@ -60,6 +61,51 @@
         color: $title;
       }
     }
+  }
+
+  .header-mobile {
+    height: calc(100vh - 80px);
+    background-color: $bg1;
+
+    .menu-mobile {
+      flex-direction: column;
+      height: 100%;
+      align-items: center;
+      padding-top: 80px;
+      font-weight: 400;
+      font-size: 20px;
+      line-height: 26px;
+      text-transform: uppercase;
+      color: $paragraph;
+
+      a {
+        display: block;
+        margin-bottom: 40px;
+
+        &:hover {
+          color: $title;
+        }
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+
+        &.active {
+          font-weight: 500;
+          color: $title;
+        }
+      }
+    }
+  }
+
+  .btn-close {
+    border: 2px solid #41495f;
+    border-radius: 48px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 }
 

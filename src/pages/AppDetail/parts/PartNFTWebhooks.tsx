@@ -6,6 +6,7 @@ import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
 import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
 import ListWebhook from './ListWebhook';
 import { NoData } from 'src/assets/icons';
+import { isMobile } from "react-device-detect";
 
 interface IListNTF {
   appInfo: IAppResponse;
@@ -41,7 +42,7 @@ const PartNFTWebhooks: FC<IListNTF> = ({ appInfo }) => {
 
   return (
     <>
-      <Flex justifyContent="space-between" alignItems="center" mx={10}>
+      <Flex justifyContent="space-between" alignItems="center" mx={isMobile ? 5 :  10}>
         <Box className="description">
           Get notified when an NFT is transferred
         </Box>

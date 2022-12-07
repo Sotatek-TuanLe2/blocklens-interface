@@ -10,15 +10,22 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
+import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
+import { isMobile } from 'react-device-detect';
+import ModalFilterGraph from 'src/modals/ModalFilterGraph';
 
 const optionsFilterByType = [
   {
-    label: 'Numbers of messages',
-    value: 'messages',
+    label: 'NFT Activity',
+    value: WEBHOOK_TYPES.NFT_ACTIVITY,
   },
   {
-    label: 'Numbers of events',
-    value: 'events',
+    label: 'Address Activity',
+    value: WEBHOOK_TYPES.ADDRESS_ACTIVITY,
+  },
+  {
+    label: 'Contract Activity',
+    value: WEBHOOK_TYPES.CONTRACT_ACTIVITY,
   },
 ];
 
@@ -77,8 +84,8 @@ export const Chart = () => {
   ];
 
   return (
-    <Box height={'500px'} px={5}>
-      <ResponsiveContainer width="100%" height="85%">
+    <Box height={isMobile ? '400px' : '500px'} px={isMobile ? 0 : 5}>
+      <ResponsiveContainer width="100%" height={isMobile ? '75%' : '85%'}>
         <LineChart
           width={500}
           height={300}
@@ -98,20 +105,16 @@ export const Chart = () => {
             dataKey="average"
             stroke="#FFB547"
             strokeWidth={2}
-            dot={{ r: 8 }}
+            dot={{ r: isMobile ? 6 : 8 }}
           />
           <Line
-            dot={{ r: 8 }}
+            dot={{ r: isMobile ? 6 : 8 }}
             strokeWidth={2}
             dataKey="daily"
             stroke="#3A95FF"
             name="Numbers of events"
           />
-          <CartesianGrid
-            vertical={false}
-            horizontal
-            stroke="#41495F"
-          />
+          <CartesianGrid vertical={false} horizontal stroke="#41495F" />
         </LineChart>
       </ResponsiveContainer>
 
@@ -128,34 +131,61 @@ interface IAppGraph {
 }
 
 const AppGraph: FC<IAppGraph> = ({ type }) => {
-  const [typeData, setTypeData] = useState<string>('messages');
+  const [typeData, setTypeData] = useState<string>(WEBHOOK_TYPES.NFT_ACTIVITY);
   const [duration, setDuration] = useState<string>('24h');
+  const [isOpenFilterGraphModal, setIsOpenFilterGraphModal] =
+    useState<boolean>(false);
+
+  const _renderFilter = () => {
+    return (
+      <Flex>
+        {type === 'app' && (
+          <Box mr={3}>
+            <AppSelect2
+              width={'200px'}
+              value={typeData}
+              onChange={setTypeData}
+              options={optionsFilterByType}
+            />
+          </Box>
+        )}
+
+        <AppSelect2
+          width={'170px'}
+          value={duration}
+          onChange={setDuration}
+          options={optionsFilterByDuration}
+        />
+      </Flex>
+    );
+  };
 
   return (
     <AppCard className="user-graph" p={0}>
       <Flex className={'title-list-app'}>
         <Box className={'text-title'}>{type}'s Graph</Box>
-        <Flex>
-          {type !== 'webhook' && (
-            <Box mr={3}>
-              <AppSelect2
-                width={'230px'}
-                value={typeData}
-                onChange={setTypeData}
-                options={optionsFilterByType}
-              />
-            </Box>
-          )}
-
-          <AppSelect2
-            width={'170px'}
-            value={duration}
-            onChange={setDuration}
-            options={optionsFilterByDuration}
+        {isMobile ? (
+          <Box
+            className="icon-filter-mobile"
+            onClick={() => setIsOpenFilterGraphModal(true)}
           />
-        </Flex>
+        ) : (
+          _renderFilter()
+        )}
       </Flex>
       <Chart />
+
+      <ModalFilterGraph
+        optionTypes={optionsFilterByType}
+        optionTimes={optionsFilterByDuration}
+        open={isOpenFilterGraphModal}
+        typeData={typeData}
+        type={type}
+        time={duration}
+        onChangeType={setTypeData}
+        onChangeTime={setDuration}
+        onClose={() => setIsOpenFilterGraphModal(false)}
+      />
     </AppCard>
   );
 };

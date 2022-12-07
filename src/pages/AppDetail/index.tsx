@@ -7,7 +7,7 @@ import {
   TabPanels,
   Tabs,
 } from '@chakra-ui/react';
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import rf from 'src/requests/RequestFactory';
 import { useHistory, useParams } from 'react-router';
 import 'src/styles/pages/AppDetail.scss';
@@ -17,9 +17,10 @@ import PartAddressWebhooks from './parts/PartAddressWebhooks';
 import PartContractWebhooks from './parts/PartContractWebhooks';
 import { BasePageContainer } from 'src/layouts';
 import { AppButton, AppCard, AppGraph, AppLink } from 'src/components';
-import { CHAINS } from 'src/constants';
 import AppSettings from './parts/AppSettings';
-import { getLogoChainByName } from 'src/utils/utils-network';
+import { getLogoChainByName, isEVMNetwork } from 'src/utils/utils-network';
+import { isMobile } from 'react-device-detect';
+import { APP_STATUS } from '../../utils/utils-app';
 
 const AppDetail = () => {
   const [appInfo, setAppInfo] = useState<any>({});
@@ -43,11 +44,6 @@ const AppDetail = () => {
     getAppInfo().then();
   }, []);
 
-  const isEVM = useMemo(
-    () => appInfo.chain !== CHAINS.SOLANA && appInfo.chain !== CHAINS.BITCOIN,
-    [appInfo],
-  );
-
   return (
     <BasePageContainer className="app-detail">
       {isShowSetting ? (
@@ -61,23 +57,27 @@ const AppDetail = () => {
           <Flex className="app-info">
             <Flex className="name">
               <AppLink to={'/'}>
-                <Box className="icon-arrow-left" mr={6} />
+                <Box className="icon-arrow-left" mr={isMobile ? 3 : 6} />
               </AppLink>
               <Box>{appInfo.name}</Box>
             </Flex>
 
             <Flex>
-              <Flex alignItems={'center'} className="box-network">
-                <Box className={getLogoChainByName(appInfo.chain)} mr={2}></Box>
-                {appInfo.network}
-              </Flex>
+              {!isMobile && (
+                <Flex alignItems={'center'} className="box-network">
+                  <Box className={getLogoChainByName(appInfo.chain)} mr={2} />
+                  {appInfo.network}
+                </Flex>
+              )}
+
               <AppButton
                 size={'md'}
+                px={isMobile ? 2.5 : 4}
                 variant="cancel"
-                mr={5}
                 onClick={() => setIsShowSetting(true)}
               >
-                <Box className="icon-settings" mr={2} /> Setting
+                <Box className="icon-settings" mr={isMobile ? 0 : 2} />
+                {isMobile ? '' : 'Setting'}
               </AppButton>
             </Flex>
           </Flex>
@@ -92,6 +92,7 @@ const AppDetail = () => {
                   size={'sm'}
                   px={4}
                   py={1}
+                  isDisabled={appInfo.status === APP_STATUS.DISABLED}
                   className={'btn-create'}
                   onClick={() =>
                     history.push(`/create-webhook/${appInfo.appId}`)
@@ -101,27 +102,38 @@ const AppDetail = () => {
                 </AppButton>
               </Box>
             </Flex>
+
             <Tabs variant={'unstyled'} colorScheme="transparent">
-              <TabList className={`${isEVM ? '' : 'no-tab'} app-tabs`}>
+              <TabList
+                className={`${
+                  isEVMNetwork(appInfo.chain) ? '' : 'no-tab'
+                } app-tabs`}
+              >
                 <Flex w={'100%'}>
-                  {isEVM && <Tab className="app-tab">NFT Activity</Tab>}
+                  {isEVMNetwork(appInfo.chain) && (
+                    <Tab className="app-tab">NFT Activity</Tab>
+                  )}
                   <Tab className="app-tab">Address Activity</Tab>
-                  {isEVM && <Tab className="app-tab">Contract Activity</Tab>}
+                  {isEVMNetwork(appInfo.chain) && (
+                    <Tab className="app-tab">Contract Activity</Tab>
+                  )}
                 </Flex>
               </TabList>
 
               <TabPanels>
-                {isEVM && (
+                {isEVMNetwork(appInfo.chain) && (
                   <TabPanel className="content-tab-app">
                     <PartNFTWebhooks appInfo={appInfo} />
                   </TabPanel>
                 )}
                 <TabPanel
-                  className={`${isEVM ? '' : 'no-tab'} content-tab-app`}
+                  className={`${
+                    isEVMNetwork(appInfo.chain) ? '' : 'no-tab'
+                  } content-tab-app`}
                 >
                   <PartAddressWebhooks appInfo={appInfo} />
                 </TabPanel>
-                {isEVM && (
+                {isEVMNetwork(appInfo.chain) && (
                   <TabPanel className="content-tab-app">
                     <PartContractWebhooks appInfo={appInfo} />
                   </TabPanel>

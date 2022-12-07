@@ -26,6 +26,19 @@
       color: $line;
       width: 120px;
     }
+
+    @include tablet {
+      flex-direction: column;
+      padding: 16px;
+
+      div {
+        margin-left: 0;
+      }
+
+      .label-events {
+        margin-bottom: 10px;
+      }
+    }
   }
 
   .file-name {
@@ -55,6 +68,12 @@
     &::placeholder {
       color: $paragraph;
     }
+
+    @include tablet {
+      margin-left: 0;
+      width: 100% !important;
+      padding: 4px 10px 4px 40px;
+    }
   }
 
   .box-upload {
@@ -81,5 +100,10 @@
     background-color: $bg2;
     padding: 22px 24px;
     border-radius: 6px;
+
+    @include tablet {
+      padding: 20px !important;
+      margin-bottom: 20px;
+    }
   }
 }

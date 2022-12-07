@@ -17,6 +17,7 @@ import {
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import ModalDeleteWebhook from 'src/modals/ModalDeleteWebhook';
+import { isMobile } from 'react-device-detect';
 
 interface IAppSettings {
   onBack: () => void;
@@ -123,8 +124,8 @@ const WebhookSettings: FC<IAppSettings> = ({ onBack, webhook, reloadData }) => {
         <Flex>
           <AppButton
             size={'md'}
+            px={isMobile ? 3 : 4}
             variant="cancel"
-            mr={5}
             onClick={() => setIsOpenModalDelete(true)}
           >
             <Box className="icon-trash" />
@@ -134,22 +135,27 @@ const WebhookSettings: FC<IAppSettings> = ({ onBack, webhook, reloadData }) => {
 
       <AppCard className="app-status">
         <Flex justifyContent={'space-between'}>
-          <Flex alignItems="center">
+          <Flex
+            alignItems={isMobile ? 'flex-start' : 'center'}
+            flexDirection={isMobile ? 'column' : 'row'}
+          >
             <Box className="title-status">Webhook Status</Box>
-            <Box
-              className={isActive ? 'icon-active' : 'icon-inactive'}
-              mr={2}
-            />
-            <Box>{isActive ? 'Active' : 'Inactive'}</Box>
+            <Flex alignItems={'center'}>
+              <Box
+                className={isActive ? 'icon-active' : 'icon-inactive'}
+                mr={2}
+              />
+              <Box>{isActive ? 'Active' : 'Inactive'}</Box>
+            </Flex>
           </Flex>
 
-          <AppButton onClick={onUpdateStatus}>
+          <AppButton onClick={onUpdateStatus} size={isMobile ? 'sm' : 'md'}>
             {isActive ? 'Deactivate' : 'Activate'}
           </AppButton>
         </Flex>
       </AppCard>
 
-      <AppCard mt={7}>
+      <AppCard mt={7} p={isMobile ? 5 : 10}>
         <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
           <AppField label={'Network'} customWidth={'49%'}>
             <AppInput value={webhook.network} isDisabled />

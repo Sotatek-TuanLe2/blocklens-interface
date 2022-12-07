@@ -18,10 +18,11 @@ import {
 } from 'src/utils/utils-webhook';
 import MessageItem from './parts/MessageItem';
 import { toastError } from 'src/utils/utils-notify';
-import { FilterIcon, InfoIcon } from 'src/assets/icons';
+import { FilterIcon } from 'src/assets/icons';
+import _ from 'lodash';
 
 const MessagesHistory = () => {
-  const { appId, id: webhookId } = useParams<{ appId: string; id: string }>();
+  const { id: hashId } = useParams<{ id: string }>();
   const [valueSearch, setValueSearch] = useState<string>('');
   const [valueFilter, setValueFilter] = useState<string>('');
   const [webhook, setWebhook] = useState<IWebhook | any>({});
@@ -29,21 +30,23 @@ const MessagesHistory = () => {
   const getWebhookInfo = useCallback(async () => {
     try {
       const res = (await rf
-        .getRequest('RegistrationRequest')
-        .getRegistration(appId, webhookId)) as any;
+        .getRequest('NotificationRequest')
+        .getMessagesHistory(hashId)) as any;
       setWebhook(res);
     } catch (error: any) {
       setWebhook({});
     }
-  }, [webhookId]);
+  }, []);
 
   useEffect(() => {
     getWebhookInfo().then();
   }, []);
 
-  const fetchDataTable: any = useCallback(async (param: any) => {
+  const fetchDataTable: any = useCallback(async (params: any) => {
     try {
-      return await rf.getRequest('NotificationRequest').getNotifications(param);
+      return await rf
+        .getRequest('NotificationRequest')
+        .getMessagesHistory(hashId, _.omitBy(params, _.isEmpty));
     } catch (error: any) {
       toastError({
         message: error?.message || 'Oops. Something went wrong!',
@@ -167,7 +170,7 @@ const MessagesHistory = () => {
       <>
         <Flex className="app-info">
           <Flex className="name">
-            <AppLink to={`/apps/${appId}`}>
+            <AppLink to={`/`}>
               <Box className="icon-arrow-left" mr={6} />
             </AppLink>
             <Box>Messages History</Box>

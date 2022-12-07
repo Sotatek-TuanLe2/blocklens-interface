@@ -6,6 +6,7 @@ import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
 import ListWebhook from './ListWebhook';
 import { useHistory } from 'react-router';
 import { NoData } from 'src/assets/icons';
+import { isMobile } from "react-device-detect";
 
 interface IListAddress {
   appInfo: IAppResponse;
@@ -43,7 +44,7 @@ const PartAddressWebhooks: FC<IListAddress> = ({ appInfo }) => {
 
   return (
     <>
-      <Flex justifyContent="space-between" alignItems="center" mx={10}>
+      <Flex justifyContent="space-between" alignItems="center" mx={isMobile ? 5 :  10}>
         <Box className="description">
           Get notified whenever an address sends/receives any Token
         </Box>

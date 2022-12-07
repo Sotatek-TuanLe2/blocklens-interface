@@ -39,6 +39,7 @@ interface DataTableProps {
   renderNoData?: () => ReactNode;
   loading?: boolean;
   isNotShowNoData?: boolean;
+  hidePagination?: boolean;
 }
 
 export interface DataTableRef {
@@ -78,6 +79,7 @@ const AppDataTable = forwardRef(
       renderHeader,
       renderNoData,
       isNotShowNoData = false,
+      hidePagination = false,
     } = props;
 
     const initialPagination: Pagination = { limit, page: 1 };
@@ -169,8 +171,9 @@ const AppDataTable = forwardRef(
       ) : null;
     };
     const _renderPagination = () => {
+      if (hidePagination) return;
       return (
-        <Flex justifyContent="flex-end">
+        <Flex justifyContent={isMobile ? 'center' : 'flex-end'}>
           <AppPagination
             pageCount={totalPages}
             forcePage={pagination.page - 1}
@@ -184,7 +187,7 @@ const AppDataTable = forwardRef(
       if (totalPages <= 1 || isLoading || props.loading) {
         return null;
       }
-      return isMobile ? _renderLoadMore() : _renderPagination();
+      return _renderPagination();
     };
 
     const _renderNoResultOrLoading = () => {
@@ -223,9 +226,14 @@ const AppDataTable = forwardRef(
 
     return (
       <>
-        <TableContainer>
-          <Table colorScheme="gray">{_renderTable()}</Table>
-        </TableContainer>
+        {isMobile ? (
+          _renderTable()
+        ) : (
+          <TableContainer>
+            <Table colorScheme="gray">{_renderTable()}</Table>
+          </TableContainer>
+        )}
+
         {_renderNoResultOrLoading()}
         {_renderFooter()}
       </>

@@ -11,6 +11,8 @@ import AppButton from 'src/components/AppButton';
 import { ModalProps, ModalHeaderProps } from '@chakra-ui/modal/src/modal';
 import 'src/styles/components/BaseModal.scss';
 import { CloseIcon } from '@chakra-ui/icons';
+import { isMobile } from 'react-device-detect';
+import { ArrowDown } from 'src/assets/icons';
 
 export interface BaseModalProps extends ModalProps {
   title: string;
@@ -38,6 +40,8 @@ export interface BaseModalProps extends ModalProps {
   isLoadingButtonRight?: boolean;
   styleHeader?: ModalHeaderProps;
   icon?: string;
+  isFullScreen?: boolean;
+  isBack?: boolean;
 }
 
 const BaseModal: FC<BaseModalProps> = ({
@@ -48,6 +52,8 @@ const BaseModal: FC<BaseModalProps> = ({
   icon,
   size = 'md',
   isCentered = true,
+  isFullScreen = false,
+                                         isBack = false,
   isHideCloseIcon = false,
   children,
   onActionLeft,
@@ -70,18 +76,27 @@ const BaseModal: FC<BaseModalProps> = ({
         autoFocus={false}
       >
         <ModalOverlay />
-        <ModalContent className={`${className} modal`}>
+        <ModalContent
+          className={`${className} modal ${isFullScreen ? 'full' : ''}`}
+        >
           {!isHideCloseIcon && (
             <Box className={'modal__btn-close'} onClick={onClose}>
-              <CloseIcon />
+              <CloseIcon width={isMobile ? '11px' : '15px'} />
             </Box>
           )}
 
-          {icon && (
-            <Box className={`modal__icon ${icon}`} />
-          )}
+          {icon && <Box className={`modal__icon ${icon}`} />}
 
-          <Box className={`modal__title ${icon ? 'icon' : ''}`} {...styleHeader}>
+          <Box
+            className={`modal__title ${icon ? 'icon' : ''}`}
+            {...styleHeader}
+          >
+            {isBack && (
+              <Box onClick={onClose} className="icon-back">
+                {' '}
+                <ArrowDown />{' '}
+              </Box>
+            )}
             {title}
           </Box>
 

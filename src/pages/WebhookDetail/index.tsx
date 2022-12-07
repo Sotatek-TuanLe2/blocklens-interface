@@ -9,14 +9,28 @@ import WebhookSettings from './parts/WebhookSettings';
 import WebhookActivities from './parts/WebhookActivities';
 import { IWebhook } from 'src/utils/utils-webhook';
 import PartWebhookStats from './parts/PartWebhookStats';
+import { isMobile } from 'react-device-detect';
+import { formatShortText } from 'src/utils/utils-helper';
 
 const WebhookDetail = () => {
   const [webhook, setWebhook] = useState<IWebhook | any>({});
+  const [appInfo, setAppInfo] = useState<any>({});
   const [isShowSetting, setIsShowSetting] = useState<boolean>(false);
   const [isShowAllActivities, setIsShowAllActivities] =
     useState<boolean>(false);
 
   const { appId, id: webhookId } = useParams<{ appId: string; id: string }>();
+
+  const getAppInfo = useCallback(async () => {
+    try {
+      const res = (await rf
+        .getRequest('AppRequest')
+        .getAppDetail(appId)) as any;
+      setAppInfo(res);
+    } catch (error: any) {
+      setAppInfo({});
+    }
+  }, [appId]);
 
   const getWebhookInfo = useCallback(async () => {
     try {
@@ -31,6 +45,7 @@ const WebhookDetail = () => {
 
   useEffect(() => {
     getWebhookInfo().then();
+    getAppInfo().then();
   }, []);
 
   const _renderAllActivities = () => {
@@ -48,6 +63,7 @@ const WebhookDetail = () => {
           </Flex>
         </Flex>
         <WebhookActivities
+          appInfo={appInfo}
           registrationId={webhook.registrationId}
           webhook={webhook}
           isShowAll={isShowAllActivities}
@@ -64,22 +80,28 @@ const WebhookDetail = () => {
             <AppLink to={`/apps/${appId}`}>
               <Box className="icon-arrow-left" mr={6} />
             </AppLink>
-            <Box>Webhook: {webhook.registrationId}</Box>
+            <Box>
+              {isMobile
+                ? `wh: ${formatShortText(webhook.registrationId)}`
+                : `Webhook: ${webhook.registrationId}`}
+            </Box>
           </Flex>
 
           <Flex>
             <AppButton
               size={'md'}
+              px={isMobile ? 2.5 : 4}
               variant="cancel"
-              mr={5}
               onClick={() => setIsShowSetting(true)}
             >
-              <Box className="icon-settings" mr={2} /> Setting
+              <Box className="icon-settings" mr={isMobile ? 0 : 2} />
+              {isMobile ? '' : 'Setting'}
             </AppButton>
           </Flex>
         </Flex>
         <PartWebhookStats />
         <WebhookActivities
+          appInfo={appInfo}
           registrationId={webhook.registrationId}
           webhook={webhook}
           onShowAll={() => setIsShowAllActivities(true)}
