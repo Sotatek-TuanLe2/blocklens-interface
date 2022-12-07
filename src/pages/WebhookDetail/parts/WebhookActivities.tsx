@@ -1,42 +1,13 @@
-import {
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
-  Box,
-  Text,
-  Flex,
-  Tooltip,
-} from '@chakra-ui/react';
+import { Box, Flex, Tbody, Td, Text, Th, Thead, Tooltip, Tr } from '@chakra-ui/react';
 import React, { FC, useCallback, useMemo, useState } from 'react';
-import {
-  AppButton,
-  AppCard,
-  AppDataTable,
-  AppInput,
-  AppLink,
-  AppSelect2,
-} from 'src/components';
+import { AppButton, AppCard, AppDataTable, AppInput, AppLink, AppSelect2 } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import { formatShortText, formatTimestamp } from 'src/utils/utils-helper';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import 'src/styles/pages/NotificationPage.scss';
 import 'src/styles/pages/AppDetail.scss';
-import {
-  LinkIcon,
-  FilterIcon,
-  InfoIcon,
-  RetryIcon,
-  LinkDetail,
-} from 'src/assets/icons';
-import {
-  IWebhook,
-  WEBHOOK_TYPES,
-  STATUS,
-  getColorBrandStatus,
-  optionsFilter,
-} from 'src/utils/utils-webhook';
+import { FilterIcon, InfoIcon, LinkDetail, LinkIcon, RetryIcon } from 'src/assets/icons';
+import { getColorBrandStatus, IWebhook, optionsFilter, STATUS, WEBHOOK_TYPES } from 'src/utils/utils-webhook';
 import { useParams } from 'react-router';
 import _ from 'lodash';
 import { isMobile } from 'react-device-detect';
@@ -379,15 +350,12 @@ const WebhookActivities: FC<IWebhookActivities> = ({
   const [valueSearch, setValueSearch] = useState<string>('');
   const [valueFilter, setValueFilter] = useState<string>('');
   const { id: webhookId } = useParams<{ id: string }>();
-  const [totalActivities, setTotalActivities] = useState<any>({});
 
   const fetchDataTable: any = useCallback(async (params: any) => {
     try {
-      const res = await rf
+      return await rf
         .getRequest('NotificationRequest')
         .getActivities(webhookId, _.omitBy(params, _.isEmpty));
-      setTotalActivities(res?.totalDocs);
-      return res;
     } catch (error: any) {
       toastError({
         message: error?.message || 'Oops. Something went wrong!',
@@ -573,7 +541,7 @@ const WebhookActivities: FC<IWebhookActivities> = ({
       ) : (
         <Flex className="title-list-app">
           <Text className="text-title">Recent Activities</Text>
-          {!isMobile && totalActivities > 0 && _renderLinkShowAll()}
+          {!isMobile && _renderLinkShowAll()}
         </Flex>
       )}
 
@@ -589,7 +557,7 @@ const WebhookActivities: FC<IWebhookActivities> = ({
         limit={isShowAll ? 15 : 10}
       />
 
-      {isMobile && totalActivities > 0 && (
+      {isMobile && (
         <Flex justifyContent={'center'} my={4}>
           {_renderLinkShowAll()}
         </Flex>
