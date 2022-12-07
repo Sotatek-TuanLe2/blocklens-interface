@@ -1,4 +1,4 @@
-import { SimpleGrid } from '@chakra-ui/react';
+import { Box, SimpleGrid } from '@chakra-ui/react';
 import React, { useCallback, useEffect, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import { useParams } from 'react-router';
@@ -10,8 +10,6 @@ import {
 } from 'src/pages/HomePage/parts/PartUserStats';
 import rf from 'src/requests/RequestFactory';
 import { formatLargeNumber } from 'src/utils/utils-helper';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/swiper.scss';
 
 interface IWebhookStats {
   totalThisMonth?: number;
@@ -92,11 +90,11 @@ const PartWebhookStats = () => {
   const _renderStatsMobile = () => {
     return (
       <div className="infos">
-        <Swiper className="swiperMobile" slidesPerView={1.25}>
+        <Box className="statsMobile">
           {webhookStats &&
             listUserStats.map((stats, index: number) => {
               return (
-                <SwiperSlide key={`${index} stats`}>
+                <Box key={`${index} stats`} className="statsItemMobile">
                   <AppStatistical
                     label={stats.label}
                     value={
@@ -108,10 +106,10 @@ const PartWebhookStats = () => {
                     }
                     dataChart={data}
                   />
-                </SwiperSlide>
+                </Box>
               );
             })}
-        </Swiper>
+        </Box>
       </div>
     );
   };

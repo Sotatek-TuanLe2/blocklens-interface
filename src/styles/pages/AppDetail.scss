@@ -111,16 +111,6 @@
 
 .infos {
   margin-bottom: 30px;
-  .swiperMobile {
-    .swiper-slide {
-      padding-right: 10px;
-      background-clip: content-box;
-    }
-    :last-child {
-      padding-right: 0px;
-    }
-  }
-
   .box-info {
     display: flex;
     flex-direction: column;
@@ -160,6 +150,23 @@
     top: 50%;
     transform: translateY(-50%);
     right: 0;
+  }
+  .statsMobile {
+    display: flex;
+    width: 100%;
+    flex-wrap: nowrap;
+    overflow-x: scroll;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    .statsItemMobile {
+      min-width: 80%;
+      margin-right: 10px;
+    }
+    :last-child {
+      margin-right: 0px;
+    }
   }
 }
 

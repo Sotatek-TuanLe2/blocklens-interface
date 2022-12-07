@@ -1,11 +1,9 @@
-import { SimpleGrid } from '@chakra-ui/react';
+import { Box, SimpleGrid } from '@chakra-ui/react';
 import React, { useCallback, useEffect, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import AppStatistical from 'src/components/AppStatistical';
 import rf from 'src/requests/RequestFactory';
 import { formatLargeNumber } from 'src/utils/utils-helper';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/swiper.scss';
 
 export interface IUserStats {
   totalThisMonth?: number;
@@ -142,11 +140,11 @@ const PartUserStats = () => {
   const _renderStatsMobile = () => {
     return (
       <div className="infos">
-        <Swiper className="swiperMobile" slidesPerView={1.25}>
+        <Box className="statsMobile">
           {userStats &&
             listUserStats.map((stats, index: number) => {
               return (
-                <SwiperSlide key={`${index} stats`}>
+                <Box key={`${index} stats`} className="statsItemMobile">
                   <AppStatistical
                     label={stats.label}
                     value={
@@ -158,10 +156,10 @@ const PartUserStats = () => {
                     }
                     dataChart={data}
                   />
-                </SwiperSlide>
+                </Box>
               );
             })}
-        </Swiper>
+        </Box>
       </div>
     );
   };

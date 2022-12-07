@@ -1,18 +1,15 @@
-import { SimpleGrid } from '@chakra-ui/react';
-import { useCallback, useEffect, useState } from 'react';
+import { Box, SimpleGrid } from '@chakra-ui/react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { isMobile } from 'react-device-detect';
 import { useParams } from 'react-router';
 import AppStatistical from 'src/components/AppStatistical';
-import rf from 'src/requests/RequestFactory';
-import { formatLargeNumber } from 'src/utils/utils-helper';
-import React from 'react';
 import {
   data,
   LabelStats,
   listUserStats,
 } from 'src/pages/HomePage/parts/PartUserStats';
-import { isMobile } from 'react-device-detect';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/swiper.scss';
+import rf from 'src/requests/RequestFactory';
+import { formatLargeNumber } from 'src/utils/utils-helper';
 
 interface IAppStats {
   totalThisMonth?: number;
@@ -94,11 +91,11 @@ const PartAppStatics = () => {
   const _renderStatsMobile = () => {
     return (
       <div className="infos">
-        <Swiper className="swiperMobile" slidesPerView={1.25}>
+        <Box className="statsMobile">
           {appStats &&
             listUserStats.map((stats, index: number) => {
               return (
-                <SwiperSlide key={`${index} stats`}>
+                <Box key={`${index} stats`} className="statsItemMobile">
                   <AppStatistical
                     label={stats.label}
                     value={
@@ -110,10 +107,10 @@ const PartAppStatics = () => {
                     }
                     dataChart={data}
                   />
-                </SwiperSlide>
+                </Box>
               );
             })}
-        </Swiper>
+        </Box>
       </div>
     );
   };
