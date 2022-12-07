@@ -119,7 +119,7 @@ const MessagesItemMobile = ({ message, webhook }: any) => {
         >
           <Box>Status</Box>
           <Box>
-            <StatusMessages messages={message} />
+            <StatusMessages message={message} />
           </Box>
         </Flex>
 

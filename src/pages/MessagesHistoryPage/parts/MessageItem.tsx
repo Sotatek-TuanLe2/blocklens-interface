@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { Box, Flex, Tbody, Td, Tr } from '@chakra-ui/react';
-import { WEBHOOK_TYPES, getColorBrandStatus } from 'src/utils/utils-webhook';
+import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
 import { formatShortText, formatTimestamp } from 'src/utils/utils-helper';
-import { AppLink } from 'src/components';
 import { LinkIcon, ArrowDown } from 'src/assets/icons';
 import ReactJson from 'react-json-view';
-import { getBlockExplorerUrl } from '../../../utils/utils-network';
+import { getBlockExplorerUrl } from 'src/utils/utils-network';
 
 export const StatusMessages = ({ message }: any) => {
-  if (!!message.output?.error) {
+  if (!!message?.output?.error) {
     return <Box className={`status inactive`}>Failed</Box>;
   }
 
@@ -19,28 +18,28 @@ const MessageItem = ({ message, webhook }: any) => {
   const [isShowDetail, setIsShowDetail] = useState<boolean>(false);
 
   const _renderContentContract = () => {
-    return <Td textAlign="center">{message.metadata?.method}</Td>;
+    return <Td textAlign="center">{message?.metadata?.method}</Td>;
   };
 
   const _renderContentNFT = () => {
     return (
       <>
         {_renderContentContract()}
-        <Td textAlign="center">{message.metadata?.tokenId.join(', ')}</Td>
+        <Td textAlign="center">{message?.metadata?.tokenId.join(', ')}</Td>
       </>
     );
   };
 
   const _renderContentAddress = () => {
-    return <Td>{formatShortText(message.trackingAddrress)}</Td>;
+    return <Td>{formatShortText(message?.trackingAddrress)}</Td>;
   };
 
   const _renderContentActivities = () => {
-    if (webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY) {
+    if (webhook?.type === WEBHOOK_TYPES.NFT_ACTIVITY) {
       return _renderContentNFT();
     }
 
-    if (webhook.type === WEBHOOK_TYPES.CONTRACT_ACTIVITY) {
+    if (webhook?.type === WEBHOOK_TYPES.CONTRACT_ACTIVITY) {
       return _renderContentContract();
     }
 
@@ -59,13 +58,13 @@ const MessageItem = ({ message, webhook }: any) => {
         </Td>
         <Td>
           <Flex alignItems="center">
-            {formatShortText(message.txHash)}
+            {formatShortText(message?.txHash)}
             <Box ml={2}>
               <a
                 href={`${
                   getBlockExplorerUrl(
-                    message.input?.chain,
-                    message.input?.network,
+                    message?.input?.chain,
+                    message?.input?.network,
                   ) + `tx/${message.txHash}`
                 }`}
                 className="link-redirect"
