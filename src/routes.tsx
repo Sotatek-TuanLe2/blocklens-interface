@@ -64,7 +64,7 @@ const Routes: FC<RouteComponentProps> = () => {
           component={CreateWebhookPage}
         />
         <PrivateRoute
-          path={'/messages-histories/:id'}
+          path={'/app/:appId/webhook/:webhookId/activities/:id'}
           component={MessagesHistory}
         />
         <PrivateRoute path={'/'} component={HomePage} />
@@ -99,6 +99,7 @@ const PrivateRoute = ({ component: Component, ...rest }: any) => {
 
   return (
     <Route
+      exact
       {...rest}
       render={(props) =>
         !!accessToken ? (

@@ -5,6 +5,7 @@ import {
   ModalFooter,
   ModalBody,
   Box,
+  Flex,
 } from '@chakra-ui/react';
 import React, { FC, ReactNode } from 'react';
 import AppButton from 'src/components/AppButton';
@@ -53,7 +54,7 @@ const BaseModal: FC<BaseModalProps> = ({
   size = 'md',
   isCentered = true,
   isFullScreen = false,
-                                         isBack = false,
+  isBack = false,
   isHideCloseIcon = false,
   children,
   onActionLeft,
@@ -85,50 +86,51 @@ const BaseModal: FC<BaseModalProps> = ({
             </Box>
           )}
 
-          {icon && <Box className={`modal__icon ${icon}`} />}
+          <Flex flexDirection={'column'}>
+            {icon && <Box className={`modal__icon ${icon}`} />}
 
-          <Box
-            className={`modal__title ${icon ? 'icon' : ''}`}
-            {...styleHeader}
-          >
-            {isBack && (
-              <Box onClick={onClose} className="icon-back">
-                {' '}
-                <ArrowDown />{' '}
-              </Box>
+            <Box
+              className={`modal__title ${icon ? 'icon' : ''}`}
+              {...styleHeader}
+            >
+              {isBack && (
+                <Box onClick={onClose} className="icon-back">
+                  <ArrowDown />
+                </Box>
+              )}
+              {title}
+            </Box>
+
+            {description && (
+              <Box className={'modal__description'}>{description}</Box>
             )}
-            {title}
-          </Box>
 
-          {description && (
-            <Box className={'modal__description'}>{description}</Box>
-          )}
+            <ModalBody>{children}</ModalBody>
 
-          <ModalBody>{children}</ModalBody>
+            <ModalFooter>
+              {onActionLeft && (
+                <Box mr={2}>
+                  <AppButton
+                    onClick={onActionLeft}
+                    variant="outline"
+                    fontWeight={400}
+                  >
+                    {textActionLeft}
+                  </AppButton>
+                </Box>
+              )}
 
-          <ModalFooter>
-            {onActionLeft && (
-              <Box mr={2}>
+              {onActionRight && (
                 <AppButton
-                  onClick={onActionLeft}
-                  variant="outline"
+                  isLoading={isLoadingButtonRight}
+                  onClick={onActionRight}
                   fontWeight={400}
                 >
-                  {textActionLeft}
+                  {textActionRight}
                 </AppButton>
-              </Box>
-            )}
-
-            {onActionRight && (
-              <AppButton
-                isLoading={isLoadingButtonRight}
-                onClick={onActionRight}
-                fontWeight={400}
-              >
-                {textActionRight}
-              </AppButton>
-            )}
-          </ModalFooter>
+              )}
+            </ModalFooter>
+          </Flex>
         </ModalContent>
       </Modal>
     </>

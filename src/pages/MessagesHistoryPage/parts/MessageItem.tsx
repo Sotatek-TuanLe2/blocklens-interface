@@ -1,50 +1,50 @@
-import React, { useState } from 'react';
+import React, { FC, useState } from 'react';
 import { Box, Flex, Tbody, Td, Tr } from '@chakra-ui/react';
-import { WEBHOOK_TYPES, getColorBrandStatus } from 'src/utils/utils-webhook';
-import { formatTimestamp } from 'src/utils/utils-helper';
-import {
-  AppCard,
-  AppField,
-  AppInput,
-  AppLink,
-  AppSelect2,
-} from 'src/components';
+import { IMessages, IWebhook, WEBHOOK_TYPES } from 'src/utils/utils-webhook';
+import { formatShortText, formatTimestamp } from 'src/utils/utils-helper';
 import { LinkIcon, ArrowDown } from 'src/assets/icons';
+import ReactJson from 'react-json-view';
+import { getBlockExplorerUrl } from 'src/utils/utils-network';
 
-const MessageItem = ({ message, webhook }: any) => {
+export const StatusMessages = ({ message }: any) => {
+  if (!!message?.output?.error) {
+    return <Box className={`status inactive`}>Failed</Box>;
+  }
+
+  return <Box className={`status active`}>Successful</Box>;
+};
+
+interface IMessageItem {
+  message: IMessages;
+  webhook: IWebhook;
+}
+
+const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
   const [isShowDetail, setIsShowDetail] = useState<boolean>(false);
-  const _renderStatus = (message: any) => {
-    if (!message.status) return 'N/A';
-    return (
-      <Box className={`status ${getColorBrandStatus(message.status)}`}>
-        {message.status}
-      </Box>
-    );
+
+  const _renderContentContract = () => {
+    return <Td textAlign="center">{message?.metadata?.method}</Td>;
   };
 
   const _renderContentNFT = () => {
     return (
       <>
-        <Td>N/A</Td>
-        <Td textAlign="center">N/A</Td>
+        {_renderContentContract()}
+        <Td textAlign="center">{message?.metadata?.tokenId.join(', ')}</Td>
       </>
     );
   };
 
   const _renderContentAddress = () => {
-    return <Td>N/A</Td>;
-  };
-
-  const _renderContentContract = () => {
-    return <Td textAlign="center">method</Td>;
+    return <Td>{formatShortText(message?.trackingAddress)}</Td>;
   };
 
   const _renderContentActivities = () => {
-    if (webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY) {
+    if (webhook?.type === WEBHOOK_TYPES.NFT_ACTIVITY) {
       return _renderContentNFT();
     }
 
-    if (webhook.type === WEBHOOK_TYPES.CONTRACT_ACTIVITY) {
+    if (webhook?.type === WEBHOOK_TYPES.CONTRACT_ACTIVITY) {
       return _renderContentContract();
     }
 
@@ -63,13 +63,27 @@ const MessageItem = ({ message, webhook }: any) => {
         </Td>
         <Td>
           <Flex alignItems="center">
-            <AppLink ml={3} to={'#'} className="link-redirect">
-              <LinkIcon />
-            </AppLink>
+            {formatShortText(message?.txHash)}
+            <Box ml={2}>
+              <a
+                href={`${
+                  getBlockExplorerUrl(
+                    message?.input?.chain,
+                    message?.input?.network,
+                  ) + `tx/${message.txHash}`
+                }`}
+                className="link-redirect"
+                target="_blank"
+              >
+                <LinkIcon />
+              </a>
+            </Box>
           </Flex>
         </Td>
         {_renderContentActivities()}
-        <Td>{_renderStatus(message)}</Td>
+        <Td>
+          <StatusMessages message={message} />
+        </Td>
         <Td>
           <Box className={`icon-down ${isShowDetail ? 'open' : ''}`}>
             <ArrowDown />
@@ -82,11 +96,25 @@ const MessageItem = ({ message, webhook }: any) => {
             <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
               <Box width={'49%'}>
                 <Box className="label-detail">input</Box>
-                <Box className="content-detail">N/A</Box>
+                <Box className="content-detail">
+                  <ReactJson
+                    name={false}
+                    theme="monokai"
+                    src={message.input}
+                    displayDataTypes={false}
+                    collapsed={false}
+                    displayObjectSize={false}
+                  />
+                </Box>
               </Box>
               <Box width={'49%'}>
                 <Box className="label-detail">output</Box>
-                <Box className="content-detail">N/A</Box>
+                <Box className="content-detail">
+                  <Box
+                    className={'content-output'}
+                    dangerouslySetInnerHTML={{ __html: message.output?.error }}
+                  />
+                </Box>
               </Box>
             </Flex>
           </Td>

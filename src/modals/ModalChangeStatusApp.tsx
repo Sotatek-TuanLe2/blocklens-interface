@@ -5,6 +5,7 @@ import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
 import AppButton from 'src/components/AppButton';
+import { isMobile } from 'react-device-detect';
 
 interface IModalChangeStatusApp {
   open: boolean;
@@ -57,6 +58,7 @@ const ModalChangeStatusApp: FC<IModalChangeStatusApp> = ({
           : 'Deactivate app'
       }
       isOpen={open}
+      isFullScreen={isMobile}
       onClose={onClose}
     >
       <Box textAlign={'center'}>{getDescription()}</Box>

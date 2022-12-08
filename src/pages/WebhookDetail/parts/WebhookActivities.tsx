@@ -1,42 +1,13 @@
-import {
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
-  Box,
-  Text,
-  Flex,
-  Tooltip,
-} from '@chakra-ui/react';
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import {
-  AppButton,
-  AppCard,
-  AppDataTable,
-  AppInput,
-  AppLink,
-  AppSelect2,
-} from 'src/components';
+import { Box, Flex, Tbody, Td, Text, Th, Thead, Tooltip, Tr } from '@chakra-ui/react';
+import React, { FC, useCallback, useMemo, useState } from 'react';
+import { AppButton, AppCard, AppDataTable, AppInput, AppLink, AppSelect2 } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import { formatShortText, formatTimestamp } from 'src/utils/utils-helper';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import 'src/styles/pages/NotificationPage.scss';
 import 'src/styles/pages/AppDetail.scss';
-import {
-  LinkIcon,
-  FilterIcon,
-  InfoIcon,
-  RetryIcon,
-  LinkDetail,
-} from 'src/assets/icons';
-import {
-  IWebhook,
-  WEBHOOK_TYPES,
-  STATUS,
-  getColorBrandStatus,
-  optionsFilter,
-} from 'src/utils/utils-webhook';
+import { FilterIcon, InfoIcon, LinkDetail, LinkIcon, RetryIcon } from 'src/assets/icons';
+import { getColorBrandStatus, IWebhook, optionsFilter, STATUS, WEBHOOK_TYPES } from 'src/utils/utils-webhook';
 import { useParams } from 'react-router';
 import _ from 'lodash';
 import { isMobile } from 'react-device-detect';
@@ -95,9 +66,10 @@ const _renderStatus = (
       <Box className="status waiting">Retrying ${notification.retryTime}/5</Box>
     );
   }
+
   return (
     <Box className={`status ${getColorBrandStatus(notification.status)}`}>
-      {notification.status}
+      {notification.status === STATUS.DONE ? 'Successful' : 'Failed'}
     </Box>
   );
 };
@@ -240,7 +212,9 @@ const NotificationItemMobile: FC<INotificationItemMobile> = ({
               )}
 
               <Box width={'48%'}>
-                <AppLink to={`/messages-histories/${notification.hash}`}>
+                <AppLink
+                  to={`/app/${appInfo.appId}/webhook/${webhook.registrationId}/activities/${notification.hash}`}
+                >
                   <AppButton variant="cancel" size="sm" w={'100%'}>
                     More Details
                   </AppButton>
@@ -353,7 +327,9 @@ const NotificationItem: FC<INotificationItem> = ({
               </Box>
             )}
 
-            <AppLink to={`/messages-histories/${notification.hash}`}>
+            <AppLink
+              to={`/app/${appInfo.appId}/webhook/${webhook.registrationId}/activities/${notification.hash}`}
+            >
               <Box className="link-redirect">
                 <LinkDetail />
               </Box>
@@ -374,15 +350,12 @@ const WebhookActivities: FC<IWebhookActivities> = ({
   const [valueSearch, setValueSearch] = useState<string>('');
   const [valueFilter, setValueFilter] = useState<string>('');
   const { id: webhookId } = useParams<{ id: string }>();
-  const [totalActivities, setTotalActivities] = useState<any>({});
 
   const fetchDataTable: any = useCallback(async (params: any) => {
     try {
-      const res = await rf
+      return await rf
         .getRequest('NotificationRequest')
         .getActivities(webhookId, _.omitBy(params, _.isEmpty));
-      setTotalActivities(res?.totalDocs);
-      return res;
     } catch (error: any) {
       toastError({
         message: error?.message || 'Oops. Something went wrong!',
@@ -535,7 +508,7 @@ const WebhookActivities: FC<IWebhookActivities> = ({
           </Box>
         )}
 
-        <Box width={'200px'}>
+        <Box width={isMobile ? '85%' : '200px'}>
           <AppInput
             isSearch
             className={'input-search'}
@@ -568,7 +541,7 @@ const WebhookActivities: FC<IWebhookActivities> = ({
       ) : (
         <Flex className="title-list-app">
           <Text className="text-title">Recent Activities</Text>
-          {!isMobile && totalActivities > 0 && _renderLinkShowAll()}
+          {!isMobile && _renderLinkShowAll()}
         </Flex>
       )}
 
@@ -584,7 +557,7 @@ const WebhookActivities: FC<IWebhookActivities> = ({
         limit={isShowAll ? 15 : 10}
       />
 
-      {isMobile && totalActivities > 0 && (
+      {isMobile && (
         <Flex justifyContent={'center'} my={4}>
           {_renderLinkShowAll()}
         </Flex>

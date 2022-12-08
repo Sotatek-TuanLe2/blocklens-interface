@@ -90,10 +90,10 @@ const ModalFilterGraph: FC<IModalFilterGraph> = ({
     <BaseModal
       size="xl"
       title="Filter"
-      isFullScreen={isMobile}
       isBack={isMobile}
       isHideCloseIcon
       isOpen={open}
+      className={"modal-filter"}
       onClose={onClose}
     >
       <Box mt={2}>

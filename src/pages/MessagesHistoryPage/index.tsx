@@ -1,4 +1,4 @@
-import { Box, Flex, Text, Th, Thead, Tooltip, Tr } from '@chakra-ui/react';
+import { Box, Flex, Th, Thead, Tr } from '@chakra-ui/react';
 import React, { useEffect, useState, useCallback } from 'react';
 import rf from 'src/requests/RequestFactory';
 import { useParams } from 'react-router';
@@ -15,14 +15,25 @@ import {
   WEBHOOK_TYPES,
   optionsFilter,
   IWebhook,
+  IMessages,
 } from 'src/utils/utils-webhook';
 import MessageItem from './parts/MessageItem';
 import { toastError } from 'src/utils/utils-notify';
 import { FilterIcon } from 'src/assets/icons';
 import _ from 'lodash';
+import { isMobile } from 'react-device-detect';
+import MessagesItemMobile from './parts/MessagesItemMobile';
 
 const MessagesHistory = () => {
-  const { id: hashId } = useParams<{ id: string }>();
+  const {
+    id: hashId,
+    webhookId,
+    appId,
+  } = useParams<{
+    webhookId: string;
+    id: string;
+    appId: string;
+  }>();
   const [valueSearch, setValueSearch] = useState<string>('');
   const [valueFilter, setValueFilter] = useState<string>('');
   const [webhook, setWebhook] = useState<IWebhook | any>({});
@@ -30,13 +41,13 @@ const MessagesHistory = () => {
   const getWebhookInfo = useCallback(async () => {
     try {
       const res = (await rf
-        .getRequest('NotificationRequest')
-        .getMessagesHistory(hashId)) as any;
+        .getRequest('RegistrationRequest')
+        .getRegistration(appId, webhookId)) as any;
       setWebhook(res);
     } catch (error: any) {
       setWebhook({});
     }
-  }, []);
+  }, [webhookId]);
 
   useEffect(() => {
     getWebhookInfo().then();
@@ -55,6 +66,8 @@ const MessagesHistory = () => {
   }, []);
 
   const _renderHeader = () => {
+    if (isMobile) return;
+
     const _renderHeaderNFT = () => {
       return (
         <>
@@ -136,23 +149,41 @@ const MessagesHistory = () => {
     );
   };
 
-  const _renderBody = (data?: any[]) => {
-    return data?.map((message: any, index: number) => {
+  const _renderBody = (data?: IMessages[]) => {
+    if (isMobile) {
+      return (
+        <Box className="list-card-mobile">
+          {data?.map((message: any, index: number) => {
+            return (
+              <MessagesItemMobile
+                message={message}
+                key={index}
+                webhook={webhook}
+              />
+            );
+          })}
+        </Box>
+      );
+    }
+
+    return data?.map((message: IMessages, index: number) => {
       return <MessageItem message={message} key={index} webhook={webhook} />;
     });
   };
 
   const _renderBoxFilter = () => {
     return (
-      <Flex className="box-filter">
-        <Box width={'150px'}>
-          <AppSelect2
-            onChange={setValueFilter}
-            options={optionsFilter}
-            value={valueFilter}
-          />
-        </Box>
-        <Box width={'200px'}>
+      <Flex className="box-filter activities-all">
+        {!isMobile && (
+          <Box width={'150px'}>
+            <AppSelect2
+              onChange={setValueFilter}
+              options={optionsFilter}
+              value={valueFilter}
+            />
+          </Box>
+        )}
+        <Box width={isMobile ? '85%' : '200px'}>
           <AppInput
             isSearch
             className={'input-search'}
@@ -162,6 +193,7 @@ const MessagesHistory = () => {
             onChange={(e) => setValueSearch(e.target.value.trim())}
           />
         </Box>
+        {isMobile && <Box className="icon-filter-mobile" />}
       </Flex>
     );
   };
@@ -170,7 +202,7 @@ const MessagesHistory = () => {
       <>
         <Flex className="app-info">
           <Flex className="name">
-            <AppLink to={`/`}>
+            <AppLink to={`/app/${appId}/webhooks/${webhookId}`}>
               <Box className="icon-arrow-left" mr={6} />
             </AppLink>
             <Box>Messages History</Box>

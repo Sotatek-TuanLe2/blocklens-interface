@@ -32,10 +32,10 @@
     @include tablet {
       margin: 0 20px;
       overflow-x: scroll;
-      -ms-overflow-style: none;  /* Internet Explorer 10+ */
-      scrollbar-width: none;  /* Firefox */
+      -ms-overflow-style: none; /* Internet Explorer 10+ */
+      scrollbar-width: none; /* Firefox */
       &::-webkit-scrollbar {
-        display: none;  /* Safari and Chrome */
+        display: none; /* Safari and Chrome */
       }
 
       & > div {
@@ -148,6 +148,9 @@
 
 .infos {
   margin-bottom: 30px;
+  @include tablet {
+    margin-bottom: 20px;
+  }
 
   .box-info {
     display: flex;
@@ -182,6 +185,29 @@
     top: 50%;
     transform: translateY(-50%);
     right: 0;
+  }
+  .chartMobile {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 0;
+  }
+  .statsMobile {
+    display: flex;
+    width: 100%;
+    flex-wrap: nowrap;
+    overflow-x: scroll;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    .statsItemMobile {
+      min-width: 80%;
+      margin-right: 10px;
+    }
+    :last-child {
+      margin-right: 0px;
+    }
   }
 }
 
@@ -297,8 +323,9 @@
     @include tablet {
       margin: 20px;
       justify-content: space-between;
-      div:first-child {
-        width: calc(100% - 40px);
+      .input-search {
+        margin-left: 0;
+        padding: 4px 20px 4px 45px;
       }
     }
   }

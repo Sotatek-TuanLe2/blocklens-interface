@@ -129,6 +129,11 @@
     border-bottom: 1px solid $border;
     padding: 14px 40px 26px;
 
+    @include tablet {
+      padding: 0;
+      border: 0;
+    }
+
     .label-detail {
       @include text-small-bold;
       color: $line;
@@ -138,16 +143,41 @@
 
     .content-detail {
       @include text-medium-regular;
-      padding: 20px;
+
       color: $title;
       background-color: $card;
       border-radius: 6px;
+      overflow: hidden;
+      height: 210px;
+      width: 100%;
+
+      @include tablet {
+        margin-bottom: 15px;
+        @include text-small-regular;
+      }
+
+      .react-json-view {
+        padding: 20px;
+        background-color: $card !important;
+        color: $title;
+        overflow: auto;
+        height: 210px;
+        width: 100%;
+      }
+
+      .content-output {
+        padding: 20px;
+      }
     }
   }
 }
 
 .user-graph {
   margin-top: 30px;
+
+  @include tablet {
+    margin-top: 20px;
+  }
 
   .text-title {
     text-transform: capitalize;
