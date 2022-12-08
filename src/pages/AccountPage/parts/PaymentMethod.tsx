@@ -6,9 +6,27 @@ import { formatShortText } from 'src/utils/utils-helper';
 import { isMobile } from 'react-device-detect';
 import rf from 'src/requests/RequestFactory';
 import { toastError } from 'src/utils/utils-notify';
+import ModalPayment from 'src/modals/ModalPayment';
 
 const PaymentMethod = () => {
   const [billingInfo, setBillingInfo] = useState<any>({});
+  const [isOpenChangePaymentMethod, setIsOpenChangePaymentMethod] =
+    useState<boolean>(false);
+  const [paymentIntent, setPaymentIntent] = useState<any>({});
+
+  const getPaymentIntent = async () => {
+    try {
+      const res = await rf.getRequest('BillingRequest').getPaymentIntent();
+      setPaymentIntent(res);
+    } catch (e: any) {
+      toastError({ message: e?.message || 'Oops. Something went wrong!' });
+    }
+  };
+
+  useEffect(() => {
+    getPaymentIntent().then();
+  }, [isOpenChangePaymentMethod]);
+
   const getBillingInfo = async () => {
     try {
       const res = await rf.getRequest('BillingRequest').getBillingInfo();
@@ -27,7 +45,12 @@ const PaymentMethod = () => {
         <Box className="link" mr={5}>
           Top Up With Crypto
         </Box>
-        <Box className="link">Change</Box>
+        <Box
+          className="link"
+          onClick={() => setIsOpenChangePaymentMethod(true)}
+        >
+          Change
+        </Box>
       </Flex>
     );
   };
@@ -57,6 +80,15 @@ const PaymentMethod = () => {
 
         {isMobile && <Box mt={4}>{_renderLink()}</Box>}
       </Box>
+
+      {isOpenChangePaymentMethod && (
+        <ModalPayment
+          open={isOpenChangePaymentMethod}
+          onClose={() => setIsOpenChangePaymentMethod(false)}
+          reloadData={getBillingInfo}
+          paymentIntent={paymentIntent}
+        />
+      )}
     </AppCard>
   );
 };

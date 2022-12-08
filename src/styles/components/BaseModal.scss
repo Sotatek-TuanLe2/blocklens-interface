@@ -9,16 +9,10 @@
 
   &.modal-filter {
     @include tablet {
-      min-height: 100vh;
-      border-radius: 0 !important;
-      margin: 0 !important;
-    }
-  }
-
-  .content-modal {
-    @include tablet {
       height: 100vh;
       overflow-y: auto;
+      border-radius: 0 !important;
+      margin: 0 !important;
     }
   }
 

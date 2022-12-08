@@ -70,12 +70,14 @@ const BillingInfoPage = () => {
           </Flex>
         </AppCard>
 
-        <ModalBillingInfo
-          open={isOpenEditBillingInfoModal}
-          onClose={() => setIsOpenEditBillingInfoModal(false)}
-          reloadData={getBillingInfo}
-          billingInfo={billingInfo}
-        />
+        {isOpenEditBillingInfoModal && (
+          <ModalBillingInfo
+            open={isOpenEditBillingInfoModal}
+            onClose={() => setIsOpenEditBillingInfoModal(false)}
+            reloadData={getBillingInfo}
+            billingInfo={billingInfo}
+          />
+        )}
       </>
     </BasePageContainer>
   );
