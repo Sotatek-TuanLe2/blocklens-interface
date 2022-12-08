@@ -8,13 +8,22 @@
   max-width: 500px !important;
 
   &.modal-filter {
-    height: 100vh;
-    border-radius: 0 !important;
-    margin: 0 !important;
+    @include tablet {
+      min-height: 100vh;
+      border-radius: 0 !important;
+      margin: 0 !important;
+    }
+  }
+
+  .content-modal {
+    @include tablet {
+      height: 100vh;
+      overflow-y: auto;
+    }
   }
 
   &.full {
-    height: 100vh;
+    min-height: 100vh;
     border-radius: 0 !important;
     margin: 0 !important;
     display: flex;
@@ -58,7 +67,7 @@
     @include heading-4;
     margin-top: 50px;
     text-align: center;
-    margin-bottom: 8px;
+    margin-bottom: 20px;
 
     &.icon {
       margin-top: 28px;

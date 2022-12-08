@@ -104,10 +104,6 @@ const PartUserStats = () => {
     [userStats],
   );
 
-  useEffect(() => {
-    getUserStats().then();
-  }, []);
-
   const _renderStatsDesktop = () => {
     return (
       <SimpleGrid

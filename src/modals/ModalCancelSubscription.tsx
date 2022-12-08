@@ -1,8 +1,10 @@
 import React, { FC } from 'react';
 import BaseModal from './BaseModal';
-import { Box } from '@chakra-ui/react';
+import { Box, Flex } from '@chakra-ui/react';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
+import AppButton from '../components/AppButton';
+import { isMobile } from 'react-device-detect';
 
 interface IModalCancelSubscription {
   open: boolean;
@@ -28,17 +30,23 @@ const ModalCancelSubscription: FC<IModalCancelSubscription> = ({
       title="Cancel Subscription"
       isOpen={open}
       onClose={onClose}
-      onActionRight={cancelSubscription}
-      textActionRight="Confirm"
-      onActionLeft={onClose}
-      textActionLeft="Back"
-      isHideCloseIcon
+      isFullScreen={isMobile}
+      description="At the end of this billing period, your current plan will be terminated & changed to Free plan.
+       To use our service next month after canceling subscription, you will need to manually register."
     >
-      <Box maxW={'80%'} textAlign={'center'} margin={'0 auto'}>
-        At the end of this billing period, your current plan will be terminated
-        & changed to Free plan. To use our service next month after canceling
-        subscription, you will need to manually register.
-      </Box>
+      <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
+        <AppButton
+          width={'49%'}
+          size={'lg'}
+          variant={'cancel'}
+          onClick={onClose}
+        >
+          Cancel
+        </AppButton>
+        <AppButton width={'49%'} size={'lg'} onClick={cancelSubscription}>
+          Confirm
+        </AppButton>
+      </Flex>
     </BaseModal>
   );
 };

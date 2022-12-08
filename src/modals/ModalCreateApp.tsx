@@ -1,11 +1,5 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
-import React, {
-  FC,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
 import BaseModal from './BaseModal';
 import {
   AppButton,
@@ -125,9 +119,9 @@ const ModalCreateApp: FC<IModalCreateApp> = ({ open, onClose, reloadData }) => {
   return (
     <BaseModal
       size="lg"
-      title="Create an Apps"
-      description="We suggest you create an App and start experiencing our BlockLens API,
-       which grants access to various blockchains WITHOUT running nodes anymore!"
+      title="Create New Apps"
+      description="We suggest you create an app and start experiencing our service,
+       which grants real-time notifications to various blockchains' activities!"
       isOpen={open}
       isFullScreen={isMobile}
       onClose={onCloseModal}

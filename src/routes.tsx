@@ -12,7 +12,6 @@ import React from 'react';
 import HomePage from './pages/HomePage';
 import SignUpPage from './pages/SignUpPage';
 import LoginPage from './pages/LoginPage';
-import ProfilePage from './pages/ProfilePage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import Storage from 'src/utils/storage';
 import AppDetail from './pages/AppDetail';
@@ -24,6 +23,8 @@ import ResetPasswordPage from './pages/ResetPasswordPage';
 import CreateWebhookPage from './pages/CreateWebhookPage';
 import WebhookDetail from './pages/WebhookDetail';
 import MessagesHistory from './pages/MessagesHistoryPage';
+import AccountPage from './pages/AccountPage';
+import BillingInfoPage from './pages/BillingInfoPage';
 
 /**
  * Main App routes.
@@ -54,7 +55,8 @@ const Routes: FC<RouteComponentProps> = () => {
         <PublicRoute path={'/verify-email'} component={VerifyAccountPage} />
         <PublicRoute path={'/forgot-password'} component={ForgotPasswordPage} />
         <PublicRoute path={'/reset-password'} component={ResetPasswordPage} />
-        <PrivateRoute path={'/setting/:tab'} component={ProfilePage} />
+        <PrivateRoute path={'/account'} component={AccountPage} />
+        <PrivateRoute path={'/billing-info'} component={BillingInfoPage} />
         <PrivateRoute
           path={'/app/:appId/webhooks/:id'}
           component={WebhookDetail}

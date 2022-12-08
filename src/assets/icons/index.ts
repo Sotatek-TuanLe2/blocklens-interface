@@ -8,6 +8,7 @@ import { ReactComponent as InfoIcon } from './InfoIcon.svg';
 import { ReactComponent as RetryIcon } from './RetryIcon.svg';
 import { ReactComponent as ArrowDown } from './ArrowDown.svg';
 import { ReactComponent as NoData } from './NoData.svg';
+import { ReactComponent as EditIcon } from './EditIcon.svg';
 
 export {
   CalendarIcon,
@@ -19,5 +20,6 @@ export {
   RetryIcon,
   LinkDetail,
   ArrowDown,
-  NoData
+  NoData,
+  EditIcon
 };

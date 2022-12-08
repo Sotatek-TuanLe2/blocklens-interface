@@ -29,11 +29,11 @@ const menus = [
   },
   {
     name: 'Billing',
-    path: '/setting/billing',
+    path: '/account',
   },
   {
     name: 'Account',
-    path: '/setting/profile',
+    path: '/account',
   },
 ];
 
@@ -83,7 +83,7 @@ const Header: FC = () => {
             <MenuItem className="user-name">
               👋&nbsp; Welcome {userInfo?.firstName + ' ' + userInfo?.lastName}!
             </MenuItem>
-            <MenuItem onClick={() => history.push('/setting/profile')}>
+            <MenuItem onClick={() => history.push('/account')}>
               My Profile
             </MenuItem>
             <MenuItem onClick={() => history.push('/setting/billing')}>

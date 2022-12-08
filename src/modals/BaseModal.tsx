@@ -86,7 +86,7 @@ const BaseModal: FC<BaseModalProps> = ({
             </Box>
           )}
 
-          <Flex flexDirection={'column'}>
+          <Flex flexDirection={'column'} className={"content-modal"}>
             {icon && <Box className={`modal__icon ${icon}`} />}
 
             <Box

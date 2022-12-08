@@ -9,7 +9,7 @@ import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { createValidator } from 'src/utils/utils-validator';
 import { getInfoUser } from 'src/store/auth';
-import ChangePasswordModal from 'src/modals/ChangePasswordModal';
+import ModalChangePassword from 'src/modals/ModalChangePassword';
 
 interface IDataForm {
   firstName?: string;
@@ -157,13 +157,6 @@ const MyProfile: FC = () => {
       >
         Change password
       </AppLink>
-
-      {isOpenModal && (
-        <ChangePasswordModal
-          isOpenModal={isOpenModal}
-          setIsOpenModal={setIsOpenModal}
-        />
-      )}
     </Box>
   );
 };
