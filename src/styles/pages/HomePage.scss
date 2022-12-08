@@ -175,6 +175,10 @@
 .user-graph {
   margin-top: 30px;
 
+  @include tablet {
+    margin-top: 20px;
+  }
+
   .text-title {
     text-transform: capitalize;
   }

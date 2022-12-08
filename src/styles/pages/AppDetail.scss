@@ -148,6 +148,10 @@
 
 .infos {
   margin-bottom: 30px;
+  @include tablet {
+    margin-bottom: 20px;
+  }
+
   .box-info {
     display: flex;
     flex-direction: column;
