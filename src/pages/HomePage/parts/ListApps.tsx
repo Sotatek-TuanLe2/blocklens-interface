@@ -128,7 +128,11 @@ const ListApps: React.FC<IListApps> = ({
   };
 
   const onCreateApp = () => {
-    if (myPlan?.appLimitation && totalApps >= myPlan?.appLimitation) {
+    if (
+      myPlan?.appLimitation &&
+      totalAppActive &&
+      totalAppActive >= myPlan?.appLimitation
+    ) {
       setOpenModalUpgradeCreateApp(true);
       return;
     }
