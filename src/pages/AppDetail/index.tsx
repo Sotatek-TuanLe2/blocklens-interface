@@ -22,10 +22,12 @@ import { getLogoChainByName, isEVMNetwork } from 'src/utils/utils-network';
 import { isMobile } from 'react-device-detect';
 import { APP_STATUS } from 'src/utils/utils-app';
 import PartAppGraph from './parts/PartAppGraph';
+import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
 
 const AppDetail = () => {
   const [appInfo, setAppInfo] = useState<any>({});
   const [isShowSetting, setIsShowSetting] = useState<boolean>(false);
+  const [type, setType] = useState<string>(WEBHOOK_TYPES.NFT_ACTIVITY);
   const history = useHistory();
 
   const { id: appId } = useParams<{ id: string }>();
@@ -96,7 +98,7 @@ const AppDetail = () => {
                   isDisabled={appInfo.status === APP_STATUS.DISABLED}
                   className={'btn-create'}
                   onClick={() =>
-                    history.push(`/create-webhook/${appInfo.appId}`)
+                    history.push(`/create-webhook/${appInfo.appId}?type=${type}`)
                   }
                 >
                   <Box className="icon-plus-circle" mr={2} /> Create
@@ -112,11 +114,26 @@ const AppDetail = () => {
               >
                 <Flex w={'100%'}>
                   {isEVMNetwork(appInfo.chain) && (
-                    <Tab className="app-tab">NFT Activity</Tab>
+                    <Tab
+                      className="app-tab"
+                      onClick={() => setType(WEBHOOK_TYPES.NFT_ACTIVITY)}
+                    >
+                      NFT Activity
+                    </Tab>
                   )}
-                  <Tab className="app-tab">Address Activity</Tab>
+                  <Tab
+                    className="app-tab"
+                    onClick={() => setType(WEBHOOK_TYPES.ADDRESS_ACTIVITY)}
+                  >
+                    Address Activity
+                  </Tab>
                   {isEVMNetwork(appInfo.chain) && (
-                    <Tab className="app-tab">Contract Activity</Tab>
+                    <Tab
+                      className="app-tab"
+                      onClick={() => setType(WEBHOOK_TYPES.CONTRACT_ACTIVITY)}
+                    >
+                      Contract Activity
+                    </Tab>
                   )}
                 </Flex>
               </TabList>

@@ -6,7 +6,7 @@ import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
 import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
 import ListWebhook from './ListWebhook';
 import { NoData } from 'src/assets/icons';
-import { isMobile } from "react-device-detect";
+import { isMobile } from 'react-device-detect';
 
 interface IListNTF {
   appInfo: IAppResponse;
@@ -27,12 +27,16 @@ const PartNFTWebhooks: FC<IListNTF> = ({ appInfo }) => {
     return (
       <Flex className="box-create">
         <NoData />
-        No data yet. Create your first NFT Activity webhook
-        to start experiencing Blocklens!
+        No data yet. Create your first NFT Activity webhook to start
+        experiencing Blocklens!
         <AppButton
           isDisabled={isDisabledApp}
           size={'md'}
-          onClick={() => history.push(`/create-webhook/${appInfo.appId}`)}
+          onClick={() =>
+            history.push(
+              `/create-webhook/${appInfo.appId}?type=${WEBHOOK_TYPES.NFT_ACTIVITY}`,
+            )
+          }
         >
           Create
         </AppButton>
@@ -42,7 +46,11 @@ const PartNFTWebhooks: FC<IListNTF> = ({ appInfo }) => {
 
   return (
     <>
-      <Flex justifyContent="space-between" alignItems="center" mx={isMobile ? 5 :  10}>
+      <Flex
+        justifyContent="space-between"
+        alignItems="center"
+        mx={isMobile ? 5 : 10}
+      >
         <Box className="description">
           Get notified when an NFT is transferred
         </Box>

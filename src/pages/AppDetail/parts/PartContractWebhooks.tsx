@@ -28,13 +28,15 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
     return (
       <Flex className="box-create">
         <NoData />
-        No data yet. Create your first Contract Activity webhook
-        to start experiencing Blocklens!
+        No data yet. Create your first Contract Activity webhook to start
+        experiencing Blocklens!
         <AppButton
           isDisabled={isDisabledApp}
           size={'md'}
           onClick={() =>
-            history.push(`/create-webhook/${appInfo.appId}`)
+            history.push(
+              `/create-webhook/${appInfo.appId}?type=${WEBHOOK_TYPES.CONTRACT_ACTIVITY}`,
+            )
           }
         >
           Create

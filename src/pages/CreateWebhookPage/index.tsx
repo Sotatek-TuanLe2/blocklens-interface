@@ -29,6 +29,8 @@ import { CloseIcon } from '@chakra-ui/icons';
 import { Link as ReactLink } from 'react-router-dom';
 import { isMobile } from 'react-device-detect';
 import { APP_STATUS } from 'src/utils/utils-app';
+import { isEVMNetwork } from 'src/utils/utils-network';
+import { useLocation } from 'react-router';
 
 const FILE_CSV_EXAMPLE = '/abi/CSV_Example.csv';
 
@@ -81,6 +83,30 @@ const CreateWebhook = () => {
   const [, updateState] = useState<any>();
   const forceUpdate = useCallback(() => updateState({}), []);
   const inputRef = useRef<any>(null);
+
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const typeParams = params.get('type');
+
+  const optionTypes = useMemo(() => {
+    if (!isEVMNetwork(appInfo.chain)) {
+      return optionsWebhookType.filter(
+        (item) => item.value === WEBHOOK_TYPES.ADDRESS_ACTIVITY,
+      );
+    }
+    return optionsWebhookType;
+  }, [appInfo]);
+
+  useEffect(() => {
+    if (!!Object.keys(appInfo).length && !isEVMNetwork(appInfo.chain)) {
+      setType(WEBHOOK_TYPES.ADDRESS_ACTIVITY);
+      return;
+    }
+
+    if (!!typeParams) {
+      setType(typeParams);
+    }
+  }, [appInfo, typeParams]);
 
   const getAppInfo = useCallback(async () => {
     try {
@@ -435,7 +461,7 @@ const CreateWebhook = () => {
               <AppSelect2
                 className="select-type-webhook"
                 size="large"
-                options={optionsWebhookType}
+                options={optionTypes}
                 value={type}
                 onChange={onChangeWebhookType}
               />
