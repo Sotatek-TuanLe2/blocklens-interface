@@ -1,120 +1,103 @@
-import { Box, SimpleGrid } from '@chakra-ui/react';
-import React, { useCallback, useEffect, useState } from 'react';
-import { isMobile } from 'react-device-detect';
-import { useParams } from 'react-router';
-import AppStatistical from 'src/components/AppStatistical';
-import {
-  data,
-  LabelStats,
-  listUserStats,
-} from 'src/pages/HomePage/parts/PartUserStats';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { keyStats } from 'src/components/AppStatistical';
 import rf from 'src/requests/RequestFactory';
-import { formatLargeNumber } from 'src/utils/utils-helper';
+import { useParams } from 'react-router';
+import { ListStat } from 'src/pages/HomePage/parts/PartUserStats';
 
 interface IAppStats {
-  totalThisMonth?: number;
-  totalToday?: number;
-  totalSuccessToday?: number;
-  tottalActivities?: number;
+  messages?: number;
+  activities?: number;
+  successRate?: number;
+  webhooks?: number;
+  messagesSuccess: number;
+  messagesFailed: number;
 }
 
-const formatPercent = (stats: any) => {
-  if (!stats?.totalToday || !stats?.totalSuccessToday) {
-    return '--';
-  }
+export const data = [
+  {
+    name: 'Page A',
+    pv: 2400,
+  },
+  {
+    name: 'Page B',
+    pv: 1398,
+  },
+  {
+    name: 'Page C',
+    pv: 9800,
+  },
+  {
+    name: 'Page D',
+    pv: 3908,
+  },
+  {
+    name: 'Page E',
+    pv: 4800,
+  },
+  {
+    name: 'Page F',
+    pv: 3800,
+  },
+  {
+    name: 'Page G',
+    pv: 4300,
+  },
+];
 
-  return ((stats?.totalSuccessToday / stats?.totalToday) * 100).toFixed(2);
-};
+export const listStats = [
+  {
+    key: 'messages',
+    label: 'Total Messages (today)',
+  },
+  {
+    key: 'activities',
+    label: 'Total Activities (today)',
+  },
+  {
+    key: 'successRate',
+    label: 'Success Rate (today)',
+  },
+  {
+    key: 'webhooks',
+    label: 'Total Webhook',
+  },
+];
 
-const PartAppStatics = () => {
+const PartAppStats = () => {
+  const [appStats, setAppStats] = useState<IAppStats | any>({});
   const { id: appId } = useParams<{ id: string }>();
-  const [appStats, setAppStats] = useState<IAppStats>({});
-
-  const getValueStats = useCallback(
-    (
-      appStats: IAppStats,
-      value: number,
-      stats: { key: string; label: string },
-    ) => {
-      if (stats.key === 'totalSuccessToday') {
-        return formatPercent(appStats);
-      }
-      return formatLargeNumber(value);
-    },
-    [appStats],
-  );
 
   const getAppStats = useCallback(async () => {
     try {
-      const res = (await rf
+      const res: IAppStats = await rf
         .getRequest('NotificationRequest')
-        .getAppStats(appId)) as any;
+        .getAppStats(appId);
       setAppStats(res);
     } catch (error: any) {
       setAppStats({});
     }
-  }, [appId]);
+  }, []);
 
   useEffect(() => {
     getAppStats().then();
   }, []);
 
-  const _renderStatsDesktop = () => {
-    return (
-      <SimpleGrid
-        className="infos"
-        columns={{ base: 1, sm: 2, lg: 4 }}
-        gap="20px"
-      >
-        {appStats &&
-          listUserStats.map((stats, index: number) => {
-            return (
-              <React.Fragment key={`${index} stats`}>
-                <AppStatistical
-                  label={stats.label}
-                  value={
-                    getValueStats(
-                      appStats,
-                      appStats[stats.label as LabelStats] || 0,
-                      stats,
-                    ) || 0
-                  }
-                  dataChart={data}
-                />
-              </React.Fragment>
-            );
-          })}
-      </SimpleGrid>
-    );
-  };
+  const dataAppStats = useMemo(() => {
+    return listStats.map((item) => {
+      if (item.key === 'messages')
+        return {
+          ...item,
+          value: appStats.messagesFailed + appStats.messagesSuccess,
+        };
 
-  const _renderStatsMobile = () => {
-    return (
-      <div className="infos">
-        <Box className="statsMobile">
-          {appStats &&
-            listUserStats.map((stats, index: number) => {
-              return (
-                <Box key={`${index} stats`} className="statsItemMobile">
-                  <AppStatistical
-                    label={stats.label}
-                    value={
-                      getValueStats(
-                        appStats,
-                        appStats[stats.label as LabelStats] || 0,
-                        stats,
-                      ) || 0
-                    }
-                    dataChart={data}
-                  />
-                </Box>
-              );
-            })}
-        </Box>
-      </div>
-    );
-  };
-  return <>{isMobile ? _renderStatsMobile() : _renderStatsDesktop()}</>;
+      return {
+        ...item,
+        value: appStats[item.key as keyStats],
+      };
+    });
+  }, [appStats]);
+
+  return <ListStat dataStats={dataAppStats} />;
 };
 
-export default PartAppStatics;
+export default PartAppStats;

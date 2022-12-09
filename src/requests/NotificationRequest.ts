@@ -12,17 +12,17 @@ export default class NotificationRequest extends BaseRequest {
   }
 
   getAppStats(appId: string) {
-    const url = `/activities/app-${appId}/statistics`;
+    const url = `/my/stats/app/${appId}/metric-today`;
     return this.get(url);
   }
 
   getWebhookStats(registrationId: string) {
-    const url = `/activities/webhook-${registrationId}/statistics`;
+    const url = `/my/stats/registration/${registrationId}/metric-today`;
     return this.get(url);
   }
 
   getUserStats() {
-    const url = `/activities/statistics`;
+    const url = `/my/stats/metric-today`;
     return this.get(url);
   }
 

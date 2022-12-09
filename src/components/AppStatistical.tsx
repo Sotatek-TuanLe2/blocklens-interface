@@ -3,11 +3,15 @@ import { FC } from 'react';
 import { isMobile } from 'react-device-detect';
 import { Line, LineChart, ResponsiveContainer } from 'recharts';
 import { AppCard } from 'src/components';
+
 interface IAppStatics {
-  label: string | ((data?: any) => string);
-  value: string | number | ((data?: any) => number | string);
+  label: string | number;
+  value?: string | number;
   dataChart?: any[];
+  isPercent?: boolean;
 }
+
+export type keyStats = 'messages' | 'activities' | 'successRate' | 'webhooks';
 
 export const ChartStatics: FC<{ dataChart?: any[] }> = ({ dataChart }) => {
   if (dataChart?.length) {
@@ -35,12 +39,20 @@ export const ChartStatics: FC<{ dataChart?: any[] }> = ({ dataChart }) => {
   return <></>;
 };
 
-const AppStatistical: FC<IAppStatics> = ({ label, value, dataChart }) => {
+const AppStatistical: FC<IAppStatics> = ({
+  label,
+  isPercent,
+  value,
+  dataChart,
+}) => {
   return (
     <>
       <AppCard className="box-info">
         <Box className="label">{label}</Box>
-        <Box className="value">{value}</Box>
+        <Box className="value">
+          {value || 0}
+          {isPercent ? '%' : ''}
+        </Box>
         <ChartStatics dataChart={dataChart} />
       </AppCard>
     </>

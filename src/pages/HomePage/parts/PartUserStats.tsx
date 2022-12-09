@@ -1,22 +1,17 @@
 import { Box, SimpleGrid } from '@chakra-ui/react';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState, FC } from 'react';
 import { isMobile } from 'react-device-detect';
-import AppStatistical from 'src/components/AppStatistical';
+import AppStatistical, { keyStats } from 'src/components/AppStatistical';
 import rf from 'src/requests/RequestFactory';
-import { formatLargeNumber } from 'src/utils/utils-helper';
 
-export interface IUserStats {
-  totalThisMonth?: number;
-  totalToday?: number;
-  totalSuccessToday?: number;
-  tottalActivities?: number;
+interface IUserStats {
+  messages?: number;
+  activities?: number;
+  successRate?: number;
+  webhooks?: number;
+  messagesSuccess: number;
+  messagesFailed: number;
 }
-
-export type LabelStats =
-  | 'totalThisMonth'
-  | 'totalToday'
-  | 'totalSuccessToday'
-  | 'tottalActivities';
 
 export const data = [
   {
@@ -49,65 +44,36 @@ export const data = [
   },
 ];
 
-export const listUserStats = [
+export const listStats = [
   {
-    key: 'totalToday',
+    key: 'messages',
     label: 'Total Messages (today)',
   },
   {
-    key: 'totalThisMonth',
-    label: 'Total Webhook',
+    key: 'activities',
+    label: 'Total Activities (today)',
   },
   {
-    key: 'totalSuccessToday',
+    key: 'successRate',
     label: 'Success Rate (today)',
   },
   {
-    key: 'tottalActivities',
-    label: 'Total Activities (today)',
+    key: 'webhooks',
+    label: 'Total Webhook',
   },
 ];
 
-const formatPercent = (stats: any) => {
-  if (!stats?.totalToday || !stats?.totalSuccessToday) {
-    return '--';
-  }
+interface IStat {
+  label: string;
+  value: string | number;
+  key: string;
+}
 
-  return ((stats?.totalSuccessToday / stats?.totalToday) * 100).toFixed(2);
-};
+interface IListStat {
+  dataStats: IStat[];
+}
 
-const PartUserStats = () => {
-  const [userStats, setUserStats] = useState<IUserStats>({});
-
-  const getUserStats = useCallback(async () => {
-    try {
-      const res: IUserStats = await rf
-        .getRequest('NotificationRequest')
-        .getUserStats();
-      setUserStats({ ...res, tottalActivities: res.totalToday });
-    } catch (error: any) {
-      setUserStats({});
-    }
-  }, []);
-
-  const getValueStats = useCallback(
-    (
-      userStats: IUserStats,
-      value: number,
-      stats: { key: string; label: string },
-    ) => {
-      if (stats.key === 'totalSuccessToday') {
-        return formatPercent(userStats);
-      }
-      return formatLargeNumber(value);
-    },
-    [userStats],
-  );
-
-  useEffect(() => {
-    getUserStats().then();
-  }, []);
-
+export const ListStat: FC<IListStat> = ({ dataStats }) => {
   const _renderStatsDesktop = () => {
     return (
       <SimpleGrid
@@ -115,24 +81,18 @@ const PartUserStats = () => {
         columns={{ base: 1, sm: 2, lg: 4 }}
         gap="20px"
       >
-        {userStats &&
-          listUserStats.map((stats, index: number) => {
-            return (
-              <React.Fragment key={`${index} stats`}>
-                <AppStatistical
-                  label={stats.label}
-                  value={
-                    getValueStats(
-                      userStats,
-                      userStats[stats.label as LabelStats] || 0,
-                      stats,
-                    ) || 0
-                  }
-                  dataChart={data}
-                />
-              </React.Fragment>
-            );
-          })}
+        {dataStats.map((stats, index: number) => {
+          return (
+            <Box key={`${index} stats`}>
+              <AppStatistical
+                label={stats.label}
+                value={stats.value}
+                dataChart={data}
+                isPercent={stats.key === 'successRate'}
+              />
+            </Box>
+          );
+        })}
       </SimpleGrid>
     );
   };
@@ -141,29 +101,59 @@ const PartUserStats = () => {
     return (
       <div className="infos">
         <Box className="statsMobile">
-          {userStats &&
-            listUserStats.map((stats, index: number) => {
-              return (
-                <Box key={`${index} stats`} className="statsItemMobile">
-                  <AppStatistical
-                    label={stats.label}
-                    value={
-                      getValueStats(
-                        userStats,
-                        userStats[stats.label as LabelStats] || 0,
-                        stats,
-                      ) || 0
-                    }
-                    dataChart={data}
-                  />
-                </Box>
-              );
-            })}
+          {dataStats.map((stats, index: number) => {
+            return (
+              <Box key={`${index} stats`} className="statsItemMobile">
+                <AppStatistical
+                  label={stats.label}
+                  value={stats.value}
+                  dataChart={data}
+                  isPercent={stats.key === 'successRate'}
+                />
+              </Box>
+            );
+          })}
         </Box>
       </div>
     );
   };
   return <>{isMobile ? _renderStatsMobile() : _renderStatsDesktop()}</>;
+};
+
+const PartUserStats = () => {
+  const [userStats, setUserStats] = useState<IUserStats | any>({});
+
+  const getUserStats = useCallback(async () => {
+    try {
+      const res: IUserStats = await rf
+        .getRequest('NotificationRequest')
+        .getUserStats();
+      setUserStats(res);
+    } catch (error: any) {
+      setUserStats({});
+    }
+  }, []);
+
+  useEffect(() => {
+    getUserStats().then();
+  }, []);
+
+  const dataUserStats = useMemo(() => {
+    return listStats.map((item) => {
+      if (item.key === 'messages')
+        return {
+          ...item,
+          value: userStats.messagesFailed + userStats.messagesSuccess,
+        };
+
+      return {
+        ...item,
+        value: userStats[item.key as keyStats],
+      };
+    });
+  }, [userStats]);
+
+  return <ListStat dataStats={dataUserStats} />;
 };
 
 export default PartUserStats;
