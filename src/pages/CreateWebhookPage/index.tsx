@@ -24,11 +24,11 @@ import { createValidator } from 'src/utils/utils-validator';
 import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
-import { isValidChecksumAddress } from 'ethereumjs-util';
+import { isValidAddressEVM } from 'src/utils/utils-helper';
 import { CloseIcon } from '@chakra-ui/icons';
 import { Link as ReactLink } from 'react-router-dom';
 import { isMobile } from 'react-device-detect';
-import { APP_STATUS } from '../../utils/utils-app';
+import { APP_STATUS } from 'src/utils/utils-app';
 
 const FILE_CSV_EXAMPLE = '/abi/CSV_Example.csv';
 
@@ -194,13 +194,13 @@ const CreateWebhook = () => {
   const addressesInvalid = useMemo(() => {
     return addressesInput.map((address: string, index: number) => ({
       value: address,
-      index: !isValidChecksumAddress(address) ? index : -1,
+      index: !isValidAddressEVM(address) ? index : -1,
     }));
   }, [addressesInput]);
 
   const addressValid = useMemo(() => {
     return addressesInput.filter((address: string) =>
-      isValidChecksumAddress(address),
+      isValidAddressEVM(address),
     );
   }, [addressesInput]);
 
