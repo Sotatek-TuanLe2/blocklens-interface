@@ -20,9 +20,9 @@ import {
 import MessageItem from './parts/MessageItem';
 import { toastError } from 'src/utils/utils-notify';
 import { FilterIcon } from 'src/assets/icons';
-import _ from 'lodash';
 import { isMobile } from 'react-device-detect';
 import MessagesItemMobile from './parts/MessagesItemMobile';
+import { filterParams } from 'src/utils/utils-helper';
 
 const MessagesHistory = () => {
   const {
@@ -57,7 +57,7 @@ const MessagesHistory = () => {
     try {
       return await rf
         .getRequest('NotificationRequest')
-        .getMessagesHistory(hashId, _.omitBy(params, _.isEmpty));
+        .getMessagesHistory(hashId, filterParams(params));
     } catch (error: any) {
       toastError({
         message: error?.message || 'Oops. Something went wrong!',
