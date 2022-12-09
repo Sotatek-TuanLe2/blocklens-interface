@@ -16,11 +16,12 @@ import PartAppStatics from './parts/PartAppStatics';
 import PartAddressWebhooks from './parts/PartAddressWebhooks';
 import PartContractWebhooks from './parts/PartContractWebhooks';
 import { BasePageContainer } from 'src/layouts';
-import { AppButton, AppCard, AppGraph, AppLink } from 'src/components';
+import { AppButton, AppCard, AppLink } from 'src/components';
 import AppSettings from './parts/AppSettings';
 import { getLogoChainByName, isEVMNetwork } from 'src/utils/utils-network';
 import { isMobile } from 'react-device-detect';
 import { APP_STATUS } from 'src/utils/utils-app';
+import PartAppGraph from './parts/PartAppGraph';
 
 const AppDetail = () => {
   const [appInfo, setAppInfo] = useState<any>({});
@@ -142,7 +143,7 @@ const AppDetail = () => {
             </Tabs>
           </AppCard>
 
-          <AppGraph type="app" />
+          <PartAppGraph />
         </>
       )}
     </BasePageContainer>

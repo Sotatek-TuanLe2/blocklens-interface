@@ -4,13 +4,14 @@ import rf from 'src/requests/RequestFactory';
 import { useParams } from 'react-router';
 import 'src/styles/pages/AppDetail.scss';
 import { BasePageContainer } from 'src/layouts';
-import { AppButton, AppGraph, AppLink } from 'src/components';
+import { AppButton, AppLink } from 'src/components';
 import WebhookSettings from './parts/WebhookSettings';
 import WebhookActivities from './parts/WebhookActivities';
 import { IWebhook } from 'src/utils/utils-webhook';
 import PartWebhookStats from './parts/PartWebhookStats';
 import { isMobile } from 'react-device-detect';
 import { formatShortText } from 'src/utils/utils-helper';
+import PartWebhookGraph from './parts/PartWebhookGraph';
 
 const WebhookDetail = () => {
   const [webhook, setWebhook] = useState<IWebhook | any>({});
@@ -107,7 +108,7 @@ const WebhookDetail = () => {
           onShowAll={() => setIsShowAllActivities(true)}
           isShowAll={isShowAllActivities}
         />
-        <AppGraph type="webhook" />
+        <PartWebhookGraph />
       </>
     );
   };
