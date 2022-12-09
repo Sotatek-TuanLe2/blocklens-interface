@@ -7,14 +7,20 @@ import { AppCard } from 'src/components';
 interface IAppStatics {
   label: string | number;
   value?: string | number;
-  dataChart?: any[];
+  dataChart: any[];
   isPercent?: boolean;
+  keyStat: string;
+}
+
+interface IChartStatics {
+  dataChart: any[];
+  keyStat: string;
 }
 
 export type keyStats = 'messages' | 'activities' | 'successRate' | 'webhooks';
 
-export const ChartStatics: FC<{ dataChart?: any[] }> = ({ dataChart }) => {
-  if (dataChart?.length) {
+export const ChartStatics: FC<IChartStatics> = ({ dataChart, keyStat }) => {
+  if (!!dataChart?.length) {
     return (
       <Box
         height={'50px'}
@@ -26,7 +32,7 @@ export const ChartStatics: FC<{ dataChart?: any[] }> = ({ dataChart }) => {
           <LineChart width={500} height={300} data={dataChart}>
             <Line
               type="monotone"
-              dataKey="pv"
+              dataKey={keyStat}
               stroke="#05CD99"
               strokeWidth={2}
               dot={false}
@@ -44,6 +50,7 @@ const AppStatistical: FC<IAppStatics> = ({
   isPercent,
   value,
   dataChart,
+  keyStat,
 }) => {
   return (
     <>
@@ -53,7 +60,7 @@ const AppStatistical: FC<IAppStatics> = ({
           {value || 0}
           {isPercent ? '%' : ''}
         </Box>
-        <ChartStatics dataChart={dataChart} />
+        <ChartStatics dataChart={dataChart} keyStat={keyStat} />
       </AppCard>
     </>
   );

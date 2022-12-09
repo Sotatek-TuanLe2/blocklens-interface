@@ -11,17 +11,32 @@ export default class NotificationRequest extends BaseRequest {
     return this.get(url, { ...params });
   }
 
-  getAppStats(appId: string) {
+  getAppStats(appId: string, params: any) {
+    const url = `/my/stats/app/${appId}`;
+    return this.get(url, params);
+  }
+
+  getWebhookStats(registrationId: string, params: any) {
+    const url = `/my/stats/registration/${registrationId}`;
+    return this.get(url, params);
+  }
+
+  getUserStats(params: any) {
+    const url = `/my/stats`;
+    return this.get(url, params);
+  }
+
+  getAppStatsToday(appId: string) {
     const url = `/my/stats/app/${appId}/metric-today`;
     return this.get(url);
   }
 
-  getWebhookStats(registrationId: string) {
+  getWebhookStatsToday(registrationId: string) {
     const url = `/my/stats/registration/${registrationId}/metric-today`;
     return this.get(url);
   }
 
-  getUserStats() {
+  getUserStatsToday() {
     const url = `/my/stats/metric-today`;
     return this.get(url);
   }

@@ -3,9 +3,10 @@ import { keyStats } from 'src/components/AppStatistical';
 import rf from 'src/requests/RequestFactory';
 import { useParams } from 'react-router';
 import { ListStat } from 'src/pages/HomePage/parts/PartUserStats';
+import moment from 'moment';
 
 interface IAppStats {
-  messages?: number;
+  message?: number;
   activities?: number;
   successRate?: number;
   webhooks?: number;
@@ -13,40 +14,9 @@ interface IAppStats {
   messagesFailed: number;
 }
 
-export const data = [
-  {
-    name: 'Page A',
-    pv: 2400,
-  },
-  {
-    name: 'Page B',
-    pv: 1398,
-  },
-  {
-    name: 'Page C',
-    pv: 9800,
-  },
-  {
-    name: 'Page D',
-    pv: 3908,
-  },
-  {
-    name: 'Page E',
-    pv: 4800,
-  },
-  {
-    name: 'Page F',
-    pv: 3800,
-  },
-  {
-    name: 'Page G',
-    pv: 4300,
-  },
-];
-
 export const listStats = [
   {
-    key: 'messages',
+    key: 'message',
     label: 'Total Messages (today)',
   },
   {
@@ -65,31 +35,42 @@ export const listStats = [
 
 const PartAppStats = () => {
   const [appStats, setAppStats] = useState<IAppStats | any>({});
+  const [dataChart, setDataChart] = useState<IAppStats[] | any>([]);
   const { id: appId } = useParams<{ id: string }>();
 
-  const getAppStats = useCallback(async () => {
+  const getAppStatsToday = useCallback(async () => {
     try {
       const res: IAppStats = await rf
         .getRequest('NotificationRequest')
-        .getAppStats(appId);
+        .getAppStatsToday(appId);
       setAppStats(res);
     } catch (error: any) {
       setAppStats({});
     }
   }, []);
 
+  const getAppStats = useCallback(async () => {
+    try {
+      const res: IAppStats[] = await rf
+        .getRequest('NotificationRequest')
+        .getAppStats(appId, {
+          from: moment().utc().startOf('day').valueOf(),
+          to: moment().utc().valueOf(),
+          period: 'hour',
+        });
+      setDataChart(res);
+    } catch (error: any) {
+      setDataChart([]);
+    }
+  }, []);
+
   useEffect(() => {
     getAppStats().then();
+    getAppStatsToday().then();
   }, []);
 
   const dataAppStats = useMemo(() => {
     return listStats.map((item) => {
-      if (item.key === 'messages')
-        return {
-          ...item,
-          value: appStats.messagesFailed + appStats.messagesSuccess,
-        };
-
       return {
         ...item,
         value: appStats[item.key as keyStats],
@@ -97,7 +78,7 @@ const PartAppStats = () => {
     });
   }, [appStats]);
 
-  return <ListStat dataStats={dataAppStats} />;
+  return <ListStat dataStats={dataAppStats} dataChart={dataChart} />;
 };
 
 export default PartAppStats;

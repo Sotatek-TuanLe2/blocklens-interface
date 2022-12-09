@@ -3,9 +3,10 @@ import { keyStats } from 'src/components/AppStatistical';
 import rf from 'src/requests/RequestFactory';
 import { useParams } from 'react-router';
 import { ListStat } from 'src/pages/HomePage/parts/PartUserStats';
+import moment from 'moment';
 
 interface IWebhookStats {
-  messages?: number;
+  message?: number;
   activities?: number;
   successRate?: number;
   webhooks?: number;
@@ -13,40 +14,9 @@ interface IWebhookStats {
   messagesFailed: number;
 }
 
-export const data = [
-  {
-    name: 'Page A',
-    pv: 2400,
-  },
-  {
-    name: 'Page B',
-    pv: 1398,
-  },
-  {
-    name: 'Page C',
-    pv: 9800,
-  },
-  {
-    name: 'Page D',
-    pv: 3908,
-  },
-  {
-    name: 'Page E',
-    pv: 4800,
-  },
-  {
-    name: 'Page F',
-    pv: 3800,
-  },
-  {
-    name: 'Page G',
-    pv: 4300,
-  },
-];
-
 export const listStats = [
   {
-    key: 'messages',
+    key: 'message',
     label: 'Total Messages (today)',
   },
   {
@@ -65,31 +35,42 @@ export const listStats = [
 
 const PartWebhookStats = () => {
   const [webhookStats, setWebhookStats] = useState<IWebhookStats | any>({});
+  const [dataChart, setDataChart] = useState<IWebhookStats[] | any>([]);
   const { id: webhookId } = useParams<{ id: string }>();
 
-  const getWebhookStats = useCallback(async () => {
+  const getWebhookStatsToday = useCallback(async () => {
     try {
       const res: IWebhookStats = await rf
         .getRequest('NotificationRequest')
-        .getWebhookStats(webhookId);
+        .getWebhookStatsToday(webhookId);
       setWebhookStats(res);
     } catch (error: any) {
       setWebhookStats({});
     }
   }, []);
 
+  const getWebhookStats = useCallback(async () => {
+    try {
+      const res: IWebhookStats[] = await rf
+        .getRequest('NotificationRequest')
+        .getWebhookStats(webhookId, {
+          from: moment().utc().startOf('day').valueOf(),
+          to: moment().utc().valueOf(),
+          period: 'hour',
+        });
+      setDataChart(res);
+    } catch (error: any) {
+      setDataChart([]);
+    }
+  }, []);
+
   useEffect(() => {
+    getWebhookStatsToday().then();
     getWebhookStats().then();
   }, []);
 
   const dataWebhookStats = useMemo(() => {
     return listStats.map((item) => {
-      if (item.key === 'messages')
-        return {
-          ...item,
-          value: webhookStats.messagesFailed + webhookStats.messagesSuccess,
-        };
-
       return {
         ...item,
         value: webhookStats[item.key as keyStats],
@@ -97,7 +78,7 @@ const PartWebhookStats = () => {
     });
   }, [webhookStats]);
 
-  return <ListStat dataStats={dataWebhookStats} />;
+  return <ListStat dataStats={dataWebhookStats} dataChart={dataChart} />;
 };
 
 export default PartWebhookStats;

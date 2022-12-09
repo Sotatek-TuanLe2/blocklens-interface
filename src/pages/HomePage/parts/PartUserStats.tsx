@@ -3,9 +3,10 @@ import React, { useCallback, useEffect, useMemo, useState, FC } from 'react';
 import { isMobile } from 'react-device-detect';
 import AppStatistical, { keyStats } from 'src/components/AppStatistical';
 import rf from 'src/requests/RequestFactory';
+import moment from 'moment';
 
 interface IUserStats {
-  messages?: number;
+  message?: number;
   activities?: number;
   successRate?: number;
   webhooks?: number;
@@ -13,40 +14,9 @@ interface IUserStats {
   messagesFailed: number;
 }
 
-export const data = [
-  {
-    name: 'Page A',
-    pv: 2400,
-  },
-  {
-    name: 'Page B',
-    pv: 1398,
-  },
-  {
-    name: 'Page C',
-    pv: 9800,
-  },
-  {
-    name: 'Page D',
-    pv: 3908,
-  },
-  {
-    name: 'Page E',
-    pv: 4800,
-  },
-  {
-    name: 'Page F',
-    pv: 3800,
-  },
-  {
-    name: 'Page G',
-    pv: 4300,
-  },
-];
-
 export const listStats = [
   {
-    key: 'messages',
+    key: 'message',
     label: 'Total Messages (today)',
   },
   {
@@ -71,9 +41,10 @@ interface IStat {
 
 interface IListStat {
   dataStats: IStat[];
+  dataChart: any[];
 }
 
-export const ListStat: FC<IListStat> = ({ dataStats }) => {
+export const ListStat: FC<IListStat> = ({ dataStats, dataChart }) => {
   const _renderStatsDesktop = () => {
     return (
       <SimpleGrid
@@ -87,7 +58,8 @@ export const ListStat: FC<IListStat> = ({ dataStats }) => {
               <AppStatistical
                 label={stats.label}
                 value={stats.value}
-                dataChart={data}
+                keyStat={stats.key}
+                dataChart={dataChart}
                 isPercent={stats.key === 'successRate'}
               />
             </Box>
@@ -107,7 +79,8 @@ export const ListStat: FC<IListStat> = ({ dataStats }) => {
                 <AppStatistical
                   label={stats.label}
                   value={stats.value}
-                  dataChart={data}
+                  dataChart={dataChart}
+                  keyStat={stats.key}
                   isPercent={stats.key === 'successRate'}
                 />
               </Box>
@@ -121,39 +94,50 @@ export const ListStat: FC<IListStat> = ({ dataStats }) => {
 };
 
 const PartUserStats = () => {
-  const [userStats, setUserStats] = useState<IUserStats | any>({});
+  const [userStatsToday, setUserStatsToday] = useState<IUserStats | any>({});
+  const [dataChart, setDataChart] = useState<IUserStats[] | any>([]);
+
+  const getUserStatsToday = useCallback(async () => {
+    try {
+      const res: IUserStats = await rf
+        .getRequest('NotificationRequest')
+        .getUserStatsToday();
+      setUserStatsToday(res);
+    } catch (error: any) {
+      setUserStatsToday({});
+    }
+  }, []);
 
   const getUserStats = useCallback(async () => {
     try {
       const res: IUserStats = await rf
         .getRequest('NotificationRequest')
-        .getUserStats();
-      setUserStats(res);
+        .getUserStats({
+          from: moment().utc().startOf('day').valueOf(),
+          to: moment().utc().valueOf(),
+          period: 'hour',
+        });
+      setDataChart(res);
     } catch (error: any) {
-      setUserStats({});
+      setDataChart([]);
     }
   }, []);
 
   useEffect(() => {
     getUserStats().then();
+    getUserStatsToday().then();
   }, []);
 
-  const dataUserStats = useMemo(() => {
+  const dataUserStatsToday = useMemo(() => {
     return listStats.map((item) => {
-      if (item.key === 'messages')
-        return {
-          ...item,
-          value: userStats.messagesFailed + userStats.messagesSuccess,
-        };
-
       return {
         ...item,
-        value: userStats[item.key as keyStats],
+        value: userStatsToday[item.key as keyStats],
       };
     });
-  }, [userStats]);
+  }, [userStatsToday]);
 
-  return <ListStat dataStats={dataUserStats} />;
+  return <ListStat dataStats={dataUserStatsToday} dataChart={dataChart} />;
 };
 
 export default PartUserStats;
