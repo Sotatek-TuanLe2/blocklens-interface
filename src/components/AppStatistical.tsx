@@ -17,9 +17,16 @@ interface IChartStatics {
   keyStat: string;
 }
 
-export type keyStats = 'messages' | 'activities' | 'successRate' | 'webhooks';
+export type keyStats = 'message' | 'activities' | 'successRate' | 'webhooks';
 
 export const ChartStatics: FC<IChartStatics> = ({ dataChart, keyStat }) => {
+  const dataFormat = dataChart.map((item) => {
+    return {
+      ...item,
+      successRate: +item.successRate,
+    };
+  });
+
   if (!!dataChart?.length) {
     return (
       <Box
@@ -29,7 +36,7 @@ export const ChartStatics: FC<IChartStatics> = ({ dataChart, keyStat }) => {
         className={isMobile ? 'chartMobile' : 'chart'}
       >
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart width={500} height={300} data={dataChart}>
+          <LineChart width={500} height={300} data={dataFormat}>
             <Line
               type="monotone"
               dataKey={keyStat}
