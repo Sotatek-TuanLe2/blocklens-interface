@@ -47,14 +47,14 @@ const AppDetail = () => {
     getAppInfo().then();
   }, []);
 
-  if(!Object.keys(appInfo).length) {
+  console.log(appInfo, 'appInfo');
+
+  if (!appInfo || !Object.values(appInfo).length) {
     return (
       <BasePageContainer className="app-detail">
-        <Flex justifyContent='center'>
-          App Not Found
-        </Flex>
+        <Flex justifyContent="center">App Not Found</Flex>
       </BasePageContainer>
-    )
+    );
   }
 
   return (
@@ -108,7 +108,9 @@ const AppDetail = () => {
                   isDisabled={appInfo.status === APP_STATUS.DISABLED}
                   className={'btn-create'}
                   onClick={() =>
-                    history.push(`/create-webhook/${appInfo.appId}?type=${type}`)
+                    history.push(
+                      `/create-webhook/${appInfo.appId}?type=${type}`,
+                    )
                   }
                 >
                   <Box className="icon-plus-circle" mr={2} /> Create
