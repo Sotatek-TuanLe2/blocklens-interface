@@ -232,6 +232,14 @@
     .name-mobile {
       @include text-medium-bold;
       color: $title;
+
+      .box-current {
+        @include text-tiny-regular;
+        color: $main;
+        padding: 4px 10px;
+        background: rgba(115, 103, 240, 0.14);
+        border-radius: 14px;
+      }
     }
 
     &.open {

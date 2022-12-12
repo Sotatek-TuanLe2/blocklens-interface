@@ -29,7 +29,7 @@ const menus = [
   },
   {
     name: 'Billing',
-    path: '/setting/billing',
+    path: '/billing',
   },
   {
     name: 'Account',
@@ -86,7 +86,7 @@ const Header: FC = () => {
             <MenuItem onClick={() => history.push('/setting/profile')}>
               My Profile
             </MenuItem>
-            <MenuItem onClick={() => history.push('/setting/billing')}>
+            <MenuItem onClick={() => history.push('/billing')}>
               Billing
             </MenuItem>
             <MenuItem color={'red.400'} onClick={onLogout}>

@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import rf from 'src/requests/RequestFactory';
 
-interface IMyPlan {
+export interface IMyPlan {
   code?: string;
   name?: string;
   description?: string;
@@ -16,12 +16,12 @@ interface IMyPlan {
 export interface IPlan {
   code: string;
   name: string;
-  description: string;
+  description?: string;
   price: number | null;
   currency?: string;
   periodByDay?: number;
-  appLimitation?: number;
-  notificationLimitation?: number;
+  appLimitation?: number | string;
+  notificationLimitation?: number | string;
   from?: number;
   to?: number;
 }
