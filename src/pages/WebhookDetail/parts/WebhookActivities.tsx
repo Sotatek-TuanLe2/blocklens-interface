@@ -1,15 +1,47 @@
-import { Box, Flex, Tbody, Td, Text, Th, Thead, Tooltip, Tr } from '@chakra-ui/react';
+import {
+  Box,
+  Flex,
+  Tbody,
+  Td,
+  Text,
+  Th,
+  Thead,
+  Tooltip,
+  Tr,
+} from '@chakra-ui/react';
 import React, { FC, useCallback, useMemo, useState } from 'react';
-import { AppButton, AppCard, AppDataTable, AppInput, AppLink, AppSelect2 } from 'src/components';
+import {
+  AppButton,
+  AppCard,
+  AppDataTable,
+  AppInput,
+  AppLink,
+  AppSelect2,
+} from 'src/components';
 import rf from 'src/requests/RequestFactory';
-import { formatShortText, formatTimestamp } from 'src/utils/utils-helper';
+import {
+  filterParams,
+  formatShortText,
+  formatTimestamp,
+} from 'src/utils/utils-helper';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import 'src/styles/pages/NotificationPage.scss';
 import 'src/styles/pages/AppDetail.scss';
-import { FilterIcon, InfoIcon, LinkDetail, LinkIcon, RetryIcon } from 'src/assets/icons';
-import { getColorBrandStatus, IWebhook, optionsFilter, STATUS, WEBHOOK_TYPES } from 'src/utils/utils-webhook';
+import {
+  FilterIcon,
+  InfoIcon,
+  LinkDetail,
+  LinkIcon,
+  RetryIcon,
+} from 'src/assets/icons';
+import {
+  getColorBrandStatus,
+  IWebhook,
+  optionsFilter,
+  STATUS,
+  WEBHOOK_TYPES,
+} from 'src/utils/utils-webhook';
 import { useParams } from 'react-router';
-import _ from 'lodash';
 import { isMobile } from 'react-device-detect';
 import { getBlockExplorerUrl } from 'src/utils/utils-network';
 import { IAppResponse } from 'src/utils/utils-app';
@@ -355,7 +387,7 @@ const WebhookActivities: FC<IWebhookActivities> = ({
     try {
       return await rf
         .getRequest('NotificationRequest')
-        .getActivities(webhookId, _.omitBy(params, _.isEmpty));
+        .getActivities(webhookId, filterParams(params));
     } catch (error: any) {
       toastError({
         message: error?.message || 'Oops. Something went wrong!',

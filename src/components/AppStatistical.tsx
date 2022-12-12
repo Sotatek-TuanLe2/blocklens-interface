@@ -3,14 +3,31 @@ import { FC } from 'react';
 import { isMobile } from 'react-device-detect';
 import { Line, LineChart, ResponsiveContainer } from 'recharts';
 import { AppCard } from 'src/components';
+
 interface IAppStatics {
-  label: string | ((data?: any) => string);
-  value: string | number | ((data?: any) => number | string);
-  dataChart?: any[];
+  label: string | number;
+  value?: string | number;
+  dataChart: any[];
+  isPercent?: boolean;
+  keyStat: string;
 }
 
-export const ChartStatics: FC<{ dataChart?: any[] }> = ({ dataChart }) => {
-  if (dataChart?.length) {
+interface IChartStatics {
+  dataChart: any[];
+  keyStat: string;
+}
+
+export type keyStats = 'message' | 'activities' | 'successRate' | 'webhooks';
+
+export const ChartStatics: FC<IChartStatics> = ({ dataChart, keyStat }) => {
+  const dataFormat = dataChart.map((item) => {
+    return {
+      ...item,
+      successRate: +item.successRate,
+    };
+  });
+
+  if (!!dataChart?.length) {
     return (
       <Box
         height={'50px'}
@@ -19,10 +36,10 @@ export const ChartStatics: FC<{ dataChart?: any[] }> = ({ dataChart }) => {
         className={isMobile ? 'chartMobile' : 'chart'}
       >
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart width={500} height={300} data={dataChart}>
+          <LineChart width={500} height={300} data={dataFormat}>
             <Line
               type="monotone"
-              dataKey="pv"
+              dataKey={keyStat}
               stroke="#05CD99"
               strokeWidth={2}
               dot={false}
@@ -35,13 +52,22 @@ export const ChartStatics: FC<{ dataChart?: any[] }> = ({ dataChart }) => {
   return <></>;
 };
 
-const AppStatistical: FC<IAppStatics> = ({ label, value, dataChart }) => {
+const AppStatistical: FC<IAppStatics> = ({
+  label,
+  isPercent,
+  value,
+  dataChart,
+  keyStat,
+}) => {
   return (
     <>
       <AppCard className="box-info">
         <Box className="label">{label}</Box>
-        <Box className="value">{value}</Box>
-        <ChartStatics dataChart={dataChart} />
+        <Box className="value">
+          {value || 0}
+          {isPercent ? '%' : ''}
+        </Box>
+        <ChartStatics dataChart={dataChart} keyStat={keyStat} />
       </AppCard>
     </>
   );

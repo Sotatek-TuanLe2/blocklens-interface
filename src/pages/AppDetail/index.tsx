@@ -16,15 +16,18 @@ import PartAppStatics from './parts/PartAppStatics';
 import PartAddressWebhooks from './parts/PartAddressWebhooks';
 import PartContractWebhooks from './parts/PartContractWebhooks';
 import { BasePageContainer } from 'src/layouts';
-import { AppButton, AppCard, AppGraph, AppLink } from 'src/components';
+import { AppButton, AppCard, AppLink } from 'src/components';
 import AppSettings from './parts/AppSettings';
 import { getLogoChainByName, isEVMNetwork } from 'src/utils/utils-network';
 import { isMobile } from 'react-device-detect';
 import { APP_STATUS } from 'src/utils/utils-app';
+import PartAppGraph from './parts/PartAppGraph';
+import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
 
 const AppDetail = () => {
   const [appInfo, setAppInfo] = useState<any>({});
   const [isShowSetting, setIsShowSetting] = useState<boolean>(false);
+  const [type, setType] = useState<string>(WEBHOOK_TYPES.NFT_ACTIVITY);
   const history = useHistory();
 
   const { id: appId } = useParams<{ id: string }>();
@@ -43,6 +46,16 @@ const AppDetail = () => {
   useEffect(() => {
     getAppInfo().then();
   }, []);
+
+  console.log(appInfo, 'appInfo');
+
+  if (!appInfo || !Object.values(appInfo).length) {
+    return (
+      <BasePageContainer className="app-detail">
+        <Flex justifyContent="center">App Not Found</Flex>
+      </BasePageContainer>
+    );
+  }
 
   return (
     <BasePageContainer className="app-detail">
@@ -95,7 +108,9 @@ const AppDetail = () => {
                   isDisabled={appInfo.status === APP_STATUS.DISABLED}
                   className={'btn-create'}
                   onClick={() =>
-                    history.push(`/create-webhook/${appInfo.appId}`)
+                    history.push(
+                      `/create-webhook/${appInfo.appId}?type=${type}`,
+                    )
                   }
                 >
                   <Box className="icon-plus-circle" mr={2} /> Create
@@ -111,11 +126,26 @@ const AppDetail = () => {
               >
                 <Flex w={'100%'}>
                   {isEVMNetwork(appInfo.chain) && (
-                    <Tab className="app-tab">NFT Activity</Tab>
+                    <Tab
+                      className="app-tab"
+                      onClick={() => setType(WEBHOOK_TYPES.NFT_ACTIVITY)}
+                    >
+                      NFT Activity
+                    </Tab>
                   )}
-                  <Tab className="app-tab">Address Activity</Tab>
+                  <Tab
+                    className="app-tab"
+                    onClick={() => setType(WEBHOOK_TYPES.ADDRESS_ACTIVITY)}
+                  >
+                    Address Activity
+                  </Tab>
                   {isEVMNetwork(appInfo.chain) && (
-                    <Tab className="app-tab">Contract Activity</Tab>
+                    <Tab
+                      className="app-tab"
+                      onClick={() => setType(WEBHOOK_TYPES.CONTRACT_ACTIVITY)}
+                    >
+                      Contract Activity
+                    </Tab>
                   )}
                 </Flex>
               </TabList>
@@ -142,7 +172,7 @@ const AppDetail = () => {
             </Tabs>
           </AppCard>
 
-          <AppGraph type="app" />
+          <PartAppGraph />
         </>
       )}
     </BasePageContainer>
