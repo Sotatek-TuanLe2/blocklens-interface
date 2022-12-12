@@ -1,119 +1,84 @@
-import { Box, SimpleGrid } from '@chakra-ui/react';
-import React, { useCallback, useEffect, useState } from 'react';
-import { isMobile } from 'react-device-detect';
-import { useParams } from 'react-router';
-import AppStatistical from 'src/components/AppStatistical';
-import {
-  data,
-  LabelStats,
-  listUserStats,
-} from 'src/pages/HomePage/parts/PartUserStats';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { keyStats } from 'src/components/AppStatistical';
 import rf from 'src/requests/RequestFactory';
-import { formatLargeNumber } from 'src/utils/utils-helper';
+import { useParams } from 'react-router';
+import { ListStat } from 'src/pages/HomePage/parts/PartUserStats';
+import moment from 'moment';
 
 interface IWebhookStats {
-  totalThisMonth?: number;
-  totalToday?: number;
-  totalSuccessToday?: number;
-  tottalActivities?: number;
+  message?: number;
+  activities?: number;
+  successRate?: number;
+  webhooks?: number;
+  messagesSuccess: number;
+  messagesFailed: number;
 }
 
-const formatPercent = (stats: any) => {
-  if (!stats?.totalToday || !stats?.totalSuccessToday) {
-    return '--';
-  }
-
-  return ((stats?.totalSuccessToday / stats?.totalToday) * 100).toFixed(2);
-};
+export const listStats = [
+  {
+    key: 'message',
+    label: 'Total Messages (today)',
+  },
+  {
+    key: 'activities',
+    label: 'Total Activities (today)',
+  },
+  {
+    key: 'successRate',
+    label: 'Success Rate (today)',
+  },
+  {
+    key: 'webhooks',
+    label: 'Total Webhook',
+  },
+];
 
 const PartWebhookStats = () => {
+  const [webhookStats, setWebhookStats] = useState<IWebhookStats | any>({});
+  const [dataChart, setDataChart] = useState<IWebhookStats[] | any>([]);
   const { id: webhookId } = useParams<{ id: string }>();
-  const [webhookStats, setWebhookStats] = useState<IWebhookStats>({});
 
-  const getWebhookStats = useCallback(async () => {
+  const getWebhookStatsToday = useCallback(async () => {
     try {
-      const res = (await rf
+      const res: IWebhookStats = await rf
         .getRequest('NotificationRequest')
-        .getWebhookStats(webhookId)) as any;
+        .getWebhookStatsToday(webhookId);
       setWebhookStats(res);
     } catch (error: any) {
       setWebhookStats({});
     }
-  }, [webhookId]);
+  }, []);
 
-  const getValueStats = useCallback(
-    (
-      webhooks: IWebhookStats,
-      value: number,
-      stats: { key: string; label: string },
-    ) => {
-      if (stats.key === 'totalSuccessToday') {
-        return formatPercent(webhooks);
-      }
-      return formatLargeNumber(value);
-    },
-    [webhookStats],
-  );
+  const getWebhookStats = useCallback(async () => {
+    try {
+      const res: IWebhookStats[] = await rf
+        .getRequest('NotificationRequest')
+        .getWebhookStats(webhookId, {
+          from: moment().utc().startOf('day').valueOf(),
+          to: moment().utc().valueOf(),
+          period: 'hour',
+        });
+      setDataChart(res);
+    } catch (error: any) {
+      setDataChart([]);
+    }
+  }, []);
 
   useEffect(() => {
+    getWebhookStatsToday().then();
     getWebhookStats().then();
-  }, [webhookId]);
-  const _renderStatsDesktop = () => {
-    return (
-      <SimpleGrid
-        className="infos"
-        columns={{ base: 1, sm: 2, lg: 4 }}
-        gap="20px"
-      >
-        {webhookStats &&
-          listUserStats.map((stats, index: number) => {
-            return (
-              <React.Fragment key={`${index} stats`}>
-                <AppStatistical
-                  label={stats.label}
-                  value={
-                    getValueStats(
-                      webhookStats,
-                      webhookStats[stats.label as LabelStats] || 0,
-                      stats,
-                    ) || 0
-                  }
-                  dataChart={data}
-                />
-              </React.Fragment>
-            );
-          })}
-      </SimpleGrid>
-    );
-  };
+  }, []);
 
-  const _renderStatsMobile = () => {
-    return (
-      <div className="infos">
-        <Box className="statsMobile">
-          {webhookStats &&
-            listUserStats.map((stats, index: number) => {
-              return (
-                <Box key={`${index} stats`} className="statsItemMobile">
-                  <AppStatistical
-                    label={stats.label}
-                    value={
-                      getValueStats(
-                        webhookStats,
-                        webhookStats[stats.label as LabelStats] || 0,
-                        stats,
-                      ) || 0
-                    }
-                    dataChart={data}
-                  />
-                </Box>
-              );
-            })}
-        </Box>
-      </div>
-    );
-  };
-  return <>{isMobile ? _renderStatsMobile() : _renderStatsDesktop()}</>;
+  const dataWebhookStats = useMemo(() => {
+    return listStats.map((item) => {
+      return {
+        ...item,
+        value: webhookStats[item.key as keyStats],
+      };
+    });
+  }, [webhookStats]);
+
+  return <ListStat dataStats={dataWebhookStats} dataChart={dataChart} />;
 };
 
 export default PartWebhookStats;

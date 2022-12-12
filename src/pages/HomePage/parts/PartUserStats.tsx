@@ -1,113 +1,50 @@
 import { Box, SimpleGrid } from '@chakra-ui/react';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState, FC } from 'react';
 import { isMobile } from 'react-device-detect';
-import AppStatistical from 'src/components/AppStatistical';
+import AppStatistical, { keyStats } from 'src/components/AppStatistical';
 import rf from 'src/requests/RequestFactory';
-import { formatLargeNumber } from 'src/utils/utils-helper';
+import moment from 'moment';
 
-export interface IUserStats {
-  totalThisMonth?: number;
-  totalToday?: number;
-  totalSuccessToday?: number;
-  tottalActivities?: number;
+interface IUserStats {
+  message?: number;
+  activities?: number;
+  successRate?: number;
+  webhooks?: number;
+  messagesSuccess: number;
+  messagesFailed: number;
 }
 
-export type LabelStats =
-  | 'totalThisMonth'
-  | 'totalToday'
-  | 'totalSuccessToday'
-  | 'tottalActivities';
-
-export const data = [
+export const listStats = [
   {
-    name: 'Page A',
-    pv: 2400,
-  },
-  {
-    name: 'Page B',
-    pv: 1398,
-  },
-  {
-    name: 'Page C',
-    pv: 9800,
-  },
-  {
-    name: 'Page D',
-    pv: 3908,
-  },
-  {
-    name: 'Page E',
-    pv: 4800,
-  },
-  {
-    name: 'Page F',
-    pv: 3800,
-  },
-  {
-    name: 'Page G',
-    pv: 4300,
-  },
-];
-
-export const listUserStats = [
-  {
-    key: 'totalToday',
+    key: 'message',
     label: 'Total Messages (today)',
   },
   {
-    key: 'totalThisMonth',
-    label: 'Total Webhook',
+    key: 'activities',
+    label: 'Total Activities (today)',
   },
   {
-    key: 'totalSuccessToday',
+    key: 'successRate',
     label: 'Success Rate (today)',
   },
   {
-    key: 'tottalActivities',
-    label: 'Total Activities (today)',
+    key: 'webhooks',
+    label: 'Total Webhook',
   },
 ];
 
-const formatPercent = (stats: any) => {
-  if (!stats?.totalToday || !stats?.totalSuccessToday) {
-    return '--';
-  }
+interface IStat {
+  label: string;
+  value: string | number;
+  key: string;
+}
 
-  return ((stats?.totalSuccessToday / stats?.totalToday) * 100).toFixed(2);
-};
+interface IListStat {
+  dataStats: IStat[];
+  dataChart: any[];
+}
 
-const PartUserStats = () => {
-  const [userStats, setUserStats] = useState<IUserStats>({});
-
-  const getUserStats = useCallback(async () => {
-    try {
-      const res: IUserStats = await rf
-        .getRequest('NotificationRequest')
-        .getUserStats();
-      setUserStats({ ...res, tottalActivities: res.totalToday });
-    } catch (error: any) {
-      setUserStats({});
-    }
-  }, []);
-
-  const getValueStats = useCallback(
-    (
-      userStats: IUserStats,
-      value: number,
-      stats: { key: string; label: string },
-    ) => {
-      if (stats.key === 'totalSuccessToday') {
-        return formatPercent(userStats);
-      }
-      return formatLargeNumber(value);
-    },
-    [userStats],
-  );
-
-  useEffect(() => {
-    getUserStats().then();
-  }, []);
-
+export const ListStat: FC<IListStat> = ({ dataStats, dataChart }) => {
   const _renderStatsDesktop = () => {
     return (
       <SimpleGrid
@@ -115,24 +52,19 @@ const PartUserStats = () => {
         columns={{ base: 1, sm: 2, lg: 4 }}
         gap="20px"
       >
-        {userStats &&
-          listUserStats.map((stats, index: number) => {
-            return (
-              <React.Fragment key={`${index} stats`}>
-                <AppStatistical
-                  label={stats.label}
-                  value={
-                    getValueStats(
-                      userStats,
-                      userStats[stats.label as LabelStats] || 0,
-                      stats,
-                    ) || 0
-                  }
-                  dataChart={data}
-                />
-              </React.Fragment>
-            );
-          })}
+        {dataStats.map((stats, index: number) => {
+          return (
+            <Box key={`${index} stats`}>
+              <AppStatistical
+                label={stats.label}
+                value={stats.value}
+                keyStat={stats.key}
+                dataChart={dataChart}
+                isPercent={stats.key === 'successRate'}
+              />
+            </Box>
+          );
+        })}
       </SimpleGrid>
     );
   };
@@ -141,29 +73,71 @@ const PartUserStats = () => {
     return (
       <div className="infos">
         <Box className="statsMobile">
-          {userStats &&
-            listUserStats.map((stats, index: number) => {
-              return (
-                <Box key={`${index} stats`} className="statsItemMobile">
-                  <AppStatistical
-                    label={stats.label}
-                    value={
-                      getValueStats(
-                        userStats,
-                        userStats[stats.label as LabelStats] || 0,
-                        stats,
-                      ) || 0
-                    }
-                    dataChart={data}
-                  />
-                </Box>
-              );
-            })}
+          {dataStats.map((stats, index: number) => {
+            return (
+              <Box key={`${index} stats`} className="statsItemMobile">
+                <AppStatistical
+                  label={stats.label}
+                  value={stats.value}
+                  dataChart={dataChart}
+                  keyStat={stats.key}
+                  isPercent={stats.key === 'successRate'}
+                />
+              </Box>
+            );
+          })}
         </Box>
       </div>
     );
   };
   return <>{isMobile ? _renderStatsMobile() : _renderStatsDesktop()}</>;
+};
+
+const PartUserStats = () => {
+  const [userStatsToday, setUserStatsToday] = useState<IUserStats | any>({});
+  const [dataChart, setDataChart] = useState<IUserStats[] | any>([]);
+
+  const getUserStatsToday = useCallback(async () => {
+    try {
+      const res: IUserStats = await rf
+        .getRequest('NotificationRequest')
+        .getUserStatsToday();
+      setUserStatsToday(res);
+    } catch (error: any) {
+      setUserStatsToday({});
+    }
+  }, []);
+
+  const getUserStats = useCallback(async () => {
+    try {
+      const res: IUserStats = await rf
+        .getRequest('NotificationRequest')
+        .getUserStats({
+          from: moment().utc().startOf('day').valueOf(),
+          to: moment().utc().valueOf(),
+          period: 'hour',
+        });
+      setDataChart(res);
+    } catch (error: any) {
+      setDataChart([]);
+    }
+  }, []);
+
+  useEffect(() => {
+    getUserStats().then();
+    getUserStatsToday().then();
+  }, []);
+
+  const dataUserStatsToday = useMemo(() => {
+    return listStats.map((item) => {
+      return {
+        ...item,
+        value: userStatsToday[item.key as keyStats],
+      };
+    });
+  }, [userStatsToday]);
+
+  return <ListStat dataStats={dataUserStatsToday} dataChart={dataChart} />;
 };
 
 export default PartUserStats;

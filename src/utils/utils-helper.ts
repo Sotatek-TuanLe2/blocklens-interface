@@ -1,5 +1,6 @@
 import { toastError, toastSuccess, toastWarning } from './utils-notify';
 import moment from 'moment';
+import { isValidChecksumAddress, toChecksumAddress } from 'ethereumjs-util';
 
 export const copyToClipboard = (message: string) => {
   if (!navigator.clipboard) {
@@ -40,4 +41,17 @@ export const formatShortText = (text: string, digits = 6): string => {
     text.length - 3,
     text.length,
   )}`;
+};
+
+export const isValidAddressEVM = (address: string) => {
+  try {
+    const addressChecksum = toChecksumAddress(address);
+    return isValidChecksumAddress(addressChecksum);
+  } catch (e) {
+    return false;
+  }
+};
+
+export const filterParams = (params: any) => {
+  return Object.fromEntries(Object.entries(params).filter(([_, v]) => v));
 };
