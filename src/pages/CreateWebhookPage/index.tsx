@@ -444,6 +444,16 @@ const CreateWebhook = () => {
     return _renderFormAddressActivity();
   };
 
+  if(!Object.keys(appInfo).length) {
+    return (
+      <BasePageContainer className="app-detail">
+        <Flex justifyContent='center'>
+          App Not Found
+        </Flex>
+      </BasePageContainer>
+    )
+  }
+
   return (
     <BasePageContainer className="app-detail">
       <>
