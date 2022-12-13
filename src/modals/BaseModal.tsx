@@ -78,7 +78,7 @@ const BaseModal: FC<BaseModalProps> = ({
       >
         <ModalOverlay />
         <ModalContent
-          className={`${className} modal ${isFullScreen ? 'full' : ''}`}
+          className={`${className} modal`}
         >
           {!isHideCloseIcon && (
             <Box className={'modal__btn-close'} onClick={onClose}>

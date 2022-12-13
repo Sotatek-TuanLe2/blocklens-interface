@@ -24,11 +24,11 @@ const BasicDetail: FC<IBasicDetail> = ({ billingInfo }) => {
     <AppCard className="box-info-account">
       <Box className="info-item">
         <Box className="title">Basic Details</Box>
-        <Flex mb={2}>
+        <Flex>
           <Box className="label">Email:</Box>
           <Box className="value">{userInfo.email}</Box>
         </Flex>
-        <Flex justifyContent={'space-between'}>
+        <Flex justifyContent={'space-between'} my={3}>
           <Flex>
             <Box className="label">Name:</Box>
             <Box className="value">

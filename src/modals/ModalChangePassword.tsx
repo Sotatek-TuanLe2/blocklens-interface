@@ -78,7 +78,6 @@ const ModalChangePassword: React.FC<IChangePasswordModal> = ({
       isOpen={open}
       onClose={onClose}
       size="md"
-      className={'modal-filter'}
       title="Change Password"
     >
       <AppField label={'Current Password'} customWidth={'100%'} isRequired>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import 'src/styles/pages/AccountPage.scss';
 import { Box, Flex } from '@chakra-ui/react';
-import { AppButton, AppCard } from 'src/components';
+import { AppButton, AppCard, AppLink } from 'src/components';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/store';
 import { formatTimestamp } from 'src/utils/utils-helper';
@@ -17,16 +17,14 @@ const BillingInfos = () => {
     (state: RootState) => state.billing,
   );
 
-  const indexCurrentPlan = plans.findIndex(
-    (item) => item.code === currentPlan.code,
-  );
-
   const _renderLinkDetail = () => {
     return (
-      <Flex>
-        <Box className="link">Change Plan </Box>
-        <Box ml={2} mt={1.5} className="icon-arrow-right" />
-      </Flex>
+      <AppLink to={'/billing'}>
+        <Flex>
+          <Box className="link">Change Plan </Box>
+          <Box ml={2} mt={1.5} className="icon-arrow-right" />
+        </Flex>
+      </AppLink>
     );
   };
 
@@ -45,11 +43,11 @@ const BillingInfos = () => {
         <Box className="detail-plan">
           <Flex alignItems={'center'}>
             <CheckedIcon />{' '}
-            <Box ml={2}>{currentPlan.appLimitation} active apps</Box>
+            <Box ml={3}>{currentPlan.appLimitation} active apps</Box>
           </Flex>
           <Flex alignItems={'center'}>
             <CheckedIcon />{' '}
-            <Box ml={2}> {currentPlan.notificationLimitation} message/day</Box>
+            <Box ml={3}> {currentPlan.notificationLimitation} message/day</Box>
           </Flex>
           <Box>
             Period: {formatTimestamp(currentPlan?.from || 0, 'MMM DD, YYYY')} -{' '}

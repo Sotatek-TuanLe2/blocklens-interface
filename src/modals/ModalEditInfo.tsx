@@ -80,7 +80,6 @@ const ModalEditInfo: React.FC<IModalEditInfo> = ({ open, onClose }) => {
       isOpen={open}
       onClose={onClose}
       size="md"
-      className={'modal-filter'}
       title="Edit Basic Details"
     >
       <AppField label={'First Name'} customWidth={'100%'} isRequired>

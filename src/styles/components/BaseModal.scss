@@ -7,6 +7,10 @@
   padding: 8px;
   max-width: 500px !important;
 
+  @include tablet {
+    margin: 0 16px !important;
+  }
+
   &.modal-filter {
     @include tablet {
       height: 100vh;
@@ -143,5 +147,42 @@
 .chakra-modal__body {
   @include tablet {
     padding: 0 10px !important;
+  }
+}
+
+.box-wallet {
+  width: 136px;
+  padding: 20px 0;
+  background: $bg2;
+  border: 1px solid $line;
+  border-radius: 12px;
+  color: $paragraph;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  margin: 0 7px;
+
+  &:hover {
+    border-color: $main;
+  }
+
+  svg {
+    margin-bottom: 13px;
+  }
+
+  @include tablet {
+    margin: 0 4px;
+    flex-direction: row;
+    width: 147px;
+    padding: 16px 0;
+    @include text-small-regular;
+
+    svg {
+      width: 20px;
+      margin-bottom: 0;
+      margin-right: 10px;
+    }
   }
 }

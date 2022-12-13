@@ -10,9 +10,12 @@ import { AppButton, AppCard } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import { toastError } from 'src/utils/utils-notify';
 import Notifications from './parts/Notifications';
+import ModalConnectWallet from 'src/modals/ModalConnectWallet';
 
 const AccountPage = () => {
   const [billingInfo, setBillingInfo] = useState<any>({});
+  const [isOpenConnectWalletModal, setIsOpenConnectWalletModal] =
+    useState<boolean>(false);
 
   const getBillingInfo = async () => {
     try {
@@ -60,7 +63,12 @@ const AccountPage = () => {
             </Flex>
 
             <Flex justifyContent={'center'} my={isMobile ? 5 : 4}>
-              <AppButton size="lg">Connect wallet</AppButton>
+              <AppButton
+                size="lg"
+                onClick={() => setIsOpenConnectWalletModal(true)}
+              >
+                Connect wallet
+              </AppButton>
             </Flex>
 
             {/*<Flex justifyContent={'space-between'} mb={5} className="info-item">*/}
@@ -73,6 +81,11 @@ const AccountPage = () => {
             {/*</Flex>*/}
           </AppCard>
         </Box>
+
+        <ModalConnectWallet
+          open={isOpenConnectWalletModal}
+          onClose={() => setIsOpenConnectWalletModal(false)}
+        />
       </>
     </BasePageContainer>
   );
