@@ -8,6 +8,12 @@ import { ReactComponent as InfoIcon } from './InfoIcon.svg';
 import { ReactComponent as RetryIcon } from './RetryIcon.svg';
 import { ReactComponent as ArrowDown } from './ArrowDown.svg';
 import { ReactComponent as NoData } from './NoData.svg';
+import { ReactComponent as CheckedIcon } from './CheckedIcon.svg';
+import { ReactComponent as RadioChecked } from './RadioChecked.svg';
+import { ReactComponent as RadioNoCheckedIcon } from './RadioNoCheckedIcon.svg';
+import { ReactComponent as EditIcon } from './EditIcon.svg';
+import { ReactComponent as MetaMaskIcon } from './MetaMaskIcon.svg';
+import { ReactComponent as WalletConnectIcon } from './WalletConnectIcon.svg';
 
 export {
   CalendarIcon,
@@ -19,5 +25,11 @@ export {
   RetryIcon,
   LinkDetail,
   ArrowDown,
-  NoData
+  NoData,
+  EditIcon,
+  CheckedIcon,
+  RadioChecked,
+  RadioNoCheckedIcon,
+  WalletConnectIcon,
+  MetaMaskIcon,
 };

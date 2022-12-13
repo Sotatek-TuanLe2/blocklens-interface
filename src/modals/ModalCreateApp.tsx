@@ -1,11 +1,5 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
-import React, {
-  FC,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
 import BaseModal from './BaseModal';
 import {
   AppButton,
@@ -39,6 +33,7 @@ export interface IChain {
   id: string;
   icon: string;
   networks: { name: string; id: string; icon: string }[];
+  currencies: { name: string; id: string; icon: string }[];
 }
 
 const CHAINS = config.chains.map((chain: IChain) => {
@@ -125,9 +120,9 @@ const ModalCreateApp: FC<IModalCreateApp> = ({ open, onClose, reloadData }) => {
   return (
     <BaseModal
       size="lg"
-      title="Create an Apps"
-      description="We suggest you create an App and start experiencing our BlockLens API,
-       which grants access to various blockchains WITHOUT running nodes anymore!"
+      title="Create New Apps"
+      description="We suggest you create an app and start experiencing our service,
+       which grants real-time notifications to various blockchains' activities!"
       isOpen={open}
       isFullScreen={isMobile}
       onClose={onCloseModal}
@@ -168,34 +163,40 @@ const ModalCreateApp: FC<IModalCreateApp> = ({ open, onClose, reloadData }) => {
               }}
             />
           </AppField>
-          <AppField label={'Chain'} customWidth={'49%'} isRequired>
-            <AppSelect2
-              size="large"
-              onChange={(value: string) => {
-                setChainSelected(CHAINS.find((chain) => chain.value === value));
-                setNetworkSelected(
-                  CHAINS.find((chain) => chain.value === value)?.networks[0],
-                );
-              }}
-              options={CHAINS}
-              value={chainSelected.value}
-            />
-          </AppField>
+          <Box width={isMobile ? '100%' : '49%'} zIndex={99}>
+            <AppField label={'Chain'} customWidth={'100%'} isRequired>
+              <AppSelect2
+                size="large"
+                onChange={(value: string) => {
+                  setChainSelected(
+                    CHAINS.find((chain) => chain.value === value),
+                  );
+                  setNetworkSelected(
+                    CHAINS.find((chain) => chain.value === value)?.networks[0],
+                  );
+                }}
+                options={CHAINS}
+                value={chainSelected.value}
+              />
+            </AppField>
+          </Box>
 
-          <AppField label={'Network'} customWidth={'49%'} isRequired>
-            <AppSelect2
-              size="large"
-              onChange={(value: string) => {
-                setNetworkSelected(
-                  chainSelected.networks.find(
-                    (network: any) => network.value === value,
-                  ),
-                );
-              }}
-              options={chainSelected.networks}
-              value={networkSelected.value}
-            />
-          </AppField>
+          <Box width={isMobile ? '100%' : '49%'}>
+            <AppField label={'Network'} customWidth={'100%'} isRequired>
+              <AppSelect2
+                size="large"
+                onChange={(value: string) => {
+                  setNetworkSelected(
+                    chainSelected.networks.find(
+                      (network: any) => network.value === value,
+                    ),
+                  );
+                }}
+                options={chainSelected.networks}
+                value={networkSelected.value}
+              />
+            </AppField>
+          </Box>
         </Flex>
 
         <Flex flexWrap={'wrap'} justifyContent={'space-between'} mt={4}>

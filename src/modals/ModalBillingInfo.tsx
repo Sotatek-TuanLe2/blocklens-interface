@@ -1,10 +1,11 @@
 import React, { FC, useEffect, useState } from 'react';
 import BaseModal from './BaseModal';
 import { Box, Flex } from '@chakra-ui/react';
-import { AppField, AppInput, AppSelect } from 'src/components';
+import { AppButton, AppField, AppInput, AppSelect2 } from 'src/components';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import rf from 'src/requests/RequestFactory';
 import { COUNTRIES } from 'src/constants';
+import { isMobile } from 'react-device-detect';
 
 interface IModalBillingInfo {
   open: boolean;
@@ -15,8 +16,11 @@ interface IModalBillingInfo {
 
 interface IDataFormBillingInfo {
   name?: string;
-  country?: string;
+  country: string;
   address?: string;
+  city?: string;
+  state?: string;
+  postalCode?: string;
   email?: string;
 }
 
@@ -37,6 +41,10 @@ const ModalBillingInfo: FC<IModalBillingInfo> = ({
     name: '',
     country: '',
     address: '',
+    city: '',
+    state: '',
+    postalCode: '',
+    email: '',
   };
 
   const [dataForm, setDataForm] = useState<IDataFormBillingInfo>(initData);
@@ -61,25 +69,25 @@ const ModalBillingInfo: FC<IModalBillingInfo> = ({
       name: billingInfo.name,
       country: billingInfo.country,
       address: billingInfo.address,
+      email: billingInfo.email,
+      city: billingInfo.city,
+      state: billingInfo.state,
+      postalCode: billingInfo.postalCode,
     });
   }, [billingInfo, open]);
 
   return (
     <BaseModal
-      size="2xl"
-      title={`Billing Address`}
+      size="lg"
+      title={`Edit Billing Details`}
       isOpen={open}
       onClose={onClose}
-      onActionLeft={onClose}
-      textActionRight="Submit"
-      onActionRight={updateMyBillingInfo}
-      textActionLeft="Cancel"
+      className={"modal-filter"}
     >
       <Box flexDirection={'column'} pt={'20px'}>
         <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
-          <AppField label={'NAME'} customWidth={'49%'}>
+          <AppField label={'Name'} customWidth={'100%'}>
             <AppInput
-              placeholder={'Name or Company name'}
               value={dataForm.name}
               onChange={(e) => {
                 setDataForm({
@@ -89,27 +97,8 @@ const ModalBillingInfo: FC<IModalBillingInfo> = ({
               }}
             />
           </AppField>
-          <AppField label={'COUNTRY'} customWidth={'49%'}>
-            <AppSelect
-              isSearchable
-              placeholder={'Billing country'}
-              onChange={(e: any) => {
-                setDataForm({
-                  ...dataForm,
-                  country: e.value,
-                });
-              }}
-              options={listCountry}
-              value={
-                listCountry.find(
-                  (item) => item.value === dataForm.country,
-                ) as any
-              }
-            />
-          </AppField>
-          <AppField label={'ADDRESS'} customWidth={'100%'}>
+          <AppField label={'Address'} customWidth={'100%'}>
             <AppInput
-              placeholder={'Billing address'}
               value={dataForm.address}
               onChange={(e) => {
                 setDataForm({
@@ -119,6 +108,81 @@ const ModalBillingInfo: FC<IModalBillingInfo> = ({
               }}
             />
           </AppField>
+          <AppField label={'City'} customWidth={'32%'}>
+            <AppInput
+              value={dataForm.city}
+              onChange={(e) => {
+                setDataForm({
+                  ...dataForm,
+                  city: e.target.value,
+                });
+              }}
+            />
+          </AppField>
+
+          <AppField label={'State'} customWidth={'32%'}>
+            <AppInput
+              value={dataForm.state}
+              onChange={(e) => {
+                setDataForm({
+                  ...dataForm,
+                  state: e.target.value,
+                });
+              }}
+            />
+          </AppField>
+
+          <AppField label={'Postal Code'} customWidth={'32%'}>
+            <AppInput
+              value={dataForm.postalCode}
+              onChange={(e) => {
+                setDataForm({
+                  ...dataForm,
+                  postalCode: e.target.value,
+                });
+              }}
+            />
+          </AppField>
+
+          <AppField label={'Country'} customWidth={'100%'}>
+            <AppSelect2
+              size="large"
+              onChange={(value: string) => {
+                setDataForm({
+                  ...dataForm,
+                  country: value,
+                });
+              }}
+              options={listCountry}
+              value={dataForm.country}
+            />
+          </AppField>
+
+          <AppField label={'Billing Email'} customWidth={'100%'}>
+            <AppInput
+              value={dataForm.email}
+              onChange={(e) => {
+                setDataForm({
+                  ...dataForm,
+                  email: e.target.value,
+                });
+              }}
+            />
+          </AppField>
+        </Flex>
+
+        <Flex flexWrap={'wrap'} justifyContent={'space-between'} mt={4}>
+          <AppButton
+            width={'49%'}
+            size={'lg'}
+            variant={'cancel'}
+            onClick={onClose}
+          >
+            Cancel
+          </AppButton>
+          <AppButton width={'49%'} size={'lg'} onClick={updateMyBillingInfo}>
+            Save
+          </AppButton>
         </Flex>
       </Box>
     </BaseModal>

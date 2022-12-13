@@ -30,6 +30,18 @@
           "icon": "icon-ethereum",
           "blockExplorerUrl": "https://goerli.etherscan.io/"
         }
+      ],
+      "currencies": [
+        {
+          "name": "Tether (USDT)",
+          "id": "USDT",
+          "icon": "icon-usdt"
+        },
+        {
+          "name": "USD Coin (USDC)",
+          "id": "USDC",
+          "icon": "icon-usdc"
+        }
       ]
     },
     {
@@ -48,6 +60,23 @@
           "id": "TESTNET",
           "icon": "icon-bsc",
           "blockExplorerUrl": "https://testnet.bscscan.com/"
+        }
+      ],
+      "currencies": [
+        {
+          "name": "Binance USD (BUSD)",
+          "id": "BUSD",
+          "icon": "icon-busd"
+        },
+        {
+          "name": "Tether (USDT)",
+          "id": "USDT",
+          "icon": "icon-usdt"
+        },
+        {
+          "name": "USD Coin (USDC)",
+          "id": "USDC",
+          "icon": "icon-usdc"
         }
       ]
     },
@@ -68,6 +97,18 @@
           "icon": "icon-polygon",
           "blockExplorerUrl": "https://mumbai.polygonscan.com/"
         }
+      ],
+      "currencies": [
+        {
+          "name": "Tether (USDT)",
+          "id": "USDT",
+          "icon": "icon-usdt"
+        },
+        {
+          "name": "USD Coin (USDC)",
+          "id": "USDC",
+          "icon": "icon-usdc"
+        }
       ]
     },
     {
@@ -86,6 +127,18 @@
           "icon": "icon-solana"
         },
         { "name": "Devnet", "id": "DEVNET", "icon": "icon-solana" }
+      ],
+      "currencies": [
+        {
+          "name": "Tether (USDT)",
+          "id": "USDT",
+          "icon": "icon-usdt"
+        },
+        {
+          "name": "USD Coin (USDC)",
+          "id": "USDC",
+          "icon": "icon-usdc"
+        }
       ]
     },
     {
@@ -102,6 +155,18 @@
           "name": "Testnet",
           "id": "TESTNET",
           "icon": "icon-bitcoin"
+        }
+      ],
+      "currencies": [
+        {
+          "name": "Tether (USDT)",
+          "id": "USDT",
+          "icon": "icon-usdt"
+        },
+        {
+          "name": "USD Coin (USDC)",
+          "id": "USDC",
+          "icon": "icon-usdc"
         }
       ]
     }

@@ -78,7 +78,7 @@ const BaseModal: FC<BaseModalProps> = ({
       >
         <ModalOverlay />
         <ModalContent
-          className={`${className} modal ${isFullScreen ? 'full' : ''}`}
+          className={`${className} modal`}
         >
           {!isHideCloseIcon && (
             <Box className={'modal__btn-close'} onClick={onClose}>
@@ -86,7 +86,7 @@ const BaseModal: FC<BaseModalProps> = ({
             </Box>
           )}
 
-          <Flex flexDirection={'column'}>
+          <Flex flexDirection={'column'} className={"content-modal"}>
             {icon && <Box className={`modal__icon ${icon}`} />}
 
             <Box

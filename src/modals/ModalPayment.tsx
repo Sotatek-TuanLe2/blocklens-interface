@@ -82,11 +82,16 @@ const CheckoutForm: FC<ICheckoutForm> = ({ onClose, reloadData }) => {
     <Box>
       <form onSubmit={handleSubmit as any}>
         <PaymentElement />
-        <Flex justifyContent={'flex-end'} alignItems="center" mt={2}>
-          <AppButton onClick={onClose} variant="outline" mr={5}>
+        <Flex flexWrap={'wrap'} justifyContent={'space-between'} mt={10}>
+          <AppButton
+            width={'49%'}
+            size={'lg'}
+            variant={'cancel'}
+            onClick={onClose}
+          >
             Cancel
           </AppButton>
-          <AppButton isLoading={isLoading} type="submit">
+          <AppButton w={'49%'} size="lg" isLoading={isLoading} type="submit">
             Submit
           </AppButton>
         </Flex>
@@ -109,8 +114,11 @@ const ModalPayment: FC<IModalPayment> = ({
   return (
     <BaseModal
       size="2xl"
-      title="Payment Method"
+      title="Edit Credit Card"
+      description="By providing your card information, you allow Blocklens to charge
+       your card for future payments in accordance with their terms."
       isOpen={open}
+      className={'modal-filter'}
       onClose={onClose}
     >
       <Box flexDirection={'column'} pt={'20px'}>

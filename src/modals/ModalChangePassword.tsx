@@ -1,12 +1,11 @@
 import { Box, Text } from '@chakra-ui/react';
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { AppButton, AppField, AppInput, AppLink } from 'src/components';
+import { AppButton, AppField, AppInput } from 'src/components';
 import { createValidator } from 'src/utils/utils-validator';
 import BaseModal from './BaseModal';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { useHistory } from 'react-router';
-import { setAuthorizationToRequest } from 'src/utils/utils-auth';
 import Storage from 'src/utils/storage';
 
 interface IFormChangePass {
@@ -16,13 +15,13 @@ interface IFormChangePass {
 }
 
 interface IChangePasswordModal {
-  isOpenModal: boolean;
-  setIsOpenModal: (params: any) => void;
+  open: boolean;
+  onClose: () => void;
 }
 
-const ChangePasswordModal: React.FC<IChangePasswordModal> = ({
-  isOpenModal,
-  setIsOpenModal,
+const ModalChangePassword: React.FC<IChangePasswordModal> = ({
+  open,
+  onClose,
 }) => {
   const initialData = {
     currentPassword: '',
@@ -53,7 +52,7 @@ const ChangePasswordModal: React.FC<IChangePasswordModal> = ({
     try {
       await rf.getRequest('AuthRequest').changePassword(dataSubmit);
       setDataForm({ ...initialData });
-      setIsOpenModal(false);
+      onClose();
       toastSuccess({ message: 'Update password was successfully' });
     } catch (error: any) {
       toastError({
@@ -76,17 +75,13 @@ const ChangePasswordModal: React.FC<IChangePasswordModal> = ({
 
   return (
     <BaseModal
-      isOpen={isOpenModal}
-      onClose={() => setIsOpenModal(false)}
-      size="lg"
+      isOpen={open}
+      onClose={onClose}
+      size="md"
       title="Change Password"
-      isHideCloseIcon
-      closeOnOverlayClick
-      styleHeader={{ fontSize: '24px' }}
     >
-      <AppField label={'CURRENT PASSWORD'} customWidth={'100%'} isRequired>
+      <AppField label={'Current Password'} customWidth={'100%'} isRequired>
         <AppInput
-          placeholder="Current password"
           value={dataForm.currentPassword}
           type="password"
           onChange={(e) => {
@@ -103,9 +98,8 @@ const ChangePasswordModal: React.FC<IChangePasswordModal> = ({
         />
       </AppField>
 
-      <AppField label={'NEW PASSWORD'} customWidth={'100%'} isRequired>
+      <AppField label={'New Password'} customWidth={'100%'} isRequired>
         <AppInput
-          placeholder="New password"
           value={dataForm.newPassword}
           type="password"
           onChange={(e) => {
@@ -122,9 +116,8 @@ const ChangePasswordModal: React.FC<IChangePasswordModal> = ({
         />
       </AppField>
 
-      <AppField label={'CONFIRM PASSWORD'} customWidth={'100%'} isRequired>
+      <AppField label={'Confirm password'} customWidth={'100%'} isRequired>
         <AppInput
-          placeholder="Confirm password"
           value={dataForm.confirmPassword}
           type="password"
           onChange={(e) => {
@@ -140,18 +133,19 @@ const ChangePasswordModal: React.FC<IChangePasswordModal> = ({
           }}
         />
       </AppField>
-      <Box
-        onClick={handleClickForgotPassword}
-        style={{ cursor: 'pointer', color: '#422afb' }}
-        mb={3}
-      >
+      <Box onClick={handleClickForgotPassword} mb={7} mt={-3} className="link">
         Forgot your password?
       </Box>
-      <AppButton w={'100%'} disabled={isDisableSubmit} onClick={handleOnSubmit}>
+      <AppButton
+        w={'100%'}
+        size="lg"
+        disabled={isDisableSubmit}
+        onClick={handleOnSubmit}
+      >
         Set password
       </AppButton>
     </BaseModal>
   );
 };
 
-export default ChangePasswordModal;
+export default ModalChangePassword;
