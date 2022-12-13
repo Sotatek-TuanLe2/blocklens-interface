@@ -49,6 +49,7 @@ const CheckoutForm = () => {
         } catch (e: any) {
           toastError({ message: e?.message || 'Oops. Something went wrong!' });
         } finally {
+          setIsLoading(false);
         }
         break;
       }
@@ -147,6 +148,7 @@ const FormCard: FC<IFormAddCard> = ({ onBack, step }) => {
               variables: {
                 colorText: '#B4B7BD',
                 fontSizeBase: '16px',
+                colorTextPlaceholder: '#69758C',
                 colorBackground: '#30384E',
               },
             },
