@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { FC, useState } from 'react';
 import 'src/styles/pages/AccountPage.scss';
-import { Box, Checkbox, Flex } from '@chakra-ui/react';
+import { Box, Flex } from '@chakra-ui/react';
 import { AppCard } from 'src/components';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/store';
@@ -8,12 +8,16 @@ import { EditIcon } from 'src/assets/icons';
 import ModalChangePassword from 'src/modals/ModalChangePassword';
 import ModalEditInfo from 'src/modals/ModalEditInfo';
 
-const BasicDetail = () => {
+interface IBasicDetail {
+  billingInfo: any;
+}
+
+const BasicDetail: FC<IBasicDetail> = ({ billingInfo }) => {
   const [isOpenChangePasswordModal, setIsChangePasswordModal] =
     useState<boolean>(false);
   const [isOpenEditInfoModal, setIsOpenEditInfoModal] =
     useState<boolean>(false);
-  const [isSendMail, setIsSendMail] = useState<boolean>(false);
+
   const { userInfo } = useSelector((state: RootState) => state.auth);
 
   return (
@@ -38,6 +42,28 @@ const BasicDetail = () => {
             <EditIcon />
           </Box>
         </Flex>
+        <Flex justifyContent={'space-between'} my={3}>
+          <Flex>
+            <Box className="label">Card:</Box>
+            <Box className="value">
+              •••• •••• •••• {billingInfo?.paymentMethod?.card?.last4}
+            </Box>
+          </Flex>
+          <Box className="btn-edit">
+            <EditIcon />
+          </Box>
+        </Flex>
+        <Flex justifyContent={'space-between'}>
+          <Flex>
+            <Box className="label">Balance:</Box>
+            <Box className="value">--</Box>
+          </Flex>
+          <Box
+            className="link"
+          >
+           Top up
+          </Box>
+        </Flex>
       </Box>
 
       <Box className="info-item">
@@ -52,21 +78,6 @@ const BasicDetail = () => {
             onClick={() => setIsChangePasswordModal(true)}
           >
             <EditIcon />
-          </Box>
-        </Flex>
-      </Box>
-
-      <Box className="info-item">
-        <Box className="title">notifications</Box>
-        <Flex>
-          <Checkbox
-            size="lg"
-            isChecked={isSendMail}
-            mr={3}
-            onChange={() => setIsSendMail(!isSendMail)}
-          />
-          <Box className="value">
-            Receive emails when you are at or near your daily request limit.
           </Box>
         </Flex>
       </Box>

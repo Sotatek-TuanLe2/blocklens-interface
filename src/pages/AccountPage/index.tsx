@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BasePageContainer } from 'src/layouts';
 import { Box, Flex } from '@chakra-ui/react';
 import BasicDetail from './parts/BasicDetail';
@@ -6,12 +6,25 @@ import BillingInfos from './parts/BillingInfos';
 import 'src/styles/pages/AccountPage.scss';
 import { isMobile } from 'react-device-detect';
 import PaymentMethod from './parts/PaymentMethod';
-import { AppButton } from 'src/components';
-import ModalCancelSubscription from 'src/modals/ModalCancelSubscription';
+import { AppButton, AppCard } from 'src/components';
+import rf from 'src/requests/RequestFactory';
+import { toastError } from 'src/utils/utils-notify';
+import Notifications from './parts/Notifications';
 
 const AccountPage = () => {
-  const [isOpenCancelSubscriptionModal, setIsOpenCancelSubscriptionModal] =
-    useState<boolean>(false);
+  const [billingInfo, setBillingInfo] = useState<any>({});
+
+  const getBillingInfo = async () => {
+    try {
+      const res = await rf.getRequest('BillingRequest').getBillingInfo();
+      setBillingInfo(res || {});
+    } catch (e: any) {
+      toastError({ message: e?.message || 'Oops. Something went wrong!' });
+    }
+  };
+  useEffect(() => {
+    getBillingInfo().then();
+  }, []);
 
   return (
     <BasePageContainer className="account">
@@ -23,30 +36,43 @@ const AccountPage = () => {
           flexDirection={isMobile ? 'column' : 'row'}
         >
           <Box className={'box-account'}>
-            <BasicDetail />
+            <BasicDetail billingInfo={billingInfo} />
           </Box>
-          <Box className={'box-account'}>
+          <Box className={'box-account'} mt={isMobile ? 5 : 0}>
             <BillingInfos />
           </Box>
-        </Flex>
 
-        <PaymentMethod />
+          <Box className={'box-account'} mt={5}>
+            <PaymentMethod billingInfo={billingInfo} />
+          </Box>
 
-        <Flex justifyContent={'flex-end'} mt={5}>
-          <AppButton
-            variant="cancel"
-            size="lg"
-            onClick={() => setIsOpenCancelSubscriptionModal(true)}
-          >
-            Cancel Subscription
-          </AppButton>
+          <Box className={'box-account'} mt={5}>
+            <Notifications billingInfo={billingInfo} />
+          </Box>
         </Flex>
-        {isOpenCancelSubscriptionModal && (
-          <ModalCancelSubscription
-            open={isOpenCancelSubscriptionModal}
-            onClose={() => setIsOpenCancelSubscriptionModal(false)}
-          />
-        )}
+        <Box mt={5}>
+          <AppCard className="box-info-account accounts">
+            <Flex justifyContent={'space-between'}>
+              <Box className="info-item">
+                <Box className="title">Linked Accounts</Box>
+              </Box>
+              {isMobile && <Box className={'link'}>Unlink</Box>}
+            </Flex>
+
+            <Flex justifyContent={'center'} my={isMobile ? 5 : 4}>
+              <AppButton size="lg">Connect wallet</AppButton>
+            </Flex>
+
+            {/*<Flex justifyContent={'space-between'} mb={5} className="info-item">*/}
+            {/*  <Flex>*/}
+            {/*    <Box className={'label'}>Addresses:</Box>*/}
+            {/*    <Box className={'value'}>--</Box>*/}
+            {/*  </Flex>*/}
+
+            {/*  {!isMobile && <Box className={'link'}>Unlink</Box>}*/}
+            {/*</Flex>*/}
+          </AppCard>
+        </Box>
       </>
     </BasePageContainer>
   );

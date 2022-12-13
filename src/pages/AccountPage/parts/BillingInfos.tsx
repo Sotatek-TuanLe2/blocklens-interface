@@ -1,14 +1,17 @@
-import React, { useMemo } from 'react';
+import React, { useState } from 'react';
 import 'src/styles/pages/AccountPage.scss';
 import { Box, Flex } from '@chakra-ui/react';
-import { AppCard, AppLink } from 'src/components';
+import { AppButton, AppCard } from 'src/components';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/store';
 import { formatTimestamp } from 'src/utils/utils-helper';
-import moment from 'moment';
 import { isMobile } from 'react-device-detect';
+import ModalCancelSubscription from 'src/modals/ModalCancelSubscription';
 
 const BillingInfos = () => {
+  const [isOpenCancelSubscriptionModal, setIsOpenCancelSubscriptionModal] =
+    useState<boolean>(false);
+
   const { myPlan: currentPlan, plans } = useSelector(
     (state: RootState) => state.billing,
   );
@@ -17,22 +20,11 @@ const BillingInfos = () => {
     (item) => item.code === currentPlan.code,
   );
 
-  const nextPlan = useMemo(() => {
-    if (indexCurrentPlan <= plans.length - 1) {
-      return plans[indexCurrentPlan + 1];
-    }
-    return null;
-  }, [indexCurrentPlan, plans]);
-
   const _renderLinkDetail = () => {
     return (
       <Flex>
-        <AppLink to={`/billing-info`}>
-          <Box className="link" mr={5}>
-            Billing Info
-          </Box>
-        </AppLink>
-        <Box className="link">Change Plan</Box>
+        <Box className="link">Change Plan </Box>
+        <Box ml={2} mt={1.5} className="icon-arrow-right" />
       </Flex>
     );
   };
@@ -46,6 +38,9 @@ const BillingInfos = () => {
         </Flex>
 
         <Box className="name-plan">{currentPlan.name}</Box>
+        <Box className="name-plan">
+          {currentPlan.price === 0 ? `$0` : `$${currentPlan.price}/month`}
+        </Box>
         <Box className="detail-plan">
           <Box>{currentPlan.appLimitation} active apps</Box>
           <Box>{currentPlan.notificationLimitation} message/day</Box>
@@ -56,21 +51,24 @@ const BillingInfos = () => {
         </Box>
       </Box>
 
-      <Box className="info-item">
-        <Box className="title">upcoming plan</Box>
-        {nextPlan && (
-          <Flex justifyContent={'space-between'}>
-            <Box className="name-next-plan">
-              {nextPlan?.name}: ${nextPlan?.price}
-            </Box>
-            <Box className="time">
-              Starting: {formatTimestamp(+moment(), 'MMM DD, YYYY')}
-            </Box>
-          </Flex>
-        )}
+      {currentPlan.code !== 'FREE' && (
+        <Flex justifyContent={isMobile ? 'center' : 'flex-end'}>
+          <AppButton
+            variant="cancel"
+            size="sm"
+            onClick={() => setIsOpenCancelSubscriptionModal(true)}
+          >
+            Cancel Subscription
+          </AppButton>
+        </Flex>
+      )}
 
-        {isMobile && <Box mt={4}>{_renderLinkDetail()}</Box>}
-      </Box>
+      {isOpenCancelSubscriptionModal && (
+        <ModalCancelSubscription
+          open={isOpenCancelSubscriptionModal}
+          onClose={() => setIsOpenCancelSubscriptionModal(false)}
+        />
+      )}
     </AppCard>
   );
 };
