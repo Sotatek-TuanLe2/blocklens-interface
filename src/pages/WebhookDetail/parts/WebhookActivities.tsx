@@ -228,9 +228,11 @@ const NotificationItemMobile: FC<INotificationItemMobile> = ({
             <Flex
               flexWrap={'wrap'}
               my={2}
-              justifyContent={isRetrying ? 'space-between' : 'center'}
+              justifyContent={
+                notification.status !== STATUS.DONE ? 'space-between' : 'center'
+              }
             >
-              {isRetrying && (
+              {notification.status !== STATUS.DONE && (
                 <Box width={'48%'}>
                   <AppButton
                     variant="cancel"
@@ -353,7 +355,7 @@ const NotificationItem: FC<INotificationItem> = ({
         <Td>{_renderStatus(notification, isRetrying)}</Td>
         <Td>
           <Flex>
-            {isRetrying && (
+            {notification.status !== STATUS.DONE && (
               <Box className="link-redirect" mr={3}>
                 <RetryIcon onClick={onRetry} />
               </Box>
