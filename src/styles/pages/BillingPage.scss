@@ -1,0 +1,130 @@
+@import '../color-variables.scss';
+@import '../mixins.scss';
+
+.billing-page {
+  .heading-title {
+    @include heading-4;
+    color: $title;
+    margin-bottom: 26px;
+
+    @include tablet {
+      @include heading-6;
+    }
+  }
+
+  .list-table-wrap {
+    padding: 0;
+
+    .text-title {
+      @include heading-6;
+      color: $title;
+      padding: 30px 40px 22px 40px;
+
+      @include tablet {
+        @include heading-8;
+        padding: 20px 20px 18px 20px;
+      }
+    }
+
+    .tr-list {
+      svg {
+        color: $line;
+      }
+
+      &.active {
+        svg {
+          color: $green;
+        }
+      }
+
+      .box-current {
+        @include text-tiny-regular;
+        color: $main;
+        padding: 4px 10px;
+        background: rgba(115, 103, 240, 0.14);
+        border-radius: 14px;
+      }
+    }
+  }
+
+  .payment-method {
+    cursor: pointer;
+    padding-left: 40px;
+    width: max-content;
+    &:nth-child(2) {
+      margin-bottom: 24px;
+    }
+
+    @include tablet {
+      padding-left: 20px;
+
+      &:nth-child(2) {
+        margin-bottom: 12px;
+      }
+    }
+  }
+
+  .plan-card {
+    .info {
+      margin-bottom: 10px;
+    }
+
+    .plan-detail {
+      @include text-small-regular;
+      color: $paragraph;
+      margin-left: 10px;
+
+      &.price {
+        margin-left: 35px;
+      }
+    }
+
+    &.active {
+      .plan-detail {
+        svg {
+          color: $green;
+        }
+      }
+    }
+  }
+
+  .box-payment-method {
+    padding: 0 0 32px 0;
+    .text-title {
+      @include heading-6;
+      color: $title;
+      padding: 30px 40px 22px 40px;
+
+      @include tablet {
+        @include heading-8;
+        padding: 20px 20px 18px 20px;
+      }
+    }
+  }
+
+  .form-card {
+    .sub-title {
+      @include heading-5;
+      color: $title;
+
+      @include tablet {
+        @include heading-7;
+      }
+    }
+
+    .icon-arrow-left {
+      cursor: pointer;
+    }
+
+    .box-form-crypto {
+      padding: 30px 40px 14px 40px;
+      @include tablet {
+        padding: 20px;
+      }
+
+      .app-select__btn-select {
+        background-color: $bg2;
+      }
+    }
+  }
+}

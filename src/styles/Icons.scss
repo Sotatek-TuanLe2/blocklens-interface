@@ -202,26 +202,49 @@
 }
 
 .icon-download-table {
-  width: 21px; height: 20px;
+  width: 21px;
+  height: 20px;
   background: url('../assets/icons/icon_mobile.png') -62px -10px;
 }
 
 .icon-filter-mobile {
-  width: 32px; height: 32px;
+  width: 32px;
+  height: 32px;
   background: url('../assets/icons/icon_mobile.png') -10px -10px;
 }
 
 .icon-minus {
-  width: 16px; height: 2px;
+  width: 16px;
+  height: 2px;
   background: url('../assets/icons/icon_mobile.png') -103px -10px;
 }
 
 .icon-plus {
-  width: 16px; height: 16px;
+  width: 16px;
+  height: 16px;
   background: url('../assets/icons/icon_mobile.png') -50px -62px;
 }
 
 .icon-menu-mobile {
-  width: 20px; height: 18px;
+  width: 20px;
+  height: 18px;
   background: url('../assets/icons/icon_mobile.png') -10px -62px;
+}
+
+.icon-busd {
+  width: 20px;
+  height: 20px;
+  background: url('../assets/icons/icon_currency.png') -10px -50px;
+}
+
+.icon-usdt {
+  width: 20px;
+  height: 20px;
+  background: url('../assets/icons/icon_currency.png') -50px -10px;
+}
+
+.icon-usdc {
+  width: 20px;
+  height: 20px;
+  background: url('../assets/icons/icon_currency.png') -10px -10px;
 }

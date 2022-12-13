@@ -33,6 +33,7 @@ export interface IChain {
   id: string;
   icon: string;
   networks: { name: string; id: string; icon: string }[];
+  currencies: { name: string; id: string; icon: string }[];
 }
 
 const CHAINS = config.chains.map((chain: IChain) => {

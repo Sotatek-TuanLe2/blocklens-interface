@@ -24,7 +24,13 @@ export interface Config {
     name: string;
     id: string;
     icon: string;
-    networks: { name: string; id: string; icon: string, blockExplorerUrl?: string }[];
+    networks: {
+      name: string;
+      id: string;
+      icon: string;
+      blockExplorerUrl?: string;
+    }[];
+    currencies: { name: string; id: string; icon: string }[];
   }[];
   networks: { name: string; id: string; icon: string }[];
 }

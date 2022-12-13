@@ -23,6 +23,7 @@ import ResetPasswordPage from './pages/ResetPasswordPage';
 import CreateWebhookPage from './pages/CreateWebhookPage';
 import WebhookDetail from './pages/WebhookDetail';
 import MessagesHistory from './pages/MessagesHistoryPage';
+import BillingPage from './pages/BillingPage';
 import AccountPage from './pages/AccountPage';
 import BillingInfoPage from './pages/BillingInfoPage';
 
@@ -55,6 +56,7 @@ const Routes: FC<RouteComponentProps> = () => {
         <PublicRoute path={'/verify-email'} component={VerifyAccountPage} />
         <PublicRoute path={'/forgot-password'} component={ForgotPasswordPage} />
         <PublicRoute path={'/reset-password'} component={ResetPasswordPage} />
+        <PrivateRoute path={'/billing'} component={BillingPage} />
         <PrivateRoute path={'/account'} component={AccountPage} />
         <PrivateRoute path={'/billing-info'} component={BillingInfoPage} />
         <PrivateRoute

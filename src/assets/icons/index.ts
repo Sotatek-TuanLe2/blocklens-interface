@@ -8,6 +8,9 @@ import { ReactComponent as InfoIcon } from './InfoIcon.svg';
 import { ReactComponent as RetryIcon } from './RetryIcon.svg';
 import { ReactComponent as ArrowDown } from './ArrowDown.svg';
 import { ReactComponent as NoData } from './NoData.svg';
+import { ReactComponent as CheckedIcon } from './CheckedIcon.svg';
+import { ReactComponent as RadioChecked } from './RadioChecked.svg';
+import { ReactComponent as RadioNoCheckedIcon } from './RadioNoCheckedIcon.svg';
 import { ReactComponent as EditIcon } from './EditIcon.svg';
 
 export {
@@ -21,5 +24,8 @@ export {
   LinkDetail,
   ArrowDown,
   NoData,
-  EditIcon
+  EditIcon,
+  CheckedIcon,
+  RadioChecked,
+  RadioNoCheckedIcon,
 };
