@@ -7,6 +7,7 @@ import { RootState } from 'src/store';
 import { formatTimestamp } from 'src/utils/utils-helper';
 import { isMobile } from 'react-device-detect';
 import ModalCancelSubscription from 'src/modals/ModalCancelSubscription';
+import { CheckedIcon } from '../../../assets/icons';
 
 const BillingInfos = () => {
   const [isOpenCancelSubscriptionModal, setIsOpenCancelSubscriptionModal] =
@@ -42,8 +43,14 @@ const BillingInfos = () => {
           {currentPlan.price === 0 ? `$0` : `$${currentPlan.price}/month`}
         </Box>
         <Box className="detail-plan">
-          <Box>{currentPlan.appLimitation} active apps</Box>
-          <Box>{currentPlan.notificationLimitation} message/day</Box>
+          <Flex alignItems={'center'}>
+            <CheckedIcon />{' '}
+            <Box ml={2}>{currentPlan.appLimitation} active apps</Box>
+          </Flex>
+          <Flex alignItems={'center'}>
+            <CheckedIcon />{' '}
+            <Box ml={2}> {currentPlan.notificationLimitation} message/day</Box>
+          </Flex>
           <Box>
             Period: {formatTimestamp(currentPlan?.from || 0, 'MMM DD, YYYY')} -{' '}
             {formatTimestamp(currentPlan?.to || 0, 'MMM DD, YYYY')} (UTC)

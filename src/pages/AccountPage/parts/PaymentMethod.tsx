@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import 'src/styles/pages/AccountPage.scss';
 import { AppCard } from 'src/components';
 import { Box, Flex } from '@chakra-ui/react';
+import { RadioChecked, RadioNoCheckedIcon } from 'src/assets/icons';
 
 interface IPaymentMethod {
   billingInfo: any;
@@ -16,13 +17,15 @@ const PaymentMethod: FC<IPaymentMethod> = ({ billingInfo }) => {
         </Flex>
 
         <Flex mb={3}>
-          <Box>Card</Box>{' '}
+          <RadioChecked />
+          <Box ml={2}>Card</Box>{' '}
           <Box className="info-payment">
             (•••• •••• •••• {billingInfo?.paymentMethod?.card?.last4})
           </Box>
         </Flex>
         <Flex>
-          <Box>Crypto</Box> <Box className="info-payment">(Balance: $--)</Box>
+          <RadioNoCheckedIcon /> <Box ml={2}>Crypto</Box>{' '}
+          <Box className="info-payment">(Balance: $--)</Box>
         </Flex>
       </Box>
     </AppCard>
