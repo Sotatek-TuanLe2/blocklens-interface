@@ -51,6 +51,18 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
     return _renderContentAddress();
   };
 
+  const getNumberColspan = () => {
+    if (webhook?.type === WEBHOOK_TYPES.NFT_ACTIVITY) {
+      return 6;
+    }
+
+    if (webhook?.type === WEBHOOK_TYPES.CONTRACT_ACTIVITY) {
+      return 5;
+    }
+
+    return 5;
+  };
+
   return (
     <Tbody>
       <Tr
@@ -92,7 +104,7 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
       </Tr>
       {isShowDetail && (
         <Tr>
-          <Td colSpan={5} className="box-detail">
+          <Td colSpan={getNumberColspan()} className="box-detail">
             <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
               <Box width={'49%'}>
                 <Box className="label-detail">input</Box>

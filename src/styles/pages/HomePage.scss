@@ -149,7 +149,7 @@
       border-radius: 6px;
       overflow: hidden;
       height: 210px;
-      width: 100%;
+      max-width: 535px;
 
       @include tablet {
         margin-bottom: 15px;

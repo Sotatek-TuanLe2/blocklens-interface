@@ -582,11 +582,11 @@ const WebhookActivities: FC<IWebhookActivities> = ({
           status: valueFilter,
           search: valueSearch,
         }}
-        hidePagination={isMobile && !isShowAll}
+        hidePagination={!isShowAll}
         fetchData={fetchDataTable}
         renderBody={_renderBody}
         renderHeader={_renderHeader}
-        limit={isShowAll ? 15 : 10}
+        limit={isShowAll ? 15 : 5}
       />
 
       {isMobile && (

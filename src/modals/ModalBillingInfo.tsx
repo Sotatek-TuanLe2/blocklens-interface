@@ -5,7 +5,6 @@ import { AppButton, AppField, AppInput, AppSelect2 } from 'src/components';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import rf from 'src/requests/RequestFactory';
 import { COUNTRIES } from 'src/constants';
-import { isMobile } from 'react-device-detect';
 
 interface IModalBillingInfo {
   open: boolean;
@@ -82,7 +81,6 @@ const ModalBillingInfo: FC<IModalBillingInfo> = ({
       title={`Edit Billing Details`}
       isOpen={open}
       onClose={onClose}
-      className={"modal-filter"}
     >
       <Box flexDirection={'column'} pt={'20px'}>
         <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
@@ -108,41 +106,46 @@ const ModalBillingInfo: FC<IModalBillingInfo> = ({
               }}
             />
           </AppField>
-          <AppField label={'City'} customWidth={'32%'}>
-            <AppInput
-              value={dataForm.city}
-              onChange={(e) => {
-                setDataForm({
-                  ...dataForm,
-                  city: e.target.value,
-                });
-              }}
-            />
-          </AppField>
+          <Box width={'32%'}>
+            <AppField label={'City'} customWidth={'100%'}>
+              <AppInput
+                value={dataForm.city}
+                onChange={(e) => {
+                  setDataForm({
+                    ...dataForm,
+                    city: e.target.value,
+                  });
+                }}
+              />
+            </AppField>
+          </Box>
 
-          <AppField label={'State'} customWidth={'32%'}>
-            <AppInput
-              value={dataForm.state}
-              onChange={(e) => {
-                setDataForm({
-                  ...dataForm,
-                  state: e.target.value,
-                });
-              }}
-            />
-          </AppField>
-
-          <AppField label={'Postal Code'} customWidth={'32%'}>
-            <AppInput
-              value={dataForm.postalCode}
-              onChange={(e) => {
-                setDataForm({
-                  ...dataForm,
-                  postalCode: e.target.value,
-                });
-              }}
-            />
-          </AppField>
+          <Box width={'32%'}>
+            <AppField label={'State'} customWidth={'100%'}>
+              <AppInput
+                value={dataForm.state}
+                onChange={(e) => {
+                  setDataForm({
+                    ...dataForm,
+                    state: e.target.value,
+                  });
+                }}
+              />
+            </AppField>
+          </Box>
+          <Box width={'32%'}>
+            <AppField label={'Postal Code'} customWidth={'100%'}>
+              <AppInput
+                value={dataForm.postalCode}
+                onChange={(e) => {
+                  setDataForm({
+                    ...dataForm,
+                    postalCode: e.target.value,
+                  });
+                }}
+              />
+            </AppField>
+          </Box>
 
           <AppField label={'Country'} customWidth={'100%'}>
             <AppSelect2
