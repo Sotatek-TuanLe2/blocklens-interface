@@ -95,7 +95,7 @@ const _renderStatus = (
 
   if (isRetrying) {
     return (
-      <Box className="status waiting">Retrying ${notification.retryTime}/5</Box>
+      <Box className="status waiting">Retrying {notification.retryTime}/5</Box>
     );
   }
 
@@ -354,7 +354,7 @@ const NotificationItem: FC<INotificationItem> = ({
         <Td>
           <Flex>
             {isRetrying && (
-              <Box className="link-redirect">
+              <Box className="link-redirect" mr={3}>
                 <RetryIcon onClick={onRetry} />
               </Box>
             )}
