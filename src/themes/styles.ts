@@ -136,7 +136,6 @@ export const globalStyles = {
           borderCollapse: 'collapse',
           w: 'full',
           th: {
-            fontFamily: 'heading',
             fontWeight: 'bold',
             textTransform: 'uppercase',
             letterSpacing: 'wider',

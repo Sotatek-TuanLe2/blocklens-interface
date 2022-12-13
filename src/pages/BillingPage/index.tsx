@@ -264,7 +264,7 @@ const BillingPage = () => {
   const _renderContent = () => {
     if (step === STEPS.LIST) return _renderStep1();
     if (step === STEPS.FORM && paymentMethod === PAYMENT_METHOD.CARD) {
-      return <FormCard onBack={() => setStep(STEPS.LIST)} />;
+      return <FormCard onBack={() => setStep(STEPS.LIST)} step={step} />;
     }
     if (step === STEPS.FORM && paymentMethod === PAYMENT_METHOD.CRYPTO) {
       return <FormCrypto onBack={() => setStep(STEPS.LIST)} />;

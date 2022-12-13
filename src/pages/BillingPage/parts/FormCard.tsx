@@ -87,9 +87,10 @@ const CheckoutForm = () => {
 
 interface IFormAddCard {
   onBack: () => void;
+  step: string;
 }
 
-const FormCard: FC<IFormAddCard> = ({ onBack }) => {
+const FormCard: FC<IFormAddCard> = ({ onBack, step }) => {
   const [paymentIntent, setPaymentIntent] = useState<any>({});
 
   const getPaymentIntent = async () => {
@@ -103,7 +104,7 @@ const FormCard: FC<IFormAddCard> = ({ onBack }) => {
 
   useEffect(() => {
     getPaymentIntent().then();
-  }, []);
+  }, [step]);
 
   const stripePromise = useMemo(
     () => loadStripe(config.stripe.publishableKey),
@@ -123,6 +124,32 @@ const FormCard: FC<IFormAddCard> = ({ onBack }) => {
           options={{
             locale: 'en',
             clientSecret: paymentIntent.client_secret,
+            appearance: {
+              rules: {
+                '.Label': {
+                  marginBottom: '5px',
+                  fontSize: '16px',
+                },
+                '.Input': {
+                  border: '1px solid #69758C',
+                  boxShadow: 'none',
+                  color: '#ffffff',
+                },
+                '.Input:focus': {
+                  borderColor: '#7367F0',
+                  boxShadow: 'none',
+                },
+                '.TermsText': {
+                  display: 'none !important',
+                },
+              },
+              theme: 'night',
+              variables: {
+                colorText: '#B4B7BD',
+                fontSizeBase: '16px',
+                colorBackground: '#30384E',
+              },
+            },
           }}
         >
           <CheckoutForm />
