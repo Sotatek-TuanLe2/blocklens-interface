@@ -112,36 +112,6 @@
       ]
     },
     {
-      "name": "Solana",
-      "id": "SOLANA",
-      "icon": "icon-solana",
-      "networks": [
-        {
-          "name": "Mainnet",
-          "id": "MAINNET",
-          "icon": "icon-solana"
-        },
-        {
-          "name": "Testnet",
-          "id": "TESTNET",
-          "icon": "icon-solana"
-        },
-        { "name": "Devnet", "id": "DEVNET", "icon": "icon-solana" }
-      ],
-      "currencies": [
-        {
-          "name": "Tether (USDT)",
-          "id": "USDT",
-          "icon": "icon-usdt"
-        },
-        {
-          "name": "USD Coin (USDC)",
-          "id": "USDC",
-          "icon": "icon-usdc"
-        }
-      ]
-    },
-    {
       "name": "Bitcoin",
       "id": "BITCOIN",
       "icon": "icon-bitcoin",
