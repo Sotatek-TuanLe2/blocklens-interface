@@ -7,13 +7,13 @@ import { RootState } from 'src/store';
 import { formatTimestamp } from 'src/utils/utils-helper';
 import { isMobile } from 'react-device-detect';
 import ModalCancelSubscription from 'src/modals/ModalCancelSubscription';
-import { CheckedIcon } from '../../../assets/icons';
+import { CheckedIcon } from 'src/assets/icons';
 
 const BillingInfos = () => {
   const [isOpenCancelSubscriptionModal, setIsOpenCancelSubscriptionModal] =
     useState<boolean>(false);
 
-  const { myPlan: currentPlan, plans } = useSelector(
+  const { myPlan: currentPlan } = useSelector(
     (state: RootState) => state.billing,
   );
 
@@ -56,17 +56,16 @@ const BillingInfos = () => {
         </Box>
       </Box>
 
-      {currentPlan.code !== 'FREE' && (
-        <Flex justifyContent={isMobile ? 'center' : 'flex-end'}>
-          <AppButton
-            variant="cancel"
-            size="sm"
-            onClick={() => setIsOpenCancelSubscriptionModal(true)}
-          >
-            Cancel Subscription
-          </AppButton>
-        </Flex>
-      )}
+      <Flex justifyContent={isMobile ? 'center' : 'flex-end'}>
+        <AppButton
+          isDisabled={currentPlan.code === 'FREE'}
+          variant="cancel"
+          size="sm"
+          onClick={() => setIsOpenCancelSubscriptionModal(true)}
+        >
+          Cancel Subscription
+        </AppButton>
+      </Flex>
 
       {isOpenCancelSubscriptionModal && (
         <ModalCancelSubscription

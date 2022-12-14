@@ -13,21 +13,8 @@ import Notifications from './parts/Notifications';
 import ModalConnectWallet from 'src/modals/ModalConnectWallet';
 
 const AccountPage = () => {
-  const [billingInfo, setBillingInfo] = useState<any>({});
   const [isOpenConnectWalletModal, setIsOpenConnectWalletModal] =
     useState<boolean>(false);
-
-  const getBillingInfo = async () => {
-    try {
-      const res = await rf.getRequest('BillingRequest').getBillingInfo();
-      setBillingInfo(res || {});
-    } catch (e: any) {
-      toastError({ message: e?.message || 'Oops. Something went wrong!' });
-    }
-  };
-  useEffect(() => {
-    getBillingInfo().then();
-  }, []);
 
   return (
     <BasePageContainer className="account">
@@ -39,18 +26,18 @@ const AccountPage = () => {
           flexDirection={isMobile ? 'column' : 'row'}
         >
           <Box className={'box-account'}>
-            <BasicDetail billingInfo={billingInfo} />
+            <BasicDetail />
           </Box>
           <Box className={'box-account'} mt={isMobile ? 5 : 0}>
             <BillingInfos />
           </Box>
 
           <Box className={'box-account'} mt={5}>
-            <PaymentMethod billingInfo={billingInfo} />
+            <PaymentMethod/>
           </Box>
 
           <Box className={'box-account'} mt={5}>
-            <Notifications billingInfo={billingInfo} />
+            <Notifications />
           </Box>
         </Flex>
         <Box mt={5}>

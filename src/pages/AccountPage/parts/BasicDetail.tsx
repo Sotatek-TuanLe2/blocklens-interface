@@ -7,18 +7,18 @@ import { RootState } from 'src/store';
 import { EditIcon } from 'src/assets/icons';
 import ModalChangePassword from 'src/modals/ModalChangePassword';
 import ModalEditInfo from 'src/modals/ModalEditInfo';
+import ModalEditCreditCard from 'src/modals/ModalEditCreditCard';
 
-interface IBasicDetail {
-  billingInfo: any;
-}
-
-const BasicDetail: FC<IBasicDetail> = ({ billingInfo }) => {
+const BasicDetail = () => {
   const [isOpenChangePasswordModal, setIsChangePasswordModal] =
     useState<boolean>(false);
   const [isOpenEditInfoModal, setIsOpenEditInfoModal] =
     useState<boolean>(false);
+  const [isOpenEditCardModal, setIsOpenEditCardModal] =
+    useState<boolean>(false);
 
   const { userInfo } = useSelector((state: RootState) => state.auth);
+  const { billingInfos } = useSelector((state: RootState) => state.billing);
 
   return (
     <AppCard className="box-info-account">
@@ -46,10 +46,13 @@ const BasicDetail: FC<IBasicDetail> = ({ billingInfo }) => {
           <Flex>
             <Box className="label">Card:</Box>
             <Box className="value">
-              •••• •••• •••• {billingInfo?.paymentMethod?.card?.last4}
+              •••• •••• •••• {billingInfos?.paymentMethod?.card?.last4}
             </Box>
           </Flex>
-          <Box className="btn-edit">
+          <Box
+            className="btn-edit"
+            onClick={() => setIsOpenEditCardModal(true)}
+          >
             <EditIcon />
           </Box>
         </Flex>
@@ -58,11 +61,7 @@ const BasicDetail: FC<IBasicDetail> = ({ billingInfo }) => {
             <Box className="label">Balance:</Box>
             <Box className="value">--</Box>
           </Flex>
-          <Box
-            className="link"
-          >
-           Top up
-          </Box>
+          <Box className="link">Top up</Box>
         </Flex>
       </Box>
 
@@ -93,6 +92,13 @@ const BasicDetail: FC<IBasicDetail> = ({ billingInfo }) => {
         <ModalEditInfo
           open={isOpenEditInfoModal}
           onClose={() => setIsOpenEditInfoModal(false)}
+        />
+      )}
+
+      {isOpenEditCardModal && (
+        <ModalEditCreditCard
+          open={isOpenEditCardModal}
+          onClose={() => setIsOpenEditCardModal(false)}
         />
       )}
     </AppCard>

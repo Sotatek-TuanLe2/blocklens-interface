@@ -20,7 +20,7 @@ import {
   RadioChecked,
 } from 'src/assets/icons';
 import { isMobile } from 'react-device-detect';
-import FormCard from './parts/FormCard';
+import PartAddCard from './parts/PartAddCard';
 import FormCrypto from './parts/FormCrypto';
 
 const planEnterprise = {
@@ -264,7 +264,7 @@ const BillingPage = () => {
   const _renderContent = () => {
     if (step === STEPS.LIST) return _renderStep1();
     if (step === STEPS.FORM && paymentMethod === PAYMENT_METHOD.CARD) {
-      return <FormCard onBack={() => setStep(STEPS.LIST)} step={step} />;
+      return <PartAddCard onBack={() => setStep(STEPS.LIST)} />;
     }
     if (step === STEPS.FORM && paymentMethod === PAYMENT_METHOD.CRYPTO) {
       return <FormCrypto onBack={() => setStep(STEPS.LIST)} />;

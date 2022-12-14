@@ -13,9 +13,17 @@ import { loadStripe } from '@stripe/stripe-js';
 import config from 'src/config';
 import { AppButton, AppCard } from 'src/components';
 import { isMobile } from 'react-device-detect';
+import { getBillingInfos } from 'src/store/billing';
+import { useDispatch } from 'react-redux';
 
-const CheckoutForm = () => {
+interface ICheckoutForm {
+  onClose?: () => void;
+  isEdit?: boolean;
+}
+
+const CheckoutForm: FC<ICheckoutForm> = ({ onClose, isEdit }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch<any>();
 
   // Initialize an instance of stripe.
   const stripe = useStripe();
@@ -46,6 +54,8 @@ const CheckoutForm = () => {
             paymentMethodId: result.setupIntent.payment_method as string,
           });
           toastSuccess({ message: 'Successfully!' });
+          onClose && onClose();
+          dispatch(getBillingInfos());
         } catch (e: any) {
           toastError({ message: e?.message || 'Oops. Something went wrong!' });
         } finally {
@@ -66,19 +76,43 @@ const CheckoutForm = () => {
     }
   };
 
+  if (isEdit) {
+    return (
+      <Box>
+        <form onSubmit={handleSubmit as any}>
+          <PaymentElement />
+          <Flex flexWrap={'wrap'} justifyContent={'space-between'} mt={4}>
+            <AppButton
+              width={'49%'}
+              size={'lg'}
+              variant={'cancel'}
+              onClick={onClose}
+            >
+              Cancel
+            </AppButton>
+            <AppButton
+              width={'49%'}
+              size={'lg'}
+              isLoading={isLoading}
+              type="submit"
+            >
+              Submit
+            </AppButton>
+          </Flex>
+        </form>
+      </Box>
+    );
+  }
+
   return (
     <Box>
       <form onSubmit={handleSubmit as any}>
         <AppCard>
           <PaymentElement />
         </AppCard>
-        <Flex
-          justifyContent={isMobile ? 'center' : 'flex-end'}
-          alignItems="center"
-          mt={7}
-        >
-          <AppButton isLoading={isLoading} type="submit" size="md">
-            Submit
+        <Flex justifyContent={isMobile ? 'center' : 'flex-end'} mt={4}>
+          <AppButton size={'lg'} isLoading={isLoading} type="submit">
+            Continue
           </AppButton>
         </Flex>
       </form>
@@ -86,12 +120,12 @@ const CheckoutForm = () => {
   );
 };
 
-interface IFormAddCard {
-  onBack: () => void;
-  step: string;
+interface IFormCard {
+  isEdit?: boolean;
+  onClose?: () => void;
 }
 
-const FormCard: FC<IFormAddCard> = ({ onBack, step }) => {
+const FormCard: FC<IFormCard> = ({ isEdit, onClose }) => {
   const [paymentIntent, setPaymentIntent] = useState<any>({});
 
   const getPaymentIntent = async () => {
@@ -105,7 +139,7 @@ const FormCard: FC<IFormAddCard> = ({ onBack, step }) => {
 
   useEffect(() => {
     getPaymentIntent().then();
-  }, [step]);
+  }, []);
 
   const stripePromise = useMemo(
     () => loadStripe(config.stripe.publishableKey),
@@ -113,12 +147,7 @@ const FormCard: FC<IFormAddCard> = ({ onBack, step }) => {
   );
 
   return (
-    <Box className="form-card">
-      <Flex alignItems={'center'} mb={7}>
-        <Box className="icon-arrow-left" mr={6} onClick={onBack} />
-        <Box className={'sub-title'}>Card</Box>
-      </Flex>
-
+    <Box>
       {!!Object.keys(paymentIntent).length && (
         <Elements
           stripe={stripePromise}
@@ -154,7 +183,7 @@ const FormCard: FC<IFormAddCard> = ({ onBack, step }) => {
             },
           }}
         >
-          <CheckoutForm />
+          <CheckoutForm onClose={onClose} isEdit={isEdit} />
         </Elements>
       )}
     </Box>
