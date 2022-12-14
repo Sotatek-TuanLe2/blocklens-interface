@@ -36,10 +36,11 @@ const PAYMENT_METHOD = {
   CRYPTO: 'CRYPTO',
 };
 
-const STEPS = {
-  LIST: 'LIST',
-  FORM: 'FORM',
-};
+enum STEPS {
+  LIST,
+  FORM,
+  CHECKOUT
+}
 
 const paymentMethods = [
   {
@@ -140,7 +141,7 @@ const BillingPage = () => {
     PAYMENT_METHOD.CARD,
   );
   const [planSelected, setPlanSelected] = useState<any>('');
-  const [step, setStep] = useState<string>(STEPS.LIST);
+  const [step, setStep] = useState<number>(STEPS.LIST);
   const { myPlan: currentPlan, plans } = useSelector(
     (state: RootState) => state.billing,
   );
@@ -261,13 +262,23 @@ const BillingPage = () => {
     );
   };
 
+  const onNextStep = () => setStep(prevState => prevState + 1);
+
+  const onBackStep = () => setStep(prevState => prevState - 1);
+
   const _renderContent = () => {
-    if (step === STEPS.LIST) return _renderStep1();
-    if (step === STEPS.FORM && paymentMethod === PAYMENT_METHOD.CARD) {
-      return <PartAddCard onBack={() => setStep(STEPS.LIST)} />;
-    }
-    if (step === STEPS.FORM && paymentMethod === PAYMENT_METHOD.CRYPTO) {
-      return <FormCrypto onBack={() => setStep(STEPS.LIST)} />;
+    switch (step) {
+      case STEPS.LIST:
+        return _renderStep1();
+      case STEPS.FORM:
+        if (paymentMethod === PAYMENT_METHOD.CARD) {
+          return <PartAddCard onBack={onBackStep} onNext={onNextStep} />;
+        }
+        return <FormCrypto onBack={onBackStep} />;
+      case STEPS.CHECKOUT:
+        return <div>Billing Checkout</div>;
+      default:
+        return null;
     }
   };
 
