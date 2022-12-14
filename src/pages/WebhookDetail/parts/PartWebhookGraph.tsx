@@ -79,13 +79,15 @@ const PartWebhookGraph = () => {
 
       <AppGraph data={dataChart} duration={duration} />
 
-      <ModalFilterGraph
-        optionTimes={optionsFilterByDuration}
-        open={isOpenFilterGraphModal}
-        time={duration}
-        onChangeTime={setDuration}
-        onClose={() => setIsOpenFilterGraphModal(false)}
-      />
+      {isOpenFilterGraphModal && (
+        <ModalFilterGraph
+          optionTimes={optionsFilterByDuration}
+          open={isOpenFilterGraphModal}
+          time={duration}
+          onChangeTime={setDuration}
+          onClose={() => setIsOpenFilterGraphModal(false)}
+        />
+      )}
     </AppCard>
   );
 };
