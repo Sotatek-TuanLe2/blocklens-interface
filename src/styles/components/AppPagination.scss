@@ -14,14 +14,20 @@
     @include text-small-regular;
     border: 1px solid $border;
     margin: 0 5px;
-    min-width: 30px;
-    padding: 0 5px;
-    height: 30px;
     display: flex;
     justify-content: center;
     align-items: center;
     border-radius: 3px;
     color: $paragraph;
+
+    a {
+      padding: 0 5px;
+      min-width: 30px;
+      height: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
 
     &.selected {
       background: $gradient;
