@@ -137,6 +137,11 @@ const CreateWebhook = () => {
       return forceUpdate();
     }
 
+    if (!dataForm.abiFilter.length) {
+      toastError({ message: 'At least one checkbox must be checked.' });
+      return;
+    }
+
     const data = {
       ...dataForm,
       type,
@@ -447,11 +452,9 @@ const CreateWebhook = () => {
   if (!appInfo || !Object.values(appInfo).length) {
     return (
       <BasePageContainer className="app-detail">
-        <Flex justifyContent='center'>
-          App Not Found
-        </Flex>
+        <Flex justifyContent="center">App Not Found</Flex>
       </BasePageContainer>
-    )
+    );
   }
 
   return (
