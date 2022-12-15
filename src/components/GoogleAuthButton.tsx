@@ -39,7 +39,7 @@ const GoogleAuthButton: FC<IGoogleAuthButton> = ({ children }) => {
 
       dispatch(setAccessToken(res));
       dispatch(setUserInfo(res.user));
-      toastSuccess({ message: 'Welcome to Blocklens!' });
+      toastSuccess({ message: 'Welcome to Blocksniper!' });
       history.push('/');
     } catch (e: any) {
       toastError({ message: e?.message || 'Oops. Something went wrong!' });

@@ -29,7 +29,7 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
       <Flex className="box-create">
         <NoData />
         No data yet. Create your first Contract Activity webhook to start
-        experiencing Blocklens!
+        experiencing Blocksniper!
         <AppButton
           isDisabled={isDisabledApp}
           size={'md'}
