@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, MouseEvent, useState } from 'react';
 import { Box, Flex, Tbody, Td, Tr } from '@chakra-ui/react';
 import { IMessages, IWebhook, WEBHOOK_TYPES } from 'src/utils/utils-webhook';
 import { formatShortText, formatTimestamp } from 'src/utils/utils-helper';
@@ -63,6 +63,11 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
     return 5;
   };
 
+  const onRedirectToBlockExplorer = (e: MouseEvent<HTMLAnchorElement>) => {
+    e.stopPropagation();
+    return;
+  };
+
   return (
     <Tbody>
       <Tr
@@ -78,6 +83,7 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
             {formatShortText(message?.txHash)}
             <Box ml={2}>
               <a
+                onClick={(e) => onRedirectToBlockExplorer(e)}
                 href={`${
                   getBlockExplorerUrl(
                     message?.input?.chain,

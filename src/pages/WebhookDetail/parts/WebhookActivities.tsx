@@ -9,7 +9,7 @@ import {
   Tooltip,
   Tr,
 } from '@chakra-ui/react';
-import React, { FC, useCallback, useMemo, useState } from 'react';
+import React, { FC, useCallback, useMemo, useState, MouseEvent } from 'react';
 import {
   AppButton,
   AppCard,
@@ -41,7 +41,7 @@ import {
   STATUS,
   WEBHOOK_TYPES,
 } from 'src/utils/utils-webhook';
-import { useParams } from 'react-router';
+import { useHistory, useParams } from 'react-router';
 import { isMobile } from 'react-device-detect';
 import { getBlockExplorerUrl } from 'src/utils/utils-network';
 import { IAppResponse } from 'src/utils/utils-app';
@@ -76,7 +76,7 @@ interface INotificationItemMobile {
   webhook: IWebhook;
   isRetrying: boolean;
   appInfo: IAppResponse;
-  onRetry: () => void;
+  onRetry: (e: MouseEvent<SVGSVGElement | HTMLButtonElement>) => void;
 }
 
 interface IWebhookActivities {
@@ -237,7 +237,7 @@ const NotificationItemMobile: FC<INotificationItemMobile> = ({
                   <AppButton
                     variant="cancel"
                     size="sm"
-                    onClick={onRetry}
+                    onClick={(e: any) => onRetry(e)}
                     w={'100%'}
                   >
                     Retry Now
@@ -267,22 +267,27 @@ const NotificationItem: FC<INotificationItem> = ({
   webhook,
   appInfo,
 }) => {
+  const history = useHistory();
   const isRetrying = useMemo(() => {
     return notification.retryTime < 5 && notification.status === STATUS.FAILED;
   }, [notification]);
 
-  const onRetry = useCallback(async () => {
-    try {
-      await rf
-        .getRequest('NotificationRequest')
-        .retryActivity(notification.hash);
-      toastSuccess({ message: 'Successfully!' });
-    } catch (error: any) {
-      toastError({
-        message: error?.message || 'Oops. Something went wrong!',
-      });
-    }
-  }, []);
+  const onRetry = useCallback(
+    async (e: MouseEvent<SVGSVGElement | HTMLButtonElement>) => {
+      e.stopPropagation();
+      try {
+        await rf
+          .getRequest('NotificationRequest')
+          .retryActivity(notification.hash);
+        toastSuccess({ message: 'Successfully!' });
+      } catch (error: any) {
+        toastError({
+          message: error?.message || 'Oops. Something went wrong!',
+        });
+      }
+    },
+    [],
+  );
 
   const _renderContentContract = () => {
     return <Td textAlign="center">{notification.method}</Td>;
@@ -324,9 +329,21 @@ const NotificationItem: FC<INotificationItem> = ({
       />
     );
 
+  const onRedirectToBlockExplorer = (e: MouseEvent<HTMLAnchorElement>) => {
+    e.stopPropagation();
+    return;
+  };
+
   return (
     <Tbody>
-      <Tr className="tr-list">
+      <Tr
+        className="tr-list"
+        onClick={() => {
+          history.push(
+            `/app/${appInfo.appId}/webhook/${webhook.registrationId}/activities/${notification.hash}`,
+          );
+        }}
+      >
         <Td>
           {formatTimestamp(
             notification.createdAt * 1000,
@@ -339,6 +356,7 @@ const NotificationItem: FC<INotificationItem> = ({
             {formatShortText(notification.metadata?.transactionHash)}
             <Box ml={2}>
               <a
+                onClick={(e) => onRedirectToBlockExplorer(e)}
                 href={`${
                   getBlockExplorerUrl(appInfo.chain, appInfo.network) +
                   `tx/${notification.metadata?.transactionHash}`
@@ -357,7 +375,9 @@ const NotificationItem: FC<INotificationItem> = ({
           <Flex>
             {notification.status !== STATUS.DONE && (
               <Box className="link-redirect" mr={3}>
-                <RetryIcon onClick={onRetry} />
+                <RetryIcon
+                  onClick={(e: MouseEvent<SVGSVGElement>) => onRetry(e)}
+                />
               </Box>
             )}
 
