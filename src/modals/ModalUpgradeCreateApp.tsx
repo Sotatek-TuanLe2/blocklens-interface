@@ -34,15 +34,15 @@ const ModalUpgradeCreateApp: FC<ModalUpgradeCreateApp> = ({
       onClose={onClose}
     >
       <Box className={'modal__description'}>
-        You can only create {myPlan?.appLimitation} active apps in your current plan,
-        upgrade to{' '}
+        You can only create {myPlan?.appLimitation} active apps in your current
+        plan, upgrade to{' '}
         <Box as={'span'} textTransform="lowercase">
           {nextPlan?.name}
         </Box>{' '}
         to enjoy {nextPlan?.appLimitation} active apps in maximum.
       </Box>
       <Flex flexWrap={'wrap'} justifyContent={'center'}>
-        <AppButton size={'lg'} onClick={() => history.push('/setting/billing')}>
+        <AppButton size={'lg'} onClick={() => history.push('/billing')}>
           Upgrade Now
         </AppButton>
       </Flex>
