@@ -26,6 +26,7 @@ import MessagesHistory from './pages/MessagesHistoryPage';
 import BillingPage from './pages/BillingPage';
 import AccountPage from './pages/AccountPage';
 import BillingInfoPage from './pages/BillingInfoPage';
+import LandingPage from './pages/LandingPage';
 
 /**
  * Main App routes.
@@ -56,6 +57,7 @@ const Routes: FC<RouteComponentProps> = () => {
         <PublicRoute path={'/sign-up'} component={SignUpPage} />
         <PublicRoute path={'/verify-email'} component={VerifyAccountPage} />
         <PublicRoute path={'/forgot-password'} component={ForgotPasswordPage} />
+        <PublicRoute path={'/landing-page'} component={LandingPage} />
         <PublicRoute path={'/reset-password'} component={ResetPasswordPage} />
         <PrivateRoute path={'/billing'} component={BillingPage} />
         <PrivateRoute path={'/account'} component={AccountPage} />
