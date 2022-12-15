@@ -1,6 +1,6 @@
 const env = process.env.REACT_APP_ENV || 'prod';
 
-const PREFERENCES = `blocklens-preferences-${env}`;
+const PREFERENCES = `blocksniper-preferences-${env}`;
 
 type StorageInterface = {
   accessToken?: string;
