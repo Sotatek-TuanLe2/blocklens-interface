@@ -83,6 +83,8 @@ const PartUserGraph = () => {
     );
   };
 
+  if (!dataChart.length) return <></>;
+
   return (
     <AppCard className="user-graph" p={0}>
       <Flex className={'title-list-app'}>

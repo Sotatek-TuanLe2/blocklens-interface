@@ -63,6 +63,7 @@ const Header: FC = () => {
 
   const onSignInRequest = () => {
     if (!isOpenSignInRequestModal) {
+      onLogout();
       setIsOpenSignInRequestModal(true);
     }
   };
@@ -125,7 +126,7 @@ const Header: FC = () => {
               className={'btn-close'}
               onClick={() => setIsOpenMenuMobile(false)}
             >
-              <CloseIcon width={"11px"}/>
+              <CloseIcon width={'11px'} />
             </Box>
           ) : (
             <Box
@@ -163,9 +164,7 @@ const Header: FC = () => {
         onClose={() => setIsOpenSignInRequestModal(false)}
       />
 
-      {isOpenMenuMobile && <Box className="header-mobile">
-        {_renderMenu()}
-      </Box>}
+      {isOpenMenuMobile && <Box className="header-mobile">{_renderMenu()}</Box>}
     </Box>
   );
 };

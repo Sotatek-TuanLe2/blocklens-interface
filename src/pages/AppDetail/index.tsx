@@ -47,8 +47,6 @@ const AppDetail = () => {
     getAppInfo().then();
   }, []);
 
-  console.log(appInfo, 'appInfo');
-
   if (!appInfo || !Object.values(appInfo).length) {
     return (
       <BasePageContainer className="app-detail">

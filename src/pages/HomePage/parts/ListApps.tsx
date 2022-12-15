@@ -87,7 +87,7 @@ const AppMobile: FC<IAppMobile> = ({ app }) => {
               className="info"
             >
               <Box>Message today</Box>
-              <Box className="value">N/A</Box>
+              <Box className="value">--</Box>
             </Flex>
             <Flex
               justifyContent="space-between"
@@ -95,7 +95,7 @@ const AppMobile: FC<IAppMobile> = ({ app }) => {
               className="info"
             >
               <Box>Number of webhook</Box>
-              <Box className="value">N/A</Box>
+              <Box className="value">--</Box>
             </Flex>
           </Box>
         )}
@@ -179,8 +179,8 @@ const ListApps: React.FC<IListApps> = ({
             >
               <Td>{app.name}</Td>
               <Td>{_renderChainApp(app.chain)}</Td>
-              <Td textAlign={'center'}>N/A</Td>
-              <Td textAlign={'center'}>N/A</Td>
+              <Td textAlign={'center'}>--</Td>
+              <Td textAlign={'center'}>--</Td>
               <Td textAlign={'right'}>{_renderStatus(app.status)}</Td>
             </Tr>
           );

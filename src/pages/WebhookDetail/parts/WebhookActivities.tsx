@@ -95,7 +95,7 @@ const _renderStatus = (
 
   if (isRetrying) {
     return (
-      <Box className="status waiting">Retrying ${notification.retryTime}/5</Box>
+      <Box className="status waiting">Retrying {notification.retryTime}/5</Box>
     );
   }
 
@@ -228,9 +228,11 @@ const NotificationItemMobile: FC<INotificationItemMobile> = ({
             <Flex
               flexWrap={'wrap'}
               my={2}
-              justifyContent={isRetrying ? 'space-between' : 'center'}
+              justifyContent={
+                notification.status !== STATUS.DONE ? 'space-between' : 'center'
+              }
             >
-              {isRetrying && (
+              {notification.status !== STATUS.DONE && (
                 <Box width={'48%'}>
                   <AppButton
                     variant="cancel"
@@ -353,8 +355,8 @@ const NotificationItem: FC<INotificationItem> = ({
         <Td>{_renderStatus(notification, isRetrying)}</Td>
         <Td>
           <Flex>
-            {isRetrying && (
-              <Box className="link-redirect">
+            {notification.status !== STATUS.DONE && (
+              <Box className="link-redirect" mr={3}>
                 <RetryIcon onClick={onRetry} />
               </Box>
             )}
@@ -484,7 +486,13 @@ const WebhookActivities: FC<IWebhookActivities> = ({
           <Th>
             <Flex alignItems={'center'}>
               Status{' '}
-              <Tooltip p={2} label="Status" placement={'top'} hasArrow>
+              <Tooltip
+                p={2}
+                label="Messages for each activity will retry 5 times if send failed, each auto-retry occurs after one minute.
+                 The status shows Failed if all retries failed or user’s daily limit is reached."
+                placement={'top'}
+                hasArrow
+              >
                 <Box ml={2} cursor="pointer">
                   <InfoIcon />
                 </Box>
@@ -582,11 +590,11 @@ const WebhookActivities: FC<IWebhookActivities> = ({
           status: valueFilter,
           search: valueSearch,
         }}
-        hidePagination={isMobile && !isShowAll}
+        hidePagination={!isShowAll}
         fetchData={fetchDataTable}
         renderBody={_renderBody}
         renderHeader={_renderHeader}
-        limit={isShowAll ? 15 : 10}
+        limit={isShowAll ? 15 : 5}
       />
 
       {isMobile && (

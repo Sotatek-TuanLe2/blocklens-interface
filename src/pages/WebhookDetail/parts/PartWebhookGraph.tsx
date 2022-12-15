@@ -61,6 +61,8 @@ const PartWebhookGraph = () => {
     );
   };
 
+  if (!dataChart.length) return <></>;
+
   return (
     <AppCard className="user-graph" p={0}>
       <Flex className={'title-list-app'}>
@@ -77,13 +79,15 @@ const PartWebhookGraph = () => {
 
       <AppGraph data={dataChart} duration={duration} />
 
-      <ModalFilterGraph
-        optionTimes={optionsFilterByDuration}
-        open={isOpenFilterGraphModal}
-        time={duration}
-        onChangeTime={setDuration}
-        onClose={() => setIsOpenFilterGraphModal(false)}
-      />
+      {isOpenFilterGraphModal && (
+        <ModalFilterGraph
+          optionTimes={optionsFilterByDuration}
+          open={isOpenFilterGraphModal}
+          time={duration}
+          onChangeTime={setDuration}
+          onClose={() => setIsOpenFilterGraphModal(false)}
+        />
+      )}
     </AppCard>
   );
 };

@@ -31,12 +31,12 @@ export const ChartStatics: FC<IChartStatics> = ({ dataChart, keyStat }) => {
     return (
       <Box
         height={'50px'}
-        width={'40%'}
+        width={'35%'}
         px={5}
         className={isMobile ? 'chartMobile' : 'chart'}
       >
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart width={500} height={300} data={dataFormat}>
+          <LineChart width={500} height={300} data={dataFormat.reverse()}>
             <Line
               type="monotone"
               dataKey={keyStat}
@@ -64,8 +64,8 @@ const AppStatistical: FC<IAppStatics> = ({
       <AppCard className="box-info">
         <Box className="label">{label}</Box>
         <Box className="value">
-          {value || 0}
-          {isPercent ? '%' : ''}
+          {value && +value > 0 ? value : '--'}
+          {value && +value > 0 && isPercent ? '%' : ''}
         </Box>
         <ChartStatics dataChart={dataChart} keyStat={keyStat} />
       </AppCard>

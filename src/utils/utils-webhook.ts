@@ -75,6 +75,6 @@ export const getColorBrandStatus = (status: string) => {
     case STATUS.FAILED:
       return 'inactive';
     default:
-      return 'active';
+      return 'inactive';
   }
 };

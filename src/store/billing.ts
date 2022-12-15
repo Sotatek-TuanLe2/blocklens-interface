@@ -29,11 +29,13 @@ export interface IPlan {
 interface BillingState {
   myPlan: IMyPlan;
   plans: IPlan[];
+  billingInfos: any;
 }
 
 const initialState = {
   myPlan: {},
   plans: [],
+  billingInfos: {},
 } as BillingState;
 
 export const getMyPlan = createAsyncThunk(
@@ -52,6 +54,14 @@ export const getPlans = createAsyncThunk(
   },
 );
 
+export const getBillingInfos = createAsyncThunk(
+  'billing/getBillingInfos',
+  async (params, thunkApi) => {
+    const res = await rf.getRequest('BillingRequest').getBillingInfo();
+    thunkApi.dispatch(setBillingInfos(res));
+  },
+);
+
 const billingSlice = createSlice({
   name: 'billing',
   initialState,
@@ -62,9 +72,12 @@ const billingSlice = createSlice({
     setPlans: (state, action) => {
       state.plans = action.payload;
     },
+    setBillingInfos: (state, action) => {
+      state.billingInfos = action.payload;
+    },
   },
 });
 
-export const { setMyPlan, setPlans } = billingSlice.actions;
+export const { setMyPlan, setPlans, setBillingInfos } = billingSlice.actions;
 
 export default billingSlice.reducer;

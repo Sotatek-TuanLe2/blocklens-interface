@@ -149,7 +149,7 @@
       border-radius: 6px;
       overflow: hidden;
       height: 210px;
-      width: 100%;
+      max-width: 535px;
 
       @include tablet {
         margin-bottom: 15px;
@@ -252,6 +252,7 @@
   margin-left: 60px;
 
   div {
+    cursor: pointer;
     @include text-medium-regular;
     color: $paragraph;
     margin-right: 30px;
@@ -279,6 +280,10 @@
       &:before {
         background-color: $yellow;
       }
+    }
+
+    &.hide {
+      text-decoration: line-through;
     }
   }
 

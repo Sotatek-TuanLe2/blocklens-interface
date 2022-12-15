@@ -4,7 +4,6 @@ export const CHAINS = {
   ETHEREUM: 'ETHEREUM',
   BSC: 'BSC',
   POLYGON: 'POLYGON',
-  SOLANA: 'SOLANA',
   BITCOIN: 'BITCOIN',
 };
 
@@ -15,7 +14,7 @@ export const getLogoChainByName = (chainName?: string) => {
 
 export const isEVMNetwork = (chainId?: string) => {
   if (!chainId) return false;
-  return chainId !== CHAINS.SOLANA && chainId !== CHAINS.BITCOIN;
+  return chainId !== CHAINS.BITCOIN;
 };
 
 export const getBlockExplorerUrl = (chainId?: string, networkId?: string) => {
