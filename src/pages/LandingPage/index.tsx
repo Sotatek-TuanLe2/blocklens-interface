@@ -79,10 +79,10 @@ const feedbacks = [
 
 const LandingPage = () => {
   return (
-    <div>
+    <div className="landing-page">
       <Header />
 
-      <div className="main">
+      <div className="main-landing">
         <div className="introduction">
           <div className="introduction__sub-text">
             Notifications for Web3.0 Developers
