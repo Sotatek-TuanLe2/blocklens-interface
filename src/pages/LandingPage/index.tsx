@@ -1,7 +1,8 @@
 import 'src/styles/pages/LandingPage.scss';
 import Header from 'src/pages/LandingPage/Header';
 import Footer from 'src/pages/LandingPage/Footer';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const categories = [
   {
@@ -205,7 +206,9 @@ const LandingPage = () => {
             </div>
 
             <div className="get-start__btn">
-              <button className="btn-primary">Sign Up</button>
+              <Link to={'/sign-up'}>
+                <button className="btn-primary">Sign Up</button>
+              </Link>
             </div>
           </div>
         </div>

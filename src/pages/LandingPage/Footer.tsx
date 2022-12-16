@@ -44,7 +44,7 @@ const Footer = () => {
           minim veniam, quis nostrud exercitation ullamco laboris nisi ut
           aliquip ex ea commodo consequat.
         </div>
-        <div>© 2022, Block Sniper</div>
+        <div className='footer-landing__name'>© 2022, Block Sniper</div>
       </div>
 
       <div className="footer-landing__menus">

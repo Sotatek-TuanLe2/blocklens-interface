@@ -1,3 +1,6 @@
+@import '../color-variables.scss';
+@import '../mixins.scss';
+
 * {
   line-height: 140%;
 }
@@ -55,12 +58,12 @@
       font-family: 'Anderson Grotesk Bold', sans-serif;
       font-weight: 700;
       font-size: 18px;
-      color: #ffffff;
+      color: $title;
       display: block;
       margin-right: 40px;
 
       &:hover {
-        color: #03caff;
+        color: $link;
         text-decoration: underline;
       }
     }
@@ -79,7 +82,7 @@
       font-weight: 400;
       font-size: 28px;
       text-align: center;
-      color: #ffffff;
+      color: $title;
       max-width: 744px;
       margin: 0 auto;
     }
@@ -89,14 +92,14 @@
       font-size: 80px;
       line-height: 120%;
       text-align: center;
-      color: #ffffff;
+      color: $title;
       max-width: 940px;
       margin: 0 auto;
       margin-top: 8px;
       font-family: 'Spline Sans Mono', sans-serif;
 
       span {
-        color: #03caff;
+        color: $link;
       }
     }
 
@@ -105,7 +108,7 @@
       font-size: 24px;
       line-height: 160%;
       text-align: center;
-      color: #ffffff;
+      color: $title;
       max-width: 744px;
       margin: 60px auto;
     }
@@ -138,14 +141,14 @@
       &__name {
         font-weight: 400;
         font-size: 40px;
-        color: #ffffff;
+        color: $title;
       }
 
       &__description {
         font-weight: 400;
         font-size: 18px;
         line-height: 160%;
-        color: #ffffff;
+        color: $title;
         max-width: 456px;
       }
     }
@@ -153,7 +156,7 @@
     .divider {
       width: 96px;
       height: 0.5px;
-      background-color: #ffffff;
+      background-color: $title;
     }
   }
 
@@ -166,7 +169,7 @@
       font-family: 'Spline Sans Mono', sans-serif;
 
       span {
-        color: #03caff;
+        color: $link;
       }
     }
 
@@ -188,7 +191,7 @@
         font-weight: 400;
         font-size: 40px;
         line-height: 140%;
-        color: #ffffff;
+        color: $title;
         margin-bottom: 24px;
       }
 
@@ -196,7 +199,7 @@
         font-weight: 400;
         font-size: 18px;
         line-height: 160%;
-        color: #ffffff;
+        color: $title;
       }
     }
   }
@@ -208,12 +211,12 @@
       font-weight: 400;
       font-size: 32px;
       line-height: 140%;
-      color: #ffffff;
+      color: $title;
       max-width: 792px;
       margin: 120px auto;
 
       span {
-        color: #03caff;
+        color: $link;
       }
     }
     img {
@@ -226,12 +229,12 @@
       font-weight: 400;
       font-size: 80px;
       line-height: 120%;
-      color: #ffffff;
+      color: $title;
       margin-bottom: 80px;
       font-family: 'Spline Sans Mono', sans-serif;
 
       span {
-        color: #03caff;
+        color: $link;
       }
     }
 
@@ -256,7 +259,7 @@
       font-weight: 400;
       font-size: 16px;
       line-height: 160%;
-      color: #ffffff;
+      color: $title;
     }
 
     &__name {
@@ -271,12 +274,12 @@
       font-size: 80px;
       line-height: 120%;
       text-align: center;
-      color: #ffffff;
+      color: $title;
       margin-bottom: 60px;
       font-family: 'Spline Sans Mono', sans-serif;
 
       span {
-        color: #03caff;
+        color: $link;
       }
     }
 
@@ -285,7 +288,7 @@
       font-size: 24px;
       line-height: 160%;
       text-align: center;
-      color: #ffffff;
+      color: $title;
       max-width: 744px;
       margin: 0 auto;
     }
@@ -313,8 +316,7 @@
     font-weight: 400;
     font-size: 14px;
     line-height: 150%;
-    color: #ffffff;
-    opacity: 0.6;
+    color: $title;
 
     img {
       width: 155px;
@@ -326,12 +328,16 @@
     margin: 24px 0;
   }
 
+  &__name, &__description {
+    opacity: 0.6;
+  }
+
   &__menus {
     font-weight: 400;
     font-size: 14px;
     line-height: 150%;
     width: 25%;
-    color: #ffffff;
+    color: $title;
   }
 
   &__menu-item {
@@ -356,7 +362,7 @@
   font-size: 18px;
   text-align: center;
   padding: 12px 24px;
-  color: #ffffff;
+  color: $title;
   font-family: 'Anderson Grotesk Bold', sans-serif;
 
   &:hover {

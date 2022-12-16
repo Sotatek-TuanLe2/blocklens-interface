@@ -57,7 +57,7 @@ const Routes: FC<RouteComponentProps> = () => {
         <PublicRoute path={'/sign-up'} component={SignUpPage} />
         <PublicRoute path={'/verify-email'} component={VerifyAccountPage} />
         <PublicRoute path={'/forgot-password'} component={ForgotPasswordPage} />
-        <PublicRoute path={'/landing-page'} component={LandingPage} />
+
         <PublicRoute path={'/reset-password'} component={ResetPasswordPage} />
         <PrivateRoute path={'/billing'} component={BillingPage} />
         <PrivateRoute path={'/account'} component={AccountPage} />
@@ -74,7 +74,8 @@ const Routes: FC<RouteComponentProps> = () => {
           path={'/app/:appId/webhook/:webhookId/activities/:id'}
           component={MessagesHistory}
         />
-        <PrivateRoute path={'/'} component={HomePage} />
+        <PrivateRoute path={'/home'} component={HomePage} />
+        <PublicRoute path={'/'} component={LandingPage} />
       </Switch>
     </>
   );
@@ -92,7 +93,7 @@ const PublicRoute = ({ component: Component, ...rest }: any) => {
         ) : (
           <Redirect
             to={{
-              pathname: '/',
+              pathname: '/home',
             }}
           />
         )

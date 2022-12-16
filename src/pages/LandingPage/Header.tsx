@@ -30,7 +30,7 @@ const Header: FC<IHeader> = ({ isFixedHeader }) => {
     <div className={`header-landing ${isFixedHeader ? 'fixed' : ''}`}>
       <div className="header-landing__content">
         <div>
-          <Link to={'#'}>
+          <Link to={'/'}>
             <img src="/images/LandingPage/logo.png" alt="logo" />
           </Link>
         </div>
@@ -44,7 +44,9 @@ const Header: FC<IHeader> = ({ isFixedHeader }) => {
             );
           })}
           <div>
-            <button className="btn-primary">Log in</button>
+            <Link to={'/login'}>
+              <button className="btn-primary">Log in</button>
+            </Link>
           </div>
         </div>
       </div>
