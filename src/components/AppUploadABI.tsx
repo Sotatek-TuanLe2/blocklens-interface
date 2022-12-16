@@ -14,6 +14,7 @@ import ERC721 from 'src/abi/ERC-721.json';
 import { Link as ReactLink } from 'react-router-dom';
 import 'src/styles/components/AppUploadABI.scss';
 import { isMobile } from 'react-device-detect';
+import { DownloadIcon } from 'src/assets/icons';
 
 export const TYPE_ABI = {
   NFT: 'NFT',
@@ -435,8 +436,8 @@ const AppUploadABI: FC<IAppUploadABI> = ({
               download
             >
               <Flex>
-                <Box className="icon-download" mr={2} />
-                Download Example
+                <DownloadIcon />
+                <Box ml={2}>Download Example</Box>
               </Flex>
             </Link>
           </Box>

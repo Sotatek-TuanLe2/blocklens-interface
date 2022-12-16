@@ -33,6 +33,7 @@ import {
   LinkDetail,
   LinkIcon,
   RetryIcon,
+  ArrowRightIcon,
 } from 'src/assets/icons';
 import {
   getColorBrandStatus,
@@ -565,11 +566,11 @@ const WebhookActivities: FC<IWebhookActivities> = ({
 
   const _renderLinkShowAll = () => {
     return (
-      <Flex alignItems={'center'} className="view-all">
-        <Box className="link" cursor={'pointer'} onClick={onShowAll}>
+      <Flex alignItems={'center'} className="view-all link">
+        <Box className="link" cursor={'pointer'} onClick={onShowAll} mr={2}>
           View More Activity
         </Box>
-        <Box className="icon-arrow-right" ml={2} />
+        <ArrowRightIcon />
       </Flex>
     );
   };

@@ -31,6 +31,7 @@ import { isMobile } from 'react-device-detect';
 import { APP_STATUS } from 'src/utils/utils-app';
 import { isEVMNetwork } from 'src/utils/utils-network';
 import { useLocation } from 'react-router';
+import { DownloadIcon } from 'src/assets/icons';
 
 const FILE_CSV_EXAMPLE = '/abi/CSV_Example.csv';
 
@@ -347,8 +348,8 @@ const CreateWebhook = () => {
                   className="link"
                 >
                   <Flex>
-                    <Box className="icon-download" mr={2} />
-                    Download Example
+                    <DownloadIcon />
+                    <Box ml={2}>Download Example</Box>
                   </Flex>
                 </Link>
               </Box>
@@ -447,11 +448,9 @@ const CreateWebhook = () => {
   if (!appInfo || !Object.values(appInfo).length) {
     return (
       <BasePageContainer className="app-detail">
-        <Flex justifyContent='center'>
-          App Not Found
-        </Flex>
+        <Flex justifyContent="center">App Not Found</Flex>
       </BasePageContainer>
-    )
+    );
   }
 
   return (

@@ -25,7 +25,7 @@ import { CloseIcon } from '@chakra-ui/icons';
 const menus = [
   {
     name: 'Dashboard',
-    path: '/',
+    path: '/home',
   },
   {
     name: 'Billing',

@@ -7,7 +7,7 @@ import { RootState } from 'src/store';
 import { formatTimestamp } from 'src/utils/utils-helper';
 import { isMobile } from 'react-device-detect';
 import ModalCancelSubscription from 'src/modals/ModalCancelSubscription';
-import { CheckedIcon } from 'src/assets/icons';
+import { CheckedIcon, ArrowRightIcon } from 'src/assets/icons';
 
 const BillingInfos = () => {
   const [isOpenCancelSubscriptionModal, setIsOpenCancelSubscriptionModal] =
@@ -20,9 +20,9 @@ const BillingInfos = () => {
   const _renderLinkDetail = () => {
     return (
       <AppLink to={'/billing'}>
-        <Flex>
-          <Box className="link">Change Plan </Box>
-          <Box ml={2} mt={1.5} className="icon-arrow-right" />
+        <Flex className={"link"} alignItems={'center'}>
+          <Box className="link" mr={2}>Change Plan </Box>
+          <ArrowRightIcon />
         </Flex>
       </AppLink>
     );
