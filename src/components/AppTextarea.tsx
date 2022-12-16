@@ -63,7 +63,7 @@ export const appTextareaStyles = {
         color: mode('secondaryGray.500', 'whiteAlpha.300')(props),
       },
       _focus: {
-        borderColor: mode('main.100', 'main.300')(props),
+        borderColor: mode('pressed.100', 'pressed.100')(props),
       },
     }),
   },
