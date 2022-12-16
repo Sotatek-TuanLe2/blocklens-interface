@@ -1,8 +1,12 @@
 import 'src/styles/pages/LandingPage.scss';
-import React from 'react';
+import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
 
-const Header = () => {
+interface IHeader {
+  isFixedHeader: boolean;
+}
+
+const Header: FC<IHeader> = ({ isFixedHeader }) => {
   const menus = [
     {
       name: 'Developer',
@@ -23,21 +27,25 @@ const Header = () => {
   ];
 
   return (
-    <div className="header-landing">
-      <div>
-        <img src="/images/LandingPage/logo.png" alt="logo" />
-      </div>
-
-      <div className="menus">
-        {menus.map((item) => {
-          return (
-            <Link className="menu" to={item.path}>
-              {item.name}
-            </Link>
-          );
-        })}
+    <div className={`header-landing ${isFixedHeader ? 'fixed' : ''}`}>
+      <div className="header-landing__content">
         <div>
-          <button className="btn-primary">Login</button>
+          <Link to={'#'}>
+            <img src="/images/LandingPage/logo.png" alt="logo" />
+          </Link>
+        </div>
+
+        <div className="menus">
+          {menus.map((item, index) => {
+            return (
+              <Link className="menu" to={item.path} key={index}>
+                {item.name}
+              </Link>
+            );
+          })}
+          <div>
+            <button className="btn-primary">Log in</button>
+          </div>
         </div>
       </div>
     </div>

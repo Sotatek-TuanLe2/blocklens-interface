@@ -2,29 +2,57 @@
   line-height: 140%;
 }
 
+@font-face {
+  font-family: 'Spline Sans Mono';
+  src: url('../../assets/fonts/SplineSansMono-Regular.ttf');
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'Anderson Grotesk';
+  src: url('../../assets/fonts/AndersonGrotesk.otf');
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'Anderson Grotesk Bold';
+  src: url('../../assets/fonts/AndersonGrotesk-Bold.otf');
+  font-weight: 700;
+}
+
 .landing-page {
   background-image: url('../../assets/icons/bg-homepage.png');
   background-repeat: no-repeat;
   background-size: cover;
   width: 100%;
+  font-family: 'Anderson Grotesk', sans-serif;
 }
 
 .header-landing {
-  display: flex;
-  justify-content: space-between;
-  max-width: 1130px;
-  margin: 0 auto;
   position: fixed;
-  top: 60px;
+  padding: 30px 0;
+  top: 0;
   left: 0;
   right: 0;
   align-items: center;
   z-index: 9999;
 
+  &.fixed {
+    background-color: #000224;
+  }
+
+  &__content {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 auto;
+    max-width: 1130px;
+  }
+
   .menus {
     display: flex;
     align-items: center;
     .menu {
+      font-family: 'Anderson Grotesk Bold', sans-serif;
       font-weight: 700;
       font-size: 18px;
       color: #ffffff;
@@ -65,6 +93,7 @@
       max-width: 940px;
       margin: 0 auto;
       margin-top: 8px;
+      font-family: 'Spline Sans Mono', sans-serif;
 
       span {
         color: #03caff;
@@ -133,6 +162,7 @@
       font-size: 80px;
       line-height: 120%;
       margin-top: 180px;
+      font-family: 'Spline Sans Mono', sans-serif;
 
       span {
         color: #03caff;
@@ -197,6 +227,7 @@
       line-height: 120%;
       color: #ffffff;
       margin-bottom: 80px;
+      font-family: 'Spline Sans Mono', sans-serif;
 
       span {
         color: #03caff;
@@ -241,6 +272,7 @@
       text-align: center;
       color: #ffffff;
       margin-bottom: 60px;
+      font-family: 'Spline Sans Mono', sans-serif;
 
       span {
         color: #03caff;
@@ -324,6 +356,7 @@
   text-align: center;
   padding: 12px 24px;
   color: #ffffff;
+  font-family: 'Anderson Grotesk Bold', sans-serif;
 
   &:hover {
     background: #226cff;

@@ -49,9 +49,9 @@ const Footer = () => {
 
       <div className="footer-landing__menus">
         <div>Company</div>
-        {menus.map((item) => {
+        {menus.map((item, index) => {
           return (
-            <Link className="footer-landing__menu-item" to={item.path}>
+            <Link className="footer-landing__menu-item" to={item.path} key={index}>
               {item.name}
             </Link>
           );
@@ -60,9 +60,9 @@ const Footer = () => {
 
       <div className="footer-landing__menus">
         <div>Privacy Policy and Terms of Service</div>
-        {linkTerms.map((item) => {
+        {linkTerms.map((item, index) => {
           return (
-            <Link className="footer-landing__menu-item" to={item.path}>
+            <Link className="footer-landing__menu-item" to={item.path}  key={index}>
               {item.name}
             </Link>
           );

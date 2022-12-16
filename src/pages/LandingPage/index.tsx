@@ -1,6 +1,7 @@
 import 'src/styles/pages/LandingPage.scss';
 import Header from 'src/pages/LandingPage/Header';
 import Footer from 'src/pages/LandingPage/Footer';
+import { useEffect, useState } from 'react';
 
 const categories = [
   {
@@ -78,9 +79,19 @@ const feedbacks = [
 ];
 
 const LandingPage = () => {
+  const [isFixedHeader, setIsFixedHeader] = useState<boolean>(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsFixedHeader(window.scrollY > 96);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
     <div className="landing-page">
-      <Header />
+      <Header isFixedHeader={isFixedHeader} />
 
       <div className="main-landing">
         <div className="introduction">
