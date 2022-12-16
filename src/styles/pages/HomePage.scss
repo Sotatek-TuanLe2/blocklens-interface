@@ -235,9 +235,9 @@
 
       .box-current {
         @include text-tiny-regular;
-        color: $main;
+        color: $blue;
         padding: 4px 10px;
-        background: rgba(115, 103, 240, 0.14);
+        background: rgba(3, 202, 255, 0.1);
         border-radius: 14px;
       }
     }

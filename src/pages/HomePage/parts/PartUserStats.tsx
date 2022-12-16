@@ -50,7 +50,7 @@ export const ListStat: FC<IListStat> = ({ dataStats, dataChart }) => {
       <SimpleGrid
         className="infos"
         columns={{ base: 1, sm: 2, lg: 4 }}
-        gap="20px"
+        gap="18px"
       >
         {dataStats.map((stats, index: number) => {
           return (
