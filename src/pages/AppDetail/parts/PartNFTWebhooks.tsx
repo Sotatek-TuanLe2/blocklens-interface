@@ -28,7 +28,7 @@ const PartNFTWebhooks: FC<IListNTF> = ({ appInfo }) => {
       <Flex className="box-create">
         <NoData />
         No data yet. Create your first NFT Activity webhook to start
-        experiencing Blocklens!
+        experiencing Blocksniper!
         <AppButton
           isDisabled={isDisabledApp}
           size={'md'}

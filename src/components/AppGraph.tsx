@@ -64,13 +64,13 @@ const AppGraph: FC<IChart> = ({ data, duration }) => {
               dataKey="message"
               stroke="#3A95FF"
               strokeWidth={2}
-              dot={{ r: isMobile ? 3 : 5 }}
+              dot={{ r: isMobile ? 2 : 4 }}
             />
           )}
 
           {checkIsShowLine('activities') && (
             <Line
-              dot={{ r: isMobile ? 3 : 5 }}
+              dot={{ r: isMobile ? 2 : 4 }}
               strokeWidth={2}
               dataKey="activities"
               stroke="#FFB547"
