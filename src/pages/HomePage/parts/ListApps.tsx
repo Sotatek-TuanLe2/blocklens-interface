@@ -5,7 +5,10 @@ import rf from 'src/requests/RequestFactory';
 import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
 import { IListAppResponse } from 'src/utils/common';
 import { useHistory } from 'react-router';
-import { getLogoChainByName } from 'src/utils/utils-network';
+import {
+  getLogoChainByName,
+  getNameChainByChainId,
+} from 'src/utils/utils-network';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/store';
 import ModalUpgradeCreateApp from 'src/modals/ModalUpgradeCreateApp';
@@ -31,11 +34,12 @@ export const _renderStatus = (status?: APP_STATUS) => {
   );
 };
 
-const _renderChainApp = (chain: string) => {
+const _renderChainApp = (chain: string, network: string) => {
   return (
     <Flex alignItems={'center'}>
       <Box className={getLogoChainByName(chain) || ''} mr={2.5} />
-      {chain}
+      <Box mr={1}>{getNameChainByChainId(chain)}</Box>
+      <Box textTransform="capitalize"> {network}</Box>
     </Flex>
   );
 };
@@ -79,7 +83,9 @@ const AppMobile: FC<IAppMobile> = ({ app }) => {
               className="info"
             >
               <Box>Network</Box>
-              <Box className="value">{_renderChainApp(app.chain)}</Box>
+              <Box className="value">
+                {_renderChainApp(app.chain, app.network.toLowerCase())}
+              </Box>
             </Flex>
             <Flex
               justifyContent="space-between"
@@ -178,7 +184,7 @@ const ListApps: React.FC<IListApps> = ({
               onClick={() => history.push(`/apps/${app.appId}`)}
             >
               <Td>{app.name}</Td>
-              <Td>{_renderChainApp(app.chain)}</Td>
+              <Td>{_renderChainApp(app.chain, app.network.toLowerCase())}</Td>
               <Td textAlign={'center'}>--</Td>
               <Td textAlign={'center'}>--</Td>
               <Td textAlign={'right'}>{_renderStatus(app.status)}</Td>
