@@ -6,5 +6,325 @@
   },
   "api": {
     "baseUrlApi": "https://stg-launchpad-api.metaversestarter.io"
+  },
+  "defaultNetwork": "BSC_MAINNET",
+  "networks": {
+    "ETH_MAINNET": {
+      "id": "ETH_MAINNET",
+      "name": "Ethereum",
+      "chainId": 1,
+      "rpcUrls": [
+        "https://mainnet.infura.io/v3/706f50c257ba4ca9883d0aa14ae57434",
+        "https://mainnet.infura.io/v3/9ddb0f7769a347948bfacd789a9a714f"
+      ],
+      "blockExplorer": {
+        "name": "Etherscan",
+        "icon": "/images/etherscan.png",
+        "url": "https://etherscan.io/"
+      },
+      "support": ["signIn", "auction"],
+      "nativeCurrency": {
+        "name": "ETH",
+        "symbol": "ETH",
+        "decimals": 18
+      },
+      "currencies": {
+        "eth": {
+          "coingeckoId": "ethereum",
+          "address": "0x00",
+          "name": "ETH",
+          "symbol": "ETH",
+          "decimals": 18,
+          "icon": "/icons/eth.png"
+        },
+        "weth": {
+          "coingeckoId": "ethereum",
+          "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+          "name": "WETH",
+          "symbol": "WETH",
+          "decimals": 18,
+          "icon": "/images/ETH.png"
+        },
+        "usdt": {
+          "coingeckoId": "tether",
+          "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+          "name": "USDT",
+          "symbol": "USDT",
+          "decimals": 6,
+          "icon": "/images/USDT.png"
+        },
+        "usdc": {
+          "coingeckoId": "usd-coin",
+          "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "name": "USDC",
+          "symbol": "USDC",
+          "decimals": 6,
+          "icon": "/images/USDC.png"
+        }
+      },
+      "addresses": {
+        "multicall": "0xeefba1e63905ef1d7acba5a8513c70307c1ce441",
+        "auctionProxy": "0x0dE1e103d599A78841F36A3e70E3B2b66F2a2A86",
+        "auctionVault": "0x95df9af95CB3d81210097a46C5607Aef219Bb296"
+      },
+      "icon": "/icons/eth.png",
+      "currency": "ETH",
+      "connectors": {
+        "metamask-connector": {
+          "id": "metamask-connector",
+          "name": "MetaMask",
+          "icon": "icons/metamask.png",
+          "description": "Easy-to-use browser extension.",
+          "href": null,
+          "mobile": true,
+          "deepLink": "",
+          "options": {},
+          "extensionLink": {
+            "chrome": "https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en",
+            "firefox": "https://addons.mozilla.org/en-US/firefox/addon/ether-metamask/",
+            "brave": "https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en",
+            "edge": "https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en"
+          }
+        },
+        "wallet-connect-connector": {
+          "id": "wallet-connect-connector",
+          "name": "WalletConnect",
+          "icon": "/icons/wallet_connect.png",
+          "description": "Connect to Trust Wallet, Rainbow Wallet and more...",
+          "href": null,
+          "mobile": true,
+          "options": {
+            "rpc": {
+              "42": "https://kovan.infura.io/v3/b725ba2b44f64faa9dd4781d4c0a8ab0"
+            },
+            "infuraId": "b725ba2b44f64faa9dd4781d4c0a8ab0",
+            "bridge": "https://bridge.walletconnect.org",
+            "qrcode": true,
+            "pollingInterval": 10000
+          }
+        },
+        "bsc-connector": {
+          "id": "bsc-connector",
+          "name": "BSC Wallet",
+          "icon": "/icons/bsc.png",
+          "description": "Connect to Trust Wallet, Rainbow Wallet and more...",
+          "href": null,
+          "options": {},
+          "extensionLink": {
+            "chrome": "https://chrome.google.com/webstore/detail/binance-wallet/fhbohimaelbohpjbbldcngcnapndodjp",
+            "firefox": "https://addons.mozilla.org/en-US/firefox/addon/binance-chain/?utm_source=addons.mozilla.org&utm_medium=referral&utm_content=search",
+            "brave": "https://chrome.google.com/webstore/detail/binance-wallet/fhbohimaelbohpjbbldcngcnapndodjp",
+            "edge": "https://chrome.google.com/webstore/detail/binance-wallet/fhbohimaelbohpjbbldcngcnapndodjp"
+          }
+        }
+      }
+    },
+    "BSC_MAINNET": {
+      "id": "BSC_MAINNET",
+      "name": "Binance Smart Chain",
+      "chainId": 56,
+      "rpcUrls": ["https://bsc-dataseed1.defibit.io/"],
+      "blockExplorer": {
+        "name": "Bscscan",
+        "icon": "/images/bscscan.png",
+        "url": "https://bscscan.com/"
+      },
+      "support": ["signIn", "auction"],
+      "nativeCurrency": {
+        "name": "BNB",
+        "symbol": "BNB",
+        "decimals": 18
+      },
+      "currencies": {
+        "bnb": {
+          "coingeckoId": "binancecoin",
+          "address": "0x00",
+          "name": "BNB",
+          "symbol": "BNB",
+          "decimals": 18,
+          "icon": "/icons/bnb.png"
+        },
+        "wbnb": {
+          "coingeckoId": "binancecoin",
+          "address": "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
+          "name": "WBNB",
+          "symbol": "WBNB",
+          "decimals": 18,
+          "icon": "/images/BNB.png"
+        },
+        "usdt": {
+          "coingeckoId": "tether",
+          "address": "0x55d398326f99059fF775485246999027B3197955",
+          "name": "USDT",
+          "symbol": "USDT",
+          "decimals": 18,
+          "icon": "/images/USDT.png"
+        },
+        "busd": {
+          "coingeckoId": "binance-usd",
+          "address": "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56",
+          "name": "BUSD",
+          "symbol": "BUSD",
+          "decimals": 18,
+          "icon": "/images/BUSD.png"
+        },
+        "usdc": {
+          "coingeckoId": "usd-coin",
+          "address": "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d",
+          "name": "USDC",
+          "symbol": "USDC",
+          "decimals": 18,
+          "icon": "/images/USDC.png"
+        }
+      },
+      "addresses": {
+        "multicall": "0x41263cba59eb80dc200f3e2544eda4ed6a90e76c",
+        "auctionProxy": "0x1A5f4B48E0AA70599d13fB78B6A9F7419A88eBe6",
+        "auctionVault": "0x7a69460317d830da8f24a330f61fAa4144187040"
+      },
+      "icon": "/icons/bnb.png",
+      "currency": "BNB",
+      "connectors": {
+        "metamask-connector": {
+          "id": "metamask-connector",
+          "name": "MetaMask",
+          "icon": "/icons/metamask.png",
+          "description": "Easy-to-use browser extension.",
+          "href": null,
+          "mobile": true,
+          "deepLink": "",
+          "options": {},
+          "extensionLink": {
+            "chrome": "https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en",
+            "firefox": "https://addons.mozilla.org/en-US/firefox/addon/ether-metamask/",
+            "brave": "https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en",
+            "edge": "https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en"
+          }
+        },
+        "wallet-connect-connector": {
+          "id": "wallet-connect-connector",
+          "name": "WalletConnect",
+          "icon": "/icons/wallet_connect.png",
+          "description": "Connect to Trust Wallet, Rainbow Wallet and more...",
+          "href": null,
+          "mobile": true,
+          "options": {
+            "rpc": {
+              "56": "https://data-seed-prebsc-1-s1.binance.org:8545/"
+            },
+            "infuraId": "706f50c257ba4ca9883d0aa14ae57434",
+            "bridge": "https://bridge.walletconnect.org",
+            "qrcode": true,
+            "pollingInterval": 10000
+          }
+        },
+        "bsc-connector": {
+          "id": "bsc-connector",
+          "name": "BSC Wallet",
+          "icon": "/icons/bsc.png",
+          "description": "Connect to Trust Wallet, Rainbow Wallet and more...",
+          "href": null,
+          "options": {},
+          "extensionLink": {
+            "chrome": "https://chrome.google.com/webstore/detail/binance-wallet/fhbohimaelbohpjbbldcngcnapndodjp",
+            "firefox": "https://addons.mozilla.org/en-US/firefox/addon/binance-chain/?utm_source=addons.mozilla.org&utm_medium=referral&utm_content=search",
+            "brave": "https://chrome.google.com/webstore/detail/binance-wallet/fhbohimaelbohpjbbldcngcnapndodjp",
+            "edge": "https://chrome.google.com/webstore/detail/binance-wallet/fhbohimaelbohpjbbldcngcnapndodjp"
+          }
+        }
+      }
+    },
+    "POLYGON_MAINNET": {
+      "id": "POLYGON_MAINNET",
+      "name": "Polygon",
+      "chainId": 137,
+      "rpcUrls": ["https://rpc-mainnet.maticvigil.com/"],
+      "blockExplorer": {
+        "name": "Polygonscan",
+        "icon": "/images/polygonscan.png",
+        "url": "https://polygonscan.com/"
+      },
+      "support": ["signIn", "auction"],
+      "currencies": {
+        "matic": {
+          "coingeckoId": "matic-network",
+          "address": "0x00",
+          "name": "MATIC",
+          "symbol": "MATIC",
+          "decimals": 18,
+          "icon": "/icons/polygon.png"
+        },
+        "wmatic": {
+          "coingeckoId": "matic-network",
+          "address": "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
+          "name": "WMATIC",
+          "symbol": "WMATIC",
+          "decimals": 18,
+          "icon": "/images/MATIC.png"
+        },
+        "usdt": {
+          "coingeckoId": "tether",
+          "address": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
+          "name": "USDT",
+          "symbol": "USDT",
+          "decimals": 6,
+          "icon": "/images/USDT.png"
+        },
+        "usdc": {
+          "coingeckoId": "usd-coin",
+          "address": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
+          "name": "USDC",
+          "symbol": "USDC",
+          "decimals": 6,
+          "icon": "/images/USDC.png"
+        }
+      },
+      "addresses": {
+        "multicall": "0x11ce4B23bD875D7F5C6a31084f55fDe1e9A87507",
+        "auctionProxy": "0x16694fdC854CEF3F0cc960147e66699d3495fFef",
+        "auctionVault": "0x072844dc3761B9a7D81285A43630603d239a484E"
+      },
+      "icon": "/icons/polygon.png",
+      "currency": "MATIC",
+      "nativeCurrency": {
+        "name": "MATIC",
+        "symbol": "MATIC",
+        "decimals": 18
+      },
+      "connectors": {
+        "metamask-connector": {
+          "id": "metamask-connector",
+          "name": "MetaMask",
+          "icon": "/icons/metamask.png",
+          "description": "Easy-to-use browser extension.",
+          "href": null,
+          "mobile": true,
+          "deepLink": "",
+          "options": {},
+          "extensionLink": {
+            "chrome": "https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en",
+            "firefox": "https://addons.mozilla.org/en-US/firefox/addon/ether-metamask/",
+            "brave": "https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en",
+            "edge": "https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en"
+          }
+        },
+        "wallet-connect-connector": {
+          "id": "wallet-connect-connector",
+          "name": "WalletConnect",
+          "icon": "/icons/wallet_connect.png",
+          "description": "Connect to Trust Wallet, Rainbow Wallet and more...",
+          "href": null,
+          "options": {
+            "rpc": {
+              "137": "https://rpc-mumbai.maticvigil.com/"
+            },
+            "infuraId": "e267dd5ef60949ba9bb3195ccacde657",
+            "bridge": "https://bridge.walletconnect.org",
+            "qrcode": true,
+            "pollingInterval": 10000
+          }
+        }
+      }
+    }
   }
 }

@@ -6,6 +6,54 @@ const env = process.env.REACT_APP_ENV || 'prod';
 const configs: any = { prod, dev };
 const config: Config = configs[env];
 
+interface BlockExplorer {
+  name: string;
+  icon: string;
+  url: string;
+}
+
+interface Connector {
+  id: string;
+  name: string;
+  icon: string;
+  description: string;
+  href: string;
+  mobile: boolean;
+  deepLink: string;
+  options: any;
+  extensionLink?: {
+    chrome: string;
+    firefox: string;
+    brave: string;
+    edge: string;
+  };
+}
+
+interface Currency {
+  id: string;
+  coingeckoId: string;
+  address: string;
+  name: string;
+  symbol: string;
+  decimals: number;
+  icon: string;
+}
+
+export interface Network {
+  id: string;
+  coingeckoId: string;
+  name: string;
+  chainId: number;
+  rpcUrls: string[];
+  blockExplorer: BlockExplorer;
+  addresses?: any;
+  connectors: { [key: string]: Connector };
+  icon?: string;
+  currency?: string;
+  nativeCurrency?: any;
+  currencies: { [key: string]: Currency };
+}
+
 export interface Config {
   auth: {
     domain: string;
@@ -17,6 +65,7 @@ export interface Config {
     baseUrlApi: string;
     notificationsApi: string;
   };
+  defaultNetwork: string;
   stripe: {
     publishableKey: string;
   };
@@ -32,7 +81,7 @@ export interface Config {
     }[];
     currencies: { name: string; id: string; icon: string }[];
   }[];
-  networks: { name: string; id: string; icon: string }[];
+  networks: { [key: string]: Network };
 }
 
 export default config;

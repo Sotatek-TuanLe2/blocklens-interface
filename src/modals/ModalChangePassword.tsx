@@ -6,7 +6,7 @@ import BaseModal from './BaseModal';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { useHistory } from 'react-router';
-import Storage from 'src/utils/storage';
+import Storage from 'src/utils/utils-storage';
 
 interface IFormChangePass {
   currentPassword: string;

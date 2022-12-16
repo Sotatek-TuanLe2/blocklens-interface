@@ -1,25 +1,21 @@
-import { createStore, applyMiddleware, combineReducers } from 'redux';
-import { composeWithDevTools } from 'redux-devtools-extension';
-import thunk from 'redux-thunk';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import thunkMiddleware from 'redux-thunk';
 import auth from 'src/store/auth';
 import billing from 'src/store/billing';
+import wallet from 'src/store/wallet';
 
 const rootReducer = combineReducers({
   auth,
-  billing
+  billing,
+  wallet
 });
 
-const initialState = {};
+const store = configureStore({
+  reducer: rootReducer,
+  middleware: [thunkMiddleware],
+});
 
-const middlewares = [thunk];
-
-export type RootState = ReturnType<typeof rootReducer>;
-
-const store = createStore(
-  rootReducer,
-  initialState,
-  composeWithDevTools(applyMiddleware(...middlewares)),
-);
+export type RootState = ReturnType<typeof store.getState>;
 
 export default () => {
   return { store };

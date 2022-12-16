@@ -1,6 +1,6 @@
 import config from 'src/config';
 import axios from 'axios';
-import Storage from 'src/utils/storage';
+import Storage from 'src/utils/utils-storage';
 import { setAuthorizationToRequest } from 'src/utils/utils-auth';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
 
