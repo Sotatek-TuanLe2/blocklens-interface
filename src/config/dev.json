@@ -1,7 +1,7 @@
 {
   "auth": {
     "domain": "Blocksniper",
-    "message": "Join Blocksniper",
+    "message": "Hello Blocksniper",
     "secretKey": "0xA84Df05A9F758eca47A7060a9A6C004578F6E65B",
     "googleClientId": "130485616803-c05jc0gd898m975gt9spv73v71u15ti1.apps.googleusercontent.com"
   },
@@ -168,10 +168,10 @@
           "id": "629dc9f014a8be7577e1ccdc",
           "coingeckoId": "ethereum",
           "address": "0x00",
-          "name": "ETH",
+          "name": "Ethereum",
           "symbol": "ETH",
           "decimals": 18,
-          "icon": "/icons/eth.png"
+          "icon": "icon-ethereum"
         },
         "weth": {
           "id": "",
@@ -189,7 +189,7 @@
           "name": "USDT",
           "symbol": "USDT",
           "decimals": 6,
-          "icon": "/images/USDT.png"
+          "icon": "icon-usdt"
         },
         "usdc": {
           "id": "629dc9f014a8be7577e1cce0",
@@ -198,7 +198,7 @@
           "name": "USDC",
           "symbol": "USDC",
           "decimals": 6,
-          "icon": "/images/USDC.png"
+          "icon": "icon-usdc"
         }
       },
       "addresses": {
@@ -206,13 +206,13 @@
         "auctionProxy": "0xd8CC13D4dd3F40c693b4f844C8609d6231731728",
         "auctionVault": "0x351A93E819f29897b964c82370e86138E86f0f10"
       },
-      "icon": "/icons/eth.png",
+      "icon": "icon-ethereum",
       "currency": "ETH",
       "connectors": {
         "metamask-connector": {
           "id": "metamask-connector",
           "name": "MetaMask",
-          "icon": "/icons/metamask.png",
+          "icon": "/images/MetaMaskIcon.svg",
           "description": "Easy-to-use browser extension.",
           "href": null,
           "mobile": true,
@@ -228,7 +228,7 @@
         "wallet-connect-connector": {
           "id": "wallet-connect-connector",
           "name": "WalletConnect",
-          "icon": "/icons/wallet_connect.png",
+          "icon": "/images/WalletConnectIcon.svg",
           "description": "Connect to Trust Wallet, Rainbow Wallet and more...",
           "href": null,
           "mobile": true,
@@ -268,7 +268,7 @@
           "name": "BNB",
           "symbol": "BNB",
           "decimals": 18,
-          "icon": "/icons/bnb.png"
+          "icon": "icon-bsc"
         },
         "wbnb": {
           "id": "",
@@ -286,7 +286,7 @@
           "name": "USDT",
           "symbol": "USDT",
           "decimals": 18,
-          "icon": "/images/USDT.png"
+          "icon": "icon-usdt"
         },
         "busd": {
           "id": "629dc9f014a8be7577e1cce4",
@@ -304,7 +304,7 @@
           "name": "USDC",
           "symbol": "USDC",
           "decimals": 18,
-          "icon": "/images/USDC.png"
+          "icon": "icon-usdc"
         }
       },
       "addresses": {
@@ -312,13 +312,13 @@
         "auctionProxy": "0x9f2B6F70299EBa7b7894f928fe2cB3f3Bea3DCa7",
         "auctionVault": "0x6c6031B1359042a5d1272F90B497248637E4Fd12"
       },
-      "icon": "/icons/bnb.png",
+      "icon": "icon-bsc",
       "currency": "BNB",
       "connectors": {
         "metamask-connector": {
           "id": "metamask-connector",
           "name": "MetaMask",
-          "icon": "/icons/metamask.png",
+          "icon": "/images/MetaMaskIcon.svg",
           "description": "Easy-to-use browser extension.",
           "href": null,
           "mobile": true,
@@ -334,7 +334,7 @@
         "wallet-connect-connector": {
           "id": "wallet-connect-connector",
           "name": "WalletConnect",
-          "icon": "/icons/wallet_connect.png",
+          "icon": "/images/WalletConnectIcon.svg",
           "description": "Connect to Trust Wallet, Rainbow Wallet and more...",
           "href": null,
           "mobile": true,
@@ -368,7 +368,7 @@
         "auctionProxy": "0xD9a51C88E4588A026a7FFEd53ea61bc6a372a093",
         "auctionVault": "0x41095a849Aa05F416C4295bDd5Fc748A17eDAA67"
       },
-      "icon": "/icons/polygon.png",
+      "icon": "icon-polygon",
       "currency": "MATIC",
       "nativeCurrency": {
         "name": "MATIC",
@@ -383,7 +383,7 @@
           "name": "MATIC",
           "symbol": "MATIC",
           "decimals": 18,
-          "icon": "/icons/polygon.png"
+          "icon": "icon-polygon"
         },
         "wmatic": {
           "id": "",
@@ -401,7 +401,7 @@
           "name": "USDT",
           "symbol": "USDT",
           "decimals": 6,
-          "icon": "/images/USDT.png"
+          "icon": "icon-usdt"
         },
         "usdc": {
           "id": "629dc9f114a8be7577e1ccee",
@@ -410,14 +410,14 @@
           "name": "USDC",
           "symbol": "USDC",
           "decimals": 6,
-          "icon": "/images/USDC.png"
+          "icon": "icon-usdc"
         }
       },
       "connectors": {
         "metamask-connector": {
           "id": "metamask-connector",
           "name": "MetaMask",
-          "icon": "/icons/metamask.png",
+          "icon": "/images/MetaMaskIcon.svg",
           "description": "Easy-to-use browser extension.",
           "href": null,
           "mobile": true,
@@ -433,7 +433,7 @@
         "wallet-connect-connector": {
           "id": "wallet-connect-connector",
           "name": "WalletConnect",
-          "icon": "/icons/wallet_connect.png",
+          "icon": "/images/WalletConnectIcon.svg",
           "description": "Connect to Trust Wallet, Rainbow Wallet and more...",
           "href": null,
           "options": {

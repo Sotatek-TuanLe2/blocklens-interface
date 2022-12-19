@@ -10,6 +10,9 @@ interface IUserInfo {
   lastName?: string;
   address?: string;
   email?: string;
+  billingEmail?: string;
+  balance?: string | number;
+  walletAddress?: string;
 }
 
 interface AuthState {

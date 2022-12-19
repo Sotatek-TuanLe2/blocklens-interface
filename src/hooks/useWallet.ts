@@ -20,6 +20,10 @@ import { useMemo } from 'react';
 import { checkWalletConnectProvider, IWallet, Wallet } from 'src/utils/utils-wallet';
 import Storage from 'src/utils/utils-storage';
 import { toastError } from 'src/utils/utils-notify';
+import BaseConnector from 'src/connectors/BaseConnector';
+import useUser from './useUser';
+import rf from 'src/requests/RequestFactory';
+import { getInfoUser } from 'src/store/auth';
 
 type ReturnType = {
   currentNetwork: string;
@@ -43,6 +47,8 @@ const useWallet = (): ReturnType => {
     balance,
     openModalConnectWallet,
   } = useSelector((state: RootState) => state.wallet);
+
+  const { user } = useUser();
 
   const wallet = useMemo(() => {
     if (!address) {
@@ -114,6 +120,20 @@ const useWallet = (): ReturnType => {
     });
   };
 
+  const signMessage = async (connector: BaseConnector, address: string) => {
+    try {
+      if (!user || !!user.isUserLinked() || !address) {
+        return;
+      }
+      const signature = await connector.signMessage();
+      await rf.getRequest('AuthRequest').attachWalletAddress({ address, signature });
+      // reload user's info
+      dispatch(getInfoUser());
+    } catch (error: any) {
+      toastError({ message: error.message });
+    }
+  };
+
   const connectWallet = async (connectorId: string, network: string) => {
     const connector = ConnectorFactory.getConnector(connectorId, network);
     if (!connector) {
@@ -145,6 +165,7 @@ const useWallet = (): ReturnType => {
 
       _saveProvider(provider);
       dispatch(setIsConnecting(false));
+      await signMessage(connector, account);
     } catch (error: any) {
       dispatch(setIsConnecting(false));
       disconnectWallet();
@@ -160,6 +181,7 @@ const useWallet = (): ReturnType => {
   };
 
   const changeNetwork = async (network: string) => {
+    console.log("changeNetwork", network);
     if (!provider) {
       return;
     }

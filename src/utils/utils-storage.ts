@@ -1,3 +1,4 @@
+import config from "src/config";
 import { WALLET_CONNECT } from "src/connectors";
 
 const env = process.env.REACT_APP_ENV || 'prod';
@@ -7,16 +8,21 @@ const PREFERENCES = `blocksniper-preferences-${env}`;
 type StorageInterface = {
   accessToken?: string;
   refreshToken?: string;
-  network?: string;
+  network: string;
   chainId?: string;
   connectorId?: string;
   account?: string;
+};
+
+const defaultPreferences: StorageInterface = {
+  network: config.defaultNetwork,
 };
 
 function getStorage(): StorageInterface {
   const preferencesString = localStorage.getItem(PREFERENCES);
   const preferences = JSON.parse(preferencesString || '{}');
   return {
+    ...defaultPreferences,
     ...preferences,
   };
 }

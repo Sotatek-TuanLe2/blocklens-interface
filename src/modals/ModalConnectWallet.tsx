@@ -1,7 +1,12 @@
 import { Box, Flex } from '@chakra-ui/react';
-import React, { FC } from 'react';
+import { FC } from 'react';
 import BaseModal from './BaseModal';
-import { WalletConnectIcon, MetaMaskIcon } from 'src/assets/icons';
+import useWallet from 'src/hooks/useWallet';
+import config from 'src/config';
+import { toastError } from 'src/utils/utils-notify';
+import { METAMASK_WALLET } from 'src/connectors';
+import { switchNetwork } from 'src/utils/utils-network';
+import Storage from 'src/utils/utils-storage';
 
 interface IModalConnectWallet {
   open: boolean;
@@ -9,8 +14,38 @@ interface IModalConnectWallet {
 }
 
 const ModalConnectWallet: FC<IModalConnectWallet> = ({ open, onClose }) => {
-  const onCloseModal = () => {
-    onClose();
+  const { wallet, connectWallet } = useWallet();
+  const defaultNetwork = wallet ? wallet.getNework() : Storage.getNetwork();
+
+  const onClickWallet = async (walletId: string) => {
+    try {
+      if ([METAMASK_WALLET].includes(walletId)) {
+        const provider = (window as any).ethereum;
+        await switchNetwork(defaultNetwork, provider);
+      }
+      await connectWallet(walletId, defaultNetwork);
+      onClose();
+    } catch (error: any) {
+      error && toastError({ message: error.message || error.toString() });
+    }
+  };
+
+  const _renderWallets = () => {
+    const selectedNetworkConfig = config.networks[defaultNetwork];
+    return Object.keys(selectedNetworkConfig.connectors).map((connectorKey) => {
+      const connectorInfo = selectedNetworkConfig.connectors[connectorKey];
+      const { id, icon, name } = connectorInfo;
+      return (
+        <Box 
+          key={id} 
+          className={'box-wallet'}
+          onClick={() => onClickWallet(id)}
+        >
+          <img src={icon} alt={name} />
+          <Box className={'name-wallet'}>{name}</Box>
+        </Box>
+      );
+    });
   };
 
   return (
@@ -18,17 +53,10 @@ const ModalConnectWallet: FC<IModalConnectWallet> = ({ open, onClose }) => {
       size="xl"
       title="Choose Wallet"
       isOpen={open}
-      onClose={onCloseModal}
+      onClose={onClose}
     >
       <Flex justifyContent={'center'}>
-        <Box className={'box-wallet'}>
-          <MetaMaskIcon />
-          <Box className={'name-wallet'}>MetaMask</Box>
-        </Box>
-        <Box className={'box-wallet'}>
-          <WalletConnectIcon />
-          <Box className={'name-wallet'}>Wallet Connect</Box>
-        </Box>
+        {_renderWallets()}
       </Flex>
     </BaseModal>
   );

@@ -1,5 +1,5 @@
 import { Box, Flex } from '@chakra-ui/react';
-import React, { FC, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import 'src/styles/pages/AppDetail.scss';
 import {
   AppButton,
@@ -11,6 +11,8 @@ import {
 import { isMobile } from 'react-device-detect';
 import { IChain } from 'src/modals/ModalCreateApp';
 import config from 'src/config';
+import AppConnectWalletButton from 'src/components/AppConnectWalletButton';
+import useWallet from 'src/hooks/useWallet';
 
 interface IFormCrypto {
   onBack: () => void;
@@ -47,11 +49,46 @@ const FormCrypto: FC<IFormCrypto> = ({ onBack }) => {
   };
 
   const [dataForm, setDataForm] = useState<IDataForm>(initData);
-  const [chainSelected, setChainSelected] = useState<any>(CHAINS[0]);
-  const [currencySelected, setCurrencySelected] = useState<any>(
-    CHAINS[0].currencies[0],
-  );
-  const [isConnected, setIsConnected] = useState<boolean>(false);
+  const { wallet, changeNetwork } = useWallet();
+
+  useEffect(() => {
+    if (wallet?.getAddress()) {
+      const networkCurrencies = config.networks[wallet.getNework()].currencies;
+      const defaultCurrency = networkCurrencies[Object.keys(networkCurrencies)[0]];
+      setDataForm(prevState => ({
+        ...prevState,
+        wallet: wallet.getAddress(),
+        chain: wallet.getNework(),
+        currency: defaultCurrency.name
+      }));
+    }
+  }, [wallet?.getAddress(), wallet?.getNework()]);
+
+  const CHAIN_OPTIONS = useMemo(() => {
+    if (!wallet) {
+      return [];
+    }
+    return Object.keys(config.networks).map((networkKey) => {
+      const network = config.networks[networkKey];
+      return { label: network.name, value: network.id, icon: network.icon };
+    });
+  }, [wallet?.getNework()]);
+
+  const CURRENCY_OPTIONS = useMemo(() => {
+    if (!wallet) {
+      return [];
+    }
+    const networkCurrencies = config.networks[wallet.getNework()].currencies;
+    return Object.keys(networkCurrencies).map(currencyKey => {
+      const currency = networkCurrencies[currencyKey];
+      return { label: currency.name, value: currency.name, icon: currency.icon };
+    });
+  }, [wallet?.getNework()]);
+
+  const onChangeCurrency = (currency: string) => {
+    setDataForm(prevState => ({ ...prevState, currency }));
+  };
+
   return (
     <Box className="form-card">
       <Flex alignItems={'center'} mb={7}>
@@ -76,24 +113,21 @@ const FormCrypto: FC<IFormCrypto> = ({ onBack }) => {
                   isDisabled={true}
                   size="lg"
                   value={dataForm.wallet}
-                  onChange={(e) => {
-                    setDataForm({
-                      ...dataForm,
-                      wallet: e.target.value.trim(),
-                    });
-                  }}
                 />
               </Box>
 
               <Box width={isMobile ? '100%' : '165px'} mt={isMobile ? 4 : 0}>
-                <AppButton width={'100%'} size="lg">
+                <AppConnectWalletButton
+                  width={'100%'}
+                  size="lg"
+                >
                   Connect Wallet
-                </AppButton>
+                </AppConnectWalletButton>
               </Box>
             </Flex>
           </AppField>
 
-          {isConnected && (
+          {wallet && (
             <Flex
               flexWrap={'wrap'}
               justifyContent={'space-between'}
@@ -103,17 +137,9 @@ const FormCrypto: FC<IFormCrypto> = ({ onBack }) => {
                 <AppField label={'Chain'} customWidth={'100%'}>
                   <AppSelect2
                     size="large"
-                    onChange={(value: string) => {
-                      setChainSelected(
-                        CHAINS.find((chain) => chain.value === value),
-                      );
-                      setCurrencySelected(
-                        CHAINS.find((chain) => chain.value === value)
-                          ?.currencies[0],
-                      );
-                    }}
-                    options={CHAINS}
-                    value={chainSelected.value}
+                    onChange={(value: string) => changeNetwork(value)}
+                    options={CHAIN_OPTIONS}
+                    value={dataForm.chain}
                   />
                 </AppField>
               </Box>
@@ -121,15 +147,9 @@ const FormCrypto: FC<IFormCrypto> = ({ onBack }) => {
                 <AppField label={'Currency'} customWidth={'100%'}>
                   <AppSelect2
                     size="large"
-                    onChange={(value: string) => {
-                      setCurrencySelected(
-                        chainSelected.currencies.find(
-                          (currency: any) => currency.value === value,
-                        ),
-                      );
-                    }}
-                    options={chainSelected.currencies}
-                    value={currencySelected.value}
+                    onChange={(value: string) => onChangeCurrency(value)}
+                    options={CURRENCY_OPTIONS}
+                    value={dataForm.currency}
                   />
                 </AppField>
               </Box>
@@ -151,9 +171,9 @@ const FormCrypto: FC<IFormCrypto> = ({ onBack }) => {
         </Flex>
       </AppCard>
 
-      {isConnected && (
+      {wallet && (
         <Flex justifyContent={isMobile ? 'center' : 'flex-end'} mt={7}>
-          <AppButton size={'lg'}>Transfer</AppButton>
+          <AppButton size={'lg'}>Top Up</AppButton>
         </Flex>
       )}
     </Box>

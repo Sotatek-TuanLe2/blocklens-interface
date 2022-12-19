@@ -1,19 +1,5 @@
 import { Web3Provider } from '@ethersproject/providers';
-import Storage from 'src/utils/utils-storage';
 import config from 'src/config';
-
-const domain = {
-  name: config.auth.domain,
-  version: '2',
-  chainId: '97',
-};
-
-const types = {
-  message: [
-    { name: 'address', type: 'address' },
-    { name: 'message', type: 'string' },
-  ],
-};
 
 class BaseConnector {
   public options: any;
@@ -77,18 +63,12 @@ class BaseConnector {
   /**
    * sign a signature and save token into localStorage
    */
-  async signMessage(_payload?: any): Promise<any> {
+  async signMessage(): Promise<any> {
     if (this.account && this.connector && this.provider) {
       try {
-        const message = {
-          address: this.account,
-          message: config.auth.message,
-        };
         const signer = new Web3Provider(this.provider).getSigner();
-
-        // domain.chainId = Storage.getChainId() || '97';
-        // const signature = await signer._signTypedData(domain, types, message);
-        // return signature;
+        const signature = await signer.signMessage(config.auth.message);
+        return signature;
       } catch (error) {
         console.error(error);
         console.error('Signing message failed!');
