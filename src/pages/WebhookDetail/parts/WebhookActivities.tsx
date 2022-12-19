@@ -208,12 +208,12 @@ const NotificationItemMobile: FC<INotificationItemMobile> = ({
               <Box>TXN ID</Box>
               <Box className="value">
                 <Flex alignItems="center">
-                  {formatShortText(notification.metadata?.transactionHash)}
+                  {formatShortText(notification.metadata?.transaction?.transactionHash)}
                   <Box ml={2}>
                     <a
                       href={`${
                         getBlockExplorerUrl(appInfo.chain, appInfo.network) +
-                        `tx/${notification.metadata?.transactionHash}`
+                        `tx/${notification.metadata?.transaction?.transactionHash}`
                       }`}
                       className="link-redirect"
                       target="_blank"
@@ -354,13 +354,13 @@ const NotificationItem: FC<INotificationItem> = ({
         </Td>
         <Td>
           <Flex alignItems="center">
-            {formatShortText(notification.metadata?.transactionHash)}
+            {formatShortText(notification.metadata?.transaction?.transactionHash)}
             <Box ml={2}>
               <a
                 onClick={(e) => onRedirectToBlockExplorer(e)}
                 href={`${
                   getBlockExplorerUrl(appInfo.chain, appInfo.network) +
-                  `tx/${notification.metadata?.transactionHash}`
+                  `tx/${notification.metadata?.transaction?.transactionHash}`
                 }`}
                 className="link-redirect"
                 target="_blank"
