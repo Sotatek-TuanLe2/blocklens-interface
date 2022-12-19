@@ -143,7 +143,7 @@ const NotificationItemMobile: FC<INotificationItemMobile> = ({
           <Box>Address</Box>
           <Box className="value">
             <Flex alignItems="center">
-              {formatShortText(notification.trackingAddress)}
+              {formatShortText(notification?.metadata?.trackingAddress)}
             </Flex>
           </Box>
         </Flex>
@@ -207,7 +207,7 @@ const NotificationItemMobile: FC<INotificationItemMobile> = ({
               className="info"
             >
               <Box>Block</Box>
-              <Box className="value">--</Box>
+              <Box className="value">{notification.metadata?.tx?.blockNumber}</Box>
             </Flex>
             <Flex
               justifyContent="space-between"
@@ -218,13 +218,13 @@ const NotificationItemMobile: FC<INotificationItemMobile> = ({
               <Box className="value">
                 <Flex alignItems="center">
                   {formatShortText(
-                    notification.metadata?.transaction?.transactionHash,
+                    notification.metadata?.tx?.transactionHash,
                   )}
                   <Box ml={2}>
                     <a
                       href={`${
                         getBlockExplorerUrl(appInfo.chain, appInfo.network) +
-                        `tx/${notification.metadata?.transaction?.transactionHash}`
+                        `tx/${notification.metadata?.tx?.transactionHash}`
                       }`}
                       className="link-redirect"
                       target="_blank"
@@ -319,7 +319,7 @@ const NotificationItem: FC<INotificationItem> = ({
   };
 
   const _renderContentAddress = () => {
-    return <Td>{formatShortText(notification.trackingAddress)}</Td>;
+    return <Td>{formatShortText(notification?.metadata?.trackingAddress)}</Td>;
   };
 
   const _renderContentActivities = () => {
@@ -367,18 +367,18 @@ const NotificationItem: FC<INotificationItem> = ({
           )}{' '}
           UTC
         </Td>
-        <Td>--</Td>
+        <Td>{notification.metadata?.tx?.blockNumber}</Td>
         <Td>
           <Flex alignItems="center">
             {formatShortText(
-              notification.metadata?.transaction?.transactionHash,
+              notification.metadata?.tx?.transactionHash,
             )}
             <Box ml={2}>
               <a
                 onClick={(e) => onRedirectToBlockExplorer(e)}
                 href={`${
                   getBlockExplorerUrl(appInfo.chain, appInfo.network) +
-                  `tx/${notification.metadata?.transaction?.transactionHash}`
+                  `tx/${notification.metadata?.tx?.transactionHash}`
                 }`}
                 className="link-redirect"
                 target="_blank"
