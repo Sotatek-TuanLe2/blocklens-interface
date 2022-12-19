@@ -141,6 +141,14 @@ const MessagesItemMobile: FC<IMessagesItemMobile> = ({
               alignItems="center"
               className="info"
             >
+              <Box>Block</Box>
+              <Box>{message?.input?.tx?.blockNumber}</Box>
+            </Flex>
+            <Flex
+              justifyContent="space-between"
+              alignItems="center"
+              className="info"
+            >
               <Box>TXN ID</Box>
               <Box className="value">
                 <Flex alignItems="center">

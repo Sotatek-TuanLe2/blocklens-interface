@@ -645,7 +645,7 @@ const WebhookActivities: FC<IWebhookActivities> = ({
         limit={isShowAll ? 15 : 5}
       />
 
-      {isMobile && (
+      {isMobile && !isShowAll && (
         <Flex justifyContent={'center'} my={4}>
           {_renderLinkShowAll()}
         </Flex>
