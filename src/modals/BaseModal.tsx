@@ -16,7 +16,7 @@ import { isMobile } from 'react-device-detect';
 import { ArrowDown } from 'src/assets/icons';
 
 export interface BaseModalProps extends ModalProps {
-  title: string;
+  title?: string;
   description?: string;
   size?:
     | 'xs'
@@ -77,29 +77,29 @@ const BaseModal: FC<BaseModalProps> = ({
         autoFocus={false}
       >
         <ModalOverlay />
-        <ModalContent
-          className={`${className} modal`}
-        >
+        <ModalContent className={`${className} modal`}>
           {!isHideCloseIcon && (
             <Box className={'modal__btn-close'} onClick={onClose}>
               <CloseIcon width={isMobile ? '11px' : '15px'} />
             </Box>
           )}
 
-          <Flex flexDirection={'column'} className={"content-modal"}>
+          <Flex flexDirection={'column'} className={'content-modal'}>
             {icon && <Box className={`modal__icon ${icon}`} />}
 
-            <Box
-              className={`modal__title ${icon ? 'icon' : ''}`}
-              {...styleHeader}
-            >
-              {isBack && (
-                <Box onClick={onClose} className="icon-back">
-                  <ArrowDown />
-                </Box>
-              )}
-              {title}
-            </Box>
+            {title && (
+              <Box
+                className={`modal__title ${icon ? 'icon' : ''}`}
+                {...styleHeader}
+              >
+                {isBack && (
+                  <Box onClick={onClose} className="icon-back">
+                    <ArrowDown />
+                  </Box>
+                )}
+                {title}
+              </Box>
+            )}
 
             {description && (
               <Box className={'modal__description'}>{description}</Box>
