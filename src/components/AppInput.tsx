@@ -122,7 +122,7 @@ export const appInputStyles = {
         fontSize: '16px',
         p: '20px',
         _focus: {
-          borderColor: mode('main.100', 'main.300')(props),
+          borderColor: mode('pressed.100', 'pressed.100')(props),
         },
         _placeholder: {
           color: mode('secondaryGray.500', 'whiteAlpha.300')(props),

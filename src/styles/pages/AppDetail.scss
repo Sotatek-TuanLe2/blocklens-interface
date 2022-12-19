@@ -162,10 +162,14 @@
     border: 1px solid $card;
 
     &:hover {
-      background: rgba(115, 103, 240, 0.2);
-      box-shadow: 0 10px 40px rgba(107, 78, 255, 0.25);
+      background: linear-gradient(
+        180deg,
+        rgba(34, 108, 255, 0) -27.27%,
+        rgba(34, 108, 255, 0.2) 108.18%
+      );
+      filter: drop-shadow(0px 10px 40px rgba(34, 108, 255, 0.25));
       cursor: pointer;
-      border: 1px solid $main;
+      border: 1.1px solid $blue;
     }
 
     .label {

@@ -14,6 +14,10 @@ import { ReactComponent as RadioNoCheckedIcon } from './RadioNoCheckedIcon.svg';
 import { ReactComponent as EditIcon } from './EditIcon.svg';
 import { ReactComponent as MetaMaskIcon } from './MetaMaskIcon.svg';
 import { ReactComponent as WalletConnectIcon } from './WalletConnectIcon.svg';
+import { ReactComponent as ArrowRightIcon } from './ArrowRightIcon.svg';
+import { ReactComponent as DownloadIcon } from './DownloadIcon.svg';
+import { ReactComponent as IconMenuMobile } from './IconMenuMoblie.svg';
+import { ReactComponent as CloseMenuIcon } from './CloseMenuIcon.svg';
 
 export {
   CalendarIcon,
@@ -32,4 +36,8 @@ export {
   RadioNoCheckedIcon,
   WalletConnectIcon,
   MetaMaskIcon,
+  ArrowRightIcon,
+  DownloadIcon,
+  IconMenuMobile,
+  CloseMenuIcon,
 };

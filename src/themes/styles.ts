@@ -3,7 +3,7 @@ import { mode, StyleFunctionProps } from '@chakra-ui/theme-tools';
 export const globalStyles = {
   colors: {
     main: {
-      100: '#7367F0',
+      100: 'linear-gradient(268.85deg, #226CFF 22.48%, #1084FF 83.59%)',
     },
     paragraph: {
       100: '#B4B7BD',
@@ -12,14 +12,14 @@ export const globalStyles = {
       100: '#69758C',
     },
     bg: {
-      100: '#222736',
-      200: '#30384E',
+      100: '#000224',
+      200: '#1A203B',
     },
     pressed: {
-      100: '#4F43CA',
+      100: '#0245C9',
     },
     border: {
-      100: '#41495F',
+      100: '#272D52',
     },
     yellow: {
       100: '#FFB547',
@@ -104,7 +104,7 @@ export const globalStyles = {
       100: '#FFFFFF',
     },
     card: {
-      100: '#283046',
+      100: '#101530',
     },
   },
   styles: {
@@ -115,7 +115,7 @@ export const globalStyles = {
         fontFamily: 'DM Sans',
         letterSpacing: '0.2px',
         fontWeight: 500,
-        color: 'white'
+        color: 'white',
       },
       input: {
         color: 'gray.700',
