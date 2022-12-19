@@ -47,26 +47,28 @@ const Footer = () => {
         <div className='footer-landing__name'>© 2022, Block Sniper</div>
       </div>
 
-      <div className="footer-landing__menus">
-        <div>Company</div>
-        {menus.map((item, index) => {
-          return (
-            <Link className="footer-landing__menu-item" to={item.path} key={index}>
-              {item.name}
-            </Link>
-          );
-        })}
-      </div>
+      <div className="footer-landing__menus-link">
+        <div className="footer-landing__menus">
+          <div>Company</div>
+          {menus.map((item, index) => {
+            return (
+              <Link className="footer-landing__menu-item" to={item.path} key={index}>
+                {item.name}
+              </Link>
+            );
+          })}
+        </div>
 
-      <div className="footer-landing__menus">
-        <div>Privacy Policy and Terms of Service</div>
-        {linkTerms.map((item, index) => {
-          return (
-            <Link className="footer-landing__menu-item" to={item.path}  key={index}>
-              {item.name}
-            </Link>
-          );
-        })}
+        <div className="footer-landing__menus">
+          <div>Privacy Policy and Terms of Service</div>
+          {linkTerms.map((item, index) => {
+            return (
+              <Link className="footer-landing__menu-item" to={item.path}  key={index}>
+                {item.name}
+              </Link>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

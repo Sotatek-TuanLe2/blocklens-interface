@@ -44,11 +44,28 @@
     background-color: $bg1;
   }
 
+  @include tablet {
+    padding: 24px 0;
+
+    &.mobile {
+      height: 100vh;
+     background-image: url('../../assets/icons/bg-menu-mobile.png');
+    }
+  }
+
   &__content {
     display: flex;
     justify-content: space-between;
     margin: 0 auto;
-    max-width: 1130px;
+    max-width: 1178px;
+    padding: 0 24px;
+
+    @include tablet {
+      align-items: center;
+      img {
+        width: 125px;
+      }
+    }
   }
 
   .menus {
@@ -68,15 +85,35 @@
       }
     }
   }
+
+  .menus-mobile {
+    margin-top: 140px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    a {
+      display: block;
+      margin-bottom: 60px;
+      font-weight: 700;
+      font-size: 18px;
+      line-height: 140%;
+    }
+  }
 }
 
 .main-landing {
-  max-width: 1130px;
+  max-width: 1178px;
+  padding: 0 24px;
   margin: 0 auto;
 
   .introduction {
     margin: 0 auto;
     padding-top: 260px;
+
+    @include tablet {
+      padding-top: 160px;
+    }
 
     &__sub-text {
       font-weight: 400;
@@ -85,6 +122,10 @@
       color: $title;
       max-width: 744px;
       margin: 0 auto;
+
+      @include tablet {
+        font-size: 24px;
+      }
     }
 
     &__main-text {
@@ -101,6 +142,10 @@
       span {
         color: $link;
       }
+
+      @include tablet {
+        font-size: 48px;
+      }
     }
 
     &__description {
@@ -111,6 +156,11 @@
       color: $title;
       max-width: 744px;
       margin: 60px auto;
+
+      @include tablet {
+        font-size: 20px;
+        margin: 40px auto;
+      }
     }
 
     &__btn {
@@ -127,6 +177,10 @@
     img {
       margin: 0 auto;
     }
+
+    @include tablet {
+      margin: 80px 0 120px 0;
+    }
   }
 
   .categories {
@@ -138,10 +192,23 @@
       justify-content: space-between;
       margin: 60px 0;
 
+      @include tablet {
+        flex-direction: column;
+        img {
+          width: 70%;
+          margin-left: auto;
+        }
+      }
+
       &__name {
         font-weight: 400;
         font-size: 40px;
         color: $title;
+
+        @include tablet {
+          font-size: 32px;
+          margin-bottom: 16px;
+        }
       }
 
       &__description {
@@ -150,6 +217,11 @@
         line-height: 160%;
         color: $title;
         max-width: 456px;
+
+        @include tablet {
+          font-size: 16px;
+          margin-bottom: 40px;
+        }
       }
     }
 
@@ -171,6 +243,12 @@
       span {
         color: $link;
       }
+
+      @include tablet {
+        font-size: 48px;
+        margin-top: 120px;
+        margin-bottom: 70px;
+      }
     }
 
     .use-case {
@@ -179,8 +257,25 @@
       align-items: center;
       margin-bottom: 32px;
 
+      @include tablet {
+        flex-direction: column-reverse;
+        margin-bottom: 60px;
+      }
+
+      img {
+        max-width: 40%;
+
+        @include tablet {
+          max-width: 100%;
+          margin-bottom: 40px;
+        }
+      }
+
       &.reverse {
         flex-flow: row-reverse;
+        @include tablet {
+          flex-direction: column;
+        }
       }
 
       &__content {
@@ -193,6 +288,11 @@
         line-height: 140%;
         color: $title;
         margin-bottom: 24px;
+
+        @include tablet {
+          font-size: 32px;
+          margin-bottom: 16px;
+        }
       }
 
       &__description {
@@ -200,12 +300,20 @@
         font-size: 18px;
         line-height: 160%;
         color: $title;
+
+        @include tablet {
+          font-size: 16px;
+        }
       }
     }
   }
 
   .chart {
     margin-bottom: 200px;
+
+    @include tablet {
+      margin-bottom: 160px;
+    }
 
     &__description {
       font-weight: 400;
@@ -214,6 +322,10 @@
       color: $title;
       max-width: 792px;
       margin: 120px auto;
+
+      @include tablet {
+        margin: 80px auto;
+      }
 
       span {
         color: $link;
@@ -236,12 +348,33 @@
       span {
         color: $link;
       }
+
+      @include tablet {
+        font-size: 48px;
+        margin-bottom: 40px;
+      }
     }
 
     &__list {
       display: flex;
       justify-content: space-between;
       flex-wrap: wrap;
+
+      @include tablet {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        width: max-content;
+      }
+    }
+
+    &__content {
+      overflow-x: auto;
+      -ms-overflow-style: none; /* Internet Explorer 10+ */
+      scrollbar-width: none; /* Firefox */
+      &::-webkit-scrollbar {
+        display: none; /* Safari and Chrome */
+      }
+      width: calc(100% + 24px);
     }
 
     &__item {
@@ -255,11 +388,16 @@
       backdrop-filter: blur(8px);
       border-radius: 40px;
       padding: 40px;
-      width: 31%;
+      max-width: 31%;
       font-weight: 400;
       font-size: 16px;
       line-height: 160%;
       color: $title;
+
+      @include tablet {
+        width: 295px;
+        margin-right: 24px;
+      }
     }
 
     &__name {
@@ -269,6 +407,11 @@
 
   .get-start {
     margin: 160px 0;
+
+    @include tablet {
+      margin: 140px 0 120px 0;
+    }
+
     &__heading {
       font-weight: 400;
       font-size: 80px;
@@ -281,6 +424,11 @@
       span {
         color: $link;
       }
+
+      @include tablet {
+        font-size: 48px;
+        margin-bottom: 40px;
+      }
     }
 
     &__description {
@@ -291,28 +439,41 @@
       color: $title;
       max-width: 744px;
       margin: 0 auto;
+
+      @include tablet {
+        font-size: 20px;
+        margin-bottom: 40px;
+      }
     }
 
     &__btn {
       display: flex;
       justify-content: center;
       margin-top: 60px;
+
+      @include tablet {
+        margin-top: 40px;
+      }
     }
   }
 }
 
 .footer-landing {
   border-top: 0.5px solid rgba(255, 255, 255, 0.4);
-  max-width: 1130px;
+  max-width: 1178px;
   margin: 0 auto;
-  padding: 80px 0 70px 0;
+  padding: 80px 24px 70px 24px;
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
 
+  @include tablet {
+    flex-direction: column;
+    padding: 60px 24px 60px 24px;
+  }
+
   &__box-info {
     width: 45%;
-
     font-weight: 400;
     font-size: 14px;
     line-height: 150%;
@@ -321,22 +482,42 @@
     img {
       width: 155px;
     }
+
+    @include tablet {
+      width: 100%;
+      margin-bottom: 40px;
+
+      img {
+        width: 125px;
+      }
+    }
   }
 
   &__description {
     max-width: 420px;
     margin: 24px 0;
+    font-weight: 400;
   }
 
-  &__name, &__description {
+  &__name,
+  &__description {
     opacity: 0.6;
+  }
+
+  &__menus-link {
+    width: 50%;
+    display: flex;
+
+    @include tablet {
+      width: 100%;
+    }
   }
 
   &__menus {
     font-weight: 400;
     font-size: 14px;
     line-height: 150%;
-    width: 25%;
+    width: 48%;
     color: $title;
   }
 

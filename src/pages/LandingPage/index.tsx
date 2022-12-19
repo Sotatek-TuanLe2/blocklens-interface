@@ -3,6 +3,7 @@ import Header from 'src/pages/LandingPage/Header';
 import Footer from 'src/pages/LandingPage/Footer';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { isMobile } from 'react-device-detect';
 
 const categories = [
   {
@@ -146,7 +147,7 @@ const LandingPage = () => {
                 return (
                   <div key={index}>
                     <div
-                      className={`use-case ${(index + 2) % 2 ? 'reverse' : ''}`}
+                      className={`use-case ${(index + 2) % 2 && !isMobile ? 'reverse' : ''}`}
                     >
                       <div className="use-case__content">
                         <div className="use-case__name">{item.name}</div>
@@ -181,18 +182,20 @@ const LandingPage = () => {
               <span>developers</span> say
             </h1>
 
-            <div className="feedback__list">
-              {feedbacks.map((item, index) => {
-                return (
-                  <div className="feedback__item" key={index}>
-                    <div className="feedback__description">
-                      {item.description}
+            <div className="feedback__content">
+              <div className="feedback__list">
+                {feedbacks.map((item, index) => {
+                  return (
+                    <div className="feedback__item" key={index}>
+                      <div className="feedback__description">
+                        {item.description}
+                      </div>
+                      <div className="feedback__name">{item.name}</div>
+                      <div className="feedback__title">{item.title}</div>
                     </div>
-                    <div className="feedback__name">{item.name}</div>
-                    <div className="feedback__title">{item.title}</div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
           </div>
 
