@@ -49,7 +49,7 @@
 
     &.mobile {
       height: 100vh;
-     background-image: url('../../assets/icons/bg-menu-mobile.png');
+      background-image: url('../../assets/icons/bg-menu-mobile.png');
     }
   }
 
@@ -368,13 +368,15 @@
     }
 
     &__content {
-      overflow-x: auto;
-      -ms-overflow-style: none; /* Internet Explorer 10+ */
-      scrollbar-width: none; /* Firefox */
-      &::-webkit-scrollbar {
-        display: none; /* Safari and Chrome */
+      @include tablet {
+        overflow-x: auto;
+        -ms-overflow-style: none; /* Internet Explorer 10+ */
+        scrollbar-width: none; /* Firefox */
+        &::-webkit-scrollbar {
+          display: none; /* Safari and Chrome */
+        }
+        width: calc(100% + 24px);
       }
-      width: calc(100% + 24px);
     }
 
     &__item {
