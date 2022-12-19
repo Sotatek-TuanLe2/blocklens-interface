@@ -10,7 +10,7 @@ import { toastError } from './utils-notify';
 import Storage from './utils-storage';
 
 export const CHAINS = {
-  ETHEREUM: 'ETHEREUM',
+  ETH: 'ETH',
   BSC: 'BSC',
   POLYGON: 'POLYGON',
   BITCOIN: 'BITCOIN',
@@ -19,6 +19,11 @@ export const CHAINS = {
 export const getLogoChainByName = (chainName?: string) => {
   if (!chainName) return;
   return config.chains.filter((chain) => chain.id === chainName)[0]?.icon;
+};
+
+export const getNameChainByChainId = (ChainId?: string) => {
+  if (!ChainId) return '--';
+  return config.chains.filter((chain) => chain.id === ChainId)[0]?.name;
 };
 
 export const isEVMNetwork = (chainId?: string) => {
