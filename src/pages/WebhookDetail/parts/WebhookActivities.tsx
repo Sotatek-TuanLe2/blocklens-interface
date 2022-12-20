@@ -9,7 +9,15 @@ import {
   Tooltip,
   Tr,
 } from '@chakra-ui/react';
-import React, { FC, MouseEvent, useCallback, useMemo, useState } from 'react';
+import React, {
+  FC,
+  MouseEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   AppButton,
   AppCard,
@@ -104,6 +112,42 @@ const _renderStatus = (
   return (
     <Box className={`status ${getColorBrandStatus(notification.status)}`}>
       {notification.status === STATUS.DONE ? 'Successful' : 'Failed'}
+    </Box>
+  );
+};
+
+export const Filter = () => {
+  const [value, setValue] = useState<string>('');
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const ref = useRef<any>(null);
+
+  const handleClickOutside = (event: any) => {
+    if (ref.current && !ref.current?.contains(event.target)) {
+      setIsOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('click', handleClickOutside, true);
+    return () => {
+      document.removeEventListener('click', handleClickOutside, true);
+    };
+  }, []);
+
+  return (
+    <Box ml={2} className={`filter-table ${isOpen ? 'active' : ''}`} ref={ref}>
+      <FilterIcon onClick={() => setIsOpen(true)} />
+
+      {isOpen && (
+        <Box className="filter-table__box-search">
+          <AppInput
+            className={'input-search'}
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            placeholder={'Select txn ID'}
+          />
+        </Box>
+      )}
     </Box>
   );
 };
@@ -207,7 +251,9 @@ const NotificationItemMobile: FC<INotificationItemMobile> = ({
               className="info"
             >
               <Box>Block</Box>
-              <Box className="value">{notification.metadata?.tx?.blockNumber}</Box>
+              <Box className="value">
+                {notification.metadata?.tx?.blockNumber}
+              </Box>
             </Flex>
             <Flex
               justifyContent="space-between"
@@ -217,9 +263,7 @@ const NotificationItemMobile: FC<INotificationItemMobile> = ({
               <Box>TXN ID</Box>
               <Box className="value">
                 <Flex alignItems="center">
-                  {formatShortText(
-                    notification.metadata?.tx?.transactionHash,
-                  )}
+                  {formatShortText(notification.metadata?.tx?.transactionHash)}
                   <Box ml={2}>
                     <a
                       href={`${
@@ -370,9 +414,7 @@ const NotificationItem: FC<INotificationItem> = ({
         <Td>{notification.metadata?.tx?.blockNumber}</Td>
         <Td>
           <Flex alignItems="center">
-            {formatShortText(
-              notification.metadata?.tx?.transactionHash,
-            )}
+            {formatShortText(notification.metadata?.tx?.transactionHash)}
             <Box ml={2}>
               <a
                 onClick={(e) => onRedirectToBlockExplorer(e)}
@@ -422,6 +464,8 @@ const NotificationItem: FC<INotificationItem> = ({
   );
 };
 
+
+
 const WebhookActivities: FC<IWebhookActivities> = ({
   webhook,
   onShowAll,
@@ -452,21 +496,13 @@ const WebhookActivities: FC<IWebhookActivities> = ({
           <Th>
             <Flex alignItems="center">
               method
-              {isShowAll && (
-                <Box ml={2} className="filter-table">
-                  <FilterIcon />
-                </Box>
-              )}
+              {isShowAll && <Filter />}
             </Flex>
           </Th>
           <Th textAlign="center">
             <Flex alignItems="center">
               token id
-              {isShowAll && (
-                <Box ml={2} className="filter-table">
-                  <FilterIcon />
-                </Box>
-              )}
+              {isShowAll && <Filter />}
             </Flex>
           </Th>
         </>
@@ -478,11 +514,7 @@ const WebhookActivities: FC<IWebhookActivities> = ({
         <Th>
           <Flex alignItems="center">
             Address
-            {isShowAll && (
-              <Box ml={2} className="filter-table">
-                <FilterIcon />
-              </Box>
-            )}
+            {isShowAll && <Filter />}
           </Flex>
         </Th>
       );
@@ -491,14 +523,7 @@ const WebhookActivities: FC<IWebhookActivities> = ({
     const _renderHeaderContract = () => {
       return (
         <Th textAlign="center">
-          <Flex alignItems="center">
-            method{' '}
-            {isShowAll && (
-              <Box ml={2} className="filter-table">
-                <FilterIcon />
-              </Box>
-            )}
-          </Flex>
+          <Flex alignItems="center">method {isShowAll && <Filter />}</Flex>
         </Th>
       );
     };
@@ -521,14 +546,7 @@ const WebhookActivities: FC<IWebhookActivities> = ({
           <Th>Created At</Th>
           <Th>Block</Th>
           <Th>
-            <Flex alignItems="center">
-              txn id{' '}
-              {isShowAll && (
-                <Box ml={2} className="filter-table">
-                  <FilterIcon />
-                </Box>
-              )}
-            </Flex>
+            <Flex alignItems="center">txn id {isShowAll && <Filter />}</Flex>
           </Th>
           {_renderHeaderActivities()}
           <Th>

@@ -19,10 +19,10 @@ import {
 } from 'src/utils/utils-webhook';
 import MessageItem from './parts/MessageItem';
 import { toastError } from 'src/utils/utils-notify';
-import { FilterIcon } from 'src/assets/icons';
 import { isMobile } from 'react-device-detect';
 import MessagesItemMobile from './parts/MessagesItemMobile';
 import { filterParams } from 'src/utils/utils-helper';
+import { Filter } from 'src/pages/WebhookDetail/parts/WebhookActivities';
 
 const MessagesHistory = () => {
   const {
@@ -73,18 +73,13 @@ const MessagesHistory = () => {
         <>
           <Th>
             <Flex alignItems="center">
-              method{' '}
-              <Box ml={2} className="filter-table">
-                <FilterIcon />
-              </Box>
+              method <Filter />
             </Flex>
           </Th>
           <Th textAlign="center">
             <Flex alignItems="center">
               token id
-              <Box ml={2} className="filter-table">
-                <FilterIcon />
-              </Box>
+              <Filter />
             </Flex>
           </Th>
         </>
@@ -96,9 +91,7 @@ const MessagesHistory = () => {
         <Th>
           <Flex alignItems="center">
             Address
-            <Box ml={2} className="filter-table">
-              <FilterIcon />
-            </Box>
+            <Filter />
           </Flex>
         </Th>
       );
@@ -109,9 +102,7 @@ const MessagesHistory = () => {
         <Th textAlign="center">
           <Flex alignItems="center">
             method
-            <Box ml={2} className="filter-table">
-              <FilterIcon />
-            </Box>
+            <Filter />
           </Flex>
         </Th>
       );
@@ -137,9 +128,7 @@ const MessagesHistory = () => {
           <Th>
             <Flex alignItems="center">
               txn id
-              <Box ml={2} className="filter-table">
-                <FilterIcon />
-              </Box>
+              <Filter />
             </Flex>
           </Th>
           {_renderHeaderActivities()}
@@ -199,14 +188,12 @@ const MessagesHistory = () => {
     );
   };
 
-  if(!webhook && !Object.keys(webhook).length) {
+  if (!webhook && !Object.keys(webhook).length) {
     return (
       <BasePageContainer className="app-detail">
-        <Flex justifyContent='center'>
-          Webhook Not Found
-        </Flex>
+        <Flex justifyContent="center">Webhook Not Found</Flex>
       </BasePageContainer>
-    )
+    );
   }
 
   return (
