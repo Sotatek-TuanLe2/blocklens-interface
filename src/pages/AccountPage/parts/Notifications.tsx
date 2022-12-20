@@ -7,7 +7,7 @@ import { RootState } from 'src/store';
 
 const Notifications = () => {
   const [isSendMail, setIsSendMail] = useState<boolean>(false);
-  const { billingInfos } = useSelector((state: RootState) => state.billing);
+  const { userInfo } = useSelector((state: RootState) => state.auth);
 
   return (
     <AppCard className="box-info-account notification">
@@ -27,7 +27,7 @@ const Notifications = () => {
             Receive emails when you are at or near your daily request limit.
           </Box>
         </Flex>
-        <Box className="email">Receive Email: {billingInfos?.email}</Box>
+        <Box className="email">Receive Email: {userInfo?.billingEmail}</Box>
       </Box>
     </AppCard>
   );

@@ -11,7 +11,8 @@ interface IUserInfo {
   address?: string;
   email?: string;
   billingEmail?: string;
-  balance?: string | number;
+  balance?: number;
+  stripePaymentMethod?: any;
   walletAddress?: string;
 }
 
