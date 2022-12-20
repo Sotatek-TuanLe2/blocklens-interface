@@ -147,7 +147,9 @@ const LandingPage = () => {
                 return (
                   <div key={index}>
                     <div
-                      className={`use-case ${(index + 2) % 2 && !isMobile ? 'reverse' : ''}`}
+                      className={`use-case ${
+                        (index + 2) % 2 && !isMobile ? 'reverse' : ''
+                      }`}
                     >
                       <div className="use-case__content">
                         <div className="use-case__name">{item.name}</div>

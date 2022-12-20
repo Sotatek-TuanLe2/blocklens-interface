@@ -39,7 +39,7 @@ const PAYMENT_METHOD = {
 enum STEPS {
   LIST,
   FORM,
-  CHECKOUT
+  CHECKOUT,
 }
 
 const paymentMethods = [
@@ -262,9 +262,9 @@ const BillingPage = () => {
     );
   };
 
-  const onNextStep = () => setStep(prevState => prevState + 1);
+  const onNextStep = () => setStep((prevState) => prevState + 1);
 
-  const onBackStep = () => setStep(prevState => prevState - 1);
+  const onBackStep = () => setStep((prevState) => prevState - 1);
 
   const _renderContent = () => {
     switch (step) {

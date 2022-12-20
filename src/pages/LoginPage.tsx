@@ -72,7 +72,7 @@ const LoginPage: FC = () => {
 
           <Flex className="divider">
             <Box className="border" />
-            <Box >or</Box>
+            <Box>or</Box>
             <Box className="border" />
           </Flex>
 
@@ -125,10 +125,7 @@ const LoginPage: FC = () => {
             </AppButton>
 
             <Box mt={2} className={'note'}>
-              Don't have an account?{' '}
-              <AppLink to={'/sign-up'}>
-                Sign up
-              </AppLink>
+              Don't have an account? <AppLink to={'/sign-up'}>Sign up</AppLink>
             </Box>
 
             <Box className="note" mt={3}>

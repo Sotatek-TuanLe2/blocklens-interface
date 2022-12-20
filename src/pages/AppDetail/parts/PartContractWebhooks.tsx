@@ -28,7 +28,8 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
     return (
       <Flex className="box-create">
         <NoData />
-        Create your webhook to start experiencing Blocksniper with Contract Activity!
+        Create your webhook to start experiencing Blocksniper with Contract
+        Activity!
         <AppButton
           isDisabled={isDisabledApp}
           size={'md'}
@@ -46,7 +47,11 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
 
   return (
     <>
-      <Flex justifyContent="space-between" alignItems="center" mx={isMobile ? 5 :  10}>
+      <Flex
+        justifyContent="space-between"
+        alignItems="center"
+        mx={isMobile ? 5 : 10}
+      >
         <Box className="description">
           Get notified when your Contract occurs activities
         </Box>
