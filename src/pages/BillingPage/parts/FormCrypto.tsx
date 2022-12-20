@@ -1,5 +1,7 @@
 import { Box, Flex } from '@chakra-ui/react';
 import { FC, useEffect, useMemo, useState } from 'react';
+import { Web3Provider } from '@ethersproject/providers';
+import { MaxUint256 } from '@ethersproject/constants';
 import 'src/styles/pages/AppDetail.scss';
 import {
   AppButton,
@@ -9,46 +11,44 @@ import {
   AppSelect2,
 } from 'src/components';
 import { isMobile } from 'react-device-detect';
-import { IChain } from 'src/modals/ModalCreateApp';
 import config from 'src/config';
 import AppConnectWalletButton from 'src/components/AppConnectWalletButton';
 import useWallet from 'src/hooks/useWallet';
+import { billingContract, erc20Contract } from 'src/utils/utils-contract';
+import { isTokenApproved } from 'src/utils/utils-token';
+import { toastError, toastInfo } from 'src/utils/utils-notify';
+import { convertDecToWei } from 'src/utils/utils-format';
 
 interface IFormCrypto {
   onBack: () => void;
+  onNext: () => void;
 }
 
 interface IDataForm {
-  wallet: string;
-  chain: string;
-  currency: string;
+  walletAddress: string;
+  chainId: string;
+  currencyAddress: string;
   amount: string;
 }
 
-export const CHAINS = config.chains.map((chain: IChain) => {
-  const currenciesClone = chain.currencies.map(
-    (currency: { name: string; id: string; icon: string }) => {
-      return { label: currency.name, value: currency.id, icon: currency.icon };
-    },
-  );
-
-  return {
-    label: chain.name,
-    value: chain.id,
-    icon: chain.icon,
-    currencies: [...currenciesClone],
-  };
-});
-
-const FormCrypto: FC<IFormCrypto> = ({ onBack }) => {
-  const initData = {
-    wallet: '',
-    chain: '',
-    currency: '',
+const FormCrypto: FC<IFormCrypto> = ({ onBack, onNext }) => {
+  const initialDataForm: IDataForm = {
+    walletAddress: '',
+    chainId: '',
+    currencyAddress: '',
     amount: '',
   };
 
-  const [dataForm, setDataForm] = useState<IDataForm>(initData);
+  enum TOP_UP_STATUS {
+    NONE,
+    PENDING,
+    FINISHED
+  }
+
+  const TOP_UP_APP_ID = 1; // used for blockSniper
+
+  const [dataForm, setDataForm] = useState<IDataForm>(initialDataForm);
+  const [topUpStatus, setTopUpStatus] = useState<number>(TOP_UP_STATUS.NONE);
   const { wallet, changeNetwork } = useWallet();
 
   useEffect(() => {
@@ -57,14 +57,18 @@ const FormCrypto: FC<IFormCrypto> = ({ onBack }) => {
       const defaultCurrency = networkCurrencies[Object.keys(networkCurrencies)[0]];
       setDataForm(prevState => ({
         ...prevState,
-        wallet: wallet.getAddress(),
-        chain: wallet.getNework(),
-        currency: defaultCurrency.name
+        walletAddress: wallet.getAddress(),
+        chainId: wallet.getNework(),
+        currencyAddress: defaultCurrency.address
       }));
     }
   }, [wallet?.getAddress(), wallet?.getNework()]);
 
-  const CHAIN_OPTIONS = useMemo(() => {
+  const CHAIN_OPTIONS = useMemo((): {
+    label: string,
+    value: string,
+    icon: string | undefined
+  }[] => {
     if (!wallet) {
       return [];
     }
@@ -74,19 +78,92 @@ const FormCrypto: FC<IFormCrypto> = ({ onBack }) => {
     });
   }, [wallet?.getNework()]);
 
-  const CURRENCY_OPTIONS = useMemo(() => {
+  const CURRENCY_OPTIONS = useMemo((): {
+    label: string,
+    value: string,
+    icon: string | undefined,
+    decimals: number
+  }[] => {
     if (!wallet) {
       return [];
     }
     const networkCurrencies = config.networks[wallet.getNework()].currencies;
     return Object.keys(networkCurrencies).map(currencyKey => {
       const currency = networkCurrencies[currencyKey];
-      return { label: currency.name, value: currency.name, icon: currency.icon };
+      return { label: currency.name, value: currency.address, icon: currency.icon, decimals: currency.decimals };
     });
   }, [wallet?.getNework()]);
 
-  const onChangeCurrency = (currency: string) => {
-    setDataForm(prevState => ({ ...prevState, currency }));
+  const onChangeCurrency = (currencyAddress: string) => {
+    setDataForm(prevState => ({ ...prevState, currencyAddress }));
+  };
+
+  const approveToken = async (
+    network: string,
+    currencyAddress: string,
+    walletAddress: string,
+    contractAddress: string
+  ) => {
+    const isApproved = await isTokenApproved(
+      network,
+      currencyAddress,
+      walletAddress,
+      contractAddress
+    );
+    if (isApproved) {
+      return;
+    }
+    toastInfo({ message: 'You need to give permission to access your token' });
+    const contract = erc20Contract(
+      currencyAddress,
+      // @ts-ignore
+      new Web3Provider(wallet.getProvider()).getSigner()
+    );
+    return contract.approve(contractAddress, MaxUint256.toString());
+  }
+
+  const onTopUp = async () => {
+    const { currencyAddress, amount } = dataForm;
+    if (!wallet || !amount) {
+      return;
+    }
+    try {
+      setTopUpStatus(TOP_UP_STATUS.PENDING);
+      const topUpContractAddress = config.networks[dataForm.chainId].addresses.topup;
+      await approveToken(
+        wallet.getNework(),
+        currencyAddress,
+        wallet.getAddress(),
+        topUpContractAddress
+      );
+      const contract = billingContract(
+        topUpContractAddress,
+        // @ts-ignore
+        new Web3Provider(wallet.getProvider()).getSigner()
+      );
+      const currencyDecimal = CURRENCY_OPTIONS.find(item => item.value === currencyAddress)?.decimals;
+      await contract.topup(
+        TOP_UP_APP_ID,
+        currencyAddress,
+        convertDecToWei(amount, currencyDecimal)
+      );
+      setTopUpStatus(TOP_UP_STATUS.FINISHED);
+    } catch (error: any) {
+      setTopUpStatus(TOP_UP_STATUS.NONE);
+      console.error(error);
+      toastError({ message: error.data.message || error.message });
+    }
+  };
+
+  const _renderTopUpMessage = () => {
+    if (topUpStatus === TOP_UP_STATUS.NONE) {
+      return null;
+    }
+    return (
+      <Box>
+        When payment is completed, Continue button would be available.
+      </Box>
+    );
   };
 
   return (
@@ -95,7 +172,6 @@ const FormCrypto: FC<IFormCrypto> = ({ onBack }) => {
         <Box className="icon-arrow-left" mr={6} onClick={onBack} />
         <Box className={'sub-title'}>Crypto</Box>
       </Flex>
-
       <AppCard className={'box-form-crypto'}>
         <Flex
           flexWrap={'wrap'}
@@ -112,10 +188,9 @@ const FormCrypto: FC<IFormCrypto> = ({ onBack }) => {
                 <AppInput
                   isDisabled={true}
                   size="lg"
-                  value={dataForm.wallet}
+                  value={dataForm.walletAddress}
                 />
               </Box>
-
               <Box width={isMobile ? '100%' : '165px'} mt={isMobile ? 4 : 0}>
                 <AppConnectWalletButton
                   width={'100%'}
@@ -126,7 +201,6 @@ const FormCrypto: FC<IFormCrypto> = ({ onBack }) => {
               </Box>
             </Flex>
           </AppField>
-
           {wallet && (
             <Flex
               flexWrap={'wrap'}
@@ -139,7 +213,7 @@ const FormCrypto: FC<IFormCrypto> = ({ onBack }) => {
                     size="large"
                     onChange={(value: string) => changeNetwork(value)}
                     options={CHAIN_OPTIONS}
-                    value={dataForm.chain}
+                    value={dataForm.chainId}
                   />
                 </AppField>
               </Box>
@@ -149,7 +223,7 @@ const FormCrypto: FC<IFormCrypto> = ({ onBack }) => {
                     size="large"
                     onChange={(value: string) => onChangeCurrency(value)}
                     options={CURRENCY_OPTIONS}
-                    value={dataForm.currency}
+                    value={dataForm.currencyAddress}
                   />
                 </AppField>
               </Box>
@@ -170,10 +244,16 @@ const FormCrypto: FC<IFormCrypto> = ({ onBack }) => {
           )}
         </Flex>
       </AppCard>
-
+      {_renderTopUpMessage()}
       {wallet && (
         <Flex justifyContent={isMobile ? 'center' : 'flex-end'} mt={7}>
-          <AppButton size={'lg'}>Top Up</AppButton>
+          <AppButton
+            size={'lg'}
+            onClick={topUpStatus === TOP_UP_STATUS.NONE ? onTopUp : onNext}
+            disabled={topUpStatus === TOP_UP_STATUS.PENDING}
+          >
+            {topUpStatus === TOP_UP_STATUS.NONE ? 'Top Up' : 'Continue'}
+          </AppButton>
         </Flex>
       )}
     </Box>

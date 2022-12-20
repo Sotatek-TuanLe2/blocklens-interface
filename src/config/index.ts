@@ -46,7 +46,10 @@ export interface Network {
   chainId: number;
   rpcUrls: string[];
   blockExplorer: BlockExplorer;
-  addresses?: any;
+  addresses: {
+    multicall: string;
+    topup: string;
+  };
   connectors: { [key: string]: Connector };
   icon?: string;
   currency?: string;

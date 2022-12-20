@@ -164,24 +164,6 @@
         "decimals": 18
       },
       "currencies": {
-        "eth": {
-          "id": "629dc9f014a8be7577e1ccdc",
-          "coingeckoId": "ethereum",
-          "address": "0x00",
-          "name": "Ethereum",
-          "symbol": "ETH",
-          "decimals": 18,
-          "icon": "icon-ethereum"
-        },
-        "weth": {
-          "id": "",
-          "coingeckoId": "ethereum",
-          "address": "0x97ea2bfd16ADfA7c3170004E86abBE74e93E1AA4",
-          "name": "WETH",
-          "symbol": "WETH",
-          "decimals": 18,
-          "icon": "/images/ETH.png"
-        },
         "usdt": {
           "id": "629dc9f014a8be7577e1ccde",
           "coingeckoId": "tether",
@@ -203,8 +185,7 @@
       },
       "addresses": {
         "multicall": "0x77dca2c955b15e9de4dbbcf1246b4b85b651e50e",
-        "auctionProxy": "0xd8CC13D4dd3F40c693b4f844C8609d6231731728",
-        "auctionVault": "0x351A93E819f29897b964c82370e86138E86f0f10"
+        "topup": "0xE66E07c149fbE6B5e385c1e6eA5c3A722E985A11"
       },
       "icon": "icon-ethereum",
       "currency": "ETH",
@@ -261,24 +242,6 @@
         "decimals": 18
       },
       "currencies": {
-        "bnb": {
-          "id": "629dc9f014a8be7577e1cce2",
-          "coingeckoId": "binancecoin",
-          "address": "0x00",
-          "name": "BNB",
-          "symbol": "BNB",
-          "decimals": 18,
-          "icon": "icon-bsc"
-        },
-        "wbnb": {
-          "id": "",
-          "coingeckoId": "binancecoin",
-          "address": "0x6281357c37980383024339c0b6b10fDb6Ce95728",
-          "name": "WBNB",
-          "symbol": "WBNB",
-          "decimals": 18,
-          "icon": "/images/BNB.png"
-        },
         "usdt": {
           "id": "629dc9f014a8be7577e1cce8",
           "coingeckoId": "tether",
@@ -309,8 +272,7 @@
       },
       "addresses": {
         "multicall": "0xae11C5B5f29A6a25e955F0CB8ddCc416f522AF5C",
-        "auctionProxy": "0x9f2B6F70299EBa7b7894f928fe2cB3f3Bea3DCa7",
-        "auctionVault": "0x6c6031B1359042a5d1272F90B497248637E4Fd12"
+        "topup": "0xD7B49476810EC3edb9676b9313c1E32736d7b7a7"
       },
       "icon": "icon-bsc",
       "currency": "BNB",
@@ -365,8 +327,7 @@
       },
       "addresses": {
         "multicall": "0x08411ADd0b5AA8ee47563b146743C13b3556c9Cc",
-        "auctionProxy": "0xD9a51C88E4588A026a7FFEd53ea61bc6a372a093",
-        "auctionVault": "0x41095a849Aa05F416C4295bDd5Fc748A17eDAA67"
+        "topup": "0x48183fAAB3a9Cc770Fd00fb6ACC65486bAE1bB4F"
       },
       "icon": "icon-polygon",
       "currency": "MATIC",
@@ -376,24 +337,6 @@
         "decimals": 18
       },
       "currencies": {
-        "matic": {
-          "id": "629dc9f114a8be7577e1ccea",
-          "coingeckoId": "matic-network",
-          "address": "0x00",
-          "name": "MATIC",
-          "symbol": "MATIC",
-          "decimals": 18,
-          "icon": "icon-polygon"
-        },
-        "wmatic": {
-          "id": "",
-          "coingeckoId": "matic-network",
-          "address": "0x792f90b0D1A18d613BFE0af2364636eFeA0D0AA9",
-          "name": "WMATIC",
-          "symbol": "WMATIC",
-          "decimals": 18,
-          "icon": "/images/MATIC.png"
-        },
         "usdt": {
           "id": "629dc9f114a8be7577e1ccec",
           "coingeckoId": "tether",
