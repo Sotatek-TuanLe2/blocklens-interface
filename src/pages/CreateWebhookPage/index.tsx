@@ -31,6 +31,7 @@ import { isMobile } from 'react-device-detect';
 import { APP_STATUS } from 'src/utils/utils-app';
 import { isEVMNetwork } from 'src/utils/utils-network';
 import { useLocation } from 'react-router';
+import { DownloadIcon } from 'src/assets/icons';
 
 const FILE_CSV_EXAMPLE = '/abi/CSV_Example.csv';
 
@@ -137,7 +138,7 @@ const CreateWebhook = () => {
       return forceUpdate();
     }
 
-    if (!dataForm.abiFilter.length) {
+    if (!dataForm.abiFilter.length && type !== WEBHOOK_TYPES.ADDRESS_ACTIVITY) {
       toastError({ message: 'At least one checkbox must be checked.' });
       return;
     }
@@ -352,8 +353,8 @@ const CreateWebhook = () => {
                   className="link"
                 >
                   <Flex>
-                    <Box className="icon-download" mr={2} />
-                    Download Example
+                    <DownloadIcon />
+                    <Box ml={2}>Download Example</Box>
                   </Flex>
                 </Link>
               </Box>

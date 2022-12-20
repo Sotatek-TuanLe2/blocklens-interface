@@ -66,13 +66,13 @@ iframe {
   background-color: inherit !important;
 
   &[data-checked] {
-    background-color: $main !important;
-    border-color: $main !important;
+    background: $main !important;
+    border: 0 !important;
   }
 
   &[data-indeterminate] {
-    background-color: $main !important;
-    border-color: $main !important;
+    background: $main !important;
+    border: 0 !important;
   }
 
   &[data-focus] {

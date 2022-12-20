@@ -25,7 +25,7 @@ import { CloseIcon } from '@chakra-ui/icons';
 const menus = [
   {
     name: 'Dashboard',
-    path: '/',
+    path: '/home',
   },
   {
     name: 'Billing',
@@ -151,7 +151,7 @@ const Header: FC = () => {
       <Flex className={'content-header'}>
         <Box onClick={() => history.push('/')} cursor={'pointer'}>
           <img
-            src="/images/logo.png"
+            src="/images/LandingPage/logo.png"
             alt="logo"
             width={isMobile ? '140px' : '180px'}
           />

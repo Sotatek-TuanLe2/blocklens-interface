@@ -36,7 +36,7 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
   };
 
   const _renderContentAddress = () => {
-    return <Td>{formatShortText(message?.trackingAddress)}</Td>;
+    return <Td>{formatShortText(message?.input?.trackingAddress)}</Td>;
   };
 
   const _renderContentActivities = () => {
@@ -53,14 +53,14 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
 
   const getNumberColspan = () => {
     if (webhook?.type === WEBHOOK_TYPES.NFT_ACTIVITY) {
-      return 6;
+      return 7;
     }
 
     if (webhook?.type === WEBHOOK_TYPES.CONTRACT_ACTIVITY) {
-      return 5;
+      return 6;
     }
 
-    return 5;
+    return 6;
   };
 
   const onRedirectToBlockExplorer = (e: MouseEvent<HTMLAnchorElement>) => {
@@ -78,9 +78,13 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
           {formatTimestamp(message?.createdAt * 1000, 'YYYY-MM-DD HH:mm:ss')}{' '}
           UTC
         </Td>
+
+        <Td>
+          {message?.input?.tx?.blockNumber}
+        </Td>
         <Td>
           <Flex alignItems="center">
-            {formatShortText(message?.txHash)}
+            {formatShortText(message?.input?.tx?.transactionHash)}
             <Box ml={2}>
               <a
                 onClick={(e) => onRedirectToBlockExplorer(e)}
@@ -88,7 +92,7 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
                   getBlockExplorerUrl(
                     message?.input?.chain,
                     message?.input?.network,
-                  ) + `tx/${message.txHash}`
+                  ) + `tx/${message?.input?.tx?.transactionHash}`
                 }`}
                 className="link-redirect"
                 target="_blank"

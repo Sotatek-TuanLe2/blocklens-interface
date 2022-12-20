@@ -77,7 +77,9 @@ const AppDetail = () => {
               {!isMobile && (
                 <Flex alignItems={'center'} className="box-network">
                   <Box className={getLogoChainByName(appInfo.chain)} mr={2} />
-                  {appInfo.network}
+                  <Box textTransform="capitalize">
+                    {appInfo.network.toLowerCase()}
+                  </Box>
                 </Flex>
               )}
 

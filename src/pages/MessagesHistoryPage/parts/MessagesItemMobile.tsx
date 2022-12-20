@@ -65,7 +65,7 @@ const MessagesItemMobile: FC<IMessagesItemMobile> = ({
         <Box>Address</Box>
         <Box className="value">
           <Flex alignItems="center">
-            {formatShortText(message?.trackingAddress)}
+            {formatShortText(message?.input?.trackingAddress)}
           </Flex>
         </Box>
       </Flex>
@@ -141,17 +141,25 @@ const MessagesItemMobile: FC<IMessagesItemMobile> = ({
               alignItems="center"
               className="info"
             >
+              <Box>Block</Box>
+              <Box>{message?.input?.tx?.blockNumber}</Box>
+            </Flex>
+            <Flex
+              justifyContent="space-between"
+              alignItems="center"
+              className="info"
+            >
               <Box>TXN ID</Box>
               <Box className="value">
                 <Flex alignItems="center">
-                  {formatShortText(message.txHash)}
+                  {formatShortText(message?.input?.tx?.transactionHash)}
                   <Box ml={2}>
                     <a
                       href={`${
                         getBlockExplorerUrl(
                           message?.input?.chain,
                           message?.input?.network,
-                        ) + `tx/${message.txHash}`
+                        ) + `tx/${message?.input?.tx?.transactionHash}`
                       }`}
                       className="link-redirect"
                       target="_blank"

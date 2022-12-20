@@ -21,7 +21,10 @@ import ModalChangeStatusApp from 'src/modals/ModalChangeStatusApp';
 import { createValidator } from 'src/utils/utils-validator';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
-import { getLogoChainByName } from 'src/utils/utils-network';
+import {
+  getLogoChainByName,
+  getNameChainByChainId,
+} from 'src/utils/utils-network';
 import { isMobile } from 'react-device-detect';
 
 interface IAppSettings {
@@ -152,13 +155,15 @@ const AppSettings: FC<IAppSettings> = ({ onBack, appInfo, reloadData }) => {
           <AppField label={'Chain'} customWidth={'24.5%'} isRequired>
             <Flex className="chain-app">
               <Box className={getLogoChainByName(appInfo.chain)} mr={3} />
-              <Box>{appInfo.chain}</Box>
+              <Box>{getNameChainByChainId(appInfo.chain)}</Box>
             </Flex>
           </AppField>
           <AppField label={'Network'} customWidth={'24.5%'} isRequired>
             <Flex className="chain-app">
               <Box className={getLogoChainByName(appInfo.chain)} mr={3} />
-              <Box>{appInfo.network}</Box>
+              <Box textTransform="capitalize">
+                {appInfo.network.toLowerCase()}
+              </Box>
             </Flex>
           </AppField>
           <AppField label={'Description'} customWidth={'100%'}>

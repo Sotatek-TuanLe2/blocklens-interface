@@ -133,6 +133,7 @@ const MessagesHistory = () => {
       <Thead className="header-list">
         <Tr>
           <Th>Created At</Th>
+          <Th>Block</Th>
           <Th>
             <Flex alignItems="center">
               txn id
