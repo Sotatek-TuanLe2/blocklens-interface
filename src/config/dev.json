@@ -3,7 +3,7 @@
     "domain": "Blocksniper",
     "message": "Join Blocksniper",
     "secretKey": "0xA84Df05A9F758eca47A7060a9A6C004578F6E65B",
-    "googleClientId": "763245371014-3sb0h7slimmco6654lgfm5acmijlq0td.apps.googleusercontent.com"
+    "googleClientId": "130485616803-c05jc0gd898m975gt9spv73v71u15ti1.apps.googleusercontent.com"
   },
   "api": {
     "baseUrlApi": "https://dev-blocksniper.sotatek.works/api/blocklens-users",
