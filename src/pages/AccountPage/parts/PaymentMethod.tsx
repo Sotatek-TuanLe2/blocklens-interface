@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from 'src/store';
 
 const PaymentMethod = () => {
-  const { billingInfos } = useSelector((state: RootState) => state.billing);
+  const { userInfo } = useSelector((state: RootState) => state.auth);
 
   return (
     <AppCard className="box-info-account payment-method">
@@ -20,12 +20,12 @@ const PaymentMethod = () => {
           <RadioChecked />
           <Box ml={2}>Card</Box>{' '}
           <Box className="info-payment">
-            (•••• •••• •••• {billingInfos?.paymentMethod?.card?.last4})
+            (•••• •••• •••• {userInfo?.stripePaymentMethod?.card?.last4})
           </Box>
         </Flex>
         <Flex cursor={'pointer'}>
           <RadioNoCheckedIcon /> <Box ml={2}>Crypto</Box>{' '}
-          <Box className="info-payment">(Balance: $--)</Box>
+          <Box className="info-payment">(Balance: ${userInfo?.balance})</Box>
         </Flex>
       </Box>
     </AppCard>
