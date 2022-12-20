@@ -9,7 +9,7 @@ import {
   Tooltip,
   Tr,
 } from '@chakra-ui/react';
-import React, { FC, useCallback, useMemo, useState, MouseEvent } from 'react';
+import React, { FC, MouseEvent, useCallback, useMemo, useState } from 'react';
 import {
   AppButton,
   AppCard,
@@ -28,18 +28,19 @@ import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import 'src/styles/pages/NotificationPage.scss';
 import 'src/styles/pages/AppDetail.scss';
 import {
+  ArrowRightIcon,
   FilterIcon,
   InfoIcon,
   LinkDetail,
   LinkIcon,
   RetryIcon,
-  ArrowRightIcon,
 } from 'src/assets/icons';
 import {
   getColorBrandStatus,
   IWebhook,
   optionsFilter,
   STATUS,
+  WEBHOOK_STATUS,
   WEBHOOK_TYPES,
 } from 'src/utils/utils-webhook';
 import { useHistory, useParams } from 'react-router';
@@ -142,7 +143,7 @@ const NotificationItemMobile: FC<INotificationItemMobile> = ({
           <Box>Address</Box>
           <Box className="value">
             <Flex alignItems="center">
-              {formatShortText(notification.trackingAddress)}
+              {formatShortText(notification?.metadata?.trackingAddress)}
             </Flex>
           </Box>
         </Flex>
@@ -205,15 +206,25 @@ const NotificationItemMobile: FC<INotificationItemMobile> = ({
               alignItems="center"
               className="info"
             >
+              <Box>Block</Box>
+              <Box className="value">{notification.metadata?.tx?.blockNumber}</Box>
+            </Flex>
+            <Flex
+              justifyContent="space-between"
+              alignItems="center"
+              className="info"
+            >
               <Box>TXN ID</Box>
               <Box className="value">
                 <Flex alignItems="center">
-                  {formatShortText(notification.metadata?.transactionHash)}
+                  {formatShortText(
+                    notification.metadata?.tx?.transactionHash,
+                  )}
                   <Box ml={2}>
                     <a
                       href={`${
                         getBlockExplorerUrl(appInfo.chain, appInfo.network) +
-                        `tx/${notification.metadata?.transactionHash}`
+                        `tx/${notification.metadata?.tx?.transactionHash}`
                       }`}
                       className="link-redirect"
                       target="_blank"
@@ -240,6 +251,7 @@ const NotificationItemMobile: FC<INotificationItemMobile> = ({
                     size="sm"
                     onClick={(e: any) => onRetry(e)}
                     w={'100%'}
+                    isDisabled={webhook.status === WEBHOOK_STATUS.DISABLED}
                   >
                     Retry Now
                   </AppButton>
@@ -276,6 +288,9 @@ const NotificationItem: FC<INotificationItem> = ({
   const onRetry = useCallback(
     async (e: MouseEvent<SVGSVGElement | HTMLButtonElement>) => {
       e.stopPropagation();
+
+      if (webhook.status === WEBHOOK_STATUS.DISABLED) return;
+
       try {
         await rf
           .getRequest('NotificationRequest')
@@ -304,7 +319,7 @@ const NotificationItem: FC<INotificationItem> = ({
   };
 
   const _renderContentAddress = () => {
-    return <Td>{formatShortText(notification.trackingAddress)}</Td>;
+    return <Td>{formatShortText(notification?.metadata?.trackingAddress)}</Td>;
   };
 
   const _renderContentActivities = () => {
@@ -352,15 +367,18 @@ const NotificationItem: FC<INotificationItem> = ({
           )}{' '}
           UTC
         </Td>
+        <Td>{notification.metadata?.tx?.blockNumber}</Td>
         <Td>
           <Flex alignItems="center">
-            {formatShortText(notification.metadata?.transactionHash)}
+            {formatShortText(
+              notification.metadata?.tx?.transactionHash,
+            )}
             <Box ml={2}>
               <a
                 onClick={(e) => onRedirectToBlockExplorer(e)}
                 href={`${
                   getBlockExplorerUrl(appInfo.chain, appInfo.network) +
-                  `tx/${notification.metadata?.transactionHash}`
+                  `tx/${notification.metadata?.tx?.transactionHash}`
                 }`}
                 className="link-redirect"
                 target="_blank"
@@ -375,7 +393,15 @@ const NotificationItem: FC<INotificationItem> = ({
         <Td>
           <Flex>
             {notification.status !== STATUS.DONE && (
-              <Box className="link-redirect" mr={3}>
+              <Box
+                className="link-redirect"
+                mr={3}
+                cursor={
+                  webhook.status === WEBHOOK_STATUS.DISABLED
+                    ? 'not-allowed'
+                    : 'pointer'
+                }
+              >
                 <RetryIcon
                   onClick={(e: MouseEvent<SVGSVGElement>) => onRetry(e)}
                 />
@@ -493,6 +519,7 @@ const WebhookActivities: FC<IWebhookActivities> = ({
       <Thead className="header-list">
         <Tr>
           <Th>Created At</Th>
+          <Th>Block</Th>
           <Th>
             <Flex alignItems="center">
               txn id{' '}
@@ -618,7 +645,7 @@ const WebhookActivities: FC<IWebhookActivities> = ({
         limit={isShowAll ? 15 : 5}
       />
 
-      {isMobile && (
+      {isMobile && !isShowAll && (
         <Flex justifyContent={'center'} my={4}>
           {_renderLinkShowAll()}
         </Flex>

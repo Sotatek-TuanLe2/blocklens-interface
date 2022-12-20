@@ -41,11 +41,12 @@ const ModalResendMail: FC<ModalUpgradeCreateApp> = ({
     <BaseModal
       size="xl"
       icon="icon-sent-mail"
-      title="Want To Create More Apps?"
       isOpen={open}
       onClose={onClose}
     >
-      {renderDescription()}
+      <Box mt={7}>
+        {renderDescription()}
+      </Box>
 
       <Flex flexWrap={'wrap'} justifyContent={'center'}>
         <AppButton size={'lg'} onClick={onResend}>
