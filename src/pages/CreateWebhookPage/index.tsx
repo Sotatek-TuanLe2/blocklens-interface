@@ -138,7 +138,7 @@ const CreateWebhook = () => {
       return forceUpdate();
     }
 
-    if (!dataForm.abiFilter.length) {
+    if (!dataForm.abiFilter.length && type !== WEBHOOK_TYPES.ADDRESS_ACTIVITY) {
       toastError({ message: 'At least one checkbox must be checked.' });
       return;
     }
