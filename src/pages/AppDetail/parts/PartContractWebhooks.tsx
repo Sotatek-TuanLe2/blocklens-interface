@@ -53,7 +53,7 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
         mx={isMobile ? 5 : 10}
       >
         <Box className="description">
-          Get notified when your Contract occurs activities
+          Get notified whenever a contract occurs activity
         </Box>
       </Flex>
       <Box mt={3} className="list-table-wrap">
