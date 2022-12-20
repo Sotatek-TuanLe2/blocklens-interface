@@ -238,8 +238,8 @@ const AppUploadABI: FC<IAppUploadABI> = ({
   const [valueSort, setValueSort] = useState<string>('az');
   const inputRef = useRef<any>(null);
 
-  const handleFileSelect = (evt: any, drogFile?: any) => {
-    const file = drogFile || evt.target.files[0];
+  const handleFileSelect = (evt: any, dropFile?: any) => {
+    const file = dropFile || evt.target.files[0];
     if (file.type !== 'application/json') {
       toastError({ message: 'The ABI file must be json file type' });
       return;
@@ -319,7 +319,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
         return;
       }
 
-      setFileSelected(drogFile || evt.target.files[0]);
+      setFileSelected(dropFile || evt.target.files[0]);
       setABIData(abi);
     };
     reader.readAsText(file);
