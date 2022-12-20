@@ -17,8 +17,8 @@ deploy-dev:
 	cp .env.dev.example .env
 	npm run build
 	echo "Uploading to s3"
-	aws s3 sync ./build s3://dev-blocksniper.bunicorn.finance --exclude "index.html"
-	aws s3 sync ./build s3://dev-blocksniper.bunicorn.finance --exclude "index.html" --include "*.html"
+	aws s3 sync ./build s3://dev-blocksniper.bunicorn.finance
+	aws s3 sync ./build s3://dev-blocksniper.bunicorn.finance
 	  rm -f ./build/index.html
 	echo "Deploy client finished!"
 	aws cloudfront create-invalidation \
@@ -30,8 +30,8 @@ deploy-prod:
 	cp .env.prod.example .env
 	npm run build
 	echo "Uploading to s3"
-	aws s3 sync ./build s3://blocksniper.bunicorn.finance --exclude "index.html"
-	aws s3 sync ./build s3://blocksniper.bunicorn.finance --exclude "index.html" --include "*.html"
+	aws s3 sync ./build s3://blocksniper.bunicorn.finance
+	aws s3 sync ./build s3://blocksniper.bunicorn.finance
 	  rm -f ./build/index.html
 	echo "Deploy client finished!"
 	aws cloudfront create-invalidation \

@@ -48,7 +48,7 @@ const ModalDeleteWebhook: FC<IModalDeleteWebhook> = ({
           <Box>Webhook ID</Box>
           <Box>{webhook.registrationId}</Box>
         </Flex>
-        <Flex justifyContent={'space-between'}  className="info">
+        <Flex justifyContent={'space-between'} className="info">
           <Box>URL</Box>
           <Box>{webhook.webhook}</Box>
         </Flex>

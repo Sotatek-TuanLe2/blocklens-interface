@@ -6,7 +6,7 @@ import billing from 'src/store/billing';
 
 const rootReducer = combineReducers({
   auth,
-  billing
+  billing,
 });
 
 const initialState = {};

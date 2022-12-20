@@ -44,7 +44,7 @@ const Footer = () => {
           minim veniam, quis nostrud exercitation ullamco laboris nisi ut
           aliquip ex ea commodo consequat.
         </div>
-        <div className='footer-landing__name'>© 2022, Block Sniper</div>
+        <div className="footer-landing__name">© 2022, Block Sniper</div>
       </div>
 
       <div className="footer-landing__menus-link">
@@ -52,7 +52,11 @@ const Footer = () => {
           <div>Company</div>
           {menus.map((item, index) => {
             return (
-              <Link className="footer-landing__menu-item" to={item.path} key={index}>
+              <Link
+                className="footer-landing__menu-item"
+                to={item.path}
+                key={index}
+              >
                 {item.name}
               </Link>
             );
@@ -63,7 +67,11 @@ const Footer = () => {
           <div>Privacy Policy and Terms of Service</div>
           {linkTerms.map((item, index) => {
             return (
-              <Link className="footer-landing__menu-item" to={item.path}  key={index}>
+              <Link
+                className="footer-landing__menu-item"
+                to={item.path}
+                key={index}
+              >
                 {item.name}
               </Link>
             );

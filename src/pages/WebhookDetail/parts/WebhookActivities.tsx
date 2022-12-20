@@ -207,7 +207,9 @@ const NotificationItemMobile: FC<INotificationItemMobile> = ({
               className="info"
             >
               <Box>Block</Box>
-              <Box className="value">{notification.metadata?.tx?.blockNumber}</Box>
+              <Box className="value">
+                {notification.metadata?.tx?.blockNumber}
+              </Box>
             </Flex>
             <Flex
               justifyContent="space-between"
@@ -217,9 +219,7 @@ const NotificationItemMobile: FC<INotificationItemMobile> = ({
               <Box>TXN ID</Box>
               <Box className="value">
                 <Flex alignItems="center">
-                  {formatShortText(
-                    notification.metadata?.tx?.transactionHash,
-                  )}
+                  {formatShortText(notification.metadata?.tx?.transactionHash)}
                   <Box ml={2}>
                     <a
                       href={`${
@@ -370,9 +370,7 @@ const NotificationItem: FC<INotificationItem> = ({
         <Td>{notification.metadata?.tx?.blockNumber}</Td>
         <Td>
           <Flex alignItems="center">
-            {formatShortText(
-              notification.metadata?.tx?.transactionHash,
-            )}
+            {formatShortText(notification.metadata?.tx?.transactionHash)}
             <Box ml={2}>
               <a
                 onClick={(e) => onRedirectToBlockExplorer(e)}

@@ -50,7 +50,10 @@ const BillingInfoPage = () => {
         <AppCard className="box-info-account">
           <Flex justifyContent={'space-between'} width={'100%'}>
             <Flex flexDirection={isMobile ? 'column' : 'row'} width={'100%'}>
-              <Flex justifyContent={'space-between'} width={isMobile ? '100%' : 'auto'}>
+              <Flex
+                justifyContent={'space-between'}
+                width={isMobile ? '100%' : 'auto'}
+              >
                 <Box className="label">Billing Address:</Box>
                 {isMobile && _renderButtonEdit()}
               </Flex>

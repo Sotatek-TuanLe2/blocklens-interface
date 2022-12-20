@@ -79,9 +79,7 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
           UTC
         </Td>
 
-        <Td>
-          {message?.input?.tx?.blockNumber}
-        </Td>
+        <Td>{message?.input?.tx?.blockNumber}</Td>
         <Td>
           <Flex alignItems="center">
             {formatShortText(message?.input?.tx?.transactionHash)}

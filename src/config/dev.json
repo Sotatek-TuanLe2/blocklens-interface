@@ -3,11 +3,11 @@
     "domain": "Blocksniper",
     "message": "Join Blocksniper",
     "secretKey": "0xA84Df05A9F758eca47A7060a9A6C004578F6E65B",
-    "googleClientId": "130485616803-c05jc0gd898m975gt9spv73v71u15ti1.apps.googleusercontent.com"
+    "googleClientId": "763245371014-3sb0h7slimmco6654lgfm5acmijlq0td.apps.googleusercontent.com"
   },
   "api": {
-    "baseUrlApi": "https://buni-dev-api.sotatek.works/api/blocklens-users",
-    "notificationsApi": "https://buni-dev-api.sotatek.works/api/blocklens-notifications"
+    "baseUrlApi": "https://dev-blocksniper.sotatek.works/api/blocklens-users",
+    "notificationsApi": "https://dev-blocksniper.sotatek.works/api/blocklens-notifications"
   },
   "stripe": {
     "publishableKey": "pk_test_51Ljx2qF4Iczr6ngs4zx9wLMG1wlxVR2RrGGMkeGQndyZSoidulS0aLSETfQQoOAmL7tfJHQfWPsBUzIdykgJm6y400SL9AErt9"
