@@ -127,6 +127,7 @@ const WebhookDetail = () => {
         <WebhookSettings
           onBack={() => setIsShowSetting(false)}
           webhook={webhook}
+          appInfo={appInfo}
           reloadData={getWebhookInfo}
         />
       ) : (
