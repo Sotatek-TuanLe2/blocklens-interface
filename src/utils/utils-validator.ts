@@ -47,7 +47,9 @@ type CustomRule =
   | 'isPositive'
   | 'maxDigits'
   | 'isSame'
-  | 'isAddress';
+  | 'isAddress'
+  | 'maxCountIds'
+  | 'isIds';
 
 export type Rules = IRule | CustomRule;
 
@@ -122,6 +124,22 @@ export const createValidator = (options?: IOptions | undefined) => {
         message: 'Your password can’t start or end with a blank space.',
         rule: (value: string) => {
           return !value.startsWith(' ') && !value.endsWith(' ');
+        },
+      },
+      maxCountIds: {
+        message: 'TokenIds must contain not more than 20 elements',
+        rule: (value: string) => {
+          const listTokenId = value.trim().split(', ');
+          return listTokenId.length <= 20;
+        },
+      },
+      isIds: {
+        message: 'TokenId must be positive number.',
+        rule: (value: string) => {
+          const listTokenId = value.trim().split(', ');
+          return listTokenId.every((value: string) => {
+            return /^[0-9]{1,}$/.test(value);
+          });
         },
       },
     },

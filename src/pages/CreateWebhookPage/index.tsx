@@ -444,6 +444,11 @@ const CreateWebhook = () => {
                 tokenIds: e.target.value,
               })
             }
+            validate={{
+              name: `tokenID`,
+              validator: validator.current,
+              rule: ['maxCountIds', 'isIds'],
+            }}
           />
         </AppField>
         <AppUploadABI
