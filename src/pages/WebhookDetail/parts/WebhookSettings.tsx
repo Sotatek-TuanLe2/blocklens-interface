@@ -18,14 +18,21 @@ import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import ModalDeleteWebhook from 'src/modals/ModalDeleteWebhook';
 import { isMobile } from 'react-device-detect';
+import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
 
 interface IAppSettings {
   onBack: () => void;
   reloadData: () => void;
   webhook: IWebhook;
+  appInfo: IAppResponse;
 }
 
-const WebhookSettings: FC<IAppSettings> = ({ onBack, webhook, reloadData }) => {
+const WebhookSettings: FC<IAppSettings> = ({
+  onBack,
+  webhook,
+  reloadData,
+  appInfo,
+}) => {
   const [isOpenModalDelete, setIsOpenModalDelete] = useState<boolean>(false);
 
   const isActive = useMemo(
@@ -149,7 +156,11 @@ const WebhookSettings: FC<IAppSettings> = ({ onBack, webhook, reloadData }) => {
             </Flex>
           </Flex>
 
-          <AppButton onClick={onUpdateStatus} size={isMobile ? 'sm' : 'md'}>
+          <AppButton
+            onClick={onUpdateStatus}
+            size={isMobile ? 'sm' : 'md'}
+            isDisabled={appInfo.status === APP_STATUS.DISABLED}
+          >
             {isActive ? 'Deactivate' : 'Activate'}
           </AppButton>
         </Flex>
