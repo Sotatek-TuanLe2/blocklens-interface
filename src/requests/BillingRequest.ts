@@ -12,7 +12,7 @@ export default class BillingRequest extends BaseRequest {
   }
 
   getBillingInfo() {
-    const url = '/my/payment/billing-info';
+    const url = '/my/users/profile';
     return this.get(url);
   }
 
