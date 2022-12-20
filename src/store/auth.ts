@@ -10,6 +10,9 @@ interface IUserInfo {
   lastName?: string;
   address?: string;
   email?: string;
+  billingEmail?: string;
+  balance?: number;
+  stripePaymentMethod?: any;
 }
 
 interface AuthState {

@@ -11,10 +11,6 @@ export default class BillingRequest extends BaseRequest {
     return this.get(url);
   }
 
-  getBillingInfo() {
-    const url = '/my/payment/billing-info';
-    return this.get(url);
-  }
 
   updateBillingInfo(params: any) {
     const url = '/my/payment/billing-info';
