@@ -52,7 +52,7 @@ const PartAddressWebhooks: FC<IListAddress> = ({ appInfo }) => {
         mx={isMobile ? 5 : 10}
       >
         <Box className="description">
-          Get notified whenever an address sends/receives any Token
+          Get notified whenever an address occurs activity
         </Box>
       </Flex>
 

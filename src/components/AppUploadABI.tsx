@@ -238,8 +238,8 @@ const AppUploadABI: FC<IAppUploadABI> = ({
   const [valueSort, setValueSort] = useState<string>('az');
   const inputRef = useRef<any>(null);
 
-  const handleFileSelect = (evt: any) => {
-    const file = evt.target.files[0];
+  const handleFileSelect = (evt: any, dropFile?: any) => {
+    const file = dropFile || evt.target.files[0];
     if (file.type !== 'application/json') {
       toastError({ message: 'The ABI file must be json file type' });
       return;
@@ -319,11 +319,30 @@ const AppUploadABI: FC<IAppUploadABI> = ({
         return;
       }
 
-      setFileSelected(evt.target.files[0]);
+      setFileSelected(dropFile || evt.target.files[0]);
       setABIData(abi);
     };
     reader.readAsText(file);
   };
+
+  const onDropHandler = (ev: any) => {
+    ev.preventDefault();
+
+    let file: any = {};
+    if (ev.dataTransfer.items) {
+      // Use DataTransferItemList interface to access the file(s)
+      file = [...ev.dataTransfer.items]
+        .find((item: any) => item.kind === 'file')
+        .getAsFile();
+    } else {
+      // Use DataTransfer interface to access the file(s)
+      file = ev.dataTransfer.files[0];
+    }
+
+    handleFileSelect(null, file);
+  };
+
+  const onDragOver = (e: any) => e.preventDefault();
 
   useEffect(() => {
     if (type !== TYPE_ABI.NFT) return;
@@ -407,7 +426,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
 
       {!viewOnly && (
         <>
-          <label>
+          <label onDrop={onDropHandler} onDragOver={onDragOver}>
             <Box className="box-upload">
               <Box className="icon-upload" mb={4} />
               <Box maxW={'365px'} textAlign={'center'}>
