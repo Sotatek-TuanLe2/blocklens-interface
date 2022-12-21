@@ -3,11 +3,13 @@ import thunkMiddleware from 'redux-thunk';
 import auth from 'src/store/auth';
 import billing from 'src/store/billing';
 import wallet from 'src/store/wallet';
+import transaction from 'src/store/transaction';
 
 const rootReducer = combineReducers({
   auth,
   billing,
-  wallet
+  wallet,
+  transaction
 });
 
 const store = configureStore({

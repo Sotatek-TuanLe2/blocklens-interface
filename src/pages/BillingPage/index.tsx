@@ -295,7 +295,7 @@ const BillingPage = () => {
   const _renderButton = () => (
     step === STEPS.LIST && (
       <Flex justifyContent={isMobile ? 'center' : 'flex-end'}>
-        {planSelected === 'ENTERPRISE' ? (
+        {planSelected === planEnterprise.code ? (
           <AppButton size="md" mt={7}>
             Contact Us
           </AppButton>

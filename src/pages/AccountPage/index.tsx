@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from 'react';
 import { BasePageContainer } from 'src/layouts';
 import { Box, Flex } from '@chakra-ui/react';
 import BasicDetail from './parts/BasicDetail';
@@ -6,15 +5,34 @@ import BillingInfos from './parts/BillingInfos';
 import 'src/styles/pages/AccountPage.scss';
 import { isMobile } from 'react-device-detect';
 import PaymentMethod from './parts/PaymentMethod';
-import { AppButton, AppCard } from 'src/components';
-import rf from 'src/requests/RequestFactory';
-import { toastError } from 'src/utils/utils-notify';
+import { AppCard } from 'src/components';
 import Notifications from './parts/Notifications';
-import ModalConnectWallet from 'src/modals/ModalConnectWallet';
+import AppConnectWalletButton from 'src/components/AppConnectWalletButton';
+import useUser from 'src/hooks/useUser';
 
 const AccountPage = () => {
-  const [isOpenConnectWalletModal, setIsOpenConnectWalletModal] =
-    useState<boolean>(false);
+  const { user } = useUser();
+
+  const _renderLinkedAccounts = () => {
+    if (user?.getLinkedAddress()) {
+      return (
+        <Flex justifyContent={'space-between'} mb={5} className="info-item">
+          <Flex>
+            <Box className={'label'}>Addresses:</Box>
+            <Box className={'value'}>{user.getLinkedAddress()}</Box>
+          </Flex>
+          {!isMobile && <Box className={'link'}>Unlink</Box>}
+        </Flex>
+      );
+    }
+    return (
+      <Flex justifyContent={'center'} my={isMobile ? 5 : 4}>
+        <AppConnectWalletButton>
+          Connect Wallet
+        </AppConnectWalletButton>
+      </Flex>
+    );
+  };
 
   return (
     <BasePageContainer className="account">
@@ -48,31 +66,9 @@ const AccountPage = () => {
               </Box>
               {isMobile && <Box className={'link'}>Unlink</Box>}
             </Flex>
-
-            <Flex justifyContent={'center'} my={isMobile ? 5 : 4}>
-              <AppButton
-                size="lg"
-                onClick={() => setIsOpenConnectWalletModal(true)}
-              >
-                Connect wallet
-              </AppButton>
-            </Flex>
-
-            {/*<Flex justifyContent={'space-between'} mb={5} className="info-item">*/}
-            {/*  <Flex>*/}
-            {/*    <Box className={'label'}>Addresses:</Box>*/}
-            {/*    <Box className={'value'}>--</Box>*/}
-            {/*  </Flex>*/}
-
-            {/*  {!isMobile && <Box className={'link'}>Unlink</Box>}*/}
-            {/*</Flex>*/}
+            {_renderLinkedAccounts()}
           </AppCard>
         </Box>
-
-        <ModalConnectWallet
-          open={isOpenConnectWalletModal}
-          onClose={() => setIsOpenConnectWalletModal(false)}
-        />
       </>
     </BasePageContainer>
   );

@@ -27,6 +27,8 @@ import BillingPage from './pages/BillingPage';
 import AccountPage from './pages/AccountPage';
 import BillingInfoPage from './pages/BillingInfoPage';
 import LandingPage from './pages/LandingPage';
+import ModalSubmittingTransaction from './modals/ModalSubmittingTransaction';
+import ModalFinishTransaction from './modals/ModalFinishTransaction';
 
 /**
  * Main App routes.
@@ -76,6 +78,8 @@ const Routes: FC<RouteComponentProps> = () => {
         <PrivateRoute path={'/home'} component={HomePage} />
         <PublicRoute path={'/'} component={LandingPage} />
       </Switch>
+      <ModalSubmittingTransaction />
+      <ModalFinishTransaction />
     </>
   );
 };

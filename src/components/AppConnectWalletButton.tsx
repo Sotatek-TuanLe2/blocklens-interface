@@ -3,13 +3,20 @@ import useWallet from 'src/hooks/useWallet';
 import ModalConnectWallet from 'src/modals/ModalConnectWallet';
 import AppButton, { AppButtonProps } from './AppButton';
 
-const AppConnectWalletButton = forwardRef<HTMLButtonElement, AppButtonProps>(
+interface IAppConnectWalletButton extends AppButtonProps {
+  onConnectSuccess?: () => void;
+}
+
+const AppConnectWalletButton = forwardRef<HTMLButtonElement, IAppConnectWalletButton>(
   (props, ref) => {
     const { wallet, isOpenModalConnectWallet, toggleModalConnectWallet } = useWallet();
 
     const onOpenModalConnectWallet = () => toggleModalConnectWallet(true);
 
-    const onCloseModalConnectWallet = () => toggleModalConnectWallet(false); 
+    const onCloseModalConnectWallet = () => {
+      toggleModalConnectWallet(false);
+      props.onConnectSuccess && props.onConnectSuccess();
+    } ;
 
     const _renderUnconnectedWallet = () => (
       <AppButton

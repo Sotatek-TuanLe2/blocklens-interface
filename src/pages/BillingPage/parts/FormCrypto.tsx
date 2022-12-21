@@ -1,6 +1,5 @@
 import { Box, Flex } from '@chakra-ui/react';
 import { FC, useEffect, useMemo, useState } from 'react';
-import { Web3Provider } from '@ethersproject/providers';
 import { MaxUint256 } from '@ethersproject/constants';
 import 'src/styles/pages/AppDetail.scss';
 import {
@@ -14,10 +13,13 @@ import { isMobile } from 'react-device-detect';
 import config from 'src/config';
 import AppConnectWalletButton from 'src/components/AppConnectWalletButton';
 import useWallet from 'src/hooks/useWallet';
-import { billingContract, erc20Contract } from 'src/utils/utils-contract';
 import { isTokenApproved } from 'src/utils/utils-token';
 import { toastError, toastInfo } from 'src/utils/utils-notify';
 import { convertDecToWei } from 'src/utils/utils-format';
+import { useDispatch } from 'react-redux';
+import { executeTransaction } from 'src/store/transaction';
+import abi from 'src/abi';
+import { getInfoUser } from 'src/store/auth';
 
 interface IFormCrypto {
   onBack: () => void;
@@ -46,10 +48,12 @@ const FormCrypto: FC<IFormCrypto> = ({ onBack, onNext }) => {
   }
 
   const TOP_UP_APP_ID = 1; // used for blockSniper
+  const TOP_UP_CONFIRMATIONS = 30;
 
   const [dataForm, setDataForm] = useState<IDataForm>(initialDataForm);
   const [topUpStatus, setTopUpStatus] = useState<number>(TOP_UP_STATUS.NONE);
   const { wallet, changeNetwork } = useWallet();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (wallet?.getAddress()) {
@@ -114,12 +118,15 @@ const FormCrypto: FC<IFormCrypto> = ({ onBack, onNext }) => {
       return;
     }
     toastInfo({ message: 'You need to give permission to access your token' });
-    const contract = erc20Contract(
-      currencyAddress,
-      // @ts-ignore
-      new Web3Provider(wallet.getProvider()).getSigner()
-    );
-    return contract.approve(contractAddress, MaxUint256.toString());
+    await dispatch(executeTransaction({
+      provider: wallet?.getProvider(),
+      params: {
+        contractAddress: currencyAddress,
+        abi: abi['erc20'],
+        action: 'approve',
+        transactionArgs: [contractAddress, MaxUint256.toString()],
+      }
+    }));
   }
 
   const onTopUp = async () => {
@@ -136,17 +143,18 @@ const FormCrypto: FC<IFormCrypto> = ({ onBack, onNext }) => {
         wallet.getAddress(),
         topUpContractAddress
       );
-      const contract = billingContract(
-        topUpContractAddress,
-        // @ts-ignore
-        new Web3Provider(wallet.getProvider()).getSigner()
-      );
       const currencyDecimal = CURRENCY_OPTIONS.find(item => item.value === currencyAddress)?.decimals;
-      await contract.topup(
-        TOP_UP_APP_ID,
-        currencyAddress,
-        convertDecToWei(amount, currencyDecimal)
-      );
+      await dispatch(executeTransaction({
+        provider: wallet.getProvider(),
+        params: {
+          contractAddress: topUpContractAddress,
+          abi: abi['billing'],
+          action: 'topup',
+          transactionArgs: [TOP_UP_APP_ID, currencyAddress, convertDecToWei(amount, currencyDecimal)]
+        },
+        confirmation: TOP_UP_CONFIRMATIONS
+      }));
+      dispatch(getInfoUser());
       setTopUpStatus(TOP_UP_STATUS.FINISHED);
     } catch (error: any) {
       setTopUpStatus(TOP_UP_STATUS.NONE);
