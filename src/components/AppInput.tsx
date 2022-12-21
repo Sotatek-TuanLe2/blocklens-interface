@@ -38,7 +38,7 @@ const AppInput = forwardRef(
       size = 'lg',
       readOnly,
       type = 'text',
-      isSearch= false,
+      isSearch = false,
       validate,
       endAdornment,
       hiddenErrorText = false,
@@ -57,7 +57,13 @@ const AppInput = forwardRef(
     return (
       <>
         <InputGroup size={size}>
-          {isSearch && <InputLeftElement top={'-8px'} left={'5px'} children={<Box className="icon-search" />} />}
+          {isSearch && (
+            <InputLeftElement
+              top={'-8px'}
+              left={'5px'}
+              children={<Box className="icon-search" />}
+            />
+          )}
           <Input
             type={type === 'password' && isShowPassword ? 'text' : type}
             {...props}
@@ -130,7 +136,7 @@ export const appInputStyles = {
         _disabled: {
           borderColor: mode('bg.200', 'bg.200')(props),
           color: mode('paragraph.100', 'paragraph.100')(props),
-        }
+        },
       },
     }),
     auth: (props: StyleProps) => ({

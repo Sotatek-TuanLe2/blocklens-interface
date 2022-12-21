@@ -256,8 +256,8 @@ const CreateWebhook = () => {
       setAddressesValue(value.join('\n'));
     };
 
-    const handleFileSelect = (evt: any) => {
-      const file = evt.target.files[0];
+    const handleFileSelect = (evt: any, dropFile?: any) => {
+      const file = dropFile || evt.target.files[0];
       if (file.type !== 'text/csv') {
         toastError({ message: 'The file must be csv file type' });
         return;
@@ -267,7 +267,7 @@ const CreateWebhook = () => {
       reader.onload = (e: any) => {
         const data = e.target.result;
         setAddressesValue(data?.split('\r\n').slice(0, -1).join('\n'));
-        setFileSelected(evt.target.files[0]);
+        setFileSelected(dropFile || evt.target.files[0]);
       };
 
       reader.readAsBinaryString(file);
@@ -290,6 +290,24 @@ const CreateWebhook = () => {
         );
       }
     };
+
+    const onDropHandler = (ev: any) => {
+      ev.preventDefault();
+
+      let file: any = {};
+      if (ev.dataTransfer.items) {
+        // Use DataTransferItemList interface to access the file(s)
+        file = [...ev.dataTransfer.items]
+          .find((item: any) => item.kind === 'file')
+          .getAsFile();
+      } else {
+        // Use DataTransfer interface to access the file(s)
+        file = ev.dataTransfer.files[0];
+      }
+      handleFileSelect(null, file);
+    };
+
+    const onDragOver = (e: any) => e.preventDefault();
 
     return (
       <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
@@ -328,7 +346,7 @@ const CreateWebhook = () => {
             </>
           ) : (
             <>
-              <label>
+              <label onDrop={onDropHandler} onDragOver={onDragOver}>
                 <Box className="box-upload">
                   <Box className="icon-upload" mb={4} />
                   <Box maxW={'365px'} textAlign={'center'}>
@@ -426,6 +444,11 @@ const CreateWebhook = () => {
                 tokenIds: e.target.value,
               })
             }
+            validate={{
+              name: `tokenID`,
+              validator: validator.current,
+              rule: ['maxCountIds', 'isIds'],
+            }}
           />
         </AppField>
         <AppUploadABI

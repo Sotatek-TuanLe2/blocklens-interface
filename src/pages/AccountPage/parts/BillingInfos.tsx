@@ -20,8 +20,10 @@ const BillingInfos = () => {
   const _renderLinkDetail = () => {
     return (
       <AppLink to={'/billing'}>
-        <Flex className={"link"} alignItems={'center'}>
-          <Box className="link" mr={2}>Change Plan </Box>
+        <Flex className={'link'} alignItems={'center'}>
+          <Box className="link" mr={2}>
+            Change Plan{' '}
+          </Box>
           <ArrowRightIcon />
         </Flex>
       </AppLink>

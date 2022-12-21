@@ -16,12 +16,12 @@ const ModalResendMail: FC<ModalUpgradeCreateApp> = ({
   onClose,
   type,
   email,
-  onResend
+  onResend,
 }) => {
   const renderDescription = () => {
     if (type === 'Sign up') {
       return (
-        <Box className={'modal__description'}>
+        <Box className={'modal__description-email'}>
           An emails has been sent to <span className="email">{email}</span>{' '}
           <br />
           Click the link in the email to complete signup.
@@ -30,7 +30,7 @@ const ModalResendMail: FC<ModalUpgradeCreateApp> = ({
     }
 
     return (
-      <Box className={'modal__description'}>
+      <Box className={'modal__description-email'}>
         An emails has been sent to <span className="email">{email}</span> <br />
         Click the link in the email to choose a new password.
       </Box>
@@ -38,15 +38,8 @@ const ModalResendMail: FC<ModalUpgradeCreateApp> = ({
   };
 
   return (
-    <BaseModal
-      size="xl"
-      icon="icon-sent-mail"
-      isOpen={open}
-      onClose={onClose}
-    >
-      <Box mt={7}>
-        {renderDescription()}
-      </Box>
+    <BaseModal size="xl" icon="icon-sent-mail" isOpen={open} onClose={onClose}>
+      <Box mt={7}>{renderDescription()}</Box>
 
       <Flex flexWrap={'wrap'} justifyContent={'center'}>
         <AppButton size={'lg'} onClick={onResend}>

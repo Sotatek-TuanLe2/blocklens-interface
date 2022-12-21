@@ -19,7 +19,13 @@ const AppField = ({
   note,
 }: IField) => {
   return (
-    <Flex alignItems={'flex-start'} w={['full', customWidth]} mb={4} className={'field'} position={'relative'}>
+    <Flex
+      alignItems={'flex-start'}
+      w={['full', customWidth]}
+      mb={4}
+      className={'field'}
+      position={'relative'}
+    >
       <Stack w={'full'} spacing={1}>
         <Flex alignItems={'center'}>
           <Text whiteSpace={'nowrap'} mr={2} className={'label'}>
@@ -31,7 +37,7 @@ const AppField = ({
             )}
           </Text>
           {note && (
-            <Tooltip p={2} label={note} placement={"top"} hasArrow>
+            <Tooltip p={2} label={note} placement={'top'} hasArrow>
               <Box className="icon-info" ml={1} cursor={'pointer'} />
             </Tooltip>
           )}

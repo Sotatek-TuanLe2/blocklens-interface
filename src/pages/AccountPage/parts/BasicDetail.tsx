@@ -18,7 +18,6 @@ const BasicDetail = () => {
     useState<boolean>(false);
 
   const { userInfo } = useSelector((state: RootState) => state.auth);
-  const { billingInfos } = useSelector((state: RootState) => state.billing);
 
   return (
     <AppCard className="box-info-account">
@@ -46,7 +45,7 @@ const BasicDetail = () => {
           <Flex>
             <Box className="label">Card:</Box>
             <Box className="value">
-              •••• •••• •••• {billingInfos?.paymentMethod?.card?.last4}
+              •••• •••• •••• {userInfo?.stripePaymentMethod?.card?.last4}
             </Box>
           </Flex>
           <Box
@@ -59,7 +58,7 @@ const BasicDetail = () => {
         <Flex justifyContent={'space-between'}>
           <Flex>
             <Box className="label">Balance:</Box>
-            <Box className="value">--</Box>
+            <Box className="value">{userInfo?.balance}</Box>
           </Flex>
           <Box className="link">Top up</Box>
         </Flex>

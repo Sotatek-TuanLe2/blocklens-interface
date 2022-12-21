@@ -5,9 +5,7 @@ import 'src/styles/layout/Header.scss';
 
 const Footer: FC = () => {
   return (
-    <Flex
-      className={'footer'}
-    >
+    <Flex className={'footer'}>
       <Box padding={'20px'} fontWeight={600} textAlign={'center'}>
         &copy; 2022 SOTA LABS. All Rights Reserved.
       </Box>

@@ -33,7 +33,7 @@ const AccountPage = () => {
           </Box>
 
           <Box className={'box-account'} mt={5}>
-            <PaymentMethod/>
+            <PaymentMethod />
           </Box>
 
           <Box className={'box-account'} mt={5}>

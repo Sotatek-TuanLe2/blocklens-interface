@@ -113,14 +113,12 @@ const WebhookDetail = () => {
     );
   };
 
-  if(!webhook && !Object.keys(webhook).length) {
+  if (!webhook && !Object.keys(webhook).length) {
     return (
       <BasePageContainer className="app-detail">
-        <Flex justifyContent='center'>
-         Webhook Not Found
-        </Flex>
+        <Flex justifyContent="center">Webhook Not Found</Flex>
       </BasePageContainer>
-    )
+    );
   }
 
   return (
@@ -129,6 +127,7 @@ const WebhookDetail = () => {
         <WebhookSettings
           onBack={() => setIsShowSetting(false)}
           webhook={webhook}
+          appInfo={appInfo}
           reloadData={getWebhookInfo}
         />
       ) : (
