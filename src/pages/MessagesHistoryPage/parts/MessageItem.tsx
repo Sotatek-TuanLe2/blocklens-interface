@@ -135,7 +135,8 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
                     theme="monokai"
                     src={message.input}
                     displayDataTypes={false}
-                    collapsed={false}
+                    collapsed={1}
+                    shouldCollapse={false}
                     displayObjectSize={false}
                   />
                 </Box>
@@ -148,7 +149,8 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
                     theme="monokai"
                     src={message.output}
                     displayDataTypes={false}
-                    collapsed={false}
+                    collapsed={1}
+                    shouldCollapse={false}
                     displayObjectSize={false}
                   />
                 </Box>
