@@ -71,12 +71,12 @@ interface INotificationItem {
   notification: INotificationResponse;
   webhook: IWebhook;
   appInfo: IAppResponse;
+  onReloadData: () => void;
 }
 
 interface INotificationItemMobile {
   notification: INotificationResponse;
   webhook: IWebhook;
-  isRetrying: boolean;
   appInfo: IAppResponse;
   onRetry: (e: MouseEvent<SVGSVGElement | HTMLButtonElement>) => void;
 }
@@ -89,13 +89,10 @@ interface IWebhookActivities {
   appInfo: IAppResponse;
 }
 
-const _renderStatus = (
-  notification: INotificationResponse,
-  isRetrying: boolean,
-) => {
-  if (!notification.status) return 'N/A';
+const _renderStatus = (notification: INotificationResponse) => {
+  if (!notification.status) return '--';
 
-  if (isRetrying) {
+  if (notification.status === STATUS.PROCESSING) {
     return (
       <Box className="status waiting">Retrying {notification.retryTime}/5</Box>
     );
@@ -111,7 +108,6 @@ const _renderStatus = (
 const NotificationItemMobile: FC<INotificationItemMobile> = ({
   notification,
   webhook,
-  isRetrying,
   appInfo,
   onRetry,
 }) => {
@@ -198,7 +194,7 @@ const NotificationItemMobile: FC<INotificationItemMobile> = ({
           className="info"
         >
           <Box>Status</Box>
-          <Box>{_renderStatus(notification, isRetrying)}</Box>
+          <Box>{_renderStatus(notification)}</Box>
         </Flex>
 
         {isOpen && (
@@ -281,11 +277,9 @@ const NotificationItem: FC<INotificationItem> = ({
   notification,
   webhook,
   appInfo,
+  onReloadData,
 }) => {
   const history = useHistory();
-  const isRetrying = useMemo(() => {
-    return notification.retryTime < 5 && notification.status === STATUS.FAILED;
-  }, [notification]);
 
   const onRetry = useCallback(
     async (e: MouseEvent<SVGSVGElement | HTMLButtonElement>) => {
@@ -297,7 +291,8 @@ const NotificationItem: FC<INotificationItem> = ({
         await rf
           .getRequest('NotificationRequest')
           .retryActivity(notification.hash);
-        toastSuccess({ message: 'Successfully!' });
+        toastSuccess({ message: 'Retried!' });
+        onReloadData();
       } catch (error: any) {
         toastError({
           message: error?.message || 'Oops. Something went wrong!',
@@ -340,7 +335,6 @@ const NotificationItem: FC<INotificationItem> = ({
     return (
       <NotificationItemMobile
         notification={notification}
-        isRetrying={isRetrying}
         webhook={webhook}
         appInfo={appInfo}
         onRetry={onRetry}
@@ -389,7 +383,7 @@ const NotificationItem: FC<INotificationItem> = ({
           </Flex>
         </Td>
         {_renderContentActivities()}
-        <Td>{_renderStatus(notification, isRetrying)}</Td>
+        <Td>{_renderStatus(notification)}</Td>
         <Td>
           <Flex>
             {notification.status !== STATUS.DONE && (
@@ -431,6 +425,9 @@ const WebhookActivities: FC<IWebhookActivities> = ({
   const [valueSearch, setValueSearch] = useState<string>('');
   const [valueFilter, setValueFilter] = useState<string>('');
   const { id: webhookId } = useParams<{ id: string }>();
+  const [, updateState] = useState<any>();
+
+  const forceUpdate = useCallback(() => updateState({}), []);
 
   const fetchDataTable: any = useCallback(async (params: any) => {
     try {
@@ -564,6 +561,7 @@ const WebhookActivities: FC<IWebhookActivities> = ({
                 key={index}
                 webhook={webhook}
                 appInfo={appInfo}
+                onReloadData={forceUpdate}
               />
             );
           })}
@@ -578,6 +576,7 @@ const WebhookActivities: FC<IWebhookActivities> = ({
           key={index}
           webhook={webhook}
           appInfo={appInfo}
+          onReloadData={forceUpdate}
         />
       );
     });
