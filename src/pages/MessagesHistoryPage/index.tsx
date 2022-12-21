@@ -36,6 +36,10 @@ const MessagesHistory = () => {
   }>();
   const [valueSearch, setValueSearch] = useState<string>('');
   const [valueFilter, setValueFilter] = useState<string>('');
+  const [method, setMethod] = useState<string>('');
+  const [txHash, setTxHash] = useState<string>('');
+  const [tokenId, setTokenId] = useState<string>('');
+  const [address, setAddress] = useState<string>('');
   const [webhook, setWebhook] = useState<IWebhook | any>({});
 
   const getWebhookInfo = useCallback(async () => {
@@ -73,13 +77,13 @@ const MessagesHistory = () => {
         <>
           <Th>
             <Flex alignItems="center">
-              method <Filter />
+              method <Filter value={method} onChange={setMethod} type="method" />
             </Flex>
           </Th>
           <Th textAlign="center">
             <Flex alignItems="center">
               token id
-              <Filter />
+              <Filter value={tokenId} onChange={setTokenId} type="token ID" />
             </Flex>
           </Th>
         </>
@@ -91,7 +95,7 @@ const MessagesHistory = () => {
         <Th>
           <Flex alignItems="center">
             Address
-            <Filter />
+            <Filter value={address} onChange={setAddress} type="address" />
           </Flex>
         </Th>
       );
@@ -102,7 +106,7 @@ const MessagesHistory = () => {
         <Th textAlign="center">
           <Flex alignItems="center">
             method
-            <Filter />
+            <Filter value={method} onChange={setMethod} type="method" />
           </Flex>
         </Th>
       );
@@ -128,7 +132,7 @@ const MessagesHistory = () => {
           <Th>
             <Flex alignItems="center">
               txn id
-              <Filter />
+              <Filter value={txHash} onChange={setTxHash} type="txn ID" />
             </Flex>
           </Th>
           {_renderHeaderActivities()}
@@ -214,6 +218,10 @@ const MessagesHistory = () => {
             requestParams={{
               status: valueFilter,
               search: valueSearch,
+              method: method,
+              address: address,
+              txHash: txHash,
+              tokenId: tokenId,
             }}
             fetchData={fetchDataTable}
             renderBody={_renderBody}

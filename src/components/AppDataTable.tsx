@@ -27,6 +27,10 @@ export interface RequestParams {
   searchKey?: string;
   appId?: string;
   registrationId?: string;
+  method?: string;
+  address?: string;
+  tokenId?: string;
+  txHash?: string;
 }
 
 interface DataTableProps {

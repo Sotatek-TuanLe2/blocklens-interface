@@ -113,8 +113,7 @@ const _renderStatus = (notification: INotificationResponse) => {
   );
 };
 
-export const Filter = () => {
-  const [value, setValue] = useState<string>('');
+export const Filter = ({ value, onChange, type }: any) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const ref = useRef<any>(null);
 
@@ -132,7 +131,11 @@ export const Filter = () => {
   }, []);
 
   return (
-    <Box ml={2} className={`filter-table ${isOpen ? 'active' : ''}`} ref={ref}>
+    <Box
+      ml={2}
+      className={`filter-table ${isOpen || !!value ? 'active' : ''}`}
+      ref={ref}
+    >
       <FilterIcon onClick={() => setIsOpen(true)} />
 
       {isOpen && (
@@ -140,8 +143,8 @@ export const Filter = () => {
           <AppInput
             className={'input-search'}
             value={value}
-            onChange={(e) => setValue(e.target.value)}
-            placeholder={'Select txn ID'}
+            onChange={(e) => onChange(e.target.value)}
+            placeholder={`Select ${type}`}
           />
         </Box>
       )}
@@ -460,8 +463,6 @@ const NotificationItem: FC<INotificationItem> = ({
   );
 };
 
-
-
 const WebhookActivities: FC<IWebhookActivities> = ({
   webhook,
   onShowAll,
@@ -470,6 +471,10 @@ const WebhookActivities: FC<IWebhookActivities> = ({
 }) => {
   const [valueSearch, setValueSearch] = useState<string>('');
   const [valueFilter, setValueFilter] = useState<string>('');
+  const [method, setMethod] = useState<string>('');
+  const [txHash, setTxHash] = useState<string>('');
+  const [tokenId, setTokenId] = useState<string>('');
+  const [address, setAddress] = useState<string>('');
   const { id: webhookId } = useParams<{ id: string }>();
   const [, updateState] = useState<any>();
 
@@ -495,13 +500,17 @@ const WebhookActivities: FC<IWebhookActivities> = ({
           <Th>
             <Flex alignItems="center">
               method
-              {isShowAll && <Filter />}
+              {isShowAll && (
+                <Filter value={method} onChange={setMethod} type="method" />
+              )}
             </Flex>
           </Th>
           <Th textAlign="center">
             <Flex alignItems="center">
               token id
-              {isShowAll && <Filter />}
+              {isShowAll && (
+                <Filter value={tokenId} onChange={setTokenId} type="token ID" />
+              )}
             </Flex>
           </Th>
         </>
@@ -513,7 +522,9 @@ const WebhookActivities: FC<IWebhookActivities> = ({
         <Th>
           <Flex alignItems="center">
             Address
-            {isShowAll && <Filter />}
+            {isShowAll && (
+              <Filter value={address} onChange={setAddress} type="address" />
+            )}
           </Flex>
         </Th>
       );
@@ -522,7 +533,12 @@ const WebhookActivities: FC<IWebhookActivities> = ({
     const _renderHeaderContract = () => {
       return (
         <Th textAlign="center">
-          <Flex alignItems="center">method {isShowAll && <Filter />}</Flex>
+          <Flex alignItems="center">
+            method{' '}
+            {isShowAll && (
+              <Filter value={method} onChange={setMethod} type="method" />
+            )}
+          </Flex>
         </Th>
       );
     };
@@ -545,7 +561,10 @@ const WebhookActivities: FC<IWebhookActivities> = ({
           <Th>Created At</Th>
           <Th>Block</Th>
           <Th>
-            <Flex alignItems="center">txn id {isShowAll && <Filter />}</Flex>
+            <Flex alignItems="center">
+              txn id{' '}
+              {isShowAll && <Filter value={txHash} onChange={setTxHash} type="txn ID"/>}
+            </Flex>
           </Th>
           {_renderHeaderActivities()}
           <Th>
@@ -656,6 +675,10 @@ const WebhookActivities: FC<IWebhookActivities> = ({
         requestParams={{
           status: valueFilter,
           search: valueSearch,
+          method: method,
+          address: address,
+          txHash: txHash,
+          tokenId: tokenId,
         }}
         hidePagination={!isShowAll}
         fetchData={fetchDataTable}
