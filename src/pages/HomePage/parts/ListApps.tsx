@@ -1,5 +1,5 @@
 import { Box, Flex, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
-import React, { useState, FC } from 'react';
+import React, { useState, FC, useCallback, useEffect } from 'react';
 import { AppButton, AppCard, AppDataTable } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
@@ -117,7 +117,7 @@ const ListApps: React.FC<IListApps> = ({
 }) => {
   const history = useHistory();
   const { myPlan } = useSelector((state: RootState) => state.billing);
-  const [totalAppActive, setTotalAppActive] = useState<number | undefined>(0);
+  const [appStat, setAppStat] = useState<any>({});
   const [openModalUpgradeCreateApp, setOpenModalUpgradeCreateApp] =
     useState<boolean>(false);
 
@@ -126,18 +126,30 @@ const ListApps: React.FC<IListApps> = ({
       const res: IListAppResponse = await rf
         .getRequest('AppRequest')
         .getListApp(param);
-      setTotalAppActive(res?.totalAppActive);
       return res;
     } catch (error) {
       return error;
     }
   };
 
+  const getAppStatOfUser = useCallback(async () => {
+    try {
+      const res = await rf.getRequest('AppRequest').getAppStatsOfUser();
+      setAppStat(res);
+    } catch (error: any) {
+      setAppStat([]);
+    }
+  }, []);
+
+  useEffect(() => {
+    getAppStatOfUser().then();
+  }, []);
+
   const onCreateApp = () => {
     if (
       myPlan?.appLimitation &&
-      totalAppActive &&
-      totalAppActive >= myPlan?.appLimitation
+      appStat?.totalAppActive &&
+      appStat?.totalAppActive >= myPlan?.appLimitation
     ) {
       setOpenModalUpgradeCreateApp(true);
       return;
@@ -198,7 +210,8 @@ const ListApps: React.FC<IListApps> = ({
   const _renderTotalApp = () => {
     return (
       <Box className="number-app">
-        <Text as={'span'}>Active Apps:</Text> {totalAppActive}/{totalApps}
+        <Text as={'span'}>Active Apps:</Text> {appStat?.totalAppActive}/
+        {totalApps}
       </Box>
     );
   };
