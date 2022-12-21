@@ -51,7 +51,7 @@ const PartNFTWebhooks: FC<IListNTF> = ({ appInfo }) => {
         mx={isMobile ? 5 : 10}
       >
         <Box className="description">
-          Get notified when an NFT is transferred
+          Get notified whenever a NFT occurs activity
         </Box>
       </Flex>
       <Box mt={3} className="list-table-wrap">

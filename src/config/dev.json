@@ -54,7 +54,7 @@
           "name": "Mainnet",
           "id": "MAINNET",
           "icon": "icon-bsc",
-          "blockExplorerUrl": "https://bscscan.com"
+          "blockExplorerUrl": "https://bscscan.com/"
         },
         {
           "name": "Testnet",

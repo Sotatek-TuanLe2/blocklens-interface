@@ -7,6 +7,7 @@ interface IUserInfo {
   userId?: string;
   firstName?: string;
   isEmailVerified?: boolean;
+  notificationEnabled?: boolean;
   lastName?: string;
   address?: string;
   email?: string;

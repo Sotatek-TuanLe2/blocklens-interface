@@ -11,6 +11,11 @@ export default class AppRequest extends BaseRequest {
     return this.get(url, { ...params });
   }
 
+  getAppStatsOfUser() {
+    const url = '/my/apps/stats';
+    return this.get(url);
+  }
+
   createApp(params: any) {
     const url = '/my/apps';
     return this.post(url, params);

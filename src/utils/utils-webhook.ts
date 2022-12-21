@@ -2,6 +2,7 @@ export const enum STATUS {
   WAITING = 'WAITING',
   DONE = 'DONE',
   FAILED = 'FAILED',
+  PROCESSING = 'PROCESSING',
 }
 
 export enum WEBHOOK_STATUS {
