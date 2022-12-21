@@ -91,11 +91,13 @@ const MessagesItemMobile: FC<IMessagesItemMobile> = ({
         <Box>
           <Box className="label-detail">output</Box>
           <Box className="content-detail">
-            <Box
-              className={'content-output'}
-              dangerouslySetInnerHTML={{
-                __html: message.output?.error || message.output?.responseData,
-              }}
+            <ReactJson
+              name={false}
+              theme="monokai"
+              src={message.output}
+              displayDataTypes={false}
+              collapsed={false}
+              displayObjectSize={false}
             />
           </Box>
         </Box>

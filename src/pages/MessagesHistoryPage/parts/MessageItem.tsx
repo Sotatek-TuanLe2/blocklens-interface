@@ -1,17 +1,30 @@
 import React, { FC, MouseEvent, useState } from 'react';
 import { Box, Flex, Tbody, Td, Tr } from '@chakra-ui/react';
-import { IMessages, IWebhook, WEBHOOK_TYPES } from 'src/utils/utils-webhook';
+import {
+  IMessages,
+  IWebhook,
+  STATUS,
+  WEBHOOK_TYPES,
+} from 'src/utils/utils-webhook';
 import { formatShortText, formatTimestamp } from 'src/utils/utils-helper';
 import { LinkIcon, ArrowDown } from 'src/assets/icons';
 import ReactJson from 'react-json-view';
 import { getBlockExplorerUrl } from 'src/utils/utils-network';
 
 export const StatusMessages = ({ message }: any) => {
-  if (!!message?.output?.error) {
-    return <Box className={`status inactive`}>Failed</Box>;
+  if (!!message.status) {
+    return (
+      <Box
+        className={`status ${
+          message.status === STATUS.FAILED ? 'inactive' : 'active'
+        }`}
+      >
+        {message.status}
+      </Box>
+    );
   }
 
-  return <Box className={`status active`}>Successful</Box>;
+  return <Box className={`status inactive`}>--</Box>;
 };
 
 interface IMessageItem {
@@ -130,9 +143,13 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
               <Box width={'49%'}>
                 <Box className="label-detail">output</Box>
                 <Box className="content-detail">
-                  <Box
-                    className={'content-output'}
-                    dangerouslySetInnerHTML={{ __html: message.output?.error }}
+                  <ReactJson
+                    name={false}
+                    theme="monokai"
+                    src={message.output}
+                    displayDataTypes={false}
+                    collapsed={false}
+                    displayObjectSize={false}
                   />
                 </Box>
               </Box>
