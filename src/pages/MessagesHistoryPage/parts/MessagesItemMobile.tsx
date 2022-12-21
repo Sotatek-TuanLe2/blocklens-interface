@@ -83,7 +83,8 @@ const MessagesItemMobile: FC<IMessagesItemMobile> = ({
               name={false}
               src={message.input}
               displayDataTypes={false}
-              collapsed={false}
+              collapsed={1}
+              shouldCollapse={false}
               displayObjectSize={false}
             />
           </Box>
@@ -96,7 +97,8 @@ const MessagesItemMobile: FC<IMessagesItemMobile> = ({
               theme="monokai"
               src={message.output}
               displayDataTypes={false}
-              collapsed={false}
+              collapsed={1}
+              shouldCollapse={false}
               displayObjectSize={false}
             />
           </Box>
