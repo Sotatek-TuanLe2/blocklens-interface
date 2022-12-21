@@ -2,6 +2,7 @@ export const enum STATUS {
   WAITING = 'WAITING',
   DONE = 'DONE',
   FAILED = 'FAILED',
+  SUCCESSFUL = 'SUCCESSFUL',
   PROCESSING = 'PROCESSING',
 }
 
@@ -22,7 +23,7 @@ export const optionsFilter = [
     value: '',
   },
   {
-    label: 'Successful',
+    label: 'Done',
     value: STATUS.DONE,
   },
   {
@@ -31,7 +32,22 @@ export const optionsFilter = [
   },
   {
     label: 'Retrying',
-    value: STATUS.WAITING,
+    value: STATUS.PROCESSING,
+  },
+];
+
+export const optionsFilterMessage = [
+  {
+    label: 'All status',
+    value: '',
+  },
+  {
+    label: 'Successful',
+    value: STATUS.SUCCESSFUL,
+  },
+  {
+    label: 'Failed',
+    value: STATUS.FAILED,
   },
 ];
 
