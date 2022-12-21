@@ -30,7 +30,7 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
     return (
       <>
         {_renderContentContract()}
-        <Td textAlign="center">{message?.input?.tokenId?.join(', ') || '--'}</Td>
+        <Td textAlign="center">{message?.input?.tokenId || '--'}</Td>
       </>
     );
   };
