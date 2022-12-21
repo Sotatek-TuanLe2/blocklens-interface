@@ -18,8 +18,8 @@ import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import ModalDeleteWebhook from 'src/modals/ModalDeleteWebhook';
 import { isMobile } from 'react-device-detect';
+import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
 import { getLogoChainByName, getNameChainByChainId } from 'src/utils/utils-network';
-import { IAppResponse } from 'src/utils/utils-app';
 
 interface IAppSettings {
   onBack: () => void;
@@ -152,7 +152,11 @@ const WebhookSettings: FC<IAppSettings> = ({ onBack, webhook, reloadData, appInf
             </Flex>
           </Flex>
 
-          <AppButton onClick={onUpdateStatus} size={isMobile ? 'sm' : 'md'}>
+          <AppButton
+            onClick={onUpdateStatus}
+            size={isMobile ? 'sm' : 'md'}
+            isDisabled={appInfo.status === APP_STATUS.DISABLED}
+          >
             {isActive ? 'Deactivate' : 'Activate'}
           </AppButton>
         </Flex>
