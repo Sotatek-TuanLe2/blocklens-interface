@@ -129,7 +129,6 @@ const WebhookDetail = () => {
           webhook={webhook}
           appInfo={appInfo}
           reloadData={getWebhookInfo}
-          appInfo={appInfo}
         />
       ) : (
         <>
