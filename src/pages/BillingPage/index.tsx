@@ -276,6 +276,7 @@ const BillingPage = () => {
         }
         return (
           <FormCrypto
+            planSelected={planSelected}
             onBack={onBackStep}
             onNext={onNextStep}
           />

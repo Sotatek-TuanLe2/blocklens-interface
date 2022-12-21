@@ -1,6 +1,7 @@
 import { Box, Flex } from '@chakra-ui/react';
 import { FC, useEffect, useMemo, useState } from 'react';
 import { MaxUint256 } from '@ethersproject/constants';
+import BigNumber from 'bignumber.js';
 import 'src/styles/pages/AppDetail.scss';
 import {
   AppButton,
@@ -16,14 +17,17 @@ import useWallet from 'src/hooks/useWallet';
 import { isTokenApproved } from 'src/utils/utils-token';
 import { toastError, toastInfo } from 'src/utils/utils-notify';
 import { convertDecToWei } from 'src/utils/utils-format';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { executeTransaction } from 'src/store/transaction';
 import abi from 'src/abi';
 import { getInfoUser } from 'src/store/auth';
+import useUser from 'src/hooks/useUser';
+import { RootState } from 'src/store';
 
 interface IFormCrypto {
   onBack: () => void;
   onNext: () => void;
+  planSelected: string;
 }
 
 interface IDataForm {
@@ -33,7 +37,7 @@ interface IDataForm {
   amount: string;
 }
 
-const FormCrypto: FC<IFormCrypto> = ({ onBack, onNext }) => {
+const FormCrypto: FC<IFormCrypto> = ({ onBack, onNext, planSelected }) => {
   const initialDataForm: IDataForm = {
     walletAddress: '',
     chainId: '',
@@ -50,10 +54,18 @@ const FormCrypto: FC<IFormCrypto> = ({ onBack, onNext }) => {
   const TOP_UP_APP_ID = 1; // used for blockSniper
   const TOP_UP_CONFIRMATIONS = 30;
 
+  const { plans } = useSelector(
+    (state: RootState) => state.billing,
+  );
   const [dataForm, setDataForm] = useState<IDataForm>(initialDataForm);
   const [topUpStatus, setTopUpStatus] = useState<number>(TOP_UP_STATUS.NONE);
+  const [isCorrectAddress, setIsCorrectAddress] = useState<boolean>(true);
+  const [isSufficientBalance, setIsSufficientBalance] = useState<boolean>(false);
   const { wallet, changeNetwork } = useWallet();
+  const { user } = useUser();
   const dispatch = useDispatch();
+
+  const newPlan = plans.find(item => item.code === planSelected);
 
   useEffect(() => {
     if (wallet?.getAddress()) {
@@ -67,6 +79,24 @@ const FormCrypto: FC<IFormCrypto> = ({ onBack, onNext }) => {
       }));
     }
   }, [wallet?.getAddress(), wallet?.getNework()]);
+
+  useEffect(() => {
+    if (wallet?.getAddress() && user?.getLinkedAddress()) {
+      setIsCorrectAddress(wallet.getAddress() === user.getLinkedAddress());
+    }
+  }, [wallet?.getAddress(), user?.getLinkedAddress()]);
+
+  useEffect(() => {
+    if (user?.getBalance() && newPlan) {
+      if (new BigNumber(user.getBalance()).isGreaterThanOrEqualTo(new BigNumber(newPlan.price || 0))) {
+        setIsSufficientBalance(true);
+        setTopUpStatus(TOP_UP_STATUS.FINISHED);
+      } else {
+        setIsSufficientBalance(false);
+        setTopUpStatus(TOP_UP_STATUS.NONE);
+      }
+    }
+  }, [user?.getBalance()])
 
   const CHAIN_OPTIONS = useMemo((): {
     label: string,
@@ -154,8 +184,7 @@ const FormCrypto: FC<IFormCrypto> = ({ onBack, onNext }) => {
         },
         confirmation: TOP_UP_CONFIRMATIONS
       }));
-      dispatch(getInfoUser());
-      setTopUpStatus(TOP_UP_STATUS.FINISHED);
+      await dispatch(getInfoUser());
     } catch (error: any) {
       setTopUpStatus(TOP_UP_STATUS.NONE);
       console.error(error);
@@ -174,42 +203,42 @@ const FormCrypto: FC<IFormCrypto> = ({ onBack, onNext }) => {
     );
   };
 
-  return (
-    <Box className="form-card">
-      <Flex alignItems={'center'} mb={7}>
-        <Box className="icon-arrow-left" mr={6} onClick={onBack} />
-        <Box className={'sub-title'}>Crypto</Box>
-      </Flex>
-      <AppCard className={'box-form-crypto'}>
-        <Flex
-          flexWrap={'wrap'}
-          justifyContent={'space-between'}
-          alignItems={'flex-end'}
-        >
-          <AppField label={'Linked Wallet'} customWidth={'100%'}>
-            <Flex
-              flexWrap={'wrap'}
-              justifyContent={'space-between'}
-              flexDirection={isMobile ? 'column' : 'row'}
-            >
-              <Box width={isMobile ? '100%' : 'calc(100% - 175px)'}>
-                <AppInput
-                  isDisabled={true}
-                  size="lg"
-                  value={dataForm.walletAddress}
-                />
-              </Box>
-              <Box width={isMobile ? '100%' : '165px'} mt={isMobile ? 4 : 0}>
-                <AppConnectWalletButton
-                  width={'100%'}
-                  size="lg"
-                >
-                  Connect Wallet
-                </AppConnectWalletButton>
-              </Box>
-            </Flex>
-          </AppField>
-          {wallet && (
+  const _renderWalletInfo = () => {
+    if (!isCorrectAddress) {
+      return (
+        <Box>
+          {`You are connecting with different address: ${wallet?.getAddress()}.`}
+          <br />
+          {`Please connect with linked address: ${user?.getLinkedAddress()}`}
+        </Box>
+      );
+    }
+    return (
+      <>
+        <AppCard className={'box-form-crypto'}>
+          <Flex
+            flexWrap={'wrap'}
+            justifyContent={'space-between'}
+            alignItems={'flex-end'}
+          >
+            {!isSufficientBalance && (
+              <Box>Your current balance is insufficent. Please top-up to meet the plan's price!</Box>
+            )}
+            <AppField label={'Linked Wallet'} customWidth={'100%'}>
+              <Flex
+                flexWrap={'wrap'}
+                justifyContent={'space-between'}
+                flexDirection={isMobile ? 'column' : 'row'}
+              >
+                <Box width={isMobile ? '100%' : 'calc(100% - 175px)'}>
+                  <AppInput
+                    isDisabled={true}
+                    size="lg"
+                    value={dataForm.walletAddress}
+                  />
+                </Box>
+              </Flex>
+            </AppField>
             <Flex
               flexWrap={'wrap'}
               justifyContent={'space-between'}
@@ -249,11 +278,9 @@ const FormCrypto: FC<IFormCrypto> = ({ onBack, onNext }) => {
                 />
               </AppField>
             </Flex>
-          )}
-        </Flex>
-      </AppCard>
-      {_renderTopUpMessage()}
-      {wallet && (
+          </Flex>
+        </AppCard>
+        {_renderTopUpMessage()}
         <Flex justifyContent={isMobile ? 'center' : 'flex-end'} mt={7}>
           <AppButton
             size={'lg'}
@@ -263,7 +290,28 @@ const FormCrypto: FC<IFormCrypto> = ({ onBack, onNext }) => {
             {topUpStatus === TOP_UP_STATUS.NONE ? 'Top Up' : 'Continue'}
           </AppButton>
         </Flex>
-      )}
+      </>
+    );
+  };
+
+  return (
+    <Box className="form-card">
+      <Flex alignItems={'center'} mb={7}>
+        <Box className="icon-arrow-left" mr={6} onClick={onBack} />
+        <Box className={'sub-title'}>Crypto</Box>
+      </Flex>
+      {wallet
+        ? _renderWalletInfo()
+        : (
+          <Box width={isMobile ? '100%' : '165px'} mt={isMobile ? 4 : 0}>
+            <AppConnectWalletButton
+              width={'100%'}
+              size="lg"
+            >
+              Connect Wallet
+            </AppConnectWalletButton>
+          </Box>
+        )}
     </Box>
   );
 };

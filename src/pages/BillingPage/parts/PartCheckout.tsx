@@ -2,7 +2,7 @@ import { FC, useMemo } from 'react';
 import { Box } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'src/store';
-import { paymentMethods, planEnterprise } from '..';
+import { paymentMethods } from '..';
 import useWallet from 'src/hooks/useWallet';
 import { AppButton } from 'src/components';
 import rf from 'src/requests/RequestFactory';
@@ -21,8 +21,6 @@ const PartCheckout: FC<IPartCheckout> = ({ planSelected, paymentMethodCode }) =>
   const { wallet } = useWallet();
   const dispatch = useDispatch();
 
-  const billingPlans = useMemo(() => [...plans, planEnterprise], [plans]);
-
   const _renderPaymentMethod = () => {
     const paymentMethod = paymentMethods.find(item => item.code === paymentMethodCode);
     return (
@@ -34,7 +32,7 @@ const PartCheckout: FC<IPartCheckout> = ({ planSelected, paymentMethodCode }) =>
   };
 
   const _renderOrder = () => {
-    const newPlan = billingPlans.find(item => item.code === planSelected);
+    const newPlan = plans.find(item => item.code === planSelected);
     return (
       <Box>
         <p>{newPlan?.name}</p>
