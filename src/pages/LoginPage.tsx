@@ -83,7 +83,7 @@ const LoginPage: FC = () => {
                 onChange={(e) =>
                   setDataForm({
                     ...dataForm,
-                    email: e.target.value,
+                    email: e.target.value.trim(),
                   })
                 }
                 validate={{

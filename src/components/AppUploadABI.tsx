@@ -303,7 +303,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
     reader.onload = (e: any) => {
       const data = e.target.result;
 
-      if (!validateJson.validate(JSON.parse(data), schema).valid) {
+      if (!data || !validateJson.validate(JSON.parse(data), schema).valid) {
         toastError({ message: 'The ABI file must be correct format' });
         return;
       }

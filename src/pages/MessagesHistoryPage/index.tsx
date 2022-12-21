@@ -13,7 +13,7 @@ import {
 } from 'src/components';
 import {
   WEBHOOK_TYPES,
-  optionsFilter,
+  optionsFilterMessage,
   IWebhook,
   IMessages,
 } from 'src/utils/utils-webhook';
@@ -168,7 +168,7 @@ const MessagesHistory = () => {
           <Box width={'150px'}>
             <AppSelect2
               onChange={setValueFilter}
-              options={optionsFilter}
+              options={optionsFilterMessage}
               value={valueFilter}
             />
           </Box>
