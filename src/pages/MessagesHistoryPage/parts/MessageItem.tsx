@@ -23,14 +23,14 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
   const [isShowDetail, setIsShowDetail] = useState<boolean>(false);
 
   const _renderContentContract = () => {
-    return <Td textAlign="center">{message?.metadata?.method}</Td>;
+    return <Td textAlign="center">{message?.input?.method}</Td>;
   };
 
   const _renderContentNFT = () => {
     return (
       <>
         {_renderContentContract()}
-        <Td textAlign="center">{message?.metadata?.tokenId.join(', ')}</Td>
+        <Td textAlign="center">{message?.input?.tokenId?.join(', ') || '--'}</Td>
       </>
     );
   };
