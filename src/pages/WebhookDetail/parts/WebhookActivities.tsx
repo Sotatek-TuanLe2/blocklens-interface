@@ -308,7 +308,7 @@ const NotificationItem: FC<INotificationItem> = ({
   );
 
   const _renderContentContract = () => {
-    return <Td textAlign="center">{notification?.metadata?.method}</Td>;
+    return <Td textAlign="left">{notification?.metadata?.method}</Td>;
   };
 
   const _renderContentNFT = () => {

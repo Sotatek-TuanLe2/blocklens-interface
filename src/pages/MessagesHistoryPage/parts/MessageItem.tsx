@@ -23,7 +23,7 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
   const [isShowDetail, setIsShowDetail] = useState<boolean>(false);
 
   const _renderContentContract = () => {
-    return <Td textAlign="center">{message?.input?.method}</Td>;
+    return <Td textAlign="left">{message?.input?.method}</Td>;
   };
 
   const _renderContentNFT = () => {
