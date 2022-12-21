@@ -131,7 +131,6 @@
       .email {
         @include text-medium-regular;
         color: $line;
-        margin-top: 10px;
         margin-left: 32px;
 
         @include tablet {

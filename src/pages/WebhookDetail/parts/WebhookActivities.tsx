@@ -127,7 +127,7 @@ const NotificationItemMobile: FC<INotificationItemMobile> = ({
         >
           <Box>Method</Box>
           <Box className="value">
-            <Flex alignItems="center">--</Flex>
+            <Flex alignItems="center">{notification.metadata.method}</Flex>
           </Box>
         </Flex>
       );
@@ -164,7 +164,9 @@ const NotificationItemMobile: FC<INotificationItemMobile> = ({
         >
           <Box>Token ID</Box>
           <Box className="value">
-            <Flex alignItems="center">--</Flex>
+            <Flex alignItems="center">
+              {notification.metadata?.tokenId?.join(', ') || '--'}
+            </Flex>
           </Box>
         </Flex>
       </>
@@ -306,14 +308,14 @@ const NotificationItem: FC<INotificationItem> = ({
   );
 
   const _renderContentContract = () => {
-    return <Td textAlign="center">--</Td>;
+    return <Td textAlign="left">{notification?.metadata?.method}</Td>;
   };
 
   const _renderContentNFT = () => {
     return (
       <>
         {_renderContentContract()}
-        <Td textAlign="center">--</Td>
+        <Td textAlign="center">{notification?.metadata?.tokenId?.join(', ') || '--'}</Td>
       </>
     );
   };
