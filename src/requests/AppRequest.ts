@@ -16,10 +16,17 @@ export default class AppRequest extends BaseRequest {
     return this.get(url);
   }
 
+  getTotalWebhookEachApp(params: any) {
+    const url = '/my/apps/webhook/count';
+    return this.get(url, params);
+  }
+
   createApp(params: any) {
     const url = '/my/apps';
     return this.post(url, params);
   }
+
+
 
   updateApp(appId: string, params: any) {
     const url = `/my/apps/${appId}`;
