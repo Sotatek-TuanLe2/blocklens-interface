@@ -8,10 +8,10 @@ import { EditIcon } from 'src/assets/icons';
 import rf from 'src/requests/RequestFactory';
 import { getInfoUser } from 'src/store/auth';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
-import ModalEditBillingEmail from 'src/modals/ModalEditBillingEmail';
+import ModalEditReceiveEmail from 'src/modals/ModalEditReceiveEmail';
 
 const Notifications = () => {
-  const [isOpenEditBillingEmailModal, setIsOpenEditBillingEmailModal] =
+  const [isOpenEditReceiveEmailModal, setIsOpenEditReceiveEmailModal] =
     useState<boolean>(false);
   const { userInfo } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch<any>();
@@ -53,17 +53,17 @@ const Notifications = () => {
           {userInfo.notificationEnabled && (
             <Box
               className="btn-edit"
-              onClick={() => setIsOpenEditBillingEmailModal(true)}
+              onClick={() => setIsOpenEditReceiveEmailModal(true)}
             >
               <EditIcon />
             </Box>
           )}
         </Flex>
       </Box>
-      {isOpenEditBillingEmailModal && (
-        <ModalEditBillingEmail
-          open={isOpenEditBillingEmailModal}
-          onClose={() => setIsOpenEditBillingEmailModal(false)}
+      {isOpenEditReceiveEmailModal && (
+        <ModalEditReceiveEmail
+          open={isOpenEditReceiveEmailModal}
+          onClose={() => setIsOpenEditReceiveEmailModal(false)}
         />
       )}
     </AppCard>

@@ -9,12 +9,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'src/store';
 import { getInfoUser } from 'src/store/auth';
 
-interface IModalEditBillingEmail {
+interface IModalEditReceiveEmail {
   open: boolean;
   onClose: () => void;
 }
 
-const ModalEditBillingEmail: React.FC<IModalEditBillingEmail> = ({
+const ModalEditReceiveEmail: React.FC<IModalEditReceiveEmail> = ({
   open,
   onClose,
 }) => {
@@ -112,4 +112,4 @@ const ModalEditBillingEmail: React.FC<IModalEditBillingEmail> = ({
   );
 };
 
-export default ModalEditBillingEmail;
+export default ModalEditReceiveEmail;
