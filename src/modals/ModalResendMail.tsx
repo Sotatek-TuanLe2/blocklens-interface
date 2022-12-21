@@ -21,7 +21,7 @@ const ModalResendMail: FC<ModalUpgradeCreateApp> = ({
   const renderDescription = () => {
     if (type === 'Sign up') {
       return (
-        <Box className={'modal__description'}>
+        <Box className={'modal__description-email'}>
           An emails has been sent to <span className="email">{email}</span>{' '}
           <br />
           Click the link in the email to complete signup.
@@ -30,7 +30,7 @@ const ModalResendMail: FC<ModalUpgradeCreateApp> = ({
     }
 
     return (
-      <Box className={'modal__description'}>
+      <Box className={'modal__description-email'}>
         An emails has been sent to <span className="email">{email}</span> <br />
         Click the link in the email to choose a new password.
       </Box>
