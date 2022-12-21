@@ -165,7 +165,7 @@ const NotificationItemMobile: FC<INotificationItemMobile> = ({
           <Box>Token ID</Box>
           <Box className="value">
             <Flex alignItems="center">
-              {notification.metadata?.tokenId?.join(', ') || '--'}
+              {notification.metadata?.tokenId || '--'}
             </Flex>
           </Box>
         </Flex>
@@ -315,7 +315,7 @@ const NotificationItem: FC<INotificationItem> = ({
     return (
       <>
         {_renderContentContract()}
-        <Td textAlign="center">{notification?.metadata?.tokenId?.join(', ') || '--'}</Td>
+        <Td textAlign="center">{notification?.metadata?.tokenId || '--'}</Td>
       </>
     );
   };

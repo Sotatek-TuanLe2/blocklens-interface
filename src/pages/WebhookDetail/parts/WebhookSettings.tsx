@@ -18,14 +18,17 @@ import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import ModalDeleteWebhook from 'src/modals/ModalDeleteWebhook';
 import { isMobile } from 'react-device-detect';
+import { getLogoChainByName, getNameChainByChainId } from 'src/utils/utils-network';
+import { IAppResponse } from 'src/utils/utils-app';
 
 interface IAppSettings {
   onBack: () => void;
   reloadData: () => void;
   webhook: IWebhook;
+  appInfo: IAppResponse;
 }
 
-const WebhookSettings: FC<IAppSettings> = ({ onBack, webhook, reloadData }) => {
+const WebhookSettings: FC<IAppSettings> = ({ onBack, webhook, reloadData, appInfo }) => {
   const [isOpenModalDelete, setIsOpenModalDelete] = useState<boolean>(false);
 
   const isActive = useMemo(
@@ -155,10 +158,16 @@ const WebhookSettings: FC<IAppSettings> = ({ onBack, webhook, reloadData }) => {
         </Flex>
       </AppCard>
 
-      <AppCard mt={7} p={isMobile ? 5 : 10}>
+      <AppCard mt={7} p={isMobile ? 5 : 10} className="basic-setting">
         <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
           <AppField label={'Network'} customWidth={'49%'}>
-            <AppInput value={webhook.network} isDisabled />
+            <Flex className="chain-app">
+              <Box className={getLogoChainByName(appInfo.chain)} mr={3} />
+              <Box>{getNameChainByChainId(appInfo.chain)}</Box>
+              <Box textTransform="capitalize" ml={2}>
+                {appInfo.network.toLowerCase()}
+              </Box>
+            </Flex>
           </AppField>
           <AppField label={'Webhook URL'} customWidth={'49%'}>
             <AppInput value={webhook.webhook} isDisabled />
