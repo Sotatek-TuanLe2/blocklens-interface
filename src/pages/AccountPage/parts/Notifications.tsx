@@ -48,7 +48,7 @@ const Notifications = () => {
             Receive emails when you are at or near your daily request limit.
           </Box>
         </Flex>
-        <Flex alignItems={'center'} justifyContent={'space-between'}>
+        <Flex alignItems={'self-start'} justifyContent={'space-between'} mt={2.5}>
           <Box className="email">Receive Email: {userInfo?.billingEmail}</Box>
           {userInfo.notificationEnabled && (
             <Box

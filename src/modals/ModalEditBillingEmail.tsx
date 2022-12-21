@@ -33,10 +33,6 @@ const ModalEditBillingEmail: React.FC<IModalEditBillingEmail> = ({
     }),
   );
 
-  useEffect(() => {
-    setEmail(userInfo.billingEmail || '');
-  }, [userInfo]);
-
   const handleOnSubmit = async () => {
     if (!validators.current.allValid()) {
       validators.current.showMessages();
@@ -70,9 +66,16 @@ const ModalEditBillingEmail: React.FC<IModalEditBillingEmail> = ({
       isOpen={open}
       onClose={onClose}
       size="md"
-      title="Edit Billing Email"
+      title="Edit Receive Email"
     >
-      <AppField label={'Billing Email'} customWidth={'100%'} isRequired>
+      <AppField label={'Current Email'} customWidth={'100%'}>
+        <AppInput
+          value={userInfo.billingEmail}
+          type="text"
+          isDisabled={true}
+        />
+      </AppField>
+      <AppField label={'New Email'} customWidth={'100%'} isRequired>
         <AppInput
           value={email}
           type="text"
@@ -80,7 +83,7 @@ const ModalEditBillingEmail: React.FC<IModalEditBillingEmail> = ({
             setEmail(e.target.value);
           }}
           validate={{
-            name: `billingEmail`,
+            name: `receiveEmail`,
             validator: validators.current,
             rule: 'required|email',
           }}
