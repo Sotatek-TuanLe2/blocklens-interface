@@ -9,14 +9,12 @@ import {
   AppDataTable,
   AppInput,
   AppLink,
-  AppSelect2,
 } from 'src/components';
 import {
   WEBHOOK_TYPES,
   optionsFilterMessage,
   IWebhook,
   IMessages,
-  optionsFilter,
 } from 'src/utils/utils-webhook';
 import MessageItem from './parts/MessageItem';
 import { toastError } from 'src/utils/utils-notify';
@@ -24,7 +22,7 @@ import { isMobile } from 'react-device-detect';
 import MessagesItemMobile from './parts/MessagesItemMobile';
 import { filterParams } from 'src/utils/utils-helper';
 import { Filter } from 'src/pages/WebhookDetail/parts/WebhookActivities';
-import ModalFilterActivities from '../../modals/ModalFilterActivities';
+import ModalFilterActivities from 'src/modals/ModalFilterActivities';
 
 const MessagesHistory = () => {
   const {

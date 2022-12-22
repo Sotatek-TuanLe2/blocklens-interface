@@ -14,7 +14,6 @@ import React, {
   MouseEvent,
   useCallback,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -24,7 +23,6 @@ import {
   AppDataTable,
   AppInput,
   AppLink,
-  AppSelect2,
 } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import {
@@ -56,7 +54,7 @@ import { isMobile } from 'react-device-detect';
 import { getBlockExplorerUrl } from 'src/utils/utils-network';
 import { IAppResponse } from 'src/utils/utils-app';
 import 'src/styles/pages/HomePage.scss';
-import ModalFilterActivities from '../../../modals/ModalFilterActivities';
+import ModalFilterActivities from 'src/modals/ModalFilterActivities';
 
 interface INotificationResponse {
   hash: string;
