@@ -27,6 +27,7 @@ import BillingPage from './pages/BillingPage';
 import AccountPage from './pages/AccountPage';
 import BillingInfoPage from './pages/BillingInfoPage';
 import LandingPage from './pages/LandingPage';
+import Pricing from './pages/LandingPage/Pricing';
 
 /**
  * Main App routes.
@@ -74,6 +75,7 @@ const Routes: FC<RouteComponentProps> = () => {
           component={MessagesHistory}
         />
         <PrivateRoute path={'/home'} component={HomePage} />
+        <Route path={'/pricing'} component={Pricing} />
         <PublicRoute path={'/'} component={LandingPage} />
       </Switch>
     </>
