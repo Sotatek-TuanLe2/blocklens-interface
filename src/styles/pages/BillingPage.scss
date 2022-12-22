@@ -200,7 +200,79 @@
         &.active {
           background: rgba(3, 202, 255, 0.14);
           border: 1px solid $link;
-          color: $link
+          color: $link;
+        }
+      }
+    }
+  }
+
+  .billing-checkout {
+    &__bill {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      max-width: 430px;
+      margin: 0 auto;
+
+      @include tablet {
+        max-width: 343px;
+      }
+    }
+
+    &__bill-info {
+      background-image: url('../../assets/icons/bg-billing.png');
+      padding: 50px;
+      background-repeat: no-repeat;
+      width: 100%;
+
+      @include tablet {
+        padding: 34px;
+        background-image: url('../../assets/icons/bg-billing-mobile.png');
+      }
+    }
+
+    &__payment-method {
+      padding-bottom: 30px;
+      border-bottom: 1px dashed #2f3b58;
+      .title {
+        @include text-medium-bold;
+        color: $line;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+      }
+
+      .type {
+        @include text-medium-regular;
+        color: $paragraph;
+      }
+    }
+
+    &__order {
+      margin-top: 30px;
+      margin-bottom: 40px;
+      @include tablet {
+        margin-bottom: 60px;
+      }
+
+      .title {
+        @include text-medium-bold;
+        color: $line;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+      }
+      .name-plan {
+        @include text-large-bold;
+        margin-bottom: 4px;
+      }
+
+      .info {
+        @include text-medium-regular;
+        align-items: center;
+        margin-top: 10px;
+        svg {
+          color: $green;
+          margin-right: 12px;
         }
       }
     }
