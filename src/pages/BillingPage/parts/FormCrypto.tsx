@@ -279,7 +279,7 @@ const FormCrypto: FC<IFormCrypto> = ({ onBack, onNext, planSelected }) => {
                 />
               </AppField>
             </Box>
-            <AppField label={'Amount'} customWidth={'49%'}>
+            <AppField label={'Amount'} customWidth={'49.5%'}>
               <AppInput
                 size="lg"
                 placeholder="0"
