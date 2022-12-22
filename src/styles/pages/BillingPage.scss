@@ -26,6 +26,12 @@
       }
     }
 
+    .table-plan {
+      td {
+        color: $paragraph;
+      }
+    }
+
     .tr-list {
       svg {
         color: $line;
@@ -34,6 +40,10 @@
       &.active {
         svg {
           color: $green;
+        }
+
+        td {
+          color: $title;
         }
       }
 

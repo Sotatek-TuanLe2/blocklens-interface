@@ -184,7 +184,7 @@ const BillingPage = () => {
 
     return (
       <TableContainer>
-        <Table colorScheme="gray">{_renderBody()}</Table>
+        <Table colorScheme="gray" className={"table-plan"}>{_renderBody()}</Table>
       </TableContainer>
     );
   };
