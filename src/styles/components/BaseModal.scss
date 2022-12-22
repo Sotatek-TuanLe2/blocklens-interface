@@ -86,7 +86,8 @@
     }
   }
 
-  &__description, &__description-email {
+  &__description,
+  &__description-email {
     @include text-medium-regular;
     color: $paragraph;
     margin-bottom: 18px;
@@ -171,6 +172,23 @@
   align-items: center;
   cursor: pointer;
   margin: 0 7px;
+
+  .name-wallet {
+    margin-top: 10px;
+    @include tablet {
+      margin-left: 10px;
+      margin-top: 0;
+    }
+  }
+
+  &:last-child {
+    .name-wallet {
+      margin-top: 15px;
+      @include tablet {
+        margin-top: 0;
+      }
+    }
+  }
 
   &:hover {
     border-color: $main;

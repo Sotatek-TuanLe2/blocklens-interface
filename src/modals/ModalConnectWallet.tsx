@@ -7,6 +7,7 @@ import { toastError } from 'src/utils/utils-notify';
 import { METAMASK_WALLET } from 'src/connectors';
 import { switchNetwork } from 'src/utils/utils-network';
 import Storage from 'src/utils/utils-storage';
+import { isMobile } from 'react-device-detect';
 
 interface IModalConnectWallet {
   open: boolean;
@@ -36,12 +37,12 @@ const ModalConnectWallet: FC<IModalConnectWallet> = ({ open, onClose }) => {
       const connectorInfo = selectedNetworkConfig.connectors[connectorKey];
       const { id, icon, name } = connectorInfo;
       return (
-        <Box 
-          key={id} 
+        <Box
+          key={id}
           className={'box-wallet'}
           onClick={() => onClickWallet(id)}
         >
-          <img src={icon} alt={name} />
+          <img src={icon} alt={name} width={isMobile ? '20px' : 'auto'} />
           <Box className={'name-wallet'}>{name}</Box>
         </Box>
       );
@@ -49,15 +50,8 @@ const ModalConnectWallet: FC<IModalConnectWallet> = ({ open, onClose }) => {
   };
 
   return (
-    <BaseModal
-      size="xl"
-      title="Choose Wallet"
-      isOpen={open}
-      onClose={onClose}
-    >
-      <Flex justifyContent={'center'}>
-        {_renderWallets()}
-      </Flex>
+    <BaseModal size="xl" title="Choose Wallet" isOpen={open} onClose={onClose}>
+      <Flex justifyContent={'center'}>{_renderWallets()}</Flex>
     </BaseModal>
   );
 };

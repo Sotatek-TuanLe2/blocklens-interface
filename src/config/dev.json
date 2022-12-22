@@ -6,8 +6,8 @@
     "googleClientId": "130485616803-c05jc0gd898m975gt9spv73v71u15ti1.apps.googleusercontent.com"
   },
   "api": {
-    "baseUrlApi": "https://dev-blocksniper.sotatek.works/api/blocklens-users",
-    "notificationsApi": "https://dev-blocksniper.sotatek.works/api/blocklens-notifications"
+    "baseUrlApi": "https://dev-blocksniper-api.sotatek.works/api/blocklens-users",
+    "notificationsApi": "https://dev-blocksniper-api.sotatek.works/api/blocklens-notifications"
   },
   "defaultNetwork": "BSC_TESTNET",
   "stripe": {
@@ -258,7 +258,7 @@
           "name": "BUSD",
           "symbol": "BUSD",
           "decimals": 18,
-          "icon": "/images/BUSD.png"
+          "icon": "icon-busd"
         },
         "usdc": {
           "id": "629dc9f014a8be7577e1cce6",

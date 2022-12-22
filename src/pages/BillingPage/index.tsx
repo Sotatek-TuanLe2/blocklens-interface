@@ -24,14 +24,6 @@ import PartAddCard from './parts/PartAddCard';
 import FormCrypto from './parts/FormCrypto';
 import PartCheckout from './parts/PartCheckout';
 
-export const planEnterprise = {
-  code: 'ENTERPRISE',
-  name: 'ENTERPRISE',
-  appLimitation: 'Custom',
-  notificationLimitation: 'Custom',
-  price: null,
-};
-
 export const PAYMENT_METHOD = {
   CARD: 'CARD',
   CRYPTO: 'CRYPTO',
@@ -62,15 +54,6 @@ interface IPlanMobile {
 }
 
 const _renderPrice = (price: number | null) => {
-  if (price === null)
-    return (
-      <>
-        <AppLink className="link" to={'#'}>
-          Contact us
-        </AppLink>
-      </>
-    );
-
   if (price === 0) {
     return '$0';
   }
@@ -90,8 +73,9 @@ const PlanMobile: FC<IPlanMobile> = ({
   return (
     <>
       <Box
-        className={`${isOpen ? 'open' : ''} ${isActivePlan ? 'active' : ''
-          } card-mobile plan-card`}
+        className={`${isOpen ? 'open' : ''} ${
+          isActivePlan ? 'active' : ''
+        } card-mobile plan-card`}
       >
         <Flex
           justifyContent="space-between"
@@ -142,15 +126,13 @@ const BillingPage = () => {
   );
   const [planSelected, setPlanSelected] = useState<any>('');
   const [step, setStep] = useState<number>(STEPS.LIST);
-  const { myPlan: currentPlan, plans } = useSelector(
+  const { myPlan: currentPlan, plans: billingPlans } = useSelector(
     (state: RootState) => state.billing,
   );
 
   useEffect(() => {
     setPlanSelected(currentPlan.code);
   }, [currentPlan]);
-
-  const billingPlans = useMemo(() => [...plans, planEnterprise], [plans]);
 
   const _renderPlansDesktop = () => {
     const _renderBody = () => {
@@ -232,6 +214,14 @@ const BillingPage = () => {
         <AppCard className="list-table-wrap">
           <Box className={'text-title'}>Select Your Plan</Box>
           {isMobile ? _renderPlansMobile() : _renderPlansDesktop()}
+
+          <Box textAlign={'center'} pt={isMobile ? 0 : 7} pb={isMobile ? 5 : 0}>
+            For custom Enterprise plan with more Active Apps & messages/day, you
+            can{' '}
+            <AppLink to="/contact-us" className="link">
+              Contact Us
+            </AppLink>
+          </Box>
         </AppCard>
         <AppCard className="box-payment-method" mt={7}>
           <Box className={'text-title'}>Payment Method</Box>
@@ -267,12 +257,7 @@ const BillingPage = () => {
         return _renderStep1();
       case STEPS.FORM:
         if (paymentMethod === PAYMENT_METHOD.CARD) {
-          return (
-            <PartAddCard
-              onBack={onBackStep}
-              onNext={onNextStep}
-            />
-          );
+          return <PartAddCard onBack={onBackStep} onNext={onNextStep} />;
         }
         return (
           <FormCrypto
@@ -293,26 +278,20 @@ const BillingPage = () => {
     }
   };
 
-  const _renderButton = () => (
+  const _renderButton = () =>
     step === STEPS.LIST && (
       <Flex justifyContent={isMobile ? 'center' : 'flex-end'}>
-        {planSelected === planEnterprise.code ? (
-          <AppButton size="md" mt={7}>
-            Contact Us
-          </AppButton>
-        ) : (
-          <AppButton
-            size="md"
-            mt={7}
-            isDisabled={planSelected === 'FREE'}
-            onClick={() => setStep(STEPS.FORM)}
-          >
-            Continue
-          </AppButton>
-        )}
+        <AppButton
+          width={isMobile ? '100%' : 'auto'}
+          size="lg"
+          mt={7}
+          isDisabled={planSelected === 'FREE'}
+          onClick={() => setStep(STEPS.FORM)}
+        >
+          Continue
+        </AppButton>
       </Flex>
-    )
-  );
+    );
 
   return (
     <BasePageContainer className="billing-page">
