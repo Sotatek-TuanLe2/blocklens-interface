@@ -25,6 +25,7 @@ import useUser from 'src/hooks/useUser';
 import { RootState } from 'src/store';
 import { ConnectWalletIcon } from 'src/assets/icons';
 import AppAlertWarning from '../../../components/AppAlertWarning';
+import App from '../../../App';
 
 interface IFormCrypto {
   onBack: () => void;
@@ -242,9 +243,11 @@ const FormCrypto: FC<IFormCrypto> = ({ onBack, onNext, planSelected }) => {
         <AppCard className={'box-form-crypto'}>
           <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
             {!isSufficientBalance && (
-              <Box>
-                Your current balance is insufficent. Please top-up to meet the
-                plan's price!
+              <Box width={'100%'}>
+                <AppAlertWarning>
+                  Your current balance is insufficent. Please top-up to meet the
+                  plan's price!
+                </AppAlertWarning>
               </Box>
             )}
             <AppField

@@ -9,7 +9,7 @@ interface IAppAlertWarning {
 
 const AppAlertWarning: FC<IAppAlertWarning> = ({ children }) => {
   return (
-    <Flex className="app-alert" mt={3}>
+    <Flex className="app-alert" my={3}>
       <WarningIcon />
       <Box>{children}</Box>
     </Flex>
