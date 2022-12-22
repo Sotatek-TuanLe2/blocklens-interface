@@ -43,7 +43,6 @@ const ForgotPasswordPage: FC = () => {
     }
     try {
       await rf.getRequest('AuthRequest').forgotPassword(dataForm);
-      setDataForm({ ...initDataRestPassword });
       setOpenModalResendEmail(true);
     } catch (error: any) {
       toastError({
@@ -109,13 +108,13 @@ const ForgotPasswordPage: FC = () => {
           </Box>
         </AppCard>
 
-        <ModalResendMail
+        {openModalResendEmail && <ModalResendMail
           type="Reset password"
           email={dataForm.email}
           open={openModalResendEmail}
           onClose={() => setOpenModalResendEmail(false)}
           onResend={() => console.log('send mail')}
-        />
+        />}
       </Flex>
     </BasePage>
   );

@@ -17,7 +17,7 @@ import Storage from 'src/utils/storage';
 import AppDetail from './pages/AppDetail';
 import VerifyAccountPage from './pages/VerifyAccountPage';
 import { getInfoUser } from 'src/store/auth';
-import { getBillingInfos, getMyPlan, getPlans } from 'src/store/billing';
+import { getMyPlan, getPlans } from 'src/store/billing';
 import { useDispatch } from 'react-redux';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import CreateWebhookPage from './pages/CreateWebhookPage';
@@ -47,7 +47,6 @@ const Routes: FC<RouteComponentProps> = () => {
     dispatch(getInfoUser());
     dispatch(getMyPlan());
     dispatch(getPlans());
-    dispatch(getBillingInfos());
   }, [accessToken]);
 
   return (

@@ -31,6 +31,11 @@ export default class NotificationRequest extends BaseRequest {
     return this.get(url);
   }
 
+  getAppMetricToday(params: any) {
+    const url = `/my/stats/app/metric-today`;
+    return this.get(url, params);
+  }
+
   getWebhookStatsToday(registrationId: string) {
     const url = `/my/stats/registration/${registrationId}/metric-today`;
     return this.get(url);

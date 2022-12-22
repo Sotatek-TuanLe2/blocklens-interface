@@ -30,7 +30,7 @@ const MessagesItemMobile: FC<IMessagesItemMobile> = ({
         >
           <Box>Method</Box>
           <Box className="value">
-            <Flex alignItems="center">{message.metadata?.method}</Flex>
+            <Flex alignItems="center">{message.input?.method}</Flex>
           </Box>
         </Flex>
       );
@@ -52,7 +52,7 @@ const MessagesItemMobile: FC<IMessagesItemMobile> = ({
             <Box>Token ID</Box>
             <Box className="value">
               <Flex alignItems="center">
-                {message.metadata?.tokenId?.join(', ')}
+                {message.input?.tokenId || '--'}
               </Flex>
             </Box>
           </Flex>
@@ -83,7 +83,8 @@ const MessagesItemMobile: FC<IMessagesItemMobile> = ({
               name={false}
               src={message.input}
               displayDataTypes={false}
-              collapsed={false}
+              collapsed={1}
+              shouldCollapse={false}
               displayObjectSize={false}
             />
           </Box>
@@ -91,11 +92,14 @@ const MessagesItemMobile: FC<IMessagesItemMobile> = ({
         <Box>
           <Box className="label-detail">output</Box>
           <Box className="content-detail">
-            <Box
-              className={'content-output'}
-              dangerouslySetInnerHTML={{
-                __html: message.output?.error || message.output?.responseData,
-              }}
+            <ReactJson
+              name={false}
+              theme="monokai"
+              src={message.output}
+              displayDataTypes={false}
+              collapsed={1}
+              shouldCollapse={false}
+              displayObjectSize={false}
             />
           </Box>
         </Box>

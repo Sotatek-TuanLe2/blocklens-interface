@@ -20,4 +20,14 @@ export default class UserRequest extends BaseRequest {
     const url = `/public/users/contact`;
     return this.post(url, params);
   }
+
+  updateNotificationFlag(params: any) {
+    const url = `/my/users/notification`;
+    return this.put(url, params);
+  }
+
+  updateBillingEmail(params: any) {
+    const url = `/my/users/billing-email`;
+    return this.put(url, params);
+  }
 }

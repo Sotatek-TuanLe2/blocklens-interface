@@ -85,13 +85,13 @@ const ResetPasswordPage: FC = () => {
                 onChange={(e) =>
                   setDataForm({
                     ...dataForm,
-                    newPassword: e.target.value,
+                    newPassword: e.target.value.trim(),
                   })
                 }
                 validate={{
                   name: `newPassword`,
                   validator: validator.current,
-                  rule: 'required|min:6|max:50',
+                  rule: 'required|min:8|max:50',
                 }}
               />
             </AppField>
@@ -104,7 +104,7 @@ const ResetPasswordPage: FC = () => {
                 onChange={(e) =>
                   setDataForm({
                     ...dataForm,
-                    confirmPassword: e.target.value,
+                    confirmPassword: e.target.value.trim(),
                   })
                 }
                 validate={{

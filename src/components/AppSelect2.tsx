@@ -8,6 +8,7 @@ interface IAppSelectPops {
   className?: string;
   width?: string;
   size?: 'small' | 'medium' | 'large';
+  hiddenLabelDefault?: boolean;
   onChange: (value: string) => void;
 }
 
@@ -23,6 +24,7 @@ const AppSelect2: FC<IAppSelectPops> = ({
   onChange,
   width,
   size = 'small',
+  hiddenLabelDefault = false,
   className,
 }) => {
   const [open, setOpen] = useState<boolean>(false);
@@ -53,7 +55,11 @@ const AppSelect2: FC<IAppSelectPops> = ({
           {optionSelected?.icon && (
             <Box className={`${optionSelected?.icon} icon`} />
           )}
-          <Box>{optionSelected?.label ?? 'Select'}</Box>
+          {hiddenLabelDefault ? (
+            <Box>{optionSelected?.label ?? ''}</Box>
+          ) : (
+            <Box>{optionSelected?.label ?? 'Select'}</Box>
+          )}
         </Flex>
 
         <Box className="icon-arrow-down" ml={2} />

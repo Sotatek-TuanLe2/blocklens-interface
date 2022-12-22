@@ -10,11 +10,27 @@
     }
     padding-bottom: 26px;
   }
+  .title-wrap-mobile {
+    position: relative;
+    padding-bottom: 36px;
+    .icon-arrow-wrap {
+      position: absolute;
+      left: 0;
+      top: 0;
+      transform: translateY(6px);
+    }
+    .title-contact-us {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      font-size: 22px;
+    }
+  }
   .labelArea {
     color: $paragraph;
     margin-bottom: 4px;
   }
-  .btn-submit {
-    padding: 12px 24px;
+  .contact-form-mobile {
+    padding: 19px;
   }
 }

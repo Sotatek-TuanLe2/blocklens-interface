@@ -15,6 +15,7 @@ import 'src/styles/pages/ContactUs.scss';
 import { createValidator } from 'src/utils/utils-validator';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
+import { isMobile } from 'react-device-detect';
 
 interface IDataFormContact {
   email?: string;
@@ -77,13 +78,15 @@ const ContactUs = () => {
   return (
     <BasePageContainer className="contact-us">
       <>
-        <Flex className="title-wrap">
-          <AppLink to={`/account`}>
-            <Box className="icon-arrow-left" mr={6} />
-          </AppLink>
+        <Flex className={`title-wrap ${isMobile ? 'title-wrap-mobile' : ''}`}>
+          <Box className="icon-arrow-wrap">
+            <AppLink to={`/billing`}>
+              <Box className="icon-arrow-left" mr={6} />
+            </AppLink>
+          </Box>
           <Box className="title-contact-us">Contact Our Team</Box>
         </Flex>
-        <AppCard>
+        <AppCard className={isMobile ? 'contact-form-mobile' : ''}>
           <AppField label="Email" isRequired>
             <AppInput
               value={dataContact.email}
@@ -157,6 +160,7 @@ const ContactUs = () => {
 
             <AppField label="Country" customWidth="49%">
               <AppSelect2
+                hiddenLabelDefault
                 size="large"
                 onChange={(value: string) => {
                   setDataContact({
@@ -210,7 +214,7 @@ const ContactUs = () => {
             </AppField>
           </Flex>
 
-          <Flex direction={'column'} marginBottom="26px">
+          <Flex direction={'column'} marginBottom={isMobile ? '0px' : '26px'}>
             <Box className="labelArea">
               Tell Us More About What You Are Building
             </Box>
@@ -231,17 +235,34 @@ const ContactUs = () => {
             />
           </Flex>
 
-          <Flex justifyContent={'right'}>
+          {!isMobile && (
+            <Flex justifyContent={'right'}>
+              <AppButton
+                size="lg"
+                onClick={handleSubmit}
+                isDisabled={isDisableSubmit}
+                className="btn-submit"
+                w={'auto'}
+              >
+                Submit
+              </AppButton>
+            </Flex>
+          )}
+        </AppCard>
+
+        {isMobile && (
+          <Flex justifyContent={'right'} pt="50px">
             <AppButton
+              size="lg"
               onClick={handleSubmit}
               isDisabled={isDisableSubmit}
               className="btn-submit"
-              w={['100%', 'auto']}
+              w={'100%'}
             >
               Submit
             </AppButton>
           </Flex>
-        </AppCard>
+        )}
       </>
     </BasePageContainer>
   );

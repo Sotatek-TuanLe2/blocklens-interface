@@ -86,7 +86,7 @@
     }
   }
 
-  &__description {
+  &__description, &__description-email {
     @include text-medium-regular;
     color: $paragraph;
     margin-bottom: 18px;
@@ -100,6 +100,10 @@
     .email {
       color: $title;
     }
+  }
+
+  &__description-email {
+    padding: 0;
   }
 }
 
