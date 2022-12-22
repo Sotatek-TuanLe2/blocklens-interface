@@ -275,6 +275,7 @@ const BillingPage = () => {
           <PartCheckout
             planSelected={planSelected}
             paymentMethodCode={paymentMethod}
+            onBack={onBackStep}
           />
         );
       default:

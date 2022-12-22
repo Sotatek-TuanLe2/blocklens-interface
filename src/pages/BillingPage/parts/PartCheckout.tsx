@@ -15,11 +15,13 @@ import { CheckedIcon } from '../../../assets/icons';
 interface IPartCheckout {
   planSelected: string;
   paymentMethodCode: string;
+  onBack: () => void;
 }
 
 const PartCheckout: FC<IPartCheckout> = ({
   planSelected,
   paymentMethodCode,
+  onBack,
 }) => {
   const { plans } = useSelector((state: RootState) => state.billing);
   const { wallet } = useWallet();
@@ -28,15 +30,6 @@ const PartCheckout: FC<IPartCheckout> = ({
   const paymentMethod = paymentMethods.find(
     (item) => item.code === paymentMethodCode,
   );
-
-  const _renderPaymentMethod = () => {
-    return (
-      <Box>
-        <p>{paymentMethod?.name}</p>
-        <p>{wallet?.getAddress()}</p>
-      </Box>
-    );
-  };
 
   const _renderOrder = () => {
     const newPlan = plans.find((item) => item.code === planSelected);
@@ -76,7 +69,7 @@ const PartCheckout: FC<IPartCheckout> = ({
   return (
     <Box className="form-card">
       <Flex alignItems={'center'} mb={7}>
-        <Box className="icon-arrow-left" mr={6} />
+        <Box className="icon-arrow-left" mr={6} onClick={onBack}/>
         <Box className={'sub-title'}>Billing Checkout</Box>
       </Flex>
 
