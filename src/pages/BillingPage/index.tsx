@@ -64,7 +64,7 @@ const _renderPrice = (price: number | null) => {
   if (price === null)
     return (
       <>
-        <AppLink className="link" to={'#'}>
+        <AppLink className="link" to={'/contact-us'}>
           Contact us
         </AppLink>
       </>

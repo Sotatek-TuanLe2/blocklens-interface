@@ -15,4 +15,9 @@ export default class UserRequest extends BaseRequest {
     const url = `/my/users/profile`;
     return this.put(url, params);
   }
+
+  contactToAdmin(params: any) {
+    const url = `/public/users/contact`;
+    return this.post(url, params);
+  }
 }
