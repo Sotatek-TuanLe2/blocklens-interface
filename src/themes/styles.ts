@@ -6,7 +6,7 @@ export const globalStyles = {
       100: 'linear-gradient(268.85deg, #226CFF 22.48%, #1084FF 83.59%)',
     },
     paragraph: {
-      100: '#B4B7BD',
+      100: '#8D91A5',
     },
     line: {
       100: '#69758C',
