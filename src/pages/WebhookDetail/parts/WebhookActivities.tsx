@@ -56,6 +56,7 @@ import { isMobile } from 'react-device-detect';
 import { getBlockExplorerUrl } from 'src/utils/utils-network';
 import { IAppResponse } from 'src/utils/utils-app';
 import 'src/styles/pages/HomePage.scss';
+import ModalFilterActivities from '../../../modals/ModalFilterActivities';
 
 interface INotificationResponse {
   hash: string;
@@ -97,12 +98,26 @@ interface IWebhookActivities {
   appInfo: IAppResponse;
 }
 
+interface IOption {
+  value: string;
+  label: string;
+}
+
+interface IFilter {
+  value: string;
+  onChange: (value: string) => void;
+  type: string;
+  options?: IOption[];
+}
+
 const _renderStatus = (notification: INotificationResponse) => {
   if (!notification.status) return '--';
 
   if (notification.status === STATUS.PROCESSING) {
     return (
-      <Box className="status waiting">Retrying {notification.retryTime}/5</Box>
+      <Box className="status waiting">
+        Processing {notification.retryTime}/5
+      </Box>
     );
   }
 
@@ -113,7 +128,7 @@ const _renderStatus = (notification: INotificationResponse) => {
   );
 };
 
-export const Filter = ({ value, onChange, type }: any) => {
+export const Filter: FC<IFilter> = ({ value, onChange, type, options }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const ref = useRef<any>(null);
 
@@ -139,14 +154,38 @@ export const Filter = ({ value, onChange, type }: any) => {
       <FilterIcon onClick={() => setIsOpen(true)} />
 
       {isOpen && (
-        <Box className="filter-table__box-search">
-          <AppInput
-            className={'input-search'}
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
-            placeholder={`Select ${type}`}
-          />
-        </Box>
+        <>
+          {type === 'status' ? (
+            <Box className="filter-table__options">
+              {!!options &&
+                options.map((item: any, index: number) => {
+                  return (
+                    <Box
+                      className={`filter-table__option ${
+                        item.value === value ? 'active' : ''
+                      }`}
+                      onClick={() => {
+                        onChange(item?.value);
+                        setIsOpen(false);
+                      }}
+                      key={index}
+                    >
+                      {item.label}
+                    </Box>
+                  );
+                })}
+            </Box>
+          ) : (
+            <Box className="filter-table__box-search">
+              <AppInput
+                className={'input-search'}
+                value={value}
+                onChange={(e) => onChange(e.target.value)}
+                placeholder={`Select ${type}`}
+              />
+            </Box>
+          )}
+        </>
       )}
     </Box>
   );
@@ -469,12 +508,13 @@ const WebhookActivities: FC<IWebhookActivities> = ({
   isShowAll,
   appInfo,
 }) => {
-  const [valueSearch, setValueSearch] = useState<string>('');
-  const [valueFilter, setValueFilter] = useState<string>('');
+  const [search, setSearch] = useState<string>('');
+  const [status, setStatus] = useState<string>('');
   const [method, setMethod] = useState<string>('');
   const [txHash, setTxHash] = useState<string>('');
   const [tokenId, setTokenId] = useState<string>('');
   const [address, setAddress] = useState<string>('');
+  const [isOpenFilterModal, setIsOpenFilterModal] = useState<boolean>(false);
   const { id: webhookId } = useParams<{ id: string }>();
   const [, updateState] = useState<any>();
 
@@ -563,13 +603,23 @@ const WebhookActivities: FC<IWebhookActivities> = ({
           <Th>
             <Flex alignItems="center">
               txn id{' '}
-              {isShowAll && <Filter value={txHash} onChange={setTxHash} type="txn ID"/>}
+              {isShowAll && (
+                <Filter value={txHash} onChange={setTxHash} type="txn ID" />
+              )}
             </Flex>
           </Th>
           {_renderHeaderActivities()}
           <Th>
             <Flex alignItems={'center'}>
               Status{' '}
+              {isShowAll && (
+                <Filter
+                  value={status}
+                  onChange={setStatus}
+                  type="status"
+                  options={optionsFilter}
+                />
+              )}
               <Tooltip
                 p={2}
                 label="Messages for each activity will retry 5 times if send failed, each auto-retry occurs after one minute.
@@ -622,29 +672,23 @@ const WebhookActivities: FC<IWebhookActivities> = ({
   };
 
   const _renderBoxFilter = () => {
+    if (!isMobile) return <Box p={5} />;
     return (
       <Flex className="box-filter activities-all" flex={'1 1 0'}>
-        {!isMobile && (
-          <Box width={'150px'}>
-            <AppSelect2
-              onChange={setValueFilter}
-              options={optionsFilter}
-              value={valueFilter}
-            />
-          </Box>
-        )}
-
-        <Box width={isMobile ? '85%' : '200px'}>
+        <Box width={'85%'}>
           <AppInput
             isSearch
             className={'input-search'}
             type="text"
             placeholder={'Search...'}
-            value={valueSearch}
-            onChange={(e) => setValueSearch(e.target.value.trim())}
+            value={status}
+            onChange={(e) => setSearch(e.target.value.trim())}
           />
         </Box>
-        {isMobile && <Box className="icon-filter-mobile" />}
+        <Box
+          className="icon-filter-mobile"
+          onClick={() => setIsOpenFilterModal(true)}
+        />
       </Flex>
     );
   };
@@ -673,12 +717,12 @@ const WebhookActivities: FC<IWebhookActivities> = ({
 
       <AppDataTable
         requestParams={{
-          status: valueFilter,
-          search: valueSearch,
-          method: method,
-          address: address,
-          txHash: txHash,
-          tokenId: tokenId,
+          status,
+          search,
+          method,
+          address,
+          txHash,
+          tokenId,
         }}
         hidePagination={!isShowAll}
         fetchData={fetchDataTable}
@@ -691,6 +735,16 @@ const WebhookActivities: FC<IWebhookActivities> = ({
         <Flex justifyContent={'center'} my={4}>
           {_renderLinkShowAll()}
         </Flex>
+      )}
+
+      {isOpenFilterModal && (
+        <ModalFilterActivities
+          open={isOpenFilterModal}
+          value={status}
+          onClose={() => setIsOpenFilterModal(false)}
+          onChange={setStatus}
+          options={optionsFilter}
+        />
       )}
     </AppCard>
   );

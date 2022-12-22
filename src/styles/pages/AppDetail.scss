@@ -353,7 +353,7 @@
     color: $title;
   }
 
-  &__box-search {
+  &__box-search, &__options {
     background-color: #2f3b58;
     padding: 14px 10px;
     border-radius: 6px;
@@ -366,6 +366,20 @@
       @include text-small-regular;
       padding: 6px 10px;
       height: 32px;
+    }
+  }
+
+  &__options {
+    padding: 14px 0;
+    text-transform: capitalize;
+  }
+
+  &__option {
+    @include text-small-regular;
+    padding: 8px 10px;
+
+    &.active {
+      background: linear-gradient(268.85deg, #226CFF 22.48%, #1084FF 83.59%);
     }
   }
 }
