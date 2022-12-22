@@ -150,7 +150,9 @@ const BillingPage = () => {
                 <Td>
                   <Flex alignItems={'center'}>
                     {isActivePlan ? <RadioChecked /> : <RadioNoCheckedIcon />}
-                    <Box ml={3}>{plan.name}</Box>
+                    <Box ml={3} className="name-plan">
+                      {plan.name.toLowerCase()}
+                    </Box>
 
                     {isCurrentPlan && (
                       <Box ml={3} className={'box-current'}>
@@ -184,7 +186,9 @@ const BillingPage = () => {
 
     return (
       <TableContainer>
-        <Table colorScheme="gray" className={"table-plan"}>{_renderBody()}</Table>
+        <Table colorScheme="gray" className={'table-plan'}>
+          {_renderBody()}
+        </Table>
       </TableContainer>
     );
   };

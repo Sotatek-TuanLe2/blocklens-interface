@@ -29,6 +29,12 @@
     .table-plan {
       td {
         color: $paragraph;
+
+        .name-plan {
+          @include text-medium-bold;
+          color: $title;
+          text-transform: capitalize;
+        }
       }
     }
 
