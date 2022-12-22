@@ -27,6 +27,7 @@ import BillingPage from './pages/BillingPage';
 import AccountPage from './pages/AccountPage';
 import BillingInfoPage from './pages/BillingInfoPage';
 import LandingPage from './pages/LandingPage';
+import ContactUs from './pages/ContactUs';
 
 /**
  * Main App routes.
@@ -74,13 +75,14 @@ const Routes: FC<RouteComponentProps> = () => {
           component={MessagesHistory}
         />
         <PrivateRoute path={'/home'} component={HomePage} />
+        <Route path={'/contact-us'} component={ContactUs} />
         <PublicRoute path={'/'} component={LandingPage} />
       </Switch>
     </>
   );
 };
 
-const PublicRoute = ({ component: Component, ...rest }: any) => {
+const PublicRoute = ({ component: Component, path, ...rest }: any) => {
   const accessToken = Storage.getAccessToken();
 
   return (
