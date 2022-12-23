@@ -4,9 +4,9 @@ import rf from 'src/requests/RequestFactory';
 import { useParams } from 'react-router';
 import { ListStat } from 'src/pages/HomePage/parts/PartUserStats';
 import moment from 'moment';
-import { formatLargeNumber } from '../../../utils/utils-helper';
+import { formatLargeNumber } from 'src/utils/utils-helper';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../../store';
+import { RootState } from 'src/store';
 
 interface IAppStats {
   message?: number;
