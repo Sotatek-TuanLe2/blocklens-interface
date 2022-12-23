@@ -5,8 +5,8 @@ import AppStatistical, { keyStats } from 'src/components/AppStatistical';
 import rf from 'src/requests/RequestFactory';
 import moment from 'moment';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../../store';
-import { formatLargeNumber } from '../../../utils/utils-helper';
+import { RootState } from 'src/store';
+import { formatLargeNumber } from 'src/utils/utils-helper';
 
 interface IUserStats {
   message?: number;
