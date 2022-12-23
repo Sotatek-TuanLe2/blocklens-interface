@@ -9,6 +9,8 @@ import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { isMobile } from 'react-device-detect';
 import BillingItemMobile from './parts/BillingItemMobile';
 
+const fileDownload = require('js-file-download');
+
 interface ILineItems {
   amount: number;
   description: string;
@@ -41,9 +43,10 @@ const BillingHistory = () => {
 
   const onDownloadReceipt = useCallback(async (receiptId: string) => {
     try {
-      await rf
+      const res = await rf
         .getRequest('BillingRequest')
         .downloadInvoice('receipt', receiptId);
+      fileDownload(res, `${receiptId}.pdf`);
       toastSuccess({
         message: 'Successfully!',
       });
