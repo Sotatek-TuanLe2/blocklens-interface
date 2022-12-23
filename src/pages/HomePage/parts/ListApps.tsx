@@ -16,6 +16,7 @@ import { isMobile } from 'react-device-detect';
 
 interface IListApps {
   totalApps: number;
+  totalAppActive: number;
   searchListApp: any;
   setOpenModalCreateApp: () => void;
 }
@@ -114,10 +115,11 @@ const ListApps: React.FC<IListApps> = ({
   totalApps,
   setOpenModalCreateApp,
   searchListApp,
+  totalAppActive,
 }) => {
   const history = useHistory();
   const { myPlan } = useSelector((state: RootState) => state.billing);
-  const [appStat, setAppStat] = useState<any>({});
+
   const [openModalUpgradeCreateApp, setOpenModalUpgradeCreateApp] =
     useState<boolean>(false);
 
@@ -173,24 +175,11 @@ const ListApps: React.FC<IListApps> = ({
     }
   };
 
-  const getAppStatOfUser = useCallback(async () => {
-    try {
-      const res = await rf.getRequest('AppRequest').getAppStatsOfUser();
-      setAppStat(res);
-    } catch (error: any) {
-      setAppStat([]);
-    }
-  }, []);
-
-  useEffect(() => {
-    getAppStatOfUser().then();
-  }, []);
-
   const onCreateApp = () => {
     if (
       myPlan?.appLimitation &&
-      appStat?.totalAppActive &&
-      appStat?.totalAppActive >= myPlan?.appLimitation
+      totalAppActive &&
+      totalAppActive >= myPlan?.appLimitation
     ) {
       setOpenModalUpgradeCreateApp(true);
       return;
@@ -251,7 +240,7 @@ const ListApps: React.FC<IListApps> = ({
   const _renderTotalApp = () => {
     return (
       <Box className="number-app">
-        <Text as={'span'}>Active Apps:</Text> {appStat?.totalAppActive}/
+        <Text as={'span'}>Active Apps:</Text> {totalAppActive}/
         {totalApps}
       </Box>
     );

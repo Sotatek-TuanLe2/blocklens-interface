@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import 'src/styles/pages/HomePage.scss';
 import { Flex, Box } from '@chakra-ui/react';
 import ListApps from './parts/ListApps';
@@ -14,6 +14,7 @@ const HomePage = () => {
   const [totalApps, setTotalApps] = useState<any>({});
   const [open, setOpen] = useState<boolean>(false);
   const [searchListApp, setSearchListApp] = useState<any>({});
+  const [appStat, setAppStat] = useState<any>({});
 
   const getTotalApp = async () => {
     try {
@@ -25,8 +26,18 @@ const HomePage = () => {
     }
   };
 
+  const getAppStatOfUser = useCallback(async () => {
+    try {
+      const res = await rf.getRequest('AppRequest').getAppStatsOfUser();
+      setAppStat(res);
+    } catch (error: any) {
+      setAppStat([]);
+    }
+  }, []);
+
   useEffect(() => {
     getTotalApp().then();
+    getAppStatOfUser().then();
   }, []);
 
   useEffect(() => {
@@ -60,8 +71,11 @@ const HomePage = () => {
       <>
         {totalApps > 0 ? (
           <>
-            <PartUserStats />
+            <PartUserStats
+              totalWebhookActive={appStat?.totalRegistrationActive}
+            />
             <ListApps
+              totalAppActive={appStat?.totalAppActive}
               totalApps={totalApps}
               setOpenModalCreateApp={() => setOpen(true)}
               searchListApp={searchListApp}

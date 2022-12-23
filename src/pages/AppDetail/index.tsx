@@ -98,7 +98,9 @@ const AppDetail = () => {
             </Flex>
           </Flex>
 
-          <PartAppStatics />
+          <PartAppStatics
+            totalWebhookActive={appInfo?.totalRegistrationActive}
+          />
 
           <AppCard className="list-webhook">
             <Flex className={'title-list-app'} pt={0}>

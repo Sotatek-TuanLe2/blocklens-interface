@@ -71,6 +71,13 @@ const PartWebhookStats = () => {
 
   const dataWebhookStats = useMemo(() => {
     return listStats.map((item) => {
+      if (item.key === 'successRate') {
+        return {
+          ...item,
+          value: +webhookStats.successRate || '--',
+        };
+      }
+
       return {
         ...item,
         value: webhookStats[item.key as keyStats],
