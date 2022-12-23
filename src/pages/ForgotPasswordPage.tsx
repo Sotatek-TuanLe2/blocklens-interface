@@ -108,13 +108,15 @@ const ForgotPasswordPage: FC = () => {
           </Box>
         </AppCard>
 
-        {openModalResendEmail && <ModalResendMail
-          type="Reset password"
-          email={dataForm.email}
-          open={openModalResendEmail}
-          onClose={() => setOpenModalResendEmail(false)}
-          onResend={() => console.log('send mail')}
-        />}
+        {openModalResendEmail && (
+          <ModalResendMail
+            type="Reset password"
+            email={dataForm.email}
+            open={openModalResendEmail}
+            onClose={() => setOpenModalResendEmail(false)}
+            onResend={() => console.log('send mail')}
+          />
+        )}
       </Flex>
     </BasePage>
   );

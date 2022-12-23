@@ -233,7 +233,7 @@ const AppDataTable = forwardRef(
         {isMobile ? (
           _renderTable()
         ) : (
-          <TableContainer overflowX="inherit"  overflowY="inherit">
+          <TableContainer overflowX="inherit" overflowY="inherit">
             <Table colorScheme="gray">{_renderTable()}</Table>
           </TableContainer>
         )}
