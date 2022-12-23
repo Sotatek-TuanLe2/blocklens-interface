@@ -57,7 +57,7 @@ const BillingItem: FC<IBillingItem> = ({ billing, onDownload, onRetry }) => {
               className="link-redirect"
               onClick={(e) => {
                 e.stopPropagation();
-                onDownload(billing.receiptId);
+                onDownload(billing.id);
               }}
             >
               <DownloadBillingIcon />

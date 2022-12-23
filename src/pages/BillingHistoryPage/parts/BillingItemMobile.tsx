@@ -94,7 +94,7 @@ const BillingItemMobile: FC<IBillingItemMobile> = ({
                   variant="cancel"
                   size="sm"
                   w={'100%'}
-                  onClick={() => onDownload(billing.receiptId)}
+                  onClick={() => onDownload(billing.id)}
                 >
                   Download
                 </AppButton>
