@@ -21,6 +21,7 @@ import { AppBroadcast } from 'src/utils/utils-broadcast';
 import ModalSignInRequest from 'src/modals/ModalSignInRequest';
 import { isMobile } from 'react-device-detect';
 import { CloseIcon } from '@chakra-ui/icons';
+import { LogoutIcon } from 'src/assets/icons';
 
 const menus = [
   {
@@ -159,7 +160,16 @@ const Header: FC = () => {
         onClose={() => setIsOpenSignInRequestModal(false)}
       />
 
-      {isOpenMenuMobile && <Box className="header-mobile">{_renderMenu()}</Box>}
+      {isOpenMenuMobile && (
+        <Box className="header-mobile">
+          {_renderMenu()}
+
+          <Flex className="btn-logout" onClick={onLogout}>
+            <LogoutIcon />
+            <Box>Log Out</Box>
+          </Flex>
+        </Box>
+      )}
     </Box>
   );
 };
