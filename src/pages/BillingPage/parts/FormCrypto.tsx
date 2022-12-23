@@ -25,6 +25,7 @@ import useUser from 'src/hooks/useUser';
 import { RootState } from 'src/store';
 import { ConnectWalletIcon } from 'src/assets/icons';
 import AppAlertWarning from '../../../components/AppAlertWarning';
+import { getChainConfig, getNetworkByEnv } from 'src/utils/utils-network';
 
 interface IFormCrypto {
   onBack: () => void;
@@ -72,7 +73,7 @@ const FormCrypto: FC<IFormCrypto> = ({ onBack, onNext, planSelected }) => {
 
   useEffect(() => {
     if (wallet?.getAddress()) {
-      const networkCurrencies = config.networks[wallet.getNework()].currencies;
+      const networkCurrencies = getNetworkByEnv(getChainConfig(wallet.getNework())).currencies;
       const defaultCurrency =
         networkCurrencies[Object.keys(networkCurrencies)[0]];
       setDataForm((prevState) => ({
@@ -114,9 +115,9 @@ const FormCrypto: FC<IFormCrypto> = ({ onBack, onNext, planSelected }) => {
     if (!wallet) {
       return [];
     }
-    return Object.keys(config.networks).map((networkKey) => {
-      const network = config.networks[networkKey];
-      return { label: network.name, value: network.id, icon: network.icon };
+    return Object.keys(config.chains).map((chainKey) => {
+      const chain = config.chains[chainKey];
+      return { label: chain.name, value: chain.id, icon: chain.icon };
     });
   }, [wallet?.getNework()]);
 
@@ -129,7 +130,7 @@ const FormCrypto: FC<IFormCrypto> = ({ onBack, onNext, planSelected }) => {
     if (!wallet) {
       return [];
     }
-    const networkCurrencies = config.networks[wallet.getNework()].currencies;
+    const networkCurrencies = getNetworkByEnv(getChainConfig(wallet.getNework())).currencies;
     return Object.keys(networkCurrencies).map((currencyKey) => {
       const currency = networkCurrencies[currencyKey];
       return {
@@ -182,7 +183,7 @@ const FormCrypto: FC<IFormCrypto> = ({ onBack, onNext, planSelected }) => {
     try {
       setTopUpStatus(TOP_UP_STATUS.PENDING);
       const topUpContractAddress =
-        config.networks[dataForm.chainId].addresses.topup;
+        config.topUp[dataForm.chainId].contractAddress;
       await approveToken(
         wallet.getNework(),
         currencyAddress,
@@ -230,11 +231,10 @@ const FormCrypto: FC<IFormCrypto> = ({ onBack, onNext, planSelected }) => {
   const _renderWalletInfo = () => {
     if (!isCorrectAddress) {
       return (
-        <Box>
-          {`You are connecting with different address: ${wallet?.getAddress()}.`}
-          <br />
-          {`Please connect with linked address: ${user?.getLinkedAddress()}`}
-        </Box>
+        <AppAlertWarning>
+          <Box>You are connecting with different address: {wallet?.getAddress()}.</Box>
+          <Box>Please connect with linked address: {user?.getLinkedAddress()}.</Box>
+        </AppAlertWarning>
       );
     }
     return (

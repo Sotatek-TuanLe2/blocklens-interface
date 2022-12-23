@@ -32,9 +32,8 @@ const ModalConnectWallet: FC<IModalConnectWallet> = ({ open, onClose }) => {
   };
 
   const _renderWallets = () => {
-    const selectedNetworkConfig = config.networks[defaultNetwork];
-    return Object.keys(selectedNetworkConfig.connectors).map((connectorKey) => {
-      const connectorInfo = selectedNetworkConfig.connectors[connectorKey];
+    return Object.keys(config.connectors).map((connectorKey) => {
+      const connectorInfo = config.connectors[connectorKey];
       const { id, icon, name } = connectorInfo;
       return (
         <Box

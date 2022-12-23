@@ -5,7 +5,7 @@ import {
   JsonRpcProvider,
 } from '@ethersproject/providers';
 import _ from 'lodash';
-import config from 'src/config';
+import config, { Chain, Network } from 'src/config';
 import { toastError } from './utils-notify';
 import Storage from './utils-storage';
 
@@ -16,14 +16,14 @@ export const CHAINS = {
   BITCOIN: 'BITCOIN',
 };
 
-export const getLogoChainByName = (chainName?: string) => {
-  if (!chainName) return;
-  return config.chains.filter((chain) => chain.id === chainName)[0]?.icon;
+export const getLogoChainByChainId = (ChainId?: string) => {
+  if (!ChainId) return;
+  return config.chains[ChainId].icon;
 };
 
 export const getNameChainByChainId = (ChainId?: string) => {
   if (!ChainId) return '--';
-  return config.chains.filter((chain) => chain.id === ChainId)[0]?.name;
+  return config.chains[ChainId].name;
 };
 
 export const isEVMNetwork = (chainId?: string) => {
@@ -32,36 +32,55 @@ export const isEVMNetwork = (chainId?: string) => {
 };
 
 export const getBlockExplorerUrl = (chainId?: string, networkId?: string) => {
-  const chain = config.chains.find((chain) => chain.id === chainId);
-  const network = chain?.networks.find((item) => item.id === networkId);
-  return network?.blockExplorerUrl || '';
+  if (!chainId || !networkId) {
+    return '';
+  }
+  const chain = config.chains[chainId];
+  const network = chain.networks[networkId];
+  return network?.blockExplorer.url || '';
 };
 
-export const getNetworkConfig = (networkId: string | undefined) => {
+export const getChainConfig = (networkId: string | undefined): Chain => {
+  const defaultChain = config.chains[config.defaultNetwork];
   if (!networkId) {
-    return null;
+    return defaultChain;
   }
-  const network =
-    config.networks[networkId] ||
-    _.find(
-      config.networks,
-      (network) => network.id.toUpperCase() === networkId.toUpperCase(),
-    );
-  if (!network) {
-    return null;
+  return config.chains[networkId] || defaultChain;
+};
+
+export const getNetworkByEnv = (chain: Chain | null): Network => {
+  const env = process.env.REACT_APP_ENV || 'prod';
+  const networks: any = {
+    ETH: {
+      prod: "MAINNET",
+      dev: "GOERLI"
+    },
+    BSC: {
+      prod: "MAINNET",
+      dev: "TESTNET"
+    },
+    POLYGON: {
+      prod: "MAINNET",
+      dev: "MUMBAI"
+    }
+  };
+  const defaultChain = getChainConfig(config.defaultNetwork);
+  const defaultNetworkByEnv = defaultChain.networks[networks[defaultChain.id][env]];
+  if (!chain) {
+    return defaultNetworkByEnv;
   }
-  return network;
+  return chain.networks[chain.id];
 };
 
 export const getNetworkProvider = (network = ''): FallbackProvider => {
   network = network ? network : config.defaultNetwork;
-  const networkConfig = getNetworkConfig(network);
-  if (!networkConfig) {
+  const chainConfig = getChainConfig(network);
+  if (!chainConfig) {
     console.error(
       `[getNetworkProvider] throw error: networkConfig ${network} not found`,
     );
   }
-  const rpcUrls = _.shuffle(networkConfig?.rpcUrls);
+  const rpcUrls = _.shuffle(getNetworkByEnv(chainConfig).rpcUrls);
 
   const providers: {
     provider: BaseProvider;
@@ -71,7 +90,7 @@ export const getNetworkProvider = (network = ''): FallbackProvider => {
   rpcUrls.forEach((rpcUrl, index) => {
     const provider: BaseProvider = new StaticJsonRpcProvider(
       rpcUrl,
-      networkConfig?.chainId,
+      getNetworkByEnv(chainConfig).chainId,
     );
     const priority = index + 1;
     providers.push({
@@ -91,7 +110,10 @@ export const switchNetwork = async (
   if (!provider) {
     throw new Error('[Switch Network] No provider was found');
   }
-  const chainId = config.networks[network].chainId;
+  const chainId = getNetworkByEnv(getChainConfig(network)).chainId;
+  if (!chainId) {
+    throw new Error('[Switch Network] No chainId was found');
+  }
   try {
     await provider.send('wallet_switchEthereumChain', [
       {
@@ -112,8 +134,11 @@ export const switchNetwork = async (
 
 const addNewNetwork = (network: string, provider: JsonRpcProvider) => {
   try {
-    const { chainId, name, nativeCurrency, rpcUrls, blockExplorer } =
-      config.networks[network];
+    const networkConfig = getNetworkByEnv(getChainConfig(network));
+    if (!networkConfig) {
+      return;
+    }
+    const { chainId, name, nativeCurrency, rpcUrls, blockExplorer } = networkConfig;
     return provider.send('wallet_addEthereumChain', [
       {
         chainId: `0x${chainId.toString(16)}`,

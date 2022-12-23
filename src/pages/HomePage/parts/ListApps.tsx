@@ -6,7 +6,7 @@ import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
 import { IListAppResponse } from 'src/utils/common';
 import { useHistory } from 'react-router';
 import {
-  getLogoChainByName,
+  getLogoChainByChainId,
   getNameChainByChainId,
 } from 'src/utils/utils-network';
 import { useSelector } from 'react-redux';
@@ -37,7 +37,7 @@ export const _renderStatus = (status?: APP_STATUS) => {
 const _renderChainApp = (chain: string, network: string) => {
   return (
     <Flex alignItems={'center'}>
-      <Box className={getLogoChainByName(chain) || ''} mr={2.5} />
+      <Box className={getLogoChainByChainId(chain) || ''} mr={2.5} />
       <Box mr={1}>{getNameChainByChainId(chain)}</Box>
       <Box textTransform="capitalize"> {network}</Box>
     </Flex>

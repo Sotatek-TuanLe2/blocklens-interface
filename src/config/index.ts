@@ -3,7 +3,10 @@ import prod from './prod.json';
 import dev from './dev.json';
 
 const env = process.env.REACT_APP_ENV || 'prod';
-const configs: any = { prod, dev };
+const configs: any = {
+  prod,
+  dev
+};
 const config: Config = configs[env];
 
 interface BlockExplorer {
@@ -20,7 +23,9 @@ interface Connector {
   href: string;
   mobile: boolean;
   deepLink: string;
-  options: any;
+  options: {
+    [key : string]: any
+  };
   extensionLink?: {
     chrome: string;
     firefox: string;
@@ -40,21 +45,31 @@ interface Currency {
 }
 
 export interface Network {
-  id: string;
-  coingeckoId: string;
   name: string;
+  id: string;
+  icon: string;
   chainId: number;
   rpcUrls: string[];
   blockExplorer: BlockExplorer;
-  addresses: {
-    multicall: string;
-    topup: string;
+  nativeCurrency: {
+    name: string;
+    symbol: string;
+    decimals: number;
   };
-  connectors: { [key: string]: Connector };
-  icon?: string;
-  currency?: string;
-  nativeCurrency?: any;
-  currencies: { [key: string]: Currency };
+  currencies: {
+    [key : string]: Currency;
+  }
+}
+
+export interface Chain {
+  name: string;
+  id: string;
+  icon: string;
+  networks: {[key: string]: Network};
+}
+
+export interface TopUp {
+  contractAddress: string;
 }
 
 export interface Config {
@@ -69,22 +84,25 @@ export interface Config {
     notificationsApi: string;
   };
   defaultNetwork: string;
+  defaultChainId: number;
   stripe: {
     publishableKey: string;
   };
   chains: {
-    name: string;
-    id: string;
-    icon: string;
-    networks: {
-      name: string;
-      id: string;
-      icon: string;
-      blockExplorerUrl?: string;
-    }[];
-    currencies: { name: string; id: string; icon: string }[];
-  }[];
-  networks: { [key: string]: Network };
+    [key: string]: Chain
+  };
+  multicall: {
+    [key : string]: string;
+  },
+  topUp: {
+    [key : string]: TopUp;
+  },
+  connectors: {
+    [key : string]: Connector;
+  }
+  networks: {
+    [key : string]: Network;
+  };
 }
 
 export default config;

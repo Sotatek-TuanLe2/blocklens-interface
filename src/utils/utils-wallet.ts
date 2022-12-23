@@ -109,19 +109,18 @@ export const shortenWalletAddress = (walletAddress: string) => {
 };
 
 export const navigateToWalletInstallation = (
-  network: string,
   wallet: string,
 ) => {
   let walletInstallationURL = '';
   if (isChrome) {
     walletInstallationURL =
-      config.networks[network].connectors[wallet].extensionLink?.chrome || '';
+      config.connectors[wallet].extensionLink?.chrome || '';
   } else if (isFirefox) {
     walletInstallationURL =
-      config.networks[network].connectors[wallet].extensionLink?.firefox || '';
+      config.connectors[wallet].extensionLink?.firefox || '';
   } else if (isEdge) {
     walletInstallationURL =
-      config.networks[network].connectors[wallet].extensionLink?.edge || '';
+      config.connectors[wallet].extensionLink?.edge || '';
   }
   if (!walletInstallationURL) {
     return;

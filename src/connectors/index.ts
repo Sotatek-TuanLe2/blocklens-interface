@@ -30,8 +30,7 @@ class ConnectorFactory {
     if (!Connector) {
       throw new Error(`Invalid connector class: ${Connector}`);
     }
-    const networkConfig = config.networks[network];
-    const options = networkConfig.connectors[connectorId].options;
+    const options = config.connectors[connectorId].options[network];
     const connectorInstance = new Connector(options);
     this.instances[connectorId] = connectorInstance;
     return connectorInstance;

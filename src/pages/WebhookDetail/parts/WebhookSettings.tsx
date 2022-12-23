@@ -19,7 +19,7 @@ import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import ModalDeleteWebhook from 'src/modals/ModalDeleteWebhook';
 import { isMobile } from 'react-device-detect';
 import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
-import { getLogoChainByName, getNameChainByChainId } from 'src/utils/utils-network';
+import { getLogoChainByChainId, getNameChainByChainId } from 'src/utils/utils-network';
 
 interface IAppSettings {
   onBack: () => void;
@@ -166,7 +166,7 @@ const WebhookSettings: FC<IAppSettings> = ({ onBack, webhook, reloadData, appInf
         <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
           <AppField label={'Network'} customWidth={'49%'}>
             <Flex className="chain-app">
-              <Box className={getLogoChainByName(appInfo.chain)} mr={3} />
+              <Box className={getLogoChainByChainId(appInfo.chain)} mr={3} />
               <Box>{getNameChainByChainId(appInfo.chain)}</Box>
               <Box textTransform="capitalize" ml={2}>
                 {appInfo.network.toLowerCase()}
