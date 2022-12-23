@@ -47,7 +47,7 @@ const AppGraph: FC<IChart> = ({ data, duration }) => {
         <LineChart
           width={500}
           height={300}
-          data={dataChart.reverse()}
+          data={dataChart}
           margin={{
             top: 5,
             right: 30,

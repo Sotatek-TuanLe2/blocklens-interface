@@ -29,7 +29,7 @@ export const listStats = [
   },
   {
     key: 'webhooks',
-    label: 'Total Webhook',
+    label: 'Active Webhook',
   },
 ];
 
