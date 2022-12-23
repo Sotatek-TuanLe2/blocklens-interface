@@ -41,12 +41,12 @@ const BillingHistory = () => {
     }
   }, []);
 
-  const onDownloadReceipt = useCallback(async (receiptId: string) => {
+  const onDownloadReceipt = useCallback(async (invoiceId: string) => {
     try {
       const res = await rf
         .getRequest('BillingRequest')
-        .downloadInvoice('receipt', receiptId);
-      fileDownload(res, `${receiptId}.pdf`);
+        .downloadInvoice('invoice', invoiceId);
+      fileDownload(res, `Invoice-${invoiceId}.pdf`);
       toastSuccess({
         message: 'Successfully!',
       });
