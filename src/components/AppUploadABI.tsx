@@ -15,6 +15,7 @@ import { Link as ReactLink } from 'react-router-dom';
 import 'src/styles/components/AppUploadABI.scss';
 import { isMobile } from 'react-device-detect';
 import { DownloadIcon } from 'src/assets/icons';
+import { Scrollbars } from 'react-custom-scrollbars';
 
 export const TYPE_ABI = {
   NFT: 'NFT',
@@ -182,43 +183,59 @@ const ListSelect: FC<IListSelect> = ({
       <Box className="label-events">
         {type === 'function' ? 'Functions' : 'Events'}
       </Box>
-      <Box maxH={'320px'} overflowY={'auto'} ml={5}>
-        {!!dataShow.length && (
-          <Checkbox
-            size="lg"
-            isChecked={allCheckedViewOnly || allChecked}
-            isIndeterminate={isIndeterminateViewOnly || isIndeterminate}
-            onChange={onSelectAll}
-            isDisabled={viewOnly}
-          >
-            All
-          </Checkbox>
-        )}
+      <Box ml={5} width="100%">
+        <Scrollbars
+          style={{ width: '100%', height: 300 }}
+          autoHide
+          renderThumbVertical={({ style, ...props }: any) => (
+            <div
+              style={{
+                ...style,
+                backgroundColor: '#8D91A5',
+                borderRadius: '5px',
+                cursor: 'pointer',
+              }}
+              {...props}
+            />
+          )}
+        >
+          {!!dataShow.length && (
+            <Checkbox
+              size="lg"
+              isChecked={allCheckedViewOnly || allChecked}
+              isIndeterminate={isIndeterminateViewOnly || isIndeterminate}
+              onChange={onSelectAll}
+              isDisabled={viewOnly}
+            >
+              All
+            </Checkbox>
+          )}
 
-        {!!dataShow.length ? (
-          dataShow?.map((item: any, index: number) => {
-            return (
-              <Box key={index} my={2}>
-                <Checkbox
-                  size="lg"
-                  isDisabled={viewOnly}
-                  value={item.name}
-                  isChecked={
-                    itemSelected.includes(item.name) ||
-                    nameSelected.includes(item.name)
-                  }
-                  onChange={(e) => onChangeSelect(e, item.name)}
-                >
-                  {item.name}
-                </Checkbox>
-              </Box>
-            );
-          })
-        ) : (
-          <Flex justifyContent={'center'}>
-            <Box> No data...</Box>
-          </Flex>
-        )}
+          {!!dataShow.length ? (
+            dataShow?.map((item: any, index: number) => {
+              return (
+                <Box key={index} my={2}>
+                  <Checkbox
+                    size="lg"
+                    isDisabled={viewOnly}
+                    value={item.name}
+                    isChecked={
+                      itemSelected.includes(item.name) ||
+                      nameSelected.includes(item.name)
+                    }
+                    onChange={(e) => onChangeSelect(e, item.name)}
+                  >
+                    {item.name}
+                  </Checkbox>
+                </Box>
+              );
+            })
+          ) : (
+            <Flex justifyContent={'center'}>
+              <Box> No data...</Box>
+            </Flex>
+          )}
+        </Scrollbars>
       </Box>
     </Flex>
   );
