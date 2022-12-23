@@ -40,6 +40,19 @@ export const getBlockExplorerUrl = (chainId?: string, networkId?: string) => {
   return network?.blockExplorer.url || '';
 };
 
+export const getChainByChainId = (chainId: string | number): Chain | null => {
+  const chainKeys = Object.keys(config.chains);
+  const chainKey = chainKeys.find((chainKey) => {
+    const chain = config.chains[chainKey];
+    const networkKeys = Object.keys(chain.networks);
+    return networkKeys.some((networkKey) => String(chain.networks[networkKey].chainId) === String(chainId));
+  })
+  if (!chainKey) {
+    return null;
+  }
+  return config.chains[chainKey];
+};
+
 export const getChainConfig = (networkId: string | undefined): Chain => {
   const defaultChain = config.chains[config.defaultNetwork];
   if (!networkId) {
@@ -69,7 +82,7 @@ export const getNetworkByEnv = (chain: Chain | null): Network => {
   if (!chain) {
     return defaultNetworkByEnv;
   }
-  return chain.networks[chain.id];
+  return chain.networks[networks[chain.id][env]];
 };
 
 export const getNetworkProvider = (network = ''): FallbackProvider => {
