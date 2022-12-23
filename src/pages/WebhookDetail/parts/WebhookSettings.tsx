@@ -21,7 +21,6 @@ import { isMobile } from 'react-device-detect';
 import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
 import {
   getLogoChainByChainId,
-  getLogoChainByName,
   getNameChainByChainId,
 } from 'src/utils/utils-network';
 

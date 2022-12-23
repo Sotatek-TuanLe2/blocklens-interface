@@ -7,7 +7,6 @@ import {
 import _ from 'lodash';
 import config, { Chain, Network } from 'src/config';
 import { toastError } from './utils-notify';
-import Storage from './utils-storage';
 
 export const CHAINS = {
   ETH: 'ETH',
