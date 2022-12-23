@@ -58,7 +58,7 @@ const BasicDetail = () => {
         <Flex justifyContent={'space-between'}>
           <Flex>
             <Box className="label">Balance:</Box>
-            <Box className="value">{userInfo?.balance}</Box>
+            <Box className="value">${userInfo?.balance}</Box>
           </Flex>
           <Box className="link">Top up</Box>
         </Flex>

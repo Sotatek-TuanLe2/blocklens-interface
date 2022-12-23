@@ -31,6 +31,7 @@ import ContactUs from './pages/ContactUs';
 import BillingHistory from './pages/BillingHistoryPage';
 import ModalSubmittingTransaction from './modals/ModalSubmittingTransaction';
 import ModalFinishTransaction from './modals/ModalFinishTransaction';
+import WebhookActivitiesPage from './pages/WebhookActivitiesPage';
 
 /**
  * Main App routes.
@@ -66,6 +67,10 @@ const Routes: FC<RouteComponentProps> = () => {
         <PrivateRoute path={'/account'} component={AccountPage} />
         <PrivateRoute path={'/billing-info'} component={BillingInfoPage} />
         <PrivateRoute path={'/billing-history'} component={BillingHistory} />
+        <PrivateRoute
+          path={'/app/:appId/webhooks/:id/activities'}
+          component={WebhookActivitiesPage}
+        />
         <PrivateRoute
           path={'/app/:appId/webhooks/:id'}
           component={WebhookDetail}

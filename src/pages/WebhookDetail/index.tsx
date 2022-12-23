@@ -17,8 +17,6 @@ const WebhookDetail = () => {
   const [webhook, setWebhook] = useState<IWebhook | any>({});
   const [appInfo, setAppInfo] = useState<any>({});
   const [isShowSetting, setIsShowSetting] = useState<boolean>(false);
-  const [isShowAllActivities, setIsShowAllActivities] =
-    useState<boolean>(false);
 
   const { appId, id: webhookId } = useParams<{ appId: string; id: string }>();
 
@@ -48,30 +46,6 @@ const WebhookDetail = () => {
     getWebhookInfo().then();
     getAppInfo().then();
   }, []);
-
-  const _renderAllActivities = () => {
-    return (
-      <>
-        <Flex className="app-info">
-          <Flex className="name">
-            <Box
-              cursor={'pointer'}
-              className="icon-arrow-left"
-              mr={6}
-              onClick={() => setIsShowAllActivities(false)}
-            />
-            <Box>All Activities</Box>
-          </Flex>
-        </Flex>
-        <WebhookActivities
-          appInfo={appInfo}
-          registrationId={webhook.registrationId}
-          webhook={webhook}
-          isShowAll={isShowAllActivities}
-        />
-      </>
-    );
-  };
 
   const _renderWebhookDetail = () => {
     return (
@@ -105,8 +79,6 @@ const WebhookDetail = () => {
           appInfo={appInfo}
           registrationId={webhook.registrationId}
           webhook={webhook}
-          onShowAll={() => setIsShowAllActivities(true)}
-          isShowAll={isShowAllActivities}
         />
         <PartWebhookGraph />
       </>
@@ -131,11 +103,7 @@ const WebhookDetail = () => {
           reloadData={getWebhookInfo}
         />
       ) : (
-        <>
-          {isShowAllActivities
-            ? _renderAllActivities()
-            : _renderWebhookDetail()}
-        </>
+        <>{_renderWebhookDetail()}</>
       )}
     </BasePageContainer>
   );
