@@ -24,8 +24,7 @@ import { getInfoUser } from 'src/store/auth';
 import useUser from 'src/hooks/useUser';
 import { RootState } from 'src/store';
 import { ConnectWalletIcon } from 'src/assets/icons';
-import AppAlertWarning from '../../../components/AppAlertWarning';
-import App from '../../../App';
+import AppAlertWarning from 'src/components/AppAlertWarning';
 
 interface IFormCrypto {
   onBack: () => void;

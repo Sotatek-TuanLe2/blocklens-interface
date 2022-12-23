@@ -19,7 +19,10 @@ import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import ModalDeleteWebhook from 'src/modals/ModalDeleteWebhook';
 import { isMobile } from 'react-device-detect';
 import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
-import { getLogoChainByName, getNameChainByChainId } from 'src/utils/utils-network';
+import {
+  getLogoChainByName,
+  getNameChainByChainId,
+} from 'src/utils/utils-network';
 
 interface IAppSettings {
   onBack: () => void;
@@ -28,7 +31,12 @@ interface IAppSettings {
   appInfo: IAppResponse;
 }
 
-const WebhookSettings: FC<IAppSettings> = ({ onBack, webhook, reloadData, appInfo }) => {
+const WebhookSettings: FC<IAppSettings> = ({
+  onBack,
+  webhook,
+  reloadData,
+  appInfo,
+}) => {
   const [isOpenModalDelete, setIsOpenModalDelete] = useState<boolean>(false);
 
   const isActive = useMemo(
@@ -121,7 +129,7 @@ const WebhookSettings: FC<IAppSettings> = ({ onBack, webhook, reloadData, appInf
             onClick={onBack}
             cursor="pointer"
           />
-          <Box>Setting</Box>
+          <Box className={'title-mobile'}>Settings</Box>
         </Flex>
 
         <Flex>

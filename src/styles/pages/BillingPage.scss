@@ -125,6 +125,9 @@
 
       @include tablet {
         @include heading-7;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
       }
     }
 

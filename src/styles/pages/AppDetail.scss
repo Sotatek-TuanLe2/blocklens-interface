@@ -15,6 +15,15 @@
     @include tablet {
       @include heading-7;
     }
+
+    .title-mobile {
+      @include tablet {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        width: max-content;
+      }
+    }
   }
 
   .box-network {
