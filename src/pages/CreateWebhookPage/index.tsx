@@ -489,7 +489,7 @@ const CreateWebhook = () => {
             <AppLink to={`/apps/${appId}`}>
               <Box className="icon-arrow-left" mr={6} />
             </AppLink>
-            <Box>Create Webhook</Box>
+            <Box className={'title-mobile'}>Create Webhook</Box>
           </Flex>
         </Flex>
         <AppCard className={'form-create'}>

@@ -33,15 +33,14 @@ export interface IChain {
   id: string;
   icon: string;
   networks: { name: string; id: string; icon: string }[];
-  currencies: { name: string; id: string; icon: string }[];
 }
 
-const CHAINS = config.chains.map((chain: IChain) => {
-  const networksClone = chain.networks.map(
-    (network: { name: string; id: string; icon: string }) => {
-      return { label: network.name, value: network.id, icon: network.icon };
-    },
-  );
+const CHAINS = Object.keys(config.chains).map((chainKey) => {
+  const chain = config.chains[chainKey];
+  const networksClone = Object.keys(chain.networks).map((networkKey) => {
+    const network = chain.networks[networkKey];
+    return { label: network.name, value: network.id, icon: network.icon };
+  });
 
   return {
     label: chain.name,

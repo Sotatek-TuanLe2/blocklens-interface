@@ -22,16 +22,9 @@ import {
 import { isMobile } from 'react-device-detect';
 import PartAddCard from './parts/PartAddCard';
 import FormCrypto from './parts/FormCrypto';
+import PartCheckout from './parts/PartCheckout';
 
-const planEnterprise = {
-  code: 'ENTERPRISE',
-  name: 'ENTERPRISE',
-  appLimitation: 'Custom',
-  notificationLimitation: 'Custom',
-  price: null,
-};
-
-const PAYMENT_METHOD = {
+export const PAYMENT_METHOD = {
   CARD: 'CARD',
   CRYPTO: 'CRYPTO',
 };
@@ -42,9 +35,9 @@ enum STEPS {
   CHECKOUT,
 }
 
-const paymentMethods = [
+export const paymentMethods = [
   {
-    name: 'Card',
+    name: 'Credit Card',
     code: PAYMENT_METHOD.CARD,
   },
   {
@@ -61,15 +54,6 @@ interface IPlanMobile {
 }
 
 const _renderPrice = (price: number | null) => {
-  if (price === null)
-    return (
-      <>
-        <AppLink className="link" to={'/contact-us'}>
-          Contact us
-        </AppLink>
-      </>
-    );
-
   if (price === 0) {
     return '$0';
   }
@@ -142,15 +126,13 @@ const BillingPage = () => {
   );
   const [planSelected, setPlanSelected] = useState<any>('');
   const [step, setStep] = useState<number>(STEPS.LIST);
-  const { myPlan: currentPlan, plans } = useSelector(
+  const { myPlan: currentPlan, plans: billingPlans } = useSelector(
     (state: RootState) => state.billing,
   );
 
   useEffect(() => {
     setPlanSelected(currentPlan.code);
   }, [currentPlan]);
-
-  const billingPlans = useMemo(() => [...plans, planEnterprise], [plans]);
 
   const _renderPlansDesktop = () => {
     const _renderBody = () => {
@@ -168,7 +150,9 @@ const BillingPage = () => {
                 <Td>
                   <Flex alignItems={'center'}>
                     {isActivePlan ? <RadioChecked /> : <RadioNoCheckedIcon />}
-                    <Box ml={3}>{plan.name}</Box>
+                    <Box ml={3} className="name-plan">
+                      {plan.name.toLowerCase()}
+                    </Box>
 
                     {isCurrentPlan && (
                       <Box ml={3} className={'box-current'}>
@@ -202,7 +186,9 @@ const BillingPage = () => {
 
     return (
       <TableContainer>
-        <Table colorScheme="gray">{_renderBody()}</Table>
+        <Table colorScheme="gray" className={'table-plan'}>
+          {_renderBody()}
+        </Table>
       </TableContainer>
     );
   };
@@ -229,16 +215,25 @@ const BillingPage = () => {
     return (
       <>
         <Box className="heading-title">Billing</Box>
-
         <AppCard className="list-table-wrap">
           <Box className={'text-title'}>Select Your Plan</Box>
-
           {isMobile ? _renderPlansMobile() : _renderPlansDesktop()}
-        </AppCard>
 
+          <Box
+            textAlign={'center'}
+            pt={isMobile ? 0 : 7}
+            pb={isMobile ? 5 : 0}
+            px={5}
+          >
+            For custom Enterprise plan with more Active Apps & messages/day, you
+            can{' '}
+            <AppLink to="/contact-us" className="link">
+              Contact Us
+            </AppLink>
+          </Box>
+        </AppCard>
         <AppCard className="box-payment-method" mt={7}>
           <Box className={'text-title'}>Payment Method</Box>
-
           {paymentMethods.map((item, index: number) => {
             return (
               <Flex
@@ -252,7 +247,6 @@ const BillingPage = () => {
                 ) : (
                   <RadioNoCheckedIcon />
                 )}
-
                 <Box ml={4}>{item.name}</Box>
               </Flex>
             );
@@ -274,37 +268,46 @@ const BillingPage = () => {
         if (paymentMethod === PAYMENT_METHOD.CARD) {
           return <PartAddCard onBack={onBackStep} onNext={onNextStep} />;
         }
-        return <FormCrypto onBack={onBackStep} />;
+        return (
+          <FormCrypto
+            planSelected={planSelected}
+            onBack={onBackStep}
+            onNext={onNextStep}
+          />
+        );
       case STEPS.CHECKOUT:
-        return <div>Billing Checkout</div>;
+        return (
+          <PartCheckout
+            planSelected={planSelected}
+            paymentMethodCode={paymentMethod}
+            onBack={onBackStep}
+          />
+        );
       default:
         return null;
     }
   };
 
+  const _renderButton = () =>
+    step === STEPS.LIST && (
+      <Flex justifyContent={isMobile ? 'center' : 'flex-end'}>
+        <AppButton
+          width={isMobile ? '100%' : 'auto'}
+          size="lg"
+          mt={7}
+          isDisabled={planSelected === 'FREE'}
+          onClick={() => setStep(STEPS.FORM)}
+        >
+          Continue
+        </AppButton>
+      </Flex>
+    );
+
   return (
     <BasePageContainer className="billing-page">
       <>
         {_renderContent()}
-
-        {step === STEPS.LIST && (
-          <Flex justifyContent={isMobile ? 'center' : 'flex-end'}>
-            {planSelected === 'ENTERPRISE' ? (
-              <AppButton size="md" mt={7}>
-                Contact Us
-              </AppButton>
-            ) : (
-              <AppButton
-                size="md"
-                mt={7}
-                isDisabled={planSelected === 'FREE'}
-                onClick={() => setStep(STEPS.FORM)}
-              >
-                Continue
-              </AppButton>
-            )}
-          </Flex>
-        )}
+        {_renderButton()}
       </>
     </BasePageContainer>
   );

@@ -4,12 +4,7 @@ import rf from 'src/requests/RequestFactory';
 import { useParams } from 'react-router';
 import 'src/styles/pages/AppDetail.scss';
 import { BasePageContainer } from 'src/layouts';
-import {
-  AppCard,
-  AppDataTable,
-  AppInput,
-  AppLink,
-} from 'src/components';
+import { AppCard, AppDataTable, AppInput, AppLink } from 'src/components';
 import {
   WEBHOOK_TYPES,
   optionsFilterMessage,
@@ -215,7 +210,7 @@ const MessagesHistory = () => {
             <AppLink to={`/app/${appId}/webhooks/${webhookId}`}>
               <Box className="icon-arrow-left" mr={6} />
             </AppLink>
-            <Box>Messages History</Box>
+            <Box className={'title-mobile'}>Messages History</Box>
           </Flex>
         </Flex>
 

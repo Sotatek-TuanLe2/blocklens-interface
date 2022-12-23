@@ -22,7 +22,7 @@ import { createValidator } from 'src/utils/utils-validator';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import {
-  getLogoChainByName,
+  getLogoChainByChainId,
   getNameChainByChainId,
 } from 'src/utils/utils-network';
 import { isMobile } from 'react-device-detect';
@@ -105,7 +105,7 @@ const AppSettings: FC<IAppSettings> = ({ onBack, appInfo, reloadData }) => {
             onClick={onBack}
             cursor="pointer"
           />
-          <Box>Setting</Box>
+          <Box className={'title-mobile'}>Settings</Box>
         </Flex>
 
         <Flex>
@@ -154,13 +154,13 @@ const AppSettings: FC<IAppSettings> = ({ onBack, appInfo, reloadData }) => {
           </AppField>
           <AppField label={'Chain'} customWidth={'24.5%'} isRequired>
             <Flex className="chain-app">
-              <Box className={getLogoChainByName(appInfo.chain)} mr={3} />
+              <Box className={getLogoChainByChainId(appInfo.chain)} mr={3} />
               <Box>{getNameChainByChainId(appInfo.chain)}</Box>
             </Flex>
           </AppField>
           <AppField label={'Network'} customWidth={'24.5%'} isRequired>
             <Flex className="chain-app">
-              <Box className={getLogoChainByName(appInfo.chain)} mr={3} />
+              <Box className={getLogoChainByChainId(appInfo.chain)} mr={3} />
               <Box textTransform="capitalize">
                 {appInfo.network.toLowerCase()}
               </Box>

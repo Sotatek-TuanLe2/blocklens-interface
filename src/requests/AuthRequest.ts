@@ -45,4 +45,9 @@ export default class AuthRequest extends BaseRequest {
     const url = '/my/users/password';
     return this.put(url, data);
   }
+
+  attachWalletAddress(data: { address: string; signature: string }) {
+    const url = '/my/users/wallet';
+    return this.put(url, data);
+  }
 }
