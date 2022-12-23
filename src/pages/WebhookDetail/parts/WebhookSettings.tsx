@@ -20,6 +20,7 @@ import ModalDeleteWebhook from 'src/modals/ModalDeleteWebhook';
 import { isMobile } from 'react-device-detect';
 import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
 import {
+  getLogoChainByChainId,
   getLogoChainByName,
   getNameChainByChainId,
 } from 'src/utils/utils-network';
@@ -129,7 +130,7 @@ const WebhookSettings: FC<IAppSettings> = ({
             onClick={onBack}
             cursor="pointer"
           />
-          <Box>Setting</Box>
+          <Box className={'title-mobile'}>Settings</Box>
         </Flex>
 
         <Flex>
@@ -174,7 +175,7 @@ const WebhookSettings: FC<IAppSettings> = ({
         <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
           <AppField label={'Network'} customWidth={'49%'}>
             <Flex className="chain-app">
-              <Box className={getLogoChainByName(appInfo.chain)} mr={3} />
+              <Box className={getLogoChainByChainId(appInfo.chain)} mr={3} />
               <Box>{getNameChainByChainId(appInfo.chain)}</Box>
               <Box textTransform="capitalize" ml={2}>
                 {appInfo.network.toLowerCase()}

@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import Storage from 'src/utils/storage';
+import Storage from 'src/utils/utils-storage';
 import rf from 'src/requests/RequestFactory';
 import { setAuthorizationToRequest } from 'src/utils/utils-auth';
 
@@ -14,6 +14,7 @@ interface IUserInfo {
   billingEmail?: string;
   balance?: number;
   stripePaymentMethod?: any;
+  walletAddress?: string;
 }
 
 interface AuthState {

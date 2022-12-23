@@ -18,6 +18,9 @@ import { ReactComponent as ArrowRightIcon } from './ArrowRightIcon.svg';
 import { ReactComponent as DownloadIcon } from './DownloadIcon.svg';
 import { ReactComponent as IconMenuMobile } from './IconMenuMoblie.svg';
 import { ReactComponent as CloseMenuIcon } from './CloseMenuIcon.svg';
+import { ReactComponent as ConnectWalletIcon } from './ConnectWalletIcon.svg';
+import { ReactComponent as WarningIcon } from './WarningIcon.svg';
+import { ReactComponent as DownloadBillingIcon } from './DownloadBillingIcon.svg';
 
 export {
   CalendarIcon,
@@ -40,4 +43,7 @@ export {
   DownloadIcon,
   IconMenuMobile,
   CloseMenuIcon,
+  ConnectWalletIcon,
+  WarningIcon,
+  DownloadBillingIcon,
 };

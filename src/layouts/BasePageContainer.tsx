@@ -21,7 +21,7 @@ const BasePageContainer: FC<IBasePageContainer> = ({ children, className }) => {
           marginTop={isMobile ? '50px' : '70px'}
           maxW={'1210px'}
           width={'full'}
-          px={5}
+          px={4}
         >
           <Box width={'full'}>{children}</Box>
         </Box>

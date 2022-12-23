@@ -3,7 +3,7 @@ import React from 'react';
 import { AppLink } from 'src/components';
 import { useHistory } from 'react-router';
 import 'src/styles/layout/Header.scss';
-import Storage from 'src/utils/storage';
+import Storage from 'src/utils/utils-storage';
 import { RootState } from 'src/store';
 import { useDispatch, useSelector } from 'react-redux';
 import {

@@ -1,0 +1,18 @@
+@import '../color-variables.scss';
+@import '../_mixins.scss';
+
+.app-alert {
+  @include text-medium-regular;
+  padding: 12px 16px;
+  background: rgba(255, 181, 71, 0.1);
+  border-radius: 8px;
+  color: $yellow;
+  align-items: center;
+  svg {
+    margin-right: 10px;
+    width: 18px;
+  }
+  div {
+    width: calc(100% - 30px);
+  }
+}
