@@ -12,37 +12,37 @@ export default class NotificationRequest extends BaseRequest {
   }
 
   getAppStats(appId: string, params: any) {
-    const url = `/my/stats/app/${appId}`;
+    const url = `/stats/app/${appId}`;
     return this.get(url, params);
   }
 
   getWebhookStats(registrationId: string, params: any) {
-    const url = `/my/stats/registration/${registrationId}`;
+    const url = `/stats/registration/${registrationId}`;
     return this.get(url, params);
   }
 
   getUserStats(params: any) {
-    const url = `/my/stats`;
+    const url = `/stats`;
     return this.get(url, params);
   }
 
   getAppStatsToday(appId: string) {
-    const url = `/my/stats/app/${appId}/metric-today`;
+    const url = `/stats/app/${appId}/metric-today`;
     return this.get(url);
   }
 
   getAppMetricToday(params: any) {
-    const url = `/my/stats/app/metric-today`;
+    const url = `/stats/app/metric-today`;
     return this.get(url, params);
   }
 
   getWebhookStatsToday(registrationId: string) {
-    const url = `/my/stats/registration/${registrationId}/metric-today`;
+    const url = `/stats/registration/${registrationId}/metric-today`;
     return this.get(url);
   }
 
   getUserStatsToday() {
-    const url = `/my/stats/metric-today`;
+    const url = `/stats/metric-today`;
     return this.get(url);
   }
 

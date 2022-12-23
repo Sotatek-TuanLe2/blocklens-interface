@@ -19,7 +19,11 @@ import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import ModalDeleteWebhook from 'src/modals/ModalDeleteWebhook';
 import { isMobile } from 'react-device-detect';
 import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
-import { getLogoChainByChainId, getNameChainByChainId } from 'src/utils/utils-network';
+import {
+  getLogoChainByChainId,
+  getLogoChainByName,
+  getNameChainByChainId,
+} from 'src/utils/utils-network';
 
 interface IAppSettings {
   onBack: () => void;
