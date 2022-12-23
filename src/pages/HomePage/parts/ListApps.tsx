@@ -93,7 +93,7 @@ const AppMobile: FC<IAppMobile> = ({ app }) => {
               className="info"
             >
               <Box>Message today</Box>
-              <Box className="value">--</Box>
+              <Box className="value">{app.messageToday}</Box>
             </Flex>
             <Flex
               justifyContent="space-between"
@@ -101,7 +101,7 @@ const AppMobile: FC<IAppMobile> = ({ app }) => {
               className="info"
             >
               <Box>Number of webhook</Box>
-              <Box className="value">--</Box>
+              <Box className="value">{app.totalWebhook}</Box>
             </Flex>
           </Box>
         )}
@@ -121,12 +121,53 @@ const ListApps: React.FC<IListApps> = ({
   const [openModalUpgradeCreateApp, setOpenModalUpgradeCreateApp] =
     useState<boolean>(false);
 
+  const getTotalWebhookEachApp = async (appIds: string) => {
+    try {
+      const res: any = await rf
+        .getRequest('AppRequest')
+        .getTotalWebhookEachApp({
+          appIds,
+        });
+      return res;
+    } catch (error) {
+      return error;
+    }
+  };
+
+  const getAppMetricToday = async (appIds: string) => {
+    try {
+      const res: any = await rf
+        .getRequest('NotificationRequest')
+        .getAppMetricToday({
+          appIds,
+        });
+      return res;
+    } catch (error) {
+      return error;
+    }
+  };
+
   const fetchDataTable: any = async (param: any) => {
     try {
-      const res: IListAppResponse = await rf
-        .getRequest('AppRequest')
-        .getListApp(param);
-      return res;
+      const res: any = await rf.getRequest('AppRequest').getListApp(param);
+      const appIds = res.docs.map((item: IAppResponse) => item?.appId) || [];
+      const appMetric = await getAppMetricToday(appIds.join(',').toString());
+      const totalWebhooks = await getTotalWebhookEachApp(
+        appIds.join(',').toString(),
+      );
+
+      const dataApps = res?.docs.map((app: IAppResponse, index: number) => {
+        return {
+          ...app,
+          totalWebhook: totalWebhooks[index].totalRegistration,
+          messageToday: appMetric[index].message,
+        };
+      });
+
+      return {
+        ...res,
+        docs: dataApps,
+      };
     } catch (error) {
       return error;
     }
@@ -197,8 +238,8 @@ const ListApps: React.FC<IListApps> = ({
             >
               <Td>{app.name}</Td>
               <Td>{_renderChainApp(app.chain, app.network.toLowerCase())}</Td>
-              <Td textAlign={'center'}>--</Td>
-              <Td textAlign={'center'}>--</Td>
+              <Td textAlign={'center'}>{app?.messageToday}</Td>
+              <Td textAlign={'center'}>{app?.totalWebhook}</Td>
               <Td textAlign={'right'}>{_renderStatus(app.status)}</Td>
             </Tr>
           );

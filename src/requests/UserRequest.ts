@@ -16,6 +16,11 @@ export default class UserRequest extends BaseRequest {
     return this.put(url, params);
   }
 
+  contactToAdmin(params: any) {
+    const url = `/public/users/contact`;
+    return this.post(url, params);
+  }
+
   updateNotificationFlag(params: any) {
     const url = `/my/users/notification`;
     return this.put(url, params);

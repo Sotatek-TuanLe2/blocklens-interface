@@ -6,8 +6,8 @@
     "googleClientId": "763245371014-3sb0h7slimmco6654lgfm5acmijlq0td.apps.googleusercontent.com"
   },
   "api": {
-    "baseUrlApi": "https://blocksniper.sotatek.works/api/blocklens-users",
-    "notificationsApi": "https://blocksniper.sotatek.works/api/blocklens-notifications"
+    "baseUrlApi": "https://blocksniper-api.sotatek.works/api/blocklens-users",
+    "notificationsApi": "https://blocksniper-api.sotatek.works/api/blocklens-notifications"
   },
   "defaultNetwork": "BSC",
   "defaultChainId": 56,

@@ -13,4 +13,6 @@ export interface IAppResponse {
   key: string;
   status: APP_STATUS;
   createdAt: number;
+  totalWebhook?: number;
+  messageToday?: number;
 }

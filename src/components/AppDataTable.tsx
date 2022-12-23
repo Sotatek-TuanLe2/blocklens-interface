@@ -27,6 +27,10 @@ export interface RequestParams {
   searchKey?: string;
   appId?: string;
   registrationId?: string;
+  method?: string;
+  address?: string;
+  tokenId?: string;
+  txHash?: string;
 }
 
 interface DataTableProps {
@@ -229,7 +233,7 @@ const AppDataTable = forwardRef(
         {isMobile ? (
           _renderTable()
         ) : (
-          <TableContainer>
+          <TableContainer overflowX="inherit"  overflowY="inherit">
             <Table colorScheme="gray">{_renderTable()}</Table>
           </TableContainer>
         )}

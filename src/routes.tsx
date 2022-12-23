@@ -27,9 +27,10 @@ import BillingPage from './pages/BillingPage';
 import AccountPage from './pages/AccountPage';
 import BillingInfoPage from './pages/BillingInfoPage';
 import LandingPage from './pages/LandingPage';
+import ContactUs from './pages/ContactUs';
+import BillingHistory from './pages/BillingHistoryPage';
 import ModalSubmittingTransaction from './modals/ModalSubmittingTransaction';
 import ModalFinishTransaction from './modals/ModalFinishTransaction';
-import BillingHistory from './pages/BillingHistoryPage';
 
 /**
  * Main App routes.
@@ -78,6 +79,7 @@ const Routes: FC<RouteComponentProps> = () => {
           component={MessagesHistory}
         />
         <PrivateRoute path={'/home'} component={HomePage} />
+        <Route path={'/contact-us'} component={ContactUs} />
         <PublicRoute path={'/'} component={LandingPage} />
       </Switch>
       <ModalSubmittingTransaction />
@@ -86,7 +88,7 @@ const Routes: FC<RouteComponentProps> = () => {
   );
 };
 
-const PublicRoute = ({ component: Component, ...rest }: any) => {
+const PublicRoute = ({ component: Component, path, ...rest }: any) => {
   const accessToken = Storage.getAccessToken();
 
   return (
