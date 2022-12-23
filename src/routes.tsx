@@ -28,6 +28,7 @@ import AccountPage from './pages/AccountPage';
 import BillingInfoPage from './pages/BillingInfoPage';
 import LandingPage from './pages/LandingPage';
 import ContactUs from './pages/ContactUs';
+import WebhookActivitiesPage from './pages/WebhookActivitiesPage';
 
 /**
  * Main App routes.
@@ -62,6 +63,10 @@ const Routes: FC<RouteComponentProps> = () => {
         <PrivateRoute path={'/billing'} component={BillingPage} />
         <PrivateRoute path={'/account'} component={AccountPage} />
         <PrivateRoute path={'/billing-info'} component={BillingInfoPage} />
+        <PrivateRoute
+          path={'/app/:appId/webhooks/:id/activities'}
+          component={WebhookActivitiesPage}
+        />
         <PrivateRoute
           path={'/app/:appId/webhooks/:id'}
           component={WebhookDetail}

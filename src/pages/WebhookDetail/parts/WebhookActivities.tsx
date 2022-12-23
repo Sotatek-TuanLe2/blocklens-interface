@@ -91,8 +91,7 @@ interface INotificationItemMobile {
 interface IWebhookActivities {
   registrationId: string;
   webhook: IWebhook;
-  onShowAll?: () => void;
-  isShowAll: boolean;
+  isShowAll?: boolean;
   appInfo: IAppResponse;
 }
 
@@ -502,7 +501,6 @@ const NotificationItem: FC<INotificationItem> = ({
 
 const WebhookActivities: FC<IWebhookActivities> = ({
   webhook,
-  onShowAll,
   isShowAll,
   appInfo,
 }) => {
@@ -515,6 +513,7 @@ const WebhookActivities: FC<IWebhookActivities> = ({
   const [isOpenFilterModal, setIsOpenFilterModal] = useState<boolean>(false);
   const { id: webhookId } = useParams<{ id: string }>();
   const [, updateState] = useState<any>();
+  const history = useHistory();
 
   const forceUpdate = useCallback(() => updateState({}), []);
 
@@ -694,7 +693,14 @@ const WebhookActivities: FC<IWebhookActivities> = ({
   const _renderLinkShowAll = () => {
     return (
       <Flex alignItems={'center'} className="view-all link">
-        <Box className="link" cursor={'pointer'} onClick={onShowAll} mr={2}>
+        <Box
+          className="link"
+          cursor={'pointer'}
+          onClick={() =>
+            history.push(`/app/${appInfo.appId}/webhooks/${webhookId}/activities`)
+          }
+          mr={2}
+        >
           View More Activity
         </Box>
         <ArrowRightIcon />
