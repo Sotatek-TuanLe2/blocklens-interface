@@ -219,7 +219,7 @@ const BillingPage = () => {
           <Box className={'text-title'}>Select Your Plan</Box>
           {isMobile ? _renderPlansMobile() : _renderPlansDesktop()}
 
-          <Box textAlign={'center'} pt={isMobile ? 0 : 7} pb={isMobile ? 5 : 0}>
+          <Box textAlign={'center'} pt={isMobile ? 0 : 7} pb={isMobile ? 5 : 0} px={5}>
             For custom Enterprise plan with more Active Apps & messages/day, you
             can{' '}
             <AppLink to="/contact-us" className="link">
@@ -275,6 +275,7 @@ const BillingPage = () => {
           <PartCheckout
             planSelected={planSelected}
             paymentMethodCode={paymentMethod}
+            onBack={onBackStep}
           />
         );
       default:

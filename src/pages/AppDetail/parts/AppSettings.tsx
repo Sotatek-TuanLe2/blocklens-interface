@@ -105,7 +105,7 @@ const AppSettings: FC<IAppSettings> = ({ onBack, appInfo, reloadData }) => {
             onClick={onBack}
             cursor="pointer"
           />
-          <Box>Setting</Box>
+          <Box className={'title-mobile'}>Settings</Box>
         </Flex>
 
         <Flex>
