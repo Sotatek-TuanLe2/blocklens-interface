@@ -4,6 +4,9 @@ import rf from 'src/requests/RequestFactory';
 import { useParams } from 'react-router';
 import { ListStat } from 'src/pages/HomePage/parts/PartUserStats';
 import moment from 'moment';
+import { formatLargeNumber } from 'src/utils/utils-helper';
+import { useSelector } from 'react-redux';
+import { RootState } from 'src/store';
 
 interface IAppStats {
   message?: number;
@@ -33,10 +36,17 @@ export const listStats = [
   },
 ];
 
-const PartAppStats = () => {
+const PartAppStats = ({
+  totalWebhookActive,
+}: {
+  totalWebhookActive?: number;
+}) => {
   const [appStats, setAppStats] = useState<IAppStats | any>({});
   const [dataChart, setDataChart] = useState<IAppStats[] | any>([]);
   const { id: appId } = useParams<{ id: string }>();
+  const { myPlan: currentPlan } = useSelector(
+    (state: RootState) => state.billing,
+  );
 
   const getAppStatsToday = useCallback(async () => {
     try {
@@ -71,6 +81,42 @@ const PartAppStats = () => {
 
   const dataAppStats = useMemo(() => {
     return listStats.map((item) => {
+      const getValue = (value?: number, total?: number) => {
+        if (!total) return '--';
+        if (!value) return `--/${formatLargeNumber(total)}`;
+        return `${formatLargeNumber(value)}/${formatLargeNumber(total)}`;
+      };
+
+      if (item.key === 'message') {
+        return {
+          ...item,
+          value: getValue(
+            +appStats.message,
+            currentPlan?.notificationLimitation,
+          ),
+        };
+      }
+
+      if (item.key === 'activities') {
+        return {
+          ...item,
+          value: `${formatLargeNumber(appStats.activities)}`,
+        };
+      }
+
+      if (item.key === 'successRate') {
+        return {
+          ...item,
+          value: +appStats.successRate || '--',
+        };
+      }
+
+      if (item.key === 'webhooks') {
+        return {
+          ...item,
+          value: getValue(totalWebhookActive, appStats.webhooks),
+        };
+      }
       return {
         ...item,
         value: appStats[item.key as keyStats],

@@ -29,34 +29,7 @@ const ModalFilterGraph: FC<IModalFilterGraph> = ({
   optionTimes,
   optionTypes,
 }) => {
-  const _renderFilterType = () => {
-    return (
-      <Box>
-        <Box className="label-filter"> Webhook Type</Box>
-        <Box className="list-option">
-          {optionTypes &&
-            optionTypes.map((item: IOption, index: number) => {
-              return (
-                <Box key={index}>
-                  <Checkbox
-                    mb={4}
-                    size="lg"
-                    value={item.value}
-                    isChecked={item.value === typeData}
-                    onChange={(e) => {
-                      e.preventDefault();
-                      onChangeType && onChangeType(item.value);
-                    }}
-                  >
-                    {item.label}
-                  </Checkbox>
-                </Box>
-              );
-            })}
-        </Box>
-      </Box>
-    );
-  };
+
   const _renderFilterTime = () => {
     return (
       <Box>
@@ -97,8 +70,6 @@ const ModalFilterGraph: FC<IModalFilterGraph> = ({
       onClose={onClose}
     >
       <Box mt={2}>
-        <Box>{_renderFilterType()}</Box>
-
         <Box>{_renderFilterTime()}</Box>
       </Box>
     </BaseModal>

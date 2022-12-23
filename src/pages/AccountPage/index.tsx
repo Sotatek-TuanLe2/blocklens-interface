@@ -9,6 +9,7 @@ import { AppCard } from 'src/components';
 import Notifications from './parts/Notifications';
 import AppConnectWalletButton from 'src/components/AppConnectWalletButton';
 import useUser from 'src/hooks/useUser';
+import { formatShortText } from '../../utils/utils-helper';
 
 const AccountPage = () => {
   const { user } = useUser();
@@ -19,7 +20,11 @@ const AccountPage = () => {
         <Flex justifyContent={'space-between'} mb={5} className="info-item">
           <Flex>
             <Box className={'label'}>Addresses:</Box>
-            <Box className={'value'}>{user.getLinkedAddress()}</Box>
+            <Box className={'value'}>
+              {isMobile
+                ? formatShortText(user.getLinkedAddress())
+                : user.getLinkedAddress()}
+            </Box>
           </Flex>
           {!isMobile && <Box className={'link'}>Unlink</Box>}
         </Flex>

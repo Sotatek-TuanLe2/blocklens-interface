@@ -4,6 +4,9 @@ import { isMobile } from 'react-device-detect';
 import AppStatistical, { keyStats } from 'src/components/AppStatistical';
 import rf from 'src/requests/RequestFactory';
 import moment from 'moment';
+import { useSelector } from 'react-redux';
+import { RootState } from 'src/store';
+import { formatLargeNumber } from 'src/utils/utils-helper';
 
 interface IUserStats {
   message?: number;
@@ -93,9 +96,16 @@ export const ListStat: FC<IListStat> = ({ dataStats, dataChart }) => {
   return <>{isMobile ? _renderStatsMobile() : _renderStatsDesktop()}</>;
 };
 
-const PartUserStats = () => {
+const PartUserStats = ({
+  totalWebhookActive,
+}: {
+  totalWebhookActive?: number;
+}) => {
   const [userStatsToday, setUserStatsToday] = useState<IUserStats | any>({});
   const [dataChart, setDataChart] = useState<IUserStats[] | any>([]);
+  const { myPlan: currentPlan } = useSelector(
+    (state: RootState) => state.billing,
+  );
 
   const getUserStatsToday = useCallback(async () => {
     try {
@@ -129,7 +139,44 @@ const PartUserStats = () => {
   }, []);
 
   const dataUserStatsToday = useMemo(() => {
+    const getValue = (value?: number, total?: number) => {
+      if (!total) return '--';
+      if (!value) return `--/${formatLargeNumber(total)}`;
+      return `${formatLargeNumber(value)}/${formatLargeNumber(total)}`;
+    };
+
     return listStats.map((item) => {
+      if (item.key === 'message') {
+        return {
+          ...item,
+          value: getValue(
+            +userStatsToday.message,
+            currentPlan?.notificationLimitation,
+          ),
+        };
+      }
+
+      if (item.key === 'successRate') {
+        return {
+          ...item,
+          value: +userStatsToday.successRate || '--',
+        };
+      }
+
+      if (item.key === 'activities') {
+        return {
+          ...item,
+          value: `${formatLargeNumber(userStatsToday.activities)}`,
+        };
+      }
+
+      if (item.key === 'webhooks') {
+        return {
+          ...item,
+          value: getValue(totalWebhookActive, userStatsToday.webhooks),
+        };
+      }
+
       return {
         ...item,
         value: userStatsToday[item.key as keyStats],
