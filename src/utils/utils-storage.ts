@@ -1,5 +1,5 @@
-import config from "src/config";
-import { WALLET_CONNECT } from "src/connectors";
+import config from 'src/config';
+import { WALLET_CONNECT } from 'src/connectors';
 
 const env = process.env.REACT_APP_ENV || 'prod';
 

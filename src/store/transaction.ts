@@ -19,18 +19,25 @@ export interface ITransactionParams {
 
 const initialState: ITransactionState = {
   openSubmittingTransactionModal: false,
-  openFinishTransactionModal: false
+  openFinishTransactionModal: false,
 };
 
 const GAS_LIMIT_BUFFER = 0.1;
 const DEFAULT_CONFIRMATION = 5;
 
-const createTransaction = async (
-  provider: any,
-  params: ITransactionParams
-) => {
-  const { contractAddress, abi, action, transactionArgs, overrides = {} } = params;
-  const contractWithSigner = new Contract(contractAddress, abi, new Web3Provider(provider).getSigner());
+const createTransaction = async (provider: any, params: ITransactionParams) => {
+  const {
+    contractAddress,
+    abi,
+    action,
+    transactionArgs,
+    overrides = {},
+  } = params;
+  const contractWithSigner = new Contract(
+    contractAddress,
+    abi,
+    new Web3Provider(provider).getSigner(),
+  );
   try {
     // Gas estimation
     const gasLimitNumber = await contractWithSigner.estimateGas[action](
@@ -50,20 +57,24 @@ const handleTransaction = createAsyncThunk(
   'transaction/handleTransaction',
   async (
     transactionParams: {
-      transaction: any,
-      provider: any,
-      confirmation?: number
+      transaction: any;
+      provider: any;
+      confirmation?: number;
     },
-    thunkApi
+    thunkApi,
   ) => {
     const { dispatch } = thunkApi;
-    const { transaction, provider, confirmation = DEFAULT_CONFIRMATION } = transactionParams;
+    const {
+      transaction,
+      provider,
+      confirmation = DEFAULT_CONFIRMATION,
+    } = transactionParams;
     try {
       if (transaction.hash) {
         dispatch(toggleSubmittingTransactionModal(true));
         const receipt = await new Web3Provider(provider).waitForTransaction(
           transaction.hash,
-          confirmation
+          confirmation,
         );
         dispatch(toggleSubmittingTransactionModal(false));
 
@@ -71,36 +82,40 @@ const handleTransaction = createAsyncThunk(
           dispatch(toggleFinishTransactionModal(true));
           toastSuccess({ message: 'Transaction completed successfully!' });
         } else {
-          toastError({ message: 'Transaction\'s gone wrong!' });
+          toastError({ message: "Transaction's gone wrong!" });
         }
       }
-    } catch (error) {
-
-    }
-  }
+    } catch (error) {}
+  },
 );
 
 export const executeTransaction = createAsyncThunk(
   'transaction/createTransaction',
   async (
     transactionParams: {
-      provider: any,
-      params: ITransactionParams,
-      confirmation?: number
+      provider: any;
+      params: ITransactionParams;
+      confirmation?: number;
     },
-    thunkApi
+    thunkApi,
   ) => {
     const { dispatch } = thunkApi;
-    const { provider, params, confirmation = DEFAULT_CONFIRMATION } = transactionParams;
+    const {
+      provider,
+      params,
+      confirmation = DEFAULT_CONFIRMATION,
+    } = transactionParams;
     try {
       const transaction = await createTransaction(provider, params);
-      await dispatch(handleTransaction({ transaction, provider, confirmation }));
+      await dispatch(
+        handleTransaction({ transaction, provider, confirmation }),
+      );
     } catch (error: any) {
       toastError({ message: error.data.message || error.message });
       console.log(error);
       throw new Error(error);
     }
-  }
+  },
 );
 
 export const transactionsSlice = createSlice({

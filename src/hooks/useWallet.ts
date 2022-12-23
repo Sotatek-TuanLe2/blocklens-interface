@@ -12,12 +12,16 @@ import {
   setIsConnecting,
   setNetwork,
   setOpenModalConnectWallet,
-  setProvider
+  setProvider,
 } from 'src/store/wallet';
 import config from 'src/config';
 import { getChainByChainId, switchNetwork } from 'src/utils/utils-network';
 import { useMemo } from 'react';
-import { checkWalletConnectProvider, IWallet, Wallet } from 'src/utils/utils-wallet';
+import {
+  checkWalletConnectProvider,
+  IWallet,
+  Wallet,
+} from 'src/utils/utils-wallet';
 import Storage from 'src/utils/utils-storage';
 import { toastError } from 'src/utils/utils-notify';
 import BaseConnector from 'src/connectors/BaseConnector';
@@ -45,7 +49,7 @@ const useWallet = (): ReturnType => {
     provider,
     address,
     balance,
-    openModalConnectWallet
+    openModalConnectWallet,
   } = useSelector((state: RootState) => state.wallet);
 
   const { user } = useUser();
@@ -61,14 +65,7 @@ const useWallet = (): ReturnType => {
     newWallet.setProvider(provider);
     newWallet.setBalance(balance);
     return newWallet;
-  }, [
-    network,
-    chainId,
-    connector,
-    provider,
-    address,
-    balance
-  ]);
+  }, [network, chainId, connector, provider, address, balance]);
 
   const _onChainChanged = async (hexChainId: string) => {
     const chainId = web3.utils.hexToNumber(hexChainId);
@@ -89,7 +86,13 @@ const useWallet = (): ReturnType => {
     const connectorId = Storage.getConnectorId() || '';
     const network = Storage.getNetwork();
     if (!connectorId) {
-      console.error('[onAccountedChange] throw warning: Not found connector', 'connectorId:', connectorId, 'network:', network,);
+      console.error(
+        '[onAccountedChange] throw warning: Not found connector',
+        'connectorId:',
+        connectorId,
+        'network:',
+        network,
+      );
       return;
     }
     await connectWallet(connectorId, network);
@@ -124,7 +127,9 @@ const useWallet = (): ReturnType => {
         return;
       }
       const signature = await connector.signMessage();
-      await rf.getRequest('AuthRequest').attachWalletAddress({ address, signature });
+      await rf
+        .getRequest('AuthRequest')
+        .attachWalletAddress({ address, signature });
       // reload user's info
       dispatch(getInfoUser());
     } catch (error: any) {
@@ -167,8 +172,7 @@ const useWallet = (): ReturnType => {
     } catch (error: any) {
       dispatch(setIsConnecting(false));
       disconnectWallet();
-      console.error(`[ConnectWallet] throw exception: ${error.message
-        }`, error);
+      console.error(`[ConnectWallet] throw exception: ${error.message}`, error);
       throw error;
     } finally {
       dispatch(setIsConnecting(false));
@@ -184,9 +188,11 @@ const useWallet = (): ReturnType => {
       return;
     }
     const connectorId = Storage.getConnectorId() || '';
-    const options = config.connectors[connectorId].options[network]
+    const options = config.connectors[connectorId].options[network];
     if (!options) {
-      toastError({ message: `This wallet does not support ${network} network` });
+      toastError({
+        message: `This wallet does not support ${network} network`,
+      });
       return;
     }
     return switchNetwork(network, new Web3Provider(provider));
@@ -211,7 +217,7 @@ const useWallet = (): ReturnType => {
     disconnectWallet,
     changeNetwork,
     reloadBalance,
-    toggleModalConnectWallet
+    toggleModalConnectWallet,
   };
 };
 

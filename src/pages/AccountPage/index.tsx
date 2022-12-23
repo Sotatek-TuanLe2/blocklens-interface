@@ -27,9 +27,7 @@ const AccountPage = () => {
     }
     return (
       <Flex justifyContent={'center'} my={isMobile ? 5 : 4}>
-        <AppConnectWalletButton>
-          Connect Wallet
-        </AppConnectWalletButton>
+        <AppConnectWalletButton>Connect Wallet</AppConnectWalletButton>
       </Flex>
     );
   };

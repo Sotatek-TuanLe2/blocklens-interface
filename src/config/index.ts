@@ -5,7 +5,7 @@ import dev from './dev.json';
 const env = process.env.REACT_APP_ENV || 'prod';
 const configs: any = {
   prod,
-  dev
+  dev,
 };
 const config: Config = configs[env];
 
@@ -24,7 +24,7 @@ interface Connector {
   mobile: boolean;
   deepLink: string;
   options: {
-    [key : string]: any
+    [key: string]: any;
   };
   extensionLink?: {
     chrome: string;
@@ -57,15 +57,15 @@ export interface Network {
     decimals: number;
   };
   currencies: {
-    [key : string]: Currency;
-  }
+    [key: string]: Currency;
+  };
 }
 
 export interface Chain {
   name: string;
   id: string;
   icon: string;
-  networks: {[key: string]: Network};
+  networks: { [key: string]: Network };
 }
 
 export interface TopUp {
@@ -89,19 +89,19 @@ export interface Config {
     publishableKey: string;
   };
   chains: {
-    [key: string]: Chain
+    [key: string]: Chain;
   };
   multicall: {
-    [key : string]: string;
-  },
+    [key: string]: string;
+  };
   topUp: {
-    [key : string]: TopUp;
-  },
+    [key: string]: TopUp;
+  };
   connectors: {
-    [key : string]: Connector;
-  }
+    [key: string]: Connector;
+  };
   networks: {
-    [key : string]: Network;
+    [key: string]: Network;
   };
 }
 

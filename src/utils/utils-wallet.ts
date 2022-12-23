@@ -108,9 +108,7 @@ export const shortenWalletAddress = (walletAddress: string) => {
   );
 };
 
-export const navigateToWalletInstallation = (
-  wallet: string,
-) => {
+export const navigateToWalletInstallation = (wallet: string) => {
   let walletInstallationURL = '';
   if (isChrome) {
     walletInstallationURL =
@@ -119,8 +117,7 @@ export const navigateToWalletInstallation = (
     walletInstallationURL =
       config.connectors[wallet].extensionLink?.firefox || '';
   } else if (isEdge) {
-    walletInstallationURL =
-      config.connectors[wallet].extensionLink?.edge || '';
+    walletInstallationURL = config.connectors[wallet].extensionLink?.edge || '';
   }
   if (!walletInstallationURL) {
     return;

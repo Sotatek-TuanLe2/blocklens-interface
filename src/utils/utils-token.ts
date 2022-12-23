@@ -26,13 +26,13 @@ export const isTokenApproved = async (
   network: string,
   currencyAddress: string,
   walletAddress: string,
-  contractAddress: string
+  contractAddress: string,
 ) => {
   const allowance = await getAllowance(
     network,
     currencyAddress,
     walletAddress,
-    contractAddress
+    contractAddress,
   );
   return new BigNumber(allowance).gt(0);
 };

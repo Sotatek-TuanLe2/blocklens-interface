@@ -73,7 +73,9 @@ const FormCrypto: FC<IFormCrypto> = ({ onBack, onNext, planSelected }) => {
 
   useEffect(() => {
     if (wallet?.getAddress()) {
-      const networkCurrencies = getNetworkByEnv(getChainConfig(wallet.getNework())).currencies;
+      const networkCurrencies = getNetworkByEnv(
+        getChainConfig(wallet.getNework()),
+      ).currencies;
       const defaultCurrency =
         networkCurrencies[Object.keys(networkCurrencies)[0]];
       setDataForm((prevState) => ({
@@ -130,7 +132,9 @@ const FormCrypto: FC<IFormCrypto> = ({ onBack, onNext, planSelected }) => {
     if (!wallet) {
       return [];
     }
-    const networkCurrencies = getNetworkByEnv(getChainConfig(wallet.getNework())).currencies;
+    const networkCurrencies = getNetworkByEnv(
+      getChainConfig(wallet.getNework()),
+    ).currencies;
     return Object.keys(networkCurrencies).map((currencyKey) => {
       const currency = networkCurrencies[currencyKey];
       return {
@@ -232,8 +236,12 @@ const FormCrypto: FC<IFormCrypto> = ({ onBack, onNext, planSelected }) => {
     if (!isCorrectAddress) {
       return (
         <AppAlertWarning>
-          <Box>You are connecting with different address: {wallet?.getAddress()}.</Box>
-          <Box>Please connect with linked address: {user?.getLinkedAddress()}.</Box>
+          <Box>
+            You are connecting with different address: {wallet?.getAddress()}.
+          </Box>
+          <Box>
+            Please connect with linked address: {user?.getLinkedAddress()}.
+          </Box>
         </AppAlertWarning>
       );
     }

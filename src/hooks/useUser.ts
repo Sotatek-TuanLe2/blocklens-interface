@@ -1,14 +1,14 @@
-import {useMemo} from "react";
-import {useSelector} from "react-redux";
-import {RootState} from "src/store";
-import {User, UserInterface} from "src/utils/utils-user";
+import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
+import { RootState } from 'src/store';
+import { User, UserInterface } from 'src/utils/utils-user';
 
 type ReturnType = {
   user: UserInterface | null;
 };
 
-const useUser = () : ReturnType => {
-  const {userInfo} = useSelector((state : RootState) => state.auth);
+const useUser = (): ReturnType => {
+  const { userInfo } = useSelector((state: RootState) => state.auth);
   const {
     userId,
     balance,
@@ -17,7 +17,7 @@ const useUser = () : ReturnType => {
     firstName,
     lastName,
     isEmailVerified,
-    walletAddress
+    walletAddress,
   } = userInfo;
 
   const user = useMemo(() => {
@@ -41,7 +41,7 @@ const useUser = () : ReturnType => {
     firstName,
     lastName,
     isEmailVerified,
-    walletAddress
+    walletAddress,
   ]);
 
   return { user };

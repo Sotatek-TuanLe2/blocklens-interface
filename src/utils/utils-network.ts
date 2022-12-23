@@ -44,8 +44,11 @@ export const getChainByChainId = (chainId: string | number): Chain | null => {
   const chainKey = chainKeys.find((chainKey) => {
     const chain = config.chains[chainKey];
     const networkKeys = Object.keys(chain.networks);
-    return networkKeys.some((networkKey) => String(chain.networks[networkKey].chainId) === String(chainId));
-  })
+    return networkKeys.some(
+      (networkKey) =>
+        String(chain.networks[networkKey].chainId) === String(chainId),
+    );
+  });
   if (!chainKey) {
     return null;
   }
@@ -64,20 +67,21 @@ export const getNetworkByEnv = (chain: Chain | null): Network => {
   const env = process.env.REACT_APP_ENV || 'prod';
   const networks: any = {
     ETH: {
-      prod: "MAINNET",
-      dev: "GOERLI"
+      prod: 'MAINNET',
+      dev: 'GOERLI',
     },
     BSC: {
-      prod: "MAINNET",
-      dev: "TESTNET"
+      prod: 'MAINNET',
+      dev: 'TESTNET',
     },
     POLYGON: {
-      prod: "MAINNET",
-      dev: "MUMBAI"
-    }
+      prod: 'MAINNET',
+      dev: 'MUMBAI',
+    },
   };
   const defaultChain = getChainConfig(config.defaultNetwork);
-  const defaultNetworkByEnv = defaultChain.networks[networks[defaultChain.id][env]];
+  const defaultNetworkByEnv =
+    defaultChain.networks[networks[defaultChain.id][env]];
   if (!chain) {
     return defaultNetworkByEnv;
   }
@@ -136,7 +140,9 @@ export const switchNetwork = async (
     // This error code indicates that the chain has not been added to MetaMask.
     // TODO: change 4902 to constant variable
     if (error.code === 4902 || error.code === -32603) {
-      toastError({ message: 'Please add this network to your wallet to continue' });
+      toastError({
+        message: 'Please add this network to your wallet to continue',
+      });
       return addNewNetwork(network, provider);
     }
     // 4001: User rejected to switch network
@@ -150,7 +156,8 @@ const addNewNetwork = (network: string, provider: JsonRpcProvider) => {
     if (!networkConfig) {
       return;
     }
-    const { chainId, name, nativeCurrency, rpcUrls, blockExplorer } = networkConfig;
+    const { chainId, name, nativeCurrency, rpcUrls, blockExplorer } =
+      networkConfig;
     return provider.send('wallet_addEthereumChain', [
       {
         chainId: `0x${chainId.toString(16)}`,

@@ -9,7 +9,7 @@ const rootReducer = combineReducers({
   auth,
   billing,
   wallet,
-  transaction
+  transaction,
 });
 
 const store = configureStore({

@@ -1,11 +1,13 @@
-import { Box } from "@chakra-ui/react";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "src/store";
-import { toggleSubmittingTransactionModal } from "src/store/transaction";
-import BaseModal from "./BaseModal";
+import { Box } from '@chakra-ui/react';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from 'src/store';
+import { toggleSubmittingTransactionModal } from 'src/store/transaction';
+import BaseModal from './BaseModal';
 
 const ModalSubmittingTransaction = () => {
-  const { openSubmittingTransactionModal } = useSelector((state: RootState) => state.transaction);
+  const { openSubmittingTransactionModal } = useSelector(
+    (state: RootState) => state.transaction,
+  );
   const dispatch = useDispatch();
 
   return (
