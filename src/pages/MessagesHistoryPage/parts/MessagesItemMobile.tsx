@@ -7,6 +7,7 @@ import { AppButton } from 'src/components';
 import ReactJson from 'react-json-view';
 import { StatusMessages } from './MessageItem';
 import { getBlockExplorerUrl } from 'src/utils/utils-network';
+import { Scrollbars } from 'react-custom-scrollbars';
 
 interface IMessagesItemMobile {
   message: IMessages;
@@ -76,29 +77,83 @@ const MessagesItemMobile: FC<IMessagesItemMobile> = ({
         <Box>
           <Box className="label-detail">input</Box>
           <Box className="content-detail">
-            <ReactJson
-              theme="monokai"
-              name={false}
-              src={message.input}
-              displayDataTypes={false}
-              collapsed={1}
-              shouldCollapse={false}
-              displayObjectSize={false}
-            />
+            <Scrollbars
+              style={{ width: '100%', height: 210 }}
+              autoHide
+              renderThumbVertical={({ style, ...props }: any) => (
+                <div
+                  style={{
+                    ...style,
+                    backgroundColor: '#8D91A5',
+                    borderRadius: '5px',
+                    cursor: 'pointer',
+                  }}
+                  {...props}
+                />
+              )}
+              renderThumbHorizontal={({ style, ...props }: any) => (
+                <div
+                  style={{
+                    ...style,
+                    backgroundColor: '#8D91A5',
+                    borderRadius: '5px',
+                    cursor: 'pointer',
+                  }}
+                  {...props}
+                />
+              )}
+            >
+              <ReactJson
+                theme="monokai"
+                name={false}
+                src={message.input}
+                displayDataTypes={false}
+                collapsed={1}
+                shouldCollapse={false}
+                displayObjectSize={false}
+              />
+            </Scrollbars>
           </Box>
         </Box>
         <Box>
           <Box className="label-detail">output</Box>
           <Box className="content-detail">
-            <ReactJson
-              name={false}
-              theme="monokai"
-              src={message.output}
-              displayDataTypes={false}
-              collapsed={1}
-              shouldCollapse={false}
-              displayObjectSize={false}
-            />
+            <Scrollbars
+              style={{ width: '100%', height: 210 }}
+              autoHide
+              renderThumbVertical={({ style, ...props }: any) => (
+                <div
+                  style={{
+                    ...style,
+                    backgroundColor: '#8D91A5',
+                    borderRadius: '5px',
+                    cursor: 'pointer',
+                  }}
+                  {...props}
+                />
+              )}
+              renderThumbHorizontal={({ style, ...props }: any) => (
+                <div
+                  style={{
+                    ...style,
+                    backgroundColor: '#8D91A5',
+                    borderRadius: '5px',
+                    cursor: 'pointer',
+                  }}
+                  {...props}
+                />
+              )}
+            >
+              <ReactJson
+                name={false}
+                theme="monokai"
+                src={message.output}
+                displayDataTypes={false}
+                collapsed={1}
+                shouldCollapse={false}
+                displayObjectSize={false}
+              />
+            </Scrollbars>
           </Box>
         </Box>
       </Box>
