@@ -6,7 +6,6 @@ import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
 import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
 import ListWebhook from './ListWebhook';
 import 'src/styles/pages/HomePage.scss';
-import { NoData } from 'src/assets/icons';
 import { isMobile } from 'react-device-detect';
 
 interface IListContract {
@@ -27,7 +26,7 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
   const _renderNoData = () => {
     return (
       <Flex className="box-create">
-        <NoData />
+        <Box className="icon-no-data" mb={4}/>
         Create your webhook to start experiencing Blocksniper with Contract
         Activity!
         <AppButton
