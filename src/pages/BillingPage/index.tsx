@@ -269,11 +269,12 @@ const BillingPage = () => {
   const onBackStep = () => setStep((prevState) => prevState - 1);
 
   const _renderContent = () => {
+    const isCardPaymentMethod = paymentMethod === PAYMENT_METHOD.CARD;
     switch (step) {
       case STEPS.LIST:
         return _renderStep1();
       case STEPS.FORM:
-        if (paymentMethod === PAYMENT_METHOD.CARD) {
+        if (isCardPaymentMethod) {
           return <PartAddCard onBack={onBackStep} onNext={onNextStep} />;
         }
         return (
@@ -288,7 +289,13 @@ const BillingPage = () => {
           <PartCheckout
             planSelected={planSelected}
             paymentMethodCode={paymentMethod}
-            onBack={onBackStep}
+            onBack={isCardPaymentMethod
+              ? onBackStep
+              : (
+                isSufficientBalance
+                  ? () => setStep(STEPS.LIST)
+                  : onBackStep
+              )}
           />
         );
       default:
@@ -322,10 +329,11 @@ const BillingPage = () => {
   };
 
   const onClickButton = () => {
-    if (!user) {
-      return;
+    if (paymentMethod === PAYMENT_METHOD.CRYPTO) {
+      setStep(isSufficientBalance ? STEPS.CHECKOUT : STEPS.FORM);
+    } else {
+      setStep(STEPS.FORM);
     }
-    setStep(isSufficientBalance ? STEPS.CHECKOUT : STEPS.FORM);
   };
 
   const _renderButton = () => {
