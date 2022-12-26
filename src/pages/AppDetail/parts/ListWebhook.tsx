@@ -124,11 +124,11 @@ const WebhookItem: FC<IWebhookItem> = ({ webhook, appInfo, type }) => {
           )
         }
       >
-        <Td>{formatShortText(webhook.registrationId)}</Td>
-        <Td>
+        <Td w="20%">{formatShortText(webhook.registrationId)}</Td>
+        <Td w="45%">
           <Box className="short-text">{webhook.webhook}</Box>
         </Td>
-        <Td>
+        <Td w="20%">
           {type === WEBHOOK_TYPES.ADDRESS_ACTIVITY ? (
             <>
               {webhook.metadata.addresses.length}{' '}
@@ -138,7 +138,7 @@ const WebhookItem: FC<IWebhookItem> = ({ webhook, appInfo, type }) => {
             '1 address'
           )}
         </Td>
-        <Td textAlign={'right'}>{_renderStatus(webhook.status)}</Td>
+        <Td w="15%" textAlign={'right'}>{_renderStatus(webhook.status)}</Td>
       </Tr>
     </Tbody>
   );
@@ -185,10 +185,10 @@ const ListWebhook: FC<IListWebhook> = ({
     return (
       <Thead className="header-list">
         <Tr>
-          <Th>ID</Th>
-          <Th>Webhook URL</Th>
-          <Th>Address</Th>
-          <Th textAlign={'right'}>Status</Th>
+          <Th w="20%">ID</Th>
+          <Th w="45%">Webhook URL</Th>
+          <Th w="20%">Address</Th>
+          <Th textAlign={'right'} w="15%">Status</Th>
         </Tr>
       </Thead>
     );

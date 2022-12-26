@@ -386,20 +386,26 @@ const NotificationItem: FC<INotificationItem> = ({
   );
 
   const _renderContentContract = () => {
-    return <Td textAlign="left">{notification?.metadata?.method}</Td>;
+    return <Td w="20%">{notification?.metadata?.method}</Td>;
   };
 
   const _renderContentNFT = () => {
     return (
       <>
-        {_renderContentContract()}
-        <Td textAlign="center">{notification?.metadata?.tokenId || '--'}</Td>
+        <Td w="13%">{notification?.metadata?.method}</Td>
+        <Td textAlign="center" w="10%">
+          {notification?.metadata?.tokenId || '--'}
+        </Td>
       </>
     );
   };
 
   const _renderContentAddress = () => {
-    return <Td>{formatShortText(notification?.metadata?.trackingAddress)}</Td>;
+    return (
+      <Td w="20%">
+        {formatShortText(notification?.metadata?.trackingAddress)}
+      </Td>
+    );
   };
 
   const _renderContentActivities = () => {
@@ -439,15 +445,17 @@ const NotificationItem: FC<INotificationItem> = ({
           );
         }}
       >
-        <Td>
+        <Td w="25%">
           {formatTimestamp(
             notification.createdAt * 1000,
             'YYYY-MM-DD HH:mm:ss',
           )}{' '}
           UTC
         </Td>
-        <Td>{notification.metadata?.tx?.blockNumber}</Td>
-        <Td>
+        <Td w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '12%' : '15%'}>
+          {notification.metadata?.tx?.blockNumber}
+        </Td>
+        <Td w="15%">
           <Flex alignItems="center">
             {formatShortText(notification.metadata?.tx?.transactionHash)}
             <Box ml={2}>
@@ -466,9 +474,11 @@ const NotificationItem: FC<INotificationItem> = ({
           </Flex>
         </Td>
         {_renderContentActivities()}
-        <Td>{_renderStatus(notification)}</Td>
-        <Td>
-          <Flex>
+        <Td w="15%" textAlign={'center'}>
+          {_renderStatus(notification)}
+        </Td>
+        <Td w="10%">
+          <Flex justifyContent={'center'}>
             {notification.status !== STATUS.DONE && (
               <Box
                 className="link-redirect"
@@ -531,32 +541,26 @@ const WebhookActivities: FC<IWebhookActivities> = ({
 
   const _renderHeader = () => {
     if (isMobile) return;
-    const _renderHeaderNFT = () => {
+
+    const _renderHeaderContract = () => {
       return (
-        <>
-          <Th>
-            <Flex alignItems="center">
-              method
-              {isShowAll && (
-                <Filter value={method} onChange={setMethod} type="method" />
-              )}
-            </Flex>
-          </Th>
-          <Th textAlign="center">
-            <Flex alignItems="center">
-              token id
-              {isShowAll && (
-                <Filter value={tokenId} onChange={setTokenId} type="token ID" />
-              )}
-            </Flex>
-          </Th>
-        </>
+        <Th
+          textAlign="center"
+          w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '13%' : '20%'}
+        >
+          <Flex alignItems="center">
+            method{' '}
+            {isShowAll && (
+              <Filter value={method} onChange={setMethod} type="method" />
+            )}
+          </Flex>
+        </Th>
       );
     };
 
     const _renderHeaderAddress = () => {
       return (
-        <Th>
+        <Th w="20%">
           <Flex alignItems="center">
             Address
             {isShowAll && (
@@ -567,16 +571,19 @@ const WebhookActivities: FC<IWebhookActivities> = ({
       );
     };
 
-    const _renderHeaderContract = () => {
+    const _renderHeaderNFT = () => {
       return (
-        <Th textAlign="center">
-          <Flex alignItems="center">
-            method{' '}
-            {isShowAll && (
-              <Filter value={method} onChange={setMethod} type="method" />
-            )}
-          </Flex>
-        </Th>
+        <>
+          {_renderHeaderContract()}
+          <Th textAlign="center" w="10%">
+            <Flex alignItems="center" justifyContent={'center'}>
+              token id
+              {isShowAll && (
+                <Filter value={tokenId} onChange={setTokenId} type="token ID" />
+              )}
+            </Flex>
+          </Th>
+        </>
       );
     };
 
@@ -595,9 +602,11 @@ const WebhookActivities: FC<IWebhookActivities> = ({
     return (
       <Thead className="header-list">
         <Tr>
-          <Th>Created At</Th>
-          <Th>Block</Th>
-          <Th>
+          <Th w="25%">Created At</Th>
+          <Th w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '12%' : '15%'}>
+            Block
+          </Th>
+          <Th w={'15%'}>
             <Flex alignItems="center">
               txn id{' '}
               {isShowAll && (
@@ -606,8 +615,8 @@ const WebhookActivities: FC<IWebhookActivities> = ({
             </Flex>
           </Th>
           {_renderHeaderActivities()}
-          <Th>
-            <Flex alignItems={'center'}>
+          <Th w="15%">
+            <Flex alignItems={'center'} justifyContent={'center'}>
               Status{' '}
               {isShowAll && (
                 <Filter
@@ -630,7 +639,7 @@ const WebhookActivities: FC<IWebhookActivities> = ({
               </Tooltip>
             </Flex>
           </Th>
-          <Th />
+          <Th w="10%" />
         </Tr>
       </Thead>
     );
@@ -697,7 +706,9 @@ const WebhookActivities: FC<IWebhookActivities> = ({
           className="link"
           cursor={'pointer'}
           onClick={() =>
-            history.push(`/app/${appInfo.appId}/webhooks/${webhookId}/activities`)
+            history.push(
+              `/app/${appInfo.appId}/webhooks/${webhookId}/activities`,
+            )
           }
           mr={2}
         >
