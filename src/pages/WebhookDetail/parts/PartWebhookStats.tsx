@@ -4,6 +4,7 @@ import rf from 'src/requests/RequestFactory';
 import { useParams } from 'react-router';
 import { ListStat } from 'src/pages/HomePage/parts/PartUserStats';
 import moment from 'moment';
+import { formatLargeNumber } from '../../../utils/utils-helper';
 
 interface IWebhookStats {
   message?: number;
@@ -71,6 +72,20 @@ const PartWebhookStats = () => {
 
   const dataWebhookStats = useMemo(() => {
     return listStats.map((item) => {
+      if (item.key === 'message') {
+        return {
+          ...item,
+          value: `${formatLargeNumber(webhookStats.message)}`,
+        };
+      }
+
+      if (item.key === 'activities') {
+        return {
+          ...item,
+          value: `${formatLargeNumber(webhookStats.activities)}`,
+        };
+      }
+
       if (item.key === 'successRate') {
         if (
           webhookStats.messagesFailed > 1 &&
