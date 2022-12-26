@@ -105,6 +105,16 @@ const PartAppStats = ({
       }
 
       if (item.key === 'successRate') {
+        if (
+          appStats.messagesFailed > 1 &&
+          appStats.messagesFailed === appStats.messagesSuccess
+        ) {
+          return {
+            ...item,
+            value: '0',
+          };
+        }
+
         return {
           ...item,
           value: +appStats.successRate || '--',

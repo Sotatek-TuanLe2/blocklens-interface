@@ -157,6 +157,16 @@ const PartUserStats = ({
       }
 
       if (item.key === 'successRate') {
+        if (
+          userStatsToday.messagesFailed > 1 &&
+          userStatsToday.messagesFailed === userStatsToday.messagesSuccess
+        ) {
+          return {
+            ...item,
+            value: '0',
+          };
+        }
+
         return {
           ...item,
           value: +userStatsToday.successRate || '--',
