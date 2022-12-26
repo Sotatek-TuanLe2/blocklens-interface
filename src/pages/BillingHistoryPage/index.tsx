@@ -8,7 +8,6 @@ import BillingItem from './parts/BillingItem';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { isMobile } from 'react-device-detect';
 import BillingItemMobile from './parts/BillingItemMobile';
-import { IAppResponse } from '../../utils/utils-app';
 
 const fileDownload = require('js-file-download');
 
