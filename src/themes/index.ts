@@ -6,6 +6,7 @@ import { appTextareaStyles } from 'src/components/AppTextarea';
 import { appSwitchStyles } from 'src/components/AppSwitch';
 import { cardStyles } from 'src/components/AppCard';
 import { appLinkStyles } from 'src/components/AppLink';
+import { appAccordionStyle } from 'src/components/AppAccordion';
 
 // Add your color mode config
 const config: ThemeConfig = {
@@ -24,5 +25,6 @@ export default extendTheme({
     Switch: appSwitchStyles,
     Card: cardStyles,
     Link: appLinkStyles,
+    Accordion: appAccordionStyle,
   },
 });

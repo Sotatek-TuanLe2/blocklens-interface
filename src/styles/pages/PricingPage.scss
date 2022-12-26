@@ -1,8 +1,12 @@
 @import '../color-variables.scss';
 @import '../mixins.scss';
 
+.landing-page {
+  background-image: url('../../assets/icons/bg-price-page.png');
+}
 .main-landing {
   padding-bottom: 50px;
+  font-family: 'Anderson Grotesk Light';
   .introduction {
     .price-text {
       max-width: 1128px;
@@ -16,6 +20,7 @@
         position: relative;
         overflow: hidden;
         max-width: 264px;
+        min-width: 264px;
         background: linear-gradient(
           180deg,
           rgba(255, 255, 255, 0) -24.6%,
@@ -108,6 +113,139 @@
       justify-content: center;
       margin-top: 60px;
       margin-bottom: 160px;
+    }
+    .plan-table {
+      margin-top: 60px;
+      margin-bottom: 160px;
+      border-radius: 16px;
+      backdrop-filter: blur(8px);
+      background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0) -24.6%,
+        rgba(34, 108, 255, 0.24) 100%
+      );
+      border: 1px solid rgba(34, 108, 255, 0.3);
+      filter: drop-shadow(0px 18px 24px rgba(136, 225, 220, 0.08));
+      box-shadow: 0px 20px 20px #88e1dc14;
+
+      .plan-row {
+        display: flex;
+        justify-content: center;
+        font-size: 18px;
+        border-bottom: 1px solid #3b528a;
+        &:first-child,
+        &:last-child {
+          border-bottom: none;
+        }
+        .name-plan-cell {
+          padding-left: 40px;
+          width: 28%;
+          min-height: 70px;
+          display: flex;
+          align-items: center;
+          justify-content: left;
+        }
+        .free-plan-cell,
+        .starter-plan-cell,
+        .growth-plan-cell,
+        .pro-plan-cell {
+          width: 18%;
+          flex: 1;
+          min-height: 70px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .title-plan {
+          color: #8d91a5;
+          font-size: 16px;
+        }
+        .active-plan {
+          color: $link;
+          display: flex;
+          align-items: center;
+          .icon-vector-right {
+            margin-left: 10px;
+          }
+          div {
+            &:hover {
+              text-decoration: underline;
+              cursor: pointer;
+            }
+          }
+        }
+      }
+    }
+    .button-network-wrap {
+      display: flex;
+      justify-content: center;
+      margin-top: 72px;
+      margin-bottom: 160px;
+      .button-network {
+        cursor: pointer;
+        text-align: center;
+        width: 156px;
+        background: linear-gradient(225deg, #226cff 14.89%, #1084ff 85.85%);
+        border-radius: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 12px 24px;
+        .icon-telegram {
+          margin-right: 10px;
+        }
+      }
+    }
+    .list-package-mobile {
+      margin-top: 40px;
+      margin-bottom: 120px;
+      overflow-x: scroll;
+      width: calc(100% + 24px);
+      &::-webkit-scrollbar {
+        display: none;
+      }
+      .package {
+        margin-right: 24px;
+      }
+    }
+    .list-plan-mobile {
+      margin-top: 40px;
+      margin-bottom: 120px;
+      .content-plan-wrap {
+        margin-bottom: 16px;
+        .content-plan-item {
+          &:first-child {
+            margin-top: 10px;
+          }
+          color: #ffffff99;
+          font-size: 16px;
+          display: flex;
+          align-items: center;
+          padding-bottom: 18px;
+
+          div.icon-tone {
+            margin-right: 13px;
+          }
+        }
+        .active-plan-btn {
+          margin-top: 6px;
+          color: $link;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-weight: 700;
+          font-size: 18px;
+          padding-bottom: 8px;
+          padding-top: 22px;
+          border-top: 1px dashed #5a74b280;
+
+          .icon-vector-right {
+            margin-left: 10px;
+          }
+        }
+      }
+    }
+    .network-support-mobile {
     }
   }
 }
