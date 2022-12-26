@@ -9,7 +9,8 @@ import { AppCard } from 'src/components';
 import Notifications from './parts/Notifications';
 import AppConnectWalletButton from 'src/components/AppConnectWalletButton';
 import useUser from 'src/hooks/useUser';
-import { formatShortText } from '../../utils/utils-helper';
+import { formatShortText } from 'src/utils/utils-helper';
+import TopUpHistory from './parts/TopUpHistory';
 import useWallet from 'src/hooks/useWallet';
 
 const AccountPage = () => {
@@ -73,6 +74,10 @@ const AccountPage = () => {
             </Flex>
             {_renderLinkedAccounts()}
           </AppCard>
+        </Box>
+
+        <Box mt={5}>
+          <TopUpHistory />
         </Box>
       </>
     </BasePageContainer>
