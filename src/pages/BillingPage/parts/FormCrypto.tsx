@@ -26,11 +26,12 @@ import { RootState } from 'src/store';
 import { ConnectWalletIcon } from 'src/assets/icons';
 import AppAlertWarning from 'src/components/AppAlertWarning';
 import { getChainConfig, getNetworkByEnv } from 'src/utils/utils-network';
+import { IPlan } from 'src/store/billing';
 
 interface IFormCrypto {
   onBack: () => void;
   onNext: () => void;
-  planSelected: string;
+  planSelected: IPlan;
 }
 
 interface IDataForm {
@@ -59,7 +60,6 @@ const FormCrypto: FC<IFormCrypto> = ({ onBack, onNext, planSelected }) => {
   const TOP_UP_APP_ID = 1; // used for blockSniper
   const TOP_UP_CONFIRMATIONS = 30;
 
-  const { plans } = useSelector((state: RootState) => state.billing);
   const [dataForm, setDataForm] = useState<IDataForm>(initialDataForm);
   const [topUpStatus, setTopUpStatus] = useState<number>(TOP_UP_STATUS.NONE);
   const [isCorrectAddress, setIsCorrectAddress] = useState<boolean>(true);
@@ -68,8 +68,6 @@ const FormCrypto: FC<IFormCrypto> = ({ onBack, onNext, planSelected }) => {
   const { wallet, changeNetwork } = useWallet();
   const { user } = useUser();
   const dispatch = useDispatch();
-
-  const newPlan = plans.find((item) => item.code === planSelected);
 
   useEffect(() => {
     if (wallet?.getAddress()) {
@@ -94,10 +92,10 @@ const FormCrypto: FC<IFormCrypto> = ({ onBack, onNext, planSelected }) => {
   }, [wallet?.getAddress(), user?.getLinkedAddress()]);
 
   useEffect(() => {
-    if (user?.getBalance() && newPlan) {
+    if (user?.getBalance() && planSelected) {
       if (
         new BigNumber(user.getBalance()).isGreaterThanOrEqualTo(
-          new BigNumber(newPlan.price || 0),
+          new BigNumber(planSelected.price || 0),
         )
       ) {
         setIsSufficientBalance(true);
