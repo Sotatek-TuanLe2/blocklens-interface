@@ -437,6 +437,7 @@ const CreateWebhook = () => {
         <AppField label={'Token ID'} customWidth={'49%'}>
           <AppInput
             size="lg"
+            placeholder={"20,21,22"}
             value={dataForm.tokenIds}
             onChange={(e) =>
               setDataForm({
