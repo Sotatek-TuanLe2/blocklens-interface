@@ -26,6 +26,24 @@ export const StatusBilling: FC<IStatusBilling> = ({ billing }) => {
   );
 };
 
+export const _renderMethodBilling = (billing: IBilling) => {
+  if (billing?.activePaymentMethod === 'CRYPTO') {
+    return 'Blocklens balance';
+  }
+
+  if (billing?.activePaymentMethod === 'STRIPE') {
+    return (
+      <Flex>
+        <Box textTransform="capitalize">
+          {billing?.stripePaymentMethod?.card?.brand}
+        </Box>
+        <Box ml={2}>{billing?.stripePaymentMethod?.card?.last4}</Box>
+      </Flex>
+    );
+  }
+  return '---';
+};
+
 const BillingItem: FC<IBillingItem> = ({ billing, onDownload, onRetry }) => {
   return (
     <Tbody>
@@ -34,7 +52,7 @@ const BillingItem: FC<IBillingItem> = ({ billing, onDownload, onRetry }) => {
 
         <Td>{billing.type}</Td>
         <Td>${billing.totalAmount}</Td>
-        <Td>--</Td>
+        <Td>{_renderMethodBilling(billing)}</Td>
         <Td>
           <StatusBilling billing={billing} />
         </Td>

@@ -3,7 +3,7 @@ import { Box, Flex } from '@chakra-ui/react';
 import { formatTimestamp } from 'src/utils/utils-helper';
 import { AppButton } from 'src/components';
 import { IBilling } from '../index';
-import { StatusBilling } from './BillingItem';
+import { StatusBilling, _renderMethodBilling } from './BillingItem';
 
 interface IBillingItemMobile {
   billing: IBilling;
@@ -72,7 +72,7 @@ const BillingItemMobile: FC<IBillingItemMobile> = ({
               className="info"
             >
               <Box>Method</Box>
-              <Box className="value">--</Box>
+              <Box className="value">{_renderMethodBilling(billing)}</Box>
             </Flex>
 
             <Flex flexWrap={'wrap'} my={2} justifyContent={'center'}>
