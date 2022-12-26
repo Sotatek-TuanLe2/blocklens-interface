@@ -4,13 +4,7 @@ import rf from 'src/requests/RequestFactory';
 import { useParams } from 'react-router';
 import 'src/styles/pages/AppDetail.scss';
 import { BasePageContainer } from 'src/layouts';
-import {
-  AppCard,
-  AppDataTable,
-  AppInput,
-  AppLink,
-  AppSelect2,
-} from 'src/components';
+import { AppCard, AppDataTable, AppInput, AppLink } from 'src/components';
 import {
   WEBHOOK_TYPES,
   optionsFilterMessage,
@@ -19,10 +13,11 @@ import {
 } from 'src/utils/utils-webhook';
 import MessageItem from './parts/MessageItem';
 import { toastError } from 'src/utils/utils-notify';
-import { FilterIcon } from 'src/assets/icons';
 import { isMobile } from 'react-device-detect';
 import MessagesItemMobile from './parts/MessagesItemMobile';
 import { filterParams } from 'src/utils/utils-helper';
+import { Filter } from 'src/pages/WebhookDetail/parts/WebhookActivities';
+import ModalFilterActivities from 'src/modals/ModalFilterActivities';
 
 const MessagesHistory = () => {
   const {
@@ -34,9 +29,14 @@ const MessagesHistory = () => {
     id: string;
     appId: string;
   }>();
-  const [valueSearch, setValueSearch] = useState<string>('');
-  const [valueFilter, setValueFilter] = useState<string>('');
+  const [search, setSearch] = useState<string>('');
+  const [status, setStatus] = useState<string>('');
+  const [method, setMethod] = useState<string>('');
+  const [txHash, setTxHash] = useState<string>('');
+  const [tokenId, setTokenId] = useState<string>('');
+  const [address, setAddress] = useState<string>('');
   const [webhook, setWebhook] = useState<IWebhook | any>({});
+  const [isOpenFilterModal, setIsOpenFilterModal] = useState<boolean>(false);
 
   const getWebhookInfo = useCallback(async () => {
     try {
@@ -74,17 +74,13 @@ const MessagesHistory = () => {
           <Th>
             <Flex alignItems="center">
               method{' '}
-              <Box ml={2} className="filter-table">
-                <FilterIcon />
-              </Box>
+              <Filter value={method} onChange={setMethod} type="method" />
             </Flex>
           </Th>
           <Th textAlign="center">
             <Flex alignItems="center">
               token id
-              <Box ml={2} className="filter-table">
-                <FilterIcon />
-              </Box>
+              <Filter value={tokenId} onChange={setTokenId} type="token ID" />
             </Flex>
           </Th>
         </>
@@ -96,9 +92,7 @@ const MessagesHistory = () => {
         <Th>
           <Flex alignItems="center">
             Address
-            <Box ml={2} className="filter-table">
-              <FilterIcon />
-            </Box>
+            <Filter value={address} onChange={setAddress} type="address" />
           </Flex>
         </Th>
       );
@@ -109,9 +103,7 @@ const MessagesHistory = () => {
         <Th textAlign="center">
           <Flex alignItems="center">
             method
-            <Box ml={2} className="filter-table">
-              <FilterIcon />
-            </Box>
+            <Filter value={method} onChange={setMethod} type="method" />
           </Flex>
         </Th>
       );
@@ -137,13 +129,21 @@ const MessagesHistory = () => {
           <Th>
             <Flex alignItems="center">
               txn id
-              <Box ml={2} className="filter-table">
-                <FilterIcon />
-              </Box>
+              <Filter value={txHash} onChange={setTxHash} type="txn ID" />
             </Flex>
           </Th>
           {_renderHeaderActivities()}
-          <Th>Status</Th>
+          <Th>
+            <Flex alignItems="center">
+              Status
+              <Filter
+                value={status}
+                onChange={setStatus}
+                type="status"
+                options={optionsFilterMessage}
+              />
+            </Flex>
+          </Th>
           <Th />
         </Tr>
       </Thead>
@@ -173,28 +173,23 @@ const MessagesHistory = () => {
   };
 
   const _renderBoxFilter = () => {
+    if (!isMobile) return <Box p={5} />;
     return (
       <Flex className="box-filter activities-all">
-        {!isMobile && (
-          <Box width={'150px'}>
-            <AppSelect2
-              onChange={setValueFilter}
-              options={optionsFilterMessage}
-              value={valueFilter}
-            />
-          </Box>
-        )}
-        <Box width={isMobile ? '85%' : '200px'}>
+        <Box width={'85%'}>
           <AppInput
             isSearch
             className={'input-search'}
             type="text"
             placeholder={'Search...'}
-            value={valueSearch}
-            onChange={(e) => setValueSearch(e.target.value.trim())}
+            value={search}
+            onChange={(e) => setSearch(e.target.value.trim())}
           />
         </Box>
-        {isMobile && <Box className="icon-filter-mobile" />}
+        <Box
+          className="icon-filter-mobile"
+          onClick={() => setIsOpenFilterModal(true)}
+        />
       </Flex>
     );
   };
@@ -215,7 +210,7 @@ const MessagesHistory = () => {
             <AppLink to={`/app/${appId}/webhooks/${webhookId}`}>
               <Box className="icon-arrow-left" mr={6} />
             </AppLink>
-            <Box>Messages History</Box>
+            <Box className={'title-mobile'}>Messages History</Box>
           </Flex>
         </Flex>
 
@@ -223,8 +218,12 @@ const MessagesHistory = () => {
           {_renderBoxFilter()}
           <AppDataTable
             requestParams={{
-              status: valueFilter,
-              search: valueSearch,
+              status,
+              search,
+              method,
+              address,
+              txHash,
+              tokenId,
             }}
             fetchData={fetchDataTable}
             renderBody={_renderBody}
@@ -232,6 +231,16 @@ const MessagesHistory = () => {
             limit={15}
           />
         </AppCard>
+
+        {isOpenFilterModal && (
+          <ModalFilterActivities
+            open={isOpenFilterModal}
+            value={status}
+            onClose={() => setIsOpenFilterModal(false)}
+            onChange={setStatus}
+            options={optionsFilterMessage}
+          />
+        )}
       </>
     </BasePageContainer>
   );

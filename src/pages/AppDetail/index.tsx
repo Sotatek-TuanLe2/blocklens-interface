@@ -18,7 +18,7 @@ import PartContractWebhooks from './parts/PartContractWebhooks';
 import { BasePageContainer } from 'src/layouts';
 import { AppButton, AppCard, AppLink } from 'src/components';
 import AppSettings from './parts/AppSettings';
-import { getLogoChainByName, isEVMNetwork } from 'src/utils/utils-network';
+import { getLogoChainByChainId, isEVMNetwork } from 'src/utils/utils-network';
 import { isMobile } from 'react-device-detect';
 import { APP_STATUS } from 'src/utils/utils-app';
 import PartAppGraph from './parts/PartAppGraph';
@@ -76,7 +76,10 @@ const AppDetail = () => {
             <Flex>
               {!isMobile && (
                 <Flex alignItems={'center'} className="box-network">
-                  <Box className={getLogoChainByName(appInfo.chain)} mr={2} />
+                  <Box
+                    className={getLogoChainByChainId(appInfo.chain)}
+                    mr={2}
+                  />
                   <Box textTransform="capitalize">
                     {appInfo.network.toLowerCase()}
                   </Box>
@@ -95,7 +98,9 @@ const AppDetail = () => {
             </Flex>
           </Flex>
 
-          <PartAppStatics />
+          <PartAppStatics
+            totalWebhookActive={appInfo?.totalRegistrationActive}
+          />
 
           <AppCard className="list-webhook">
             <Flex className={'title-list-app'} pt={0}>

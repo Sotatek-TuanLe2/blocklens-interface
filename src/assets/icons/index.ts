@@ -7,7 +7,6 @@ import { ReactComponent as FilterIcon } from './FilterIcon.svg';
 import { ReactComponent as InfoIcon } from './InfoIcon.svg';
 import { ReactComponent as RetryIcon } from './RetryIcon.svg';
 import { ReactComponent as ArrowDown } from './ArrowDown.svg';
-import { ReactComponent as NoData } from './NoData.svg';
 import { ReactComponent as CheckedIcon } from './CheckedIcon.svg';
 import { ReactComponent as RadioChecked } from './RadioChecked.svg';
 import { ReactComponent as RadioNoCheckedIcon } from './RadioNoCheckedIcon.svg';
@@ -18,6 +17,10 @@ import { ReactComponent as ArrowRightIcon } from './ArrowRightIcon.svg';
 import { ReactComponent as DownloadIcon } from './DownloadIcon.svg';
 import { ReactComponent as IconMenuMobile } from './IconMenuMoblie.svg';
 import { ReactComponent as CloseMenuIcon } from './CloseMenuIcon.svg';
+import { ReactComponent as ConnectWalletIcon } from './ConnectWalletIcon.svg';
+import { ReactComponent as WarningIcon } from './WarningIcon.svg';
+import { ReactComponent as DownloadBillingIcon } from './DownloadBillingIcon.svg';
+import { ReactComponent as LogoutIcon } from './LogoutIcon.svg';
 
 export {
   CalendarIcon,
@@ -29,7 +32,6 @@ export {
   RetryIcon,
   LinkDetail,
   ArrowDown,
-  NoData,
   EditIcon,
   CheckedIcon,
   RadioChecked,
@@ -40,4 +42,8 @@ export {
   DownloadIcon,
   IconMenuMobile,
   CloseMenuIcon,
+  ConnectWalletIcon,
+  WarningIcon,
+  DownloadBillingIcon,
+  LogoutIcon
 };

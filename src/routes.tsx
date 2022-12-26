@@ -13,7 +13,7 @@ import HomePage from './pages/HomePage';
 import SignUpPage from './pages/SignUpPage';
 import LoginPage from './pages/LoginPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
-import Storage from 'src/utils/storage';
+import Storage from 'src/utils/utils-storage';
 import AppDetail from './pages/AppDetail';
 import VerifyAccountPage from './pages/VerifyAccountPage';
 import { getInfoUser } from 'src/store/auth';
@@ -28,6 +28,11 @@ import AccountPage from './pages/AccountPage';
 import BillingInfoPage from './pages/BillingInfoPage';
 import LandingPage from './pages/LandingPage';
 import Pricing from './pages/LandingPage/Pricing';
+import ContactUs from './pages/ContactUs';
+import BillingHistory from './pages/BillingHistoryPage';
+import ModalSubmittingTransaction from './modals/ModalSubmittingTransaction';
+import ModalFinishTransaction from './modals/ModalFinishTransaction';
+import WebhookActivitiesPage from './pages/WebhookActivitiesPage';
 
 /**
  * Main App routes.
@@ -62,6 +67,11 @@ const Routes: FC<RouteComponentProps> = () => {
         <PrivateRoute path={'/billing'} component={BillingPage} />
         <PrivateRoute path={'/account'} component={AccountPage} />
         <PrivateRoute path={'/billing-info'} component={BillingInfoPage} />
+        <PrivateRoute path={'/billing-history'} component={BillingHistory} />
+        <PrivateRoute
+          path={'/app/:appId/webhooks/:id/activities'}
+          component={WebhookActivitiesPage}
+        />
         <PrivateRoute
           path={'/app/:appId/webhooks/:id'}
           component={WebhookDetail}
@@ -76,13 +86,16 @@ const Routes: FC<RouteComponentProps> = () => {
         />
         <PrivateRoute path={'/home'} component={HomePage} />
         <Route path={'/pricing'} component={Pricing} />
+        <Route path={'/contact-us'} component={ContactUs} />
         <PublicRoute path={'/'} component={LandingPage} />
       </Switch>
+      <ModalSubmittingTransaction />
+      <ModalFinishTransaction />
     </>
   );
 };
 
-const PublicRoute = ({ component: Component, ...rest }: any) => {
+const PublicRoute = ({ component: Component, path, ...rest }: any) => {
   const accessToken = Storage.getAccessToken();
 
   return (

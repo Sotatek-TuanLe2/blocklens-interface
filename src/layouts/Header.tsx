@@ -3,7 +3,7 @@ import React from 'react';
 import { AppLink } from 'src/components';
 import { useHistory } from 'react-router';
 import 'src/styles/layout/Header.scss';
-import Storage from 'src/utils/storage';
+import Storage from 'src/utils/utils-storage';
 import { RootState } from 'src/store';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -21,6 +21,7 @@ import { AppBroadcast } from 'src/utils/utils-broadcast';
 import ModalSignInRequest from 'src/modals/ModalSignInRequest';
 import { isMobile } from 'react-device-detect';
 import { CloseIcon } from '@chakra-ui/icons';
+import { LogoutIcon } from 'src/assets/icons';
 
 const menus = [
   {
@@ -159,7 +160,16 @@ const Header: FC = () => {
         onClose={() => setIsOpenSignInRequestModal(false)}
       />
 
-      {isOpenMenuMobile && <Box className="header-mobile">{_renderMenu()}</Box>}
+      {isOpenMenuMobile && (
+        <Box className="header-mobile">
+          {_renderMenu()}
+
+          <Flex className="btn-logout" onClick={onLogout}>
+            <LogoutIcon />
+            <Box>Log Out</Box>
+          </Flex>
+        </Box>
+      )}
     </Box>
   );
 };

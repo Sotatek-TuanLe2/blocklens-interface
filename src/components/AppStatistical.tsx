@@ -64,10 +64,12 @@ const AppStatistical: FC<IAppStatics> = ({
       <AppCard className="box-info">
         <Box className="label">{label}</Box>
         <Box className="value">
-          {value && +value > 0 ? value : '--'}
+          {value}
           {value && +value > 0 && isPercent ? '%' : ''}
         </Box>
-        <ChartStatics dataChart={dataChart} keyStat={keyStat} />
+        {keyStat !== 'webhooks' && (
+          <ChartStatics dataChart={dataChart} keyStat={keyStat} />
+        )}
       </AppCard>
     </>
   );

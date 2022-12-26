@@ -8,6 +8,9 @@
   padding-bottom: 50px;
   font-family: 'Anderson Grotesk Light';
   .introduction {
+    @include tablet {
+      padding-top: 108px;
+    }
     .price-text {
       max-width: 1128px;
     }
@@ -16,6 +19,18 @@
       display: flex;
       justify-content: space-between;
       margin-bottom: 160px;
+      @include tablet {
+        margin-top: 40px;
+        margin-bottom: 120px;
+        overflow-x: scroll;
+        width: calc(100% + 24px);
+        &::-webkit-scrollbar {
+          display: none;
+        }
+        .package {
+          margin-right: 24px;
+        }
+      }
       .package {
         position: relative;
         overflow: hidden;
@@ -113,6 +128,9 @@
       justify-content: center;
       margin-top: 60px;
       margin-bottom: 160px;
+      @include tablet {
+        margin-bottom: 120px;
+      }
     }
     .plan-table {
       margin-top: 60px;
@@ -180,12 +198,19 @@
       display: flex;
       justify-content: center;
       margin-top: 72px;
-      margin-bottom: 160px;
+      margin-bottom: 110px;
+
+      @include tablet {
+        margin-bottom: 70px;
+      }
       .button-network {
         cursor: pointer;
         text-align: center;
         width: 156px;
         background: linear-gradient(225deg, #226cff 14.89%, #1084ff 85.85%);
+        &:hover {
+          background: linear-gradient(225deg, #226cff 64.89%, #1084ff 95.85%);
+        }
         border-radius: 10px;
         display: flex;
         justify-content: center;
@@ -194,18 +219,6 @@
         .icon-telegram {
           margin-right: 10px;
         }
-      }
-    }
-    .list-package-mobile {
-      margin-top: 40px;
-      margin-bottom: 120px;
-      overflow-x: scroll;
-      width: calc(100% + 24px);
-      &::-webkit-scrollbar {
-        display: none;
-      }
-      .package {
-        margin-right: 24px;
       }
     }
     .list-plan-mobile {
@@ -244,8 +257,6 @@
           }
         }
       }
-    }
-    .network-support-mobile {
     }
   }
 }

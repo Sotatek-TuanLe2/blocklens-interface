@@ -3,7 +3,7 @@ import { Button, ButtonProps } from '@chakra-ui/react';
 import { mode } from '@chakra-ui/theme-tools';
 import { StyleProps } from '@chakra-ui/system';
 
-interface AppButtonProps extends ButtonProps {
+export interface AppButtonProps extends ButtonProps {
   variant?:
     | 'brand'
     | 'darkBrand'

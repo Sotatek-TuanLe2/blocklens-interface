@@ -31,7 +31,7 @@ export const optionsFilter = [
     value: STATUS.FAILED,
   },
   {
-    label: 'Retrying',
+    label: 'Processing',
     value: STATUS.PROCESSING,
   },
 ];

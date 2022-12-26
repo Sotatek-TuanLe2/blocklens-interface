@@ -41,7 +41,7 @@ const LIST_PACKAGE = [
   },
 ];
 
-const LIST_NETWORK_PLAN = [
+const LIST_NETWORK = [
   {
     name: 'Mainnet, Testnet',
     free: 'true',
@@ -189,7 +189,7 @@ const Pricing = () => {
           <div className="growth-plan-cell title-plan">GROWTH</div>
           <div className="pro-plan-cell title-plan">PROFESSIONAL</div>
         </div>
-        {LIST_NETWORK_PLAN.map((plan, index) => {
+        {LIST_NETWORK.map((plan, index) => {
           return (
             <div className="plan-row" key={`${index} plan`}>
               <div className="name-plan-cell">{plan.name}</div>
@@ -247,9 +247,7 @@ const Pricing = () => {
           <h1 className="introduction__main-text price-text">
             Industry-leading <span>plans</span>, built for everyone
           </h1>
-          <div
-            className={`list-package ${isMobile ? 'list-package-mobile' : ''}`}
-          >
+          <div className={`list-package`}>
             {LIST_PACKAGE.map((item, index) => {
               return (
                 <div className="package" key={`${index} package`}>

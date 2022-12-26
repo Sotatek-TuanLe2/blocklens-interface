@@ -11,7 +11,6 @@ export default class BillingRequest extends BaseRequest {
     return this.get(url);
   }
 
-
   updateBillingInfo(params: any) {
     const url = '/my/payment/billing-info';
     return this.put(url, params);
@@ -52,7 +51,7 @@ export default class BillingRequest extends BaseRequest {
     return this.download(url);
   }
 
-  payPendingInvoice(id: string) {
+  retryPendingInvoice(id: string) {
     const url = `/my/payment/invoice/${id}`;
     return this.put(url);
   }

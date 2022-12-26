@@ -15,6 +15,15 @@
     @include tablet {
       @include heading-7;
     }
+
+    .title-mobile {
+      @include tablet {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        width: max-content;
+      }
+    }
   }
 
   .box-network {
@@ -343,9 +352,44 @@
 }
 
 .filter-table {
+  position: relative;
   &:hover {
     cursor: pointer;
     color: $title;
+  }
+
+  &.active {
+    color: $title;
+  }
+
+  &__box-search, &__options {
+    background-color: #2f3b58;
+    padding: 14px 10px;
+    border-radius: 6px;
+    position: absolute;
+    width: 200px;
+    top: 150%;
+
+    .input-search {
+      background-color: #2f3b58;
+      @include text-small-regular;
+      padding: 6px 10px;
+      height: 32px;
+    }
+  }
+
+  &__options {
+    padding: 14px 0;
+    text-transform: capitalize;
+  }
+
+  &__option {
+    @include text-small-regular;
+    padding: 8px 10px;
+
+    &.active {
+      background: linear-gradient(268.85deg, #226CFF 22.48%, #1084FF 83.59%);
+    }
   }
 }
 

@@ -78,6 +78,10 @@ iframe {
   &[data-focus] {
     box-shadow: none !important;
   }
+
+  svg {
+    color: $title;
+  }
 }
 
 .chakra-checkbox__label {

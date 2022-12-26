@@ -23,7 +23,7 @@ deploy-dev:
 	echo "Deploy client finished!"
 	aws cloudfront create-invalidation \
         --distribution-id E38UEYF6YP6HN1 \
-        --paths "/" "/js/app.js" "/css/app.css" "/index.css"
+        --paths "/*"
 
 
 deploy-prod:
@@ -36,4 +36,4 @@ deploy-prod:
 	echo "Deploy client finished!"
 	aws cloudfront create-invalidation \
         --distribution-id E1M4ONVP5M6DSW \
-        --paths "/" "/js/app.js" "/css/app.css" "/index.css"
+        --paths "/*"

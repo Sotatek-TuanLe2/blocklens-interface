@@ -26,6 +26,18 @@
       }
     }
 
+    .table-plan {
+      td {
+        color: $paragraph;
+
+        .name-plan {
+          @include text-medium-bold;
+          color: $title;
+          text-transform: capitalize;
+        }
+      }
+    }
+
     .tr-list {
       svg {
         color: $line;
@@ -34,6 +46,10 @@
       &.active {
         svg {
           color: $green;
+        }
+
+        td {
+          color: $title;
         }
       }
 
@@ -109,6 +125,9 @@
 
       @include tablet {
         @include heading-7;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
       }
     }
 
@@ -124,6 +143,140 @@
 
       .app-select__btn-select {
         background-color: $bg2;
+      }
+    }
+
+    .box-connect-wallet {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 70vh;
+
+      &__description {
+        @include text-large-regular;
+        color: $paragraph;
+        max-width: 400px;
+        text-align: center;
+        margin: 28px 0 40px 0;
+
+        @include tablet {
+          @include text-medium-regular;
+          margin: 24px 0 40px 0;
+        }
+      }
+
+      svg {
+        @include tablet {
+          width: 130px;
+          height: auto;
+        }
+      }
+
+      button {
+        width: max-content;
+      }
+    }
+
+    .amount-options {
+      margin-left: -200px;
+
+      @include tablet {
+        margin-left: -140px;
+      }
+
+      .amount-option {
+        @include text-medium-regular;
+        padding: 4px 16px;
+        background-color: $disable;
+        margin-left: 6px;
+        border-radius: 6px;
+        border: 1px solid $disable;
+        color: $paragraph;
+        cursor: pointer;
+
+        @include tablet {
+          @include text-small-regular;
+          padding: 4px 8px;
+        }
+
+        &.active {
+          background: rgba(3, 202, 255, 0.14);
+          border: 1px solid $link;
+          color: $link;
+        }
+      }
+    }
+  }
+
+  .billing-checkout {
+    &__bill {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      max-width: 430px;
+      margin: 0 auto;
+
+      @include tablet {
+        max-width: 343px;
+      }
+    }
+
+    &__bill-info {
+      background-image: url('../../assets/icons/bg-billing.png');
+      padding: 50px;
+      background-repeat: no-repeat;
+      width: 100%;
+
+      @include tablet {
+        padding: 34px;
+        background-image: url('../../assets/icons/bg-billing-mobile.png');
+      }
+    }
+
+    &__payment-method {
+      padding-bottom: 30px;
+      border-bottom: 1px dashed #2f3b58;
+      .title {
+        @include text-medium-bold;
+        color: $line;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+      }
+
+      .type {
+        @include text-medium-regular;
+        color: $paragraph;
+      }
+    }
+
+    &__order {
+      margin-top: 30px;
+      margin-bottom: 40px;
+      @include tablet {
+        margin-bottom: 60px;
+      }
+
+      .title {
+        @include text-medium-bold;
+        color: $line;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+      }
+      .name-plan {
+        @include text-large-bold;
+        margin-bottom: 4px;
+      }
+
+      .info {
+        @include text-medium-regular;
+        align-items: center;
+        margin-top: 10px;
+        svg {
+          color: $green;
+          margin-right: 12px;
+        }
       }
     }
   }
