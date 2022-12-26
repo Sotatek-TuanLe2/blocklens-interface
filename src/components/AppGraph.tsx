@@ -18,13 +18,13 @@ interface IChart {
 }
 
 const AppGraph: FC<IChart> = ({ data, duration }) => {
-  const [lineHide, setLineHide] = useState<string[]>([]);
+  const [lineHide, setLineHide] = useState<string>('activities');
   const dataChart = useMemo(() => {
     if (duration === '24h') {
       return data.map((item: any) => {
         return {
           ...item,
-          label: formatTimestamp(item.time, 'HH'),
+          label: formatTimestamp(item.time, 'hh:mm A'),
         };
       });
     }
@@ -36,10 +36,6 @@ const AppGraph: FC<IChart> = ({ data, duration }) => {
       };
     });
   }, [duration, data]);
-
-  const checkIsShowLine = (type: string) => {
-    return !lineHide.some((item) => item === type);
-  };
 
   return (
     <Box height={isMobile ? '400px' : '500px'} px={isMobile ? 0 : 5}>
@@ -55,10 +51,10 @@ const AppGraph: FC<IChart> = ({ data, duration }) => {
             bottom: 5,
           }}
         >
-          <XAxis dataKey="label" tick={{ fill: '#B4B7BD' }} />
+          <XAxis dataKey="label" interval={3} tick={{ fill: '#B4B7BD' }} />
           <YAxis tick={{ fill: '#B4B7BD' }} axisLine={false} />
           <Tooltip />
-          {checkIsShowLine('message') && (
+          {lineHide === 'message' && (
             <Line
               name="Numbers of messages"
               dataKey="message"
@@ -68,7 +64,7 @@ const AppGraph: FC<IChart> = ({ data, duration }) => {
             />
           )}
 
-          {checkIsShowLine('activities') && (
+          {lineHide === 'activities' && (
             <Line
               dot={{ r: isMobile ? 2 : 4 }}
               strokeWidth={2}
@@ -83,32 +79,29 @@ const AppGraph: FC<IChart> = ({ data, duration }) => {
 
       <Flex my={5} className={'legend'}>
         <Box
-          className={!checkIsShowLine('message') ? 'hide' : ''}
+          className={`${lineHide === 'message' ? 'hide' : ''} activities`}
           onClick={() => {
-            if (!checkIsShowLine('message')) {
-              const newLineHide = lineHide.filter((item) => item !== 'message');
-              setLineHide(newLineHide);
+            if (lineHide === 'message') {
+              setLineHide('activities');
               return;
             }
-            setLineHide([...lineHide, 'message']);
-          }}
-        >
-          Numbers of messages
-        </Box>
-        <Box
-          className={!checkIsShowLine('activities') ? 'hide' : ''}
-          onClick={() => {
-            if (!checkIsShowLine('activities')) {
-              const newLineHide = lineHide.filter(
-                (item) => item !== 'activities',
-              );
-              setLineHide(newLineHide);
-              return;
-            }
-            setLineHide([...lineHide, 'activities']);
+            setLineHide('message');
           }}
         >
           Numbers of activities
+        </Box>
+
+        <Box
+          className={`${lineHide === 'activities' ? 'hide' : ''} message`}
+          onClick={() => {
+            if (lineHide === 'activities') {
+              setLineHide('message');
+              return;
+            }
+            setLineHide('activities');
+          }}
+        >
+          Numbers of messages
         </Box>
       </Flex>
     </Box>
