@@ -77,7 +77,7 @@ const MessagesHistory = () => {
               <Filter value={method} onChange={setMethod} type="method" />
             </Flex>
           </Th>
-          <Th textAlign="center" w="10%">
+          <Th textAlign="center" w="13%">
             <Flex alignItems="center" justifyContent='center'>
               token id
               <Filter value={tokenId} onChange={setTokenId} type="token ID" />
@@ -89,7 +89,7 @@ const MessagesHistory = () => {
 
     const _renderHeaderAddress = () => {
       return (
-        <Th w="20%">
+        <Th w="15%">
           <Flex alignItems="center">
             Address
             <Filter value={address} onChange={setAddress} type="address" />
@@ -100,7 +100,7 @@ const MessagesHistory = () => {
 
     const _renderHeaderContract = () => {
       return (
-        <Th textAlign="center" w="20%">
+        <Th textAlign="center" w="15%">
           <Flex alignItems="center">
             method
             <Filter value={method} onChange={setMethod} type="method" />
@@ -126,14 +126,14 @@ const MessagesHistory = () => {
         <Tr>
           <Th w="25%">Created At</Th>
           <Th w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '12%' : '15%'}>Block</Th>
-          <Th w="15%">
+          <Th w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '15%' : '20%'}>
             <Flex alignItems="center">
               txn id
               <Filter value={txHash} onChange={setTxHash} type="txn ID" />
             </Flex>
           </Th>
           {_renderHeaderActivities()}
-          <Th w="15%">
+          <Th w="12%">
             <Flex alignItems="center">
               Status
               <Filter
