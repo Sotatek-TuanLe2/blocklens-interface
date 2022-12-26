@@ -194,11 +194,17 @@ const ListApps: React.FC<IListApps> = ({
     return (
       <Thead className="header-list">
         <Tr>
-          <Th>NAME</Th>
-          <Th>NETWORK</Th>
-          <Th textAlign={'center'}>Messages today</Th>
-          <Th textAlign={'center'}>number of webhook</Th>
-          <Th textAlign={'right'}>Status</Th>
+          <Th w="25%">NAME</Th>
+          <Th w="20%">NETWORK</Th>
+          <Th w="20%" textAlign={'center'}>
+            Messages today
+          </Th>
+          <Th w="20%" textAlign={'center'}>
+            number of webhook
+          </Th>
+          <Th w="15%" textAlign={'right'}>
+            Status
+          </Th>
         </Tr>
       </Thead>
     );
@@ -225,11 +231,11 @@ const ListApps: React.FC<IListApps> = ({
               className="tr-list"
               onClick={() => history.push(`/apps/${app.appId}`)}
             >
-              <Td>{app.name}</Td>
-              <Td>{_renderChainApp(app.chain, app.network.toLowerCase())}</Td>
-              <Td textAlign={'center'}>{app?.messageToday}</Td>
-              <Td textAlign={'center'}>{app?.totalWebhook}</Td>
-              <Td textAlign={'right'}>{_renderStatus(app.status)}</Td>
+              <Td w="25%">{app.name}</Td>
+              <Td w="20%">{_renderChainApp(app.chain, app.network.toLowerCase())}</Td>
+              <Td w="20%" textAlign={'center'}>{app?.messageToday}</Td>
+              <Td w="20%" textAlign={'center'}>{app?.totalWebhook}</Td>
+              <Td w="15%" textAlign={'right'}>{_renderStatus(app.status)}</Td>
             </Tr>
           );
         })}
@@ -240,8 +246,7 @@ const ListApps: React.FC<IListApps> = ({
   const _renderTotalApp = () => {
     return (
       <Box className="number-app">
-        <Text as={'span'}>Active Apps:</Text> {totalAppActive}/
-        {totalApps}
+        <Text as={'span'}>Active Apps:</Text> {totalAppActive}/{totalApps}
       </Box>
     );
   };
