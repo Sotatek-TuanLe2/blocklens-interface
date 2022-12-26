@@ -478,7 +478,7 @@ const NotificationItem: FC<INotificationItem> = ({
           {_renderStatus(notification)}
         </Td>
         <Td w="10%">
-          <Flex justifyContent={'center'}>
+          <Flex justifyContent={'flex-end'}>
             {notification.status !== STATUS.DONE && (
               <Box
                 className="link-redirect"
