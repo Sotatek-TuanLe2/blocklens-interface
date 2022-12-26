@@ -50,4 +50,9 @@ export default class AuthRequest extends BaseRequest {
     const url = '/my/users/wallet';
     return this.put(url, data);
   }
+
+  unlinkWallet() {
+    const url = '/my/users/unlink-wallet';
+    return this.put(url);
+  }
 }

@@ -10,9 +10,11 @@ import Notifications from './parts/Notifications';
 import AppConnectWalletButton from 'src/components/AppConnectWalletButton';
 import useUser from 'src/hooks/useUser';
 import { formatShortText } from '../../utils/utils-helper';
+import useWallet from 'src/hooks/useWallet';
 
 const AccountPage = () => {
   const { user } = useUser();
+  const { unlinkWallet } = useWallet();
 
   const _renderLinkedAccounts = () => {
     if (user?.getLinkedAddress()) {
@@ -26,7 +28,7 @@ const AccountPage = () => {
                 : user.getLinkedAddress()}
             </Box>
           </Flex>
-          {!isMobile && <Box className={'link'}>Unlink</Box>}
+          {!isMobile && <Box className={'link'} onClick={unlinkWallet}>Unlink</Box>}
         </Flex>
       );
     }
@@ -67,7 +69,7 @@ const AccountPage = () => {
               <Box className="info-item">
                 <Box className="title">Linked Accounts</Box>
               </Box>
-              {isMobile && <Box className={'link'}>Unlink</Box>}
+              {isMobile && <Box className={'link'} onClick={unlinkWallet}>Unlink</Box>}
             </Flex>
             {_renderLinkedAccounts()}
           </AppCard>

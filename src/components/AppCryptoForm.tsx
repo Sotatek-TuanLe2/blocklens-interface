@@ -20,7 +20,7 @@ interface IAppCryptoForm {
 }
 
 const AppCryptoForm: FC<IAppCryptoForm> = (props) => {
-  const { wallet, changeNetwork } = useWallet();
+  const { wallet, isUserLinked, changeNetwork } = useWallet();
   const { user } = useUser();
   const { currencyAddress, amount, onChangeCurrencyAddress, onChangeAmount } = props;
 
@@ -64,7 +64,7 @@ const AppCryptoForm: FC<IAppCryptoForm> = (props) => {
   }, [wallet?.getNework()]);
 
   const _renderCryptoForm = () => {
-    if (!wallet || !user) {
+    if (!wallet || !user || !isUserLinked) {
       return null;
     }
     if (wallet.getAddress() !== user.getLinkedAddress()) {

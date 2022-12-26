@@ -32,7 +32,7 @@ const TopUpPage = () => {
   const [dataForm, setDataForm] = useState<IDataForm>(initialDataForm);
   const [isBeingToppedUp, setIsBeingToppedUp] = useState<boolean>(false);
 
-  const { wallet } = useWallet();
+  const { wallet, isUserLinked } = useWallet();
   const { topUp } = useTopUp();
   const history = useHistory();
 
@@ -104,19 +104,19 @@ const TopUpPage = () => {
           <Box className="icon-arrow-left" mr={6} onClick={onBack} />
           <Box className={'sub-title'}>Top Up</Box>
         </Flex>
-        {wallet ? (
-          _renderWalletInfo()
-        ) : (
-          <AppCard className="box-connect-wallet">
-            <ConnectWalletIcon />
-            <Box className="box-connect-wallet__description">
-              Connect wallet to top up your balance amount.
-            </Box>
-            <AppConnectWalletButton width={'100%'} size="lg">
-              Connect Wallet
-            </AppConnectWalletButton>
-          </AppCard>
-        )}
+        {wallet && isUserLinked
+          ? _renderWalletInfo()
+          : (
+            <AppCard className="box-connect-wallet">
+              <ConnectWalletIcon />
+              <Box className="box-connect-wallet__description">
+                Connect wallet to top up your balance amount.
+              </Box>
+              <AppConnectWalletButton width={'100%'} size="lg">
+                Connect Wallet
+              </AppConnectWalletButton>
+            </AppCard>
+          )}
       </Box>
     </BasePageContainer>
   );

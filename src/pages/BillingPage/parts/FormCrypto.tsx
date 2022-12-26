@@ -47,7 +47,7 @@ const FormCrypto: FC<IFormCrypto> = ({ onBack, onNext, planSelected }) => {
   const [topUpStatus, setTopUpStatus] = useState<number>(TOP_UP_STATUS.NONE);
   const [isSufficientBalance, setIsSufficientBalance] =
     useState<boolean>(false);
-  const { wallet } = useWallet();
+  const { wallet, isUserLinked } = useWallet();
   const { user } = useUser();
   const { topUp } = useTopUp();
 
@@ -151,7 +151,7 @@ const FormCrypto: FC<IFormCrypto> = ({ onBack, onNext, planSelected }) => {
         <Box className="icon-arrow-left" mr={6} onClick={onBack} />
         <Box className={'sub-title'}>Crypto</Box>
       </Flex>
-      {wallet
+      {wallet && isUserLinked
         ? _renderWalletInfo()
         : (
           <AppCard className="box-connect-wallet">

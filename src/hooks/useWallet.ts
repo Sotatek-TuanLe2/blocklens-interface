@@ -23,7 +23,7 @@ import {
   Wallet,
 } from 'src/utils/utils-wallet';
 import Storage from 'src/utils/utils-storage';
-import { toastError } from 'src/utils/utils-notify';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import BaseConnector from 'src/connectors/BaseConnector';
 import useUser from './useUser';
 import rf from 'src/requests/RequestFactory';
@@ -33,8 +33,10 @@ type ReturnType = {
   currentNetwork: string;
   wallet: IWallet | null;
   isOpenModalConnectWallet: boolean;
+  isUserLinked: boolean;
   connectWallet: (connectorId: string, network: string) => Promise<void>;
   disconnectWallet: () => void;
+  unlinkWallet: () => void;
   changeNetwork: (network: string) => Promise<void>;
   reloadBalance: () => Promise<void>;
   toggleModalConnectWallet: (isOpen: boolean) => void;
@@ -133,7 +135,7 @@ const useWallet = (): ReturnType => {
       // reload user's info
       dispatch(getInfoUser());
     } catch (error: any) {
-      toastError({ message: error.message });
+      throw new Error(error.message);
     }
   };
 
@@ -183,6 +185,20 @@ const useWallet = (): ReturnType => {
     dispatch(clearWallet());
   };
 
+  const unlinkWallet = async () => {
+    try {
+      await rf
+        .getRequest('AuthRequest')
+        .unlinkWallet();
+      // reload user's info
+      dispatch(getInfoUser());
+      disconnectWallet();
+      toastSuccess({ message: "Unlink wallet successfully!" });
+    } catch (error: any) {
+      toastError({ message: error.message });
+    }
+  };
+
   const changeNetwork = async (network: string) => {
     if (!provider) {
       return;
@@ -213,8 +229,10 @@ const useWallet = (): ReturnType => {
     currentNetwork: network,
     wallet,
     isOpenModalConnectWallet: openModalConnectWallet,
+    isUserLinked: !!wallet && !!user?.isUserLinked(),
     connectWallet,
     disconnectWallet,
+    unlinkWallet,
     changeNetwork,
     reloadBalance,
     toggleModalConnectWallet,
