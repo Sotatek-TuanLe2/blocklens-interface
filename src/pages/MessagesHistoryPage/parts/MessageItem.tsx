@@ -10,6 +10,7 @@ import { formatShortText, formatTimestamp } from 'src/utils/utils-helper';
 import { LinkIcon, ArrowDown } from 'src/assets/icons';
 import ReactJson from 'react-json-view';
 import { getBlockExplorerUrl } from 'src/utils/utils-network';
+import { Scrollbars } from 'react-custom-scrollbars';
 
 export const StatusMessages = ({ message }: any) => {
   if (!!message.status) {
@@ -140,29 +141,83 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
               <Box width={'49%'}>
                 <Box className="label-detail">input</Box>
                 <Box className="content-detail">
-                  <ReactJson
-                    name={false}
-                    theme="monokai"
-                    src={message.input}
-                    displayDataTypes={false}
-                    collapsed={1}
-                    shouldCollapse={false}
-                    displayObjectSize={false}
-                  />
+                  <Scrollbars
+                    style={{ width: '100%', height: 210 }}
+                    autoHide
+                    renderThumbVertical={({ style, ...props }: any) => (
+                      <div
+                        style={{
+                          ...style,
+                          backgroundColor: '#8D91A5',
+                          borderRadius: '5px',
+                          cursor: 'pointer',
+                        }}
+                        {...props}
+                      />
+                    )}
+                    renderThumbHorizontal={({ style, ...props }: any) => (
+                      <div
+                        style={{
+                          ...style,
+                          backgroundColor: '#8D91A5',
+                          borderRadius: '5px',
+                          cursor: 'pointer',
+                        }}
+                        {...props}
+                      />
+                    )}
+                  >
+                    <ReactJson
+                      name={false}
+                      theme="monokai"
+                      src={message.input}
+                      displayDataTypes={false}
+                      collapsed={1}
+                      shouldCollapse={false}
+                      displayObjectSize={false}
+                    />
+                  </Scrollbars>
                 </Box>
               </Box>
               <Box width={'49%'}>
                 <Box className="label-detail">output</Box>
                 <Box className="content-detail">
-                  <ReactJson
-                    name={false}
-                    theme="monokai"
-                    src={message.output}
-                    displayDataTypes={false}
-                    collapsed={1}
-                    shouldCollapse={false}
-                    displayObjectSize={false}
-                  />
+                  <Scrollbars
+                    style={{ width: '100%', height: 210 }}
+                    autoHide
+                    renderThumbVertical={({ style, ...props }: any) => (
+                      <div
+                        style={{
+                          ...style,
+                          backgroundColor: '#8D91A5',
+                          borderRadius: '5px',
+                          cursor: 'pointer',
+                        }}
+                        {...props}
+                      />
+                    )}
+                    renderThumbHorizontal={({ style, ...props }: any) => (
+                      <div
+                        style={{
+                          ...style,
+                          backgroundColor: '#8D91A5',
+                          borderRadius: '5px',
+                          cursor: 'pointer',
+                        }}
+                        {...props}
+                      />
+                    )}
+                  >
+                    <ReactJson
+                      name={false}
+                      theme="monokai"
+                      src={message.output}
+                      displayDataTypes={false}
+                      collapsed={1}
+                      shouldCollapse={false}
+                      displayObjectSize={false}
+                    />
+                  </Scrollbars>
                 </Box>
               </Box>
             </Flex>

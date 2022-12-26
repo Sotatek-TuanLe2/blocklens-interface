@@ -160,9 +160,12 @@
         padding: 20px;
         background-color: $card !important;
         color: $title;
-        overflow: auto;
         height: 210px;
         width: 100%;
+
+        .pretty-json-container {
+          padding-bottom: 20px;
+        }
       }
 
       .content-output {
