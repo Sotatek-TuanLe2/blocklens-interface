@@ -1,25 +1,18 @@
 import { Box, Flex } from '@chakra-ui/react';
-import { FC, useEffect, useState } from 'react';
-import BigNumber from 'bignumber.js';
+import { useEffect, useState } from 'react';
+import 'src/styles/pages/BillingPage.scss';
 import 'src/styles/pages/AppDetail.scss';
 import { AppButton, AppCard } from 'src/components';
 import { isMobile } from 'react-device-detect';
 import AppConnectWalletButton from 'src/components/AppConnectWalletButton';
 import useWallet from 'src/hooks/useWallet';
 import { toastError } from 'src/utils/utils-notify';
-import useUser from 'src/hooks/useUser';
 import { ConnectWalletIcon } from 'src/assets/icons';
-import AppAlertWarning from 'src/components/AppAlertWarning';
 import { getChainConfig, getNetworkByEnv } from 'src/utils/utils-network';
-import { IPlan } from 'src/store/billing';
+import { useHistory } from 'react-router-dom';
+import { BasePageContainer } from 'src/layouts';
 import useTopUp from 'src/hooks/useTopUp';
 import AppCryptoForm from 'src/components/AppCryptoForm';
-
-interface IFormCrypto {
-  onBack: () => void;
-  onNext: () => void;
-  planSelected: IPlan;
-}
 
 interface IDataForm {
   walletAddress: string;
@@ -28,8 +21,7 @@ interface IDataForm {
   amount: string;
 }
 
-
-const FormCrypto: FC<IFormCrypto> = ({ onBack, onNext, planSelected }) => {
+const TopUpPage = () => {
   const initialDataForm: IDataForm = {
     walletAddress: '',
     chainId: '',
@@ -37,19 +29,12 @@ const FormCrypto: FC<IFormCrypto> = ({ onBack, onNext, planSelected }) => {
     amount: '',
   };
 
-  enum TOP_UP_STATUS {
-    NONE,
-    PENDING,
-    FINISHED,
-  }
-
   const [dataForm, setDataForm] = useState<IDataForm>(initialDataForm);
-  const [topUpStatus, setTopUpStatus] = useState<number>(TOP_UP_STATUS.NONE);
-  const [isSufficientBalance, setIsSufficientBalance] =
-    useState<boolean>(false);
+  const [isBeingToppedUp, setIsBeingToppedUp] = useState<boolean>(false);
+
   const { wallet } = useWallet();
-  const { user } = useUser();
   const { topUp } = useTopUp();
+  const history = useHistory();
 
   useEffect(() => {
     if (wallet?.getAddress()) {
@@ -67,22 +52,6 @@ const FormCrypto: FC<IFormCrypto> = ({ onBack, onNext, planSelected }) => {
     }
   }, [wallet?.getAddress(), wallet?.getNework()]);
 
-  useEffect(() => {
-    if (user?.getBalance() && planSelected) {
-      if (
-        new BigNumber(user.getBalance()).isGreaterThanOrEqualTo(
-          new BigNumber(planSelected.price || 0),
-        )
-      ) {
-        setIsSufficientBalance(true);
-        setTopUpStatus(TOP_UP_STATUS.FINISHED);
-      } else {
-        setIsSufficientBalance(false);
-        setTopUpStatus(TOP_UP_STATUS.NONE);
-      }
-    }
-  }, [user?.getBalance()]);
-
   const onChangeCurrency = (currencyAddress: string) => {
     setDataForm((prevState) => ({ ...prevState, currencyAddress }));
   };
@@ -93,36 +62,18 @@ const FormCrypto: FC<IFormCrypto> = ({ onBack, onNext, planSelected }) => {
       return;
     }
     try {
-      setTopUpStatus(TOP_UP_STATUS.PENDING);
+      setIsBeingToppedUp(true);
       await topUp(currencyAddress, amount);
+      setIsBeingToppedUp(false);
     } catch (error: any) {
-      setTopUpStatus(TOP_UP_STATUS.NONE);
+      setIsBeingToppedUp(false);
       console.error(error);
       toastError({ message: error.data.message || error.message });
     }
   };
 
-  const _renderTopUpMessage = () => {
-    if (topUpStatus === TOP_UP_STATUS.NONE) {
-      return null;
-    }
-    return (
-      <AppAlertWarning>
-        When payment is completed, Continue button would be available.
-      </AppAlertWarning>
-    );
-  };
-
   const _renderWalletInfo = () => (
     <>
-      {!isSufficientBalance && (
-        <Box width={'100%'}>
-          <AppAlertWarning>
-            Your current balance is insufficent. Please top-up to meet the
-            plan's price!
-          </AppAlertWarning>
-        </Box>
-      )}
       <AppCryptoForm
         currencyAddress={dataForm.currencyAddress}
         amount={dataForm.amount}
@@ -132,42 +83,43 @@ const FormCrypto: FC<IFormCrypto> = ({ onBack, onNext, planSelected }) => {
           amount: value,
         })}
       />
-      {_renderTopUpMessage()}
       <Flex justifyContent={isMobile ? 'center' : 'flex-end'} mt={7}>
         <AppButton
           size={'lg'}
-          onClick={topUpStatus === TOP_UP_STATUS.NONE ? onTopUp : onNext}
-          disabled={topUpStatus === TOP_UP_STATUS.PENDING}
+          onClick={onTopUp}
+          disabled={isBeingToppedUp}
         >
-          {topUpStatus === TOP_UP_STATUS.NONE ? 'Top Up' : 'Continue'}
+          Top Up
         </AppButton>
       </Flex>
     </>
   );
 
+  const onBack = () => history.goBack();
+
   return (
-    <Box className="form-card">
-      <Flex alignItems={'center'} mb={7}>
-        <Box className="icon-arrow-left" mr={6} onClick={onBack} />
-        <Box className={'sub-title'}>Crypto</Box>
-      </Flex>
-      {wallet
-        ? _renderWalletInfo()
-        : (
+    <BasePageContainer className="billing-page">
+      <Box className="form-card">
+        <Flex alignItems={'center'} mb={7}>
+          <Box className="icon-arrow-left" mr={6} onClick={onBack} />
+          <Box className={'sub-title'}>Top Up</Box>
+        </Flex>
+        {wallet ? (
+          _renderWalletInfo()
+        ) : (
           <AppCard className="box-connect-wallet">
             <ConnectWalletIcon />
             <Box className="box-connect-wallet__description">
-              Connect wallet to top up your balance amount and perform payment
-              with cryptocurrencies.
+              Connect wallet to top up your balance amount.
             </Box>
             <AppConnectWalletButton width={'100%'} size="lg">
               Connect Wallet
             </AppConnectWalletButton>
           </AppCard>
-        )
-      }
-    </Box >
+        )}
+      </Box>
+    </BasePageContainer>
   );
 };
 
-export default FormCrypto;
+export default TopUpPage;
