@@ -30,16 +30,16 @@ const BillingItem: FC<IBillingItem> = ({ billing, onDownload, onRetry }) => {
   return (
     <Tbody>
       <Tr className={`tr-list`}>
-        <Td>{formatTimestamp(billing?.createdAt, 'MMMM DD YYYY')}</Td>
+        <Td w={"25%"}>{formatTimestamp(billing?.createdAt, 'MMMM DD YYYY')}</Td>
 
-        <Td>{billing.type}</Td>
-        <Td>${billing.totalAmount}</Td>
-        <Td>--</Td>
-        <Td>
+        <Td w={"20%"}>{billing.type}</Td>
+        <Td w={"20%"}>${billing.totalAmount}</Td>
+        <Td w={"20%"}>--</Td>
+        <Td w={"15%"}>
           <StatusBilling billing={billing} />
         </Td>
-        <Td>
-          <Flex alignItems="center">
+        <Td w={"10%"}>
+          <Flex alignItems="center" justifyContent={'flex-end'}>
             {billing.status !== 'SUCCESS' && (
               <Box
                 mr={3}

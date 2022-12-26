@@ -1,5 +1,5 @@
 import React, { FC, MouseEvent, useState } from 'react';
-import { Box, Flex, Tbody, Td, Tr } from '@chakra-ui/react';
+import { Box, Flex, Tbody, Td, Th, Tr } from '@chakra-ui/react';
 import {
   IMessages,
   IWebhook,
@@ -36,20 +36,28 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
   const [isShowDetail, setIsShowDetail] = useState<boolean>(false);
 
   const _renderContentContract = () => {
-    return <Td textAlign="left">{message?.input?.method}</Td>;
+    return (
+      <Td textAlign="left" w="20%">
+        {message?.input?.method}
+      </Td>
+    );
   };
 
   const _renderContentNFT = () => {
     return (
       <>
-        {_renderContentContract()}
-        <Td textAlign="center">{message?.input?.tokenId || '--'}</Td>
+        <Td textAlign="left" w="13%">
+          {message?.input?.method}
+        </Td>
+        <Td textAlign="center" w="10%">
+          {message?.input?.tokenId || '--'}
+        </Td>
       </>
     );
   };
 
   const _renderContentAddress = () => {
-    return <Td>{formatShortText(message?.input?.trackingAddress)}</Td>;
+    return <Td w="20%">{formatShortText(message?.input?.trackingAddress)}</Td>;
   };
 
   const _renderContentActivities = () => {
@@ -87,13 +95,15 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
         className={`tr-list ${isShowDetail ? 'show' : ''}`}
         onClick={() => setIsShowDetail(!isShowDetail)}
       >
-        <Td>
+        <Td w="25%">
           {formatTimestamp(message?.createdAt * 1000, 'YYYY-MM-DD HH:mm:ss')}{' '}
           UTC
         </Td>
 
-        <Td>{message?.input?.tx?.blockNumber}</Td>
-        <Td>
+        <Td w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '12%' : '15%'}>
+          {message?.input?.tx?.blockNumber}
+        </Td>
+        <Td w="15%">
           <Flex alignItems="center">
             {formatShortText(message?.input?.tx?.transactionHash)}
             <Box ml={2}>
@@ -114,10 +124,10 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
           </Flex>
         </Td>
         {_renderContentActivities()}
-        <Td>
+        <Td w="15%">
           <StatusMessages message={message} />
         </Td>
-        <Td>
+        <Td w="10%">
           <Box className={`icon-down ${isShowDetail ? 'open' : ''}`}>
             <ArrowDown />
           </Box>

@@ -62,5 +62,10 @@
       justify-content: center;
       margin-top: 20px;
     }
+
+    button:disabled {
+      background: $main;
+      opacity: 1;
+    }
   }
 }

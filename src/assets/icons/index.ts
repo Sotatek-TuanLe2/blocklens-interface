@@ -7,7 +7,6 @@ import { ReactComponent as FilterIcon } from './FilterIcon.svg';
 import { ReactComponent as InfoIcon } from './InfoIcon.svg';
 import { ReactComponent as RetryIcon } from './RetryIcon.svg';
 import { ReactComponent as ArrowDown } from './ArrowDown.svg';
-import { ReactComponent as NoData } from './NoData.svg';
 import { ReactComponent as CheckedIcon } from './CheckedIcon.svg';
 import { ReactComponent as RadioChecked } from './RadioChecked.svg';
 import { ReactComponent as RadioNoCheckedIcon } from './RadioNoCheckedIcon.svg';
@@ -33,7 +32,6 @@ export {
   RetryIcon,
   LinkDetail,
   ArrowDown,
-  NoData,
   EditIcon,
   CheckedIcon,
   RadioChecked,

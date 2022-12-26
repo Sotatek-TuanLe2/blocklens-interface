@@ -35,7 +35,7 @@ const BillingInfos = () => {
       <Box className="info-item">
         <Flex justifyContent={'space-between'}>
           <Box className="title">current plan</Box>
-          {!isMobile && _renderLinkDetail()}
+          {_renderLinkDetail()}
         </Flex>
 
         <Box className="name-plan">{currentPlan.name}</Box>
