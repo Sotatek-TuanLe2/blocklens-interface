@@ -252,7 +252,7 @@
 }
 
 .legend {
-  margin-left: 60px;
+  justify-content: center;
 
   div {
     cursor: pointer;
@@ -285,8 +285,8 @@
       }
     }
 
-    &.hide {
-      text-decoration: line-through;
+    svg {
+      margin-right: 10px;
     }
   }
 

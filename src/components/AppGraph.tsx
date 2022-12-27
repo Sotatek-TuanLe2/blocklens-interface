@@ -11,6 +11,7 @@ import {
 } from 'recharts';
 import { isMobile } from 'react-device-detect';
 import { formatTimestamp } from 'src/utils/utils-helper';
+import { RadioChecked, RadioNoCheckedIcon } from '../assets/icons';
 
 interface IChart {
   data: any[];
@@ -63,7 +64,11 @@ const AppGraph: FC<IChart> = ({ data, duration }) => {
             bottom: 5,
           }}
         >
-          <XAxis dataKey="label" interval={3} tick={{ fill: '#B4B7BD' }} />
+          <XAxis
+            dataKey="label"
+            interval={isMobile ? undefined : 3}
+            tick={{ fill: '#B4B7BD' }}
+          />
           <YAxis
             tick={{ fill: '#B4B7BD' }}
             tickFormatter={formatDataChart}
@@ -93,9 +98,8 @@ const AppGraph: FC<IChart> = ({ data, duration }) => {
         </LineChart>
       </ResponsiveContainer>
 
-      <Flex my={5} className={'legend'}>
-        <Box
-          className={`${lineHide === 'message' ? 'hide' : ''} activities`}
+      <Flex my={isMobile ? 3 : 5} className={'legend'}>
+        <Flex
           onClick={() => {
             if (lineHide === 'message') {
               setLineHide('activities');
@@ -104,11 +108,15 @@ const AppGraph: FC<IChart> = ({ data, duration }) => {
             setLineHide('message');
           }}
         >
-          Numbers of activities
-        </Box>
+          {lineHide === 'activities' ? (
+            <RadioChecked />
+          ) : (
+            <RadioNoCheckedIcon />
+          )}
+          <Box className={`activities`}>Numbers of activities</Box>
+        </Flex>
 
-        <Box
-          className={`${lineHide === 'activities' ? 'hide' : ''} message`}
+        <Flex
           onClick={() => {
             if (lineHide === 'activities') {
               setLineHide('message');
@@ -117,8 +125,9 @@ const AppGraph: FC<IChart> = ({ data, duration }) => {
             setLineHide('activities');
           }}
         >
-          Numbers of messages
-        </Box>
+          {lineHide === 'message' ? <RadioChecked /> : <RadioNoCheckedIcon />}
+          <Box className={`message`}>Numbers of messages</Box>
+        </Flex>
       </Flex>
     </Box>
   );
