@@ -60,7 +60,7 @@ const BillingInfos = () => {
 
       <Flex justifyContent={isMobile ? 'center' : 'flex-end'}>
         <AppButton
-          isDisabled={currentPlan.code === 'FREE'}
+          isDisabled={currentPlan.code === 'STARTER'}
           variant="cancel"
           size="sm"
           onClick={() => setIsOpenCancelSubscriptionModal(true)}

@@ -36,7 +36,7 @@ export const ChartStatics: FC<IChartStatics> = ({ dataChart, keyStat }) => {
         className={isMobile ? 'chartMobile' : 'chart'}
       >
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart width={500} height={300} data={dataFormat.reverse()}>
+          <LineChart width={500} height={300} data={dataFormat}>
             <Line
               type="monotone"
               dataKey={keyStat}

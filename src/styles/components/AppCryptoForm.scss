@@ -1,0 +1,13 @@
+@import '../color-variables.scss';
+@import '../mixins.scss';
+
+.box-form-crypto {
+  padding: 30px 40px 14px 40px;
+  @include tablet {
+    padding: 20px;
+  }
+
+  .app-select__btn-select {
+    background-color: $bg2;
+  }
+}

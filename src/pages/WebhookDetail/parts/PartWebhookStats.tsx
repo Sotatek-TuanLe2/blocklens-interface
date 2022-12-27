@@ -4,6 +4,7 @@ import rf from 'src/requests/RequestFactory';
 import { useParams } from 'react-router';
 import { ListStat } from 'src/pages/HomePage/parts/PartUserStats';
 import moment from 'moment';
+import { formatLargeNumber } from '../../../utils/utils-helper';
 
 interface IWebhookStats {
   message?: number;
@@ -17,15 +18,15 @@ interface IWebhookStats {
 export const listStats = [
   {
     key: 'message',
-    label: 'Total Messages (today)',
+    label: 'Total Messages (24hrs)',
   },
   {
     key: 'activities',
-    label: 'Total Activities (today)',
+    label: 'Total Activities (24hrs)',
   },
   {
     key: 'successRate',
-    label: 'Success Rate (today)',
+    label: 'Success Rate (24hrs)',
   },
   {
     key: 'webhooks',
@@ -54,7 +55,7 @@ const PartWebhookStats = () => {
       const res: IWebhookStats[] = await rf
         .getRequest('NotificationRequest')
         .getWebhookStats(webhookId, {
-          from: moment().utc().startOf('day').valueOf(),
+          from: moment().utc().subtract(24, 'hour').valueOf(),
           to: moment().utc().valueOf(),
           period: 'hour',
         });
@@ -71,6 +72,20 @@ const PartWebhookStats = () => {
 
   const dataWebhookStats = useMemo(() => {
     return listStats.map((item) => {
+      if (item.key === 'message') {
+        return {
+          ...item,
+          value: `${formatLargeNumber(webhookStats.message)}`,
+        };
+      }
+
+      if (item.key === 'activities') {
+        return {
+          ...item,
+          value: `${formatLargeNumber(webhookStats.activities)}`,
+        };
+      }
+
       if (item.key === 'successRate') {
         if (
           webhookStats.messagesFailed > 1 &&
@@ -90,7 +105,7 @@ const PartWebhookStats = () => {
 
       return {
         ...item,
-        value: webhookStats[item.key as keyStats],
+        value: webhookStats[item.key as keyStats] || '--',
       };
     });
   }, [webhookStats]);

@@ -1,5 +1,5 @@
 import React, { FC, MouseEvent, useState } from 'react';
-import { Box, Flex, Tbody, Td, Tr } from '@chakra-ui/react';
+import { Box, Flex, Tbody, Td, Th, Tr } from '@chakra-ui/react';
 import {
   IMessages,
   IWebhook,
@@ -10,6 +10,7 @@ import { formatShortText, formatTimestamp } from 'src/utils/utils-helper';
 import { LinkIcon, ArrowDown } from 'src/assets/icons';
 import ReactJson from 'react-json-view';
 import { getBlockExplorerUrl } from 'src/utils/utils-network';
+import { Scrollbars } from 'react-custom-scrollbars';
 
 export const StatusMessages = ({ message }: any) => {
   if (!!message.status) {
@@ -36,20 +37,28 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
   const [isShowDetail, setIsShowDetail] = useState<boolean>(false);
 
   const _renderContentContract = () => {
-    return <Td textAlign="left">{message?.input?.method}</Td>;
+    return (
+      <Td textAlign="left" w="15%">
+        {message?.input?.method}
+      </Td>
+    );
   };
 
   const _renderContentNFT = () => {
     return (
       <>
-        {_renderContentContract()}
-        <Td textAlign="center">{message?.input?.tokenId || '--'}</Td>
+        <Td textAlign="left" w="13%">
+          {message?.input?.method}
+        </Td>
+        <Td textAlign="center" w="13%">
+          {message?.input?.tokenId || '--'}
+        </Td>
       </>
     );
   };
 
   const _renderContentAddress = () => {
-    return <Td>{formatShortText(message?.input?.trackingAddress)}</Td>;
+    return <Td w="15%">{formatShortText(message?.input?.trackingAddress)}</Td>;
   };
 
   const _renderContentActivities = () => {
@@ -87,13 +96,15 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
         className={`tr-list ${isShowDetail ? 'show' : ''}`}
         onClick={() => setIsShowDetail(!isShowDetail)}
       >
-        <Td>
+        <Td w="25%">
           {formatTimestamp(message?.createdAt * 1000, 'YYYY-MM-DD HH:mm:ss')}{' '}
           UTC
         </Td>
 
-        <Td>{message?.input?.tx?.blockNumber}</Td>
-        <Td>
+        <Td w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '12%' : '15%'}>
+          {message?.input?.tx?.blockNumber}
+        </Td>
+        <Td w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '15%' : '20%'}>
           <Flex alignItems="center">
             {formatShortText(message?.input?.tx?.transactionHash)}
             <Box ml={2}>
@@ -114,10 +125,10 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
           </Flex>
         </Td>
         {_renderContentActivities()}
-        <Td>
+        <Td w="12%">
           <StatusMessages message={message} />
         </Td>
-        <Td>
+        <Td w="10%">
           <Box className={`icon-down ${isShowDetail ? 'open' : ''}`}>
             <ArrowDown />
           </Box>
@@ -130,29 +141,83 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
               <Box width={'49%'}>
                 <Box className="label-detail">input</Box>
                 <Box className="content-detail">
-                  <ReactJson
-                    name={false}
-                    theme="monokai"
-                    src={message.input}
-                    displayDataTypes={false}
-                    collapsed={1}
-                    shouldCollapse={false}
-                    displayObjectSize={false}
-                  />
+                  <Scrollbars
+                    style={{ width: '100%', height: 210 }}
+                    autoHide
+                    renderThumbVertical={({ style, ...props }: any) => (
+                      <div
+                        style={{
+                          ...style,
+                          backgroundColor: '#8D91A5',
+                          borderRadius: '5px',
+                          cursor: 'pointer',
+                        }}
+                        {...props}
+                      />
+                    )}
+                    renderThumbHorizontal={({ style, ...props }: any) => (
+                      <div
+                        style={{
+                          ...style,
+                          backgroundColor: '#8D91A5',
+                          borderRadius: '5px',
+                          cursor: 'pointer',
+                        }}
+                        {...props}
+                      />
+                    )}
+                  >
+                    <ReactJson
+                      name={false}
+                      theme="monokai"
+                      src={message.input}
+                      displayDataTypes={false}
+                      collapsed={1}
+                      shouldCollapse={false}
+                      displayObjectSize={false}
+                    />
+                  </Scrollbars>
                 </Box>
               </Box>
               <Box width={'49%'}>
                 <Box className="label-detail">output</Box>
                 <Box className="content-detail">
-                  <ReactJson
-                    name={false}
-                    theme="monokai"
-                    src={message.output}
-                    displayDataTypes={false}
-                    collapsed={1}
-                    shouldCollapse={false}
-                    displayObjectSize={false}
-                  />
+                  <Scrollbars
+                    style={{ width: '100%', height: 210 }}
+                    autoHide
+                    renderThumbVertical={({ style, ...props }: any) => (
+                      <div
+                        style={{
+                          ...style,
+                          backgroundColor: '#8D91A5',
+                          borderRadius: '5px',
+                          cursor: 'pointer',
+                        }}
+                        {...props}
+                      />
+                    )}
+                    renderThumbHorizontal={({ style, ...props }: any) => (
+                      <div
+                        style={{
+                          ...style,
+                          backgroundColor: '#8D91A5',
+                          borderRadius: '5px',
+                          cursor: 'pointer',
+                        }}
+                        {...props}
+                      />
+                    )}
+                  >
+                    <ReactJson
+                      name={false}
+                      theme="monokai"
+                      src={message.output}
+                      displayDataTypes={false}
+                      collapsed={1}
+                      shouldCollapse={false}
+                      displayObjectSize={false}
+                    />
+                  </Scrollbars>
                 </Box>
               </Box>
             </Flex>

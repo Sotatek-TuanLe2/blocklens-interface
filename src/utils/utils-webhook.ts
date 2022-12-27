@@ -85,8 +85,6 @@ export interface IMessages {
 
 export const getColorBrandStatus = (status: string) => {
   switch (status) {
-    case STATUS.WAITING:
-      return 'waiting';
     case STATUS.DONE:
       return 'active';
     case STATUS.FAILED:

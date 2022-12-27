@@ -28,12 +28,41 @@ export interface IBilling {
   totalAmount: number;
   type: string;
   userId: string;
+  activePaymentMethod?: string;
+  stripePaymentMethod?: any;
 }
 
 const BillingHistory = () => {
+  const getListReceipt = async (receiptIds: string) => {
+    try {
+      const res: any = await rf
+        .getRequest('BillingRequest')
+        .getListReceipt(receiptIds);
+      return res;
+    } catch (error) {
+      return error;
+    }
+  };
+
   const fetchDataTable: any = useCallback(async (params: any) => {
     try {
-      return await rf.getRequest('BillingRequest').getInvoiceList(params);
+      const res = await rf.getRequest('BillingRequest').getInvoiceList(params);
+      const receiptIds =
+        res.docs.map((item: any) => item?.receiptId || -1) || [];
+      const listReceipt = await getListReceipt(receiptIds.join(',').toString());
+
+      const dataTable = res?.docs.map((invoice: any, index: number) => {
+        return {
+          ...invoice,
+          activePaymentMethod: listReceipt[index].activePaymentMethod,
+          stripePaymentMethod: listReceipt[index]?.stripePaymentMethod || null,
+        };
+      });
+
+      return {
+        ...res,
+        docs: dataTable,
+      };
     } catch (error: any) {
       toastError({
         message: error?.message || 'Oops. Something went wrong!',
@@ -74,12 +103,12 @@ const BillingHistory = () => {
     return (
       <Thead className="header-list">
         <Tr>
-          <Th>date of issue</Th>
-          <Th>type</Th>
-          <Th>amount</Th>
-          <Th>method</Th>
-          <Th>Status</Th>
-          <Th />
+          <Th w={'25%'}>date of issue</Th>
+          <Th w={'20%'}>type</Th>
+          <Th w={'20%'}>amount</Th>
+          <Th w={'20%'}>method</Th>
+          <Th w={'15%'}>Status</Th>
+          <Th w={'10%'} />
         </Tr>
       </Thead>
     );

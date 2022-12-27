@@ -160,9 +160,12 @@
         padding: 20px;
         background-color: $card !important;
         color: $title;
-        overflow: auto;
         height: 210px;
         width: 100%;
+
+        .pretty-json-container {
+          padding-bottom: 20px;
+        }
       }
 
       .content-output {
@@ -249,7 +252,7 @@
 }
 
 .legend {
-  margin-left: 60px;
+  justify-content: center;
 
   div {
     cursor: pointer;
@@ -270,20 +273,20 @@
       left: 0;
     }
 
-    &:first-child {
+    &.message {
       &:before {
         background-color: $link;
       }
     }
 
-    &:last-child {
+    &.activities {
       &:before {
         background-color: $yellow;
       }
     }
 
-    &.hide {
-      text-decoration: line-through;
+    svg {
+      margin-right: 10px;
     }
   }
 

@@ -79,7 +79,7 @@ export const addTrailingZero = (
 };
 
 const _formatLargeNumberIfNeed = (number: string, digits = 0) => {
-  if (new BigNumber(number).comparedTo(1000000) < 0) {
+  if (new BigNumber(number).comparedTo(10000) < 0) {
     return commaNumber(new BigNumber(number).toString(), ',', '.');
   }
   const SI = [
@@ -142,9 +142,10 @@ export function formatWeiNumber(
 export function formatNumber(
   value: string | number | BigNumber,
   decimalPlaces = 4,
+  defaultValue: any = null,
 ): string {
   if (!value || new BigNumber(value || 0).isZero()) {
-    return NOT_AVAILABLE_TEXT;
+    return defaultValue ? defaultValue : NOT_AVAILABLE_TEXT;
   }
 
   if (
