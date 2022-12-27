@@ -38,5 +38,12 @@
       background: $gradient;
       color: $title;
     }
+
+    &.disabled {
+      cursor: not-allowed;
+      a {
+        cursor: not-allowed;
+      }
+    }
   }
 }

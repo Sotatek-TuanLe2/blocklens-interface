@@ -38,7 +38,7 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
 
   const _renderContentContract = () => {
     return (
-      <Td textAlign="left" w="20%">
+      <Td textAlign="left" w="15%">
         {message?.input?.method}
       </Td>
     );
@@ -50,7 +50,7 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
         <Td textAlign="left" w="13%">
           {message?.input?.method}
         </Td>
-        <Td textAlign="center" w="10%">
+        <Td textAlign="center" w="13%">
           {message?.input?.tokenId || '--'}
         </Td>
       </>
@@ -58,7 +58,7 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
   };
 
   const _renderContentAddress = () => {
-    return <Td w="20%">{formatShortText(message?.input?.trackingAddress)}</Td>;
+    return <Td w="15%">{formatShortText(message?.input?.trackingAddress)}</Td>;
   };
 
   const _renderContentActivities = () => {
@@ -104,7 +104,7 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
         <Td w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '12%' : '15%'}>
           {message?.input?.tx?.blockNumber}
         </Td>
-        <Td w="15%">
+        <Td w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '15%' : '20%'}>
           <Flex alignItems="center">
             {formatShortText(message?.input?.tx?.transactionHash)}
             <Box ml={2}>
@@ -125,7 +125,7 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
           </Flex>
         </Td>
         {_renderContentActivities()}
-        <Td w="15%">
+        <Td w="12%">
           <StatusMessages message={message} />
         </Td>
         <Td w="10%">

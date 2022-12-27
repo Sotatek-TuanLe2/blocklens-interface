@@ -386,7 +386,7 @@ const NotificationItem: FC<INotificationItem> = ({
   );
 
   const _renderContentContract = () => {
-    return <Td w="20%">{notification?.metadata?.method}</Td>;
+    return <Td w="15%">{notification?.metadata?.method}</Td>;
   };
 
   const _renderContentNFT = () => {
@@ -402,7 +402,7 @@ const NotificationItem: FC<INotificationItem> = ({
 
   const _renderContentAddress = () => {
     return (
-      <Td w="20%">
+      <Td w="15%">
         {formatShortText(notification?.metadata?.trackingAddress)}
       </Td>
     );
@@ -455,7 +455,7 @@ const NotificationItem: FC<INotificationItem> = ({
         <Td w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '12%' : '15%'}>
           {notification.metadata?.tx?.blockNumber}
         </Td>
-        <Td w="15%">
+        <Td w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '15%' : '20%'}>
           <Flex alignItems="center">
             {formatShortText(notification.metadata?.tx?.transactionHash)}
             <Box ml={2}>
@@ -477,7 +477,7 @@ const NotificationItem: FC<INotificationItem> = ({
         <Td w="15%" textAlign={'center'}>
           {_renderStatus(notification)}
         </Td>
-        <Td w="10%">
+        <Td w="15%">
           <Flex justifyContent={'flex-end'}>
             {notification.status !== STATUS.DONE && (
               <Box
@@ -546,7 +546,7 @@ const WebhookActivities: FC<IWebhookActivities> = ({
       return (
         <Th
           textAlign="center"
-          w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '13%' : '20%'}
+          w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '13%' : '15%'}
         >
           <Flex alignItems="center">
             method{' '}
@@ -560,7 +560,7 @@ const WebhookActivities: FC<IWebhookActivities> = ({
 
     const _renderHeaderAddress = () => {
       return (
-        <Th w="20%">
+        <Th w="15%">
           <Flex alignItems="center">
             Address
             {isShowAll && (
@@ -606,7 +606,7 @@ const WebhookActivities: FC<IWebhookActivities> = ({
           <Th w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '12%' : '15%'}>
             Block
           </Th>
-          <Th w={'15%'}>
+          <Th w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '15%' : '20%'}>
             <Flex alignItems="center">
               txn id{' '}
               {isShowAll && (
@@ -639,7 +639,7 @@ const WebhookActivities: FC<IWebhookActivities> = ({
               </Tooltip>
             </Flex>
           </Th>
-          <Th w="10%" />
+          <Th w="15%" />
         </Tr>
       </Thead>
     );
