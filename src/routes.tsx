@@ -32,6 +32,7 @@ import BillingHistory from './pages/BillingHistoryPage';
 import ModalSubmittingTransaction from './modals/ModalSubmittingTransaction';
 import ModalFinishTransaction from './modals/ModalFinishTransaction';
 import WebhookActivitiesPage from './pages/WebhookActivitiesPage';
+import TopUpPage from './pages/TopUp';
 
 /**
  * Main App routes.
@@ -84,6 +85,7 @@ const Routes: FC<RouteComponentProps> = () => {
           component={MessagesHistory}
         />
         <PrivateRoute path={'/home'} component={HomePage} />
+        <PrivateRoute path={'/top-up'} component={TopUpPage} />
         <Route path={'/contact-us'} component={ContactUs} />
         <PublicRoute path={'/'} component={LandingPage} />
       </Switch>

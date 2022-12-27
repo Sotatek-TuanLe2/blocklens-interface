@@ -1,29 +1,19 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import rf from 'src/requests/RequestFactory';
 
-export interface IMyPlan {
-  code?: string;
-  name?: string;
-  description?: string;
-  price?: number;
-  currency?: string;
-  from?: number;
-  to?: number;
-  appLimitation?: number;
-  notificationLimitation?: number;
-}
-
 export interface IPlan {
   code: string;
   name: string;
-  description?: string;
-  price: number | null;
-  currency?: string;
-  periodByDay?: number;
-  appLimitation?: number | string;
-  notificationLimitation?: number | string;
-  from?: number;
-  to?: number;
+  description: string;
+  price: number;
+  appLimitation: number;
+  notificationLimitation: number;
+}
+
+export interface IMyPlan extends IPlan {
+  currency: string;
+  from: number;
+  to: number;
 }
 
 interface BillingState {
@@ -34,7 +24,7 @@ interface BillingState {
 const initialState = {
   myPlan: {},
   plans: [],
-} as BillingState;
+} as unknown as BillingState;
 
 export const getMyPlan = createAsyncThunk(
   'billing/getMyPlan',
