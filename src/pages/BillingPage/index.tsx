@@ -12,9 +12,9 @@ import BigNumber from 'bignumber.js';
 import 'src/styles/pages/BillingPage.scss';
 import { BasePageContainer } from 'src/layouts';
 import { AppButton, AppCard, AppLink } from 'src/components';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'src/store';
-import { IPlan } from 'src/store/billing';
+import { getMyPlan, IPlan } from 'src/store/billing';
 import {
   CheckedIcon,
   RadioNoCheckedIcon,
@@ -26,6 +26,8 @@ import FormCrypto from './parts/FormCrypto';
 import PartCheckout from './parts/PartCheckout';
 import AppAlertWarning from 'src/components/AppAlertWarning';
 import useUser from 'src/hooks/useUser';
+import rf from 'src/requests/RequestFactory';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
 
 export const PAYMENT_METHOD = {
   CARD: 'CARD',
@@ -130,6 +132,7 @@ const BillingPage = () => {
     (state: RootState) => state.billing,
   );
   const { user } = useUser();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     setPlanSelected(currentPlan);
@@ -141,6 +144,9 @@ const BillingPage = () => {
     }
     return new BigNumber(user.getBalance()).isGreaterThanOrEqualTo(new BigNumber(planSelected.price));
   }, [user?.getBalance(), planSelected]);
+
+  const isCurrentPlan = new BigNumber(planSelected.price).isEqualTo(new BigNumber(currentPlan.price));
+  const isDownGrade = new BigNumber(planSelected.price).isLessThan(new BigNumber(currentPlan.price));
 
   const _renderPlansDesktop = () => {
     const _renderBody = () => {
@@ -304,13 +310,13 @@ const BillingPage = () => {
   };
 
   const _renderWarning = () => {
-    if (new BigNumber(planSelected.price).isEqualTo(new BigNumber(currentPlan.price))) {
+    if (isCurrentPlan) {
       return null;
     }
     return (
       <AppAlertWarning>
         {
-          new BigNumber(planSelected.price).isLessThan(new BigNumber(currentPlan.price))
+          isDownGrade
             ? 'Your current plan would still be usable until the end of the current billing period. New plan will be applied with the next billing period. Some apps might become inactive to match limit of the Downgraded plan (changable later).'
             : 'Your current plan will be terminated. New plan will be applied with billing period starting today.'
         }
@@ -319,20 +325,36 @@ const BillingPage = () => {
   };
 
   const _renderButtonText = (): string => {
-    if (new BigNumber(planSelected.price).isEqualTo(new BigNumber(currentPlan.price))) {
+    if (isCurrentPlan) {
       return 'Continue';
     }
-    if (new BigNumber(planSelected.price).isLessThan(new BigNumber(currentPlan.price))) {
+    if (isDownGrade) {
       return 'Downgrade'
     }
     return 'Upgrade';
   };
 
-  const onClickButton = () => {
-    if (paymentMethod === PAYMENT_METHOD.CRYPTO) {
-      setStep(isSufficientBalance ? STEPS.CHECKOUT : STEPS.FORM);
-    } else {
-      setStep(STEPS.FORM);
+  const opUpdatePlan = async () => {
+    try {
+      await rf
+        .getRequest('BillingRequest')
+        .updateBillingPlan({ code: planSelected.code });
+      toastSuccess({ message: 'Update Plan Successfully!' });
+      dispatch(getMyPlan());
+    } catch (error: any) {
+      toastError({ message: error.message });
+    }
+  };
+
+  const onClickButton = async () => {
+    if (isCurrentPlan || isDownGrade) {
+      await opUpdatePlan();
+    } else { // isUpgrade
+      if (paymentMethod === PAYMENT_METHOD.CRYPTO) {
+        setStep(isSufficientBalance ? STEPS.CHECKOUT : STEPS.FORM);
+      } else {
+        setStep(user?.isUserStriped() ? STEPS.CHECKOUT : STEPS.FORM);
+      }
     }
   };
 
