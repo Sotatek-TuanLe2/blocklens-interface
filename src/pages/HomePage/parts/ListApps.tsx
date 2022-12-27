@@ -232,10 +232,18 @@ const ListApps: React.FC<IListApps> = ({
               onClick={() => history.push(`/apps/${app.appId}`)}
             >
               <Td w="25%">{app.name}</Td>
-              <Td w="20%">{_renderChainApp(app.chain, app.network.toLowerCase())}</Td>
-              <Td w="20%" textAlign={'center'}>{app?.messageToday}</Td>
-              <Td w="20%" textAlign={'center'}>{app?.totalWebhook}</Td>
-              <Td w="15%" textAlign={'right'}>{_renderStatus(app.status)}</Td>
+              <Td w="20%">
+                {_renderChainApp(app.chain, app.network.toLowerCase())}
+              </Td>
+              <Td w="20%" textAlign={'center'}>
+                {app?.messageToday}
+              </Td>
+              <Td w="20%" textAlign={'center'}>
+                {app?.totalWebhook}
+              </Td>
+              <Td w="15%" textAlign={'right'}>
+                {_renderStatus(app.status)}
+              </Td>
             </Tr>
           );
         })}

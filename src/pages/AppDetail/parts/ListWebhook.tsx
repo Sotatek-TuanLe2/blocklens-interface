@@ -138,7 +138,9 @@ const WebhookItem: FC<IWebhookItem> = ({ webhook, appInfo, type }) => {
             '1 address'
           )}
         </Td>
-        <Td w="15%" textAlign={'right'}>{_renderStatus(webhook.status)}</Td>
+        <Td w="15%" textAlign={'right'}>
+          {_renderStatus(webhook.status)}
+        </Td>
       </Tr>
     </Tbody>
   );
@@ -188,7 +190,9 @@ const ListWebhook: FC<IListWebhook> = ({
           <Th w="20%">ID</Th>
           <Th w="45%">Webhook URL</Th>
           <Th w="20%">Address</Th>
-          <Th textAlign={'right'} w="15%">Status</Th>
+          <Th textAlign={'right'} w="15%">
+            Status
+          </Th>
         </Tr>
       </Thead>
     );

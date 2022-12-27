@@ -78,7 +78,7 @@ const MessagesHistory = () => {
             </Flex>
           </Th>
           <Th textAlign="center" w="13%">
-            <Flex alignItems="center" justifyContent='center'>
+            <Flex alignItems="center" justifyContent="center">
               token id
               <Filter value={tokenId} onChange={setTokenId} type="token ID" />
             </Flex>
@@ -125,7 +125,9 @@ const MessagesHistory = () => {
       <Thead className="header-list">
         <Tr>
           <Th w="25%">Created At</Th>
-          <Th w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '12%' : '15%'}>Block</Th>
+          <Th w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '12%' : '15%'}>
+            Block
+          </Th>
           <Th w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '15%' : '20%'}>
             <Flex alignItems="center">
               txn id
