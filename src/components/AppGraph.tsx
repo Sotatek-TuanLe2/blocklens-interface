@@ -37,6 +37,18 @@ const AppGraph: FC<IChart> = ({ data, duration }) => {
     });
   }, [duration, data]);
 
+  const formatDataChart = (number: number) => {
+    if (number > 1000000000) {
+      return (number / 1000000000).toString() + 'B';
+    } else if (number > 1000000) {
+      return (number / 1000000).toString() + 'M';
+    } else if (number > 1000) {
+      return (number / 1000).toString() + 'K';
+    } else {
+      return number.toString();
+    }
+  };
+
   return (
     <Box height={isMobile ? '400px' : '500px'} px={isMobile ? 0 : 5}>
       <ResponsiveContainer width="100%" height={isMobile ? '75%' : '85%'}>
@@ -52,7 +64,11 @@ const AppGraph: FC<IChart> = ({ data, duration }) => {
           }}
         >
           <XAxis dataKey="label" interval={3} tick={{ fill: '#B4B7BD' }} />
-          <YAxis tick={{ fill: '#B4B7BD' }} axisLine={false} />
+          <YAxis
+            tick={{ fill: '#B4B7BD' }}
+            tickFormatter={formatDataChart}
+            axisLine={false}
+          />
           <Tooltip />
           {lineHide === 'message' && (
             <Line
