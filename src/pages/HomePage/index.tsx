@@ -92,6 +92,7 @@ const HomePage = () => {
             onClose={() => setOpen(false)}
             reloadData={() => {
               getTotalApp().then();
+              getAppStatOfUser().then();
               setSearchListApp((pre: any) => {
                 return { ...pre };
               });

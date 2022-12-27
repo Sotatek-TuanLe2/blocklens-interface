@@ -1,6 +1,7 @@
 import React, { FC, useState } from 'react';
 import 'src/styles/pages/AccountPage.scss';
 import { Box, Flex } from '@chakra-ui/react';
+import { useHistory } from 'react-router-dom';
 import { AppCard } from 'src/components';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/store';
@@ -18,6 +19,7 @@ const BasicDetail = () => {
     useState<boolean>(false);
 
   const { userInfo } = useSelector((state: RootState) => state.auth);
+  const history = useHistory();
 
   return (
     <AppCard className="box-info-account">
@@ -60,7 +62,7 @@ const BasicDetail = () => {
             <Box className="label">Balance:</Box>
             <Box className="value">${userInfo?.balance}</Box>
           </Flex>
-          <Box className="link">Top up</Box>
+          <Box className="link" onClick={() => history.push('/top-up')} >Top up</Box>
         </Flex>
       </Box>
 
