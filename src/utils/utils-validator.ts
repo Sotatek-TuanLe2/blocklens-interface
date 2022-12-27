@@ -136,7 +136,7 @@ export const createValidator = (options?: IOptions | undefined) => {
       isIds: {
         message: 'TokenId must be positive number.',
         rule: (value: string) => {
-          const listTokenId = value.trim().split(', ');
+          const listTokenId = value.trim().split(',');
           return listTokenId.every((value: string) => {
             return /^[0-9]{1,}$/.test(value);
           });

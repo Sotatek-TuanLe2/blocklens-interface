@@ -55,4 +55,9 @@ export default class BillingRequest extends BaseRequest {
     const url = `/my/payment/invoice/${id}`;
     return this.put(url);
   }
+
+  getListReceipt(receiptIds: string) {
+    const url = `/my/payment/receipt`;
+    return this.get(url, { receiptIds });
+  }
 }

@@ -105,7 +105,7 @@ const PartWebhookStats = () => {
 
       return {
         ...item,
-        value: webhookStats[item.key as keyStats],
+        value: webhookStats[item.key as keyStats] || '--',
       };
     });
   }, [webhookStats]);
