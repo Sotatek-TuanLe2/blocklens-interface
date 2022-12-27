@@ -57,7 +57,7 @@ const TopUpItemMobile: FC<ITopUpItemMobile> = ({ topUp }) => {
           className="info"
         >
           <Box>Network</Box>
-          <Box  className="value">
+          <Box className="value">
             <Flex>
               <Box className={getLogoChainByChainId(topUp.chain)} />
               <Box mx={2}>{getNameChainByChainId(topUp.chain)}</Box>

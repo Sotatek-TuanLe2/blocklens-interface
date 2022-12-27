@@ -29,7 +29,6 @@ const ModalFilterGraph: FC<IModalFilterGraph> = ({
   optionTimes,
   optionTypes,
 }) => {
-
   const _renderFilterTime = () => {
     return (
       <Box>

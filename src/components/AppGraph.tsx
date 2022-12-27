@@ -11,6 +11,8 @@ import {
 } from 'recharts';
 import { isMobile } from 'react-device-detect';
 import { formatTimestamp } from 'src/utils/utils-helper';
+import { formatNumber } from 'src/utils/utils-format';
+import { RadioChecked, RadioNoCheckedIcon } from 'src/assets/icons';
 
 interface IChart {
   data: any[];
@@ -37,6 +39,20 @@ const AppGraph: FC<IChart> = ({ data, duration }) => {
     });
   }, [duration, data]);
 
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <Box p={2}>{`${label} : ${formatNumber(
+          payload[0].value,
+          4,
+          '0',
+        )}`}</Box>
+      );
+    }
+
+    return null;
+  };
+
   return (
     <Box height={isMobile ? '400px' : '500px'} px={isMobile ? 0 : 5}>
       <ResponsiveContainer width="100%" height={isMobile ? '75%' : '85%'}>
@@ -51,9 +67,17 @@ const AppGraph: FC<IChart> = ({ data, duration }) => {
             bottom: 5,
           }}
         >
-          <XAxis dataKey="label" interval={3} tick={{ fill: '#B4B7BD' }} />
-          <YAxis tick={{ fill: '#B4B7BD' }} axisLine={false} />
-          <Tooltip />
+          <XAxis
+            dataKey="label"
+            interval={isMobile ? undefined : 3}
+            tick={{ fill: '#B4B7BD' }}
+          />
+          <YAxis
+            tick={{ fill: '#B4B7BD' }}
+            tickFormatter={(value: any) => formatNumber(value, 4, '0')}
+            axisLine={false}
+          />
+          <Tooltip content={<CustomTooltip />} />
           {lineHide === 'message' && (
             <Line
               name="Numbers of messages"
@@ -77,9 +101,8 @@ const AppGraph: FC<IChart> = ({ data, duration }) => {
         </LineChart>
       </ResponsiveContainer>
 
-      <Flex my={5} className={'legend'}>
-        <Box
-          className={`${lineHide === 'message' ? 'hide' : ''} activities`}
+      <Flex my={isMobile ? 3 : 5} className={'legend'}>
+        <Flex
           onClick={() => {
             if (lineHide === 'message') {
               setLineHide('activities');
@@ -88,11 +111,15 @@ const AppGraph: FC<IChart> = ({ data, duration }) => {
             setLineHide('message');
           }}
         >
-          Numbers of activities
-        </Box>
+          {lineHide === 'activities' ? (
+            <RadioChecked />
+          ) : (
+            <RadioNoCheckedIcon />
+          )}
+          <Box className={`activities`}>Numbers of activities</Box>
+        </Flex>
 
-        <Box
-          className={`${lineHide === 'activities' ? 'hide' : ''} message`}
+        <Flex
           onClick={() => {
             if (lineHide === 'activities') {
               setLineHide('message');
@@ -101,8 +128,9 @@ const AppGraph: FC<IChart> = ({ data, duration }) => {
             setLineHide('activities');
           }}
         >
-          Numbers of messages
-        </Box>
+          {lineHide === 'message' ? <RadioChecked /> : <RadioNoCheckedIcon />}
+          <Box className={`message`}>Numbers of messages</Box>
+        </Flex>
       </Flex>
     </Box>
   );

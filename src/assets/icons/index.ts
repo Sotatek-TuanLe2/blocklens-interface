@@ -45,5 +45,5 @@ export {
   ConnectWalletIcon,
   WarningIcon,
   DownloadBillingIcon,
-  LogoutIcon
+  LogoutIcon,
 };

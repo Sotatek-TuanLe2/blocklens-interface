@@ -103,12 +103,12 @@ const BillingHistory = () => {
     return (
       <Thead className="header-list">
         <Tr>
-          <Th w={"25%"}>date of issue</Th>
-          <Th w={"20%"}>type</Th>
-          <Th w={"20%"}>amount</Th>
-          <Th w={"20%"}>method</Th>
-          <Th w={"15%"}>Status</Th>
-          <Th w={"10%"} />
+          <Th w={'25%'}>date of issue</Th>
+          <Th w={'20%'}>type</Th>
+          <Th w={'20%'}>amount</Th>
+          <Th w={'20%'}>method</Th>
+          <Th w={'15%'}>Status</Th>
+          <Th w={'10%'} />
         </Tr>
       </Thead>
     );

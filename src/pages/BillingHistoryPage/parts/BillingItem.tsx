@@ -55,7 +55,7 @@ const BillingItem: FC<IBillingItem> = ({ billing, onDownload, onRetry }) => {
         <Td w={"15%"}>
           <StatusBilling billing={billing} />
         </Td>
-        <Td w={"10%"}>
+        <Td w={'10%'}>
           <Flex alignItems="center" justifyContent={'flex-end'}>
             {billing.status !== 'SUCCESS' && (
               <Box
