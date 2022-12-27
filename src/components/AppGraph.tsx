@@ -10,7 +10,8 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { isMobile } from 'react-device-detect';
-import { formatTimestamp } from 'src/utils/utils-helper';
+import { formatLargeNumber, formatTimestamp } from 'src/utils/utils-helper';
+import { formatNumber } from 'src/utils/utils-format';
 import { RadioChecked, RadioNoCheckedIcon } from '../assets/icons';
 
 interface IChart {
@@ -38,16 +39,18 @@ const AppGraph: FC<IChart> = ({ data, duration }) => {
     });
   }, [duration, data]);
 
-  const formatDataChart = (number: number) => {
-    if (number > 1000000000) {
-      return (number / 1000000000).toString() + 'B';
-    } else if (number > 1000000) {
-      return (number / 1000000).toString() + 'M';
-    } else if (number > 1000) {
-      return (number / 1000).toString() + 'K';
-    } else {
-      return number.toString();
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <Box p={2}>{`${label} : ${formatNumber(
+          payload[0].value,
+          4,
+          '0',
+        )}`}</Box>
+      );
     }
+
+    return null;
   };
 
   return (
@@ -71,10 +74,10 @@ const AppGraph: FC<IChart> = ({ data, duration }) => {
           />
           <YAxis
             tick={{ fill: '#B4B7BD' }}
-            tickFormatter={formatDataChart}
+            tickFormatter={(value: any) => formatNumber(value, 4, '0')}
             axisLine={false}
           />
-          <Tooltip />
+          <Tooltip content={<CustomTooltip />} />
           {lineHide === 'message' && (
             <Line
               name="Numbers of messages"
