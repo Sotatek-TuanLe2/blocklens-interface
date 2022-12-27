@@ -28,6 +28,7 @@ import AppAlertWarning from 'src/components/AppAlertWarning';
 import useUser from 'src/hooks/useUser';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
+import { TOP_UP_PARAMS } from '../TopUp';
 
 export const PAYMENT_METHOD = {
   CARD: 'CARD',
@@ -248,6 +249,7 @@ const BillingPage = () => {
         </AppCard>
         <AppCard className="box-payment-method" mt={7}>
           <Box className={'text-title'}>Payment Method</Box>
+          {/* TODO: Add reload balance for Crypto method */}
           {paymentMethods.map((item, index: number) => {
             return (
               <Flex
@@ -349,12 +351,25 @@ const BillingPage = () => {
   const onClickButton = async () => {
     if (isCurrentPlan || isDownGrade) {
       await opUpdatePlan();
-    } else { // isUpgrade
-      if (paymentMethod === PAYMENT_METHOD.CRYPTO) {
-        setStep(isSufficientBalance ? STEPS.CHECKOUT : STEPS.FORM);
-      } else {
-        setStep(user?.isUserStriped() ? STEPS.CHECKOUT : STEPS.FORM);
-      }
+      return;
+    }
+    // isUpgrade
+    switch (paymentMethod) {
+      case PAYMENT_METHOD.CRYPTO:
+        if (isSufficientBalance) {
+          setStep(STEPS.CHECKOUT);
+        } else {
+          window.open(`/top-up?${TOP_UP_PARAMS.PLAN}=${planSelected.code}`, '_blank')?.focus();
+          // TODO: setInterval to reload balance with attempts
+        }
+        break;
+      case PAYMENT_METHOD.CARD:
+        setStep(user?.isUserStriped()
+          ? STEPS.CHECKOUT
+          : STEPS.FORM);
+        break;
+      default:
+        break;
     }
   };
 
