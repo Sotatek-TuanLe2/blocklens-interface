@@ -28,7 +28,7 @@ interface IDataForm {
 }
 
 export const TOP_UP_PARAMS = {
-  PLAN: 'plan'
+  PLAN: 'plan',
 };
 
 const TopUpPage = () => {
@@ -42,8 +42,7 @@ const TopUpPage = () => {
   const [dataForm, setDataForm] = useState<IDataForm>(initialDataForm);
   const [isBeingToppedUp, setIsBeingToppedUp] = useState<boolean>(false);
   const [planSelected, setPlanSelected] = useState<IPlan | undefined>();
-  const [isSufficientBalance, setIsSufficientBalance] =
-    useState<boolean>(true); // default without any plans
+  const [isSufficientBalance, setIsSufficientBalance] = useState<boolean>(true); // default without any plans
 
   const { plans } = useSelector((state: RootState) => state.billing);
   const { wallet, isUserLinked } = useWallet();
@@ -57,7 +56,7 @@ const TopUpPage = () => {
       const urlParams = new URLSearchParams(location.search);
       const planCode = urlParams.get(TOP_UP_PARAMS.PLAN);
       if (planCode) {
-        setPlanSelected(plans.find(item => item.code === planCode));
+        setPlanSelected(plans.find((item) => item.code === planCode));
       }
     }
   }, [location.search, plans]);
@@ -80,9 +79,9 @@ const TopUpPage = () => {
 
   useEffect(() => {
     if (user && planSelected) {
-      const isSufficientBalance = new BigNumber(user.getBalance()).isGreaterThanOrEqualTo(
-        new BigNumber(planSelected.price || 0),
-      );
+      const isSufficientBalance = new BigNumber(
+        user.getBalance(),
+      ).isGreaterThanOrEqualTo(new BigNumber(planSelected.price || 0));
       setIsSufficientBalance(isSufficientBalance);
     }
   }, [user, planSelected]);
@@ -114,8 +113,8 @@ const TopUpPage = () => {
     return (
       <Box width={'100%'}>
         <AppAlertWarning>
-          Your current balance is insufficent. Please top-up to meet the
-          plan's price!
+          Your current balance is insufficent. Please top-up to meet the plan's
+          price!
         </AppAlertWarning>
       </Box>
     );
@@ -127,18 +126,16 @@ const TopUpPage = () => {
       <AppCryptoForm
         currencyAddress={dataForm.currencyAddress}
         amount={dataForm.amount}
-        onChangeCurrencyAddress={value => onChangeCurrency(value)}
-        onChangeAmount={value => setDataForm({
-          ...dataForm,
-          amount: value,
-        })}
+        onChangeCurrencyAddress={(value) => onChangeCurrency(value)}
+        onChangeAmount={(value) =>
+          setDataForm({
+            ...dataForm,
+            amount: value,
+          })
+        }
       />
       <Flex justifyContent={isMobile ? 'center' : 'flex-end'} mt={7}>
-        <AppButton
-          size={'lg'}
-          onClick={onTopUp}
-          disabled={isBeingToppedUp}
-        >
+        <AppButton size={'lg'} onClick={onTopUp} disabled={isBeingToppedUp}>
           Top Up
         </AppButton>
       </Flex>
@@ -154,19 +151,19 @@ const TopUpPage = () => {
           <Box className="icon-arrow-left" mr={6} onClick={onBack} />
           <Box className={'sub-title'}>Top Up</Box>
         </Flex>
-        {wallet && isUserLinked
-          ? _renderWalletInfo()
-          : (
-            <AppCard className="box-connect-wallet">
-              <ConnectWalletIcon />
-              <Box className="box-connect-wallet__description">
-                Connect wallet to top up your balance amount.
-              </Box>
-              <AppConnectWalletButton width={'100%'} size="lg">
-                Connect Wallet
-              </AppConnectWalletButton>
-            </AppCard>
-          )}
+        {wallet && isUserLinked ? (
+          _renderWalletInfo()
+        ) : (
+          <AppCard className="box-connect-wallet">
+            <ConnectWalletIcon />
+            <Box className="box-connect-wallet__description">
+              Connect wallet to top up your balance amount.
+            </Box>
+            <AppConnectWalletButton width={'100%'} size="lg">
+              Connect Wallet
+            </AppConnectWalletButton>
+          </AppCard>
+        )}
       </Box>
     </BasePageContainer>
   );

@@ -29,7 +29,11 @@ const AccountPage = () => {
                 : user.getLinkedAddress()}
             </Box>
           </Flex>
-          {!isMobile && <Box className={'link'} onClick={unlinkWallet}>Unlink</Box>}
+          {!isMobile && (
+            <Box className={'link'} onClick={unlinkWallet}>
+              Unlink
+            </Box>
+          )}
         </Flex>
       );
     }
@@ -70,7 +74,11 @@ const AccountPage = () => {
               <Box className="info-item">
                 <Box className="title">Linked Accounts</Box>
               </Box>
-              {isMobile && <Box className={'link'} onClick={unlinkWallet}>Unlink</Box>}
+              {isMobile && (
+                <Box className={'link'} onClick={unlinkWallet}>
+                  Unlink
+                </Box>
+              )}
             </Flex>
             {_renderLinkedAccounts()}
           </AppCard>
