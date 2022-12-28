@@ -25,7 +25,7 @@ const PartAddressWebhooks: FC<IListAddress> = ({ appInfo }) => {
   const _renderNoData = () => {
     return (
       <Flex className="box-create">
-        <Box className="icon-no-data" mb={4}/>
+        <Box className="icon-no-data" mb={4} />
         Create your webhook to start experiencing Blocksniper with Address
         Activity!
         <AppButton

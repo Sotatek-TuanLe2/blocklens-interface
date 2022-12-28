@@ -1,19 +1,19 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC } from 'react';
 import { Box, Flex } from '@chakra-ui/react';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from 'src/store';
+import { useDispatch } from 'react-redux';
 import { paymentMethods } from '..';
 import useWallet from 'src/hooks/useWallet';
-import { AppButton, AppLink } from 'src/components';
+import { AppButton } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
-import { getMyPlan } from 'src/store/billing';
+import { getMyPlan, IPlan } from 'src/store/billing';
 import AppAlertWarning from '../../../components/AppAlertWarning';
 import { formatShortText } from '../../../utils/utils-helper';
 import { CheckedIcon } from '../../../assets/icons';
+import { useHistory } from 'react-router-dom';
 
 interface IPartCheckout {
-  planSelected: string;
+  planSelected: IPlan;
   paymentMethodCode: string;
   onBack: () => void;
 }
@@ -23,31 +23,30 @@ const PartCheckout: FC<IPartCheckout> = ({
   paymentMethodCode,
   onBack,
 }) => {
-  const { plans } = useSelector((state: RootState) => state.billing);
   const { wallet } = useWallet();
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const paymentMethod = paymentMethods.find(
     (item) => item.code === paymentMethodCode,
   );
 
   const _renderOrder = () => {
-    const newPlan = plans.find((item) => item.code === planSelected);
     return (
       <Box className="billing-checkout__order">
         <Box className="title">Order</Box>
         <Flex className="name-plan">
           <Box textTransform="capitalize" mr={1}>
-            {newPlan?.name?.toLowerCase()}
+            {planSelected.name.toLowerCase()}
           </Box>{' '}
           monthly plan
         </Flex>
-        <Box className="name-plan">{`$${newPlan?.price}/month`}</Box>
+        <Box className="name-plan">{`$${planSelected.price}/month`}</Box>
         <Flex className="info">
-          <CheckedIcon /> {newPlan?.appLimitation} active apps
+          <CheckedIcon /> {planSelected.appLimitation} active apps
         </Flex>
         <Flex className="info">
-          <CheckedIcon /> {newPlan?.notificationLimitation} messages/day
+          <CheckedIcon /> {planSelected.notificationLimitation} messages/day
         </Flex>
       </Box>
     );
@@ -57,10 +56,10 @@ const PartCheckout: FC<IPartCheckout> = ({
     try {
       await rf
         .getRequest('BillingRequest')
-        .updateBillingPlan({ code: planSelected });
+        .updateBillingPlan({ code: planSelected.code });
       toastSuccess({ message: 'Update Successfully!' });
       dispatch(getMyPlan());
-      // TODO: go to Billing history
+      history.push('/billing-history');
     } catch (e: any) {
       toastError({ message: e?.message || 'Oops. Something went wrong!' });
     }

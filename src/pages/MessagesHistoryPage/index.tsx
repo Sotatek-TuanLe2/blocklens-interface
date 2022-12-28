@@ -71,14 +71,14 @@ const MessagesHistory = () => {
     const _renderHeaderNFT = () => {
       return (
         <>
-          <Th>
+          <Th w="13%">
             <Flex alignItems="center">
               method{' '}
               <Filter value={method} onChange={setMethod} type="method" />
             </Flex>
           </Th>
-          <Th textAlign="center">
-            <Flex alignItems="center">
+          <Th textAlign="center" w="13%">
+            <Flex alignItems="center" justifyContent="center">
               token id
               <Filter value={tokenId} onChange={setTokenId} type="token ID" />
             </Flex>
@@ -89,7 +89,7 @@ const MessagesHistory = () => {
 
     const _renderHeaderAddress = () => {
       return (
-        <Th>
+        <Th w="15%">
           <Flex alignItems="center">
             Address
             <Filter value={address} onChange={setAddress} type="address" />
@@ -100,7 +100,7 @@ const MessagesHistory = () => {
 
     const _renderHeaderContract = () => {
       return (
-        <Th textAlign="center">
+        <Th textAlign="center" w="15%">
           <Flex alignItems="center">
             method
             <Filter value={method} onChange={setMethod} type="method" />
@@ -124,16 +124,18 @@ const MessagesHistory = () => {
     return (
       <Thead className="header-list">
         <Tr>
-          <Th>Created At</Th>
-          <Th>Block</Th>
-          <Th>
+          <Th w="25%">Created At</Th>
+          <Th w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '12%' : '15%'}>
+            Block
+          </Th>
+          <Th w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '15%' : '20%'}>
             <Flex alignItems="center">
               txn id
               <Filter value={txHash} onChange={setTxHash} type="txn ID" />
             </Flex>
           </Th>
           {_renderHeaderActivities()}
-          <Th>
+          <Th w="12%">
             <Flex alignItems="center">
               Status
               <Filter
@@ -144,7 +146,7 @@ const MessagesHistory = () => {
               />
             </Flex>
           </Th>
-          <Th />
+          <Th w="10%" />
         </Tr>
       </Thead>
     );

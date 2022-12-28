@@ -20,15 +20,15 @@ interface IUserStats {
 export const listStats = [
   {
     key: 'message',
-    label: 'Total Messages (today)',
+    label: 'Total Messages (24hrs)',
   },
   {
     key: 'activities',
-    label: 'Total Activities (today)',
+    label: 'Total Activities (24hrs)',
   },
   {
     key: 'successRate',
-    label: 'Success Rate (today)',
+    label: 'Success Rate (24hrs)',
   },
   {
     key: 'webhooks',
@@ -123,7 +123,7 @@ const PartUserStats = ({
       const res: IUserStats = await rf
         .getRequest('NotificationRequest')
         .getUserStats({
-          from: moment().utc().startOf('day').valueOf(),
+          from: moment().utc().subtract(24, 'hour').valueOf(),
           to: moment().utc().valueOf(),
           period: 'hour',
         });

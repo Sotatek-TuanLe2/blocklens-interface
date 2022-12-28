@@ -7,13 +7,14 @@ import {
   Table,
   TableContainer,
 } from '@chakra-ui/react';
-import React, { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
+import BigNumber from 'bignumber.js';
 import 'src/styles/pages/BillingPage.scss';
 import { BasePageContainer } from 'src/layouts';
 import { AppButton, AppCard, AppLink } from 'src/components';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'src/store';
-import { IPlan, IMyPlan } from 'src/store/billing';
+import { getMyPlan, IPlan } from 'src/store/billing';
 import {
   CheckedIcon,
   RadioNoCheckedIcon,
@@ -23,6 +24,11 @@ import { isMobile } from 'react-device-detect';
 import PartAddCard from './parts/PartAddCard';
 import FormCrypto from './parts/FormCrypto';
 import PartCheckout from './parts/PartCheckout';
+import AppAlertWarning from 'src/components/AppAlertWarning';
+import useUser from 'src/hooks/useUser';
+import rf from 'src/requests/RequestFactory';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
+import { TOP_UP_PARAMS } from '../TopUp';
 
 export const PAYMENT_METHOD = {
   CARD: 'CARD',
@@ -48,9 +54,9 @@ export const paymentMethods = [
 
 interface IPlanMobile {
   plan: IPlan;
-  planSelected: string;
-  currentPlan: IMyPlan;
-  onSelect: (value: string) => void;
+  planSelected: IPlan;
+  currentPlan: IPlan;
+  onSelect: (value: IPlan) => void;
 }
 
 const _renderPrice = (price: number | null) => {
@@ -69,13 +75,12 @@ const PlanMobile: FC<IPlanMobile> = ({
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const isCurrentPlan = plan.code === currentPlan.code;
-  const isActivePlan = planSelected === plan.code;
+  const isActivePlan = planSelected.code === plan.code;
   return (
     <>
       <Box
-        className={`${isOpen ? 'open' : ''} ${
-          isActivePlan ? 'active' : ''
-        } card-mobile plan-card`}
+        className={`${isOpen ? 'open' : ''} ${isActivePlan ? 'active' : ''
+          } card-mobile plan-card`}
       >
         <Flex
           justifyContent="space-between"
@@ -85,7 +90,7 @@ const PlanMobile: FC<IPlanMobile> = ({
           <Flex
             className="name-mobile"
             alignItems={'center'}
-            onClick={() => onSelect(plan.code)}
+            onClick={() => onSelect(plan)}
           >
             {isActivePlan ? <RadioChecked /> : <RadioNoCheckedIcon />}
             <Box ml={3}>{plan.code}</Box>
@@ -121,18 +126,28 @@ const PlanMobile: FC<IPlanMobile> = ({
 };
 
 const BillingPage = () => {
-  const [paymentMethod, setPaymentMethod] = useState<string>(
-    PAYMENT_METHOD.CARD,
-  );
-  const [planSelected, setPlanSelected] = useState<any>('');
+  const [paymentMethod, setPaymentMethod] = useState<string>(PAYMENT_METHOD.CARD);
+  const [planSelected, setPlanSelected] = useState<IPlan>({} as any);
   const [step, setStep] = useState<number>(STEPS.LIST);
   const { myPlan: currentPlan, plans: billingPlans } = useSelector(
     (state: RootState) => state.billing,
   );
+  const { user } = useUser();
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    setPlanSelected(currentPlan.code);
+    setPlanSelected(currentPlan);
   }, [currentPlan]);
+
+  const isSufficientBalance = useMemo(() => {
+    if (!user) {
+      return false;
+    }
+    return new BigNumber(user.getBalance()).isGreaterThanOrEqualTo(new BigNumber(planSelected.price));
+  }, [user?.getBalance(), planSelected]);
+
+  const isCurrentPlan = new BigNumber(planSelected.price).isEqualTo(new BigNumber(currentPlan.price));
+  const isDownGrade = new BigNumber(planSelected.price).isLessThan(new BigNumber(currentPlan.price));
 
   const _renderPlansDesktop = () => {
     const _renderBody = () => {
@@ -140,12 +155,12 @@ const BillingPage = () => {
         <Tbody>
           {billingPlans?.map((plan: IPlan, index: number) => {
             const isCurrentPlan = plan.code === currentPlan.code;
-            const isActivePlan = planSelected === plan.code;
+            const isActivePlan = planSelected.code === plan.code;
             return (
               <Tr
                 key={index}
                 className={`${isActivePlan ? 'active' : ''} tr-list`}
-                onClick={() => setPlanSelected(plan.code)}
+                onClick={() => setPlanSelected(plan)}
               >
                 <Td>
                   <Flex alignItems={'center'}>
@@ -234,6 +249,7 @@ const BillingPage = () => {
         </AppCard>
         <AppCard className="box-payment-method" mt={7}>
           <Box className={'text-title'}>Payment Method</Box>
+          {/* TODO: Add reload balance for Crypto method */}
           {paymentMethods.map((item, index: number) => {
             return (
               <Flex
@@ -261,11 +277,12 @@ const BillingPage = () => {
   const onBackStep = () => setStep((prevState) => prevState - 1);
 
   const _renderContent = () => {
+    const isCardPaymentMethod = paymentMethod === PAYMENT_METHOD.CARD;
     switch (step) {
       case STEPS.LIST:
         return _renderStep1();
       case STEPS.FORM:
-        if (paymentMethod === PAYMENT_METHOD.CARD) {
+        if (isCardPaymentMethod) {
           return <PartAddCard onBack={onBackStep} onNext={onNextStep} />;
         }
         return (
@@ -280,7 +297,13 @@ const BillingPage = () => {
           <PartCheckout
             planSelected={planSelected}
             paymentMethodCode={paymentMethod}
-            onBack={onBackStep}
+            onBack={isCardPaymentMethod
+              ? onBackStep
+              : (
+                isSufficientBalance
+                  ? () => setStep(STEPS.LIST)
+                  : onBackStep
+              )}
           />
         );
       default:
@@ -288,20 +311,90 @@ const BillingPage = () => {
     }
   };
 
-  const _renderButton = () =>
-    step === STEPS.LIST && (
-      <Flex justifyContent={isMobile ? 'center' : 'flex-end'}>
-        <AppButton
-          width={isMobile ? '100%' : 'auto'}
-          size="lg"
-          mt={7}
-          isDisabled={planSelected === 'FREE'}
-          onClick={() => setStep(STEPS.FORM)}
-        >
-          Continue
-        </AppButton>
-      </Flex>
+  const _renderWarning = () => {
+    if (isCurrentPlan) {
+      return null;
+    }
+    return (
+      <AppAlertWarning>
+        {
+          isDownGrade
+            ? 'Your current plan would still be usable until the end of the current billing period. New plan will be applied with the next billing period. Some apps might become inactive to match limit of the Downgraded plan (changable later).'
+            : 'Your current plan will be terminated. New plan will be applied with billing period starting today.'
+        }
+      </AppAlertWarning>
+    )
+  };
+
+  const _renderButtonText = (): string => {
+    if (isCurrentPlan) {
+      return 'Continue';
+    }
+    if (isDownGrade) {
+      return 'Downgrade'
+    }
+    return 'Upgrade';
+  };
+
+  const opUpdatePlan = async () => {
+    try {
+      await rf
+        .getRequest('BillingRequest')
+        .updateBillingPlan({ code: planSelected.code });
+      toastSuccess({ message: 'Update Plan Successfully!' });
+      dispatch(getMyPlan());
+    } catch (error: any) {
+      toastError({ message: error.message });
+    }
+  };
+
+  const onClickButton = async () => {
+    if (isCurrentPlan || isDownGrade) {
+      await opUpdatePlan();
+      return;
+    }
+    // isUpgrade
+    switch (paymentMethod) {
+      case PAYMENT_METHOD.CRYPTO:
+        if (isSufficientBalance) {
+          setStep(STEPS.CHECKOUT);
+        } else {
+          window.open(`/top-up?${TOP_UP_PARAMS.PLAN}=${planSelected.code}`, '_blank')?.focus();
+          // TODO: setInterval to reload balance with attempts
+        }
+        break;
+      case PAYMENT_METHOD.CARD:
+        setStep(user?.isUserStriped()
+          ? STEPS.CHECKOUT
+          : STEPS.FORM);
+        break;
+      default:
+        break;
+    }
+  };
+
+  const _renderButton = () => {
+    if (step !== STEPS.LIST) {
+      return null;
+    }
+    const isDisabled = planSelected.price === 0;
+    return (
+      <>
+        {_renderWarning()}
+        <Flex justifyContent={isMobile ? 'center' : 'flex-end'}>
+          <AppButton
+            width={isMobile ? '100%' : 'auto'}
+            size="lg"
+            mt={7}
+            isDisabled={isDisabled}
+            onClick={onClickButton}
+          >
+            {_renderButtonText()}
+          </AppButton>
+        </Flex>
+      </>
     );
+  };
 
   return (
     <BasePageContainer className="billing-page">

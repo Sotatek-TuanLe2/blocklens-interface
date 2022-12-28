@@ -11,6 +11,8 @@ import {
 } from 'recharts';
 import { isMobile } from 'react-device-detect';
 import { formatTimestamp } from 'src/utils/utils-helper';
+import { formatNumber } from 'src/utils/utils-format';
+import { RadioChecked, RadioNoCheckedIcon } from 'src/assets/icons';
 
 interface IChart {
   data: any[];
@@ -18,13 +20,13 @@ interface IChart {
 }
 
 const AppGraph: FC<IChart> = ({ data, duration }) => {
-  const [lineHide, setLineHide] = useState<string[]>([]);
+  const [lineHide, setLineHide] = useState<string>('activities');
   const dataChart = useMemo(() => {
     if (duration === '24h') {
       return data.map((item: any) => {
         return {
           ...item,
-          label: formatTimestamp(item.time, 'HH'),
+          label: formatTimestamp(item.time, 'hh:mm A'),
         };
       });
     }
@@ -37,8 +39,18 @@ const AppGraph: FC<IChart> = ({ data, duration }) => {
     });
   }, [duration, data]);
 
-  const checkIsShowLine = (type: string) => {
-    return !lineHide.some((item) => item === type);
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <Box p={2}>{`${label} : ${formatNumber(
+          payload[0].value,
+          4,
+          '0',
+        )}`}</Box>
+      );
+    }
+
+    return null;
   };
 
   return (
@@ -55,10 +67,18 @@ const AppGraph: FC<IChart> = ({ data, duration }) => {
             bottom: 5,
           }}
         >
-          <XAxis dataKey="label" tick={{ fill: '#B4B7BD' }} />
-          <YAxis tick={{ fill: '#B4B7BD' }} axisLine={false} />
-          <Tooltip />
-          {checkIsShowLine('message') && (
+          <XAxis
+            dataKey="label"
+            interval={isMobile ? undefined : 3}
+            tick={{ fill: '#B4B7BD' }}
+          />
+          <YAxis
+            tick={{ fill: '#B4B7BD' }}
+            tickFormatter={(value: any) => formatNumber(value, 4, '0')}
+            axisLine={false}
+          />
+          <Tooltip content={<CustomTooltip />} />
+          {lineHide === 'message' && (
             <Line
               name="Numbers of messages"
               dataKey="message"
@@ -68,7 +88,7 @@ const AppGraph: FC<IChart> = ({ data, duration }) => {
             />
           )}
 
-          {checkIsShowLine('activities') && (
+          {lineHide === 'activities' && (
             <Line
               dot={{ r: isMobile ? 2 : 4 }}
               strokeWidth={2}
@@ -81,35 +101,36 @@ const AppGraph: FC<IChart> = ({ data, duration }) => {
         </LineChart>
       </ResponsiveContainer>
 
-      <Flex my={5} className={'legend'}>
-        <Box
-          className={!checkIsShowLine('message') ? 'hide' : ''}
+      <Flex my={isMobile ? 3 : 5} className={'legend'}>
+        <Flex
           onClick={() => {
-            if (!checkIsShowLine('message')) {
-              const newLineHide = lineHide.filter((item) => item !== 'message');
-              setLineHide(newLineHide);
+            if (lineHide === 'message') {
+              setLineHide('activities');
               return;
             }
-            setLineHide([...lineHide, 'message']);
+            setLineHide('message');
           }}
         >
-          Numbers of messages
-        </Box>
-        <Box
-          className={!checkIsShowLine('activities') ? 'hide' : ''}
+          {lineHide === 'activities' ? (
+            <RadioChecked />
+          ) : (
+            <RadioNoCheckedIcon />
+          )}
+          <Box className={`activities`}>Numbers of activities</Box>
+        </Flex>
+
+        <Flex
           onClick={() => {
-            if (!checkIsShowLine('activities')) {
-              const newLineHide = lineHide.filter(
-                (item) => item !== 'activities',
-              );
-              setLineHide(newLineHide);
+            if (lineHide === 'activities') {
+              setLineHide('message');
               return;
             }
-            setLineHide([...lineHide, 'activities']);
+            setLineHide('activities');
           }}
         >
-          Numbers of activities
-        </Box>
+          {lineHide === 'message' ? <RadioChecked /> : <RadioNoCheckedIcon />}
+          <Box className={`message`}>Numbers of messages</Box>
+        </Flex>
       </Flex>
     </Box>
   );
