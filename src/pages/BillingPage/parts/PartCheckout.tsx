@@ -56,7 +56,7 @@ const PartCheckout: FC<IPartCheckout> = ({
     try {
       await rf
         .getRequest('BillingRequest')
-        .updateBillingPlan({ code: planSelected });
+        .updateBillingPlan({ code: planSelected.code });
       toastSuccess({ message: 'Update Successfully!' });
       dispatch(getMyPlan());
       history.push('/billing-history');
