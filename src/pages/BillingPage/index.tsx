@@ -20,6 +20,7 @@ import {
   RadioNoCheckedIcon,
   RadioChecked,
   ArrowRightIcon,
+  EditIcon,
 } from 'src/assets/icons';
 import { isMobile } from 'react-device-detect';
 import PartCheckout from './parts/PartCheckout';
@@ -30,9 +31,11 @@ import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { TOP_UP_PARAMS } from '../TopUp';
 import { useHistory } from 'react-router';
 import PartPaymentInfo from './parts/PartPaymentInfo';
+import ModalEditCreditCard from 'src/modals/ModalEditCreditCard';
+import { getInfoUser } from '../../store/auth';
 
 export const PAYMENT_METHOD = {
-  CARD: 'CARD',
+  CARD: 'STRIPE',
   CRYPTO: 'CRYPTO',
 };
 
@@ -132,13 +135,22 @@ const BillingPage = () => {
     PAYMENT_METHOD.CARD,
   );
   const [planSelected, setPlanSelected] = useState<IPlan>({} as any);
+  const [isOpenEditCardModal, setIsOpenEditCardModal] =
+    useState<boolean>(false);
   const [step, setStep] = useState<number>(STEPS.LIST);
   const { myPlan: currentPlan, plans: billingPlans } = useSelector(
     (state: RootState) => state.billing,
   );
+  const { userInfo } = useSelector((state: RootState) => state.auth);
+
   const { user } = useUser();
   const dispatch = useDispatch();
   const history = useHistory();
+
+  useEffect(() => {
+    setPaymentMethod(userInfo.activePaymentMethod || PAYMENT_METHOD.CARD);
+  }, [userInfo]);
+
 
   useEffect(() => {
     setPlanSelected(currentPlan);
@@ -237,6 +249,73 @@ const BillingPage = () => {
     );
   };
 
+  const onUpdatePlan = async () => {
+    try {
+      await rf
+        .getRequest('BillingRequest')
+        .updateBillingPlan({ code: planSelected.code });
+      toastSuccess({ message: 'Downgrade Plan Successfully!' });
+      dispatch(getMyPlan());
+    } catch (error: any) {
+      toastError({ message: error.message });
+    }
+  };
+
+  const onChangePaymentMethod = async (method: string) => {
+    try {
+      await rf
+        .getRequest('UserRequest')
+        .editInfoUser({ activePaymentMethod: method });
+      toastSuccess({ message: 'Update Successfully!' });
+      dispatch(getInfoUser());
+    } catch (error: any) {
+      toastError({ message: error.message });
+    }
+  };
+
+  const onClickButton = async () => {
+    if (isCurrentPlan || isDownGrade) {
+      await onUpdatePlan();
+      return;
+    }
+    // isUpgrade
+    if (paymentMethod === PAYMENT_METHOD.CRYPTO) {
+      if (isSufficientBalance) {
+        setStep(STEPS.CHECKOUT);
+      } else {
+        window
+          .open(`/top-up?${TOP_UP_PARAMS.PLAN}=${planSelected.code}`, '_blank')
+          ?.focus();
+        // TODO: setInterval to reload balance with attempts
+      }
+    } else {
+      setStep(STEPS.CHECKOUT);
+    }
+  };
+
+  const _renderButtonUpdatePlan = () => {
+    if (!userInfo?.isPaymentMethodIntegrated || isCurrentPlan) {
+      return null;
+    }
+    return (
+      <>
+        <Flex
+          justifyContent={isMobile ? 'center' : 'flex-end'}
+          width={isMobile ? '100%' : 'auto'}
+        >
+          <AppButton
+            width={isMobile ? '100%' : 'auto'}
+            size="lg"
+            mt={3}
+            onClick={onClickButton}
+          >
+            {isDownGrade ? 'Downgrade' : 'Upgrade'}
+          </AppButton>
+        </Flex>
+      </>
+    );
+  };
+
   const _renderStep1 = () => {
     return (
       <>
@@ -270,28 +349,68 @@ const BillingPage = () => {
               Contact Us
             </AppLink>
           </Box>
+
+          {!isCurrentPlan && user?.isPaymentMethodIntegrated && (
+            <Box px={10} mb={3} mt={isMobile ? 0 : 3}>
+              {_renderWarning()}
+              <Flex
+                width={isMobile ? '100%' : 'auto'}
+                justifyContent={isMobile ? 'center' : 'flex-end'}
+              >
+                {_renderButtonUpdatePlan()}
+              </Flex>
+            </Box>
+          )}
         </AppCard>
 
         {user?.isPaymentMethodIntegrated && (
           <AppCard className="box-payment-method" mt={7}>
             <Box className={'text-title'}>Payment Method</Box>
-            {paymentMethods.map((item, index: number) => {
-              return (
-                <Flex
-                  className={'payment-method'}
-                  alignItems={'center'}
-                  key={index}
-                  onClick={() => setPaymentMethod(item.code)}
-                >
-                  {paymentMethod === item.code ? (
-                    <RadioChecked />
-                  ) : (
-                    <RadioNoCheckedIcon />
-                  )}
-                  <Box ml={4}>{item.name} </Box>
+            <Flex className={'payment-method'}>
+              <Flex onClick={() => onChangePaymentMethod(PAYMENT_METHOD.CARD)}>
+                {paymentMethod === PAYMENT_METHOD.CARD ? (
+                  <RadioChecked />
+                ) : (
+                  <RadioNoCheckedIcon />
+                )}
+
+                <Flex ml={4}>
+                  Credit Card
+                  <Box ml={2} className="payment-method__value">
+                    (
+                    {userInfo?.stripePaymentMethod
+                      ? `${userInfo?.stripePaymentMethod?.card?.brand} - ${userInfo?.stripePaymentMethod?.card?.last4}`
+                      : '--'}
+                    )
+                  </Box>
                 </Flex>
-              );
-            })}
+              </Flex>
+
+              <Box
+                className="btn-edit"
+                onClick={() => setIsOpenEditCardModal(true)}
+              >
+                <EditIcon />
+              </Box>
+            </Flex>
+
+            <Flex className={'payment-method'}>
+              <Flex onClick={() => onChangePaymentMethod(PAYMENT_METHOD.CRYPTO)}>
+                {paymentMethod === PAYMENT_METHOD.CRYPTO ? (
+                  <RadioChecked />
+                ) : (
+                  <RadioNoCheckedIcon />
+                )}
+
+                <Flex ml={4}>
+                  Crypto
+                  <Box ml={2} className="payment-method__value">
+                    (Total: ${userInfo.balance})
+                  </Box>
+                </Flex>
+              </Flex>
+              <Box />
+            </Flex>
           </AppCard>
         )}
       </>
@@ -346,73 +465,22 @@ const BillingPage = () => {
     );
   };
 
-  const _renderButtonText = (): string => {
-    if (isCurrentPlan || !user?.isPaymentMethodIntegrated) {
-      return 'Continue';
-    }
-    if (isDownGrade) {
-      return 'Downgrade';
-    }
-    return 'Upgrade';
-  };
-
-  const opUpdatePlan = async () => {
-    try {
-      await rf
-        .getRequest('BillingRequest')
-        .updateBillingPlan({ code: planSelected.code });
-      toastSuccess({ message: 'Downgrade Plan Successfully!' });
-      dispatch(getMyPlan());
-    } catch (error: any) {
-      toastError({ message: error.message });
-    }
-  };
-
-  const onClickButton = async () => {
-    if (isCurrentPlan || isDownGrade) {
-      await opUpdatePlan();
-      return;
-    }
-    // isUpgrade
-    switch (paymentMethod) {
-      case PAYMENT_METHOD.CRYPTO:
-        if (isSufficientBalance) {
-          setStep(STEPS.CHECKOUT);
-        } else {
-          window
-            .open(
-              `/top-up?${TOP_UP_PARAMS.PLAN}=${planSelected.code}`,
-              '_blank',
-            )
-            ?.focus();
-          // TODO: setInterval to reload balance with attempts
-        }
-        break;
-      case PAYMENT_METHOD.CARD:
-        setStep(user?.isUserStriped() ? STEPS.CHECKOUT : STEPS.FORM);
-        break;
-      default:
-        break;
-    }
-  };
-
   const _renderButton = () => {
-    if (step !== STEPS.LIST) {
+    if (step !== STEPS.LIST || userInfo?.isPaymentMethodIntegrated) {
       return null;
     }
     const isDisabled = planSelected.price === 0;
     return (
       <>
-        {_renderWarning()}
         <Flex justifyContent={isMobile ? 'center' : 'flex-end'}>
           <AppButton
             width={isMobile ? '100%' : 'auto'}
             size="lg"
             mt={7}
             isDisabled={isDisabled}
-            onClick={onClickButton}
+            onClick={() => setStep(STEPS.FORM)}
           >
-            {_renderButtonText()}
+            Continue
           </AppButton>
         </Flex>
       </>
@@ -423,7 +491,15 @@ const BillingPage = () => {
     <BasePageContainer className="billing-page">
       <>
         {_renderContent()}
+
         {_renderButton()}
+
+        {isOpenEditCardModal && (
+          <ModalEditCreditCard
+            open={isOpenEditCardModal}
+            onClose={() => setIsOpenEditCardModal(false)}
+          />
+        )}
       </>
     </BasePageContainer>
   );

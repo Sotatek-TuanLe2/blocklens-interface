@@ -16,6 +16,7 @@ interface IUserInfo {
   balance?: number;
   stripePaymentMethod?: any;
   walletAddress?: string;
+  activePaymentMethod?: string;
 }
 
 interface AuthState {

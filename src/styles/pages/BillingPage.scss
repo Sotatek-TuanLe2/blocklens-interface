@@ -65,18 +65,30 @@
 
   .payment-method {
     cursor: pointer;
-    padding-left: 40px;
+    padding: 0 40px;
     width: max-content;
+    align-items: center;
     &:nth-child(2) {
       margin-bottom: 24px;
     }
 
     @include tablet {
-      padding-left: 20px;
+      padding: 0 20px;
+      justify-content: space-between;
+      width: 100%;
 
       &:nth-child(2) {
         margin-bottom: 12px;
       }
+    }
+
+    &__value {
+      color: $paragraph;
+    }
+
+    .btn-edit {
+      color: $paragraph;
+      margin-left: 50px;
     }
   }
 
