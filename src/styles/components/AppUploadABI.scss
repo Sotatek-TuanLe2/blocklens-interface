@@ -38,6 +38,21 @@
       .label-events {
         margin-bottom: 10px;
       }
+
+      label {
+        display: flex;
+        align-items: flex-start;
+      }
+    }
+
+    .abi-option {
+      @include tablet {
+        flex-direction: column;
+      }
+      .inputs{
+        color: $paragraph;
+        margin-left: 5px;
+      }
     }
   }
 
