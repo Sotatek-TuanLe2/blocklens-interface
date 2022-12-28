@@ -28,7 +28,6 @@ interface IDataForm {
   amount: string;
 }
 
-
 const FormCrypto: FC<IFormCrypto> = ({ onBack, onNext, planSelected }) => {
   const initialDataForm: IDataForm = {
     walletAddress: '',
@@ -126,11 +125,13 @@ const FormCrypto: FC<IFormCrypto> = ({ onBack, onNext, planSelected }) => {
       <AppCryptoForm
         currencyAddress={dataForm.currencyAddress}
         amount={dataForm.amount}
-        onChangeCurrencyAddress={value => onChangeCurrency(value)}
-        onChangeAmount={value => setDataForm({
-          ...dataForm,
-          amount: value,
-        })}
+        onChangeCurrencyAddress={(value) => onChangeCurrency(value)}
+        onChangeAmount={(value) =>
+          setDataForm({
+            ...dataForm,
+            amount: value,
+          })
+        }
       />
       {_renderTopUpMessage()}
       <Flex justifyContent={isMobile ? 'center' : 'flex-end'} mt={7}>
@@ -151,22 +152,21 @@ const FormCrypto: FC<IFormCrypto> = ({ onBack, onNext, planSelected }) => {
         <Box className="icon-arrow-left" mr={6} onClick={onBack} />
         <Box className={'sub-title'}>Crypto</Box>
       </Flex>
-      {wallet && isUserLinked
-        ? _renderWalletInfo()
-        : (
-          <AppCard className="box-connect-wallet">
-            <ConnectWalletIcon />
-            <Box className="box-connect-wallet__description">
-              Connect wallet to top up your balance amount and perform payment
-              with cryptocurrencies.
-            </Box>
-            <AppConnectWalletButton width={'100%'} size="lg">
-              Connect Wallet
-            </AppConnectWalletButton>
-          </AppCard>
-        )
-      }
-    </Box >
+      {wallet && isUserLinked ? (
+        _renderWalletInfo()
+      ) : (
+        <AppCard className="box-connect-wallet">
+          <ConnectWalletIcon />
+          <Box className="box-connect-wallet__description">
+            Connect wallet to top up your balance amount and perform payment
+            with cryptocurrencies.
+          </Box>
+          <AppConnectWalletButton width={'100%'} size="lg">
+            Connect Wallet
+          </AppConnectWalletButton>
+        </AppCard>
+      )}
+    </Box>
   );
 };
 

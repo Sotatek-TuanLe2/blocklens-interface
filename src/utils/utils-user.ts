@@ -14,15 +14,15 @@ export interface UserInterface {
   linkedAddress: string;
   stripePayment: StripePayment;
 
-  setId: (id : string) => void;
-  setBalance: (balance : string) => void;
-  setBillingEmail: (billingEmail : string) => void;
-  setEmail: (email : string) => void;
-  setFirstName: (firstName : string) => void;
-  setLastName: (lastName : string) => void;
-  setIsEmailVerified: (isEmailVerified : boolean) => void;
-  setLinkedAddress: (linkedAddress : string) => void;
-  setStripePayment: (stripePayment : StripePayment) => void;
+  setId: (id: string) => void;
+  setBalance: (balance: string) => void;
+  setBillingEmail: (billingEmail: string) => void;
+  setEmail: (email: string) => void;
+  setFirstName: (firstName: string) => void;
+  setLastName: (lastName: string) => void;
+  setIsEmailVerified: (isEmailVerified: boolean) => void;
+  setLinkedAddress: (linkedAddress: string) => void;
+  setStripePayment: (stripePayment: StripePayment) => void;
   getId: () => string;
   getBalance: () => string;
   getBillingEmail: () => string;
@@ -47,43 +47,43 @@ export class User implements UserInterface {
   public linkedAddress = '';
   public stripePayment = {
     card: {},
-    id: "",
-    livemode: false
+    id: '',
+    livemode: false,
   };
 
-  constructor(id : string) {
+  constructor(id: string) {
     this.id = id;
   }
 
-  setId(id : string): void {
+  setId(id: string): void {
     this.id = id;
   }
 
-  setBalance(balance : string | number): void {
+  setBalance(balance: string | number): void {
     this.balance = String(balance);
   }
 
-  setBillingEmail(billingEmail : string): void {
+  setBillingEmail(billingEmail: string): void {
     this.billingEmail = billingEmail;
   }
 
-  setEmail(email : string): void {
+  setEmail(email: string): void {
     this.email = email;
   }
 
-  setFirstName(firstName : string): void {
+  setFirstName(firstName: string): void {
     this.firstName = firstName;
   }
 
-  setLastName(lastName : string): void {
+  setLastName(lastName: string): void {
     this.lastName = lastName;
   }
 
-  setIsEmailVerified(isEmailVerified : boolean): void {
+  setIsEmailVerified(isEmailVerified: boolean): void {
     this.isEmailVerified = isEmailVerified;
   }
 
-  setLinkedAddress(linkedAddress : string): void {
+  setLinkedAddress(linkedAddress: string): void {
     this.linkedAddress = linkedAddress;
   }
 

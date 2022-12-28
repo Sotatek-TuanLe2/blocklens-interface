@@ -79,8 +79,9 @@ const PlanMobile: FC<IPlanMobile> = ({
   return (
     <>
       <Box
-        className={`${isOpen ? 'open' : ''} ${isActivePlan ? 'active' : ''
-          } card-mobile plan-card`}
+        className={`${isOpen ? 'open' : ''} ${
+          isActivePlan ? 'active' : ''
+        } card-mobile plan-card`}
       >
         <Flex
           justifyContent="space-between"
@@ -126,7 +127,9 @@ const PlanMobile: FC<IPlanMobile> = ({
 };
 
 const BillingPage = () => {
-  const [paymentMethod, setPaymentMethod] = useState<string>(PAYMENT_METHOD.CARD);
+  const [paymentMethod, setPaymentMethod] = useState<string>(
+    PAYMENT_METHOD.CARD,
+  );
   const [planSelected, setPlanSelected] = useState<IPlan>({} as any);
   const [step, setStep] = useState<number>(STEPS.LIST);
   const { myPlan: currentPlan, plans: billingPlans } = useSelector(
@@ -143,11 +146,17 @@ const BillingPage = () => {
     if (!user) {
       return false;
     }
-    return new BigNumber(user.getBalance()).isGreaterThanOrEqualTo(new BigNumber(planSelected.price));
+    return new BigNumber(user.getBalance()).isGreaterThanOrEqualTo(
+      new BigNumber(planSelected.price),
+    );
   }, [user?.getBalance(), planSelected]);
 
-  const isCurrentPlan = new BigNumber(planSelected.price).isEqualTo(new BigNumber(currentPlan.price));
-  const isDownGrade = new BigNumber(planSelected.price).isLessThan(new BigNumber(currentPlan.price));
+  const isCurrentPlan = new BigNumber(planSelected.price).isEqualTo(
+    new BigNumber(currentPlan.price),
+  );
+  const isDownGrade = new BigNumber(planSelected.price).isLessThan(
+    new BigNumber(currentPlan.price),
+  );
 
   const _renderPlansDesktop = () => {
     const _renderBody = () => {
@@ -297,13 +306,13 @@ const BillingPage = () => {
           <PartCheckout
             planSelected={planSelected}
             paymentMethodCode={paymentMethod}
-            onBack={isCardPaymentMethod
-              ? onBackStep
-              : (
-                isSufficientBalance
-                  ? () => setStep(STEPS.LIST)
-                  : onBackStep
-              )}
+            onBack={
+              isCardPaymentMethod
+                ? onBackStep
+                : isSufficientBalance
+                ? () => setStep(STEPS.LIST)
+                : onBackStep
+            }
           />
         );
       default:
@@ -317,13 +326,11 @@ const BillingPage = () => {
     }
     return (
       <AppAlertWarning>
-        {
-          isDownGrade
-            ? 'Your current plan would still be usable until the end of the current billing period. New plan will be applied with the next billing period. Some apps might become inactive to match limit of the Downgraded plan (changable later).'
-            : 'Your current plan will be terminated. New plan will be applied with billing period starting today.'
-        }
+        {isDownGrade
+          ? 'Your current plan would still be usable until the end of the current billing period. New plan will be applied with the next billing period. Some apps might become inactive to match limit of the Downgraded plan (changable later).'
+          : 'Your current plan will be terminated. New plan will be applied with billing period starting today.'}
       </AppAlertWarning>
-    )
+    );
   };
 
   const _renderButtonText = (): string => {
@@ -331,7 +338,7 @@ const BillingPage = () => {
       return 'Continue';
     }
     if (isDownGrade) {
-      return 'Downgrade'
+      return 'Downgrade';
     }
     return 'Upgrade';
   };
@@ -359,14 +366,17 @@ const BillingPage = () => {
         if (isSufficientBalance) {
           setStep(STEPS.CHECKOUT);
         } else {
-          window.open(`/top-up?${TOP_UP_PARAMS.PLAN}=${planSelected.code}`, '_blank')?.focus();
+          window
+            .open(
+              `/top-up?${TOP_UP_PARAMS.PLAN}=${planSelected.code}`,
+              '_blank',
+            )
+            ?.focus();
           // TODO: setInterval to reload balance with attempts
         }
         break;
       case PAYMENT_METHOD.CARD:
-        setStep(user?.isUserStriped()
-          ? STEPS.CHECKOUT
-          : STEPS.FORM);
+        setStep(user?.isUserStriped() ? STEPS.CHECKOUT : STEPS.FORM);
         break;
       default:
         break;
