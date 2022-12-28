@@ -308,9 +308,14 @@
 
   @include tablet {
     width: 100%;
+    padding: 30px 0;
 
     &:first-child {
       margin-bottom: 20px;
+    }
+
+    svg {
+      max-width: 270px;
     }
   }
 
@@ -324,6 +329,10 @@
     line-height: 26px;
     margin-bottom: 22px;
     text-transform: uppercase;
+
+    @include tablet {
+      font-size: 16px;
+    }
   }
 
   .icon-checked-active {

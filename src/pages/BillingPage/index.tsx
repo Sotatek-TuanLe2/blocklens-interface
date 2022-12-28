@@ -32,7 +32,7 @@ import { TOP_UP_PARAMS } from '../TopUp';
 import { useHistory } from 'react-router';
 import PartPaymentInfo from './parts/PartPaymentInfo';
 import ModalEditCreditCard from 'src/modals/ModalEditCreditCard';
-import { getInfoUser } from '../../store/auth';
+import { getInfoUser } from 'src/store/auth';
 
 export const PAYMENT_METHOD = {
   CARD: 'STRIPE',
@@ -65,7 +65,7 @@ interface IPlanMobile {
 
 const _renderPrice = (price: number | null) => {
   if (price === 0) {
-    return '$0';
+    return 'Free';
   }
 
   return `$${price}/month`;
@@ -202,7 +202,7 @@ const BillingPage = () => {
                 <Td>
                   <Flex alignItems={'center'}>
                     <CheckedIcon />
-                    <Box ml={3}> {plan.appLimitation} active apps </Box>
+                    <Box ml={3}> {plan.appLimitation} apps </Box>
                   </Flex>
                 </Td>
                 <Td>
@@ -212,6 +212,12 @@ const BillingPage = () => {
                       {' '}
                       {plan.notificationLimitation} messages/day{' '}
                     </Box>
+                  </Flex>
+                </Td>
+                <Td>
+                  <Flex alignItems={'center'}>
+                    <CheckedIcon />
+                    <Box ml={3}>All supported chains</Box>
                   </Flex>
                 </Td>
                 <Td>{_renderPrice(plan.price)}</Td>
