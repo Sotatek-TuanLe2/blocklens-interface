@@ -31,11 +31,46 @@
       border-radius: 16px;
       font-size: 14px;
     }
-    .user-name {
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      display: inline-block;
+
+    .menu-header {
+      font-size: 16px;
+      max-width: 200px;
+      background: $bg2;
+      border: none;
+      padding: 18px 20px;
+      border-radius: 18px;
+      .user-info {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        display: inline-block;
+        text-align: center;
+        font-weight: 700;
+        &:focus {
+          background-color: transparent;
+        }
+        .user-email {
+          font-size: 14px;
+          color: $paragraph;
+          font-weight: 400;
+        }
+        .user-divider {
+          margin-top: 14px;
+          width: 100%;
+          border: 1px solid #2f3b58;
+        }
+        .user-logout {
+          color: $red;
+          padding-top: 14px;
+          font-weight: 500;
+          font-family: 'DM Sans';
+          display: flex;
+          justify-content: center;
+          span {
+            margin-left: 8px;
+          }
+        }
+      }
     }
   }
 

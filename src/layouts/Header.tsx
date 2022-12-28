@@ -81,13 +81,16 @@ const Header: FC = () => {
           <MenuButton>
             <Avatar name={userInfo?.firstName} size="sm" />
           </MenuButton>
-          <MenuList fontSize={'16px'} color={'black'} maxW="200px">
-            <MenuItem className="user-name">
-              👋&nbsp; Welcome {userInfo?.firstName + ' ' + userInfo?.lastName}!
-            </MenuItem>
-
-            <MenuItem color={'red.400'} onClick={onLogout}>
-              Logout
+          <MenuList className="menu-header">
+            <MenuItem className="user-info">
+              <span>{userInfo?.firstName + ' ' + userInfo?.lastName}</span>
+              <br />
+              <span className="user-email">{userInfo?.email}</span>
+              <div className="user-divider"></div>
+              <div className="user-logout" onClick={onLogout}>
+                {' '}
+                <LogoutIcon /> <span>Log Out</span>
+              </div>
             </MenuItem>
           </MenuList>
         </Menu>
