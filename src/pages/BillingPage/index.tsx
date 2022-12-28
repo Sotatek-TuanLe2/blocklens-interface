@@ -331,6 +331,7 @@ const BillingPage = () => {
             <Flex
               className="link"
               alignItems="center"
+              mb={5}
               onClick={() => history.push('/billing-history')}
             >
               <Box mr={2}>Billing History</Box>
