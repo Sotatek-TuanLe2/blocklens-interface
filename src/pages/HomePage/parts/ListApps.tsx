@@ -15,8 +15,6 @@ import ModalUpgradeCreateApp from 'src/modals/ModalUpgradeCreateApp';
 import { isMobile } from 'react-device-detect';
 
 interface IListApps {
-  totalApps: number;
-  totalAppActive: number;
   searchListApp: any;
   setOpenModalCreateApp: () => void;
 }
@@ -112,13 +110,14 @@ const AppMobile: FC<IAppMobile> = ({ app }) => {
 };
 
 const ListApps: React.FC<IListApps> = ({
-  totalApps,
   setOpenModalCreateApp,
   searchListApp,
-  totalAppActive,
 }) => {
   const history = useHistory();
-  const { myPlan } = useSelector((state: RootState) => state.billing);
+  const {
+    billing: { myPlan },
+    stats: { totalApp, totalAppActive },
+  } = useSelector((state: RootState) => state);
 
   const [openModalUpgradeCreateApp, setOpenModalUpgradeCreateApp] =
     useState<boolean>(false);
@@ -254,7 +253,7 @@ const ListApps: React.FC<IListApps> = ({
   const _renderTotalApp = () => {
     return (
       <Box className="number-app">
-        <Text as={'span'}>Active Apps:</Text> {totalAppActive}/{totalApps}
+        <Text as={'span'}>Active Apps:</Text> {totalAppActive}/{totalApp}
       </Box>
     );
   };

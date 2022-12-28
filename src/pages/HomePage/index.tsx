@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import 'src/styles/pages/HomePage.scss';
 import { Flex, Box } from '@chakra-ui/react';
 import ListApps from './parts/ListApps';
@@ -7,44 +7,37 @@ import { BasePageContainer } from 'src/layouts';
 import PartUserStats from './parts/PartUserStats';
 import { AppButton, AppCard, RequestParams } from 'src/components';
 import ModalCreateApp from 'src/modals/ModalCreateApp';
-import rf from 'src/requests/RequestFactory';
-import { functions } from 'lodash';
-
-type AppStatsType = {
-  totalApp: number;
-  totalAppActive: number;
-  totalAppInActive: number;
-  totalRegistration: number;
-  totalRegistrationActive: number;
-};
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../store';
+import { getUserStats } from '../../store/stats';
 
 const HomePage = () => {
+  const { totalApp, totalRegistrationActive } = useSelector(
+    (state: RootState) => state.stats,
+  );
+  const hasApp = totalApp > 0;
+
   const [openModalCreateApp, setOpenModalCreateApp] = useState<boolean>(false);
   const [searchListApp, setSearchListApp] = useState<RequestParams>({});
-  const [appStat, setAppStat] = useState<AppStatsType>({} as AppStatsType);
-
-  const getAppStatOfUser = useCallback(async () => {
-    try {
-      const res = await rf.getRequest('AppRequest').getAppStatsOfUser();
-      setAppStat(res);
-    } catch (error: any) {
-      setAppStat({} as AppStatsType);
-    }
-  }, []);
+  // const getAppStatOfUser = useCallback(async () => {
+  //   try {
+  //     const res = await rf.getRequest('AppRequest').getAppStatsOfUser();
+  //     setAppStat(res);
+  //   } catch (error: any) {
+  //     setAppStat({} as AppStatsType);
+  //   }
+  // }, []);
 
   const onCreateAppSuccess = async () => {
-    await getAppStatOfUser();
+    dispatch(getUserStats());
     setSearchListApp((prevState) => ({ ...prevState }));
   };
 
-  useEffect(() => {
-    (async () => await getAppStatOfUser())();
-  }, [getAppStatOfUser]);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    if (appStat.totalApp !== 0) return;
-    setOpenModalCreateApp(true);
-  }, [appStat.totalApp]);
+    dispatch(getUserStats());
+  }, []);
 
   const _renderNoApp = () => {
     return (
@@ -69,14 +62,10 @@ const HomePage = () => {
   return (
     <BasePageContainer>
       <>
-        {appStat.totalApp > 0 ? (
+        {hasApp ? (
           <>
-            <PartUserStats
-              totalWebhookActive={appStat?.totalRegistrationActive}
-            />
+            <PartUserStats totalWebhookActive={totalRegistrationActive} />
             <ListApps
-              totalAppActive={appStat?.totalAppActive}
-              totalApps={appStat.totalApp}
               setOpenModalCreateApp={() => setOpenModalCreateApp(true)}
               searchListApp={searchListApp}
             />
@@ -86,7 +75,7 @@ const HomePage = () => {
           _renderNoApp()
         )}
         <ModalCreateApp
-          open={openModalCreateApp}
+          open={openModalCreateApp || !hasApp}
           onClose={() => setOpenModalCreateApp(false)}
           reloadData={onCreateAppSuccess}
         />
