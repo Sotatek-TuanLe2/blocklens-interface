@@ -34,7 +34,7 @@ const HomePage = () => {
   
   const onCreateAppSuccess = async () => {
 	await getAppStatOfUser();
-	setSearchListApp(prevState => prevState)
+	setSearchListApp(prevState => ({...prevState}))
   }
   
   
