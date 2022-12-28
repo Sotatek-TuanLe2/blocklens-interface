@@ -70,7 +70,7 @@ const AccountPage = () => {
               <Box className="info-item">
                 <Box className="title">Linked Accounts</Box>
               </Box>
-              {isMobile && <Box className={'link'} onClick={unlinkWallet}>Unlink</Box>}
+              {isMobile && user?.getLinkedAddress() && <Box className={'link'} onClick={unlinkWallet}>Unlink</Box>}
             </Flex>
             {_renderLinkedAccounts()}
           </AppCard>
