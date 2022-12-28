@@ -46,7 +46,8 @@ const useUser = (): ReturnType => {
     lastName,
     isEmailVerified,
     walletAddress,
-    stripePaymentMethod
+    stripePaymentMethod,
+    isPaymentMethodIntegrated,
   ]);
 
   return { user };

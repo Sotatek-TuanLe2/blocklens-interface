@@ -29,7 +29,11 @@ const AccountPage = () => {
                 : user.getLinkedAddress()}
             </Box>
           </Flex>
-          {!isMobile && <Box className={'link'} onClick={unlinkWallet}>Unlink</Box>}
+          {!isMobile && (
+            <Box className={'link'} onClick={unlinkWallet}>
+              Unlink
+            </Box>
+          )}
         </Flex>
       );
     }
