@@ -7,9 +7,10 @@ import { BasePageContainer } from 'src/layouts';
 import PartUserStats from './parts/PartUserStats';
 import { AppButton, AppCard } from 'src/components';
 import ModalCreateApp from 'src/modals/ModalCreateApp';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { getUserStats } from '../../store/stats';
+import { useDispatch } from 'react-redux';
 
 const HomePage = () => {
   const { totalApp, totalRegistrationActive } = useSelector(
@@ -17,17 +18,13 @@ const HomePage = () => {
   );
   const hasApp = totalApp > 0;
 
-  const dispatch = useDispatch();
-
   const [openModalCreateApp, setOpenModalCreateApp] = useState<boolean>(false);
+
+  const dispatch = useDispatch();
 
   const onCreateAppSuccess = async () => {
     dispatch(getUserStats());
   };
-
-  useEffect(() => {
-    dispatch(getUserStats());
-  }, []);
 
   const _renderNoApp = () => {
     return (
