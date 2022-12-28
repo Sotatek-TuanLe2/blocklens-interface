@@ -1,9 +1,8 @@
 import { Box, Flex, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
-import React, { useState, FC, useCallback, useEffect } from 'react';
-import { AppButton, AppCard, AppDataTable } from 'src/components';
+import React, { useState, FC, useRef } from 'react';
+import { AppButton, AppCard, AppDataTable, DataTableRef } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
-import { IListAppResponse } from 'src/utils/common';
 import { useHistory } from 'react-router';
 import {
   getLogoChainByChainId,
@@ -13,11 +12,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from 'src/store';
 import ModalUpgradeCreateApp from 'src/modals/ModalUpgradeCreateApp';
 import { isMobile } from 'react-device-detect';
-
-interface IListApps {
-  searchListApp: any;
-  setOpenModalCreateApp: () => void;
-}
+import ModalCreateApp from '../../../modals/ModalCreateApp';
 
 interface IAppMobile {
   app: IAppResponse;
@@ -109,18 +104,14 @@ const AppMobile: FC<IAppMobile> = ({ app }) => {
   );
 };
 
-const ListApps: React.FC<IListApps> = ({
-  setOpenModalCreateApp,
-  searchListApp,
-}) => {
+const ListApps: React.FC = () => {
   const history = useHistory();
   const {
     billing: { myPlan },
     stats: { totalApp, totalAppActive },
   } = useSelector((state: RootState) => state);
 
-  const [openModalUpgradeCreateApp, setOpenModalUpgradeCreateApp] =
-    useState<boolean>(false);
+  const [openCreateApp, setOpenCreateApp] = useState(false);
 
   const getTotalWebhookEachApp = async (appIds: string) => {
     try {
@@ -147,6 +138,8 @@ const ListApps: React.FC<IListApps> = ({
       return error;
     }
   };
+
+  const dataTableRef = useRef<DataTableRef>();
 
   const fetchDataTable: any = async (param: any) => {
     try {
@@ -175,16 +168,26 @@ const ListApps: React.FC<IListApps> = ({
   };
 
   const onCreateApp = () => {
-    if (
+    setOpenCreateApp(true);
+  };
+
+  const _renderModalCreateApp = () => {
+    const isLimitApp =
       myPlan?.appLimitation &&
       totalAppActive &&
-      totalAppActive >= myPlan?.appLimitation
-    ) {
-      setOpenModalUpgradeCreateApp(true);
-      return;
-    }
-
-    setOpenModalCreateApp();
+      totalAppActive >= myPlan?.appLimitation;
+    return isLimitApp ? (
+      <ModalUpgradeCreateApp
+        open={openCreateApp}
+        onClose={() => setOpenCreateApp(false)}
+      />
+    ) : (
+      <ModalCreateApp
+        reloadData={() => dataTableRef.current?.fetchTableData()}
+        open={openCreateApp}
+        onClose={() => setOpenCreateApp(false)}
+      />
+    );
   };
 
   const _renderHeader = () => {
@@ -282,20 +285,15 @@ const ListApps: React.FC<IListApps> = ({
           </Box>
         )}
         <AppDataTable
-          requestParams={searchListApp}
+          //@ts-ignore
+          ref={dataTableRef}
           fetchData={fetchDataTable}
           renderBody={_renderBody}
           renderHeader={_renderHeader}
           limit={10}
         />
       </AppCard>
-
-      {openModalUpgradeCreateApp && (
-        <ModalUpgradeCreateApp
-          open={openModalUpgradeCreateApp}
-          onClose={() => setOpenModalUpgradeCreateApp(false)}
-        />
-      )}
+      {_renderModalCreateApp()}
     </Box>
   );
 };
