@@ -7,7 +7,7 @@ import {
   Table,
   TableContainer,
 } from '@chakra-ui/react';
-import { FC, useEffect, useMemo, useState } from 'react';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 import BigNumber from 'bignumber.js';
 import 'src/styles/pages/BillingPage.scss';
 import { BasePageContainer } from 'src/layouts';
@@ -19,16 +19,17 @@ import {
   CheckedIcon,
   RadioNoCheckedIcon,
   RadioChecked,
+  ArrowRightIcon,
 } from 'src/assets/icons';
 import { isMobile } from 'react-device-detect';
-import PartAddCard from './parts/PartAddCard';
-import FormCrypto from './parts/FormCrypto';
 import PartCheckout from './parts/PartCheckout';
 import AppAlertWarning from 'src/components/AppAlertWarning';
 import useUser from 'src/hooks/useUser';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { TOP_UP_PARAMS } from '../TopUp';
+import { useHistory } from 'react-router';
+import PartPaymentInfo from './parts/PartPaymentInfo';
 
 export const PAYMENT_METHOD = {
   CARD: 'CARD',
@@ -79,8 +80,9 @@ const PlanMobile: FC<IPlanMobile> = ({
   return (
     <>
       <Box
-        className={`${isOpen ? 'open' : ''} ${isActivePlan ? 'active' : ''
-          } card-mobile plan-card`}
+        className={`${isOpen ? 'open' : ''} ${
+          isActivePlan ? 'active' : ''
+        } card-mobile plan-card`}
       >
         <Flex
           justifyContent="space-between"
@@ -126,7 +128,9 @@ const PlanMobile: FC<IPlanMobile> = ({
 };
 
 const BillingPage = () => {
-  const [paymentMethod, setPaymentMethod] = useState<string>(PAYMENT_METHOD.CARD);
+  const [paymentMethod, setPaymentMethod] = useState<string>(
+    PAYMENT_METHOD.CARD,
+  );
   const [planSelected, setPlanSelected] = useState<IPlan>({} as any);
   const [step, setStep] = useState<number>(STEPS.LIST);
   const { myPlan: currentPlan, plans: billingPlans } = useSelector(
@@ -134,6 +138,7 @@ const BillingPage = () => {
   );
   const { user } = useUser();
   const dispatch = useDispatch();
+  const history = useHistory();
 
   useEffect(() => {
     setPlanSelected(currentPlan);
@@ -143,11 +148,17 @@ const BillingPage = () => {
     if (!user) {
       return false;
     }
-    return new BigNumber(user.getBalance()).isGreaterThanOrEqualTo(new BigNumber(planSelected.price));
+    return new BigNumber(user.getBalance()).isGreaterThanOrEqualTo(
+      new BigNumber(planSelected.price),
+    );
   }, [user?.getBalance(), planSelected]);
 
-  const isCurrentPlan = new BigNumber(planSelected.price).isEqualTo(new BigNumber(currentPlan.price));
-  const isDownGrade = new BigNumber(planSelected.price).isLessThan(new BigNumber(currentPlan.price));
+  const isCurrentPlan = new BigNumber(planSelected.price).isEqualTo(
+    new BigNumber(currentPlan.price),
+  );
+  const isDownGrade = new BigNumber(planSelected.price).isLessThan(
+    new BigNumber(currentPlan.price),
+  );
 
   const _renderPlansDesktop = () => {
     const _renderBody = () => {
@@ -229,7 +240,20 @@ const BillingPage = () => {
   const _renderStep1 = () => {
     return (
       <>
-        <Box className="heading-title">Billing</Box>
+        <Flex justifyContent={'space-between'}>
+          <Box className="heading-title">Billing</Box>
+          {user?.isPaymentMethodIntegrated && (
+            <Flex
+              className="link"
+              alignItems="center"
+              onClick={() => history.push('/billing-history')}
+            >
+              <Box mr={2}>Billing History</Box>
+              <ArrowRightIcon />
+            </Flex>
+          )}
+        </Flex>
+
         <AppCard className="list-table-wrap">
           <Box className={'text-title'}>Select Your Plan</Box>
           {isMobile ? _renderPlansMobile() : _renderPlansDesktop()}
@@ -247,27 +271,29 @@ const BillingPage = () => {
             </AppLink>
           </Box>
         </AppCard>
-        <AppCard className="box-payment-method" mt={7}>
-          <Box className={'text-title'}>Payment Method</Box>
-          {/* TODO: Add reload balance for Crypto method */}
-          {paymentMethods.map((item, index: number) => {
-            return (
-              <Flex
-                className={'payment-method'}
-                alignItems={'center'}
-                key={index}
-                onClick={() => setPaymentMethod(item.code)}
-              >
-                {paymentMethod === item.code ? (
-                  <RadioChecked />
-                ) : (
-                  <RadioNoCheckedIcon />
-                )}
-                <Box ml={4}>{item.name}</Box>
-              </Flex>
-            );
-          })}
-        </AppCard>
+
+        {user?.isPaymentMethodIntegrated && (
+          <AppCard className="box-payment-method" mt={7}>
+            <Box className={'text-title'}>Payment Method</Box>
+            {paymentMethods.map((item, index: number) => {
+              return (
+                <Flex
+                  className={'payment-method'}
+                  alignItems={'center'}
+                  key={index}
+                  onClick={() => setPaymentMethod(item.code)}
+                >
+                  {paymentMethod === item.code ? (
+                    <RadioChecked />
+                  ) : (
+                    <RadioNoCheckedIcon />
+                  )}
+                  <Box ml={4}>{item.name} </Box>
+                </Flex>
+              );
+            })}
+          </AppCard>
+        )}
       </>
     );
   };
@@ -277,19 +303,17 @@ const BillingPage = () => {
   const onBackStep = () => setStep((prevState) => prevState - 1);
 
   const _renderContent = () => {
-    const isCardPaymentMethod = paymentMethod === PAYMENT_METHOD.CARD;
     switch (step) {
       case STEPS.LIST:
         return _renderStep1();
       case STEPS.FORM:
-        if (isCardPaymentMethod) {
-          return <PartAddCard onBack={onBackStep} onNext={onNextStep} />;
-        }
         return (
-          <FormCrypto
+          <PartPaymentInfo
             planSelected={planSelected}
             onBack={onBackStep}
             onNext={onNextStep}
+            paymentMethod={paymentMethod}
+            setPaymentMethod={setPaymentMethod}
           />
         );
       case STEPS.CHECKOUT:
@@ -297,13 +321,11 @@ const BillingPage = () => {
           <PartCheckout
             planSelected={planSelected}
             paymentMethodCode={paymentMethod}
-            onBack={isCardPaymentMethod
-              ? onBackStep
-              : (
-                isSufficientBalance
-                  ? () => setStep(STEPS.LIST)
-                  : onBackStep
-              )}
+            onBack={
+              user?.isPaymentMethodIntegrated
+                ? () => setStep(STEPS.LIST)
+                : onBackStep
+            }
           />
         );
       default:
@@ -312,26 +334,24 @@ const BillingPage = () => {
   };
 
   const _renderWarning = () => {
-    if (isCurrentPlan) {
+    if (isCurrentPlan || !user?.isPaymentMethodIntegrated) {
       return null;
     }
     return (
       <AppAlertWarning>
-        {
-          isDownGrade
-            ? 'Your current plan would still be usable until the end of the current billing period. New plan will be applied with the next billing period. Some apps might become inactive to match limit of the Downgraded plan (changable later).'
-            : 'Your current plan will be terminated. New plan will be applied with billing period starting today.'
-        }
+        {isDownGrade
+          ? 'Your current plan would still be usable until the end of the current billing period. New plan will be applied with the next billing period. Some apps might become inactive to match limit of the Downgraded plan (changable later).'
+          : 'Your current plan will be terminated. New plan will be applied with billing period starting today.'}
       </AppAlertWarning>
-    )
+    );
   };
 
   const _renderButtonText = (): string => {
-    if (isCurrentPlan) {
+    if (isCurrentPlan || !user?.isPaymentMethodIntegrated) {
       return 'Continue';
     }
     if (isDownGrade) {
-      return 'Downgrade'
+      return 'Downgrade';
     }
     return 'Upgrade';
   };
@@ -341,7 +361,7 @@ const BillingPage = () => {
       await rf
         .getRequest('BillingRequest')
         .updateBillingPlan({ code: planSelected.code });
-      toastSuccess({ message: 'Update Plan Successfully!' });
+      toastSuccess({ message: 'Downgrade Plan Successfully!' });
       dispatch(getMyPlan());
     } catch (error: any) {
       toastError({ message: error.message });
@@ -359,14 +379,17 @@ const BillingPage = () => {
         if (isSufficientBalance) {
           setStep(STEPS.CHECKOUT);
         } else {
-          window.open(`/top-up?${TOP_UP_PARAMS.PLAN}=${planSelected.code}`, '_blank')?.focus();
+          window
+            .open(
+              `/top-up?${TOP_UP_PARAMS.PLAN}=${planSelected.code}`,
+              '_blank',
+            )
+            ?.focus();
           // TODO: setInterval to reload balance with attempts
         }
         break;
       case PAYMENT_METHOD.CARD:
-        setStep(user?.isUserStriped()
-          ? STEPS.CHECKOUT
-          : STEPS.FORM);
+        setStep(user?.isUserStriped() ? STEPS.CHECKOUT : STEPS.FORM);
         break;
       default:
         break;

@@ -18,6 +18,7 @@ const useUser = (): ReturnType => {
     lastName,
     isEmailVerified,
     walletAddress,
+    isPaymentMethodIntegrated,
     stripePaymentMethod
   } = userInfo;
 
@@ -32,6 +33,7 @@ const useUser = (): ReturnType => {
     newUser.setFirstName(firstName || '');
     newUser.setLastName(lastName || '');
     newUser.setIsEmailVerified(!!isEmailVerified);
+    newUser.setIsPaymentMethodIntegrated(!!isPaymentMethodIntegrated);
     newUser.setLinkedAddress(walletAddress || '');
     newUser.setStripePayment(stripePaymentMethod);
     return newUser;

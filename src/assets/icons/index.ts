@@ -21,6 +21,9 @@ import { ReactComponent as ConnectWalletIcon } from './ConnectWalletIcon.svg';
 import { ReactComponent as WarningIcon } from './WarningIcon.svg';
 import { ReactComponent as DownloadBillingIcon } from './DownloadBillingIcon.svg';
 import { ReactComponent as LogoutIcon } from './LogoutIcon.svg';
+import { ReactComponent as ListCardIcon } from './ListCardIcon.svg';
+import { ReactComponent as CryptoIcon } from './CryptoIcon.svg';
+import { ReactComponent as CircleCheckedIcon } from './CircleCheckedIcon.svg';
 
 export {
   CalendarIcon,
@@ -46,4 +49,7 @@ export {
   WarningIcon,
   DownloadBillingIcon,
   LogoutIcon,
+  CryptoIcon,
+  ListCardIcon,
+  CircleCheckedIcon
 };

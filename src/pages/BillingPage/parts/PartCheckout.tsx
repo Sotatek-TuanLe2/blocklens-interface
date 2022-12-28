@@ -1,16 +1,17 @@
 import React, { FC } from 'react';
 import { Box, Flex } from '@chakra-ui/react';
-import { useDispatch } from 'react-redux';
-import { paymentMethods } from '..';
+import { useDispatch, useSelector } from 'react-redux';
+import { PAYMENT_METHOD, paymentMethods } from '..';
 import useWallet from 'src/hooks/useWallet';
 import { AppButton } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { getMyPlan, IPlan } from 'src/store/billing';
-import AppAlertWarning from '../../../components/AppAlertWarning';
-import { formatShortText } from '../../../utils/utils-helper';
-import { CheckedIcon } from '../../../assets/icons';
+import AppAlertWarning from 'src/components/AppAlertWarning';
+import { formatShortText } from 'src/utils/utils-helper';
+import { CheckedIcon } from 'src/assets/icons';
 import { useHistory } from 'react-router-dom';
+import { RootState } from 'src/store';
 
 interface IPartCheckout {
   planSelected: IPlan;
@@ -26,6 +27,7 @@ const PartCheckout: FC<IPartCheckout> = ({
   const { wallet } = useWallet();
   const dispatch = useDispatch();
   const history = useHistory();
+  const { userInfo } = useSelector((state: RootState) => state.auth);
 
   const paymentMethod = paymentMethods.find(
     (item) => item.code === paymentMethodCode,
@@ -65,6 +67,20 @@ const PartCheckout: FC<IPartCheckout> = ({
     }
   };
 
+  const _renderInfoPayment = () => {
+    if (paymentMethod?.code === PAYMENT_METHOD.CARD) {
+      return (
+        userInfo?.stripePaymentMethod?.card?.brand +
+        ' - ' +
+        userInfo?.stripePaymentMethod?.card?.last4
+      );
+    }
+
+    return formatShortText(
+      wallet?.getAddress() || userInfo?.walletAddress || '',
+    );
+  };
+
   return (
     <Box className="form-card">
       <Flex alignItems={'center'} mb={7}>
@@ -78,9 +94,7 @@ const PartCheckout: FC<IPartCheckout> = ({
             <Box className="title">Payment method</Box>
             <Flex justifyContent={'space-between'}>
               <Box className="type">{paymentMethod?.name}</Box>
-              <Box className="address">
-                {formatShortText(wallet?.getAddress() || '')}
-              </Box>
+              <Box className="address">{_renderInfoPayment()}</Box>
             </Flex>
           </Box>
 

@@ -20,7 +20,9 @@ const PaymentMethod = () => {
           <RadioChecked />
           <Box ml={2}>Card</Box>{' '}
           <Box className="info-payment">
-            (•••• •••• •••• {userInfo?.stripePaymentMethod?.card?.last4})
+            ({userInfo?.stripePaymentMethod
+              ? `${userInfo?.stripePaymentMethod?.card?.brand} - ${userInfo?.stripePaymentMethod?.card?.last4}`
+              : '--'})
           </Box>
         </Flex>
         <Flex cursor={'pointer'}>
