@@ -1,8 +1,10 @@
-import { FC, ReactElement } from 'react';
+import { FC, ReactElement, useEffect } from 'react';
 import { Box, Flex } from '@chakra-ui/react';
 import React from 'react';
 import { BasePage } from 'src/layouts';
 import { isMobile } from 'react-device-detect';
+import { useDispatch } from 'react-redux';
+import { getUserStats } from '../store/user';
 
 interface IBasePageContainer {
   className?: string;

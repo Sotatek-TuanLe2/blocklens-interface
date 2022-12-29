@@ -23,14 +23,35 @@ import { isMobile } from 'react-device-detect';
 import { APP_STATUS } from 'src/utils/utils-app';
 import PartAppGraph from './parts/PartAppGraph';
 import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
 
 const AppDetail = () => {
+  const {
+    stats: {
+      numberOfAddressActivities,
+      numberOfContractActivities,
+      numberOfNftActivities,
+    },
+  } = useSelector((state: RootState) => state.user);
+
   const [appInfo, setAppInfo] = useState<any>({});
   const [isShowSetting, setIsShowSetting] = useState<boolean>(false);
   const [type, setType] = useState<string>(WEBHOOK_TYPES.NFT_ACTIVITY);
+  const [defaultTab, setDefaultTab] = useState(0);
   const history = useHistory();
 
   const { id: appId } = useParams<{ id: string }>();
+
+  const getActiveTab = () => {
+    const tabs = [
+      numberOfNftActivities,
+      numberOfAddressActivities,
+      numberOfContractActivities,
+    ];
+    const tabHasWebhook = tabs.find((item) => item > 0);
+    return tabHasWebhook ? tabs.indexOf(tabHasWebhook) : 0;
+  };
 
   const getAppInfo = useCallback(async () => {
     try {
@@ -46,6 +67,15 @@ const AppDetail = () => {
   useEffect(() => {
     getAppInfo().then();
   }, []);
+
+  useEffect(() => {
+    const activeTab = getActiveTab();
+    setDefaultTab(activeTab);
+  }, [
+    numberOfContractActivities,
+    numberOfAddressActivities,
+    numberOfNftActivities,
+  ]);
 
   if (!appInfo || !Object.values(appInfo).length) {
     return (
@@ -123,7 +153,11 @@ const AppDetail = () => {
               </Box>
             </Flex>
 
-            <Tabs variant={'unstyled'} colorScheme="transparent">
+            <Tabs
+              variant={'unstyled'}
+              colorScheme="transparent"
+              defaultIndex={defaultTab}
+            >
               <TabList
                 className={`${
                   isEVMNetwork(appInfo.chain) ? '' : 'no-tab'

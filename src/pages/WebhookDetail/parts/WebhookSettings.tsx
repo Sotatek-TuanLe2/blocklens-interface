@@ -23,6 +23,8 @@ import {
   getLogoChainByChainId,
   getNameChainByChainId,
 } from 'src/utils/utils-network';
+import { useDispatch } from 'react-redux';
+import { getUserStats } from '../../../store/user';
 
 interface IAppSettings {
   onBack: () => void;
@@ -39,6 +41,8 @@ const WebhookSettings: FC<IAppSettings> = ({
 }) => {
   const [isOpenModalDelete, setIsOpenModalDelete] = useState<boolean>(false);
 
+  const dispatch = useDispatch();
+
   const isActive = useMemo(
     () => webhook.status === WEBHOOK_STATUS.ENABLE,
     [webhook],
@@ -54,6 +58,7 @@ const WebhookSettings: FC<IAppSettings> = ({
               ? WEBHOOK_STATUS.DISABLED
               : WEBHOOK_STATUS.ENABLE,
         });
+      dispatch(getUserStats());
       toastSuccess({ message: 'Update Successfully!' });
       reloadData();
     } catch (e: any) {

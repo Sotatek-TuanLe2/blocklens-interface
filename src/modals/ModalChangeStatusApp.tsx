@@ -6,6 +6,8 @@ import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
 import AppButton from 'src/components/AppButton';
 import { isMobile } from 'react-device-detect';
+import { useDispatch } from 'react-redux';
+import { getUserStats } from '../store/user';
 
 interface IModalChangeStatusApp {
   open: boolean;
@@ -20,9 +22,11 @@ const ModalChangeStatusApp: FC<IModalChangeStatusApp> = ({
   appInfo,
   reloadData,
 }) => {
+  const dispatch = useDispatch();
   const onChangeStatus = async () => {
     try {
       await rf.getRequest('AppRequest').toggleApp(appInfo?.appId);
+      dispatch(getUserStats());
       toastSuccess({ message: 'Update Successfully!' });
       onClose();
       reloadData();
