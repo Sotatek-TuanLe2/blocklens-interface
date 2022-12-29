@@ -297,7 +297,7 @@
   display: flex;
   justify-content: center;
   flex-direction: column;
-  padding: 20px 20px;
+  padding: 20px 20px 44px;
   background: rgba(16, 21, 48, 0.5);
   border: 1.6px solid $line;
   border-radius: 18px;
@@ -307,6 +307,7 @@
 
   @include tablet {
     width: 100%;
+    padding-bottom: 30px;
 
     &:first-child {
       margin-bottom: 20px;
@@ -325,7 +326,7 @@
     color: $paragraph;
   }
 
-  &__name {
+  &__name, &__method {
     font-weight: 700;
     font-size: 20px;
     line-height: 26px;
@@ -337,10 +338,13 @@
     }
   }
 
+  &__method {
+    margin-bottom: 22px;
+  }
+
   &__value {
     @include text-large-regular;
     color: $paragraph;
-    margin-bottom: 18px;
   }
 
   .icon-checked-active {

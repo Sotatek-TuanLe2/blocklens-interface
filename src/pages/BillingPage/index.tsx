@@ -123,9 +123,13 @@ const PlanMobile: FC<IPlanMobile> = ({
               <CheckedIcon />
               <Box ml={3}> {plan.appLimitation} active apps </Box>
             </Flex>
-            <Flex alignItems={'center'}>
+            <Flex alignItems={'center'} my={2}>
               <CheckedIcon />
               <Box ml={3}> {plan.notificationLimitation} message/day </Box>
+            </Flex>
+            <Flex alignItems={'center'}>
+              <CheckedIcon />
+              <Box ml={3}> All supported chains</Box>
             </Flex>
           </Box>
         )}
@@ -294,10 +298,7 @@ const BillingPage = () => {
       if (isSufficientBalance) {
         setStep(STEPS.CHECKOUT);
       } else {
-        window
-          .open(`/top-up?${TOP_UP_PARAMS.PLAN}=${planSelected.code}`, '_blank')
-          ?.focus();
-        // TODO: setInterval to reload balance with attempts
+        history.push('/top-up');
       }
     } else {
       setStep(STEPS.CHECKOUT);
@@ -305,6 +306,14 @@ const BillingPage = () => {
   };
 
   const _renderButtonUpdatePlan = () => {
+    if (isCurrentPlan) return;
+    const getTextButton = () => {
+      if (isDownGrade) return 'Downgrade';
+      if (paymentMethod === PAYMENT_METHOD.CRYPTO && !isSufficientBalance)
+        return 'Top Up';
+      return 'Upgrade';
+    };
+
     return (
       <>
         <Flex
@@ -318,7 +327,7 @@ const BillingPage = () => {
             isDisabled={isCurrentPlan}
             onClick={onClickButton}
           >
-            {isDownGrade ? 'Downgrade' : 'Upgrade'}
+            {getTextButton()}
           </AppButton>
         </Flex>
       </>
