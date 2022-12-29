@@ -40,14 +40,23 @@
       padding: 18px 20px;
       border-radius: 18px;
       .user-info {
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        display: inline-block;
+        padding: 0;
+        padding-inline-start: 0;
+        padding-inline-end: 0;
+
+        display: block;
         text-align: center;
         font-weight: 700;
         &:focus {
           background-color: transparent;
+        }
+        .user-email,
+        .user-name {
+          overflow: hidden;
+          display: block;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          line-height: 20px;
         }
         .user-email {
           font-size: 14px;
@@ -58,17 +67,6 @@
           margin-top: 14px;
           width: 100%;
           border: 1px solid #2f3b58;
-        }
-        .user-logout {
-          color: $red;
-          padding-top: 14px;
-          font-weight: 500;
-          font-family: 'DM Sans';
-          display: flex;
-          justify-content: center;
-          span {
-            margin-left: 8px;
-          }
         }
       }
     }
@@ -97,7 +95,38 @@
       }
     }
   }
+  .user-logout {
+    color: $red;
+    padding-top: 14px;
+    font-weight: 600;
+    font-family: 'DM Sans';
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    @include tablet {
+      font-weight: 500;
+      font-size: 18px;
+    }
+    span {
+      &:last-child {
+        transform: translateX(-5px);
+      }
+      &:first-child {
+        transform: translateX(5px);
+      }
+    }
+    .arrow-logout {
+      transform: translateX(-70%);
+      transition: all linear 0.5s;
+    }
 
+    &:hover {
+      text-decoration: underline;
+      .arrow-logout {
+        transform: translateX(-50%);
+      }
+    }
+  }
   .header-mobile {
     height: calc(100vh - 80px);
     background-color: $bg1;

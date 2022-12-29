@@ -21,7 +21,7 @@ import { AppBroadcast } from 'src/utils/utils-broadcast';
 import ModalSignInRequest from 'src/modals/ModalSignInRequest';
 import { isMobile } from 'react-device-detect';
 import { CloseIcon } from '@chakra-ui/icons';
-import { LogoutIcon } from 'src/assets/icons';
+import { ArrowLogout, DoorLogout, LogoutIcon } from 'src/assets/icons';
 
 const menus = [
   {
@@ -83,13 +83,21 @@ const Header: FC = () => {
           </MenuButton>
           <MenuList className="menu-header">
             <MenuItem className="user-info">
-              <span>{userInfo?.firstName + ' ' + userInfo?.lastName}</span>
-              <br />
-              <span className="user-email">{userInfo?.email}</span>
+              <div className="user-name">
+                {userInfo?.firstName + ' ' + userInfo?.lastName}
+              </div>
+
+              <div className="user-email">{userInfo?.email}</div>
               <div className="user-divider"></div>
               <div className="user-logout" onClick={onLogout}>
                 {' '}
-                <LogoutIcon /> <span>Log Out</span>
+                <span className="door-logout">
+                  <DoorLogout />
+                </span>
+                <span className="arrow-logout">
+                  <ArrowLogout />
+                </span>{' '}
+                <span>Log Out</span>
               </div>
             </MenuItem>
           </MenuList>
@@ -167,10 +175,16 @@ const Header: FC = () => {
         <Box className="header-mobile">
           {_renderMenu()}
 
-          <Flex className="btn-logout" onClick={onLogout}>
-            <LogoutIcon />
-            <Box>Log Out</Box>
-          </Flex>
+          <div className="user-logout" onClick={onLogout}>
+            {' '}
+            <span className="door-logout">
+              <DoorLogout />
+            </span>
+            <span className="arrow-logout">
+              <ArrowLogout />
+            </span>{' '}
+            <span>Log Out</span>
+          </div>
         </Box>
       )}
     </Box>
