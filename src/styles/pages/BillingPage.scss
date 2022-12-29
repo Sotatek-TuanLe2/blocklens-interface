@@ -355,3 +355,26 @@
     }
   }
 }
+
+.box-top-up {
+  border: 1.6px solid $line;
+  border-radius: 18px;
+  width: 49%;
+  padding: 30px 36px;
+
+  @include tablet {
+    width: 100%;
+  }
+
+  &__label {
+    @include text-medium-bold;
+    color: $line;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+
+  &__name {
+    @include text-medium-bold;
+    color: $paragraph;
+  }
+}

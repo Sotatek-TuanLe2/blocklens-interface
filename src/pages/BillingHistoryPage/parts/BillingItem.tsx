@@ -28,7 +28,7 @@ export const StatusBilling: FC<IStatusBilling> = ({ billing }) => {
 
 export const _renderMethodBilling = (billing: IBilling) => {
   if (billing?.activePaymentMethod === 'CRYPTO') {
-    return 'Blocklens balance';
+    return 'Crypto balance';
   }
 
   if (billing?.activePaymentMethod === 'STRIPE') {

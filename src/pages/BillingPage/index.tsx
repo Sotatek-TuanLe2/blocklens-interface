@@ -36,6 +36,7 @@ import PartPaymentInfo from './parts/PartPaymentInfo';
 import ModalEditCreditCard from 'src/modals/ModalEditCreditCard';
 import ModalCancelSubscription from 'src/modals/ModalCancelSubscription';
 import { getInfoUser } from 'src/store/auth';
+import PartTopUp from './parts/PartTopUp';
 
 export const PAYMENT_METHOD = {
   CARD: 'STRIPE',
@@ -45,6 +46,7 @@ export const PAYMENT_METHOD = {
 enum STEPS {
   LIST,
   FORM,
+  TOPUP,
   CHECKOUT,
 }
 
@@ -297,7 +299,7 @@ const BillingPage = () => {
       if (isSufficientBalance) {
         setStep(STEPS.CHECKOUT);
       } else {
-        history.push('/top-up');
+        setStep(STEPS.TOPUP);
       }
     } else {
       setStep(STEPS.CHECKOUT);
@@ -308,8 +310,6 @@ const BillingPage = () => {
     if (isCurrentPlan) return;
     const getTextButton = () => {
       if (isDownGrade) return 'Downgrade';
-      if (paymentMethod === PAYMENT_METHOD.CRYPTO && !isSufficientBalance)
-        return 'Top Up';
       return 'Upgrade';
     };
 
@@ -517,9 +517,16 @@ const BillingPage = () => {
           <PartPaymentInfo
             planSelected={planSelected}
             onBack={onBackStep}
-            onNext={onNextStep}
+            onNext={() => setStep(STEPS.CHECKOUT)}
             paymentMethod={paymentMethod}
             setPaymentMethod={setPaymentMethod}
+          />
+        );
+      case STEPS.TOPUP:
+        return (
+          <PartTopUp
+            planSelected={planSelected}
+            onBack={() => setStep(STEPS.LIST)}
           />
         );
       case STEPS.CHECKOUT:
@@ -530,7 +537,7 @@ const BillingPage = () => {
             onBack={
               user?.isPaymentMethodIntegrated
                 ? () => setStep(STEPS.LIST)
-                : onBackStep
+                : () => setStep(STEPS.FORM)
             }
           />
         );
