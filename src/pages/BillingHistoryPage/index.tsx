@@ -54,7 +54,7 @@ const BillingHistory = () => {
       const dataTable = res?.docs.map((invoice: any, index: number) => {
         return {
           ...invoice,
-          activePaymentMethod: listReceipt[index].activePaymentMethod,
+          activePaymentMethod: listReceipt[index]?.activePaymentMethod || null,
           stripePaymentMethod: listReceipt[index]?.stripePaymentMethod || null,
         };
       });
