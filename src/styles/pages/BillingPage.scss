@@ -345,6 +345,7 @@
   &__value {
     @include text-large-regular;
     color: $paragraph;
+    padding-bottom: 18px;
   }
 
   .icon-checked-active {
