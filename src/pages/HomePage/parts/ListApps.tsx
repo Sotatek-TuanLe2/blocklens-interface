@@ -108,7 +108,9 @@ const ListApps: React.FC = () => {
   const history = useHistory();
   const {
     billing: { myPlan },
-    stats: { totalApp, totalAppActive },
+    user: {
+      stats: { totalApp, totalAppActive },
+    },
   } = useSelector((state: RootState) => state);
 
   const [openCreateApp, setOpenCreateApp] = useState(false);

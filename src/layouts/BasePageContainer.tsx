@@ -4,7 +4,7 @@ import React from 'react';
 import { BasePage } from 'src/layouts';
 import { isMobile } from 'react-device-detect';
 import { useDispatch } from 'react-redux';
-import { getUserStats } from '../store/stats';
+import { getUserStats } from '../store/user';
 
 interface IBasePageContainer {
   className?: string;
@@ -12,10 +12,6 @@ interface IBasePageContainer {
 }
 
 const BasePageContainer: FC<IBasePageContainer> = ({ children, className }) => {
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(getUserStats());
-  }, []);
   return (
     <BasePage>
       <Flex

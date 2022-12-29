@@ -34,6 +34,7 @@ import ModalSubmittingTransaction from './modals/ModalSubmittingTransaction';
 import ModalFinishTransaction from './modals/ModalFinishTransaction';
 import WebhookActivitiesPage from './pages/WebhookActivitiesPage';
 import TopUpPage from './pages/TopUp';
+import { getUserStats } from './store/user';
 
 /**
  * Main App routes.
@@ -53,6 +54,7 @@ const Routes: FC<RouteComponentProps> = () => {
     dispatch(getInfoUser());
     dispatch(getMyPlan());
     dispatch(getPlans());
+    dispatch(getUserStats());
   }, [accessToken]);
 
   return (

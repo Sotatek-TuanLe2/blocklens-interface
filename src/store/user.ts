@@ -12,17 +12,21 @@ export type StatsOfUserType = {
   totalRegistrationActive: number;
 };
 
-type UserStatState = StatsOfUserType;
+type UserState = {
+  stats: StatsOfUserType;
+};
 
-const initialState: UserStatState = {
-  numberOfAddressActivities: 0,
-  numberOfContractActivities: 0,
-  numberOfNftActivities: 0,
-  totalApp: 0,
-  totalAppActive: 0,
-  totalAppInActive: 0,
-  totalRegistration: 0,
-  totalRegistrationActive: 0,
+const initialState: UserState = {
+  stats: {
+    numberOfAddressActivities: 0,
+    numberOfContractActivities: 0,
+    numberOfNftActivities: 0,
+    totalApp: 0,
+    totalAppActive: 0,
+    totalAppInActive: 0,
+    totalRegistration: 0,
+    totalRegistrationActive: 0,
+  },
 };
 
 export const getUserStats = createAsyncThunk(
@@ -40,7 +44,8 @@ const statsSlice = createSlice({
 
   extraReducers: (builder) => {
     builder.addCase(getUserStats.fulfilled, (state, action) => {
-      return { ...action.payload };
+      console.log(action.payload);
+      state.stats = action.payload;
     });
   },
 });

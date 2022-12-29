@@ -28,10 +28,12 @@ import { RootState } from '../../store';
 
 const AppDetail = () => {
   const {
-    numberOfAddressActivities,
-    numberOfContractActivities,
-    numberOfNftActivities,
-  } = useSelector((state: RootState) => state.stats);
+    stats: {
+      numberOfAddressActivities,
+      numberOfContractActivities,
+      numberOfNftActivities,
+    },
+  } = useSelector((state: RootState) => state.user);
 
   const [appInfo, setAppInfo] = useState<any>({});
   const [isShowSetting, setIsShowSetting] = useState<boolean>(false);
