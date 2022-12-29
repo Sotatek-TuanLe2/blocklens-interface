@@ -36,6 +36,7 @@ const AppDetail = () => {
   const [appInfo, setAppInfo] = useState<any>({});
   const [isShowSetting, setIsShowSetting] = useState<boolean>(false);
   const [type, setType] = useState<string>(WEBHOOK_TYPES.NFT_ACTIVITY);
+  const [defaultTab, setDefaultTab] = useState(0);
   const history = useHistory();
 
   const { id: appId } = useParams<{ id: string }>();
@@ -64,6 +65,15 @@ const AppDetail = () => {
   useEffect(() => {
     getAppInfo().then();
   }, []);
+
+  useEffect(() => {
+    const activeTab = getActiveTab();
+    setDefaultTab(activeTab);
+  }, [
+    numberOfContractActivities,
+    numberOfAddressActivities,
+    numberOfNftActivities,
+  ]);
 
   if (!appInfo || !Object.values(appInfo).length) {
     return (
@@ -144,7 +154,7 @@ const AppDetail = () => {
             <Tabs
               variant={'unstyled'}
               colorScheme="transparent"
-              defaultIndex={getActiveTab()}
+              defaultIndex={defaultTab}
             >
               <TabList
                 className={`${
