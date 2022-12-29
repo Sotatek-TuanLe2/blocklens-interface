@@ -31,7 +31,6 @@ import AppAlertWarning from 'src/components/AppAlertWarning';
 import useUser from 'src/hooks/useUser';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
-import { TOP_UP_PARAMS } from '../TopUp';
 import { useHistory } from 'react-router';
 import PartPaymentInfo from './parts/PartPaymentInfo';
 import ModalEditCreditCard from 'src/modals/ModalEditCreditCard';
@@ -459,9 +458,11 @@ const BillingPage = () => {
                 <Box className="box-method__name">Card</Box>
                 <Box className="box-method__value">
                   (
-                  {userInfo?.stripePaymentMethod?.card?.brand +
-                    ' - ' +
-                    userInfo?.stripePaymentMethod?.card?.last4}
+                  {!userInfo?.stripePaymentMethod
+                    ? '---'
+                    : userInfo?.stripePaymentMethod?.card?.brand +
+                      ' - ' +
+                      userInfo?.stripePaymentMethod?.card?.last4}
                   )
                 </Box>
                 <ListCardIcon />

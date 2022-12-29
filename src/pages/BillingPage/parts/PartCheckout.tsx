@@ -12,7 +12,6 @@ import { formatShortText } from 'src/utils/utils-helper';
 import { CheckedIcon } from 'src/assets/icons';
 import { useHistory } from 'react-router-dom';
 import { RootState } from 'src/store';
-import { getInfoUser } from '../../../store/auth';
 
 interface IPartCheckout {
   planSelected: IPlan;
@@ -46,7 +45,7 @@ const PartCheckout: FC<IPartCheckout> = ({
         </Flex>
         <Box className="name-plan">{`$${planSelected.price}/month`}</Box>
         <Flex className="info">
-          <CheckedIcon /> {planSelected.appLimitation} active apps
+          <CheckedIcon /> {planSelected.appLimitation} apps
         </Flex>
         <Flex className="info">
           <CheckedIcon /> {planSelected.notificationLimitation} messages/day
