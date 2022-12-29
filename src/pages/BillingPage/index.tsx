@@ -21,6 +21,9 @@ import {
   RadioChecked,
   ArrowRightIcon,
   EditIcon,
+  ListCardIcon,
+  CircleCheckedIcon,
+  CryptoIcon,
 } from 'src/assets/icons';
 import { isMobile } from 'react-device-detect';
 import PartCheckout from './parts/PartCheckout';
@@ -32,6 +35,7 @@ import { TOP_UP_PARAMS } from '../TopUp';
 import { useHistory } from 'react-router';
 import PartPaymentInfo from './parts/PartPaymentInfo';
 import ModalEditCreditCard from 'src/modals/ModalEditCreditCard';
+import ModalCancelSubscription from 'src/modals/ModalCancelSubscription';
 import { getInfoUser } from 'src/store/auth';
 
 export const PAYMENT_METHOD = {
@@ -134,6 +138,8 @@ const BillingPage = () => {
   const [paymentMethod, setPaymentMethod] = useState<string>(
     PAYMENT_METHOD.CARD,
   );
+  const [isOpenCancelSubscriptionModal, setIsOpenCancelSubscriptionModal] =
+    useState<boolean>(false);
   const [planSelected, setPlanSelected] = useState<IPlan>({} as any);
   const [isOpenEditCardModal, setIsOpenEditCardModal] =
     useState<boolean>(false);
@@ -150,7 +156,6 @@ const BillingPage = () => {
   useEffect(() => {
     setPaymentMethod(userInfo.activePaymentMethod || PAYMENT_METHOD.CARD);
   }, [userInfo]);
-
 
   useEffect(() => {
     setPlanSelected(currentPlan);
@@ -300,9 +305,6 @@ const BillingPage = () => {
   };
 
   const _renderButtonUpdatePlan = () => {
-    if (!userInfo?.isPaymentMethodIntegrated || isCurrentPlan) {
-      return null;
-    }
     return (
       <>
         <Flex
@@ -313,9 +315,29 @@ const BillingPage = () => {
             width={isMobile ? '100%' : 'auto'}
             size="lg"
             mt={3}
+            isDisabled={isCurrentPlan}
             onClick={onClickButton}
           >
             {isDownGrade ? 'Downgrade' : 'Upgrade'}
+          </AppButton>
+        </Flex>
+      </>
+    );
+  };
+
+  const _renderButton = () => {
+    const isDisabled = planSelected.price === 0;
+    return (
+      <>
+        <Flex justifyContent={isMobile ? 'center' : 'flex-end'}>
+          <AppButton
+            width={isMobile ? '100%' : 'auto'}
+            size="lg"
+            mt={isMobile ? 3 : 0}
+            isDisabled={isDisabled}
+            onClick={() => setStep(STEPS.FORM)}
+          >
+            Continue
           </AppButton>
         </Flex>
       </>
@@ -341,84 +363,132 @@ const BillingPage = () => {
         </Flex>
 
         <AppCard className="list-table-wrap">
-          <Box className={'text-title'}>Select Your Plan</Box>
+          <Flex
+            justifyContent={'space-between'}
+            alignItems={isMobile ? 'flex-start' : 'center'}
+            flexDirection={isMobile ? 'column' : 'row'}
+          >
+            <Box className={'text-title'}>Select Your Plan</Box>
+            <AppButton
+              mr={10}
+              ml={isMobile ? 5 : 0}
+              mb={isMobile ? 5 : 0}
+              isDisabled={currentPlan.price === 0}
+              variant="cancel"
+              size="sm"
+              onClick={() => setIsOpenCancelSubscriptionModal(true)}
+            >
+              Cancel Subscription
+            </AppButton>
+          </Flex>
           {isMobile ? _renderPlansMobile() : _renderPlansDesktop()}
 
-          <Box
-            textAlign={'center'}
-            pt={isMobile ? 0 : 7}
-            pb={isMobile ? 5 : 0}
-            px={5}
+          <Flex
+            justifyContent={'space-between'}
+            alignItems={'center'}
+            mx={isMobile ? 5 : 10}
+            mt={5}
+            flexDirection={isMobile ? 'column' : 'row'}
           >
-            For custom Enterprise plan with more Active Apps & messages/day, you
-            can{' '}
-            <AppLink to="/contact-us" className="link">
-              Contact Us
-            </AppLink>
-          </Box>
+            <Box textAlign={'center'}>
+              If you need more apps or higher limits, please{' '}
+              <AppLink to="/contact-us" className="link">
+                Contact Us
+              </AppLink>
+            </Box>
+            <Box mb={isMobile ? 4 : 0} width={isMobile ? '100%' : 'auto'}>
+              {userInfo?.isPaymentMethodIntegrated
+                ? _renderButtonUpdatePlan()
+                : _renderButton()}
+            </Box>
+          </Flex>
 
           {!isCurrentPlan && user?.isPaymentMethodIntegrated && (
-            <Box px={10} mb={3} mt={isMobile ? 0 : 3}>
+            <Box
+              px={isMobile ? 5 : 10}
+              mb={isMobile ? 3 : 0}
+              mt={isMobile ? 0 : 3}
+            >
               {_renderWarning()}
-              <Flex
-                width={isMobile ? '100%' : 'auto'}
-                justifyContent={isMobile ? 'center' : 'flex-end'}
-              >
-                {_renderButtonUpdatePlan()}
-              </Flex>
             </Box>
+          )}
+          {isOpenCancelSubscriptionModal && (
+            <ModalCancelSubscription
+              open={isOpenCancelSubscriptionModal}
+              onClose={() => setIsOpenCancelSubscriptionModal(false)}
+            />
           )}
         </AppCard>
 
         {user?.isPaymentMethodIntegrated && (
-          <AppCard className="box-payment-method" mt={7}>
-            <Box className={'text-title'}>Payment Method</Box>
-            <Flex className={'payment-method'}>
-              <Flex onClick={() => onChangePaymentMethod(PAYMENT_METHOD.CARD)}>
-                {paymentMethod === PAYMENT_METHOD.CARD ? (
-                  <RadioChecked />
-                ) : (
-                  <RadioNoCheckedIcon />
-                )}
-
-                <Flex ml={4}>
-                  Credit Card
-                  <Box ml={2} className="payment-method__value">
-                    (
-                    {userInfo?.stripePaymentMethod
-                      ? `${userInfo?.stripePaymentMethod?.card?.brand} - ${userInfo?.stripePaymentMethod?.card?.last4}`
-                      : '--'}
-                    )
-                  </Box>
-                </Flex>
+          <Flex flexWrap={'wrap'} justifyContent={'space-between'} mt={5}>
+            <Box
+              className={`${
+                paymentMethod === PAYMENT_METHOD.CARD ? 'active' : ''
+              } box-method`}
+            >
+              <Flex justifyContent={'space-between'}>
+                <Box
+                  className="icon-checked-active"
+                  onClick={() => onChangePaymentMethod(PAYMENT_METHOD.CARD)}
+                >
+                  {paymentMethod === PAYMENT_METHOD.CARD ? (
+                    <CircleCheckedIcon />
+                  ) : (
+                    <RadioNoCheckedIcon />
+                  )}
+                </Box>
+                <Box
+                  onClick={() => setIsOpenEditCardModal(true)}
+                  className={'box-method__btn-edit'}
+                >
+                  <EditIcon />
+                </Box>
               </Flex>
 
+              <Flex flexDirection={'column'} alignItems={'center'}>
+                <Box className="box-method__name">Card</Box>
+                <Box className="box-method__value">
+                  (
+                  {userInfo?.stripePaymentMethod?.card?.brand +
+                    ' - ' +
+                    userInfo?.stripePaymentMethod?.card?.last4}
+                  )
+                </Box>
+                <ListCardIcon />
+              </Flex>
+            </Box>
+
+            <Box
+              className={`${
+                paymentMethod === PAYMENT_METHOD.CRYPTO ? 'active' : ''
+              } box-method`}
+            >
               <Box
-                className="btn-edit"
-                onClick={() => setIsOpenEditCardModal(true)}
+                className="icon-checked-active"
+                onClick={() => onChangePaymentMethod(PAYMENT_METHOD.CRYPTO)}
               >
-                <EditIcon />
-              </Box>
-            </Flex>
-
-            <Flex className={'payment-method'}>
-              <Flex onClick={() => onChangePaymentMethod(PAYMENT_METHOD.CRYPTO)}>
                 {paymentMethod === PAYMENT_METHOD.CRYPTO ? (
-                  <RadioChecked />
+                  <CircleCheckedIcon />
                 ) : (
                   <RadioNoCheckedIcon />
                 )}
-
-                <Flex ml={4}>
-                  Crypto
-                  <Box ml={2} className="payment-method__value">
-                    (Total: ${userInfo.balance})
-                  </Box>
-                </Flex>
+              </Box>
+              <Flex flexDirection={'column'} alignItems={'center'}>
+                <Box className="box-method__name">Crypto</Box>
+                <Box className="box-method__value">
+                  (Total: ${user?.getBalance()})
+                </Box>
+                <CryptoIcon />
               </Flex>
-              <Box />
-            </Flex>
-          </AppCard>
+            </Box>
+            {isOpenEditCardModal && (
+              <ModalEditCreditCard
+                open={isOpenEditCardModal}
+                onClose={() => setIsOpenEditCardModal(false)}
+              />
+            )}
+          </Flex>
         )}
       </>
     );
@@ -472,42 +542,9 @@ const BillingPage = () => {
     );
   };
 
-  const _renderButton = () => {
-    if (step !== STEPS.LIST || userInfo?.isPaymentMethodIntegrated) {
-      return null;
-    }
-    const isDisabled = planSelected.price === 0;
-    return (
-      <>
-        <Flex justifyContent={isMobile ? 'center' : 'flex-end'}>
-          <AppButton
-            width={isMobile ? '100%' : 'auto'}
-            size="lg"
-            mt={7}
-            isDisabled={isDisabled}
-            onClick={() => setStep(STEPS.FORM)}
-          >
-            Continue
-          </AppButton>
-        </Flex>
-      </>
-    );
-  };
-
   return (
     <BasePageContainer className="billing-page">
-      <>
-        {_renderContent()}
-
-        {_renderButton()}
-
-        {isOpenEditCardModal && (
-          <ModalEditCreditCard
-            open={isOpenEditCardModal}
-            onClose={() => setIsOpenEditCardModal(false)}
-          />
-        )}
-      </>
+      <>{_renderContent()}</>
     </BasePageContainer>
   );
 };

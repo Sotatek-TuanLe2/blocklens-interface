@@ -19,6 +19,7 @@ const ModalCancelSubscription: FC<IModalCancelSubscription> = ({
     try {
       await rf.getRequest('BillingRequest').cancelSubscription();
       toastSuccess({ message: 'Cancel Subscription Successfully!' });
+      onClose();
     } catch (e: any) {
       toastError({ message: e?.message || 'Oops. Something went wrong!' });
     }
