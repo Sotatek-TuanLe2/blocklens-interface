@@ -12,6 +12,7 @@ import { formatShortText } from 'src/utils/utils-helper';
 import { CheckedIcon } from 'src/assets/icons';
 import { useHistory } from 'react-router-dom';
 import { RootState } from 'src/store';
+import { getInfoUser } from '../../../store/auth';
 
 interface IPartCheckout {
   planSelected: IPlan;
@@ -56,6 +57,9 @@ const PartCheckout: FC<IPartCheckout> = ({
 
   const onPay = async () => {
     try {
+      await rf
+        .getRequest('UserRequest')
+        .editInfoUser({ activePaymentMethod: paymentMethod?.code });
       await rf
         .getRequest('BillingRequest')
         .updateBillingPlan({ code: planSelected.code });
