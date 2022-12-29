@@ -7,6 +7,8 @@ import { IWebhook } from 'src/utils/utils-webhook';
 import { AppButton } from 'src/components';
 import { useHistory } from 'react-router';
 import { isMobile } from 'react-device-detect';
+import { useDispatch } from 'react-redux';
+import { getUserStats } from '../store/user';
 
 interface IModalDeleteWebhook {
   open: boolean;
@@ -20,12 +22,14 @@ const ModalDeleteWebhook: FC<IModalDeleteWebhook> = ({
   webhook,
 }) => {
   const history = useHistory();
+  const dispatch = useDispatch();
 
   const onDelete = async () => {
     try {
       await rf
         .getRequest('RegistrationRequest')
         .deleteRegistration(webhook.appId, webhook.registrationId);
+      dispatch(getUserStats());
       toastSuccess({ message: 'Delete Successfully!' });
       history.push(`/apps/${webhook.appId}`);
       onClose();

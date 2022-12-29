@@ -8,6 +8,8 @@ import { IAppResponse } from 'src/utils/utils-app';
 import { AppField, AppInput, AppTextarea } from 'src/components';
 import AppButton from 'src/components/AppButton';
 import { isMobile } from 'react-device-detect';
+import { useDispatch } from 'react-redux';
+import { getUserStats } from '../store/user';
 
 interface IModalEditApp {
   open: boolean;
@@ -19,6 +21,8 @@ const ModalDeleteApp: FC<IModalEditApp> = ({ open, onClose, appInfo }) => {
   const [nameApp, setNameApp] = useState<string>('');
   const history = useHistory();
 
+  const dispatch = useDispatch();
+
   const onCloseModal = () => {
     onClose();
     setNameApp('');
@@ -28,6 +32,7 @@ const ModalDeleteApp: FC<IModalEditApp> = ({ open, onClose, appInfo }) => {
     try {
       await rf.getRequest('AppRequest').deleteApp(appInfo.appId);
       toastSuccess({ message: 'Delete Successfully!' });
+      dispatch(getUserStats());
       history.push('/');
       onCloseModal();
     } catch (e: any) {
