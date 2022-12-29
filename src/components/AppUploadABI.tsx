@@ -82,19 +82,19 @@ const ListSelect: FC<IListSelect> = ({
 }) => {
   const [itemSelected, setItemSelected] = useState<any>([]);
 
-  const onChangeSelect = (e: ChangeEvent<HTMLInputElement>, name: string) => {
+  const onChangeSelect = (e: ChangeEvent<HTMLInputElement>, id: string) => {
     let newItemsSelected = [];
 
     if (!e.target.checked) {
       newItemsSelected = [
-        ...itemSelected.filter((item: string) => item !== name),
+        ...itemSelected.filter((item: string) => item !== id),
       ];
-      onSelectData([...dataSelected.filter((item: any) => item.name !== name)]);
+      onSelectData([...dataSelected.filter((item: any) => item.id !== id)]);
     } else {
-      newItemsSelected = [...itemSelected, name];
+      newItemsSelected = [...itemSelected, id];
       onSelectData([
         ...dataSelected,
-        data.filter((item: any) => item.name === name)[0],
+        data.filter((item: any) => item.id === id)[0],
       ]);
     }
     setItemSelected(newItemsSelected);
@@ -136,40 +136,40 @@ const ListSelect: FC<IListSelect> = ({
     return dataFiltered;
   }, [data, valueSearch, valueSort]);
 
-  const nameSelected = useMemo(
-    () => dataSelected.map((item: any) => item.name),
+  const IdsSelected = useMemo(
+    () => dataSelected.map((item: any) => item.id),
     [dataSelected],
   );
 
   const allChecked = dataShow.every((data: any) =>
-    itemSelected.some((name: string) => data.name === name),
+    itemSelected.some((id: string) => data.id === id),
   );
 
   const allCheckedViewOnly =
     viewOnly &&
     dataShow.every((data: any) =>
-      nameSelected.some((name: string) => data.name === name),
+      IdsSelected.some((id: string) => data.id === id),
     );
 
   const isIndeterminate =
     dataShow.some((data: any) =>
-      itemSelected.some((name: string) => data.name === name),
+      itemSelected.some((id: string) => data.id === id),
     ) && !allChecked;
 
   const isIndeterminateViewOnly = useMemo(
     () =>
       dataShow.some((data: any) =>
-        nameSelected.some((name: string) => data.name === name),
+        IdsSelected.some((id: string) => data.id === id),
       ) &&
       viewOnly &&
       !allCheckedViewOnly,
-    [nameSelected, allCheckedViewOnly, viewOnly],
+    [IdsSelected, allCheckedViewOnly, viewOnly],
   );
 
   const onSelectAll = () => {
     const dataRest = dataSelected.filter((item: any) => item.type !== type);
     if (!allChecked) {
-      const allData = dataShow.map((item: any) => item.name);
+      const allData = dataShow.map((item: any) => item.id);
       onSelectData([...dataRest, ...dataShow]);
       setItemSelected(allData);
       return;
@@ -213,6 +213,10 @@ const ListSelect: FC<IListSelect> = ({
 
           {!!dataShow.length ? (
             dataShow?.map((item: any, index: number) => {
+              const inputs = item.inputs?.map((input: any) => {
+                return input.name;
+              });
+
               return (
                 <Box key={index} my={2}>
                   <Checkbox
@@ -220,12 +224,15 @@ const ListSelect: FC<IListSelect> = ({
                     isDisabled={viewOnly}
                     value={item.name}
                     isChecked={
-                      itemSelected.includes(item.name) ||
-                      nameSelected.includes(item.name)
+                      itemSelected.includes(item.id) ||
+                      IdsSelected.includes(item.id)
                     }
-                    onChange={(e) => onChangeSelect(e, item.name)}
+                    onChange={(e) => onChangeSelect(e, item.id)}
                   >
-                    {item.name}
+                    <Flex className="abi-option">
+                      {item.name}
+                      {!!inputs.length && <Box className="inputs">({inputs.join(', ')})</Box>}
+                    </Flex>
                   </Checkbox>
                 </Box>
               );
@@ -368,29 +375,51 @@ const AppUploadABI: FC<IAppUploadABI> = ({
 
   useEffect(() => {
     if (viewOnly) {
+      const datABIFilterFormat = abiFilter?.map((item: any) => {
+        const inputsFunc = item.inputs.map((input: any) => input.name).join('');
+        return {
+          ...item,
+          id: item.name + inputsFunc,
+        };
+      });
       setABIData(abi);
-      setDataSelected(abiFilter);
+      setDataSelected(datABIFilterFormat);
     }
   }, [abi, abiFilter, viewOnly]);
 
-  const listEvent = useMemo(
-    () =>
-      ABIData.filter((item: any) => {
-        return item.type === 'event';
-      }),
-    [ABIData],
-  );
+  const listEvent = useMemo(() => {
+    const data = ABIData.filter((item: any) => {
+      return item.type === 'event';
+    });
 
-  const listFunction = useMemo(
-    () =>
-      ABIData.filter((item: any) => {
-        return item.type === 'function' && item.stateMutability !== 'view';
-      }),
-    [ABIData],
-  );
+    return data.map((event: any) => {
+      const inputsEvent = event.inputs.map((input: any) => input.name).join('');
+      return {
+        ...event,
+        id: event.name + inputsEvent,
+      };
+    });
+  }, [ABIData]);
+
+  const listFunction = useMemo(() => {
+    const data = ABIData.filter((item: any) => {
+      return item.type === 'function' && item.stateMutability !== 'view';
+    });
+
+    return data.map((func: any) => {
+      const inputsFunction = func.inputs
+        .map((input: any) => input.name)
+        .join('');
+      return {
+        ...func,
+        id: func.name + inputsFunction,
+      };
+    });
+  }, [ABIData]);
 
   useEffect(() => {
-    onChange && onChange(ABIData, dataSelected);
+    const ABISelected = dataSelected.map(({ id, ...rest }: any) => rest);
+    onChange && onChange(ABIData, ABISelected);
   }, [ABIData, dataSelected]);
 
   const onClearFile = () => {
