@@ -5,12 +5,14 @@
   &__title {
     @include heading-4;
     margin-bottom: 12px;
+    text-align: center;
   }
 
   &__description {
     @include text-medium-regular;
     margin-bottom: 40px;
     color: $paragraph;
+    text-align: center;
   }
 
   &__btn {
