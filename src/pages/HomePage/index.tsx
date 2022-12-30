@@ -14,7 +14,7 @@ import { useDispatch } from 'react-redux';
 
 const HomePage = () => {
   const {
-    stats: { totalApp, totalRegistrationActive },
+    stats: { totalApp, totalRegistrationActive, totalRegistration },
   } = useSelector((state: RootState) => state.user);
   const hasApp = totalApp > 0;
 
@@ -57,7 +57,10 @@ const HomePage = () => {
     <BasePageContainer>
       {hasApp ? (
         <>
-          <PartUserStats totalWebhookActive={totalRegistrationActive} />
+          <PartUserStats
+            totalWebhookActive={totalRegistrationActive}
+            totalWebhook={totalRegistration}
+          />
           <ListApps />
           <PartUserGraph />
         </>
