@@ -21,11 +21,11 @@ import { ReactComponent as ConnectWalletIcon } from './ConnectWalletIcon.svg';
 import { ReactComponent as WarningIcon } from './WarningIcon.svg';
 import { ReactComponent as DownloadBillingIcon } from './DownloadBillingIcon.svg';
 import { ReactComponent as LogoutIcon } from './LogoutIcon.svg';
-import { ReactComponent as DoorLogout } from './DoorLogout.svg';
-import { ReactComponent as ArrowLogout } from './ArrowLogout.svg';
 import { ReactComponent as ListCardIcon } from './ListCardIcon.svg';
 import { ReactComponent as CryptoIcon } from './CryptoIcon.svg';
 import { ReactComponent as CircleCheckedIcon } from './CircleCheckedIcon.svg';
+import { ReactComponent as DoorLogout } from './DoorLogout.svg';
+import { ReactComponent as ArrowLogout } from './ArrowLogout.svg';
 
 export {
   CalendarIcon,

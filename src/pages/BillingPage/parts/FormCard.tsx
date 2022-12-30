@@ -79,7 +79,7 @@ const CheckoutForm: FC<ICheckoutForm> = ({ onClose, isEdit }) => {
   if (isEdit) {
     return (
       <Box>
-        <form onSubmit={handleSubmit as any}>
+        <form onSubmit={handleSubmit as any} className={'stripe-form'}>
           <PaymentElement />
           <Flex flexWrap={'wrap'} justifyContent={'space-between'} mt={4}>
             <AppButton
