@@ -12,6 +12,25 @@
     }
   }
 
+  .box-change-plan {
+    margin-top: 20px;
+    padding: 40px 40px 20px 40px;
+
+    @include tablet {
+      padding: 20px;
+    }
+
+    &__title {
+      @include heading-6;
+      color: $title;
+
+      @include tablet {
+        @include heading-8;
+      }
+    }
+
+  }
+
   .list-table-wrap {
     padding: 0;
 
@@ -326,7 +345,8 @@
     color: $paragraph;
   }
 
-  &__name, &__method {
+  &__name,
+  &__method {
     font-weight: 700;
     font-size: 20px;
     line-height: 26px;
@@ -368,7 +388,7 @@
     }
   }
 
-  &>div {
+  & > div {
     padding: 30px 36px;
 
     @include tablet {

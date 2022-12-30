@@ -437,80 +437,87 @@ const BillingPage = () => {
         </AppCard>
 
         {user?.isPaymentMethodIntegrated && (
-          <Flex flexWrap={'wrap'} justifyContent={'space-between'} mt={5}>
-            <Box
-              className={`${
-                paymentMethod === PAYMENT_METHOD.CARD ? 'active' : ''
-              } box-method`}
+          <AppCard className={'box-change-plan'}>
+            <Box className={'box-change-plan__title'}>Change Payment Method</Box>
+            <Flex
+              flexWrap={'wrap'}
+              justifyContent={'space-between'}
+              mt={5}
             >
-              <Flex justifyContent={'space-between'}>
+              <Box
+                className={`${
+                  paymentMethod === PAYMENT_METHOD.CARD ? 'active' : ''
+                } box-method`}
+              >
+                <Flex justifyContent={'space-between'}>
+                  <Box
+                    className="icon-checked-active"
+                    onClick={() => onChangePaymentMethod(PAYMENT_METHOD.CARD)}
+                  >
+                    {paymentMethod === PAYMENT_METHOD.CARD ? (
+                      <CircleCheckedIcon />
+                    ) : (
+                      <RadioNoCheckedIcon />
+                    )}
+                  </Box>
+                </Flex>
+
+                <Flex flexDirection={'column'} alignItems={'center'}>
+                  <Box className="box-method__name">Card</Box>
+                  <Flex alignItems={'flex-start'}>
+                    <Box className="box-method__value">
+                      (
+                      {!userInfo?.stripePaymentMethod
+                        ? '---'
+                        : userInfo?.stripePaymentMethod?.card?.brand +
+                          ' - ' +
+                          userInfo?.stripePaymentMethod?.card?.last4}
+                      )
+                    </Box>
+                    <Box
+                      ml={4}
+                      mt={1}
+                      onClick={() => setIsOpenEditCardModal(true)}
+                      className={'box-method__btn-edit'}
+                    >
+                      <EditIcon />
+                    </Box>
+                  </Flex>
+                  <ListCardIcon />
+                </Flex>
+              </Box>
+
+              <Box
+                className={`${
+                  paymentMethod === PAYMENT_METHOD.CRYPTO ? 'active' : ''
+                } box-method`}
+              >
                 <Box
                   className="icon-checked-active"
-                  onClick={() => onChangePaymentMethod(PAYMENT_METHOD.CARD)}
+                  onClick={() => onChangePaymentMethod(PAYMENT_METHOD.CRYPTO)}
                 >
-                  {paymentMethod === PAYMENT_METHOD.CARD ? (
+                  {paymentMethod === PAYMENT_METHOD.CRYPTO ? (
                     <CircleCheckedIcon />
                   ) : (
                     <RadioNoCheckedIcon />
                   )}
                 </Box>
-              </Flex>
-
-              <Flex flexDirection={'column'} alignItems={'center'}>
-                <Box className="box-method__name">Card</Box>
-                <Flex alignItems={'flex-start'}>
+                <Flex flexDirection={'column'} alignItems={'center'}>
+                  <Box className="box-method__name">Crypto</Box>
                   <Box className="box-method__value">
-                    (
-                    {!userInfo?.stripePaymentMethod
-                      ? '---'
-                      : userInfo?.stripePaymentMethod?.card?.brand +
-                        ' - ' +
-                        userInfo?.stripePaymentMethod?.card?.last4}
-                    )
+                    (Total: ${user?.getBalance()})
                   </Box>
-                  <Box
-                    ml={4}
-                    mt={1}
-                    onClick={() => setIsOpenEditCardModal(true)}
-                    className={'box-method__btn-edit'}
-                  >
-                    <EditIcon />
-                  </Box>
+                  <CryptoIcon />
                 </Flex>
-                <ListCardIcon />
-              </Flex>
-            </Box>
-
-            <Box
-              className={`${
-                paymentMethod === PAYMENT_METHOD.CRYPTO ? 'active' : ''
-              } box-method`}
-            >
-              <Box
-                className="icon-checked-active"
-                onClick={() => onChangePaymentMethod(PAYMENT_METHOD.CRYPTO)}
-              >
-                {paymentMethod === PAYMENT_METHOD.CRYPTO ? (
-                  <CircleCheckedIcon />
-                ) : (
-                  <RadioNoCheckedIcon />
-                )}
               </Box>
-              <Flex flexDirection={'column'} alignItems={'center'}>
-                <Box className="box-method__name">Crypto</Box>
-                <Box className="box-method__value">
-                  (Total: ${user?.getBalance()})
-                </Box>
-                <CryptoIcon />
-              </Flex>
-            </Box>
-            {isOpenEditCardModal && (
-              <ModalEditCreditCard
-                open={isOpenEditCardModal}
-                onClose={() => setIsOpenEditCardModal(false)}
-              />
-            )}
-          </Flex>
+              {isOpenEditCardModal && (
+                <ModalEditCreditCard
+                  open={isOpenEditCardModal}
+                  onClose={() => setIsOpenEditCardModal(false)}
+                />
+              )}
+            </Flex>
+          </AppCard>
         )}
       </>
     );
