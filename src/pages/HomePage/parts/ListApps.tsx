@@ -43,12 +43,14 @@ const AppMobile: FC<IAppMobile> = ({ app }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   return (
     <>
-      <Box className={`${isOpen ? 'open' : ''} card-mobile`}>
+      <Box
+        className={`${isOpen ? 'open' : ''} card-mobile`}
+        onClick={() => history.push(`/apps/${app.appId}`)}
+      >
         <Flex
           justifyContent="space-between"
           alignItems="center"
           className="info"
-          onClick={() => history.push(`/apps/${app.appId}`)}
         >
           <Box className="name-mobile">{app.name}</Box>
           <Box
