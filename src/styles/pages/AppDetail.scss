@@ -2,6 +2,7 @@
 @import '../mixins.scss';
 
 .app-detail {
+
   .app-info {
     justify-content: space-between;
     align-items: center;
@@ -454,3 +455,9 @@
     cursor: pointer;
   }
 }
+.stripe-form {
+  iframe{
+    display: block !important;
+  }
+}
+
