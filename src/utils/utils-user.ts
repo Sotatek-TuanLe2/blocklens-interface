@@ -13,16 +13,18 @@ export interface UserInterface {
   isEmailVerified: boolean;
   linkedAddress: string;
   stripePayment: StripePayment;
+  isPaymentMethodIntegrated: boolean;
 
-  setId: (id: string) => void;
-  setBalance: (balance: string) => void;
-  setBillingEmail: (billingEmail: string) => void;
-  setEmail: (email: string) => void;
-  setFirstName: (firstName: string) => void;
-  setLastName: (lastName: string) => void;
-  setIsEmailVerified: (isEmailVerified: boolean) => void;
-  setLinkedAddress: (linkedAddress: string) => void;
-  setStripePayment: (stripePayment: StripePayment) => void;
+  setId: (id : string) => void;
+  setBalance: (balance : string) => void;
+  setBillingEmail: (billingEmail : string) => void;
+  setEmail: (email : string) => void;
+  setFirstName: (firstName : string) => void;
+  setLastName: (lastName : string) => void;
+  setIsEmailVerified: (isEmailVerified : boolean) => void;
+  setIsPaymentMethodIntegrated: (isPaymentMethodIntegrated : boolean) => void;
+  setLinkedAddress: (linkedAddress : string) => void;
+  setStripePayment: (stripePayment : StripePayment) => void;
   getId: () => string;
   getBalance: () => string;
   getBillingEmail: () => string;
@@ -44,6 +46,7 @@ export class User implements UserInterface {
   public firstName = '';
   public lastName = '';
   public isEmailVerified = false;
+  public isPaymentMethodIntegrated = false;
   public linkedAddress = '';
   public stripePayment = {
     card: {},
@@ -83,7 +86,11 @@ export class User implements UserInterface {
     this.isEmailVerified = isEmailVerified;
   }
 
-  setLinkedAddress(linkedAddress: string): void {
+  setIsPaymentMethodIntegrated(isPaymentMethodIntegrated : boolean): void {
+    this.isPaymentMethodIntegrated = isPaymentMethodIntegrated;
+  }
+
+  setLinkedAddress(linkedAddress : string): void {
     this.linkedAddress = linkedAddress;
   }
 

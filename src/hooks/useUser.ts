@@ -18,7 +18,8 @@ const useUser = (): ReturnType => {
     lastName,
     isEmailVerified,
     walletAddress,
-    stripePaymentMethod,
+    isPaymentMethodIntegrated,
+    stripePaymentMethod
   } = userInfo;
 
   const user = useMemo(() => {
@@ -32,6 +33,7 @@ const useUser = (): ReturnType => {
     newUser.setFirstName(firstName || '');
     newUser.setLastName(lastName || '');
     newUser.setIsEmailVerified(!!isEmailVerified);
+    newUser.setIsPaymentMethodIntegrated(!!isPaymentMethodIntegrated);
     newUser.setLinkedAddress(walletAddress || '');
     newUser.setStripePayment(stripePaymentMethod);
     return newUser;
@@ -45,6 +47,7 @@ const useUser = (): ReturnType => {
     isEmailVerified,
     walletAddress,
     stripePaymentMethod,
+    isPaymentMethodIntegrated,
   ]);
 
   return { user };

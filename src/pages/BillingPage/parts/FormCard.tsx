@@ -166,7 +166,7 @@ const FormCard: FC<IFormCard> = ({ isEdit, onClose }) => {
                   color: '#ffffff',
                 },
                 '.Input:focus': {
-                  borderColor: '#7367F0',
+                  borderColor: '#226CFF',
                   boxShadow: 'none',
                 },
                 '.TermsText': {
