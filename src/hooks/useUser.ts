@@ -19,7 +19,7 @@ const useUser = (): ReturnType => {
     isEmailVerified,
     walletAddress,
     isPaymentMethodIntegrated,
-    stripePaymentMethod
+    stripePaymentMethod,
   } = userInfo;
 
   const user = useMemo(() => {

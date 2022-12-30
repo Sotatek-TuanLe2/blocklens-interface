@@ -103,7 +103,9 @@ const LandingPage = () => {
           </div>
 
           <div className="introduction__btn">
-            <button className="btn-primary">Get Started</button>
+            <Link to={'/login'}>
+              <button className="btn-primary">Get Started</button>
+            </Link>
           </div>
 
           <div className="image-main">
