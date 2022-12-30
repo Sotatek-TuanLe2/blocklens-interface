@@ -333,26 +333,30 @@ const AppUploadABI: FC<IAppUploadABI> = ({
 
     const reader = new FileReader();
     reader.onload = (e: any) => {
-      const data = e.target.result;
+      try {
+        const data = e.target.result;
 
-      if (!data || !validateJson.validate(JSON.parse(data), schema).valid) {
+        if (!data || !validateJson.validate(JSON.parse(data), schema).valid) {
+          toastError({ message: 'The ABI file must be correct format' });
+          return;
+        }
+
+        const abi = JSON.parse(data).abi;
+
+        const isCorrectFunctionAndEventOfNFT = listFunctionAndEventOfNFT.every(
+          (name: string) => abi.some((abiItem: any) => abiItem.name === name),
+        );
+
+        if (type === TYPE_ABI.NFT && !isCorrectFunctionAndEventOfNFT) {
+          toastError({ message: 'The ABI file must be correct format' });
+          return;
+        }
+
+        setFileSelected(dropFile || evt.target.files[0]);
+        setABIData(abi);
+      } catch (e) {
         toastError({ message: 'The ABI file must be correct format' });
-        return;
       }
-
-      const abi = JSON.parse(data).abi;
-
-      const isCorrectFunctionAndEventOfNFT = listFunctionAndEventOfNFT.every(
-        (name: string) => abi.some((abiItem: any) => abiItem.name === name),
-      );
-
-      if (type === TYPE_ABI.NFT && !isCorrectFunctionAndEventOfNFT) {
-        toastError({ message: 'The ABI file must be correct format' });
-        return;
-      }
-
-      setFileSelected(dropFile || evt.target.files[0]);
-      setABIData(abi);
     };
     reader.readAsText(file);
   };

@@ -174,7 +174,7 @@ const ListApps: React.FC = () => {
 
   const _renderModalCreateApp = () => {
     const isLimitApp =
-      myPlan?.appLimitation && totalApp >= myPlan?.appLimitation;
+      myPlan?.appLimitation && !!totalApp && totalApp >= myPlan?.appLimitation;
     return isLimitApp ? (
       <ModalUpgradeCreateApp
         open={openCreateApp}
