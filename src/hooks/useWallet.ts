@@ -36,6 +36,7 @@ type ReturnType = {
   isUserLinked: boolean;
   connectWallet: (connectorId: string, network: string) => Promise<void>;
   disconnectWallet: () => void;
+  linkWallet: (connector: BaseConnector, address: string) => Promise<void>;
   unlinkWallet: () => void;
   changeNetwork: (network: string) => Promise<void>;
   reloadBalance: () => Promise<void>;
@@ -123,22 +124,6 @@ const useWallet = (): ReturnType => {
     });
   };
 
-  const signMessage = async (connector: BaseConnector, address: string) => {
-    try {
-      if (!user || !!user.isUserLinked() || !address) {
-        return;
-      }
-      const signature = await connector.signMessage();
-      await rf
-        .getRequest('AuthRequest')
-        .attachWalletAddress({ address, signature });
-      // reload user's info
-      dispatch(getInfoUser());
-    } catch (error: any) {
-      throw new Error(error.message);
-    }
-  };
-
   const connectWallet = async (connectorId: string, network: string) => {
     const connector = ConnectorFactory.getConnector(connectorId, network);
     if (!connector) {
@@ -170,7 +155,6 @@ const useWallet = (): ReturnType => {
 
       _saveProvider(provider);
       dispatch(setIsConnecting(false));
-      await signMessage(connector, account);
     } catch (error: any) {
       dispatch(setIsConnecting(false));
       disconnectWallet();
@@ -183,6 +167,20 @@ const useWallet = (): ReturnType => {
 
   const disconnectWallet = () => {
     dispatch(clearWallet());
+  };
+
+  const linkWallet = async (connector: BaseConnector, address: string) => {
+    try {
+      const signature = await connector.signMessage();
+      await rf
+        .getRequest('AuthRequest')
+        .attachWalletAddress({ address, signature });
+      // reload user's info
+      dispatch(getInfoUser());
+      toastSuccess({ message: 'Link wallet successfully!' });
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
   };
 
   const unlinkWallet = async () => {
@@ -229,9 +227,10 @@ const useWallet = (): ReturnType => {
     currentNetwork: network,
     wallet,
     isOpenModalConnectWallet: openModalConnectWallet,
-    isUserLinked: !!wallet && !!user?.isUserLinked(),
+    isUserLinked: !!user?.isUserLinked(),
     connectWallet,
     disconnectWallet,
+    linkWallet,
     unlinkWallet,
     changeNetwork,
     reloadBalance,

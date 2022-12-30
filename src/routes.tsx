@@ -33,6 +33,7 @@ import ModalSubmittingTransaction from './modals/ModalSubmittingTransaction';
 import ModalFinishTransaction from './modals/ModalFinishTransaction';
 import WebhookActivitiesPage from './pages/WebhookActivitiesPage';
 import TopUpPage from './pages/TopUp';
+import ModalSignatureRequired from './modals/ModalSignatureRequired';
 
 /**
  * Main App routes.
@@ -89,8 +90,11 @@ const Routes: FC<RouteComponentProps> = () => {
         <Route path={'/contact-us'} component={ContactUs} />
         <PublicRoute path={'/'} component={LandingPage} />
       </Switch>
-      <ModalSubmittingTransaction />
-      <ModalFinishTransaction />
+      <>
+        <ModalSignatureRequired />
+        <ModalSubmittingTransaction />
+        <ModalFinishTransaction />
+      </>
     </>
   );
 };
