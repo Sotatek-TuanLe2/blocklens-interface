@@ -122,7 +122,7 @@ const PlanMobile: FC<IPlanMobile> = ({
           <Box className="plan-detail">
             <Flex alignItems={'center'} my={2}>
               <CheckedIcon />
-              <Box ml={3}> {plan.appLimitation} active apps </Box>
+              <Box ml={3}> {plan.appLimitation} apps </Box>
             </Flex>
             <Flex alignItems={'center'} my={2}>
               <CheckedIcon />
@@ -295,6 +295,14 @@ const BillingPage = () => {
       return;
     }
     // isUpgrade
+    if (
+      paymentMethod === PAYMENT_METHOD.CARD &&
+      !userInfo?.stripePaymentMethod
+    ) {
+      setStep(STEPS.FORM);
+      return;
+    }
+
     if (paymentMethod === PAYMENT_METHOD.CRYPTO) {
       if (isSufficientBalance) {
         setStep(STEPS.CHECKOUT);
@@ -446,25 +454,29 @@ const BillingPage = () => {
                     <RadioNoCheckedIcon />
                   )}
                 </Box>
-                <Box
-                  onClick={() => setIsOpenEditCardModal(true)}
-                  className={'box-method__btn-edit'}
-                >
-                  <EditIcon />
-                </Box>
               </Flex>
 
               <Flex flexDirection={'column'} alignItems={'center'}>
                 <Box className="box-method__name">Card</Box>
-                <Box className="box-method__value">
-                  (
-                  {!userInfo?.stripePaymentMethod
-                    ? '---'
-                    : userInfo?.stripePaymentMethod?.card?.brand +
-                      ' - ' +
-                      userInfo?.stripePaymentMethod?.card?.last4}
-                  )
-                </Box>
+                <Flex alignItems={'flex-start'}>
+                  <Box className="box-method__value">
+                    (
+                    {!userInfo?.stripePaymentMethod
+                      ? '---'
+                      : userInfo?.stripePaymentMethod?.card?.brand +
+                        ' - ' +
+                        userInfo?.stripePaymentMethod?.card?.last4}
+                    )
+                  </Box>
+                  <Box
+                    ml={4}
+                    mt={1}
+                    onClick={() => setIsOpenEditCardModal(true)}
+                    className={'box-method__btn-edit'}
+                  >
+                    <EditIcon />
+                  </Box>
+                </Flex>
                 <ListCardIcon />
               </Flex>
             </Box>

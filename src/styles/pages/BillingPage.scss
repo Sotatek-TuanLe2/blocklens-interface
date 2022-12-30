@@ -357,13 +357,23 @@
 }
 
 .box-top-up {
-  border: 1.6px solid $line;
   border-radius: 18px;
   width: 49%;
-  padding: 30px 36px;
 
   @include tablet {
     width: 100%;
+
+    &:first-child {
+      margin-bottom: 20px;
+    }
+  }
+
+  &>div {
+    padding: 30px 36px;
+
+    @include tablet {
+      padding: 20px;
+    }
   }
 
   &__label {
