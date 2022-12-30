@@ -21,7 +21,7 @@ import { AppBroadcast } from 'src/utils/utils-broadcast';
 import ModalSignInRequest from 'src/modals/ModalSignInRequest';
 import { isMobile } from 'react-device-detect';
 import { CloseIcon } from '@chakra-ui/icons';
-import { LogoutIcon } from 'src/assets/icons';
+import { ArrowLogout, DoorLogout, LogoutIcon } from 'src/assets/icons';
 
 const menus = [
   {
@@ -81,13 +81,24 @@ const Header: FC = () => {
           <MenuButton>
             <Avatar name={userInfo?.firstName} size="sm" />
           </MenuButton>
-          <MenuList fontSize={'16px'} color={'black'} maxW="200px">
-            <MenuItem className="user-name">
-              👋&nbsp; Welcome {userInfo?.firstName + ' ' + userInfo?.lastName}!
-            </MenuItem>
+          <MenuList className="menu-header">
+            <MenuItem className="user-info">
+              <div className="user-name">
+                {userInfo?.firstName + ' ' + userInfo?.lastName}
+              </div>
 
-            <MenuItem color={'red.400'} onClick={onLogout}>
-              Logout
+              <div className="user-email">{userInfo?.email}</div>
+              <div className="user-divider"></div>
+              <div className="user-logout" onClick={onLogout}>
+                {' '}
+                <span className="door-logout">
+                  <DoorLogout />
+                </span>
+                <span className="arrow-logout">
+                  <ArrowLogout />
+                </span>{' '}
+                <span>Log Out</span>
+              </div>
             </MenuItem>
           </MenuList>
         </Menu>
@@ -164,10 +175,16 @@ const Header: FC = () => {
         <Box className="header-mobile">
           {_renderMenu()}
 
-          <Flex className="btn-logout" onClick={onLogout}>
-            <LogoutIcon />
-            <Box>Log Out</Box>
-          </Flex>
+          <div className="user-logout" onClick={onLogout}>
+            {' '}
+            <span className="door-logout">
+              <DoorLogout />
+            </span>
+            <span className="arrow-logout">
+              <ArrowLogout />
+            </span>{' '}
+            <span>Log Out</span>
+          </div>
         </Box>
       )}
     </Box>

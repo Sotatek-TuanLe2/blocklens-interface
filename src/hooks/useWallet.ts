@@ -185,13 +185,11 @@ const useWallet = (): ReturnType => {
 
   const unlinkWallet = async () => {
     try {
-      await rf
-        .getRequest('AuthRequest')
-        .unlinkWallet();
+      await rf.getRequest('AuthRequest').unlinkWallet();
       // reload user's info
       dispatch(getInfoUser());
       disconnectWallet();
-      toastSuccess({ message: "Unlink wallet successfully!" });
+      toastSuccess({ message: 'Unlink wallet successfully!' });
     } catch (error: any) {
       toastError({ message: error.message });
     }

@@ -17,6 +17,7 @@ import { setAccessToken, setUserInfo } from 'src/store/auth';
 import { useHistory } from 'react-router';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
+import { getUserStats } from '../store/user';
 
 interface IDataForm {
   email: string;
@@ -52,6 +53,7 @@ const LoginPage: FC = () => {
       if (res) {
         dispatch(setAccessToken(res));
         dispatch(setUserInfo(res.user));
+        dispatch(getUserStats());
         toastSuccess({ message: 'Welcome to Blocksniper!' });
         history.push('/home');
       }

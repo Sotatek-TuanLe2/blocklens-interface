@@ -43,26 +43,14 @@ const BasicDetail = () => {
             <EditIcon />
           </Box>
         </Flex>
-        <Flex justifyContent={'space-between'} my={3}>
-          <Flex>
-            <Box className="label">Card:</Box>
-            <Box className="value">
-              •••• •••• •••• {userInfo?.stripePaymentMethod?.card?.last4}
-            </Box>
-          </Flex>
-          <Box
-            className="btn-edit"
-            onClick={() => setIsOpenEditCardModal(true)}
-          >
-            <EditIcon />
-          </Box>
-        </Flex>
         <Flex justifyContent={'space-between'}>
           <Flex>
             <Box className="label">Balance:</Box>
             <Box className="value">${userInfo?.balance}</Box>
           </Flex>
-          <Box className="link" onClick={() => history.push('/top-up')} >Top up</Box>
+          <Box className="link" onClick={() => history.push('/top-up')}>
+            Top up
+          </Box>
         </Flex>
       </Box>
 

@@ -28,7 +28,7 @@ export const StatusBilling: FC<IStatusBilling> = ({ billing }) => {
 
 export const _renderMethodBilling = (billing: IBilling) => {
   if (billing?.activePaymentMethod === 'CRYPTO') {
-    return 'Blocklens balance';
+    return 'Crypto balance';
   }
 
   if (billing?.activePaymentMethod === 'STRIPE') {
@@ -48,11 +48,11 @@ const BillingItem: FC<IBillingItem> = ({ billing, onDownload, onRetry }) => {
   return (
     <Tbody>
       <Tr className={`tr-list`}>
-        <Td w={"25%"}>{formatTimestamp(billing?.createdAt, 'MMMM DD YYYY')}</Td>
-        <Td w={"20%"}>{billing.type}</Td>
-        <Td w={"20%"}>${billing.totalAmount}</Td>
-        <Td w={"20%"}>{_renderMethodBilling(billing)}</Td>
-        <Td w={"15%"}>
+        <Td w={'25%'}>{formatTimestamp(billing?.createdAt, 'MMMM DD YYYY')}</Td>
+        <Td w={'20%'}>{billing.type}</Td>
+        <Td w={'20%'}>${billing.totalAmount}</Td>
+        <Td w={'20%'}>{_renderMethodBilling(billing)}</Td>
+        <Td w={'15%'}>
           <StatusBilling billing={billing} />
         </Td>
         <Td w={'10%'}>

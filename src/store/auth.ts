@@ -7,6 +7,7 @@ interface IUserInfo {
   userId?: string;
   firstName?: string;
   isEmailVerified?: boolean;
+  isPaymentMethodIntegrated?: boolean;
   notificationEnabled?: boolean;
   lastName?: string;
   address?: string;
@@ -15,6 +16,7 @@ interface IUserInfo {
   balance?: number;
   stripePaymentMethod?: any;
   walletAddress?: string;
+  activePaymentMethod?: string;
 }
 
 interface AuthState {

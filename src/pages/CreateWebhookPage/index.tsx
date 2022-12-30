@@ -32,6 +32,8 @@ import { APP_STATUS } from 'src/utils/utils-app';
 import { isEVMNetwork } from 'src/utils/utils-network';
 import { useLocation } from 'react-router';
 import { DownloadIcon } from 'src/assets/icons';
+import { useDispatch } from 'react-redux';
+import { getUserStats } from '../../store/user';
 
 const FILE_CSV_EXAMPLE = '/abi/CSV_Example.csv';
 
@@ -84,6 +86,8 @@ const CreateWebhook = () => {
   const [, updateState] = useState<any>();
   const forceUpdate = useCallback(() => updateState({}), []);
   const inputRef = useRef<any>(null);
+
+  const dispatch = useDispatch();
 
   const location = useLocation();
   const params = new URLSearchParams(location.search);
@@ -154,6 +158,7 @@ const CreateWebhook = () => {
 
     try {
       await rf.getRequest('RegistrationRequest').addRegistrations(appId, data);
+      dispatch(getUserStats());
       history.push(`/apps/${appId}`);
       toastSuccess({ message: 'Create Successfully!' });
     } catch (e: any) {
@@ -437,7 +442,7 @@ const CreateWebhook = () => {
         <AppField label={'Token ID'} customWidth={'49%'}>
           <AppInput
             size="lg"
-            placeholder={"20,21,22"}
+            placeholder={'20,21,22'}
             value={dataForm.tokenIds}
             onChange={(e) =>
               setDataForm({

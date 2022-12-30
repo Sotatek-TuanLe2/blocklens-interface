@@ -1,24 +1,21 @@
-import { useDispatch } from "react-redux";
+import { useDispatch } from 'react-redux';
 import { MaxUint256 } from '@ethersproject/constants';
-import abi from "src/abi";
-import { executeTransaction } from "src/store/transaction";
-import { toastInfo } from "src/utils/utils-notify";
-import { isTokenApproved } from "src/utils/utils-token";
+import abi from 'src/abi';
+import { executeTransaction } from 'src/store/transaction';
+import { toastInfo } from 'src/utils/utils-notify';
+import { isTokenApproved } from 'src/utils/utils-token';
 import useWallet from 'src/hooks/useWallet';
-import config from "src/config";
-import { getInfoUser } from "src/store/auth";
-import { getChainConfig, getNetworkByEnv } from "src/utils/utils-network";
-import { convertDecToWei } from "src/utils/utils-format";
+import config from 'src/config';
+import { getInfoUser } from 'src/store/auth';
+import { getChainConfig, getNetworkByEnv } from 'src/utils/utils-network';
+import { convertDecToWei } from 'src/utils/utils-format';
 
 type ReturnType = {
   approveToken: (
     contractAddress: string,
     currencyAddress: string,
-  ) => Promise<void>,
-  topUp: (
-    currencyAddress: string,
-    amount: string
-  ) => Promise<void>
+  ) => Promise<void>;
+  topUp: (currencyAddress: string, amount: string) => Promise<void>;
 };
 
 const useTopUp = (): ReturnType => {
@@ -58,27 +55,23 @@ const useTopUp = (): ReturnType => {
     );
   };
 
-  const topUp = async (
-    currencyAddress: string,
-    amount: string
-  ) => {
+  const topUp = async (currencyAddress: string, amount: string) => {
     if (!wallet) {
       return;
     }
     const networkCurrencies = getNetworkByEnv(
       getChainConfig(wallet.getNework()),
     ).currencies;
-    const currencyKey = Object.keys(networkCurrencies)
-      .find((currencyKey: string) => networkCurrencies[currencyKey].address === currencyAddress);
+    const currencyKey = Object.keys(networkCurrencies).find(
+      (currencyKey: string) =>
+        networkCurrencies[currencyKey].address === currencyAddress,
+    );
     if (!currencyKey) {
       return;
     }
     const topUpContractAddress =
       config.topUp[wallet.getNework()].contractAddress;
-    await approveToken(
-      topUpContractAddress,
-      currencyAddress,
-    );
+    await approveToken(topUpContractAddress, currencyAddress);
     await dispatch(
       executeTransaction({
         provider: wallet.getProvider(),
@@ -100,8 +93,8 @@ const useTopUp = (): ReturnType => {
 
   return {
     approveToken,
-    topUp
-  }
+    topUp,
+  };
 };
 
 export default useTopUp;

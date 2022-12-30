@@ -22,7 +22,8 @@ interface IAppCryptoForm {
 const AppCryptoForm: FC<IAppCryptoForm> = (props) => {
   const { wallet, isUserLinked, changeNetwork } = useWallet();
   const { user } = useUser();
-  const { currencyAddress, amount, onChangeCurrencyAddress, onChangeAmount } = props;
+  const { currencyAddress, amount, onChangeCurrencyAddress, onChangeAmount } =
+    props;
 
   const AMOUNT_OPTIONS = [300, 500, 1000];
 
@@ -88,11 +89,7 @@ const AppCryptoForm: FC<IAppCryptoForm> = (props) => {
             note="Each account has 1 linked wallet. Cryptocurrencies sent from other wallets would not be top up to your account balance.
                     You can change your linked wallet at the Account page."
           >
-            <AppInput
-              isDisabled={true}
-              size="lg"
-              value={wallet.getAddress()}
-            />
+            <AppInput isDisabled={true} size="lg" value={wallet.getAddress()} />
           </AppField>
           <Box width={isMobile ? '100%' : '49.5%'} zIndex={99}>
             <AppField label={'Chain'} customWidth={'100%'}>
@@ -125,8 +122,9 @@ const AppCryptoForm: FC<IAppCryptoForm> = (props) => {
                   {AMOUNT_OPTIONS.map((item: number, index: number) => {
                     return (
                       <Box
-                        className={`amount-option ${+amount === item ? 'active' : ''
-                          }`}
+                        className={`amount-option ${
+                          +amount === item ? 'active' : ''
+                        }`}
                         key={index}
                         onClick={() => onChangeAmount(item.toString())}
                       >

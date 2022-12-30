@@ -14,6 +14,8 @@ import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import config from 'src/config';
 import _ from 'lodash';
 import { isMobile } from 'react-device-detect';
+import { useDispatch } from 'react-redux';
+import { getUserStats } from '../store/user';
 
 interface IModalCreateApp {
   open: boolean;
@@ -63,6 +65,8 @@ const ModalCreateApp: FC<IModalCreateApp> = ({ open, onClose, reloadData }) => {
   const [, updateState] = useState<any>();
   const forceUpdate = useCallback(() => updateState({}), []);
 
+  const dispatch = useDispatch();
+
   const validator = useRef(
     createValidator({
       element: (message: string) => (
@@ -102,6 +106,7 @@ const ModalCreateApp: FC<IModalCreateApp> = ({ open, onClose, reloadData }) => {
       if (res.key) {
         setDataForm({ ...initDataCreateApp });
         toastSuccess({ message: 'Create app successfully!' });
+        dispatch(getUserStats());
         reloadData && reloadData();
         onCloseModal();
       }
