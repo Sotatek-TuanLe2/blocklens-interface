@@ -18,12 +18,12 @@ import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { isMobile } from 'react-device-detect';
 
 interface IDataFormContact {
-  email?: string;
-  firstName?: string;
-  lastName?: string;
+  email: string;
+  firstName: string;
+  lastName: string;
   company?: string;
   country?: string;
-  networkOrChain?: string;
+  networkOrChain: string;
   telegram?: string;
   feedback?: string;
 }
@@ -33,6 +33,7 @@ const initialForm = {
   lastName: '',
   email: '',
   country: '',
+  networkOrChain: '',
 };
 
 const listCountry = COUNTRIES.map((item: { name: string }) => {
@@ -45,6 +46,7 @@ const listCountry = COUNTRIES.map((item: { name: string }) => {
 const ContactUs = () => {
   const [dataContact, setDataContact] = useState<IDataFormContact>(initialForm);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
+  const [isHiddenError, setIsHiddenError] = useState(false);
   const [, updateState] = useState<any>();
   const forceUpdate = useCallback(() => updateState({}), []);
 
@@ -62,8 +64,8 @@ const ContactUs = () => {
     try {
       await rf.getRequest('UserRequest').contactToAdmin(dataContact);
       setDataContact({ ...initialForm });
+      setIsHiddenError(true);
       toastSuccess({ message: 'Send email successfully' });
-      console.log('dataContact', dataContact);
     } catch (error: any) {
       toastError({
         message: error?.message || 'Oops. Something went wrong!',
@@ -89,13 +91,15 @@ const ContactUs = () => {
         <AppCard className={isMobile ? 'contact-form-mobile' : ''}>
           <AppField label="Email" isRequired>
             <AppInput
+              hiddenErrorText={isHiddenError}
               value={dataContact.email}
-              onChange={(e) =>
+              onChange={(e) => {
+                setIsHiddenError(false);
                 setDataContact({
                   ...dataContact,
                   email: e.target.value,
-                })
-              }
+                });
+              }}
               validate={{
                 name: `email`,
                 validator: validator.current,
@@ -107,13 +111,16 @@ const ContactUs = () => {
           <Flex direction={'row'} justifyContent="space-between" wrap={'wrap'}>
             <AppField label="First Name" isRequired customWidth="49%">
               <AppInput
+                hiddenErrorText={isHiddenError}
                 value={dataContact.firstName}
-                onChange={(e) =>
+                onChange={(e) => {
+                  setIsHiddenError(false);
+
                   setDataContact({
                     ...dataContact,
                     firstName: e.target.value,
-                  })
-                }
+                  });
+                }}
                 validate={{
                   name: `firstName`,
                   validator: validator.current,
@@ -124,13 +131,16 @@ const ContactUs = () => {
 
             <AppField label="Last Name" isRequired customWidth="49%">
               <AppInput
+                hiddenErrorText={isHiddenError}
                 value={dataContact.lastName}
-                onChange={(e) =>
+                onChange={(e) => {
+                  setIsHiddenError(false);
+
                   setDataContact({
                     ...dataContact,
                     lastName: e.target.value,
-                  })
-                }
+                  });
+                }}
                 validate={{
                   name: `lastName`,
                   validator: validator.current,
@@ -143,13 +153,16 @@ const ContactUs = () => {
           <Flex direction={'row'} justifyContent="space-between" wrap={'wrap'}>
             <AppField label="Company" customWidth="49%">
               <AppInput
+                hiddenErrorText={isHiddenError}
                 value={dataContact.company}
-                onChange={(e) =>
+                onChange={(e) => {
+                  setIsHiddenError(false);
+
                   setDataContact({
                     ...dataContact,
                     company: e.target.value,
-                  })
-                }
+                  });
+                }}
                 validate={{
                   name: `company`,
                   validator: validator.current,
@@ -181,13 +194,16 @@ const ContactUs = () => {
               customWidth="49%"
             >
               <AppInput
+                hiddenErrorText={isHiddenError}
                 value={dataContact.networkOrChain}
-                onChange={(e) =>
+                onChange={(e) => {
+                  setIsHiddenError(false);
+
                   setDataContact({
                     ...dataContact,
                     networkOrChain: e.target.value,
-                  })
-                }
+                  });
+                }}
                 validate={{
                   name: `networkOrChain`,
                   validator: validator.current,
@@ -198,13 +214,16 @@ const ContactUs = () => {
 
             <AppField label="Telegram" customWidth="49%">
               <AppInput
+                hiddenErrorText={isHiddenError}
                 value={dataContact.telegram}
-                onChange={(e) =>
+                onChange={(e) => {
+                  setIsHiddenError(false);
+
                   setDataContact({
                     ...dataContact,
                     telegram: e.target.value,
-                  })
-                }
+                  });
+                }}
                 validate={{
                   name: `telegram`,
                   validator: validator.current,
@@ -219,14 +238,17 @@ const ContactUs = () => {
               Tell Us More About What You Are Building
             </Box>
             <AppTextarea
+              hiddenErrorText={isHiddenError}
               rows={6}
               value={dataContact.feedback}
-              onChange={(e) =>
+              onChange={(e) => {
+                setIsHiddenError(false);
+
                 setDataContact({
                   ...dataContact,
                   feedback: e.target.value,
-                })
-              }
+                });
+              }}
               validate={{
                 name: `feedback`,
                 validator: validator.current,
