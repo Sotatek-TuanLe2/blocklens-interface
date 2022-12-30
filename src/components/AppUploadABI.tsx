@@ -1,4 +1,12 @@
-import { Box, Flex, Link, Text, Checkbox, Tooltip } from '@chakra-ui/react';
+import {
+  Box,
+  Flex,
+  Link,
+  Text,
+  Checkbox,
+  Tooltip,
+  useDisclosure,
+} from '@chakra-ui/react';
 import { toastError } from 'src/utils/utils-notify';
 import React, {
   useState,
@@ -325,26 +333,30 @@ const AppUploadABI: FC<IAppUploadABI> = ({
 
     const reader = new FileReader();
     reader.onload = (e: any) => {
-      const data = e.target.result;
+      try {
+        const data = e.target.result;
 
-      if (!data || !validateJson.validate(JSON.parse(data), schema).valid) {
+        if (!data || !validateJson.validate(JSON.parse(data), schema).valid) {
+          toastError({ message: 'The ABI file must be correct format' });
+          return;
+        }
+
+        const abi = JSON.parse(data).abi;
+
+        const isCorrectFunctionAndEventOfNFT = listFunctionAndEventOfNFT.every(
+          (name: string) => abi.some((abiItem: any) => abiItem.name === name),
+        );
+
+        if (type === TYPE_ABI.NFT && !isCorrectFunctionAndEventOfNFT) {
+          toastError({ message: 'The ABI file must be correct format' });
+          return;
+        }
+
+        setFileSelected(dropFile || evt.target.files[0]);
+        setABIData(abi);
+      } catch (e) {
         toastError({ message: 'The ABI file must be correct format' });
-        return;
       }
-
-      const abi = JSON.parse(data).abi;
-
-      const isCorrectFunctionAndEventOfNFT = listFunctionAndEventOfNFT.every(
-        (name: string) => abi.some((abiItem: any) => abiItem.name === name),
-      );
-
-      if (type === TYPE_ABI.NFT && !isCorrectFunctionAndEventOfNFT) {
-        toastError({ message: 'The ABI file must be correct format' });
-        return;
-      }
-
-      setFileSelected(dropFile || evt.target.files[0]);
-      setABIData(abi);
     };
     reader.readAsText(file);
   };
@@ -447,15 +459,25 @@ const AppUploadABI: FC<IAppUploadABI> = ({
     }
   };
 
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   const _renderNoticeUpload = () => {
     return (
       <Tooltip
         placement={'top'}
         hasArrow
         p={2}
+        isOpen={isOpen}
         label={`This is an optional function. If you don't upload a custom ABI file, we would use default ERC-721 file.`}
       >
-        <Box className="icon-info" ml={2} cursor={'pointer'} />
+        <Box
+          onMouseEnter={onOpen}
+          onMouseLeave={onClose}
+          onClick={onOpen}
+          className="icon-info"
+          ml={2}
+          cursor={'pointer'}
+        />
       </Tooltip>
     );
   };
