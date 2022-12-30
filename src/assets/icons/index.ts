@@ -53,7 +53,7 @@ export {
   LogoutIcon,
   CryptoIcon,
   ListCardIcon,
-  CircleCheckedIcon
+  CircleCheckedIcon,
   DoorLogout,
   ArrowLogout,
 };
