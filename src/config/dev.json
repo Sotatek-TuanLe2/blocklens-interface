@@ -352,21 +352,13 @@
           "pollingInterval": 10000
         },
         "BSC": {
-          "id": "wallet-connect-connector",
-          "name": "WalletConnect",
-          "icon": "/images/WalletConnectIcon.svg",
-          "description": "Connect to Trust Wallet, Rainbow Wallet and more...",
-          "href": null,
-          "mobile": true,
-          "options": {
-            "rpc": {
-              "97": "https://data-seed-prebsc-1-s1.binance.org:8545/"
-            },
-            "infuraId": "706f50c257ba4ca9883d0aa14ae57434",
-            "bridge": "https://bridge.walletconnect.org",
-            "qrcode": true,
-            "pollingInterval": 10000
-          }
+          "rpc": {
+            "97": "https://data-seed-prebsc-1-s1.binance.org:8545/"
+          },
+          "infuraId": "706f50c257ba4ca9883d0aa14ae57434",
+          "bridge": "https://bridge.walletconnect.org",
+          "qrcode": true,
+          "pollingInterval": 10000
         },
         "POLYGON": {
           "rpc": {
