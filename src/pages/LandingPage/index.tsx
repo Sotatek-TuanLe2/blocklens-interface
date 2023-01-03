@@ -55,20 +55,20 @@ const useCases = [
 
 const feedbacks = [
   {
-    name: '',
-    title: '',
+    name: 'Loi Luu',
+    title: 'CEO – Kyber Network',
     description:
       'Block Sniper saved us 2 months of development with its no-code platform. On-chain synchronization is a must for web3 application and develop it by ourself is extremely time consuming.',
   },
   {
-    name: '',
-    title: '',
+    name: 'Thi Truong',
+    title: 'CEO & Founder of Polka Foundry',
     description:
       'Thanks to Block Sniper, we’ve cut our spend for infrastructure. Maintaining a blockchain node or hosting blockchain crawler servers is costly nowaday.',
   },
   {
-    name: '',
-    title: '',
+    name: 'Luu Trung Nguyen',
+    title: 'CEO & Founder of Satom Venture Studio',
     description:
       'Building dApp has never been easier with Block Sniper. It supports everything we need to make our platform aware of on-chain events and keep our users engaged with the application.',
   },
@@ -186,8 +186,10 @@ const LandingPage = () => {
                       <div className="feedback__description">
                         {item.description}
                       </div>
-                      <div className="feedback__name">{item.name}</div>
-                      <div className="feedback__title">{item.title}</div>
+                      <div>
+                        <div className="feedback__name">{item.name}</div>
+                        <div className="feedback__title">{item.title}</div>
+                      </div>
                     </div>
                   );
                 })}
