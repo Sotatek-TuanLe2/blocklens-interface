@@ -46,7 +46,7 @@
               "name": "USDT",
               "symbol": "USDT",
               "decimals": 6,
-              "icon": "/images/USDT.png"
+              "icon": "icon-usdt"
             },
             "usdc": {
               "coingeckoId": "usd-coin",
@@ -54,7 +54,7 @@
               "name": "USDC",
               "symbol": "USDC",
               "decimals": 6,
-              "icon": "/images/USDC.png"
+              "icon": "icon-usdc"
             }
           }
         },
@@ -128,7 +128,7 @@
               "name": "USDT",
               "symbol": "USDT",
               "decimals": 18,
-              "icon": "/images/USDT.png"
+              "icon": "icon-usdt"
             },
             "busd": {
               "coingeckoId": "binance-usd",
@@ -136,7 +136,7 @@
               "name": "BUSD",
               "symbol": "BUSD",
               "decimals": 18,
-              "icon": "/images/BUSD.png"
+              "icon": "icon-busd"
             },
             "usdc": {
               "coingeckoId": "usd-coin",
@@ -144,7 +144,7 @@
               "name": "USDC",
               "symbol": "USDC",
               "decimals": 18,
-              "icon": "/images/USDC.png"
+              "icon": "icon-usdc"
             }
           }
         },
@@ -226,7 +226,7 @@
               "name": "USDT",
               "symbol": "USDT",
               "decimals": 6,
-              "icon": "/images/USDT.png"
+              "icon": "icon-usdt"
             },
             "usdc": {
               "coingeckoId": "usd-coin",
@@ -234,7 +234,7 @@
               "name": "USDC",
               "symbol": "USDC",
               "decimals": 6,
-              "icon": "/images/USDC.png"
+              "icon": "icon-usdc"
             }
           }
         },
