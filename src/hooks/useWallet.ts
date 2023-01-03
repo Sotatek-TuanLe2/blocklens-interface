@@ -150,14 +150,6 @@ const useWallet = (): ReturnType => {
       if (!provider) {
         throw new Error('No provider was found');
       }
-      if (connectorId === WALLET_CONNECT) {
-        const { isValid, message } = checkWalletConnectProvider(provider);
-        if (!isValid) {
-          await provider.disconnect();
-          disconnectWallet();
-          throw new Error(message || '');
-        }
-      }
       dispatch(setConnector(connector));
 
       const account = await connector.getAccount(provider);

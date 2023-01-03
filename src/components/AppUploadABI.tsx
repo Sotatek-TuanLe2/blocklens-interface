@@ -239,7 +239,9 @@ const ListSelect: FC<IListSelect> = ({
                   >
                     <Flex className="abi-option">
                       {item.name}
-                      {!!inputs.length && <Box className="inputs">({inputs.join(', ')})</Box>}
+                      {!!inputs.length && (
+                        <Box className="inputs">({inputs.join(', ')})</Box>
+                      )}
                     </Flex>
                   </Checkbox>
                 </Box>

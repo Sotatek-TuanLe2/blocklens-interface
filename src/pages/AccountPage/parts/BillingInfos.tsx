@@ -47,8 +47,7 @@ const BillingInfos = () => {
             <Box ml={3}> {currentPlan.notificationLimitation} message/day</Box>
           </Flex>
           <Flex alignItems={'center'}>
-            <CheckedIcon />{' '}
-            <Box ml={3}> All supported chains</Box>
+            <CheckedIcon /> <Box ml={3}> All supported chains</Box>
           </Flex>
           <Box>
             Period: {formatTimestamp(currentPlan?.from || 0, 'MMM DD, YYYY')} -{' '}
