@@ -8,15 +8,15 @@ import PartUserStats from './parts/PartUserStats';
 import { AppButton, AppCard } from 'src/components';
 import ModalCreateApp from 'src/modals/ModalCreateApp';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../store';
-import { getUserStats } from '../../store/user';
+import { RootState } from 'src/store';
+import { getUserStats } from 'src/store/user';
 import { useDispatch } from 'react-redux';
 
 const HomePage = () => {
   const {
     stats: { totalApp, totalRegistrationActive, totalRegistration },
   } = useSelector((state: RootState) => state.user);
-  const hasApp = totalApp > 0;
+  const hasApp = !!totalApp && totalApp > 0;
 
   const [openModalCreateApp, setOpenModalCreateApp] = useState<boolean>(false);
 
