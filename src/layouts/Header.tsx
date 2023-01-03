@@ -21,7 +21,7 @@ import { AppBroadcast } from 'src/utils/utils-broadcast';
 import ModalSignInRequest from 'src/modals/ModalSignInRequest';
 import { isMobile } from 'react-device-detect';
 import { CloseIcon } from '@chakra-ui/icons';
-import { ArrowLogout, DoorLogout, LogoutIcon } from 'src/assets/icons';
+import { ArrowLogout, DoorLogout } from 'src/assets/icons';
 
 const menus = [
   {
