@@ -35,6 +35,8 @@ import ModalFinishTransaction from './modals/ModalFinishTransaction';
 import WebhookActivitiesPage from './pages/WebhookActivitiesPage';
 import TopUpPage from './pages/TopUp';
 import { getUserStats } from './store/user';
+import { getUser } from './store/user-2';
+import { getMetadataPlans } from './store/metadata';
 
 /**
  * Main App routes.
@@ -51,6 +53,9 @@ const Routes: FC<RouteComponentProps> = () => {
 
   useEffect(() => {
     if (!accessToken) return;
+    dispatch(getUser());
+    dispatch(getMetadataPlans());
+
     dispatch(getInfoUser());
     dispatch(getMyPlan());
     dispatch(getPlans());
