@@ -21,6 +21,15 @@
   }
 }
 
+.title-heading {
+  @include heading-4;
+  margin-bottom: 22px;
+
+  @include tablet {
+    @include heading-6;
+  }
+}
+
 .title-list-app {
   justify-content: space-between;
   align-items: center;

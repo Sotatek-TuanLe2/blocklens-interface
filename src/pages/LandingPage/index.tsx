@@ -30,53 +30,47 @@ const useCases = [
   {
     name: '1. Address transactions',
     description:
-      'Notify users of critical events at every step of their journey. Increase user engagement and retention by 100%.',
+      'Notify whenever there is a new transaction occurs on your address. Track your wallet balance, no more waiting for every new block.',
     image: 'use-case-1.png',
   },
   {
     name: '2. Smart contract transactions',
     description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.' +
-      ' Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ',
+      'Get to know when a swap, an in-game action, purchases, and other smart-contract transactions were made instantly. Upload your smart contract ABI and specify which method to receive webhook when being called.',
     image: 'use-case-2.png',
   },
   {
     name: '3. NFT activities',
     description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.' +
-      ' Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ',
+      'Notify your users when their NFT is minted, transferred to another users. Congrats your users once their in-game NFT is sold, their items is available for sale and much more.',
     image: 'use-case-3.png',
   },
   {
     name: '4. Failed transactions',
     description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.' +
-      ' Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ',
+      'Getting alerts when there is a failed transaction in your smart contract to notify users, aware of hacking attempts. No more refreshing web pages to check for failed transactions.',
     image: 'use-case-4.png',
   },
 ];
 
 const feedbacks = [
   {
-    name: 'Name',
-    title: 'Title',
+    name: 'Loi Luu',
+    title: 'CEO – Kyber Network',
     description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.' +
-      ' Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ',
+      'Block Sniper saved us 2 months of development with its no-code platform. On-chain synchronization is a must for web3 application and develop it by ourself is extremely time consuming.',
   },
   {
-    name: 'Name',
-    title: 'Title',
+    name: 'Thi Truong',
+    title: 'CEO & Founder of Polka Foundry',
     description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.' +
-      ' Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ',
+      'Thanks to Block Sniper, we’ve cut our spend for infrastructure. Maintaining a blockchain node or hosting blockchain crawler servers is costly nowaday.',
   },
   {
-    name: 'Name',
-    title: 'Title',
+    name: 'Luu Trung Nguyen',
+    title: 'CEO & Founder of Satom Venture Studio',
     description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.' +
-      ' Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ',
+      'Building dApp has never been easier with Block Sniper. It supports everything we need to make our platform aware of on-chain events and keep our users engaged with the application.',
   },
 ];
 
@@ -172,7 +166,7 @@ const LandingPage = () => {
             <div className="chart__description">
               <span>Blockchain made simple.</span> Remove the hassle of syncing
               and maintaining data/transactions between on-chain and off-chain.
-              No full-node setup, no code, multi-chain.
+              No fullnode setup, No code, Multichain.
             </div>
 
             <img src="/images/LandingPage/chart.png" alt="chart" />
@@ -192,8 +186,10 @@ const LandingPage = () => {
                       <div className="feedback__description">
                         {item.description}
                       </div>
-                      <div className="feedback__name">{item.name}</div>
-                      <div className="feedback__title">{item.title}</div>
+                      <div>
+                        <div className="feedback__name">{item.name}</div>
+                        <div className="feedback__title">{item.title}</div>
+                      </div>
                     </div>
                   );
                 })}

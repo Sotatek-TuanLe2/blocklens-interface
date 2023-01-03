@@ -44,7 +44,6 @@ const statsSlice = createSlice({
 
   extraReducers: (builder) => {
     builder.addCase(getUserStats.fulfilled, (state, action) => {
-      console.log(action.payload);
       state.stats = action.payload;
     });
   },
