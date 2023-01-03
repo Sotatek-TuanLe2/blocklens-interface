@@ -51,9 +51,9 @@ export {
   WarningIcon,
   DownloadBillingIcon,
   LogoutIcon,
-  DoorLogout,
-  ArrowLogout,
   CryptoIcon,
   ListCardIcon,
-  CircleCheckedIcon
+  CircleCheckedIcon,
+  DoorLogout,
+  ArrowLogout,
 };

@@ -16,7 +16,7 @@ class WalletConnectConnector extends BaseConnector {
    * @returns provider
    */
   async connect() {
-    const connector = new WalletConnectProvider(this.options.options);
+    const connector = new WalletConnectProvider(this.options);
     await connector.activate();
     const provider = await connector.getProvider();
     this.connector = connector;
