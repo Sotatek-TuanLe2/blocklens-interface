@@ -1,20 +1,10 @@
-import {
-  Box,
-  Flex,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tooltip,
-  Tr,
-} from '@chakra-ui/react';
+import { Box, Flex, Tbody, Td, Th, Thead, Tooltip, Tr } from '@chakra-ui/react';
 import React, {
   useEffect,
   useState,
   useCallback,
   FC,
   MouseEvent,
-  useRef,
 } from 'react';
 import rf from 'src/requests/RequestFactory';
 import { useHistory, useParams } from 'react-router';
@@ -36,7 +26,8 @@ import {
   AppHeading,
   AppInput,
   AppLink,
-} from '../components';
+  AppFilter
+} from 'src/components';
 import { isMobile } from 'react-device-detect';
 import ModalFilterActivities from '../modals/ModalFilterActivities';
 import {
@@ -46,7 +37,6 @@ import {
 } from '../utils/utils-helper';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import {
-  FilterIcon,
   InfoIcon,
   LinkDetail,
   LinkIcon,
@@ -64,81 +54,6 @@ interface IActivity {
     activity: IActivityResponse,
   ) => void;
 }
-
-interface IOption {
-  value: string;
-  label: string;
-}
-
-interface IFilter {
-  value: string;
-  onChange: (value: string) => void;
-  type: string;
-  options?: IOption[];
-}
-
-export const Filter: FC<IFilter> = ({ value, onChange, type, options }) => {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-  const ref = useRef<any>(null);
-
-  const handleClickOutside = (event: any) => {
-    if (ref.current && !ref.current?.contains(event.target)) {
-      setIsOpen(false);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener('click', handleClickOutside, true);
-    return () => {
-      document.removeEventListener('click', handleClickOutside, true);
-    };
-  }, []);
-
-  return (
-    <Box
-      ml={2}
-      className={`filter-table ${isOpen || !!value ? 'active' : ''}`}
-      ref={ref}
-    >
-      <FilterIcon onClick={() => setIsOpen(true)} />
-
-      {isOpen && (
-        <>
-          {type === 'status' ? (
-            <Box className="filter-table__options">
-              {!!options &&
-                options.map((item: any, index: number) => {
-                  return (
-                    <Box
-                      className={`filter-table__option ${
-                        item.value === value ? 'active' : ''
-                      }`}
-                      onClick={() => {
-                        onChange(item?.value);
-                        setIsOpen(false);
-                      }}
-                      key={index}
-                    >
-                      {item.label}
-                    </Box>
-                  );
-                })}
-            </Box>
-          ) : (
-            <Box className="filter-table__box-search">
-              <AppInput
-                className={'input-search'}
-                value={value}
-                onChange={(e) => onChange(e.target.value)}
-                placeholder={`Select ${type}`}
-              />
-            </Box>
-          )}
-        </>
-      )}
-    </Box>
-  );
-};
 
 const ActivityMobile: FC<IActivity> = ({
   activity,
@@ -508,7 +423,7 @@ const AllActivitiesPage = () => {
         >
           <Flex alignItems="center">
             method
-            <Filter value={method} onChange={setMethod} type="method" />
+            <AppFilter value={method} onChange={setMethod} type="method" />
           </Flex>
         </Th>
       );
@@ -519,7 +434,11 @@ const AllActivitiesPage = () => {
         <Th w="15%">
           <Flex alignItems="center">
             Address
-            <Filter value={address} onChange={setAddress} type="address" />
+            <AppFilter
+              value={address}
+              onChange={setAddress}
+              type="address"
+            />
           </Flex>
         </Th>
       );
@@ -532,7 +451,11 @@ const AllActivitiesPage = () => {
           <Th textAlign="center" w="10%">
             <Flex alignItems="center" justifyContent={'center'}>
               token id
-              <Filter value={tokenId} onChange={setTokenId} type="token ID" />
+              <AppFilter
+                value={tokenId}
+                onChange={setTokenId}
+                type="token ID"
+              />
             </Flex>
           </Th>
         </>
@@ -560,15 +483,19 @@ const AllActivitiesPage = () => {
           </Th>
           <Th w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '15%' : '20%'}>
             <Flex alignItems="center">
-              txn id{' '}
-              <Filter value={txHash} onChange={setTxHash} type="txn ID" />
+              txn id
+              <AppFilter
+                value={txHash}
+                onChange={setTxHash}
+                type="txn ID"
+              />
             </Flex>
           </Th>
           {_renderHeaderActivities()}
           <Th w="15%">
             <Flex alignItems={'center'} justifyContent={'center'}>
               Status
-              <Filter
+              <AppFilter
                 value={status}
                 onChange={setStatus}
                 type="status"
