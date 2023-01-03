@@ -21,6 +21,10 @@ interface IUserInfo {
 
 interface AuthState {
   userInfo: IUserInfo;
+  tokens: {
+    access: string;
+    refresh: string;
+  }
 }
 
 const initialState = {
@@ -37,6 +41,10 @@ const initialState = {
     notificationEnabled: false,
     isPaymentMethodIntegrated: false
   },
+  tokens: {
+    access: '',
+    refresh: ''
+  }
 } as AuthState;
 
 export const getInfoUser = createAsyncThunk(
@@ -60,9 +68,14 @@ const authSlice = createSlice({
       state.userInfo = action.payload;
     },
     setAccessToken: (state, action) => {
-      setAuthorizationToRequest(action.payload.accessToken);
-      Storage.setAccessToken(action.payload.accessToken);
-      Storage.setRefreshToken(action.payload.refreshToken);
+      const { accessToken, refreshToken } = action.payload;
+      state.tokens = {
+        access: accessToken,
+        refresh: refreshToken
+      };
+      setAuthorizationToRequest(accessToken);
+      Storage.setAccessToken(accessToken);
+      Storage.setRefreshToken(refreshToken);
     },
   },
 });
