@@ -373,6 +373,9 @@
       width: 26px;
       height: 26px;
     }
+    .is-reloading {
+      animation: spin 1s infinite linear;
+    }
   }
 }
 

@@ -24,6 +24,7 @@ import {
   ListCardIcon,
   CircleCheckedIcon,
   CryptoIcon,
+  ReloadIcon,
 } from 'src/assets/icons';
 import { isMobile } from 'react-device-detect';
 import PartCheckout from './parts/PartCheckout';
@@ -90,7 +91,7 @@ const PlanMobile: FC<IPlanMobile> = ({
       <Box
         className={`${isOpen ? 'open' : ''} ${
           isActivePlan ? 'active' : ''
-        } card-mobile plan-card`}
+          } card-mobile plan-card`}
       >
         <Flex
           justifyContent="space-between"
@@ -148,6 +149,7 @@ const BillingPage = () => {
   const [planSelected, setPlanSelected] = useState<IPlan>({} as any);
   const [isOpenEditCardModal, setIsOpenEditCardModal] =
     useState<boolean>(false);
+  const [isReloadingUserInfo, setIsReloadingUserInfo] = useState<boolean>(false);
   const [step, setStep] = useState<number>(STEPS.LIST);
   const { myPlan: currentPlan, plans: billingPlans } = useSelector(
     (state: RootState) => state.billing,
@@ -165,6 +167,19 @@ const BillingPage = () => {
   useEffect(() => {
     setPlanSelected(currentPlan);
   }, [currentPlan]);
+
+  useEffect(() => {
+    const RELOAD_BALANCE_DURATION = 30;
+    let reloadBalanceInterval: any = null;
+    if (paymentMethod === PAYMENT_METHOD.CRYPTO) {
+      reloadBalanceInterval = setInterval(() => {
+        dispatch(getInfoUser())
+      }, RELOAD_BALANCE_DURATION * 1000);
+    }
+    return () => {
+      clearInterval(reloadBalanceInterval);
+    };
+  }, [paymentMethod]);
 
   const isSufficientBalance = useMemo(() => {
     if (!user) {
@@ -314,6 +329,13 @@ const BillingPage = () => {
     }
   };
 
+  const onReloadUserInfo = async () => {
+    setIsReloadingUserInfo(true);
+    await dispatch(getInfoUser());
+    setIsReloadingUserInfo(false);
+    toastSuccess({ message: 'Reload balance successfully!' });
+  };
+
   const _renderButtonUpdatePlan = () => {
     if (isCurrentPlan) return;
     const getTextButton = () => {
@@ -447,17 +469,16 @@ const BillingPage = () => {
               <Box
                 className={`${
                   paymentMethod === PAYMENT_METHOD.CARD ? 'active' : ''
-                } box-method`}
+                  } box-method`}
               >
                 <Flex justifyContent={'space-between'}>
                   <Box
                     className="icon-checked-active"
-                    onClick={() => onChangePaymentMethod(PAYMENT_METHOD.CARD)}
                   >
                     {paymentMethod === PAYMENT_METHOD.CARD ? (
                       <CircleCheckedIcon />
                     ) : (
-                      <RadioNoCheckedIcon />
+                      <RadioNoCheckedIcon onClick={() => onChangePaymentMethod(PAYMENT_METHOD.CARD)} />
                     )}
                   </Box>
                 </Flex>
@@ -470,8 +491,8 @@ const BillingPage = () => {
                       {!userInfo?.stripePaymentMethod
                         ? '---'
                         : userInfo?.stripePaymentMethod?.card?.brand +
-                          ' - ' +
-                          userInfo?.stripePaymentMethod?.card?.last4}
+                        ' - ' +
+                        userInfo?.stripePaymentMethod?.card?.last4}
                       )
                     </Box>
                     <Box
@@ -490,17 +511,22 @@ const BillingPage = () => {
               <Box
                 className={`${
                   paymentMethod === PAYMENT_METHOD.CRYPTO ? 'active' : ''
-                } box-method`}
+                  } box-method`}
               >
                 <Box
                   className="icon-checked-active"
-                  onClick={() => onChangePaymentMethod(PAYMENT_METHOD.CRYPTO)}
+                  display='flex'
+                  justifyContent='space-between'
                 >
                   {paymentMethod === PAYMENT_METHOD.CRYPTO ? (
                     <CircleCheckedIcon />
                   ) : (
-                    <RadioNoCheckedIcon />
+                    <RadioNoCheckedIcon onClick={() => onChangePaymentMethod(PAYMENT_METHOD.CRYPTO)} />
                   )}
+                  <ReloadIcon
+                    className={isReloadingUserInfo ? 'is-reloading' : '' } 
+                    onClick={onReloadUserInfo} 
+                  />
                 </Box>
                 <Flex flexDirection={'column'} alignItems={'center'}>
                   <Box className="box-method__name">Crypto</Box>
@@ -522,8 +548,6 @@ const BillingPage = () => {
       </>
     );
   };
-
-  const onNextStep = () => setStep((prevState) => prevState + 1);
 
   const onBackStep = () => setStep((prevState) => prevState - 1);
 
