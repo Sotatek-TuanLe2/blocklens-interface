@@ -4,19 +4,19 @@ import rf from 'src/requests/RequestFactory';
 import { setAuthorizationToRequest } from 'src/utils/utils-auth';
 
 interface IUserInfo {
-  userId?: string;
-  firstName?: string;
+  userId: string;
+  firstName: string;
   isEmailVerified?: boolean;
-  isPaymentMethodIntegrated?: boolean;
-  notificationEnabled?: boolean;
-  lastName?: string;
+  isPaymentMethodIntegrated: boolean;
+  notificationEnabled: boolean;
+  lastName: string;
   address?: string;
-  email?: string;
-  billingEmail?: string;
-  balance?: number;
-  stripePaymentMethod?: any;
-  walletAddress?: string;
-  activePaymentMethod?: string;
+  email: string;
+  billingEmail: string;
+  balance: number;
+  stripePaymentMethod: any;
+  walletAddress: string;
+  activePaymentMethod: string;
 }
 
 interface AuthState {
@@ -24,7 +24,19 @@ interface AuthState {
 }
 
 const initialState = {
-  userInfo: {},
+  userInfo: {
+    userId: '',
+    email: '',
+    firstName: '',
+    lastName: '',
+    billingEmail: '',
+    stripePaymentMethod: {},
+    activePaymentMethod: 'STRIPE',
+    balance: 0,
+    walletAddress: '',
+    notificationEnabled: false,
+    isPaymentMethodIntegrated: false
+  },
 } as AuthState;
 
 export const getInfoUser = createAsyncThunk(
@@ -40,7 +52,7 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     clearAuth: (state) => {
-      state.userInfo = {};
+      state.userInfo = initialState.userInfo;
       setAuthorizationToRequest(null);
       Storage.logout();
     },
