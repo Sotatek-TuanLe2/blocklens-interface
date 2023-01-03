@@ -55,18 +55,21 @@ const HomePage = () => {
 
   return (
     <BasePageContainer>
-      {hasApp ? (
-        <>
-          <PartUserStats
-            totalWebhookActive={totalRegistrationActive}
-            totalWebhook={totalRegistration}
-          />
-          <ListApps />
-          <PartUserGraph />
-        </>
-      ) : (
-        _renderNoApp()
-      )}
+      <>
+        <Box className="title-heading">Dashboard</Box>
+        {hasApp ? (
+          <>
+            <PartUserStats
+              totalWebhookActive={totalRegistrationActive}
+              totalWebhook={totalRegistration}
+            />
+            <ListApps />
+            <PartUserGraph />
+          </>
+        ) : (
+          _renderNoApp()
+        )}
+      </>
     </BasePageContainer>
   );
 };
