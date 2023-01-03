@@ -1,23 +1,22 @@
 import { Box, Flex } from '@chakra-ui/react';
 import React, { useEffect, useState, useCallback } from 'react';
 import rf from 'src/requests/RequestFactory';
-import { useParams } from 'react-router';
+import { useHistory, useParams } from 'react-router';
 import 'src/styles/pages/AppDetail.scss';
 import { BasePageContainer } from 'src/layouts';
-import { AppButton, AppLink } from 'src/components';
-import WebhookSettings from './parts/WebhookSettings';
-import WebhookActivities from './parts/WebhookActivities';
+import { AppButton, AppHeading } from 'src/components';
 import { IWebhook } from 'src/utils/utils-webhook';
 import PartWebhookStats from './parts/PartWebhookStats';
 import { isMobile } from 'react-device-detect';
 import { formatShortText } from 'src/utils/utils-helper';
 import PartWebhookGraph from './parts/PartWebhookGraph';
+import PartRecentActivities from './parts/PartRecentActivities';
 
 const WebhookDetail = () => {
   const [webhook, setWebhook] = useState<IWebhook | any>({});
   const [appInfo, setAppInfo] = useState<any>({});
-  const [isShowSetting, setIsShowSetting] = useState<boolean>(false);
 
+  const history = useHistory();
   const { appId, id: webhookId } = useParams<{ appId: string; id: string }>();
 
   const getAppInfo = useCallback(async () => {
@@ -47,44 +46,6 @@ const WebhookDetail = () => {
     getAppInfo().then();
   }, []);
 
-  const _renderWebhookDetail = () => {
-    return (
-      <>
-        <Flex className="app-info">
-          <Flex className="name">
-            <AppLink to={`/apps/${appId}`}>
-              <Box className="icon-arrow-left" mr={6} />
-            </AppLink>
-            <Box>
-              {isMobile
-                ? `wh: ${formatShortText(webhook.registrationId)}`
-                : `Webhook: ${webhook.registrationId}`}
-            </Box>
-          </Flex>
-
-          <Flex>
-            <AppButton
-              size={'md'}
-              px={isMobile ? 2.5 : 4}
-              variant="cancel"
-              onClick={() => setIsShowSetting(true)}
-            >
-              <Box className="icon-settings" mr={isMobile ? 0 : 2} />
-              {isMobile ? '' : 'Setting'}
-            </AppButton>
-          </Flex>
-        </Flex>
-        <PartWebhookStats />
-        <WebhookActivities
-          appInfo={appInfo}
-          registrationId={webhook.registrationId}
-          webhook={webhook}
-        />
-        <PartWebhookGraph />
-      </>
-    );
-  };
-
   if (!webhook && !Object.keys(webhook).length) {
     return (
       <BasePageContainer className="app-detail">
@@ -93,18 +54,46 @@ const WebhookDetail = () => {
     );
   }
 
+  const _renderHeading = () => {
+    return (
+      <Flex className="app-info">
+        <AppHeading
+          title={
+            isMobile
+              ? `wh: ${formatShortText(webhook?.registrationId)}`
+              : `Webhook: ${webhook?.registrationId}`
+          }
+          linkBack={`/apps/${appId}`}
+        />
+        <Flex>
+          <AppButton
+            size={'md'}
+            px={isMobile ? 2.5 : 4}
+            variant="cancel"
+            onClick={() => history.push(`/app/${appId}/webhooks/${webhookId}/settings`)}
+          >
+            <Box className="icon-settings" mr={isMobile ? 0 : 2} />
+            {isMobile ? '' : 'Setting'}
+          </AppButton>
+        </Flex>
+      </Flex>
+    );
+  };
+
   return (
     <BasePageContainer className="app-detail">
-      {isShowSetting ? (
-        <WebhookSettings
-          onBack={() => setIsShowSetting(false)}
-          webhook={webhook}
+      <>
+        {_renderHeading()}
+
+        <PartWebhookStats />
+
+        <PartRecentActivities
           appInfo={appInfo}
-          reloadData={getWebhookInfo}
+          webhook={webhook}
         />
-      ) : (
-        <>{_renderWebhookDetail()}</>
-      )}
+
+        <PartWebhookGraph />
+      </>
     </BasePageContainer>
   );
 };
