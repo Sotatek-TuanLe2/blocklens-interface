@@ -12,6 +12,7 @@ import {
   AppButton,
   AppCard,
   AppField,
+  AppHeading,
   AppInput,
   AppTextarea,
 } from 'src/components';
@@ -26,6 +27,8 @@ import {
   getNameChainByChainId,
 } from 'src/utils/utils-network';
 import { isMobile } from 'react-device-detect';
+import { useParams } from 'react-router';
+import { BasePageContainer } from 'src/layouts';
 
 interface IAppSettings {
   onBack: () => void;
@@ -38,12 +41,13 @@ interface IDataForm {
   description?: string;
 }
 
-const AppSettings: FC<IAppSettings> = ({ onBack, appInfo, reloadData }) => {
+const AppSettingsPage: FC<IAppSettings> = () => {
+  const { id: appId } = useParams<{ id: string }>();
+  const [appInfo, setAppInfo] = useState<any>({});
   const initData = {
     name: appInfo?.name,
     description: appInfo?.description,
   };
-
   const [dataForm, setDataForm] = useState<IDataForm>(initData);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
   const [, updateState] = useState<any>();
@@ -58,6 +62,21 @@ const AppSettings: FC<IAppSettings> = ({ onBack, appInfo, reloadData }) => {
     () => appInfo.status === APP_STATUS.ENABLE,
     [appInfo],
   );
+
+  const getAppInfo = useCallback(async () => {
+    try {
+      const res = (await rf
+        .getRequest('AppRequest')
+        .getAppDetail(appId)) as any;
+      setAppInfo(res);
+    } catch (error: any) {
+      setAppInfo({});
+    }
+  }, [appId]);
+
+  useEffect(() => {
+    getAppInfo().then();
+  }, []);
 
   useEffect(() => {
     const isDisabled = !validator.current.allValid();
@@ -88,38 +107,15 @@ const AppSettings: FC<IAppSettings> = ({ onBack, appInfo, reloadData }) => {
         name: dataForm.name?.trim(),
         description: dataForm.description?.trim(),
       });
+      await getAppInfo();
       toastSuccess({ message: 'Update Successfully!' });
-      reloadData();
     } catch (e: any) {
       toastError({ message: e?.message || 'Oops. Something went wrong!' });
     }
   };
 
-  return (
-    <>
-      <Flex className="app-info">
-        <Flex className="name">
-          <Box
-            className="icon-arrow-left"
-            mr={isMobile ? 3 : 6}
-            onClick={onBack}
-            cursor="pointer"
-          />
-          <Box className={'title-mobile'}>Settings</Box>
-        </Flex>
-
-        <Flex>
-          <AppButton
-            size={'md'}
-            variant="cancel"
-            px={isMobile ? 3 : 4}
-            onClick={() => setIsOpenDeleteAppModal(true)}
-          >
-            <Box className="icon-trash" />
-          </AppButton>
-        </Flex>
-      </Flex>
-
+  const _renderBasicSettings = () => {
+    return (
       <AppCard className="basic-setting">
         <Flex justifyContent={'space-between'} alignItems={'center'}>
           <Box className="title-status">Basic Settings</Box>
@@ -154,15 +150,15 @@ const AppSettings: FC<IAppSettings> = ({ onBack, appInfo, reloadData }) => {
           </AppField>
           <AppField label={'Chain'} customWidth={'24.5%'} isRequired>
             <Flex className="chain-app">
-              <Box className={getLogoChainByChainId(appInfo.chain)} mr={3} />
-              <Box>{getNameChainByChainId(appInfo.chain)}</Box>
+              <Box className={getLogoChainByChainId(appInfo?.chain)} mr={3} />
+              <Box>{getNameChainByChainId(appInfo?.chain)}</Box>
             </Flex>
           </AppField>
           <AppField label={'Network'} customWidth={'24.5%'} isRequired>
             <Flex className="chain-app">
-              <Box className={getLogoChainByChainId(appInfo.chain)} mr={3} />
+              <Box className={getLogoChainByChainId(appInfo?.chain)} mr={3} />
               <Box textTransform="capitalize">
-                {appInfo.network.toLowerCase()}
+                {appInfo?.network?.toLowerCase()}
               </Box>
             </Flex>
           </AppField>
@@ -185,7 +181,11 @@ const AppSettings: FC<IAppSettings> = ({ onBack, appInfo, reloadData }) => {
           </AppField>
         </Flex>
       </AppCard>
+    );
+  };
 
+  const _renderAppStatus = () => {
+    return (
       <AppCard className="app-status">
         <Flex justifyContent={'space-between'}>
           <Flex
@@ -210,25 +210,56 @@ const AppSettings: FC<IAppSettings> = ({ onBack, appInfo, reloadData }) => {
           </AppButton>
         </Flex>
       </AppCard>
+    );
+  };
 
-      {isOpenDeleteAppModal && (
-        <ModalDeleteApp
-          open={isOpenDeleteAppModal}
-          onClose={() => setIsOpenDeleteAppModal(false)}
-          appInfo={appInfo}
-        />
-      )}
+  const _renderHeading = () => {
+    return (
+      <Flex className="app-info">
+        <AppHeading title="Settings" linkBack={`/apps/${appId}`} />
 
-      {isOpenChangeStatusAppModal && (
-        <ModalChangeStatusApp
-          open={isOpenChangeStatusAppModal}
-          onClose={() => setIsOpenChangeStatusAppModal(false)}
-          reloadData={reloadData}
-          appInfo={appInfo}
-        />
-      )}
-    </>
+        <Flex>
+          <AppButton
+            size={'md'}
+            variant="cancel"
+            px={isMobile ? 3 : 4}
+            onClick={() => setIsOpenDeleteAppModal(true)}
+          >
+            <Box className="icon-trash" />
+          </AppButton>
+        </Flex>
+      </Flex>
+    );
+  };
+
+  return (
+    <BasePageContainer className="app-detail">
+      <>
+        {_renderHeading()}
+
+        {_renderBasicSettings()}
+
+        {_renderAppStatus()}
+
+        {isOpenDeleteAppModal && (
+          <ModalDeleteApp
+            open={isOpenDeleteAppModal}
+            onClose={() => setIsOpenDeleteAppModal(false)}
+            appInfo={appInfo}
+          />
+        )}
+
+        {isOpenChangeStatusAppModal && (
+          <ModalChangeStatusApp
+            open={isOpenChangeStatusAppModal}
+            onClose={() => setIsOpenChangeStatusAppModal(false)}
+            reloadData={getAppInfo}
+            appInfo={appInfo}
+          />
+        )}
+      </>
+    </BasePageContainer>
   );
 };
 
-export default AppSettings;
+export default AppSettingsPage;

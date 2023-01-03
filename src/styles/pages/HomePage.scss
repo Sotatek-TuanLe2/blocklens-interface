@@ -23,7 +23,7 @@
 
 .title-heading {
   @include heading-4;
-  margin-bottom: 22px;
+  align-items: center;
 
   @include tablet {
     @include heading-6;

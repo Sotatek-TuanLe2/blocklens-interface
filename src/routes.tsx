@@ -35,6 +35,7 @@ import ModalFinishTransaction from './modals/ModalFinishTransaction';
 import WebhookActivitiesPage from './pages/WebhookActivitiesPage';
 import TopUpPage from './pages/TopUp';
 import { getUserStats } from './store/user';
+import AppSettingsPage from './pages/AppSettingsPage';
 
 /**
  * Main App routes.
@@ -60,6 +61,7 @@ const Routes: FC<RouteComponentProps> = () => {
   return (
     <>
       <Switch>
+        <PrivateRoute path={`/apps/:id/settings`} component={AppSettingsPage} />
         <PrivateRoute path={`/apps/:id`} component={AppDetail} />
         <PublicRoute path={'/login'} component={LoginPage} />
         <PublicRoute path={'/sign-up'} component={SignUpPage} />

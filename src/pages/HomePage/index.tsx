@@ -5,7 +5,7 @@ import ListApps from './parts/ListApps';
 import PartUserGraph from './parts/PartUserGraph';
 import { BasePageContainer } from 'src/layouts';
 import PartUserStats from './parts/PartUserStats';
-import { AppButton, AppCard } from 'src/components';
+import { AppButton, AppCard, AppHeading } from 'src/components';
 import ModalCreateApp from 'src/modals/ModalCreateApp';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/store';
@@ -56,7 +56,10 @@ const HomePage = () => {
   return (
     <BasePageContainer>
       <>
-        <Box className="title-heading">Dashboard</Box>
+        <Box mb={7}>
+          <AppHeading title="Dashboard" />
+        </Box>
+
         {hasApp ? (
           <>
             <PartUserStats
