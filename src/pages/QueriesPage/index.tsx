@@ -2,7 +2,7 @@ import { BasePage } from '../../layouts';
 import { Box, Flex } from '@chakra-ui/react';
 import AceEditor from 'react-ace';
 import AppButton from '../../components/AppButton';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { EditorContext } from './context/EditorContext';
 import EditorSidebar from './part/EditorSidebar';
 import VisualizationDisplay from './part/VisualizationDisplay';
@@ -13,9 +13,15 @@ import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/mode-sql';
 import { getErrorMessage } from '../../utils/utils-helper';
 import { QueryType } from '../../utils/common';
+import { useParams } from 'react-router-dom';
 
-const QueriesPage: React.FC = () => {
+interface ParamTypes {
+  queryId: string;
+}
+
+const QueriesPage = () => {
   const editorRef = useRef<any>();
+  const { queryId } = useParams<ParamTypes>();
 
   const [queryValues, setQueryValues] = useState<unknown[]>([]);
 
@@ -40,7 +46,7 @@ const QueriesPage: React.FC = () => {
     }
   };
 
-  const submitQuery = async () => {
+  const fetchQueryResults = async () => {
     try {
       const dashboardsRequest = new DashboardsRequest();
       const queryValues = await dashboardsRequest.getQueriesValues();
@@ -49,52 +55,58 @@ const QueriesPage: React.FC = () => {
     } catch (err) {
       getErrorMessage(err);
     }
-  };
 
-  return (
-    <BasePage>
-      <EditorContext.Provider
-        value={{
-          editor: editorRef,
-          queryValues: queryValues,
-        }}
-      >
-        <Flex justifyContent={'space-between'} alignItems={'flex-start'}>
-          <EditorSidebar />
-          <Flex flexDir={'column'} maxW={'100%'} overflow={'scroll'} w={'100%'}>
-            <Box width={'100%'}>
-              <AceEditor
-                ref={editorRef}
-                mode="sql"
-                theme="monokai"
-                width="100%"
-                wrapEnabled={true}
-                name="sql_editor"
-                editorProps={{ $blockScrolling: true }}
-                showPrintMargin={true}
-                showGutter={true}
-                highlightActiveLine={true}
-                setOptions={{
-                  enableLiveAutocompletion: true,
-                  enableBasicAutocompletion: true,
-                  enableSnippets: false,
-                  showLineNumbers: true,
-                  tabSize: 2,
-                }}
-              />
-              <Box mt={2}>
-                <AppButton onClick={submitQuery}>Run</AppButton>
-                <AppButton ml={2}>Format</AppButton>
+    useEffect(() => {
+      if (queryId) {
+        fetchQueryResults();
+      }
+    }, [queryId]);
+
+    return (
+      <BasePage>
+        <EditorContext.Provider
+          value={{
+            editor: editorRef,
+            queryValues: queryValues,
+          }}
+        >
+          <Flex justifyContent={'space-between'} alignItems={'flex-start'}>
+            <EditorSidebar />
+            <Flex flexDir={'column'} maxW={'100%'} overflow={'auto'} w={'100%'}>
+              <Box width={'100%'}>
+                <AceEditor
+                  ref={editorRef}
+                  mode="sql"
+                  theme="monokai"
+                  width="100%"
+                  wrapEnabled={true}
+                  name="sql_editor"
+                  editorProps={{ $blockScrolling: true }}
+                  showPrintMargin={true}
+                  showGutter={true}
+                  highlightActiveLine={true}
+                  setOptions={{
+                    enableLiveAutocompletion: true,
+                    enableBasicAutocompletion: true,
+                    enableSnippets: false,
+                    showLineNumbers: true,
+                    tabSize: 2,
+                  }}
+                />
+                <Box mt={2}>
+                  <AppButton onClick={fetchQueryResults}>Run</AppButton>
+                  <AppButton ml={2}>Format</AppButton>
+                </Box>
               </Box>
-            </Box>
-            <Box mt={8}>
-              <VisualizationDisplay queryValues={queryValues} />
-            </Box>
+              <Box mt={8}>
+                <VisualizationDisplay queryValues={queryValues} />
+              </Box>
+            </Flex>
           </Flex>
-        </Flex>
-      </EditorContext.Provider>
-    </BasePage>
-  );
+        </EditorContext.Provider>
+      </BasePage>
+    );
+  };
 };
 
 export default QueriesPage;

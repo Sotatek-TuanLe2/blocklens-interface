@@ -5,7 +5,7 @@ import { useHistory, useLocation } from 'react-router';
 import { Link } from 'react-router-dom';
 import { CloseMenuIcon } from 'src/assets/icons';
 import { AppButton, AppInput } from 'src/components';
-import ModalSettingDashboardDetails from 'src/modals/ModalSettingDashboardDetails';
+import ModalNewDashboard from 'src/modals/ModalNewDashboard';
 import { LIST_ITEM_TYPE } from '..';
 
 interface IFilterSearch {
@@ -237,7 +237,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
           </AppButton>
         </>
       )}
-      <ModalSettingDashboardDetails
+      <ModalNewDashboard
         open={openNewDashboardModal}
         onClose={onToggleNewDashboardModal}
       />

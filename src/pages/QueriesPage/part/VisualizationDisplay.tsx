@@ -56,7 +56,7 @@ const VisualizationDisplay = ({ queryValues }: Props) => {
   >([
     {
       value: 'query',
-      label: 'Query',
+      label: 'Query results',
       type: 'table',
     },
     { value: 'newVisualization', label: 'New Visualization', type: '' },
@@ -108,7 +108,10 @@ const VisualizationDisplay = ({ queryValues }: Props) => {
         showLegend: true,
       },
     };
-    setVisualizationsActive([searchedVisualization, ...visualizationsActive]);
+    setVisualizationsActive((prevState) => {
+      const [queryResult, ...others] = prevState;
+      return [queryResult, searchedVisualization, ...others];
+    });
     const query = await getQuery('2');
     const updateQuery = {
       ...query,

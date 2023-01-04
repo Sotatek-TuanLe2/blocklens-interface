@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Avatar, Badge, Box, Flex } from '@chakra-ui/react';
 import { useParams } from 'react-router-dom';
 import { ActiveStarIcon, PenIcon, StarIcon } from 'src/assets/icons';
@@ -6,6 +6,7 @@ import { AppButton } from 'src/components';
 import useUser from 'src/hooks/useUser';
 import { Layout, Responsive, WidthProvider } from 'react-grid-layout';
 import ReactMarkdown from 'react-markdown';
+import rf from 'src/requests/RequestFactory';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import 'src/styles/pages/DashboardDetailPage.scss';
@@ -15,6 +16,8 @@ import ModalSettingDashboardDetails from 'src/modals/ModalSettingDashboardDetail
 import ModalAddTextWidget from 'src/modals/ModalAddTextWidget';
 import ModalAddVisualization from 'src/modals/ModalAddVisualization';
 import ModalEditItemDashBoard from 'src/modals/ModalEditItemDashBoard';
+import { getErrorMessage } from 'src/utils/utils-helper';
+import { toastError } from 'src/utils/utils-notify';
 
 interface ParamTypes {
   authorId: string;
@@ -27,16 +30,11 @@ export interface ILayout extends Layout {
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
-const layouts: ILayout[] = [
-  { id: 1, i: 'a', x: 0, y: 0, w: 6, h: 2 },
-  { id: 2, i: 'b', x: 6, y: 0, w: 6, h: 2 },
-  { id: 3, i: 'c', x: 0, y: 0, w: 6, h: 2 },
-  { id: 4, i: 'd', x: 6, y: 0, w: 6, h: 2 },
-];
+const hashTag: string[] = ['zkSync', 'bridge', 'l2'];
 
 const DashboardDetailPage: React.FC = () => {
   const { authorId, dashboardId } = useParams<ParamTypes>();
-  const [dataLayouts, setDataLayouts] = useState<ILayout[]>(layouts);
+  const [dataLayouts, setDataLayouts] = useState<ILayout[]>([]);
   const [selectedItem, setSelectedItem] = useState<ILayout>(Object);
   const [markdownText, setMarkdownText] = useState<string>(``);
   const [typeModalTextWidget, setTypeModalTextWidget] = useState<string>(``);
@@ -46,14 +44,27 @@ const DashboardDetailPage: React.FC = () => {
   const [openModalSetting, setOpenModalSetting] = useState<boolean>(false);
   const [openModalEdit, setOpenModalEdit] = useState<boolean>(false);
   const [editMode, setEditMode] = useState<boolean>(false);
+  const [reload, setReload] = useState<boolean>(false);
 
   const [openModalAddTextWidget, setOpenModalAddTextWidget] =
     useState<boolean>(false);
   const { user } = useUser();
 
-  const getNameUser = `${user?.getFirstName()}` + `${user?.getLastName()}`;
+  const userName = `${user?.getFirstName()}` + `${user?.getLastName()}`;
 
-  const HashTag: string[] = ['zkSync', 'bridge', 'l2'];
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await rf.getRequest('DashboardsRequest').getDashboardItem();
+        setDataLayouts(res);
+      } catch (error) {
+        toastError({
+          message: getErrorMessage(error),
+        });
+      }
+    })();
+  }, [reload]);
+  console.log(dataLayouts);
 
   const GroupEditButton = () => {
     const TitleEditName = [
@@ -69,7 +80,7 @@ const DashboardDetailPage: React.FC = () => {
             size={'sm'}
             bg="#e1e1f9"
             color="#1e1870"
-            onClick={(e) => {
+            onClick={() => {
               if (item.title === 'Add text widget') {
                 setTypeModalTextWidget('add');
               }
@@ -95,6 +106,7 @@ const DashboardDetailPage: React.FC = () => {
           Fork
         </AppButton>
         <ModalForkDashBoardDetails
+          authorId={authorId}
           open={openModalFork}
           onClose={() => setOpenModalFork(false)}
         />
@@ -202,10 +214,10 @@ const DashboardDetailPage: React.FC = () => {
           <Avatar name={user?.getFirstName()} size="sm" />
           <div>
             <div className="dashboard-name">
-              @{getNameUser} / {dashboardId}
+              @{userName} / {dashboardId}
             </div>
             <Flex gap={1} pt={'10px'}>
-              {HashTag.map((item) => (
+              {hashTag.map((item) => (
                 <Badge
                   bg={'gray.200'}
                   color={'gray.600'}
@@ -223,17 +235,15 @@ const DashboardDetailPage: React.FC = () => {
 
       <ResponsiveGridLayout
         className="main-grid-layout"
-        layouts={{ lg: layouts }}
+        layouts={{ lg: dataLayouts }}
         breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
         cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
         isDraggable={editMode}
         isResizable={editMode}
-        maxRows={4}
       >
         {dataLayouts.map((item) => (
           <Box border={'1px dashed #808080'} key={item.i} position={'relative'}>
-            <ReactMarkdown source={item.i} />
-
+            <ReactMarkdown>{item.i}</ReactMarkdown>
             {editMode ? (
               <Box
                 onClick={() => {
@@ -252,11 +262,11 @@ const DashboardDetailPage: React.FC = () => {
           </Box>
         ))}
       </ResponsiveGridLayout>
-
       <ModalSettingDashboardDetails
-        title={dashboardId}
         url={dashboardId}
+        authorId={authorId}
         open={openModalSetting}
+        hashTag={hashTag}
         onClose={() => setOpenModalSetting(false)}
       />
 
@@ -269,6 +279,7 @@ const DashboardDetailPage: React.FC = () => {
         onClose={() => setOpenModalAddTextWidget(false)}
         markdownText={markdownText}
         setMarkdownText={setMarkdownText}
+        setReload={setReload}
       />
       <ModalEditItemDashBoard
         open={openModalEdit}
@@ -278,7 +289,7 @@ const DashboardDetailPage: React.FC = () => {
         setOpenModalFork={setOpenModalFork}
         open={openModalAddVisualization}
         onClose={() => setOpenModalAddVisualization(false)}
-        userName={getNameUser}
+        userName={userName}
       />
     </div>
   );

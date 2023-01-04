@@ -36,6 +36,10 @@ const menus = [
     name: 'Account',
     path: '/account',
   },
+  {
+    name: 'Dashboards demo',
+    path: '/dashboards',
+  },
 ];
 
 const Header: FC = () => {

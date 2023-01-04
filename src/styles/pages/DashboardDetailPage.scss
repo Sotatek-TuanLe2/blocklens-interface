@@ -2,6 +2,15 @@
 @import '../mixins.scss';
 
 .main-content-dashboard-details {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-size: revert;
+    font-weight: revert;
+  }
   padding: 2rem;
   .main-header-dashboard-details {
     display: flex;
@@ -22,9 +31,13 @@
     width: 100%;
     margin-top: 20px;
     .react-grid-item {
+      a {
+        text-decoration: underline;
+      }
       background: #ffeceb;
-      padding: 10px;
+      padding: 10px 25px;
       color: $blackAlpha-900;
+      overflow: hidden;
       cursor: grab;
     }
 

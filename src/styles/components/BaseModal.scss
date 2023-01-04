@@ -262,7 +262,10 @@
   .main-markdown {
     border-bottom: 1px solid $gray-500;
     padding: 5px 0px;
-
+    a {
+      text-decoration: underline;
+      cursor: pointer;
+    }
     p {
       font-size: 12px;
     }
