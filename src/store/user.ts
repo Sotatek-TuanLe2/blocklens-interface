@@ -75,8 +75,8 @@ export type UserState = {
 const initialState: UserState = {
   userId: '',
   auth: {
-    accessToken: '',
-    refreshToken: ''
+    accessToken: Storage.getAccessToken() || '',
+    refreshToken: Storage.getRefreshToken() || ''
   },
   info: {
     email: '',
@@ -146,7 +146,7 @@ export const getUserStats = createAsyncThunk(
   'user/getUserStats',
   async (_params, thunkApi) => {
     const res = await rf.getRequest('AppRequest').getAppStatsOfUser();
-    thunkApi.dispatch(res);
+    thunkApi.dispatch(setUserStats(res));
   },
 );
 
