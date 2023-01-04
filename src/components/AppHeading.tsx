@@ -5,9 +5,10 @@ import React, { FC } from 'react';
 interface IHeading {
   title: string;
   linkBack?: string;
+  isCenter?: boolean;
 }
 
-const AppHeading: FC<IHeading> = ({ title, linkBack }) => {
+const AppHeading: FC<IHeading> = ({ title, linkBack, isCenter= false }) => {
   return (
     <Flex className="title-heading">
       {linkBack && (
@@ -16,7 +17,7 @@ const AppHeading: FC<IHeading> = ({ title, linkBack }) => {
         </AppLink>
       )}
 
-      <Box>{title}</Box>
+      <Box className={isCenter ? 'title-heading--center': ''}>{title}</Box>
     </Flex>
   );
 };

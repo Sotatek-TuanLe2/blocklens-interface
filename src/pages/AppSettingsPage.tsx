@@ -216,7 +216,7 @@ const AppSettingsPage: FC<IAppSettings> = () => {
   const _renderHeading = () => {
     return (
       <Flex className="app-info">
-        <AppHeading title="Settings" linkBack={`/apps/${appId}`} />
+        <AppHeading title="Settings" linkBack={`/apps/${appId}`} isCenter/>
 
         <Flex>
           <AppButton

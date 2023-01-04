@@ -149,6 +149,7 @@ const WebhookSettingsPage = () => {
     return (
       <Flex className="app-info">
         <AppHeading
+          isCenter
           title="Settings"
           linkBack={`/app/${appId}/webhooks/${webhookId}`}
         />

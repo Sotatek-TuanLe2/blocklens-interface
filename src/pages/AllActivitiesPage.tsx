@@ -1,11 +1,5 @@
 import { Box, Flex, Tbody, Td, Th, Thead, Tooltip, Tr } from '@chakra-ui/react';
-import React, {
-  useEffect,
-  useState,
-  useCallback,
-  FC,
-  MouseEvent,
-} from 'react';
+import React, { useEffect, useState, useCallback, FC, MouseEvent } from 'react';
 import rf from 'src/requests/RequestFactory';
 import { useHistory, useParams } from 'react-router';
 import 'src/styles/pages/AppDetail.scss';
@@ -26,7 +20,7 @@ import {
   AppHeading,
   AppInput,
   AppLink,
-  AppFilter
+  AppFilter,
 } from 'src/components';
 import { isMobile } from 'react-device-detect';
 import ModalFilterActivities from '../modals/ModalFilterActivities';
@@ -36,12 +30,7 @@ import {
   formatTimestamp,
 } from '../utils/utils-helper';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
-import {
-  InfoIcon,
-  LinkDetail,
-  LinkIcon,
-  RetryIcon,
-} from 'src/assets/icons';
+import { InfoIcon, LinkDetail, LinkIcon, RetryIcon } from 'src/assets/icons';
 import { getBlockExplorerUrl } from 'src/utils/utils-network';
 import { IAppResponse } from 'src/utils/utils-app';
 
@@ -49,17 +38,35 @@ interface IActivity {
   activity: IActivityResponse;
   webhook: IWebhook;
   appInfo: IAppResponse;
-  onRetry: (
-    e: MouseEvent<SVGSVGElement | HTMLButtonElement>,
-    activity: IActivityResponse,
-  ) => void;
+  onReload: () => void;
 }
+
+export const onRetry = async (
+  e: MouseEvent<SVGSVGElement | HTMLButtonElement>,
+  activity: IActivityResponse,
+  webhook: IWebhook,
+  onReload: () => void,
+) => {
+  e.stopPropagation();
+
+  if (webhook.status === WEBHOOK_STATUS.DISABLED) return;
+
+  try {
+    await rf.getRequest('NotificationRequest').retryActivity(activity.hash);
+    toastSuccess({ message: 'Retried!' });
+    onReload();
+  } catch (error: any) {
+    toastError({
+      message: error?.message || 'Oops. Something went wrong!',
+    });
+  }
+};
 
 const ActivityMobile: FC<IActivity> = ({
   activity,
   webhook,
   appInfo,
-  onRetry,
+  onReload,
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
@@ -192,7 +199,9 @@ const ActivityMobile: FC<IActivity> = ({
                   <AppButton
                     variant="cancel"
                     size="sm"
-                    onClick={(e: any) => onRetry(e, activity)}
+                    onClick={(e: any) =>
+                      onRetry(e, activity, webhook, onReload)
+                    }
                     w={'100%'}
                     isDisabled={webhook.status === WEBHOOK_STATUS.DISABLED}
                   >
@@ -222,7 +231,7 @@ const ActivityDesktop: FC<IActivity> = ({
   activity,
   webhook,
   appInfo,
-  onRetry,
+  onReload,
 }) => {
   const history = useHistory();
 
@@ -317,7 +326,7 @@ const ActivityDesktop: FC<IActivity> = ({
               >
                 <RetryIcon
                   onClick={(e: MouseEvent<SVGSVGElement>) =>
-                    onRetry(e, activity)
+                    onRetry(e, activity, webhook, onReload)
                   }
                 />
               </Box>
@@ -390,28 +399,6 @@ const AllActivitiesPage = () => {
     }
   }, []);
 
-  const onRetry = useCallback(
-    async (
-      e: MouseEvent<SVGSVGElement | HTMLButtonElement>,
-      activity: IActivityResponse,
-    ) => {
-      e.stopPropagation();
-
-      if (webhook.status === WEBHOOK_STATUS.DISABLED) return;
-
-      try {
-        await rf.getRequest('NotificationRequest').retryActivity(activity.hash);
-        toastSuccess({ message: 'Retried!' });
-        forceUpdate();
-      } catch (error: any) {
-        toastError({
-          message: error?.message || 'Oops. Something went wrong!',
-        });
-      }
-    },
-    [],
-  );
-
   const _renderHeader = () => {
     if (isMobile) return;
 
@@ -434,11 +421,7 @@ const AllActivitiesPage = () => {
         <Th w="15%">
           <Flex alignItems="center">
             Address
-            <AppFilter
-              value={address}
-              onChange={setAddress}
-              type="address"
-            />
+            <AppFilter value={address} onChange={setAddress} type="address" />
           </Flex>
         </Th>
       );
@@ -484,11 +467,7 @@ const AllActivitiesPage = () => {
           <Th w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '15%' : '20%'}>
             <Flex alignItems="center">
               txn id
-              <AppFilter
-                value={txHash}
-                onChange={setTxHash}
-                type="txn ID"
-              />
+              <AppFilter value={txHash} onChange={setTxHash} type="txn ID" />
             </Flex>
           </Th>
           {_renderHeaderActivities()}
@@ -530,7 +509,7 @@ const AllActivitiesPage = () => {
               key={index}
               webhook={webhook}
               appInfo={appInfo}
-              onRetry={onRetry}
+              onReload={forceUpdate}
             />
           );
         })}
@@ -546,7 +525,7 @@ const AllActivitiesPage = () => {
           key={index}
           webhook={webhook}
           appInfo={appInfo}
-          onRetry={onRetry}
+          onReload={forceUpdate}
         />
       );
     });
@@ -579,6 +558,7 @@ const AllActivitiesPage = () => {
       <>
         <Flex className="app-info">
           <AppHeading
+            isCenter
             title="All Activities"
             linkBack={`/app/${appId}/webhooks/${webhookId}`}
           />

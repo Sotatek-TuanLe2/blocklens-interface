@@ -9,21 +9,10 @@ import {
   Tooltip,
   Tr,
 } from '@chakra-ui/react';
-import React, {
-  FC,
-  MouseEvent,
-  useCallback,
-  useState,
-} from 'react';
-import {
-  AppButton,
-  AppCard,
-  AppDataTable,
-  AppLink,
-} from 'src/components';
+import React, { FC, MouseEvent, useCallback, useState } from 'react';
+import { AppButton, AppCard, AppDataTable, AppLink } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import {
-  filterParams,
   formatShortText,
   formatTimestamp,
 } from 'src/utils/utils-helper';
@@ -50,15 +39,13 @@ import { isMobile } from 'react-device-detect';
 import { getBlockExplorerUrl } from 'src/utils/utils-network';
 import { IAppResponse } from 'src/utils/utils-app';
 import 'src/styles/pages/HomePage.scss';
+import { onRetry } from 'src/pages/AllActivitiesPage';
 
 interface IActivity {
   activity: IActivityResponse;
   webhook: IWebhook;
   appInfo: IAppResponse;
-  onRetry: (
-    e: MouseEvent<SVGSVGElement | HTMLButtonElement>,
-    activity: IActivityResponse,
-  ) => void;
+  onReload: () => void;
 }
 
 interface IPartRecentActivities {
@@ -86,7 +73,7 @@ const ActivityMobile: FC<IActivity> = ({
   activity,
   webhook,
   appInfo,
-  onRetry,
+  onReload,
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
@@ -219,7 +206,9 @@ const ActivityMobile: FC<IActivity> = ({
                   <AppButton
                     variant="cancel"
                     size="sm"
-                    onClick={(e: any) => onRetry(e, activity)}
+                    onClick={(e: any) =>
+                      onRetry(e, activity, webhook, onReload)
+                    }
                     w={'100%'}
                     isDisabled={webhook.status === WEBHOOK_STATUS.DISABLED}
                   >
@@ -249,7 +238,7 @@ const ActivityDesktop: FC<IActivity> = ({
   activity,
   webhook,
   appInfo,
-  onRetry,
+  onReload,
 }) => {
   const history = useHistory();
 
@@ -344,7 +333,7 @@ const ActivityDesktop: FC<IActivity> = ({
               >
                 <RetryIcon
                   onClick={(e: MouseEvent<SVGSVGElement>) =>
-                    onRetry(e, activity)
+                    onRetry(e, activity, webhook, onReload)
                   }
                 />
               </Box>
@@ -364,7 +353,10 @@ const ActivityDesktop: FC<IActivity> = ({
   );
 };
 
-const PartRecentActivities: FC<IPartRecentActivities> = ({ webhook, appInfo }) => {
+const PartRecentActivities: FC<IPartRecentActivities> = ({
+  webhook,
+  appInfo,
+}) => {
   const { id: webhookId } = useParams<{ id: string }>();
   const [, updateState] = useState<any>();
   const history = useHistory();
@@ -375,7 +367,7 @@ const PartRecentActivities: FC<IPartRecentActivities> = ({ webhook, appInfo }) =
     try {
       return await rf
         .getRequest('NotificationRequest')
-        .getActivities(webhookId, filterParams(params));
+        .getActivities(webhookId, params);
     } catch (error: any) {
       toastError({
         message: error?.message || 'Oops. Something went wrong!',
@@ -487,7 +479,7 @@ const PartRecentActivities: FC<IPartRecentActivities> = ({ webhook, appInfo }) =
           key={index}
           webhook={webhook}
           appInfo={appInfo}
-          onRetry={onRetry}
+          onReload={forceUpdate}
         />
       );
     });
@@ -503,7 +495,7 @@ const PartRecentActivities: FC<IPartRecentActivities> = ({ webhook, appInfo }) =
               key={index}
               webhook={webhook}
               appInfo={appInfo}
-              onRetry={onRetry}
+              onReload={forceUpdate}
             />
           );
         })}
