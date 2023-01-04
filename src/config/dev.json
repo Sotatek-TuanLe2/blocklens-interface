@@ -244,7 +244,7 @@
           "icon": "icon-polygon",
           "chainId": 80001,
           "rpcUrls": [
-            "https://nd-468-706-569.p2pify.com/4bba3da7016680fe302cff4e2c12cf9a"
+            "https://rpc-mumbai.matic.today/"
           ],
           "blockExplorer": {
             "name": "Polygonscan",

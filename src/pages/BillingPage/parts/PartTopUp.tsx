@@ -21,29 +21,43 @@ const PartTopUp: FC<IPartTopUp> = ({ onBack, planSelected }) => {
         <Box className="icon-arrow-left" mr={6} onClick={onBack} />
         <Box className={'sub-title'}>Upgrade</Box>
       </Flex>
+      <Flex
+        flexWrap={'wrap'}
+        justifyContent={'space-between'}
+        w={'100%'}
+        mb={5}
+      >
+        <Box className="box-top-up">
+          <AppCard>
+            <Box>
+              <Box className="box-top-up__label">ORDER</Box>
+              <Flex alignItems={'center'} justifyContent={'space-between'}>
+                <Box className="box-top-up__name">
+                  <Box textTransform={'capitalize'} as={'span'}>
+                    {planSelected.name.toLowerCase()}
+                  </Box>{' '}
+                  monthly plan
+                </Box>
+                <Box className="box-top-up__value">
+                  ${planSelected.price}/mo
+                </Box>
+              </Flex>
+            </Box>
+          </AppCard>
+        </Box>
 
-      <AppCard className="box-connect-wallet">
-        <Flex flexWrap={'wrap'} justifyContent={'space-between'} w={'100%'} mb={20}>
-          <Box className="box-top-up">
-            <Box className="box-top-up__label">ORDER</Box>
-            <Flex alignItems={'center'} justifyContent={'space-between'}>
-              <Box className="box-top-up__name">
-                <Box textTransform={'capitalize'} as={'span'}>
-                  {planSelected.name.toLowerCase()}
-                </Box> monthly plan
-              </Box>
-              <Box className="box-top-up__value">${planSelected.price}/mo</Box>
-            </Flex>
-          </Box>
-          <Box className="box-top-up">
+        <Box className="box-top-up">
+          <AppCard>
             <Box className="box-top-up__label">crypto</Box>
-
             <Flex alignItems={'center'} justifyContent={'space-between'}>
               <Box className="box-top-up__name">Balance</Box>
               <Box className="box-top-up__value">${user?.getBalance()}</Box>
             </Flex>
-          </Box>
-        </Flex>
+          </AppCard>
+        </Box>
+      </Flex>
+
+      <AppCard className="box-connect-wallet">
         <ConnectWalletIcon />
         <Box className="box-connect-wallet__description">
           Insufficient balance. Use Card payment or increase your balance by Top

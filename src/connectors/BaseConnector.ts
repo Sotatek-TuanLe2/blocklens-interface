@@ -68,13 +68,10 @@ class BaseConnector {
     if (this.account && this.connector && this.provider) {
       try {
         const provider = new Web3Provider(this.provider);
-        const signature = await provider.send(
-          'personal_sign',
-          [
-            ethers.utils.hexlify(ethers.utils.toUtf8Bytes(config.auth.message)),
-            this.account.toLowerCase()
-          ]
-        );
+        const signature = await provider.send('personal_sign', [
+          ethers.utils.hexlify(ethers.utils.toUtf8Bytes(config.auth.message)),
+          this.account.toLowerCase(),
+        ]);
         return signature;
       } catch (error) {
         console.error(error);

@@ -12,6 +12,25 @@
     }
   }
 
+  .box-change-plan {
+    margin-top: 20px;
+    padding: 40px 40px 20px 40px;
+
+    @include tablet {
+      padding: 20px;
+    }
+
+    &__title {
+      @include heading-6;
+      color: $title;
+
+      @include tablet {
+        @include heading-8;
+      }
+    }
+
+  }
+
   .list-table-wrap {
     padding: 0;
 
@@ -326,7 +345,8 @@
     color: $paragraph;
   }
 
-  &__name, &__method {
+  &__name,
+  &__method {
     font-weight: 700;
     font-size: 20px;
     line-height: 26px;
@@ -353,17 +373,30 @@
       width: 26px;
       height: 26px;
     }
+    .is-reloading {
+      animation: spin 1s infinite linear;
+    }
   }
 }
 
 .box-top-up {
-  border: 1.6px solid $line;
   border-radius: 18px;
   width: 49%;
-  padding: 30px 36px;
 
   @include tablet {
     width: 100%;
+
+    &:first-child {
+      margin-bottom: 20px;
+    }
+  }
+
+  & > div {
+    padding: 30px 36px;
+
+    @include tablet {
+      padding: 20px;
+    }
   }
 
   &__label {

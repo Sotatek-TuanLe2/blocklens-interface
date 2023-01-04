@@ -16,27 +16,27 @@ import Header from './Header';
 
 const LIST_PACKAGE = [
   {
-    NAME: 'FREE',
+    NAME: 'STARTER',
     PRICE: '0',
-    SERVICE: ['5 Active apps', '10,000 messages/day'],
+    SERVICE: ['2 apps', '100 messages/day', 'All supported chains'],
     BADGE: '',
   },
   {
-    NAME: 'STARTER',
-    PRICE: '50',
-    SERVICE: ['10 Active apps', '100,000 messages/day'],
-    BADGE: 'Popular',
+    NAME: 'BASIC',
+    PRICE: '29',
+    SERVICE: ['5 apps', '500 messages/day', 'All supported chains'],
+    BADGE: '',
   },
   {
     NAME: 'GROWTH',
-    PRICE: '225',
-    SERVICE: ['25 Active apps', '500,000 messages/day'],
+    PRICE: '119',
+    SERVICE: ['7 apps', '2,500 messages/day', 'All supported chains'],
     BADGE: 'Popular',
   },
   {
     NAME: 'PROFESSIONAL',
-    PRICE: '1,000',
-    SERVICE: ['50 Active apps', '2,500,000 messages/day'],
+    PRICE: '479',
+    SERVICE: ['15 apps', '12,000 messages/day', 'All supported chains'],
     BADGE: '',
   },
 ];
@@ -50,59 +50,59 @@ const LIST_NETWORK = [
     professional: 'true',
   },
   {
-    name: 'Archive date',
+    name: 'All supported chains',
     free: 'true',
     starter: 'true',
     growth: 'true',
     professional: 'true',
   },
   {
-    name: 'Active apps',
-    free: '5',
-    starter: '10',
-    growth: '25',
-    professional: '50',
+    name: 'Apps',
+    free: '2',
+    starter: '5',
+    growth: '7',
+    professional: '15',
   },
   {
     name: 'Daily messages',
-    free: '10,000',
-    starter: '100,000',
-    growth: '500,000',
-    professional: '2,500,000',
+    free: '100',
+    starter: '500',
+    growth: '2,500',
+    professional: '12,000',
   },
 ];
 
 const LIST_PLAN = [
   {
-    name: 'FREE',
+    name: 'STARTER',
     mainTestNet: 'Mainnet, TestNet',
-    archiveDate: 'Archive date',
-    activeApps: '5 Active apps',
-    messagesCount: '10,000 messsages/day',
+    archiveDate: 'All supported chains',
+    activeApps: '2 apps',
+    messagesCount: '100 messsages/day',
     linkStarted: '/',
   },
   {
-    name: 'STARTER',
+    name: 'BASIC',
     mainTestNet: 'Mainnet, TestNet',
-    archiveDate: 'Archive date',
-    activeApps: '10 Active apps',
-    messagesCount: '100,000 messsages/day',
+    archiveDate: 'All supported chains',
+    activeApps: '5 apps',
+    messagesCount: '500 messsages/day',
     linkStarted: '/',
   },
   {
     name: 'GROWTH',
     mainTestNet: 'Mainnet, TestNet',
-    archiveDate: 'Archive date',
-    activeApps: '25 Active apps',
-    messagesCount: '500,000 messsages/day',
+    archiveDate: 'All supported chains',
+    activeApps: '7 apps',
+    messagesCount: '2,500 messsages/day',
     linkStarted: '/',
   },
   {
     name: 'PROFESSIONAL',
     mainTestNet: 'Mainnet, TestNet',
-    archiveDate: 'Archive date',
-    activeApps: '50 Active apps',
-    messagesCount: '2, 500,000 messsages/day',
+    archiveDate: 'All supported chains',
+    activeApps: '15 apps',
+    messagesCount: '12,000 messsages/day',
     linkStarted: '/',
   },
 ];
@@ -184,8 +184,8 @@ const Pricing = () => {
       <div className="plan-table">
         <div className="plan-row">
           <div className="name-plan-cell"></div>
-          <div className="free-plan-cell title-plan">FREE</div>
-          <div className="starter-plan-cell title-plan">STARTER</div>
+          <div className="free-plan-cell title-plan">STARTER</div>
+          <div className="starter-plan-cell title-plan">BASIC</div>
           <div className="growth-plan-cell title-plan">GROWTH</div>
           <div className="pro-plan-cell title-plan">PROFESSIONAL</div>
         </div>
@@ -258,8 +258,12 @@ const Pricing = () => {
                   )}
                   <div className="name-package">{item.NAME}</div>
                   <div className="price-package-wrap">
-                    <div className="currency-package">$</div>
-                    <div className="price-package">{item.PRICE}</div>
+                    {item.PRICE !== '0' && (
+                      <div className="currency-package">$</div>
+                    )}
+                    <div className="price-package">
+                      {item.PRICE === '0' ? 'Free' : item.PRICE}
+                    </div>
                     {item.PRICE !== '0' ? (
                       <div className="time-package">/mo</div>
                     ) : (

@@ -1,7 +1,7 @@
 {
   "hooks": {
     "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
-    "pre-commit": "npm run docker-eslint",
+    "pre-commit": "npm run pre-commit",
     "pre-push": "branchlint"
   }
 }
