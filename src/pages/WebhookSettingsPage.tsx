@@ -81,7 +81,7 @@ const WebhookSettingsPage = () => {
         });
       dispatch(getUserStats());
       toastSuccess({ message: 'Update Successfully!' });
-      getWebhookInfo();
+      await getWebhookInfo();
     } catch (e: any) {
       toastError({ message: e?.message || 'Oops. Something went wrong!' });
     }
