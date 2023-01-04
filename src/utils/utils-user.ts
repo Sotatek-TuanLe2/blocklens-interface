@@ -1,67 +1,96 @@
-export interface StripePayment {
-  card: any;
-  id: string;
-  livemode: boolean;
-}
+import { StripePayment, UserAuthType, UserBillingType, UserInfoType, UserPaymentType, UserPlanType, UserSettingsType, UserStatsType } from "src/store/user";
 export interface UserInterface {
   id: string;
-  balance: string;
-  billingEmail: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  isEmailVerified: boolean;
-  linkedAddress: string;
-  stripePayment: StripePayment;
-  isPaymentMethodIntegrated: boolean;
-  notificationEnabled: boolean;
-  activePaymentMethod: string;
+  auth: UserAuthType;
+  info: UserInfoType;
+  stats: UserStatsType;
+  billing: UserBillingType;
+  settings: UserSettingsType;
 
   setId: (id: string) => void;
-  setBalance: (balance: string) => void;
-  setBillingEmail: (billingEmail: string) => void;
-  setEmail: (email: string) => void;
-  setFirstName: (firstName: string) => void;
-  setLastName: (lastName: string) => void;
-  setIsEmailVerified: (isEmailVerified: boolean) => void;
-  setIsPaymentMethodIntegrated: (isPaymentMethodIntegrated: boolean) => void;
-  setLinkedAddress: (linkedAddress: string) => void;
-  setStripePayment: (stripePayment: StripePayment) => void;
-  setNotificationEnabled: (notificationEnabled: boolean) => void;
-  setActivePaymentMethod: (activePaymentMethod: string) => void;
+  setAuth: (auth: UserAuthType) => void;
+  setInfo: (info: UserInfoType) => void;
+  setStats: (stats: UserStatsType) => void;
+  setBilling: (billing: UserBillingType) => void;
+  setPlan: (plan: UserPlanType) => void;
+  setPayment: (payment: UserPaymentType) => void;
+  setSettings: (settings: UserSettingsType) => void;
+
   getId: () => string;
-  getBalance: () => string;
-  getBillingEmail: () => string;
+  getAuth: () => UserAuthType;
+  getInfo: () => UserInfoType;
+  getStats: () => UserStatsType;
+  getBilling: () => UserBillingType;
+  getPlan: () => UserPlanType;
+  getPayment: () => UserPaymentType;
+  getSettings: () => UserSettingsType;
+  
   getEmail: () => string;
+  getBillingEmail: () => string;
   getFirstName: () => string;
   getLastName: () => string;
-  getIsEmailVerified: () => boolean;
-  getIsPaymentMethodIntegrated: () => boolean;
+
+  getBalance: () => number;
   getLinkedAddress: () => string;
   getStripePayment: () => StripePayment;
-  getNotificationEnabled: () => boolean;
   getActivePaymentMethod: () => string;
+
+  isEmailVerified: () => boolean;
   isUserLinked: () => boolean;
   isUserStriped: () => boolean;
+  isPaymentMethodIntegrated: () => boolean;
+  isNotificationEnabled: () => boolean;
 }
 
 export class User implements UserInterface {
   public id = '';
-  public balance = '';
-  public billingEmail = '';
-  public email = '';
-  public firstName = '';
-  public lastName = '';
-  public isEmailVerified = false;
-  public isPaymentMethodIntegrated = false;
-  public linkedAddress = '';
-  public stripePayment = {
-    card: {},
-    id: '',
-    livemode: false,
+  public auth: UserAuthType = {
+    accessToken: '',
+    refreshToken: ''
   };
-  public notificationEnabled = false;
-  public activePaymentMethod = '';
+  public info: UserInfoType = {
+    email: '',
+    firstName: '',
+    lastName: '',
+    billingEmail: ''
+  };
+  public stats: UserStatsType = {
+    numberOfAddressActivities: 0,
+    numberOfContractActivities: 0,
+    numberOfNftActivities: 0,
+    totalApp: 0,
+    totalAppActive: 0,
+    totalAppInActive: 0,
+    totalRegistration: 0,
+    totalRegistrationActive: 0,
+  };
+  public billing: UserBillingType = {
+    plan: {
+      code: 'STARTER',
+      name: 'STARTER',
+      description: '',
+      price: 0,
+      currency: '',
+      from: 0,
+      to: 0,
+      appLimitation: 0,
+      notificationLimitation: 0
+    },
+    payment: {
+      activePaymentMethod: 'STRIPE',
+      balance: 0,
+      isPaymentMethodIntegrated: false,
+      stripePaymentMethod: {
+        card: {},
+        id: '',
+        livemode: false
+      },
+      walletAddress: ''
+    }
+  };
+  public settings: UserSettingsType = {
+    notificationEnabled: false
+  };
 
   constructor(id: string) {
     this.id = id;
@@ -71,103 +100,114 @@ export class User implements UserInterface {
     this.id = id;
   }
 
-  setBalance(balance: string | number): void {
-    this.balance = String(balance);
+  setAuth(auth: UserAuthType): void {
+    this.auth = auth;
   }
 
-  setBillingEmail(billingEmail: string): void {
-    this.billingEmail = billingEmail;
+  setInfo(info: UserInfoType): void {
+    this.info = info;
   }
 
-  setEmail(email: string): void {
-    this.email = email;
+  setStats(stats: UserStatsType): void {
+    this.stats = stats;
   }
 
-  setFirstName(firstName: string): void {
-    this.firstName = firstName;
+  setBilling(billing: UserBillingType): void {
+    this.billing = billing;
   }
 
-  setLastName(lastName: string): void {
-    this.lastName = lastName;
+  setPlan(plan: UserPlanType): void {
+    this.billing.plan = plan;
   }
 
-  setIsEmailVerified(isEmailVerified: boolean): void {
-    this.isEmailVerified = isEmailVerified;
+  setPayment(payment: UserPaymentType): void {
+    this.billing.payment = payment;
   }
 
-  setIsPaymentMethodIntegrated(isPaymentMethodIntegrated: boolean): void {
-    this.isPaymentMethodIntegrated = isPaymentMethodIntegrated;
-  }
-
-  setLinkedAddress(linkedAddress: string): void {
-    this.linkedAddress = linkedAddress;
-  }
-
-  setStripePayment(stripePayment: StripePayment): void {
-    this.stripePayment = stripePayment;
-  }
-
-  setNotificationEnabled(notificationEnabled: boolean): void {
-    this.notificationEnabled = notificationEnabled;
-  }
-
-  setActivePaymentMethod(activePaymentMethod: string): void {
-    this.activePaymentMethod = activePaymentMethod;
+  setSettings(settings: UserSettingsType): void {
+    this.settings = settings;
   }
 
   getId(): string {
     return this.id;
   }
+  getAuth(): UserAuthType {
+    return this.auth;
+  }
 
-  getBalance(): string {
-    return this.balance;
+  getInfo(): UserInfoType {
+    return this.info;
+  }
+
+  getStats(): UserStatsType {
+    return this.stats;
+  }
+
+  getBilling(): UserBillingType {
+    return this.billing;
+  }
+
+  getPlan(): UserPlanType {
+    return this.billing.plan;
+  }
+
+  getPayment(): UserPaymentType {
+    return this.billing.payment;
+  }
+
+  getSettings(): UserSettingsType {
+    return this.settings;
+  }
+  
+  getEmail(): string {
+    return this.info.email;
   }
 
   getBillingEmail(): string {
-    return this.billingEmail;
-  }
-
-  getEmail(): string {
-    return this.email;
+    return this.info.billingEmail;
   }
 
   getFirstName(): string {
-    return this.firstName;
+    return this.info.firstName;
   }
 
   getLastName(): string {
-    return this.lastName;
+    return this.info.lastName;
   }
 
-  getIsEmailVerified(): boolean {
-    return this.isEmailVerified;
-  }
-
-  getIsPaymentMethodIntegrated(): boolean {
-    return this.isPaymentMethodIntegrated;
+  getBalance(): number {
+    return this.billing.payment.balance;
   }
 
   getLinkedAddress(): string {
-    return this.linkedAddress;
+    return this.billing.payment.walletAddress;
   }
 
   getStripePayment(): StripePayment {
-    return this.stripePayment;
-  }
-
-  getNotificationEnabled(): boolean {
-    return this.notificationEnabled;
+    return this.billing.payment.stripePaymentMethod;
   }
 
   getActivePaymentMethod(): string {
-    return this.activePaymentMethod;
+    return this.billing.payment.activePaymentMethod
+  }
+
+  isEmailVerified(): boolean {
+    return !!this.info.isEmailVerified;
   }
 
   isUserLinked(): boolean {
-    return !!this.linkedAddress;
+    return !!this.billing.payment.walletAddress;
   }
 
   isUserStriped(): boolean {
-    return !!this.stripePayment;
+    return !!this.billing.payment.stripePaymentMethod
+  }
+
+  isPaymentMethodIntegrated(): boolean {
+    return !!this.billing.payment.isPaymentMethodIntegrated;
+  }
+
+  isNotificationEnabled(): boolean {
+    return !!this.settings.notificationEnabled;
   }
 }

@@ -436,7 +436,7 @@ const BillingPage = () => {
               </AppLink>
             </Box>
             <Box mb={isMobile ? 4 : 0} width={isMobile ? '100%' : 'auto'}>
-              {user?.getIsPaymentMethodIntegrated()
+              {user?.isPaymentMethodIntegrated()
                 ? _renderButtonUpdatePlan()
                 : _renderButton()}
             </Box>

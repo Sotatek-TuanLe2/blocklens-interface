@@ -19,7 +19,7 @@ const Notifications = () => {
   const updateNotificationFlag = async () => {
     try {
       await rf.getRequest('UserRequest').updateNotificationFlag({
-        notificationEnabled: !user?.getNotificationEnabled(),
+        notificationEnabled: !user?.isNotificationEnabled(),
       });
       dispatch(getUserProfile());
       toastSuccess({ message: 'Successfully' });
@@ -40,7 +40,7 @@ const Notifications = () => {
         <Flex>
           <Checkbox
             size="lg"
-            isChecked={user?.getNotificationEnabled()}
+            isChecked={user?.isNotificationEnabled()}
             mr={3}
             onChange={updateNotificationFlag}
           />
@@ -54,7 +54,7 @@ const Notifications = () => {
           mt={2.5}
         >
           <Box className="email">Receive Email: {user?.getBillingEmail()}</Box>
-          {user?.getNotificationEnabled() && (
+          {user?.isNotificationEnabled() && (
             <Box
               className="btn-edit"
               onClick={() => setIsOpenEditReceiveEmailModal(true)}

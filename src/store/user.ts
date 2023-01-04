@@ -40,10 +40,16 @@ export type UserPlanType = {
   to: number;
 };
 
+export interface StripePayment {
+  card: any;
+  id: string;
+  livemode: boolean;
+}
+
 export type UserPaymentType = {
   isPaymentMethodIntegrated: boolean;
   activePaymentMethod: string;
-  stripePaymentMethod: any;
+  stripePaymentMethod: StripePayment;
   walletAddress: string;
   balance: number;
 };
@@ -52,15 +58,17 @@ export type UserSettingsType = {
   notificationEnabled: boolean;
 };
 
+export type UserBillingType = {
+  plan: UserPlanType;
+  payment: UserPaymentType;
+};
+
 export type UserState = {
   userId: string;
   auth: UserAuthType;
   info: UserInfoType;
   stats: UserStatsType;
-  billing: {
-    plan: UserPlanType;
-    payment: UserPaymentType;
-  }
+  billing: UserBillingType;
   settings: UserSettingsType;
 };
 
@@ -102,7 +110,11 @@ const initialState: UserState = {
       activePaymentMethod: 'STRIPE',
       balance: 0,
       isPaymentMethodIntegrated: false,
-      stripePaymentMethod: {},
+      stripePaymentMethod: {
+        card: {},
+        id: '',
+        livemode: false
+      },
       walletAddress: ''
     }
   },
