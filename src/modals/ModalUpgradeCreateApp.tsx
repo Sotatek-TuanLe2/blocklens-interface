@@ -3,11 +3,10 @@ import { FC } from 'react';
 import BaseModal from './BaseModal';
 import { useHistory } from 'react-router';
 import AppButton from 'src/components/AppButton';
-import { useSelector } from 'react-redux';
-import { RootState } from 'src/store';
 import { isMobile } from 'react-device-detect';
 import { MetadataPlan } from 'src/store/metadata';
 import useUser from 'src/hooks/useUser';
+import useMetadata from 'src/hooks/useMetadata';
 
 interface ModalUpgradeCreateApp {
   open: boolean;
@@ -20,11 +19,11 @@ const ModalUpgradeCreateApp: FC<ModalUpgradeCreateApp> = ({
 }) => {
   const history = useHistory();
   const { user } = useUser();
-  const { plans } = useSelector((state: RootState) => state.metadata);
-  const indexMyPlan = plans.findIndex(
+  const { billingPlans } = useMetadata();
+  const indexMyPlan = billingPlans.findIndex(
     (item: MetadataPlan) => item.code === user?.getPlan().code,
   );
-  const nextPlan = plans[indexMyPlan + 1];
+  const nextPlan = billingPlans[indexMyPlan + 1];
 
   return (
     <BaseModal

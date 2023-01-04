@@ -12,8 +12,7 @@ import BigNumber from 'bignumber.js';
 import 'src/styles/pages/BillingPage.scss';
 import { BasePageContainer } from 'src/layouts';
 import { AppButton, AppCard, AppLink } from 'src/components';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from 'src/store';
+import { useDispatch } from 'react-redux';
 import {
   CheckedIcon,
   RadioNoCheckedIcon,
@@ -38,6 +37,7 @@ import ModalCancelSubscription from 'src/modals/ModalCancelSubscription';
 import PartTopUp from './parts/PartTopUp';
 import { getUserPlan, getUserProfile } from 'src/store/user';
 import { MetadataPlan } from 'src/store/metadata';
+import useMetadata from 'src/hooks/useMetadata';
 
 export const PAYMENT_METHOD = {
   CARD: 'STRIPE',
@@ -151,10 +151,8 @@ const BillingPage = () => {
     useState<boolean>(false);
   const [isReloadingUserInfo, setIsReloadingUserInfo] = useState<boolean>(false);
   const [step, setStep] = useState<number>(STEPS.LIST);
-  const { plans: billingPlans } = useSelector(
-    (state: RootState) => state.metadata,
-  );
   const { user } = useUser();
+  const { billingPlans } = useMetadata();
   const dispatch = useDispatch();
   const history = useHistory();
 
