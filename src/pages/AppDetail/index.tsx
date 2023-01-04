@@ -130,6 +130,7 @@ const AppDetail = () => {
 
           <PartAppStatics
             totalWebhookActive={appInfo?.totalRegistrationActive}
+            totalWebhook={appInfo?.totalRegistration}
           />
 
           <AppCard className="list-webhook">

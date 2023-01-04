@@ -12,6 +12,25 @@
     }
   }
 
+  .box-change-plan {
+    margin-top: 20px;
+    padding: 40px 40px 20px 40px;
+
+    @include tablet {
+      padding: 20px;
+    }
+
+    &__title {
+      @include heading-6;
+      color: $title;
+
+      @include tablet {
+        @include heading-8;
+      }
+    }
+
+  }
+
   .list-table-wrap {
     padding: 0;
 
@@ -65,18 +84,30 @@
 
   .payment-method {
     cursor: pointer;
-    padding-left: 40px;
+    padding: 0 40px;
     width: max-content;
+    align-items: center;
     &:nth-child(2) {
       margin-bottom: 24px;
     }
 
     @include tablet {
-      padding-left: 20px;
+      padding: 0 20px;
+      justify-content: space-between;
+      width: 100%;
 
       &:nth-child(2) {
         margin-bottom: 12px;
       }
+    }
+
+    &__value {
+      color: $paragraph;
+    }
+
+    .btn-edit {
+      color: $paragraph;
+      margin-left: 50px;
     }
   }
 
@@ -151,7 +182,6 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      height: 70vh;
 
       &__description {
         @include text-large-regular;
@@ -279,5 +309,105 @@
         }
       }
     }
+  }
+}
+
+.box-method {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  padding: 20px 20px 44px;
+  background: rgba(16, 21, 48, 0.5);
+  border: 1.6px solid $line;
+  border-radius: 18px;
+  cursor: pointer;
+  width: 49%;
+  position: relative;
+
+  @include tablet {
+    width: 100%;
+    padding-bottom: 30px;
+
+    &:first-child {
+      margin-bottom: 20px;
+    }
+
+    svg {
+      max-width: 270px;
+    }
+  }
+
+  &.active {
+    border: 1.6px solid $blue;
+  }
+
+  &__btn-edit {
+    color: $paragraph;
+  }
+
+  &__name,
+  &__method {
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 26px;
+    margin-bottom: 2px;
+    text-transform: uppercase;
+
+    @include tablet {
+      font-size: 16px;
+    }
+  }
+
+  &__method {
+    margin-bottom: 22px;
+  }
+
+  &__value {
+    @include text-large-regular;
+    color: $paragraph;
+    padding-bottom: 18px;
+  }
+
+  .icon-checked-active {
+    svg {
+      width: 26px;
+      height: 26px;
+    }
+    .is-reloading {
+      animation: spin 1s infinite linear;
+    }
+  }
+}
+
+.box-top-up {
+  border-radius: 18px;
+  width: 49%;
+
+  @include tablet {
+    width: 100%;
+
+    &:first-child {
+      margin-bottom: 20px;
+    }
+  }
+
+  & > div {
+    padding: 30px 36px;
+
+    @include tablet {
+      padding: 20px;
+    }
+  }
+
+  &__label {
+    @include text-medium-bold;
+    color: $line;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+
+  &__name {
+    @include text-medium-bold;
+    color: $paragraph;
   }
 }

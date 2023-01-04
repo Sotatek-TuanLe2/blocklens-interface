@@ -98,8 +98,10 @@ export const ListStat: FC<IListStat> = ({ dataStats, dataChart }) => {
 
 const PartUserStats = ({
   totalWebhookActive,
+  totalWebhook,
 }: {
   totalWebhookActive?: number;
+  totalWebhook?: number;
 }) => {
   const [userStatsToday, setUserStatsToday] = useState<IUserStats | any>({});
   const [dataChart, setDataChart] = useState<IUserStats[] | any>([]);
@@ -140,8 +142,7 @@ const PartUserStats = ({
 
   const dataUserStatsToday = useMemo(() => {
     const getValue = (value?: number, total?: number) => {
-      if (!total) return '--';
-      if (!value) return `--/${formatLargeNumber(total)}`;
+      if (!total || !value) return '--';
       return `${formatLargeNumber(value)}/${formatLargeNumber(total)}`;
     };
 
@@ -183,7 +184,7 @@ const PartUserStats = ({
       if (item.key === 'webhooks') {
         return {
           ...item,
-          value: getValue(totalWebhookActive, userStatsToday.webhooks),
+          value: getValue(totalWebhookActive, totalWebhook),
         };
       }
 

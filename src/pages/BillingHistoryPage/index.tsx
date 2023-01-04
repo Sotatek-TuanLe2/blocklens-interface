@@ -8,6 +8,7 @@ import BillingItem from './parts/BillingItem';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { isMobile } from 'react-device-detect';
 import BillingItemMobile from './parts/BillingItemMobile';
+import { useHistory } from 'react-router';
 
 const fileDownload = require('js-file-download');
 
@@ -33,6 +34,7 @@ export interface IBilling {
 }
 
 const BillingHistory = () => {
+  const history = useHistory();
   const getListReceipt = async (receiptIds: string) => {
     try {
       const res: any = await rf
@@ -149,7 +151,12 @@ const BillingHistory = () => {
       <>
         <Flex className="app-info">
           <Flex className="name">
-            <Box className="icon-arrow-left" mr={6} />
+            <Box
+              cursor={'pointer'}
+              className="icon-arrow-left"
+              mr={6}
+              onClick={() => history.push('/billing')}
+            />
             <Box className={'title-mobile'}>Billing History</Box>
           </Flex>
         </Flex>

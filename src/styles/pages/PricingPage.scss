@@ -21,14 +21,15 @@
       margin-bottom: 160px;
       @include tablet {
         margin-top: 40px;
-        margin-bottom: 120px;
-        overflow-x: scroll;
-        width: calc(100% + 24px);
+        margin-bottom: 96px;
+        flex-direction: column;
+        align-items: center;
+
         &::-webkit-scrollbar {
           display: none;
         }
         .package {
-          margin-right: 24px;
+          margin-bottom: 24px;
         }
       }
       .package {

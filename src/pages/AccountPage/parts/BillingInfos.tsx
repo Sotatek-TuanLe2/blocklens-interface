@@ -1,18 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import 'src/styles/pages/AccountPage.scss';
 import { Box, Flex } from '@chakra-ui/react';
-import { AppButton, AppCard, AppLink } from 'src/components';
+import { AppCard, AppLink } from 'src/components';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/store';
 import { formatTimestamp } from 'src/utils/utils-helper';
-import { isMobile } from 'react-device-detect';
-import ModalCancelSubscription from 'src/modals/ModalCancelSubscription';
 import { CheckedIcon, ArrowRightIcon } from 'src/assets/icons';
 
 const BillingInfos = () => {
-  const [isOpenCancelSubscriptionModal, setIsOpenCancelSubscriptionModal] =
-    useState<boolean>(false);
-
   const { myPlan: currentPlan } = useSelector(
     (state: RootState) => state.billing,
   );
@@ -44,12 +39,14 @@ const BillingInfos = () => {
         </Box>
         <Box className="detail-plan">
           <Flex alignItems={'center'}>
-            <CheckedIcon />{' '}
-            <Box ml={3}>{currentPlan.appLimitation} active apps</Box>
+            <CheckedIcon /> <Box ml={3}>{currentPlan.appLimitation} apps</Box>
           </Flex>
           <Flex alignItems={'center'}>
             <CheckedIcon />{' '}
             <Box ml={3}> {currentPlan.notificationLimitation} message/day</Box>
+          </Flex>
+          <Flex alignItems={'center'}>
+            <CheckedIcon /> <Box ml={3}> All supported chains</Box>
           </Flex>
           <Box>
             Period: {formatTimestamp(currentPlan?.from || 0, 'MMM DD, YYYY')} -{' '}
@@ -57,24 +54,6 @@ const BillingInfos = () => {
           </Box>
         </Box>
       </Box>
-
-      <Flex justifyContent={isMobile ? 'center' : 'flex-end'}>
-        <AppButton
-          isDisabled={currentPlan.code === 'STARTER'}
-          variant="cancel"
-          size="sm"
-          onClick={() => setIsOpenCancelSubscriptionModal(true)}
-        >
-          Cancel Subscription
-        </AppButton>
-      </Flex>
-
-      {isOpenCancelSubscriptionModal && (
-        <ModalCancelSubscription
-          open={isOpenCancelSubscriptionModal}
-          onClose={() => setIsOpenCancelSubscriptionModal(false)}
-        />
-      )}
     </AppCard>
   );
 };

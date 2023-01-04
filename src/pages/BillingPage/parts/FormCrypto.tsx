@@ -16,7 +16,6 @@ import useTopUp from 'src/hooks/useTopUp';
 import AppCryptoForm from 'src/components/AppCryptoForm';
 
 interface IFormCrypto {
-  onBack: () => void;
   onNext: () => void;
   planSelected: IPlan;
 }
@@ -28,7 +27,7 @@ interface IDataForm {
   amount: string;
 }
 
-const FormCrypto: FC<IFormCrypto> = ({ onBack, onNext, planSelected }) => {
+const FormCrypto: FC<IFormCrypto> = ({ onNext, planSelected }) => {
   const initialDataForm: IDataForm = {
     walletAddress: '',
     chainId: '',
@@ -148,10 +147,6 @@ const FormCrypto: FC<IFormCrypto> = ({ onBack, onNext, planSelected }) => {
 
   return (
     <Box className="form-card">
-      <Flex alignItems={'center'} mb={7}>
-        <Box className="icon-arrow-left" mr={6} onClick={onBack} />
-        <Box className={'sub-title'}>Crypto</Box>
-      </Flex>
       {wallet && isUserLinked ? (
         _renderWalletInfo()
       ) : (

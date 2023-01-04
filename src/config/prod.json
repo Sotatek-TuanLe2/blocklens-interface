@@ -46,7 +46,7 @@
               "name": "USDT",
               "symbol": "USDT",
               "decimals": 6,
-              "icon": "/images/USDT.png"
+              "icon": "icon-usdt"
             },
             "usdc": {
               "coingeckoId": "usd-coin",
@@ -54,7 +54,7 @@
               "name": "USDC",
               "symbol": "USDC",
               "decimals": 6,
-              "icon": "/images/USDC.png"
+              "icon": "icon-usdc"
             }
           }
         },
@@ -128,7 +128,7 @@
               "name": "USDT",
               "symbol": "USDT",
               "decimals": 18,
-              "icon": "/images/USDT.png"
+              "icon": "icon-usdt"
             },
             "busd": {
               "coingeckoId": "binance-usd",
@@ -136,7 +136,7 @@
               "name": "BUSD",
               "symbol": "BUSD",
               "decimals": 18,
-              "icon": "/images/BUSD.png"
+              "icon": "icon-busd"
             },
             "usdc": {
               "coingeckoId": "usd-coin",
@@ -144,7 +144,7 @@
               "name": "USDC",
               "symbol": "USDC",
               "decimals": 18,
-              "icon": "/images/USDC.png"
+              "icon": "icon-usdc"
             }
           }
         },
@@ -226,7 +226,7 @@
               "name": "USDT",
               "symbol": "USDT",
               "decimals": 6,
-              "icon": "/images/USDT.png"
+              "icon": "icon-usdt"
             },
             "usdc": {
               "coingeckoId": "usd-coin",
@@ -234,7 +234,7 @@
               "name": "USDC",
               "symbol": "USDC",
               "decimals": 6,
-              "icon": "/images/USDC.png"
+              "icon": "icon-usdc"
             }
           }
         },
@@ -244,7 +244,7 @@
           "icon": "icon-polygon",
           "chainId": 80001,
           "rpcUrls": [
-            "https://nd-468-706-569.p2pify.com/4bba3da7016680fe302cff4e2c12cf9a"
+            "https://rpc-mumbai.matic.today/"
           ],
           "blockExplorer": {
             "name": "Polygonscan",
@@ -304,13 +304,13 @@
   },
   "topUp": {
     "ETH": {
-      "contractAddress": ""
+      "contractAddress": "0x488772cdfcccA2Fc9458cc707303b3ec0085DA0b"
     },
     "BSC": {
-      "contractAddress": ""
+      "contractAddress": "0x488772cdfcccA2Fc9458cc707303b3ec0085DA0b"
     },
     "POLYGON": {
-      "contractAddress": ""
+      "contractAddress": "0xA9a0118AfBe649CD59C6B381e64883f3937D5A20"
     }
   },
   "connectors": {

@@ -48,16 +48,15 @@ const AppMobile: FC<IAppMobile> = ({ app }) => {
           justifyContent="space-between"
           alignItems="center"
           className="info"
+          onClick={() => history.push(`/apps/${app.appId}`)}
         >
-          <Box
-            className="name-mobile"
-            onClick={() => history.push(`/apps/${app.appId}`)}
-          >
-            {app.name}
-          </Box>
+          <Box className="name-mobile">{app.name}</Box>
           <Box
             className={isOpen ? 'icon-minus' : 'icon-plus'}
-            onClick={() => setIsOpen(!isOpen)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsOpen(!isOpen);
+            }}
           />
         </Flex>
         <Flex
@@ -175,9 +174,7 @@ const ListApps: React.FC = () => {
 
   const _renderModalCreateApp = () => {
     const isLimitApp =
-      myPlan?.appLimitation &&
-      totalAppActive &&
-      totalAppActive >= myPlan?.appLimitation;
+      myPlan?.appLimitation && !!totalApp && totalApp >= myPlan?.appLimitation;
     return isLimitApp ? (
       <ModalUpgradeCreateApp
         open={openCreateApp}

@@ -38,8 +38,10 @@ export const listStats = [
 
 const PartAppStats = ({
   totalWebhookActive,
+  totalWebhook,
 }: {
   totalWebhookActive?: number;
+  totalWebhook?: number;
 }) => {
   const [appStats, setAppStats] = useState<IAppStats | any>({});
   const [dataChart, setDataChart] = useState<IAppStats[] | any>([]);
@@ -82,8 +84,7 @@ const PartAppStats = ({
   const dataAppStats = useMemo(() => {
     return listStats.map((item) => {
       const getValue = (value?: number, total?: number) => {
-        if (!total) return '--';
-        if (!value) return `--/${formatLargeNumber(total)}`;
+        if (!total || !value) return '--';
         return `${formatLargeNumber(value)}/${formatLargeNumber(total)}`;
       };
 
@@ -124,7 +125,7 @@ const PartAppStats = ({
       if (item.key === 'webhooks') {
         return {
           ...item,
-          value: getValue(totalWebhookActive, appStats.webhooks),
+          value: getValue(totalWebhookActive, totalWebhook),
         };
       }
       return {
