@@ -7,7 +7,7 @@ import { EditIcon } from 'src/assets/icons';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import ModalEditReceiveEmail from 'src/modals/ModalEditReceiveEmail';
-import { getUserProfile } from 'src/store/user-2';
+import { getUserProfile } from 'src/store/user';
 import useUser from 'src/hooks/useUser';
 
 const Notifications = () => {

@@ -16,7 +16,7 @@ import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
-import { getUserStats, setUserAuth, setUserProfile } from '../store/user-2';
+import { getUserStats, setUserAuth, setUserProfile } from '../store/user';
 
 interface IDataForm {
   email: string;

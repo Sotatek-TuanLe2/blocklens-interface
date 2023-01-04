@@ -26,7 +26,7 @@ import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import BaseConnector from 'src/connectors/BaseConnector';
 import useUser from './useUser';
 import rf from 'src/requests/RequestFactory';
-import { getUserProfile } from 'src/store/user-2';
+import { getUserProfile } from 'src/store/user';
 
 type ReturnType = {
   currentNetwork: string;

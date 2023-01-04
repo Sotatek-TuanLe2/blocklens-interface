@@ -47,7 +47,7 @@ const PartAppStats = ({
   const [dataChart, setDataChart] = useState<IAppStats[] | any>([]);
   const { id: appId } = useParams<{ id: string }>();
   const { billing: { plan: currentPlan } } = useSelector(
-    (state: RootState) => state.user2,
+    (state: RootState) => state.user,
   );
 
   const getAppStatsToday = useCallback(async () => {

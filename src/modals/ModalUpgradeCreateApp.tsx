@@ -19,7 +19,7 @@ const ModalUpgradeCreateApp: FC<ModalUpgradeCreateApp> = ({
 }) => {
   const history = useHistory();
   const { plans } = useSelector((state: RootState) => state.metadata);
-  const { billing: { plan: myPlan } } = useSelector((state: RootState) => state.user2);
+  const { billing: { plan: myPlan } } = useSelector((state: RootState) => state.user);
   const indexMyPlan = plans.findIndex(
     (item: MetadataPlan) => item.code === myPlan?.code,
   );

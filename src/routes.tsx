@@ -32,7 +32,7 @@ import ModalSubmittingTransaction from './modals/ModalSubmittingTransaction';
 import ModalFinishTransaction from './modals/ModalFinishTransaction';
 import WebhookActivitiesPage from './pages/WebhookActivitiesPage';
 import TopUpPage from './pages/TopUp';
-import { getUser } from './store/user-2';
+import { getUser } from './store/user';
 import { initMetadata } from './store/metadata';
 
 /**

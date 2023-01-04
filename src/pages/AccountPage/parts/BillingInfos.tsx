@@ -8,7 +8,7 @@ import { CheckedIcon, ArrowRightIcon } from 'src/assets/icons';
 
 const BillingInfos = () => {
   const { billing: { plan: currentPlan } } = useSelector(
-    (state: RootState) => state.user2,
+    (state: RootState) => state.user,
   );
 
   const _renderLinkDetail = () => {

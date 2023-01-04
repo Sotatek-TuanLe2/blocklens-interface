@@ -8,7 +8,7 @@ type ReturnType = {
 };
 
 const useUser = (): ReturnType => {
-  const { userId, info, billing, settings } = useSelector((state: RootState) => state.user2);
+  const { userId, info, billing, settings } = useSelector((state: RootState) => state.user);
   const {
     billingEmail,
     email,

@@ -35,7 +35,7 @@ import PartPaymentInfo from './parts/PartPaymentInfo';
 import ModalEditCreditCard from 'src/modals/ModalEditCreditCard';
 import ModalCancelSubscription from 'src/modals/ModalCancelSubscription';
 import PartTopUp from './parts/PartTopUp';
-import { getUserPlan, getUserProfile } from 'src/store/user-2';
+import { getUserPlan, getUserProfile } from 'src/store/user';
 import { MetadataPlan } from 'src/store/metadata';
 
 export const PAYMENT_METHOD = {
@@ -153,7 +153,7 @@ const BillingPage = () => {
     (state: RootState) => state.metadata,
   );
   const { billing: { plan: currentPlan } } = useSelector(
-    (state: RootState) => state.user2,
+    (state: RootState) => state.user,
   );
   const { user } = useUser();
   const dispatch = useDispatch();

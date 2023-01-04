@@ -14,7 +14,7 @@ import config from 'src/config';
 import { AppButton, AppCard } from 'src/components';
 import { isMobile } from 'react-device-detect';
 import { useDispatch } from 'react-redux';
-import { getUserProfile } from 'src/store/user-2';
+import { getUserProfile } from 'src/store/user';
 
 interface ICheckoutForm {
   onClose?: () => void;

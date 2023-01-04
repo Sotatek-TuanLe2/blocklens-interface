@@ -33,7 +33,7 @@ const AppDetail = () => {
       numberOfContractActivities,
       numberOfNftActivities,
     },
-  } = useSelector((state: RootState) => state.user2);
+  } = useSelector((state: RootState) => state.user);
 
   const [appInfo, setAppInfo] = useState<any>({});
   const [isShowSetting, setIsShowSetting] = useState<boolean>(false);

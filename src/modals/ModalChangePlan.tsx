@@ -7,7 +7,7 @@ import 'src/styles/pages/ProfilePage.scss';
 import { AppCard } from 'src/components';
 import { useDispatch } from 'react-redux';
 import { MetadataPlan } from 'src/store/metadata';
-import { getUserPlan } from 'src/store/user-2';
+import { getUserPlan } from 'src/store/user';
 
 interface IModalChangePaymentMethod {
   open: boolean;

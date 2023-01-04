@@ -8,7 +8,7 @@ import useWallet from 'src/hooks/useWallet';
 import config from 'src/config';
 import { getChainConfig, getNetworkByEnv } from 'src/utils/utils-network';
 import { convertDecToWei } from 'src/utils/utils-format';
-import { getUserProfile } from 'src/store/user-2';
+import { getUserProfile } from 'src/store/user';
 
 type ReturnType = {
   approveToken: (

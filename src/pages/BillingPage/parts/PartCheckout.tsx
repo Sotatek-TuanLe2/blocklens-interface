@@ -12,7 +12,7 @@ import { CheckedIcon } from 'src/assets/icons';
 import { useHistory } from 'react-router-dom';
 import useUser from 'src/hooks/useUser';
 import { MetadataPlan } from 'src/store/metadata';
-import { getUserPlan } from 'src/store/user-2';
+import { getUserPlan } from 'src/store/user';
 
 interface IPartCheckout {
   planSelected: MetadataPlan;

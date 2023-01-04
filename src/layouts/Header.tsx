@@ -20,7 +20,7 @@ import ModalSignInRequest from 'src/modals/ModalSignInRequest';
 import { isMobile } from 'react-device-detect';
 import { CloseIcon } from '@chakra-ui/icons';
 import { ArrowLogout, DoorLogout } from 'src/assets/icons';
-import { clearUser } from 'src/store/user-2';
+import { clearUser } from 'src/store/user';
 import useUser from 'src/hooks/useUser';
 
 const menus = [

@@ -8,7 +8,7 @@ import { useHistory } from 'react-router';
 import AppButton from './AppButton';
 import { Box } from '@chakra-ui/react';
 import config from 'src/config';
-import { getUserStats, setUserAuth, setUserProfile } from '../store/user-2';
+import { getUserStats, setUserAuth, setUserProfile } from '../store/user';
 
 const clientId = config.auth.googleClientId;
 

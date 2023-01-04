@@ -106,7 +106,7 @@ const PartUserStats = ({
   const [userStatsToday, setUserStatsToday] = useState<IUserStats | any>({});
   const [dataChart, setDataChart] = useState<IUserStats[] | any>([]);
   const { billing: { plan: currentPlan } } = useSelector(
-    (state: RootState) => state.user2,
+    (state: RootState) => state.user,
   );
 
   const getUserStatsToday = useCallback(async () => {
