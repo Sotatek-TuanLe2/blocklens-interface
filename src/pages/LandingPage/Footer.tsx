@@ -39,10 +39,8 @@ const Footer = () => {
         <img src="/images/LandingPage/logo.png" alt="logo" />
 
         <div className="footer-landing__description">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat.
+          Block Sniper pushes on-chain events to your back-end web hooks.
+          Reliable, configurable, real-time. Get started for free now!
         </div>
         <div className="footer-landing__name">© 2022, Block Sniper</div>
       </div>
@@ -64,7 +62,6 @@ const Footer = () => {
         </div>
 
         <div className="footer-landing__menus">
-          <div>Privacy Policy and Terms of Service</div>
           {linkTerms.map((item, index) => {
             return (
               <Link
