@@ -62,12 +62,18 @@ const HomePage = () => {
 
         {hasApp ? (
           <>
-            <PartUserStats
-              totalWebhookActive={totalRegistrationActive}
-              totalWebhook={totalRegistration}
-            />
+            <Box className={'statics'}>
+              <PartUserStats
+                totalWebhookActive={totalRegistrationActive}
+                totalWebhook={totalRegistration}
+              />
+            </Box>
+
             <ListApps />
-            <PartUserGraph />
+
+            <Box className={'user-graph'}>
+              <PartUserGraph />
+            </Box>
           </>
         ) : (
           _renderNoApp()

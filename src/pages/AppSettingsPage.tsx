@@ -171,62 +171,46 @@ const AppSettingsPage: FC<IAppSettings> = () => {
     );
   };
 
-  const _renderAppStatus = () => {
-    return (
-      <AppCard className="app-status">
-        <Flex justifyContent={'space-between'}>
-          <Flex
-            alignItems={isMobile ? 'flex-start' : 'center'}
-            flexDirection={isMobile ? 'column' : 'row'}
-          >
-            <Box className="title-status">App Status</Box>
-            <Flex alignItems={'center'}>
-              <Box
-                className={isActive ? 'icon-active' : 'icon-inactive'}
-                mr={2}
-              />
-              <Box>{isActive ? 'Active' : 'Inactive'}</Box>
-            </Flex>
-          </Flex>
-
-          <AppButton
-            onClick={() => setIsOpenChangeStatusAppModal(true)}
-            size={isMobile ? 'sm' : 'md'}
-          >
-            {isActive ? 'Deactivate' : 'Activate'}
-          </AppButton>
-        </Flex>
-      </AppCard>
-    );
-  };
-
-  const _renderHeading = () => {
-    return (
-      <Flex className="app-info">
-        <AppHeading title="Settings" linkBack={`/apps/${appId}`} isCenter/>
-
-        <Flex>
-          <AppButton
-            size={'md'}
-            variant="cancel"
-            px={isMobile ? 3 : 4}
-            onClick={() => setIsOpenDeleteAppModal(true)}
-          >
-            <Box className="icon-trash" />
-          </AppButton>
-        </Flex>
-      </Flex>
-    );
-  };
-
   return (
     <BasePageContainer className="app-detail">
       <>
-        {_renderHeading()}
+        <Flex className="app-info">
+          <AppHeading title="Settings" linkBack={`/apps/${appId}`} isCenter/>
+
+          <Flex>
+            <AppButton
+              size={'md'}
+              variant="cancel"
+              onClick={() => setIsOpenDeleteAppModal(true)}
+            >
+              <Box className="icon-trash" />
+            </AppButton>
+          </Flex>
+        </Flex>
 
         {_renderBasicSettings()}
 
-        {_renderAppStatus()}
+        <AppCard className="app-status">
+          <Flex justifyContent={'space-between'}>
+            <Flex className="box-status">
+              <Box className="title-status">App Status</Box>
+              <Flex alignItems={'center'}>
+                <Box
+                  className={isActive ? 'icon-active' : 'icon-inactive'}
+                  mr={2}
+                />
+                <Box>{isActive ? 'Active' : 'Inactive'}</Box>
+              </Flex>
+            </Flex>
+
+            <AppButton
+              onClick={() => setIsOpenChangeStatusAppModal(true)}
+              size={isMobile ? 'sm' : 'md'}
+            >
+              {isActive ? 'Deactivate' : 'Activate'}
+            </AppButton>
+          </Flex>
+        </AppCard>
 
         {isOpenDeleteAppModal && (
           <ModalDeleteApp

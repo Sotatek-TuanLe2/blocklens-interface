@@ -119,89 +119,67 @@ const WebhookSettingsPage = () => {
     }
   };
 
-  const _renderHeading = () => {
-    return (
-      <Flex className="app-info">
-        <AppHeading
-          isCenter
-          title="Settings"
-          linkBack={`/app/${appId}/webhooks/${webhookId}`}
-        />
-
-        <Flex>
-          <AppButton
-            size={'md'}
-            px={isMobile ? 3 : 4}
-            variant="cancel"
-            onClick={() => setIsOpenModalDelete(true)}
-          >
-            <Box className="icon-trash" />
-          </AppButton>
-        </Flex>
-      </Flex>
-    );
-  };
-
-  const _renderWebhookStatus = () => {
-    return (
-      <AppCard className="app-status">
-        <Flex justifyContent={'space-between'}>
-          <Flex
-            alignItems={isMobile ? 'flex-start' : 'center'}
-            flexDirection={isMobile ? 'column' : 'row'}
-          >
-            <Box className="title-status">Webhook Status</Box>
-            <Flex alignItems={'center'}>
-              <Box
-                className={isActive ? 'icon-active' : 'icon-inactive'}
-                mr={2}
-              />
-              <Box>{isActive ? 'Active' : 'Inactive'}</Box>
-            </Flex>
-          </Flex>
-
-          <AppButton
-            onClick={onUpdateStatus}
-            size={isMobile ? 'sm' : 'md'}
-            isDisabled={appInfo.status === APP_STATUS.DISABLED}
-          >
-            {isActive ? 'Deactivate' : 'Activate'}
-          </AppButton>
-        </Flex>
-      </AppCard>
-    );
-  };
-
-  const _renderWebhookInfo = () => {
-    return (
-      <AppCard mt={7} p={isMobile ? 5 : 10} className="basic-setting">
-        <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
-          <AppField label={'Network'} customWidth={'49%'}>
-            <Flex className="chain-app">
-              <Box className={getLogoChainByChainId(appInfo?.chain)} mr={3} />
-              <Box>{getNameChainByChainId(appInfo?.chain)}</Box>
-              <Box textTransform="capitalize" ml={2}>
-                {appInfo?.network?.toLowerCase()}
-              </Box>
-            </Flex>
-          </AppField>
-          <AppField label={'Webhook URL'} customWidth={'49%'}>
-            <AppInput value={webhook?.webhook} isDisabled />
-          </AppField>
-        </Flex>
-        {_renderDetailWebhook()}
-      </AppCard>
-    );
-  };
-
   return (
     <BasePageContainer  className="app-detail">
       <>
-        {_renderHeading()}
+        <Flex className="app-info">
+          <AppHeading
+            isCenter
+            title="Settings"
+            linkBack={`/app/${appId}/webhooks/${webhookId}`}
+          />
 
-        {_renderWebhookStatus()}
+          <Flex>
+            <AppButton
+              size={'md'}
+              variant="cancel"
+              onClick={() => setIsOpenModalDelete(true)}
+            >
+              <Box className="icon-trash" />
+            </AppButton>
+          </Flex>
+        </Flex>
 
-        {_renderWebhookInfo()}
+        <AppCard className="app-status">
+          <Flex justifyContent={'space-between'}>
+            <Flex className="box-status">
+              <Box className="title-status">Webhook Status</Box>
+              <Flex alignItems={'center'}>
+                <Box
+                  className={isActive ? 'icon-active' : 'icon-inactive'}
+                  mr={2}
+                />
+                <Box>{isActive ? 'Active' : 'Inactive'}</Box>
+              </Flex>
+            </Flex>
+
+            <AppButton
+              onClick={onUpdateStatus}
+              size={isMobile ? 'sm' : 'md'}
+              isDisabled={appInfo.status === APP_STATUS.DISABLED}
+            >
+              {isActive ? 'Deactivate' : 'Activate'}
+            </AppButton>
+          </Flex>
+        </AppCard>
+
+        <AppCard className="basic-setting">
+          <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
+            <AppField label={'Network'} customWidth={'49%'}>
+              <Flex className="chain-app">
+                <Box className={getLogoChainByChainId(appInfo?.chain)} mr={3} />
+                <Box>{getNameChainByChainId(appInfo?.chain)}</Box>
+                <Box textTransform="capitalize" ml={2}>
+                  {appInfo?.network?.toLowerCase()}
+                </Box>
+              </Flex>
+            </AppField>
+            <AppField label={'Webhook URL'} customWidth={'49%'}>
+              <AppInput value={webhook?.webhook} isDisabled />
+            </AppField>
+          </Flex>
+          {_renderDetailWebhook()}
+        </AppCard>
 
         {isOpenModalDelete && (
           <ModalDeleteWebhook

@@ -522,17 +522,13 @@ const CreateWebhook = () => {
 
           {_renderFormWebhook()}
 
-          <Flex justifyContent={isMobile ? 'center' : 'flex-end'}>
+          <Flex className="box-btn-create">
             <AppButton
               disabled={
                 isDisableSubmit || appInfo.status === APP_STATUS.DISABLED
               }
               onClick={handleSubmitForm}
-              size={'md'}
-              mt={isMobile ? 2 : 5}
-              mb={isMobile ? 5 : 0}
-              px={8}
-              py={3}
+              size={'lg'}
             >
               Create webhook
             </AppButton>

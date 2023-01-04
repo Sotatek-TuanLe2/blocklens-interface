@@ -27,45 +27,41 @@ const WebhookDetail = () => {
     );
   }
 
-  const _renderHeading = () => {
-    return (
-      <Flex className="app-info">
-        <AppHeading
-          title={
-            isMobile
-              ? `wh: ${formatShortText(webhook?.registrationId)}`
-              : `Webhook: ${webhook?.registrationId}`
-          }
-          linkBack={`/apps/${appId}`}
-        />
-        <Flex>
-          <AppButton
-            size={'md'}
-            px={isMobile ? 2.5 : 4}
-            variant="cancel"
-            onClick={() => history.push(`/app/${appId}/webhooks/${webhookId}/settings`)}
-          >
-            <Box className="icon-settings" mr={isMobile ? 0 : 2} />
-            {isMobile ? '' : 'Setting'}
-          </AppButton>
-        </Flex>
-      </Flex>
-    );
-  };
-
   return (
     <BasePageContainer className="app-detail">
       <>
-        {_renderHeading()}
+        <Flex className="app-info">
+          <AppHeading
+            title={
+              isMobile
+                ? `wh: ${formatShortText(webhook?.registrationId)}`
+                : `Webhook: ${webhook?.registrationId}`
+            }
+            linkBack={`/apps/${appId}`}
+          />
+          <Flex>
+            <AppButton
+              size={'md'}
+              px={isMobile ? 2.5 : 4}
+              variant="cancel"
+              onClick={() =>
+                history.push(`/app/${appId}/webhooks/${webhookId}/settings`)
+              }
+            >
+              <Box className="icon-settings" />
+              {!isMobile && <Box ml={2}>Setting</Box>}
+            </AppButton>
+          </Flex>
+        </Flex>
 
-        <PartWebhookStats />
+        <Box className={'statics'}>
+          <PartWebhookStats />
+        </Box>
 
-        <PartRecentActivities
-          appInfo={appInfo}
-          webhook={webhook}
-        />
-
-        <PartWebhookGraph />
+        <PartRecentActivities appInfo={appInfo} webhook={webhook} />
+        <Box className={'user-graph'}>
+          <PartWebhookGraph />
+        </Box>
       </>
     </BasePageContainer>
   );

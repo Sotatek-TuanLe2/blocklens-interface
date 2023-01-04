@@ -7,8 +7,7 @@ import {
   TabPanels,
   Tabs,
 } from '@chakra-ui/react';
-import React, { useEffect, useState, useCallback } from 'react';
-import rf from 'src/requests/RequestFactory';
+import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router';
 import 'src/styles/pages/AppDetail.scss';
 import PartNFTWebhooks from './parts/PartNFTWebhooks';
@@ -150,48 +149,46 @@ const AppDetail = () => {
     );
   };
 
-  const _renderHeadingInfo = () => {
-    return (
-      <Flex className="app-info">
-        <AppHeading title={appInfo.name} linkBack={'/'} />
-
-        <Flex>
-          {!isMobile && (
-            <Flex alignItems={'center'} className="box-network">
-              <Box className={getLogoChainByChainId(appInfo.chain)} mr={2} />
-              <Box textTransform="capitalize">
-                {appInfo.network.toLowerCase()}
-              </Box>
-            </Flex>
-          )}
-
-          <AppButton
-            size={'md'}
-            px={isMobile ? 2.5 : 4}
-            variant="cancel"
-            onClick={() => history.push(`/apps/${appId}/settings`)}
-          >
-            <Box className="icon-settings" mr={isMobile ? 0 : 2} />
-            {isMobile ? '' : 'Setting'}
-          </AppButton>
-        </Flex>
-      </Flex>
-    );
-  };
-
   return (
     <BasePageContainer className="app-detail">
       <>
-        {_renderHeadingInfo()}
+        <Flex className="app-info">
+          <AppHeading title={appInfo.name} linkBack={'/'} />
 
-        <PartAppStatics
-          totalWebhookActive={appInfo?.totalRegistrationActive}
-          totalWebhook={appInfo?.totalRegistration}
-        />
+          <Flex>
+            {!isMobile && (
+              <Flex alignItems={'center'} className="box-network">
+                <Box className={getLogoChainByChainId(appInfo.chain)} mr={2} />
+                <Box textTransform="capitalize">
+                  {appInfo.network.toLowerCase()}
+                </Box>
+              </Flex>
+            )}
+
+            <AppButton
+              size={'md'}
+              px={isMobile ? 2.5 : 4}
+              variant="cancel"
+              onClick={() => history.push(`/apps/${appId}/settings`)}
+            >
+              <Box className="icon-settings" />
+              {!isMobile && <Box ml={2}>Setting</Box>}
+            </AppButton>
+          </Flex>
+        </Flex>
+
+        <Box className={'statics'}>
+          <PartAppStatics
+            totalWebhookActive={appInfo?.totalRegistrationActive}
+            totalWebhook={appInfo?.totalRegistration}
+          />
+        </Box>
 
         {_renderListWebhook()}
 
-        <PartAppGraph />
+        <Box className={'user-graph'}>
+          <PartAppGraph />
+        </Box>
       </>
     </BasePageContainer>
   );
