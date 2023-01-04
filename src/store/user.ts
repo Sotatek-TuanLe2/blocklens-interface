@@ -136,9 +136,7 @@ export const getUserProfile = createAsyncThunk(
   'user/getUserProfile',
   async (_params, thunkApi) => {
     const res = await rf.getRequest('UserRequest').getInfoUser();
-    thunkApi.dispatch(setUserId(res));
-    thunkApi.dispatch(setUserInfo(res));
-    thunkApi.dispatch(setUserPayment(res));
+    thunkApi.dispatch(setUserProfile(res));
   },
 );
 
@@ -164,6 +162,7 @@ export const setUserProfile = createAsyncThunk(
     thunkApi.dispatch(setUserId(user));
     thunkApi.dispatch(setUserInfo(user));
     thunkApi.dispatch(setUserPayment(user));
+    thunkApi.dispatch(setUserSettings(user));
   },
 );
 
