@@ -31,7 +31,7 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
         Activity!
         <AppButton
           isDisabled={isDisabledApp}
-          size={'md'}
+          size={'lg'}
           onClick={() =>
             history.push(
               `/create-webhook/${appInfo.appId}?type=${WEBHOOK_TYPES.CONTRACT_ACTIVITY}`,

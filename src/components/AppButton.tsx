@@ -1,7 +1,8 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, ReactNode } from 'react';
 import { Button, ButtonProps } from '@chakra-ui/react';
 import { mode } from '@chakra-ui/theme-tools';
 import { StyleProps } from '@chakra-ui/system';
+import { isMobile } from 'react-device-detect';
 
 export interface AppButtonProps extends ButtonProps {
   variant?:
@@ -27,6 +28,15 @@ const AppButton = forwardRef<HTMLButtonElement, AppButtonProps>(
     );
   },
 );
+
+export const AppButtonLarge = (props: AppButtonProps) => {
+  const { children, ...rest } = props;
+  return (
+    <AppButton size={isMobile ? 'sm' : 'lg'} px={6} {...rest}>
+      {children}
+    </AppButton>
+  );
+};
 
 export default AppButton;
 

@@ -7,16 +7,13 @@ import {
   AppField,
   AppInput,
   AppUploadABI,
+  AppButtonLarge,
   TYPE_ABI,
 } from 'src/components';
-import {
-  WEBHOOK_STATUS,
-  WEBHOOK_TYPES,
-} from 'src/utils/utils-webhook';
+import { WEBHOOK_STATUS, WEBHOOK_TYPES } from 'src/utils/utils-webhook';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import ModalDeleteWebhook from 'src/modals/ModalDeleteWebhook';
-import { isMobile } from 'react-device-detect';
 import { APP_STATUS } from 'src/utils/utils-app';
 import {
   getLogoChainByChainId,
@@ -120,7 +117,7 @@ const WebhookSettingsPage = () => {
   };
 
   return (
-    <BasePageContainer  className="app-detail">
+    <BasePageContainer className="app-detail">
       <>
         <Flex className="app-info">
           <AppHeading
@@ -153,13 +150,12 @@ const WebhookSettingsPage = () => {
               </Flex>
             </Flex>
 
-            <AppButton
+            <AppButtonLarge
               onClick={onUpdateStatus}
-              size={isMobile ? 'sm' : 'md'}
               isDisabled={appInfo.status === APP_STATUS.DISABLED}
             >
               {isActive ? 'Deactivate' : 'Activate'}
-            </AppButton>
+            </AppButtonLarge>
           </Flex>
         </AppCard>
 

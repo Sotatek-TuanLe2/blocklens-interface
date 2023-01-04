@@ -76,10 +76,7 @@ const AppDetail = () => {
           <Box>
             <AppButton
               size={'sm'}
-              px={4}
-              py={1}
               isDisabled={appInfo.status === APP_STATUS.DISABLED}
-              className={'btn-create'}
               onClick={() =>
                 history.push(`/create-webhook/${appInfo.appId}?type=${type}`)
               }
@@ -167,7 +164,6 @@ const AppDetail = () => {
 
             <AppButton
               size={'md'}
-              px={isMobile ? 2.5 : 4}
               variant="cancel"
               onClick={() => history.push(`/apps/${appId}/settings`)}
             >

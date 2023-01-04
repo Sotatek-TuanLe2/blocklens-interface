@@ -42,7 +42,6 @@ const WebhookDetail = () => {
           <Flex>
             <AppButton
               size={'md'}
-              px={isMobile ? 2.5 : 4}
               variant="cancel"
               onClick={() =>
                 history.push(`/app/${appId}/webhooks/${webhookId}/settings`)

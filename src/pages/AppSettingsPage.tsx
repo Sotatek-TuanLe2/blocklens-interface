@@ -15,6 +15,7 @@ import {
   AppHeading,
   AppInput,
   AppTextarea,
+  AppButtonLarge
 } from 'src/components';
 import ModalDeleteApp from 'src/modals/ModalDeleteApp';
 import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
@@ -26,7 +27,6 @@ import {
   getLogoChainByChainId,
   getNameChainByChainId,
 } from 'src/utils/utils-network';
-import { isMobile } from 'react-device-detect';
 import { useParams } from 'react-router';
 import { BasePageContainer } from 'src/layouts';
 import useAppDetails from 'src/hooks/useAppDetails';
@@ -107,14 +107,12 @@ const AppSettingsPage: FC<IAppSettings> = () => {
         <Flex justifyContent={'space-between'} alignItems={'center'}>
           <Box className="title-status">Basic Settings</Box>
 
-          <AppButton
-            size={isMobile ? 'sm' : 'md'}
+          <AppButtonLarge
             onClick={handleSubmitForm}
             isDisabled={isDisableSubmit}
-            className="btn-create"
           >
             Save
-          </AppButton>
+          </AppButtonLarge>
         </Flex>
 
         <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
@@ -203,12 +201,11 @@ const AppSettingsPage: FC<IAppSettings> = () => {
               </Flex>
             </Flex>
 
-            <AppButton
+            <AppButtonLarge
               onClick={() => setIsOpenChangeStatusAppModal(true)}
-              size={isMobile ? 'sm' : 'md'}
             >
               {isActive ? 'Deactivate' : 'Activate'}
-            </AppButton>
+            </AppButtonLarge>
           </Flex>
         </AppCard>
 
