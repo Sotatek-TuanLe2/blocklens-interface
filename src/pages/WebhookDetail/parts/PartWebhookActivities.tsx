@@ -353,7 +353,7 @@ const ActivityDesktop: FC<IActivity> = ({
   );
 };
 
-const PartRecentActivities: FC<IPartRecentActivities> = ({
+const PartWebhookActivities: FC<IPartRecentActivities> = ({
   webhook,
   appInfo,
 }) => {
@@ -551,4 +551,4 @@ const PartRecentActivities: FC<IPartRecentActivities> = ({
   );
 };
 
-export default PartRecentActivities;
+export default PartWebhookActivities;

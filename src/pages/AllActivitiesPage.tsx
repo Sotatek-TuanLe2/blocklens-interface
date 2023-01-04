@@ -4,7 +4,7 @@ import rf from 'src/requests/RequestFactory';
 import { useHistory, useParams } from 'react-router';
 import 'src/styles/pages/AppDetail.scss';
 import { BasePageContainer } from 'src/layouts';
-import { _renderStatus } from 'src/pages/WebhookDetail/parts/PartRecentActivities';
+import { _renderStatus } from 'src/pages/WebhookDetail/parts/PartWebhookActivities';
 import {
   IActivityResponse,
   IWebhook,

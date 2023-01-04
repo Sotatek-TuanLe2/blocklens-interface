@@ -8,7 +8,7 @@ import PartWebhookStats from './parts/PartWebhookStats';
 import { isMobile } from 'react-device-detect';
 import { formatShortText } from 'src/utils/utils-helper';
 import PartWebhookGraph from './parts/PartWebhookGraph';
-import PartRecentActivities from './parts/PartRecentActivities';
+import PartWebhookActivities from './parts/PartWebhookActivities';
 import useAppDetails from 'src/hooks/useAppDetails';
 import useWebhookDetails from 'src/hooks/useWebhook';
 
@@ -57,7 +57,8 @@ const WebhookDetail = () => {
           <PartWebhookStats />
         </Box>
 
-        <PartRecentActivities appInfo={appInfo} webhook={webhook} />
+        <PartWebhookActivities appInfo={appInfo} webhook={webhook} />
+
         <Box className={'user-graph'}>
           <PartWebhookGraph />
         </Box>
