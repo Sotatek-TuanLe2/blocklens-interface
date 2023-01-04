@@ -29,6 +29,7 @@ import {
 import { isMobile } from 'react-device-detect';
 import { useParams } from 'react-router';
 import { BasePageContainer } from 'src/layouts';
+import useAppDetails from '../hooks/useAppDetails';
 
 interface IAppSettings {
   onBack: () => void;
@@ -43,7 +44,8 @@ interface IDataForm {
 
 const AppSettingsPage: FC<IAppSettings> = () => {
   const { id: appId } = useParams<{ id: string }>();
-  const [appInfo, setAppInfo] = useState<any>({});
+  const { appInfo, getAppInfo } = useAppDetails(appId);
+
   const initData = {
     name: appInfo?.name,
     description: appInfo?.description,
@@ -62,21 +64,6 @@ const AppSettingsPage: FC<IAppSettings> = () => {
     () => appInfo.status === APP_STATUS.ENABLE,
     [appInfo],
   );
-
-  const getAppInfo = useCallback(async () => {
-    try {
-      const res = (await rf
-        .getRequest('AppRequest')
-        .getAppDetail(appId)) as any;
-      setAppInfo(res);
-    } catch (error: any) {
-      setAppInfo({});
-    }
-  }, [appId]);
-
-  useEffect(() => {
-    getAppInfo().then();
-  }, []);
 
   useEffect(() => {
     const isDisabled = !validator.current.allValid();

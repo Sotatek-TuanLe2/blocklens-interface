@@ -24,6 +24,7 @@ import PartAppGraph from './parts/PartAppGraph';
 import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/store';
+import useAppDetails from '../../hooks/useAppDetails';
 
 const AppDetail = () => {
   const {
@@ -34,12 +35,12 @@ const AppDetail = () => {
     },
   } = useSelector((state: RootState) => state.user);
 
-  const [appInfo, setAppInfo] = useState<any>({});
   const [type, setType] = useState<string>(WEBHOOK_TYPES.NFT_ACTIVITY);
   const [defaultTab, setDefaultTab] = useState(0);
   const history = useHistory();
 
   const { id: appId } = useParams<{ id: string }>();
+  const { appInfo } = useAppDetails(appId);
 
   const getActiveTab = () => {
     const tabs = [
@@ -50,21 +51,6 @@ const AppDetail = () => {
     const tabHasWebhook = tabs.find((item) => item > 0);
     return tabHasWebhook ? tabs.indexOf(tabHasWebhook) : 0;
   };
-
-  const getAppInfo = useCallback(async () => {
-    try {
-      const res = (await rf
-        .getRequest('AppRequest')
-        .getAppDetail(appId)) as any;
-      setAppInfo(res);
-    } catch (error: any) {
-      setAppInfo({});
-    }
-  }, [appId]);
-
-  useEffect(() => {
-    getAppInfo().then();
-  }, []);
 
   useEffect(() => {
     const activeTab = getActiveTab();

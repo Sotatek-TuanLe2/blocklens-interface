@@ -34,6 +34,7 @@ import { useLocation } from 'react-router';
 import { DownloadIcon } from 'src/assets/icons';
 import { useDispatch } from 'react-redux';
 import { getUserStats } from '../../store/user';
+import useAppDetails from '../../hooks/useAppDetails';
 
 const FILE_CSV_EXAMPLE = '/abi/CSV_Example.csv';
 
@@ -75,7 +76,7 @@ const CreateWebhook = () => {
   };
 
   const history = useHistory();
-  const [appInfo, setAppInfo] = useState<any>({});
+  const { appInfo } = useAppDetails(appId);
   const [dataForm, setDataForm] = useState<IDataForm>(initDataCreateWebHook);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
   const [type, setType] = useState<string>(WEBHOOK_TYPES.NFT_ACTIVITY);
@@ -112,21 +113,6 @@ const CreateWebhook = () => {
       setType(typeParams);
     }
   }, [appInfo, typeParams]);
-
-  const getAppInfo = useCallback(async () => {
-    try {
-      const res = (await rf
-        .getRequest('AppRequest')
-        .getAppDetail(appId)) as any;
-      setAppInfo(res);
-    } catch (error: any) {
-      setAppInfo({});
-    }
-  }, [appId]);
-
-  useEffect(() => {
-    getAppInfo().then();
-  }, []);
 
   const validator = useRef(
     createValidator({

@@ -28,41 +28,16 @@ import { getUserStats } from 'src/store/user';
 import { useParams } from 'react-router';
 import { AppHeading } from '../components';
 import { BasePageContainer } from 'src/layouts';
+import useAppDetails from '../hooks/useAppDetails';
+import useWebhookDetails from '../hooks/useWebhook';
 
 const WebhookSettingsPage = () => {
-  const [webhook, setWebhook] = useState<IWebhook | any>({});
-  const [appInfo, setAppInfo] = useState<any>({});
   const { appId, id: webhookId } = useParams<{ appId: string; id: string }>();
   const [isOpenModalDelete, setIsOpenModalDelete] = useState<boolean>(false);
 
   const dispatch = useDispatch();
-
-  const getAppInfo = useCallback(async () => {
-    try {
-      const res = (await rf
-        .getRequest('AppRequest')
-        .getAppDetail(appId)) as any;
-      setAppInfo(res);
-    } catch (error: any) {
-      setAppInfo({});
-    }
-  }, [appId]);
-
-  const getWebhookInfo = useCallback(async () => {
-    try {
-      const res = (await rf
-        .getRequest('RegistrationRequest')
-        .getRegistration(appId, webhookId)) as any;
-      setWebhook(res);
-    } catch (error: any) {
-      setWebhook({});
-    }
-  }, [webhookId]);
-
-  useEffect(() => {
-    getWebhookInfo().then();
-    getAppInfo().then();
-  }, []);
+  const { appInfo } = useAppDetails(appId);
+  const { webhook, getWebhookInfo } = useWebhookDetails(appId, webhookId);
 
   const isActive = useMemo(
     () => webhook?.status === WEBHOOK_STATUS.ENABLE,

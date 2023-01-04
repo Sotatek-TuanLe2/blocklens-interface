@@ -17,6 +17,7 @@ import { isMobile } from 'react-device-detect';
 import MessagesItemMobile from './parts/MessagesItemMobile';
 import { filterParams } from 'src/utils/utils-helper';
 import ModalFilterActivities from 'src/modals/ModalFilterActivities';
+import useWebhookDetails from 'src/hooks/useWebhook';
 
 const MessagesHistory = () => {
   const {
@@ -34,23 +35,9 @@ const MessagesHistory = () => {
   const [txHash, setTxHash] = useState<string>('');
   const [tokenId, setTokenId] = useState<string>('');
   const [address, setAddress] = useState<string>('');
-  const [webhook, setWebhook] = useState<IWebhook | any>({});
   const [isOpenFilterModal, setIsOpenFilterModal] = useState<boolean>(false);
 
-  const getWebhookInfo = useCallback(async () => {
-    try {
-      const res = (await rf
-        .getRequest('RegistrationRequest')
-        .getRegistration(appId, webhookId)) as any;
-      setWebhook(res);
-    } catch (error: any) {
-      setWebhook({});
-    }
-  }, [webhookId]);
-
-  useEffect(() => {
-    getWebhookInfo().then();
-  }, []);
+  const { webhook } = useWebhookDetails(appId, webhookId);
 
   const fetchDataTable: any = useCallback(async (params: any) => {
     try {

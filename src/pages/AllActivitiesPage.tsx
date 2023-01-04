@@ -33,6 +33,8 @@ import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { InfoIcon, LinkDetail, LinkIcon, RetryIcon } from 'src/assets/icons';
 import { getBlockExplorerUrl } from 'src/utils/utils-network';
 import { IAppResponse } from 'src/utils/utils-app';
+import useAppDetails from 'src/hooks/useAppDetails';
+import useWebhookDetails from 'src/hooks/useWebhook';
 
 interface IActivity {
   activity: IActivityResponse;
@@ -354,38 +356,12 @@ const AllActivitiesPage = () => {
   const [tokenId, setTokenId] = useState<string>('');
   const [address, setAddress] = useState<string>('');
   const [isOpenFilterModal, setIsOpenFilterModal] = useState<boolean>(false);
-  const [webhook, setWebhook] = useState<IWebhook | any>({});
-  const [appInfo, setAppInfo] = useState<any>({});
   const { appId, id: webhookId } = useParams<{ appId: string; id: string }>();
   const [, updateState] = useState<any>();
   const forceUpdate = useCallback(() => updateState({}), []);
 
-  const getAppInfo = useCallback(async () => {
-    try {
-      const res = (await rf
-        .getRequest('AppRequest')
-        .getAppDetail(appId)) as any;
-      setAppInfo(res);
-    } catch (error: any) {
-      setAppInfo({});
-    }
-  }, [appId]);
-
-  const getWebhookInfo = useCallback(async () => {
-    try {
-      const res = (await rf
-        .getRequest('RegistrationRequest')
-        .getRegistration(appId, webhookId)) as any;
-      setWebhook(res);
-    } catch (error: any) {
-      setWebhook({});
-    }
-  }, [webhookId]);
-
-  useEffect(() => {
-    getWebhookInfo().then();
-    getAppInfo().then();
-  }, []);
+  const { appInfo } = useAppDetails(appId);
+  const { webhook } = useWebhookDetails(appId, webhookId);
 
   const fetchDataTable: any = useCallback(async (params: any) => {
     try {
