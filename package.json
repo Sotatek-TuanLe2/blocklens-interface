@@ -66,7 +66,11 @@
     "typescript": "^4.4.2",
     "web-vitals": "^2.1.0",
     "web3": "^1.8.0",
-    "yarn": "^1.22.18"
+    "yarn": "^1.22.18",
+    "@types/react-text-mask": "^5.4.11",
+    "@types/text-mask-addons": "^3.8.1",
+    "react-text-mask": "^5.5.0",
+    "text-mask-addons": "^3.8.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -79,7 +83,7 @@
     "docker-init": "docker-compose up -d && docker exec -it buni-lens-interface npm i && npm run build",
     "docker-build": "docker-compose up -d && docker exec -it buni-lens-interface npm run build",
     "docker-start": "docker-compose up -d && docker exec -it buni-lens-interface npm run start",
-    "pre-commit": "npm run lint && npm run format"
+    "docker-eslint": "docker-compose up -d && docker exec -t buni-lens-interface npm run lint && npm run format"
   },
   "eslintConfig": {
     "extends": [
