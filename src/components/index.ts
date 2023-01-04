@@ -20,6 +20,7 @@ export * from './AppButton';
 export * from './AppDataTable';
 export * from './AppField';
 export * from './AppInput';
+export * from './AppCurrencyInput';
 export * from './AppLink';
 export * from './AppPagination';
 export * from './AppRadio';

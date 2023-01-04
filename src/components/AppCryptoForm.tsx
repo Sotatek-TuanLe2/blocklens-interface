@@ -1,5 +1,5 @@
-import React, { FC, useMemo, useRef } from 'react';
-import { Box, Flex, Text } from '@chakra-ui/react';
+import React, { FC, useMemo } from 'react';
+import { Box, Flex } from '@chakra-ui/react';
 import { isMobile } from 'react-device-detect';
 import useWallet from 'src/hooks/useWallet';
 import 'src/styles/components/AppCryptoForm.scss';
@@ -11,7 +11,7 @@ import AppInput from './AppInput';
 import AppSelect2 from './AppSelect2';
 import config from 'src/config';
 import { getChainConfig, getNetworkByEnv } from 'src/utils/utils-network';
-import { createValidator } from '../utils/utils-validator';
+import AppCurrencyInput from './AppCurrencyInput';
 
 interface IAppCryptoForm {
   currencyAddress: string;
@@ -25,13 +25,6 @@ const AppCryptoForm: FC<IAppCryptoForm> = (props) => {
   const { user } = useUser();
   const { currencyAddress, amount, onChangeCurrencyAddress, onChangeAmount } =
     props;
-  const validators = useRef(
-    createValidator({
-      element: (message: string) => (
-        <Text className="text-error">{message}</Text>
-      ),
-    }),
-  );
 
   const AMOUNT_OPTIONS = [300, 500, 1000];
 
@@ -119,41 +112,33 @@ const AppCryptoForm: FC<IAppCryptoForm> = (props) => {
               />
             </AppField>
           </Box>
-          <AppField label={'Amount'} customWidth={'49.5%'}>
-            <AppInput
-              size="lg"
-              placeholder="0"
-              min={'0'}
-              type={'number'}
-              value={amount}
-              onKeyDown={(e) =>
-                ['e', 'E', '+', '-'].includes(e.key) && e.preventDefault()
-              }
-              onChange={(e) => {
-                onChangeAmount(e.target.value.trim());
-              }}
-              validate={{
-                name: `amount`,
-                validator: validators.current,
-                rule: ['isPositive'],
-              }}
-              endAdornment={
-                <Flex className="amount-options">
-                  {AMOUNT_OPTIONS.map((item: number, index: number) => {
-                    return (
-                      <Box
-                        className={`amount-option ${
-                          +amount === item ? 'active' : ''
-                        }`}
-                        key={index}
-                        onClick={() => onChangeAmount(item.toString())}
-                      >
-                        {item}
-                      </Box>
-                    );
-                  })}
-                </Flex>
-              }
+          <AppField label={'Amount'}>
+            <AppCurrencyInput
+              onChange={(e) => onChangeAmount(e.target.value.trim())}
+              render={(ref, props) => (
+                <AppInput
+                  ref={ref}
+                  value={amount}
+                  {...props}
+                  endAdornment={
+                    <Flex className="amount-options">
+                      {AMOUNT_OPTIONS.map((item: number, index: number) => {
+                        return (
+                          <Box
+                            className={`amount-option ${
+                              +amount === item ? 'active' : ''
+                            }`}
+                            key={index}
+                            onClick={() => onChangeAmount(item.toString())}
+                          >
+                            {item}
+                          </Box>
+                        );
+                      })}
+                    </Flex>
+                  }
+                />
+              )}
             />
           </AppField>
         </Flex>
