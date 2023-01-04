@@ -258,8 +258,12 @@ const Pricing = () => {
                   )}
                   <div className="name-package">{item.NAME}</div>
                   <div className="price-package-wrap">
-                    {item.PRICE !== '0' && <div className="currency-package">$</div>}
-                    <div className="price-package">{item.PRICE === '0' ? 'Free' : item.PRICE}</div>
+                    {item.PRICE !== '0' && (
+                      <div className="currency-package">$</div>
+                    )}
+                    <div className="price-package">
+                      {item.PRICE === '0' ? 'Free' : item.PRICE}
+                    </div>
                     {item.PRICE !== '0' ? (
                       <div className="time-package">/mo</div>
                     ) : (
