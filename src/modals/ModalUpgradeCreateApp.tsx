@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from 'src/store';
 import { isMobile } from 'react-device-detect';
 import { MetadataPlan } from 'src/store/metadata';
+import useUser from 'src/hooks/useUser';
 
 interface ModalUpgradeCreateApp {
   open: boolean;
@@ -18,10 +19,10 @@ const ModalUpgradeCreateApp: FC<ModalUpgradeCreateApp> = ({
   onClose,
 }) => {
   const history = useHistory();
+  const { user } = useUser();
   const { plans } = useSelector((state: RootState) => state.metadata);
-  const { billing: { plan: myPlan } } = useSelector((state: RootState) => state.user);
   const indexMyPlan = plans.findIndex(
-    (item: MetadataPlan) => item.code === myPlan?.code,
+    (item: MetadataPlan) => item.code === user?.getPlan().code,
   );
   const nextPlan = plans[indexMyPlan + 1];
 
@@ -35,7 +36,7 @@ const ModalUpgradeCreateApp: FC<ModalUpgradeCreateApp> = ({
       onClose={onClose}
     >
       <Box className={'modal__description'}>
-        You can only create {myPlan?.appLimitation} active apps in your current
+        You can only create {user?.getPlan().appLimitation} active apps in your current
         plan, upgrade to{' '}
         <Box as={'span'} textTransform="lowercase">
           {nextPlan?.name}

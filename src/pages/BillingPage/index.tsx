@@ -154,9 +154,6 @@ const BillingPage = () => {
   const { plans: billingPlans } = useSelector(
     (state: RootState) => state.metadata,
   );
-  const { billing: { plan: currentPlan } } = useSelector(
-    (state: RootState) => state.user,
-  );
   const { user } = useUser();
   const dispatch = useDispatch();
   const history = useHistory();
@@ -166,8 +163,10 @@ const BillingPage = () => {
   }, [user?.getActivePaymentMethod()]);
 
   useEffect(() => {
-    setPlanSelected(currentPlan);
-  }, [currentPlan]);
+    if (user) {
+      setPlanSelected(user.getPlan());
+    }
+  }, [user?.getPlan()]);
 
   useEffect(() => {
     const RELOAD_BALANCE_DURATION = 30;
@@ -192,10 +191,10 @@ const BillingPage = () => {
   }, [user?.getBalance(), planSelected]);
 
   const isCurrentPlan = new BigNumber(planSelected.price).isEqualTo(
-    new BigNumber(currentPlan.price),
+    new BigNumber(user?.getPlan().price || 0),
   );
   const isDownGrade = new BigNumber(planSelected.price).isLessThan(
-    new BigNumber(currentPlan.price),
+    new BigNumber(user?.getPlan().price || 0),
   );
 
   const _renderPlansDesktop = () => {
@@ -203,7 +202,7 @@ const BillingPage = () => {
       return (
         <Tbody>
           {billingPlans?.map((plan: MetadataPlan, index: number) => {
-            const isCurrentPlan = plan.code === currentPlan.code;
+            const isCurrentPlan = plan.code === user?.getPlan().code;
             const isActivePlan = planSelected.code === plan.code;
             return (
               <Tr
@@ -264,6 +263,9 @@ const BillingPage = () => {
   };
 
   const _renderPlansMobile = () => {
+    if (!user) {
+      return null;
+    }
     return (
       <Box className="list-card-mobile">
         {billingPlans?.map((plan: MetadataPlan, index: number) => {
@@ -271,7 +273,7 @@ const BillingPage = () => {
             <PlanMobile
               plan={plan}
               key={index}
-              currentPlan={currentPlan}
+              currentPlan={user.getPlan()}
               planSelected={planSelected}
               onSelect={setPlanSelected}
             />
@@ -412,7 +414,7 @@ const BillingPage = () => {
               mr={10}
               ml={isMobile ? 5 : 0}
               mb={isMobile ? 5 : 0}
-              isDisabled={currentPlan.price === 0}
+              isDisabled={user?.getPlan().price === 0}
               variant="cancel"
               size="sm"
               onClick={() => setIsOpenCancelSubscriptionModal(true)}

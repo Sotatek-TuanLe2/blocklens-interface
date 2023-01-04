@@ -5,8 +5,7 @@ import { useParams } from 'react-router';
 import { ListStat } from 'src/pages/HomePage/parts/PartUserStats';
 import moment from 'moment';
 import { formatLargeNumber } from 'src/utils/utils-helper';
-import { useSelector } from 'react-redux';
-import { RootState } from 'src/store';
+import useUser from 'src/hooks/useUser';
 
 interface IAppStats {
   message?: number;
@@ -46,9 +45,7 @@ const PartAppStats = ({
   const [appStats, setAppStats] = useState<IAppStats | any>({});
   const [dataChart, setDataChart] = useState<IAppStats[] | any>([]);
   const { id: appId } = useParams<{ id: string }>();
-  const { billing: { plan: currentPlan } } = useSelector(
-    (state: RootState) => state.user,
-  );
+  const { user } = useUser();
 
   const getAppStatsToday = useCallback(async () => {
     try {
@@ -93,7 +90,7 @@ const PartAppStats = ({
           ...item,
           value: getValue(
             +appStats.message,
-            currentPlan?.notificationLimitation,
+            user?.getPlan().notificationLimitation,
           ),
         };
       }

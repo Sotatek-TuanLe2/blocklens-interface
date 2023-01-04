@@ -1,12 +1,11 @@
 import { Box, SimpleGrid } from '@chakra-ui/react';
-import React, { useCallback, useEffect, useMemo, useState, FC } from 'react';
+import { useCallback, useEffect, useMemo, useState, FC } from 'react';
 import { isMobile } from 'react-device-detect';
 import AppStatistical, { keyStats } from 'src/components/AppStatistical';
 import rf from 'src/requests/RequestFactory';
 import moment from 'moment';
-import { useSelector } from 'react-redux';
-import { RootState } from 'src/store';
 import { formatLargeNumber } from 'src/utils/utils-helper';
+import useUser from 'src/hooks/useUser';
 
 interface IUserStats {
   message?: number;
@@ -105,9 +104,7 @@ const PartUserStats = ({
 }) => {
   const [userStatsToday, setUserStatsToday] = useState<IUserStats | any>({});
   const [dataChart, setDataChart] = useState<IUserStats[] | any>([]);
-  const { billing: { plan: currentPlan } } = useSelector(
-    (state: RootState) => state.user,
-  );
+  const { user } = useUser();
 
   const getUserStatsToday = useCallback(async () => {
     try {
@@ -152,7 +149,7 @@ const PartUserStats = ({
           ...item,
           value: getValue(
             +userStatsToday.message,
-            currentPlan?.notificationLimitation,
+            user?.getPlan().notificationLimitation,
           ),
         };
       }

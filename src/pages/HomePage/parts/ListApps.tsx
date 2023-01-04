@@ -8,11 +8,10 @@ import {
   getLogoChainByChainId,
   getNameChainByChainId,
 } from 'src/utils/utils-network';
-import { useSelector } from 'react-redux';
-import { RootState } from 'src/store';
 import ModalUpgradeCreateApp from 'src/modals/ModalUpgradeCreateApp';
 import { isMobile } from 'react-device-detect';
 import ModalCreateApp from '../../../modals/ModalCreateApp';
+import useUser from 'src/hooks/useUser';
 
 interface IAppMobile {
   app: IAppResponse;
@@ -105,7 +104,9 @@ const AppMobile: FC<IAppMobile> = ({ app }) => {
 
 const ListApps: React.FC = () => {
   const history = useHistory();
-  const { stats: { totalApp, totalAppActive }, billing: { plan: myPlan } } = useSelector((state: RootState) => state.user);
+  const { user } = useUser();
+  const userPlan = user?.getPlan();
+  const userStats = user?.getStats();
 
   const [openCreateApp, setOpenCreateApp] = useState(false);
 
@@ -169,7 +170,7 @@ const ListApps: React.FC = () => {
 
   const _renderModalCreateApp = () => {
     const isLimitApp =
-      myPlan?.appLimitation && !!totalApp && totalApp >= myPlan?.appLimitation;
+      userPlan?.appLimitation && !!userStats?.totalApp && userStats?.totalApp >= userPlan?.appLimitation;
     return isLimitApp ? (
       <ModalUpgradeCreateApp
         open={openCreateApp}
@@ -250,7 +251,7 @@ const ListApps: React.FC = () => {
   const _renderTotalApp = () => {
     return (
       <Box className="number-app">
-        <Text as={'span'}>Active Apps:</Text> {totalAppActive}/{totalApp}
+        <Text as={'span'}>Active Apps:</Text> {userStats?.totalAppActive}/{userStats?.totalApp}
       </Box>
     );
   };

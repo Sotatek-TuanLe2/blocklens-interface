@@ -7,7 +7,7 @@ import {
   TabPanels,
   Tabs,
 } from '@chakra-ui/react';
-import React, { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import rf from 'src/requests/RequestFactory';
 import { useHistory, useParams } from 'react-router';
 import 'src/styles/pages/AppDetail.scss';
@@ -23,33 +23,26 @@ import { isMobile } from 'react-device-detect';
 import { APP_STATUS } from 'src/utils/utils-app';
 import PartAppGraph from './parts/PartAppGraph';
 import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../store';
+import useUser from 'src/hooks/useUser';
 
 const AppDetail = () => {
-  const {
-    stats: {
-      numberOfAddressActivities,
-      numberOfContractActivities,
-      numberOfNftActivities,
-    },
-  } = useSelector((state: RootState) => state.user);
-
   const [appInfo, setAppInfo] = useState<any>({});
   const [isShowSetting, setIsShowSetting] = useState<boolean>(false);
   const [type, setType] = useState<string>(WEBHOOK_TYPES.NFT_ACTIVITY);
   const [defaultTab, setDefaultTab] = useState(0);
   const history = useHistory();
+  const { user } = useUser();
+  const userStats = user?.getStats();
 
   const { id: appId } = useParams<{ id: string }>();
 
   const getActiveTab = () => {
     const tabs = [
-      numberOfNftActivities,
-      numberOfAddressActivities,
-      numberOfContractActivities,
+      userStats?.numberOfNftActivities,
+      userStats?.numberOfAddressActivities,
+      userStats?.numberOfContractActivities,
     ];
-    const tabHasWebhook = tabs.find((item) => item > 0);
+    const tabHasWebhook = tabs.find((item) => item && item > 0);
     return tabHasWebhook ? tabs.indexOf(tabHasWebhook) : 0;
   };
 
@@ -72,9 +65,9 @@ const AppDetail = () => {
     const activeTab = getActiveTab();
     setDefaultTab(activeTab);
   }, [
-    numberOfContractActivities,
-    numberOfAddressActivities,
-    numberOfNftActivities,
+    userStats?.numberOfContractActivities,
+    userStats?.numberOfAddressActivities,
+    userStats?.numberOfNftActivities,
   ]);
 
   if (!appInfo || !Object.values(appInfo).length) {
