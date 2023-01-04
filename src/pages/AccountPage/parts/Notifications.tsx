@@ -1,27 +1,27 @@
-import React, { FC, useState } from 'react';
+import { useState } from 'react';
 import 'src/styles/pages/AccountPage.scss';
 import { AppCard } from 'src/components';
 import { Box, Checkbox, Flex } from '@chakra-ui/react';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from 'src/store';
+import { useDispatch } from 'react-redux';
 import { EditIcon } from 'src/assets/icons';
 import rf from 'src/requests/RequestFactory';
-import { getInfoUser } from 'src/store/auth';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import ModalEditReceiveEmail from 'src/modals/ModalEditReceiveEmail';
+import { getUserProfile } from 'src/store/user-2';
+import useUser from 'src/hooks/useUser';
 
 const Notifications = () => {
   const [isOpenEditReceiveEmailModal, setIsOpenEditReceiveEmailModal] =
     useState<boolean>(false);
-  const { userInfo } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch<any>();
+  const { user } = useUser();
 
   const updateNotificationFlag = async () => {
     try {
       await rf.getRequest('UserRequest').updateNotificationFlag({
-        notificationEnabled: !userInfo.notificationEnabled,
+        notificationEnabled: !user?.getNotificationEnabled(),
       });
-      dispatch(getInfoUser());
+      dispatch(getUserProfile());
       toastSuccess({ message: 'Successfully' });
     } catch (error: any) {
       toastError({
@@ -40,7 +40,7 @@ const Notifications = () => {
         <Flex>
           <Checkbox
             size="lg"
-            isChecked={userInfo.notificationEnabled}
+            isChecked={user?.getNotificationEnabled()}
             mr={3}
             onChange={updateNotificationFlag}
           />
@@ -53,8 +53,8 @@ const Notifications = () => {
           justifyContent={'space-between'}
           mt={2.5}
         >
-          <Box className="email">Receive Email: {userInfo?.billingEmail}</Box>
-          {userInfo.notificationEnabled && (
+          <Box className="email">Receive Email: {user?.getBillingEmail()}</Box>
+          {user?.getNotificationEnabled() && (
             <Box
               className="btn-edit"
               onClick={() => setIsOpenEditReceiveEmailModal(true)}

@@ -1,12 +1,12 @@
 import { Box, Flex } from '@chakra-ui/react';
-import React, { FC } from 'react';
+import { FC } from 'react';
 import BaseModal from './BaseModal';
 import { useHistory } from 'react-router';
 import AppButton from 'src/components/AppButton';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/store';
-import { IPlan } from 'src/store/billing';
 import { isMobile } from 'react-device-detect';
+import { MetadataPlan } from 'src/store/metadata';
 
 interface ModalUpgradeCreateApp {
   open: boolean;
@@ -18,9 +18,10 @@ const ModalUpgradeCreateApp: FC<ModalUpgradeCreateApp> = ({
   onClose,
 }) => {
   const history = useHistory();
-  const { myPlan, plans } = useSelector((state: RootState) => state.billing);
+  const { plans } = useSelector((state: RootState) => state.metadata);
+  const { billing: { plan: myPlan } } = useSelector((state: RootState) => state.user2);
   const indexMyPlan = plans.findIndex(
-    (item: IPlan) => item.code === myPlan?.code,
+    (item: MetadataPlan) => item.code === myPlan?.code,
   );
   const nextPlan = plans[indexMyPlan + 1];
 

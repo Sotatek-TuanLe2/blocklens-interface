@@ -105,12 +105,7 @@ const AppMobile: FC<IAppMobile> = ({ app }) => {
 
 const ListApps: React.FC = () => {
   const history = useHistory();
-  const {
-    billing: { myPlan },
-    user: {
-      stats: { totalApp, totalAppActive },
-    },
-  } = useSelector((state: RootState) => state);
+  const { stats: { totalApp, totalAppActive }, billing: { plan: myPlan } } = useSelector((state: RootState) => state.user2);
 
   const [openCreateApp, setOpenCreateApp] = useState(false);
 

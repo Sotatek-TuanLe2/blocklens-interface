@@ -8,19 +8,24 @@ type ReturnType = {
 };
 
 const useUser = (): ReturnType => {
-  const { userInfo } = useSelector((state: RootState) => state.auth);
+  const { userId, info, billing, settings } = useSelector((state: RootState) => state.user2);
   const {
-    userId,
-    balance,
-    email,
     billingEmail,
+    email,
     firstName,
     lastName,
-    isEmailVerified,
-    walletAddress,
-    isPaymentMethodIntegrated,
-    stripePaymentMethod,
-  } = userInfo;
+    isEmailVerified
+  } = info;
+  const {
+    payment: {
+      balance,
+      isPaymentMethodIntegrated,
+      stripePaymentMethod,
+      walletAddress,
+      activePaymentMethod
+    }
+  } = billing;
+  const { notificationEnabled } = settings;
 
   const user = useMemo(() => {
     if (!userId) {
@@ -36,6 +41,8 @@ const useUser = (): ReturnType => {
     newUser.setIsPaymentMethodIntegrated(!!isPaymentMethodIntegrated);
     newUser.setLinkedAddress(walletAddress || '');
     newUser.setStripePayment(stripePaymentMethod);
+    newUser.setNotificationEnabled(!!notificationEnabled);
+    newUser.setActivePaymentMethod(activePaymentMethod);
     return newUser;
   }, [
     userId,
@@ -48,6 +55,8 @@ const useUser = (): ReturnType => {
     walletAddress,
     stripePaymentMethod,
     isPaymentMethodIntegrated,
+    notificationEnabled,
+    activePaymentMethod
   ]);
 
   return { user };

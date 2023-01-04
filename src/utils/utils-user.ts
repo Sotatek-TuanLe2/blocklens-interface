@@ -14,6 +14,8 @@ export interface UserInterface {
   linkedAddress: string;
   stripePayment: StripePayment;
   isPaymentMethodIntegrated: boolean;
+  notificationEnabled: boolean;
+  activePaymentMethod: string;
 
   setId: (id: string) => void;
   setBalance: (balance: string) => void;
@@ -25,6 +27,8 @@ export interface UserInterface {
   setIsPaymentMethodIntegrated: (isPaymentMethodIntegrated: boolean) => void;
   setLinkedAddress: (linkedAddress: string) => void;
   setStripePayment: (stripePayment: StripePayment) => void;
+  setNotificationEnabled: (notificationEnabled: boolean) => void;
+  setActivePaymentMethod: (activePaymentMethod: string) => void;
   getId: () => string;
   getBalance: () => string;
   getBillingEmail: () => string;
@@ -32,8 +36,11 @@ export interface UserInterface {
   getFirstName: () => string;
   getLastName: () => string;
   getIsEmailVerified: () => boolean;
+  getIsPaymentMethodIntegrated: () => boolean;
   getLinkedAddress: () => string;
   getStripePayment: () => StripePayment;
+  getNotificationEnabled: () => boolean;
+  getActivePaymentMethod: () => string;
   isUserLinked: () => boolean;
   isUserStriped: () => boolean;
 }
@@ -53,6 +60,8 @@ export class User implements UserInterface {
     id: '',
     livemode: false,
   };
+  public notificationEnabled = false;
+  public activePaymentMethod = '';
 
   constructor(id: string) {
     this.id = id;
@@ -98,6 +107,14 @@ export class User implements UserInterface {
     this.stripePayment = stripePayment;
   }
 
+  setNotificationEnabled(notificationEnabled: boolean): void {
+    this.notificationEnabled = notificationEnabled;
+  }
+
+  setActivePaymentMethod(activePaymentMethod: string): void {
+    this.activePaymentMethod = activePaymentMethod;
+  }
+
   getId(): string {
     return this.id;
   }
@@ -126,12 +143,24 @@ export class User implements UserInterface {
     return this.isEmailVerified;
   }
 
+  getIsPaymentMethodIntegrated(): boolean {
+    return this.isPaymentMethodIntegrated;
+  }
+
   getLinkedAddress(): string {
     return this.linkedAddress;
   }
 
   getStripePayment(): StripePayment {
     return this.stripePayment;
+  }
+
+  getNotificationEnabled(): boolean {
+    return this.notificationEnabled;
+  }
+
+  getActivePaymentMethod(): string {
+    return this.activePaymentMethod;
   }
 
   isUserLinked(): boolean {

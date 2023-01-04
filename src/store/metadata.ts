@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import rf from 'src/requests/RequestFactory';
 
-export type MetadataPlans = {
+export type MetadataPlan = {
   code: string;
   name: string;
   description: string;
@@ -11,12 +11,19 @@ export type MetadataPlans = {
 }
 
 export type MetadataState = {
-  plans: MetadataPlans[];
+  plans: MetadataPlan[];
 };
 
 const initialState: MetadataState = {
   plans: []
 };
+
+export const initMetadata = createAsyncThunk(
+  'metadata/init',
+  async (_params, thunkApi) => {
+    thunkApi.dispatch(getMetadataPlans());
+  },
+);
 
 export const getMetadataPlans = createAsyncThunk(
   'metadata/getPlans',

@@ -121,7 +121,7 @@ export const getUser = createAsyncThunk(
 )
 
 export const getUserProfile = createAsyncThunk(
-  'user/getUserInfo',
+  'user/getUserProfile',
   async (_params, thunkApi) => {
     const res = await rf.getRequest('UserRequest').getInfoUser();
     thunkApi.dispatch(setUserId(res));
@@ -143,6 +143,15 @@ export const getUserPlan = createAsyncThunk(
   async (_params, thunkApi) => {
     const res = await rf.getRequest('BillingRequest').getCurrentPlan();
     thunkApi.dispatch(setUserPlan(res));
+  },
+);
+
+export const setUserProfile = createAsyncThunk(
+  'user/setUserProfile',
+  async (user: any, thunkApi) => {
+    thunkApi.dispatch(setUserId(user));
+    thunkApi.dispatch(setUserInfo(user));
+    thunkApi.dispatch(setUserPayment(user));
   },
 );
 
@@ -199,6 +208,11 @@ const userSlice = createSlice({
     setUserSettings: (state, action) => {
       const { notificationEnabled } = action.payload;
       state.settings = { notificationEnabled };
+    },
+    clearUser: () => {
+      setAuthorizationToRequest(null);
+      Storage.logout();
+      return initialState;
     }
   }
 });
@@ -210,7 +224,8 @@ export const {
   setUserStats,
   setUserPlan,
   setUserPayment,
-  setUserSettings
+  setUserSettings,
+  clearUser
 } = userSlice.actions;
 
 export default userSlice.reducer;

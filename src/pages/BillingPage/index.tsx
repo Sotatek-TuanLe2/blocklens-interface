@@ -7,14 +7,13 @@ import {
   Table,
   TableContainer,
 } from '@chakra-ui/react';
-import React, { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import BigNumber from 'bignumber.js';
 import 'src/styles/pages/BillingPage.scss';
 import { BasePageContainer } from 'src/layouts';
 import { AppButton, AppCard, AppLink } from 'src/components';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'src/store';
-import { getMyPlan, IPlan } from 'src/store/billing';
 import {
   CheckedIcon,
   RadioNoCheckedIcon,
@@ -35,8 +34,9 @@ import { useHistory } from 'react-router';
 import PartPaymentInfo from './parts/PartPaymentInfo';
 import ModalEditCreditCard from 'src/modals/ModalEditCreditCard';
 import ModalCancelSubscription from 'src/modals/ModalCancelSubscription';
-import { getInfoUser } from 'src/store/auth';
 import PartTopUp from './parts/PartTopUp';
+import { getUserPlan, getUserProfile } from 'src/store/user-2';
+import { MetadataPlan } from 'src/store/metadata';
 
 export const PAYMENT_METHOD = {
   CARD: 'STRIPE',
@@ -62,10 +62,10 @@ export const paymentMethods = [
 ];
 
 interface IPlanMobile {
-  plan: IPlan;
-  planSelected: IPlan;
-  currentPlan: IPlan;
-  onSelect: (value: IPlan) => void;
+  plan: MetadataPlan;
+  planSelected: MetadataPlan;
+  currentPlan: MetadataPlan;
+  onSelect: (value: MetadataPlan) => void;
 }
 
 const _renderPrice = (price: number | null) => {
@@ -145,22 +145,23 @@ const BillingPage = () => {
   );
   const [isOpenCancelSubscriptionModal, setIsOpenCancelSubscriptionModal] =
     useState<boolean>(false);
-  const [planSelected, setPlanSelected] = useState<IPlan>({} as any);
+  const [planSelected, setPlanSelected] = useState<MetadataPlan>({} as any);
   const [isOpenEditCardModal, setIsOpenEditCardModal] =
     useState<boolean>(false);
   const [step, setStep] = useState<number>(STEPS.LIST);
-  const { myPlan: currentPlan, plans: billingPlans } = useSelector(
-    (state: RootState) => state.billing,
+  const { plans: billingPlans } = useSelector(
+    (state: RootState) => state.metadata,
   );
-  const { userInfo } = useSelector((state: RootState) => state.auth);
-
+  const { billing: { plan: currentPlan } } = useSelector(
+    (state: RootState) => state.user2,
+  );
   const { user } = useUser();
   const dispatch = useDispatch();
   const history = useHistory();
 
   useEffect(() => {
-    setPaymentMethod(userInfo.activePaymentMethod || PAYMENT_METHOD.CARD);
-  }, [userInfo]);
+    setPaymentMethod(user?.getActivePaymentMethod() || PAYMENT_METHOD.CARD);
+  }, [user?.getActivePaymentMethod()]);
 
   useEffect(() => {
     setPlanSelected(currentPlan);
@@ -186,7 +187,7 @@ const BillingPage = () => {
     const _renderBody = () => {
       return (
         <Tbody>
-          {billingPlans?.map((plan: IPlan, index: number) => {
+          {billingPlans?.map((plan: MetadataPlan, index: number) => {
             const isCurrentPlan = plan.code === currentPlan.code;
             const isActivePlan = planSelected.code === plan.code;
             return (
@@ -250,7 +251,7 @@ const BillingPage = () => {
   const _renderPlansMobile = () => {
     return (
       <Box className="list-card-mobile">
-        {billingPlans?.map((plan: IPlan, index: number) => {
+        {billingPlans?.map((plan: MetadataPlan, index: number) => {
           return (
             <PlanMobile
               plan={plan}
@@ -271,7 +272,7 @@ const BillingPage = () => {
         .getRequest('BillingRequest')
         .updateBillingPlan({ code: planSelected.code });
       toastSuccess({ message: 'Downgrade Plan Successfully!' });
-      dispatch(getMyPlan());
+      dispatch(getUserPlan());
     } catch (error: any) {
       toastError({ message: error.message });
     }
@@ -283,7 +284,7 @@ const BillingPage = () => {
         .getRequest('UserRequest')
         .editInfoUser({ activePaymentMethod: method });
       toastSuccess({ message: 'Update Successfully!' });
-      dispatch(getInfoUser());
+      dispatch(getUserProfile());
     } catch (error: any) {
       toastError({ message: error.message });
     }
@@ -405,7 +406,7 @@ const BillingPage = () => {
               </AppLink>
             </Box>
             <Box mb={isMobile ? 4 : 0} width={isMobile ? '100%' : 'auto'}>
-              {userInfo?.isPaymentMethodIntegrated
+              {user?.getIsPaymentMethodIntegrated()
                 ? _renderButtonUpdatePlan()
                 : _renderButton()}
             </Box>
@@ -458,11 +459,11 @@ const BillingPage = () => {
                 <Box className="box-method__name">Card</Box>
                 <Box className="box-method__value">
                   (
-                  {!userInfo?.stripePaymentMethod
+                  {!user.getStripePayment()
                     ? '---'
-                    : userInfo?.stripePaymentMethod?.card?.brand +
+                    : user.getStripePayment()?.card?.brand +
                       ' - ' +
-                      userInfo?.stripePaymentMethod?.card?.last4}
+                      user.getStripePayment()?.card?.last4}
                   )
                 </Box>
                 <ListCardIcon />

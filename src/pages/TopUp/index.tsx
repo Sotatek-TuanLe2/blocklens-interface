@@ -16,9 +16,9 @@ import useTopUp from 'src/hooks/useTopUp';
 import AppCryptoForm from 'src/components/AppCryptoForm';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/store';
-import { IPlan } from 'src/store/billing';
 import useUser from 'src/hooks/useUser';
 import AppAlertWarning from 'src/components/AppAlertWarning';
+import { MetadataPlan } from 'src/store/metadata';
 
 interface IDataForm {
   walletAddress: string;
@@ -41,10 +41,10 @@ const TopUpPage = () => {
 
   const [dataForm, setDataForm] = useState<IDataForm>(initialDataForm);
   const [isBeingToppedUp, setIsBeingToppedUp] = useState<boolean>(false);
-  const [planSelected, setPlanSelected] = useState<IPlan | undefined>();
+  const [planSelected, setPlanSelected] = useState<MetadataPlan | undefined>();
   const [isSufficientBalance, setIsSufficientBalance] = useState<boolean>(true); // default without any plans
 
-  const { plans } = useSelector((state: RootState) => state.billing);
+  const { plans } = useSelector((state: RootState) => state.metadata);
   const { wallet, isUserLinked } = useWallet();
   const { user } = useUser();
   const { topUp } = useTopUp();

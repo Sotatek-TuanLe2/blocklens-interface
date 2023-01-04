@@ -5,14 +5,15 @@ import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from '../utils/utils-notify';
 import 'src/styles/pages/ProfilePage.scss';
 import { AppCard } from 'src/components';
-import { getMyPlan, IPlan } from 'src/store/billing';
 import { useDispatch } from 'react-redux';
+import { MetadataPlan } from 'src/store/metadata';
+import { getUserPlan } from 'src/store/user-2';
 
 interface IModalChangePaymentMethod {
   open: boolean;
   onClose: () => void;
   isUpgrade: boolean;
-  plan: IPlan;
+  plan: MetadataPlan;
 }
 
 const ModalChangePlan: FC<IModalChangePaymentMethod> = ({
@@ -29,7 +30,7 @@ const ModalChangePlan: FC<IModalChangePaymentMethod> = ({
         .getRequest('BillingRequest')
         .updateBillingPlan({ code: plan.code });
       toastSuccess({ message: 'Update Successfully!' });
-      dispatch(getMyPlan());
+      dispatch(getUserPlan());
       onClose();
     } catch (e: any) {
       toastError({ message: e?.message || 'Oops. Something went wrong!' });

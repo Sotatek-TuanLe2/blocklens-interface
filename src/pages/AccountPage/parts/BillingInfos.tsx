@@ -1,4 +1,3 @@
-import React from 'react';
 import 'src/styles/pages/AccountPage.scss';
 import { Box, Flex } from '@chakra-ui/react';
 import { AppCard, AppLink } from 'src/components';
@@ -8,8 +7,8 @@ import { formatTimestamp } from 'src/utils/utils-helper';
 import { CheckedIcon, ArrowRightIcon } from 'src/assets/icons';
 
 const BillingInfos = () => {
-  const { myPlan: currentPlan } = useSelector(
-    (state: RootState) => state.billing,
+  const { billing: { plan: currentPlan } } = useSelector(
+    (state: RootState) => state.user2,
   );
 
   const _renderLinkDetail = () => {

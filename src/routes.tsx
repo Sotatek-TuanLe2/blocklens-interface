@@ -16,8 +16,6 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import Storage from 'src/utils/utils-storage';
 import AppDetail from './pages/AppDetail';
 import VerifyAccountPage from './pages/VerifyAccountPage';
-import { getInfoUser } from 'src/store/auth';
-import { getMyPlan, getPlans } from 'src/store/billing';
 import { useDispatch } from 'react-redux';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import CreateWebhookPage from './pages/CreateWebhookPage';
@@ -34,9 +32,8 @@ import ModalSubmittingTransaction from './modals/ModalSubmittingTransaction';
 import ModalFinishTransaction from './modals/ModalFinishTransaction';
 import WebhookActivitiesPage from './pages/WebhookActivitiesPage';
 import TopUpPage from './pages/TopUp';
-import { getUserStats } from './store/user';
 import { getUser } from './store/user-2';
-import { getMetadataPlans } from './store/metadata';
+import { initMetadata } from './store/metadata';
 
 /**
  * Main App routes.
@@ -54,12 +51,7 @@ const Routes: FC<RouteComponentProps> = () => {
   useEffect(() => {
     if (!accessToken) return;
     dispatch(getUser());
-    dispatch(getMetadataPlans());
-
-    dispatch(getInfoUser());
-    dispatch(getMyPlan());
-    dispatch(getPlans());
-    dispatch(getUserStats());
+    dispatch(initMetadata());
   }, [accessToken]);
 
   return (

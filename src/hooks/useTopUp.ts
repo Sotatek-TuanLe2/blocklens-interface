@@ -6,9 +6,9 @@ import { toastInfo } from 'src/utils/utils-notify';
 import { isTokenApproved } from 'src/utils/utils-token';
 import useWallet from 'src/hooks/useWallet';
 import config from 'src/config';
-import { getInfoUser } from 'src/store/auth';
 import { getChainConfig, getNetworkByEnv } from 'src/utils/utils-network';
 import { convertDecToWei } from 'src/utils/utils-format';
+import { getUserProfile } from 'src/store/user-2';
 
 type ReturnType = {
   approveToken: (
@@ -88,7 +88,7 @@ const useTopUp = (): ReturnType => {
         confirmation: TOP_UP_CONFIRMATIONS,
       }),
     );
-    await dispatch(getInfoUser());
+    await dispatch(getUserProfile());
   };
 
   return {

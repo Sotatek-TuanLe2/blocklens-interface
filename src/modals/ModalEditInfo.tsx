@@ -1,4 +1,4 @@
-import { Box, Flex, Text } from '@chakra-ui/react';
+import { Flex, Text } from '@chakra-ui/react';
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { AppButton, AppField, AppInput } from 'src/components';
 import { createValidator } from 'src/utils/utils-validator';
@@ -7,7 +7,8 @@ import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'src/store';
-import { getInfoUser } from 'src/store/auth';
+import { getUserProfile } from 'src/store/user-2';
+import useUser from 'src/hooks/useUser';
 
 interface IForm {
   lastName?: string;
@@ -29,8 +30,8 @@ const ModalEditInfo: React.FC<IModalEditInfo> = ({ open, onClose }) => {
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
   const [, updateState] = useState<any>();
   const forceUpdate = useCallback(() => updateState({}), []);
-  const { userInfo } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch<any>();
+  const { user } = useUser();
 
   const validators = useRef(
     createValidator({
@@ -43,10 +44,10 @@ const ModalEditInfo: React.FC<IModalEditInfo> = ({ open, onClose }) => {
   useEffect(() => {
     setDataForm({
       ...dataForm,
-      firstName: userInfo.firstName,
-      lastName: userInfo.lastName,
+      firstName: user?.getFirstName(),
+      lastName: user?.getLastName(),
     });
-  }, [userInfo]);
+  }, [user]);
 
   const handleOnSubmit = async () => {
     if (!validators.current.allValid()) {
@@ -58,7 +59,7 @@ const ModalEditInfo: React.FC<IModalEditInfo> = ({ open, onClose }) => {
       await rf.getRequest('UserRequest').editInfoUser(dataForm);
       setDataForm({ ...initialData });
       onClose();
-      dispatch(getInfoUser());
+      dispatch(getUserProfile);
       toastSuccess({ message: 'Update successfully' });
     } catch (error: any) {
       toastError({

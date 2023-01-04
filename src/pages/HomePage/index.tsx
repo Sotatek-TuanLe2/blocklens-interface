@@ -15,7 +15,7 @@ import { useDispatch } from 'react-redux';
 const HomePage = () => {
   const {
     stats: { totalApp, totalRegistrationActive, totalRegistration },
-  } = useSelector((state: RootState) => state.user);
+  } = useSelector((state: RootState) => state.user2);
   const hasApp = !!totalApp && totalApp > 0;
 
   const [openModalCreateApp, setOpenModalCreateApp] = useState<boolean>(false);

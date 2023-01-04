@@ -1,4 +1,4 @@
-import { Box, Flex, Text } from '@chakra-ui/react';
+import { Flex, Text } from '@chakra-ui/react';
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { AppButton, AppField, AppInput } from 'src/components';
 import { createValidator } from 'src/utils/utils-validator';
@@ -7,7 +7,8 @@ import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'src/store';
-import { getInfoUser } from 'src/store/auth';
+import { getUserProfile } from 'src/store/user-2';
+import useUser from 'src/hooks/useUser';
 
 interface IModalEditReceiveEmail {
   open: boolean;
@@ -22,8 +23,8 @@ const ModalEditReceiveEmail: React.FC<IModalEditReceiveEmail> = ({
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
   const [, updateState] = useState<any>();
   const forceUpdate = useCallback(() => updateState({}), []);
-  const { userInfo } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch<any>();
+  const { user } = useUser();
 
   const validators = useRef(
     createValidator({
@@ -44,7 +45,7 @@ const ModalEditReceiveEmail: React.FC<IModalEditReceiveEmail> = ({
         billingEmail: email,
       });
       onClose();
-      dispatch(getInfoUser());
+      dispatch(getUserProfile());
       toastSuccess({ message: 'Update successfully' });
     } catch (error: any) {
       toastError({
@@ -69,7 +70,7 @@ const ModalEditReceiveEmail: React.FC<IModalEditReceiveEmail> = ({
       title="Edit Receive Email"
     >
       <AppField label={'Current Email'} customWidth={'100%'}>
-        <AppInput value={userInfo.billingEmail} type="text" isDisabled={true} />
+        <AppInput value={user?.getBillingEmail()} type="text" isDisabled={true} />
       </AppField>
       <AppField label={'New Email'} customWidth={'100%'} isRequired>
         <AppInput

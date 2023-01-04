@@ -10,14 +10,14 @@ import {
 import { PAYMENT_METHOD } from '../index';
 import FormCard from './FormCard';
 import FormCrypto from './FormCrypto';
-import { IPlan } from 'src/store/billing';
+import { MetadataPlan } from 'src/store/metadata';
 
 interface IPartPaymentInfo {
   onBack: () => void;
   onNext: () => void;
   setPaymentMethod: (value: string) => void;
   paymentMethod: string;
-  planSelected: IPlan;
+  planSelected: MetadataPlan;
 }
 
 const PartPaymentInfo: FC<IPartPaymentInfo> = ({

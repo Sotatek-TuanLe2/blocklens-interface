@@ -1,6 +1,6 @@
 import { FC, useRef, useState, useEffect } from 'react';
 import React from 'react';
-import { Box, Flex, useColorModeValue, Text } from '@chakra-ui/react';
+import { Box, Flex, Text } from '@chakra-ui/react';
 import {
   AppField,
   AppCard,
@@ -13,11 +13,10 @@ import BasePage from 'src/layouts/BasePage';
 import { createValidator } from 'src/utils/utils-validator';
 import 'src/styles/pages/LoginPage.scss';
 import { useDispatch } from 'react-redux';
-import { setAccessToken, setUserInfo } from 'src/store/auth';
 import { useHistory } from 'react-router';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
-import { getUserStats } from '../store/user';
+import { getUserStats, setUserAuth, setUserProfile } from '../store/user-2';
 
 interface IDataForm {
   email: string;
@@ -51,8 +50,8 @@ const LoginPage: FC = () => {
     try {
       const res = await rf.getRequest('AuthRequest').login(dataForm);
       if (res) {
-        dispatch(setAccessToken(res));
-        dispatch(setUserInfo(res.user));
+        dispatch(setUserAuth(res));
+        dispatch(setUserProfile(res.user));
         dispatch(getUserStats());
         toastSuccess({ message: 'Welcome to Blocksniper!' });
         history.push('/home');
