@@ -1,18 +1,16 @@
 import { Box, Flex } from '@chakra-ui/react';
-import React, { useEffect, useState, useCallback } from 'react';
-import rf from 'src/requests/RequestFactory';
+import React from 'react';
 import { useHistory, useParams } from 'react-router';
 import 'src/styles/pages/AppDetail.scss';
 import { BasePageContainer } from 'src/layouts';
 import { AppButton, AppHeading } from 'src/components';
-import { IWebhook } from 'src/utils/utils-webhook';
 import PartWebhookStats from './parts/PartWebhookStats';
 import { isMobile } from 'react-device-detect';
 import { formatShortText } from 'src/utils/utils-helper';
 import PartWebhookGraph from './parts/PartWebhookGraph';
 import PartRecentActivities from './parts/PartRecentActivities';
-import useAppDetails from '../../hooks/useAppDetails';
-import useWebhookDetails from '../../hooks/useWebhook';
+import useAppDetails from 'src/hooks/useAppDetails';
+import useWebhookDetails from 'src/hooks/useWebhook';
 
 const WebhookDetail = () => {
   const history = useHistory();

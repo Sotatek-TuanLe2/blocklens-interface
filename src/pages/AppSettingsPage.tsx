@@ -29,7 +29,7 @@ import {
 import { isMobile } from 'react-device-detect';
 import { useParams } from 'react-router';
 import { BasePageContainer } from 'src/layouts';
-import useAppDetails from '../hooks/useAppDetails';
+import useAppDetails from 'src/hooks/useAppDetails';
 
 interface IAppSettings {
   onBack: () => void;

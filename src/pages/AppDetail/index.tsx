@@ -24,7 +24,7 @@ import PartAppGraph from './parts/PartAppGraph';
 import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/store';
-import useAppDetails from '../../hooks/useAppDetails';
+import useAppDetails from 'src/hooks/useAppDetails';
 
 const AppDetail = () => {
   const {

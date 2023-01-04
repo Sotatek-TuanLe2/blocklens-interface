@@ -1,5 +1,5 @@
 import { Box, Flex } from '@chakra-ui/react';
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import 'src/styles/pages/AppDetail.scss';
 import {
   AppButton,
@@ -10,7 +10,6 @@ import {
   TYPE_ABI,
 } from 'src/components';
 import {
-  IWebhook,
   WEBHOOK_STATUS,
   WEBHOOK_TYPES,
 } from 'src/utils/utils-webhook';
@@ -26,10 +25,10 @@ import {
 import { useDispatch } from 'react-redux';
 import { getUserStats } from 'src/store/user';
 import { useParams } from 'react-router';
-import { AppHeading } from '../components';
+import { AppHeading } from 'src/components';
 import { BasePageContainer } from 'src/layouts';
-import useAppDetails from '../hooks/useAppDetails';
-import useWebhookDetails from '../hooks/useWebhook';
+import useAppDetails from 'src/hooks/useAppDetails';
+import useWebhookDetails from 'src/hooks/useWebhook';
 
 const WebhookSettingsPage = () => {
   const { appId, id: webhookId } = useParams<{ appId: string; id: string }>();

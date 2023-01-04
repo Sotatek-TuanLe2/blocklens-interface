@@ -1,5 +1,5 @@
 import { Box, Flex, Tbody, Td, Th, Thead, Tooltip, Tr } from '@chakra-ui/react';
-import React, { useEffect, useState, useCallback, FC, MouseEvent } from 'react';
+import React, { useState, useCallback, FC, MouseEvent } from 'react';
 import rf from 'src/requests/RequestFactory';
 import { useHistory, useParams } from 'react-router';
 import 'src/styles/pages/AppDetail.scss';

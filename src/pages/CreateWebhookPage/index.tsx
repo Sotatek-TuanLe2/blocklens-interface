@@ -33,8 +33,8 @@ import { isEVMNetwork } from 'src/utils/utils-network';
 import { useLocation } from 'react-router';
 import { DownloadIcon } from 'src/assets/icons';
 import { useDispatch } from 'react-redux';
-import { getUserStats } from '../../store/user';
-import useAppDetails from '../../hooks/useAppDetails';
+import { getUserStats } from 'src/store/user';
+import useAppDetails from 'src/hooks/useAppDetails';
 
 const FILE_CSV_EXAMPLE = '/abi/CSV_Example.csv';
 
