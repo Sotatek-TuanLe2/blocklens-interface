@@ -83,7 +83,7 @@
     "docker-init": "docker-compose up -d && docker exec -it buni-lens-interface npm i && npm run build",
     "docker-build": "docker-compose up -d && docker exec -it buni-lens-interface npm run build",
     "docker-start": "docker-compose up -d && docker exec -it buni-lens-interface npm run start",
-    "docker-eslint": "docker-compose up -d && docker exec -t buni-lens-interface npm run lint && npm run format"
+    "pre-commit": "npm run lint && npm run format"
   },
   "eslintConfig": {
     "extends": [

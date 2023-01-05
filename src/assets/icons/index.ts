@@ -57,5 +57,5 @@ export {
   CircleCheckedIcon,
   DoorLogout,
   ArrowLogout,
-  ReloadIcon
+  ReloadIcon,
 };

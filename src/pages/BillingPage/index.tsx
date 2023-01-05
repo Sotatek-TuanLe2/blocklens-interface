@@ -91,7 +91,7 @@ const PlanMobile: FC<IPlanMobile> = ({
       <Box
         className={`${isOpen ? 'open' : ''} ${
           isActivePlan ? 'active' : ''
-          } card-mobile plan-card`}
+        } card-mobile plan-card`}
       >
         <Flex
           justifyContent="space-between"
@@ -149,7 +149,8 @@ const BillingPage = () => {
   const [planSelected, setPlanSelected] = useState<IPlan>({} as any);
   const [isOpenEditCardModal, setIsOpenEditCardModal] =
     useState<boolean>(false);
-  const [isReloadingUserInfo, setIsReloadingUserInfo] = useState<boolean>(false);
+  const [isReloadingUserInfo, setIsReloadingUserInfo] =
+    useState<boolean>(false);
   const [step, setStep] = useState<number>(STEPS.LIST);
   const { myPlan: currentPlan, plans: billingPlans } = useSelector(
     (state: RootState) => state.billing,
@@ -173,7 +174,7 @@ const BillingPage = () => {
     let reloadBalanceInterval: any = null;
     if (paymentMethod === PAYMENT_METHOD.CRYPTO) {
       reloadBalanceInterval = setInterval(() => {
-        dispatch(getInfoUser())
+        dispatch(getInfoUser());
       }, RELOAD_BALANCE_DURATION * 1000);
     }
     return () => {
@@ -460,25 +461,25 @@ const BillingPage = () => {
 
         {user?.isPaymentMethodIntegrated && (
           <AppCard className={'box-change-plan'}>
-            <Box className={'box-change-plan__title'}>Change Payment Method</Box>
-            <Flex
-              flexWrap={'wrap'}
-              justifyContent={'space-between'}
-              mt={5}
-            >
+            <Box className={'box-change-plan__title'}>
+              Change Payment Method
+            </Box>
+            <Flex flexWrap={'wrap'} justifyContent={'space-between'} mt={5}>
               <Box
                 className={`${
                   paymentMethod === PAYMENT_METHOD.CARD ? 'active' : ''
-                  } box-method`}
+                } box-method`}
               >
                 <Flex justifyContent={'space-between'}>
-                  <Box
-                    className="icon-checked-active"
-                  >
+                  <Box className="icon-checked-active">
                     {paymentMethod === PAYMENT_METHOD.CARD ? (
                       <CircleCheckedIcon />
                     ) : (
-                      <RadioNoCheckedIcon onClick={() => onChangePaymentMethod(PAYMENT_METHOD.CARD)} />
+                      <RadioNoCheckedIcon
+                        onClick={() =>
+                          onChangePaymentMethod(PAYMENT_METHOD.CARD)
+                        }
+                      />
                     )}
                   </Box>
                 </Flex>
@@ -491,8 +492,8 @@ const BillingPage = () => {
                       {!userInfo?.stripePaymentMethod
                         ? '---'
                         : userInfo?.stripePaymentMethod?.card?.brand +
-                        ' - ' +
-                        userInfo?.stripePaymentMethod?.card?.last4}
+                          ' - ' +
+                          userInfo?.stripePaymentMethod?.card?.last4}
                       )
                     </Box>
                     <Box
@@ -511,21 +512,25 @@ const BillingPage = () => {
               <Box
                 className={`${
                   paymentMethod === PAYMENT_METHOD.CRYPTO ? 'active' : ''
-                  } box-method`}
+                } box-method`}
               >
                 <Box
                   className="icon-checked-active"
-                  display='flex'
-                  justifyContent='space-between'
+                  display="flex"
+                  justifyContent="space-between"
                 >
                   {paymentMethod === PAYMENT_METHOD.CRYPTO ? (
                     <CircleCheckedIcon />
                   ) : (
-                    <RadioNoCheckedIcon onClick={() => onChangePaymentMethod(PAYMENT_METHOD.CRYPTO)} />
+                    <RadioNoCheckedIcon
+                      onClick={() =>
+                        onChangePaymentMethod(PAYMENT_METHOD.CRYPTO)
+                      }
+                    />
                   )}
                   <ReloadIcon
-                    className={isReloadingUserInfo ? 'is-reloading' : '' } 
-                    onClick={onReloadUserInfo} 
+                    className={isReloadingUserInfo ? 'is-reloading' : ''}
+                    onClick={onReloadUserInfo}
                   />
                 </Box>
                 <Flex flexDirection={'column'} alignItems={'center'}>
