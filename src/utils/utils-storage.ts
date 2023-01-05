@@ -12,6 +12,7 @@ type StorageInterface = {
   chainId?: string;
   connectorId?: string;
   account?: string;
+  expireTime?: number;
 };
 
 const defaultPreferences: StorageInterface = {
@@ -42,6 +43,11 @@ class Storage {
     return accessToken;
   }
 
+  static getExpireTimeToken(): number | undefined {
+    const { expireTime } = getStorage();
+    return expireTime;
+  }
+
   static getRefreshToken(): string | undefined {
     const { refreshToken } = getStorage();
     return refreshToken;
@@ -67,9 +73,10 @@ class Storage {
     return account || '';
   }
 
-  static setAccessToken(accessToken: string) {
+  static setAccessToken(accessToken: string, expireTime: number) {
     const preferences = getStorage();
     preferences.accessToken = accessToken;
+    preferences.expireTime = expireTime;
     setStorage(PREFERENCES, preferences);
   }
 
@@ -106,6 +113,7 @@ class Storage {
   static clearAccessToken() {
     const preferences = getStorage();
     delete preferences.accessToken;
+    delete preferences.expireTime;
     setStorage(PREFERENCES, preferences);
   }
 

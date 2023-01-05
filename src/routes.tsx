@@ -7,8 +7,7 @@ import {
   Switch,
   withRouter,
 } from 'react-router-dom';
-import { useLocation } from 'react-router';
-import React from 'react';
+import { useHistory, useLocation } from 'react-router';
 import HomePage from './pages/HomePage';
 import SignUpPage from './pages/SignUpPage';
 import LoginPage from './pages/LoginPage';
@@ -32,10 +31,10 @@ import ModalSubmittingTransaction from './modals/ModalSubmittingTransaction';
 import ModalFinishTransaction from './modals/ModalFinishTransaction';
 import AllActivitiesPage from './pages/AllActivitiesPage';
 import TopUpPage from './pages/TopUp';
-import { getUser } from './store/user';
-import { initMetadata } from './store/metadata';
+import { clearUser, getUser } from './store/user';
 import AppSettingsPage from './pages/AppSettingsPage';
 import WebhookSettingsPage from './pages/WebhookSettingsPage';
+import { initMetadata } from './store/metadata';
 
 /**
  * Main App routes.
@@ -45,13 +44,20 @@ const Routes: FC<RouteComponentProps> = () => {
   const { pathname } = useLocation();
   const dispatch = useDispatch<any>();
   const accessToken = Storage.getAccessToken();
-
+  const history = useHistory();
+  const isExpireTimeToken =
+    Storage.getExpireTimeToken() &&
+    new Date().getTime() >= Number(Storage.getExpireTimeToken());
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
 
   useEffect(() => {
-    if (!accessToken) return;
+    if (!accessToken || isExpireTimeToken) {
+      dispatch(clearUser());
+      history.push('/login');
+      return;
+    }
     dispatch(getUser());
     dispatch(initMetadata());
   }, [accessToken]);

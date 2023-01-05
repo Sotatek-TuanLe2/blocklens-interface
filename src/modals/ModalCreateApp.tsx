@@ -80,10 +80,11 @@ const ModalCreateApp: FC<IModalCreateApp> = ({ open, onClose, reloadData }) => {
   );
 
   useEffect(() => {
-    setTimeout(() => {
+    const statusSubmitBtn = setTimeout(() => {
       const isDisabled = !validator.current.allValid();
       setIsDisableSubmit(isDisabled);
     }, 0);
+    return () => clearTimeout(statusSubmitBtn);
   }, [dataForm, open]);
 
   const handleSubmitForm = async () => {

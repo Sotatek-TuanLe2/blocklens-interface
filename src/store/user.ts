@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import rf from 'src/requests/RequestFactory';
 import { setAuthorizationToRequest } from 'src/utils/utils-auth';
 import Storage from 'src/utils/utils-storage';
+import { TIME_EXPIRE_TOKEN_CLIENT } from 'src/constants';
 
 export type UserAuthType = {
   accessToken: string;
@@ -174,10 +175,11 @@ const userSlice = createSlice({
       state.userId = action.payload.userId;
     },
     setUserAuth: (state, action) => {
+      const timeExpireToken = new Date().getTime() + TIME_EXPIRE_TOKEN_CLIENT;
       const { accessToken, refreshToken } = action.payload;
       state.auth = { accessToken, refreshToken };
       setAuthorizationToRequest(accessToken);
-      Storage.setAccessToken(accessToken);
+      Storage.setAccessToken(accessToken, timeExpireToken);
       Storage.setRefreshToken(refreshToken);
     },
     setUserInfo: (state, action) => {
