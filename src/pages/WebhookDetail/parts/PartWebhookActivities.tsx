@@ -122,7 +122,7 @@ const ActivityMobile: FC<IActivity> = ({
           <Box>Token ID</Box>
           <Box className="value">
             <Flex alignItems="center">
-              {activity?.metadata?.tokenId || '--'}
+              {activity?.metadata?.tokenIds?.join(', ') || '--'}
             </Flex>
           </Box>
         </Flex>
@@ -248,7 +248,7 @@ const ActivityDesktop: FC<IActivity> = ({
       <>
         <Td w="13%">{activity?.metadata?.method}</Td>
         <Td textAlign="center" w="10%">
-          {activity?.metadata?.tokenId || '--'}
+          {activity?.metadata?.tokenIds?.join(', ') || '*'}
         </Td>
       </>
     );
