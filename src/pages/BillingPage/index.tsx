@@ -170,7 +170,7 @@ const BillingPage = () => {
   useEffect(() => {
     const RELOAD_BALANCE_DURATION = 30;
     let reloadBalanceInterval: any = null;
-    if (userInfo.activePaymentMethod === PAYMENT_METHOD.CRYPTO) {
+    if (user?.getActivePaymentMethod() === PAYMENT_METHOD.CRYPTO) {
       reloadBalanceInterval = setInterval(() => {
         dispatch(getUserProfile());
       }, RELOAD_BALANCE_DURATION * 1000);
@@ -178,7 +178,7 @@ const BillingPage = () => {
     return () => {
       clearInterval(reloadBalanceInterval);
     };
-  }, [userInfo.activePaymentMethod]);
+  }, [user?.getActivePaymentMethod()]);
 
   const isSufficientBalance = useMemo(() => {
     if (!user) {
