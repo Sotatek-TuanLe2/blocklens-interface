@@ -4,7 +4,13 @@ import rf from 'src/requests/RequestFactory';
 import { useParams } from 'react-router';
 import 'src/styles/pages/AppDetail.scss';
 import { BasePageContainer } from 'src/layouts';
-import { AppCard, AppDataTable, AppInput, AppLink, AppFilter } from 'src/components';
+import {
+  AppCard,
+  AppDataTable,
+  AppInput,
+  AppLink,
+  AppFilter,
+} from 'src/components';
 import {
   WEBHOOK_TYPES,
   optionsFilterMessage,
@@ -66,7 +72,11 @@ const MessagesHistory = () => {
           <Th textAlign="center" w="13%">
             <Flex alignItems="center" justifyContent="center">
               token id
-              <AppFilter value={tokenId} onChange={setTokenId} type="token ID" />
+              <AppFilter
+                value={tokenId}
+                onChange={setTokenId}
+                type="token ID"
+              />
             </Flex>
           </Th>
         </>

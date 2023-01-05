@@ -12,10 +12,7 @@ import {
 import React, { FC, MouseEvent, useCallback, useState } from 'react';
 import { AppButton, AppCard, AppDataTable, AppLink } from 'src/components';
 import rf from 'src/requests/RequestFactory';
-import {
-  formatShortText,
-  formatTimestamp,
-} from 'src/utils/utils-helper';
+import { formatShortText, formatTimestamp } from 'src/utils/utils-helper';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import 'src/styles/pages/NotificationPage.scss';
 import 'src/styles/pages/AppDetail.scss';

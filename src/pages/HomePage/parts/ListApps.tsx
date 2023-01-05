@@ -263,10 +263,7 @@ const ListApps: React.FC = () => {
           <Text className="text-title">Apps</Text>
           <Flex alignItems={'center'}>
             {!isMobile && _renderTotalApp()}
-            <AppButton
-              size={'sm'}
-              onClick={onCreateApp}
-            >
+            <AppButton size={'sm'} onClick={onCreateApp}>
               <Box className="icon-plus-circle" mr={2} /> Create
             </AppButton>
           </Flex>
