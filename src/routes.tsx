@@ -30,10 +30,12 @@ import ContactUs from './pages/ContactUs';
 import BillingHistory from './pages/BillingHistoryPage';
 import ModalSubmittingTransaction from './modals/ModalSubmittingTransaction';
 import ModalFinishTransaction from './modals/ModalFinishTransaction';
-import WebhookActivitiesPage from './pages/WebhookActivitiesPage';
+import AllActivitiesPage from './pages/AllActivitiesPage';
 import TopUpPage from './pages/TopUp';
 import { getUser } from './store/user';
 import { initMetadata } from './store/metadata';
+import AppSettingsPage from './pages/AppSettingsPage';
+import WebhookSettingsPage from './pages/WebhookSettingsPage';
 
 /**
  * Main App routes.
@@ -57,6 +59,7 @@ const Routes: FC<RouteComponentProps> = () => {
   return (
     <>
       <Switch>
+        <PrivateRoute path={`/apps/:id/settings`} component={AppSettingsPage} />
         <PrivateRoute path={`/apps/:id`} component={AppDetail} />
         <PublicRoute path={'/login'} component={LoginPage} />
         <PublicRoute path={'/sign-up'} component={SignUpPage} />
@@ -70,7 +73,11 @@ const Routes: FC<RouteComponentProps> = () => {
         <PrivateRoute path={'/billing-history'} component={BillingHistory} />
         <PrivateRoute
           path={'/app/:appId/webhooks/:id/activities'}
-          component={WebhookActivitiesPage}
+          component={AllActivitiesPage}
+        />
+        <PrivateRoute
+          path={'/app/:appId/webhooks/:id/settings'}
+          component={WebhookSettingsPage}
         />
         <PrivateRoute
           path={'/app/:appId/webhooks/:id'}

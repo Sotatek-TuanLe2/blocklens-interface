@@ -4,6 +4,7 @@ import Footer from 'src/pages/LandingPage/Footer';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { isMobile } from 'react-device-detect';
+import MainImageLanding from 'src/components/MainImageLanding';
 
 const categories = [
   {
@@ -109,7 +110,7 @@ const LandingPage = () => {
           </div>
 
           <div className="image-main">
-            <img src="/images/LandingPage/main-image.png" alt="logo" />
+            <MainImageLanding />
           </div>
 
           <div className="categories">

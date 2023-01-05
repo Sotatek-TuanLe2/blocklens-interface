@@ -90,7 +90,11 @@ const TopUpPage = () => {
         }
       />
       <Flex justifyContent={isMobile ? 'center' : 'flex-end'} mt={7}>
-        <AppButton size={'lg'} onClick={onTopUp} disabled={isBeingToppedUp}>
+        <AppButton
+          size={'lg'}
+          onClick={onTopUp}
+          disabled={isBeingToppedUp || +dataForm.amount <= 0}
+        >
           Top Up
         </AppButton>
       </Flex>

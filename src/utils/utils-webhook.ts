@@ -83,6 +83,24 @@ export interface IMessages {
   metadata: any;
 }
 
+export interface IActivityResponse {
+  hash: string;
+  userId: number;
+  registrationId: number;
+  type: string;
+  status: string;
+  statusCode: number;
+  webhook: string;
+  metadata: any;
+  errs: string[];
+  tokenId: string[];
+  method: string;
+  retryTime: number;
+  createdAt: number;
+  updatedAt: number;
+  trackingAddress: string;
+}
+
 export const getColorBrandStatus = (status: string) => {
   switch (status) {
     case STATUS.DONE:
