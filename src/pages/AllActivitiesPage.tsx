@@ -561,7 +561,6 @@ const AllActivitiesPage = () => {
               txHash,
               tokenId,
             }}
-            hidePagination
             fetchData={fetchDataTable}
             renderBody={(data) =>
               isMobile

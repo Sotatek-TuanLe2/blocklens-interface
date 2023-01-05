@@ -29,7 +29,7 @@ const AccountPage = () => {
             </Box>
             <Box
               ml={2}
-              className={'link'}
+              className={'btn-copy'}
               onClick={() => copyToClipboard(user.getLinkedAddress())}
             >
               <CopyIcon />
