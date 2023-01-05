@@ -4,6 +4,7 @@ import Footer from 'src/pages/LandingPage/Footer';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { isMobile } from 'react-device-detect';
+import MainImageLanding from 'src/components/MainImageLanding';
 
 const categories = [
   {
@@ -55,20 +56,20 @@ const useCases = [
 
 const feedbacks = [
   {
-    name: 'Loi Luu',
-    title: 'CEO – Kyber Network',
+    name: 'Leo',
+    title: 'CEO Fizen',
     description:
       'Block Sniper saved us 2 months of development with its no-code platform. On-chain synchronization is a must for web3 application and develop it by ourself is extremely time consuming.',
   },
   {
     name: 'Thi Truong',
-    title: 'CEO & Founder of Polka Foundry',
+    title: 'Founder gamefi.org',
     description:
       'Thanks to Block Sniper, we’ve cut our spend for infrastructure. Maintaining a blockchain node or hosting blockchain crawler servers is costly nowaday.',
   },
   {
-    name: 'Luu Trung Nguyen',
-    title: 'CEO & Founder of Satom Venture Studio',
+    name: 'Louis',
+    title: 'Founder Crypto Hawk',
     description:
       'Building dApp has never been easier with Block Sniper. It supports everything we need to make our platform aware of on-chain events and keep our users engaged with the application.',
   },
@@ -109,7 +110,7 @@ const LandingPage = () => {
           </div>
 
           <div className="image-main">
-            <img src="/images/LandingPage/main-image.png" alt="logo" />
+            <MainImageLanding />
           </div>
 
           <div className="categories">

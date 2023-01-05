@@ -269,9 +269,6 @@ const ListApps: React.FC = () => {
             {!isMobile && _renderTotalApp()}
             <AppButton
               size={'sm'}
-              px={4}
-              py={1}
-              className={'btn-create'}
               onClick={onCreateApp}
             >
               <Box className="icon-plus-circle" mr={2} /> Create

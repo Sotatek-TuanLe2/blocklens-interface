@@ -1,6 +1,13 @@
 import { ReactNode } from 'react';
 import React from 'react';
-import { Box, Flex, Stack, Text, Tooltip, useDisclosure } from '@chakra-ui/react';
+import {
+  Box,
+  Flex,
+  Stack,
+  Text,
+  Tooltip,
+  useDisclosure,
+} from '@chakra-ui/react';
 import 'src/styles/components/AppField.scss';
 
 interface IField {

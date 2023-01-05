@@ -49,6 +49,15 @@ const PartAppGraph = () => {
   }, [appId, params]);
 
   const _renderFilter = () => {
+    if (isMobile) {
+      return (
+        <Box
+          className="icon-filter-mobile"
+          onClick={() => setIsOpenFilterGraphModal(true)}
+        />
+      );
+    }
+
     return (
       <Flex>
         <AppSelect2
@@ -64,17 +73,10 @@ const PartAppGraph = () => {
   if (!dataChart.length) return <></>;
 
   return (
-    <AppCard className="user-graph" p={0}>
+    <AppCard p={0}>
       <Flex className={'title-list-app'}>
         <Box className={'text-title'}>App's Graph</Box>
-        {isMobile ? (
-          <Box
-            className="icon-filter-mobile"
-            onClick={() => setIsOpenFilterGraphModal(true)}
-          />
-        ) : (
-          _renderFilter()
-        )}
+        {_renderFilter()}
       </Flex>
       <AppGraph data={dataChart} duration={duration} />
 

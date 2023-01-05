@@ -29,7 +29,7 @@ const PartNFTWebhooks: FC<IListNTF> = ({ appInfo }) => {
         Create your webhook to start experiencing Blocksniper with NFT Activity!
         <AppButton
           isDisabled={isDisabledApp}
-          size={'md'}
+          size={'lg'}
           onClick={() =>
             history.push(
               `/create-webhook/${appInfo.appId}?type=${WEBHOOK_TYPES.NFT_ACTIVITY}`,
