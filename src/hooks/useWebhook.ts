@@ -22,7 +22,7 @@ const useWebhookDetails = (appId: string, webhookId: string) => {
 
   return {
     webhook,
-    getWebhookInfo
+    getWebhookInfo,
   };
 };
 

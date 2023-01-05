@@ -15,7 +15,7 @@ import {
   AppHeading,
   AppInput,
   AppTextarea,
-  AppButtonLarge
+  AppButtonLarge,
 } from 'src/components';
 import ModalDeleteApp from 'src/modals/ModalDeleteApp';
 import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
@@ -173,7 +173,7 @@ const AppSettingsPage: FC<IAppSettings> = () => {
     <BasePageContainer className="app-detail">
       <>
         <Flex className="app-info">
-          <AppHeading title="Settings" linkBack={`/apps/${appId}`} isCenter/>
+          <AppHeading title="Settings" linkBack={`/apps/${appId}`} isCenter />
 
           <Flex>
             <AppButton
@@ -201,9 +201,7 @@ const AppSettingsPage: FC<IAppSettings> = () => {
               </Flex>
             </Flex>
 
-            <AppButtonLarge
-              onClick={() => setIsOpenChangeStatusAppModal(true)}
-            >
+            <AppButtonLarge onClick={() => setIsOpenChangeStatusAppModal(true)}>
               {isActive ? 'Deactivate' : 'Activate'}
             </AppButtonLarge>
           </Flex>
