@@ -1,6 +1,4 @@
-import React, { FC, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { useHistory, useLocation } from 'react-router';
+import { FC, useEffect } from 'react';
 import {
   BrowserRouter as Router,
   Redirect,
@@ -9,33 +7,34 @@ import {
   Switch,
   withRouter,
 } from 'react-router-dom';
-import { clearAuth, getInfoUser } from 'src/store/auth';
-import { getMyPlan, getPlans } from 'src/store/billing';
-import Storage from 'src/utils/utils-storage';
-import ModalFinishTransaction from './modals/ModalFinishTransaction';
-import ModalSubmittingTransaction from './modals/ModalSubmittingTransaction';
-import AccountPage from './pages/AccountPage';
-import AppDetail from './pages/AppDetail';
-import BillingHistory from './pages/BillingHistoryPage';
-import BillingInfoPage from './pages/BillingInfoPage';
-import BillingPage from './pages/BillingPage';
-import ContactUs from './pages/ContactUs';
-import CreateWebhookPage from './pages/CreateWebhookPage';
-import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import { useHistory, useLocation } from 'react-router';
 import HomePage from './pages/HomePage';
+import SignUpPage from './pages/SignUpPage';
+import LoginPage from './pages/LoginPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import Storage from 'src/utils/utils-storage';
+import AppDetail from './pages/AppDetail';
+import VerifyAccountPage from './pages/VerifyAccountPage';
+import { useDispatch } from 'react-redux';
+import ResetPasswordPage from './pages/ResetPasswordPage';
+import CreateWebhookPage from './pages/CreateWebhookPage';
+import WebhookDetail from './pages/WebhookDetail';
+import MessagesHistory from './pages/MessagesHistoryPage';
+import BillingPage from './pages/BillingPage';
+import AccountPage from './pages/AccountPage';
+import BillingInfoPage from './pages/BillingInfoPage';
 import LandingPage from './pages/LandingPage';
 import Pricing from './pages/LandingPage/Pricing';
-import LoginPage from './pages/LoginPage';
-import MessagesHistory from './pages/MessagesHistoryPage';
-import ResetPasswordPage from './pages/ResetPasswordPage';
-import SignUpPage from './pages/SignUpPage';
+import ContactUs from './pages/ContactUs';
+import BillingHistory from './pages/BillingHistoryPage';
+import ModalSubmittingTransaction from './modals/ModalSubmittingTransaction';
+import ModalFinishTransaction from './modals/ModalFinishTransaction';
 import AllActivitiesPage from './pages/AllActivitiesPage';
 import TopUpPage from './pages/TopUp';
-import VerifyAccountPage from './pages/VerifyAccountPage';
-import WebhookDetail from './pages/WebhookDetail';
-import { getUserStats } from './store/user';
+import { clearUser, getUser } from './store/user';
 import AppSettingsPage from './pages/AppSettingsPage';
 import WebhookSettingsPage from './pages/WebhookSettingsPage';
+import { initMetadata } from './store/metadata';
 
 /**
  * Main App routes.
@@ -55,14 +54,12 @@ const Routes: FC<RouteComponentProps> = () => {
 
   useEffect(() => {
     if (!accessToken || isExpireTimeToken) {
-      dispatch(clearAuth());
+      dispatch(clearUser());
       history.push('/login');
       return;
     }
-    dispatch(getInfoUser());
-    dispatch(getMyPlan());
-    dispatch(getPlans());
-    dispatch(getUserStats());
+    dispatch(getUser());
+    dispatch(initMetadata());
   }, [accessToken]);
 
   return (

@@ -1,12 +1,12 @@
 import { Box, Flex } from '@chakra-ui/react';
-import React, { FC } from 'react';
+import { FC } from 'react';
 import BaseModal from './BaseModal';
 import { useHistory } from 'react-router';
 import AppButton from 'src/components/AppButton';
-import { useSelector } from 'react-redux';
-import { RootState } from 'src/store';
-import { IPlan } from 'src/store/billing';
 import { isMobile } from 'react-device-detect';
+import { MetadataPlan } from 'src/store/metadata';
+import useUser from 'src/hooks/useUser';
+import useMetadata from 'src/hooks/useMetadata';
 
 interface ModalUpgradeCreateApp {
   open: boolean;
@@ -18,11 +18,12 @@ const ModalUpgradeCreateApp: FC<ModalUpgradeCreateApp> = ({
   onClose,
 }) => {
   const history = useHistory();
-  const { myPlan, plans } = useSelector((state: RootState) => state.billing);
-  const indexMyPlan = plans.findIndex(
-    (item: IPlan) => item.code === myPlan?.code,
+  const { user } = useUser();
+  const { billingPlans } = useMetadata();
+  const indexMyPlan = billingPlans.findIndex(
+    (item: MetadataPlan) => item.code === user?.getPlan().code,
   );
-  const nextPlan = plans[indexMyPlan + 1];
+  const nextPlan = billingPlans[indexMyPlan + 1];
 
   return (
     <BaseModal
@@ -34,7 +35,7 @@ const ModalUpgradeCreateApp: FC<ModalUpgradeCreateApp> = ({
       onClose={onClose}
     >
       <Box className={'modal__description'}>
-        You can only create {myPlan?.appLimitation} active apps in your current
+        You can only create {user?.getPlan().appLimitation} active apps in your current
         plan, upgrade to{' '}
         <Box as={'span'} textTransform="lowercase">
           {nextPlan?.name}

@@ -1,16 +1,13 @@
-import React from 'react';
 import 'src/styles/pages/AccountPage.scss';
 import { Box, Flex } from '@chakra-ui/react';
 import { AppCard, AppLink } from 'src/components';
-import { useSelector } from 'react-redux';
-import { RootState } from 'src/store';
 import { formatTimestamp } from 'src/utils/utils-helper';
 import { CheckedIcon, ArrowRightIcon } from 'src/assets/icons';
+import useUser from 'src/hooks/useUser';
 
 const BillingInfos = () => {
-  const { myPlan: currentPlan } = useSelector(
-    (state: RootState) => state.billing,
-  );
+  const { user } = useUser();
+  const currentPlan = user?.getPlan();
 
   const _renderLinkDetail = () => {
     return (
@@ -33,17 +30,17 @@ const BillingInfos = () => {
           {_renderLinkDetail()}
         </Flex>
 
-        <Box className="name-plan">{currentPlan.name}</Box>
+        <Box className="name-plan">{currentPlan?.name}</Box>
         <Box className="name-plan">
-          {currentPlan.price === 0 ? `$0` : `$${currentPlan.price}/month`}
+          {currentPlan?.price === 0 ? `$0` : `$${currentPlan?.price}/month`}
         </Box>
         <Box className="detail-plan">
           <Flex alignItems={'center'}>
-            <CheckedIcon /> <Box ml={3}>{currentPlan.appLimitation} apps</Box>
+            <CheckedIcon /> <Box ml={3}>{currentPlan?.appLimitation} apps</Box>
           </Flex>
           <Flex alignItems={'center'}>
             <CheckedIcon />{' '}
-            <Box ml={3}> {currentPlan.notificationLimitation} message/day</Box>
+            <Box ml={3}> {currentPlan?.notificationLimitation} message/day</Box>
           </Flex>
           <Flex alignItems={'center'}>
             <CheckedIcon /> <Box ml={3}> All supported chains</Box>

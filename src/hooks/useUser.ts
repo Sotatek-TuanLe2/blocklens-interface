@@ -8,46 +8,26 @@ type ReturnType = {
 };
 
 const useUser = (): ReturnType => {
-  const { userInfo } = useSelector((state: RootState) => state.auth);
-  const {
-    userId,
-    balance,
-    email,
-    billingEmail,
-    firstName,
-    lastName,
-    isEmailVerified,
-    walletAddress,
-    isPaymentMethodIntegrated,
-    stripePaymentMethod,
-  } = userInfo;
+  const { userId, auth, info, stats, billing, settings } = useSelector((state: RootState) => state.user);
 
   const user = useMemo(() => {
     if (!userId) {
       return null;
     }
     const newUser = new User(userId);
-    newUser.setBalance(balance || '');
-    newUser.setEmail(email || '');
-    newUser.setBillingEmail(billingEmail || '');
-    newUser.setFirstName(firstName || '');
-    newUser.setLastName(lastName || '');
-    newUser.setIsEmailVerified(!!isEmailVerified);
-    newUser.setIsPaymentMethodIntegrated(!!isPaymentMethodIntegrated);
-    newUser.setLinkedAddress(walletAddress || '');
-    newUser.setStripePayment(stripePaymentMethod);
+    newUser.setAuth(auth);
+    newUser.setInfo(info);
+    newUser.setStats(stats);
+    newUser.setBilling(billing);
+    newUser.setSettings(settings);
     return newUser;
   }, [
     userId,
-    balance,
-    email,
-    billingEmail,
-    firstName,
-    lastName,
-    isEmailVerified,
-    walletAddress,
-    stripePaymentMethod,
-    isPaymentMethodIntegrated,
+    auth,
+    info,
+    stats,
+    billing,
+    settings
   ]);
 
   return { user };

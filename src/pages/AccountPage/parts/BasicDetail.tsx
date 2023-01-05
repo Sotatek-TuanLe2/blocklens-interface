@@ -3,12 +3,11 @@ import 'src/styles/pages/AccountPage.scss';
 import { Box, Flex } from '@chakra-ui/react';
 import { useHistory } from 'react-router-dom';
 import { AppCard } from 'src/components';
-import { useSelector } from 'react-redux';
-import { RootState } from 'src/store';
 import { EditIcon } from 'src/assets/icons';
 import ModalChangePassword from 'src/modals/ModalChangePassword';
 import ModalEditInfo from 'src/modals/ModalEditInfo';
 import ModalEditCreditCard from 'src/modals/ModalEditCreditCard';
+import useUser from 'src/hooks/useUser';
 
 const BasicDetail = () => {
   const [isOpenChangePasswordModal, setIsChangePasswordModal] =
@@ -18,8 +17,8 @@ const BasicDetail = () => {
   const [isOpenEditCardModal, setIsOpenEditCardModal] =
     useState<boolean>(false);
 
-  const { userInfo } = useSelector((state: RootState) => state.auth);
   const history = useHistory();
+  const { user } = useUser();
 
   return (
     <AppCard className="box-info-account">
@@ -27,13 +26,13 @@ const BasicDetail = () => {
         <Box className="title">Basic Details</Box>
         <Flex>
           <Box className="label">Email:</Box>
-          <Box className="value">{userInfo.email}</Box>
+          <Box className="value">{user?.getEmail()}</Box>
         </Flex>
         <Flex justifyContent={'space-between'} my={3}>
           <Flex>
             <Box className="label">Name:</Box>
             <Box className="value">
-              {userInfo.firstName + ' ' + userInfo.lastName}
+              {user?.getFirstName() + ' ' + user?.getLastName()}
             </Box>
           </Flex>
           <Box
@@ -46,7 +45,7 @@ const BasicDetail = () => {
         <Flex justifyContent={'space-between'}>
           <Flex>
             <Box className="label">Balance:</Box>
-            <Box className="value">${userInfo?.balance}</Box>
+            <Box className="value">${user?.getBalance()}</Box>
           </Flex>
           <Box className="link" onClick={() => history.push('/top-up')}>
             Top up

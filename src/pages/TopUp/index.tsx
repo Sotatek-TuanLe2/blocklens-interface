@@ -1,6 +1,5 @@
 import { Box, Flex } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
-import BigNumber from 'bignumber.js';
 import 'src/styles/pages/BillingPage.scss';
 import 'src/styles/pages/AppDetail.scss';
 import { AppButton, AppCard } from 'src/components';
@@ -10,15 +9,10 @@ import useWallet from 'src/hooks/useWallet';
 import { toastError } from 'src/utils/utils-notify';
 import { ConnectWalletIcon } from 'src/assets/icons';
 import { getChainConfig, getNetworkByEnv } from 'src/utils/utils-network';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { BasePageContainer } from 'src/layouts';
 import useTopUp from 'src/hooks/useTopUp';
 import AppCryptoForm from 'src/components/AppCryptoForm';
-import { useSelector } from 'react-redux';
-import { RootState } from 'src/store';
-import { IPlan } from 'src/store/billing';
-import useUser from 'src/hooks/useUser';
-import AppAlertWarning from 'src/components/AppAlertWarning';
 
 interface IDataForm {
   walletAddress: string;
@@ -41,25 +35,10 @@ const TopUpPage = () => {
 
   const [dataForm, setDataForm] = useState<IDataForm>(initialDataForm);
   const [isBeingToppedUp, setIsBeingToppedUp] = useState<boolean>(false);
-  const [planSelected, setPlanSelected] = useState<IPlan | undefined>();
-  const [isSufficientBalance, setIsSufficientBalance] = useState<boolean>(true); // default without any plans
 
-  const { plans } = useSelector((state: RootState) => state.billing);
   const { wallet, isUserLinked } = useWallet();
-  const { user } = useUser();
   const { topUp } = useTopUp();
   const history = useHistory();
-  const location = useLocation();
-
-  useEffect(() => {
-    if (location.search && !!plans.length) {
-      const urlParams = new URLSearchParams(location.search);
-      const planCode = urlParams.get(TOP_UP_PARAMS.PLAN);
-      if (planCode) {
-        setPlanSelected(plans.find((item) => item.code === planCode));
-      }
-    }
-  }, [location.search, plans]);
 
   useEffect(() => {
     if (wallet?.getAddress()) {
@@ -76,15 +55,6 @@ const TopUpPage = () => {
       }));
     }
   }, [wallet?.getAddress(), wallet?.getNework()]);
-
-  useEffect(() => {
-    if (user && planSelected) {
-      const isSufficientBalance = new BigNumber(
-        user.getBalance(),
-      ).isGreaterThanOrEqualTo(new BigNumber(planSelected.price || 0));
-      setIsSufficientBalance(isSufficientBalance);
-    }
-  }, [user, planSelected]);
 
   const onChangeCurrency = (currencyAddress: string) => {
     setDataForm((prevState) => ({ ...prevState, currencyAddress }));
@@ -106,23 +76,8 @@ const TopUpPage = () => {
     }
   };
 
-  const _renderWarningBalanceMessage = () => {
-    if (isSufficientBalance) {
-      return null;
-    }
-    return (
-      <Box width={'100%'}>
-        <AppAlertWarning>
-          Your current balance is insufficent. Please top-up to meet the plan's
-          price!
-        </AppAlertWarning>
-      </Box>
-    );
-  };
-
   const _renderWalletInfo = () => (
     <>
-      {_renderWarningBalanceMessage()}
       <AppCryptoForm
         currencyAddress={dataForm.currencyAddress}
         amount={dataForm.amount}

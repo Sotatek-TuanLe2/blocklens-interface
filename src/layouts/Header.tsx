@@ -1,5 +1,4 @@
 import { FC, useEffect, useState } from 'react';
-import React from 'react';
 import { AppLink } from 'src/components';
 import { useHistory } from 'react-router';
 import 'src/styles/layout/Header.scss';
@@ -16,12 +15,13 @@ import {
   Avatar,
 } from '@chakra-ui/react';
 import { useLocation } from 'react-router-dom';
-import { clearAuth } from 'src/store/auth';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
 import ModalSignInRequest from 'src/modals/ModalSignInRequest';
 import { isMobile } from 'react-device-detect';
 import { CloseIcon } from '@chakra-ui/icons';
 import { ArrowLogout, DoorLogout } from 'src/assets/icons';
+import { clearUser } from 'src/store/user';
+import useUser from 'src/hooks/useUser';
 
 const menus = [
   {
@@ -43,8 +43,8 @@ const Header: FC = () => {
     useState<boolean>(false);
   const [isOpenMenuMobile, setIsOpenMenuMobile] = useState<boolean>(false);
   const history = useHistory();
+  const { user } = useUser();
   const accessToken = Storage.getAccessToken();
-  const { userInfo } = useSelector((state: RootState) => state.auth);
   const location = useLocation();
   const dispatch = useDispatch();
 
@@ -70,7 +70,7 @@ const Header: FC = () => {
   };
 
   const onLogout = () => {
-    dispatch(clearAuth());
+    dispatch(clearUser());
     history.push('/login');
   };
 
@@ -79,15 +79,15 @@ const Header: FC = () => {
       <Box>
         <Menu>
           <MenuButton>
-            <Avatar name={userInfo?.firstName} size="sm" />
+            <Avatar name={user?.getFirstName()} size="sm" />
           </MenuButton>
           <MenuList className="menu-header">
             <MenuItem className="user-info">
               <div className="user-name">
-                {userInfo?.firstName + ' ' + userInfo?.lastName}
+                {user?.getFirstName() + ' ' + user?.getLastName()}
               </div>
 
-              <div className="user-email">{userInfo?.email}</div>
+              <div className="user-email">{user?.getEmail()}</div>
               <div className="user-divider"></div>
               <div className="user-logout" onClick={onLogout}>
                 {' '}
