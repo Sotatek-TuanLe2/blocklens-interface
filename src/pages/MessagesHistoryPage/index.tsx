@@ -8,8 +8,8 @@ import {
   AppCard,
   AppDataTable,
   AppInput,
-  AppLink,
   AppFilter,
+  AppHeading,
 } from 'src/components';
 import {
   WEBHOOK_TYPES,
@@ -24,6 +24,8 @@ import MessagesItemMobile from './parts/MessagesItemMobile';
 import { filterParams } from 'src/utils/utils-helper';
 import ModalFilterActivities from 'src/modals/ModalFilterActivities';
 import useWebhookDetails from 'src/hooks/useWebhook';
+import useAppDetails from 'src/hooks/useAppDetails';
+import { getLogoChainByChainId } from '../../utils/utils-network';
 
 const MessagesHistory = () => {
   const {
@@ -44,6 +46,7 @@ const MessagesHistory = () => {
   const [isOpenFilterModal, setIsOpenFilterModal] = useState<boolean>(false);
 
   const { webhook } = useWebhookDetails(appId, webhookId);
+  const { appInfo } = useAppDetails(appId);
 
   const fetchDataTable: any = useCallback(async (params: any) => {
     try {
@@ -204,12 +207,19 @@ const MessagesHistory = () => {
     <BasePageContainer className="app-detail">
       <>
         <Flex className="app-info">
-          <Flex className="name">
-            <AppLink to={`/app/${appId}/webhooks/${webhookId}`}>
-              <Box className="icon-arrow-left" mr={6} />
-            </AppLink>
-            <Box className={'title-mobile'}>Messages History</Box>
-          </Flex>
+          <AppHeading
+            title="Messages History"
+            linkBack={`/app/${appId}/webhooks/${webhookId}`}
+          />
+
+          {!isMobile && (
+            <Flex alignItems={'center'} className="box-network">
+              <Box className={getLogoChainByChainId(appInfo.chain)} mr={2} />
+              <Box textTransform="capitalize">
+                {appInfo?.network?.toLowerCase()}
+              </Box>
+            </Flex>
+          )}
         </Flex>
 
         <AppCard className="list-table-wrap">

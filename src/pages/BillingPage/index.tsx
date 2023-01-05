@@ -11,7 +11,7 @@ import React, { FC, useEffect, useMemo, useState } from 'react';
 import BigNumber from 'bignumber.js';
 import 'src/styles/pages/BillingPage.scss';
 import { BasePageContainer } from 'src/layouts';
-import { AppButton, AppCard, AppLink } from 'src/components';
+import { AppButton, AppCard, AppHeading, AppLink } from 'src/components';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'src/store';
 import { getMyPlan, IPlan } from 'src/store/billing';
@@ -24,7 +24,7 @@ import {
   ListCardIcon,
   CircleCheckedIcon,
   CryptoIcon,
-  ReloadIcon,
+  ReloadIcon, WarningIcon,
 } from 'src/assets/icons';
 import { isMobile } from 'react-device-detect';
 import PartCheckout from './parts/PartCheckout';
@@ -387,7 +387,10 @@ const BillingPage = () => {
     return (
       <>
         <Flex justifyContent={'space-between'}>
-          <Box className="heading-title">Billing</Box>
+          <Box mb={7}>
+            <AppHeading title="Billing" />
+          </Box>
+
           {user?.isPaymentMethodIntegrated && (
             <Flex
               className="link"
@@ -402,24 +405,23 @@ const BillingPage = () => {
         </Flex>
 
         <AppCard className="list-table-wrap">
-          <Flex
-            justifyContent={'space-between'}
-            alignItems={isMobile ? 'flex-start' : 'center'}
-            flexDirection={isMobile ? 'column' : 'row'}
-          >
+          <Flex className="box-title">
+
             <Box className={'text-title'}>Select Your Plan</Box>
-            <AppButton
-              mr={10}
-              ml={isMobile ? 5 : 0}
-              mb={isMobile ? 5 : 0}
-              isDisabled={currentPlan.price === 0}
-              variant="cancel"
-              size="sm"
-              onClick={() => setIsOpenCancelSubscriptionModal(true)}
-            >
-              Cancel Subscription
-            </AppButton>
+
+            {currentPlan.price !== 0 && (
+              <Box className="box-btn-cancel">
+                <AppButton
+                  variant="cancel"
+                  size="sm"
+                  onClick={() => setIsOpenCancelSubscriptionModal(true)}
+                >
+                  Cancel Subscription
+                </AppButton>
+              </Box>
+            )}
           </Flex>
+
           {isMobile ? _renderPlansMobile() : _renderPlansDesktop()}
 
           <Flex
@@ -429,12 +431,15 @@ const BillingPage = () => {
             mt={5}
             flexDirection={isMobile ? 'column' : 'row'}
           >
-            <Box textAlign={'center'}>
-              If you need more apps or higher limits, please{' '}
-              <AppLink to="/contact-us" className="link">
-                Contact Us
-              </AppLink>
-            </Box>
+            <Flex>
+              <WarningIcon />
+              <Box textAlign={'center'} ml={3}>
+                If you need more apps or higher limits, please{' '}
+                <AppLink to="/contact-us" className="link">
+                  Contact Us
+                </AppLink>
+              </Box>
+            </Flex>
             <Box mb={isMobile ? 4 : 0} width={isMobile ? '100%' : 'auto'}>
               {userInfo?.isPaymentMethodIntegrated
                 ? _renderButtonUpdatePlan()
@@ -485,7 +490,7 @@ const BillingPage = () => {
                 </Flex>
 
                 <Flex flexDirection={'column'} alignItems={'center'}>
-                  <Box className="box-method__name">Card</Box>
+                  <Box className="box-method__name">Payment with card</Box>
                   <Flex alignItems={'flex-start'}>
                     <Box className="box-method__value">
                       (
@@ -534,7 +539,7 @@ const BillingPage = () => {
                   />
                 </Box>
                 <Flex flexDirection={'column'} alignItems={'center'}>
-                  <Box className="box-method__name">Crypto</Box>
+                  <Box className="box-method__name">Payment with crypto</Box>
                   <Box className="box-method__value">
                     (Total: ${user?.getBalance()})
                   </Box>

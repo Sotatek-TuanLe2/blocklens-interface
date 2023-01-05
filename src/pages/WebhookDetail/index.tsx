@@ -11,6 +11,7 @@ import PartWebhookGraph from './parts/PartWebhookGraph';
 import PartWebhookActivities from './parts/PartWebhookActivities';
 import useAppDetails from 'src/hooks/useAppDetails';
 import useWebhookDetails from 'src/hooks/useWebhook';
+import { getLogoChainByChainId } from '../../utils/utils-network';
 
 const WebhookDetail = () => {
   const history = useHistory();
@@ -40,6 +41,15 @@ const WebhookDetail = () => {
             linkBack={`/apps/${appId}`}
           />
           <Flex>
+            {!isMobile && (
+              <Flex alignItems={'center'} className="box-network">
+                <Box className={getLogoChainByChainId(appInfo.chain)} mr={2} />
+                <Box textTransform="capitalize">
+                  {appInfo?.network?.toLowerCase()}
+                </Box>
+              </Flex>
+            )}
+
             <AppButton
               size={'md'}
               variant="cancel"

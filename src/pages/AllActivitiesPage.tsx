@@ -31,7 +31,7 @@ import {
 } from '../utils/utils-helper';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { InfoIcon, LinkDetail, LinkIcon, RetryIcon } from 'src/assets/icons';
-import { getBlockExplorerUrl } from 'src/utils/utils-network';
+import { getBlockExplorerUrl, getLogoChainByChainId } from 'src/utils/utils-network';
 import { IAppResponse } from 'src/utils/utils-app';
 import useAppDetails from 'src/hooks/useAppDetails';
 import useWebhookDetails from 'src/hooks/useWebhook';
@@ -538,6 +538,15 @@ const AllActivitiesPage = () => {
             title="All Activities"
             linkBack={`/app/${appId}/webhooks/${webhookId}`}
           />
+
+          {!isMobile && (
+            <Flex alignItems={'center'} className="box-network">
+              <Box className={getLogoChainByChainId(appInfo.chain)} mr={2} />
+              <Box textTransform="capitalize">
+                {appInfo?.network?.toLowerCase()}
+              </Box>
+            </Flex>
+          )}
         </Flex>
 
         <AppCard className="list-table-wrap">
