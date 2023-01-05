@@ -23,10 +23,16 @@
 
 .title-heading {
   @include heading-4;
-  margin-bottom: 22px;
+  align-items: center;
 
   @include tablet {
     @include heading-6;
+
+    &--center {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
   }
 }
 
@@ -191,10 +197,6 @@
 
   @include tablet {
     margin-top: 20px;
-  }
-
-  .text-title {
-    text-transform: capitalize;
   }
 }
 

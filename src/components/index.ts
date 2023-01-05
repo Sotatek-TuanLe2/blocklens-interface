@@ -14,6 +14,8 @@ export { default as GoogleAuthButton } from './GoogleAuthButton';
 export { default as AppUploadABI } from './AppUploadABI';
 export { default as AppSelect2 } from './AppSelect2';
 export { default as AppGraph } from './AppGraph';
+export { default as AppHeading } from './AppHeading';
+export { default as AppFilter } from './AppFilter';
 
 export * from './AppCard';
 export * from './AppButton';
@@ -32,3 +34,5 @@ export * from './GoogleAuthButton';
 export * from './AppUploadABI';
 export * from './AppSelect2';
 export * from './AppGraph';
+export * from './AppHeading';
+export * from './AppFilter';

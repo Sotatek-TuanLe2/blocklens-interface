@@ -4,7 +4,7 @@ import rf from 'src/requests/RequestFactory';
 import { useParams } from 'react-router';
 import { ListStat } from 'src/pages/HomePage/parts/PartUserStats';
 import moment from 'moment';
-import { formatLargeNumber } from '../../../utils/utils-helper';
+import { formatLargeNumber } from 'src/utils/utils-helper';
 
 interface IWebhookStats {
   message?: number;

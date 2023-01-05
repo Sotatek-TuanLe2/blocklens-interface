@@ -33,7 +33,8 @@ import { isEVMNetwork } from 'src/utils/utils-network';
 import { useLocation } from 'react-router';
 import { DownloadIcon } from 'src/assets/icons';
 import { useDispatch } from 'react-redux';
-import { getUserStats } from '../../store/user';
+import { getUserStats } from 'src/store/user';
+import useAppDetails from 'src/hooks/useAppDetails';
 
 const FILE_CSV_EXAMPLE = '/abi/CSV_Example.csv';
 
@@ -75,7 +76,7 @@ const CreateWebhook = () => {
   };
 
   const history = useHistory();
-  const [appInfo, setAppInfo] = useState<any>({});
+  const { appInfo } = useAppDetails(appId);
   const [dataForm, setDataForm] = useState<IDataForm>(initDataCreateWebHook);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
   const [type, setType] = useState<string>(WEBHOOK_TYPES.NFT_ACTIVITY);
@@ -112,21 +113,6 @@ const CreateWebhook = () => {
       setType(typeParams);
     }
   }, [appInfo, typeParams]);
-
-  const getAppInfo = useCallback(async () => {
-    try {
-      const res = (await rf
-        .getRequest('AppRequest')
-        .getAppDetail(appId)) as any;
-      setAppInfo(res);
-    } catch (error: any) {
-      setAppInfo({});
-    }
-  }, [appId]);
-
-  useEffect(() => {
-    getAppInfo().then();
-  }, []);
 
   const validator = useRef(
     createValidator({
@@ -536,17 +522,13 @@ const CreateWebhook = () => {
 
           {_renderFormWebhook()}
 
-          <Flex justifyContent={isMobile ? 'center' : 'flex-end'}>
+          <Flex className="box-btn-create">
             <AppButton
               disabled={
                 isDisableSubmit || appInfo.status === APP_STATUS.DISABLED
               }
               onClick={handleSubmitForm}
-              size={'md'}
-              mt={isMobile ? 2 : 5}
-              mb={isMobile ? 5 : 0}
-              px={8}
-              py={3}
+              size={'lg'}
             >
               Create webhook
             </AppButton>
