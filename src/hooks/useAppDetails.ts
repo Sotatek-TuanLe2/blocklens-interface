@@ -22,7 +22,7 @@ const useAppDetails = (appId: string) => {
 
   return {
     appInfo,
-    getAppInfo
+    getAppInfo,
   };
 };
 

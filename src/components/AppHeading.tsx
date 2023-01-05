@@ -8,7 +8,7 @@ interface IHeading {
   isCenter?: boolean;
 }
 
-const AppHeading: FC<IHeading> = ({ title, linkBack, isCenter= false }) => {
+const AppHeading: FC<IHeading> = ({ title, linkBack, isCenter = false }) => {
   return (
     <Flex className="title-heading">
       {linkBack && (
@@ -17,7 +17,7 @@ const AppHeading: FC<IHeading> = ({ title, linkBack, isCenter= false }) => {
         </AppLink>
       )}
 
-      <Box className={isCenter ? 'title-heading--center': ''}>{title}</Box>
+      <Box className={isCenter ? 'title-heading--center' : ''}>{title}</Box>
     </Flex>
   );
 };

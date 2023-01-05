@@ -42,12 +42,14 @@ const AppMobile: FC<IAppMobile> = ({ app }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   return (
     <>
-      <Box className={`${isOpen ? 'open' : ''} card-mobile`}>
+      <Box
+        className={`${isOpen ? 'open' : ''} card-mobile`}
+        onClick={() => history.push(`/apps/${app.appId}`)}
+      >
         <Flex
           justifyContent="space-between"
           alignItems="center"
           className="info"
-          onClick={() => history.push(`/apps/${app.appId}`)}
         >
           <Box className="name-mobile">{app.name}</Box>
           <Box
@@ -263,10 +265,7 @@ const ListApps: React.FC = () => {
           <Text className="text-title">Apps</Text>
           <Flex alignItems={'center'}>
             {!isMobile && _renderTotalApp()}
-            <AppButton
-              size={'sm'}
-              onClick={onCreateApp}
-            >
+            <AppButton size={'sm'} onClick={onCreateApp}>
               <Box className="icon-plus-circle" mr={2} /> Create
             </AppButton>
           </Flex>
