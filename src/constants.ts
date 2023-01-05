@@ -705,3 +705,5 @@ export const COUNTRIES = [
     name: 'Zimbabwe',
   },
 ];
+
+export const TIME_EXPIRE_TOKEN_CLIENT = 20 * 60 * 1000; //miliseconds
