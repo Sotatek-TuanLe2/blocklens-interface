@@ -13,7 +13,7 @@ import { getChainConfig, getNetworkByEnv } from 'src/utils/utils-network';
 import { useHistory, useLocation } from 'react-router-dom';
 import { BasePageContainer } from 'src/layouts';
 import useTopUp from 'src/hooks/useTopUp';
-import AppCryptoForm from 'src/components/AppCryptoForm';
+import AppCryptoForm, { CHAIN_OPTIONS } from 'src/components/AppCryptoForm';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/store';
 import { IPlan } from 'src/store/billing';
@@ -64,14 +64,14 @@ const TopUpPage = () => {
   useEffect(() => {
     if (wallet?.getAddress()) {
       const networkCurrencies = getNetworkByEnv(
-        getChainConfig(wallet.getNework()),
+        getChainConfig(CHAIN_OPTIONS[0].value),
       ).currencies;
       const defaultCurrency =
         networkCurrencies[Object.keys(networkCurrencies)[0]];
       setDataForm((prevState) => ({
         ...prevState,
         walletAddress: wallet.getAddress(),
-        chainId: wallet.getNework(),
+        chainId: CHAIN_OPTIONS[0].value,
         currencyAddress: defaultCurrency.address,
       }));
     }

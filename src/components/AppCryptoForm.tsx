@@ -23,6 +23,15 @@ interface IAppCryptoForm {
   onChangeAmount: (value: string) => void;
 }
 
+const EXCEPTED_NETWORKS = ['ETH', 'BSC', 'POLYGON'];
+
+export const CHAIN_OPTIONS = Object.keys(config.chains)
+  .filter((chainId) => EXCEPTED_NETWORKS.includes(chainId))
+  .map((chainKey) => {
+    const chain = config.chains[chainKey];
+    return { label: chain.name, value: chain.id, icon: chain.icon };
+  });
+
 const AppCryptoForm: FC<IAppCryptoForm> = (props) => {
   const { wallet, isUserLinked } = useWallet();
   const { user } = useUser();
@@ -36,24 +45,8 @@ const AppCryptoForm: FC<IAppCryptoForm> = (props) => {
   } = props;
 
   const AMOUNT_OPTIONS = [300, 500, 1000];
-  const EXCEPTED_NETWORKS = ['ETH', 'BSC', 'POLYGON'];
-  const [balanceToken, setBalanceToken] = useState<string | number>('');
 
-  const CHAIN_OPTIONS = useMemo((): {
-    label: string;
-    value: string;
-    icon: string | undefined;
-  }[] => {
-    if (!wallet) {
-      return [];
-    }
-    return Object.keys(config.chains)
-      .filter((chainId) => EXCEPTED_NETWORKS.includes(chainId))
-      .map((chainKey) => {
-        const chain = config.chains[chainKey];
-        return { label: chain.name, value: chain.id, icon: chain.icon };
-      });
-  }, []);
+  const [balanceToken, setBalanceToken] = useState<string | number>('');
 
   const CURRENCY_OPTIONS = useMemo((): {
     label: string;
@@ -145,10 +138,16 @@ const AppCryptoForm: FC<IAppCryptoForm> = (props) => {
 
           <Flex width={'100%'} flexDirection={isMobile ? 'column' : 'row'}>
             <AppField label={''} customWidth={'49.5%'}>
-              <Flex justifyContent="space-between" className="field" flexDirection={isMobile ? 'column-reverse' : 'row'}>
+              <Flex
+                justifyContent="space-between"
+                className="field"
+                flexDirection={isMobile ? 'column-reverse' : 'row'}
+              >
                 <Box className="label">Top up amount</Box>
                 <Flex>
-                  <Box mr={2} className="label">User balance:</Box>
+                  <Box mr={2} className="label">
+                    User balance:
+                  </Box>
                   <Box>{balanceToken || '--'}</Box>
                 </Flex>
               </Flex>
