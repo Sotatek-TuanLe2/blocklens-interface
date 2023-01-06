@@ -82,7 +82,7 @@ const AppCryptoForm: FC<IAppCryptoForm> = (props) => {
     const getBalanceTokenCurrency = async () => {
       try {
         const balance = await getBalanceToken(
-          wallet?.getNework(),
+          chainId,
           currencyAddress,
           wallet?.getAddress(),
         );
@@ -93,7 +93,7 @@ const AppCryptoForm: FC<IAppCryptoForm> = (props) => {
     };
 
     getBalanceTokenCurrency().then();
-  }, [currencyAddress]);
+  }, [currencyAddress, chainId]);
 
   const _renderCryptoForm = () => {
     if (!wallet || !user || !isUserLinked) {
