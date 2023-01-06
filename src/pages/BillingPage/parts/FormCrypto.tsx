@@ -11,13 +11,13 @@ import useUser from 'src/hooks/useUser';
 import { ConnectWalletIcon } from 'src/assets/icons';
 import AppAlertWarning from 'src/components/AppAlertWarning';
 import { getChainConfig, getNetworkByEnv } from 'src/utils/utils-network';
-import { IPlan } from 'src/store/billing';
 import useTopUp from 'src/hooks/useTopUp';
 import AppCryptoForm from 'src/components/AppCryptoForm';
+import { MetadataPlan } from 'src/store/metadata';
 
 interface IFormCrypto {
   onNext: () => void;
-  planSelected: IPlan;
+  planSelected: MetadataPlan;
 }
 
 interface IDataForm {

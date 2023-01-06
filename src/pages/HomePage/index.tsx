@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import 'src/styles/pages/HomePage.scss';
 import { Flex, Box } from '@chakra-ui/react';
 import ListApps from './parts/ListApps';
@@ -7,16 +7,14 @@ import { BasePageContainer } from 'src/layouts';
 import PartUserStats from './parts/PartUserStats';
 import { AppButton, AppCard, AppHeading } from 'src/components';
 import ModalCreateApp from 'src/modals/ModalCreateApp';
-import { useSelector } from 'react-redux';
-import { RootState } from 'src/store';
 import { getUserStats } from 'src/store/user';
 import { useDispatch } from 'react-redux';
+import useUser from 'src/hooks/useUser';
 
 const HomePage = () => {
-  const {
-    stats: { totalApp, totalRegistrationActive, totalRegistration },
-  } = useSelector((state: RootState) => state.user);
-  const hasApp = !!totalApp && totalApp > 0;
+  const { user } = useUser();
+  const userStats = user?.getStats();
+  const hasApp = !!userStats?.totalApp && userStats?.totalApp > 0;
 
   const [openModalCreateApp, setOpenModalCreateApp] = useState<boolean>(false);
 
@@ -64,8 +62,8 @@ const HomePage = () => {
           <>
             <Box className={'statics'}>
               <PartUserStats
-                totalWebhookActive={totalRegistrationActive}
-                totalWebhook={totalRegistration}
+                totalWebhookActive={userStats?.totalRegistrationActive}
+                totalWebhook={userStats?.totalRegistration}
               />
             </Box>
 

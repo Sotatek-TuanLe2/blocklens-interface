@@ -26,7 +26,7 @@ import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import BaseConnector from 'src/connectors/BaseConnector';
 import useUser from './useUser';
 import rf from 'src/requests/RequestFactory';
-import { getInfoUser } from 'src/store/auth';
+import { getUserProfile } from 'src/store/user';
 
 type ReturnType = {
   currentNetwork: string;
@@ -132,7 +132,7 @@ const useWallet = (): ReturnType => {
         .getRequest('AuthRequest')
         .attachWalletAddress({ address, signature });
       // reload user's info
-      dispatch(getInfoUser());
+      dispatch(getUserProfile());
     } catch (error: any) {
       throw new Error(error.message);
     }
@@ -180,7 +180,7 @@ const useWallet = (): ReturnType => {
     try {
       await rf.getRequest('AuthRequest').unlinkWallet();
       // reload user's info
-      dispatch(getInfoUser());
+      dispatch(getUserProfile());
       disconnectWallet();
       toastSuccess({ message: 'Unlink wallet successfully!' });
     } catch (error: any) {

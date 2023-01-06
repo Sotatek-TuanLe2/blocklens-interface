@@ -1,20 +1,21 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { Box, Flex } from '@chakra-ui/react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { PAYMENT_METHOD, paymentMethods } from '..';
 import useWallet from 'src/hooks/useWallet';
 import { AppButton } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
-import { getMyPlan, IPlan } from 'src/store/billing';
 import AppAlertWarning from 'src/components/AppAlertWarning';
 import { formatShortText } from 'src/utils/utils-helper';
 import { CheckedIcon } from 'src/assets/icons';
 import { useHistory } from 'react-router-dom';
-import { RootState } from 'src/store';
+import useUser from 'src/hooks/useUser';
+import { MetadataPlan } from 'src/store/metadata';
+import { getUserPlan } from 'src/store/user';
 
 interface IPartCheckout {
-  planSelected: IPlan;
+  planSelected: MetadataPlan;
   paymentMethodCode: string;
   onBack: () => void;
 }
@@ -27,7 +28,7 @@ const PartCheckout: FC<IPartCheckout> = ({
   const { wallet } = useWallet();
   const dispatch = useDispatch();
   const history = useHistory();
-  const { userInfo } = useSelector((state: RootState) => state.auth);
+  const { user } = useUser();
 
   const paymentMethod = paymentMethods.find(
     (item) => item.code === paymentMethodCode,
@@ -63,7 +64,7 @@ const PartCheckout: FC<IPartCheckout> = ({
         .getRequest('BillingRequest')
         .updateBillingPlan({ code: planSelected.code });
       toastSuccess({ message: 'Update Successfully!' });
-      dispatch(getMyPlan());
+      dispatch(getUserPlan());
       history.push('/billing-history');
     } catch (e: any) {
       toastError({ message: e?.message || 'Oops. Something went wrong!' });
@@ -73,14 +74,14 @@ const PartCheckout: FC<IPartCheckout> = ({
   const _renderInfoPayment = () => {
     if (paymentMethod?.code === PAYMENT_METHOD.CARD) {
       return (
-        userInfo?.stripePaymentMethod?.card?.brand +
+        user?.getStripePayment()?.card?.brand +
         ' - ' +
-        userInfo?.stripePaymentMethod?.card?.last4
+        user?.getStripePayment()?.card?.last4
       );
     }
 
     return formatShortText(
-      wallet?.getAddress() || userInfo?.walletAddress || '',
+      wallet?.getAddress() || user?.getLinkedAddress() || '',
     );
   };
 

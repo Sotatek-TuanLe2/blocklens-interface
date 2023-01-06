@@ -44,25 +44,28 @@ const WebhookMobile: FC<IWebhookItem> = ({ webhook, appInfo, type }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   return (
     <>
-      <Box className={`${isOpen ? 'open' : ''} card-mobile`}>
+      <Box
+        className={`${isOpen ? 'open' : ''} card-mobile`}
+        onClick={() =>
+          history.push(
+            `/app/${appInfo.appId}/webhooks/${webhook.registrationId}`,
+          )
+        }
+      >
         <Flex
           justifyContent="space-between"
           alignItems="center"
           className="info"
         >
-          <Box
-            className="name-mobile"
-            onClick={() =>
-              history.push(
-                `/app/${appInfo.appId}/webhooks/${webhook.registrationId}`,
-              )
-            }
-          >
+          <Box className="name-mobile">
             {formatShortText(webhook.registrationId)}
           </Box>
           <Box
             className={isOpen ? 'icon-minus' : 'icon-plus'}
-            onClick={() => setIsOpen(!isOpen)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsOpen(!isOpen)
+            }}
           />
         </Flex>
         <Flex

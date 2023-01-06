@@ -1,20 +1,19 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { Box, Flex } from '@chakra-ui/react';
-import { IPlan } from 'src/store/billing';
 import { AppCard, AppButton } from 'src/components';
 import { ConnectWalletIcon } from 'src/assets/icons';
 import { useHistory } from 'react-router';
-import { useSelector } from 'react-redux';
-import { RootState } from 'src/store';
+import useUser from 'src/hooks/useUser';
+import { MetadataPlan } from 'src/store/metadata';
 
 interface IPartTopUp {
-  planSelected: IPlan;
+  planSelected: MetadataPlan;
   onBack: () => void;
 }
 
 const PartTopUp: FC<IPartTopUp> = ({ onBack, planSelected }) => {
   const history = useHistory();
-  const { userInfo } = useSelector((state: RootState) => state.auth);
+  const { user } = useUser();
 
   return (
     <Box className="form-card">
@@ -52,7 +51,7 @@ const PartTopUp: FC<IPartTopUp> = ({ onBack, planSelected }) => {
             <Box className="box-top-up__label">crypto</Box>
             <Flex alignItems={'center'} justifyContent={'space-between'}>
               <Box className="box-top-up__name">Balance</Box>
-              <Box className="box-top-up__value">${userInfo.balance}</Box>
+              <Box className="box-top-up__value">${user?.getBalance()}</Box>
             </Flex>
           </AppCard>
         </Box>

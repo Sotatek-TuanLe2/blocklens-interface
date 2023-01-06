@@ -7,14 +7,12 @@ import {
   Table,
   TableContainer,
 } from '@chakra-ui/react';
-import React, { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import BigNumber from 'bignumber.js';
 import 'src/styles/pages/BillingPage.scss';
 import { BasePageContainer } from 'src/layouts';
-import { AppButton, AppCard, AppHeading, AppLink } from 'src/components';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from 'src/store';
-import { getMyPlan, IPlan } from 'src/store/billing';
+import { AppButton, AppCard, AppLink, AppHeading } from 'src/components';
+import { useDispatch } from 'react-redux';
 import {
   CheckedIcon,
   RadioNoCheckedIcon,
@@ -36,8 +34,10 @@ import { useHistory } from 'react-router';
 import PartPaymentInfo from './parts/PartPaymentInfo';
 import ModalEditCreditCard from 'src/modals/ModalEditCreditCard';
 import ModalCancelSubscription from 'src/modals/ModalCancelSubscription';
-import { getInfoUser } from 'src/store/auth';
 import PartTopUp from './parts/PartTopUp';
+import { getUserPlan, getUserProfile } from 'src/store/user';
+import { MetadataPlan } from 'src/store/metadata';
+import useMetadata from 'src/hooks/useMetadata';
 
 export const PAYMENT_METHOD = {
   CARD: 'STRIPE',
@@ -63,10 +63,10 @@ export const paymentMethods = [
 ];
 
 interface IPlanMobile {
-  plan: IPlan;
-  planSelected: IPlan;
-  currentPlan: IPlan;
-  onSelect: (value: IPlan) => void;
+  plan: MetadataPlan;
+  planSelected: MetadataPlan;
+  currentPlan: MetadataPlan;
+  onSelect: (value: MetadataPlan) => void;
 }
 
 const _renderPrice = (price: number | null) => {
@@ -146,41 +146,39 @@ const BillingPage = () => {
   );
   const [isOpenCancelSubscriptionModal, setIsOpenCancelSubscriptionModal] =
     useState<boolean>(false);
-  const [planSelected, setPlanSelected] = useState<IPlan>({} as any);
+  const [planSelected, setPlanSelected] = useState<MetadataPlan>({} as any);
   const [isOpenEditCardModal, setIsOpenEditCardModal] =
     useState<boolean>(false);
   const [isReloadingUserInfo, setIsReloadingUserInfo] =
     useState<boolean>(false);
   const [step, setStep] = useState<number>(STEPS.LIST);
-  const { myPlan: currentPlan, plans: billingPlans } = useSelector(
-    (state: RootState) => state.billing,
-  );
-  const { userInfo } = useSelector((state: RootState) => state.auth);
-
   const { user } = useUser();
+  const { billingPlans } = useMetadata();
   const dispatch = useDispatch();
   const history = useHistory();
 
   useEffect(() => {
-    setPaymentMethod(userInfo.activePaymentMethod || PAYMENT_METHOD.CARD);
-  }, [userInfo]);
+    setPaymentMethod(user?.getActivePaymentMethod() || PAYMENT_METHOD.CARD);
+  }, [user?.getActivePaymentMethod()]);
 
   useEffect(() => {
-    setPlanSelected(currentPlan);
-  }, [currentPlan]);
+    if (user) {
+      setPlanSelected(user.getPlan());
+    }
+  }, [user?.getPlan()]);
 
   useEffect(() => {
     const RELOAD_BALANCE_DURATION = 30;
     let reloadBalanceInterval: any = null;
-    if (userInfo.activePaymentMethod === PAYMENT_METHOD.CRYPTO) {
+    if (user?.getActivePaymentMethod() === PAYMENT_METHOD.CRYPTO) {
       reloadBalanceInterval = setInterval(() => {
-        dispatch(getInfoUser());
+        dispatch(getUserProfile());
       }, RELOAD_BALANCE_DURATION * 1000);
     }
     return () => {
       clearInterval(reloadBalanceInterval);
     };
-  }, [userInfo.activePaymentMethod]);
+  }, [user?.getActivePaymentMethod()]);
 
   const isSufficientBalance = useMemo(() => {
     if (!user) {
@@ -192,18 +190,18 @@ const BillingPage = () => {
   }, [user?.getBalance(), planSelected]);
 
   const isCurrentPlan = new BigNumber(planSelected.price).isEqualTo(
-    new BigNumber(currentPlan.price),
+    new BigNumber(user?.getPlan().price || 0),
   );
   const isDownGrade = new BigNumber(planSelected.price).isLessThan(
-    new BigNumber(currentPlan.price),
+    new BigNumber(user?.getPlan().price || 0),
   );
 
   const _renderPlansDesktop = () => {
     const _renderBody = () => {
       return (
         <Tbody>
-          {billingPlans?.map((plan: IPlan, index: number) => {
-            const isCurrentPlan = plan.code === currentPlan.code;
+          {billingPlans?.map((plan: MetadataPlan, index: number) => {
+            const isCurrentPlan = plan.code === user?.getPlan().code;
             const isActivePlan = planSelected.code === plan.code;
             return (
               <Tr
@@ -264,14 +262,17 @@ const BillingPage = () => {
   };
 
   const _renderPlansMobile = () => {
+    if (!user) {
+      return null;
+    }
     return (
       <Box className="list-card-mobile">
-        {billingPlans?.map((plan: IPlan, index: number) => {
+        {billingPlans?.map((plan: MetadataPlan, index: number) => {
           return (
             <PlanMobile
               plan={plan}
               key={index}
-              currentPlan={currentPlan}
+              currentPlan={user.getPlan()}
               planSelected={planSelected}
               onSelect={setPlanSelected}
             />
@@ -287,7 +288,7 @@ const BillingPage = () => {
         .getRequest('BillingRequest')
         .updateBillingPlan({ code: planSelected.code });
       toastSuccess({ message: 'Downgrade Plan Successfully!' });
-      dispatch(getMyPlan());
+      dispatch(getUserPlan());
     } catch (error: any) {
       toastError({ message: error.message });
     }
@@ -299,7 +300,7 @@ const BillingPage = () => {
         .getRequest('UserRequest')
         .editInfoUser({ activePaymentMethod: method });
       toastSuccess({ message: 'Update Successfully!' });
-      dispatch(getInfoUser());
+      dispatch(getUserProfile());
     } catch (error: any) {
       toastError({ message: error.message });
     }
@@ -313,7 +314,7 @@ const BillingPage = () => {
     // isUpgrade
     if (
       paymentMethod === PAYMENT_METHOD.CARD &&
-      !userInfo?.stripePaymentMethod
+      !user?.getStripePayment()
     ) {
       setStep(STEPS.FORM);
       return;
@@ -332,7 +333,7 @@ const BillingPage = () => {
 
   const onReloadUserInfo = async () => {
     setIsReloadingUserInfo(true);
-    await dispatch(getInfoUser());
+    await dispatch(getUserProfile());
     setIsReloadingUserInfo(false);
     toastSuccess({ message: 'Reload balance successfully!' });
   };
@@ -409,7 +410,7 @@ const BillingPage = () => {
 
             <Box className={'text-title'}>Select Your Plan</Box>
 
-            {currentPlan.price !== 0 && (
+            {user?.getPlan().price !== 0 && (
               <Box className="box-btn-cancel">
                 <AppButton
                   variant="cancel"
@@ -441,7 +442,7 @@ const BillingPage = () => {
               </Box>
             </Flex>
             <Box mb={isMobile ? 4 : 0} width={isMobile ? '100%' : 'auto'}>
-              {userInfo?.isPaymentMethodIntegrated
+              {user?.isPaymentMethodIntegrated()
                 ? _renderButtonUpdatePlan()
                 : _renderButton()}
             </Box>
@@ -494,11 +495,11 @@ const BillingPage = () => {
                   <Flex alignItems={'flex-start'}>
                     <Box className="box-method__value">
                       (
-                      {!userInfo?.stripePaymentMethod
+                      {!user.getStripePayment()
                         ? '---'
-                        : userInfo?.stripePaymentMethod?.card?.brand +
+                        : user.getStripePayment()?.card?.brand +
                           ' - ' +
-                          userInfo?.stripePaymentMethod?.card?.last4}
+                          user.getStripePayment().card?.last4}
                       )
                     </Box>
                     <Box
