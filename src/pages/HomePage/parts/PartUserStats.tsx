@@ -1,12 +1,11 @@
 import { Box, SimpleGrid } from '@chakra-ui/react';
-import React, { useCallback, useEffect, useMemo, useState, FC } from 'react';
+import { useCallback, useEffect, useMemo, useState, FC } from 'react';
 import { isMobile } from 'react-device-detect';
 import AppStatistical, { keyStats } from 'src/components/AppStatistical';
 import rf from 'src/requests/RequestFactory';
 import moment from 'moment';
-import { useSelector } from 'react-redux';
-import { RootState } from 'src/store';
 import { formatLargeNumber } from 'src/utils/utils-helper';
+import useUser from 'src/hooks/useUser';
 
 interface IUserStats {
   message?: number;
@@ -98,14 +97,14 @@ export const ListStat: FC<IListStat> = ({ dataStats, dataChart }) => {
 
 const PartUserStats = ({
   totalWebhookActive,
+  totalWebhook,
 }: {
   totalWebhookActive?: number;
+  totalWebhook?: number;
 }) => {
   const [userStatsToday, setUserStatsToday] = useState<IUserStats | any>({});
   const [dataChart, setDataChart] = useState<IUserStats[] | any>([]);
-  const { myPlan: currentPlan } = useSelector(
-    (state: RootState) => state.billing,
-  );
+  const { user } = useUser();
 
   const getUserStatsToday = useCallback(async () => {
     try {
@@ -140,8 +139,7 @@ const PartUserStats = ({
 
   const dataUserStatsToday = useMemo(() => {
     const getValue = (value?: number, total?: number) => {
-      if (!total) return '--';
-      if (!value) return `--/${formatLargeNumber(total)}`;
+      if (!total || !value) return '--';
       return `${formatLargeNumber(value)}/${formatLargeNumber(total)}`;
     };
 
@@ -151,7 +149,7 @@ const PartUserStats = ({
           ...item,
           value: getValue(
             +userStatsToday.message,
-            currentPlan?.notificationLimitation,
+            user?.getPlan().notificationLimitation,
           ),
         };
       }
@@ -183,7 +181,7 @@ const PartUserStats = ({
       if (item.key === 'webhooks') {
         return {
           ...item,
-          value: getValue(totalWebhookActive, userStatsToday.webhooks),
+          value: getValue(totalWebhookActive, totalWebhook),
         };
       }
 

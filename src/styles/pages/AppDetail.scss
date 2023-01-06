@@ -7,6 +7,7 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 30px;
+    position: relative;
   }
 
   .name {
@@ -156,12 +157,14 @@
   }
 }
 
-.infos {
+.statics {
   margin-bottom: 30px;
   @include tablet {
     margin-bottom: 20px;
   }
+}
 
+.infos {
   .box-info {
     display: flex;
     flex-direction: column;
@@ -231,14 +234,25 @@
   @include tablet {
     padding: 20px !important;
   }
+
+  .box-status {
+    align-items: center;
+    flex-direction: row;
+
+    @include tablet {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  }
 }
 
 .basic-setting {
-  margin-bottom: 30px;
+  margin: 30px 0;
   padding-top: 30px !important;
 
   @include tablet {
     padding: 20px !important;
+    margin: 20px 0;
   }
 
   .chain-app {
@@ -280,7 +294,6 @@
 
   .select-type-webhook {
     .app-select__btn-select {
-      background-color: $bg2;
       z-index: 99;
     }
   }
@@ -306,6 +319,16 @@
     position: absolute;
     right: 0;
     top: -5px;
+  }
+
+  .box-btn-create {
+    justify-content: flex-end;
+    margin-top: 20px;
+
+    @include tablet {
+      justify-content: center;
+      margin-bottom: 20px;
+    }
   }
 }
 

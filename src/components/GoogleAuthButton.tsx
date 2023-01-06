@@ -3,13 +3,12 @@ import { GoogleLogin } from 'react-google-login';
 import { gapi } from 'gapi-script';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import rf from 'src/requests/RequestFactory';
-import { setAccessToken, setUserInfo } from 'src/store/auth';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
 import AppButton from './AppButton';
 import { Box } from '@chakra-ui/react';
 import config from 'src/config';
-import { getUserStats } from '../store/user';
+import { getUserStats, setUserAuth, setUserProfile } from '../store/user';
 
 const clientId = config.auth.googleClientId;
 
@@ -38,8 +37,8 @@ const GoogleAuthButton: FC<IGoogleAuthButton> = ({ children }) => {
         ggAccessToken: response.accessToken,
       });
 
-      dispatch(setAccessToken(res));
-      dispatch(setUserInfo(res.user));
+      dispatch(setUserAuth(res));
+      dispatch(setUserProfile(res.user));
       dispatch(getUserStats());
       toastSuccess({ message: 'Welcome to Blocksniper!' });
       history.push('/');

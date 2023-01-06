@@ -12,8 +12,45 @@
     }
   }
 
+  .box-change-plan {
+    margin-top: 20px;
+    padding: 40px 40px 20px 40px;
+
+    @include tablet {
+      padding: 20px;
+    }
+
+    &__title {
+      @include heading-6;
+      color: $title;
+
+      @include tablet {
+        @include heading-8;
+      }
+    }
+  }
+
   .list-table-wrap {
     padding: 0;
+
+    .box-title {
+      justify-content: space-between;
+      align-items: center;
+
+      @include tablet {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .box-btn-cancel {
+        margin-right: 40px;
+
+        @include tablet {
+          margin-left: 20px;
+          margin-bottom: 20px;
+        }
+      }
+    }
 
     .text-title {
       @include heading-6;
@@ -152,10 +189,6 @@
       @include tablet {
         padding: 20px;
       }
-
-      .app-select__btn-select {
-        background-color: $bg2;
-      }
     }
 
     .box-connect-wallet {
@@ -190,10 +223,10 @@
     }
 
     .amount-options {
-      margin-left: -200px;
+      margin-top: 42px;
 
       @include tablet {
-        margin-left: -140px;
+        margin-top: 0;
       }
 
       .amount-option {
@@ -205,10 +238,19 @@
         border: 1px solid $disable;
         color: $paragraph;
         cursor: pointer;
+        height: max-content;
+
+        &:first-child {
+          margin-left: 10px;
+        }
 
         @include tablet {
           @include text-small-regular;
           padding: 4px 8px;
+
+          &:first-child {
+            margin-left: 0;
+          }
         }
 
         &.active {
@@ -326,12 +368,12 @@
     color: $paragraph;
   }
 
-  &__name, &__method {
+  &__name,
+  &__method {
     font-weight: 700;
     font-size: 20px;
     line-height: 26px;
     margin-bottom: 2px;
-    text-transform: uppercase;
 
     @include tablet {
       font-size: 16px;
@@ -353,17 +395,30 @@
       width: 26px;
       height: 26px;
     }
+    .is-reloading {
+      animation: spin 1s infinite linear;
+    }
   }
 }
 
 .box-top-up {
-  border: 1.6px solid $line;
   border-radius: 18px;
   width: 49%;
-  padding: 30px 36px;
 
   @include tablet {
     width: 100%;
+
+    &:first-child {
+      margin-bottom: 20px;
+    }
+  }
+
+  & > div {
+    padding: 30px 36px;
+
+    @include tablet {
+      padding: 20px;
+    }
   }
 
   &__label {

@@ -7,14 +7,12 @@ import {
   Table,
   TableContainer,
 } from '@chakra-ui/react';
-import React, { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import BigNumber from 'bignumber.js';
 import 'src/styles/pages/BillingPage.scss';
 import { BasePageContainer } from 'src/layouts';
-import { AppButton, AppCard, AppLink } from 'src/components';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from 'src/store';
-import { getMyPlan, IPlan } from 'src/store/billing';
+import { AppButton, AppCard, AppLink, AppHeading } from 'src/components';
+import { useDispatch } from 'react-redux';
 import {
   CheckedIcon,
   RadioNoCheckedIcon,
@@ -24,6 +22,7 @@ import {
   ListCardIcon,
   CircleCheckedIcon,
   CryptoIcon,
+  ReloadIcon, WarningIcon,
 } from 'src/assets/icons';
 import { isMobile } from 'react-device-detect';
 import PartCheckout from './parts/PartCheckout';
@@ -35,8 +34,10 @@ import { useHistory } from 'react-router';
 import PartPaymentInfo from './parts/PartPaymentInfo';
 import ModalEditCreditCard from 'src/modals/ModalEditCreditCard';
 import ModalCancelSubscription from 'src/modals/ModalCancelSubscription';
-import { getInfoUser } from 'src/store/auth';
 import PartTopUp from './parts/PartTopUp';
+import { getUserPlan, getUserProfile } from 'src/store/user';
+import { MetadataPlan } from 'src/store/metadata';
+import useMetadata from 'src/hooks/useMetadata';
 
 export const PAYMENT_METHOD = {
   CARD: 'STRIPE',
@@ -62,10 +63,10 @@ export const paymentMethods = [
 ];
 
 interface IPlanMobile {
-  plan: IPlan;
-  planSelected: IPlan;
-  currentPlan: IPlan;
-  onSelect: (value: IPlan) => void;
+  plan: MetadataPlan;
+  planSelected: MetadataPlan;
+  currentPlan: MetadataPlan;
+  onSelect: (value: MetadataPlan) => void;
 }
 
 const _renderPrice = (price: number | null) => {
@@ -122,7 +123,7 @@ const PlanMobile: FC<IPlanMobile> = ({
           <Box className="plan-detail">
             <Flex alignItems={'center'} my={2}>
               <CheckedIcon />
-              <Box ml={3}> {plan.appLimitation} active apps </Box>
+              <Box ml={3}> {plan.appLimitation} apps </Box>
             </Flex>
             <Flex alignItems={'center'} my={2}>
               <CheckedIcon />
@@ -145,26 +146,39 @@ const BillingPage = () => {
   );
   const [isOpenCancelSubscriptionModal, setIsOpenCancelSubscriptionModal] =
     useState<boolean>(false);
-  const [planSelected, setPlanSelected] = useState<IPlan>({} as any);
+  const [planSelected, setPlanSelected] = useState<MetadataPlan>({} as any);
   const [isOpenEditCardModal, setIsOpenEditCardModal] =
     useState<boolean>(false);
+  const [isReloadingUserInfo, setIsReloadingUserInfo] =
+    useState<boolean>(false);
   const [step, setStep] = useState<number>(STEPS.LIST);
-  const { myPlan: currentPlan, plans: billingPlans } = useSelector(
-    (state: RootState) => state.billing,
-  );
-  const { userInfo } = useSelector((state: RootState) => state.auth);
-
   const { user } = useUser();
+  const { billingPlans } = useMetadata();
   const dispatch = useDispatch();
   const history = useHistory();
 
   useEffect(() => {
-    setPaymentMethod(userInfo.activePaymentMethod || PAYMENT_METHOD.CARD);
-  }, [userInfo]);
+    setPaymentMethod(user?.getActivePaymentMethod() || PAYMENT_METHOD.CARD);
+  }, [user?.getActivePaymentMethod()]);
 
   useEffect(() => {
-    setPlanSelected(currentPlan);
-  }, [currentPlan]);
+    if (user) {
+      setPlanSelected(user.getPlan());
+    }
+  }, [user?.getPlan()]);
+
+  useEffect(() => {
+    const RELOAD_BALANCE_DURATION = 30;
+    let reloadBalanceInterval: any = null;
+    if (user?.getActivePaymentMethod() === PAYMENT_METHOD.CRYPTO) {
+      reloadBalanceInterval = setInterval(() => {
+        dispatch(getUserProfile());
+      }, RELOAD_BALANCE_DURATION * 1000);
+    }
+    return () => {
+      clearInterval(reloadBalanceInterval);
+    };
+  }, [user?.getActivePaymentMethod()]);
 
   const isSufficientBalance = useMemo(() => {
     if (!user) {
@@ -176,18 +190,18 @@ const BillingPage = () => {
   }, [user?.getBalance(), planSelected]);
 
   const isCurrentPlan = new BigNumber(planSelected.price).isEqualTo(
-    new BigNumber(currentPlan.price),
+    new BigNumber(user?.getPlan().price || 0),
   );
   const isDownGrade = new BigNumber(planSelected.price).isLessThan(
-    new BigNumber(currentPlan.price),
+    new BigNumber(user?.getPlan().price || 0),
   );
 
   const _renderPlansDesktop = () => {
     const _renderBody = () => {
       return (
         <Tbody>
-          {billingPlans?.map((plan: IPlan, index: number) => {
-            const isCurrentPlan = plan.code === currentPlan.code;
+          {billingPlans?.map((plan: MetadataPlan, index: number) => {
+            const isCurrentPlan = plan.code === user?.getPlan().code;
             const isActivePlan = planSelected.code === plan.code;
             return (
               <Tr
@@ -248,14 +262,17 @@ const BillingPage = () => {
   };
 
   const _renderPlansMobile = () => {
+    if (!user) {
+      return null;
+    }
     return (
       <Box className="list-card-mobile">
-        {billingPlans?.map((plan: IPlan, index: number) => {
+        {billingPlans?.map((plan: MetadataPlan, index: number) => {
           return (
             <PlanMobile
               plan={plan}
               key={index}
-              currentPlan={currentPlan}
+              currentPlan={user.getPlan()}
               planSelected={planSelected}
               onSelect={setPlanSelected}
             />
@@ -271,7 +288,7 @@ const BillingPage = () => {
         .getRequest('BillingRequest')
         .updateBillingPlan({ code: planSelected.code });
       toastSuccess({ message: 'Downgrade Plan Successfully!' });
-      dispatch(getMyPlan());
+      dispatch(getUserPlan());
     } catch (error: any) {
       toastError({ message: error.message });
     }
@@ -283,7 +300,7 @@ const BillingPage = () => {
         .getRequest('UserRequest')
         .editInfoUser({ activePaymentMethod: method });
       toastSuccess({ message: 'Update Successfully!' });
-      dispatch(getInfoUser());
+      dispatch(getUserProfile());
     } catch (error: any) {
       toastError({ message: error.message });
     }
@@ -295,6 +312,14 @@ const BillingPage = () => {
       return;
     }
     // isUpgrade
+    if (
+      paymentMethod === PAYMENT_METHOD.CARD &&
+      !user?.getStripePayment()
+    ) {
+      setStep(STEPS.FORM);
+      return;
+    }
+
     if (paymentMethod === PAYMENT_METHOD.CRYPTO) {
       if (isSufficientBalance) {
         setStep(STEPS.CHECKOUT);
@@ -304,6 +329,13 @@ const BillingPage = () => {
     } else {
       setStep(STEPS.CHECKOUT);
     }
+  };
+
+  const onReloadUserInfo = async () => {
+    setIsReloadingUserInfo(true);
+    await dispatch(getUserProfile());
+    setIsReloadingUserInfo(false);
+    toastSuccess({ message: 'Reload balance successfully!' });
   };
 
   const _renderButtonUpdatePlan = () => {
@@ -356,7 +388,10 @@ const BillingPage = () => {
     return (
       <>
         <Flex justifyContent={'space-between'}>
-          <Box className="heading-title">Billing</Box>
+          <Box mb={7}>
+            <AppHeading title="Billing" />
+          </Box>
+
           {user?.isPaymentMethodIntegrated && (
             <Flex
               className="link"
@@ -371,24 +406,23 @@ const BillingPage = () => {
         </Flex>
 
         <AppCard className="list-table-wrap">
-          <Flex
-            justifyContent={'space-between'}
-            alignItems={isMobile ? 'flex-start' : 'center'}
-            flexDirection={isMobile ? 'column' : 'row'}
-          >
+          <Flex className="box-title">
+
             <Box className={'text-title'}>Select Your Plan</Box>
-            <AppButton
-              mr={10}
-              ml={isMobile ? 5 : 0}
-              mb={isMobile ? 5 : 0}
-              isDisabled={currentPlan.price === 0}
-              variant="cancel"
-              size="sm"
-              onClick={() => setIsOpenCancelSubscriptionModal(true)}
-            >
-              Cancel Subscription
-            </AppButton>
+
+            {user?.getPlan().price !== 0 && (
+              <Box className="box-btn-cancel">
+                <AppButton
+                  variant="cancel"
+                  size="sm"
+                  onClick={() => setIsOpenCancelSubscriptionModal(true)}
+                >
+                  Cancel Subscription
+                </AppButton>
+              </Box>
+            )}
           </Flex>
+
           {isMobile ? _renderPlansMobile() : _renderPlansDesktop()}
 
           <Flex
@@ -398,14 +432,17 @@ const BillingPage = () => {
             mt={5}
             flexDirection={isMobile ? 'column' : 'row'}
           >
-            <Box textAlign={'center'}>
-              If you need more apps or higher limits, please{' '}
-              <AppLink to="/contact-us" className="link">
-                Contact Us
-              </AppLink>
-            </Box>
+            <Flex>
+              <WarningIcon />
+              <Box textAlign={'center'} ml={3}>
+                If you need more apps or higher limits, please{' '}
+                <AppLink to="/contact-us" className="link">
+                  Contact Us
+                </AppLink>
+              </Box>
+            </Flex>
             <Box mb={isMobile ? 4 : 0} width={isMobile ? '100%' : 'auto'}>
-              {userInfo?.isPaymentMethodIntegrated
+              {user?.isPaymentMethodIntegrated()
                 ? _renderButtonUpdatePlan()
                 : _renderButton()}
             </Box>
@@ -429,82 +466,99 @@ const BillingPage = () => {
         </AppCard>
 
         {user?.isPaymentMethodIntegrated && (
-          <Flex flexWrap={'wrap'} justifyContent={'space-between'} mt={5}>
-            <Box
-              className={`${
-                paymentMethod === PAYMENT_METHOD.CARD ? 'active' : ''
-              } box-method`}
-            >
-              <Flex justifyContent={'space-between'}>
+          <AppCard className={'box-change-plan'}>
+            <Box className={'box-change-plan__title'}>
+              Change Payment Method
+            </Box>
+            <Flex flexWrap={'wrap'} justifyContent={'space-between'} mt={5}>
+              <Box
+                className={`${
+                  paymentMethod === PAYMENT_METHOD.CARD ? 'active' : ''
+                } box-method`}
+              >
+                <Flex justifyContent={'space-between'}>
+                  <Box className="icon-checked-active">
+                    {paymentMethod === PAYMENT_METHOD.CARD ? (
+                      <CircleCheckedIcon />
+                    ) : (
+                      <RadioNoCheckedIcon
+                        onClick={() =>
+                          onChangePaymentMethod(PAYMENT_METHOD.CARD)
+                        }
+                      />
+                    )}
+                  </Box>
+                </Flex>
+
+                <Flex flexDirection={'column'} alignItems={'center'}>
+                  <Box className="box-method__name">Payment with card</Box>
+                  <Flex alignItems={'flex-start'}>
+                    <Box className="box-method__value">
+                      (
+                      {!user.getStripePayment()
+                        ? '---'
+                        : user.getStripePayment()?.card?.brand +
+                          ' - ' +
+                          user.getStripePayment().card?.last4}
+                      )
+                    </Box>
+                    <Box
+                      ml={4}
+                      mt={1}
+                      onClick={() => setIsOpenEditCardModal(true)}
+                      className={'box-method__btn-edit'}
+                    >
+                      <EditIcon />
+                    </Box>
+                  </Flex>
+                  <ListCardIcon />
+                </Flex>
+              </Box>
+
+              <Box
+                className={`${
+                  paymentMethod === PAYMENT_METHOD.CRYPTO ? 'active' : ''
+                } box-method`}
+              >
                 <Box
                   className="icon-checked-active"
-                  onClick={() => onChangePaymentMethod(PAYMENT_METHOD.CARD)}
+                  display="flex"
+                  justifyContent="space-between"
                 >
-                  {paymentMethod === PAYMENT_METHOD.CARD ? (
+                  {paymentMethod === PAYMENT_METHOD.CRYPTO ? (
                     <CircleCheckedIcon />
                   ) : (
-                    <RadioNoCheckedIcon />
+                    <RadioNoCheckedIcon
+                      onClick={() =>
+                        onChangePaymentMethod(PAYMENT_METHOD.CRYPTO)
+                      }
+                    />
                   )}
+                  <ReloadIcon
+                    className={isReloadingUserInfo ? 'is-reloading' : ''}
+                    onClick={onReloadUserInfo}
+                  />
                 </Box>
-                <Box
-                  onClick={() => setIsOpenEditCardModal(true)}
-                  className={'box-method__btn-edit'}
-                >
-                  <EditIcon />
-                </Box>
-              </Flex>
-
-              <Flex flexDirection={'column'} alignItems={'center'}>
-                <Box className="box-method__name">Card</Box>
-                <Box className="box-method__value">
-                  (
-                  {!userInfo?.stripePaymentMethod
-                    ? '---'
-                    : userInfo?.stripePaymentMethod?.card?.brand +
-                      ' - ' +
-                      userInfo?.stripePaymentMethod?.card?.last4}
-                  )
-                </Box>
-                <ListCardIcon />
-              </Flex>
-            </Box>
-
-            <Box
-              className={`${
-                paymentMethod === PAYMENT_METHOD.CRYPTO ? 'active' : ''
-              } box-method`}
-            >
-              <Box
-                className="icon-checked-active"
-                onClick={() => onChangePaymentMethod(PAYMENT_METHOD.CRYPTO)}
-              >
-                {paymentMethod === PAYMENT_METHOD.CRYPTO ? (
-                  <CircleCheckedIcon />
-                ) : (
-                  <RadioNoCheckedIcon />
-                )}
+                <Flex flexDirection={'column'} alignItems={'center'}>
+                  <Box className="box-method__name">Payment with crypto</Box>
+                  <Box className="box-method__value">
+                    (Total: ${user?.getBalance()})
+                  </Box>
+                  <CryptoIcon />
+                </Flex>
               </Box>
-              <Flex flexDirection={'column'} alignItems={'center'}>
-                <Box className="box-method__name">Crypto</Box>
-                <Box className="box-method__value">
-                  (Total: ${user?.getBalance()})
-                </Box>
-                <CryptoIcon />
-              </Flex>
-            </Box>
-            {isOpenEditCardModal && (
-              <ModalEditCreditCard
-                open={isOpenEditCardModal}
-                onClose={() => setIsOpenEditCardModal(false)}
-              />
-            )}
-          </Flex>
+              {isOpenEditCardModal && (
+                <ModalEditCreditCard
+                  open={isOpenEditCardModal}
+                  onClose={() => setIsOpenEditCardModal(false)}
+                />
+              )}
+            </Flex>
+          </AppCard>
         )}
       </>
     );
   };
-
-  const onNextStep = () => setStep((prevState) => prevState + 1);
 
   const onBackStep = () => setStep((prevState) => prevState - 1);
 

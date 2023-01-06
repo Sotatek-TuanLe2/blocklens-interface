@@ -7,8 +7,7 @@ import {
   Switch,
   withRouter,
 } from 'react-router-dom';
-import { useLocation } from 'react-router';
-import React from 'react';
+import { useHistory, useLocation } from 'react-router';
 import HomePage from './pages/HomePage';
 import SignUpPage from './pages/SignUpPage';
 import LoginPage from './pages/LoginPage';
@@ -16,8 +15,6 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import Storage from 'src/utils/utils-storage';
 import AppDetail from './pages/AppDetail';
 import VerifyAccountPage from './pages/VerifyAccountPage';
-import { getInfoUser } from 'src/store/auth';
-import { getMyPlan, getPlans } from 'src/store/billing';
 import { useDispatch } from 'react-redux';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import CreateWebhookPage from './pages/CreateWebhookPage';
@@ -30,12 +27,15 @@ import LandingPage from './pages/LandingPage';
 import Pricing from './pages/LandingPage/Pricing';
 import ContactUs from './pages/ContactUs';
 import BillingHistory from './pages/BillingHistoryPage';
+import AllActivitiesPage from './pages/AllActivitiesPage';
+import TopUpPage from './pages/TopUp';
+import AppSettingsPage from './pages/AppSettingsPage';
+import WebhookSettingsPage from './pages/WebhookSettingsPage';
+import { clearUser, getUser } from './store/user';
+import { initMetadata } from './store/metadata';
 import ModalSubmittingTransaction from './modals/ModalSubmittingTransaction';
 import ModalFinishTransaction from './modals/ModalFinishTransaction';
-import WebhookActivitiesPage from './pages/WebhookActivitiesPage';
-import TopUpPage from './pages/TopUp';
 import ModalSignatureRequired from './modals/ModalSignatureRequired';
-import { getUserStats } from './store/user';
 
 /**
  * Main App routes.
@@ -45,22 +45,28 @@ const Routes: FC<RouteComponentProps> = () => {
   const { pathname } = useLocation();
   const dispatch = useDispatch<any>();
   const accessToken = Storage.getAccessToken();
-
+  const history = useHistory();
+  const isExpireTimeToken =
+    Storage.getExpireTimeToken() &&
+    new Date().getTime() >= Number(Storage.getExpireTimeToken());
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
 
   useEffect(() => {
-    if (!accessToken) return;
-    dispatch(getInfoUser());
-    dispatch(getMyPlan());
-    dispatch(getPlans());
-    dispatch(getUserStats());
+    if (!accessToken || isExpireTimeToken) {
+      dispatch(clearUser());
+      history.push('/login');
+      return;
+    }
+    dispatch(getUser());
+    dispatch(initMetadata());
   }, [accessToken]);
 
   return (
     <>
       <Switch>
+        <PrivateRoute path={`/apps/:id/settings`} component={AppSettingsPage} />
         <PrivateRoute path={`/apps/:id`} component={AppDetail} />
         <PublicRoute path={'/login'} component={LoginPage} />
         <PublicRoute path={'/sign-up'} component={SignUpPage} />
@@ -74,7 +80,11 @@ const Routes: FC<RouteComponentProps> = () => {
         <PrivateRoute path={'/billing-history'} component={BillingHistory} />
         <PrivateRoute
           path={'/app/:appId/webhooks/:id/activities'}
-          component={WebhookActivitiesPage}
+          component={AllActivitiesPage}
+        />
+        <PrivateRoute
+          path={'/app/:appId/webhooks/:id/settings'}
+          component={WebhookSettingsPage}
         />
         <PrivateRoute
           path={'/app/:appId/webhooks/:id'}

@@ -26,6 +26,8 @@ import { ReactComponent as CryptoIcon } from './CryptoIcon.svg';
 import { ReactComponent as CircleCheckedIcon } from './CircleCheckedIcon.svg';
 import { ReactComponent as DoorLogout } from './DoorLogout.svg';
 import { ReactComponent as ArrowLogout } from './ArrowLogout.svg';
+import { ReactComponent as ReloadIcon } from './ReloadIcon.svg';
+import { ReactComponent as CopyIcon } from './CopyIcon.svg';
 
 export {
   CalendarIcon,
@@ -53,7 +55,9 @@ export {
   LogoutIcon,
   CryptoIcon,
   ListCardIcon,
-  CircleCheckedIcon
+  CircleCheckedIcon,
   DoorLogout,
   ArrowLogout,
+  ReloadIcon,
+  CopyIcon,
 };

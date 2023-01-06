@@ -1,4 +1,4 @@
-import { FC, useMemo } from 'react';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 import { Box, Flex } from '@chakra-ui/react';
 import { isMobile } from 'react-device-detect';
 import useWallet from 'src/hooks/useWallet';
@@ -11,35 +11,42 @@ import AppInput from './AppInput';
 import AppSelect2 from './AppSelect2';
 import config from 'src/config';
 import { getChainConfig, getNetworkByEnv } from 'src/utils/utils-network';
+import AppCurrencyInput from './AppCurrencyInput';
+import { getBalanceToken } from 'src/utils/utils-token';
 
 interface IAppCryptoForm {
   currencyAddress: string;
+  chainId: string;
   amount: string;
   onChangeCurrencyAddress: (value: string) => void;
+  onChangeChainId: (value: string) => void;
   onChangeAmount: (value: string) => void;
 }
 
+const EXCEPTED_NETWORKS = ['ETH', 'BSC', 'POLYGON'];
+
+export const CHAIN_OPTIONS = Object.keys(config.chains)
+  .filter((chainId) => EXCEPTED_NETWORKS.includes(chainId))
+  .map((chainKey) => {
+    const chain = config.chains[chainKey];
+    return { label: chain.name, value: chain.id, icon: chain.icon };
+  });
+
 const AppCryptoForm: FC<IAppCryptoForm> = (props) => {
-  const { wallet, isUserLinked, changeNetwork } = useWallet();
+  const { wallet, isUserLinked } = useWallet();
   const { user } = useUser();
-  const { currencyAddress, amount, onChangeCurrencyAddress, onChangeAmount } =
-    props;
+  const {
+    currencyAddress,
+    amount,
+    onChangeCurrencyAddress,
+    onChangeAmount,
+    onChangeChainId,
+    chainId,
+  } = props;
 
   const AMOUNT_OPTIONS = [300, 500, 1000];
 
-  const CHAIN_OPTIONS = useMemo((): {
-    label: string;
-    value: string;
-    icon: string | undefined;
-  }[] => {
-    if (!wallet) {
-      return [];
-    }
-    return Object.keys(config.chains).map((chainKey) => {
-      const chain = config.chains[chainKey];
-      return { label: chain.name, value: chain.id, icon: chain.icon };
-    });
-  }, [wallet?.getNework()]);
+  const [balanceToken, setBalanceToken] = useState<string | number>('');
 
   const CURRENCY_OPTIONS = useMemo((): {
     label: string;
@@ -51,7 +58,7 @@ const AppCryptoForm: FC<IAppCryptoForm> = (props) => {
       return [];
     }
     const networkCurrencies = getNetworkByEnv(
-      getChainConfig(wallet.getNework()),
+      getChainConfig(chainId),
     ).currencies;
     return Object.keys(networkCurrencies).map((currencyKey) => {
       const currency = networkCurrencies[currencyKey];
@@ -62,7 +69,24 @@ const AppCryptoForm: FC<IAppCryptoForm> = (props) => {
         decimals: currency.decimals,
       };
     });
-  }, [wallet?.getNework()]);
+  }, [chainId]);
+
+  useEffect(() => {
+    const getBalanceTokenCurrency = async () => {
+      try {
+        const balance = await getBalanceToken(
+          chainId,
+          currencyAddress,
+          wallet?.getAddress(),
+        );
+        setBalanceToken(balance);
+      } catch (error) {
+        setBalanceToken('');
+      }
+    };
+
+    getBalanceTokenCurrency().then();
+  }, [currencyAddress, chainId]);
 
   const _renderCryptoForm = () => {
     if (!wallet || !user || !isUserLinked) {
@@ -95,9 +119,9 @@ const AppCryptoForm: FC<IAppCryptoForm> = (props) => {
             <AppField label={'Chain'} customWidth={'100%'}>
               <AppSelect2
                 size="large"
-                onChange={(value: string) => changeNetwork(value)}
+                onChange={(value: string) => onChangeChainId(value)}
                 options={CHAIN_OPTIONS}
-                value={wallet.getNework()}
+                value={chainId}
               />
             </AppField>
           </Box>
@@ -111,31 +135,45 @@ const AppCryptoForm: FC<IAppCryptoForm> = (props) => {
               />
             </AppField>
           </Box>
-          <AppField label={'Amount'} customWidth={'49.5%'}>
-            <AppInput
-              size="lg"
-              placeholder="0"
-              value={amount}
-              onChange={(e) => onChangeAmount(e.target.value.trim())}
-              endAdornment={
-                <Flex className="amount-options">
-                  {AMOUNT_OPTIONS.map((item: number, index: number) => {
-                    return (
-                      <Box
-                        className={`amount-option ${
-                          +amount === item ? 'active' : ''
-                        }`}
-                        key={index}
-                        onClick={() => onChangeAmount(item.toString())}
-                      >
-                        {item}
-                      </Box>
-                    );
-                  })}
+
+          <Flex width={'100%'} flexDirection={isMobile ? 'column' : 'row'}>
+            <AppField label={''} customWidth={'49.5%'}>
+              <Flex
+                justifyContent="space-between"
+                className="field"
+                flexDirection={isMobile ? 'column-reverse' : 'row'}
+              >
+                <Box className="label">Top up amount</Box>
+                <Flex>
+                  <Box mr={2} className="label">
+                    User balance:
+                  </Box>
+                  <Box>{balanceToken || '--'}</Box>
                 </Flex>
-              }
-            />
-          </AppField>
+              </Flex>
+              <AppCurrencyInput
+                onChange={(e) => onChangeAmount(e.target.value.trim())}
+                render={(ref, props) => (
+                  <AppInput ref={ref} value={amount} {...props} />
+                )}
+              />
+            </AppField>
+            <Flex className="amount-options">
+              {AMOUNT_OPTIONS.map((item: number, index: number) => {
+                return (
+                  <Box
+                    className={`amount-option ${
+                      +amount === item ? 'active' : ''
+                    }`}
+                    key={index}
+                    onClick={() => onChangeAmount(item.toString())}
+                  >
+                    {item}
+                  </Box>
+                );
+              })}
+            </Flex>
+          </Flex>
         </Flex>
       </AppCard>
     );

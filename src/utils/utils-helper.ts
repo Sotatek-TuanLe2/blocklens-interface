@@ -1,13 +1,11 @@
-import { toastError, toastSuccess, toastWarning } from './utils-notify';
+import { toastError, toastSuccess } from './utils-notify';
 import moment from 'moment';
 import { isValidChecksumAddress, toChecksumAddress } from 'ethereumjs-util';
+import copy from 'copy-to-clipboard';
 
 export const copyToClipboard = (message: string) => {
-  if (!navigator.clipboard) {
-    return toastWarning({ message: "Your browser doesn't support copy" });
-  }
   try {
-    navigator.clipboard.writeText(message);
+    copy(message);
     toastSuccess({ message: 'Copied' });
   } catch (error: any) {
     toastError({ message: 'Oops. Something went wrong' });

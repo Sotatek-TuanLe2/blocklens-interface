@@ -56,6 +56,9 @@
     &.mobile {
       height: 100vh;
       background-image: url('../../assets/icons/bg-menu-mobile.png');
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
     }
   }
 
@@ -395,12 +398,15 @@
       filter: drop-shadow(0px 18px 24px rgba(136, 225, 220, 0.08));
       backdrop-filter: blur(8px);
       border-radius: 40px;
-      padding: 40px;
+      padding: 40px 25px;
       max-width: 31%;
       font-weight: 400;
       font-size: 16px;
       line-height: 160%;
       color: $title;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
 
       @include tablet {
         width: 295px;

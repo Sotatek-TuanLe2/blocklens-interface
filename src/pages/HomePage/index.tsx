@@ -1,22 +1,20 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import 'src/styles/pages/HomePage.scss';
 import { Flex, Box } from '@chakra-ui/react';
 import ListApps from './parts/ListApps';
 import PartUserGraph from './parts/PartUserGraph';
 import { BasePageContainer } from 'src/layouts';
 import PartUserStats from './parts/PartUserStats';
-import { AppButton, AppCard } from 'src/components';
+import { AppButton, AppCard, AppHeading } from 'src/components';
 import ModalCreateApp from 'src/modals/ModalCreateApp';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../store';
-import { getUserStats } from '../../store/user';
+import { getUserStats } from 'src/store/user';
 import { useDispatch } from 'react-redux';
+import useUser from 'src/hooks/useUser';
 
 const HomePage = () => {
-  const {
-    stats: { totalApp, totalRegistrationActive },
-  } = useSelector((state: RootState) => state.user);
-  const hasApp = totalApp > 0;
+  const { user } = useUser();
+  const userStats = user?.getStats();
+  const hasApp = !!userStats?.totalApp && userStats?.totalApp > 0;
 
   const [openModalCreateApp, setOpenModalCreateApp] = useState<boolean>(false);
 
@@ -55,15 +53,30 @@ const HomePage = () => {
 
   return (
     <BasePageContainer>
-      {hasApp ? (
-        <>
-          <PartUserStats totalWebhookActive={totalRegistrationActive} />
-          <ListApps />
-          <PartUserGraph />
-        </>
-      ) : (
-        _renderNoApp()
-      )}
+      <>
+        <Box mb={7}>
+          <AppHeading title="Dashboard" />
+        </Box>
+
+        {hasApp ? (
+          <>
+            <Box className={'statics'}>
+              <PartUserStats
+                totalWebhookActive={userStats?.totalRegistrationActive}
+                totalWebhook={userStats?.totalRegistration}
+              />
+            </Box>
+
+            <ListApps />
+
+            <Box className={'user-graph'}>
+              <PartUserGraph />
+            </Box>
+          </>
+        ) : (
+          _renderNoApp()
+        )}
+      </>
     </BasePageContainer>
   );
 };

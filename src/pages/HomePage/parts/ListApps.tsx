@@ -8,11 +8,10 @@ import {
   getLogoChainByChainId,
   getNameChainByChainId,
 } from 'src/utils/utils-network';
-import { useSelector } from 'react-redux';
-import { RootState } from 'src/store';
 import ModalUpgradeCreateApp from 'src/modals/ModalUpgradeCreateApp';
 import { isMobile } from 'react-device-detect';
 import ModalCreateApp from '../../../modals/ModalCreateApp';
+import useUser from 'src/hooks/useUser';
 
 interface IAppMobile {
   app: IAppResponse;
@@ -43,21 +42,22 @@ const AppMobile: FC<IAppMobile> = ({ app }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   return (
     <>
-      <Box className={`${isOpen ? 'open' : ''} card-mobile`}>
+      <Box
+        className={`${isOpen ? 'open' : ''} card-mobile`}
+        onClick={() => history.push(`/apps/${app.appId}`)}
+      >
         <Flex
           justifyContent="space-between"
           alignItems="center"
           className="info"
         >
-          <Box
-            className="name-mobile"
-            onClick={() => history.push(`/apps/${app.appId}`)}
-          >
-            {app.name}
-          </Box>
+          <Box className="name-mobile">{app.name}</Box>
           <Box
             className={isOpen ? 'icon-minus' : 'icon-plus'}
-            onClick={() => setIsOpen(!isOpen)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsOpen(!isOpen);
+            }}
           />
         </Flex>
         <Flex
@@ -106,12 +106,9 @@ const AppMobile: FC<IAppMobile> = ({ app }) => {
 
 const ListApps: React.FC = () => {
   const history = useHistory();
-  const {
-    billing: { myPlan },
-    user: {
-      stats: { totalApp, totalAppActive },
-    },
-  } = useSelector((state: RootState) => state);
+  const { user } = useUser();
+  const userPlan = user?.getPlan();
+  const userStats = user?.getStats();
 
   const [openCreateApp, setOpenCreateApp] = useState(false);
 
@@ -175,7 +172,7 @@ const ListApps: React.FC = () => {
 
   const _renderModalCreateApp = () => {
     const isLimitApp =
-      myPlan?.appLimitation && totalApp >= myPlan?.appLimitation;
+      userPlan?.appLimitation && !!userStats?.totalApp && userStats?.totalApp >= userPlan?.appLimitation;
     return isLimitApp ? (
       <ModalUpgradeCreateApp
         open={openCreateApp}
@@ -256,7 +253,7 @@ const ListApps: React.FC = () => {
   const _renderTotalApp = () => {
     return (
       <Box className="number-app">
-        <Text as={'span'}>Active Apps:</Text> {totalAppActive}/{totalApp}
+        <Text as={'span'}>Active Apps:</Text> {userStats?.totalAppActive}/{userStats?.totalApp}
       </Box>
     );
   };
@@ -268,13 +265,7 @@ const ListApps: React.FC = () => {
           <Text className="text-title">Apps</Text>
           <Flex alignItems={'center'}>
             {!isMobile && _renderTotalApp()}
-            <AppButton
-              size={'sm'}
-              px={4}
-              py={1}
-              className={'btn-create'}
-              onClick={onCreateApp}
-            >
+            <AppButton size={'sm'} onClick={onCreateApp}>
               <Box className="icon-plus-circle" mr={2} /> Create
             </AppButton>
           </Flex>

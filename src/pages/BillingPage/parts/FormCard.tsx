@@ -13,8 +13,8 @@ import { loadStripe } from '@stripe/stripe-js';
 import config from 'src/config';
 import { AppButton, AppCard } from 'src/components';
 import { isMobile } from 'react-device-detect';
-import { getInfoUser } from 'src/store/auth';
 import { useDispatch } from 'react-redux';
+import { getUserProfile } from 'src/store/user';
 
 interface ICheckoutForm {
   onClose?: () => void;
@@ -55,7 +55,7 @@ const CheckoutForm: FC<ICheckoutForm> = ({ onClose, isEdit }) => {
           });
           toastSuccess({ message: 'Successfully!' });
           onClose && onClose();
-          dispatch(getInfoUser());
+          dispatch(getUserProfile());
         } catch (e: any) {
           toastError({ message: e?.message || 'Oops. Something went wrong!' });
         } finally {
@@ -178,7 +178,7 @@ const FormCard: FC<IFormCard> = ({ isEdit, onClose }) => {
                 colorText: '#B4B7BD',
                 fontSizeBase: '16px',
                 colorTextPlaceholder: '#69758C',
-                colorBackground: '#30384E',
+                colorBackground: '#101530',
               },
             },
           }}

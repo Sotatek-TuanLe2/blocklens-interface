@@ -1,4 +1,5 @@
 import { Web3Provider } from '@ethersproject/providers';
+import { ethers } from 'ethers';
 import config from 'src/config';
 
 class BaseConnector {
@@ -66,8 +67,11 @@ class BaseConnector {
   async signMessage(): Promise<any> {
     if (this.account && this.connector && this.provider) {
       try {
-        const signer = new Web3Provider(this.provider).getSigner();
-        const signature = await signer.signMessage(config.auth.message);
+        const provider = new Web3Provider(this.provider);
+        const signature = await provider.send('personal_sign', [
+          ethers.utils.hexlify(ethers.utils.toUtf8Bytes(config.auth.message)),
+          this.account.toLowerCase(),
+        ]);
         return signature;
       } catch (error) {
         console.error(error);

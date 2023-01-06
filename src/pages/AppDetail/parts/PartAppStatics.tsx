@@ -5,8 +5,7 @@ import { useParams } from 'react-router';
 import { ListStat } from 'src/pages/HomePage/parts/PartUserStats';
 import moment from 'moment';
 import { formatLargeNumber } from 'src/utils/utils-helper';
-import { useSelector } from 'react-redux';
-import { RootState } from 'src/store';
+import useUser from 'src/hooks/useUser';
 
 interface IAppStats {
   message?: number;
@@ -38,15 +37,15 @@ export const listStats = [
 
 const PartAppStats = ({
   totalWebhookActive,
+  totalWebhook,
 }: {
   totalWebhookActive?: number;
+  totalWebhook?: number;
 }) => {
   const [appStats, setAppStats] = useState<IAppStats | any>({});
   const [dataChart, setDataChart] = useState<IAppStats[] | any>([]);
   const { id: appId } = useParams<{ id: string }>();
-  const { myPlan: currentPlan } = useSelector(
-    (state: RootState) => state.billing,
-  );
+  const { user } = useUser();
 
   const getAppStatsToday = useCallback(async () => {
     try {
@@ -82,8 +81,7 @@ const PartAppStats = ({
   const dataAppStats = useMemo(() => {
     return listStats.map((item) => {
       const getValue = (value?: number, total?: number) => {
-        if (!total) return '--';
-        if (!value) return `--/${formatLargeNumber(total)}`;
+        if (!total || !value) return '--';
         return `${formatLargeNumber(value)}/${formatLargeNumber(total)}`;
       };
 
@@ -92,7 +90,7 @@ const PartAppStats = ({
           ...item,
           value: getValue(
             +appStats.message,
-            currentPlan?.notificationLimitation,
+            user?.getPlan().notificationLimitation,
           ),
         };
       }
@@ -124,7 +122,7 @@ const PartAppStats = ({
       if (item.key === 'webhooks') {
         return {
           ...item,
-          value: getValue(totalWebhookActive, appStats.webhooks),
+          value: getValue(totalWebhookActive, totalWebhook),
         };
       }
       return {

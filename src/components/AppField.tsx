@@ -1,6 +1,13 @@
 import { ReactNode } from 'react';
 import React from 'react';
-import { Box, Flex, Stack, Text, Tooltip } from '@chakra-ui/react';
+import {
+  Box,
+  Flex,
+  Stack,
+  Text,
+  Tooltip,
+  useDisclosure,
+} from '@chakra-ui/react';
 import 'src/styles/components/AppField.scss';
 
 interface IField {
@@ -18,6 +25,7 @@ const AppField = ({
   customWidth = '100%',
   note,
 }: IField) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <Flex
       alignItems={'flex-start'}
@@ -37,8 +45,21 @@ const AppField = ({
             )}
           </Text>
           {note && (
-            <Tooltip p={2} label={note} placement={'top'} hasArrow>
-              <Box className="icon-info" ml={1} cursor={'pointer'} />
+            <Tooltip
+              p={2}
+              label={note}
+              placement={'top'}
+              hasArrow
+              isOpen={isOpen}
+            >
+              <Box
+                className="icon-info"
+                ml={1}
+                cursor={'pointer'}
+                onMouseEnter={onOpen}
+                onMouseLeave={onClose}
+                onClick={onOpen}
+              />
             </Tooltip>
           )}
         </Flex>

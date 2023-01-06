@@ -4,7 +4,13 @@ import rf from 'src/requests/RequestFactory';
 import { useParams } from 'react-router';
 import 'src/styles/pages/AppDetail.scss';
 import { BasePageContainer } from 'src/layouts';
-import { AppCard, AppDataTable, AppInput, AppLink } from 'src/components';
+import {
+  AppCard,
+  AppDataTable,
+  AppInput,
+  AppFilter,
+  AppHeading,
+} from 'src/components';
 import {
   WEBHOOK_TYPES,
   optionsFilterMessage,
@@ -16,8 +22,10 @@ import { toastError } from 'src/utils/utils-notify';
 import { isMobile } from 'react-device-detect';
 import MessagesItemMobile from './parts/MessagesItemMobile';
 import { filterParams } from 'src/utils/utils-helper';
-import { Filter } from 'src/pages/WebhookDetail/parts/WebhookActivities';
 import ModalFilterActivities from 'src/modals/ModalFilterActivities';
+import useWebhookDetails from 'src/hooks/useWebhook';
+import useAppDetails from 'src/hooks/useAppDetails';
+import { getLogoChainByChainId } from '../../utils/utils-network';
 
 const MessagesHistory = () => {
   const {
@@ -35,23 +43,10 @@ const MessagesHistory = () => {
   const [txHash, setTxHash] = useState<string>('');
   const [tokenId, setTokenId] = useState<string>('');
   const [address, setAddress] = useState<string>('');
-  const [webhook, setWebhook] = useState<IWebhook | any>({});
   const [isOpenFilterModal, setIsOpenFilterModal] = useState<boolean>(false);
 
-  const getWebhookInfo = useCallback(async () => {
-    try {
-      const res = (await rf
-        .getRequest('RegistrationRequest')
-        .getRegistration(appId, webhookId)) as any;
-      setWebhook(res);
-    } catch (error: any) {
-      setWebhook({});
-    }
-  }, [webhookId]);
-
-  useEffect(() => {
-    getWebhookInfo().then();
-  }, []);
+  const { webhook } = useWebhookDetails(appId, webhookId);
+  const { appInfo } = useAppDetails(appId);
 
   const fetchDataTable: any = useCallback(async (params: any) => {
     try {
@@ -74,13 +69,17 @@ const MessagesHistory = () => {
           <Th w="13%">
             <Flex alignItems="center">
               method{' '}
-              <Filter value={method} onChange={setMethod} type="method" />
+              <AppFilter value={method} onChange={setMethod} type="method" />
             </Flex>
           </Th>
           <Th textAlign="center" w="13%">
             <Flex alignItems="center" justifyContent="center">
               token id
-              <Filter value={tokenId} onChange={setTokenId} type="token ID" />
+              <AppFilter
+                value={tokenId}
+                onChange={setTokenId}
+                type="token ID"
+              />
             </Flex>
           </Th>
         </>
@@ -92,7 +91,7 @@ const MessagesHistory = () => {
         <Th w="15%">
           <Flex alignItems="center">
             Address
-            <Filter value={address} onChange={setAddress} type="address" />
+            <AppFilter value={address} onChange={setAddress} type="address" />
           </Flex>
         </Th>
       );
@@ -103,7 +102,7 @@ const MessagesHistory = () => {
         <Th textAlign="center" w="15%">
           <Flex alignItems="center">
             method
-            <Filter value={method} onChange={setMethod} type="method" />
+            <AppFilter value={method} onChange={setMethod} type="method" />
           </Flex>
         </Th>
       );
@@ -131,14 +130,14 @@ const MessagesHistory = () => {
           <Th w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '15%' : '20%'}>
             <Flex alignItems="center">
               txn id
-              <Filter value={txHash} onChange={setTxHash} type="txn ID" />
+              <AppFilter value={txHash} onChange={setTxHash} type="txn ID" />
             </Flex>
           </Th>
           {_renderHeaderActivities()}
           <Th w="12%">
             <Flex alignItems="center">
               Status
-              <Filter
+              <AppFilter
                 value={status}
                 onChange={setStatus}
                 type="status"
@@ -208,12 +207,19 @@ const MessagesHistory = () => {
     <BasePageContainer className="app-detail">
       <>
         <Flex className="app-info">
-          <Flex className="name">
-            <AppLink to={`/app/${appId}/webhooks/${webhookId}`}>
-              <Box className="icon-arrow-left" mr={6} />
-            </AppLink>
-            <Box className={'title-mobile'}>Messages History</Box>
-          </Flex>
+          <AppHeading
+            title="Messages History"
+            linkBack={`/app/${appId}/webhooks/${webhookId}`}
+          />
+
+          {!isMobile && (
+            <Flex alignItems={'center'} className="box-network">
+              <Box className={getLogoChainByChainId(appInfo.chain)} mr={2} />
+              <Box textTransform="capitalize">
+                {appInfo?.network?.toLowerCase()}
+              </Box>
+            </Flex>
+          )}
         </Flex>
 
         <AppCard className="list-table-wrap">
