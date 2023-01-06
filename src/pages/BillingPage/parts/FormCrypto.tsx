@@ -12,7 +12,7 @@ import { ConnectWalletIcon } from 'src/assets/icons';
 import AppAlertWarning from 'src/components/AppAlertWarning';
 import { getChainConfig, getNetworkByEnv } from 'src/utils/utils-network';
 import useTopUp from 'src/hooks/useTopUp';
-import AppCryptoForm from 'src/components/AppCryptoForm';
+import AppCryptoForm, { CHAIN_OPTIONS} from 'src/components/AppCryptoForm';
 import { MetadataPlan } from 'src/store/metadata';
 
 interface IFormCrypto {
@@ -52,18 +52,18 @@ const FormCrypto: FC<IFormCrypto> = ({ onNext, planSelected }) => {
   useEffect(() => {
     if (wallet?.getAddress()) {
       const networkCurrencies = getNetworkByEnv(
-        getChainConfig(dataForm.chainId),
+        getChainConfig(CHAIN_OPTIONS[0].value),
       ).currencies;
       const defaultCurrency =
         networkCurrencies[Object.keys(networkCurrencies)[0]];
       setDataForm((prevState) => ({
         ...prevState,
         walletAddress: wallet.getAddress(),
-        chainId: dataForm.chainId,
+        chainId: CHAIN_OPTIONS[0].value,
         currencyAddress: defaultCurrency.address,
       }));
     }
-  }, [wallet?.getAddress(), wallet?.getNework(), dataForm]);
+  }, []);
 
   useEffect(() => {
     if (user?.getBalance() && planSelected) {
