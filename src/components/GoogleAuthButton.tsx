@@ -8,7 +8,7 @@ import { useHistory } from 'react-router';
 import AppButton from './AppButton';
 import { Box } from '@chakra-ui/react';
 import config from 'src/config';
-import { getUserStats, setUserAuth, setUserProfile } from '../store/user';
+import { setUserAuth } from '../store/user';
 
 const clientId = config.auth.googleClientId;
 
@@ -38,8 +38,6 @@ const GoogleAuthButton: FC<IGoogleAuthButton> = ({ children }) => {
       });
 
       dispatch(setUserAuth(res));
-      dispatch(setUserProfile(res.user));
-      dispatch(getUserStats());
       toastSuccess({ message: 'Welcome to Blocksniper!' });
       history.push('/');
     } catch (e: any) {
