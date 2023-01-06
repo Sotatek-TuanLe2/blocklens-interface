@@ -227,10 +227,10 @@
     }
 
     .amount-options {
-      margin-left: -200px;
+      margin-top: 42px;
 
       @include tablet {
-        margin-left: -140px;
+        margin-top: 0;
       }
 
       .amount-option {
@@ -242,10 +242,15 @@
         border: 1px solid $disable;
         color: $paragraph;
         cursor: pointer;
+        height: max-content;
 
         @include tablet {
           @include text-small-regular;
           padding: 4px 8px;
+
+          &:first-child {
+            margin-left: 0;
+          }
         }
 
         &.active {

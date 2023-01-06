@@ -45,7 +45,7 @@ const TopUpPage = () => {
   const [isSufficientBalance, setIsSufficientBalance] = useState<boolean>(true); // default without any plans
 
   const { plans } = useSelector((state: RootState) => state.billing);
-  const { wallet, isUserLinked } = useWallet();
+  const { wallet, isUserLinked, changeNetwork } = useWallet();
   const { user } = useUser();
   const { topUp } = useTopUp();
   const history = useHistory();
@@ -75,7 +75,7 @@ const TopUpPage = () => {
         currencyAddress: defaultCurrency.address,
       }));
     }
-  }, [wallet?.getAddress(), wallet?.getNework()]);
+  }, [wallet]);
 
   useEffect(() => {
     if (user && planSelected) {
@@ -90,11 +90,29 @@ const TopUpPage = () => {
     setDataForm((prevState) => ({ ...prevState, currencyAddress }));
   };
 
+  const onChangeChainId = (chainId: string) => {
+    const networkCurrencies = getNetworkByEnv(
+      getChainConfig(chainId),
+    ).currencies;
+    const defaultCurrency =
+      networkCurrencies[Object.keys(networkCurrencies)[0]];
+    setDataForm((prevState) => ({
+      ...prevState,
+      chainId,
+      currencyAddress: defaultCurrency.address,
+    }));
+  };
+
   const onTopUp = async () => {
-    const { currencyAddress, amount } = dataForm;
+    const { currencyAddress, amount, chainId } = dataForm;
     if (!wallet || !amount) {
       return;
     }
+
+    if (chainId !== wallet.getChainId()) {
+      await changeNetwork(chainId);
+    }
+
     try {
       setIsBeingToppedUp(true);
       await topUp(currencyAddress, amount);
@@ -124,6 +142,8 @@ const TopUpPage = () => {
     <>
       {_renderWarningBalanceMessage()}
       <AppCryptoForm
+        chainId={dataForm.chainId}
+        onChangeChainId={(value) => onChangeChainId(value)}
         currencyAddress={dataForm.currencyAddress}
         amount={dataForm.amount}
         onChangeCurrencyAddress={(value) => onChangeCurrency(value)}

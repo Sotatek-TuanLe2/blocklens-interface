@@ -45,25 +45,25 @@ const FormCrypto: FC<IFormCrypto> = ({ onNext, planSelected }) => {
   const [topUpStatus, setTopUpStatus] = useState<number>(TOP_UP_STATUS.NONE);
   const [isSufficientBalance, setIsSufficientBalance] =
     useState<boolean>(false);
-  const { wallet, isUserLinked } = useWallet();
+  const { wallet, isUserLinked, changeNetwork } = useWallet();
   const { user } = useUser();
   const { topUp } = useTopUp();
 
   useEffect(() => {
     if (wallet?.getAddress()) {
       const networkCurrencies = getNetworkByEnv(
-        getChainConfig(wallet.getNework()),
+        getChainConfig(dataForm.chainId),
       ).currencies;
       const defaultCurrency =
         networkCurrencies[Object.keys(networkCurrencies)[0]];
       setDataForm((prevState) => ({
         ...prevState,
         walletAddress: wallet.getAddress(),
-        chainId: wallet.getNework(),
+        chainId: dataForm.chainId,
         currencyAddress: defaultCurrency.address,
       }));
     }
-  }, [wallet?.getAddress(), wallet?.getNework()]);
+  }, [wallet?.getAddress(), wallet?.getNework(), dataForm]);
 
   useEffect(() => {
     if (user?.getBalance() && planSelected) {
@@ -85,12 +85,22 @@ const FormCrypto: FC<IFormCrypto> = ({ onNext, planSelected }) => {
     setDataForm((prevState) => ({ ...prevState, currencyAddress }));
   };
 
+  const onChangeChainId = (chainId: string) => {
+    setDataForm((prevState) => ({ ...prevState, chainId }));
+  };
+
   const onTopUp = async () => {
-    const { currencyAddress, amount } = dataForm;
+    const { currencyAddress, amount, chainId } = dataForm;
     if (!wallet || !amount) {
       return;
     }
+
+    if(chainId !== wallet.getChainId()) {
+      await changeNetwork(chainId);
+    }
+
     try {
+      await changeNetwork(chainId);
       setTopUpStatus(TOP_UP_STATUS.PENDING);
       await topUp(currencyAddress, amount);
     } catch (error: any) {
@@ -121,10 +131,13 @@ const FormCrypto: FC<IFormCrypto> = ({ onNext, planSelected }) => {
           </AppAlertWarning>
         </Box>
       )}
+
       <AppCryptoForm
         currencyAddress={dataForm.currencyAddress}
         amount={dataForm.amount}
+        chainId={dataForm.chainId}
         onChangeCurrencyAddress={(value) => onChangeCurrency(value)}
+        onChangeChainId={(value) => onChangeChainId(value)}
         onChangeAmount={(value) =>
           setDataForm({
             ...dataForm,

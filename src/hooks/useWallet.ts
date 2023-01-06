@@ -18,7 +18,6 @@ import config from 'src/config';
 import { getChainByChainId, switchNetwork } from 'src/utils/utils-network';
 import { useMemo } from 'react';
 import {
-  checkWalletConnectProvider,
   IWallet,
   Wallet,
 } from 'src/utils/utils-wallet';
