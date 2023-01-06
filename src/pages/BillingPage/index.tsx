@@ -408,7 +408,7 @@ const BillingPage = () => {
         <AppCard className="list-table-wrap">
           <Flex className="box-title">
 
-            <Box className={'text-title'}>Select Your Plan</Box>
+            <Box className={'text-title'}>Change Your Plan</Box>
 
             {user?.getPlan().price !== 0 && (
               <Box className="box-btn-cancel">
