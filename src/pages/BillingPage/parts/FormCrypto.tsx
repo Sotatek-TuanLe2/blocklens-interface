@@ -12,7 +12,7 @@ import { ConnectWalletIcon } from 'src/assets/icons';
 import AppAlertWarning from 'src/components/AppAlertWarning';
 import { getChainConfig, getNetworkByEnv } from 'src/utils/utils-network';
 import useTopUp from 'src/hooks/useTopUp';
-import AppCryptoForm, { CHAIN_OPTIONS} from 'src/components/AppCryptoForm';
+import AppCryptoForm, { CHAIN_OPTIONS } from 'src/components/AppCryptoForm';
 import { MetadataPlan } from 'src/store/metadata';
 
 interface IFormCrypto {
@@ -63,7 +63,7 @@ const FormCrypto: FC<IFormCrypto> = ({ onNext, planSelected }) => {
         currencyAddress: defaultCurrency.address,
       }));
     }
-  }, []);
+  }, [wallet]);
 
   useEffect(() => {
     if (user?.getBalance() && planSelected) {
@@ -86,7 +86,16 @@ const FormCrypto: FC<IFormCrypto> = ({ onNext, planSelected }) => {
   };
 
   const onChangeChainId = (chainId: string) => {
-    setDataForm((prevState) => ({ ...prevState, chainId }));
+    const networkCurrencies = getNetworkByEnv(
+      getChainConfig(chainId),
+    ).currencies;
+    const defaultCurrency =
+      networkCurrencies[Object.keys(networkCurrencies)[0]];
+    setDataForm((prevState) => ({
+      ...prevState,
+      chainId,
+      currencyAddress: defaultCurrency.address,
+    }));
   };
 
   const onTopUp = async () => {
@@ -95,7 +104,7 @@ const FormCrypto: FC<IFormCrypto> = ({ onNext, planSelected }) => {
       return;
     }
 
-    if(chainId !== wallet.getChainId()) {
+    if (chainId !== wallet.getChainId()) {
       await changeNetwork(chainId);
     }
 
@@ -150,7 +159,10 @@ const FormCrypto: FC<IFormCrypto> = ({ onNext, planSelected }) => {
         <AppButton
           size={'lg'}
           onClick={topUpStatus === TOP_UP_STATUS.NONE ? onTopUp : onNext}
-          disabled={topUpStatus === TOP_UP_STATUS.PENDING}
+          disabled={
+            topUpStatus === TOP_UP_STATUS.PENDING ||
+            wallet?.getAddress() !== user?.getLinkedAddress()
+          }
         >
           {topUpStatus === TOP_UP_STATUS.NONE ? 'Top Up' : 'Continue'}
         </AppButton>
