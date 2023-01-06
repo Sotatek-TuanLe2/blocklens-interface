@@ -120,7 +120,7 @@ export const appInputStyles = {
   variants: {
     main: (props: StyleProps) => ({
       field: {
-        bg: mode('bg.200', 'bg.200')(props),
+        bg: mode('card.100', 'card.100')(props),
         border: '1px solid',
         color: mode('white', 'white')(props),
         borderColor: mode('line.100', 'line.300')(props),
@@ -134,6 +134,7 @@ export const appInputStyles = {
           color: mode('secondaryGray.500', 'whiteAlpha.300')(props),
         },
         _disabled: {
+          bg: mode('bg.200', 'bg.200')(props),
           borderColor: mode('bg.200', 'bg.200')(props),
           color: mode('paragraph.100', 'paragraph.100')(props),
         },

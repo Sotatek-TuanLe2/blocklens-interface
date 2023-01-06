@@ -52,7 +52,7 @@ export const appTextareaStyles = {
 
   variants: {
     main: (props: StyleProps) => ({
-      bg: mode('bg.200', 'bg.200')(props),
+      bg: mode('card.100', 'card.100')(props),
       border: '1px solid',
       color: mode('white', 'white')(props),
       borderColor: mode('line.100', 'line.300')(props),

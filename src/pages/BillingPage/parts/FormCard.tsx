@@ -178,7 +178,7 @@ const FormCard: FC<IFormCard> = ({ isEdit, onClose }) => {
                 colorText: '#B4B7BD',
                 fontSizeBase: '16px',
                 colorTextPlaceholder: '#69758C',
-                colorBackground: '#30384E',
+                colorBackground: '#101530',
               },
             },
           }}
