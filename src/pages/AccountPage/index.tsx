@@ -4,13 +4,15 @@ import BasicDetail from './parts/BasicDetail';
 import BillingInfos from './parts/BillingInfos';
 import 'src/styles/pages/AccountPage.scss';
 import { isMobile } from 'react-device-detect';
-import { AppCard } from 'src/components';
+import { AppCard, AppHeading } from 'src/components';
 import Notifications from './parts/Notifications';
 import AppConnectWalletButton from 'src/components/AppConnectWalletButton';
 import useUser from 'src/hooks/useUser';
 import { formatShortText, copyToClipboard } from 'src/utils/utils-helper';
 import TopUpHistory from './parts/TopUpHistory';
 import useWallet from 'src/hooks/useWallet';
+import { CopyIcon } from 'src/assets/icons';
+import React from 'react';
 
 const AccountPage = () => {
   const { user } = useUser();
@@ -27,10 +29,10 @@ const AccountPage = () => {
             </Box>
             <Box
               ml={2}
-              className={'link'}
+              className={'btn-copy'}
               onClick={() => copyToClipboard(user.getLinkedAddress())}
             >
-              Copy
+              <CopyIcon />
             </Box>
           </Flex>
           {!isMobile && (
@@ -51,7 +53,9 @@ const AccountPage = () => {
   return (
     <BasePageContainer className="account">
       <>
-        <Box className="title-heading">Account</Box>
+        <Box mb={7}>
+          <AppHeading title="Account" />
+        </Box>
         <Flex
           flexWrap={'wrap'}
           justifyContent={'space-between'}

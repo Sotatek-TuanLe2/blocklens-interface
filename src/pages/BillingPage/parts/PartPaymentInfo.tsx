@@ -38,7 +38,7 @@ const PartPaymentInfo: FC<IPartPaymentInfo> = ({
     <Box className="form-card">
       <Flex alignItems={'center'} mb={7}>
         <Box className="icon-arrow-left" mr={6} onClick={onBack} />
-        <Box className={'sub-title'}>Payment Info</Box>
+        <Box className={'sub-title'}>Payment</Box>
       </Flex>
       <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
         <Box
@@ -58,7 +58,7 @@ const PartPaymentInfo: FC<IPartPaymentInfo> = ({
           </Box>
 
           <Flex flexDirection={'column'} alignItems={'center'}>
-            <Box className="box-method__method">Card</Box>
+            <Box className="box-method__method">Payment with card</Box>
             <ListCardIcon />
           </Flex>
         </Box>
@@ -80,7 +80,7 @@ const PartPaymentInfo: FC<IPartPaymentInfo> = ({
             )}
           </Box>
           <Flex flexDirection={'column'} alignItems={'center'}>
-            <Box className="box-method__method">Crypto</Box>
+            <Box className="box-method__method">Payment with crypto</Box>
             <CryptoIcon />
           </Flex>
         </Box>

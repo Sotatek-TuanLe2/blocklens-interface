@@ -12,7 +12,10 @@ import { getChainConfig, getNetworkByEnv } from 'src/utils/utils-network';
 import { useHistory } from 'react-router-dom';
 import { BasePageContainer } from 'src/layouts';
 import useTopUp from 'src/hooks/useTopUp';
-import AppCryptoForm from 'src/components/AppCryptoForm';
+import AppCryptoForm, { CHAIN_OPTIONS } from 'src/components/AppCryptoForm';
+import { useSelector } from 'react-redux';
+import { RootState } from 'src/store';
+import useUser from 'src/hooks/useUser';
 
 interface IDataForm {
   walletAddress: string;
@@ -36,35 +39,53 @@ const TopUpPage = () => {
   const [dataForm, setDataForm] = useState<IDataForm>(initialDataForm);
   const [isBeingToppedUp, setIsBeingToppedUp] = useState<boolean>(false);
 
-  const { wallet, isUserLinked } = useWallet();
+  const { wallet, isUserLinked, changeNetwork } = useWallet();
   const { topUp } = useTopUp();
   const history = useHistory();
 
   useEffect(() => {
     if (wallet?.getAddress()) {
       const networkCurrencies = getNetworkByEnv(
-        getChainConfig(wallet.getNework()),
+        getChainConfig(CHAIN_OPTIONS[0].value),
       ).currencies;
       const defaultCurrency =
         networkCurrencies[Object.keys(networkCurrencies)[0]];
       setDataForm((prevState) => ({
         ...prevState,
         walletAddress: wallet.getAddress(),
-        chainId: wallet.getNework(),
+        chainId: CHAIN_OPTIONS[0].value,
         currencyAddress: defaultCurrency.address,
       }));
     }
-  }, [wallet?.getAddress(), wallet?.getNework()]);
+  }, [wallet]);
 
   const onChangeCurrency = (currencyAddress: string) => {
     setDataForm((prevState) => ({ ...prevState, currencyAddress }));
   };
 
+  const onChangeChainId = (chainId: string) => {
+    const networkCurrencies = getNetworkByEnv(
+      getChainConfig(chainId),
+    ).currencies;
+    const defaultCurrency =
+      networkCurrencies[Object.keys(networkCurrencies)[0]];
+    setDataForm((prevState) => ({
+      ...prevState,
+      chainId,
+      currencyAddress: defaultCurrency.address,
+    }));
+  };
+
   const onTopUp = async () => {
-    const { currencyAddress, amount } = dataForm;
+    const { currencyAddress, amount, chainId } = dataForm;
     if (!wallet || !amount) {
       return;
     }
+
+    if (chainId !== wallet.getChainId()) {
+      await changeNetwork(chainId);
+    }
+
     try {
       setIsBeingToppedUp(true);
       await topUp(currencyAddress, amount);
@@ -79,6 +100,8 @@ const TopUpPage = () => {
   const _renderWalletInfo = () => (
     <>
       <AppCryptoForm
+        chainId={dataForm.chainId}
+        onChangeChainId={(value) => onChangeChainId(value)}
         currencyAddress={dataForm.currencyAddress}
         amount={dataForm.amount}
         onChangeCurrencyAddress={(value) => onChangeCurrency(value)}

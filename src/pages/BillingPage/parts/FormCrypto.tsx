@@ -12,7 +12,7 @@ import { ConnectWalletIcon } from 'src/assets/icons';
 import AppAlertWarning from 'src/components/AppAlertWarning';
 import { getChainConfig, getNetworkByEnv } from 'src/utils/utils-network';
 import useTopUp from 'src/hooks/useTopUp';
-import AppCryptoForm from 'src/components/AppCryptoForm';
+import AppCryptoForm, { CHAIN_OPTIONS } from 'src/components/AppCryptoForm';
 import { MetadataPlan } from 'src/store/metadata';
 
 interface IFormCrypto {
@@ -45,25 +45,25 @@ const FormCrypto: FC<IFormCrypto> = ({ onNext, planSelected }) => {
   const [topUpStatus, setTopUpStatus] = useState<number>(TOP_UP_STATUS.NONE);
   const [isSufficientBalance, setIsSufficientBalance] =
     useState<boolean>(false);
-  const { wallet, isUserLinked } = useWallet();
+  const { wallet, isUserLinked, changeNetwork } = useWallet();
   const { user } = useUser();
   const { topUp } = useTopUp();
 
   useEffect(() => {
     if (wallet?.getAddress()) {
       const networkCurrencies = getNetworkByEnv(
-        getChainConfig(wallet.getNework()),
+        getChainConfig(CHAIN_OPTIONS[0].value),
       ).currencies;
       const defaultCurrency =
         networkCurrencies[Object.keys(networkCurrencies)[0]];
       setDataForm((prevState) => ({
         ...prevState,
         walletAddress: wallet.getAddress(),
-        chainId: wallet.getNework(),
+        chainId: CHAIN_OPTIONS[0].value,
         currencyAddress: defaultCurrency.address,
       }));
     }
-  }, [wallet?.getAddress(), wallet?.getNework()]);
+  }, [wallet]);
 
   useEffect(() => {
     if (user?.getBalance() && planSelected) {
@@ -85,12 +85,31 @@ const FormCrypto: FC<IFormCrypto> = ({ onNext, planSelected }) => {
     setDataForm((prevState) => ({ ...prevState, currencyAddress }));
   };
 
+  const onChangeChainId = (chainId: string) => {
+    const networkCurrencies = getNetworkByEnv(
+      getChainConfig(chainId),
+    ).currencies;
+    const defaultCurrency =
+      networkCurrencies[Object.keys(networkCurrencies)[0]];
+    setDataForm((prevState) => ({
+      ...prevState,
+      chainId,
+      currencyAddress: defaultCurrency.address,
+    }));
+  };
+
   const onTopUp = async () => {
-    const { currencyAddress, amount } = dataForm;
+    const { currencyAddress, amount, chainId } = dataForm;
     if (!wallet || !amount) {
       return;
     }
+
+    if (chainId !== wallet.getChainId()) {
+      await changeNetwork(chainId);
+    }
+
     try {
+      await changeNetwork(chainId);
       setTopUpStatus(TOP_UP_STATUS.PENDING);
       await topUp(currencyAddress, amount);
     } catch (error: any) {
@@ -121,10 +140,13 @@ const FormCrypto: FC<IFormCrypto> = ({ onNext, planSelected }) => {
           </AppAlertWarning>
         </Box>
       )}
+
       <AppCryptoForm
         currencyAddress={dataForm.currencyAddress}
         amount={dataForm.amount}
+        chainId={dataForm.chainId}
         onChangeCurrencyAddress={(value) => onChangeCurrency(value)}
+        onChangeChainId={(value) => onChangeChainId(value)}
         onChangeAmount={(value) =>
           setDataForm({
             ...dataForm,
@@ -137,7 +159,10 @@ const FormCrypto: FC<IFormCrypto> = ({ onNext, planSelected }) => {
         <AppButton
           size={'lg'}
           onClick={topUpStatus === TOP_UP_STATUS.NONE ? onTopUp : onNext}
-          disabled={topUpStatus === TOP_UP_STATUS.PENDING}
+          disabled={
+            topUpStatus === TOP_UP_STATUS.PENDING ||
+            wallet?.getAddress() !== user?.getLinkedAddress()
+          }
         >
           {topUpStatus === TOP_UP_STATUS.NONE ? 'Top Up' : 'Continue'}
         </AppButton>

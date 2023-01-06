@@ -110,7 +110,6 @@
     &.billing-info {
       justify-content: space-between;
 
-
       .info-item {
         padding-bottom: 15px;
       }
@@ -160,6 +159,15 @@
         border-bottom: 0;
       }
     }
+  }
+}
+
+.btn-copy {
+  color: $paragraph;
+  cursor: pointer;
+
+  &:hover {
+    color: $link;
   }
 }
 

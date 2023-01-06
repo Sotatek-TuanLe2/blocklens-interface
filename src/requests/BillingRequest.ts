@@ -52,7 +52,7 @@ export default class BillingRequest extends BaseRequest {
   }
 
   retryPendingInvoice(id: string) {
-    const url = `/my/payment/invoice/${id}`;
+    const url = `/my/plan/retry-payment/invoice-${id}`;
     return this.put(url);
   }
 
