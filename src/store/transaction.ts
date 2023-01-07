@@ -48,8 +48,8 @@ const createTransaction = async (provider: any, params: ITransactionParams) => {
     overrides.gasLimit = Math.floor(gasLimit * (1 + GAS_LIMIT_BUFFER));
     return contractWithSigner[action](...transactionArgs, overrides);
   } catch (error: any) {
-    toastError({ message: error.data.message || error.message });
     console.log(error);
+    toastError({ message: error.data.message || error.message });
     throw new Error(error);
   }
 };
@@ -112,9 +112,8 @@ export const executeTransaction = createAsyncThunk(
         handleTransaction({ transaction, provider, confirmation }),
       );
     } catch (error: any) {
-      toastError({ message: error.data.message || error.message });
-      console.log(error);
-      throw new Error(error);
+      // console.log(error);
+      toastError({ message: error?.data?.message || error?.message });
     }
   },
 );

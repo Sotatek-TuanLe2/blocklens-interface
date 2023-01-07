@@ -1,4 +1,4 @@
-import { Box, Flex, Text } from '@chakra-ui/react';
+import { Box, Flex, Spinner, Text } from '@chakra-ui/react';
 import React, { useEffect, useMemo, useState } from 'react';
 import 'src/styles/pages/BillingPage.scss';
 import 'src/styles/pages/AppDetail.scss';
@@ -11,9 +11,8 @@ import { ConnectWalletIcon } from 'src/assets/icons';
 import { getChainConfig, getNetworkByEnv } from 'src/utils/utils-network';
 import { useHistory } from 'react-router-dom';
 import { BasePageContainer } from 'src/layouts';
-import useTopUp from 'src/hooks/useTopUp';
 import { CHAIN_OPTIONS } from 'src/components/AppCryptoForm';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'src/store';
 import Storage from '../../utils/utils-storage';
 import AppField from '../../components/AppField';
@@ -22,7 +21,13 @@ import AppSelect2 from '../../components/AppSelect2';
 import AppCurrencyInput from '../../components/AppCurrencyInput';
 import { shortenWalletAddress } from '../../utils/utils-wallet';
 import useUser from '../../hooks/useUser';
-import { getBalanceToken } from '../../utils/utils-token';
+import { getBalanceToken, isTokenApproved } from '../../utils/utils-token';
+import config from '../../config';
+import { executeTransaction } from '../../store/transaction';
+import abi from '../../abi';
+import { convertDecToWei } from '../../utils/utils-format';
+import { getUserProfile } from '../../store/user';
+import { MaxUint256 } from '@ethersproject/constants';
 
 interface IDataForm {
   walletAddress: string;
@@ -30,10 +35,6 @@ interface IDataForm {
   currencyAddress: string;
   amount: string;
 }
-
-export const TOP_UP_PARAMS = {
-  PLAN: 'plan',
-};
 
 const TopUpPage = () => {
   const initialDataForm: IDataForm = {
@@ -43,22 +44,33 @@ const TopUpPage = () => {
     amount: '',
   };
 
-  const [dataForm, setDataForm] = useState<IDataForm>(initialDataForm);
+  const TOP_UP_APP_ID = 1; // used for blockSniper
+  const TOP_UP_CONFIRMATIONS = 30;
 
+  const [dataForm, setDataForm] = useState<IDataForm>(initialDataForm);
   const { currencyAddress, amount, chainId } = dataForm;
+
   const [isBeingToppedUp, setIsBeingToppedUp] = useState<boolean>(false);
 
-  const { wallet, isUserLinked, changeNetwork, connectWallet } = useWallet();
+  const [balanceToken, setBalanceToken] = useState<string | number>('');
+  const [fetchingBalance, setFetchingBalance] = useState(false);
+
+  const { wallet, changeNetwork, connectWallet } = useWallet();
   const { user } = useUser();
-  const { isConnecting } = useSelector((state: RootState) => state.wallet);
-  const { topUp } = useTopUp();
   const history = useHistory();
+
+  const { isConnecting: connectingWallet } = useSelector(
+    (state: RootState) => state.wallet,
+  );
+
+  const dispatch = useDispatch();
 
   // form
 
   const AMOUNT_OPTIONS = [300, 500, 1000];
-
-  const [balanceToken, setBalanceToken] = useState<string | number>('');
+  const topUpContractAddress = wallet
+    ? config.topUp[wallet?.getNework()].contractAddress
+    : null;
 
   const CURRENCY_OPTIONS = useMemo((): {
     label: string;
@@ -88,28 +100,55 @@ const TopUpPage = () => {
 
   // end form
 
-  useEffect(() => {
-    const connectorId = Storage.getConnectorId();
-    const network = Storage.getNetwork();
-    if (!connectorId) return;
-    (async () => await connectWallet(connectorId, network))();
-  }, []);
+  const [hasApproveToken, setHasApproveToken] = useState(false);
 
-  useEffect(() => {
-    if (wallet?.getAddress()) {
-      const networkCurrencies = getNetworkByEnv(
-        getChainConfig(CHAIN_OPTIONS[0].value),
-      ).currencies;
-      const defaultCurrency =
-        networkCurrencies[Object.keys(networkCurrencies)[0]];
-      setDataForm((prevState) => ({
-        ...prevState,
-        walletAddress: wallet.getAddress(),
-        chainId: CHAIN_OPTIONS[0].value,
-        currencyAddress: defaultCurrency.address,
-      }));
+  const approveToken = async () => {
+    await dispatch(
+      executeTransaction({
+        provider: wallet?.getProvider(),
+        params: {
+          contractAddress: currencyAddress,
+          abi: abi['erc20'],
+          action: 'approve',
+          transactionArgs: [topUpContractAddress, MaxUint256.toString()],
+        },
+      }),
+    );
+  };
+
+  const topUp = async (currencyAddress: string, amount: string) => {
+    if (!(wallet && topUpContractAddress)) {
+      return;
     }
-  }, [wallet]);
+    const networkCurrencies = getNetworkByEnv(
+      getChainConfig(wallet.getNework()),
+    ).currencies;
+    const currencyKey = Object.keys(networkCurrencies).find(
+      (currencyKey: string) =>
+        networkCurrencies[currencyKey].address === currencyAddress,
+    );
+    if (!currencyKey) {
+      return;
+    }
+
+    await dispatch(
+      executeTransaction({
+        provider: wallet.getProvider(),
+        params: {
+          contractAddress: topUpContractAddress,
+          abi: abi['billing'],
+          action: 'topup',
+          transactionArgs: [
+            TOP_UP_APP_ID,
+            currencyAddress,
+            convertDecToWei(amount, networkCurrencies[currencyKey].decimals),
+          ],
+        },
+        confirmation: TOP_UP_CONFIRMATIONS,
+      }),
+    );
+    await dispatch(getUserProfile());
+  };
 
   const onChangeCurrency = (currencyAddress: string) => {
     setDataForm((prevState) => ({ ...prevState, currencyAddress }));
@@ -144,18 +183,66 @@ const TopUpPage = () => {
     } catch (error: any) {
       setIsBeingToppedUp(false);
       console.error(error);
-      toastError({ message: error.data.message || error.message });
+      toastError({ message: error?.data?.message || error?.message });
     }
   };
 
   useEffect(() => {
+    const connectorId = Storage.getConnectorId();
+    const network = Storage.getNetwork();
+    if (!connectorId) return;
+    (async () => {
+      await connectWallet(connectorId, network);
+    })();
+  }, []);
+
+  useEffect(() => {
+    if (!(wallet && topUpContractAddress)) return;
+    isTokenApproved(
+      wallet?.getNework(),
+      currencyAddress,
+      wallet.getAddress(),
+      topUpContractAddress,
+    )
+      .then((result) => setHasApproveToken(result))
+      .catch(() => setHasApproveToken(false))
+      .finally(() => setDataForm((prevState) => prevState));
+  }, [wallet, topUpContractAddress, currencyAddress]);
+
+  useEffect(() => {
+    if (wallet?.getAddress()) {
+      const networkCurrencies = getNetworkByEnv(
+        getChainConfig(CHAIN_OPTIONS[0].value),
+      ).currencies;
+      const defaultCurrency =
+        networkCurrencies[Object.keys(networkCurrencies)[0]];
+      setDataForm((prevState) => ({
+        ...prevState,
+        walletAddress: wallet.getAddress(),
+        chainId: CHAIN_OPTIONS[0].value,
+        currencyAddress: defaultCurrency.address,
+      }));
+    }
+  }, [wallet]);
+
+  useEffect(() => {
+    if (!(chainId && currencyAddress && wallet?.getAddress())) return;
+    setFetchingBalance(true);
     getBalanceToken(chainId, currencyAddress, wallet?.getAddress())
-      .then((balance) => setBalanceToken(balance))
-      .catch((error) => console.log(error));
-  }, [currencyAddress, chainId]);
+      .then((balance) => {
+        setBalanceToken(balance);
+      })
+      .catch((error) => {
+        console.log(error);
+        toastError({ message: error.toString() });
+      })
+      .finally(() => setFetchingBalance(false));
+  }, [currencyAddress, chainId, wallet?.getAddress()]);
 
   const _renderTopUpForm = () => {
-    if (!wallet || !user) return null;
+    if (!(wallet && user)) {
+      return null;
+    }
     const _renderAlert = () => (
       <Text align={'center'}>
         You linked wallet:{' '}
@@ -166,7 +253,14 @@ const TopUpPage = () => {
     );
 
     return (
-      <>
+      <form
+        onSubmit={async (e) => {
+          e.preventDefault();
+          if (hasApproveToken) {
+            await onTopUp();
+          } else await approveToken();
+        }}
+      >
         <AppCard className={'box-form-crypto'}>
           {isDifferentWalletAddressLinked && _renderAlert()}
           <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
@@ -211,11 +305,15 @@ const TopUpPage = () => {
                   flexDirection={isMobile ? 'column-reverse' : 'row'}
                 >
                   <Box className="label">Top up amount</Box>
-                  <Flex>
+                  <Flex alignItems={'center'}>
                     <Box mr={2} className="label">
                       User balance:
                     </Box>
-                    <Box>{balanceToken || '--'}</Box>
+                    {!fetchingBalance ? (
+                      <Box>{balanceToken || '--'}</Box>
+                    ) : (
+                      <Spinner size={'sm'} />
+                    )}
                   </Flex>
                 </Flex>
                 <AppCurrencyInput
@@ -225,6 +323,7 @@ const TopUpPage = () => {
                       amount: e.target.value.trim(),
                     })
                   }
+                  disabled={fetchingBalance}
                   render={(ref, props) => (
                     <AppInput ref={ref} value={dataForm.amount} {...props} />
                   )}
@@ -252,19 +351,25 @@ const TopUpPage = () => {
         </AppCard>
         <Flex justifyContent={isMobile ? 'center' : 'flex-end'} mt={7}>
           <AppButton
+            type={'submit'}
             size={'lg'}
-            onClick={onTopUp}
-            disabled={isBeingToppedUp || +dataForm.amount <= 0}
+            disabled={
+              hasApproveToken && (isBeingToppedUp || +dataForm.amount <= 0)
+            }
           >
-            Top Up
+            {hasApproveToken ? `Top Up` : 'Approve Token'}
           </AppButton>
         </Flex>
-      </>
+      </form>
     );
   };
 
   const _renderLoading = () => {
-    return <Text align={'center'}>Loading...</Text>;
+    return (
+      <Flex alignItems={'center'} justifyContent={'center'}>
+        <Spinner size={'xl'} thickness={'4px'} />
+      </Flex>
+    );
   };
 
   const onBack = () => history.goBack();
@@ -276,9 +381,9 @@ const TopUpPage = () => {
           <Box className="icon-arrow-left" mr={6} onClick={onBack} />
           <Box className={'sub-title'}>Top Up</Box>
         </Flex>
-        {isConnecting ? (
+        {connectingWallet ? (
           _renderLoading()
-        ) : wallet && isUserLinked ? (
+        ) : wallet ? (
           _renderTopUpForm()
         ) : (
           <AppCard className="box-connect-wallet">
