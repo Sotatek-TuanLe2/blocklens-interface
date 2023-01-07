@@ -1,69 +1,27 @@
-import { Box, Flex } from '@chakra-ui/react';
-import { FC, useEffect, useState } from 'react';
+import { Box } from '@chakra-ui/react';
+import React, { FC, useEffect, useState } from 'react';
 import BigNumber from 'bignumber.js';
 import 'src/styles/pages/AppDetail.scss';
 import { AppButton, AppCard } from 'src/components';
-import { isMobile } from 'react-device-detect';
 import AppConnectWalletButton from 'src/components/AppConnectWalletButton';
 import useWallet from 'src/hooks/useWallet';
-import { toastError } from 'src/utils/utils-notify';
 import useUser from 'src/hooks/useUser';
 import { ConnectWalletIcon } from 'src/assets/icons';
-import AppAlertWarning from 'src/components/AppAlertWarning';
-import { getChainConfig, getNetworkByEnv } from 'src/utils/utils-network';
-import useTopUp from 'src/hooks/useTopUp';
-import AppCryptoForm, { CHAIN_OPTIONS } from 'src/components/AppCryptoForm';
 import { MetadataPlan } from 'src/store/metadata';
+import { useHistory } from 'react-router';
+import AppAlertWarning from 'src/components/AppAlertWarning';
 
 interface IFormCrypto {
   onNext: () => void;
   planSelected: MetadataPlan;
 }
 
-interface IDataForm {
-  walletAddress: string;
-  chainId: string;
-  currencyAddress: string;
-  amount: string;
-}
-
 const FormCrypto: FC<IFormCrypto> = ({ onNext, planSelected }) => {
-  const initialDataForm: IDataForm = {
-    walletAddress: '',
-    chainId: '',
-    currencyAddress: '',
-    amount: '',
-  };
-
-  enum TOP_UP_STATUS {
-    NONE,
-    PENDING,
-    FINISHED,
-  }
-
-  const [dataForm, setDataForm] = useState<IDataForm>(initialDataForm);
-  const [topUpStatus, setTopUpStatus] = useState<number>(TOP_UP_STATUS.NONE);
   const [isSufficientBalance, setIsSufficientBalance] =
     useState<boolean>(false);
-  const { wallet, isUserLinked, changeNetwork } = useWallet();
+  const { wallet, isUserLinked } = useWallet();
   const { user } = useUser();
-  const { topUp } = useTopUp();
-
-  useEffect(() => {
-    if (wallet?.getAddress()) {
-      const networkCurrencies = getNetworkByEnv(
-        getChainConfig(CHAIN_OPTIONS[0].value),
-      ).currencies;
-      const defaultCurrency =
-        networkCurrencies[Object.keys(networkCurrencies)[0]];
-      setDataForm((prevState) => ({
-        ...prevState,
-        walletAddress: wallet.getAddress(),
-        chainId: CHAIN_OPTIONS[0].value,
-        currencyAddress: defaultCurrency.address,
-      }));
-    }
-  }, [wallet]);
+  const history = useHistory();
 
   useEffect(() => {
     if (user?.getBalance() && planSelected) {
@@ -73,102 +31,47 @@ const FormCrypto: FC<IFormCrypto> = ({ onNext, planSelected }) => {
         )
       ) {
         setIsSufficientBalance(true);
-        setTopUpStatus(TOP_UP_STATUS.FINISHED);
       } else {
         setIsSufficientBalance(false);
-        setTopUpStatus(TOP_UP_STATUS.NONE);
       }
     }
   }, [user?.getBalance()]);
 
-  const onChangeCurrency = (currencyAddress: string) => {
-    setDataForm((prevState) => ({ ...prevState, currencyAddress }));
-  };
-
-  const onChangeChainId = (chainId: string) => {
-    const networkCurrencies = getNetworkByEnv(
-      getChainConfig(chainId),
-    ).currencies;
-    const defaultCurrency =
-      networkCurrencies[Object.keys(networkCurrencies)[0]];
-    setDataForm((prevState) => ({
-      ...prevState,
-      chainId,
-      currencyAddress: defaultCurrency.address,
-    }));
-  };
-
-  const onTopUp = async () => {
-    const { currencyAddress, amount, chainId } = dataForm;
-    if (!wallet || !amount) {
-      return;
+  const _renderWalletInfo = () => {
+    if (wallet?.getAddress() !== user?.getLinkedAddress()) {
+      return (
+        <AppAlertWarning>
+          <Box>
+            You are connecting with different address: {wallet?.getAddress()}.
+          </Box>
+          <Box>
+            Please connect with linked address: {user?.getLinkedAddress()}.
+          </Box>
+        </AppAlertWarning>
+      );
     }
 
-    if (chainId !== wallet.getChainId()) {
-      await changeNetwork(chainId);
+    if (!isSufficientBalance) {
+      return (
+        <AppCard className="box-connect-wallet">
+          <ConnectWalletIcon />
+          <Box className="box-connect-wallet__description">
+            Insufficient balance. Use Card payment or increase your balance by
+            Top up with Crypto.
+          </Box>
+          <AppButton
+            width={'100%'}
+            size="lg"
+            onClick={() => history.push('/top-up')}
+          >
+            Top Up
+          </AppButton>
+        </AppCard>
+      );
     }
 
-    try {
-      await changeNetwork(chainId);
-      setTopUpStatus(TOP_UP_STATUS.PENDING);
-      await topUp(currencyAddress, amount);
-    } catch (error: any) {
-      setTopUpStatus(TOP_UP_STATUS.NONE);
-      console.error(error);
-      toastError({ message: error.data.message || error.message });
-    }
+    return <></>;
   };
-
-  const _renderTopUpMessage = () => {
-    if (topUpStatus === TOP_UP_STATUS.NONE) {
-      return null;
-    }
-    return (
-      <AppAlertWarning>
-        When payment is completed, Continue button would be available.
-      </AppAlertWarning>
-    );
-  };
-
-  const _renderWalletInfo = () => (
-    <>
-      {!isSufficientBalance && (
-        <Box width={'100%'}>
-          <AppAlertWarning>
-            Your current balance is insufficent. Please top-up to meet the
-            plan's price!
-          </AppAlertWarning>
-        </Box>
-      )}
-
-      <AppCryptoForm
-        currencyAddress={dataForm.currencyAddress}
-        amount={dataForm.amount}
-        chainId={dataForm.chainId}
-        onChangeCurrencyAddress={(value) => onChangeCurrency(value)}
-        onChangeChainId={(value) => onChangeChainId(value)}
-        onChangeAmount={(value) =>
-          setDataForm({
-            ...dataForm,
-            amount: value,
-          })
-        }
-      />
-      {_renderTopUpMessage()}
-      <Flex justifyContent={isMobile ? 'center' : 'flex-end'} mt={7}>
-        <AppButton
-          size={'lg'}
-          onClick={topUpStatus === TOP_UP_STATUS.NONE ? onTopUp : onNext}
-          disabled={
-            topUpStatus === TOP_UP_STATUS.PENDING ||
-            wallet?.getAddress() !== user?.getLinkedAddress()
-          }
-        >
-          {topUpStatus === TOP_UP_STATUS.NONE ? 'Top Up' : 'Continue'}
-        </AppButton>
-      </Flex>
-    </>
-  );
 
   return (
     <Box className="form-card">

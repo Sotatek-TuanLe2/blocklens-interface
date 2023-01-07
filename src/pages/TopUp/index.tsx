@@ -13,9 +13,6 @@ import { useHistory } from 'react-router-dom';
 import { BasePageContainer } from 'src/layouts';
 import useTopUp from 'src/hooks/useTopUp';
 import AppCryptoForm, { CHAIN_OPTIONS } from 'src/components/AppCryptoForm';
-import { useSelector } from 'react-redux';
-import { RootState } from 'src/store';
-import useUser from 'src/hooks/useUser';
 
 interface IDataForm {
   walletAddress: string;
@@ -23,10 +20,6 @@ interface IDataForm {
   currencyAddress: string;
   amount: string;
 }
-
-export const TOP_UP_PARAMS = {
-  PLAN: 'plan',
-};
 
 const TopUpPage = () => {
   const initialDataForm: IDataForm = {
