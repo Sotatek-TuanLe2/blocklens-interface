@@ -4,15 +4,19 @@ import { IWebhook } from 'src/utils/utils-webhook';
 
 const useWebhookDetails = (appId: string, webhookId: string) => {
   const [webhook, setWebhook] = useState<IWebhook | any>({});
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const getWebhookInfo = useCallback(async () => {
     try {
+      setIsLoading(true);
       const res = (await rf
         .getRequest('RegistrationRequest')
         .getRegistration(appId, webhookId)) as any;
       setWebhook(res);
+      setIsLoading(false);
     } catch (error: any) {
       setWebhook({});
+      setIsLoading(false);
     }
   }, [appId, webhookId]);
 
@@ -23,6 +27,7 @@ const useWebhookDetails = (appId: string, webhookId: string) => {
   return {
     webhook,
     getWebhookInfo,
+    isLoading
   };
 };
 

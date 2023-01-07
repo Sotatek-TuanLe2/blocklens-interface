@@ -18,18 +18,14 @@ const WebhookDetail = () => {
   const { appId, id: webhookId } = useParams<{ appId: string; id: string }>();
 
   const { appInfo } = useAppDetails(appId);
-  const { webhook } = useWebhookDetails(appId, webhookId);
+  const { webhook, isLoading } = useWebhookDetails(appId, webhookId);
 
-  if (!webhook && !Object.keys(webhook).length) {
+  const _renderNoWebhook = () => {
+    return <Flex justifyContent="center">Webhook Not Found</Flex>;
+  };
+
+  const _renderWebhookDetail = () => {
     return (
-      <BasePageContainer className="app-detail">
-        <Flex justifyContent="center">Webhook Not Found</Flex>
-      </BasePageContainer>
-    );
-  }
-
-  return (
-    <BasePageContainer className="app-detail">
       <>
         <Flex className="app-info">
           <AppHeading
@@ -73,6 +69,14 @@ const WebhookDetail = () => {
           <PartWebhookGraph />
         </Box>
       </>
+    );
+  };
+
+  return (
+    <BasePageContainer className="app-detail" isLoading={isLoading}>
+      {!webhook && !Object.keys(webhook).length
+        ? _renderNoWebhook()
+        : _renderWebhookDetail()}
     </BasePageContainer>
   );
 };

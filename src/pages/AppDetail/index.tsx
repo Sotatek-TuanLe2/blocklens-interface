@@ -32,7 +32,7 @@ const AppDetail = () => {
   const userStats = user?.getStats();
 
   const { id: appId } = useParams<{ id: string }>();
-  const { appInfo } = useAppDetails(appId);
+  const { appInfo, isLoading } = useAppDetails(appId);
 
   const getActiveTab = () => {
     const tabs = [
@@ -52,14 +52,6 @@ const AppDetail = () => {
     userStats?.numberOfAddressActivities,
     userStats?.numberOfNftActivities,
   ]);
-
-  if (!appInfo || !Object.values(appInfo).length) {
-    return (
-      <BasePageContainer className="app-detail">
-        <Flex justifyContent="center">App Not Found</Flex>
-      </BasePageContainer>
-    );
-  }
 
   const _renderListWebhook = () => {
     return (
@@ -139,8 +131,12 @@ const AppDetail = () => {
     );
   };
 
-  return (
-    <BasePageContainer className="app-detail">
+  const _renderNoApp = () => {
+    return <Flex justifyContent="center">App Not Found</Flex>;
+  };
+
+  const _renderAppDetail = () => {
+    return (
       <>
         <Flex className="app-info">
           <AppHeading title={appInfo.name} linkBack={'/'} />
@@ -179,6 +175,14 @@ const AppDetail = () => {
           <PartAppGraph />
         </Box>
       </>
+    );
+  };
+
+  return (
+    <BasePageContainer className="app-detail" isLoading={isLoading}>
+      {!appInfo || !Object.values(appInfo).length
+        ? _renderNoApp()
+        : _renderAppDetail()}
     </BasePageContainer>
   );
 };

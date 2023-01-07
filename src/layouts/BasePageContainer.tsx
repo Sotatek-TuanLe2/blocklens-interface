@@ -1,17 +1,20 @@
-import { FC, ReactElement, useEffect } from 'react';
-import { Box, Flex } from '@chakra-ui/react';
+import { FC, ReactElement } from 'react';
+import { Box, Flex, Spinner } from '@chakra-ui/react';
 import React from 'react';
 import { BasePage } from 'src/layouts';
 import { isMobile } from 'react-device-detect';
-import { useDispatch } from 'react-redux';
-import { getUserStats } from '../store/user';
 
 interface IBasePageContainer {
   className?: string;
+  isLoading?: boolean;
   children: ReactElement;
 }
 
-const BasePageContainer: FC<IBasePageContainer> = ({ children, className }) => {
+const BasePageContainer: FC<IBasePageContainer> = ({
+  isLoading,
+  children,
+  className,
+}) => {
   return (
     <BasePage>
       <Flex
@@ -25,7 +28,19 @@ const BasePageContainer: FC<IBasePageContainer> = ({ children, className }) => {
           width={'full'}
           px={4}
         >
-          <Box width={'full'}>{children}</Box>
+          {isLoading ? (
+            <Flex justifyContent={'center'}>
+              <Spinner
+                thickness="4px"
+                speed="0.65s"
+                emptyColor="gray.200"
+                color="blue.500"
+                size="xl"
+              />
+            </Flex>
+          ) : (
+            <Box width={'full'}>{children}</Box>
+          )}
         </Box>
       </Flex>
     </BasePage>

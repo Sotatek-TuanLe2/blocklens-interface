@@ -76,7 +76,7 @@ const CreateWebhook = () => {
   };
 
   const history = useHistory();
-  const { appInfo } = useAppDetails(appId);
+  const { appInfo, isLoading } = useAppDetails(appId);
   const [dataForm, setDataForm] = useState<IDataForm>(initDataCreateWebHook);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
   const [type, setType] = useState<string>(WEBHOOK_TYPES.NFT_ACTIVITY);
@@ -465,16 +465,12 @@ const CreateWebhook = () => {
     return _renderFormAddressActivity();
   };
 
-  if (!appInfo || !Object.values(appInfo).length) {
-    return (
-      <BasePageContainer className="app-detail">
-        <Flex justifyContent="center">App Not Found</Flex>
-      </BasePageContainer>
-    );
-  }
+  const _renderNoApp = () => {
+    return <Flex justifyContent="center">App Not Found</Flex>;
+  };
 
-  return (
-    <BasePageContainer className="app-detail">
+  const _renderCreateWebhook = () => {
+    return (
       <>
         <Flex className="app-info">
           <Flex className="name">
@@ -535,6 +531,14 @@ const CreateWebhook = () => {
           </Flex>
         </AppCard>
       </>
+    );
+  };
+
+  return (
+    <BasePageContainer className="app-detail" isLoading={isLoading}>
+      {!appInfo || !Object.values(appInfo).length
+        ? _renderNoApp()
+        : _renderCreateWebhook()}
     </BasePageContainer>
   );
 };
