@@ -22,7 +22,8 @@ import {
   ListCardIcon,
   CircleCheckedIcon,
   CryptoIcon,
-  ReloadIcon, WarningIcon,
+  ReloadIcon,
+  WarningIcon,
 } from 'src/assets/icons';
 import { isMobile } from 'react-device-detect';
 import PartCheckout from './parts/PartCheckout';
@@ -159,7 +160,7 @@ const BillingPage = () => {
 
   useEffect(() => {
     setPaymentMethod(user?.getActivePaymentMethod() || PAYMENT_METHOD.CARD);
-  }, [user?.getActivePaymentMethod()]);
+  }, [user]);
 
   useEffect(() => {
     if (user) {
@@ -299,8 +300,13 @@ const BillingPage = () => {
       await rf
         .getRequest('UserRequest')
         .editInfoUser({ activePaymentMethod: method });
-      toastSuccess({ message: 'Update Successfully!' });
-      dispatch(getUserProfile());
+
+      if (method === PAYMENT_METHOD.CARD && !user?.getStripePayment()) {
+        setIsOpenEditCardModal(true);
+      } else {
+        toastSuccess({ message: 'Update Successfully!' });
+      }
+      await dispatch(getUserProfile());
     } catch (error: any) {
       toastError({ message: error.message });
     }
@@ -312,11 +318,8 @@ const BillingPage = () => {
       return;
     }
     // isUpgrade
-    if (
-      paymentMethod === PAYMENT_METHOD.CARD &&
-      !user?.getStripePayment()
-    ) {
-      setStep(STEPS.FORM);
+    if (paymentMethod === PAYMENT_METHOD.CARD && !user?.getStripePayment()) {
+      setIsOpenEditCardModal(true);
       return;
     }
 
@@ -407,8 +410,7 @@ const BillingPage = () => {
 
         <AppCard className="list-table-wrap">
           <Flex className="box-title">
-
-            <Box className={'text-title'}>Select Your Plan</Box>
+            <Box className={'text-title'}>Change Your Plan</Box>
 
             {user?.getPlan().price !== 0 && (
               <Box className="box-btn-cancel">
