@@ -142,9 +142,7 @@ const PlanMobile: FC<IPlanMobile> = ({
 };
 
 const BillingPage = () => {
-  const [paymentMethod, setPaymentMethod] = useState<string>(
-    PAYMENT_METHOD.CARD,
-  );
+  const [paymentMethod, setPaymentMethod] = useState<string | any>(null);
   const [isOpenCancelSubscriptionModal, setIsOpenCancelSubscriptionModal] =
     useState<boolean>(false);
   const [planSelected, setPlanSelected] = useState<MetadataPlan>({} as any);
@@ -159,7 +157,7 @@ const BillingPage = () => {
   const history = useHistory();
 
   useEffect(() => {
-    setPaymentMethod(user?.getActivePaymentMethod() || PAYMENT_METHOD.CARD);
+    setPaymentMethod(user?.getActivePaymentMethod());
   }, [user]);
 
   useEffect(() => {
@@ -319,7 +317,7 @@ const BillingPage = () => {
     }
     // isUpgrade
     if (paymentMethod === PAYMENT_METHOD.CARD && !user?.getStripePayment()) {
-      setIsOpenEditCardModal(true);
+      toastError({ message: 'Please add your credit card for payment!' });
       return;
     }
 
