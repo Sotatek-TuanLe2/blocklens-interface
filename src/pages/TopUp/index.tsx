@@ -20,7 +20,6 @@ import { ConnectWalletIcon } from 'src/assets/icons';
 import { getChainConfig, getNetworkByEnv } from 'src/utils/utils-network';
 import { useHistory } from 'react-router-dom';
 import { BasePageContainer } from 'src/layouts';
-import { CHAIN_OPTIONS } from 'src/components/AppCryptoForm';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'src/store';
 import Storage from '../../utils/utils-storage';
@@ -45,6 +44,14 @@ interface IDataForm {
   currencyAddress: string;
   amount: string;
 }
+
+const EXCEPTED_NETWORKS = ['ETH', 'BSC', 'POLYGON'];
+export const CHAIN_OPTIONS = Object.keys(config.chains)
+  .filter((chainId) => EXCEPTED_NETWORKS.includes(chainId))
+  .map((chainKey) => {
+    const chain = config.chains[chainKey];
+    return { label: chain.name, value: chain.id, icon: chain.icon };
+  });
 
 const TopUpPage = () => {
   const initialDataForm: IDataForm = {
