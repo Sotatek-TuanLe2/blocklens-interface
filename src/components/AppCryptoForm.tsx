@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useMemo, useState } from 'react';
-import { Box, Flex } from '@chakra-ui/react';
+import { Box, Button, Flex, Text } from '@chakra-ui/react';
 import { isMobile } from 'react-device-detect';
 import useWallet from 'src/hooks/useWallet';
 import 'src/styles/components/AppCryptoForm.scss';
@@ -13,6 +13,8 @@ import config from 'src/config';
 import { getChainConfig, getNetworkByEnv } from 'src/utils/utils-network';
 import AppCurrencyInput from './AppCurrencyInput';
 import { getBalanceToken } from 'src/utils/utils-token';
+import { shortenWalletAddress } from '../utils/utils-wallet';
+import { AppButton } from './index';
 
 interface IAppCryptoForm {
   currencyAddress: string;
@@ -72,114 +74,99 @@ const AppCryptoForm: FC<IAppCryptoForm> = (props) => {
   }, [chainId]);
 
   useEffect(() => {
-    const getBalanceTokenCurrency = async () => {
-      try {
-        const balance = await getBalanceToken(
-          chainId,
-          currencyAddress,
-          wallet?.getAddress(),
-        );
-        setBalanceToken(balance);
-      } catch (error) {
-        setBalanceToken('');
-      }
-    };
-
-    getBalanceTokenCurrency().then();
+    getBalanceToken(chainId, currencyAddress, wallet?.getAddress())
+      .then((balance) => setBalanceToken(balance))
+      .catch((error) => console.log(error));
   }, [currencyAddress, chainId]);
 
-  const _renderCryptoForm = () => {
-    if (!wallet || !user || !isUserLinked) {
-      return null;
-    }
-    if (wallet.getAddress() !== user.getLinkedAddress()) {
-      return (
-        <AppAlertWarning>
-          <Box>
-            You are connecting with different address: {wallet.getAddress()}.
-          </Box>
-          <Box>
-            Please connect with linked address: {user.getLinkedAddress()}.
-          </Box>
-        </AppAlertWarning>
-      );
-    }
-    return (
-      <AppCard className={'box-form-crypto'}>
-        <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
-          <AppField
-            label={'Linked Wallet'}
-            customWidth={'100%'}
-            note="Each account has 1 linked wallet. Cryptocurrencies sent from other wallets would not be top up to your account balance.
-                    You can change your linked wallet at the Account page."
-          >
-            <AppInput isDisabled={true} size="lg" value={wallet.getAddress()} />
-          </AppField>
-          <Box width={isMobile ? '100%' : '49.5%'} zIndex={99}>
-            <AppField label={'Chain'} customWidth={'100%'}>
-              <AppSelect2
-                size="large"
-                onChange={(value: string) => onChangeChainId(value)}
-                options={CHAIN_OPTIONS}
-                value={chainId}
-              />
-            </AppField>
-          </Box>
-          <Box width={isMobile ? '100%' : '49.5%'} zIndex={98}>
-            <AppField label={'Currency'} customWidth={'100%'}>
-              <AppSelect2
-                size="large"
-                onChange={(value: string) => onChangeCurrencyAddress(value)}
-                options={CURRENCY_OPTIONS}
-                value={currencyAddress}
-              />
-            </AppField>
-          </Box>
+  const isDifferentWalletAddressLinked =
+    wallet?.getAddress() !== user?.getLinkedAddress();
 
-          <Flex width={'100%'} flexDirection={isMobile ? 'column' : 'row'}>
-            <AppField label={''} customWidth={'49.5%'}>
-              <Flex
-                justifyContent="space-between"
-                className="field"
-                flexDirection={isMobile ? 'column-reverse' : 'row'}
-              >
-                <Box className="label">Top up amount</Box>
-                <Flex>
-                  <Box mr={2} className="label">
-                    User balance:
-                  </Box>
-                  <Box>{balanceToken || '--'}</Box>
-                </Flex>
-              </Flex>
-              <AppCurrencyInput
-                onChange={(e) => onChangeAmount(e.target.value.trim())}
-                render={(ref, props) => (
-                  <AppInput ref={ref} value={amount} {...props} />
-                )}
-              />
-            </AppField>
-            <Flex className="amount-options">
-              {AMOUNT_OPTIONS.map((item: number, index: number) => {
-                return (
-                  <Box
-                    className={`amount-option ${
-                      +amount === item ? 'active' : ''
-                    }`}
-                    key={index}
-                    onClick={() => onChangeAmount(item.toString())}
-                  >
-                    {item}
-                  </Box>
-                );
-              })}
-            </Flex>
-          </Flex>
-        </Flex>
-      </AppCard>
+  const _renderAlert = () => {
+    return !wallet || !user ? null : (
+      <Text align={'center'}>
+        You linked wallet:{' '}
+        <span>{shortenWalletAddress(user?.getLinkedAddress())}</span>
+        not <span>{shortenWalletAddress(wallet?.getAddress())}</span>
+        <AppButton>Switch</AppButton>
+      </Text>
     );
   };
 
-  return _renderCryptoForm();
+  return !wallet ? null : (
+    <AppCard className={'box-form-crypto'}>
+      {isDifferentWalletAddressLinked && _renderAlert()}
+      <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
+        <AppField
+          label={'Linked Wallet'}
+          customWidth={'100%'}
+          note="Each account has 1 linked wallet. Cryptocurrencies sent from other wallets would not be top up to your account balance.
+                    You can change your linked wallet at the Account page."
+        >
+          <AppInput isDisabled={true} size="lg" value={wallet.getAddress()} />
+        </AppField>
+        <Box width={isMobile ? '100%' : '49.5%'} zIndex={99}>
+          <AppField label={'Chain'} customWidth={'100%'}>
+            <AppSelect2
+              size="large"
+              onChange={(value: string) => onChangeChainId(value)}
+              options={CHAIN_OPTIONS}
+              value={chainId}
+            />
+          </AppField>
+        </Box>
+        <Box width={isMobile ? '100%' : '49.5%'} zIndex={98}>
+          <AppField label={'Currency'} customWidth={'100%'}>
+            <AppSelect2
+              size="large"
+              onChange={(value: string) => onChangeCurrencyAddress(value)}
+              options={CURRENCY_OPTIONS}
+              value={currencyAddress}
+            />
+          </AppField>
+        </Box>
+
+        <Flex width={'100%'} flexDirection={isMobile ? 'column' : 'row'}>
+          <AppField label={''} customWidth={'49.5%'}>
+            <Flex
+              justifyContent="space-between"
+              className="field"
+              flexDirection={isMobile ? 'column-reverse' : 'row'}
+            >
+              <Box className="label">Top up amount</Box>
+              <Flex>
+                <Box mr={2} className="label">
+                  User balance:
+                </Box>
+                <Box>{balanceToken || '--'}</Box>
+              </Flex>
+            </Flex>
+            <AppCurrencyInput
+              onChange={(e) => onChangeAmount(e.target.value.trim())}
+              render={(ref, props) => (
+                <AppInput ref={ref} value={amount} {...props} />
+              )}
+            />
+          </AppField>
+          <Flex className="amount-options">
+            {AMOUNT_OPTIONS.map((item: number, index: number) => {
+              return (
+                <Box
+                  className={`amount-option ${
+                    +amount === item ? 'active' : ''
+                  }`}
+                  key={index}
+                  onClick={() => onChangeAmount(item.toString())}
+                >
+                  {item}
+                </Box>
+              );
+            })}
+          </Flex>
+        </Flex>
+      </Flex>
+    </AppCard>
+  );
 };
 
 export default AppCryptoForm;
