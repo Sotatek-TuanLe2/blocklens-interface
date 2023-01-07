@@ -23,8 +23,6 @@ import MessagesHistory from './pages/MessagesHistoryPage';
 import BillingPage from './pages/BillingPage';
 import AccountPage from './pages/AccountPage';
 import BillingInfoPage from './pages/BillingInfoPage';
-import LandingPage from './pages/LandingPage';
-import Pricing from './pages/LandingPage/Pricing';
 import ContactUs from './pages/ContactUs';
 import BillingHistory from './pages/BillingHistoryPage';
 import AllActivitiesPage from './pages/AllActivitiesPage';
@@ -98,11 +96,9 @@ const Routes: FC<RouteComponentProps> = () => {
           path={'/app/:appId/webhook/:webhookId/activities/:id'}
           component={MessagesHistory}
         />
-        <PrivateRoute path={'/home'} component={HomePage} />
-        <Route path={'/pricing'} component={Pricing} />
         <PrivateRoute path={'/top-up'} component={TopUpPage} />
         <Route path={'/contact-us'} component={ContactUs} />
-        <PublicRoute path={'/'} component={LandingPage} />
+        <PrivateRoute path={'/'} component={HomePage} />
       </Switch>
       <>
         <ModalSignatureRequired />
@@ -125,7 +121,7 @@ const PublicRoute = ({ component: Component, path, ...rest }: any) => {
         ) : (
           <Redirect
             to={{
-              pathname: '/home',
+              pathname: '/',
             }}
           />
         )
