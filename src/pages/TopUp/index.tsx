@@ -1,4 +1,4 @@
-import { Box, Flex } from '@chakra-ui/react';
+import { Box, Flex, Text } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import 'src/styles/pages/BillingPage.scss';
 import 'src/styles/pages/AppDetail.scss';
@@ -15,7 +15,7 @@ import useTopUp from 'src/hooks/useTopUp';
 import AppCryptoForm, { CHAIN_OPTIONS } from 'src/components/AppCryptoForm';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/store';
-import useUser from 'src/hooks/useUser';
+import Storage from '../../utils/utils-storage';
 
 interface IDataForm {
   walletAddress: string;
@@ -39,9 +39,18 @@ const TopUpPage = () => {
   const [dataForm, setDataForm] = useState<IDataForm>(initialDataForm);
   const [isBeingToppedUp, setIsBeingToppedUp] = useState<boolean>(false);
 
-  const { wallet, isUserLinked, changeNetwork } = useWallet();
+  const { wallet, isUserLinked, changeNetwork, connectWallet } = useWallet();
+  const { isConnecting } = useSelector((state: RootState) => state.wallet);
   const { topUp } = useTopUp();
   const history = useHistory();
+
+  useEffect(() => {
+    const connectorId = Storage.getConnectorId() || '';
+    const network = Storage.getNetwork();
+
+    if (!connectorId) return;
+    (async () => await connectWallet(connectorId, network))();
+  }, []);
 
   useEffect(() => {
     if (wallet?.getAddress()) {
@@ -124,6 +133,10 @@ const TopUpPage = () => {
     </>
   );
 
+  const _renderLoading = () => {
+    return <Text align={'center'}>Loading...</Text>;
+  };
+
   const onBack = () => history.goBack();
 
   return (
@@ -133,7 +146,9 @@ const TopUpPage = () => {
           <Box className="icon-arrow-left" mr={6} onClick={onBack} />
           <Box className={'sub-title'}>Top Up</Box>
         </Flex>
-        {wallet && isUserLinked ? (
+        {isConnecting ? (
+          _renderLoading()
+        ) : wallet && isUserLinked ? (
           _renderWalletInfo()
         ) : (
           <AppCard className="box-connect-wallet">
