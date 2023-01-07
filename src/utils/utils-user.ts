@@ -1,4 +1,4 @@
-import { StripePayment, UserAuthType, UserBillingType, UserInfoType, UserPaymentType, UserPlanType, UserSettingsType, UserStatsType } from "src/store/user";
+import { StripePayment, UserAuthType, UserBillingType, UserInfoType, UserPaymentType, UserPlanType, UserSettingsType, UserState, UserStatsType } from "src/store/user";
 export interface UserInterface {
   id: string;
   auth: UserAuthType;
@@ -92,8 +92,13 @@ export class User implements UserInterface {
     notificationEnabled: false
   };
 
-  constructor(id: string) {
-    this.id = id;
+  constructor(user: UserState) {
+    this.id = user.userId;
+    this.auth = user.auth;
+    this.info = user.info;
+    this.stats = user.stats;
+    this.billing = user.billing;
+    this.settings = user.settings;
   }
 
   setId(id: string): void {

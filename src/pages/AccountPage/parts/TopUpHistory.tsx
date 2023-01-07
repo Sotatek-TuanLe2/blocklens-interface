@@ -80,10 +80,7 @@ const TopUpItemMobile: FC<ITopUpItemMobile> = ({ topUp }) => {
                 <Flex>
                   <Box mr={2}>{formatShortText(topUp.transactionHash)}</Box>
                   <a
-                    href={`${
-                      getBlockExplorerUrl(topUp.chain, topUp.network) +
-                      `tx/${topUp.transactionHash}`
-                    }`}
+                    href={getBlockExplorerUrl(topUp.chain, topUp.network) + topUp.transactionHash}
                     className="link-redirect"
                     target="_blank"
                   >
@@ -169,10 +166,7 @@ const TopUpHistory = () => {
               <Flex>
                 <Box mr={2}>{formatShortText(item.transactionHash)}</Box>
                 <a
-                  href={`${
-                    getBlockExplorerUrl(item.chain, item.network) +
-                    `tx/${item.transactionHash}`
-                  }`}
+                  href={getBlockExplorerUrl(item.chain, item.network) + item.transactionHash}
                   className="link-redirect"
                   target="_blank"
                 >

@@ -31,7 +31,10 @@ import {
 } from '../utils/utils-helper';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { InfoIcon, LinkDetail, LinkIcon, RetryIcon } from 'src/assets/icons';
-import { getBlockExplorerUrl, getLogoChainByChainId } from 'src/utils/utils-network';
+import {
+  getBlockExplorerUrl,
+  getLogoChainByChainId,
+} from 'src/utils/utils-network';
 import { IAppResponse } from 'src/utils/utils-app';
 import useAppDetails from 'src/hooks/useAppDetails';
 import useWebhookDetails from 'src/hooks/useWebhook';
@@ -174,10 +177,10 @@ const ActivityMobile: FC<IActivity> = ({
                   {formatShortText(activity?.metadata?.tx?.transactionHash)}
                   <Box ml={2}>
                     <a
-                      href={`${
+                      href={
                         getBlockExplorerUrl(appInfo.chain, appInfo.network) +
-                        `tx/${activity?.metadata?.tx?.transactionHash}`
-                      }`}
+                        activity?.metadata?.tx?.transactionHash
+                      }
                       className="link-redirect"
                       target="_blank"
                     >
@@ -298,10 +301,10 @@ const ActivityDesktop: FC<IActivity> = ({
             <Box ml={2}>
               <a
                 onClick={(e) => onRedirectToBlockExplorer(e)}
-                href={`${
+                href={
                   getBlockExplorerUrl(appInfo.chain, appInfo.network) +
-                  `tx/${activity.metadata?.tx?.transactionHash}`
-                }`}
+                  activity.metadata?.tx?.transactionHash
+                }
                 className="link-redirect"
                 target="_blank"
               >

@@ -16,7 +16,7 @@ import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
-import { getUserStats, setUserAuth, setUserProfile } from '../store/user';
+import { setUserAuth } from '../store/user';
 
 interface IDataForm {
   email: string;
@@ -51,8 +51,6 @@ const LoginPage: FC = () => {
       const res = await rf.getRequest('AuthRequest').login(dataForm);
       if (res) {
         dispatch(setUserAuth(res));
-        dispatch(setUserProfile(res.user));
-        dispatch(getUserStats());
         toastSuccess({ message: 'Welcome to Blocksniper!' });
         history.push('/home');
       }

@@ -27,14 +27,15 @@ import LandingPage from './pages/LandingPage';
 import Pricing from './pages/LandingPage/Pricing';
 import ContactUs from './pages/ContactUs';
 import BillingHistory from './pages/BillingHistoryPage';
-import ModalSubmittingTransaction from './modals/ModalSubmittingTransaction';
-import ModalFinishTransaction from './modals/ModalFinishTransaction';
 import AllActivitiesPage from './pages/AllActivitiesPage';
 import TopUpPage from './pages/TopUp';
-import { clearUser, getUser } from './store/user';
 import AppSettingsPage from './pages/AppSettingsPage';
 import WebhookSettingsPage from './pages/WebhookSettingsPage';
+import { clearUser, getUser } from './store/user';
 import { initMetadata } from './store/metadata';
+import ModalSubmittingTransaction from './modals/ModalSubmittingTransaction';
+import ModalFinishTransaction from './modals/ModalFinishTransaction';
+import ModalSignatureRequired from './modals/ModalSignatureRequired';
 
 /**
  * Main App routes.
@@ -103,8 +104,11 @@ const Routes: FC<RouteComponentProps> = () => {
         <Route path={'/contact-us'} component={ContactUs} />
         <PublicRoute path={'/'} component={LandingPage} />
       </Switch>
-      <ModalSubmittingTransaction />
-      <ModalFinishTransaction />
+      <>
+        <ModalSignatureRequired />
+        <ModalSubmittingTransaction />
+        <ModalFinishTransaction />
+      </>
     </>
   );
 };
