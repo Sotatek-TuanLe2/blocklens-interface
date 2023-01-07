@@ -1,5 +1,5 @@
-import { Box, Flex, Spinner, Text } from '@chakra-ui/react';
-import React, { useEffect, useMemo, useState } from 'react';
+import { Box, Button, Flex, Spinner, Text } from '@chakra-ui/react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import 'src/styles/pages/BillingPage.scss';
 import 'src/styles/pages/AppDetail.scss';
 import { AppButton, AppCard } from 'src/components';
@@ -28,6 +28,7 @@ import abi from '../../abi';
 import { convertDecToWei } from '../../utils/utils-format';
 import { getUserProfile } from '../../store/user';
 import { MaxUint256 } from '@ethersproject/constants';
+import { createValidator } from '../../utils/utils-validator';
 
 interface IDataForm {
   walletAddress: string;
@@ -64,6 +65,12 @@ const TopUpPage = () => {
   );
 
   const dispatch = useDispatch();
+
+  const validator = useRef(
+    createValidator({
+      element: (message: string) => <Text color={'red.100'}>{message}</Text>,
+    }),
+  );
 
   // form
 
@@ -323,16 +330,26 @@ const TopUpPage = () => {
                       amount: e.target.value.trim(),
                     })
                   }
-                  disabled={fetchingBalance}
+                  disabled={isDifferentWalletAddressLinked || fetchingBalance}
                   render={(ref, props) => (
-                    <AppInput ref={ref} value={dataForm.amount} {...props} />
+                    <AppInput
+                      ref={ref}
+                      value={amount}
+                      validate={{
+                        name: 'amount',
+                        validator: validator.current,
+                        rule: [`insufficientBalance:${balanceToken}`],
+                      }}
+                      {...props}
+                    />
                   )}
                 />
               </AppField>
               <Flex className="amount-options">
                 {AMOUNT_OPTIONS.map((item: number, index: number) => {
                   return (
-                    <Box
+                    <Button
+                      disabled={fetchingBalance}
                       className={`amount-option ${
                         +dataForm.amount === item ? 'active' : ''
                       }`}
@@ -342,7 +359,7 @@ const TopUpPage = () => {
                       }
                     >
                       {item}
-                    </Box>
+                    </Button>
                   );
                 })}
               </Flex>
@@ -353,8 +370,13 @@ const TopUpPage = () => {
           <AppButton
             type={'submit'}
             size={'lg'}
+            isLoading={fetchingBalance}
+            loadingText={'Loading...'}
             disabled={
-              hasApproveToken && (isBeingToppedUp || +dataForm.amount <= 0)
+              isDifferentWalletAddressLinked ||
+              fetchingBalance ||
+              (hasApproveToken &&
+                (isBeingToppedUp || +amount <= 0 || +amount > balanceToken))
             }
           >
             {hasApproveToken ? `Top Up` : 'Approve Token'}
