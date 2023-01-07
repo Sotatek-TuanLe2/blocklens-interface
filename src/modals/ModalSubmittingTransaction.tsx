@@ -15,6 +15,7 @@ const ModalSubmittingTransaction = () => {
       size="xl"
       title="Submitting Transaction"
       isOpen={openSubmittingTransactionModal}
+      isHideCloseIcon
       onClose={() => dispatch(toggleSubmittingTransactionModal(false))}
     >
       <Box textAlign={'center'}>
