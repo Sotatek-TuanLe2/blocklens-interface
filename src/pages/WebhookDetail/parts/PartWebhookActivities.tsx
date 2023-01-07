@@ -176,10 +176,10 @@ const ActivityMobile: FC<IActivity> = ({
                   {formatShortText(activity?.metadata?.tx?.transactionHash)}
                   <Box ml={2}>
                     <a
-                      href={`${
+                      href={
                         getBlockExplorerUrl(appInfo.chain, appInfo.network) +
-                        `tx/${activity?.metadata?.tx?.transactionHash}`
-                      }`}
+                        activity?.metadata?.tx?.transactionHash
+                      }
                       className="link-redirect"
                       target="_blank"
                     >
@@ -300,10 +300,10 @@ const ActivityDesktop: FC<IActivity> = ({
             <Box ml={2}>
               <a
                 onClick={(e) => onRedirectToBlockExplorer(e)}
-                href={`${
+                href={
                   getBlockExplorerUrl(appInfo.chain, appInfo.network) +
-                  `tx/${activity.metadata?.tx?.transactionHash}`
-                }`}
+                  activity.metadata?.tx?.transactionHash
+                }
                 className="link-redirect"
                 target="_blank"
               >

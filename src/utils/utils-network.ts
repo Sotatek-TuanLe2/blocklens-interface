@@ -34,9 +34,15 @@ export const getBlockExplorerUrl = (chainId?: string, networkId?: string) => {
   if (!chainId || !networkId) {
     return '';
   }
+
   const chain = config.chains[chainId];
   const network = chain.networks[networkId];
-  return network?.blockExplorer.url || '';
+
+  if (chainId === CHAINS.BTC) {
+    return network?.blockExplorer?.url + 'tx/bitcoin/' || '';
+  }
+
+  return network?.blockExplorer.url + 'tx/' || '';
 };
 
 export const getChainByChainId = (chainId: string | number): Chain | null => {
