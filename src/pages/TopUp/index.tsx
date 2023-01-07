@@ -1,4 +1,13 @@
-import { Box, Button, Flex, Spinner, Text } from '@chakra-ui/react';
+import {
+  Alert,
+  AlertDescription,
+  AlertIcon,
+  Box,
+  Button,
+  Flex,
+  Spinner,
+  Text,
+} from '@chakra-ui/react';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import 'src/styles/pages/BillingPage.scss';
 import 'src/styles/pages/AppDetail.scss';
@@ -186,6 +195,7 @@ const TopUpPage = () => {
     try {
       setIsBeingToppedUp(true);
       await topUp(currencyAddress, amount);
+      setDataForm((prevState) => ({ ...prevState, amount: '0' }));
       setIsBeingToppedUp(false);
     } catch (error: any) {
       setIsBeingToppedUp(false);
@@ -201,7 +211,7 @@ const TopUpPage = () => {
     (async () => {
       await connectWallet(connectorId, network);
     })();
-  }, []);
+  }, [wallet?.getNework()]);
 
   useEffect(() => {
     if (!(wallet && topUpContractAddress)) return;
@@ -251,12 +261,18 @@ const TopUpPage = () => {
       return null;
     }
     const _renderAlert = () => (
-      <Text align={'center'}>
-        You linked wallet:{' '}
-        <span>{shortenWalletAddress(user?.getLinkedAddress())}</span>
-        not <span>{shortenWalletAddress(wallet?.getAddress())}</span>
-        <AppButton>Switch</AppButton>
-      </Text>
+      <Alert
+        status="warning"
+        borderRadius={'6px'}
+        bg={'rgba(255, 181, 71, 0.1)'}
+        mb={'8px'}
+      >
+        <AlertIcon />
+        <AlertDescription color={'yellow.100'}>
+          You linked wallet: {user?.getLinkedAddress()} not{' '}
+          {wallet?.getAddress()}
+        </AlertDescription>
+      </Alert>
     );
 
     return (
@@ -330,7 +346,7 @@ const TopUpPage = () => {
                       amount: e.target.value.trim(),
                     })
                   }
-                  disabled={isDifferentWalletAddressLinked || fetchingBalance}
+                  disabled={fetchingBalance}
                   render={(ref, props) => (
                     <AppInput
                       ref={ref}
@@ -373,7 +389,6 @@ const TopUpPage = () => {
             isLoading={fetchingBalance}
             loadingText={'Loading...'}
             disabled={
-              isDifferentWalletAddressLinked ||
               fetchingBalance ||
               (hasApproveToken &&
                 (isBeingToppedUp || +amount <= 0 || +amount > balanceToken))
