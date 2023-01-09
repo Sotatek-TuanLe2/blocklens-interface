@@ -26,7 +26,7 @@ import useUser from 'src/hooks/useUser';
 const menus = [
   {
     name: 'Dashboard',
-    path: '/home',
+    path: '/',
   },
   {
     name: 'Billing',

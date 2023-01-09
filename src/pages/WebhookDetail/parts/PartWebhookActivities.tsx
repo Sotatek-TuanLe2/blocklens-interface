@@ -48,17 +48,17 @@ interface IPartRecentActivities {
 }
 
 export const _renderStatus = (activity: IActivityResponse) => {
-  if (!activity?.status) return '--';
+  if (!activity?.lastStatus) return '--';
 
-  if (activity?.status === STATUS.PROCESSING) {
+  if (activity?.retryTime > 0) {
     return (
       <Box className="status waiting">Processing {activity?.retryTime}/5</Box>
     );
   }
 
   return (
-    <Box className={`status ${getColorBrandStatus(activity?.status)}`}>
-      {activity?.status === STATUS.DONE ? 'Successful' : 'Failed'}
+    <Box className={`status ${getColorBrandStatus(activity?.lastStatus)}`}>
+      {activity?.lastStatus === STATUS.DONE ? 'Successful' : 'Failed'}
     </Box>
   );
 };
@@ -191,10 +191,10 @@ const ActivityMobile: FC<IActivity> = ({
               flexWrap={'wrap'}
               my={2}
               justifyContent={
-                activity?.status !== STATUS.DONE ? 'space-between' : 'center'
+                activity?.lastStatus !== STATUS.DONE ? 'space-between' : 'center'
               }
             >
-              {activity?.status !== STATUS.DONE && (
+              {activity?.lastStatus !== STATUS.DONE && (
                 <Box width={'48%'}>
                   <AppButton
                     variant="cancel"
@@ -313,7 +313,7 @@ const ActivityDesktop: FC<IActivity> = ({
         </Td>
         <Td w="15%">
           <Flex justifyContent={'flex-end'}>
-            {activity.status !== STATUS.DONE && (
+            {activity.lastStatus !== STATUS.DONE && (
               <Box
                 className="link-redirect"
                 mr={3}

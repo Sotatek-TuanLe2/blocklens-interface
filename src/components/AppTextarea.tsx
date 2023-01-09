@@ -60,7 +60,7 @@ export const appTextareaStyles = {
       fontSize: '16px',
       p: '20px',
       _placeholder: {
-        color: mode('secondaryGray.500', 'whiteAlpha.300')(props),
+        color: mode('line.100', 'line.100')(props),
       },
       _focus: {
         borderColor: mode('pressed.100', 'pressed.100')(props),
