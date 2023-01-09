@@ -31,7 +31,12 @@ const PartPaymentInfo: FC<IPartPaymentInfo> = ({
     if (paymentMethod === PAYMENT_METHOD.CARD) {
       return <FormCard onClose={onNext} />;
     }
-    return <FormCrypto onNext={onNext} planSelected={planSelected} />;
+
+    if (paymentMethod === PAYMENT_METHOD.CRYPTO) {
+      return <FormCrypto onNext={onNext} planSelected={planSelected} />;
+    }
+
+    return <> </>;
   };
 
   return (

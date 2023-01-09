@@ -51,7 +51,7 @@ const LoginPage: FC = () => {
       const res = await rf.getRequest('AuthRequest').login(dataForm);
       if (res) {
         dispatch(setUserAuth(res));
-        toastSuccess({ message: 'Welcome to Blocksniper!' });
+        toastSuccess({ message: 'Welcome to Blocklens!' });
         history.push('/home');
       }
     } catch (e: any) {

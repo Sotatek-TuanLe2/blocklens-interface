@@ -1,7 +1,7 @@
 {
   "auth": {
-    "domain": "Blocksniper",
-    "message": "Join Blocksniper",
+    "domain": "Blocklens",
+    "message": "Join Blocklens",
     "secretKey": "0xA84Df05A9F758eca47A7060a9A6C004578F6E65B",
     "googleClientId": "763245371014-3sb0h7slimmco6654lgfm5acmijlq0td.apps.googleusercontent.com"
   },

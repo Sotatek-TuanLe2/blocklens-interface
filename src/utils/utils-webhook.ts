@@ -88,7 +88,7 @@ export interface IActivityResponse {
   userId: number;
   registrationId: number;
   type: string;
-  status: string;
+  lastStatus: string;
   statusCode: number;
   webhook: string;
   metadata: any;

@@ -196,10 +196,10 @@ const ActivityMobile: FC<IActivity> = ({
               flexWrap={'wrap'}
               my={2}
               justifyContent={
-                activity?.status !== STATUS.DONE ? 'space-between' : 'center'
+                activity?.lastStatus !== STATUS.DONE ? 'space-between' : 'center'
               }
             >
-              {activity?.status !== STATUS.DONE && (
+              {activity?.lastStatus !== STATUS.DONE && (
                 <Box width={'48%'}>
                   <AppButton
                     variant="cancel"
@@ -319,7 +319,7 @@ const ActivityDesktop: FC<IActivity> = ({
         </Td>
         <Td w="15%">
           <Flex justifyContent={'flex-end'}>
-            {activity.status !== STATUS.DONE && (
+            {activity?.lastStatus !== STATUS.DONE && (
               <Box
                 className="link-redirect"
                 mr={3}

@@ -3,7 +3,7 @@ import { WALLET_CONNECT } from 'src/connectors';
 
 const env = process.env.REACT_APP_ENV || 'prod';
 
-const PREFERENCES = `blocksniper-preferences-${env}`;
+const PREFERENCES = `blocklens-preferences-${env}`;
 
 type StorageInterface = {
   accessToken?: string;
