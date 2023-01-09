@@ -10,7 +10,7 @@ import {
   AppTextarea,
 } from 'src/components';
 import { COUNTRIES } from 'src/constants';
-import { BasePage, BasePageContainer } from 'src/layouts';
+import { BasePage } from 'src/layouts';
 import 'src/styles/pages/ContactUs.scss';
 import { createValidator } from 'src/utils/utils-validator';
 import rf from 'src/requests/RequestFactory';
@@ -80,7 +80,7 @@ const ContactUs = () => {
   }, [dataContact]);
 
   return (
-    <BasePageContainer className="contact-us">
+    <BasePage className="contact-us">
       <>
         <Flex className={`title-wrap ${isMobile ? 'title-wrap-mobile' : ''}`}>
           <Box className="icon-arrow-wrap">
@@ -269,7 +269,7 @@ const ContactUs = () => {
           </Flex>
         )}
       </>
-    </BasePageContainer>
+    </BasePage>
   );
 };
 

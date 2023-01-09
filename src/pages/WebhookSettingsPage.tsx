@@ -23,7 +23,7 @@ import { useDispatch } from 'react-redux';
 import { getUserStats } from 'src/store/user';
 import { useParams } from 'react-router';
 import { AppHeading } from 'src/components';
-import { BasePageContainer } from 'src/layouts';
+import { BasePage } from 'src/layouts';
 import useAppDetails from 'src/hooks/useAppDetails';
 import useWebhookDetails from 'src/hooks/useWebhook';
 
@@ -117,7 +117,7 @@ const WebhookSettingsPage = () => {
   };
 
   return (
-    <BasePageContainer className="app-detail">
+    <BasePage className="app-detail">
       <>
         <Flex className="app-info">
           <AppHeading
@@ -163,10 +163,10 @@ const WebhookSettingsPage = () => {
           <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
             <AppField label={'Network'} customWidth={'49%'}>
               <Flex className="chain-app">
-                <Box className={getLogoChainByChainId(appInfo?.chain)} mr={3} />
-                <Box>{getNameChainByChainId(appInfo?.chain)}</Box>
+                <Box className={getLogoChainByChainId(webhook?.chain)} mr={3} />
+                <Box>{getNameChainByChainId(webhook?.chain)}</Box>
                 <Box textTransform="capitalize" ml={2}>
-                  {appInfo?.network?.toLowerCase()}
+                  {webhook?.network?.toLowerCase()}
                 </Box>
               </Flex>
             </AppField>
@@ -185,7 +185,7 @@ const WebhookSettingsPage = () => {
           />
         )}
       </>
-    </BasePageContainer>
+    </BasePage>
   );
 };
 

@@ -34,20 +34,17 @@ import {
 import { useHistory, useParams } from 'react-router';
 import { isMobile } from 'react-device-detect';
 import { getBlockExplorerUrl } from 'src/utils/utils-network';
-import { IAppResponse } from 'src/utils/utils-app';
 import 'src/styles/pages/HomePage.scss';
 import { onRetry } from 'src/pages/AllActivitiesPage';
 
 interface IActivity {
   activity: IActivityResponse;
   webhook: IWebhook;
-  appInfo: IAppResponse;
   onReload: () => void;
 }
 
 interface IPartRecentActivities {
   webhook: IWebhook;
-  appInfo: IAppResponse;
 }
 
 export const _renderStatus = (activity: IActivityResponse) => {
@@ -69,7 +66,6 @@ export const _renderStatus = (activity: IActivityResponse) => {
 const ActivityMobile: FC<IActivity> = ({
   activity,
   webhook,
-  appInfo,
   onReload,
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -177,7 +173,7 @@ const ActivityMobile: FC<IActivity> = ({
                   <Box ml={2}>
                     <a
                       href={
-                        getBlockExplorerUrl(appInfo.chain, appInfo.network) +
+                        getBlockExplorerUrl(webhook?.chain, webhook?.network) +
                         activity?.metadata?.tx?.transactionHash
                       }
                       className="link-redirect"
@@ -216,7 +212,7 @@ const ActivityMobile: FC<IActivity> = ({
 
               <Box width={'48%'}>
                 <AppLink
-                  to={`/app/${appInfo.appId}/webhook/${webhook.registrationId}/activities/${activity?.hash}`}
+                  to={`/app/${webhook?.appId}/webhook/${webhook.registrationId}/activities/${activity?.hash}`}
                 >
                   <AppButton variant="cancel" size="sm" w={'100%'}>
                     More Details
@@ -234,7 +230,6 @@ const ActivityMobile: FC<IActivity> = ({
 const ActivityDesktop: FC<IActivity> = ({
   activity,
   webhook,
-  appInfo,
   onReload,
 }) => {
   const history = useHistory();
@@ -283,7 +278,7 @@ const ActivityDesktop: FC<IActivity> = ({
         className="tr-list"
         onClick={() => {
           history.push(
-            `/app/${appInfo.appId}/webhook/${webhook.registrationId}/activities/${activity.hash}`,
+            `/app/${webhook?.appId}/webhook/${webhook.registrationId}/activities/${activity.hash}`,
           );
         }}
       >
@@ -301,7 +296,7 @@ const ActivityDesktop: FC<IActivity> = ({
               <a
                 onClick={(e) => onRedirectToBlockExplorer(e)}
                 href={
-                  getBlockExplorerUrl(appInfo.chain, appInfo.network) +
+                  getBlockExplorerUrl(webhook?.chain, webhook?.network) +
                   activity.metadata?.tx?.transactionHash
                 }
                 className="link-redirect"
@@ -337,7 +332,7 @@ const ActivityDesktop: FC<IActivity> = ({
             )}
 
             <AppLink
-              to={`/app/${appInfo.appId}/webhook/${webhook.registrationId}/activities/${activity.hash}`}
+              to={`/app/${webhook?.appId}/webhook/${webhook.registrationId}/activities/${activity.hash}`}
             >
               <Box className="link-redirect">
                 <LinkDetail />
@@ -352,7 +347,6 @@ const ActivityDesktop: FC<IActivity> = ({
 
 const PartWebhookActivities: FC<IPartRecentActivities> = ({
   webhook,
-  appInfo,
 }) => {
   const { id: webhookId } = useParams<{ id: string }>();
   const [, updateState] = useState<any>();
@@ -475,7 +469,6 @@ const PartWebhookActivities: FC<IPartRecentActivities> = ({
           activity={activity}
           key={index}
           webhook={webhook}
-          appInfo={appInfo}
           onReload={forceUpdate}
         />
       );
@@ -491,7 +484,6 @@ const PartWebhookActivities: FC<IPartRecentActivities> = ({
               activity={activity}
               key={index}
               webhook={webhook}
-              appInfo={appInfo}
               onReload={forceUpdate}
             />
           );
@@ -508,7 +500,7 @@ const PartWebhookActivities: FC<IPartRecentActivities> = ({
           cursor={'pointer'}
           onClick={() =>
             history.push(
-              `/app/${appInfo.appId}/webhooks/${webhookId}/activities`,
+              `/app/${webhook?.appId}/webhooks/${webhookId}/activities`,
             )
           }
           mr={2}

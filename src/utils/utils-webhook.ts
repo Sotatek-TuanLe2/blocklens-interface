@@ -56,6 +56,7 @@ export interface IWebhook {
   userId: string;
   registrationId: string;
   network: string;
+  chain: string;
   webhook: string;
   status: WEBHOOK_STATUS;
   type: string;
