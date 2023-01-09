@@ -106,7 +106,7 @@ const PartCheckout: FC<IPartCheckout> = ({
         </Box>
 
         <AppAlertWarning>
-          By clicking the Pay button, you agree to authorize Blocksniper to
+          By clicking the Pay button, you agree to authorize Blocklensto
           charge you the monthly fee. Your subscription renews at 1st day of
           every month until you cancel.
         </AppAlertWarning>

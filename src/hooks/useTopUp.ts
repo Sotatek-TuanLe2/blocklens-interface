@@ -22,7 +22,7 @@ const useTopUp = (): ReturnType => {
   const dispatch = useDispatch();
   const { wallet } = useWallet();
 
-  const TOP_UP_APP_ID = 1; // used for blockSniper
+  const TOP_UP_APP_ID = 1; // used for Blocklens
   const TOP_UP_CONFIRMATIONS = 30;
 
   const approveToken = async (
