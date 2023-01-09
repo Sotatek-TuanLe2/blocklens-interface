@@ -26,7 +26,7 @@ import useUser from 'src/hooks/useUser';
 const menus = [
   {
     name: 'Dashboard',
-    path: '/home',
+    path: '/',
   },
   {
     name: 'Billing',
@@ -158,7 +158,7 @@ const Header: FC = () => {
       <Flex className={'content-header'}>
         <Box onClick={() => history.push('/')} cursor={'pointer'}>
           <img
-            src="/images/LandingPage/logo.png"
+            src="/images/logo.png"
             alt="logo"
             width={isMobile ? '140px' : '180px'}
           />
