@@ -3,7 +3,7 @@ import 'src/styles/pages/HomePage.scss';
 import { Flex, Box } from '@chakra-ui/react';
 import ListApps from './parts/ListApps';
 import PartUserGraph from './parts/PartUserGraph';
-import { BasePageAuth } from 'src/layouts';
+import { GuestPage } from 'src/layouts';
 import PartUserStats from './parts/PartUserStats';
 import { AppButton, AppCard, AppHeading } from 'src/components';
 import ModalCreateApp from 'src/modals/ModalCreateApp';
@@ -52,7 +52,7 @@ const HomePage = () => {
   };
 
   return (
-    <BasePageAuth>
+    <GuestPage>
       <>
         <Box mb={7}>
           <AppHeading title="Dashboard" />
@@ -77,7 +77,7 @@ const HomePage = () => {
           _renderNoApp()
         )}
       </>
-    </BasePageAuth>
+    </GuestPage>
   );
 };
 

@@ -14,7 +14,7 @@ import PartNFTWebhooks from './parts/PartNFTWebhooks';
 import PartAppStatics from './parts/PartAppStatics';
 import PartAddressWebhooks from './parts/PartAddressWebhooks';
 import PartContractWebhooks from './parts/PartContractWebhooks';
-import { BasePageAuth } from 'src/layouts';
+import { GuestPage } from 'src/layouts';
 import { AppButton, AppCard, AppHeading } from 'src/components';
 import { getLogoChainByChainId, isEVMNetwork } from 'src/utils/utils-network';
 import { isMobile } from 'react-device-detect';
@@ -190,11 +190,11 @@ const AppDetail = () => {
   };
 
   return (
-    <BasePageAuth className="app-detail" onInitPage={getAppInfo}>
+    <GuestPage className="app-detail" onInitPage={getAppInfo}>
       {!appInfo || !Object.values(appInfo).length
         ? _renderNoApp()
         : _renderAppDetail()}
-    </BasePageAuth>
+    </GuestPage>
   );
 };
 

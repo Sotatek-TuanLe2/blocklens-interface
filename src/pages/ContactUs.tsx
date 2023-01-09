@@ -10,7 +10,7 @@ import {
   AppTextarea,
 } from 'src/components';
 import { COUNTRIES } from 'src/constants';
-import { BasePage, BasePageAuth } from 'src/layouts';
+import { BasePage, GuestPage } from 'src/layouts';
 import 'src/styles/pages/ContactUs.scss';
 import { createValidator } from 'src/utils/utils-validator';
 import rf from 'src/requests/RequestFactory';
@@ -78,7 +78,7 @@ const ContactUs = () => {
     setIsDisableSubmit(isDisabled);
   }, [dataContact]);
   return (
-    <BasePageAuth className="contact-us">
+    <GuestPage className="contact-us">
       <>
         <Flex className={`title-wrap ${isMobile ? 'title-wrap-mobile' : ''}`}>
           <Box className="icon-arrow-wrap">
@@ -286,7 +286,7 @@ const ContactUs = () => {
           </Flex>
         )}
       </>
-    </BasePageAuth>
+    </GuestPage>
   );
 };
 

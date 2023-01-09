@@ -3,7 +3,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import rf from 'src/requests/RequestFactory';
 import { useParams } from 'react-router';
 import 'src/styles/pages/AppDetail.scss';
-import { BasePageAuth } from 'src/layouts';
+import { GuestPage } from 'src/layouts';
 import {
   AppCard,
   AppDataTable,
@@ -194,14 +194,14 @@ const MessagesHistory = () => {
 
   if (!webhook && !Object.keys(webhook).length) {
     return (
-      <BasePageAuth className="app-detail">
+      <GuestPage className="app-detail">
         <Flex justifyContent="center">Webhook Not Found</Flex>
-      </BasePageAuth>
+      </GuestPage>
     );
   }
 
   return (
-    <BasePageAuth className="app-detail">
+    <GuestPage className="app-detail">
       <>
         <Flex className="app-info">
           <AppHeading
@@ -247,7 +247,7 @@ const MessagesHistory = () => {
           />
         )}
       </>
-    </BasePageAuth>
+    </GuestPage>
   );
 };
 

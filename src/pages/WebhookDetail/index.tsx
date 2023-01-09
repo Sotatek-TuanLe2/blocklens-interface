@@ -2,7 +2,7 @@ import { Box, Flex } from '@chakra-ui/react';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router';
 import 'src/styles/pages/AppDetail.scss';
-import { BasePageAuth } from 'src/layouts';
+import { GuestPage } from 'src/layouts';
 import { AppButton, AppHeading } from 'src/components';
 import PartWebhookStats from './parts/PartWebhookStats';
 import { isMobile } from 'react-device-detect';
@@ -82,11 +82,11 @@ const WebhookDetail = () => {
   };
 
   return (
-    <BasePageAuth className="app-detail" onInitPage={getWebhookInfo}>
+    <GuestPage className="app-detail" onInitPage={getWebhookInfo}>
       {!webhook && !Object.keys(webhook).length
         ? _renderNoWebhook()
         : _renderWebhookDetail()}
-    </BasePageAuth>
+    </GuestPage>
   );
 };
 

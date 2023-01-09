@@ -28,7 +28,7 @@ import {
   getNameChainByChainId,
 } from 'src/utils/utils-network';
 import { useParams } from 'react-router';
-import { BasePageAuth } from 'src/layouts';
+import { GuestPage } from 'src/layouts';
 
 interface IAppSettings {
   onBack: () => void;
@@ -180,7 +180,7 @@ const AppSettingsPage: FC<IAppSettings> = () => {
   };
 
   return (
-    <BasePageAuth className="app-detail" onInitPage={getAppInfo}>
+    <GuestPage className="app-detail" onInitPage={getAppInfo}>
       <>
         <Flex className="app-info">
           <AppHeading title="Settings" linkBack={`/apps/${appId}`} isCenter />
@@ -234,7 +234,7 @@ const AppSettingsPage: FC<IAppSettings> = () => {
           />
         )}
       </>
-    </BasePageAuth>
+    </GuestPage>
   );
 };
 

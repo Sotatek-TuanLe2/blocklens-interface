@@ -4,13 +4,13 @@ import React from 'react';
 import { BasePage } from 'src/layouts';
 import { isMobile } from 'react-device-detect';
 
-interface IBasePageAuth {
+interface GuestPage {
   className?: string;
   onInitPage?: () => void;
   children: ReactElement;
 }
 
-const BasePageAuth: FC<IBasePageAuth> = ({
+const GuestPage: FC<GuestPage> = ({
   onInitPage,
   children,
   className,
@@ -63,4 +63,4 @@ const BasePageAuth: FC<IBasePageAuth> = ({
   );
 };
 
-export default BasePageAuth;
+export default GuestPage;

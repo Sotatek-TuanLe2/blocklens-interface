@@ -10,7 +10,7 @@ import { toastError } from 'src/utils/utils-notify';
 import { ConnectWalletIcon } from 'src/assets/icons';
 import { getChainConfig, getNetworkByEnv } from 'src/utils/utils-network';
 import { useHistory } from 'react-router-dom';
-import { BasePageAuth } from 'src/layouts';
+import { GuestPage } from 'src/layouts';
 import useTopUp from 'src/hooks/useTopUp';
 import AppCryptoForm, { CHAIN_OPTIONS } from 'src/components/AppCryptoForm';
 
@@ -120,7 +120,7 @@ const TopUpPage = () => {
   const onBack = () => history.goBack();
 
   return (
-    <BasePageAuth className="billing-page">
+    <GuestPage className="billing-page">
       <Box className="form-card">
         <Flex alignItems={'center'} mb={7}>
           <Box className="icon-arrow-left" mr={6} onClick={onBack} />
@@ -140,7 +140,7 @@ const TopUpPage = () => {
           </AppCard>
         )}
       </Box>
-    </BasePageAuth>
+    </GuestPage>
   );
 };
 

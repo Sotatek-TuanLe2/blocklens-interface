@@ -1,4 +1,4 @@
-import { BasePageAuth } from 'src/layouts';
+import { GuestPage } from 'src/layouts';
 import { Box, Flex } from '@chakra-ui/react';
 import BasicDetail from './parts/BasicDetail';
 import BillingInfos from './parts/BillingInfos';
@@ -51,7 +51,7 @@ const AccountPage = () => {
   };
 
   return (
-    <BasePageAuth className="account">
+    <GuestPage className="account">
       <>
         <Box mb={7}>
           <AppHeading title="Account" />
@@ -95,7 +95,7 @@ const AccountPage = () => {
           <TopUpHistory />
         </Box>
       </>
-    </BasePageAuth>
+    </GuestPage>
   );
 };
 
