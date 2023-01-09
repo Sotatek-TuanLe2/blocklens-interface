@@ -8,26 +8,16 @@ type ReturnType = {
 };
 
 const useUser = (): ReturnType => {
-  const { userId, auth, info, stats, billing, settings } = useSelector((state: RootState) => state.user);
+  const { user: userStore } = useSelector((state: RootState) => state);
 
   const user = useMemo(() => {
-    if (!userId) {
+    if (!userStore.userId) {
       return null;
     }
-    const newUser = new User(userId);
-    newUser.setAuth(auth);
-    newUser.setInfo(info);
-    newUser.setStats(stats);
-    newUser.setBilling(billing);
-    newUser.setSettings(settings);
+    const newUser = new User(userStore);
     return newUser;
   }, [
-    userId,
-    auth,
-    info,
-    stats,
-    billing,
-    settings
+    userStore
   ]);
 
   return { user };

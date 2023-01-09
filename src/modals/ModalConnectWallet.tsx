@@ -8,6 +8,8 @@ import { METAMASK_WALLET } from 'src/connectors';
 import { switchNetwork } from 'src/utils/utils-network';
 import Storage from 'src/utils/utils-storage';
 import { isMobile } from 'react-device-detect';
+import { useDispatch } from 'react-redux';
+import { setOpenModalSignatureRequired } from 'src/store/wallet';
 
 interface IModalConnectWallet {
   open: boolean;
@@ -15,8 +17,9 @@ interface IModalConnectWallet {
 }
 
 const ModalConnectWallet: FC<IModalConnectWallet> = ({ open, onClose }) => {
-  const { wallet, connectWallet } = useWallet();
+  const { wallet, connectWallet, isUserLinked } = useWallet();
   const defaultNetwork = wallet ? wallet.getNework() : Storage.getNetwork();
+  const dispatch = useDispatch();
 
   const onClickWallet = async (walletId: string) => {
     try {
@@ -25,6 +28,9 @@ const ModalConnectWallet: FC<IModalConnectWallet> = ({ open, onClose }) => {
         await switchNetwork(defaultNetwork, provider);
       }
       await connectWallet(walletId, defaultNetwork);
+      if (!isUserLinked) {
+        dispatch(setOpenModalSignatureRequired(true));
+      }
       onClose();
     } catch (error: any) {
       error && toastError({ message: error.message || error.toString() });

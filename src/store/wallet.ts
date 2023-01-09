@@ -19,6 +19,7 @@ interface IWalletState {
   balance: string;
   isConnecting: boolean;
   openModalConnectWallet: boolean;
+  openModalSignatureRequired: boolean;
 }
 
 const initialState: IWalletState = {
@@ -32,6 +33,7 @@ const initialState: IWalletState = {
   balance: '',
   isConnecting: false,
   openModalConnectWallet: false,
+  openModalSignatureRequired: false
 };
 
 export const getBalance = createAsyncThunk(
@@ -88,6 +90,9 @@ const walletSlice = createSlice({
     setOpenModalConnectWallet: (state, action) => {
       state.openModalConnectWallet = action.payload;
     },
+    setOpenModalSignatureRequired: (state, action) => {
+      state.openModalSignatureRequired = action.payload;
+    },
     clearWallet: () => {
       Storage.clearWallet();
       return { ...initialState };
@@ -110,5 +115,6 @@ export const {
   setIsConnecting,
   clearWallet,
   setOpenModalConnectWallet,
+  setOpenModalSignatureRequired
 } = walletSlice.actions;
 export default walletSlice.reducer;

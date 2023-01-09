@@ -212,12 +212,12 @@ const MessagesItemMobile: FC<IMessagesItemMobile> = ({
                   {formatShortText(message?.input?.tx?.transactionHash)}
                   <Box ml={2}>
                     <a
-                      href={`${
+                      href={
                         getBlockExplorerUrl(
                           message?.input?.chain,
                           message?.input?.network,
-                        ) + `tx/${message?.input?.tx?.transactionHash}`
-                      }`}
+                        ) + message?.input?.tx?.transactionHash
+                      }
                       className="link-redirect"
                       target="_blank"
                     >

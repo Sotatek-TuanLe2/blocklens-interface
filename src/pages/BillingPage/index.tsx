@@ -22,7 +22,8 @@ import {
   ListCardIcon,
   CircleCheckedIcon,
   CryptoIcon,
-  ReloadIcon, WarningIcon,
+  ReloadIcon,
+  WarningIcon,
 } from 'src/assets/icons';
 import { isMobile } from 'react-device-detect';
 import PartCheckout from './parts/PartCheckout';
@@ -141,9 +142,7 @@ const PlanMobile: FC<IPlanMobile> = ({
 };
 
 const BillingPage = () => {
-  const [paymentMethod, setPaymentMethod] = useState<string>(
-    PAYMENT_METHOD.CARD,
-  );
+  const [paymentMethod, setPaymentMethod] = useState<string | any>(null);
   const [isOpenCancelSubscriptionModal, setIsOpenCancelSubscriptionModal] =
     useState<boolean>(false);
   const [planSelected, setPlanSelected] = useState<MetadataPlan>({} as any);
@@ -158,8 +157,8 @@ const BillingPage = () => {
   const history = useHistory();
 
   useEffect(() => {
-    setPaymentMethod(user?.getActivePaymentMethod() || PAYMENT_METHOD.CARD);
-  }, [user?.getActivePaymentMethod()]);
+    setPaymentMethod(user?.getActivePaymentMethod());
+  }, [user]);
 
   useEffect(() => {
     if (user) {
@@ -299,8 +298,13 @@ const BillingPage = () => {
       await rf
         .getRequest('UserRequest')
         .editInfoUser({ activePaymentMethod: method });
-      toastSuccess({ message: 'Update Successfully!' });
-      dispatch(getUserProfile());
+
+      if (method === PAYMENT_METHOD.CARD && !user?.getStripePayment()) {
+        setIsOpenEditCardModal(true);
+      } else {
+        toastSuccess({ message: 'Update Successfully!' });
+      }
+      await dispatch(getUserProfile());
     } catch (error: any) {
       toastError({ message: error.message });
     }
@@ -312,11 +316,8 @@ const BillingPage = () => {
       return;
     }
     // isUpgrade
-    if (
-      paymentMethod === PAYMENT_METHOD.CARD &&
-      !user?.getStripePayment()
-    ) {
-      setStep(STEPS.FORM);
+    if (paymentMethod === PAYMENT_METHOD.CARD && !user?.getStripePayment()) {
+      toastError({ message: 'Please add your credit card for payment!' });
       return;
     }
 
@@ -407,7 +408,6 @@ const BillingPage = () => {
 
         <AppCard className="list-table-wrap">
           <Flex className="box-title">
-
             <Box className={'text-title'}>Change Your Plan</Box>
 
             {user?.getPlan().price !== 0 && (
