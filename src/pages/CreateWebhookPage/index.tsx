@@ -8,7 +8,7 @@ import React, {
 } from 'react';
 import { useHistory, useParams } from 'react-router';
 import 'src/styles/pages/AppDetail.scss';
-import { BasePageContainer } from 'src/layouts';
+import { BasePageAuth } from 'src/layouts';
 import {
   AppButton,
   AppCard,
@@ -544,11 +544,11 @@ const CreateWebhook = () => {
   };
 
   return (
-    <BasePageContainer className="app-detail" onInitPage={getAppInfo}>
+    <BasePageAuth className="app-detail" onInitPage={getAppInfo}>
       {!appInfo || !Object.values(appInfo).length
         ? _renderNoApp()
         : _renderCreateWebhook()}
-    </BasePageContainer>
+    </BasePageAuth>
   );
 };
 

@@ -3,7 +3,7 @@ import React, { useState, useCallback, FC, MouseEvent } from 'react';
 import rf from 'src/requests/RequestFactory';
 import { useHistory, useParams } from 'react-router';
 import 'src/styles/pages/AppDetail.scss';
-import { BasePageContainer } from 'src/layouts';
+import { BasePageAuth } from 'src/layouts';
 import { _renderStatus } from 'src/pages/WebhookDetail/parts/PartWebhookActivities';
 import {
   IActivityResponse,
@@ -525,7 +525,7 @@ const AllActivitiesPage = () => {
   };
 
   return (
-    <BasePageContainer className="app-detail">
+    <BasePageAuth className="app-detail">
       <>
         <Flex className="app-info">
           <AppHeading
@@ -577,7 +577,7 @@ const AllActivitiesPage = () => {
           )}
         </AppCard>
       </>
-    </BasePageContainer>
+    </BasePageAuth>
   );
 };
 
