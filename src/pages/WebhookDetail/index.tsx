@@ -1,5 +1,5 @@
 import { Box, Flex } from '@chakra-ui/react';
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router';
 import 'src/styles/pages/AppDetail.scss';
 import { BasePageContainer } from 'src/layouts';
@@ -9,16 +9,25 @@ import { isMobile } from 'react-device-detect';
 import { formatShortText } from 'src/utils/utils-helper';
 import PartWebhookGraph from './parts/PartWebhookGraph';
 import PartWebhookActivities from './parts/PartWebhookActivities';
-import useAppDetails from 'src/hooks/useAppDetails';
-import useWebhookDetails from 'src/hooks/useWebhook';
-import { getLogoChainByChainId } from '../../utils/utils-network';
+import { getLogoChainByChainId } from 'src/utils/utils-network';
+import { IWebhook } from 'src/utils/utils-webhook';
+import rf from 'src/requests/RequestFactory';
 
 const WebhookDetail = () => {
   const history = useHistory();
   const { appId, id: webhookId } = useParams<{ appId: string; id: string }>();
+  const [webhook, setWebhook] = useState<IWebhook | any>({});
 
-  const { appInfo } = useAppDetails(appId);
-  const { webhook, isLoading } = useWebhookDetails(appId, webhookId);
+  const getWebhookInfo = useCallback(async () => {
+    try {
+      const res = (await rf
+        .getRequest('RegistrationRequest')
+        .getRegistration(appId, webhookId)) as any;
+      setWebhook(res);
+    } catch (error: any) {
+      setWebhook({});
+    }
+  }, [appId, webhookId]);
 
   const _renderNoWebhook = () => {
     return <Flex justifyContent="center">Webhook Not Found</Flex>;
@@ -39,9 +48,9 @@ const WebhookDetail = () => {
           <Flex>
             {!isMobile && (
               <Flex alignItems={'center'} className="box-network">
-                <Box className={getLogoChainByChainId(appInfo.chain)} mr={2} />
+                <Box className={getLogoChainByChainId(webhook?.chain)} mr={2} />
                 <Box textTransform="capitalize">
-                  {appInfo?.network?.toLowerCase()}
+                  {webhook?.network?.toLowerCase()}
                 </Box>
               </Flex>
             )}
@@ -63,7 +72,7 @@ const WebhookDetail = () => {
           <PartWebhookStats />
         </Box>
 
-        <PartWebhookActivities appInfo={appInfo} webhook={webhook} />
+        <PartWebhookActivities webhook={webhook} />
 
         <Box className={'user-graph'}>
           <PartWebhookGraph />
@@ -73,7 +82,7 @@ const WebhookDetail = () => {
   };
 
   return (
-    <BasePageContainer className="app-detail" isLoading={isLoading}>
+    <BasePageContainer className="app-detail" onInitPage={getWebhookInfo}>
       {!webhook && !Object.keys(webhook).length
         ? _renderNoWebhook()
         : _renderWebhookDetail()}

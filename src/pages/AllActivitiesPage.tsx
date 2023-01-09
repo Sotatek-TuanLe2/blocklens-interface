@@ -42,7 +42,6 @@ import useWebhookDetails from 'src/hooks/useWebhook';
 interface IActivity {
   activity: IActivityResponse;
   webhook: IWebhook;
-  appInfo: IAppResponse;
   onReload: () => void;
 }
 
@@ -70,7 +69,6 @@ export const onRetry = async (
 const ActivityMobile: FC<IActivity> = ({
   activity,
   webhook,
-  appInfo,
   onReload,
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -178,7 +176,7 @@ const ActivityMobile: FC<IActivity> = ({
                   <Box ml={2}>
                     <a
                       href={
-                        getBlockExplorerUrl(appInfo.chain, appInfo.network) +
+                        getBlockExplorerUrl(webhook?.chain, webhook?.network) +
                         activity?.metadata?.tx?.transactionHash
                       }
                       className="link-redirect"
@@ -217,7 +215,7 @@ const ActivityMobile: FC<IActivity> = ({
 
               <Box width={'48%'}>
                 <AppLink
-                  to={`/app/${appInfo.appId}/webhook/${webhook.registrationId}/activities/${activity?.hash}`}
+                  to={`/app/${webhook?.appId}/webhook/${webhook.registrationId}/activities/${activity?.hash}`}
                 >
                   <AppButton variant="cancel" size="sm" w={'100%'}>
                     More Details
@@ -235,7 +233,6 @@ const ActivityMobile: FC<IActivity> = ({
 const ActivityDesktop: FC<IActivity> = ({
   activity,
   webhook,
-  appInfo,
   onReload,
 }) => {
   const history = useHistory();
@@ -284,7 +281,7 @@ const ActivityDesktop: FC<IActivity> = ({
         className="tr-list"
         onClick={() => {
           history.push(
-            `/app/${appInfo.appId}/webhook/${webhook.registrationId}/activities/${activity.hash}`,
+            `/app/${webhook?.appId}/webhook/${webhook.registrationId}/activities/${activity.hash}`,
           );
         }}
       >
@@ -302,7 +299,7 @@ const ActivityDesktop: FC<IActivity> = ({
               <a
                 onClick={(e) => onRedirectToBlockExplorer(e)}
                 href={
-                  getBlockExplorerUrl(appInfo.chain, appInfo.network) +
+                  getBlockExplorerUrl(webhook?.chain, webhook?.network) +
                   activity.metadata?.tx?.transactionHash
                 }
                 className="link-redirect"
@@ -338,7 +335,7 @@ const ActivityDesktop: FC<IActivity> = ({
             )}
 
             <AppLink
-              to={`/app/${appInfo.appId}/webhook/${webhook.registrationId}/activities/${activity.hash}`}
+              to={`/app/${webhook?.appId}/webhook/${webhook.registrationId}/activities/${activity.hash}`}
             >
               <Box className="link-redirect">
                 <LinkDetail />
@@ -487,7 +484,6 @@ const AllActivitiesPage = () => {
               activity={activity}
               key={index}
               webhook={webhook}
-              appInfo={appInfo}
               onReload={forceUpdate}
             />
           );
@@ -503,7 +499,6 @@ const AllActivitiesPage = () => {
           activity={activity}
           key={index}
           webhook={webhook}
-          appInfo={appInfo}
           onReload={forceUpdate}
         />
       );

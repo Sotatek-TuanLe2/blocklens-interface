@@ -1,4 +1,4 @@
-import { FC, ReactElement } from 'react';
+import { FC, ReactElement, useEffect, useState } from 'react';
 import { Box, Flex, Spinner } from '@chakra-ui/react';
 import React from 'react';
 import { BasePage } from 'src/layouts';
@@ -6,15 +6,31 @@ import { isMobile } from 'react-device-detect';
 
 interface IBasePageContainer {
   className?: string;
-  isLoading?: boolean;
+  onInitPage?: () => void;
   children: ReactElement;
 }
 
 const BasePageContainer: FC<IBasePageContainer> = ({
-  isLoading,
+  onInitPage,
   children,
   className,
 }) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const onInit = async () => {
+    try {
+      setIsLoading(true);
+      onInitPage && (await onInitPage());
+      setIsLoading(false);
+    } catch {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    onInit().then();
+  }, []);
+
   return (
     <BasePage>
       <Flex

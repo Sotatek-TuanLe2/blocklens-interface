@@ -14,7 +14,6 @@ import {
 import {
   WEBHOOK_TYPES,
   optionsFilterMessage,
-  IWebhook,
   IMessages,
 } from 'src/utils/utils-webhook';
 import MessageItem from './parts/MessageItem';
@@ -24,8 +23,7 @@ import MessagesItemMobile from './parts/MessagesItemMobile';
 import { filterParams } from 'src/utils/utils-helper';
 import ModalFilterActivities from 'src/modals/ModalFilterActivities';
 import useWebhookDetails from 'src/hooks/useWebhook';
-import useAppDetails from 'src/hooks/useAppDetails';
-import { getLogoChainByChainId } from '../../utils/utils-network';
+import { getLogoChainByChainId } from 'src/utils/utils-network';
 
 const MessagesHistory = () => {
   const {
@@ -46,7 +44,6 @@ const MessagesHistory = () => {
   const [isOpenFilterModal, setIsOpenFilterModal] = useState<boolean>(false);
 
   const { webhook } = useWebhookDetails(appId, webhookId);
-  const { appInfo } = useAppDetails(appId);
 
   const fetchDataTable: any = useCallback(async (params: any) => {
     try {
@@ -214,9 +211,9 @@ const MessagesHistory = () => {
 
           {!isMobile && (
             <Flex alignItems={'center'} className="box-network">
-              <Box className={getLogoChainByChainId(appInfo.chain)} mr={2} />
+              <Box className={getLogoChainByChainId(webhook?.chain)} mr={2} />
               <Box textTransform="capitalize">
-                {appInfo?.network?.toLowerCase()}
+                {webhook?.network?.toLowerCase()}
               </Box>
             </Flex>
           )}

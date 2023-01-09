@@ -7,7 +7,7 @@ import {
   TabPanels,
   Tabs,
 } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router';
 import 'src/styles/pages/AppDetail.scss';
 import PartNFTWebhooks from './parts/PartNFTWebhooks';
@@ -18,11 +18,11 @@ import { BasePageContainer } from 'src/layouts';
 import { AppButton, AppCard, AppHeading } from 'src/components';
 import { getLogoChainByChainId, isEVMNetwork } from 'src/utils/utils-network';
 import { isMobile } from 'react-device-detect';
-import { APP_STATUS } from 'src/utils/utils-app';
+import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
 import PartAppGraph from './parts/PartAppGraph';
 import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
 import useUser from 'src/hooks/useUser';
-import useAppDetails from 'src/hooks/useAppDetails';
+import rf from 'src/requests/RequestFactory';
 
 const AppDetail = () => {
   const [type, setType] = useState<string>(WEBHOOK_TYPES.NFT_ACTIVITY);
@@ -32,7 +32,18 @@ const AppDetail = () => {
   const userStats = user?.getStats();
 
   const { id: appId } = useParams<{ id: string }>();
-  const { appInfo, isLoading } = useAppDetails(appId);
+  const [appInfo, setAppInfo] = useState<IAppResponse | any>({});
+
+  const getAppInfo = useCallback(async () => {
+    try {
+      const res = (await rf
+        .getRequest('AppRequest')
+        .getAppDetail(appId)) as any;
+      setAppInfo(res);
+    } catch (error: any) {
+      setAppInfo({});
+    }
+  }, [appId]);
 
   const getActiveTab = () => {
     const tabs = [
@@ -179,7 +190,7 @@ const AppDetail = () => {
   };
 
   return (
-    <BasePageContainer className="app-detail" isLoading={isLoading}>
+    <BasePageContainer className="app-detail" onInitPage={getAppInfo}>
       {!appInfo || !Object.values(appInfo).length
         ? _renderNoApp()
         : _renderAppDetail()}

@@ -27,14 +27,12 @@ import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { isValidAddressEVM } from 'src/utils/utils-helper';
 import { CloseIcon } from '@chakra-ui/icons';
 import { Link as ReactLink } from 'react-router-dom';
-import { isMobile } from 'react-device-detect';
-import { APP_STATUS } from 'src/utils/utils-app';
+import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
 import { isEVMNetwork } from 'src/utils/utils-network';
 import { useLocation } from 'react-router';
 import { DownloadIcon } from 'src/assets/icons';
 import { useDispatch } from 'react-redux';
 import { getUserStats } from 'src/store/user';
-import useAppDetails from 'src/hooks/useAppDetails';
 
 const FILE_CSV_EXAMPLE = '/abi/CSV_Example.csv';
 
@@ -76,7 +74,7 @@ const CreateWebhook = () => {
   };
 
   const history = useHistory();
-  const { appInfo, isLoading } = useAppDetails(appId);
+  const [appInfo, setAppInfo] = useState<IAppResponse | any>({});
   const [dataForm, setDataForm] = useState<IDataForm>(initDataCreateWebHook);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
   const [type, setType] = useState<string>(WEBHOOK_TYPES.NFT_ACTIVITY);
@@ -93,6 +91,17 @@ const CreateWebhook = () => {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const typeParams = params.get('type');
+
+  const getAppInfo = useCallback(async () => {
+    try {
+      const res = (await rf
+        .getRequest('AppRequest')
+        .getAppDetail(appId)) as any;
+      setAppInfo(res);
+    } catch (error: any) {
+      setAppInfo({});
+    }
+  }, [appId]);
 
   const optionTypes = useMemo(() => {
     if (!isEVMNetwork(appInfo.chain)) {
@@ -535,7 +544,7 @@ const CreateWebhook = () => {
   };
 
   return (
-    <BasePageContainer className="app-detail" isLoading={isLoading}>
+    <BasePageContainer className="app-detail" onInitPage={getAppInfo}>
       {!appInfo || !Object.values(appInfo).length
         ? _renderNoApp()
         : _renderCreateWebhook()}
