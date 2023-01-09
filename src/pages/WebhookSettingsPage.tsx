@@ -163,10 +163,10 @@ const WebhookSettingsPage = () => {
           <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
             <AppField label={'Network'} customWidth={'49%'}>
               <Flex className="chain-app">
-                <Box className={getLogoChainByChainId(appInfo?.chain)} mr={3} />
-                <Box>{getNameChainByChainId(appInfo?.chain)}</Box>
+                <Box className={getLogoChainByChainId(webhook?.chain)} mr={3} />
+                <Box>{getNameChainByChainId(webhook?.chain)}</Box>
                 <Box textTransform="capitalize" ml={2}>
-                  {appInfo?.network?.toLowerCase()}
+                  {webhook?.network?.toLowerCase()}
                 </Box>
               </Flex>
             </AppField>

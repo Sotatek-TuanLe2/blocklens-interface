@@ -29,7 +29,6 @@ import {
 } from 'src/utils/utils-network';
 import { useParams } from 'react-router';
 import { BasePageContainer } from 'src/layouts';
-import useAppDetails from 'src/hooks/useAppDetails';
 
 interface IAppSettings {
   onBack: () => void;
@@ -44,7 +43,7 @@ interface IDataForm {
 
 const AppSettingsPage: FC<IAppSettings> = () => {
   const { id: appId } = useParams<{ id: string }>();
-  const { appInfo, getAppInfo } = useAppDetails(appId);
+  const [appInfo, setAppInfo] = useState<IAppResponse | any>({});
 
   const initData = {
     name: appInfo?.name,
@@ -82,6 +81,17 @@ const AppSettingsPage: FC<IAppSettings> = () => {
     if (!appInfo) return;
     setDataForm(initData);
   }, [appInfo]);
+
+  const getAppInfo = useCallback(async () => {
+    try {
+      const res = (await rf
+        .getRequest('AppRequest')
+        .getAppDetail(appId)) as any;
+      setAppInfo(res);
+    } catch (error: any) {
+      setAppInfo({});
+    }
+  }, [appId]);
 
   const handleSubmitForm = async () => {
     if (!validator.current.allValid()) {
@@ -170,7 +180,7 @@ const AppSettingsPage: FC<IAppSettings> = () => {
   };
 
   return (
-    <BasePageContainer className="app-detail">
+    <BasePageContainer className="app-detail" onInitPage={getAppInfo}>
       <>
         <Flex className="app-info">
           <AppHeading title="Settings" linkBack={`/apps/${appId}`} isCenter />

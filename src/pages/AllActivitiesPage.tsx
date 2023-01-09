@@ -35,8 +35,6 @@ import {
   getBlockExplorerUrl,
   getLogoChainByChainId,
 } from 'src/utils/utils-network';
-import { IAppResponse } from 'src/utils/utils-app';
-import useAppDetails from 'src/hooks/useAppDetails';
 import useWebhookDetails from 'src/hooks/useWebhook';
 
 interface IActivity {
@@ -360,7 +358,6 @@ const AllActivitiesPage = () => {
   const [, updateState] = useState<any>();
   const forceUpdate = useCallback(() => updateState({}), []);
 
-  const { appInfo } = useAppDetails(appId);
   const { webhook } = useWebhookDetails(appId, webhookId);
 
   const fetchDataTable: any = useCallback(async (params: any) => {
@@ -539,9 +536,9 @@ const AllActivitiesPage = () => {
 
           {!isMobile && (
             <Flex alignItems={'center'} className="box-network">
-              <Box className={getLogoChainByChainId(appInfo.chain)} mr={2} />
+              <Box className={getLogoChainByChainId(webhook?.chain)} mr={2} />
               <Box textTransform="capitalize">
-                {appInfo?.network?.toLowerCase()}
+                {webhook?.network?.toLowerCase()}
               </Box>
             </Flex>
           )}
