@@ -2,7 +2,7 @@ import { FC, useEffect, useState } from 'react';
 import React from 'react';
 import { Box, Flex } from '@chakra-ui/react';
 import { AppCard, AppButton } from 'src/components';
-import BasePage from 'src/layouts/BasePage';
+import GuestPage from 'src/layouts/GuestPage';
 import 'src/styles/pages/LoginPage.scss';
 import { useLocation } from 'react-router';
 import rf from 'src/requests/RequestFactory';
@@ -41,7 +41,7 @@ const VerifyAccountPage: FC = () => {
   }, []);
 
   return (
-    <BasePage>
+    <GuestPage>
       <Flex className="box-login">
         <AppCard className="box-form" borderRadius={'4px'}>
           <Box textAlign={'center'}>
@@ -59,7 +59,7 @@ const VerifyAccountPage: FC = () => {
           </AppButton>
         </AppCard>
       </Flex>
-    </BasePage>
+    </GuestPage>
   );
 };
 

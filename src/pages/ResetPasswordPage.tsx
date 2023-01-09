@@ -2,7 +2,7 @@ import { Box, Flex, Text } from '@chakra-ui/react';
 import { FC, useEffect, useRef, useState } from 'react';
 import { useHistory, useLocation } from 'react-router';
 import { AppButton, AppCard, AppField, AppInput } from 'src/components';
-import BasePage from 'src/layouts/BasePage';
+import GuestPage from 'src/layouts/GuestPage';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/pages/LoginPage.scss';
 import { setAuthorizationToRequest } from 'src/utils/utils-auth';
@@ -65,7 +65,7 @@ const ResetPasswordPage: FC = () => {
   }, []);
 
   return (
-    <BasePage>
+    <GuestPage>
       <Flex className="box-login">
         <AppCard className="box-form">
           <Box className="box-form__title">
@@ -127,7 +127,7 @@ const ResetPasswordPage: FC = () => {
           </Box>
         </AppCard>
       </Flex>
-    </BasePage>
+    </GuestPage>
   );
 };
 

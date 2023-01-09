@@ -8,7 +8,7 @@ import React, {
 } from 'react';
 import { useHistory, useParams } from 'react-router';
 import 'src/styles/pages/AppDetail.scss';
-import { GuestPage } from 'src/layouts';
+import { BasePage } from 'src/layouts';
 import {
   AppButton,
   AppCard,
@@ -544,11 +544,11 @@ const CreateWebhook = () => {
   };
 
   return (
-    <GuestPage className="app-detail" onInitPage={getAppInfo}>
+    <BasePage className="app-detail" onInitPage={getAppInfo}>
       {!appInfo || !Object.values(appInfo).length
         ? _renderNoApp()
         : _renderCreateWebhook()}
-    </GuestPage>
+    </BasePage>
   );
 };
 

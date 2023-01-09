@@ -1,26 +1,65 @@
-import { ReactNode, FC } from 'react';
-import { Header } from 'src/layouts';
-import { Box } from '@chakra-ui/react';
+import { FC, ReactElement, useEffect, useState } from 'react';
+import { Box, Flex, Spinner } from '@chakra-ui/react';
 import React from 'react';
-import 'src/styles/layout/Header.scss';
+import { GuestPage } from 'src/layouts';
+import { isMobile } from 'react-device-detect';
 
-interface IBasePage {
-  children?: ReactNode;
+interface BasePage {
+  className?: string;
+  onInitPage?: () => void;
+  children: ReactElement;
 }
 
-const BasePage: FC<IBasePage> = ({ children }) => {
+const BasePage: FC<BasePage> = ({
+  onInitPage,
+  children,
+  className,
+}) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const onInit = async () => {
+    try {
+      setIsLoading(true);
+      onInitPage && (await onInitPage());
+      setIsLoading(false);
+    } catch {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    onInit().then();
+  }, []);
+
   return (
-    <Box>
-      <Header />
-      <Box
-        pt={'65px'}
-        mb={'60px'}
-        minH={'calc(100vh - 80px)'}
-        className={'main'}
+    <GuestPage>
+      <Flex
+        justifyContent={'center'}
+        minH={'calc(100vh - 200px)'}
+        className={className}
       >
-        {children}
-      </Box>
-    </Box>
+        <Box
+          marginTop={isMobile ? '50px' : '70px'}
+          maxW={'1210px'}
+          width={'full'}
+          px={4}
+        >
+          {isLoading ? (
+            <Flex justifyContent={'center'}>
+              <Spinner
+                thickness="4px"
+                speed="0.65s"
+                emptyColor="gray.200"
+                color="blue.500"
+                size="xl"
+              />
+            </Flex>
+          ) : (
+            <Box width={'full'}>{children}</Box>
+          )}
+        </Box>
+      </Flex>
+    </GuestPage>
   );
 };
 

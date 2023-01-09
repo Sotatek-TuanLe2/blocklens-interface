@@ -23,7 +23,7 @@ import { useDispatch } from 'react-redux';
 import { getUserStats } from 'src/store/user';
 import { useParams } from 'react-router';
 import { AppHeading } from 'src/components';
-import { GuestPage } from 'src/layouts';
+import { BasePage } from 'src/layouts';
 import useAppDetails from 'src/hooks/useAppDetails';
 import useWebhookDetails from 'src/hooks/useWebhook';
 
@@ -117,7 +117,7 @@ const WebhookSettingsPage = () => {
   };
 
   return (
-    <GuestPage className="app-detail">
+    <BasePage className="app-detail">
       <>
         <Flex className="app-info">
           <AppHeading
@@ -185,7 +185,7 @@ const WebhookSettingsPage = () => {
           />
         )}
       </>
-    </GuestPage>
+    </BasePage>
   );
 };
 

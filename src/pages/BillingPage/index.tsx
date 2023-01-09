@@ -10,7 +10,7 @@ import {
 import { FC, useEffect, useMemo, useState } from 'react';
 import BigNumber from 'bignumber.js';
 import 'src/styles/pages/BillingPage.scss';
-import { GuestPage } from 'src/layouts';
+import { BasePage } from 'src/layouts';
 import { AppButton, AppCard, AppLink, AppHeading } from 'src/components';
 import { useDispatch } from 'react-redux';
 import {
@@ -614,9 +614,9 @@ const BillingPage = () => {
   };
 
   return (
-    <GuestPage className="billing-page">
+    <BasePage className="billing-page">
       <>{_renderContent()}</>
-    </GuestPage>
+    </BasePage>
   );
 };
 
