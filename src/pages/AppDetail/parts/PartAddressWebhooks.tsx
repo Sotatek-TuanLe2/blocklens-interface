@@ -26,7 +26,7 @@ const PartAddressWebhooks: FC<IListAddress> = ({ appInfo }) => {
     return (
       <Flex className="box-create">
         <Box className="icon-no-data" mb={4} />
-        Create your webhook to start experiencing Blocklenswith Address
+        Create your webhook to start experiencing Blocklens with Address
         Activity!
         <AppButton
           isDisabled={isDisabledApp}

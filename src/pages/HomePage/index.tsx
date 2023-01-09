@@ -31,7 +31,7 @@ const HomePage = () => {
           <Flex my={14} flexDirection={'column'} alignItems={'center'}>
             <Box className={'no-app__title'}>You don’t have any Apps</Box>
             <Box className={'no-app__description'}>
-              Create a new App to start using BlocklensAPI
+              Create a new App to start using Blocklens API
             </Box>
             <AppButton
               className={'no-app__btn'}
