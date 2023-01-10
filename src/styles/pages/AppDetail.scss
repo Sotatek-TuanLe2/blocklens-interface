@@ -395,7 +395,7 @@
     top: 150%;
 
     .input-search {
-      background-color: #2f3b58;
+      background-color: $bg2;
       @include text-small-regular;
       padding: 6px 10px;
       height: 32px;
