@@ -160,7 +160,7 @@ const Header: FC = () => {
           <img
             src="/images/logo.png"
             alt="logo"
-            width={isMobile ? '140px' : '180px'}
+            width={isMobile ? '140px' : 'auto'}
           />
         </Box>
         {accessToken && _renderContent()}
