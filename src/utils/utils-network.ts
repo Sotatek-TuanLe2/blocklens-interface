@@ -67,6 +67,38 @@ export const getChains: (filter?: (chain: Chain) => boolean) => {
     });
 };
 
+export const getSupportChainsTopUp = () => {
+  const supportChainsName = objectKeys(config.topUp.supportChains);
+  return getChains((chain) => supportChainsName.includes(chain.id));
+};
+
+export const getTopUpCurrencies = () => {
+  const supportTopUpChainConfigKeys = objectKeys(config.topUp.supportChains);
+  return supportTopUpChainConfigKeys.map(
+    (key) => config.topUp.supportChains[key].currencies,
+  );
+};
+
+export const getTopUpCurrenciesByChainId = (chainId: string) => {
+  const supportChain = config.topUp.supportChains[chainId];
+  if (!supportChain) return [];
+  const currencyKeys = objectKeys(supportChain.currencies);
+  return currencyKeys.map((key) => supportChain.currencies[key]);
+};
+
+export const getTopUpCurrencyOptions = (chainId: string) => {
+  return getTopUpCurrenciesByChainId(chainId).map((currency) => ({
+    label: currency.name,
+    value: currency.address,
+    icon: currency.icon,
+    decimals: currency.decimals,
+  }));
+};
+
+export const getTopUpConfigByNetworkId = (networkId: string) => {
+  return config.topUp.supportChains[networkId];
+};
+
 export const getChainByChainId = (chainId: string | number): Chain | null => {
   const chainKeys = Object.keys(config.chains);
   const chainKey = chainKeys.find((chainKey) => {

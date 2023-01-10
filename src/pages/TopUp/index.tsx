@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import useWallet from 'src/hooks/useWallet';
@@ -31,9 +31,11 @@ import { executeTransaction } from 'src/store/transaction';
 import { getUserProfile } from 'src/store/user';
 import {
   getChainConfig,
-  getChains,
   getNetworkByEnv,
-  objectKeys,
+  getSupportChainsTopUp,
+  getTopUpConfigByNetworkId,
+  getTopUpCurrenciesByChainId,
+  getTopUpCurrencyOptions,
 } from 'src/utils/utils-network';
 import Storage from 'src/utils/utils-storage';
 import { toastError } from 'src/utils/utils-notify';
@@ -55,13 +57,6 @@ interface IDataForm {
 const AMOUNT_OPTIONS = [300, 500, 1000];
 
 const TopUpPage = () => {
-  const initialDataForm: IDataForm = {
-    walletAddress: '',
-    chainId: '',
-    currencyAddress: '',
-    amount: '',
-  };
-
   const { isConnecting: connectingWallet } = useSelector(
     (state: RootState) => state.wallet,
   );
@@ -70,8 +65,10 @@ const TopUpPage = () => {
   const { wallet, changeNetwork, connectWallet } = useWallet();
   const { user } = useUser();
 
-  const [dataForm, setDataForm] = useState<IDataForm>(initialDataForm);
-  const { currencyAddress, amount, chainId } = dataForm;
+  const [chainId, setChainId] = useState<string>('');
+  const [amount, setAmount] = useState<string>('');
+  const [currencyAddress, setCurrencyAddress] = useState<string>('');
+
   const [isBeingToppedUp, setIsBeingToppedUp] = useState<boolean>(false);
   const [balanceToken, setBalanceToken] = useState<string | number>('');
   const [fetchingBalance, setFetchingBalance] = useState(false);
@@ -84,36 +81,21 @@ const TopUpPage = () => {
   );
 
   const topUpContractAddress = wallet
-    ? config.topUp.chains[wallet?.getNework()].contractAddress
+    ? getTopUpConfigByNetworkId(wallet.getNework()).contractAddress
     : null;
-  const topUpAppId = config.topUp.topUpAppId;
-  const topUpConfirmations = config.topUp.topUpConfirmations;
   const isDifferentWalletAddressLinked =
     wallet?.getAddress() !== user?.getLinkedAddress();
+  const chainOptions = getSupportChainsTopUp();
 
-  const chainOptions = getChains((chain) => chain.allowTopUp);
-  const currencyOptions = useMemo((): {
-    label: string;
-    value: string;
-    icon: string | undefined;
-    decimals: number;
-  }[] => {
-    if (!wallet || !chainId) {
-      return [];
-    }
-    const networkCurrencies = getNetworkByEnv(
-      getChainConfig(chainId),
-    ).currencies;
+  useEffect(() => {
+    const defaultChain = chainOptions[0];
+    onChangeChain(defaultChain.value);
+  }, []);
 
-    return objectKeys(networkCurrencies).map((currencyKey) => {
-      const currency = networkCurrencies[currencyKey];
-      return {
-        label: currency.name,
-        value: currency.address,
-        icon: currency.icon,
-        decimals: currency.decimals,
-      };
-    });
+  useEffect(() => {
+    if (chainId === '') return;
+    const currencies = getTopUpCurrenciesByChainId(chainId);
+    onChangeCurrency(currencies[0].address);
   }, [chainId]);
 
   useEffect(() => {
@@ -124,50 +106,58 @@ const TopUpPage = () => {
       await connectWallet(connectorId, network);
     })();
   }, [wallet?.getNework()]);
-
+  const checkApproveToken = async () => {
+    if (!(chainId && wallet && topUpContractAddress && currencyAddress)) return;
+    try {
+      const result = await isTokenApproved(
+        chainId,
+        currencyAddress,
+        wallet.getAddress(),
+        topUpContractAddress,
+      );
+      setHasApproveToken(result);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   useEffect(() => {
-    if (!(wallet && topUpContractAddress)) return;
-    isTokenApproved(
-      wallet?.getNework(),
-      currencyAddress,
-      wallet.getAddress(),
-      topUpContractAddress,
-    )
-      .then((result) => setHasApproveToken(result))
-      .catch(() => setHasApproveToken(false))
-      .finally(() => setDataForm((prevState) => prevState));
+    checkApproveToken();
   }, [wallet, topUpContractAddress, currencyAddress]);
-
-  useEffect(() => {
-    if (!wallet?.getAddress()) return;
-    const networkCurrencies = getNetworkByEnv(
-      getChainConfig(chainOptions[0].value),
-    ).currencies;
-
-    const defaultCurrency = networkCurrencies[objectKeys(networkCurrencies)[0]];
-    setDataForm((prevState) => ({
-      ...prevState,
-      walletAddress: wallet.getAddress(),
-      chainId: chainOptions[0].value,
-      currencyAddress: defaultCurrency.address,
-    }));
-  }, [wallet]);
 
   useEffect(() => {
     if (!(chainId && currencyAddress && wallet?.getAddress())) return;
     setFetchingBalance(true);
-    getBalanceToken(chainId, currencyAddress, wallet?.getAddress())
-      .then((balance) => {
+
+    const fetchBalance = async () => {
+      setFetchingBalance(true);
+      try {
+        const balance = await getBalanceToken(
+          chainId,
+          currencyAddress,
+          wallet?.getAddress(),
+        );
         setBalanceToken(balance);
-      })
-      .catch((error) => {
-        console.log(error);
+      } catch (error: any) {
+        setBalanceToken('');
         toastError({ message: error.toString() });
-      })
-      .finally(() => setFetchingBalance(false));
-  }, [currencyAddress, chainId, wallet?.getAddress()]);
+      } finally {
+        setFetchingBalance(false);
+      }
+    };
+    fetchBalance();
+  }, [currencyAddress, wallet?.getAddress()]);
+
+  const onChangeChain = (value: string) => {
+    setChainId(value);
+  };
+  const onChangeCurrency = (currencyAddress: string) => {
+    setCurrencyAddress(currencyAddress);
+  };
 
   const approveToken = async () => {
+    if (chainId !== wallet?.getChainId()) {
+      await changeNetwork(chainId);
+    }
     await dispatch(
       executeTransaction({
         provider: wallet?.getProvider(),
@@ -179,6 +169,7 @@ const TopUpPage = () => {
         },
       }),
     );
+    await checkApproveToken();
   };
 
   const topUp = async (currencyAddress: string, amount: string) => {
@@ -205,32 +196,15 @@ const TopUpPage = () => {
           abi: abi['billing'],
           action: 'topup',
           transactionArgs: [
-            topUpAppId,
+            config.topUp.appId,
             currencyAddress,
             convertDecToWei(amount, networkCurrencies[currencyKey].decimals),
           ],
         },
-        confirmation: topUpConfirmations,
+        confirmation: config.topUp.confirmations,
       }),
     );
     await dispatch(getUserProfile());
-  };
-
-  const onChangeCurrency = (currencyAddress: string) => {
-    setDataForm((prevState) => ({ ...prevState, currencyAddress }));
-  };
-
-  const onChangeChainId = (chainId: string) => {
-    const networkCurrencies = getNetworkByEnv(
-      getChainConfig(chainId),
-    ).currencies;
-    const defaultCurrency =
-      networkCurrencies[Object.keys(networkCurrencies)[0]];
-    setDataForm((prevState) => ({
-      ...prevState,
-      chainId,
-      currencyAddress: defaultCurrency.address,
-    }));
   };
 
   const onTopUp = async () => {
@@ -241,11 +215,10 @@ const TopUpPage = () => {
     if (chainId !== wallet.getChainId()) {
       await changeNetwork(chainId);
     }
-
     try {
       setIsBeingToppedUp(true);
       await topUp(currencyAddress, amount);
-      setDataForm((prevState) => ({ ...prevState, amount: '0' }));
+      setAmount('0');
       setIsBeingToppedUp(false);
     } catch (error: any) {
       setIsBeingToppedUp(false);
@@ -301,7 +274,9 @@ const TopUpPage = () => {
               <AppField label={'Chain'} customWidth={'100%'}>
                 <AppSelect2
                   size="large"
-                  onChange={(value: string) => onChangeChainId(value)}
+                  onChange={(value: string) => {
+                    onChangeChain(value);
+                  }}
                   options={chainOptions}
                   value={chainId}
                 />
@@ -312,8 +287,8 @@ const TopUpPage = () => {
                 <AppSelect2
                   size="large"
                   onChange={(value: string) => onChangeCurrency(value)}
-                  options={currencyOptions}
-                  value={dataForm.currencyAddress}
+                  options={getTopUpCurrencyOptions(chainId)}
+                  value={currencyAddress}
                 />
               </AppField>
             </Box>
@@ -338,12 +313,7 @@ const TopUpPage = () => {
                   </Flex>
                 </Flex>
                 <AppCurrencyInput
-                  onChange={(e) =>
-                    setDataForm({
-                      ...dataForm,
-                      amount: e.target.value.trim(),
-                    })
-                  }
+                  onChange={(e) => setAmount(e.target.value.trim())}
                   disabled={fetchingBalance}
                   render={(ref, props) => (
                     <AppInput
@@ -365,12 +335,10 @@ const TopUpPage = () => {
                     <Button
                       disabled={fetchingBalance}
                       className={`amount-option ${
-                        +dataForm.amount === item ? 'active' : ''
+                        +amount === item ? 'active' : ''
                       }`}
                       key={index}
-                      onClick={() =>
-                        setDataForm({ ...dataForm, amount: item.toString() })
-                      }
+                      onClick={() => setAmount(item.toString())}
                     >
                       {item}
                     </Button>

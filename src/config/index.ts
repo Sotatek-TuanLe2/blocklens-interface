@@ -66,12 +66,14 @@ export interface Chain {
   id: string;
   icon: string;
   networks: { [key: string]: Network };
-  allowTopUp: boolean;
 }
 
-export interface TopUp {
+export type ChainTopUpConfigType = {
   contractAddress: string;
-}
+  currencies: {
+    [key: string]: Currency;
+  };
+};
 
 export interface Config {
   auth: {
@@ -96,11 +98,11 @@ export interface Config {
     [key: string]: string;
   };
   topUp: {
-    chains: {
-      [key: string]: TopUp;
+    supportChains: {
+      [key: string]: ChainTopUpConfigType;
     };
-    topUpAppId: number;
-    topUpConfirmations: number;
+    appId: number;
+    confirmations: number;
   };
   connectors: {
     [key: string]: Connector;
