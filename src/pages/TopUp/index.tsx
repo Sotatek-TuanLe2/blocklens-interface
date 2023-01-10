@@ -47,13 +47,6 @@ import abi from 'src/abi';
 import 'src/styles/pages/BillingPage.scss';
 import 'src/styles/pages/AppDetail.scss';
 
-interface IDataForm {
-  walletAddress: string;
-  chainId: string;
-  currencyAddress: string;
-  amount: string;
-}
-
 const AMOUNT_OPTIONS = [300, 500, 1000];
 
 const TopUpPage = () => {
