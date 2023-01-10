@@ -66,6 +66,7 @@ export interface Chain {
   id: string;
   icon: string;
   networks: { [key: string]: Network };
+  allowTopUp: boolean;
 }
 
 export interface TopUp {
@@ -95,7 +96,11 @@ export interface Config {
     [key: string]: string;
   };
   topUp: {
-    [key: string]: TopUp;
+    chains: {
+      [key: string]: TopUp;
+    };
+    topUpAppId: number;
+    topUpConfirmations: number;
   };
   connectors: {
     [key: string]: Connector;

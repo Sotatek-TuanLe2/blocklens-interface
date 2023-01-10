@@ -1,3 +1,9 @@
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import useWallet from 'src/hooks/useWallet';
+import useUser from 'src/hooks/useUser';
+import { RootState } from 'src/store';
 import {
   Alert,
   AlertDescription,
@@ -8,35 +14,36 @@ import {
   Spinner,
   Text,
 } from '@chakra-ui/react';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import {
+  AppCurrencyInput,
+  AppSelect2,
+  AppField,
+  AppInput,
+  AppButton,
+  AppCard,
+  AppConnectWalletButton,
+} from 'src/components';
+import { ConnectWalletIcon } from 'src/assets/icons';
+import { isMobile } from 'react-device-detect';
+import { MaxUint256 } from '@ethersproject/constants';
+import { BasePageContainer } from 'src/layouts';
+import { executeTransaction } from 'src/store/transaction';
+import { getUserProfile } from 'src/store/user';
+import {
+  getChainConfig,
+  getChains,
+  getNetworkByEnv,
+  objectKeys,
+} from 'src/utils/utils-network';
+import Storage from 'src/utils/utils-storage';
+import { toastError } from 'src/utils/utils-notify';
+import { getBalanceToken, isTokenApproved } from 'src/utils/utils-token';
+import { convertDecToWei } from 'src/utils/utils-format';
+import { createValidator } from 'src/utils/utils-validator';
+import config from 'src/config';
+import abi from 'src/abi';
 import 'src/styles/pages/BillingPage.scss';
 import 'src/styles/pages/AppDetail.scss';
-import { AppButton, AppCard } from 'src/components';
-import { isMobile } from 'react-device-detect';
-import AppConnectWalletButton from 'src/components/AppConnectWalletButton';
-import useWallet from 'src/hooks/useWallet';
-import { toastError } from 'src/utils/utils-notify';
-import { ConnectWalletIcon } from 'src/assets/icons';
-import { getChainConfig, getNetworkByEnv } from 'src/utils/utils-network';
-import { useHistory } from 'react-router-dom';
-import { BasePageContainer } from 'src/layouts';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from 'src/store';
-import Storage from '../../utils/utils-storage';
-import AppField from '../../components/AppField';
-import AppInput from '../../components/AppInput';
-import AppSelect2 from '../../components/AppSelect2';
-import AppCurrencyInput from '../../components/AppCurrencyInput';
-import { shortenWalletAddress } from '../../utils/utils-wallet';
-import useUser from '../../hooks/useUser';
-import { getBalanceToken, isTokenApproved } from '../../utils/utils-token';
-import config from '../../config';
-import { executeTransaction } from '../../store/transaction';
-import abi from '../../abi';
-import { convertDecToWei } from '../../utils/utils-format';
-import { getUserProfile } from '../../store/user';
-import { MaxUint256 } from '@ethersproject/constants';
-import { createValidator } from '../../utils/utils-validator';
 
 interface IDataForm {
   walletAddress: string;
@@ -45,13 +52,7 @@ interface IDataForm {
   amount: string;
 }
 
-const EXCEPTED_NETWORKS = ['ETH', 'BSC', 'POLYGON'];
-export const CHAIN_OPTIONS = Object.keys(config.chains)
-  .filter((chainId) => EXCEPTED_NETWORKS.includes(chainId))
-  .map((chainKey) => {
-    const chain = config.chains[chainKey];
-    return { label: chain.name, value: chain.id, icon: chain.icon };
-  });
+const AMOUNT_OPTIONS = [300, 500, 1000];
 
 const TopUpPage = () => {
   const initialDataForm: IDataForm = {
@@ -61,26 +62,20 @@ const TopUpPage = () => {
     amount: '',
   };
 
-  const TOP_UP_APP_ID = 1; // used for blockSniper
-  const TOP_UP_CONFIRMATIONS = 30;
-
-  const [dataForm, setDataForm] = useState<IDataForm>(initialDataForm);
-  const { currencyAddress, amount, chainId } = dataForm;
-
-  const [isBeingToppedUp, setIsBeingToppedUp] = useState<boolean>(false);
-
-  const [balanceToken, setBalanceToken] = useState<string | number>('');
-  const [fetchingBalance, setFetchingBalance] = useState(false);
-
-  const { wallet, changeNetwork, connectWallet } = useWallet();
-  const { user } = useUser();
-  const history = useHistory();
-
   const { isConnecting: connectingWallet } = useSelector(
     (state: RootState) => state.wallet,
   );
-
   const dispatch = useDispatch();
+  const history = useHistory();
+  const { wallet, changeNetwork, connectWallet } = useWallet();
+  const { user } = useUser();
+
+  const [dataForm, setDataForm] = useState<IDataForm>(initialDataForm);
+  const { currencyAddress, amount, chainId } = dataForm;
+  const [isBeingToppedUp, setIsBeingToppedUp] = useState<boolean>(false);
+  const [balanceToken, setBalanceToken] = useState<string | number>('');
+  const [fetchingBalance, setFetchingBalance] = useState(false);
+  const [hasApproveToken, setHasApproveToken] = useState(false);
 
   const validator = useRef(
     createValidator({
@@ -88,26 +83,29 @@ const TopUpPage = () => {
     }),
   );
 
-  // form
-
-  const AMOUNT_OPTIONS = [300, 500, 1000];
   const topUpContractAddress = wallet
-    ? config.topUp[wallet?.getNework()].contractAddress
+    ? config.topUp.chains[wallet?.getNework()].contractAddress
     : null;
+  const topUpAppId = config.topUp.topUpAppId;
+  const topUpConfirmations = config.topUp.topUpConfirmations;
+  const isDifferentWalletAddressLinked =
+    wallet?.getAddress() !== user?.getLinkedAddress();
 
-  const CURRENCY_OPTIONS = useMemo((): {
+  const chainOptions = getChains((chain) => chain.allowTopUp);
+  const currencyOptions = useMemo((): {
     label: string;
     value: string;
     icon: string | undefined;
     decimals: number;
   }[] => {
-    if (!wallet) {
+    if (!wallet || !chainId) {
       return [];
     }
     const networkCurrencies = getNetworkByEnv(
-      getChainConfig(dataForm.chainId),
+      getChainConfig(chainId),
     ).currencies;
-    return Object.keys(networkCurrencies).map((currencyKey) => {
+
+    return objectKeys(networkCurrencies).map((currencyKey) => {
       const currency = networkCurrencies[currencyKey];
       return {
         label: currency.name,
@@ -116,14 +114,58 @@ const TopUpPage = () => {
         decimals: currency.decimals,
       };
     });
-  }, [dataForm.chainId]);
+  }, [chainId]);
 
-  const isDifferentWalletAddressLinked =
-    wallet?.getAddress() !== user?.getLinkedAddress();
+  useEffect(() => {
+    const connectorId = Storage.getConnectorId();
+    const network = Storage.getNetwork();
+    if (!connectorId) return;
+    (async () => {
+      await connectWallet(connectorId, network);
+    })();
+  }, [wallet?.getNework()]);
 
-  // end form
+  useEffect(() => {
+    if (!(wallet && topUpContractAddress)) return;
+    isTokenApproved(
+      wallet?.getNework(),
+      currencyAddress,
+      wallet.getAddress(),
+      topUpContractAddress,
+    )
+      .then((result) => setHasApproveToken(result))
+      .catch(() => setHasApproveToken(false))
+      .finally(() => setDataForm((prevState) => prevState));
+  }, [wallet, topUpContractAddress, currencyAddress]);
 
-  const [hasApproveToken, setHasApproveToken] = useState(false);
+  useEffect(() => {
+    if (!wallet?.getAddress()) return;
+    const networkCurrencies = getNetworkByEnv(
+      getChainConfig(chainOptions[0].value),
+    ).currencies;
+
+    const defaultCurrency = networkCurrencies[objectKeys(networkCurrencies)[0]];
+    setDataForm((prevState) => ({
+      ...prevState,
+      walletAddress: wallet.getAddress(),
+      chainId: chainOptions[0].value,
+      currencyAddress: defaultCurrency.address,
+    }));
+  }, [wallet]);
+
+  useEffect(() => {
+    if (!(chainId && currencyAddress && wallet?.getAddress())) return;
+    setFetchingBalance(true);
+    getBalanceToken(chainId, currencyAddress, wallet?.getAddress())
+      .then((balance) => {
+        setBalanceToken(balance);
+      })
+      .catch((error) => {
+        console.log(error);
+        toastError({ message: error.toString() });
+      })
+      .finally(() => setFetchingBalance(false));
+  }, [currencyAddress, chainId, wallet?.getAddress()]);
 
   const approveToken = async () => {
     await dispatch(
@@ -150,6 +192,7 @@ const TopUpPage = () => {
       (currencyKey: string) =>
         networkCurrencies[currencyKey].address === currencyAddress,
     );
+
     if (!currencyKey) {
       return;
     }
@@ -162,12 +205,12 @@ const TopUpPage = () => {
           abi: abi['billing'],
           action: 'topup',
           transactionArgs: [
-            TOP_UP_APP_ID,
+            topUpAppId,
             currencyAddress,
             convertDecToWei(amount, networkCurrencies[currencyKey].decimals),
           ],
         },
-        confirmation: TOP_UP_CONFIRMATIONS,
+        confirmation: topUpConfirmations,
       }),
     );
     await dispatch(getUserProfile());
@@ -210,58 +253,6 @@ const TopUpPage = () => {
       toastError({ message: error?.data?.message || error?.message });
     }
   };
-
-  useEffect(() => {
-    const connectorId = Storage.getConnectorId();
-    const network = Storage.getNetwork();
-    if (!connectorId) return;
-    (async () => {
-      await connectWallet(connectorId, network);
-    })();
-  }, [wallet?.getNework()]);
-
-  useEffect(() => {
-    if (!(wallet && topUpContractAddress)) return;
-    isTokenApproved(
-      wallet?.getNework(),
-      currencyAddress,
-      wallet.getAddress(),
-      topUpContractAddress,
-    )
-      .then((result) => setHasApproveToken(result))
-      .catch(() => setHasApproveToken(false))
-      .finally(() => setDataForm((prevState) => prevState));
-  }, [wallet, topUpContractAddress, currencyAddress]);
-
-  useEffect(() => {
-    if (wallet?.getAddress()) {
-      const networkCurrencies = getNetworkByEnv(
-        getChainConfig(CHAIN_OPTIONS[0].value),
-      ).currencies;
-      const defaultCurrency =
-        networkCurrencies[Object.keys(networkCurrencies)[0]];
-      setDataForm((prevState) => ({
-        ...prevState,
-        walletAddress: wallet.getAddress(),
-        chainId: CHAIN_OPTIONS[0].value,
-        currencyAddress: defaultCurrency.address,
-      }));
-    }
-  }, [wallet]);
-
-  useEffect(() => {
-    if (!(chainId && currencyAddress && wallet?.getAddress())) return;
-    setFetchingBalance(true);
-    getBalanceToken(chainId, currencyAddress, wallet?.getAddress())
-      .then((balance) => {
-        setBalanceToken(balance);
-      })
-      .catch((error) => {
-        console.log(error);
-        toastError({ message: error.toString() });
-      })
-      .finally(() => setFetchingBalance(false));
-  }, [currencyAddress, chainId, wallet?.getAddress()]);
 
   const _renderTopUpForm = () => {
     if (!(wallet && user)) {
@@ -311,8 +302,8 @@ const TopUpPage = () => {
                 <AppSelect2
                   size="large"
                   onChange={(value: string) => onChangeChainId(value)}
-                  options={CHAIN_OPTIONS}
-                  value={dataForm.chainId}
+                  options={chainOptions}
+                  value={chainId}
                 />
               </AppField>
             </Box>
@@ -321,7 +312,7 @@ const TopUpPage = () => {
                 <AppSelect2
                   size="large"
                   onChange={(value: string) => onChangeCurrency(value)}
-                  options={CURRENCY_OPTIONS}
+                  options={currencyOptions}
                   value={dataForm.currencyAddress}
                 />
               </AppField>

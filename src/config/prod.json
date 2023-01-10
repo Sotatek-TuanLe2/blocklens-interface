@@ -98,7 +98,8 @@
             }
           }
         }
-      }
+      },
+      "allowTopUp": true
     },
     "BSC": {
       "name": "Binance Smart Chain",
@@ -110,7 +111,9 @@
           "id": "MAINNET",
           "icon": "icon-bsc",
           "chainId": 56,
-          "rpcUrls": ["https://bsc-dataseed1.defibit.io/"],
+          "rpcUrls": [
+            "https://bsc-dataseed1.defibit.io/"
+          ],
           "blockExplorer": {
             "name": "Bscscan",
             "icon": "/images/bscscan.png",
@@ -196,7 +199,8 @@
             }
           }
         }
-      }
+      },
+      "allowTopUp": true
     },
     "POLYGON": {
       "name": "Polygon",
@@ -208,7 +212,9 @@
           "id": "MAINNET",
           "icon": "icon-polygon",
           "chainId": 137,
-          "rpcUrls": ["https://rpc-mainnet.maticvigil.com/"],
+          "rpcUrls": [
+            "https://rpc-mainnet.maticvigil.com/"
+          ],
           "blockExplorer": {
             "name": "Polygonscan",
             "icon": "/images/polygonscan.png",
@@ -277,7 +283,8 @@
             }
           }
         }
-      }
+      },
+      "allowTopUp": true
     },
     "BTC": {
       "name": "Bitcoin",
@@ -294,7 +301,8 @@
           "id": "TESTNET",
           "icon": "icon-bitcoin"
         }
-      }
+      },
+      "allowTopUp": false
     }
   },
   "multicall": {
@@ -303,15 +311,19 @@
     "POLYGON": "0x11ce4B23bD875D7F5C6a31084f55fDe1e9A87507"
   },
   "topUp": {
-    "ETH": {
-      "contractAddress": "0x488772cdfcccA2Fc9458cc707303b3ec0085DA0b"
+    "chains": {
+      "ETH": {
+        "contractAddress": "0x488772cdfcccA2Fc9458cc707303b3ec0085DA0b"
+      },
+      "BSC": {
+        "contractAddress": "0x488772cdfcccA2Fc9458cc707303b3ec0085DA0b"
+      },
+      "POLYGON": {
+        "contractAddress": "0xA9a0118AfBe649CD59C6B381e64883f3937D5A20"
+      }
     },
-    "BSC": {
-      "contractAddress": "0x488772cdfcccA2Fc9458cc707303b3ec0085DA0b"
-    },
-    "POLYGON": {
-      "contractAddress": "0xA9a0118AfBe649CD59C6B381e64883f3937D5A20"
-    }
+    "topUpAppId": 1,
+    "topUpConfirmations": 30
   },
   "connectors": {
     "metamask-connector": {

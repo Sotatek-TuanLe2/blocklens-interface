@@ -98,7 +98,8 @@
             }
           }
         }
-      }
+      },
+      "allowTopUp": true
     },
     "BSC": {
       "name": "Binance Smart Chain",
@@ -196,7 +197,8 @@
             }
           }
         }
-      }
+      },
+      "allowTopUp": true
     },
     "POLYGON": {
       "name": "Polygon",
@@ -277,7 +279,8 @@
             }
           }
         }
-      }
+      },
+      "allowTopUp": true
     },
     "BTC": {
       "name": "Bitcoin",
@@ -304,7 +307,8 @@
             "url": "https://blockchain.coinmarketcap.com/"
           }
         }
-      }
+      },
+      "allowTopUp": false
     }
   },
   "multicall": {
@@ -313,15 +317,19 @@
     "POLYGON": "0x08411ADd0b5AA8ee47563b146743C13b3556c9Cc"
   },
   "topUp": {
-    "ETH": {
-      "contractAddress": "0xE66E07c149fbE6B5e385c1e6eA5c3A722E985A11"
+    "chains": {
+      "ETH": {
+        "contractAddress": "0xE66E07c149fbE6B5e385c1e6eA5c3A722E985A11"
+      },
+      "BSC": {
+        "contractAddress": "0xD7B49476810EC3edb9676b9313c1E32736d7b7a7"
+      },
+      "POLYGON": {
+        "contractAddress": "0x48183fAAB3a9Cc770Fd00fb6ACC65486bAE1bB4F"
+      }
     },
-    "BSC": {
-      "contractAddress": "0xD7B49476810EC3edb9676b9313c1E32736d7b7a7"
-    },
-    "POLYGON": {
-      "contractAddress": "0x48183fAAB3a9Cc770Fd00fb6ACC65486bAE1bB4F"
-    }
+    "topUpAppId": 1,
+    "topUpConfirmations": 30
   },
   "connectors": {
     "metamask-connector": {

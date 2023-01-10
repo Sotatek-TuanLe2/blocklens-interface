@@ -45,6 +45,28 @@ export const getBlockExplorerUrl = (chainId?: string, networkId?: string) => {
   return network?.blockExplorer.url + 'tx/' || '';
 };
 
+export const objectKeys = <Obj>(obj: Obj): (keyof Obj)[] =>
+  Object.keys(obj) as (keyof Obj)[];
+
+export const getChains: (filter?: (chain: Chain) => boolean) => {
+  label: string;
+  value: string;
+  icon: string;
+  networks: { [key: string]: Network };
+}[] = (filter) => {
+  return objectKeys(config.chains)
+    .filter((chainId) => (filter ? filter(config.chains[chainId]) : true))
+    .map((chainKey) => {
+      const chain = config.chains[chainKey];
+      return {
+        label: chain.name,
+        value: chain.id,
+        icon: chain.icon,
+        networks: chain.networks,
+      };
+    });
+};
+
 export const getChainByChainId = (chainId: string | number): Chain | null => {
   const chainKeys = Object.keys(config.chains);
   const chainKey = chainKeys.find((chainKey) => {
@@ -61,7 +83,7 @@ export const getChainByChainId = (chainId: string | number): Chain | null => {
   return config.chains[chainKey];
 };
 
-export const getChainConfig = (networkId: string | undefined): Chain => {
+export const getChainConfig = (networkId?: string): Chain => {
   const defaultChain = config.chains[config.defaultNetwork];
   if (!networkId) {
     return defaultChain;
@@ -69,7 +91,7 @@ export const getChainConfig = (networkId: string | undefined): Chain => {
   return config.chains[networkId] || defaultChain;
 };
 
-export const getNetworkByEnv = (chain: Chain | null): Network => {
+export const getNetworkByEnv = (chain?: Chain | null): Network => {
   const env = process.env.REACT_APP_ENV || 'prod';
   const networks: any = {
     ETH: {
@@ -85,12 +107,13 @@ export const getNetworkByEnv = (chain: Chain | null): Network => {
       dev: 'MUMBAI',
     },
   };
-  const defaultChain = getChainConfig(config.defaultNetwork);
+  const defaultChain = getChainConfig();
   const defaultNetworkByEnv =
     defaultChain.networks[networks[defaultChain.id][env]];
   if (!chain) {
     return defaultNetworkByEnv;
   }
+
   return chain.networks[networks[chain.id][env]];
 };
 
