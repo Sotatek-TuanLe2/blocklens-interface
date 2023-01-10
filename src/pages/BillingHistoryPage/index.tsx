@@ -2,7 +2,7 @@ import { Box, Flex, Th, Thead, Tr } from '@chakra-ui/react';
 import React, { useCallback } from 'react';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/pages/AppDetail.scss';
-import { BasePageContainer } from 'src/layouts';
+import { BasePage } from 'src/layouts';
 import { AppCard, AppDataTable } from 'src/components';
 import BillingItem from './parts/BillingItem';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
@@ -147,7 +147,7 @@ const BillingHistory = () => {
   };
 
   return (
-    <BasePageContainer className="app-detail">
+    <BasePage className="app-detail">
       <>
         <Flex className="app-info">
           <Flex className="name">
@@ -171,7 +171,7 @@ const BillingHistory = () => {
           />
         </AppCard>
       </>
-    </BasePageContainer>
+    </BasePage>
   );
 };
 

@@ -131,7 +131,7 @@ export const appInputStyles = {
           borderColor: mode('pressed.100', 'pressed.100')(props),
         },
         _placeholder: {
-          color: mode('secondaryGray.500', 'whiteAlpha.300')(props),
+          color: mode('line.100', 'line.100')(props),
         },
         _disabled: {
           bg: mode('bg.200', 'bg.200')(props),
@@ -151,7 +151,7 @@ export const appInputStyles = {
           'rgba(135, 140, 189, 0.3)',
         )(props),
         borderRadius: '4px',
-        _placeholder: { color: 'secondaryGray.600', fontWeight: '400' },
+        _placeholder: { color: 'line.100', fontWeight: '400' },
       },
     }),
     authSecondary: () => ({
@@ -169,7 +169,7 @@ export const appInputStyles = {
         border: 'none',
         py: '11px',
         borderRadius: '30px',
-        _placeholder: { color: 'gray.400', fontSize: '14px' },
+        _placeholder: { color: 'line.100', fontSize: '14px' },
         color: mode('gray.700', 'gray.100')(props),
       },
     }),

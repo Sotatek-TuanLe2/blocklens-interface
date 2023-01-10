@@ -10,7 +10,7 @@ import {
 import { FC, useEffect, useMemo, useState } from 'react';
 import BigNumber from 'bignumber.js';
 import 'src/styles/pages/BillingPage.scss';
-import { BasePageContainer } from 'src/layouts';
+import { BasePage } from 'src/layouts';
 import { AppButton, AppCard, AppLink, AppHeading } from 'src/components';
 import { useDispatch } from 'react-redux';
 import {
@@ -393,7 +393,7 @@ const BillingPage = () => {
             <AppHeading title="Billing" />
           </Box>
 
-          {user?.isPaymentMethodIntegrated && (
+          {user?.isPaymentMethodIntegrated() && (
             <Flex
               className="link"
               alignItems="center"
@@ -448,7 +448,7 @@ const BillingPage = () => {
             </Box>
           </Flex>
 
-          {!isCurrentPlan && user?.isPaymentMethodIntegrated && (
+          {!isCurrentPlan && user?.isPaymentMethodIntegrated() && (
             <Box
               px={isMobile ? 5 : 10}
               mb={isMobile ? 3 : 0}
@@ -465,7 +465,7 @@ const BillingPage = () => {
           )}
         </AppCard>
 
-        {user?.isPaymentMethodIntegrated && (
+        {user?.isPaymentMethodIntegrated() && (
           <AppCard className={'box-change-plan'}>
             <Box className={'box-change-plan__title'}>
               Change Payment Method
@@ -589,7 +589,7 @@ const BillingPage = () => {
             planSelected={planSelected}
             paymentMethodCode={paymentMethod}
             onBack={
-              user?.isPaymentMethodIntegrated
+              user?.isPaymentMethodIntegrated()
                 ? () => setStep(STEPS.LIST)
                 : () => setStep(STEPS.FORM)
             }
@@ -601,7 +601,7 @@ const BillingPage = () => {
   };
 
   const _renderWarning = () => {
-    if (isCurrentPlan || !user?.isPaymentMethodIntegrated) {
+    if (isCurrentPlan || !user?.isPaymentMethodIntegrated()) {
       return null;
     }
     return (
@@ -614,9 +614,9 @@ const BillingPage = () => {
   };
 
   return (
-    <BasePageContainer className="billing-page">
+    <BasePage className="billing-page">
       <>{_renderContent()}</>
-    </BasePageContainer>
+    </BasePage>
   );
 };
 

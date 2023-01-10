@@ -3,7 +3,7 @@ import 'src/styles/pages/HomePage.scss';
 import { Flex, Box } from '@chakra-ui/react';
 import ListApps from './parts/ListApps';
 import PartUserGraph from './parts/PartUserGraph';
-import { BasePageContainer } from 'src/layouts';
+import { BasePage } from 'src/layouts';
 import PartUserStats from './parts/PartUserStats';
 import { AppButton, AppCard, AppHeading } from 'src/components';
 import ModalCreateApp from 'src/modals/ModalCreateApp';
@@ -31,7 +31,7 @@ const HomePage = () => {
           <Flex my={14} flexDirection={'column'} alignItems={'center'}>
             <Box className={'no-app__title'}>You don’t have any Apps</Box>
             <Box className={'no-app__description'}>
-              Create a new App to start using Blocksniper API
+              Create a new App to start using Blocklens API
             </Box>
             <AppButton
               className={'no-app__btn'}
@@ -52,7 +52,7 @@ const HomePage = () => {
   };
 
   return (
-    <BasePageContainer>
+    <BasePage>
       <>
         <Box mb={7}>
           <AppHeading title="Dashboard" />
@@ -77,7 +77,7 @@ const HomePage = () => {
           _renderNoApp()
         )}
       </>
-    </BasePageContainer>
+    </BasePage>
   );
 };
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BasePageContainer } from 'src/layouts';
+import { BasePage } from 'src/layouts';
 import 'src/styles/pages/AccountPage.scss';
 import { Box, Checkbox, Flex } from '@chakra-ui/react';
 import { AppCard, AppLink } from 'src/components';
@@ -38,7 +38,7 @@ const BillingInfoPage = () => {
   };
 
   return (
-    <BasePageContainer className="billing account">
+    <BasePage className="billing account">
       <>
         <Flex className="title-billing">
           <AppLink to={`/account`}>
@@ -82,7 +82,7 @@ const BillingInfoPage = () => {
           />
         )}
       </>
-    </BasePageContainer>
+    </BasePage>
   );
 };
 

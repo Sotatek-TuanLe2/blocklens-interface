@@ -8,7 +8,7 @@ import {
   AppButton,
   AppLink,
 } from 'src/components';
-import BasePage from 'src/layouts/BasePage';
+import GuestPage from 'src/layouts/GuestPage';
 import { createValidator } from 'src/utils/utils-validator';
 import 'src/styles/pages/LoginPage.scss';
 import rf from 'src/requests/RequestFactory';
@@ -56,7 +56,7 @@ const ForgotPasswordPage: FC = () => {
   }, [dataForm]);
 
   return (
-    <BasePage>
+    <GuestPage>
       <Flex className="box-login">
         <AppCard className="box-form">
           <Box className="box-form__title">
@@ -118,7 +118,7 @@ const ForgotPasswordPage: FC = () => {
           />
         )}
       </Flex>
-    </BasePage>
+    </GuestPage>
   );
 };
 

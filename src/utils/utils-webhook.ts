@@ -56,6 +56,7 @@ export interface IWebhook {
   userId: string;
   registrationId: string;
   network: string;
+  chain: string;
   webhook: string;
   status: WEBHOOK_STATUS;
   type: string;
@@ -88,7 +89,7 @@ export interface IActivityResponse {
   userId: number;
   registrationId: number;
   type: string;
-  status: string;
+  lastStatus: string;
   statusCode: number;
   webhook: string;
   metadata: any;

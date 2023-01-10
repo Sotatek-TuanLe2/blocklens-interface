@@ -9,7 +9,7 @@ import {
   AppLink,
   GoogleAuthButton,
 } from 'src/components';
-import BasePage from 'src/layouts/BasePage';
+import GuestPage from 'src/layouts/GuestPage';
 import { createValidator } from 'src/utils/utils-validator';
 import 'src/styles/pages/LoginPage.scss';
 import { useDispatch } from 'react-redux';
@@ -51,7 +51,7 @@ const LoginPage: FC = () => {
       const res = await rf.getRequest('AuthRequest').login(dataForm);
       if (res) {
         dispatch(setUserAuth(res));
-        toastSuccess({ message: 'Welcome to Blocksniper!' });
+        toastSuccess({ message: 'Welcome to Blocklens!' });
         history.push('/home');
       }
     } catch (e: any) {
@@ -60,7 +60,7 @@ const LoginPage: FC = () => {
   };
 
   return (
-    <BasePage>
+    <GuestPage>
       <Flex className="box-login">
         <AppCard className="box-form">
           <Box className="box-form__title">Login</Box>
@@ -135,7 +135,7 @@ const LoginPage: FC = () => {
           </Box>
         </AppCard>
       </Flex>
-    </BasePage>
+    </GuestPage>
   );
 };
 

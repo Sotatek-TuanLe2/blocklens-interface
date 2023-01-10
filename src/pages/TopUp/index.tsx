@@ -26,7 +26,7 @@ import {
 import { ConnectWalletIcon } from 'src/assets/icons';
 import { isMobile } from 'react-device-detect';
 import { MaxUint256 } from '@ethersproject/constants';
-import { BasePageContainer } from 'src/layouts';
+import { BasePage } from 'src/layouts';
 import { executeTransaction } from 'src/store/transaction';
 import { getUserProfile } from 'src/store/user';
 import {
@@ -371,7 +371,7 @@ const TopUpPage = () => {
   const onBack = () => history.goBack();
 
   return (
-    <BasePageContainer className="billing-page">
+    <BasePage className="billing-page">
       <Box className="form-card">
         <Flex alignItems={'center'} mb={7}>
           <Box className="icon-arrow-left" mr={6} onClick={onBack} />
@@ -393,7 +393,7 @@ const TopUpPage = () => {
           </AppCard>
         )}
       </Box>
-    </BasePageContainer>
+    </BasePage>
   );
 };
 

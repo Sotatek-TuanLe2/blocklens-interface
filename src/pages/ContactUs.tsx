@@ -10,7 +10,7 @@ import {
   AppTextarea,
 } from 'src/components';
 import { COUNTRIES } from 'src/constants';
-import { BasePage, BasePageContainer } from 'src/layouts';
+import { BasePage } from 'src/layouts';
 import 'src/styles/pages/ContactUs.scss';
 import { createValidator } from 'src/utils/utils-validator';
 import rf from 'src/requests/RequestFactory';
@@ -33,7 +33,9 @@ const initialForm = {
   lastName: '',
   email: '',
   country: '',
+  company: '',
   networkOrChain: '',
+  feedback: '',
 };
 
 const listCountry = COUNTRIES.map((item: { name: string }) => {
@@ -46,13 +48,12 @@ const listCountry = COUNTRIES.map((item: { name: string }) => {
 const ContactUs = () => {
   const [dataContact, setDataContact] = useState<IDataFormContact>(initialForm);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
-  const [isHiddenError, setIsHiddenError] = useState(false);
   const [, updateState] = useState<any>();
   const forceUpdate = useCallback(() => updateState({}), []);
 
   const validator = useRef(
     createValidator({
-      element: (message: string) => <Text color={'red.100'}>{message}</Text>,
+      element: (message: string) => <Text className="text-error">{message}</Text>,
     }),
   );
 
@@ -64,7 +65,7 @@ const ContactUs = () => {
     try {
       await rf.getRequest('UserRequest').contactToAdmin(dataContact);
       setDataContact({ ...initialForm });
-      setIsHiddenError(true);
+      validator.current.visibleFields = [];
       toastSuccess({ message: 'Send email successfully' });
     } catch (error: any) {
       toastError({
@@ -77,8 +78,9 @@ const ContactUs = () => {
     const isDisabled = !validator.current.allValid();
     setIsDisableSubmit(isDisabled);
   }, [dataContact]);
+
   return (
-    <BasePageContainer className="contact-us">
+    <BasePage className="contact-us">
       <>
         <Flex className={`title-wrap ${isMobile ? 'title-wrap-mobile' : ''}`}>
           <Box className="icon-arrow-wrap">
@@ -91,10 +93,8 @@ const ContactUs = () => {
         <AppCard className={isMobile ? 'contact-form-mobile' : ''}>
           <AppField label="Email" isRequired>
             <AppInput
-              hiddenErrorText={isHiddenError}
               value={dataContact.email}
               onChange={(e) => {
-                setIsHiddenError(false);
                 setDataContact({
                   ...dataContact,
                   email: e.target.value,
@@ -111,11 +111,8 @@ const ContactUs = () => {
           <Flex direction={'row'} justifyContent="space-between" wrap={'wrap'}>
             <AppField label="First Name" isRequired customWidth="49%">
               <AppInput
-                hiddenErrorText={isHiddenError}
                 value={dataContact.firstName}
                 onChange={(e) => {
-                  setIsHiddenError(false);
-
                   setDataContact({
                     ...dataContact,
                     firstName: e.target.value,
@@ -131,10 +128,8 @@ const ContactUs = () => {
 
             <AppField label="Last Name" isRequired customWidth="49%">
               <AppInput
-                hiddenErrorText={isHiddenError}
                 value={dataContact.lastName}
                 onChange={(e) => {
-                  setIsHiddenError(false);
 
                   setDataContact({
                     ...dataContact,
@@ -153,11 +148,8 @@ const ContactUs = () => {
           <Flex direction={'row'} justifyContent="space-between" wrap={'wrap'}>
             <AppField label="Company" customWidth="49%">
               <AppInput
-                hiddenErrorText={isHiddenError}
                 value={dataContact.company}
                 onChange={(e) => {
-                  setIsHiddenError(false);
-
                   setDataContact({
                     ...dataContact,
                     company: e.target.value,
@@ -194,11 +186,8 @@ const ContactUs = () => {
               customWidth="49%"
             >
               <AppInput
-                hiddenErrorText={isHiddenError}
                 value={dataContact.networkOrChain}
                 onChange={(e) => {
-                  setIsHiddenError(false);
-
                   setDataContact({
                     ...dataContact,
                     networkOrChain: e.target.value,
@@ -214,11 +203,8 @@ const ContactUs = () => {
 
             <AppField label="Telegram" customWidth="49%">
               <AppInput
-                hiddenErrorText={isHiddenError}
                 value={dataContact.telegram}
                 onChange={(e) => {
-                  setIsHiddenError(false);
-
                   setDataContact({
                     ...dataContact,
                     telegram: e.target.value,
@@ -238,12 +224,9 @@ const ContactUs = () => {
               Tell Us More About What You Are Building
             </Box>
             <AppTextarea
-              hiddenErrorText={isHiddenError}
               rows={6}
               value={dataContact.feedback}
               onChange={(e) => {
-                setIsHiddenError(false);
-
                 setDataContact({
                   ...dataContact,
                   feedback: e.target.value,
@@ -286,7 +269,7 @@ const ContactUs = () => {
           </Flex>
         )}
       </>
-    </BasePageContainer>
+    </BasePage>
   );
 };
 

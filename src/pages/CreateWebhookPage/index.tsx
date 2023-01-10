@@ -8,7 +8,7 @@ import React, {
 } from 'react';
 import { useHistory, useParams } from 'react-router';
 import 'src/styles/pages/AppDetail.scss';
-import { BasePageContainer } from 'src/layouts';
+import { BasePage } from 'src/layouts';
 import {
   AppButton,
   AppCard,
@@ -27,14 +27,12 @@ import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { isValidAddressEVM } from 'src/utils/utils-helper';
 import { CloseIcon } from '@chakra-ui/icons';
 import { Link as ReactLink } from 'react-router-dom';
-import { isMobile } from 'react-device-detect';
-import { APP_STATUS } from 'src/utils/utils-app';
+import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
 import { isEVMNetwork } from 'src/utils/utils-network';
 import { useLocation } from 'react-router';
 import { DownloadIcon } from 'src/assets/icons';
 import { useDispatch } from 'react-redux';
 import { getUserStats } from 'src/store/user';
-import useAppDetails from 'src/hooks/useAppDetails';
 
 const FILE_CSV_EXAMPLE = '/abi/CSV_Example.csv';
 
@@ -76,7 +74,7 @@ const CreateWebhook = () => {
   };
 
   const history = useHistory();
-  const { appInfo } = useAppDetails(appId);
+  const [appInfo, setAppInfo] = useState<IAppResponse | any>({});
   const [dataForm, setDataForm] = useState<IDataForm>(initDataCreateWebHook);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
   const [type, setType] = useState<string>(WEBHOOK_TYPES.NFT_ACTIVITY);
@@ -93,6 +91,17 @@ const CreateWebhook = () => {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const typeParams = params.get('type');
+
+  const getAppInfo = useCallback(async () => {
+    try {
+      const res = (await rf
+        .getRequest('AppRequest')
+        .getAppDetail(appId)) as any;
+      setAppInfo(res);
+    } catch (error: any) {
+      setAppInfo({});
+    }
+  }, [appId]);
 
   const optionTypes = useMemo(() => {
     if (!isEVMNetwork(appInfo.chain)) {
@@ -465,16 +474,12 @@ const CreateWebhook = () => {
     return _renderFormAddressActivity();
   };
 
-  if (!appInfo || !Object.values(appInfo).length) {
-    return (
-      <BasePageContainer className="app-detail">
-        <Flex justifyContent="center">App Not Found</Flex>
-      </BasePageContainer>
-    );
-  }
+  const _renderNoApp = () => {
+    return <Flex justifyContent="center">App Not Found</Flex>;
+  };
 
-  return (
-    <BasePageContainer className="app-detail">
+  const _renderCreateWebhook = () => {
+    return (
       <>
         <Flex className="app-info">
           <Flex className="name">
@@ -535,7 +540,15 @@ const CreateWebhook = () => {
           </Flex>
         </AppCard>
       </>
-    </BasePageContainer>
+    );
+  };
+
+  return (
+    <BasePage className="app-detail" onInitPage={getAppInfo}>
+      {!appInfo || !Object.values(appInfo).length
+        ? _renderNoApp()
+        : _renderCreateWebhook()}
+    </BasePage>
   );
 };
 
