@@ -39,6 +39,7 @@ import PartTopUp from './parts/PartTopUp';
 import { getUserPlan, getUserProfile } from 'src/store/user';
 import { MetadataPlan } from 'src/store/metadata';
 import useMetadata from 'src/hooks/useMetadata';
+import ModalChangePaymentMethod from 'src/modals/ModalChangePaymentMethod';
 
 export const PAYMENT_METHOD = {
   CARD: 'STRIPE',
@@ -142,11 +143,15 @@ const PlanMobile: FC<IPlanMobile> = ({
 };
 
 const BillingPage = () => {
-  const [paymentMethod, setPaymentMethod] = useState<string | any>(null);
+  const [paymentMethodSelected, setPaymentMethodSelected] = useState<
+    string | any
+  >(null);
   const [isOpenCancelSubscriptionModal, setIsOpenCancelSubscriptionModal] =
     useState<boolean>(false);
   const [planSelected, setPlanSelected] = useState<MetadataPlan>({} as any);
   const [isOpenEditCardModal, setIsOpenEditCardModal] =
+    useState<boolean>(false);
+  const [isOpenChangePayMethodModal, setIsOpenChangePayMethodModal] =
     useState<boolean>(false);
   const [isReloadingUserInfo, setIsReloadingUserInfo] =
     useState<boolean>(false);
@@ -157,8 +162,13 @@ const BillingPage = () => {
   const history = useHistory();
 
   useEffect(() => {
-    setPaymentMethod(user?.getActivePaymentMethod());
-  }, [user]);
+    setPaymentMethodSelected(user?.getActivePaymentMethod());
+  }, []);
+
+  const paymentMethod = useMemo(
+    () => user?.getActivePaymentMethod(),
+    [user?.getActivePaymentMethod()],
+  );
 
   useEffect(() => {
     if (user) {
@@ -169,7 +179,7 @@ const BillingPage = () => {
   useEffect(() => {
     const RELOAD_BALANCE_DURATION = 30;
     let reloadBalanceInterval: any = null;
-    if (user?.getActivePaymentMethod() === PAYMENT_METHOD.CRYPTO) {
+    if (paymentMethod === PAYMENT_METHOD.CRYPTO) {
       reloadBalanceInterval = setInterval(() => {
         dispatch(getUserProfile());
       }, RELOAD_BALANCE_DURATION * 1000);
@@ -177,7 +187,7 @@ const BillingPage = () => {
     return () => {
       clearInterval(reloadBalanceInterval);
     };
-  }, [user?.getActivePaymentMethod()]);
+  }, [paymentMethod]);
 
   const isSufficientBalance = useMemo(() => {
     if (!user) {
@@ -288,23 +298,6 @@ const BillingPage = () => {
         .updateBillingPlan({ code: planSelected.code });
       toastSuccess({ message: 'Downgrade Plan Successfully!' });
       dispatch(getUserPlan());
-    } catch (error: any) {
-      toastError({ message: error.message });
-    }
-  };
-
-  const onChangePaymentMethod = async (method: string) => {
-    try {
-      await rf
-        .getRequest('UserRequest')
-        .editInfoUser({ activePaymentMethod: method });
-
-      if (method === PAYMENT_METHOD.CARD && !user?.getStripePayment()) {
-        setIsOpenEditCardModal(true);
-      } else {
-        toastSuccess({ message: 'Update Successfully!' });
-      }
-      await dispatch(getUserProfile());
     } catch (error: any) {
       toastError({ message: error.message });
     }
@@ -482,9 +475,10 @@ const BillingPage = () => {
                       <CircleCheckedIcon />
                     ) : (
                       <RadioNoCheckedIcon
-                        onClick={() =>
-                          onChangePaymentMethod(PAYMENT_METHOD.CARD)
-                        }
+                        onClick={() => {
+                          setIsOpenChangePayMethodModal(true);
+                          setPaymentMethodSelected(PAYMENT_METHOD.CARD);
+                        }}
                       />
                     )}
                   </Box>
@@ -529,21 +523,27 @@ const BillingPage = () => {
                     <CircleCheckedIcon />
                   ) : (
                     <RadioNoCheckedIcon
-                      onClick={() =>
-                        onChangePaymentMethod(PAYMENT_METHOD.CRYPTO)
-                      }
+                      onClick={() => {
+                        setIsOpenChangePayMethodModal(true);
+                        setPaymentMethodSelected(PAYMENT_METHOD.CRYPTO);
+                      }}
                     />
                   )}
-                  <ReloadIcon
-                    className={isReloadingUserInfo ? 'is-reloading' : ''}
-                    onClick={onReloadUserInfo}
-                  />
                 </Box>
                 <Flex flexDirection={'column'} alignItems={'center'}>
                   <Box className="box-method__name">Payment with crypto</Box>
-                  <Box className="box-method__value">
-                    (Total: ${user?.getBalance()})
-                  </Box>
+                  <Flex >
+                    <Box className="box-method__value" mr={3}>
+                      (Total: ${user?.getBalance()})
+                    </Box>
+                    <Box mt={1}>
+                      <ReloadIcon
+                        className={isReloadingUserInfo ? 'is-reloading' : ''}
+                        onClick={onReloadUserInfo}
+                      />
+                    </Box>
+
+                  </Flex>
                   <CryptoIcon />
                 </Flex>
               </Box>
@@ -551,6 +551,16 @@ const BillingPage = () => {
                 <ModalEditCreditCard
                   open={isOpenEditCardModal}
                   onClose={() => setIsOpenEditCardModal(false)}
+                />
+              )}
+
+              {isOpenChangePayMethodModal && (
+                <ModalChangePaymentMethod
+                  paymentMethodSelected={paymentMethodSelected}
+                  open={isOpenChangePayMethodModal}
+                  onClose={() => {
+                    setIsOpenChangePayMethodModal(false);
+                  }}
                 />
               )}
             </Flex>
@@ -572,8 +582,8 @@ const BillingPage = () => {
             planSelected={planSelected}
             onBack={onBackStep}
             onNext={() => setStep(STEPS.CHECKOUT)}
-            paymentMethod={paymentMethod}
-            setPaymentMethod={setPaymentMethod}
+            paymentMethod={paymentMethodSelected}
+            setPaymentMethod={setPaymentMethodSelected}
           />
         );
       case STEPS.TOPUP:

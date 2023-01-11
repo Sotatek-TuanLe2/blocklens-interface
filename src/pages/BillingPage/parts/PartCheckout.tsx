@@ -16,7 +16,7 @@ import { getUserPlan } from 'src/store/user';
 
 interface IPartCheckout {
   planSelected: MetadataPlan;
-  paymentMethodCode: string;
+  paymentMethodCode: any;
   onBack: () => void;
 }
 
@@ -106,9 +106,9 @@ const PartCheckout: FC<IPartCheckout> = ({
         </Box>
 
         <AppAlertWarning>
-          By clicking the Pay button, you agree to authorize Blocklens to
-          charge you the monthly fee. Your subscription renews at 1st day of
-          every month until you cancel.
+          By clicking the Pay button, you agree to authorize Blocklens to charge
+          you the monthly fee. Your subscription renews at 1st day of every
+          month until you cancel.
         </AppAlertWarning>
 
         <AppButton size="lg" onClick={onPay} width={'100%'} mt={3}>
