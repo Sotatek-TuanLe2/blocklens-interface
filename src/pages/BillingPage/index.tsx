@@ -532,7 +532,7 @@ const BillingPage = () => {
                 </Box>
                 <Flex flexDirection={'column'} alignItems={'center'}>
                   <Box className="box-method__name">Payment with crypto</Box>
-                  <Flex >
+                  <Flex>
                     <Box className="box-method__value" mr={3}>
                       (Total: ${user?.getBalance()})
                     </Box>
@@ -542,7 +542,6 @@ const BillingPage = () => {
                         onClick={onReloadUserInfo}
                       />
                     </Box>
-
                   </Flex>
                   <CryptoIcon />
                 </Flex>

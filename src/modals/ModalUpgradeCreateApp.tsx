@@ -35,8 +35,8 @@ const ModalUpgradeCreateApp: FC<ModalUpgradeCreateApp> = ({
       onClose={onClose}
     >
       <Box className={'modal__description'}>
-        You can only create {user?.getPlan().appLimitation} active apps in your current
-        plan, upgrade to{' '}
+        You can only create {user?.getPlan().appLimitation} active apps in your
+        current plan, upgrade to{' '}
         <Box as={'span'} textTransform="lowercase">
           {nextPlan?.name}
         </Box>{' '}

@@ -70,7 +70,11 @@ const ModalEditReceiveEmail: React.FC<IModalEditReceiveEmail> = ({
       title="Edit Receive Email"
     >
       <AppField label={'Current Email'} customWidth={'100%'}>
-        <AppInput value={user?.getBillingEmail()} type="text" isDisabled={true} />
+        <AppInput
+          value={user?.getBillingEmail()}
+          type="text"
+          isDisabled={true}
+        />
       </AppField>
       <AppField label={'New Email'} customWidth={'100%'} isRequired>
         <AppInput

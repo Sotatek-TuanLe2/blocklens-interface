@@ -33,7 +33,7 @@ const initialState: IWalletState = {
   balance: '',
   isConnecting: false,
   openModalConnectWallet: false,
-  openModalSignatureRequired: false
+  openModalSignatureRequired: false,
 };
 
 export const getBalance = createAsyncThunk(
@@ -115,6 +115,6 @@ export const {
   setIsConnecting,
   clearWallet,
   setOpenModalConnectWallet,
-  setOpenModalSignatureRequired
+  setOpenModalSignatureRequired,
 } = walletSlice.actions;
 export default walletSlice.reducer;

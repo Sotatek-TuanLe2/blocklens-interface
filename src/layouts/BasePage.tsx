@@ -10,11 +10,7 @@ interface BasePage {
   children: ReactElement;
 }
 
-const BasePage: FC<BasePage> = ({
-  onInitPage,
-  children,
-  className,
-}) => {
+const BasePage: FC<BasePage> = ({ onInitPage, children, className }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const onInit = async () => {

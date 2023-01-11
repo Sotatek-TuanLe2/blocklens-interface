@@ -54,7 +54,9 @@ const ContactUs = () => {
 
   const validator = useRef(
     createValidator({
-      element: (message: string) => <Text className="text-error">{message}</Text>,
+      element: (message: string) => (
+        <Text className="text-error">{message}</Text>
+      ),
     }),
   );
 
@@ -131,7 +133,6 @@ const ContactUs = () => {
               <AppInput
                 value={dataContact.lastName}
                 onChange={(e) => {
-
                   setDataContact({
                     ...dataContact,
                     lastName: e.target.value,
