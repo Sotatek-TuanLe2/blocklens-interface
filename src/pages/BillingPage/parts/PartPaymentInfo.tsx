@@ -11,6 +11,10 @@ import { PAYMENT_METHOD } from '../index';
 import FormCard from './FormCard';
 import FormCrypto from './FormCrypto';
 import { MetadataPlan } from 'src/store/metadata';
+import rf from 'src/requests/RequestFactory';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
+import { getUserProfile } from 'src/store/user';
+import { useDispatch } from 'react-redux';
 
 interface IPartPaymentInfo {
   onBack: () => void;
@@ -27,13 +31,32 @@ const PartPaymentInfo: FC<IPartPaymentInfo> = ({
   setPaymentMethod,
   planSelected,
 }) => {
+  const dispatch = useDispatch();
+
+  const onChangePaymentMethod = async () => {
+    try {
+      await rf
+        .getRequest('UserRequest')
+        .editInfoUser({ activePaymentMethod: PAYMENT_METHOD.CRYPTO });
+      toastSuccess({ message: 'Update Successfully!' });
+      await dispatch(getUserProfile());
+    } catch (error: any) {
+      toastError({ message: error.message });
+    }
+  };
+
   const _renderPaymentMethod = () => {
     if (paymentMethod === PAYMENT_METHOD.CARD) {
-      return <FormCard onClose={onNext} />;
+      return <FormCard onClose={onNext} onSuccess={onChangePaymentMethod} />;
     }
 
     if (paymentMethod === PAYMENT_METHOD.CRYPTO) {
-      return <FormCrypto onNext={onNext} planSelected={planSelected} />;
+      return (
+        <FormCrypto
+          planSelected={planSelected}
+          onSuccess={onChangePaymentMethod}
+        />
+      );
     }
 
     return <> </>;
