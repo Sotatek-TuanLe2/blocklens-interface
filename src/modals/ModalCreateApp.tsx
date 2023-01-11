@@ -105,7 +105,6 @@ const ModalCreateApp: FC<IModalCreateApp> = ({ open, onClose, reloadData }) => {
         .getRequest('AppRequest')
         .createApp(_.omitBy(dataSubmit, _.isEmpty));
       if (res.key) {
-        setDataForm({ ...initDataCreateApp });
         toastSuccess({ message: 'Create app successfully!' });
         dispatch(getUserStats());
         reloadData && reloadData();
