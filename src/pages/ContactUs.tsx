@@ -36,6 +36,7 @@ const initialForm = {
   company: '',
   networkOrChain: '',
   feedback: '',
+  telegram: '',
 };
 
 const listCountry = COUNTRIES.map((item: { name: string }) => {
