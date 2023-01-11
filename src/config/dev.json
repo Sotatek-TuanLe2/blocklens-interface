@@ -227,6 +227,23 @@
           }
         }
       }
+    },
+    "BITCOIN": {
+      "name": "Bitcoin",
+      "id": "BITCOIN",
+      "icon": "icon-bitcoin",
+      "networks": {
+        "MAINNET": {
+          "name": "Mainnet",
+          "id": "MAINNET",
+          "icon": "icon-bitcoin"
+        },
+        "TESTNET": {
+          "name": "Testnet",
+          "id": "TESTNET",
+          "icon": "icon-bitcoin"
+        }
+      }
     }
   },
   "multicall": {
