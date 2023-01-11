@@ -23,7 +23,7 @@ import {
   CircleCheckedIcon,
   CryptoIcon,
   ReloadIcon,
-  WarningIcon,
+  NoticeIcon,
 } from 'src/assets/icons';
 import { isMobile } from 'react-device-detect';
 import PartCheckout from './parts/PartCheckout';
@@ -425,9 +425,9 @@ const BillingPage = () => {
             mt={5}
             flexDirection={isMobile ? 'column' : 'row'}
           >
-            <Flex>
-              <WarningIcon />
-              <Box textAlign={'center'} ml={3}>
+            <Flex alignItems={'center'}>
+              <NoticeIcon />
+              <Box textAlign={'center'} ml={2}>
                 If you need more apps or higher limits, please{' '}
                 <AppLink to="/contact-us" className="link">
                   Contact Us

@@ -28,6 +28,7 @@ import { ReactComponent as DoorLogout } from './DoorLogout.svg';
 import { ReactComponent as ArrowLogout } from './ArrowLogout.svg';
 import { ReactComponent as ReloadIcon } from './ReloadIcon.svg';
 import { ReactComponent as CopyIcon } from './CopyIcon.svg';
+import { ReactComponent as NoticeIcon } from './NoticeIcon.svg';
 
 export {
   CalendarIcon,
@@ -60,4 +61,5 @@ export {
   ArrowLogout,
   ReloadIcon,
   CopyIcon,
+  NoticeIcon
 };

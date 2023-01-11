@@ -92,6 +92,15 @@
         @include text-medium-bold;
         color: $title;
         margin-bottom: 8px;
+
+        &.price {
+          font-size: 48px;
+          margin: 20px 0 30px 0;
+
+          .month {
+            font-size: 28px;
+          }
+        }
       }
 
       .detail-plan {
@@ -99,6 +108,10 @@
         color: $paragraph;
         div {
           margin-bottom: 4px;
+
+          &:last-child {
+            margin-bottom: 0;
+          }
         }
 
         svg {
@@ -111,7 +124,7 @@
       justify-content: space-between;
 
       .info-item {
-        padding-bottom: 15px;
+        padding-bottom: 0;
       }
 
       .name-next-plan {
