@@ -54,7 +54,9 @@ const Routes: FC<RouteComponentProps> = () => {
   useEffect(() => {
     if (!accessToken || isExpireTimeToken) {
       dispatch(clearUser());
-      history.push('/login');
+      if (pathname !== '/forgot-password') {
+        history.push('/login');
+      }
       return;
     }
     dispatch(getUser());
