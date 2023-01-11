@@ -186,7 +186,7 @@ const TopUpPage = () => {
         provider: wallet.getProvider(),
         params: {
           contractAddress: topUpContractAddress,
-          abi: abi['billing'],
+          abi: abi['topup'],
           action: 'topup',
           transactionArgs: [
             config.topUp.appId,
