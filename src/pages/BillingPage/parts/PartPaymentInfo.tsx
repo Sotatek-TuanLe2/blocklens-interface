@@ -37,7 +37,7 @@ const PartPaymentInfo: FC<IPartPaymentInfo> = ({
     try {
       await rf
         .getRequest('UserRequest')
-        .editInfoUser({ activePaymentMethod: PAYMENT_METHOD.CRYPTO });
+        .editInfoUser({ activePaymentMethod: paymentMethod });
       toastSuccess({ message: 'Update Successfully!' });
       await dispatch(getUserProfile());
     } catch (error: any) {
