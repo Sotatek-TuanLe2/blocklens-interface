@@ -77,7 +77,10 @@ const WebhookSettingsPage = () => {
           <AppInput value={webhook?.metadata?.address} isDisabled />
         </AppField>
         <AppField label={'Token ID'} customWidth={'49%'}>
-          <AppInput value={webhook?.metadata?.tokenIds.join(', ') || '*'} isDisabled />
+          <AppInput
+            value={webhook?.metadata?.tokenIds.join(', ') || '*'}
+            isDisabled
+          />
         </AppField>
 
         <AppUploadABI

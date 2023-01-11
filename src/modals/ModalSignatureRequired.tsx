@@ -12,7 +12,9 @@ const ModalSignatureRequired = () => {
     (state: RootState) => state.wallet,
   );
   const dispatch = useDispatch();
-  const { connector, address } = useSelector((state: RootState) => state.wallet);
+  const { connector, address } = useSelector(
+    (state: RootState) => state.wallet,
+  );
   const { linkWallet } = useWallet();
 
   const onLinkWallet = async () => {
@@ -36,12 +38,8 @@ const ModalSignatureRequired = () => {
       onClose={() => dispatch(setOpenModalSignatureRequired(false))}
     >
       <Box textAlign={'center'}>
-        <Box marginBottom={5}>
-          Please sign on your wallet to link account.
-        </Box>
-        <AppButton onClick={onLinkWallet}>
-          Sign in the wallet
-        </AppButton>
+        <Box marginBottom={5}>Please sign on your wallet to link account.</Box>
+        <AppButton onClick={onLinkWallet}>Sign in the wallet</AppButton>
       </Box>
     </BaseModal>
   );

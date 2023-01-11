@@ -1,8 +1,4 @@
-import {
-  Box,
-  Flex,
-  Text,
-} from '@chakra-ui/react';
+import { Box, Flex, Text } from '@chakra-ui/react';
 import React, { FC } from 'react';
 import { AppCard } from 'src/components';
 import 'src/styles/pages/NotificationPage.scss';

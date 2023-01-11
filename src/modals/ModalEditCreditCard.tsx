@@ -14,7 +14,11 @@ const ModalEditCreditCard: FC<IModalEditCreditCard> = ({ open, onClose }) => {
     <BaseModal
       size="xl"
       title={!user?.getStripePayment() ? 'Add Credit Card' : 'Edit Credit Card'}
-      description={!user?.getStripePayment() ? 'You need add your credit card for payment.' : ''}
+      description={
+        !user?.getStripePayment()
+          ? 'You need add your credit card for payment.'
+          : ''
+      }
       isOpen={open}
       onClose={onClose}
     >

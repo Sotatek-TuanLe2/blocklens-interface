@@ -16,9 +16,7 @@ const useUser = (): ReturnType => {
     }
     const newUser = new User(userStore);
     return newUser;
-  }, [
-    userStore
-  ]);
+  }, [userStore]);
 
   return { user };
 };

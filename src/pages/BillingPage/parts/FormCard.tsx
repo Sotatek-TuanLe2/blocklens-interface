@@ -18,10 +18,11 @@ import { getUserProfile } from 'src/store/user';
 
 interface ICheckoutForm {
   onClose?: () => void;
+  onSuccess?: () => void;
   isEdit?: boolean;
 }
 
-const CheckoutForm: FC<ICheckoutForm> = ({ onClose, isEdit }) => {
+const CheckoutForm: FC<ICheckoutForm> = ({ onClose, onSuccess, isEdit }) => {
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch<any>();
 
@@ -55,6 +56,7 @@ const CheckoutForm: FC<ICheckoutForm> = ({ onClose, isEdit }) => {
           });
           toastSuccess({ message: 'Successfully!' });
           onClose && onClose();
+          onSuccess && (await onSuccess());
           dispatch(getUserProfile());
         } catch (e: any) {
           toastError({ message: e?.message || 'Oops. Something went wrong!' });
@@ -123,9 +125,10 @@ const CheckoutForm: FC<ICheckoutForm> = ({ onClose, isEdit }) => {
 interface IFormCard {
   isEdit?: boolean;
   onClose?: () => void;
+  onSuccess?: () => void;
 }
 
-const FormCard: FC<IFormCard> = ({ isEdit, onClose }) => {
+const FormCard: FC<IFormCard> = ({ isEdit, onClose, onSuccess }) => {
   const [paymentIntent, setPaymentIntent] = useState<any>({});
 
   const getPaymentIntent = async () => {
@@ -183,7 +186,11 @@ const FormCard: FC<IFormCard> = ({ isEdit, onClose }) => {
             },
           }}
         >
-          <CheckoutForm onClose={onClose} isEdit={isEdit} />
+          <CheckoutForm
+            onClose={onClose}
+            isEdit={isEdit}
+            onSuccess={onSuccess}
+          />
         </Elements>
       )}
     </Box>

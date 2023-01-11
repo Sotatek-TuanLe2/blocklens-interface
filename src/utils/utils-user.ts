@@ -1,4 +1,14 @@
-import { StripePayment, UserAuthType, UserBillingType, UserInfoType, UserPaymentType, UserPlanType, UserSettingsType, UserState, UserStatsType } from "src/store/user";
+import {
+  StripePayment,
+  UserAuthType,
+  UserBillingType,
+  UserInfoType,
+  UserPaymentType,
+  UserPlanType,
+  UserSettingsType,
+  UserState,
+  UserStatsType,
+} from 'src/store/user';
 export interface UserInterface {
   id: string;
   auth: UserAuthType;
@@ -24,7 +34,7 @@ export interface UserInterface {
   getPlan: () => UserPlanType;
   getPayment: () => UserPaymentType;
   getSettings: () => UserSettingsType;
-  
+
   getEmail: () => string;
   getBillingEmail: () => string;
   getFirstName: () => string;
@@ -46,13 +56,13 @@ export class User implements UserInterface {
   public id = '';
   public auth: UserAuthType = {
     accessToken: '',
-    refreshToken: ''
+    refreshToken: '',
   };
   public info: UserInfoType = {
     email: '',
     firstName: '',
     lastName: '',
-    billingEmail: ''
+    billingEmail: '',
   };
   public stats: UserStatsType = {
     numberOfAddressActivities: 0,
@@ -74,7 +84,7 @@ export class User implements UserInterface {
       from: 0,
       to: 0,
       appLimitation: 0,
-      notificationLimitation: 0
+      notificationLimitation: 0,
     },
     payment: {
       activePaymentMethod: 'STRIPE',
@@ -83,13 +93,13 @@ export class User implements UserInterface {
       stripePaymentMethod: {
         card: {},
         id: '',
-        livemode: false
+        livemode: false,
       },
-      walletAddress: ''
-    }
+      walletAddress: '',
+    },
   };
   public settings: UserSettingsType = {
-    notificationEnabled: false
+    notificationEnabled: false,
   };
 
   constructor(user: UserState) {
@@ -163,7 +173,7 @@ export class User implements UserInterface {
   getSettings(): UserSettingsType {
     return this.settings;
   }
-  
+
   getEmail(): string {
     return this.info.email;
   }
@@ -193,7 +203,7 @@ export class User implements UserInterface {
   }
 
   getActivePaymentMethod(): string {
-    return this.billing.payment.activePaymentMethod
+    return this.billing.payment.activePaymentMethod;
   }
 
   isEmailVerified(): boolean {
@@ -205,7 +215,7 @@ export class User implements UserInterface {
   }
 
   isUserStriped(): boolean {
-    return !!this.billing.payment.stripePaymentMethod
+    return !!this.billing.payment.stripePaymentMethod;
   }
 
   isPaymentMethodIntegrated(): boolean {

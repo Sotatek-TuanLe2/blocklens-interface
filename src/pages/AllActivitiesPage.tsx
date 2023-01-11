@@ -3,19 +3,11 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router';
 import 'src/styles/pages/AppDetail.scss';
 import { BasePage } from 'src/layouts';
-import {
-  optionsFilter,
-} from 'src/utils/utils-webhook';
-import {
-  AppCard,
-  AppHeading,
-  AppInput,
-} from 'src/components';
+import { optionsFilter } from 'src/utils/utils-webhook';
+import { AppCard, AppHeading, AppInput } from 'src/components';
 import { isMobile } from 'react-device-detect';
 import ModalFilterActivities from '../modals/ModalFilterActivities';
-import {
-  getLogoChainByChainId,
-} from 'src/utils/utils-network';
+import { getLogoChainByChainId } from 'src/utils/utils-network';
 import useWebhookDetails from 'src/hooks/useWebhook';
 import ActivityDatatable from 'src/components/ActivityDatatable';
 

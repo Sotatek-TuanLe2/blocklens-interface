@@ -172,7 +172,9 @@ const ListApps: React.FC = () => {
 
   const _renderModalCreateApp = () => {
     const isLimitApp =
-      userPlan?.appLimitation && !!userStats?.totalApp && userStats?.totalApp >= userPlan?.appLimitation;
+      userPlan?.appLimitation &&
+      !!userStats?.totalApp &&
+      userStats?.totalApp >= userPlan?.appLimitation;
     return isLimitApp ? (
       <ModalUpgradeCreateApp
         open={openCreateApp}
@@ -253,7 +255,8 @@ const ListApps: React.FC = () => {
   const _renderTotalApp = () => {
     return (
       <Box className="number-app">
-        <Text as={'span'}>Active Apps:</Text> {userStats?.totalAppActive}/{userStats?.totalApp}
+        <Text as={'span'}>Active Apps:</Text> {userStats?.totalAppActive}/
+        {userStats?.totalApp}
       </Box>
     );
   };

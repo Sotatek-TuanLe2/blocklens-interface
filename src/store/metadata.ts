@@ -8,14 +8,14 @@ export type MetadataPlan = {
   price: number;
   appLimitation: number;
   notificationLimitation: number;
-}
+};
 
 export type MetadataState = {
   plans: MetadataPlan[];
 };
 
 const initialState: MetadataState = {
-  plans: []
+  plans: [],
 };
 
 export const initMetadata = createAsyncThunk(
