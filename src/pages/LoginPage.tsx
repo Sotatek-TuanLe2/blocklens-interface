@@ -52,7 +52,7 @@ const LoginPage: FC = () => {
       if (res) {
         dispatch(setUserAuth(res));
         toastSuccess({ message: 'Welcome to Blocklens!' });
-        history.push('/home');
+        history.push('/');
       }
     } catch (e: any) {
       toastError({ message: e?.message || 'Oops. Something went wrong' });
