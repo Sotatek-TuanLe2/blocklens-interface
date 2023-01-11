@@ -66,7 +66,7 @@ const LoginPage: FC = () => {
           <Box className="box-form__title">Login</Box>
 
           <GoogleAuthButton>
-            <Box>Login with google</Box>
+            <Box>Login with GOOGLE</Box>
           </GoogleAuthButton>
 
           <Flex className="divider">
@@ -128,7 +128,7 @@ const LoginPage: FC = () => {
             </Box>
 
             <Box className="note" mt={3}>
-              This site is protected by reCAPTCHA and the Google{' '}
+              This site is protected by reCAPTCHA and the {' '}
               <AppLink to={'#'}>Privacy Policy </AppLink> and{' '}
               <AppLink to={'#'}>Terms of Service</AppLink> apply.
             </Box>
