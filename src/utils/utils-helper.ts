@@ -53,3 +53,7 @@ export const isValidAddressEVM = (address: string) => {
 export const filterParams = (params: any) => {
   return Object.fromEntries(Object.entries(params).filter(([_, v]) => v));
 };
+
+export const convertCurrencyToNumber = (value: string) => {
+  return Number(value.replace(/[^0-9.-]+/g, ''));
+};

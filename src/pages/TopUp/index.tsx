@@ -46,6 +46,7 @@ import config from 'src/config';
 import abi from 'src/abi';
 import 'src/styles/pages/BillingPage.scss';
 import 'src/styles/pages/AppDetail.scss';
+import { convertCurrencyToNumber } from '../../utils/utils-helper';
 
 const AMOUNT_OPTIONS = [300, 500, 1000];
 
@@ -65,6 +66,7 @@ const TopUpPage = () => {
   const [isBeingToppedUp, setIsBeingToppedUp] = useState<boolean>(false);
   const [balanceToken, setBalanceToken] = useState<string | number>('');
   const [fetchingBalance, setFetchingBalance] = useState(false);
+  const [checkingApprove, setCheckingApprove] = useState(false);
   const [hasApproveToken, setHasApproveToken] = useState(false);
 
   const validator = useRef(
@@ -73,8 +75,8 @@ const TopUpPage = () => {
     }),
   );
 
-  const topUpContractAddress = wallet
-    ? getTopUpConfigByNetworkId(wallet.getNework()).contractAddress
+  const topUpContractAddress = chainId
+    ? getTopUpConfigByNetworkId(chainId).contractAddress
     : null;
   const isDifferentWalletAddressLinked =
     wallet?.getAddress() !== user?.getLinkedAddress();
@@ -99,23 +101,11 @@ const TopUpPage = () => {
       await connectWallet(connectorId, network);
     })();
   }, [wallet?.getNework()]);
-  const checkApproveToken = async () => {
-    if (!(chainId && wallet && topUpContractAddress && currencyAddress)) return;
-    try {
-      const result = await isTokenApproved(
-        chainId,
-        currencyAddress,
-        wallet.getAddress(),
-        topUpContractAddress,
-      );
-      setHasApproveToken(result);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+
   useEffect(() => {
+    if (!(chainId && wallet && topUpContractAddress && currencyAddress)) return;
     checkApproveToken();
-  }, [wallet, topUpContractAddress, currencyAddress]);
+  }, [wallet, currencyAddress]);
 
   useEffect(() => {
     if (!(chainId && currencyAddress && wallet?.getAddress())) return;
@@ -145,6 +135,25 @@ const TopUpPage = () => {
   };
   const onChangeCurrency = (currencyAddress: string) => {
     setCurrencyAddress(currencyAddress);
+  };
+
+  const checkApproveToken = async () => {
+    if (!(chainId && wallet && topUpContractAddress && currencyAddress)) return;
+    setCheckingApprove(true);
+    try {
+      const result = await isTokenApproved(
+        chainId,
+        currencyAddress,
+        wallet.getAddress(),
+        topUpContractAddress,
+      );
+      setHasApproveToken(result);
+    } catch (error: any) {
+      toastError({ message: error.toString() });
+      console.log('error', error);
+    } finally {
+      setCheckingApprove(false);
+    }
   };
 
   const approveToken = async () => {
@@ -307,7 +316,7 @@ const TopUpPage = () => {
                 </Flex>
                 <AppCurrencyInput
                   onChange={(e) => setAmount(e.target.value.trim())}
-                  disabled={fetchingBalance}
+                  disabled={fetchingBalance || !hasApproveToken}
                   render={(ref, props) => (
                     <AppInput
                       ref={ref}
@@ -326,7 +335,7 @@ const TopUpPage = () => {
                 {AMOUNT_OPTIONS.map((item: number, index: number) => {
                   return (
                     <Button
-                      disabled={fetchingBalance}
+                      disabled={fetchingBalance || !hasApproveToken}
                       className={`amount-option ${
                         +amount === item ? 'active' : ''
                       }`}
@@ -345,12 +354,15 @@ const TopUpPage = () => {
           <AppButton
             type={'submit'}
             size={'lg'}
-            isLoading={fetchingBalance}
+            isLoading={fetchingBalance || checkingApprove}
             loadingText={'Loading...'}
             disabled={
               fetchingBalance ||
+              checkingApprove ||
               (hasApproveToken &&
-                (isBeingToppedUp || +amount <= 0 || +amount > balanceToken))
+                (isBeingToppedUp ||
+                  +amount <= 0 ||
+                  convertCurrencyToNumber(amount) > balanceToken))
             }
           >
             {hasApproveToken ? `Top Up` : 'Approve Token'}
