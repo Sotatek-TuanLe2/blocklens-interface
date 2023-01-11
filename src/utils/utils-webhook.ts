@@ -23,7 +23,7 @@ export const optionsFilter = [
     value: '',
   },
   {
-    label: 'Done',
+    label: 'Successful',
     value: STATUS.DONE,
   },
   {
