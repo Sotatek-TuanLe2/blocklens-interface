@@ -49,7 +49,8 @@ type CustomRule =
   | 'isSame'
   | 'isAddress'
   | 'maxCountIds'
-  | 'isIds';
+  | 'isIds'
+  | 'insufficientBalance';
 
 export type Rules = IRule | CustomRule;
 
@@ -140,6 +141,12 @@ export const createValidator = (options?: IOptions | undefined) => {
           return listTokenId.every((value: string) => {
             return /^[0-9]{1,}$/.test(value);
           });
+        },
+      },
+      insufficientBalance: {
+        message: 'Insufficient balance',
+        rule: (value: string, params: string[]) => {
+          return +value < +params[0];
         },
       },
     },

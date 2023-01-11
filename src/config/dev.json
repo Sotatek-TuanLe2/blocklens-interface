@@ -38,24 +38,6 @@
             "name": "ETH",
             "symbol": "ETH",
             "decimals": 18
-          },
-          "currencies": {
-            "usdt": {
-              "coingeckoId": "tether",
-              "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
-              "name": "USDT",
-              "symbol": "USDT",
-              "decimals": 6,
-              "icon": "icon-usdt"
-            },
-            "usdc": {
-              "coingeckoId": "usd-coin",
-              "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-              "name": "USDC",
-              "symbol": "USDC",
-              "decimals": 6,
-              "icon": "icon-usdc"
-            }
           }
         },
         "GOERLI": {
@@ -110,7 +92,9 @@
           "id": "MAINNET",
           "icon": "icon-bsc",
           "chainId": 56,
-          "rpcUrls": ["https://bsc-dataseed1.defibit.io/"],
+          "rpcUrls": [
+            "https://bsc-dataseed1.defibit.io/"
+          ],
           "blockExplorer": {
             "name": "Bscscan",
             "icon": "/images/bscscan.png",
@@ -120,32 +104,6 @@
             "name": "BNB",
             "symbol": "BNB",
             "decimals": 18
-          },
-          "currencies": {
-            "usdt": {
-              "coingeckoId": "tether",
-              "address": "0x55d398326f99059fF775485246999027B3197955",
-              "name": "USDT",
-              "symbol": "USDT",
-              "decimals": 18,
-              "icon": "icon-usdt"
-            },
-            "busd": {
-              "coingeckoId": "binance-usd",
-              "address": "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56",
-              "name": "BUSD",
-              "symbol": "BUSD",
-              "decimals": 18,
-              "icon": "icon-busd"
-            },
-            "usdc": {
-              "coingeckoId": "usd-coin",
-              "address": "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d",
-              "name": "USDC",
-              "symbol": "USDC",
-              "decimals": 18,
-              "icon": "icon-usdc"
-            }
           }
         },
         "TESTNET": {
@@ -208,7 +166,9 @@
           "id": "MAINNET",
           "icon": "icon-polygon",
           "chainId": 137,
-          "rpcUrls": ["https://rpc-mainnet.maticvigil.com/"],
+          "rpcUrls": [
+            "https://rpc-mainnet.maticvigil.com/"
+          ],
           "blockExplorer": {
             "name": "Polygonscan",
             "icon": "/images/polygonscan.png",
@@ -218,24 +178,6 @@
             "name": "MATIC",
             "symbol": "MATIC",
             "decimals": 18
-          },
-          "currencies": {
-            "usdt": {
-              "coingeckoId": "tether",
-              "address": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
-              "name": "USDT",
-              "symbol": "USDT",
-              "decimals": 6,
-              "icon": "icon-usdt"
-            },
-            "usdc": {
-              "coingeckoId": "usd-coin",
-              "address": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
-              "name": "USDC",
-              "symbol": "USDC",
-              "decimals": 6,
-              "icon": "icon-usdc"
-            }
           }
         },
         "MUMBAI": {
@@ -255,53 +197,33 @@
             "name": "MATIC",
             "symbol": "MATIC",
             "decimals": 18
-          },
-          "currencies": {
-            "usdt": {
-              "id": "629dc9f114a8be7577e1ccec",
-              "coingeckoId": "tether",
-              "address": "0xF7F730fFAEC85455E3Ba44F488c2bD2A741953b3",
-              "name": "USDT",
-              "symbol": "USDT",
-              "decimals": 6,
-              "icon": "icon-usdt"
-            },
-            "usdc": {
-              "id": "629dc9f114a8be7577e1ccee",
-              "coingeckoId": "usd-coin",
-              "address": "0x0675A944CbEa834cddA62F24a08cE42d0fbb83A3",
-              "name": "USDC",
-              "symbol": "USDC",
-              "decimals": 6,
-              "icon": "icon-usdc"
-            }
           }
         }
-      }
-    },
-    "BTC": {
-      "name": "Bitcoin",
-      "id": "BTC",
-      "icon": "icon-bitcoin",
-      "networks": {
-        "MAINNET": {
-          "name": "Mainnet",
-          "id": "MAINNET",
-          "icon": "icon-bitcoin",
-          "blockExplorer": {
-            "name": "Bitcoin",
-            "icon": "/images/bscscan.png",
-            "url": "https://blockchain.coinmarketcap.com/"
-          }
-        },
-        "TESTNET": {
-          "name": "Testnet",
-          "id": "TESTNET",
-          "icon": "icon-bitcoin",
-          "blockExplorer": {
-            "name": "Bitcoin",
-            "icon": "/images/bscscan.png",
-            "url": "https://blockchain.coinmarketcap.com/"
+      },
+      "BTC": {
+        "name": "Bitcoin",
+        "id": "BTC",
+        "icon": "icon-bitcoin",
+        "networks": {
+          "MAINNET": {
+            "name": "Mainnet",
+            "id": "MAINNET",
+            "icon": "icon-bitcoin",
+            "blockExplorer": {
+              "name": "Bitcoin",
+              "icon": "/images/bscscan.png",
+              "url": "https://blockchain.coinmarketcap.com/"
+            }
+          },
+          "TESTNET": {
+            "name": "Testnet",
+            "id": "TESTNET",
+            "icon": "icon-bitcoin",
+            "blockExplorer": {
+              "name": "Bitcoin",
+              "icon": "/images/bscscan.png",
+              "url": "https://blockchain.coinmarketcap.com/"
+            }
           }
         }
       }
@@ -313,15 +235,88 @@
     "POLYGON": "0x08411ADd0b5AA8ee47563b146743C13b3556c9Cc"
   },
   "topUp": {
-    "ETH": {
-      "contractAddress": "0xE66E07c149fbE6B5e385c1e6eA5c3A722E985A11"
+    "supportChains": {
+      "ETH": {
+        "contractAddress": "0xE66E07c149fbE6B5e385c1e6eA5c3A722E985A11",
+        "currencies": {
+          "usdt": {
+            "id": "629dc9f014a8be7577e1ccde",
+            "coingeckoId": "tether",
+            "address": "0xb347aa50A880C4920e86C2C4A77a6b5809D0A645",
+            "name": "USDT",
+            "symbol": "USDT",
+            "decimals": 6,
+            "icon": "icon-usdt"
+          },
+          "usdc": {
+            "id": "629dc9f014a8be7577e1cce0",
+            "coingeckoId": "usd-coin",
+            "address": "0xE78181D342cC44E4c67f72fBc2f2Ba5337f168bc",
+            "name": "USDC",
+            "symbol": "USDC",
+            "decimals": 6,
+            "icon": "icon-usdc"
+          }
+        }
+      },
+      "BSC": {
+        "contractAddress": "0xD7B49476810EC3edb9676b9313c1E32736d7b7a7",
+        "currencies": {
+          "usdt": {
+            "id": "629dc9f014a8be7577e1cce8",
+            "coingeckoId": "tether",
+            "address": "0xa6F387881000761d8130Bf04423Fa71d634d867B",
+            "name": "USDT",
+            "symbol": "USDT",
+            "decimals": 18,
+            "icon": "icon-usdt"
+          },
+          "busd": {
+            "id": "629dc9f014a8be7577e1cce4",
+            "coingeckoId": "binance-usd",
+            "address": "0xc399a946A67994c8Abf194A697Dafd075CB9F341",
+            "name": "BUSD",
+            "symbol": "BUSD",
+            "decimals": 18,
+            "icon": "icon-busd"
+          },
+          "usdc": {
+            "id": "629dc9f014a8be7577e1cce6",
+            "coingeckoId": "usd-coin",
+            "address": "0x840754e2879a5b678d0419E660524ef6dAb15748",
+            "name": "USDC",
+            "symbol": "USDC",
+            "decimals": 18,
+            "icon": "icon-usdc"
+          }
+        }
+      },
+      "POLYGON": {
+        "contractAddress": "0x48183fAAB3a9Cc770Fd00fb6ACC65486bAE1bB4F",
+        "currencies": {
+          "usdt": {
+            "id": "629dc9f114a8be7577e1ccec",
+            "coingeckoId": "tether",
+            "address": "0xF7F730fFAEC85455E3Ba44F488c2bD2A741953b3",
+            "name": "USDT",
+            "symbol": "USDT",
+            "decimals": 6,
+            "icon": "icon-usdt"
+          },
+          "usdc": {
+            "id": "629dc9f114a8be7577e1ccee",
+            "coingeckoId": "usd-coin",
+            "address": "0x0675A944CbEa834cddA62F24a08cE42d0fbb83A3",
+            "name": "USDC",
+            "symbol": "USDC",
+            "decimals": 6,
+            "icon": "icon-usdc"
+          }
+        }
+      }
     },
-    "BSC": {
-      "contractAddress": "0xD7B49476810EC3edb9676b9313c1E32736d7b7a7"
-    },
-    "POLYGON": {
-      "contractAddress": "0x48183fAAB3a9Cc770Fd00fb6ACC65486bAE1bB4F"
-    }
+    "appId": 1,
+    "confirmations": 30
   },
   "connectors": {
     "metamask-connector": {

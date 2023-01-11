@@ -45,6 +45,60 @@ export const getBlockExplorerUrl = (chainId?: string, networkId?: string) => {
   return network?.blockExplorer.url + 'tx/' || '';
 };
 
+export const objectKeys = <Obj>(obj: Obj): (keyof Obj)[] =>
+  Object.keys(obj) as (keyof Obj)[];
+
+export const getChains: (filter?: (chain: Chain) => boolean) => {
+  label: string;
+  value: string;
+  icon: string;
+  networks: { [key: string]: Network };
+}[] = (filter) => {
+  return objectKeys(config.chains)
+    .filter((chainId) => (filter ? filter(config.chains[chainId]) : true))
+    .map((chainKey) => {
+      const chain = config.chains[chainKey];
+      return {
+        label: chain.name,
+        value: chain.id,
+        icon: chain.icon,
+        networks: chain.networks,
+      };
+    });
+};
+
+export const getSupportChainsTopUp = () => {
+  const supportChainsName = objectKeys(config.topUp.supportChains);
+  return getChains((chain) => supportChainsName.includes(chain.id));
+};
+
+export const getTopUpCurrencies = () => {
+  const supportTopUpChainConfigKeys = objectKeys(config.topUp.supportChains);
+  return supportTopUpChainConfigKeys.map(
+    (key) => config.topUp.supportChains[key].currencies,
+  );
+};
+
+export const getTopUpCurrenciesByChainId = (chainId: string) => {
+  const supportChain = config.topUp.supportChains[chainId];
+  if (!supportChain) return [];
+  const currencyKeys = objectKeys(supportChain.currencies);
+  return currencyKeys.map((key) => supportChain.currencies[key]);
+};
+
+export const getTopUpCurrencyOptions = (chainId: string) => {
+  return getTopUpCurrenciesByChainId(chainId).map((currency) => ({
+    label: currency.name,
+    value: currency.address,
+    icon: currency.icon,
+    decimals: currency.decimals,
+  }));
+};
+
+export const getTopUpConfigByNetworkId = (networkId: string) => {
+  return config.topUp.supportChains[networkId];
+};
+
 export const getChainByChainId = (chainId: string | number): Chain | null => {
   const chainKeys = Object.keys(config.chains);
   const chainKey = chainKeys.find((chainKey) => {
@@ -61,7 +115,7 @@ export const getChainByChainId = (chainId: string | number): Chain | null => {
   return config.chains[chainKey];
 };
 
-export const getChainConfig = (networkId: string | undefined): Chain => {
+export const getChainConfig = (networkId?: string): Chain => {
   const defaultChain = config.chains[config.defaultNetwork];
   if (!networkId) {
     return defaultChain;
@@ -69,7 +123,7 @@ export const getChainConfig = (networkId: string | undefined): Chain => {
   return config.chains[networkId] || defaultChain;
 };
 
-export const getNetworkByEnv = (chain: Chain | null): Network => {
+export const getNetworkByEnv = (chain?: Chain | null): Network => {
   const env = process.env.REACT_APP_ENV || 'prod';
   const networks: any = {
     ETH: {
@@ -85,12 +139,13 @@ export const getNetworkByEnv = (chain: Chain | null): Network => {
       dev: 'MUMBAI',
     },
   };
-  const defaultChain = getChainConfig(config.defaultNetwork);
+  const defaultChain = getChainConfig();
   const defaultNetworkByEnv =
     defaultChain.networks[networks[defaultChain.id][env]];
   if (!chain) {
     return defaultNetworkByEnv;
   }
+
   return chain.networks[networks[chain.id][env]];
 };
 
