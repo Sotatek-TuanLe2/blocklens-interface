@@ -71,7 +71,11 @@ const TopUpPage = () => {
 
   const validator = useRef(
     createValidator({
-      element: (message: string) => <Text color={'red.100'}>{message}</Text>,
+      element: (message: string) => (
+        <>
+          <Text color={'red.100'}>{message}</Text>
+        </>
+      ),
     }),
   );
 
@@ -336,7 +340,10 @@ const TopUpPage = () => {
                         +amount === item ? 'active' : ''
                       }`}
                       key={index}
-                      onClick={() => setAmount(item.toString())}
+                      onClick={() => {
+                        setAmount(item.toString());
+                        validator.current.showMessages();
+                      }}
                     >
                       {item}
                     </Button>
