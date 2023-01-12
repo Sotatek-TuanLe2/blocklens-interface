@@ -126,7 +126,7 @@ const TopUpPage = () => {
       );
       setBalanceToken(balance);
     } catch (error) {
-      setBalanceToken('');
+      setBalanceToken('0');
       toastError({ message: getErrorMessage(error) });
     }
   };
