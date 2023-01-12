@@ -71,11 +71,7 @@ const TopUpPage = () => {
 
   const validator = useRef(
     createValidator({
-      element: (message: string) => (
-        <>
-          <Text color={'red.100'}>{message}</Text>
-        </>
-      ),
+      element: (message: string) => <Text color={'red.100'}>{message}</Text>,
     }),
   );
 
@@ -91,7 +87,6 @@ const TopUpPage = () => {
   useEffect(() => {
     const defaultChain =
       chainOptions.find((chain) => chain.value === 'BSC') || chainOptions[0];
-    // const defaultChain = chainOptions[0];
     onChangeChain(defaultChain.value);
   }, []);
 
@@ -113,6 +108,7 @@ const TopUpPage = () => {
 
   useEffect(() => {
     if (!(chainId && wallet && topUpContractAddress && currencyAddress)) return;
+    setAmount('0');
     setFetchingInfo(true);
     Promise.all([checkApproveToken(), fetchBalance()])
       .catch((error) => {
@@ -250,9 +246,7 @@ const TopUpPage = () => {
       <form
         onSubmit={async (e) => {
           e.preventDefault();
-          if (hasApproveToken) {
-            await onTopUp();
-          } else await approveToken();
+          await onTopUp();
         }}
       >
         <AppCard className={'box-form-crypto'}>
@@ -352,17 +346,29 @@ const TopUpPage = () => {
               </Flex>
             </Flex>
           </Flex>
+          {fetchingInfo && <Text>Please waiting</Text>}
         </AppCard>
         <Flex justifyContent={isMobile ? 'center' : 'flex-end'} mt={7}>
           <AppButton
             type={'submit'}
             size={'lg'}
-            isLoading={fetchingInfo || processing}
-            loadingText={'Loading...'}
-            disabled={fetchingInfo || processing || inValidAmount}
+            disabled={
+              !hasApproveToken || fetchingInfo || processing || inValidAmount
+            }
           >
-            {hasApproveToken ? `Top Up` : 'Approve Token'}
+            Top up
           </AppButton>
+          {!hasApproveToken && (
+            <AppButton
+              marginLeft={'8px'}
+              type={'button'}
+              size={'lg'}
+              disabled={fetchingInfo || processing || inValidAmount}
+              onClick={approveToken}
+            >
+              Approve token
+            </AppButton>
+          )}
         </Flex>
       </form>
     );

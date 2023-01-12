@@ -239,6 +239,9 @@
         color: $paragraph;
         cursor: pointer;
         height: max-content;
+        &:hover{
+          border: 1px solid $link;
+        }
 
         &:first-child {
           margin-left: 10px;
