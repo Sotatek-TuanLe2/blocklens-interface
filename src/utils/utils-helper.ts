@@ -2,6 +2,7 @@ import { toastError, toastSuccess } from './utils-notify';
 import moment from 'moment';
 import { isValidChecksumAddress, toChecksumAddress } from 'ethereumjs-util';
 import copy from 'copy-to-clipboard';
+import { COMMON_ERROR_MESSAGE } from '../constants';
 
 export const copyToClipboard = (message: string) => {
   try {
@@ -56,4 +57,24 @@ export const filterParams = (params: any) => {
 
 export const convertCurrencyToNumber = (value: string) => {
   return Number(value.replace(/[^0-9.-]+/g, ''));
+};
+
+export const isString = (value: unknown) => {
+  return typeof value === 'string';
+};
+
+export const getErrorMessage = (err: any) => {
+  // Init regex inside a function to reset regex (reset lastIndex)
+  const REGEX_GET_MESSAGE = /execution reverted:([^"]*)/gm;
+  if (err.message?.includes('execution reverted:')) {
+    const match = REGEX_GET_MESSAGE.exec(err.message);
+    return match ? match[1] : COMMON_ERROR_MESSAGE;
+  }
+  if (isString(err)) {
+    return err;
+  }
+  if (err.message && isString(err.message)) {
+    return err.message;
+  }
+  return COMMON_ERROR_MESSAGE;
 };

@@ -3,6 +3,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Contract } from 'ethers';
 import { Interface as AbiInterface } from '@ethersproject/abi';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
+import { getErrorMessage } from '../utils/utils-helper';
 
 interface ITransactionState {
   openSubmittingTransactionModal: boolean;
@@ -26,19 +27,19 @@ const GAS_LIMIT_BUFFER = 0.1;
 const DEFAULT_CONFIRMATION = 5;
 
 const createTransaction = async (provider: any, params: ITransactionParams) => {
-  const {
-    contractAddress,
-    abi,
-    action,
-    transactionArgs,
-    overrides = {},
-  } = params;
-  const contractWithSigner = new Contract(
-    contractAddress,
-    abi,
-    new Web3Provider(provider).getSigner(),
-  );
   try {
+    const {
+      contractAddress,
+      abi,
+      action,
+      transactionArgs,
+      overrides = {},
+    } = params;
+    const contractWithSigner = new Contract(
+      contractAddress,
+      abi,
+      new Web3Provider(provider).getSigner(),
+    );
     // Gas estimation
     const gasLimitNumber = await contractWithSigner.estimateGas[action](
       ...transactionArgs,
@@ -49,7 +50,6 @@ const createTransaction = async (provider: any, params: ITransactionParams) => {
     return contractWithSigner[action](...transactionArgs, overrides);
   } catch (error: any) {
     console.log(error);
-    toastError({ message: error.data.message || error.message });
     throw new Error(error);
   }
 };
@@ -83,10 +83,12 @@ const handleTransaction = createAsyncThunk(
           dispatch(toggleFinishTransactionModal(true));
           toastSuccess({ message: 'Transaction completed successfully!' });
         } else {
-          toastError({ message: "Transaction's gone wrong!" });
+          throw new Error("Transaction's gone wrong!");
         }
       }
-    } catch (error) {}
+    } catch (error: any) {
+      throw new Error(error);
+    }
   },
 );
 
@@ -112,8 +114,8 @@ export const executeTransaction = createAsyncThunk(
         handleTransaction({ transaction, provider, confirmation }),
       );
     } catch (error: any) {
-      // console.log(error);
-      toastError({ message: error?.data?.message || error?.message });
+      toastError({ message: getErrorMessage(error) });
+      throw new Error(error);
     }
   },
 );

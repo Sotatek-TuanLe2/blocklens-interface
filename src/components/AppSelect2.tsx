@@ -10,6 +10,7 @@ interface IAppSelectPops {
   size?: 'small' | 'medium' | 'large';
   hiddenLabelDefault?: boolean;
   onChange: (value: string) => void;
+  disabled?: boolean;
 }
 
 interface IOption {
@@ -26,6 +27,7 @@ const AppSelect2: FC<IAppSelectPops> = ({
   size = 'small',
   hiddenLabelDefault = false,
   className,
+  disabled,
 }) => {
   const [open, setOpen] = useState<boolean>(false);
   const ref = useRef<any>(null);
@@ -50,7 +52,12 @@ const AppSelect2: FC<IAppSelectPops> = ({
 
   return (
     <Box className={`app-select ${size} ${className}`} width={width} ref={ref}>
-      <Flex className="app-select__btn-select" onClick={() => setOpen(!open)}>
+      <Flex
+        className="app-select__btn-select"
+        onClick={() => {
+          !disabled && setOpen(!open);
+        }}
+      >
         <Flex alignItems={'center'}>
           {optionSelected?.icon && (
             <Box className={`${optionSelected?.icon} icon`} />
