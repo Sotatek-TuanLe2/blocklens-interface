@@ -331,7 +331,7 @@ const TopUpPage = () => {
                 {AMOUNT_OPTIONS.map((item: number, index: number) => {
                   return (
                     <Button
-                      disabled={fetchingInfo || !hasApproveToken}
+                      disabled={fetchingInfo || processing}
                       className={`amount-option ${
                         +amount === item ? 'active' : ''
                       }`}
