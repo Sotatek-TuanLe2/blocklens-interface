@@ -128,9 +128,11 @@ const LoginPage: FC = () => {
             </Box>
 
             <Box className="note" mt={3}>
-              This site is protected by reCAPTCHA and the {' '}
-              <AppLink to={'#'}>Privacy Policy </AppLink> and{' '}
-              <AppLink to={'#'}>Terms of Service</AppLink> apply.
+              This site is protected by reCAPTCHA and the{' '}
+              <a href="https://blocklens.io/privacy-policy" className={"link"} target="_blank">
+                Privacy Policy{' '}
+              </a>{' '}
+              and <a href="https://blocklens.io/terms" target="_blank" className={"link"}>Terms of Service</a> apply.
             </Box>
           </Box>
         </AppCard>
