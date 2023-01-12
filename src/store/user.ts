@@ -77,13 +77,13 @@ const initialState: UserState = {
   userId: '',
   auth: {
     accessToken: Storage.getAccessToken() || '',
-    refreshToken: Storage.getRefreshToken() || ''
+    refreshToken: Storage.getRefreshToken() || '',
   },
   info: {
     email: '',
     firstName: '',
     lastName: '',
-    billingEmail: ''
+    billingEmail: '',
   },
   stats: {
     numberOfAddressActivities: 0,
@@ -105,7 +105,7 @@ const initialState: UserState = {
       from: 0,
       to: 0,
       appLimitation: 0,
-      notificationLimitation: 0
+      notificationLimitation: 0,
     },
     payment: {
       activePaymentMethod: 'STRIPE',
@@ -114,14 +114,14 @@ const initialState: UserState = {
       stripePaymentMethod: {
         card: {},
         id: '',
-        livemode: false
+        livemode: false,
       },
-      walletAddress: ''
-    }
+      walletAddress: '',
+    },
   },
   settings: {
-    notificationEnabled: false
-  }
+    notificationEnabled: false,
+  },
 };
 
 export const getUser = createAsyncThunk(
@@ -131,7 +131,7 @@ export const getUser = createAsyncThunk(
     thunkApi.dispatch(getUserStats());
     thunkApi.dispatch(getUserPlan());
   },
-)
+);
 
 export const getUserProfile = createAsyncThunk(
   'user/getUserProfile',
@@ -183,17 +183,12 @@ const userSlice = createSlice({
       Storage.setRefreshToken(refreshToken);
     },
     setUserInfo: (state, action) => {
-      const {
-        email,
-        firstName,
-        lastName,
-        billingEmail
-      } = action.payload;
+      const { email, firstName, lastName, billingEmail } = action.payload;
       state.info = {
         email,
         firstName,
         lastName,
-        billingEmail
+        billingEmail,
       };
     },
     setUserStats: (state, action) => {
@@ -208,14 +203,14 @@ const userSlice = createSlice({
         balance,
         isPaymentMethodIntegrated,
         stripePaymentMethod,
-        walletAddress
+        walletAddress,
       } = action.payload;
       state.billing.payment = {
         activePaymentMethod,
         balance,
         isPaymentMethodIntegrated,
         stripePaymentMethod,
-        walletAddress
+        walletAddress,
       };
     },
     setUserSettings: (state, action) => {
@@ -226,8 +221,8 @@ const userSlice = createSlice({
       setAuthorizationToRequest(null);
       Storage.logout();
       return initialState;
-    }
-  }
+    },
+  },
 });
 
 export const {
@@ -238,7 +233,7 @@ export const {
   setUserPlan,
   setUserPayment,
   setUserSettings,
-  clearUser
+  clearUser,
 } = userSlice.actions;
 
 export default userSlice.reducer;

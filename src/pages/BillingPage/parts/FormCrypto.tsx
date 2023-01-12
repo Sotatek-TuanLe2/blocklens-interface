@@ -12,11 +12,11 @@ import { useHistory } from 'react-router';
 import AppAlertWarning from 'src/components/AppAlertWarning';
 
 interface IFormCrypto {
-  onNext: () => void;
+  onSuccess: () => void;
   planSelected: MetadataPlan;
 }
 
-const FormCrypto: FC<IFormCrypto> = ({ onNext, planSelected }) => {
+const FormCrypto: FC<IFormCrypto> = ({ onSuccess, planSelected }) => {
   const [isSufficientBalance, setIsSufficientBalance] =
     useState<boolean>(false);
   const { wallet, isUserLinked } = useWallet();
@@ -84,7 +84,11 @@ const FormCrypto: FC<IFormCrypto> = ({ onNext, planSelected }) => {
             Connect wallet to top up your balance amount and perform payment
             with cryptocurrencies.
           </Box>
-          <AppConnectWalletButton width={'100%'} size="lg">
+          <AppConnectWalletButton
+            width={'100%'}
+            size="lg"
+            onConnectSuccess={onSuccess}
+          >
             Connect Wallet
           </AppConnectWalletButton>
         </AppCard>

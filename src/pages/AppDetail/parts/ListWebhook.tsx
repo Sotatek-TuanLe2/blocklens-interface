@@ -64,7 +64,7 @@ const WebhookMobile: FC<IWebhookItem> = ({ webhook, appInfo, type }) => {
             className={isOpen ? 'icon-minus' : 'icon-plus'}
             onClick={(e) => {
               e.stopPropagation();
-              setIsOpen(!isOpen)
+              setIsOpen(!isOpen);
             }}
           />
         </Flex>

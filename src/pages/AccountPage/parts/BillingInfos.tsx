@@ -31,8 +31,17 @@ const BillingInfos = () => {
         </Flex>
 
         <Box className="name-plan">{currentPlan?.name}</Box>
-        <Box className="name-plan">
-          {currentPlan?.price === 0 ? `Free` : `$${currentPlan?.price}/month`}
+        <Box className="name-plan price">
+          {currentPlan?.price === 0 ? (
+            `Free`
+          ) : (
+            <Box>
+              ${currentPlan?.price}
+              <Box as={'span'} className="month">
+                /month
+              </Box>
+            </Box>
+          )}
         </Box>
         <Box className="detail-plan">
           <Flex alignItems={'center'}>

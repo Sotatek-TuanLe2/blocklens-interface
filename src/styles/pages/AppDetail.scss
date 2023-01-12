@@ -11,11 +11,11 @@
   }
 
   .name {
-    @include heading-5;
+    @include heading-4;
     align-items: center;
     margin-bottom: 3px;
     @include tablet {
-      @include heading-7;
+      @include heading-6;
     }
 
     .title-mobile {

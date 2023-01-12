@@ -118,7 +118,7 @@ const ActivityMobile: FC<IActivity> = ({ activity, webhook, onReload }) => {
           <Box>Token ID</Box>
           <Box className="value">
             <Flex alignItems="center">
-              {activity?.metadata?.tokenIds?.join(', ') || '--'}
+              {activity?.metadata?.tokenIds?.join(', ') || '*'}
             </Flex>
           </Box>
         </Flex>

@@ -17,10 +17,7 @@ import {
 import config from 'src/config';
 import { getChainByChainId, switchNetwork } from 'src/utils/utils-network';
 import { useMemo } from 'react';
-import {
-  IWallet,
-  Wallet,
-} from 'src/utils/utils-wallet';
+import { IWallet, Wallet } from 'src/utils/utils-wallet';
 import Storage from 'src/utils/utils-storage';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import BaseConnector from 'src/connectors/BaseConnector';

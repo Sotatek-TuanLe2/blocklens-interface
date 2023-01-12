@@ -1,7 +1,7 @@
 import { Box, Flex, Th, Thead, Tr } from '@chakra-ui/react';
 import React, { useEffect, useState, useCallback } from 'react';
 import rf from 'src/requests/RequestFactory';
-import { useParams } from 'react-router';
+import { useHistory, useParams } from 'react-router';
 import 'src/styles/pages/AppDetail.scss';
 import { BasePage } from 'src/layouts';
 import {
@@ -10,6 +10,7 @@ import {
   AppInput,
   AppFilter,
   AppHeading,
+  AppLink,
 } from 'src/components';
 import {
   WEBHOOK_TYPES,
@@ -44,6 +45,7 @@ const MessagesHistory = () => {
   const [isOpenFilterModal, setIsOpenFilterModal] = useState<boolean>(false);
 
   const { webhook } = useWebhookDetails(appId, webhookId);
+  const history = useHistory();
 
   const fetchDataTable: any = useCallback(async (params: any) => {
     try {
@@ -204,10 +206,15 @@ const MessagesHistory = () => {
     <BasePage className="app-detail">
       <>
         <Flex className="app-info">
-          <AppHeading
-            title="Messages History"
-            linkBack={`/app/${appId}/webhooks/${webhookId}`}
-          />
+          <Flex className="name">
+            <Box
+              className="icon-arrow-left"
+              cursor={'pointer'}
+              mr={6}
+              onClick={() => history.goBack()}
+            />
+            <Box className="title-mobile">Messages History</Box>
+          </Flex>
 
           {!isMobile && (
             <Flex alignItems={'center'} className="box-network">

@@ -12,7 +12,7 @@ import GuestPage from 'src/layouts/GuestPage';
 import { createValidator } from 'src/utils/utils-validator';
 import 'src/styles/pages/LoginPage.scss';
 import rf from 'src/requests/RequestFactory';
-import { toastError } from 'src/utils/utils-notify';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import ModalResendMail from 'src/modals/ModalResendMail';
 
 interface IDataForm {
@@ -50,10 +50,20 @@ const ForgotPasswordPage: FC = () => {
       });
     }
   };
+
   useEffect(() => {
     const isDisabled = !validator.current.allValid();
     setIsDisableSubmit(isDisabled);
   }, [dataForm]);
+
+  const onResendMail = async () => {
+    try {
+      await rf.getRequest('AuthRequest').resendMailVerify(dataForm.email);
+      toastSuccess({ message: 'Successfully!' });
+    } catch (e: any) {
+      toastError({ message: e?.message || 'Oops. Something went wrong!' });
+    }
+  };
 
   return (
     <GuestPage>
@@ -114,7 +124,7 @@ const ForgotPasswordPage: FC = () => {
             email={dataForm.email}
             open={openModalResendEmail}
             onClose={() => setOpenModalResendEmail(false)}
-            onResend={() => console.log('send mail')}
+            onResend={onResendMail}
           />
         )}
       </Flex>

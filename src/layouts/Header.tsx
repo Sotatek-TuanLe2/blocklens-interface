@@ -106,6 +106,20 @@ const Header: FC = () => {
     );
   };
 
+  const isActiveMenu = (path: string) => {
+    if (path === '/account') {
+      return location.pathname === path;
+    }
+
+    if (path === '/billing') {
+      return location.pathname.includes('billing');
+    }
+
+    return (
+      !location.pathname.includes('billing') && location.pathname !== '/account'
+    );
+  };
+
   const _renderMenu = () => {
     return (
       <Flex className={`${isMobile ? 'menu-mobile' : 'menu'}`}>
@@ -114,7 +128,7 @@ const Header: FC = () => {
             <AppLink
               to={item.path}
               key={index}
-              className={location.pathname === item.path ? 'active' : ''}
+              className={isActiveMenu(item.path) ? 'active' : ''}
             >
               {item.name}
             </AppLink>

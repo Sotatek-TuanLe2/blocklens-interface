@@ -93,6 +93,7 @@
     margin-bottom: 18px;
     padding: 0 28px;
     text-align: center;
+    white-space: pre-line;
 
     @include tablet {
       padding: 0;
@@ -210,5 +211,18 @@
       margin-bottom: 0;
       margin-right: 10px;
     }
+  }
+}
+
+.info-payment {
+  justify-content: space-between;
+  padding: 12px 16px;
+  background-color: $disable;
+  margin-bottom: 4px;
+  border-radius: 6px;
+
+  .label {
+    color: $paragraph;
+    text-transform: capitalize;
   }
 }

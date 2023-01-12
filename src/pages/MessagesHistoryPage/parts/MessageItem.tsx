@@ -51,7 +51,7 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
           {message?.input?.method}
         </Td>
         <Td textAlign="center" w="13%">
-          {message?.input?.tokenId || '--'}
+          {message?.input?.tokenIds?.join(', ') || '*'}
         </Td>
       </>
     );

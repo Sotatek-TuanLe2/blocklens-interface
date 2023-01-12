@@ -36,6 +36,7 @@ const initialForm = {
   company: '',
   networkOrChain: '',
   feedback: '',
+  telegram: '',
 };
 
 const listCountry = COUNTRIES.map((item: { name: string }) => {
@@ -53,7 +54,9 @@ const ContactUs = () => {
 
   const validator = useRef(
     createValidator({
-      element: (message: string) => <Text className="text-error">{message}</Text>,
+      element: (message: string) => (
+        <Text className="text-error">{message}</Text>
+      ),
     }),
   );
 
@@ -130,7 +133,6 @@ const ContactUs = () => {
               <AppInput
                 value={dataContact.lastName}
                 onChange={(e) => {
-
                   setDataContact({
                     ...dataContact,
                     lastName: e.target.value,

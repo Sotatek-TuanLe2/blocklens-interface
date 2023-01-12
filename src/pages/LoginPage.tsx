@@ -52,7 +52,7 @@ const LoginPage: FC = () => {
       if (res) {
         dispatch(setUserAuth(res));
         toastSuccess({ message: 'Welcome to Blocklens!' });
-        history.push('/home');
+        history.push('/');
       }
     } catch (e: any) {
       toastError({ message: e?.message || 'Oops. Something went wrong' });
@@ -66,7 +66,7 @@ const LoginPage: FC = () => {
           <Box className="box-form__title">Login</Box>
 
           <GoogleAuthButton>
-            <Box>Login with google</Box>
+            <Box>Login with GOOGLE</Box>
           </GoogleAuthButton>
 
           <Flex className="divider">
@@ -128,9 +128,11 @@ const LoginPage: FC = () => {
             </Box>
 
             <Box className="note" mt={3}>
-              This site is protected by reCAPTCHA and the Google{' '}
-              <AppLink to={'#'}>Privacy Policy </AppLink> and{' '}
-              <AppLink to={'#'}>Terms of Service</AppLink> apply.
+              This site is protected by reCAPTCHA and the{' '}
+              <a href="https://blocklens.io/privacy-policy" className={"link"} target="_blank">
+                Privacy Policy{' '}
+              </a>{' '}
+              and <a href="https://blocklens.io/terms" target="_blank" className={"link"}>Terms of Service</a> apply.
             </Box>
           </Box>
         </AppCard>
