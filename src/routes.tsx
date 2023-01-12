@@ -39,6 +39,13 @@ import ModalSignatureRequired from './modals/ModalSignatureRequired';
  * Main App routes.
  */
 
+const GUEST_PATH = [
+  '/forgot-password',
+  '/verify-email',
+  '/sign-up',
+  '/reset-password',
+];
+
 const Routes: FC<RouteComponentProps> = () => {
   const { pathname } = useLocation();
   const dispatch = useDispatch<any>();
@@ -54,7 +61,7 @@ const Routes: FC<RouteComponentProps> = () => {
   useEffect(() => {
     if (!accessToken || isExpireTimeToken) {
       dispatch(clearUser());
-      if (pathname !== '/forgot-password') {
+      if (!GUEST_PATH.includes(pathname)) {
         history.push('/login');
       }
       return;
