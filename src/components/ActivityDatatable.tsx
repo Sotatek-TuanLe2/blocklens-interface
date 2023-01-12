@@ -17,6 +17,7 @@ import {
   filterParams,
   formatShortText,
   formatTimestamp,
+  getErrorMessage,
 } from '../utils/utils-helper';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { InfoIcon, LinkDetail, LinkIcon, RetryIcon } from 'src/assets/icons';
@@ -60,10 +61,8 @@ export const onRetry = async (
     await rf.getRequest('NotificationRequest').retryActivity(activity.hash);
     toastSuccess({ message: 'Retried!' });
     onReload();
-  } catch (error: any) {
-    toastError({
-      message: error?.message || 'Oops. Something went wrong!',
-    });
+  } catch (error) {
+    toastError({ message: getErrorMessage(error) });
   }
 };
 
@@ -368,9 +367,9 @@ const ActivityDatatable: FC<IActivityDatatable> = ({
       return await rf
         .getRequest('NotificationRequest')
         .getActivities(webhookId, filterParams(params));
-    } catch (error: any) {
+    } catch (error) {
       toastError({
-        message: error?.message || 'Oops. Something went wrong!',
+        message: getErrorMessage(error),
       });
     }
   }, []);

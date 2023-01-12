@@ -15,6 +15,7 @@ import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { GoogleAuthButton } from 'src/components';
 import ModalResendMail from 'src/modals/ModalResendMail';
+import { getErrorMessage } from '../utils/utils-helper';
 
 interface IDataForm {
   firstName: string;
@@ -54,8 +55,8 @@ const SignUpPage: FC = () => {
       const res = await rf.getRequest('AuthRequest').signUp(dataForm);
       setUserId(res?.userId || '');
       setOpenModalResendEmail(true);
-    } catch (e: any) {
-      toastError({ message: e?.message || 'Oops. Something went wrong!' });
+    } catch (e) {
+      toastError({ message: getErrorMessage(e) });
     }
   };
 
@@ -64,8 +65,8 @@ const SignUpPage: FC = () => {
     try {
       await rf.getRequest('AuthRequest').resendMailVerify(dataForm.email);
       toastSuccess({ message: 'Successfully!' });
-    } catch (e: any) {
-      toastError({ message: e?.message || 'Oops. Something went wrong!' });
+    } catch (e) {
+      toastError({ message: getErrorMessage(e) });
     }
   };
 

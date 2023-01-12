@@ -6,6 +6,7 @@ import { RootState } from 'src/store';
 import { setOpenModalSignatureRequired } from 'src/store/wallet';
 import { toastError } from 'src/utils/utils-notify';
 import BaseModal from './BaseModal';
+import { getErrorMessage } from '../utils/utils-helper';
 
 const ModalSignatureRequired = () => {
   const { openModalSignatureRequired } = useSelector(
@@ -24,8 +25,8 @@ const ModalSignatureRequired = () => {
       }
       await linkWallet(connector, address);
       dispatch(setOpenModalSignatureRequired(false));
-    } catch (error: any) {
-      toastError({ message: error.message });
+    } catch (error) {
+      toastError({ message: getErrorMessage(error) });
     }
   };
 

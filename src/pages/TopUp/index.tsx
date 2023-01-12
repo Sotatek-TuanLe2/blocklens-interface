@@ -94,7 +94,7 @@ const TopUpPage = () => {
     if (chainId === '') return;
     const currencies = getTopUpCurrenciesByChainId(chainId);
     onChangeCurrency(currencies[0].address);
-    setAmount('0');
+    setAmount('');
   }, [chainId]);
 
   useEffect(() => {
@@ -108,7 +108,7 @@ const TopUpPage = () => {
 
   useEffect(() => {
     if (!(chainId && wallet && topUpContractAddress && currencyAddress)) return;
-    setAmount('0');
+    setAmount('');
     setFetchingInfo(true);
     Promise.all([checkApproveToken(), fetchBalance()])
       .catch((error) => {
@@ -127,7 +127,6 @@ const TopUpPage = () => {
       setBalanceToken(balance);
     } catch (error) {
       setBalanceToken('0');
-      toastError({ message: getErrorMessage(error) });
     }
   };
   const onChangeChain = (value: string) => {
@@ -165,6 +164,7 @@ const TopUpPage = () => {
           },
         }),
       );
+
       await checkApproveToken();
     } catch (error) {
       toastError({ message: getErrorMessage(error) });
@@ -183,23 +183,27 @@ const TopUpPage = () => {
       (option) => option.value === currencyAddress,
     )?.decimals;
 
-    await dispatch(
-      executeTransaction({
-        provider: wallet.getProvider(),
-        params: {
-          contractAddress: topUpContractAddress,
-          abi: abi['topup'],
-          action: 'topup',
-          transactionArgs: [
-            config.topUp.appId,
-            currencyAddress,
-            convertDecToWei(amount, decimal),
-          ],
-        },
-        confirmation: config.topUp.confirmations,
-      }),
-    );
-    await dispatch(getUserProfile());
+    try {
+      await dispatch(
+        executeTransaction({
+          provider: wallet.getProvider(),
+          params: {
+            contractAddress: topUpContractAddress,
+            abi: abi['topup'],
+            action: 'topup',
+            transactionArgs: [
+              config.topUp.appId,
+              currencyAddress,
+              convertDecToWei(amount, decimal),
+            ],
+          },
+          confirmation: config.topUp.confirmations,
+        }),
+      );
+      await dispatch(getUserProfile());
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const onTopUp = async () => {
@@ -214,7 +218,7 @@ const TopUpPage = () => {
       setProcessing(true);
       await topUp(currencyAddress, amount);
       await fetchBalance();
-      setAmount('0');
+      setAmount('');
     } catch (error) {
       console.error(error);
       toastError({ message: getErrorMessage(error) });
@@ -346,7 +350,11 @@ const TopUpPage = () => {
               </Flex>
             </Flex>
           </Flex>
-          {fetchingInfo && <Text>Please waiting</Text>}
+          {fetchingInfo && (
+            <Text fontSize={'12px'}>
+              Please waiting until it has already loaded
+            </Text>
+          )}
         </AppCard>
         <Flex justifyContent={isMobile ? 'center' : 'flex-end'} mt={7}>
           <AppButton

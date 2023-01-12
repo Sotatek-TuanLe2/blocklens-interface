@@ -8,6 +8,7 @@ import { AppCard } from 'src/components';
 import { useDispatch } from 'react-redux';
 import { MetadataPlan } from 'src/store/metadata';
 import { getUserPlan } from 'src/store/user';
+import { getErrorMessage } from '../utils/utils-helper';
 
 interface IModalChangePaymentMethod {
   open: boolean;
@@ -32,8 +33,8 @@ const ModalChangePlan: FC<IModalChangePaymentMethod> = ({
       toastSuccess({ message: 'Update Successfully!' });
       dispatch(getUserPlan());
       onClose();
-    } catch (e: any) {
-      toastError({ message: e?.message || 'Oops. Something went wrong!' });
+    } catch (e) {
+      toastError({ message: getErrorMessage(e) });
     }
   };
 

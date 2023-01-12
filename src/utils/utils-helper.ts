@@ -8,8 +8,8 @@ export const copyToClipboard = (message: string) => {
   try {
     copy(message);
     toastSuccess({ message: 'Copied' });
-  } catch (error: any) {
-    toastError({ message: 'Oops. Something went wrong' });
+  } catch (error) {
+    toastError({ message: getErrorMessage(error) });
   }
 };
 
@@ -64,7 +64,6 @@ export const isString = (value: unknown) => {
 };
 
 export const getErrorMessage = (err: any) => {
-  // Init regex inside a function to reset regex (reset lastIndex)
   const REGEX_GET_MESSAGE = /execution reverted:([^"]*)/gm;
   if (err.message?.includes('execution reverted:')) {
     const match = REGEX_GET_MESSAGE.exec(err.message);

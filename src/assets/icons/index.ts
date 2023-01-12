@@ -61,5 +61,5 @@ export {
   ArrowLogout,
   ReloadIcon,
   CopyIcon,
-  NoticeIcon
+  NoticeIcon,
 };

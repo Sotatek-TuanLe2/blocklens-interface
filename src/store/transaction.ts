@@ -3,7 +3,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Contract } from 'ethers';
 import { Interface as AbiInterface } from '@ethersproject/abi';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
-import { getErrorMessage } from '../utils/utils-helper';
+import { getErrorMessage, isString } from '../utils/utils-helper';
 
 interface ITransactionState {
   openSubmittingTransactionModal: boolean;
@@ -49,7 +49,6 @@ const createTransaction = async (provider: any, params: ITransactionParams) => {
     overrides.gasLimit = Math.floor(gasLimit * (1 + GAS_LIMIT_BUFFER));
     return contractWithSigner[action](...transactionArgs, overrides);
   } catch (error: any) {
-    console.log(error);
     throw new Error(error);
   }
 };
@@ -114,7 +113,9 @@ export const executeTransaction = createAsyncThunk(
         handleTransaction({ transaction, provider, confirmation }),
       );
     } catch (error: any) {
-      toastError({ message: getErrorMessage(error) });
+      if (error.code === 'ACTION_REJECTED') {
+        toastError({ message: 'User denied transaction signature.' });
+      }
       throw new Error(error);
     }
   },

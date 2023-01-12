@@ -26,6 +26,7 @@ import { AppHeading } from 'src/components';
 import { BasePage } from 'src/layouts';
 import useAppDetails from 'src/hooks/useAppDetails';
 import useWebhookDetails from 'src/hooks/useWebhook';
+import { getErrorMessage } from '../utils/utils-helper';
 
 const WebhookSettingsPage = () => {
   const { appId, id: webhookId } = useParams<{ appId: string; id: string }>();
@@ -53,8 +54,8 @@ const WebhookSettingsPage = () => {
       dispatch(getUserStats());
       toastSuccess({ message: 'Update Successfully!' });
       await getWebhookInfo();
-    } catch (e: any) {
-      toastError({ message: e?.message || 'Oops. Something went wrong!' });
+    } catch (e) {
+      toastError({ message: getErrorMessage(e) });
     }
   };
 

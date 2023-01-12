@@ -9,6 +9,7 @@ import AppButton from './AppButton';
 import { Box } from '@chakra-ui/react';
 import config from 'src/config';
 import { setUserAuth } from '../store/user';
+import { getErrorMessage } from '../utils/utils-helper';
 
 const clientId = config.auth.googleClientId;
 
@@ -40,8 +41,8 @@ const GoogleAuthButton: FC<IGoogleAuthButton> = ({ children }) => {
       dispatch(setUserAuth(res));
       toastSuccess({ message: 'Welcome to Blocklens!' });
       history.push('/');
-    } catch (e: any) {
-      toastError({ message: e?.message || 'Oops. Something went wrong!' });
+    } catch (e) {
+      toastError({ message: getErrorMessage(e) });
     }
   };
 

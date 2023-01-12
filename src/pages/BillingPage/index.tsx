@@ -40,6 +40,7 @@ import { getUserPlan, getUserProfile } from 'src/store/user';
 import { MetadataPlan } from 'src/store/metadata';
 import useMetadata from 'src/hooks/useMetadata';
 import ModalChangePaymentMethod from 'src/modals/ModalChangePaymentMethod';
+import { getErrorMessage } from '../../utils/utils-helper';
 
 export const PAYMENT_METHOD = {
   CARD: 'STRIPE',
@@ -298,8 +299,8 @@ const BillingPage = () => {
         .updateBillingPlan({ code: planSelected.code });
       toastSuccess({ message: 'Downgrade Plan Successfully!' });
       dispatch(getUserPlan());
-    } catch (error: any) {
-      toastError({ message: error.message });
+    } catch (error) {
+      toastError({ message: getErrorMessage(error) });
     }
   };
 

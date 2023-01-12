@@ -7,6 +7,7 @@ import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { useHistory } from 'react-router';
 import Storage from 'src/utils/utils-storage';
+import { getErrorMessage } from '../utils/utils-helper';
 
 interface IFormChangePass {
   currentPassword: string;
@@ -54,9 +55,9 @@ const ModalChangePassword: React.FC<IChangePasswordModal> = ({
       setDataForm({ ...initialData });
       onClose();
       toastSuccess({ message: 'Update password was successfully' });
-    } catch (error: any) {
+    } catch (error) {
       toastError({
-        message: error?.message || 'Oops. Something went wrong!',
+        message: getErrorMessage(error),
       });
     }
   };

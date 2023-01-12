@@ -15,6 +15,7 @@ import { AppButton, AppCard } from 'src/components';
 import { isMobile } from 'react-device-detect';
 import { useDispatch } from 'react-redux';
 import { getUserProfile } from 'src/store/user';
+import { getErrorMessage } from '../../../utils/utils-helper';
 
 interface ICheckoutForm {
   onClose?: () => void;
@@ -58,8 +59,8 @@ const CheckoutForm: FC<ICheckoutForm> = ({ onClose, onSuccess, isEdit }) => {
           onClose && onClose();
           onSuccess && (await onSuccess());
           dispatch(getUserProfile());
-        } catch (e: any) {
-          toastError({ message: e?.message || 'Oops. Something went wrong!' });
+        } catch (e) {
+          toastError({ message: getErrorMessage(e) });
         } finally {
           setIsLoading(false);
         }
