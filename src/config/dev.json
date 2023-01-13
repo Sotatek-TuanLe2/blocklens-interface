@@ -228,9 +228,9 @@
         }
       }
     },
-    "BITCOIN": {
+    "BTC": {
       "name": "Bitcoin",
-      "id": "BITCOIN",
+      "id": "BTC",
       "icon": "icon-bitcoin",
       "networks": {
         "MAINNET": {
