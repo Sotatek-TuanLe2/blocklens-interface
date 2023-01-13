@@ -64,6 +64,13 @@ const AppDetail = () => {
     userStats?.numberOfNftActivities,
   ]);
 
+  useEffect(() => {
+    if (appInfo.chain === 'BTC') {
+      setDefaultTab(0);
+      return;
+    }
+  }, [appInfo]);
+
   const _renderListWebhook = () => {
     return (
       <AppCard className="list-webhook">
