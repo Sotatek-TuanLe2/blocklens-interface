@@ -291,12 +291,22 @@
         "MAINNET": {
           "name": "Mainnet",
           "id": "MAINNET",
-          "icon": "icon-bitcoin"
+          "icon": "icon-bitcoin",
+          "blockExplorer": {
+            "name": "Bitcoin",
+            "icon": "/images/bscscan.png",
+            "url": "https://blockchain.coinmarketcap.com/"
+          }
         },
         "TESTNET": {
           "name": "Testnet",
           "id": "TESTNET",
-          "icon": "icon-bitcoin"
+          "icon": "icon-bitcoin",
+          "blockExplorer": {
+            "name": "Bitcoin",
+            "icon": "/images/bscscan.png",
+            "url": "https://blockchain.coinmarketcap.com/"
+          }
         }
       }
     }

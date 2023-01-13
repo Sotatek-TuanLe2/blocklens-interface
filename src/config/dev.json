@@ -199,49 +199,32 @@
             "decimals": 18
           }
         }
-      },
-      "BTC": {
-        "name": "Bitcoin",
-        "id": "BTC",
-        "icon": "icon-bitcoin",
-        "networks": {
-          "MAINNET": {
-            "name": "Mainnet",
-            "id": "MAINNET",
-            "icon": "icon-bitcoin",
-            "blockExplorer": {
-              "name": "Bitcoin",
-              "icon": "/images/bscscan.png",
-              "url": "https://blockchain.coinmarketcap.com/"
-            }
-          },
-          "TESTNET": {
-            "name": "Testnet",
-            "id": "TESTNET",
-            "icon": "icon-bitcoin",
-            "blockExplorer": {
-              "name": "Bitcoin",
-              "icon": "/images/bscscan.png",
-              "url": "https://blockchain.coinmarketcap.com/"
-            }
-          }
-        }
       }
     },
-    "BITCOIN": {
+    "BTC": {
       "name": "Bitcoin",
-      "id": "BITCOIN",
+      "id": "BTC",
       "icon": "icon-bitcoin",
       "networks": {
         "MAINNET": {
           "name": "Mainnet",
           "id": "MAINNET",
-          "icon": "icon-bitcoin"
+          "icon": "icon-bitcoin",
+          "blockExplorer": {
+            "name": "Bitcoin",
+            "icon": "/images/bscscan.png",
+            "url": "https://blockchain.coinmarketcap.com/"
+          }
         },
         "TESTNET": {
           "name": "Testnet",
           "id": "TESTNET",
-          "icon": "icon-bitcoin"
+          "icon": "icon-bitcoin",
+          "blockExplorer": {
+            "name": "Bitcoin",
+            "icon": "/images/bscscan.png",
+            "url": "https://blockchain.coinmarketcap.com/"
+          }
         }
       }
     }
