@@ -128,6 +128,7 @@ const ModalCreateApp: FC<IModalCreateApp> = ({ open, onClose, reloadData }) => {
       description="We suggest you create an app and start experiencing our service,
        which grants real-time notifications to various blockchains' activities!"
       isOpen={open}
+      className='modal-create-app'
       isFullScreen={isMobile}
       onClose={onCloseModal}
     >
