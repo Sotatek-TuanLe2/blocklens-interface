@@ -1,15 +1,16 @@
-import { Box, Flex } from '@chakra-ui/react';
+import { Flex } from '@chakra-ui/react';
 import React, { FC, useState } from 'react';
 import BaseModal from './BaseModal';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { useHistory } from 'react-router';
 import { IAppResponse } from 'src/utils/utils-app';
-import { AppField, AppInput, AppTextarea } from 'src/components';
+import { AppField, AppInput } from 'src/components';
 import AppButton from 'src/components/AppButton';
 import { isMobile } from 'react-device-detect';
 import { useDispatch } from 'react-redux';
 import { getUserStats } from '../store/user';
+import { getErrorMessage } from '../utils/utils-helper';
 
 interface IModalEditApp {
   open: boolean;
@@ -35,8 +36,8 @@ const ModalDeleteApp: FC<IModalEditApp> = ({ open, onClose, appInfo }) => {
       dispatch(getUserStats());
       history.push('/');
       onCloseModal();
-    } catch (e: any) {
-      toastError({ message: e?.message || 'Oops. Something went wrong!' });
+    } catch (e) {
+      toastError({ message: getErrorMessage(e) });
     }
   };
 

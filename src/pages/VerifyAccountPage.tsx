@@ -8,6 +8,7 @@ import { useLocation } from 'react-router';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { useHistory } from 'react-router';
+import { getErrorMessage } from '../utils/utils-helper';
 
 const VerifyAccountPage: FC = () => {
   const { search } = useLocation();
@@ -31,8 +32,8 @@ const VerifyAccountPage: FC = () => {
       await rf.getRequest('AuthRequest').verifyMail(uid, vid);
       setIsVerifyFail(false);
       toastSuccess({ message: 'Verify Successfully!' });
-    } catch (e: any) {
-      toastError({ message: e?.message || 'Oops. Something went wrong!' });
+    } catch (e) {
+      toastError({ message: getErrorMessage(e) });
       setIsVerifyFail(true);
     }
   };

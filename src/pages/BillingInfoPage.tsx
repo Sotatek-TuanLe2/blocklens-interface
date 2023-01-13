@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { BasePage } from 'src/layouts';
 import 'src/styles/pages/AccountPage.scss';
-import { Box, Checkbox, Flex } from '@chakra-ui/react';
+import { Box, Flex } from '@chakra-ui/react';
 import { AppCard, AppLink } from 'src/components';
 import { EditIcon } from 'src/assets/icons';
 import rf from 'src/requests/RequestFactory';
 import { toastError } from 'src/utils/utils-notify';
 import { isMobile } from 'react-device-detect';
 import ModalBillingInfo from '../modals/ModalBillingInfo';
+import { getErrorMessage } from '../utils/utils-helper';
 
 const BillingInfoPage = () => {
   const [isOpenEditBillingInfoModal, setIsOpenEditBillingInfoModal] =
@@ -18,8 +19,8 @@ const BillingInfoPage = () => {
     try {
       const res = await rf.getRequest('BillingRequest').getBillingInfo();
       setBillingInfo(res || {});
-    } catch (e: any) {
-      toastError({ message: e?.message || 'Oops. Something went wrong!' });
+    } catch (e) {
+      toastError({ message: getErrorMessage(e) });
     }
   };
   useEffect(() => {

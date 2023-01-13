@@ -144,9 +144,9 @@ export const createValidator = (options?: IOptions | undefined) => {
         },
       },
       insufficientBalance: {
-        message: 'Insufficient balance',
+        message: 'Your balance is currently insufficient',
         rule: (value: string, params: string[]) => {
-          return +value < +params[0];
+          return +value <= +params[0];
         },
       },
     },

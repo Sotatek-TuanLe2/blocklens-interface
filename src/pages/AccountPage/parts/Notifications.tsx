@@ -9,6 +9,7 @@ import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import ModalEditReceiveEmail from 'src/modals/ModalEditReceiveEmail';
 import { getUserProfile } from 'src/store/user';
 import useUser from 'src/hooks/useUser';
+import { getErrorMessage } from '../../../utils/utils-helper';
 
 const Notifications = () => {
   const [isOpenEditReceiveEmailModal, setIsOpenEditReceiveEmailModal] =
@@ -23,9 +24,9 @@ const Notifications = () => {
       });
       dispatch(getUserProfile());
       toastSuccess({ message: 'Successfully' });
-    } catch (error: any) {
+    } catch (error) {
       toastError({
-        message: error?.message || 'Oops. Something went wrong!',
+        message: getErrorMessage(error),
       });
     }
   };

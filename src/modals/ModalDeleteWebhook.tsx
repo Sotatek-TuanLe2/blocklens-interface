@@ -9,6 +9,7 @@ import { useHistory } from 'react-router';
 import { isMobile } from 'react-device-detect';
 import { useDispatch } from 'react-redux';
 import { getUserStats } from '../store/user';
+import { getErrorMessage } from '../utils/utils-helper';
 
 interface IModalDeleteWebhook {
   open: boolean;
@@ -33,8 +34,8 @@ const ModalDeleteWebhook: FC<IModalDeleteWebhook> = ({
       toastSuccess({ message: 'Delete Successfully!' });
       history.push(`/apps/${webhook.appId}`);
       onClose();
-    } catch (e: any) {
-      toastError({ message: e?.message || 'Oops. Something went wrong!' });
+    } catch (e) {
+      toastError({ message: getErrorMessage(e) });
     }
   };
 

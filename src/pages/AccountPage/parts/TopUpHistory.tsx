@@ -5,7 +5,11 @@ import 'src/styles/pages/AppDetail.scss';
 import { AppCard, AppDataTable } from 'src/components';
 import { toastError } from 'src/utils/utils-notify';
 import { isMobile } from 'react-device-detect';
-import { formatShortText, formatTimestamp } from 'src/utils/utils-helper';
+import {
+  formatShortText,
+  formatTimestamp,
+  getErrorMessage,
+} from 'src/utils/utils-helper';
 import {
   getBlockExplorerUrl,
   getLogoChainByChainId,
@@ -120,9 +124,9 @@ const TopUpHistory = () => {
   const fetchDataTable: any = useCallback(async (params: any) => {
     try {
       return await rf.getRequest('UserRequest').getTopUpHistories(params);
-    } catch (error: any) {
+    } catch (error) {
       toastError({
-        message: error?.message || 'Oops. Something went wrong!',
+        message: getErrorMessage(error),
       });
     }
   }, []);

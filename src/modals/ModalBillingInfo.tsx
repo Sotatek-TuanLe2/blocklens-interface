@@ -5,6 +5,7 @@ import { AppButton, AppField, AppInput, AppSelect2 } from 'src/components';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import rf from 'src/requests/RequestFactory';
 import { COUNTRIES } from 'src/constants';
+import { getErrorMessage } from '../utils/utils-helper';
 
 interface IModalBillingInfo {
   open: boolean;
@@ -58,8 +59,8 @@ const ModalBillingInfo: FC<IModalBillingInfo> = ({
       toastSuccess({ message: 'Successfully!' });
       reloadData();
       onClose();
-    } catch (e: any) {
-      toastError({ message: e?.message || 'Oops. Something went wrong!' });
+    } catch (error) {
+      toastError({ message: getErrorMessage(error) });
     }
   };
 

@@ -112,7 +112,7 @@
           "icon": "icon-bsc",
           "chainId": 97,
           "rpcUrls": [
-            "https://data-seed-prebsc-1-s1.binance.org:8545"
+            "https://data-seed-prebsc-1-s3.binance.org:8545/"
           ],
           "blockExplorer": {
             "name": "Bscscan",
@@ -225,6 +225,23 @@
               "url": "https://blockchain.coinmarketcap.com/"
             }
           }
+        }
+      }
+    },
+    "BITCOIN": {
+      "name": "Bitcoin",
+      "id": "BITCOIN",
+      "icon": "icon-bitcoin",
+      "networks": {
+        "MAINNET": {
+          "name": "Mainnet",
+          "id": "MAINNET",
+          "icon": "icon-bitcoin"
+        },
+        "TESTNET": {
+          "name": "Testnet",
+          "id": "TESTNET",
+          "icon": "icon-bitcoin"
         }
       }
     }

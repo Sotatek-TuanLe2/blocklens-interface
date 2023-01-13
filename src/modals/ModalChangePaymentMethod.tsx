@@ -9,7 +9,7 @@ import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { getUserProfile } from 'src/store/user';
 import { useDispatch } from 'react-redux';
-import { formatShortText } from 'src/utils/utils-helper';
+import { formatShortText, getErrorMessage } from 'src/utils/utils-helper';
 
 interface IModalChangePaymentMethod {
   open: boolean;
@@ -33,8 +33,8 @@ const ModalChangePaymentMethod: FC<IModalChangePaymentMethod> = ({
       toastSuccess({ message: 'Update Successfully!' });
       await dispatch(getUserProfile());
       onClose();
-    } catch (error: any) {
-      toastError({ message: error.message });
+    } catch (error) {
+      toastError({ message: getErrorMessage(error) });
     }
   };
 

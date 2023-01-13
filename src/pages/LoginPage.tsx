@@ -17,6 +17,7 @@ import { useHistory } from 'react-router';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { setUserAuth } from '../store/user';
+import { getErrorMessage } from '../utils/utils-helper';
 
 interface IDataForm {
   email: string;
@@ -54,8 +55,8 @@ const LoginPage: FC = () => {
         toastSuccess({ message: 'Welcome to Blocklens!' });
         history.push('/');
       }
-    } catch (e: any) {
-      toastError({ message: e?.message || 'Oops. Something went wrong' });
+    } catch (e) {
+      toastError({ message: getErrorMessage(e) });
     }
   };
 
@@ -129,10 +130,22 @@ const LoginPage: FC = () => {
 
             <Box className="note" mt={3}>
               This site is protected by reCAPTCHA and the{' '}
-              <a href="https://blocklens.io/privacy-policy" className={"link"} target="_blank">
+              <a
+                href="https://blocklens.io/privacy-policy"
+                className={'link'}
+                target="_blank"
+              >
                 Privacy Policy{' '}
               </a>{' '}
-              and <a href="https://blocklens.io/terms" target="_blank" className={"link"}>Terms of Service</a> apply.
+              and{' '}
+              <a
+                href="https://blocklens.io/terms"
+                target="_blank"
+                className={'link'}
+              >
+                Terms of Service
+              </a>{' '}
+              apply.
             </Box>
           </Box>
         </AppCard>

@@ -1,10 +1,11 @@
 import React, { FC } from 'react';
 import BaseModal from './BaseModal';
-import { Box, Flex } from '@chakra-ui/react';
+import { Flex } from '@chakra-ui/react';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import AppButton from '../components/AppButton';
 import { isMobile } from 'react-device-detect';
+import { getErrorMessage } from '../utils/utils-helper';
 
 interface IModalCancelSubscription {
   open: boolean;
@@ -20,8 +21,8 @@ const ModalCancelSubscription: FC<IModalCancelSubscription> = ({
       await rf.getRequest('BillingRequest').cancelSubscription();
       toastSuccess({ message: 'Cancel Subscription Successfully!' });
       onClose();
-    } catch (e: any) {
-      toastError({ message: e?.message || 'Oops. Something went wrong!' });
+    } catch (e) {
+      toastError({ message: getErrorMessage(e) });
     }
   };
 

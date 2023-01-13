@@ -16,6 +16,7 @@ import _ from 'lodash';
 import { isMobile } from 'react-device-detect';
 import { useDispatch } from 'react-redux';
 import { getUserStats } from '../store/user';
+import { getErrorMessage } from '../utils/utils-helper';
 
 interface IModalCreateApp {
   open: boolean;
@@ -110,8 +111,8 @@ const ModalCreateApp: FC<IModalCreateApp> = ({ open, onClose, reloadData }) => {
         reloadData && reloadData();
         onCloseModal();
       }
-    } catch (e: any) {
-      toastError({ message: e?.message || 'Oops. Something went wrong!' });
+    } catch (e) {
+      toastError({ message: getErrorMessage(e) });
     }
   };
 

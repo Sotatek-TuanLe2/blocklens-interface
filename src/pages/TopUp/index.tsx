@@ -30,8 +30,6 @@ import { BasePage } from 'src/layouts';
 import { executeTransaction } from 'src/store/transaction';
 import { getUserProfile } from 'src/store/user';
 import {
-  getChainConfig,
-  getNetworkByEnv,
   getSupportChainsTopUp,
   getTopUpConfigByNetworkId,
   getTopUpCurrenciesByChainId,
@@ -42,6 +40,10 @@ import { toastError } from 'src/utils/utils-notify';
 import { getBalanceToken, isTokenApproved } from 'src/utils/utils-token';
 import { convertDecToWei } from 'src/utils/utils-format';
 import { createValidator } from 'src/utils/utils-validator';
+import {
+  convertCurrencyToNumber,
+  getErrorMessage,
+} from 'src/utils/utils-helper';
 import config from 'src/config';
 import abi from 'src/abi';
 import 'src/styles/pages/BillingPage.scss';
@@ -62,9 +64,9 @@ const TopUpPage = () => {
   const [amount, setAmount] = useState<string>('');
   const [currencyAddress, setCurrencyAddress] = useState<string>('');
 
-  const [isBeingToppedUp, setIsBeingToppedUp] = useState<boolean>(false);
+  const [processing, setProcessing] = useState(false);
   const [balanceToken, setBalanceToken] = useState<string | number>('');
-  const [fetchingBalance, setFetchingBalance] = useState(false);
+  const [fetchingInfo, setFetchingInfo] = useState(false);
   const [hasApproveToken, setHasApproveToken] = useState(false);
 
   const validator = useRef(
@@ -73,15 +75,18 @@ const TopUpPage = () => {
     }),
   );
 
-  const topUpContractAddress = wallet
-    ? getTopUpConfigByNetworkId(wallet.getNework()).contractAddress
+  const topUpContractAddress = chainId
+    ? getTopUpConfigByNetworkId(chainId).contractAddress
     : null;
   const isDifferentWalletAddressLinked =
     wallet?.getAddress() !== user?.getLinkedAddress();
   const chainOptions = getSupportChainsTopUp();
+  const inValidAmount =
+    +amount <= 0 || convertCurrencyToNumber(amount) > balanceToken;
 
   useEffect(() => {
-    const defaultChain = chainOptions[0];
+    const defaultChain =
+      chainOptions.find((chain) => chain.value === 'BSC') || chainOptions[0];
     onChangeChain(defaultChain.value);
   }, []);
 
@@ -89,6 +94,7 @@ const TopUpPage = () => {
     if (chainId === '') return;
     const currencies = getTopUpCurrenciesByChainId(chainId);
     onChangeCurrency(currencies[0].address);
+    setAmount('');
   }, [chainId]);
 
   useEffect(() => {
@@ -99,47 +105,30 @@ const TopUpPage = () => {
       await connectWallet(connectorId, network);
     })();
   }, [wallet?.getNework()]);
-  const checkApproveToken = async () => {
+
+  useEffect(() => {
     if (!(chainId && wallet && topUpContractAddress && currencyAddress)) return;
+    setAmount('');
+    setFetchingInfo(true);
+    Promise.all([checkApproveToken(), fetchBalance()])
+      .catch((error) => {
+        toastError({ message: getErrorMessage(error) });
+      })
+      .finally(() => setFetchingInfo(false));
+  }, [wallet, currencyAddress]);
+
+  const fetchBalance = async () => {
     try {
-      const result = await isTokenApproved(
+      const balance = await getBalanceToken(
         chainId,
         currencyAddress,
-        wallet.getAddress(),
-        topUpContractAddress,
+        wallet?.getAddress(),
       );
-      setHasApproveToken(result);
+      setBalanceToken(balance);
     } catch (error) {
-      console.log(error);
+      setBalanceToken('0');
     }
   };
-  useEffect(() => {
-    checkApproveToken();
-  }, [wallet, topUpContractAddress, currencyAddress]);
-
-  useEffect(() => {
-    if (!(chainId && currencyAddress && wallet?.getAddress())) return;
-    setFetchingBalance(true);
-
-    const fetchBalance = async () => {
-      setFetchingBalance(true);
-      try {
-        const balance = await getBalanceToken(
-          chainId,
-          currencyAddress,
-          wallet?.getAddress(),
-        );
-        setBalanceToken(balance);
-      } catch (error: any) {
-        setBalanceToken('');
-        toastError({ message: error.toString() });
-      } finally {
-        setFetchingBalance(false);
-      }
-    };
-    fetchBalance();
-  }, [currencyAddress, wallet?.getAddress()]);
-
   const onChangeChain = (value: string) => {
     setChainId(value);
   };
@@ -147,57 +136,74 @@ const TopUpPage = () => {
     setCurrencyAddress(currencyAddress);
   };
 
-  const approveToken = async () => {
-    if (chainId !== wallet?.getChainId()) {
-      await changeNetwork(chainId);
-    }
-    await dispatch(
-      executeTransaction({
-        provider: wallet?.getProvider(),
-        params: {
-          contractAddress: currencyAddress,
-          abi: abi['erc20'],
-          action: 'approve',
-          transactionArgs: [topUpContractAddress, MaxUint256.toString()],
-        },
-      }),
+  const checkApproveToken = async () => {
+    if (!(chainId && wallet && topUpContractAddress && currencyAddress)) return;
+    const result = await isTokenApproved(
+      chainId,
+      currencyAddress,
+      wallet.getAddress(),
+      topUpContractAddress,
     );
-    await checkApproveToken();
+    setHasApproveToken(result);
+  };
+
+  const approveToken = async () => {
+    setProcessing(true);
+    try {
+      if (chainId !== wallet?.getChainId()) {
+        await changeNetwork(chainId);
+      }
+      await dispatch(
+        executeTransaction({
+          provider: wallet?.getProvider(),
+          params: {
+            contractAddress: currencyAddress,
+            abi: abi['erc20'],
+            action: 'approve',
+            transactionArgs: [topUpContractAddress, MaxUint256.toString()],
+          },
+        }),
+      );
+
+      await checkApproveToken();
+    } catch (error) {
+      toastError({ message: getErrorMessage(error) });
+    } finally {
+      setProcessing(false);
+    }
   };
 
   const topUp = async (currencyAddress: string, amount: string) => {
     if (!(wallet && topUpContractAddress)) {
       return;
     }
-    const networkCurrencies = getNetworkByEnv(
-      getChainConfig(wallet.getNework()),
-    ).currencies;
-    const currencyKey = Object.keys(networkCurrencies).find(
-      (currencyKey: string) =>
-        networkCurrencies[currencyKey].address === currencyAddress,
-    );
 
-    if (!currencyKey) {
-      return;
+    const currencyOptions = getTopUpCurrencyOptions(chainId);
+    const decimal = currencyOptions.find(
+      (option) => option.value === currencyAddress,
+    )?.decimals;
+
+    try {
+      await dispatch(
+        executeTransaction({
+          provider: wallet.getProvider(),
+          params: {
+            contractAddress: topUpContractAddress,
+            abi: abi['topup'],
+            action: 'topup',
+            transactionArgs: [
+              config.topUp.appId,
+              currencyAddress,
+              convertDecToWei(amount, decimal),
+            ],
+          },
+          confirmation: config.topUp.confirmations,
+        }),
+      );
+      await dispatch(getUserProfile());
+    } catch (error) {
+      console.log(error);
     }
-
-    await dispatch(
-      executeTransaction({
-        provider: wallet.getProvider(),
-        params: {
-          contractAddress: topUpContractAddress,
-          abi: abi['topup'],
-          action: 'topup',
-          transactionArgs: [
-            config.topUp.appId,
-            currencyAddress,
-            convertDecToWei(amount, networkCurrencies[currencyKey].decimals),
-          ],
-        },
-        confirmation: config.topUp.confirmations,
-      }),
-    );
-    await dispatch(getUserProfile());
   };
 
   const onTopUp = async () => {
@@ -205,18 +211,19 @@ const TopUpPage = () => {
       return;
     }
 
-    if (chainId !== wallet.getChainId()) {
-      await changeNetwork(chainId);
-    }
     try {
-      setIsBeingToppedUp(true);
+      if (chainId !== wallet.getChainId()) {
+        await changeNetwork(chainId);
+      }
+      setProcessing(true);
       await topUp(currencyAddress, amount);
-      setAmount('0');
-      setIsBeingToppedUp(false);
-    } catch (error: any) {
-      setIsBeingToppedUp(false);
+      await fetchBalance();
+      setAmount('');
+    } catch (error) {
       console.error(error);
-      toastError({ message: error?.data?.message || error?.message });
+      toastError({ message: getErrorMessage(error) });
+    } finally {
+      setProcessing(false);
     }
   };
 
@@ -243,9 +250,7 @@ const TopUpPage = () => {
       <form
         onSubmit={async (e) => {
           e.preventDefault();
-          if (hasApproveToken) {
-            await onTopUp();
-          } else await approveToken();
+          await onTopUp();
         }}
       >
         <AppCard className={'box-form-crypto'}>
@@ -272,6 +277,7 @@ const TopUpPage = () => {
                   }}
                   options={chainOptions}
                   value={chainId}
+                  disabled={fetchingInfo}
                 />
               </AppField>
             </Box>
@@ -282,6 +288,7 @@ const TopUpPage = () => {
                   onChange={(value: string) => onChangeCurrency(value)}
                   options={getTopUpCurrencyOptions(chainId)}
                   value={currencyAddress}
+                  disabled={fetchingInfo}
                 />
               </AppField>
             </Box>
@@ -298,7 +305,7 @@ const TopUpPage = () => {
                     <Box mr={2} className="label">
                       User balance:
                     </Box>
-                    {!fetchingBalance ? (
+                    {!fetchingInfo ? (
                       <Box>{balanceToken || '--'}</Box>
                     ) : (
                       <Spinner size={'sm'} />
@@ -307,7 +314,7 @@ const TopUpPage = () => {
                 </Flex>
                 <AppCurrencyInput
                   onChange={(e) => setAmount(e.target.value.trim())}
-                  disabled={fetchingBalance}
+                  disabled={fetchingInfo}
                   render={(ref, props) => (
                     <AppInput
                       ref={ref}
@@ -326,12 +333,15 @@ const TopUpPage = () => {
                 {AMOUNT_OPTIONS.map((item: number, index: number) => {
                   return (
                     <Button
-                      disabled={fetchingBalance}
+                      disabled={fetchingInfo || processing}
                       className={`amount-option ${
                         +amount === item ? 'active' : ''
                       }`}
                       key={index}
-                      onClick={() => setAmount(item.toString())}
+                      onClick={() => {
+                        setAmount(item.toString());
+                        validator.current.showMessages();
+                      }}
                     >
                       {item}
                     </Button>
@@ -340,21 +350,33 @@ const TopUpPage = () => {
               </Flex>
             </Flex>
           </Flex>
+          {fetchingInfo && (
+            <Text fontSize={'12px'}>
+              Please waiting until it has already loaded
+            </Text>
+          )}
         </AppCard>
         <Flex justifyContent={isMobile ? 'center' : 'flex-end'} mt={7}>
           <AppButton
             type={'submit'}
             size={'lg'}
-            isLoading={fetchingBalance}
-            loadingText={'Loading...'}
             disabled={
-              fetchingBalance ||
-              (hasApproveToken &&
-                (isBeingToppedUp || +amount <= 0 || +amount > balanceToken))
+              !hasApproveToken || fetchingInfo || processing || inValidAmount
             }
           >
-            {hasApproveToken ? `Top Up` : 'Approve Token'}
+            Top up
           </AppButton>
+          {!hasApproveToken && (
+            <AppButton
+              marginLeft={'8px'}
+              type={'button'}
+              size={'lg'}
+              disabled={fetchingInfo || processing || inValidAmount}
+              onClick={approveToken}
+            >
+              Approve token
+            </AppButton>
+          )}
         </Flex>
       </form>
     );

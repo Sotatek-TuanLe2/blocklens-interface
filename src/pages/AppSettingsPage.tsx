@@ -29,6 +29,7 @@ import {
 } from 'src/utils/utils-network';
 import { useParams } from 'react-router';
 import { BasePage } from 'src/layouts';
+import { getErrorMessage } from '../utils/utils-helper';
 
 interface IAppSettings {
   onBack: () => void;
@@ -106,8 +107,8 @@ const AppSettingsPage: FC<IAppSettings> = () => {
       });
       await getAppInfo();
       toastSuccess({ message: 'Update Successfully!' });
-    } catch (e: any) {
-      toastError({ message: e?.message || 'Oops. Something went wrong!' });
+    } catch (e) {
+      toastError({ message: getErrorMessage(e) });
     }
   };
 

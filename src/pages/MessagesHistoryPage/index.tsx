@@ -1,17 +1,10 @@
 import { Box, Flex, Th, Thead, Tr } from '@chakra-ui/react';
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import rf from 'src/requests/RequestFactory';
 import { useHistory, useParams } from 'react-router';
 import 'src/styles/pages/AppDetail.scss';
 import { BasePage } from 'src/layouts';
-import {
-  AppCard,
-  AppDataTable,
-  AppInput,
-  AppFilter,
-  AppHeading,
-  AppLink,
-} from 'src/components';
+import { AppCard, AppDataTable, AppInput, AppFilter } from 'src/components';
 import {
   WEBHOOK_TYPES,
   optionsFilterMessage,
@@ -21,7 +14,7 @@ import MessageItem from './parts/MessageItem';
 import { toastError } from 'src/utils/utils-notify';
 import { isMobile } from 'react-device-detect';
 import MessagesItemMobile from './parts/MessagesItemMobile';
-import { filterParams } from 'src/utils/utils-helper';
+import { filterParams, getErrorMessage } from 'src/utils/utils-helper';
 import ModalFilterActivities from 'src/modals/ModalFilterActivities';
 import useWebhookDetails from 'src/hooks/useWebhook';
 import { getLogoChainByChainId } from 'src/utils/utils-network';
@@ -52,9 +45,9 @@ const MessagesHistory = () => {
       return await rf
         .getRequest('NotificationRequest')
         .getMessagesHistory(hashId, filterParams(params));
-    } catch (error: any) {
+    } catch (error) {
       toastError({
-        message: error?.message || 'Oops. Something went wrong!',
+        message: getErrorMessage(error),
       });
     }
   }, []);

@@ -1,7 +1,7 @@
 {
   "disallowed": ["master"],
   "allowed": ["develop"],
-  "prefixes": ["feature", "fix", "hotfix", "release"],
+  "prefixes": ["feature", "fix", "hotfix", "release", "refactor"],
   "separator": "/",
   "maxSections": 2
 }

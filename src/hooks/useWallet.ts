@@ -1,6 +1,5 @@
 import { BaseProvider, Web3Provider } from '@ethersproject/providers';
 import web3 from 'web3';
-import _ from 'lodash';
 import ConnectorFactory, { WALLET_CONNECT } from 'src/connectors';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from 'src/store';
@@ -24,6 +23,7 @@ import BaseConnector from 'src/connectors/BaseConnector';
 import useUser from './useUser';
 import rf from 'src/requests/RequestFactory';
 import { getUserProfile } from 'src/store/user';
+import { getErrorMessage } from '../utils/utils-helper';
 
 type ReturnType = {
   currentNetwork: string;
@@ -178,8 +178,8 @@ const useWallet = (): ReturnType => {
       dispatch(getUserProfile());
       disconnectWallet();
       toastSuccess({ message: 'Unlink wallet successfully!' });
-    } catch (error: any) {
-      toastError({ message: error.message });
+    } catch (error) {
+      toastError({ message: getErrorMessage(error) });
     }
   };
 

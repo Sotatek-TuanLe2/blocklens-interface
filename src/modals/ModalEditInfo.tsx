@@ -5,10 +5,10 @@ import { createValidator } from 'src/utils/utils-validator';
 import BaseModal from './BaseModal';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from 'src/store';
+import { useDispatch } from 'react-redux';
 import { getUserProfile } from 'src/store/user';
 import useUser from 'src/hooks/useUser';
+import { getErrorMessage } from '../utils/utils-helper';
 
 interface IForm {
   lastName?: string;
@@ -61,9 +61,9 @@ const ModalEditInfo: React.FC<IModalEditInfo> = ({ open, onClose }) => {
       onClose();
       dispatch(getUserProfile);
       toastSuccess({ message: 'Update successfully' });
-    } catch (error: any) {
+    } catch (error) {
       toastError({
-        message: error?.message || 'Oops. Something went wrong!',
+        message: getErrorMessage(error),
       });
     }
   };

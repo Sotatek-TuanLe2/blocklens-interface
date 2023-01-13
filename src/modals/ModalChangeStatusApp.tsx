@@ -8,6 +8,7 @@ import AppButton from 'src/components/AppButton';
 import { isMobile } from 'react-device-detect';
 import { useDispatch } from 'react-redux';
 import { getUserStats } from '../store/user';
+import { getErrorMessage } from '../utils/utils-helper';
 
 interface IModalChangeStatusApp {
   open: boolean;
@@ -30,8 +31,8 @@ const ModalChangeStatusApp: FC<IModalChangeStatusApp> = ({
       toastSuccess({ message: 'Update Successfully!' });
       onClose();
       reloadData();
-    } catch (e: any) {
-      toastError({ message: e?.message || 'Oops. Something went wrong!' });
+    } catch (error) {
+      toastError({ message: getErrorMessage(error) });
     }
   };
 

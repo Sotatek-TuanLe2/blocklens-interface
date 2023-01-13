@@ -10,6 +10,7 @@ import Storage from 'src/utils/utils-storage';
 import { isMobile } from 'react-device-detect';
 import { useDispatch } from 'react-redux';
 import { setOpenModalSignatureRequired } from 'src/store/wallet';
+import { getErrorMessage } from '../utils/utils-helper';
 
 interface IModalConnectWallet {
   open: boolean;
@@ -32,8 +33,8 @@ const ModalConnectWallet: FC<IModalConnectWallet> = ({ open, onClose }) => {
         dispatch(setOpenModalSignatureRequired(true));
       }
       onClose();
-    } catch (error: any) {
-      error && toastError({ message: error.message || error.toString() });
+    } catch (error) {
+      toastError({ message: getErrorMessage(error) });
     }
   };
 

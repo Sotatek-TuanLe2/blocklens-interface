@@ -9,6 +9,7 @@ import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { isMobile } from 'react-device-detect';
 import BillingItemMobile from './parts/BillingItemMobile';
 import { useHistory } from 'react-router';
+import { getErrorMessage } from '../../utils/utils-helper';
 
 const fileDownload = require('js-file-download');
 
@@ -37,12 +38,9 @@ const BillingHistory = () => {
   const history = useHistory();
   const getListReceipt = async (receiptIds: string) => {
     try {
-      const res: any = await rf
-        .getRequest('BillingRequest')
-        .getListReceipt(receiptIds);
-      return res;
+      return await rf.getRequest('BillingRequest').getListReceipt(receiptIds);
     } catch (error) {
-      return error;
+      toastError({ message: getErrorMessage(error) });
     }
   };
 
@@ -65,9 +63,9 @@ const BillingHistory = () => {
         ...res,
         docs: dataTable,
       };
-    } catch (error: any) {
+    } catch (error) {
       toastError({
-        message: error?.message || 'Oops. Something went wrong!',
+        message: getErrorMessage(error),
       });
     }
   }, []);
@@ -81,9 +79,9 @@ const BillingHistory = () => {
       toastSuccess({
         message: 'Successfully!',
       });
-    } catch (error: any) {
+    } catch (error) {
       toastError({
-        message: error?.message || 'Oops. Something went wrong!',
+        message: getErrorMessage(error),
       });
     }
   }, []);
@@ -92,9 +90,9 @@ const BillingHistory = () => {
     try {
       await rf.getRequest('BillingRequest').retryPendingInvoice(id);
       toastSuccess({ message: 'Successfully!' });
-    } catch (error: any) {
+    } catch (error) {
       toastError({
-        message: error?.message || 'Oops. Something went wrong!',
+        message: getErrorMessage(error),
       });
     }
   }, []);

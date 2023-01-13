@@ -8,6 +8,7 @@ import 'src/styles/pages/LoginPage.scss';
 import { setAuthorizationToRequest } from 'src/utils/utils-auth';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { createValidator } from 'src/utils/utils-validator';
+import { getErrorMessage } from '../utils/utils-helper';
 
 interface IDataForm {
   newPassword: string;
@@ -40,9 +41,9 @@ const ResetPasswordPage: FC = () => {
       setAuthorizationToRequest('');
       setDataForm({ ...initDataResetPassword });
       history.replace('/login');
-    } catch (error: any) {
+    } catch (error) {
       toastError({
-        message: `${error.message || 'Oops. Something went wrong!'}`,
+        message: getErrorMessage(error),
       });
     }
   };
