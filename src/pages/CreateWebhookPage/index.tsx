@@ -225,7 +225,7 @@ const CreateWebhook = () => {
   }, [addressesValue]);
 
   const isValidAddress = (address: string) => {
-    if (appInfo.chain === 'BTC') return validate(address);
+    if (!isEVMNetwork(appInfo.chain)) return validate(address);
     return isValidAddressEVM(address);
   };
 

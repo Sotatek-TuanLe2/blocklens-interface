@@ -65,7 +65,7 @@ const AppDetail = () => {
   ]);
 
   useEffect(() => {
-    if (appInfo.chain === 'BTC') {
+    if (!isEVMNetwork(appInfo.chain)) {
       setDefaultTab(0);
       return;
     }

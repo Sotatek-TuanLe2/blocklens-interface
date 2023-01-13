@@ -8,13 +8,6 @@ import _ from 'lodash';
 import config, { Chain, Network } from 'src/config';
 import { toastError } from './utils-notify';
 
-export const CHAINS = {
-  ETH: 'ETH',
-  BSC: 'BSC',
-  POLYGON: 'POLYGON',
-  BTC: 'BTC',
-};
-
 export const getLogoChainByChainId = (ChainId?: string) => {
   if (!ChainId) return;
   return config.chains[ChainId].icon;
@@ -27,7 +20,7 @@ export const getNameChainByChainId = (ChainId?: string) => {
 
 export const isEVMNetwork = (chainId?: string) => {
   if (!chainId) return false;
-  return chainId !== CHAINS.BTC;
+  return chainId !== 'BTC';
 };
 
 export const getBlockExplorerUrl = (chainId?: string, networkId?: string) => {
@@ -38,7 +31,7 @@ export const getBlockExplorerUrl = (chainId?: string, networkId?: string) => {
   const chain = config.chains[chainId];
   const network = chain.networks[networkId];
 
-  if (chainId === CHAINS.BTC) {
+  if (!isEVMNetwork(chainId)) {
     return network?.blockExplorer?.url + 'tx/bitcoin/' || '';
   }
 
