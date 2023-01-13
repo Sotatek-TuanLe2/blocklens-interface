@@ -56,15 +56,6 @@ const ForgotPasswordPage: FC = () => {
     setIsDisableSubmit(isDisabled);
   }, [dataForm]);
 
-  const onResendMail = async () => {
-    try {
-      await rf.getRequest('AuthRequest').resendMailVerify(dataForm.email);
-      toastSuccess({ message: 'Successfully!' });
-    } catch (e: any) {
-      toastError({ message: e?.message || 'Oops. Something went wrong!' });
-    }
-  };
-
   return (
     <GuestPage>
       <Flex className="box-login">
@@ -124,7 +115,7 @@ const ForgotPasswordPage: FC = () => {
             email={dataForm.email}
             open={openModalResendEmail}
             onClose={() => setOpenModalResendEmail(false)}
-            onResend={onResendMail}
+            onResend={handleSendEmailResetPassword}
           />
         )}
       </Flex>
