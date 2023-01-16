@@ -16,7 +16,7 @@
   },
   "chains": {
     "ETH": {
-      "isEVM": true,
+      "family": "ETH",
       "name": "Ethereum",
       "id": "ETH",
       "icon": "icon-ethereum",
@@ -33,7 +33,7 @@
           "blockExplorer": {
             "name": "Etherscan",
             "icon": "/images/etherscan.png",
-            "url": "https://etherscan.io/tx/"
+            "url": "https://etherscan.io/tx"
           },
           "nativeCurrency": {
             "name": "ETH",
@@ -71,7 +71,7 @@
           "blockExplorer": {
             "name": "Etherscan",
             "icon": "/images/etherscan.png",
-            "url": "https://goerli.etherscan.io/tx/"
+            "url": "https://goerli.etherscan.io/tx"
           },
           "nativeCurrency": {
             "name": "ETH",
@@ -102,7 +102,7 @@
       }
     },
     "BSC": {
-      "isEVM": true,
+      "family": "ETH",
       "name": "Binance Smart Chain",
       "id": "BSC",
       "icon": "icon-bsc",
@@ -118,7 +118,7 @@
           "blockExplorer": {
             "name": "Bscscan",
             "icon": "/images/bscscan.png",
-            "url": "https://bscscan.com/tx/"
+            "url": "https://bscscan.com/tx"
           },
           "nativeCurrency": {
             "name": "BNB",
@@ -163,7 +163,7 @@
           "blockExplorer": {
             "name": "Bscscan",
             "icon": "/images/bscscan.png",
-            "url": "https://testnet.bscscan.com/tx/"
+            "url": "https://testnet.bscscan.com/tx"
           },
           "nativeCurrency": {
             "name": "BNB",
@@ -203,7 +203,7 @@
       }
     },
     "POLYGON": {
-      "isEVM": true,
+      "family": "ETH",
       "name": "Polygon",
       "id": "POLYGON",
       "icon": "icon-polygon",
@@ -219,7 +219,7 @@
           "blockExplorer": {
             "name": "Polygonscan",
             "icon": "/images/polygonscan.png",
-            "url": "https://polygonscan.com/tx/"
+            "url": "https://polygonscan.com/tx"
           },
           "nativeCurrency": {
             "name": "MATIC",
@@ -256,7 +256,7 @@
           "blockExplorer": {
             "name": "Polygonscan",
             "icon": "/images/polygonscan.png",
-            "url": "https://mumbai.polygonscan.com/tx/"
+            "url": "https://mumbai.polygonscan.com/tx"
           },
           "nativeCurrency": {
             "name": "MATIC",
@@ -287,7 +287,7 @@
       }
     },
     "BTC": {
-      "isEVM": false,
+      "family": "BTC",
       "name": "Bitcoin",
       "id": "BTC",
       "icon": "icon-bitcoin",
@@ -299,7 +299,7 @@
           "blockExplorer": {
             "name": "Bitcoin",
             "icon": "/images/bscscan.png",
-            "url": "https://blockchain.coinmarketcap.com/tx/bitcoin/"
+            "url": "https://blockchain.coinmarketcap.com/tx/bitcoin"
           }
         },
         "TESTNET": {
@@ -309,7 +309,7 @@
           "blockExplorer": {
             "name": "Bitcoin",
             "icon": "/images/bscscan.png",
-            "url": "https://blockchain.coinmarketcap.com/tx/bitcoin/"
+            "url": "https://blockchain.coinmarketcap.com/tx/bitcoin"
           }
         }
       }

@@ -62,7 +62,7 @@ export interface Network {
 }
 
 export interface Chain {
-  isEVM: boolean,
+  family: string,
   name: string;
   id: string;
   icon: string;

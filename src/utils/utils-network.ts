@@ -20,18 +20,22 @@ export const getNameChainByChainId = (ChainId?: string) => {
 
 export const isEVMNetwork = (chainId?: string) => {
   if (!chainId) return false;
-  return config.chains[chainId].isEVM;
+  return config.chains[chainId].family === 'ETH';
 };
 
-export const getBlockExplorerUrl = (chainId?: string, networkId?: string) => {
-  if (!chainId || !networkId) {
+export const getExplorerTxUrl = (
+  chainId?: string,
+  networkId?: string,
+  txHash?: string,
+) => {
+  if (!chainId || !networkId || !txHash) {
     return '';
   }
 
   const chain = config.chains[chainId];
   const network = chain.networks[networkId];
 
-  return network?.blockExplorer.url;
+  return `${network?.blockExplorer.url}/${txHash}`;
 };
 
 export const objectKeys = <Obj>(obj: Obj): (keyof Obj)[] =>
