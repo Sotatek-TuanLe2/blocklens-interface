@@ -2,6 +2,7 @@ import { FC } from 'react';
 import ReactPaginate, { ReactPaginateProps } from 'react-paginate';
 import 'src/styles/components/AppPagination.scss';
 import { ArrowDownIcon } from '../assets/icons';
+import { isMobile } from 'react-device-detect';
 
 const AppPagination: FC<ReactPaginateProps> = ({ ...props }) => {
   return (
@@ -18,7 +19,8 @@ const AppPagination: FC<ReactPaginateProps> = ({ ...props }) => {
           }}
         />
       }
-      pageRangeDisplayed={2}
+      pageRangeDisplayed={isMobile ? 1 : 2}
+      marginPagesDisplayed={isMobile ? 1 : 2}
       previousLabel={
         <ArrowDownIcon
           style={{
