@@ -107,6 +107,10 @@
   &__description-email {
     padding: 0;
   }
+
+  &.modal-create-app {
+    max-width: 590px !important;
+  }
 }
 
 .infos {
