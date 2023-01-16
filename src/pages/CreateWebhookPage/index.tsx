@@ -33,6 +33,7 @@ import { useLocation } from 'react-router';
 import { DownloadIcon } from 'src/assets/icons';
 import { useDispatch } from 'react-redux';
 import { getUserStats } from 'src/store/user';
+import { validate } from 'bitcoin-address-validation';
 
 const FILE_CSV_EXAMPLE = '/abi/CSV_Example.csv';
 
@@ -223,16 +224,21 @@ const CreateWebhook = () => {
     return addressesValue.split('\n');
   }, [addressesValue]);
 
+  const isValidAddress = (address: string) => {
+    if (!isEVMNetwork(appInfo.chain)) return validate(address);
+    return isValidAddressEVM(address);
+  };
+
   const addressesInvalid = useMemo(() => {
     return addressesInput.map((address: string, index: number) => ({
       value: address,
-      index: !isValidAddressEVM(address) ? index : -1,
+      index: !isValidAddress(address) ? index : -1,
     }));
   }, [addressesInput]);
 
   const addressValid = useMemo(() => {
     return addressesInput.filter((address: string) =>
-      isValidAddressEVM(address),
+      isValidAddress(address),
     );
   }, [addressesInput]);
 

@@ -387,7 +387,7 @@ const BillingPage = () => {
             <AppHeading title="Billing" />
           </Box>
 
-          {user?.isPaymentMethodIntegrated() && (
+          {user?.isPaymentMethodIntegrated() && !!user?.getActivePaymentMethod() && (
             <Flex
               className="link"
               alignItems="center"
@@ -436,7 +436,7 @@ const BillingPage = () => {
               </Box>
             </Flex>
             <Box mb={isMobile ? 4 : 0} width={isMobile ? '100%' : 'auto'}>
-              {user?.isPaymentMethodIntegrated()
+              {(user?.isPaymentMethodIntegrated() && !!user?.getActivePaymentMethod())
                 ? _renderButtonUpdatePlan()
                 : _renderButton()}
             </Box>
@@ -459,7 +459,7 @@ const BillingPage = () => {
           )}
         </AppCard>
 
-        {user?.isPaymentMethodIntegrated() && (
+        {user?.isPaymentMethodIntegrated() && !!user?.getActivePaymentMethod() && (
           <AppCard className={'box-change-plan'}>
             <Box className={'box-change-plan__title'}>
               Change Payment Method

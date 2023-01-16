@@ -62,6 +62,7 @@ export interface Network {
 }
 
 export interface Chain {
+  family: string,
   name: string;
   id: string;
   icon: string;

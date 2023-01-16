@@ -6,7 +6,7 @@ import { LinkIcon } from 'src/assets/icons';
 import { AppButton } from 'src/components';
 import ReactJson from 'react-json-view';
 import { StatusMessages } from './MessageItem';
-import { getBlockExplorerUrl } from 'src/utils/utils-network';
+import { getExplorerTxUrl } from 'src/utils/utils-network';
 import { Scrollbars } from 'react-custom-scrollbars';
 
 interface IMessagesItemMobile {
@@ -214,12 +214,11 @@ const MessagesItemMobile: FC<IMessagesItemMobile> = ({
                   {formatShortText(message?.input?.tx?.transactionHash)}
                   <Box ml={2}>
                     <a
-                      href={
-                        getBlockExplorerUrl(
-                          message?.input?.chain,
-                          message?.input?.network,
-                        ) + message?.input?.tx?.transactionHash
-                      }
+                      href={getExplorerTxUrl(
+                        message?.input?.chain,
+                        message?.input?.network,
+                        message?.input?.tx?.transactionHash,
+                      )}
                       className="link-redirect"
                       target="_blank"
                     >

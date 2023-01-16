@@ -8,13 +8,6 @@ import _ from 'lodash';
 import config, { Chain, Network } from 'src/config';
 import { toastError } from './utils-notify';
 
-export const CHAINS = {
-  ETH: 'ETH',
-  BSC: 'BSC',
-  POLYGON: 'POLYGON',
-  BTC: 'BTC',
-};
-
 export const getLogoChainByChainId = (ChainId?: string) => {
   if (!ChainId) return;
   return config.chains[ChainId].icon;
@@ -27,22 +20,22 @@ export const getNameChainByChainId = (ChainId?: string) => {
 
 export const isEVMNetwork = (chainId?: string) => {
   if (!chainId) return false;
-  return chainId !== CHAINS.BTC;
+  return config.chains[chainId].family === 'ETH';
 };
 
-export const getBlockExplorerUrl = (chainId?: string, networkId?: string) => {
-  if (!chainId || !networkId) {
+export const getExplorerTxUrl = (
+  chainId?: string,
+  networkId?: string,
+  txHash?: string,
+) => {
+  if (!chainId || !networkId || !txHash) {
     return '';
   }
 
   const chain = config.chains[chainId];
   const network = chain.networks[networkId];
 
-  if (chainId === CHAINS.BTC) {
-    return network?.blockExplorer?.url + 'tx/bitcoin/' || '';
-  }
-
-  return network?.blockExplorer.url + 'tx/' || '';
+  return `${network?.blockExplorer.url}/${txHash}`;
 };
 
 export const objectKeys = <Obj>(obj: Obj): (keyof Obj)[] =>

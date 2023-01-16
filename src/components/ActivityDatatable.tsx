@@ -21,7 +21,7 @@ import {
 } from '../utils/utils-helper';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { InfoIcon, LinkDetail, LinkIcon, RetryIcon } from 'src/assets/icons';
-import { getBlockExplorerUrl } from 'src/utils/utils-network';
+import { getExplorerTxUrl } from 'src/utils/utils-network';
 import useWebhookDetails from 'src/hooks/useWebhook';
 import { getColorBrandStatus } from 'src/utils/utils-webhook';
 
@@ -171,10 +171,11 @@ const ActivityMobile: FC<IActivity> = ({ activity, webhook, onReload }) => {
                   {formatShortText(activity?.metadata?.tx?.transactionHash)}
                   <Box ml={2}>
                     <a
-                      href={
-                        getBlockExplorerUrl(webhook?.chain, webhook?.network) +
-                        activity?.metadata?.tx?.transactionHash
-                      }
+                      href={getExplorerTxUrl(
+                        webhook?.chain,
+                        webhook?.network,
+                        activity?.metadata?.tx?.transactionHash,
+                      )}
                       className="link-redirect"
                       target="_blank"
                     >
@@ -292,10 +293,11 @@ const ActivityDesktop: FC<IActivity> = ({ activity, webhook, onReload }) => {
             <Box ml={2}>
               <a
                 onClick={(e) => onRedirectToBlockExplorer(e)}
-                href={
-                  getBlockExplorerUrl(webhook?.chain, webhook?.network) +
-                  activity.metadata?.tx?.transactionHash
-                }
+                href={getExplorerTxUrl(
+                  webhook?.chain,
+                  webhook?.network,
+                  activity.metadata?.tx?.transactionHash,
+                )}
                 className="link-redirect"
                 target="_blank"
               >

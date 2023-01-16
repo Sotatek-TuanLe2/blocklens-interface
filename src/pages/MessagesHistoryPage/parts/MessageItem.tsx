@@ -9,7 +9,7 @@ import {
 import { formatShortText, formatTimestamp } from 'src/utils/utils-helper';
 import { LinkIcon, ArrowDown } from 'src/assets/icons';
 import ReactJson from 'react-json-view';
-import { getBlockExplorerUrl } from 'src/utils/utils-network';
+import { getExplorerTxUrl } from 'src/utils/utils-network';
 import { Scrollbars } from 'react-custom-scrollbars';
 
 export const StatusMessages = ({ message }: any) => {
@@ -111,10 +111,10 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
               <a
                 onClick={(e) => onRedirectToBlockExplorer(e)}
                 href={
-                  getBlockExplorerUrl(
+                  getExplorerTxUrl(
                     message?.input?.chain,
                     message?.input?.network,
-                  ) + message?.input?.tx?.transactionHash
+                    message?.input?.tx?.transactionHash)
                 }
                 className="link-redirect"
                 target="_blank"

@@ -64,6 +64,13 @@ const AppDetail = () => {
     userStats?.numberOfNftActivities,
   ]);
 
+  useEffect(() => {
+    if (!isEVMNetwork(appInfo.chain)) {
+      setDefaultTab(0);
+      return;
+    }
+  }, [appInfo]);
+
   const _renderListWebhook = () => {
     return (
       <AppCard className="list-webhook">
