@@ -436,7 +436,7 @@ const BillingPage = () => {
               </Box>
             </Flex>
             <Box mb={isMobile ? 4 : 0} width={isMobile ? '100%' : 'auto'}>
-              {user?.isPaymentMethodIntegrated()
+              {(user?.isPaymentMethodIntegrated() && !!user?.getActivePaymentMethod())
                 ? _renderButtonUpdatePlan()
                 : _renderButton()}
             </Box>
