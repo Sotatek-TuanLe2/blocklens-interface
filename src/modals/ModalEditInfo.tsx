@@ -59,7 +59,7 @@ const ModalEditInfo: React.FC<IModalEditInfo> = ({ open, onClose }) => {
       await rf.getRequest('UserRequest').editInfoUser(dataForm);
       setDataForm({ ...initialData });
       onClose();
-      dispatch(getUserProfile);
+      dispatch(getUserProfile());
       toastSuccess({ message: 'Update successfully' });
     } catch (error) {
       toastError({
