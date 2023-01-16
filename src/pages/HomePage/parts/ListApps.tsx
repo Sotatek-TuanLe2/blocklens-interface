@@ -182,7 +182,7 @@ const ListApps: React.FC = () => {
       />
     ) : (
       <ModalCreateApp
-        reloadData={() => dataTableRef.current?.fetchTableData()}
+        reloadData={fetchDataTable}
         open={openCreateApp}
         onClose={() => setOpenCreateApp(false)}
       />

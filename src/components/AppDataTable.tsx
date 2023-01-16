@@ -49,6 +49,7 @@ interface DataTableProps {
 export interface DataTableRef {
   tableData: any[];
   fetchTableData: any;
+  params: any;
 }
 
 export interface Pagination {
@@ -95,6 +96,7 @@ const AppDataTable = forwardRef(
     const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
 
     useImperativeHandle(ref, () => ({
+      params: requestParams,
       tableData,
       fetchTableData,
       pagination,
@@ -124,7 +126,7 @@ const AppDataTable = forwardRef(
 
     const debounceFetchTablaData = useCallback(
       debounce(fetchTableData, DEBOUNCE_TIME),
-      [requestParams],
+      [requestParams, fetchData],
     );
 
     useEffect(() => {
