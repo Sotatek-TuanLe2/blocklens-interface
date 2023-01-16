@@ -20,7 +20,7 @@ export const getNameChainByChainId = (ChainId?: string) => {
 
 export const isEVMNetwork = (chainId?: string) => {
   if (!chainId) return false;
-  return chainId !== 'BTC';
+  return config.chains[chainId].isEVM;
 };
 
 export const getBlockExplorerUrl = (chainId?: string, networkId?: string) => {
@@ -31,11 +31,7 @@ export const getBlockExplorerUrl = (chainId?: string, networkId?: string) => {
   const chain = config.chains[chainId];
   const network = chain.networks[networkId];
 
-  if (!isEVMNetwork(chainId)) {
-    return network?.blockExplorer?.url + 'tx/bitcoin/' || '';
-  }
-
-  return network?.blockExplorer.url + 'tx/' || '';
+  return network?.blockExplorer.url;
 };
 
 export const objectKeys = <Obj>(obj: Obj): (keyof Obj)[] =>
