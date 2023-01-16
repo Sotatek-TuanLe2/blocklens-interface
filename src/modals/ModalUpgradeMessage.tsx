@@ -8,15 +8,12 @@ import { MetadataPlan } from 'src/store/metadata';
 import useUser from 'src/hooks/useUser';
 import useMetadata from 'src/hooks/useMetadata';
 
-interface ModalUpgradeCreateApp {
+interface Props {
   open: boolean;
   onClose: () => void;
 }
 
-const ModalUpgradeCreateApp: FC<ModalUpgradeCreateApp> = ({
-                                                            open,
-                                                            onClose,
-                                                          }) => {
+const ModalUpgradeMessage: FC<Props> = ({ open, onClose }) => {
   const history = useHistory();
   const { user } = useUser();
   const { billingPlans } = useMetadata();
@@ -24,19 +21,19 @@ const ModalUpgradeCreateApp: FC<ModalUpgradeCreateApp> = ({
     (item: MetadataPlan) => item.code === user?.getPlan().code,
   );
   const nextPlan = billingPlans[indexMyPlan + 1];
-  
+
   return (
     <BaseModal
       size="xl"
       icon="icon-add-app"
-      title="Want To Create More Apps?"
+      title="Want To Receive More Message?"
       isOpen={open}
       isFullScreen={isMobile}
       onClose={onClose}
     >
       <Box className={'modal__description'}>
-        You can only create {user?.getPlan().appLimitation} active apps in your
-        current plan, upgrade to{' '}
+        You have reached the limit of {user?.getPlan().appLimitation} active
+        apps in your current plan, upgrade to{' '}
         <Box as={'span'} textTransform="lowercase">
           {nextPlan?.name}
         </Box>{' '}
@@ -51,4 +48,4 @@ const ModalUpgradeCreateApp: FC<ModalUpgradeCreateApp> = ({
   );
 };
 
-export default ModalUpgradeCreateApp;
+export default ModalUpgradeMessage;
