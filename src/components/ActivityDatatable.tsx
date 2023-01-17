@@ -61,7 +61,6 @@ export const onRetry = async (
   const res = await rf
     .getRequest('NotificationRequest')
     .retryActivity(activity.hash);
-  console.log('res noti', res);
   toastSuccess({ message: 'Retried!' });
   onReload();
 };
@@ -347,7 +346,6 @@ const ActivityDesktop: FC<IActivity> = ({ activity, webhook, onReload }) => {
                           getErrorMessage(error) ===
                           'Limit of daily messages is reached'
                         ) {
-                          console.log('popup');
                           setOpenModalUpgradeMessage(true);
                         } else toastError({ message: getErrorMessage(error) });
                       }
