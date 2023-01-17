@@ -66,7 +66,7 @@ const PartPaymentInfo: FC<IPartPaymentInfo> = ({
     <Box className="form-card">
       <Flex alignItems={'center'} mb={7}>
         <Box className="icon-arrow-left" mr={6} onClick={onBack} />
-        <Box className={'sub-title'}>Payment</Box>
+        <Box className={'sub-title'}>Select Payment Method</Box>
       </Flex>
       <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
         <Box
