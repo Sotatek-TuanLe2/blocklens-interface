@@ -41,8 +41,14 @@
 
     &.disabled {
       cursor: not-allowed;
+      opacity: 0.5;
       a {
         cursor: not-allowed;
+      }
+
+      &:hover {
+        background: inherit;
+        color: $title;
       }
     }
   }

@@ -17,6 +17,7 @@ import { isMobile } from 'react-device-detect';
 import { useDispatch } from 'react-redux';
 import { getUserStats } from '../store/user';
 import { getErrorMessage } from '../utils/utils-helper';
+import useUser from '../hooks/useUser';
 
 interface IModalCreateApp {
   open: boolean;
@@ -65,6 +66,8 @@ const ModalCreateApp: FC<IModalCreateApp> = ({ open, onClose, reloadData }) => {
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
   const [, updateState] = useState<any>();
   const forceUpdate = useCallback(() => updateState({}), []);
+  const { user } = useUser();
+  const userStats = user?.getStats();
 
   const dispatch = useDispatch();
 
@@ -126,10 +129,14 @@ const ModalCreateApp: FC<IModalCreateApp> = ({ open, onClose, reloadData }) => {
     <BaseModal
       size="lg"
       title="Create New Apps"
-      description="We suggest you create an app and start experiencing our service,
-       which grants real-time notifications to various blockchains' activities!"
+      description={
+        !userStats?.totalApp
+          ? `We suggest you create an app and start experiencing our service,
+       which grants real-time notifications to various blockchains' activities!`
+          : ''
+      }
       isOpen={open}
-      className='modal-create-app'
+      className="modal-create-app"
       isFullScreen={isMobile}
       onClose={onCloseModal}
     >
