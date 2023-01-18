@@ -2,6 +2,7 @@ import SimpleReactValidator from 'simple-react-validator';
 import { isValidChecksumAddress } from 'ethereumjs-util';
 import BN from 'bn.js';
 import bs58 from 'bs58';
+import { convertCurrencyToNumber } from './utils-helper';
 
 type IRule =
   | 'accepted'
@@ -146,7 +147,7 @@ export const createValidator = (options?: IOptions | undefined) => {
       insufficientBalance: {
         message: 'Your balance is currently insufficient',
         rule: (value: string, params: string[]) => {
-          return +value <= +params[0];
+          return convertCurrencyToNumber(value) <= +params[0];
         },
       },
     },
