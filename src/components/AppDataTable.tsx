@@ -132,7 +132,7 @@ const AppDataTable = forwardRef(
       return () => {
         debounceFetchTablaData.cancel();
       };
-    }, [debounceFetchTablaData]);
+    }, [debounceFetchTablaData, fetchData]);
 
     const onChangePagination = (event: { selected: number }) => {
       fetchTableData(requestParams, {
