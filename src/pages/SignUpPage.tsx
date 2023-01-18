@@ -75,7 +75,7 @@ const SignUpPage: FC = () => {
       <AppCard className="box-form">
         <Box className="box-form__title">Sign up</Box>
         <GoogleAuthButton>
-          <Box>Sign up with GOOGLE</Box>
+          <Box>Sign up with Google</Box>
         </GoogleAuthButton>
 
         <Flex className="divider">

@@ -176,6 +176,8 @@
         @include heading-7;
         position: absolute;
         left: 50%;
+        width: 100%;
+        text-align: center;
         transform: translateX(-50%);
       }
     }
