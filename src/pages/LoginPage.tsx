@@ -131,7 +131,7 @@ const LoginPage: FC = () => {
             <Box className="note" mt={3}>
               This site is protected by reCAPTCHA and the{' '}
               <a
-                href="https://blocklens.io/privacy-policy"
+                href="https://policies.google.com/privacy"
                 className={'link'}
                 target="_blank"
               >
@@ -139,7 +139,7 @@ const LoginPage: FC = () => {
               </a>{' '}
               and{' '}
               <a
-                href="https://blocklens.io/terms"
+                href="https://policies.google.com/terms"
                 target="_blank"
                 className={'link'}
               >
