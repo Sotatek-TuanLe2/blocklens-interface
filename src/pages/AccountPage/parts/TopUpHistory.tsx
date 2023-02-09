@@ -2,7 +2,7 @@ import { Box, Flex, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
 import React, { FC, useCallback, useState } from 'react';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/pages/AppDetail.scss';
-import { AppCard, AppDataTable } from 'src/components';
+import { AppCard, AppDataTable, AppLoadingTable } from 'src/components';
 import { toastError } from 'src/utils/utils-notify';
 import { isMobile } from 'react-device-detect';
 import {
@@ -144,12 +144,17 @@ const TopUpHistory = () => {
           <Th w={'20%'} textAlign="center">
             Amount
           </Th>
-          <Th w={'20%'} textAlign="center">
+          <Th w={'15%'} textAlign="center">
             Currency
           </Th>
         </Tr>
       </Thead>
     );
+  };
+
+  const _renderLoading = () => {
+    const widthColumns = [25, 20, 20, 20, 15];
+    return <AppLoadingTable widthColumns={widthColumns} />;
   };
 
   const _renderBody = (data?: ITopUp[]) => {
@@ -198,7 +203,7 @@ const TopUpHistory = () => {
             <Td w={'20%'} textAlign="center">
               {item.amount}
             </Td>
-            <Td w={'20%'} textAlign="center">
+            <Td w={'15%'} textAlign="center">
               {item.currencySymbol}
             </Td>
           </Tr>
@@ -213,6 +218,7 @@ const TopUpHistory = () => {
       <AppDataTable
         fetchData={fetchDataTable}
         renderBody={_renderBody}
+        renderLoading={_renderLoading}
         renderHeader={_renderHeader}
         limit={10}
       />

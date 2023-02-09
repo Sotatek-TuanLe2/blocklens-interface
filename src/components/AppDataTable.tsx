@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
+import React, {
   forwardRef,
   useImperativeHandle,
   Ref,
@@ -14,7 +14,8 @@ import { debounce } from 'lodash';
 import AppPagination from './AppPagination';
 import 'src/styles/components/AppDataTable.scss';
 import AppButton from './AppButton';
-import { Table, TableContainer, Flex } from '@chakra-ui/react';
+import { Table, TableContainer, Flex, Tr, Td, Tbody } from '@chakra-ui/react';
+import Skeleton from 'react-loading-skeleton';
 
 // For more params, please define them below with ? mark
 export interface RequestParams {
@@ -40,6 +41,7 @@ interface DataTableProps {
   fetchData: (requestParams: RequestParams) => Promise<IResponseType>;
   renderBody: (tableData: any[]) => ReactNode;
   renderHeader?: () => ReactNode;
+  renderLoading?: () => ReactNode;
   renderNoData?: () => ReactNode;
   loading?: boolean;
   isNotShowNoData?: boolean;
@@ -82,6 +84,7 @@ const AppDataTable = forwardRef(
       renderBody,
       renderHeader,
       renderNoData,
+      renderLoading,
       isNotShowNoData = false,
       hidePagination = false,
     } = props;
@@ -151,6 +154,10 @@ const AppDataTable = forwardRef(
     };
 
     const _renderLoading = () => {
+      if (!!renderLoading) {
+        return renderLoading();
+      }
+
       return (
         <div style={{ marginTop: '25px', width: '100%', textAlign: 'center' }}>
           Loading...

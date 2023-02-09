@@ -1,6 +1,15 @@
-import { Box, Flex, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
+import {
+  Box,
+  Flex,
+  Tbody,
+  Td,
+  Text,
+  Th,
+  Thead,
+  Tr,
+} from '@chakra-ui/react';
 import React, { useState, FC, useRef } from 'react';
-import { AppButton, AppCard, AppDataTable, DataTableRef } from 'src/components';
+import { AppButton, AppCard, AppDataTable, DataTableRef, AppLoadingTable } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
 import { useHistory } from 'react-router';
@@ -10,7 +19,7 @@ import {
 } from 'src/utils/utils-network';
 import ModalUpgradeCreateApp from 'src/modals/ModalUpgradeCreateApp';
 import { isMobile } from 'react-device-detect';
-import ModalCreateApp from '../../../modals/ModalCreateApp';
+import ModalCreateApp from 'src/modals/ModalCreateApp';
 import useUser from 'src/hooks/useUser';
 
 interface IAppMobile {
@@ -211,6 +220,11 @@ const ListApps: React.FC = () => {
     );
   };
 
+  const _renderLoading = () => {
+    const widthColumns = [25, 20, 20, 20, 15];
+    return <AppLoadingTable widthColumns={widthColumns} />;
+  };
+
   const _renderListAppMobile = (data?: IAppResponse[]) => {
     return (
       <Box className="list-card-mobile">
@@ -281,6 +295,7 @@ const ListApps: React.FC = () => {
         <AppDataTable
           //@ts-ignore
           ref={dataTableRef}
+          renderLoading={_renderLoading}
           fetchData={fetchDataTable}
           renderBody={_renderBody}
           renderHeader={_renderHeader}

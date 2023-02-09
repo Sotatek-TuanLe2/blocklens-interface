@@ -11,7 +11,13 @@ import {
   WEBHOOK_STATUS,
   WEBHOOK_TYPES,
 } from 'src/utils/utils-webhook';
-import { AppButton, AppDataTable, AppLink, AppFilter } from 'src/components';
+import {
+  AppButton,
+  AppDataTable,
+  AppLink,
+  AppFilter,
+  AppLoadingTable,
+} from 'src/components';
 import { isMobile } from 'react-device-detect';
 import {
   filterParams,
@@ -30,6 +36,18 @@ interface IActivity {
   webhook: IWebhook;
   onReload: () => void;
 }
+
+export const getWidthColumns = (webhook: IWebhook) => {
+  if (webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY) {
+    return [25, 12, 15, 13, 10, 15, 15];
+  }
+
+  if (webhook.type === WEBHOOK_TYPES.CONTRACT_ACTIVITY) {
+    return [25, 15, 15, 15, 15, 15];
+  }
+
+  return [25, 15, 15, 15, 15, 15];
+};
 
 const _renderStatus = (activity: IActivityResponse) => {
   if (!activity?.lastStatus) return '--';
@@ -461,7 +479,7 @@ const ActivityDatatable: FC<IActivityDatatable> = ({
           <Th w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '12%' : '15%'}>
             Block
           </Th>
-          <Th w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '15%' : '20%'}>
+          <Th w={'15%'}>
             <Flex alignItems="center">
               txn id
               {isFilter && (
@@ -538,11 +556,16 @@ const ActivityDatatable: FC<IActivityDatatable> = ({
     });
   };
 
+  const _renderLoading = () => {
+    return <AppLoadingTable widthColumns={getWidthColumns(webhook)} />;
+  };
+
   return (
     <AppDataTable
       hidePagination={hidePagination}
       requestParams={params}
       fetchData={fetchDataTable}
+      renderLoading={_renderLoading}
       renderBody={(data) =>
         isMobile
           ? _renderListActivityMobile(data)
