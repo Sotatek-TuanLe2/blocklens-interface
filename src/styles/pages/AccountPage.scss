@@ -235,6 +235,15 @@
     border: 1px solid $line !important;
     color: $title !important;
   }
+
+  &__action {
+    margin-right: 45px;
+    align-items: center;
+
+    svg {
+      margin-left: 15px;
+    }
+  }
 }
 
 .allowist {

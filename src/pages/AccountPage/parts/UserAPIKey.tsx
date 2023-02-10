@@ -1,15 +1,18 @@
 import 'src/styles/pages/AccountPage.scss';
-import { Box } from '@chakra-ui/react';
+import { Box, Flex } from '@chakra-ui/react';
 import { AppCard, AppInput, AppLink } from 'src/components';
-import { CopyIcon } from 'src/assets/icons';
+import { CopyIcon, RetryIcon } from 'src/assets/icons';
 import { copyToClipboard } from 'src/utils/utils-helper';
-import { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import rf from 'src/requests/RequestFactory';
 import { isMobile } from 'react-device-detect';
 import { shortenWalletAddress } from 'src/utils/utils-wallet';
+import ModalConfirmUpdateAPIKey from 'src/modals/ModalConfirmUpdateAPIKey';
 
 const UserAPIKey = () => {
   const [apiKey, setApiKey] = useState<string>('');
+  const [openModalConfirmUpdate, setOpenModalConfirmUpdate] =
+    useState<boolean>(false);
 
   const getAPIKey = useCallback(async () => {
     try {
@@ -43,16 +46,33 @@ const UserAPIKey = () => {
           isDisabled
           value={isMobile ? shortenWalletAddress(apiKey) : apiKey}
           endAdornment={
-            <Box
-              cursor="pointer"
-              className="btn-copy"
-              onClick={() => copyToClipboard(apiKey)}
-            >
-              <CopyIcon />
-            </Box>
+            <Flex className={'user-api__action'}>
+              <Box
+                cursor="pointer"
+                className="btn-copy"
+                onClick={() => setOpenModalConfirmUpdate(true)}
+              >
+                <RetryIcon />
+              </Box>
+              <Box
+                cursor="pointer"
+                className="btn-copy"
+                onClick={() => copyToClipboard(apiKey)}
+              >
+                <CopyIcon />
+              </Box>
+            </Flex>
           }
         />
       </Box>
+
+      {openModalConfirmUpdate && (
+        <ModalConfirmUpdateAPIKey
+          onReloadData={getAPIKey}
+          open={openModalConfirmUpdate}
+          onClose={() => setOpenModalConfirmUpdate(false)}
+        />
+      )}
     </AppCard>
   );
 };
