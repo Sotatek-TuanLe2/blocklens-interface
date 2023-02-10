@@ -32,9 +32,9 @@ const ModalUpgradeMessage: FC<Props> = ({ open, onClose }) => {
       onClose={onClose}
     >
       <Box className={'modal__description'}>
-        You have reached the limit of {user?.getPlan().notificationLimitation}{' '}
+        You have reached the limit of {user?.getPlan()?.notificationLimitation}{' '}
         messages/day in your current plan.Upgrade to <b>Growth</b> to enjoy{' '}
-        {nextPlan.appLimitation} messages/day
+        {nextPlan?.appLimitation} messages/day
       </Box>
       <Flex flexWrap={'wrap'} justifyContent={'center'}>
         <AppButton size={'lg'} onClick={() => history.push('/billing')}>
