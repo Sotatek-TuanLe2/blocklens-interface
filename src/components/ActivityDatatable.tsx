@@ -55,14 +55,16 @@ export const onRetry = async (
   onReload: () => void,
 ) => {
   e.stopPropagation();
-
   if (webhook.status === WEBHOOK_STATUS.DISABLED) return;
-
-  const res = await rf
-    .getRequest('NotificationRequest')
-    .retryActivity(activity.hash);
+  await rf.getRequest('NotificationRequest').retryActivity(activity.hash);
   toastSuccess({ message: 'Retried!' });
   onReload();
+};
+
+const handlerRetryError = (error: any, handleLimitError: any) => {
+  if (getErrorMessage(error) === 'Limit of daily messages is reached') {
+    handleLimitError();
+  } else toastError({ message: getErrorMessage(error) });
 };
 
 const ActivityMobile: FC<IActivity> = ({ activity, webhook, onReload }) => {
@@ -201,16 +203,13 @@ const ActivityMobile: FC<IActivity> = ({ activity, webhook, onReload }) => {
                   <AppButton
                     variant="cancel"
                     size="sm"
-                    onClick={async (e: any) => {
+                    onClick={async (e) => {
                       try {
                         await onRetry(e, activity, webhook, onReload);
                       } catch (error) {
-                        if (
-                          getErrorMessage(error) ===
-                          'Limit of daily messages is reached'
-                        ) {
-                          setOpenUpgradeMessage(true);
-                        } else toastError({ message: getErrorMessage(error) });
+                        handlerRetryError(error, () =>
+                          setOpenUpgradeMessage(true),
+                        );
                       }
                     }}
                     w={'100%'}
@@ -338,16 +337,13 @@ const ActivityDesktop: FC<IActivity> = ({ activity, webhook, onReload }) => {
                   }
                 >
                   <RetryIcon
-                    onClick={async (e: MouseEvent<SVGSVGElement>) => {
+                    onClick={async (e) => {
                       try {
                         await onRetry(e, activity, webhook, onReload);
                       } catch (error) {
-                        if (
-                          getErrorMessage(error) ===
-                          'Limit of daily messages is reached'
-                        ) {
-                          setOpenModalUpgradeMessage(true);
-                        } else toastError({ message: getErrorMessage(error) });
+                        handlerRetryError(error, () =>
+                          setOpenModalUpgradeMessage(true),
+                        );
                       }
                     }}
                   />

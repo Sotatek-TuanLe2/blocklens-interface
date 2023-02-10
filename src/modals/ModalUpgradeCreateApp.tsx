@@ -8,15 +8,15 @@ import { MetadataPlan } from 'src/store/metadata';
 import useUser from 'src/hooks/useUser';
 import useMetadata from 'src/hooks/useMetadata';
 
-interface ModalUpgradeCreateApp {
+interface ModalUpgradeCreateAppProps {
   open: boolean;
   onClose: () => void;
 }
 
-const ModalUpgradeCreateApp: FC<ModalUpgradeCreateApp> = ({
-                                                            open,
-                                                            onClose,
-                                                          }) => {
+const ModalUpgradeCreateApp: FC<ModalUpgradeCreateAppProps> = ({
+  open,
+  onClose,
+}) => {
   const history = useHistory();
   const { user } = useUser();
   const { billingPlans } = useMetadata();
@@ -24,7 +24,7 @@ const ModalUpgradeCreateApp: FC<ModalUpgradeCreateApp> = ({
     (item: MetadataPlan) => item.code === user?.getPlan().code,
   );
   const nextPlan = billingPlans[indexMyPlan + 1];
-  
+
   return (
     <BaseModal
       size="xl"
