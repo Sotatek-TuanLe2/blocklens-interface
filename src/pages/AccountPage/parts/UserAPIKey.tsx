@@ -1,14 +1,12 @@
 import 'src/styles/pages/AccountPage.scss';
 import { Box } from '@chakra-ui/react';
 import { AppCard, AppInput, AppLink } from 'src/components';
-import useUser from 'src/hooks/useUser';
 import { CopyIcon } from 'src/assets/icons';
 import { copyToClipboard } from 'src/utils/utils-helper';
 import { useCallback, useEffect, useState } from 'react';
-import { IAppResponse } from '../../../utils/utils-app';
-import rf from '../../../requests/RequestFactory';
+import rf from 'src/requests/RequestFactory';
 import { isMobile } from 'react-device-detect';
-import { shortenWalletAddress } from '../../../utils/utils-wallet';
+import { shortenWalletAddress } from 'src/utils/utils-wallet';
 
 const UserAPIKey = () => {
   const [apiKey, setApiKey] = useState<string>('');
