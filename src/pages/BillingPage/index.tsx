@@ -387,17 +387,18 @@ const BillingPage = () => {
             <AppHeading title="Billing" />
           </Box>
 
-          {user?.isPaymentMethodIntegrated() && !!user?.getActivePaymentMethod() && (
-            <Flex
-              className="link"
-              alignItems="center"
-              mb={5}
-              onClick={() => history.push('/billing-history')}
-            >
-              <Box mr={2}>Billing History</Box>
-              <ArrowRightIcon />
-            </Flex>
-          )}
+          {user?.isPaymentMethodIntegrated() &&
+            !!user?.getActivePaymentMethod() && (
+              <Flex
+                className="link"
+                alignItems="center"
+                mb={5}
+                onClick={() => history.push('/billing-history')}
+              >
+                <Box mr={2}>Billing History</Box>
+                <ArrowRightIcon />
+              </Flex>
+            )}
         </Flex>
 
         <AppCard className="list-table-wrap">
@@ -436,7 +437,8 @@ const BillingPage = () => {
               </Box>
             </Flex>
             <Box mb={isMobile ? 4 : 0} width={isMobile ? '100%' : 'auto'}>
-              {(user?.isPaymentMethodIntegrated() && !!user?.getActivePaymentMethod())
+              {user?.isPaymentMethodIntegrated() &&
+              !!user?.getActivePaymentMethod()
                 ? _renderButtonUpdatePlan()
                 : _renderButton()}
             </Box>

@@ -237,9 +237,7 @@ const CreateWebhook = () => {
   }, [addressesInput]);
 
   const addressValid = useMemo(() => {
-    return addressesInput.filter((address: string) =>
-      isValidAddress(address),
-    );
+    return addressesInput.filter((address: string) => isValidAddress(address));
   }, [addressesInput]);
 
   useEffect(() => {

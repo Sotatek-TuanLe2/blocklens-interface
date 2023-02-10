@@ -27,9 +27,10 @@ import {
 } from '../utils/utils-helper';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { InfoIcon, LinkDetail, LinkIcon, RetryIcon } from 'src/assets/icons';
-import { getExplorerTxUrl } from 'src/utils/utils-network';
+import { getExplorerTxUrl, objectKeys } from 'src/utils/utils-network';
 import useWebhookDetails from 'src/hooks/useWebhook';
 import { getColorBrandStatus } from 'src/utils/utils-webhook';
+import ModalUpgradeMessage from '../modals/ModalUpgradeMessage';
 
 interface IActivity {
   activity: IActivityResponse;
@@ -72,20 +73,21 @@ export const onRetry = async (
   onReload: () => void,
 ) => {
   e.stopPropagation();
-
   if (webhook.status === WEBHOOK_STATUS.DISABLED) return;
+  await rf.getRequest('NotificationRequest').retryActivity(activity.hash);
+  toastSuccess({ message: 'Retried!' });
+  onReload();
+};
 
-  try {
-    await rf.getRequest('NotificationRequest').retryActivity(activity.hash);
-    toastSuccess({ message: 'Retried!' });
-    onReload();
-  } catch (error) {
-    toastError({ message: getErrorMessage(error) });
-  }
+const handlerRetryError = (error: any, handleLimitError: any) => {
+  if (getErrorMessage(error) === 'Limit of daily messages is reached') {
+    handleLimitError();
+  } else toastError({ message: getErrorMessage(error) });
 };
 
 const ActivityMobile: FC<IActivity> = ({ activity, webhook, onReload }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [openModalUpgradeMessage, setOpenUpgradeMessage] = useState(false);
 
   const _renderInfos = () => {
     const _renderInfoContractActivity = () => {
@@ -219,9 +221,15 @@ const ActivityMobile: FC<IActivity> = ({ activity, webhook, onReload }) => {
                   <AppButton
                     variant="cancel"
                     size="sm"
-                    onClick={(e: any) =>
-                      onRetry(e, activity, webhook, onReload)
-                    }
+                    onClick={async (e) => {
+                      try {
+                        await onRetry(e, activity, webhook, onReload);
+                      } catch (error) {
+                        handlerRetryError(error, () =>
+                          setOpenUpgradeMessage(true),
+                        );
+                      }
+                    }}
                     w={'100%'}
                     isDisabled={webhook.status === WEBHOOK_STATUS.DISABLED}
                   >
@@ -243,12 +251,17 @@ const ActivityMobile: FC<IActivity> = ({ activity, webhook, onReload }) => {
           </Box>
         )}
       </Box>
+      <ModalUpgradeMessage
+        open={openModalUpgradeMessage}
+        onClose={() => setOpenUpgradeMessage(false)}
+      />
     </>
   );
 };
 
 const ActivityDesktop: FC<IActivity> = ({ activity, webhook, onReload }) => {
   const history = useHistory();
+  const [openModalUpgradeMessage, setOpenModalUpgradeMessage] = useState(false);
 
   const _renderContentContract = () => {
     return <Td w="15%">{activity?.metadata?.method}</Td>;
@@ -289,76 +302,88 @@ const ActivityDesktop: FC<IActivity> = ({ activity, webhook, onReload }) => {
   };
 
   return (
-    <Tbody>
-      <Tr
-        className="tr-list"
-        onClick={() => {
-          history.push(
-            `/app/${webhook?.appId}/webhook/${webhook.registrationId}/activities/${activity.hash}`,
-          );
-        }}
-      >
-        <Td w="25%">
-          {formatTimestamp(activity.createdAt * 1000, 'YYYY-MM-DD HH:mm:ss')}{' '}
-          UTC
-        </Td>
-        <Td w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '12%' : '15%'}>
-          {activity.metadata?.tx?.blockNumber}
-        </Td>
-        <Td w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '15%' : '20%'}>
-          <Flex alignItems="center">
-            {formatShortText(activity.metadata?.tx?.transactionHash)}
-            <Box ml={2}>
-              <a
-                onClick={(e) => onRedirectToBlockExplorer(e)}
-                href={getExplorerTxUrl(
-                  webhook?.chain,
-                  webhook?.network,
-                  activity.metadata?.tx?.transactionHash,
-                )}
-                className="link-redirect"
-                target="_blank"
-              >
-                <LinkIcon />
-              </a>
-            </Box>
-          </Flex>
-        </Td>
-        {_renderContentActivities()}
-        <Td w="15%" textAlign={'center'}>
-          {_renderStatus(activity)}
-        </Td>
-        <Td w="15%">
-          <Flex justifyContent={'flex-end'}>
-            {activity?.lastStatus !== STATUS.DONE && (
-              <Box
-                className="link-redirect"
-                mr={3}
-                cursor={
-                  webhook.status === WEBHOOK_STATUS.DISABLED
-                    ? 'not-allowed'
-                    : 'pointer'
-                }
-              >
-                <RetryIcon
-                  onClick={(e: MouseEvent<SVGSVGElement>) =>
-                    onRetry(e, activity, webhook, onReload)
+    <>
+      <Tbody>
+        <Tr
+          className="tr-list"
+          onClick={() => {
+            history.push(
+              `/app/${webhook?.appId}/webhook/${webhook.registrationId}/activities/${activity.hash}`,
+            );
+          }}
+        >
+          <Td w="25%">
+            {formatTimestamp(activity.createdAt * 1000, 'YYYY-MM-DD HH:mm:ss')}{' '}
+            UTC
+          </Td>
+          <Td w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '12%' : '15%'}>
+            {activity.metadata?.tx?.blockNumber}
+          </Td>
+          <Td w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '15%' : '20%'}>
+            <Flex alignItems="center">
+              {formatShortText(activity.metadata?.tx?.transactionHash)}
+              <Box ml={2}>
+                <a
+                  onClick={(e) => onRedirectToBlockExplorer(e)}
+                  href={getExplorerTxUrl(
+                    webhook?.chain,
+                    webhook?.network,
+                    activity.metadata?.tx?.transactionHash,
+                  )}
+                  className="link-redirect"
+                  target="_blank"
+                >
+                  <LinkIcon />
+                </a>
+              </Box>
+            </Flex>
+          </Td>
+          {_renderContentActivities()}
+          <Td w="15%" textAlign={'center'}>
+            {_renderStatus(activity)}
+          </Td>
+          <Td w="15%">
+            <Flex justifyContent={'flex-end'}>
+              {activity?.lastStatus !== STATUS.DONE && (
+                <Box
+                  className="link-redirect"
+                  mr={3}
+                  cursor={
+                    webhook.status === WEBHOOK_STATUS.DISABLED
+                      ? 'not-allowed'
+                      : 'pointer'
                   }
-                />
-              </Box>
-            )}
+                >
+                  <RetryIcon
+                    onClick={async (e) => {
+                      try {
+                        await onRetry(e, activity, webhook, onReload);
+                      } catch (error) {
+                        handlerRetryError(error, () =>
+                          setOpenModalUpgradeMessage(true),
+                        );
+                      }
+                    }}
+                  />
+                </Box>
+              )}
 
-            <AppLink
-              to={`/app/${webhook?.appId}/webhook/${webhook.registrationId}/activities/${activity.hash}`}
-            >
-              <Box className="link-redirect">
-                <LinkDetail />
-              </Box>
-            </AppLink>
-          </Flex>
-        </Td>
-      </Tr>
-    </Tbody>
+              <AppLink
+                to={`/app/${webhook?.appId}/webhook/${webhook.registrationId}/activities/${activity.hash}`}
+              >
+                <Box className="link-redirect">
+                  <LinkDetail />
+                </Box>
+              </AppLink>
+            </Flex>
+          </Td>
+        </Tr>
+      </Tbody>
+      <ModalUpgradeMessage
+        open={openModalUpgradeMessage}
+        onClose={() => setOpenModalUpgradeMessage(false)}
+      />
+    </>
   );
 };
 

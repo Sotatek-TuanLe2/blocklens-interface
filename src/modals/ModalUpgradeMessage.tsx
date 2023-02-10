@@ -8,15 +8,12 @@ import { MetadataPlan } from 'src/store/metadata';
 import useUser from 'src/hooks/useUser';
 import useMetadata from 'src/hooks/useMetadata';
 
-interface ModalUpgradeCreateAppProps {
+interface Props {
   open: boolean;
   onClose: () => void;
 }
 
-const ModalUpgradeCreateApp: FC<ModalUpgradeCreateAppProps> = ({
-  open,
-  onClose,
-}) => {
+const ModalUpgradeMessage: FC<Props> = ({ open, onClose }) => {
   const history = useHistory();
   const { user } = useUser();
   const { billingPlans } = useMetadata();
@@ -29,18 +26,15 @@ const ModalUpgradeCreateApp: FC<ModalUpgradeCreateAppProps> = ({
     <BaseModal
       size="xl"
       icon="icon-add-app"
-      title="Want To Create More Apps?"
+      title="Want To Receive More Message?"
       isOpen={open}
       isFullScreen={isMobile}
       onClose={onClose}
     >
       <Box className={'modal__description'}>
-        You can only create {user?.getPlan().appLimitation} active apps in your
-        current plan, upgrade to{' '}
-        <Box as={'span'} textTransform="lowercase">
-          {nextPlan?.name}
-        </Box>{' '}
-        to enjoy {nextPlan?.appLimitation} active apps in maximum.
+        You have reached the limit of {user?.getPlan().notificationLimitation}{' '}
+        messages/day in your current plan.Upgrade to <b>Growth</b> to enjoy{' '}
+        {nextPlan.appLimitation} messages/day
       </Box>
       <Flex flexWrap={'wrap'} justifyContent={'center'}>
         <AppButton size={'lg'} onClick={() => history.push('/billing')}>
@@ -51,4 +45,4 @@ const ModalUpgradeCreateApp: FC<ModalUpgradeCreateAppProps> = ({
   );
 };
 
-export default ModalUpgradeCreateApp;
+export default ModalUpgradeMessage;

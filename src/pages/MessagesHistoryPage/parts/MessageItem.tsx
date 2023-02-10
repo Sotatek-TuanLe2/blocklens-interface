@@ -110,12 +110,11 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
             <Box ml={2}>
               <a
                 onClick={(e) => onRedirectToBlockExplorer(e)}
-                href={
-                  getExplorerTxUrl(
-                    message?.input?.chain,
-                    message?.input?.network,
-                    message?.input?.tx?.transactionHash)
-                }
+                href={getExplorerTxUrl(
+                  message?.input?.chain,
+                  message?.input?.network,
+                  message?.input?.tx?.transactionHash,
+                )}
                 className="link-redirect"
                 target="_blank"
               >
