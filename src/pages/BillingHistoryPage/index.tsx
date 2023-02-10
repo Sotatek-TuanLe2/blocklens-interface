@@ -3,13 +3,14 @@ import React, { useCallback } from 'react';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/pages/AppDetail.scss';
 import { BasePage } from 'src/layouts';
-import { AppCard, AppDataTable } from 'src/components';
+import { AppCard, AppDataTable, AppLoadingTable } from 'src/components';
 import BillingItem from './parts/BillingItem';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { isMobile } from 'react-device-detect';
 import BillingItemMobile from './parts/BillingItemMobile';
 import { useHistory } from 'react-router';
 import { getErrorMessage } from '../../utils/utils-helper';
+import { getWidthColumns } from '../../components/ActivityDatatable';
 
 const fileDownload = require('js-file-download');
 
@@ -105,13 +106,18 @@ const BillingHistory = () => {
         <Tr>
           <Th w={'25%'}>date of issue</Th>
           <Th w={'20%'}>type</Th>
-          <Th w={'20%'}>amount</Th>
-          <Th w={'20%'}>method</Th>
+          <Th w={'15%'}>amount</Th>
+          <Th w={'15%'}>method</Th>
           <Th w={'15%'}>Status</Th>
           <Th w={'10%'} />
         </Tr>
       </Thead>
     );
+  };
+
+  const _renderLoading = () => {
+    const widthColumns = [25, 20, 15, 15, 15, 10];
+    return <AppLoadingTable widthColumns={widthColumns} />;
   };
 
   const _renderBody = (data?: IBilling[]) => {
@@ -164,6 +170,7 @@ const BillingHistory = () => {
           <AppDataTable
             fetchData={fetchDataTable}
             renderBody={_renderBody}
+            renderLoading={_renderLoading}
             renderHeader={_renderHeader}
             limit={15}
           />

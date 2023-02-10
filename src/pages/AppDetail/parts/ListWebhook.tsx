@@ -7,13 +7,13 @@ import {
   WEBHOOK_TYPES,
 } from 'src/utils/utils-webhook';
 import { Th, Thead, Tr, Tbody, Td, Box, Flex } from '@chakra-ui/react';
-import { AppDataTable } from 'src/components';
+import { AppDataTable, AppLoadingTable } from 'src/components';
 import { formatShortText, getErrorMessage } from 'src/utils/utils-helper';
 import _ from 'lodash';
 import { IAppResponse } from 'src/utils/utils-app';
 import { useHistory } from 'react-router';
 import { isMobile } from 'react-device-detect';
-import { toastError } from '../../../utils/utils-notify';
+import { toastError } from 'src/utils/utils-notify';
 
 interface IListWebhook {
   appInfo: IAppResponse;
@@ -186,6 +186,11 @@ const ListWebhook: FC<IListWebhook> = ({
     );
   }, [appInfo]);
 
+  const _renderLoading = () => {
+    const widthColumns = [20, 45, 20, 15];
+    return <AppLoadingTable widthColumns={widthColumns} />;
+  };
+
   const _renderHeader = () => {
     if (isMobile) return;
     return (
@@ -238,6 +243,7 @@ const ListWebhook: FC<IListWebhook> = ({
       requestParams={params}
       fetchData={fetchListWebhook}
       renderBody={_renderBody}
+      renderLoading={_renderLoading}
       isNotShowNoData
       renderHeader={totalWebhook > 0 ? _renderHeader : undefined}
       limit={10}

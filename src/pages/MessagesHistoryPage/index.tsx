@@ -4,7 +4,13 @@ import rf from 'src/requests/RequestFactory';
 import { useHistory, useParams } from 'react-router';
 import 'src/styles/pages/AppDetail.scss';
 import { BasePage } from 'src/layouts';
-import { AppCard, AppDataTable, AppInput, AppFilter } from 'src/components';
+import {
+  AppCard,
+  AppDataTable,
+  AppInput,
+  AppFilter,
+  AppLoadingTable,
+} from 'src/components';
 import {
   WEBHOOK_TYPES,
   optionsFilterMessage,
@@ -18,6 +24,7 @@ import { filterParams, getErrorMessage } from 'src/utils/utils-helper';
 import ModalFilterActivities from 'src/modals/ModalFilterActivities';
 import useWebhookDetails from 'src/hooks/useWebhook';
 import { getLogoChainByChainId } from 'src/utils/utils-network';
+import { getWidthColumns } from 'src/components/ActivityDatatable';
 
 const MessagesHistory = () => {
   const {
@@ -195,6 +202,10 @@ const MessagesHistory = () => {
     );
   }
 
+  const _renderLoading = () => {
+    return <AppLoadingTable widthColumns={getWidthColumns(webhook)} />;
+  };
+
   return (
     <BasePage className="app-detail">
       <>
@@ -232,6 +243,7 @@ const MessagesHistory = () => {
             }}
             fetchData={fetchDataTable}
             renderBody={_renderBody}
+            renderLoading={_renderLoading}
             renderHeader={_renderHeader}
             limit={15}
           />

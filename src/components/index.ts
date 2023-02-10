@@ -18,6 +18,7 @@ export { default as AppGraph } from './AppGraph';
 export { default as AppHeading } from './AppHeading';
 export { default as AppFilter } from './AppFilter';
 export { default as AppConnectWalletButton } from './AppConnectWalletButton';
+export { default as AppLoadingTable } from './AppLoadingTable';
 
 export * from './AppCard';
 export * from './AppButton';
@@ -38,3 +39,4 @@ export * from './AppSelect2';
 export * from './AppGraph';
 export * from './AppHeading';
 export * from './AppFilter';
+export * from './AppLoadingTable';
