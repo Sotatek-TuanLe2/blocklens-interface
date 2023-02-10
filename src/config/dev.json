@@ -7,7 +7,8 @@
   },
   "api": {
     "baseUrlApi": "https://dev-blocksniper-api.sotatek.works/api/blocklens-users",
-    "notificationsApi": "https://dev-blocksniper-api.sotatek.works/api/blocklens-notifications"
+    "notificationsApi": "https://dev-blocksniper-api.sotatek.works/api/blocklens-notifications",
+    "authApi": "https://buni-dev-api.sotatek.works/api/blocklens-auth"
   },
   "defaultNetwork": "BSC",
   "defaultChainId": 97,

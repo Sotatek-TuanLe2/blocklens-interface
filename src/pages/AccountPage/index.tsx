@@ -13,6 +13,7 @@ import TopUpHistory from './parts/TopUpHistory';
 import useWallet from 'src/hooks/useWallet';
 import { CopyIcon } from 'src/assets/icons';
 import React from 'react';
+import UserAPIKey from './parts/UserAPIKey';
 
 const AccountPage = () => {
   const { user } = useUser();
@@ -90,6 +91,10 @@ const AccountPage = () => {
             <Notifications />
           </Box>
         </Flex>
+
+        <Box mt={5}>
+          <UserAPIKey />
+        </Box>
 
         <Box mt={5}>
           <TopUpHistory />

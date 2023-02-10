@@ -86,6 +86,7 @@ export interface Config {
   api: {
     baseUrlApi: string;
     notificationsApi: string;
+    authApi: string;
   };
   defaultNetwork: string;
   defaultChainId: number;

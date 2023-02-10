@@ -29,6 +29,7 @@ import { ReactComponent as ArrowLogout } from './ArrowLogout.svg';
 import { ReactComponent as ReloadIcon } from './ReloadIcon.svg';
 import { ReactComponent as CopyIcon } from './CopyIcon.svg';
 import { ReactComponent as NoticeIcon } from './NoticeIcon.svg';
+import { ReactComponent as AddIcon } from './AddIcon.svg';
 
 export {
   CalendarIcon,
@@ -62,4 +63,5 @@ export {
   ReloadIcon,
   CopyIcon,
   NoticeIcon,
+  AddIcon
 };
