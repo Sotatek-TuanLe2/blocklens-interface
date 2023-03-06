@@ -209,3 +209,48 @@
     }
   }
 }
+
+.user-api {
+  &__title {
+    @include heading-6;
+
+    @include tablet {
+      @include heading-8;
+    }
+
+    color: $title;
+    margin-bottom: 20px;
+  }
+
+  &__label {
+    @include text-medium-regular;
+
+
+    color: $paragraph;
+    margin-bottom: 4px;
+  }
+
+  &__input {
+    background-color: transparent !important;
+    border: 1px solid $line !important;
+    color: $title !important;
+  }
+
+  &__action {
+    margin-right: 45px;
+    align-items: center;
+
+    svg {
+      margin-left: 15px;
+    }
+  }
+}
+
+.allowist {
+  .btn-add {
+    @include text-medium-medium;
+
+    cursor: pointer;
+    align-items: center;
+  }
+}

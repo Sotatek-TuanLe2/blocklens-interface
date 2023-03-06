@@ -5,5 +5,6 @@
   .label {
     @include text-medium-regular;
     color: $paragraph;
+    min-height: 24px;
   }
 }
