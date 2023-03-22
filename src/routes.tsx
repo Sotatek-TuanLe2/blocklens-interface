@@ -34,6 +34,7 @@ import { initMetadata } from './store/metadata';
 import ModalSubmittingTransaction from './modals/ModalSubmittingTransaction';
 import ModalFinishTransaction from './modals/ModalFinishTransaction';
 import ModalSignatureRequired from './modals/ModalSignatureRequired';
+import SqlEditor from './components/Editor/SqlEditorAce';
 
 /**
  * Main App routes.
@@ -82,6 +83,7 @@ const Routes: FC<RouteComponentProps> = () => {
 
         <PublicRoute path={'/reset-password'} component={ResetPasswordPage} />
         <PrivateRoute path={'/billing'} component={BillingPage} />
+        <PrivateRoute path={'/sql-editor'} component={SqlEditor} />
         <PrivateRoute path={'/account'} component={AccountPage} />
         <PrivateRoute path={'/billing-info'} component={BillingInfoPage} />
         <PrivateRoute path={'/billing-history'} component={BillingHistory} />
