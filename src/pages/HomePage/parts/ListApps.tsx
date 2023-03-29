@@ -1,15 +1,12 @@
-import {
-  Box,
-  Flex,
-  Tbody,
-  Td,
-  Text,
-  Th,
-  Thead,
-  Tr,
-} from '@chakra-ui/react';
+import { Box, Flex, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
 import React, { useState, FC, useRef } from 'react';
-import { AppButton, AppCard, AppDataTable, DataTableRef, AppLoadingTable } from 'src/components';
+import {
+  AppButton,
+  AppCard,
+  AppDataTable,
+  DataTableRef,
+  AppLoadingTable,
+} from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
 import { useHistory } from 'react-router';

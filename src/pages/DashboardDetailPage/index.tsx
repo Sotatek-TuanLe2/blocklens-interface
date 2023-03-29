@@ -9,7 +9,9 @@ const DashboardDetailPage: React.FC = () => {
   const { authorId, dashboardId } = useParams<ParamTypes>();
 
   return (
-    <div>Dashboard Detail Page {authorId} {dashboardId}</div>
+    <div>
+      Dashboard Detail Page {authorId} {dashboardId}
+    </div>
   );
 };
 
