@@ -5,12 +5,12 @@ interface ParamTypes {
   dashboardId: string;
 }
 
-const DashboardPage: React.FC = () => {
+const DashboardDetailPage: React.FC = () => {
   const { authorId, dashboardId } = useParams<ParamTypes>();
 
   return (
-    <div>Dashboard Page {authorId} {dashboardId}</div>
+    <div>Dashboard Detail Page {authorId} {dashboardId}</div>
   );
 };
 
-export default DashboardPage;
+export default DashboardDetailPage;

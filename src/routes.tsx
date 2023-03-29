@@ -34,8 +34,10 @@ import { initMetadata } from './store/metadata';
 import ModalSubmittingTransaction from './modals/ModalSubmittingTransaction';
 import ModalFinishTransaction from './modals/ModalFinishTransaction';
 import ModalSignatureRequired from './modals/ModalSignatureRequired';
-import AnalyticsPage from './pages/AnalyticsPage';
-import DashboardPage from './pages/DashboardPage';
+
+import QueriesPage from './pages/QueriesPage';
+import DashboardsPage from './pages/DashboardsPage';
+import DashboardDetailPage from './pages/DashboardDetailPage';
 
 /**
  * Main App routes.
@@ -108,8 +110,9 @@ const Routes: FC<RouteComponentProps> = () => {
           component={MessagesHistory}
         />
         <PrivateRoute path={'/top-up'} component={TopUpPage} />
-        <PrivateRoute exact path={'/analytics'} component={AnalyticsPage} />
-        <PrivateRoute exact path={'/dashboard/:authorId/:dashboardId'} component={DashboardPage} />
+        <PrivateRoute exact path={'/dashboards'} component={DashboardsPage} />
+        <PrivateRoute exact path={'/dashboard/:authorId/:dashboardId'} component={DashboardDetailPage} />
+        <PrivateRoute exact path={'/queries'} component={QueriesPage} />
         <Route path={'/contact-us'} component={ContactUs} />
         <PrivateRoute path={'/'} component={HomePage} />
       </Switch>
