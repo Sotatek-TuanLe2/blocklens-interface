@@ -15,7 +15,6 @@ import AppPagination from './AppPagination';
 import 'src/styles/components/AppDataTable.scss';
 import AppButton from './AppButton';
 import { Table, TableContainer, Flex, Tr, Td, Tbody } from '@chakra-ui/react';
-import Skeleton from 'react-loading-skeleton';
 
 // For more params, please define them below with ? mark
 export interface RequestParams {
