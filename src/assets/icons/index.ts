@@ -63,5 +63,5 @@ export {
   ReloadIcon,
   CopyIcon,
   NoticeIcon,
-  AddIcon
+  AddIcon,
 };
