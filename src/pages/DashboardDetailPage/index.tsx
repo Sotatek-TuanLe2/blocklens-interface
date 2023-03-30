@@ -21,7 +21,7 @@ interface ParamTypes {
 }
 
 const DashboardDetailPage: React.FC = () => {
-  const { authorId, dashboardId } = useParams<ParamTypes>();
+  const { authorId } = useParams<ParamTypes>();
   const [totalVote, setTotalVote] = useState<number>(2);
   const [markdownText, setMarkdownText] = useState<string>(``);
   const [voteStar, setVoteStar] = useState<boolean>(false);
