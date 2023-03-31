@@ -237,8 +237,12 @@
   padding-top: 40px;
   row-gap: 1rem !important;
 
+  .error-validate {
+    color: $red-400;
+    font-size: 14px;
+  }
   .chakra-stack {
-    .chakra-text {
+    .label {
       color: $whiteAlpha-900;
     }
   }

@@ -8,14 +8,14 @@ import BaseModal from './BaseModal';
 interface IModalAddVisualization {
   open: boolean;
   onClose: () => void;
-  getNameUser: string;
+  userName: string;
   setOpenModalFork: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   open,
   onClose,
-  getNameUser,
+  userName,
   setOpenModalFork,
 }) => {
   const [add, setAdd] = useState<boolean>(false);
@@ -59,7 +59,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
               <>
                 <Flex alignItems={'center'} columnGap={'10px'} p={'10px'}>
                   <ListIcon />
-                  <Link>@{getNameUser} / ether</Link>
+                  <Link>@{userName} / ether</Link>
                   <Text fontWeight={'bold'}>Query results</Text>
                 </Flex>
                 <Text
