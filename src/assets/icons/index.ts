@@ -30,6 +30,11 @@ import { ReactComponent as ReloadIcon } from './ReloadIcon.svg';
 import { ReactComponent as CopyIcon } from './CopyIcon.svg';
 import { ReactComponent as NoticeIcon } from './NoticeIcon.svg';
 import { ReactComponent as AddIcon } from './AddIcon.svg';
+import { ReactComponent as StarIcon } from './StarIcon.svg';
+import { ReactComponent as ActiveStarIcon } from './ActiveStarIcon.svg';
+import { ReactComponent as ListIcon } from './ListIcon.svg';
+import { ReactComponent as SmallSuccessIcon } from './SmallSuccessIcon.svg';
+import { ReactComponent as PenIcon } from './PenIcon.svg';
 
 export {
   CalendarIcon,
@@ -64,4 +69,9 @@ export {
   CopyIcon,
   NoticeIcon,
   AddIcon,
+  StarIcon,
+  ActiveStarIcon,
+  ListIcon,
+  SmallSuccessIcon,
+  PenIcon,
 };

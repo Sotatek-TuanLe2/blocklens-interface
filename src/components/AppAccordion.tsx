@@ -1,15 +1,38 @@
-import { Accordion } from '@chakra-ui/react';
+import {
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
+  Box,
+} from '@chakra-ui/react';
 import React from 'react';
+import 'src/styles/components/AppAccordion.scss';
 
 interface IAppAccordion {
+  title: string;
   content: () => JSX.Element;
   className?: string;
 }
 
-const AppAccordion: React.FC<IAppAccordion> = ({ content, className }) => {
+const AppAccordion: React.FC<IAppAccordion> = ({
+  content,
+  className,
+  title,
+}) => {
   return (
-    <Accordion allowMultiple className={`${className}`}>
-      {content()}
+    <Accordion allowMultiple className={`${className} main-accordion`}>
+      <AccordionItem>
+        <h2>
+          <AccordionButton>
+            <Box as="span" flex="1" textAlign="left">
+              {title}
+            </Box>
+            <AccordionIcon />
+          </AccordionButton>
+        </h2>
+        <AccordionPanel pb={4}>{content()}</AccordionPanel>
+      </AccordionItem>
     </Accordion>
   );
 };
