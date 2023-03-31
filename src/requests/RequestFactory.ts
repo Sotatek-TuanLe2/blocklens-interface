@@ -5,6 +5,7 @@ import RegistrationRequest from './RegistrationRequest';
 import NotificationRequest from './NotificationRequest';
 import BillingRequest from './BillingRequest';
 import AuthServiceRequest from './AuthServiceRequest';
+import DashboardsRequest from './DashboardsRequest';
 
 const requestMap = {
   AppRequest,
@@ -14,6 +15,7 @@ const requestMap = {
   NotificationRequest,
   BillingRequest,
   AuthServiceRequest,
+  DashboardsRequest,
 };
 
 const instances = {};

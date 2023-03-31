@@ -1,9 +1,10 @@
 import BaseRequest from './BaseRequest';
 
-interface DashboardsParams {
-  order: string;
-  time_range: string;
-  q: string;
+export interface DashboardsParams {
+  order?: string;
+  time_range?: string;
+  q?: string;
+  tags?: string;
 }
 
 interface SchemasParams {
@@ -12,7 +13,7 @@ interface SchemasParams {
 
 export default class DashboardsRequest extends BaseRequest {
   getUrlPrefix(): string {
-    return "https://64240853d6152a4d4804ca2f.mockapi.io/blocklens-dashboards";
+    return 'https://64240853d6152a4d4804ca2f.mockapi.io/blocklens-dashboards';
   }
 
   getDashboards(params: DashboardsParams) {
