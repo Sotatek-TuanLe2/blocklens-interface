@@ -10,9 +10,17 @@ import {
 } from 'src/requests/DashboardsRequest';
 import { toastError } from 'src/utils/utils-notify';
 import { getErrorMessage } from 'src/utils/utils-helper';
-import ListItem, { LIST_ITEM_TYPE } from './parts/ListItem';
-import { Flex } from '@chakra-ui/react';
+import ListItem from './parts/ListItem';
+import { Flex, Tbody } from '@chakra-ui/react';
 import { BasePage } from 'src/layouts';
+import FilterSearch from './parts/FilterSearch';
+
+export const LIST_ITEM_TYPE = {
+  DASHBOARDS: 'DASHBOARDS',
+  QUERIES: 'QUERIES',
+  WIZARDS: 'WIZARDS',
+  TEAMS: 'TEAMS',
+};
 
 interface IDashboardParams extends RequestParams, DashboardsParams {}
 interface IQueriesParams extends RequestParams, QueriesParams {}
@@ -88,20 +96,22 @@ const DashboardsPage: React.FC = () => {
         <AppDataTable
           requestParams={dashboardParams}
           fetchData={fetchDashboards}
-          renderBody={(data) =>
-            data.map((item: any) => (
-              <ListItem
-                author={item.user.name}
-                avatarUrl={item.user.profile_image_url}
-                createdAt={item.created_at}
-                starCount={item.dashboard_favorite_count_all.favorite_count}
-                title={item.name}
-                type={LIST_ITEM_TYPE.DASHBOARDS}
-                key={item.id}
-                tags={item.tags}
-              />
-            ))
-          }
+          renderBody={(data) => (
+            <Tbody>
+              {data.map((item: any) => (
+                <ListItem
+                  author={item.user.name}
+                  avatarUrl={item.user.profile_image_url}
+                  createdAt={item.created_at}
+                  starCount={item.dashboard_favorite_count_all.favorite_count}
+                  title={item.name}
+                  type={LIST_ITEM_TYPE.DASHBOARDS}
+                  key={item.id}
+                  tags={item.tags}
+                />
+              ))}
+            </Tbody>
+          )}
         />
       ),
     },
@@ -157,7 +167,7 @@ const DashboardsPage: React.FC = () => {
           <AppTabs tabs={tabs} onChange={onChangeTab} />
         </div>
         <div className="dashboard-filter">
-          <div className="dashboard-filter__search"></div>
+          <FilterSearch type={tabType} />
           <div className="dashboard-filter__tags"></div>
         </div>
       </Flex>

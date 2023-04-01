@@ -219,7 +219,6 @@ const AppDataTable = forwardRef(
     };
 
     const _renderBody = () => {
-      console.log('tableData', tableData);
       if (!tableData.length || isLoading || props.loading) {
         return;
       }

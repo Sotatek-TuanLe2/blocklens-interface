@@ -1,6 +1,7 @@
 .dashboards-page {
   width: 100%;
   padding: 20px;
+  gap: 20px;
 
   .dashboard-list {
     width: 70%;
@@ -52,7 +53,13 @@
     width: 30%;
 
     &__search {
+      padding: 20px;
+      background-color: #101530;
 
+      &__title {
+        font-weight: 500;
+        margin-bottom: 20px;
+      }
     }
 
     &__tags {

@@ -1,16 +1,8 @@
-import { Flex } from '@chakra-ui/react';
+import { Flex, Tr } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 import { StarIcon } from 'src/assets/icons';
-
-export const LIST_ITEM_TYPE = {
-  DASHBOARDS: 'DASHBOARDS',
-  QUERIES: 'QUERIES',
-  WIZARDS: 'WIZARDS',
-  TEAMS: 'TEAMS',
-};
-
-const LIKEABLE_ITEMS = [LIST_ITEM_TYPE.DASHBOARDS, LIST_ITEM_TYPE.QUERIES];
+import { LIST_ITEM_TYPE } from '..';
 
 interface ListItem {
   type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
@@ -34,6 +26,8 @@ const ListItem: React.FC<ListItem> = (props) => {
     tags,
     memberAvatarUrls,
   } = props;
+
+  const LIKEABLE_ITEMS = [LIST_ITEM_TYPE.DASHBOARDS, LIST_ITEM_TYPE.QUERIES];
 
   const getDuration = () => {
     const durationMinutes = moment().diff(moment(createdAt), 'minutes');
@@ -61,45 +55,47 @@ const ListItem: React.FC<ListItem> = (props) => {
   };
 
   return (
-    <Flex className="dashboard-list__item" alignItems={'center'}>
-      <div className="dashboard-list__item__avatar">
-        <img src={avatarUrl} alt={`Avatar of ${author}`} />
-      </div>
-      <div className="dashboard-list__item__content">
+    <Tr>
+      <Flex className="dashboard-list__item" alignItems={'center'}>
+        <div className="dashboard-list__item__avatar">
+          <img src={avatarUrl} alt={`Avatar of ${author}`} />
+        </div>
+        <div className="dashboard-list__item__content">
+          <Flex
+            className="dashboard-list__item__content__title"
+            alignItems={'center'}
+          >
+            <span className="item-name">{title}</span>
+            {tags && (
+              <span>
+                {tags.map((tag) => (
+                  <Tag key={tag} value={tag} />
+                ))}
+              </span>
+            )}
+          </Flex>
+          <div className="dashboard-list__item__content__createAt">
+            Created by @
+            <Link to={`/${author}`} target="_blank">
+              {author}
+            </Link>{' '}
+            {getDuration()} ago
+          </div>
+        </div>
         <Flex
-          className="dashboard-list__item__content__title"
+          className="dashboard-list__item__stars"
           alignItems={'center'}
+          justifyContent={'space-between'}
         >
-          <span className="item-name">{title}</span>
-          {tags && (
-            <span>
-              {tags.map((tag) => (
-                <Tag key={tag} value={tag} />
-              ))}
-            </span>
+          <span>{starCount}</span>
+          {LIKEABLE_ITEMS.includes(type) ? (
+            <StarIcon onClick={onLike} />
+          ) : (
+            <StarIcon />
           )}
         </Flex>
-        <div className="dashboard-list__item__content__createAt">
-          Created by @
-          <Link to={`/${author}`} target="_blank">
-            {author}
-          </Link>{' '}
-          {getDuration()} ago
-        </div>
-      </div>
-      <Flex
-        className="dashboard-list__item__stars"
-        alignItems={'center'}
-        justifyContent={'space-between'}
-      >
-        <span>{starCount}</span>
-        {LIKEABLE_ITEMS.includes(type) ? (
-          <StarIcon onClick={onLike} />
-        ) : (
-          <StarIcon />
-        )}
       </Flex>
-    </Flex>
+    </Tr>
   );
 };
 
