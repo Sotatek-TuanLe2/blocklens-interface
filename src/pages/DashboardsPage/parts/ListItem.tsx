@@ -80,8 +80,11 @@ const ListItem: React.FC<ListItem> = (props) => {
           )}
         </Flex>
         <div className="dashboard-list__item__content__createAt">
-          Created by @<Link to={`/${author}`} target="_blank" /> {getDuration()}{' '}
-          ago
+          Created by @
+          <Link to={`/${author}`} target="_blank">
+            {author}
+          </Link>{' '}
+          {getDuration()} ago
         </div>
       </div>
       <Flex

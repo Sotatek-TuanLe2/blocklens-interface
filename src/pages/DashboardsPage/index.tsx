@@ -3,18 +3,27 @@ import AppTabs, { ITabs } from 'src/components/AppTabs';
 import 'src/styles/pages/DashboardsPage.scss';
 import rf from 'src/requests/RequestFactory';
 import { useCallback, useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import { DashboardsParams } from 'src/requests/DashboardsRequest';
+import { useLocation, useHistory } from 'react-router-dom';
+import {
+  DashboardsParams,
+  QueriesParams,
+} from 'src/requests/DashboardsRequest';
 import { toastError } from 'src/utils/utils-notify';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import ListItem, { LIST_ITEM_TYPE } from './parts/ListItem';
 import { Flex } from '@chakra-ui/react';
+import { BasePage } from 'src/layouts';
 
 interface IDashboardParams extends RequestParams, DashboardsParams {}
+interface IQueriesParams extends RequestParams, QueriesParams {}
 
 const DashboardsPage: React.FC = () => {
   const { pathname } = useLocation();
+  const history = useHistory();
+
+  const [tabType, setTabType] = useState<string>(LIST_ITEM_TYPE.DASHBOARDS);
   const [dashboardParams, setDashboardParams] = useState<IDashboardParams>({});
+  const [queryParams, setQueryParams] = useState<IQueriesParams>({});
 
   useEffect(() => {
     const searchParams = new URLSearchParams(pathname);
@@ -23,12 +32,24 @@ const DashboardsPage: React.FC = () => {
     const q = searchParams.get('q') || '';
     const tags = searchParams.get('tags') || '';
 
-    setDashboardParams((prevState) => ({
-      order: order || prevState.order,
-      time_range: time_range || prevState.time_range,
-      q: q || prevState.q,
-      tags: tags || prevState.tags,
-    }));
+    switch (tabType) {
+      case LIST_ITEM_TYPE.DASHBOARDS:
+        setDashboardParams((prevState) => ({
+          order: order || prevState.order,
+          time_range: time_range || prevState.time_range,
+          q: q || prevState.q,
+          tags: tags || prevState.tags,
+        }));
+        break;
+      case LIST_ITEM_TYPE.QUERIES:
+        setQueryParams((prevState) => ({
+          order: order || prevState.order,
+          q: q || prevState.q,
+        }));
+        break;
+      default:
+        break;
+    }
   }, [pathname]);
 
   const fetchDashboards: any = useCallback(
@@ -45,9 +66,23 @@ const DashboardsPage: React.FC = () => {
     [dashboardParams],
   );
 
+  const fetchQueries: any = useCallback(
+    async (params: IQueriesParams) => {
+      try {
+        const res: any = await rf
+          .getRequest('DashboardsRequest')
+          .getQueries(params);
+        return { docs: res };
+      } catch (error) {
+        toastError({ message: getErrorMessage(error) });
+      }
+    },
+    [queryParams],
+  );
+
   const tabs: ITabs[] = [
     {
-      id: 'Dashboards',
+      id: LIST_ITEM_TYPE.DASHBOARDS,
       name: 'Dashboards',
       content: (
         <AppDataTable
@@ -71,32 +106,62 @@ const DashboardsPage: React.FC = () => {
       ),
     },
     {
-      id: 'Queries',
+      id: LIST_ITEM_TYPE.QUERIES,
       name: 'Queries',
-      content: null,
+      content: (
+        <AppDataTable
+          requestParams={queryParams}
+          fetchData={fetchQueries}
+          renderBody={(data) =>
+            data.map((item: any) => (
+              <ListItem
+                author={item.user ? item.user.name : item.team.handle}
+                avatarUrl={
+                  item.user
+                    ? item.user.profile_image_url
+                    : item.team.profile_image_url
+                }
+                createdAt={item.created_at}
+                starCount={item.query_favorite_count_last_7d.favorite_count}
+                title={item.name}
+                type={LIST_ITEM_TYPE.DASHBOARDS}
+                key={item.id}
+                tags={item.tags}
+              />
+            ))
+          }
+        />
+      ),
     },
     {
-      id: 'Wizards',
+      id: LIST_ITEM_TYPE.WIZARDS,
       name: 'Wizards',
       content: null,
     },
     {
-      id: 'Teams',
+      id: LIST_ITEM_TYPE.TEAMS,
       name: 'Teams',
       content: null,
     },
   ];
 
+  const onChangeTab = (tabId: string) => {
+    history.push('/dashboards');
+    setTabType(tabId);
+  };
+
   return (
-    <Flex className="dashboards-page" justifyContent={'space-between'}>
-      <div className="dashboard-list">
-        <AppTabs tabs={tabs} />
-      </div>
-      <div className="dashboard-filter">
-        <div className="dashboard-filter__search"></div>
-        <div className="dashboard-filter__tags"></div>
-      </div>
-    </Flex>
+    <BasePage>
+      <Flex className="dashboards-page" justifyContent={'space-between'}>
+        <div className="dashboard-list">
+          <AppTabs tabs={tabs} onChange={onChangeTab} />
+        </div>
+        <div className="dashboard-filter">
+          <div className="dashboard-filter__search"></div>
+          <div className="dashboard-filter__tags"></div>
+        </div>
+      </Flex>
+    </BasePage>
   );
 };
 
