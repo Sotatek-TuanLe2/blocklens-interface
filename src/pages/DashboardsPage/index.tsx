@@ -2,7 +2,7 @@ import { AppDataTable, RequestParams } from 'src/components';
 import AppTabs, { ITabs } from 'src/components/AppTabs';
 import 'src/styles/pages/DashboardsPage.scss';
 import rf from 'src/requests/RequestFactory';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
 import {
   DashboardsParams,
@@ -22,8 +22,8 @@ export const LIST_ITEM_TYPE = {
   TEAMS: 'TEAMS',
 };
 
-interface IDashboardParams extends RequestParams, DashboardsParams {}
-interface IQueriesParams extends RequestParams, QueriesParams {}
+export interface IDashboardParams extends RequestParams, DashboardsParams {}
+export interface IQueriesParams extends RequestParams, QueriesParams {}
 
 const DashboardsPage: React.FC = () => {
   const { pathname } = useLocation();
@@ -167,7 +167,11 @@ const DashboardsPage: React.FC = () => {
           <AppTabs tabs={tabs} onChange={onChangeTab} />
         </div>
         <div className="dashboard-filter">
-          <FilterSearch type={tabType} />
+          <FilterSearch
+            type={tabType}
+            dashboardParams={dashboardParams}
+            queryParams={queryParams}
+          />
           <div className="dashboard-filter__tags"></div>
         </div>
       </Flex>

@@ -13,7 +13,9 @@ interface SchemasParams {
 
 export interface QueriesParams {
   order?: string;
+  time_range?: string;
   q?: string;
+  tags?: string;
 }
 
 export default class DashboardsRequest extends BaseRequest {
