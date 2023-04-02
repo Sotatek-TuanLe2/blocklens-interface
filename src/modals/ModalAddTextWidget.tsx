@@ -2,10 +2,12 @@ import { Flex, Text, Textarea } from '@chakra-ui/react';
 import React, { Dispatch, SetStateAction } from 'react';
 import { AppButton, AppField } from 'src/components';
 import AppAccordion from 'src/components/AppAccordion';
-import 'src/styles/components/BaseModal.scss';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import BaseModal from './BaseModal';
+import { ILayout } from 'src/pages/DashboardDetailPage';
+import { debounce } from 'lodash';
+import 'src/styles/components/BaseModal.scss';
 
 interface IModalAddTextWidget {
   open: boolean;
@@ -13,9 +15,9 @@ interface IModalAddTextWidget {
   markdownText: string;
   setMarkdownText: Dispatch<SetStateAction<string>>;
   type?: 'add' | 'edit' | string;
-  selectedItem: any;
-  state: any;
-  setState: Dispatch<any>;
+  selectedItem: ILayout;
+  dataLayouts: ILayout[];
+  setDataLayouts: React.Dispatch<React.SetStateAction<ILayout[]>>;
 }
 
 interface IMarkdown {
@@ -88,15 +90,17 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
   markdownText,
   setMarkdownText,
   type,
-  state,
-  setState,
+  dataLayouts,
+  setDataLayouts,
   selectedItem,
 }) => {
+  const DEBOUNCE_TIME = 500;
+
   const onSave = async () => {
     try {
-      setState([
-        ...state,
-        { id: state.length + 1, i: markdownText, w: 6, h: 2 },
+      setDataLayouts([
+        ...dataLayouts,
+        { id: dataLayouts.length + 1, i: markdownText, x: 0, y: 0, w: 6, h: 2 },
       ]);
       setMarkdownText('');
       onClose();
@@ -107,9 +111,9 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
 
   const onUpdate = (id: number) => {
     try {
-      setState(
-        state.map((item: any) =>
-          item.id === id ? { id: id, i: markdownText, w: 6, h: 2 } : item,
+      setDataLayouts(
+        dataLayouts.map((item) =>
+          item.id === id ? { ...item, id: id, i: markdownText } : item,
         ),
       );
       setMarkdownText('');
@@ -118,7 +122,51 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
       toastError({ message: getErrorMessage(e) });
     }
   };
-  console.log(state);
+  const handleChangeMarkdownText = debounce((event) => {
+    setMarkdownText(event.target.value);
+  }, DEBOUNCE_TIME);
+
+  const ButtonSave = () => {
+    return (
+      <AppButton
+        size="sm"
+        bg="#1e1870"
+        color="#fff"
+        onClick={() => {
+          type === 'add' ? onSave() : onUpdate(selectedItem.id);
+        }}
+        disabled={!markdownText}
+      >
+        Save
+      </AppButton>
+    );
+  };
+  const ButtonCancel = () => {
+    return (
+      <AppButton
+        onClick={onClose}
+        size="sm"
+        bg="#e1e1f9"
+        color="#1e1870"
+        variant={'cancel'}
+      >
+        Cancel
+      </AppButton>
+    );
+  };
+  const ButtonRemoveWidget = () => {
+    return (
+      <AppButton
+        onClick={onClose}
+        size="sm"
+        bg="#e1e1f9"
+        color="#1e1870"
+        variant={'cancel'}
+      >
+        Remove this widget
+      </AppButton>
+    );
+  };
 
   return (
     <BaseModal isOpen={open} onClose={onClose} size="md">
@@ -129,12 +177,10 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
             size="sm"
             h={'150px'}
             borderRadius={'0.5rem'}
-            value={markdownText}
-            defaultValue="Sdsads"
-            onChange={(e) => setMarkdownText(e.target.value)}
+            defaultValue={type === 'add' ? '' : selectedItem.i}
+            onChange={handleChangeMarkdownText}
           />
         </AppField>
-        {console.log(selectedItem)}
         <AppAccordion
           content={
             <div>
@@ -155,48 +201,13 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
           mt={10}
           justifyContent={type === 'add' ? '' : 'space-between'}
         >
-          <AppButton
-            size="sm"
-            bg="#1e1870"
-            color="#fff"
-            onClick={() => {
-              onSave();
-              onUpdate(selectedItem.id);
-            }}
-            disabled={!markdownText}
-          >
-            Save
-          </AppButton>
+          <ButtonSave />
           {type === 'add' ? (
-            <AppButton
-              onClick={onClose}
-              size="sm"
-              bg="#e1e1f9"
-              color="#1e1870"
-              variant={'cancel'}
-            >
-              Cancel
-            </AppButton>
+            <ButtonCancel />
           ) : (
             <div>
-              <AppButton
-                onClick={onClose}
-                size="sm"
-                bg="#e1e1f9"
-                color="#1e1870"
-                variant={'cancel'}
-              >
-                Remove this widget
-              </AppButton>
-              <AppButton
-                onClick={onClose}
-                size="sm"
-                bg="#e1e1f9"
-                color="#1e1870"
-                variant={'cancel'}
-              >
-                Cancel
-              </AppButton>
+              <ButtonRemoveWidget />
+              <ButtonCancel />
             </div>
           )}
         </Flex>

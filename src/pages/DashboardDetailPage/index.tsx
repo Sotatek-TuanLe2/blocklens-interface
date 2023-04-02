@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import { ActiveStarIcon, PenIcon, StarIcon } from 'src/assets/icons';
 import { AppButton } from 'src/components';
 import useUser from 'src/hooks/useUser';
-import { Responsive, WidthProvider } from 'react-grid-layout';
+import { Layout, Responsive, WidthProvider } from 'react-grid-layout';
 import ReactMarkdown from 'react-markdown';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
@@ -21,51 +21,38 @@ interface ParamTypes {
   dashboardId: string;
 }
 
-interface ILayout {
+export interface ILayout extends Layout {
   id: number;
-  i: string;
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-}
-interface Layouts {
-  [P: string]: ILayout[];
 }
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
-const layouts: Layouts = {
-  lg: [
-    { id: 1, i: 'a', x: 0, y: 0, w: 6, h: 2 },
-    { id: 2, i: 'b', x: 6, y: 0, w: 6, h: 2 },
-    { id: 3, i: 'c', x: 0, y: 0, w: 6, h: 2 },
-    { id: 4, i: 'd', x: 6, y: 0, w: 6, h: 2 },
-  ],
-};
+const layouts: ILayout[] = [
+  { id: 1, i: 'a', x: 0, y: 0, w: 6, h: 2 },
+  { id: 2, i: 'b', x: 6, y: 0, w: 6, h: 2 },
+  { id: 3, i: 'c', x: 0, y: 0, w: 6, h: 2 },
+  { id: 4, i: 'd', x: 6, y: 0, w: 6, h: 2 },
+];
 
 const DashboardDetailPage: React.FC = () => {
   const { authorId, dashboardId } = useParams<ParamTypes>();
-  const [state, setState] = useState<any>(layouts.lg);
-  const [totalVote, setTotalVote] = useState<number>(2);
-  const [selectedItem, setSelectedItem] = useState<number>(1);
+  const [dataLayouts, setDataLayouts] = useState<ILayout[]>(layouts);
+  const [selectedItem, setSelectedItem] = useState<ILayout>(Object);
   const [markdownText, setMarkdownText] = useState<string>(``);
   const [typeModalTextWidget, setTypeModalTextWidget] = useState<string>(``);
-  const [voteStar, setVoteStar] = useState<boolean>(false);
-  const [openModalFork, setOpenModalFork] = useState<boolean>(false);
-  const [openModalShare, setOpenModalShare] = useState<boolean>(false);
-  const [openModalSetting, setOpenModalSetting] = useState<boolean>(false);
-  const [openModalEdit, setOpenModalEdit] = useState<boolean>(false);
   const [openModalAddVisualization, setOpenModalAddVisualization] =
     useState<boolean>(false);
+  const [openModalSetting, setOpenModalSetting] = useState<boolean>(false);
+  const [openModalEdit, setOpenModalEdit] = useState<boolean>(false);
+  const [editMode, setEditMode] = useState<boolean>(false);
+
   const [openModalAddTextWidget, setOpenModalAddTextWidget] =
     useState<boolean>(false);
-  const [editMode, setEditMode] = useState<boolean>(false);
   const { user } = useUser();
 
   const getNameUser = `${user?.getFirstName()}` + `${user?.getLastName()}`;
-  const isAccountsDashboard = user?.getId() === authorId;
-  const HashTag = ['zkSync', 'bridge', 'l2'];
+
+  const HashTag: string[] = ['zkSync', 'bridge', 'l2'];
 
   const GroupEditButton = () => {
     const TitleEditName = [
@@ -97,6 +84,126 @@ const DashboardDetailPage: React.FC = () => {
     );
   };
 
+  const ButtonModalFork = () => {
+    const [openModalFork, setOpenModalFork] = useState<boolean>(false);
+
+    return (
+      <>
+        <AppButton
+          size={'sm'}
+          bg="#e1e1f9"
+          color="#1e1870"
+          onClick={() => setOpenModalFork(true)}
+        >
+          Fork
+        </AppButton>
+        <ModalForkDashBoardDetails
+          open={openModalFork}
+          onClose={() => setOpenModalFork(false)}
+        />
+        <ModalAddVisualization
+          setOpenModalFork={setOpenModalFork}
+          open={openModalAddVisualization}
+          onClose={() => setOpenModalAddVisualization(false)}
+          userName={getNameUser}
+        />
+      </>
+    );
+  };
+
+  const ButtonVoteStar = () => {
+    const [voteStar, setVoteStar] = useState<boolean>(false);
+    const [totalVote, setTotalVote] = useState<number>(2);
+
+    return (
+      <AppButton
+        onClick={() => {
+          setTotalVote(!voteStar ? totalVote + 1 : totalVote - 1);
+          setVoteStar(!voteStar);
+        }}
+        size={'sm'}
+        bg="#e1e1f9"
+        color="#1e1870"
+        rightIcon={!voteStar ? <StarIcon /> : <ActiveStarIcon />}
+        w={'60px'}
+      >
+        {totalVote}
+      </AppButton>
+    );
+  };
+
+  const ButtonShare = () => {
+    const [openModalShare, setOpenModalShare] = useState<boolean>(false);
+
+    return (
+      <>
+        <AppButton
+          size={'sm'}
+          bg="#e1e1f9"
+          color="#1e1870"
+          onClick={() => setOpenModalShare(true)}
+        >
+          Share
+        </AppButton>
+        <ModalShareDashboardDetails
+          open={openModalShare}
+          onClose={() => setOpenModalShare(false)}
+          user={user}
+        />
+      </>
+    );
+  };
+
+  const ButtonEdit = () => {
+    const isAccountsDashboard = user?.getId() === authorId;
+    const ButtonDone = () => {
+      return (
+        <AppButton
+          size={'sm'}
+          bg="#1e1870"
+          color="#fff"
+          onClick={() => setEditMode(false)}
+        >
+          Done
+        </AppButton>
+      );
+    };
+    const ButtonEditChildren = () => {
+      return (
+        <AppButton
+          size={'sm'}
+          bg="#e1e1f9"
+          color="#1e1870"
+          onClick={() => setEditMode(true)}
+        >
+          Edit
+        </AppButton>
+      );
+    };
+
+    return (
+      <Flex gap={'10px'}>
+        {editMode ? (
+          <GroupEditButton />
+        ) : (
+          <>
+            <ButtonVoteStar />
+            {isAccountsDashboard ? <ButtonModalFork /> : null}
+
+            <ButtonShare />
+          </>
+        )}
+        {isAccountsDashboard ? (
+          editMode ? (
+            <ButtonDone />
+          ) : (
+            <ButtonEditChildren />
+          )
+        ) : null}
+      </Flex>
+    );
+  };
+
   return (
     <div className="main-content-dashboard-details">
       <header className="main-header-dashboard-details">
@@ -120,72 +227,12 @@ const DashboardDetailPage: React.FC = () => {
             </Flex>
           </div>
         </Flex>
-        <Flex gap={'10px'}>
-          {editMode ? (
-            <GroupEditButton />
-          ) : (
-            <>
-              <AppButton
-                onClick={() => {
-                  setTotalVote(!voteStar ? totalVote + 1 : totalVote - 1);
-                  setVoteStar(!voteStar);
-                }}
-                size={'sm'}
-                bg="#e1e1f9"
-                color="#1e1870"
-                rightIcon={!voteStar ? <StarIcon /> : <ActiveStarIcon />}
-                w={'60px'}
-              >
-                {totalVote}
-              </AppButton>
-              {isAccountsDashboard ? (
-                <AppButton
-                  size={'sm'}
-                  bg="#e1e1f9"
-                  color="#1e1870"
-                  onClick={() => setOpenModalFork(true)}
-                >
-                  Fork
-                </AppButton>
-              ) : null}
-
-              <AppButton
-                size={'sm'}
-                bg="#e1e1f9"
-                color="#1e1870"
-                onClick={() => setOpenModalShare(true)}
-              >
-                Share
-              </AppButton>
-            </>
-          )}
-          {isAccountsDashboard ? (
-            editMode ? (
-              <AppButton
-                size={'sm'}
-                bg="#1e1870"
-                color="#fff"
-                onClick={() => setEditMode(false)}
-              >
-                Done
-              </AppButton>
-            ) : (
-              <AppButton
-                size={'sm'}
-                bg="#e1e1f9"
-                color="#1e1870"
-                onClick={() => setEditMode(true)}
-              >
-                Edit
-              </AppButton>
-            )
-          ) : null}
-        </Flex>
+        <ButtonEdit />
       </header>
 
       <ResponsiveGridLayout
         className="main-grid-layout"
-        layouts={layouts}
+        layouts={{ lg: layouts }}
         breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
         cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
         isDraggable={editMode}
@@ -193,7 +240,8 @@ const DashboardDetailPage: React.FC = () => {
       >
         {state.map((item: any) => (
           <Box border={'1px dashed #808080'} key={item.i} position={'relative'}>
-            <ReactMarkdown>{item.i}</ReactMarkdown>
+            <ReactMarkdown source={item.i} />
+
             {editMode ? (
               <Box
                 onClick={() => {
@@ -212,26 +260,14 @@ const DashboardDetailPage: React.FC = () => {
           </Box>
         ))}
       </ResponsiveGridLayout>
-      <ModalForkDashBoardDetails
-        open={openModalFork}
-        onClose={() => setOpenModalFork(false)}
-      />
-      <ModalShareDashboardDetails
-        open={openModalShare}
-        onClose={() => setOpenModalShare(false)}
-      />
+
       <ModalSettingDashboardDetails
         title={dashboardId}
         url={dashboardId}
         open={openModalSetting}
         onClose={() => setOpenModalSetting(false)}
       />
-      <ModalAddVisualization
-        setOpenModalFork={setOpenModalFork}
-        open={openModalAddVisualization}
-        onClose={() => setOpenModalAddVisualization(false)}
-        userName={getNameUser}
-      />
+
       <ModalAddTextWidget
         selectedItem={selectedItem}
         state={state}

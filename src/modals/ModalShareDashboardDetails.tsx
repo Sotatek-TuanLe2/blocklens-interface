@@ -1,22 +1,22 @@
 import { Flex, Text } from '@chakra-ui/react';
 import React from 'react';
 import { AppButton, AppInput } from 'src/components';
-import useUser from 'src/hooks/useUser';
 import 'src/styles/components/BaseModal.scss';
 import { copyToClipboard } from 'src/utils/utils-helper';
+import { UserInterface } from 'src/utils/utils-user';
 import BaseModal from './BaseModal';
 
 interface IModalShareDashboardDetails {
   open: boolean;
   onClose: () => void;
+  user: UserInterface | null;
 }
 
 const ModalShareDashboardDetails: React.FC<IModalShareDashboardDetails> = ({
   open,
   onClose,
+  user,
 }) => {
-  const { user } = useUser();
-
   const link = `https://dune.com/${user?.getId()}/zzcs`;
 
   return (
@@ -25,7 +25,7 @@ const ModalShareDashboardDetails: React.FC<IModalShareDashboardDetails> = ({
         <Text fontSize={'14px'}>
           Use the following link to share this public dashboard.
         </Text>
-        <AppInput value={link} size="sm" placeholder="my-dashboard" />
+        <AppInput value={link} size="sm" placeholder="my-dashboard" readOnly />
       </Flex>
       <Flex flexWrap={'wrap'} gap={'10px'}>
         <AppButton
