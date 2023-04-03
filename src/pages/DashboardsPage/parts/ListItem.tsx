@@ -13,7 +13,7 @@ interface IMember {
 interface IListItem {
   type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
   title: string;
-  createdAt: Date;
+  createdAt?: Date;
   avatarUrl: string;
   author: string;
   starCount: number;

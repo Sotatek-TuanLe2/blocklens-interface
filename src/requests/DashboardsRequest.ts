@@ -18,6 +18,10 @@ export interface QueriesParams {
   tags?: string;
 }
 
+export interface WizardsParams {
+  q?: string;
+}
+
 export interface TeamsParams {
   q?: string;
 }
@@ -50,6 +54,11 @@ export default class DashboardsRequest extends BaseRequest {
   getPopularQueryTags() {
     const url = 'https://run.mocky.io/v3/50864550-87f8-41ae-9985-a15289cf7f77';
     return this.get(url);
+  }
+
+  getWizards(params: WizardsParams) {
+    const url = 'https://run.mocky.io/v3/2e1577c1-7a87-412e-8a49-e161462168db';
+    return this.get(url, params);
   }
 
   getTeams(params: TeamsParams) {

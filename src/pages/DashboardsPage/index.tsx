@@ -8,6 +8,7 @@ import {
   DashboardsParams,
   QueriesParams,
   TeamsParams,
+  WizardsParams,
 } from 'src/requests/DashboardsRequest';
 import { toastError } from 'src/utils/utils-notify';
 import { getErrorMessage } from 'src/utils/utils-helper';
@@ -26,6 +27,7 @@ export const LIST_ITEM_TYPE = {
 
 interface IDashboardParams extends RequestParams, DashboardsParams {}
 interface IQueriesParams extends RequestParams, QueriesParams {}
+interface IWizardsParams extends RequestParams, WizardsParams {}
 interface ITeamsParams extends RequestParams, TeamsParams {}
 
 const DashboardsPage: React.FC = () => {
@@ -35,6 +37,7 @@ const DashboardsPage: React.FC = () => {
   const [tabType, setTabType] = useState<string>(LIST_ITEM_TYPE.DASHBOARDS);
   const [dashboardParams, setDashboardParams] = useState<IDashboardParams>({});
   const [queryParams, setQueryParams] = useState<IQueriesParams>({});
+  const [wizardParams, setWizardParams] = useState<IWizardsParams>({});
   const [teamParams, setTeamParams] = useState<ITeamsParams>({});
 
   useEffect(() => {
@@ -59,6 +62,11 @@ const DashboardsPage: React.FC = () => {
           q: q || prevState.q,
         }));
         break;
+      case LIST_ITEM_TYPE.WIZARDS:
+        setWizardParams((prevState) => ({
+          q: q || prevState.q,
+        }));
+        break;
       case LIST_ITEM_TYPE.TEAMS:
         setTeamParams((prevState) => ({
           q: q || prevState.q,
@@ -70,12 +78,12 @@ const DashboardsPage: React.FC = () => {
   }, [searchUrl]);
 
   const fetchDashboards: any = useCallback(
-    async (params: IDashboardParams) => {
+    async (params: any) => {
       try {
         const res: any = await rf
           .getRequest('DashboardsRequest')
           .getDashboards(params);
-        return { docs: res };
+        return { docs: res, totalPages: Math.ceil(res.length / params.limit) };
       } catch (error) {
         toastError({ message: getErrorMessage(error) });
       }
@@ -84,12 +92,12 @@ const DashboardsPage: React.FC = () => {
   );
 
   const fetchQueries: any = useCallback(
-    async (params: IQueriesParams) => {
+    async (params: any) => {
       try {
         const res: any = await rf
           .getRequest('DashboardsRequest')
           .getQueries(params);
-        return { docs: res };
+        return { docs: res, totalPages: Math.ceil(res.length / params.limit) };
       } catch (error) {
         toastError({ message: getErrorMessage(error) });
       }
@@ -97,18 +105,32 @@ const DashboardsPage: React.FC = () => {
     [queryParams],
   );
 
-  const fetchTeams: any = useCallback(
-    async (params: ITeamsParams) => {
+  const fetchWizards: any = useCallback(
+    async (params: any) => {
       try {
         const res: any = await rf
           .getRequest('DashboardsRequest')
-          .getTeams(params);
-        return { docs: res };
+          .getWizards(params);
+        return { docs: res, totalPages: Math.ceil(res.length / params.limit) };
       } catch (error) {
         toastError({ message: getErrorMessage(error) });
       }
     },
-    [queryParams],
+    [wizardParams],
+  );
+
+  const fetchTeams: any = useCallback(
+    async (params: any) => {
+      try {
+        const res: any = await rf
+          .getRequest('DashboardsRequest')
+          .getTeams(params);
+        return { docs: res, totalPages: Math.ceil(res.length / params.limit) };
+      } catch (error) {
+        toastError({ message: getErrorMessage(error) });
+      }
+    },
+    [teamParams],
   );
 
   const tabs: ITabs[] = [
@@ -169,7 +191,28 @@ const DashboardsPage: React.FC = () => {
     {
       id: LIST_ITEM_TYPE.WIZARDS,
       name: 'Wizards',
-      content: null,
+      content: (
+        <AppDataTable
+          requestParams={wizardParams}
+          fetchData={fetchWizards}
+          renderBody={(data) =>
+            data.map((item: any) => {
+              return (
+                <ListItem
+                  author={item.name}
+                  avatarUrl={item.profile_image_url}
+                  starCount={item.dashboards.list
+                    .map((item: any) => item.favoriteCount)
+                    .reduce((a: number, b: number) => a + b)}
+                  title={item.name}
+                  type={LIST_ITEM_TYPE.WIZARDS}
+                  key={item.id}
+                />
+              );
+            })
+          }
+        />
+      ),
     },
     {
       id: LIST_ITEM_TYPE.TEAMS,
@@ -183,7 +226,6 @@ const DashboardsPage: React.FC = () => {
               <ListItem
                 author={item.name}
                 avatarUrl={item.profile_image_url}
-                createdAt={item.created_at}
                 starCount={item.received_stars}
                 title={item.name}
                 type={LIST_ITEM_TYPE.TEAMS}
