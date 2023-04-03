@@ -2,7 +2,7 @@ import { AppDataTable, RequestParams } from 'src/components';
 import AppTabs, { ITabs } from 'src/components/AppTabs';
 import 'src/styles/pages/DashboardsPage.scss';
 import rf from 'src/requests/RequestFactory';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
 import {
   DashboardsParams,
@@ -14,6 +14,7 @@ import ListItem from './parts/ListItem';
 import { Flex, Tbody } from '@chakra-ui/react';
 import { BasePage } from 'src/layouts';
 import FilterSearch from './parts/FilterSearch';
+import FilterTags from './parts/FilterTags';
 
 export const LIST_ITEM_TYPE = {
   DASHBOARDS: 'DASHBOARDS',
@@ -22,8 +23,8 @@ export const LIST_ITEM_TYPE = {
   TEAMS: 'TEAMS',
 };
 
-export interface IDashboardParams extends RequestParams, DashboardsParams {}
-export interface IQueriesParams extends RequestParams, QueriesParams {}
+interface IDashboardParams extends RequestParams, DashboardsParams {}
+interface IQueriesParams extends RequestParams, QueriesParams {}
 
 const DashboardsPage: React.FC = () => {
   const { search: searchUrl } = useLocation();
@@ -168,7 +169,7 @@ const DashboardsPage: React.FC = () => {
         </div>
         <div className="dashboard-filter">
           <FilterSearch type={tabType} />
-          <div className="dashboard-filter__tags"></div>
+          <FilterTags type={tabType} />
         </div>
       </Flex>
     </BasePage>

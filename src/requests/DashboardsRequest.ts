@@ -37,4 +37,14 @@ export default class DashboardsRequest extends BaseRequest {
     const url = 'https://run.mocky.io/v3/dbfc2015-6b31-4cf3-953d-34fce07d3d64';
     return this.get(url, { ...params });
   }
+
+  getPopularDashboardTags() {
+    const url = 'https://run.mocky.io/v3/fd2b3e65-6c5f-44f1-bc61-e7249645f1c3';
+    return this.get(url);
+  }
+
+  getPopularQueryTags() {
+    const url = 'https://run.mocky.io/v3/50864550-87f8-41ae-9985-a15289cf7f77';
+    return this.get(url);
+  }
 }
