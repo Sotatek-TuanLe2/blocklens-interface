@@ -20,3 +20,11 @@ export interface IAppResponse {
   network: string;
   key: string;
 }
+
+export const randomColor = Math.floor(Math.random() * 16777215).toString(16);
+
+export const getHourAndMinute = (date: Date) => {
+  const hour = date.getHours();
+  const minute = date.getMinutes();
+  return `${hour}:${minute}`;
+};

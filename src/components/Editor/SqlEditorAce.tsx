@@ -9,6 +9,7 @@ import { Box, Flex } from '@chakra-ui/react';
 import EditorSidebar from './EditorSidebar';
 import { EditorContext } from './EditorContext';
 import { BasePage } from '../../layouts';
+import VisualizationDisplay from './VisualizationDisplay';
 
 const SqlEditor = () => {
   const editorRef = useRef<any>();
@@ -26,31 +27,36 @@ const SqlEditor = () => {
       >
         <Flex justifyContent={'space-between'} alignItems={'flex-start'}>
           <EditorSidebar />
-          <Box width={'100%'}>
-            <AceEditor
-              ref={editorRef}
-              mode="sql"
-              theme="monokai"
-              width="100%"
-              wrapEnabled={true}
-              name="sql_editor"
-              editorProps={{ $blockScrolling: true }}
-              showPrintMargin={true}
-              showGutter={true}
-              highlightActiveLine={true}
-              setOptions={{
-                enableLiveAutocompletion: true,
-                enableBasicAutocompletion: true,
-                enableSnippets: false,
-                showLineNumbers: true,
-                tabSize: 2,
-              }}
-            />
-            <Box mt={2}>
-              <AppButton onClick={submitQuery}>Run</AppButton>
-              <AppButton ml={2}>Format</AppButton>
+          <Flex flexDir={'column'} maxW={'100%'} overflow={'scroll'} w={'100%'}>
+            <Box width={'100%'}>
+              <AceEditor
+                ref={editorRef}
+                mode="sql"
+                theme="monokai"
+                width="100%"
+                wrapEnabled={true}
+                name="sql_editor"
+                editorProps={{ $blockScrolling: true }}
+                showPrintMargin={true}
+                showGutter={true}
+                highlightActiveLine={true}
+                setOptions={{
+                  enableLiveAutocompletion: true,
+                  enableBasicAutocompletion: true,
+                  enableSnippets: false,
+                  showLineNumbers: true,
+                  tabSize: 2,
+                }}
+              />
+              <Box mt={2}>
+                <AppButton onClick={submitQuery}>Run</AppButton>
+                <AppButton ml={2}>Format</AppButton>
+              </Box>
             </Box>
-          </Box>
+            <Box mt={8}>
+              <VisualizationDisplay />
+            </Box>
+          </Flex>
         </Flex>
       </EditorContext.Provider>
     </BasePage>
