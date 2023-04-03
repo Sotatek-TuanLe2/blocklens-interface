@@ -96,7 +96,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
 }) => {
   const DEBOUNCE_TIME = 500;
 
-  const onSave = async () => {
+  const handleSave = async () => {
     try {
       setDataLayouts([
         ...dataLayouts,
@@ -109,11 +109,11 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
     }
   };
 
-  const onUpdate = (id: number) => {
+  const handleUpdate = (id: number) => {
     try {
       setDataLayouts(
         dataLayouts.map((item) =>
-          item.id === id ? { ...item, id: id, i: markdownText } : item,
+          item.id === id ? { ...item, i: markdownText } : item,
         ),
       );
       setMarkdownText('');
@@ -122,6 +122,20 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
       toastError({ message: getErrorMessage(e) });
     }
   };
+
+  const handleRemoveItem = (
+    id: number,
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
+    try {
+      e.preventDefault();
+      setDataLayouts(dataLayouts.filter((item) => item.id !== id));
+      onClose();
+    } catch (e) {
+      toastError({ message: getErrorMessage(e) });
+    }
+  };
+
   const handleChangeMarkdownText = debounce((event) => {
     setMarkdownText(event.target.value);
   }, DEBOUNCE_TIME);
@@ -133,7 +147,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
         bg="#1e1870"
         color="#fff"
         onClick={() => {
-          type === 'add' ? onSave() : onUpdate(selectedItem.id);
+          type === 'add' ? handleSave() : handleUpdate(selectedItem.id);
         }}
         disabled={!markdownText}
       >
@@ -157,7 +171,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
   const ButtonRemoveWidget = () => {
     return (
       <AppButton
-        onClick={onClose}
+        onClick={(e) => handleRemoveItem(selectedItem.id, e)}
         size="sm"
         bg="#e1e1f9"
         color="#1e1870"

@@ -237,8 +237,9 @@ const DashboardDetailPage: React.FC = () => {
         cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
         isDraggable={editMode}
         isResizable={editMode}
+        maxRows={4}
       >
-        {state.map((item: any) => (
+        {dataLayouts.map((item) => (
           <Box border={'1px dashed #808080'} key={item.i} position={'relative'}>
             <ReactMarkdown source={item.i} />
 
@@ -270,8 +271,8 @@ const DashboardDetailPage: React.FC = () => {
 
       <ModalAddTextWidget
         selectedItem={selectedItem}
-        state={state}
-        setState={setState}
+        dataLayouts={dataLayouts}
+        setDataLayouts={setDataLayouts}
         type={typeModalTextWidget}
         open={openModalAddTextWidget}
         onClose={() => setOpenModalAddTextWidget(false)}
