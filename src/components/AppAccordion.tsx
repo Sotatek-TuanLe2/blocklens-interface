@@ -11,7 +11,7 @@ import 'src/styles/components/AppAccordion.scss';
 
 interface IAppAccordion {
   title: string;
-  content: () => JSX.Element;
+  content: JSX.Element;
   className?: string;
 }
 
@@ -31,7 +31,7 @@ const AppAccordion: React.FC<IAppAccordion> = ({
             <AccordionIcon />
           </AccordionButton>
         </h2>
-        <AccordionPanel pb={4}>{content()}</AccordionPanel>
+        <AccordionPanel pb={4}>{content}</AccordionPanel>
       </AccordionItem>
     </Accordion>
   );

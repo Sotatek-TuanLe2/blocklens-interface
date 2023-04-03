@@ -7,11 +7,15 @@ import BaseModal from './BaseModal';
 interface IModalSettingDashboardDetails {
   open: boolean;
   onClose: () => void;
+  title?: string;
+  url?: string;
 }
 
 const ModalSettingDashboardDetails: React.FC<IModalSettingDashboardDetails> = ({
   open,
   onClose,
+  title,
+  url,
 }) => {
   return (
     <BaseModal isOpen={open} onClose={onClose} size="md">
@@ -21,14 +25,14 @@ const ModalSettingDashboardDetails: React.FC<IModalSettingDashboardDetails> = ({
         className="main-modal-dashboard-details"
       >
         <AppField label={'Dashboard title'}>
-          <AppInput size="sm" placeholder="my-dashboard" />
+          <AppInput value={title} size="sm" placeholder="my-dashboard" />
         </AppField>
         <AppField label={'Customize the URL'}>
-          <AppInput size="sm" placeholder="largom-demo" />
+          <AppInput value={url} size="sm" placeholder={url} />
         </AppField>
         <AppField label={'Dashboard tags'}>
           <AppInput size="sm" placeholder="Tag 1, tag2, tag-3" />
-          <Text fontSize="13px">https://dune.com/dinhtran/</Text>
+          <Text fontSize="13px">Separate tags with commas.</Text>
         </AppField>
         <AppField label={'Privacy'}>
           <Checkbox size={'sm'}>Make private</Checkbox>
