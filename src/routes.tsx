@@ -36,6 +36,10 @@ import ModalFinishTransaction from './modals/ModalFinishTransaction';
 import ModalSignatureRequired from './modals/ModalSignatureRequired';
 import SqlEditor from './components/Editor/SqlEditorAce';
 
+import QueriesPage from './pages/QueriesPage';
+import DashboardsPage from './pages/DashboardsPage';
+import DashboardDetailPage from './pages/DashboardDetailPage';
+
 /**
  * Main App routes.
  */
@@ -58,6 +62,8 @@ const Routes: FC<RouteComponentProps> = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
+
+  console.log('pathname', pathname);
 
   useEffect(() => {
     if (!accessToken || isExpireTimeToken) {
@@ -108,6 +114,12 @@ const Routes: FC<RouteComponentProps> = () => {
           component={MessagesHistory}
         />
         <PrivateRoute path={'/top-up'} component={TopUpPage} />
+        <PrivateRoute path={'/dashboards'} component={DashboardsPage} />
+        <PrivateRoute
+          path={'/dashboard/:authorId/:dashboardId'}
+          component={DashboardDetailPage}
+        />
+        <PrivateRoute path={'/queries'} component={QueriesPage} />
         <Route path={'/contact-us'} component={ContactUs} />
         <PrivateRoute path={'/'} component={HomePage} />
       </Switch>

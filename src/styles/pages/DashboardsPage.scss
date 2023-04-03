@@ -1,0 +1,138 @@
+.dashboards-page {
+  width: 100%;
+  padding: 20px;
+  gap: 20px;
+
+  .dashboard-list {
+    width: 70%;
+
+    .chakra-tabs__tab {
+      padding: 10px 0;
+    }
+
+    &__item {
+      width: 100%;
+      padding: 15px 20px;
+      border: 1px solid #272D52;
+      margin-bottom: 5px;
+
+      &__avatar {
+        width: 2.5rem;
+        margin-right: 10px;
+
+        img {
+          border-radius: 100%;
+        }
+      }
+
+      &__content {
+        margin-right: 10px;
+
+        &__title {
+          .item-tag {
+            padding: 3px;
+            padding: .2rem .4rem .3rem .3rem;
+            font-size: 1.2rem;
+            background: #f2f2f2;
+            color: #404040;
+            font-size: 12px;
+            line-height: 12px;
+            border-radius: 2px;
+            margin-left: 5px;
+          }
+
+          .item-member-image {
+            margin-right: -10px;
+            margin-left: 5px;
+            
+            img {
+              border-radius: 100%;
+              width: 20px;
+              height: 20px;
+            }
+          }
+        }
+      }
+
+      &__stars {
+        margin-left: auto;
+
+        span {
+          margin-right: 10px;
+        }
+      }
+    }
+  }
+
+  .dashboard-filter {
+    width: 30%;
+
+    &__search, &__tags {
+      padding: 20px;
+      background-color: #101530;
+
+      &__title {
+        font-weight: 500;
+        margin-bottom: 20px;
+      }
+
+      &__selects, &__input {
+        margin-bottom: 20px;
+        
+        &__item {
+          padding: 5px 10px;
+          margin-right: 10px;
+
+          &--selected {
+            border: 1px solid #272D52;
+            border-radius: 3px;
+          }
+        }
+      }
+
+      &__tag {
+        padding: 5px 10px;
+        margin-bottom: 20px;
+        border: 1px solid #272D52;
+
+        svg {
+          cursor: pointer;
+        }
+      }
+
+      &__button {
+        margin-top: 20px;
+      }
+    }
+
+    &__tags {
+      margin-top: 20px;
+
+      &__list {
+        &__item {
+          padding: 8px 0;
+          font-size: 14px;
+          line-height: 21px;
+
+          &:not(&:last-child) {
+            border-bottom: 1px solid #272D52;
+          }
+        }
+
+        &__tag {
+          &--selected {
+            text-decoration: underline;
+          }
+        }
+
+        &__popularity {
+          border: 1px solid #272D52;
+          border-radius: 3px;
+          padding: 5px;
+          font-size: 12px;
+          line-height: 18px;
+        }
+      }
+    }
+  }
+}

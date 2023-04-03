@@ -6,7 +6,6 @@ import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import configureStore from 'src/store';
 import 'src/styles/global.scss';
-import 'react-loading-skeleton/dist/skeleton.css'
 
 /* eslint-disable-next-line */
 function App() {

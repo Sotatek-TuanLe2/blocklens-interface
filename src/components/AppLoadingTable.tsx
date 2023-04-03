@@ -30,10 +30,8 @@ const AppLoadingTable: FC<IAppLoadingTable> = ({
   }
 
   return (
-    <Table >
-      <Tbody>
-        {rowLoadings}
-      </Tbody>
+    <Table>
+      <Tbody>{rowLoadings}</Tbody>
     </Table>
   );
 };

@@ -111,6 +111,9 @@
   &.modal-create-app {
     max-width: 590px !important;
   }
+  &.modal-add-visualization {
+    max-width: 715px !important;
+  }
 }
 
 .infos {
@@ -228,5 +231,84 @@
   .label {
     color: $paragraph;
     text-transform: capitalize;
+  }
+}
+.main-modal-dashboard-details {
+  padding-top: 40px;
+  row-gap: 1rem !important;
+
+  .error-validate {
+    color: $red-400;
+    font-size: 14px;
+  }
+  .chakra-stack {
+    .label {
+      color: $whiteAlpha-900;
+    }
+  }
+  .chakra-accordion__item {
+    border: unset;
+
+    span {
+      -webkit-flex: unset;
+      flex: unset;
+    }
+
+    button {
+      padding: unset;
+    }
+  }
+
+  .main-markdown {
+    border-bottom: 1px solid $gray-500;
+    padding: 5px 0px;
+
+    p {
+      font-size: 12px;
+    }
+
+    &:last-child {
+      border: unset;
+    }
+  }
+  .main-queries {
+    margin-top: 20px;
+    background: #f2f2f2;
+    color: $blackAlpha-900;
+    font-size: 14px;
+    border-radius: 2px;
+    min-height: 250px;
+    .btn-add-query {
+      color: #1e1870;
+      background: #e1e1f9;
+      padding: 10px 20px;
+      cursor: pointer;
+    }
+
+    .btn-added-query {
+      color: $whiteAlpha-900;
+      background: #1e1870;
+      padding: 10px 20px;
+      cursor: pointer;
+    }
+  }
+  .group-action-query {
+    button {
+      font-size: 14px;
+    }
+    .btn-add-query {
+      color: #1e1870;
+      background: #e1e1f9;
+      padding: 10px 20px;
+      cursor: pointer;
+    }
+
+    .btn-added-query {
+      color: $whiteAlpha-900;
+      background: #1e1870;
+      padding: 10px 20px;
+      cursor: pointer;
+      border: unset;
+    }
   }
 }

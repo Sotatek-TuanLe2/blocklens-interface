@@ -1,0 +1,35 @@
+@import '../color-variables.scss';
+@import '../mixins.scss';
+
+.main-content-dashboard-details {
+  padding: 2rem;
+  .main-header-dashboard-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    button {
+      &:hover {
+        background-color: #c5c5db;
+      }
+    }
+    .dashboard-name {
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 24px;
+    }
+  }
+  .main-grid-layout {
+    width: 100%;
+    margin-top: 20px;
+    .react-grid-item {
+      background: #ffeceb;
+      padding: 10px;
+      color: $blackAlpha-900;
+      cursor: grab;
+    }
+
+    .react-draggable-dragging {
+      cursor: grabbing;
+    }
+  }
+}
