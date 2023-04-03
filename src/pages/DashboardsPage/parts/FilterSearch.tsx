@@ -1,14 +1,12 @@
 import { Flex } from '@chakra-ui/react';
 import { ChangeEvent, useEffect } from 'react';
 import { useState } from 'react';
-import { useHistory } from 'react-router';
+import { useHistory, useLocation } from 'react-router';
 import { AppButton, AppInput } from 'src/components';
 import { IDashboardParams, IQueriesParams, LIST_ITEM_TYPE } from '..';
 
 interface IFilterSearch {
   type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
-  dashboardParams: IDashboardParams;
-  queryParams: IQueriesParams;
 }
 
 const RANKS = {
@@ -43,34 +41,34 @@ const TRENDING_TIME_RANGE: {
 ];
 
 const FilterSearch: React.FC<IFilterSearch> = (props) => {
-  const { type, dashboardParams, queryParams } = props;
+  const { type } = props;
   const history = useHistory();
+  const { search: searchUrl } = useLocation();
   const [rankBy, setRankBy] = useState<string>('');
   const [search, setSearch] = useState<string>('');
   const [timeRange, setTimeRange] = useState<string>('');
 
   useEffect(() => {
+    const searchParams = new URLSearchParams(searchUrl);
+    const order = searchParams.get('order') || '';
+    const time_range = searchParams.get('time_range') || '';
+    const q = searchParams.get('q') || '';
+
     switch (type) {
       case LIST_ITEM_TYPE.DASHBOARDS:
-        setRankBy(dashboardParams.order || RANKS.TRENDING);
-        setSearch(dashboardParams.search || '');
-        setTimeRange(
-          dashboardParams.time_range || TRENDING_TIME_RANGE[1].value,
-        );
+        setRankBy(order || RANKS.TRENDING);
+        setSearch(q || '');
+        setTimeRange(time_range || TRENDING_TIME_RANGE[1].value);
         break;
       case LIST_ITEM_TYPE.QUERIES:
-        setRankBy(queryParams.order || RANKS.FAVORITES);
-        setSearch(queryParams.search || '');
-        setTimeRange(queryParams.time_range || FAVORITES_TIME_RANGE[1].value);
+        setRankBy(order || RANKS.FAVORITES);
+        setSearch(q || '');
+        setTimeRange(time_range || FAVORITES_TIME_RANGE[1].value);
         break;
       default:
         break;
     }
-  }, [type, dashboardParams, queryParams]);
-
-  useEffect(() => {
-    // TODO: add params into URL
-  }, [rankBy, search, timeRange]);
+  }, [type, searchUrl]);
 
   const isDashboardOrQuery =
     type === LIST_ITEM_TYPE.DASHBOARDS || type === LIST_ITEM_TYPE.QUERIES;
@@ -87,12 +85,37 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
       ? [RANKS.FAVORITES, RANKS.TRENDING, RANKS.NEW]
       : [RANKS.FAVORITES, RANKS.NEW];
 
-  const onClickRank = (rank: string) => () => setRankBy(rank);
+  const onClickRank = (rank: string) => () => {
+    const searchParams = new URLSearchParams(searchUrl);
+    searchParams.delete('order');
+    searchParams.set('order', rank);
+    switch (rank) {
+      case RANKS.FAVORITES:
+        searchParams.set('time_range', FAVORITES_TIME_RANGE[1].value);
+        break;
+      case RANKS.TRENDING:
+        searchParams.set('time_range', TRENDING_TIME_RANGE[1].value);
+        break;
+      default:
+        searchParams.delete('time_range');
+        break;
+    }
+    history.push(`/dashboards?${searchParams.toString()}`);
+  };
 
-  const onChangeSearch = (e: ChangeEvent<HTMLInputElement>) =>
-    setSearch(e.target.value);
+  const onChangeSearch = (e: ChangeEvent<HTMLInputElement>) => {
+    const searchParams = new URLSearchParams(searchUrl);
+    searchParams.delete('q');
+    searchParams.set('q', e.target.value);
+    history.push(`/dashboards?${searchParams.toString()}`);
+  };
 
-  const onClickTimeRange = (timeRange: string) => () => setTimeRange(timeRange);
+  const onClickTimeRange = (timeRange: string) => () => {
+    const searchParams = new URLSearchParams(searchUrl);
+    searchParams.delete('time_range');
+    searchParams.set('time_range', timeRange);
+    history.push(`/dashboards?${searchParams.toString()}`);
+  };
 
   return (
     <div className="dashboard-filter__search">

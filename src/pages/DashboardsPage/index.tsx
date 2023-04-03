@@ -26,7 +26,7 @@ export interface IDashboardParams extends RequestParams, DashboardsParams {}
 export interface IQueriesParams extends RequestParams, QueriesParams {}
 
 const DashboardsPage: React.FC = () => {
-  const { pathname } = useLocation();
+  const { search: searchUrl } = useLocation();
   const history = useHistory();
 
   const [tabType, setTabType] = useState<string>(LIST_ITEM_TYPE.DASHBOARDS);
@@ -34,7 +34,7 @@ const DashboardsPage: React.FC = () => {
   const [queryParams, setQueryParams] = useState<IQueriesParams>({});
 
   useEffect(() => {
-    const searchParams = new URLSearchParams(pathname);
+    const searchParams = new URLSearchParams(searchUrl);
     const order = searchParams.get('order') || '';
     const time_range = searchParams.get('time_range') || '';
     const q = searchParams.get('q') || '';
@@ -58,7 +58,7 @@ const DashboardsPage: React.FC = () => {
       default:
         break;
     }
-  }, [pathname]);
+  }, [searchUrl]);
 
   const fetchDashboards: any = useCallback(
     async (params: IDashboardParams) => {
@@ -167,11 +167,7 @@ const DashboardsPage: React.FC = () => {
           <AppTabs tabs={tabs} onChange={onChangeTab} />
         </div>
         <div className="dashboard-filter">
-          <FilterSearch
-            type={tabType}
-            dashboardParams={dashboardParams}
-            queryParams={queryParams}
-          />
+          <FilterSearch type={tabType} />
           <div className="dashboard-filter__tags"></div>
         </div>
       </Flex>
