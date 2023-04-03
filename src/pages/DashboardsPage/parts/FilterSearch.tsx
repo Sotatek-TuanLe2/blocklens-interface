@@ -2,8 +2,10 @@ import { Flex } from '@chakra-ui/react';
 import { ChangeEvent, useEffect } from 'react';
 import { useState } from 'react';
 import { useHistory, useLocation } from 'react-router';
+import { Link } from 'react-router-dom';
+import { CloseMenuIcon } from 'src/assets/icons';
 import { AppButton, AppInput } from 'src/components';
-import { IDashboardParams, IQueriesParams, LIST_ITEM_TYPE } from '..';
+import { LIST_ITEM_TYPE } from '..';
 
 interface IFilterSearch {
   type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
@@ -47,27 +49,29 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   const [rankBy, setRankBy] = useState<string>('');
   const [search, setSearch] = useState<string>('');
   const [timeRange, setTimeRange] = useState<string>('');
+  const [tag, setTag] = useState<string>('');
 
   useEffect(() => {
     const searchParams = new URLSearchParams(searchUrl);
     const order = searchParams.get('order') || '';
     const time_range = searchParams.get('time_range') || '';
     const q = searchParams.get('q') || '';
+    const tag = searchParams.get('tags') || '';
 
     switch (type) {
       case LIST_ITEM_TYPE.DASHBOARDS:
         setRankBy(order || RANKS.TRENDING);
-        setSearch(q || '');
         setTimeRange(time_range || TRENDING_TIME_RANGE[1].value);
         break;
       case LIST_ITEM_TYPE.QUERIES:
         setRankBy(order || RANKS.FAVORITES);
-        setSearch(q || '');
         setTimeRange(time_range || FAVORITES_TIME_RANGE[1].value);
         break;
       default:
         break;
     }
+    setSearch(q || '');
+    setTag(tag || '');
   }, [type, searchUrl]);
 
   const isDashboardOrQuery =
@@ -85,7 +89,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
       ? [RANKS.FAVORITES, RANKS.TRENDING, RANKS.NEW]
       : [RANKS.FAVORITES, RANKS.NEW];
 
-  const onClickRank = (rank: string) => () => {
+  const getRankUrl = (rank: string) => () => {
     const searchParams = new URLSearchParams(searchUrl);
     searchParams.delete('order');
     searchParams.set('order', rank);
@@ -100,7 +104,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
         searchParams.delete('time_range');
         break;
     }
-    history.push(`/dashboards?${searchParams.toString()}`);
+    return `/dashboards?${searchParams.toString()}`;
   };
 
   const onChangeSearch = (e: ChangeEvent<HTMLInputElement>) => {
@@ -110,11 +114,17 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
     history.push(`/dashboards?${searchParams.toString()}`);
   };
 
-  const onClickTimeRange = (timeRange: string) => () => {
+  const getTimeRangeUrl = (timeRange: string) => () => {
     const searchParams = new URLSearchParams(searchUrl);
     searchParams.delete('time_range');
     searchParams.set('time_range', timeRange);
-    history.push(`/dashboards?${searchParams.toString()}`);
+    return `/dashboards?${searchParams.toString()}`;
+  };
+
+  const getRemoveTagUrl = () => {
+    const searchParams = new URLSearchParams(searchUrl);
+    searchParams.delete('tags');
+    return `/dashboards?${searchParams.toString()}`;
   };
 
   return (
@@ -130,17 +140,17 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
             alignItems={'center'}
           >
             {ranks.map((rank) => (
-              <div
+              <Link
                 key={rank}
                 className={`dashboard-filter__search__selects__item ${
                   rank === rankBy
                     ? 'dashboard-filter__search__selects__item--selected'
                     : ''
                 }`}
-                onClick={onClickRank(rank)}
+                to={getRankUrl(rank)}
               >
                 {RANK_TITLES[rank]}
-              </div>
+              </Link>
             ))}
           </Flex>
         </>
@@ -165,20 +175,32 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
               ? FAVORITES_TIME_RANGE
               : TRENDING_TIME_RANGE
             ).map((item) => (
-              <div
+              <Link
                 key={item.value}
                 className={`dashboard-filter__search__selects__item ${
                   item.value === timeRange
                     ? 'dashboard-filter__search__selects__item--selected'
                     : ''
                 }`}
-                onClick={onClickTimeRange(item.value)}
+                to={getTimeRangeUrl(item.value)}
               >
                 {item.title}
-              </div>
+              </Link>
             ))}
           </Flex>
         </>
+      )}
+      {tag && (
+        <Flex
+          className="dashboard-filter__search__tag"
+          justifyContent={'space-between'}
+          alignItems={'center'}
+        >
+          <span>{tag}</span>
+          <Link to={getRemoveTagUrl()}>
+            <CloseMenuIcon width={12} />
+          </Link>
+        </Flex>
       )}
       {type !== LIST_ITEM_TYPE.WIZARDS && (
         <>

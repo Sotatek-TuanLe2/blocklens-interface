@@ -52,7 +52,7 @@
   .dashboard-filter {
     width: 30%;
 
-    &__search {
+    &__search, &__tags {
       padding: 20px;
       background-color: #101530;
 
@@ -66,7 +66,6 @@
         
         &__item {
           padding: 5px 10px;
-          cursor: pointer;
           margin-right: 10px;
 
           &--selected {
@@ -76,13 +75,49 @@
         }
       }
 
+      &__tag {
+        padding: 5px 10px;
+        margin-bottom: 20px;
+        border: 1px solid #272D52;
+
+        svg {
+          cursor: pointer;
+        }
+      }
+
       &__button {
         margin-top: 20px;
       }
     }
 
     &__tags {
-      
+      margin-top: 20px;
+
+      &__list {
+        &__item {
+          padding: 8px 0;
+          font-size: 14px;
+          line-height: 21px;
+
+          &:not(&:last-child) {
+            border-bottom: 1px solid #272D52;
+          }
+        }
+
+        &__tag {
+          &--selected {
+            text-decoration: underline;
+          }
+        }
+
+        &__popularity {
+          border: 1px solid #272D52;
+          border-radius: 3px;
+          padding: 5px;
+          font-size: 12px;
+          line-height: 18px;
+        }
+      }
     }
   }
 }
