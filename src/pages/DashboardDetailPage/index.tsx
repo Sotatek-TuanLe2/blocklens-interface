@@ -42,6 +42,7 @@ const DashboardDetailPage: React.FC = () => {
   const [typeModalTextWidget, setTypeModalTextWidget] = useState<string>(``);
   const [openModalAddVisualization, setOpenModalAddVisualization] =
     useState<boolean>(false);
+  const [openModalFork, setOpenModalFork] = useState<boolean>(false);
   const [openModalSetting, setOpenModalSetting] = useState<boolean>(false);
   const [openModalEdit, setOpenModalEdit] = useState<boolean>(false);
   const [editMode, setEditMode] = useState<boolean>(false);
@@ -68,13 +69,11 @@ const DashboardDetailPage: React.FC = () => {
             size={'sm'}
             bg="#e1e1f9"
             color="#1e1870"
-            onClick={() => {
+            onClick={(e) => {
               if (item.title === 'Add text widget') {
-                item.setModal(true);
                 setTypeModalTextWidget('add');
-              } else {
-                item.setModal(true);
               }
+              item.setModal(true);
             }}
           >
             {item.title}
@@ -85,8 +84,6 @@ const DashboardDetailPage: React.FC = () => {
   };
 
   const ButtonModalFork = () => {
-    const [openModalFork, setOpenModalFork] = useState<boolean>(false);
-
     return (
       <>
         <AppButton
@@ -100,12 +97,6 @@ const DashboardDetailPage: React.FC = () => {
         <ModalForkDashBoardDetails
           open={openModalFork}
           onClose={() => setOpenModalFork(false)}
-        />
-        <ModalAddVisualization
-          setOpenModalFork={setOpenModalFork}
-          open={openModalAddVisualization}
-          onClose={() => setOpenModalAddVisualization(false)}
-          userName={getNameUser}
         />
       </>
     );
@@ -282,6 +273,12 @@ const DashboardDetailPage: React.FC = () => {
       <ModalEditItemDashBoard
         open={openModalEdit}
         onClose={() => setOpenModalEdit(false)}
+      />
+      <ModalAddVisualization
+        setOpenModalFork={setOpenModalFork}
+        open={openModalAddVisualization}
+        onClose={() => setOpenModalAddVisualization(false)}
+        userName={getNameUser}
       />
     </div>
   );
