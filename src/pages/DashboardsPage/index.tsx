@@ -7,6 +7,7 @@ import { useLocation, useHistory } from 'react-router-dom';
 import {
   DashboardsParams,
   QueriesParams,
+  TeamsParams,
 } from 'src/requests/DashboardsRequest';
 import { toastError } from 'src/utils/utils-notify';
 import { getErrorMessage } from 'src/utils/utils-helper';
@@ -25,6 +26,7 @@ export const LIST_ITEM_TYPE = {
 
 interface IDashboardParams extends RequestParams, DashboardsParams {}
 interface IQueriesParams extends RequestParams, QueriesParams {}
+interface ITeamsParams extends RequestParams, TeamsParams {}
 
 const DashboardsPage: React.FC = () => {
   const { search: searchUrl } = useLocation();
@@ -33,6 +35,7 @@ const DashboardsPage: React.FC = () => {
   const [tabType, setTabType] = useState<string>(LIST_ITEM_TYPE.DASHBOARDS);
   const [dashboardParams, setDashboardParams] = useState<IDashboardParams>({});
   const [queryParams, setQueryParams] = useState<IQueriesParams>({});
+  const [teamParams, setTeamParams] = useState<ITeamsParams>({});
 
   useEffect(() => {
     const searchParams = new URLSearchParams(searchUrl);
@@ -53,6 +56,11 @@ const DashboardsPage: React.FC = () => {
       case LIST_ITEM_TYPE.QUERIES:
         setQueryParams((prevState) => ({
           order: order || prevState.order,
+          q: q || prevState.q,
+        }));
+        break;
+      case LIST_ITEM_TYPE.TEAMS:
+        setTeamParams((prevState) => ({
           q: q || prevState.q,
         }));
         break;
@@ -81,6 +89,20 @@ const DashboardsPage: React.FC = () => {
         const res: any = await rf
           .getRequest('DashboardsRequest')
           .getQueries(params);
+        return { docs: res };
+      } catch (error) {
+        toastError({ message: getErrorMessage(error) });
+      }
+    },
+    [queryParams],
+  );
+
+  const fetchTeams: any = useCallback(
+    async (params: ITeamsParams) => {
+      try {
+        const res: any = await rf
+          .getRequest('DashboardsRequest')
+          .getTeams(params);
         return { docs: res };
       } catch (error) {
         toastError({ message: getErrorMessage(error) });
@@ -152,7 +174,30 @@ const DashboardsPage: React.FC = () => {
     {
       id: LIST_ITEM_TYPE.TEAMS,
       name: 'Teams',
-      content: null,
+      content: (
+        <AppDataTable
+          requestParams={teamParams}
+          fetchData={fetchTeams}
+          renderBody={(data) =>
+            data.map((item: any) => (
+              <ListItem
+                author={item.name}
+                avatarUrl={item.profile_image_url}
+                createdAt={item.created_at}
+                starCount={item.received_stars}
+                title={item.name}
+                type={LIST_ITEM_TYPE.TEAMS}
+                key={item.id}
+                members={item.members.map((member: any) => ({
+                  id: member.id,
+                  name: member.name,
+                  avatar: member.profile_image_url,
+                }))}
+              />
+            ))
+          }
+        />
+      ),
     },
   ];
 

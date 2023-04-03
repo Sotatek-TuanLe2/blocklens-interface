@@ -36,6 +36,17 @@
             border-radius: 2px;
             margin-left: 5px;
           }
+
+          .item-member-image {
+            margin-right: -10px;
+            margin-left: 5px;
+            
+            img {
+              border-radius: 100%;
+              width: 20px;
+              height: 20px;
+            }
+          }
         }
       }
 
