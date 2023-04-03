@@ -5,6 +5,7 @@ import { useHistory, useLocation } from 'react-router';
 import { Link } from 'react-router-dom';
 import { CloseMenuIcon } from 'src/assets/icons';
 import { AppButton, AppInput } from 'src/components';
+import ModalSettingDashboardDetails from 'src/modals/ModalSettingDashboardDetails';
 import { LIST_ITEM_TYPE } from '..';
 
 interface IFilterSearch {
@@ -50,6 +51,8 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   const [search, setSearch] = useState<string>('');
   const [timeRange, setTimeRange] = useState<string>('');
   const [tag, setTag] = useState<string>('');
+  const [openNewDashboardModal, setOpenNewDashboardModal] =
+    useState<boolean>(false);
 
   useEffect(() => {
     const searchParams = new URLSearchParams(searchUrl);
@@ -126,6 +129,22 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
     searchParams.delete('tags');
     return `/dashboards?${searchParams.toString()}`;
   };
+
+  const onClickNew = () => {
+    switch (type) {
+      case LIST_ITEM_TYPE.DASHBOARDS:
+        onToggleNewDashboardModal();
+        break;
+      case LIST_ITEM_TYPE.QUERIES:
+        history.push('/queries');
+        break;
+      default:
+        break;
+    }
+  };
+
+  const onToggleNewDashboardModal = () =>
+    setOpenNewDashboardModal((prevState) => !prevState);
 
   return (
     <div className="dashboard-filter__search">
@@ -205,7 +224,10 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
       {type !== LIST_ITEM_TYPE.WIZARDS && (
         <>
           <hr />
-          <AppButton className="dashboard-filter__search__button">
+          <AppButton
+            className="dashboard-filter__search__button"
+            onClick={onClickNew}
+          >
             New{' '}
             {type === LIST_ITEM_TYPE.DASHBOARDS
               ? 'dashboard'
@@ -215,6 +237,10 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
           </AppButton>
         </>
       )}
+      <ModalSettingDashboardDetails
+        open={openNewDashboardModal}
+        onClose={onToggleNewDashboardModal}
+      />
     </div>
   );
 };

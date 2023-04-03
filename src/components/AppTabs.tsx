@@ -42,7 +42,7 @@ const AppTabs: FC<IAppTabs> = ({
     >
       <TabList className="tab-list">
         <Flex justifyContent={'space-between'} alignItems="center" w="100%">
-          <Flex>
+          <Flex alignItems="center">
             {tabs.map((tab: ITabs) => {
               return (
                 <Tab

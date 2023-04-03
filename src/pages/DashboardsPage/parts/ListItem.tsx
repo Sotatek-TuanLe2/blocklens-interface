@@ -1,21 +1,27 @@
 import { Flex, Tr } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
-import { StarIcon } from 'src/assets/icons';
+import { ActiveStarIcon, StarIcon } from 'src/assets/icons';
 import { LIST_ITEM_TYPE } from '..';
 
-interface ListItem {
+interface IMember {
+  id: number;
+  name: string;
+  avatar: string;
+}
+
+interface IListItem {
   type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
   title: string;
-  createdAt: Date;
+  createdAt?: Date;
   avatarUrl: string;
   author: string;
   starCount: number;
   tags?: string[]; // used for dashboards and queries
-  memberAvatarUrls?: string[]; // used for teams
+  members?: IMember[]; // used for teams
 }
 
-const ListItem: React.FC<ListItem> = (props) => {
+const ListItem: React.FC<IListItem> = (props) => {
   const {
     type,
     title,
@@ -24,7 +30,7 @@ const ListItem: React.FC<ListItem> = (props) => {
     author,
     starCount,
     tags,
-    memberAvatarUrls,
+    members,
   } = props;
 
   const LIKEABLE_ITEMS = [LIST_ITEM_TYPE.DASHBOARDS, LIST_ITEM_TYPE.QUERIES];
@@ -54,6 +60,24 @@ const ListItem: React.FC<ListItem> = (props) => {
     //
   };
 
+  const _renderSubContent = () => {
+    if (type === LIST_ITEM_TYPE.DASHBOARDS || type === LIST_ITEM_TYPE.QUERIES) {
+      return (
+        <>
+          Created by @
+          <Link to={`/${author}`} target="_blank">
+            {author}
+          </Link>{' '}
+          {getDuration()} ago
+        </>
+      );
+    }
+    if (type === LIST_ITEM_TYPE.WIZARDS) {
+      return <>Wizard since </>;
+    }
+    return <>Created </>;
+  };
+
   return (
     <Tr>
       <Flex className="dashboard-list__item" alignItems={'center'}>
@@ -73,13 +97,22 @@ const ListItem: React.FC<ListItem> = (props) => {
                 ))}
               </span>
             )}
+            {members && (
+              <Flex>
+                {members.map((member) => (
+                  <Link
+                    key={member.id}
+                    className="item-member-image"
+                    to={`/src`}
+                  >
+                    <img src={member.avatar} alt={`Avatar of ${member.name}`} />
+                  </Link>
+                ))}
+              </Flex>
+            )}
           </Flex>
           <div className="dashboard-list__item__content__createAt">
-            Created by @
-            <Link to={`/${author}`} target="_blank">
-              {author}
-            </Link>{' '}
-            {getDuration()} ago
+            {_renderSubContent()}
           </div>
         </div>
         <Flex
@@ -91,7 +124,7 @@ const ListItem: React.FC<ListItem> = (props) => {
           {LIKEABLE_ITEMS.includes(type) ? (
             <StarIcon onClick={onLike} />
           ) : (
-            <StarIcon />
+            <ActiveStarIcon />
           )}
         </Flex>
       </Flex>

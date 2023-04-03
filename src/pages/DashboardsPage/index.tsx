@@ -7,6 +7,8 @@ import { useLocation, useHistory } from 'react-router-dom';
 import {
   DashboardsParams,
   QueriesParams,
+  TeamsParams,
+  WizardsParams,
 } from 'src/requests/DashboardsRequest';
 import { toastError } from 'src/utils/utils-notify';
 import { getErrorMessage } from 'src/utils/utils-helper';
@@ -25,6 +27,8 @@ export const LIST_ITEM_TYPE = {
 
 interface IDashboardParams extends RequestParams, DashboardsParams {}
 interface IQueriesParams extends RequestParams, QueriesParams {}
+interface IWizardsParams extends RequestParams, WizardsParams {}
+interface ITeamsParams extends RequestParams, TeamsParams {}
 
 const DashboardsPage: React.FC = () => {
   const { search: searchUrl } = useLocation();
@@ -33,6 +37,8 @@ const DashboardsPage: React.FC = () => {
   const [tabType, setTabType] = useState<string>(LIST_ITEM_TYPE.DASHBOARDS);
   const [dashboardParams, setDashboardParams] = useState<IDashboardParams>({});
   const [queryParams, setQueryParams] = useState<IQueriesParams>({});
+  const [wizardParams, setWizardParams] = useState<IWizardsParams>({});
+  const [teamParams, setTeamParams] = useState<ITeamsParams>({});
 
   useEffect(() => {
     const searchParams = new URLSearchParams(searchUrl);
@@ -56,18 +62,28 @@ const DashboardsPage: React.FC = () => {
           q: q || prevState.q,
         }));
         break;
+      case LIST_ITEM_TYPE.WIZARDS:
+        setWizardParams((prevState) => ({
+          q: q || prevState.q,
+        }));
+        break;
+      case LIST_ITEM_TYPE.TEAMS:
+        setTeamParams((prevState) => ({
+          q: q || prevState.q,
+        }));
+        break;
       default:
         break;
     }
   }, [searchUrl]);
 
   const fetchDashboards: any = useCallback(
-    async (params: IDashboardParams) => {
+    async (params: any) => {
       try {
         const res: any = await rf
           .getRequest('DashboardsRequest')
           .getDashboards(params);
-        return { docs: res };
+        return { docs: res, totalPages: Math.ceil(res.length / params.limit) };
       } catch (error) {
         toastError({ message: getErrorMessage(error) });
       }
@@ -76,17 +92,45 @@ const DashboardsPage: React.FC = () => {
   );
 
   const fetchQueries: any = useCallback(
-    async (params: IQueriesParams) => {
+    async (params: any) => {
       try {
         const res: any = await rf
           .getRequest('DashboardsRequest')
           .getQueries(params);
-        return { docs: res };
+        return { docs: res, totalPages: Math.ceil(res.length / params.limit) };
       } catch (error) {
         toastError({ message: getErrorMessage(error) });
       }
     },
     [queryParams],
+  );
+
+  const fetchWizards: any = useCallback(
+    async (params: any) => {
+      try {
+        const res: any = await rf
+          .getRequest('DashboardsRequest')
+          .getWizards(params);
+        return { docs: res, totalPages: Math.ceil(res.length / params.limit) };
+      } catch (error) {
+        toastError({ message: getErrorMessage(error) });
+      }
+    },
+    [wizardParams],
+  );
+
+  const fetchTeams: any = useCallback(
+    async (params: any) => {
+      try {
+        const res: any = await rf
+          .getRequest('DashboardsRequest')
+          .getTeams(params);
+        return { docs: res, totalPages: Math.ceil(res.length / params.limit) };
+      } catch (error) {
+        toastError({ message: getErrorMessage(error) });
+      }
+    },
+    [teamParams],
   );
 
   const tabs: ITabs[] = [
@@ -147,12 +191,55 @@ const DashboardsPage: React.FC = () => {
     {
       id: LIST_ITEM_TYPE.WIZARDS,
       name: 'Wizards',
-      content: null,
+      content: (
+        <AppDataTable
+          requestParams={wizardParams}
+          fetchData={fetchWizards}
+          renderBody={(data) =>
+            data.map((item: any) => {
+              return (
+                <ListItem
+                  author={item.name}
+                  avatarUrl={item.profile_image_url}
+                  starCount={item.dashboards.list
+                    .map((item: any) => item.favoriteCount)
+                    .reduce((a: number, b: number) => a + b)}
+                  title={item.name}
+                  type={LIST_ITEM_TYPE.WIZARDS}
+                  key={item.id}
+                />
+              );
+            })
+          }
+        />
+      ),
     },
     {
       id: LIST_ITEM_TYPE.TEAMS,
       name: 'Teams',
-      content: null,
+      content: (
+        <AppDataTable
+          requestParams={teamParams}
+          fetchData={fetchTeams}
+          renderBody={(data) =>
+            data.map((item: any) => (
+              <ListItem
+                author={item.name}
+                avatarUrl={item.profile_image_url}
+                starCount={item.received_stars}
+                title={item.name}
+                type={LIST_ITEM_TYPE.TEAMS}
+                key={item.id}
+                members={item.members.map((member: any) => ({
+                  id: member.id,
+                  name: member.name,
+                  avatar: member.profile_image_url,
+                }))}
+              />
+            ))
+          }
+        />
+      ),
     },
   ];
 

@@ -6,6 +6,10 @@
   .dashboard-list {
     width: 70%;
 
+    .chakra-tabs__tab {
+      padding: 10px 0;
+    }
+
     &__item {
       width: 100%;
       padding: 15px 20px;
@@ -35,6 +39,17 @@
             line-height: 12px;
             border-radius: 2px;
             margin-left: 5px;
+          }
+
+          .item-member-image {
+            margin-right: -10px;
+            margin-left: 5px;
+            
+            img {
+              border-radius: 100%;
+              width: 20px;
+              height: 20px;
+            }
           }
         }
       }
