@@ -145,13 +145,14 @@ const DashboardsPage: React.FC = () => {
             <Tbody>
               {data.map((item: any) => (
                 <ListItem
+                  key={item.id}
+                  id={item.id}
                   author={item.user.name}
                   avatarUrl={item.user.profile_image_url}
                   createdAt={item.created_at}
                   starCount={item.dashboard_favorite_count_all.favorite_count}
                   title={item.name}
                   type={LIST_ITEM_TYPE.DASHBOARDS}
-                  key={item.id}
                   tags={item.tags}
                 />
               ))}
@@ -170,6 +171,8 @@ const DashboardsPage: React.FC = () => {
           renderBody={(data) =>
             data.map((item: any) => (
               <ListItem
+                key={item.id}
+                id={item.id}
                 author={item.user ? item.user.name : item.team.handle}
                 avatarUrl={
                   item.user
@@ -179,8 +182,7 @@ const DashboardsPage: React.FC = () => {
                 createdAt={item.created_at}
                 starCount={item.query_favorite_count_last_7d.favorite_count}
                 title={item.name}
-                type={LIST_ITEM_TYPE.DASHBOARDS}
-                key={item.id}
+                type={LIST_ITEM_TYPE.QUERIES}
                 tags={item.tags}
               />
             ))
@@ -199,6 +201,8 @@ const DashboardsPage: React.FC = () => {
             data.map((item: any) => {
               return (
                 <ListItem
+                  key={item.id}
+                  id={item.id}
                   author={item.name}
                   avatarUrl={item.profile_image_url}
                   starCount={item.dashboards.list
@@ -206,7 +210,6 @@ const DashboardsPage: React.FC = () => {
                     .reduce((a: number, b: number) => a + b)}
                   title={item.name}
                   type={LIST_ITEM_TYPE.WIZARDS}
-                  key={item.id}
                 />
               );
             })
@@ -224,12 +227,13 @@ const DashboardsPage: React.FC = () => {
           renderBody={(data) =>
             data.map((item: any) => (
               <ListItem
+                key={item.id}
+                id={item.id}
                 author={item.name}
                 avatarUrl={item.profile_image_url}
                 starCount={item.received_stars}
                 title={item.name}
                 type={LIST_ITEM_TYPE.TEAMS}
-                key={item.id}
                 members={item.members.map((member: any) => ({
                   id: member.id,
                   name: member.name,
