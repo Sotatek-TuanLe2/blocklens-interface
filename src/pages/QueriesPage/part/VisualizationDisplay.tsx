@@ -8,11 +8,14 @@ import {
   Tabs,
   Text,
 } from '@chakra-ui/react';
-import { AppButton, AppSelect2 } from '../index';
-import TableValue from './TableValue';
-import { columnConfigs, queryValueData } from './MockData';
-import VisualizationLineChart from './LineChart';
-import VisualizationBarChart from './BarChart';
+import TableValue from '../../../components/Editor/TableValue';
+import {
+  columnConfigs,
+  queryValueData,
+} from '../../../components/Editor/MockData';
+import VisualizationLineChart from '../../../components/Editor/LineChart';
+import VisualizationBarChart from '../../../components/Editor/BarChart';
+import { AppButton, AppSelect2 } from '../../../components';
 
 type VisualizationConfigType = {
   value: string;

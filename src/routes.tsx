@@ -34,11 +34,11 @@ import { initMetadata } from './store/metadata';
 import ModalSubmittingTransaction from './modals/ModalSubmittingTransaction';
 import ModalFinishTransaction from './modals/ModalFinishTransaction';
 import ModalSignatureRequired from './modals/ModalSignatureRequired';
-import SqlEditor from './components/Editor/SqlEditorAce';
 
 import QueriesPage from './pages/QueriesPage';
 import DashboardsPage from './pages/DashboardsPage';
 import DashboardDetailPage from './pages/DashboardDetailPage';
+import SqlEditor from './pages/QueriesPage/part/SqlEditorAce';
 
 /**
  * Main App routes.

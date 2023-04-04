@@ -4,12 +4,12 @@ import 'ace-builds/src-noconflict/theme-github';
 import 'ace-builds/src-noconflict/theme-monokai';
 import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/mode-sql';
-import AppButton from '../AppButton';
 import { Box, Flex } from '@chakra-ui/react';
 import EditorSidebar from './EditorSidebar';
-import { EditorContext } from './EditorContext';
-import { BasePage } from '../../layouts';
 import VisualizationDisplay from './VisualizationDisplay';
+import { BasePage } from '../../../layouts';
+import { EditorContext } from '../context/EditorContext';
+import { AppButton } from '../../../components';
 
 const SqlEditor = () => {
   const editorRef = useRef<any>();

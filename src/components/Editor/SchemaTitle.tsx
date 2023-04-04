@@ -2,7 +2,10 @@ import React, { useContext } from 'react';
 import { Box, Flex, Text } from '@chakra-ui/react';
 import { getLogoChainByChainId } from 'src/utils/utils-network';
 import { ChevronRightIcon, InfoOutlineIcon, ViewIcon } from '@chakra-ui/icons';
-import { EditorContext, EditorContextType } from './EditorContext';
+import {
+  EditorContext,
+  EditorContextType,
+} from '../../pages/QueriesPage/context/EditorContext';
 
 type Props = {
   tableName: string;

@@ -1,18 +1,22 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Flex, Select, Text } from '@chakra-ui/react';
-import { tableDetail, schemas } from './MockData';
-import SchemaTitle from './SchemaTitle';
-import 'src/styles/components/EditorSidebar.scss';
-import TableDescribeCard from './TableDescribeCard';
+import { SchemaType, tableDetail } from '../../../components/Editor/MockData';
+import DashboardsRequest from '../../../requests/DashboardsRequest';
 import { ArrowBackIcon } from '@chakra-ui/icons';
-import { getLogoChainByChainId } from '../../utils/utils-network';
-import { AppInput } from '../index';
+import { toastError } from '../../../utils/utils-notify';
+import SchemaTitle from '../../../components/Editor/SchemaTitle';
+import TableDescribeCard from '../../../components/Editor/TableDescribeCard';
+import { getLogoChainByChainId } from '../../../utils/utils-network';
+import { getErrorMessage } from '../../../utils/utils-helper';
+import { AppInput } from '../../../components';
+import 'src/styles/components/EditorSidebar.scss';
 
 const EditorSidebar = () => {
   const [tableSelected, setTableSelected] = useState<{
     chain: string;
     name: string;
   } | null>(null);
+  const [schemas, setSchemas] = useState<SchemaType[]>([]);
 
   const selectSchemaTitleHandler = ({
     chain,
@@ -26,6 +30,20 @@ const EditorSidebar = () => {
   const clickBackIconHandler = () => {
     setTableSelected(null);
   };
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const dashboardRequest = new DashboardsRequest();
+        const schemas = await dashboardRequest.getSchemas({
+          category: 'arbitrum',
+        });
+        setSchemas(schemas);
+      } catch (error) {
+        toastError(getErrorMessage(error));
+      }
+    })();
+  }, []);
 
   const renderTableDescribe = () => {
     return (
@@ -44,7 +62,7 @@ const EditorSidebar = () => {
       !tableSelected && (
         <Box maxH={'400px'} overflow={'scroll'}>
           {schemas.map((schema) => (
-            <Box>
+            <Box key={schema.id}>
               <SchemaTitle
                 chainName={schema.namespace}
                 tableName={schema.table_name}
