@@ -38,7 +38,6 @@ import ModalSignatureRequired from './modals/ModalSignatureRequired';
 import QueriesPage from './pages/QueriesPage';
 import DashboardsPage from './pages/DashboardsPage';
 import DashboardDetailPage from './pages/DashboardDetailPage';
-import SqlEditor from './pages/QueriesPage/part/SqlEditorAce';
 
 /**
  * Main App routes.
@@ -89,7 +88,6 @@ const Routes: FC<RouteComponentProps> = () => {
 
         <PublicRoute path={'/reset-password'} component={ResetPasswordPage} />
         <PrivateRoute path={'/billing'} component={BillingPage} />
-        <PrivateRoute path={'/sql-editor'} component={SqlEditor} />
         <PrivateRoute path={'/account'} component={AccountPage} />
         <PrivateRoute path={'/billing-info'} component={BillingInfoPage} />
         <PrivateRoute path={'/billing-history'} component={BillingHistory} />

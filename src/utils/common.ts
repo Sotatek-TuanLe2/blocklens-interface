@@ -21,7 +21,25 @@ export interface IAppResponse {
   key: string;
 }
 
-export const randomColor = Math.floor(Math.random() * 16777215).toString(16);
+export type SchemaType = {
+  blockchains: string[];
+  full_name: string;
+  id: string;
+  namespace: string;
+  table_name: string;
+  __typename: string;
+};
+
+export type TableAttributeType = {
+  blockchains: string[];
+  column_name: string;
+  data_type: string;
+  full_name: string;
+  id: string;
+};
+
+// export const randomColor = Math.floor(Math.random() * 16777215).toString(16);
+export const randomColor = '#8884d8';
 
 export const getHourAndMinute = (date: Date) => {
   const hour = date.getHours();
