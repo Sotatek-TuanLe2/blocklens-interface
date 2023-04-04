@@ -40,3 +40,4 @@ export * from './AppGraph';
 export * from './AppHeading';
 export * from './AppFilter';
 export * from './AppLoadingTable';
+export * from './AppTabs';

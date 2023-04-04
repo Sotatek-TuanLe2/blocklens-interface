@@ -1,0 +1,25 @@
+@import '../color-variables.scss';
+@import '../_mixins.scss';
+
+.app-tab {
+  &__name-tab {
+    @include text-small-regular;
+
+    color: $paragraph;
+    height: max-content !important;
+    font-size: 14px !important;
+    box-shadow: none;
+    margin-right: 18px;
+
+    &[aria-selected='true'] {
+      @include text-small-bold;
+
+      box-shadow: none !important;
+      color: $title;
+    }
+  }
+
+  &__content-tab {
+    padding: 0 !important;
+  }
+}
