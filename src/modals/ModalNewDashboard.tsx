@@ -7,43 +7,34 @@ import { useState } from 'react';
 import { useHistory } from 'react-router';
 import { toastError } from 'src/utils/utils-notify';
 import { getErrorMessage } from 'src/utils/utils-helper';
+import useUser from 'src/hooks/useUser';
 
-interface IModalSettingDashboardDetails {
+interface IModalNewDashboard {
   open: boolean;
   onClose: () => void;
-  url: string;
-  hashTag: string[];
-  authorId: string;
 }
 
 interface IDataSettingForm {
   title: string;
   url: string;
-  tag: string;
   private: boolean;
 }
 
-const ModalSettingDashboardDetails: React.FC<IModalSettingDashboardDetails> = ({
-  open,
-  onClose,
-  url,
-  hashTag,
-  authorId,
-}) => {
+const ModalNewDashboard: React.FC<IModalNewDashboard> = ({ open, onClose }) => {
   const initDataFormSetting = {
-    title: url,
-    url: url,
-    tag: hashTag.toString(),
+    title: '',
+    url: '',
     private: false,
   };
   const history = useHistory();
+  const { user } = useUser();
 
   const [dataForm, setDataForm] =
     useState<IDataSettingForm>(initDataFormSetting);
 
   const handleSubmitForm = () => {
     try {
-      history.push(`/dashboard/${authorId}/${dataForm.url}`);
+      history.push(`/dashboard/${user?.getId()}/${dataForm.url}`);
       onClose();
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
@@ -62,11 +53,11 @@ const ModalSettingDashboardDetails: React.FC<IModalSettingDashboardDetails> = ({
         rowGap={'2rem'}
         className="main-modal-dashboard-details"
       >
-        <AppField label={'Dashboard title'}>
+        <AppField label={'Dashboard name'}>
           <AppInput
             value={dataForm.title}
             size="sm"
-            placeholder="my-dashboard"
+            placeholder="My dashboard"
             onChange={(e) => {
               setDataForm({
                 ...dataForm,
@@ -79,22 +70,11 @@ const ModalSettingDashboardDetails: React.FC<IModalSettingDashboardDetails> = ({
           <AppInput
             value={dataForm.url}
             size="sm"
-            placeholder={url}
+            placeholder="my-dashboard"
             onChange={(e) => {
               setDataForm({ ...dataForm, url: e.target.value });
             }}
           />
-        </AppField>
-        <AppField label={'Dashboard tags'}>
-          <AppInput
-            value={dataForm.tag}
-            size="sm"
-            placeholder="Tag 1, tag2, tag-3"
-            onChange={(e) => {
-              setDataForm({ ...dataForm, tag: e.target.value });
-            }}
-          />
-          <Text fontSize="13px">Separate tags with commas.</Text>
         </AppField>
         <AppField label={'Privacy'}>
           <Checkbox
@@ -121,30 +101,20 @@ const ModalSettingDashboardDetails: React.FC<IModalSettingDashboardDetails> = ({
           onClick={handleSubmitForm}
           disabled={!dataForm.title}
         >
-          Save
+          Save and open
         </AppButton>
-        <Flex gap={1}>
-          <AppButton
-            onClick={handleCloseModal}
-            size="sm"
-            color="#d93025"
-            variant="setup"
-          >
-            Archive
-          </AppButton>
-          <AppButton
-            onClick={handleCloseModal}
-            size="sm"
-            bg="#e1e1f9"
-            color="#1e1870"
-            variant={'cancel'}
-          >
-            Cancel
-          </AppButton>
-        </Flex>
+        <AppButton
+          onClick={handleCloseModal}
+          size="sm"
+          bg="#e1e1f9"
+          color="#1e1870"
+          variant={'cancel'}
+        >
+          Cancel
+        </AppButton>
       </Flex>
     </BaseModal>
   );
 };
 
-export default ModalSettingDashboardDetails;
+export default ModalNewDashboard;

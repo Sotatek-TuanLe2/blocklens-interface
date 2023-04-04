@@ -1,5 +1,5 @@
 import { Flex, Text, Textarea } from '@chakra-ui/react';
-import React, { Dispatch, SetStateAction } from 'react';
+import React, { Dispatch, SetStateAction, MouseEvent } from 'react';
 import { AppButton, AppField } from 'src/components';
 import AppAccordion from 'src/components/AppAccordion';
 import { getErrorMessage } from 'src/utils/utils-helper';
@@ -7,6 +7,7 @@ import { toastError } from 'src/utils/utils-notify';
 import BaseModal from './BaseModal';
 import { ILayout } from 'src/pages/DashboardDetailPage';
 import { debounce } from 'lodash';
+import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/BaseModal.scss';
 
 interface IModalAddTextWidget {
@@ -14,6 +15,7 @@ interface IModalAddTextWidget {
   onClose: () => void;
   markdownText: string;
   setMarkdownText: Dispatch<SetStateAction<string>>;
+  setReload: Dispatch<SetStateAction<boolean>>;
   type?: 'add' | 'edit' | string;
   selectedItem: ILayout;
   dataLayouts: ILayout[];
@@ -37,7 +39,7 @@ const MarkdownSupport: IMarkdown[] = [
     title: 'Link',
     mark: (
       <>
-        [Link]<a href={linkDune}>{linkDune}</a>
+        [Link] <a href={linkDune}>{linkDune}</a>
       </>
     ),
   },
@@ -45,7 +47,7 @@ const MarkdownSupport: IMarkdown[] = [
     title: 'Image or GIF',
     mark: (
       <>
-        ![image]<a>(https://cutt.ly/1AKJVWx)</a>
+        ![image] <a>(https://cutt.ly/1AKJVWx)</a>
       </>
     ),
   },
@@ -93,43 +95,69 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
   dataLayouts,
   setDataLayouts,
   selectedItem,
+  setReload,
 }) => {
   const DEBOUNCE_TIME = 500;
 
   const handleSave = async () => {
     try {
-      setDataLayouts([
-        ...dataLayouts,
-        { id: dataLayouts.length + 1, i: markdownText, x: 0, y: 0, w: 6, h: 2 },
-      ]);
-      setMarkdownText('');
-      onClose();
+      const res = await rf.getRequest('DashboardsRequest').addDashboardItem({
+        id: dataLayouts.length + 1,
+        i: markdownText,
+        x: 0,
+        y: 0,
+        w: 6,
+        h: 2,
+      });
+      if (res) {
+        setDataLayouts([...dataLayouts, res]);
+        setMarkdownText('');
+        onClose();
+      }
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
     }
   };
 
-  const handleUpdate = (id: number) => {
+  const handleUpdate = async () => {
     try {
-      setDataLayouts(
-        dataLayouts.map((item) =>
-          item.id === id ? { ...item, i: markdownText } : item,
-        ),
-      );
-      setMarkdownText('');
-      onClose();
+      const res = await rf
+        .getRequest('DashboardsRequest')
+        .updateDashboardItem({ ...selectedItem, i: markdownText });
+      if (res) {
+        setDataLayouts((prevData) => {
+          const updateDataIndex = prevData.findIndex(
+            (item) => item.id === selectedItem.id,
+          );
+          if (updateDataIndex === -1) {
+            return [...prevData, res];
+          } else {
+            const newData = [...prevData];
+            newData.splice(updateDataIndex, 1, res);
+            return newData;
+          }
+        });
+        setMarkdownText('');
+        onClose();
+      }
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
     }
   };
 
-  const handleRemoveItem = (
+  const handleRemoveItem = async (
     id: number,
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     try {
       e.preventDefault();
-      setDataLayouts(dataLayouts.filter((item) => item.id !== id));
+      const res = await rf
+        .getRequest('DashboardsRequest')
+        .removeDashboardItem(selectedItem.id);
+      if (res) {
+        setDataLayouts([...dataLayouts]);
+      }
+      setReload((prev) => !prev);
       onClose();
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
@@ -147,7 +175,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
         bg="#1e1870"
         color="#fff"
         onClick={() => {
-          type === 'add' ? handleSave() : handleUpdate(selectedItem.id);
+          type === 'add' ? handleSave() : handleUpdate();
         }}
         disabled={!markdownText}
       >
@@ -171,7 +199,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
   const ButtonRemoveWidget = () => {
     return (
       <AppButton
-        onClick={(e) => handleRemoveItem(selectedItem.id, e)}
+        onClick={(e: any) => handleRemoveItem(selectedItem.id, e)}
         size="sm"
         bg="#e1e1f9"
         color="#1e1870"
@@ -219,10 +247,10 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
           {type === 'add' ? (
             <ButtonCancel />
           ) : (
-            <div>
+            <Flex gap={'10px'}>
               <ButtonRemoveWidget />
               <ButtonCancel />
-            </div>
+            </Flex>
           )}
         </Flex>
       </div>
