@@ -9,22 +9,21 @@ import {
   ResponsiveContainer,
   Legend,
 } from 'recharts';
-import { queryValueData } from './MockData';
 import { randomColor } from '../../utils/common';
 
 export type ChartProps = {
-  data?: any;
+  data?: unknown[];
   xAxisKey?: string;
   yAxisKeys?: string[];
 };
 type Props = ChartProps;
 
-const VisualizationLineChart = ({ xAxisKey, yAxisKeys }: Props) => {
+const VisualizationLineChart = ({ data, xAxisKey, yAxisKeys }: Props) => {
   return (
     <ResponsiveContainer width={'100%'} height={'100%'}>
       <LineChart
         height={500}
-        data={queryValueData}
+        data={data}
         margin={{
           top: 5,
           right: 30,

@@ -9,10 +9,10 @@ import 'src/styles/components/TableValue.scss';
 
 interface ReactTableProps<T> {
   data: T[];
-  columns: ColumnDef<T>[];
+  columns: ColumnDef<T, unknown>[];
 }
 
-const TableValue = <T,>({ data, columns }: ReactTableProps<T>) => {
+const TableSqlValue = <T,>({ data, columns }: ReactTableProps<T>) => {
   const table = useReactTable({
     data,
     columns,
@@ -20,6 +20,7 @@ const TableValue = <T,>({ data, columns }: ReactTableProps<T>) => {
   });
   return (
     <table
+      className={'table-value'}
       {...{
         style: {
           height: '100%',
@@ -91,18 +92,9 @@ const TableValue = <T,>({ data, columns }: ReactTableProps<T>) => {
             ))}
           </tr>
         ))}
-        {/*{table.getRowModel().rows.map((row) => (*/}
-        {/*  <tr key={row.id}>*/}
-        {/*    {row.getVisibleCells().map((cell) => (*/}
-        {/*      <td key={cell.id}>*/}
-        {/*        {flexRender(cell.column.columnDef.cell, cell.getContext())}*/}
-        {/*      </td>*/}
-        {/*    ))}*/}
-        {/*  </tr>*/}
-        {/*))}*/}
       </tbody>
     </table>
   );
 };
 
-export default TableValue;
+export default TableSqlValue;

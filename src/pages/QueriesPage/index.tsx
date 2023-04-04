@@ -2,16 +2,29 @@ import { BasePage } from '../../layouts';
 import { Box, Flex } from '@chakra-ui/react';
 import AceEditor from 'react-ace';
 import AppButton from '../../components/AppButton';
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { EditorContext } from './context/EditorContext';
 import EditorSidebar from './part/EditorSidebar';
 import VisualizationDisplay from './part/VisualizationDisplay';
+import DashboardsRequest from '../../requests/DashboardsRequest';
+import 'ace-builds/src-noconflict/theme-github';
+import 'ace-builds/src-noconflict/theme-monokai';
+import 'ace-builds/src-noconflict/ext-language_tools';
+import 'ace-builds/src-noconflict/mode-sql';
+import { getErrorMessage } from '../../utils/utils-helper';
 
 const QueriesPage: React.FC = () => {
   const editorRef = useRef<any>();
 
-  const submitQuery = () => {
-    console.log(editorRef.current.editor.getValue());
+  const [queryValues, setQueryValues] = useState<unknown[]>([]);
+  const submitQuery = async () => {
+    try {
+      const dashboardsRequest = new DashboardsRequest();
+      const queryValues = await dashboardsRequest.getQueriesValues();
+      setQueryValues(queryValues);
+    } catch (err) {
+      getErrorMessage(err);
+    }
   };
 
   return (
@@ -19,6 +32,7 @@ const QueriesPage: React.FC = () => {
       <EditorContext.Provider
         value={{
           editor: editorRef,
+          queryValues: queryValues,
         }}
       >
         <Flex justifyContent={'space-between'} alignItems={'flex-start'}>
@@ -50,7 +64,7 @@ const QueriesPage: React.FC = () => {
               </Box>
             </Box>
             <Box mt={8}>
-              <VisualizationDisplay />
+              <VisualizationDisplay queryValues={queryValues} />
             </Box>
           </Flex>
         </Flex>

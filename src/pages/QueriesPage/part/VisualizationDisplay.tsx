@@ -1,28 +1,19 @@
-import React, { useState } from 'react';
-import {
-  Box,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-  Text,
-} from '@chakra-ui/react';
-import TableValue from '../../../components/Editor/TableValue';
-import {
-  columnConfigs,
-  queryValueData,
-} from '../../../components/Editor/MockData';
-import VisualizationLineChart from '../../../components/Editor/LineChart';
-import VisualizationBarChart from '../../../components/Editor/BarChart';
+import React, { useMemo, useState } from 'react';
+import { Box, Text } from '@chakra-ui/react';
+import TableSqlValue from '../../../components/Chart/TableSqlValue';
+import VisualizationBarChart from '../../../components/Chart/BarChart';
 import { AppButton, AppSelect2 } from '../../../components';
-import VisualizationAreaChart from '../../../components/Editor/AreaChart';
+import VisualizationAreaChart from '../../../components/Chart/AreaChart';
+import AppTabs from '../../../components/AppTabs';
+import { objectKeys } from '../../../utils/utils-network';
+import VisualizationLineChart from '../../../components/Chart/LineChart';
+import ChartSettings from '../../../components/SqlEditor/ChartSettings';
+import VisualizationPieChart from '../../../components/Chart/PieChart';
 
 type VisualizationConfigType = {
   value: string;
   label: string;
   type: string;
-  // Component: ReactNode;
 };
 
 const visualizationConfigs: VisualizationConfigType[] = [
@@ -46,9 +37,18 @@ const visualizationConfigs: VisualizationConfigType[] = [
     type: 'area',
     value: 'area',
   },
+  {
+    label: 'Pie chart',
+    type: 'pie',
+    value: 'pie',
+  },
 ];
 
-const VisualizationDisplay = () => {
+type Props = {
+  queryValues: unknown[];
+};
+
+const VisualizationDisplay = ({ queryValues }: Props) => {
   const [visualizationsActive, setVisualizationsActive] = useState<
     VisualizationConfigType[]
   >([
@@ -57,7 +57,24 @@ const VisualizationDisplay = () => {
       label: 'Query',
       type: 'table',
     },
+    { value: 'newVisualization', label: 'New Visualization', type: '' },
   ]);
+
+  const columns =
+    Array.isArray(queryValues) && queryValues[0]
+      ? objectKeys(queryValues[0])
+      : [];
+  const tableValuesColumnConfigs = useMemo(
+    () =>
+      columns.map((col) => ({
+        id: col,
+        accessorKey: col,
+        header: col,
+        enableResizing: true,
+        size: 100,
+      })),
+    [queryValues],
+  );
 
   const addVisualizationHandler = (visualizationValue: string) => {
     const newVisualization = visualizationConfigs.find(
@@ -70,44 +87,53 @@ const VisualizationDisplay = () => {
   const renderVisualization = (type: string) => {
     switch (type) {
       case 'table':
-        return <TableValue columns={columnConfigs} data={queryValueData} />;
+        return tableValuesColumnConfigs ? (
+          <TableSqlValue
+            columns={tableValuesColumnConfigs as typeof queryValues}
+            data={queryValues}
+          />
+        ) : null;
       case 'line':
-        return <VisualizationLineChart xAxisKey="time" yAxisKeys={['size']} />;
+        return (
+          <VisualizationLineChart
+            data={queryValues}
+            xAxisKey="time"
+            yAxisKeys={['size']}
+          />
+        );
       case 'bar':
         return (
           <VisualizationBarChart
-            data={queryValueData}
+            data={queryValues}
             xAxisKey="time"
             yAxisKeys={['size']}
           />
         );
       case 'area':
-        return <VisualizationAreaChart />;
+        return (
+          <VisualizationAreaChart
+            data={queryValues}
+            xAxisKey="time"
+            yAxisKeys={['size']}
+          />
+        );
+      case 'pie':
+        return <VisualizationPieChart data={queryValues} dataKey={'number'} />;
+      default:
+        return <AddVisualization onAddVisualize={addVisualizationHandler} />;
     }
   };
 
   return (
-    <Box>
-      <Tabs variant={'enclosed'}>
-        <TabList>
-          {visualizationsActive.map((tab) => (
-            <Tab key={tab.value}>{tab.label}</Tab>
-          ))}
-          <Tab>Add Visualization</Tab>
-        </TabList>
-        <Box height={'600px'} overflow={'auto'}>
-          <TabPanels height={'100%'}>
-            {visualizationsActive.map((v) => (
-              <TabPanel height={'100%'} key={v.value}>
-                {renderVisualization(v.type)}
-              </TabPanel>
-            ))}
-            <TabPanel height={'100%'}>
-              <AddVisualization onAddVisualize={addVisualizationHandler} />
-            </TabPanel>
-          </TabPanels>
-        </Box>
-      </Tabs>
+    <Box height={'500px'} overflow={'auto'}>
+      <AppTabs
+        tabs={visualizationsActive.map((v) => ({
+          name: v.label,
+          content: renderVisualization(v.type),
+          id: v.value,
+        }))}
+      />
+      <ChartSettings />
     </Box>
   );
 };
@@ -122,7 +148,7 @@ const AddVisualization = ({ onAddVisualize }: AddVisualizationProps) => {
   const [visualizationSelected, setVisualizationSelected] = useState<string>();
   return (
     <Box>
-      <Text>Select visualization type</Text>
+      <Text mb={2}>Select visualization type</Text>
       <AppSelect2
         options={visualizationConfigs}
         value={visualizationSelected || ''}
