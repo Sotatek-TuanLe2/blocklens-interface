@@ -240,7 +240,6 @@ const DashboardDetailPage: React.FC = () => {
         cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
         isDraggable={editMode}
         isResizable={editMode}
-        maxRows={4}
       >
         {dataLayouts.map((item) => (
           <Box border={'1px dashed #808080'} key={item.i} position={'relative'}>
