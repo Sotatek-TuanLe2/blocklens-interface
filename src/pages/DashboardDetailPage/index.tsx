@@ -33,6 +33,7 @@ const layouts: ILayout[] = [
   { id: 3, i: 'c', x: 0, y: 0, w: 6, h: 2 },
   { id: 4, i: 'd', x: 6, y: 0, w: 6, h: 2 },
 ];
+const HashTag: string[] = ['zkSync', 'bridge', 'l2'];
 
 const DashboardDetailPage: React.FC = () => {
   const { authorId, dashboardId } = useParams<ParamTypes>();
@@ -51,9 +52,7 @@ const DashboardDetailPage: React.FC = () => {
     useState<boolean>(false);
   const { user } = useUser();
 
-  const getNameUser = `${user?.getFirstName()}` + `${user?.getLastName()}`;
-
-  const HashTag: string[] = ['zkSync', 'bridge', 'l2'];
+  const UserName = `${user?.getFirstName()}` + `${user?.getLastName()}`;
 
   const GroupEditButton = () => {
     const TitleEditName = [
@@ -69,7 +68,7 @@ const DashboardDetailPage: React.FC = () => {
             size={'sm'}
             bg="#e1e1f9"
             color="#1e1870"
-            onClick={(e) => {
+            onClick={() => {
               if (item.title === 'Add text widget') {
                 setTypeModalTextWidget('add');
               }
@@ -95,6 +94,7 @@ const DashboardDetailPage: React.FC = () => {
           Fork
         </AppButton>
         <ModalForkDashBoardDetails
+          authorId={authorId}
           open={openModalFork}
           onClose={() => setOpenModalFork(false)}
         />
@@ -202,7 +202,7 @@ const DashboardDetailPage: React.FC = () => {
           <Avatar name={user?.getFirstName()} size="sm" />
           <div>
             <div className="dashboard-name">
-              @{getNameUser} / {dashboardId}
+              @{UserName} / {dashboardId}
             </div>
             <Flex gap={1} pt={'10px'}>
               {HashTag.map((item) => (
@@ -223,7 +223,7 @@ const DashboardDetailPage: React.FC = () => {
 
       <ResponsiveGridLayout
         className="main-grid-layout"
-        layouts={{ lg: layouts }}
+        layouts={{ lg: dataLayouts }}
         breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
         cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
         isDraggable={editMode}
@@ -232,8 +232,7 @@ const DashboardDetailPage: React.FC = () => {
       >
         {dataLayouts.map((item) => (
           <Box border={'1px dashed #808080'} key={item.i} position={'relative'}>
-            <ReactMarkdown source={item.i} />
-
+            <ReactMarkdown source={item.i} escapeHtml={false} />
             {editMode ? (
               <Box
                 onClick={() => {
@@ -252,11 +251,11 @@ const DashboardDetailPage: React.FC = () => {
           </Box>
         ))}
       </ResponsiveGridLayout>
-
       <ModalSettingDashboardDetails
-        title={dashboardId}
         url={dashboardId}
+        authorId={authorId}
         open={openModalSetting}
+        HashTag={HashTag}
         onClose={() => setOpenModalSetting(false)}
       />
 
@@ -278,7 +277,7 @@ const DashboardDetailPage: React.FC = () => {
         setOpenModalFork={setOpenModalFork}
         open={openModalAddVisualization}
         onClose={() => setOpenModalAddVisualization(false)}
-        userName={getNameUser}
+        userName={UserName}
       />
     </div>
   );
