@@ -46,8 +46,6 @@ const ModalNewDashboard: React.FC<IModalNewDashboard> = ({ open, onClose }) => {
     setDataForm(initDataFormSetting);
   };
 
-  const checkDisableButton = !dataForm.title;
-
   return (
     <BaseModal isOpen={open} onClose={handleCloseModal} size="md">
       <Flex
@@ -101,7 +99,7 @@ const ModalNewDashboard: React.FC<IModalNewDashboard> = ({ open, onClose }) => {
           bg="#1e1870"
           color="#fff"
           onClick={handleSubmitForm}
-          disabled={checkDisableButton}
+          disabled={!dataForm.title}
         >
           Save and open
         </AppButton>

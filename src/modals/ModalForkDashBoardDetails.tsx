@@ -48,8 +48,6 @@ const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
     }
   };
 
-  const checkDisableButton = !dataForm.dashboard;
-
   return (
     <BaseModal isOpen={open} onClose={onClose} size="md">
       <div className="main-modal-dashboard-details">
@@ -98,7 +96,7 @@ const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
           bg="#1e1870"
           color="#fff"
           onClick={onSave}
-          disabled={checkDisableButton}
+          disabled={!dataForm.dashboard}
         >
           Save and open
         </AppButton>

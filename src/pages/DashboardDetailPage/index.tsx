@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Avatar, Badge, Box, Flex } from '@chakra-ui/react';
 import { useParams } from 'react-router-dom';
 import { ActiveStarIcon, PenIcon, StarIcon } from 'src/assets/icons';
@@ -6,6 +6,7 @@ import { AppButton } from 'src/components';
 import useUser from 'src/hooks/useUser';
 import { Layout, Responsive, WidthProvider } from 'react-grid-layout';
 import ReactMarkdown from 'react-markdown';
+import rf from 'src/requests/RequestFactory';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import 'src/styles/pages/DashboardDetailPage.scss';
@@ -15,6 +16,8 @@ import ModalSettingDashboardDetails from 'src/modals/ModalSettingDashboardDetail
 import ModalAddTextWidget from 'src/modals/ModalAddTextWidget';
 import ModalAddVisualization from 'src/modals/ModalAddVisualization';
 import ModalEditItemDashBoard from 'src/modals/ModalEditItemDashBoard';
+import { getErrorMessage } from 'src/utils/utils-helper';
+import { toastError } from 'src/utils/utils-notify';
 
 interface ParamTypes {
   authorId: string;
@@ -27,17 +30,11 @@ export interface ILayout extends Layout {
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
-const layouts: ILayout[] = [
-  { id: 1, i: 'a', x: 0, y: 0, w: 6, h: 2 },
-  { id: 2, i: 'b', x: 6, y: 0, w: 6, h: 2 },
-  { id: 3, i: 'c', x: 0, y: 0, w: 6, h: 2 },
-  { id: 4, i: 'd', x: 6, y: 0, w: 6, h: 2 },
-];
-const HashTag: string[] = ['zkSync', 'bridge', 'l2'];
+const hashTag: string[] = ['zkSync', 'bridge', 'l2'];
 
 const DashboardDetailPage: React.FC = () => {
   const { authorId, dashboardId } = useParams<ParamTypes>();
-  const [dataLayouts, setDataLayouts] = useState<ILayout[]>(layouts);
+  const [dataLayouts, setDataLayouts] = useState<ILayout[]>([]);
   const [selectedItem, setSelectedItem] = useState<ILayout>(Object);
   const [markdownText, setMarkdownText] = useState<string>(``);
   const [typeModalTextWidget, setTypeModalTextWidget] = useState<string>(``);
@@ -47,12 +44,27 @@ const DashboardDetailPage: React.FC = () => {
   const [openModalSetting, setOpenModalSetting] = useState<boolean>(false);
   const [openModalEdit, setOpenModalEdit] = useState<boolean>(false);
   const [editMode, setEditMode] = useState<boolean>(false);
+  const [reload, setReload] = useState<boolean>(false);
 
   const [openModalAddTextWidget, setOpenModalAddTextWidget] =
     useState<boolean>(false);
   const { user } = useUser();
 
   const userName = `${user?.getFirstName()}` + `${user?.getLastName()}`;
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await rf.getRequest('DashboardsRequest').getDashboardItem();
+        setDataLayouts(res);
+      } catch (error) {
+        toastError({
+          message: getErrorMessage(error),
+        });
+      }
+    })();
+  }, [reload]);
+  console.log(dataLayouts);
 
   const GroupEditButton = () => {
     const TitleEditName = [
@@ -205,7 +217,7 @@ const DashboardDetailPage: React.FC = () => {
               @{userName} / {dashboardId}
             </div>
             <Flex gap={1} pt={'10px'}>
-              {HashTag.map((item) => (
+              {hashTag.map((item) => (
                 <Badge
                   bg={'gray.200'}
                   color={'gray.600'}
@@ -255,7 +267,7 @@ const DashboardDetailPage: React.FC = () => {
         url={dashboardId}
         authorId={authorId}
         open={openModalSetting}
-        hashTag={HashTag}
+        hashTag={hashTag}
         onClose={() => setOpenModalSetting(false)}
       />
 
@@ -268,6 +280,7 @@ const DashboardDetailPage: React.FC = () => {
         onClose={() => setOpenModalAddTextWidget(false)}
         markdownText={markdownText}
         setMarkdownText={setMarkdownText}
+        setReload={setReload}
       />
       <ModalEditItemDashBoard
         open={openModalEdit}
