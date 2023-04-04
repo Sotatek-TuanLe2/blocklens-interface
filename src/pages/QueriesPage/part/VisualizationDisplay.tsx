@@ -16,6 +16,7 @@ import {
 import VisualizationLineChart from '../../../components/Editor/LineChart';
 import VisualizationBarChart from '../../../components/Editor/BarChart';
 import { AppButton, AppSelect2 } from '../../../components';
+import VisualizationAreaChart from '../../../components/Editor/AreaChart';
 
 type VisualizationConfigType = {
   value: string;
@@ -39,6 +40,11 @@ const visualizationConfigs: VisualizationConfigType[] = [
     label: 'Line chart',
     type: 'line',
     value: 'line',
+  },
+  {
+    label: 'Area chart',
+    type: 'area',
+    value: 'area',
   },
 ];
 
@@ -75,6 +81,8 @@ const VisualizationDisplay = () => {
             yAxisKeys={['size']}
           />
         );
+      case 'area':
+        return <VisualizationAreaChart />;
     }
   };
 
@@ -83,14 +91,16 @@ const VisualizationDisplay = () => {
       <Tabs variant={'enclosed'}>
         <TabList>
           {visualizationsActive.map((tab) => (
-            <Tab>{tab.label}</Tab>
+            <Tab key={tab.value}>{tab.label}</Tab>
           ))}
           <Tab>Add Visualization</Tab>
         </TabList>
         <Box height={'600px'} overflow={'auto'}>
           <TabPanels height={'100%'}>
             {visualizationsActive.map((v) => (
-              <TabPanel height={'100%'}>{renderVisualization(v.type)}</TabPanel>
+              <TabPanel height={'100%'} key={v.value}>
+                {renderVisualization(v.type)}
+              </TabPanel>
             ))}
             <TabPanel height={'100%'}>
               <AddVisualization onAddVisualize={addVisualizationHandler} />

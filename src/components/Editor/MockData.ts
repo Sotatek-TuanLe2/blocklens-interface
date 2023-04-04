@@ -73,38 +73,6 @@ export const columnConfigs = columns.map((col) => ({
 }));
 
 export const queryValueData = [
-  // {
-  //   base_fee_per_gas: null,
-  //   difficulty: 0,
-  //   gas_limit: '287962567',
-  //   gas_used: '3736',
-  //   hash: '0xf6a372f74d764bef2d9b6c538868a72086deb01b38c63eda3c0bc57988e2c8a1',
-  //   miner: '0x0000000000000000000000000000000000000000',
-  //   nonce: '0x0000000000000000',
-  //   number: 80499,
-  //   parent_hash:
-  //     '0xe3a2cc02585585ad429c93d2b67aee29b25669a982554b9e6606b1f611a5789d',
-  //   size: 1320,
-  //   time: '2021-07-08 11:06:58.000 UTC',
-  //   total_difficulty: '0',
-  // },
-
-  // {
-  //   base_fee_per_gas: null,
-  //   difficulty: 0,
-  //   gas_limit: '287990722',
-  //   gas_used: '3736',
-  //   hash: '0xc03ae520338918e7cd652f26bc07b735dbb20dad4b6b03ccb95a13f1d3ce328a',
-  //   miner: '0x0000000000000000000000000000000000000000',
-  //   nonce: '0x0000000000000000',
-  //   number: 14587,
-  //   parent_hash:
-  //     '0x3a51cb8429ee0e33b59b8e8d0cca28069ccaec875b50235b43d38157a3a15d13',
-  //   size: 1318,
-  //   time: '2021-06-23 00:00:35.000 UTC',
-  //   total_difficulty: '0',
-  // },
-
   {
     base_fee_per_gas: 100000000,
     difficulty: 1,
@@ -116,7 +84,7 @@ export const queryValueData = [
     number: 76280644,
     parent_hash:
       '0x38a6be2da4a16bffd561aee1344efd78b70cae426a64ba132c55fadcfb53a253',
-    size: 2107,
+    size: 702,
     time: '2023-04-02 13:16:38.000 UTC',
     total_difficulty: '54072828',
   },
@@ -132,7 +100,7 @@ export const queryValueData = [
     number: 76281132,
     parent_hash:
       '0xa7d3c2a07de74efc622e86639f2c64689ccfdee8051c03fed5e6b71ff6680bb7',
-    size: 2111,
+    size: 676,
     time: '2023-04-02 13:18:37.000 UTC',
     total_difficulty: '54073316',
   },
@@ -148,7 +116,7 @@ export const queryValueData = [
     number: 76281132,
     parent_hash:
       '0xa7d3c2a07de74efc622e86639f2c64689ccfdee8051c03fed5e6b71ff6680bb7',
-    size: 2111,
+    size: 678,
     time: '2023-04-02 13:18:37.000 UTC',
     total_difficulty: '54073316',
   },
@@ -164,7 +132,7 @@ export const queryValueData = [
     number: 76284376,
     parent_hash:
       '0xc9d2fb21ab500706d966b2548b535a71f94edbc0033d482f85d6c0d8e35912f4',
-    size: 1294,
+    size: 682,
     time: '2023-04-02 13:32:02.000 UTC',
     total_difficulty: '54076560',
   },
