@@ -62,6 +62,8 @@ const Routes: FC<RouteComponentProps> = () => {
     window.scrollTo(0, 0);
   }, [pathname]);
 
+  console.log('pathname', pathname);
+
   useEffect(() => {
     if (!accessToken || isExpireTimeToken) {
       dispatch(clearUser());
@@ -110,13 +112,12 @@ const Routes: FC<RouteComponentProps> = () => {
           component={MessagesHistory}
         />
         <PrivateRoute path={'/top-up'} component={TopUpPage} />
-        <PrivateRoute exact path={'/dashboards'} component={DashboardsPage} />
+        <PrivateRoute path={'/dashboards'} component={DashboardsPage} />
         <PrivateRoute
-          exact
           path={'/dashboard/:authorId/:dashboardId'}
           component={DashboardDetailPage}
         />
-        <PrivateRoute exact path={'/queries'} component={QueriesPage} />
+        <PrivateRoute path={'/queries/:queryId'} component={QueriesPage} />
         <Route path={'/contact-us'} component={ContactUs} />
         <PrivateRoute path={'/'} component={HomePage} />
       </Switch>
