@@ -1,5 +1,5 @@
 import { Flex, Text, Textarea } from '@chakra-ui/react';
-import React, { Dispatch, SetStateAction } from 'react';
+import React, { Dispatch, SetStateAction, MouseEvent } from 'react';
 import { AppButton, AppField } from 'src/components';
 import AppAccordion from 'src/components/AppAccordion';
 import { getErrorMessage } from 'src/utils/utils-helper';
@@ -129,7 +129,9 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
   ) => {
     try {
       e.preventDefault();
-      setDataLayouts(dataLayouts.filter((item) => item.id !== id));
+      setDataLayouts(
+        dataLayouts.filter((item: { id: number }) => item.id !== id),
+      );
       onClose();
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
@@ -171,7 +173,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
   const ButtonRemoveWidget = () => {
     return (
       <AppButton
-        onClick={(e) => handleRemoveItem(selectedItem.id, e)}
+        onClick={(e: any) => handleRemoveItem(selectedItem.id, e)}
         size="sm"
         bg="#e1e1f9"
         color="#1e1870"
@@ -219,10 +221,10 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
           {type === 'add' ? (
             <ButtonCancel />
           ) : (
-            <div>
+            <Flex gap={'10px'}>
               <ButtonRemoveWidget />
               <ButtonCancel />
-            </div>
+            </Flex>
           )}
         </Flex>
       </div>
