@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import moment from 'moment';
 import { ActiveStarIcon, StarIcon } from 'src/assets/icons';
 import { LIST_ITEM_TYPE } from '..';
+import useUser from 'src/hooks/useUser';
 
 interface IMember {
   id: number;
@@ -11,6 +12,7 @@ interface IMember {
 }
 
 interface IListItem {
+  id: string | number;
   type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
   title: string;
   createdAt?: Date;
@@ -23,6 +25,7 @@ interface IListItem {
 
 const ListItem: React.FC<IListItem> = (props) => {
   const {
+    id,
     type,
     title,
     createdAt,
@@ -33,9 +36,11 @@ const ListItem: React.FC<IListItem> = (props) => {
     members,
   } = props;
 
+  const { user } = useUser();
+
   const LIKEABLE_ITEMS = [LIST_ITEM_TYPE.DASHBOARDS, LIST_ITEM_TYPE.QUERIES];
 
-  const getDuration = () => {
+  const getDuration = (): string => {
     const durationMinutes = moment().diff(moment(createdAt), 'minutes');
     if (durationMinutes < 60) {
       return `${durationMinutes} minute(s)`;
@@ -54,6 +59,17 @@ const ListItem: React.FC<IListItem> = (props) => {
     }
     const durationYears = moment().diff(moment(createdAt), 'years');
     return `${durationYears} year(s)`;
+  };
+
+  const getTitleUrl = (): string => {
+    switch (type) {
+      case LIST_ITEM_TYPE.DASHBOARDS:
+        return `/dashboard/${user?.getId()}/${title}`;
+      case LIST_ITEM_TYPE.QUERIES:
+        return `/queries/${id}`;
+      default:
+        return '/dashboards';
+    }
   };
 
   const onLike = () => {
@@ -89,7 +105,9 @@ const ListItem: React.FC<IListItem> = (props) => {
             className="dashboard-list__item__content__title"
             alignItems={'center'}
           >
-            <span className="item-name">{title}</span>
+            <Link className="item-name" to={getTitleUrl()} target={'_blank'}>
+              {title}
+            </Link>
             {tags && (
               <span>
                 {tags.map((tag) => (
@@ -103,7 +121,8 @@ const ListItem: React.FC<IListItem> = (props) => {
                   <Link
                     key={member.id}
                     className="item-member-image"
-                    to={`/src`}
+                    to={`/`}
+                    target={'_blank'}
                   >
                     <img src={member.avatar} alt={`Avatar of ${member.name}`} />
                   </Link>

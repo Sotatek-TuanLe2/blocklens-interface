@@ -1,3 +1,6 @@
+@import '../color-variables';
+@import '../variables';
+
 .dashboards-page {
   width: 100%;
   padding: 20px;
@@ -29,14 +32,23 @@
         margin-right: 10px;
 
         &__title {
+          .item-name {
+            word-break: break-word;
+            font-weight: 500;
+            display: -webkit-inline-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            color: $title;
+          }
+
           .item-tag {
             padding: 3px;
-            padding: .2rem .4rem .3rem .3rem;
-            font-size: 1.2rem;
+            padding: 2px 3px;
             background: #f2f2f2;
             color: #404040;
-            font-size: 12px;
-            line-height: 12px;
+            font-size: 10px;
+            line-height: 10px;
             border-radius: 2px;
             margin-left: 5px;
           }
@@ -51,6 +63,12 @@
               height: 20px;
             }
           }
+        }
+
+        &__createAt {
+          color: $line;
+          font-size: 14px;
+          line-height: 14px;
         }
       }
 
@@ -82,10 +100,12 @@
         &__item {
           padding: 5px 10px;
           margin-right: 10px;
+          color: $line;
 
           &--selected {
             border: 1px solid #272D52;
             border-radius: 3px;
+            color: $title;
           }
         }
       }
@@ -120,8 +140,11 @@
         }
 
         &__tag {
+          color: $line;
+
           &--selected {
             text-decoration: underline;
+            color: $title;
           }
         }
 
