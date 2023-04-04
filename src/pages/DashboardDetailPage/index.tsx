@@ -52,7 +52,7 @@ const DashboardDetailPage: React.FC = () => {
     useState<boolean>(false);
   const { user } = useUser();
 
-  const UserName = `${user?.getFirstName()}` + `${user?.getLastName()}`;
+  const userName = `${user?.getFirstName()}` + `${user?.getLastName()}`;
 
   const GroupEditButton = () => {
     const TitleEditName = [
@@ -202,7 +202,7 @@ const DashboardDetailPage: React.FC = () => {
           <Avatar name={user?.getFirstName()} size="sm" />
           <div>
             <div className="dashboard-name">
-              @{UserName} / {dashboardId}
+              @{userName} / {dashboardId}
             </div>
             <Flex gap={1} pt={'10px'}>
               {HashTag.map((item) => (
@@ -255,7 +255,7 @@ const DashboardDetailPage: React.FC = () => {
         url={dashboardId}
         authorId={authorId}
         open={openModalSetting}
-        HashTag={HashTag}
+        hashTag={HashTag}
         onClose={() => setOpenModalSetting(false)}
       />
 
@@ -277,7 +277,7 @@ const DashboardDetailPage: React.FC = () => {
         setOpenModalFork={setOpenModalFork}
         open={openModalAddVisualization}
         onClose={() => setOpenModalAddVisualization(false)}
-        userName={UserName}
+        userName={userName}
       />
     </div>
   );

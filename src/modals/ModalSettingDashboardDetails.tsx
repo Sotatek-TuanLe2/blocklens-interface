@@ -12,7 +12,7 @@ interface IModalSettingDashboardDetails {
   open: boolean;
   onClose: () => void;
   url: string;
-  HashTag: string[];
+  hashTag: string[];
   authorId: string;
 }
 
@@ -27,13 +27,13 @@ const ModalSettingDashboardDetails: React.FC<IModalSettingDashboardDetails> = ({
   open,
   onClose,
   url,
-  HashTag,
+  hashTag,
   authorId,
 }) => {
   const initDataFormSetting = {
     title: url,
     url: url,
-    tag: HashTag.toString(),
+    tag: hashTag.toString(),
     private: false,
   };
   const history = useHistory();
