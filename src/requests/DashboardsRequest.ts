@@ -51,6 +51,11 @@ export default class DashboardsRequest extends BaseRequest {
     return this.get(url, { ...params });
   }
 
+  getQueriesValues() {
+    const url = 'https://run.mocky.io/v3/c2d9b9cf-afd4-4aad-ac74-7c770669525f';
+    return this.get(url);
+  }
+
   getPopularDashboardTags() {
     const url = 'https://run.mocky.io/v3/fd2b3e65-6c5f-44f1-bc61-e7249645f1c3';
     return this.get(url);
