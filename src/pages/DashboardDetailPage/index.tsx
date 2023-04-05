@@ -243,7 +243,7 @@ const DashboardDetailPage: React.FC = () => {
       >
         {dataLayouts.map((item) => (
           <Box border={'1px dashed #808080'} key={item.i} position={'relative'}>
-            <ReactMarkdown source={item.i} escapeHtml={false} />
+            <ReactMarkdown>{item.i}</ReactMarkdown>
             {editMode ? (
               <Box
                 onClick={() => {
