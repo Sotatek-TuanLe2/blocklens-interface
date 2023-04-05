@@ -105,7 +105,7 @@ const ListItem: React.FC<IListItem> = (props) => {
             className="dashboard-list__item__content__title"
             alignItems={'center'}
           >
-            <Link className="item-name" to={getTitleUrl()} target={'_blank'}>
+            <Link className="item-name" to={getTitleUrl()}>
               {title}
             </Link>
             {tags && (
