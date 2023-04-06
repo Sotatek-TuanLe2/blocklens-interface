@@ -5,7 +5,7 @@ import DashboardsRequest from '../../../requests/DashboardsRequest';
 import { ArrowBackIcon } from '@chakra-ui/icons';
 import { toastError } from '../../../utils/utils-notify';
 import SchemaTitle from '../../../components/SqlEditor/SchemaTitle';
-import TableDescribeCard from '../../../components/SqlEditor/TableDescribeCard';
+import SchemaDescribe from '../../../components/SqlEditor/SchemaDescribe';
 import { getLogoChainByChainId } from '../../../utils/utils-network';
 import { getErrorMessage } from '../../../utils/utils-helper';
 import { AppInput } from '../../../components';
@@ -49,7 +49,7 @@ const EditorSidebar = () => {
   const renderTableDescribe = () => {
     return (
       tableSelected && (
-        <TableDescribeCard
+        <SchemaDescribe
           tableDescribe={tableDetail}
           blockchain={tableSelected?.chain}
           name={tableSelected.name}

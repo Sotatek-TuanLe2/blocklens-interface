@@ -11,6 +11,7 @@ import ChartSettings from '../../../components/SqlEditor/ChartSettings';
 import VisualizationPieChart from '../../../components/Chart/PieChart';
 import { QueryType, VisualizationType } from '../../../utils/common';
 import DashboardsRequest from '../../../requests/DashboardsRequest';
+import { useParams } from 'react-router-dom';
 
 type VisualizationConfigType = {
   value: string;
@@ -51,6 +52,8 @@ type Props = {
 };
 
 const VisualizationDisplay = ({ queryValues }: Props) => {
+  const { queryId } = useParams<{ queryId: string }>();
+  console.log('queryId', queryId);
   const [visualizationsActive, setVisualizationsActive] = useState<
     VisualizationConfigType[]
   >([
@@ -112,12 +115,12 @@ const VisualizationDisplay = ({ queryValues }: Props) => {
       const [queryResult, ...others] = prevState;
       return [queryResult, searchedVisualization, ...others];
     });
-    const query = await getQuery('2');
+    const query = await getQuery(queryId);
     const updateQuery = {
       ...query,
       visualizations: [...query.visualizations, newVisualization],
     };
-    await addVisualizationToQuery('2', updateQuery);
+    await addVisualizationToQuery(queryId, updateQuery);
   };
 
   const renderVisualization = (type: string) => {

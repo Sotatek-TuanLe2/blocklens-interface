@@ -46,11 +46,21 @@ const QueriesPage = () => {
     }
   };
 
-  const fetchQueryResults = async () => {
+  const submitQuery = async () => {
     try {
       const dashboardsRequest = new DashboardsRequest();
       const queryValues = await dashboardsRequest.getQueriesValues();
       await createNewQuery(editorRef.current.editor.getValue());
+      setQueryValues(queryValues);
+    } catch (err) {
+      getErrorMessage(err);
+    }
+  };
+
+  const fetchQueryResults = async () => {
+    try {
+      const dashboardsRequest = new DashboardsRequest();
+      const queryValues = await dashboardsRequest.getQueriesValues();
       setQueryValues(queryValues);
     } catch (err) {
       getErrorMessage(err);
@@ -95,7 +105,7 @@ const QueriesPage = () => {
                 }}
               />
               <Box mt={2}>
-                <AppButton onClick={fetchQueryResults}>Run</AppButton>
+                <AppButton onClick={submitQuery}>Run</AppButton>
                 <AppButton ml={2}>Format</AppButton>
               </Box>
             </Box>
