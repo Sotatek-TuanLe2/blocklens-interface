@@ -29,6 +29,7 @@ const AppTabs: FC<IAppTabs> = ({
   onChange,
   rightElement,
 }) => {
+  console.log('tabs', tabs);
   return (
     <Tabs
       h={'full'}

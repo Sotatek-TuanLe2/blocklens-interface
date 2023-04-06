@@ -24,6 +24,7 @@ const QueriesPage = () => {
   const { queryId } = useParams<ParamTypes>();
 
   const [queryValues, setQueryValues] = useState<unknown[]>([]);
+  const [infoQuery, setInfoQuery] = useState<QueryType | null>(null);
 
   const createNewQuery = async (query: string) => {
     try {
@@ -35,7 +36,7 @@ const QueriesPage = () => {
           {
             name: 'Table',
             type: 'table',
-            id: 1,
+            id: '1',
             options: {},
           },
         ],
@@ -67,9 +68,20 @@ const QueriesPage = () => {
     }
   };
 
+  const fetchInfoQuery = async () => {
+    try {
+      const request = new DashboardsRequest();
+      const res = await request.getQuery(queryId);
+      setInfoQuery(res);
+    } catch (err) {
+      getErrorMessage(err);
+    }
+  };
+
   useEffect(() => {
     if (queryId) {
       fetchQueryResults();
+      fetchInfoQuery();
     }
   }, [queryId]);
 
@@ -110,7 +122,12 @@ const QueriesPage = () => {
               </Box>
             </Box>
             <Box mt={8}>
-              <VisualizationDisplay queryValues={queryValues} />
+              {infoQuery && (
+                <VisualizationDisplay
+                  queryValues={queryValues}
+                  queryInfo={infoQuery}
+                />
+              )}
             </Box>
           </Flex>
         </Flex>
