@@ -55,58 +55,58 @@ const QueriesPage = () => {
     } catch (err) {
       getErrorMessage(err);
     }
-
-    useEffect(() => {
-      if (queryId) {
-        fetchQueryResults();
-      }
-    }, [queryId]);
-
-    return (
-      <BasePage>
-        <EditorContext.Provider
-          value={{
-            editor: editorRef,
-            queryValues: queryValues,
-          }}
-        >
-          <Flex justifyContent={'space-between'} alignItems={'flex-start'}>
-            <EditorSidebar />
-            <Flex flexDir={'column'} maxW={'100%'} overflow={'auto'} w={'100%'}>
-              <Box width={'100%'}>
-                <AceEditor
-                  ref={editorRef}
-                  mode="sql"
-                  theme="monokai"
-                  width="100%"
-                  wrapEnabled={true}
-                  name="sql_editor"
-                  editorProps={{ $blockScrolling: true }}
-                  showPrintMargin={true}
-                  showGutter={true}
-                  highlightActiveLine={true}
-                  setOptions={{
-                    enableLiveAutocompletion: true,
-                    enableBasicAutocompletion: true,
-                    enableSnippets: false,
-                    showLineNumbers: true,
-                    tabSize: 2,
-                  }}
-                />
-                <Box mt={2}>
-                  <AppButton onClick={fetchQueryResults}>Run</AppButton>
-                  <AppButton ml={2}>Format</AppButton>
-                </Box>
-              </Box>
-              <Box mt={8}>
-                <VisualizationDisplay queryValues={queryValues} />
-              </Box>
-            </Flex>
-          </Flex>
-        </EditorContext.Provider>
-      </BasePage>
-    );
   };
+
+  useEffect(() => {
+    if (queryId) {
+      fetchQueryResults();
+    }
+  }, [queryId]);
+
+  return (
+    <BasePage>
+      <EditorContext.Provider
+        value={{
+          editor: editorRef,
+          queryValues: queryValues,
+        }}
+      >
+        <Flex justifyContent={'space-between'} alignItems={'flex-start'}>
+          <EditorSidebar />
+          <Flex flexDir={'column'} maxW={'100%'} overflow={'auto'} w={'100%'}>
+            <Box width={'100%'}>
+              <AceEditor
+                ref={editorRef}
+                mode="sql"
+                theme="monokai"
+                width="100%"
+                wrapEnabled={true}
+                name="sql_editor"
+                editorProps={{ $blockScrolling: true }}
+                showPrintMargin={true}
+                showGutter={true}
+                highlightActiveLine={true}
+                setOptions={{
+                  enableLiveAutocompletion: true,
+                  enableBasicAutocompletion: true,
+                  enableSnippets: false,
+                  showLineNumbers: true,
+                  tabSize: 2,
+                }}
+              />
+              <Box mt={2}>
+                <AppButton onClick={fetchQueryResults}>Run</AppButton>
+                <AppButton ml={2}>Format</AppButton>
+              </Box>
+            </Box>
+            <Box mt={8}>
+              <VisualizationDisplay queryValues={queryValues} />
+            </Box>
+          </Flex>
+        </Flex>
+      </EditorContext.Provider>
+    </BasePage>
+  );
 };
 
 export default QueriesPage;
