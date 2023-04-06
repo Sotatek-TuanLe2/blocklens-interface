@@ -12,6 +12,7 @@ import VisualizationPieChart from '../../../components/Chart/PieChart';
 import { QueryType, VisualizationType } from '../../../utils/common';
 import DashboardsRequest from '../../../requests/DashboardsRequest';
 import { useParams } from 'react-router-dom';
+import BaseModal from '../../../modals/BaseModal';
 
 type VisualizationConfigType = {
   value: string;
@@ -54,11 +55,10 @@ type Props = {
 
 const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
   const { queryId } = useParams<{ queryId: string }>();
-  console.log(queryInfo);
-
   const [visualizationsActive, setVisualizationsActive] = useState<
     VisualizationType[]
   >([{ id: '1', options: {}, name: 'New Visualization', type: '' }]);
+  const [closeTabId, setCloseTabId] = useState('');
 
   const columns =
     Array.isArray(queryValues) && queryValues[0]
@@ -84,13 +84,7 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
     await request.updateQuery(queryId, updateQuery);
   };
 
-  // const getQuery = async (queryId: string) => {
-  //   const request = new DashboardsRequest();
-  //   return await request.getQuery(queryId);
-  // };
-
   const addVisualizationHandler = async (visualizationValue: string) => {
-    console.log('visualizationValue', visualizationValue);
     const searchedVisualization = visualizationConfigs.find(
       (v) => v.value === visualizationValue,
     );
@@ -105,7 +99,7 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
       };
     } else {
       newVisualization = {
-        id: '1',
+        id: (Math.floor(Math.random() * 100) + 1).toString(),
         name: 'Chart',
         type: 'chart',
         options: {
@@ -119,22 +113,49 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
       };
     }
 
-    setVisualizationsActive((prevState) => {
-      const [queryResult, ...others] = prevState;
-
-      return [queryResult, newVisualization, ...others];
-    });
     const updateQuery = {
       ...queryInfo,
       visualizations: [...queryInfo.visualizations, newVisualization],
     };
     await addVisualizationToQuery(queryId, updateQuery);
+    setVisualizationsActive((prevState) => {
+      const [queryResult, ...others] = prevState;
+      return [queryResult, newVisualization, ...others];
+    });
+  };
+
+  const removeVisualizationHandler = async (visualizationId: string) => {
+    const visualizationIndex = queryInfo.visualizations.findIndex(
+      (v) => v.id.toString() === visualizationId.toString(),
+    );
+    if (visualizationIndex === -1) return;
+    const updateQuery = {
+      ...queryInfo,
+      visualizations: queryInfo.visualizations.filter(
+        (v) => v.id !== visualizationId,
+      ),
+    };
+    await addVisualizationToQuery(queryId, updateQuery);
+    setVisualizationsActive([
+      ...updateQuery.visualizations,
+      {
+        id: 'newVisualization',
+        options: {},
+        name: 'New Visualization',
+        type: 'newVisualization',
+      },
+    ]);
   };
 
   useEffect(() => {
-    setVisualizationsActive((prevState) => [
+    setVisualizationsActive([
       ...queryInfo.visualizations,
-      { id: '1', options: {}, name: 'New Visualization', type: '' },
+      {
+        id: 'newVisualization',
+        options: {},
+        name: 'New Visualization',
+        type: 'newVisualization',
+      },
     ]);
   }, []);
 
@@ -181,13 +202,31 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
   return (
     <Box height={'500px'} overflow={'auto'}>
       <AppTabs
-        tabs={visualizationsActive.map((v, index) => ({
+        onCloseTab={(tabId) => {
+          // setOpenRemoveTabModal(true);
+          setCloseTabId(tabId);
+        }}
+        tabs={visualizationsActive.map((v) => ({
           name: v.name,
           content: renderVisualization(v.options.globalSeriesType || v.type),
-          id: index.toString(),
+          id: v.id,
+          closeable: v.type !== 'newVisualization',
         }))}
       />
       <ChartSettings />
+      <BaseModal
+        title={'Remove visualization'}
+        description={'Are you sure you want to remove this visualization?'}
+        isOpen={closeTabId !== ''}
+        onClose={() => setCloseTabId('')}
+        onActionLeft={() => setCloseTabId('')}
+        onActionRight={() => {
+          removeVisualizationHandler(closeTabId);
+          setCloseTabId('');
+        }}
+      >
+        <></>
+      </BaseModal>
     </Box>
   );
 };
