@@ -73,6 +73,8 @@ const QueriesPage = () => {
     try {
       const request = new DashboardsRequest();
       const res = await request.getQuery(queryId);
+      const position = editorRef.current.editor.getCursorPosition();
+      editorRef.current.editor.session.insert(position, res.query);
       setInfoQuery(res);
     } catch (err) {
       getErrorMessage(err);
