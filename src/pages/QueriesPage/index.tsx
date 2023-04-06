@@ -12,17 +12,52 @@ import 'ace-builds/src-noconflict/theme-monokai';
 import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/mode-sql';
 import { getErrorMessage } from '../../utils/utils-helper';
+import { QueryType } from '../../utils/common';
 import { useParams } from 'react-router-dom';
 
 interface ParamTypes {
   queryId: string;
 }
 
-const QueriesPage: React.FC = () => {
+const QueriesPage = () => {
   const editorRef = useRef<any>();
   const { queryId } = useParams<ParamTypes>();
 
   const [queryValues, setQueryValues] = useState<unknown[]>([]);
+  const [infoQuery, setInfoQuery] = useState<QueryType | null>(null);
+
+  const createNewQuery = async (query: string) => {
+    try {
+      const dashboardsRequest = new DashboardsRequest();
+      const newQuery: QueryType = {
+        name: 'Query1',
+        query: 'select * from arbitrum.blocks limit 10',
+        visualizations: [
+          {
+            name: 'Table',
+            type: 'table',
+            id: '1',
+            options: {},
+          },
+        ],
+      };
+      const infoQuery = await dashboardsRequest.createNewQuery(newQuery);
+      setInfoQuery(infoQuery);
+    } catch (err) {
+      getErrorMessage(err);
+    }
+  };
+
+  const submitQuery = async () => {
+    try {
+      const dashboardsRequest = new DashboardsRequest();
+      const queryValues = await dashboardsRequest.getQueriesValues();
+      await createNewQuery(editorRef.current.editor.getValue());
+      setQueryValues(queryValues);
+    } catch (err) {
+      getErrorMessage(err);
+    }
+  };
 
   const fetchQueryResults = async () => {
     try {
@@ -34,9 +69,20 @@ const QueriesPage: React.FC = () => {
     }
   };
 
+  const fetchInfoQuery = async () => {
+    try {
+      const request = new DashboardsRequest();
+      const res = await request.getQuery(queryId);
+      setInfoQuery(res);
+    } catch (err) {
+      getErrorMessage(err);
+    }
+  };
+
   useEffect(() => {
     if (queryId) {
       fetchQueryResults();
+      fetchInfoQuery();
     }
   }, [queryId]);
 
@@ -72,12 +118,17 @@ const QueriesPage: React.FC = () => {
                 }}
               />
               <Box mt={2}>
-                <AppButton onClick={fetchQueryResults}>Run</AppButton>
+                <AppButton onClick={submitQuery}>Run</AppButton>
                 <AppButton ml={2}>Format</AppButton>
               </Box>
             </Box>
             <Box mt={8}>
-              <VisualizationDisplay queryValues={queryValues} />
+              {infoQuery && (
+                <VisualizationDisplay
+                  queryValues={queryValues}
+                  queryInfo={infoQuery}
+                />
+              )}
             </Box>
           </Flex>
         </Flex>

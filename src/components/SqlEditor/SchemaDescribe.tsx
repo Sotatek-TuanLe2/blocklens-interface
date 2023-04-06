@@ -9,7 +9,7 @@ type Props = {
   name: string;
 };
 
-const TableDescribeCard = ({ blockchain, name, tableDescribe }: Props) => {
+const SchemaDescribe = ({ blockchain, name, tableDescribe }: Props) => {
   return (
     <Box>
       <SchemaTitle chainName={blockchain} tableName={name} />
@@ -39,4 +39,4 @@ const TableDescribeCard = ({ blockchain, name, tableDescribe }: Props) => {
   );
 };
 
-export default TableDescribeCard;
+export default SchemaDescribe;

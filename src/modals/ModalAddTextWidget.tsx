@@ -166,48 +166,6 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
     setMarkdownText(event.target.value);
   }, DEBOUNCE_TIME);
 
-  const ButtonSave = () => {
-    return (
-      <AppButton
-        size="sm"
-        bg="#1e1870"
-        color="#fff"
-        onClick={() => {
-          type === TYPE_MODAL.ADD ? handleSave() : handleUpdate();
-        }}
-        disabled={!markdownText}
-      >
-        Save
-      </AppButton>
-    );
-  };
-  const ButtonCancel = () => {
-    return (
-      <AppButton
-        onClick={onClose}
-        size="sm"
-        bg="#e1e1f9"
-        color="#1e1870"
-        variant={'cancel'}
-      >
-        Cancel
-      </AppButton>
-    );
-  };
-  const ButtonRemoveWidget = () => {
-    return (
-      <AppButton
-        onClick={(e: never) => handleRemoveItem(selectedItem.id, e)}
-        size="sm"
-        bg="#e1e1f9"
-        color="#1e1870"
-        variant={'cancel'}
-      >
-        Remove this widget
-      </AppButton>
-    );
-  };
-
   return (
     <BaseModal isOpen={open} onClose={onClose} size="md">
       <div className="main-modal-dashboard-details">
@@ -241,15 +199,39 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
           mt={10}
           justifyContent={type === TYPE_MODAL.ADD ? '' : 'space-between'}
         >
-          <ButtonSave />
-          {type === TYPE_MODAL.ADD ? (
-            <ButtonCancel />
-          ) : (
-            <Flex gap={'10px'}>
-              <ButtonRemoveWidget />
-              <ButtonCancel />
-            </Flex>
-          )}
+          <AppButton
+            size="sm"
+            bg="#1e1870"
+            color="#fff"
+            onClick={() => {
+              type === TYPE_MODAL.ADD ? handleSave() : handleUpdate();
+            }}
+            disabled={!markdownText}
+          >
+            Save
+          </AppButton>
+          <Flex gap={'10px'}>
+            {type === TYPE_MODAL.EDIT && (
+              <AppButton
+                onClick={(e: never) => handleRemoveItem(selectedItem.id, e)}
+                size="sm"
+                bg="#e1e1f9"
+                color="#1e1870"
+                variant={'cancel'}
+              >
+                Remove this widget
+              </AppButton>
+            )}
+            <AppButton
+              onClick={onClose}
+              size="sm"
+              bg="#e1e1f9"
+              color="#1e1870"
+              variant={'cancel'}
+            >
+              Cancel
+            </AppButton>
+          </Flex>
         </Flex>
       </div>
     </BaseModal>
