@@ -54,7 +54,7 @@ const VisualizationDisplay = ({ queryValues }: Props) => {
   >([
     {
       value: 'query',
-      label: 'Query',
+      label: 'Query results',
       type: 'table',
     },
     { value: 'newVisualization', label: 'New Visualization', type: '' },
@@ -81,7 +81,10 @@ const VisualizationDisplay = ({ queryValues }: Props) => {
       (v) => v.value === visualizationValue,
     );
     if (!newVisualization) return;
-    setVisualizationsActive([newVisualization, ...visualizationsActive]);
+    setVisualizationsActive((prevState) => {
+      const [queryResult, ...others] = prevState;
+      return [queryResult, newVisualization, ...others];
+    });
   };
 
   const renderVisualization = (type: string) => {
