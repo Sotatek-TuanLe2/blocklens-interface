@@ -259,9 +259,11 @@ const DashboardDetailPage: React.FC = () => {
               <Box
                 className="btn-edit"
                 onClick={() => {
-                  setOpenModalAddTextWidget(true);
                   setTypeModalTextWidget(TYPE_MODAL.EDIT);
                   setSelectedItem(item);
+                  item.content.toString().length > 0
+                    ? setOpenModalEdit(true)
+                    : setOpenModalAddTextWidget(true);
                 }}
               >
                 <PenIcon />
@@ -287,6 +289,10 @@ const DashboardDetailPage: React.FC = () => {
         onReload={fetchLayoutData}
       />
       <ModalEditItemDashBoard
+        selectedItem={selectedItem}
+        dataLayouts={dataLayouts}
+        setDataLayouts={setDataLayouts}
+        onReload={fetchLayoutData}
         open={openModalEdit}
         onClose={() => setOpenModalEdit(false)}
       />
