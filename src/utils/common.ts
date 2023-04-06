@@ -83,7 +83,7 @@ type VisualizationOptionsType = ChartType &
 
 export type VisualizationType = {
   // created_at: Date;
-  id: number;
+  id: string;
   name: string;
   options: Partial<VisualizationOptionsType>;
   type: string;

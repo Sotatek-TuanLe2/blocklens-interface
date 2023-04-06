@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Box, Text } from '@chakra-ui/react';
 import TableSqlValue from '../../../components/Chart/TableSqlValue';
 import VisualizationBarChart from '../../../components/Chart/BarChart';
@@ -49,21 +49,16 @@ const visualizationConfigs: VisualizationConfigType[] = [
 
 type Props = {
   queryValues: unknown[];
+  queryInfo: QueryType;
 };
 
-const VisualizationDisplay = ({ queryValues }: Props) => {
+const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
   const { queryId } = useParams<{ queryId: string }>();
-  console.log('queryId', queryId);
+  console.log(queryInfo);
+
   const [visualizationsActive, setVisualizationsActive] = useState<
-    VisualizationConfigType[]
-  >([
-    {
-      value: 'query',
-      label: 'Query results',
-      type: 'table',
-    },
-    { value: 'newVisualization', label: 'New Visualization', type: '' },
-  ]);
+    VisualizationType[]
+  >([{ id: '1', options: {}, name: 'New Visualization', type: '' }]);
 
   const columns =
     Array.isArray(queryValues) && queryValues[0]
@@ -80,6 +75,7 @@ const VisualizationDisplay = ({ queryValues }: Props) => {
       })),
     [queryValues],
   );
+
   const addVisualizationToQuery = async (
     queryId: string,
     updateQuery: Partial<QueryType>,
@@ -88,50 +84,69 @@ const VisualizationDisplay = ({ queryValues }: Props) => {
     await request.updateQuery(queryId, updateQuery);
   };
 
-  const getQuery = async (queryId: string) => {
-    const request = new DashboardsRequest();
-    return await request.getQuery(queryId);
-  };
+  // const getQuery = async (queryId: string) => {
+  //   const request = new DashboardsRequest();
+  //   return await request.getQuery(queryId);
+  // };
 
   const addVisualizationHandler = async (visualizationValue: string) => {
+    console.log('visualizationValue', visualizationValue);
     const searchedVisualization = visualizationConfigs.find(
       (v) => v.value === visualizationValue,
     );
     if (!searchedVisualization) return;
-    const newVisualization: VisualizationType = {
-      id: 1,
-      name: 'Chart',
-      type: 'chart',
-      options: {
-        globalSeriesType: searchedVisualization.type,
-        columnMapping: {
-          time: 'x',
-          number: 'y',
+    let newVisualization: VisualizationType = {} as VisualizationType;
+    if (searchedVisualization.type === 'table') {
+      newVisualization = {
+        name: 'Table',
+        id: (Math.floor(Math.random() * 100) + 1).toString(),
+        type: 'table',
+        options: {},
+      };
+    } else {
+      newVisualization = {
+        id: '1',
+        name: 'Chart',
+        type: 'chart',
+        options: {
+          globalSeriesType: searchedVisualization.type,
+          columnMapping: {
+            time: 'x',
+            number: 'y',
+          },
+          showLegend: true,
         },
-        showLegend: true,
-      },
-    };
+      };
+    }
+
     setVisualizationsActive((prevState) => {
       const [queryResult, ...others] = prevState;
-      return [queryResult, searchedVisualization, ...others];
+
+      return [queryResult, newVisualization, ...others];
     });
-    const query = await getQuery(queryId);
     const updateQuery = {
-      ...query,
-      visualizations: [...query.visualizations, newVisualization],
+      ...queryInfo,
+      visualizations: [...queryInfo.visualizations, newVisualization],
     };
     await addVisualizationToQuery(queryId, updateQuery);
   };
 
+  useEffect(() => {
+    setVisualizationsActive((prevState) => [
+      ...queryInfo.visualizations,
+      { id: '1', options: {}, name: 'New Visualization', type: '' },
+    ]);
+  }, []);
+
   const renderVisualization = (type: string) => {
     switch (type) {
       case 'table':
-        return tableValuesColumnConfigs ? (
+        return (
           <TableSqlValue
             columns={tableValuesColumnConfigs as typeof queryValues}
             data={queryValues}
           />
-        ) : null;
+        );
       case 'line':
         return (
           <VisualizationLineChart
@@ -166,10 +181,10 @@ const VisualizationDisplay = ({ queryValues }: Props) => {
   return (
     <Box height={'500px'} overflow={'auto'}>
       <AppTabs
-        tabs={visualizationsActive.map((v) => ({
-          name: v.label,
-          content: renderVisualization(v.type),
-          id: v.value,
+        tabs={visualizationsActive.map((v, index) => ({
+          name: v.name,
+          content: renderVisualization(v.options.globalSeriesType || v.type),
+          id: index.toString(),
         }))}
       />
       <ChartSettings />
