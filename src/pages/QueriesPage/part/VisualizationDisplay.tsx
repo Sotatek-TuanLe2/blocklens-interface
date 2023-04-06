@@ -58,7 +58,6 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
   const [visualizationsActive, setVisualizationsActive] = useState<
     VisualizationType[]
   >([{ id: '1', options: {}, name: 'New Visualization', type: '' }]);
-  const [openRemoveTabModal, setOpenRemoveTabModal] = useState(false);
   const [closeTabId, setCloseTabId] = useState('');
 
   const columns =
@@ -85,13 +84,7 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
     await request.updateQuery(queryId, updateQuery);
   };
 
-  // const getQuery = async (queryId: string) => {
-  //   const request = new DashboardsRequest();
-  //   return await request.getQuery(queryId);
-  // };
-
   const addVisualizationHandler = async (visualizationValue: string) => {
-    console.log('visualizationValue', visualizationValue);
     const searchedVisualization = visualizationConfigs.find(
       (v) => v.value === visualizationValue,
     );
@@ -136,15 +129,12 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
       (v) => v.id.toString() === visualizationId.toString(),
     );
     if (visualizationIndex === -1) return;
-    console.log('queryInfo.visualizations', visualizationIndex);
-    console.log('queryInfo.visualizations', queryInfo.visualizations);
     const updateQuery = {
       ...queryInfo,
       visualizations: queryInfo.visualizations.filter(
         (v) => v.id !== visualizationId,
       ),
     };
-    console.log('updateQuery', updateQuery);
     await addVisualizationToQuery(queryId, updateQuery);
     setVisualizationsActive([
       ...updateQuery.visualizations,
@@ -158,7 +148,7 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
   };
 
   useEffect(() => {
-    setVisualizationsActive((prevState) => [
+    setVisualizationsActive([
       ...queryInfo.visualizations,
       {
         id: 'newVisualization',
