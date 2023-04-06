@@ -6,19 +6,20 @@ import { copyToClipboard } from 'src/utils/utils-helper';
 import { UserInterface } from 'src/utils/utils-user';
 import BaseModal from './BaseModal';
 import { SmallSuccessIcon } from 'src/assets/icons';
+import useUser from 'src/hooks/useUser';
 
 interface IModalShareDashboardDetails {
   open: boolean;
   onClose: () => void;
-  user: UserInterface | null;
 }
 
 const ModalShareDashboardDetails: React.FC<IModalShareDashboardDetails> = ({
   open,
   onClose,
-  user,
 }) => {
+  const { user } = useUser();
   const [copy, setCopy] = useState<boolean>(false);
+
   const link = `https://dune.com/${user?.getId()}/zzcs`;
 
   const ButtonCopySuccess = () => {
@@ -35,7 +36,12 @@ const ModalShareDashboardDetails: React.FC<IModalShareDashboardDetails> = ({
   };
 
   return (
-    <BaseModal isOpen={open} onClose={handleCloseModal} size="md">
+    <BaseModal
+      className="main-modal-share"
+      isOpen={open}
+      onClose={handleCloseModal}
+      size="md"
+    >
       <Flex flexDirection={'column'} rowGap={'2rem'} pt={'50px'}>
         <Text fontSize={'14px'}>
           Use the following link to share this public dashboard.
@@ -45,8 +51,7 @@ const ModalShareDashboardDetails: React.FC<IModalShareDashboardDetails> = ({
       <Flex flexWrap={'wrap'} gap={'10px'}>
         <AppButton
           size="sm"
-          bg="#1e1870"
-          color="#fff"
+          className="btn-save"
           onClick={() => {
             copyToClipboard(link);
             setCopy(true);
@@ -57,8 +62,7 @@ const ModalShareDashboardDetails: React.FC<IModalShareDashboardDetails> = ({
         <AppButton
           onClick={handleCloseModal}
           size="sm"
-          bg="#ffeceb"
-          color="#000"
+          className="btn-cancel"
           variant={'cancel'}
         >
           Cancel

@@ -26,7 +26,6 @@ const QueriesPage: React.FC = () => {
       getErrorMessage(err);
     }
   };
-
   return (
     <BasePage>
       <EditorContext.Provider

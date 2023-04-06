@@ -1,9 +1,9 @@
 import { Flex, Text, Textarea } from '@chakra-ui/react';
 import { debounce } from 'lodash';
-import React, { Dispatch, MouseEvent, SetStateAction } from 'react';
+import React, { MouseEvent, useState } from 'react';
 import { AppButton, AppField } from 'src/components';
 import AppAccordion from 'src/components/AppAccordion';
-import { ILayout } from 'src/pages/DashboardDetailPage';
+import { ILayout, TYPE_MODAL } from 'src/pages/DashboardDetailPage';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/BaseModal.scss';
 import { getErrorMessage } from 'src/utils/utils-helper';
@@ -13,13 +13,11 @@ import BaseModal from './BaseModal';
 interface IModalAddTextWidget {
   open: boolean;
   onClose: () => void;
-  markdownText: string;
-  setMarkdownText: Dispatch<SetStateAction<string>>;
-  setReload: Dispatch<SetStateAction<boolean>>;
-  type?: 'add' | 'edit' | string;
+  type?: TYPE_MODAL.ADD | TYPE_MODAL.EDIT | string;
   selectedItem: ILayout;
   dataLayouts: ILayout[];
   setDataLayouts: React.Dispatch<React.SetStateAction<ILayout[]>>;
+  onReload: () => Promise<void>;
 }
 
 interface IMarkdown {
@@ -86,18 +84,17 @@ const MarkdownSupport: IMarkdown[] = [
     ),
   },
 ];
-
 const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
   open,
   onClose,
-  markdownText,
-  setMarkdownText,
   type,
   dataLayouts,
   setDataLayouts,
   selectedItem,
-  setReload,
+  onReload,
 }) => {
+  const [markdownText, setMarkdownText] = useState<string>(``);
+
   const DEBOUNCE_TIME = 500;
 
   const handleSave = async () => {
@@ -158,7 +155,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
       if (res) {
         setDataLayouts([...dataLayouts]);
       }
-      setReload((prev) => !prev);
+      onReload();
       onClose();
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
@@ -176,7 +173,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
         bg="#1e1870"
         color="#fff"
         onClick={() => {
-          type === 'add' ? handleSave() : handleUpdate();
+          type === TYPE_MODAL.ADD ? handleSave() : handleUpdate();
         }}
         disabled={!markdownText}
       >
@@ -200,7 +197,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
   const ButtonRemoveWidget = () => {
     return (
       <AppButton
-        onClick={(e: any) => handleRemoveItem(selectedItem.id, e)}
+        onClick={(e: never) => handleRemoveItem(selectedItem.id, e)}
         size="sm"
         bg="#e1e1f9"
         color="#1e1870"
@@ -220,7 +217,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
             size="sm"
             h={'150px'}
             borderRadius={'0.5rem'}
-            defaultValue={type === 'add' ? '' : selectedItem.i}
+            defaultValue={type === TYPE_MODAL.ADD ? '' : selectedItem.i}
             onChange={handleChangeMarkdownText}
           />
         </AppField>
@@ -242,10 +239,10 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
           flexWrap={'wrap'}
           gap={'10px'}
           mt={10}
-          justifyContent={type === 'add' ? '' : 'space-between'}
+          justifyContent={type === TYPE_MODAL.ADD ? '' : 'space-between'}
         >
           <ButtonSave />
-          {type === 'add' ? (
+          {type === TYPE_MODAL.ADD ? (
             <ButtonCancel />
           ) : (
             <Flex gap={'10px'}>
