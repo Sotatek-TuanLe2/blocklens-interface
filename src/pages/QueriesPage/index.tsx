@@ -12,15 +12,39 @@ import 'ace-builds/src-noconflict/theme-monokai';
 import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/mode-sql';
 import { getErrorMessage } from '../../utils/utils-helper';
+import { QueryType } from '../../utils/common';
 
 const QueriesPage: React.FC = () => {
   const editorRef = useRef<any>();
 
   const [queryValues, setQueryValues] = useState<unknown[]>([]);
+
+  const createNewQuery = async (query: string) => {
+    try {
+      const dashboardsRequest = new DashboardsRequest();
+      const newQuery: QueryType = {
+        name: 'Query1',
+        query: 'select * from arbitrum.blocks limit 10',
+        visualizations: [
+          {
+            name: 'Table',
+            type: 'table',
+            id: 1,
+            options: {},
+          },
+        ],
+      };
+      await dashboardsRequest.createNewQuery(newQuery);
+    } catch (err) {
+      getErrorMessage(err);
+    }
+  };
+
   const submitQuery = async () => {
     try {
       const dashboardsRequest = new DashboardsRequest();
       const queryValues = await dashboardsRequest.getQueriesValues();
+      await createNewQuery(editorRef.current.editor.getValue());
       setQueryValues(queryValues);
     } catch (err) {
       getErrorMessage(err);

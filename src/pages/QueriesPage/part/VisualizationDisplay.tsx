@@ -9,6 +9,8 @@ import { objectKeys } from '../../../utils/utils-network';
 import VisualizationLineChart from '../../../components/Chart/LineChart';
 import ChartSettings from '../../../components/SqlEditor/ChartSettings';
 import VisualizationPieChart from '../../../components/Chart/PieChart';
+import { QueryType, VisualizationType } from '../../../utils/common';
+import DashboardsRequest from '../../../requests/DashboardsRequest';
 
 type VisualizationConfigType = {
   value: string;
@@ -24,7 +26,7 @@ const visualizationConfigs: VisualizationConfigType[] = [
   },
   {
     label: 'Bar chart',
-    type: 'bar',
+    type: 'column',
     value: 'bar',
   },
   {
@@ -75,13 +77,44 @@ const VisualizationDisplay = ({ queryValues }: Props) => {
       })),
     [queryValues],
   );
+  const addVisualizationToQuery = async (
+    queryId: string,
+    updateQuery: Partial<QueryType>,
+  ) => {
+    const request = new DashboardsRequest();
+    await request.updateQuery(queryId, updateQuery);
+  };
 
-  const addVisualizationHandler = (visualizationValue: string) => {
-    const newVisualization = visualizationConfigs.find(
+  const getQuery = async (queryId: string) => {
+    const request = new DashboardsRequest();
+    return await request.getQuery(queryId);
+  };
+
+  const addVisualizationHandler = async (visualizationValue: string) => {
+    const searchedVisualization = visualizationConfigs.find(
       (v) => v.value === visualizationValue,
     );
-    if (!newVisualization) return;
-    setVisualizationsActive([newVisualization, ...visualizationsActive]);
+    if (!searchedVisualization) return;
+    const newVisualization: VisualizationType = {
+      id: 1,
+      name: 'Chart',
+      type: 'chart',
+      options: {
+        globalSeriesType: searchedVisualization.type,
+        columnMapping: {
+          time: 'x',
+          number: 'y',
+        },
+        showLegend: true,
+      },
+    };
+    setVisualizationsActive([searchedVisualization, ...visualizationsActive]);
+    const query = await getQuery('2');
+    const updateQuery = {
+      ...query,
+      visualizations: [...query.visualizations, newVisualization],
+    };
+    await addVisualizationToQuery('2', updateQuery);
   };
 
   const renderVisualization = (type: string) => {
@@ -101,7 +134,7 @@ const VisualizationDisplay = ({ queryValues }: Props) => {
             yAxisKeys={['size']}
           />
         );
-      case 'bar':
+      case 'column':
         return (
           <VisualizationBarChart
             data={queryValues}
