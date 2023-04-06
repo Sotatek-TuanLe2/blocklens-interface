@@ -117,7 +117,7 @@ const Routes: FC<RouteComponentProps> = () => {
           path={'/dashboard/:authorId/:dashboardId'}
           component={DashboardDetailPage}
         />
-        <PrivateRoute path={'/queries/:queryId'} component={QueriesPage} />
+        <PrivateRoute path={'/queries/:queryId?'} component={QueriesPage} />
         <Route path={'/contact-us'} component={ContactUs} />
         <PrivateRoute path={'/'} component={HomePage} />
       </Switch>

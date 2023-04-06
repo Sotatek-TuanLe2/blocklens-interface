@@ -1,14 +1,14 @@
 import { Flex, Text, Textarea } from '@chakra-ui/react';
-import React, { Dispatch, SetStateAction, MouseEvent } from 'react';
+import { debounce } from 'lodash';
+import React, { Dispatch, MouseEvent, SetStateAction } from 'react';
 import { AppButton, AppField } from 'src/components';
 import AppAccordion from 'src/components/AppAccordion';
+import { ILayout } from 'src/pages/DashboardDetailPage';
+import rf from 'src/requests/RequestFactory';
+import 'src/styles/components/BaseModal.scss';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import BaseModal from './BaseModal';
-import { ILayout } from 'src/pages/DashboardDetailPage';
-import { debounce } from 'lodash';
-import rf from 'src/requests/RequestFactory';
-import 'src/styles/components/BaseModal.scss';
 
 interface IModalAddTextWidget {
   open: boolean;
@@ -28,6 +28,7 @@ interface IMarkdown {
 }
 
 const linkDune = 'https://dune.com';
+const randomImage = 'https://unsplash.it/600/400';
 
 const MarkdownSupport: IMarkdown[] = [
   { title: 'Bold', mark: <b>**text**</b> },
@@ -39,7 +40,7 @@ const MarkdownSupport: IMarkdown[] = [
     title: 'Link',
     mark: (
       <>
-        [Link] <a href={linkDune}>{linkDune}</a>
+        [Link]<a href={linkDune}>({linkDune})</a>
       </>
     ),
   },
@@ -47,7 +48,7 @@ const MarkdownSupport: IMarkdown[] = [
     title: 'Image or GIF',
     mark: (
       <>
-        ![image] <a>(https://cutt.ly/1AKJVWx)</a>
+        ![image]<a href={randomImage}>({randomImage})</a>
       </>
     ),
   },

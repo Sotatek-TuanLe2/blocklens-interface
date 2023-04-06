@@ -38,6 +38,63 @@ export type TableAttributeType = {
   id: string;
 };
 
+export type VisualizationOptionType = {
+  columnMapping: Record<string, 'x' | 'y'>;
+  globalSeriesType: string;
+};
+
+export type ResultDataConfigsType = {
+  columnMapping: {
+    [key: string]: 'x' | 'y';
+  };
+};
+
+export type ChartOptionConfigsType = {
+  name: string;
+  showLegend: boolean;
+  showDataLabels: boolean;
+  series: {
+    percentValues: boolean;
+  };
+};
+
+export type XAxisConfigsType = {
+  title: string;
+  sortX: boolean;
+  reverseX: boolean;
+  tickFormat: string;
+};
+
+export type YAxisConfigsType = {
+  title: string;
+  tickFormat: string;
+  labelFormat: string;
+};
+
+export type ChartType = {
+  globalSeriesType: string;
+};
+
+type VisualizationOptionsType = ChartType &
+  ResultDataConfigsType &
+  ChartOptionConfigsType &
+  XAxisConfigsType &
+  YAxisConfigsType;
+
+export type VisualizationType = {
+  // created_at: Date;
+  id: number;
+  name: string;
+  options: Partial<VisualizationOptionsType>;
+  type: string;
+};
+
+export type QueryType = {
+  name: string;
+  query: string;
+  visualizations: VisualizationType[];
+};
+
 // export const randomColor = Math.floor(Math.random() * 16777215).toString(16);
 export const randomColor = '#8884d8';
 
