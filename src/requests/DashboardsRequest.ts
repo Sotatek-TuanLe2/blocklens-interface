@@ -1,5 +1,6 @@
 import { Layout } from 'react-grid-layout';
 import BaseRequest from './BaseRequest';
+import { QueryType } from '../utils/common';
 
 export interface DashboardsParams {
   order?: string;
@@ -54,6 +55,21 @@ export default class DashboardsRequest extends BaseRequest {
   getQueriesValues() {
     const url = 'https://run.mocky.io/v3/c2d9b9cf-afd4-4aad-ac74-7c770669525f';
     return this.get(url);
+  }
+
+  createNewQuery(query: QueryType) {
+    const url = 'https://642cf0d966a20ec9ce915e71.mockapi.io/queries/queries';
+    return this.post(url, query);
+  }
+
+  getQuery(queryId: string) {
+    const url = `https://642cf0d966a20ec9ce915e71.mockapi.io/queries/queries/${queryId}`;
+    return this.get(url);
+  }
+
+  updateQuery(queryId: string, query: Partial<QueryType>) {
+    const url = `https://642cf0d966a20ec9ce915e71.mockapi.io/queries/queries/${queryId}`;
+    return this.put(url, query);
   }
 
   getPopularDashboardTags() {
