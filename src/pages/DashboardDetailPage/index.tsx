@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Key } from 'react';
 import { Avatar, Badge, Box, Flex } from '@chakra-ui/react';
 import { useParams } from 'react-router-dom';
 import { ActiveStarIcon, PenIcon, StarIcon } from 'src/assets/icons';
@@ -18,14 +18,32 @@ import ModalAddVisualization from 'src/modals/ModalAddVisualization';
 import ModalEditItemDashBoard from 'src/modals/ModalEditItemDashBoard';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
+import { UserInterface } from 'src/utils/utils-user';
 
 interface ParamTypes {
   authorId: string;
   dashboardId: string;
 }
+interface IGroupEditButton {
+  setOpenModalSetting: React.Dispatch<React.SetStateAction<boolean>>;
+  setOpenModalAddTextWidget: React.Dispatch<React.SetStateAction<boolean>>;
+  setOpenModalAddVisualization: React.Dispatch<React.SetStateAction<boolean>>;
+  setTypeModalTextWidget: React.Dispatch<React.SetStateAction<string>>;
+}
+
+interface IButtonModalFork {
+  openModalFork: boolean;
+  setOpenModalFork: React.Dispatch<React.SetStateAction<boolean>>;
+  authorId: string;
+}
 
 export interface ILayout extends Layout {
+  i: string;
   id: number;
+}
+export enum TYPE_MODAL {
+  ADD = 'add',
+  EDIT = 'edit',
 }
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
@@ -36,7 +54,6 @@ const DashboardDetailPage: React.FC = () => {
   const { authorId, dashboardId } = useParams<ParamTypes>();
   const [dataLayouts, setDataLayouts] = useState<ILayout[]>([]);
   const [selectedItem, setSelectedItem] = useState<ILayout>(Object);
-  const [markdownText, setMarkdownText] = useState<string>(``);
   const [typeModalTextWidget, setTypeModalTextWidget] = useState<string>(``);
   const [openModalAddVisualization, setOpenModalAddVisualization] =
     useState<boolean>(false);
@@ -44,127 +61,34 @@ const DashboardDetailPage: React.FC = () => {
   const [openModalSetting, setOpenModalSetting] = useState<boolean>(false);
   const [openModalEdit, setOpenModalEdit] = useState<boolean>(false);
   const [editMode, setEditMode] = useState<boolean>(false);
-  const [reload, setReload] = useState<boolean>(false);
 
   const [openModalAddTextWidget, setOpenModalAddTextWidget] =
     useState<boolean>(false);
   const { user } = useUser();
 
   const userName = `${user?.getFirstName()}` + `${user?.getLastName()}`;
+  const fetchLayoutData = async () => {
+    try {
+      const res = await rf.getRequest('DashboardsRequest').getDashboardItem();
+      setDataLayouts(res);
+    } catch (error) {
+      toastError({
+        message: getErrorMessage(error),
+      });
+    }
+  };
 
   useEffect(() => {
-    (async () => {
-      try {
-        const res = await rf.getRequest('DashboardsRequest').getDashboardItem();
-        setDataLayouts(res);
-      } catch (error) {
-        toastError({
-          message: getErrorMessage(error),
-        });
-      }
-    })();
-  }, [reload]);
-  console.log(dataLayouts);
-
-  const GroupEditButton = () => {
-    const TitleEditName = [
-      { title: 'Settings', setModal: setOpenModalSetting },
-      { title: 'Add text widget', setModal: setOpenModalAddTextWidget },
-      { title: 'Add visualization', setModal: setOpenModalAddVisualization },
-    ];
-    return (
-      <>
-        {TitleEditName.map((item, index) => (
-          <AppButton
-            key={index}
-            size={'sm'}
-            bg="#e1e1f9"
-            color="#1e1870"
-            onClick={() => {
-              if (item.title === 'Add text widget') {
-                setTypeModalTextWidget('add');
-              }
-              item.setModal(true);
-            }}
-          >
-            {item.title}
-          </AppButton>
-        ))}
-      </>
-    );
-  };
-
-  const ButtonModalFork = () => {
-    return (
-      <>
-        <AppButton
-          size={'sm'}
-          bg="#e1e1f9"
-          color="#1e1870"
-          onClick={() => setOpenModalFork(true)}
-        >
-          Fork
-        </AppButton>
-        <ModalForkDashBoardDetails
-          authorId={authorId}
-          open={openModalFork}
-          onClose={() => setOpenModalFork(false)}
-        />
-      </>
-    );
-  };
-
-  const ButtonVoteStar = () => {
-    const [voteStar, setVoteStar] = useState<boolean>(false);
-    const [totalVote, setTotalVote] = useState<number>(2);
-
-    return (
-      <AppButton
-        onClick={() => {
-          setTotalVote(!voteStar ? totalVote + 1 : totalVote - 1);
-          setVoteStar(!voteStar);
-        }}
-        size={'sm'}
-        bg="#e1e1f9"
-        color="#1e1870"
-        rightIcon={!voteStar ? <StarIcon /> : <ActiveStarIcon />}
-        w={'60px'}
-      >
-        {totalVote}
-      </AppButton>
-    );
-  };
-
-  const ButtonShare = () => {
-    const [openModalShare, setOpenModalShare] = useState<boolean>(false);
-
-    return (
-      <>
-        <AppButton
-          size={'sm'}
-          bg="#e1e1f9"
-          color="#1e1870"
-          onClick={() => setOpenModalShare(true)}
-        >
-          Share
-        </AppButton>
-        <ModalShareDashboardDetails
-          open={openModalShare}
-          onClose={() => setOpenModalShare(false)}
-          user={user}
-        />
-      </>
-    );
-  };
+    fetchLayoutData();
+  }, []);
 
   const ButtonEdit = () => {
     const isAccountsDashboard = user?.getId() === authorId;
     const ButtonDone = () => {
       return (
         <AppButton
+          className="btn-save"
           size={'sm'}
-          bg="#1e1870"
-          color="#fff"
           onClick={() => setEditMode(false)}
         >
           Done
@@ -174,9 +98,8 @@ const DashboardDetailPage: React.FC = () => {
     const ButtonEditChildren = () => {
       return (
         <AppButton
+          className="btn-cancel"
           size={'sm'}
-          bg="#e1e1f9"
-          color="#1e1870"
           onClick={() => setEditMode(true)}
         >
           Edit
@@ -187,11 +110,22 @@ const DashboardDetailPage: React.FC = () => {
     return (
       <Flex gap={'10px'}>
         {editMode ? (
-          <GroupEditButton />
+          <GroupEditButton
+            setOpenModalSetting={setOpenModalSetting}
+            setOpenModalAddTextWidget={setOpenModalAddTextWidget}
+            setOpenModalAddVisualization={setOpenModalAddVisualization}
+            setTypeModalTextWidget={setTypeModalTextWidget}
+          />
         ) : (
           <>
             <ButtonVoteStar />
-            {isAccountsDashboard ? <ButtonModalFork /> : null}
+            {isAccountsDashboard ? (
+              <ButtonModalFork
+                openModalFork={openModalFork}
+                setOpenModalFork={setOpenModalFork}
+                authorId={authorId}
+              />
+            ) : null}
 
             <ButtonShare />
           </>
@@ -218,12 +152,7 @@ const DashboardDetailPage: React.FC = () => {
             </div>
             <Flex gap={1} pt={'10px'}>
               {hashTag.map((item) => (
-                <Badge
-                  bg={'gray.200'}
-                  color={'gray.600'}
-                  size={'sm'}
-                  key={item}
-                >
+                <Badge size={'sm'} key={item}>
                   #{item}
                 </Badge>
               ))}
@@ -242,24 +171,21 @@ const DashboardDetailPage: React.FC = () => {
         isResizable={editMode}
       >
         {dataLayouts.map((item) => (
-          <Box border={'1px dashed #808080'} key={item.i} position={'relative'}>
+          <div className="box-layout" key={item.i}>
             <ReactMarkdown>{item.i}</ReactMarkdown>
             {editMode ? (
               <Box
+                className="btn-edit"
                 onClick={() => {
                   setOpenModalAddTextWidget(true);
-                  setTypeModalTextWidget('edit');
+                  setTypeModalTextWidget(TYPE_MODAL.EDIT);
                   setSelectedItem(item);
                 }}
-                position={'absolute'}
-                cursor="pointer"
-                top={1}
-                right={1}
               >
                 <PenIcon />
               </Box>
             ) : null}
-          </Box>
+          </div>
         ))}
       </ResponsiveGridLayout>
       <ModalSettingDashboardDetails
@@ -277,9 +203,7 @@ const DashboardDetailPage: React.FC = () => {
         type={typeModalTextWidget}
         open={openModalAddTextWidget}
         onClose={() => setOpenModalAddTextWidget(false)}
-        markdownText={markdownText}
-        setMarkdownText={setMarkdownText}
-        setReload={setReload}
+        onReload={fetchLayoutData}
       />
       <ModalEditItemDashBoard
         open={openModalEdit}
@@ -296,3 +220,96 @@ const DashboardDetailPage: React.FC = () => {
 };
 
 export default DashboardDetailPage;
+
+export const GroupEditButton = ({
+  setOpenModalSetting,
+  setOpenModalAddTextWidget,
+  setOpenModalAddVisualization,
+  setTypeModalTextWidget,
+}: IGroupEditButton) => {
+  const TitleEditName = [
+    { title: 'Settings', setModal: setOpenModalSetting },
+    { title: 'Add text widget', setModal: setOpenModalAddTextWidget },
+    { title: 'Add visualization', setModal: setOpenModalAddVisualization },
+  ];
+  return (
+    <>
+      {TitleEditName.map((item, index) => (
+        <AppButton
+          className="btn-cancel"
+          key={index}
+          size={'sm'}
+          onClick={() => {
+            if (item.title === 'Add text widget') {
+              setTypeModalTextWidget(TYPE_MODAL.ADD);
+            }
+            item.setModal(true);
+          }}
+        >
+          {item.title}
+        </AppButton>
+      ))}
+    </>
+  );
+};
+export const ButtonModalFork = ({
+  openModalFork,
+  setOpenModalFork,
+  authorId,
+}: IButtonModalFork) => {
+  return (
+    <>
+      <AppButton
+        className="btn-cancel"
+        size={'sm'}
+        onClick={() => setOpenModalFork(true)}
+      >
+        Fork
+      </AppButton>
+      <ModalForkDashBoardDetails
+        authorId={authorId}
+        open={openModalFork}
+        onClose={() => setOpenModalFork(false)}
+      />
+    </>
+  );
+};
+
+export const ButtonVoteStar = () => {
+  const [voteStar, setVoteStar] = useState<boolean>(false);
+  const [totalVote, setTotalVote] = useState<number>(2);
+
+  return (
+    <AppButton
+      onClick={() => {
+        setTotalVote(!voteStar ? totalVote + 1 : totalVote - 1);
+        setVoteStar(!voteStar);
+      }}
+      className="btn-cancel"
+      size={'sm'}
+      rightIcon={!voteStar ? <StarIcon /> : <ActiveStarIcon />}
+      w={'60px'}
+    >
+      {totalVote}
+    </AppButton>
+  );
+};
+export const ButtonShare = () => {
+  const [openModalShare, setOpenModalShare] = useState<boolean>(false);
+
+  return (
+    <>
+      <AppButton
+        className="btn-cancel"
+        size={'sm'}
+        onClick={() => setOpenModalShare(true)}
+      >
+        Share
+      </AppButton>
+      <ModalShareDashboardDetails
+        open={openModalShare}
+        onClose={() => setOpenModalShare(false)}
+      />
+    </>
+  );
+};
