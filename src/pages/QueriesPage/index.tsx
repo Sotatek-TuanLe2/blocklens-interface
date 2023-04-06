@@ -41,7 +41,8 @@ const QueriesPage = () => {
           },
         ],
       };
-      await dashboardsRequest.createNewQuery(newQuery);
+      const infoQuery = await dashboardsRequest.createNewQuery(newQuery);
+      setInfoQuery(infoQuery);
     } catch (err) {
       getErrorMessage(err);
     }
