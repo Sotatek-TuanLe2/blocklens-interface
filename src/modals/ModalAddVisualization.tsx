@@ -17,13 +17,11 @@ interface IModalAddVisualization {
   setOpenModalFork: React.Dispatch<React.SetStateAction<boolean>>;
   dataLayouts: ILayout[];
   setDataLayouts: React.Dispatch<React.SetStateAction<ILayout[]>>;
+  onReload: () => Promise<void>;
 }
 interface IButtonAdd {
   userName: string;
   item: QueryType;
-  add: boolean;
-  setAdd: React.Dispatch<React.SetStateAction<boolean>>;
-
   dataLayouts: ILayout[];
   handleRemoveVisualization: (
     item: any,
@@ -43,6 +41,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   setOpenModalFork,
   dataLayouts,
   setDataLayouts,
+  onReload,
 }) => {
   const [add, setAdd] = useState<boolean>(false);
   const [myQuery, setMyQuery] = useState<boolean>(false);
@@ -69,17 +68,23 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   ) => {
     try {
       const res = await rf.getRequest('DashboardsRequest').addDashboardItem({
-        id: dataLayouts.length + 1,
+        id: (dataLayouts.length + 1).toString(),
         i: (dataLayouts.length + 1).toString(),
         x: 0,
         y: 0,
         w: 6,
         h: 2,
-        content: [{ ...data, visualizations: visualizations }],
+        content: [
+          {
+            ...data,
+            visualizations: visualizations,
+            parentId: (dataLayouts.length + 1).toString(),
+          },
+        ],
       });
       if (res) {
         setDataLayouts([...dataLayouts, res]);
-        onClose();
+        // onClose();
       }
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
@@ -94,11 +99,13 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
       e.preventDefault();
       const res = await rf
         .getRequest('DashboardsRequest')
-        .removeDashboardItem(item.id);
+        .removeDashboardItem(item[0].content[0].parentId);
       if (res) {
         setDataLayouts([...dataLayouts]);
+        onReload();
+        fetchVisualization();
       }
-      onClose();
+      // onClose();
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
     }
@@ -143,8 +150,6 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
                   </>
                 ) : (
                   <ButtonAdd
-                    add={add}
-                    setAdd={setAdd}
                     userName={userName}
                     item={item}
                     dataLayouts={dataLayouts}
@@ -203,14 +208,19 @@ const ButtonAdd: React.FC<IButtonAdd> = ({
   item,
   handleSaveVisualization,
   handleRemoveVisualization,
-  add,
-  setAdd,
   dataLayouts,
   i,
 }) => {
-  // const checkAdded = dataLayouts
-  //   .map((i: any) => i.content[0]?.id)
-  //   .includes(item.id);
+  const checkIdItem = dataLayouts
+    .map((i: any) => i.content[0]?.id)
+    .includes(item.id);
+
+  const checkAdded = checkIdItem
+    ? dataLayouts
+        .map((item) => item.content[0]?.visualizations.id)
+        .includes(i.id)
+    : null;
+
   return (
     <>
       <Flex alignItems={'center'} columnGap={'10px'} p={'10px'}>
@@ -225,13 +235,13 @@ const ButtonAdd: React.FC<IButtonAdd> = ({
       </Flex>
       <Text
         onClick={(e: any) => {
-          add
-            ? handleRemoveVisualization(item, e)
+          checkAdded
+            ? handleRemoveVisualization(dataLayouts, e)
             : handleSaveVisualization(item, i);
         }}
-        className={add ? 'btn-added-query' : 'btn-add-query'}
+        className={checkAdded ? 'btn-added-query' : 'btn-add-query'}
       >
-        {add ? 'Added' : 'Add'}
+        {checkAdded ? 'Added' : 'Add'}
       </Text>
     </>
   );

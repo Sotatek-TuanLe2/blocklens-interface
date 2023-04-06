@@ -87,6 +87,7 @@ export type QueryType = {
   name: string;
   query: string;
   visualizations: VisualizationType[];
+  id: string;
 };
 
 export type QueryTypeSingle = {
