@@ -15,12 +15,14 @@ interface IAppTabs {
   tabs: ITabs[];
   onChange?: (value: string) => void;
   rightElement?: () => ReactNode;
+  onCloseTab?: (id: string) => void;
 }
 export interface ITabs {
   name: string;
   content: ReactNode;
   id: string;
   icon?: ReactNode;
+  closeable?: boolean;
 }
 
 const AppTabs: FC<IAppTabs> = ({
@@ -28,6 +30,7 @@ const AppTabs: FC<IAppTabs> = ({
   tabs,
   onChange,
   rightElement,
+  onCloseTab,
 }) => {
   console.log('tabs', tabs);
   return (
@@ -55,6 +58,19 @@ const AppTabs: FC<IAppTabs> = ({
                     {tab.icon && <span>{tab.icon}</span>}
                     <span>{tab.name}</span>
                   </span>
+                  {tab.closeable && (
+                    <Box
+                      as={'span'}
+                      ml={2}
+                      cursor={'pointer'}
+                      onClick={() => {
+                        if (!onCloseTab) return;
+                        onCloseTab(tab.id);
+                      }}
+                    >
+                      x
+                    </Box>
+                  )}
                 </Tab>
               );
             })}
