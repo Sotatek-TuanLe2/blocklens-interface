@@ -217,7 +217,7 @@ const ButtonAdd: React.FC<IButtonAdd> = ({
 
   const checkAdded = checkIdItem
     ? dataLayouts
-        .map((item) => item.content[0]?.visualizations.id)
+        .map((item: any) => item.content[0]?.visualizations.id)
         .includes(i.id)
     : null;
 

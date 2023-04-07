@@ -144,7 +144,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
   };
 
   const handleRemoveItem = async (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    e: React.MouseEvent<HTMLButtonElement, globalThis.MouseEvent>,
   ) => {
     try {
       e.preventDefault();
