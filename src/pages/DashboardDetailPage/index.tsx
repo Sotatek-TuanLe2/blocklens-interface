@@ -2,8 +2,8 @@ import { Avatar, Badge, Box, Flex } from '@chakra-ui/react';
 import { useEffect, useMemo, useState } from 'react';
 import { Layout, Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
-import ReactMarkdown from 'react-markdown';
 import 'react-resizable/css/styles.css';
+import ReactMarkdown from 'react-markdown';
 import { useParams } from 'react-router-dom';
 import { ActiveStarIcon, PenIcon, StarIcon } from 'src/assets/icons';
 import { AppButton } from 'src/components';
@@ -26,6 +26,8 @@ import { QueryTypeSingle } from 'src/utils/common';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { objectKeys } from 'src/utils/utils-network';
 import { toastError } from 'src/utils/utils-notify';
+import { debounce } from 'lodash';
+import { async } from 'q';
 
 interface ParamTypes {
   authorId: string;
@@ -56,6 +58,8 @@ const DashboardDetailPage: React.FC = () => {
   const { authorId, dashboardId } = useParams<ParamTypes>();
   const { user } = useUser();
 
+  const [reSize, setReSize] = useState<any>();
+
   const [editMode, setEditMode] = useState<boolean>(false);
   const [dataLayouts, setDataLayouts] = useState<ILayout[]>([]);
   const [queryValues, setQueryValues] = useState<unknown[]>([]);
@@ -75,7 +79,18 @@ const DashboardDetailPage: React.FC = () => {
   const fetchLayoutData = async () => {
     try {
       const res = await rf.getRequest('DashboardsRequest').getDashboardItem();
-      setDataLayouts(res);
+      const layouts = res.map((item: ILayout) => {
+        return {
+          x: item.x,
+          y: item.y,
+          w: item.w,
+          h: item.h,
+          i: item.i,
+          id: item.id,
+          content: item.content,
+        };
+      });
+      setDataLayouts(layouts);
     } catch (error) {
       toastError({
         message: getErrorMessage(error),
@@ -216,6 +231,52 @@ const DashboardDetailPage: React.FC = () => {
     );
   };
 
+  const updateItem = async (item) => {
+    console.log(item, 'item');
+    try {
+      const res = await rf
+        .getRequest('DashboardsRequest')
+        .updateDashboardItem(item);
+      if (res) {
+        setDataLayouts((prevData) => {
+          const updateDataIndex = prevData.findIndex(
+            (prevItem) => prevItem.id === item.i,
+          );
+          if (updateDataIndex === -1) {
+            return [...prevData, res];
+          } else {
+            const newData = [...prevData];
+            newData.splice(updateDataIndex, 1, res);
+            return newData;
+          }
+        });
+      }
+    } catch (e) {
+      toastError({ message: getErrorMessage(e) });
+    }
+  };
+
+  const onLayoutChange = (layout: any) => {
+    setReSize(layout);
+  };
+
+  const stopDrag = () => {
+    const promises = reSize.map((item: any) => {
+      const selectedItems = dataLayouts.find(
+        (prevItem) => prevItem.id === item.i,
+      );
+      return updateItem({ ...selectedItems, ...item });
+    });
+    Promise.all(promises)
+      .then((responses) => {
+        console.log(responses);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+  const onLayoutChangeDebounced = debounce(stopDrag, 200);
+
   return (
     <div className="main-content-dashboard-details">
       <header className="main-header-dashboard-details">
@@ -237,16 +298,22 @@ const DashboardDetailPage: React.FC = () => {
         {_renderButtons()}
       </header>
       <ResponsiveGridLayout
+        onLayoutChange={onLayoutChange}
         className="main-grid-layout"
         layouts={{ lg: dataLayouts }}
         breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
         cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
         isDraggable={editMode}
         isResizable={editMode}
+        onDragStop={onLayoutChangeDebounced}
       >
         {dataLayouts.map((item) => (
-          <div className="box-layout" key={item.i}>
-            {item.content.toString().length > 0 ? (
+          <div
+            className="box-layout"
+            key={item.i}
+            onClick={() => setSelectedItem(item)}
+          >
+            {item.content.length > 0 ? (
               <>
                 {renderVisualization(
                   checkTypeVisualization(item.content).toString(),
@@ -261,7 +328,7 @@ const DashboardDetailPage: React.FC = () => {
                 onClick={() => {
                   setTypeModalTextWidget(TYPE_MODAL.EDIT);
                   setSelectedItem(item);
-                  item.content.toString().length > 0
+                  item.content.length > 0
                     ? setOpenModalEdit(true)
                     : setOpenModalAddTextWidget(true);
                 }}

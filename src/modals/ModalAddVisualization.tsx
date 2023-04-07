@@ -91,7 +91,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   };
 
   const handleRemoveVisualization = async (
-    item: any,
+    item: ILayout,
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     try {

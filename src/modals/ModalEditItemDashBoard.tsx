@@ -25,7 +25,6 @@ const ModalEditItemDashBoard: React.FC<IModalEditItemDashBoard> = ({
   setDataLayouts,
   onReload,
 }) => {
-  console.log(selectedItem);
   const handleRemoveItem = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {

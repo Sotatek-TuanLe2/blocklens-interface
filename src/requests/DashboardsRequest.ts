@@ -96,19 +96,19 @@ export default class DashboardsRequest extends BaseRequest {
     return this.get(url);
   }
   getDashboardItem() {
-    const url = `https://642bcf7fd7081590f92a4f26.mockapi.io/blocklens/layouts`;
+    const url = `https://6071c80750aaea0017285222.mockapi.io/layouts`;
     return this.get(url);
   }
   addDashboardItem(data: ILayout) {
-    const url = `https://642bcf7fd7081590f92a4f26.mockapi.io/blocklens/layouts`;
+    const url = `https://6071c80750aaea0017285222.mockapi.io/layouts`;
     return this.post(url, data);
   }
   updateDashboardItem(data: ILayout) {
-    const url = `https://642bcf7fd7081590f92a4f26.mockapi.io/blocklens/layouts/${data.id}`;
+    const url = `https://6071c80750aaea0017285222.mockapi.io/layouts/${data.id}`;
     return this.put(url, data);
   }
   removeDashboardItem(id: ILayout) {
-    const url = `https://642bcf7fd7081590f92a4f26.mockapi.io/blocklens/layouts/${id}`;
+    const url = `https://6071c80750aaea0017285222.mockapi.io/layouts/${id}`;
     return this.delete(url, id);
   }
 }
