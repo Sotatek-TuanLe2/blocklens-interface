@@ -102,7 +102,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
       const res = await rf.getRequest('DashboardsRequest').addDashboardItem({
         id: dataLayouts.length + 1,
         i: markdownText,
-        x: 0,
+        x: dataLayouts.length % 2 === 0 ? 0 : 6,
         y: 0,
         w: 6,
         h: 2,
