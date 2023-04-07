@@ -144,8 +144,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
   };
 
   const handleRemoveItem = async (
-    id: number,
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    e: React.MouseEvent<HTMLButtonElement, globalThis.MouseEvent>,
   ) => {
     try {
       e.preventDefault();
@@ -213,7 +212,9 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
           <Flex gap={'10px'}>
             {type === TYPE_MODAL.EDIT && (
               <AppButton
-                onClick={(e: never) => handleRemoveItem(selectedItem.id, e)}
+                onClick={(
+                  e: React.MouseEvent<HTMLButtonElement, globalThis.MouseEvent>,
+                ) => handleRemoveItem(e)}
                 size="sm"
                 bg="#e1e1f9"
                 color="#1e1870"

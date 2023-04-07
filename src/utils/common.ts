@@ -37,12 +37,6 @@ export type TableAttributeType = {
   full_name: string;
   id: string;
 };
-
-export type VisualizationOptionType = {
-  columnMapping: Record<string, 'x' | 'y'>;
-  globalSeriesType: string;
-};
-
 export type ResultDataConfigsType = {
   columnMapping: {
     [key: string]: 'x' | 'y';
@@ -93,6 +87,14 @@ export type QueryType = {
   name: string;
   query: string;
   visualizations: VisualizationType[];
+  id: string;
+};
+
+export type QueryTypeSingle = {
+  name: string;
+  query: string;
+  visualizations: VisualizationType;
+  id: number;
 };
 
 // export const randomColor = Math.floor(Math.random() * 16777215).toString(16);
