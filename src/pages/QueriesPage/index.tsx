@@ -30,6 +30,7 @@ const QueriesPage = () => {
     try {
       const dashboardsRequest = new DashboardsRequest();
       const newQuery: QueryType = {
+        id: Math.floor(Math.random() * 10000000).toString(),
         name: 'Query1',
         query: 'select * from arbitrum.blocks limit 10',
         visualizations: [
