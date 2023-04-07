@@ -211,8 +211,8 @@ const DashboardDetailPage: React.FC = () => {
       i.visualizations.type === 'table'
         ? i.visualizations.type
         : i.visualizations.type === 'chart'
-          ? i.visualizations.options.globalSeriesType
-          : null,
+        ? i.visualizations.options.globalSeriesType
+        : null,
     );
   };
 
@@ -279,7 +279,9 @@ const DashboardDetailPage: React.FC = () => {
           height={'calc(100vh - 118px);'}
           justifyContent={'center'}
           alignItems={'center'}
-        >This dashboard is empty.</Flex>
+        >
+          This dashboard is empty.
+        </Flex>
       )}
       <ModalSettingDashboardDetails
         url={dashboardId}

@@ -29,9 +29,10 @@ const QueriesPage = () => {
   const createNewQuery = async (query: string) => {
     try {
       const dashboardsRequest = new DashboardsRequest();
+      const randomId = Math.floor(Math.random() * 10000000).toString();
       const newQuery: QueryType = {
-        id: Math.floor(Math.random() * 10000000).toString(),
-        name: 'Query1',
+        id: randomId,
+        name: `Query-${randomId}`,
         query: 'select * from arbitrum.blocks limit 10',
         visualizations: [
           {
