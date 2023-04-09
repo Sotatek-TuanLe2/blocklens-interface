@@ -15,6 +15,7 @@ interface IModalAddVisualization {
   onClose: () => void;
   userName: string;
   setOpenModalFork: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsUpdate: React.Dispatch<React.SetStateAction<boolean>>;
   dataLayouts: ILayout[];
   setDataLayouts: React.Dispatch<React.SetStateAction<ILayout[]>>;
   onReload: () => Promise<void>;
@@ -42,6 +43,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   dataLayouts,
   setDataLayouts,
   onReload,
+  setIsUpdate,
 }) => {
   const [add, setAdd] = useState<boolean>(false);
   const [myQuery, setMyQuery] = useState<boolean>(false);
@@ -67,12 +69,15 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
     visualizations: VisualizationType,
   ) => {
     try {
-      const res = await rf.getRequest('DashboardsRequest').addDashboardItem({
-        i: (dataLayouts.length + 1).toString(),
-        x: dataLayouts.length % 2 === 0 ? 0 : 6,
-        y: 0,
-        w: 6,
-        h: 2,
+      setIsUpdate(false);
+      const payload = {
+        meta: {
+          i: (dataLayouts.length + 1).toString(),
+          x: dataLayouts.length % 2 === 0 ? 0 : 6,
+          y: 0,
+          w: 6,
+          h: 2,
+        },
         content: [
           {
             ...data,
@@ -80,10 +85,12 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
             parentId: (dataLayouts.length + 1).toString(),
           },
         ],
-      });
+      };
+      const res = await rf
+        .getRequest('DashboardsRequest')
+        .addDashboardItem(payload);
       if (res) {
-        setDataLayouts([...dataLayouts, res]);
-        // onClose();
+        onReload();
       }
     } catch (e) {
       toastError({ message: getErrorMessage(e) });

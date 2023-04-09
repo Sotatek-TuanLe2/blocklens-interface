@@ -44,6 +44,7 @@ export interface ILayout extends Layout {
   i: string;
   id: number;
   content: [];
+  meta: any;
 }
 export enum TYPE_MODAL {
   ADD = 'add',
@@ -57,8 +58,8 @@ const hashTag: string[] = ['zkSync', 'bridge', 'l2'];
 const DashboardDetailPage: React.FC = () => {
   const { authorId, dashboardId } = useParams<ParamTypes>();
   const { user } = useUser();
-
-  const [reSize, setReSize] = useState<any>();
+  const [isInitialMount, setIsInitialMount] = useState(true);
+  const [isUpdate, setIsUpdate] = useState<boolean>(true);
 
   const [editMode, setEditMode] = useState<boolean>(false);
   const [dataLayouts, setDataLayouts] = useState<ILayout[]>([]);
@@ -79,13 +80,15 @@ const DashboardDetailPage: React.FC = () => {
   const fetchLayoutData = async () => {
     try {
       const res = await rf.getRequest('DashboardsRequest').getDashboardItem();
+
       const layouts = res.map((item: ILayout) => {
+        const { meta } = item;
         return {
-          x: item.x,
-          y: item.y,
-          w: item.w,
-          h: item.h,
-          i: item.i,
+          x: meta.x,
+          y: meta.y,
+          w: meta.w,
+          h: meta.h,
+          i: meta.i,
           id: item.id,
           content: item.content,
         };
@@ -231,51 +234,61 @@ const DashboardDetailPage: React.FC = () => {
     );
   };
 
-  const updateItem = async (item) => {
-    console.log(item, 'item');
-    try {
-      const res = await rf
-        .getRequest('DashboardsRequest')
-        .updateDashboardItem(item);
-      if (res) {
-        setDataLayouts((prevData) => {
-          const updateDataIndex = prevData.findIndex(
-            (prevItem) => prevItem.id === item.i,
-          );
-          if (updateDataIndex === -1) {
-            return [...prevData, res];
-          } else {
-            const newData = [...prevData];
-            newData.splice(updateDataIndex, 1, res);
-            return newData;
-          }
-        });
+  async function processItems(ids) {
+    const results = [];
+    for (const id of ids) {
+      const result = await doSomethingAsync(id);
+      results.push(result);
+    }
+    return results;
+  }
+
+  async function doSomethingAsync(id) {
+    return rf.getRequest('DashboardsRequest').removeDashboardItem(id);
+  }
+
+  async function processItems2(newLayout) {
+    const results = [];
+    for (const layout of newLayout) {
+      const result = await addDashboardItem(layout);
+      results.push(result);
+    }
+    return results;
+  }
+
+  async function addDashboardItem(id) {
+    return rf.getRequest('DashboardsRequest').addDashboardItem(id);
+  }
+
+  const updateItem = async (layout) => {
+    const ids = dataLayouts.map((e) => e.id);
+    const newLayout = dataLayouts.map((item, index) => ({
+      id: item.id,
+      content: item.content,
+      meta: layout[index],
+    }));
+
+    const processResults = await processItems(ids);
+    if (processResults.every((result) => !!result.id)) {
+      try {
+        const processResults2 = await processItems2(newLayout);
+        if (processResults2.every((result) => !!result.id)) {
+          fetchLayoutData();
+        }
+      } catch (err) {
+        toastError({ message: getErrorMessage(err) });
       }
-    } catch (e) {
-      toastError({ message: getErrorMessage(e) });
     }
   };
 
-  const onLayoutChange = (layout: any) => {
-    setReSize(layout);
+  const onLayoutChange = (layout: Layout[]) => {
+    if (!isInitialMount && isUpdate) {
+      setIsUpdate(false);
+      updateItem(layout);
+    } else {
+      setIsInitialMount(false);
+    }
   };
-
-  const stopDrag = () => {
-    const promises = reSize.map((item: any) => {
-      const selectedItems = dataLayouts.find(
-        (prevItem) => prevItem.id === item.i,
-      );
-      return updateItem({ ...selectedItems, ...item });
-    });
-    Promise.all(promises)
-      .then((responses) => {
-        console.log(responses);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-  const onLayoutChangeDebounced = debounce(stopDrag, 200);
 
   return (
     <div className="main-content-dashboard-details">
@@ -305,7 +318,6 @@ const DashboardDetailPage: React.FC = () => {
         cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
         isDraggable={editMode}
         isResizable={editMode}
-        onDragStop={onLayoutChangeDebounced}
       >
         {dataLayouts.map((item) => (
           <div
@@ -368,9 +380,13 @@ const DashboardDetailPage: React.FC = () => {
         setDataLayouts={setDataLayouts}
         setOpenModalFork={setOpenModalFork}
         open={openModalAddVisualization}
-        onClose={() => setOpenModalAddVisualization(false)}
+        onClose={() => {
+          setOpenModalAddVisualization(false);
+          setIsUpdate(true);
+        }}
         userName={userName}
         onReload={fetchLayoutData}
+        setIsUpdate={setIsUpdate}
       />
     </div>
   );
