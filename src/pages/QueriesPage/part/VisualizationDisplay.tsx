@@ -1,14 +1,14 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Box, Text } from '@chakra-ui/react';
-import TableSqlValue from '../../../components/Chart/TableSqlValue';
-import VisualizationBarChart from '../../../components/Chart/BarChart';
+import TableSqlValue from '../../../components/Charts/TableSqlValue';
+import VisualizationBarChart from '../../../components/Charts/BarChart';
 import { AppButton, AppSelect2 } from '../../../components';
-import VisualizationAreaChart from '../../../components/Chart/AreaChart';
+import VisualizationAreaChart from '../../../components/Charts/AreaChart';
 import AppTabs from '../../../components/AppTabs';
 import { objectKeys } from '../../../utils/utils-network';
-import VisualizationLineChart from '../../../components/Chart/LineChart';
+import VisualizationLineChart from '../../../components/Charts/LineChart';
 import ChartSettings from '../../../components/SqlEditor/ChartSettings';
-import VisualizationPieChart from '../../../components/Chart/PieChart';
+import VisualizationPieChart from '../../../components/Charts/PieChart';
 import {
   QueryType,
   TYPE_VISUALIZATION,
