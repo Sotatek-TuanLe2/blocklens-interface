@@ -91,13 +91,15 @@ const EditorSidebar = () => {
             Raw tables
           </Text>
         </Box>
-        <Select height={'32px'} maxW={'40%'}>
-          {['All chains', 'Ethereum', 'Polygon'].map((item) => (
-            <option key={item} style={{ backgroundColor: '#000224' }}>
-              {item}
-            </option>
-          ))}
-        </Select>
+        <Box className="select-chains">
+          <Select>
+            {['All chains', 'Ethereum', 'Polygon'].map((item) => (
+              <option key={item} style={{ backgroundColor: '#000224' }}>
+                {item}
+              </option>
+            ))}
+          </Select>
+        </Box>
       </Flex>
     );
   };

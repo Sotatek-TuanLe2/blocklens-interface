@@ -2,13 +2,13 @@ import { Flex, Link, Text } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { ListIcon, SmallSuccessIcon } from 'src/assets/icons';
 import { AppButton, AppInput } from 'src/components';
-import 'src/styles/components/BaseModal.scss';
-import BaseModal from './BaseModal';
-import { toastError } from 'src/utils/utils-notify';
-import rf from 'src/requests/RequestFactory';
-import { getErrorMessage } from 'src/utils/utils-helper';
 import { ILayout } from 'src/pages/DashboardDetailPage';
+import rf from 'src/requests/RequestFactory';
+import 'src/styles/components/BaseModal.scss';
 import { QueryType, VisualizationType } from 'src/utils/common';
+import { getErrorMessage } from 'src/utils/utils-helper';
+import { toastError } from 'src/utils/utils-notify';
+import BaseModal from './BaseModal';
 
 interface IModalAddVisualization {
   open: boolean;
@@ -24,7 +24,7 @@ interface IButtonAdd {
   item: QueryType;
   dataLayouts: ILayout[];
   handleRemoveVisualization: (
-    item: any,
+    item: ILayout[],
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => Promise<void>;
   handleSaveVisualization: (
@@ -44,7 +44,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   onReload,
 }) => {
   const [add, setAdd] = useState<boolean>(false);
-  const [myQuery, setMyQuery] = useState<boolean>(false);
+  const [showMyQueries, setShowMyQueries] = useState<boolean>(false);
   const [dataVisualization, setDataVisualization] = useState<QueryType[]>([]);
 
   const fetchVisualization = async () => {
@@ -67,12 +67,14 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
     visualizations: VisualizationType,
   ) => {
     try {
-      const res = await rf.getRequest('DashboardsRequest').addDashboardItem({
-        i: (dataLayouts.length + 1).toString(),
-        x: dataLayouts.length % 2 === 0 ? 0 : 6,
-        y: 0,
-        w: 6,
-        h: 2,
+      const payload = {
+        meta: {
+          i: (dataLayouts.length + 1).toString(),
+          x: dataLayouts.length % 2 === 0 ? 0 : 6,
+          y: 0,
+          w: 6,
+          h: 2,
+        },
         content: [
           {
             ...data,
@@ -80,10 +82,12 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
             parentId: (dataLayouts.length + 1).toString(),
           },
         ],
-      });
+      };
+      const res = await rf
+        .getRequest('DashboardsRequest')
+        .addDashboardItem(payload);
       if (res) {
-        setDataLayouts([...dataLayouts, res]);
-        // onClose();
+        onReload();
       }
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
@@ -122,7 +126,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
           mt={'10px'}
           size="sm"
           placeholder={
-            myQuery ? "Search everyone's queries" : 'Search your queries'
+            showMyQueries ? "Search everyone's queries" : 'Search your queries'
           }
         />
         <div className="main-queries">
@@ -133,7 +137,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
                 borderBottom={'1px solid white'}
                 key={item.id}
               >
-                {myQuery ? (
+                {showMyQueries ? (
                   <>
                     <Flex alignItems={'center'} columnGap={'10px'} p={'10px'}>
                       <ListIcon />
@@ -167,26 +171,25 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
           mt={10}
           className="group-action-query"
         >
-          <AppButton size="sm" bg="#1e1870" color="#fff" onClick={onClose}>
+          <AppButton className="btn-save" size="sm" onClick={onClose}>
             Done
           </AppButton>
           <AppButton
             size="sm"
-            bg="#e1e1f9"
-            color="#1e1870"
+            className="btn-remove"
             variant={'cancel'}
             onClick={() => setOpenModalFork(true)}
           >
             New dashboard
           </AppButton>
           <AppButton
-            className={myQuery ? 'btn-added-query' : 'btn-add-query'}
+            className={showMyQueries ? 'btn-added-query' : 'btn-add-query'}
             size="sm"
             variant={'cancel'}
-            onClick={() => setMyQuery(!myQuery)}
+            onClick={() => setShowMyQueries(!showMyQueries)}
           >
             Show queries from other users{' '}
-            {myQuery ? (
+            {showMyQueries ? (
               <Text ps={'4px'}>
                 <SmallSuccessIcon />
               </Text>

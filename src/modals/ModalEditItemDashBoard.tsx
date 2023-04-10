@@ -25,7 +25,6 @@ const ModalEditItemDashBoard: React.FC<IModalEditItemDashBoard> = ({
   setDataLayouts,
   onReload,
 }) => {
-  console.log(selectedItem);
   const handleRemoveItem = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
@@ -54,8 +53,7 @@ const ModalEditItemDashBoard: React.FC<IModalEditItemDashBoard> = ({
         <Flex flexWrap={'wrap'} gap={'10px'} className="group-action-query">
           <AppButton
             size="sm"
-            bg="#e1e1f9"
-            color="#1e1870"
+            className="btn-remove"
             variant={'cancel'}
             onClick={(e) => handleRemoveItem(e)}
           >
@@ -63,8 +61,7 @@ const ModalEditItemDashBoard: React.FC<IModalEditItemDashBoard> = ({
           </AppButton>
           <AppButton
             size="sm"
-            bg="#e1e1f9"
-            color="#1e1870"
+            className="btn-remove"
             variant={'cancel'}
             onClick={onClose}
           >

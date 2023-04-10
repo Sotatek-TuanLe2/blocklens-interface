@@ -7,11 +7,11 @@ import 'react-resizable/css/styles.css';
 import { useParams } from 'react-router-dom';
 import { ActiveStarIcon, PenIcon, StarIcon } from 'src/assets/icons';
 import { AppButton } from 'src/components';
-import VisualizationAreaChart from 'src/components/Chart/AreaChart';
-import VisualizationBarChart from 'src/components/Chart/BarChart';
-import VisualizationLineChart from 'src/components/Chart/LineChart';
-import VisualizationPieChart from 'src/components/Chart/PieChart';
-import TableSqlValue from 'src/components/Chart/TableSqlValue';
+import VisualizationAreaChart from 'src/components/Charts/AreaChart';
+import VisualizationBarChart from 'src/components/Charts/BarChart';
+import VisualizationLineChart from 'src/components/Charts/LineChart';
+import VisualizationPieChart from 'src/components/Charts/PieChart';
+import TableSqlValue from 'src/components/Charts/TableSqlValue';
 import useUser from 'src/hooks/useUser';
 import ModalAddTextWidget from 'src/modals/ModalAddTextWidget';
 import ModalAddVisualization from 'src/modals/ModalAddVisualization';
@@ -22,7 +22,7 @@ import ModalShareDashboardDetails from 'src/modals/ModalShareDashboardDetails';
 import DashboardsRequest from 'src/requests/DashboardsRequest';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/pages/DashboardDetailPage.scss';
-import { QueryTypeSingle } from 'src/utils/common';
+import { QueryTypeSingle, TYPE_VISUALIZATION } from 'src/utils/common';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { objectKeys } from 'src/utils/utils-network';
 import { toastError } from 'src/utils/utils-notify';
@@ -42,6 +42,7 @@ export interface ILayout extends Layout {
   i: string;
   id: number;
   content: [];
+  meta: Layout;
 }
 export enum TYPE_MODAL {
   ADD = 'add',
@@ -58,6 +59,7 @@ const DashboardDetailPage: React.FC = () => {
 
   const [editMode, setEditMode] = useState<boolean>(false);
   const [dataLayouts, setDataLayouts] = useState<ILayout[]>([]);
+  const [layoutChange, setLayoutChange] = useState<Layout[]>([]);
   const [queryValues, setQueryValues] = useState<unknown[]>([]);
   const [selectedItem, setSelectedItem] = useState<ILayout>(Object);
   const [typeModalTextWidget, setTypeModalTextWidget] = useState<string>(``);
@@ -72,16 +74,32 @@ const DashboardDetailPage: React.FC = () => {
 
   const userName = `${user?.getFirstName()}` + `${user?.getLastName()}`;
 
-  const fetchLayoutData = async () => {
-    try {
-      const res = await rf.getRequest('DashboardsRequest').getDashboardItem();
-      setDataLayouts(res);
-    } catch (error) {
-      toastError({
-        message: getErrorMessage(error),
-      });
-    }
-  };
+  const fetchLayoutData = useMemo(
+    () => async () => {
+      try {
+        const res = await rf.getRequest('DashboardsRequest').getDashboardItem();
+
+        const layouts = res.map((item: ILayout) => {
+          const { meta } = item;
+          return {
+            x: meta.x,
+            y: meta.y,
+            w: meta.w,
+            h: meta.h,
+            i: meta.i,
+            id: item.id,
+            content: item.content,
+          };
+        });
+        setDataLayouts(layouts);
+      } catch (error) {
+        toastError({
+          message: getErrorMessage(error),
+        });
+      }
+    },
+    [dataLayouts],
+  );
 
   const fetchQueryResults = async () => {
     try {
@@ -98,32 +116,31 @@ const DashboardDetailPage: React.FC = () => {
     fetchQueryResults();
   }, []);
 
-  const columns =
-    Array.isArray(queryValues) && queryValues[0]
-      ? objectKeys(queryValues[0])
-      : [];
-  const tableValuesColumnConfigs = useMemo(
-    () =>
-      columns.map((col) => ({
-        id: col,
-        accessorKey: col,
-        header: col,
-        enableResizing: true,
-        size: 100,
-      })),
-    [queryValues],
-  );
+  const tableValuesColumnConfigs = useMemo(() => {
+    const columns =
+      Array.isArray(queryValues) && queryValues[0]
+        ? objectKeys(queryValues[0])
+        : [];
+
+    return columns.map((col) => ({
+      id: col,
+      accessorKey: col,
+      header: col,
+      enableResizing: true,
+      size: 100,
+    }));
+  }, [queryValues]);
 
   const renderVisualization = (type: string) => {
     switch (type) {
-      case 'table':
-        return tableValuesColumnConfigs ? (
+      case TYPE_VISUALIZATION.table:
+        return (
           <TableSqlValue
             columns={tableValuesColumnConfigs as typeof queryValues}
             data={queryValues}
           />
-        ) : null;
-      case 'line':
+        );
+      case TYPE_VISUALIZATION.line:
         return (
           <VisualizationLineChart
             data={queryValues}
@@ -131,7 +148,7 @@ const DashboardDetailPage: React.FC = () => {
             yAxisKeys={['size']}
           />
         );
-      case 'column':
+      case TYPE_VISUALIZATION.column:
         return (
           <VisualizationBarChart
             data={queryValues}
@@ -139,7 +156,7 @@ const DashboardDetailPage: React.FC = () => {
             yAxisKeys={['size']}
           />
         );
-      case 'area':
+      case TYPE_VISUALIZATION.area:
         return (
           <VisualizationAreaChart
             data={queryValues}
@@ -147,7 +164,7 @@ const DashboardDetailPage: React.FC = () => {
             yAxisKeys={['size']}
           />
         );
-      case 'pie':
+      case TYPE_VISUALIZATION.pie:
         return <VisualizationPieChart data={queryValues} dataKey={'number'} />;
       default:
       // return <AddVisualization onAddVisualize={addVisualizationHandler} />;
@@ -197,7 +214,14 @@ const DashboardDetailPage: React.FC = () => {
           <AppButton
             className={editMode ? 'btn-save' : 'btn-cancel'}
             size={'sm'}
-            onClick={() => setEditMode(!editMode)}
+            onClick={() => {
+              if (editMode) {
+                updateItem(layoutChange);
+                setEditMode(false);
+              } else {
+                setEditMode(true);
+              }
+            }}
           >
             {editMode ? 'Done' : 'Edit'}
           </AppButton>
@@ -216,6 +240,66 @@ const DashboardDetailPage: React.FC = () => {
     );
   };
 
+  async function processGetItems(ids: number[]) {
+    const results = [];
+    for (const id of ids) {
+      const result = await removeItem(id);
+      results.push(result);
+    }
+    return results;
+  }
+
+  async function removeItem(id: number) {
+    return rf.getRequest('DashboardsRequest').removeDashboardItem(id);
+  }
+
+  async function processAddItem(
+    newLayout: {
+      id: number;
+      content: [];
+      meta: Layout;
+    }[],
+  ) {
+    const results = [];
+    for (const layout of newLayout) {
+      const result = await addDashboardItem(layout);
+      results.push(result);
+    }
+    return results;
+  }
+
+  async function addDashboardItem(id: {
+    id: number;
+    content: [];
+    meta: Layout;
+  }) {
+    return rf.getRequest('DashboardsRequest').addDashboardItem(id);
+  }
+
+  const updateItem = async (layout: Layout[]) => {
+    const ids = dataLayouts.map((e) => e.id);
+    const newLayout = dataLayouts.map((item, index) => ({
+      id: item.id,
+      content: item.content,
+      meta: layout[index],
+    }));
+
+    const processResults = await processGetItems(ids);
+    if (processResults.every((result) => !!result.id)) {
+      try {
+        const processResults2 = await processAddItem(newLayout);
+        if (processResults2.every((result) => !!result.id)) {
+          fetchLayoutData();
+        }
+      } catch (err) {
+        toastError({ message: getErrorMessage(err) });
+      }
+    }
+  };
+
+  const onLayoutChange = (layout: Layout[]) => {
+    setLayoutChange(layout);
+  };
   return (
     <div className="main-content-dashboard-details">
       <header className="main-header-dashboard-details">
@@ -238,6 +322,7 @@ const DashboardDetailPage: React.FC = () => {
       </header>
       {!!dataLayouts.length ? (
         <ResponsiveGridLayout
+          onLayoutChange={onLayoutChange}
           className="main-grid-layout"
           layouts={{ lg: dataLayouts }}
           breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
@@ -247,7 +332,7 @@ const DashboardDetailPage: React.FC = () => {
         >
           {dataLayouts.map((item) => (
             <div className="box-layout" key={item.i}>
-              {item.content.toString().length > 0 ? (
+              {item.content.length > 0 ? (
                 <>
                   {renderVisualization(
                     checkTypeVisualization(item.content).toString(),
@@ -262,7 +347,7 @@ const DashboardDetailPage: React.FC = () => {
                   onClick={() => {
                     setTypeModalTextWidget(TYPE_MODAL.EDIT);
                     setSelectedItem(item);
-                    item.content.toString().length > 0
+                    item.content.length > 0
                       ? setOpenModalEdit(true)
                       : setOpenModalAddTextWidget(true);
                   }}
@@ -283,6 +368,7 @@ const DashboardDetailPage: React.FC = () => {
           This dashboard is empty.
         </Flex>
       )}
+
       <ModalSettingDashboardDetails
         url={dashboardId}
         authorId={authorId}
