@@ -2,8 +2,8 @@ import { Avatar, Badge, Box, Flex } from '@chakra-ui/react';
 import { useEffect, useMemo, useState } from 'react';
 import { Layout, Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
-import 'react-resizable/css/styles.css';
 import ReactMarkdown from 'react-markdown';
+import 'react-resizable/css/styles.css';
 import { useParams } from 'react-router-dom';
 import { ActiveStarIcon, PenIcon, StarIcon } from 'src/assets/icons';
 import { AppButton } from 'src/components';
@@ -26,8 +26,6 @@ import { QueryTypeSingle } from 'src/utils/common';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { objectKeys } from 'src/utils/utils-network';
 import { toastError } from 'src/utils/utils-notify';
-import { debounce } from 'lodash';
-import { async } from 'q';
 
 interface ParamTypes {
   authorId: string;
@@ -77,29 +75,32 @@ const DashboardDetailPage: React.FC = () => {
 
   const userName = `${user?.getFirstName()}` + `${user?.getLastName()}`;
 
-  const fetchLayoutData = async () => {
-    try {
-      const res = await rf.getRequest('DashboardsRequest').getDashboardItem();
+  const fetchLayoutData = useMemo(
+    () => async () => {
+      try {
+        const res = await rf.getRequest('DashboardsRequest').getDashboardItem();
 
-      const layouts = res.map((item: ILayout) => {
-        const { meta } = item;
-        return {
-          x: meta.x,
-          y: meta.y,
-          w: meta.w,
-          h: meta.h,
-          i: meta.i,
-          id: item.id,
-          content: item.content,
-        };
-      });
-      setDataLayouts(layouts);
-    } catch (error) {
-      toastError({
-        message: getErrorMessage(error),
-      });
-    }
-  };
+        const layouts = res.map((item: ILayout) => {
+          const { meta } = item;
+          return {
+            x: meta.x,
+            y: meta.y,
+            w: meta.w,
+            h: meta.h,
+            i: meta.i,
+            id: item.id,
+            content: item.content,
+          };
+        });
+        setDataLayouts(layouts);
+      } catch (error) {
+        toastError({
+          message: getErrorMessage(error),
+        });
+      }
+    },
+    [dataLayouts],
+  );
 
   const fetchQueryResults = async () => {
     try {
@@ -234,20 +235,26 @@ const DashboardDetailPage: React.FC = () => {
     );
   };
 
-  async function processItems(ids) {
+  async function processGetItems(ids: number[]) {
     const results = [];
     for (const id of ids) {
-      const result = await doSomethingAsync(id);
+      const result = await removeItem(id);
       results.push(result);
     }
     return results;
   }
 
-  async function doSomethingAsync(id) {
+  async function removeItem(id: number) {
     return rf.getRequest('DashboardsRequest').removeDashboardItem(id);
   }
 
-  async function processItems2(newLayout) {
+  async function processAddItem(
+    newLayout: {
+      id: number;
+      content: [];
+      meta: Layout;
+    }[],
+  ) {
     const results = [];
     for (const layout of newLayout) {
       const result = await addDashboardItem(layout);
@@ -256,11 +263,15 @@ const DashboardDetailPage: React.FC = () => {
     return results;
   }
 
-  async function addDashboardItem(id) {
+  async function addDashboardItem(id: {
+    id: number;
+    content: [];
+    meta: Layout;
+  }) {
     return rf.getRequest('DashboardsRequest').addDashboardItem(id);
   }
 
-  const updateItem = async (layout) => {
+  const updateItem = async (layout: Layout[]) => {
     const ids = dataLayouts.map((e) => e.id);
     const newLayout = dataLayouts.map((item, index) => ({
       id: item.id,
@@ -268,10 +279,10 @@ const DashboardDetailPage: React.FC = () => {
       meta: layout[index],
     }));
 
-    const processResults = await processItems(ids);
+    const processResults = await processGetItems(ids);
     if (processResults.every((result) => !!result.id)) {
       try {
-        const processResults2 = await processItems2(newLayout);
+        const processResults2 = await processAddItem(newLayout);
         if (processResults2.every((result) => !!result.id)) {
           fetchLayoutData();
         }
@@ -283,13 +294,12 @@ const DashboardDetailPage: React.FC = () => {
 
   const onLayoutChange = (layout: Layout[]) => {
     if (!isInitialMount && isUpdate) {
-      setIsUpdate(false);
+      setIsUpdate(true);
       updateItem(layout);
     } else {
       setIsInitialMount(false);
     }
   };
-
   return (
     <div className="main-content-dashboard-details">
       <header className="main-header-dashboard-details">
@@ -320,11 +330,7 @@ const DashboardDetailPage: React.FC = () => {
         isResizable={editMode}
       >
         {dataLayouts.map((item) => (
-          <div
-            className="box-layout"
-            key={item.i}
-            onClick={() => setSelectedItem(item)}
-          >
+          <div className="box-layout" key={item.i}>
             {item.content.length > 0 ? (
               <>
                 {renderVisualization(
@@ -366,6 +372,7 @@ const DashboardDetailPage: React.FC = () => {
         open={openModalAddTextWidget}
         onClose={() => setOpenModalAddTextWidget(false)}
         onReload={fetchLayoutData}
+        setIsUpdate={setIsUpdate}
       />
       <ModalEditItemDashBoard
         selectedItem={selectedItem}

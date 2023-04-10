@@ -1,6 +1,6 @@
 import { Flex, Text, Textarea } from '@chakra-ui/react';
 import { debounce } from 'lodash';
-import React, { MouseEvent, useState } from 'react';
+import React, { useState } from 'react';
 import { AppButton, AppField } from 'src/components';
 import AppAccordion from 'src/components/AppAccordion';
 import { ILayout, TYPE_MODAL } from 'src/pages/DashboardDetailPage';
@@ -16,6 +16,8 @@ interface IModalAddTextWidget {
   type?: TYPE_MODAL.ADD | TYPE_MODAL.EDIT | string;
   selectedItem: ILayout;
   dataLayouts: ILayout[];
+  setIsUpdate: React.Dispatch<React.SetStateAction<boolean>>;
+
   setDataLayouts: React.Dispatch<React.SetStateAction<ILayout[]>>;
   onReload: () => Promise<void>;
 }
@@ -92,6 +94,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
   setDataLayouts,
   selectedItem,
   onReload,
+  setIsUpdate,
 }) => {
   const [markdownText, setMarkdownText] = useState<string>(``);
 
@@ -99,18 +102,25 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
 
   const handleSave = async () => {
     try {
-      const res = await rf.getRequest('DashboardsRequest').addDashboardItem({
-        id: dataLayouts.length + 1,
-        i: markdownText,
-        x: dataLayouts.length % 2 === 0 ? 0 : 6,
-        y: 0,
-        w: 6,
-        h: 2,
-      });
+      setIsUpdate(false);
+      const payload = {
+        meta: {
+          i: markdownText,
+          x: dataLayouts.length % 2 === 0 ? 0 : 6,
+          y: 0,
+          w: 6,
+          h: 2,
+        },
+        content: [],
+      };
+      const res = await rf
+        .getRequest('DashboardsRequest')
+        .addDashboardItem(payload);
       if (res) {
-        setDataLayouts([...dataLayouts, res]);
+        onReload();
         setMarkdownText('');
         onClose();
+        setIsUpdate(true);
       }
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
@@ -119,10 +129,22 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
 
   const handleUpdate = async () => {
     try {
+      const payload = {
+        meta: {
+          i: markdownText,
+          x: selectedItem.x,
+          y: selectedItem.y,
+          w: selectedItem.w,
+          h: selectedItem.h,
+        },
+        content: [],
+        id: selectedItem.id,
+      };
       const res = await rf
         .getRequest('DashboardsRequest')
-        .updateDashboardItem({ ...selectedItem, i: markdownText });
+        .updateDashboardItem(payload);
       if (res) {
+        setIsUpdate(false);
         setDataLayouts((prevData) => {
           const updateDataIndex = prevData.findIndex(
             (item) => item.id === selectedItem.id,
@@ -135,6 +157,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
             return newData;
           }
         });
+        onReload();
         setMarkdownText('');
         onClose();
       }
@@ -142,7 +165,6 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
       toastError({ message: getErrorMessage(e) });
     }
   };
-
   const handleRemoveItem = async (
     e: React.MouseEvent<HTMLButtonElement, globalThis.MouseEvent>,
   ) => {

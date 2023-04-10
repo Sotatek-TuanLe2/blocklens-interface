@@ -2,13 +2,13 @@ import { Flex, Link, Text } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { ListIcon, SmallSuccessIcon } from 'src/assets/icons';
 import { AppButton, AppInput } from 'src/components';
-import 'src/styles/components/BaseModal.scss';
-import BaseModal from './BaseModal';
-import { toastError } from 'src/utils/utils-notify';
-import rf from 'src/requests/RequestFactory';
-import { getErrorMessage } from 'src/utils/utils-helper';
 import { ILayout } from 'src/pages/DashboardDetailPage';
+import rf from 'src/requests/RequestFactory';
+import 'src/styles/components/BaseModal.scss';
 import { QueryType, VisualizationType } from 'src/utils/common';
+import { getErrorMessage } from 'src/utils/utils-helper';
+import { toastError } from 'src/utils/utils-notify';
+import BaseModal from './BaseModal';
 
 interface IModalAddVisualization {
   open: boolean;
@@ -102,6 +102,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     try {
+      console.log(item);
       e.preventDefault();
       const res = await rf
         .getRequest('DashboardsRequest')
