@@ -99,7 +99,6 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     try {
-      console.log(item, item);
       e.preventDefault();
       const res = await rf
         .getRequest('DashboardsRequest')
