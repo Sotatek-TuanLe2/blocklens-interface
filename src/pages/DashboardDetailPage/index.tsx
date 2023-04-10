@@ -320,43 +320,55 @@ const DashboardDetailPage: React.FC = () => {
         </Flex>
         {_renderButtons()}
       </header>
-      <ResponsiveGridLayout
-        onLayoutChange={onLayoutChange}
-        className="main-grid-layout"
-        layouts={{ lg: dataLayouts }}
-        breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
-        cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
-        isDraggable={editMode}
-        isResizable={editMode}
-      >
-        {dataLayouts.map((item) => (
-          <div className="box-layout" key={item.i}>
-            {item.content.length > 0 ? (
-              <>
-                {renderVisualization(
-                  checkTypeVisualization(item.content).toString(),
-                )}
-              </>
-            ) : (
-              <ReactMarkdown>{item.i}</ReactMarkdown>
-            )}
-            {editMode ? (
-              <Box
-                className="btn-edit"
-                onClick={() => {
-                  setTypeModalTextWidget(TYPE_MODAL.EDIT);
-                  setSelectedItem(item);
-                  item.content.length > 0
-                    ? setOpenModalEdit(true)
-                    : setOpenModalAddTextWidget(true);
-                }}
-              >
-                <PenIcon />
-              </Box>
-            ) : null}
-          </div>
-        ))}
-      </ResponsiveGridLayout>
+      {!!dataLayouts.length ? (
+        <ResponsiveGridLayout
+          onLayoutChange={onLayoutChange}
+          className="main-grid-layout"
+          layouts={{ lg: dataLayouts }}
+          breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
+          cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
+          isDraggable={editMode}
+          isResizable={editMode}
+        >
+          {dataLayouts.map((item) => (
+            <div className="box-layout" key={item.i}>
+              {item.content.length > 0 ? (
+                <>
+                  {renderVisualization(
+                    checkTypeVisualization(item.content).toString(),
+                  )}
+                </>
+              ) : (
+                <ReactMarkdown>{item.i}</ReactMarkdown>
+              )}
+              {editMode ? (
+                <Box
+                  className="btn-edit"
+                  onClick={() => {
+                    setTypeModalTextWidget(TYPE_MODAL.EDIT);
+                    setSelectedItem(item);
+                    item.content.length > 0
+                      ? setOpenModalEdit(true)
+                      : setOpenModalAddTextWidget(true);
+                  }}
+                >
+                  <PenIcon />
+                </Box>
+              ) : null}
+            </div>
+          ))}
+        </ResponsiveGridLayout>
+      ) : (
+        <Flex
+          width={'full'}
+          height={'calc(100vh - 118px);'}
+          justifyContent={'center'}
+          alignItems={'center'}
+        >
+          This dashboard is empty.
+        </Flex>
+      )}
+
       <ModalSettingDashboardDetails
         url={dashboardId}
         authorId={authorId}

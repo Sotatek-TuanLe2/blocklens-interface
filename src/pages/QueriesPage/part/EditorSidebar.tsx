@@ -92,9 +92,11 @@ const EditorSidebar = () => {
           </Text>
         </Box>
         <Select height={'32px'} maxW={'40%'}>
-          <option>All chains</option>
-          <option>Ethereum</option>
-          <option>Polygon</option>
+          {['All chains', 'Ethereum', 'Polygon'].map((item) => (
+            <option key={item} style={{ backgroundColor: '#000224' }}>
+              {item}
+            </option>
+          ))}
         </Select>
       </Flex>
     );
