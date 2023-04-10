@@ -56,11 +56,10 @@ const hashTag: string[] = ['zkSync', 'bridge', 'l2'];
 const DashboardDetailPage: React.FC = () => {
   const { authorId, dashboardId } = useParams<ParamTypes>();
   const { user } = useUser();
-  const [isInitialMount, setIsInitialMount] = useState(true);
-  const [isUpdate, setIsUpdate] = useState<boolean>(true);
 
   const [editMode, setEditMode] = useState<boolean>(false);
   const [dataLayouts, setDataLayouts] = useState<ILayout[]>([]);
+  const [layoutChange, setLayoutChange] = useState<Layout[]>([]);
   const [queryValues, setQueryValues] = useState<unknown[]>([]);
   const [selectedItem, setSelectedItem] = useState<ILayout>(Object);
   const [typeModalTextWidget, setTypeModalTextWidget] = useState<string>(``);
@@ -215,7 +214,14 @@ const DashboardDetailPage: React.FC = () => {
           <AppButton
             className={editMode ? 'btn-save' : 'btn-cancel'}
             size={'sm'}
-            onClick={() => setEditMode(!editMode)}
+            onClick={() => {
+              if (editMode) {
+                updateItem(layoutChange);
+                setEditMode(false);
+              } else {
+                setEditMode(true);
+              }
+            }}
           >
             {editMode ? 'Done' : 'Edit'}
           </AppButton>
@@ -292,12 +298,7 @@ const DashboardDetailPage: React.FC = () => {
   };
 
   const onLayoutChange = (layout: Layout[]) => {
-    if (!isInitialMount && isUpdate) {
-      setIsUpdate(true);
-      updateItem(layout);
-    } else {
-      setIsInitialMount(false);
-    }
+    setLayoutChange(layout);
   };
   return (
     <div className="main-content-dashboard-details">
@@ -383,7 +384,6 @@ const DashboardDetailPage: React.FC = () => {
         open={openModalAddTextWidget}
         onClose={() => setOpenModalAddTextWidget(false)}
         onReload={fetchLayoutData}
-        setIsUpdate={setIsUpdate}
       />
       <ModalEditItemDashBoard
         selectedItem={selectedItem}
@@ -398,13 +398,9 @@ const DashboardDetailPage: React.FC = () => {
         setDataLayouts={setDataLayouts}
         setOpenModalFork={setOpenModalFork}
         open={openModalAddVisualization}
-        onClose={() => {
-          setOpenModalAddVisualization(false);
-          setIsUpdate(true);
-        }}
+        onClose={() => setOpenModalAddVisualization(false)}
         userName={userName}
         onReload={fetchLayoutData}
-        setIsUpdate={setIsUpdate}
       />
     </div>
   );

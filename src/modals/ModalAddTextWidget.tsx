@@ -16,7 +16,6 @@ interface IModalAddTextWidget {
   type?: TYPE_MODAL.ADD | TYPE_MODAL.EDIT | string;
   selectedItem: ILayout;
   dataLayouts: ILayout[];
-  setIsUpdate: React.Dispatch<React.SetStateAction<boolean>>;
 
   setDataLayouts: React.Dispatch<React.SetStateAction<ILayout[]>>;
   onReload: () => Promise<void>;
@@ -94,7 +93,6 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
   setDataLayouts,
   selectedItem,
   onReload,
-  setIsUpdate,
 }) => {
   const [markdownText, setMarkdownText] = useState<string>(``);
 
@@ -102,7 +100,6 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
 
   const handleSave = async () => {
     try {
-      setIsUpdate(false);
       const payload = {
         meta: {
           i: markdownText,
@@ -120,7 +117,6 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
         onReload();
         setMarkdownText('');
         onClose();
-        setIsUpdate(true);
       }
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
@@ -144,7 +140,6 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
         .getRequest('DashboardsRequest')
         .updateDashboardItem(payload);
       if (res) {
-        setIsUpdate(false);
         setDataLayouts((prevData) => {
           const updateDataIndex = prevData.findIndex(
             (item) => item.id === selectedItem.id,

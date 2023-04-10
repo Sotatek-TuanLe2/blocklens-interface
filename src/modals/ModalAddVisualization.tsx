@@ -15,7 +15,6 @@ interface IModalAddVisualization {
   onClose: () => void;
   userName: string;
   setOpenModalFork: React.Dispatch<React.SetStateAction<boolean>>;
-  setIsUpdate: React.Dispatch<React.SetStateAction<boolean>>;
   dataLayouts: ILayout[];
   setDataLayouts: React.Dispatch<React.SetStateAction<ILayout[]>>;
   onReload: () => Promise<void>;
@@ -43,7 +42,6 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   dataLayouts,
   setDataLayouts,
   onReload,
-  setIsUpdate,
 }) => {
   const [add, setAdd] = useState<boolean>(false);
   const [showMyQueries, setShowMyQueries] = useState<boolean>(false);
@@ -69,7 +67,6 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
     visualizations: VisualizationType,
   ) => {
     try {
-      setIsUpdate(false);
       const payload = {
         meta: {
           i: (dataLayouts.length + 1).toString(),
@@ -98,11 +95,11 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   };
 
   const handleRemoveVisualization = async (
-    item: ILayout,
+    item: any,
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     try {
-      console.log(item);
+      console.log(item, item);
       e.preventDefault();
       const res = await rf
         .getRequest('DashboardsRequest')
