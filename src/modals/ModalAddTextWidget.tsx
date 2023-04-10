@@ -192,10 +192,9 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
       <div className="main-modal-dashboard-details">
         <AppField label={'Text widget context'}>
           <Textarea
+            className="text-widget-input"
             resize={'both'}
             size="sm"
-            h={'150px'}
-            borderRadius={'0.5rem'}
             defaultValue={type === TYPE_MODAL.ADD ? '' : selectedItem.i}
             onChange={handleChangeMarkdownText}
           />
@@ -205,8 +204,8 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
             <div>
               {MarkdownSupport.map((item) => (
                 <Flex key={item.title} gap={'20px'} className="main-markdown">
-                  <Text w={'160px'}>{item.title}</Text>
-                  <Text w={'100%'}>{item.mark}</Text>
+                  <Text className="title-markdown">{item.title}</Text>
+                  <Text className="markdown">{item.mark}</Text>
                 </Flex>
               ))}
             </div>
@@ -221,9 +220,8 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
           justifyContent={type === TYPE_MODAL.ADD ? '' : 'space-between'}
         >
           <AppButton
+            className="btn-save"
             size="sm"
-            bg="#1e1870"
-            color="#fff"
             onClick={() => {
               type === TYPE_MODAL.ADD ? handleSave() : handleUpdate();
             }}
@@ -238,8 +236,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
                   e: React.MouseEvent<HTMLButtonElement, globalThis.MouseEvent>,
                 ) => handleRemoveItem(e)}
                 size="sm"
-                bg="#e1e1f9"
-                color="#1e1870"
+                className="btn-remove"
                 variant={'cancel'}
               >
                 Remove this widget
@@ -248,8 +245,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
             <AppButton
               onClick={onClose}
               size="sm"
-              bg="#e1e1f9"
-              color="#1e1870"
+              className="btn-remove"
               variant={'cancel'}
             >
               Cancel

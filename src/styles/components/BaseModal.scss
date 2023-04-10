@@ -248,7 +248,29 @@
 .main-modal-dashboard-details {
   padding-top: 40px;
   row-gap: 1rem !important;
+  .text-widget-input {
+    height: 150px;
+    border-radius: 7px;
+  }
+  .btn-save {
+    background: #1e1870;
+    color: #fff;
+  }
+  .btn-remove {
+    background: #e1e1f9;
+    color: #1e1870;
+  }
 
+  .btn-cancel {
+    background: #ffeceb;
+    color: #000;
+  }
+  .title-markdown {
+    width: 160px;
+  }
+  .markdown {
+    width: 100%;
+  }
   .error-validate {
     color: $red-400;
     font-size: 14px;

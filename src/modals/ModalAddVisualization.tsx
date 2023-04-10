@@ -175,13 +175,12 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
           mt={10}
           className="group-action-query"
         >
-          <AppButton size="sm" bg="#1e1870" color="#fff" onClick={onClose}>
+          <AppButton className="btn-save" size="sm" onClick={onClose}>
             Done
           </AppButton>
           <AppButton
             size="sm"
-            bg="#e1e1f9"
-            color="#1e1870"
+            className="btn-remove"
             variant={'cancel'}
             onClick={() => setOpenModalFork(true)}
           >
