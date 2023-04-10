@@ -22,7 +22,7 @@ import ModalShareDashboardDetails from 'src/modals/ModalShareDashboardDetails';
 import DashboardsRequest from 'src/requests/DashboardsRequest';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/pages/DashboardDetailPage.scss';
-import { QueryTypeSingle } from 'src/utils/common';
+import { QueryTypeSingle, TYPE_VISUALIZATION } from 'src/utils/common';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { objectKeys } from 'src/utils/utils-network';
 import { toastError } from 'src/utils/utils-notify';
@@ -42,7 +42,7 @@ export interface ILayout extends Layout {
   i: string;
   id: number;
   content: [];
-  meta: any;
+  meta: Layout;
 }
 export enum TYPE_MODAL {
   ADD = 'add',
@@ -117,32 +117,31 @@ const DashboardDetailPage: React.FC = () => {
     fetchQueryResults();
   }, []);
 
-  const columns =
-    Array.isArray(queryValues) && queryValues[0]
-      ? objectKeys(queryValues[0])
-      : [];
-  const tableValuesColumnConfigs = useMemo(
-    () =>
-      columns.map((col) => ({
-        id: col,
-        accessorKey: col,
-        header: col,
-        enableResizing: true,
-        size: 100,
-      })),
-    [queryValues],
-  );
+  const tableValuesColumnConfigs = useMemo(() => {
+    const columns =
+      Array.isArray(queryValues) && queryValues[0]
+        ? objectKeys(queryValues[0])
+        : [];
+
+    return columns.map((col) => ({
+      id: col,
+      accessorKey: col,
+      header: col,
+      enableResizing: true,
+      size: 100,
+    }));
+  }, [queryValues]);
 
   const renderVisualization = (type: string) => {
     switch (type) {
-      case 'table':
-        return tableValuesColumnConfigs ? (
+      case TYPE_VISUALIZATION.table:
+        return (
           <TableSqlValue
             columns={tableValuesColumnConfigs as typeof queryValues}
             data={queryValues}
           />
-        ) : null;
-      case 'line':
+        );
+      case TYPE_VISUALIZATION.line:
         return (
           <VisualizationLineChart
             data={queryValues}
@@ -150,7 +149,7 @@ const DashboardDetailPage: React.FC = () => {
             yAxisKeys={['size']}
           />
         );
-      case 'column':
+      case TYPE_VISUALIZATION.column:
         return (
           <VisualizationBarChart
             data={queryValues}
@@ -158,7 +157,7 @@ const DashboardDetailPage: React.FC = () => {
             yAxisKeys={['size']}
           />
         );
-      case 'area':
+      case TYPE_VISUALIZATION.area:
         return (
           <VisualizationAreaChart
             data={queryValues}
@@ -166,7 +165,7 @@ const DashboardDetailPage: React.FC = () => {
             yAxisKeys={['size']}
           />
         );
-      case 'pie':
+      case TYPE_VISUALIZATION.pie:
         return <VisualizationPieChart data={queryValues} dataKey={'number'} />;
       default:
       // return <AddVisualization onAddVisualize={addVisualizationHandler} />;

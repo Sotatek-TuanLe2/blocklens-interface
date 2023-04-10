@@ -9,7 +9,12 @@ import { objectKeys } from '../../../utils/utils-network';
 import VisualizationLineChart from '../../../components/Chart/LineChart';
 import ChartSettings from '../../../components/SqlEditor/ChartSettings';
 import VisualizationPieChart from '../../../components/Chart/PieChart';
-import { QueryType, VisualizationType } from '../../../utils/common';
+import {
+  QueryType,
+  TYPE_VISUALIZATION,
+  VALUE_VISUALIZATION,
+  VisualizationType,
+} from '../../../utils/common';
 import DashboardsRequest from '../../../requests/DashboardsRequest';
 import { useParams } from 'react-router-dom';
 import BaseModal from '../../../modals/BaseModal';
@@ -22,29 +27,29 @@ type VisualizationConfigType = {
 
 const visualizationConfigs: VisualizationConfigType[] = [
   {
-    value: 'query',
+    value: VALUE_VISUALIZATION.query,
     label: 'Query',
-    type: 'table',
+    type: TYPE_VISUALIZATION.table,
   },
   {
     label: 'Bar chart',
-    type: 'column',
-    value: 'bar',
+    type: TYPE_VISUALIZATION.bar,
+    value: VALUE_VISUALIZATION.bar,
   },
   {
     label: 'Line chart',
-    type: 'line',
-    value: 'line',
+    type: TYPE_VISUALIZATION.line,
+    value: VALUE_VISUALIZATION.line,
   },
   {
     label: 'Area chart',
-    type: 'area',
-    value: 'area',
+    type: TYPE_VISUALIZATION.area,
+    value: VALUE_VISUALIZATION.area,
   },
   {
     label: 'Pie chart',
-    type: 'pie',
-    value: 'pie',
+    type: TYPE_VISUALIZATION.pie,
+    value: VALUE_VISUALIZATION.pie,
   },
 ];
 
@@ -60,21 +65,20 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
   >([{ id: '1', options: {}, name: 'New Visualization', type: '' }]);
   const [closeTabId, setCloseTabId] = useState('');
 
-  const columns =
-    Array.isArray(queryValues) && queryValues[0]
-      ? objectKeys(queryValues[0])
-      : [];
-  const tableValuesColumnConfigs = useMemo(
-    () =>
-      columns.map((col) => ({
-        id: col,
-        accessorKey: col,
-        header: col,
-        enableResizing: true,
-        size: 100,
-      })),
-    [queryValues],
-  );
+  const tableValuesColumnConfigs = useMemo(() => {
+    const columns =
+      Array.isArray(queryValues) && queryValues[0]
+        ? objectKeys(queryValues[0])
+        : [];
+
+    return columns.map((col) => ({
+      id: col,
+      accessorKey: col,
+      header: col,
+      enableResizing: true,
+      size: 100,
+    }));
+  }, [queryValues]);
 
   const addVisualizationToQuery = async (
     queryId: string,
@@ -161,14 +165,14 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
 
   const renderVisualization = (type: string) => {
     switch (type) {
-      case 'table':
+      case TYPE_VISUALIZATION.table:
         return (
           <TableSqlValue
             columns={tableValuesColumnConfigs as typeof queryValues}
             data={queryValues}
           />
         );
-      case 'line':
+      case TYPE_VISUALIZATION.line:
         return (
           <VisualizationLineChart
             data={queryValues}
@@ -176,7 +180,7 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
             yAxisKeys={['size']}
           />
         );
-      case 'column':
+      case TYPE_VISUALIZATION.column:
         return (
           <VisualizationBarChart
             data={queryValues}
@@ -184,7 +188,7 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
             yAxisKeys={['size']}
           />
         );
-      case 'area':
+      case TYPE_VISUALIZATION.area:
         return (
           <VisualizationAreaChart
             data={queryValues}
@@ -192,7 +196,7 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
             yAxisKeys={['size']}
           />
         );
-      case 'pie':
+      case TYPE_VISUALIZATION.pie:
         return <VisualizationPieChart data={queryValues} dataKey={'number'} />;
       default:
         return <AddVisualization onAddVisualize={addVisualizationHandler} />;

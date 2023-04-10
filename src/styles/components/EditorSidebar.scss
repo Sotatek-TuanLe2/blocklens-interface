@@ -2,6 +2,14 @@
   .row-element {
     margin-bottom: 8px;
   }
+
+  .select-chains {
+    width: 40%;
+
+    .chakra-select {
+      height: 32px;
+    }
+  }
 }
 
 .schema-title {
@@ -14,7 +22,7 @@
   padding: 4px 8px;
   border-radius: 6px;
   &:hover {
-    background-color: #1A203B;
+    background-color: #1a203b;
   }
 }
 .dataset-title {
@@ -22,6 +30,6 @@
   cursor: pointer;
   &:hover {
     border-radius: 6px;
-    background-color: #1A203B;
+    background-color: #1a203b;
   }
 }

@@ -25,7 +25,7 @@ interface IButtonAdd {
   item: QueryType;
   dataLayouts: ILayout[];
   handleRemoveVisualization: (
-    item: any,
+    item: ILayout[],
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => Promise<void>;
   handleSaveVisualization: (
@@ -46,7 +46,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   setIsUpdate,
 }) => {
   const [add, setAdd] = useState<boolean>(false);
-  const [myQuery, setMyQuery] = useState<boolean>(false);
+  const [showMyQueries, setShowMyQueries] = useState<boolean>(false);
   const [dataVisualization, setDataVisualization] = useState<QueryType[]>([]);
 
   const fetchVisualization = async () => {
@@ -130,7 +130,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
           mt={'10px'}
           size="sm"
           placeholder={
-            myQuery ? "Search everyone's queries" : 'Search your queries'
+            showMyQueries ? "Search everyone's queries" : 'Search your queries'
           }
         />
         <div className="main-queries">
@@ -141,7 +141,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
                 borderBottom={'1px solid white'}
                 key={item.id}
               >
-                {myQuery ? (
+                {showMyQueries ? (
                   <>
                     <Flex alignItems={'center'} columnGap={'10px'} p={'10px'}>
                       <ListIcon />
@@ -188,13 +188,13 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
             New dashboard
           </AppButton>
           <AppButton
-            className={myQuery ? 'btn-added-query' : 'btn-add-query'}
+            className={showMyQueries ? 'btn-added-query' : 'btn-add-query'}
             size="sm"
             variant={'cancel'}
-            onClick={() => setMyQuery(!myQuery)}
+            onClick={() => setShowMyQueries(!showMyQueries)}
           >
             Show queries from other users{' '}
-            {myQuery ? (
+            {showMyQueries ? (
               <Text ps={'4px'}>
                 <SmallSuccessIcon />
               </Text>
