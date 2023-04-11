@@ -107,6 +107,7 @@ export const getHourAndMinute = (date: Date) => {
 };
 
 export enum VALUE_VISUALIZATION {
+  scatter = 'scatter',
   query = 'query',
   bar = 'bar',
   line = 'line',
@@ -115,6 +116,7 @@ export enum VALUE_VISUALIZATION {
 }
 
 export enum TYPE_VISUALIZATION {
+  scatter = 'scatter',
   table = 'table',
   bar = 'bar',
   line = 'line',

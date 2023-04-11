@@ -304,7 +304,6 @@ const DashboardDetailPage: React.FC = () => {
   const onLayoutChange = (layout: Layout[]) => {
     setLayoutChange(layout);
   };
-
   return (
     <div className="main-content-dashboard-details">
       <header className="main-header-dashboard-details">
