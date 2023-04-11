@@ -27,6 +27,7 @@ import { getErrorMessage } from 'src/utils/utils-helper';
 import { objectKeys } from 'src/utils/utils-network';
 import { toastError } from 'src/utils/utils-notify';
 import { ColumnDef } from '@tanstack/react-table';
+import { BasePage } from 'src/layouts';
 
 interface ParamTypes {
   authorId: string;
@@ -304,115 +305,115 @@ const DashboardDetailPage: React.FC = () => {
   const onLayoutChange = (layout: Layout[]) => {
     setLayoutChange(layout);
   };
-
   return (
-    <div className="main-content-dashboard-details">
-      <header className="main-header-dashboard-details">
-        <Flex gap={2}>
-          <Avatar name={user?.getFirstName()} size="sm" />
-          <div>
-            <div className="dashboard-name">
-              @{userName} / {dashboardId}
-            </div>
-            <Flex gap={1} pt={'10px'}>
-              {hashTag.map((item) => (
-                <Badge size={'sm'} key={item}>
-                  #{item}
-                </Badge>
-              ))}
-            </Flex>
-          </div>
-        </Flex>
-        {_renderButtons()}
-      </header>
-      {!!dataLayouts.length ? (
-        <ResponsiveGridLayout
-          onLayoutChange={onLayoutChange}
-          className="main-grid-layout"
-          layouts={{ lg: dataLayouts }}
-          breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
-          cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
-          isDraggable={editMode}
-          isResizable={editMode}
-        >
-          {dataLayouts.map((item) => (
-            <div className="box-layout" key={item.i}>
-              <div className="box-chart">
-                {item.content.length > 0 ? (
-                  <>
-                    {renderVisualization(
-                      checkTypeVisualization(item.content).toString(),
-                    )}
-                  </>
-                ) : (
-                  <div className="box-text-widget">
-                    <ReactMarkdown>{item.i}</ReactMarkdown>
-                  </div>
-                )}
+    <BasePage isFullWidth>
+      <div className="main-content-dashboard-details">
+        <header className="main-header-dashboard-details">
+          <Flex gap={2}>
+            <Avatar name={user?.getFirstName()} size="sm" />
+            <div>
+              <div className="dashboard-name">
+                @{userName} / {dashboardId}
               </div>
-
-              {editMode ? (
-                <Box
-                  className="btn-edit"
-                  onClick={() => {
-                    setTypeModalTextWidget(TYPE_MODAL.EDIT);
-                    setSelectedItem(item);
-                    item.content.length > 0
-                      ? setOpenModalEdit(true)
-                      : setOpenModalAddTextWidget(true);
-                  }}
-                >
-                  <PenIcon />
-                </Box>
-              ) : null}
+              <Flex gap={1} pt={'10px'}>
+                {hashTag.map((item) => (
+                  <Badge size={'sm'} key={item}>
+                    #{item}
+                  </Badge>
+                ))}
+              </Flex>
             </div>
-          ))}
-        </ResponsiveGridLayout>
-      ) : (
-        <Flex
-          width={'full'}
-          height={'calc(100vh - 118px);'}
-          justifyContent={'center'}
-          alignItems={'center'}
-        >
-          This dashboard is empty.
-        </Flex>
-      )}
+          </Flex>
+          {_renderButtons()}
+        </header>
+        {!!dataLayouts.length ? (
+          <ResponsiveGridLayout
+            onLayoutChange={onLayoutChange}
+            className="main-grid-layout"
+            layouts={{ lg: dataLayouts }}
+            breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
+            cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
+            isDraggable={editMode}
+            isResizable={editMode}
+          >
+            {dataLayouts.map((item) => (
+              <div className="box-layout" key={item.i}>
+                <div className="box-chart">
+                  {item.content.length > 0 ? (
+                    <>
+                      {renderVisualization(
+                        checkTypeVisualization(item.content).toString(),
+                      )}
+                    </>
+                  ) : (
+                    <div className="box-text-widget">
+                      <ReactMarkdown>{item.i}</ReactMarkdown>
+                    </div>
+                  )}
+                </div>
 
-      <ModalSettingDashboardDetails
-        url={dashboardId}
-        authorId={authorId}
-        open={openModalSetting}
-        hashTag={hashTag}
-        onClose={() => setOpenModalSetting(false)}
-      />
-      <ModalAddTextWidget
-        selectedItem={selectedItem}
-        dataLayouts={dataLayouts}
-        setDataLayouts={setDataLayouts}
-        type={typeModalTextWidget}
-        open={openModalAddTextWidget}
-        onClose={() => setOpenModalAddTextWidget(false)}
-        onReload={fetchLayoutData}
-      />
-      <ModalEditItemDashBoard
-        selectedItem={selectedItem}
-        dataLayouts={dataLayouts}
-        setDataLayouts={setDataLayouts}
-        onReload={fetchLayoutData}
-        open={openModalEdit}
-        onClose={() => setOpenModalEdit(false)}
-      />
-      <ModalAddVisualization
-        dataLayouts={dataLayouts}
-        setDataLayouts={setDataLayouts}
-        setOpenModalFork={setOpenModalFork}
-        open={openModalAddVisualization}
-        onClose={() => setOpenModalAddVisualization(false)}
-        userName={userName}
-        onReload={fetchLayoutData}
-      />
-    </div>
+                {editMode ? (
+                  <Box
+                    className="btn-edit"
+                    onClick={() => {
+                      setTypeModalTextWidget(TYPE_MODAL.EDIT);
+                      setSelectedItem(item);
+                      item.content.length > 0
+                        ? setOpenModalEdit(true)
+                        : setOpenModalAddTextWidget(true);
+                    }}
+                  >
+                    <PenIcon />
+                  </Box>
+                ) : null}
+              </div>
+            ))}
+          </ResponsiveGridLayout>
+        ) : (
+          <Flex
+            width={'full'}
+            height={'calc(100vh - 118px);'}
+            justifyContent={'center'}
+            alignItems={'center'}
+          >
+            This dashboard is empty.
+          </Flex>
+        )}
+        <ModalSettingDashboardDetails
+          url={dashboardId}
+          authorId={authorId}
+          open={openModalSetting}
+          hashTag={hashTag}
+          onClose={() => setOpenModalSetting(false)}
+        />
+        <ModalAddTextWidget
+          selectedItem={selectedItem}
+          dataLayouts={dataLayouts}
+          setDataLayouts={setDataLayouts}
+          type={typeModalTextWidget}
+          open={openModalAddTextWidget}
+          onClose={() => setOpenModalAddTextWidget(false)}
+          onReload={fetchLayoutData}
+        />
+        <ModalEditItemDashBoard
+          selectedItem={selectedItem}
+          dataLayouts={dataLayouts}
+          setDataLayouts={setDataLayouts}
+          onReload={fetchLayoutData}
+          open={openModalEdit}
+          onClose={() => setOpenModalEdit(false)}
+        />
+        <ModalAddVisualization
+          dataLayouts={dataLayouts}
+          setDataLayouts={setDataLayouts}
+          setOpenModalFork={setOpenModalFork}
+          open={openModalAddVisualization}
+          onClose={() => setOpenModalAddVisualization(false)}
+          userName={userName}
+          onReload={fetchLayoutData}
+        />
+      </div>
+    </BasePage>
   );
 };
 
