@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { AppButton, AppField, AppInput } from 'src/components';
 import BaseModal from './BaseModal';
 import 'src/styles/components/BaseModal.scss';
@@ -89,27 +89,26 @@ const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
             }
           />
         </AppField>
+
+        <Flex flexWrap={'wrap'} gap={'10px'} mt={10}>
+          <AppButton
+            size="sm"
+            className="btn-save"
+            onClick={onSave}
+            disabled={!dataForm.dashboard}
+          >
+            Save and open
+          </AppButton>
+          <AppButton
+            onClick={onClose}
+            size="sm"
+            className="btn-remove"
+            variant={'cancel'}
+          >
+            Cancel
+          </AppButton>
+        </Flex>
       </div>
-      <Flex flexWrap={'wrap'} gap={'10px'} mt={10}>
-        <AppButton
-          size="sm"
-          bg="#1e1870"
-          color="#fff"
-          onClick={onSave}
-          disabled={!dataForm.dashboard}
-        >
-          Save and open
-        </AppButton>
-        <AppButton
-          onClick={onClose}
-          size="sm"
-          bg="#e1e1f9"
-          color="#1e1870"
-          variant={'cancel'}
-        >
-          Cancel
-        </AppButton>
-      </Flex>
     </BaseModal>
   );
 };

@@ -62,8 +62,6 @@ const Routes: FC<RouteComponentProps> = () => {
     window.scrollTo(0, 0);
   }, [pathname]);
 
-  console.log('pathname', pathname);
-
   useEffect(() => {
     if (!accessToken || isExpireTimeToken) {
       dispatch(clearUser());

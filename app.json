@@ -1,0 +1,10 @@
+{
+  "apps": [
+    {
+      "name": "dev.blocklens.interface.demo",
+      "script": "npm",
+      "args": "run start",
+      "log_date_format": "YYYY-MM-DD HH:mm:ss"
+    }
+  ]
+}

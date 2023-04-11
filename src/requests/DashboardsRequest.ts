@@ -91,20 +91,24 @@ export default class DashboardsRequest extends BaseRequest {
     const url = 'https://run.mocky.io/v3/0f280d1a-e11c-4cf7-bce9-6a530d2303e4';
     return this.get(url, params);
   }
+  getVisualization() {
+    const url = `https://642cf0d966a20ec9ce915e71.mockapi.io/queries/queries/`;
+    return this.get(url);
+  }
   getDashboardItem() {
-    const url = `https://642bcf7fd7081590f92a4f26.mockapi.io/blocklens/layouts`;
+    const url = `https://6071c80750aaea0017285222.mockapi.io/layouts`;
     return this.get(url);
   }
   addDashboardItem(data: ILayout) {
-    const url = `https://642bcf7fd7081590f92a4f26.mockapi.io/blocklens/layouts`;
+    const url = `https://6071c80750aaea0017285222.mockapi.io/layouts`;
     return this.post(url, data);
   }
   updateDashboardItem(data: ILayout) {
-    const url = `https://642bcf7fd7081590f92a4f26.mockapi.io/blocklens/layouts/${data.id}`;
+    const url = `https://6071c80750aaea0017285222.mockapi.io/layouts/${data.id}`;
     return this.put(url, data);
   }
   removeDashboardItem(id: ILayout) {
-    const url = `https://642bcf7fd7081590f92a4f26.mockapi.io/blocklens/layouts/${id}`;
+    const url = `https://6071c80750aaea0017285222.mockapi.io/layouts/${id}`;
     return this.delete(url, id);
   }
 }

@@ -6,14 +6,21 @@ import {
   AreaChart,
   LineChart,
   PieChart,
-} from '../../../components/Chart';
+} from '../../../components/Charts';
 import { AppTabs, AppButton, AppSelect2 } from '../../../components';
 import BaseModal from '../../../modals/BaseModal';
-import ChartSettings from '../../../components/SqlEditor/ChartSettings';
-import DashboardsRequest from '../../../requests/DashboardsRequest';
 import { objectKeys } from '../../../utils/utils-network';
-import { QueryType, VisualizationType } from '../../../utils/common';
+import ChartSettings from '../../../components/SqlEditor/ChartSettings';
+import VisualizationPieChart from '../../../components/Charts/PieChart';
+import DashboardsRequest from '../../../requests/DashboardsRequest';
+import {
+  QueryType,
+  VisualizationType,
+  TYPE_VISUALIZATION,
+  VALUE_VISUALIZATION,
+} from '../../../utils/common';
 import { useParams } from 'react-router-dom';
+import { ColumnDef } from '@tanstack/react-table';
 
 type VisualizationConfigType = {
   value: string;
@@ -23,29 +30,29 @@ type VisualizationConfigType = {
 
 const visualizationConfigs: VisualizationConfigType[] = [
   {
-    value: 'query',
+    value: VALUE_VISUALIZATION.query,
     label: 'Query',
-    type: 'table',
+    type: TYPE_VISUALIZATION.table,
   },
   {
     label: 'Bar chart',
-    type: 'column',
-    value: 'bar',
+    type: TYPE_VISUALIZATION.bar,
+    value: VALUE_VISUALIZATION.bar,
   },
   {
     label: 'Line chart',
-    type: 'line',
-    value: 'line',
+    type: TYPE_VISUALIZATION.line,
+    value: VALUE_VISUALIZATION.line,
   },
   {
     label: 'Area chart',
-    type: 'area',
-    value: 'area',
+    type: TYPE_VISUALIZATION.area,
+    value: VALUE_VISUALIZATION.area,
   },
   {
     label: 'Pie chart',
-    type: 'pie',
-    value: 'pie',
+    type: TYPE_VISUALIZATION.pie,
+    value: VALUE_VISUALIZATION.pie,
   },
 ];
 
@@ -61,21 +68,23 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
   >([{ id: '1', options: {}, name: 'New Visualization', type: '' }]);
   const [closeTabId, setCloseTabId] = useState('');
 
-  const columns =
-    Array.isArray(queryValues) && queryValues[0]
-      ? objectKeys(queryValues[0])
-      : [];
-  const tableValuesColumnConfigs = useMemo(
-    () =>
-      columns.map((col) => ({
-        id: col,
-        accessorKey: col,
-        header: col,
-        enableResizing: true,
-        size: 100,
-      })),
-    [queryValues],
-  );
+  const tableValuesColumnConfigs = useMemo(() => {
+    const columns =
+      Array.isArray(queryValues) && queryValues[0]
+        ? objectKeys(queryValues[0])
+        : [];
+
+    return columns.map(
+      (col) =>
+        ({
+          id: col,
+          accessorKey: col,
+          header: col,
+          enableResizing: true,
+          size: 100,
+        } as ColumnDef<unknown>),
+    );
+  }, [queryValues]);
 
   const addVisualizationToQuery = async (
     queryId: string,
@@ -162,25 +171,27 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
 
   const renderVisualization = (type: string) => {
     switch (type) {
-      case 'table':
+      case TYPE_VISUALIZATION.table:
         return (
           <TableSqlValue
-            columns={tableValuesColumnConfigs as typeof queryValues}
+            columns={tableValuesColumnConfigs}
             data={queryValues}
           />
         );
-      case 'line':
+      case TYPE_VISUALIZATION.line:
         return (
           <LineChart data={queryValues} xAxisKey="time" yAxisKeys={['size']} />
         );
-      case 'column':
+      case TYPE_VISUALIZATION.column:
         return (
           <BarChart data={queryValues} xAxisKey="time" yAxisKeys={['size']} />
         );
-      case 'area':
+      case TYPE_VISUALIZATION.area:
         return (
           <AreaChart data={queryValues} xAxisKey="time" yAxisKeys={['size']} />
         );
+      case TYPE_VISUALIZATION.pie:
+        return <VisualizationPieChart data={queryValues} dataKey={'number'} />;
       case 'pie':
         return <PieChart data={queryValues} dataKey={'number'} />;
       default:

@@ -1,9 +1,9 @@
 import { Flex, Text, Textarea } from '@chakra-ui/react';
 import { debounce } from 'lodash';
-import React, { Dispatch, MouseEvent, SetStateAction } from 'react';
+import React, { useState } from 'react';
 import { AppButton, AppField } from 'src/components';
 import AppAccordion from 'src/components/AppAccordion';
-import { ILayout } from 'src/pages/DashboardDetailPage';
+import { ILayout, TYPE_MODAL } from 'src/pages/DashboardDetailPage';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/BaseModal.scss';
 import { getErrorMessage } from 'src/utils/utils-helper';
@@ -13,13 +13,12 @@ import BaseModal from './BaseModal';
 interface IModalAddTextWidget {
   open: boolean;
   onClose: () => void;
-  markdownText: string;
-  setMarkdownText: Dispatch<SetStateAction<string>>;
-  setReload: Dispatch<SetStateAction<boolean>>;
-  type?: 'add' | 'edit' | string;
+  type?: TYPE_MODAL.ADD | TYPE_MODAL.EDIT | string;
   selectedItem: ILayout;
   dataLayouts: ILayout[];
+
   setDataLayouts: React.Dispatch<React.SetStateAction<ILayout[]>>;
+  onReload: () => Promise<void>;
 }
 
 interface IMarkdown {
@@ -86,32 +85,36 @@ const MarkdownSupport: IMarkdown[] = [
     ),
   },
 ];
-
 const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
   open,
   onClose,
-  markdownText,
-  setMarkdownText,
   type,
   dataLayouts,
   setDataLayouts,
   selectedItem,
-  setReload,
+  onReload,
 }) => {
+  const [markdownText, setMarkdownText] = useState<string>(``);
+
   const DEBOUNCE_TIME = 500;
 
   const handleSave = async () => {
     try {
-      const res = await rf.getRequest('DashboardsRequest').addDashboardItem({
-        id: dataLayouts.length + 1,
-        i: markdownText,
-        x: 0,
-        y: 0,
-        w: 6,
-        h: 2,
-      });
+      const payload = {
+        meta: {
+          i: markdownText,
+          x: dataLayouts.length % 2 === 0 ? 0 : 6,
+          y: 0,
+          w: 6,
+          h: 2,
+        },
+        content: [],
+      };
+      const res = await rf
+        .getRequest('DashboardsRequest')
+        .addDashboardItem(payload);
       if (res) {
-        setDataLayouts([...dataLayouts, res]);
+        onReload();
         setMarkdownText('');
         onClose();
       }
@@ -122,9 +125,20 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
 
   const handleUpdate = async () => {
     try {
+      const payload = {
+        meta: {
+          i: markdownText,
+          x: selectedItem.x,
+          y: selectedItem.y,
+          w: selectedItem.w,
+          h: selectedItem.h,
+        },
+        content: [],
+        id: selectedItem.id,
+      };
       const res = await rf
         .getRequest('DashboardsRequest')
-        .updateDashboardItem({ ...selectedItem, i: markdownText });
+        .updateDashboardItem(payload);
       if (res) {
         setDataLayouts((prevData) => {
           const updateDataIndex = prevData.findIndex(
@@ -138,6 +152,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
             return newData;
           }
         });
+        onReload();
         setMarkdownText('');
         onClose();
       }
@@ -145,10 +160,8 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
       toastError({ message: getErrorMessage(e) });
     }
   };
-
   const handleRemoveItem = async (
-    id: number,
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    e: React.MouseEvent<HTMLButtonElement, globalThis.MouseEvent>,
   ) => {
     try {
       e.preventDefault();
@@ -158,7 +171,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
       if (res) {
         setDataLayouts([...dataLayouts]);
       }
-      setReload((prev) => !prev);
+      onReload();
       onClose();
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
@@ -169,58 +182,15 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
     setMarkdownText(event.target.value);
   }, DEBOUNCE_TIME);
 
-  const ButtonSave = () => {
-    return (
-      <AppButton
-        size="sm"
-        bg="#1e1870"
-        color="#fff"
-        onClick={() => {
-          type === 'add' ? handleSave() : handleUpdate();
-        }}
-        disabled={!markdownText}
-      >
-        Save
-      </AppButton>
-    );
-  };
-  const ButtonCancel = () => {
-    return (
-      <AppButton
-        onClick={onClose}
-        size="sm"
-        bg="#e1e1f9"
-        color="#1e1870"
-        variant={'cancel'}
-      >
-        Cancel
-      </AppButton>
-    );
-  };
-  const ButtonRemoveWidget = () => {
-    return (
-      <AppButton
-        onClick={(e: any) => handleRemoveItem(selectedItem.id, e)}
-        size="sm"
-        bg="#e1e1f9"
-        color="#1e1870"
-        variant={'cancel'}
-      >
-        Remove this widget
-      </AppButton>
-    );
-  };
-
   return (
     <BaseModal isOpen={open} onClose={onClose} size="md">
       <div className="main-modal-dashboard-details">
         <AppField label={'Text widget context'}>
           <Textarea
+            className="text-widget-input"
             resize={'both'}
             size="sm"
-            h={'150px'}
-            borderRadius={'0.5rem'}
-            defaultValue={type === 'add' ? '' : selectedItem.i}
+            defaultValue={type === TYPE_MODAL.ADD ? '' : selectedItem.i}
             onChange={handleChangeMarkdownText}
           />
         </AppField>
@@ -229,8 +199,8 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
             <div>
               {MarkdownSupport.map((item) => (
                 <Flex key={item.title} gap={'20px'} className="main-markdown">
-                  <Text w={'160px'}>{item.title}</Text>
-                  <Text w={'100%'}>{item.mark}</Text>
+                  <Text className="title-markdown">{item.title}</Text>
+                  <Text className="markdown">{item.mark}</Text>
                 </Flex>
               ))}
             </div>
@@ -242,17 +212,40 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
           flexWrap={'wrap'}
           gap={'10px'}
           mt={10}
-          justifyContent={type === 'add' ? '' : 'space-between'}
+          justifyContent={type === TYPE_MODAL.ADD ? '' : 'space-between'}
         >
-          <ButtonSave />
-          {type === 'add' ? (
-            <ButtonCancel />
-          ) : (
-            <Flex gap={'10px'}>
-              <ButtonRemoveWidget />
-              <ButtonCancel />
-            </Flex>
-          )}
+          <AppButton
+            className="btn-save"
+            size="sm"
+            onClick={() => {
+              type === TYPE_MODAL.ADD ? handleSave() : handleUpdate();
+            }}
+            disabled={!markdownText}
+          >
+            Save
+          </AppButton>
+          <Flex gap={'10px'}>
+            {type === TYPE_MODAL.EDIT && (
+              <AppButton
+                onClick={(
+                  e: React.MouseEvent<HTMLButtonElement, globalThis.MouseEvent>,
+                ) => handleRemoveItem(e)}
+                size="sm"
+                className="btn-remove"
+                variant={'cancel'}
+              >
+                Remove this widget
+              </AppButton>
+            )}
+            <AppButton
+              onClick={onClose}
+              size="sm"
+              className="btn-remove"
+              variant={'cancel'}
+            >
+              Cancel
+            </AppButton>
+          </Flex>
         </Flex>
       </div>
     </BaseModal>
