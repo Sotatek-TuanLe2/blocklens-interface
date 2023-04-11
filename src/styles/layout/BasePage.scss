@@ -1,0 +1,13 @@
+.base-page-container {
+  min-height: calc(100vh - 200px);
+
+  &__content {
+    width: 100%;
+    max-width: 1210px;
+    padding: 0 16px;
+
+    &--full {
+      max-width: initial;
+    }
+  }
+}
