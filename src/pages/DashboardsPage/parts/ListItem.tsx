@@ -1,9 +1,9 @@
 import { Flex, Tr } from '@chakra-ui/react';
-import { Link } from 'react-router-dom';
 import moment from 'moment';
-import { ActiveStarIcon, StarIcon } from 'src/assets/icons';
-import { LIST_ITEM_TYPE } from '..';
+import { Link } from 'react-router-dom';
+import { AccountIcon } from 'src/assets/icons';
 import useUser from 'src/hooks/useUser';
+import { LIST_ITEM_TYPE } from '..';
 
 interface IMember {
   id: number;
@@ -38,7 +38,7 @@ const ListItem: React.FC<IListItem> = (props) => {
 
   const { user } = useUser();
 
-  const LIKEABLE_ITEMS = [LIST_ITEM_TYPE.DASHBOARDS, LIST_ITEM_TYPE.QUERIES];
+  // const LIKEABLE_ITEMS = [LIST_ITEM_TYPE.DASHBOARDS, LIST_ITEM_TYPE.QUERIES];
 
   const getDuration = (): string => {
     const durationMinutes = moment().diff(moment(createdAt), 'minutes');
@@ -72,20 +72,24 @@ const ListItem: React.FC<IListItem> = (props) => {
     }
   };
 
-  const onLike = () => {
-    //
-  };
+  // const onLike = () => {
+  //   //
+  // };
 
   const _renderSubContent = () => {
     if (type === LIST_ITEM_TYPE.DASHBOARDS || type === LIST_ITEM_TYPE.QUERIES) {
       return (
-        <>
-          Created by @
-          <Link to={`/${author}`} target="_blank">
-            {author}
+        <div className="dashboard-list__item__sub__content">
+          Created by{' '}
+          <Link
+            className="dashboard-list__item__sub__content__link"
+            to={`/${author}`}
+            target="_blank"
+          >
+            @{author}
           </Link>{' '}
           {getDuration()} ago
-        </>
+        </div>
       );
     }
     if (type === LIST_ITEM_TYPE.WIZARDS) {
@@ -140,11 +144,12 @@ const ListItem: React.FC<IListItem> = (props) => {
           justifyContent={'space-between'}
         >
           <span>{starCount}</span>
-          {LIKEABLE_ITEMS.includes(type) ? (
+          {/* {LIKEABLE_ITEMS.includes(type) ? (
             <StarIcon onClick={onLike} />
           ) : (
             <ActiveStarIcon />
-          )}
+          )} */}
+          <AccountIcon />
         </Flex>
       </Flex>
     </Tr>

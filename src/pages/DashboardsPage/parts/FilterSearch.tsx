@@ -1,9 +1,8 @@
 import { Flex } from '@chakra-ui/react';
-import { ChangeEvent, useEffect } from 'react';
-import { useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router';
 import { Link } from 'react-router-dom';
-import { CloseMenuIcon } from 'src/assets/icons';
+import { CloseMenuIcon, TagIcon } from 'src/assets/icons';
 import { AppButton, AppInput } from 'src/components';
 import ModalNewDashboard from 'src/modals/ModalNewDashboard';
 import { LIST_ITEM_TYPE } from '..';
@@ -22,6 +21,12 @@ const RANK_TITLES = {
   [RANKS.FAVORITES]: 'Favorites',
   [RANKS.TRENDING]: 'Trending',
   [RANKS.NEW]: 'New',
+};
+
+const RANK_ICON = {
+  [RANKS.FAVORITES]: '⭐',
+  [RANKS.TRENDING]: '🔥',
+  [RANKS.NEW]: '🎊',
 };
 
 const FAVORITES_TIME_RANGE: {
@@ -92,6 +97,8 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
       ? [RANKS.FAVORITES, RANKS.TRENDING, RANKS.NEW]
       : [RANKS.FAVORITES, RANKS.NEW];
 
+  console.log('ranks', ranks);
+
   const getRankUrl = (rank: string) => () => {
     const searchParams = new URLSearchParams(searchUrl);
     searchParams.delete('order');
@@ -157,6 +164,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
           <Flex
             className="dashboard-filter__search__selects"
             alignItems={'center'}
+            isTruncated
           >
             {ranks.map((rank) => (
               <Link
@@ -168,7 +176,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
                 }`}
                 to={getRankUrl(rank)}
               >
-                {RANK_TITLES[rank]}
+                {RANK_ICON[rank]} {RANK_TITLES[rank]}
               </Link>
             ))}
           </Flex>
@@ -187,8 +195,9 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
         <>
           <div className="dashboard-filter__search__title">Time range</div>
           <Flex
-            className="dashboard-filter__search__selects"
+            className="dashboard-filter__search__selects--time"
             alignItems={'center'}
+            isTruncated
           >
             {(rankBy === RANKS.FAVORITES
               ? FAVORITES_TIME_RANGE
@@ -196,9 +205,9 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
             ).map((item) => (
               <Link
                 key={item.value}
-                className={`dashboard-filter__search__selects__item ${
+                className={`dashboard-filter__search__selects--time__item ${
                   item.value === timeRange
-                    ? 'dashboard-filter__search__selects__item--selected'
+                    ? 'dashboard-filter__search__selects--time__item--selected'
                     : ''
                 }`}
                 to={getTimeRangeUrl(item.value)}
@@ -215,7 +224,10 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
           justifyContent={'space-between'}
           alignItems={'center'}
         >
-          <span>{tag}</span>
+          <div className="tag-title">
+            <TagIcon />
+            <span>{tag}</span>
+          </div>
           <Link to={getRemoveTagUrl()}>
             <CloseMenuIcon width={12} />
           </Link>
