@@ -26,6 +26,7 @@ import { QueryTypeSingle, TYPE_VISUALIZATION } from 'src/utils/common';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { objectKeys } from 'src/utils/utils-network';
 import { toastError } from 'src/utils/utils-notify';
+import { ColumnDef } from '@tanstack/react-table';
 
 interface ParamTypes {
   authorId: string;
@@ -122,13 +123,16 @@ const DashboardDetailPage: React.FC = () => {
         ? objectKeys(queryValues[0])
         : [];
 
-    return columns.map((col) => ({
-      id: col,
-      accessorKey: col,
-      header: col,
-      enableResizing: true,
-      size: 100,
-    }));
+    return columns.map(
+      (col) =>
+        ({
+          id: col,
+          accessorKey: col,
+          header: col,
+          enableResizing: true,
+          size: 100,
+        } as ColumnDef<unknown>),
+    );
   }, [queryValues]);
 
   const renderVisualization = (type: string) => {
@@ -136,7 +140,7 @@ const DashboardDetailPage: React.FC = () => {
       case TYPE_VISUALIZATION.table:
         return (
           <TableSqlValue
-            columns={tableValuesColumnConfigs as typeof queryValues}
+            columns={tableValuesColumnConfigs}
             data={queryValues}
           />
         );
@@ -340,9 +344,12 @@ const DashboardDetailPage: React.FC = () => {
                     )}
                   </>
                 ) : (
-                  <ReactMarkdown>{item.i}</ReactMarkdown>
+                  <div className="box-text-widget">
+                    <ReactMarkdown>{item.i}</ReactMarkdown>
+                  </div>
                 )}
               </div>
+
               {editMode ? (
                 <Box
                   className="btn-edit"
