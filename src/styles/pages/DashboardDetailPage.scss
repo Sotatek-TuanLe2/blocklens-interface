@@ -57,9 +57,8 @@
         text-decoration: underline;
       }
       background: #ffeceb;
-      padding: 10px 25px;
       color: $blackAlpha-900;
-      overflow: auto;
+      overflow: hidden;
       cursor: grab;
     }
 
@@ -70,6 +69,16 @@
     .box-layout {
       border: 1px dashed #808080;
       position: relative;
+
+      .box-chart {
+        overflow: auto;
+        width: 100%;
+        height: 100%;
+      }
+
+      .box-text-widget {
+        padding: 10px 25px;
+      }
 
       .btn-edit {
         position: absolute;

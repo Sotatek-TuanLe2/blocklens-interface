@@ -300,6 +300,7 @@ const DashboardDetailPage: React.FC = () => {
   const onLayoutChange = (layout: Layout[]) => {
     setLayoutChange(layout);
   };
+
   return (
     <div className="main-content-dashboard-details">
       <header className="main-header-dashboard-details">
@@ -332,15 +333,20 @@ const DashboardDetailPage: React.FC = () => {
         >
           {dataLayouts.map((item) => (
             <div className="box-layout" key={item.i}>
-              {item.content.length > 0 ? (
-                <>
-                  {renderVisualization(
-                    checkTypeVisualization(item.content).toString(),
-                  )}
-                </>
-              ) : (
-                <ReactMarkdown>{item.i}</ReactMarkdown>
-              )}
+              <div className="box-chart">
+                {item.content.length > 0 ? (
+                  <>
+                    {renderVisualization(
+                      checkTypeVisualization(item.content).toString(),
+                    )}
+                  </>
+                ) : (
+                  <div className="box-text-widget">
+                    <ReactMarkdown>{item.i}</ReactMarkdown>
+                  </div>
+                )}
+              </div>
+
               {editMode ? (
                 <Box
                   className="btn-edit"
