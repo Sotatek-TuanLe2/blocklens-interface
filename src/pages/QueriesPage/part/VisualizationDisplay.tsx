@@ -109,7 +109,6 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
   };
 
   const addVisualizationHandler = async (visualizationValue: string) => {
-    console.log(visualizationValue);
     const searchedVisualization = visualizationConfigs.find(
       (v) => v.value === visualizationValue,
     );
@@ -251,7 +250,7 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
   return (
     <Box className="visual-container">
       <AppTabs
-        onCloseTab={(tabId) => {
+        onCloseTab={(tabId: string) => {
           setCloseTabId(tabId);
         }}
         tabs={visualizationsActive.map((v) => ({
