@@ -1,24 +1,26 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Box, Text } from '@chakra-ui/react';
-import TableSqlValue from '../../../components/Charts/TableSqlValue';
-import VisualizationBarChart from '../../../components/Charts/BarChart';
-import { AppButton, AppSelect2 } from '../../../components';
-import VisualizationAreaChart from '../../../components/Charts/AreaChart';
-import AppTabs from '../../../components/AppTabs';
+import {
+  TableSqlValue,
+  BarChart,
+  AreaChart,
+  LineChart,
+  PieChart,
+  ScatterChart,
+} from '../../../components/Charts';
+import { AppTabs, AppButton, AppSelect2 } from '../../../components';
+import BaseModal from '../../../modals/BaseModal';
 import { objectKeys } from '../../../utils/utils-network';
-import VisualizationLineChart from '../../../components/Charts/LineChart';
 import ChartSettings from '../../../components/SqlEditor/ChartSettings';
 import VisualizationPieChart from '../../../components/Charts/PieChart';
+import DashboardsRequest from '../../../requests/DashboardsRequest';
 import {
   QueryType,
+  VisualizationType,
   TYPE_VISUALIZATION,
   VALUE_VISUALIZATION,
-  VisualizationType,
 } from '../../../utils/common';
-import DashboardsRequest from '../../../requests/DashboardsRequest';
 import { useParams } from 'react-router-dom';
-import BaseModal from '../../../modals/BaseModal';
-import VisualizationScatterChart from '../../../components/Charts/ScatterChart';
 import { ColumnDef } from '@tanstack/react-table';
 
 type VisualizationConfigType = {
@@ -184,34 +186,24 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
         );
       case TYPE_VISUALIZATION.line:
         return (
-          <VisualizationLineChart
-            data={queryValues}
-            xAxisKey="time"
-            yAxisKeys={['size']}
-          />
+          <LineChart data={queryValues} xAxisKey="time" yAxisKeys={['size']} />
         );
       case TYPE_VISUALIZATION.column:
         return (
-          <VisualizationBarChart
-            data={queryValues}
-            xAxisKey="time"
-            yAxisKeys={['size']}
-          />
+          <BarChart data={queryValues} xAxisKey="time" yAxisKeys={['size']} />
         );
       case TYPE_VISUALIZATION.area:
         return (
-          <VisualizationAreaChart
-            data={queryValues}
-            xAxisKey="time"
-            yAxisKeys={['size']}
-          />
+          <AreaChart data={queryValues} xAxisKey="time" yAxisKeys={['size']} />
         );
       case TYPE_VISUALIZATION.pie:
         return <VisualizationPieChart data={queryValues} dataKey={'number'} />;
+      case 'pie':
+        return <PieChart data={queryValues} dataKey={'number'} />;
 
       case TYPE_VISUALIZATION.scatter:
         return (
-          <VisualizationScatterChart
+          <ScatterChart
             data={queryValues}
             xAxisKey={'number'}
             yAxisKeys={['size']}
