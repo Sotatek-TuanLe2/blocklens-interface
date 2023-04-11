@@ -18,6 +18,8 @@ import {
 import DashboardsRequest from '../../../requests/DashboardsRequest';
 import { useParams } from 'react-router-dom';
 import BaseModal from '../../../modals/BaseModal';
+import VisualizationScatterChart from '../../../components/Charts/ScatterChart';
+import { ColumnDef } from '@tanstack/react-table';
 
 type VisualizationConfigType = {
   value: string;
@@ -51,6 +53,11 @@ const visualizationConfigs: VisualizationConfigType[] = [
     type: TYPE_VISUALIZATION.pie,
     value: VALUE_VISUALIZATION.pie,
   },
+  {
+    label: 'Scatter chart',
+    type: TYPE_VISUALIZATION.scatter,
+    value: VALUE_VISUALIZATION.scatter,
+  },
 ];
 
 type Props = {
@@ -71,13 +78,16 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
         ? objectKeys(queryValues[0])
         : [];
 
-    return columns.map((col) => ({
-      id: col,
-      accessorKey: col,
-      header: col,
-      enableResizing: true,
-      size: 100,
-    }));
+    return columns.map(
+      (col) =>
+        ({
+          id: col,
+          accessorKey: col,
+          header: col,
+          enableResizing: true,
+          size: 100,
+        } as ColumnDef<unknown>),
+    );
   }, [queryValues]);
 
   const addVisualizationToQuery = async (
@@ -168,7 +178,7 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
       case TYPE_VISUALIZATION.table:
         return (
           <TableSqlValue
-            columns={tableValuesColumnConfigs as typeof queryValues}
+            columns={tableValuesColumnConfigs}
             data={queryValues}
           />
         );
@@ -198,6 +208,15 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
         );
       case TYPE_VISUALIZATION.pie:
         return <VisualizationPieChart data={queryValues} dataKey={'number'} />;
+
+      case TYPE_VISUALIZATION.scatter:
+        return (
+          <VisualizationScatterChart
+            data={queryValues}
+            xAxisKey={'number'}
+            yAxisKeys={['size']}
+          />
+        );
       default:
         return <AddVisualization onAddVisualize={addVisualizationHandler} />;
     }
