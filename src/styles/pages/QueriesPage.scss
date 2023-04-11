@@ -1,0 +1,24 @@
+.queries-page {
+  .control-editor {
+    padding: 16px 12px;
+    background-color: #111213;
+    display: flex;
+    justify-content: flex-end;
+  }
+  .schema-detail-title {
+    cursor: default;
+    .table-name {
+      &:hover {
+        background: transparent;
+      }
+    }
+  }
+  .block-describe {
+    padding: 2px;
+
+    cursor: pointer;
+    &:hover {
+      background-color: #ffffff1a;
+    }
+  }
+}

@@ -94,11 +94,26 @@ iframe {
   cursor: pointer;
 }
 
+::-webkit-scrollbar {
+  width: 6px;
+  background-color: #030821;
+  border-radius: 100px;
+  height: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background: #1a203b;
+  border-radius: 100px;
+}
+
+::-webkit-scrollbar-corner {
+  background: #030821;
+}
+
 @keyframes spin {
   from {
-    transform:rotate(0deg);
+    transform: rotate(0deg);
   }
   to {
-    transform:rotate(360deg);
+    transform: rotate(360deg);
   }
 }
