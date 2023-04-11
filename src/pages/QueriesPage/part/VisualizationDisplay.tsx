@@ -14,7 +14,7 @@ import {
   TYPE_VISUALIZATION,
   VALUE_VISUALIZATION,
   VisualizationType,
-} from '../../../utils/common';
+} from '../../../utils/Visualization.types';
 import DashboardsRequest from '../../../requests/DashboardsRequest';
 import { useParams } from 'react-router-dom';
 import BaseModal from '../../../modals/BaseModal';

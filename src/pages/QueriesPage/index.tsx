@@ -12,8 +12,8 @@ import 'ace-builds/src-noconflict/theme-monokai';
 import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/mode-sql';
 import { getErrorMessage } from '../../utils/utils-helper';
-import { QueryType } from '../../utils/common';
 import { useParams } from 'react-router-dom';
+import { QueryType } from '../../utils/Visualization.types';
 
 interface ParamTypes {
   queryId: string;
