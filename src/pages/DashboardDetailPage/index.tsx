@@ -332,15 +332,17 @@ const DashboardDetailPage: React.FC = () => {
         >
           {dataLayouts.map((item) => (
             <div className="box-layout" key={item.i}>
-              {item.content.length > 0 ? (
-                <>
-                  {renderVisualization(
-                    checkTypeVisualization(item.content).toString(),
-                  )}
-                </>
-              ) : (
-                <ReactMarkdown>{item.i}</ReactMarkdown>
-              )}
+              <div className="box-chart">
+                {item.content.length > 0 ? (
+                  <>
+                    {renderVisualization(
+                      checkTypeVisualization(item.content).toString(),
+                    )}
+                  </>
+                ) : (
+                  <ReactMarkdown>{item.i}</ReactMarkdown>
+                )}
+              </div>
               {editMode ? (
                 <Box
                   className="btn-edit"
