@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { AppButton, AppField, AppInput } from 'src/components';
 import BaseModal from './BaseModal';
 import 'src/styles/components/BaseModal.scss';
