@@ -19,6 +19,7 @@ export { default as AppHeading } from './AppHeading';
 export { default as AppFilter } from './AppFilter';
 export { default as AppConnectWalletButton } from './AppConnectWalletButton';
 export { default as AppLoadingTable } from './AppLoadingTable';
+export { default as AppTabs } from './AppTabs';
 
 export * from './AppCard';
 export * from './AppButton';

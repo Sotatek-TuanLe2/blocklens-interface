@@ -9,6 +9,7 @@ import {
 } from '@chakra-ui/react';
 import { FC, ReactNode } from 'react';
 import 'src/styles/components/AppTabs.scss';
+import { CloseIcon } from '@chakra-ui/icons';
 
 interface IAppTabs {
   defaultTab?: number;
@@ -32,7 +33,6 @@ const AppTabs: FC<IAppTabs> = ({
   rightElement,
   onCloseTab,
 }) => {
-  console.log('tabs', tabs);
   return (
     <Tabs
       h={'full'}
@@ -59,17 +59,15 @@ const AppTabs: FC<IAppTabs> = ({
                     <span>{tab.name}</span>
                   </span>
                   {tab.closeable && (
-                    <Box
-                      as={'span'}
+                    <CloseIcon
+                      boxSize={2}
                       ml={2}
                       cursor={'pointer'}
                       onClick={() => {
                         if (!onCloseTab) return;
                         onCloseTab(tab.id);
                       }}
-                    >
-                      x
-                    </Box>
+                    />
                   )}
                 </Tab>
               );
