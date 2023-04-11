@@ -7,15 +7,20 @@
 
     color: $paragraph;
     height: max-content !important;
-    font-size: 14px !important;
+    font-size: 16px !important;
     box-shadow: none;
     margin-right: 18px;
+
+    svg {
+      margin-right: 10px;
+    }
 
     &[aria-selected='true'] {
       @include text-small-bold;
 
       box-shadow: none !important;
       color: $title;
+      text-decoration: underline;
     }
   }
 
