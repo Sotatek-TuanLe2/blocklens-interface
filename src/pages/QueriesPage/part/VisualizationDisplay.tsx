@@ -6,6 +6,7 @@ import {
   AreaChart,
   LineChart,
   PieChart,
+  ScatterChart,
 } from '../../../components/Charts';
 import { AppTabs, AppButton, AppSelect2 } from '../../../components';
 import BaseModal from '../../../modals/BaseModal';
@@ -53,6 +54,11 @@ const visualizationConfigs: VisualizationConfigType[] = [
     label: 'Pie chart',
     type: TYPE_VISUALIZATION.pie,
     value: VALUE_VISUALIZATION.pie,
+  },
+  {
+    label: 'Scatter chart',
+    type: TYPE_VISUALIZATION.scatter,
+    value: VALUE_VISUALIZATION.scatter,
   },
 ];
 
@@ -194,6 +200,15 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
         return <VisualizationPieChart data={queryValues} dataKey={'number'} />;
       case 'pie':
         return <PieChart data={queryValues} dataKey={'number'} />;
+
+      case TYPE_VISUALIZATION.scatter:
+        return (
+          <ScatterChart
+            data={queryValues}
+            xAxisKey={'number'}
+            yAxisKeys={['size']}
+          />
+        );
       default:
         return <AddVisualization onAddVisualize={addVisualizationHandler} />;
     }

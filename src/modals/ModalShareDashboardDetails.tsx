@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { AppButton, AppInput } from 'src/components';
 import 'src/styles/components/BaseModal.scss';
 import { copyToClipboard } from 'src/utils/utils-helper';
+import { UserInterface } from 'src/utils/utils-user';
 import BaseModal from './BaseModal';
 import { SmallSuccessIcon } from 'src/assets/icons';
 import useUser from 'src/hooks/useUser';
