@@ -135,9 +135,6 @@ const QueriesPage = () => {
                 >
                   Run
                 </AppButton>
-                <AppButton ml={2} bg={'#2a2c2f'} _hover={{ bg: '#2a2c2f99' }}>
-                  Format
-                </AppButton>
               </Box>
             </Box>
             <Box mt={8}>

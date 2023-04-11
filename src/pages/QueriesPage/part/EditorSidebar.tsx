@@ -62,7 +62,7 @@ const EditorSidebar = () => {
   const renderListSchema = () => {
     return (
       !tableSelected && (
-        <Box maxH={'468px'} overflow={'auto'} className="custom-scroll">
+        <Box className="list-schema custom-scroll">
           {schemas.map((schema) => (
             <Box key={schema.id}>
               <SchemaTitle
@@ -92,10 +92,7 @@ const EditorSidebar = () => {
     return (
       <Flex justifyContent={'space-between'} alignItems={'center'}>
         <Box className={'dataset-title'}>
-          <ArrowBackIcon />
-          <Text as={'span'} marginLeft={3}>
-            Raw tables
-          </Text>
+          <Text as={'span'}>Raw tables</Text>
         </Box>
         <Box className="select-chains">
           <AppSelect2
@@ -107,13 +104,6 @@ const EditorSidebar = () => {
             ]}
             onChange={handleChangeChainSelect}
           />
-          {/* <Select >
-            {['All chains', 'Ethereum', 'Polygon'].map((item) => (
-              <option key={item} style={{ backgroundColor: '#000224' }}>
-                {item}
-              </option>
-            ))}
-          </Select> */}
         </Box>
       </Flex>
     );
@@ -131,12 +121,9 @@ const EditorSidebar = () => {
         {tableSelected ? (
           <Flex alignItems={'center'}>
             <Flex
-              cursor={'pointer'}
-              _hover={{ bg: '#ffffff1a' }}
+              className="header-table"
               alignItems={'center'}
               onClick={clickBackIconHandler}
-              p={'4px'}
-              ml="-4px"
             >
               <ArrowBackIcon />
               <Box className={getLogoChainByChainId('ETH')} marginLeft={2} />

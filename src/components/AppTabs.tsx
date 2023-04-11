@@ -46,7 +46,7 @@ const AppTabs: FC<IAppTabs> = ({
     >
       <TabList className="tab-list">
         <Flex justifyContent={'space-between'} alignItems="center" w="100%">
-          <Flex alignItems="center">
+          <Flex alignItems="center" className="tabs-container">
             {tabs.map((tab: ITabs) => {
               return (
                 <Tab
@@ -54,10 +54,10 @@ const AppTabs: FC<IAppTabs> = ({
                   className="app-tab__name-tab"
                   onClick={() => onChange && onChange(tab.id)}
                 >
-                  <Flex flexDirection="row" alignItems="center">
+                  <div className="app-tab__name-tab__detail">
                     {tab.icon && <span>{tab.icon}</span>}
                     <span>{tab.name}</span>
-                  </Flex>
+                  </div>
                   {tab.closeable && (
                     <CloseIcon
                       boxSize={2}

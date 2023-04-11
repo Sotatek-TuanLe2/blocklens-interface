@@ -40,6 +40,12 @@ import { ReactComponent as TagIcon } from './TagIcon.svg';
 import { ReactComponent as DashboardsIcon } from './DashboardsIcon.svg';
 import { ReactComponent as QueriesIcon } from './QueriesIcon.svg';
 import { ReactComponent as TeamsIcon } from './TeamsIcon.svg';
+import { ReactComponent as QueryResultIcon } from './QueryResultIcon.svg';
+import { ReactComponent as PieChartIcon } from './PieChartIcon.svg';
+import { ReactComponent as ScatterChartIcon } from './ScatterChartIcon.svg';
+import { ReactComponent as LineChartIcon } from './LineChartIcon.svg';
+import { ReactComponent as AreaChartIcon } from './AreaChartIcon.svg';
+import { ReactComponent as BarChartIcon } from './BarChartIcon.svg';
 
 export {
   CalendarIcon,
@@ -84,4 +90,10 @@ export {
   DashboardsIcon,
   QueriesIcon,
   TeamsIcon,
+  QueryResultIcon,
+  PieChartIcon,
+  ScatterChartIcon,
+  LineChartIcon,
+  AreaChartIcon,
+  BarChartIcon,
 };

@@ -21,4 +21,60 @@
       background-color: #ffffff1a;
     }
   }
+
+  .visual-container {
+    .app-tab {
+      .tabs-container {
+        background-color: #111213;
+        border-radius: 4px;
+        margin-bottom: 20px;
+      }
+
+      &__name-tab {
+        margin-right: 0;
+        border-radius: 4px;
+        line-height: unset !important;
+
+        &__detail {
+          display: flex;
+          gap: 4px;
+          align-items: center;
+        }
+
+        &:hover {
+          background-color: #ffffff1a;
+        }
+      }
+
+      &__name-tab[aria-selected='true'] {
+        background-color: #444444;
+        text-decoration: none;
+      }
+
+      .table-value {
+        border: 1px solid #747474;
+
+        td,
+        th {
+          text-align: center;
+          font-size: 12px;
+          box-shadow: none;
+          border-bottom: 1px solid #747474;
+        }
+        thead {
+          .resizer {
+            display: none;
+          }
+          tr {
+            background-color: #444444;
+            th {
+              font-size: 12px;
+
+              font-weight: 400;
+            }
+          }
+        }
+      }
+    }
+  }
 }

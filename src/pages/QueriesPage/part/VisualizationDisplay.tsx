@@ -22,6 +22,14 @@ import {
 } from '../../../utils/common';
 import { useParams } from 'react-router-dom';
 import { ColumnDef } from '@tanstack/react-table';
+import {
+  AreaChartIcon,
+  BarChartIcon,
+  LineChartIcon,
+  PieChartIcon,
+  QueryResultIcon,
+  ScatterChartIcon,
+} from 'src/assets/icons';
 
 type VisualizationConfigType = {
   value: string;
@@ -86,7 +94,7 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
           id: col,
           accessorKey: col,
           header: col,
-          enableResizing: true,
+          enableResizing: false,
           size: 100,
         } as ColumnDef<unknown>),
     );
@@ -101,14 +109,15 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
   };
 
   const addVisualizationHandler = async (visualizationValue: string) => {
+    console.log(visualizationValue);
     const searchedVisualization = visualizationConfigs.find(
       (v) => v.value === visualizationValue,
     );
     if (!searchedVisualization) return;
     let newVisualization: VisualizationType = {} as VisualizationType;
-    if (searchedVisualization.type === 'table') {
+    if (searchedVisualization.type === TYPE_VISUALIZATION.table) {
       newVisualization = {
-        name: 'Table',
+        name: 'Query results',
         id: (Math.floor(Math.random() * 100) + 1).toString(),
         type: 'table',
         options: {},
@@ -116,7 +125,7 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
     } else {
       newVisualization = {
         id: (Math.floor(Math.random() * 100) + 1).toString(),
-        name: 'Chart',
+        name: searchedVisualization.label,
         type: 'chart',
         options: {
           globalSeriesType: searchedVisualization.type,
@@ -214,14 +223,39 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
     }
   };
 
+  const getIcon = (chain: string | undefined) => {
+    switch (chain) {
+      case TYPE_VISUALIZATION.table:
+        return <QueryResultIcon />;
+
+      case TYPE_VISUALIZATION.scatter:
+        return <ScatterChartIcon />;
+
+      case TYPE_VISUALIZATION.area:
+        return <AreaChartIcon />;
+
+      case TYPE_VISUALIZATION.line:
+        return <LineChartIcon />;
+
+      case TYPE_VISUALIZATION.pie:
+        return <PieChartIcon />;
+
+      case TYPE_VISUALIZATION.bar:
+        return <BarChartIcon />;
+
+      default:
+        return <></>;
+    }
+  };
+
   return (
-    <Box height={'500px'} overflow={'auto'}>
+    <Box className="visual-container">
       <AppTabs
         onCloseTab={(tabId) => {
-          // setOpenRemoveTabModal(true);
           setCloseTabId(tabId);
         }}
         tabs={visualizationsActive.map((v) => ({
+          icon: getIcon(v.options.globalSeriesType || v.type),
           name: v.name,
           content: renderVisualization(v.options.globalSeriesType || v.type),
           id: v.id,
