@@ -97,8 +97,6 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
       ? [RANKS.FAVORITES, RANKS.TRENDING, RANKS.NEW]
       : [RANKS.FAVORITES, RANKS.NEW];
 
-  console.log('ranks', ranks);
-
   const getRankUrl = (rank: string) => () => {
     const searchParams = new URLSearchParams(searchUrl);
     searchParams.delete('order');
