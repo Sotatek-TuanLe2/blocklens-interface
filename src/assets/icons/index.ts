@@ -37,6 +37,9 @@ import { ReactComponent as SmallSuccessIcon } from './SmallSuccessIcon.svg';
 import { ReactComponent as PenIcon } from './PenIcon.svg';
 import { ReactComponent as AccountIcon } from './AccountIcon.svg';
 import { ReactComponent as TagIcon } from './TagIcon.svg';
+import { ReactComponent as DashboardsIcon } from './DashboardsIcon.svg';
+import { ReactComponent as QueriesIcon } from './QueriesIcon.svg';
+import { ReactComponent as TeamsIcon } from './TeamsIcon.svg';
 
 export {
   CalendarIcon,
@@ -78,4 +81,7 @@ export {
   PenIcon,
   AccountIcon,
   TagIcon,
+  DashboardsIcon,
+  QueriesIcon,
+  TeamsIcon,
 };

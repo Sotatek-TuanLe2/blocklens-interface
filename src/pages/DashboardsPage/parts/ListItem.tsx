@@ -1,7 +1,7 @@
 import { Flex, Tr } from '@chakra-ui/react';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
-import { AccountIcon } from 'src/assets/icons';
+import { AccountIcon, ActiveStarIcon, StarIcon } from 'src/assets/icons';
 import useUser from 'src/hooks/useUser';
 import { LIST_ITEM_TYPE } from '..';
 
@@ -38,7 +38,7 @@ const ListItem: React.FC<IListItem> = (props) => {
 
   const { user } = useUser();
 
-  // const LIKEABLE_ITEMS = [LIST_ITEM_TYPE.DASHBOARDS, LIST_ITEM_TYPE.QUERIES];
+  const LIKEABLE_ITEMS = [LIST_ITEM_TYPE.DASHBOARDS, LIST_ITEM_TYPE.QUERIES];
 
   const getDuration = (): string => {
     const durationMinutes = moment().diff(moment(createdAt), 'minutes');
@@ -72,9 +72,9 @@ const ListItem: React.FC<IListItem> = (props) => {
     }
   };
 
-  // const onLike = () => {
-  //   //
-  // };
+  const onLike = () => {
+    //
+  };
 
   const _renderSubContent = () => {
     if (type === LIST_ITEM_TYPE.DASHBOARDS || type === LIST_ITEM_TYPE.QUERIES) {
@@ -144,12 +144,11 @@ const ListItem: React.FC<IListItem> = (props) => {
           justifyContent={'space-between'}
         >
           <span>{starCount}</span>
-          {/* {LIKEABLE_ITEMS.includes(type) ? (
+          {LIKEABLE_ITEMS.includes(type) ? (
             <StarIcon onClick={onLike} />
           ) : (
             <ActiveStarIcon />
-          )} */}
-          <AccountIcon />
+          )}
         </Flex>
       </Flex>
     </Tr>

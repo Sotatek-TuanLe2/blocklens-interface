@@ -96,6 +96,7 @@
 
   .dashboard-filter {
     width: 30%;
+    margin-top: 46px;
 
     &__search,
     &__tags {
@@ -120,6 +121,7 @@
           flex-direction: row;
           align-items: center;
           font-size: 14px;
+          border: 1px solid transparent;
 
           &:hover {
             border: 1px solid #272d52;
@@ -146,6 +148,7 @@
           flex-direction: row;
           align-items: center;
           font-size: 14px;
+          border: 1px solid transparent;
 
           &:hover {
             border: 1px solid #272d52;
