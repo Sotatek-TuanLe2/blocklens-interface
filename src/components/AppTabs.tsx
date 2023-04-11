@@ -54,10 +54,10 @@ const AppTabs: FC<IAppTabs> = ({
                   className="app-tab__name-tab"
                   onClick={() => onChange && onChange(tab.id)}
                 >
-                  <span>
+                  <Flex flexDirection="row" alignItems="center">
                     {tab.icon && <span>{tab.icon}</span>}
                     <span>{tab.name}</span>
-                  </span>
+                  </Flex>
                   {tab.closeable && (
                     <CloseIcon
                       boxSize={2}

@@ -92,7 +92,7 @@ const QueriesPage = () => {
   }, [queryId]);
 
   return (
-    <BasePage>
+    <BasePage isFullWidth>
       <EditorContext.Provider
         value={{
           editor: editorRef,

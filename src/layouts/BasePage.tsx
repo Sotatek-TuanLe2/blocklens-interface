@@ -3,14 +3,21 @@ import { Box, Flex, Spinner } from '@chakra-ui/react';
 import React from 'react';
 import { GuestPage } from 'src/layouts';
 import { isMobile } from 'react-device-detect';
+import 'src/styles/layout/BasePage.scss';
 
 interface BasePage {
   className?: string;
   onInitPage?: () => void;
   children: ReactElement;
+  isFullWidth?: boolean;
 }
 
-const BasePage: FC<BasePage> = ({ onInitPage, children, className }) => {
+const BasePage: FC<BasePage> = ({
+  onInitPage,
+  children,
+  className = '',
+  isFullWidth = false,
+}) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const onInit = async () => {
@@ -31,14 +38,13 @@ const BasePage: FC<BasePage> = ({ onInitPage, children, className }) => {
     <GuestPage>
       <Flex
         justifyContent={'center'}
-        minH={'calc(100vh - 200px)'}
-        className={className}
+        className={`base-page-container ${className}`}
       >
         <Box
           marginTop={isMobile ? '50px' : '70px'}
-          maxW={'1210px'}
-          width={'full'}
-          px={4}
+          className={`base-page-container__content ${
+            isFullWidth ? 'base-page-container__content--full' : ''
+          }`}
         >
           {isLoading ? (
             <Flex justifyContent={'center'}>
