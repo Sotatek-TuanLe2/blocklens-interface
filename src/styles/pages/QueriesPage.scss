@@ -75,6 +75,20 @@
           }
         }
       }
+
+      .select-visual-type {
+        width: 40%;
+        ::-webkit-scrollbar {
+          display: none;
+        }
+        .visual-type-content {
+          .app-select {
+            &__menu {
+              max-height: max-content;
+            }
+          }
+        }
+      }
     }
   }
 }

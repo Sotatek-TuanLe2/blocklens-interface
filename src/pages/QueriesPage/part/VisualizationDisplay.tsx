@@ -39,11 +39,6 @@ type VisualizationConfigType = {
 
 const visualizationConfigs: VisualizationConfigType[] = [
   {
-    value: VALUE_VISUALIZATION.query,
-    label: 'Query',
-    type: TYPE_VISUALIZATION.table,
-  },
-  {
     label: 'Bar chart',
     type: TYPE_VISUALIZATION.bar,
     value: VALUE_VISUALIZATION.bar,
@@ -292,15 +287,20 @@ type AddVisualizationProps = {
 };
 
 const AddVisualization = ({ onAddVisualize }: AddVisualizationProps) => {
-  const [visualizationSelected, setVisualizationSelected] = useState<string>();
+  const [visualizationSelected, setVisualizationSelected] = useState<string>(
+    VALUE_VISUALIZATION.bar,
+  );
   return (
     <Box>
       <Text mb={2}>Select visualization type</Text>
-      <AppSelect2
-        options={visualizationConfigs}
-        value={visualizationSelected || ''}
-        onChange={(value) => setVisualizationSelected(value)}
-      />
+      <Box className="select-visual-type">
+        <AppSelect2
+          options={visualizationConfigs}
+          value={visualizationSelected || ''}
+          onChange={(value) => setVisualizationSelected(value)}
+          className="visual-type-content"
+        />
+      </Box>
 
       <AppButton
         mt={4}
