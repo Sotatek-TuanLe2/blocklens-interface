@@ -11,6 +11,7 @@ import { AppCard, AppInput, AppSelect2 } from '../index';
 import {
   ChartOptionConfigsType,
   XAxisConfigsType,
+  YAxisConfigsType,
 } from '../../utils/visualization.type';
 
 const ChartSettings = () => {
@@ -19,6 +20,9 @@ const ChartSettings = () => {
   );
   const [xConfigs, setXConfigs] = useState<XAxisConfigsType>(
     {} as XAxisConfigsType,
+  );
+  const [yConfigs, setYConfigs] = useState<YAxisConfigsType>(
+    {} as YAxisConfigsType,
   );
   const [columnMapping, setColumnMapping] = useState({
     xAxis: 'time',
@@ -52,7 +56,13 @@ const ChartSettings = () => {
           setXConfigs(configs);
         }}
       />
-      <YAxisConfigs />
+      <YAxisConfigs
+        yConfigs={yConfigs}
+        onChangeConfigs={(configs) => {
+          console.log('configsY', configs);
+          setYConfigs(configs);
+        }}
+      />
     </VStack>
   );
 };
@@ -211,7 +221,7 @@ const XAxisConfigs = ({
     onChangeConfigs(tempOptions);
   };
   return (
-    <AppCard zIndex={-1}>
+    <AppCard>
       <Text>x-axis options</Text>
       <Flex alignItems={'center'} justifyContent={'space-between'}>
         <Text>Axis title</Text>
@@ -237,7 +247,60 @@ const XAxisConfigs = ({
   );
 };
 
-const YAxisConfigs = () => {
-  return <AppCard>YAxis configs</AppCard>;
+const YAxisConfigs = ({
+  yConfigs,
+  onChangeConfigs,
+}: {
+  yConfigs: YAxisConfigsType;
+  onChangeConfigs: (configs: YAxisConfigsType) => void;
+}) => {
+  const { title, labelFormat, tickFormat } = yConfigs;
+
+  const changeValueHandle = (key: string, value: boolean | string) => {
+    let tempOptions = yConfigs;
+    tempOptions = {
+      ...tempOptions,
+      [key]: value,
+    };
+    onChangeConfigs(tempOptions);
+  };
+  return (
+    <AppCard>
+      <Text>y-axis options</Text>
+      <Flex alignItems={'center'} justifyContent={'space-between'}>
+        <Text>Axis title</Text>
+        <AppInput
+          value={title}
+          onChange={(e) => changeValueHandle(e.target.name, e.target.value)}
+          name={'title'}
+        />
+      </Flex>
+      <Checkbox
+        value={'logarithmic'}
+        name={'logarithmic'}
+        onChange={(e) => changeValueHandle(e.target.name, e.target.checked)}
+      >
+        {'Logarithmic'}
+      </Checkbox>
+      <Flex alignItems={'center'} justifyContent={'space-between'}>
+        <Text>Tick format</Text>
+        <AppInput
+          size={'sm'}
+          value={tickFormat}
+          onChange={(e) => changeValueHandle(e.target.name, e.target.value)}
+          name={'tickFormat'}
+        />
+      </Flex>
+      <Flex alignItems={'center'} justifyContent={'space-between'}>
+        <Text>Label format</Text>
+        <AppInput
+          size={'sm'}
+          value={labelFormat}
+          onChange={(e) => changeValueHandle(e.target.name, e.target.value)}
+          name={'labelFormat'}
+        />
+      </Flex>
+    </AppCard>
+  );
 };
 export default ChartSettings;
