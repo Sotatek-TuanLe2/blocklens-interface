@@ -139,109 +139,6 @@ const DashboardsPage: React.FC = () => {
     [teamParams],
   );
 
-  const appDataTableDashboard = () => {
-    return (
-      <AppDataTable
-        requestParams={dashboardParams}
-        fetchData={fetchDashboards}
-        renderBody={(data) => (
-          <Tbody>
-            {data.map((item: any) => (
-              <ListItem
-                key={item.id}
-                id={item.id}
-                author={item.user.name}
-                avatarUrl={item.user.avatarUrl}
-                createdAt={item.createdAt}
-                starCount={item.favoriteCount}
-                title={item.name}
-                type={LIST_ITEM_TYPE.DASHBOARDS}
-                tags={item.tags}
-              />
-            ))}
-          </Tbody>
-        )}
-      />
-    );
-  };
-
-  const appDataTableQueries = () => {
-    return (
-      <AppDataTable
-        requestParams={queryParams}
-        fetchData={fetchQueries}
-        renderBody={(data) =>
-          data.map((item: any) => (
-            <ListItem
-              key={item.id}
-              id={item.id}
-              author={item.user ? item.user.name : item.team.name}
-              avatarUrl={item.user ? item.user.avatarUrl : item.team.avatarUrl}
-              createdAt={item.createdAt}
-              starCount={item.favoriteCount}
-              title={item.name}
-              type={LIST_ITEM_TYPE.DASHBOARDS}
-              tags={item.tags}
-            />
-          ))
-        }
-      />
-    );
-  };
-
-  const appDataTableWizards = () => {
-    return (
-      <AppDataTable
-        requestParams={wizardParams}
-        fetchData={fetchWizards}
-        renderBody={(data) =>
-          data.map((item: any) => {
-            return (
-              <ListItem
-                key={item.id}
-                id={item.id}
-                author={item.name}
-                avatarUrl={item.profile_image_url}
-                starCount={item.dashboards.list
-                  .map((item: any) => item.favoriteCount)
-                  .reduce((a: number, b: number) => a + b)}
-                title={item.name}
-                type={LIST_ITEM_TYPE.WIZARDS}
-              />
-            );
-          })
-        }
-      />
-    );
-  };
-
-  const appDataTableTeams = () => {
-    return (
-      <AppDataTable
-        requestParams={teamParams}
-        fetchData={fetchTeams}
-        renderBody={(data) =>
-          data.map((item: any) => (
-            <ListItem
-              key={item.id}
-              id={item.id}
-              author={item.name}
-              avatarUrl={item.profile_image_url}
-              starCount={item.received_stars}
-              title={item.name}
-              type={LIST_ITEM_TYPE.TEAMS}
-              members={item.members.map((member: any) => ({
-                id: member.id,
-                name: member.name,
-                avatar: member.profile_image_url,
-              }))}
-            />
-          ))
-        }
-      />
-    );
-  };
-
   const _renderContentTable = useCallback(
     (appTable: any) => {
       return (
@@ -249,7 +146,7 @@ const DashboardsPage: React.FC = () => {
           <div className="dashboard-filter-mobile">
             <FilterSearch type={tabType} />
           </div>
-          {appTable()}
+          {appTable}
 
           <div className="dashboard-filter-mobile">
             <FilterTags type={tabType} />
@@ -265,25 +162,114 @@ const DashboardsPage: React.FC = () => {
       id: LIST_ITEM_TYPE.DASHBOARDS,
       name: 'Dashboards',
       icon: <DashboardsIcon />,
-      content: _renderContentTable(appDataTableDashboard),
+      content: _renderContentTable(
+        <AppDataTable
+          requestParams={dashboardParams}
+          fetchData={fetchDashboards}
+          renderBody={(data) => (
+            <Tbody>
+              {data.map((item: any) => (
+                <ListItem
+                  key={item.id}
+                  id={item.id}
+                  author={item.user.name}
+                  avatarUrl={item.user.avatarUrl}
+                  createdAt={item.createdAt}
+                  starCount={item.favoriteCount}
+                  title={item.name}
+                  type={LIST_ITEM_TYPE.DASHBOARDS}
+                  tags={item.tags}
+                />
+              ))}
+            </Tbody>
+          )}
+        />,
+      ),
     },
     {
       id: LIST_ITEM_TYPE.QUERIES,
       name: 'Queries',
       icon: <QueriesIcon />,
-      content: _renderContentTable(appDataTableQueries),
+      content: _renderContentTable(
+        <AppDataTable
+          requestParams={queryParams}
+          fetchData={fetchQueries}
+          renderBody={(data) =>
+            data.map((item: any) => (
+              <ListItem
+                key={item.id}
+                id={item.id}
+                author={item.user ? item.user.name : item.team.name}
+                avatarUrl={
+                  item.user ? item.user.avatarUrl : item.team.avatarUrl
+                }
+                createdAt={item.createdAt}
+                starCount={item.favoriteCount}
+                title={item.name}
+                type={LIST_ITEM_TYPE.DASHBOARDS}
+                tags={item.tags}
+              />
+            ))
+          }
+        />,
+      ),
     },
     {
       id: LIST_ITEM_TYPE.WIZARDS,
       name: 'Wizards',
       icon: <AccountIcon />,
-      content: _renderContentTable(appDataTableWizards),
+      content: _renderContentTable(
+        <AppDataTable
+          requestParams={wizardParams}
+          fetchData={fetchWizards}
+          renderBody={(data) =>
+            data.map((item: any) => {
+              return (
+                <ListItem
+                  key={item.id}
+                  id={item.id}
+                  author={item.name}
+                  avatarUrl={item.profile_image_url}
+                  starCount={item.dashboards.list
+                    .map((item: any) => item.favoriteCount)
+                    .reduce((a: number, b: number) => a + b)}
+                  title={item.name}
+                  type={LIST_ITEM_TYPE.WIZARDS}
+                />
+              );
+            })
+          }
+        />,
+      ),
     },
     {
       id: LIST_ITEM_TYPE.TEAMS,
       name: 'Teams',
       icon: <TeamsIcon />,
-      content: _renderContentTable(appDataTableTeams),
+      content: _renderContentTable(
+        <AppDataTable
+          requestParams={teamParams}
+          fetchData={fetchTeams}
+          renderBody={(data) =>
+            data.map((item: any) => (
+              <ListItem
+                key={item.id}
+                id={item.id}
+                author={item.name}
+                avatarUrl={item.profile_image_url}
+                starCount={item.received_stars}
+                title={item.name}
+                type={LIST_ITEM_TYPE.TEAMS}
+                members={item.members.map((member: any) => ({
+                  id: member.id,
+                  name: member.name,
+                  avatar: member.profile_image_url,
+                }))}
+              />
+            ))
+          }
+        />,
+      ),
     },
   ];
 
