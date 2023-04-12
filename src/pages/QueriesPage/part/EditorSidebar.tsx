@@ -91,9 +91,7 @@ const EditorSidebar = () => {
   const renderHeaderRawTable = () => {
     return (
       <Flex justifyContent={'space-between'} alignItems={'center'}>
-        <Box className={'dataset-title'}>
-          <Text as={'span'}>Raw tables</Text>
-        </Box>
+        <Box className={'dataset-title'}></Box>
         <Box className="select-chains">
           <AppSelect2
             value={chainSelected}
