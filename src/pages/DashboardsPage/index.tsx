@@ -206,7 +206,7 @@ const DashboardsPage: React.FC = () => {
                 createdAt={item.createdAt}
                 starCount={item.favoriteCount}
                 title={item.name}
-                type={LIST_ITEM_TYPE.DASHBOARDS}
+                type={LIST_ITEM_TYPE.QUERIES}
                 tags={item.tags}
               />
             ))
