@@ -10,7 +10,7 @@ import { getLogoChainByChainId } from '../../../utils/utils-network';
 import { getErrorMessage } from '../../../utils/utils-helper';
 import { AppInput, AppSelect2 } from '../../../components';
 import 'src/styles/components/EditorSidebar.scss';
-import { SchemaType } from '../../../utils/common';
+import { SchemaType, TableAttributeType } from '../../../utils/common';
 
 const EditorSidebar = () => {
   const [tableSelected, setTableSelected] = useState<{
@@ -19,8 +19,11 @@ const EditorSidebar = () => {
   } | null>(null);
   const [schemas, setSchemas] = useState<SchemaType[]>([]);
   const [chainSelected, setChangeSelected] = useState('');
+  const [tableDescribe, setTableDescribe] = useState<
+    TableAttributeType[] | null
+  >();
 
-  const selectSchemaTitleHandler = ({
+  const selectSchemaTitleHandler = async ({
     chain,
     name,
   }: {
@@ -28,9 +31,14 @@ const EditorSidebar = () => {
     name: string;
   }) => {
     setTableSelected({ chain, name });
+    try {
+      console.log(22222);
+      //get schema
+    } catch (error) {}
   };
   const clickBackIconHandler = () => {
     setTableSelected(null);
+    setTableDescribe(null);
   };
 
   useEffect(() => {
