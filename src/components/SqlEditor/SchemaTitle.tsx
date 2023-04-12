@@ -72,7 +72,11 @@ const SidebarEditorRow = ({
         </Flex>
         <Flex alignItems={'center'}>
           <ViewIcon marginLeft={3} />
-          <ChevronRightIcon marginLeft={3} onClick={addTableNameToEditor} />
+          <ChevronRightIcon
+            marginLeft={3}
+            onClick={addTableNameToEditor}
+            cursor="pointer"
+          />
         </Flex>
       </Flex>
     </Box>

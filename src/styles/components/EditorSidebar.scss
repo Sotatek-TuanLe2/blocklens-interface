@@ -10,6 +10,20 @@
       height: 32px;
     }
   }
+  .header-table {
+    cursor: pointer;
+    &:hover {
+      background: #ffffff1a;
+    }
+    padding: 4px;
+    margin-left: -4px;
+    border-radius: 4px;
+  }
+
+  .list-schema {
+    max-height: 468px;
+    overflow: auto;
+  }
 }
 
 .schema-title {
