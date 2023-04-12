@@ -139,121 +139,155 @@ const DashboardsPage: React.FC = () => {
     [teamParams],
   );
 
-  const tabs: ITabs[] = [
-    {
-      id: LIST_ITEM_TYPE.DASHBOARDS,
-      name: 'Dashboards',
-      icon: <DashboardsIcon />,
-      content: (
-        <AppDataTable
-          requestParams={dashboardParams}
-          fetchData={fetchDashboards}
-          renderBody={(data) => (
-            <Tbody>
-              {data.map((item: any) => (
-                <ListItem
-                  key={item.id}
-                  id={item.id}
-                  author={item.user.name}
-                  avatarUrl={item.user.profile_image_url}
-                  createdAt={item.created_at}
-                  starCount={item.dashboard_favorite_count_all.favorite_count}
-                  title={item.name}
-                  type={LIST_ITEM_TYPE.DASHBOARDS}
-                  tags={item.tags}
-                />
-              ))}
-            </Tbody>
-          )}
-        />
-      ),
-    },
-    {
-      id: LIST_ITEM_TYPE.QUERIES,
-      name: 'Queries',
-      icon: <QueriesIcon />,
-      content: (
-        <AppDataTable
-          requestParams={queryParams}
-          fetchData={fetchQueries}
-          renderBody={(data) =>
-            data.map((item: any) => (
+  const appDataTableDashboard = () => {
+    return (
+      <AppDataTable
+        requestParams={dashboardParams}
+        fetchData={fetchDashboards}
+        renderBody={(data) => (
+          <Tbody width={'100%'}>
+            {data.map((item: any) => (
               <ListItem
                 key={item.id}
                 id={item.id}
-                author={item.user ? item.user.name : item.team.handle}
-                avatarUrl={
-                  item.user
-                    ? item.user.profile_image_url
-                    : item.team.profile_image_url
-                }
+                author={item.user.name}
+                avatarUrl={item.user.profile_image_url}
                 createdAt={item.created_at}
-                starCount={item.query_favorite_count_last_7d.favorite_count}
+                starCount={item.dashboard_favorite_count_all.favorite_count}
                 title={item.name}
-                type={LIST_ITEM_TYPE.QUERIES}
+                type={LIST_ITEM_TYPE.DASHBOARDS}
                 tags={item.tags}
               />
-            ))
-          }
-        />
-      ),
-    },
-    {
-      id: LIST_ITEM_TYPE.WIZARDS,
-      name: 'Wizards',
-      icon: <AccountIcon />,
-      content: (
-        <AppDataTable
-          requestParams={wizardParams}
-          fetchData={fetchWizards}
-          renderBody={(data) =>
-            data.map((item: any) => {
-              return (
-                <ListItem
-                  key={item.id}
-                  id={item.id}
-                  author={item.name}
-                  avatarUrl={item.profile_image_url}
-                  starCount={item.dashboards.list
-                    .map((item: any) => item.favoriteCount)
-                    .reduce((a: number, b: number) => a + b)}
-                  title={item.name}
-                  type={LIST_ITEM_TYPE.WIZARDS}
-                />
-              );
-            })
-          }
-        />
-      ),
-    },
-    {
-      id: LIST_ITEM_TYPE.TEAMS,
-      name: 'Teams',
-      icon: <TeamsIcon />,
-      content: (
-        <AppDataTable
-          requestParams={teamParams}
-          fetchData={fetchTeams}
-          renderBody={(data) =>
-            data.map((item: any) => (
+            ))}
+          </Tbody>
+        )}
+      />
+    );
+  };
+
+  const appDataTableQueries = () => {
+    return (
+      <AppDataTable
+        requestParams={queryParams}
+        fetchData={fetchQueries}
+        renderBody={(data) =>
+          data.map((item: any) => (
+            <ListItem
+              key={item.id}
+              id={item.id}
+              author={item.user ? item.user.name : item.team.handle}
+              avatarUrl={
+                item.user
+                  ? item.user.profile_image_url
+                  : item.team.profile_image_url
+              }
+              createdAt={item.created_at}
+              starCount={item.query_favorite_count_last_7d.favorite_count}
+              title={item.name}
+              type={LIST_ITEM_TYPE.QUERIES}
+              tags={item.tags}
+            />
+          ))
+        }
+      />
+    );
+  };
+
+  const appDataTableWizards = () => {
+    return (
+      <AppDataTable
+        requestParams={wizardParams}
+        fetchData={fetchWizards}
+        renderBody={(data) =>
+          data.map((item: any) => {
+            return (
               <ListItem
                 key={item.id}
                 id={item.id}
                 author={item.name}
                 avatarUrl={item.profile_image_url}
-                starCount={item.received_stars}
+                starCount={item.dashboards.list
+                  .map((item: any) => item.favoriteCount)
+                  .reduce((a: number, b: number) => a + b)}
                 title={item.name}
-                type={LIST_ITEM_TYPE.TEAMS}
-                members={item.members.map((member: any) => ({
-                  id: member.id,
-                  name: member.name,
-                  avatar: member.profile_image_url,
-                }))}
+                type={LIST_ITEM_TYPE.WIZARDS}
               />
-            ))
-          }
-        />
-      ),
+            );
+          })
+        }
+      />
+    );
+  };
+
+  const appDataTableTeams = () => {
+    return (
+      <AppDataTable
+        requestParams={teamParams}
+        fetchData={fetchTeams}
+        renderBody={(data) =>
+          data.map((item: any) => (
+            <ListItem
+              key={item.id}
+              id={item.id}
+              author={item.name}
+              avatarUrl={item.profile_image_url}
+              starCount={item.received_stars}
+              title={item.name}
+              type={LIST_ITEM_TYPE.TEAMS}
+              members={item.members.map((member: any) => ({
+                id: member.id,
+                name: member.name,
+                avatar: member.profile_image_url,
+              }))}
+            />
+          ))
+        }
+      />
+    );
+  };
+
+  const _renderContentTable = useCallback(
+    (appTable: any) => {
+      return (
+        <>
+          <div className="dashboard-filter-mobile">
+            <FilterSearch type={tabType} />
+          </div>
+          {appTable()}
+
+          <div className="dashboard-filter-mobile">
+            <FilterTags type={tabType} />
+          </div>
+        </>
+      );
+    },
+    [tabType],
+  );
+
+  const tabs: ITabs[] = [
+    {
+      id: LIST_ITEM_TYPE.DASHBOARDS,
+      name: 'Dashboards',
+      icon: <DashboardsIcon />,
+      content: _renderContentTable(appDataTableDashboard),
+    },
+    {
+      id: LIST_ITEM_TYPE.QUERIES,
+      name: 'Queries',
+      icon: <QueriesIcon />,
+      content: _renderContentTable(appDataTableQueries),
+    },
+    {
+      id: LIST_ITEM_TYPE.WIZARDS,
+      name: 'Wizards',
+      icon: <AccountIcon />,
+      content: _renderContentTable(appDataTableWizards),
+    },
+    {
+      id: LIST_ITEM_TYPE.TEAMS,
+      name: 'Teams',
+      icon: <TeamsIcon />,
+      content: _renderContentTable(appDataTableTeams),
     },
   ];
 

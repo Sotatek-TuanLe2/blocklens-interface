@@ -163,6 +163,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
             className="dashboard-filter__search__selects"
             alignItems={'center'}
             isTruncated
+            flexWrap="wrap"
           >
             {ranks.map((rank) => (
               <Link

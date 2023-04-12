@@ -1,13 +1,22 @@
 @import '../color-variables';
 @import '../variables';
+@import '../mixins.scss';
 
 .dashboards-page {
   width: 100%;
   padding: 20px;
   gap: 20px;
 
+  @include mobile {
+    padding: 20px 10px;
+  }
+
   .dashboard-list {
     width: 70%;
+
+    @include desktop {
+      width: 100%;
+    }
 
     .chakra-tabs__tab {
       padding: 10px 0;
@@ -20,18 +29,19 @@
       margin-bottom: 5px;
 
       &__avatar {
-        width: 2.5rem;
+        width: 40px;
+        height: 40px;
         margin-right: 18px;
-
-        img {
-          border-radius: 100%;
-        }
+        border-radius: 100%;
       }
 
       &__content {
         margin-right: 10px;
 
         &__title {
+          display: flex;
+          flex-wrap: wrap;
+
           .item-name {
             word-break: break-word;
             font-weight: 500;
@@ -41,6 +51,14 @@
             overflow: hidden;
             color: $title;
             font-size: 18px;
+            white-space: normal;
+            line-height: 20px;
+            margin-bottom: 3px;
+          }
+
+          .tag-name {
+            display: flex;
+            flex-wrap: wrap;
           }
 
           .item-tag {
@@ -75,7 +93,11 @@
 
       &__sub {
         &__content {
+          display: flex;
+          flex-direction: row;
+          flex-wrap: wrap;
           font-size: 14px;
+          margin-top: 3px;
 
           &__link {
             text-decoration: underline;
@@ -97,6 +119,157 @@
   .dashboard-filter {
     width: 30%;
     margin-top: 46px;
+
+    @include desktop {
+      display: none;
+    }
+
+    &__search,
+    &__tags {
+      padding: 20px;
+      background-color: #101530;
+
+      &__title {
+        font-weight: 500;
+        margin-bottom: 20px;
+        font-size: 14px;
+      }
+
+      &__selects,
+      &__input {
+        margin-bottom: 20px;
+
+        &__item {
+          padding: 5px 9px;
+          margin-right: 6px;
+          color: $line;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          font-size: 14px;
+          border: 1px solid transparent;
+
+          &:hover {
+            border: 1px solid #272d52;
+            border-radius: 8px;
+            color: $title;
+          }
+
+          &--selected {
+            border: 1px solid #272d52;
+            border-radius: 8px;
+            color: $title;
+          }
+        }
+      }
+
+      &__selects--time {
+        margin-bottom: 20px;
+
+        &__item {
+          padding: 5px 9px;
+          margin-right: 6px;
+          color: $line;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          font-size: 14px;
+          border: 1px solid transparent;
+
+          &:hover {
+            border: 1px solid #272d52;
+            border-radius: 8px;
+            color: $title;
+          }
+
+          &--selected {
+            border: 1px solid #272d52;
+            border-radius: 8px;
+            color: $title;
+          }
+        }
+      }
+
+      &__tag {
+        padding: 8px 14px;
+        margin-bottom: 20px;
+        border: 1px solid #272d52;
+        border-radius: 8px;
+
+        .tag-title {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          font-size: 14px;
+
+          svg {
+            cursor: auto;
+            margin-right: 10px;
+            width: 16px;
+            height: 16px;
+          }
+        }
+
+        svg {
+          cursor: pointer;
+        }
+      }
+
+      &__button {
+        margin-top: 20px;
+      }
+    }
+
+    &__tags {
+      margin-top: 20px;
+
+      &__list {
+        svg {
+          margin-right: 10px;
+          width: 18px;
+          height: 18px;
+        }
+
+        &__item {
+          padding: 8px 0;
+          font-size: 14px;
+          line-height: 21px;
+          width: 100%;
+          border-bottom: 1px solid #272d52;
+
+          &:not(&:last-child) {
+            border-bottom: 1px solid #272d52;
+          }
+        }
+
+        &__tag {
+          color: $line;
+
+          &--selected {
+            text-decoration: underline;
+            color: $title;
+          }
+        }
+
+        &__popularity {
+          border: 1px solid #272d52;
+          border-radius: 3px;
+          padding: 5px;
+          font-size: 12px;
+          line-height: 18px;
+        }
+      }
+    }
+  }
+
+  .dashboard-filter-mobile {
+    width: 100%;
+    margin: 20px 0;
+    display: none;
+
+    @include desktop {
+      display: block;
+    }
 
     &__search,
     &__tags {

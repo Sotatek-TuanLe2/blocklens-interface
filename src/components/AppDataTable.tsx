@@ -240,7 +240,9 @@ const AppDataTable = forwardRef(
           _renderTable()
         ) : (
           <TableContainer overflowX="inherit" overflowY="inherit">
-            <Table colorScheme="gray">{_renderTable()}</Table>
+            <Table className="table" colorScheme="gray">
+              {_renderTable()}
+            </Table>
           </TableContainer>
         )}
 
