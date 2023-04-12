@@ -5,7 +5,7 @@ import { AppButton, AppInput } from 'src/components';
 import { ILayout } from 'src/pages/DashboardDetailPage';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/BaseModal.scss';
-import { QueryType, VisualizationType } from 'src/utils/common';
+import { QueryType, VisualizationType } from 'src/utils/visualization.type';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import BaseModal from './BaseModal';

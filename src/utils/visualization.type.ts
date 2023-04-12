@@ -28,13 +28,17 @@ export type ResultDataConfigsType = {
   };
 };
 
+export type ColumnMappingType = {
+  xAxis: string;
+  yAxis: string[];
+};
+
 export type ChartOptionConfigsType = {
   name: string;
   showLegend: boolean;
   showDataLabels: boolean;
-  series: {
-    percentValues: boolean;
-  };
+  percentValues?: boolean;
+  stacking?: boolean;
 };
 
 export type XAxisConfigsType = {

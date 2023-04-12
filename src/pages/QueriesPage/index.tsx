@@ -13,7 +13,7 @@ import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/mode-sql';
 import { getErrorMessage } from '../../utils/utils-helper';
 import { useParams } from 'react-router-dom';
-import { QueryType } from '../../utils/Visualization.types';
+import { QueryType } from '../../utils/visualization.type';
 
 interface ParamTypes {
   queryId: string;

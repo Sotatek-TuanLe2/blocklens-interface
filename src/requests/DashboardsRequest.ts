@@ -1,6 +1,6 @@
 import { Layout } from 'react-grid-layout';
 import BaseRequest from './BaseRequest';
-import { QueryType } from '../utils/common';
+import { QueryType } from '../utils/visualization.type';
 
 export interface DashboardsParams {
   order?: string;

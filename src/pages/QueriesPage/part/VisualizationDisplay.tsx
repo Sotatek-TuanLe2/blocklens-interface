@@ -9,15 +9,21 @@ import { objectKeys } from '../../../utils/utils-network';
 import VisualizationLineChart from '../../../components/Charts/LineChart';
 import ChartSettings from '../../../components/SqlEditor/ChartSettings';
 import VisualizationPieChart from '../../../components/Charts/PieChart';
+// import {
+//   QueryType,
+//   TYPE_VISUALIZATION,
+//   VALUE_VISUALIZATION,
+// } from 'src/utils/visualization.types';
+import DashboardsRequest from '../../../requests/DashboardsRequest';
+import { useParams } from 'react-router-dom';
+import BaseModal from '../../../modals/BaseModal';
+import { ColumnDef } from '@tanstack/react-table';
 import {
   QueryType,
   TYPE_VISUALIZATION,
   VALUE_VISUALIZATION,
   VisualizationType,
-} from '../../../utils/Visualization.types';
-import DashboardsRequest from '../../../requests/DashboardsRequest';
-import { useParams } from 'react-router-dom';
-import BaseModal from '../../../modals/BaseModal';
+} from '../../../utils/visualization.type';
 
 type VisualizationConfigType = {
   value: string;
@@ -71,13 +77,16 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
         ? objectKeys(queryValues[0])
         : [];
 
-    return columns.map((col) => ({
-      id: col,
-      accessorKey: col,
-      header: col,
-      enableResizing: true,
-      size: 100,
-    }));
+    return columns.map(
+      (col) =>
+        ({
+          id: col,
+          accessorKey: col,
+          header: col,
+          enableResizing: true,
+          size: 100,
+        } as ColumnDef<unknown>),
+    );
   }, [queryValues]);
 
   const addVisualizationToQuery = async (
@@ -168,7 +177,7 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
       case TYPE_VISUALIZATION.table:
         return (
           <TableSqlValue
-            columns={tableValuesColumnConfigs as typeof queryValues}
+            columns={tableValuesColumnConfigs}
             data={queryValues}
           />
         );
@@ -207,7 +216,6 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
     <Box height={'500px'} overflow={'auto'}>
       <AppTabs
         onCloseTab={(tabId) => {
-          // setOpenRemoveTabModal(true);
           setCloseTabId(tabId);
         }}
         tabs={visualizationsActive.map((v) => ({
