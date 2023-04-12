@@ -77,6 +77,7 @@ type VisualizationOptionsType = ChartType &
 
 export type VisualizationType = {
   // created_at: Date;
+  icon?: React.ReactNode;
   id: string;
   name: string;
   options: Partial<VisualizationOptionsType>;

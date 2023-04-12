@@ -398,6 +398,13 @@
           }
         }
 
+        .truncate {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          max-width: 220px;
+        }
+
         &__popularity {
           border: 1px solid #272d52;
           border-radius: 3px;
