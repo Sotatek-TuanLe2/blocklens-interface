@@ -4,8 +4,8 @@ import { QueryType } from '../utils/visualization.type';
 
 export interface DashboardsParams {
   order?: string;
-  time_range?: string;
-  q?: string;
+  timeRange?: string;
+  search?: string;
   tags?: string;
 }
 
@@ -15,17 +15,17 @@ interface SchemasParams {
 
 export interface QueriesParams {
   order?: string;
-  time_range?: string;
-  q?: string;
+  timeRange?: string;
+  search?: string;
   tags?: string;
 }
 
 export interface WizardsParams {
-  q?: string;
+  search?: string;
 }
 
 export interface TeamsParams {
-  q?: string;
+  search?: string;
 }
 
 export interface ILayout extends Layout {
@@ -38,7 +38,7 @@ export default class DashboardsRequest extends BaseRequest {
   }
 
   getDashboards(params: DashboardsParams) {
-    const url = 'https://run.mocky.io/v3/3ac95d0b-00bb-4343-bb1d-4f3c2fc780fe';
+    const url = 'https://run.mocky.io/v3/8deb0b1a-289e-4f91-8669-679338169925';
     return this.get(url, { ...params });
   }
 
@@ -48,7 +48,7 @@ export default class DashboardsRequest extends BaseRequest {
   }
 
   getQueries(params: QueriesParams) {
-    const url = 'https://run.mocky.io/v3/dbfc2015-6b31-4cf3-953d-34fce07d3d64';
+    const url = 'https://run.mocky.io/v3/1fc26a41-6ebc-43fc-88a8-b2c36d9fe085';
     return this.get(url, { ...params });
   }
 

@@ -8,8 +8,8 @@ import {
   Tabs,
 } from '@chakra-ui/react';
 import { FC, ReactNode } from 'react';
-import { CloseMenuIcon } from 'src/assets/icons';
 import 'src/styles/components/AppTabs.scss';
+import { CloseIcon } from '@chakra-ui/icons';
 
 interface IAppTabs {
   defaultTab?: number;
@@ -46,7 +46,7 @@ const AppTabs: FC<IAppTabs> = ({
     >
       <TabList className="tab-list">
         <Flex justifyContent={'space-between'} alignItems="center" w="100%">
-          <Flex alignItems="center">
+          <Flex alignItems="center" className="tabs-container">
             {tabs.map((tab: ITabs) => {
               return (
                 <Tab
@@ -54,22 +54,24 @@ const AppTabs: FC<IAppTabs> = ({
                   className="app-tab__name-tab"
                   onClick={() => onChange && onChange(tab.id)}
                 >
-                  <span>
+                  <Flex
+                    justifyContent={'center'}
+                    alignItems={'center'}
+                    className="app-tab__name-tab__detail"
+                  >
                     {tab.icon && <span>{tab.icon}</span>}
                     <span>{tab.name}</span>
-                  </span>
+                  </Flex>
                   {tab.closeable && (
-                    <Box
-                      as={'span'}
+                    <CloseIcon
+                      boxSize={2}
                       ml={2}
                       cursor={'pointer'}
                       onClick={() => {
                         if (!onCloseTab) return;
                         onCloseTab(tab.id);
                       }}
-                    >
-                      <CloseMenuIcon width={14} />
-                    </Box>
+                    />
                   )}
                 </Tab>
               );

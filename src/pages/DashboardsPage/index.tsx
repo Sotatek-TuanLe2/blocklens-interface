@@ -1,22 +1,28 @@
+import { Flex, Tbody } from '@chakra-ui/react';
+import { useCallback, useEffect, useState } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
+import {
+  AccountIcon,
+  DashboardsIcon,
+  QueriesIcon,
+  TeamsIcon,
+} from 'src/assets/icons';
 import { AppDataTable, RequestParams } from 'src/components';
 import AppTabs, { ITabs } from 'src/components/AppTabs';
-import 'src/styles/pages/DashboardsPage.scss';
-import rf from 'src/requests/RequestFactory';
-import { useCallback, useEffect, useState } from 'react';
-import { useLocation, useHistory } from 'react-router-dom';
+import { BasePage } from 'src/layouts';
 import {
   DashboardsParams,
   QueriesParams,
   TeamsParams,
   WizardsParams,
 } from 'src/requests/DashboardsRequest';
-import { toastError } from 'src/utils/utils-notify';
+import rf from 'src/requests/RequestFactory';
+import 'src/styles/pages/DashboardsPage.scss';
 import { getErrorMessage } from 'src/utils/utils-helper';
-import ListItem from './parts/ListItem';
-import { Flex, Tbody } from '@chakra-ui/react';
-import { BasePage } from 'src/layouts';
+import { toastError } from 'src/utils/utils-notify';
 import FilterSearch from './parts/FilterSearch';
 import FilterTags from './parts/FilterTags';
+import ListItem from './parts/ListItem';
 
 export const LIST_ITEM_TYPE = {
   DASHBOARDS: 'DASHBOARDS',
@@ -43,33 +49,33 @@ const DashboardsPage: React.FC = () => {
   useEffect(() => {
     const searchParams = new URLSearchParams(searchUrl);
     const order = searchParams.get('order') || '';
-    const time_range = searchParams.get('time_range') || '';
-    const q = searchParams.get('q') || '';
+    const timeRange = searchParams.get('timeRange') || '';
+    const search = searchParams.get('search') || '';
     const tags = searchParams.get('tags') || '';
 
     switch (tabType) {
       case LIST_ITEM_TYPE.DASHBOARDS:
         setDashboardParams((prevState) => ({
           order: order || prevState.order,
-          time_range: time_range || prevState.time_range,
-          q: q || prevState.q,
+          timeRange: timeRange || prevState.timeRange,
+          search: search || prevState.search,
           tags: tags || prevState.tags,
         }));
         break;
       case LIST_ITEM_TYPE.QUERIES:
         setQueryParams((prevState) => ({
           order: order || prevState.order,
-          q: q || prevState.q,
+          search: search || prevState.search,
         }));
         break;
       case LIST_ITEM_TYPE.WIZARDS:
         setWizardParams((prevState) => ({
-          q: q || prevState.q,
+          search: search || prevState.search,
         }));
         break;
       case LIST_ITEM_TYPE.TEAMS:
         setTeamParams((prevState) => ({
-          q: q || prevState.q,
+          search: search || prevState.search,
         }));
         break;
       default:
@@ -137,6 +143,7 @@ const DashboardsPage: React.FC = () => {
     {
       id: LIST_ITEM_TYPE.DASHBOARDS,
       name: 'Dashboards',
+      icon: <DashboardsIcon />,
       content: (
         <AppDataTable
           requestParams={dashboardParams}
@@ -148,9 +155,9 @@ const DashboardsPage: React.FC = () => {
                   key={item.id}
                   id={item.id}
                   author={item.user.name}
-                  avatarUrl={item.user.profile_image_url}
-                  createdAt={item.created_at}
-                  starCount={item.dashboard_favorite_count_all.favorite_count}
+                  avatarUrl={item.user.avatarUrl}
+                  createdAt={item.createdAt}
+                  starCount={item.favoriteCount}
                   title={item.name}
                   type={LIST_ITEM_TYPE.DASHBOARDS}
                   tags={item.tags}
@@ -164,6 +171,7 @@ const DashboardsPage: React.FC = () => {
     {
       id: LIST_ITEM_TYPE.QUERIES,
       name: 'Queries',
+      icon: <QueriesIcon />,
       content: (
         <AppDataTable
           requestParams={queryParams}
@@ -173,14 +181,12 @@ const DashboardsPage: React.FC = () => {
               <ListItem
                 key={item.id}
                 id={item.id}
-                author={item.user ? item.user.name : item.team.handle}
+                author={item.user ? item.user.name : item.team.name}
                 avatarUrl={
-                  item.user
-                    ? item.user.profile_image_url
-                    : item.team.profile_image_url
+                  item.user ? item.user.avatarUrl : item.team.avatarUrl
                 }
-                createdAt={item.created_at}
-                starCount={item.query_favorite_count_last_7d.favorite_count}
+                createdAt={item.createdAt}
+                starCount={item.favoriteCount}
                 title={item.name}
                 type={LIST_ITEM_TYPE.QUERIES}
                 tags={item.tags}
@@ -193,6 +199,7 @@ const DashboardsPage: React.FC = () => {
     {
       id: LIST_ITEM_TYPE.WIZARDS,
       name: 'Wizards',
+      icon: <AccountIcon />,
       content: (
         <AppDataTable
           requestParams={wizardParams}
@@ -220,6 +227,7 @@ const DashboardsPage: React.FC = () => {
     {
       id: LIST_ITEM_TYPE.TEAMS,
       name: 'Teams',
+      icon: <TeamsIcon />,
       content: (
         <AppDataTable
           requestParams={teamParams}

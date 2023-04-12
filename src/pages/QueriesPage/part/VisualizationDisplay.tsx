@@ -1,23 +1,30 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Box, Text } from '@chakra-ui/react';
-import TableSqlValue from '../../../components/Charts/TableSqlValue';
-import VisualizationBarChart from '../../../components/Charts/BarChart';
-import { AppButton, AppSelect2 } from '../../../components';
-import VisualizationAreaChart from '../../../components/Charts/AreaChart';
-import AppTabs from '../../../components/AppTabs';
+import {
+  TableSqlValue,
+  BarChart,
+  AreaChart,
+  LineChart,
+  PieChart,
+  ScatterChart,
+} from '../../../components/Charts';
+import { AppTabs, AppButton, AppSelect2 } from '../../../components';
+import BaseModal from '../../../modals/BaseModal';
 import { objectKeys } from '../../../utils/utils-network';
-import VisualizationLineChart from '../../../components/Charts/LineChart';
 import ChartSettings from '../../../components/SqlEditor/ChartSettings';
 import VisualizationPieChart from '../../../components/Charts/PieChart';
-// import {
-//   QueryType,
-//   TYPE_VISUALIZATION,
-//   VALUE_VISUALIZATION,
-// } from 'src/utils/visualization.types';
+
 import DashboardsRequest from '../../../requests/DashboardsRequest';
 import { useParams } from 'react-router-dom';
-import BaseModal from '../../../modals/BaseModal';
 import { ColumnDef } from '@tanstack/react-table';
+import {
+  AreaChartIcon,
+  BarChartIcon,
+  LineChartIcon,
+  PieChartIcon,
+  QueryResultIcon,
+  ScatterChartIcon,
+} from 'src/assets/icons';
 import {
   QueryType,
   TYPE_VISUALIZATION,
@@ -32,11 +39,6 @@ type VisualizationConfigType = {
 };
 
 const visualizationConfigs: VisualizationConfigType[] = [
-  {
-    value: VALUE_VISUALIZATION.query,
-    label: 'Query',
-    type: TYPE_VISUALIZATION.table,
-  },
   {
     label: 'Bar chart',
     type: TYPE_VISUALIZATION.bar,
@@ -56,6 +58,11 @@ const visualizationConfigs: VisualizationConfigType[] = [
     label: 'Pie chart',
     type: TYPE_VISUALIZATION.pie,
     value: VALUE_VISUALIZATION.pie,
+  },
+  {
+    label: 'Scatter chart',
+    type: TYPE_VISUALIZATION.scatter,
+    value: VALUE_VISUALIZATION.scatter,
   },
 ];
 
@@ -83,7 +90,7 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
           id: col,
           accessorKey: col,
           header: col,
-          enableResizing: true,
+          enableResizing: false,
           size: 100,
         } as ColumnDef<unknown>),
     );
@@ -103,9 +110,9 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
     );
     if (!searchedVisualization) return;
     let newVisualization: VisualizationType = {} as VisualizationType;
-    if (searchedVisualization.type === 'table') {
+    if (searchedVisualization.type === TYPE_VISUALIZATION.table) {
       newVisualization = {
-        name: 'Table',
+        name: 'Query results',
         id: (Math.floor(Math.random() * 100) + 1).toString(),
         type: 'table',
         options: {},
@@ -113,7 +120,7 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
     } else {
       newVisualization = {
         id: (Math.floor(Math.random() * 100) + 1).toString(),
-        name: 'Chart',
+        name: searchedVisualization.label,
         type: 'chart',
         options: {
           globalSeriesType: searchedVisualization.type,
@@ -172,7 +179,7 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
     ]);
   }, []);
 
-  const renderVisualization = (type: string) => {
+  const renderVisualization = (type: TYPE_VISUALIZATION) => {
     switch (type) {
       case TYPE_VISUALIZATION.table:
         return (
@@ -181,46 +188,77 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
             data={queryValues}
           />
         );
-      case TYPE_VISUALIZATION.line:
+      case TYPE_VISUALIZATION.line: {
         return (
-          <VisualizationLineChart
-            data={queryValues}
-            xAxisKey="time"
-            yAxisKeys={['size']}
-          />
+          <LineChart data={queryValues} xAxisKey="time" yAxisKeys={['size']} />
         );
-      case TYPE_VISUALIZATION.column:
+      }
+      case TYPE_VISUALIZATION.bar:
         return (
-          <VisualizationBarChart
-            data={queryValues}
-            xAxisKey="time"
-            yAxisKeys={['size']}
-          />
+          <BarChart data={queryValues} xAxisKey="time" yAxisKeys={['size']} />
         );
       case TYPE_VISUALIZATION.area:
         return (
-          <VisualizationAreaChart
-            data={queryValues}
-            xAxisKey="time"
-            yAxisKeys={['size']}
-          />
+          <AreaChart data={queryValues} xAxisKey="time" yAxisKeys={['size']} />
         );
       case TYPE_VISUALIZATION.pie:
         return <VisualizationPieChart data={queryValues} dataKey={'number'} />;
+      case 'pie':
+        return <PieChart data={queryValues} dataKey={'number'} />;
+
+      case TYPE_VISUALIZATION.scatter: {
+        return (
+          <ScatterChart
+            data={queryValues}
+            xAxisKey={'number'}
+            yAxisKeys={['size']}
+          />
+        );
+      }
+
       default:
         return <AddVisualization onAddVisualize={addVisualizationHandler} />;
     }
   };
 
+  const getIcon = (chain: string | undefined) => {
+    switch (chain) {
+      case TYPE_VISUALIZATION.table:
+        return <QueryResultIcon />;
+
+      case TYPE_VISUALIZATION.scatter:
+        return <ScatterChartIcon />;
+
+      case TYPE_VISUALIZATION.area:
+        return <AreaChartIcon />;
+
+      case TYPE_VISUALIZATION.line: {
+        return <LineChartIcon />;
+      }
+
+      case TYPE_VISUALIZATION.pie:
+        return <PieChartIcon />;
+
+      case TYPE_VISUALIZATION.bar:
+        return <BarChartIcon />;
+
+      default:
+        return <></>;
+    }
+  };
+
   return (
-    <Box height={'500px'} overflow={'auto'}>
+    <Box className="visual-container">
       <AppTabs
-        onCloseTab={(tabId) => {
+        onCloseTab={(tabId: string) => {
           setCloseTabId(tabId);
         }}
         tabs={visualizationsActive.map((v) => ({
+          icon: getIcon(v.options.globalSeriesType || v.type),
           name: v.name,
-          content: renderVisualization(v.options.globalSeriesType || v.type),
+          content: renderVisualization(
+            (v.options.globalSeriesType as TYPE_VISUALIZATION) || v.type,
+          ),
           id: v.id,
           closeable: v.type !== 'newVisualization',
         }))}
@@ -250,15 +288,20 @@ type AddVisualizationProps = {
 };
 
 const AddVisualization = ({ onAddVisualize }: AddVisualizationProps) => {
-  const [visualizationSelected, setVisualizationSelected] = useState<string>();
+  const [visualizationSelected, setVisualizationSelected] = useState<string>(
+    VALUE_VISUALIZATION.bar,
+  );
   return (
     <Box>
       <Text mb={2}>Select visualization type</Text>
-      <AppSelect2
-        options={visualizationConfigs}
-        value={visualizationSelected || ''}
-        onChange={(value) => setVisualizationSelected(value)}
-      />
+      <Box className="select-visual-type">
+        <AppSelect2
+          options={visualizationConfigs}
+          value={visualizationSelected || ''}
+          onChange={(value) => setVisualizationSelected(value)}
+          className="visual-type-content"
+        />
+      </Box>
 
       <AppButton
         mt={4}

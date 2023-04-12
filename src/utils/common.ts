@@ -38,3 +38,20 @@ export const getHourAndMinute = (date: Date) => {
   const minute = date.getMinutes();
   return `${hour}:${minute}`;
 };
+
+export enum VALUE_VISUALIZATION {
+  query = 'query',
+  bar = 'bar',
+  line = 'line',
+  area = 'area',
+  pie = 'pie',
+}
+
+export enum TYPE_VISUALIZATION {
+  table = 'table',
+  bar = 'bar',
+  line = 'line',
+  area = 'area',
+  pie = 'pie',
+  column = 'column',
+}

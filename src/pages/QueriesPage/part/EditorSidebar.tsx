@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Flex, Select, Text } from '@chakra-ui/react';
+import { Box, Flex, Text } from '@chakra-ui/react';
 import { tableDetail } from '../../../components/SqlEditor/MockData';
 import DashboardsRequest from '../../../requests/DashboardsRequest';
 import { ArrowBackIcon } from '@chakra-ui/icons';
@@ -8,7 +8,7 @@ import SchemaTitle from '../../../components/SqlEditor/SchemaTitle';
 import SchemaDescribe from '../../../components/SqlEditor/SchemaDescribe';
 import { getLogoChainByChainId } from '../../../utils/utils-network';
 import { getErrorMessage } from '../../../utils/utils-helper';
-import { AppInput } from '../../../components';
+import { AppInput, AppSelect2 } from '../../../components';
 import 'src/styles/components/EditorSidebar.scss';
 import { SchemaType } from '../../../utils/common';
 
@@ -18,6 +18,7 @@ const EditorSidebar = () => {
     name: string;
   } | null>(null);
   const [schemas, setSchemas] = useState<SchemaType[]>([]);
+  const [chainSelected, setChangeSelected] = useState('');
 
   const selectSchemaTitleHandler = ({
     chain,
@@ -61,7 +62,7 @@ const EditorSidebar = () => {
   const renderListSchema = () => {
     return (
       !tableSelected && (
-        <Box maxH={'400px'} overflow={'scroll'}>
+        <Box className="list-schema custom-scroll">
           {schemas.map((schema) => (
             <Box key={schema.id}>
               <SchemaTitle
@@ -82,23 +83,25 @@ const EditorSidebar = () => {
     );
   };
 
+  const handleChangeChainSelect = (value: any) => {
+    setChangeSelected(value);
+    console.log(value);
+  };
+
   const renderHeaderRawTable = () => {
     return (
       <Flex justifyContent={'space-between'} alignItems={'center'}>
-        <Box className={'dataset-title'}>
-          <ArrowBackIcon />
-          <Text as={'span'} marginLeft={3}>
-            Raw tables
-          </Text>
-        </Box>
+        <Box className={'dataset-title'}></Box>
         <Box className="select-chains">
-          <Select>
-            {['All chains', 'Ethereum', 'Polygon'].map((item) => (
-              <option key={item} style={{ backgroundColor: '#000224' }}>
-                {item}
-              </option>
-            ))}
-          </Select>
+          <AppSelect2
+            value={chainSelected}
+            options={[
+              { label: 'All chains', value: '' },
+              { label: 'Ethereum', value: 'Ethereum' },
+              { label: 'Polygon', value: 'Polygon' },
+            ]}
+            onChange={handleChangeChainSelect}
+          />
         </Box>
       </Flex>
     );
@@ -111,14 +114,20 @@ const EditorSidebar = () => {
       px={5}
       className="editor-sidebar"
     >
-      <AppInput marginBottom={4} placeholder={'Filter tables...'} />
+      <AppInput marginBottom={4} placeholder={'Filter tables...'} size="md" />
       <Box marginBottom={4}>
         {tableSelected ? (
-          <Flex alignItems={'center'} marginBottom={4}>
-            <ArrowBackIcon onClick={clickBackIconHandler} />
-            <Box className={getLogoChainByChainId('ETH')} marginLeft={2} />
-            <Text ml={2}>{tableSelected?.chain}</Text>
-            <Text ml={2}>{tableSelected?.name}</Text>
+          <Flex alignItems={'center'}>
+            <Flex
+              className="header-table"
+              alignItems={'center'}
+              onClick={clickBackIconHandler}
+            >
+              <ArrowBackIcon />
+              <Box className={getLogoChainByChainId('ETH')} marginLeft={2} />
+              <Text ml={2}>{tableSelected?.chain}</Text>
+              <Text ml={2}>{tableSelected?.name}</Text>
+            </Flex>
           </Flex>
         ) : (
           renderHeaderRawTable()

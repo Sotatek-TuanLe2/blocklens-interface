@@ -14,6 +14,7 @@ import 'ace-builds/src-noconflict/mode-sql';
 import { getErrorMessage } from '../../utils/utils-helper';
 import { useParams } from 'react-router-dom';
 import { QueryType } from '../../utils/visualization.type';
+import 'src/styles/pages/QueriesPage.scss';
 
 interface ParamTypes {
   queryId: string;
@@ -91,17 +92,22 @@ const QueriesPage = () => {
   }, [queryId]);
 
   return (
-    <BasePage>
+    <BasePage isFullWidth>
       <EditorContext.Provider
         value={{
           editor: editorRef,
           queryValues: queryValues,
         }}
       >
-        <Flex justifyContent={'space-between'} alignItems={'flex-start'}>
+        <Flex
+          justifyContent={'space-between'}
+          alignItems={'flex-start'}
+          className="queries-page"
+        >
           <EditorSidebar />
           <Flex flexDir={'column'} maxW={'100%'} overflow={'auto'} w={'100%'}>
             <Box width={'100%'}>
+              <Box bg="#272822" h="10px"></Box>
               <AceEditor
                 ref={editorRef}
                 mode="sql"
@@ -121,9 +127,14 @@ const QueriesPage = () => {
                   tabSize: 2,
                 }}
               />
-              <Box mt={2}>
-                <AppButton onClick={submitQuery}>Run</AppButton>
-                <AppButton ml={2}>Format</AppButton>
+              <Box className="control-editor">
+                <AppButton
+                  onClick={submitQuery}
+                  bg={'#2a2c2f'}
+                  _hover={{ bg: '#2a2c2f99' }}
+                >
+                  Run
+                </AppButton>
               </Box>
             </Box>
             <Box mt={8}>

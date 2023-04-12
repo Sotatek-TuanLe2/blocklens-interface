@@ -4,6 +4,8 @@ export enum VALUE_VISUALIZATION {
   line = 'line',
   area = 'area',
   pie = 'pie',
+
+  scatter = 'scatter',
 }
 
 export enum TYPE_VISUALIZATION {
@@ -13,6 +15,7 @@ export enum TYPE_VISUALIZATION {
   area = 'area',
   pie = 'pie',
   column = 'column',
+  scatter = 'scatter',
 }
 
 export type TableAttributeType = {

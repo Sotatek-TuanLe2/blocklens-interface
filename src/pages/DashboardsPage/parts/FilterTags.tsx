@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import rf from 'src/requests/RequestFactory';
 import { LIST_ITEM_TYPE } from '..';
+import { TagIcon } from 'src/assets/icons';
 
 interface IFilterTags {
   type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
@@ -56,25 +57,30 @@ const FilterTags: React.FC<IFilterTags> = (props) => {
       </div>
       <div className="dashboard-filter__tags__list">
         {tags.map((tag) => (
-          <Flex
-            key={tag.tag}
-            justifyContent={'space-between'}
-            alignItems={'center'}
-            className="dashboard-filter__tags__list__item"
-          >
-            <Link
-              className={`dashboard-filter__tags__list__tag ${
-                tag.tag === selectedTag
-                  ? 'dashboard-filter__tags__list__tag--selected'
-                  : ''
-              }`}
-              to={getTagUrl(tag.tag)}
+          <Flex justifyContent={'space-between'} alignItems="center">
+            <TagIcon />
+            <Flex
+              key={tag.tag}
+              justifyContent={'space-between'}
+              alignItems={'center'}
+              className="dashboard-filter__tags__list__item"
             >
-              {tag.tag}
-            </Link>
-            <span className="dashboard-filter__tags__list__popularity">
-              {tag.popularity}
-            </span>
+              <Link
+                className={`dashboard-filter__tags__list__tag ${
+                  tag.tag === selectedTag
+                    ? 'dashboard-filter__tags__list__tag--selected'
+                    : ''
+                }`}
+                to={getTagUrl(tag.tag)}
+              >
+                <div className="truncate" title={tag.tag}>
+                  {tag.tag}
+                </div>
+              </Link>
+              <span className="dashboard-filter__tags__list__popularity">
+                {tag.popularity}
+              </span>
+            </Flex>
           </Flex>
         ))}
       </div>
