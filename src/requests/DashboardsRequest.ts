@@ -38,8 +38,7 @@ export default class DashboardsRequest extends BaseRequest {
   }
 
   getDashboards(params: DashboardsParams) {
-    const url =
-      'https://64240853d6152a4d4804ca2f.mockapi.io/blocklens-dashboards/dashboards';
+    const url = 'https://run.mocky.io/v3/8deb0b1a-289e-4f91-8669-679338169925';
     return this.get(url, { ...params });
   }
 
@@ -49,7 +48,7 @@ export default class DashboardsRequest extends BaseRequest {
   }
 
   getQueries(params: QueriesParams) {
-    const url = 'https://run.mocky.io/v3/dbfc2015-6b31-4cf3-953d-34fce07d3d64';
+    const url = 'https://run.mocky.io/v3/1fc26a41-6ebc-43fc-88a8-b2c36d9fe085';
     return this.get(url, { ...params });
   }
 

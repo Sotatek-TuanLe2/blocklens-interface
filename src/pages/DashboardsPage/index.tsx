@@ -181,14 +181,12 @@ const DashboardsPage: React.FC = () => {
               <ListItem
                 key={item.id}
                 id={item.id}
-                author={item.user ? item.user.name : item.team.handle}
+                author={item.user ? item.user.name : item.team.name}
                 avatarUrl={
-                  item.user
-                    ? item.user.profile_image_url
-                    : item.team.profile_image_url
+                  item.user ? item.user.avatarUrl : item.team.avatarUrl
                 }
-                createdAt={item.created_at}
-                starCount={item.query_favorite_count_last_7d.favorite_count}
+                createdAt={item.createdAt}
+                starCount={item.favoriteCount}
                 title={item.name}
                 type={LIST_ITEM_TYPE.QUERIES}
                 tags={item.tags}
