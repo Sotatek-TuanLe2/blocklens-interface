@@ -1,27 +1,23 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Box, Text } from '@chakra-ui/react';
-import {
-  TableSqlValue,
-  BarChart,
-  AreaChart,
-  LineChart,
-  PieChart,
-  ScatterChart,
-} from '../../../components/Charts';
-import { AppTabs, AppButton, AppSelect2 } from '../../../components';
-import BaseModal from '../../../modals/BaseModal';
+import TableSqlValue from '../../../components/Charts/TableSqlValue';
+import VisualizationBarChart from '../../../components/Charts/BarChart';
+import { AppButton, AppSelect2 } from '../../../components';
+import VisualizationAreaChart from '../../../components/Charts/AreaChart';
+import AppTabs from '../../../components/AppTabs';
 import { objectKeys } from '../../../utils/utils-network';
+import VisualizationLineChart from '../../../components/Charts/LineChart';
 import ChartSettings from '../../../components/SqlEditor/ChartSettings';
 import VisualizationPieChart from '../../../components/Charts/PieChart';
-import DashboardsRequest from '../../../requests/DashboardsRequest';
 import {
   QueryType,
-  VisualizationType,
   TYPE_VISUALIZATION,
   VALUE_VISUALIZATION,
+  VisualizationType,
 } from '../../../utils/common';
+import DashboardsRequest from '../../../requests/DashboardsRequest';
 import { useParams } from 'react-router-dom';
-import { ColumnDef } from '@tanstack/react-table';
+import BaseModal from '../../../modals/BaseModal';
 
 type VisualizationConfigType = {
   value: string;
@@ -55,11 +51,6 @@ const visualizationConfigs: VisualizationConfigType[] = [
     type: TYPE_VISUALIZATION.pie,
     value: VALUE_VISUALIZATION.pie,
   },
-  {
-    label: 'Scatter chart',
-    type: TYPE_VISUALIZATION.scatter,
-    value: VALUE_VISUALIZATION.scatter,
-  },
 ];
 
 type Props = {
@@ -80,16 +71,13 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
         ? objectKeys(queryValues[0])
         : [];
 
-    return columns.map(
-      (col) =>
-        ({
-          id: col,
-          accessorKey: col,
-          header: col,
-          enableResizing: true,
-          size: 100,
-        } as ColumnDef<unknown>),
-    );
+    return columns.map((col) => ({
+      id: col,
+      accessorKey: col,
+      header: col,
+      enableResizing: true,
+      size: 100,
+    }));
   }, [queryValues]);
 
   const addVisualizationToQuery = async (
@@ -180,35 +168,36 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
       case TYPE_VISUALIZATION.table:
         return (
           <TableSqlValue
-            columns={tableValuesColumnConfigs}
+            columns={tableValuesColumnConfigs as typeof queryValues}
             data={queryValues}
           />
         );
       case TYPE_VISUALIZATION.line:
         return (
-          <LineChart data={queryValues} xAxisKey="time" yAxisKeys={['size']} />
-        );
-      case TYPE_VISUALIZATION.column:
-        return (
-          <BarChart data={queryValues} xAxisKey="time" yAxisKeys={['size']} />
-        );
-      case TYPE_VISUALIZATION.area:
-        return (
-          <AreaChart data={queryValues} xAxisKey="time" yAxisKeys={['size']} />
-        );
-      case TYPE_VISUALIZATION.pie:
-        return <VisualizationPieChart data={queryValues} dataKey={'number'} />;
-      case 'pie':
-        return <PieChart data={queryValues} dataKey={'number'} />;
-
-      case TYPE_VISUALIZATION.scatter:
-        return (
-          <ScatterChart
+          <VisualizationLineChart
             data={queryValues}
-            xAxisKey={'number'}
+            xAxisKey="time"
             yAxisKeys={['size']}
           />
         );
+      case TYPE_VISUALIZATION.column:
+        return (
+          <VisualizationBarChart
+            data={queryValues}
+            xAxisKey="time"
+            yAxisKeys={['size']}
+          />
+        );
+      case TYPE_VISUALIZATION.area:
+        return (
+          <VisualizationAreaChart
+            data={queryValues}
+            xAxisKey="time"
+            yAxisKeys={['size']}
+          />
+        );
+      case TYPE_VISUALIZATION.pie:
+        return <VisualizationPieChart data={queryValues} dataKey={'number'} />;
       default:
         return <AddVisualization onAddVisualize={addVisualizationHandler} />;
     }
@@ -228,7 +217,6 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
           closeable: v.type !== 'newVisualization',
         }))}
       />
-      <ChartSettings />
       <BaseModal
         title={'Remove visualization'}
         description={'Are you sure you want to remove this visualization?'}
