@@ -73,7 +73,7 @@ const FilterTags: React.FC<IFilterTags> = (props) => {
                 }`}
                 to={getTagUrl(tag.tag)}
               >
-                {tag.tag}
+                <div className="truncate">{tag.tag}</div>
               </Link>
               <span className="dashboard-filter__tags__list__popularity">
                 {tag.popularity}
