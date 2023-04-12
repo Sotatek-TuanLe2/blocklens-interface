@@ -59,6 +59,10 @@
           .tag-name {
             display: flex;
             flex-wrap: wrap;
+
+            @include mobile {
+              display: none;
+            }
           }
 
           .item-tag {
