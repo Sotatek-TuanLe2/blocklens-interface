@@ -183,7 +183,7 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
     ]);
   }, []);
 
-  const renderVisualization = (type: string) => {
+  const renderVisualization = (type: TYPE_VISUALIZATION) => {
     switch (type) {
       case TYPE_VISUALIZATION.table:
         return (
@@ -192,11 +192,12 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
             data={queryValues}
           />
         );
-      case TYPE_VISUALIZATION.line:
+      case TYPE_VISUALIZATION.line: {
         return (
           <LineChart data={queryValues} xAxisKey="time" yAxisKeys={['size']} />
         );
-      case TYPE_VISUALIZATION.column:
+      }
+      case TYPE_VISUALIZATION.bar:
         return (
           <BarChart data={queryValues} xAxisKey="time" yAxisKeys={['size']} />
         );
@@ -209,7 +210,7 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
       case 'pie':
         return <PieChart data={queryValues} dataKey={'number'} />;
 
-      case TYPE_VISUALIZATION.scatter:
+      case TYPE_VISUALIZATION.scatter: {
         return (
           <ScatterChart
             data={queryValues}
@@ -217,6 +218,8 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
             yAxisKeys={['size']}
           />
         );
+      }
+
       default:
         return <AddVisualization onAddVisualize={addVisualizationHandler} />;
     }
@@ -233,8 +236,9 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
       case TYPE_VISUALIZATION.area:
         return <AreaChartIcon />;
 
-      case TYPE_VISUALIZATION.line:
+      case TYPE_VISUALIZATION.line: {
         return <LineChartIcon />;
+      }
 
       case TYPE_VISUALIZATION.pie:
         return <PieChartIcon />;
@@ -256,7 +260,9 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
         tabs={visualizationsActive.map((v) => ({
           icon: getIcon(v.options.globalSeriesType || v.type),
           name: v.name,
-          content: renderVisualization(v.options.globalSeriesType || v.type),
+          content: renderVisualization(
+            (v.options.globalSeriesType as TYPE_VISUALIZATION) || v.type,
+          ),
           id: v.id,
           closeable: v.type !== 'newVisualization',
         }))}
