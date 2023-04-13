@@ -4,14 +4,12 @@ import wallet from 'src/store/wallet';
 import transaction from 'src/store/transaction';
 import user from 'src/store/user';
 import metadata from 'src/store/metadata';
-import configuration from 'src/store/configuration';
 
 const rootReducer = combineReducers({
   wallet,
   transaction,
   user,
   metadata,
-  configuration,
 });
 
 const store = configureStore({
