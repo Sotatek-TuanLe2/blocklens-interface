@@ -57,7 +57,11 @@ const FilterTags: React.FC<IFilterTags> = (props) => {
       </div>
       <div className="dashboard-filter__tags__list">
         {tags.map((tag) => (
-          <Flex justifyContent={'space-between'} alignItems="center">
+          <Flex
+            key={tag.tag}
+            justifyContent={'space-between'}
+            alignItems="center"
+          >
             <TagIcon />
             <Flex
               key={tag.tag}
