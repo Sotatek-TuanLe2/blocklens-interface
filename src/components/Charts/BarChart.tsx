@@ -1,4 +1,3 @@
-import moment from 'moment';
 import {
   Bar,
   BarChart,
@@ -19,9 +18,7 @@ const CustomTooltip = (props: any) => {
   if (active && payload && payload.length) {
     return (
       <div className="custom-tooltip">
-        <p className=" custom-tooltip__label">{`${moment(label).format(
-          'YYYY-MM-DD HH:mm',
-        )}`}</p>
+        <p className=" custom-tooltip__label">{label}</p>
         <div className="custom-tooltip__desc">
           <span style={{ backgroundColor: `${payload[0].fill}` }}></span>
           <span>size</span>
