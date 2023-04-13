@@ -4,7 +4,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import 'src/styles/components/TableValue.scss';
 import ConfigTable from '../SqlEditor/ConfigTable';
 
@@ -12,22 +12,29 @@ interface ReactTableProps<T> {
   data: T[];
   columns: ColumnDef<T, unknown>[];
 }
-interface IDataForm {
-  align: string;
-  type: string;
-}
 
-const TableSqlValue = <T,>({ data, columns }: ReactTableProps<T>) => {
+const TableSqlValue = <T,>({
+  data,
+  columns: dataColumn,
+}: ReactTableProps<T>) => {
+  const [columns, setColumns] = useState<ColumnDef<T, unknown>[]>(dataColumn);
+  useEffect(() => {
+    setColumns(dataColumn);
+  }, [dataColumn]);
   const table = useReactTable({
     data,
-    columns,
+    columns: columns,
     getCoreRowModel: getCoreRowModel(),
   });
 
-  const [dataTable, setDataTable] = useState({ ...table });
-  const a = [...dataTable.getHeaderGroups()[0].headers];
-  const b = a.map((i) => ({ ...i, scs: 'sscs' }));
-
+  const updateDataNewTable = useCallback(
+    (data) => {
+      setColumns(
+        columns.map((item: any) => (item.id === data.id ? data : item)),
+      );
+    },
+    [columns],
+  );
   return (
     <div>
       <table
@@ -41,7 +48,7 @@ const TableSqlValue = <T,>({ data, columns }: ReactTableProps<T>) => {
         }}
       >
         <thead>
-          {dataTable.getHeaderGroups().map((headerGroup) => (
+          {table.getHeaderGroups().map((headerGroup) => (
             <tr
               key={headerGroup.id}
               style={{
@@ -49,17 +56,18 @@ const TableSqlValue = <T,>({ data, columns }: ReactTableProps<T>) => {
                 // display: 'flex',
               }}
             >
-              {b.map((header) => (
+              {headerGroup.headers.map((header: any) => (
                 <th
                   {...{
                     key: header.id,
                     style: {
                       width: header.getSize(),
                       boxShadow: 'inset 0 0 0 1px lightgray',
+                      textAlign: header.column.columnDef.align,
+                      display: header.column.columnDef.isHidden ? 'none' : null,
                     },
                   }}
                 >
-                  {console.log(header.scs)}
                   {header.isPlaceholder
                     ? null
                     : flexRender(
@@ -76,7 +84,7 @@ const TableSqlValue = <T,>({ data, columns }: ReactTableProps<T>) => {
                       style: {
                         transform: header.column.getIsResizing()
                           ? `translateX(${
-                              dataTable.getState().columnSizingInfo.deltaOffset
+                              table.getState().columnSizingInfo.deltaOffset
                             }px)`
                           : '',
                       },
@@ -88,25 +96,67 @@ const TableSqlValue = <T,>({ data, columns }: ReactTableProps<T>) => {
           ))}
         </thead>
         <tbody>
-          {dataTable.getRowModel().rows.map((row) => (
+          {table.getRowModel().rows.map((row) => (
             <tr key={row.id}>
-              {row.getVisibleCells().map((cell) => (
-                <td
-                  {...{
-                    key: cell.id,
-                    style: {
-                      width: cell.column.getSize(),
-                    },
-                  }}
-                >
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
+              {row.getVisibleCells().map((cells) => {
+                const {
+                  align,
+                  isHidden,
+                  cell,
+                  coloredPositive,
+                  coloredNegative,
+                  type,
+                } = cells.column.columnDef;
+                const value = cells.getValue();
+                const checkColor = (value: any) => {
+                  switch (true) {
+                    case value > 0 && coloredPositive:
+                      return '#006400';
+                    case value < 0 && coloredNegative:
+                      return '#d93025';
+                    default:
+                      return null;
+                  }
+                };
+                return (
+                  <td
+                    {...{
+                      key: cells.id,
+                      style: {
+                        width: cells.column.getSize(),
+                      },
+                    }}
+                  >
+                    <div
+                      className="progressbar"
+                      {...{
+                        key: cells.id,
+                        style: {
+                          justifyContent: align,
+                          display: isHidden ? 'none' : null,
+                          color:
+                            typeof value === 'number'
+                              ? checkColor(cells.getValue())
+                              : null,
+                        },
+                      }}
+                    >
+                      {type === 'normal' ? null : (
+                        <div className="visual-progressbar"> </div>
+                      )}
+                      {value}
+                    </div>
+                  </td>
+                );
+              })}
             </tr>
           ))}
         </tbody>
       </table>
-      <ConfigTable table={dataTable} />
+      <ConfigTable
+        newColumns={columns}
+        updateDataNewTable={updateDataNewTable}
+      />
     </div>
   );
 };

@@ -8,7 +8,8 @@ import AppInput from '../AppInput';
 import AppSelect2 from '../AppSelect2';
 
 interface IConfigTable {
-  table: Table<any>;
+  newColumns: any;
+  updateDataNewTable: any;
 }
 interface IOption {
   value: string;
@@ -26,7 +27,7 @@ const optionAlign: IOption[] = [
   { value: 'right', label: 'Right' },
 ];
 
-const ConfigTable: FC<IConfigTable> = ({ table }) => {
+const ConfigTable: FC<IConfigTable> = ({ newColumns, updateDataNewTable }) => {
   return (
     <div className="main-layout">
       <header>
@@ -53,13 +54,14 @@ const ConfigTable: FC<IConfigTable> = ({ table }) => {
       </Grid>
       <Divider orientation="horizontal" borderColor={'gray'} />
       <Grid templateColumns="repeat(4, 1fr)" gap={'10px'}>
-        {table.getHeaderGroups().map((headerGroup) =>
-          headerGroup.headers.map((header) => (
-            <GridItem key={header.index}>
-              <TableOptions header={header} table={table} />
-            </GridItem>
-          )),
-        )}
+        {newColumns.map((header: any) => (
+          <GridItem key={header.index}>
+            <TableOptions
+              header={header}
+              updateDataNewTable={updateDataNewTable}
+            />
+          </GridItem>
+        ))}
       </Grid>
     </div>
   );
@@ -67,14 +69,13 @@ const ConfigTable: FC<IConfigTable> = ({ table }) => {
 
 export default ConfigTable;
 
-const TableOptions = ({ header }: any) => {
-  const [first, setfirst] = useState();
-  console.log(first, 'first');
+const TableOptions = ({ header, updateDataNewTable }: any) => {
+  const [selectedItem, setSelectedItem] = useState(Object);
+
   return (
-    <div className="box-table" onClick={() => setfirst(header)}>
+    <div className="box-table" onClick={() => setSelectedItem(header)}>
       <Text fontWeight="bold" marginBottom="10px">
-        Column {header.index}:{' '}
-        {flexRender(header.column.columnDef.header, header.getContext())}
+        Column {header.index}: {header.accessorKey}
       </Text>
       <div className="box-table-children">
         <div>Title</div>
@@ -86,8 +87,8 @@ const TableOptions = ({ header }: any) => {
         <AppSelect2
           className="select-table z-100"
           size="small"
-          // value={dataForm.align}
-          onChange={(e) => console.log(e)}
+          value={header?.align}
+          onChange={(e) => updateDataNewTable({ ...selectedItem, align: e })}
           options={optionAlign}
         />
       </div>
@@ -98,23 +99,73 @@ const TableOptions = ({ header }: any) => {
       <div className="box-table-children">
         <div>Type</div>
 
-        {/* <AppSelect2
+        <AppSelect2
           className="select-table"
           size="small"
-          value={dataForm.type}
-          onChange={(e) => setDataForm({ ...dataForm, type: e })}
+          value={header?.type}
+          onChange={(e) => updateDataNewTable({ ...selectedItem, type: e })}
           options={optionType}
-        /> */}
+        />
       </div>
       <div className="main-checkbox">
-        <Checkbox size="sm">Hide column</Checkbox>
+        <Checkbox
+          size="sm"
+          value={header?.isHidden}
+          onChange={(e) =>
+            updateDataNewTable({ ...selectedItem, isHidden: e.target.checked })
+          }
+        >
+          Hide column
+        </Checkbox>
       </div>
-      <div className="main-checkbox">
-        <Checkbox size="sm">Colored positive values</Checkbox>
-      </div>
-      <div className="main-checkbox">
-        <Checkbox size="sm">Colored negative values</Checkbox>
-      </div>
+      {header?.type === 'normal' ? (
+        <div>
+          <div className="main-checkbox">
+            <Checkbox
+              size="sm"
+              value={header?.coloredPositive}
+              onChange={(e) =>
+                updateDataNewTable({
+                  ...selectedItem,
+                  coloredPositive: e.target.checked,
+                })
+              }
+            >
+              Colored positive values
+            </Checkbox>
+          </div>
+          <div className="main-checkbox">
+            <Checkbox
+              size="sm"
+              value={header?.coloredNegative}
+              onChange={(e) =>
+                updateDataNewTable({
+                  ...selectedItem,
+                  coloredNegative: e.target.checked,
+                })
+              }
+            >
+              Colored negative values
+            </Checkbox>
+          </div>
+        </div>
+      ) : (
+        <div className="main-checkbox">
+          <Checkbox
+            size="sm"
+            value={header?.coloredPositive}
+            onChange={(e) =>
+              updateDataNewTable({
+                ...selectedItem,
+                coloredPositive: e.target.checked,
+                coloredNegative: e.target.checked,
+              })
+            }
+          >
+            Colored positive/negative values
+          </Checkbox>
+        </div>
+      )}
     </div>
   );
 };
