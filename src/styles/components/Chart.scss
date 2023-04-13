@@ -1,0 +1,47 @@
+.bar-chart {
+  path.recharts-tooltip-cursor {
+    display: none !important;
+  }
+
+  .custom-tooltip {
+    font-size: 14px;
+    background-color: #696969;
+    border-radius: 4px;
+    padding: 6px 8px;
+    width: 200px;
+    &__desc {
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      span:nth-child(1) {
+        position: absolute;
+        padding: 3px;
+        border-radius: 100px;
+        background-color: aliceblue;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+      span:nth-child(2) {
+        padding-left: 10px;
+      }
+    }
+  }
+  .custom-legend {
+    padding-left: 50px;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    span:nth-child(2) {
+      right: 0px;
+      position: absolute;
+      padding: 3px;
+      border-radius: 100px;
+      background-color: aliceblue;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    span:nth-child(1) {
+      padding-right: 10px;
+    }
+  }
+}
