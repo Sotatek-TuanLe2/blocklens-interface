@@ -57,6 +57,11 @@ const VisualizationBarChart = (props: Props) => {
   const chartOptionsConfigs = configs?.chartOptionsConfigs;
   const xAxisConfigs = configs?.xAxisConfigs;
   const yAxisConfigs = configs?.yAxisConfigs;
+
+  const tickFormatTime = (value: string) => {
+    return getHourAndMinute(new Date(value));
+  };
+
   return (
     <>
       <Text>{chartOptionsConfigs?.name}</Text>
@@ -65,9 +70,7 @@ const VisualizationBarChart = (props: Props) => {
           <CartesianGrid vertical={false} strokeDasharray="4" />
           <XAxis
             dataKey={xAxisKey}
-            tickFormatter={(value) => {
-              return getHourAndMinute(new Date(value));
-            }}
+            tickFormatter={xAxisKey === 'time' ? tickFormatTime : undefined}
             fill={'#ccc'}
           >
             <Label

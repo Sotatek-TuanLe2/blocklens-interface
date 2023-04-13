@@ -81,14 +81,15 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
   const [configsChart, setConfigsChart] = useState<VisualizationOptionsType>(
     {} as VisualizationOptionsType,
   );
+  console.log('configsChart', configsChart.xAxisConfigs.sortX);
+
+  const axisOptions =
+    Array.isArray(queryValues) && queryValues[0]
+      ? objectKeys(queryValues[0])
+      : [];
 
   const tableValuesColumnConfigs = useMemo(() => {
-    const columns =
-      Array.isArray(queryValues) && queryValues[0]
-        ? objectKeys(queryValues[0])
-        : [];
-
-    return columns.map(
+    return axisOptions.map(
       (col) =>
         ({
           id: col,
@@ -204,6 +205,7 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
               yAxisKeys={['size']}
             />
             <ChartSettings
+              axisOptions={axisOptions as string[]}
               configs={visualization.options as VisualizationOptionsType}
               onChangeConfigs={(configs) => {
                 console.log('configs', configs);
@@ -216,12 +218,21 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
         return (
           <>
             <BarChart
-              data={queryValues}
+              data={
+                configsChart?.xAxisConfigs.sortX
+                  ? queryValues.sort(
+                      (a, b) =>
+                        a[configsChart.columnMapping.xAxis] -
+                        b[configsChart.columnMapping.xAxis],
+                    )
+                  : queryValues
+              }
               xAxisKey={configsChart?.columnMapping?.xAxis || 'time'}
               yAxisKeys={configsChart.columnMapping?.yAxis || ['size']}
               configs={configsChart}
             />
             <ChartSettings
+              axisOptions={axisOptions as string[]}
               configs={visualization.options as VisualizationOptionsType}
               onChangeConfigs={setConfigsChart}
             />
@@ -236,6 +247,7 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
               yAxisKeys={['size']}
             />
             <ChartSettings
+              axisOptions={axisOptions as string[]}
               configs={visualization.options as VisualizationOptionsType}
               onChangeConfigs={(configs) => {
                 console.log('configs', configs);
@@ -248,6 +260,7 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
           <>
             <PieChart data={queryValues} dataKey={'number'} />;
             <ChartSettings
+              axisOptions={axisOptions as string[]}
               configs={visualization.options as VisualizationOptionsType}
               onChangeConfigs={(configs) => {
                 console.log('configs', configs);
@@ -265,6 +278,7 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
               yAxisKeys={['size']}
             />
             <ChartSettings
+              axisOptions={axisOptions as string[]}
               configs={visualization.options as VisualizationOptionsType}
               onChangeConfigs={(configs) => {
                 console.log('configs', configs);

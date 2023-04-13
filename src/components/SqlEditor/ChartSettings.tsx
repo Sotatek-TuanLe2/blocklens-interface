@@ -19,8 +19,9 @@ import 'src/styles/components/ChartSettings.scss';
 type Props = {
   configs: VisualizationOptionsType;
   onChangeConfigs: (configs: VisualizationOptionsType) => void;
+  axisOptions: string[];
 };
-const ChartSettings = ({ configs, onChangeConfigs }: Props) => {
+const ChartSettings = ({ axisOptions, configs, onChangeConfigs }: Props) => {
   const [chartConfigs, setChartConfigs] = useState<VisualizationOptionsType>({
     chartOptionsConfigs: {} as ChartOptionConfigsType,
     xAxisConfigs: {} as XAxisConfigsType,
@@ -53,7 +54,7 @@ const ChartSettings = ({ configs, onChangeConfigs }: Props) => {
         }}
       />
       <ResultDataConfigs
-        axisOptions={['time', 'number', 'size', 'hash']}
+        axisOptions={axisOptions}
         xAxisMapped={chartConfigs.columnMapping.xAxis}
         yAxesMapped={chartConfigs.columnMapping.yAxis}
         onChangeXAxis={(xAxis) => {
@@ -72,7 +73,6 @@ const ChartSettings = ({ configs, onChangeConfigs }: Props) => {
       <XAxisConfigs
         xConfigs={chartConfigs.xAxisConfigs}
         onChangeConfigs={(configs) => {
-          console.log('configs', configs);
           updateState('xAxisConfigs', configs);
         }}
       />
@@ -101,7 +101,6 @@ const ChartOptions = ({
 
   const changeValueHandle = (key: string, value: boolean | string) => {
     let tempOptions = options;
-    console.log('key show VisualizationBarChart', key, value);
     tempOptions = {
       ...tempOptions,
       [key]: value,
@@ -124,11 +123,6 @@ const ChartOptions = ({
             key={option.value}
             value={option.value}
             onChange={(e) => {
-              console.log(
-                'e.target.checked show VisualizationBarChart',
-                e.target.checked,
-              );
-              // console.log('option.value', option.value);
               changeValueHandle(option.value, e.target.checked);
             }}
           >
@@ -159,6 +153,9 @@ const ResultDataConfigs = ({
   );
 
   const changeYAxisHandle = (value: string, oldValue: string) => {
+    if (value === '' && oldValue === '') {
+      return;
+    }
     if (oldValue === '') {
       const tempYAxes = [...yAxesMapped, value];
       return onChangeYAxes(tempYAxes);
@@ -211,8 +208,7 @@ const ResultDataConfigs = ({
                 width={'100%'}
                 options={axisOptionsConfigs.filter(
                   (config) =>
-                    !yAxesMapped.includes(config.value) ||
-                    axis === config.value,
+                    !yAxesMapped.includes(config.value) || axis !== xAxisMapped,
                 )}
                 value={axis.toString()}
                 onChange={(value) => {
@@ -292,7 +288,6 @@ const YAxisConfigs = ({
       ...tempOptions,
       [key]: value,
     };
-    console.log('temOptions VisualizationBarChart', tempOptions);
     onChangeConfigs(tempOptions);
   };
   return (
