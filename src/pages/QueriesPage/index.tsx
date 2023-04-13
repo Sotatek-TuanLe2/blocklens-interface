@@ -28,7 +28,7 @@ const QueriesPage = () => {
 
   const [queryValues, setQueryValues] = useState<unknown[]>([]);
   const [infoQuery, setInfoQuery] = useState<QueryType | null>(null);
-  const [isExpland, setIsExpland] = useState<boolean>(false);
+  const [isExpand, setIsExpand] = useState<boolean>(false);
 
   const createNewQuery = async (query: string) => {
     try {
@@ -94,7 +94,7 @@ const QueriesPage = () => {
   };
 
   const onExpland = () => {
-    setIsExpland((pre) => !pre);
+    setIsExpand((pre) => !pre);
   };
 
   useEffect(() => {
@@ -107,7 +107,11 @@ const QueriesPage = () => {
   const _renderButton = () => {
     return (
       <div className="custom-button">
-        <Tooltip hasArrow placement="top" label="Expland">
+        <Tooltip
+          hasArrow
+          placement="top"
+          label={isExpand ? 'Collapse' : 'Expand'}
+        >
           <AppButton
             onClick={onExpland}
             bg={'#2a2c2f'}
@@ -152,7 +156,7 @@ const QueriesPage = () => {
             <Box width={'100%'}>
               <Box bg="#272822" h="10px"></Box>
               <AceEditor
-                className={`custom-editor ${isExpland ? 'expland' : ''}`}
+                className={`custom-editor ${isExpand ? 'expland' : ''}`}
                 ref={editorRef}
                 mode="sql"
                 theme="monokai"

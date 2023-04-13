@@ -6,14 +6,11 @@
   max-width: 380px;
   width: 100%;
   height: 100%;
-  padding: 0 20px;
+  padding: 20px;
+  background-color: #101530;
 
   @include desktop {
     max-width: 100%;
-  }
-
-  @include mobile {
-    padding: 0;
   }
 
   .row-element {
