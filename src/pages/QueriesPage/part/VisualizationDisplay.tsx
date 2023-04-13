@@ -22,6 +22,8 @@ import {
 } from '../../../utils/common';
 import { useParams } from 'react-router-dom';
 import { ColumnDef } from '@tanstack/react-table';
+import 'src/styles/components/Chart.scss';
+
 import {
   AreaChartIcon,
   BarChartIcon,
