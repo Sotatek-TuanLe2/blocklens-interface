@@ -5,16 +5,17 @@
 .queries-page {
   display: flex;
   flex-direction: row;
+  gap: 20px;
 
   @include desktop {
     flex-direction: column-reverse;
   }
 
   .custom-editor {
-    height: 500px !important;
+    height: 250px !important;
 
     &.expland {
-      height: 400px !important;
+      height: 550px !important;
     }
 
     .ace_print-margin {
