@@ -1,12 +1,47 @@
+@import '../color-variables';
+@import '../variables';
+@import '../mixins.scss';
+
 .queries-page {
+  display: flex;
+  flex-direction: row;
+
+  @include desktop {
+    flex-direction: column-reverse;
+  }
+
+  .custom-editor {
+    height: 500px !important;
+
+    &.expland {
+      height: 400px !important;
+    }
+
+    .ace_print-margin {
+      display: none;
+    }
+  }
+
   .control-editor {
     padding: 16px 12px;
     background-color: #111213;
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
+
+    .custom-button {
+      display: flex;
+      flex-direction: row;
+
+      & > button {
+        margin-right: 4px;
+        border-radius: 8px;
+        padding: 8px;
+      }
+    }
   }
   .schema-detail-title {
     cursor: default;
+
     .table-name {
       &:hover {
         background: transparent;
@@ -29,9 +64,11 @@
         border-radius: 4px;
         margin-bottom: 20px;
       }
+
       &__content-tab {
         height: 500px;
       }
+
       &__name-tab {
         margin-right: 0;
         border-radius: 4px;

@@ -46,6 +46,8 @@ import { ReactComponent as ScatterChartIcon } from './ScatterChartIcon.svg';
 import { ReactComponent as LineChartIcon } from './LineChartIcon.svg';
 import { ReactComponent as AreaChartIcon } from './AreaChartIcon.svg';
 import { ReactComponent as BarChartIcon } from './BarChartIcon.svg';
+import { ReactComponent as ExplandIcon } from './ExplandIcon.svg';
+import { ReactComponent as FormatIcon } from './FormatIcon.svg';
 
 export {
   CalendarIcon,
@@ -96,4 +98,6 @@ export {
   LineChartIcon,
   AreaChartIcon,
   BarChartIcon,
+  ExplandIcon,
+  FormatIcon,
 };

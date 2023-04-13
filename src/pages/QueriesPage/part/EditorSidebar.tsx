@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import { Box, Flex, Select, Text } from '@chakra-ui/react';
-import { tableDetail } from '../../../components/SqlEditor/MockData';
-import DashboardsRequest from '../../../requests/DashboardsRequest';
 import { ArrowBackIcon } from '@chakra-ui/icons';
-import { toastError } from '../../../utils/utils-notify';
-import SchemaTitle from '../../../components/SqlEditor/SchemaTitle';
-import SchemaDescribe from '../../../components/SqlEditor/SchemaDescribe';
-import { getLogoChainByChainId } from '../../../utils/utils-network';
-import { getErrorMessage } from '../../../utils/utils-helper';
-import { AppInput, AppSelect2 } from '../../../components';
+import { Box, Flex, Text } from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
 import 'src/styles/components/EditorSidebar.scss';
+import { AppInput, AppSelect2 } from '../../../components';
+import { tableDetail } from '../../../components/SqlEditor/MockData';
+import SchemaDescribe from '../../../components/SqlEditor/SchemaDescribe';
+import SchemaTitle from '../../../components/SqlEditor/SchemaTitle';
+import DashboardsRequest from '../../../requests/DashboardsRequest';
 import { SchemaType } from '../../../utils/common';
+import { getErrorMessage } from '../../../utils/utils-helper';
+import { getLogoChainByChainId } from '../../../utils/utils-network';
+import { toastError } from '../../../utils/utils-notify';
 
 const EditorSidebar = () => {
   const [tableSelected, setTableSelected] = useState<{
@@ -107,13 +107,7 @@ const EditorSidebar = () => {
     );
   };
   return (
-    <Box
-      maxW={'380px'}
-      width={'100%'}
-      height="100%"
-      px={5}
-      className="editor-sidebar"
-    >
+    <Box className="editor-sidebar">
       <AppInput marginBottom={4} placeholder={'Filter tables...'} size="md" />
       <Box marginBottom={4}>
         {tableSelected ? (
