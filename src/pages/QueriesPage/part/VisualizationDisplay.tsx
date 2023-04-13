@@ -12,7 +12,6 @@ import { AppTabs, AppButton, AppSelect2 } from '../../../components';
 import BaseModal from '../../../modals/BaseModal';
 import { objectKeys } from '../../../utils/utils-network';
 import ChartSettings from '../../../components/SqlEditor/ChartSettings';
-import VisualizationPieChart from '../../../components/Charts/PieChart';
 
 import DashboardsRequest from '../../../requests/DashboardsRequest';
 import { useParams } from 'react-router-dom';
@@ -29,6 +28,7 @@ import {
   QueryType,
   TYPE_VISUALIZATION,
   VALUE_VISUALIZATION,
+  VisualizationOptionsType,
   VisualizationType,
 } from '../../../utils/visualization.type';
 
@@ -78,6 +78,10 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
   >([{ id: '1', options: {}, name: 'New Visualization', type: '' }]);
   const [closeTabId, setCloseTabId] = useState('');
 
+  const [configsChart, setConfigsChart] = useState<VisualizationOptionsType>(
+    {} as VisualizationOptionsType,
+  );
+
   const tableValuesColumnConfigs = useMemo(() => {
     const columns =
       Array.isArray(queryValues) && queryValues[0]
@@ -125,10 +129,12 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
         options: {
           globalSeriesType: searchedVisualization.type,
           columnMapping: {
-            time: 'x',
-            number: 'y',
+            xAxis: 'time',
+            yAxis: ['number'],
           },
-          showLegend: true,
+          chartOptionsConfigs: {
+            showLegend: true,
+          },
         },
       };
     }
@@ -179,7 +185,8 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
     ]);
   }, []);
 
-  const renderVisualization = (type: TYPE_VISUALIZATION) => {
+  const renderVisualization = (visualization: VisualizationType) => {
+    const type = visualization.options?.globalSeriesType || visualization.type;
     switch (type) {
       case TYPE_VISUALIZATION.table:
         return (
@@ -190,29 +197,80 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
         );
       case TYPE_VISUALIZATION.line: {
         return (
-          <LineChart data={queryValues} xAxisKey="time" yAxisKeys={['size']} />
+          <>
+            <LineChart
+              data={queryValues}
+              xAxisKey="time"
+              yAxisKeys={['size']}
+            />
+            <ChartSettings
+              configs={visualization.options as VisualizationOptionsType}
+              onChangeConfigs={(configs) => {
+                console.log('configs', configs);
+              }}
+            />
+          </>
         );
       }
       case TYPE_VISUALIZATION.bar:
         return (
-          <BarChart data={queryValues} xAxisKey="time" yAxisKeys={['size']} />
+          <>
+            <BarChart
+              data={queryValues}
+              xAxisKey={configsChart?.columnMapping?.xAxis || 'time'}
+              yAxisKeys={configsChart.columnMapping?.yAxis || ['size']}
+              configs={configsChart}
+            />
+            <ChartSettings
+              configs={visualization.options as VisualizationOptionsType}
+              onChangeConfigs={setConfigsChart}
+            />
+          </>
         );
       case TYPE_VISUALIZATION.area:
         return (
-          <AreaChart data={queryValues} xAxisKey="time" yAxisKeys={['size']} />
+          <>
+            <AreaChart
+              data={queryValues}
+              xAxisKey="time"
+              yAxisKeys={['size']}
+            />
+            <ChartSettings
+              configs={visualization.options as VisualizationOptionsType}
+              onChangeConfigs={(configs) => {
+                console.log('configs', configs);
+              }}
+            />
+          </>
         );
       case TYPE_VISUALIZATION.pie:
-        return <VisualizationPieChart data={queryValues} dataKey={'number'} />;
-      case 'pie':
-        return <PieChart data={queryValues} dataKey={'number'} />;
+        return (
+          <>
+            <PieChart data={queryValues} dataKey={'number'} />;
+            <ChartSettings
+              configs={visualization.options as VisualizationOptionsType}
+              onChangeConfigs={(configs) => {
+                console.log('configs', configs);
+              }}
+            />
+          </>
+        );
 
       case TYPE_VISUALIZATION.scatter: {
         return (
-          <ScatterChart
-            data={queryValues}
-            xAxisKey={'number'}
-            yAxisKeys={['size']}
-          />
+          <>
+            <ScatterChart
+              data={queryValues}
+              xAxisKey={'number'}
+              yAxisKeys={['size']}
+            />
+            <ChartSettings
+              configs={visualization.options as VisualizationOptionsType}
+              onChangeConfigs={(configs) => {
+                console.log('configs', configs);
+              }}
+            />
+          </>
         );
       }
 
@@ -256,14 +314,12 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
         tabs={visualizationsActive.map((v) => ({
           icon: getIcon(v.options.globalSeriesType || v.type),
           name: v.name,
-          content: renderVisualization(
-            (v.options.globalSeriesType as TYPE_VISUALIZATION) || v.type,
-          ),
+          content: renderVisualization(v),
           id: v.id,
           closeable: v.type !== 'newVisualization',
         }))}
       />
-      <ChartSettings />
+
       <BaseModal
         title={'Remove visualization'}
         description={'Are you sure you want to remove this visualization?'}

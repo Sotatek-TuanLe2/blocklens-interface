@@ -11,6 +11,7 @@ interface IAppSelectPops {
   hiddenLabelDefault?: boolean;
   onChange: (value: string) => void;
   disabled?: boolean;
+  zIndex?: number;
 }
 
 interface IOption {
@@ -28,6 +29,7 @@ const AppSelect2: FC<IAppSelectPops> = ({
   hiddenLabelDefault = false,
   className,
   disabled,
+  zIndex,
 }) => {
   const [open, setOpen] = useState<boolean>(false);
   const ref = useRef<any>(null);
@@ -51,7 +53,12 @@ const AppSelect2: FC<IAppSelectPops> = ({
   }, []);
 
   return (
-    <Box className={`app-select ${size} ${className}`} width={width} ref={ref}>
+    <Box
+      className={`app-select ${size} ${className}`}
+      width={width}
+      ref={ref}
+      zIndex={zIndex}
+    >
       <Flex
         className="app-select__btn-select"
         onClick={() => {

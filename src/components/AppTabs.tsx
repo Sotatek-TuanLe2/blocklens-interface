@@ -24,6 +24,7 @@ export interface ITabs {
   id: string;
   icon?: ReactNode;
   closeable?: boolean;
+  onTabClick?: () => void;
 }
 
 const AppTabs: FC<IAppTabs> = ({

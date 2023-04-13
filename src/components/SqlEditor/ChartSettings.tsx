@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Box,
   Checkbox,
@@ -10,57 +10,76 @@ import {
 import { AppCard, AppInput, AppSelect2 } from '../index';
 import {
   ChartOptionConfigsType,
+  VisualizationOptionsType,
   XAxisConfigsType,
   YAxisConfigsType,
 } from '../../utils/visualization.type';
+import 'src/styles/components/ChartSettings.scss';
 
-const ChartSettings = () => {
-  const [chartOptions, setChartOptions] = useState<ChartOptionConfigsType>(
-    {} as ChartOptionConfigsType,
-  );
-  const [xConfigs, setXConfigs] = useState<XAxisConfigsType>(
-    {} as XAxisConfigsType,
-  );
-  const [yConfigs, setYConfigs] = useState<YAxisConfigsType>(
-    {} as YAxisConfigsType,
-  );
-  const [columnMapping, setColumnMapping] = useState({
-    xAxis: 'time',
-    yAxis: ['size'] as string[],
-  });
+type Props = {
+  configs: VisualizationOptionsType;
+  onChangeConfigs: (configs: VisualizationOptionsType) => void;
+};
+const ChartSettings = ({ configs, onChangeConfigs }: Props) => {
+  const [chartConfigs, setChartConfigs] = useState<VisualizationOptionsType>({
+    chartOptionsConfigs: {} as ChartOptionConfigsType,
+    xAxisConfigs: {} as XAxisConfigsType,
+    yAxisConfigs: {} as YAxisConfigsType,
+    columnMapping: {
+      xAxis: 'time',
+      yAxis: ['size'],
+    },
+  } as VisualizationOptionsType);
+
+  useEffect(() => {
+    setChartConfigs(configs);
+  }, []);
+
+  const updateState = (prop: string, value: unknown) => {
+    const tempConfigs = {
+      ...chartConfigs,
+      [prop]: value,
+    };
+    setChartConfigs(tempConfigs);
+    onChangeConfigs(tempConfigs);
+  };
 
   return (
-    <VStack spacing={'24px'}>
+    <VStack spacing={'24px'} className={'chart-settings'}>
       <ChartOptions
-        options={chartOptions}
+        options={chartConfigs.chartOptionsConfigs}
         onChangeOptions={(options) => {
-          console.log('options', options);
-          setChartOptions(options);
+          updateState('chartOptionsConfigs', options);
         }}
       />
       <ResultDataConfigs
-        axisOptions={['time', 'number', 'size', 'hash', 'hihi']}
-        xAxisMapped={columnMapping.xAxis}
-        yAxesMapped={columnMapping.yAxis}
+        axisOptions={['time', 'number', 'size', 'hash']}
+        xAxisMapped={chartConfigs.columnMapping.xAxis}
+        yAxesMapped={chartConfigs.columnMapping.yAxis}
         onChangeXAxis={(xAxis) => {
-          setColumnMapping({ ...columnMapping, xAxis });
+          updateState('columnMapping', {
+            ...chartConfigs.columnMapping,
+            xAxis,
+          });
         }}
-        onChangeYAxes={(yAxes) =>
-          setColumnMapping({ ...columnMapping, yAxis: yAxes })
-        }
+        onChangeYAxes={(yAxes) => {
+          updateState('columnMapping', {
+            ...chartConfigs.columnMapping,
+            yAxis: yAxes,
+          });
+        }}
       />
       <XAxisConfigs
-        xConfigs={xConfigs}
+        xConfigs={chartConfigs.xAxisConfigs}
         onChangeConfigs={(configs) => {
           console.log('configs', configs);
-          setXConfigs(configs);
+          updateState('xAxisConfigs', configs);
         }}
       />
       <YAxisConfigs
-        yConfigs={yConfigs}
+        yConfigs={chartConfigs.yAxisConfigs}
         onChangeConfigs={(configs) => {
-          console.log('configsY', configs);
-          setYConfigs(configs);
+          updateState('yAxisConfigs', configs);
         }}
       />
     </VStack>
@@ -71,8 +90,8 @@ const ChartOptions = ({
   options,
   onChangeOptions,
 }: {
-  options: ChartOptionConfigsType;
-  onChangeOptions: (options: ChartOptionConfigsType) => void;
+  options: Partial<ChartOptionConfigsType>;
+  onChangeOptions: (options: Partial<ChartOptionConfigsType>) => void;
 }) => {
   const chartOptionsConfigs = [
     { label: 'Show chart legend', value: 'showLegend' },
@@ -82,6 +101,7 @@ const ChartOptions = ({
 
   const changeValueHandle = (key: string, value: boolean | string) => {
     let tempOptions = options;
+    console.log('key show VisualizationBarChart', key, value);
     tempOptions = {
       ...tempOptions,
       [key]: value,
@@ -91,7 +111,7 @@ const ChartOptions = ({
 
   return (
     <AppCard>
-      <Text as={'h3'} fontWeight={'bold'} fontSize={'24px'} mb={2}>
+      <Text as={'h3'} className={'chart-settings__title'}>
         Chart options
       </Text>
       <Flex alignItems={'center'} mb={2}>
@@ -104,6 +124,11 @@ const ChartOptions = ({
             key={option.value}
             value={option.value}
             onChange={(e) => {
+              console.log(
+                'e.target.checked show VisualizationBarChart',
+                e.target.checked,
+              );
+              // console.log('option.value', option.value);
               changeValueHandle(option.value, e.target.checked);
             }}
           >
@@ -150,7 +175,7 @@ const ResultDataConfigs = ({
 
   return (
     <AppCard py={4} px={6}>
-      <Text as={'h3'} fontWeight={'bold'} fontSize={'24px'} mb={3}>
+      <Text as={'h3'} className={'chart-settings__title'}>
         Result data
       </Text>
       <Flex alignItems={'center'} justifyContent={'space-between'} mb={2}>
@@ -159,6 +184,7 @@ const ResultDataConfigs = ({
         </Text>
         <Box flex={1}>
           <AppSelect2
+            zIndex={1001}
             options={axisOptionsConfigs.filter(
               (config) => !yAxesMapped.includes(config.value),
             )}
@@ -167,9 +193,11 @@ const ResultDataConfigs = ({
           />
         </Box>
       </Flex>
-      {[...yAxesMapped, ''].map((axis) => {
+      {[...yAxesMapped, ''].map((axis, index) => {
         return (
           <Flex
+            mt={2}
+            width={'100%'}
             alignItems={'center'}
             justifyContent={'space-between'}
             key={axis}
@@ -179,6 +207,7 @@ const ResultDataConfigs = ({
             </Text>
             <Box flex={1}>
               <AppSelect2
+                zIndex={1000 - index}
                 width={'100%'}
                 options={axisOptionsConfigs.filter(
                   (config) =>
@@ -222,11 +251,12 @@ const XAxisConfigs = ({
   };
   return (
     <AppCard>
-      <Text>x-axis options</Text>
+      <Text as={'h3'} className={'chart-settings__title'}>
+        x-axis options
+      </Text>
       <Flex alignItems={'center'} justifyContent={'space-between'}>
         <Text>Axis title</Text>
         <AppInput
-          size={'sm'}
           value={title}
           onChange={(e) => changeValueHandle(e.target.name, e.target.value)}
           name={'title'}
@@ -262,11 +292,14 @@ const YAxisConfigs = ({
       ...tempOptions,
       [key]: value,
     };
+    console.log('temOptions VisualizationBarChart', tempOptions);
     onChangeConfigs(tempOptions);
   };
   return (
     <AppCard>
-      <Text>y-axis options</Text>
+      <Text as={'h3'} className={'chart-settings__title'}>
+        y-axis options
+      </Text>
       <Flex alignItems={'center'} justifyContent={'space-between'}>
         <Text>Axis title</Text>
         <AppInput

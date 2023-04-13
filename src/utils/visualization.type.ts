@@ -26,9 +26,7 @@ export type TableAttributeType = {
   id: string;
 };
 export type ResultDataConfigsType = {
-  columnMapping: {
-    [key: string]: 'x' | 'y';
-  };
+  columnMapping: ColumnMappingType;
 };
 
 export type ColumnMappingType = {
@@ -61,11 +59,12 @@ export type ChartType = {
   globalSeriesType: string;
 };
 
-type VisualizationOptionsType = ChartType &
-  ResultDataConfigsType &
-  ChartOptionConfigsType &
-  XAxisConfigsType &
-  YAxisConfigsType;
+export type VisualizationOptionsType = ChartType &
+  ResultDataConfigsType & {
+    chartOptionsConfigs: Partial<ChartOptionConfigsType>;
+  } & {
+    xAxisConfigs: XAxisConfigsType;
+  } & { yAxisConfigs: YAxisConfigsType };
 
 export type VisualizationType = {
   // created_at: Date;
