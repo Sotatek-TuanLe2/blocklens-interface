@@ -226,7 +226,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
         >
           <div className="tag-title">
             <TagIcon />
-            <span>{tag}</span>
+            <span className="truncate">{tag}</span>
           </div>
           <Link to={getRemoveTagUrl()}>
             <CloseMenuIcon width={12} />
