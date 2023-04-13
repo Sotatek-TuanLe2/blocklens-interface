@@ -13,7 +13,7 @@ import {
 import { getHourAndMinute, randomColor } from '../../utils/common';
 import { ChartProps } from './LineChart';
 import { VisualizationOptionsType } from '../../utils/visualization.type';
-import { Text } from '@chakra-ui/react';
+import { Box, Text } from '@chakra-ui/react';
 type ChartConfigType = VisualizationOptionsType;
 type Props = ChartProps & {
   configs?: Partial<ChartConfigType>;
@@ -26,9 +26,14 @@ const CustomTooltip = (props: any) => {
       <div className="custom-tooltip">
         <p className=" custom-tooltip__label">{label}</p>
         <div className="custom-tooltip__desc">
-          <span style={{ backgroundColor: `${payload[0].fill}` }}></span>
-          <span>size</span>
-          <span>{payload[0].value}</span>
+          {payload.map((entry: any) => (
+            <Box as={'div'}>
+              <span style={{ backgroundColor: `${entry.fill}` }}></span>
+              <span>{entry.name}</span>
+              <span>{entry.value}</span>
+              <br />
+            </Box>
+          ))}
         </div>
       </div>
     );

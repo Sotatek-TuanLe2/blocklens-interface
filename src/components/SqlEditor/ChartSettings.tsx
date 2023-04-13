@@ -33,6 +33,7 @@ const ChartSettings = ({ axisOptions, configs, onChangeConfigs }: Props) => {
   } as VisualizationOptionsType);
 
   useEffect(() => {
+    console.log('configs', configs);
     setChartConfigs(configs);
   }, []);
 
@@ -93,11 +94,44 @@ const ChartOptions = ({
   options: Partial<ChartOptionConfigsType>;
   onChangeOptions: (options: Partial<ChartOptionConfigsType>) => void;
 }) => {
-  const chartOptionsConfigs = [
-    { label: 'Show chart legend', value: 'showLegend' },
-    { label: 'Enable stacking', value: 'stacking' },
-    { label: 'Normalize to percentage', value: 'percentValues' },
-  ];
+  console.log('options', options);
+
+  const [chartOptions, setChartOptions] = useState([
+    {
+      label: 'Show chart legend',
+      value: 'showLegend',
+      checked: true,
+    },
+    { label: 'Enable stacking', value: 'stacking', checked: false },
+    {
+      label: 'Normalize to percentage',
+      value: 'percentValues',
+      checked: false,
+    },
+  ]);
+  useEffect(() => {
+    console.log('options effect', options.showLegend);
+    setChartOptions((prev) => {
+      console.log('prev', prev);
+      return [
+        {
+          label: 'Show chart legend',
+          value: 'showLegend',
+          checked: options.showLegend || false,
+        },
+        {
+          label: 'Enable stacking',
+          value: 'stacking',
+          checked: options.stacking || false,
+        },
+        {
+          label: 'Normalize to percentage',
+          value: 'percentValues',
+          checked: options.percentValues || false,
+        },
+      ];
+    });
+  }, [options]);
 
   const changeValueHandle = (key: string, value: boolean | string) => {
     let tempOptions = options;
@@ -115,20 +149,27 @@ const ChartOptions = ({
       </Text>
       <Flex alignItems={'center'} mb={2}>
         <Text mr={2}>Title</Text>
-        <AppInput onChange={(e) => changeValueHandle('name', e.target.value)} />
+        <AppInput
+          value={options.name || ''}
+          onChange={(e) => changeValueHandle('name', e.target.value)}
+        />
       </Flex>
       <CheckboxGroup>
-        {chartOptionsConfigs.map((option) => (
-          <Checkbox
-            key={option.value}
-            value={option.value}
-            onChange={(e) => {
-              changeValueHandle(option.value, e.target.checked);
-            }}
-          >
-            {option.label}
-          </Checkbox>
-        ))}
+        {chartOptions.map((option) => {
+          console.log('option', option);
+          return (
+            <Checkbox
+              key={option.value}
+              name={option.value}
+              isChecked={option.checked}
+              onChange={(e) => {
+                changeValueHandle(option.value, e.target.checked);
+              }}
+            >
+              {option.label}
+            </Checkbox>
+          );
+        })}
       </CheckboxGroup>
     </AppCard>
   );
@@ -160,7 +201,7 @@ const ResultDataConfigs = ({
       const tempYAxes = [...yAxesMapped, value];
       return onChangeYAxes(tempYAxes);
     }
-    if (value === '' && yAxesMapped.length > 1) {
+    if (value === '' && yAxesMapped.length <= 1) {
       const tempYAxes = yAxesMapped.filter((item) => item !== oldValue);
       return onChangeYAxes(tempYAxes);
     }

@@ -81,7 +81,7 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
   const [configsChart, setConfigsChart] = useState<VisualizationOptionsType>(
     {} as VisualizationOptionsType,
   );
-  console.log('configsChart', configsChart.xAxisConfigs.sortX);
+  // console.log('configsChart', configsChart.xAxisConfigs.sortX);
 
   const axisOptions =
     Array.isArray(queryValues) && queryValues[0]
@@ -131,7 +131,7 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
           globalSeriesType: searchedVisualization.type,
           columnMapping: {
             xAxis: 'time',
-            yAxis: ['number'],
+            yAxis: ['size'],
           },
           chartOptionsConfigs: {
             showLegend: true,
@@ -219,7 +219,7 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
           <>
             <BarChart
               data={
-                configsChart?.xAxisConfigs.sortX
+                configsChart?.xAxisConfigs?.sortX
                   ? queryValues.sort(
                       (a, b) =>
                         a[configsChart.columnMapping.xAxis] -
@@ -261,7 +261,11 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
             <PieChart data={queryValues} dataKey={'number'} />;
             <ChartSettings
               axisOptions={axisOptions as string[]}
-              configs={visualization.options as VisualizationOptionsType}
+              configs={
+                objectKeys(configsChart).length > 0
+                  ? configsChart
+                  : (visualization.options as VisualizationOptionsType)
+              }
               onChangeConfigs={(configs) => {
                 console.log('configs', configs);
               }}
@@ -330,6 +334,10 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
           name: v.name,
           content: renderVisualization(v),
           id: v.id,
+          onTabClick: () => {
+            console.log('v.options', v.options);
+            setConfigsChart(v.options as VisualizationOptionsType);
+          },
           closeable: v.type !== 'newVisualization',
         }))}
       />
