@@ -1,19 +1,16 @@
-import React from 'react';
+import moment from 'moment';
 import {
-  BarChart,
   Bar,
-  XAxis,
-  YAxis,
+  BarChart,
   CartesianGrid,
-  Tooltip,
   Legend,
   ResponsiveContainer,
-  LegendProps,
-  LegendType,
+  Tooltip,
+  XAxis,
+  YAxis,
 } from 'recharts';
-import { ChartProps } from './LineChart';
 import { getHourAndMinute, randomColor } from '../../utils/common';
-import moment from 'moment';
+import { ChartProps } from './LineChart';
 
 type Props = ChartProps;
 
@@ -56,7 +53,7 @@ const VisualizationBarChart = ({ xAxisKey, yAxisKeys, data }: Props) => {
   return (
     <ResponsiveContainer width={'100%'} height={'100%'}>
       <BarChart height={500} data={data} className="bar-chart">
-        {/* <CartesianGrid strokeDasharray="3 3" /> */}
+        <CartesianGrid vertical={false} strokeDasharray="4" />
         <XAxis
           dataKey={xAxisKey}
           tickFormatter={(value) => {
