@@ -1,36 +1,32 @@
-import React, { useEffect, useState } from 'react';
 import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table';
+import { useEffect, useState } from 'react';
 import 'src/styles/components/TableValue.scss';
 import ConfigTable from '../SqlEditor/ConfigTable';
-import { useSelector } from 'react-redux';
-import { RootState } from 'src/store';
 
 interface ReactTableProps<T> {
   data: T[];
   columns: ColumnDef<T, unknown>[];
 }
+interface IDataForm {
+  align: string;
+  type: string;
+}
 
 const TableSqlValue = <T,>({ data, columns }: ReactTableProps<T>) => {
-  const newColumns = columns.map((i) => {
-    return {
-      ...i,
-      align: 'left',
-      type: 'normal',
-      coloredPositive: false,
-      coloredNegative: false,
-    };
-  });
   const table = useReactTable({
     data,
-    columns: newColumns,
+    columns,
     getCoreRowModel: getCoreRowModel(),
   });
-  const [dataTable, setDataTable] = useState(table);
+
+  const [dataTable, setDataTable] = useState({ ...table });
+  const a = [...dataTable.getHeaderGroups()[0].headers];
+  const b = a.map((i) => ({ ...i, scs: 'sscs' }));
 
   return (
     <div>
@@ -45,7 +41,7 @@ const TableSqlValue = <T,>({ data, columns }: ReactTableProps<T>) => {
         }}
       >
         <thead>
-          {table.getHeaderGroups().map((headerGroup) => (
+          {dataTable.getHeaderGroups().map((headerGroup) => (
             <tr
               key={headerGroup.id}
               style={{
@@ -53,17 +49,17 @@ const TableSqlValue = <T,>({ data, columns }: ReactTableProps<T>) => {
                 // display: 'flex',
               }}
             >
-              {headerGroup.headers.map((header) => (
+              {b.map((header) => (
                 <th
                   {...{
                     key: header.id,
                     style: {
-                      textAlign: header.column.columnDef.align,
                       width: header.getSize(),
                       boxShadow: 'inset 0 0 0 1px lightgray',
                     },
                   }}
                 >
+                  {console.log(header.scs)}
                   {header.isPlaceholder
                     ? null
                     : flexRender(
@@ -80,7 +76,7 @@ const TableSqlValue = <T,>({ data, columns }: ReactTableProps<T>) => {
                       style: {
                         transform: header.column.getIsResizing()
                           ? `translateX(${
-                              table.getState().columnSizingInfo.deltaOffset
+                              dataTable.getState().columnSizingInfo.deltaOffset
                             }px)`
                           : '',
                       },
@@ -92,7 +88,7 @@ const TableSqlValue = <T,>({ data, columns }: ReactTableProps<T>) => {
           ))}
         </thead>
         <tbody>
-          {table.getRowModel().rows.map((row) => (
+          {dataTable.getRowModel().rows.map((row) => (
             <tr key={row.id}>
               {row.getVisibleCells().map((cell) => (
                 <td
@@ -110,7 +106,7 @@ const TableSqlValue = <T,>({ data, columns }: ReactTableProps<T>) => {
           ))}
         </tbody>
       </table>
-      <ConfigTable table={dataTable} setDataTable={setDataTable} />
+      <ConfigTable table={dataTable} />
     </div>
   );
 };

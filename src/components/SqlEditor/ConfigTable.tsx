@@ -1,27 +1,18 @@
 import { Checkbox, Divider, Grid, GridItem, Text } from '@chakra-ui/react';
 import { flexRender } from '@tanstack/react-table';
 import { Table } from '@tanstack/table-core';
-import { FC, useEffect, useState } from 'react';
+import { FC, useState } from 'react';
 import 'src/styles/components/TableConfig.scss';
 import AppButton from '../AppButton';
 import AppInput from '../AppInput';
 import AppSelect2 from '../AppSelect2';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from 'src/store';
-import { setAlignContent } from 'src/store/configuration';
 
 interface IConfigTable {
   table: Table<any>;
-  setDataTable: any;
 }
 interface IOption {
   value: string;
   label: string;
-}
-
-interface IDataForm {
-  align: string;
-  type: string;
 }
 
 const optionType: IOption[] = [
@@ -35,7 +26,7 @@ const optionAlign: IOption[] = [
   { value: 'right', label: 'Right' },
 ];
 
-const ConfigTable: FC<IConfigTable> = ({ table, setDataTable, dataTable }) => {
+const ConfigTable: FC<IConfigTable> = ({ table }) => {
   return (
     <div className="main-layout">
       <header>
@@ -65,7 +56,7 @@ const ConfigTable: FC<IConfigTable> = ({ table, setDataTable, dataTable }) => {
         {table.getHeaderGroups().map((headerGroup) =>
           headerGroup.headers.map((header) => (
             <GridItem key={header.index}>
-              <TableOptions setDataTable={setDataTable} header={header} />
+              <TableOptions header={header} table={table} />
             </GridItem>
           )),
         )}
@@ -76,36 +67,11 @@ const ConfigTable: FC<IConfigTable> = ({ table, setDataTable, dataTable }) => {
 
 export default ConfigTable;
 
-const TableOptions = ({ header, setDataTable }: any) => {
-  const dispatch = useDispatch();
-  const { alignContent } = useSelector(
-    (state: RootState) => state.configuration,
-  );
-  const initDataForm = {
-    align: 'left',
-    type: 'normal',
-  };
-  const [dataForm, setDataForm] = useState<IDataForm>(initDataForm);
-  console.log(header, 'header');
-
-  const handleAlignChange = (align) => {
-    const updatedColumns = columns.map((column) => {
-      if (column.id === header.column.columnDef.id) {
-        return {
-          ...column,
-          columnDef: {
-            ...column.columnDef,
-            align: align,
-          },
-        };
-      }
-      return column;
-    });
-    dispatch(setAlignContent(updatedColumns));
-  };
-
+const TableOptions = ({ header }: any) => {
+  const [first, setfirst] = useState();
+  console.log(first, 'first');
   return (
-    <div className="box-table">
+    <div className="box-table" onClick={() => setfirst(header)}>
       <Text fontWeight="bold" marginBottom="10px">
         Column {header.index}:{' '}
         {flexRender(header.column.columnDef.header, header.getContext())}
@@ -120,8 +86,8 @@ const TableOptions = ({ header, setDataTable }: any) => {
         <AppSelect2
           className="select-table z-100"
           size="small"
-          value={dataForm.align}
-          onChange={(e) => setDataTable(e)}
+          // value={dataForm.align}
+          onChange={(e) => console.log(e)}
           options={optionAlign}
         />
       </div>
@@ -132,13 +98,13 @@ const TableOptions = ({ header, setDataTable }: any) => {
       <div className="box-table-children">
         <div>Type</div>
 
-        <AppSelect2
+        {/* <AppSelect2
           className="select-table"
           size="small"
           value={dataForm.type}
           onChange={(e) => setDataForm({ ...dataForm, type: e })}
           options={optionType}
-        />
+        /> */}
       </div>
       <div className="main-checkbox">
         <Checkbox size="sm">Hide column</Checkbox>
