@@ -57,7 +57,11 @@ const FilterTags: React.FC<IFilterTags> = (props) => {
       </div>
       <div className="dashboard-filter__tags__list">
         {tags.map((tag) => (
-          <Flex justifyContent={'space-between'} alignItems="center">
+          <Flex
+            key={tag.tag}
+            justifyContent={'space-between'}
+            alignItems="center"
+          >
             <TagIcon />
             <Flex
               key={tag.tag}
@@ -73,7 +77,9 @@ const FilterTags: React.FC<IFilterTags> = (props) => {
                 }`}
                 to={getTagUrl(tag.tag)}
               >
-                {tag.tag}
+                <div className="truncate" title={tag.tag}>
+                  {tag.tag}
+                </div>
               </Link>
               <span className="dashboard-filter__tags__list__popularity">
                 {tag.popularity}

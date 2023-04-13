@@ -62,23 +62,23 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   useEffect(() => {
     const searchParams = new URLSearchParams(searchUrl);
     const order = searchParams.get('order') || '';
-    const time_range = searchParams.get('time_range') || '';
-    const q = searchParams.get('q') || '';
+    const timeRange = searchParams.get('timeRange') || '';
+    const search = searchParams.get('search') || '';
     const tag = searchParams.get('tags') || '';
 
     switch (type) {
       case LIST_ITEM_TYPE.DASHBOARDS:
         setRankBy(order || RANKS.TRENDING);
-        setTimeRange(time_range || TRENDING_TIME_RANGE[1].value);
+        setTimeRange(timeRange || TRENDING_TIME_RANGE[1].value);
         break;
       case LIST_ITEM_TYPE.QUERIES:
         setRankBy(order || RANKS.FAVORITES);
-        setTimeRange(time_range || FAVORITES_TIME_RANGE[1].value);
+        setTimeRange(timeRange || FAVORITES_TIME_RANGE[1].value);
         break;
       default:
         break;
     }
-    setSearch(q || '');
+    setSearch(search || '');
     setTag(tag || '');
   }, [type, searchUrl]);
 
@@ -103,13 +103,13 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
     searchParams.set('order', rank);
     switch (rank) {
       case RANKS.FAVORITES:
-        searchParams.set('time_range', FAVORITES_TIME_RANGE[1].value);
+        searchParams.set('timeRange', FAVORITES_TIME_RANGE[1].value);
         break;
       case RANKS.TRENDING:
-        searchParams.set('time_range', TRENDING_TIME_RANGE[1].value);
+        searchParams.set('timeRange', TRENDING_TIME_RANGE[1].value);
         break;
       default:
-        searchParams.delete('time_range');
+        searchParams.delete('timeRange');
         break;
     }
     return `/dashboards?${searchParams.toString()}`;
@@ -117,15 +117,15 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
 
   const onChangeSearch = (e: ChangeEvent<HTMLInputElement>) => {
     const searchParams = new URLSearchParams(searchUrl);
-    searchParams.delete('q');
-    searchParams.set('q', e.target.value);
+    searchParams.delete('search');
+    searchParams.set('search', e.target.value);
     history.push(`/dashboards?${searchParams.toString()}`);
   };
 
   const getTimeRangeUrl = (timeRange: string) => () => {
     const searchParams = new URLSearchParams(searchUrl);
-    searchParams.delete('time_range');
-    searchParams.set('time_range', timeRange);
+    searchParams.delete('timeRange');
+    searchParams.set('timeRange', timeRange);
     return `/dashboards?${searchParams.toString()}`;
   };
 
@@ -163,6 +163,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
             className="dashboard-filter__search__selects"
             alignItems={'center'}
             isTruncated
+            flexWrap="wrap"
           >
             {ranks.map((rank) => (
               <Link
@@ -196,6 +197,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
             className="dashboard-filter__search__selects--time"
             alignItems={'center'}
             isTruncated
+            flexWrap="wrap"
           >
             {(rankBy === RANKS.FAVORITES
               ? FAVORITES_TIME_RANGE
@@ -224,7 +226,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
         >
           <div className="tag-title">
             <TagIcon />
-            <span>{tag}</span>
+            <span className="truncate">{tag}</span>
           </div>
           <Link to={getRemoveTagUrl()}>
             <CloseMenuIcon width={12} />

@@ -1,7 +1,7 @@
-import { Flex, Tr } from '@chakra-ui/react';
+import { Flex, Tr, Td } from '@chakra-ui/react';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
-import { AccountIcon, ActiveStarIcon, StarIcon } from 'src/assets/icons';
+import { ActiveStarIcon, StarIcon } from 'src/assets/icons';
 import useUser from 'src/hooks/useUser';
 import { LIST_ITEM_TYPE } from '..';
 
@@ -100,57 +100,68 @@ const ListItem: React.FC<IListItem> = (props) => {
 
   return (
     <Tr>
-      <Flex className="dashboard-list__item" alignItems={'center'}>
-        <div className="dashboard-list__item__avatar">
-          <img src={avatarUrl} alt={`Avatar of ${author}`} />
-        </div>
-        <div className="dashboard-list__item__content">
+      <Td border={'none'} padding={0}>
+        <Flex
+          flexDirection="row"
+          className="dashboard-list__item"
+          alignItems={'center'}
+        >
+          <img
+            src={avatarUrl}
+            alt={`Avatar of ${author}`}
+            className="dashboard-list__item__avatar"
+          />
+          <div className="dashboard-list__item__content">
+            <Flex
+              className="dashboard-list__item__content__title"
+              alignItems={'center'}
+            >
+              <Link className="item-name" to={getTitleUrl()}>
+                {title}
+              </Link>
+              {tags && (
+                <span className="tag-name">
+                  {tags.map((tag) => (
+                    <Tag key={tag} value={tag} />
+                  ))}
+                </span>
+              )}
+              {members && (
+                <Flex>
+                  {members.map((member) => (
+                    <Link
+                      key={member.id}
+                      className="item-member-image"
+                      to={`/`}
+                      target={'_blank'}
+                    >
+                      <img
+                        src={member.avatar}
+                        alt={`Avatar of ${member.name}`}
+                      />
+                    </Link>
+                  ))}
+                </Flex>
+              )}
+            </Flex>
+            <div className="dashboard-list__item__content__createAt">
+              {_renderSubContent()}
+            </div>
+          </div>
           <Flex
-            className="dashboard-list__item__content__title"
+            className="dashboard-list__item__stars"
             alignItems={'center'}
+            justifyContent={'space-between'}
           >
-            <Link className="item-name" to={getTitleUrl()}>
-              {title}
-            </Link>
-            {tags && (
-              <span>
-                {tags.map((tag) => (
-                  <Tag key={tag} value={tag} />
-                ))}
-              </span>
-            )}
-            {members && (
-              <Flex>
-                {members.map((member) => (
-                  <Link
-                    key={member.id}
-                    className="item-member-image"
-                    to={`/`}
-                    target={'_blank'}
-                  >
-                    <img src={member.avatar} alt={`Avatar of ${member.name}`} />
-                  </Link>
-                ))}
-              </Flex>
+            <span>{starCount}</span>
+            {LIKEABLE_ITEMS.includes(type) ? (
+              <StarIcon onClick={onLike} />
+            ) : (
+              <ActiveStarIcon />
             )}
           </Flex>
-          <div className="dashboard-list__item__content__createAt">
-            {_renderSubContent()}
-          </div>
-        </div>
-        <Flex
-          className="dashboard-list__item__stars"
-          alignItems={'center'}
-          justifyContent={'space-between'}
-        >
-          <span>{starCount}</span>
-          {LIKEABLE_ITEMS.includes(type) ? (
-            <StarIcon onClick={onLike} />
-          ) : (
-            <ActiveStarIcon />
-          )}
         </Flex>
-      </Flex>
+      </Td>
     </Tr>
   );
 };

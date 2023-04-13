@@ -12,7 +12,11 @@ type Props = {
 const SchemaDescribe = ({ blockchain, name, tableDescribe }: Props) => {
   return (
     <Box>
-      <SchemaTitle chainName={blockchain} tableName={name} />
+      <SchemaTitle
+        chainName={blockchain}
+        tableName={name}
+        className={'schema-detail-title'}
+      />
       <Box paddingLeft={3} marginTop={2}>
         <Box borderLeft={'1px solid #ccc'} paddingLeft={4}>
           {tableDescribe.map((desc) => (
@@ -21,6 +25,7 @@ const SchemaDescribe = ({ blockchain, name, tableDescribe }: Props) => {
               justifyContent={'space-between'}
               alignItems={'center'}
               fontSize={14}
+              className="block-describe"
             >
               <Box>{desc.column_name}</Box>
               <Text

@@ -7,6 +7,7 @@ import {
 import { useCallback, useEffect, useState } from 'react';
 import 'src/styles/components/TableValue.scss';
 import ConfigTable from '../SqlEditor/ConfigTable';
+import { Box } from '@chakra-ui/react';
 
 interface ReactTableProps<T> {
   data: T[];
@@ -34,7 +35,7 @@ const TableSqlValue = <T,>({
     [columns],
   );
   return (
-    <div>
+    <Box height={'500px'} overflow={'auto'}>
       <table
         className={'table-value'}
         {...{
@@ -54,7 +55,7 @@ const TableSqlValue = <T,>({
                 // display: 'flex',
               }}
             >
-              {headerGroup.headers.map((header: any) => (
+              {headerGroup.headers.map((header) => (
                 <th
                   {...{
                     key: header.id,
@@ -74,7 +75,6 @@ const TableSqlValue = <T,>({
                         header.column.columnDef.header,
                         header.getContext(),
                       )}
-
                   <div
                     {...{
                       onMouseDown: header.getResizeHandler(),
@@ -168,7 +168,7 @@ const TableSqlValue = <T,>({
         updateDataNewTable={updateDataNewTable}
         table={table}
       />
-    </div>
+    </Box>
   );
 };
 

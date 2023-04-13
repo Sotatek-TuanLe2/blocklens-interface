@@ -49,33 +49,33 @@ const DashboardsPage: React.FC = () => {
   useEffect(() => {
     const searchParams = new URLSearchParams(searchUrl);
     const order = searchParams.get('order') || '';
-    const time_range = searchParams.get('time_range') || '';
-    const q = searchParams.get('q') || '';
+    const timeRange = searchParams.get('timeRange') || '';
+    const search = searchParams.get('search') || '';
     const tags = searchParams.get('tags') || '';
 
     switch (tabType) {
       case LIST_ITEM_TYPE.DASHBOARDS:
         setDashboardParams((prevState) => ({
           order: order || prevState.order,
-          time_range: time_range || prevState.time_range,
-          q: q || prevState.q,
+          timeRange: timeRange || prevState.timeRange,
+          search: search || prevState.search,
           tags: tags || prevState.tags,
         }));
         break;
       case LIST_ITEM_TYPE.QUERIES:
         setQueryParams((prevState) => ({
           order: order || prevState.order,
-          q: q || prevState.q,
+          search: search || prevState.search,
         }));
         break;
       case LIST_ITEM_TYPE.WIZARDS:
         setWizardParams((prevState) => ({
-          q: q || prevState.q,
+          search: search || prevState.search,
         }));
         break;
       case LIST_ITEM_TYPE.TEAMS:
         setTeamParams((prevState) => ({
-          q: q || prevState.q,
+          search: search || prevState.search,
         }));
         break;
       default:
@@ -139,12 +139,30 @@ const DashboardsPage: React.FC = () => {
     [teamParams],
   );
 
+  const _renderContentTable = useCallback(
+    (appTable: any) => {
+      return (
+        <>
+          <div className="dashboard-filter-mobile">
+            <FilterSearch type={tabType} />
+          </div>
+          {appTable}
+
+          <div className="dashboard-filter-mobile">
+            <FilterTags type={tabType} />
+          </div>
+        </>
+      );
+    },
+    [tabType],
+  );
+
   const tabs: ITabs[] = [
     {
       id: LIST_ITEM_TYPE.DASHBOARDS,
       name: 'Dashboards',
       icon: <DashboardsIcon />,
-      content: (
+      content: _renderContentTable(
         <AppDataTable
           requestParams={dashboardParams}
           fetchData={fetchDashboards}
@@ -155,9 +173,9 @@ const DashboardsPage: React.FC = () => {
                   key={item.id}
                   id={item.id}
                   author={item.user.name}
-                  avatarUrl={item.user.profile_image_url}
-                  createdAt={item.created_at}
-                  starCount={item.dashboard_favorite_count_all.favorite_count}
+                  avatarUrl={item.user.avatarUrl}
+                  createdAt={item.createdAt}
+                  starCount={item.favoriteCount}
                   title={item.name}
                   type={LIST_ITEM_TYPE.DASHBOARDS}
                   tags={item.tags}
@@ -165,14 +183,14 @@ const DashboardsPage: React.FC = () => {
               ))}
             </Tbody>
           )}
-        />
+        />,
       ),
     },
     {
       id: LIST_ITEM_TYPE.QUERIES,
       name: 'Queries',
       icon: <QueriesIcon />,
-      content: (
+      content: _renderContentTable(
         <AppDataTable
           requestParams={queryParams}
           fetchData={fetchQueries}
@@ -181,28 +199,26 @@ const DashboardsPage: React.FC = () => {
               <ListItem
                 key={item.id}
                 id={item.id}
-                author={item.user ? item.user.name : item.team.handle}
+                author={item.user ? item.user.name : item.team.name}
                 avatarUrl={
-                  item.user
-                    ? item.user.profile_image_url
-                    : item.team.profile_image_url
+                  item.user ? item.user.avatarUrl : item.team.avatarUrl
                 }
-                createdAt={item.created_at}
-                starCount={item.query_favorite_count_last_7d.favorite_count}
+                createdAt={item.createdAt}
+                starCount={item.favoriteCount}
                 title={item.name}
                 type={LIST_ITEM_TYPE.QUERIES}
                 tags={item.tags}
               />
             ))
           }
-        />
+        />,
       ),
     },
     {
       id: LIST_ITEM_TYPE.WIZARDS,
       name: 'Wizards',
       icon: <AccountIcon />,
-      content: (
+      content: _renderContentTable(
         <AppDataTable
           requestParams={wizardParams}
           fetchData={fetchWizards}
@@ -223,14 +239,14 @@ const DashboardsPage: React.FC = () => {
               );
             })
           }
-        />
+        />,
       ),
     },
     {
       id: LIST_ITEM_TYPE.TEAMS,
       name: 'Teams',
       icon: <TeamsIcon />,
-      content: (
+      content: _renderContentTable(
         <AppDataTable
           requestParams={teamParams}
           fetchData={fetchTeams}
@@ -252,7 +268,7 @@ const DashboardsPage: React.FC = () => {
               />
             ))
           }
-        />
+        />,
       ),
     },
   ];
