@@ -220,6 +220,13 @@
         }
       }
 
+      .truncate {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 220px;
+      }
+
       &__button {
         margin-top: 20px;
       }
@@ -407,7 +414,7 @@
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
-          max-width: 220px;
+          max-width: 200px;
         }
 
         &__popularity {
