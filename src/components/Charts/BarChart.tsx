@@ -32,13 +32,14 @@ const CustomTooltip = (props: any) => {
 
 const renderLegend = (props: any) => {
   const { payload } = props;
+
   return (
     <div>
       {payload.map((entry: any, index: number) => (
         <>
           <div key={`item-${index}`} className="custom-legend">
-            <span style={{ color: '#8884d8' }}>{entry.value}</span>
-            <span style={{ backgroundColor: '#8884d8' }}></span>
+            <span style={{ color: `${entry.color}` }}>{entry.value}</span>
+            <span style={{ backgroundColor: `${entry.color}` }}></span>
           </div>
         </>
       ))}
