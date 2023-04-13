@@ -163,6 +163,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
             className="dashboard-filter__search__selects"
             alignItems={'center'}
             isTruncated
+            flexWrap="wrap"
           >
             {ranks.map((rank) => (
               <Link
@@ -196,6 +197,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
             className="dashboard-filter__search__selects--time"
             alignItems={'center'}
             isTruncated
+            flexWrap="wrap"
           >
             {(rankBy === RANKS.FAVORITES
               ? FAVORITES_TIME_RANGE
@@ -224,7 +226,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
         >
           <div className="tag-title">
             <TagIcon />
-            <span>{tag}</span>
+            <span className="truncate">{tag}</span>
           </div>
           <Link to={getRemoveTagUrl()}>
             <CloseMenuIcon width={12} />

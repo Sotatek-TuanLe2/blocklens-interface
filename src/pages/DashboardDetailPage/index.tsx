@@ -31,6 +31,7 @@ import { objectKeys } from 'src/utils/utils-network';
 import { toastError } from 'src/utils/utils-notify';
 import { ColumnDef } from '@tanstack/react-table';
 import { BasePage } from 'src/layouts';
+import { ScatterChart } from 'src/components/Charts';
 
 interface ParamTypes {
   authorId: string;
@@ -169,6 +170,14 @@ const DashboardDetailPage: React.FC = () => {
           <VisualizationAreaChart
             data={queryValues}
             xAxisKey="time"
+            yAxisKeys={['size']}
+          />
+        );
+      case TYPE_VISUALIZATION.scatter:
+        return (
+          <ScatterChart
+            data={queryValues}
+            xAxisKey={'number'}
             yAxisKeys={['size']}
           />
         );

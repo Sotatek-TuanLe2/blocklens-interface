@@ -1,21 +1,21 @@
-import React, { useEffect, useMemo, useState } from 'react';
 import { Box, Text } from '@chakra-ui/react';
+import { useEffect, useMemo, useState } from 'react';
+import 'src/styles/components/Chart.scss';
 import {
-  TableSqlValue,
-  BarChart,
   AreaChart,
+  BarChart,
   LineChart,
   PieChart,
   ScatterChart,
+  TableSqlValue,
 } from '../../../components/Charts';
 import { AppTabs, AppButton, AppSelect2 } from '../../../components';
-import BaseModal from '../../../modals/BaseModal';
-import { objectKeys } from '../../../utils/utils-network';
 import ChartSettings from '../../../components/SqlEditor/ChartSettings';
-
+import BaseModal from '../../../modals/BaseModal';
 import DashboardsRequest from '../../../requests/DashboardsRequest';
 import { useParams } from 'react-router-dom';
 import { ColumnDef } from '@tanstack/react-table';
+import { objectKeys } from '../../../utils/utils-network';
 import {
   AreaChartIcon,
   BarChartIcon,
