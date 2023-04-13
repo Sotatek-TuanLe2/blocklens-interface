@@ -31,11 +31,69 @@
     .custom-button {
       display: flex;
       flex-direction: row;
+      position: relative;
 
       & > button {
         margin-right: 4px;
         border-radius: 8px;
         padding: 8px;
+      }
+
+      .btn-setting {
+        margin-right: 4px;
+        border-radius: 8px;
+
+        & > button {
+          padding: 0;
+        }
+
+        .menu-panel {
+          position: absolute;
+          width: 100%;
+          top: -144px;
+          left: 44px;
+          z-index: 1000;
+          border-radius: 6px;
+          padding: 8px;
+          min-width: 330px;
+
+          &.theme-light {
+            background-color: white;
+            color: #1d1d20;
+          }
+
+          &.theme-dark {
+            background-color: #1d1d20;
+          }
+
+          @include mobile {
+            min-width: 280px;
+            top: -162px;
+          }
+
+          &__item {
+            cursor: pointer;
+            padding: 6px 8px;
+
+            &.theme-light {
+              &:hover {
+                background-color: #f3f5f7;
+              }
+            }
+
+            &.theme-dark {
+              &:hover {
+                background-color: #232426;
+              }
+            }
+
+            &--key {
+              padding: 0 8px;
+              margin-left: 2px;
+              border-radius: 4px;
+            }
+          }
+        }
       }
     }
   }
