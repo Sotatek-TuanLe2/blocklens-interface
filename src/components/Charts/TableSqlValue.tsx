@@ -28,10 +28,8 @@ const TableSqlValue = <T,>({
   });
 
   const updateDataNewTable = useCallback(
-    (data) => {
-      setColumns(
-        columns.map((item: any) => (item.id === data.id ? data : item)),
-      );
+    (data: ColumnDef<T, unknown>) => {
+      setColumns(columns.map((item) => (item.id === data.id ? data : item)));
     },
     [columns],
   );
@@ -64,7 +62,9 @@ const TableSqlValue = <T,>({
                       width: header.getSize(),
                       boxShadow: 'inset 0 0 0 1px lightgray',
                       textAlign: header.column.columnDef.align,
-                      display: header.column.columnDef.isHidden ? 'none' : null,
+                      display: header.column.columnDef.isHidden
+                        ? 'none'
+                        : undefined,
                     },
                   }}
                 >
@@ -74,6 +74,7 @@ const TableSqlValue = <T,>({
                         header.column.columnDef.header,
                         header.getContext(),
                       )}
+
                   <div
                     {...{
                       onMouseDown: header.getResizeHandler(),
@@ -102,10 +103,10 @@ const TableSqlValue = <T,>({
                 const {
                   align,
                   isHidden,
-                  cell,
                   coloredPositive,
                   coloredNegative,
                   type,
+                  coloredProgress,
                 } = cells.column.columnDef;
                 const value = cells.getValue();
                 const checkColor = (value: any) => {
@@ -115,7 +116,7 @@ const TableSqlValue = <T,>({
                     case value < 0 && coloredNegative:
                       return '#d93025';
                     default:
-                      return null;
+                      return undefined;
                   }
                 };
                 return (
@@ -133,17 +134,26 @@ const TableSqlValue = <T,>({
                         key: cells.id,
                         style: {
                           justifyContent: align,
-                          display: isHidden ? 'none' : null,
+                          display: isHidden ? 'none' : undefined,
                           color:
                             typeof value === 'number'
                               ? checkColor(cells.getValue())
-                              : null,
+                              : undefined,
                         },
                       }}
                     >
-                      {type === 'normal' ? null : (
-                        <div className="visual-progressbar"> </div>
-                      )}
+                      {type === 'normal' ? null : typeof value === 'number' ? (
+                        <div
+                          style={
+                            {
+                              '--myColor': coloredProgress
+                                ? '#006400'
+                                : '#3965ff',
+                            } as React.CSSProperties
+                          }
+                          className="visual-progressbar"
+                        ></div>
+                      ) : null}
                       {value}
                     </div>
                   </td>
@@ -154,8 +164,9 @@ const TableSqlValue = <T,>({
         </tbody>
       </table>
       <ConfigTable
-        newColumns={columns}
+        newColumns={columns as typeof columns}
         updateDataNewTable={updateDataNewTable}
+        table={table}
       />
     </div>
   );

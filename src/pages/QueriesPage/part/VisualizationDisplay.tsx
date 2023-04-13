@@ -81,6 +81,7 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
       type: 'normal',
       coloredPositive: false,
       coloredNegative: false,
+      coloredProgress: false,
       isHidden: false,
     }));
   }, [queryValues]);
