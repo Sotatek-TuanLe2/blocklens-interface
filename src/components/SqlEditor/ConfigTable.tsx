@@ -39,7 +39,7 @@ const ConfigTable = () => {
           Add to dashboard
         </AppButton>
       </header>
-      <Grid templateColumns="repeat(4, 1fr)">
+      <Grid templateColumns="repeat(2, 1fr)">
         <GridItem>
           <div className="box-table first-box-table">
             <Text fontWeight="bold" marginBottom="10px">
@@ -57,7 +57,7 @@ const ConfigTable = () => {
         </GridItem>
       </Grid>
       <Divider orientation="horizontal" borderColor={'gray'} />
-      <Grid templateColumns="repeat(4, 1fr)" gap={'10px'}>
+      <Grid templateColumns="repeat(2, 1fr)" gap={'10px'}>
         {columnData.map((header, index) => (
           <GridItem key={index}>
             <TableOptions header={header} typeData={typeData} index={index} />

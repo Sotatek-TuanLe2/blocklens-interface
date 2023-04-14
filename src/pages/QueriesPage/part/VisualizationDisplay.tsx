@@ -164,19 +164,22 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
           Array.isArray(queryValues) && queryValues[0]
             ? objectKeys(queryValues[0])
             : [];
-        const tableValuesColumnConfigs = columns.map((col) => ({
-          id: col,
-          accessorKey: col,
-          header: col,
-          enableResizing: true,
-          size: 100,
-          align: 'left',
-          type: 'normal',
-          coloredPositive: false,
-          coloredNegative: false,
-          coloredProgress: false,
-          isHidden: false,
-        }) as ColumnDef<unknown>);
+        const tableValuesColumnConfigs = columns.map(
+          (col) =>
+            ({
+              id: col,
+              accessorKey: col,
+              header: col,
+              enableResizing: true,
+              size: 100,
+              align: 'left',
+              type: 'normal',
+              coloredPositive: false,
+              coloredNegative: false,
+              coloredProgress: false,
+              isHidden: false,
+            } as ColumnDef<unknown>),
+        );
 
         return (
           <TableSqlValue
