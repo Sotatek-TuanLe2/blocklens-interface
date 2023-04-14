@@ -116,7 +116,7 @@ const EditorSidebar = () => {
   };
   return (
     <Box
-      maxW={'500px'}
+      maxW={'380px'}
       width={'100%'}
       height="100%"
       px={5}

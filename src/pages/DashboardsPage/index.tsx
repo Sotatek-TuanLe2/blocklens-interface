@@ -139,12 +139,30 @@ const DashboardsPage: React.FC = () => {
     [teamParams],
   );
 
+  const _renderContentTable = useCallback(
+    (appTable: any) => {
+      return (
+        <>
+          <div className="dashboard-filter-mobile">
+            <FilterSearch type={tabType} />
+          </div>
+          {appTable}
+
+          <div className="dashboard-filter-mobile">
+            <FilterTags type={tabType} />
+          </div>
+        </>
+      );
+    },
+    [tabType],
+  );
+
   const tabs: ITabs[] = [
     {
       id: LIST_ITEM_TYPE.DASHBOARDS,
       name: 'Dashboards',
       icon: <DashboardsIcon />,
-      content: (
+      content: _renderContentTable(
         <AppDataTable
           requestParams={dashboardParams}
           fetchData={fetchDashboards}
@@ -165,14 +183,14 @@ const DashboardsPage: React.FC = () => {
               ))}
             </Tbody>
           )}
-        />
+        />,
       ),
     },
     {
       id: LIST_ITEM_TYPE.QUERIES,
       name: 'Queries',
       icon: <QueriesIcon />,
-      content: (
+      content: _renderContentTable(
         <AppDataTable
           requestParams={queryParams}
           fetchData={fetchQueries}
@@ -193,14 +211,14 @@ const DashboardsPage: React.FC = () => {
               />
             ))
           }
-        />
+        />,
       ),
     },
     {
       id: LIST_ITEM_TYPE.WIZARDS,
       name: 'Wizards',
       icon: <AccountIcon />,
-      content: (
+      content: _renderContentTable(
         <AppDataTable
           requestParams={wizardParams}
           fetchData={fetchWizards}
@@ -221,14 +239,14 @@ const DashboardsPage: React.FC = () => {
               );
             })
           }
-        />
+        />,
       ),
     },
     {
       id: LIST_ITEM_TYPE.TEAMS,
       name: 'Teams',
       icon: <TeamsIcon />,
-      content: (
+      content: _renderContentTable(
         <AppDataTable
           requestParams={teamParams}
           fetchData={fetchTeams}
@@ -250,7 +268,7 @@ const DashboardsPage: React.FC = () => {
               />
             ))
           }
-        />
+        />,
       ),
     },
   ];
