@@ -7,10 +7,10 @@ import {
   LineChart,
   PieChart,
   ScatterChart,
-  TableSqlValue,
+  VisualizationTable,
 } from '../../../components/Charts';
 import { AppTabs, AppButton, AppSelect2 } from '../../../components';
-import ChartSettings from '../../../components/SqlEditor/ChartSettings';
+import ChartConfigurations from '../../../components/VisualizationConfigs/ChartConfigurations';
 import BaseModal from '../../../modals/BaseModal';
 import DashboardsRequest from '../../../requests/DashboardsRequest';
 import { useParams } from 'react-router-dom';
@@ -31,7 +31,7 @@ import {
   VisualizationOptionsType,
   VisualizationType,
 } from '../../../utils/visualization.type';
-import ConfigTable from '../../../components/SqlEditor/ConfigTable';
+import TableConfigurations from '../../../components/VisualizationConfigs/TableConfigurations';
 
 type VisualizationConfigType = {
   value: string;
@@ -205,22 +205,32 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
 
         return (
           <>
-            <TableSqlValue
-              columns={tableValuesColumnConfigs}
-              data={queryValues}
-            />
-            <ConfigTable />
+            <div className="visual-container__visualization">
+              <div className="visual-container__visualization__title">
+                {configsChart?.chartOptionsConfigs?.name}
+              </div>
+              <VisualizationTable
+                columns={tableValuesColumnConfigs}
+                data={queryValues}
+              />
+            </div>
+            <TableConfigurations />
           </>
         );
       case TYPE_VISUALIZATION.line: {
         return (
           <>
-            <LineChart
-              data={queryValues}
-              xAxisKey="time"
-              yAxisKeys={['size']}
-            />
-            <ChartSettings
+            <div className="visual-container__visualization">
+              <div className="visual-container__visualization__title">
+                {configsChart?.chartOptionsConfigs?.name}
+              </div>
+              <LineChart
+                data={queryValues}
+                xAxisKey="time"
+                yAxisKeys={['size']}
+              />
+            </div>
+            <ChartConfigurations
               axisOptions={axisOptions as string[]}
               configs={visualization.options as VisualizationOptionsType}
               onChangeConfigs={(configs) => {
@@ -233,21 +243,26 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
       case TYPE_VISUALIZATION.bar:
         return (
           <>
-            <BarChart
-              data={
-                configsChart?.xAxisConfigs?.sortX
-                  ? queryValues.sort(
-                      (a, b) =>
-                        a[configsChart.columnMapping.xAxis] -
-                        b[configsChart.columnMapping.xAxis],
-                    )
-                  : queryValues
-              }
-              xAxisKey={configsChart?.columnMapping?.xAxis || 'time'}
-              yAxisKeys={configsChart.columnMapping?.yAxis || ['size']}
-              configs={configsChart}
-            />
-            <ChartSettings
+            <div className="visual-container__visualization">
+              <div className="visual-container__visualization__title">
+                {configsChart?.chartOptionsConfigs?.name}
+              </div>
+              <BarChart
+                data={
+                  configsChart?.xAxisConfigs?.sortX
+                    ? queryValues.sort(
+                        (a, b) =>
+                          a[configsChart.columnMapping.xAxis] -
+                          b[configsChart.columnMapping.xAxis],
+                      )
+                    : queryValues
+                }
+                xAxisKey={configsChart?.columnMapping?.xAxis || 'time'}
+                yAxisKeys={configsChart.columnMapping?.yAxis || ['size']}
+                configs={configsChart}
+              />
+            </div>
+            <ChartConfigurations
               axisOptions={axisOptions as string[]}
               configs={configsChart as VisualizationOptionsType}
               onChangeConfigs={setConfigsChart}
@@ -257,12 +272,17 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
       case TYPE_VISUALIZATION.area:
         return (
           <>
-            <AreaChart
-              data={queryValues}
-              xAxisKey="time"
-              yAxisKeys={['size']}
-            />
-            <ChartSettings
+            <div className="visual-container__visualization">
+              <div className="visual-container__visualization__title">
+                {configsChart?.chartOptionsConfigs?.name}
+              </div>
+              <AreaChart
+                data={queryValues}
+                xAxisKey="time"
+                yAxisKeys={['size']}
+              />
+            </div>
+            <ChartConfigurations
               axisOptions={axisOptions as string[]}
               configs={visualization.options as VisualizationOptionsType}
               onChangeConfigs={(configs) => {
@@ -274,8 +294,13 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
       case TYPE_VISUALIZATION.pie:
         return (
           <>
-            <PieChart data={queryValues} dataKey={'number'} />;
-            <ChartSettings
+            <div className="visual-container__visualization">
+              <div className="visual-container__visualization__title">
+                {configsChart?.chartOptionsConfigs?.name}
+              </div>
+              <PieChart data={queryValues} dataKey={'number'} />;
+            </div>
+            <ChartConfigurations
               axisOptions={axisOptions as string[]}
               configs={
                 objectKeys(configsChart).length > 0
@@ -292,12 +317,17 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
       case TYPE_VISUALIZATION.scatter: {
         return (
           <>
-            <ScatterChart
-              data={queryValues}
-              xAxisKey={'number'}
-              yAxisKeys={['size']}
-            />
-            <ChartSettings
+            <div className="visual-container__visualization">
+              <div className="visual-container__visualization__title">
+                {configsChart?.chartOptionsConfigs?.name}
+              </div>
+              <ScatterChart
+                data={queryValues}
+                xAxisKey={'number'}
+                yAxisKeys={['size']}
+              />
+            </div>
+            <ChartConfigurations
               axisOptions={axisOptions as string[]}
               configs={visualization.options as VisualizationOptionsType}
               onChangeConfigs={(configs) => {
