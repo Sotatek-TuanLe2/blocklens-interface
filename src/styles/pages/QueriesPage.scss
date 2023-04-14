@@ -96,6 +96,15 @@
       }
     }
   }
+
+  &__right-side {
+    width: 70%;
+
+    @include mobile {
+      width: 100%;
+    }
+  }
+
   .schema-detail-title {
     cursor: default;
 
@@ -105,6 +114,7 @@
       }
     }
   }
+
   .block-describe {
     padding: 2px;
 

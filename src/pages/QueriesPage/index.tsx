@@ -246,7 +246,7 @@ const QueriesPage = () => {
       >
         <div className="queries-page">
           <EditorSidebar />
-          <Flex flexDir={'column'} maxW={'100%'} overflow={'auto'} w={'100%'}>
+          <Box className="queries-page__right-side">
             <Box width={'100%'}>
               <Box bg={switchTheme ? '#fff' : '#272822'} h="10px"></Box>
               <AceEditor
@@ -291,7 +291,7 @@ const QueriesPage = () => {
                 />
               )}
             </Box>
-          </Flex>
+          </Box>
         </div>
       </EditorContext.Provider>
     </BasePage>
