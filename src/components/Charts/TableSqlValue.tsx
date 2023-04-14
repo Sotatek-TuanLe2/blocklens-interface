@@ -62,7 +62,7 @@ const TableSqlValue = <T,>({
                 // display: 'flex',
               }}
             >
-              {headerGroup.headers.map((header) => (
+              {headerGroup.headers.map((header: any) => (
                 <th
                   {...{
                     key: header.id,
@@ -106,7 +106,7 @@ const TableSqlValue = <T,>({
         <tbody>
           {table.getRowModel().rows.map((row) => (
             <tr key={row.id}>
-              {row.getVisibleCells().map((cells) => {
+              {row.getVisibleCells().map((cells: any) => {
                 const {
                   align,
                   isHidden,

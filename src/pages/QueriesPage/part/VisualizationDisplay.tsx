@@ -80,27 +80,20 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
         ? objectKeys(queryValues[0])
         : [];
 
-    return columns.map((col) => ({
-      id: col,
-      accessorKey: col,
-      header: col,
-      enableResizing: true,
-      size: 100,
-      align: 'left',
-      type: 'normal',
-      coloredPositive: false,
-      coloredNegative: false,
-      coloredProgress: false,
-      isHidden: false,
-    }));
     return columns.map(
       (col) =>
         ({
           id: col,
           accessorKey: col,
           header: col,
-          enableResizing: false,
+          enableResizing: true,
           size: 100,
+          align: 'left',
+          type: 'normal',
+          coloredPositive: false,
+          coloredNegative: false,
+          coloredProgress: false,
+          isHidden: false,
         } as ColumnDef<unknown>),
     );
   }, [queryValues]);
