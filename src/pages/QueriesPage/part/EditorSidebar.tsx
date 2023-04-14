@@ -1,16 +1,16 @@
+import React, { useEffect, useState } from 'react';
 import { ArrowBackIcon } from '@chakra-ui/icons';
 import { Box, Flex, Text } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
 import 'src/styles/components/EditorSidebar.scss';
 import { AppInput, AppSelect2 } from '../../../components';
 import { tableDetail } from '../../../components/SqlEditor/MockData';
 import SchemaDescribe from '../../../components/SqlEditor/SchemaDescribe';
 import SchemaTitle from '../../../components/SqlEditor/SchemaTitle';
-import DashboardsRequest from '../../../requests/DashboardsRequest';
 import { SchemaType } from '../../../utils/common';
 import { getErrorMessage } from '../../../utils/utils-helper';
 import { getLogoChainByChainId } from '../../../utils/utils-network';
 import { toastError } from '../../../utils/utils-notify';
+import DashboardsRequest from '../../../requests/DashboardsRequest';
 
 const EditorSidebar = () => {
   const [tableSelected, setTableSelected] = useState<{

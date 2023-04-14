@@ -13,8 +13,8 @@ import 'ace-builds/src-noconflict/theme-kuroir';
 import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/mode-sql';
 import { getErrorMessage } from '../../utils/utils-helper';
-import { QueryType } from '../../utils/common';
 import { useParams } from 'react-router-dom';
+import { QueryType } from '../../utils/visualization.type';
 import 'src/styles/pages/QueriesPage.scss';
 import { AddParameterIcon, ExplandIcon } from 'src/assets/icons';
 import { MoonIcon, SettingsIcon, SunIcon } from '@chakra-ui/icons';
@@ -246,7 +246,7 @@ const QueriesPage = () => {
       >
         <div className="queries-page">
           <EditorSidebar />
-          <Flex flexDir={'column'} maxW={'100%'} overflow={'auto'} w={'100%'}>
+          <Box className="queries-page__right-side">
             <Box width={'100%'}>
               <Box bg={switchTheme ? '#fff' : '#272822'} h="10px"></Box>
               <AceEditor
@@ -291,7 +291,7 @@ const QueriesPage = () => {
                 />
               )}
             </Box>
-          </Flex>
+          </Box>
         </div>
       </EditorContext.Provider>
     </BasePage>

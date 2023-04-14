@@ -24,6 +24,7 @@ export interface ITabs {
   id: string;
   icon?: ReactNode;
   closeable?: boolean;
+  onTabClick?: () => void;
 }
 
 const AppTabs: FC<IAppTabs> = ({
@@ -53,6 +54,7 @@ const AppTabs: FC<IAppTabs> = ({
                   key={tab.id}
                   className="app-tab__name-tab"
                   onClick={() => onChange && onChange(tab.id)}
+                  // onClick={tab.onTabClick}
                 >
                   <Flex
                     justifyContent={'center'}
