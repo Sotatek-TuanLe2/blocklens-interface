@@ -31,7 +31,7 @@ const ConfigTable = () => {
   );
 
   const typeData = dataTable.map((row) =>
-    row.getVisibleCells().map((cells) => cells.getValue()),
+    row.getVisibleCells().map((cells: any) => cells.getValue()),
   );
   return (
     <div className="main-layout">
