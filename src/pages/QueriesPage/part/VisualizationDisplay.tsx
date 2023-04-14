@@ -206,6 +206,9 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
         return (
           <>
             <div className="visual-container__visualization">
+              <div className="visual-container__visualization__title">
+                {configsChart?.chartOptionsConfigs?.name}
+              </div>
               <VisualizationTable
                 columns={tableValuesColumnConfigs}
                 data={queryValues}
@@ -218,6 +221,9 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
         return (
           <>
             <div className="visual-container__visualization">
+              <div className="visual-container__visualization__title">
+                {configsChart?.chartOptionsConfigs?.name}
+              </div>
               <LineChart
                 data={queryValues}
                 xAxisKey="time"
