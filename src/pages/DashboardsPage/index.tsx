@@ -143,12 +143,12 @@ const DashboardsPage: React.FC = () => {
     (appTable: any) => {
       return (
         <>
-          <div className="dashboard-filter-mobile">
+          <div className="dashboard-filter dashboard-filter--mobile">
             <FilterSearch type={tabType} />
           </div>
           {appTable}
 
-          <div className="dashboard-filter-mobile">
+          <div className="dashboard-filter dashboard-filter--mobile">
             <FilterTags type={tabType} />
           </div>
         </>
