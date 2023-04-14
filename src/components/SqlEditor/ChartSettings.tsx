@@ -1,7 +1,12 @@
 import React from 'react';
+import ConfigTable from './ConfigTable';
 
 const ChartSettings = () => {
-  return <div>Chart Settings</div>;
+  return (
+    <div>
+      <ConfigTable />
+    </div>
+  );
 };
 
 export default ChartSettings;
