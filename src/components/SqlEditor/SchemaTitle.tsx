@@ -52,23 +52,25 @@ const SidebarEditorRow = ({
           justifyContent={'space-between'}
           flex={1}
           onClick={onClick}
+          isTruncated
           className={'table-name'}
         >
-          <Flex alignItems={'center'}>
+          <Flex isTruncated alignItems={'center'}>
             <InfoOutlineIcon />
             <Text
               marginLeft={3}
               fontSize={'13px'}
               fontWeight={'600'}
               color={'blue.100'}
+              isTruncated
             >
               {chainName}
             </Text>
-            <Text marginLeft={3} fontSize={'13px'}>
+            <Text isTruncated marginLeft={3} fontSize={'13px'}>
               {tableName}
             </Text>
           </Flex>
-          {getChainIcon()}
+          <div>{getChainIcon()}</div>
         </Flex>
         <Flex alignItems={'center'}>
           <ViewIcon marginLeft={3} />

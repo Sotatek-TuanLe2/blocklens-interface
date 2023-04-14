@@ -1,12 +1,104 @@
+@import '../color-variables';
+@import '../variables';
+@import '../mixins.scss';
+
 .queries-page {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+
+  @include desktop {
+    flex-direction: column-reverse;
+  }
+
+  .custom-editor {
+    height: 250px !important;
+
+    &.expland {
+      height: 530px !important;
+    }
+
+    .ace_print-margin {
+      display: none;
+    }
+  }
+
   .control-editor {
     padding: 16px 12px;
-    background-color: #111213;
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
+
+    .custom-button {
+      display: flex;
+      flex-direction: row;
+      position: relative;
+
+      & > button {
+        margin-right: 4px;
+        border-radius: 8px;
+        padding: 8px;
+      }
+
+      .btn-setting {
+        margin-right: 4px;
+        border-radius: 8px;
+
+        & > button {
+          padding: 0;
+        }
+
+        .menu-panel {
+          position: absolute;
+          width: 100%;
+          top: -54px;
+          left: 44px;
+          z-index: 1000;
+          border-radius: 6px;
+          padding: 8px;
+          min-width: 330px;
+
+          &.theme-light {
+            background-color: white;
+            color: #1d1d20;
+          }
+
+          &.theme-dark {
+            background-color: #1d1d20;
+          }
+
+          @include mobile {
+            min-width: 260px;
+          }
+
+          &__item {
+            cursor: pointer;
+            padding: 6px 8px;
+
+            &.theme-light {
+              &:hover {
+                background-color: #f3f5f7;
+              }
+            }
+
+            &.theme-dark {
+              &:hover {
+                background-color: #232426;
+              }
+            }
+
+            &--key {
+              padding: 0 8px;
+              margin-left: 2px;
+              border-radius: 4px;
+            }
+          }
+        }
+      }
+    }
   }
   .schema-detail-title {
     cursor: default;
+
     .table-name {
       &:hover {
         background: transparent;
@@ -29,9 +121,11 @@
         border-radius: 4px;
         margin-bottom: 20px;
       }
+
       &__content-tab {
         height: 500px;
       }
+
       &__name-tab {
         margin-right: 0;
         border-radius: 4px;
