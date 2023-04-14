@@ -392,7 +392,9 @@ const YAxisConfigs = ({
         </Checkbox>
       </div>
       <div className={'box-table-children'}>
-        <Text>Tick format</Text>
+        <Text w={'max-content'} pr={2}>
+          Tick format
+        </Text>
         <AppInput
           className={'input-table'}
           size={'sm'}
@@ -402,7 +404,9 @@ const YAxisConfigs = ({
         />
       </div>
       <div className={'box-table-children'}>
-        <Text>Label format</Text>
+        <Text w={'max-content'} pr={2}>
+          Label format
+        </Text>
         <AppInput
           className={'input-table'}
           size={'sm'}
