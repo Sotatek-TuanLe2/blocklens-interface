@@ -24,7 +24,7 @@ const optionAlign: IOption[] = [
   { value: 'right', label: 'Right' },
 ];
 
-const ConfigTable = () => {
+const TableConfigurations = () => {
   const [title, setTitle] = useState<string>('');
   const { columnData, dataTable } = useSelector(
     (state: RootState) => state.configuration,
@@ -74,7 +74,7 @@ const ConfigTable = () => {
   );
 };
 
-export default ConfigTable;
+export default TableConfigurations;
 
 const TableOptions = ({ header, typeData, index }: any) => {
   const dispatch = useDispatch();
