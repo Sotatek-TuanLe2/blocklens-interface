@@ -78,7 +78,15 @@ const VisualizationDisplay = ({ queryResult, queryValue }: Props) => {
   const { queryId } = useParams<{ queryId: string }>();
   const [visualizationsActive, setVisualizationsActive] = useState<
     VisualizationType[]
-  >([{ id: '1', options: {}, name: 'New Visualization', type: '', createdAt: moment().toDate() }]);
+  >([
+    {
+      id: '1',
+      options: {},
+      name: 'New Visualization',
+      type: '',
+      createdAt: moment().toDate(),
+    },
+  ]);
   const [closeTabId, setCloseTabId] = useState<string | number>('');
 
   const [configsChart, setConfigsChart] = useState<VisualizationOptionsType>(
@@ -142,7 +150,9 @@ const VisualizationDisplay = ({ queryResult, queryValue }: Props) => {
     });
   };
 
-  const removeVisualizationHandler = async (visualizationId: string | number) => {
+  const removeVisualizationHandler = async (
+    visualizationId: string | number,
+  ) => {
     const visualizationIndex = queryValue.visualizations.findIndex(
       (v) => v.id.toString() === visualizationId.toString(),
     );

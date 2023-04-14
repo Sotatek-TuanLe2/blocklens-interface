@@ -40,10 +40,9 @@ export interface IQuery {
     id: string | number;
     name: string;
     avatarUrl: string;
-  }
+  };
   visualizations: VisualizationType[];
 }
-
 
 export type TableAttributeType = {
   blockchains: string[];

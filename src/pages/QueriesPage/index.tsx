@@ -244,7 +244,7 @@ const QueriesPage = () => {
   };
 
   const onChangeQuery = (queryValue: any) => {
-    setQueryValue(queryValue)
+    setQueryValue(queryValue);
   };
 
   return (
