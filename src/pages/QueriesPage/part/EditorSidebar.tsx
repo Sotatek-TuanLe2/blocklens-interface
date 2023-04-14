@@ -92,8 +92,8 @@ const EditorSidebar = () => {
       !tableSelected && (
         <Box className="list-schema custom-scroll">
           {!!schemas.length &&
-            schemas.map((schema) => (
-              <Box key={schema.id}>
+            schemas.map((schema, index) => (
+              <Box key={index + 'list-schema'}>
                 <SchemaTitle
                   chainName={schema.namespace}
                   tableName={schema.table_name}

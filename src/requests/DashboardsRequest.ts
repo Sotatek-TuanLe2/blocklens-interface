@@ -9,9 +9,10 @@ export interface DashboardsParams {
   tags?: string;
 }
 
-interface SchemasParams {
-  category?: string;
+interface TableParams {
+  network?: string;
   chain?: string;
+  search?: string;
 }
 
 export interface QueriesParams {
@@ -47,7 +48,7 @@ export default class DashboardsRequest extends BaseRequest {
     return this.get(url, { ...params });
   }
 
-  getTable(params: SchemasParams) {
+  getTable(params: TableParams) {
     const url = 'http://172.16.199.30:8002/query/tables';
     return this.get(url, { ...params });
   }
