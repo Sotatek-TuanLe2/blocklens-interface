@@ -1,12 +1,16 @@
 import { Checkbox, Divider, Grid, GridItem, Text } from '@chakra-ui/react';
 import { useState } from 'react';
-import 'src/styles/components/TableConfigurations.scss';
-import AppButton from '../AppButton';
-import AppInput from '../AppInput';
-import AppSelect2 from '../AppSelect2';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'src/store';
 import { updateDatTable } from 'src/store/configuration';
+import 'src/styles/components/TableConfigurations.scss';
+import AppInput from '../AppInput';
+import AppSelect2 from '../AppSelect2';
+
+interface IConfigTable {
+  configsTable: string;
+  setConfigsTable: React.Dispatch<React.SetStateAction<string>>;
+}
 
 interface IOption {
   value: string;
@@ -24,8 +28,7 @@ const optionAlign: IOption[] = [
   { value: 'right', label: 'Right' },
 ];
 
-const ConfigTable = () => {
-  const [title, setTitle] = useState<string>('');
+const ConfigTable = ({ configsTable, setConfigsTable }: IConfigTable) => {
   const { columnData, dataTable } = useSelector(
     (state: RootState) => state.configuration,
   );
@@ -53,10 +56,10 @@ const ConfigTable = () => {
             <div className="box-table-children">
               <div>Title</div>
               <AppInput
-                value={title}
+                value={configsTable}
                 size={'sm'}
                 className="input-table"
-                onChange={(e) => setTitle(e.target.value)}
+                onChange={(e) => setConfigsTable(e.target.value)}
               />
             </div>
           </div>

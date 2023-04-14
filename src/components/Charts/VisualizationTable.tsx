@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'src/store';
 import { setColumn, setDataTable } from 'src/store/configuration';
 import 'src/styles/components/TableValue.scss';
+import { formatNumberToCurrency } from 'src/utils/format';
 
 interface ReactTableProps<T> {
   data: T[];
@@ -113,6 +114,7 @@ const VisualizationTable = <T,>({
                   coloredPositive,
                   coloredNegative,
                   type,
+                  format,
                   coloredProgress,
                 } = cells.column.columnDef;
                 const value = cells.getValue();
@@ -124,6 +126,20 @@ const VisualizationTable = <T,>({
                       return '#d93025';
                     default:
                       return undefined;
+                  }
+                };
+                const checkFormatValue = (format: string) => {
+                  switch (typeof value === 'number') {
+                    case format.includes(','):
+                      return value.toLocaleString('en-US');
+                    case format === '0':
+                      return parseInt(value);
+                    case format.includes('a') && format.includes('$'):
+                      return `$${formatNumberToCurrency(value)}`;
+                    case format === '$':
+                      return `$${value}`;
+                    default:
+                      return value;
                   }
                 };
                 return (
@@ -161,7 +177,7 @@ const VisualizationTable = <T,>({
                           className="visual-progressbar"
                         ></div>
                       ) : null}
-                      {value}
+                      {checkFormatValue(format)}
                     </div>
                   </td>
                 );

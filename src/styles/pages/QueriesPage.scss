@@ -126,9 +126,8 @@
 
   .visual-container {
     &__visualization {
-      height: 500px;
+      min-height: 500px;
       border: 1px solid $border;
-      padding: 10px 0;
       margin-bottom: 20px;
 
       &__title {

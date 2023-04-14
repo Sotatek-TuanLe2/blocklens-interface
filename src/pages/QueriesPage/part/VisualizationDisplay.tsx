@@ -1,5 +1,5 @@
 import { Box, Text } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import 'src/styles/components/Chart.scss';
 import {
   AreaChart,
@@ -25,6 +25,7 @@ import {
   ScatterChartIcon,
 } from 'src/assets/icons';
 import {
+  ChartOptionConfigsType,
   QueryType,
   TYPE_VISUALIZATION,
   VALUE_VISUALIZATION,
@@ -32,6 +33,7 @@ import {
   VisualizationType,
 } from '../../../utils/visualization.type';
 import TableConfigurations from '../../../components/VisualizationConfigs/TableConfigurations';
+import { debounce } from 'lodash';
 
 type VisualizationConfigType = {
   value: string;
@@ -82,7 +84,7 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
   const [configsChart, setConfigsChart] = useState<VisualizationOptionsType>(
     {} as VisualizationOptionsType,
   );
-
+  const [configsTable, setConfigsTable] = useState<string>('Query results');
   const axisOptions =
     Array.isArray(queryValues) && queryValues[0]
       ? objectKeys(queryValues[0])
@@ -176,7 +178,6 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
         ({} as VisualizationOptionsType),
     );
   }, []);
-
   const renderVisualization = (visualization: VisualizationType) => {
     const type = visualization.options?.globalSeriesType || visualization.type;
     switch (type) {
@@ -207,14 +208,18 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
           <>
             <div className="visual-container__visualization">
               <div className="visual-container__visualization__title">
-                {configsChart?.chartOptionsConfigs?.name}
+                {configsTable}
               </div>
+
               <VisualizationTable
                 columns={tableValuesColumnConfigs}
                 data={queryValues}
               />
             </div>
-            <TableConfigurations />
+            <TableConfigurations
+              configsTable={configsTable}
+              setConfigsTable={setConfigsTable}
+            />
           </>
         );
       case TYPE_VISUALIZATION.line: {
