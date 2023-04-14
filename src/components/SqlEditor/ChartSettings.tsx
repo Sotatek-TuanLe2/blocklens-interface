@@ -33,7 +33,6 @@ const ChartSettings = ({ axisOptions, configs, onChangeConfigs }: Props) => {
   } as VisualizationOptionsType);
 
   useEffect(() => {
-    console.log('configs', configs);
     setChartConfigs(configs);
   }, []);
 
@@ -94,8 +93,6 @@ const ChartOptions = ({
   options: Partial<ChartOptionConfigsType>;
   onChangeOptions: (options: Partial<ChartOptionConfigsType>) => void;
 }) => {
-  console.log('options', options);
-
   const [chartOptions, setChartOptions] = useState([
     {
       label: 'Show chart legend',
@@ -110,27 +107,23 @@ const ChartOptions = ({
     },
   ]);
   useEffect(() => {
-    console.log('options effect', options.showLegend);
-    setChartOptions((prev) => {
-      console.log('prev', prev);
-      return [
-        {
-          label: 'Show chart legend',
-          value: 'showLegend',
-          checked: options.showLegend || false,
-        },
-        {
-          label: 'Enable stacking',
-          value: 'stacking',
-          checked: options.stacking || false,
-        },
-        {
-          label: 'Normalize to percentage',
-          value: 'percentValues',
-          checked: options.percentValues || false,
-        },
-      ];
-    });
+    setChartOptions([
+      {
+        label: 'Show chart legend',
+        value: 'showLegend',
+        checked: options.showLegend || false,
+      },
+      {
+        label: 'Enable stacking',
+        value: 'stacking',
+        checked: options.stacking || false,
+      },
+      {
+        label: 'Normalize to percentage',
+        value: 'percentValues',
+        checked: options.percentValues || false,
+      },
+    ]);
   }, [options]);
 
   const changeValueHandle = (key: string, value: boolean | string) => {
@@ -156,7 +149,6 @@ const ChartOptions = ({
       </Flex>
       <CheckboxGroup>
         {chartOptions.map((option) => {
-          console.log('option', option);
           return (
             <Checkbox
               key={option.value}
@@ -271,8 +263,6 @@ const XAxisConfigs = ({
   xConfigs: XAxisConfigsType;
   onChangeConfigs: (configs: XAxisConfigsType) => void;
 }) => {
-  const { title } = xConfigs;
-
   const checkboxConfigs = [
     { label: 'Sort value', value: 'sortX' },
     { label: 'Revert value', value: 'reverseX' },
@@ -294,7 +284,7 @@ const XAxisConfigs = ({
       <Flex alignItems={'center'} justifyContent={'space-between'}>
         <Text>Axis title</Text>
         <AppInput
-          value={title}
+          value={xConfigs?.title || ''}
           onChange={(e) => changeValueHandle(e.target.name, e.target.value)}
           name={'title'}
         />
@@ -321,8 +311,6 @@ const YAxisConfigs = ({
   yConfigs: YAxisConfigsType;
   onChangeConfigs: (configs: YAxisConfigsType) => void;
 }) => {
-  const { title, labelFormat, tickFormat } = yConfigs;
-
   const changeValueHandle = (key: string, value: boolean | string) => {
     let tempOptions = yConfigs;
     tempOptions = {
@@ -339,7 +327,7 @@ const YAxisConfigs = ({
       <Flex alignItems={'center'} justifyContent={'space-between'}>
         <Text>Axis title</Text>
         <AppInput
-          value={title}
+          value={yConfigs?.title || ''}
           onChange={(e) => changeValueHandle(e.target.name, e.target.value)}
           name={'title'}
         />
@@ -355,7 +343,7 @@ const YAxisConfigs = ({
         <Text>Tick format</Text>
         <AppInput
           size={'sm'}
-          value={tickFormat}
+          value={yConfigs?.tickFormat || ''}
           onChange={(e) => changeValueHandle(e.target.name, e.target.value)}
           name={'tickFormat'}
         />
@@ -364,7 +352,7 @@ const YAxisConfigs = ({
         <Text>Label format</Text>
         <AppInput
           size={'sm'}
-          value={labelFormat}
+          value={yConfigs?.labelFormat || ''}
           onChange={(e) => changeValueHandle(e.target.name, e.target.value)}
           name={'labelFormat'}
         />
