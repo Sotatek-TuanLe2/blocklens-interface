@@ -123,7 +123,9 @@ const TableOptions = ({ header, typeData, index }: any) => {
           value={header?.format}
           onChange={(e) =>
             dispatch(
-              updateDatTable({ newData: { ...selectedItem, format: e } }),
+              updateDatTable({
+                newData: { ...selectedItem, format: e.target.value },
+              }),
             )
           }
         />
