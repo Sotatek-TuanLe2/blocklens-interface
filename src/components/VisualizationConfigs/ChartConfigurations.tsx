@@ -15,7 +15,7 @@ import {
   XAxisConfigsType,
   YAxisConfigsType,
 } from '../../utils/visualization.type';
-import 'src/styles/components/TableConfig.scss';
+import 'src/styles/components/TableConfigurations.scss';
 
 type Props = {
   configs: VisualizationOptionsType;
