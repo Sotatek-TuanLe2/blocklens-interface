@@ -1,5 +1,5 @@
 import { BasePage } from '../../layouts';
-import { Box, Checkbox, Flex, Text, Tooltip } from '@chakra-ui/react';
+import { Box, Flex, Text, Tooltip } from '@chakra-ui/react';
 import AceEditor from 'react-ace';
 import AppButton from '../../components/AppButton';
 import React, { useEffect, useRef, useState } from 'react';
@@ -16,7 +16,7 @@ import { getErrorMessage } from '../../utils/utils-helper';
 import { QueryType } from '../../utils/common';
 import { useParams } from 'react-router-dom';
 import 'src/styles/pages/QueriesPage.scss';
-import { AddParameterIcon, ExplandIcon, FormatIcon } from 'src/assets/icons';
+import { AddParameterIcon, ExplandIcon } from 'src/assets/icons';
 import { MoonIcon, SettingsIcon, SunIcon } from '@chakra-ui/icons';
 
 interface ParamTypes {
@@ -93,10 +93,9 @@ const QueriesPage = () => {
     }
   };
 
-  const onFormat = () => {
-    const position = editorRef.current.editor.getCursorPosition();
-    editorRef.current.editor.session.insert(position, '{{unnamed_parameter}}');
-  };
+  // const onFormat = () => {
+  //
+  // };
 
   const onExpland = () => {
     setIsExpand((pre) => !pre);
@@ -112,13 +111,7 @@ const QueriesPage = () => {
   };
 
   const onClickFullScreen = () => {
-    if (editorRef.current.editor)
-      console.log(
-        'editorRef.current.editor.resize()',
-        editorRef.current.editor.env,
-      );
-
-    editorRef.current.editor.env.onResize();
+    if (editorRef.current.editor) editorRef.current.editor.resize();
   };
 
   useEffect(() => {
@@ -137,7 +130,7 @@ const QueriesPage = () => {
         flexDirection="column"
         className={`menu-panel ${switchTheme ? 'theme-light' : 'theme-dark'}`}
       >
-        <Flex
+        {/* <Flex
           className={`menu-panel__item ${
             switchTheme ? 'theme-light' : 'theme-dark'
           }`}
@@ -152,7 +145,7 @@ const QueriesPage = () => {
           <Text mt={1} fontSize="12px">
             You can always show suggestions with CTRL-space
           </Text>
-        </Flex>
+        </Flex> */}
         <Flex
           className={`menu-panel__item ${
             switchTheme ? 'theme-light' : 'theme-dark'
@@ -219,7 +212,7 @@ const QueriesPage = () => {
             {isSetting && _renderMenuPanelSetting()}
           </div>
         </Tooltip>
-        <Tooltip hasArrow placement="top" label="Format query">
+        {/* <Tooltip hasArrow placement="top" label="Format query">
           <AppButton
             onClick={onFormat}
             bg={background}
@@ -227,7 +220,7 @@ const QueriesPage = () => {
           >
             <FormatIcon color={colorIcon} />
           </AppButton>
-        </Tooltip>
+        </Tooltip> */}
         {showButton && (
           <Tooltip hasArrow placement="top" label="Add Parameter">
             <AppButton

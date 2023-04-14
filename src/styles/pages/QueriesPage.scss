@@ -50,7 +50,7 @@
         .menu-panel {
           position: absolute;
           width: 100%;
-          top: -144px;
+          top: -90px;
           left: 44px;
           z-index: 1000;
           border-radius: 6px;
@@ -67,8 +67,8 @@
           }
 
           @include mobile {
-            min-width: 280px;
-            top: -162px;
+            min-width: 260px;
+            top: -90px;
           }
 
           &__item {
