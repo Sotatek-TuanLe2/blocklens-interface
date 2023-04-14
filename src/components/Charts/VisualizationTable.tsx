@@ -10,7 +10,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'src/store';
 import { setColumn, setDataTable } from 'src/store/configuration';
 import 'src/styles/components/TableValue.scss';
-import { formatNumberToCurrency } from 'src/utils/format';
+import {
+  formatNumberToCurrency,
+  formatNumberWithDecimalDigits,
+} from 'src/utils/utils-format';
 
 interface ReactTableProps<T> {
   data: T[];
@@ -132,12 +135,16 @@ const VisualizationTable = <T,>({
                   switch (typeof value === 'number') {
                     case format.includes(','):
                       return value.toLocaleString('en-US');
+                    case format.includes('0.'):
+                      return formatNumberWithDecimalDigits(value, format);
                     case format === '0':
                       return parseInt(value);
-                    case format.includes('a') && format.includes('$'):
-                      return `$${formatNumberToCurrency(value)}`;
+                    case format === 'a':
+                      return formatNumberToCurrency(value);
                     case format === '$':
                       return `$${value}`;
+                    case format.includes('a') && format.includes('$'):
+                      return `$${formatNumberToCurrency(value)}`;
                     default:
                       return value;
                   }
