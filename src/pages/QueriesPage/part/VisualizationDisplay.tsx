@@ -74,31 +74,6 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
   >([{ id: '1', options: {}, name: 'New Visualization', type: '' }]);
   const [closeTabId, setCloseTabId] = useState('');
 
-  const tableValuesColumnConfigs = useMemo(() => {
-    const columns =
-      Array.isArray(queryValues) && queryValues[0]
-        ? objectKeys(queryValues[0])
-        : [];
-
-    return columns.map(
-      (col) =>
-        ({
-          id: col,
-          accessorKey: col,
-          header: col,
-          enableResizing: true,
-          size: 100,
-          format: '',
-          align: 'left',
-          type: 'normal',
-          coloredPositive: false,
-          coloredNegative: false,
-          coloredProgress: false,
-          isHidden: false,
-        } as ColumnDef<unknown>),
-    );
-  }, [queryValues]);
-
   const addVisualizationToQuery = async (
     queryId: string,
     updateQuery: Partial<QueryType>,
