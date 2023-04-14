@@ -235,7 +235,12 @@ const ResultDataConfigs = ({
 
   return (
     <div className={'box-table'}>
-      <Text as={'h3'} className={'box-table__title'}>
+      <Text
+        as={'h3'}
+        className={'box-table__title'}
+        fontWeight={'bold'}
+        mb={'10px'}
+      >
         Result data
       </Text>
       <div className={'box-table-children'}>
@@ -259,7 +264,7 @@ const ResultDataConfigs = ({
         return (
           <div className={'box-table-children'} key={axis}>
             <Text w={'max-content'} mr={2}>
-              Y column
+              Y column {index + 1}
             </Text>
             <Box flex={1}>
               <AppSelect2
@@ -307,7 +312,12 @@ const XAxisConfigs = ({
   };
   return (
     <div className={'box-table'}>
-      <Text as={'h3'} className={'box-table__title'}>
+      <Text
+        as={'h3'}
+        className={'box-table__title'}
+        fontWeight={'bold'}
+        mb={'10px'}
+      >
         x-axis options
       </Text>
       <div className={'box-table-children'}>
@@ -355,7 +365,12 @@ const YAxisConfigs = ({
   };
   return (
     <div className={'box-table'}>
-      <Text as={'h3'} className={'box-table__title'}>
+      <Text
+        as={'h3'}
+        className={'box-table__title'}
+        fontWeight={'bold'}
+        mb={'10px'}
+      >
         y-axis options
       </Text>
       <div className={'box-table-children'}>
