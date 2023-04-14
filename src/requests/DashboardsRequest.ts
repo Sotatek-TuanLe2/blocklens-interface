@@ -1,6 +1,6 @@
 import { Layout } from 'react-grid-layout';
 import BaseRequest from './BaseRequest';
-import { QueryType } from '../utils/visualization.type';
+import { IQuery } from '../utils/query.type';
 
 export interface DashboardsParams {
   order?: string;
@@ -57,7 +57,7 @@ export default class DashboardsRequest extends BaseRequest {
     return this.get(url);
   }
 
-  createNewQuery(query: QueryType) {
+  createNewQuery(query: IQuery) {
     const url = 'https://642bcf7fd7081590f92a4f26.mockapi.io/blocklens/z';
     return this.post(url, query);
   }
@@ -67,7 +67,7 @@ export default class DashboardsRequest extends BaseRequest {
     return this.get(url);
   }
 
-  updateQuery(queryId: string, query: Partial<QueryType>) {
+  updateQuery(queryId: string, query: Partial<IQuery>) {
     const url = `https://642cf0d966a20ec9ce915e71.mockapi.io/queries/queries/${queryId}`;
     return this.put(url, query);
   }

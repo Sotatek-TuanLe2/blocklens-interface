@@ -12,8 +12,8 @@ import {
 } from 'recharts';
 import { getHourAndMinute, randomColor } from '../../utils/common';
 import { ChartProps } from './LineChart';
-import { VisualizationOptionsType } from '../../utils/visualization.type';
-import { Box, Text } from '@chakra-ui/react';
+import { VisualizationOptionsType } from '../../utils/query.type';
+import { Box } from '@chakra-ui/react';
 type ChartConfigType = VisualizationOptionsType;
 type Props = ChartProps & {
   configs?: Partial<ChartConfigType>;
