@@ -174,6 +174,7 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
               size: 100,
               align: 'left',
               type: 'normal',
+              format: '',
               coloredPositive: false,
               coloredNegative: false,
               coloredProgress: false,
