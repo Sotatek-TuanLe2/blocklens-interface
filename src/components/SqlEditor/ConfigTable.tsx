@@ -1,5 +1,4 @@
 import { Checkbox, Divider, Grid, GridItem, Text } from '@chakra-ui/react';
-import { ColumnDef, Table } from '@tanstack/react-table';
 import { useState } from 'react';
 import 'src/styles/components/TableConfig.scss';
 import AppButton from '../AppButton';
