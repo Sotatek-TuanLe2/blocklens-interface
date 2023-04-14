@@ -88,6 +88,7 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
           header: col,
           enableResizing: true,
           size: 100,
+          format: '',
           align: 'left',
           type: 'normal',
           coloredPositive: false,
