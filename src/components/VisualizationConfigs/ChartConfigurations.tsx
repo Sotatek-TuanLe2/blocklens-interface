@@ -145,7 +145,7 @@ const ChartOptions = ({
   };
 
   return (
-    <div className={'box-table first-box-table'}>
+    <div className={'box-table'}>
       <Text
         as={'h3'}
         className={'box-table__title'}
