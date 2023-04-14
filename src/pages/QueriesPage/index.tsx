@@ -14,10 +14,11 @@ import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/mode-sql';
 import { getErrorMessage } from '../../utils/utils-helper';
 import { useParams } from 'react-router-dom';
-import { QueryType } from '../../utils/visualization.type';
+import { IQuery } from '../../utils/query.type';
 import 'src/styles/pages/QueriesPage.scss';
 import { AddParameterIcon, ExplandIcon } from 'src/assets/icons';
 import { MoonIcon, SettingsIcon, SunIcon } from '@chakra-ui/icons';
+import moment from 'moment';
 
 interface ParamTypes {
   queryId: string;
@@ -27,71 +28,46 @@ const QueriesPage = () => {
   const editorRef = useRef<any>();
   const { queryId } = useParams<ParamTypes>();
 
-  const [queryValues, setQueryValues] = useState<unknown[]>([]);
-  const [infoQuery, setInfoQuery] = useState<QueryType | null>(null);
+  const [queryResult, setQueryResult] = useState<unknown[]>([]);
+  const [queryValue, setQueryValue] = useState<IQuery | null>(null);
   const [isSetting, setIsSetting] = useState<boolean>(false);
 
   const [showButton, setShowButton] = useState<boolean>(false);
   const [switchTheme, setSwitchTheme] = useState<boolean>(false);
   const [isExpand, setIsExpand] = useState<boolean>(false);
 
-  const createNewQuery = async (query: string) => {
+  const fetchQueryResultById = async () => {
     try {
       const dashboardsRequest = new DashboardsRequest();
-      const randomId = Math.floor(Math.random() * 10000000).toString();
-      const newQuery: QueryType = {
-        id: randomId,
-        name: `Query-${randomId}`,
-        query: 'select * from arbitrum.blocks limit 10',
-        visualizations: [
-          {
-            name: 'Table',
-            type: 'table',
-            id: '1',
-            options: {},
-          },
-        ],
-      };
-      const infoQuery = await dashboardsRequest.createNewQuery(newQuery);
-      setInfoQuery(infoQuery);
+      const queryResult = await dashboardsRequest.getQueriesValues();
+      setQueryResult(queryResult);
     } catch (err) {
       getErrorMessage(err);
     }
   };
 
-  const submitQuery = async () => {
-    setShowButton(true);
-    try {
-      const dashboardsRequest = new DashboardsRequest();
-      const queryValues = await dashboardsRequest.getQueriesValues();
-      await createNewQuery(editorRef.current.editor.getValue());
-      setQueryValues(queryValues);
-    } catch (err) {
-      getErrorMessage(err);
-    }
-  };
-
-  const fetchQueryResults = async () => {
-    try {
-      const dashboardsRequest = new DashboardsRequest();
-      const queryValues = await dashboardsRequest.getQueriesValues();
-      setQueryValues(queryValues);
-    } catch (err) {
-      getErrorMessage(err);
-    }
-  };
-
-  const fetchInfoQuery = async () => {
+  const fetchQueryById = async () => {
     try {
       const request = new DashboardsRequest();
       const res = await request.getQuery(queryId);
       const position = editorRef.current.editor.getCursorPosition();
       editorRef.current.editor.session.insert(position, res.query);
-      setInfoQuery(res);
+      setQueryValue(res);
     } catch (err) {
       getErrorMessage(err);
     }
   };
+
+  useEffect(() => {
+    if (queryId) {
+      fetchQueryResultById();
+      fetchQueryById();
+    }
+  }, [queryId]);
+
+  useEffect(() => {
+    // TODO: call API to update query
+  }, [queryValue]);
 
   // const onFormat = () => {
   //
@@ -113,13 +89,6 @@ const QueriesPage = () => {
   // const onClickFullScreen = () => {
   //   if (editorRef.current.editor) editorRef.current.editor.resize();
   // };
-
-  useEffect(() => {
-    if (queryId) {
-      fetchQueryResults();
-      fetchInfoQuery();
-    }
-  }, [queryId]);
 
   const hoverBackground = switchTheme ? '#dadde0' : '#2a2c2f99';
   const background = switchTheme ? '#e9ebee' : '#2a2c2f';
@@ -236,12 +205,54 @@ const QueriesPage = () => {
     );
   };
 
+  const createNewQuery = async (query: string) => {
+    try {
+      const dashboardsRequest = new DashboardsRequest();
+      const randomId = Math.floor(Math.random() * 10000000).toString();
+      const newQuery: IQuery = {
+        id: randomId,
+        name: `Query-${randomId}`,
+        query: 'select * from arbitrum.blocks limit 10',
+        createAt: moment().toDate(),
+        visualizations: [
+          {
+            id: '1',
+            name: 'Table',
+            type: 'table',
+            createdAt: moment().toDate(),
+            options: {},
+          },
+        ],
+      };
+      const queryValue = await dashboardsRequest.createNewQuery(newQuery);
+      setQueryValue(queryValue);
+    } catch (err) {
+      getErrorMessage(err);
+    }
+  };
+
+  const submitQuery = async () => {
+    setShowButton(true);
+    try {
+      const dashboardsRequest = new DashboardsRequest();
+      const queryResult = await dashboardsRequest.getQueriesValues();
+      await createNewQuery(editorRef.current.editor.getValue());
+      setQueryResult(queryResult);
+    } catch (err) {
+      getErrorMessage(err);
+    }
+  };
+
+  const onChangeQuery = (queryValue: any) => {
+    setQueryValue(queryValue)
+  };
+
   return (
     <BasePage>
       <EditorContext.Provider
         value={{
           editor: editorRef,
-          queryValues: queryValues,
+          queryResult: queryResult,
         }}
       >
         <div className="queries-page">
@@ -284,10 +295,11 @@ const QueriesPage = () => {
               </Box>
             </Box>
             <Box mt={8}>
-              {infoQuery && (
+              {queryValue && (
                 <VisualizationDisplay
-                  queryValues={queryValues}
-                  queryInfo={infoQuery}
+                  queryResult={queryResult}
+                  queryValue={queryValue}
+                  onChangeQuery={onChangeQuery}
                 />
               )}
             </Box>

@@ -25,7 +25,7 @@ import 'src/styles/pages/DashboardDetailPage.scss';
 import {
   QueryTypeSingle,
   TYPE_VISUALIZATION,
-} from 'src/utils/visualization.type';
+} from 'src/utils/query.type';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { objectKeys } from 'src/utils/utils-network';
 import { toastError } from 'src/utils/utils-notify';
