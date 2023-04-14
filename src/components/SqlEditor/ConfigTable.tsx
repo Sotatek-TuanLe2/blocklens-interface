@@ -25,6 +25,7 @@ const optionAlign: IOption[] = [
 ];
 
 const ConfigTable = () => {
+  const [title, setTitle] = useState<string>('');
   const { columnData, dataTable } = useSelector(
     (state: RootState) => state.configuration,
   );
@@ -48,9 +49,10 @@ const ConfigTable = () => {
             <div className="box-table-children">
               <div>Title</div>
               <AppInput
-                value={'Query result'}
+                value={title}
                 size={'sm'}
                 className="input-table"
+                onChange={(e) => setTitle(e.target.value)}
               />
             </div>
           </div>
@@ -113,7 +115,19 @@ const TableOptions = ({ header, typeData, index }: any) => {
       </div>
       <div className="box-table-children">
         <div>Format</div>
-        <AppInput placeholder="0.0" size={'sm'} className="input-table" />
+        <AppInput
+          placeholder="0.0"
+          size={'sm'}
+          className="input-table"
+          value={header?.format}
+          onChange={(e) =>
+            dispatch(
+              updateDatTable({
+                newData: { ...selectedItem, format: e.target.value },
+              }),
+            )
+          }
+        />
       </div>
       {typeValue === 'number' && (
         <div className="box-table-children">
