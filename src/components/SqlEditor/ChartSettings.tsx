@@ -22,19 +22,13 @@ type Props = {
   axisOptions: string[];
 };
 const ChartSettings = ({ axisOptions, configs, onChangeConfigs }: Props) => {
-  const [chartConfigs, setChartConfigs] = useState<VisualizationOptionsType>({
-    // chartOptionsConfigs: {} as ChartOptionConfigsType,
-    // xAxisConfigs: {} as XAxisConfigsType,
-    // yAxisConfigs: {} as YAxisConfigsType,
-    // columnMapping: {
-    //   xAxis: 'time',
-    //   yAxis: ['size'],
-    // },
-  } as VisualizationOptionsType);
+  const [chartConfigs, setChartConfigs] = useState<VisualizationOptionsType>(
+    {} as VisualizationOptionsType,
+  );
 
   useEffect(() => {
     setChartConfigs(configs);
-  }, []);
+  }, [configs]);
 
   const updateState = (prop: string, value: unknown) => {
     const tempConfigs = {
@@ -55,8 +49,8 @@ const ChartSettings = ({ axisOptions, configs, onChangeConfigs }: Props) => {
       />
       <ResultDataConfigs
         axisOptions={axisOptions}
-        xAxisMapped={chartConfigs?.columnMapping?.xAxis}
-        yAxesMapped={chartConfigs?.columnMapping?.yAxis}
+        xAxisMapped={chartConfigs?.columnMapping?.xAxis || 'time'}
+        yAxesMapped={chartConfigs?.columnMapping?.yAxis || ['size']}
         onChangeXAxis={(xAxis) => {
           updateState('columnMapping', {
             ...chartConfigs?.columnMapping,
@@ -107,6 +101,7 @@ const ChartOptions = ({
     },
   ]);
   useEffect(() => {
+    console.log('ooptions', options);
     setChartOptions([
       {
         label: 'Show chart legend',
@@ -180,25 +175,37 @@ const ResultDataConfigs = ({
   onChangeYAxes: (yAxes: string[]) => void;
   onChangeXAxis: (xAxis: string) => void;
 }) => {
+  const [configs, setConfigs] = useState({
+    xAxis: xAxisMapped,
+    yAxis: yAxesMapped,
+  });
+
   const axisOptionsConfigs = useMemo(
     () => ['', ...axisOptions]?.map((axis) => ({ value: axis, label: axis })),
     [axisOptions],
   );
+  useEffect(() => {
+    console.log('configs', configs);
+    setConfigs({
+      xAxis: xAxisMapped,
+      yAxis: yAxesMapped,
+    });
+  }, [xAxisMapped, yAxesMapped]);
 
   const changeYAxisHandle = (value: string, oldValue: string) => {
     if (value === '' && oldValue === '') {
       return;
     }
     if (oldValue === '') {
-      const tempYAxes = [...yAxesMapped, value];
+      const tempYAxes = [...configs.yAxis, value];
       return onChangeYAxes(tempYAxes);
     }
-    if (value === '' && yAxesMapped.length <= 1) {
-      const tempYAxes = yAxesMapped.filter((item) => item !== oldValue);
+    if (value === '' && configs.yAxis?.length <= 1) {
+      const tempYAxes = configs.yAxis.filter((item) => item !== oldValue);
       return onChangeYAxes(tempYAxes);
     }
-    const index = yAxesMapped.indexOf(oldValue);
-    const tempYAxes = yAxesMapped;
+    const index = configs.yAxis.indexOf(oldValue);
+    const tempYAxes = configs.yAxis;
     tempYAxes[index] = value;
     onChangeYAxes(tempYAxes);
   };
@@ -216,17 +223,17 @@ const ResultDataConfigs = ({
           <AppSelect2
             zIndex={1001}
             options={axisOptionsConfigs?.filter((config) => {
-              if (yAxesMapped?.length > 0) {
-                return !yAxesMapped?.includes(config.value);
+              if (configs.yAxis?.length > 0) {
+                return !configs.yAxis?.includes(config.value);
               }
               return true;
             })}
-            value={xAxisMapped?.toString() || ''}
+            value={configs.xAxis?.toString() || ''}
             onChange={onChangeXAxis}
           />
         </Box>
       </Flex>
-      {(yAxesMapped ? [...yAxesMapped, ''] : ['']).map((axis, index) => {
+      {(configs.yAxis ? [...configs.yAxis, ''] : ['']).map((axis, index) => {
         return (
           <Flex
             mt={2}
@@ -243,9 +250,9 @@ const ResultDataConfigs = ({
                 zIndex={1000 - index}
                 width={'100%'}
                 options={axisOptionsConfigs.filter((config) => {
-                  return yAxesMapped
-                    ? !yAxesMapped.includes(config.value) ||
-                        axis !== xAxisMapped
+                  return configs.yAxis
+                    ? !configs.yAxis.includes(config.value) ||
+                        axis !== configs.xAxis
                     : true;
                 })}
                 value={axis.toString()}
