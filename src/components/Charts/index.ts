@@ -2,7 +2,7 @@ import AreaChart from './AreaChart';
 import BarChart from './BarChart';
 import LineChart from './LineChart';
 import PieChart from './PieChart';
-import TableSqlValue from './TableSqlValue';
+import VisualizationTable from './VisualizationTable';
 import ScatterChart from './ScatterChart';
 
 export {
@@ -10,6 +10,6 @@ export {
   BarChart,
   LineChart,
   PieChart,
-  TableSqlValue,
+  VisualizationTable,
   ScatterChart,
 };

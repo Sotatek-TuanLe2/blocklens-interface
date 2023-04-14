@@ -96,6 +96,15 @@
       }
     }
   }
+
+  &__right-side {
+    width: 70%;
+
+    @include mobile {
+      width: 100%;
+    }
+  }
+
   .schema-detail-title {
     cursor: default;
 
@@ -105,6 +114,7 @@
       }
     }
   }
+
   .block-describe {
     padding: 2px;
 
@@ -115,6 +125,18 @@
   }
 
   .visual-container {
+    &__visualization {
+      height: 500px;
+      border: 1px solid $border;
+      padding: 10px 0;
+      margin-bottom: 20px;
+
+      &__title {
+        padding: 0 10px;
+        margin-bottom: 10px;
+      }
+    }
+
     .app-tab {
       .tabs-container {
         background-color: #111213;

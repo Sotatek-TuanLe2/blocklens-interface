@@ -16,7 +16,7 @@ interface ReactTableProps<T> {
   columns: ColumnDef<T, unknown>[];
 }
 
-const TableSqlValue = <T,>({
+const VisualizationTable = <T,>({
   data,
   columns: dataColumn,
 }: ReactTableProps<T>) => {
@@ -174,4 +174,4 @@ const TableSqlValue = <T,>({
   );
 };
 
-export default TableSqlValue;
+export default VisualizationTable;
