@@ -193,26 +193,18 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
       case TYPE_VISUALIZATION.table:
         return (
           <TableSqlValue
-            columns={tableValuesColumnConfigs as typeof queryValues}
+            columns={tableValuesColumnConfigs}
             data={queryValues}
           />
         );
       case TYPE_VISUALIZATION.line: {
         return (
-          <VisualizationLineChart
-            data={queryValues}
-            xAxisKey="time"
-            yAxisKeys={['size']}
-          />
+          <LineChart data={queryValues} xAxisKey="time" yAxisKeys={['size']} />
         );
       }
       case TYPE_VISUALIZATION.bar:
         return (
-          <VisualizationBarChart
-            data={queryValues}
-            xAxisKey="time"
-            yAxisKeys={['size']}
-          />
+          <BarChart data={queryValues} xAxisKey="time" yAxisKeys={['size']} />
         );
       case TYPE_VISUALIZATION.area:
         return (
@@ -227,7 +219,7 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
         return (
           <ScatterChart
             data={queryValues}
-            xAxisKey="time"
+            xAxisKey={'number'}
             yAxisKeys={['size']}
           />
         );
