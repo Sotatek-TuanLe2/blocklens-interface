@@ -53,8 +53,8 @@ const AppTabs: FC<IAppTabs> = ({
                 <Tab
                   key={tab.id}
                   className="app-tab__name-tab"
-                  // onClick={() => onChange && onChange(tab.id)}
-                  onClick={tab.onTabClick}
+                  onClick={() => onChange && onChange(tab.id)}
+                  // onClick={tab.onTabClick}
                 >
                   <Flex
                     justifyContent={'center'}

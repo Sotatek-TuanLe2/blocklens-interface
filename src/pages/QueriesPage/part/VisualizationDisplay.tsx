@@ -1,5 +1,5 @@
 import { Box, Text } from '@chakra-ui/react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import 'src/styles/components/Chart.scss';
 import {
   AreaChart,
@@ -31,6 +31,7 @@ import {
   VisualizationOptionsType,
   VisualizationType,
 } from '../../../utils/visualization.type';
+import ConfigTable from '../../../components/SqlEditor/ConfigTable';
 
 type VisualizationConfigType = {
   value: string;
@@ -81,25 +82,11 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
   const [configsChart, setConfigsChart] = useState<VisualizationOptionsType>(
     {} as VisualizationOptionsType,
   );
-  // console.log('configsChart', configsChart.xAxisConfigs.sortX);
 
   const axisOptions =
     Array.isArray(queryValues) && queryValues[0]
       ? objectKeys(queryValues[0])
       : [];
-
-  const tableValuesColumnConfigs = useMemo(() => {
-    return axisOptions.map(
-      (col) =>
-        ({
-          id: col,
-          accessorKey: col,
-          header: col,
-          enableResizing: false,
-          size: 100,
-        } as ColumnDef<unknown>),
-    );
-  }, [queryValues]);
 
   const addVisualizationToQuery = async (
     queryId: string,
@@ -184,17 +171,46 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
         type: 'newVisualization',
       },
     ]);
+    setConfigsChart(
+      (queryInfo.visualizations[0]?.options as VisualizationOptionsType) ||
+        ({} as VisualizationOptionsType),
+    );
   }, []);
 
   const renderVisualization = (visualization: VisualizationType) => {
     const type = visualization.options?.globalSeriesType || visualization.type;
     switch (type) {
       case TYPE_VISUALIZATION.table:
+        const columns =
+          Array.isArray(queryValues) && queryValues[0]
+            ? objectKeys(queryValues[0])
+            : [];
+        const tableValuesColumnConfigs = columns.map(
+          (col) =>
+            ({
+              id: col,
+              accessorKey: col,
+              header: col,
+              enableResizing: true,
+              size: 100,
+              align: 'left',
+              type: 'normal',
+              format: '',
+              coloredPositive: false,
+              coloredNegative: false,
+              coloredProgress: false,
+              isHidden: false,
+            } as ColumnDef<unknown>),
+        );
+
         return (
-          <TableSqlValue
-            columns={tableValuesColumnConfigs}
-            data={queryValues}
-          />
+          <>
+            <TableSqlValue
+              columns={tableValuesColumnConfigs}
+              data={queryValues}
+            />
+            <ConfigTable />
+          </>
         );
       case TYPE_VISUALIZATION.line: {
         return (
@@ -233,7 +249,7 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
             />
             <ChartSettings
               axisOptions={axisOptions as string[]}
-              configs={visualization.options as VisualizationOptionsType}
+              configs={configsChart as VisualizationOptionsType}
               onChangeConfigs={setConfigsChart}
             />
           </>
@@ -329,15 +345,20 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
         onCloseTab={(tabId: string) => {
           setCloseTabId(tabId);
         }}
+        onChange={(tabId: string) => {
+          const visualization = visualizationsActive.find(
+            (v) => v.id === tabId,
+          );
+          if (visualization) {
+            setConfigsChart(visualization.options as VisualizationOptionsType);
+          }
+        }}
         tabs={visualizationsActive.map((v) => ({
           icon: getIcon(v.options.globalSeriesType || v.type),
           name: v.name,
           content: renderVisualization(v),
           id: v.id,
-          onTabClick: () => {
-            console.log('v.options', v.options);
-            setConfigsChart(v.options as VisualizationOptionsType);
-          },
+
           closeable: v.type !== 'newVisualization',
         }))}
       />

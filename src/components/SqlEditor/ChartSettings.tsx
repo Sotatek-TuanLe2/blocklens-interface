@@ -23,13 +23,13 @@ type Props = {
 };
 const ChartSettings = ({ axisOptions, configs, onChangeConfigs }: Props) => {
   const [chartConfigs, setChartConfigs] = useState<VisualizationOptionsType>({
-    chartOptionsConfigs: {} as ChartOptionConfigsType,
-    xAxisConfigs: {} as XAxisConfigsType,
-    yAxisConfigs: {} as YAxisConfigsType,
-    columnMapping: {
-      xAxis: 'time',
-      yAxis: ['size'],
-    },
+    // chartOptionsConfigs: {} as ChartOptionConfigsType,
+    // xAxisConfigs: {} as XAxisConfigsType,
+    // yAxisConfigs: {} as YAxisConfigsType,
+    // columnMapping: {
+    //   xAxis: 'time',
+    //   yAxis: ['size'],
+    // },
   } as VisualizationOptionsType);
 
   useEffect(() => {
@@ -55,11 +55,11 @@ const ChartSettings = ({ axisOptions, configs, onChangeConfigs }: Props) => {
       />
       <ResultDataConfigs
         axisOptions={axisOptions}
-        xAxisMapped={chartConfigs.columnMapping.xAxis}
-        yAxesMapped={chartConfigs.columnMapping.yAxis}
+        xAxisMapped={chartConfigs?.columnMapping?.xAxis}
+        yAxesMapped={chartConfigs?.columnMapping?.yAxis}
         onChangeXAxis={(xAxis) => {
           updateState('columnMapping', {
-            ...chartConfigs.columnMapping,
+            ...chartConfigs?.columnMapping,
             xAxis,
           });
         }}
@@ -111,17 +111,17 @@ const ChartOptions = ({
       {
         label: 'Show chart legend',
         value: 'showLegend',
-        checked: options.showLegend || false,
+        checked: options?.showLegend || false,
       },
       {
         label: 'Enable stacking',
         value: 'stacking',
-        checked: options.stacking || false,
+        checked: options?.stacking || false,
       },
       {
         label: 'Normalize to percentage',
         value: 'percentValues',
-        checked: options.percentValues || false,
+        checked: options?.percentValues || false,
       },
     ]);
   }, [options]);
@@ -143,7 +143,7 @@ const ChartOptions = ({
       <Flex alignItems={'center'} mb={2}>
         <Text mr={2}>Title</Text>
         <AppInput
-          value={options.name || ''}
+          value={options?.name || ''}
           onChange={(e) => changeValueHandle('name', e.target.value)}
         />
       </Flex>
@@ -215,15 +215,18 @@ const ResultDataConfigs = ({
         <Box flex={1}>
           <AppSelect2
             zIndex={1001}
-            options={axisOptionsConfigs.filter(
-              (config) => !yAxesMapped.includes(config.value),
-            )}
+            options={axisOptionsConfigs?.filter((config) => {
+              if (yAxesMapped?.length > 0) {
+                return !yAxesMapped?.includes(config.value);
+              }
+              return true;
+            })}
             value={xAxisMapped?.toString() || ''}
             onChange={onChangeXAxis}
           />
         </Box>
       </Flex>
-      {[...yAxesMapped, ''].map((axis, index) => {
+      {(yAxesMapped ? [...yAxesMapped, ''] : ['']).map((axis, index) => {
         return (
           <Flex
             mt={2}
@@ -239,10 +242,12 @@ const ResultDataConfigs = ({
               <AppSelect2
                 zIndex={1000 - index}
                 width={'100%'}
-                options={axisOptionsConfigs.filter(
-                  (config) =>
-                    !yAxesMapped.includes(config.value) || axis !== xAxisMapped,
-                )}
+                options={axisOptionsConfigs.filter((config) => {
+                  return yAxesMapped
+                    ? !yAxesMapped.includes(config.value) ||
+                        axis !== xAxisMapped
+                    : true;
+                })}
                 value={axis.toString()}
                 onChange={(value) => {
                   changeYAxisHandle(value, axis);

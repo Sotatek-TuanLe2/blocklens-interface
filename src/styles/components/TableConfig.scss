@@ -10,6 +10,7 @@
   padding: 10px;
   border: 1px solid #ffbdb6;
   background: $title;
+
   .z-100 {
     z-index: 100;
   }
@@ -18,7 +19,13 @@
     color: $blackAlpha-800;
     font-size: 14px;
   }
+
+  .first-box-table {
+    min-height: unset !important;
+  }
+
   .box-table {
+    min-height: 303px;
     background: #f2f2f2;
     padding: 10px;
     border: 1px solid transparent;
