@@ -40,7 +40,12 @@ const TableConfigurations = () => {
           Add to dashboard
         </AppButton>
       </header> */}
-      <Grid templateColumns="repeat(2, 1fr)">
+      <Grid
+        templateColumns={{
+          sm: 'repeat(1, 1fr)',
+          md: 'repeat(2, 1fr)',
+        }}
+      >
         <GridItem>
           <div className="box-table first-box-table">
             <Text
@@ -63,7 +68,13 @@ const TableConfigurations = () => {
         </GridItem>
       </Grid>
       <Divider orientation="horizontal" borderColor={'gray'} />
-      <Grid templateColumns="repeat(2, 1fr)" gap={'10px'}>
+      <Grid
+        templateColumns={{
+          sm: 'repeat(1, 1fr)',
+          md: 'repeat(2, 1fr)',
+        }}
+        gap={'10px'}
+      >
         {columnData.map((header, index) => (
           <GridItem key={index}>
             <TableOptions header={header} typeData={typeData} index={index} />
