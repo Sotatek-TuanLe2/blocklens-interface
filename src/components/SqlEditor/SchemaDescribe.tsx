@@ -1,10 +1,10 @@
 import React from 'react';
-import { TableAttributeType } from './MockData';
+import { SchemaType } from '../../utils/common';
 import { Box, Flex, Text } from '@chakra-ui/react';
 import SchemaTitle from './SchemaTitle';
 
 type Props = {
-  tableDescribe: TableAttributeType[];
+  tableDescribe: SchemaType[];
   blockchain: string;
   name: string;
 };

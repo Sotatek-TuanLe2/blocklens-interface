@@ -21,7 +21,7 @@ export interface IAppResponse {
   key: string;
 }
 
-export type SchemaType = {
+export type TableAttributeType = {
   blockchains: string[];
   full_name: string;
   id: string;
@@ -29,6 +29,14 @@ export type SchemaType = {
   table_name: string;
   __typename: string;
 };
+
+export interface SchemaType {
+  column_name: string;
+  data_type: string;
+  full_name: string;
+  namespace: string;
+  table_name: string;
+}
 
 // export const randomColor = Math.floor(Math.random() * 16777215).toString(16);
 export const randomColor = '#8884d8';
