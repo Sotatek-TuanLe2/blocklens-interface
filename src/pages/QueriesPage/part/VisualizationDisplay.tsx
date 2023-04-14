@@ -7,10 +7,10 @@ import {
   LineChart,
   PieChart,
   ScatterChart,
-  TableSqlValue,
+  VisualizationTable,
 } from '../../../components/Charts';
 import { AppTabs, AppButton, AppSelect2 } from '../../../components';
-import ChartSettings from '../../../components/SqlEditor/ChartSettings';
+import ChartConfigurations from '../../../components/VisualizationConfigs/ChartConfigurations';
 import BaseModal from '../../../modals/BaseModal';
 import DashboardsRequest from '../../../requests/DashboardsRequest';
 import { useParams } from 'react-router-dom';
@@ -31,7 +31,7 @@ import {
   VisualizationOptionsType,
   VisualizationType,
 } from '../../../utils/visualization.type';
-import ConfigTable from '../../../components/SqlEditor/ConfigTable';
+import TableConfigurations from '../../../components/VisualizationConfigs/TableConfigurations';
 
 type VisualizationConfigType = {
   value: string;
@@ -205,11 +205,11 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
 
         return (
           <>
-            <TableSqlValue
+            <VisualizationTable
               columns={tableValuesColumnConfigs}
               data={queryValues}
             />
-            <ConfigTable />
+            <TableConfigurations />
           </>
         );
       case TYPE_VISUALIZATION.line: {
@@ -220,7 +220,7 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
               xAxisKey="time"
               yAxisKeys={['size']}
             />
-            <ChartSettings
+            <ChartConfigurations
               axisOptions={axisOptions as string[]}
               configs={visualization.options as VisualizationOptionsType}
               onChangeConfigs={(configs) => {
@@ -247,7 +247,7 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
               yAxisKeys={configsChart.columnMapping?.yAxis || ['size']}
               configs={configsChart}
             />
-            <ChartSettings
+            <ChartConfigurations
               axisOptions={axisOptions as string[]}
               configs={configsChart as VisualizationOptionsType}
               onChangeConfigs={setConfigsChart}
@@ -262,7 +262,7 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
               xAxisKey="time"
               yAxisKeys={['size']}
             />
-            <ChartSettings
+            <ChartConfigurations
               axisOptions={axisOptions as string[]}
               configs={visualization.options as VisualizationOptionsType}
               onChangeConfigs={(configs) => {
@@ -275,7 +275,7 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
         return (
           <>
             <PieChart data={queryValues} dataKey={'number'} />;
-            <ChartSettings
+            <ChartConfigurations
               axisOptions={axisOptions as string[]}
               configs={
                 objectKeys(configsChart).length > 0
@@ -297,7 +297,7 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
               xAxisKey={'number'}
               yAxisKeys={['size']}
             />
-            <ChartSettings
+            <ChartConfigurations
               axisOptions={axisOptions as string[]}
               configs={visualization.options as VisualizationOptionsType}
               onChangeConfigs={(configs) => {

@@ -1,6 +1,6 @@
 import { Checkbox, Divider, Grid, GridItem, Text } from '@chakra-ui/react';
 import { useState } from 'react';
-import 'src/styles/components/TableConfig.scss';
+import 'src/styles/components/TableConfigurations.scss';
 import AppButton from '../AppButton';
 import AppInput from '../AppInput';
 import AppSelect2 from '../AppSelect2';

@@ -11,7 +11,7 @@ import VisualizationAreaChart from 'src/components/Charts/AreaChart';
 import VisualizationBarChart from 'src/components/Charts/BarChart';
 import VisualizationLineChart from 'src/components/Charts/LineChart';
 import VisualizationPieChart from 'src/components/Charts/PieChart';
-import TableSqlValue from 'src/components/Charts/TableSqlValue';
+import VisualizationTable from 'src/components/Charts/VisualizationTable';
 import useUser from 'src/hooks/useUser';
 import ModalAddTextWidget from 'src/modals/ModalAddTextWidget';
 import ModalAddVisualization from 'src/modals/ModalAddVisualization';
@@ -144,7 +144,7 @@ const DashboardDetailPage: React.FC = () => {
     switch (type) {
       case TYPE_VISUALIZATION.table:
         return (
-          <TableSqlValue
+          <VisualizationTable
             columns={tableValuesColumnConfigs}
             data={queryValues}
           />

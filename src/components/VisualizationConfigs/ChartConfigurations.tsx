@@ -14,14 +14,18 @@ import {
   XAxisConfigsType,
   YAxisConfigsType,
 } from '../../utils/visualization.type';
-import 'src/styles/components/ChartSettings.scss';
+import 'src/styles/components/ChartConfigurations.scss';
 
 type Props = {
   configs: VisualizationOptionsType;
   onChangeConfigs: (configs: VisualizationOptionsType) => void;
   axisOptions: string[];
 };
-const ChartSettings = ({ axisOptions, configs, onChangeConfigs }: Props) => {
+const ChartConfigurations = ({
+  axisOptions,
+  configs,
+  onChangeConfigs,
+}: Props) => {
   const [chartConfigs, setChartConfigs] = useState<VisualizationOptionsType>(
     {} as VisualizationOptionsType,
   );
@@ -372,4 +376,4 @@ const YAxisConfigs = ({
     </AppCard>
   );
 };
-export default ChartSettings;
+export default ChartConfigurations;
