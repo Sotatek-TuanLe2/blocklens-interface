@@ -19,9 +19,9 @@ const SchemaDescribe = ({ blockchain, name, tableDescribe }: Props) => {
       />
       <Box paddingLeft={3} marginTop={2}>
         <Box borderLeft={'1px solid #ccc'} paddingLeft={4}>
-          {tableDescribe.map((desc) => (
+          {tableDescribe.map((desc, index) => (
             <Flex
-              key={desc.id}
+              key={index}
               justifyContent={'space-between'}
               alignItems={'center'}
               fontSize={14}

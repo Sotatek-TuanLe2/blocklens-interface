@@ -32,13 +32,28 @@
   }
 }
 
-.table-name {
-  padding: 4px 8px;
-  border-radius: 6px;
-  &:hover {
-    background-color: #1a203b;
+.row-name-wrap {
+  .row-name {
+    width: 80%;
+    padding: 4px 8px;
+    border-radius: 6px;
+    &:hover {
+      background-color: #1a203b;
+    }
+    &__row {
+      width: 80%;
+      p {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+  }
+  .row-icon {
+    width: 20%;
   }
 }
+
 .dataset-title {
   padding: 4px 8px;
   cursor: pointer;

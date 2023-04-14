@@ -10,7 +10,8 @@ export interface DashboardsParams {
 }
 
 interface SchemasParams {
-  category: string;
+  category?: string;
+  chain?: string;
 }
 
 export interface QueriesParams {
@@ -32,6 +33,10 @@ export interface ILayout extends Layout {
   id: number;
 }
 
+export interface SchemaParams {
+  namespace: string;
+  tableName: string;
+}
 export default class DashboardsRequest extends BaseRequest {
   getUrlPrefix(): string {
     return '';
@@ -42,9 +47,14 @@ export default class DashboardsRequest extends BaseRequest {
     return this.get(url, { ...params });
   }
 
-  getSchemas(params: SchemasParams) {
-    const url = 'https://run.mocky.io/v3/0833bca4-9039-49f0-b8c5-98ce577cf2d0';
+  getTable(params: SchemasParams) {
+    const url = 'http://172.16.199.30:8002/query/tables';
     return this.get(url, { ...params });
+  }
+
+  getSchema(params: SchemaParams) {
+    const url = `http://172.16.199.30:8002/query/${params.namespace}/${params.tableName}/schema`;
+    return this.get(url);
   }
 
   getQueries(params: QueriesParams) {
