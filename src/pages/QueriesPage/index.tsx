@@ -9,6 +9,7 @@ import VisualizationDisplay from './part/VisualizationDisplay';
 import DashboardsRequest from '../../requests/DashboardsRequest';
 import 'ace-builds/src-noconflict/theme-github';
 import 'ace-builds/src-noconflict/theme-monokai';
+import 'ace-builds/src-noconflict/theme-kuroir';
 import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/mode-sql';
 import { getErrorMessage } from '../../utils/utils-helper';
@@ -111,7 +112,13 @@ const QueriesPage = () => {
   };
 
   const onClickFullScreen = () => {
-    editorRef.current.editor.resize();
+    if (editorRef.current.editor)
+      console.log(
+        'editorRef.current.editor.resize()',
+        editorRef.current.editor.env,
+      );
+
+    editorRef.current.editor.env.onResize();
   };
 
   useEffect(() => {
@@ -120,6 +127,9 @@ const QueriesPage = () => {
       fetchInfoQuery();
     }
   }, [queryId]);
+
+  const hoverBackground = switchTheme ? '#dadde0' : '#2a2c2f99';
+  const background = switchTheme ? '#e9ebee' : '#2a2c2f';
 
   const _renderMenuPanelSetting = () => {
     return (
@@ -164,22 +174,13 @@ const QueriesPage = () => {
         >
           <Text fontSize="14px">Fullscreen</Text>
           <Flex>
-            <Box
-              bg={switchTheme ? '#e9ebee' : '#2a2c2f'}
-              className="menu-panel__item--key"
-            >
+            <Box bg={background} className="menu-panel__item--key">
               ⌃
             </Box>
-            <Box
-              bg={switchTheme ? '#e9ebee' : '#2a2c2f'}
-              className="menu-panel__item--key"
-            >
+            <Box bg={background} className="menu-panel__item--key">
               ⇧
             </Box>
-            <Box
-              bg={switchTheme ? '#e9ebee' : '#2a2c2f'}
-              className="menu-panel__item--key"
-            >
+            <Box bg={background} className="menu-panel__item--key">
               F
             </Box>
           </Flex>
@@ -189,6 +190,8 @@ const QueriesPage = () => {
   };
 
   const _renderButton = () => {
+    const colorIcon = switchTheme ? '#35373c' : '#fef5f7';
+
     return (
       <div className="custom-button">
         <Tooltip
@@ -198,20 +201,20 @@ const QueriesPage = () => {
         >
           <AppButton
             onClick={onExpland}
-            bg={'#2a2c2f'}
-            _hover={{ bg: '#2a2c2f99' }}
+            bg={background}
+            _hover={{ bg: hoverBackground }}
           >
-            <ExplandIcon />
+            <ExplandIcon color={colorIcon} />
           </AppButton>
         </Tooltip>
         <Tooltip hasArrow placement="top" label="Settings">
           <div className="btn-setting">
             <AppButton
               onClick={onSetting}
-              bg={'#2a2c2f'}
-              _hover={{ bg: '#2a2c2f99' }}
+              bg={background}
+              _hover={{ bg: hoverBackground }}
             >
-              <SettingsIcon />
+              <SettingsIcon color={colorIcon} />
             </AppButton>
             {isSetting && _renderMenuPanelSetting()}
           </div>
@@ -219,20 +222,20 @@ const QueriesPage = () => {
         <Tooltip hasArrow placement="top" label="Format query">
           <AppButton
             onClick={onFormat}
-            bg={'#2a2c2f'}
-            _hover={{ bg: '#2a2c2f99' }}
+            bg={background}
+            _hover={{ bg: hoverBackground }}
           >
-            <FormatIcon />
+            <FormatIcon color={colorIcon} />
           </AppButton>
         </Tooltip>
         {showButton && (
           <Tooltip hasArrow placement="top" label="Add Parameter">
             <AppButton
               onClick={onAddParameter}
-              bg={'#2a2c2f'}
-              _hover={{ bg: '#2a2c2f99' }}
+              bg={background}
+              _hover={{ bg: hoverBackground }}
             >
-              <AddParameterIcon />
+              <AddParameterIcon color={colorIcon} />
             </AppButton>
           </Tooltip>
         )}
@@ -257,7 +260,7 @@ const QueriesPage = () => {
                 className={`custom-editor ${isExpand ? 'expland' : ''}`}
                 ref={editorRef}
                 mode="sql"
-                theme={switchTheme ? 'monokai' : 'kuroir'}
+                theme={switchTheme ? 'kuroir' : 'monokai'}
                 width="100%"
                 wrapEnabled={true}
                 name="sql_editor"
@@ -273,14 +276,17 @@ const QueriesPage = () => {
                   tabSize: 2,
                 }}
               />
-              <Box className="control-editor">
+              <Box
+                bg={switchTheme ? '#f3f5f7' : '#111213'}
+                className="control-editor"
+              >
                 {_renderButton()}
                 <AppButton
                   onClick={submitQuery}
-                  bg={'#2a2c2f'}
-                  _hover={{ bg: '#2a2c2f99' }}
+                  bg={background}
+                  _hover={{ bg: hoverBackground }}
                 >
-                  Run
+                  <Text color={switchTheme ? '#1d1d20' : '#f3f5f7'}>Run</Text>
                 </AppButton>
               </Box>
             </Box>
