@@ -35,15 +35,19 @@ const ConfigTable = () => {
   );
   return (
     <div className="main-layout">
-      <header>
+      {/* <header>
         <AppButton className="btn-add" size="sm">
           Add to dashboard
         </AppButton>
-      </header>
+      </header> */}
       <Grid templateColumns="repeat(2, 1fr)">
         <GridItem>
           <div className="box-table first-box-table">
-            <Text fontWeight="bold" marginBottom="10px">
+            <Text
+              className="box-table__title"
+              fontWeight="bold"
+              marginBottom="10px"
+            >
               Table options
             </Text>
             <div className="box-table-children">
@@ -81,7 +85,7 @@ const TableOptions = ({ header, typeData, index }: any) => {
 
   return (
     <div className="box-table" onClick={() => setSelectedItem(header)}>
-      <Text fontWeight="bold" marginBottom="10px">
+      <Text className="box-table__title" fontWeight="bold" marginBottom="10px">
         Column {index}: {header.accessorKey}
       </Text>
       <div className="box-table-children">
