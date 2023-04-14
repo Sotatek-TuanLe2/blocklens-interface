@@ -1,5 +1,7 @@
+@import '../color-variables.scss';
+@import '../mixins.scss';
 
-.table-value{
+.table-value {
   table,
   .divTable {
     border: 1px solid lightgray;
@@ -36,6 +38,30 @@
   td,
   .td {
     height: 30px;
+    .progressbar {
+      display: flex;
+      align-items: center;
+      .visual-progressbar {
+        margin-right: 5px;
+        display: inline-block;
+        position: relative;
+        width: 80px;
+        height: 8px;
+        background: rgb(35 240 14 / 13%);
+        border-radius: 0.7rem;
+        overflow: hidden;
+        &::after {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 0;
+          height: 100%;
+          width: 20px;
+          background: var(--myColor);
+          border-radius: inherit;
+        }
+      }
+    }
   }
 
   .resizer {
@@ -65,4 +91,3 @@
     }
   }
 }
-

@@ -1,24 +1,46 @@
-import React from 'react';
+import { Box } from '@chakra-ui/react';
 import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from 'src/store';
+import { setColumn, setDataTable } from 'src/store/configuration';
 import 'src/styles/components/TableValue.scss';
-import { Box } from '@chakra-ui/react';
 
 interface ReactTableProps<T> {
   data: T[];
   columns: ColumnDef<T, unknown>[];
 }
 
-const TableSqlValue = <T,>({ data, columns }: ReactTableProps<T>) => {
+const TableSqlValue = <T,>({
+  data,
+  columns: dataColumn,
+}: ReactTableProps<T>) => {
+  const { columnData } = useSelector((state: RootState) => state.configuration);
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(setColumn(dataColumn));
+  }, [dataColumn]);
   const table = useReactTable({
     data,
-    columns,
+    columns: columnData,
     getCoreRowModel: getCoreRowModel(),
   });
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      dispatch(setDataTable(table.getRowModel().rows));
+    }, 500);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, []);
+
   return (
     <Box height={'500px'} overflow={'auto'}>
       <table
@@ -27,6 +49,7 @@ const TableSqlValue = <T,>({ data, columns }: ReactTableProps<T>) => {
           style: {
             height: '100%',
             width: table.getCenterTotalSize(),
+            boxShadow: 'inset 0 0 0 1px lightgray',
           },
         }}
       >
@@ -39,12 +62,17 @@ const TableSqlValue = <T,>({ data, columns }: ReactTableProps<T>) => {
                 // display: 'flex',
               }}
             >
-              {headerGroup.headers.map((header) => (
+              {headerGroup.headers.map((header: any) => (
                 <th
                   {...{
                     key: header.id,
                     style: {
                       width: header.getSize(),
+                      boxShadow: 'inset 0 0 0 1px lightgray',
+                      textAlign: header.column.columnDef.align,
+                      display: header.column.columnDef.isHidden
+                        ? 'none'
+                        : undefined,
                     },
                   }}
                 >
@@ -78,18 +106,66 @@ const TableSqlValue = <T,>({ data, columns }: ReactTableProps<T>) => {
         <tbody>
           {table.getRowModel().rows.map((row) => (
             <tr key={row.id}>
-              {row.getVisibleCells().map((cell) => (
-                <td
-                  {...{
-                    key: cell.id,
-                    style: {
-                      width: cell.column.getSize(),
-                    },
-                  }}
-                >
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
+              {row.getVisibleCells().map((cells: any) => {
+                const {
+                  align,
+                  isHidden,
+                  coloredPositive,
+                  coloredNegative,
+                  type,
+                  coloredProgress,
+                } = cells.column.columnDef;
+                const value = cells.getValue();
+                const checkColor = (value: any) => {
+                  switch (true) {
+                    case value > 0 && coloredPositive:
+                      return '#006400';
+                    case value < 0 && coloredNegative:
+                      return '#d93025';
+                    default:
+                      return undefined;
+                  }
+                };
+                return (
+                  <td
+                    {...{
+                      key: cells.id,
+                      style: {
+                        width: cells.column.getSize(),
+                      },
+                    }}
+                  >
+                    <div
+                      className="progressbar"
+                      {...{
+                        key: cells.id,
+                        style: {
+                          justifyContent: align,
+                          display: isHidden ? 'none' : undefined,
+                          color:
+                            typeof value === 'number'
+                              ? checkColor(cells.getValue())
+                              : undefined,
+                        },
+                      }}
+                    >
+                      {type === 'normal' ? null : typeof value === 'number' ? (
+                        <div
+                          style={
+                            {
+                              '--myColor': coloredProgress
+                                ? '#006400'
+                                : '#3965ff',
+                            } as React.CSSProperties
+                          }
+                          className="visual-progressbar"
+                        ></div>
+                      ) : null}
+                      {value}
+                    </div>
+                  </td>
+                );
+              })}
             </tr>
           ))}
         </tbody>

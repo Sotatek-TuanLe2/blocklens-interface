@@ -8,8 +8,8 @@
   display: grid;
   grid-gap: 10px;
   padding: 10px;
-  border: 1px solid #ffbdb6;
-  background: $title;
+  border: 1px solid $border;
+
   .z-100 {
     z-index: 100;
   }
@@ -18,16 +18,24 @@
     color: $blackAlpha-800;
     font-size: 14px;
   }
+
+  .first-box-table {
+    min-height: unset !important;
+  }
+
   .box-table {
-    background: #f2f2f2;
+    min-height: 340px;
+    background-color: $card;
     padding: 10px;
     border: 1px solid transparent;
 
+    &__title {
+      color: $title;
+    }
+
     .main-checkbox {
-      border-bottom: 1px solid $gray-200;
-      background-color: $whiteAlpha-900;
       padding: 5px 10px;
-      color: $blackAlpha-800;
+      color: $title;
 
       .chakra-checkbox__label {
         font-size: 14px !important;
@@ -35,49 +43,35 @@
     }
 
     .box-table-children {
-      border-bottom: 1px solid $gray-200;
       align-items: center;
       display: grid;
-      background-color: $whiteAlpha-900;
       grid-template-columns: minmax(auto, 4rem) minmax(auto, 1fr);
       padding-left: 10px;
+      color: $title;
+      padding: 5px 0;
+
       .ok {
         &:shadow {
-          border: 1px solid $gray-400;
+          border: 1px solid $border;
         }
       }
       .select-table {
         .app-select__btn-select {
-          background: $title;
-          border-color: transparent;
           padding: 0px 17px;
           font-size: 14px;
-          &:hover {
-            border: 1px solid $gray-600;
-          }
         }
-        .app-select__menu {
-          padding-bottom: unset;
-          background-color: $title;
-          border-color: transparent;
-          border: 1px solid $gray-400;
 
-          .app-select__menu-item {
-            padding: 0 10px;
-            &:hover {
-              background: $blue-400;
-            }
-          }
+        .app-select__menu {
+          color: $title;
         }
       }
       .input-table {
         font-size: 13px;
         border-color: transparent;
-        background: unset;
-        color: $blackAlpha-800;
+        color: $title;
         border-radius: 5px;
         &:focus {
-          border: 1px solid $gray-400;
+          border: 1px solid $border;
         }
         padding: 18px;
       }

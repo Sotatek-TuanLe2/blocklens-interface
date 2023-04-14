@@ -68,7 +68,7 @@ const SidebarEditorRow = ({
               {tableName}
             </Text>
           </Flex>
-          {getChainIcon()}
+          <div>{getChainIcon()}</div>
         </Flex>
         <Flex alignItems={'center'} className="row-icon">
           <ViewIcon marginLeft={3} />

@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   Bar,
   BarChart,
@@ -7,11 +8,16 @@ import {
   Tooltip,
   XAxis,
   YAxis,
+  Label,
 } from 'recharts';
 import { getHourAndMinute, randomColor } from '../../utils/common';
 import { ChartProps } from './LineChart';
-
-type Props = ChartProps;
+import { VisualizationOptionsType } from '../../utils/visualization.type';
+import { Box, Text } from '@chakra-ui/react';
+type ChartConfigType = VisualizationOptionsType;
+type Props = ChartProps & {
+  configs?: Partial<ChartConfigType>;
+};
 
 const CustomTooltip = (props: any) => {
   const { active, payload, label } = props;
@@ -20,9 +26,14 @@ const CustomTooltip = (props: any) => {
       <div className="custom-tooltip">
         <p className=" custom-tooltip__label">{label}</p>
         <div className="custom-tooltip__desc">
-          <span style={{ backgroundColor: `${payload[0].fill}` }}></span>
-          <span>size</span>
-          <span>{payload[0].value}</span>
+          {payload.map((entry: any) => (
+            <Box as={'div'}>
+              <span style={{ backgroundColor: `${entry.fill}` }}></span>
+              <span>{entry.name}</span>
+              <span>{entry.value}</span>
+              <br />
+            </Box>
+          ))}
         </div>
       </div>
     );
@@ -47,36 +58,70 @@ const renderLegend = (props: any) => {
   );
 };
 
-const VisualizationBarChart = ({ xAxisKey, yAxisKeys, data }: Props) => {
+const VisualizationBarChart = (props: Props) => {
+  const { xAxisKey, yAxisKeys, data, configs } = props;
+  const chartOptionsConfigs = configs?.chartOptionsConfigs;
+  const xAxisConfigs = configs?.xAxisConfigs;
+  const yAxisConfigs = configs?.yAxisConfigs;
+
+  const tickFormatTime = (value: string) => {
+    return getHourAndMinute(new Date(value));
+  };
+
   return (
-    <ResponsiveContainer width={'100%'} height={'100%'}>
-      <BarChart height={500} data={data} className="bar-chart">
-        <CartesianGrid vertical={false} strokeDasharray="4" />
-        <XAxis
-          dataKey={xAxisKey}
-          tickFormatter={(value) => {
-            return getHourAndMinute(new Date(value));
-          }}
-        />
-        {yAxisKeys?.map((yKey) => (
-          <YAxis key={yKey} dataKey={yKey} />
-        ))}
-        <Tooltip
-          content={<CustomTooltip />}
-          animationDuration={200}
-          animationEasing={'linear'}
-        />
-        <Legend
-          verticalAlign="middle"
-          align="right"
-          layout="vertical"
-          content={renderLegend}
-        />
-        {yAxisKeys?.map((yKey) => (
-          <Bar key={yKey} dataKey={yKey} fill={randomColor} />
-        ))}
-      </BarChart>
-    </ResponsiveContainer>
+    <>
+      <Text>{chartOptionsConfigs?.name}</Text>
+      <ResponsiveContainer width={'100%'} height={'100%'}>
+        <BarChart height={500} data={data} className={'bar-chart'}>
+          <CartesianGrid vertical={false} strokeDasharray="4" />
+          <XAxis
+            dataKey={xAxisKey}
+            tickFormatter={xAxisKey === 'time' ? tickFormatTime : undefined}
+            fill={'#ccc'}
+          >
+            <Label
+              offset={0}
+              position="insideBottom"
+              value={xAxisConfigs?.title}
+              fill={'#ccc'}
+            />
+          </XAxis>
+          {yAxisKeys?.map((yKey) => (
+            <YAxis
+              key={yKey}
+              dataKey={yKey}
+              label={{
+                value: yAxisConfigs?.title,
+                angle: -90,
+                position: 'insideLeft',
+                fill: '#ccc',
+              }}
+            />
+          ))}
+          <Tooltip
+            content={<CustomTooltip />}
+            animationDuration={200}
+            animationEasing={'linear'}
+          />
+          {chartOptionsConfigs?.showLegend && (
+            <Legend
+              verticalAlign="middle"
+              align="right"
+              layout="vertical"
+              content={renderLegend}
+            />
+          )}
+          {yAxisKeys?.map((yKey) => (
+            <Bar
+              key={yKey}
+              dataKey={yKey}
+              fill={randomColor}
+              stackId={chartOptionsConfigs?.stacking ? 'a' : undefined}
+            />
+          ))}
+        </BarChart>
+      </ResponsiveContainer>
+    </>
   );
 };
 

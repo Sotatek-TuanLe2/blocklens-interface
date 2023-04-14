@@ -3,28 +3,26 @@ import { Box, Flex, Select, Text } from '@chakra-ui/react';
 import { tableDetail } from '../../../components/SqlEditor/MockData';
 import DashboardsRequest from '../../../requests/DashboardsRequest';
 import { ArrowBackIcon } from '@chakra-ui/icons';
-import { toastError } from '../../../utils/utils-notify';
-import SchemaTitle from '../../../components/SqlEditor/SchemaTitle';
-import SchemaDescribe from '../../../components/SqlEditor/SchemaDescribe';
-import { getLogoChainByChainId } from '../../../utils/utils-network';
-import { getErrorMessage } from '../../../utils/utils-helper';
-import { AppInput, AppSelect2 } from '../../../components';
 import 'src/styles/components/EditorSidebar.scss';
 import { SchemaType, TableAttributeType } from '../../../utils/common';
 import _, { debounce } from 'lodash';
 
 const TIME_DEBOUNCE = 1000;
+import { AppInput, AppSelect2 } from '../../../components';
+import SchemaDescribe from '../../../components/SqlEditor/SchemaDescribe';
+import SchemaTitle from '../../../components/SqlEditor/SchemaTitle';
+import { getErrorMessage } from '../../../utils/utils-helper';
+import { getLogoChainByChainId } from '../../../utils/utils-network';
+import { toastError } from '../../../utils/utils-notify';
 
 const EditorSidebar = () => {
   const [tableSelected, setTableSelected] = useState<{
     chain: string;
     name: string;
   } | null>(null);
-  const [schemas, setSchemas] = useState<SchemaType[]>([]);
+  const [schemas, setSchemas] = useState<TableAttributeType[]>([]);
   const [paramsSearch, setParamsSearch] = useState({ chain: '', search: '' });
-  const [schemaDescribe, setSchemaDescribe] = useState<
-    TableAttributeType[] | null
-  >();
+  const [schemaDescribe, setSchemaDescribe] = useState<SchemaType[] | null>();
 
   const selectSchemaTitleHandler = async ({
     chain,

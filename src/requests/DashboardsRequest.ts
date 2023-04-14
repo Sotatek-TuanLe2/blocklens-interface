@@ -1,6 +1,6 @@
 import { Layout } from 'react-grid-layout';
 import BaseRequest from './BaseRequest';
-import { QueryType } from '../utils/common';
+import { QueryType } from '../utils/visualization.type';
 
 export interface DashboardsParams {
   order?: string;
@@ -69,7 +69,7 @@ export default class DashboardsRequest extends BaseRequest {
   }
 
   createNewQuery(query: QueryType) {
-    const url = 'https://642cf0d966a20ec9ce915e71.mockapi.io/queries/queries';
+    const url = 'https://642bcf7fd7081590f92a4f26.mockapi.io/blocklens/z';
     return this.post(url, query);
   }
 
