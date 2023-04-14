@@ -110,9 +110,9 @@ const QueriesPage = () => {
     editorRef.current.editor.session.insert(position, '{{unnamed_parameter}}');
   };
 
-  const onClickFullScreen = () => {
-    if (editorRef.current.editor) editorRef.current.editor.resize();
-  };
+  // const onClickFullScreen = () => {
+  //   if (editorRef.current.editor) editorRef.current.editor.resize();
+  // };
 
   useEffect(() => {
     if (queryId) {
@@ -157,7 +157,7 @@ const QueriesPage = () => {
           <Text fontSize="14px">Switch to light theme</Text>
           {switchTheme ? <MoonIcon /> : <SunIcon />}
         </Flex>
-        <Flex
+        {/* <Flex
           className={`menu-panel__item ${
             switchTheme ? 'theme-light' : 'theme-dark'
           }`}
@@ -177,7 +177,7 @@ const QueriesPage = () => {
               F
             </Box>
           </Flex>
-        </Flex>
+        </Flex> */}
       </Flex>
     );
   };
