@@ -1,13 +1,15 @@
+import { Box } from '@chakra-ui/react';
 import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from 'src/store';
+import { setColumn, setDataTable } from 'src/store/configuration';
 import 'src/styles/components/TableValue.scss';
-import ConfigTable from '../SqlEditor/ConfigTable';
-import { Box } from '@chakra-ui/react';
 
 interface ReactTableProps<T> {
   data: T[];
@@ -18,22 +20,27 @@ const TableSqlValue = <T,>({
   data,
   columns: dataColumn,
 }: ReactTableProps<T>) => {
-  const [columns, setColumns] = useState<ColumnDef<T, unknown>[]>(dataColumn);
+  const { columnData } = useSelector((state: RootState) => state.configuration);
+
+  const dispatch = useDispatch();
   useEffect(() => {
-    setColumns(dataColumn);
+    dispatch(setColumn(dataColumn));
   }, [dataColumn]);
   const table = useReactTable({
     data,
-    columns: columns,
+    columns: columnData,
     getCoreRowModel: getCoreRowModel(),
   });
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      dispatch(setDataTable(table.getRowModel().rows));
+    }, 500);
 
-  const updateDataNewTable = useCallback(
-    (data: ColumnDef<T, unknown>) => {
-      setColumns(columns.map((item) => (item.id === data.id ? data : item)));
-    },
-    [columns],
-  );
+    return () => {
+      clearTimeout(timer);
+    };
+  }, []);
+
   return (
     <Box height={'500px'} overflow={'auto'}>
       <table
@@ -163,11 +170,6 @@ const TableSqlValue = <T,>({
           ))}
         </tbody>
       </table>
-      <ConfigTable
-        newColumns={columns as typeof columns}
-        updateDataNewTable={updateDataNewTable}
-        table={table}
-      />
     </Box>
   );
 };

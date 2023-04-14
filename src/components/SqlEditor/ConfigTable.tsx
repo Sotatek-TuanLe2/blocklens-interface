@@ -5,12 +5,10 @@ import 'src/styles/components/TableConfig.scss';
 import AppButton from '../AppButton';
 import AppInput from '../AppInput';
 import AppSelect2 from '../AppSelect2';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from 'src/store';
+import { updateDatTable } from 'src/store/configuration';
 
-interface IConfigTable<T> {
-  newColumns: ColumnDef<T, unknown>[];
-  updateDataNewTable: (data: ColumnDef<T, unknown>) => void;
-  table: Table<T>;
-}
 interface IOption {
   value: string;
   label: string;
@@ -27,14 +25,14 @@ const optionAlign: IOption[] = [
   { value: 'right', label: 'Right' },
 ];
 
-const ConfigTable = <T,>({
-  newColumns,
-  updateDataNewTable,
-  table,
-}: IConfigTable<T>) => {
-  const typeData = table
-    .getRowModel()
-    .rows.map((row) => row.getVisibleCells().map((cells) => cells.getValue()));
+const ConfigTable = () => {
+  const { columnData, dataTable } = useSelector(
+    (state: RootState) => state.configuration,
+  );
+
+  const typeData = dataTable.map((row) =>
+    row.getVisibleCells().map((cells) => cells.getValue()),
+  );
   return (
     <div className="main-layout">
       <header>
@@ -61,14 +59,9 @@ const ConfigTable = <T,>({
       </Grid>
       <Divider orientation="horizontal" borderColor={'gray'} />
       <Grid templateColumns="repeat(4, 1fr)" gap={'10px'}>
-        {newColumns.map((header, index) => (
+        {columnData.map((header, index) => (
           <GridItem key={index}>
-            <TableOptions
-              header={header}
-              updateDataNewTable={updateDataNewTable}
-              typeData={typeData}
-              index={index}
-            />
+            <TableOptions header={header} typeData={typeData} index={index} />
           </GridItem>
         ))}
       </Grid>
@@ -78,9 +71,13 @@ const ConfigTable = <T,>({
 
 export default ConfigTable;
 
-const TableOptions = ({ header, updateDataNewTable, typeData, index }: any) => {
+const TableOptions = ({ header, typeData, index }: any) => {
+  const dispatch = useDispatch();
+
   const [selectedItem, setSelectedItem] = useState(Object);
-  const typeValue = typeof typeData[0][index];
+
+  const typeValue = typeof typeData?.[0]?.[index];
+
   return (
     <div className="box-table" onClick={() => setSelectedItem(header)}>
       <Text fontWeight="bold" marginBottom="10px">
@@ -91,7 +88,11 @@ const TableOptions = ({ header, updateDataNewTable, typeData, index }: any) => {
         <AppInput
           value={header?.header}
           onChange={(e) =>
-            updateDataNewTable({ ...selectedItem, header: e.target.value })
+            dispatch(
+              updateDatTable({
+                newData: { ...selectedItem, header: e.target.value },
+              }),
+            )
           }
           placeholder="Price"
           size={'sm'}
@@ -105,7 +106,9 @@ const TableOptions = ({ header, updateDataNewTable, typeData, index }: any) => {
           className="select-table z-100"
           size="small"
           value={header?.align}
-          onChange={(e) => updateDataNewTable({ ...selectedItem, align: e })}
+          onChange={(e) =>
+            dispatch(updateDatTable({ newData: { ...selectedItem, align: e } }))
+          }
           options={optionAlign}
         />
       </div>
@@ -121,7 +124,11 @@ const TableOptions = ({ header, updateDataNewTable, typeData, index }: any) => {
             className="select-table"
             size="small"
             value={header?.type}
-            onChange={(e) => updateDataNewTable({ ...selectedItem, type: e })}
+            onChange={(e) =>
+              dispatch(
+                updateDatTable({ newData: { ...selectedItem, type: e } }),
+              )
+            }
             options={optionType}
           />
         </div>
@@ -132,7 +139,11 @@ const TableOptions = ({ header, updateDataNewTable, typeData, index }: any) => {
           size="sm"
           value={header?.isHidden}
           onChange={(e) =>
-            updateDataNewTable({ ...selectedItem, isHidden: e.target.checked })
+            dispatch(
+              updateDatTable({
+                newData: { ...selectedItem, isHidden: e.target.checked },
+              }),
+            )
           }
         >
           Hide column
@@ -145,10 +156,14 @@ const TableOptions = ({ header, updateDataNewTable, typeData, index }: any) => {
               size="sm"
               value={header?.coloredPositive}
               onChange={(e) =>
-                updateDataNewTable({
-                  ...selectedItem,
-                  coloredPositive: e.target.checked,
-                })
+                dispatch(
+                  updateDatTable({
+                    newData: {
+                      ...selectedItem,
+                      coloredPositive: e.target.checked,
+                    },
+                  }),
+                )
               }
             >
               Colored positive values
@@ -159,10 +174,14 @@ const TableOptions = ({ header, updateDataNewTable, typeData, index }: any) => {
               size="sm"
               value={header?.coloredNegative}
               onChange={(e) =>
-                updateDataNewTable({
-                  ...selectedItem,
-                  coloredNegative: e.target.checked,
-                })
+                dispatch(
+                  updateDatTable({
+                    newData: {
+                      ...selectedItem,
+                      coloredNegative: e.target.checked,
+                    },
+                  }),
+                )
               }
             >
               Colored negative values
@@ -175,10 +194,14 @@ const TableOptions = ({ header, updateDataNewTable, typeData, index }: any) => {
             size="sm"
             value={header?.coloredProgress}
             onChange={(e) =>
-              updateDataNewTable({
-                ...selectedItem,
-                coloredProgress: e.target.checked,
-              })
+              dispatch(
+                updateDatTable({
+                  newData: {
+                    ...selectedItem,
+                    coloredProgress: e.target.checked,
+                  },
+                }),
+              )
             }
           >
             Colored positive/negative values

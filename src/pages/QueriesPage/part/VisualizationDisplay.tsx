@@ -280,6 +280,7 @@ const VisualizationDisplay = ({ queryValues, queryInfo }: Props) => {
           closeable: v.type !== 'newVisualization',
         }))}
       />
+      <ChartSettings />
       <BaseModal
         title={'Remove visualization'}
         description={'Are you sure you want to remove this visualization?'}
