@@ -13,7 +13,6 @@ import { AppTabs, AppButton, AppSelect2 } from '../../../components';
 import ChartConfigurations from '../../../components/VisualizationConfigs/ChartConfigurations';
 import BaseModal from '../../../modals/BaseModal';
 import DashboardsRequest from '../../../requests/DashboardsRequest';
-import { useParams } from 'react-router-dom';
 import { ColumnDef } from '@tanstack/react-table';
 import { objectKeys } from '../../../utils/utils-network';
 import {
@@ -71,39 +70,34 @@ const visualizationConfigs: VisualizationConfigType[] = [
 type Props = {
   queryResult: unknown[];
   queryValue: IQuery;
-  onChangeQuery: (queryValue: IQuery) => void;
+  onReload: () => Promise<void>;
 };
 
-const VisualizationDisplay = ({ queryResult, queryValue }: Props) => {
-  const { queryId } = useParams<{ queryId: string }>();
-  const [visualizationsActive, setVisualizationsActive] = useState<
-    VisualizationType[]
-  >([
-    {
-      id: '1',
-      options: {},
-      name: 'New Visualization',
-      type: '',
-      createdAt: moment().toDate(),
-    },
-  ]);
+const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
+  const [visualizations, setVisualizations] = useState<VisualizationType[]>([]);
   const [closeTabId, setCloseTabId] = useState<string | number>('');
 
   const [configsChart, setConfigsChart] = useState<VisualizationOptionsType>(
     {} as VisualizationOptionsType,
   );
 
+  useEffect(() => {
+    setVisualizations([...queryValue.visualizations]);
+    setConfigsChart(
+      (queryValue.visualizations[0]?.options as VisualizationOptionsType) ||
+        ({} as VisualizationOptionsType),
+    );
+  }, [queryValue]);
+
   const axisOptions =
     Array.isArray(queryResult) && queryResult[0]
       ? objectKeys(queryResult[0])
       : [];
 
-  const addVisualizationToQuery = async (
-    queryId: string,
-    updateQuery: IQuery,
-  ) => {
+  const updateQuery = async (updateQuery: IQuery) => {
     const request = new DashboardsRequest();
-    await request.updateQuery(queryId, updateQuery);
+    await request.updateQuery(queryValue.id, updateQuery);
+    await onReload();
   };
 
   const addVisualizationHandler = async (visualizationValue: string) => {
@@ -139,15 +133,12 @@ const VisualizationDisplay = ({ queryResult, queryValue }: Props) => {
       };
     }
 
-    const updateQuery: IQuery = {
+    const [queryResult, ...others] = visualizations;
+    const newQuery: IQuery = {
       ...queryValue,
-      visualizations: [...queryValue.visualizations, newVisualization],
+      visualizations: [queryResult, newVisualization, ...others],
     };
-    await addVisualizationToQuery(queryId, updateQuery);
-    setVisualizationsActive((prevState) => {
-      const [queryResult, ...others] = prevState;
-      return [queryResult, newVisualization, ...others];
-    });
+    await updateQuery(newQuery);
   };
 
   const removeVisualizationHandler = async (
@@ -157,41 +148,14 @@ const VisualizationDisplay = ({ queryResult, queryValue }: Props) => {
       (v) => v.id.toString() === visualizationId.toString(),
     );
     if (visualizationIndex === -1) return;
-    const updateQuery = {
+    const newQuery = {
       ...queryValue,
       visualizations: queryValue.visualizations.filter(
         (v) => v.id !== visualizationId,
       ),
     };
-    await addVisualizationToQuery(queryId, updateQuery);
-    setVisualizationsActive([
-      ...updateQuery.visualizations,
-      {
-        id: 'newVisualization',
-        createdAt: moment().toDate(),
-        options: {},
-        name: 'New Visualization',
-        type: 'newVisualization',
-      },
-    ]);
+    await updateQuery(newQuery);
   };
-
-  useEffect(() => {
-    setVisualizationsActive([
-      ...queryValue.visualizations,
-      {
-        id: 'newVisualization',
-        createdAt: moment().toDate(),
-        options: {},
-        name: 'New Visualization',
-        type: 'newVisualization',
-      },
-    ]);
-    setConfigsChart(
-      (queryValue.visualizations[0]?.options as VisualizationOptionsType) ||
-        ({} as VisualizationOptionsType),
-    );
-  }, []);
 
   const renderVisualization = (visualization: VisualizationType) => {
     const type = visualization.options?.globalSeriesType || visualization.type;
@@ -392,14 +356,21 @@ const VisualizationDisplay = ({ queryResult, queryValue }: Props) => {
           setCloseTabId(tabId);
         }}
         onChange={(tabId: string) => {
-          const visualization = visualizationsActive.find(
-            (v) => v.id === tabId,
-          );
+          const visualization = visualizations.find((v) => v.id === tabId);
           if (visualization) {
             setConfigsChart(visualization.options as VisualizationOptionsType);
           }
         }}
-        tabs={visualizationsActive.map((v) => ({
+        tabs={[
+          ...visualizations,
+          {
+            id: 'newVisualization',
+            createdAt: moment().toDate(),
+            options: {},
+            name: 'New Visualization',
+            type: 'newVisualization',
+          },
+        ].map((v) => ({
           icon: getIcon(v.options.globalSeriesType || v.type),
           name: v.name,
           content: renderVisualization(v),
