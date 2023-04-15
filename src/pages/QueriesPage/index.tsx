@@ -240,10 +240,6 @@ const QueriesPage = () => {
     }
   };
 
-  const onChangeQuery = (queryValue: any) => {
-    setQueryValue(queryValue);
-  };
-
   return (
     <BasePage>
       <EditorContext.Provider
