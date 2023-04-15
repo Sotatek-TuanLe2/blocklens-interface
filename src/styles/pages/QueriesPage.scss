@@ -100,7 +100,7 @@
   &__right-side {
     width: 70%;
 
-    @include mobile {
+    @include desktop {
       width: 100%;
     }
   }
@@ -141,10 +141,6 @@
         background-color: #111213;
         border-radius: 4px;
         margin-bottom: 20px;
-      }
-
-      &__content-tab {
-        height: 500px;
       }
 
       &__name-tab {
