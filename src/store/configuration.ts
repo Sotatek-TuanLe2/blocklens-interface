@@ -3,17 +3,11 @@ import { createSlice } from '@reduxjs/toolkit';
 interface IOptionTable {
   columnData: any[];
   dataTable: any[];
-  type: string;
-  coloredPositive: boolean;
-  coloredNegative: boolean;
 }
 
 const initialState: IOptionTable = {
   columnData: [],
   dataTable: [],
-  type: 'normal',
-  coloredPositive: false,
-  coloredNegative: false,
 };
 
 const configureSlice = createSlice({
