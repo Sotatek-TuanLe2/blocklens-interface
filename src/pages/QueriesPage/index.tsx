@@ -50,6 +50,7 @@ const QueriesPage = () => {
     try {
       const request = new DashboardsRequest();
       const res = await request.getQuery(queryId);
+      // TODO: clear all contents before inserting
       const position = editorRef.current.editor.getCursorPosition();
       editorRef.current.editor.session.insert(position, res.query);
       setQueryValue(res);
@@ -64,10 +65,6 @@ const QueriesPage = () => {
       fetchQueryById();
     }
   }, [queryId]);
-
-  useEffect(() => {
-    // TODO: call API to update query
-  }, [queryValue]);
 
   // const onFormat = () => {
   //
@@ -299,7 +296,7 @@ const QueriesPage = () => {
                 <VisualizationDisplay
                   queryResult={queryResult}
                   queryValue={queryValue}
-                  onChangeQuery={onChangeQuery}
+                  onReload={fetchQueryById}
                 />
               )}
             </Box>
