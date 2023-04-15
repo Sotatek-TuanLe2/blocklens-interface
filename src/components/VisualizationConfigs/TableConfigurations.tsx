@@ -1,5 +1,5 @@
 import { Checkbox, Divider, Grid, GridItem, Text } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import 'src/styles/components/TableConfigurations.scss';
 import AppButton from '../AppButton';
 import AppInput from '../AppInput';
@@ -7,6 +7,8 @@ import AppSelect2 from '../AppSelect2';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'src/store';
 import { updateDatTable } from 'src/store/configuration';
+import { VisualizationType } from 'src/utils/query.type';
+import { debounce } from 'lodash';
 
 interface IOption {
   value: string;
@@ -24,15 +26,59 @@ const optionAlign: IOption[] = [
   { value: 'right', label: 'Right' },
 ];
 
-const TableConfigurations = () => {
-  const [title, setTitle] = useState<string>('');
+interface ITableConfigurations {
+  visualization: VisualizationType;
+  onChangeConfigurations: (v: VisualizationType) => void;
+}
+
+const DEBOUNCE_TIME = 500;
+
+const TableConfigurations: React.FC<ITableConfigurations> = ({
+  visualization,
+  onChangeConfigurations,
+}) => {
   const { columnData, dataTable } = useSelector(
     (state: RootState) => state.configuration,
   );
+  const [editVisualization, setEditVisualization] =
+    useState<VisualizationType>(visualization);
+  let timeout: any = null;
+
+  useEffect(() => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      onChangeConfigurations(editVisualization);
+    }, DEBOUNCE_TIME);
+
+    return () => clearTimeout(timeout);
+  }, [editVisualization]);
 
   const typeData = dataTable.map((row) =>
     row.getVisibleCells().map((cells: any) => cells.getValue()),
   );
+
+  const onChangeTableName = (e: any) => {
+    setEditVisualization((prevState) => ({
+      ...prevState,
+      name: e.target.value,
+    }));
+  };
+
+  const onChangeColumnConfigurations = (data: any, index: number) => {
+    setEditVisualization((prevState) => {
+      const newColumns = [...prevState.options.columns];
+      newColumns[index] = data;
+      return {
+        ...prevState,
+        options: {
+          columns: newColumns,
+        },
+      };
+    });
+  };
+
+  console.log('columnData', columnData);
+
   return (
     <div className="main-layout">
       {/* <header>
@@ -58,10 +104,10 @@ const TableConfigurations = () => {
             <div className="box-table-children">
               <div>Title</div>
               <AppInput
-                value={title}
+                value={editVisualization.name}
                 size={'sm'}
                 className="input-table"
-                onChange={(e) => setTitle(e.target.value)}
+                onChange={onChangeTableName}
               />
             </div>
           </div>
@@ -75,9 +121,14 @@ const TableConfigurations = () => {
         }}
         gap={'10px'}
       >
-        {columnData.map((header, index) => (
+        {columnData.map((data, index) => (
           <GridItem key={index}>
-            <TableOptions header={header} typeData={typeData} index={index} />
+            <TableOptions
+              data={data}
+              typeData={typeData}
+              index={index}
+              onChange={onChangeColumnConfigurations}
+            />
           </GridItem>
         ))}
       </Grid>
@@ -87,7 +138,7 @@ const TableConfigurations = () => {
 
 export default TableConfigurations;
 
-const TableOptions = ({ header, typeData, index }: any) => {
+const TableOptions = ({ data, typeData, index, onChange }: any) => {
   const dispatch = useDispatch();
 
   const [selectedItem, setSelectedItem] = useState(Object);
@@ -95,14 +146,14 @@ const TableOptions = ({ header, typeData, index }: any) => {
   const typeValue = typeof typeData?.[0]?.[index];
 
   return (
-    <div className="box-table" onClick={() => setSelectedItem(header)}>
+    <div className="box-table" onClick={() => setSelectedItem(data)}>
       <Text className="box-table__title" fontWeight="bold" marginBottom="10px">
-        Column {index}: {header.accessorKey}
+        Column {index}: {data.accessorKey}
       </Text>
       <div className="box-table-children">
         <div>Title</div>
         <AppInput
-          value={header?.header}
+          value={data?.header}
           onChange={(e) =>
             dispatch(
               updateDatTable({
@@ -121,7 +172,7 @@ const TableOptions = ({ header, typeData, index }: any) => {
         <AppSelect2
           className="select-table z-100"
           size="small"
-          value={header?.align}
+          value={data?.align}
           onChange={(e) =>
             dispatch(updateDatTable({ newData: { ...selectedItem, align: e } }))
           }
@@ -134,7 +185,7 @@ const TableOptions = ({ header, typeData, index }: any) => {
           placeholder="0.0"
           size={'sm'}
           className="input-table"
-          value={header?.format}
+          value={data?.format}
           onChange={(e) =>
             dispatch(
               updateDatTable({
@@ -151,7 +202,7 @@ const TableOptions = ({ header, typeData, index }: any) => {
           <AppSelect2
             className="select-table"
             size="small"
-            value={header?.type}
+            value={data?.type}
             onChange={(e) =>
               dispatch(
                 updateDatTable({ newData: { ...selectedItem, type: e } }),
@@ -165,7 +216,7 @@ const TableOptions = ({ header, typeData, index }: any) => {
       <div className="main-checkbox">
         <Checkbox
           size="sm"
-          value={header?.isHidden}
+          value={data?.isHidden}
           onChange={(e) =>
             dispatch(
               updateDatTable({
@@ -177,12 +228,12 @@ const TableOptions = ({ header, typeData, index }: any) => {
           Hide column
         </Checkbox>
       </div>
-      {typeValue === 'number' && header?.type === 'normal' ? (
+      {typeValue === 'number' && data?.type === 'normal' ? (
         <div>
           <div className="main-checkbox">
             <Checkbox
               size="sm"
-              value={header?.coloredPositive}
+              value={data?.coloredPositive}
               onChange={(e) =>
                 dispatch(
                   updateDatTable({
@@ -200,7 +251,7 @@ const TableOptions = ({ header, typeData, index }: any) => {
           <div className="main-checkbox">
             <Checkbox
               size="sm"
-              value={header?.coloredNegative}
+              value={data?.coloredNegative}
               onChange={(e) =>
                 dispatch(
                   updateDatTable({
@@ -220,7 +271,7 @@ const TableOptions = ({ header, typeData, index }: any) => {
         <div className="main-checkbox">
           <Checkbox
             size="sm"
-            value={header?.coloredProgress}
+            value={data?.coloredProgress}
             onChange={(e) =>
               dispatch(
                 updateDatTable({

@@ -172,7 +172,7 @@ const ChartOptions = ({
       <CheckboxGroup>
         {chartOptions.map((option) => {
           return (
-            <div className={'main-checkbox'}>
+            <div className={'main-checkbox'} key={option.value}>
               <Checkbox
                 key={option.value}
                 name={option.value}

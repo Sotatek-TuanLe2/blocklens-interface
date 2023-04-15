@@ -1,5 +1,7 @@
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
+import Decimal from 'decimal.js';
+
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const commaNumber = require('comma-number');
 
@@ -176,4 +178,49 @@ export function formatToPercent(
     .multipliedBy(100)
     .toFixed(decimalPlaces);
   return new BigNumber(newValue).toString() + '%';
+}
+
+export function formatNumberToCurrency(number: number): string {
+  const lookup: { [key: number]: string } = {
+    1e3: 'K',
+    1e6: 'M',
+    1e9: 'B',
+    1e12: 'T',
+    1e15: 'P',
+    1e18: 'E',
+  };
+
+  const absNumber = Math.abs(number);
+
+  for (const value in lookup) {
+    if (absNumber >= parseInt(value)) {
+      return (number / parseInt(value)).toFixed(0) + lookup[value];
+    }
+  }
+
+  return number.toString();
+}
+
+export function formatNumberWithDecimalDigits(
+  number: number,
+  a: string,
+): string {
+  if (a === undefined) {
+    a = '0';
+  } else if (typeof a !== 'string' || a.length === 0) {
+    a = '0';
+  }
+
+  const decimalNumber = new Decimal(number);
+  const integerPart = decimalNumber.floor().toString();
+  const decimalPart = decimalNumber
+    .minus(integerPart)
+    .toFixed(a.length - 1)
+    .slice(1);
+  const formattedDecimalPart = decimalPart.padEnd(a.length - 1, '0');
+  const result =
+    integerPart +
+    (formattedDecimalPart !== '' ? '' + formattedDecimalPart : '');
+
+  return result;
 }
