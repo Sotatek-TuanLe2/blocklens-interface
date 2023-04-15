@@ -12,8 +12,8 @@ import {
 } from 'recharts';
 import { getHourAndMinute, randomColor } from '../../utils/common';
 import { ChartProps } from './LineChart';
-import { VisualizationOptionsType } from '../../utils/visualization.type';
-import { Box, Text } from '@chakra-ui/react';
+import { VisualizationOptionsType } from '../../utils/query.type';
+import { Box } from '@chakra-ui/react';
 type ChartConfigType = VisualizationOptionsType;
 type Props = ChartProps & {
   configs?: Partial<ChartConfigType>;
@@ -26,8 +26,8 @@ const CustomTooltip = (props: any) => {
       <div className="custom-tooltip">
         <p className=" custom-tooltip__label">{label}</p>
         <div className="custom-tooltip__desc">
-          {payload.map((entry: any) => (
-            <Box as={'div'}>
+          {payload.map((entry: any, index: number) => (
+            <Box as={'div'} key={index}>
               <span style={{ backgroundColor: `${entry.fill}` }}></span>
               <span>{entry.name}</span>
               <span>{entry.value}</span>
@@ -47,12 +47,10 @@ const renderLegend = (props: any) => {
   return (
     <div>
       {payload.map((entry: any, index: number) => (
-        <>
-          <div key={`item-${index}`} className="custom-legend">
-            <span style={{ color: `${entry.color}` }}>{entry.value}</span>
-            <span style={{ backgroundColor: `${entry.color}` }}></span>
-          </div>
-        </>
+        <div key={`item-${index}`} className="custom-legend">
+          <span style={{ color: `${entry.color}` }}>{entry.value}</span>
+          <span style={{ backgroundColor: `${entry.color}` }}></span>
+        </div>
       ))}
     </div>
   );

@@ -18,6 +18,32 @@ export enum TYPE_VISUALIZATION {
   scatter = 'scatter',
 }
 
+export type VisualizationType = {
+  id: string;
+  name: string;
+  type: string;
+  createdAt: Date | number;
+  updatedAt?: Date | number;
+  options: any;
+};
+
+export interface IQuery {
+  id: string;
+  name: string;
+  isPrivate?: boolean;
+  isArchived?: boolean;
+  createAt: Date | number;
+  updatedAt?: Date | number;
+  query: string;
+  forkedQuery?: null;
+  user?: {
+    id: string | number;
+    name: string;
+    avatarUrl: string;
+  };
+  visualizations: VisualizationType[];
+}
+
 export type TableAttributeType = {
   blockchains: string[];
   column_name: string;
@@ -65,14 +91,6 @@ export type VisualizationOptionsType = ChartType &
   } & {
     xAxisConfigs: XAxisConfigsType;
   } & { yAxisConfigs: YAxisConfigsType };
-
-export type VisualizationType = {
-  // created_at: Date;
-  id: string;
-  name: string;
-  options: Partial<VisualizationOptionsType>;
-  type: string;
-};
 
 export type QueryType = {
   name: string;

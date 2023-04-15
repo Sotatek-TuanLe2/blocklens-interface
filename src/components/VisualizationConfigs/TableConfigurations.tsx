@@ -1,16 +1,12 @@
 import { Checkbox, Divider, Grid, GridItem, Text } from '@chakra-ui/react';
 import { useState } from 'react';
+import 'src/styles/components/TableConfigurations.scss';
+import AppButton from '../AppButton';
+import AppInput from '../AppInput';
+import AppSelect2 from '../AppSelect2';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'src/store';
 import { updateDatTable } from 'src/store/configuration';
-import 'src/styles/components/TableConfigurations.scss';
-import AppInput from '../AppInput';
-import AppSelect2 from '../AppSelect2';
-
-interface IConfigTable {
-  configsTable: string;
-  setConfigsTable: React.Dispatch<React.SetStateAction<string>>;
-}
 
 interface IOption {
   value: string;
@@ -28,7 +24,10 @@ const optionAlign: IOption[] = [
   { value: 'right', label: 'Right' },
 ];
 
-const ConfigTable = ({ configsTable, setConfigsTable }: IConfigTable) => {
+const TableConfigurations = ({
+  configsTable,
+  setConfigsTable,
+}: IConfigTable) => {
   const { columnData, dataTable } = useSelector(
     (state: RootState) => state.configuration,
   );
@@ -77,7 +76,7 @@ const ConfigTable = ({ configsTable, setConfigsTable }: IConfigTable) => {
   );
 };
 
-export default ConfigTable;
+export default TableConfigurations;
 
 const TableOptions = ({ header, typeData, index }: any) => {
   const dispatch = useDispatch();
