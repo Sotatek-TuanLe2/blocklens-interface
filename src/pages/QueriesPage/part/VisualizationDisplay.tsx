@@ -168,6 +168,8 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
 
   const renderVisualization = (visualization: VisualizationType) => {
     const type = visualization.options?.globalSeriesType || visualization.type;
+    const [dataColumn, setDataColumn] = useState<ColumnDef<unknown>[]>([]);
+    const [dataTable, setDataTable] = useState<any[]>([]);
     switch (type) {
       case TYPE_VISUALIZATION.table:
         const columns =
@@ -192,6 +194,15 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
             } as ColumnDef<unknown>),
         );
 
+        useEffect(() => {
+          const timer = setTimeout(() => {
+            setDataColumn(tableValuesColumnConfigs);
+          }, 500);
+          return () => {
+            clearTimeout(timer);
+          };
+        }, [dataTable]);
+        console.log(dataColumn);
         return (
           <>
             <div className="visual-container__visualization">
@@ -200,13 +211,17 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
               </div>
 
               <VisualizationTable
-                columns={tableValuesColumnConfigs}
                 data={queryResult}
+                setDataTable={setDataTable}
+                dataColumn={dataColumn}
               />
             </div>
             <TableConfigurations
               visualization={visualization}
               onChangeConfigurations={onChangeConfigurations}
+              dataColumn={dataColumn}
+              dataTable={dataTable}
+              setDataColumn={setDataColumn}
             />
           </>
         );

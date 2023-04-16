@@ -1,14 +1,10 @@
 import { Checkbox, Divider, Grid, GridItem, Text } from '@chakra-ui/react';
+import { ColumnDef } from '@tanstack/react-table';
 import { useEffect, useState } from 'react';
 import 'src/styles/components/TableConfigurations.scss';
-import AppButton from '../AppButton';
+import { VisualizationType } from 'src/utils/query.type';
 import AppInput from '../AppInput';
 import AppSelect2 from '../AppSelect2';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from 'src/store';
-import { updateDatTable } from 'src/store/configuration';
-import { VisualizationType } from 'src/utils/query.type';
-import { debounce } from 'lodash';
 
 interface IOption {
   value: string;
@@ -29,6 +25,9 @@ const optionAlign: IOption[] = [
 interface ITableConfigurations {
   visualization: VisualizationType;
   onChangeConfigurations: (v: VisualizationType) => void;
+  setDataColumn?: React.Dispatch<React.SetStateAction<ColumnDef<unknown>[]>>;
+  dataColumn?: ColumnDef<unknown>[];
+  dataTable?: any[];
 }
 
 const DEBOUNCE_TIME = 500;
@@ -36,10 +35,10 @@ const DEBOUNCE_TIME = 500;
 const TableConfigurations: React.FC<ITableConfigurations> = ({
   visualization,
   onChangeConfigurations,
+  dataColumn,
+  dataTable,
+  setDataColumn,
 }) => {
-  const { columnData, dataTable } = useSelector(
-    (state: RootState) => state.configuration,
-  );
   const [editVisualization, setEditVisualization] =
     useState<VisualizationType>(visualization);
   let timeout: any = null;
@@ -53,7 +52,7 @@ const TableConfigurations: React.FC<ITableConfigurations> = ({
     return () => clearTimeout(timeout);
   }, [editVisualization]);
 
-  const typeData = dataTable.map((row) =>
+  const typeData = dataTable?.map((row) =>
     row.getVisibleCells().map((cells: any) => cells.getValue()),
   );
 
@@ -76,8 +75,6 @@ const TableConfigurations: React.FC<ITableConfigurations> = ({
       };
     });
   };
-
-  console.log('columnData', columnData);
 
   return (
     <div className="main-layout">
@@ -121,16 +118,22 @@ const TableConfigurations: React.FC<ITableConfigurations> = ({
         }}
         gap={'10px'}
       >
-        {columnData.map((data, index) => (
-          <GridItem key={index}>
-            <TableOptions
-              data={data}
-              typeData={typeData}
-              index={index}
-              onChange={onChangeColumnConfigurations}
-            />
-          </GridItem>
-        ))}
+        {!!dataColumn?.length ? (
+          dataColumn?.map((data, index) => (
+            <GridItem key={index}>
+              <TableOptions
+                data={data}
+                typeData={typeData}
+                index={index}
+                onChange={onChangeColumnConfigurations}
+                setDataColumn={setDataColumn}
+                dataColumn={dataColumn}
+              />
+            </GridItem>
+          ))
+        ) : (
+          <>Loading</>
+        )}
       </Grid>
     </div>
   );
@@ -138,12 +141,25 @@ const TableConfigurations: React.FC<ITableConfigurations> = ({
 
 export default TableConfigurations;
 
-const TableOptions = ({ data, typeData, index, onChange }: any) => {
-  const dispatch = useDispatch();
-
+const TableOptions = ({
+  data,
+  typeData,
+  index,
+  onChange,
+  setDataColumn,
+  dataColumn,
+}: any) => {
   const [selectedItem, setSelectedItem] = useState(Object);
 
   const typeValue = typeof typeData?.[0]?.[index];
+
+  const updateDatTable = (value: ColumnDef<unknown>) => {
+    setDataColumn(
+      dataColumn.map((item: ColumnDef<unknown>) =>
+        item.id === value.id ? value : item,
+      ),
+    );
+  };
 
   return (
     <div className="box-table" onClick={() => setSelectedItem(data)}>
@@ -155,11 +171,10 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
         <AppInput
           value={data?.header}
           onChange={(e) =>
-            dispatch(
-              updateDatTable({
-                newData: { ...selectedItem, header: e.target.value },
-              }),
-            )
+            updateDatTable({
+              ...selectedItem,
+              header: e.target.value,
+            })
           }
           placeholder="Price"
           size={'sm'}
@@ -173,9 +188,7 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
           className="select-table z-100"
           size="small"
           value={data?.align}
-          onChange={(e) =>
-            dispatch(updateDatTable({ newData: { ...selectedItem, align: e } }))
-          }
+          onChange={(e) => updateDatTable({ ...selectedItem, align: e })}
           options={optionAlign}
         />
       </div>
@@ -187,11 +200,10 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
           className="input-table"
           value={data?.format}
           onChange={(e) =>
-            dispatch(
-              updateDatTable({
-                newData: { ...selectedItem, format: e.target.value },
-              }),
-            )
+            updateDatTable({
+              ...selectedItem,
+              format: e.target.value,
+            })
           }
         />
       </div>
@@ -203,11 +215,7 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
             className="select-table"
             size="small"
             value={data?.type}
-            onChange={(e) =>
-              dispatch(
-                updateDatTable({ newData: { ...selectedItem, type: e } }),
-              )
-            }
+            onChange={(e) => updateDatTable({ ...selectedItem, type: e })}
             options={optionType}
           />
         </div>
@@ -218,11 +226,10 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
           size="sm"
           value={data?.isHidden}
           onChange={(e) =>
-            dispatch(
-              updateDatTable({
-                newData: { ...selectedItem, isHidden: e.target.checked },
-              }),
-            )
+            updateDatTable({
+              ...selectedItem,
+              isHidden: e.target.checked,
+            })
           }
         >
           Hide column
@@ -235,14 +242,10 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
               size="sm"
               value={data?.coloredPositive}
               onChange={(e) =>
-                dispatch(
-                  updateDatTable({
-                    newData: {
-                      ...selectedItem,
-                      coloredPositive: e.target.checked,
-                    },
-                  }),
-                )
+                updateDatTable({
+                  ...selectedItem,
+                  coloredPositive: e.target.checked,
+                })
               }
             >
               Colored positive values
@@ -253,14 +256,10 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
               size="sm"
               value={data?.coloredNegative}
               onChange={(e) =>
-                dispatch(
-                  updateDatTable({
-                    newData: {
-                      ...selectedItem,
-                      coloredNegative: e.target.checked,
-                    },
-                  }),
-                )
+                updateDatTable({
+                  ...selectedItem,
+                  coloredNegative: e.target.checked,
+                })
               }
             >
               Colored negative values
@@ -273,14 +272,10 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
             size="sm"
             value={data?.coloredProgress}
             onChange={(e) =>
-              dispatch(
-                updateDatTable({
-                  newData: {
-                    ...selectedItem,
-                    coloredProgress: e.target.checked,
-                  },
-                }),
-              )
+              updateDatTable({
+                ...selectedItem,
+                coloredProgress: e.target.checked,
+              })
             }
           >
             Colored positive/negative values
