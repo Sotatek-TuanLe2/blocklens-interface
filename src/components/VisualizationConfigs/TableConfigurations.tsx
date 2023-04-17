@@ -1,6 +1,7 @@
 import { Checkbox, Divider, Grid, GridItem, Text } from '@chakra-ui/react';
 import { ColumnDef } from '@tanstack/react-table';
 import { useEffect, useState } from 'react';
+import { VISUALIZATION_DEBOUNCE } from 'src/pages/QueriesPage/part/VisualizationDisplay';
 import 'src/styles/components/TableConfigurations.scss';
 import { VisualizationType } from 'src/utils/query.type';
 import AppInput from '../AppInput';
@@ -28,8 +29,6 @@ interface ITableConfigurations {
   dataTable?: any[];
 }
 
-const DEBOUNCE_TIME = 500;
-
 const TableConfigurations: React.FC<ITableConfigurations> = ({
   visualization,
   onChangeConfigurations,
@@ -43,7 +42,7 @@ const TableConfigurations: React.FC<ITableConfigurations> = ({
     clearTimeout(timeout);
     timeout = setTimeout(() => {
       onChangeConfigurations(editVisualization);
-    }, DEBOUNCE_TIME);
+    }, VISUALIZATION_DEBOUNCE);
 
     return () => clearTimeout(timeout);
   }, [editVisualization]);
