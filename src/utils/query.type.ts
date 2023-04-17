@@ -96,7 +96,7 @@ export type VisualizationOptionsType = ChartType &
 export type QueryType = {
   name: string;
   query: string;
-  visualizations: VisualizationType[];
+  // visualizations: VisualizationType[];
   id: string;
 };
 
