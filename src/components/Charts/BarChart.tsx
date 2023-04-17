@@ -20,7 +20,7 @@ type Props = ChartProps & {
   configs?: Partial<ChartConfigType>;
 };
 
-const CustomTooltip = (props: any) => {
+export const CustomTooltip = (props: any) => {
   const { active, payload, label } = props;
   if (active && payload && payload.length) {
     return (
@@ -28,9 +28,13 @@ const CustomTooltip = (props: any) => {
         <p className=" custom-tooltip__label">{label}</p>
         <div className="custom-tooltip__desc">
           {payload.map((entry: any, index: number) => (
-            <Box as={'div'} key={index}>
+            <Box
+              as={'div'}
+              key={index}
+              className="custom-tooltip__desc__detail"
+            >
               <span style={{ backgroundColor: `${entry.fill}` }}></span>
-              <span>{entry.name}</span>
+              <span>{`${entry.name}:  `}</span>
               <span>{entry.value}</span>
               <br />
             </Box>
@@ -42,7 +46,7 @@ const CustomTooltip = (props: any) => {
   return null;
 };
 
-const renderLegend = (props: any) => {
+export const renderLegend = (props: any) => {
   const { payload } = props;
 
   return (
@@ -55,6 +59,10 @@ const renderLegend = (props: any) => {
       ))}
     </div>
   );
+};
+
+export const tickFormatTime = (value: string) => {
+  return getHourAndMinute(new Date(value));
 };
 
 const VisualizationBarChart = (props: Props) => {
