@@ -1,14 +1,19 @@
 import { Checkbox, CheckboxGroup, Text } from '@chakra-ui/react';
-import { debounce } from 'lodash';
-import { XAxisConfigsType, YAxisConfigsType } from 'src/utils/query.type';
+import {
+  ChartOptionConfigsType,
+  XAxisConfigsType,
+  YAxisConfigsType,
+} from 'src/utils/query.type';
 import AppInput from '../AppInput';
 
 interface IXAxisOptions {
+  chartOptions: ChartOptionConfigsType;
   xConfigs: XAxisConfigsType;
   onChangeConfigs: (configs: XAxisConfigsType) => void;
 }
 
 export const XAxisOptions: React.FC<IXAxisOptions> = ({
+  chartOptions,
   xConfigs,
   onChangeConfigs,
 }) => {
@@ -59,16 +64,31 @@ export const XAxisOptions: React.FC<IXAxisOptions> = ({
           </div>
         ))}
       </CheckboxGroup>
+      <div className={'box-table-children'}>
+        <Text w={'max-content'} pr={2}>
+          Tick format
+        </Text>
+        <AppInput
+          className={'input-table'}
+          size={'sm'}
+          placeholder={chartOptions?.percentValues ? '0%' : '0[.]0a'}
+          value={xConfigs?.tickFormat || ''}
+          onChange={(e) => changeValueHandle(e.target.name, e.target.value)}
+          name={'tickFormat'}
+        />
+      </div>
     </div>
   );
 };
 
 interface IYAxisOptions {
+  chartOptions: ChartOptionConfigsType;
   yConfigs: YAxisConfigsType;
   onChangeConfigs: (configs: YAxisConfigsType) => void;
 }
 
 export const YAxisOptions: React.FC<IYAxisOptions> = ({
+  chartOptions,
   yConfigs,
   onChangeConfigs,
 }) => {
@@ -101,7 +121,7 @@ export const YAxisOptions: React.FC<IYAxisOptions> = ({
       </div>
       <div className={'main-checkbox'}>
         <Checkbox
-          value={'logarithmic'}
+          isChecked={yConfigs?.logarithmic}
           name={'logarithmic'}
           onChange={(e) => changeValueHandle(e.target.name, e.target.checked)}
         >
@@ -115,6 +135,7 @@ export const YAxisOptions: React.FC<IYAxisOptions> = ({
         <AppInput
           className={'input-table'}
           size={'sm'}
+          placeholder={chartOptions?.percentValues ? '0%' : '0[.]0a'}
           value={yConfigs?.tickFormat || ''}
           onChange={(e) => changeValueHandle(e.target.name, e.target.value)}
           name={'tickFormat'}
@@ -127,6 +148,7 @@ export const YAxisOptions: React.FC<IYAxisOptions> = ({
         <AppInput
           className={'input-table'}
           size={'sm'}
+          placeholder="0.0"
           value={yConfigs?.labelFormat || ''}
           onChange={(e) => changeValueHandle(e.target.name, e.target.value)}
           name={'labelFormat'}

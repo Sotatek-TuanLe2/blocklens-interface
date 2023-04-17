@@ -17,12 +17,25 @@ const ChartOptions: React.FC<IChartOptions> = ({
       label: 'Show chart legend',
       value: 'showLegend',
       checked: true,
+      disabled: false,
     },
-    { label: 'Enable stacking', value: 'stacking', checked: false },
+    {
+      label: 'Enable stacking',
+      value: 'stacking',
+      checked: false,
+      disabled: false,
+    },
     {
       label: 'Normalize to percentage',
       value: 'percentValues',
       checked: false,
+      disabled: false,
+    },
+    {
+      label: 'Show data labels',
+      value: 'showDataLabels',
+      checked: false,
+      disabled: false,
     },
   ]);
 
@@ -34,19 +47,35 @@ const ChartOptions: React.FC<IChartOptions> = ({
         label: 'Show chart legend',
         value: 'showLegend',
         checked: options?.showLegend || false,
+        disabled: false,
       },
       {
         label: 'Enable stacking',
         value: 'stacking',
         checked: options?.stacking || false,
+        disabled: false,
       },
       {
         label: 'Normalize to percentage',
         value: 'percentValues',
         checked: options?.percentValues || false,
+        disabled: false,
+      },
+      {
+        label: 'Show data labels',
+        value: 'showDataLabels',
+        checked: options?.showDataLabels || false,
+        disabled: !!options?.stacking,
       },
     ]);
   }, [visualization]);
+
+  const changeNameHandle = (value: string) => {
+    onChangeConfigurations({
+      ...visualization,
+      name: value,
+    });
+  };
 
   const changeValueHandle = (key: string, value: boolean | string) => {
     const newChartOptionsConfigs = {
@@ -77,7 +106,7 @@ const ChartOptions: React.FC<IChartOptions> = ({
         <AppInput
           className={'input-table'}
           value={visualization?.name || ''}
-          onChange={(e) => changeValueHandle('name', e.target.value)}
+          onChange={(e: any) => changeNameHandle(e.target.value)}
           size={'sm'}
         />
       </Flex>
@@ -88,7 +117,8 @@ const ChartOptions: React.FC<IChartOptions> = ({
               <Checkbox
                 key={option.value}
                 name={option.value}
-                isChecked={option.checked}
+                isChecked={option.disabled ? false : option.checked}
+                disabled={option.disabled}
                 onChange={(e) => {
                   changeValueHandle(option.value, e.target.checked);
                 }}
