@@ -18,7 +18,7 @@ const VisualizationScatterChart = ({
   yAxisKeys,
 }: Props) => {
   return (
-    <ResponsiveContainer width={'100%'} height={'100%'}>
+    <ResponsiveContainer width={'96%'} height={'92%'}>
       <ScatterChart>
         <XAxis dataKey={xAxisKey} />
         {yAxisKeys?.map((yKey) => (

@@ -11,10 +11,12 @@
     border-radius: 4px;
     padding: 6px 8px;
     width: 200px;
+
     &__desc {
       position: relative;
       display: flex;
       justify-content: space-between;
+
       span:nth-child(1) {
         position: absolute;
         padding: 3px;

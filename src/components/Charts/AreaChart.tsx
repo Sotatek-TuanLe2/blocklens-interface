@@ -13,7 +13,7 @@ import { randomColor } from '../../utils/common';
 type Props = ChartProps;
 const VisualizationAreaChart = ({ data, xAxisKey, yAxisKeys }: Props) => {
   return (
-    <ResponsiveContainer width={'100%'} height={'100%'}>
+    <ResponsiveContainer width={'96%'} height={'96%'}>
       <AreaChart
         data={data}
         margin={{

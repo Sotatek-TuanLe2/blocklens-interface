@@ -200,6 +200,14 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
           </>
         );
       case TYPE_VISUALIZATION.line: {
+        const data = visualization.options.xAxisConfigs?.sortX
+          ? queryResult.sort(
+              (a: any, b: any) =>
+                a[visualization.options.columnMapping.xAxis] -
+                b[visualization.options.columnMapping.xAxis],
+            )
+          : queryResult;
+
         return (
           <>
             <div className="visual-container__visualization">
@@ -207,9 +215,12 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
                 {visualization.name}
               </div>
               <LineChart
-                data={queryResult}
-                xAxisKey="time"
-                yAxisKeys={['size']}
+                data={data}
+                xAxisKey={visualization.options?.columnMapping?.xAxis || 'time'}
+                yAxisKeys={
+                  visualization.options.columnMapping?.yAxis || ['size']
+                }
+                configs={visualization.options}
               />
             </div>
             <ChartConfigurations

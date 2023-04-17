@@ -19,11 +19,11 @@ const ChartOptions: React.FC<IChartOptions> = ({
       checked: true,
     },
     { label: 'Enable stacking', value: 'stacking', checked: false },
-    {
-      label: 'Normalize to percentage',
-      value: 'percentValues',
-      checked: false,
-    },
+    // {
+    //   label: 'Normalize to percentage',
+    //   value: 'percentValues',
+    //   checked: false,
+    // },
   ]);
 
   useEffect(() => {
@@ -40,11 +40,11 @@ const ChartOptions: React.FC<IChartOptions> = ({
         value: 'stacking',
         checked: options?.stacking || false,
       },
-      {
-        label: 'Normalize to percentage',
-        value: 'percentValues',
-        checked: options?.percentValues || false,
-      },
+      // {
+      //   label: 'Normalize to percentage',
+      //   value: 'percentValues',
+      //   checked: options?.percentValues || false,
+      // },
     ]);
   }, [visualization]);
 
