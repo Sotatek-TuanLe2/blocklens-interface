@@ -34,7 +34,7 @@
     }
 
     .main-checkbox {
-      padding: 5px 10px;
+      padding: 5px 0px 10px;
       color: $title;
 
       .chakra-checkbox__label {
@@ -49,12 +49,6 @@
       padding-left: 10px;
       color: $title;
       padding: 5px 0;
-
-      .ok {
-        &:shadow {
-          border: 1px solid $border;
-        }
-      }
 
       .select-table {
         .app-select__btn-select {

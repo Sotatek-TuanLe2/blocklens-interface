@@ -9,6 +9,7 @@ import { useEffect } from 'react';
 import 'src/styles/components/TableValue.scss';
 import {
   _formatLargeNumberIfNeed,
+  checkFormatValue,
   formatNumberWithDecimalDigits,
 } from 'src/utils/utils-format';
 
@@ -125,24 +126,7 @@ const VisualizationTable = <T,>({
                       return undefined;
                   }
                 };
-                const checkFormatValue = (format: string) => {
-                  switch (typeof value === 'number') {
-                    case format.includes(','):
-                      return value.toLocaleString('en-US');
-                    case format.includes('0.'):
-                      return formatNumberWithDecimalDigits(value, format);
-                    case format === '0':
-                      return parseInt(value);
-                    case format === 'a':
-                      return _formatLargeNumberIfNeed(value);
-                    case format === '$':
-                      return `$${value}`;
-                    case format.includes('a') && format.includes('$'):
-                      return `$${_formatLargeNumberIfNeed(value)}`;
-                    default:
-                      return value;
-                  }
-                };
+
                 return (
                   <td
                     {...{
@@ -178,7 +162,7 @@ const VisualizationTable = <T,>({
                           className="visual-progressbar"
                         ></div>
                       ) : null}
-                      {checkFormatValue(format)}
+                      {checkFormatValue(format, value)}
                     </div>
                   </td>
                 );

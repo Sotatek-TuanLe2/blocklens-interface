@@ -215,7 +215,10 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
               </div>
               <VisualizationCounter />
             </div>
-            <CounterConfiguration />
+            <CounterConfiguration
+              visualization={visualization}
+              onChangeConfigurations={onChangeConfigurations}
+            />
           </>
         );
       case TYPE_VISUALIZATION.line: {

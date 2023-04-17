@@ -203,3 +203,21 @@ export function formatNumberWithDecimalDigits(
 
   return result;
 }
+export const checkFormatValue = (format: string, value: any) => {
+  switch (typeof value === 'number') {
+    case format.includes(','):
+      return value.toLocaleString('en-US');
+    case format.includes('0.'):
+      return formatNumberWithDecimalDigits(value, format);
+    case format === '0':
+      return parseInt(value);
+    case format === 'a':
+      return _formatLargeNumberIfNeed(value);
+    case format === '$':
+      return `$${value}`;
+    case format.includes('a') && format.includes('$'):
+      return `$${_formatLargeNumberIfNeed(value)}`;
+    default:
+      return value;
+  }
+};

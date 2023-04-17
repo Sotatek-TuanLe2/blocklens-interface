@@ -41,14 +41,19 @@
   grid-gap: 10px;
   padding: 10px;
   border: 1px solid $border;
-
+  .z-100 {
+    z-index: 100;
+  }
   .btn-add {
     background: $gray-200;
     color: $blackAlpha-800;
     font-size: 14px;
+    &:hover {
+      background: $gray-400;
+    }
   }
   .box-table {
-    min-height: 340px;
+    min-height: 270px;
     background-color: $card;
     padding: 10px;
     border: 1px solid transparent;
@@ -58,7 +63,7 @@
     }
 
     .main-checkbox {
-      padding: 5px 10px;
+      padding: 5px 0px 10px;
       color: $title;
 
       .chakra-checkbox__label {
@@ -69,16 +74,10 @@
     .box-table-children {
       align-items: center;
       display: grid;
-      grid-template-columns: minmax(auto, 4rem) minmax(auto, 1fr);
+      grid-template-columns: minmax(auto, 6rem) minmax(auto, 1fr);
       padding-left: 10px;
       color: $title;
       padding: 5px 0;
-
-      .ok {
-        &:shadow {
-          border: 1px solid $border;
-        }
-      }
 
       .select-table {
         .app-select__btn-select {
