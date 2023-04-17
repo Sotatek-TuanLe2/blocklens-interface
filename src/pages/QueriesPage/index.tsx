@@ -13,8 +13,12 @@ import 'ace-builds/src-noconflict/theme-kuroir';
 import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/mode-sql';
 import { getErrorMessage } from '../../utils/utils-helper';
-import { useParams } from 'react-router-dom';
-import { QueryType } from '../../utils/visualization.type';
+import { useHistory, useParams } from 'react-router-dom';
+import {
+  QueryExecutedResponse,
+  QueryInfoResponse,
+  QueryType,
+} from '../../utils/visualization.type';
 import 'src/styles/pages/QueriesPage.scss';
 import { AddParameterIcon, ExplandIcon } from 'src/assets/icons';
 import { MoonIcon, SettingsIcon, SunIcon } from '@chakra-ui/icons';
@@ -35,6 +39,8 @@ const QueriesPage = () => {
   const [switchTheme, setSwitchTheme] = useState<boolean>(false);
   const [isExpand, setIsExpand] = useState<boolean>(false);
 
+  const history = useHistory();
+
   const createNewQuery = async (query: string) => {
     try {
       const dashboardsRequest = new DashboardsRequest();
@@ -42,7 +48,7 @@ const QueriesPage = () => {
       const newQuery: QueryType = {
         id: randomId,
         name: `Query-${randomId}`,
-        query: 'select * from arbitrum.blocks limit 10',
+        query: query,
         visualizations: [
           {
             name: 'Table',
@@ -52,7 +58,10 @@ const QueriesPage = () => {
           },
         ],
       };
-      const infoQuery = await dashboardsRequest.createNewQuery(newQuery);
+      const infoQuery: QueryInfoResponse =
+        await dashboardsRequest.createNewQuery(newQuery);
+      history.push(`/queries/${infoQuery.id}`);
+      // const infoQuery = await dashboardsRequest.createNewQuery(newQuery);
       setInfoQuery(infoQuery);
     } catch (err) {
       getErrorMessage(err);
@@ -62,36 +71,61 @@ const QueriesPage = () => {
   const submitQuery = async () => {
     setShowButton(true);
     try {
-      const dashboardsRequest = new DashboardsRequest();
-      const queryValues = await dashboardsRequest.getQueriesValues();
+      // const dashboardsRequest = new DashboardsRequest();
+      // const queryValues = await dashboardsRequest.getQueriesValues();
       await createNewQuery(editorRef.current.editor.getValue());
-      setQueryValues(queryValues);
+      // setQueryValues(queryValues);
     } catch (err) {
       getErrorMessage(err);
     }
   };
 
-  const fetchQueryResults = async () => {
-    try {
-      const dashboardsRequest = new DashboardsRequest();
-      const queryValues = await dashboardsRequest.getQueriesValues();
-      setQueryValues(queryValues);
-    } catch (err) {
-      getErrorMessage(err);
-    }
-  };
-
-  const fetchInfoQuery = async () => {
+  // const fetchQueryResults = async () => {
+  //   try {
+  //     const dashboardsRequest = new DashboardsRequest();
+  //     const queryValues = await dashboardsRequest.getQueriesValues();
+  //     setQueryValues(queryValues);
+  //   } catch (err) {
+  //     getErrorMessage(err);
+  //   }
+  // };
+  const fetchQueryResult = async (id: string) => {
     try {
       const request = new DashboardsRequest();
-      const res = await request.getQuery(queryId);
-      const position = editorRef.current.editor.getCursorPosition();
-      editorRef.current.editor.session.insert(position, res.query);
-      setInfoQuery(res);
+      const res = await request.getQueryResult({
+        queryId,
+        executionId: id,
+      });
+      setQueryValues(res);
+      // const position = editorRef.current.editor.getCursorPosition();
+      // editorRef.current.editor.session.insert(position, res.query);
+      // setInfoQuery(res);
     } catch (err) {
       getErrorMessage(err);
     }
   };
+
+  const fetchExcuteQuery = async () => {
+    try {
+      const dashboardsRequest = new DashboardsRequest();
+      const queryValues: QueryExecutedResponse =
+        await dashboardsRequest.postExcuteQuery(queryId);
+      // setExecutedQuery(queryValues);
+      await fetchQueryResult(queryValues.id);
+    } catch (error) {}
+  };
+
+  // const fetchInfoQuery = async () => {
+  //   try {
+  //     const request = new DashboardsRequest();
+  //     const res = await request.getQuery(queryId);
+  //     const position = editorRef.current.editor.getCursorPosition();
+  //     editorRef.current.editor.session.insert(position, res.query);
+  //     setInfoQuery(res);
+  //   } catch (err) {
+  //     getErrorMessage(err);
+  //   }
+  // };
 
   // const onFormat = () => {
   //
@@ -116,8 +150,9 @@ const QueriesPage = () => {
 
   useEffect(() => {
     if (queryId) {
-      fetchQueryResults();
-      fetchInfoQuery();
+      fetchExcuteQuery();
+      // fetchQueryResults();
+      // fetchInfoQuery();
     }
   }, [queryId]);
 
@@ -284,11 +319,8 @@ const QueriesPage = () => {
               </Box>
             </Box>
             <Box mt={8}>
-              {infoQuery && (
-                <VisualizationDisplay
-                  queryValues={queryValues}
-                  queryInfo={infoQuery}
-                />
+              {infoQuery && queryValues.length && (
+                <VisualizationDisplay queryValues={[]} queryInfo={infoQuery} />
               )}
             </Box>
           </Box>

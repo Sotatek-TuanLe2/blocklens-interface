@@ -87,3 +87,27 @@ export type QueryTypeSingle = {
   visualizations: VisualizationType;
   id: number;
 };
+
+export type QueryExecutedResponse = {
+  id: string;
+  query: QueryInfoResponse;
+  createdAt: string;
+  result: any;
+  status: string;
+  updatedAt: string;
+};
+
+export type QueryInfoResponse = {
+  id: string;
+  query: string;
+  network: string;
+  chain: string;
+  name: string;
+  forkedQuery?: string;
+  user?: any;
+  isPrivate: boolean;
+  isArchived: boolean;
+  createdAt: string;
+  updatedAt: string;
+  visualizations: any;
+};

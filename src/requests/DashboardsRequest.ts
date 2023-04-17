@@ -38,6 +38,11 @@ export interface SchemaParams {
   namespace: string;
   tableName: string;
 }
+
+export interface QueryResult {
+  queryId: string;
+  executionId: string;
+}
 export default class DashboardsRequest extends BaseRequest {
   getUrlPrefix(): string {
     return '';
@@ -68,14 +73,25 @@ export default class DashboardsRequest extends BaseRequest {
     return this.get(url);
   }
 
+  postExcuteQuery(queryId: string) {
+    const url =
+      'http://172.16.199.30:8002/query-executor/query-service/execute-query';
+    return this.post(url, { queryId });
+  }
+
   createNewQuery(query: QueryType) {
-    const url = 'https://642bcf7fd7081590f92a4f26.mockapi.io/blocklens/z';
-    return this.post(url, query);
+    const url = 'http://172.16.199.30:8002/query/query-service/create-query';
+    return this.post(url, { name: query.name, query: query.query });
   }
 
   getQuery(queryId: string) {
     const url = `https://642cf0d966a20ec9ce915e71.mockapi.io/queries/queries/${queryId}`;
     return this.get(url);
+  }
+
+  getQueryResult(data: QueryResult) {
+    const url = `http://172.16.199.30:8002/query-executor/query-service/get-execution`;
+    return this.post(url, data);
   }
 
   updateQuery(queryId: string, query: Partial<QueryType>) {

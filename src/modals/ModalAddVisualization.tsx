@@ -130,39 +130,41 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
           }
         />
         <div className="main-queries">
-          {dataVisualization.map((item) =>
-            item.visualizations.map((i) => (
-              <Flex
-                justifyContent={'space-between'}
-                borderBottom={'1px solid white'}
-                key={item.id}
-              >
-                {showMyQueries ? (
-                  <>
-                    <Flex alignItems={'center'} columnGap={'10px'} p={'10px'}>
-                      <ListIcon />
-                      <Link>@cypherpepe / Airdrops and Wallets</Link>
-                      <Text fontWeight={'bold'}>Airdrops and Wallets</Text>
-                    </Flex>
-                    <Text
-                      onClick={() => setAdd(!add)}
-                      className={add ? 'btn-added-query' : 'btn-add-query'}
-                    >
-                      {add ? 'Added' : 'Add'}
-                    </Text>
-                  </>
-                ) : (
-                  <ButtonAdd
-                    userName={userName}
-                    item={item}
-                    dataLayouts={dataLayouts}
-                    handleSaveVisualization={handleSaveVisualization}
-                    handleRemoveVisualization={handleRemoveVisualization}
-                    i={i}
-                  />
-                )}
-              </Flex>
-            )),
+          {dataVisualization.map(
+            (item) =>
+              item.visualizations &&
+              item.visualizations.map((i) => (
+                <Flex
+                  justifyContent={'space-between'}
+                  borderBottom={'1px solid white'}
+                  key={item.id}
+                >
+                  {showMyQueries ? (
+                    <>
+                      <Flex alignItems={'center'} columnGap={'10px'} p={'10px'}>
+                        <ListIcon />
+                        <Link>@cypherpepe / Airdrops and Wallets</Link>
+                        <Text fontWeight={'bold'}>Airdrops and Wallets</Text>
+                      </Flex>
+                      <Text
+                        onClick={() => setAdd(!add)}
+                        className={add ? 'btn-added-query' : 'btn-add-query'}
+                      >
+                        {add ? 'Added' : 'Add'}
+                      </Text>
+                    </>
+                  ) : (
+                    <ButtonAdd
+                      userName={userName}
+                      item={item}
+                      dataLayouts={dataLayouts}
+                      handleSaveVisualization={handleSaveVisualization}
+                      handleRemoveVisualization={handleRemoveVisualization}
+                      i={i}
+                    />
+                  )}
+                </Flex>
+              )),
           )}
         </div>
         <Flex
