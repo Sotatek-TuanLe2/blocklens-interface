@@ -76,6 +76,12 @@ type Props = {
 
 const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
   const [closeTabId, setCloseTabId] = useState<string | number>('');
+  const [dataTable, setDataTable] = useState<any[]>([]);
+
+  const axisOptions =
+    Array.isArray(queryResult) && queryResult[0]
+      ? objectKeys(queryResult[0])
+      : [];
 
   const updateQuery = async (updateQuery: IQuery) => {
     const request = new DashboardsRequest();
@@ -89,13 +95,31 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
     );
     if (!searchedVisualization) return;
     let newVisualization: VisualizationType = {} as VisualizationType;
+
+    const columns = axisOptions.map(
+      (col) =>
+        ({
+          id: col,
+          accessorKey: col,
+          header: col,
+          enableResizing: true,
+          size: 100,
+          align: 'left',
+          type: 'normal',
+          format: '',
+          coloredPositive: false,
+          coloredNegative: false,
+          coloredProgress: false,
+          isHidden: false,
+        } as ColumnDef<unknown>),
+    );
     if (searchedVisualization.type === TYPE_VISUALIZATION.table) {
       newVisualization = {
         name: 'Query results',
         id: (Math.floor(Math.random() * 100) + 1).toString(),
         type: 'table',
         createdAt: moment().toDate(),
-        options: {},
+        options: { columns },
       };
     } else {
       newVisualization = {
@@ -153,61 +177,25 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
 
   const renderVisualization = (visualization: VisualizationType) => {
     const type = visualization.options?.globalSeriesType || visualization.type;
-    const [dataColumn, setDataColumn] = useState<ColumnDef<unknown>[]>([]);
-    const [dataTable, setDataTable] = useState<any[]>([]);
 
     switch (type) {
       case TYPE_VISUALIZATION.table:
-        const columns =
-          Array.isArray(queryResult) && queryResult[0]
-            ? objectKeys(queryResult[0])
-            : [];
-        const tableValuesColumnConfigs = columns.map(
-          (col) =>
-            ({
-              id: col,
-              accessorKey: col,
-              header: col,
-              enableResizing: true,
-              size: 100,
-              align: 'left',
-              type: 'normal',
-              format: '',
-              coloredPositive: false,
-              coloredNegative: false,
-              coloredProgress: false,
-              isHidden: false,
-            } as ColumnDef<unknown>),
-        );
-
-        useEffect(() => {
-          const timer = setTimeout(() => {
-            setDataColumn(tableValuesColumnConfigs);
-          }, 500);
-          return () => {
-            clearTimeout(timer);
-          };
-        }, [dataTable]);
-
         return (
           <>
             <div className="visual-container__visualization">
               <div className="visual-container__visualization__title">
                 {visualization.name}
               </div>
-
               <VisualizationTable
                 data={queryResult}
                 setDataTable={setDataTable}
-                dataColumn={dataColumn}
+                dataColumn={visualization.options.columns}
               />
             </div>
             <TableConfigurations
               visualization={visualization}
               onChangeConfigurations={onChangeConfigurations}
-              dataColumn={dataColumn}
               dataTable={dataTable}
-              setDataColumn={setDataColumn}
             />
           </>
         );
