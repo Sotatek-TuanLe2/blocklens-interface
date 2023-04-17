@@ -78,7 +78,6 @@ const VisualizationBarChart = (props: Props) => {
 
   const tickFormatAxis = (axis: string) => (value: string) => {
     if (axis === 'x' && configs?.xAxisConfigs?.tickFormat) {
-      console.log('1', value, configs?.xAxisConfigs?.tickFormat);
       return checkFormatValue(configs?.xAxisConfigs?.tickFormat, value);
     }
     if (axis === 'y' && configs?.yAxisConfigs?.tickFormat) {
