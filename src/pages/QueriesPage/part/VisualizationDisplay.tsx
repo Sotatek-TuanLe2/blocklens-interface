@@ -14,7 +14,6 @@ import ChartConfigurations from '../../../components/VisualizationConfigs/ChartC
 import BaseModal from '../../../modals/BaseModal';
 import DashboardsRequest from '../../../requests/DashboardsRequest';
 import { ColumnDef } from '@tanstack/react-table';
-import { objectKeys } from '../../../utils/utils-network';
 import {
   AreaChartIcon,
   BarChartIcon,
@@ -27,11 +26,11 @@ import {
   IQuery,
   TYPE_VISUALIZATION,
   VALUE_VISUALIZATION,
-  VisualizationOptionsType,
   VisualizationType,
 } from '../../../utils/query.type';
 import TableConfigurations from '../../../components/VisualizationConfigs/TableConfigurations';
 import moment from 'moment';
+import { objectKeys } from 'src/utils/utils-network';
 
 type VisualizationConfigType = {
   value: string;
@@ -67,6 +66,8 @@ const visualizationConfigs: VisualizationConfigType[] = [
   },
 ];
 
+export const VISUALIZATION_DEBOUNCE = 500;
+
 type Props = {
   queryResult: unknown[];
   queryValue: IQuery;
@@ -75,22 +76,6 @@ type Props = {
 
 const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
   const [closeTabId, setCloseTabId] = useState<string | number>('');
-
-  const [configsChart, setConfigsChart] = useState<VisualizationOptionsType>(
-    {} as VisualizationOptionsType,
-  );
-
-  useEffect(() => {
-    setConfigsChart(
-      (queryValue.visualizations[0]?.options as VisualizationOptionsType) ||
-        ({} as VisualizationOptionsType),
-    );
-  }, [queryValue]);
-
-  const axisOptions =
-    Array.isArray(queryResult) && queryResult[0]
-      ? objectKeys(queryResult[0])
-      : [];
 
   const updateQuery = async (updateQuery: IQuery) => {
     const request = new DashboardsRequest();
@@ -170,6 +155,7 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
     const type = visualization.options?.globalSeriesType || visualization.type;
     const [dataColumn, setDataColumn] = useState<ColumnDef<unknown>[]>([]);
     const [dataTable, setDataTable] = useState<any[]>([]);
+
     switch (type) {
       case TYPE_VISUALIZATION.table:
         const columns =
@@ -202,7 +188,7 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
             clearTimeout(timer);
           };
         }, [dataTable]);
-        console.log(dataColumn);
+
         return (
           <>
             <div className="visual-container__visualization">
@@ -230,7 +216,7 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
           <>
             <div className="visual-container__visualization">
               <div className="visual-container__visualization__title">
-                {configsChart?.chartOptionsConfigs?.name}
+                {visualization.name}
               </div>
               <LineChart
                 data={queryResult}
@@ -239,11 +225,9 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
               />
             </div>
             <ChartConfigurations
-              axisOptions={axisOptions as string[]}
-              configs={visualization.options as VisualizationOptionsType}
-              onChangeConfigs={(configs) => {
-                console.log('configs', configs);
-              }}
+              data={queryResult}
+              visualization={visualization}
+              onChangeConfigurations={onChangeConfigurations}
             />
           </>
         );
@@ -253,27 +237,29 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
           <>
             <div className="visual-container__visualization">
               <div className="visual-container__visualization__title">
-                {configsChart?.chartOptionsConfigs?.name}
+                {visualization.name}
               </div>
               <BarChart
                 data={
-                  configsChart?.xAxisConfigs?.sortX
+                  visualization.options.xAxisConfigs?.sortX
                     ? queryResult.sort(
-                        (a, b) =>
-                          a[configsChart.columnMapping.xAxis] -
-                          b[configsChart.columnMapping.xAxis],
+                        (a: any, b: any) =>
+                          a[visualization.options.columnMapping.xAxis] -
+                          b[visualization.options.columnMapping.xAxis],
                       )
                     : queryResult
                 }
-                xAxisKey={configsChart?.columnMapping?.xAxis || 'time'}
-                yAxisKeys={configsChart.columnMapping?.yAxis || ['size']}
-                configs={configsChart}
+                xAxisKey={visualization.options?.columnMapping?.xAxis || 'time'}
+                yAxisKeys={
+                  visualization.options.columnMapping?.yAxis || ['size']
+                }
+                configs={visualization.options}
               />
             </div>
             <ChartConfigurations
-              axisOptions={axisOptions as string[]}
-              configs={configsChart as VisualizationOptionsType}
-              onChangeConfigs={setConfigsChart}
+              data={queryResult}
+              visualization={visualization}
+              onChangeConfigurations={onChangeConfigurations}
             />
           </>
         );
@@ -282,7 +268,7 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
           <>
             <div className="visual-container__visualization">
               <div className="visual-container__visualization__title">
-                {configsChart?.chartOptionsConfigs?.name}
+                {visualization.name}
               </div>
               <AreaChart
                 data={queryResult}
@@ -291,11 +277,9 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
               />
             </div>
             <ChartConfigurations
-              axisOptions={axisOptions as string[]}
-              configs={visualization.options as VisualizationOptionsType}
-              onChangeConfigs={(configs) => {
-                console.log('configs', configs);
-              }}
+              data={queryResult}
+              visualization={visualization}
+              onChangeConfigurations={onChangeConfigurations}
             />
           </>
         );
@@ -304,30 +288,23 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
           <>
             <div className="visual-container__visualization">
               <div className="visual-container__visualization__title">
-                {configsChart?.chartOptionsConfigs?.name}
+                {visualization.name}
               </div>
               <PieChart data={queryResult} dataKey={'number'} />;
             </div>
             <ChartConfigurations
-              axisOptions={axisOptions as string[]}
-              configs={
-                objectKeys(configsChart).length > 0
-                  ? configsChart
-                  : (visualization.options as VisualizationOptionsType)
-              }
-              onChangeConfigs={(configs) => {
-                console.log('configs', configs);
-              }}
+              data={queryResult}
+              visualization={visualization}
+              onChangeConfigurations={onChangeConfigurations}
             />
           </>
         );
-
       case TYPE_VISUALIZATION.scatter: {
         return (
           <>
             <div className="visual-container__visualization">
               <div className="visual-container__visualization__title">
-                {configsChart?.chartOptionsConfigs?.name}
+                {visualization.name}
               </div>
               <ScatterChart
                 data={queryResult}
@@ -336,16 +313,13 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
               />
             </div>
             <ChartConfigurations
-              axisOptions={axisOptions as string[]}
-              configs={visualization.options as VisualizationOptionsType}
-              onChangeConfigs={(configs) => {
-                console.log('configs', configs);
-              }}
+              data={queryResult}
+              visualization={visualization}
+              onChangeConfigurations={onChangeConfigurations}
             />
           </>
         );
       }
-
       default:
         return <AddVisualization onAddVisualize={addVisualizationHandler} />;
     }
@@ -382,14 +356,6 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
       <AppTabs
         onCloseTab={(tabId: string) => {
           setCloseTabId(tabId);
-        }}
-        onChange={(tabId: string) => {
-          const visualization = queryValue.visualizations.find(
-            (v) => v.id === tabId,
-          );
-          if (visualization) {
-            setConfigsChart(visualization.options as VisualizationOptionsType);
-          }
         }}
         tabs={[
           ...queryValue.visualizations,

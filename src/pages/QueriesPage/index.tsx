@@ -52,6 +52,7 @@ const QueriesPage = () => {
       const res = await request.getQuery(queryId);
       // TODO: clear all contents before inserting
       const position = editorRef.current.editor.getCursorPosition();
+      editorRef.current.editor.setValue('');
       editorRef.current.editor.session.insert(position, res.query);
       setQueryValue(res);
     } catch (err) {

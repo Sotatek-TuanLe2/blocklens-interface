@@ -1,38 +1,41 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Grid, GridItem } from '@chakra-ui/react';
-import { VisualizationOptionsType } from '../../utils/query.type';
+import { VisualizationType } from '../../utils/query.type';
 import 'src/styles/components/TableConfigurations.scss';
 import ChartOptions from './ChartOptions';
 import ResultData from './ResultData';
 import { XAxisOptions, YAxisOptions } from './AxisOptions';
+import { objectKeys } from 'src/utils/utils-network';
+import { VISUALIZATION_DEBOUNCE } from 'src/pages/QueriesPage/part/VisualizationDisplay';
 
 type Props = {
-  configs: VisualizationOptionsType;
-  onChangeConfigs: (configs: VisualizationOptionsType) => void;
-  axisOptions: string[];
+  data: unknown[];
+  visualization: VisualizationType;
+  onChangeConfigurations: (v: VisualizationType) => void;
 };
 
 const ChartConfigurations = ({
-  axisOptions,
-  configs,
-  onChangeConfigs,
+  data,
+  visualization,
+  onChangeConfigurations,
 }: Props) => {
-  const [chartConfigs, setChartConfigs] = useState<VisualizationOptionsType>(
-    {} as VisualizationOptionsType,
-  );
+  const [editVisualization, setEditVisualization] =
+    useState<VisualizationType>(visualization);
+  let timeout: any = null;
 
   useEffect(() => {
-    setChartConfigs(configs);
-  }, [configs]);
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      onChangeConfigurations(editVisualization);
+    }, VISUALIZATION_DEBOUNCE);
 
-  const updateState = (prop: string, value: unknown) => {
-    const tempConfigs = {
-      ...chartConfigs,
-      [prop]: value,
-    };
-    setChartConfigs(tempConfigs);
-    onChangeConfigs(tempConfigs);
-  };
+    return () => clearTimeout(timeout);
+  }, [editVisualization]);
+
+  const axisOptions = useMemo(
+    () => (Array.isArray(data) && data[0] ? objectKeys(data[0]) : []),
+    [data],
+  );
 
   return (
     <div className={'main-layout'}>
@@ -45,44 +48,72 @@ const ChartConfigurations = ({
       >
         <GridItem>
           <ChartOptions
-            options={chartConfigs.chartOptionsConfigs}
-            onChangeOptions={(options) => {
-              updateState('chartOptionsConfigs', options);
-            }}
+            visualization={editVisualization}
+            onChangeConfigurations={(visualization) =>
+              setEditVisualization(visualization)
+            }
           />
         </GridItem>
         <GridItem>
           <ResultData
-            axisOptions={axisOptions}
-            xAxisMapped={chartConfigs?.columnMapping?.xAxis || 'time'}
-            yAxesMapped={chartConfigs?.columnMapping?.yAxis || ['size']}
+            axisOptions={axisOptions as string[]}
+            xAxisMapped={
+              editVisualization.options?.columnMapping?.xAxis || 'time'
+            }
+            yAxesMapped={
+              editVisualization.options?.columnMapping?.yAxis || ['size']
+            }
             onChangeXAxis={(xAxis) => {
-              updateState('columnMapping', {
-                ...chartConfigs?.columnMapping,
-                xAxis,
+              setEditVisualization({
+                ...editVisualization,
+                options: {
+                  ...editVisualization.options,
+                  columnMapping: {
+                    ...editVisualization.options.columnMapping,
+                    xAxis,
+                  },
+                },
               });
             }}
-            onChangeYAxes={(yAxes) => {
-              updateState('columnMapping', {
-                ...chartConfigs.columnMapping,
-                yAxis: yAxes,
+            onChangeYAxis={(yAxis) => {
+              setEditVisualization({
+                ...editVisualization,
+                options: {
+                  ...editVisualization.options,
+                  columnMapping: {
+                    ...editVisualization.options.columnMapping,
+                    yAxis,
+                  },
+                },
               });
             }}
           />
         </GridItem>
         <GridItem>
           <XAxisOptions
-            xConfigs={chartConfigs.xAxisConfigs}
+            xConfigs={editVisualization.options.xAxisConfigs}
             onChangeConfigs={(configs) => {
-              updateState('xAxisConfigs', configs);
+              setEditVisualization({
+                ...editVisualization,
+                options: {
+                  ...editVisualization.options,
+                  xAxisConfigs: configs,
+                },
+              });
             }}
           />
         </GridItem>
         <GridItem>
           <YAxisOptions
-            yConfigs={chartConfigs.yAxisConfigs}
+            yConfigs={editVisualization.options.yAxisConfigs}
             onChangeConfigs={(configs) => {
-              updateState('yAxisConfigs', configs);
+              setEditVisualization({
+                ...editVisualization,
+                options: {
+                  ...editVisualization.options,
+                  yAxisConfigs: configs,
+                },
+              });
             }}
           />
         </GridItem>

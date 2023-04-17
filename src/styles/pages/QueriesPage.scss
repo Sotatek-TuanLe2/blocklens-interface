@@ -127,13 +127,19 @@
   .visual-container {
     &__visualization {
       min-height: 500px;
-      height: 500px;
+      height: 540px;
       border: 1px solid $border;
       margin-bottom: 20px;
 
       &__title {
         padding: 0 10px;
         margin-bottom: 10px;
+      }
+
+      &__barchart {
+        width: 96% !important;
+        height: 95% !important;
+        margin-top: 20px;
       }
     }
 

@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react';
-import { ChartOptionConfigsType } from 'src/utils/query.type';
+import { VisualizationType } from 'src/utils/query.type';
 import { Checkbox, CheckboxGroup, Flex, Text } from '@chakra-ui/react';
 import AppInput from '../AppInput';
 
 interface IChartOptions {
-  options: Partial<ChartOptionConfigsType>;
-  onChangeOptions: (options: Partial<ChartOptionConfigsType>) => void;
+  visualization: VisualizationType;
+  onChangeConfigurations: (visualization: VisualizationType) => void;
 }
 
 const ChartOptions: React.FC<IChartOptions> = ({
-  options,
-  onChangeOptions,
+  visualization,
+  onChangeConfigurations,
 }) => {
   const [chartOptions, setChartOptions] = useState([
     {
@@ -27,6 +27,8 @@ const ChartOptions: React.FC<IChartOptions> = ({
   ]);
 
   useEffect(() => {
+    const options = visualization.options.chartOptionsConfigs;
+
     setChartOptions([
       {
         label: 'Show chart legend',
@@ -44,15 +46,20 @@ const ChartOptions: React.FC<IChartOptions> = ({
         checked: options?.percentValues || false,
       },
     ]);
-  }, [options]);
+  }, [visualization]);
 
   const changeValueHandle = (key: string, value: boolean | string) => {
-    let tempOptions = options;
-    tempOptions = {
-      ...tempOptions,
+    const newChartOptionsConfigs = {
+      ...visualization.options.chartOptionsConfigs,
       [key]: value,
     };
-    onChangeOptions(tempOptions);
+    onChangeConfigurations({
+      ...visualization,
+      options: {
+        ...visualization.options,
+        chartOptionsConfigs: newChartOptionsConfigs,
+      },
+    });
   };
 
   return (
@@ -69,7 +76,7 @@ const ChartOptions: React.FC<IChartOptions> = ({
         <div>Title</div>
         <AppInput
           className={'input-table'}
-          value={options?.name || ''}
+          value={visualization?.name || ''}
           onChange={(e) => changeValueHandle('name', e.target.value)}
           size={'sm'}
         />
