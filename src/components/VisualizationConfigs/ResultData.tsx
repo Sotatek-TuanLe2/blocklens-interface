@@ -6,7 +6,7 @@ interface IResultData {
   xAxisMapped: string;
   yAxesMapped: string[];
   axisOptions: string[];
-  onChangeYAxes: (yAxes: string[]) => void;
+  onChangeYAxis: (yAxis: string[]) => void;
   onChangeXAxis: (xAxis: string) => void;
 }
 
@@ -14,7 +14,7 @@ const ResultData: React.FC<IResultData> = ({
   axisOptions,
   xAxisMapped,
   yAxesMapped,
-  onChangeYAxes,
+  onChangeYAxis,
   onChangeXAxis,
 }) => {
   const [configs, setConfigs] = useState({
@@ -28,7 +28,6 @@ const ResultData: React.FC<IResultData> = ({
   );
 
   useEffect(() => {
-    console.log('configs', configs);
     setConfigs({
       xAxis: xAxisMapped,
       yAxis: yAxesMapped,
@@ -41,16 +40,16 @@ const ResultData: React.FC<IResultData> = ({
     }
     if (oldValue === '') {
       const tempYAxes = [...configs.yAxis, value];
-      return onChangeYAxes(tempYAxes);
+      return onChangeYAxis(tempYAxes);
     }
     if (value === '' && configs.yAxis?.length <= 1) {
       const tempYAxes = configs.yAxis.filter((item) => item !== oldValue);
-      return onChangeYAxes(tempYAxes);
+      return onChangeYAxis(tempYAxes);
     }
     const index = configs.yAxis.indexOf(oldValue);
     const tempYAxes = configs.yAxis;
     tempYAxes[index] = value;
-    onChangeYAxes(tempYAxes);
+    onChangeYAxis(tempYAxes);
   };
 
   return (
