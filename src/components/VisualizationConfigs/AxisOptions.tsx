@@ -1,4 +1,5 @@
 import { Checkbox, CheckboxGroup, Text } from '@chakra-ui/react';
+import { debounce } from 'lodash';
 import { XAxisConfigsType, YAxisConfigsType } from 'src/utils/query.type';
 import AppInput from '../AppInput';
 
@@ -17,12 +18,11 @@ export const XAxisOptions: React.FC<IXAxisOptions> = ({
   ];
 
   const changeValueHandle = (key: string, value: boolean | string) => {
-    let tempOptions = xConfigs;
-    tempOptions = {
-      ...tempOptions,
+    const newOptions = {
+      ...xConfigs,
       [key]: value,
     };
-    onChangeConfigs(tempOptions);
+    onChangeConfigs(newOptions);
   };
 
   return (
@@ -46,7 +46,7 @@ export const XAxisOptions: React.FC<IXAxisOptions> = ({
       </div>
       <CheckboxGroup>
         {checkboxConfigs.map((option) => (
-          <div className={'main-checkbox'}>
+          <div key={option.value} className={'main-checkbox'}>
             <Checkbox
               key={option.value}
               value={option.value}
@@ -73,12 +73,11 @@ export const YAxisOptions: React.FC<IYAxisOptions> = ({
   onChangeConfigs,
 }) => {
   const changeValueHandle = (key: string, value: boolean | string) => {
-    let tempOptions = yConfigs;
-    tempOptions = {
-      ...tempOptions,
+    const newOptions = {
+      ...yConfigs,
       [key]: value,
     };
-    onChangeConfigs(tempOptions);
+    onChangeConfigs(newOptions);
   };
 
   return (
