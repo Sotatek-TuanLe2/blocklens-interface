@@ -1,13 +1,12 @@
-import React from 'react';
 import {
-  LineChart,
+  CartesianGrid,
+  Legend,
   Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Legend,
 } from 'recharts';
 import { randomColor } from '../../utils/common';
 import { CustomTooltip, renderLegend, tickFormatTime } from './BarChart';

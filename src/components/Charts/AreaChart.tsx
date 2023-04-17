@@ -1,16 +1,15 @@
-import React from 'react';
 import {
   Area,
   AreaChart,
+  Legend,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  Legend,
 } from 'recharts';
-import { ChartProps } from './LineChart';
-import { COLORS, randomColor } from '../../utils/common';
+import { COLORS } from '../../utils/common';
 import { CustomTooltip, renderLegend, tickFormatTime } from './BarChart';
+import { ChartProps } from './LineChart';
 
 type Props = ChartProps;
 const VisualizationAreaChart = ({ data, xAxisKey, yAxisKeys }: Props) => {
