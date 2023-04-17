@@ -68,7 +68,7 @@ const VisualizationBarChart = (props: Props) => {
 
   return (
     <>
-      <ResponsiveContainer width={'100%'} height={'100%'}>
+      <ResponsiveContainer className="visual-container__visualization__barchart">
         <BarChart height={500} data={data} className={'bar-chart'}>
           <CartesianGrid vertical={false} strokeDasharray="4" />
           <XAxis

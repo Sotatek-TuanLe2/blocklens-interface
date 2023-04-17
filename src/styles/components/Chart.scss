@@ -1,3 +1,5 @@
+@import '../mixins.scss';
+
 .bar-chart {
   path.recharts-tooltip-cursor {
     display: none !important;
@@ -31,6 +33,11 @@
     position: relative;
     display: flex;
     justify-content: space-between;
+
+    @include mobile {
+      display: none;
+    }
+
     span:nth-child(2) {
       right: 0px;
       position: absolute;
@@ -40,6 +47,7 @@
       top: 50%;
       transform: translateY(-50%);
     }
+
     span:nth-child(1) {
       padding-right: 10px;
     }

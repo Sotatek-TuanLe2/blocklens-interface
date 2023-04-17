@@ -202,7 +202,7 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
             clearTimeout(timer);
           };
         }, [dataTable]);
-        console.log(dataColumn);
+
         return (
           <>
             <div className="visual-container__visualization">
