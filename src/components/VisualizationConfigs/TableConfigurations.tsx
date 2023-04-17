@@ -153,7 +153,7 @@ const TableOptions = ({
 
   const typeValue = typeof typeData?.[0]?.[index];
 
-  const updateDatTable = (value: ColumnDef<unknown>) => {
+  const updateDataTable = (value: ColumnDef<unknown>) => {
     setDataColumn(
       dataColumn.map((item: ColumnDef<unknown>) =>
         item.id === value.id ? value : item,
@@ -171,7 +171,7 @@ const TableOptions = ({
         <AppInput
           value={data?.header}
           onChange={(e) =>
-            updateDatTable({
+            updateDataTable({
               ...selectedItem,
               header: e.target.value,
             })
@@ -188,7 +188,7 @@ const TableOptions = ({
           className="select-table z-100"
           size="small"
           value={data?.align}
-          onChange={(e) => updateDatTable({ ...selectedItem, align: e })}
+          onChange={(e) => updateDataTable({ ...selectedItem, align: e })}
           options={optionAlign}
         />
       </div>
@@ -200,7 +200,7 @@ const TableOptions = ({
           className="input-table"
           value={data?.format}
           onChange={(e) =>
-            updateDatTable({
+            updateDataTable({
               ...selectedItem,
               format: e.target.value,
             })
@@ -215,7 +215,7 @@ const TableOptions = ({
             className="select-table"
             size="small"
             value={data?.type}
-            onChange={(e) => updateDatTable({ ...selectedItem, type: e })}
+            onChange={(e) => updateDataTable({ ...selectedItem, type: e })}
             options={optionType}
           />
         </div>
@@ -226,7 +226,7 @@ const TableOptions = ({
           size="sm"
           value={data?.isHidden}
           onChange={(e) =>
-            updateDatTable({
+            updateDataTable({
               ...selectedItem,
               isHidden: e.target.checked,
             })
@@ -242,7 +242,7 @@ const TableOptions = ({
               size="sm"
               value={data?.coloredPositive}
               onChange={(e) =>
-                updateDatTable({
+                updateDataTable({
                   ...selectedItem,
                   coloredPositive: e.target.checked,
                 })
@@ -256,7 +256,7 @@ const TableOptions = ({
               size="sm"
               value={data?.coloredNegative}
               onChange={(e) =>
-                updateDatTable({
+                updateDataTable({
                   ...selectedItem,
                   coloredNegative: e.target.checked,
                 })
@@ -272,7 +272,7 @@ const TableOptions = ({
             size="sm"
             value={data?.coloredProgress}
             onChange={(e) =>
-              updateDatTable({
+              updateDataTable({
                 ...selectedItem,
                 coloredProgress: e.target.checked,
               })
