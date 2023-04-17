@@ -6,9 +6,6 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from 'src/store';
-import { setColumn, setDataTable } from 'src/store/configuration';
 import 'src/styles/components/TableValue.scss';
 import {
   formatNumberToCurrency,
@@ -17,27 +14,24 @@ import {
 
 interface ReactTableProps<T> {
   data: T[];
-  columns: ColumnDef<T, unknown>[];
+  setDataTable?: React.Dispatch<React.SetStateAction<any[]>>;
+  dataColumn?: ColumnDef<unknown>[];
 }
 
 const VisualizationTable = <T,>({
   data,
-  columns: dataColumn,
+  setDataTable,
+  dataColumn,
 }: ReactTableProps<T>) => {
-  const { columnData } = useSelector((state: RootState) => state.configuration);
-
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(setColumn(dataColumn));
-  }, [dataColumn]);
   const table = useReactTable({
     data,
-    columns: columnData,
+    columns: dataColumn || [],
     getCoreRowModel: getCoreRowModel(),
   });
+
   useEffect(() => {
     const timer = setTimeout(() => {
-      dispatch(setDataTable(table.getRowModel().rows));
+      setDataTable && setDataTable(table.getRowModel().rows);
     }, 500);
 
     return () => {
@@ -155,6 +149,7 @@ const VisualizationTable = <T,>({
                       key: cells.id,
                       style: {
                         width: cells.column.getSize(),
+                        display: isHidden ? 'none' : undefined,
                       },
                     }}
                   >
@@ -164,7 +159,6 @@ const VisualizationTable = <T,>({
                         key: cells.id,
                         style: {
                           justifyContent: align,
-                          display: isHidden ? 'none' : undefined,
                           color:
                             typeof value === 'number'
                               ? checkColor(cells.getValue())

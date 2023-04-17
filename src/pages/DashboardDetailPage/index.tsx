@@ -133,6 +133,13 @@ const DashboardDetailPage: React.FC = () => {
           header: col,
           enableResizing: true,
           size: 100,
+          align: 'left',
+          type: 'normal',
+          format: '',
+          coloredPositive: false,
+          coloredNegative: false,
+          coloredProgress: false,
+          isHidden: false,
         } as ColumnDef<unknown>),
     );
   }, [queryValues]);
@@ -142,7 +149,7 @@ const DashboardDetailPage: React.FC = () => {
       case TYPE_VISUALIZATION.table:
         return (
           <VisualizationTable
-            columns={tableValuesColumnConfigs}
+            dataColumn={tableValuesColumnConfigs}
             data={queryValues}
           />
         );
