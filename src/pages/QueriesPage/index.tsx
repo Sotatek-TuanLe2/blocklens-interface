@@ -18,10 +18,12 @@ import {
   QueryExecutedResponse,
   QueryInfoResponse,
   QueryType,
-} from '../../utils/visualization.type';
+  IQuery,
+} from '../../utils/query.type';
 import 'src/styles/pages/QueriesPage.scss';
 import { AddParameterIcon, ExplandIcon } from 'src/assets/icons';
 import { MoonIcon, SettingsIcon, SunIcon } from '@chakra-ui/icons';
+import moment from 'moment';
 
 interface ParamTypes {
   queryId: string;
@@ -31,8 +33,8 @@ const QueriesPage = () => {
   const editorRef = useRef<any>();
   const { queryId } = useParams<ParamTypes>();
 
-  const [queryValues, setQueryValues] = useState<unknown[]>([]);
-  const [infoQuery, setInfoQuery] = useState<QueryType | null>(null);
+  const [queryResult, setQueryResult] = useState<unknown[]>([]);
+  const [infoQuery, setInfoQuery] = useState<QueryInfoResponse | null>(null);
   const [isSetting, setIsSetting] = useState<boolean>(false);
 
   const [showButton, setShowButton] = useState<boolean>(false);
@@ -49,14 +51,15 @@ const QueriesPage = () => {
         id: randomId,
         name: `Query-${randomId}`,
         query: query,
-        visualizations: [
-          {
-            name: 'Table',
-            type: 'table',
-            id: '1',
-            options: {},
-          },
-        ],
+        // visualizations: [
+        //   {
+        //     createdAt: 1003232131232,
+        //     name: 'Table',
+        //     type: 'table',
+        //     id: '1',
+        //     options: {},
+        //   },
+        // ],
       };
       const infoQuery: QueryInfoResponse =
         await dashboardsRequest.createNewQuery(newQuery);
@@ -96,7 +99,7 @@ const QueriesPage = () => {
         queryId,
         executionId: id,
       });
-      setQueryValues(res);
+      setQueryResult(res);
       // const position = editorRef.current.editor.getCursorPosition();
       // editorRef.current.editor.session.insert(position, res.query);
       // setInfoQuery(res);
@@ -278,7 +281,7 @@ const QueriesPage = () => {
       <EditorContext.Provider
         value={{
           editor: editorRef,
-          queryValues: queryValues,
+          queryResult: queryResult,
         }}
       >
         <div className="queries-page">
@@ -321,9 +324,9 @@ const QueriesPage = () => {
               </Box>
             </Box>
             <Box mt={8}>
-              {infoQuery && queryValues.length && (
-                <VisualizationDisplay queryValues={[]} queryInfo={infoQuery} />
-              )}
+              {/* {infoQuery && queryResult.length && (
+                <VisualizationDisplay queryValue={queryResult} queryInfo={infoQuery} />
+              )} */}
             </Box>
           </Box>
         </div>

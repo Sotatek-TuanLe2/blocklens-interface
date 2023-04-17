@@ -22,10 +22,7 @@ import ModalShareDashboardDetails from 'src/modals/ModalShareDashboardDetails';
 import DashboardsRequest from 'src/requests/DashboardsRequest';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/pages/DashboardDetailPage.scss';
-import {
-  QueryTypeSingle,
-  TYPE_VISUALIZATION,
-} from 'src/utils/visualization.type';
+import { QueryTypeSingle, TYPE_VISUALIZATION } from 'src/utils/query.type';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { objectKeys } from 'src/utils/utils-network';
 import { toastError } from 'src/utils/utils-notify';
@@ -136,6 +133,13 @@ const DashboardDetailPage: React.FC = () => {
           header: col,
           enableResizing: true,
           size: 100,
+          align: 'left',
+          type: 'normal',
+          format: '',
+          coloredPositive: false,
+          coloredNegative: false,
+          coloredProgress: false,
+          isHidden: false,
         } as ColumnDef<unknown>),
     );
   }, [queryValues]);
@@ -145,7 +149,7 @@ const DashboardDetailPage: React.FC = () => {
       case TYPE_VISUALIZATION.table:
         return (
           <VisualizationTable
-            columns={tableValuesColumnConfigs}
+            dataColumn={tableValuesColumnConfigs}
             data={queryValues}
           />
         );

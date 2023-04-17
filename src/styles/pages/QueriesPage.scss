@@ -100,7 +100,7 @@
   &__right-side {
     width: 70%;
 
-    @include mobile {
+    @include desktop {
       width: 100%;
     }
   }
@@ -120,14 +120,20 @@
 
   .visual-container {
     &__visualization {
-      height: 500px;
+      min-height: 500px;
+      height: 540px;
       border: 1px solid $border;
-      padding: 10px 0;
       margin-bottom: 20px;
 
       &__title {
         padding: 0 10px;
         margin-bottom: 10px;
+      }
+
+      &__barchart {
+        width: 96% !important;
+        height: 95% !important;
+        margin-top: 20px;
       }
     }
 
@@ -136,10 +142,6 @@
         background-color: #111213;
         border-radius: 4px;
         margin-bottom: 20px;
-      }
-
-      &__content-tab {
-        height: 500px;
       }
 
       &__name-tab {

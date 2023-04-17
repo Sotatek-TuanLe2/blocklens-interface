@@ -1,6 +1,6 @@
 import { Layout } from 'react-grid-layout';
 import BaseRequest from './BaseRequest';
-import { QueryType } from '../utils/visualization.type';
+import { IQuery, QueryType } from '../utils/query.type';
 
 export interface DashboardsParams {
   order?: string;
@@ -83,7 +83,6 @@ export default class DashboardsRequest extends BaseRequest {
     const url = 'http://172.16.199.30:8002/query/query-service/create-query';
     return this.post(url, { name: query.name, query: query.query });
   }
-
   getQuery(queryId: string) {
     const url = `https://642cf0d966a20ec9ce915e71.mockapi.io/queries/queries/${queryId}`;
     return this.get(url);
@@ -94,7 +93,7 @@ export default class DashboardsRequest extends BaseRequest {
     return this.post(url, data);
   }
 
-  updateQuery(queryId: string, query: Partial<QueryType>) {
+  updateQuery(queryId: string, query: Partial<IQuery>) {
     const url = `https://642cf0d966a20ec9ce915e71.mockapi.io/queries/queries/${queryId}`;
     return this.put(url, query);
   }

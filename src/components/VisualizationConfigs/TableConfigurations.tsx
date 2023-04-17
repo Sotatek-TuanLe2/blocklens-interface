@@ -1,12 +1,10 @@
 import { Checkbox, Divider, Grid, GridItem, Text } from '@chakra-ui/react';
-import { useState } from 'react';
+import { ColumnDef } from '@tanstack/react-table';
+import { useEffect, useState } from 'react';
 import 'src/styles/components/TableConfigurations.scss';
-import AppButton from '../AppButton';
+import { VisualizationType } from 'src/utils/query.type';
 import AppInput from '../AppInput';
 import AppSelect2 from '../AppSelect2';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from 'src/store';
-import { updateDatTable } from 'src/store/configuration';
 
 interface IOption {
   value: string;
@@ -24,15 +22,60 @@ const optionAlign: IOption[] = [
   { value: 'right', label: 'Right' },
 ];
 
-const ConfigTable = () => {
-  const [title, setTitle] = useState<string>('');
-  const { columnData, dataTable } = useSelector(
-    (state: RootState) => state.configuration,
-  );
+interface ITableConfigurations {
+  visualization: VisualizationType;
+  onChangeConfigurations: (v: VisualizationType) => void;
+  setDataColumn?: React.Dispatch<React.SetStateAction<ColumnDef<unknown>[]>>;
+  dataColumn?: ColumnDef<unknown>[];
+  dataTable?: any[];
+}
 
-  const typeData = dataTable.map((row) =>
+const DEBOUNCE_TIME = 500;
+
+const TableConfigurations: React.FC<ITableConfigurations> = ({
+  visualization,
+  onChangeConfigurations,
+  dataColumn,
+  dataTable,
+  setDataColumn,
+}) => {
+  const [editVisualization, setEditVisualization] =
+    useState<VisualizationType>(visualization);
+  let timeout: any = null;
+
+  useEffect(() => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      onChangeConfigurations(editVisualization);
+    }, DEBOUNCE_TIME);
+
+    return () => clearTimeout(timeout);
+  }, [editVisualization]);
+
+  const typeData = dataTable?.map((row) =>
     row.getVisibleCells().map((cells: any) => cells.getValue()),
   );
+
+  const onChangeTableName = (e: any) => {
+    setEditVisualization((prevState) => ({
+      ...prevState,
+      name: e.target.value,
+    }));
+  };
+
+  const onChangeColumnConfigurations = (data: any, index: number) => {
+    setEditVisualization((prevState) => {
+      const newColumns = [...prevState.options.columns];
+      newColumns[index] = data;
+      return {
+        ...prevState,
+        options: {
+          columns: newColumns,
+        },
+      };
+    });
+  };
+
   return (
     <div className="main-layout">
       {/* <header>
@@ -40,7 +83,12 @@ const ConfigTable = () => {
           Add to dashboard
         </AppButton>
       </header> */}
-      <Grid templateColumns="repeat(2, 1fr)">
+      <Grid
+        templateColumns={{
+          sm: 'repeat(1, 1fr)',
+          md: 'repeat(2, 1fr)',
+        }}
+      >
         <GridItem>
           <div className="box-table first-box-table">
             <Text
@@ -53,51 +101,80 @@ const ConfigTable = () => {
             <div className="box-table-children">
               <div>Title</div>
               <AppInput
-                value={title}
+                value={editVisualization.name}
                 size={'sm'}
                 className="input-table"
-                onChange={(e) => setTitle(e.target.value)}
+                onChange={onChangeTableName}
               />
             </div>
           </div>
         </GridItem>
       </Grid>
       <Divider orientation="horizontal" borderColor={'gray'} />
-      <Grid templateColumns="repeat(2, 1fr)" gap={'10px'}>
-        {columnData.map((header, index) => (
-          <GridItem key={index}>
-            <TableOptions header={header} typeData={typeData} index={index} />
-          </GridItem>
-        ))}
+      <Grid
+        templateColumns={{
+          sm: 'repeat(1, 1fr)',
+          md: 'repeat(2, 1fr)',
+        }}
+        gap={'10px'}
+      >
+        {!!dataColumn?.length ? (
+          dataColumn?.map((data, index) => (
+            <GridItem key={index}>
+              <TableOptions
+                data={data}
+                typeData={typeData}
+                index={index}
+                onChange={onChangeColumnConfigurations}
+                setDataColumn={setDataColumn}
+                dataColumn={dataColumn}
+              />
+            </GridItem>
+          ))
+        ) : (
+          <>Loading</>
+        )}
       </Grid>
     </div>
   );
 };
 
-export default ConfigTable;
+export default TableConfigurations;
 
-const TableOptions = ({ header, typeData, index }: any) => {
-  const dispatch = useDispatch();
-
+const TableOptions = ({
+  data,
+  typeData,
+  index,
+  onChange,
+  setDataColumn,
+  dataColumn,
+}: any) => {
   const [selectedItem, setSelectedItem] = useState(Object);
 
   const typeValue = typeof typeData?.[0]?.[index];
 
+  const updateDataTable = (value: ColumnDef<unknown>) => {
+    setDataColumn(
+      dataColumn.map((item: ColumnDef<unknown>) =>
+        item.id === value.id ? value : item,
+      ),
+    );
+  };
+
   return (
-    <div className="box-table" onClick={() => setSelectedItem(header)}>
+    <div className="box-table" onClick={() => setSelectedItem(data)}>
       <Text className="box-table__title" fontWeight="bold" marginBottom="10px">
-        Column {index}: {header.accessorKey}
+        Column {index}: {data.accessorKey}
       </Text>
       <div className="box-table-children">
         <div>Title</div>
         <AppInput
-          value={header?.header}
+          value={data?.header}
           onChange={(e) =>
-            dispatch(
-              updateDatTable({
-                newData: { ...selectedItem, header: e.target.value },
-              }),
-            )
+            updateDataTable({
+              ...selectedItem,
+              header: e.target.value,
+            })
           }
           placeholder="Price"
           size={'sm'}
@@ -110,10 +187,8 @@ const TableOptions = ({ header, typeData, index }: any) => {
         <AppSelect2
           className="select-table z-100"
           size="small"
-          value={header?.align}
-          onChange={(e) =>
-            dispatch(updateDatTable({ newData: { ...selectedItem, align: e } }))
-          }
+          value={data?.align}
+          onChange={(e) => updateDataTable({ ...selectedItem, align: e })}
           options={optionAlign}
         />
       </div>
@@ -123,13 +198,12 @@ const TableOptions = ({ header, typeData, index }: any) => {
           placeholder="0.0"
           size={'sm'}
           className="input-table"
-          value={header?.format}
+          value={data?.format}
           onChange={(e) =>
-            dispatch(
-              updateDatTable({
-                newData: { ...selectedItem, format: e.target.value },
-              }),
-            )
+            updateDataTable({
+              ...selectedItem,
+              format: e.target.value,
+            })
           }
         />
       </div>
@@ -140,12 +214,8 @@ const TableOptions = ({ header, typeData, index }: any) => {
           <AppSelect2
             className="select-table"
             size="small"
-            value={header?.type}
-            onChange={(e) =>
-              dispatch(
-                updateDatTable({ newData: { ...selectedItem, type: e } }),
-              )
-            }
+            value={data?.type}
+            onChange={(e) => updateDataTable({ ...selectedItem, type: e })}
             options={optionType}
           />
         </div>
@@ -154,33 +224,28 @@ const TableOptions = ({ header, typeData, index }: any) => {
       <div className="main-checkbox">
         <Checkbox
           size="sm"
-          value={header?.isHidden}
+          value={data?.isHidden}
           onChange={(e) =>
-            dispatch(
-              updateDatTable({
-                newData: { ...selectedItem, isHidden: e.target.checked },
-              }),
-            )
+            updateDataTable({
+              ...selectedItem,
+              isHidden: e.target.checked,
+            })
           }
         >
           Hide column
         </Checkbox>
       </div>
-      {typeValue === 'number' && header?.type === 'normal' ? (
+      {typeValue === 'number' && data?.type === 'normal' ? (
         <div>
           <div className="main-checkbox">
             <Checkbox
               size="sm"
-              value={header?.coloredPositive}
+              value={data?.coloredPositive}
               onChange={(e) =>
-                dispatch(
-                  updateDatTable({
-                    newData: {
-                      ...selectedItem,
-                      coloredPositive: e.target.checked,
-                    },
-                  }),
-                )
+                updateDataTable({
+                  ...selectedItem,
+                  coloredPositive: e.target.checked,
+                })
               }
             >
               Colored positive values
@@ -189,16 +254,12 @@ const TableOptions = ({ header, typeData, index }: any) => {
           <div className="main-checkbox">
             <Checkbox
               size="sm"
-              value={header?.coloredNegative}
+              value={data?.coloredNegative}
               onChange={(e) =>
-                dispatch(
-                  updateDatTable({
-                    newData: {
-                      ...selectedItem,
-                      coloredNegative: e.target.checked,
-                    },
-                  }),
-                )
+                updateDataTable({
+                  ...selectedItem,
+                  coloredNegative: e.target.checked,
+                })
               }
             >
               Colored negative values
@@ -209,16 +270,12 @@ const TableOptions = ({ header, typeData, index }: any) => {
         <div className="main-checkbox">
           <Checkbox
             size="sm"
-            value={header?.coloredProgress}
+            value={data?.coloredProgress}
             onChange={(e) =>
-              dispatch(
-                updateDatTable({
-                  newData: {
-                    ...selectedItem,
-                    coloredProgress: e.target.checked,
-                  },
-                }),
-              )
+              updateDataTable({
+                ...selectedItem,
+                coloredProgress: e.target.checked,
+              })
             }
           >
             Colored positive/negative values

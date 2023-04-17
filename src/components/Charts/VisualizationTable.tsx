@@ -6,34 +6,32 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from 'src/store';
-import { setColumn, setDataTable } from 'src/store/configuration';
 import 'src/styles/components/TableValue.scss';
+import {
+  formatNumberToCurrency,
+  formatNumberWithDecimalDigits,
+} from 'src/utils/utils-format';
 
 interface ReactTableProps<T> {
   data: T[];
-  columns: ColumnDef<T, unknown>[];
+  setDataTable?: React.Dispatch<React.SetStateAction<any[]>>;
+  dataColumn?: ColumnDef<unknown>[];
 }
 
 const VisualizationTable = <T,>({
   data,
-  columns: dataColumn,
+  setDataTable,
+  dataColumn,
 }: ReactTableProps<T>) => {
-  const { columnData } = useSelector((state: RootState) => state.configuration);
-
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(setColumn(dataColumn));
-  }, [dataColumn]);
   const table = useReactTable({
     data,
-    columns: columnData,
+    columns: dataColumn || [],
     getCoreRowModel: getCoreRowModel(),
   });
+
   useEffect(() => {
     const timer = setTimeout(() => {
-      dispatch(setDataTable(table.getRowModel().rows));
+      setDataTable && setDataTable(table.getRowModel().rows);
     }, 500);
 
     return () => {
@@ -113,6 +111,7 @@ const VisualizationTable = <T,>({
                   coloredPositive,
                   coloredNegative,
                   type,
+                  format,
                   coloredProgress,
                 } = cells.column.columnDef;
                 const value = cells.getValue();
@@ -126,12 +125,31 @@ const VisualizationTable = <T,>({
                       return undefined;
                   }
                 };
+                const checkFormatValue = (format: string) => {
+                  switch (typeof value === 'number') {
+                    case format.includes(','):
+                      return value.toLocaleString('en-US');
+                    case format.includes('0.'):
+                      return formatNumberWithDecimalDigits(value, format);
+                    case format === '0':
+                      return parseInt(value);
+                    case format === 'a':
+                      return formatNumberToCurrency(value);
+                    case format === '$':
+                      return `$${value}`;
+                    case format.includes('a') && format.includes('$'):
+                      return `$${formatNumberToCurrency(value)}`;
+                    default:
+                      return value;
+                  }
+                };
                 return (
                   <td
                     {...{
                       key: cells.id,
                       style: {
                         width: cells.column.getSize(),
+                        display: isHidden ? 'none' : undefined,
                       },
                     }}
                   >
@@ -141,7 +159,6 @@ const VisualizationTable = <T,>({
                         key: cells.id,
                         style: {
                           justifyContent: align,
-                          display: isHidden ? 'none' : undefined,
                           color:
                             typeof value === 'number'
                               ? checkColor(cells.getValue())
@@ -161,7 +178,7 @@ const VisualizationTable = <T,>({
                           className="visual-progressbar"
                         ></div>
                       ) : null}
-                      {value}
+                      {checkFormatValue(format)}
                     </div>
                   </td>
                 );
