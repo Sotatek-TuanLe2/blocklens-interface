@@ -79,6 +79,7 @@ export type YAxisConfigsType = {
   title: string;
   tickFormat: string;
   labelFormat: string;
+  logarithmic: boolean;
 };
 
 export type ChartType = {

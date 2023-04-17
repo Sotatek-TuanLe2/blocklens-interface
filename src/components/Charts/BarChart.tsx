@@ -66,6 +66,13 @@ const VisualizationBarChart = (props: Props) => {
     return getHourAndMinute(new Date(value));
   };
 
+  const logarithmicProps: any = yAxisConfigs?.logarithmic
+    ? {
+        scale: 'log',
+        domain: ['auto', 'auto'],
+      }
+    : {};
+
   return (
     <>
       <ResponsiveContainer className="visual-container__visualization__barchart">
@@ -93,6 +100,7 @@ const VisualizationBarChart = (props: Props) => {
                 position: 'insideLeft',
                 fill: '#ccc',
               }}
+              {...logarithmicProps}
             />
           ))}
           <Tooltip
