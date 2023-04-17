@@ -113,7 +113,7 @@ export const YAxisOptions: React.FC<IYAxisOptions> = ({
       </div>
       <div className={'main-checkbox'}>
         <Checkbox
-          isChecked={yConfigs.logarithmic}
+          isChecked={yConfigs?.logarithmic}
           name={'logarithmic'}
           onChange={(e) => changeValueHandle(e.target.name, e.target.checked)}
         >
