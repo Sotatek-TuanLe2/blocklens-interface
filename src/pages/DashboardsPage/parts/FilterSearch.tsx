@@ -141,9 +141,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
         onToggleNewDashboardModal();
         break;
       case LIST_ITEM_TYPE.QUERIES:
-        {
-          history.push('/queries');
-        }
+        history.push('/queries');
         break;
       default:
         break;

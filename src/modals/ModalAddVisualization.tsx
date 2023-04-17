@@ -45,7 +45,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
 }) => {
   const [add, setAdd] = useState<boolean>(false);
   const [showMyQueries, setShowMyQueries] = useState<boolean>(false);
-  const [dataVisualization, setDataVisualization] = useState<QueryType[]>([]);
+  const [dataVisualization, setDataVisualization] = useState<any[]>([]);
 
   const fetchVisualization = async () => {
     try {
@@ -132,8 +132,8 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
         <div className="main-queries">
           {dataVisualization.map(
             (item) =>
-              item.visualizations &&
-              item.visualizations.map((i) => (
+              item?.visualizations &&
+              item?.visualizations.map((i: any) => (
                 <Flex
                   justifyContent={'space-between'}
                   borderBottom={'1px solid white'}
