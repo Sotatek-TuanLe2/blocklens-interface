@@ -1,16 +1,15 @@
-import React from 'react';
 import {
-  LineChart,
+  CartesianGrid,
+  Legend,
   Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Legend,
   Label,
 } from 'recharts';
-import { randomColor } from '../../utils/common';
+import { getHourAndMinute, randomColor } from '../../utils/common';
 import { VisualizationOptionsType } from 'src/utils/query.type';
 import { Box } from '@chakra-ui/react';
 
@@ -67,6 +66,10 @@ const VisualizationLineChart = (props: Props) => {
   const xAxisConfigs = configs?.xAxisConfigs;
   const yAxisConfigs = configs?.yAxisConfigs;
 
+  const tickFormatTime = (value: string) => {
+    return getHourAndMinute(new Date(value));
+  };
+
   const logarithmicProps: any = yAxisConfigs?.logarithmic
     ? {
         scale: 'log',
@@ -76,9 +79,13 @@ const VisualizationLineChart = (props: Props) => {
 
   return (
     <ResponsiveContainer className="visual-container__visualization__linechart">
-      <LineChart height={500} data={data} className={'bar-chart'}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey={xAxisKey} fill={'#ccc'}>
+      <LineChart height={500} data={data} className="line-chart">
+        <CartesianGrid vertical={false} strokeDasharray="4" />
+        <XAxis
+          tickFormatter={xAxisKey === 'time' ? tickFormatTime : undefined}
+          dataKey={xAxisKey}
+          fill={'#ccc'}
+        >
           <Label
             offset={0}
             position="insideBottom"
@@ -86,6 +93,7 @@ const VisualizationLineChart = (props: Props) => {
             fill={'#ccc'}
           />
         </XAxis>
+
         {yAxisKeys?.map((yAxisKey) => (
           <YAxis
             key={yAxisKey}
@@ -118,6 +126,7 @@ const VisualizationLineChart = (props: Props) => {
             type="monotone"
             dataKey={yAxisKey}
             stroke={randomColor}
+            dot={false}
           />
         ))}
       </LineChart>

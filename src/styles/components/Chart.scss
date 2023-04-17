@@ -1,6 +1,9 @@
 @import '../mixins.scss';
 
-.bar-chart {
+.bar-chart,
+.line-chart,
+.pie-chart,
+.area-chart {
   path.recharts-tooltip-cursor {
     display: none !important;
   }
@@ -16,6 +19,7 @@
       position: relative;
       display: flex;
       justify-content: space-between;
+      width: 100%;
 
       span:nth-child(1) {
         position: absolute;
