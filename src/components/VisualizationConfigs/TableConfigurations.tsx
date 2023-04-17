@@ -1,6 +1,7 @@
 import { Checkbox, Divider, Grid, GridItem, Text } from '@chakra-ui/react';
 import { ColumnDef } from '@tanstack/react-table';
 import { useEffect, useState } from 'react';
+import { VISUALIZATION_DEBOUNCE } from 'src/pages/QueriesPage/part/VisualizationDisplay';
 import 'src/styles/components/TableConfigurations.scss';
 import { VisualizationType } from 'src/utils/query.type';
 import AppInput from '../AppInput';
@@ -25,19 +26,13 @@ const optionAlign: IOption[] = [
 interface ITableConfigurations {
   visualization: VisualizationType;
   onChangeConfigurations: (v: VisualizationType) => void;
-  setDataColumn?: React.Dispatch<React.SetStateAction<ColumnDef<unknown>[]>>;
-  dataColumn?: ColumnDef<unknown>[];
   dataTable?: any[];
 }
-
-const DEBOUNCE_TIME = 500;
 
 const TableConfigurations: React.FC<ITableConfigurations> = ({
   visualization,
   onChangeConfigurations,
-  dataColumn,
   dataTable,
-  setDataColumn,
 }) => {
   const [editVisualization, setEditVisualization] =
     useState<VisualizationType>(visualization);
@@ -47,7 +42,7 @@ const TableConfigurations: React.FC<ITableConfigurations> = ({
     clearTimeout(timeout);
     timeout = setTimeout(() => {
       onChangeConfigurations(editVisualization);
-    }, DEBOUNCE_TIME);
+    }, VISUALIZATION_DEBOUNCE);
 
     return () => clearTimeout(timeout);
   }, [editVisualization]);
@@ -62,6 +57,7 @@ const TableConfigurations: React.FC<ITableConfigurations> = ({
       name: e.target.value,
     }));
   };
+  const dataColumn: [] = editVisualization.options.columns;
 
   const onChangeColumnConfigurations = (data: any, index: number) => {
     setEditVisualization((prevState) => {
@@ -126,8 +122,6 @@ const TableConfigurations: React.FC<ITableConfigurations> = ({
                 typeData={typeData}
                 index={index}
                 onChange={onChangeColumnConfigurations}
-                setDataColumn={setDataColumn}
-                dataColumn={dataColumn}
               />
             </GridItem>
           ))
@@ -141,25 +135,10 @@ const TableConfigurations: React.FC<ITableConfigurations> = ({
 
 export default TableConfigurations;
 
-const TableOptions = ({
-  data,
-  typeData,
-  index,
-  onChange,
-  setDataColumn,
-  dataColumn,
-}: any) => {
+const TableOptions = ({ data, typeData, index, onChange }: any) => {
   const [selectedItem, setSelectedItem] = useState(Object);
 
   const typeValue = typeof typeData?.[0]?.[index];
-
-  const updateDataTable = (value: ColumnDef<unknown>) => {
-    setDataColumn(
-      dataColumn.map((item: ColumnDef<unknown>) =>
-        item.id === value.id ? value : item,
-      ),
-    );
-  };
 
   return (
     <div className="box-table" onClick={() => setSelectedItem(data)}>
@@ -171,10 +150,13 @@ const TableOptions = ({
         <AppInput
           value={data?.header}
           onChange={(e) =>
-            updateDataTable({
-              ...selectedItem,
-              header: e.target.value,
-            })
+            onChange(
+              {
+                ...selectedItem,
+                header: e.target.value,
+              },
+              index,
+            )
           }
           placeholder="Price"
           size={'sm'}
@@ -188,7 +170,15 @@ const TableOptions = ({
           className="select-table z-100"
           size="small"
           value={data?.align}
-          onChange={(e) => updateDataTable({ ...selectedItem, align: e })}
+          onChange={(e) =>
+            onChange(
+              {
+                ...selectedItem,
+                align: e,
+              },
+              index,
+            )
+          }
           options={optionAlign}
         />
       </div>
@@ -200,10 +190,13 @@ const TableOptions = ({
           className="input-table"
           value={data?.format}
           onChange={(e) =>
-            updateDataTable({
-              ...selectedItem,
-              format: e.target.value,
-            })
+            onChange(
+              {
+                ...selectedItem,
+                format: e.target.value,
+              },
+              index,
+            )
           }
         />
       </div>
@@ -215,7 +208,15 @@ const TableOptions = ({
             className="select-table"
             size="small"
             value={data?.type}
-            onChange={(e) => updateDataTable({ ...selectedItem, type: e })}
+            onChange={(e) =>
+              onChange(
+                {
+                  ...selectedItem,
+                  type: e,
+                },
+                index,
+              )
+            }
             options={optionType}
           />
         </div>
@@ -225,11 +226,15 @@ const TableOptions = ({
         <Checkbox
           size="sm"
           value={data?.isHidden}
+          isChecked={data?.isHidden}
           onChange={(e) =>
-            updateDataTable({
-              ...selectedItem,
-              isHidden: e.target.checked,
-            })
+            onChange(
+              {
+                ...selectedItem,
+                isHidden: e.target.checked,
+              },
+              index,
+            )
           }
         >
           Hide column
@@ -241,11 +246,15 @@ const TableOptions = ({
             <Checkbox
               size="sm"
               value={data?.coloredPositive}
+              isChecked={data?.coloredPositive}
               onChange={(e) =>
-                updateDataTable({
-                  ...selectedItem,
-                  coloredPositive: e.target.checked,
-                })
+                onChange(
+                  {
+                    ...selectedItem,
+                    coloredPositive: e.target.checked,
+                  },
+                  index,
+                )
               }
             >
               Colored positive values
@@ -255,11 +264,15 @@ const TableOptions = ({
             <Checkbox
               size="sm"
               value={data?.coloredNegative}
+              isChecked={data?.coloredNegative}
               onChange={(e) =>
-                updateDataTable({
-                  ...selectedItem,
-                  coloredNegative: e.target.checked,
-                })
+                onChange(
+                  {
+                    ...selectedItem,
+                    coloredNegative: e.target.checked,
+                  },
+                  index,
+                )
               }
             >
               Colored negative values
@@ -271,11 +284,15 @@ const TableOptions = ({
           <Checkbox
             size="sm"
             value={data?.coloredProgress}
+            isChecked={data?.coloredProgress}
             onChange={(e) =>
-              updateDataTable({
-                ...selectedItem,
-                coloredProgress: e.target.checked,
-              })
+              onChange(
+                {
+                  ...selectedItem,
+                  coloredProgress: e.target.checked,
+                },
+                index,
+              )
             }
           >
             Colored positive/negative values
