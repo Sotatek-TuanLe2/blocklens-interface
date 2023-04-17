@@ -48,6 +48,13 @@ const ChartOptions: React.FC<IChartOptions> = ({
     ]);
   }, [visualization]);
 
+  const changeNameHandle = (value: string) => {
+    onChangeConfigurations({
+      ...visualization,
+      name: value,
+    });
+  };
+
   const changeValueHandle = (key: string, value: boolean | string) => {
     const newChartOptionsConfigs = {
       ...visualization.options.chartOptionsConfigs,
@@ -77,7 +84,7 @@ const ChartOptions: React.FC<IChartOptions> = ({
         <AppInput
           className={'input-table'}
           value={visualization?.name || ''}
-          onChange={(e) => changeValueHandle('name', e.target.value)}
+          onChange={(e: any) => changeNameHandle(e.target.value)}
           size={'sm'}
         />
       </Flex>
