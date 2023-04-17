@@ -7,11 +7,7 @@ import {
 } from '@tanstack/react-table';
 import { useEffect } from 'react';
 import 'src/styles/components/TableValue.scss';
-import {
-  _formatLargeNumberIfNeed,
-  checkFormatValue,
-  formatNumberWithDecimalDigits,
-} from 'src/utils/utils-format';
+import { checkFormatValue } from 'src/utils/utils-format';
 
 interface ReactTableProps<T> {
   data: T[];
