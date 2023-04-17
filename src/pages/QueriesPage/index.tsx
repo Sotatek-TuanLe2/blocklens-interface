@@ -112,7 +112,9 @@ const QueriesPage = () => {
         await dashboardsRequest.postExcuteQuery(queryId);
       // setExecutedQuery(queryValues);
       await fetchQueryResult(queryValues.id);
-    } catch (error) {}
+    } catch (error) {
+      getErrorMessage(error);
+    }
   };
 
   // const fetchInfoQuery = async () => {
