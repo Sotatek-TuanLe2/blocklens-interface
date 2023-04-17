@@ -9,6 +9,7 @@ import {
   XAxis,
   YAxis,
   Label,
+  LabelList,
 } from 'recharts';
 import { getHourAndMinute, randomColor } from '../../utils/common';
 import { ChartProps } from './LineChart';
@@ -66,6 +67,23 @@ const VisualizationBarChart = (props: Props) => {
     return getHourAndMinute(new Date(value));
   };
 
+  const tickFormatAxis = (axis: string) => (value: string) => {
+    if (axis === 'x' && configs?.xAxisConfigs?.tickFormat) {
+      // TODO: return tick format
+    }
+    if (axis === 'y' && configs?.yAxisConfigs?.tickFormat) {
+      // TODO: return tick format
+    }
+    return value;
+  };
+
+  const labelFormat = (value: string) => {
+    if (configs?.yAxisConfigs?.labelFormat) {
+      // TODO: return label format
+    }
+    return value;
+  };
+
   const logarithmicProps: any = yAxisConfigs?.logarithmic
     ? {
         scale: 'log',
@@ -80,7 +98,9 @@ const VisualizationBarChart = (props: Props) => {
           <CartesianGrid vertical={false} strokeDasharray="4" />
           <XAxis
             dataKey={xAxisKey}
-            tickFormatter={xAxisKey === 'time' ? tickFormatTime : undefined}
+            tickFormatter={
+              xAxisKey === 'time' ? tickFormatTime : tickFormatAxis('x')
+            }
             fill={'#ccc'}
           >
             <Label
@@ -100,6 +120,7 @@ const VisualizationBarChart = (props: Props) => {
                 position: 'insideLeft',
                 fill: '#ccc',
               }}
+              tickFormatter={tickFormatAxis('y')}
               {...logarithmicProps}
             />
           ))}
@@ -122,7 +143,16 @@ const VisualizationBarChart = (props: Props) => {
               dataKey={yKey}
               fill={randomColor}
               stackId={chartOptionsConfigs?.stacking ? 'a' : undefined}
-            />
+            >
+              {!configs?.chartOptionsConfigs?.stacking &&
+                configs?.chartOptionsConfigs?.showDataLabels && (
+                  <LabelList
+                    dataKey={yKey}
+                    position="top"
+                    formatter={labelFormat}
+                  />
+                )}
+            </Bar>
           ))}
         </BarChart>
       </ResponsiveContainer>
