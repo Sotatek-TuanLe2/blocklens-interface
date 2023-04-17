@@ -80,7 +80,7 @@ export const addTrailingZero = (
   return new BigNumber(number).toFixed(decimals).toString();
 };
 
-const _formatLargeNumberIfNeed = (number: string, digits = 0) => {
+export const _formatLargeNumberIfNeed = (number: string, digits = 0) => {
   if (new BigNumber(number).comparedTo(10000) < 0) {
     return commaNumber(new BigNumber(number).toString(), ',', '.');
   }
@@ -178,27 +178,6 @@ export function formatToPercent(
     .multipliedBy(100)
     .toFixed(decimalPlaces);
   return new BigNumber(newValue).toString() + '%';
-}
-
-export function formatNumberToCurrency(number: number): string {
-  const lookup: { [key: number]: string } = {
-    1e3: 'K',
-    1e6: 'M',
-    1e9: 'B',
-    1e12: 'T',
-    1e15: 'P',
-    1e18: 'E',
-  };
-
-  const absNumber = Math.abs(number);
-
-  for (const value in lookup) {
-    if (absNumber >= parseInt(value)) {
-      return (number / parseInt(value)).toFixed(0) + lookup[value];
-    }
-  }
-
-  return number.toString();
 }
 
 export function formatNumberWithDecimalDigits(

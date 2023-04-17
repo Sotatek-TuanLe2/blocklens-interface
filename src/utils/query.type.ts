@@ -6,10 +6,12 @@ export enum VALUE_VISUALIZATION {
   pie = 'pie',
 
   scatter = 'scatter',
+  counter = 'counter',
 }
 
 export enum TYPE_VISUALIZATION {
   table = 'table',
+  counter = 'counter',
   bar = 'bar',
   line = 'line',
   area = 'area',

@@ -8,7 +8,7 @@ import {
 import { useEffect } from 'react';
 import 'src/styles/components/TableValue.scss';
 import {
-  formatNumberToCurrency,
+  _formatLargeNumberIfNeed,
   formatNumberWithDecimalDigits,
 } from 'src/utils/utils-format';
 
@@ -134,11 +134,11 @@ const VisualizationTable = <T,>({
                     case format === '0':
                       return parseInt(value);
                     case format === 'a':
-                      return formatNumberToCurrency(value);
+                      return _formatLargeNumberIfNeed(value);
                     case format === '$':
                       return `$${value}`;
                     case format.includes('a') && format.includes('$'):
-                      return `$${formatNumberToCurrency(value)}`;
+                      return `$${_formatLargeNumberIfNeed(value)}`;
                     default:
                       return value;
                   }
