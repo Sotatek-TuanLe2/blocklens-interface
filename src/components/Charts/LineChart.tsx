@@ -1,15 +1,15 @@
-import React from 'react';
 import {
-  LineChart,
+  CartesianGrid,
+  Legend,
   Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Legend,
 } from 'recharts';
 import { randomColor } from '../../utils/common';
+import { CustomTooltip, renderLegend, tickFormatTime } from './BarChart';
 
 export type ChartProps = {
   data?: unknown[];
@@ -22,6 +22,7 @@ const VisualizationLineChart = ({ data, xAxisKey, yAxisKeys }: Props) => {
   return (
     <ResponsiveContainer width={'100%'} height={'100%'}>
       <LineChart
+        className="line-chart"
         height={500}
         data={data}
         margin={{
@@ -31,19 +32,33 @@ const VisualizationLineChart = ({ data, xAxisKey, yAxisKeys }: Props) => {
           bottom: 5,
         }}
       >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey={xAxisKey} />
+        <CartesianGrid vertical={false} strokeDasharray="4" />
+
+        <XAxis
+          dataKey={xAxisKey}
+          tickFormatter={xAxisKey === 'time' ? tickFormatTime : undefined}
+        />
         {yAxisKeys?.map((yAxisKey) => (
           <YAxis dataKey={yAxisKey} key={yAxisKey} />
         ))}
-        <Tooltip />
-        <Legend />
+        <Tooltip
+          content={<CustomTooltip />}
+          animationDuration={200}
+          animationEasing={'linear'}
+        />
+        <Legend
+          verticalAlign="middle"
+          align="right"
+          layout="vertical"
+          content={renderLegend}
+        />
         {yAxisKeys?.map((yAxisKey) => (
           <Line
             key={yAxisKey}
             type="monotone"
             dataKey={yAxisKey}
             stroke={randomColor}
+            dot={false}
           />
         ))}
       </LineChart>

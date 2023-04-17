@@ -33,6 +33,20 @@ export type SchemaType = {
 // export const randomColor = Math.floor(Math.random() * 16777215).toString(16);
 export const randomColor = '#8884d8';
 
+export const COLORS = [
+  'rgb(244, 96, 62)',
+  'rgb(144, 144, 144)',
+  'rgb(230, 131, 16)',
+  'rgb(36, 121, 108)',
+  'rgb(153, 201, 69)',
+  'rgb(82, 188, 163)',
+  'rgb(93, 105, 177)',
+  'rgb(65, 100, 74)',
+  'rgb(242, 183, 1)',
+  'rgb(204, 97, 176)',
+  'rgb(5, 191, 219)',
+];
+
 export const getHourAndMinute = (date: Date) => {
   const hour = date.getHours();
   const minute = date.getMinutes();
