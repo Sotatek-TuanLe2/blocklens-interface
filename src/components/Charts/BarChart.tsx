@@ -14,52 +14,11 @@ import {
 import { getHourAndMinute, randomColor } from '../../utils/common';
 import { ChartProps } from './LineChart';
 import { VisualizationOptionsType } from '../../utils/query.type';
-import { Box } from '@chakra-ui/react';
-import { checkFormatValue, formatNumber } from 'src/utils/utils-format';
+import { checkFormatValue } from 'src/utils/utils-format';
+import { CustomTooltip, renderLegend } from './CustomComponent';
 type ChartConfigType = VisualizationOptionsType;
 type Props = ChartProps & {
   configs?: Partial<ChartConfigType>;
-};
-
-export const CustomTooltip = (props: any) => {
-  const { active, payload, label } = props;
-  if (active && payload && payload.length) {
-    return (
-      <div className="custom-tooltip">
-        <p className=" custom-tooltip__label">{label}</p>
-        <div className="custom-tooltip__desc">
-          {payload.map((entry: any, index: number) => (
-            <Box
-              as={'div'}
-              key={index}
-              className="custom-tooltip__desc__detail"
-            >
-              <span style={{ backgroundColor: `${entry.fill}` }}></span>
-              <span>{`${entry.name}:  `}</span>
-              <span>{formatNumber(entry.value)}</span>
-              <br />
-            </Box>
-          ))}
-        </div>
-      </div>
-    );
-  }
-  return null;
-};
-
-export const renderLegend = (props: any) => {
-  const { payload } = props;
-
-  return (
-    <div>
-      {payload.map((entry: any, index: number) => (
-        <div key={`item-${index}`} className="custom-legend">
-          <span style={{ color: `${entry.color}` }}>{entry.value}</span>
-          <span style={{ backgroundColor: `${entry.color}` }}></span>
-        </div>
-      ))}
-    </div>
-  );
 };
 
 export const tickFormatTime = (value: string) => {

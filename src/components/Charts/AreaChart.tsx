@@ -11,10 +11,10 @@ import {
   YAxis,
 } from 'recharts';
 import { COLORS, getHourAndMinute } from '../../utils/common';
-import { CustomTooltip, renderLegend } from './BarChart';
 import { ChartProps } from './LineChart';
 import { VisualizationOptionsType } from 'src/utils/query.type';
 import { checkFormatValue } from 'src/utils/utils-format';
+import { CustomTooltip, renderLegend } from './CustomComponent';
 
 type ChartConfigType = VisualizationOptionsType;
 type Props = ChartProps & {
@@ -117,6 +117,7 @@ const VisualizationAreaChart = (props: Props) => {
             dataKey={yAxisKey}
             stroke={COLORS[index % COLORS.length]}
             fill={COLORS[index % COLORS.length]}
+            stackId={chartOptionsConfigs?.stacking ? 'a' : undefined}
           >
             {!configs?.chartOptionsConfigs?.stacking &&
               configs?.chartOptionsConfigs?.showDataLabels && (

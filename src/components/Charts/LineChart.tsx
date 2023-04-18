@@ -13,7 +13,7 @@ import {
 import { getHourAndMinute, randomColor } from '../../utils/common';
 import { VisualizationOptionsType } from 'src/utils/query.type';
 import { checkFormatValue } from 'src/utils/utils-format';
-import { CustomTooltip, renderLegend } from './BarChart';
+import { CustomTooltip, renderLegend } from './CustomComponent';
 
 type ChartConfigType = VisualizationOptionsType;
 export type ChartProps = {

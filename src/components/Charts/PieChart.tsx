@@ -7,7 +7,7 @@ import {
   Tooltip,
 } from 'recharts';
 import { COLORS } from 'src/utils/common';
-import { CustomTooltip, renderLegend } from './BarChart';
+import { CustomTooltip, renderLegend } from './CustomComponent';
 
 type Props = {
   data: unknown[];
