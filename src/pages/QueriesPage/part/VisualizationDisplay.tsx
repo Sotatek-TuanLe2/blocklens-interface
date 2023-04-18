@@ -211,6 +211,7 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
 
   const renderVisualization = (visualization: VisualizationType) => {
     const type = visualization.options?.globalSeriesType || visualization.type;
+
     const data = visualization.options.xAxisConfigs?.sortX
       ? queryResult.sort(
           (a: any, b: any) =>
@@ -251,9 +252,15 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
         />
       );
     } else if (type === TYPE_VISUALIZATION.counter) {
-      visualizationDisplay = <VisualizationCounter />;
+      visualizationDisplay = (
+        <VisualizationCounter
+          data={queryResult}
+          visualization={visualization}
+        />
+      );
       visualizationConfiguration = (
         <CounterConfiguration
+          data={queryResult}
           visualization={visualization}
           onChangeConfigurations={onChangeConfigurations}
         />
@@ -289,95 +296,6 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
               }
               yAxisKeys={visualization.options.columnMapping?.yAxis || []}
               configs={visualization.options}
-    switch (type) {
-      case TYPE_VISUALIZATION.table:
-        return (
-          <>
-            <div className="visual-container__visualization">
-              <div className="visual-container__visualization__title">
-                {visualization.name}
-              </div>
-              <VisualizationTable
-                data={queryResult}
-                setDataTable={setDataTable}
-                dataColumn={visualization.options.columns}
-              />
-            </div>
-            <TableConfigurations
-              visualization={visualization}
-              onChangeConfigurations={onChangeConfigurations}
-              dataTable={dataTable}
-            />
-          </>
-        );
-      case TYPE_VISUALIZATION.counter:
-        return (
-          <>
-            <div className="visual-container__visualization">
-              <div className="visual-container__visualization__title">
-                {visualization.name}
-              </div>
-              <VisualizationCounter
-                data={queryResult}
-                visualization={visualization}
-              />
-            </div>
-            <CounterConfiguration
-              data={queryResult}
-              visualization={visualization}
-              onChangeConfigurations={onChangeConfigurations}
-            />
-          </>
-        );
-      case TYPE_VISUALIZATION.line: {
-        return (
-          <>
-            <div className="visual-container__visualization">
-              <div className="visual-container__visualization__title">
-                {visualization.name}
-              </div>
-              <LineChart
-                data={queryResult}
-                xAxisKey="time"
-                yAxisKeys={['size']}
-              />
-            </div>
-            <ChartConfigurations
-              data={queryResult}
-              visualization={visualization}
-              onChangeConfigurations={onChangeConfigurations}
-            />
-          </>
-        );
-      }
-      case TYPE_VISUALIZATION.bar:
-        return (
-          <>
-            <div className="visual-container__visualization">
-              <div className="visual-container__visualization__title">
-                {visualization.name}
-              </div>
-              <BarChart
-                data={
-                  visualization.options.xAxisConfigs?.sortX
-                    ? queryResult.sort(
-                        (a: any, b: any) =>
-                          a[visualization.options.columnMapping.xAxis] -
-                          b[visualization.options.columnMapping.xAxis],
-                      )
-                    : queryResult
-                }
-                xAxisKey={visualization.options?.columnMapping?.xAxis || 'time'}
-                yAxisKeys={
-                  visualization.options.columnMapping?.yAxis || ['size']
-                }
-                configs={visualization.options}
-              />
-            </div>
-            <ChartConfigurations
-              data={queryResult}
-              visualization={visualization}
-              onChangeConfigurations={onChangeConfigurations}
             />
           );
           break;
