@@ -7,7 +7,8 @@ import {
   Tooltip,
 } from 'recharts';
 import { COLORS } from 'src/utils/common';
-import { CustomTooltip, renderLegend } from './BarChart';
+import CustomTooltip from './CustomTooltip';
+import CustomLegend from './CustomLegend';
 
 type Props = {
   data: unknown[];
@@ -32,7 +33,7 @@ const VisualizationPieChart = ({ data, dataKey, nameKey }: Props) => {
           verticalAlign="middle"
           align="right"
           layout="vertical"
-          content={renderLegend}
+          content={<CustomLegend />}
         />
       </PieChart>
     </ResponsiveContainer>

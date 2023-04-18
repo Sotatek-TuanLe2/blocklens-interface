@@ -1,5 +1,5 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import 'src/styles/components/Chart.scss';
 import {
   AreaChart,
@@ -322,11 +322,12 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
         case TYPE_VISUALIZATION.area:
           visualizationDisplay = (
             <AreaChart
-              data={queryResult}
+              data={data}
               xAxisKey={
                 visualization.options?.columnMapping?.xAxis || defaultTimeXAxis
               }
               yAxisKeys={visualization.options.columnMapping?.yAxis || []}
+              configs={visualization.options}
             />
           );
           break;
