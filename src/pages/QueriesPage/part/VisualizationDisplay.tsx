@@ -290,11 +290,12 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
         case TYPE_VISUALIZATION.area:
           visualizationDisplay = (
             <AreaChart
-              data={queryResult}
+              data={data}
               xAxisKey={
                 visualization.options?.columnMapping?.xAxis || defaultTimeXAxis
               }
               yAxisKeys={visualization.options.columnMapping?.yAxis || []}
+              configs={visualization.options}
             />
           );
           break;

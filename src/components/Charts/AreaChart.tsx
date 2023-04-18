@@ -102,6 +102,15 @@ const VisualizationAreaChart = (props: Props) => {
           animationEasing={'linear'}
         />
 
+        {chartOptionsConfigs?.showLegend && (
+          <Legend
+            verticalAlign="middle"
+            align="right"
+            layout="vertical"
+            content={renderLegend}
+          />
+        )}
+
         {yAxisKeys?.map((yAxisKey, index) => (
           <Area
             key={yAxisKey}
@@ -119,15 +128,6 @@ const VisualizationAreaChart = (props: Props) => {
               )}
           </Area>
         ))}
-
-        {chartOptionsConfigs?.showLegend && (
-          <Legend
-            verticalAlign="middle"
-            align="right"
-            layout="vertical"
-            content={renderLegend}
-          />
-        )}
       </AreaChart>
     </ResponsiveContainer>
   );
