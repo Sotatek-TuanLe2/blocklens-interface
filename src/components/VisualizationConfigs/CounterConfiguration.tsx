@@ -32,7 +32,7 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
   );
 
   let timeout: any = null;
-  console.log(editVisualization, 'editVisualization');
+
   useEffect(() => {
     clearTimeout(timeout);
     timeout = setTimeout(() => {
