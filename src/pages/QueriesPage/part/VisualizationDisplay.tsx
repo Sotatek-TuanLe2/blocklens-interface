@@ -1,5 +1,5 @@
-import { Box, Text } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
+import { Box, Flex, Text } from '@chakra-ui/react';
+import { useEffect, useMemo, useState } from 'react';
 import 'src/styles/components/Chart.scss';
 import {
   AreaChart,
@@ -90,6 +90,22 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
       ? objectKeys(queryResult[0])
       : [];
 
+  const defaultTimeXAxis = useMemo(() => {
+    let result = '';
+    const firstResultInQuery =
+      queryResult && !!queryResult.length ? queryResult[0] : null;
+    if (firstResultInQuery) {
+      Object.keys(firstResultInQuery).forEach((key: string) => {
+        const date = moment(firstResultInQuery[key]);
+        if (date.isValid()) {
+          result = key;
+          return;
+        }
+      });
+    }
+    return result;
+  }, [queryResult]);
+
   const updateQuery = async (updateQuery: IQuery) => {
     const request = new DashboardsRequest();
     await request.updateQuery(queryValue.id, updateQuery);
@@ -148,8 +164,8 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
         options: {
           globalSeriesType: searchedVisualization.type,
           columnMapping: {
-            xAxis: 'time',
-            yAxis: ['size'],
+            xAxis: defaultTimeXAxis,
+            yAxis: [],
           },
           chartOptionsConfigs: {
             showLegend: true,
@@ -195,6 +211,84 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
 
   const renderVisualization = (visualization: VisualizationType) => {
     const type = visualization.options?.globalSeriesType || visualization.type;
+    const data = visualization.options.xAxisConfigs?.sortX
+      ? queryResult.sort(
+          (a: any, b: any) =>
+            a[visualization.options.columnMapping.xAxis] -
+            b[visualization.options.columnMapping.xAxis],
+        )
+      : queryResult;
+
+    if (type === TYPE_VISUALIZATION.new) {
+      return <AddVisualization onAddVisualize={addVisualizationHandler} />;
+    }
+
+    let errorMessage = null;
+    let visualizationDisplay = null;
+    let visualizationConfiguration = null;
+
+    if (!visualization.options.columnMapping?.xAxis) {
+      errorMessage = 'Missing x-axis';
+    } else if (!visualization.options.columnMapping?.yAxis.length) {
+      errorMessage = 'Missing y-axis';
+    } else {
+      // TODO: check yAxis values have same type
+    }
+
+    if (type === TYPE_VISUALIZATION.table) {
+      visualizationDisplay = (
+        <VisualizationTable
+          data={queryResult}
+          setDataTable={setDataTable}
+          dataColumn={visualization.options.columns}
+        />
+      );
+      visualizationConfiguration = (
+        <TableConfigurations
+          visualization={visualization}
+          onChangeConfigurations={onChangeConfigurations}
+          dataTable={dataTable}
+        />
+      );
+    } else if (type === TYPE_VISUALIZATION.counter) {
+      visualizationDisplay = <VisualizationCounter />;
+      visualizationConfiguration = (
+        <CounterConfiguration
+          visualization={visualization}
+          onChangeConfigurations={onChangeConfigurations}
+        />
+      );
+    } else {
+      // chart
+      visualizationConfiguration = (
+        <ChartConfigurations
+          data={queryResult}
+          visualization={visualization}
+          onChangeConfigurations={onChangeConfigurations}
+        />
+      );
+      switch (type) {
+        case TYPE_VISUALIZATION.bar:
+          visualizationDisplay = (
+            <BarChart
+              data={data}
+              xAxisKey={
+                visualization.options?.columnMapping?.xAxis || defaultTimeXAxis
+              }
+              yAxisKeys={visualization.options.columnMapping?.yAxis || []}
+              configs={visualization.options}
+            />
+          );
+          break;
+        case TYPE_VISUALIZATION.line:
+          visualizationDisplay = (
+            <LineChart
+              data={data}
+              xAxisKey={
+                visualization.options?.columnMapping?.xAxis || defaultTimeXAxis
+              }
+              yAxisKeys={visualization.options.columnMapping?.yAxis || []}
+              configs={visualization.options}
     switch (type) {
       case TYPE_VISUALIZATION.table:
         return (
@@ -285,68 +379,61 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
               visualization={visualization}
               onChangeConfigurations={onChangeConfigurations}
             />
-          </>
-        );
-      case TYPE_VISUALIZATION.area:
-        return (
-          <>
-            <div className="visual-container__visualization">
-              <div className="visual-container__visualization__title">
-                {visualization.name}
-              </div>
-              <AreaChart
-                data={queryResult}
-                xAxisKey="time"
-                yAxisKeys={['size']}
-              />
-            </div>
-            <ChartConfigurations
+          );
+          break;
+        case TYPE_VISUALIZATION.area:
+          visualizationDisplay = (
+            <AreaChart
               data={queryResult}
-              visualization={visualization}
-              onChangeConfigurations={onChangeConfigurations}
+              xAxisKey={
+                visualization.options?.columnMapping?.xAxis || defaultTimeXAxis
+              }
+              yAxisKeys={visualization.options.columnMapping?.yAxis || []}
             />
-          </>
-        );
-      case TYPE_VISUALIZATION.pie:
-        return (
-          <>
-            <div className="visual-container__visualization">
-              <div className="visual-container__visualization__title">
-                {visualization.name}
-              </div>
-              <PieChart data={queryResult} dataKey={'number'} />;
-            </div>
-            <ChartConfigurations
+          );
+          break;
+        case TYPE_VISUALIZATION.scatter:
+          visualizationDisplay = (
+            <ScatterChart
               data={queryResult}
-              visualization={visualization}
-              onChangeConfigurations={onChangeConfigurations}
+              xAxisKey={
+                visualization.options?.columnMapping?.xAxis || defaultTimeXAxis
+              }
+              yAxisKeys={visualization.options.columnMapping?.yAxis || []}
             />
-          </>
-        );
-      case TYPE_VISUALIZATION.scatter: {
-        return (
-          <>
-            <div className="visual-container__visualization">
-              <div className="visual-container__visualization__title">
-                {visualization.name}
-              </div>
-              <ScatterChart
-                data={queryResult}
-                xAxisKey={'number'}
-                yAxisKeys={['size']}
-              />
-            </div>
-            <ChartConfigurations
-              data={queryResult}
-              visualization={visualization}
-              onChangeConfigurations={onChangeConfigurations}
-            />
-          </>
-        );
+          );
+          break;
+        case TYPE_VISUALIZATION.pie:
+          visualizationDisplay = (
+            <PieChart data={queryResult} dataKey={'number'} />
+          );
+          break;
+        default:
+          break;
       }
-      default:
-        return <AddVisualization onAddVisualize={addVisualizationHandler} />;
     }
+
+    return (
+      <>
+        <div className="visual-container__visualization">
+          <div className="visual-container__visualization__title">
+            {visualization.name}
+          </div>
+          {errorMessage ? (
+            <Flex
+              alignItems={'center'}
+              justifyContent={'center'}
+              className="visual-container__visualization__error"
+            >
+              {errorMessage}
+            </Flex>
+          ) : (
+            visualizationDisplay
+          )}
+        </div>
+        {visualizationConfiguration}
+      </>
+    );
   };
 
   const getIcon = (chain: string | undefined) => {
@@ -384,18 +471,18 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
         tabs={[
           ...queryValue.visualizations,
           {
-            id: 'newVisualization',
+            id: TYPE_VISUALIZATION.new,
             createdAt: moment().toDate(),
             options: {},
             name: 'New Visualization',
-            type: 'newVisualization',
+            type: TYPE_VISUALIZATION.new,
           },
         ].map((v) => ({
           icon: getIcon(v.options.globalSeriesType || v.type),
           name: v.name,
           content: renderVisualization(v),
           id: v.id,
-          closeable: v.type !== 'newVisualization',
+          closeable: v.type !== TYPE_VISUALIZATION.new,
         }))}
       />
 

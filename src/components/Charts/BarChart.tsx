@@ -11,7 +11,7 @@ import {
   Label,
   LabelList,
 } from 'recharts';
-import { getHourAndMinute, randomColor } from '../../utils/common';
+import { COLORS, getHourAndMinute } from '../../utils/common';
 import { ChartProps } from './LineChart';
 import { VisualizationOptionsType } from '../../utils/query.type';
 import { Box } from '@chakra-ui/react';
@@ -119,10 +119,9 @@ const VisualizationBarChart = (props: Props) => {
               fill={'#ccc'}
             />
           </XAxis>
-          {yAxisKeys?.map((yKey) => (
+          {yAxisKeys && !!yAxisKeys.length && (
             <YAxis
-              key={yKey}
-              dataKey={yKey}
+              dataKey={yAxisKeys[0]}
               label={{
                 value: yAxisConfigs?.title,
                 angle: -90,
@@ -132,7 +131,7 @@ const VisualizationBarChart = (props: Props) => {
               tickFormatter={tickFormatAxis('y')}
               {...logarithmicProps}
             />
-          ))}
+          )}
           <Tooltip
             content={<CustomTooltip />}
             animationDuration={200}
@@ -146,11 +145,11 @@ const VisualizationBarChart = (props: Props) => {
               content={renderLegend}
             />
           )}
-          {yAxisKeys?.map((yKey) => (
+          {yAxisKeys?.map((yKey, index) => (
             <Bar
               key={yKey}
               dataKey={yKey}
-              fill={randomColor}
+              fill={COLORS[index % COLORS.length]}
               stackId={chartOptionsConfigs?.stacking ? 'a' : undefined}
             >
               {!configs?.chartOptionsConfigs?.stacking &&

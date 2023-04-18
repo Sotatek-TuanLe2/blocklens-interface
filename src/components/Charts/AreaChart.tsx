@@ -14,7 +14,7 @@ import { ChartProps } from './LineChart';
 type Props = ChartProps;
 const VisualizationAreaChart = ({ data, xAxisKey, yAxisKeys }: Props) => {
   return (
-    <ResponsiveContainer width={'100%'} height={'100%'}>
+    <ResponsiveContainer width={'96%'} height={'96%'}>
       <AreaChart
         className="area-chart"
         data={data}
@@ -29,9 +29,7 @@ const VisualizationAreaChart = ({ data, xAxisKey, yAxisKeys }: Props) => {
           dataKey={xAxisKey}
           tickFormatter={xAxisKey === 'time' ? tickFormatTime : undefined}
         />
-        {yAxisKeys?.map((yAxisKey) => (
-          <YAxis dataKey={yAxisKey} key={yAxisKey} />
-        ))}
+        {yAxisKeys && !!yAxisKeys.length && <YAxis dataKey={yAxisKeys[0]} />}
         {yAxisKeys?.map((yAxisKey, index) => (
           <Area
             key={yAxisKey}
