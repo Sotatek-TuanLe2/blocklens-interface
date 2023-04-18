@@ -246,6 +246,7 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
     }
 
     if (type === TYPE_VISUALIZATION.table) {
+      errorMessage = null;
       visualizationDisplay = (
         <VisualizationTable
           data={queryResult}
@@ -261,6 +262,7 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
         />
       );
     } else if (type === TYPE_VISUALIZATION.counter) {
+      errorMessage = null;
       visualizationDisplay = (
         <VisualizationCounter
           data={queryResult}
