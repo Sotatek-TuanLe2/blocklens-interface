@@ -49,8 +49,8 @@ export const COLORS = [
   'rgb(5, 191, 219)',
 ];
 
-export const getHourAndMinute = (date: Date) => {
-  return moment(date).format('hh:mm');
+export const getHourAndMinute = (date: string) => {
+  return moment(new Date(date)).format('hh:mm');
 };
 
 export enum VALUE_VISUALIZATION {

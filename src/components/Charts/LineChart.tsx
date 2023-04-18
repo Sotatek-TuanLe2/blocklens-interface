@@ -12,8 +12,9 @@ import {
 } from 'recharts';
 import { COLORS, getHourAndMinute } from '../../utils/common';
 import { VisualizationOptionsType } from 'src/utils/query.type';
-import { Box } from '@chakra-ui/react';
 import { checkFormatValue } from 'src/utils/utils-format';
+import CustomTooltip from './CustomTooltip';
+import CustomLegend from './CustomLegend';
 
 type ChartConfigType = VisualizationOptionsType;
 export type ChartProps = {
@@ -25,52 +26,11 @@ type Props = ChartProps & {
   configs?: Partial<ChartConfigType>;
 };
 
-const CustomTooltip = (props: any) => {
-  const { active, payload, label } = props;
-  if (active && payload && payload.length) {
-    return (
-      <div className="custom-tooltip">
-        <p className=" custom-tooltip__label">{label}</p>
-        <div className="custom-tooltip__desc">
-          {payload.map((entry: any, index: number) => (
-            <Box as={'div'} key={index}>
-              <span style={{ backgroundColor: `${entry.fill}` }}></span>
-              <span>{entry.name}</span>
-              <span>{entry.value}</span>
-              <br />
-            </Box>
-          ))}
-        </div>
-      </div>
-    );
-  }
-  return null;
-};
-
-const renderLegend = (props: any) => {
-  const { payload } = props;
-
-  return (
-    <div>
-      {payload.map((entry: any, index: number) => (
-        <div key={`item-${index}`} className="custom-legend">
-          <span style={{ color: `${entry.color}` }}>{entry.value}</span>
-          <span style={{ backgroundColor: `${entry.color}` }}></span>
-        </div>
-      ))}
-    </div>
-  );
-};
-
 const VisualizationLineChart = (props: Props) => {
   const { xAxisKey, yAxisKeys, data, configs } = props;
   const chartOptionsConfigs = configs?.chartOptionsConfigs;
   const xAxisConfigs = configs?.xAxisConfigs;
   const yAxisConfigs = configs?.yAxisConfigs;
-
-  const tickFormatTime = (value: string) => {
-    return getHourAndMinute(new Date(value));
-  };
 
   const tickFormatAxis = (axis: string) => (value: string) => {
     if (axis === 'x' && configs?.xAxisConfigs?.tickFormat) {
@@ -98,11 +58,19 @@ const VisualizationLineChart = (props: Props) => {
 
   return (
     <ResponsiveContainer className="visual-container__visualization__linechart">
-      <LineChart height={500} data={data} className="line-chart">
+      <LineChart
+        height={500}
+        data={data}
+        className="line-chart"
+        margin={{
+          left: 20,
+          bottom: 20,
+        }}
+      >
         <CartesianGrid vertical={false} strokeDasharray="4" />
         <XAxis
           tickFormatter={
-            xAxisKey === 'time' ? tickFormatTime : tickFormatAxis('x')
+            xAxisKey === 'time' ? getHourAndMinute : tickFormatAxis('x')
           }
           dataKey={xAxisKey}
           fill={'#ccc'}
@@ -137,7 +105,7 @@ const VisualizationLineChart = (props: Props) => {
             verticalAlign="middle"
             align="right"
             layout="vertical"
-            content={renderLegend}
+            content={<CustomLegend />}
           />
         )}
         {yAxisKeys?.map((yAxisKey, index) => (
