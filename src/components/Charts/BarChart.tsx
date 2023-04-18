@@ -119,10 +119,9 @@ const VisualizationBarChart = (props: Props) => {
               fill={'#ccc'}
             />
           </XAxis>
-          {yAxisKeys?.map((yKey) => (
+          {yAxisKeys && !!yAxisKeys.length && (
             <YAxis
-              key={yKey}
-              dataKey={yKey}
+              dataKey={yAxisKeys[0]}
               label={{
                 value: yAxisConfigs?.title,
                 angle: -90,
@@ -132,7 +131,7 @@ const VisualizationBarChart = (props: Props) => {
               tickFormatter={tickFormatAxis('y')}
               {...logarithmicProps}
             />
-          ))}
+          )}
           <Tooltip
             content={<CustomTooltip />}
             animationDuration={200}

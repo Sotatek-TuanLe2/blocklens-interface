@@ -29,9 +29,7 @@ const VisualizationAreaChart = ({ data, xAxisKey, yAxisKeys }: Props) => {
           dataKey={xAxisKey}
           tickFormatter={xAxisKey === 'time' ? tickFormatTime : undefined}
         />
-        {yAxisKeys?.map((yAxisKey) => (
-          <YAxis dataKey={yAxisKey} key={yAxisKey} />
-        ))}
+        {yAxisKeys && !!yAxisKeys.length && <YAxis dataKey={yAxisKeys[0]} />}
         {yAxisKeys?.map((yAxisKey, index) => (
           <Area
             key={yAxisKey}
