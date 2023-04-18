@@ -54,7 +54,8 @@ export const XAxisOptions: React.FC<IXAxisOptions> = ({
           <div key={option.value} className={'main-checkbox'}>
             <Checkbox
               key={option.value}
-              value={option.value}
+              // @ts-ignore
+              isChecked={xConfigs[option.value]}
               onChange={(e) =>
                 changeValueHandle(option.value, e.target.checked)
               }
