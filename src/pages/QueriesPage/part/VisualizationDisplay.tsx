@@ -212,20 +212,14 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
       return <AddVisualization onAddVisualize={addVisualizationHandler} />;
     }
 
-    let visualizationError = null;
+    let errorMessage = null;
     let visualizationDisplay = null;
     let visualizationConfiguration = null;
 
-    if (!visualization.options.columnMapping?.yAxis.length) {
-      visualizationError = (
-        <Flex
-          alignItems={'center'}
-          justifyContent={'center'}
-          className="visual-container__visualization__error"
-        >
-          Missing y-axis
-        </Flex>
-      );
+    if (!visualization.options.columnMapping?.xAxis) {
+      errorMessage = 'Missing x-axis';
+    } else if (!visualization.options.columnMapping?.yAxis.length) {
+      errorMessage = 'Missing y-axis';
     } else {
       // TODO: check yAxis values have same type
     }
@@ -326,7 +320,17 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
           <div className="visual-container__visualization__title">
             {visualization.name}
           </div>
-          {visualizationError ? visualizationError : visualizationDisplay}
+          {errorMessage ? (
+            <Flex
+              alignItems={'center'}
+              justifyContent={'center'}
+              className="visual-container__visualization__error"
+            >
+              {errorMessage}
+            </Flex>
+          ) : (
+            visualizationDisplay
+          )}
         </div>
         {visualizationConfiguration}
       </>
