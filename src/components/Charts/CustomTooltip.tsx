@@ -1,7 +1,7 @@
 import { Box } from '@chakra-ui/react';
 import { formatNumber } from 'src/utils/utils-format';
 
-export const CustomTooltip = (props: any) => {
+const CustomTooltip = (props: any) => {
   const { active, payload, label } = props;
   if (active && payload && payload.length) {
     return (
@@ -27,17 +27,4 @@ export const CustomTooltip = (props: any) => {
   return null;
 };
 
-export const renderLegend = (props: any) => {
-  const { payload } = props;
-
-  return (
-    <div>
-      {payload.map((entry: any, index: number) => (
-        <div key={`item-${index}`} className="custom-legend">
-          <span style={{ color: `${entry.color}` }}>{entry.value}</span>
-          <span style={{ backgroundColor: `${entry.color}` }}></span>
-        </div>
-      ))}
-    </div>
-  );
-};
+export default CustomTooltip;

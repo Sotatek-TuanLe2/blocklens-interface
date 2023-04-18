@@ -13,7 +13,8 @@ import {
 import { COLORS, getHourAndMinute } from '../../utils/common';
 import { VisualizationOptionsType } from 'src/utils/query.type';
 import { checkFormatValue } from 'src/utils/utils-format';
-import { CustomTooltip, renderLegend } from './CustomComponent';
+import CustomTooltip from './CustomTooltip';
+import CustomLegend from './CustomLegend';
 
 type ChartConfigType = VisualizationOptionsType;
 export type ChartProps = {
@@ -108,7 +109,7 @@ const VisualizationLineChart = (props: Props) => {
             verticalAlign="middle"
             align="right"
             layout="vertical"
-            content={renderLegend}
+            content={<CustomLegend />}
           />
         )}
         {yAxisKeys?.map((yAxisKey, index) => (

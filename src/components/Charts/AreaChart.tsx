@@ -14,7 +14,8 @@ import { COLORS, getHourAndMinute } from '../../utils/common';
 import { ChartProps } from './LineChart';
 import { VisualizationOptionsType } from 'src/utils/query.type';
 import { checkFormatValue } from 'src/utils/utils-format';
-import { CustomTooltip, renderLegend } from './CustomComponent';
+import CustomTooltip from './CustomTooltip';
+import CustomLegend from './CustomLegend';
 
 type ChartConfigType = VisualizationOptionsType;
 type Props = ChartProps & {
@@ -107,7 +108,7 @@ const VisualizationAreaChart = (props: Props) => {
             verticalAlign="middle"
             align="right"
             layout="vertical"
-            content={renderLegend}
+            content={<CustomLegend />}
           />
         )}
 
