@@ -8,10 +8,12 @@ import {
   XAxis,
   YAxis,
   Label,
+  LabelList,
 } from 'recharts';
 import { getHourAndMinute, randomColor } from '../../utils/common';
 import { VisualizationOptionsType } from 'src/utils/query.type';
 import { Box } from '@chakra-ui/react';
+import { checkFormatValue } from 'src/utils/utils-format';
 
 type ChartConfigType = VisualizationOptionsType;
 export type ChartProps = {
@@ -70,6 +72,23 @@ const VisualizationLineChart = (props: Props) => {
     return getHourAndMinute(new Date(value));
   };
 
+  const tickFormatAxis = (axis: string) => (value: string) => {
+    if (axis === 'x' && configs?.xAxisConfigs?.tickFormat) {
+      return checkFormatValue(configs?.xAxisConfigs?.tickFormat, value);
+    }
+    if (axis === 'y' && configs?.yAxisConfigs?.tickFormat) {
+      return checkFormatValue(configs?.yAxisConfigs?.tickFormat, value);
+    }
+    return value;
+  };
+
+  const labelFormat = (value: string) => {
+    if (configs?.yAxisConfigs?.labelFormat) {
+      return checkFormatValue(configs?.yAxisConfigs?.labelFormat, value);
+    }
+    return value;
+  };
+
   const logarithmicProps: any = yAxisConfigs?.logarithmic
     ? {
         scale: 'log',
@@ -82,7 +101,9 @@ const VisualizationLineChart = (props: Props) => {
       <LineChart height={500} data={data} className="line-chart">
         <CartesianGrid vertical={false} strokeDasharray="4" />
         <XAxis
-          tickFormatter={xAxisKey === 'time' ? tickFormatTime : undefined}
+          tickFormatter={
+            xAxisKey === 'time' ? tickFormatTime : tickFormatAxis('x')
+          }
           dataKey={xAxisKey}
           fill={'#ccc'}
         >
@@ -104,6 +125,7 @@ const VisualizationLineChart = (props: Props) => {
               position: 'insideLeft',
               fill: '#ccc',
             }}
+            tickFormatter={tickFormatAxis('y')}
             {...logarithmicProps}
           />
         ))}
@@ -127,7 +149,16 @@ const VisualizationLineChart = (props: Props) => {
             dataKey={yAxisKey}
             stroke={randomColor}
             dot={false}
-          />
+          >
+            {!configs?.chartOptionsConfigs?.stacking &&
+              configs?.chartOptionsConfigs?.showDataLabels && (
+                <LabelList
+                  dataKey={yAxisKey}
+                  position="top"
+                  formatter={labelFormat}
+                />
+              )}
+          </Line>
         ))}
       </LineChart>
     </ResponsiveContainer>
