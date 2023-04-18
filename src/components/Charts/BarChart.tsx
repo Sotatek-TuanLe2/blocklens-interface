@@ -15,7 +15,7 @@ import { getHourAndMinute, randomColor } from '../../utils/common';
 import { ChartProps } from './LineChart';
 import { VisualizationOptionsType } from '../../utils/query.type';
 import { Box } from '@chakra-ui/react';
-import { checkFormatValue } from 'src/utils/utils-format';
+import { checkFormatValue, formatNumber } from 'src/utils/utils-format';
 type ChartConfigType = VisualizationOptionsType;
 type Props = ChartProps & {
   configs?: Partial<ChartConfigType>;
@@ -36,7 +36,7 @@ export const CustomTooltip = (props: any) => {
             >
               <span style={{ backgroundColor: `${entry.fill}` }}></span>
               <span>{`${entry.name}:  `}</span>
-              <span>{entry.value}</span>
+              <span>{formatNumber(entry.value)}</span>
               <br />
             </Box>
           ))}

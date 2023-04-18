@@ -105,20 +105,20 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
 
     const columns = axisOptions.map(
       (col) =>
-      ({
-        id: col,
-        accessorKey: col,
-        header: col,
-        enableResizing: true,
-        size: 100,
-        align: 'left',
-        type: 'normal',
-        format: '',
-        coloredPositive: false,
-        coloredNegative: false,
-        coloredProgress: false,
-        isHidden: false,
-      } as ColumnDef<unknown>),
+        ({
+          id: col,
+          accessorKey: col,
+          header: col,
+          enableResizing: true,
+          size: 100,
+          align: 'left',
+          type: 'normal',
+          format: '',
+          coloredPositive: false,
+          coloredNegative: false,
+          coloredProgress: false,
+          isHidden: false,
+        } as ColumnDef<unknown>),
     );
     if (searchedVisualization.type === TYPE_VISUALIZATION.table) {
       newVisualization = {
@@ -186,10 +186,10 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
     const type = visualization.options?.globalSeriesType || visualization.type;
     const data = visualization.options.xAxisConfigs?.sortX
       ? queryResult.sort(
-        (a: any, b: any) =>
-          a[visualization.options.columnMapping.xAxis] -
-          b[visualization.options.columnMapping.xAxis],
-      )
+          (a: any, b: any) =>
+            a[visualization.options.columnMapping.xAxis] -
+            b[visualization.options.columnMapping.xAxis],
+        )
       : queryResult;
 
     switch (type) {
@@ -283,9 +283,12 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
                 {visualization.name}
               </div>
               <AreaChart
-                data={queryResult}
-                xAxisKey="time"
-                yAxisKeys={['size']}
+                data={data}
+                xAxisKey={visualization.options?.columnMapping?.xAxis || 'time'}
+                yAxisKeys={
+                  visualization.options.columnMapping?.yAxis || ['size']
+                }
+                configs={visualization.options}
               />
             </div>
             <ChartConfigurations

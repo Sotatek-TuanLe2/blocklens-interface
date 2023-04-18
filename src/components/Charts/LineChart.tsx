@@ -12,8 +12,8 @@ import {
 } from 'recharts';
 import { getHourAndMinute, randomColor } from '../../utils/common';
 import { VisualizationOptionsType } from 'src/utils/query.type';
-import { Box } from '@chakra-ui/react';
 import { checkFormatValue } from 'src/utils/utils-format';
+import { CustomTooltip, renderLegend } from './BarChart';
 
 type ChartConfigType = VisualizationOptionsType;
 export type ChartProps = {
@@ -23,43 +23,6 @@ export type ChartProps = {
 };
 type Props = ChartProps & {
   configs?: Partial<ChartConfigType>;
-};
-
-const CustomTooltip = (props: any) => {
-  const { active, payload, label } = props;
-  if (active && payload && payload.length) {
-    return (
-      <div className="custom-tooltip">
-        <p className=" custom-tooltip__label">{label}</p>
-        <div className="custom-tooltip__desc">
-          {payload.map((entry: any, index: number) => (
-            <Box as={'div'} key={index}>
-              <span style={{ backgroundColor: `${entry.fill}` }}></span>
-              <span>{entry.name}</span>
-              <span>{entry.value}</span>
-              <br />
-            </Box>
-          ))}
-        </div>
-      </div>
-    );
-  }
-  return null;
-};
-
-const renderLegend = (props: any) => {
-  const { payload } = props;
-
-  return (
-    <div>
-      {payload.map((entry: any, index: number) => (
-        <div key={`item-${index}`} className="custom-legend">
-          <span style={{ color: `${entry.color}` }}>{entry.value}</span>
-          <span style={{ backgroundColor: `${entry.color}` }}></span>
-        </div>
-      ))}
-    </div>
-  );
 };
 
 const VisualizationLineChart = (props: Props) => {
@@ -98,7 +61,15 @@ const VisualizationLineChart = (props: Props) => {
 
   return (
     <ResponsiveContainer className="visual-container__visualization__linechart">
-      <LineChart height={500} data={data} className="line-chart">
+      <LineChart
+        height={500}
+        data={data}
+        className="line-chart"
+        margin={{
+          left: 20,
+          bottom: 20,
+        }}
+      >
         <CartesianGrid vertical={false} strokeDasharray="4" />
         <XAxis
           tickFormatter={
