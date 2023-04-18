@@ -164,7 +164,7 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
         />
       </div>
       <div className="box-table-children">
-        <div className="ok">Align</div>
+        <div>Align</div>
 
         <AppSelect2
           className="select-table z-100"

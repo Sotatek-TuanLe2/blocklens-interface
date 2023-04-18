@@ -180,27 +180,6 @@ export function formatToPercent(
   return new BigNumber(newValue).toString() + '%';
 }
 
-export function formatNumberToCurrency(number: number): string {
-  const lookup: { [key: number]: string } = {
-    1e3: 'K',
-    1e6: 'M',
-    1e9: 'B',
-    1e12: 'T',
-    1e15: 'P',
-    1e18: 'E',
-  };
-
-  const absNumber = Math.abs(number);
-
-  for (const value in lookup) {
-    if (absNumber >= parseInt(value)) {
-      return (number / parseInt(value)).toFixed(0) + lookup[value];
-    }
-  }
-
-  return number.toString();
-}
-
 export function formatNumberWithDecimalDigits(
   number: number,
   a: string,
@@ -215,7 +194,7 @@ export function formatNumberWithDecimalDigits(
   const integerPart = decimalNumber.floor().toString();
   const decimalPart = decimalNumber
     .minus(integerPart)
-    .toFixed(a.length - 1)
+    .toFixed(a.length - 2)
     .slice(1);
   const formattedDecimalPart = decimalPart.padEnd(a.length - 1, '0');
   const result =
@@ -224,3 +203,21 @@ export function formatNumberWithDecimalDigits(
 
   return result;
 }
+export const checkFormatValue = (format: string, value: any) => {
+  switch (typeof value === 'number') {
+    case format.includes(','):
+      return value.toLocaleString('en-US');
+    case format.includes('0.'):
+      return formatNumberWithDecimalDigits(value, format);
+    case format === '0':
+      return parseInt(value);
+    case format === 'a':
+      return _formatLargeNumberIfNeed(value);
+    case format === '$':
+      return `$${value}`;
+    case format.includes('a') && format.includes('$'):
+      return `$${_formatLargeNumberIfNeed(value)}`;
+    default:
+      return value;
+  }
+};
