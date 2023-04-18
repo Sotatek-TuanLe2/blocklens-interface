@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 export interface IListAppResponse {
   pagingCounter?: number;
   offset?: number;
@@ -48,9 +50,7 @@ export const COLORS = [
 ];
 
 export const getHourAndMinute = (date: Date) => {
-  const hour = date.getHours();
-  const minute = date.getMinutes();
-  return `${hour}:${minute}`;
+  return moment(date).format('hh:mm');
 };
 
 export enum VALUE_VISUALIZATION {
