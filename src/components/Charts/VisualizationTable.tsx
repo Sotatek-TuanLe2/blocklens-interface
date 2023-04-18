@@ -7,10 +7,7 @@ import {
 } from '@tanstack/react-table';
 import { useEffect } from 'react';
 import 'src/styles/components/TableValue.scss';
-import {
-  formatNumberToCurrency,
-  formatNumberWithDecimalDigits,
-} from 'src/utils/utils-format';
+import { checkFormatValue } from 'src/utils/utils-format';
 
 interface ReactTableProps<T> {
   data: T[];
@@ -125,24 +122,7 @@ const VisualizationTable = <T,>({
                       return undefined;
                   }
                 };
-                const checkFormatValue = (format: string) => {
-                  switch (typeof value === 'number') {
-                    case format.includes(','):
-                      return value.toLocaleString('en-US');
-                    case format.includes('0.'):
-                      return formatNumberWithDecimalDigits(value, format);
-                    case format === '0':
-                      return parseInt(value);
-                    case format === 'a':
-                      return formatNumberToCurrency(value);
-                    case format === '$':
-                      return `$${value}`;
-                    case format.includes('a') && format.includes('$'):
-                      return `$${formatNumberToCurrency(value)}`;
-                    default:
-                      return value;
-                  }
-                };
+
                 return (
                   <td
                     {...{
@@ -178,7 +158,7 @@ const VisualizationTable = <T,>({
                           className="visual-progressbar"
                         ></div>
                       ) : null}
-                      {checkFormatValue(format)}
+                      {checkFormatValue(format, value)}
                     </div>
                   </td>
                 );

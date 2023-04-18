@@ -31,6 +31,8 @@ import {
 import TableConfigurations from '../../../components/VisualizationConfigs/TableConfigurations';
 import moment from 'moment';
 import { objectKeys } from 'src/utils/utils-network';
+import VisualizationCounter from 'src/components/Charts/VisualizationCounter';
+import CounterConfiguration from 'src/components/VisualizationConfigs/CounterConfiguration';
 
 type VisualizationConfigType = {
   value: string;
@@ -63,6 +65,11 @@ const visualizationConfigs: VisualizationConfigType[] = [
     label: 'Scatter chart',
     type: TYPE_VISUALIZATION.scatter,
     value: VALUE_VISUALIZATION.scatter,
+  },
+  {
+    label: 'Counter',
+    type: TYPE_VISUALIZATION.counter,
+    value: VALUE_VISUALIZATION.counter,
   },
 ];
 
@@ -203,6 +210,21 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
               visualization={visualization}
               onChangeConfigurations={onChangeConfigurations}
               dataTable={dataTable}
+            />
+          </>
+        );
+      case TYPE_VISUALIZATION.counter:
+        return (
+          <>
+            <div className="visual-container__visualization">
+              <div className="visual-container__visualization__title">
+                {visualization.name}
+              </div>
+              <VisualizationCounter />
+            </div>
+            <CounterConfiguration
+              visualization={visualization}
+              onChangeConfigurations={onChangeConfigurations}
             />
           </>
         );

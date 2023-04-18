@@ -15,6 +15,7 @@ import { getHourAndMinute, randomColor } from '../../utils/common';
 import { ChartProps } from './LineChart';
 import { VisualizationOptionsType } from '../../utils/query.type';
 import { Box } from '@chakra-ui/react';
+import { checkFormatValue } from 'src/utils/utils-format';
 type ChartConfigType = VisualizationOptionsType;
 type Props = ChartProps & {
   configs?: Partial<ChartConfigType>;
@@ -77,17 +78,17 @@ const VisualizationBarChart = (props: Props) => {
 
   const tickFormatAxis = (axis: string) => (value: string) => {
     if (axis === 'x' && configs?.xAxisConfigs?.tickFormat) {
-      // TODO: return tick format
+      return checkFormatValue(configs?.xAxisConfigs?.tickFormat, value);
     }
     if (axis === 'y' && configs?.yAxisConfigs?.tickFormat) {
-      // TODO: return tick format
+      return checkFormatValue(configs?.yAxisConfigs?.tickFormat, value);
     }
     return value;
   };
 
   const labelFormat = (value: string) => {
     if (configs?.yAxisConfigs?.labelFormat) {
-      // TODO: return label format
+      return checkFormatValue(configs?.yAxisConfigs?.labelFormat, value);
     }
     return value;
   };
