@@ -115,10 +115,10 @@ const VisualizationLineChart = (props: Props) => {
           />
         </XAxis>
 
-        {yAxisKeys?.map((yAxisKey) => (
+        {yAxisKeys && (
           <YAxis
-            key={yAxisKey}
-            dataKey={yAxisKey}
+            key={yAxisKeys[0]}
+            dataKey={yAxisKeys[0]}
             label={{
               value: yAxisConfigs?.title,
               angle: -90,
@@ -128,7 +128,7 @@ const VisualizationLineChart = (props: Props) => {
             tickFormatter={tickFormatAxis('y')}
             {...logarithmicProps}
           />
-        ))}
+        )}
         <Tooltip
           content={<CustomTooltip />}
           animationDuration={200}
