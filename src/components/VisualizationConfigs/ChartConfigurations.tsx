@@ -57,13 +57,9 @@ const ChartConfigurations = ({
         <GridItem>
           <ResultData
             axisOptions={axisOptions as string[]}
-            xAxisMapped={
-              editVisualization.options?.columnMapping?.xAxis || 'time'
-            }
-            yAxesMapped={
-              editVisualization.options?.columnMapping?.yAxis || ['size']
-            }
-            onChangeXAxis={(xAxis) => {
+            xAxis={editVisualization.options?.columnMapping?.xAxis}
+            yAxis={editVisualization.options?.columnMapping?.yAxis}
+            onChangeAxis={(xAxis: string, yAxis: string[]) => {
               setEditVisualization({
                 ...editVisualization,
                 options: {
@@ -71,17 +67,6 @@ const ChartConfigurations = ({
                   columnMapping: {
                     ...editVisualization.options.columnMapping,
                     xAxis,
-                  },
-                },
-              });
-            }}
-            onChangeYAxis={(yAxis) => {
-              setEditVisualization({
-                ...editVisualization,
-                options: {
-                  ...editVisualization.options,
-                  columnMapping: {
-                    ...editVisualization.options.columnMapping,
                     yAxis,
                   },
                 },
