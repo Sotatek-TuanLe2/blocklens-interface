@@ -80,6 +80,7 @@ const VisualizationAreaChart = (props: Props) => {
             fill={'#ccc'}
           />
         </XAxis>
+        {yAxisKeys && !!yAxisKeys.length && <YAxis dataKey={yAxisKeys[0]} />}
         {yAxisKeys?.map((yAxisKey) => (
           <YAxis
             key={yAxisKey}

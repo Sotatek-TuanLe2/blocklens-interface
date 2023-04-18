@@ -85,10 +85,8 @@ const VisualizationLineChart = (props: Props) => {
             fill={'#ccc'}
           />
         </XAxis>
-
-        {yAxisKeys && (
+        {yAxisKeys && !!yAxisKeys.length && (
           <YAxis
-            key={yAxisKeys[0]}
             dataKey={yAxisKeys[0]}
             label={{
               value: yAxisConfigs?.title,
