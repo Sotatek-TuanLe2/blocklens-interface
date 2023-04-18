@@ -1,35 +1,85 @@
-import React from 'react';
-import 'src/styles/components/CounterConfigurations.scss';
-import AppButton from '../AppButton';
+import { Checkbox } from '@chakra-ui/checkbox';
 import { Grid, GridItem, Text } from '@chakra-ui/layout';
+import React, { useEffect, useMemo, useState } from 'react';
+import { VISUALIZATION_DEBOUNCE } from 'src/pages/QueriesPage/part/VisualizationDisplay';
+import 'src/styles/components/CounterConfigurations.scss';
+import { VisualizationType } from 'src/utils/query.type';
+import { objectKeys } from 'src/utils/utils-network';
 import AppInput from '../AppInput';
 import AppSelect2 from '../AppSelect2';
-import { Checkbox } from '@chakra-ui/checkbox';
-import { VisualizationType } from 'src/utils/query.type';
 
 interface ICounterConfigurations {
   visualization: VisualizationType;
   onChangeConfigurations: (v: VisualizationType) => void;
+  data: unknown[];
 }
-
-const optionAlign = [
-  { value: 'block_time', label: 'block_time' },
-  { value: 'center', label: 'Center' },
-  { value: 'right', label: 'Right' },
-];
 
 const CounterConfiguration: React.FC<ICounterConfigurations> = ({
   visualization,
   onChangeConfigurations,
+  data,
 }) => {
-  console.log(visualization);
+  const [editVisualization, setEditVisualization] =
+    useState<VisualizationType>(visualization);
+  const axisOptions = useMemo(
+    () => (Array.isArray(data) && data[0] ? objectKeys(data[0]) : []),
+    [data],
+  );
+
+  const axisOptionsConfigs = useMemo(
+    () => ['', ...axisOptions]?.map((axis) => ({ value: axis, label: axis })),
+    [axisOptions],
+  );
+
+  let timeout: any = null;
+  console.log(editVisualization, 'editVisualization');
+  useEffect(() => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      onChangeConfigurations(editVisualization);
+    }, VISUALIZATION_DEBOUNCE);
+
+    return () => clearTimeout(timeout);
+  }, [editVisualization]);
+
+  const onChangeCounterName = (e: any) => {
+    setEditVisualization((prevState) => ({
+      ...prevState,
+      name: e.target.value,
+    }));
+  };
+
+  const onChangeCounterConfigurations = (data: any) => {
+    setEditVisualization((prevState) => {
+      return {
+        ...prevState,
+        options: {
+          ...prevState.options,
+          ...data,
+        },
+      };
+    });
+  };
+  const dataColumn = editVisualization.options;
+  const onKeyDown = (e: { keyCode: number; preventDefault: () => void }) => {
+    if (
+      e.keyCode === 189 ||
+      e.keyCode === 187 ||
+      e.keyCode === 107 ||
+      e.keyCode === 109 ||
+      e.keyCode === 69
+    ) {
+      e.preventDefault();
+    }
+  };
+
   return (
     <div className="config-counter">
-      <header>
+      {/* <header>
         <AppButton className="btn-add" size="sm">
           Add to dashboard
         </AppButton>
-      </header>
+      </header> */}
       <Grid
         templateColumns={{
           sm: 'repeat(1, 1fr)',
@@ -49,34 +99,65 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
             <div className="box-table-children">
               <div>Title</div>
               <AppInput
+                value={editVisualization?.name}
                 placeholder="Price"
                 size={'sm'}
                 className="input-table"
+                onChange={onChangeCounterName}
               />
             </div>
             <div className="box-table-children">
-              <div>Align</div>
+              <div>Column</div>
               <AppSelect2
                 className="select-table z-100"
                 size="small"
-                value="block_time"
-                options={optionAlign}
-                onChange={(e) => console.log(e)}
+                value={dataColumn?.counterColName}
+                options={axisOptionsConfigs}
+                onChange={(e) =>
+                  onChangeCounterConfigurations({ counterColName: e })
+                }
               />
             </div>
             <div className="box-table-children">
               <div>Row number</div>
               <AppInput
+                type="number"
                 placeholder="Price"
                 size={'sm'}
                 className="input-table"
+                value={dataColumn?.rowNumber}
+                onChange={(e) =>
+                  onChangeCounterConfigurations({ rowNumber: e.target.value })
+                }
               />
             </div>
             <div className="main-checkbox">
-              <Checkbox size="sm">Colored positive values</Checkbox>
+              <Checkbox
+                isChecked={dataColumn?.coloredPositiveValues}
+                value={dataColumn?.coloredPositiveValues}
+                onChange={(e) =>
+                  onChangeCounterConfigurations({
+                    coloredPositiveValues: e.target.checked,
+                  })
+                }
+                size="sm"
+              >
+                Colored positive values
+              </Checkbox>
             </div>
             <div className="main-checkbox">
-              <Checkbox size="sm">Colored negative values</Checkbox>
+              <Checkbox
+                isChecked={dataColumn?.coloredNegativeValues}
+                value={dataColumn?.coloredNegativeValues}
+                onChange={(e) =>
+                  onChangeCounterConfigurations({
+                    coloredNegativeValues: e.target.checked,
+                  })
+                }
+                size="sm"
+              >
+                Colored negative values
+              </Checkbox>
             </div>
           </div>
         </GridItem>
@@ -91,11 +172,31 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
             </Text>
             <div className="box-table-children">
               <div>Prefix</div>
-              <AppInput placeholder="$" size={'sm'} className="input-table" />
+              <AppInput
+                placeholder="$"
+                size={'sm'}
+                className="input-table"
+                value={dataColumn?.stringPrefix}
+                onChange={(e) =>
+                  onChangeCounterConfigurations({
+                    stringPrefix: e.target.value,
+                  })
+                }
+              />
             </div>
             <div className="box-table-children">
               <div>Suffix</div>
-              <AppInput placeholder="M" size={'sm'} className="input-table" />
+              <AppInput
+                placeholder="M"
+                size={'sm'}
+                className="input-table"
+                value={dataColumn?.stringSuffix}
+                onChange={(e) =>
+                  onChangeCounterConfigurations({
+                    stringSuffix: e.target.value,
+                  })
+                }
+              />
             </div>
             <div className="box-table-children">
               <div>Label</div>
@@ -103,11 +204,31 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
                 placeholder="Current price"
                 size={'sm'}
                 className="input-table"
+                value={dataColumn?.counterLabel}
+                onChange={(e) =>
+                  onChangeCounterConfigurations({
+                    counterLabel: e.target.value,
+                  })
+                }
               />
             </div>
             <div className="box-table-children">
               <div>Decimals</div>
-              <AppInput placeholder="1" size={'sm'} className="input-table" />
+              <AppInput
+                type="number"
+                placeholder="1"
+                size={'sm'}
+                className="input-table"
+                value={dataColumn?.stringDecimal}
+                onKeyDown={onKeyDown}
+                onChange={(e) => {
+                  const value = e?.target?.value.replace(/[-e]/gi, '');
+                  if (value.length > 1) return;
+                  onChangeCounterConfigurations({
+                    stringDecimal: value,
+                  });
+                }}
+              />
             </div>
           </div>
         </GridItem>

@@ -203,6 +203,13 @@ export function formatNumberWithDecimalDigits(
 
   return result;
 }
+
+export const roundAndPadZeros = (a: number, b: number): string => {
+  const rounded = +(Math.round(Number(`${a}e${b}`)) + `e${-b}`);
+  const formatted = rounded.toFixed(b);
+  return formatted;
+};
+
 export const checkFormatValue = (format: string, value: any) => {
   switch (typeof value === 'number') {
     case format.includes(','):

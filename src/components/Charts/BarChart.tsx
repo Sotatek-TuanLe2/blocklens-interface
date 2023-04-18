@@ -23,6 +23,7 @@ type Props = ChartProps & {
 
 export const CustomTooltip = (props: any) => {
   const { active, payload, label } = props;
+
   if (active && payload && payload.length) {
     return (
       <div className="custom-tooltip">
@@ -99,7 +100,6 @@ const VisualizationBarChart = (props: Props) => {
         domain: ['auto', 'auto'],
       }
     : {};
-
   return (
     <>
       <ResponsiveContainer className="visual-container__visualization__barchart">
