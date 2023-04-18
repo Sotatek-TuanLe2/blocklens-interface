@@ -14,7 +14,7 @@ import { ChartProps } from './LineChart';
 type Props = ChartProps;
 const VisualizationAreaChart = ({ data, xAxisKey, yAxisKeys }: Props) => {
   return (
-    <ResponsiveContainer width={'100%'} height={'100%'}>
+    <ResponsiveContainer width={'96%'} height={'96%'}>
       <AreaChart
         className="area-chart"
         data={data}
