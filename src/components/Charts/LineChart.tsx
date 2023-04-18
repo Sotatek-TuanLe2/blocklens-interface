@@ -35,8 +35,8 @@ const CustomTooltip = (props: any) => {
           {payload.map((entry: any, index: number) => (
             <Box as={'div'} key={index}>
               <span style={{ backgroundColor: `${entry.fill}` }}></span>
-              <span>{entry.name} </span>
-              <span> {entry.value}</span>
+              <span>{entry.name}</span>
+              <span>{entry.value}</span>
               <br />
             </Box>
           ))}
