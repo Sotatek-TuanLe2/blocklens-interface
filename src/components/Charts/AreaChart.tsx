@@ -13,7 +13,7 @@ import {
 import { COLORS, getHourAndMinute } from '../../utils/common';
 import { ChartProps } from './LineChart';
 import { VisualizationOptionsType } from 'src/utils/query.type';
-import { checkFormatValue } from 'src/utils/utils-format';
+import { formatVisualizationValue } from 'src/utils/utils-format';
 import CustomTooltip from './CustomTooltip';
 import CustomLegend from './CustomLegend';
 
@@ -29,17 +29,20 @@ const VisualizationAreaChart = (props: Props) => {
 
   const tickFormatAxis = (axis: string) => (value: string) => {
     if (axis === 'x' && configs?.xAxisConfigs?.tickFormat) {
-      return checkFormatValue(configs?.xAxisConfigs?.tickFormat, value);
+      return formatVisualizationValue(configs?.xAxisConfigs?.tickFormat, value);
     }
     if (axis === 'y' && configs?.yAxisConfigs?.tickFormat) {
-      return checkFormatValue(configs?.yAxisConfigs?.tickFormat, value);
+      return formatVisualizationValue(configs?.yAxisConfigs?.tickFormat, value);
     }
     return value;
   };
 
   const labelFormat = (value: string) => {
     if (configs?.yAxisConfigs?.labelFormat) {
-      return checkFormatValue(configs?.yAxisConfigs?.labelFormat, value);
+      return formatVisualizationValue(
+        configs?.yAxisConfigs?.labelFormat,
+        value,
+      );
     }
     return value;
   };
