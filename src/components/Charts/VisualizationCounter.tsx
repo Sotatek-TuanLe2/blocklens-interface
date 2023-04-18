@@ -6,9 +6,7 @@ const VisualizationCounter = () => {
   return (
     <div className="main-counter">
       <div className="counter-result">
-        <div className="background-counter">
-          <CounterIcon />
-        </div>
+        <div className="background-counter"></div>
         <div className="text-result">sss</div>
       </div>
     </div>
