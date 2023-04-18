@@ -1,55 +1,57 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { Box, Text } from '@chakra-ui/react';
 import AppSelect2 from '../AppSelect2';
 
 interface IResultData {
-  xAxisMapped: string;
-  yAxesMapped: string[];
+  xAxis: string;
+  yAxis: string[];
   axisOptions: string[];
-  onChangeYAxis: (yAxis: string[]) => void;
-  onChangeXAxis: (xAxis: string) => void;
+  onChangeAxis: (xAxis: string, yAxis: string[]) => void;
 }
 
 const ResultData: React.FC<IResultData> = ({
   axisOptions,
-  xAxisMapped,
-  yAxesMapped,
-  onChangeYAxis,
-  onChangeXAxis,
+  xAxis,
+  yAxis,
+  onChangeAxis,
 }) => {
-  const [configs, setConfigs] = useState({
-    xAxis: xAxisMapped,
-    yAxis: yAxesMapped,
-  });
-
   const axisOptionsConfigs = useMemo(
     () => ['', ...axisOptions]?.map((axis) => ({ value: axis, label: axis })),
     [axisOptions],
   );
 
-  useEffect(() => {
-    setConfigs({
-      xAxis: xAxisMapped,
-      yAxis: yAxesMapped,
-    });
-  }, [xAxisMapped, yAxesMapped]);
+  const changeXAxisHandle = (value: string) => {
+    let newYAxis = [...yAxis];
+    if (yAxis.some((axis) => axis === value)) {
+      newYAxis = yAxis.filter((axis) => axis !== value);
+    }
+    onChangeAxis(value, newYAxis);
+  };
 
   const changeYAxisHandle = (value: string, oldValue: string) => {
-    if (value === '' && oldValue === '') {
-      return;
+    let newXAxis = xAxis;
+    let newYAxis = [...yAxis];
+    if (yAxis.some((axis) => axis === value)) {
+      // duplicated value
+      const index = newYAxis.indexOf(oldValue);
+      const removedIndex = newYAxis.indexOf(value);
+      newYAxis[index] = value;
+      newYAxis.splice(removedIndex, 1);
+    } else if (!value) {
+      // empty value
+      newYAxis = newYAxis.filter((axis) => axis !== oldValue);
+    } else {
+      const index = newYAxis.indexOf(oldValue);
+      if (index >= 0) {
+        newYAxis[index] = value;
+      } else {
+        newYAxis.push(value);
+      }
     }
-    if (oldValue === '') {
-      const tempYAxes = [...configs.yAxis, value];
-      return onChangeYAxis(tempYAxes);
+    if (value === xAxis) {
+      newXAxis = '';
     }
-    if (value === '' && configs.yAxis?.length <= 1) {
-      const tempYAxes = configs.yAxis.filter((item) => item !== oldValue);
-      return onChangeYAxis(tempYAxes);
-    }
-    const index = configs.yAxis.indexOf(oldValue);
-    const tempYAxes = configs.yAxis;
-    tempYAxes[index] = value;
-    onChangeYAxis(tempYAxes);
+    onChangeAxis(newXAxis, newYAxis);
   };
 
   return (
@@ -69,17 +71,12 @@ const ResultData: React.FC<IResultData> = ({
         <AppSelect2
           className={'select-table'}
           zIndex={1001}
-          options={axisOptionsConfigs?.filter((config) => {
-            if (configs.yAxis?.length > 0) {
-              return !configs.yAxis?.includes(config.value);
-            }
-            return true;
-          })}
-          value={configs.xAxis?.toString() || ''}
-          onChange={onChangeXAxis}
+          options={axisOptionsConfigs}
+          value={xAxis?.toString() || ''}
+          onChange={changeXAxisHandle}
         />
       </div>
-      {(configs.yAxis ? [...configs.yAxis, ''] : ['']).map((axis, index) => {
+      {(yAxis ? [...yAxis, ''] : ['']).map((axis, index) => {
         return (
           <div className={'box-table-children'} key={axis}>
             <Text w={'max-content'} mr={2}>
@@ -90,12 +87,7 @@ const ResultData: React.FC<IResultData> = ({
                 className={'select-table'}
                 zIndex={1000 - index}
                 width={'100%'}
-                options={axisOptionsConfigs.filter((config) => {
-                  return configs.yAxis
-                    ? !configs.yAxis.includes(config.value) ||
-                        axis !== configs.xAxis
-                    : true;
-                })}
+                options={axisOptionsConfigs}
                 value={axis.toString()}
                 onChange={(value) => {
                   changeYAxisHandle(value, axis);

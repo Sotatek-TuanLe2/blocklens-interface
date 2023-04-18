@@ -121,20 +121,20 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
 
     const columns = axisOptions.map(
       (col) =>
-      ({
-        id: col,
-        accessorKey: col,
-        header: col,
-        enableResizing: true,
-        size: 100,
-        align: 'left',
-        type: 'normal',
-        format: '',
-        coloredPositive: false,
-        coloredNegative: false,
-        coloredProgress: false,
-        isHidden: false,
-      } as ColumnDef<unknown>),
+        ({
+          id: col,
+          accessorKey: col,
+          header: col,
+          enableResizing: true,
+          size: 100,
+          align: 'left',
+          type: 'normal',
+          format: '',
+          coloredPositive: false,
+          coloredNegative: false,
+          coloredProgress: false,
+          isHidden: false,
+        } as ColumnDef<unknown>),
     );
     if (searchedVisualization.type === TYPE_VISUALIZATION.table) {
       newVisualization = {
@@ -202,30 +202,24 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
     const type = visualization.options?.globalSeriesType || visualization.type;
     const data = visualization.options.xAxisConfigs?.sortX
       ? queryResult.sort(
-        (a: any, b: any) =>
-          a[visualization.options.columnMapping.xAxis] -
-          b[visualization.options.columnMapping.xAxis],
-      )
+          (a: any, b: any) =>
+            a[visualization.options.columnMapping.xAxis] -
+            b[visualization.options.columnMapping.xAxis],
+        )
       : queryResult;
 
     if (type === TYPE_VISUALIZATION.new) {
       return <AddVisualization onAddVisualize={addVisualizationHandler} />;
     }
 
-    let visualizationError = null;
+    let errorMessage = null;
     let visualizationDisplay = null;
     let visualizationConfiguration = null;
 
-    if (!visualization.options.columnMapping?.yAxis.length) {
-      visualizationError = (
-        <Flex
-          alignItems={'center'}
-          justifyContent={'center'}
-          className="visual-container__visualization__error"
-        >
-          Missing y-axis
-        </Flex>
-      );
+    if (!visualization.options.columnMapping?.xAxis) {
+      errorMessage = 'Missing x-axis';
+    } else if (!visualization.options.columnMapping?.yAxis.length) {
+      errorMessage = 'Missing y-axis';
     } else {
       // TODO: check yAxis values have same type
     }
@@ -325,7 +319,17 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
           <div className="visual-container__visualization__title">
             {visualization.name}
           </div>
-          {visualizationError ? visualizationError : visualizationDisplay}
+          {errorMessage ? (
+            <Flex
+              alignItems={'center'}
+              justifyContent={'center'}
+              className="visual-container__visualization__error"
+            >
+              {errorMessage}
+            </Flex>
+          ) : (
+            visualizationDisplay
+          )}
         </div>
         {visualizationConfiguration}
       </>
