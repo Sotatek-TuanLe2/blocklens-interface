@@ -38,9 +38,9 @@ export interface DataQuery {
 }
 
 export interface IUpdateQuery {
-  queryId: string;
   name?: string;
   query?: string;
+  is_tempt?: boolean;
 }
 
 export interface SchemaParams {
@@ -63,12 +63,12 @@ export default class DashboardsRequest extends BaseRequest {
   }
 
   getTable(params: TableParams) {
-    const url = 'http://172.16.199.30:8002/query/tables';
+    const url = 'http://172.16.199.30:8002/databases/tables';
     return this.get(url, { ...params });
   }
 
   getSchema(params: SchemaParams) {
-    const url = `http://172.16.199.30:8002/query/${params.namespace}/${params.tableName}/schema`;
+    const url = `http://172.16.199.30:8002/databases/${params.namespace}/${params.tableName}/schema`;
     return this.get(url);
   }
 
@@ -83,19 +83,18 @@ export default class DashboardsRequest extends BaseRequest {
   }
 
   getDataQuery(params: DataQuery) {
-    const url = 'http://172.16.199.30:8002/query/query-service/find-query';
-    return this.post(url, params);
+    const url = 'http://172.16.199.30:8002/queries/find-query';
+    return this.get(url, params);
   }
 
   postExcuteQuery(queryId: string) {
-    const url =
-      'http://172.16.199.30:8002/query-executor/query-service/execute-query';
+    const url = 'http://172.16.199.30:8002/query-executors/execute-query';
     return this.post(url, { queryId });
   }
 
   createNewQuery(query: QueryType) {
-    const url = 'http://172.16.199.30:8002/query/query-service/create-query';
-    return this.post(url, { name: query.name, query: query.query });
+    const url = 'http://172.16.199.30:8002/queries/create-query';
+    return this.post(url, query);
   }
   getQuery(queryId: string) {
     const url = `https://642cf0d966a20ec9ce915e71.mockapi.io/queries/queries/${queryId}`;
@@ -103,12 +102,12 @@ export default class DashboardsRequest extends BaseRequest {
   }
 
   getQueryResult(data: QueryResult) {
-    const url = `http://172.16.199.30:8002/query-executor/query-service/get-execution`;
-    return this.post(url, data);
+    const url = `http://172.16.199.30:8002/query-executors/get-execution`;
+    return this.get(url, data);
   }
 
   getExecutionId(data: DataQuery) {
-    const url = 'http://172.16.199.30:8002/query-result';
+    const url = 'http://172.16.199.30:8002/query-results/query-result';
     return this.get(url, data);
   }
 
@@ -117,9 +116,9 @@ export default class DashboardsRequest extends BaseRequest {
     return this.put(url, query);
   }
 
-  updateQueries(params: IUpdateQuery) {
-    const url = 'http://172.16.199.30:8002/query/query-service/update-query';
-    return this.post(url, params);
+  updateQueries(params: IUpdateQuery, queryId: string) {
+    const url = `http://172.16.199.30:8002/queries/${queryId}/update-query`;
+    return this.patch(url, params);
   }
 
   getPopularDashboardTags() {

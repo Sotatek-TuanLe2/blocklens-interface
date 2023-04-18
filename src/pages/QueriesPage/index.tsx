@@ -25,6 +25,8 @@ import 'src/styles/pages/QueriesPage.scss';
 import { AddParameterIcon, ExplandIcon } from 'src/assets/icons';
 import { MoonIcon, SettingsIcon, SunIcon } from '@chakra-ui/icons';
 import moment from 'moment';
+import ModalSaveQuery from 'src/modals/ModalSaveQuery';
+import { toastSuccess } from 'src/utils/utils-notify';
 
 interface ParamTypes {
   queryId: string;
@@ -43,6 +45,8 @@ const QueriesPage = () => {
   const [switchTheme, setSwitchTheme] = useState<boolean>(false);
   const [isExpand, setIsExpand] = useState<boolean>(false);
 
+  const [showSaveModal, setShowSaveModal] = useState(true);
+
   const history = useHistory();
 
   const createNewQuery = async (query: string) => {
@@ -50,25 +54,22 @@ const QueriesPage = () => {
       const dashboardsRequest = new DashboardsRequest();
       if (queryId) {
         const updateQuery = {
-          queryId: queryId,
           query: query,
         };
-        await dashboardsRequest.updateQueries(updateQuery);
+        await dashboardsRequest.updateQueries(updateQuery, queryId);
         const queryValues: QueryExecutedResponse =
           await dashboardsRequest.postExcuteQuery(queryId);
         excutionIdRef.current = queryValues.id;
         await fetchQueryResult(queryValues.id);
         await fetchFindQuery();
       } else {
-        const randomId = Math.floor(Math.random() * 10000000).toString();
         const newQuery: QueryType = {
-          name: `Query-${randomId}`,
+          name: ``,
           query: query,
         };
 
         const infoQuery: QueryInfoResponse =
           await dashboardsRequest.createNewQuery(newQuery);
-
         const queryValues: QueryExecutedResponse =
           await dashboardsRequest.postExcuteQuery(infoQuery.id);
         excutionIdRef.current = queryValues.id;
@@ -77,6 +78,21 @@ const QueriesPage = () => {
       // const infoQuery = await dashboardsRequest.createNewQuery(newQuery);
     } catch (err) {
       getErrorMessage(err);
+    }
+  };
+
+  const saveNameQuery = async (name: string) => {
+    const newQuery = {
+      name: name,
+      is_tempt: false,
+    };
+    try {
+      const dashboardsRequest = new DashboardsRequest();
+      await dashboardsRequest.updateQueries(newQuery, queryId);
+      setShowSaveModal(false);
+      toastSuccess({ message: 'Save query is successfully.' });
+    } catch (error) {
+      getErrorMessage(error);
     }
   };
 
@@ -96,9 +112,9 @@ const QueriesPage = () => {
     }
   };
 
-  const status = useRef<any>();
+  const fetchQueryRef = useRef<any>();
   const fetchQueryResult = async (executionId: string) => {
-    status.current = setInterval(async () => {
+    fetchQueryRef.current = setInterval(async () => {
       try {
         const request = new DashboardsRequest();
 
@@ -108,7 +124,7 @@ const QueriesPage = () => {
         });
 
         setQueryResult(() => res);
-        if (res.status === 'DONE') clearInterval(status.current);
+        if (res.status === 'DONE') clearInterval(fetchQueryRef.current);
       } catch (err) {
         getErrorMessage(err);
       }
@@ -153,11 +169,6 @@ const QueriesPage = () => {
         fetchFindQuery();
       }
     }
-    // if (queryId && !excutionIdRef.current) {
-    // } else if (queryId && excutionIdRef.current) {
-    //   fetchQueryResult(excutionIdRef.current);
-    //   fetchFindQuery();
-    // }
   }, [queryId]);
 
   const onExpland = () => {
@@ -186,22 +197,6 @@ const QueriesPage = () => {
         flexDirection="column"
         className={`menu-panel ${switchTheme ? 'theme-light' : 'theme-dark'}`}
       >
-        {/* <Flex
-          className={`menu-panel__item ${
-            switchTheme ? 'theme-light' : 'theme-dark'
-          }`}
-          flexDirection="column"
-        >
-          <Flex justifyContent="space-between" alignItems="center">
-            <Flex flexDirection="column" alignItems="flex-start">
-              <Text fontSize="14px">Enable autosuggest (beta)</Text>
-            </Flex>
-            <Checkbox />
-          </Flex>
-          <Text mt={1} fontSize="12px">
-            You can always show suggestions with CTRL-space
-          </Text>
-        </Flex> */}
         <Flex
           className={`menu-panel__item ${
             switchTheme ? 'theme-light' : 'theme-dark'
@@ -213,27 +208,6 @@ const QueriesPage = () => {
           <Text fontSize="14px">Switch to light theme</Text>
           {switchTheme ? <MoonIcon /> : <SunIcon />}
         </Flex>
-        {/* <Flex
-          className={`menu-panel__item ${
-            switchTheme ? 'theme-light' : 'theme-dark'
-          }`}
-          justifyContent="space-between"
-          alignItems="center"
-          onClick={onClickFullScreen}
-        >
-          <Text fontSize="14px">Fullscreen</Text>
-          <Flex>
-            <Box bg={background} className="menu-panel__item--key">
-              ⌃
-            </Box>
-            <Box bg={background} className="menu-panel__item--key">
-              ⇧
-            </Box>
-            <Box bg={background} className="menu-panel__item--key">
-              F
-            </Box>
-          </Flex>
-        </Flex> */}
       </Flex>
     );
   };
@@ -294,66 +268,80 @@ const QueriesPage = () => {
 
   return (
     <BasePage>
-      <EditorContext.Provider
-        value={{
-          editor: editorRef,
-          queryResult: queryResult,
-        }}
-      >
-        <div className="queries-page">
-          <EditorSidebar />
-          <Box className="queries-page__right-side">
-            <Box width={'100%'}>
-              <Box bg={switchTheme ? '#fff' : '#272822'} h="10px"></Box>
-              <AceEditor
-                className={`custom-editor ${isExpand ? 'expland' : ''}`}
-                ref={editorRef}
-                mode="sql"
-                theme={switchTheme ? 'kuroir' : 'monokai'}
-                width="100%"
-                wrapEnabled={true}
-                name="sql_editor"
-                editorProps={{ $blockScrolling: true }}
-                showPrintMargin={true}
-                showGutter={true}
-                highlightActiveLine={true}
-                setOptions={{
-                  enableLiveAutocompletion: true,
-                  enableBasicAutocompletion: true,
-                  enableSnippets: false,
-                  showLineNumbers: true,
-                  tabSize: 2,
-                }}
-              />
-              <Box
-                bg={switchTheme ? '#f3f5f7' : '#111213'}
-                className="control-editor"
-              >
-                {_renderButton()}
-                <AppButton
-                  onClick={submitQuery}
-                  bg={background}
-                  _hover={{ bg: hoverBackground }}
-                >
-                  <Text color={switchTheme ? '#1d1d20' : '#f3f5f7'}>Run</Text>
-                </AppButton>
-              </Box>
-            </Box>
-            <Box mt={8}>
-              {infoQuery && queryResult.length && (
-                <VisualizationDisplay
-                  queryResult={queryResult}
-                  queryValue={infoQuery}
-                  onReload={async () => {
-                    await fetchQueryResult(excutionIdRef.current);
-                    await fetchFindQuery();
+      <>
+        <EditorContext.Provider
+          value={{
+            editor: editorRef,
+            queryResult: queryResult,
+          }}
+        >
+          <div className="queries-page">
+            <EditorSidebar />
+            <Box className="queries-page__right-side">
+              <Flex justifyContent={'right'}>
+                {infoQuery && !infoQuery?.name && (
+                  <AppButton onClick={() => setShowSaveModal(true)}>
+                    Save
+                  </AppButton>
+                )}
+              </Flex>
+              <Box width={'100%'}>
+                <Box bg={switchTheme ? '#fff' : '#272822'} h="10px"></Box>
+                <AceEditor
+                  className={`custom-editor ${isExpand ? 'expland' : ''}`}
+                  ref={editorRef}
+                  mode="sql"
+                  theme={switchTheme ? 'kuroir' : 'monokai'}
+                  width="100%"
+                  wrapEnabled={true}
+                  name="sql_editor"
+                  editorProps={{ $blockScrolling: true }}
+                  showPrintMargin={true}
+                  showGutter={true}
+                  highlightActiveLine={true}
+                  setOptions={{
+                    enableLiveAutocompletion: true,
+                    enableBasicAutocompletion: true,
+                    enableSnippets: false,
+                    showLineNumbers: true,
+                    tabSize: 2,
                   }}
                 />
-              )}
+                <Box
+                  bg={switchTheme ? '#f3f5f7' : '#111213'}
+                  className="control-editor"
+                >
+                  {_renderButton()}
+                  <AppButton
+                    onClick={submitQuery}
+                    bg={background}
+                    _hover={{ bg: hoverBackground }}
+                  >
+                    <Text color={switchTheme ? '#1d1d20' : '#f3f5f7'}>Run</Text>
+                  </AppButton>
+                </Box>
+              </Box>
+              <Box mt={8}>
+                {infoQuery && queryResult.length && (
+                  <VisualizationDisplay
+                    queryResult={queryResult}
+                    queryValue={infoQuery}
+                    onReload={async () => {
+                      await fetchQueryResult(excutionIdRef.current);
+                      await fetchFindQuery();
+                    }}
+                  />
+                )}
+              </Box>
             </Box>
-          </Box>
-        </div>
-      </EditorContext.Provider>
+          </div>
+        </EditorContext.Provider>
+        <ModalSaveQuery
+          open={showSaveModal}
+          onClose={() => setShowSaveModal(false)}
+          onSubmit={saveNameQuery}
+        />
+      </>
     </BasePage>
   );
 };
