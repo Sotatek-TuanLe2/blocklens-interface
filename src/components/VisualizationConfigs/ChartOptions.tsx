@@ -25,7 +25,6 @@ const ChartOptions: React.FC<IChartOptions> = ({
       checked: false,
       disabled: false,
     },
-    { label: 'Enable stacking', value: 'stacking', checked: false },
     // {
     //   label: 'Normalize to percentage',
     //   value: 'percentValues',
