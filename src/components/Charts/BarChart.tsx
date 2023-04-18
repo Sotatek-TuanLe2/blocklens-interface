@@ -78,6 +78,7 @@ const VisualizationBarChart = (props: Props) => {
               fill={'#ccc'}
             />
           </XAxis>
+
           {yAxisKeys && !!yAxisKeys.length && (
             <YAxis
               dataKey={yAxisKeys[0]}
@@ -91,11 +92,13 @@ const VisualizationBarChart = (props: Props) => {
               {...logarithmicProps}
             />
           )}
+
           <Tooltip
             content={<CustomTooltip />}
             animationDuration={200}
             animationEasing={'linear'}
           />
+
           {chartOptionsConfigs?.showLegend && (
             <Legend
               verticalAlign="middle"
