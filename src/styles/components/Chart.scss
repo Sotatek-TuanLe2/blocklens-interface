@@ -13,13 +13,15 @@
     background-color: #696969;
     border-radius: 4px;
     padding: 6px 8px;
-    width: 200px;
+    // width: 200px;
 
     &__desc {
       position: relative;
       display: flex;
       justify-content: space-between;
       width: 100%;
+      flex-direction: column;
+      margin-top: 4px;
 
       span:nth-child(1) {
         position: absolute;
