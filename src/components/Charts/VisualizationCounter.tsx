@@ -1,5 +1,4 @@
 import React from 'react';
-import { CounterIcon } from 'src/assets/icons';
 import 'src/styles/components/CounterConfigurations.scss';
 
 const VisualizationCounter = () => {
