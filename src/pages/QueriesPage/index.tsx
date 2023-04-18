@@ -45,7 +45,7 @@ const QueriesPage = () => {
   const [switchTheme, setSwitchTheme] = useState<boolean>(false);
   const [isExpand, setIsExpand] = useState<boolean>(false);
 
-  const [showSaveModal, setShowSaveModal] = useState(true);
+  const [showSaveModal, setShowSaveModal] = useState(false);
 
   const history = useHistory();
 
