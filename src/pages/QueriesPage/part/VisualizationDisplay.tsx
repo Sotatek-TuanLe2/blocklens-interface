@@ -144,6 +144,17 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
         createdAt: moment().toDate(),
         options: { columns },
       };
+    } else if (searchedVisualization.type === TYPE_VISUALIZATION.counter) {
+      newVisualization = {
+        name: 'Counter',
+        id: (Math.floor(Math.random() * 100) + 1).toString(),
+        type: 'counter',
+        createdAt: moment().toDate(),
+        options: {
+          counterColName: 'time',
+          rowNumber: 1,
+        },
+      };
     } else {
       newVisualization = {
         id: (Math.floor(Math.random() * 100) + 1).toString(),
@@ -235,6 +246,7 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
     }
 
     if (type === TYPE_VISUALIZATION.table) {
+      errorMessage = null;
       visualizationDisplay = (
         <VisualizationTable
           data={queryResult}
@@ -250,9 +262,16 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
         />
       );
     } else if (type === TYPE_VISUALIZATION.counter) {
-      visualizationDisplay = <VisualizationCounter />;
+      errorMessage = null;
+      visualizationDisplay = (
+        <VisualizationCounter
+          data={queryResult}
+          visualization={visualization}
+        />
+      );
       visualizationConfiguration = (
         <CounterConfiguration
+          data={queryResult}
           visualization={visualization}
           onChangeConfigurations={onChangeConfigurations}
         />

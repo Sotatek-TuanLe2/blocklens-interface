@@ -7,7 +7,7 @@ import {
 } from '@tanstack/react-table';
 import { useEffect } from 'react';
 import 'src/styles/components/TableValue.scss';
-import { checkFormatValue } from 'src/utils/utils-format';
+import { formatVisualizationValue } from 'src/utils/utils-format';
 
 interface ReactTableProps<T> {
   data: T[];
@@ -158,7 +158,7 @@ const VisualizationTable = <T,>({
                           className="visual-progressbar"
                         ></div>
                       ) : null}
-                      {checkFormatValue(format, value)}
+                      {formatVisualizationValue(format, value)}
                     </div>
                   </td>
                 );

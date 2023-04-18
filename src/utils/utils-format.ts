@@ -203,7 +203,14 @@ export function formatNumberWithDecimalDigits(
 
   return result;
 }
-export const checkFormatValue = (format: string, value: any) => {
+
+export const roundAndPadZeros = (a: number, decimals: number): string => {
+  const rounded = +(Math.round(Number(`${a}e${decimals}`)) + `e${-decimals}`);
+  const formatted = rounded.toFixed(decimals);
+  return formatted;
+};
+
+export const formatVisualizationValue = (format: string, value: any) => {
   switch (typeof value === 'number') {
     case format.includes(','):
       return value.toLocaleString('en-US');
