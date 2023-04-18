@@ -18,6 +18,7 @@ export enum TYPE_VISUALIZATION {
   pie = 'pie',
   column = 'column',
   scatter = 'scatter',
+  new = 'newVisualization'
 }
 
 export type VisualizationType = {

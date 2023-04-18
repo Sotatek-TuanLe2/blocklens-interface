@@ -1,5 +1,5 @@
 import { Box, Text } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import 'src/styles/components/Chart.scss';
 import {
   AreaChart,
@@ -90,6 +90,22 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
       ? objectKeys(queryResult[0])
       : [];
 
+  const defaultTimeXAxis = useMemo(() => {
+    let result = '';
+    const firstResultInQuery =
+      queryResult && !!queryResult.length ? queryResult[0] : null;
+    if (firstResultInQuery) {
+      Object.keys(firstResultInQuery).forEach((key: string) => {
+        const date = moment(firstResultInQuery[key]);
+        if (date.isValid()) {
+          result = key;
+          return;
+        }
+      });
+    }
+    return result;
+  }, [queryResult]);
+
   const updateQuery = async (updateQuery: IQuery) => {
     const request = new DashboardsRequest();
     await request.updateQuery(queryValue.id, updateQuery);
@@ -137,8 +153,8 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
         options: {
           globalSeriesType: searchedVisualization.type,
           columnMapping: {
-            xAxis: 'time',
-            yAxis: ['size'],
+            xAxis: defaultTimeXAxis,
+            yAxis: [],
           },
           chartOptionsConfigs: {
             showLegend: true,
@@ -237,9 +253,12 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
               </div>
               <LineChart
                 data={data}
-                xAxisKey={visualization.options?.columnMapping?.xAxis || 'time'}
+                xAxisKey={
+                  visualization.options?.columnMapping?.xAxis ||
+                  defaultTimeXAxis
+                }
                 yAxisKeys={
-                  visualization.options.columnMapping?.yAxis || ['size']
+                  visualization.options.columnMapping?.yAxis || []
                 }
                 configs={visualization.options}
               />
@@ -261,9 +280,12 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
               </div>
               <BarChart
                 data={data}
-                xAxisKey={visualization.options?.columnMapping?.xAxis || 'time'}
+                xAxisKey={
+                  visualization.options?.columnMapping?.xAxis ||
+                  defaultTimeXAxis
+                }
                 yAxisKeys={
-                  visualization.options.columnMapping?.yAxis || ['size']
+                  visualization.options.columnMapping?.yAxis || []
                 }
                 configs={visualization.options}
               />
@@ -285,7 +307,7 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
               <AreaChart
                 data={queryResult}
                 xAxisKey="time"
-                yAxisKeys={['size']}
+                yAxisKeys={[]}
               />
             </div>
             <ChartConfigurations
@@ -321,7 +343,7 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
               <ScatterChart
                 data={queryResult}
                 xAxisKey={'number'}
-                yAxisKeys={['size']}
+                yAxisKeys={[]}
               />
             </div>
             <ChartConfigurations
@@ -372,18 +394,18 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
         tabs={[
           ...queryValue.visualizations,
           {
-            id: 'newVisualization',
+            id: TYPE_VISUALIZATION.new,
             createdAt: moment().toDate(),
             options: {},
             name: 'New Visualization',
-            type: 'newVisualization',
+            type: TYPE_VISUALIZATION.new,
           },
         ].map((v) => ({
           icon: getIcon(v.options.globalSeriesType || v.type),
           name: v.name,
           content: renderVisualization(v),
           id: v.id,
-          closeable: v.type !== 'newVisualization',
+          closeable: v.type !== TYPE_VISUALIZATION.new,
         }))}
       />
 
