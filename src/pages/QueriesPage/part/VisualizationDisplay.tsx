@@ -211,16 +211,6 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
 
   const renderVisualization = (visualization: VisualizationType) => {
     const type = visualization.options?.globalSeriesType || visualization.type;
-<<<<<<< HEAD
-
-    const data = visualization.options.xAxisConfigs?.sortX
-      ? queryResult.sort(
-          (a: any, b: any) =>
-            a[visualization.options.columnMapping.xAxis] -
-            b[visualization.options.columnMapping.xAxis],
-        )
-      : queryResult;
-=======
     let data = [...queryResult];
     if (visualization.options.xAxisConfigs?.sortX) {
       data = data.sort((a: any, b: any) => {
@@ -238,7 +228,6 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
     if (visualization.options.xAxisConfigs?.reverseX) {
       data = data.reverse();
     }
->>>>>>> 66e35ec927b9afaac6b744305870cc3e69ae8dcf
 
     if (type === TYPE_VISUALIZATION.new) {
       return <AddVisualization onAddVisualize={addVisualizationHandler} />;
