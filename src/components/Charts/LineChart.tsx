@@ -32,10 +32,6 @@ const VisualizationLineChart = (props: Props) => {
   const xAxisConfigs = configs?.xAxisConfigs;
   const yAxisConfigs = configs?.yAxisConfigs;
 
-  const tickFormatTime = (value: string) => {
-    return getHourAndMinute(new Date(value));
-  };
-
   const tickFormatAxis = (axis: string) => (value: string) => {
     if (axis === 'x' && configs?.xAxisConfigs?.tickFormat) {
       return checkFormatValue(configs?.xAxisConfigs?.tickFormat, value);
@@ -74,7 +70,7 @@ const VisualizationLineChart = (props: Props) => {
         <CartesianGrid vertical={false} strokeDasharray="4" />
         <XAxis
           tickFormatter={
-            xAxisKey === 'time' ? tickFormatTime : tickFormatAxis('x')
+            xAxisKey === 'time' ? getHourAndMinute : tickFormatAxis('x')
           }
           dataKey={xAxisKey}
           fill={'#ccc'}

@@ -22,19 +22,11 @@ type Props = ChartProps & {
   configs?: Partial<ChartConfigType>;
 };
 
-export const tickFormatTime = (value: string) => {
-  return getHourAndMinute(new Date(value));
-};
-
 const VisualizationBarChart = (props: Props) => {
   const { xAxisKey, yAxisKeys, data, configs } = props;
   const chartOptionsConfigs = configs?.chartOptionsConfigs;
   const xAxisConfigs = configs?.xAxisConfigs;
   const yAxisConfigs = configs?.yAxisConfigs;
-
-  const tickFormatTime = (value: string) => {
-    return getHourAndMinute(new Date(value));
-  };
 
   const tickFormatAxis = (axis: string) => (value: string) => {
     if (axis === 'x' && configs?.xAxisConfigs?.tickFormat) {
@@ -68,7 +60,7 @@ const VisualizationBarChart = (props: Props) => {
           <XAxis
             dataKey={xAxisKey}
             tickFormatter={
-              xAxisKey === 'time' ? tickFormatTime : tickFormatAxis('x')
+              xAxisKey === 'time' ? getHourAndMinute : tickFormatAxis('x')
             }
             fill={'#ccc'}
           >
