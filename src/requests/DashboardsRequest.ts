@@ -33,6 +33,15 @@ export interface TeamsParams {
 export interface ILayout extends Layout {
   id: number;
 }
+export interface DataQuery {
+  queryId: string;
+}
+
+export interface IUpdateQuery {
+  queryId: string;
+  name?: string;
+  query?: string;
+}
 
 export interface SchemaParams {
   namespace: string;
@@ -73,6 +82,11 @@ export default class DashboardsRequest extends BaseRequest {
     return this.get(url);
   }
 
+  getDataQuery(params: DataQuery) {
+    const url = 'http://172.16.199.30:8002/query/query-service/find-query';
+    return this.post(url, params);
+  }
+
   postExcuteQuery(queryId: string) {
     const url =
       'http://172.16.199.30:8002/query-executor/query-service/execute-query';
@@ -93,9 +107,19 @@ export default class DashboardsRequest extends BaseRequest {
     return this.post(url, data);
   }
 
+  getExecutionId(data: DataQuery) {
+    const url = 'http://172.16.199.30:8002/query-result';
+    return this.get(url, data);
+  }
+
   updateQuery(queryId: string, query: Partial<IQuery>) {
     const url = `https://642cf0d966a20ec9ce915e71.mockapi.io/queries/queries/${queryId}`;
     return this.put(url, query);
+  }
+
+  updateQueries(params: IUpdateQuery) {
+    const url = 'http://172.16.199.30:8002/query/query-service/update-query';
+    return this.post(url, params);
   }
 
   getPopularDashboardTags() {

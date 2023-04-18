@@ -21,7 +21,7 @@ interface IModalAddVisualization {
 }
 interface IButtonAdd {
   userName: string;
-  item: QueryType;
+  item: any;
   dataLayouts: ILayout[];
   handleRemoveVisualization: (
     item: ILayout[],
@@ -217,7 +217,7 @@ const ButtonAdd: React.FC<IButtonAdd> = ({
 }) => {
   const checkIdItem = dataLayouts
     .map((i: any) => i.content[0]?.id)
-    .includes(item.id);
+    .includes(item?.id);
 
   const checkAdded = checkIdItem
     ? dataLayouts

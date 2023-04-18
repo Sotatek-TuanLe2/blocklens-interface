@@ -97,7 +97,6 @@ export type QueryType = {
   name: string;
   query: string;
   // visualizations: VisualizationType[];
-  id: string;
 };
 
 export type QueryTypeSingle = {
@@ -129,4 +128,12 @@ export type QueryInfoResponse = {
   createdAt: string;
   updatedAt: string;
   visualizations: any;
+};
+
+export type QueryResultResponse = {
+  id: string;
+  query: QueryInfoResponse;
+  resultId: string;
+  createAt: string;
+  updatedAt: string;
 };
