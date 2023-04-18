@@ -88,7 +88,7 @@ const VisualizationBarChart = (props: Props) => {
 
   const labelFormat = (value: string) => {
     if (configs?.yAxisConfigs?.labelFormat) {
-      return checkFormatValue(configs?.yAxisConfigs?.tickFormat, value);
+      return checkFormatValue(configs?.yAxisConfigs?.labelFormat, value);
     }
     return value;
   };

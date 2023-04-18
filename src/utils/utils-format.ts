@@ -80,7 +80,7 @@ export const addTrailingZero = (
   return new BigNumber(number).toFixed(decimals).toString();
 };
 
-export const _formatLargeNumberIfNeed = (number: string, digits = 0) => {
+const _formatLargeNumberIfNeed = (number: string, digits = 0) => {
   if (new BigNumber(number).comparedTo(10000) < 0) {
     return commaNumber(new BigNumber(number).toString(), ',', '.');
   }
@@ -194,7 +194,7 @@ export function formatNumberWithDecimalDigits(
   const integerPart = decimalNumber.floor().toString();
   const decimalPart = decimalNumber
     .minus(integerPart)
-    .toFixed(a.length - 1)
+    .toFixed(a.length - 2)
     .slice(1);
   const formattedDecimalPart = decimalPart.padEnd(a.length - 1, '0');
   const result =
