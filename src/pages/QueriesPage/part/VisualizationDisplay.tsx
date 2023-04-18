@@ -201,10 +201,6 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
   const renderVisualization = (visualization: VisualizationType) => {
     const type = visualization.options?.globalSeriesType || visualization.type;
     let data = [...queryResult];
-    console.log(
-      'visualization.options.xAxisConfigs?.sortX',
-      visualization.options.xAxisConfigs?.sortX,
-    );
     if (visualization.options.xAxisConfigs?.sortX) {
       data = data.sort((a: any, b: any) => {
         if (moment(a[visualization.options.columnMapping.xAxis]).isValid()) {
@@ -218,15 +214,9 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
         );
       });
     }
-    console.log('data', data);
-    console.log(
-      'visualization.options.xAxisConfigs?.reverseX',
-      visualization.options.xAxisConfigs?.reverseX,
-    );
     if (visualization.options.xAxisConfigs?.reverseX) {
       data = data.reverse();
     }
-    console.log('data-2', data);
 
     if (type === TYPE_VISUALIZATION.new) {
       return <AddVisualization onAddVisualize={addVisualizationHandler} />;
