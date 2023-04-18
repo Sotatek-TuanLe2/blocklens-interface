@@ -10,7 +10,7 @@ import {
   Label,
   LabelList,
 } from 'recharts';
-import { getHourAndMinute, randomColor } from '../../utils/common';
+import { COLORS, getHourAndMinute } from '../../utils/common';
 import { VisualizationOptionsType } from 'src/utils/query.type';
 import { checkFormatValue } from 'src/utils/utils-format';
 import { CustomTooltip, renderLegend } from './BarChart';
@@ -111,12 +111,12 @@ const VisualizationLineChart = (props: Props) => {
             content={renderLegend}
           />
         )}
-        {yAxisKeys?.map((yAxisKey) => (
+        {yAxisKeys?.map((yAxisKey, index) => (
           <Line
             key={yAxisKey}
             type="monotone"
             dataKey={yAxisKey}
-            stroke={randomColor}
+            stroke={COLORS[index % COLORS.length]}
             dot={false}
           >
             {!configs?.chartOptionsConfigs?.stacking &&
