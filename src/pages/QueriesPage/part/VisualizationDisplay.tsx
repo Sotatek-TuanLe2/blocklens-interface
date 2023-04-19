@@ -31,7 +31,7 @@ import TableConfigurations from '../../../components/VisualizationConfigs/TableC
 import moment from 'moment';
 import VisualizationCounter from 'src/components/Charts/VisualizationCounter';
 import CounterConfiguration from 'src/components/VisualizationConfigs/CounterConfiguration';
-import { defaultTableColumn } from 'src/components/Charts/VisualizationTable';
+import { getDefaultTableColumns } from 'src/components/Charts/VisualizationTable';
 
 type VisualizationConfigType = {
   value: string;
@@ -89,7 +89,7 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
   const [closeTabId, setCloseTabId] = useState<string | number>('');
   const [dataTable, setDataTable] = useState<any[]>([]);
 
-  const optionsColumn = defaultTableColumn(queryResult);
+  const optionsColumn = getDefaultTableColumns(queryResult);
 
   const defaultTimeXAxis = useMemo(() => {
     let result = '';

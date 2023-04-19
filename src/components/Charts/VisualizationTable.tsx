@@ -16,6 +16,27 @@ interface ReactTableProps<T> {
   dataColumn?: ColumnDef<unknown>[];
 }
 
+export const getDefaultTableColumns = (data: any[]) => {
+  const axisOptions = Array.isArray(data) && data[0] ? objectKeys(data[0]) : [];
+  return axisOptions.map(
+    (col) =>
+      ({
+        id: col,
+        accessorKey: col,
+        header: col,
+        enableResizing: true,
+        size: 100,
+        align: 'left',
+        type: 'normal',
+        format: '',
+        coloredPositive: false,
+        coloredNegative: false,
+        coloredProgress: false,
+        isHidden: false,
+      } as ColumnDef<unknown>),
+  );
+};
+
 const VisualizationTable = <T,>({
   data,
   setDataTable,
@@ -23,7 +44,7 @@ const VisualizationTable = <T,>({
 }: ReactTableProps<T>) => {
   const table = useReactTable({
     data,
-    columns: dataColumn || defaultTableColumn(data),
+    columns: dataColumn || getDefaultTableColumns(data),
     getCoreRowModel: getCoreRowModel(),
   });
   useEffect(() => {
@@ -172,23 +193,3 @@ const VisualizationTable = <T,>({
 };
 
 export default VisualizationTable;
-export const defaultTableColumn = (data: any[]) => {
-  const axisOptions = Array.isArray(data) && data[0] ? objectKeys(data[0]) : [];
-  return axisOptions.map(
-    (col) =>
-      ({
-        id: col,
-        accessorKey: col,
-        header: col,
-        enableResizing: true,
-        size: 100,
-        align: 'left',
-        type: 'normal',
-        format: '',
-        coloredPositive: false,
-        coloredNegative: false,
-        coloredProgress: false,
-        isHidden: false,
-      } as ColumnDef<unknown>),
-  );
-};
