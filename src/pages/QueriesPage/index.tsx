@@ -6,7 +6,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { EditorContext } from './context/EditorContext';
 import EditorSidebar from './part/EditorSidebar';
 import VisualizationDisplay from './part/VisualizationDisplay';
-import DashboardsRequest from '../../requests/DashboardsRequest';
 import 'ace-builds/src-noconflict/theme-github';
 import 'ace-builds/src-noconflict/theme-monokai';
 import 'ace-builds/src-noconflict/theme-kuroir';
@@ -16,8 +15,7 @@ import { getErrorMessage } from '../../utils/utils-helper';
 import { useHistory, useParams } from 'react-router-dom';
 import {
   QueryExecutedResponse,
-  QueryInfoResponse,
-  QueryType,
+  IQuery,
   QueryResultResponse,
 } from '../../utils/query.type';
 import 'src/styles/pages/QueriesPage.scss';
@@ -33,15 +31,11 @@ interface ParamTypes {
 
 const QueriesPage = () => {
   const editorRef = useRef<any>();
-  const executionIdRef = useRef<string>('');
-  const fetchQueryRef = useRef<any>();
   const { queryId } = useParams<ParamTypes>();
 
   const [queryResult, setQueryResult] = useState<any>([]);
-  const [infoQuery, setInfoQuery] = useState<any | null>(null);
+  const [queryValue, setInfoQuery] = useState<IQuery | null>(null);
   const [isSetting, setIsSetting] = useState<boolean>(false);
-
-  const [showButton, setShowButton] = useState<boolean>(false);
   const [switchTheme, setSwitchTheme] = useState<boolean>(false);
   const [expandEditor, setExpandEditor] = useState<boolean>(false);
   const [showSaveModal, setShowSaveModal] = useState<boolean>(false);
@@ -53,56 +47,47 @@ const QueriesPage = () => {
 
   useEffect(() => {
     if (queryId) {
-      if (!executionIdRef.current) {
-        fetchDataOnReload();
-      } else {
-        fetchQueryResult(executionIdRef.current);
-        fetchFindQuery();
-      }
+      fetchInitalData();
     }
   }, [queryId]);
 
   const createNewQuery = async (query: string) => {
     try {
-      if (queryId) {
-        const updateQuery = {
-          query: query,
-        };
-        await rf
-          .getRequest('DashboardsRequest')
-          .updateQuery(updateQuery, queryId);
-        const queryValues: QueryExecutedResponse = await rf
-          .getRequest('DashboardsRequest')
-          .executeQuery(queryId);
-        executionIdRef.current = queryValues.id;
-        await fetchQueryResult(queryValues.id);
-        await fetchFindQuery();
-      } else {
-        const newQuery: QueryType = {
+      const queryValue: IQuery = await rf
+        .getRequest('DashboardsRequest')
+        .createNewQuery({
           name: ``,
-          query: query,
-        };
-        const infoQuery: QueryInfoResponse = await rf
-          .getRequest('DashboardsRequest')
-          .createNewQuery(newQuery);
-        const queryValues: QueryExecutedResponse = await rf
-          .getRequest('DashboardsRequest')
-          .executeQuery(infoQuery.id);
-        executionIdRef.current = queryValues.id;
-        history.push(`/queries/${infoQuery.id}`);
-      }
-    } catch (err) {
-      getErrorMessage(err);
+          query,
+        });
+      await rf.getRequest('DashboardsRequest').executeQuery(queryValue.id);
+      history.push(`/queries/${queryValue.id}`);
+    } catch (error) {
+      getErrorMessage(error);
+    }
+  };
+
+  const updateQuery = async (query: string) => {
+    try {
+      await rf.getRequest('DashboardsRequest').updateQuery({ query }, queryId);
+      const queryValues: QueryExecutedResponse = await rf
+        .getRequest('DashboardsRequest')
+        .executeQuery(queryId);
+      await fetchQueryResult(queryValues.id);
+      await fetchQuery();
+    } catch (error) {
+      getErrorMessage(error);
     }
   };
 
   const saveNameQuery = async (name: string) => {
-    const newQuery = {
-      name: name,
-      is_tempt: false,
-    };
     try {
-      await rf.getRequest('DashboardsRequest').updateQuery(newQuery, queryId);
+      await rf.getRequest('DashboardsRequest').updateQuery(
+        {
+          name: name,
+          isTemp: false,
+        },
+        queryId,
+      );
       setShowSaveModal(false);
       toastSuccess({ message: 'Save query is successfully.' });
     } catch (error) {
@@ -110,46 +95,46 @@ const QueriesPage = () => {
     }
   };
 
-  const submitQuery = async () => {
-    setShowButton(true);
-    try {
-      await createNewQuery(editorRef.current.editor.getValue());
-    } catch (err) {
-      getErrorMessage(err);
+  const fetchQueryResult = async (executionId: string) => {
+    const res = await rf.getRequest('DashboardsRequest').getQueryResult({
+      queryId,
+      executionId,
+    });
+    let fetchQueryResultInterval: any = null;
+    if (res.status !== 'DONE') {
+      fetchQueryResultInterval = setInterval(async () => {
+        const resInterval = await rf
+          .getRequest('DashboardsRequest')
+          .getQueryResult({
+            queryId,
+            executionId,
+          });
+        if (resInterval.status === 'DONE') {
+          clearInterval(fetchQueryResultInterval);
+          setQueryResult(resInterval);
+        }
+      }, 2000);
+    } else {
+      setQueryResult(res);
     }
   };
 
-  const fetchQueryResult = async (executionId: string) => {
-    fetchQueryRef.current = setInterval(async () => {
-      try {
-        const res = await rf.getRequest('DashboardsRequest').getQueryResult({
-          queryId,
-          executionId,
-        });
-
-        setQueryResult(() => res);
-        if (res.status === 'DONE') clearInterval(fetchQueryRef.current);
-      } catch (err) {
-        getErrorMessage(err);
-      }
-    }, 2000);
-  };
-
-  const fetchFindQuery = async () => {
-    let data;
+  const fetchQuery = async () => {
     try {
       const dataQuery = await rf
         .getRequest('DashboardsRequest')
         .getQueryById({ queryId });
       setInfoQuery(dataQuery);
-      data = dataQuery;
+      // set query into editor
+      const position = editorRef.current.editor.getCursorPosition();
+      editorRef.current.editor.setValue('');
+      editorRef.current.editor.session.insert(position, dataQuery?.query);
     } catch (error) {
       getErrorMessage(error);
     }
-    return data;
   };
 
-  const fetchDataOnReload = async () => {
+  const fetchInitalData = async () => {
     try {
       const res: QueryResultResponse = await rf
         .getRequest('DashboardsRequest')
@@ -157,9 +142,7 @@ const QueriesPage = () => {
           queryId,
         });
       await fetchQueryResult(res.resultId);
-      const data = await fetchFindQuery();
-      const position = editorRef.current.editor.getCursorPosition();
-      editorRef.current.editor.session.insert(position, data?.query);
+      await fetchQuery();
     } catch (error) {
       getErrorMessage(error);
     }
@@ -176,6 +159,18 @@ const QueriesPage = () => {
   const onAddParameter = () => {
     const position = editorRef.current.editor.getCursorPosition();
     editorRef.current.editor.session.insert(position, '{{unnamed_parameter}}');
+  };
+
+  const onRunQuery = async () => {
+    try {
+      if (queryId) {
+        await updateQuery(editorRef.current.editor.getValue());
+      } else {
+        await createNewQuery(editorRef.current.editor.getValue());
+      }
+    } catch (err) {
+      getErrorMessage(err);
+    }
   };
 
   // const onClickFullScreen = () => {
@@ -242,7 +237,7 @@ const QueriesPage = () => {
             <FormatIcon color={colorIcon} />
           </AppButton>
         </Tooltip> */}
-        {showButton && (
+        {queryValue && (
           <Tooltip hasArrow placement="top" label="Add Parameter">
             <AppButton
               onClick={onAddParameter}
@@ -270,7 +265,7 @@ const QueriesPage = () => {
             <EditorSidebar />
             <Box className="queries-page__right-side">
               <Flex justifyContent={'right'}>
-                {infoQuery && !infoQuery?.name && (
+                {queryValue && !queryValue?.name && (
                   <AppButton onClick={() => setShowSaveModal(true)}>
                     Save
                   </AppButton>
@@ -304,7 +299,7 @@ const QueriesPage = () => {
                 >
                   {_renderEditorButtons()}
                   <AppButton
-                    onClick={submitQuery}
+                    onClick={onRunQuery}
                     bg={backgroundButton}
                     _hover={{ bg: hoverBackgroundButton }}
                   >
@@ -313,11 +308,11 @@ const QueriesPage = () => {
                 </Box>
               </Box>
               <Box mt={8}>
-                {infoQuery && queryResult.length && (
+                {queryValue && queryResult.length && (
                   <VisualizationDisplay
                     queryResult={queryResult}
-                    queryValue={infoQuery}
-                    onReload={fetchFindQuery}
+                    queryValue={queryValue}
+                    onReload={fetchQuery}
                   />
                 )}
               </Box>

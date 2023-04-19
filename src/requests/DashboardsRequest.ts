@@ -40,7 +40,7 @@ export interface DataQuery {
 export interface IUpdateQuery {
   name?: string;
   query?: string;
-  is_tempt?: boolean;
+  isTemp?: boolean;
 }
 
 export interface SchemaParams {
