@@ -52,6 +52,22 @@ export interface QueryResult {
   queryId: string;
   executionId: string;
 }
+
+export interface IInsertVisualization {
+  queryId: string;
+  type: string;
+  name: string;
+  options: any;
+}
+
+export interface IDeleteVisualization {
+  visualId: string;
+}
+
+export interface IEditVisualization {
+  name: string;
+  options: any;
+}
 export default class DashboardsRequest extends BaseRequest {
   getUrlPrefix(): string {
     return '';
@@ -178,4 +194,18 @@ export default class DashboardsRequest extends BaseRequest {
   //   const url = `https://642cf0d966a20ec9ce915e71.mockapi.io/queries/queries/${queryId}`;
   //   return this.put(url, query);
   // }
+  insertVisualization(data: IInsertVisualization) {
+    const url = `http://172.16.199.30:8002/visualizations/insert-visual`;
+    return this.post(url, data);
+  }
+
+  deleteVisualization(data: IDeleteVisualization) {
+    const url = `http://172.16.199.30:8002/visualizations/${data.visualId}/delete-visual`;
+    return this.delete(url);
+  }
+
+  editVisualization(data: IEditVisualization, visualId: string) {
+    const url = `http://172.16.199.30:8002/visualizations/${visualId}/edit-visual`;
+    return this.patch(url, data);
+  }
 }

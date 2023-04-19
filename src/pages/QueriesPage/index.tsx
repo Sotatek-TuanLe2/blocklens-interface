@@ -308,9 +308,9 @@ const QueriesPage = () => {
                 </Box>
               </Box>
               <Box mt={8}>
-                {queryValue && queryResult.length && (
+                {queryValue && queryResult.result && (
                   <VisualizationDisplay
-                    queryResult={queryResult}
+                    queryResult={queryResult.result}
                     queryValue={queryValue}
                     onReload={fetchQuery}
                   />
