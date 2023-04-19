@@ -13,7 +13,6 @@ import { AppTabs, AppButton, AppSelect2 } from '../../../components';
 import ChartConfigurations from '../../../components/VisualizationConfigs/ChartConfigurations';
 import BaseModal from '../../../modals/BaseModal';
 import DashboardsRequest from '../../../requests/DashboardsRequest';
-import { ColumnDef } from '@tanstack/react-table';
 import {
   AreaChartIcon,
   BarChartIcon,
@@ -30,9 +29,9 @@ import {
 } from '../../../utils/query.type';
 import TableConfigurations from '../../../components/VisualizationConfigs/TableConfigurations';
 import moment from 'moment';
-import { objectKeys } from 'src/utils/utils-network';
 import VisualizationCounter from 'src/components/Charts/VisualizationCounter';
 import CounterConfiguration from 'src/components/VisualizationConfigs/CounterConfiguration';
+import { defaultTableColumn } from 'src/components/Charts/VisualizationTable';
 
 type VisualizationConfigType = {
   value: string;
@@ -85,10 +84,7 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
   const [closeTabId, setCloseTabId] = useState<string | number>('');
   const [dataTable, setDataTable] = useState<any[]>([]);
 
-  const axisOptions =
-    Array.isArray(queryResult) && queryResult[0]
-      ? objectKeys(queryResult[0])
-      : [];
+  const optionsColumn = defaultTableColumn(queryResult);
 
   const defaultTimeXAxis = useMemo(() => {
     let result = '';
@@ -119,30 +115,13 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
     if (!searchedVisualization) return;
     let newVisualization: VisualizationType = {} as VisualizationType;
 
-    const columns = axisOptions.map(
-      (col) =>
-        ({
-          id: col,
-          accessorKey: col,
-          header: col,
-          enableResizing: true,
-          size: 100,
-          align: 'left',
-          type: 'normal',
-          format: '',
-          coloredPositive: false,
-          coloredNegative: false,
-          coloredProgress: false,
-          isHidden: false,
-        } as ColumnDef<unknown>),
-    );
     if (searchedVisualization.type === TYPE_VISUALIZATION.table) {
       newVisualization = {
         name: 'Query results',
         id: (Math.floor(Math.random() * 100) + 1).toString(),
         type: 'table',
         createdAt: moment().toDate(),
-        options: { columns },
+        options: { optionsColumn },
       };
     } else if (searchedVisualization.type === TYPE_VISUALIZATION.counter) {
       newVisualization = {
