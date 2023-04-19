@@ -17,6 +17,7 @@ import { VisualizationOptionsType } from '../../utils/query.type';
 import { formatVisualizationValue } from 'src/utils/utils-format';
 import CustomTooltip from './CustomTooltip';
 import CustomLegend from './CustomLegend';
+import moment from 'moment';
 type ChartConfigType = VisualizationOptionsType;
 type Props = ChartProps & {
   configs?: Partial<ChartConfigType>;
@@ -29,6 +30,9 @@ const VisualizationBarChart = (props: Props) => {
   const yAxisConfigs = configs?.yAxisConfigs;
 
   const tickFormatAxis = (axis: string) => (value: string) => {
+    if (moment(new Date(value)).isValid() && isNaN(+value)) {
+      return getHourAndMinute(value);
+    }
     if (axis === 'x' && configs?.xAxisConfigs?.tickFormat) {
       return formatVisualizationValue(configs?.xAxisConfigs?.tickFormat, value);
     }
@@ -54,6 +58,7 @@ const VisualizationBarChart = (props: Props) => {
         domain: ['auto', 'auto'],
       }
     : {};
+
   return (
     <>
       <ResponsiveContainer className="visual-container__visualization__barchart">
@@ -61,9 +66,7 @@ const VisualizationBarChart = (props: Props) => {
           <CartesianGrid vertical={false} strokeDasharray="4" />
           <XAxis
             dataKey={xAxisKey}
-            tickFormatter={
-              xAxisKey === 'time' ? getHourAndMinute : tickFormatAxis('x')
-            }
+            tickFormatter={tickFormatAxis('x')}
             fill={'#ccc'}
           >
             <Label

@@ -3,6 +3,19 @@ import { ColumnDef } from '@tanstack/react-table';
 import moment from 'moment';
 import { useMemo, useState } from 'react';
 import { useParams } from 'react-router';
+import 'src/styles/components/Chart.scss';
+import {
+  AreaChart,
+  BarChart,
+  LineChart,
+  PieChart,
+  ScatterChart,
+  VisualizationTable,
+} from '../../../components/Charts';
+import { AppTabs, AppButton, AppSelect2 } from '../../../components';
+import ChartConfigurations from '../../../components/VisualizationConfigs/ChartConfigurations';
+import BaseModal from '../../../modals/BaseModal';
+import DashboardsRequest from '../../../requests/DashboardsRequest';
 import {
   AreaChartIcon,
   BarChartIcon,
@@ -16,24 +29,14 @@ import CounterConfiguration from 'src/components/VisualizationConfigs/CounterCon
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/Chart.scss';
 import { objectKeys } from 'src/utils/utils-network';
-import { AppButton, AppSelect2, AppTabs } from '../../../components';
-import {
-  AreaChart,
-  BarChart,
-  LineChart,
-  PieChart,
-  ScatterChart,
-  VisualizationTable,
-} from '../../../components/Charts';
-import ChartConfigurations from '../../../components/VisualizationConfigs/ChartConfigurations';
 import TableConfigurations from '../../../components/VisualizationConfigs/TableConfigurations';
-import BaseModal from '../../../modals/BaseModal';
 import {
   IQuery,
   TYPE_VISUALIZATION,
   VALUE_VISUALIZATION,
   VisualizationType,
 } from '../../../utils/query.type';
+import { getDefaultTableColumns } from 'src/components/Charts/VisualizationTable';
 
 type VisualizationConfigType = {
   value: string;
@@ -72,6 +75,11 @@ const visualizationConfigs: VisualizationConfigType[] = [
     type: TYPE_VISUALIZATION.counter,
     value: VALUE_VISUALIZATION.counter,
   },
+  {
+    label: 'Table',
+    type: TYPE_VISUALIZATION.table,
+    value: VALUE_VISUALIZATION.table,
+  },
 ];
 
 export const VISUALIZATION_DEBOUNCE = 500;
@@ -91,6 +99,8 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
   const [closeTabId, setCloseTabId] = useState<string | number>('');
   const [dataTable, setDataTable] = useState<any[]>([]);
 
+  const optionsColumn = getDefaultTableColumns(queryResult);
+
   const axisOptions =
     Array.isArray(queryResult) && queryResult[0]
       ? objectKeys(queryResult[0])
@@ -98,12 +108,12 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
 
   const defaultTimeXAxis = useMemo(() => {
     let result = '';
-    const firstResultInQuery =
+    const firstResultInQuery: any =
       queryResult && !!queryResult.length ? queryResult[0] : null;
     if (firstResultInQuery) {
       Object.keys(firstResultInQuery).forEach((key: string) => {
         const date = moment(firstResultInQuery[key]);
-        if (date.isValid()) {
+        if (date.isValid() && isNaN(+firstResultInQuery[key])) {
           result = key;
           return;
         }
@@ -119,30 +129,13 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
     if (!searchedVisualization) return;
     let newVisualization: VisualizationType = {} as VisualizationType;
 
-    const columns = axisOptions.map(
-      (col) =>
-        ({
-          id: col,
-          accessorKey: col,
-          header: col,
-          enableResizing: true,
-          size: 100,
-          align: 'left',
-          type: 'normal',
-          format: '',
-          coloredPositive: false,
-          coloredNegative: false,
-          coloredProgress: false,
-          isHidden: false,
-        } as ColumnDef<unknown>),
-    );
     if (searchedVisualization.type === TYPE_VISUALIZATION.table) {
       newVisualization = {
-        name: 'Query results',
+        name: 'Table',
         id: (Math.floor(Math.random() * 100) + 1).toString(),
         type: 'table',
         createdAt: moment().toDate(),
-        options: { columns },
+        options: { optionsColumn },
       };
     } else if (searchedVisualization.type === TYPE_VISUALIZATION.counter) {
       newVisualization = {
@@ -151,7 +144,7 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
         type: 'counter',
         createdAt: moment().toDate(),
         options: {
-          counterColName: 'time',
+          counterColName: !!axisOptions.length ? axisOptions[0] : '',
           rowNumber: 1,
         },
       };

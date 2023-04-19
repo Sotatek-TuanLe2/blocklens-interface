@@ -16,13 +16,9 @@ interface ReactTableProps<T> {
   dataColumn?: ColumnDef<unknown>[];
 }
 
-const VisualizationTable = <T,>({
-  data,
-  setDataTable,
-  dataColumn,
-}: ReactTableProps<T>) => {
+export const getDefaultTableColumns = (data: any[]) => {
   const axisOptions = Array.isArray(data) && data[0] ? objectKeys(data[0]) : [];
-  const defaultDataColumn = axisOptions.map(
+  return axisOptions.map(
     (col) =>
       ({
         id: col,
@@ -39,13 +35,18 @@ const VisualizationTable = <T,>({
         isHidden: false,
       } as ColumnDef<unknown>),
   );
+};
 
+const VisualizationTable = <T,>({
+  data,
+  setDataTable,
+  dataColumn,
+}: ReactTableProps<T>) => {
   const table = useReactTable({
     data,
-    columns: dataColumn || defaultDataColumn,
+    columns: dataColumn || getDefaultTableColumns(data),
     getCoreRowModel: getCoreRowModel(),
   });
-
   useEffect(() => {
     const timer = setTimeout(() => {
       setDataTable && setDataTable(table.getRowModel().rows);
@@ -178,7 +179,7 @@ const VisualizationTable = <T,>({
                           className="visual-progressbar"
                         ></div>
                       ) : null}
-                      {formatVisualizationValue(format, value)}
+                      {!!value && formatVisualizationValue(format, value)}
                     </div>
                   </td>
                 );
