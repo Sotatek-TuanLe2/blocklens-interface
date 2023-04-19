@@ -111,11 +111,11 @@ const QueriesPage = () => {
           });
         if (resInterval.status === 'DONE') {
           clearInterval(fetchQueryResultInterval);
-          setQueryResult(resInterval);
+          setQueryResult(resInterval.result);
         }
       }, 2000);
     } else {
-      setQueryResult(res);
+      setQueryResult(res.result);
     }
   };
 
