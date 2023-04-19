@@ -28,7 +28,6 @@ import VisualizationCounter from 'src/components/Charts/VisualizationCounter';
 import CounterConfiguration from 'src/components/VisualizationConfigs/CounterConfiguration';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/Chart.scss';
-import { objectKeys } from 'src/utils/utils-network';
 import TableConfigurations from '../../../components/VisualizationConfigs/TableConfigurations';
 import {
   IQuery,
