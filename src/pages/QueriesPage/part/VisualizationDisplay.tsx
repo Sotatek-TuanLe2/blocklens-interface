@@ -325,11 +325,12 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
         case TYPE_VISUALIZATION.scatter:
           visualizationDisplay = (
             <ScatterChart
-              data={queryResult}
+              data={data}
               xAxisKey={
                 visualization.options?.columnMapping?.xAxis || defaultTimeXAxis
               }
               yAxisKeys={visualization.options.columnMapping?.yAxis || []}
+              configs={visualization.options}
             />
           );
           break;
