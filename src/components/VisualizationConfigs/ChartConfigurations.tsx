@@ -91,6 +91,7 @@ const ChartConfigurations = ({
         </GridItem>
         <GridItem>
           <XAxisOptions
+            chartOptions={editVisualization.options.chartOptionsConfigs}
             xConfigs={editVisualization.options.xAxisConfigs}
             onChangeConfigs={(configs) => {
               setEditVisualization({
@@ -105,6 +106,7 @@ const ChartConfigurations = ({
         </GridItem>
         <GridItem>
           <YAxisOptions
+            chartOptions={editVisualization.options.chartOptionsConfigs}
             yConfigs={editVisualization.options.yAxisConfigs}
             onChangeConfigs={(configs) => {
               setEditVisualization({
