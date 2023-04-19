@@ -111,31 +111,16 @@ export type QueryTypeSingle = {
 
 export type QueryExecutedResponse = {
   id: string;
-  query: QueryInfoResponse;
+  query: IQuery;
   createdAt: string;
   result: any;
   status: string;
   updatedAt: string;
 };
 
-export type QueryInfoResponse = {
-  id: string;
-  query: string;
-  network: string;
-  chain: string;
-  name: string;
-  forkedQuery?: string;
-  user?: any;
-  isPrivate: boolean;
-  isArchived: boolean;
-  createdAt: string;
-  updatedAt: string;
-  visualizations: any;
-};
-
 export type QueryResultResponse = {
   id: string;
-  query: QueryInfoResponse;
+  query: IQuery;
   resultId: string;
   createAt: string;
   updatedAt: string;

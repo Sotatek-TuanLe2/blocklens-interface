@@ -108,7 +108,7 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
 
   const updateQuery = async (updateQuery: IQuery) => {
     const request = new DashboardsRequest();
-    await request.updateQuery(queryValue.id, updateQuery);
+    // await request.updateQuery(queryValue.id, updateQuery);
     await onReload();
   };
 
