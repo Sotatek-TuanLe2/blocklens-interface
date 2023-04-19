@@ -1,19 +1,18 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Box, Flex, Select, Text } from '@chakra-ui/react';
-import { tableDetail } from '../../../components/SqlEditor/MockData';
-import DashboardsRequest from '../../../requests/DashboardsRequest';
+import { Box, Flex, Text } from '@chakra-ui/react';
 import { ArrowBackIcon } from '@chakra-ui/icons';
 import 'src/styles/components/EditorSidebar.scss';
 import { SchemaType, TableAttributeType } from '../../../utils/common';
 import _, { debounce } from 'lodash';
-
-const TIME_DEBOUNCE = 1000;
 import { AppInput, AppSelect2 } from '../../../components';
 import SchemaDescribe from '../../../components/SqlEditor/SchemaDescribe';
 import SchemaTitle from '../../../components/SqlEditor/SchemaTitle';
 import { getErrorMessage } from '../../../utils/utils-helper';
 import { getLogoChainByChainId } from '../../../utils/utils-network';
 import { toastError } from '../../../utils/utils-notify';
+import rf from 'src/requests/RequestFactory';
+
+const TIME_DEBOUNCE = 1000;
 
 const EditorSidebar = () => {
   const [tableSelected, setTableSelected] = useState<{
@@ -33,8 +32,7 @@ const EditorSidebar = () => {
   }) => {
     setTableSelected({ chain, name });
     try {
-      const dashboardRequest = new DashboardsRequest();
-      const data = await dashboardRequest.getSchemaOfTable({
+      const data = await rf.getRequest('DashboardsRequest').getSchemaOfTable({
         namespace: chain,
         tableName: name,
       });
@@ -51,9 +49,8 @@ const EditorSidebar = () => {
 
   const fetchDataTable = async () => {
     try {
-      const dashboardRequest = new DashboardsRequest();
       const params = _.omitBy({ ...paramsSearch }, (v) => v === '');
-      const tables = await dashboardRequest.getTables(params);
+      const tables = await rf.getRequest('DashboardsRequest').getTables(params);
       setSchemas(tables);
     } catch (error) {
       toastError(getErrorMessage(error));

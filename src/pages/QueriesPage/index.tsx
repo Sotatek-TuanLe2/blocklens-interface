@@ -18,15 +18,14 @@ import {
   QueryExecutedResponse,
   QueryInfoResponse,
   QueryType,
-  IQuery,
   QueryResultResponse,
 } from '../../utils/query.type';
 import 'src/styles/pages/QueriesPage.scss';
 import { AddParameterIcon, ExplandIcon } from 'src/assets/icons';
 import { MoonIcon, SettingsIcon, SunIcon } from '@chakra-ui/icons';
-import moment from 'moment';
 import ModalSaveQuery from 'src/modals/ModalSaveQuery';
 import { toastSuccess } from 'src/utils/utils-notify';
+import rf from 'src/requests/RequestFactory';
 
 interface ParamTypes {
   queryId: string;
@@ -49,6 +48,9 @@ const QueriesPage = () => {
 
   const history = useHistory();
 
+  const hoverBackgroundButton = switchTheme ? '#dadde0' : '#2a2c2f99';
+  const backgroundButton = switchTheme ? '#e9ebee' : '#2a2c2f';
+
   useEffect(() => {
     if (queryId) {
       if (!executionIdRef.current) {
@@ -62,14 +64,16 @@ const QueriesPage = () => {
 
   const createNewQuery = async (query: string) => {
     try {
-      const dashboardsRequest = new DashboardsRequest();
       if (queryId) {
         const updateQuery = {
           query: query,
         };
-        await dashboardsRequest.updateQuery(updateQuery, queryId);
-        const queryValues: QueryExecutedResponse =
-          await dashboardsRequest.executeQuery(queryId);
+        await rf
+          .getRequest('DashboardsRequest')
+          .updateQuery(updateQuery, queryId);
+        const queryValues: QueryExecutedResponse = await rf
+          .getRequest('DashboardsRequest')
+          .executeQuery(queryId);
         executionIdRef.current = queryValues.id;
         await fetchQueryResult(queryValues.id);
         await fetchFindQuery();
@@ -78,10 +82,12 @@ const QueriesPage = () => {
           name: ``,
           query: query,
         };
-        const infoQuery: QueryInfoResponse =
-          await dashboardsRequest.createNewQuery(newQuery);
-        const queryValues: QueryExecutedResponse =
-          await dashboardsRequest.executeQuery(infoQuery.id);
+        const infoQuery: QueryInfoResponse = await rf
+          .getRequest('DashboardsRequest')
+          .createNewQuery(newQuery);
+        const queryValues: QueryExecutedResponse = await rf
+          .getRequest('DashboardsRequest')
+          .executeQuery(infoQuery.id);
         executionIdRef.current = queryValues.id;
         history.push(`/queries/${infoQuery.id}`);
       }
@@ -96,8 +102,7 @@ const QueriesPage = () => {
       is_tempt: false,
     };
     try {
-      const dashboardsRequest = new DashboardsRequest();
-      await dashboardsRequest.updateQuery(newQuery, queryId);
+      await rf.getRequest('DashboardsRequest').updateQuery(newQuery, queryId);
       setShowSaveModal(false);
       toastSuccess({ message: 'Save query is successfully.' });
     } catch (error) {
@@ -117,9 +122,7 @@ const QueriesPage = () => {
   const fetchQueryResult = async (executionId: string) => {
     fetchQueryRef.current = setInterval(async () => {
       try {
-        const request = new DashboardsRequest();
-
-        const res = await request.getQueryResult({
+        const res = await rf.getRequest('DashboardsRequest').getQueryResult({
           queryId,
           executionId,
         });
@@ -135,8 +138,9 @@ const QueriesPage = () => {
   const fetchFindQuery = async () => {
     let data;
     try {
-      const request = new DashboardsRequest();
-      const dataQuery = await request.getQueryById({ queryId });
+      const dataQuery = await rf
+        .getRequest('DashboardsRequest')
+        .getQueryById({ queryId });
       setInfoQuery(dataQuery);
       data = dataQuery;
     } catch (error) {
@@ -147,10 +151,11 @@ const QueriesPage = () => {
 
   const fetchDataOnReload = async () => {
     try {
-      const request = new DashboardsRequest();
-      const res: QueryResultResponse = await request.getQueryExecutionId({
-        queryId,
-      });
+      const res: QueryResultResponse = await rf
+        .getRequest('DashboardsRequest')
+        .getQueryExecutionId({
+          queryId,
+        });
       await fetchQueryResult(res.resultId);
       const data = await fetchFindQuery();
       const position = editorRef.current.editor.getCursorPosition();
@@ -177,9 +182,6 @@ const QueriesPage = () => {
   //   if (editorRef.current.editor) editorRef.current.editor.resize();
   // };
 
-  const hoverBackground = switchTheme ? '#dadde0' : '#2a2c2f99';
-  const background = switchTheme ? '#e9ebee' : '#2a2c2f';
-
   const _renderMenuPanelSetting = () => {
     return (
       <Flex
@@ -201,7 +203,7 @@ const QueriesPage = () => {
     );
   };
 
-  const _renderButton = () => {
+  const _renderEditorButtons = () => {
     const colorIcon = switchTheme ? '#35373c' : '#fef5f7';
 
     return (
@@ -213,8 +215,8 @@ const QueriesPage = () => {
         >
           <AppButton
             onClick={onExpland}
-            bg={background}
-            _hover={{ bg: hoverBackground }}
+            bg={backgroundButton}
+            _hover={{ bg: hoverBackgroundButton }}
           >
             <ExplandIcon color={colorIcon} />
           </AppButton>
@@ -223,8 +225,8 @@ const QueriesPage = () => {
           <div className="btn-setting">
             <AppButton
               onClick={onSetting}
-              bg={background}
-              _hover={{ bg: hoverBackground }}
+              bg={backgroundButton}
+              _hover={{ bg: hoverBackgroundButton }}
             >
               <SettingsIcon color={colorIcon} />
             </AppButton>
@@ -234,8 +236,8 @@ const QueriesPage = () => {
         {/* <Tooltip hasArrow placement="top" label="Format query">
           <AppButton
             onClick={onFormat}
-            bg={background}
-            _hover={{ bg: hoverBackground }}
+            bg={backgroundButton}
+            _hover={{ bg: hoverBackgroundButton }}
           >
             <FormatIcon color={colorIcon} />
           </AppButton>
@@ -244,8 +246,8 @@ const QueriesPage = () => {
           <Tooltip hasArrow placement="top" label="Add Parameter">
             <AppButton
               onClick={onAddParameter}
-              bg={background}
-              _hover={{ bg: hoverBackground }}
+              bg={backgroundButton}
+              _hover={{ bg: hoverBackgroundButton }}
             >
               <AddParameterIcon color={colorIcon} />
             </AppButton>
@@ -300,11 +302,11 @@ const QueriesPage = () => {
                   bg={switchTheme ? '#f3f5f7' : '#111213'}
                   className="control-editor"
                 >
-                  {_renderButton()}
+                  {_renderEditorButtons()}
                   <AppButton
                     onClick={submitQuery}
-                    bg={background}
-                    _hover={{ bg: hoverBackground }}
+                    bg={backgroundButton}
+                    _hover={{ bg: hoverBackgroundButton }}
                   >
                     <Text color={switchTheme ? '#1d1d20' : '#f3f5f7'}>Run</Text>
                   </AppButton>
@@ -315,10 +317,7 @@ const QueriesPage = () => {
                   <VisualizationDisplay
                     queryResult={queryResult}
                     queryValue={infoQuery}
-                    onReload={async () => {
-                      await fetchQueryResult(executionIdRef.current);
-                      await fetchFindQuery();
-                    }}
+                    onReload={fetchFindQuery}
                   />
                 )}
               </Box>
