@@ -27,9 +27,9 @@ const VisualizationCounter = ({ data, visualization }: Props) => {
   const defaultSize =
     NUMBER_SIZE.start -
     (dataCounter().toString().length +
-      Number(dataOptions.stringDecimal) +
-      dataOptions.stringPrefix.toString().length +
-      dataOptions.stringSuffix.toString().length) /
+      Number(dataOptions?.stringDecimal) +
+      dataOptions?.stringPrefix?.toString().length +
+      dataOptions?.stringSuffix?.toString().length) /
       NUMBER_SIZE.percent;
 
   useEffect(() => {
@@ -56,7 +56,7 @@ const VisualizationCounter = ({ data, visualization }: Props) => {
               {checkTypeValue === 'number'
                 ? roundAndPadZeros(
                     dataCounter(),
-                    Number(dataOptions.stringDecimal),
+                    Number(dataOptions.stringDecimal || 0),
                   )
                 : dataCounter()}
             </span>
