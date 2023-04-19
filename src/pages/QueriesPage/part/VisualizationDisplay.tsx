@@ -71,6 +71,11 @@ const visualizationConfigs: VisualizationConfigType[] = [
     type: TYPE_VISUALIZATION.counter,
     value: VALUE_VISUALIZATION.counter,
   },
+  {
+    label: 'Table',
+    type: TYPE_VISUALIZATION.table,
+    value: VALUE_VISUALIZATION.table,
+  },
 ];
 
 export const VISUALIZATION_DEBOUNCE = 500;
@@ -138,7 +143,7 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
     );
     if (searchedVisualization.type === TYPE_VISUALIZATION.table) {
       newVisualization = {
-        name: 'Query results',
+        name: 'Table',
         id: (Math.floor(Math.random() * 100) + 1).toString(),
         type: 'table',
         createdAt: moment().toDate(),
@@ -151,7 +156,7 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
         type: 'counter',
         createdAt: moment().toDate(),
         options: {
-          counterColName: 'time',
+          counterColName: !!axisOptions.length ? axisOptions[0] : '',
           rowNumber: 1,
         },
       };
