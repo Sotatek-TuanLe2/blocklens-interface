@@ -28,7 +28,6 @@ import VisualizationCounter from 'src/components/Charts/VisualizationCounter';
 import CounterConfiguration from 'src/components/VisualizationConfigs/CounterConfiguration';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/Chart.scss';
-import { objectKeys } from 'src/utils/utils-network';
 import TableConfigurations from '../../../components/VisualizationConfigs/TableConfigurations';
 import {
   IQuery,
@@ -101,11 +100,6 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
   const [dataTable, setDataTable] = useState<any[]>([]);
 
   const optionsColumn = getDefaultTableColumns(queryResult);
-  const axisOptions =
-    Array.isArray(queryResult) && queryResult[0]
-      ? objectKeys(queryResult[0])
-      : [];
-
   const axisOptions =
     Array.isArray(queryResult) && queryResult[0]
       ? objectKeys(queryResult[0])
