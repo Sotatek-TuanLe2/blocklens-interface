@@ -34,7 +34,7 @@ const EditorSidebar = () => {
     setTableSelected({ chain, name });
     try {
       const dashboardRequest = new DashboardsRequest();
-      const data = await dashboardRequest.getSchema({
+      const data = await dashboardRequest.getSchemaOfTable({
         namespace: chain,
         tableName: name,
       });
@@ -53,7 +53,7 @@ const EditorSidebar = () => {
     try {
       const dashboardRequest = new DashboardsRequest();
       const params = _.omitBy({ ...paramsSearch }, (v) => v === '');
-      const tables = await dashboardRequest.getTable(params);
+      const tables = await dashboardRequest.getTables(params);
       setSchemas(tables);
     } catch (error) {
       toastError(getErrorMessage(error));

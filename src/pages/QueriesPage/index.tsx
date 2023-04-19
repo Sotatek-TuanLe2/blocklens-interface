@@ -56,9 +56,9 @@ const QueriesPage = () => {
         const updateQuery = {
           query: query,
         };
-        await dashboardsRequest.updateQueries(updateQuery, queryId);
+        await dashboardsRequest.updateQuery(updateQuery, queryId);
         const queryValues: QueryExecutedResponse =
-          await dashboardsRequest.postExcuteQuery(queryId);
+          await dashboardsRequest.executeQuery(queryId);
         excutionIdRef.current = queryValues.id;
         await fetchQueryResult(queryValues.id);
         await fetchFindQuery();
@@ -71,7 +71,7 @@ const QueriesPage = () => {
         const infoQuery: QueryInfoResponse =
           await dashboardsRequest.createNewQuery(newQuery);
         const queryValues: QueryExecutedResponse =
-          await dashboardsRequest.postExcuteQuery(infoQuery.id);
+          await dashboardsRequest.executeQuery(infoQuery.id);
         excutionIdRef.current = queryValues.id;
         history.push(`/queries/${infoQuery.id}`);
       }
@@ -88,7 +88,7 @@ const QueriesPage = () => {
     };
     try {
       const dashboardsRequest = new DashboardsRequest();
-      await dashboardsRequest.updateQueries(newQuery, queryId);
+      await dashboardsRequest.updateQuery(newQuery, queryId);
       setShowSaveModal(false);
       toastSuccess({ message: 'Save query is successfully.' });
     } catch (error) {
@@ -135,7 +135,7 @@ const QueriesPage = () => {
     let data;
     try {
       const request = new DashboardsRequest();
-      const dataQuery = await request.getDataQuery({ queryId });
+      const dataQuery = await request.getQueryById({ queryId });
       setInfoQuery(dataQuery);
       data = dataQuery;
     } catch (error) {
@@ -148,7 +148,7 @@ const QueriesPage = () => {
     try {
       const request = new DashboardsRequest();
 
-      const res: QueryResultResponse = await request.getExecutionId({
+      const res: QueryResultResponse = await request.getQueryExecutionId({
         queryId,
       });
       await fetchQueryResult(res.resultId);
