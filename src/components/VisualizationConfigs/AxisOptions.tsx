@@ -22,6 +22,8 @@ export const XAxisOptions: React.FC<IXAxisOptions> = ({
     { label: 'Revert value', value: 'reverseX' },
   ];
 
+  console.log('xConfigs', xConfigs);
+
   const changeValueHandle = (key: string, value: boolean | string) => {
     const newOptions = {
       ...xConfigs,
