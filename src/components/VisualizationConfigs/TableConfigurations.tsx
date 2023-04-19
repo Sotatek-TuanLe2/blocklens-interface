@@ -1,11 +1,11 @@
 import { Checkbox, Divider, Grid, GridItem, Text } from '@chakra-ui/react';
-import { ColumnDef } from '@tanstack/react-table';
 import { useEffect, useState } from 'react';
 import { VISUALIZATION_DEBOUNCE } from 'src/pages/QueriesPage/part/VisualizationDisplay';
 import 'src/styles/components/TableConfigurations.scss';
 import { VisualizationType } from 'src/utils/query.type';
 import AppInput from '../AppInput';
 import AppSelect2 from '../AppSelect2';
+import { getDefaultTableColumns } from '../Charts/VisualizationTable';
 
 interface IOption {
   value: string;
@@ -24,16 +24,21 @@ const optionAlign: IOption[] = [
 ];
 
 interface ITableConfigurations {
+  data: any[];
   visualization: VisualizationType;
   onChangeConfigurations: (v: VisualizationType) => void;
   dataTable?: any[];
 }
 
 const TableConfigurations: React.FC<ITableConfigurations> = ({
+  data,
   visualization,
   onChangeConfigurations,
   dataTable,
 }) => {
+  // @ts-ignore
+  dataTable.length && console.log(dataTable[0]);
+
   const [editVisualization, setEditVisualization] =
     useState<VisualizationType>(visualization);
   let timeout: any = null;
@@ -57,11 +62,13 @@ const TableConfigurations: React.FC<ITableConfigurations> = ({
       name: e.target.value,
     }));
   };
-  const dataColumn: [] = editVisualization.options.columns;
+
+  const dataColumns =
+    editVisualization.options.columns || getDefaultTableColumns(data);
 
   const onChangeColumnConfigurations = (data: any, index: number) => {
     setEditVisualization((prevState) => {
-      const newColumns = [...prevState.options.columns];
+      const newColumns = [...dataColumns];
       newColumns[index] = data;
       return {
         ...prevState,
@@ -114,8 +121,8 @@ const TableConfigurations: React.FC<ITableConfigurations> = ({
         }}
         gap={'10px'}
       >
-        {!!dataColumn?.length ? (
-          dataColumn?.map((data, index) => (
+        {!!dataColumns?.length ? (
+          dataColumns?.map((data: any, index: number) => (
             <GridItem key={index}>
               <TableOptions
                 data={data}

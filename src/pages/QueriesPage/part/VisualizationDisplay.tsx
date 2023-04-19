@@ -37,6 +37,7 @@ import {
   VisualizationType,
 } from '../../../utils/query.type';
 import { getDefaultTableColumns } from 'src/components/Charts/VisualizationTable';
+import { objectKeys } from 'src/utils/utils-network';
 
 type VisualizationConfigType = {
   value: string;
@@ -100,6 +101,10 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
   const [dataTable, setDataTable] = useState<any[]>([]);
 
   const optionsColumn = getDefaultTableColumns(queryResult);
+  const axisOptions =
+    Array.isArray(queryResult) && queryResult[0]
+      ? objectKeys(queryResult[0])
+      : [];
 
   const axisOptions =
     Array.isArray(queryResult) && queryResult[0]
@@ -252,6 +257,7 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
       );
       visualizationConfiguration = (
         <TableConfigurations
+          data={queryResult}
           visualization={visualization}
           onChangeConfigurations={onChangeConfigurations}
           dataTable={dataTable}
