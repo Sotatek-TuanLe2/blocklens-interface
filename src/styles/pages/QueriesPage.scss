@@ -173,6 +173,8 @@
       }
 
       .table-value {
+        min-width: 100%;
+        height: fit-content !important;
         border: 1px solid #747474;
 
         td,
