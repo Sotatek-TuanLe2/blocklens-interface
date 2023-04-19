@@ -50,7 +50,7 @@ export const COLORS = [
 ];
 
 export const getHourAndMinute = (date: string) => {
-  return moment(new Date(date)).format('hh:mm');
+  return moment(new Date(date)).format('HH:mm');
 };
 
 export enum VALUE_VISUALIZATION {

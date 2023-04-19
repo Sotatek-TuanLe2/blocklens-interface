@@ -8,12 +8,34 @@ import {
 import { useEffect } from 'react';
 import 'src/styles/components/TableValue.scss';
 import { formatVisualizationValue } from 'src/utils/utils-format';
+import { objectKeys } from 'src/utils/utils-network';
 
 interface ReactTableProps<T> {
   data: T[];
   setDataTable?: React.Dispatch<React.SetStateAction<any[]>>;
   dataColumn?: ColumnDef<unknown>[];
 }
+
+export const getDefaultTableColumns = (data: any[]) => {
+  const axisOptions = Array.isArray(data) && data[0] ? objectKeys(data[0]) : [];
+  return axisOptions.map(
+    (col) =>
+      ({
+        id: col,
+        accessorKey: col,
+        header: col,
+        enableResizing: true,
+        size: 100,
+        align: 'left',
+        type: 'normal',
+        format: '',
+        coloredPositive: false,
+        coloredNegative: false,
+        coloredProgress: false,
+        isHidden: false,
+      } as ColumnDef<unknown>),
+  );
+};
 
 const VisualizationTable = <T,>({
   data,
@@ -22,10 +44,9 @@ const VisualizationTable = <T,>({
 }: ReactTableProps<T>) => {
   const table = useReactTable({
     data,
-    columns: dataColumn || [],
+    columns: dataColumn || getDefaultTableColumns(data),
     getCoreRowModel: getCoreRowModel(),
   });
-
   useEffect(() => {
     const timer = setTimeout(() => {
       setDataTable && setDataTable(table.getRowModel().rows);
