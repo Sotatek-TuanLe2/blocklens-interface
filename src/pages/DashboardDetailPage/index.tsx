@@ -186,7 +186,9 @@ const DashboardDetailPage: React.FC = () => {
           />
         );
       case TYPE_VISUALIZATION.pie:
-        return <VisualizationPieChart data={queryValues} dataKey={'number'} />;
+        return (
+          <VisualizationPieChart data={queryValues} dataKey={['number']} />
+        );
       default:
       // return <AddVisualization onAddVisualize={addVisualizationHandler} />;
     }

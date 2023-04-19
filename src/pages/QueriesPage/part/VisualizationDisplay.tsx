@@ -324,7 +324,14 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
           break;
         case TYPE_VISUALIZATION.pie:
           visualizationDisplay = (
-            <PieChart data={queryResult} dataKey={'number'} />
+            <PieChart
+              data={queryResult}
+              nameKey={
+                visualization.options?.columnMapping?.xAxis || defaultTimeXAxis
+              }
+              configs={visualization.options}
+              dataKey={visualization.options.columnMapping?.yAxis || []}
+            />
           );
           break;
         default:
