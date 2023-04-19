@@ -80,11 +80,9 @@ const VisualizationAreaChart = (props: Props) => {
             fill={'#ccc'}
           />
         </XAxis>
-        {yAxisKeys && !!yAxisKeys.length && <YAxis dataKey={yAxisKeys[0]} />}
-        {yAxisKeys?.map((yAxisKey) => (
+        {yAxisKeys && !!yAxisKeys.length && (
           <YAxis
-            key={yAxisKey}
-            dataKey={yAxisKey}
+            dataKey={yAxisKeys[0]}
             label={{
               value: yAxisConfigs?.title,
               angle: -90,
@@ -94,7 +92,7 @@ const VisualizationAreaChart = (props: Props) => {
             tickFormatter={tickFormatAxis('y')}
             {...logarithmicProps}
           />
-        ))}
+        )}
 
         <Tooltip
           content={<CustomTooltip />}
