@@ -11,58 +11,15 @@ import {
   Label,
   LabelList,
 } from 'recharts';
-import { getHourAndMinute, randomColor } from '../../utils/common';
+import { COLORS, getHourAndMinute } from '../../utils/common';
 import { ChartProps } from './LineChart';
 import { VisualizationOptionsType } from '../../utils/query.type';
-import { Box } from '@chakra-ui/react';
+import { formatVisualizationValue } from 'src/utils/utils-format';
+import CustomTooltip from './CustomTooltip';
+import CustomLegend from './CustomLegend';
 type ChartConfigType = VisualizationOptionsType;
 type Props = ChartProps & {
   configs?: Partial<ChartConfigType>;
-};
-
-export const CustomTooltip = (props: any) => {
-  const { active, payload, label } = props;
-  if (active && payload && payload.length) {
-    return (
-      <div className="custom-tooltip">
-        <p className=" custom-tooltip__label">{label}</p>
-        <div className="custom-tooltip__desc">
-          {payload.map((entry: any, index: number) => (
-            <Box
-              as={'div'}
-              key={index}
-              className="custom-tooltip__desc__detail"
-            >
-              <span style={{ backgroundColor: `${entry.fill}` }}></span>
-              <span>{`${entry.name}:  `}</span>
-              <span>{entry.value}</span>
-              <br />
-            </Box>
-          ))}
-        </div>
-      </div>
-    );
-  }
-  return null;
-};
-
-export const renderLegend = (props: any) => {
-  const { payload } = props;
-
-  return (
-    <div>
-      {payload.map((entry: any, index: number) => (
-        <div key={`item-${index}`} className="custom-legend">
-          <span style={{ color: `${entry.color}` }}>{entry.value}</span>
-          <span style={{ backgroundColor: `${entry.color}` }}></span>
-        </div>
-      ))}
-    </div>
-  );
-};
-
-export const tickFormatTime = (value: string) => {
-  return getHourAndMinute(new Date(value));
 };
 
 const VisualizationBarChart = (props: Props) => {
@@ -71,23 +28,22 @@ const VisualizationBarChart = (props: Props) => {
   const xAxisConfigs = configs?.xAxisConfigs;
   const yAxisConfigs = configs?.yAxisConfigs;
 
-  const tickFormatTime = (value: string) => {
-    return getHourAndMinute(new Date(value));
-  };
-
   const tickFormatAxis = (axis: string) => (value: string) => {
     if (axis === 'x' && configs?.xAxisConfigs?.tickFormat) {
-      // TODO: return tick format
+      return formatVisualizationValue(configs?.xAxisConfigs?.tickFormat, value);
     }
     if (axis === 'y' && configs?.yAxisConfigs?.tickFormat) {
-      // TODO: return tick format
+      return formatVisualizationValue(configs?.yAxisConfigs?.tickFormat, value);
     }
     return value;
   };
 
   const labelFormat = (value: string) => {
     if (configs?.yAxisConfigs?.labelFormat) {
-      // TODO: return label format
+      return formatVisualizationValue(
+        configs?.yAxisConfigs?.labelFormat,
+        value,
+      );
     }
     return value;
   };
@@ -98,7 +54,6 @@ const VisualizationBarChart = (props: Props) => {
         domain: ['auto', 'auto'],
       }
     : {};
-
   return (
     <>
       <ResponsiveContainer className="visual-container__visualization__barchart">
@@ -107,7 +62,7 @@ const VisualizationBarChart = (props: Props) => {
           <XAxis
             dataKey={xAxisKey}
             tickFormatter={
-              xAxisKey === 'time' ? tickFormatTime : tickFormatAxis('x')
+              xAxisKey === 'time' ? getHourAndMinute : tickFormatAxis('x')
             }
             fill={'#ccc'}
           >
@@ -118,10 +73,10 @@ const VisualizationBarChart = (props: Props) => {
               fill={'#ccc'}
             />
           </XAxis>
-          {yAxisKeys?.map((yKey) => (
+
+          {yAxisKeys && !!yAxisKeys.length && (
             <YAxis
-              key={yKey}
-              dataKey={yKey}
+              dataKey={yAxisKeys[0]}
               label={{
                 value: yAxisConfigs?.title,
                 angle: -90,
@@ -131,25 +86,27 @@ const VisualizationBarChart = (props: Props) => {
               tickFormatter={tickFormatAxis('y')}
               {...logarithmicProps}
             />
-          ))}
+          )}
+
           <Tooltip
             content={<CustomTooltip />}
             animationDuration={200}
             animationEasing={'linear'}
           />
+
           {chartOptionsConfigs?.showLegend && (
             <Legend
               verticalAlign="middle"
               align="right"
               layout="vertical"
-              content={renderLegend}
+              content={<CustomLegend />}
             />
           )}
-          {yAxisKeys?.map((yKey) => (
+          {yAxisKeys?.map((yKey, index) => (
             <Bar
               key={yKey}
               dataKey={yKey}
-              fill={randomColor}
+              fill={COLORS[index % COLORS.length]}
               stackId={chartOptionsConfigs?.stacking ? 'a' : undefined}
             >
               {!configs?.chartOptionsConfigs?.stacking &&

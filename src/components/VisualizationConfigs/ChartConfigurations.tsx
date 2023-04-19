@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Grid, GridItem } from '@chakra-ui/react';
-import { VisualizationType } from '../../utils/query.type';
+import { TYPE_VISUALIZATION, VisualizationType } from '../../utils/query.type';
 import 'src/styles/components/TableConfigurations.scss';
 import ChartOptions from './ChartOptions';
 import ResultData from './ResultData';
@@ -32,6 +32,8 @@ const ChartConfigurations = ({
     return () => clearTimeout(timeout);
   }, [editVisualization]);
 
+  const type = visualization.options?.globalSeriesType || visualization.type;
+
   const axisOptions = useMemo(
     () => (Array.isArray(data) && data[0] ? objectKeys(data[0]) : []),
     [data],
@@ -57,13 +59,9 @@ const ChartConfigurations = ({
         <GridItem>
           <ResultData
             axisOptions={axisOptions as string[]}
-            xAxisMapped={
-              editVisualization.options?.columnMapping?.xAxis || 'time'
-            }
-            yAxesMapped={
-              editVisualization.options?.columnMapping?.yAxis || ['size']
-            }
-            onChangeXAxis={(xAxis) => {
+            xAxis={editVisualization.options?.columnMapping?.xAxis}
+            yAxis={editVisualization.options?.columnMapping?.yAxis}
+            onChangeAxis={(xAxis: string, yAxis: string[]) => {
               setEditVisualization({
                 ...editVisualization,
                 options: {
@@ -71,17 +69,6 @@ const ChartConfigurations = ({
                   columnMapping: {
                     ...editVisualization.options.columnMapping,
                     xAxis,
-                  },
-                },
-              });
-            }}
-            onChangeYAxis={(yAxis) => {
-              setEditVisualization({
-                ...editVisualization,
-                options: {
-                  ...editVisualization.options,
-                  columnMapping: {
-                    ...editVisualization.options.columnMapping,
                     yAxis,
                   },
                 },
@@ -89,36 +76,42 @@ const ChartConfigurations = ({
             }}
           />
         </GridItem>
-        <GridItem>
-          <XAxisOptions
-            chartOptions={editVisualization.options.chartOptionsConfigs}
-            xConfigs={editVisualization.options.xAxisConfigs}
-            onChangeConfigs={(configs) => {
-              setEditVisualization({
-                ...editVisualization,
-                options: {
-                  ...editVisualization.options,
-                  xAxisConfigs: configs,
-                },
-              });
-            }}
-          />
-        </GridItem>
-        <GridItem>
-          <YAxisOptions
-            chartOptions={editVisualization.options.chartOptionsConfigs}
-            yConfigs={editVisualization.options.yAxisConfigs}
-            onChangeConfigs={(configs) => {
-              setEditVisualization({
-                ...editVisualization,
-                options: {
-                  ...editVisualization.options,
-                  yAxisConfigs: configs,
-                },
-              });
-            }}
-          />
-        </GridItem>
+        {type === TYPE_VISUALIZATION.pie ? (
+          <GridItem></GridItem>
+        ) : (
+          <>
+            <GridItem>
+              <XAxisOptions
+                chartOptions={editVisualization.options.chartOptionsConfigs}
+                xConfigs={editVisualization.options.xAxisConfigs}
+                onChangeConfigs={(configs) => {
+                  setEditVisualization({
+                    ...editVisualization,
+                    options: {
+                      ...editVisualization.options,
+                      xAxisConfigs: configs,
+                    },
+                  });
+                }}
+              />
+            </GridItem>
+            <GridItem>
+              <YAxisOptions
+                chartOptions={editVisualization.options.chartOptionsConfigs}
+                yConfigs={editVisualization.options.yAxisConfigs}
+                onChangeConfigs={(configs) => {
+                  setEditVisualization({
+                    ...editVisualization,
+                    options: {
+                      ...editVisualization.options,
+                      yAxisConfigs: configs,
+                    },
+                  });
+                }}
+              />
+            </GridItem>
+          </>
+        )}
       </Grid>
     </div>
   );
