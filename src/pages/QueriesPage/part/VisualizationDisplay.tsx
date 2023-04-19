@@ -32,6 +32,7 @@ import moment from 'moment';
 import VisualizationCounter from 'src/components/Charts/VisualizationCounter';
 import CounterConfiguration from 'src/components/VisualizationConfigs/CounterConfiguration';
 import { getDefaultTableColumns } from 'src/components/Charts/VisualizationTable';
+import { objectKeys } from 'src/utils/utils-network';
 
 type VisualizationConfigType = {
   value: string;
@@ -89,6 +90,10 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
   const [closeTabId, setCloseTabId] = useState<string | number>('');
   const [dataTable, setDataTable] = useState<any[]>([]);
 
+  const axisOptions =
+    Array.isArray(queryResult) && queryResult[0]
+      ? objectKeys(queryResult[0])
+      : [];
   const optionsColumn = getDefaultTableColumns(queryResult);
 
   const defaultTimeXAxis = useMemo(() => {
