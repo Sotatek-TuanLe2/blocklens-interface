@@ -84,7 +84,7 @@ const VisualizationScatterChart = (props: Props) => {
             />
           </XAxis>
 
-          {/* {yAxisKeys && !!yAxisKeys.length && (
+          {yAxisKeys && !!yAxisKeys.length && (
             <YAxis
               dataKey={yAxisKeys[0]}
               label={{
@@ -96,9 +96,9 @@ const VisualizationScatterChart = (props: Props) => {
               tickFormatter={tickFormatAxis('y')}
               {...logarithmicProps}
             />
-          )} */}
+          )}
 
-          {yAxisKeys &&
+          {/* {yAxisKeys &&
             yAxisKeys.map((yAxisKey) => (
               <YAxis
                 key={yAxisKey}
@@ -113,7 +113,7 @@ const VisualizationScatterChart = (props: Props) => {
                 tickFormatter={tickFormatAxis('y')}
                 {...logarithmicProps}
               />
-            ))}
+            ))} */}
 
           <Tooltip
             content={<CustomTooltip />}
@@ -136,7 +136,7 @@ const VisualizationScatterChart = (props: Props) => {
               stroke={COLORS[index % COLORS.length]}
               fill={COLORS[index % COLORS.length]}
               name={yAxisKey}
-              yAxisId={yAxisKey}
+              // yAxisId={yAxisKey}
             >
               {!configs?.chartOptionsConfigs?.stacking &&
                 configs?.chartOptionsConfigs?.showDataLabels && (
