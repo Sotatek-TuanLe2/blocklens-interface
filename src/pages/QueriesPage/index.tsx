@@ -34,7 +34,8 @@ interface ParamTypes {
 
 const QueriesPage = () => {
   const editorRef = useRef<any>();
-  const excutionIdRef = useRef<string>('');
+  const executionIdRef = useRef<string>('');
+  const fetchQueryRef = useRef<any>();
   const { queryId } = useParams<ParamTypes>();
 
   const [queryResult, setQueryResult] = useState<any>([]);
@@ -43,11 +44,21 @@ const QueriesPage = () => {
 
   const [showButton, setShowButton] = useState<boolean>(false);
   const [switchTheme, setSwitchTheme] = useState<boolean>(false);
-  const [isExpand, setIsExpand] = useState<boolean>(false);
-
-  const [showSaveModal, setShowSaveModal] = useState(false);
+  const [expandEditor, setExpandEditor] = useState<boolean>(false);
+  const [showSaveModal, setShowSaveModal] = useState<boolean>(false);
 
   const history = useHistory();
+
+  useEffect(() => {
+    if (queryId) {
+      if (!executionIdRef.current) {
+        fetchDataOnReload();
+      } else {
+        fetchQueryResult(executionIdRef.current);
+        fetchFindQuery();
+      }
+    }
+  }, [queryId]);
 
   const createNewQuery = async (query: string) => {
     try {
@@ -59,7 +70,7 @@ const QueriesPage = () => {
         await dashboardsRequest.updateQuery(updateQuery, queryId);
         const queryValues: QueryExecutedResponse =
           await dashboardsRequest.executeQuery(queryId);
-        excutionIdRef.current = queryValues.id;
+        executionIdRef.current = queryValues.id;
         await fetchQueryResult(queryValues.id);
         await fetchFindQuery();
       } else {
@@ -67,15 +78,13 @@ const QueriesPage = () => {
           name: ``,
           query: query,
         };
-
         const infoQuery: QueryInfoResponse =
           await dashboardsRequest.createNewQuery(newQuery);
         const queryValues: QueryExecutedResponse =
           await dashboardsRequest.executeQuery(infoQuery.id);
-        excutionIdRef.current = queryValues.id;
+        executionIdRef.current = queryValues.id;
         history.push(`/queries/${infoQuery.id}`);
       }
-      // const infoQuery = await dashboardsRequest.createNewQuery(newQuery);
     } catch (err) {
       getErrorMessage(err);
     }
@@ -96,23 +105,15 @@ const QueriesPage = () => {
     }
   };
 
-  // const updateQuery = async () => {
-
-  // }
-
   const submitQuery = async () => {
     setShowButton(true);
     try {
-      // const dashboardsRequest = new DashboardsRequest();
-      // const queryValues = await dashboardsRequest.getQueriesValues();
       await createNewQuery(editorRef.current.editor.getValue());
-      // setQueryValues(queryValues);
     } catch (err) {
       getErrorMessage(err);
     }
   };
 
-  const fetchQueryRef = useRef<any>();
   const fetchQueryResult = async (executionId: string) => {
     fetchQueryRef.current = setInterval(async () => {
       try {
@@ -147,7 +148,6 @@ const QueriesPage = () => {
   const fetchDataOnReload = async () => {
     try {
       const request = new DashboardsRequest();
-
       const res: QueryResultResponse = await request.getQueryExecutionId({
         queryId,
       });
@@ -160,19 +160,8 @@ const QueriesPage = () => {
     }
   };
 
-  useEffect(() => {
-    if (queryId) {
-      if (!excutionIdRef.current) {
-        fetchDataOnReload();
-      } else {
-        fetchQueryResult(excutionIdRef.current);
-        fetchFindQuery();
-      }
-    }
-  }, [queryId]);
-
   const onExpland = () => {
-    setIsExpand((pre) => !pre);
+    setExpandEditor((pre) => !pre);
   };
 
   const onSetting = () => {
@@ -220,7 +209,7 @@ const QueriesPage = () => {
         <Tooltip
           hasArrow
           placement="top"
-          label={isExpand ? 'Collapse' : 'Expand'}
+          label={expandEditor ? 'Collapse' : 'Expand'}
         >
           <AppButton
             onClick={onExpland}
@@ -288,7 +277,7 @@ const QueriesPage = () => {
               <Box width={'100%'}>
                 <Box bg={switchTheme ? '#fff' : '#272822'} h="10px"></Box>
                 <AceEditor
-                  className={`custom-editor ${isExpand ? 'expland' : ''}`}
+                  className={`custom-editor ${expandEditor ? 'expland' : ''}`}
                   ref={editorRef}
                   mode="sql"
                   theme={switchTheme ? 'kuroir' : 'monokai'}
@@ -327,7 +316,7 @@ const QueriesPage = () => {
                     queryResult={queryResult}
                     queryValue={infoQuery}
                     onReload={async () => {
-                      await fetchQueryResult(excutionIdRef.current);
+                      await fetchQueryResult(executionIdRef.current);
                       await fetchFindQuery();
                     }}
                   />
