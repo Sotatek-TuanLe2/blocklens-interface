@@ -102,7 +102,7 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
     if (firstResultInQuery) {
       Object.keys(firstResultInQuery).forEach((key: string) => {
         const date = moment(firstResultInQuery[key]);
-        if (date.isValid()) {
+        if (date.isValid() && isNaN(+firstResultInQuery[key])) {
           result = key;
           return;
         }
