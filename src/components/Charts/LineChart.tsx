@@ -7,59 +7,127 @@ import {
   Tooltip,
   XAxis,
   YAxis,
+  Label,
+  LabelList,
 } from 'recharts';
-import { randomColor } from '../../utils/common';
-import { CustomTooltip, renderLegend, tickFormatTime } from './BarChart';
+import { COLORS, getHourAndMinute } from '../../utils/common';
+import { VisualizationOptionsType } from 'src/utils/query.type';
+import { formatVisualizationValue } from 'src/utils/utils-format';
+import CustomTooltip from './CustomTooltip';
+import CustomLegend from './CustomLegend';
 
+type ChartConfigType = VisualizationOptionsType;
 export type ChartProps = {
   data?: unknown[];
   xAxisKey?: string;
   yAxisKeys?: string[];
 };
-type Props = ChartProps;
+type Props = ChartProps & {
+  configs?: Partial<ChartConfigType>;
+};
 
-const VisualizationLineChart = ({ data, xAxisKey, yAxisKeys }: Props) => {
+const VisualizationLineChart = (props: Props) => {
+  const { xAxisKey, yAxisKeys, data, configs } = props;
+  const chartOptionsConfigs = configs?.chartOptionsConfigs;
+  const xAxisConfigs = configs?.xAxisConfigs;
+  const yAxisConfigs = configs?.yAxisConfigs;
+
+  const tickFormatAxis = (axis: string) => (value: string) => {
+    if (axis === 'x' && configs?.xAxisConfigs?.tickFormat) {
+      return formatVisualizationValue(configs?.xAxisConfigs?.tickFormat, value);
+    }
+    if (axis === 'y' && configs?.yAxisConfigs?.tickFormat) {
+      return formatVisualizationValue(configs?.yAxisConfigs?.tickFormat, value);
+    }
+    return value;
+  };
+
+  const labelFormat = (value: string) => {
+    if (configs?.yAxisConfigs?.labelFormat) {
+      return formatVisualizationValue(
+        configs?.yAxisConfigs?.labelFormat,
+        value,
+      );
+    }
+    return value;
+  };
+
+  const logarithmicProps: any = yAxisConfigs?.logarithmic
+    ? {
+        scale: 'log',
+        domain: ['auto', 'auto'],
+      }
+    : {};
+
   return (
-    <ResponsiveContainer width={'100%'} height={'100%'}>
+    <ResponsiveContainer className="visual-container__visualization__linechart">
       <LineChart
-        className="line-chart"
         height={500}
         data={data}
+        className="line-chart"
         margin={{
-          top: 5,
-          right: 30,
           left: 20,
-          bottom: 5,
+          bottom: 20,
         }}
       >
         <CartesianGrid vertical={false} strokeDasharray="4" />
-
         <XAxis
+          tickFormatter={
+            xAxisKey === 'time' ? getHourAndMinute : tickFormatAxis('x')
+          }
           dataKey={xAxisKey}
-          tickFormatter={xAxisKey === 'time' ? tickFormatTime : undefined}
-        />
-        {yAxisKeys?.map((yAxisKey) => (
-          <YAxis dataKey={yAxisKey} key={yAxisKey} />
-        ))}
+          fill={'#ccc'}
+        >
+          <Label
+            offset={0}
+            position="insideBottom"
+            value={xAxisConfigs?.title}
+            fill={'#ccc'}
+          />
+        </XAxis>
+        {yAxisKeys && !!yAxisKeys.length && (
+          <YAxis
+            dataKey={yAxisKeys[0]}
+            label={{
+              value: yAxisConfigs?.title,
+              angle: -90,
+              position: 'insideLeft',
+              fill: '#ccc',
+            }}
+            tickFormatter={tickFormatAxis('y')}
+            {...logarithmicProps}
+          />
+        )}
         <Tooltip
           content={<CustomTooltip />}
           animationDuration={200}
           animationEasing={'linear'}
         />
-        <Legend
-          verticalAlign="middle"
-          align="right"
-          layout="vertical"
-          content={renderLegend}
-        />
-        {yAxisKeys?.map((yAxisKey) => (
+        {chartOptionsConfigs?.showLegend && (
+          <Legend
+            verticalAlign="middle"
+            align="right"
+            layout="vertical"
+            content={<CustomLegend />}
+          />
+        )}
+        {yAxisKeys?.map((yAxisKey, index) => (
           <Line
             key={yAxisKey}
             type="monotone"
             dataKey={yAxisKey}
-            stroke={randomColor}
+            stroke={COLORS[index % COLORS.length]}
             dot={false}
-          />
+          >
+            {!configs?.chartOptionsConfigs?.stacking &&
+              configs?.chartOptionsConfigs?.showDataLabels && (
+                <LabelList
+                  dataKey={yAxisKey}
+                  position="top"
+                  formatter={labelFormat}
+                />
+              )}
+          </Line>
         ))}
       </LineChart>
     </ResponsiveContainer>
