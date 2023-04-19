@@ -4,9 +4,9 @@ export enum VALUE_VISUALIZATION {
   line = 'line',
   area = 'area',
   pie = 'pie',
-
   scatter = 'scatter',
   counter = 'counter',
+  table = 'table',
 }
 
 export enum TYPE_VISUALIZATION {
