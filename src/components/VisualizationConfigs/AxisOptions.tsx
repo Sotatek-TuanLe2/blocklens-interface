@@ -22,8 +22,6 @@ export const XAxisOptions: React.FC<IXAxisOptions> = ({
     { label: 'Revert value', value: 'reverseX' },
   ];
 
-  console.log('xConfigs', xConfigs);
-
   const changeValueHandle = (key: string, value: boolean | string) => {
     const newOptions = {
       ...xConfigs,
@@ -57,7 +55,7 @@ export const XAxisOptions: React.FC<IXAxisOptions> = ({
             <Checkbox
               key={option.value}
               // @ts-ignore
-              isChecked={xConfigs[option.value]}
+              isChecked={xConfigs && !!xConfigs[option.value]}
               onChange={(e) =>
                 changeValueHandle(option.value, e.target.checked)
               }
