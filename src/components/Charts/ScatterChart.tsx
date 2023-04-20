@@ -14,7 +14,7 @@ import {
 import { ChartProps } from './LineChart';
 import { VisualizationOptionsType } from 'src/utils/query.type';
 import { formatVisualizationValue } from 'src/utils/utils-format';
-import { COLORS, getHourAndMinute } from 'src/utils/common';
+import { COLORS } from 'src/utils/common';
 import CustomTooltip from './CustomTooltip';
 import CustomLegend from './CustomLegend';
 
