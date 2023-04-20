@@ -26,12 +26,12 @@ const ChartOptions: React.FC<IChartOptions> = ({
       checked: false,
       disabled: false,
     },
-    {
-      label: 'Normalize to percentage',
-      value: 'percentValues',
-      checked: false,
-      disabled: false,
-    },
+    // {
+    //   label: 'Normalize to percentage',
+    //   value: 'percentValues',
+    //   checked: false,
+    //   disabled: false,
+    // },
     {
       label: 'Show data labels',
       value: 'showDataLabels',
@@ -43,13 +43,11 @@ const ChartOptions: React.FC<IChartOptions> = ({
     visualization.options?.globalSeriesType || visualization.type;
 
   const getStatusDisableStacking =
-    chartType === TYPE_VISUALIZATION.bar ||
-    chartType === TYPE_VISUALIZATION.area
-      ? false
-      : true;
+    chartType !== TYPE_VISUALIZATION.bar &&
+    chartType !== TYPE_VISUALIZATION.area;
 
-  const getStatusDisablePercentage =
-    chartType === TYPE_VISUALIZATION.pie ? true : false;
+  // const getStatusDisablePercentage =
+  //   chartType === TYPE_VISUALIZATION.pie ? true : false;
 
   useEffect(() => {
     const options = visualization.options.chartOptionsConfigs;
@@ -67,12 +65,12 @@ const ChartOptions: React.FC<IChartOptions> = ({
         checked: options?.stacking || false,
         disabled: getStatusDisableStacking,
       },
-      {
-        label: 'Normalize to percentage',
-        value: 'percentValues',
-        checked: options?.percentValues || false,
-        disabled: getStatusDisablePercentage,
-      },
+      // {
+      //   label: 'Normalize to percentage',
+      //   value: 'percentValues',
+      //   checked: options?.percentValues || false,
+      //   disabled: getStatusDisablePercentage,
+      // },
       {
         label: 'Show data labels',
         value: 'showDataLabels',
