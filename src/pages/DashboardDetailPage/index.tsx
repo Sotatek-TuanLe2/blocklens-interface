@@ -107,7 +107,7 @@ const DashboardDetailPage: React.FC = () => {
   const fetchQueryResults = async () => {
     try {
       const dashboardsRequest = new DashboardsRequest();
-      const queryValues = await dashboardsRequest.getQueriesValues();
+      // const queryValues = await dashboardsRequest.getQueriesValues();
       setQueryValues(queryValues);
     } catch (err) {
       getErrorMessage(err);

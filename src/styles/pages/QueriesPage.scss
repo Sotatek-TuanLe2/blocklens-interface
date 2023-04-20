@@ -2,6 +2,10 @@
 @import '../variables';
 @import '../mixins.scss';
 
+.queries-page-header-buttons {
+  margin-bottom: 20px;
+}
+
 .queries-page {
   display: flex;
   flex-direction: row;
@@ -107,12 +111,6 @@
 
   .schema-detail-title {
     cursor: default;
-
-    .table-name {
-      &:hover {
-        background: transparent;
-      }
-    }
   }
 
   .block-describe {
@@ -179,6 +177,8 @@
       }
 
       .table-value {
+        min-width: 100%;
+        height: fit-content !important;
         border: 1px solid #747474;
 
         td,

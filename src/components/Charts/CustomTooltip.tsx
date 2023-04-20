@@ -1,5 +1,4 @@
 import { Box } from '@chakra-ui/react';
-import { formatNumber } from 'src/utils/utils-format';
 
 const CustomTooltip = (props: any) => {
   const { active, payload, label } = props;
@@ -16,7 +15,7 @@ const CustomTooltip = (props: any) => {
             >
               <span style={{ backgroundColor: `${entry.fill}` }}></span>
               <span>{`${entry.name}:  `}</span>
-              <span>{formatNumber(entry.value)}</span>
+              <span>{entry.value}</span>
               <br />
             </Box>
           ))}
