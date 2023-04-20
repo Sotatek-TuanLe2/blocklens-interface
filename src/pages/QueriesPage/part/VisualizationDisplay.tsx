@@ -1,5 +1,8 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
+import { ColumnDef } from '@tanstack/react-table';
+import moment from 'moment';
 import { useMemo, useState } from 'react';
+import { useParams } from 'react-router';
 import 'src/styles/components/Chart.scss';
 import {
   AreaChart,
@@ -21,16 +24,17 @@ import {
   QueryResultIcon,
   ScatterChartIcon,
 } from 'src/assets/icons';
+import VisualizationCounter from 'src/components/Charts/VisualizationCounter';
+import CounterConfiguration from 'src/components/VisualizationConfigs/CounterConfiguration';
+import rf from 'src/requests/RequestFactory';
+import 'src/styles/components/Chart.scss';
+import TableConfigurations from '../../../components/VisualizationConfigs/TableConfigurations';
 import {
   IQuery,
   TYPE_VISUALIZATION,
   VALUE_VISUALIZATION,
   VisualizationType,
 } from '../../../utils/query.type';
-import TableConfigurations from '../../../components/VisualizationConfigs/TableConfigurations';
-import moment from 'moment';
-import VisualizationCounter from 'src/components/Charts/VisualizationCounter';
-import CounterConfiguration from 'src/components/VisualizationConfigs/CounterConfiguration';
 import { getDefaultTableColumns } from 'src/components/Charts/VisualizationTable';
 import { objectKeys } from 'src/utils/utils-network';
 
@@ -87,6 +91,11 @@ type Props = {
 };
 
 const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
+  interface ParamTypes {
+    queryId: string;
+  }
+  const { queryId } = useParams<ParamTypes>();
+
   const [closeTabId, setCloseTabId] = useState<string | number>('');
   const [dataTable, setDataTable] = useState<any[]>([]);
 
@@ -98,7 +107,7 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
 
   const defaultTimeXAxis = useMemo(() => {
     let result = '';
-    const firstResultInQuery =
+    const firstResultInQuery: any =
       queryResult && !!queryResult.length ? queryResult[0] : null;
     if (firstResultInQuery) {
       Object.keys(firstResultInQuery).forEach((key: string) => {
@@ -111,12 +120,6 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
     }
     return result;
   }, [queryResult]);
-
-  const updateQuery = async (updateQuery: IQuery) => {
-    const request = new DashboardsRequest();
-    // await request.updateQuery(queryValue.id, updateQuery);
-    await onReload();
-  };
 
   const addVisualizationHandler = async (visualizationValue: string) => {
     const searchedVisualization = visualizationConfigs.find(
@@ -163,12 +166,11 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
       };
     }
 
-    const [queryResult, ...others] = queryValue.visualizations;
-    const newQuery: IQuery = {
-      ...queryValue,
-      visualizations: [queryResult, newVisualization, ...others],
-    };
-    await updateQuery(newQuery);
+    await rf.getRequest('DashboardsRequest').insertVisualization({
+      ...newVisualization,
+      queryId: queryId,
+    });
+    await onReload();
   };
 
   const removeVisualizationHandler = async (
@@ -178,23 +180,22 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
       (v) => v.id.toString() === visualizationId.toString(),
     );
     if (visualizationIndex === -1) return;
-    const newQuery = {
-      ...queryValue,
-      visualizations: queryValue.visualizations.filter(
-        (v) => v.id !== visualizationId,
-      ),
-    };
-    await updateQuery(newQuery);
+
+    await rf
+      .getRequest('DashboardsRequest')
+      .deleteVisualization({ visualId: visualizationId });
+    await onReload();
   };
 
-  const onChangeConfigurations = (visualization: VisualizationType) => {
+  const onChangeConfigurations = async (visualization: VisualizationType) => {
     const index = queryValue.visualizations.findIndex(
       (v) => v.id === visualization.id,
     );
     if (index >= 0) {
-      const newQuery = { ...queryValue };
-      newQuery.visualizations[index] = visualization;
-      updateQuery(newQuery);
+      await rf
+        .getRequest('DashboardsRequest')
+        .editVisualization(visualization, visualization.id);
+      await onReload();
     }
   };
 
@@ -398,7 +399,7 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
             type: TYPE_VISUALIZATION.new,
           },
         ].map((v) => ({
-          icon: getIcon(v.options.globalSeriesType || v.type),
+          icon: getIcon(v?.options?.globalSeriesType || v.type),
           name: v.name,
           content: renderVisualization(v),
           id: v.id,
