@@ -92,9 +92,6 @@ const ListItem: React.FC<IListItem> = (props) => {
         </div>
       );
     }
-    if (type === LIST_ITEM_TYPE.WIZARDS) {
-      return <>Wizard since </>;
-    }
     return <>Created </>;
   };
 
