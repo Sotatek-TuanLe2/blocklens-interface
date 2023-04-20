@@ -11,16 +11,19 @@ import { VisualizationOptionsType } from 'src/utils/query.type';
 import CustomTooltip from './CustomTooltip';
 import CustomLegend from './CustomLegend';
 import { Flex } from '@chakra-ui/react';
+import { ChartProps } from './LineChart';
 
 type ChartConfigType = VisualizationOptionsType;
-type Props = {
-  data: unknown[];
-  nameKey?: string;
-  dataKey: string[];
+type Props = ChartProps & {
   configs?: Partial<ChartConfigType>;
 };
 
-const VisualizationPieChart = ({ data, dataKey, nameKey, configs }: Props) => {
+const VisualizationPieChart = ({
+  data,
+  yAxisKeys,
+  xAxisKey,
+  configs,
+}: Props) => {
   const chartOptionsConfigs = configs?.chartOptionsConfigs;
   const RADIAN = Math.PI / 180;
 
@@ -49,13 +52,17 @@ const VisualizationPieChart = ({ data, dataKey, nameKey, configs }: Props) => {
     );
   };
 
-  function reducedData(data: unknown[]) {
+  function reducedData(data: unknown[] | undefined) {
+    if (!yAxisKeys || !data) {
+      return [];
+    }
+
     const groupedData = data.reduce(
       (acc: { [key: string]: number }, item: any) => {
-        if (typeof item[dataKey?.[0]]) {
-          acc[item[nameKey || 0]] = [dataKey?.[0]].length;
+        if (typeof item[yAxisKeys?.[0]]) {
+          acc[item[xAxisKey || 0]] = [yAxisKeys?.[0]].length;
         } else {
-          acc[item[nameKey || 0]] = item[dataKey?.[0]];
+          acc[item[xAxisKey || 0]] = item[yAxisKeys?.[0]];
         }
         return acc;
       },
@@ -63,29 +70,31 @@ const VisualizationPieChart = ({ data, dataKey, nameKey, configs }: Props) => {
     );
 
     const reducedData = Object.keys(groupedData).map((name) => {
-      return { [nameKey || 0]: name, [dataKey?.[0]]: groupedData[name] };
+      return { [xAxisKey || 0]: name, [yAxisKeys?.[0]]: groupedData[name] };
     });
 
     return reducedData;
   }
+
   return (
     <ResponsiveContainer width={'100%'} height={'100%'}>
-      {dataKey.length === 1 ? (
+      {yAxisKeys?.length === 1 ? (
         <PieChart className="pie-chart">
           <Pie
             data={reducedData(data)}
-            dataKey={dataKey?.[0]}
+            dataKey={yAxisKeys?.[0]}
             label={chartOptionsConfigs?.showDataLabels && renderCustomizedLabel}
-            nameKey={nameKey}
+            nameKey={xAxisKey}
             innerRadius={100}
             labelLine={false}
           >
-            {data.map((entry, index) => (
-              <Cell
-                key={`cell-${index}`}
-                fill={COLORS[index % COLORS.length]}
-              />
-            ))}
+            {data &&
+              data.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={COLORS[index % COLORS.length]}
+                />
+              ))}
           </Pie>
           <Tooltip
             content={
