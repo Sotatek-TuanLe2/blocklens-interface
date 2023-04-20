@@ -179,7 +179,7 @@ const VisualizationTable = <T,>({
                           className="visual-progressbar"
                         ></div>
                       ) : null}
-                      {formatVisualizationValue(format, value)}
+                      {!!value && formatVisualizationValue(format, value)}
                     </div>
                   </td>
                 );

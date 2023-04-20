@@ -28,7 +28,7 @@ import { objectKeys } from 'src/utils/utils-network';
 import { toastError } from 'src/utils/utils-notify';
 import { ColumnDef } from '@tanstack/react-table';
 import { BasePage } from 'src/layouts';
-import { ScatterChart } from 'src/components/Charts';
+import VisualizationScatterChart from 'src/components/Charts/ScatterChart';
 
 interface ParamTypes {
   authorId: string;
@@ -107,7 +107,7 @@ const DashboardDetailPage: React.FC = () => {
   const fetchQueryResults = async () => {
     try {
       const dashboardsRequest = new DashboardsRequest();
-      const queryValues = await dashboardsRequest.getQueriesValues();
+      // const queryValues = await dashboardsRequest.getQueriesValues();
       setQueryValues(queryValues);
     } catch (err) {
       getErrorMessage(err);
@@ -179,14 +179,16 @@ const DashboardDetailPage: React.FC = () => {
         );
       case TYPE_VISUALIZATION.scatter:
         return (
-          <ScatterChart
+          <VisualizationScatterChart
             data={queryValues}
-            xAxisKey={'number'}
+            xAxisKey="time"
             yAxisKeys={['size']}
           />
         );
       case TYPE_VISUALIZATION.pie:
-        return <VisualizationPieChart data={queryValues} dataKey={'number'} />;
+        return (
+          <VisualizationPieChart data={queryValues} dataKey={['number']} />
+        );
       default:
       // return <AddVisualization onAddVisualize={addVisualizationHandler} />;
     }

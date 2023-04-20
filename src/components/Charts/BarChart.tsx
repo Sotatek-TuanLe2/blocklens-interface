@@ -79,7 +79,6 @@ const VisualizationBarChart = (props: Props) => {
 
           {yAxisKeys && !!yAxisKeys.length && (
             <YAxis
-              dataKey={yAxisKeys[0]}
               label={{
                 value: yAxisConfigs?.title,
                 angle: -90,

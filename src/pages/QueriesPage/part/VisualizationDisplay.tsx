@@ -1,5 +1,7 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
+import moment from 'moment';
 import { useMemo, useState } from 'react';
+import { useParams } from 'react-router';
 import 'src/styles/components/Chart.scss';
 import {
   AreaChart,
@@ -12,7 +14,6 @@ import {
 import { AppTabs, AppButton, AppSelect2 } from '../../../components';
 import ChartConfigurations from '../../../components/VisualizationConfigs/ChartConfigurations';
 import BaseModal from '../../../modals/BaseModal';
-import DashboardsRequest from '../../../requests/DashboardsRequest';
 import {
   AreaChartIcon,
   BarChartIcon,
@@ -21,17 +22,19 @@ import {
   QueryResultIcon,
   ScatterChartIcon,
 } from 'src/assets/icons';
+import VisualizationCounter from 'src/components/Charts/VisualizationCounter';
+import CounterConfiguration from 'src/components/VisualizationConfigs/CounterConfiguration';
+import rf from 'src/requests/RequestFactory';
+import 'src/styles/components/Chart.scss';
+import TableConfigurations from '../../../components/VisualizationConfigs/TableConfigurations';
 import {
   IQuery,
   TYPE_VISUALIZATION,
   VALUE_VISUALIZATION,
   VisualizationType,
 } from '../../../utils/query.type';
-import TableConfigurations from '../../../components/VisualizationConfigs/TableConfigurations';
-import moment from 'moment';
-import VisualizationCounter from 'src/components/Charts/VisualizationCounter';
-import CounterConfiguration from 'src/components/VisualizationConfigs/CounterConfiguration';
 import { getDefaultTableColumns } from 'src/components/Charts/VisualizationTable';
+import { objectKeys } from 'src/utils/utils-network';
 
 type VisualizationConfigType = {
   value: string;
@@ -86,14 +89,23 @@ type Props = {
 };
 
 const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
+  interface ParamTypes {
+    queryId: string;
+  }
+  const { queryId } = useParams<ParamTypes>();
+
   const [closeTabId, setCloseTabId] = useState<string | number>('');
   const [dataTable, setDataTable] = useState<any[]>([]);
 
   const optionsColumn = getDefaultTableColumns(queryResult);
+  const axisOptions =
+    Array.isArray(queryResult) && queryResult[0]
+      ? objectKeys(queryResult[0])
+      : [];
 
   const defaultTimeXAxis = useMemo(() => {
     let result = '';
-    const firstResultInQuery =
+    const firstResultInQuery: any =
       queryResult && !!queryResult.length ? queryResult[0] : null;
     if (firstResultInQuery) {
       Object.keys(firstResultInQuery).forEach((key: string) => {
@@ -106,12 +118,6 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
     }
     return result;
   }, [queryResult]);
-
-  const updateQuery = async (updateQuery: IQuery) => {
-    const request = new DashboardsRequest();
-    await request.updateQuery(queryValue.id, updateQuery);
-    await onReload();
-  };
 
   const addVisualizationHandler = async (visualizationValue: string) => {
     const searchedVisualization = visualizationConfigs.find(
@@ -158,12 +164,11 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
       };
     }
 
-    const [queryResult, ...others] = queryValue.visualizations;
-    const newQuery: IQuery = {
-      ...queryValue,
-      visualizations: [queryResult, newVisualization, ...others],
-    };
-    await updateQuery(newQuery);
+    await rf.getRequest('DashboardsRequest').insertVisualization({
+      ...newVisualization,
+      queryId: queryId,
+    });
+    await onReload();
   };
 
   const removeVisualizationHandler = async (
@@ -173,23 +178,22 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
       (v) => v.id.toString() === visualizationId.toString(),
     );
     if (visualizationIndex === -1) return;
-    const newQuery = {
-      ...queryValue,
-      visualizations: queryValue.visualizations.filter(
-        (v) => v.id !== visualizationId,
-      ),
-    };
-    await updateQuery(newQuery);
+
+    await rf
+      .getRequest('DashboardsRequest')
+      .deleteVisualization({ visualId: visualizationId });
+    await onReload();
   };
 
-  const onChangeConfigurations = (visualization: VisualizationType) => {
+  const onChangeConfigurations = async (visualization: VisualizationType) => {
     const index = queryValue.visualizations.findIndex(
       (v) => v.id === visualization.id,
     );
     if (index >= 0) {
-      const newQuery = { ...queryValue };
-      newQuery.visualizations[index] = visualization;
-      updateQuery(newQuery);
+      await rf
+        .getRequest('DashboardsRequest')
+        .editVisualization(visualization, visualization.id);
+      await onReload();
     }
   };
 
@@ -240,6 +244,7 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
       );
       visualizationConfiguration = (
         <TableConfigurations
+          data={queryResult}
           visualization={visualization}
           onChangeConfigurations={onChangeConfigurations}
           dataTable={dataTable}
@@ -309,17 +314,25 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
         case TYPE_VISUALIZATION.scatter:
           visualizationDisplay = (
             <ScatterChart
-              data={queryResult}
+              data={data}
               xAxisKey={
                 visualization.options?.columnMapping?.xAxis || defaultTimeXAxis
               }
               yAxisKeys={visualization.options.columnMapping?.yAxis || []}
+              configs={visualization.options}
             />
           );
           break;
         case TYPE_VISUALIZATION.pie:
           visualizationDisplay = (
-            <PieChart data={queryResult} dataKey={'number'} />
+            <PieChart
+              data={queryResult}
+              xAxisKey={
+                visualization.options?.columnMapping?.xAxis || defaultTimeXAxis
+              }
+              yAxisKeys={visualization.options.columnMapping?.yAxis || []}
+              configs={visualization.options}
+            />
           );
           break;
         default:
@@ -392,7 +405,7 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
             type: TYPE_VISUALIZATION.new,
           },
         ].map((v) => ({
-          icon: getIcon(v.options.globalSeriesType || v.type),
+          icon: getIcon(v?.options?.globalSeriesType || v.type),
           name: v.name,
           content: renderVisualization(v),
           id: v.id,

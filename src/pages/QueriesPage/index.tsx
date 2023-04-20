@@ -6,19 +6,24 @@ import React, { useEffect, useRef, useState } from 'react';
 import { EditorContext } from './context/EditorContext';
 import EditorSidebar from './part/EditorSidebar';
 import VisualizationDisplay from './part/VisualizationDisplay';
-import DashboardsRequest from '../../requests/DashboardsRequest';
 import 'ace-builds/src-noconflict/theme-github';
 import 'ace-builds/src-noconflict/theme-monokai';
 import 'ace-builds/src-noconflict/theme-kuroir';
 import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/mode-sql';
 import { getErrorMessage } from '../../utils/utils-helper';
-import { useParams } from 'react-router-dom';
-import { IQuery } from '../../utils/query.type';
+import { useHistory, useParams } from 'react-router-dom';
+import {
+  QueryExecutedResponse,
+  IQuery,
+  QueryResultResponse,
+} from '../../utils/query.type';
 import 'src/styles/pages/QueriesPage.scss';
 import { AddParameterIcon, ExplandIcon } from 'src/assets/icons';
 import { MoonIcon, SettingsIcon, SunIcon } from '@chakra-ui/icons';
-import moment from 'moment';
+import ModalSaveQuery from 'src/modals/ModalSaveQuery';
+import { toastSuccess } from 'src/utils/utils-notify';
+import rf from 'src/requests/RequestFactory';
 
 interface ParamTypes {
   queryId: string;
@@ -28,51 +33,124 @@ const QueriesPage = () => {
   const editorRef = useRef<any>();
   const { queryId } = useParams<ParamTypes>();
 
-  const [queryResult, setQueryResult] = useState<unknown[]>([]);
-  const [queryValue, setQueryValue] = useState<IQuery | null>(null);
+  const [queryResult, setQueryResult] = useState<any>([]);
+  const [queryValue, setInfoQuery] = useState<IQuery | null>(null);
   const [isSetting, setIsSetting] = useState<boolean>(false);
-
-  const [showButton, setShowButton] = useState<boolean>(false);
   const [switchTheme, setSwitchTheme] = useState<boolean>(false);
-  const [isExpand, setIsExpand] = useState<boolean>(false);
+  const [expandEditor, setExpandEditor] = useState<boolean>(false);
+  const [showSaveModal, setShowSaveModal] = useState<boolean>(false);
 
-  const fetchQueryResultById = async () => {
-    try {
-      const dashboardsRequest = new DashboardsRequest();
-      const queryResult = await dashboardsRequest.getQueriesValues();
-      setQueryResult(queryResult);
-    } catch (err) {
-      getErrorMessage(err);
-    }
-  };
+  const history = useHistory();
 
-  const fetchQueryById = async () => {
-    try {
-      const request = new DashboardsRequest();
-      const res = await request.getQuery(queryId);
-      // TODO: clear all contents before inserting
-      const position = editorRef.current.editor.getCursorPosition();
-      editorRef.current.editor.setValue('');
-      editorRef.current.editor.session.insert(position, res.query);
-      setQueryValue(res);
-    } catch (err) {
-      getErrorMessage(err);
-    }
-  };
+  const hoverBackgroundButton = switchTheme ? '#dadde0' : '#2a2c2f99';
+  const backgroundButton = switchTheme ? '#e9ebee' : '#2a2c2f';
 
   useEffect(() => {
     if (queryId) {
-      fetchQueryResultById();
-      fetchQueryById();
+      fetchInitalData();
     }
   }, [queryId]);
 
-  // const onFormat = () => {
-  //
-  // };
+  const createNewQuery = async (query: string) => {
+    try {
+      const queryValue: IQuery = await rf
+        .getRequest('DashboardsRequest')
+        .createNewQuery({
+          name: ``,
+          query,
+        });
+      await rf.getRequest('DashboardsRequest').executeQuery(queryValue.id);
+      history.push(`/queries/${queryValue.id}`);
+    } catch (error) {
+      getErrorMessage(error);
+    }
+  };
+
+  const updateQuery = async (query: string) => {
+    try {
+      await rf.getRequest('DashboardsRequest').updateQuery({ query }, queryId);
+      const queryValues: QueryExecutedResponse = await rf
+        .getRequest('DashboardsRequest')
+        .executeQuery(queryId);
+      await fetchQueryResult(queryValues.id);
+      await fetchQuery();
+    } catch (error) {
+      getErrorMessage(error);
+    }
+  };
+
+  const saveNameQuery = async (name: string) => {
+    try {
+      await rf.getRequest('DashboardsRequest').updateQuery(
+        {
+          name: name,
+          isTemp: false,
+        },
+        queryId,
+      );
+      await fetchQuery();
+      setShowSaveModal(false);
+      toastSuccess({ message: 'Save query successfully.' });
+    } catch (error) {
+      getErrorMessage(error);
+    }
+  };
+
+  const fetchQueryResult = async (executionId: string) => {
+    const res = await rf.getRequest('DashboardsRequest').getQueryResult({
+      queryId,
+      executionId,
+    });
+    let fetchQueryResultInterval: any = null;
+    if (res.status !== 'DONE') {
+      fetchQueryResultInterval = setInterval(async () => {
+        const resInterval = await rf
+          .getRequest('DashboardsRequest')
+          .getQueryResult({
+            queryId,
+            executionId,
+          });
+        if (resInterval.status === 'DONE') {
+          clearInterval(fetchQueryResultInterval);
+          setQueryResult(resInterval.result);
+        }
+      }, 2000);
+    } else {
+      setQueryResult(res.result);
+    }
+  };
+
+  const fetchQuery = async () => {
+    try {
+      const dataQuery = await rf
+        .getRequest('DashboardsRequest')
+        .getQueryById({ queryId });
+      setInfoQuery(dataQuery);
+      // set query into editor
+      const position = editorRef.current.editor.getCursorPosition();
+      editorRef.current.editor.setValue('');
+      editorRef.current.editor.session.insert(position, dataQuery?.query);
+    } catch (error) {
+      getErrorMessage(error);
+    }
+  };
+
+  const fetchInitalData = async () => {
+    try {
+      const res: QueryResultResponse = await rf
+        .getRequest('DashboardsRequest')
+        .getQueryExecutionId({
+          queryId,
+        });
+      await fetchQueryResult(res.resultId);
+      await fetchQuery();
+    } catch (error) {
+      getErrorMessage(error);
+    }
+  };
 
   const onExpland = () => {
-    setIsExpand((pre) => !pre);
+    setExpandEditor((pre) => !pre);
   };
 
   const onSetting = () => {
@@ -84,12 +162,21 @@ const QueriesPage = () => {
     editorRef.current.editor.session.insert(position, '{{unnamed_parameter}}');
   };
 
+  const onRunQuery = async () => {
+    try {
+      if (queryId) {
+        await updateQuery(editorRef.current.editor.getValue());
+      } else {
+        await createNewQuery(editorRef.current.editor.getValue());
+      }
+    } catch (err) {
+      getErrorMessage(err);
+    }
+  };
+
   // const onClickFullScreen = () => {
   //   if (editorRef.current.editor) editorRef.current.editor.resize();
   // };
-
-  const hoverBackground = switchTheme ? '#dadde0' : '#2a2c2f99';
-  const background = switchTheme ? '#e9ebee' : '#2a2c2f';
 
   const _renderMenuPanelSetting = () => {
     return (
@@ -97,22 +184,6 @@ const QueriesPage = () => {
         flexDirection="column"
         className={`menu-panel ${switchTheme ? 'theme-light' : 'theme-dark'}`}
       >
-        {/* <Flex
-          className={`menu-panel__item ${
-            switchTheme ? 'theme-light' : 'theme-dark'
-          }`}
-          flexDirection="column"
-        >
-          <Flex justifyContent="space-between" alignItems="center">
-            <Flex flexDirection="column" alignItems="flex-start">
-              <Text fontSize="14px">Enable autosuggest (beta)</Text>
-            </Flex>
-            <Checkbox />
-          </Flex>
-          <Text mt={1} fontSize="12px">
-            You can always show suggestions with CTRL-space
-          </Text>
-        </Flex> */}
         <Flex
           className={`menu-panel__item ${
             switchTheme ? 'theme-light' : 'theme-dark'
@@ -124,32 +195,11 @@ const QueriesPage = () => {
           <Text fontSize="14px">Switch to light theme</Text>
           {switchTheme ? <MoonIcon /> : <SunIcon />}
         </Flex>
-        {/* <Flex
-          className={`menu-panel__item ${
-            switchTheme ? 'theme-light' : 'theme-dark'
-          }`}
-          justifyContent="space-between"
-          alignItems="center"
-          onClick={onClickFullScreen}
-        >
-          <Text fontSize="14px">Fullscreen</Text>
-          <Flex>
-            <Box bg={background} className="menu-panel__item--key">
-              ⌃
-            </Box>
-            <Box bg={background} className="menu-panel__item--key">
-              ⇧
-            </Box>
-            <Box bg={background} className="menu-panel__item--key">
-              F
-            </Box>
-          </Flex>
-        </Flex> */}
       </Flex>
     );
   };
 
-  const _renderButton = () => {
+  const _renderEditorButtons = () => {
     const colorIcon = switchTheme ? '#35373c' : '#fef5f7';
 
     return (
@@ -157,12 +207,12 @@ const QueriesPage = () => {
         <Tooltip
           hasArrow
           placement="top"
-          label={isExpand ? 'Collapse' : 'Expand'}
+          label={expandEditor ? 'Collapse' : 'Expand'}
         >
           <AppButton
             onClick={onExpland}
-            bg={background}
-            _hover={{ bg: hoverBackground }}
+            bg={backgroundButton}
+            _hover={{ bg: hoverBackgroundButton }}
           >
             <ExplandIcon color={colorIcon} />
           </AppButton>
@@ -171,8 +221,8 @@ const QueriesPage = () => {
           <div className="btn-setting">
             <AppButton
               onClick={onSetting}
-              bg={background}
-              _hover={{ bg: hoverBackground }}
+              bg={backgroundButton}
+              _hover={{ bg: hoverBackgroundButton }}
             >
               <SettingsIcon color={colorIcon} />
             </AppButton>
@@ -182,18 +232,18 @@ const QueriesPage = () => {
         {/* <Tooltip hasArrow placement="top" label="Format query">
           <AppButton
             onClick={onFormat}
-            bg={background}
-            _hover={{ bg: hoverBackground }}
+            bg={backgroundButton}
+            _hover={{ bg: hoverBackgroundButton }}
           >
             <FormatIcon color={colorIcon} />
           </AppButton>
         </Tooltip> */}
-        {showButton && (
+        {queryValue && (
           <Tooltip hasArrow placement="top" label="Add Parameter">
             <AppButton
               onClick={onAddParameter}
-              bg={background}
-              _hover={{ bg: hoverBackground }}
+              bg={backgroundButton}
+              _hover={{ bg: hoverBackgroundButton }}
             >
               <AddParameterIcon color={colorIcon} />
             </AppButton>
@@ -203,103 +253,80 @@ const QueriesPage = () => {
     );
   };
 
-  const createNewQuery = async (query: string) => {
-    try {
-      const dashboardsRequest = new DashboardsRequest();
-      const randomId = Math.floor(Math.random() * 10000000).toString();
-      const newQuery: IQuery = {
-        id: randomId,
-        name: `Query-${randomId}`,
-        query: 'select * from arbitrum.blocks limit 10',
-        createAt: moment().toDate(),
-        visualizations: [
-          {
-            id: '1',
-            name: 'Table',
-            type: 'table',
-            createdAt: moment().toDate(),
-            options: {},
-          },
-        ],
-      };
-      const queryValue = await dashboardsRequest.createNewQuery(newQuery);
-      setQueryValue(queryValue);
-    } catch (err) {
-      getErrorMessage(err);
-    }
-  };
-
-  const submitQuery = async () => {
-    setShowButton(true);
-    try {
-      const dashboardsRequest = new DashboardsRequest();
-      const queryResult = await dashboardsRequest.getQueriesValues();
-      await createNewQuery(editorRef.current.editor.getValue());
-      setQueryResult(queryResult);
-    } catch (err) {
-      getErrorMessage(err);
-    }
-  };
-
   return (
     <BasePage>
-      <EditorContext.Provider
-        value={{
-          editor: editorRef,
-          queryResult: queryResult,
-        }}
-      >
-        <div className="queries-page">
-          <EditorSidebar />
-          <Box className="queries-page__right-side">
-            <Box width={'100%'}>
-              <Box bg={switchTheme ? '#fff' : '#272822'} h="10px"></Box>
-              <AceEditor
-                className={`custom-editor ${isExpand ? 'expland' : ''}`}
-                ref={editorRef}
-                mode="sql"
-                theme={switchTheme ? 'kuroir' : 'monokai'}
-                width="100%"
-                wrapEnabled={true}
-                name="sql_editor"
-                editorProps={{ $blockScrolling: true }}
-                showPrintMargin={true}
-                showGutter={true}
-                highlightActiveLine={true}
-                setOptions={{
-                  enableLiveAutocompletion: true,
-                  enableBasicAutocompletion: true,
-                  enableSnippets: false,
-                  showLineNumbers: true,
-                  tabSize: 2,
-                }}
-              />
-              <Box
-                bg={switchTheme ? '#f3f5f7' : '#111213'}
-                className="control-editor"
-              >
-                {_renderButton()}
-                <AppButton
-                  onClick={submitQuery}
-                  bg={background}
-                  _hover={{ bg: hoverBackground }}
+      <>
+        <EditorContext.Provider
+          value={{
+            editor: editorRef,
+            queryResult: queryResult,
+          }}
+        >
+          <Flex
+            className="queries-page-header-buttons"
+            justifyContent={'right'}
+          >
+            {queryValue && !queryValue?.name && (
+              <AppButton onClick={() => setShowSaveModal(true)}>Save</AppButton>
+            )}
+          </Flex>
+          <div className="queries-page">
+            <EditorSidebar />
+            <Box className="queries-page__right-side">
+              <Box width={'100%'}>
+                <Box bg={switchTheme ? '#fff' : '#272822'} h="10px"></Box>
+                <AceEditor
+                  className={`custom-editor ${expandEditor ? 'expland' : ''}`}
+                  ref={editorRef}
+                  mode="sql"
+                  theme={switchTheme ? 'kuroir' : 'monokai'}
+                  width="100%"
+                  wrapEnabled={true}
+                  name="sql_editor"
+                  editorProps={{ $blockScrolling: true }}
+                  showPrintMargin={true}
+                  showGutter={true}
+                  highlightActiveLine={true}
+                  setOptions={{
+                    enableLiveAutocompletion: true,
+                    enableBasicAutocompletion: true,
+                    enableSnippets: false,
+                    showLineNumbers: true,
+                    tabSize: 2,
+                  }}
+                />
+                <Box
+                  bg={switchTheme ? '#f3f5f7' : '#111213'}
+                  className="control-editor"
                 >
-                  <Text color={switchTheme ? '#1d1d20' : '#f3f5f7'}>Run</Text>
-                </AppButton>
+                  {_renderEditorButtons()}
+                  <AppButton
+                    onClick={onRunQuery}
+                    bg={backgroundButton}
+                    _hover={{ bg: hoverBackgroundButton }}
+                  >
+                    <Text color={switchTheme ? '#1d1d20' : '#f3f5f7'}>Run</Text>
+                  </AppButton>
+                </Box>
+              </Box>
+              <Box mt={8}>
+                {queryValue && !!queryResult.length && (
+                  <VisualizationDisplay
+                    queryResult={queryResult}
+                    queryValue={queryValue}
+                    onReload={fetchQuery}
+                  />
+                )}
               </Box>
             </Box>
-            <Box mt={8}>
-              {queryValue && (
-                <VisualizationDisplay
-                  queryResult={queryResult}
-                  queryValue={queryValue}
-                  onReload={fetchQueryById}
-                />
-              )}
-            </Box>
-          </Box>
-        </div>
-      </EditorContext.Provider>
+          </div>
+        </EditorContext.Provider>
+        <ModalSaveQuery
+          open={showSaveModal}
+          onClose={() => setShowSaveModal(false)}
+          onSubmit={saveNameQuery}
+        />
+      </>
     </BasePage>
   );
 };

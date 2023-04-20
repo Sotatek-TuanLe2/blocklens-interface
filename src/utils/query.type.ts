@@ -94,13 +94,12 @@ export type VisualizationOptionsType = ChartType &
     chartOptionsConfigs: Partial<ChartOptionConfigsType>;
   } & {
     xAxisConfigs: XAxisConfigsType;
-  } & { yAxisConfigs: YAxisConfigsType };
+  } & { yAxisConfigs: YAxisConfigsType } & { numberFormat?: string };
 
 export type QueryType = {
   name: string;
   query: string;
-  visualizations: VisualizationType[];
-  id: string;
+  // visualizations: VisualizationType[];
 };
 
 export type QueryTypeSingle = {
@@ -108,4 +107,21 @@ export type QueryTypeSingle = {
   query: string;
   visualizations: VisualizationType;
   id: number;
+};
+
+export type QueryExecutedResponse = {
+  id: string;
+  query: IQuery;
+  createdAt: string;
+  result: any;
+  status: string;
+  updatedAt: string;
+};
+
+export type QueryResultResponse = {
+  id: string;
+  query: IQuery;
+  resultId: string;
+  createAt: string;
+  updatedAt: string;
 };
