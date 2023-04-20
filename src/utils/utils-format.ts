@@ -186,7 +186,11 @@ export function formatNumberWithDecimalDigits(
 ): string {
   if (a === undefined) {
     a = '0';
-  } else if (typeof a !== 'string' || a.length === 0) {
+  } else if (
+    typeof a !== 'string' ||
+    a.length === 0 ||
+    (!a.includes('0') && !a.includes('.'))
+  ) {
     a = '0';
   }
 

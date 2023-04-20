@@ -49,12 +49,31 @@ const VisualizationPieChart = ({ data, dataKey, nameKey, configs }: Props) => {
     );
   };
 
+  function reducedData(data: unknown[]) {
+    const groupedData = data.reduce(
+      (acc: { [key: string]: number }, item: any) => {
+        if (typeof item[dataKey?.[0]]) {
+          acc[item[nameKey || 0]] = [dataKey?.[0]].length;
+        } else {
+          acc[item[nameKey || 0]] = item[dataKey?.[0]];
+        }
+        return acc;
+      },
+      {},
+    );
+
+    const reducedData = Object.keys(groupedData).map((name) => {
+      return { [nameKey || 0]: name, [dataKey?.[0]]: groupedData[name] };
+    });
+
+    return reducedData;
+  }
   return (
     <ResponsiveContainer width={'100%'} height={'100%'}>
       {dataKey.length === 1 ? (
         <PieChart className="pie-chart">
           <Pie
-            data={data}
+            data={reducedData(data)}
             dataKey={dataKey?.[0]}
             label={chartOptionsConfigs?.showDataLabels && renderCustomizedLabel}
             nameKey={nameKey}
