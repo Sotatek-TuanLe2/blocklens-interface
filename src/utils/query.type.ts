@@ -94,7 +94,7 @@ export type VisualizationOptionsType = ChartType &
     chartOptionsConfigs: Partial<ChartOptionConfigsType>;
   } & {
     xAxisConfigs: XAxisConfigsType;
-  } & { yAxisConfigs: YAxisConfigsType };
+  } & { yAxisConfigs: YAxisConfigsType } & { numberFormat?: string };
 
 export type QueryType = {
   name: string;

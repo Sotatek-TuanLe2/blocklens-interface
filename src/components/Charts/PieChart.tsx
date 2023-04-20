@@ -48,6 +48,7 @@ const VisualizationPieChart = ({ data, dataKey, nameKey, configs }: Props) => {
       </text>
     );
   };
+
   return (
     <ResponsiveContainer width={'100%'} height={'100%'}>
       {dataKey.length === 1 ? (
@@ -68,7 +69,9 @@ const VisualizationPieChart = ({ data, dataKey, nameKey, configs }: Props) => {
             ))}
           </Pie>
           <Tooltip
-            content={<CustomTooltip />}
+            content={
+              <CustomTooltip type="pie" numberFormat={configs?.numberFormat} />
+            }
             animationDuration={200}
             animationEasing={'linear'}
           />

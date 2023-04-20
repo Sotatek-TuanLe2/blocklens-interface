@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Grid, GridItem } from '@chakra-ui/react';
+import { Grid, GridItem, Text } from '@chakra-ui/react';
 import { TYPE_VISUALIZATION, VisualizationType } from '../../utils/query.type';
 import 'src/styles/components/TableConfigurations.scss';
 import ChartOptions from './ChartOptions';
@@ -7,6 +7,7 @@ import ResultData from './ResultData';
 import { XAxisOptions, YAxisOptions } from './AxisOptions';
 import { objectKeys } from 'src/utils/utils-network';
 import { VISUALIZATION_DEBOUNCE } from 'src/pages/QueriesPage/part/VisualizationDisplay';
+import AppInput from '../AppInput';
 
 type Props = {
   data: unknown[];
@@ -77,7 +78,37 @@ const ChartConfigurations = ({
           />
         </GridItem>
         {type === TYPE_VISUALIZATION.pie ? (
-          <GridItem></GridItem>
+          <GridItem>
+            <div className="box-table">
+              <Text
+                className="box-table__title"
+                fontWeight="bold"
+                marginBottom="10px"
+              >
+                Pie options
+              </Text>
+              <div className="box-table-children grid-pie">
+                <div>Label format</div>
+                <AppInput
+                  placeholder="Current price"
+                  size={'sm'}
+                  className="input-table"
+                  value={editVisualization?.options?.numberFormat}
+                  onChange={(e) =>
+                    setEditVisualization((prevState) => {
+                      return {
+                        ...prevState,
+                        options: {
+                          ...prevState.options,
+                          numberFormat: e.target.value,
+                        },
+                      };
+                    })
+                  }
+                />
+              </div>
+            </div>
+          </GridItem>
         ) : (
           <>
             <GridItem>
