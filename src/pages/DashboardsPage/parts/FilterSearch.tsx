@@ -99,12 +99,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
           className="dashboard-filter__search__button"
           onClick={onClickNew}
         >
-          New{' '}
-          {type === LIST_ITEM_TYPE.DASHBOARDS
-            ? 'dashboard'
-            : type === LIST_ITEM_TYPE.QUERIES
-            ? 'query'
-            : 'team'}
+          New {type === LIST_ITEM_TYPE.DASHBOARDS ? 'dashboard' : 'query'}
         </AppButton>
       </>
 
