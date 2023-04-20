@@ -71,9 +71,7 @@ const VisualizationScatterChart = (props: Props) => {
           <CartesianGrid vertical={false} strokeDasharray="4" />
           <XAxis
             dataKey={xAxisKey}
-            tickFormatter={
-              xAxisKey === 'time' ? getHourAndMinute : tickFormatAxis('x')
-            }
+            tickFormatter={tickFormatAxis('x')}
             fill={'#ccc'}
           >
             <Label
