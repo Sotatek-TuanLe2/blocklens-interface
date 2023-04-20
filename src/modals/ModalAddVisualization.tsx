@@ -21,7 +21,7 @@ interface IModalAddVisualization {
 }
 interface IButtonAdd {
   userName: string;
-  item: QueryType;
+  item: any;
   dataLayouts: ILayout[];
   handleRemoveVisualization: (
     item: ILayout[],
@@ -45,7 +45,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
 }) => {
   const [add, setAdd] = useState<boolean>(false);
   const [showMyQueries, setShowMyQueries] = useState<boolean>(false);
-  const [dataVisualization, setDataVisualization] = useState<QueryType[]>([]);
+  const [dataVisualization, setDataVisualization] = useState<any[]>([]);
 
   const fetchVisualization = async () => {
     try {
@@ -130,39 +130,41 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
           }
         />
         <div className="main-queries">
-          {dataVisualization.map((item) =>
-            item.visualizations.map((i) => (
-              <Flex
-                justifyContent={'space-between'}
-                borderBottom={'1px solid white'}
-                key={item.id}
-              >
-                {showMyQueries ? (
-                  <>
-                    <Flex alignItems={'center'} columnGap={'10px'} p={'10px'}>
-                      <ListIcon />
-                      <Link>@cypherpepe / Airdrops and Wallets</Link>
-                      <Text fontWeight={'bold'}>Airdrops and Wallets</Text>
-                    </Flex>
-                    <Text
-                      onClick={() => setAdd(!add)}
-                      className={add ? 'btn-added-query' : 'btn-add-query'}
-                    >
-                      {add ? 'Added' : 'Add'}
-                    </Text>
-                  </>
-                ) : (
-                  <ButtonAdd
-                    userName={userName}
-                    item={item}
-                    dataLayouts={dataLayouts}
-                    handleSaveVisualization={handleSaveVisualization}
-                    handleRemoveVisualization={handleRemoveVisualization}
-                    i={i}
-                  />
-                )}
-              </Flex>
-            )),
+          {dataVisualization.map(
+            (item) =>
+              item?.visualizations &&
+              item?.visualizations.map((i: any) => (
+                <Flex
+                  justifyContent={'space-between'}
+                  borderBottom={'1px solid white'}
+                  key={item.id}
+                >
+                  {showMyQueries ? (
+                    <>
+                      <Flex alignItems={'center'} columnGap={'10px'} p={'10px'}>
+                        <ListIcon />
+                        <Link>@cypherpepe / Airdrops and Wallets</Link>
+                        <Text fontWeight={'bold'}>Airdrops and Wallets</Text>
+                      </Flex>
+                      <Text
+                        onClick={() => setAdd(!add)}
+                        className={add ? 'btn-added-query' : 'btn-add-query'}
+                      >
+                        {add ? 'Added' : 'Add'}
+                      </Text>
+                    </>
+                  ) : (
+                    <ButtonAdd
+                      userName={userName}
+                      item={item}
+                      dataLayouts={dataLayouts}
+                      handleSaveVisualization={handleSaveVisualization}
+                      handleRemoveVisualization={handleRemoveVisualization}
+                      i={i}
+                    />
+                  )}
+                </Flex>
+              )),
           )}
         </div>
         <Flex
@@ -215,7 +217,7 @@ const ButtonAdd: React.FC<IButtonAdd> = ({
 }) => {
   const checkIdItem = dataLayouts
     .map((i: any) => i.content[0]?.id)
-    .includes(item.id);
+    .includes(item?.id);
 
   const checkAdded = checkIdItem
     ? dataLayouts

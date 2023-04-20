@@ -46,33 +46,31 @@ const SidebarEditorRow = ({
 
   return (
     <Box cursor={'pointer'} width={'100%'} className={className}>
-      <Flex alignItems="center">
+      <Flex alignItems="center" className="row-name-wrap">
         <Flex
           alignItems={'center'}
           justifyContent={'space-between'}
           flex={1}
           onClick={onClick}
-          isTruncated
-          className={'table-name'}
+          className={'row-name'}
         >
-          <Flex isTruncated alignItems={'center'}>
+          <Flex alignItems={'center'} className="row-name__row">
             <InfoOutlineIcon />
             <Text
-              marginLeft={3}
               fontSize={'13px'}
               fontWeight={'600'}
               color={'blue.100'}
-              isTruncated
+              marginLeft={3}
             >
               {chainName}
             </Text>
-            <Text isTruncated marginLeft={3} fontSize={'13px'}>
+            <Text fontSize={'13px'} marginLeft={3}>
               {tableName}
             </Text>
           </Flex>
           <div>{getChainIcon()}</div>
         </Flex>
-        <Flex alignItems={'center'}>
+        <Flex alignItems={'center'} className="row-icon">
           <ViewIcon marginLeft={3} />
           <ChevronRightIcon
             marginLeft={3}
