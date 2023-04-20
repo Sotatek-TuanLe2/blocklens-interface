@@ -36,6 +36,7 @@ import {
   VisualizationType,
 } from '../../../utils/query.type';
 import { getDefaultTableColumns } from 'src/components/Charts/VisualizationTable';
+import { objectKeys } from 'src/utils/utils-network';
 
 type VisualizationConfigType = {
   value: string;
@@ -196,11 +197,6 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
         .editVisualization(visualization, visualization.id);
       await onReload();
     }
-    // if (index >= 0) {
-    //   const newQuery = { ...queryValue };
-    //   newQuery.visualizations[index] = visualization;
-    //   updateQuery(newQuery);
-    // }
   };
 
   const renderVisualization = (visualization: VisualizationType) => {
