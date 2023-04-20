@@ -1,5 +1,4 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
-import { ColumnDef } from '@tanstack/react-table';
 import moment from 'moment';
 import { useMemo, useState } from 'react';
 import { useParams } from 'react-router';
@@ -15,7 +14,6 @@ import {
 import { AppTabs, AppButton, AppSelect2 } from '../../../components';
 import ChartConfigurations from '../../../components/VisualizationConfigs/ChartConfigurations';
 import BaseModal from '../../../modals/BaseModal';
-import DashboardsRequest from '../../../requests/DashboardsRequest';
 import {
   AreaChartIcon,
   BarChartIcon,
@@ -327,7 +325,14 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
           break;
         case TYPE_VISUALIZATION.pie:
           visualizationDisplay = (
-            <PieChart data={queryResult} dataKey={'number'} />
+            <PieChart
+              data={queryResult}
+              xAxisKey={
+                visualization.options?.columnMapping?.xAxis || defaultTimeXAxis
+              }
+              yAxisKeys={visualization.options.columnMapping?.yAxis || []}
+              configs={visualization.options}
+            />
           );
           break;
         default:

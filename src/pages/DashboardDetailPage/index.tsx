@@ -127,20 +127,20 @@ const DashboardDetailPage: React.FC = () => {
 
     return columns.map(
       (col) =>
-        ({
-          id: col,
-          accessorKey: col,
-          header: col,
-          enableResizing: true,
-          size: 100,
-          align: 'left',
-          type: 'normal',
-          format: '',
-          coloredPositive: false,
-          coloredNegative: false,
-          coloredProgress: false,
-          isHidden: false,
-        } as ColumnDef<unknown>),
+      ({
+        id: col,
+        accessorKey: col,
+        header: col,
+        enableResizing: true,
+        size: 100,
+        align: 'left',
+        type: 'normal',
+        format: '',
+        coloredPositive: false,
+        coloredNegative: false,
+        coloredProgress: false,
+        isHidden: false,
+      } as ColumnDef<unknown>),
     );
   }, [queryValues]);
 
@@ -186,7 +186,12 @@ const DashboardDetailPage: React.FC = () => {
           />
         );
       case TYPE_VISUALIZATION.pie:
-        return <VisualizationPieChart data={queryValues} dataKey={'number'} />;
+        return (
+          <VisualizationPieChart
+            data={queryValues}
+            xAxisKey="time"
+            yAxisKeys={['size']} />
+        );
       default:
       // return <AddVisualization onAddVisualize={addVisualizationHandler} />;
     }
@@ -256,8 +261,8 @@ const DashboardDetailPage: React.FC = () => {
       i.visualizations.type === 'table'
         ? i.visualizations.type
         : i.visualizations.type === 'chart'
-        ? i.visualizations.options.globalSeriesType
-        : null,
+          ? i.visualizations.options.globalSeriesType
+          : null,
     );
   };
 

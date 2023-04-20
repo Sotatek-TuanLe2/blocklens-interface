@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { VisualizationType } from 'src/utils/query.type';
 import { Checkbox, CheckboxGroup, Flex, Text } from '@chakra-ui/react';
 import AppInput from '../AppInput';
+import { TYPE_VISUALIZATION } from 'src/utils/common';
 
 interface IChartOptions {
   visualization: VisualizationType;
@@ -38,6 +39,15 @@ const ChartOptions: React.FC<IChartOptions> = ({
       disabled: false,
     },
   ]);
+  const chartType =
+    visualization.options?.globalSeriesType || visualization.type;
+
+  const getStatusDisableStacking =
+    chartType !== TYPE_VISUALIZATION.bar &&
+    chartType !== TYPE_VISUALIZATION.area;
+
+  // const getStatusDisablePercentage =
+  //   chartType === TYPE_VISUALIZATION.pie ? true : false;
 
   useEffect(() => {
     const options = visualization.options.chartOptionsConfigs;
@@ -53,13 +63,13 @@ const ChartOptions: React.FC<IChartOptions> = ({
         label: 'Enable stacking',
         value: 'stacking',
         checked: options?.stacking || false,
-        disabled: false,
+        disabled: getStatusDisableStacking,
       },
       // {
       //   label: 'Normalize to percentage',
       //   value: 'percentValues',
       //   checked: options?.percentValues || false,
-      //   disabled: false,
+      //   disabled: getStatusDisablePercentage,
       // },
       {
         label: 'Show data labels',

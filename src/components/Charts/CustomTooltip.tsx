@@ -1,7 +1,11 @@
 import { Box } from '@chakra-ui/react';
+import { TYPE_VISUALIZATION } from 'src/utils/common';
+import { formatNumberWithDecimalDigits } from 'src/utils/utils-format';
+import { formatNumber } from 'src/utils/utils-format';
 
 const CustomTooltip = (props: any) => {
-  const { active, payload, label } = props;
+  const { active, payload, label, ...prop } = props;
+
   if (active && payload && payload.length) {
     return (
       <div className="custom-tooltip">
@@ -15,7 +19,14 @@ const CustomTooltip = (props: any) => {
             >
               <span style={{ backgroundColor: `${entry.fill}` }}></span>
               <span>{`${entry.name}:  `}</span>
-              <span>{entry.value}</span>
+              <span>
+                {prop?.type === TYPE_VISUALIZATION.pie
+                  ? formatNumberWithDecimalDigits(
+                      Number(entry.value),
+                      prop?.numberFormat,
+                    )
+                  : formatNumber(entry.value)}
+              </span>
               <br />
             </Box>
           ))}
