@@ -183,17 +183,6 @@ export default class DashboardsRequest extends BaseRequest {
     return this.patch(url, params);
   }
 
-  /* End of Query page */
-
-  // getQuery(queryId: string) {
-  //   const url = `https://642cf0d966a20ec9ce915e71.mockapi.io/queries/queries/${queryId}`;
-  //   return this.get(url);
-  // }
-
-  // updateQuery(queryId: string, query: Partial<IQuery>) {
-  //   const url = `https://642cf0d966a20ec9ce915e71.mockapi.io/queries/queries/${queryId}`;
-  //   return this.put(url, query);
-  // }
   insertVisualization(data: IInsertVisualization) {
     const url = `http://172.16.199.30:8002/visualizations/insert-visual`;
     return this.post(url, data);
@@ -208,4 +197,6 @@ export default class DashboardsRequest extends BaseRequest {
     const url = `http://172.16.199.30:8002/visualizations/${visualId}/edit-visual`;
     return this.patch(url, data);
   }
+
+  /* End of Query page */
 }
