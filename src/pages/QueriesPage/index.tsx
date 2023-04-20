@@ -88,8 +88,9 @@ const QueriesPage = () => {
         },
         queryId,
       );
+      await fetchQuery();
       setShowSaveModal(false);
-      toastSuccess({ message: 'Save query is successfully.' });
+      toastSuccess({ message: 'Save query successfully.' });
     } catch (error) {
       getErrorMessage(error);
     }
@@ -261,16 +262,17 @@ const QueriesPage = () => {
             queryResult: queryResult,
           }}
         >
+          <Flex
+            className="queries-page-header-buttons"
+            justifyContent={'right'}
+          >
+            {queryValue && !queryValue?.name && (
+              <AppButton onClick={() => setShowSaveModal(true)}>Save</AppButton>
+            )}
+          </Flex>
           <div className="queries-page">
             <EditorSidebar />
             <Box className="queries-page__right-side">
-              <Flex justifyContent={'right'}>
-                {queryValue && !queryValue?.name && (
-                  <AppButton onClick={() => setShowSaveModal(true)}>
-                    Save
-                  </AppButton>
-                )}
-              </Flex>
               <Box width={'100%'}>
                 <Box bg={switchTheme ? '#fff' : '#272822'} h="10px"></Box>
                 <AceEditor
@@ -308,7 +310,7 @@ const QueriesPage = () => {
                 </Box>
               </Box>
               <Box mt={8}>
-                {queryValue && queryResult.length && (
+                {queryValue && !!queryResult.length && (
                   <VisualizationDisplay
                     queryResult={queryResult}
                     queryValue={queryValue}

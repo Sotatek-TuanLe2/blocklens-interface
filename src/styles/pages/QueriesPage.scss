@@ -2,6 +2,10 @@
 @import '../variables';
 @import '../mixins.scss';
 
+.queries-page-header-buttons {
+  margin-bottom: 20px;
+}
+
 .queries-page {
   display: flex;
   flex-direction: row;
