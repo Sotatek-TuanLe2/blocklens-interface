@@ -121,8 +121,7 @@ const DashboardsPage: React.FC = () => {
                 <ListItem
                   key={item.id}
                   id={item.id}
-                  author={item.user.name}
-                  avatarUrl={item.user.avatarUrl}
+                  author={item.name}
                   createdAt={item.createdAt}
                   title={item.name}
                   type={LIST_ITEM_TYPE.DASHBOARDS}
@@ -148,10 +147,7 @@ const DashboardsPage: React.FC = () => {
               <ListItem
                 key={item.id}
                 id={item.id}
-                author={item.user ? item.user.name : item.team.name}
-                avatarUrl={
-                  item.user ? item.user.avatarUrl : item.team.avatarUrl
-                }
+                author={item.user}
                 createdAt={item.createdAt}
                 title={item.name}
                 type={LIST_ITEM_TYPE.QUERIES}

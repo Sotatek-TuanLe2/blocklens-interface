@@ -16,7 +16,6 @@ interface IListItem {
   type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
   title: string;
   createdAt?: Date;
-  avatarUrl: string;
   author: string;
   tags?: string[]; // used for dashboards and queries
   members?: IMember[]; // used for teams
@@ -24,8 +23,7 @@ interface IListItem {
 }
 
 const ListItem: React.FC<IListItem> = (props) => {
-  const { id, type, title, createdAt, avatarUrl, author, tags, members } =
-    props;
+  const { id, type, title, createdAt, author, tags, members } = props;
 
   const { user } = useUser();
 
@@ -76,14 +74,14 @@ const ListItem: React.FC<IListItem> = (props) => {
             target="_blank"
           >
             @{author}
-          </Link>{' '}
+          </Link>
+          <span> &nbsp;</span>
           {getDuration()} ago
         </div>
       );
     }
     return <>Created </>;
   };
-
   return (
     <Tr>
       <Td border={'none'} padding={0}>
