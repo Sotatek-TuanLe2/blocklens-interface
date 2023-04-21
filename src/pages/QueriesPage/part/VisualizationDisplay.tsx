@@ -3,14 +3,7 @@ import moment from 'moment';
 import { useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import 'src/styles/components/Chart.scss';
-import {
-  AreaChart,
-  BarChart,
-  LineChart,
-  PieChart,
-  ScatterChart,
-  VisualizationTable,
-} from '../../../components/Charts';
+import { PieChart, VisualizationTable } from '../../../components/Charts';
 import { AppTabs, AppButton, AppSelect2 } from '../../../components';
 import ChartConfigurations from '../../../components/VisualizationConfigs/ChartConfigurations';
 import BaseModal from '../../../modals/BaseModal';
@@ -35,6 +28,7 @@ import {
 } from '../../../utils/query.type';
 import { getDefaultTableColumns } from 'src/components/Charts/VisualizationTable';
 import { objectKeys } from 'src/utils/utils-network';
+import VisualizationChart from 'src/components/Charts/VisualizationChart';
 
 type VisualizationConfigType = {
   value: string;
@@ -233,19 +227,6 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
       // TODO: check yAxis values have same type
     }
 
-    const ChartComponent = useMemo(() => {
-      switch (type) {
-        case TYPE_VISUALIZATION.bar:
-          return BarChart;
-        case TYPE_VISUALIZATION.line:
-          return LineChart;
-        case TYPE_VISUALIZATION.scatter:
-          return ScatterChart;
-        default:
-          return AreaChart;
-      }
-    }, [type]);
-
     if (type === TYPE_VISUALIZATION.table) {
       errorMessage = null;
       visualizationDisplay = (
@@ -306,13 +287,14 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
         />
       );
       visualizationDisplay = (
-        <ChartComponent
+        <VisualizationChart
           data={data}
           xAxisKey={
             visualization.options?.columnMapping?.xAxis || defaultTimeXAxis
           }
           yAxisKeys={visualization.options.columnMapping?.yAxis || []}
           configs={visualization.options}
+          type={type}
         />
       );
     }
