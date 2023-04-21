@@ -233,6 +233,19 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
       // TODO: check yAxis values have same type
     }
 
+    const ChartComponent = useMemo(() => {
+      switch (type) {
+        case TYPE_VISUALIZATION.bar:
+          return BarChart;
+        case TYPE_VISUALIZATION.line:
+          return LineChart;
+        case TYPE_VISUALIZATION.scatter:
+          return ScatterChart;
+        default:
+          return AreaChart;
+      }
+    }, [type]);
+
     if (type === TYPE_VISUALIZATION.table) {
       errorMessage = null;
       visualizationDisplay = (
@@ -274,70 +287,16 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
           onChangeConfigurations={onChangeConfigurations}
         />
       );
-      switch (type) {
-        case TYPE_VISUALIZATION.bar:
-          visualizationDisplay = (
-            <BarChart
-              data={data}
-              xAxisKey={
-                visualization.options?.columnMapping?.xAxis || defaultTimeXAxis
-              }
-              yAxisKeys={visualization.options.columnMapping?.yAxis || []}
-              configs={visualization.options}
-            />
-          );
-          break;
-        case TYPE_VISUALIZATION.line:
-          visualizationDisplay = (
-            <LineChart
-              data={data}
-              xAxisKey={
-                visualization.options?.columnMapping?.xAxis || defaultTimeXAxis
-              }
-              yAxisKeys={visualization.options.columnMapping?.yAxis || []}
-              configs={visualization.options}
-            />
-          );
-          break;
-        case TYPE_VISUALIZATION.area:
-          visualizationDisplay = (
-            <AreaChart
-              data={data}
-              xAxisKey={
-                visualization.options?.columnMapping?.xAxis || defaultTimeXAxis
-              }
-              yAxisKeys={visualization.options.columnMapping?.yAxis || []}
-              configs={visualization.options}
-            />
-          );
-          break;
-        case TYPE_VISUALIZATION.scatter:
-          visualizationDisplay = (
-            <ScatterChart
-              data={data}
-              xAxisKey={
-                visualization.options?.columnMapping?.xAxis || defaultTimeXAxis
-              }
-              yAxisKeys={visualization.options.columnMapping?.yAxis || []}
-              configs={visualization.options}
-            />
-          );
-          break;
-        case TYPE_VISUALIZATION.pie:
-          visualizationDisplay = (
-            <PieChart
-              data={queryResult}
-              xAxisKey={
-                visualization.options?.columnMapping?.xAxis || defaultTimeXAxis
-              }
-              yAxisKeys={visualization.options.columnMapping?.yAxis || []}
-              configs={visualization.options}
-            />
-          );
-          break;
-        default:
-          break;
-      }
+      visualizationDisplay = (
+        <ChartComponent
+          data={data}
+          xAxisKey={
+            visualization.options?.columnMapping?.xAxis || defaultTimeXAxis
+          }
+          yAxisKeys={visualization.options.columnMapping?.yAxis || []}
+          configs={visualization.options}
+        />
+      );
     }
 
     return (
