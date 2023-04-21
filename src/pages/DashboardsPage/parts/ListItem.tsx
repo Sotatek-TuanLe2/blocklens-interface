@@ -17,23 +17,13 @@ interface IListItem {
   createdAt?: Date;
   avatarUrl: string;
   author: string;
-  // starCount: number;
   tags?: string[]; // used for dashboards and queries
   members?: IMember[]; // used for teams
 }
 
 const ListItem: React.FC<IListItem> = (props) => {
-  const {
-    id,
-    type,
-    title,
-    createdAt,
-    avatarUrl,
-    author,
-    // starCount,
-    tags,
-    members,
-  } = props;
+  const { id, type, title, createdAt, avatarUrl, author, tags, members } =
+    props;
 
   const { user } = useUser();
 
