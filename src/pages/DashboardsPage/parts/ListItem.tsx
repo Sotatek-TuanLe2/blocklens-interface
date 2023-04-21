@@ -1,7 +1,6 @@
-import { Flex, Tr, Td } from '@chakra-ui/react';
+import { Flex, Td, Tr } from '@chakra-ui/react';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
-import { ActiveStarIcon, StarIcon } from 'src/assets/icons';
 import useUser from 'src/hooks/useUser';
 import { LIST_ITEM_TYPE } from '..';
 
@@ -18,27 +17,15 @@ interface IListItem {
   createdAt?: Date;
   avatarUrl: string;
   author: string;
-  starCount: number;
   tags?: string[]; // used for dashboards and queries
   members?: IMember[]; // used for teams
 }
 
 const ListItem: React.FC<IListItem> = (props) => {
-  const {
-    id,
-    type,
-    title,
-    createdAt,
-    avatarUrl,
-    author,
-    starCount,
-    tags,
-    members,
-  } = props;
+  const { id, type, title, createdAt, avatarUrl, author, tags, members } =
+    props;
 
   const { user } = useUser();
-
-  const LIKEABLE_ITEMS = [LIST_ITEM_TYPE.DASHBOARDS, LIST_ITEM_TYPE.QUERIES];
 
   const getDuration = (): string => {
     const durationMinutes = moment().diff(moment(createdAt), 'minutes');
@@ -91,9 +78,6 @@ const ListItem: React.FC<IListItem> = (props) => {
           {getDuration()} ago
         </div>
       );
-    }
-    if (type === LIST_ITEM_TYPE.WIZARDS) {
-      return <>Wizard since </>;
     }
     return <>Created </>;
   };
@@ -148,18 +132,6 @@ const ListItem: React.FC<IListItem> = (props) => {
               {_renderSubContent()}
             </div>
           </div>
-          <Flex
-            className="dashboard-list__item__stars"
-            alignItems={'center'}
-            justifyContent={'space-between'}
-          >
-            <span>{starCount}</span>
-            {LIKEABLE_ITEMS.includes(type) ? (
-              <StarIcon onClick={onLike} />
-            ) : (
-              <ActiveStarIcon />
-            )}
-          </Flex>
         </Flex>
       </Td>
     </Tr>
