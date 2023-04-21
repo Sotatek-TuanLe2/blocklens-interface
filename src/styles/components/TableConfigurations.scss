@@ -42,6 +42,10 @@
       }
     }
 
+    .grid-pie {
+      grid-template-columns: minmax(auto, 6rem) minmax(auto, 1fr) !important;
+    }
+
     .box-table-children {
       align-items: center;
       display: grid;
