@@ -64,7 +64,7 @@ const VisualizationLineChart = (props: Props) => {
     : {};
 
   return (
-    <ResponsiveContainer className="visual-container__visualization__line">
+    <ResponsiveContainer className="visual-container__visualization--line">
       <LineChart
         height={500}
         data={data}

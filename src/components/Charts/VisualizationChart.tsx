@@ -123,13 +123,13 @@ const VisualizationChart: React.FC<Props> = (props) => {
   const containerClassName = useMemo(() => {
     switch (type) {
       case TYPE_VISUALIZATION.bar:
-        return 'visual-container__visualization__bar';
+        return 'visual-container__visualization--bar';
       case TYPE_VISUALIZATION.line:
-        return 'visual-container__visualization__line';
+        return 'visual-container__visualization--line';
       case TYPE_VISUALIZATION.scatter:
-        return 'visual-container__visualization__scatter';
+        return 'visual-container__visualization--scatter';
       default:
-        return 'visual-container__visualization__area';
+        return 'visual-container__visualization--area';
     }
   }, [type]);
 
