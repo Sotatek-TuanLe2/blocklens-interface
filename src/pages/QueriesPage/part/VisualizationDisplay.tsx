@@ -278,6 +278,24 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
           onChangeConfigurations={onChangeConfigurations}
         />
       );
+    } else if (type === TYPE_VISUALIZATION.pie) {
+      visualizationConfiguration = (
+        <ChartConfigurations
+          data={queryResult}
+          visualization={visualization}
+          onChangeConfigurations={onChangeConfigurations}
+        />
+      );
+      visualizationDisplay = (
+        <PieChart
+          data={queryResult}
+          xAxisKey={
+            visualization.options?.columnMapping?.xAxis || defaultTimeXAxis
+          }
+          yAxisKeys={visualization.options.columnMapping?.yAxis || []}
+          configs={visualization.options}
+        />
+      );
     } else {
       // chart
       visualizationConfiguration = (
