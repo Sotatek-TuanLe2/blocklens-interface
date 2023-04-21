@@ -8,7 +8,8 @@
   "api": {
     "baseUrlApi": "https://dev-blocksniper-api.sotatek.works/api/blocklens-users",
     "notificationsApi": "https://dev-blocksniper-api.sotatek.works/api/blocklens-notifications",
-    "authApi": "https://buni-dev-api.sotatek.works/api/blocklens-auth"
+    "authApi": "https://buni-dev-api.sotatek.works/api/blocklens-auth",
+    "dashboard": "http://172.16.199.30:8002"
   },
   "defaultNetwork": "BSC",
   "defaultChainId": 97,
@@ -95,9 +96,7 @@
           "id": "MAINNET",
           "icon": "icon-bsc",
           "chainId": 56,
-          "rpcUrls": [
-            "https://bsc-dataseed1.defibit.io/"
-          ],
+          "rpcUrls": ["https://bsc-dataseed1.defibit.io/"],
           "blockExplorer": {
             "name": "Bscscan",
             "icon": "/images/bscscan.png",
@@ -114,9 +113,7 @@
           "id": "TESTNET",
           "icon": "icon-bsc",
           "chainId": 97,
-          "rpcUrls": [
-            "https://data-seed-prebsc-1-s3.binance.org:8545/"
-          ],
+          "rpcUrls": ["https://data-seed-prebsc-1-s3.binance.org:8545/"],
           "blockExplorer": {
             "name": "Bscscan",
             "icon": "/images/bscscan.png",
@@ -170,9 +167,7 @@
           "id": "MAINNET",
           "icon": "icon-polygon",
           "chainId": 137,
-          "rpcUrls": [
-            "https://rpc-mainnet.maticvigil.com/"
-          ],
+          "rpcUrls": ["https://rpc-mainnet.maticvigil.com/"],
           "blockExplorer": {
             "name": "Polygonscan",
             "icon": "/images/polygonscan.png",
@@ -189,9 +184,7 @@
           "id": "MUMBAI",
           "icon": "icon-polygon",
           "chainId": 80001,
-          "rpcUrls": [
-            "https://rpc-mumbai.matic.today/"
-          ],
+          "rpcUrls": ["https://rpc-mumbai.matic.today/"],
           "blockExplorer": {
             "name": "Polygonscan",
             "icon": "/images/polygonscan.png",

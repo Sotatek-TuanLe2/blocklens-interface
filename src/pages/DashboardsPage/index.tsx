@@ -65,8 +65,8 @@ const DashboardsPage: React.FC = () => {
       try {
         const res: any = await rf
           .getRequest('DashboardsRequest')
-          .getDashboards(params);
-        return { docs: res, totalPages: Math.ceil(res.length / params.limit) };
+          .getListBrowseDashboard(params);
+        return res;
       } catch (error) {
         toastError({ message: getErrorMessage(error) });
       }
@@ -79,8 +79,8 @@ const DashboardsPage: React.FC = () => {
       try {
         const res: any = await rf
           .getRequest('DashboardsRequest')
-          .getQueries(params);
-        return { docs: res, totalPages: Math.ceil(res.length / params.limit) };
+          .getListBrowseQueries(params);
+        return res;
       } catch (error) {
         toastError({ message: getErrorMessage(error) });
       }
@@ -127,6 +127,7 @@ const DashboardsPage: React.FC = () => {
                   title={item.name}
                   type={LIST_ITEM_TYPE.DASHBOARDS}
                   tags={item.tags}
+                  onClick={() => history.push(`/dashboard/${item.id}`)}
                 />
               ))}
             </Tbody>

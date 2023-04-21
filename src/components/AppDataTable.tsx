@@ -60,11 +60,13 @@ export interface Pagination {
 }
 
 interface IResponseType {
-  totalDocs: number;
+  totalItems: number;
   totalPages: number;
   page: number;
-  limit: number;
-  docs: any[];
+  itemCount: number;
+  itemsPerPage: number;
+  currentPage: number;
+  data: any[];
 }
 
 const AppDataTable = forwardRef(
@@ -115,9 +117,9 @@ const AppDataTable = forwardRef(
         ...tablePagination,
       });
       setLoading(false);
-      if (response && response.docs) {
+      if (response && response.data) {
         setTableData((prevState) =>
-          isLoadMore ? [...prevState, ...response.docs] : response.docs,
+          isLoadMore ? [...prevState, ...response.data] : response.data,
         );
         setPagination({ ...tablePagination });
         setTotalPages(response.totalPages);

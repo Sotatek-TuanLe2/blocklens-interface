@@ -3,6 +3,7 @@ import moment from 'moment';
 import { Link } from 'react-router-dom';
 import useUser from 'src/hooks/useUser';
 import { LIST_ITEM_TYPE } from '..';
+import Jazzicon, { jsNumberForAddress } from 'react-jazzicon';
 
 interface IMember {
   id: number;
@@ -19,6 +20,7 @@ interface IListItem {
   author: string;
   tags?: string[]; // used for dashboards and queries
   members?: IMember[]; // used for teams
+  onClick?: () => void;
 }
 
 const ListItem: React.FC<IListItem> = (props) => {
@@ -89,12 +91,14 @@ const ListItem: React.FC<IListItem> = (props) => {
           flexDirection="row"
           className="dashboard-list__item"
           alignItems={'center'}
+          onClick={() => props.onClick && props.onClick()}
         >
-          <img
-            src={avatarUrl}
-            alt={`Avatar of ${author}`}
-            className="dashboard-list__item__avatar"
-          />
+          <div className="dashboard-list__item__avatar">
+            <Jazzicon
+              diameter={40}
+              seed={jsNumberForAddress(props.id.toString())}
+            />
+          </div>
           <div className="dashboard-list__item__content">
             <Flex
               className="dashboard-list__item__content__title"

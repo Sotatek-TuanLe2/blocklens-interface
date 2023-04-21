@@ -68,6 +68,13 @@ export interface IEditVisualization {
   name: string;
   options: any;
 }
+
+export interface IGetBrowse {
+  search?: string;
+  limit?: number;
+  page?: number;
+}
+
 export default class DashboardsRequest extends BaseRequest {
   getUrlPrefix(): string {
     return '';
@@ -186,6 +193,16 @@ export default class DashboardsRequest extends BaseRequest {
   editVisualization(data: IEditVisualization, visualId: string) {
     const url = `http://172.16.199.30:8002/visualizations/${visualId}/edit-visual`;
     return this.patch(url, data);
+  }
+
+  getListBrowseDashboard(params: IGetBrowse) {
+    const url = `http://172.16.199.30:8002/dashboard/list-browse-dashboards`;
+    return this.get(url, params);
+  }
+
+  getListBrowseQueries(params: IGetBrowse) {
+    const url = `http://172.16.199.30:8002/queries/list-browse-queries`;
+    return this.get(url, params);
   }
 
   /* End of Query page */
