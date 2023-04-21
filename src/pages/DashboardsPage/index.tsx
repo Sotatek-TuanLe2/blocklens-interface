@@ -66,7 +66,7 @@ const DashboardsPage: React.FC = () => {
         const res: any = await rf
           .getRequest('DashboardsRequest')
           .getListBrowseDashboard(params);
-        return res;
+        return { ...res, docs: res.data };
       } catch (error) {
         toastError({ message: getErrorMessage(error) });
       }
@@ -80,7 +80,7 @@ const DashboardsPage: React.FC = () => {
         const res: any = await rf
           .getRequest('DashboardsRequest')
           .getListBrowseQueries(params);
-        return res;
+        return { ...res, docs: res.data };
       } catch (error) {
         toastError({ message: getErrorMessage(error) });
       }
@@ -126,7 +126,6 @@ const DashboardsPage: React.FC = () => {
                   title={item.name}
                   type={LIST_ITEM_TYPE.DASHBOARDS}
                   tags={item.tags}
-                  onClick={() => history.push(`/dashboard/${item.id}`)}
                 />
               ))}
             </Tbody>

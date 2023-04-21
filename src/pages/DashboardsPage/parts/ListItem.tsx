@@ -19,7 +19,6 @@ interface IListItem {
   author: string;
   tags?: string[]; // used for dashboards and queries
   members?: IMember[]; // used for teams
-  onClick?: () => void;
 }
 
 const ListItem: React.FC<IListItem> = (props) => {
@@ -51,16 +50,12 @@ const ListItem: React.FC<IListItem> = (props) => {
   const getTitleUrl = (): string => {
     switch (type) {
       case LIST_ITEM_TYPE.DASHBOARDS:
-        return `/dashboard/${user?.getId()}/${title}`;
+        return `/dashboard/${id}/`;
       case LIST_ITEM_TYPE.QUERIES:
         return `/queries/${id}`;
       default:
         return '/dashboards';
     }
-  };
-
-  const onLike = () => {
-    //
   };
 
   const _renderSubContent = () => {
@@ -89,13 +84,9 @@ const ListItem: React.FC<IListItem> = (props) => {
           flexDirection="row"
           className="dashboard-list__item"
           alignItems={'center'}
-          onClick={() => props.onClick && props.onClick()}
         >
           <div className="dashboard-list__item__avatar">
-            <Jazzicon
-              diameter={40}
-              seed={jsNumberForAddress(props.id.toString())}
-            />
+            <Jazzicon diameter={40} seed={jsNumberForAddress(id.toString())} />
           </div>
           <div className="dashboard-list__item__content">
             <Flex
