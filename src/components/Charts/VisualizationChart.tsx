@@ -146,11 +146,36 @@ const VisualizationChart: React.FC<Props> = (props) => {
     }
   }, [type]);
 
+  const sortData = () => {
+    if (!data) {
+      return [];
+    }
+    if (!xAxisKey || !xAxisConfigs) {
+      return data;
+    }
+
+    let result = [...data];
+    // sorting
+    if (xAxisConfigs?.sortX) {
+      result = result.sort((a: any, b: any) => {
+        if (moment(a[xAxisKey]).isValid()) {
+          return moment.utc(a[xAxisKey]).diff(moment.utc(b[xAxisKey]));
+        }
+        return a[xAxisKey] - b[xAxisKey];
+      });
+    }
+    // reverse
+    if (xAxisConfigs?.reverseX) {
+      result = result.reverse();
+    }
+    return result;
+  };
+
   return (
     <ResponsiveContainer className={containerClassName}>
       <ChartComponent
         height={500}
-        data={data}
+        data={sortData()}
         className={`${type}-chart`}
         margin={{
           left: 20,
