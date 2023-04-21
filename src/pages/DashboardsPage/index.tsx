@@ -124,7 +124,6 @@ const DashboardsPage: React.FC = () => {
                   author={item.user.name}
                   avatarUrl={item.user.avatarUrl}
                   createdAt={item.createdAt}
-                  starCount={item.favoriteCount}
                   title={item.name}
                   type={LIST_ITEM_TYPE.DASHBOARDS}
                   tags={item.tags}
@@ -153,7 +152,6 @@ const DashboardsPage: React.FC = () => {
                   item.user ? item.user.avatarUrl : item.team.avatarUrl
                 }
                 createdAt={item.createdAt}
-                starCount={item.favoriteCount}
                 title={item.name}
                 type={LIST_ITEM_TYPE.QUERIES}
                 tags={item.tags}
