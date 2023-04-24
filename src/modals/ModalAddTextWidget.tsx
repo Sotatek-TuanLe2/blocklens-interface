@@ -101,12 +101,13 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
   const handleSave = async () => {
     try {
       const payload = {
-        meta: {
-          i: markdownText,
-          x: dataLayouts.length % 2 === 0 ? 0 : 6,
-          y: 0,
-          w: 6,
-          h: 2,
+        dashboardId: 'bWoX1XPXUqottfO8hKwKh',
+        text: markdownText,
+        options: {
+          sizeX: dataLayouts.length % 2 === 0 ? 6 : 6,
+          sizeY: 6,
+          col: 6,
+          row: 2,
         },
         content: [],
       };

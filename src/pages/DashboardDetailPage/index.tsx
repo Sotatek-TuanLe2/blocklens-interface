@@ -95,30 +95,153 @@ const DashboardDetailPage: React.FC = () => {
       try {
         const res = await rf
           .getRequest('DashboardsRequest')
-          .getDashboardById({ dashboardId: 'cG8T1zN1p6IoQ3V_fr86W' });
-        console.log(res);
-        const visualization = res.visualizationWidgets.map((item: ILayout) => {
-          return {
-            x: item.options.sizeX,
-            y: item.options.sizeY,
-            w: item.options.col,
-            h: item.options.row,
-            i: item.text,
-            id: item.id,
-            content: item.visualization,
-          };
-        });
+          .getDashboardById({ dashboardId: 'bWoX1XPXUqottfO8hKwKh' });
+        const visualization = res.visualizationWidgets.map(
+          (item: ILayout, index: string) => {
+            const { options } = item;
+            return {
+              x: options.sizeX,
+              y: options.sizeY,
+              w: options.col,
+              h: options.row,
+              i: `${index}`,
+              id: item.id,
+              content: item.visualization,
+            };
+          },
+        );
         const textWidgets = res.textWidgets.map((item: ILayout) => {
+          const { options } = item;
+
           return {
-            x: item.options.sizeX,
-            y: item.options.sizeY,
-            w: item.options.col,
-            h: item.options.row,
+            x: options.sizeX,
+            y: options.sizeY,
+            w: options.col,
+            h: options.row,
             i: item.text,
             id: item.id,
             content: [],
           };
         });
+        const layouts = [
+          {
+            content: [
+              {
+                createdAt: '2023-04-04T13:44:21.035Z',
+                query: 'select * from arbitrum.blocks limit 10',
+                visualizations: {
+                  name: 'Table',
+                  id: '19',
+                  type: 'table',
+                  options: {},
+                },
+                id: '1938231',
+                parentId: '1',
+              },
+            ],
+            meta: {
+              w: 6,
+              h: 2,
+              x: 0,
+              y: 0,
+              i: '1',
+              moved: false,
+              static: false,
+            },
+            id: '1',
+          },
+          {
+            content: [
+              {
+                createdAt: '2023-04-04T13:44:21.035Z',
+                query: 'select * from arbitrum.blocks limit 10',
+                visualizations: {
+                  id: '76',
+                  name: 'Chart',
+                  type: 'chart',
+                  options: {
+                    globalSeriesType: 'column',
+                    columnMapping: {
+                      time: 'x',
+                      number: 'y',
+                    },
+                    showLegend: true,
+                  },
+                },
+                id: '1938231',
+                parentId: '2',
+              },
+            ],
+            meta: {
+              w: 6,
+              h: 2,
+              x: 6,
+              y: 0,
+              i: '2',
+              moved: false,
+              static: false,
+            },
+            id: '2',
+          },
+          {
+            content: [
+              {
+                createdAt: '2023-04-04T13:44:21.035Z',
+                query: 'select * from arbitrum.blocks limit 10',
+                visualizations: {
+                  id: '75',
+                  name: 'Chart',
+                  type: 'chart',
+                  options: {
+                    globalSeriesType: 'line',
+                    columnMapping: {
+                      time: 'x',
+                      number: 'y',
+                    },
+                    showLegend: true,
+                  },
+                },
+                id: '1938231',
+                parentId: '3',
+              },
+            ],
+            meta: {
+              w: 6,
+              h: 2,
+              x: 0,
+              y: 2,
+              i: '3',
+              moved: false,
+              static: false,
+            },
+            id: '3',
+          },
+          {
+            content: [],
+            meta: {
+              w: 6,
+              h: 2,
+              x: 6,
+              y: 2,
+              i: 'áds',
+              moved: false,
+              static: false,
+            },
+            id: '4',
+          },
+        ].map((item: ILayout) => {
+          const { meta } = item;
+          return {
+            x: meta.x,
+            y: meta.y,
+            w: meta.w,
+            h: meta.h,
+            i: meta.i,
+            id: item.id,
+            content: { ...item.content },
+          };
+        });
+        console.log(layouts, 'layout');
         setDataLayouts(visualization.concat(textWidgets));
       } catch (error) {
         toastError({
@@ -126,8 +249,9 @@ const DashboardDetailPage: React.FC = () => {
         });
       }
     },
-    [dataLayouts],
+    [],
   );
+  console.log(dataLayouts);
 
   const fetchQueryResult = async (executionId: string) => {
     const res = await rf.getRequest('DashboardsRequest').getQueryResult({
@@ -343,9 +467,9 @@ const DashboardDetailPage: React.FC = () => {
       </>
     );
   };
-
   const _renderButtons = () => {
-    const isAccountsDashboard = user?.getId() === authorId;
+    const isAccountsDashboard = true;
+    // user?.getId() === authorId;
     const editButtons = [
       { title: 'Settings', setModal: setOpenModalSetting },
       { title: 'Add text widget', setModal: setOpenModalAddTextWidget },
@@ -502,12 +626,12 @@ const DashboardDetailPage: React.FC = () => {
             cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
             isDraggable={editMode}
             isResizable={editMode}
+            measureBeforeMount
           >
             {dataLayouts.map((item) => (
-              <div className="box-layout" key={item.i}>
-                {console.log(item)}
+              <div className="box-layout" key={item.id}>
                 <div className="box-chart">
-                  {item.content.length > 0 ? (
+                  {item.content.length === undefined ? (
                     <>
                       {renderVisualization({
                         id: TYPE_VISUALIZATION.new,
@@ -519,13 +643,6 @@ const DashboardDetailPage: React.FC = () => {
                     </>
                   ) : (
                     <div className="box-text-widget">
-                      {renderVisualization({
-                        id: TYPE_VISUALIZATION.new,
-                        createdAt: moment().toDate(),
-                        options: {},
-                        name: 'New Visualization',
-                        type: TYPE_VISUALIZATION.new,
-                      })}
                       <ReactMarkdown>{item.i}</ReactMarkdown>
                     </div>
                   )}
