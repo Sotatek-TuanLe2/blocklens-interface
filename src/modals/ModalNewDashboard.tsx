@@ -1,4 +1,4 @@
-import { Checkbox, Flex, Text } from '@chakra-ui/react';
+import { Checkbox, Flex } from '@chakra-ui/react';
 import React from 'react';
 import { AppButton, AppField, AppInput } from 'src/components';
 import 'src/styles/components/BaseModal.scss';
@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { useHistory } from 'react-router';
 import { toastError } from 'src/utils/utils-notify';
 import { getErrorMessage } from 'src/utils/utils-helper';
-import useUser from 'src/hooks/useUser';
+import rf from 'src/requests/RequestFactory';
 
 interface IModalNewDashboard {
   open: boolean;
@@ -27,17 +27,23 @@ const ModalNewDashboard: React.FC<IModalNewDashboard> = ({ open, onClose }) => {
     private: false,
   };
   const history = useHistory();
-  const { user } = useUser();
 
   const [dataForm, setDataForm] =
     useState<IDataSettingForm>(initDataFormSetting);
 
-  const handleSubmitForm = () => {
+  const handleSubmitForm = async () => {
     try {
-      history.push(`/dashboard/${user?.getId()}/${dataForm.url}`);
+      const result = await rf
+        .getRequest('DashboardsRequest')
+        .createNewDashboard({
+          name: dataForm.title,
+          slug: dataForm.url,
+          isPrivate: dataForm.private,
+        });
+      history.push(`/dashboard/${result.id}`);
       onClose();
-    } catch (e) {
-      toastError({ message: getErrorMessage(e) });
+    } catch (error) {
+      toastError({ message: getErrorMessage(error) });
     }
   };
 
