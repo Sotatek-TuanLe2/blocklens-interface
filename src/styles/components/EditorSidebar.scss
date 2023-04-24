@@ -58,10 +58,15 @@
     margin-top: 20px;
     padding: 20px;
     font-size: 14px;
+
     .query-info {
       align-items: center;
       border-bottom: 1px solid #22242d;
-      padding: 6px 0px;
+      padding: 8px 0px;
+
+      &:last-child {
+        border-bottom: none;
+      }
     }
   }
 }
