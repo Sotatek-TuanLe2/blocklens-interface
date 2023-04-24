@@ -24,6 +24,7 @@ import { MoonIcon, SettingsIcon, SunIcon } from '@chakra-ui/icons';
 import ModalSaveQuery from 'src/modals/ModalSaveQuery';
 import { toastSuccess } from 'src/utils/utils-notify';
 import rf from 'src/requests/RequestFactory';
+import { AppLoadingTable } from 'src/components';
 
 interface ParamTypes {
   queryId: string;
@@ -39,6 +40,7 @@ const QueriesPage = () => {
   const [switchTheme, setSwitchTheme] = useState<boolean>(false);
   const [expandEditor, setExpandEditor] = useState<boolean>(false);
   const [showSaveModal, setShowSaveModal] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const history = useHistory();
 
@@ -97,6 +99,7 @@ const QueriesPage = () => {
   };
 
   const fetchQueryResult = async (executionId: string) => {
+    setIsLoading(true);
     const res = await rf.getRequest('DashboardsRequest').getQueryResult({
       queryId,
       executionId,
@@ -113,9 +116,11 @@ const QueriesPage = () => {
         if (resInterval.status === 'DONE') {
           clearInterval(fetchQueryResultInterval);
           setQueryResult(resInterval.result);
+          setIsLoading(false);
         }
       }, 2000);
     } else {
+      setIsLoading(false);
       setQueryResult(res.result);
     }
   };
@@ -309,15 +314,23 @@ const QueriesPage = () => {
                   </AppButton>
                 </Box>
               </Box>
-              <Box mt={8}>
-                {queryValue && !!queryResult.length && (
-                  <VisualizationDisplay
-                    queryResult={queryResult}
-                    queryValue={queryValue}
-                    onReload={fetchQuery}
-                  />
+              <>
+                {!isLoading ? (
+                  <Box mt={8}>
+                    {queryValue && !!queryResult.length ? (
+                      <VisualizationDisplay
+                        queryResult={queryResult}
+                        queryValue={queryValue}
+                        onReload={fetchQuery}
+                      />
+                    ) : (
+                      <Flex justifyContent={'center'}>No data...</Flex>
+                    )}
+                  </Box>
+                ) : (
+                  <AppLoadingTable widthColumns={[100]} />
                 )}
-              </Box>
+              </>
             </Box>
           </div>
         </EditorContext.Provider>
