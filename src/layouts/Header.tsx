@@ -37,7 +37,7 @@ const menus = [
     path: '/account',
   },
   {
-    name: 'Dashboards demo',
+    name: 'Query SQL',
     path: '/dashboards',
   },
 ];
