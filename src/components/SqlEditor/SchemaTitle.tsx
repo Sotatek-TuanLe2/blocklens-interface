@@ -9,6 +9,7 @@ import {
 
 type Props = {
   tableName: string;
+  tableFullName: string;
   onClick?: () => void;
   className?: string;
   chainName: string;
@@ -17,6 +18,7 @@ type Props = {
 const SidebarEditorRow = ({
   chainName,
   tableName,
+  tableFullName,
   className,
   onClick,
 }: Props) => {
@@ -41,7 +43,7 @@ const SidebarEditorRow = ({
 
   const addTableNameToEditor = () => {
     const position = editor.current.editor.getCursorPosition();
-    editor.current.editor.session.insert(position, tableName);
+    editor.current.editor.session.insert(position, tableFullName);
   };
 
   return (
