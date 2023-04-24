@@ -112,7 +112,7 @@ const Routes: FC<RouteComponentProps> = () => {
         <PrivateRoute path={'/top-up'} component={TopUpPage} />
         <PrivateRoute path={'/dashboards'} component={DashboardsPage} />
         <PrivateRoute
-          path={'/dashboard/:authorId/:dashboardId'}
+          path={'/dashboard/:dashboardId'}
           component={DashboardDetailPage}
         />
         <PrivateRoute path={'/queries/:queryId?'} component={QueriesPage} />
