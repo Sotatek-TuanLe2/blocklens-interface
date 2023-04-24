@@ -38,10 +38,6 @@ const FilterTags: React.FC<IFilterTags> = (props) => {
     setSelectedTag(selectedTag);
   }, [searchUrl]);
 
-  if (type === LIST_ITEM_TYPE.WIZARDS || type === LIST_ITEM_TYPE.TEAMS) {
-    return null;
-  }
-
   const getTagUrl = (tag: string) => () => {
     const searchParams = new URLSearchParams(searchUrl);
     searchParams.delete('tags');

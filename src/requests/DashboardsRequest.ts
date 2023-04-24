@@ -1,6 +1,6 @@
 import { Layout } from 'react-grid-layout';
+import { QueryType } from '../utils/query.type';
 import BaseRequest from './BaseRequest';
-import { IQuery, QueryType } from '../utils/query.type';
 
 export interface DashboardsParams {
   order?: string;
@@ -104,16 +104,6 @@ export default class DashboardsRequest extends BaseRequest {
   getPopularQueryTags() {
     const url = 'https://run.mocky.io/v3/50864550-87f8-41ae-9985-a15289cf7f77';
     return this.get(url);
-  }
-
-  getWizards(params: WizardsParams) {
-    const url = 'https://run.mocky.io/v3/2e1577c1-7a87-412e-8a49-e161462168db';
-    return this.get(url, params);
-  }
-
-  getTeams(params: TeamsParams) {
-    const url = 'https://run.mocky.io/v3/0f280d1a-e11c-4cf7-bce9-6a530d2303e4';
-    return this.get(url, params);
   }
 
   /* End of Dashboards page */
