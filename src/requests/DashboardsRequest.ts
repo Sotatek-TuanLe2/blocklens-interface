@@ -9,7 +9,6 @@ export interface DashboardsParams {
 
 export interface CreateDashboardParams {
   name: string;
-  slug: string;
   isPrivate: boolean;
 }
 

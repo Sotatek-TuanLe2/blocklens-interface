@@ -37,7 +37,6 @@ const DashboardsPage: React.FC = () => {
   useEffect(() => {
     const searchParams = new URLSearchParams(searchUrl);
     const search = searchParams.get('search') || '';
-    const tags = searchParams.get('tags') || '';
 
     switch (tabType) {
       case LIST_ITEM_TYPE.DASHBOARDS:
@@ -45,7 +44,6 @@ const DashboardsPage: React.FC = () => {
           _.omitBy(
             {
               search: search,
-              tags: tags,
             },
             (param) => !param,
           ),
@@ -64,7 +62,7 @@ const DashboardsPage: React.FC = () => {
       default:
         break;
     }
-  }, [searchUrl]);
+  }, [searchUrl, tabType]);
 
   const fetchDashboards: any = useCallback(
     async (params: any) => {
@@ -178,7 +176,6 @@ const DashboardsPage: React.FC = () => {
         </div>
         <div className="dashboard-filter">
           <FilterSearch type={tabType} />
-          <FilterTags type={tabType} />
         </div>
       </Flex>
     </BasePage>
