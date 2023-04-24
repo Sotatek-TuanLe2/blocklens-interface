@@ -229,16 +229,16 @@ const VisualizationChart: React.FC<Props> = (props) => {
           animationDuration={200}
           animationEasing={'linear'}
         />
-        {/* {chartOptionsConfigs?.showLegend && ( */}
-        <Legend
-          verticalAlign="middle"
-          align="right"
-          layout="vertical"
-          content={
-            <CustomLegend onHideChart={onHideChart} hideChart={hideChart} />
-          }
-        />
-        {/* )} */}
+        {chartOptionsConfigs?.showLegend && (
+          <Legend
+            verticalAlign="middle"
+            align="right"
+            layout="vertical"
+            content={
+              <CustomLegend onHideChart={onHideChart} hideChart={hideChart} />
+            }
+          />
+        )}
         {yAxisKeys?.map((yAxisKey, index) => (
           <>{_renderChartType(yAxisKey, index)}</>
         ))}
