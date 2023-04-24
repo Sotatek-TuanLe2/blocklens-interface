@@ -50,10 +50,13 @@ interface IButtonModalFork {
 }
 
 export interface ILayout extends Layout {
+  options: any;
   i: string;
   id: number;
+  visualizationWidgets: [];
+  text: string;
+  visualization: any;
   content: [];
-  meta: Layout;
 }
 export enum TYPE_MODAL {
   ADD = 'add',
@@ -90,21 +93,33 @@ const DashboardDetailPage: React.FC = () => {
   const fetchLayoutData = useMemo(
     () => async () => {
       try {
-        const res = await rf.getRequest('DashboardsRequest').getDashboardItem();
-
-        const layouts = res.map((item: ILayout) => {
-          const { meta } = item;
+        const res = await rf
+          .getRequest('DashboardsRequest')
+          .getDashboardById({ dashboardId: 'cG8T1zN1p6IoQ3V_fr86W' });
+        console.log(res);
+        const visualization = res.visualizationWidgets.map((item: ILayout) => {
           return {
-            x: meta.x,
-            y: meta.y,
-            w: meta.w,
-            h: meta.h,
-            i: meta.i,
+            x: item.options.sizeX,
+            y: item.options.sizeY,
+            w: item.options.col,
+            h: item.options.row,
+            i: item.text,
             id: item.id,
-            content: item.content,
+            content: item.visualization,
           };
         });
-        setDataLayouts(layouts);
+        const textWidgets = res.textWidgets.map((item: ILayout) => {
+          return {
+            x: item.options.sizeX,
+            y: item.options.sizeY,
+            w: item.options.col,
+            h: item.options.row,
+            i: item.text,
+            id: item.id,
+            content: [],
+          };
+        });
+        setDataLayouts(visualization.concat(textWidgets));
       } catch (error) {
         toastError({
           message: getErrorMessage(error),
@@ -169,7 +184,7 @@ const DashboardDetailPage: React.FC = () => {
     if (queryId) {
       fetchInitalData();
     }
-  }, [queryId]);
+  }, []);
 
   useEffect(() => {
     fetchLayoutData();
@@ -435,24 +450,23 @@ const DashboardDetailPage: React.FC = () => {
   }
 
   const updateItem = async (layout: Layout[]) => {
-    const ids = dataLayouts.map((e) => e.id);
-    const newLayout = dataLayouts.map((item, index) => ({
-      id: item.id,
-      content: item.content,
-      meta: layout[index],
-    }));
-
-    const processResults = await processGetItems(ids);
-    if (processResults.every((result) => !!result.id)) {
-      try {
-        const processResults2 = await processAddItem(newLayout);
-        if (processResults2.every((result) => !!result.id)) {
-          fetchLayoutData();
-        }
-      } catch (err) {
-        toastError({ message: getErrorMessage(err) });
-      }
-    }
+    // const ids = dataLayouts.map((e) => e.id);
+    // const newLayout = dataLayouts.map((item, index) => ({
+    //   id: item.id,
+    //   content: item.content,
+    //   meta: layout[index],
+    // }));
+    // const processResults = await processGetItems(ids);
+    // if (processResults.every((result) => !!result.id)) {
+    //   try {
+    //     const processResults2 = await processAddItem(newLayout);
+    //     if (processResults2.every((result) => !!result.id)) {
+    //       fetchLayoutData();
+    //     }
+    //   } catch (err) {
+    //     toastError({ message: getErrorMessage(err) });
+    //   }
+    // }
   };
 
   const onLayoutChange = (layout: Layout[]) => {
@@ -491,6 +505,7 @@ const DashboardDetailPage: React.FC = () => {
           >
             {dataLayouts.map((item) => (
               <div className="box-layout" key={item.i}>
+                {console.log(item)}
                 <div className="box-chart">
                   {item.content.length > 0 ? (
                     <>
@@ -504,6 +519,13 @@ const DashboardDetailPage: React.FC = () => {
                     </>
                   ) : (
                     <div className="box-text-widget">
+                      {renderVisualization({
+                        id: TYPE_VISUALIZATION.new,
+                        createdAt: moment().toDate(),
+                        options: {},
+                        name: 'New Visualization',
+                        type: TYPE_VISUALIZATION.new,
+                      })}
                       <ReactMarkdown>{item.i}</ReactMarkdown>
                     </div>
                   )}

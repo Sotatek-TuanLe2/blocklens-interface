@@ -109,12 +109,12 @@ export default class DashboardsRequest extends BaseRequest {
   /* End of Dashboards page */
 
   /* Dashboard's detail page */
-  getDashboardById() {
-    const url = 'http://172.16.199.30:8002/dashboard/find-dashboard';
-    return this.get(url);
+  getDashboardById(id: string) {
+    const url = `http://172.16.199.24:8002/dashboard/find-dashboard`;
+    return this.get(url, id);
   }
   forkDashboard(data: ForkDashboard, id: ILayout) {
-    const url = `http://172.16.199.30:8002/dashboard/fork-dashboard/${id}`;
+    const url = `http://172.16.199.24:8002/dashboard/fork-dashboard/${id}`;
     return this.post(url, data);
   }
   getQueriesValues() {
@@ -162,7 +162,7 @@ export default class DashboardsRequest extends BaseRequest {
   }
 
   getQuery(params: ListParams) {
-    const url = 'http://172.16.199.30:8002/queries/list-browse-queries';
+    const url = 'http://172.16.199.24:8002/queries/list-browse-queries';
     return this.get(url, { ...params });
   }
 
