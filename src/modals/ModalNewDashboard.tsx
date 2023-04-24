@@ -16,14 +16,12 @@ interface IModalNewDashboard {
 
 interface IDataSettingForm {
   title: string;
-  url: string;
   private: boolean;
 }
 
 const ModalNewDashboard: React.FC<IModalNewDashboard> = ({ open, onClose }) => {
   const initDataFormSetting = {
     title: '',
-    url: '',
     private: false,
   };
   const history = useHistory();
@@ -37,7 +35,6 @@ const ModalNewDashboard: React.FC<IModalNewDashboard> = ({ open, onClose }) => {
         .getRequest('DashboardsRequest')
         .createNewDashboard({
           name: dataForm.title,
-          slug: dataForm.url,
           isPrivate: dataForm.private,
         });
       history.push(`/dashboard/${result.id}`);
@@ -51,6 +48,13 @@ const ModalNewDashboard: React.FC<IModalNewDashboard> = ({ open, onClose }) => {
     onClose();
     setDataForm(initDataFormSetting);
   };
+
+  // const defaultSlug = useMemo(() => {
+  //   if (dataForm.title) {
+  //     return dataForm.title.trim().replaceAll(" ", "-");
+  //   }
+  //   return "my-dashboard";
+  // }, [dataForm.title]);
 
   return (
     <BaseModal isOpen={open} onClose={handleCloseModal} size="md">
@@ -69,16 +73,6 @@ const ModalNewDashboard: React.FC<IModalNewDashboard> = ({ open, onClose }) => {
                 ...dataForm,
                 title: e.target.value,
               });
-            }}
-          />
-        </AppField>
-        <AppField label={'Customize the URL'}>
-          <AppInput
-            value={dataForm.url}
-            size="sm"
-            placeholder="my-dashboard"
-            onChange={(e) => {
-              setDataForm({ ...dataForm, url: e.target.value });
             }}
           />
         </AppField>
