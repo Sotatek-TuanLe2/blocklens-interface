@@ -1,11 +1,24 @@
 import { Flex, Link, Text } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
-import { ListIcon, SmallSuccessIcon } from 'src/assets/icons';
+import {
+  AreaChartIcon,
+  BarChartIcon,
+  CounterIcon,
+  LineChartIcon,
+  PieChartIcon,
+  QueryResultIcon,
+  ScatterChartIcon,
+  SmallSuccessIcon,
+} from 'src/assets/icons';
 import { AppButton, AppInput } from 'src/components';
 import { ILayout } from 'src/pages/DashboardDetailPage';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/BaseModal.scss';
-import { QueryType, VisualizationType } from 'src/utils/query.type';
+import {
+  QueryType,
+  TYPE_VISUALIZATION,
+  VisualizationType,
+} from 'src/utils/query.type';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import BaseModal from './BaseModal';
@@ -32,6 +45,7 @@ interface IButtonAdd {
     visualizations: VisualizationType,
   ) => Promise<void>;
   i: VisualizationType;
+  getIcon: (chain: string | undefined) => JSX.Element;
 }
 
 const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
@@ -48,9 +62,13 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   const [dataVisualization, setDataVisualization] = useState<any[]>([]);
 
   const fetchVisualization = async () => {
+    const params = {};
     try {
-      const res = await rf.getRequest('DashboardsRequest').getVisualization();
-      setDataVisualization(res);
+      const res = await rf.getRequest('DashboardsRequest').getQuery(params);
+      console.log(res);
+      if (res) {
+        setDataVisualization(res.data);
+      }
     } catch (error) {
       toastError({
         message: getErrorMessage(error),
@@ -60,7 +78,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
 
   useEffect(() => {
     fetchVisualization();
-  }, []);
+  }, [dataVisualization]);
 
   const handleSaveVisualization = async (
     data: QueryType,
@@ -114,6 +132,34 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
     }
   };
 
+  const getIcon = (chain: string | undefined) => {
+    switch (chain) {
+      case TYPE_VISUALIZATION.table:
+        return <QueryResultIcon />;
+
+      case TYPE_VISUALIZATION.scatter:
+        return <ScatterChartIcon />;
+
+      case TYPE_VISUALIZATION.area:
+        return <AreaChartIcon />;
+
+      case TYPE_VISUALIZATION.line: {
+        return <LineChartIcon />;
+      }
+      case TYPE_VISUALIZATION.pie:
+        return <PieChartIcon />;
+
+      case TYPE_VISUALIZATION.bar:
+        return <BarChartIcon />;
+
+      case TYPE_VISUALIZATION.counter:
+        return <CounterIcon />;
+
+      default:
+        return <></>;
+    }
+  };
+
   return (
     <BaseModal
       isOpen={open}
@@ -130,42 +176,48 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
           }
         />
         <div className="main-queries">
-          {dataVisualization.map(
-            (item) =>
-              item?.visualizations &&
-              item?.visualizations.map((i: any) => (
-                <Flex
-                  justifyContent={'space-between'}
-                  borderBottom={'1px solid white'}
-                  key={item.id}
-                >
-                  {showMyQueries ? (
-                    <>
-                      <Flex alignItems={'center'} columnGap={'10px'} p={'10px'}>
-                        <ListIcon />
-                        <Link>@cypherpepe / Airdrops and Wallets</Link>
-                        <Text fontWeight={'bold'}>Airdrops and Wallets</Text>
-                      </Flex>
-                      <Text
-                        onClick={() => setAdd(!add)}
-                        className={add ? 'btn-added-query' : 'btn-add-query'}
-                      >
-                        {add ? 'Added' : 'Add'}
-                      </Text>
-                    </>
-                  ) : (
-                    <ButtonAdd
-                      userName={userName}
-                      item={item}
-                      dataLayouts={dataLayouts}
-                      handleSaveVisualization={handleSaveVisualization}
-                      handleRemoveVisualization={handleRemoveVisualization}
-                      i={i}
-                    />
-                  )}
-                </Flex>
-              )),
-          )}
+          {dataVisualization &&
+            dataVisualization?.map(
+              (item) =>
+                item?.visualizations &&
+                item?.visualizations?.map((i: any) => (
+                  <Flex
+                    justifyContent={'space-between'}
+                    borderBottom={'1px solid white'}
+                    key={item.id}
+                  >
+                    {showMyQueries ? (
+                      <>
+                        <Flex
+                          alignItems={'center'}
+                          columnGap={'10px'}
+                          p={'10px'}
+                        >
+                          {getIcon(i.type)}
+                          <Link>@cypherpepe / Airdrops and Wallets</Link>
+                          <Text fontWeight={'bold'}>Airdrops and Wallets</Text>
+                        </Flex>
+                        <Text
+                          onClick={() => setAdd(!add)}
+                          className={add ? 'btn-added-query' : 'btn-add-query'}
+                        >
+                          {add ? 'Added' : 'Add'}
+                        </Text>
+                      </>
+                    ) : (
+                      <ButtonAdd
+                        userName={userName}
+                        item={item}
+                        dataLayouts={dataLayouts}
+                        handleSaveVisualization={handleSaveVisualization}
+                        handleRemoveVisualization={handleRemoveVisualization}
+                        i={i}
+                        getIcon={getIcon}
+                      />
+                    )}
+                  </Flex>
+                )),
+            )}
         </div>
         <Flex
           flexWrap={'wrap'}
@@ -214,6 +266,7 @@ const ButtonAdd: React.FC<IButtonAdd> = ({
   handleRemoveVisualization,
   dataLayouts,
   i,
+  getIcon,
 }) => {
   const checkIdItem = dataLayouts
     .map((i: any) => i.content[0]?.id)
@@ -224,11 +277,19 @@ const ButtonAdd: React.FC<IButtonAdd> = ({
         .map((item: any) => item.content[0]?.visualizations.id)
         .includes(i.id)
     : null;
-
+  const conditionDisplayIcon = () => {
+    if (i.type === 'table') {
+      return i.type;
+    } else if (i.type === 'counter') {
+      return i.type;
+    } else {
+      return i.options.globalSeriesType;
+    }
+  };
   return (
     <>
       <Flex alignItems={'center'} columnGap={'10px'} p={'10px'}>
-        <ListIcon />
+        {getIcon(conditionDisplayIcon())}
         <Link>
           @{userName} / {item.name}
         </Link>

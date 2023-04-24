@@ -15,6 +15,17 @@ interface TableParams {
   search?: string;
 }
 
+export interface ForkDashboard {
+  newDashboardName: string;
+  newDashboardSlug: string;
+}
+
+export interface ListParams {
+  search: string;
+  limit: number;
+  page: number;
+}
+
 export interface QueriesParams {
   order?: string;
   timeRange?: string;
@@ -31,7 +42,7 @@ export interface TeamsParams {
 }
 
 export interface ILayout extends Layout {
-  id: number;
+  id: string;
 }
 export interface DataQuery {
   queryId: string;
@@ -108,7 +119,14 @@ export default class DashboardsRequest extends BaseRequest {
   /* End of Dashboards page */
 
   /* Dashboard's detail page */
-
+  getDashboardById() {
+    const url = 'http://172.16.199.30:8002/dashboard/find-dashboard';
+    return this.get(url);
+  }
+  forkDashboard(data: ForkDashboard, id: ILayout) {
+    const url = `http://172.16.199.30:8002/dashboard/fork-dashboard/${id}`;
+    return this.post(url, data);
+  }
   getQueriesValues() {
     const url = 'https://run.mocky.io/v3/c2d9b9cf-afd4-4aad-ac74-7c770669525f';
     return this.get(url);
@@ -151,6 +169,11 @@ export default class DashboardsRequest extends BaseRequest {
   getSchemaOfTable(params: SchemaParams) {
     const url = `http://172.16.199.30:8002/databases/${params.namespace}/${params.tableName}/schema`;
     return this.get(url);
+  }
+
+  getQuery(params: ListParams) {
+    const url = 'http://172.16.199.30:8002/queries/list-browse-queries';
+    return this.get(url, { ...params });
   }
 
   getQueryById(params: DataQuery) {

@@ -1,5 +1,6 @@
 import { Avatar, Badge, Box, Flex } from '@chakra-ui/react';
-import { useEffect, useMemo, useState } from 'react';
+import moment from 'moment';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Layout, Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import ReactMarkdown from 'react-markdown';
@@ -7,32 +8,39 @@ import 'react-resizable/css/styles.css';
 import { useParams } from 'react-router-dom';
 import { ActiveStarIcon, PenIcon, StarIcon } from 'src/assets/icons';
 import { AppButton } from 'src/components';
-import VisualizationAreaChart from 'src/components/Charts/AreaChart';
-import VisualizationBarChart from 'src/components/Charts/BarChart';
-import VisualizationLineChart from 'src/components/Charts/LineChart';
-import VisualizationPieChart from 'src/components/Charts/PieChart';
+import {
+  AreaChart,
+  BarChart,
+  LineChart,
+  PieChart,
+  ScatterChart,
+} from 'src/components/Charts';
+import VisualizationCounter from 'src/components/Charts/VisualizationCounter';
 import VisualizationTable from 'src/components/Charts/VisualizationTable';
 import useUser from 'src/hooks/useUser';
+import { BasePage } from 'src/layouts';
 import ModalAddTextWidget from 'src/modals/ModalAddTextWidget';
 import ModalAddVisualization from 'src/modals/ModalAddVisualization';
 import ModalEditItemDashBoard from 'src/modals/ModalEditItemDashBoard';
 import ModalForkDashBoardDetails from 'src/modals/ModalForkDashBoardDetails';
 import ModalSettingDashboardDetails from 'src/modals/ModalSettingDashboardDetails';
 import ModalShareDashboardDetails from 'src/modals/ModalShareDashboardDetails';
-import DashboardsRequest from 'src/requests/DashboardsRequest';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/pages/DashboardDetailPage.scss';
-import { QueryTypeSingle, TYPE_VISUALIZATION } from 'src/utils/query.type';
+import {
+  IQuery,
+  QueryResultResponse,
+  QueryTypeSingle,
+  TYPE_VISUALIZATION,
+  VisualizationType,
+} from 'src/utils/query.type';
 import { getErrorMessage } from 'src/utils/utils-helper';
-import { objectKeys } from 'src/utils/utils-network';
 import { toastError } from 'src/utils/utils-notify';
-import { ColumnDef } from '@tanstack/react-table';
-import { BasePage } from 'src/layouts';
-import VisualizationScatterChart from 'src/components/Charts/ScatterChart';
 
 interface ParamTypes {
   authorId: string;
   dashboardId: string;
+  queryId: string;
 }
 
 interface IButtonModalFork {
@@ -57,13 +65,16 @@ const ResponsiveGridLayout = WidthProvider(Responsive);
 const hashTag: string[] = ['zkSync', 'bridge', 'l2'];
 
 const DashboardDetailPage: React.FC = () => {
-  const { authorId, dashboardId } = useParams<ParamTypes>();
+  const { queryId, authorId, dashboardId } = useParams<ParamTypes>();
+  const editorRef = useRef<any>();
+
   const { user } = useUser();
 
   const [editMode, setEditMode] = useState<boolean>(false);
   const [dataLayouts, setDataLayouts] = useState<ILayout[]>([]);
   const [layoutChange, setLayoutChange] = useState<Layout[]>([]);
-  const [queryValues, setQueryValues] = useState<unknown[]>([]);
+  const [queryResult, setQueryResult] = useState<unknown[]>([]);
+  const [queryValue, setInfoQuery] = useState<IQuery | null>(null);
   const [selectedItem, setSelectedItem] = useState<ILayout>(Object);
   const [typeModalTextWidget, setTypeModalTextWidget] = useState<string>(``);
 
@@ -74,7 +85,6 @@ const DashboardDetailPage: React.FC = () => {
   const [openModalEdit, setOpenModalEdit] = useState<boolean>(false);
   const [openModalAddTextWidget, setOpenModalAddTextWidget] =
     useState<boolean>(false);
-
   const userName = `${user?.getFirstName()}` + `${user?.getLastName()}`;
 
   const fetchLayoutData = useMemo(
@@ -104,97 +114,219 @@ const DashboardDetailPage: React.FC = () => {
     [dataLayouts],
   );
 
-  const fetchQueryResults = async () => {
+  const fetchQueryResult = async (executionId: string) => {
+    const res = await rf.getRequest('DashboardsRequest').getQueryResult({
+      queryId,
+      executionId,
+    });
+    let fetchQueryResultInterval: any = null;
+    if (res.status !== 'DONE') {
+      fetchQueryResultInterval = setInterval(async () => {
+        const resInterval = await rf
+          .getRequest('DashboardsRequest')
+          .getQueryResult({
+            queryId,
+            executionId,
+          });
+        if (resInterval.status === 'DONE') {
+          clearInterval(fetchQueryResultInterval);
+          setQueryResult(resInterval.result);
+        }
+      }, 2000);
+    } else {
+      setQueryResult(res.result);
+    }
+  };
+  const fetchQuery = async () => {
     try {
-      const dashboardsRequest = new DashboardsRequest();
-      // const queryValues = await dashboardsRequest.getQueriesValues();
-      setQueryValues(queryValues);
-    } catch (err) {
-      getErrorMessage(err);
+      const dataQuery = await rf
+        .getRequest('DashboardsRequest')
+        .getQueryById({ queryId });
+      setInfoQuery(dataQuery);
+      // set query into editor
+      const position = editorRef.current.editor.getCursorPosition();
+      editorRef.current.editor.setValue('');
+      editorRef.current.editor.session.insert(position, dataQuery?.query);
+    } catch (error) {
+      getErrorMessage(error);
+    }
+  };
+  const fetchInitalData = async () => {
+    try {
+      const res: QueryResultResponse = await rf
+        .getRequest('DashboardsRequest')
+        .getQueryExecutionId({
+          queryId,
+        });
+      await fetchQueryResult(res.resultId);
+      await fetchQuery();
+    } catch (error) {
+      getErrorMessage(error);
     }
   };
 
   useEffect(() => {
+    if (queryId) {
+      fetchInitalData();
+    }
+  }, [queryId]);
+
+  useEffect(() => {
     fetchLayoutData();
-    fetchQueryResults();
   }, []);
 
-  const tableValuesColumnConfigs = useMemo(() => {
-    const columns =
-      Array.isArray(queryValues) && queryValues[0]
-        ? objectKeys(queryValues[0])
-        : [];
-
-    return columns.map(
-      (col) =>
-      ({
-        id: col,
-        accessorKey: col,
-        header: col,
-        enableResizing: true,
-        size: 100,
-        align: 'left',
-        type: 'normal',
-        format: '',
-        coloredPositive: false,
-        coloredNegative: false,
-        coloredProgress: false,
-        isHidden: false,
-      } as ColumnDef<unknown>),
-    );
-  }, [queryValues]);
-
-  const renderVisualization = (type: string) => {
-    switch (type) {
-      case TYPE_VISUALIZATION.table:
-        return (
-          <VisualizationTable
-            dataColumn={tableValuesColumnConfigs}
-            data={queryValues}
-          />
-        );
-      case TYPE_VISUALIZATION.line:
-        return (
-          <VisualizationLineChart
-            data={queryValues}
-            xAxisKey="time"
-            yAxisKeys={['size']}
-          />
-        );
-      case TYPE_VISUALIZATION.column:
-        return (
-          <VisualizationBarChart
-            data={queryValues}
-            xAxisKey="time"
-            yAxisKeys={['size']}
-          />
-        );
-      case TYPE_VISUALIZATION.area:
-        return (
-          <VisualizationAreaChart
-            data={queryValues}
-            xAxisKey="time"
-            yAxisKeys={['size']}
-          />
-        );
-      case TYPE_VISUALIZATION.scatter:
-        return (
-          <VisualizationScatterChart
-            data={queryValues}
-            xAxisKey="time"
-            yAxisKeys={['size']}
-          />
-        );
-      case TYPE_VISUALIZATION.pie:
-        return (
-          <VisualizationPieChart
-            data={queryValues}
-            xAxisKey="time"
-            yAxisKeys={['size']} />
-        );
-      default:
-      // return <AddVisualization onAddVisualize={addVisualizationHandler} />;
+  const defaultTimeXAxis = useMemo(() => {
+    let result = '';
+    const firstResultInQuery: any =
+      queryResult && !!queryResult.length ? queryResult[0] : null;
+    if (firstResultInQuery) {
+      Object.keys(firstResultInQuery).forEach((key: string) => {
+        const date = moment(firstResultInQuery[key]);
+        if (date.isValid() && isNaN(+firstResultInQuery[key])) {
+          result = key;
+          return;
+        }
+      });
     }
+    return result;
+  }, [queryResult]);
+
+  const renderVisualization = (visualization: VisualizationType) => {
+    const type = visualization.options?.globalSeriesType || visualization.type;
+    let data = [...queryResult];
+    if (visualization.options.xAxisConfigs?.sortX) {
+      data = data.sort((a: any, b: any) => {
+        if (moment(a[visualization.options.columnMapping.xAxis]).isValid()) {
+          return moment
+            .utc(a[visualization.options.columnMapping.xAxis])
+            .diff(moment.utc(b[visualization.options.columnMapping.xAxis]));
+        }
+        return (
+          a[visualization.options.columnMapping.xAxis] -
+          b[visualization.options.columnMapping.xAxis]
+        );
+      });
+    }
+    if (visualization.options.xAxisConfigs?.reverseX) {
+      data = data.reverse();
+    }
+
+    let errorMessage = null;
+    let visualizationDisplay = null;
+
+    if (!visualization.options.columnMapping?.xAxis) {
+      errorMessage = 'Missing x-axis';
+    } else if (!visualization.options.columnMapping?.yAxis.length) {
+      errorMessage = 'Missing y-axis';
+    } else {
+      // TODO: check yAxis values have same type
+    }
+
+    if (type === TYPE_VISUALIZATION.table) {
+      errorMessage = null;
+      visualizationDisplay = (
+        <VisualizationTable
+          data={queryResult}
+          dataColumn={visualization.options.columns}
+        />
+      );
+    } else if (type === TYPE_VISUALIZATION.counter) {
+      errorMessage = null;
+      visualizationDisplay = (
+        <VisualizationCounter
+          data={queryResult}
+          visualization={visualization}
+        />
+      );
+    } else {
+      // chart
+
+      switch (type) {
+        case TYPE_VISUALIZATION.bar:
+          visualizationDisplay = (
+            <BarChart
+              data={data}
+              xAxisKey={
+                visualization.options?.columnMapping?.xAxis || defaultTimeXAxis
+              }
+              yAxisKeys={visualization.options.columnMapping?.yAxis || []}
+              configs={visualization.options}
+            />
+          );
+          break;
+        case TYPE_VISUALIZATION.line:
+          visualizationDisplay = (
+            <LineChart
+              data={data}
+              xAxisKey={
+                visualization.options?.columnMapping?.xAxis || defaultTimeXAxis
+              }
+              yAxisKeys={visualization.options.columnMapping?.yAxis || []}
+              configs={visualization.options}
+            />
+          );
+          break;
+        case TYPE_VISUALIZATION.area:
+          visualizationDisplay = (
+            <AreaChart
+              data={data}
+              xAxisKey={
+                visualization.options?.columnMapping?.xAxis || defaultTimeXAxis
+              }
+              yAxisKeys={visualization.options.columnMapping?.yAxis || []}
+              configs={visualization.options}
+            />
+          );
+          break;
+        case TYPE_VISUALIZATION.scatter:
+          visualizationDisplay = (
+            <ScatterChart
+              data={data}
+              xAxisKey={
+                visualization.options?.columnMapping?.xAxis || defaultTimeXAxis
+              }
+              yAxisKeys={visualization.options.columnMapping?.yAxis || []}
+              configs={visualization.options}
+            />
+          );
+          break;
+        case TYPE_VISUALIZATION.pie:
+          visualizationDisplay = (
+            <PieChart
+              data={queryResult}
+              xAxisKey={
+                visualization.options?.columnMapping?.xAxis || defaultTimeXAxis
+              }
+              yAxisKeys={visualization.options.columnMapping?.yAxis || []}
+              configs={visualization.options}
+            />
+          );
+          break;
+        default:
+          break;
+      }
+    }
+
+    return (
+      <>
+        <div className="visual-container__visualization">
+          <div className="visual-container__visualization__title">
+            {visualization.name}
+          </div>
+          {errorMessage ? (
+            <Flex
+              alignItems={'center'}
+              justifyContent={'center'}
+              className="visual-container__visualization__error"
+            >
+              {errorMessage}
+            </Flex>
+          ) : (
+            visualizationDisplay
+          )}
+        </div>
+      </>
+    );
   };
 
   const _renderButtons = () => {
@@ -261,8 +393,8 @@ const DashboardDetailPage: React.FC = () => {
       i.visualizations.type === 'table'
         ? i.visualizations.type
         : i.visualizations.type === 'chart'
-          ? i.visualizations.options.globalSeriesType
-          : null,
+        ? i.visualizations.options.globalSeriesType
+        : null,
     );
   };
 
@@ -362,9 +494,13 @@ const DashboardDetailPage: React.FC = () => {
                 <div className="box-chart">
                   {item.content.length > 0 ? (
                     <>
-                      {renderVisualization(
-                        checkTypeVisualization(item.content).toString(),
-                      )}
+                      {renderVisualization({
+                        id: TYPE_VISUALIZATION.new,
+                        createdAt: moment().toDate(),
+                        options: {},
+                        name: 'New Visualization',
+                        type: TYPE_VISUALIZATION.new,
+                      })}
                     </>
                   ) : (
                     <div className="box-text-widget">
