@@ -215,7 +215,8 @@ export const roundAndPadZeros = (a: number, decimals: number): string => {
 };
 
 export const formatVisualizationValue = (format: string, value: any) => {
-  switch (typeof value === 'number') {
+  const isNumber = !new BigNumber(value).isNaN();
+  switch (isNumber) {
     case format.includes(','):
       return value.toLocaleString('en-US');
     case format.includes('0.'):
