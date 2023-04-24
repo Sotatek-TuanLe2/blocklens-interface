@@ -3,8 +3,6 @@ import { QueryType } from '../utils/query.type';
 import BaseRequest from './BaseRequest';
 
 export interface DashboardsParams {
-  order?: string;
-  timeRange?: string;
   search?: string;
   tags?: string;
 }
@@ -22,8 +20,6 @@ interface TableParams {
 }
 
 export interface QueriesParams {
-  order?: string;
-  timeRange?: string;
   search?: string;
   tags?: string;
 }

@@ -36,8 +36,6 @@ const DashboardsPage: React.FC = () => {
 
   useEffect(() => {
     const searchParams = new URLSearchParams(searchUrl);
-    const order = searchParams.get('order') || '';
-    const timeRange = searchParams.get('timeRange') || '';
     const search = searchParams.get('search') || '';
     const tags = searchParams.get('tags') || '';
 
@@ -46,8 +44,6 @@ const DashboardsPage: React.FC = () => {
         setDashboardParams(() =>
           _.omitBy(
             {
-              order: order,
-              timeRange: timeRange,
               search: search,
               tags: tags,
             },
@@ -59,7 +55,6 @@ const DashboardsPage: React.FC = () => {
         setQueryParams(() =>
           _.omitBy(
             {
-              order: order,
               search: search,
             },
             (param) => !param,
