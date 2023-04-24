@@ -65,8 +65,8 @@ const DashboardsPage: React.FC = () => {
       try {
         const res: any = await rf
           .getRequest('DashboardsRequest')
-          .getDashboards(params);
-        return { docs: res, totalPages: Math.ceil(res.length / params.limit) };
+          .getListBrowseDashboard(params);
+        return { ...res, docs: res.data };
       } catch (error) {
         toastError({ message: getErrorMessage(error) });
       }
@@ -79,8 +79,8 @@ const DashboardsPage: React.FC = () => {
       try {
         const res: any = await rf
           .getRequest('DashboardsRequest')
-          .getQueries(params);
-        return { docs: res, totalPages: Math.ceil(res.length / params.limit) };
+          .getListBrowseQueries(params);
+        return { ...res, docs: res.data };
       } catch (error) {
         toastError({ message: getErrorMessage(error) });
       }
@@ -121,8 +121,7 @@ const DashboardsPage: React.FC = () => {
                 <ListItem
                   key={item.id}
                   id={item.id}
-                  author={item.user.name}
-                  avatarUrl={item.user.avatarUrl}
+                  author={item.name}
                   createdAt={item.createdAt}
                   title={item.name}
                   type={LIST_ITEM_TYPE.DASHBOARDS}
@@ -147,10 +146,7 @@ const DashboardsPage: React.FC = () => {
               <ListItem
                 key={item.id}
                 id={item.id}
-                author={item.user ? item.user.name : item.team.name}
-                avatarUrl={
-                  item.user ? item.user.avatarUrl : item.team.avatarUrl
-                }
+                author={item.user}
                 createdAt={item.createdAt}
                 title={item.name}
                 type={LIST_ITEM_TYPE.QUERIES}
