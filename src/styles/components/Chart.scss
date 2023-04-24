@@ -59,6 +59,11 @@
 
     span:nth-child(1) {
       padding-right: 10px;
+      cursor: pointer;
+    }
+
+    .hide-legend {
+      opacity: 0.5;
     }
   }
 }

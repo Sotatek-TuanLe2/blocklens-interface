@@ -1,31 +1,31 @@
+import moment from 'moment';
+import { useCallback, useMemo, useState } from 'react';
 import {
-  CartesianGrid,
-  Legend,
-  Bar,
-  BarChart,
-  Line,
-  LineChart,
   Area,
   AreaChart,
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Label,
+  Legend,
+  Line,
+  LineChart,
+  ResponsiveContainer,
   Scatter,
   ScatterChart,
-  ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
-  Label,
 } from 'recharts';
-import { COLORS, getHourAndMinute } from '../../utils/common';
 import {
   TYPE_VISUALIZATION,
   VisualizationOptionsType,
 } from 'src/utils/query.type';
 import { formatVisualizationValue } from 'src/utils/utils-format';
-import CustomTooltip from './CustomTooltip';
-import CustomLegend from './CustomLegend';
-import moment from 'moment';
-import { useCallback, useMemo } from 'react';
+import { COLORS, getHourAndMinute } from '../../utils/common';
 import CustomLabelList from './CustomLabelList';
+import CustomLegend from './CustomLegend';
+import CustomTooltip from './CustomTooltip';
 
 type ChartConfigType = VisualizationOptionsType;
 export type ChartProps = {
@@ -43,6 +43,8 @@ const VisualizationChart: React.FC<Props> = (props) => {
   const chartOptionsConfigs = configs?.chartOptionsConfigs;
   const xAxisConfigs = configs?.xAxisConfigs;
   const yAxisConfigs = configs?.yAxisConfigs;
+
+  const [hideChart, setHideChart] = useState<string[]>([]);
 
   const tickFormatAxis = (axis: string) => (value: string) => {
     if (moment(new Date(value)).isValid() && isNaN(+value)) {
@@ -64,6 +66,17 @@ const VisualizationChart: React.FC<Props> = (props) => {
       }
     : {};
 
+  const onHideChart = (entry: string) => {
+    // check entry in hideChart
+    const newHideChart = hideChart.includes(entry)
+      ? hideChart.filter((value) => {
+          return value !== entry;
+        })
+      : [...hideChart, entry];
+
+    setHideChart(newHideChart);
+  };
+
   const _renderChartType = useCallback(
     (yAxisKey: string, index: number) => {
       switch (type) {
@@ -75,6 +88,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
               dataKey={yAxisKey}
               stroke={COLORS[index % COLORS.length]}
               dot={false}
+              hide={hideChart.includes(yAxisKey)}
             >
               <CustomLabelList configs={configs} yAxisKey={yAxisKey} />
             </Line>
@@ -88,6 +102,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
               stroke={COLORS[index % COLORS.length]}
               fill={COLORS[index % COLORS.length]}
               stackId={chartOptionsConfigs?.stacking ? 'a' : undefined}
+              hide={hideChart.includes(yAxisKey)}
             >
               <CustomLabelList configs={configs} yAxisKey={yAxisKey} />
             </Area>
@@ -99,6 +114,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
               dataKey={yAxisKey}
               fill={COLORS[index % COLORS.length]}
               stackId={chartOptionsConfigs?.stacking ? 'a' : undefined}
+              hide={hideChart.includes(yAxisKey)}
             >
               <CustomLabelList configs={configs} yAxisKey={yAxisKey} />
             </Bar>
@@ -111,13 +127,14 @@ const VisualizationChart: React.FC<Props> = (props) => {
               stroke={COLORS[index % COLORS.length]}
               fill={COLORS[index % COLORS.length]}
               name={yAxisKey}
+              hide={hideChart.includes(yAxisKey)}
             >
               <CustomLabelList configs={configs} yAxisKey={yAxisKey} />
             </Scatter>
           );
       }
     },
-    [type],
+    [type, hideChart],
   );
 
   const containerClassName = useMemo(() => {
@@ -212,14 +229,16 @@ const VisualizationChart: React.FC<Props> = (props) => {
           animationDuration={200}
           animationEasing={'linear'}
         />
-        {chartOptionsConfigs?.showLegend && (
-          <Legend
-            verticalAlign="middle"
-            align="right"
-            layout="vertical"
-            content={<CustomLegend />}
-          />
-        )}
+        {/* {chartOptionsConfigs?.showLegend && ( */}
+        <Legend
+          verticalAlign="middle"
+          align="right"
+          layout="vertical"
+          content={
+            <CustomLegend onHideChart={onHideChart} hideChart={hideChart} />
+          }
+        />
+        {/* )} */}
         {yAxisKeys?.map((yAxisKey, index) => (
           <>{_renderChartType(yAxisKey, index)}</>
         ))}
