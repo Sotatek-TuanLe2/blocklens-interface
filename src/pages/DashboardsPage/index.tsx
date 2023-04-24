@@ -36,20 +36,14 @@ const DashboardsPage: React.FC = () => {
 
   useEffect(() => {
     const searchParams = new URLSearchParams(searchUrl);
-    const order = searchParams.get('order') || '';
-    const timeRange = searchParams.get('timeRange') || '';
     const search = searchParams.get('search') || '';
-    const tags = searchParams.get('tags') || '';
 
     switch (tabType) {
       case LIST_ITEM_TYPE.DASHBOARDS:
         setDashboardParams(() =>
           _.omitBy(
             {
-              order: order,
-              timeRange: timeRange,
               search: search,
-              tags: tags,
             },
             (param) => !param,
           ),
@@ -59,7 +53,6 @@ const DashboardsPage: React.FC = () => {
         setQueryParams(() =>
           _.omitBy(
             {
-              order: order,
               search: search,
             },
             (param) => !param,
@@ -69,7 +62,7 @@ const DashboardsPage: React.FC = () => {
       default:
         break;
     }
-  }, [searchUrl]);
+  }, [searchUrl, tabType]);
 
   const fetchDashboards: any = useCallback(
     async (params: any) => {
@@ -183,7 +176,6 @@ const DashboardsPage: React.FC = () => {
         </div>
         <div className="dashboard-filter">
           <FilterSearch type={tabType} />
-          <FilterTags type={tabType} />
         </div>
       </Flex>
     </BasePage>
