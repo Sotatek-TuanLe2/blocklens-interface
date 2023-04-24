@@ -1,4 +1,5 @@
 import { Flex, Tbody } from '@chakra-ui/react';
+import _ from 'lodash';
 import { useCallback, useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { DashboardsIcon, QueriesIcon } from 'src/assets/icons';
@@ -42,18 +43,28 @@ const DashboardsPage: React.FC = () => {
 
     switch (tabType) {
       case LIST_ITEM_TYPE.DASHBOARDS:
-        setDashboardParams((prevState) => ({
-          order: order || prevState.order,
-          timeRange: timeRange || prevState.timeRange,
-          search: search || prevState.search,
-          tags: tags || prevState.tags,
-        }));
+        setDashboardParams(() =>
+          _.omitBy(
+            {
+              order: order,
+              timeRange: timeRange,
+              search: search,
+              tags: tags,
+            },
+            (param) => !param,
+          ),
+        );
         break;
       case LIST_ITEM_TYPE.QUERIES:
-        setQueryParams((prevState) => ({
-          order: order || prevState.order,
-          search: search || prevState.search,
-        }));
+        setQueryParams(() =>
+          _.omitBy(
+            {
+              order: order,
+              search: search,
+            },
+            (param) => !param,
+          ),
+        );
         break;
       default:
         break;
