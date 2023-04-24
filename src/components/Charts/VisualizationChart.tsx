@@ -66,13 +66,13 @@ const VisualizationChart: React.FC<Props> = (props) => {
       }
     : {};
 
-  const onHideChart = (entry: string) => {
-    // check entry in hideChart
-    const newHideChart = hideChart.includes(entry)
+  const onHideChart = (dataKey: string) => {
+    // check dataKey in hideChart
+    const newHideChart = hideChart.includes(dataKey)
       ? hideChart.filter((value) => {
-          return value !== entry;
+          return value !== dataKey;
         })
-      : [...hideChart, entry];
+      : [...hideChart, dataKey];
 
     setHideChart(newHideChart);
   };
