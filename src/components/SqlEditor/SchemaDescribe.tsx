@@ -7,14 +7,21 @@ type Props = {
   tableDescribe: SchemaType[];
   blockchain: string;
   name: string;
+  fullName: string;
 };
 
-const SchemaDescribe = ({ blockchain, name, tableDescribe }: Props) => {
+const SchemaDescribe = ({
+  blockchain,
+  name,
+  tableDescribe,
+  fullName,
+}: Props) => {
   return (
     <Box>
       <SchemaTitle
         chainName={blockchain}
         tableName={name}
+        tableFullName={fullName}
         className={'schema-detail-title'}
       />
       <Box paddingLeft={3} marginTop={2}>

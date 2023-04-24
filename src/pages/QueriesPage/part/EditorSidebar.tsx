@@ -18,6 +18,7 @@ const EditorSidebar = () => {
   const [tableSelected, setTableSelected] = useState<{
     chain: string;
     name: string;
+    fullName: string;
   } | null>(null);
   const [schemas, setSchemas] = useState<TableAttributeType[]>([]);
   const [paramsSearch, setParamsSearch] = useState({ chain: '', search: '' });
@@ -26,11 +27,13 @@ const EditorSidebar = () => {
   const selectSchemaTitleHandler = async ({
     chain,
     name,
+    fullName,
   }: {
     chain: string;
     name: string;
+    fullName: string;
   }) => {
-    setTableSelected({ chain, name });
+    setTableSelected({ chain, name, fullName });
     try {
       const data = await rf.getRequest('DashboardsRequest').getSchemaOfTable({
         namespace: chain,
@@ -77,6 +80,7 @@ const EditorSidebar = () => {
           tableDescribe={schemaDescribe}
           blockchain={tableSelected?.chain}
           name={tableSelected.name}
+          fullName={tableSelected.fullName}
         />
       )
     );
@@ -92,11 +96,13 @@ const EditorSidebar = () => {
                 <SchemaTitle
                   chainName={schema.namespace}
                   tableName={schema.table_name}
+                  tableFullName={schema.full_name}
                   className={'row-element'}
                   onClick={() =>
                     selectSchemaTitleHandler({
                       chain: schema.namespace,
                       name: schema.table_name,
+                      fullName: schema.full_name,
                     })
                   }
                 />
