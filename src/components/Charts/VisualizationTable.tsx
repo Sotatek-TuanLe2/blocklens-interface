@@ -5,6 +5,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table';
+import BigNumber from 'bignumber.js';
 import { useEffect } from 'react';
 import 'src/styles/components/TableValue.scss';
 import { formatVisualizationValue } from 'src/utils/utils-format';
@@ -133,11 +134,14 @@ const VisualizationTable = <T,>({
                   coloredProgress,
                 } = cells.column.columnDef;
                 const value = cells.getValue();
+                const isNumber = !new BigNumber(value).isNaN();
+
                 const checkColor = (value: any) => {
                   switch (true) {
-                    case value > 0 && coloredPositive:
+                    case new BigNumber(value).isGreaterThan(0) &&
+                      coloredPositive:
                       return '#006400';
-                    case value < 0 && coloredNegative:
+                    case new BigNumber(value).isLessThan(0) && coloredNegative:
                       return '#d93025';
                     default:
                       return undefined;
@@ -160,14 +164,13 @@ const VisualizationTable = <T,>({
                         key: cells.id,
                         style: {
                           justifyContent: align,
-                          color:
-                            typeof value === 'number'
-                              ? checkColor(cells.getValue())
-                              : undefined,
+                          color: isNumber
+                            ? checkColor(cells.getValue())
+                            : undefined,
                         },
                       }}
                     >
-                      {type === 'normal' ? null : typeof value === 'number' ? (
+                      {type === 'normal' ? null : isNumber ? (
                         <div
                           style={
                             {

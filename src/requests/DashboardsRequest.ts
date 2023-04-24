@@ -79,6 +79,13 @@ export interface IEditVisualization {
   name: string;
   options: any;
 }
+
+export interface IGetBrowse {
+  search?: string;
+  limit?: number;
+  page?: number;
+}
+
 export default class DashboardsRequest extends BaseRequest {
   getUrlPrefix(): string {
     return '';
@@ -152,12 +159,12 @@ export default class DashboardsRequest extends BaseRequest {
   /* Query page */
 
   getTables(params: TableParams) {
-    const url = 'http://172.16.199.30:8002/databases/tables';
+    const url = 'http://172.16.199.24:8002/databases/tables';
     return this.get(url, { ...params });
   }
 
   getSchemaOfTable(params: SchemaParams) {
-    const url = `http://172.16.199.30:8002/databases/${params.namespace}/${params.tableName}/schema`;
+    const url = `http://172.16.199.24:8002/databases/${params.namespace}/${params.tableName}/schema`;
     return this.get(url);
   }
 
@@ -167,48 +174,58 @@ export default class DashboardsRequest extends BaseRequest {
   }
 
   getQueryById(params: DataQuery) {
-    const url = 'http://172.16.199.30:8002/queries/find-query';
+    const url = 'http://172.16.199.24:8002/queries/find-query';
     return this.get(url, params);
   }
 
   createNewQuery(query: QueryType) {
-    const url = 'http://172.16.199.30:8002/queries/create-query';
+    const url = 'http://172.16.199.24:8002/queries/create-query';
     return this.post(url, query);
   }
 
   executeQuery(queryId: string) {
-    const url = 'http://172.16.199.30:8002/query-executors/execute-query';
+    const url = 'http://172.16.199.24:8002/query-executors/execute-query';
     return this.post(url, { queryId });
   }
 
   getQueryExecutionId(params: DataQuery) {
-    const url = 'http://172.16.199.30:8002/query-results/query-result';
+    const url = 'http://172.16.199.24:8002/query-results/query-result';
     return this.get(url, params);
   }
 
   getQueryResult(params: QueryResult) {
-    const url = `http://172.16.199.30:8002/query-executors/get-execution`;
+    const url = `http://172.16.199.24:8002/query-executors/get-execution`;
     return this.get(url, params);
   }
 
   updateQuery(params: IUpdateQuery, queryId: string) {
-    const url = `http://172.16.199.30:8002/queries/${queryId}/update-query`;
+    const url = `http://172.16.199.24:8002/queries/${queryId}/update-query`;
     return this.patch(url, params);
   }
 
   insertVisualization(data: IInsertVisualization) {
-    const url = `http://172.16.199.30:8002/visualizations/insert-visual`;
+    const url = `http://172.16.199.24:8002/visualizations/insert-visual`;
     return this.post(url, data);
   }
 
   deleteVisualization(data: IDeleteVisualization) {
-    const url = `http://172.16.199.30:8002/visualizations/${data.visualId}/delete-visual`;
+    const url = `http://172.16.199.24:8002/visualizations/${data.visualId}/delete-visual`;
     return this.delete(url);
   }
 
   editVisualization(data: IEditVisualization, visualId: string) {
-    const url = `http://172.16.199.30:8002/visualizations/${visualId}/edit-visual`;
+    const url = `http://172.16.199.24:8002/visualizations/${visualId}/edit-visual`;
     return this.patch(url, data);
+  }
+
+  getListBrowseDashboard(params: IGetBrowse) {
+    const url = `http://172.16.199.24:8002/dashboard/list-browse-dashboards`;
+    return this.get(url, params);
+  }
+
+  getListBrowseQueries(params: IGetBrowse) {
+    const url = `http://172.16.199.24:8002/queries/list-browse-queries`;
+    return this.get(url, params);
   }
 
   /* End of Query page */
