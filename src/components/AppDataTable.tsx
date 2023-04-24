@@ -64,8 +64,6 @@ interface IResponseType {
   totalPages: number;
   page: number;
   limit: number;
-  itemsPerPage: number;
-  currentPage: number;
   docs: any[];
 }
 
