@@ -315,7 +315,7 @@ const QueriesPage = () => {
                 </Box>
               </Box>
               <>
-                {!isLoading ? (
+                {!isLoading && queryValue ? (
                   <Box mt={8}>
                     {queryValue && !!queryResult.length ? (
                       <VisualizationDisplay
@@ -324,11 +324,20 @@ const QueriesPage = () => {
                         onReload={fetchQuery}
                       />
                     ) : (
-                      <Flex justifyContent={'center'}>No data...</Flex>
+                      <Flex
+                        className="empty-table"
+                        justifyContent={'center'}
+                        alignItems="center"
+                      >
+                        No data...
+                      </Flex>
                     )}
                   </Box>
                 ) : (
-                  <AppLoadingTable widthColumns={[100]} />
+                  <AppLoadingTable
+                    widthColumns={[100]}
+                    className="visual-table"
+                  />
                 )}
               </>
             </Box>
