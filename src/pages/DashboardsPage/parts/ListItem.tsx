@@ -3,6 +3,7 @@ import moment from 'moment';
 import { Link } from 'react-router-dom';
 import useUser from 'src/hooks/useUser';
 import { LIST_ITEM_TYPE } from '..';
+import Jazzicon, { jsNumberForAddress } from 'react-jazzicon';
 
 interface IMember {
   id: number;
@@ -15,15 +16,13 @@ interface IListItem {
   type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
   title: string;
   createdAt?: Date;
-  avatarUrl: string;
   author: string;
   tags?: string[]; // used for dashboards and queries
   members?: IMember[]; // used for teams
 }
 
 const ListItem: React.FC<IListItem> = (props) => {
-  const { id, type, title, createdAt, avatarUrl, author, tags, members } =
-    props;
+  const { id, type, title, createdAt, author, tags, members } = props;
 
   const { user } = useUser();
 
@@ -51,16 +50,12 @@ const ListItem: React.FC<IListItem> = (props) => {
   const getTitleUrl = (): string => {
     switch (type) {
       case LIST_ITEM_TYPE.DASHBOARDS:
-        return `/dashboard/${user?.getId()}/${title}`;
+        return `/dashboard/${id}/`;
       case LIST_ITEM_TYPE.QUERIES:
         return `/queries/${id}`;
       default:
         return '/dashboards';
     }
-  };
-
-  const onLike = () => {
-    //
   };
 
   const _renderSubContent = () => {
@@ -74,14 +69,14 @@ const ListItem: React.FC<IListItem> = (props) => {
             target="_blank"
           >
             @{author}
-          </Link>{' '}
+          </Link>
+          <span> &nbsp;</span>
           {getDuration()} ago
         </div>
       );
     }
     return <>Created </>;
   };
-
   return (
     <Tr>
       <Td border={'none'} padding={0}>
@@ -90,11 +85,9 @@ const ListItem: React.FC<IListItem> = (props) => {
           className="dashboard-list__item"
           alignItems={'center'}
         >
-          <img
-            src={avatarUrl}
-            alt={`Avatar of ${author}`}
-            className="dashboard-list__item__avatar"
-          />
+          <div className="dashboard-list__item__avatar">
+            <Jazzicon diameter={40} seed={jsNumberForAddress(id.toString())} />
+          </div>
           <div className="dashboard-list__item__content">
             <Flex
               className="dashboard-list__item__content__title"

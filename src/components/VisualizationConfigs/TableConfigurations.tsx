@@ -1,5 +1,6 @@
 import { Checkbox, Divider, Grid, GridItem, Text } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
+import BigNumber from 'bignumber.js';
+import { useRef, useState } from 'react';
 import { VISUALIZATION_DEBOUNCE } from 'src/pages/QueriesPage/part/VisualizationDisplay';
 import 'src/styles/components/TableConfigurations.scss';
 import { VisualizationType } from 'src/utils/query.type';
@@ -36,46 +37,44 @@ const TableConfigurations: React.FC<ITableConfigurations> = ({
   onChangeConfigurations,
   dataTable,
 }) => {
-  // @ts-ignore
-  dataTable.length && console.log(dataTable[0]);
-
   const [editVisualization, setEditVisualization] =
     useState<VisualizationType>(visualization);
-  let timeout: any = null;
-
-  useEffect(() => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => {
-      onChangeConfigurations(editVisualization);
-    }, VISUALIZATION_DEBOUNCE);
-
-    return () => clearTimeout(timeout);
-  }, [editVisualization]);
+  const timeout = useRef() as any;
 
   const typeData = dataTable?.map((row) =>
     row.getVisibleCells().map((cells: any) => cells.getValue()),
   );
 
-  const onChangeTableName = (e: any) => {
-    setEditVisualization((prevState) => ({
-      ...prevState,
-      name: e.target.value,
-    }));
-  };
-
   const dataColumns =
     editVisualization.options.columns || getDefaultTableColumns(data);
 
+  const onChangeDebounce = (visualization: VisualizationType) => {
+    clearTimeout(timeout.current);
+    timeout.current = setTimeout(() => {
+      onChangeConfigurations(visualization);
+    }, VISUALIZATION_DEBOUNCE);
+  };
+
+  const onChangeVisualization = (visualization: VisualizationType) => {
+    setEditVisualization(visualization);
+    onChangeDebounce(visualization);
+  };
+
+  const onChangeTableName = (e: any) => {
+    onChangeVisualization({
+      ...editVisualization,
+      name: e.target.value,
+    });
+  };
+
   const onChangeColumnConfigurations = (data: any, index: number) => {
-    setEditVisualization((prevState) => {
-      const newColumns = [...dataColumns];
-      newColumns[index] = data;
-      return {
-        ...prevState,
-        options: {
-          columns: newColumns,
-        },
-      };
+    const newColumns = [...dataColumns];
+    newColumns[index] = data;
+    onChangeVisualization({
+      ...editVisualization,
+      options: {
+        columns: newColumns,
+      },
     });
   };
 
@@ -145,7 +144,7 @@ export default TableConfigurations;
 const TableOptions = ({ data, typeData, index, onChange }: any) => {
   const [selectedItem, setSelectedItem] = useState(Object);
 
-  const typeValue = typeof typeData?.[0]?.[index];
+  const isNumber = !new BigNumber(typeData?.[0]?.[index]).isNaN();
 
   return (
     <div className="box-table" onClick={() => setSelectedItem(data)}>
@@ -207,7 +206,7 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
           }
         />
       </div>
-      {typeValue === 'number' && (
+      {isNumber && (
         <div className="box-table-children">
           <div>Type</div>
 
@@ -247,7 +246,7 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
           Hide column
         </Checkbox>
       </div>
-      {typeValue === 'number' && data?.type === 'normal' ? (
+      {isNumber && data?.type === 'normal' ? (
         <div>
           <div className="main-checkbox">
             <Checkbox

@@ -1,4 +1,5 @@
 import { Flex, Tbody } from '@chakra-ui/react';
+import _ from 'lodash';
 import { useCallback, useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { DashboardsIcon, QueriesIcon } from 'src/assets/icons';
@@ -42,18 +43,28 @@ const DashboardsPage: React.FC = () => {
 
     switch (tabType) {
       case LIST_ITEM_TYPE.DASHBOARDS:
-        setDashboardParams((prevState) => ({
-          order: order || prevState.order,
-          timeRange: timeRange || prevState.timeRange,
-          search: search || prevState.search,
-          tags: tags || prevState.tags,
-        }));
+        setDashboardParams(() =>
+          _.omitBy(
+            {
+              order: order,
+              timeRange: timeRange,
+              search: search,
+              tags: tags,
+            },
+            (param) => !param,
+          ),
+        );
         break;
       case LIST_ITEM_TYPE.QUERIES:
-        setQueryParams((prevState) => ({
-          order: order || prevState.order,
-          search: search || prevState.search,
-        }));
+        setQueryParams(() =>
+          _.omitBy(
+            {
+              order: order,
+              search: search,
+            },
+            (param) => !param,
+          ),
+        );
         break;
       default:
         break;
@@ -65,8 +76,8 @@ const DashboardsPage: React.FC = () => {
       try {
         const res: any = await rf
           .getRequest('DashboardsRequest')
-          .getDashboards(params);
-        return { docs: res, totalPages: Math.ceil(res.length / params.limit) };
+          .getListBrowseDashboard(params);
+        return { ...res, docs: res.data };
       } catch (error) {
         toastError({ message: getErrorMessage(error) });
       }
@@ -79,8 +90,8 @@ const DashboardsPage: React.FC = () => {
       try {
         const res: any = await rf
           .getRequest('DashboardsRequest')
-          .getQueries(params);
-        return { docs: res, totalPages: Math.ceil(res.length / params.limit) };
+          .getListBrowseQueries(params);
+        return { ...res, docs: res.data };
       } catch (error) {
         toastError({ message: getErrorMessage(error) });
       }
@@ -121,8 +132,7 @@ const DashboardsPage: React.FC = () => {
                 <ListItem
                   key={item.id}
                   id={item.id}
-                  author={item.user.name}
-                  avatarUrl={item.user.avatarUrl}
+                  author={item.name}
                   createdAt={item.createdAt}
                   title={item.name}
                   type={LIST_ITEM_TYPE.DASHBOARDS}
@@ -147,10 +157,7 @@ const DashboardsPage: React.FC = () => {
               <ListItem
                 key={item.id}
                 id={item.id}
-                author={item.user ? item.user.name : item.team.name}
-                avatarUrl={
-                  item.user ? item.user.avatarUrl : item.team.avatarUrl
-                }
+                author={item.user}
                 createdAt={item.createdAt}
                 title={item.name}
                 type={LIST_ITEM_TYPE.QUERIES}

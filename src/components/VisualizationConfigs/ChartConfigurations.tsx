@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { Grid, GridItem, Text } from '@chakra-ui/react';
 import { TYPE_VISUALIZATION, VisualizationType } from '../../utils/query.type';
 import 'src/styles/components/TableConfigurations.scss';
@@ -22,16 +22,7 @@ const ChartConfigurations = ({
 }: Props) => {
   const [editVisualization, setEditVisualization] =
     useState<VisualizationType>(visualization);
-  let timeout: any = null;
-
-  useEffect(() => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => {
-      onChangeConfigurations(editVisualization);
-    }, VISUALIZATION_DEBOUNCE);
-
-    return () => clearTimeout(timeout);
-  }, [editVisualization]);
+  const timeout = useRef() as any;
 
   const type = visualization.options?.globalSeriesType || visualization.type;
 
@@ -39,6 +30,18 @@ const ChartConfigurations = ({
     () => (Array.isArray(data) && data[0] ? objectKeys(data[0]) : []),
     [data],
   );
+
+  const onChangeDebounce = (visualization: VisualizationType) => {
+    clearTimeout(timeout.current);
+    timeout.current = setTimeout(() => {
+      onChangeConfigurations(visualization);
+    }, VISUALIZATION_DEBOUNCE);
+  };
+
+  const onChangeVisualization = (visualization: VisualizationType) => {
+    setEditVisualization(visualization);
+    onChangeDebounce(visualization);
+  };
 
   return (
     <div className={'main-layout'}>
@@ -53,7 +56,7 @@ const ChartConfigurations = ({
           <ChartOptions
             visualization={editVisualization}
             onChangeConfigurations={(visualization) =>
-              setEditVisualization(visualization)
+              onChangeVisualization(visualization)
             }
           />
         </GridItem>
@@ -63,7 +66,7 @@ const ChartConfigurations = ({
             xAxis={editVisualization.options?.columnMapping?.xAxis}
             yAxis={editVisualization.options?.columnMapping?.yAxis}
             onChangeAxis={(xAxis: string, yAxis: string[]) => {
-              setEditVisualization({
+              onChangeVisualization({
                 ...editVisualization,
                 options: {
                   ...editVisualization.options,
@@ -95,14 +98,12 @@ const ChartConfigurations = ({
                   className="input-table"
                   value={editVisualization?.options?.numberFormat}
                   onChange={(e) =>
-                    setEditVisualization((prevState) => {
-                      return {
-                        ...prevState,
-                        options: {
-                          ...prevState.options,
-                          numberFormat: e.target.value,
-                        },
-                      };
+                    onChangeVisualization({
+                      ...editVisualization,
+                      options: {
+                        ...editVisualization.options,
+                        numberFormat: e.target.value,
+                      },
                     })
                   }
                 />
@@ -116,7 +117,7 @@ const ChartConfigurations = ({
                 chartOptions={editVisualization.options.chartOptionsConfigs}
                 xConfigs={editVisualization.options.xAxisConfigs}
                 onChangeConfigs={(configs) => {
-                  setEditVisualization({
+                  onChangeVisualization({
                     ...editVisualization,
                     options: {
                       ...editVisualization.options,
@@ -131,7 +132,7 @@ const ChartConfigurations = ({
                 chartOptions={editVisualization.options.chartOptionsConfigs}
                 yConfigs={editVisualization.options.yAxisConfigs}
                 onChangeConfigs={(configs) => {
-                  setEditVisualization({
+                  onChangeVisualization({
                     ...editVisualization,
                     options: {
                       ...editVisualization.options,
