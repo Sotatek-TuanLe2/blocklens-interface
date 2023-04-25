@@ -44,6 +44,8 @@ const SidebarEditorRow = ({
   const addTableNameToEditor = () => {
     const position = editor.current.editor.getCursorPosition();
     editor.current.editor.session.insert(position, tableFullName);
+    // @ts-ignore
+    editor.current.editor.textInput.focus();
   };
 
   return (
