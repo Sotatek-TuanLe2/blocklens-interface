@@ -160,7 +160,7 @@ export default class DashboardsRequest extends BaseRequest {
 
   getQueryById(params: DataQuery) {
     const url =
-      'https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/queries/find-query';
+      'https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/queries/find-my-query';
     return this.get(url, params);
   }
 
@@ -205,6 +205,13 @@ export default class DashboardsRequest extends BaseRequest {
   editVisualization(data: IEditVisualization, visualId: string) {
     const url = `https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/visualizations/${visualId}/edit-visual`;
     return this.patch(url, data);
+  }
+
+  getSupportedChains() {
+    const url =
+      'https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/databases/supported-chains';
+
+    return this.get(url);
   }
 
   /* End of Query page */

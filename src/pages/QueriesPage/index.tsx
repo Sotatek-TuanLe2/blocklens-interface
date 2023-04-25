@@ -2,7 +2,7 @@ import { BasePage } from '../../layouts';
 import { Box, Flex, Text, Tooltip } from '@chakra-ui/react';
 import AceEditor from 'react-ace';
 import AppButton from '../../components/AppButton';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { EditorContext } from './context/EditorContext';
 import EditorSidebar from './part/EditorSidebar';
 import VisualizationDisplay from './part/VisualizationDisplay';
@@ -30,6 +30,12 @@ interface ParamTypes {
   queryId: string;
 }
 
+interface IErrorExecuteQuery {
+  message: string;
+  name: string;
+  metadata: { position: string; code: string };
+}
+
 const QueriesPage = () => {
   const editorRef = useRef<any>();
   const { queryId } = useParams<ParamTypes>();
@@ -41,6 +47,8 @@ const QueriesPage = () => {
   const [expandEditor, setExpandEditor] = useState<boolean>(false);
   const [showSaveModal, setShowSaveModal] = useState<boolean>(false);
   const [isLoadingResult, setIsLoadingResult] = useState<boolean>(!!queryId);
+  const [errorExecuteQuery, setErrorExecuteQuery] =
+    useState<IErrorExecuteQuery>();
 
   const history = useHistory();
 
@@ -105,7 +113,7 @@ const QueriesPage = () => {
       executionId,
     });
     let fetchQueryResultInterval: any = null;
-    if (res.status !== 'DONE') {
+    if (res.status !== 'DONE' || res.status !== 'FAILED') {
       fetchQueryResultInterval = setInterval(async () => {
         const resInterval = await rf
           .getRequest('DashboardsRequest')
@@ -113,15 +121,19 @@ const QueriesPage = () => {
             queryId,
             executionId,
           });
-        if (resInterval.status === 'DONE') {
+        if (resInterval.status === 'DONE' || res.status === 'FAILED') {
           clearInterval(fetchQueryResultInterval);
           setQueryResult(resInterval.result);
+          if (resInterval?.error) {
+            setErrorExecuteQuery(resInterval?.error);
+          }
           setIsLoadingResult(false);
         }
       }, 2000);
     } else {
       setIsLoadingResult(false);
       setQueryResult(res.result);
+      setErrorExecuteQuery(res?.error);
     }
   };
 
@@ -178,7 +190,7 @@ const QueriesPage = () => {
       getErrorMessage(err);
     }
   };
-
+  // console.log(editorRef.current.editor.getValue());
   // const onClickFullScreen = () => {
   //   if (editorRef.current.editor) editorRef.current.editor.resize();
   // };
@@ -283,6 +295,14 @@ const QueriesPage = () => {
                 <AceEditor
                   className={`custom-editor ${expandEditor ? 'expland' : ''}`}
                   ref={editorRef}
+                  // annotations={[
+                  //   {
+                  //     row: 0,
+                  //     column: 0,
+                  //     type: 'error',
+                  //     text: errorExecuteQuery?.message || '',
+                  //   },
+                  // ]}
                   mode="sql"
                   theme={switchTheme ? 'kuroir' : 'monokai'}
                   width="100%"
@@ -337,7 +357,9 @@ const QueriesPage = () => {
                       justifyContent={'center'}
                       alignItems="center"
                     >
-                      No data...
+                      {errorExecuteQuery?.message
+                        ? errorExecuteQuery?.message
+                        : 'No data...'}
                     </Flex>
                   ))
                 )}
