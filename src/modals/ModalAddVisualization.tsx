@@ -67,7 +67,9 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   const fetchVisualization = async () => {
     const params = {};
     try {
-      const res = await rf.getRequest('DashboardsRequest').getQuery(params);
+      const res = await rf
+        .getRequest('DashboardsRequest')
+        .getListBrowseQueries(params);
       if (res) {
         setDataVisualization(res.data);
       }

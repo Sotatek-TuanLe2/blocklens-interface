@@ -194,12 +194,6 @@ export default class DashboardsRequest extends BaseRequest {
     return this.get(url);
   }
 
-  getQuery(params: ListParams) {
-    const url =
-      'https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/queries/list-browse-queries';
-    return this.get(url, { ...params });
-  }
-
   getQueryById(params: DataQuery) {
     const url =
       'https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/queries/find-my-query';
