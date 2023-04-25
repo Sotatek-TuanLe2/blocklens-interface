@@ -88,93 +88,90 @@ const VisualizationChart: React.FC<Props> = (props) => {
     return value;
   };
 
-  const _renderChartType = useCallback(
-    (yAxisKey: string, index: number) => {
-      switch (type) {
-        case TYPE_VISUALIZATION.line:
-          return (
-            <Line
-              key={yAxisKey}
-              type="monotone"
-              dataKey={yAxisKey}
-              stroke={COLORS[index % COLORS.length]}
-              dot={false}
-              hide={hiddenCharts.includes(yAxisKey)}
-            >
-              {!configs?.chartOptionsConfigs?.stacking &&
-                configs?.chartOptionsConfigs?.showDataLabels && (
-                  <LabelList
-                    dataKey={yAxisKey}
-                    position="top"
-                    formatter={labelFormat}
-                  />
-                )}
-            </Line>
-          );
+  const _renderChartType = (yAxisKey: string, index: number) => {
+    switch (type) {
+      case TYPE_VISUALIZATION.line:
+        return (
+          <Line
+            key={yAxisKey}
+            type="monotone"
+            dataKey={yAxisKey}
+            stroke={COLORS[index % COLORS.length]}
+            dot={false}
+            hide={hiddenCharts.includes(yAxisKey)}
+          >
+            {!configs?.chartOptionsConfigs?.stacking &&
+              configs?.chartOptionsConfigs?.showDataLabels && (
+                <LabelList
+                  dataKey={yAxisKey}
+                  position="top"
+                  formatter={labelFormat}
+                />
+              )}
+          </Line>
+        );
 
-        case TYPE_VISUALIZATION.area:
-          return (
-            <Area
-              key={yAxisKey}
-              dataKey={yAxisKey}
-              stroke={COLORS[index % COLORS.length]}
-              fill={COLORS[index % COLORS.length]}
-              stackId={chartOptionsConfigs?.stacking ? 'a' : undefined}
-              hide={hiddenCharts.includes(yAxisKey)}
-            >
-              {!configs?.chartOptionsConfigs?.stacking &&
-                configs?.chartOptionsConfigs?.showDataLabels && (
-                  <LabelList
-                    dataKey={yAxisKey}
-                    position="top"
-                    formatter={labelFormat}
-                  />
-                )}
-            </Area>
-          );
-        case TYPE_VISUALIZATION.bar:
-          return (
-            <Bar
-              key={yAxisKey}
-              dataKey={yAxisKey}
-              fill={COLORS[index % COLORS.length]}
-              stackId={chartOptionsConfigs?.stacking ? 'a' : undefined}
-              hide={hiddenCharts.includes(yAxisKey)}
-            >
-              {!configs?.chartOptionsConfigs?.stacking &&
-                configs?.chartOptionsConfigs?.showDataLabels && (
-                  <LabelList
-                    dataKey={yAxisKey}
-                    position="top"
-                    formatter={labelFormat}
-                  />
-                )}
-            </Bar>
-          );
-        default:
-          return (
-            <Scatter
-              key={yAxisKey}
-              dataKey={yAxisKey}
-              stroke={COLORS[index % COLORS.length]}
-              fill={COLORS[index % COLORS.length]}
-              name={yAxisKey}
-              hide={hiddenCharts.includes(yAxisKey)}
-            >
-              {!configs?.chartOptionsConfigs?.stacking &&
-                configs?.chartOptionsConfigs?.showDataLabels && (
-                  <LabelList
-                    dataKey={yAxisKey}
-                    position="top"
-                    formatter={labelFormat}
-                  />
-                )}
-            </Scatter>
-          );
-      }
-    },
-    [type, hiddenCharts],
-  );
+      case TYPE_VISUALIZATION.area:
+        return (
+          <Area
+            key={yAxisKey}
+            dataKey={yAxisKey}
+            stroke={COLORS[index % COLORS.length]}
+            fill={COLORS[index % COLORS.length]}
+            stackId={chartOptionsConfigs?.stacking ? 'area' : undefined}
+            hide={hiddenCharts.includes(yAxisKey)}
+          >
+            {!configs?.chartOptionsConfigs?.stacking &&
+              configs?.chartOptionsConfigs?.showDataLabels && (
+                <LabelList
+                  dataKey={yAxisKey}
+                  position="top"
+                  formatter={labelFormat}
+                />
+              )}
+          </Area>
+        );
+      case TYPE_VISUALIZATION.bar:
+        return (
+          <Bar
+            key={yAxisKey}
+            dataKey={yAxisKey}
+            fill={COLORS[index % COLORS.length]}
+            stackId={chartOptionsConfigs?.stacking ? 'bar' : undefined}
+            hide={hiddenCharts.includes(yAxisKey)}
+          >
+            {!configs?.chartOptionsConfigs?.stacking &&
+              configs?.chartOptionsConfigs?.showDataLabels && (
+                <LabelList
+                  dataKey={yAxisKey}
+                  position="top"
+                  formatter={labelFormat}
+                />
+              )}
+          </Bar>
+        );
+      default:
+        return (
+          <Scatter
+            key={yAxisKey}
+            dataKey={yAxisKey}
+            stroke={COLORS[index % COLORS.length]}
+            fill={COLORS[index % COLORS.length]}
+            name={yAxisKey}
+            hide={hiddenCharts.includes(yAxisKey)}
+          >
+            {!configs?.chartOptionsConfigs?.stacking &&
+              configs?.chartOptionsConfigs?.showDataLabels && (
+                <LabelList
+                  dataKey={yAxisKey}
+                  position="top"
+                  formatter={labelFormat}
+                />
+              )}
+          </Scatter>
+        );
+    }
+  };
 
   const containerClassName = useMemo(() => {
     switch (type) {
@@ -268,19 +265,19 @@ const VisualizationChart: React.FC<Props> = (props) => {
           animationDuration={200}
           animationEasing={'linear'}
         />
-        {/* {chartOptionsConfigs?.showLegend && ( */}
-        <Legend
-          verticalAlign="middle"
-          align="right"
-          layout="vertical"
-          content={
-            <CustomLegend
-              onToggleLegend={onToggleLegend}
-              hiddenCharts={hiddenCharts}
-            />
-          }
-        />
-        {/* )} */}
+        {chartOptionsConfigs?.showLegend && (
+          <Legend
+            verticalAlign="middle"
+            align="right"
+            layout="vertical"
+            content={
+              <CustomLegend
+                onToggleLegend={onToggleLegend}
+                hiddenCharts={hiddenCharts}
+              />
+            }
+          />
+        )}
         {yAxisKeys?.map((yAxisKey, index) => (
           <>{_renderChartType(yAxisKey, index)}</>
         ))}
