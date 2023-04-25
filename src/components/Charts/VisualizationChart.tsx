@@ -87,6 +87,15 @@ const VisualizationChart: React.FC<Props> = (props) => {
     return value;
   };
 
+  const _renderLabelList = (yAxisKey: string) => {
+    return (
+      !configs?.chartOptionsConfigs?.stacking &&
+      configs?.chartOptionsConfigs?.showDataLabels && (
+        <LabelList dataKey={yAxisKey} position="top" formatter={labelFormat} />
+      )
+    );
+  };
+
   const _renderChartType = (yAxisKey: string, index: number) => {
     switch (type) {
       case TYPE_VISUALIZATION.line:
@@ -99,14 +108,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
             dot={false}
             hide={hiddenCharts.includes(yAxisKey)}
           >
-            {!configs?.chartOptionsConfigs?.stacking &&
-              configs?.chartOptionsConfigs?.showDataLabels && (
-                <LabelList
-                  dataKey={yAxisKey}
-                  position="top"
-                  formatter={labelFormat}
-                />
-              )}
+            {_renderLabelList(yAxisKey)}
           </Line>
         );
 
@@ -120,14 +122,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
             stackId={chartOptionsConfigs?.stacking ? 'area' : undefined}
             hide={hiddenCharts.includes(yAxisKey)}
           >
-            {!configs?.chartOptionsConfigs?.stacking &&
-              configs?.chartOptionsConfigs?.showDataLabels && (
-                <LabelList
-                  dataKey={yAxisKey}
-                  position="top"
-                  formatter={labelFormat}
-                />
-              )}
+            {_renderLabelList(yAxisKey)}
           </Area>
         );
       case TYPE_VISUALIZATION.bar:
@@ -139,14 +134,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
             stackId={chartOptionsConfigs?.stacking ? 'bar' : undefined}
             hide={hiddenCharts.includes(yAxisKey)}
           >
-            {!configs?.chartOptionsConfigs?.stacking &&
-              configs?.chartOptionsConfigs?.showDataLabels && (
-                <LabelList
-                  dataKey={yAxisKey}
-                  position="top"
-                  formatter={labelFormat}
-                />
-              )}
+            {_renderLabelList(yAxisKey)}
           </Bar>
         );
       default:
@@ -159,14 +147,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
             name={yAxisKey}
             hide={hiddenCharts.includes(yAxisKey)}
           >
-            {!configs?.chartOptionsConfigs?.stacking &&
-              configs?.chartOptionsConfigs?.showDataLabels && (
-                <LabelList
-                  dataKey={yAxisKey}
-                  position="top"
-                  formatter={labelFormat}
-                />
-              )}
+            {_renderLabelList(yAxisKey)}
           </Scatter>
         );
     }
