@@ -105,47 +105,6 @@ const VisualizationPieChart = ({
     setDataCharts(newHideChart);
   };
 
-  const CustomLegend = (props: any) => {
-    const { payload, onToggleLegend, data } = props;
-
-    const dataClone = (data as any).map((item: any) => {
-      return {
-        value: item[xAxisKey || 0],
-      };
-    });
-
-    const newData = [];
-    for (const item of dataClone) {
-      const index = payload.findIndex(
-        (legendItem: any) => legendItem.value === item.value,
-      );
-      if (index !== -1) {
-        newData.push(payload[index]);
-      } else {
-        newData.push(item);
-      }
-    }
-
-    return (
-      <div>
-        {newData.map((entry: any, index: number) => (
-          <div key={`item-${index}`} className="custom-legend">
-            <span
-              onClick={() => onToggleLegend(entry.value)}
-              style={{
-                color: `${entry.color || '#e9ebee'}`,
-                opacity: `${entry.color ? '1' : '0.5'}`,
-              }}
-            >
-              {entry.value}
-            </span>
-            <span style={{ backgroundColor: `${entry.color}` }}></span>
-          </div>
-        ))}
-      </div>
-    );
-  };
-
   return (
     <ResponsiveContainer width={'100%'} height={'100%'}>
       {yAxisKeys?.length === 1 ? (
@@ -173,19 +132,21 @@ const VisualizationPieChart = ({
             animationDuration={200}
             animationEasing={'linear'}
           />
-          {chartOptionsConfigs?.showLegend && (
-            <Legend
-              verticalAlign="middle"
-              align="right"
-              layout="vertical"
-              content={
-                <CustomLegend
-                  onToggleLegend={onToggleLegend}
-                  hiddenCharts={dataCharts}
-                />
-              }
-            />
-          )}
+          {/* {chartOptionsConfigs?.showLegend && ( */}
+          <Legend
+            verticalAlign="middle"
+            align="right"
+            layout="vertical"
+            content={
+              <CustomLegend
+                onToggleLegend={onToggleLegend}
+                hiddenCharts={dataCharts}
+                data={data}
+                xAxisKey={xAxisKey}
+              />
+            }
+          />
+          {/* )} */}
         </PieChart>
       ) : (
         <Flex alignItems="center" justifyContent="center">
@@ -197,3 +158,44 @@ const VisualizationPieChart = ({
 };
 
 export default VisualizationPieChart;
+
+const CustomLegend = (props: any) => {
+  const { payload, onToggleLegend, data, xAxisKey } = props;
+
+  const dataClone = (data as any).map((item: any) => {
+    return {
+      value: item[xAxisKey || 0],
+    };
+  });
+
+  const newData = [];
+  for (const item of dataClone) {
+    const index = payload.findIndex(
+      (legendItem: any) => legendItem.value === item.value,
+    );
+    if (index !== -1) {
+      newData.push(payload[index]);
+    } else {
+      newData.push(item);
+    }
+  }
+
+  return (
+    <div>
+      {newData.map((entry: any, index: number) => (
+        <div key={`item-${index}`} className="custom-legend">
+          <span
+            onClick={() => onToggleLegend(entry.value)}
+            style={{
+              color: `${entry.color || '#e9ebee'}`,
+              opacity: `${entry.color ? '1' : '0.5'}`,
+            }}
+          >
+            {entry.value}
+          </span>
+          <span style={{ backgroundColor: `${entry.color}` }}></span>
+        </div>
+      ))}
+    </div>
+  );
+};
