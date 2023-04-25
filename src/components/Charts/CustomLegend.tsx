@@ -1,15 +1,15 @@
 import React from 'react';
 
 const CustomLegend = (props: any) => {
-  const { payload, onHideChart, hideChart } = props;
+  const { payload, onToggleLegend, hiddenCharts } = props;
 
   return (
     <div>
       {payload.map((entry: any, index: number) => (
         <div key={`item-${index}`} className="custom-legend">
           <span
-            className={hideChart.includes(entry.dataKey) && 'hide-legend'}
-            onClick={() => onHideChart(entry.dataKey)}
+            className={hiddenCharts.includes(entry.dataKey) && 'hide-legend'}
+            onClick={() => onToggleLegend(entry.dataKey)}
             style={{ color: `${entry.color}` }}
           >
             {entry.value}

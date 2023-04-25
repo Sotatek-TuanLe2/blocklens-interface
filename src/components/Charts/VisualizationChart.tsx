@@ -44,7 +44,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
   const xAxisConfigs = configs?.xAxisConfigs;
   const yAxisConfigs = configs?.yAxisConfigs;
 
-  const [hideChart, setHideChart] = useState<string[]>([]);
+  const [hiddenCharts, setHiddenCharts] = useState<string[]>([]);
 
   const tickFormatAxis = (axis: string) => (value: string) => {
     if (moment(new Date(value)).isValid() && isNaN(+value)) {
@@ -66,15 +66,15 @@ const VisualizationChart: React.FC<Props> = (props) => {
       }
     : {};
 
-  const onHideChart = (dataKey: string) => {
-    // check dataKey in hideChart
-    const newHideChart = hideChart.includes(dataKey)
-      ? hideChart.filter((value) => {
+  const onToggleLegend = (dataKey: string) => {
+    // check dataKey in hiddenCharts
+    const newHideChart = hiddenCharts.includes(dataKey)
+      ? hiddenCharts.filter((value) => {
           return value !== dataKey;
         })
-      : [...hideChart, dataKey];
+      : [...hiddenCharts, dataKey];
 
-    setHideChart(newHideChart);
+    setHiddenCharts(newHideChart);
   };
 
   const _renderChartType = useCallback(
@@ -88,7 +88,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
               dataKey={yAxisKey}
               stroke={COLORS[index % COLORS.length]}
               dot={false}
-              hide={hideChart.includes(yAxisKey)}
+              hide={hiddenCharts.includes(yAxisKey)}
             >
               <CustomLabelList configs={configs} yAxisKey={yAxisKey} />
             </Line>
@@ -102,7 +102,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
               stroke={COLORS[index % COLORS.length]}
               fill={COLORS[index % COLORS.length]}
               stackId={chartOptionsConfigs?.stacking ? 'a' : undefined}
-              hide={hideChart.includes(yAxisKey)}
+              hide={hiddenCharts.includes(yAxisKey)}
             >
               <CustomLabelList configs={configs} yAxisKey={yAxisKey} />
             </Area>
@@ -114,7 +114,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
               dataKey={yAxisKey}
               fill={COLORS[index % COLORS.length]}
               stackId={chartOptionsConfigs?.stacking ? 'a' : undefined}
-              hide={hideChart.includes(yAxisKey)}
+              hide={hiddenCharts.includes(yAxisKey)}
             >
               <CustomLabelList configs={configs} yAxisKey={yAxisKey} />
             </Bar>
@@ -127,14 +127,14 @@ const VisualizationChart: React.FC<Props> = (props) => {
               stroke={COLORS[index % COLORS.length]}
               fill={COLORS[index % COLORS.length]}
               name={yAxisKey}
-              hide={hideChart.includes(yAxisKey)}
+              hide={hiddenCharts.includes(yAxisKey)}
             >
               <CustomLabelList configs={configs} yAxisKey={yAxisKey} />
             </Scatter>
           );
       }
     },
-    [type, hideChart],
+    [type, hiddenCharts],
   );
 
   const containerClassName = useMemo(() => {
@@ -229,16 +229,19 @@ const VisualizationChart: React.FC<Props> = (props) => {
           animationDuration={200}
           animationEasing={'linear'}
         />
-        {chartOptionsConfigs?.showLegend && (
-          <Legend
-            verticalAlign="middle"
-            align="right"
-            layout="vertical"
-            content={
-              <CustomLegend onHideChart={onHideChart} hideChart={hideChart} />
-            }
-          />
-        )}
+        {/* {chartOptionsConfigs?.showLegend && ( */}
+        <Legend
+          verticalAlign="middle"
+          align="right"
+          layout="vertical"
+          content={
+            <CustomLegend
+              onToggleLegend={onToggleLegend}
+              hiddenCharts={hiddenCharts}
+            />
+          }
+        />
+        {/* )} */}
         {yAxisKeys?.map((yAxisKey, index) => (
           <>{_renderChartType(yAxisKey, index)}</>
         ))}
