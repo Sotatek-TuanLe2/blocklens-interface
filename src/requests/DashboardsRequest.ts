@@ -134,7 +134,7 @@ export default class DashboardsRequest extends BaseRequest {
 
   /* Dashboard's detail page */
   getDashboardById(id: string) {
-    const url = `https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/dashboard/find-dashboard`;
+    const url = `https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/dashboard/find-my-dashboard`;
     return this.get(url, id);
   }
   forkDashboard(data: ForkDashboard, id: ILayout) {
@@ -202,7 +202,7 @@ export default class DashboardsRequest extends BaseRequest {
 
   getQueryById(params: DataQuery) {
     const url =
-      'https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/queries/find-query';
+      'https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/queries/find-my-query';
     return this.get(url, params);
   }
 
