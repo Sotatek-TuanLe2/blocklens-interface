@@ -106,8 +106,8 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
         dashboardId,
         text: markdownText,
         options: {
-          sizeX: dataLayouts.length % 2 === 0 ? 6 : 6,
-          sizeY: 6,
+          sizeX: dataLayouts.length % 2 === 0 ? 0 : 6,
+          sizeY: 2,
           col: 6,
           row: 2,
         },

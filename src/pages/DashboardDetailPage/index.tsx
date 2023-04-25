@@ -14,9 +14,10 @@ import {
   LineChart,
   PieChart,
   ScatterChart,
+  VisualizationTable,
 } from 'src/components/Charts';
+
 import VisualizationCounter from 'src/components/Charts/VisualizationCounter';
-import VisualizationTable from 'src/components/Charts/VisualizationTable';
 import useUser from 'src/hooks/useUser';
 import { BasePage } from 'src/layouts';
 import ModalAddTextWidget from 'src/modals/ModalAddTextWidget';
@@ -27,6 +28,8 @@ import ModalSettingDashboardDetails from 'src/modals/ModalSettingDashboardDetail
 import ModalShareDashboardDetails from 'src/modals/ModalShareDashboardDetails';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/pages/DashboardDetailPage.scss';
+import 'src/styles/components/TableValue.scss';
+
 import {
   IQuery,
   QueryResultResponse,
@@ -36,6 +39,7 @@ import {
 } from 'src/utils/query.type';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
+import 'src/styles/components/Chart.scss';
 
 interface ParamTypes {
   authorId: string;
@@ -64,8 +68,6 @@ export enum TYPE_MODAL {
 }
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
-
-const hashTag: string[] = ['zkSync', 'bridge', 'l2'];
 
 const DashboardDetailPage: React.FC = () => {
   const { authorId, dashboardId } = useParams<ParamTypes>();
@@ -465,6 +467,7 @@ const DashboardDetailPage: React.FC = () => {
   const onLayoutChange = (layout: Layout[]) => {
     setLayoutChange(layout);
   };
+
   return (
     <BasePage isFullWidth>
       <div className="main-content-dashboard-details">
@@ -475,13 +478,6 @@ const DashboardDetailPage: React.FC = () => {
               <div className="dashboard-name">
                 @{userName} / {dashboardId}
               </div>
-              <Flex gap={1} pt={'10px'}>
-                {hashTag.map((item) => (
-                  <Badge size={'sm'} key={item}>
-                    #{item}
-                  </Badge>
-                ))}
-              </Flex>
             </div>
           </Flex>
           {_renderButtons()}
@@ -540,7 +536,6 @@ const DashboardDetailPage: React.FC = () => {
           url={dashboardId}
           authorId={authorId}
           open={openModalSetting}
-          hashTag={hashTag}
           onClose={() => setOpenModalSetting(false)}
         />
         <ModalAddTextWidget

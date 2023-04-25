@@ -24,13 +24,13 @@ const VisualizationCounter = ({ data, visualization }: Props) => {
 
   const checkTypeValue = typeof dataCounter();
 
-  const defaultSize =
-    NUMBER_SIZE.start -
-    (dataCounter().toString().length +
-      Number(dataOptions?.stringDecimal) +
-      dataOptions?.stringPrefix?.toString().length +
-      dataOptions?.stringSuffix?.toString().length) /
-      NUMBER_SIZE.percent;
+  const defaultSize = NUMBER_SIZE.start;
+  // -
+  // (dataCounter().toString().length +
+  //   Number(dataOptions?.stringDecimal) +
+  //   dataOptions?.stringPrefix?.toString().length +
+  //   dataOptions?.stringSuffix?.toString().length) /
+  //   NUMBER_SIZE.percent;
 
   useEffect(() => {
     setSize(defaultSize);
