@@ -132,21 +132,21 @@ const VisualizationPieChart = ({
             animationDuration={200}
             animationEasing={'linear'}
           />
-          {/* {chartOptionsConfigs?.showLegend && ( */}
-          <Legend
-            verticalAlign="middle"
-            align="right"
-            layout="vertical"
-            content={
-              <CustomLegend
-                onToggleLegend={onToggleLegend}
-                hiddenCharts={dataCharts}
-                data={data}
-                xAxisKey={xAxisKey}
-              />
-            }
-          />
-          {/* )} */}
+          {chartOptionsConfigs?.showLegend && (
+            <Legend
+              verticalAlign="middle"
+              align="right"
+              layout="vertical"
+              content={
+                <CustomLegend
+                  onToggleLegend={onToggleLegend}
+                  hiddenCharts={dataCharts}
+                  data={data}
+                  xAxisKey={xAxisKey}
+                />
+              }
+            />
+          )}
         </PieChart>
       ) : (
         <Flex alignItems="center" justifyContent="center">
