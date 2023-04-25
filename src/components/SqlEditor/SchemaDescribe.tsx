@@ -8,6 +8,7 @@ type Props = {
   blockchain: string;
   name: string;
   fullName: string;
+  onAddParameter: any;
 };
 
 const SchemaDescribe = ({
@@ -15,6 +16,7 @@ const SchemaDescribe = ({
   name,
   tableDescribe,
   fullName,
+  onAddParameter,
 }: Props) => {
   return (
     <Box>
@@ -33,6 +35,7 @@ const SchemaDescribe = ({
               alignItems={'center'}
               fontSize={14}
               className="block-describe"
+              onClick={() => onAddParameter(desc.column_name)}
             >
               <Box>{desc.column_name}</Box>
               <Text

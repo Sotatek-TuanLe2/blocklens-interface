@@ -24,6 +24,7 @@ import { toastError } from '../../../utils/utils-notify';
 const TIME_DEBOUNCE = 1000;
 interface IEditerSideBar {
   queryValue: IQuery | null;
+  onAddParameter: any;
 }
 
 interface IQueryInfo {
@@ -50,7 +51,10 @@ const defaultQueryInfo: { [key: string]: IQueryInfo } = {
   QUERY_PUBLISHED: { label: 'Query is', value: '', icon: <CheckIcon /> },
 };
 
-const EditorSidebar: React.FC<IEditerSideBar> = ({ queryValue }) => {
+const EditorSidebar: React.FC<IEditerSideBar> = ({
+  queryValue,
+  onAddParameter,
+}) => {
   const [tableSelected, setTableSelected] = useState<{
     chain: string;
     name: string;
@@ -139,6 +143,7 @@ const EditorSidebar: React.FC<IEditerSideBar> = ({ queryValue }) => {
           blockchain={tableSelected?.chain}
           name={tableSelected.name}
           fullName={tableSelected.fullName}
+          onAddParameter={onAddParameter}
         />
       )
     );

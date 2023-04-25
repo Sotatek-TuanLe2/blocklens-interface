@@ -162,9 +162,9 @@ const QueriesPage = () => {
     setIsSetting((pre) => !pre);
   };
 
-  const onAddParameter = () => {
+  const onAddParameter = (parameter: string) => {
     const position = editorRef.current.editor.getCursorPosition();
-    editorRef.current.editor.session.insert(position, '{{unnamed_parameter}}');
+    editorRef.current.editor.session.insert(position, parameter);
   };
 
   const onRunQuery = async () => {
@@ -246,7 +246,7 @@ const QueriesPage = () => {
         {queryValue && (
           <Tooltip hasArrow placement="top" label="Add Parameter">
             <AppButton
-              onClick={onAddParameter}
+              onClick={() => onAddParameter('{{unnamed_parameter}}')}
               bg={backgroundButton}
               _hover={{ bg: hoverBackgroundButton }}
             >
@@ -276,7 +276,10 @@ const QueriesPage = () => {
             )}
           </Flex>
           <div className="queries-page">
-            <EditorSidebar queryValue={queryValue} />
+            <EditorSidebar
+              onAddParameter={onAddParameter}
+              queryValue={queryValue}
+            />
             <Box className="queries-page__right-side">
               <Box width={'100%'}>
                 <Box bg={switchTheme ? '#fff' : '#272822'} h="10px"></Box>
