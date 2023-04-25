@@ -35,7 +35,8 @@ export interface IQuery {
   name: string;
   isPrivate?: boolean;
   isArchived?: boolean;
-  createAt: Date | number;
+  isTemp?: boolean;
+  createdAt: Date | number;
   updatedAt?: Date | number;
   query: string;
   forkedQuery?: null;

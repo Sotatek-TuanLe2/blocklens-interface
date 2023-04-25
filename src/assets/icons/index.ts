@@ -49,6 +49,10 @@ import { ReactComponent as BarChartIcon } from './BarChartIcon.svg';
 import { ReactComponent as ExplandIcon } from './ExplandIcon.svg';
 import { ReactComponent as FormatIcon } from './FormatIcon.svg';
 import { ReactComponent as AddParameterIcon } from './AddParameterIcon.svg';
+import { ReactComponent as SettingIcon } from './SettingIcon.svg';
+import { ReactComponent as ClockIcon } from './ClockIcon.svg';
+import { ReactComponent as AvatarIcon } from './AvatarIcon.svg';
+import { ReactComponent as CheckIcon } from './CheckIcon.svg';
 import { ReactComponent as CounterIcon } from './CounterIcon.svg';
 
 export {
@@ -103,5 +107,9 @@ export {
   ExplandIcon,
   FormatIcon,
   AddParameterIcon,
+  SettingIcon,
+  ClockIcon,
+  AvatarIcon,
+  CheckIcon,
   CounterIcon,
 };

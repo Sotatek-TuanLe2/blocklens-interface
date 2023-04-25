@@ -110,11 +110,11 @@ const Routes: FC<RouteComponentProps> = () => {
           component={MessagesHistory}
         />
         <PrivateRoute path={'/top-up'} component={TopUpPage} />
-        <PrivateRoute path={'/dashboards'} component={DashboardsPage} />
         <PrivateRoute
-          path={'/dashboard/:dashboardId'}
+          path={'/dashboards/:dashboardId'}
           component={DashboardDetailPage}
         />
+        <PrivateRoute path={'/dashboards'} component={DashboardsPage} />
         <PrivateRoute path={'/queries/:queryId?'} component={QueriesPage} />
         <Route path={'/contact-us'} component={ContactUs} />
         <PrivateRoute path={'/'} component={HomePage} />
