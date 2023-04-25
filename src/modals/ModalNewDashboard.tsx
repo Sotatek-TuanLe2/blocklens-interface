@@ -37,7 +37,7 @@ const ModalNewDashboard: React.FC<IModalNewDashboard> = ({ open, onClose }) => {
           name: dataForm.title,
           isPrivate: dataForm.private,
         });
-      history.push(`/dashboard/${result.id}`);
+      history.push(`/dashboards/${result.id}`);
       onClose();
     } catch (error) {
       toastError({ message: getErrorMessage(error) });
