@@ -56,7 +56,7 @@ export interface ILayout extends Layout {
   visualizationWidgets: [];
   text: string;
   visualization: any;
-  content: [];
+  content: any;
 }
 export enum TYPE_MODAL {
   ADD = 'add',
@@ -68,9 +68,8 @@ const ResponsiveGridLayout = WidthProvider(Responsive);
 const hashTag: string[] = ['zkSync', 'bridge', 'l2'];
 
 const DashboardDetailPage: React.FC = () => {
-  const { queryId, authorId, dashboardId } = useParams<ParamTypes>();
+  const { authorId, dashboardId } = useParams<ParamTypes>();
   const editorRef = useRef<any>();
-
   const { user } = useUser();
 
   const [editMode, setEditMode] = useState<boolean>(false);
@@ -95,21 +94,19 @@ const DashboardDetailPage: React.FC = () => {
       try {
         const res = await rf
           .getRequest('DashboardsRequest')
-          .getDashboardById({ dashboardId: 'bWoX1XPXUqottfO8hKwKh' });
-        const visualization = res.visualizationWidgets.map(
-          (item: ILayout, index: string) => {
-            const { options } = item;
-            return {
-              x: options.sizeX,
-              y: options.sizeY,
-              w: options.col,
-              h: options.row,
-              i: `${index}`,
-              id: item.id,
-              content: item.visualization,
-            };
-          },
-        );
+          .getDashboardById({ dashboardId });
+        const visualization = res.visualizationWidgets.map((item: ILayout) => {
+          const { options } = item;
+          return {
+            x: options.sizeX,
+            y: options.sizeY,
+            w: options.col,
+            h: options.row,
+            i: item.id,
+            id: item.id,
+            content: item.visualization,
+          };
+        });
         const textWidgets = res.textWidgets.map((item: ILayout) => {
           const { options } = item;
 
@@ -118,130 +115,13 @@ const DashboardDetailPage: React.FC = () => {
             y: options.sizeY,
             w: options.col,
             h: options.row,
-            i: item.text,
+            i: item.id,
             id: item.id,
-            content: [],
+            text: item.text,
+            content: {},
           };
         });
-        const layouts = [
-          {
-            content: [
-              {
-                createdAt: '2023-04-04T13:44:21.035Z',
-                query: 'select * from arbitrum.blocks limit 10',
-                visualizations: {
-                  name: 'Table',
-                  id: '19',
-                  type: 'table',
-                  options: {},
-                },
-                id: '1938231',
-                parentId: '1',
-              },
-            ],
-            meta: {
-              w: 6,
-              h: 2,
-              x: 0,
-              y: 0,
-              i: '1',
-              moved: false,
-              static: false,
-            },
-            id: '1',
-          },
-          {
-            content: [
-              {
-                createdAt: '2023-04-04T13:44:21.035Z',
-                query: 'select * from arbitrum.blocks limit 10',
-                visualizations: {
-                  id: '76',
-                  name: 'Chart',
-                  type: 'chart',
-                  options: {
-                    globalSeriesType: 'column',
-                    columnMapping: {
-                      time: 'x',
-                      number: 'y',
-                    },
-                    showLegend: true,
-                  },
-                },
-                id: '1938231',
-                parentId: '2',
-              },
-            ],
-            meta: {
-              w: 6,
-              h: 2,
-              x: 6,
-              y: 0,
-              i: '2',
-              moved: false,
-              static: false,
-            },
-            id: '2',
-          },
-          {
-            content: [
-              {
-                createdAt: '2023-04-04T13:44:21.035Z',
-                query: 'select * from arbitrum.blocks limit 10',
-                visualizations: {
-                  id: '75',
-                  name: 'Chart',
-                  type: 'chart',
-                  options: {
-                    globalSeriesType: 'line',
-                    columnMapping: {
-                      time: 'x',
-                      number: 'y',
-                    },
-                    showLegend: true,
-                  },
-                },
-                id: '1938231',
-                parentId: '3',
-              },
-            ],
-            meta: {
-              w: 6,
-              h: 2,
-              x: 0,
-              y: 2,
-              i: '3',
-              moved: false,
-              static: false,
-            },
-            id: '3',
-          },
-          {
-            content: [],
-            meta: {
-              w: 6,
-              h: 2,
-              x: 6,
-              y: 2,
-              i: 'áds',
-              moved: false,
-              static: false,
-            },
-            id: '4',
-          },
-        ].map((item: ILayout) => {
-          const { meta } = item;
-          return {
-            x: meta.x,
-            y: meta.y,
-            w: meta.w,
-            h: meta.h,
-            i: meta.i,
-            id: item.id,
-            content: { ...item.content },
-          };
-        });
-        console.log(layouts, 'layout');
+
         setDataLayouts(visualization.concat(textWidgets));
       } catch (error) {
         toastError({
@@ -251,8 +131,7 @@ const DashboardDetailPage: React.FC = () => {
     },
     [],
   );
-  console.log(dataLayouts);
-
+  const queryId = 'W40Qx1TwmyNH3J0T9OTxL';
   const fetchQueryResult = async (executionId: string) => {
     const res = await rf.getRequest('DashboardsRequest').getQueryResult({
       queryId,
@@ -527,16 +406,6 @@ const DashboardDetailPage: React.FC = () => {
     );
   };
 
-  const checkTypeVisualization = (data: QueryTypeSingle[]) => {
-    return data.map((i) =>
-      i.visualizations.type === 'table'
-        ? i.visualizations.type
-        : i.visualizations.type === 'chart'
-        ? i.visualizations.options.globalSeriesType
-        : null,
-    );
-  };
-
   async function processGetItems(ids: number[]) {
     const results = [];
     for (const id of ids) {
@@ -574,23 +443,23 @@ const DashboardDetailPage: React.FC = () => {
   }
 
   const updateItem = async (layout: Layout[]) => {
-    // const ids = dataLayouts.map((e) => e.id);
-    // const newLayout = dataLayouts.map((item, index) => ({
-    //   id: item.id,
-    //   content: item.content,
-    //   meta: layout[index],
-    // }));
-    // const processResults = await processGetItems(ids);
-    // if (processResults.every((result) => !!result.id)) {
-    //   try {
-    //     const processResults2 = await processAddItem(newLayout);
-    //     if (processResults2.every((result) => !!result.id)) {
-    //       fetchLayoutData();
-    //     }
-    //   } catch (err) {
-    //     toastError({ message: getErrorMessage(err) });
-    //   }
-    // }
+    const ids = dataLayouts.map((e) => e.id);
+    const newLayout = dataLayouts.map((item, index) => ({
+      id: item.id,
+      content: item.content,
+      meta: layout[index],
+    }));
+    const processResults = await processGetItems(ids);
+    if (processResults.every((result) => !!result.id)) {
+      try {
+        const processResults2 = await processAddItem(newLayout);
+        if (processResults2.every((result) => !!result.id)) {
+          fetchLayoutData();
+        }
+      } catch (err) {
+        toastError({ message: getErrorMessage(err) });
+      }
+    }
   };
 
   const onLayoutChange = (layout: Layout[]) => {
@@ -631,19 +500,11 @@ const DashboardDetailPage: React.FC = () => {
             {dataLayouts.map((item) => (
               <div className="box-layout" key={item.id}>
                 <div className="box-chart">
-                  {item.content.length === undefined ? (
-                    <>
-                      {renderVisualization({
-                        id: TYPE_VISUALIZATION.new,
-                        createdAt: moment().toDate(),
-                        options: {},
-                        name: 'New Visualization',
-                        type: TYPE_VISUALIZATION.new,
-                      })}
-                    </>
+                  {item.content.hasOwnProperty('id') ? (
+                    <>{renderVisualization(item.content)}</>
                   ) : (
                     <div className="box-text-widget">
-                      <ReactMarkdown>{item.i}</ReactMarkdown>
+                      <ReactMarkdown>{item.text}</ReactMarkdown>
                     </div>
                   )}
                 </div>
@@ -654,7 +515,7 @@ const DashboardDetailPage: React.FC = () => {
                     onClick={() => {
                       setTypeModalTextWidget(TYPE_MODAL.EDIT);
                       setSelectedItem(item);
-                      item.content.length > 0
+                      item.content.hasOwnProperty('id')
                         ? setOpenModalEdit(true)
                         : setOpenModalAddTextWidget(true);
                     }}
@@ -683,6 +544,7 @@ const DashboardDetailPage: React.FC = () => {
           onClose={() => setOpenModalSetting(false)}
         />
         <ModalAddTextWidget
+          dashboardId={dashboardId}
           selectedItem={selectedItem}
           dataLayouts={dataLayouts}
           setDataLayouts={setDataLayouts}
@@ -700,6 +562,7 @@ const DashboardDetailPage: React.FC = () => {
           onClose={() => setOpenModalEdit(false)}
         />
         <ModalAddVisualization
+          dashboardId={dashboardId}
           dataLayouts={dataLayouts}
           setDataLayouts={setDataLayouts}
           setOpenModalFork={setOpenModalFork}

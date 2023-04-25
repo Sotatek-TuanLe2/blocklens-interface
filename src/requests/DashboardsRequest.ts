@@ -165,6 +165,10 @@ export default class DashboardsRequest extends BaseRequest {
     const url = `https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/dashboard/insert-text-widget`;
     return this.post(url, data);
   }
+  addVisualization(data: DataTextWidget) {
+    const url = `https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/dashboard/insert-visualization-widget`;
+    return this.post(url, data);
+  }
 
   updateDashboardItem(data: ILayout) {
     const url = `https://6071c80750aaea0017285222.mockapi.io/layouts/${data.id}`;
@@ -172,7 +176,11 @@ export default class DashboardsRequest extends BaseRequest {
   }
 
   removeDashboardItem(id: ILayout) {
-    const url = `https://6071c80750aaea0017285222.mockapi.io/layouts/${id}`;
+    const url = `https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/text-widgets/${id}/remove-text-widget`;
+    return this.delete(url, id);
+  }
+  removeVisualization(id: ILayout) {
+    const url = `https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/visualization-widgets/${id}/remove-visualization-widget`;
     return this.delete(url, id);
   }
 

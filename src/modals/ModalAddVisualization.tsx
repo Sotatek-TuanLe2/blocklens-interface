@@ -31,6 +31,7 @@ interface IModalAddVisualization {
   dataLayouts: ILayout[];
   setDataLayouts: React.Dispatch<React.SetStateAction<ILayout[]>>;
   onReload: () => Promise<void>;
+  dashboardId: string;
 }
 interface IButtonAdd {
   userName: string;
@@ -38,6 +39,7 @@ interface IButtonAdd {
   dataLayouts: ILayout[];
   handleRemoveVisualization: (
     item: ILayout[],
+    i: VisualizationType,
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => Promise<void>;
   handleSaveVisualization: (
@@ -56,6 +58,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   dataLayouts,
   setDataLayouts,
   onReload,
+  dashboardId,
 }) => {
   const [add, setAdd] = useState<boolean>(false);
   const [showMyQueries, setShowMyQueries] = useState<boolean>(false);
@@ -85,24 +88,19 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   ) => {
     try {
       const payload = {
-        meta: {
-          i: (dataLayouts.length + 1).toString(),
-          x: dataLayouts.length % 2 === 0 ? 0 : 6,
-          y: 0,
-          w: 6,
-          h: 2,
+        dashboardId,
+        visualizationId: visualizations.id,
+        text: visualizations.name,
+        options: {
+          sizeX: dataLayouts.length % 2 === 0 ? 6 : 6,
+          sizeY: 6,
+          col: 6,
+          row: 2,
         },
-        content: [
-          {
-            ...data,
-            visualizations: visualizations,
-            parentId: (dataLayouts.length + 1).toString(),
-          },
-        ],
       };
       const res = await rf
         .getRequest('DashboardsRequest')
-        .addDashboardItem(payload);
+        .addVisualization(payload);
       if (res) {
         onReload();
       }
@@ -112,14 +110,22 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   };
 
   const handleRemoveVisualization = async (
-    item: any,
+    item: ILayout[],
+    i: VisualizationType,
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     try {
+      const result = item.map((e: any) => {
+        if (e.content.id === i.id) {
+          return e.id;
+        }
+      });
+      const removeId = result.find((item: any) => item !== undefined);
+
       e.preventDefault();
       const res = await rf
         .getRequest('DashboardsRequest')
-        .removeDashboardItem(item[0].content[0].parentId);
+        .removeVisualization(removeId);
       if (res) {
         setDataLayouts([...dataLayouts]);
         onReload();
@@ -155,7 +161,11 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
         return <CounterIcon />;
 
       default:
-        return <></>;
+        return (
+          <>
+            <QueryResultIcon />
+          </>
+        );
     }
   };
 
@@ -267,15 +277,8 @@ const ButtonAdd: React.FC<IButtonAdd> = ({
   i,
   getIcon,
 }) => {
-  const checkIdItem = dataLayouts
-    .map((i: any) => i.content[0]?.id)
-    .includes(item?.id);
+  const checkAdded = dataLayouts.map((el: any) => el.content.id).includes(i.id);
 
-  const checkAdded = checkIdItem
-    ? dataLayouts
-        .map((item: any) => item.content[0]?.visualizations.id)
-        .includes(i.id)
-    : null;
   const conditionDisplayIcon = () => {
     if (i.type === 'table') {
       return i.type;
@@ -300,7 +303,7 @@ const ButtonAdd: React.FC<IButtonAdd> = ({
       <Text
         onClick={(e: any) => {
           checkAdded
-            ? handleRemoveVisualization(dataLayouts, e)
+            ? handleRemoveVisualization(dataLayouts, i, e)
             : handleSaveVisualization(item, i);
         }}
         className={checkAdded ? 'btn-added-query' : 'btn-add-query'}
