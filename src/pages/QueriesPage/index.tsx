@@ -40,7 +40,7 @@ const QueriesPage = () => {
   const [switchTheme, setSwitchTheme] = useState<boolean>(false);
   const [expandEditor, setExpandEditor] = useState<boolean>(false);
   const [showSaveModal, setShowSaveModal] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const history = useHistory();
 
@@ -315,25 +315,26 @@ const QueriesPage = () => {
                 </Box>
               </Box>
               <>
-                {!isLoading && queryValue ? (
+                {!isLoading && !!queryValue && !!queryResult.length && (
                   <Box mt={8}>
-                    {queryValue && !!queryResult.length ? (
-                      <VisualizationDisplay
-                        queryResult={queryResult}
-                        queryValue={queryValue}
-                        onReload={fetchQuery}
-                      />
-                    ) : (
-                      <Flex
-                        className="empty-table"
-                        justifyContent={'center'}
-                        alignItems="center"
-                      >
-                        No data...
-                      </Flex>
-                    )}
+                    <VisualizationDisplay
+                      queryResult={queryResult}
+                      queryValue={queryValue}
+                      onReload={fetchQuery}
+                    />
                   </Box>
-                ) : (
+                )}
+
+                {!isLoading && !queryResult.length && queryId && (
+                  <Flex
+                    className="empty-table"
+                    justifyContent={'center'}
+                    alignItems="center"
+                  >
+                    No data...
+                  </Flex>
+                )}
+                {isLoading && queryId && (
                   <AppLoadingTable
                     widthColumns={[100]}
                     className="visual-table"
