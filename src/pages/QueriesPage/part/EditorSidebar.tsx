@@ -222,10 +222,10 @@ const EditorSidebar: React.FC<IEditerSideBar> = ({ queryValue }) => {
                     marginLeft={2}
                   />
                 </div>
-                <Text isTruncated ml={2}>
+                <Text isTruncated ml={2} title={tableSelected?.chain}>
                   {tableSelected?.chain}
                 </Text>
-                <Text isTruncated ml={2}>
+                <Text isTruncated ml={2} title={tableSelected?.name}>
                   {tableSelected?.name}
                 </Text>
               </Flex>
