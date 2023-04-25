@@ -7,6 +7,7 @@ import {
   BarChart,
   CartesianGrid,
   Label,
+  LabelList,
   Legend,
   Line,
   LineChart,
@@ -77,6 +78,16 @@ const VisualizationChart: React.FC<Props> = (props) => {
     setHiddenCharts(newHideChart);
   };
 
+  const labelFormat = (value: string) => {
+    if (configs?.yAxisConfigs?.labelFormat) {
+      return formatVisualizationValue(
+        configs?.yAxisConfigs?.labelFormat,
+        value,
+      );
+    }
+    return value;
+  };
+
   const _renderChartType = useCallback(
     (yAxisKey: string, index: number) => {
       switch (type) {
@@ -90,7 +101,14 @@ const VisualizationChart: React.FC<Props> = (props) => {
               dot={false}
               hide={hiddenCharts.includes(yAxisKey)}
             >
-              <CustomLabelList configs={configs} yAxisKey={yAxisKey} />
+              {!configs?.chartOptionsConfigs?.stacking &&
+                configs?.chartOptionsConfigs?.showDataLabels && (
+                  <LabelList
+                    dataKey={yAxisKey}
+                    position="top"
+                    formatter={labelFormat}
+                  />
+                )}
             </Line>
           );
 
@@ -104,7 +122,14 @@ const VisualizationChart: React.FC<Props> = (props) => {
               stackId={chartOptionsConfigs?.stacking ? 'a' : undefined}
               hide={hiddenCharts.includes(yAxisKey)}
             >
-              <CustomLabelList configs={configs} yAxisKey={yAxisKey} />
+              {!configs?.chartOptionsConfigs?.stacking &&
+                configs?.chartOptionsConfigs?.showDataLabels && (
+                  <LabelList
+                    dataKey={yAxisKey}
+                    position="top"
+                    formatter={labelFormat}
+                  />
+                )}
             </Area>
           );
         case TYPE_VISUALIZATION.bar:
@@ -116,7 +141,14 @@ const VisualizationChart: React.FC<Props> = (props) => {
               stackId={chartOptionsConfigs?.stacking ? 'a' : undefined}
               hide={hiddenCharts.includes(yAxisKey)}
             >
-              <CustomLabelList configs={configs} yAxisKey={yAxisKey} />
+              {!configs?.chartOptionsConfigs?.stacking &&
+                configs?.chartOptionsConfigs?.showDataLabels && (
+                  <LabelList
+                    dataKey={yAxisKey}
+                    position="top"
+                    formatter={labelFormat}
+                  />
+                )}
             </Bar>
           );
         default:
@@ -129,7 +161,14 @@ const VisualizationChart: React.FC<Props> = (props) => {
               name={yAxisKey}
               hide={hiddenCharts.includes(yAxisKey)}
             >
-              <CustomLabelList configs={configs} yAxisKey={yAxisKey} />
+              {!configs?.chartOptionsConfigs?.stacking &&
+                configs?.chartOptionsConfigs?.showDataLabels && (
+                  <LabelList
+                    dataKey={yAxisKey}
+                    position="top"
+                    formatter={labelFormat}
+                  />
+                )}
             </Scatter>
           );
       }
