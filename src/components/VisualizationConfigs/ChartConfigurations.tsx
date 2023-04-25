@@ -93,7 +93,7 @@ const ChartConfigurations = ({
               <div className="box-table-children grid-pie">
                 <div>Label format</div>
                 <AppInput
-                  placeholder="Current price"
+                  placeholder="0.0"
                   size={'sm'}
                   className="input-table"
                   value={editVisualization?.options?.numberFormat}

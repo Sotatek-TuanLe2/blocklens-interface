@@ -3,14 +3,7 @@ import moment from 'moment';
 import { useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import 'src/styles/components/Chart.scss';
-import {
-  AreaChart,
-  BarChart,
-  LineChart,
-  PieChart,
-  ScatterChart,
-  VisualizationTable,
-} from '../../../components/Charts';
+import { PieChart, VisualizationTable } from '../../../components/Charts';
 import { AppTabs, AppButton, AppSelect2 } from '../../../components';
 import ChartConfigurations from '../../../components/VisualizationConfigs/ChartConfigurations';
 import BaseModal from '../../../modals/BaseModal';
@@ -35,6 +28,7 @@ import {
 } from '../../../utils/query.type';
 import { getDefaultTableColumns } from 'src/components/Charts/VisualizationTable';
 import { objectKeys } from 'src/utils/utils-network';
+import VisualizationChart from 'src/components/Charts/VisualizationChart';
 
 type VisualizationConfigType = {
   value: string;
@@ -199,23 +193,6 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
 
   const renderVisualization = (visualization: VisualizationType) => {
     const type = visualization.options?.globalSeriesType || visualization.type;
-    let data = [...queryResult];
-    if (visualization.options.xAxisConfigs?.sortX) {
-      data = data.sort((a: any, b: any) => {
-        if (moment(a[visualization.options.columnMapping.xAxis]).isValid()) {
-          return moment
-            .utc(a[visualization.options.columnMapping.xAxis])
-            .diff(moment.utc(b[visualization.options.columnMapping.xAxis]));
-        }
-        return (
-          a[visualization.options.columnMapping.xAxis] -
-          b[visualization.options.columnMapping.xAxis]
-        );
-      });
-    }
-    if (visualization.options.xAxisConfigs?.reverseX) {
-      data = data.reverse();
-    }
 
     if (type === TYPE_VISUALIZATION.new) {
       return <AddVisualization onAddVisualize={addVisualizationHandler} />;
@@ -233,111 +210,80 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
       // TODO: check yAxis values have same type
     }
 
-    if (type === TYPE_VISUALIZATION.table) {
-      errorMessage = null;
-      visualizationDisplay = (
-        <VisualizationTable
-          data={queryResult}
-          setDataTable={setDataTable}
-          dataColumn={visualization.options.columns}
-        />
-      );
-      visualizationConfiguration = (
-        <TableConfigurations
-          data={queryResult}
-          visualization={visualization}
-          onChangeConfigurations={onChangeConfigurations}
-          dataTable={dataTable}
-        />
-      );
-    } else if (type === TYPE_VISUALIZATION.counter) {
-      errorMessage = null;
-      visualizationDisplay = (
-        <VisualizationCounter
-          data={queryResult}
-          visualization={visualization}
-        />
-      );
-      visualizationConfiguration = (
-        <CounterConfiguration
-          data={queryResult}
-          visualization={visualization}
-          onChangeConfigurations={onChangeConfigurations}
-        />
-      );
-    } else {
-      // chart
-      visualizationConfiguration = (
-        <ChartConfigurations
-          data={queryResult}
-          visualization={visualization}
-          onChangeConfigurations={onChangeConfigurations}
-        />
-      );
-      switch (type) {
-        case TYPE_VISUALIZATION.bar:
-          visualizationDisplay = (
-            <BarChart
-              data={data}
-              xAxisKey={
-                visualization.options?.columnMapping?.xAxis || defaultTimeXAxis
-              }
-              yAxisKeys={visualization.options.columnMapping?.yAxis || []}
-              configs={visualization.options}
-            />
-          );
-          break;
-        case TYPE_VISUALIZATION.line:
-          visualizationDisplay = (
-            <LineChart
-              data={data}
-              xAxisKey={
-                visualization.options?.columnMapping?.xAxis || defaultTimeXAxis
-              }
-              yAxisKeys={visualization.options.columnMapping?.yAxis || []}
-              configs={visualization.options}
-            />
-          );
-          break;
-        case TYPE_VISUALIZATION.area:
-          visualizationDisplay = (
-            <AreaChart
-              data={data}
-              xAxisKey={
-                visualization.options?.columnMapping?.xAxis || defaultTimeXAxis
-              }
-              yAxisKeys={visualization.options.columnMapping?.yAxis || []}
-              configs={visualization.options}
-            />
-          );
-          break;
-        case TYPE_VISUALIZATION.scatter:
-          visualizationDisplay = (
-            <ScatterChart
-              data={data}
-              xAxisKey={
-                visualization.options?.columnMapping?.xAxis || defaultTimeXAxis
-              }
-              yAxisKeys={visualization.options.columnMapping?.yAxis || []}
-              configs={visualization.options}
-            />
-          );
-          break;
-        case TYPE_VISUALIZATION.pie:
-          visualizationDisplay = (
-            <PieChart
-              data={queryResult}
-              xAxisKey={
-                visualization.options?.columnMapping?.xAxis || defaultTimeXAxis
-              }
-              yAxisKeys={visualization.options.columnMapping?.yAxis || []}
-              configs={visualization.options}
-            />
-          );
-          break;
-        default:
-          break;
-      }
+    switch (type) {
+      case TYPE_VISUALIZATION.table:
+        errorMessage = null;
+        visualizationDisplay = (
+          <VisualizationTable
+            data={queryResult}
+            setDataTable={setDataTable}
+            dataColumn={visualization.options.columns}
+          />
+        );
+        visualizationConfiguration = (
+          <TableConfigurations
+            data={queryResult}
+            visualization={visualization}
+            onChangeConfigurations={onChangeConfigurations}
+            dataTable={dataTable}
+          />
+        );
+        break;
+      case TYPE_VISUALIZATION.counter:
+        errorMessage = null;
+        visualizationDisplay = (
+          <VisualizationCounter
+            data={queryResult}
+            visualization={visualization}
+          />
+        );
+        visualizationConfiguration = (
+          <CounterConfiguration
+            data={queryResult}
+            visualization={visualization}
+            onChangeConfigurations={onChangeConfigurations}
+          />
+        );
+        break;
+      case TYPE_VISUALIZATION.pie:
+        visualizationConfiguration = (
+          <ChartConfigurations
+            data={queryResult}
+            visualization={visualization}
+            onChangeConfigurations={onChangeConfigurations}
+          />
+        );
+        visualizationDisplay = (
+          <PieChart
+            data={queryResult}
+            xAxisKey={
+              visualization.options?.columnMapping?.xAxis || defaultTimeXAxis
+            }
+            yAxisKeys={visualization.options.columnMapping?.yAxis || []}
+            configs={visualization.options}
+          />
+        );
+        break;
+      default:
+        // chart
+        visualizationConfiguration = (
+          <ChartConfigurations
+            data={queryResult}
+            visualization={visualization}
+            onChangeConfigurations={onChangeConfigurations}
+          />
+        );
+        visualizationDisplay = (
+          <VisualizationChart
+            data={queryResult}
+            xAxisKey={
+              visualization.options?.columnMapping?.xAxis || defaultTimeXAxis
+            }
+            yAxisKeys={visualization.options.columnMapping?.yAxis || []}
+            configs={visualization.options}
+            type={type}
+          />
+        );
     }
 
     return (
