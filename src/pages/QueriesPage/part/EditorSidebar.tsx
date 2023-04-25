@@ -1,36 +1,76 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { Box, Flex, Text } from '@chakra-ui/react';
 import { ArrowBackIcon } from '@chakra-ui/icons';
-import 'src/styles/components/EditorSidebar.scss';
-import { SchemaType, TableAttributeType } from '../../../utils/common';
+import { Box, Flex, Text } from '@chakra-ui/react';
 import _, { debounce } from 'lodash';
+import moment from 'moment';
+import React, { ReactNode, useCallback, useEffect, useState } from 'react';
+import { isMobile } from 'react-device-detect';
+import {
+  AvatarIcon,
+  CheckIcon,
+  ClockIcon,
+  SettingIcon,
+} from 'src/assets/icons';
+import rf from 'src/requests/RequestFactory';
+import 'src/styles/components/EditorSidebar.scss';
+import { IQuery } from 'src/utils/query.type';
 import { AppInput, AppSelect2 } from '../../../components';
 import SchemaDescribe from '../../../components/SqlEditor/SchemaDescribe';
 import SchemaTitle from '../../../components/SqlEditor/SchemaTitle';
+import { SchemaType, TableAttributeType } from '../../../utils/common';
 import { getErrorMessage } from '../../../utils/utils-helper';
 import { getLogoChainByChainId } from '../../../utils/utils-network';
 import { toastError } from '../../../utils/utils-notify';
-import rf from 'src/requests/RequestFactory';
 
 const TIME_DEBOUNCE = 1000;
+interface IEditerSideBar {
+  queryValue: IQuery | null;
+}
 
-const EditorSidebar = () => {
+interface IQueryInfo {
+  label: string;
+  value: any;
+  icon: ReactNode;
+  contentRight?: boolean;
+}
+
+const defaultQueryInfo: { [key: string]: IQueryInfo } = {
+  LAST_SAVED: {
+    label: 'Last saved',
+    value: '',
+    icon: <SettingIcon />,
+    contentRight: true,
+  },
+  QUERY_CREATED: {
+    label: 'Query created',
+    value: '',
+    icon: <ClockIcon />,
+    contentRight: true,
+  },
+  QUERY_PUBLIC: { label: 'Query is', value: '', icon: <AvatarIcon /> },
+  QUERY_PUBLISHED: { label: 'Query is', value: '', icon: <CheckIcon /> },
+};
+
+const EditorSidebar: React.FC<IEditerSideBar> = ({ queryValue }) => {
   const [tableSelected, setTableSelected] = useState<{
     chain: string;
     name: string;
+    fullName: string;
   } | null>(null);
   const [schemas, setSchemas] = useState<TableAttributeType[]>([]);
   const [paramsSearch, setParamsSearch] = useState({ chain: '', search: '' });
   const [schemaDescribe, setSchemaDescribe] = useState<SchemaType[] | null>();
+  const [queryInfo, setQueryInfo] = useState(defaultQueryInfo);
 
   const selectSchemaTitleHandler = async ({
     chain,
     name,
+    fullName,
   }: {
     chain: string;
     name: string;
+    fullName: string;
   }) => {
-    setTableSelected({ chain, name });
+    setTableSelected({ chain, name, fullName });
     try {
       const data = await rf.getRequest('DashboardsRequest').getSchemaOfTable({
         namespace: chain,
@@ -63,6 +103,27 @@ const EditorSidebar = () => {
   );
 
   useEffect(() => {
+    setQueryInfo((pre) => ({
+      LAST_SAVED: {
+        ...queryInfo.LAST_SAVED,
+        value: moment(queryValue?.updatedAt).fromNow(),
+      },
+      QUERY_CREATED: {
+        ...queryInfo.QUERY_CREATED,
+        value: moment(queryValue?.createdAt).fromNow(),
+      },
+      QUERY_PUBLIC: {
+        ...queryInfo.QUERY_PUBLIC,
+        value: queryValue?.isPrivate ? 'public' : 'private',
+      },
+      QUERY_PUBLISHED: {
+        ...queryInfo.QUERY_PUBLISHED,
+        value: queryValue?.isTemp ? 'keeped' : 'published',
+      },
+    }));
+  }, [queryValue]);
+
+  useEffect(() => {
     debounceFetchTablaData();
     return () => {
       debounceFetchTablaData.cancel();
@@ -77,6 +138,7 @@ const EditorSidebar = () => {
           tableDescribe={schemaDescribe}
           blockchain={tableSelected?.chain}
           name={tableSelected.name}
+          fullName={tableSelected.fullName}
         />
       )
     );
@@ -92,11 +154,13 @@ const EditorSidebar = () => {
                 <SchemaTitle
                   chainName={schema.namespace}
                   tableName={schema.table_name}
+                  tableFullName={schema.full_name}
                   className={'row-element'}
                   onClick={() =>
                     selectSchemaTitleHandler({
                       chain: schema.namespace,
                       name: schema.table_name,
+                      fullName: schema.full_name,
                     })
                   }
                 />
@@ -133,40 +197,59 @@ const EditorSidebar = () => {
     );
   };
   return (
-    <Box
-      maxW={'380px'}
-      width={'100%'}
-      height="100%"
-      px={5}
-      className="editor-sidebar"
-    >
-      <AppInput
-        value={paramsSearch.search}
-        marginBottom={4}
-        placeholder={'Filter tables...'}
-        size="md"
-        onChange={(e) => handleFilterTable(e)}
-      />
-      <Box marginBottom={4}>
-        {tableSelected ? (
-          <Flex alignItems={'center'}>
-            <Flex
-              className="header-table"
-              alignItems={'center'}
-              onClick={clickBackIconHandler}
-            >
-              <ArrowBackIcon />
-              <Box className={getLogoChainByChainId('ETH')} marginLeft={2} />
-              <Text ml={2}>{tableSelected?.chain}</Text>
-              <Text ml={2}>{tableSelected?.name}</Text>
+    <Box className="editor-sidebar-wrap" width={'100%'} maxW={'380px'}>
+      <Box className="editor-sidebar">
+        <AppInput
+          value={paramsSearch.search}
+          marginBottom={4}
+          placeholder={'Filter tables...'}
+          size="md"
+          onChange={(e) => handleFilterTable(e)}
+        />
+        <Box marginBottom={4}>
+          {tableSelected ? (
+            <Flex alignItems={'center'}>
+              <Flex
+                className="header-table"
+                alignItems={'center'}
+                onClick={clickBackIconHandler}
+              >
+                <ArrowBackIcon />
+                <Box className={getLogoChainByChainId('ETH')} marginLeft={2} />
+                <Text ml={2}>{tableSelected?.chain}</Text>
+                <Text ml={2}>{tableSelected?.name}</Text>
+              </Flex>
             </Flex>
-          </Flex>
-        ) : (
-          renderHeaderRawTable()
-        )}
+          ) : (
+            renderHeaderRawTable()
+          )}
+        </Box>
+        {renderListSchema()}
+        {renderTableDescribe()}
       </Box>
-      {renderListSchema()}
-      {renderTableDescribe()}
+      {!!queryValue && !queryValue?.isTemp && (
+        <Flex direction={'column'} className="query-info-wrap">
+          {Object.values(queryInfo).map((query, id) => (
+            <Flex
+              key={id + 'query_info'}
+              className="query-info"
+              justifyContent={query.contentRight ? 'space-between' : 'left'}
+            >
+              <Flex alignItems={'center'} gap={'6px'}>
+                <span>{query.icon}</span>
+                <Box className="query-info__label">{query.label} &nbsp;</Box>
+              </Flex>
+
+              <Box
+                className="query-info__value"
+                fontStyle={query.contentRight ? 'italic' : 'normal'}
+              >
+                {query.value}
+              </Box>
+            </Flex>
+          ))}
+        </Flex>
+      )}
     </Box>
   );
 };

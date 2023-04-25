@@ -1,6 +1,6 @@
 import { Checkbox } from '@chakra-ui/checkbox';
 import { Grid, GridItem, Text } from '@chakra-ui/layout';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { VISUALIZATION_DEBOUNCE } from 'src/pages/QueriesPage/part/VisualizationDisplay';
 import 'src/styles/components/CounterConfigurations.scss';
 import { VisualizationType } from 'src/utils/query.type';
@@ -35,36 +35,39 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
     [axisOptions],
   );
 
-  let timeout: any = null;
+  const dataColumn = editVisualization.options;
 
-  useEffect(() => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => {
-      onChangeConfigurations(editVisualization);
+  const timeout = useRef() as any;
+
+  const onChangeDebounce = (visualization: VisualizationType) => {
+    clearTimeout(timeout.current);
+    timeout.current = setTimeout(() => {
+      onChangeConfigurations(visualization);
     }, VISUALIZATION_DEBOUNCE);
+  };
 
-    return () => clearTimeout(timeout);
-  }, [editVisualization]);
+  const onChangeVisualization = (visualization: VisualizationType) => {
+    setEditVisualization(visualization);
+    onChangeDebounce(visualization);
+  };
 
   const onChangeCounterName = (e: any) => {
-    setEditVisualization((prevState) => ({
-      ...prevState,
+    onChangeVisualization({
+      ...editVisualization,
       name: e.target.value,
-    }));
+    });
   };
 
   const onChangeCounterConfigurations = (data: any) => {
-    setEditVisualization((prevState) => {
-      return {
-        ...prevState,
-        options: {
-          ...prevState.options,
-          ...data,
-        },
-      };
+    onChangeVisualization({
+      ...editVisualization,
+      options: {
+        ...editVisualization.options,
+        ...data,
+      },
     });
   };
-  const dataColumn = editVisualization.options;
+
   const onKeyDown = (e: { keyCode: number; preventDefault: () => void }) => {
     if (
       e.keyCode === 189 ||

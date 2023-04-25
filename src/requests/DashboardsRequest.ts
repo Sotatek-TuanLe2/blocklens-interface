@@ -3,10 +3,13 @@ import { QueryType } from '../utils/query.type';
 import BaseRequest from './BaseRequest';
 
 export interface DashboardsParams {
-  order?: string;
-  timeRange?: string;
   search?: string;
   tags?: string;
+}
+
+export interface CreateDashboardParams {
+  name: string;
+  isPrivate: boolean;
 }
 
 interface TableParams {
@@ -16,8 +19,6 @@ interface TableParams {
 }
 
 export interface QueriesParams {
-  order?: string;
-  timeRange?: string;
   search?: string;
   tags?: string;
 }
@@ -82,14 +83,20 @@ export default class DashboardsRequest extends BaseRequest {
 
   /* Dashboards page */
 
-  getDashboards(params: DashboardsParams) {
-    const url = 'https://run.mocky.io/v3/8deb0b1a-289e-4f91-8669-679338169925';
-    return this.get(url, { ...params });
+  getListBrowseDashboard(params: IGetBrowse) {
+    const url = `https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/dashboard/list-browse-dashboards`;
+    return this.get(url, params);
   }
 
-  getQueries(params: QueriesParams) {
-    const url = 'https://run.mocky.io/v3/1fc26a41-6ebc-43fc-88a8-b2c36d9fe085';
-    return this.get(url, { ...params });
+  getListBrowseQueries(params: IGetBrowse) {
+    const url = `https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/queries/list-browse-queries`;
+    return this.get(url, params);
+  }
+
+  createNewDashboard(data: CreateDashboardParams) {
+    const url =
+      'https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/dashboard/create-dashboard';
+    return this.post(url, data);
   }
 
   getPopularDashboardTags() {
@@ -141,68 +148,63 @@ export default class DashboardsRequest extends BaseRequest {
   /* Query page */
 
   getTables(params: TableParams) {
-    const url = 'http://172.16.199.30:8002/databases/tables';
+    const url =
+      'https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/databases/tables';
     return this.get(url, { ...params });
   }
 
   getSchemaOfTable(params: SchemaParams) {
-    const url = `http://172.16.199.30:8002/databases/${params.namespace}/${params.tableName}/schema`;
+    const url = `https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/databases/${params.namespace}/${params.tableName}/schema`;
     return this.get(url);
   }
 
   getQueryById(params: DataQuery) {
-    const url = 'http://172.16.199.30:8002/queries/find-query';
+    const url =
+      'https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/queries/find-query';
     return this.get(url, params);
   }
 
   createNewQuery(query: QueryType) {
-    const url = 'http://172.16.199.30:8002/queries/create-query';
+    const url =
+      'https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/queries/create-query';
     return this.post(url, query);
   }
 
   executeQuery(queryId: string) {
-    const url = 'http://172.16.199.30:8002/query-executors/execute-query';
+    const url =
+      'https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/query-executors/execute-query';
     return this.post(url, { queryId });
   }
 
   getQueryExecutionId(params: DataQuery) {
-    const url = 'http://172.16.199.30:8002/query-results/query-result';
+    const url =
+      'https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/query-results/query-result';
     return this.get(url, params);
   }
 
   getQueryResult(params: QueryResult) {
-    const url = `http://172.16.199.30:8002/query-executors/get-execution`;
+    const url = `https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/query-executors/get-execution`;
     return this.get(url, params);
   }
 
   updateQuery(params: IUpdateQuery, queryId: string) {
-    const url = `http://172.16.199.30:8002/queries/${queryId}/update-query`;
+    const url = `https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/queries/${queryId}/update-query`;
     return this.patch(url, params);
   }
 
   insertVisualization(data: IInsertVisualization) {
-    const url = `http://172.16.199.30:8002/visualizations/insert-visual`;
+    const url = `https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/visualizations/insert-visual`;
     return this.post(url, data);
   }
 
   deleteVisualization(data: IDeleteVisualization) {
-    const url = `http://172.16.199.30:8002/visualizations/${data.visualId}/delete-visual`;
+    const url = `https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/visualizations/${data.visualId}/delete-visual`;
     return this.delete(url);
   }
 
   editVisualization(data: IEditVisualization, visualId: string) {
-    const url = `http://172.16.199.30:8002/visualizations/${visualId}/edit-visual`;
+    const url = `https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/visualizations/${visualId}/edit-visual`;
     return this.patch(url, data);
-  }
-
-  getListBrowseDashboard(params: IGetBrowse) {
-    const url = `http://172.16.199.30:8002/dashboard/list-browse-dashboards`;
-    return this.get(url, params);
-  }
-
-  getListBrowseQueries(params: IGetBrowse) {
-    const url = `http://172.16.199.30:8002/queries/list-browse-queries`;
-    return this.get(url, params);
   }
 
   /* End of Query page */

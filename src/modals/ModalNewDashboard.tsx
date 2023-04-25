@@ -1,4 +1,4 @@
-import { Checkbox, Flex, Text } from '@chakra-ui/react';
+import { Checkbox, Flex } from '@chakra-ui/react';
 import React from 'react';
 import { AppButton, AppField, AppInput } from 'src/components';
 import 'src/styles/components/BaseModal.scss';
@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { useHistory } from 'react-router';
 import { toastError } from 'src/utils/utils-notify';
 import { getErrorMessage } from 'src/utils/utils-helper';
-import useUser from 'src/hooks/useUser';
+import rf from 'src/requests/RequestFactory';
 
 interface IModalNewDashboard {
   open: boolean;
@@ -16,28 +16,31 @@ interface IModalNewDashboard {
 
 interface IDataSettingForm {
   title: string;
-  url: string;
   private: boolean;
 }
 
 const ModalNewDashboard: React.FC<IModalNewDashboard> = ({ open, onClose }) => {
   const initDataFormSetting = {
     title: '',
-    url: '',
     private: false,
   };
   const history = useHistory();
-  const { user } = useUser();
 
   const [dataForm, setDataForm] =
     useState<IDataSettingForm>(initDataFormSetting);
 
-  const handleSubmitForm = () => {
+  const handleSubmitForm = async () => {
     try {
-      history.push(`/dashboard/${user?.getId()}/${dataForm.url}`);
+      const result = await rf
+        .getRequest('DashboardsRequest')
+        .createNewDashboard({
+          name: dataForm.title,
+          isPrivate: dataForm.private,
+        });
+      history.push(`/dashboard/${result.id}`);
       onClose();
-    } catch (e) {
-      toastError({ message: getErrorMessage(e) });
+    } catch (error) {
+      toastError({ message: getErrorMessage(error) });
     }
   };
 
@@ -45,6 +48,13 @@ const ModalNewDashboard: React.FC<IModalNewDashboard> = ({ open, onClose }) => {
     onClose();
     setDataForm(initDataFormSetting);
   };
+
+  // const defaultSlug = useMemo(() => {
+  //   if (dataForm.title) {
+  //     return dataForm.title.trim().replaceAll(" ", "-");
+  //   }
+  //   return "my-dashboard";
+  // }, [dataForm.title]);
 
   return (
     <BaseModal isOpen={open} onClose={handleCloseModal} size="md">
@@ -63,16 +73,6 @@ const ModalNewDashboard: React.FC<IModalNewDashboard> = ({ open, onClose }) => {
                 ...dataForm,
                 title: e.target.value,
               });
-            }}
-          />
-        </AppField>
-        <AppField label={'Customize the URL'}>
-          <AppInput
-            value={dataForm.url}
-            size="sm"
-            placeholder="my-dashboard"
-            onChange={(e) => {
-              setDataForm({ ...dataForm, url: e.target.value });
             }}
           />
         </AppField>

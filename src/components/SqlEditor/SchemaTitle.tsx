@@ -9,6 +9,7 @@ import {
 
 type Props = {
   tableName: string;
+  tableFullName: string;
   onClick?: () => void;
   className?: string;
   chainName: string;
@@ -17,6 +18,7 @@ type Props = {
 const SidebarEditorRow = ({
   chainName,
   tableName,
+  tableFullName,
   className,
   onClick,
 }: Props) => {
@@ -41,7 +43,7 @@ const SidebarEditorRow = ({
 
   const addTableNameToEditor = () => {
     const position = editor.current.editor.getCursorPosition();
-    editor.current.editor.session.insert(position, tableName);
+    editor.current.editor.session.insert(position, tableFullName);
   };
 
   return (
@@ -55,7 +57,6 @@ const SidebarEditorRow = ({
           className={'row-name'}
         >
           <Flex alignItems={'center'} className="row-name__row">
-            <InfoOutlineIcon />
             <Text
               fontSize={'13px'}
               fontWeight={'600'}
@@ -71,7 +72,6 @@ const SidebarEditorRow = ({
           <div>{getChainIcon()}</div>
         </Flex>
         <Flex alignItems={'center'} className="row-icon">
-          <ViewIcon marginLeft={3} />
           <ChevronRightIcon
             marginLeft={3}
             onClick={addTableNameToEditor}

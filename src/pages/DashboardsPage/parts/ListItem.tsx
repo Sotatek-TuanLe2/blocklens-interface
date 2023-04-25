@@ -50,7 +50,7 @@ const ListItem: React.FC<IListItem> = (props) => {
   const getTitleUrl = (): string => {
     switch (type) {
       case LIST_ITEM_TYPE.DASHBOARDS:
-        return `/dashboard/${id}/`;
+        return `/dashboards/${id}/`;
       case LIST_ITEM_TYPE.QUERIES:
         return `/queries/${id}`;
       default:
