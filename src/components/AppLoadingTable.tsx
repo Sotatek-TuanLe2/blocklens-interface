@@ -6,11 +6,13 @@ import 'src/styles/components/AppLoadingTable.scss';
 interface IAppLoadingTable {
   widthColumns: number[];
   rowNumber?: number;
+  className?: string;
 }
 
 const AppLoadingTable: FC<IAppLoadingTable> = ({
   widthColumns,
   rowNumber = 3,
+  className,
 }) => {
   if (isMobile) return null;
 
@@ -30,7 +32,7 @@ const AppLoadingTable: FC<IAppLoadingTable> = ({
   }
 
   return (
-    <Table>
+    <Table className={className}>
       <Tbody>{rowLoadings}</Tbody>
     </Table>
   );
