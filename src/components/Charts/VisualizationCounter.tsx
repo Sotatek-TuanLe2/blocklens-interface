@@ -16,28 +16,26 @@ const VisualizationCounter = ({ data, visualization }: Props) => {
   };
   const dataOptions = visualization?.options;
   const dataCounter = () => {
-    if (data[dataOptions.rowNumber - 1] === undefined) return;
+    if (data[dataOptions.rowNumber - 1] === undefined) return '';
     const dataColumn: any = data[dataOptions.rowNumber - 1];
     const indexColumn = dataOptions.counterColName;
     return dataColumn[indexColumn];
   };
-
   const checkTypeValue = typeof dataCounter();
-
-  const defaultSize = NUMBER_SIZE.start;
-  // -
-  // (dataCounter().toString().length +
-  //   Number(dataOptions?.stringDecimal) +
-  //   dataOptions?.stringPrefix?.toString().length +
-  //   dataOptions?.stringSuffix?.toString().length) /
-  //   NUMBER_SIZE.percent;
-
+  const defaultSize =
+    NUMBER_SIZE.start -
+    (dataCounter().length +
+      Number(dataOptions?.stringDecimal) +
+      dataOptions?.stringPrefix?.toString().length +
+      dataOptions?.stringSuffix?.toString().length) /
+      NUMBER_SIZE.percent;
   useEffect(() => {
     setSize(defaultSize);
   }, [
     dataOptions.counterColName,
     dataOptions.stringPrefix,
     dataOptions.stringDecimal,
+    dataOptions.rowNumber,
   ]);
 
   return (
