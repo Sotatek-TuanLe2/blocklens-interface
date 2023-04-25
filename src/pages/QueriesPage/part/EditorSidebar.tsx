@@ -213,11 +213,21 @@ const EditorSidebar: React.FC<IEditerSideBar> = ({ queryValue }) => {
                 className="header-table"
                 alignItems={'center'}
                 onClick={clickBackIconHandler}
+                isTruncated
               >
                 <ArrowBackIcon />
-                <Box className={getLogoChainByChainId('ETH')} marginLeft={2} />
-                <Text ml={2}>{tableSelected?.chain}</Text>
-                <Text ml={2}>{tableSelected?.name}</Text>
+                <div>
+                  <Box
+                    className={getLogoChainByChainId('ETH')}
+                    marginLeft={2}
+                  />
+                </div>
+                <Text isTruncated ml={2} title={tableSelected?.chain}>
+                  {tableSelected?.chain}
+                </Text>
+                <Text isTruncated ml={2} title={tableSelected?.name}>
+                  {tableSelected?.name}
+                </Text>
               </Flex>
             </Flex>
           ) : (
