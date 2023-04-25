@@ -66,7 +66,6 @@ const EditorSidebar: React.FC<IEditerSideBar> = ({ queryValue }) => {
   const [chainsSupported, setChainsSupported] = useState<
     { value: string; label: string }[]
   >([]);
-  console.log('paramsSearch', paramsSearch);
   useEffect(() => {
     (async () => {
       const listChainRes = await rf
