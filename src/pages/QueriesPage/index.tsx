@@ -40,7 +40,7 @@ const QueriesPage = () => {
   const [switchTheme, setSwitchTheme] = useState<boolean>(false);
   const [expandEditor, setExpandEditor] = useState<boolean>(false);
   const [showSaveModal, setShowSaveModal] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingResult, setIsLoadingResult] = useState<boolean>(!!queryId);
 
   const history = useHistory();
 
@@ -99,7 +99,7 @@ const QueriesPage = () => {
   };
 
   const fetchQueryResult = async (executionId: string) => {
-    setIsLoading(true);
+    setIsLoadingResult(true);
     const res = await rf.getRequest('DashboardsRequest').getQueryResult({
       queryId,
       executionId,
@@ -116,11 +116,11 @@ const QueriesPage = () => {
         if (resInterval.status === 'DONE') {
           clearInterval(fetchQueryResultInterval);
           setQueryResult(resInterval.result);
-          setIsLoading(false);
+          setIsLoadingResult(false);
         }
       }, 2000);
     } else {
-      setIsLoading(false);
+      setIsLoadingResult(false);
       setQueryResult(res.result);
     }
   };
@@ -315,30 +315,31 @@ const QueriesPage = () => {
                 </Box>
               </Box>
               <>
-                {!isLoading && !!queryValue && !!queryResult.length && (
-                  <Box mt={8}>
-                    <VisualizationDisplay
-                      queryResult={queryResult}
-                      queryValue={queryValue}
-                      onReload={fetchQuery}
-                    />
-                  </Box>
-                )}
-
-                {!isLoading && !queryResult.length && queryId && (
-                  <Flex
-                    className="empty-table"
-                    justifyContent={'center'}
-                    alignItems="center"
-                  >
-                    No data...
-                  </Flex>
-                )}
-                {isLoading && queryId && (
+                {isLoadingResult ? (
                   <AppLoadingTable
                     widthColumns={[100]}
                     className="visual-table"
                   />
+                ) : (
+                  queryId &&
+                  !!queryValue &&
+                  (!!queryResult.length ? (
+                    <Box mt={8}>
+                      <VisualizationDisplay
+                        queryResult={queryResult}
+                        queryValue={queryValue}
+                        onReload={fetchQuery}
+                      />
+                    </Box>
+                  ) : (
+                    <Flex
+                      className="empty-table"
+                      justifyContent={'center'}
+                      alignItems="center"
+                    >
+                      No data...
+                    </Flex>
+                  ))
                 )}
               </>
             </Box>
