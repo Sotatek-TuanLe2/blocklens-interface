@@ -24,7 +24,6 @@ import {
 } from 'src/utils/query.type';
 import { formatVisualizationValue } from 'src/utils/utils-format';
 import { COLORS, getHourAndMinute } from '../../utils/common';
-import CustomLabelList from './CustomLabelList';
 import CustomLegend from './CustomLegend';
 import CustomTooltip from './CustomTooltip';
 

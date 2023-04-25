@@ -20,7 +20,7 @@ const CustomTooltip = (props: any) => {
               <span style={{ backgroundColor: `${entry.fill}` }}></span>
               <span>{`${entry.name}:  `}</span>
               <span>
-                {prop?.type === TYPE_VISUALIZATION.pie
+                {prop?.type === TYPE_VISUALIZATION.pie && prop?.numberFormat
                   ? formatNumberWithDecimalDigits(
                       Number(entry.value),
                       prop?.numberFormat,
