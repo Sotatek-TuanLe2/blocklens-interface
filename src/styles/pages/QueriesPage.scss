@@ -107,6 +107,22 @@
     @include desktop {
       width: 100%;
     }
+
+    .empty-table {
+      height: 168px;
+      border: 1px solid #747474;
+      margin-top: 32px;
+    }
+
+    .visual-table {
+      margin-top: 20px;
+      border: 1px solid #747474;
+      .tr-list {
+        td {
+          border-bottom: none;
+        }
+      }
+    }
   }
 
   .schema-detail-title {
@@ -134,14 +150,14 @@
         margin-bottom: 10px;
       }
 
-      &__barchart {
+      &--bar, &--line, &--scatter {
         width: 96% !important;
         height: 92% !important;
       }
 
-      &__linechart {
+      &--areachart {
         width: 96% !important;
-        height: 92% !important;
+        height: 96% !important;
       }
 
       &__error {
