@@ -271,7 +271,7 @@ const QueriesPage = () => {
             )}
           </Flex>
           <div className="queries-page">
-            <EditorSidebar />
+            <EditorSidebar queryValue={queryValue} />
             <Box className="queries-page__right-side">
               <Box width={'100%'}>
                 <Box bg={switchTheme ? '#fff' : '#272822'} h="10px"></Box>

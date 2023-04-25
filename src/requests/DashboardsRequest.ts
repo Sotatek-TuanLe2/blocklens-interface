@@ -3,15 +3,12 @@ import { QueryType } from '../utils/query.type';
 import BaseRequest from './BaseRequest';
 
 export interface DashboardsParams {
-  order?: string;
-  timeRange?: string;
   search?: string;
   tags?: string;
 }
 
 export interface CreateDashboardParams {
   name: string;
-  slug: string;
   isPrivate: boolean;
 }
 
@@ -33,8 +30,6 @@ export interface ListParams {
 }
 
 export interface QueriesParams {
-  order?: string;
-  timeRange?: string;
   search?: string;
   tags?: string;
 }

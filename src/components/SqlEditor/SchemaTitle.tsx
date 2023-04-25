@@ -57,7 +57,6 @@ const SidebarEditorRow = ({
           className={'row-name'}
         >
           <Flex alignItems={'center'} className="row-name__row">
-            <InfoOutlineIcon />
             <Text
               fontSize={'13px'}
               fontWeight={'600'}
@@ -73,7 +72,6 @@ const SidebarEditorRow = ({
           <div>{getChainIcon()}</div>
         </Flex>
         <Flex alignItems={'center'} className="row-icon">
-          <ViewIcon marginLeft={3} />
           <ChevronRightIcon
             marginLeft={3}
             onClick={addTableNameToEditor}
