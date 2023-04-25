@@ -107,27 +107,27 @@ const VisualizationPieChart = ({
   const CustomLegend = (props: any) => {
     const { payload, onToggleLegend, data } = props;
 
-    const newData = (data as any).map((item: any) => {
+    const dataClone = (data as any).map((item: any) => {
       return {
         value: item[xAxisKey || 0],
       };
     });
 
-    const newData2 = [];
-    for (const item of newData) {
+    const newData = [];
+    for (const item of dataClone) {
       const index = payload.findIndex(
         (legendItem: any) => legendItem.value === item.value,
       );
       if (index !== -1) {
-        newData2.push(payload[index]);
+        newData.push(payload[index]);
       } else {
-        newData2.push(item);
+        newData.push(item);
       }
     }
 
     return (
       <div>
-        {newData2.map((entry: any, index: number) => (
+        {newData.map((entry: any, index: number) => (
           <div key={`item-${index}`} className="custom-legend">
             <span
               onClick={() => onToggleLegend(entry.value)}
