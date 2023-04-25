@@ -13,6 +13,7 @@ import { Flex } from '@chakra-ui/react';
 import { ChartProps } from './LineChart';
 import { useState } from 'react';
 import _ from 'lodash';
+import BigNumber from 'bignumber.js';
 
 type ChartConfigType = VisualizationOptionsType;
 type Props = ChartProps & {
@@ -67,20 +68,20 @@ const VisualizationPieChart = ({
 
     const groupedData = data.reduce(
       (acc: { [key: string]: number }, item: any) => {
-        if (typeof item[yAxisKeys?.[0]]) {
-          acc[item[xAxisKey || 0]] = [yAxisKeys?.[0]].length;
-        } else {
-          acc[item[xAxisKey || 0]] = item[yAxisKeys?.[0]];
-        }
+        acc[item[xAxisKey || 0]] = item[yAxisKeys?.[0]];
         return acc;
       },
       {},
     );
 
-    const reducedData = Object.keys(groupedData).map((name) => {
-      return { [xAxisKey || 0]: name, [yAxisKeys?.[0]]: groupedData[name] };
-    });
-
+    const reducedData = Object.keys(groupedData)
+      .filter((name) => {
+        const isNumber = !new BigNumber(groupedData[name]).isNaN();
+        return isNumber && new BigNumber(groupedData[name]).isGreaterThan(0);
+      })
+      .map((name) => {
+        return { [xAxisKey || 0]: name, [yAxisKeys?.[0]]: +groupedData[name] };
+      });
     return reducedData;
   }
 
