@@ -150,14 +150,14 @@
         margin-bottom: 10px;
       }
 
-      &__barchart {
+      &--bar, &--line, &--scatter {
         width: 96% !important;
         height: 92% !important;
       }
 
-      &__linechart {
+      &--areachart {
         width: 96% !important;
-        height: 92% !important;
+        height: 96% !important;
       }
 
       &__error {
