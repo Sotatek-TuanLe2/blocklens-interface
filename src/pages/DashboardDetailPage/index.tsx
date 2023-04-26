@@ -1,38 +1,35 @@
-import { Avatar, Badge, Box, Flex } from '@chakra-ui/react';
-import { useEffect, useMemo, useState } from 'react';
+import { Avatar, Box, Flex } from '@chakra-ui/react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Layout, Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import ReactMarkdown from 'react-markdown';
 import 'react-resizable/css/styles.css';
 import { useParams } from 'react-router-dom';
-import { ActiveStarIcon, PenIcon, StarIcon } from 'src/assets/icons';
+import { PenIcon } from 'src/assets/icons';
 import { AppButton } from 'src/components';
-import VisualizationAreaChart from 'src/components/Charts/AreaChart';
-import VisualizationBarChart from 'src/components/Charts/BarChart';
-import VisualizationLineChart from 'src/components/Charts/LineChart';
-import VisualizationPieChart from 'src/components/Charts/PieChart';
-import VisualizationTable from 'src/components/Charts/VisualizationTable';
+
 import useUser from 'src/hooks/useUser';
+import { BasePage } from 'src/layouts';
 import ModalAddTextWidget from 'src/modals/ModalAddTextWidget';
 import ModalAddVisualization from 'src/modals/ModalAddVisualization';
 import ModalEditItemDashBoard from 'src/modals/ModalEditItemDashBoard';
 import ModalForkDashBoardDetails from 'src/modals/ModalForkDashBoardDetails';
 import ModalSettingDashboardDetails from 'src/modals/ModalSettingDashboardDetails';
 import ModalShareDashboardDetails from 'src/modals/ModalShareDashboardDetails';
-import DashboardsRequest from 'src/requests/DashboardsRequest';
 import rf from 'src/requests/RequestFactory';
+import 'src/styles/components/TableValue.scss';
 import 'src/styles/pages/DashboardDetailPage.scss';
-import { QueryTypeSingle, TYPE_VISUALIZATION } from 'src/utils/query.type';
+
+import 'src/styles/components/Chart.scss';
+import { IQuery } from 'src/utils/query.type';
 import { getErrorMessage } from 'src/utils/utils-helper';
-import { objectKeys } from 'src/utils/utils-network';
 import { toastError } from 'src/utils/utils-notify';
-import { ColumnDef } from '@tanstack/react-table';
-import { BasePage } from 'src/layouts';
-import VisualizationScatterChart from 'src/components/Charts/ScatterChart';
+import VisualizationItem from './parts/VisualizationItem';
 
 interface ParamTypes {
   authorId: string;
   dashboardId: string;
+  queryId: string;
 }
 
 interface IButtonModalFork {
@@ -42,10 +39,13 @@ interface IButtonModalFork {
 }
 
 export interface ILayout extends Layout {
+  options: any;
   i: string;
   id: number;
-  content: [];
-  meta: Layout;
+  visualizationWidgets: [];
+  text: string;
+  visualization: any;
+  content: any;
 }
 export enum TYPE_MODAL {
   ADD = 'add',
@@ -54,16 +54,13 @@ export enum TYPE_MODAL {
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
-const hashTag: string[] = ['zkSync', 'bridge', 'l2'];
-
 const DashboardDetailPage: React.FC = () => {
   const { authorId, dashboardId } = useParams<ParamTypes>();
   const { user } = useUser();
-
   const [editMode, setEditMode] = useState<boolean>(false);
   const [dataLayouts, setDataLayouts] = useState<ILayout[]>([]);
+  const [dataDashboard, setDataDashboard] = useState<IQuery>();
   const [layoutChange, setLayoutChange] = useState<Layout[]>([]);
-  const [queryValues, setQueryValues] = useState<unknown[]>([]);
   const [selectedItem, setSelectedItem] = useState<ILayout>(Object);
   const [typeModalTextWidget, setTypeModalTextWidget] = useState<string>(``);
 
@@ -74,132 +71,58 @@ const DashboardDetailPage: React.FC = () => {
   const [openModalEdit, setOpenModalEdit] = useState<boolean>(false);
   const [openModalAddTextWidget, setOpenModalAddTextWidget] =
     useState<boolean>(false);
+  const userName =
+    `${user?.getFirstName() || ''}` + `${user?.getLastName() || ''}`;
 
-  const userName = `${user?.getFirstName()}` + `${user?.getLastName()}`;
-
-  const fetchLayoutData = useMemo(
-    () => async () => {
-      try {
-        const res = await rf.getRequest('DashboardsRequest').getDashboardItem();
-
-        const layouts = res.map((item: ILayout) => {
-          const { meta } = item;
+  const fetchLayoutData = useCallback(async () => {
+    try {
+      const res = await rf
+        .getRequest('DashboardsRequest')
+        .getDashboardById({ dashboardId });
+      if (res) {
+        const visualization = res.visualizationWidgets.map((item: ILayout) => {
+          const { options } = item;
           return {
-            x: meta.x,
-            y: meta.y,
-            w: meta.w,
-            h: meta.h,
-            i: meta.i,
+            x: options.sizeX,
+            y: options.sizeY,
+            w: options.col,
+            h: options.row,
+            i: item.id,
             id: item.id,
-            content: item.content,
+            content: item.visualization,
           };
         });
-        setDataLayouts(layouts);
-      } catch (error) {
-        toastError({
-          message: getErrorMessage(error),
-        });
-      }
-    },
-    [dataLayouts],
-  );
+        const textWidgets = res.textWidgets.map((item: ILayout) => {
+          const { options } = item;
 
-  const fetchQueryResults = async () => {
-    try {
-      const dashboardsRequest = new DashboardsRequest();
-      // const queryValues = await dashboardsRequest.getQueriesValues();
-      setQueryValues(queryValues);
-    } catch (err) {
-      getErrorMessage(err);
+          return {
+            x: options.sizeX,
+            y: options.sizeY,
+            w: options.col,
+            h: options.row,
+            i: item.id,
+            id: item.id,
+            text: item.text,
+            content: {},
+          };
+        });
+        setDataDashboard(res);
+        setDataLayouts(visualization.concat(textWidgets));
+      }
+    } catch (error) {
+      toastError({
+        message: getErrorMessage(error),
+      });
     }
-  };
+  }, [dashboardId]);
 
   useEffect(() => {
     fetchLayoutData();
-    fetchQueryResults();
   }, []);
 
-  const tableValuesColumnConfigs = useMemo(() => {
-    const columns =
-      Array.isArray(queryValues) && queryValues[0]
-        ? objectKeys(queryValues[0])
-        : [];
-
-    return columns.map(
-      (col) =>
-        ({
-          id: col,
-          accessorKey: col,
-          header: col,
-          enableResizing: true,
-          size: 100,
-          align: 'left',
-          type: 'normal',
-          format: '',
-          coloredPositive: false,
-          coloredNegative: false,
-          coloredProgress: false,
-          isHidden: false,
-        } as ColumnDef<unknown>),
-    );
-  }, [queryValues]);
-
-  const renderVisualization = (type: string) => {
-    switch (type) {
-      case TYPE_VISUALIZATION.table:
-        return (
-          <VisualizationTable
-            dataColumn={tableValuesColumnConfigs}
-            data={queryValues}
-          />
-        );
-      case TYPE_VISUALIZATION.line:
-        return (
-          <VisualizationLineChart
-            data={queryValues}
-            xAxisKey="time"
-            yAxisKeys={['size']}
-          />
-        );
-      case TYPE_VISUALIZATION.column:
-        return (
-          <VisualizationBarChart
-            data={queryValues}
-            xAxisKey="time"
-            yAxisKeys={['size']}
-          />
-        );
-      case TYPE_VISUALIZATION.area:
-        return (
-          <VisualizationAreaChart
-            data={queryValues}
-            xAxisKey="time"
-            yAxisKeys={['size']}
-          />
-        );
-      case TYPE_VISUALIZATION.scatter:
-        return (
-          <VisualizationScatterChart
-            data={queryValues}
-            xAxisKey="time"
-            yAxisKeys={['size']}
-          />
-        );
-      case TYPE_VISUALIZATION.pie:
-        return (
-          <VisualizationPieChart
-            data={queryValues}
-            xAxisKey="time"
-            yAxisKeys={['size']}
-          />
-        );
-      default:
-      // return <AddVisualization onAddVisualize={addVisualizationHandler} />;
-    }
-  };
-
   const _renderButtons = () => {
-    const isAccountsDashboard = user?.getId() === authorId;
+    const isAccountsDashboard = true;
+    // user?.getId() === authorId;
     const editButtons = [
       { title: 'Settings', setModal: setOpenModalSetting },
       { title: 'Add text widget', setModal: setOpenModalAddTextWidget },
@@ -226,7 +149,6 @@ const DashboardDetailPage: React.FC = () => {
           ))
         ) : (
           <>
-            <ButtonVoteStar />
             {isAccountsDashboard && (
               <ButtonModalFork
                 openModalFork={openModalFork}
@@ -254,16 +176,6 @@ const DashboardDetailPage: React.FC = () => {
           </AppButton>
         )}
       </Flex>
-    );
-  };
-
-  const checkTypeVisualization = (data: QueryTypeSingle[]) => {
-    return data.map((i) =>
-      i.visualizations.type === 'table'
-        ? i.visualizations.type
-        : i.visualizations.type === 'chart'
-        ? i.visualizations.options.globalSeriesType
-        : null,
     );
   };
 
@@ -310,7 +222,6 @@ const DashboardDetailPage: React.FC = () => {
       content: item.content,
       meta: layout[index],
     }));
-
     const processResults = await processGetItems(ids);
     if (processResults.every((result) => !!result.id)) {
       try {
@@ -335,19 +246,13 @@ const DashboardDetailPage: React.FC = () => {
             <Avatar name={user?.getFirstName()} size="sm" />
             <div>
               <div className="dashboard-name">
-                @{userName} / {dashboardId}
+                @{userName} / {dataDashboard?.name || ''}
               </div>
-              <Flex gap={1} pt={'10px'}>
-                {hashTag.map((item) => (
-                  <Badge size={'sm'} key={item}>
-                    #{item}
-                  </Badge>
-                ))}
-              </Flex>
             </div>
           </Flex>
           {_renderButtons()}
         </header>
+
         {!!dataLayouts.length ? (
           <ResponsiveGridLayout
             onLayoutChange={onLayoutChange}
@@ -357,19 +262,18 @@ const DashboardDetailPage: React.FC = () => {
             cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
             isDraggable={editMode}
             isResizable={editMode}
+            measureBeforeMount
           >
             {dataLayouts.map((item) => (
-              <div className="box-layout" key={item.i}>
+              <div className="box-layout" key={item.id}>
                 <div className="box-chart">
-                  {item.content.length > 0 ? (
+                  {item.content.hasOwnProperty('id') ? (
                     <>
-                      {renderVisualization(
-                        checkTypeVisualization(item.content).toString(),
-                      )}
+                      <VisualizationItem visualization={item.content} />
                     </>
                   ) : (
                     <div className="box-text-widget">
-                      <ReactMarkdown>{item.i}</ReactMarkdown>
+                      <ReactMarkdown>{item.text}</ReactMarkdown>
                     </div>
                   )}
                 </div>
@@ -380,7 +284,7 @@ const DashboardDetailPage: React.FC = () => {
                     onClick={() => {
                       setTypeModalTextWidget(TYPE_MODAL.EDIT);
                       setSelectedItem(item);
-                      item.content.length > 0
+                      item.content.hasOwnProperty('id')
                         ? setOpenModalEdit(true)
                         : setOpenModalAddTextWidget(true);
                     }}
@@ -401,14 +305,15 @@ const DashboardDetailPage: React.FC = () => {
             This dashboard is empty.
           </Flex>
         )}
+
         <ModalSettingDashboardDetails
           url={dashboardId}
           authorId={authorId}
           open={openModalSetting}
-          hashTag={hashTag}
           onClose={() => setOpenModalSetting(false)}
         />
         <ModalAddTextWidget
+          dashboardId={dashboardId}
           selectedItem={selectedItem}
           dataLayouts={dataLayouts}
           setDataLayouts={setDataLayouts}
@@ -426,6 +331,7 @@ const DashboardDetailPage: React.FC = () => {
           onClose={() => setOpenModalEdit(false)}
         />
         <ModalAddVisualization
+          dashboardId={dashboardId}
           dataLayouts={dataLayouts}
           setDataLayouts={setDataLayouts}
           setOpenModalFork={setOpenModalFork}
@@ -461,26 +367,6 @@ const ButtonModalFork: React.FC<IButtonModalFork> = ({
         onClose={() => setOpenModalFork(false)}
       />
     </>
-  );
-};
-
-const ButtonVoteStar: React.FC = () => {
-  const [voteStar, setVoteStar] = useState<boolean>(false);
-  const [totalVote, setTotalVote] = useState<number>(2);
-
-  return (
-    <AppButton
-      onClick={() => {
-        setTotalVote(!voteStar ? totalVote + 1 : totalVote - 1);
-        setVoteStar(!voteStar);
-      }}
-      className="btn-cancel"
-      size={'sm'}
-      rightIcon={!voteStar ? <StarIcon /> : <ActiveStarIcon />}
-      w={'60px'}
-    >
-      {totalVote}
-    </AppButton>
   );
 };
 

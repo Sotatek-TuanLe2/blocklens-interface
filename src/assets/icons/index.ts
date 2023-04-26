@@ -53,6 +53,7 @@ import { ReactComponent as SettingIcon } from './SettingIcon.svg';
 import { ReactComponent as ClockIcon } from './ClockIcon.svg';
 import { ReactComponent as AvatarIcon } from './AvatarIcon.svg';
 import { ReactComponent as CheckIcon } from './CheckIcon.svg';
+import { ReactComponent as CounterIcon } from './CounterIcon.svg';
 
 export {
   CalendarIcon,
@@ -110,4 +111,5 @@ export {
   ClockIcon,
   AvatarIcon,
   CheckIcon,
+  CounterIcon,
 };

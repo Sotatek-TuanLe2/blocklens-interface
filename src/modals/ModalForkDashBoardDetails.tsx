@@ -6,6 +6,7 @@ import { Flex, Text } from '@chakra-ui/react';
 import { createValidator } from 'src/utils/utils-validator';
 import { toastError } from 'src/utils/utils-notify';
 import { getErrorMessage } from 'src/utils/utils-helper';
+import rf from 'src/requests/RequestFactory';
 import { useHistory } from 'react-router';
 
 interface IModalForkDashBoardDetails {
@@ -40,8 +41,17 @@ const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
     }),
   );
   const onSave = async () => {
+    const payload = {
+      newDashboardName: dataForm.dashboard,
+      newDashboardSlug: dataForm.url || dataForm.dashboard,
+    };
     try {
-      history.push(`/dashboard/${authorId}/${mainUrl}`);
+      const res = await rf
+        .getRequest('DashboardsRequest')
+        .forkDashboard(payload, 'e8PvW5rbnall-cdi9HNdg');
+      if (res) {
+        history.push(`/dashboard/${authorId}/${mainUrl}`);
+      }
       onClose();
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
@@ -82,11 +92,7 @@ const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
               setMainUrl(dataForm.url);
             }}
             size="sm"
-            placeholder={
-              dataForm.dashboard.length > 0
-                ? dataForm.dashboard
-                : 'my-dashboard'
-            }
+            placeholder={dataForm.dashboard || 'my-dashboard'}
           />
         </AppField>
 
