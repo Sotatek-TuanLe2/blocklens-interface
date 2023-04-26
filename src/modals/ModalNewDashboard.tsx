@@ -16,13 +16,11 @@ interface IModalNewDashboard {
 
 interface IDataSettingForm {
   title: string;
-  private: boolean;
 }
 
 const ModalNewDashboard: React.FC<IModalNewDashboard> = ({ open, onClose }) => {
   const initDataFormSetting = {
     title: '',
-    private: false,
   };
   const history = useHistory();
 
@@ -35,7 +33,6 @@ const ModalNewDashboard: React.FC<IModalNewDashboard> = ({ open, onClose }) => {
         .getRequest('DashboardsRequest')
         .createNewDashboard({
           name: dataForm.title,
-          isPrivate: dataForm.private,
         });
       history.push(`/dashboards/${result.id}`);
       onClose();
@@ -75,17 +72,6 @@ const ModalNewDashboard: React.FC<IModalNewDashboard> = ({ open, onClose }) => {
               });
             }}
           />
-        </AppField>
-        <AppField label={'Privacy'}>
-          <Checkbox
-            isChecked={dataForm.private}
-            size={'sm'}
-            onChange={() => {
-              setDataForm({ ...dataForm, private: !dataForm.private });
-            }}
-          >
-            Make private
-          </Checkbox>
         </AppField>
       </Flex>
       <Flex
