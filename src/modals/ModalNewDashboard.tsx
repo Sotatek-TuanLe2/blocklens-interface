@@ -32,7 +32,7 @@ const ModalNewDashboard: React.FC<IModalNewDashboard> = ({ open, onClose }) => {
       const result = await rf
         .getRequest('DashboardsRequest')
         .createNewDashboard({
-          name: dataForm.title,
+          name: dataForm.title.trim(),
         });
       history.push(`/dashboards/${result.id}`);
       onClose();
@@ -85,7 +85,7 @@ const ModalNewDashboard: React.FC<IModalNewDashboard> = ({ open, onClose }) => {
           bg="#1e1870"
           color="#fff"
           onClick={handleSubmitForm}
-          disabled={!dataForm.title}
+          disabled={!dataForm.title.trim()}
         >
           Save and open
         </AppButton>
