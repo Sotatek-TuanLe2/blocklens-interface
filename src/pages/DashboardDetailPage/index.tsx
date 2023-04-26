@@ -1,12 +1,5 @@
 import { Avatar, Box, Flex } from '@chakra-ui/react';
-import moment from 'moment';
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Layout, Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import ReactMarkdown from 'react-markdown';
@@ -14,9 +7,7 @@ import 'react-resizable/css/styles.css';
 import { useParams } from 'react-router-dom';
 import { PenIcon } from 'src/assets/icons';
 import { AppButton } from 'src/components';
-import { PieChart, VisualizationTable } from 'src/components/Charts';
 
-import VisualizationCounter from 'src/components/Charts/VisualizationCounter';
 import useUser from 'src/hooks/useUser';
 import { BasePage } from 'src/layouts';
 import ModalAddTextWidget from 'src/modals/ModalAddTextWidget';
@@ -29,18 +20,12 @@ import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/TableValue.scss';
 import 'src/styles/pages/DashboardDetailPage.scss';
 
-import VisualizationChart from 'src/components/Charts/VisualizationChart';
 import 'src/styles/components/Chart.scss';
-import {
-  IQuery,
-  QueryResultResponse,
-  TYPE_VISUALIZATION,
-  VisualizationType,
-} from 'src/utils/query.type';
+import { IQuery } from 'src/utils/query.type';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
+import VisualizationItem from './parts/VisualizationItem';
 
-let flag = false;
 interface ParamTypes {
   authorId: string;
   dashboardId: string;
@@ -404,192 +389,3 @@ const ButtonShare: React.FC = () => {
     </>
   );
 };
-const VisualizationItem = React.memo(
-  ({ visualization }: { visualization: VisualizationType }) => {
-    const editorRef = useRef<any>();
-    const [queryResult, setQueryResult] = useState<unknown[]>([]);
-
-    const queryId = visualization?.query?.id;
-    const defaultTimeXAxis = useMemo(() => {
-      let result = '';
-      const firstResultInQuery: any =
-        queryResult && !!queryResult.length ? queryResult[0] : null;
-      if (firstResultInQuery) {
-        Object.keys(firstResultInQuery).forEach((key: string) => {
-          const date = moment(firstResultInQuery[key]);
-          if (date.isValid() && isNaN(+firstResultInQuery[key])) {
-            result = key;
-            return;
-          }
-        });
-      }
-      return result;
-    }, [queryResult]);
-    const fetchQueryResult = async (executionId: string) => {
-      const res = await rf.getRequest('DashboardsRequest').getQueryResult({
-        queryId,
-        executionId,
-      });
-
-      let fetchQueryResultInterval: any = null;
-      if (res.status !== 'DONE') {
-        fetchQueryResultInterval = setInterval(async () => {
-          const resInterval = await rf
-            .getRequest('DashboardsRequest')
-            .getQueryResult({
-              queryId,
-              executionId,
-            });
-          if (resInterval.status === 'DONE') {
-            clearInterval(fetchQueryResultInterval);
-            setQueryResult(resInterval.result);
-          }
-        }, 2000);
-      } else {
-        setQueryResult(res.result);
-      }
-    };
-    const fetchQuery = async () => {
-      try {
-        const dataQuery = await rf
-          .getRequest('DashboardsRequest')
-          .getQueryById({ queryId });
-        // set query into editor
-        const position = editorRef.current.editor.getCursorPosition();
-        editorRef.current.editor.setValue('');
-        editorRef.current.editor.session.insert(position, dataQuery?.query);
-      } catch (error) {
-        getErrorMessage(error);
-      }
-    };
-
-    const fetchInitialData = useCallback(async () => {
-      if (flag) return;
-
-      try {
-        const res: QueryResultResponse = await rf
-          .getRequest('DashboardsRequest')
-          .getQueryExecutionId({
-            queryId,
-          });
-
-        await fetchQueryResult(res.resultId);
-        await fetchQuery();
-        flag = true;
-      } catch (error) {
-        getErrorMessage(error);
-      }
-    }, [queryId, queryResult]);
-
-    useEffect(() => {
-      if (queryId) {
-        fetchInitialData();
-      }
-    }, [queryId, queryResult]);
-
-    const renderVisualization = (visualization: VisualizationType) => {
-      const type =
-        visualization.options?.globalSeriesType || visualization.type;
-      let data = [...queryResult];
-      if (visualization.options?.xAxisConfigs?.sortX) {
-        data = data.sort((a: any, b: any) => {
-          if (moment(a[visualization.options.columnMapping.xAxis]).isValid()) {
-            return moment
-              .utc(a[visualization.options.columnMapping.xAxis])
-              .diff(moment.utc(b[visualization.options.columnMapping.xAxis]));
-          }
-          return (
-            a[visualization.options?.columnMapping.xAxis] -
-            b[visualization.options?.columnMapping.xAxis]
-          );
-        });
-      }
-      if (visualization.options?.xAxisConfigs?.reverseX) {
-        data = data.reverse();
-      }
-
-      let errorMessage = null;
-      let visualizationDisplay = null;
-
-      if (!visualization.options?.columnMapping?.xAxis) {
-        errorMessage = 'Missing x-axis';
-      } else if (!visualization.options?.columnMapping?.yAxis.length) {
-        errorMessage = 'Missing y-axis';
-      } else {
-        // TODO: check yAxis values have same type
-      }
-
-      switch (type) {
-        case TYPE_VISUALIZATION.table:
-          errorMessage = null;
-          visualizationDisplay = (
-            <VisualizationTable
-              data={queryResult}
-              dataColumn={visualization.options.columns}
-            />
-          );
-
-          break;
-        case TYPE_VISUALIZATION.counter:
-          errorMessage = null;
-          visualizationDisplay = (
-            <VisualizationCounter
-              data={queryResult}
-              visualization={visualization}
-            />
-          );
-
-          break;
-        case TYPE_VISUALIZATION.pie:
-          visualizationDisplay = (
-            <PieChart
-              data={queryResult}
-              xAxisKey={
-                visualization.options?.columnMapping?.xAxis || defaultTimeXAxis
-              }
-              yAxisKeys={visualization.options.columnMapping?.yAxis || []}
-              configs={visualization.options}
-            />
-          );
-          break;
-        default:
-          // chart
-
-          visualizationDisplay = (
-            <VisualizationChart
-              data={queryResult}
-              xAxisKey={
-                visualization.options?.columnMapping?.xAxis || defaultTimeXAxis
-              }
-              yAxisKeys={visualization.options.columnMapping?.yAxis || []}
-              configs={visualization.options}
-              type={type}
-            />
-          );
-      }
-
-      return (
-        <>
-          <div className="visual-container__visualization">
-            <div className="visual-container__visualization__title">
-              {visualization.name}
-            </div>
-            {errorMessage ? (
-              <Flex
-                alignItems={'center'}
-                justifyContent={'center'}
-                className="visual-container__visualization__error"
-              >
-                {errorMessage}
-              </Flex>
-            ) : (
-              visualizationDisplay
-            )}
-          </div>
-        </>
-      );
-    };
-
-    return renderVisualization(visualization);
-  },
-);
