@@ -71,8 +71,7 @@ const QueriesPage = () => {
         });
       await rf.getRequest('DashboardsRequest').executeQuery(queryValue.id);
       history.push(`/queries/${queryValue.id}`);
-    } catch (error) {
-      getErrorMessage(error);
+    } catch (error: any) {
       toastError({ message: getErrorMessage(error) });
     }
   };
@@ -102,8 +101,8 @@ const QueriesPage = () => {
       await fetchQuery();
       setShowSaveModal(false);
       toastSuccess({ message: 'Save query successfully.' });
-    } catch (error) {
-      getErrorMessage(error);
+    } catch (error: any) {
+      toastError({ message: getErrorMessage(error) });
     }
   };
 
@@ -149,7 +148,7 @@ const QueriesPage = () => {
       editorRef.current.editor.setValue('');
       editorRef.current.editor.session.insert(position, dataQuery?.query);
     } catch (error: any) {
-      getErrorMessage(error);
+      toastError({ message: getErrorMessage(error) });
     }
   };
 
@@ -163,7 +162,7 @@ const QueriesPage = () => {
       await fetchQuery();
       await fetchQueryResult(res.resultId);
     } catch (error) {
-      getErrorMessage(error);
+      toastError({ message: getErrorMessage(error) });
     }
   };
 
@@ -188,7 +187,7 @@ const QueriesPage = () => {
         await createNewQuery(editorRef.current.editor.getValue());
       }
     } catch (err: any) {
-      getErrorMessage(err);
+      toastError({ message: getErrorMessage(err) });
     }
   };
 
@@ -243,15 +242,7 @@ const QueriesPage = () => {
             {isSetting && _renderMenuPanelSetting()}
           </div>
         </Tooltip>
-        {/* <Tooltip hasArrow placement="top" label="Format query">
-          <AppButton
-            onClick={onFormat}
-            bg={backgroundButton}
-            _hover={{ bg: hoverBackgroundButton }}
-          >
-            <FormatIcon color={colorIcon} />
-          </AppButton>
-        </Tooltip> */}
+
         {queryValue && (
           <Tooltip hasArrow placement="top" label="Add Parameter">
             <AppButton
