@@ -22,7 +22,7 @@ import 'src/styles/pages/QueriesPage.scss';
 import { AddParameterIcon, ExplandIcon } from 'src/assets/icons';
 import { MoonIcon, SettingsIcon, SunIcon } from '@chakra-ui/icons';
 import ModalSaveQuery from 'src/modals/ModalSaveQuery';
-import { toastSuccess } from 'src/utils/utils-notify';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import rf from 'src/requests/RequestFactory';
 import { AppLoadingTable } from 'src/components';
 
@@ -71,8 +71,8 @@ const QueriesPage = () => {
         });
       await rf.getRequest('DashboardsRequest').executeQuery(queryValue.id);
       history.push(`/queries/${queryValue.id}`);
-    } catch (error) {
-      getErrorMessage(error);
+    } catch (error: any) {
+      toastError({ message: getErrorMessage(error) });
     }
   };
 
@@ -84,8 +84,8 @@ const QueriesPage = () => {
         .executeQuery(queryId);
       await fetchQueryResult(queryValues.id);
       await fetchQuery();
-    } catch (error) {
-      getErrorMessage(error);
+    } catch (error: any) {
+      toastError({ message: getErrorMessage(error) });
     }
   };
 
@@ -101,8 +101,8 @@ const QueriesPage = () => {
       await fetchQuery();
       setShowSaveModal(false);
       toastSuccess({ message: 'Save query successfully.' });
-    } catch (error) {
-      getErrorMessage(error);
+    } catch (error: any) {
+      toastError({ message: getErrorMessage(error) });
     }
   };
 
@@ -147,8 +147,8 @@ const QueriesPage = () => {
       const position = editorRef.current.editor.getCursorPosition();
       editorRef.current.editor.setValue('');
       editorRef.current.editor.session.insert(position, dataQuery?.query);
-    } catch (error) {
-      getErrorMessage(error);
+    } catch (error: any) {
+      toastError({ message: getErrorMessage(error) });
     }
   };
 
@@ -162,7 +162,7 @@ const QueriesPage = () => {
       await fetchQuery();
       await fetchQueryResult(res.resultId);
     } catch (error) {
-      getErrorMessage(error);
+      toastError({ message: getErrorMessage(error) });
     }
   };
 
@@ -187,8 +187,8 @@ const QueriesPage = () => {
       } else {
         await createNewQuery(editorRef.current.editor.getValue());
       }
-    } catch (err) {
-      getErrorMessage(err);
+    } catch (err: any) {
+      toastError({ message: getErrorMessage(err) });
     }
   };
 
@@ -243,15 +243,7 @@ const QueriesPage = () => {
             {isSetting && _renderMenuPanelSetting()}
           </div>
         </Tooltip>
-        {/* <Tooltip hasArrow placement="top" label="Format query">
-          <AppButton
-            onClick={onFormat}
-            bg={backgroundButton}
-            _hover={{ bg: hoverBackgroundButton }}
-          >
-            <FormatIcon color={colorIcon} />
-          </AppButton>
-        </Tooltip> */}
+
         {queryValue && (
           <Tooltip hasArrow placement="top" label="Add Parameter">
             <AppButton
