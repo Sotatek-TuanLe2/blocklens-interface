@@ -12,7 +12,7 @@ export interface IModalSaveQuery {
 
 const ModalSaveQuery = ({ open, onClose, onSubmit }: IModalSaveQuery) => {
   const [nameQuerry, setNameQuerry] = useState('');
-  const [disableNameQueryBtn, setIsDisableNameQueryBtn] = useState(false);
+  const [disableNameQueryBtn, setIsDisableNameQueryBtn] = useState(true);
 
   const handleChangeNameQuery = (
     event: React.ChangeEvent<HTMLInputElement>,
