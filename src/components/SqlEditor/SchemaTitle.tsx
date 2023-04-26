@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Box, Flex, Text, Tooltip } from '@chakra-ui/react';
+import { Box, Flex, Text } from '@chakra-ui/react';
 import { getLogoChainByChainId } from 'src/utils/utils-network';
 import { ChevronRightIcon } from '@chakra-ui/icons';
 import {
@@ -65,11 +65,14 @@ const SidebarEditorRow = ({
             >
               {chainName}
             </Text>
-            <Tooltip p={2} label={tableName} placement={'top'} hasArrow>
-              <Text isTruncated fontSize={'13px'} marginLeft={3}>
-                {tableName}
-              </Text>
-            </Tooltip>
+            <Text
+              isTruncated
+              fontSize={'13px'}
+              marginLeft={3}
+              title={tableName}
+            >
+              {tableName}
+            </Text>
           </Flex>
           <div>{getChainIcon()}</div>
         </Flex>
