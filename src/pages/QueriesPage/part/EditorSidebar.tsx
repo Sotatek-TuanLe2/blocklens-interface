@@ -3,12 +3,7 @@ import { Box, Flex, Text } from '@chakra-ui/react';
 import _, { debounce } from 'lodash';
 import moment from 'moment';
 import React, { ReactNode, useCallback, useEffect, useState } from 'react';
-import {
-  AvatarIcon,
-  CheckIcon,
-  ClockIcon,
-  SettingIcon,
-} from 'src/assets/icons';
+import { CheckIcon, ClockIcon, SettingIcon } from 'src/assets/icons';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/EditorSidebar.scss';
 import { IQuery } from 'src/utils/query.type';
@@ -46,7 +41,6 @@ const defaultQueryInfo: { [key: string]: IQueryInfo } = {
     icon: <ClockIcon />,
     contentRight: true,
   },
-  QUERY_PUBLIC: { label: 'Query is', value: '', icon: <AvatarIcon /> },
   QUERY_PUBLISHED: { label: 'Query is', value: '', icon: <CheckIcon /> },
 };
 
@@ -133,10 +127,6 @@ const EditorSidebar: React.FC<IEditerSideBar> = ({
       QUERY_CREATED: {
         ...queryInfo.QUERY_CREATED,
         value: moment(queryValue?.createdAt).fromNow(),
-      },
-      QUERY_PUBLIC: {
-        ...queryInfo.QUERY_PUBLIC,
-        value: queryValue?.isPrivate ? 'public' : 'private',
       },
       QUERY_PUBLISHED: {
         ...queryInfo.QUERY_PUBLISHED,
