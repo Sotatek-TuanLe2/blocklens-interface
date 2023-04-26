@@ -41,7 +41,7 @@ interface IButtonModalFork {
 export interface ILayout extends Layout {
   options: any;
   i: string;
-  id: number;
+  id: string;
   visualizationWidgets: [];
   text: string;
   visualization: any;
@@ -122,7 +122,6 @@ const DashboardDetailPage: React.FC = () => {
 
   const _renderButtons = () => {
     const isAccountsDashboard = true;
-    // user?.getId() === authorId;
     const editButtons = [
       { title: 'Settings', setModal: setOpenModalSetting },
       { title: 'Add text widget', setModal: setOpenModalAddTextWidget },
@@ -179,59 +178,52 @@ const DashboardDetailPage: React.FC = () => {
     );
   };
 
-  async function processGetItems(ids: number[]) {
-    const results = [];
-    for (const id of ids) {
-      const result = await removeItem(id);
-      results.push(result);
-    }
-    return results;
-  }
-
-  async function removeItem(id: number) {
-    return rf.getRequest('DashboardsRequest').removeDashboardItem(id);
-  }
-
-  async function processAddItem(
-    newLayout: {
-      id: number;
-      content: [];
-      meta: Layout;
-    }[],
-  ) {
-    const results = [];
-    for (const layout of newLayout) {
-      const result = await addDashboardItem(layout);
-      results.push(result);
-    }
-    return results;
-  }
-
-  async function addDashboardItem(id: {
-    id: number;
-    content: [];
-    meta: Layout;
-  }) {
-    return rf.getRequest('DashboardsRequest').addDashboardItem(id);
-  }
-
   const updateItem = async (layout: Layout[]) => {
-    const ids = dataLayouts.map((e) => e.id);
-    const newLayout = dataLayouts.map((item, index) => ({
-      id: item.id,
-      content: item.content,
-      meta: layout[index],
-    }));
-    const processResults = await processGetItems(ids);
-    if (processResults.every((result) => !!result.id)) {
-      try {
-        const processResults2 = await processAddItem(newLayout);
-        if (processResults2.every((result) => !!result.id)) {
-          fetchLayoutData();
-        }
-      } catch (err) {
-        toastError({ message: getErrorMessage(err) });
+    const newWidget = (type: string) =>
+      dataLayouts.filter((e) =>
+        type === 'visualization'
+          ? e.content.hasOwnProperty('id')
+          : !e.content.hasOwnProperty('id'),
+      );
+
+    const dataVisualization = newWidget('visualization').map((item) => {
+      const newLayout = layout.filter((e) => e.i === item.id);
+      return {
+        id: item.id,
+        options: {
+          sizeX: newLayout[0].x,
+          sizeY: newLayout[0].y,
+          col: newLayout[0].w,
+          row: newLayout[0].h,
+        },
+      };
+    });
+    const dataTextWidget = newWidget('text').map((item) => {
+      const newLayout = layout.filter((e) => e.i === item.id);
+      return {
+        id: item.id,
+        options: {
+          sizeX: newLayout[0].x,
+          sizeY: newLayout[0].y,
+          col: newLayout[0].w,
+          row: newLayout[0].h,
+        },
+      };
+    });
+    try {
+      const payload = {
+        visualizationWidgets: dataVisualization,
+        textWidgets: dataTextWidget,
+      };
+      const res = await rf
+        .getRequest('DashboardsRequest')
+        .updateDashboardItem(payload, dashboardId);
+      if (res) {
+        setDataLayouts(res);
+        fetchLayoutData();
       }
+    } catch (e) {
+      toastError({ message: getErrorMessage(e) });
     }
   };
 

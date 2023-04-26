@@ -128,32 +128,18 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
   const handleUpdate = async () => {
     try {
       const payload = {
-        meta: {
-          i: markdownText,
-          x: selectedItem.x,
-          y: selectedItem.y,
-          w: selectedItem.w,
-          h: selectedItem.h,
-        },
-        content: [],
-        id: selectedItem.id,
+        textWidgets: [
+          {
+            id: selectedItem.id,
+            text: markdownText,
+          },
+        ],
       };
       const res = await rf
         .getRequest('DashboardsRequest')
-        .updateDashboardItem(payload);
+        .updateDashboardItem(payload, dashboardId);
       if (res) {
-        setDataLayouts((prevData) => {
-          const updateDataIndex = prevData.findIndex(
-            (item) => item.id === selectedItem.id,
-          );
-          if (updateDataIndex === -1) {
-            return [...prevData, res];
-          } else {
-            const newData = [...prevData];
-            newData.splice(updateDataIndex, 1, res);
-            return newData;
-          }
-        });
+        setDataLayouts(res);
         onReload();
         setMarkdownText('');
         onClose();
@@ -192,7 +178,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
             className="text-widget-input"
             resize={'both'}
             size="sm"
-            defaultValue={type === TYPE_MODAL.ADD ? '' : selectedItem.i}
+            defaultValue={type === TYPE_MODAL.ADD ? '' : selectedItem.text}
             onChange={handleChangeMarkdownText}
           />
         </AppField>
