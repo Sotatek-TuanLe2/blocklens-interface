@@ -28,7 +28,8 @@
     }
 
     .select-chains {
-      width: 40%;
+      width: max-content;
+      min-width: 40%;
 
       @include mobile {
         width: 50%;
@@ -82,16 +83,13 @@
     width: 80%;
     padding: 4px 0;
     border-radius: 6px;
+
     &:hover {
       background-color: #1a203b;
     }
+
     &__row {
       width: 80%;
-      p {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
     }
   }
 }

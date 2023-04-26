@@ -18,34 +18,10 @@ interface IListItem {
   createdAt?: Date;
   author: string;
   tags?: string[]; // used for dashboards and queries
-  members?: IMember[]; // used for teams
 }
 
 const ListItem: React.FC<IListItem> = (props) => {
-  const { id, type, title, createdAt, author, tags, members } = props;
-
-  const { user } = useUser();
-
-  const getDuration = (): string => {
-    const durationMinutes = moment().diff(moment(createdAt), 'minutes');
-    if (durationMinutes < 60) {
-      return `${durationMinutes} minute(s)`;
-    }
-    const durationHours = moment().diff(moment(createdAt), 'hours');
-    if (durationHours < 24) {
-      return `${durationHours} hour(s)`;
-    }
-    const durationDays = moment().diff(moment(createdAt), 'days');
-    if (durationDays < 30) {
-      return `${durationDays} day(s)`;
-    }
-    const durationMonths = moment().diff(moment(createdAt), 'months');
-    if (durationMonths < 30) {
-      return `${durationMonths} month(s)`;
-    }
-    const durationYears = moment().diff(moment(createdAt), 'years');
-    return `${durationYears} year(s)`;
-  };
+  const { id, type, title, createdAt, tags } = props;
 
   const getTitleUrl = (): string => {
     switch (type) {
@@ -62,16 +38,9 @@ const ListItem: React.FC<IListItem> = (props) => {
     if (type === LIST_ITEM_TYPE.DASHBOARDS || type === LIST_ITEM_TYPE.QUERIES) {
       return (
         <div className="dashboard-list__item__sub__content">
-          Created by{' '}
-          <Link
-            className="dashboard-list__item__sub__content__link"
-            to={`/${author}`}
-            target="_blank"
-          >
-            @{author}
-          </Link>
+          Created
           <span> &nbsp;</span>
-          {getDuration()} ago
+          {moment(createdAt).fromNow()}
         </div>
       );
     }
@@ -102,23 +71,6 @@ const ListItem: React.FC<IListItem> = (props) => {
                     <Tag key={tag} value={tag} />
                   ))}
                 </span>
-              )}
-              {members && (
-                <Flex>
-                  {members.map((member) => (
-                    <Link
-                      key={member.id}
-                      className="item-member-image"
-                      to={`/`}
-                      target={'_blank'}
-                    >
-                      <img
-                        src={member.avatar}
-                        alt={`Avatar of ${member.name}`}
-                      />
-                    </Link>
-                  ))}
-                </Flex>
               )}
             </Flex>
             <div className="dashboard-list__item__content__createAt">

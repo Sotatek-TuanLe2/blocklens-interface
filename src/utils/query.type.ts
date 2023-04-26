@@ -28,6 +28,7 @@ export type VisualizationType = {
   createdAt: Date | number;
   updatedAt?: Date | number;
   options: any;
+  query?: any;
 };
 
 export interface IQuery {
