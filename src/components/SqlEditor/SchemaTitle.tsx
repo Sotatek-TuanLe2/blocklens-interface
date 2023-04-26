@@ -6,6 +6,7 @@ import {
   EditorContext,
   EditorContextType,
 } from '../../pages/QueriesPage/context/EditorContext';
+import { CHAIN_NAME } from 'src/utils/query.type';
 
 type Props = {
   tableName: string;
@@ -23,17 +24,22 @@ const SidebarEditorRow = ({
   onClick,
 }: Props) => {
   const { editor } = useContext(EditorContext) as EditorContextType;
+
   const getChainIcon = () => {
     let iconClassName: string;
     switch (chainName) {
-      case 'ethereum': {
+      case CHAIN_NAME.ETH: {
         iconClassName = getLogoChainByChainId('ETH') || '';
         break;
       }
-      case 'arbitrum': {
+      case CHAIN_NAME.BSC_TESTNET: {
         iconClassName = getLogoChainByChainId('BSC') || '';
         break;
       }
+      case CHAIN_NAME.APTOS_MAINNET:
+      case CHAIN_NAME.APTOS_TESTNET:
+        iconClassName = getLogoChainByChainId('APTOS') || '';
+        break;
       default:
         iconClassName = getLogoChainByChainId('POLYGON') || '';
         break;

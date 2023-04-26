@@ -6,7 +6,7 @@ import React, { ReactNode, useCallback, useEffect, useState } from 'react';
 import { CheckIcon, ClockIcon, SettingIcon } from 'src/assets/icons';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/EditorSidebar.scss';
-import { IQuery } from 'src/utils/query.type';
+import { CHAIN_NAME, IQuery } from 'src/utils/query.type';
 import { AppInput, AppSelect2 } from '../../../components';
 import SchemaDescribe from '../../../components/SqlEditor/SchemaDescribe';
 import SchemaTitle from '../../../components/SqlEditor/SchemaTitle';
@@ -76,6 +76,28 @@ const EditorSidebar: React.FC<IEditerSideBar> = ({
       setChainsSupported(listChain);
     })();
   }, []);
+
+  const getChainIcon = (chainName: string) => {
+    let iconClassName: string;
+    switch (chainName) {
+      case CHAIN_NAME.ETH: {
+        iconClassName = getLogoChainByChainId('ETH') || '';
+        break;
+      }
+      case CHAIN_NAME.BSC_TESTNET: {
+        iconClassName = getLogoChainByChainId('BSC') || '';
+        break;
+      }
+      case CHAIN_NAME.APTOS_MAINNET:
+      case CHAIN_NAME.APTOS_TESTNET:
+        iconClassName = getLogoChainByChainId('APTOS') || '';
+        break;
+      default:
+        iconClassName = getLogoChainByChainId('POLYGON') || '';
+        break;
+    }
+    return <Box className={iconClassName}></Box>;
+  };
 
   const selectSchemaTitleHandler = async ({
     chain,
@@ -225,13 +247,8 @@ const EditorSidebar: React.FC<IEditerSideBar> = ({
                 onClick={clickBackIconHandler}
                 isTruncated
               >
-                <ArrowBackIcon />
-                <div>
-                  <Box
-                    className={getLogoChainByChainId('ETH')}
-                    marginLeft={2}
-                  />
-                </div>
+                <ArrowBackIcon mr={2} />
+                <div>{getChainIcon(tableSelected?.chain)}</div>
                 <Text isTruncated ml={2} title={tableSelected?.chain}>
                   {tableSelected?.chain}
                 </Text>
