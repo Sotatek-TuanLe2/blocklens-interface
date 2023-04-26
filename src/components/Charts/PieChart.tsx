@@ -36,7 +36,7 @@ const VisualizationPieChart = ({
     setDataCharts(data);
   }, [data]);
 
-  const reducedData = () => {
+  const reducedData = useMemo(() => {
     if (!yAxisKeys || !dataCharts) {
       return [];
     }
@@ -58,7 +58,7 @@ const VisualizationPieChart = ({
         return { [xAxisKey || 0]: name, [yAxisKeys?.[0]]: +groupedData[name] };
       });
     return result;
-  };
+  }, [dataCharts, yAxisKeys]);
 
   const onToggleLegend = (dataKey: string) => {
     // check if length hidden chart and check datakey is added to hidden chart
@@ -112,7 +112,7 @@ const VisualizationPieChart = ({
       {yAxisKeys?.length === 1 ? (
         <PieChart className="pie-chart">
           <Pie
-            data={reducedData()}
+            data={reducedData}
             dataKey={yAxisKeys?.[0]}
             label={
               chartOptionsConfigs?.showDataLabels && _renderCustomizedLabel
