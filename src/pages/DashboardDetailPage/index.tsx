@@ -313,6 +313,7 @@ const DashboardDetailPage: React.FC = () => {
           open={openModalAddTextWidget}
           onClose={() => setOpenModalAddTextWidget(false)}
           onReload={fetchLayoutData}
+          dataDashboard={dataDashboard}
         />
         <ModalEditItemDashBoard
           selectedItem={selectedItem}

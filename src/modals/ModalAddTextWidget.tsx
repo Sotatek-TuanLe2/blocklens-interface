@@ -9,6 +9,7 @@ import 'src/styles/components/BaseModal.scss';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import BaseModal from './BaseModal';
+import { IQuery } from 'src/utils/query.type';
 
 interface IModalAddTextWidget {
   open: boolean;
@@ -20,6 +21,7 @@ interface IModalAddTextWidget {
   setDataLayouts: React.Dispatch<React.SetStateAction<ILayout[]>>;
   onReload: () => Promise<void>;
   dashboardId: string;
+  dataDashboard: IQuery | undefined;
 }
 
 interface IMarkdown {
@@ -95,6 +97,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
   selectedItem,
   onReload,
   dashboardId,
+  dataDashboard,
 }) => {
   const [markdownText, setMarkdownText] = useState<string>(``);
 
@@ -124,16 +127,19 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
       toastError({ message: getErrorMessage(e) });
     }
   };
-
   const handleUpdate = async () => {
+    const newItems = dataDashboard?.textWidgets.map((i: IQuery) => {
+      if (i.id === selectedItem.id) {
+        return {
+          id: selectedItem.id,
+          text: markdownText,
+        };
+      }
+      return { ...i };
+    });
     try {
       const payload = {
-        textWidgets: [
-          {
-            id: selectedItem.id,
-            text: markdownText,
-          },
-        ],
+        textWidgets: newItems,
       };
       const res = await rf
         .getRequest('DashboardsRequest')
