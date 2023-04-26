@@ -1,5 +1,5 @@
 import { Avatar, Box, Flex } from '@chakra-ui/react';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Layout, Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import ReactMarkdown from 'react-markdown';
@@ -41,7 +41,7 @@ interface IButtonModalFork {
 export interface ILayout extends Layout {
   options: any;
   i: string;
-  id: number;
+  id: string;
   visualizationWidgets: [];
   text: string;
   visualization: any;
@@ -57,13 +57,12 @@ const ResponsiveGridLayout = WidthProvider(Responsive);
 const DashboardDetailPage: React.FC = () => {
   const { authorId, dashboardId } = useParams<ParamTypes>();
   const { user } = useUser();
+
   const [editMode, setEditMode] = useState<boolean>(false);
   const [dataLayouts, setDataLayouts] = useState<ILayout[]>([]);
   const [dataDashboard, setDataDashboard] = useState<IQuery>();
-  const [layoutChange, setLayoutChange] = useState<Layout[]>([]);
   const [selectedItem, setSelectedItem] = useState<ILayout>(Object);
   const [typeModalTextWidget, setTypeModalTextWidget] = useState<string>(``);
-
   const [openModalAddVisualization, setOpenModalAddVisualization] =
     useState<boolean>(false);
   const [openModalFork, setOpenModalFork] = useState<boolean>(false);
@@ -71,6 +70,9 @@ const DashboardDetailPage: React.FC = () => {
   const [openModalEdit, setOpenModalEdit] = useState<boolean>(false);
   const [openModalAddTextWidget, setOpenModalAddTextWidget] =
     useState<boolean>(false);
+
+  const layoutChangeTimeout = useRef() as any;
+
   const userName =
     `${user?.getFirstName() || ''}` + `${user?.getLastName() || ''}`;
 
@@ -122,7 +124,6 @@ const DashboardDetailPage: React.FC = () => {
 
   const _renderButtons = () => {
     const isAccountsDashboard = true;
-    // user?.getId() === authorId;
     const editButtons = [
       { title: 'Settings', setModal: setOpenModalSetting },
       { title: 'Add text widget', setModal: setOpenModalAddTextWidget },
@@ -163,14 +164,7 @@ const DashboardDetailPage: React.FC = () => {
           <AppButton
             className={editMode ? 'btn-save' : 'btn-cancel'}
             size={'sm'}
-            onClick={() => {
-              if (editMode) {
-                updateItem(layoutChange);
-                setEditMode(false);
-              } else {
-                setEditMode(true);
-              }
-            }}
+            onClick={() => setEditMode((prevState) => !prevState)}
           >
             {editMode ? 'Done' : 'Edit'}
           </AppButton>
@@ -179,65 +173,59 @@ const DashboardDetailPage: React.FC = () => {
     );
   };
 
-  async function processGetItems(ids: number[]) {
-    const results = [];
-    for (const id of ids) {
-      const result = await removeItem(id);
-      results.push(result);
-    }
-    return results;
-  }
+  const onLayoutChange = async (layout: Layout[]) => {
+    clearTimeout(layoutChangeTimeout.current);
+    const newWidget = (type: string) =>
+      dataLayouts.filter((e) =>
+        type === 'visualization'
+          ? e.content.hasOwnProperty('id')
+          : !e.content.hasOwnProperty('id'),
+      );
 
-  async function removeItem(id: number) {
-    return rf.getRequest('DashboardsRequest').removeDashboardItem(id);
-  }
+    const dataVisualization = newWidget('visualization').map((item) => {
+      const newLayout = layout.filter((e) => e.i === item.id);
+      return {
+        id: item.id,
+        options: {
+          sizeX: newLayout[0].x,
+          sizeY: newLayout[0].y,
+          col: newLayout[0].w,
+          row: newLayout[0].h,
+        },
+      };
+    });
+    const dataTextWidget = newWidget('text').map((item) => {
+      const newLayout = layout.filter((e) => e.i === item.id);
+      return {
+        id: item.id,
+        options: {
+          sizeX: newLayout[0].x,
+          sizeY: newLayout[0].y,
+          col: newLayout[0].w,
+          row: newLayout[0].h,
+        },
+      };
+    });
 
-  async function processAddItem(
-    newLayout: {
-      id: number;
-      content: [];
-      meta: Layout;
-    }[],
-  ) {
-    const results = [];
-    for (const layout of newLayout) {
-      const result = await addDashboardItem(layout);
-      results.push(result);
-    }
-    return results;
-  }
-
-  async function addDashboardItem(id: {
-    id: number;
-    content: [];
-    meta: Layout;
-  }) {
-    return rf.getRequest('DashboardsRequest').addDashboardItem(id);
-  }
-
-  const updateItem = async (layout: Layout[]) => {
-    const ids = dataLayouts.map((e) => e.id);
-    const newLayout = dataLayouts.map((item, index) => ({
-      id: item.id,
-      content: item.content,
-      meta: layout[index],
-    }));
-    const processResults = await processGetItems(ids);
-    if (processResults.every((result) => !!result.id)) {
+    // many widgets are changed at one time so need to update the latest change
+    layoutChangeTimeout.current = setTimeout(async () => {
       try {
-        const processResults2 = await processAddItem(newLayout);
-        if (processResults2.every((result) => !!result.id)) {
+        const payload = {
+          visualizationWidgets: dataVisualization,
+          textWidgets: dataTextWidget,
+        };
+        const res = await rf
+          .getRequest('DashboardsRequest')
+          .updateDashboardItem(payload, dashboardId);
+        if (res) {
           fetchLayoutData();
         }
-      } catch (err) {
-        toastError({ message: getErrorMessage(err) });
+      } catch (e) {
+        toastError({ message: getErrorMessage(e) });
       }
-    }
+    }, 500);
   };
 
-  const onLayoutChange = (layout: Layout[]) => {
-    setLayoutChange(layout);
-  };
   return (
     <BasePage isFullWidth>
       <div className="main-content-dashboard-details">
@@ -316,16 +304,14 @@ const DashboardDetailPage: React.FC = () => {
           dashboardId={dashboardId}
           selectedItem={selectedItem}
           dataLayouts={dataLayouts}
-          setDataLayouts={setDataLayouts}
           type={typeModalTextWidget}
           open={openModalAddTextWidget}
           onClose={() => setOpenModalAddTextWidget(false)}
           onReload={fetchLayoutData}
+          dataDashboard={dataDashboard}
         />
         <ModalEditItemDashBoard
           selectedItem={selectedItem}
-          dataLayouts={dataLayouts}
-          setDataLayouts={setDataLayouts}
           onReload={fetchLayoutData}
           open={openModalEdit}
           onClose={() => setOpenModalEdit(false)}
@@ -333,7 +319,6 @@ const DashboardDetailPage: React.FC = () => {
         <ModalAddVisualization
           dashboardId={dashboardId}
           dataLayouts={dataLayouts}
-          setDataLayouts={setDataLayouts}
           setOpenModalFork={setOpenModalFork}
           open={openModalAddVisualization}
           onClose={() => setOpenModalAddVisualization(false)}

@@ -165,9 +165,9 @@ export default class DashboardsRequest extends BaseRequest {
     return this.post(url, data);
   }
 
-  updateDashboardItem(data: ILayout) {
-    const url = `https://6071c80750aaea0017285222.mockapi.io/layouts/${data.id}`;
-    return this.put(url, data);
+  updateDashboardItem(data: ILayout, id: string) {
+    const url = `https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/dashboard/${id}/update-dashboard`;
+    return this.patch(url, data);
   }
 
   removeDashboardItem(id: ILayout) {

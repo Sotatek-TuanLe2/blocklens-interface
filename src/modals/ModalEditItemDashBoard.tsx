@@ -12,8 +12,6 @@ interface IModalEditItemDashBoard {
   open: boolean;
   onClose: () => void;
   selectedItem: ILayout;
-  dataLayouts: ILayout[];
-  setDataLayouts: React.Dispatch<React.SetStateAction<ILayout[]>>;
   onReload: () => Promise<void>;
 }
 
@@ -21,8 +19,6 @@ const ModalEditItemDashBoard: React.FC<IModalEditItemDashBoard> = ({
   open,
   onClose,
   selectedItem,
-  dataLayouts,
-  setDataLayouts,
   onReload,
 }) => {
   const handleRemoveItem = async (
@@ -34,10 +30,9 @@ const ModalEditItemDashBoard: React.FC<IModalEditItemDashBoard> = ({
         .getRequest('DashboardsRequest')
         .removeVisualization(selectedItem.id);
       if (res) {
-        setDataLayouts([...dataLayouts]);
+        onReload();
+        onClose();
       }
-      onReload();
-      onClose();
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
     }
