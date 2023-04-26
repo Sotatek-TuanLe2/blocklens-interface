@@ -31,6 +31,18 @@
       width: max-content;
       min-width: 40%;
 
+      .app-select__menu {
+        position: absolute;
+        background: #272D52;
+        border-radius: 8px;
+        padding: 0;
+        z-index: -1;
+        width: max-content;
+        top: 35px;
+        right: 0;
+        max-height: 400px;
+      }
+
       @include mobile {
         width: max-content;
       }
