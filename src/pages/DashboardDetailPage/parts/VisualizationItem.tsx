@@ -1,6 +1,12 @@
 import { Flex } from '@chakra-ui/react';
 import moment from 'moment';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import { PieChart, VisualizationTable } from 'src/components/Charts';
@@ -23,6 +29,8 @@ const VisualizationItem = React.memo(
     const [queryResult, setQueryResult] = useState<unknown[]>([]);
 
     const queryId = visualization?.query?.id;
+    const fetchQueryResultInterval: any = useRef();
+
     const defaultTimeXAxis = useMemo(() => {
       let result = '';
       const firstResultInQuery: any =
@@ -45,10 +53,8 @@ const VisualizationItem = React.memo(
         executionId,
       });
 
-      let fetchQueryResultInterval: any = null;
-
       if (res.status !== 'DONE') {
-        fetchQueryResultInterval = setInterval(async () => {
+        fetchQueryResultInterval.current = setInterval(async () => {
           const resInterval = await rf
             .getRequest('DashboardsRequest')
             .getQueryResult({
@@ -56,7 +62,7 @@ const VisualizationItem = React.memo(
               executionId,
             });
           if (resInterval.status === 'DONE') {
-            clearInterval(fetchQueryResultInterval);
+            clearInterval(fetchQueryResultInterval.current);
             setQueryResult(resInterval.result);
           }
         }, 2000);
@@ -65,7 +71,7 @@ const VisualizationItem = React.memo(
       }
     };
 
-    const fetchInitialData = useCallback(async () => {
+    const fetchInitialData = async () => {
       try {
         const res: QueryResultResponse = await rf
           .getRequest('DashboardsRequest')
@@ -76,13 +82,13 @@ const VisualizationItem = React.memo(
       } catch (error) {
         getErrorMessage(error);
       }
-    }, [queryId, queryResult]);
+    };
 
     useEffect(() => {
       if (queryId) {
         fetchInitialData();
       }
-    }, [queryId, queryResult]);
+    }, [queryId]);
 
     const renderVisualization = (visualization: VisualizationType) => {
       const type =
@@ -134,7 +140,6 @@ const VisualizationItem = React.memo(
           break;
         default:
           // chart
-
           visualizationDisplay = (
             <VisualizationChart
               data={queryResult}
