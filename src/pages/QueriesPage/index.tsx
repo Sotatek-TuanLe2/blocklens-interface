@@ -1,8 +1,8 @@
 import { BasePage } from '../../layouts';
-import { Box, Flex, Text, Tooltip } from '@chakra-ui/react';
+import { Avatar, Box, Flex, Text, Tooltip } from '@chakra-ui/react';
 import AceEditor from 'react-ace';
 import AppButton from '../../components/AppButton';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { EditorContext } from './context/EditorContext';
 import EditorSidebar from './part/EditorSidebar';
 import VisualizationDisplay from './part/VisualizationDisplay';
@@ -25,6 +25,7 @@ import ModalSaveQuery from 'src/modals/ModalSaveQuery';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import rf from 'src/requests/RequestFactory';
 import { AppLoadingTable } from 'src/components';
+import useUser from 'src/hooks/useUser';
 
 interface ParamTypes {
   queryId: string;
@@ -51,9 +52,12 @@ const QueriesPage = () => {
     useState<IErrorExecuteQuery>();
 
   const history = useHistory();
+  const { user } = useUser();
 
   const hoverBackgroundButton = switchTheme ? '#dadde0' : '#2a2c2f99';
   const backgroundButton = switchTheme ? '#e9ebee' : '#2a2c2f';
+  const userName =
+    `${user?.getFirstName() || ''}` + `${user?.getLastName() || ''}`;
 
   useEffect(() => {
     if (queryId) {
@@ -268,14 +272,30 @@ const QueriesPage = () => {
             queryResult: queryResult,
           }}
         >
-          <Flex
-            className="queries-page-header-buttons"
-            justifyContent={'right'}
-          >
-            {queryValue && !queryValue?.name && (
-              <AppButton onClick={() => setShowSaveModal(true)}>Save</AppButton>
-            )}
-          </Flex>
+          {!!queryValue && (
+            <Flex
+              className="queries-page-header-buttons"
+              justifyContent={'space-between'}
+            >
+              {queryValue.name ? (
+                <Flex gap={2}>
+                  <Avatar name={user?.getFirstName()} size="sm" />
+                  <div>
+                    <div className="query-name">
+                      @{userName} / {queryValue.name || ''}
+                    </div>
+                  </div>
+                </Flex>
+              ) : (
+                <AppButton
+                  className="query-button"
+                  onClick={() => setShowSaveModal(true)}
+                >
+                  Save
+                </AppButton>
+              )}
+            </Flex>
+          )}
           <div className="queries-page">
             <EditorSidebar
               onAddParameter={onAddParameter}
