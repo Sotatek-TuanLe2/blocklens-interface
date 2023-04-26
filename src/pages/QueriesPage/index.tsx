@@ -113,7 +113,8 @@ const QueriesPage = () => {
       executionId,
     });
     let fetchQueryResultInterval: any = null;
-    if (res.status !== 'DONE' || res.status !== 'FAILED') {
+
+    if (res.status !== 'DONE' && res.status !== 'FAILED') {
       fetchQueryResultInterval = setInterval(async () => {
         const resInterval = await rf
           .getRequest('DashboardsRequest')
@@ -122,12 +123,12 @@ const QueriesPage = () => {
             executionId,
           });
         if (resInterval.status === 'DONE' || res.status === 'FAILED') {
-          clearInterval(fetchQueryResultInterval);
           setQueryResult(resInterval.result);
           if (resInterval?.error) {
             setErrorExecuteQuery(resInterval?.error);
           }
           setIsLoadingResult(false);
+          clearInterval(fetchQueryResultInterval);
         }
       }, 2000);
     } else {
@@ -159,8 +160,8 @@ const QueriesPage = () => {
         .getQueryExecutionId({
           queryId,
         });
-      await fetchQueryResult(res.resultId);
       await fetchQuery();
+      await fetchQueryResult(res.resultId);
     } catch (error) {
       getErrorMessage(error);
     }
@@ -190,10 +191,6 @@ const QueriesPage = () => {
       getErrorMessage(err);
     }
   };
-  // console.log(editorRef.current.editor.getValue());
-  // const onClickFullScreen = () => {
-  //   if (editorRef.current.editor) editorRef.current.editor.resize();
-  // };
 
   const _renderMenuPanelSetting = () => {
     return (

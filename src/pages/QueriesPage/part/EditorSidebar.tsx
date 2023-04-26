@@ -3,7 +3,6 @@ import { Box, Flex, Text } from '@chakra-ui/react';
 import _, { debounce } from 'lodash';
 import moment from 'moment';
 import React, { ReactNode, useCallback, useEffect, useState } from 'react';
-import { isMobile } from 'react-device-detect';
 import {
   AvatarIcon,
   CheckIcon,
