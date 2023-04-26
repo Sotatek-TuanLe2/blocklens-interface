@@ -4,6 +4,10 @@
 
 .queries-page-header-buttons {
   margin-bottom: 20px;
+
+  .query-button {
+    margin-left: auto;
+  }
 }
 
 .queries-page {
@@ -102,7 +106,7 @@
   }
 
   &__right-side {
-    width: 70%;
+    width: calc(100% - 380px - 20px);
 
     @include desktop {
       width: 100%;
