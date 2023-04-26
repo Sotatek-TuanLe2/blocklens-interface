@@ -113,7 +113,6 @@ const QueriesPage = () => {
       executionId,
     });
     let fetchQueryResultInterval: any = null;
-
     if (res.status !== 'DONE' && res.status !== 'FAILED') {
       fetchQueryResultInterval = setInterval(async () => {
         const resInterval = await rf
@@ -122,7 +121,7 @@ const QueriesPage = () => {
             queryId,
             executionId,
           });
-        if (resInterval.status === 'DONE' || res.status === 'FAILED') {
+        if (resInterval.status === 'DONE' || resInterval.status === 'FAILED') {
           setQueryResult(resInterval.result);
           if (resInterval?.error) {
             setErrorExecuteQuery(resInterval?.error);
