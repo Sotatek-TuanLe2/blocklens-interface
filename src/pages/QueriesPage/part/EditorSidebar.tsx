@@ -3,7 +3,6 @@ import { Box, Flex, Text } from '@chakra-ui/react';
 import _, { debounce } from 'lodash';
 import moment from 'moment';
 import React, { ReactNode, useCallback, useEffect, useState } from 'react';
-import { isMobile } from 'react-device-detect';
 import {
   AvatarIcon,
   CheckIcon,
@@ -57,9 +56,28 @@ const EditorSidebar: React.FC<IEditerSideBar> = ({ queryValue }) => {
     fullName: string;
   } | null>(null);
   const [schemas, setSchemas] = useState<TableAttributeType[]>([]);
-  const [paramsSearch, setParamsSearch] = useState({ chain: '', search: '' });
+  const [paramsSearch, setParamsSearch] = useState({
+    namespace: '',
+    search: '',
+  });
   const [schemaDescribe, setSchemaDescribe] = useState<SchemaType[] | null>();
   const [queryInfo, setQueryInfo] = useState(defaultQueryInfo);
+  const [chainsSupported, setChainsSupported] = useState<
+    { value: string; label: string }[]
+  >([]);
+  useEffect(() => {
+    (async () => {
+      const listChainRes = await rf
+        .getRequest('DashboardsRequest')
+        .getSupportedChains();
+
+      const listChain = listChainRes.map((chain: string) => ({
+        value: chain,
+        label: chain.replaceAll('_', ' ').toUpperCase(),
+      }));
+      setChainsSupported(listChain);
+    })();
+  }, []);
 
   const selectSchemaTitleHandler = async ({
     chain,
@@ -172,7 +190,7 @@ const EditorSidebar: React.FC<IEditerSideBar> = ({ queryValue }) => {
   };
 
   const handleChangeChainSelect = (value: any) => {
-    setParamsSearch((pre) => ({ ...pre, chain: value }));
+    setParamsSearch((pre) => ({ ...pre, namespace: value }));
   };
 
   const handleFilterTable = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -185,11 +203,8 @@ const EditorSidebar: React.FC<IEditerSideBar> = ({ queryValue }) => {
         <Box className={'dataset-title'}></Box>
         <Box className="select-chains">
           <AppSelect2
-            value={paramsSearch.chain}
-            options={[
-              { label: 'All chains', value: '' },
-              { label: 'APTOS', value: 'APTOS' },
-            ]}
+            value={paramsSearch.namespace}
+            options={[{ label: 'All chains', value: '' }, ...chainsSupported]}
             onChange={handleChangeChainSelect}
           />
         </Box>

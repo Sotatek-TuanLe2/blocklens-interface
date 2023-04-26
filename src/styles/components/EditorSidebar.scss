@@ -28,7 +28,8 @@
     }
 
     .select-chains {
-      width: 40%;
+      width: max-content;
+      min-width: 40%;
 
       @include mobile {
         width: 50%;

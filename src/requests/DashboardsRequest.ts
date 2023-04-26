@@ -243,5 +243,12 @@ export default class DashboardsRequest extends BaseRequest {
     return this.patch(url, data);
   }
 
+  getSupportedChains() {
+    const url =
+      'https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/databases/supported-chains';
+
+    return this.get(url);
+  }
+
   /* End of Query page */
 }
