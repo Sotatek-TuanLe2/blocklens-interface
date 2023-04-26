@@ -32,7 +32,7 @@ const ModalEditItemDashBoard: React.FC<IModalEditItemDashBoard> = ({
       e.preventDefault();
       const res = await rf
         .getRequest('DashboardsRequest')
-        .removeDashboardItem(selectedItem.id);
+        .removeVisualization(selectedItem.id);
       if (res) {
         setDataLayouts([...dataLayouts]);
       }

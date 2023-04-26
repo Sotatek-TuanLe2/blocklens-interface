@@ -11,7 +11,7 @@ import { VisualizationOptionsType } from 'src/utils/query.type';
 import CustomTooltip from './CustomTooltip';
 import { Flex } from '@chakra-ui/react';
 import { ChartProps } from './LineChart';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import _ from 'lodash';
 import BigNumber from 'bignumber.js';
 
@@ -36,7 +36,55 @@ const VisualizationPieChart = ({
     }),
   );
 
-  const renderCustomizedLabel = ({
+  useEffect(() => {
+    setDataCharts(data);
+  }, [data]);
+
+  const reducedData = useMemo(() => {
+    if (!yAxisKeys || !data) {
+      return [];
+    }
+
+    const groupedData = data.reduce(
+      (acc: { [key: string]: number }, item: any) => {
+        acc[item[xAxisKey || 0]] = item[yAxisKeys?.[0]];
+        return acc;
+      },
+      {},
+    );
+
+    const result = Object.keys(groupedData)
+      .filter((name) => {
+        const isNumber = !new BigNumber(groupedData[name]).isNaN();
+        return isNumber && new BigNumber(groupedData[name]).isGreaterThan(0);
+      })
+      .map((name) => {
+        return { [xAxisKey || 0]: name, [yAxisKeys?.[0]]: +groupedData[name] };
+      });
+    return result;
+  }, [dataCharts]);
+
+  const onToggleLegend = (dataKey: string) => {
+    const newHiddenChart = !!hiddenCharts?.find((value: any) => {
+      return value[xAxisKey || 0] === dataKey;
+    })
+      ? hiddenCharts.filter((value: any) => {
+          return value[xAxisKey || 0] !== dataKey;
+        })
+      : [...hiddenCharts, { [xAxisKey || 0]: dataKey }];
+
+    setHiddenCharts([...newHiddenChart]);
+
+    const newHideChart = _.intersectionBy(
+      data,
+      newHiddenChart,
+      xAxisKey as string,
+    );
+
+    setDataCharts(newHideChart);
+  };
+
+  const _renderCustomizedLabel = ({
     cx,
     cy,
     midAngle,
@@ -61,58 +109,16 @@ const VisualizationPieChart = ({
     );
   };
 
-  function reducedData(data: unknown[] | undefined) {
-    if (!yAxisKeys || !data) {
-      return [];
-    }
-
-    const groupedData = data.reduce(
-      (acc: { [key: string]: number }, item: any) => {
-        acc[item[xAxisKey || 0]] = item[yAxisKeys?.[0]];
-        return acc;
-      },
-      {},
-    );
-
-    const reducedData = Object.keys(groupedData)
-      .filter((name) => {
-        const isNumber = !new BigNumber(groupedData[name]).isNaN();
-        return isNumber && new BigNumber(groupedData[name]).isGreaterThan(0);
-      })
-      .map((name) => {
-        return { [xAxisKey || 0]: name, [yAxisKeys?.[0]]: +groupedData[name] };
-      });
-    return reducedData;
-  }
-
-  const onToggleLegend = (dataKey: string) => {
-    const newHiddenChart = !!hiddenCharts?.find((value: any) => {
-      return value[xAxisKey || 0] === dataKey;
-    })
-      ? hiddenCharts.filter((value: any) => {
-          return value[xAxisKey || 0] !== dataKey;
-        })
-      : [...hiddenCharts, { [xAxisKey || 0]: dataKey }];
-
-    setHiddenCharts([...newHiddenChart]);
-
-    const newHideChart = _.intersectionBy(
-      data,
-      newHiddenChart,
-      xAxisKey as string,
-    );
-
-    setDataCharts(newHideChart);
-  };
-
   return (
     <ResponsiveContainer width={'100%'} height={'100%'}>
       {yAxisKeys?.length === 1 ? (
         <PieChart className="pie-chart">
           <Pie
-            data={reducedData(dataCharts)}
+            data={reducedData}
             dataKey={yAxisKeys?.[0]}
-            label={chartOptionsConfigs?.showDataLabels && renderCustomizedLabel}
+            label={
+              chartOptionsConfigs?.showDataLabels && _renderCustomizedLabel
+            }
             nameKey={xAxisKey}
             innerRadius={100}
             labelLine={false}
@@ -140,7 +146,6 @@ const VisualizationPieChart = ({
               content={
                 <CustomLegend
                   onToggleLegend={onToggleLegend}
-                  hiddenCharts={dataCharts}
                   data={data}
                   xAxisKey={xAxisKey}
                 />

@@ -19,6 +19,7 @@ interface IModalAddTextWidget {
 
   setDataLayouts: React.Dispatch<React.SetStateAction<ILayout[]>>;
   onReload: () => Promise<void>;
+  dashboardId: string;
 }
 
 interface IMarkdown {
@@ -93,6 +94,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
   setDataLayouts,
   selectedItem,
   onReload,
+  dashboardId,
 }) => {
   const [markdownText, setMarkdownText] = useState<string>(``);
 
@@ -101,14 +103,14 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
   const handleSave = async () => {
     try {
       const payload = {
-        meta: {
-          i: markdownText,
-          x: dataLayouts.length % 2 === 0 ? 0 : 6,
-          y: 0,
-          w: 6,
-          h: 2,
+        dashboardId,
+        text: markdownText,
+        options: {
+          sizeX: dataLayouts.length % 2 === 0 ? 0 : 6,
+          sizeY: 2,
+          col: 6,
+          row: 2,
         },
-        content: [],
       };
       const res = await rf
         .getRequest('DashboardsRequest')
