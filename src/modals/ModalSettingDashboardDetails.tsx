@@ -18,7 +18,6 @@ interface IModalSettingDashboardDetails {
 interface IDataSettingForm {
   title: string;
   url: string;
-  private: boolean;
 }
 
 const ModalSettingDashboardDetails: React.FC<IModalSettingDashboardDetails> = ({
@@ -30,7 +29,6 @@ const ModalSettingDashboardDetails: React.FC<IModalSettingDashboardDetails> = ({
   const initDataFormSetting = {
     title: url,
     url: url,
-    private: false,
   };
   const history = useHistory();
 
@@ -78,18 +76,6 @@ const ModalSettingDashboardDetails: React.FC<IModalSettingDashboardDetails> = ({
               }}
             />
           </AppField>
-
-          <AppField label={'Privacy'}>
-            <Checkbox
-              isChecked={dataForm.private}
-              size={'sm'}
-              onChange={() => {
-                setDataForm({ ...dataForm, private: !dataForm.private });
-              }}
-            >
-              Make private
-            </Checkbox>
-          </AppField>
         </Flex>
         <Flex
           flexWrap={'wrap'}
@@ -106,14 +92,6 @@ const ModalSettingDashboardDetails: React.FC<IModalSettingDashboardDetails> = ({
             Save
           </AppButton>
           <Flex gap={1}>
-            <AppButton
-              onClick={handleCloseModal}
-              size="sm"
-              color="#d93025"
-              variant="setup"
-            >
-              Archive
-            </AppButton>
             <AppButton
               onClick={handleCloseModal}
               size="sm"

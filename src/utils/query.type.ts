@@ -47,6 +47,7 @@ export interface IQuery {
     avatarUrl: string;
   };
   visualizations: VisualizationType[];
+  textWidgets: any;
 }
 
 export type TableAttributeType = {

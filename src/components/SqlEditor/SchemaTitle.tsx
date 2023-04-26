@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { Box, Flex, Text } from '@chakra-ui/react';
 import { getLogoChainByChainId } from 'src/utils/utils-network';
-import { ChevronRightIcon, InfoOutlineIcon, ViewIcon } from '@chakra-ui/icons';
+import { ChevronRightIcon } from '@chakra-ui/icons';
 import {
   EditorContext,
   EditorContextType,
@@ -44,8 +44,7 @@ const SidebarEditorRow = ({
   const addTableNameToEditor = () => {
     const position = editor.current.editor.getCursorPosition();
     editor.current.editor.session.insert(position, tableFullName);
-    // @ts-ignore
-    editor.current.editor.textInput.focus();
+    editor.current.editor.focus();
   };
 
   return (
@@ -67,7 +66,12 @@ const SidebarEditorRow = ({
             >
               {chainName}
             </Text>
-            <Text fontSize={'13px'} marginLeft={3}>
+            <Text
+              isTruncated
+              fontSize={'13px'}
+              marginLeft={3}
+              title={tableName}
+            >
               {tableName}
             </Text>
           </Flex>
