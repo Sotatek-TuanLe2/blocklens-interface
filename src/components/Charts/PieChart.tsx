@@ -30,22 +30,18 @@ const VisualizationPieChart = ({
   const RADIAN = Math.PI / 180;
 
   const [dataCharts, setDataCharts] = useState<any>(data);
-  const [hiddenCharts, setHiddenCharts] = useState<any>(
-    data?.map((item: any) => {
-      return { [xAxisKey || 0]: item[xAxisKey || 0] };
-    }),
-  );
+  const [hiddenCharts, setHiddenCharts] = useState<any>([]);
 
   useEffect(() => {
     setDataCharts(data);
   }, [data]);
 
-  const reducedData = useMemo(() => {
-    if (!yAxisKeys || !data) {
+  const reducedData = () => {
+    if (!yAxisKeys || !dataCharts) {
       return [];
     }
 
-    const groupedData = data.reduce(
+    const groupedData = dataCharts.reduce(
       (acc: { [key: string]: number }, item: any) => {
         acc[item[xAxisKey || 0]] = item[yAxisKeys?.[0]];
         return acc;
@@ -62,12 +58,17 @@ const VisualizationPieChart = ({
         return { [xAxisKey || 0]: name, [yAxisKeys?.[0]]: +groupedData[name] };
       });
     return result;
-  }, [dataCharts]);
+  };
 
   const onToggleLegend = (dataKey: string) => {
-    const newHiddenChart = !!hiddenCharts?.find((value: any) => {
-      return value[xAxisKey || 0] === dataKey;
-    })
+    // check if length hidden chart and check datakey is added to hidden chart
+    const isRemoveHiddenChart =
+      !!hiddenCharts?.find((value: any) => {
+        return value[xAxisKey || 0] === dataKey;
+      }) && !!hiddenCharts.length;
+
+    // logic add and remove hidden chart depend on isRemoveHiddenChart
+    const newHiddenChart = isRemoveHiddenChart
       ? hiddenCharts.filter((value: any) => {
           return value[xAxisKey || 0] !== dataKey;
         })
@@ -75,11 +76,8 @@ const VisualizationPieChart = ({
 
     setHiddenCharts([...newHiddenChart]);
 
-    const newHideChart = _.intersectionBy(
-      data,
-      newHiddenChart,
-      xAxisKey as string,
-    );
+    // creates an array of unique xAxiskey
+    const newHideChart = _.xorBy(data, newHiddenChart, xAxisKey as string);
 
     setDataCharts(newHideChart);
   };
@@ -114,7 +112,7 @@ const VisualizationPieChart = ({
       {yAxisKeys?.length === 1 ? (
         <PieChart className="pie-chart">
           <Pie
-            data={reducedData}
+            data={reducedData()}
             dataKey={yAxisKeys?.[0]}
             label={
               chartOptionsConfigs?.showDataLabels && _renderCustomizedLabel
@@ -167,6 +165,7 @@ export default VisualizationPieChart;
 const CustomLegend = (props: any) => {
   const { payload, onToggleLegend, data, xAxisKey } = props;
 
+  // create an array of xAisKey from data array
   const dataClone = (data as any).map((item: any) => {
     return {
       value: item[xAxisKey || 0],
