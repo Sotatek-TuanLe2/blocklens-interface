@@ -176,8 +176,8 @@ const QueriesPage = () => {
 
   const onAddParameter = (parameter: string) => {
     const position = editorRef.current.editor.getCursorPosition();
-    editorRef.current.editor.focus();
     editorRef.current.editor.session.insert(position, parameter);
+    editorRef.current.editor.focus();
   };
 
   const onRunQuery = async () => {
