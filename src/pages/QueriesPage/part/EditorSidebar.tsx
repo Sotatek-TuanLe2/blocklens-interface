@@ -24,7 +24,7 @@ import { toastError } from '../../../utils/utils-notify';
 const TIME_DEBOUNCE = 1000;
 interface IEditerSideBar {
   queryValue: IQuery | null;
-  onAddParameter: any;
+  onAddParameter: (parameter: string) => void;
 }
 
 interface IQueryInfo {

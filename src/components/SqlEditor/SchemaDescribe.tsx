@@ -8,7 +8,7 @@ type Props = {
   blockchain: string;
   name: string;
   fullName: string;
-  onAddParameter: any;
+  onAddParameter: (parameter: string) => void;
 };
 
 const SchemaDescribe = ({
