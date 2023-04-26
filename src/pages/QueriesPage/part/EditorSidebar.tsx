@@ -3,13 +3,7 @@ import { Box, Flex, Text } from '@chakra-ui/react';
 import _, { debounce } from 'lodash';
 import moment from 'moment';
 import React, { ReactNode, useCallback, useEffect, useState } from 'react';
-import { isMobile } from 'react-device-detect';
-import {
-  AvatarIcon,
-  CheckIcon,
-  ClockIcon,
-  SettingIcon,
-} from 'src/assets/icons';
+import { CheckIcon, ClockIcon, SettingIcon } from 'src/assets/icons';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/EditorSidebar.scss';
 import { IQuery } from 'src/utils/query.type';
@@ -24,6 +18,7 @@ import { toastError } from '../../../utils/utils-notify';
 const TIME_DEBOUNCE = 1000;
 interface IEditerSideBar {
   queryValue: IQuery | null;
+  onAddParameter: (parameter: string) => void;
 }
 
 interface IQueryInfo {
@@ -46,20 +41,41 @@ const defaultQueryInfo: { [key: string]: IQueryInfo } = {
     icon: <ClockIcon />,
     contentRight: true,
   },
-  QUERY_PUBLIC: { label: 'Query is', value: '', icon: <AvatarIcon /> },
   QUERY_PUBLISHED: { label: 'Query is', value: '', icon: <CheckIcon /> },
 };
 
-const EditorSidebar: React.FC<IEditerSideBar> = ({ queryValue }) => {
+const EditorSidebar: React.FC<IEditerSideBar> = ({
+  queryValue,
+  onAddParameter,
+}) => {
   const [tableSelected, setTableSelected] = useState<{
     chain: string;
     name: string;
     fullName: string;
   } | null>(null);
   const [schemas, setSchemas] = useState<TableAttributeType[]>([]);
-  const [paramsSearch, setParamsSearch] = useState({ chain: '', search: '' });
+  const [paramsSearch, setParamsSearch] = useState({
+    namespace: '',
+    search: '',
+  });
   const [schemaDescribe, setSchemaDescribe] = useState<SchemaType[] | null>();
   const [queryInfo, setQueryInfo] = useState(defaultQueryInfo);
+  const [chainsSupported, setChainsSupported] = useState<
+    { value: string; label: string }[]
+  >([]);
+  useEffect(() => {
+    (async () => {
+      const listChainRes = await rf
+        .getRequest('DashboardsRequest')
+        .getSupportedChains();
+
+      const listChain = listChainRes.map((chain: string) => ({
+        value: chain,
+        label: chain.replaceAll('_', ' ').toUpperCase(),
+      }));
+      setChainsSupported(listChain);
+    })();
+  }, []);
 
   const selectSchemaTitleHandler = async ({
     chain,
@@ -112,10 +128,6 @@ const EditorSidebar: React.FC<IEditerSideBar> = ({ queryValue }) => {
         ...queryInfo.QUERY_CREATED,
         value: moment(queryValue?.createdAt).fromNow(),
       },
-      QUERY_PUBLIC: {
-        ...queryInfo.QUERY_PUBLIC,
-        value: queryValue?.isPrivate ? 'public' : 'private',
-      },
       QUERY_PUBLISHED: {
         ...queryInfo.QUERY_PUBLISHED,
         value: queryValue?.isTemp ? 'keeped' : 'published',
@@ -139,6 +151,7 @@ const EditorSidebar: React.FC<IEditerSideBar> = ({ queryValue }) => {
           blockchain={tableSelected?.chain}
           name={tableSelected.name}
           fullName={tableSelected.fullName}
+          onAddParameter={onAddParameter}
         />
       )
     );
@@ -172,7 +185,7 @@ const EditorSidebar: React.FC<IEditerSideBar> = ({ queryValue }) => {
   };
 
   const handleChangeChainSelect = (value: any) => {
-    setParamsSearch((pre) => ({ ...pre, chain: value }));
+    setParamsSearch((pre) => ({ ...pre, namespace: value }));
   };
 
   const handleFilterTable = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -185,11 +198,8 @@ const EditorSidebar: React.FC<IEditerSideBar> = ({ queryValue }) => {
         <Box className={'dataset-title'}></Box>
         <Box className="select-chains">
           <AppSelect2
-            value={paramsSearch.chain}
-            options={[
-              { label: 'All chains', value: '' },
-              { label: 'APTOS', value: 'APTOS' },
-            ]}
+            value={paramsSearch.namespace}
+            options={[{ label: 'All chains', value: '' }, ...chainsSupported]}
             onChange={handleChangeChainSelect}
           />
         </Box>
@@ -213,11 +223,21 @@ const EditorSidebar: React.FC<IEditerSideBar> = ({ queryValue }) => {
                 className="header-table"
                 alignItems={'center'}
                 onClick={clickBackIconHandler}
+                isTruncated
               >
                 <ArrowBackIcon />
-                <Box className={getLogoChainByChainId('ETH')} marginLeft={2} />
-                <Text ml={2}>{tableSelected?.chain}</Text>
-                <Text ml={2}>{tableSelected?.name}</Text>
+                <div>
+                  <Box
+                    className={getLogoChainByChainId('ETH')}
+                    marginLeft={2}
+                  />
+                </div>
+                <Text isTruncated ml={2} title={tableSelected?.chain}>
+                  {tableSelected?.chain}
+                </Text>
+                <Text isTruncated ml={2} title={tableSelected?.name}>
+                  {tableSelected?.name}
+                </Text>
               </Flex>
             </Flex>
           ) : (

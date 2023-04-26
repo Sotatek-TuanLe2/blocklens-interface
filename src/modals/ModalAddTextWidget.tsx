@@ -9,6 +9,7 @@ import 'src/styles/components/BaseModal.scss';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import BaseModal from './BaseModal';
+import { IQuery } from 'src/utils/query.type';
 
 interface IModalAddTextWidget {
   open: boolean;
@@ -16,9 +17,9 @@ interface IModalAddTextWidget {
   type?: TYPE_MODAL.ADD | TYPE_MODAL.EDIT | string;
   selectedItem: ILayout;
   dataLayouts: ILayout[];
-
-  setDataLayouts: React.Dispatch<React.SetStateAction<ILayout[]>>;
   onReload: () => Promise<void>;
+  dashboardId: string;
+  dataDashboard: IQuery | undefined;
 }
 
 interface IMarkdown {
@@ -90,9 +91,10 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
   onClose,
   type,
   dataLayouts,
-  setDataLayouts,
   selectedItem,
   onReload,
+  dashboardId,
+  dataDashboard,
 }) => {
   const [markdownText, setMarkdownText] = useState<string>(``);
 
@@ -101,14 +103,14 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
   const handleSave = async () => {
     try {
       const payload = {
-        meta: {
-          i: markdownText,
-          x: dataLayouts.length % 2 === 0 ? 0 : 6,
-          y: 0,
-          w: 6,
-          h: 2,
+        dashboardId,
+        text: markdownText,
+        options: {
+          sizeX: dataLayouts.length % 2 === 0 ? 0 : 6,
+          sizeY: 2,
+          col: 6,
+          row: 2,
         },
-        content: [],
       };
       const res = await rf
         .getRequest('DashboardsRequest')
@@ -122,36 +124,24 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
       toastError({ message: getErrorMessage(e) });
     }
   };
-
   const handleUpdate = async () => {
+    const newItems = dataDashboard?.textWidgets.map((i: IQuery) => {
+      if (i.id === selectedItem.id) {
+        return {
+          id: selectedItem.id,
+          text: markdownText,
+        };
+      }
+      return { ...i };
+    });
     try {
       const payload = {
-        meta: {
-          i: markdownText,
-          x: selectedItem.x,
-          y: selectedItem.y,
-          w: selectedItem.w,
-          h: selectedItem.h,
-        },
-        content: [],
-        id: selectedItem.id,
+        textWidgets: newItems,
       };
       const res = await rf
         .getRequest('DashboardsRequest')
-        .updateDashboardItem(payload);
+        .updateDashboardItem(payload, dashboardId);
       if (res) {
-        setDataLayouts((prevData) => {
-          const updateDataIndex = prevData.findIndex(
-            (item) => item.id === selectedItem.id,
-          );
-          if (updateDataIndex === -1) {
-            return [...prevData, res];
-          } else {
-            const newData = [...prevData];
-            newData.splice(updateDataIndex, 1, res);
-            return newData;
-          }
-        });
         onReload();
         setMarkdownText('');
         onClose();
@@ -169,10 +159,9 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
         .getRequest('DashboardsRequest')
         .removeDashboardItem(selectedItem.id);
       if (res) {
-        setDataLayouts([...dataLayouts]);
+        onReload();
+        onClose();
       }
-      onReload();
-      onClose();
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
     }
@@ -190,7 +179,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
             className="text-widget-input"
             resize={'both'}
             size="sm"
-            defaultValue={type === TYPE_MODAL.ADD ? '' : selectedItem.i}
+            defaultValue={type === TYPE_MODAL.ADD ? '' : selectedItem.text}
             onChange={handleChangeMarkdownText}
           />
         </AppField>

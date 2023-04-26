@@ -11,7 +11,108 @@
     font-size: revert;
     font-weight: revert;
   }
+
+  .recharts-wrapper .recharts-label-list .recharts-label {
+    fill: $main;
+  }
+
+  .main-counter {
+    height: 100%;
+  }
   
+  .visual-container {
+    &__visualization {
+      height: 100%;
+
+      &__title {
+        padding: 0 10px;
+        margin-bottom: 10px;
+      }
+
+      &__barchart {
+        width: 96% !important;
+        height: 92% !important;
+      }
+
+      &__linechart {
+        width: 96% !important;
+        height: 92% !important;
+      }
+
+      &__error {
+        width: 100%;
+        height: 100%;
+      }
+    }
+
+    .app-tab {
+      .tabs-container {
+        background-color: #111213;
+        border-radius: 4px;
+        margin-bottom: 20px;
+      }
+
+      &__name-tab {
+        margin-right: 0;
+        border-radius: 4px;
+        line-height: unset !important;
+
+        &__detail {
+          gap: 4px;
+        }
+
+        &:hover {
+          background-color: #ffffff1a;
+        }
+      }
+
+      &__name-tab[aria-selected='true'] {
+        background-color: #444444;
+        text-decoration: none;
+      }
+
+      .table-value {
+        min-width: 100%;
+        height: fit-content !important;
+        border: 1px solid #747474;
+
+        td,
+        th {
+          text-align: center;
+          font-size: 12px;
+          box-shadow: none;
+          border-bottom: 1px solid #747474;
+        }
+        thead {
+          .resizer {
+            display: none;
+          }
+          tr {
+            background-color: #444444;
+            th {
+              font-size: 12px;
+
+              font-weight: 400;
+            }
+          }
+        }
+      }
+
+      .select-visual-type {
+        width: 40%;
+        ::-webkit-scrollbar {
+          display: none;
+        }
+        .visual-type-content {
+          .app-select {
+            &__menu {
+              max-height: max-content;
+            }
+          }
+        }
+      }
+    }
+  }
   .main-header-dashboard-details {
     display: flex;
     justify-content: space-between;

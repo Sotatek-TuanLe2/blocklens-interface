@@ -45,6 +45,16 @@ export interface TeamsParams {
 export interface ILayout extends Layout {
   id: string;
 }
+export interface DataTextWidget {
+  text: string;
+  options: {
+    sizeX: number;
+    sizeY: number;
+    col: number;
+    row: number;
+  };
+  content: [];
+}
 export interface DataQuery {
   queryId: string;
 }
@@ -123,12 +133,12 @@ export default class DashboardsRequest extends BaseRequest {
   /* End of Dashboards page */
 
   /* Dashboard's detail page */
-  getDashboardById() {
-    const url = 'http://172.16.199.30:8002/dashboard/find-dashboard';
-    return this.get(url);
+  getDashboardById(id: string) {
+    const url = `https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/dashboard/find-my-dashboard`;
+    return this.get(url, id);
   }
   forkDashboard(data: ForkDashboard, id: ILayout) {
-    const url = `http://172.16.199.30:8002/dashboard/fork-dashboard/${id}`;
+    const url = `https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/fork-dashboard/${id}`;
     return this.post(url, data);
   }
   getQueriesValues() {
@@ -146,18 +156,26 @@ export default class DashboardsRequest extends BaseRequest {
     return this.get(url);
   }
 
-  addDashboardItem(data: ILayout) {
-    const url = `https://6071c80750aaea0017285222.mockapi.io/layouts`;
+  addDashboardItem(data: DataTextWidget) {
+    const url = `https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/dashboard/insert-text-widget`;
+    return this.post(url, data);
+  }
+  addVisualization(data: DataTextWidget) {
+    const url = `https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/dashboard/insert-visualization-widget`;
     return this.post(url, data);
   }
 
-  updateDashboardItem(data: ILayout) {
-    const url = `https://6071c80750aaea0017285222.mockapi.io/layouts/${data.id}`;
-    return this.put(url, data);
+  updateDashboardItem(data: ILayout, id: string) {
+    const url = `https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/dashboard/${id}/update-dashboard`;
+    return this.patch(url, data);
   }
 
   removeDashboardItem(id: ILayout) {
-    const url = `https://6071c80750aaea0017285222.mockapi.io/layouts/${id}`;
+    const url = `https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/text-widgets/${id}/remove-text-widget`;
+    return this.delete(url, id);
+  }
+  removeVisualization(id: ILayout) {
+    const url = `https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/visualization-widgets/${id}/remove-visualization-widget`;
     return this.delete(url, id);
   }
 
@@ -174,11 +192,6 @@ export default class DashboardsRequest extends BaseRequest {
   getSchemaOfTable(params: SchemaParams) {
     const url = `https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/databases/${params.namespace}/${params.tableName}/schema`;
     return this.get(url);
-  }
-
-  getQuery(params: ListParams) {
-    const url = 'http://172.16.199.30:8002/queries/list-browse-queries';
-    return this.get(url, { ...params });
   }
 
   getQueryById(params: DataQuery) {
@@ -211,7 +224,7 @@ export default class DashboardsRequest extends BaseRequest {
   }
 
   updateQuery(params: IUpdateQuery, queryId: string) {
-    const url = `https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/queries/${queryId}/update-my-query`;
+    const url = `https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/queries/${queryId}/update-query`;
     return this.patch(url, params);
   }
 
@@ -228,6 +241,13 @@ export default class DashboardsRequest extends BaseRequest {
   editVisualization(data: IEditVisualization, visualId: string) {
     const url = `https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/visualizations/${visualId}/edit-visual`;
     return this.patch(url, data);
+  }
+
+  getSupportedChains() {
+    const url =
+      'https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/databases/supported-chains';
+
+    return this.get(url);
   }
 
   /* End of Query page */

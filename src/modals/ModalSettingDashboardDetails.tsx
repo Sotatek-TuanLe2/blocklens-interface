@@ -12,29 +12,23 @@ interface IModalSettingDashboardDetails {
   open: boolean;
   onClose: () => void;
   url: string;
-  hashTag: string[];
   authorId: string;
 }
 
 interface IDataSettingForm {
   title: string;
   url: string;
-  tag: string;
-  private: boolean;
 }
 
 const ModalSettingDashboardDetails: React.FC<IModalSettingDashboardDetails> = ({
   open,
   onClose,
   url,
-  hashTag,
   authorId,
 }) => {
   const initDataFormSetting = {
     title: url,
     url: url,
-    tag: hashTag.toString(),
-    private: false,
   };
   const history = useHistory();
 
@@ -82,28 +76,6 @@ const ModalSettingDashboardDetails: React.FC<IModalSettingDashboardDetails> = ({
               }}
             />
           </AppField>
-          <AppField label={'Dashboard tags'}>
-            <AppInput
-              value={dataForm.tag}
-              size="sm"
-              placeholder="Tag 1, tag2, tag-3"
-              onChange={(e) => {
-                setDataForm({ ...dataForm, tag: e.target.value });
-              }}
-            />
-            <Text fontSize="13px">Separate tags with commas.</Text>
-          </AppField>
-          <AppField label={'Privacy'}>
-            <Checkbox
-              isChecked={dataForm.private}
-              size={'sm'}
-              onChange={() => {
-                setDataForm({ ...dataForm, private: !dataForm.private });
-              }}
-            >
-              Make private
-            </Checkbox>
-          </AppField>
         </Flex>
         <Flex
           flexWrap={'wrap'}
@@ -120,14 +92,6 @@ const ModalSettingDashboardDetails: React.FC<IModalSettingDashboardDetails> = ({
             Save
           </AppButton>
           <Flex gap={1}>
-            <AppButton
-              onClick={handleCloseModal}
-              size="sm"
-              color="#d93025"
-              variant="setup"
-            >
-              Archive
-            </AppButton>
             <AppButton
               onClick={handleCloseModal}
               size="sm"

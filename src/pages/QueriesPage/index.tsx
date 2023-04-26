@@ -1,5 +1,5 @@
 import { BasePage } from '../../layouts';
-import { Box, Flex, Text, Tooltip } from '@chakra-ui/react';
+import { Avatar, Box, Flex, Text, Tooltip } from '@chakra-ui/react';
 import AceEditor from 'react-ace';
 import AppButton from '../../components/AppButton';
 import React, { useEffect, useRef, useState } from 'react';
@@ -22,12 +22,19 @@ import 'src/styles/pages/QueriesPage.scss';
 import { AddParameterIcon, ExplandIcon } from 'src/assets/icons';
 import { MoonIcon, SettingsIcon, SunIcon } from '@chakra-ui/icons';
 import ModalSaveQuery from 'src/modals/ModalSaveQuery';
-import { toastSuccess } from 'src/utils/utils-notify';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import rf from 'src/requests/RequestFactory';
 import { AppLoadingTable } from 'src/components';
+import useUser from 'src/hooks/useUser';
 
 interface ParamTypes {
   queryId: string;
+}
+
+interface IErrorExecuteQuery {
+  message: string;
+  name: string;
+  metadata: { position: string; code: string };
 }
 
 const QueriesPage = () => {
@@ -41,11 +48,16 @@ const QueriesPage = () => {
   const [expandEditor, setExpandEditor] = useState<boolean>(false);
   const [showSaveModal, setShowSaveModal] = useState<boolean>(false);
   const [isLoadingResult, setIsLoadingResult] = useState<boolean>(!!queryId);
+  const [errorExecuteQuery, setErrorExecuteQuery] =
+    useState<IErrorExecuteQuery>();
 
   const history = useHistory();
+  const { user } = useUser();
 
   const hoverBackgroundButton = switchTheme ? '#dadde0' : '#2a2c2f99';
   const backgroundButton = switchTheme ? '#e9ebee' : '#2a2c2f';
+  const userName =
+    `${user?.getFirstName() || ''}` + `${user?.getLastName() || ''}`;
 
   useEffect(() => {
     if (queryId) {
@@ -63,8 +75,8 @@ const QueriesPage = () => {
         });
       await rf.getRequest('DashboardsRequest').executeQuery(queryValue.id);
       history.push(`/queries/${queryValue.id}`);
-    } catch (error) {
-      getErrorMessage(error);
+    } catch (error: any) {
+      toastError({ message: getErrorMessage(error) });
     }
   };
 
@@ -76,8 +88,8 @@ const QueriesPage = () => {
         .executeQuery(queryId);
       await fetchQueryResult(queryValues.id);
       await fetchQuery();
-    } catch (error) {
-      getErrorMessage(error);
+    } catch (error: any) {
+      toastError({ message: getErrorMessage(error) });
     }
   };
 
@@ -93,8 +105,8 @@ const QueriesPage = () => {
       await fetchQuery();
       setShowSaveModal(false);
       toastSuccess({ message: 'Save query successfully.' });
-    } catch (error) {
-      getErrorMessage(error);
+    } catch (error: any) {
+      toastError({ message: getErrorMessage(error) });
     }
   };
 
@@ -105,7 +117,7 @@ const QueriesPage = () => {
       executionId,
     });
     let fetchQueryResultInterval: any = null;
-    if (res.status !== 'DONE') {
+    if (res.status !== 'DONE' && res.status !== 'FAILED') {
       fetchQueryResultInterval = setInterval(async () => {
         const resInterval = await rf
           .getRequest('DashboardsRequest')
@@ -113,15 +125,19 @@ const QueriesPage = () => {
             queryId,
             executionId,
           });
-        if (resInterval.status === 'DONE') {
-          clearInterval(fetchQueryResultInterval);
+        if (resInterval.status === 'DONE' || resInterval.status === 'FAILED') {
           setQueryResult(resInterval.result);
+          if (resInterval?.error) {
+            setErrorExecuteQuery(resInterval?.error);
+          }
           setIsLoadingResult(false);
+          clearInterval(fetchQueryResultInterval);
         }
       }, 2000);
     } else {
       setIsLoadingResult(false);
       setQueryResult(res.result);
+      setErrorExecuteQuery(res?.error);
     }
   };
 
@@ -135,8 +151,8 @@ const QueriesPage = () => {
       const position = editorRef.current.editor.getCursorPosition();
       editorRef.current.editor.setValue('');
       editorRef.current.editor.session.insert(position, dataQuery?.query);
-    } catch (error) {
-      getErrorMessage(error);
+    } catch (error: any) {
+      toastError({ message: getErrorMessage(error) });
     }
   };
 
@@ -147,10 +163,10 @@ const QueriesPage = () => {
         .getQueryExecutionId({
           queryId,
         });
-      await fetchQueryResult(res.resultId);
       await fetchQuery();
+      await fetchQueryResult(res.resultId);
     } catch (error) {
-      getErrorMessage(error);
+      toastError({ message: getErrorMessage(error) });
     }
   };
 
@@ -162,9 +178,10 @@ const QueriesPage = () => {
     setIsSetting((pre) => !pre);
   };
 
-  const onAddParameter = () => {
+  const onAddParameter = (parameter: string) => {
     const position = editorRef.current.editor.getCursorPosition();
-    editorRef.current.editor.session.insert(position, '{{unnamed_parameter}}');
+    editorRef.current.editor.session.insert(position, parameter);
+    editorRef.current.editor.focus();
   };
 
   const onRunQuery = async () => {
@@ -174,14 +191,10 @@ const QueriesPage = () => {
       } else {
         await createNewQuery(editorRef.current.editor.getValue());
       }
-    } catch (err) {
-      getErrorMessage(err);
+    } catch (err: any) {
+      toastError({ message: getErrorMessage(err) });
     }
   };
-
-  // const onClickFullScreen = () => {
-  //   if (editorRef.current.editor) editorRef.current.editor.resize();
-  // };
 
   const _renderMenuPanelSetting = () => {
     return (
@@ -234,19 +247,11 @@ const QueriesPage = () => {
             {isSetting && _renderMenuPanelSetting()}
           </div>
         </Tooltip>
-        {/* <Tooltip hasArrow placement="top" label="Format query">
-          <AppButton
-            onClick={onFormat}
-            bg={backgroundButton}
-            _hover={{ bg: hoverBackgroundButton }}
-          >
-            <FormatIcon color={colorIcon} />
-          </AppButton>
-        </Tooltip> */}
+
         {queryValue && (
           <Tooltip hasArrow placement="top" label="Add Parameter">
             <AppButton
-              onClick={onAddParameter}
+              onClick={() => onAddParameter('{{unnamed_parameter}}')}
               bg={backgroundButton}
               _hover={{ bg: hoverBackgroundButton }}
             >
@@ -267,22 +272,49 @@ const QueriesPage = () => {
             queryResult: queryResult,
           }}
         >
-          <Flex
-            className="queries-page-header-buttons"
-            justifyContent={'right'}
-          >
-            {queryValue && !queryValue?.name && (
-              <AppButton onClick={() => setShowSaveModal(true)}>Save</AppButton>
-            )}
-          </Flex>
+          {!!queryValue && (
+            <Flex
+              className="queries-page-header-buttons"
+              justifyContent={'space-between'}
+            >
+              {queryValue.name ? (
+                <Flex gap={2}>
+                  <Avatar name={user?.getFirstName()} size="sm" />
+                  <div>
+                    <div className="query-name">
+                      @{userName} / {queryValue.name || ''}
+                    </div>
+                  </div>
+                </Flex>
+              ) : (
+                <AppButton
+                  className="query-button"
+                  onClick={() => setShowSaveModal(true)}
+                >
+                  Save
+                </AppButton>
+              )}
+            </Flex>
+          )}
           <div className="queries-page">
-            <EditorSidebar queryValue={queryValue} />
+            <EditorSidebar
+              onAddParameter={onAddParameter}
+              queryValue={queryValue}
+            />
             <Box className="queries-page__right-side">
               <Box width={'100%'}>
                 <Box bg={switchTheme ? '#fff' : '#272822'} h="10px"></Box>
                 <AceEditor
                   className={`custom-editor ${expandEditor ? 'expland' : ''}`}
                   ref={editorRef}
+                  // annotations={[
+                  //   {
+                  //     row: 0,
+                  //     column: 0,
+                  //     type: 'error',
+                  //     text: errorExecuteQuery?.message || '',
+                  //   },
+                  // ]}
                   mode="sql"
                   theme={switchTheme ? 'kuroir' : 'monokai'}
                   width="100%"
@@ -337,7 +369,9 @@ const QueriesPage = () => {
                       justifyContent={'center'}
                       alignItems="center"
                     >
-                      No data...
+                      {errorExecuteQuery?.message
+                        ? errorExecuteQuery?.message
+                        : 'No data...'}
                     </Flex>
                   ))
                 )}

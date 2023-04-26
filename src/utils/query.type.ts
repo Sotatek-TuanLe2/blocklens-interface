@@ -28,6 +28,7 @@ export type VisualizationType = {
   createdAt: Date | number;
   updatedAt?: Date | number;
   options: any;
+  query?: any;
 };
 
 export interface IQuery {
@@ -46,6 +47,7 @@ export interface IQuery {
     avatarUrl: string;
   };
   visualizations: VisualizationType[];
+  textWidgets: any;
 }
 
 export type TableAttributeType = {
