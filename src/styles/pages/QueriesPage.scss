@@ -11,6 +11,10 @@
   flex-direction: row;
   gap: 20px;
 
+  .recharts-wrapper .recharts-label-list .recharts-label {
+    fill: #fafafa;
+  }
+
   @include desktop {
     flex-direction: column-reverse;
   }

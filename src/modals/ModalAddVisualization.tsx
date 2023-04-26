@@ -29,7 +29,6 @@ interface IModalAddVisualization {
   userName: string;
   setOpenModalFork: React.Dispatch<React.SetStateAction<boolean>>;
   dataLayouts: ILayout[];
-  setDataLayouts: React.Dispatch<React.SetStateAction<ILayout[]>>;
   onReload: () => Promise<void>;
   dashboardId: string;
 }
@@ -56,7 +55,6 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   userName,
   setOpenModalFork,
   dataLayouts,
-  setDataLayouts,
   onReload,
   dashboardId,
 }) => {
@@ -129,7 +127,6 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
         .getRequest('DashboardsRequest')
         .removeVisualization(removeId);
       if (res) {
-        setDataLayouts([...dataLayouts]);
         onReload();
         fetchVisualization();
       }

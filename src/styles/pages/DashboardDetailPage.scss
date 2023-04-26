@@ -11,9 +11,15 @@
     font-size: revert;
     font-weight: revert;
   }
+
+  .recharts-wrapper .recharts-label-list .recharts-label {
+    fill: $main;
+  }
+
   .main-counter {
     height: 100%;
   }
+  
   .visual-container {
     &__visualization {
       height: 100%;

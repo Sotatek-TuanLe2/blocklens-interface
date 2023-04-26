@@ -17,8 +17,6 @@ interface IModalAddTextWidget {
   type?: TYPE_MODAL.ADD | TYPE_MODAL.EDIT | string;
   selectedItem: ILayout;
   dataLayouts: ILayout[];
-
-  setDataLayouts: React.Dispatch<React.SetStateAction<ILayout[]>>;
   onReload: () => Promise<void>;
   dashboardId: string;
   dataDashboard: IQuery | undefined;
@@ -93,7 +91,6 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
   onClose,
   type,
   dataLayouts,
-  setDataLayouts,
   selectedItem,
   onReload,
   dashboardId,
@@ -145,7 +142,6 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
         .getRequest('DashboardsRequest')
         .updateDashboardItem(payload, dashboardId);
       if (res) {
-        setDataLayouts(res);
         onReload();
         setMarkdownText('');
         onClose();
@@ -163,10 +159,9 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
         .getRequest('DashboardsRequest')
         .removeDashboardItem(selectedItem.id);
       if (res) {
-        setDataLayouts([...dataLayouts]);
+        onReload();
+        onClose();
       }
-      onReload();
-      onClose();
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
     }
