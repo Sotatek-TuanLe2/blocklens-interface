@@ -188,7 +188,7 @@ export default class DashboardsRequest extends BaseRequest {
   }
 
   updateQuery(params: IUpdateQuery, queryId: string) {
-    const url = `https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/queries/${queryId}/update-query`;
+    const url = `https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/queries/${queryId}/update-my-query`;
     return this.patch(url, params);
   }
 
