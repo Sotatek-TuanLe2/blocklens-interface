@@ -219,7 +219,6 @@ const DashboardDetailPage: React.FC = () => {
         .getRequest('DashboardsRequest')
         .updateDashboardItem(payload, dashboardId);
       if (res) {
-        setDataLayouts(res);
         fetchLayoutData();
       }
     } catch (e) {
