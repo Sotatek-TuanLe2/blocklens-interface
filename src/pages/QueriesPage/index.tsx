@@ -22,7 +22,7 @@ import 'src/styles/pages/QueriesPage.scss';
 import { AddParameterIcon, ExplandIcon } from 'src/assets/icons';
 import { MoonIcon, SettingsIcon, SunIcon } from '@chakra-ui/icons';
 import ModalSaveQuery from 'src/modals/ModalSaveQuery';
-import { toastSuccess } from 'src/utils/utils-notify';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import rf from 'src/requests/RequestFactory';
 import { AppLoadingTable } from 'src/components';
 
@@ -73,6 +73,7 @@ const QueriesPage = () => {
       history.push(`/queries/${queryValue.id}`);
     } catch (error) {
       getErrorMessage(error);
+      toastError({ message: getErrorMessage(error) });
     }
   };
 
@@ -84,8 +85,8 @@ const QueriesPage = () => {
         .executeQuery(queryId);
       await fetchQueryResult(queryValues.id);
       await fetchQuery();
-    } catch (error) {
-      getErrorMessage(error);
+    } catch (error: any) {
+      toastError({ message: getErrorMessage(error) });
     }
   };
 
@@ -147,7 +148,7 @@ const QueriesPage = () => {
       const position = editorRef.current.editor.getCursorPosition();
       editorRef.current.editor.setValue('');
       editorRef.current.editor.session.insert(position, dataQuery?.query);
-    } catch (error) {
+    } catch (error: any) {
       getErrorMessage(error);
     }
   };
@@ -186,7 +187,7 @@ const QueriesPage = () => {
       } else {
         await createNewQuery(editorRef.current.editor.getValue());
       }
-    } catch (err) {
+    } catch (err: any) {
       getErrorMessage(err);
     }
   };
