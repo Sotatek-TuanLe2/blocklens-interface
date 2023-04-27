@@ -61,11 +61,10 @@ const VisualizationPieChart = ({
   }, [dataCharts, yAxisKeys]);
 
   const onToggleLegend = (dataKey: string) => {
-    // check if length hidden chart and check datakey is added to hidden chart
-    const isRemoveHiddenChart =
-      !!hiddenCharts?.find((value: any) => {
-        return value[xAxisKey || 0] === dataKey;
-      }) && !!hiddenCharts.length;
+    // check datakey is added to hidden chart
+    const isRemoveHiddenChart = hiddenCharts.some((value: any) => {
+      return value[xAxisKey || 0] === dataKey;
+    });
 
     // logic add and remove hidden chart depend on isRemoveHiddenChart
     const newHiddenChart = isRemoveHiddenChart
@@ -107,6 +106,21 @@ const VisualizationPieChart = ({
     );
   };
 
+  const pieSectionColor = useMemo(() => {
+    const colors: { [key: string]: string } = {};
+
+    if (!data) {
+      return colors;
+    }
+
+    for (let index = 0; index < data.length; index++) {
+      const item = data[index];
+      colors[(item as any)[xAxisKey || 0]] = COLORS[index % COLORS.length];
+    }
+
+    return colors;
+  }, [data]);
+
   return (
     <ResponsiveContainer width={'100%'} height={'100%'}>
       {yAxisKeys?.length === 1 ? (
@@ -122,10 +136,10 @@ const VisualizationPieChart = ({
             labelLine={false}
           >
             {dataCharts &&
-              dataCharts.map((entry: string, index: number) => (
+              dataCharts.map((entry: any, index: number) => (
                 <Cell
-                  key={`cell-${index}`}
-                  fill={COLORS[index % COLORS.length]}
+                  key={`cell-${entry[xAxisKey || 0]}`}
+                  fill={pieSectionColor[entry[xAxisKey || 0]]}
                 />
               ))}
           </Pie>
@@ -173,14 +187,15 @@ const CustomLegend = (props: any) => {
   });
 
   const newData = [];
-  for (const item of dataClone) {
-    const index = payload.findIndex(
+  for (let index = 0; index < dataClone.length; index++) {
+    const item = dataClone[index];
+    const i = payload.findIndex(
       (legendItem: any) => legendItem.value === item.value,
     );
-    if (index !== -1) {
-      newData.push(payload[index]);
+    if (i !== -1) {
+      newData.push({ ...payload[i], color: COLORS[index % COLORS.length] });
     } else {
-      newData.push(item);
+      newData.push({ ...item, color: COLORS[index % COLORS.length] });
     }
   }
 
@@ -191,8 +206,8 @@ const CustomLegend = (props: any) => {
           <span
             onClick={() => onToggleLegend(entry.value)}
             style={{
-              color: `${entry.color || '#e9ebee'}`,
-              opacity: `${entry.color ? '1' : '0.5'}`,
+              color: `${entry.color}`,
+              opacity: `${entry.type ? '1' : '0.5'}`,
             }}
           >
             {entry.value}
@@ -200,7 +215,7 @@ const CustomLegend = (props: any) => {
           <span
             style={{
               backgroundColor: `${entry.color}`,
-              opacity: `${entry.color ? '1' : '0.5'}`,
+              opacity: `${entry.type ? '1' : '0.5'}`,
             }}
           ></span>
         </div>
