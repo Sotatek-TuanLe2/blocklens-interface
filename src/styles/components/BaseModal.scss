@@ -114,6 +114,11 @@
   &.modal-add-visualization {
     max-width: 715px !important;
   }
+
+  .modal-footer {
+    margin-top: 20px;
+    justify-content: space-between;
+  }
 }
 
 .infos {
@@ -350,13 +355,5 @@
       cursor: pointer;
       border: unset;
     }
-  }
-}
-
-.modal-save-query {
-  .footer-modal {
-    gap: 5px;
-    margin-top: 20px;
-    justify-content: flex-end;
   }
 }

@@ -11,16 +11,12 @@ export interface IModalSaveQuery {
 }
 
 const ModalSaveQuery = ({ open, onClose, onSubmit }: IModalSaveQuery) => {
-  const [nameQuerry, setNameQuerry] = useState('');
-  const [disableNameQueryBtn, setIsDisableNameQueryBtn] = useState(true);
+  const [queryName, setQueryName] = useState('');
 
   const handleChangeNameQuery = (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    setNameQuerry(event.target.value);
-    !!_.trim(event.target.value)
-      ? setIsDisableNameQueryBtn(false)
-      : setIsDisableNameQueryBtn(true);
+    setQueryName(event.target.value);
   };
   return (
     <BaseModal
@@ -34,19 +30,20 @@ const ModalSaveQuery = ({ open, onClose, onSubmit }: IModalSaveQuery) => {
         <Box pb={'10px'}>Give your new query a name!</Box>
         <AppInput
           onChange={handleChangeNameQuery}
-          value={nameQuerry}
+          value={queryName}
           placeholder="Query name ..."
         />
         <Box pt={'20px'}>Don't worry, you can change this any time.</Box>
-        <Flex className="footer-modal">
-          <AppButton variant="outline" onClick={() => onClose()}>
-            Cancel
-          </AppButton>
+        <Flex className="modal-footer">
           <AppButton
-            disabled={disableNameQueryBtn}
-            onClick={() => onSubmit(nameQuerry)}
+            disabled={!queryName.trim()}
+            onClick={() => onSubmit(queryName)}
+            size="sm"
           >
             Save
+          </AppButton>
+          <AppButton onClick={onClose} size="sm" variant={'cancel'}>
+            Cancel
           </AppButton>
         </Flex>
       </Box>
