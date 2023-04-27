@@ -40,8 +40,10 @@ export interface SchemaType {
   table_name: string;
 }
 
-// export const randomColor = Math.floor(Math.random() * 16777215).toString(16);
-export const randomColor = '#8884d8';
+export const VISUALIZATION_COLORS = {
+  POSITIVE: '#28c76f',
+  NEGATIVE: '#ff3b2e',
+};
 
 export const COLORS = [
   'rgb(244, 96, 62)',
