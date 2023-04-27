@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import 'src/styles/components/CounterConfigurations.scss';
+import { VISUALIZATION_COLORS } from 'src/utils/common';
 import { VisualizationType } from 'src/utils/query.type';
 import { roundAndPadZeros } from 'src/utils/utils-format';
 
@@ -38,6 +39,8 @@ const VisualizationCounter = ({ data, visualization }: Props) => {
     dataOptions.rowNumber,
   ]);
 
+  const isNumber = checkTypeValue === 'number';
+
   return (
     <div className="main-counter">
       <div className="counter-result">
@@ -45,20 +48,22 @@ const VisualizationCounter = ({ data, visualization }: Props) => {
         <div className="text-result">
           <div
             style={{
-              color: dataOptions.coloredPositiveValues ? '#006400' : '',
+              color: dataOptions.coloredPositiveValues
+                ? VISUALIZATION_COLORS.POSITIVE
+                : '',
               fontSize: `${size}px`,
             }}
           >
-            {checkTypeValue === 'number' && dataOptions.stringPrefix}
+            {isNumber && dataOptions.stringPrefix}
             <span>
-              {checkTypeValue === 'number'
+              {isNumber
                 ? roundAndPadZeros(
                     dataCounter(),
                     Number(dataOptions.stringDecimal || 0),
                   )
                 : dataCounter()}
             </span>
-            {checkTypeValue === 'number' && dataOptions.stringSuffix}
+            {isNumber && dataOptions.stringSuffix}
           </div>
           <div className="counter-sub-label">
             {dataOptions.counterLabel ? dataOptions.counterLabel : 'Counter'}
