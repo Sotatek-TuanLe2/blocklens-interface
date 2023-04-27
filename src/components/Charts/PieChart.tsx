@@ -120,7 +120,7 @@ const VisualizationPieChart = ({
               chartOptionsConfigs?.showDataLabels && _renderCustomizedLabel
             }
             nameKey={xAxisKey}
-            innerRadius={100}
+            innerRadius={'38%'}
             labelLine={false}
           >
             {dataCharts &&
