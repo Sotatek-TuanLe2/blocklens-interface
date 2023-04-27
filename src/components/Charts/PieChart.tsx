@@ -23,7 +23,7 @@ type Props = ChartProps & {
 const VisualizationPieChart = ({
   data,
   yAxisKeys,
-  xAxisKey,
+  xAxisKey = '0',
   configs,
 }: Props) => {
   const chartOptionsConfigs = configs?.chartOptionsConfigs;
@@ -43,7 +43,7 @@ const VisualizationPieChart = ({
 
     const groupedData = dataCharts.reduce(
       (acc: { [key: string]: number }, item: any) => {
-        acc[item[xAxisKey || 0]] = item[yAxisKeys?.[0]];
+        acc[item[xAxisKey]] = item[yAxisKeys?.[0]];
         return acc;
       },
       {},
@@ -55,7 +55,7 @@ const VisualizationPieChart = ({
         return isNumber && new BigNumber(groupedData[name]).isGreaterThan(0);
       })
       .map((name) => {
-        return { [xAxisKey || 0]: name, [yAxisKeys?.[0]]: +groupedData[name] };
+        return { [xAxisKey]: name, [yAxisKeys?.[0]]: +groupedData[name] };
       });
     return result;
   }, [dataCharts, yAxisKeys]);
@@ -63,15 +63,15 @@ const VisualizationPieChart = ({
   const onToggleLegend = (dataKey: string) => {
     // check datakey is added to hidden chart
     const isRemoveHiddenChart = hiddenCharts.some((value: any) => {
-      return value[xAxisKey || 0] === dataKey;
+      return value[xAxisKey] === dataKey;
     });
 
     // logic add and remove hidden chart depend on isRemoveHiddenChart
     const newHiddenChart = isRemoveHiddenChart
       ? hiddenCharts.filter((value: any) => {
-          return value[xAxisKey || 0] !== dataKey;
+          return value[xAxisKey] !== dataKey;
         })
-      : [...hiddenCharts, { [xAxisKey || 0]: dataKey }];
+      : [...hiddenCharts, { [xAxisKey]: dataKey }];
 
     setHiddenCharts([...newHiddenChart]);
 
@@ -115,7 +115,7 @@ const VisualizationPieChart = ({
 
     for (let index = 0; index < data.length; index++) {
       const item = data[index];
-      colors[(item as any)[xAxisKey || 0]] = COLORS[index % COLORS.length];
+      colors[(item as any)[xAxisKey]] = COLORS[index % COLORS.length];
     }
 
     return colors;
@@ -138,8 +138,8 @@ const VisualizationPieChart = ({
             {dataCharts &&
               dataCharts.map((entry: any, index: number) => (
                 <Cell
-                  key={`cell-${entry[xAxisKey || 0]}`}
-                  fill={pieSectionColor[entry[xAxisKey || 0]]}
+                  key={`cell-${entry[xAxisKey]}`}
+                  fill={pieSectionColor[entry[xAxisKey]]}
                 />
               ))}
           </Pie>
@@ -182,7 +182,7 @@ const CustomLegend = (props: any) => {
   // create an array of xAisKey from data array
   const dataClone = (data as any).map((item: any) => {
     return {
-      value: item[xAxisKey || 0],
+      value: item[xAxisKey],
     };
   });
 
