@@ -47,7 +47,7 @@ export const VISUALIZATION_COLORS = {
 
 export const COLORS = [
   'rgb(244, 96, 62)',
-  'rgb(144, 144, 144)',
+  'rgb(200, 143, 251)',
   'rgb(230, 131, 16)',
   'rgb(36, 121, 108)',
   'rgb(153, 201, 69)',
