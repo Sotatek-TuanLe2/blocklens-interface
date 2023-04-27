@@ -77,27 +77,16 @@ const ModalSettingDashboardDetails: React.FC<IModalSettingDashboardDetails> = ({
             />
           </AppField>
         </Flex>
-        <Flex
-          flexWrap={'wrap'}
-          gap={'10px'}
-          justifyContent={'space-between'}
-          pt={'15px'}
-        >
+        <Flex className="modal-footer">
           <AppButton
             size="sm"
-            className="btn-save"
             onClick={handleSubmitForm}
             disabled={!dataForm.title}
           >
             Save
           </AppButton>
           <Flex gap={1}>
-            <AppButton
-              onClick={handleCloseModal}
-              size="sm"
-              className="btn-remove"
-              variant={'cancel'}
-            >
+            <AppButton onClick={handleCloseModal} size="sm" variant={'cancel'}>
               Cancel
             </AppButton>
           </Flex>

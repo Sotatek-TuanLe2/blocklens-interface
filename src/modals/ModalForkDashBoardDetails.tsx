@@ -96,21 +96,11 @@ const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
           />
         </AppField>
 
-        <Flex flexWrap={'wrap'} gap={'10px'} mt={10}>
-          <AppButton
-            size="sm"
-            className="btn-save"
-            onClick={onSave}
-            disabled={!dataForm.dashboard}
-          >
+        <Flex className="modal-footer">
+          <AppButton size="sm" onClick={onSave} disabled={!dataForm.dashboard}>
             Save and open
           </AppButton>
-          <AppButton
-            onClick={onClose}
-            size="sm"
-            className="btn-remove"
-            variant={'cancel'}
-          >
+          <AppButton onClick={onClose} size="sm" variant={'cancel'}>
             Cancel
           </AppButton>
         </Flex>

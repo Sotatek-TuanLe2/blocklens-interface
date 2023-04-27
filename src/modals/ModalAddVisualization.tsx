@@ -227,18 +227,12 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
                 )),
             )}
         </div>
-        <Flex
-          flexWrap={'wrap'}
-          gap={'10px'}
-          mt={10}
-          className="group-action-query"
-        >
-          <AppButton className="btn-save" size="sm" onClick={onClose}>
+        <Flex className="modal-footer">
+          <AppButton size="sm" onClick={onClose}>
             Done
           </AppButton>
           <AppButton
             size="sm"
-            className="btn-remove"
             variant={'cancel'}
             onClick={() => setOpenModalFork(true)}
           >

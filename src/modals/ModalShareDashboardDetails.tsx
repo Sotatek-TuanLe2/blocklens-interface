@@ -47,10 +47,9 @@ const ModalShareDashboardDetails: React.FC<IModalShareDashboardDetails> = ({
         </Text>
         <AppInput value={link} size="sm" placeholder="my-dashboard" readOnly />
       </Flex>
-      <Flex flexWrap={'wrap'} gap={'10px'}>
+      <Flex className="modal-footer">
         <AppButton
           size="sm"
-          className="btn-save"
           onClick={() => {
             copyToClipboard(link);
             setCopy(true);
@@ -58,12 +57,7 @@ const ModalShareDashboardDetails: React.FC<IModalShareDashboardDetails> = ({
         >
           {!copy ? 'Copy link' : <ButtonCopySuccess />}
         </AppButton>
-        <AppButton
-          onClick={handleCloseModal}
-          size="sm"
-          className="btn-cancel"
-          variant={'cancel'}
-        >
+        <AppButton onClick={handleCloseModal} size="sm" variant={'cancel'}>
           Cancel
         </AppButton>
       </Flex>

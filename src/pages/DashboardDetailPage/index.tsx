@@ -121,6 +121,7 @@ const DashboardDetailPage: React.FC = () => {
   useEffect(() => {
     fetchLayoutData();
   }, []);
+  console.log(openModalFork);
 
   const _renderButtons = () => {
     const isAccountsDashboard = true;
@@ -325,11 +326,15 @@ const DashboardDetailPage: React.FC = () => {
           userName={userName}
           onReload={fetchLayoutData}
         />
+        <ModalForkDashBoardDetails
+          authorId={authorId}
+          open={openModalFork}
+          onClose={() => setOpenModalFork(false)}
+        />
       </div>
     </BasePage>
   );
 };
-
 export default DashboardDetailPage;
 
 const ButtonModalFork: React.FC<IButtonModalFork> = ({
@@ -346,11 +351,6 @@ const ButtonModalFork: React.FC<IButtonModalFork> = ({
       >
         Fork
       </AppButton>
-      <ModalForkDashBoardDetails
-        authorId={authorId}
-        open={openModalFork}
-        onClose={() => setOpenModalFork(false)}
-      />
     </>
   );
 };
