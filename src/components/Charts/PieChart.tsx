@@ -14,6 +14,7 @@ import { ChartProps } from './LineChart';
 import { useEffect, useMemo, useState } from 'react';
 import _ from 'lodash';
 import BigNumber from 'bignumber.js';
+import { isNumber } from 'src/utils/utils-helper';
 
 type ChartConfigType = VisualizationOptionsType;
 type Props = ChartProps & {
@@ -51,8 +52,10 @@ const VisualizationPieChart = ({
 
     const result = Object.keys(groupedData)
       .filter((name) => {
-        const isNumber = !new BigNumber(groupedData[name]).isNaN();
-        return isNumber && new BigNumber(groupedData[name]).isGreaterThan(0);
+        return (
+          isNumber(groupedData[name]) &&
+          new BigNumber(groupedData[name]).isGreaterThan(0)
+        );
       })
       .map((name) => {
         return { [xAxisKey]: name, [yAxisKeys?.[0]]: +groupedData[name] };
