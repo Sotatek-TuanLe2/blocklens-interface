@@ -22,11 +22,14 @@ export enum TYPE_VISUALIZATION {
 }
 
 export enum CHAIN_NAME {
-  ETH = 'eth_goerli',
+  ETH_GRERLI = 'eth_goerli',
+  ETH_MAINNET = 'eth_mainnet',
   BSC_TESTNET = 'bsc_testnet',
+  BSC_MAINNET = 'bsc_mainnet',
   APTOS_TESTNET = 'aptos_testnet',
   APTOS_MAINNET = 'aptos_mainnet',
-  POLYGON = 'polygon_mumbai',
+  polygon_mumbai = 'polygon_mumbai',
+  POLYGON_MAINNET = 'polygon_mainnet',
 }
 
 export type VisualizationType = {

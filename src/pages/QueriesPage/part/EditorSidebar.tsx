@@ -80,11 +80,13 @@ const EditorSidebar: React.FC<IEditerSideBar> = ({
   const getChainIcon = (chainName: string) => {
     let iconClassName: string;
     switch (chainName) {
-      case CHAIN_NAME.ETH: {
+      case CHAIN_NAME.ETH_GRERLI:
+      case CHAIN_NAME.ETH_MAINNET: {
         iconClassName = getLogoChainByChainId('ETH') || '';
         break;
       }
-      case CHAIN_NAME.BSC_TESTNET: {
+      case CHAIN_NAME.BSC_TESTNET:
+      case CHAIN_NAME.BSC_MAINNET: {
         iconClassName = getLogoChainByChainId('BSC') || '';
         break;
       }
