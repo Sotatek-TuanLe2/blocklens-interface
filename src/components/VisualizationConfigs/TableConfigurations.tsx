@@ -1,9 +1,9 @@
 import { Checkbox, Divider, Grid, GridItem, Text } from '@chakra-ui/react';
-import BigNumber from 'bignumber.js';
 import { useRef, useState } from 'react';
 import { VISUALIZATION_DEBOUNCE } from 'src/pages/QueriesPage/part/VisualizationDisplay';
 import 'src/styles/components/TableConfigurations.scss';
 import { VisualizationType } from 'src/utils/query.type';
+import { isNumber } from 'src/utils/utils-helper';
 import AppInput from '../AppInput';
 import AppSelect2 from '../AppSelect2';
 import { getDefaultTableColumns } from '../Charts/VisualizationTable';
@@ -144,7 +144,7 @@ export default TableConfigurations;
 const TableOptions = ({ data, typeData, index, onChange }: any) => {
   const [selectedItem, setSelectedItem] = useState(Object);
 
-  const isNumber = !new BigNumber(typeData?.[0]?.[index]).isNaN();
+  const isNumberValue = isNumber(typeData?.[0]?.[index]);
 
   return (
     <div className="box-table" onClick={() => setSelectedItem(data)}>
@@ -206,7 +206,7 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
           }
         />
       </div>
-      {isNumber && (
+      {isNumberValue && (
         <div className="box-table-children">
           <div>Type</div>
 
@@ -246,7 +246,7 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
           Hide column
         </Checkbox>
       </div>
-      {isNumber && data?.type === 'normal' ? (
+      {isNumberValue && data?.type === 'normal' ? (
         <div>
           <div className="main-checkbox">
             <Checkbox

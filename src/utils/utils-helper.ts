@@ -3,6 +3,8 @@ import moment from 'moment';
 import { isValidChecksumAddress, toChecksumAddress } from 'ethereumjs-util';
 import copy from 'copy-to-clipboard';
 import { COMMON_ERROR_MESSAGE } from '../constants';
+import BigNumber from 'bignumber.js';
+import { isAddress, isHexString } from 'ethers/lib/utils';
 
 export const copyToClipboard = (message: string) => {
   try {
@@ -61,6 +63,12 @@ export const convertCurrencyToNumber = (value: string) => {
 
 export const isString = (value: unknown) => {
   return typeof value === 'string';
+};
+
+export const isNumber = (value: any) => {
+  return (
+    !new BigNumber(value).isNaN() && !isAddress(value) && !isHexString(value)
+  );
 };
 
 export const getErrorMessage = (err: any) => {

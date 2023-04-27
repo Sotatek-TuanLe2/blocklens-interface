@@ -10,6 +10,7 @@ import { useEffect } from 'react';
 import 'src/styles/components/TableValue.scss';
 import { VISUALIZATION_COLORS } from 'src/utils/common';
 import { formatVisualizationValue } from 'src/utils/utils-format';
+import { isNumber } from 'src/utils/utils-helper';
 import { objectKeys } from 'src/utils/utils-network';
 
 interface ReactTableProps<T> {
@@ -135,7 +136,7 @@ const VisualizationTable = <T,>({
                   coloredProgress,
                 } = cells.column.columnDef;
                 const value = cells.getValue();
-                const isNumber = !new BigNumber(value).isNaN();
+                const isNumberValue = isNumber(value);
 
                 const checkColor = (value: any) => {
                   switch (true) {
@@ -165,13 +166,13 @@ const VisualizationTable = <T,>({
                         key: cells.id,
                         style: {
                           justifyContent: align,
-                          color: isNumber
+                          color: isNumberValue
                             ? checkColor(cells.getValue())
                             : undefined,
                         },
                       }}
                     >
-                      {type === 'normal' ? null : isNumber ? (
+                      {type === 'normal' ? null : isNumberValue ? (
                         <div
                           style={
                             {

@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import Decimal from 'decimal.js';
+import { isNumber } from './utils-helper';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const commaNumber = require('comma-number');
@@ -215,8 +216,7 @@ export const roundAndPadZeros = (a: number, decimals: number): string => {
 };
 
 export const formatVisualizationValue = (format: string, value: any) => {
-  const isNumber = !new BigNumber(value).isNaN();
-  switch (isNumber) {
+  switch (isNumber(value)) {
     case format.includes(','):
       return value.toLocaleString('en-US');
     case format.includes('0.'):
