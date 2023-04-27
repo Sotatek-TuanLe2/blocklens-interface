@@ -197,7 +197,12 @@ const CustomLegend = (props: any) => {
           >
             {entry.value}
           </span>
-          <span style={{ backgroundColor: `${entry.color}` }}></span>
+          <span
+            style={{
+              backgroundColor: `${entry.color}`,
+              opacity: `${entry.color ? '1' : '0.5'}`,
+            }}
+          ></span>
         </div>
       ))}
     </div>
