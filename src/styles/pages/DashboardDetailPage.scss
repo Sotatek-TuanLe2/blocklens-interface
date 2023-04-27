@@ -11,7 +11,16 @@
     font-size: revert;
     font-weight: revert;
   }
-
+  .react-resizable-handle {
+    &::after {
+      border-right: 2px solid rgba(255, 255, 255, 0.4);
+      border-bottom: 2px solid rgba(255, 255, 255, 0.4);
+      right: 3px;
+      bottom: 3px;
+      width: 8px;
+      height: 8px;
+    }
+  }
   .recharts-wrapper .recharts-label-list .recharts-label {
     fill: $title;
   }
@@ -19,11 +28,32 @@
   .main-counter {
     height: 100%;
   }
-  
+
   .visual-container {
     &__visualization {
       height: 100%;
+      .main-table {
+        height: unset;
+        overflow: unset;
+      }
+      .table-content {
+        height: 88%;
+        overflow: auto;
+      }
+      ::-webkit-scrollbar {
+        width: 10px;
+        background-color: #030821;
+        border-radius: 100px;
+        height: 10px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #1a203b;
+        border-radius: 100px;
+      }
 
+      ::-webkit-scrollbar-corner {
+        background: #030821;
+      }
       &__title {
         padding: 0 10px;
         margin-bottom: 10px;
@@ -99,9 +129,9 @@
       }
 
       .select-visual-type {
-        width: 40%;
+        width: 100%;
         ::-webkit-scrollbar {
-          display: none;
+          display: block;
         }
         .visual-type-content {
           .app-select {
@@ -161,6 +191,7 @@
       color: $title;
       overflow: hidden;
       cursor: grab;
+      padding-bottom: 10px;
     }
 
     .react-draggable-dragging {
@@ -172,7 +203,6 @@
       position: relative;
 
       .box-chart {
-        overflow: auto;
         width: 100%;
         height: 100%;
       }

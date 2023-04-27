@@ -8,7 +8,6 @@ import {
 import BigNumber from 'bignumber.js';
 import { useEffect } from 'react';
 import 'src/styles/components/TableValue.scss';
-import { VISUALIZATION_COLORS } from 'src/utils/common';
 import { formatVisualizationValue } from 'src/utils/utils-format';
 import { objectKeys } from 'src/utils/utils-network';
 
@@ -60,7 +59,7 @@ const VisualizationTable = <T,>({
   }, []);
 
   return (
-    <Box height={'500px'} overflow={'auto'}>
+    <Box className="main-table" height={'500px'} overflow={'auto'}>
       <table
         className={'table-value'}
         {...{
@@ -141,9 +140,9 @@ const VisualizationTable = <T,>({
                   switch (true) {
                     case new BigNumber(value).isGreaterThan(0) &&
                       coloredPositive:
-                      return VISUALIZATION_COLORS.POSITIVE;
+                      return '#006400';
                     case new BigNumber(value).isLessThan(0) && coloredNegative:
-                      return VISUALIZATION_COLORS.NEGATIVE;
+                      return '#d93025';
                     default:
                       return undefined;
                   }
@@ -176,7 +175,7 @@ const VisualizationTable = <T,>({
                           style={
                             {
                               '--myColor': coloredProgress
-                                ? VISUALIZATION_COLORS.POSITIVE
+                                ? '#006400'
                                 : '#3965ff',
                             } as React.CSSProperties
                           }
