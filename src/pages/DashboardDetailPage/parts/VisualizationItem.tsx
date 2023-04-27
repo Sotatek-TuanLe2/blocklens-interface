@@ -168,7 +168,7 @@ const VisualizationItem = React.memo(
                 {errorMessage}
               </Flex>
             ) : (
-              visualizationDisplay
+              <div className="table-content">{visualizationDisplay}</div>
             )}
           </div>
         </>
