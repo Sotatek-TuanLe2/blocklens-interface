@@ -129,9 +129,9 @@
       }
 
       .select-visual-type {
-        width: 100%;
+        width: 40%;
         ::-webkit-scrollbar {
-          display: block;
+          display: none;
         }
         .visual-type-content {
           .app-select {
