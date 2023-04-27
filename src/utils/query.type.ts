@@ -21,6 +21,17 @@ export enum TYPE_VISUALIZATION {
   new = 'newVisualization',
 }
 
+export enum CHAIN_NAME {
+  ETH_GOERLI = 'eth_goerli',
+  ETH_MAINNET = 'eth_mainnet',
+  BSC_TESTNET = 'bsc_testnet',
+  BSC_MAINNET = 'bsc_mainnet',
+  APTOS_TESTNET = 'aptos_testnet',
+  APTOS_MAINNET = 'aptos_mainnet',
+  polygon_mumbai = 'polygon_mumbai',
+  POLYGON_MAINNET = 'polygon_mainnet',
+}
+
 export type VisualizationType = {
   id: string;
   name: string;
