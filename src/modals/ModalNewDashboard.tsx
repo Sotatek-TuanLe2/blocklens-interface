@@ -74,28 +74,15 @@ const ModalNewDashboard: React.FC<IModalNewDashboard> = ({ open, onClose }) => {
           />
         </AppField>
       </Flex>
-      <Flex
-        flexWrap={'wrap'}
-        gap={'10px'}
-        justifyContent={'space-between'}
-        pt={'15px'}
-      >
+      <Flex className="modal-footer">
         <AppButton
           size="sm"
-          bg="#1e1870"
-          color="#fff"
           onClick={handleSubmitForm}
           disabled={!dataForm.title.trim()}
         >
           Save and open
         </AppButton>
-        <AppButton
-          onClick={handleCloseModal}
-          size="sm"
-          bg="#e1e1f9"
-          color="#1e1870"
-          variant={'cancel'}
-        >
+        <AppButton onClick={handleCloseModal} size="sm" variant={'cancel'}>
           Cancel
         </AppButton>
       </Flex>

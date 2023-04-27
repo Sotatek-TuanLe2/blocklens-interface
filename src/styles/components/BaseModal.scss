@@ -114,6 +114,11 @@
   &.modal-add-visualization {
     max-width: 715px !important;
   }
+
+  .modal-footer {
+    margin-top: 20px;
+    justify-content: space-between;
+  }
 }
 
 .infos {
