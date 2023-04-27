@@ -13,7 +13,7 @@
   }
 
   .recharts-wrapper .recharts-label-list .recharts-label {
-    fill: $main;
+    fill: $title;
   }
 
   .main-counter {
@@ -157,8 +157,8 @@
       a {
         text-decoration: underline;
       }
-      background: #ffeceb;
-      color: $blackAlpha-900;
+      background: rgba(16, 21, 48, 0.5);
+      color: $title;
       overflow: hidden;
       cursor: grab;
     }
@@ -168,7 +168,7 @@
     }
 
     .box-layout {
-      border: 1px dashed #808080;
+      border: 1px solid #808080;
       position: relative;
 
       .box-chart {
