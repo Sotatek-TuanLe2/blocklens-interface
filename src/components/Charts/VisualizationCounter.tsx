@@ -39,7 +39,8 @@ const VisualizationCounter = ({ data, visualization }: Props) => {
     dataOptions.rowNumber,
   ]);
 
-  const isNumber = !new BigNumber(dataCounter()).isNaN();
+  const isNumber = checkTypeValue === 'number';
+  const isBigNumber = !new BigNumber(dataCounter()).isNaN();
   const checkColor = (value: string | number) => {
     switch (true) {
       case new BigNumber(value).isGreaterThan(0) &&
@@ -59,20 +60,20 @@ const VisualizationCounter = ({ data, visualization }: Props) => {
         <div className="text-result">
           <div
             style={{
-              color: (isNumber && checkColor(dataCounter())) || '',
+              color: (isBigNumber && checkColor(dataCounter())) || '',
               fontSize: ` ${size}px`,
             }}
           >
-            {checkTypeValue === 'number' && dataOptions.stringPrefix}
+            {isNumber && dataOptions.stringPrefix}
             <span>
-              {checkTypeValue === 'number'
+              {isNumber
                 ? roundAndPadZeros(
                     dataCounter(),
                     Number(dataOptions.stringDecimal || 0),
                   )
                 : dataCounter()}
             </span>
-            {checkTypeValue === 'number' && dataOptions.stringSuffix}
+            {isNumber && dataOptions.stringSuffix}
           </div>
           <div className="counter-sub-label">
             {dataOptions.counterLabel ? dataOptions.counterLabel : 'Counter'}
