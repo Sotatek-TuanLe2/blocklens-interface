@@ -177,7 +177,7 @@ const VisualizationTable = <T,>({
                           style={
                             {
                               '--myColor': coloredProgress
-                                ? '#006400'
+                                ? VISUALIZATION_COLORS.POSITIVE
                                 : '#3965ff',
                             } as React.CSSProperties
                           }
