@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js';
 import React, { useEffect, useState } from 'react';
 import 'src/styles/components/CounterConfigurations.scss';
+import { VISUALIZATION_COLORS } from 'src/utils/common';
 import { VisualizationType } from 'src/utils/query.type';
 import { roundAndPadZeros } from 'src/utils/utils-format';
 
@@ -45,10 +46,10 @@ const VisualizationCounter = ({ data, visualization }: Props) => {
     switch (true) {
       case new BigNumber(value).isGreaterThan(0) &&
         dataOptions.coloredPositiveValues:
-        return '#006400';
+        return VISUALIZATION_COLORS.POSITIVE;
       case new BigNumber(value).isLessThan(0) &&
         dataOptions.coloredNegativeValues:
-        return '#d93025';
+        return VISUALIZATION_COLORS.NEGATIVE;
       default:
         return undefined;
     }
