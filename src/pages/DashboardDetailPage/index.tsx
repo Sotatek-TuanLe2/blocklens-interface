@@ -152,11 +152,7 @@ const DashboardDetailPage: React.FC = () => {
         ) : (
           <>
             {isAccountsDashboard && (
-              <ButtonModalFork
-                openModalFork={openModalFork}
-                setOpenModalFork={setOpenModalFork}
-                authorId={authorId}
-              />
+              <ButtonModalFork openModalFork={openModalFork} />
             )}
             <ButtonShare />
           </>
@@ -337,11 +333,7 @@ const DashboardDetailPage: React.FC = () => {
 };
 export default DashboardDetailPage;
 
-const ButtonModalFork: React.FC<IButtonModalFork> = ({
-  openModalFork,
-  setOpenModalFork,
-  authorId,
-}) => {
+const ButtonModalFork: React.FC<IButtonModalFork> = ({ setOpenModalFork }) => {
   return (
     <>
       <AppButton
