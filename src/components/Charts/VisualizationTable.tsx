@@ -8,6 +8,7 @@ import {
 import BigNumber from 'bignumber.js';
 import { useEffect } from 'react';
 import 'src/styles/components/TableValue.scss';
+import { VISUALIZATION_COLORS } from 'src/utils/common';
 import { formatVisualizationValue } from 'src/utils/utils-format';
 import { objectKeys } from 'src/utils/utils-network';
 
@@ -140,9 +141,9 @@ const VisualizationTable = <T,>({
                   switch (true) {
                     case new BigNumber(value).isGreaterThan(0) &&
                       coloredPositive:
-                      return '#006400';
+                      return VISUALIZATION_COLORS.POSITIVE;
                     case new BigNumber(value).isLessThan(0) && coloredNegative:
-                      return '#d93025';
+                      return VISUALIZATION_COLORS.NEGATIVE;
                     default:
                       return undefined;
                   }
