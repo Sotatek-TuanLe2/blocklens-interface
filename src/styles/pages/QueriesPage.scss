@@ -16,7 +16,7 @@
   gap: 20px;
 
   .recharts-wrapper .recharts-label-list .recharts-label {
-    fill: #fafafa;
+    fill: $title;
   }
 
   @include desktop {
