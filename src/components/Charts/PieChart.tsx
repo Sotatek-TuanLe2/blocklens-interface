@@ -23,31 +23,27 @@ type Props = ChartProps & {
 const VisualizationPieChart = ({
   data,
   yAxisKeys,
-  xAxisKey,
+  xAxisKey = '0',
   configs,
 }: Props) => {
   const chartOptionsConfigs = configs?.chartOptionsConfigs;
   const RADIAN = Math.PI / 180;
 
   const [dataCharts, setDataCharts] = useState<any>(data);
-  const [hiddenCharts, setHiddenCharts] = useState<any>(
-    data?.map((item: any) => {
-      return { [xAxisKey || 0]: item[xAxisKey || 0] };
-    }),
-  );
+  const [hiddenCharts, setHiddenCharts] = useState<any>([]);
 
   useEffect(() => {
     setDataCharts(data);
   }, [data]);
 
   const reducedData = useMemo(() => {
-    if (!yAxisKeys || !data) {
+    if (!yAxisKeys || !dataCharts) {
       return [];
     }
 
-    const groupedData = data.reduce(
+    const groupedData = dataCharts.reduce(
       (acc: { [key: string]: number }, item: any) => {
-        acc[item[xAxisKey || 0]] = item[yAxisKeys?.[0]];
+        acc[item[xAxisKey]] = item[yAxisKeys?.[0]];
         return acc;
       },
       {},
@@ -59,27 +55,28 @@ const VisualizationPieChart = ({
         return isNumber && new BigNumber(groupedData[name]).isGreaterThan(0);
       })
       .map((name) => {
-        return { [xAxisKey || 0]: name, [yAxisKeys?.[0]]: +groupedData[name] };
+        return { [xAxisKey]: name, [yAxisKeys?.[0]]: +groupedData[name] };
       });
     return result;
-  }, [dataCharts]);
+  }, [dataCharts, yAxisKeys]);
 
   const onToggleLegend = (dataKey: string) => {
-    const newHiddenChart = !!hiddenCharts?.find((value: any) => {
-      return value[xAxisKey || 0] === dataKey;
-    })
+    // check datakey is added to hidden chart
+    const isRemoveHiddenChart = hiddenCharts.some((value: any) => {
+      return value[xAxisKey] === dataKey;
+    });
+
+    // logic add and remove hidden chart depend on isRemoveHiddenChart
+    const newHiddenChart = isRemoveHiddenChart
       ? hiddenCharts.filter((value: any) => {
-          return value[xAxisKey || 0] !== dataKey;
+          return value[xAxisKey] !== dataKey;
         })
-      : [...hiddenCharts, { [xAxisKey || 0]: dataKey }];
+      : [...hiddenCharts, { [xAxisKey]: dataKey }];
 
     setHiddenCharts([...newHiddenChart]);
 
-    const newHideChart = _.intersectionBy(
-      data,
-      newHiddenChart,
-      xAxisKey as string,
-    );
+    // creates an array of unique xAxiskey
+    const newHideChart = _.xorBy(data, newHiddenChart, xAxisKey as string);
 
     setDataCharts(newHideChart);
   };
@@ -109,6 +106,21 @@ const VisualizationPieChart = ({
     );
   };
 
+  const pieSectionColor = useMemo(() => {
+    const colors: { [key: string]: string } = {};
+
+    if (!data) {
+      return colors;
+    }
+
+    for (let index = 0; index < data.length; index++) {
+      const item = data[index];
+      colors[(item as any)[xAxisKey]] = COLORS[index % COLORS.length];
+    }
+
+    return colors;
+  }, [data]);
+
   return (
     <ResponsiveContainer width={'100%'} height={'100%'}>
       {yAxisKeys?.length === 1 ? (
@@ -124,10 +136,10 @@ const VisualizationPieChart = ({
             labelLine={false}
           >
             {dataCharts &&
-              dataCharts.map((entry: string, index: number) => (
+              dataCharts.map((entry: any, index: number) => (
                 <Cell
-                  key={`cell-${index}`}
-                  fill={COLORS[index % COLORS.length]}
+                  key={`cell-${entry[xAxisKey]}`}
+                  fill={pieSectionColor[entry[xAxisKey]]}
                 />
               ))}
           </Pie>
@@ -167,21 +179,23 @@ export default VisualizationPieChart;
 const CustomLegend = (props: any) => {
   const { payload, onToggleLegend, data, xAxisKey } = props;
 
+  // create an array of xAisKey from data array
   const dataClone = (data as any).map((item: any) => {
     return {
-      value: item[xAxisKey || 0],
+      value: item[xAxisKey],
     };
   });
 
   const newData = [];
-  for (const item of dataClone) {
-    const index = payload.findIndex(
+  for (let index = 0; index < dataClone.length; index++) {
+    const item = dataClone[index];
+    const i = payload.findIndex(
       (legendItem: any) => legendItem.value === item.value,
     );
-    if (index !== -1) {
-      newData.push(payload[index]);
+    if (i !== -1) {
+      newData.push({ ...payload[i], color: COLORS[index % COLORS.length] });
     } else {
-      newData.push(item);
+      newData.push({ ...item, color: COLORS[index % COLORS.length] });
     }
   }
 
@@ -192,13 +206,18 @@ const CustomLegend = (props: any) => {
           <span
             onClick={() => onToggleLegend(entry.value)}
             style={{
-              color: `${entry.color || '#e9ebee'}`,
-              opacity: `${entry.color ? '1' : '0.5'}`,
+              color: `${entry.color}`,
+              opacity: `${entry.type ? '1' : '0.5'}`,
             }}
           >
             {entry.value}
           </span>
-          <span style={{ backgroundColor: `${entry.color}` }}></span>
+          <span
+            style={{
+              backgroundColor: `${entry.color}`,
+              opacity: `${entry.type ? '1' : '0.5'}`,
+            }}
+          ></span>
         </div>
       ))}
     </div>
