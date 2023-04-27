@@ -22,7 +22,7 @@ export enum TYPE_VISUALIZATION {
 }
 
 export enum CHAIN_NAME {
-  ETH_GRERLI = 'eth_goerli',
+  ETH_GOERLI = 'eth_goerli',
   ETH_MAINNET = 'eth_mainnet',
   BSC_TESTNET = 'bsc_testnet',
   BSC_MAINNET = 'bsc_mainnet',

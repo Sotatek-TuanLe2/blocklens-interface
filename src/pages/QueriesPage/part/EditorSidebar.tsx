@@ -80,7 +80,7 @@ const EditorSidebar: React.FC<IEditerSideBar> = ({
   const getChainIcon = (chainName: string) => {
     let iconClassName: string;
     switch (chainName) {
-      case CHAIN_NAME.ETH_GRERLI:
+      case CHAIN_NAME.ETH_GOERLI:
       case CHAIN_NAME.ETH_MAINNET: {
         iconClassName = getLogoChainByChainId('ETH') || '';
         break;
@@ -92,7 +92,7 @@ const EditorSidebar: React.FC<IEditerSideBar> = ({
       }
       case CHAIN_NAME.APTOS_MAINNET:
       case CHAIN_NAME.APTOS_TESTNET:
-        iconClassName = getLogoChainByChainId('APTOS') || '';
+        iconClassName = 'icon-aptos';
         break;
       default:
         iconClassName = getLogoChainByChainId('POLYGON') || '';

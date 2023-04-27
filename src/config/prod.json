@@ -306,34 +306,6 @@
           }
         }
       }
-    },
-    "APTOS": {
-      "family": "APTOS",
-      "name": "Aptos",
-      "id": "APTOS",
-      "icon": "icon-aptos",
-      "networks": {
-        "MAINNET": {
-          "name": "Mainnet",
-          "id": "MAINNET",
-          "icon": "icon-aptos",
-          "blockExplorer": {
-            "name": "Aptos",
-            "icon": "/images/aptoscan.png",
-            "url": "https://aptoscan.com/tx"
-          }
-        },
-        "TESTNET": {
-          "name": "Testnet",
-          "id": "TESTNET",
-          "icon": "icon-aptos",
-          "blockExplorer": {
-            "name": "Aptos",
-            "icon": "/images/aptoscan.png",
-            "url": "https://testnet.aptoscan.com/tx"
-          }
-        }
-      }
     }
   },
   "multicall": {
