@@ -83,10 +83,7 @@ const QueriesPage = () => {
   const updateQuery = async (query: string) => {
     try {
       await rf.getRequest('DashboardsRequest').updateQuery({ query }, queryId);
-      const queryValues: QueryExecutedResponse = await rf
-        .getRequest('DashboardsRequest')
-        .executeQuery(queryId);
-      await fetchQueryResult(queryValues.id);
+      await fetchQueryResult();
       await fetchQuery();
     } catch (error: any) {
       toastError({ message: getErrorMessage(error) });
@@ -110,8 +107,13 @@ const QueriesPage = () => {
     }
   };
 
-  const fetchQueryResult = async (executionId: string) => {
+  const fetchQueryResult = async () => {
     setIsLoadingResult(true);
+    const executedResponse: QueryExecutedResponse = await rf
+      .getRequest('DashboardsRequest')
+      .executeQuery(queryId);
+    const executionId = executedResponse.id;
+
     const res = await rf.getRequest('DashboardsRequest').getQueryResult({
       queryId,
       executionId,
@@ -158,13 +160,8 @@ const QueriesPage = () => {
 
   const fetchInitalData = async () => {
     try {
-      const res: QueryResultResponse = await rf
-        .getRequest('DashboardsRequest')
-        .getQueryExecutionId({
-          queryId,
-        });
+      await fetchQueryResult();
       await fetchQuery();
-      await fetchQueryResult(res.resultId);
     } catch (error) {
       toastError({ message: getErrorMessage(error) });
     }

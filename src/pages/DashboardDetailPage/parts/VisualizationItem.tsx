@@ -18,11 +18,12 @@ import 'src/styles/pages/DashboardDetailPage.scss';
 import VisualizationChart from 'src/components/Charts/VisualizationChart';
 import 'src/styles/components/Chart.scss';
 import {
-  QueryResultResponse,
+  QueryExecutedResponse,
   TYPE_VISUALIZATION,
   VisualizationType,
 } from 'src/utils/query.type';
 import { getErrorMessage } from 'src/utils/utils-helper';
+import { toastError } from 'src/utils/utils-notify';
 
 const VisualizationItem = React.memo(
   ({ visualization }: { visualization: VisualizationType }) => {
@@ -30,6 +31,52 @@ const VisualizationItem = React.memo(
 
     const queryId = visualization?.query?.id;
     const fetchQueryResultInterval: any = useRef();
+
+    useEffect(() => {
+      if (queryId) {
+        fetchInitialData();
+      }
+    }, [queryId]);
+
+    const fetchQueryResult = async () => {
+      const executedResponse: QueryExecutedResponse = await rf
+        .getRequest('DashboardsRequest')
+        .executeQuery(queryId);
+      const executionId = executedResponse.id;
+
+      const res = await rf.getRequest('DashboardsRequest').getQueryResult({
+        queryId,
+        executionId,
+      });
+
+      if (res.status !== 'DONE' && res.status !== 'FAILED') {
+        fetchQueryResultInterval.current = setInterval(async () => {
+          const resInterval = await rf
+            .getRequest('DashboardsRequest')
+            .getQueryResult({
+              queryId,
+              executionId,
+            });
+          if (
+            resInterval.status === 'DONE' ||
+            resInterval.status === 'FAILED'
+          ) {
+            clearInterval(fetchQueryResultInterval.current);
+            setQueryResult(resInterval.result);
+          }
+        }, 2000);
+      } else {
+        setQueryResult(res.result);
+      }
+    };
+
+    const fetchInitialData = async () => {
+      try {
+        await fetchQueryResult();
+      } catch (error) {
+        toastError({ message: getErrorMessage(error) });
+      }
+    };
 
     const defaultTimeXAxis = useMemo(() => {
       let result = '';
@@ -46,49 +93,6 @@ const VisualizationItem = React.memo(
       }
       return result;
     }, [queryResult]);
-
-    const fetchQueryResult = async (executionId: string) => {
-      const res = await rf.getRequest('DashboardsRequest').getQueryResult({
-        queryId,
-        executionId,
-      });
-
-      if (res.status !== 'DONE') {
-        fetchQueryResultInterval.current = setInterval(async () => {
-          const resInterval = await rf
-            .getRequest('DashboardsRequest')
-            .getQueryResult({
-              queryId,
-              executionId,
-            });
-          if (resInterval.status === 'DONE') {
-            clearInterval(fetchQueryResultInterval.current);
-            setQueryResult(resInterval.result);
-          }
-        }, 2000);
-      } else {
-        setQueryResult(res.result);
-      }
-    };
-
-    const fetchInitialData = async () => {
-      try {
-        const res: QueryResultResponse = await rf
-          .getRequest('DashboardsRequest')
-          .getQueryExecutionId({
-            queryId,
-          });
-        await fetchQueryResult(res.resultId);
-      } catch (error) {
-        getErrorMessage(error);
-      }
-    };
-
-    useEffect(() => {
-      if (queryId) {
-        fetchInitialData();
-      }
-    }, [queryId]);
 
     const renderVisualization = (visualization: VisualizationType) => {
       const type =
