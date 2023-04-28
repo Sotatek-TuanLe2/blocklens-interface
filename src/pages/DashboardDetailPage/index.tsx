@@ -320,7 +320,6 @@ const DashboardDetailPage: React.FC = () => {
         />
         <ModalForkDashBoardDetails
           dashboardId={dashboardId}
-          authorId={authorId}
           open={openModalFork}
           onClose={() => setOpenModalFork(false)}
         />

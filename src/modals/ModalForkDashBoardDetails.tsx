@@ -12,7 +12,6 @@ import BaseModal from './BaseModal';
 interface IModalForkDashBoardDetails {
   open: boolean;
   onClose: () => void;
-  authorId: string;
   dashboardId: string;
 }
 
@@ -24,7 +23,6 @@ interface IDataForkModal {
 const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
   open,
   onClose,
-  authorId,
   dashboardId,
 }) => {
   const initDataForkModal = {
@@ -32,7 +30,6 @@ const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
     url: '',
   };
   const [dataForm, setDataForm] = useState<IDataForkModal>(initDataForkModal);
-  const [mainUrl, setMainUrl] = useState<string>('');
   const history = useHistory();
 
   const validator = useRef(
@@ -93,7 +90,6 @@ const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
                 ...dataForm,
                 url: e.target.value,
               });
-              setMainUrl(dataForm.url);
             }}
             size="sm"
             placeholder={dataForm.dashboard || 'my-dashboard'}
