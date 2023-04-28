@@ -13,11 +13,7 @@ import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/mode-sql';
 import { getErrorMessage } from '../../utils/utils-helper';
 import { useHistory, useParams } from 'react-router-dom';
-import {
-  QueryExecutedResponse,
-  IQuery,
-  QueryResultResponse,
-} from '../../utils/query.type';
+import { QueryExecutedResponse, IQuery } from '../../utils/query.type';
 import 'src/styles/pages/QueriesPage.scss';
 import { AddParameterIcon, ExplandIcon } from 'src/assets/icons';
 import { MoonIcon, SettingsIcon, SunIcon } from '@chakra-ui/icons';
@@ -83,10 +79,7 @@ const QueriesPage = () => {
   const updateQuery = async (query: string) => {
     try {
       await rf.getRequest('DashboardsRequest').updateQuery({ query }, queryId);
-      const queryValues: QueryExecutedResponse = await rf
-        .getRequest('DashboardsRequest')
-        .executeQuery(queryId);
-      await fetchQueryResult(queryValues.id);
+      await fetchQueryResult();
       await fetchQuery();
     } catch (error: any) {
       toastError({ message: getErrorMessage(error) });
@@ -110,8 +103,13 @@ const QueriesPage = () => {
     }
   };
 
-  const fetchQueryResult = async (executionId: string) => {
+  const fetchQueryResult = async () => {
     setIsLoadingResult(true);
+    const executedResponse: QueryExecutedResponse = await rf
+      .getRequest('DashboardsRequest')
+      .executeQuery(queryId);
+    const executionId = executedResponse.id;
+
     const res = await rf.getRequest('DashboardsRequest').getQueryResult({
       queryId,
       executionId,
@@ -126,18 +124,18 @@ const QueriesPage = () => {
             executionId,
           });
         if (resInterval.status === 'DONE' || resInterval.status === 'FAILED') {
+          clearInterval(fetchQueryResultInterval);
           setQueryResult(resInterval.result);
           if (resInterval?.error) {
             setErrorExecuteQuery(resInterval?.error);
           }
           setIsLoadingResult(false);
-          clearInterval(fetchQueryResultInterval);
         }
       }, 2000);
     } else {
-      setIsLoadingResult(false);
       setQueryResult(res.result);
       setErrorExecuteQuery(res?.error);
+      setIsLoadingResult(false);
     }
   };
 
@@ -158,13 +156,8 @@ const QueriesPage = () => {
 
   const fetchInitalData = async () => {
     try {
-      const res: QueryResultResponse = await rf
-        .getRequest('DashboardsRequest')
-        .getQueryExecutionId({
-          queryId,
-        });
+      await fetchQueryResult();
       await fetchQuery();
-      await fetchQueryResult(res.resultId);
     } catch (error) {
       toastError({ message: getErrorMessage(error) });
     }
