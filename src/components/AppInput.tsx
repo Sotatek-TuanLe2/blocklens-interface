@@ -29,6 +29,7 @@ interface AppInputProps extends InputProps {
   isSearch?: boolean;
   endAdornment?: ReactNode;
   hiddenErrorText?: boolean;
+  error?: boolean;
 }
 
 const AppInput = forwardRef(
@@ -42,6 +43,7 @@ const AppInput = forwardRef(
       validate,
       endAdornment,
       hiddenErrorText = false,
+      error = false,
       ...props
     }: AppInputProps,
     ref,
@@ -71,6 +73,7 @@ const AppInput = forwardRef(
             onBlur={onBlur}
             ref={ref}
             readOnly={readOnly}
+            borderColor={error && 'red.600'}
           />
 
           {endAdornment && <InputRightElement children={<>{endAdornment}</>} />}
@@ -90,6 +93,7 @@ const AppInput = forwardRef(
         </InputGroup>
         <Box>
           {!hiddenErrorText &&
+            !error &&
             validate &&
             !readOnly &&
             validate.validator.message(
@@ -137,6 +141,9 @@ export const appInputStyles = {
           bg: mode('bg.200', 'bg.200')(props),
           borderColor: mode('bg.200', 'bg.200')(props),
           color: mode('paragraph.100', 'paragraph.100')(props),
+        },
+        _error: {
+          borderColor: mode('red.400', 'red.400')(props),
         },
       },
     }),
