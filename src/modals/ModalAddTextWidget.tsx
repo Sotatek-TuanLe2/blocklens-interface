@@ -197,14 +197,8 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
           title={'Some markdown is supported'}
         />
 
-        <Flex
-          flexWrap={'wrap'}
-          gap={'10px'}
-          mt={10}
-          justifyContent={type === TYPE_MODAL.ADD ? '' : 'space-between'}
-        >
+        <Flex className="modal-footer">
           <AppButton
-            className="btn-save"
             size="sm"
             onClick={() => {
               type === TYPE_MODAL.ADD ? handleSave() : handleUpdate();
@@ -220,18 +214,12 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
                   e: React.MouseEvent<HTMLButtonElement, globalThis.MouseEvent>,
                 ) => handleRemoveItem(e)}
                 size="sm"
-                className="btn-remove"
                 variant={'cancel'}
               >
                 Remove this widget
               </AppButton>
             )}
-            <AppButton
-              onClick={onClose}
-              size="sm"
-              className="btn-remove"
-              variant={'cancel'}
-            >
+            <AppButton onClick={onClose} size="sm" variant={'cancel'}>
               Cancel
             </AppButton>
           </Flex>

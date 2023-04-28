@@ -32,12 +32,6 @@ interface ParamTypes {
   queryId: string;
 }
 
-interface IButtonModalFork {
-  openModalFork: boolean;
-  setOpenModalFork: React.Dispatch<React.SetStateAction<boolean>>;
-  authorId: string;
-}
-
 export interface ILayout extends Layout {
   options: any;
   i: string;
@@ -154,7 +148,6 @@ const DashboardDetailPage: React.FC = () => {
               <ButtonModalFork
                 openModalFork={openModalFork}
                 setOpenModalFork={setOpenModalFork}
-                authorId={authorId}
               />
             )}
             <ButtonShare />
@@ -325,18 +318,21 @@ const DashboardDetailPage: React.FC = () => {
           userName={userName}
           onReload={fetchLayoutData}
         />
+        <ModalForkDashBoardDetails
+          authorId={authorId}
+          open={openModalFork}
+          onClose={() => setOpenModalFork(false)}
+        />
       </div>
     </BasePage>
   );
 };
-
 export default DashboardDetailPage;
 
-const ButtonModalFork: React.FC<IButtonModalFork> = ({
-  openModalFork,
-  setOpenModalFork,
-  authorId,
-}) => {
+const ButtonModalFork: React.FC<{
+  openModalFork: boolean;
+  setOpenModalFork: React.Dispatch<React.SetStateAction<boolean>>;
+}> = ({ setOpenModalFork }) => {
   return (
     <>
       <AppButton
@@ -346,11 +342,6 @@ const ButtonModalFork: React.FC<IButtonModalFork> = ({
       >
         Fork
       </AppButton>
-      <ModalForkDashBoardDetails
-        authorId={authorId}
-        open={openModalFork}
-        onClose={() => setOpenModalFork(false)}
-      />
     </>
   );
 };
