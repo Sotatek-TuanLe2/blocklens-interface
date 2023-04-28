@@ -1,0 +1,28 @@
+@import '../color-variables.scss';
+@import '../mixins.scss';
+
+.main-pagination {
+  flex-direction: row;
+  gap: 10px;
+  display: flex;
+  align-items: center;
+  padding: 6px;
+  input {
+    padding: 13px;
+    border-radius: unset;
+    background: #444444;
+    &::placeholder {
+      color: $whiteAlpha-700;
+    }
+  }
+  .total-record {
+    padding: 6px 10px;
+    background: #444444;
+    font-size: 13px;
+  }
+  .button-pagination {
+    padding: 8px 10px;
+    background: #444444;
+    font-size: 13px;
+  }
+}

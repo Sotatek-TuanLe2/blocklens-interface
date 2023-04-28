@@ -29,6 +29,7 @@ import {
 import { getDefaultTableColumns } from 'src/components/Charts/VisualizationTable';
 import { objectKeys } from 'src/utils/utils-network';
 import VisualizationChart from 'src/components/Charts/VisualizationChart';
+import QueryResultsPagination from 'src/components/QueryResultsPagination';
 
 type VisualizationConfigType = {
   value: string;
@@ -201,6 +202,7 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
     let errorMessage = null;
     let visualizationDisplay = null;
     let visualizationConfiguration = null;
+    let visualizationPaginationTable = null;
 
     if (!visualization.options.columnMapping?.xAxis) {
       errorMessage = 'Missing x-axis';
@@ -228,6 +230,7 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
             dataTable={dataTable}
           />
         );
+        visualizationPaginationTable = <QueryResultsPagination />;
         break;
       case TYPE_VISUALIZATION.counter:
         errorMessage = null;
@@ -303,6 +306,7 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
           ) : (
             visualizationDisplay
           )}
+          {visualizationPaginationTable}
         </div>
         {visualizationConfiguration}
       </>
