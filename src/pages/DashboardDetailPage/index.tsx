@@ -32,12 +32,6 @@ interface ParamTypes {
   queryId: string;
 }
 
-interface IButtonModalFork {
-  openModalFork: boolean;
-  setOpenModalFork: React.Dispatch<React.SetStateAction<boolean>>;
-  authorId: string;
-}
-
 export interface ILayout extends Layout {
   options: any;
   i: string;
@@ -121,7 +115,6 @@ const DashboardDetailPage: React.FC = () => {
   useEffect(() => {
     fetchLayoutData();
   }, []);
-  console.log(openModalFork);
 
   const _renderButtons = () => {
     const isAccountsDashboard = true;
@@ -152,7 +145,10 @@ const DashboardDetailPage: React.FC = () => {
         ) : (
           <>
             {isAccountsDashboard && (
-              <ButtonModalFork openModalFork={openModalFork} />
+              <ButtonModalFork
+                openModalFork={openModalFork}
+                setOpenModalFork={setOpenModalFork}
+              />
             )}
             <ButtonShare />
           </>
@@ -333,7 +329,10 @@ const DashboardDetailPage: React.FC = () => {
 };
 export default DashboardDetailPage;
 
-const ButtonModalFork: React.FC<IButtonModalFork> = ({ setOpenModalFork }) => {
+const ButtonModalFork: React.FC<{
+  openModalFork: boolean;
+  setOpenModalFork: React.Dispatch<React.SetStateAction<boolean>>;
+}> = ({ setOpenModalFork }) => {
   return (
     <>
       <AppButton

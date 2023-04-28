@@ -8,7 +8,6 @@ import {
   PieChartIcon,
   QueryResultIcon,
   ScatterChartIcon,
-  SmallSuccessIcon,
 } from 'src/assets/icons';
 import { AppButton, AppInput } from 'src/components';
 import { ILayout } from 'src/pages/DashboardDetailPage';
@@ -58,8 +57,6 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   onReload,
   dashboardId,
 }) => {
-  const [add, setAdd] = useState<boolean>(false);
-  const [showMyQueries, setShowMyQueries] = useState<boolean>(false);
   const [dataVisualization, setDataVisualization] = useState<any[]>([]);
 
   const fetchVisualization = async () => {
@@ -176,13 +173,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
       className="modal-add-visualization"
     >
       <form className="main-modal-dashboard-details">
-        <AppInput
-          mt={'10px'}
-          size="sm"
-          placeholder={
-            showMyQueries ? "Search everyone's queries" : 'Search your queries'
-          }
-        />
+        <AppInput mt={'10px'} size="sm" placeholder="Search your queries" />
         <div className="main-queries">
           {dataVisualization &&
             dataVisualization?.map(
@@ -194,35 +185,15 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
                     borderBottom={'1px solid white'}
                     key={item.id}
                   >
-                    {showMyQueries ? (
-                      <>
-                        <Flex
-                          alignItems={'center'}
-                          columnGap={'10px'}
-                          p={'10px'}
-                        >
-                          {getIcon(i.type)}
-                          <Link>@cypherpepe / Airdrops and Wallets</Link>
-                          <Text fontWeight={'bold'}>Airdrops and Wallets</Text>
-                        </Flex>
-                        <Text
-                          onClick={() => setAdd(!add)}
-                          className={add ? 'btn-added-query' : 'btn-add-query'}
-                        >
-                          {add ? 'Added' : 'Add'}
-                        </Text>
-                      </>
-                    ) : (
-                      <ButtonAdd
-                        userName={userName}
-                        item={item}
-                        dataLayouts={dataLayouts}
-                        handleSaveVisualization={handleSaveVisualization}
-                        handleRemoveVisualization={handleRemoveVisualization}
-                        i={i}
-                        getIcon={getIcon}
-                      />
-                    )}
+                    <ButtonAdd
+                      userName={userName}
+                      item={item}
+                      dataLayouts={dataLayouts}
+                      handleSaveVisualization={handleSaveVisualization}
+                      handleRemoveVisualization={handleRemoveVisualization}
+                      i={i}
+                      getIcon={getIcon}
+                    />
                   </Flex>
                 )),
             )}
@@ -237,21 +208,6 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
             onClick={() => setOpenModalFork(true)}
           >
             New dashboard
-          </AppButton>
-          <AppButton
-            className={showMyQueries ? 'btn-added-query' : 'btn-add-query'}
-            size="sm"
-            variant={'cancel'}
-            onClick={() => setShowMyQueries(!showMyQueries)}
-          >
-            Show queries from other users{' '}
-            {showMyQueries ? (
-              <Text ps={'4px'}>
-                <SmallSuccessIcon />
-              </Text>
-            ) : (
-              ''
-            )}
           </AppButton>
         </Flex>
       </form>
