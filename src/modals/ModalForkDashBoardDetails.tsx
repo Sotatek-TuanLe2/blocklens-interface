@@ -1,18 +1,19 @@
-import React, { useRef, useState } from 'react';
-import { AppButton, AppField, AppInput } from 'src/components';
-import BaseModal from './BaseModal';
-import 'src/styles/components/BaseModal.scss';
 import { Flex, Text } from '@chakra-ui/react';
-import { createValidator } from 'src/utils/utils-validator';
-import { toastError } from 'src/utils/utils-notify';
-import { getErrorMessage } from 'src/utils/utils-helper';
-import rf from 'src/requests/RequestFactory';
+import React, { useRef, useState } from 'react';
 import { useHistory } from 'react-router';
+import { AppButton, AppField, AppInput } from 'src/components';
+import rf from 'src/requests/RequestFactory';
+import 'src/styles/components/BaseModal.scss';
+import { getErrorMessage } from 'src/utils/utils-helper';
+import { toastError } from 'src/utils/utils-notify';
+import { createValidator } from 'src/utils/utils-validator';
+import BaseModal from './BaseModal';
 
 interface IModalForkDashBoardDetails {
   open: boolean;
   onClose: () => void;
   authorId: string;
+  dashboardId: string;
 }
 
 interface IDataForkModal {
@@ -24,6 +25,7 @@ const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
   open,
   onClose,
   authorId,
+  dashboardId,
 }) => {
   const initDataForkModal = {
     dashboard: '',
@@ -48,16 +50,17 @@ const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
     try {
       const res = await rf
         .getRequest('DashboardsRequest')
-        .forkDashboard(payload, 'e8PvW5rbnall-cdi9HNdg');
+        .forkDashboard(payload, dashboardId);
       if (res) {
-        history.push(`/dashboard/${authorId}/${mainUrl}`);
+        history.push(`/dashboards/${dataForm.url || dataForm.dashboard}`);
       }
       onClose();
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
     }
   };
-
+  const linkDashboard =
+    window.location.href.split('/').slice(0, -2).join('/') + '';
   return (
     <BaseModal isOpen={open} onClose={onClose} size="md">
       <div className="main-modal-dashboard-details">
@@ -71,7 +74,6 @@ const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
                 ...dataForm,
                 dashboard: e.target.value,
               });
-              dataForm.url.length > 0 ? null : setMainUrl(dataForm.dashboard);
             }}
             validate={{
               name: `dashboard `,
@@ -79,7 +81,9 @@ const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
               rule: 'required|max:100',
             }}
           />
-          <Text fontSize="13px">https://dune.com/dinhtran/{mainUrl}</Text>
+          <Text fontSize="13px">
+            {linkDashboard}/{dataForm.url || dataForm.dashboard}
+          </Text>
         </AppField>
         <AppField label={'Customize the URL'}>
           <AppInput
