@@ -39,6 +39,12 @@ const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
       ),
     }),
   );
+
+  const closeAndResetField = () => {
+    onClose();
+    setDataForm(initDataForkModal);
+  };
+
   const onSave = async () => {
     const payload = {
       newDashboardName: dataForm.dashboard,
@@ -51,7 +57,7 @@ const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
       if (res) {
         history.push(`/dashboards/${dataForm.url || dataForm.dashboard}`);
       }
-      onClose();
+      closeAndResetField();
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
     }
@@ -59,7 +65,7 @@ const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
   const linkDashboard =
     window.location.href.split('/').slice(0, -2).join('/') + '';
   return (
-    <BaseModal isOpen={open} onClose={onClose} size="md">
+    <BaseModal isOpen={open} onClose={closeAndResetField} size="md">
       <div className="main-modal-dashboard-details">
         <AppField label={'Dashboard name'}>
           <AppInput
@@ -100,7 +106,11 @@ const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
           <AppButton size="sm" onClick={onSave} disabled={!dataForm.dashboard}>
             Save and open
           </AppButton>
-          <AppButton onClick={onClose} size="sm" variant={'cancel'}>
+          <AppButton
+            onClick={() => closeAndResetField()}
+            size="sm"
+            variant={'cancel'}
+          >
             Cancel
           </AppButton>
         </Flex>
