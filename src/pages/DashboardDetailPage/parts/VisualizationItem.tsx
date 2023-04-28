@@ -1,12 +1,6 @@
-import { Flex } from '@chakra-ui/react';
+import { Flex, Spinner } from '@chakra-ui/react';
 import moment from 'moment';
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import { PieChart, VisualizationTable } from 'src/components/Charts';
@@ -28,6 +22,7 @@ import { toastError } from 'src/utils/utils-notify';
 const VisualizationItem = React.memo(
   ({ visualization }: { visualization: VisualizationType }) => {
     const [queryResult, setQueryResult] = useState<unknown[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const queryId = visualization?.query?.id;
     const fetchQueryResultInterval: any = useRef();
@@ -39,6 +34,7 @@ const VisualizationItem = React.memo(
     }, [queryId]);
 
     const fetchQueryResult = async () => {
+      setIsLoading(true);
       const executedResponse: QueryExecutedResponse = await rf
         .getRequest('DashboardsRequest')
         .executeQuery(queryId);
@@ -63,10 +59,12 @@ const VisualizationItem = React.memo(
           ) {
             clearInterval(fetchQueryResultInterval.current);
             setQueryResult(resInterval.result);
+            setIsLoading(false);
           }
         }, 2000);
       } else {
         setQueryResult(res.result);
+        setIsLoading(false);
       }
     };
 
@@ -158,28 +156,32 @@ const VisualizationItem = React.memo(
       }
 
       return (
-        <>
-          <div className="visual-container__visualization">
-            <div className="visual-container__visualization__title">
-              {visualization.name}
-            </div>
-            {errorMessage ? (
-              <Flex
-                alignItems={'center'}
-                justifyContent={'center'}
-                className="visual-container__visualization__error"
-              >
-                {errorMessage}
-              </Flex>
-            ) : (
-              <div className="table-content">{visualizationDisplay}</div>
-            )}
+        <div className="visual-container__visualization">
+          <div className="visual-container__visualization__title">
+            {visualization.name}
           </div>
-        </>
+          {errorMessage ? (
+            <Flex
+              alignItems={'center'}
+              justifyContent={'center'}
+              className="visual-container__visualization__error"
+            >
+              {errorMessage}
+            </Flex>
+          ) : (
+            <div className="table-content">{visualizationDisplay}</div>
+          )}
+        </div>
       );
     };
 
-    return renderVisualization(visualization);
+    return isLoading ? (
+      <div className="visual-container__visualization visual-container__visualization--loading">
+        <Spinner />
+      </div>
+    ) : (
+      renderVisualization(visualization)
+    );
   },
 );
 

@@ -13,11 +13,7 @@ import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/mode-sql';
 import { getErrorMessage } from '../../utils/utils-helper';
 import { useHistory, useParams } from 'react-router-dom';
-import {
-  QueryExecutedResponse,
-  IQuery,
-  QueryResultResponse,
-} from '../../utils/query.type';
+import { QueryExecutedResponse, IQuery } from '../../utils/query.type';
 import 'src/styles/pages/QueriesPage.scss';
 import { AddParameterIcon, ExplandIcon } from 'src/assets/icons';
 import { MoonIcon, SettingsIcon, SunIcon } from '@chakra-ui/icons';
@@ -128,18 +124,18 @@ const QueriesPage = () => {
             executionId,
           });
         if (resInterval.status === 'DONE' || resInterval.status === 'FAILED') {
+          clearInterval(fetchQueryResultInterval);
           setQueryResult(resInterval.result);
           if (resInterval?.error) {
             setErrorExecuteQuery(resInterval?.error);
           }
           setIsLoadingResult(false);
-          clearInterval(fetchQueryResultInterval);
         }
       }, 2000);
     } else {
-      setIsLoadingResult(false);
       setQueryResult(res.result);
       setErrorExecuteQuery(res?.error);
+      setIsLoadingResult(false);
     }
   };
 
