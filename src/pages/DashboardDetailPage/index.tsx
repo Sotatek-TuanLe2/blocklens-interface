@@ -319,7 +319,7 @@ const DashboardDetailPage: React.FC = () => {
           onReload={fetchLayoutData}
         />
         <ModalForkDashBoardDetails
-          authorId={authorId}
+          dashboardId={dashboardId}
           open={openModalFork}
           onClose={() => setOpenModalFork(false)}
         />
