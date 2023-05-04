@@ -138,9 +138,6 @@ export const appInputStyles = {
           borderColor: mode('bg.200', 'bg.200')(props),
           color: mode('paragraph.100', 'paragraph.100')(props),
         },
-        _error: {
-          borderColor: mode('red.400', 'red.400')(props),
-        },
       },
     }),
     auth: (props: StyleProps) => ({
