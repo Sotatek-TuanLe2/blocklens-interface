@@ -50,6 +50,7 @@ const VisualizationTable = <T,>({
     columns: dataColumn || getDefaultTableColumns(data),
     getCoreRowModel: getCoreRowModel(),
   });
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setDataTable && setDataTable(table.getRowModel().rows);
