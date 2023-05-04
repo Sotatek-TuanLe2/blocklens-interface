@@ -1,5 +1,5 @@
-import { Flex } from '@chakra-ui/react';
-import React, { ChangeEvent } from 'react';
+import { Flex, Text } from '@chakra-ui/react';
+import React, { ChangeEvent, useEffect, useRef } from 'react';
 import { AppButton, AppField, AppInput } from 'src/components';
 import 'src/styles/components/BaseModal.scss';
 import BaseModal from './BaseModal';
@@ -8,6 +8,7 @@ import { useHistory } from 'react-router';
 import { toastError } from 'src/utils/utils-notify';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import rf from 'src/requests/RequestFactory';
+import { createValidator } from 'src/utils/utils-validator';
 
 interface IModalNewDashboard {
   open: boolean;
@@ -27,7 +28,18 @@ const ModalNewDashboard: React.FC<IModalNewDashboard> = ({ open, onClose }) => {
   const [dataForm, setDataForm] =
     useState<IDataSettingForm>(initDataFormSetting);
 
-  const [error, setError] = useState<boolean>(false);
+  const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
+
+  const validator = useRef(
+    createValidator({
+      element: (message: string) => <Text color={'red.100'}>{message}</Text>,
+    }),
+  );
+
+  useEffect(() => {
+    const isDisabled = !validator.current.allValid();
+    setIsDisableSubmit(isDisabled);
+  }, [dataForm]);
 
   const handleSubmitForm = async () => {
     try {
@@ -46,7 +58,6 @@ const ModalNewDashboard: React.FC<IModalNewDashboard> = ({ open, onClose }) => {
   const handleCloseModal = () => {
     onClose();
     setDataForm(initDataFormSetting);
-    setError(false);
   };
 
   // const defaultSlug = useMemo(() => {
@@ -55,20 +66,6 @@ const ModalNewDashboard: React.FC<IModalNewDashboard> = ({ open, onClose }) => {
   //   }
   //   return "my-dashboard";
   // }, [dataForm.title]);
-
-  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-
-    if (value.length > 150) {
-      setError(true);
-    } else {
-      setError(false);
-    }
-    setDataForm({
-      ...dataForm,
-      title: value,
-    });
-  };
 
   return (
     <BaseModal isOpen={open} onClose={handleCloseModal} size="md">
@@ -82,21 +79,25 @@ const ModalNewDashboard: React.FC<IModalNewDashboard> = ({ open, onClose }) => {
             value={dataForm.title}
             size="sm"
             placeholder="My dashboard"
-            onChange={(e: ChangeEvent<HTMLInputElement>) => onChange(e)}
-            error={error}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setDataForm({
+                ...dataForm,
+                title: e.target.value,
+              })
+            }
+            validate={{
+              name: `dashboard`,
+              validator: validator.current,
+              rule: ['required', 'max:150'],
+            }}
           />
-          {error && (
-            <div className="input-error">
-              Value too long for type character varying(150)
-            </div>
-          )}
         </AppField>
       </Flex>
       <Flex className="modal-footer">
         <AppButton
           size="sm"
           onClick={handleSubmitForm}
-          disabled={!dataForm.title.trim() || error}
+          disabled={!dataForm.title.trim() || isDisableSubmit}
         >
           Save and open
         </AppButton>
