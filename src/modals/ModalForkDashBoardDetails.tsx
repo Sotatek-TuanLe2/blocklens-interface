@@ -46,14 +46,13 @@ const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
   const onSave = async () => {
     const payload = {
       newDashboardName: dataForm.dashboard,
-      newDashboardSlug: dataForm.dashboard,
     };
     try {
       const res = await rf
         .getRequest('DashboardsRequest')
         .forkDashboard(payload, dashboardId);
       if (res) {
-        history.push(`/dashboards/${dataForm.dashboard}`);
+        history.push(`/dashboards/${res.id}`);
       }
       closeAndResetField();
     } catch (e) {

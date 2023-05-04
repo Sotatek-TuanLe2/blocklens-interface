@@ -21,7 +21,6 @@ interface TableParams {
 
 export interface ForkDashboard {
   newDashboardName: string;
-  newDashboardSlug: string;
 }
 
 export interface ListParams {
@@ -138,7 +137,7 @@ export default class DashboardsRequest extends BaseRequest {
     return this.get(url, id);
   }
   forkDashboard(data: ForkDashboard, id: ILayout) {
-    const url = `/fork-dashboard/${id}`;
+    const url = `/dashboard/fork-dashboard/${id}`;
     return this.post(url, data);
   }
 
