@@ -119,7 +119,7 @@ const DashboardsPage: React.FC = () => {
         <AppDataTable
           requestParams={dashboardParams}
           fetchData={fetchDashboards}
-          limit={10}
+          limit={5}
           renderBody={(data) => (
             <Tbody>
               {data.map((item: any) => (
