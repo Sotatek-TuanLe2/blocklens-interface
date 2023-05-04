@@ -59,7 +59,7 @@ export interface IQuery {
   };
   visualizations: VisualizationType[];
 }
-export interface Dashboard {
+export interface IDashboard {
   id: string;
   name: string;
   isPrivate: boolean;
@@ -70,7 +70,7 @@ export interface Dashboard {
   updatedAt?: Date;
 }
 
-export interface ITextWidgets {
+export interface ITextWidget {
   id: string;
   text: string;
   options: {
@@ -83,10 +83,10 @@ export interface ITextWidgets {
   updatedAt?: Date;
 }
 
-export interface VisualizationWidget {
+export interface IVisualizationWidget {
   id: string;
   visualization: VisualizationType;
-  dashboard: Dashboard;
+  dashboard: IDashboard;
   user: string;
   options?: null;
   createdAt?: Date;
@@ -99,13 +99,13 @@ export interface IDashboardDetail {
   isPrivate: boolean;
   isArchived: boolean;
   user: string;
-  forkedDashboard?: Dashboard;
+  forkedDashboard?: IDashboard;
   createdAt: Date;
   updatedAt: Date;
-  visualizationWidgets?: VisualizationWidget[];
+  visualizationWidgets?: IVisualizationWidget[];
   isTemp?: boolean;
   query?: string;
-  textWidgets: ITextWidgets[];
+  textWidgets: ITextWidget[];
 }
 
 export type TableAttributeType = {

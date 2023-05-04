@@ -9,7 +9,7 @@ import 'src/styles/components/BaseModal.scss';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import BaseModal from './BaseModal';
-import { IDashboardDetail, ITextWidgets } from 'src/utils/query.type';
+import { IDashboardDetail, ITextWidget } from 'src/utils/query.type';
 
 interface IModalAddTextWidget {
   open: boolean;
@@ -123,7 +123,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
     }
   };
   const handleUpdate = async () => {
-    const newItems = dataDashboard?.textWidgets.map((i: ITextWidgets) => {
+    const newItems = dataDashboard?.textWidgets.map((i: ITextWidget) => {
       if (i.id === selectedItem.id) {
         return {
           id: selectedItem.id,
