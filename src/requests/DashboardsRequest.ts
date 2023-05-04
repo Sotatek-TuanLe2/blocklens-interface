@@ -138,11 +138,7 @@ export default class DashboardsRequest extends BaseRequest {
     return this.get(url, id);
   }
   forkDashboard(data: ForkDashboard, id: ILayout) {
-<<<<<<< HEAD
-    const url = `https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/dashboard/fork-dashboard/${id}`;
-=======
     const url = `/fork-dashboard/${id}`;
->>>>>>> a33990e0059d9645ee0e9ff7425cfbeddef1a8b6
     return this.post(url, data);
   }
 
