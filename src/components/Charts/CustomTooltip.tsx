@@ -1,5 +1,5 @@
 import { Box } from '@chakra-ui/react';
-import { TYPE_VISUALIZATION } from 'src/utils/common';
+import { TYPE_VISUALIZATION } from 'src/utils/query.type';
 import { formatVisualizationValue } from 'src/utils/utils-format';
 import { formatNumber } from 'src/utils/utils-format';
 import { isNumber } from 'src/utils/utils-helper';
