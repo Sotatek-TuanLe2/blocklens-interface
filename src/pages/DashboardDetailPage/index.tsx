@@ -288,10 +288,11 @@ const DashboardDetailPage: React.FC = () => {
         )}
 
         <ModalSettingDashboardDetails
-          url={dashboardId}
-          authorId={authorId}
           open={openModalSetting}
           onClose={() => setOpenModalSetting(false)}
+          dataDashboard={dataDashboard}
+          dashboardId={dashboardId}
+          onReload={fetchLayoutData}
         />
         <ModalAddTextWidget
           dashboardId={dashboardId}

@@ -1,44 +1,52 @@
-import { Checkbox, Flex, Text } from '@chakra-ui/react';
-import React from 'react';
+import { Flex } from '@chakra-ui/react';
+import React, { useState } from 'react';
+import { useHistory } from 'react-router';
 import { AppButton, AppField, AppInput } from 'src/components';
 import 'src/styles/components/BaseModal.scss';
-import BaseModal from './BaseModal';
-import { useState } from 'react';
-import { useHistory } from 'react-router';
-import { toastError } from 'src/utils/utils-notify';
+import { IQuery } from 'src/utils/query.type';
 import { getErrorMessage } from 'src/utils/utils-helper';
+import { toastError } from 'src/utils/utils-notify';
+import rf from 'src/requests/RequestFactory';
+import BaseModal from './BaseModal';
 
 interface IModalSettingDashboardDetails {
   open: boolean;
   onClose: () => void;
-  url: string;
-  authorId: string;
+  dashboardId: string;
+  dataDashboard: IQuery | undefined;
+  onReload: () => Promise<void>;
 }
 
 interface IDataSettingForm {
-  title: string;
-  url: string;
+  title?: string;
 }
 
 const ModalSettingDashboardDetails: React.FC<IModalSettingDashboardDetails> = ({
   open,
   onClose,
-  url,
-  authorId,
+  dataDashboard,
+  dashboardId,
+  onReload,
 }) => {
   const initDataFormSetting = {
-    title: url,
-    url: url,
+    title: dataDashboard?.name,
   };
-  const history = useHistory();
 
   const [dataForm, setDataForm] =
     useState<IDataSettingForm>(initDataFormSetting);
 
-  const handleSubmitForm = () => {
+  const handleSubmitForm = async () => {
     try {
-      history.push(`/dashboard/${authorId}/${dataForm.url}`);
-      onClose();
+      const payload = {
+        name: dataForm.title,
+      };
+      const res = await rf
+        .getRequest('DashboardsRequest')
+        .updateDashboardItem(payload, dashboardId);
+      if (res) {
+        onClose();
+        onReload();
+      }
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
     }
@@ -58,21 +66,12 @@ const ModalSettingDashboardDetails: React.FC<IModalSettingDashboardDetails> = ({
               value={dataForm.title}
               size="sm"
               placeholder="my-dashboard"
+              defaultValue={dataDashboard?.name}
               onChange={(e) => {
                 setDataForm({
                   ...dataForm,
                   title: e.target.value,
                 });
-              }}
-            />
-          </AppField>
-          <AppField label={'Customize the URL'}>
-            <AppInput
-              value={dataForm.url}
-              size="sm"
-              placeholder={url}
-              onChange={(e) => {
-                setDataForm({ ...dataForm, url: e.target.value });
               }}
             />
           </AppField>
