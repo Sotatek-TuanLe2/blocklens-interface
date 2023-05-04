@@ -17,7 +17,6 @@ interface IModalForkDashBoardDetails {
 
 interface IDataForkModal {
   dashboard: string;
-  url: string;
 }
 
 const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
@@ -27,7 +26,6 @@ const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
 }) => {
   const initDataForkModal = {
     dashboard: '',
-    url: '',
   };
   const [dataForm, setDataForm] = useState<IDataForkModal>(initDataForkModal);
   const history = useHistory();
@@ -48,22 +46,21 @@ const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
   const onSave = async () => {
     const payload = {
       newDashboardName: dataForm.dashboard,
-      newDashboardSlug: dataForm.url || dataForm.dashboard,
+      newDashboardSlug: dataForm.dashboard,
     };
     try {
       const res = await rf
         .getRequest('DashboardsRequest')
         .forkDashboard(payload, dashboardId);
       if (res) {
-        history.push(`/dashboards/${dataForm.url || dataForm.dashboard}`);
+        history.push(`/dashboards/${dataForm.dashboard}`);
       }
       closeAndResetField();
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
     }
   };
-  const linkDashboard =
-    window.location.href.split('/').slice(0, -2).join('/') + '';
+
   return (
     <BaseModal isOpen={open} onClose={closeAndResetField} size="md">
       <div className="main-modal-dashboard-details">
@@ -83,22 +80,6 @@ const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
               validator: validator.current,
               rule: 'required|max:100',
             }}
-          />
-          <Text fontSize="13px">
-            {linkDashboard}/{dataForm.url || dataForm.dashboard}
-          </Text>
-        </AppField>
-        <AppField label={'Customize the URL'}>
-          <AppInput
-            value={dataForm.url}
-            onChange={(e) => {
-              setDataForm({
-                ...dataForm,
-                url: e.target.value,
-              });
-            }}
-            size="sm"
-            placeholder={dataForm.dashboard || 'my-dashboard'}
           />
         </AppField>
 
