@@ -15,7 +15,6 @@ import 'src/styles/pages/DashboardsPage.scss';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import FilterSearch from './parts/FilterSearch';
-import FilterTags from './parts/FilterTags';
 import ListItem from './parts/ListItem';
 
 export const LIST_ITEM_TYPE = {
@@ -100,10 +99,6 @@ const DashboardsPage: React.FC = () => {
             <FilterSearch type={tabType} />
           </div>
           {appTable}
-
-          <div className="dashboard-filter dashboard-filter--mobile">
-            <FilterTags type={tabType} />
-          </div>
         </>
       );
     },

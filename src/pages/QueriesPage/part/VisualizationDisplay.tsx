@@ -3,7 +3,12 @@ import moment from 'moment';
 import { useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import 'src/styles/components/Chart.scss';
-import { PieChart, VisualizationTable } from '../../../components/Charts';
+import {
+  PieChart,
+  VisualizationChart,
+  VisualizationTable,
+  VisualizationCounter,
+} from '../../../components/Charts';
 import { AppTabs, AppButton, AppSelect2 } from '../../../components';
 import ChartConfigurations from '../../../components/VisualizationConfigs/ChartConfigurations';
 import BaseModal from '../../../modals/BaseModal';
@@ -15,7 +20,6 @@ import {
   QueryResultIcon,
   ScatterChartIcon,
 } from 'src/assets/icons';
-import VisualizationCounter from 'src/components/Charts/VisualizationCounter';
 import CounterConfiguration from 'src/components/VisualizationConfigs/CounterConfiguration';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/Chart.scss';
@@ -28,7 +32,6 @@ import {
 } from '../../../utils/query.type';
 import { getDefaultTableColumns } from 'src/components/Charts/VisualizationTable';
 import { objectKeys } from 'src/utils/utils-network';
-import VisualizationChart from 'src/components/Charts/VisualizationChart';
 
 type VisualizationConfigType = {
   value: string;

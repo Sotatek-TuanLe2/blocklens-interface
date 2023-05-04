@@ -1,4 +1,5 @@
 import { Layout } from 'react-grid-layout';
+import config from 'src/config';
 import { QueryType } from '../utils/query.type';
 import BaseRequest from './BaseRequest';
 
@@ -99,83 +100,72 @@ export interface IGetBrowse {
 
 export default class DashboardsRequest extends BaseRequest {
   getUrlPrefix(): string {
-    return '';
+    return config.api.dashboard;
   }
 
   /* Dashboards page */
 
   getListBrowseDashboard(params: IGetBrowse) {
-    const url = `https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/dashboard/list-browse-dashboards`;
+    const url = `/dashboard/list-browse-dashboards`;
     return this.get(url, params);
   }
 
   getListBrowseQueries(params: IGetBrowse) {
-    const url = `https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/queries/list-browse-queries`;
+    const url = `/queries/list-browse-queries`;
     return this.get(url, params);
   }
 
   createNewDashboard(data: CreateDashboardParams) {
-    const url =
-      'https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/dashboard/create-dashboard';
+    const url = '/dashboard/create-dashboard';
     return this.post(url, data);
   }
 
-  getPopularDashboardTags() {
-    const url = 'https://run.mocky.io/v3/fd2b3e65-6c5f-44f1-bc61-e7249645f1c3';
-    return this.get(url);
-  }
+  // getPopularDashboardTags() {
+  //   const url = 'https://run.mocky.io/v3/fd2b3e65-6c5f-44f1-bc61-e7249645f1c3';
+  //   return this.get(url);
+  // }
 
-  getPopularQueryTags() {
-    const url = 'https://run.mocky.io/v3/50864550-87f8-41ae-9985-a15289cf7f77';
-    return this.get(url);
-  }
+  // getPopularQueryTags() {
+  //   const url = 'https://run.mocky.io/v3/50864550-87f8-41ae-9985-a15289cf7f77';
+  //   return this.get(url);
+  // }
 
   /* End of Dashboards page */
 
   /* Dashboard's detail page */
   getDashboardById(id: string) {
-    const url = `https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/dashboard/find-my-dashboard`;
+    const url = `/dashboard/find-my-dashboard`;
     return this.get(url, id);
   }
   forkDashboard(data: ForkDashboard, id: ILayout) {
+<<<<<<< HEAD
     const url = `https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/dashboard/fork-dashboard/${id}`;
+=======
+    const url = `/fork-dashboard/${id}`;
+>>>>>>> a33990e0059d9645ee0e9ff7425cfbeddef1a8b6
     return this.post(url, data);
-  }
-  getQueriesValues() {
-    const url = 'https://run.mocky.io/v3/c2d9b9cf-afd4-4aad-ac74-7c770669525f';
-    return this.get(url);
-  }
-
-  getVisualization() {
-    const url = `https://642cf0d966a20ec9ce915e71.mockapi.io/queries/queries/`;
-    return this.get(url);
-  }
-
-  getDashboardItem() {
-    const url = `https://6071c80750aaea0017285222.mockapi.io/layouts`;
-    return this.get(url);
   }
 
   addDashboardItem(data: DataTextWidget) {
-    const url = `https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/dashboard/insert-text-widget`;
+    const url = `/dashboard/insert-text-widget`;
     return this.post(url, data);
   }
   addVisualization(data: DataTextWidget) {
-    const url = `https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/dashboard/insert-visualization-widget`;
+    const url = `/dashboard/insert-visualization-widget`;
     return this.post(url, data);
   }
 
   updateDashboardItem(data: ILayout, id: string) {
-    const url = `https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/dashboard/${id}/update-dashboard`;
+    const url = `/dashboard/${id}/update-dashboard`;
     return this.patch(url, data);
   }
 
   removeDashboardItem(id: ILayout) {
-    const url = `https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/text-widgets/${id}/remove-text-widget`;
+    const url = `/text-widgets/${id}/remove-text-widget`;
     return this.delete(url, id);
   }
   removeVisualization(id: ILayout) {
-    const url = `https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/visualization-widgets/${id}/remove-visualization-widget`;
+    const url = `/visualization-widgets/${id}/remove-visualization-widget`;
     return this.delete(url, id);
   }
 
@@ -184,68 +174,62 @@ export default class DashboardsRequest extends BaseRequest {
   /* Query page */
 
   getTables(params: TableParams) {
-    const url =
-      'https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/databases/tables';
+    const url = '/databases/tables';
     return this.get(url, { ...params });
   }
 
   getSchemaOfTable(params: SchemaParams) {
-    const url = `https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/databases/${params.namespace}/${params.tableName}/schema`;
+    const url = `/databases/${params.namespace}/${params.tableName}/schema`;
     return this.get(url);
   }
 
   getQueryById(params: DataQuery) {
-    const url =
-      'https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/queries/find-my-query';
+    const url = '/queries/find-my-query';
     return this.get(url, params);
   }
 
   createNewQuery(query: QueryType) {
-    const url =
-      'https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/queries/create-query';
+    const url = '/queries/create-query';
     return this.post(url, query);
   }
 
   executeQuery(queryId: string) {
-    const url =
-      'https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/query-executors/execute-query';
+    const url = '/query-executors/execute-query';
     return this.post(url, { queryId });
   }
 
   getQueryExecutionId(params: DataQuery) {
-    const url =
-      'https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/query-results/query-result';
+    const url = '/query-results/query-result';
     return this.get(url, params);
   }
 
   getQueryResult(params: QueryResult) {
-    const url = `https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/query-executors/get-execution`;
+    const url = `/query-executors/get-execution`;
     return this.get(url, params);
   }
 
   updateQuery(params: IUpdateQuery, queryId: string) {
-    const url = `https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/queries/${queryId}/update-query`;
+    const url = `/queries/${queryId}/update-query`;
     return this.patch(url, params);
   }
 
   insertVisualization(data: IInsertVisualization) {
-    const url = `https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/visualizations/insert-visual`;
+    const url = `/visualizations/insert-visual`;
     return this.post(url, data);
   }
 
   deleteVisualization(data: IDeleteVisualization) {
-    const url = `https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/visualizations/${data.visualId}/delete-visual`;
+    const url = `/visualizations/${data.visualId}/delete-visual`;
     return this.delete(url);
   }
 
   editVisualization(data: IEditVisualization, visualId: string) {
-    const url = `https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/visualizations/${visualId}/edit-visual`;
+    const url = `/visualizations/${visualId}/edit-visual`;
     return this.patch(url, data);
   }
 
   getSupportedChains() {
-    const url =
-      'https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor/databases/supported-chains';
+    const url = '/databases/supported-chains';
 
     return this.get(url);
   }
