@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { AppButton, AppField, AppInput } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/BaseModal.scss';
-import { IQuery } from 'src/utils/query.type';
+import { IDashboardDetail } from 'src/utils/query.type';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import BaseModal from './BaseModal';
@@ -11,8 +11,7 @@ import BaseModal from './BaseModal';
 interface IModalSettingDashboardDetails {
   open: boolean;
   onClose: () => void;
-  dashboardId: string;
-  dataDashboard: IQuery | undefined;
+  dataDashboard?: IDashboardDetail;
   onReload: () => Promise<void>;
 }
 
@@ -24,7 +23,6 @@ const ModalSettingDashboardDetails: React.FC<IModalSettingDashboardDetails> = ({
   open,
   onClose,
   dataDashboard,
-  dashboardId,
   onReload,
 }) => {
   const initDataFormSetting = {
@@ -41,7 +39,7 @@ const ModalSettingDashboardDetails: React.FC<IModalSettingDashboardDetails> = ({
       };
       const res = await rf
         .getRequest('DashboardsRequest')
-        .updateDashboardItem(payload, dashboardId);
+        .updateDashboardItem(payload, dataDashboard?.id);
       if (res) {
         onClose();
         onReload();

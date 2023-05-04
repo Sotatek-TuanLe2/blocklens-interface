@@ -21,7 +21,7 @@ import 'src/styles/components/TableValue.scss';
 import 'src/styles/pages/DashboardDetailPage.scss';
 
 import 'src/styles/components/Chart.scss';
-import { IQuery } from 'src/utils/query.type';
+import { IDashboardDetail } from 'src/utils/query.type';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import VisualizationItem from './parts/VisualizationItem';
@@ -54,7 +54,7 @@ const DashboardDetailPage: React.FC = () => {
 
   const [editMode, setEditMode] = useState<boolean>(false);
   const [dataLayouts, setDataLayouts] = useState<ILayout[]>([]);
-  const [dataDashboard, setDataDashboard] = useState<IQuery>();
+  const [dataDashboard, setDataDashboard] = useState<IDashboardDetail>();
   const [selectedItem, setSelectedItem] = useState<ILayout>(Object);
   const [typeModalTextWidget, setTypeModalTextWidget] = useState<string>(``);
   const [openModalAddVisualization, setOpenModalAddVisualization] =
@@ -291,11 +291,9 @@ const DashboardDetailPage: React.FC = () => {
           open={openModalSetting}
           onClose={() => setOpenModalSetting(false)}
           dataDashboard={dataDashboard}
-          dashboardId={dashboardId}
           onReload={fetchLayoutData}
         />
         <ModalAddTextWidget
-          dashboardId={dashboardId}
           selectedItem={selectedItem}
           dataLayouts={dataLayouts}
           type={typeModalTextWidget}

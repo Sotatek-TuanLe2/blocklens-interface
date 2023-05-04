@@ -58,7 +58,54 @@ export interface IQuery {
     avatarUrl: string;
   };
   visualizations: VisualizationType[];
-  textWidgets: any;
+}
+export interface Dashboard {
+  id: string;
+  name: string;
+  isPrivate: boolean;
+  isArchived: boolean;
+  user: string;
+  forkedDashboard: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export interface ITextWidgets {
+  id: string;
+  text: string;
+  options: {
+    col: number;
+    row: number;
+    sizeX: number;
+    sizeY: number;
+  };
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export interface VisualizationWidget {
+  id: string;
+  visualization: VisualizationType;
+  dashboard: Dashboard;
+  user: string;
+  options?: null;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export interface IDashboardDetail {
+  id: string;
+  name: string;
+  isPrivate: boolean;
+  isArchived: boolean;
+  user: string;
+  forkedDashboard?: Dashboard;
+  createdAt: Date;
+  updatedAt: Date;
+  visualizationWidgets?: VisualizationWidget[];
+  isTemp?: boolean;
+  query?: string;
+  textWidgets: ITextWidgets[];
 }
 
 export type TableAttributeType = {
