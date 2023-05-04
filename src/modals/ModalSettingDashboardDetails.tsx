@@ -1,12 +1,11 @@
 import { Flex } from '@chakra-ui/react';
 import React, { useState } from 'react';
-import { useHistory } from 'react-router';
 import { AppButton, AppField, AppInput } from 'src/components';
+import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/BaseModal.scss';
 import { IQuery } from 'src/utils/query.type';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
-import rf from 'src/requests/RequestFactory';
 import BaseModal from './BaseModal';
 
 interface IModalSettingDashboardDetails {
