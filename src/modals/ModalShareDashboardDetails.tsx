@@ -5,7 +5,6 @@ import 'src/styles/components/BaseModal.scss';
 import { copyToClipboard } from 'src/utils/utils-helper';
 import BaseModal from './BaseModal';
 import { SmallSuccessIcon } from 'src/assets/icons';
-import useUser from 'src/hooks/useUser';
 
 interface IModalShareDashboardDetails {
   open: boolean;
@@ -16,10 +15,9 @@ const ModalShareDashboardDetails: React.FC<IModalShareDashboardDetails> = ({
   open,
   onClose,
 }) => {
-  const { user } = useUser();
   const [copy, setCopy] = useState<boolean>(false);
 
-  const link = `https://dune.com/${user?.getId()}/zzcs`;
+  const link = window.location;
 
   const ButtonCopySuccess = () => {
     return (
