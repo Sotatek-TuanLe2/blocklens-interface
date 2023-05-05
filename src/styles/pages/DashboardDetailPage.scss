@@ -11,6 +11,10 @@
     font-size: revert;
     font-weight: revert;
   }
+  .main-pagination {
+    position: fixed;
+    bottom: 1%;
+  }
   .react-resizable-handle {
     &::after {
       border-right: 2px solid rgba(255, 255, 255, 0.4);
@@ -37,7 +41,7 @@
         overflow: unset;
       }
       .table-content {
-        height: 77%;
+        height: 75%;
         overflow: auto;
       }
       ::-webkit-scrollbar {
@@ -47,7 +51,7 @@
         height: 10px;
       }
       ::-webkit-scrollbar-thumb {
-        background: #1a203b;
+        background: #4b516d;
         border-radius: 100px;
       }
 
