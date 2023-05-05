@@ -32,6 +32,7 @@ import {
 } from '../../../utils/query.type';
 import { getDefaultTableColumns } from 'src/components/Charts/VisualizationTable';
 import { objectKeys } from 'src/utils/utils-network';
+import { areYAxisesSameType, isNumber } from 'src/utils/utils-helper';
 
 type VisualizationConfigType = {
   value: string;
@@ -209,8 +210,13 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
       errorMessage = 'Missing x-axis';
     } else if (!visualization.options.columnMapping?.yAxis.length) {
       errorMessage = 'Missing y-axis';
-    } else {
-      // TODO: check yAxis values have same type
+    } else if (
+      !areYAxisesSameType(
+        queryResult,
+        visualization.options.columnMapping?.yAxis,
+      )
+    ) {
+      errorMessage = 'All columns for a y-axis must have the same data type';
     }
 
     switch (type) {
