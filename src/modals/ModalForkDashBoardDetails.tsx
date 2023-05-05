@@ -29,6 +29,12 @@ const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
   const [dataForm, setDataForm] = useState<IDataForkModal>(initDataForkModal);
 
+  useEffect(() => {
+    if (!open) {
+      setDataForm(initDataForkModal);
+    }
+  }, [open]);
+
   const validator = useRef(
     createValidator({
       element: (message: string) => (
@@ -42,11 +48,6 @@ const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
     setIsDisableSubmit(isDisabled);
   }, [dataForm]);
 
-  const closeAndResetField = () => {
-    onClose();
-    setDataForm(initDataForkModal);
-  };
-
   const onSave = async () => {
     const payload = {
       newDashboardName: dataForm.dashboard,
@@ -58,14 +59,14 @@ const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
       if (res) {
         window.location.replace(`/dashboards/${res.id}`);
       }
-      closeAndResetField();
+      onClose();
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
     }
   };
 
   return (
-    <BaseModal isOpen={open} onClose={closeAndResetField} size="md">
+    <BaseModal isOpen={open} onClose={onClose} size="md">
       <div className="main-modal-dashboard-details">
         <AppField label={'Dashboard name'}>
           <AppInput
@@ -98,11 +99,7 @@ const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
           >
             Save and open
           </AppButton>
-          <AppButton
-            onClick={() => closeAndResetField()}
-            size="sm"
-            variant={'cancel'}
-          >
+          <AppButton onClick={onClose} size="sm" variant={'cancel'}>
             Cancel
           </AppButton>
         </Flex>

@@ -85,3 +85,18 @@ export const getErrorMessage = (err: any) => {
   }
   return COMMON_ERROR_MESSAGE;
 };
+
+export const areYAxisesSameType = (data: any[], yAxis: string[]) => {
+  if (!data.length) {
+    return false;
+  }
+  const [firstItem] = data;
+  const filteredYAxis = yAxis.filter((axis) => !!axis);
+  const areYAxisesAllNumber = filteredYAxis.every((item: string) =>
+    isNumber(firstItem[item]),
+  );
+  const areYAxisesAllString = filteredYAxis.every(
+    (item: string) => !isNumber(firstItem[item]),
+  );
+  return areYAxisesAllNumber || areYAxisesAllString;
+};

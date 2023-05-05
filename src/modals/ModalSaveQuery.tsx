@@ -31,6 +31,13 @@ const ModalSaveQuery = ({ open, onClose, onSubmit }: IModalSaveQuery) => {
   ) => {
     setQueryName(event.target.value);
   };
+
+  useEffect(() => {
+    if (!open) {
+      setQueryName('');
+    }
+  }, [open]);
+
   return (
     <BaseModal
       size="xl"
