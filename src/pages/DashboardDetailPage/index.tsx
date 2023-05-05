@@ -114,7 +114,7 @@ const DashboardDetailPage: React.FC = () => {
 
   useEffect(() => {
     fetchLayoutData();
-  }, []);
+  }, [dashboardId]);
 
   const _renderButtons = () => {
     const isAccountsDashboard = true;

@@ -7,6 +7,7 @@ import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import { createValidator } from 'src/utils/utils-validator';
 import BaseModal from './BaseModal';
+import { useHistory } from 'react-router';
 
 interface IModalForkDashBoardDetails {
   open: boolean;
@@ -28,6 +29,8 @@ const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
   };
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
   const [dataForm, setDataForm] = useState<IDataForkModal>(initDataForkModal);
+
+  const history = useHistory();
 
   useEffect(() => {
     if (!open) {
@@ -57,7 +60,7 @@ const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
         .getRequest('DashboardsRequest')
         .forkDashboard(payload, dashboardId);
       if (res) {
-        window.location.replace(`/dashboards/${res.id}`);
+        history.push(`/dashboards/${res.id}`);
       }
       onClose();
     } catch (e) {
@@ -91,11 +94,7 @@ const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
           <AppButton
             size="sm"
             onClick={onSave}
-            disabled={
-              !dataForm.dashboard.trim() ||
-              isDisableSubmit ||
-              dataForm.dashboard.length > 100
-            }
+            disabled={!dataForm.dashboard.trim() || isDisableSubmit}
           >
             Save and open
           </AppButton>
