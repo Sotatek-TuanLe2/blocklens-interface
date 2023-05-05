@@ -1,6 +1,5 @@
 import { Flex, Text } from '@chakra-ui/react';
 import React, { useRef, useState } from 'react';
-import { useHistory } from 'react-router';
 import { AppButton, AppField, AppInput } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/BaseModal.scss';
@@ -28,7 +27,6 @@ const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
     dashboard: '',
   };
   const [dataForm, setDataForm] = useState<IDataForkModal>(initDataForkModal);
-  const history = useHistory();
 
   const validator = useRef(
     createValidator({
@@ -52,7 +50,7 @@ const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
         .getRequest('DashboardsRequest')
         .forkDashboard(payload, dashboardId);
       if (res) {
-        history.push(`/dashboards/${res.id}`);
+        window.location.replace(`/dashboards/${res.id}`);
       }
       closeAndResetField();
     } catch (e) {
@@ -83,7 +81,11 @@ const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
         </AppField>
 
         <Flex className="modal-footer">
-          <AppButton size="sm" onClick={onSave} disabled={!dataForm.dashboard}>
+          <AppButton
+            size="sm"
+            onClick={onSave}
+            disabled={!dataForm.dashboard || dataForm.dashboard.length > 100}
+          >
             Save and open
           </AppButton>
           <AppButton
