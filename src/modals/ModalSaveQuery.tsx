@@ -22,7 +22,10 @@ const ModalSaveQuery = ({ open, onClose, onSubmit }: IModalSaveQuery) => {
     <BaseModal
       size="xl"
       isOpen={open}
-      onClose={onClose}
+      onClose={() => {
+        setQueryName('');
+        onClose();
+      }}
       isHideCloseIcon={true}
       className="modal-save-query"
     >
@@ -42,7 +45,14 @@ const ModalSaveQuery = ({ open, onClose, onSubmit }: IModalSaveQuery) => {
           >
             Save
           </AppButton>
-          <AppButton onClick={onClose} size="sm" variant={'cancel'}>
+          <AppButton
+            onClick={() => {
+              setQueryName('');
+              onClose();
+            }}
+            size="sm"
+            variant={'cancel'}
+          >
             Cancel
           </AppButton>
         </Flex>
