@@ -17,15 +17,7 @@ const ModalShareDashboardDetails: React.FC<IModalShareDashboardDetails> = ({
 }) => {
   const [copy, setCopy] = useState<boolean>(false);
 
-  const link = window.location;
-
-  const ButtonCopySuccess = () => {
-    return (
-      <Flex gap={'5px'} alignItems={'center'}>
-        Link copied <SmallSuccessIcon />
-      </Flex>
-    );
-  };
+  const link = window.location.toString();
 
   const handleCloseModal = () => {
     onClose();
@@ -53,7 +45,13 @@ const ModalShareDashboardDetails: React.FC<IModalShareDashboardDetails> = ({
             setCopy(true);
           }}
         >
-          {!copy ? 'Copy link' : <ButtonCopySuccess />}
+          {!copy ? (
+            'Copy link'
+          ) : (
+            <Flex gap={'5px'} alignItems={'center'}>
+              Link copied <SmallSuccessIcon />
+            </Flex>
+          )}
         </AppButton>
         <AppButton onClick={handleCloseModal} size="sm" variant={'cancel'}>
           Cancel
