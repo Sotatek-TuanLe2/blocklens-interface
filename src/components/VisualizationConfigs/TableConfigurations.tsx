@@ -246,65 +246,66 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
           Hide column
         </Checkbox>
       </div>
-      {isNumberValue && data?.type === 'normal' ? (
-        <div>
+      {isNumberValue &&
+        (data?.type === 'normal' ? (
+          <div>
+            <div className="main-checkbox">
+              <Checkbox
+                size="sm"
+                value={data?.coloredPositive}
+                isChecked={data?.coloredPositive}
+                onChange={(e) =>
+                  onChange(
+                    {
+                      ...selectedItem,
+                      coloredPositive: e.target.checked,
+                    },
+                    index,
+                  )
+                }
+              >
+                Colored positive values
+              </Checkbox>
+            </div>
+            <div className="main-checkbox">
+              <Checkbox
+                size="sm"
+                value={data?.coloredNegative}
+                isChecked={data?.coloredNegative}
+                onChange={(e) =>
+                  onChange(
+                    {
+                      ...selectedItem,
+                      coloredNegative: e.target.checked,
+                    },
+                    index,
+                  )
+                }
+              >
+                Colored negative values
+              </Checkbox>
+            </div>
+          </div>
+        ) : (
           <div className="main-checkbox">
             <Checkbox
               size="sm"
-              value={data?.coloredPositive}
-              isChecked={data?.coloredPositive}
+              value={data?.coloredProgress}
+              isChecked={data?.coloredProgress}
               onChange={(e) =>
                 onChange(
                   {
                     ...selectedItem,
-                    coloredPositive: e.target.checked,
+                    coloredProgress: e.target.checked,
                   },
                   index,
                 )
               }
             >
-              Colored positive values
+              Colored positive/negative values
             </Checkbox>
           </div>
-          <div className="main-checkbox">
-            <Checkbox
-              size="sm"
-              value={data?.coloredNegative}
-              isChecked={data?.coloredNegative}
-              onChange={(e) =>
-                onChange(
-                  {
-                    ...selectedItem,
-                    coloredNegative: e.target.checked,
-                  },
-                  index,
-                )
-              }
-            >
-              Colored negative values
-            </Checkbox>
-          </div>
-        </div>
-      ) : (
-        <div className="main-checkbox">
-          <Checkbox
-            size="sm"
-            value={data?.coloredProgress}
-            isChecked={data?.coloredProgress}
-            onChange={(e) =>
-              onChange(
-                {
-                  ...selectedItem,
-                  coloredProgress: e.target.checked,
-                },
-                index,
-              )
-            }
-          >
-            Colored positive/negative values
-          </Checkbox>
-        </div>
-      )}
+        ))}
     </div>
   );
 };

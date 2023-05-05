@@ -218,7 +218,6 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
     ) {
       errorMessage = 'All columns for a y-axis must have the same data type';
     }
-
     switch (type) {
       case TYPE_VISUALIZATION.table:
         errorMessage = null;
@@ -237,6 +236,7 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
             dataTable={dataTable}
           />
         );
+
         break;
       case TYPE_VISUALIZATION.counter:
         errorMessage = null;
