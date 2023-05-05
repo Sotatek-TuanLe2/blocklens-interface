@@ -31,8 +31,6 @@ import {
   VALUE_VISUALIZATION,
   VisualizationType,
 } from '../../../utils/query.type';
-import { getDefaultTableColumns } from 'src/components/Charts/VisualizationTable';
-import { objectKeys } from 'src/utils/utils-network';
 import { areYAxisesSameType, isNumber } from 'src/utils/utils-helper';
 
 type VisualizationConfigType = {
