@@ -1,5 +1,5 @@
 import { Flex, Text } from '@chakra-ui/react';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { AppButton, AppField, AppInput } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/BaseModal.scss';
@@ -26,6 +26,7 @@ const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
   const initDataForkModal = {
     dashboard: '',
   };
+  const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
   const [dataForm, setDataForm] = useState<IDataForkModal>(initDataForkModal);
 
   const validator = useRef(
@@ -35,6 +36,11 @@ const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
       ),
     }),
   );
+
+  useEffect(() => {
+    const isDisabled = !validator.current.allValid();
+    setIsDisableSubmit(isDisabled);
+  }, [dataForm]);
 
   const closeAndResetField = () => {
     onClose();
@@ -84,7 +90,11 @@ const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
           <AppButton
             size="sm"
             onClick={onSave}
-            disabled={!dataForm.dashboard || dataForm.dashboard.length > 100}
+            disabled={
+              !dataForm.dashboard.trim() ||
+              isDisableSubmit ||
+              dataForm.dashboard.length > 100
+            }
           >
             Save and open
           </AppButton>
