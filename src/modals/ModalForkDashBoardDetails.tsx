@@ -1,6 +1,5 @@
 import { Flex, Text } from '@chakra-ui/react';
 import React, { useEffect, useRef, useState } from 'react';
-import { useHistory } from 'react-router';
 import { AppButton, AppField, AppInput } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/BaseModal.scss';
@@ -8,6 +7,7 @@ import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import { createValidator } from 'src/utils/utils-validator';
 import BaseModal from './BaseModal';
+import { useHistory } from 'react-router';
 
 interface IModalForkDashBoardDetails {
   open: boolean;
@@ -27,7 +27,9 @@ const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
   const initDataForkModal = {
     dashboard: '',
   };
+  const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
   const [dataForm, setDataForm] = useState<IDataForkModal>(initDataForkModal);
+
   const history = useHistory();
 
   useEffect(() => {
@@ -43,6 +45,11 @@ const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
       ),
     }),
   );
+
+  useEffect(() => {
+    const isDisabled = !validator.current.allValid();
+    setIsDisableSubmit(isDisabled);
+  }, [dataForm]);
 
   const onSave = async () => {
     const payload = {
@@ -78,13 +85,17 @@ const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
             validate={{
               name: `dashboard `,
               validator: validator.current,
-              rule: 'required|max:100',
+              rule: 'required|max:150',
             }}
           />
         </AppField>
 
         <Flex className="modal-footer">
-          <AppButton size="sm" onClick={onSave} disabled={!dataForm.dashboard}>
+          <AppButton
+            size="sm"
+            onClick={onSave}
+            disabled={!dataForm.dashboard.trim() || isDisableSubmit}
+          >
             Save and open
           </AppButton>
           <AppButton onClick={onClose} size="sm" variant={'cancel'}>

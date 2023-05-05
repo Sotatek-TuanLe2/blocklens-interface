@@ -1,8 +1,8 @@
-import { Box, Flex } from '@chakra-ui/react';
-import _ from 'lodash';
-import React, { useEffect, useState } from 'react';
+import { Box, Flex, Text } from '@chakra-ui/react';
+import React, { useEffect, useRef, useState } from 'react';
 import { AppButton, AppInput } from 'src/components';
 import BaseModal from './BaseModal';
+import { createValidator } from 'src/utils/utils-validator';
 
 export interface IModalSaveQuery {
   open: boolean;
@@ -12,6 +12,18 @@ export interface IModalSaveQuery {
 
 const ModalSaveQuery = ({ open, onClose, onSubmit }: IModalSaveQuery) => {
   const [queryName, setQueryName] = useState('');
+  const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
+
+  const validator = useRef(
+    createValidator({
+      element: (message: string) => <Text color={'red.100'}>{message}</Text>,
+    }),
+  );
+
+  useEffect(() => {
+    const isDisabled = !validator.current.allValid();
+    setIsDisableSubmit(isDisabled);
+  }, [queryName]);
 
   const handleChangeNameQuery = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -43,7 +55,7 @@ const ModalSaveQuery = ({ open, onClose, onSubmit }: IModalSaveQuery) => {
         <Box pt={'20px'}>Don't worry, you can change this any time.</Box>
         <Flex className="modal-footer">
           <AppButton
-            disabled={!queryName.trim()}
+            disabled={!queryName.trim() || isDisableSubmit}
             onClick={() => onSubmit(queryName)}
             size="sm"
           >

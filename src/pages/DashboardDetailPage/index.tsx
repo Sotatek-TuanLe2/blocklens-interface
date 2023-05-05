@@ -49,7 +49,7 @@ export enum TYPE_MODAL {
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 const DashboardDetailPage: React.FC = () => {
-  const { authorId, dashboardId } = useParams<ParamTypes>();
+  const { dashboardId } = useParams<ParamTypes>();
   const { user } = useUser();
 
   const [editMode, setEditMode] = useState<boolean>(false);
@@ -114,7 +114,7 @@ const DashboardDetailPage: React.FC = () => {
 
   useEffect(() => {
     fetchLayoutData();
-  }, []);
+  }, [dashboardId]);
 
   const _renderButtons = () => {
     const isAccountsDashboard = true;
