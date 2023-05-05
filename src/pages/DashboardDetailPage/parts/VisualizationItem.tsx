@@ -18,7 +18,7 @@ import {
   TYPE_VISUALIZATION,
   VisualizationType,
 } from 'src/utils/query.type';
-import { getErrorMessage } from 'src/utils/utils-helper';
+import { areYAxisesSameType, getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 
 const VisualizationItem = React.memo(
@@ -105,8 +105,13 @@ const VisualizationItem = React.memo(
         errorMessage = 'Missing x-axis';
       } else if (!visualization.options?.columnMapping?.yAxis.length) {
         errorMessage = 'Missing y-axis';
-      } else {
-        // TODO: check yAxis values have same type
+      } else if (
+        !areYAxisesSameType(
+          queryResult,
+          visualization.options.columnMapping?.yAxis,
+        )
+      ) {
+        errorMessage = 'All columns for a y-axis must have the same data type';
       }
 
       switch (type) {
