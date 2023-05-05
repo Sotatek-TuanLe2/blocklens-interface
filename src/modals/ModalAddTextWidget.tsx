@@ -201,7 +201,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
             onClick={() => {
               type === TYPE_MODAL.ADD ? handleSave() : handleUpdate();
             }}
-            disabled={!markdownText}
+            disabled={!markdownText.trim() || !selectedItem.text}
           >
             Save
           </AppButton>
