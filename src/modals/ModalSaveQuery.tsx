@@ -1,6 +1,6 @@
 import { Box, Flex } from '@chakra-ui/react';
 import _ from 'lodash';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AppButton, AppInput } from 'src/components';
 import BaseModal from './BaseModal';
 
@@ -18,14 +18,16 @@ const ModalSaveQuery = ({ open, onClose, onSubmit }: IModalSaveQuery) => {
   ) => {
     setQueryName(event.target.value);
   };
+
+  useEffect(() => {
+    if (!open) setQueryName('');
+  }, [open]);
+
   return (
     <BaseModal
       size="xl"
       isOpen={open}
-      onClose={() => {
-        setQueryName('');
-        onClose();
-      }}
+      onClose={onClose}
       isHideCloseIcon={true}
       className="modal-save-query"
     >
@@ -45,14 +47,7 @@ const ModalSaveQuery = ({ open, onClose, onSubmit }: IModalSaveQuery) => {
           >
             Save
           </AppButton>
-          <AppButton
-            onClick={() => {
-              setQueryName('');
-              onClose();
-            }}
-            size="sm"
-            variant={'cancel'}
-          >
+          <AppButton onClick={onClose} size="sm" variant={'cancel'}>
             Cancel
           </AppButton>
         </Flex>
