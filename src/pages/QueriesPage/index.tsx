@@ -12,7 +12,7 @@ import 'ace-builds/src-noconflict/theme-kuroir';
 import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/mode-sql';
 import { getErrorMessage } from '../../utils/utils-helper';
-import { Prompt, useHistory, useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import {
   QueryExecutedResponse,
   IQuery,
@@ -26,7 +26,7 @@ import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import rf from 'src/requests/RequestFactory';
 import { AppLoadingTable } from 'src/components';
 import useUser from 'src/hooks/useUser';
-import useBeforeUnload from 'src/hooks/useBeforeUnload';
+import BeforeReload from './BeforReload';
 
 interface ParamTypes {
   queryId: string;
@@ -54,7 +54,6 @@ const QueriesPage = () => {
 
   const history = useHistory();
   const { user } = useUser();
-  const unsavedChanges = useBeforeUnload();
 
   const hoverBackgroundButton = switchTheme ? '#dadde0' : '#2a2c2f99';
   const backgroundButton = switchTheme ? '#e9ebee' : '#2a2c2f';
@@ -408,10 +407,9 @@ const QueriesPage = () => {
           onSubmit={saveNameQuery}
         />
         {!!queryValue && !queryValue.name && (
-          <>
-            {unsavedChanges}
-            <Prompt message="This query has not been saved yet. Discard unsaved changes?" />
-          </>
+          <BeforeReload
+            msg={`This query has not been saved yet. Discard unsaved changes?`}
+          />
         )}
       </>
     </BasePage>
