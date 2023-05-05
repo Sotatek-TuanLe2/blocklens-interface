@@ -85,7 +85,7 @@ const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
             validate={{
               name: `dashboard `,
               validator: validator.current,
-              rule: 'required|max:100',
+              rule: 'required|max:150',
             }}
           />
         </AppField>
