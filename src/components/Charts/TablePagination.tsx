@@ -5,7 +5,7 @@ import AppInput from '../AppInput';
 import AppButton from '../AppButton';
 import { debounce } from 'lodash';
 
-const TablePagination = ({ data, setNewQueryResult }: any) => {
+const TablePagination = ({ data, onChangeData }: any) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -47,7 +47,7 @@ const TablePagination = ({ data, setNewQueryResult }: any) => {
   const displayedItems = filteredData.slice(firstIndex, lastIndex);
 
   useEffect(() => {
-    setNewQueryResult(displayedItems);
+    onChangeData(displayedItems);
   }, [lastIndex, firstIndex, searchTerm]);
 
   return (

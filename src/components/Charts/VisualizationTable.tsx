@@ -200,7 +200,7 @@ const VisualizationTable = <T,>({
         </table>
       </Box>
       <div>
-        <TablePagination data={data} setNewQueryResult={setNewQueryResult} />
+        <TablePagination data={data} onChangeData={setNewQueryResult} />
       </div>
     </div>
   );
