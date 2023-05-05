@@ -3,13 +3,15 @@ import moment from 'moment';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
-import { PieChart, VisualizationTable } from 'src/components/Charts';
-import VisualizationCounter from 'src/components/Charts/VisualizationCounter';
+import {
+  PieChart,
+  VisualizationChart,
+  VisualizationTable,
+  VisualizationCounter,
+} from 'src/components/Charts';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/TableValue.scss';
 import 'src/styles/pages/DashboardDetailPage.scss';
-
-import VisualizationChart from 'src/components/Charts/VisualizationChart';
 import 'src/styles/components/Chart.scss';
 import {
   QueryExecutedResponse,

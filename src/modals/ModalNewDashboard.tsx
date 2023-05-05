@@ -1,5 +1,5 @@
-import { Checkbox, Flex } from '@chakra-ui/react';
-import React from 'react';
+import { Flex, Text } from '@chakra-ui/react';
+import React, { ChangeEvent, useEffect, useRef } from 'react';
 import { AppButton, AppField, AppInput } from 'src/components';
 import 'src/styles/components/BaseModal.scss';
 import BaseModal from './BaseModal';
@@ -8,6 +8,7 @@ import { useHistory } from 'react-router';
 import { toastError } from 'src/utils/utils-notify';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import rf from 'src/requests/RequestFactory';
+import { createValidator } from 'src/utils/utils-validator';
 
 interface IModalNewDashboard {
   open: boolean;
@@ -26,6 +27,19 @@ const ModalNewDashboard: React.FC<IModalNewDashboard> = ({ open, onClose }) => {
 
   const [dataForm, setDataForm] =
     useState<IDataSettingForm>(initDataFormSetting);
+
+  const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
+
+  const validator = useRef(
+    createValidator({
+      element: (message: string) => <Text color={'red.100'}>{message}</Text>,
+    }),
+  );
+
+  useEffect(() => {
+    const isDisabled = !validator.current.allValid();
+    setIsDisableSubmit(isDisabled);
+  }, [dataForm]);
 
   const handleSubmitForm = async () => {
     try {
@@ -65,11 +79,16 @@ const ModalNewDashboard: React.FC<IModalNewDashboard> = ({ open, onClose }) => {
             value={dataForm.title}
             size="sm"
             placeholder="My dashboard"
-            onChange={(e) => {
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
               setDataForm({
                 ...dataForm,
                 title: e.target.value,
-              });
+              })
+            }
+            validate={{
+              name: `dashboard`,
+              validator: validator.current,
+              rule: ['required', 'max:150'],
             }}
           />
         </AppField>
@@ -78,7 +97,7 @@ const ModalNewDashboard: React.FC<IModalNewDashboard> = ({ open, onClose }) => {
         <AppButton
           size="sm"
           onClick={handleSubmitForm}
-          disabled={!dataForm.title.trim()}
+          disabled={!dataForm.title.trim() || isDisableSubmit}
         >
           Save and open
         </AppButton>

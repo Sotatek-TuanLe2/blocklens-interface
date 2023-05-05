@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { useCallback, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Area,
   AreaChart,
@@ -259,7 +259,9 @@ const VisualizationChart: React.FC<Props> = (props) => {
           />
         )}
         {yAxisKeys?.map((yAxisKey, index) => (
-          <>{_renderChartType(yAxisKey, index)}</>
+          <React.Fragment key={yAxisKey}>
+            {_renderChartType(yAxisKey, index)}
+          </React.Fragment>
         ))}
       </ChartComponent>
     </ResponsiveContainer>

@@ -13,7 +13,11 @@ import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/mode-sql';
 import { getErrorMessage } from '../../utils/utils-helper';
 import { useHistory, useParams } from 'react-router-dom';
-import { QueryExecutedResponse, IQuery } from '../../utils/query.type';
+import {
+  QueryExecutedResponse,
+  IQuery,
+  TYPE_VISUALIZATION,
+} from '../../utils/query.type';
 import 'src/styles/pages/QueriesPage.scss';
 import { AddParameterIcon, ExplandIcon } from 'src/assets/icons';
 import { MoonIcon, SettingsIcon, SunIcon } from '@chakra-ui/icons';
@@ -76,9 +80,33 @@ const QueriesPage = () => {
     }
   };
 
+  const updateTableConfigurations = async () => {
+    // reset all table configuration to empty array
+    const updateVisualizationAPIs: Array<Promise<any>> = [];
+    queryValue?.visualizations.forEach((visualization) => {
+      if (
+        visualization.type === TYPE_VISUALIZATION.table &&
+        !!visualization.options.columns
+      ) {
+        updateVisualizationAPIs.push(
+          rf.getRequest('DashboardsRequest').editVisualization(
+            {
+              ...visualization,
+              options: {},
+            },
+            visualization.id,
+          ),
+        );
+      }
+    });
+
+    await Promise.all(updateVisualizationAPIs);
+  };
+
   const updateQuery = async (query: string) => {
     try {
       await rf.getRequest('DashboardsRequest').updateQuery({ query }, queryId);
+      await updateTableConfigurations();
       await fetchQueryResult();
       await fetchQuery();
     } catch (error: any) {

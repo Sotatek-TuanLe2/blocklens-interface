@@ -8,7 +8,9 @@ const CustomLegend = (props: any) => {
       {payload.map((entry: any, index: number) => (
         <div key={`item-${index}`} className="custom-legend">
           <span
-            className={hiddenCharts.includes(entry.dataKey) && 'hide-legend'}
+            className={
+              hiddenCharts.includes(entry.dataKey) ? 'hide-legend' : ''
+            }
             onClick={() => onToggleLegend(entry.dataKey)}
             style={{ color: `${entry.color}` }}
           >

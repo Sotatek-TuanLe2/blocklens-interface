@@ -10,11 +10,11 @@ import { COLORS } from 'src/utils/common';
 import { VisualizationOptionsType } from 'src/utils/query.type';
 import CustomTooltip from './CustomTooltip';
 import { Flex } from '@chakra-ui/react';
-import { ChartProps } from './LineChart';
 import { useEffect, useMemo, useState } from 'react';
 import _ from 'lodash';
 import BigNumber from 'bignumber.js';
 import { isNumber } from 'src/utils/utils-helper';
+import { ChartProps } from './VisualizationChart';
 
 type ChartConfigType = VisualizationOptionsType;
 type Props = ChartProps & {

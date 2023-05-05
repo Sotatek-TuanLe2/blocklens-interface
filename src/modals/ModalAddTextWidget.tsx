@@ -9,7 +9,7 @@ import 'src/styles/components/BaseModal.scss';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import BaseModal from './BaseModal';
-import { IQuery } from 'src/utils/query.type';
+import { IDashboardDetail, ITextWidget } from 'src/utils/query.type';
 
 interface IModalAddTextWidget {
   open: boolean;
@@ -18,8 +18,7 @@ interface IModalAddTextWidget {
   selectedItem: ILayout;
   dataLayouts: ILayout[];
   onReload: () => Promise<void>;
-  dashboardId: string;
-  dataDashboard: IQuery | undefined;
+  dataDashboard?: IDashboardDetail;
 }
 
 interface IMarkdown {
@@ -93,7 +92,6 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
   dataLayouts,
   selectedItem,
   onReload,
-  dashboardId,
   dataDashboard,
 }) => {
   const [markdownText, setMarkdownText] = useState<string>(``);
@@ -103,7 +101,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
   const handleSave = async () => {
     try {
       const payload = {
-        dashboardId,
+        dashboardId: dataDashboard?.id,
         text: markdownText,
         options: {
           sizeX: dataLayouts.length % 2 === 0 ? 0 : 6,
@@ -125,7 +123,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
     }
   };
   const handleUpdate = async () => {
-    const newItems = dataDashboard?.textWidgets.map((i: IQuery) => {
+    const newItems = dataDashboard?.textWidgets.map((i: ITextWidget) => {
       if (i.id === selectedItem.id) {
         return {
           id: selectedItem.id,
@@ -140,7 +138,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
       };
       const res = await rf
         .getRequest('DashboardsRequest')
-        .updateDashboardItem(payload, dashboardId);
+        .updateDashboardItem(payload, dataDashboard?.id);
       if (res) {
         onReload();
         setMarkdownText('');
