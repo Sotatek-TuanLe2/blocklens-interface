@@ -12,7 +12,7 @@ import { VISUALIZATION_COLORS } from 'src/utils/common';
 import { formatVisualizationValue } from 'src/utils/utils-format';
 import { isNumber } from 'src/utils/utils-helper';
 import { objectKeys } from 'src/utils/utils-network';
-import QueryResultsPagination from '../QueryResultsPagination';
+import TablePagination from './TablePagination';
 
 interface ReactTableProps<T> {
   data: T[];
@@ -200,10 +200,7 @@ const VisualizationTable = <T,>({
         </table>
       </Box>
       <div>
-        <QueryResultsPagination
-          data={data}
-          setNewQueryResult={setNewQueryResult}
-        />
+        <TablePagination data={data} setNewQueryResult={setNewQueryResult} />
       </div>
     </div>
   );

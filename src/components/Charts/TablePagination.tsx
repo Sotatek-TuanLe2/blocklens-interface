@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { ArrowDoubleLeftIcon, PrevIcon } from 'src/assets/icons';
 import 'src/styles/components/QueryResultsPagination.scss';
-import AppInput from './AppInput';
-import AppButton from './AppButton';
+import AppInput from '../AppInput';
+import AppButton from '../AppButton';
 import { debounce } from 'lodash';
 
-const QueryResultsPagination = ({ data, setNewQueryResult }: any) => {
+const TablePagination = ({ data, setNewQueryResult }: any) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
 
-  const ITEMS_PER_PAGE = 15;
+  const ROWS_PER_PAGE = 15;
   const DEBOUNCE_TIME = 500;
 
   const handleNextPage = () => {
@@ -25,7 +25,7 @@ const QueryResultsPagination = ({ data, setNewQueryResult }: any) => {
   };
 
   const handleLastPage = () => {
-    setCurrentPage(Math.ceil(data.length / ITEMS_PER_PAGE));
+    setCurrentPage(Math.ceil(data.length / ROWS_PER_PAGE));
   };
   const handleSearch = debounce(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,9 +34,9 @@ const QueryResultsPagination = ({ data, setNewQueryResult }: any) => {
     DEBOUNCE_TIME,
   );
 
-  const lastIndex = currentPage * ITEMS_PER_PAGE;
-  const firstIndex = lastIndex - ITEMS_PER_PAGE;
-  const totalPages = Math.ceil(data.length / ITEMS_PER_PAGE);
+  const lastIndex = currentPage * ROWS_PER_PAGE;
+  const firstIndex = lastIndex - ROWS_PER_PAGE;
+  const totalPages = Math.ceil(data.length / ROWS_PER_PAGE);
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   const filteredData = data.filter((item: { [x: string]: string }) =>
@@ -62,7 +62,7 @@ const QueryResultsPagination = ({ data, setNewQueryResult }: any) => {
       </div>
       <div
         className={`group-button ${
-          filteredData.length < itemsPerPage && 'hidden-button'
+          filteredData.length < ROWS_PER_PAGE && 'hidden-button'
         } `}
       >
         <AppButton
@@ -124,4 +124,4 @@ const QueryResultsPagination = ({ data, setNewQueryResult }: any) => {
   );
 };
 
-export default QueryResultsPagination;
+export default TablePagination;
