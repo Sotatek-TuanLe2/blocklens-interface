@@ -9,7 +9,7 @@ const QueryResultsPagination = ({ data, setNewQueryResult }: any) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
 
-  const itemsPerPage = 15;
+  const ITEMS_PER_PAGE = 15;
   const DEBOUNCE_TIME = 500;
 
   const handleNextPage = () => {
@@ -25,7 +25,7 @@ const QueryResultsPagination = ({ data, setNewQueryResult }: any) => {
   };
 
   const handleLastPage = () => {
-    setCurrentPage(Math.ceil(data.length / itemsPerPage));
+    setCurrentPage(Math.ceil(data.length / ITEMS_PER_PAGE));
   };
   const handleSearch = debounce(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,9 +34,9 @@ const QueryResultsPagination = ({ data, setNewQueryResult }: any) => {
     DEBOUNCE_TIME,
   );
 
-  const lastIndex = currentPage * itemsPerPage;
-  const firstIndex = lastIndex - itemsPerPage;
-  const totalPages = Math.ceil(data.length / itemsPerPage);
+  const lastIndex = currentPage * ITEMS_PER_PAGE;
+  const firstIndex = lastIndex - ITEMS_PER_PAGE;
+  const totalPages = Math.ceil(data.length / ITEMS_PER_PAGE);
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   const filteredData = data.filter((item: { [x: string]: string }) =>

@@ -2,6 +2,16 @@ import { Box, Flex, Text } from '@chakra-ui/react';
 import moment from 'moment';
 import { useMemo, useState } from 'react';
 import { useParams } from 'react-router';
+import 'src/styles/components/Chart.scss';
+import {
+  PieChart,
+  VisualizationChart,
+  VisualizationTable,
+  VisualizationCounter,
+} from '../../../components/Charts';
+import { AppTabs, AppButton, AppSelect2 } from '../../../components';
+import ChartConfigurations from '../../../components/VisualizationConfigs/ChartConfigurations';
+import BaseModal from '../../../modals/BaseModal';
 import {
   AreaChartIcon,
   BarChartIcon,
@@ -10,27 +20,18 @@ import {
   QueryResultIcon,
   ScatterChartIcon,
 } from 'src/assets/icons';
-import { getDefaultTableColumns } from 'src/components/Charts/VisualizationTable';
 import CounterConfiguration from 'src/components/VisualizationConfigs/CounterConfiguration';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/Chart.scss';
-import { objectKeys } from 'src/utils/utils-network';
-import { AppButton, AppSelect2, AppTabs } from '../../../components';
-import {
-  PieChart,
-  VisualizationChart,
-  VisualizationCounter,
-  VisualizationTable,
-} from '../../../components/Charts';
-import ChartConfigurations from '../../../components/VisualizationConfigs/ChartConfigurations';
 import TableConfigurations from '../../../components/VisualizationConfigs/TableConfigurations';
-import BaseModal from '../../../modals/BaseModal';
 import {
   IQuery,
   TYPE_VISUALIZATION,
   VALUE_VISUALIZATION,
   VisualizationType,
 } from '../../../utils/query.type';
+import { getDefaultTableColumns } from 'src/components/Charts/VisualizationTable';
+import { objectKeys } from 'src/utils/utils-network';
 import { areYAxisesSameType, isNumber } from 'src/utils/utils-helper';
 
 type VisualizationConfigType = {

@@ -6,13 +6,13 @@ import 'react-resizable/css/styles.css';
 import {
   PieChart,
   VisualizationChart,
-  VisualizationCounter,
   VisualizationTable,
+  VisualizationCounter,
 } from 'src/components/Charts';
 import rf from 'src/requests/RequestFactory';
-import 'src/styles/components/Chart.scss';
 import 'src/styles/components/TableValue.scss';
 import 'src/styles/pages/DashboardDetailPage.scss';
+import 'src/styles/components/Chart.scss';
 import {
   QueryExecutedResponse,
   TYPE_VISUALIZATION,
