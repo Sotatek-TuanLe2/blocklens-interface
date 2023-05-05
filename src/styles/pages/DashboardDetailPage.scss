@@ -44,6 +44,10 @@
         height: 75%;
         overflow: auto;
       }
+      .chart-content {
+        height: 100%;
+        overflow: auto;
+      }
       ::-webkit-scrollbar {
         width: 10px;
         background-color: #030821;

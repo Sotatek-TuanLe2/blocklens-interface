@@ -176,7 +176,15 @@ const VisualizationItem = React.memo(
               {errorMessage}
             </Flex>
           ) : (
-            <div className="table-content">{visualizationDisplay}</div>
+            <div
+              className={`${
+                type === TYPE_VISUALIZATION.table
+                  ? 'table-content'
+                  : 'chart-content'
+              }`}
+            >
+              {visualizationDisplay}
+            </div>
           )}
         </div>
       );
