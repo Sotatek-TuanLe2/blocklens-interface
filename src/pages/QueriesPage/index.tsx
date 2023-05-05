@@ -12,7 +12,7 @@ import 'ace-builds/src-noconflict/theme-kuroir';
 import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/mode-sql';
 import { getErrorMessage } from '../../utils/utils-helper';
-import { useHistory, useParams } from 'react-router-dom';
+import { Prompt, useHistory, useParams } from 'react-router-dom';
 import {
   QueryExecutedResponse,
   IQuery,
@@ -284,6 +284,23 @@ const QueriesPage = () => {
     );
   };
 
+  const UnsavedChangesPrompt = () => {
+    useEffect(() => {
+      const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+        event.preventDefault();
+        event.returnValue = '';
+      };
+
+      window.addEventListener('beforeunload', handleBeforeUnload);
+
+      return () => {
+        window.removeEventListener('beforeunload', handleBeforeUnload);
+      };
+    }, []);
+
+    return null;
+  };
+
   return (
     <BasePage>
       <>
@@ -405,6 +422,12 @@ const QueriesPage = () => {
           onClose={() => setShowSaveModal(false)}
           onSubmit={saveNameQuery}
         />
+        {!!queryValue && !queryValue.name && (
+          <>
+            <UnsavedChangesPrompt />
+            <Prompt message="This query has not been saved yet. Discard unsaved changes?" />
+          </>
+        )}
       </>
     </BasePage>
   );
