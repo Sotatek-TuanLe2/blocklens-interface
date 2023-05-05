@@ -44,7 +44,6 @@ const QueryResultsPagination = ({ data, setNewQueryResult }: any) => {
       item[field]?.toLowerCase().includes(searchTerm.toLowerCase()),
     ),
   );
-  console.log(filteredData);
   const displayedItems = filteredData.slice(firstIndex, lastIndex);
 
   useEffect(() => {
