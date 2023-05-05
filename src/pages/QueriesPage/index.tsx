@@ -26,6 +26,7 @@ import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import rf from 'src/requests/RequestFactory';
 import { AppLoadingTable } from 'src/components';
 import useUser from 'src/hooks/useUser';
+import useBeforeUnload from 'src/hooks/useBeforeUnload';
 
 interface ParamTypes {
   queryId: string;
@@ -53,6 +54,7 @@ const QueriesPage = () => {
 
   const history = useHistory();
   const { user } = useUser();
+  const unsavedChanges = useBeforeUnload();
 
   const hoverBackgroundButton = switchTheme ? '#dadde0' : '#2a2c2f99';
   const backgroundButton = switchTheme ? '#e9ebee' : '#2a2c2f';
@@ -284,23 +286,6 @@ const QueriesPage = () => {
     );
   };
 
-  const UnsavedChangesPrompt = () => {
-    useEffect(() => {
-      const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-        event.preventDefault();
-        event.returnValue = '';
-      };
-
-      window.addEventListener('beforeunload', handleBeforeUnload);
-
-      return () => {
-        window.removeEventListener('beforeunload', handleBeforeUnload);
-      };
-    }, []);
-
-    return null;
-  };
-
   return (
     <BasePage>
       <>
@@ -424,7 +409,7 @@ const QueriesPage = () => {
         />
         {!!queryValue && !queryValue.name && (
           <>
-            <UnsavedChangesPrompt />
+            {unsavedChanges}
             <Prompt message="This query has not been saved yet. Discard unsaved changes?" />
           </>
         )}
