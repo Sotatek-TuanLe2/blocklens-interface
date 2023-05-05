@@ -1,0 +1,63 @@
+@import '../color-variables.scss';
+@import '../mixins.scss';
+
+.main-pagination {
+  flex-direction: row;
+  gap: 10px;
+  display: flex;
+  align-items: center;
+  padding: 6px;
+  background: #080b2a;
+  width: 100%;
+
+  select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+
+  input {
+    padding: 15px;
+    border-radius: unset;
+    background: #444444;
+    &::placeholder {
+      color: $whiteAlpha-700;
+    }
+  }
+
+  .group-button {
+    flex-direction: row;
+    gap: 10px;
+    display: flex;
+    align-items: center;
+  }
+  .hidden-button {
+    display: none;
+  }
+  .total-record {
+    padding: 6px 10px;
+    background: #444444;
+    font-size: 13px;
+  }
+
+  .button-pagination {
+    border-radius: unset;
+    background: #444444;
+    font-size: 13px;
+    &:hover {
+      cursor: pointer;
+      background: #716b6b;
+    }
+  }
+
+  .total-pages {
+    padding: 6px 10px;
+    background: #444444;
+    border-radius: unset;
+    font-size: 13px;
+    &:hover {
+      cursor: pointer;
+      background: #716b6b;
+    }
+  }
+}
