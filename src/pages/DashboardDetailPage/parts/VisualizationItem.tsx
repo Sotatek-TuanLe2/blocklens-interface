@@ -18,11 +18,13 @@ import {
 } from 'src/utils/query.type';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
+import QueryResultsPagination from 'src/components/QueryResultsPagination';
 
 const VisualizationItem = React.memo(
   ({ visualization }: { visualization: VisualizationType }) => {
     const [queryResult, setQueryResult] = useState<unknown[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [newQueryResult, setNewQueryResult] = useState<any[]>(queryResult);
 
     const queryId = visualization?.query?.id;
     const fetchQueryResultInterval: any = useRef();
@@ -98,6 +100,7 @@ const VisualizationItem = React.memo(
 
       let errorMessage = null;
       let visualizationDisplay = null;
+      let visualizationPaginationTable = null;
 
       if (!visualization.options?.columnMapping?.xAxis) {
         errorMessage = 'Missing x-axis';
@@ -112,11 +115,16 @@ const VisualizationItem = React.memo(
           errorMessage = null;
           visualizationDisplay = (
             <VisualizationTable
-              data={queryResult}
+              data={newQueryResult}
               dataColumn={visualization.options.columns}
             />
           );
-
+          visualizationPaginationTable = (
+            <QueryResultsPagination
+              data={queryResult}
+              setNewQueryResult={setNewQueryResult}
+            />
+          );
           break;
         case TYPE_VISUALIZATION.counter:
           errorMessage = null;
@@ -171,6 +179,7 @@ const VisualizationItem = React.memo(
           ) : (
             <div className="table-content">{visualizationDisplay}</div>
           )}
+          {visualizationPaginationTable}
         </div>
       );
     };

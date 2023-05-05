@@ -91,6 +91,7 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
 
   const [closeTabId, setCloseTabId] = useState<string | number>('');
   const [dataTable, setDataTable] = useState<any[]>([]);
+  const [newQueryResult, setNewQueryResult] = useState<any[]>(queryResult);
 
   const optionsColumn = getDefaultTableColumns(queryResult);
   const axisOptions =
@@ -211,13 +212,12 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
     } else {
       // TODO: check yAxis values have same type
     }
-
     switch (type) {
       case TYPE_VISUALIZATION.table:
         errorMessage = null;
         visualizationDisplay = (
           <VisualizationTable
-            data={queryResult}
+            data={newQueryResult}
             setDataTable={setDataTable}
             dataColumn={visualization.options.columns}
           />
@@ -230,7 +230,12 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
             dataTable={dataTable}
           />
         );
-        visualizationPaginationTable = <QueryResultsPagination />;
+        visualizationPaginationTable = (
+          <QueryResultsPagination
+            data={queryResult}
+            setNewQueryResult={setNewQueryResult}
+          />
+        );
         break;
       case TYPE_VISUALIZATION.counter:
         errorMessage = null;
