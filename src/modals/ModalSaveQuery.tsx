@@ -1,6 +1,6 @@
 import { Box, Flex } from '@chakra-ui/react';
 import _ from 'lodash';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AppButton, AppInput } from 'src/components';
 import BaseModal from './BaseModal';
 
@@ -18,6 +18,13 @@ const ModalSaveQuery = ({ open, onClose, onSubmit }: IModalSaveQuery) => {
   ) => {
     setQueryName(event.target.value);
   };
+
+  useEffect(() => {
+    if (!open) {
+      setQueryName('');
+    }
+  }, [open]);
+
   return (
     <BaseModal
       size="xl"
