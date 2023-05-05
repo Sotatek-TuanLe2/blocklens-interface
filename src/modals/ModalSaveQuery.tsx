@@ -20,7 +20,9 @@ const ModalSaveQuery = ({ open, onClose, onSubmit }: IModalSaveQuery) => {
   };
 
   useEffect(() => {
-    if (!open) setQueryName('');
+    if (!open) {
+      setQueryName('');
+    }
   }, [open]);
 
   return (

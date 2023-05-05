@@ -1,5 +1,5 @@
 import { Flex } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AppButton, AppField, AppInput } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/BaseModal.scss';
@@ -32,6 +32,12 @@ const ModalSettingDashboardDetails: React.FC<IModalSettingDashboardDetails> = ({
   const [dataForm, setDataForm] =
     useState<IDataSettingForm>(initDataFormSetting);
 
+  useEffect(() => {
+    if (!open) {
+      setDataForm(initDataFormSetting);
+    }
+  }, [open]);
+
   const handleSubmitForm = async () => {
     try {
       const payload = {
@@ -49,13 +55,8 @@ const ModalSettingDashboardDetails: React.FC<IModalSettingDashboardDetails> = ({
     }
   };
 
-  const handleCloseModal = () => {
-    onClose();
-    setDataForm(initDataFormSetting);
-  };
-
   return (
-    <BaseModal isOpen={open} onClose={handleCloseModal} size="md">
+    <BaseModal isOpen={open} onClose={onClose} size="md">
       <div className="main-modal-dashboard-details">
         <Flex flexDirection={'column'} rowGap={'2rem'}>
           <AppField label={'Dashboard title'}>
@@ -82,7 +83,7 @@ const ModalSettingDashboardDetails: React.FC<IModalSettingDashboardDetails> = ({
             Save
           </AppButton>
           <Flex gap={1}>
-            <AppButton onClick={handleCloseModal} size="sm" variant={'cancel'}>
+            <AppButton onClick={onClose} size="sm" variant={'cancel'}>
               Cancel
             </AppButton>
           </Flex>
