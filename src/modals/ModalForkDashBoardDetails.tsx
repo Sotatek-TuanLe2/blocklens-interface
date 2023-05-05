@@ -1,5 +1,5 @@
 import { Flex, Text } from '@chakra-ui/react';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router';
 import { AppButton, AppField, AppInput } from 'src/components';
 import rf from 'src/requests/RequestFactory';
@@ -30,6 +30,12 @@ const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
   const [dataForm, setDataForm] = useState<IDataForkModal>(initDataForkModal);
   const history = useHistory();
 
+  useEffect(() => {
+    if (!open) {
+      setDataForm(initDataForkModal);
+    }
+  }, [open]);
+
   const validator = useRef(
     createValidator({
       element: (message: string) => (
@@ -37,11 +43,6 @@ const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
       ),
     }),
   );
-
-  const closeAndResetField = () => {
-    onClose();
-    setDataForm(initDataForkModal);
-  };
 
   const onSave = async () => {
     const payload = {
@@ -54,14 +55,14 @@ const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
       if (res) {
         history.push(`/dashboards/${res.id}`);
       }
-      closeAndResetField();
+      onClose();
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
     }
   };
 
   return (
-    <BaseModal isOpen={open} onClose={closeAndResetField} size="md">
+    <BaseModal isOpen={open} onClose={onClose} size="md">
       <div className="main-modal-dashboard-details">
         <AppField label={'Dashboard name'}>
           <AppInput
@@ -86,11 +87,7 @@ const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
           <AppButton size="sm" onClick={onSave} disabled={!dataForm.dashboard}>
             Save and open
           </AppButton>
-          <AppButton
-            onClick={() => closeAndResetField()}
-            size="sm"
-            variant={'cancel'}
-          >
+          <AppButton onClick={onClose} size="sm" variant={'cancel'}>
             Cancel
           </AppButton>
         </Flex>

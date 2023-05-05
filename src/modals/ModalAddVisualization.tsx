@@ -76,8 +76,10 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   };
 
   useEffect(() => {
-    fetchVisualization();
-  }, []);
+    if (open) {
+      fetchVisualization();
+    }
+  }, [open]);
 
   const handleSaveVisualization = async (
     data: QueryType,

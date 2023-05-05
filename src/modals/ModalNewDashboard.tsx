@@ -37,6 +37,12 @@ const ModalNewDashboard: React.FC<IModalNewDashboard> = ({ open, onClose }) => {
   );
 
   useEffect(() => {
+    if (!open) {
+      setDataForm(initDataFormSetting);
+    }
+  }, [open]);
+
+  useEffect(() => {
     const isDisabled = !validator.current.allValid();
     setIsDisableSubmit(isDisabled);
   }, [dataForm]);
@@ -55,20 +61,8 @@ const ModalNewDashboard: React.FC<IModalNewDashboard> = ({ open, onClose }) => {
     }
   };
 
-  const handleCloseModal = () => {
-    onClose();
-    setDataForm(initDataFormSetting);
-  };
-
-  // const defaultSlug = useMemo(() => {
-  //   if (dataForm.title) {
-  //     return dataForm.title.trim().replaceAll(" ", "-");
-  //   }
-  //   return "my-dashboard";
-  // }, [dataForm.title]);
-
   return (
-    <BaseModal isOpen={open} onClose={handleCloseModal} size="md">
+    <BaseModal isOpen={open} onClose={onClose} size="md">
       <Flex
         flexDirection={'column'}
         rowGap={'2rem'}
@@ -101,7 +95,7 @@ const ModalNewDashboard: React.FC<IModalNewDashboard> = ({ open, onClose }) => {
         >
           Save and open
         </AppButton>
-        <AppButton onClick={handleCloseModal} size="sm" variant={'cancel'}>
+        <AppButton onClick={onClose} size="sm" variant={'cancel'}>
           Cancel
         </AppButton>
       </Flex>
