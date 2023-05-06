@@ -12,7 +12,7 @@ import 'ace-builds/src-noconflict/theme-kuroir';
 import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/mode-sql';
 import { getErrorMessage } from '../../utils/utils-helper';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory, useParams, Prompt } from 'react-router-dom';
 import {
   QueryExecutedResponse,
   IQuery,
@@ -26,7 +26,6 @@ import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import rf from 'src/requests/RequestFactory';
 import { AppLoadingTable } from 'src/components';
 import useUser from 'src/hooks/useUser';
-import BeforeReload from './BeforReload';
 
 interface ParamTypes {
   queryId: string;
@@ -406,11 +405,10 @@ const QueriesPage = () => {
           onClose={() => setShowSaveModal(false)}
           onSubmit={saveNameQuery}
         />
-        {!!queryValue && !queryValue.name && (
-          <BeforeReload
-            msg={`This query has not been saved yet. Discard unsaved changes?`}
-          />
-        )}
+        <Prompt
+          when={!!queryValue && !queryValue.name}
+          message="This query has not been saved yet. Discard unsaved changes?"
+        />
       </>
     </BasePage>
   );
