@@ -12,7 +12,7 @@ import 'ace-builds/src-noconflict/theme-kuroir';
 import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/mode-sql';
 import { getErrorMessage } from '../../utils/utils-helper';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory, useParams, Prompt } from 'react-router-dom';
 import {
   QueryExecutedResponse,
   IQuery,
@@ -404,6 +404,10 @@ const QueriesPage = () => {
           open={showSaveModal}
           onClose={() => setShowSaveModal(false)}
           onSubmit={saveNameQuery}
+        />
+        <Prompt
+          when={!!queryValue && !queryValue.name}
+          message="This query has not been saved yet. Discard unsaved changes?"
         />
       </>
     </BasePage>
