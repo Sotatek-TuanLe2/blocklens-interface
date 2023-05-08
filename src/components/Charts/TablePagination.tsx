@@ -4,13 +4,13 @@ import 'src/styles/components/QueryResultsPagination.scss';
 import AppInput from '../AppInput';
 import AppButton from '../AppButton';
 import { debounce } from 'lodash';
+import { INPUT_DEBOUNCE } from 'src/utils/common';
 
 const TablePagination = ({ data, onChangeData }: any) => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [searchTerm, setSearchTerm] = useState<string>('');
 
   const ROWS_PER_PAGE = 15;
-  const DEBOUNCE_TIME = 500;
 
   const handleNextPage = () => {
     setCurrentPage(currentPage + 1);
@@ -31,7 +31,7 @@ const TablePagination = ({ data, onChangeData }: any) => {
     (event: React.ChangeEvent<HTMLInputElement>) => {
       setSearchTerm(event.target.value);
     },
-    DEBOUNCE_TIME,
+    INPUT_DEBOUNCE,
   );
 
   const lastIndex = currentPage * ROWS_PER_PAGE;
@@ -40,8 +40,13 @@ const TablePagination = ({ data, onChangeData }: any) => {
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   const filteredData = data.filter((item: { [x: string]: string }) =>
-    Object.keys(data[0]).some((field) =>
-      item[field]?.toLowerCase().includes(searchTerm.toLowerCase()),
+    Object.keys(data[0]).some(
+      (field) =>
+        item[field] &&
+        item[field]
+          ?.toString()
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()),
     ),
   );
   const displayedItems = filteredData.slice(firstIndex, lastIndex);

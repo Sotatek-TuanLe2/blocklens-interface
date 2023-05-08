@@ -56,6 +56,8 @@ const QueriesPage = () => {
     useState<IErrorExecuteQuery>();
   const [selectedQuery, setSelectedQuery] = useState<string>('');
 
+  const fetchQueryResultInterval = useRef<any>(null);
+
   const history = useHistory();
   const { user } = useUser();
 
@@ -68,6 +70,11 @@ const QueriesPage = () => {
     if (queryId) {
       fetchInitalData();
     }
+    return () => {
+      if (fetchQueryResultInterval.current) {
+        clearInterval(fetchQueryResultInterval.current);
+      }
+    };
   }, [queryId]);
 
   const createNewQuery = async (query: string) => {
@@ -116,16 +123,15 @@ const QueriesPage = () => {
     const res = await rf.getRequest('DashboardsRequest').getQueryResult({
       executionId,
     });
-    let fetchQueryResultInterval: any = null;
     if (res.status === QUERY_RESULT_STATUS.WAITING) {
-      fetchQueryResultInterval = setInterval(async () => {
+      fetchQueryResultInterval.current = setInterval(async () => {
         const resInterval = await rf
           .getRequest('DashboardsRequest')
           .getQueryResult({
             executionId,
           });
         if (resInterval.status !== QUERY_RESULT_STATUS.WAITING) {
-          clearInterval(fetchQueryResultInterval);
+          clearInterval(fetchQueryResultInterval.current);
           setQueryResult(resInterval.result);
           if (resInterval?.error) {
             setErrorExecuteQuery(resInterval?.error);
@@ -156,6 +162,9 @@ const QueriesPage = () => {
         .getQueryById({ queryId });
       setQueryValue(dataQuery);
       // set query into editor
+      if (!editorRef.current) {
+        return;
+      }
       const position = editorRef.current.editor.getCursorPosition();
       const editorValue = editorRef.current.editor.getValue();
       editorRef.current.editor.setValue('');

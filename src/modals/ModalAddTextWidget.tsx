@@ -1,6 +1,6 @@
 import { Flex, Text, Textarea } from '@chakra-ui/react';
 import { debounce } from 'lodash';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AppButton, AppField } from 'src/components';
 import AppAccordion from 'src/components/AppAccordion';
 import { ILayout, TYPE_MODAL } from 'src/pages/DashboardDetailPage';
@@ -10,6 +10,7 @@ import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import BaseModal from './BaseModal';
 import { IDashboardDetail, ITextWidget } from 'src/utils/query.type';
+import { INPUT_DEBOUNCE } from 'src/utils/common';
 
 interface IModalAddTextWidget {
   open: boolean;
@@ -94,9 +95,13 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
   onReload,
   dataDashboard,
 }) => {
-  const [markdownText, setMarkdownText] = useState<string>(``);
+  const [markdownText, setMarkdownText] = useState<string>('');
 
   const DEBOUNCE_TIME = 500;
+
+  useEffect(() => {
+    setMarkdownText(selectedItem.text || '');
+  }, [selectedItem]);
 
   const handleSave = async () => {
     try {
@@ -167,7 +172,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
 
   const handleChangeMarkdownText = debounce((event) => {
     setMarkdownText(event.target.value);
-  }, DEBOUNCE_TIME);
+  }, INPUT_DEBOUNCE);
 
   return (
     <BaseModal isOpen={open} onClose={onClose} size="md">
@@ -201,7 +206,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
             onClick={() => {
               type === TYPE_MODAL.ADD ? handleSave() : handleUpdate();
             }}
-            disabled={!markdownText}
+            disabled={!markdownText.trim()}
           >
             Save
           </AppButton>
