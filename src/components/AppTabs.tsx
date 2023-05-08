@@ -62,7 +62,7 @@ const AppTabs: FC<IAppTabs> = ({
                     className="app-tab__name-tab__detail"
                   >
                     {tab.icon && <span>{tab.icon}</span>}
-                    <Box as="span" maxW={'250px'} isTruncated>
+                    <Box as="span" className="tab-name-content">
                       {tab.name}
                     </Box>
                   </Flex>
