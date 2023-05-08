@@ -188,6 +188,9 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
       <form className="main-modal-dashboard-details">
         <AppInput
           onChange={handleSearch}
+          onKeyPress={(e) => {
+            e.key === 'Enter' && e.preventDefault();
+          }}
           mt={'10px'}
           size="sm"
           placeholder="Search your queries"
