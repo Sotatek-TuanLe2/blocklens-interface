@@ -13,11 +13,7 @@ import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/mode-sql';
 import { getErrorMessage } from '../../utils/utils-helper';
 import { useHistory, useParams, Prompt } from 'react-router-dom';
-import {
-  QueryExecutedResponse,
-  IQuery,
-  TYPE_VISUALIZATION,
-} from '../../utils/query.type';
+import { QueryExecutedResponse, IQuery } from '../../utils/query.type';
 import 'src/styles/pages/QueriesPage.scss';
 import { AddParameterIcon, ExplandIcon } from 'src/assets/icons';
 import { MoonIcon, SettingsIcon, SunIcon } from '@chakra-ui/icons';
@@ -26,6 +22,7 @@ import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import rf from 'src/requests/RequestFactory';
 import { AppLoadingTable } from 'src/components';
 import useUser from 'src/hooks/useUser';
+import { debounce } from 'lodash';
 
 interface ParamTypes {
   queryId: string;
@@ -38,11 +35,18 @@ interface IErrorExecuteQuery {
 }
 
 const QueriesPage = () => {
+  const DEBOUNCE_TIME = 500;
+  const QUERY_RESULT_STATUS = {
+    DONE: 'DONE',
+    WAITING: 'WAITING',
+    FAILED: 'FAILED',
+  };
+
   const editorRef = useRef<any>();
   const { queryId } = useParams<ParamTypes>();
 
   const [queryResult, setQueryResult] = useState<any>([]);
-  const [queryValue, setInfoQuery] = useState<IQuery | null>(null);
+  const [queryValue, setQueryValue] = useState<IQuery | null>(null);
   const [isSetting, setIsSetting] = useState<boolean>(false);
   const [switchTheme, setSwitchTheme] = useState<boolean>(false);
   const [expandEditor, setExpandEditor] = useState<boolean>(false);
@@ -50,6 +54,9 @@ const QueriesPage = () => {
   const [isLoadingResult, setIsLoadingResult] = useState<boolean>(!!queryId);
   const [errorExecuteQuery, setErrorExecuteQuery] =
     useState<IErrorExecuteQuery>();
+  const [selectedQuery, setSelectedQuery] = useState<string>('');
+
+  const fetchQueryResultInterval = useRef<any>(null);
 
   const history = useHistory();
   const { user } = useUser();
@@ -63,6 +70,11 @@ const QueriesPage = () => {
     if (queryId) {
       fetchInitalData();
     }
+    return () => {
+      if (fetchQueryResultInterval.current) {
+        clearInterval(fetchQueryResultInterval.current);
+      }
+    };
   }, [queryId]);
 
   const createNewQuery = async (query: string) => {
@@ -80,33 +92,9 @@ const QueriesPage = () => {
     }
   };
 
-  const updateTableConfigurations = async () => {
-    // reset all table configuration to empty array
-    const updateVisualizationAPIs: Array<Promise<any>> = [];
-    queryValue?.visualizations.forEach((visualization) => {
-      if (
-        visualization.type === TYPE_VISUALIZATION.table &&
-        !!visualization.options.columns
-      ) {
-        updateVisualizationAPIs.push(
-          rf.getRequest('DashboardsRequest').editVisualization(
-            {
-              ...visualization,
-              options: {},
-            },
-            visualization.id,
-          ),
-        );
-      }
-    });
-
-    await Promise.all(updateVisualizationAPIs);
-  };
-
   const updateQuery = async (query: string) => {
     try {
       await rf.getRequest('DashboardsRequest').updateQuery({ query }, queryId);
-      await updateTableConfigurations();
       await fetchQueryResult();
       await fetchQuery();
     } catch (error: any) {
@@ -131,28 +119,19 @@ const QueriesPage = () => {
     }
   };
 
-  const fetchQueryResult = async () => {
-    setIsLoadingResult(true);
-    const executedResponse: QueryExecutedResponse = await rf
-      .getRequest('DashboardsRequest')
-      .executeQuery(queryId);
-    const executionId = executedResponse.id;
-
+  const getExecutionResultById = async (executionId: string) => {
     const res = await rf.getRequest('DashboardsRequest').getQueryResult({
-      queryId,
       executionId,
     });
-    let fetchQueryResultInterval: any = null;
-    if (res.status !== 'DONE' && res.status !== 'FAILED') {
-      fetchQueryResultInterval = setInterval(async () => {
+    if (res.status === QUERY_RESULT_STATUS.WAITING) {
+      fetchQueryResultInterval.current = setInterval(async () => {
         const resInterval = await rf
           .getRequest('DashboardsRequest')
           .getQueryResult({
-            queryId,
             executionId,
           });
-        if (resInterval.status === 'DONE' || resInterval.status === 'FAILED') {
-          clearInterval(fetchQueryResultInterval);
+        if (resInterval.status !== QUERY_RESULT_STATUS.WAITING) {
+          clearInterval(fetchQueryResultInterval.current);
           setQueryResult(resInterval.result);
           if (resInterval?.error) {
             setErrorExecuteQuery(resInterval?.error);
@@ -167,16 +146,29 @@ const QueriesPage = () => {
     }
   };
 
+  const fetchQueryResult = async () => {
+    setIsLoadingResult(true);
+    const executedResponse: QueryExecutedResponse = await rf
+      .getRequest('DashboardsRequest')
+      .executeQuery(queryId);
+    const executionId = executedResponse.id;
+    await getExecutionResultById(executionId);
+  };
+
   const fetchQuery = async () => {
     try {
       const dataQuery = await rf
         .getRequest('DashboardsRequest')
         .getQueryById({ queryId });
-      setInfoQuery(dataQuery);
+      setQueryValue(dataQuery);
       // set query into editor
       const position = editorRef.current.editor.getCursorPosition();
+      const editorValue = editorRef.current.editor.getValue();
       editorRef.current.editor.setValue('');
-      editorRef.current.editor.session.insert(position, dataQuery?.query);
+      editorRef.current.editor.session.insert(
+        position,
+        editorValue || dataQuery?.query,
+      );
     } catch (error: any) {
       toastError({ message: getErrorMessage(error) });
     }
@@ -205,7 +197,29 @@ const QueriesPage = () => {
     editorRef.current.editor.focus();
   };
 
+  const onSelectQuery = debounce((value) => {
+    if (queryId) {
+      setSelectedQuery(value.session.getTextRange());
+    }
+  }, DEBOUNCE_TIME);
+
+  const executeSelectedQuery = async () => {
+    try {
+      setIsLoadingResult(true);
+      const executedResponse: QueryExecutedResponse = await rf
+        .getRequest('DashboardsRequest')
+        .getTemporaryQueryResult(selectedQuery);
+      const executionId = executedResponse.id;
+      await getExecutionResultById(executionId);
+    } catch (error) {
+      toastError({ message: getErrorMessage(error) });
+    }
+  };
+
   const onRunQuery = async () => {
+    if (selectedQuery) {
+      return executeSelectedQuery();
+    }
     try {
       if (queryId) {
         await updateQuery(editorRef.current.editor.getValue());
@@ -352,6 +366,7 @@ const QueriesPage = () => {
                     showLineNumbers: true,
                     tabSize: 2,
                   }}
+                  onSelectionChange={onSelectQuery}
                 />
                 <Box
                   bg={switchTheme ? '#f3f5f7' : '#111213'}
@@ -363,7 +378,9 @@ const QueriesPage = () => {
                     bg={backgroundButton}
                     _hover={{ bg: hoverBackgroundButton }}
                   >
-                    <Text color={switchTheme ? '#1d1d20' : '#f3f5f7'}>Run</Text>
+                    <Text color={switchTheme ? '#1d1d20' : '#f3f5f7'}>
+                      {selectedQuery ? 'Run selection' : 'Run'}
+                    </Text>
                   </AppButton>
                 </Box>
               </Box>

@@ -40,8 +40,13 @@ const TablePagination = ({ data, onChangeData }: any) => {
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   const filteredData = data.filter((item: { [x: string]: string }) =>
-    Object.keys(data[0]).some((field) =>
-      item[field]?.toLowerCase().includes(searchTerm.toLowerCase()),
+    Object.keys(data[0]).some(
+      (field) =>
+        item[field] &&
+        item[field]
+          ?.toString()
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()),
     ),
   );
   const displayedItems = filteredData.slice(firstIndex, lastIndex);
