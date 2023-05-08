@@ -62,3 +62,5 @@ export const COLORS = [
 export const getHourAndMinute = (date: string) => {
   return moment(new Date(date)).format('HH:mm');
 };
+
+export const INPUT_DEBOUNCE = 500;
