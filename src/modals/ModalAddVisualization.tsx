@@ -177,6 +177,10 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
     }
   };
 
+  const dataFilter = dataVisualization?.filter((el) =>
+    el.name.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
+
   return (
     <BaseModal
       isOpen={open}
@@ -196,36 +200,31 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
         />
 
         <div className="main-queries">
-          {dataVisualization &&
-            dataVisualization
-              .filter((el) =>
-                el.name.toLowerCase().includes(searchTerm.toLowerCase()),
-              )
-              .map(
-                (item) =>
-                  item?.visualizations &&
-                  item?.visualizations?.map((i: any, index: number) => (
-                    <Flex
-                      justifyContent={'space-between'}
-                      borderBottom={'1px solid white'}
-                      key={`${item.id}-${index}`}
-                    >
-                      <ButtonAdd
-                        userName={userName}
-                        item={item}
-                        dataLayouts={dataLayouts}
-                        handleSaveVisualization={handleSaveVisualization}
-                        handleRemoveVisualization={handleRemoveVisualization}
-                        i={i}
-                        getIcon={getIcon}
-                      />
-                    </Flex>
-                  )),
-              )}
-          {dataVisualization &&
-            dataVisualization.filter((el) =>
-              el.name.toLowerCase().includes(searchTerm.toLowerCase()),
-            ).length === 0 && <div className="no-data">No data available.</div>}
+          {!!dataFilter.length ? (
+            dataFilter?.map(
+              (item) =>
+                item?.visualizations &&
+                item?.visualizations?.map((i: any, index: number) => (
+                  <Flex
+                    justifyContent={'space-between'}
+                    borderBottom={'1px solid white'}
+                    key={`${item.id}-${index}`}
+                  >
+                    <ButtonAdd
+                      userName={userName}
+                      item={item}
+                      dataLayouts={dataLayouts}
+                      handleSaveVisualization={handleSaveVisualization}
+                      handleRemoveVisualization={handleRemoveVisualization}
+                      i={i}
+                      getIcon={getIcon}
+                    />
+                  </Flex>
+                )),
+            )
+          ) : (
+            <div className="no-data">No data available.</div>
+          )}
         </div>
         <Flex className="modal-footer">
           <AppButton size="sm" onClick={onClose}>
