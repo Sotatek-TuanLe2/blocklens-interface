@@ -53,7 +53,6 @@ const VisualizationItem = React.memo(
           const resInterval = await rf
             .getRequest('DashboardsRequest')
             .getQueryResult({
-              queryId,
               executionId,
             });
           if (
@@ -121,7 +120,7 @@ const VisualizationItem = React.memo(
           visualizationDisplay = (
             <VisualizationTable
               data={queryResult}
-              dataColumn={visualization.options.columns}
+              visualization={visualization}
             />
           );
 

@@ -9,6 +9,7 @@ import BigNumber from 'bignumber.js';
 import { useEffect, useState } from 'react';
 import 'src/styles/components/TableValue.scss';
 import { VISUALIZATION_COLORS } from 'src/utils/common';
+import { VisualizationType } from 'src/utils/query.type';
 import { formatVisualizationValue } from 'src/utils/utils-format';
 import { isNumber } from 'src/utils/utils-helper';
 import { objectKeys } from 'src/utils/utils-network';
@@ -17,39 +18,48 @@ import TablePagination from './TablePagination';
 interface ReactTableProps<T> {
   data: T[];
   setDataTable?: React.Dispatch<React.SetStateAction<any[]>>;
-  dataColumn?: ColumnDef<unknown>[];
+  visualization?: VisualizationType;
 }
 
-export const getDefaultTableColumns = (data: any[]) => {
-  const axisOptions = Array.isArray(data) && data[0] ? objectKeys(data[0]) : [];
-  return axisOptions.map(
-    (col) =>
-      ({
-        id: col,
-        accessorKey: col,
-        header: col,
-        enableResizing: true,
-        size: 100,
-        align: 'left',
-        type: 'normal',
-        format: '',
-        coloredPositive: false,
-        coloredNegative: false,
-        coloredProgress: false,
-        isHidden: false,
-      } as ColumnDef<unknown>),
-  );
+export const getTableColumns = (
+  table: any[],
+  visualization: VisualizationType | undefined,
+) => {
+  const axisOptions =
+    Array.isArray(table) && table[0] ? objectKeys(table[0]) : [];
+  return axisOptions.map((col) => {
+    const columnValue = visualization?.options?.columns?.find(
+      (item: any) => item.id === col,
+    );
+    if (columnValue) {
+      return columnValue;
+    }
+    return {
+      id: col,
+      accessorKey: col,
+      header: col,
+      enableResizing: true,
+      size: 100,
+      align: 'left',
+      type: 'normal',
+      format: '',
+      coloredPositive: false,
+      coloredNegative: false,
+      coloredProgress: false,
+      isHidden: false,
+    } as ColumnDef<unknown>;
+  });
 };
 
 const VisualizationTable = <T,>({
   data,
   setDataTable,
-  dataColumn,
+  visualization,
 }: ReactTableProps<T>) => {
   const [newQueryResult, setNewQueryResult] = useState<any[]>(data);
   const table = useReactTable({
     data: newQueryResult,
-    columns: dataColumn || getDefaultTableColumns(data),
+    columns: getTableColumns(data, visualization),
     getCoreRowModel: getCoreRowModel(),
   });
 

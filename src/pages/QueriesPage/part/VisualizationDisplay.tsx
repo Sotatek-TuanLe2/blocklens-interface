@@ -30,9 +30,8 @@ import {
   VALUE_VISUALIZATION,
   VisualizationType,
 } from '../../../utils/query.type';
-import { getDefaultTableColumns } from 'src/components/Charts/VisualizationTable';
 import { objectKeys } from 'src/utils/utils-network';
-import { areYAxisesSameType, isNumber } from 'src/utils/utils-helper';
+import { areYAxisesSameType } from 'src/utils/utils-helper';
 
 type VisualizationConfigType = {
   value: string;
@@ -95,7 +94,6 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
   const [closeTabId, setCloseTabId] = useState<string | number>('');
   const [dataTable, setDataTable] = useState<any[]>([]);
 
-  const optionsColumn = getDefaultTableColumns(queryResult);
   const axisOptions =
     Array.isArray(queryResult) && queryResult[0]
       ? objectKeys(queryResult[0])
@@ -130,7 +128,7 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
         id: (Math.floor(Math.random() * 100) + 1).toString(),
         type: 'table',
         createdAt: moment().toDate(),
-        options: { optionsColumn },
+        options: {},
       };
     } else if (searchedVisualization.type === TYPE_VISUALIZATION.counter) {
       newVisualization = {
@@ -225,7 +223,7 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
           <VisualizationTable
             data={queryResult}
             setDataTable={setDataTable}
-            dataColumn={visualization.options.columns}
+            visualization={visualization}
           />
         );
         visualizationConfiguration = (
