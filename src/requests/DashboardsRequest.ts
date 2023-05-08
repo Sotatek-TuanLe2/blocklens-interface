@@ -71,7 +71,6 @@ export interface SchemaParams {
 }
 
 export interface QueryResult {
-  queryId: string;
   executionId: string;
 }
 
@@ -201,6 +200,11 @@ export default class DashboardsRequest extends BaseRequest {
   getQueryResult(params: QueryResult) {
     const url = `/query-executors/get-execution`;
     return this.get(url, params);
+  }
+
+  getTemporaryQueryResult(query: string) {
+    const url = '/query-executors/execute-tmp-query';
+    return this.post(url, { query });
   }
 
   updateQuery(params: IUpdateQuery, queryId: string) {
