@@ -65,14 +65,11 @@ const QueriesPage = () => {
     if (queryId) {
       fetchInitalData();
     }
-  }, [queryId]);
-
-  useEffect(() => {
     return () => {
       if (fetchQueryResultInterval.current)
         clearInterval(fetchQueryResultInterval.current);
     };
-  }, []);
+  }, [queryId]);
 
   const createNewQuery = async (query: string) => {
     try {
