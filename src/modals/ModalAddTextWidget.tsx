@@ -1,6 +1,6 @@
 import { Flex, Text, Textarea } from '@chakra-ui/react';
 import { debounce } from 'lodash';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AppButton, AppField } from 'src/components';
 import AppAccordion from 'src/components/AppAccordion';
 import { ILayout, TYPE_MODAL } from 'src/pages/DashboardDetailPage';
@@ -94,9 +94,13 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
   onReload,
   dataDashboard,
 }) => {
-  const [markdownText, setMarkdownText] = useState<string>(``);
+  const [markdownText, setMarkdownText] = useState<string>('');
 
   const DEBOUNCE_TIME = 500;
+
+  useEffect(() => {
+    setMarkdownText(selectedItem.text || '');
+  }, [selectedItem]);
 
   const handleSave = async () => {
     try {
@@ -201,7 +205,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
             onClick={() => {
               type === TYPE_MODAL.ADD ? handleSave() : handleUpdate();
             }}
-            disabled={!markdownText}
+            disabled={!markdownText.trim()}
           >
             Save
           </AppButton>
