@@ -323,6 +323,13 @@
     min-height: 250px;
     overflow: auto;
 
+    .no-data {
+      display: flex;
+      height: 100%;
+      justify-content: center;
+      align-items: center;
+    }
+
     .btn-add-query {
       color: #1e1870;
       background: #e1e1f9;
@@ -337,6 +344,7 @@
       cursor: pointer;
     }
   }
+
   .group-action-query {
     button {
       font-size: 14px;

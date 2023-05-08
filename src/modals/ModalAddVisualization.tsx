@@ -21,6 +21,7 @@ import {
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import BaseModal from './BaseModal';
+import { debounce } from 'lodash';
 
 interface IModalAddVisualization {
   open: boolean;
@@ -58,6 +59,16 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   dashboardId,
 }) => {
   const [dataVisualization, setDataVisualization] = useState<any[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>('');
+
+  const DEBOUNCE_TIME = 500;
+
+  const handleSearch = debounce(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchTerm(event.target.value);
+    },
+    DEBOUNCE_TIME,
+  );
 
   const fetchVisualization = async () => {
     const params = {};
@@ -175,30 +186,44 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
       className="modal-add-visualization"
     >
       <form className="main-modal-dashboard-details">
-        <AppInput mt={'10px'} size="sm" placeholder="Search your queries" />
+        <AppInput
+          onChange={handleSearch}
+          mt={'10px'}
+          size="sm"
+          placeholder="Search your queries"
+        />
+
         <div className="main-queries">
           {dataVisualization &&
-            dataVisualization?.map(
-              (item) =>
-                item?.visualizations &&
-                item?.visualizations?.map((i: any) => (
-                  <Flex
-                    justifyContent={'space-between'}
-                    borderBottom={'1px solid white'}
-                    key={item.id}
-                  >
-                    <ButtonAdd
-                      userName={userName}
-                      item={item}
-                      dataLayouts={dataLayouts}
-                      handleSaveVisualization={handleSaveVisualization}
-                      handleRemoveVisualization={handleRemoveVisualization}
-                      i={i}
-                      getIcon={getIcon}
-                    />
-                  </Flex>
-                )),
-            )}
+            dataVisualization
+              .filter((el) =>
+                el.name.toLowerCase().includes(searchTerm.toLowerCase()),
+              )
+              .map(
+                (item) =>
+                  item?.visualizations &&
+                  item?.visualizations?.map((i: any, index: number) => (
+                    <Flex
+                      justifyContent={'space-between'}
+                      borderBottom={'1px solid white'}
+                      key={`${item.id}-${index}`}
+                    >
+                      <ButtonAdd
+                        userName={userName}
+                        item={item}
+                        dataLayouts={dataLayouts}
+                        handleSaveVisualization={handleSaveVisualization}
+                        handleRemoveVisualization={handleRemoveVisualization}
+                        i={i}
+                        getIcon={getIcon}
+                      />
+                    </Flex>
+                  )),
+              )}
+          {dataVisualization &&
+            dataVisualization.filter((el) =>
+              el.name.toLowerCase().includes(searchTerm.toLowerCase()),
+            ).length === 0 && <div className="no-data">No data available.</div>}
         </div>
         <Flex className="modal-footer">
           <AppButton size="sm" onClick={onClose}>
@@ -229,7 +254,6 @@ const ButtonAdd: React.FC<IButtonAdd> = ({
   getIcon,
 }) => {
   const checkAdded = dataLayouts.map((el: any) => el.content.id).includes(i.id);
-
   const conditionDisplayIcon = () => {
     if (i.type === 'table') {
       return i.type;

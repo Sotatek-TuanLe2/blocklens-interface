@@ -6,8 +6,8 @@ import AppButton from '../AppButton';
 import { debounce } from 'lodash';
 
 const TablePagination = ({ data, onChangeData }: any) => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [searchTerm, setSearchTerm] = useState<string>('');
 
   const ROWS_PER_PAGE = 15;
   const DEBOUNCE_TIME = 500;
