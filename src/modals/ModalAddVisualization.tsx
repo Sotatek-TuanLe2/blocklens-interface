@@ -1,5 +1,5 @@
 import { Flex, Link, Text } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   AreaChartIcon,
   BarChartIcon,
@@ -62,6 +62,10 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   const [dataVisualization, setDataVisualization] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
 
+  const dataFilter = useMemo(() => dataVisualization?.filter((el) =>
+    el.name.toLowerCase().includes(searchTerm.toLowerCase()),
+  ), [dataVisualization, searchTerm]);
+
   const handleSearch = debounce(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       setSearchTerm(event.target.value);
@@ -88,6 +92,8 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   useEffect(() => {
     if (open) {
       fetchVisualization();
+    } else {
+      setSearchTerm('');
     }
   }, [open]);
 
@@ -177,9 +183,6 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
     }
   };
 
-  const dataFilter = dataVisualization?.filter((el) =>
-    el.name.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
 
   return (
     <BaseModal
