@@ -1,4 +1,5 @@
 import { Checkbox, Divider, Grid, GridItem, Text } from '@chakra-ui/react';
+import { ColumnDef } from '@tanstack/react-table';
 import { useRef, useState } from 'react';
 import { VISUALIZATION_DEBOUNCE } from 'src/pages/QueriesPage/part/VisualizationDisplay';
 import 'src/styles/components/TableConfigurations.scss';
@@ -6,7 +7,7 @@ import { VisualizationType } from 'src/utils/query.type';
 import { isNumber } from 'src/utils/utils-helper';
 import AppInput from '../AppInput';
 import AppSelect2 from '../AppSelect2';
-import { getDefaultTableColumns } from '../Charts/VisualizationTable';
+import { getTableColumns } from '../Charts/VisualizationTable';
 
 interface IOption {
   value: string;
@@ -45,8 +46,7 @@ const TableConfigurations: React.FC<ITableConfigurations> = ({
     row.getVisibleCells().map((cells: any) => cells.getValue()),
   );
 
-  const dataColumns =
-    editVisualization.options.columns || getDefaultTableColumns(data);
+  const dataColumns = getTableColumns(data, editVisualization);
 
   const onChangeDebounce = (visualization: VisualizationType) => {
     clearTimeout(timeout.current);
@@ -67,9 +67,18 @@ const TableConfigurations: React.FC<ITableConfigurations> = ({
     });
   };
 
-  const onChangeColumnConfigurations = (data: any, index: number) => {
-    const newColumns = [...dataColumns];
-    newColumns[index] = data;
+  const onChangeColumnConfigurations = (data: any) => {
+    const newColumns = editVisualization?.options.columns
+      ? [...editVisualization?.options.columns]
+      : [];
+    const existedIndex = newColumns.findIndex(
+      (item: ColumnDef<unknown>) => item.id === data.id,
+    );
+    if (existedIndex >= 0) {
+      newColumns[existedIndex] = data;
+    } else {
+      newColumns.push(data);
+    }
     onChangeVisualization({
       ...editVisualization,
       options: {
@@ -156,13 +165,10 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
         <AppInput
           value={data?.header}
           onChange={(e) =>
-            onChange(
-              {
-                ...selectedItem,
-                header: e.target.value,
-              },
-              index,
-            )
+            onChange({
+              ...selectedItem,
+              header: e.target.value,
+            })
           }
           placeholder="Price"
           size={'sm'}
@@ -177,13 +183,10 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
           size="small"
           value={data?.align}
           onChange={(e) =>
-            onChange(
-              {
-                ...selectedItem,
-                align: e,
-              },
-              index,
-            )
+            onChange({
+              ...selectedItem,
+              align: e,
+            })
           }
           options={optionAlign}
         />
@@ -196,13 +199,10 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
           className="input-table"
           value={data?.format}
           onChange={(e) =>
-            onChange(
-              {
-                ...selectedItem,
-                format: e.target.value,
-              },
-              index,
-            )
+            onChange({
+              ...selectedItem,
+              format: e.target.value,
+            })
           }
         />
       </div>
@@ -215,13 +215,10 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
             size="small"
             value={data?.type}
             onChange={(e) =>
-              onChange(
-                {
-                  ...selectedItem,
-                  type: e,
-                },
-                index,
-              )
+              onChange({
+                ...selectedItem,
+                type: e,
+              })
             }
             options={optionType}
           />
@@ -234,13 +231,10 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
           value={data?.isHidden}
           isChecked={data?.isHidden}
           onChange={(e) =>
-            onChange(
-              {
-                ...selectedItem,
-                isHidden: e.target.checked,
-              },
-              index,
-            )
+            onChange({
+              ...selectedItem,
+              isHidden: e.target.checked,
+            })
           }
         >
           Hide column
@@ -255,13 +249,10 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
                 value={data?.coloredPositive}
                 isChecked={data?.coloredPositive}
                 onChange={(e) =>
-                  onChange(
-                    {
-                      ...selectedItem,
-                      coloredPositive: e.target.checked,
-                    },
-                    index,
-                  )
+                  onChange({
+                    ...selectedItem,
+                    coloredPositive: e.target.checked,
+                  })
                 }
               >
                 Colored positive values
@@ -273,13 +264,10 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
                 value={data?.coloredNegative}
                 isChecked={data?.coloredNegative}
                 onChange={(e) =>
-                  onChange(
-                    {
-                      ...selectedItem,
-                      coloredNegative: e.target.checked,
-                    },
-                    index,
-                  )
+                  onChange({
+                    ...selectedItem,
+                    coloredNegative: e.target.checked,
+                  })
                 }
               >
                 Colored negative values
@@ -293,13 +281,10 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
               value={data?.coloredProgress}
               isChecked={data?.coloredProgress}
               onChange={(e) =>
-                onChange(
-                  {
-                    ...selectedItem,
-                    coloredProgress: e.target.checked,
-                  },
-                  index,
-                )
+                onChange({
+                  ...selectedItem,
+                  coloredProgress: e.target.checked,
+                })
               }
             >
               Colored positive/negative values
