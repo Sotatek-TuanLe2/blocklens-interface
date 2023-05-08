@@ -162,6 +162,9 @@ const QueriesPage = () => {
         .getQueryById({ queryId });
       setQueryValue(dataQuery);
       // set query into editor
+      if (!editorRef.current) {
+        return;
+      }
       const position = editorRef.current.editor.getCursorPosition();
       const editorValue = editorRef.current.editor.getValue();
       editorRef.current.editor.setValue('');
