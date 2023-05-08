@@ -51,6 +51,8 @@ const QueriesPage = () => {
   const [errorExecuteQuery, setErrorExecuteQuery] =
     useState<IErrorExecuteQuery>();
 
+  const fetchQueryResultInterval = useRef<any>(null);
+
   const history = useHistory();
   const { user } = useUser();
 
@@ -64,6 +66,13 @@ const QueriesPage = () => {
       fetchInitalData();
     }
   }, [queryId]);
+
+  useEffect(() => {
+    return () => {
+      if (fetchQueryResultInterval.current)
+        clearInterval(fetchQueryResultInterval.current);
+    };
+  }, []);
 
   const createNewQuery = async (query: string) => {
     try {
@@ -142,9 +151,9 @@ const QueriesPage = () => {
       queryId,
       executionId,
     });
-    let fetchQueryResultInterval: any = null;
+    // let fetchQueryResultInterval: any = null;
     if (res.status !== 'DONE' && res.status !== 'FAILED') {
-      fetchQueryResultInterval = setInterval(async () => {
+      fetchQueryResultInterval.current = setInterval(async () => {
         const resInterval = await rf
           .getRequest('DashboardsRequest')
           .getQueryResult({
@@ -152,7 +161,7 @@ const QueriesPage = () => {
             executionId,
           });
         if (resInterval.status === 'DONE' || resInterval.status === 'FAILED') {
-          clearInterval(fetchQueryResultInterval);
+          clearInterval(fetchQueryResultInterval.current);
           setQueryResult(resInterval.result);
           if (resInterval?.error) {
             setErrorExecuteQuery(resInterval?.error);
