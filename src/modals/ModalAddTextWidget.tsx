@@ -10,6 +10,7 @@ import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import BaseModal from './BaseModal';
 import { IDashboardDetail, ITextWidget } from 'src/utils/query.type';
+import { INPUT_DEBOUNCE } from 'src/utils/common';
 
 interface IModalAddTextWidget {
   open: boolean;
@@ -96,8 +97,6 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
 }) => {
   const [markdownText, setMarkdownText] = useState<string>(``);
 
-  const DEBOUNCE_TIME = 500;
-
   const handleSave = async () => {
     try {
       const payload = {
@@ -167,7 +166,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
 
   const handleChangeMarkdownText = debounce((event) => {
     setMarkdownText(event.target.value);
-  }, DEBOUNCE_TIME);
+  }, INPUT_DEBOUNCE);
 
   return (
     <BaseModal isOpen={open} onClose={onClose} size="md">

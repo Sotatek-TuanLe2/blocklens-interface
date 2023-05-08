@@ -22,6 +22,7 @@ import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import BaseModal from './BaseModal';
 import { debounce } from 'lodash';
+import { INPUT_DEBOUNCE } from 'src/utils/common';
 
 interface IModalAddVisualization {
   open: boolean;
@@ -61,13 +62,11 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   const [dataVisualization, setDataVisualization] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
 
-  const DEBOUNCE_TIME = 500;
-
   const handleSearch = debounce(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       setSearchTerm(event.target.value);
     },
-    DEBOUNCE_TIME,
+    INPUT_DEBOUNCE,
   );
 
   const fetchVisualization = async () => {
