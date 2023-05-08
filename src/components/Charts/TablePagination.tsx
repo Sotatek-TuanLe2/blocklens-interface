@@ -43,7 +43,10 @@ const TablePagination = ({ data, onChangeData }: any) => {
     Object.keys(data[0]).some(
       (field) =>
         item[field] &&
-        item[field]?.toLowerCase().includes(searchTerm.toLowerCase()),
+        item[field]
+          ?.toString()
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()),
     ),
   );
   const displayedItems = filteredData.slice(firstIndex, lastIndex);
