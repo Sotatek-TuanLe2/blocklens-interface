@@ -63,7 +63,7 @@ const TableConfigurations: React.FC<ITableConfigurations> = ({
   const onChangeTableName = (e: any) => {
     onChangeVisualization({
       ...editVisualization,
-      name: e.target.value,
+      name: e.target.value || ' ',
     });
   };
 
@@ -116,6 +116,7 @@ const TableConfigurations: React.FC<ITableConfigurations> = ({
                 size={'sm'}
                 className="input-table"
                 onChange={onChangeTableName}
+                placeholder="24h volume"
               />
             </div>
           </div>

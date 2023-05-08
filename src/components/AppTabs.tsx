@@ -19,7 +19,7 @@ interface IAppTabs {
   onCloseTab?: (id: string) => void;
 }
 export interface ITabs {
-  name: string;
+  name: string | JSX.Element;
   content: ReactNode;
   id: string;
   icon?: ReactNode;

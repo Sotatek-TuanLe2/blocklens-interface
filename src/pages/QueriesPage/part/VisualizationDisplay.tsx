@@ -15,6 +15,7 @@ import BaseModal from '../../../modals/BaseModal';
 import {
   AreaChartIcon,
   BarChartIcon,
+  CounterIcon,
   LineChartIcon,
   PieChartIcon,
   QueryResultIcon,
@@ -26,6 +27,7 @@ import 'src/styles/components/Chart.scss';
 import TableConfigurations from '../../../components/VisualizationConfigs/TableConfigurations';
 import {
   IQuery,
+  LABEL_VISUALIZATION,
   TYPE_VISUALIZATION,
   VALUE_VISUALIZATION,
   VisualizationType,
@@ -193,13 +195,41 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
     }
   };
 
+  const getDefaultName = (chain: string | undefined) => {
+    switch (chain) {
+      case TYPE_VISUALIZATION.table:
+        return LABEL_VISUALIZATION.table;
+
+      case TYPE_VISUALIZATION.scatter:
+        return LABEL_VISUALIZATION.scatter;
+
+      case TYPE_VISUALIZATION.area:
+        return LABEL_VISUALIZATION.area;
+
+      case TYPE_VISUALIZATION.line: {
+        return LABEL_VISUALIZATION.line;
+      }
+
+      case TYPE_VISUALIZATION.pie:
+        return LABEL_VISUALIZATION.pie;
+
+      case TYPE_VISUALIZATION.bar:
+        return LABEL_VISUALIZATION.bar;
+
+      case TYPE_VISUALIZATION.counter:
+        return LABEL_VISUALIZATION.counter;
+
+      default:
+        return <></>;
+    }
+  };
+
   const renderVisualization = (visualization: VisualizationType) => {
     const type = visualization.options?.globalSeriesType || visualization.type;
 
     if (type === TYPE_VISUALIZATION.new) {
       return <AddVisualization onAddVisualize={addVisualizationHandler} />;
     }
-
     let errorMessage = null;
     let visualizationDisplay = null;
     let visualizationConfiguration = null;
@@ -297,7 +327,9 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
       <>
         <div className="visual-container__visualization">
           <div className="visual-container__visualization__title">
-            {visualization.name}
+            {visualization.name === ' '
+              ? getDefaultName(type)
+              : visualization.name}
           </div>
           {errorMessage ? (
             <Flex
@@ -337,6 +369,9 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
       case TYPE_VISUALIZATION.bar:
         return <BarChartIcon />;
 
+      case TYPE_VISUALIZATION.counter:
+        return <CounterIcon />;
+
       default:
         return <></>;
     }
@@ -359,7 +394,10 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
           },
         ].map((v) => ({
           icon: getIcon(v?.options?.globalSeriesType || v.type),
-          name: v.name,
+          name:
+            v.name === ' '
+              ? getDefaultName(v?.options?.globalSeriesType || v.type)
+              : v.name,
           content: renderVisualization(v),
           id: v.id,
           closeable: v.type !== TYPE_VISUALIZATION.new,

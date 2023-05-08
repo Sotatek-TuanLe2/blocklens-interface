@@ -8,6 +8,15 @@ export enum VALUE_VISUALIZATION {
   counter = 'counter',
   table = 'table',
 }
+export enum LABEL_VISUALIZATION {
+  bar = 'Bar chart',
+  line = 'Line chart',
+  area = 'Area chart',
+  pie = 'Pie chart',
+  scatter = 'Scatter chart',
+  counter = 'Counter',
+  table = 'Table',
+}
 
 export enum TYPE_VISUALIZATION {
   table = 'table',
