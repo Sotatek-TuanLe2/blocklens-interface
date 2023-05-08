@@ -197,10 +197,6 @@ const VisualizationChart: React.FC<Props> = (props) => {
         return a[xAxisKey] - b[xAxisKey];
       });
     }
-    // reverse
-    if (xAxisConfigs?.reverseX) {
-      result = result.reverse();
-    }
     return result;
   };
 
@@ -212,7 +208,8 @@ const VisualizationChart: React.FC<Props> = (props) => {
         className={`${type}-chart`}
         margin={{
           left: 20,
-          bottom: 20,
+          bottom: 30,
+          right: 10,
         }}
       >
         <CartesianGrid vertical={false} strokeDasharray="4" />
@@ -220,6 +217,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
           tickFormatter={tickFormatAxis('x')}
           dataKey={xAxisKey}
           fill={'#ccc'}
+          reversed={xAxisConfigs?.reverseX}
         >
           <Label
             offset={0}

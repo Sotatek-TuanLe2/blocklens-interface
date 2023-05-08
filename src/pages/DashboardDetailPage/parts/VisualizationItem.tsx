@@ -20,6 +20,7 @@ import {
 } from 'src/utils/query.type';
 import { areYAxisesSameType, getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
+import { Link } from 'react-router-dom';
 
 const VisualizationItem = React.memo(
   ({ visualization }: { visualization: VisualizationType }) => {
@@ -165,7 +166,13 @@ const VisualizationItem = React.memo(
       return (
         <div className="visual-container__visualization">
           <div className="visual-container__visualization__title">
-            {visualization.name}
+            <span>{visualization.name}</span>
+            <Link
+              className="visual-container__visualization__title__query-link"
+              to={`/queries/${visualization.query.id}`}
+            >
+              {visualization.query.name}
+            </Link>
           </div>
           {errorMessage ? (
             <Flex

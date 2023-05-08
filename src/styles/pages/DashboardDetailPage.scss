@@ -46,7 +46,6 @@
       }
       .chart-content {
         height: 100%;
-        overflow: auto;
       }
       ::-webkit-scrollbar {
         width: 10px;
@@ -65,6 +64,10 @@
       &__title {
         padding: 0 10px;
         margin-bottom: 10px;
+
+        &__query-link {
+          margin-left: 20px;
+        }
       }
 
       &__barchart {
