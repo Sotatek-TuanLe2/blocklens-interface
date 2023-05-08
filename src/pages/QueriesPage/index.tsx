@@ -71,8 +71,9 @@ const QueriesPage = () => {
       fetchInitalData();
     }
     return () => {
-      if (fetchQueryResultInterval.current)
+      if (fetchQueryResultInterval.current) {
         clearInterval(fetchQueryResultInterval.current);
+      }
     };
   }, [queryId]);
 
@@ -122,7 +123,6 @@ const QueriesPage = () => {
     const res = await rf.getRequest('DashboardsRequest').getQueryResult({
       executionId,
     });
-    // let fetchQueryResultInterval: any = null;
     if (res.status === QUERY_RESULT_STATUS.WAITING) {
       fetchQueryResultInterval.current = setInterval(async () => {
         const resInterval = await rf
