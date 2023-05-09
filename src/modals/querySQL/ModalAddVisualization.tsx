@@ -20,7 +20,7 @@ import {
 } from 'src/utils/query.type';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
-import BaseModal from './BaseModal';
+import BaseModal from '../BaseModal';
 import { debounce } from 'lodash';
 import { INPUT_DEBOUNCE } from 'src/utils/common';
 
