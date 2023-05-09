@@ -6,7 +6,7 @@ import 'src/styles/components/BaseModal.scss';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import { createValidator } from 'src/utils/utils-validator';
-import BaseModal from './BaseModal';
+import BaseModal from '../BaseModal';
 import { useHistory } from 'react-router';
 
 interface IModalForkDashBoardDetails {

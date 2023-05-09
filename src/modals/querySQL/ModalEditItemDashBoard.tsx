@@ -2,7 +2,7 @@ import { Flex } from '@chakra-ui/react';
 import React from 'react';
 import { AppButton } from 'src/components';
 import 'src/styles/components/BaseModal.scss';
-import BaseModal from './BaseModal';
+import BaseModal from '../BaseModal';
 import { ILayout } from 'src/pages/DashboardDetailPage';
 import { toastError } from 'src/utils/utils-notify';
 import { getErrorMessage } from 'src/utils/utils-helper';
@@ -29,10 +29,8 @@ const ModalEditItemDashBoard: React.FC<IModalEditItemDashBoard> = ({
       const res = await rf
         .getRequest('DashboardsRequest')
         .removeVisualization(selectedItem.id);
-      if (res) {
-        onReload();
-        onClose();
-      }
+      onReload();
+      onClose();
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
     }
