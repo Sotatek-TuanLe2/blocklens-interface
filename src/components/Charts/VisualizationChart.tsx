@@ -23,6 +23,7 @@ import {
   VisualizationOptionsType,
 } from 'src/utils/query.type';
 import { formatVisualizationValue } from 'src/utils/utils-format';
+import { isNumber } from 'src/utils/utils-helper';
 import { COLORS, getHourAndMinute } from '../../utils/common';
 import CustomLegend from './CustomLegend';
 import CustomTooltip from './CustomTooltip';
@@ -210,6 +211,9 @@ const VisualizationChart: React.FC<Props> = (props) => {
     // sorting
     if (xAxisConfigs?.sortX) {
       result = result.sort((a: any, b: any) => {
+        if (isNumber(a[xAxisKey])) {
+          return Number(a[xAxisKey]) - Number(b[xAxisKey]);
+        }
         if (moment(a[xAxisKey]).isValid()) {
           return moment.utc(a[xAxisKey]).diff(moment.utc(b[xAxisKey]));
         }
@@ -262,7 +266,9 @@ const VisualizationChart: React.FC<Props> = (props) => {
           />
         )}
         <Tooltip
-          content={<CustomTooltip />}
+          content={
+            <CustomTooltip numberFormat={configs?.yAxisConfigs?.labelFormat} />
+          }
           animationDuration={200}
           animationEasing={'linear'}
         />

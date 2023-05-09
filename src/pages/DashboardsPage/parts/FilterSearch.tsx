@@ -4,7 +4,7 @@ import { useHistory, useLocation } from 'react-router';
 import { Link } from 'react-router-dom';
 import { CloseMenuIcon, TagIcon } from 'src/assets/icons';
 import { AppButton, AppInput } from 'src/components';
-import ModalNewDashboard from 'src/modals/ModalNewDashboard';
+import ModalNewDashboard from 'src/modals/querySQL/ModalNewDashboard';
 import { LIST_ITEM_TYPE } from '..';
 
 interface IFilterSearch {

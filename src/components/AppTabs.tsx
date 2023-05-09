@@ -19,7 +19,7 @@ interface IAppTabs {
   onCloseTab?: (id: string) => void;
 }
 export interface ITabs {
-  name: string;
+  name: string | JSX.Element;
   content: ReactNode;
   id: string;
   icon?: ReactNode;
@@ -62,7 +62,9 @@ const AppTabs: FC<IAppTabs> = ({
                     className="app-tab__name-tab__detail"
                   >
                     {tab.icon && <span>{tab.icon}</span>}
-                    <span>{tab.name}</span>
+                    <Box as="span" className="tab-name-content">
+                      {tab.name}
+                    </Box>
                   </Flex>
                   {tab.closeable && (
                     <CloseIcon

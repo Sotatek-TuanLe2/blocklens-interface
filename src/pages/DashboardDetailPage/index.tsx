@@ -10,11 +10,11 @@ import { AppButton } from 'src/components';
 
 import useUser from 'src/hooks/useUser';
 import { BasePage } from 'src/layouts';
-import ModalAddTextWidget from 'src/modals/ModalAddTextWidget';
-import ModalAddVisualization from 'src/modals/ModalAddVisualization';
-import ModalEditItemDashBoard from 'src/modals/ModalEditItemDashBoard';
-import ModalForkDashBoardDetails from 'src/modals/ModalForkDashBoardDetails';
-import ModalSettingDashboardDetails from 'src/modals/ModalSettingDashboardDetails';
+import ModalAddTextWidget from 'src/modals/querySQL/ModalAddTextWidget';
+import ModalAddVisualization from 'src/modals/querySQL/ModalAddVisualization';
+import ModalEditItemDashBoard from 'src/modals/querySQL/ModalEditItemDashBoard';
+import ModalForkDashBoardDetails from 'src/modals/querySQL/ModalForkDashBoardDetails';
+import ModalSettingDashboardDetails from 'src/modals/querySQL/ModalSettingDashboardDetails';
 import ModalShareDashboardDetails from 'src/modals/ModalShareDashboardDetails';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/TableValue.scss';
@@ -25,6 +25,7 @@ import { IDashboardDetail } from 'src/utils/query.type';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import VisualizationItem from './parts/VisualizationItem';
+import ModalEmptyDashboard from 'src/modals/querySQL/ModalEmptyDashboard';
 
 interface ParamTypes {
   authorId: string;
@@ -36,7 +37,7 @@ export interface ILayout extends Layout {
   options: any;
   i: string;
   id: string;
-  visualizationWidgets: [];
+  dashboardVisuals: [];
   text: string;
   visualization: any;
   content: any;
@@ -64,6 +65,8 @@ const DashboardDetailPage: React.FC = () => {
   const [openModalEdit, setOpenModalEdit] = useState<boolean>(false);
   const [openModalAddTextWidget, setOpenModalAddTextWidget] =
     useState<boolean>(false);
+  const [openModalEmptyDashboard, setOpenModalEmptyDashboard] =
+    useState<boolean>(false);
 
   const layoutChangeTimeout = useRef() as any;
 
@@ -76,7 +79,7 @@ const DashboardDetailPage: React.FC = () => {
         .getRequest('DashboardsRequest')
         .getDashboardById({ dashboardId });
       if (res) {
-        const visualization = res.visualizationWidgets.map((item: ILayout) => {
+        const visualization = res.dashboardVisuals.map((item: ILayout) => {
           const { options } = item;
           return {
             x: options.sizeX,
@@ -90,7 +93,6 @@ const DashboardDetailPage: React.FC = () => {
         });
         const textWidgets = res.textWidgets.map((item: ILayout) => {
           const { options } = item;
-
           return {
             x: options.sizeX,
             y: options.sizeY,
@@ -102,8 +104,11 @@ const DashboardDetailPage: React.FC = () => {
             content: {},
           };
         });
+
+        const layouts = visualization.concat(textWidgets);
         setDataDashboard(res);
-        setDataLayouts(visualization.concat(textWidgets));
+        setDataLayouts(layouts);
+        setOpenModalEmptyDashboard(!layouts.length);
       }
     } catch (error) {
       toastError({
@@ -204,7 +209,7 @@ const DashboardDetailPage: React.FC = () => {
     layoutChangeTimeout.current = setTimeout(async () => {
       try {
         const payload = {
-          visualizationWidgets: dataVisualization,
+          dashboardVisuals: dataVisualization,
           textWidgets: dataTextWidget,
         };
         const res = await rf
@@ -321,6 +326,16 @@ const DashboardDetailPage: React.FC = () => {
           dashboardId={dashboardId}
           open={openModalFork}
           onClose={() => setOpenModalFork(false)}
+        />
+        <ModalEmptyDashboard
+          open={openModalEmptyDashboard}
+          onAddText={() => {
+            setTypeModalTextWidget(TYPE_MODAL.ADD);
+            setOpenModalAddTextWidget(true);
+          }}
+          onAddVisualization={() => {
+            setOpenModalAddVisualization(true);
+          }}
         />
       </div>
     </BasePage>

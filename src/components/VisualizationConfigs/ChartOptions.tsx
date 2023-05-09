@@ -116,6 +116,7 @@ const ChartOptions: React.FC<IChartOptions> = ({
           className={'input-table'}
           value={visualization?.name || ''}
           onChange={(e: any) => changeNameHandle(e.target.value)}
+          placeholder="My Chart"
           size={'sm'}
         />
       </Flex>

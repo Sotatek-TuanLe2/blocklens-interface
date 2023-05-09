@@ -2,7 +2,7 @@ import { Flex, Text } from '@chakra-ui/react';
 import React, { ChangeEvent, useEffect, useRef } from 'react';
 import { AppButton, AppField, AppInput } from 'src/components';
 import 'src/styles/components/BaseModal.scss';
-import BaseModal from './BaseModal';
+import BaseModal from '../BaseModal';
 import { useState } from 'react';
 import { useHistory } from 'react-router';
 import { toastError } from 'src/utils/utils-notify';

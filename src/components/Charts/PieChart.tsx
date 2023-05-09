@@ -8,13 +8,13 @@ import {
 } from 'recharts';
 import { COLORS } from 'src/utils/common';
 import { VisualizationOptionsType } from 'src/utils/query.type';
-import CustomTooltip from './CustomTooltip';
-import { Flex } from '@chakra-ui/react';
+import { Box, Flex } from '@chakra-ui/react';
 import { useEffect, useMemo, useState } from 'react';
 import _ from 'lodash';
 import BigNumber from 'bignumber.js';
 import { isNumber } from 'src/utils/utils-helper';
 import { ChartProps } from './VisualizationChart';
+import { formatNumber, formatVisualizationValue } from 'src/utils/utils-format';
 
 type ChartConfigType = VisualizationOptionsType;
 type Props = ChartProps & {
@@ -125,7 +125,7 @@ const VisualizationPieChart = ({
   }, [data]);
 
   return (
-    <ResponsiveContainer width={'100%'} height={'100%'}>
+    <ResponsiveContainer width={'100%'} height={'92%'}>
       {yAxisKeys?.length === 1 ? (
         <PieChart className="pie-chart">
           <Pie
@@ -144,9 +144,7 @@ const VisualizationPieChart = ({
               ))}
           </Pie>
           <Tooltip
-            content={
-              <CustomTooltip type="pie" numberFormat={configs?.numberFormat} />
-            }
+            content={<CustomTooltip numberFormat={configs?.numberFormat} />}
             animationDuration={200}
             animationEasing={'linear'}
           />
@@ -222,4 +220,41 @@ const CustomLegend = (props: any) => {
       ))}
     </div>
   );
+};
+
+const CustomTooltip = (props: any) => {
+  const { active, payload, numberFormat } = props;
+
+  const _renderTooltipValue = (value: any) => {
+    if (isNumber(value) && numberFormat) {
+      return formatVisualizationValue(numberFormat, Number(value));
+    }
+    return value;
+  };
+
+  if (active && payload && payload.length) {
+    return (
+      <div className="custom-tooltip">
+        {payload.map((entry: any, index: number) => (
+          <>
+            <p className="custom-tooltip__label">{entry.name}</p>
+            <div className="custom-tooltip__desc">
+              <Box
+                as={'div'}
+                key={index}
+                className="custom-tooltip__desc__detail"
+              >
+                <span style={{ backgroundColor: entry.fill }}></span>
+                <span>{`${entry.dataKey}: ${_renderTooltipValue(
+                  entry.value,
+                )}`}</span>
+                <br />
+              </Box>
+            </div>
+          </>
+        ))}
+      </div>
+    );
+  }
+  return null;
 };

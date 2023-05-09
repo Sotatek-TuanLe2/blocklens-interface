@@ -8,7 +8,7 @@ import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/BaseModal.scss';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
-import BaseModal from './BaseModal';
+import BaseModal from '../BaseModal';
 import { IDashboardDetail, ITextWidget } from 'src/utils/query.type';
 import { INPUT_DEBOUNCE } from 'src/utils/common';
 
@@ -97,8 +97,6 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
 }) => {
   const [markdownText, setMarkdownText] = useState<string>('');
 
-  const DEBOUNCE_TIME = 500;
-
   useEffect(() => {
     setMarkdownText(selectedItem.text || '');
   }, [selectedItem]);
@@ -158,13 +156,11 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
   ) => {
     try {
       e.preventDefault();
-      const res = await rf
+      await rf
         .getRequest('DashboardsRequest')
         .removeDashboardItem(selectedItem.id);
-      if (res) {
-        onReload();
-        onClose();
-      }
+      onReload();
+      onClose();
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
     }

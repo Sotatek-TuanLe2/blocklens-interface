@@ -197,10 +197,7 @@ export function formatNumberWithDecimalDigits(
 
   const decimalNumber = new Decimal(number);
   const integerPart = decimalNumber.floor().toString();
-  const decimalPart = decimalNumber
-    .minus(integerPart)
-    .toFixed(a.length)
-    .slice(1);
+  const decimalPart = decimalNumber.minus(integerPart).toFixed(1).slice(1);
   const formattedDecimalPart = decimalPart.padEnd(a.length - 1, '0');
   const result =
     integerPart +
