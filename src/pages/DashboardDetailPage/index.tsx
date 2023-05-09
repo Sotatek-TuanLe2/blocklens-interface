@@ -36,7 +36,7 @@ export interface ILayout extends Layout {
   options: any;
   i: string;
   id: string;
-  visualizationWidgets: [];
+  dashboardVisuals: [];
   text: string;
   visualization: any;
   content: any;
@@ -76,7 +76,7 @@ const DashboardDetailPage: React.FC = () => {
         .getRequest('DashboardsRequest')
         .getDashboardById({ dashboardId });
       if (res) {
-        const visualization = res.visualizationWidgets.map((item: ILayout) => {
+        const visualization = res.dashboardVisuals.map((item: ILayout) => {
           const { options } = item;
           return {
             x: options.sizeX,
@@ -204,7 +204,7 @@ const DashboardDetailPage: React.FC = () => {
     layoutChangeTimeout.current = setTimeout(async () => {
       try {
         const payload = {
-          visualizationWidgets: dataVisualization,
+          dashboardVisuals: dataVisualization,
           textWidgets: dataTextWidget,
         };
         const res = await rf

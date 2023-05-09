@@ -62,9 +62,13 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   const [dataVisualization, setDataVisualization] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
 
-  const dataFilter = useMemo(() => dataVisualization?.filter((el) =>
-    el.name.toLowerCase().includes(searchTerm.toLowerCase()),
-  ), [dataVisualization, searchTerm]);
+  const dataFilter = useMemo(
+    () =>
+      dataVisualization?.filter((el) =>
+        el.name.toLowerCase().includes(searchTerm.toLowerCase()),
+      ),
+    [dataVisualization, searchTerm],
+  );
 
   const handleSearch = debounce(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -138,13 +142,9 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
       const removeId = result.find((item: any) => item !== undefined);
 
       e.preventDefault();
-      const res = await rf
-        .getRequest('DashboardsRequest')
-        .removeVisualization(removeId);
-      if (res) {
-        onReload();
-        fetchVisualization();
-      }
+      await rf.getRequest('DashboardsRequest').removeVisualization(removeId);
+      onReload();
+      fetchVisualization();
       // onClose();
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
@@ -182,7 +182,6 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
         );
     }
   };
-
 
   return (
     <BaseModal
