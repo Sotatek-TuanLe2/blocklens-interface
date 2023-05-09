@@ -229,7 +229,7 @@ const CustomTooltip = (props: any) => {
   const { active, payload, numberFormat } = props;
 
   const _renderTooltipValue = (value: any) => {
-    if (numberFormat) {
+    if (numberFormat && isNumber(value)) {
       return formatVisualizationValue(numberFormat, Number(value));
     }
     if (isNumber(value)) {
