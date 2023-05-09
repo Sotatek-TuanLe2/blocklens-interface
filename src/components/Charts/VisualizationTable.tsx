@@ -62,7 +62,11 @@ const VisualizationTable = <T,>({
     columns: getTableColumns(data, visualization),
     getCoreRowModel: getCoreRowModel(),
   });
-
+  const a = getTableColumns(data, visualization).map((i) => i.id);
+  console.log(a, ' a ');
+  const b = newQueryResult.map((i) => i.block_height);
+  const c = Math.max(...newQueryResult.map((i) => i.block_height));
+  console.log(b.map((number) => (Number(number) / c) * 100));
   useEffect(() => {
     const timer = setTimeout(() => {
       setDataTable && setDataTable(table.getRowModel().rows);
