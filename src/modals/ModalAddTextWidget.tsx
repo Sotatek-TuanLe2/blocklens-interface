@@ -158,13 +158,11 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
   ) => {
     try {
       e.preventDefault();
-      const res = await rf
+      await rf
         .getRequest('DashboardsRequest')
         .removeDashboardItem(selectedItem.id);
-      if (res) {
-        onReload();
-        onClose();
-      }
+      onReload();
+      onClose();
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
     }
