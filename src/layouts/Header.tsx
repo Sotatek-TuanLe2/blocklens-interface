@@ -174,7 +174,7 @@ const Header: FC = () => {
 
     return (
       <>
-        {_renderMenu()}
+        {/* {_renderMenu()} */}
         {_renderAvatar()}
       </>
     );
@@ -190,7 +190,7 @@ const Header: FC = () => {
             width={isMobile ? '140px' : 'auto'}
           />
         </Box>
-        {accessToken && _renderContent()}
+        {/* {accessToken && _renderContent()} */}
       </Flex>
 
       <ModalSignInRequest
