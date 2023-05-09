@@ -15,6 +15,7 @@ import BaseModal from '../../../modals/BaseModal';
 import {
   AreaChartIcon,
   BarChartIcon,
+  CounterIcon,
   LineChartIcon,
   PieChartIcon,
   QueryResultIcon,
@@ -26,12 +27,14 @@ import 'src/styles/components/Chart.scss';
 import TableConfigurations from '../../../components/VisualizationConfigs/TableConfigurations';
 import {
   IQuery,
+  LABEL_VISUALIZATION,
   TYPE_VISUALIZATION,
   VALUE_VISUALIZATION,
   VisualizationType,
 } from '../../../utils/query.type';
 import { objectKeys } from 'src/utils/utils-network';
 import { areYAxisesSameType } from 'src/utils/utils-helper';
+import { getDefaultVisualizationName } from 'src/utils/common';
 
 type VisualizationConfigType = {
   value: string;
@@ -199,7 +202,6 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
     if (type === TYPE_VISUALIZATION.new) {
       return <AddVisualization onAddVisualize={addVisualizationHandler} />;
     }
-
     let errorMessage = null;
     let visualizationDisplay = null;
     let visualizationConfiguration = null;
@@ -297,7 +299,7 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
       <>
         <div className="visual-container__visualization">
           <div className="visual-container__visualization__title">
-            {visualization.name}
+            {visualization.name || getDefaultVisualizationName(type)}
           </div>
           {errorMessage ? (
             <Flex
@@ -337,6 +339,9 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
       case TYPE_VISUALIZATION.bar:
         return <BarChartIcon />;
 
+      case TYPE_VISUALIZATION.counter:
+        return <CounterIcon />;
+
       default:
         return <></>;
     }
@@ -359,7 +364,9 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
           },
         ].map((v) => ({
           icon: getIcon(v?.options?.globalSeriesType || v.type),
-          name: v.name,
+          name:
+            v.name ||
+            getDefaultVisualizationName(v?.options?.globalSeriesType || v.type),
           content: renderVisualization(v),
           id: v.id,
           closeable: v.type !== TYPE_VISUALIZATION.new,

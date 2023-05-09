@@ -1,4 +1,4 @@
-import { Flex, Link, Text } from '@chakra-ui/react';
+import { Flex, Link, Text, Tooltip } from '@chakra-ui/react';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   AreaChartIcon,
@@ -268,15 +268,20 @@ const ButtonAdd: React.FC<IButtonAdd> = ({
   };
   return (
     <>
-      <Flex alignItems={'center'} columnGap={'10px'} p={'10px'}>
+      <Flex className="visualization-row" alignItems={'center'}>
         {getIcon(conditionDisplayIcon())}
-        <Link>
-          @{userName} / {item.name}
-        </Link>
-        <Text fontWeight={'bold'}>
-          {i.options.globalSeriesType}{' '}
-          {i.name === 'Table' ? 'Query results' : i.name}
-        </Text>
+        <Tooltip label={`${userName}/${item.name}`} hasArrow>
+          <Link className="user-name">
+            @{userName} / {item.name}
+          </Link>
+        </Tooltip>
+
+        <Tooltip label={i.name} hasArrow>
+          <Text className="visualization-name">
+            {i.options.globalSeriesType}{' '}
+            {i.name === 'Table' ? 'Query results' : i.name}
+          </Text>
+        </Tooltip>
       </Flex>
       <Text
         onClick={(e: any) => {

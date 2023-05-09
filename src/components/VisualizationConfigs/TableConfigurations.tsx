@@ -116,6 +116,7 @@ const TableConfigurations: React.FC<ITableConfigurations> = ({
                 size={'sm'}
                 className="input-table"
                 onChange={onChangeTableName}
+                placeholder="24h volume"
               />
             </div>
           </div>
