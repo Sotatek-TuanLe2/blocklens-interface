@@ -119,8 +119,17 @@ const Header: FC = () => {
       return location.pathname.includes('billing');
     }
 
+    if (path === '/dashboards') {
+      return (
+        location.pathname.includes('dashboards') ||
+        location.pathname.includes('queries')
+      );
+    }
+
     return (
-      !location.pathname.includes('billing') && location.pathname !== '/account'
+      ['billing', 'dashboards', 'queries'].every(
+        (item) => !location.pathname.includes(item),
+      ) && location.pathname !== '/account'
     );
   };
 
