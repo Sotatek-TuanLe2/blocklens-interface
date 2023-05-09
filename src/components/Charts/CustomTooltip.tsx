@@ -1,13 +1,12 @@
 import { Box } from '@chakra-ui/react';
-import { formatNumber } from 'src/utils/utils-format';
-import { isNumber } from 'src/utils/utils-helper';
+import { formatVisualizationValue } from 'src/utils/utils-format';
 
 const CustomTooltip = (props: any) => {
-  const { active, payload, label } = props;
+  const { active, payload, label, numberFormat } = props;
 
   const _renderTooltipValue = (value: any) => {
-    if (isNumber(value)) {
-      return formatNumber(value);
+    if (numberFormat) {
+      return formatVisualizationValue(numberFormat, value);
     }
     return value;
   };
