@@ -37,6 +37,7 @@
       }
     }
   }
+
   .custom-legend {
     padding-left: 50px;
     position: relative;
@@ -64,6 +65,15 @@
 
     .hide-legend {
       opacity: 0.5;
+    }
+  }
+
+  & > .recharts-legend-wrapper {
+    overflow: auto;
+    max-height: 80%;
+
+    & > div {
+      margin-right: 20px;
     }
   }
 }

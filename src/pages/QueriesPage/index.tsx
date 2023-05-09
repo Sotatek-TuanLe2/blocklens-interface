@@ -17,7 +17,7 @@ import { QueryExecutedResponse, IQuery } from '../../utils/query.type';
 import 'src/styles/pages/QueriesPage.scss';
 import { AddParameterIcon, ExplandIcon } from 'src/assets/icons';
 import { MoonIcon, SettingsIcon, SunIcon } from '@chakra-ui/icons';
-import ModalSaveQuery from 'src/modals/ModalSaveQuery';
+import ModalSaveQuery from 'src/modals/querySQL/ModalSaveQuery';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import rf from 'src/requests/RequestFactory';
 import { AppLoadingTable } from 'src/components';

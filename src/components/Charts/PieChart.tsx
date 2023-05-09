@@ -125,7 +125,7 @@ const VisualizationPieChart = ({
   }, [data]);
 
   return (
-    <ResponsiveContainer width={'100%'} height={'100%'}>
+    <ResponsiveContainer width={'100%'} height={'92%'}>
       {yAxisKeys?.length === 1 ? (
         <PieChart className="pie-chart">
           <Pie
