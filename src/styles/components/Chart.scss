@@ -70,9 +70,9 @@
 
   & > .recharts-legend-wrapper {
     overflow: auto;
+    max-height: 80%;
 
     & > div {
-      max-height: 200px;
       margin-right: 20px;
     }
   }
