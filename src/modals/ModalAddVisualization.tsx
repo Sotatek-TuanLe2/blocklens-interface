@@ -62,9 +62,13 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   const [dataVisualization, setDataVisualization] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
 
-  const dataFilter = useMemo(() => dataVisualization?.filter((el) =>
-    el.name.toLowerCase().includes(searchTerm.toLowerCase()),
-  ), [dataVisualization, searchTerm]);
+  const dataFilter = useMemo(
+    () =>
+      dataVisualization?.filter((el) =>
+        el.name.toLowerCase().includes(searchTerm.toLowerCase()),
+      ),
+    [dataVisualization, searchTerm],
+  );
 
   const handleSearch = debounce(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -182,7 +186,6 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
         );
     }
   };
-
 
   return (
     <BaseModal
