@@ -54,7 +54,7 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
   const onChangeCounterName = (e: any) => {
     onChangeVisualization({
       ...editVisualization,
-      name: e.target.value || ' ',
+      name: e.target.value,
     });
   };
   const onChangeCounterConfigurations = (data: any) => {
@@ -78,7 +78,6 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
       e.preventDefault();
     }
   };
-  // console.log(dataColumn);
 
   return (
     <div className="config-counter">

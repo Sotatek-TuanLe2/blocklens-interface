@@ -1,4 +1,4 @@
-import { Flex, Link, Text } from '@chakra-ui/react';
+import { Flex, Link, Text, Tooltip } from '@chakra-ui/react';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   AreaChartIcon,
@@ -273,10 +273,12 @@ const ButtonAdd: React.FC<IButtonAdd> = ({
         <Link>
           @{userName} / {item.name}
         </Link>
-        <Text fontWeight={'bold'}>
-          {i.options.globalSeriesType}{' '}
-          {i.name === 'Table' ? 'Query results' : i.name}
-        </Text>
+        <Tooltip label={i.name} hasArrow>
+          <Text className="visualization-name">
+            {i.options.globalSeriesType}{' '}
+            {i.name === 'Table' ? 'Query results' : i.name}
+          </Text>
+        </Tooltip>
       </Flex>
       <Text
         onClick={(e: any) => {

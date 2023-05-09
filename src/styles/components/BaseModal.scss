@@ -322,7 +322,13 @@
     border-radius: 2px;
     min-height: 250px;
     overflow: auto;
-
+    .visualization-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 365px;
+      font-weight: bold;
+    }
     .no-data {
       display: flex;
       height: 100%;

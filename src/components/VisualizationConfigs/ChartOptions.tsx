@@ -82,7 +82,7 @@ const ChartOptions: React.FC<IChartOptions> = ({
   const changeNameHandle = (value: string) => {
     onChangeConfigurations({
       ...visualization,
-      name: value || ' ',
+      name: value,
     });
   };
 
@@ -116,7 +116,7 @@ const ChartOptions: React.FC<IChartOptions> = ({
           className={'input-table'}
           value={visualization?.name || ''}
           onChange={(e: any) => changeNameHandle(e.target.value)}
-          placeholder="Chart"
+          placeholder="My Chart"
           size={'sm'}
         />
       </Flex>

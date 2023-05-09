@@ -34,6 +34,7 @@ import {
 } from '../../../utils/query.type';
 import { objectKeys } from 'src/utils/utils-network';
 import { areYAxisesSameType } from 'src/utils/utils-helper';
+import { getDefaultVisualizationName } from 'src/utils/common';
 
 type VisualizationConfigType = {
   value: string;
@@ -195,35 +196,6 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
     }
   };
 
-  const getDefaultName = (chain: string | undefined) => {
-    switch (chain) {
-      case TYPE_VISUALIZATION.table:
-        return LABEL_VISUALIZATION.table;
-
-      case TYPE_VISUALIZATION.scatter:
-        return LABEL_VISUALIZATION.scatter;
-
-      case TYPE_VISUALIZATION.area:
-        return LABEL_VISUALIZATION.area;
-
-      case TYPE_VISUALIZATION.line: {
-        return LABEL_VISUALIZATION.line;
-      }
-
-      case TYPE_VISUALIZATION.pie:
-        return LABEL_VISUALIZATION.pie;
-
-      case TYPE_VISUALIZATION.bar:
-        return LABEL_VISUALIZATION.bar;
-
-      case TYPE_VISUALIZATION.counter:
-        return LABEL_VISUALIZATION.counter;
-
-      default:
-        return <></>;
-    }
-  };
-
   const renderVisualization = (visualization: VisualizationType) => {
     const type = visualization.options?.globalSeriesType || visualization.type;
 
@@ -327,9 +299,7 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
       <>
         <div className="visual-container__visualization">
           <div className="visual-container__visualization__title">
-            {visualization.name === ' '
-              ? getDefaultName(type)
-              : visualization.name}
+            {visualization.name || getDefaultVisualizationName(type)}
           </div>
           {errorMessage ? (
             <Flex
@@ -395,9 +365,8 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
         ].map((v) => ({
           icon: getIcon(v?.options?.globalSeriesType || v.type),
           name:
-            v.name === ' '
-              ? getDefaultName(v?.options?.globalSeriesType || v.type)
-              : v.name,
+            v.name ||
+            getDefaultVisualizationName(v?.options?.globalSeriesType || v.type),
           content: renderVisualization(v),
           id: v.id,
           closeable: v.type !== TYPE_VISUALIZATION.new,

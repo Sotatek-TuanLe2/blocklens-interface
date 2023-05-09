@@ -63,7 +63,7 @@ const TableConfigurations: React.FC<ITableConfigurations> = ({
   const onChangeTableName = (e: any) => {
     onChangeVisualization({
       ...editVisualization,
-      name: e.target.value || ' ',
+      name: e.target.value,
     });
   };
 
