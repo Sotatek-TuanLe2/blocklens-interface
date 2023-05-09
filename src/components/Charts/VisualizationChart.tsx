@@ -106,6 +106,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
             type="monotone"
             dataKey={yAxisKey}
             stroke={COLORS[index % COLORS.length]}
+            strokeWidth={3}
             dot={false}
             hide={hiddenCharts.includes(yAxisKey)}
           >
@@ -115,16 +116,34 @@ const VisualizationChart: React.FC<Props> = (props) => {
 
       case TYPE_VISUALIZATION.area:
         return (
-          <Area
-            key={yAxisKey}
-            dataKey={yAxisKey}
-            stroke={COLORS[index % COLORS.length]}
-            fill={COLORS[index % COLORS.length]}
-            stackId={chartOptionsConfigs?.stacking ? 'area' : undefined}
-            hide={hiddenCharts.includes(yAxisKey)}
-          >
-            {_renderLabelList(yAxisKey)}
-          </Area>
+          <>
+            <Area
+              type="monotone"
+              key={yAxisKey}
+              dataKey={yAxisKey}
+              stroke={COLORS[index % COLORS.length]}
+              strokeWidth={3}
+              fill={`url(#${yAxisKey})`}
+              stackId={chartOptionsConfigs?.stacking ? 'area' : undefined}
+              hide={hiddenCharts.includes(yAxisKey)}
+            >
+              {_renderLabelList(yAxisKey)}
+            </Area>
+            <defs>
+              <linearGradient id={yAxisKey} x1="0" y1="0" x2="0" y2="1">
+                <stop
+                  offset="5%"
+                  stopColor={COLORS[index % COLORS.length]}
+                  stopOpacity={0.9}
+                />
+                <stop
+                  offset="95%"
+                  stopColor={COLORS[index % COLORS.length]}
+                  stopOpacity={0}
+                />
+              </linearGradient>
+            </defs>
+          </>
         );
       case TYPE_VISUALIZATION.bar:
         return (
@@ -216,12 +235,14 @@ const VisualizationChart: React.FC<Props> = (props) => {
           right: 10,
         }}
       >
-        <CartesianGrid vertical={false} strokeDasharray="4" />
+        <CartesianGrid vertical={false} stroke="#212D4A" />
         <XAxis
           tickFormatter={tickFormatAxis('x')}
           dataKey={xAxisKey}
           fill={'#ccc'}
           reversed={xAxisConfigs?.reverseX}
+          tick={{ fill: '#8D91A5', fontWeight: 400 }}
+          tickLine={false}
         >
           <Label
             offset={0}
@@ -239,6 +260,8 @@ const VisualizationChart: React.FC<Props> = (props) => {
               fill: '#ccc',
             }}
             tickFormatter={tickFormatAxis('y')}
+            tick={{ fill: '#8D91A5', fontWeight: 400 }}
+            tickLine={false}
             {...logarithmicProps}
           />
         )}

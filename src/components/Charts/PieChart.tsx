@@ -131,11 +131,8 @@ const VisualizationPieChart = ({
           <Pie
             data={reducedData}
             dataKey={yAxisKeys?.[0]}
-            label={
-              chartOptionsConfigs?.showDataLabels && _renderCustomizedLabel
-            }
             nameKey={xAxisKey}
-            innerRadius={'38%'}
+            innerRadius={'58%'}
             labelLine={false}
           >
             {dataCharts &&
@@ -205,6 +202,12 @@ const CustomLegend = (props: any) => {
       {newData.map((entry: any, index: number) => (
         <div key={`item-${index}`} className="custom-legend">
           <span
+            style={{
+              backgroundColor: `${entry.color}`,
+              opacity: `${entry.type ? '1' : '0.5'}`,
+            }}
+          ></span>
+          <span
             onClick={() => onToggleLegend(entry.value)}
             style={{
               color: `${entry.color}`,
@@ -213,12 +216,6 @@ const CustomLegend = (props: any) => {
           >
             {entry.value}
           </span>
-          <span
-            style={{
-              backgroundColor: `${entry.color}`,
-              opacity: `${entry.type ? '1' : '0.5'}`,
-            }}
-          ></span>
         </div>
       ))}
     </div>
