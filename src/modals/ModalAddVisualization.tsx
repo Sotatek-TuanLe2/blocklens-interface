@@ -142,13 +142,9 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
       const removeId = result.find((item: any) => item !== undefined);
 
       e.preventDefault();
-      const res = await rf
-        .getRequest('DashboardsRequest')
-        .removeVisualization(removeId);
-      if (res) {
-        onReload();
-        fetchVisualization();
-      }
+      await rf.getRequest('DashboardsRequest').removeVisualization(removeId);
+      onReload();
+      fetchVisualization();
       // onClose();
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
