@@ -25,6 +25,7 @@ import { IDashboardDetail } from 'src/utils/query.type';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import VisualizationItem from './parts/VisualizationItem';
+import ModalEmptyDashboard from 'src/modals/querySQL/ModalEmptyDashboard';
 
 interface ParamTypes {
   authorId: string;
@@ -64,6 +65,8 @@ const DashboardDetailPage: React.FC = () => {
   const [openModalEdit, setOpenModalEdit] = useState<boolean>(false);
   const [openModalAddTextWidget, setOpenModalAddTextWidget] =
     useState<boolean>(false);
+  const [openModalEmptyDashboard, setOpenModalEmptyDashboard] =
+    useState<boolean>(false);
 
   const layoutChangeTimeout = useRef() as any;
 
@@ -90,7 +93,6 @@ const DashboardDetailPage: React.FC = () => {
         });
         const textWidgets = res.textWidgets.map((item: ILayout) => {
           const { options } = item;
-
           return {
             x: options.sizeX,
             y: options.sizeY,
@@ -102,8 +104,11 @@ const DashboardDetailPage: React.FC = () => {
             content: {},
           };
         });
+
+        const layouts = visualization.concat(textWidgets);
         setDataDashboard(res);
-        setDataLayouts(visualization.concat(textWidgets));
+        setDataLayouts(layouts);
+        setOpenModalEmptyDashboard(!layouts.length);
       }
     } catch (error) {
       toastError({
@@ -321,6 +326,16 @@ const DashboardDetailPage: React.FC = () => {
           dashboardId={dashboardId}
           open={openModalFork}
           onClose={() => setOpenModalFork(false)}
+        />
+        <ModalEmptyDashboard
+          open={openModalEmptyDashboard}
+          onAddText={() => {
+            setTypeModalTextWidget(TYPE_MODAL.ADD);
+            setOpenModalAddTextWidget(true);
+          }}
+          onAddVisualization={() => {
+            setOpenModalAddVisualization(true);
+          }}
         />
       </div>
     </BasePage>

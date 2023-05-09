@@ -29,10 +29,8 @@ const ModalEditItemDashBoard: React.FC<IModalEditItemDashBoard> = ({
       const res = await rf
         .getRequest('DashboardsRequest')
         .removeVisualization(selectedItem.id);
-      if (res) {
-        onReload();
-        onClose();
-      }
+      onReload();
+      onClose();
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
     }

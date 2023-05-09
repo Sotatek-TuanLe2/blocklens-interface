@@ -97,8 +97,6 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
 }) => {
   const [markdownText, setMarkdownText] = useState<string>('');
 
-  const DEBOUNCE_TIME = 500;
-
   useEffect(() => {
     setMarkdownText(selectedItem.text || '');
   }, [selectedItem]);
