@@ -147,18 +147,27 @@
   }
 
   .visual-container {
+    .tab-name-content {
+      max-width: 250px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
     &__visualization {
       min-height: 500px;
       height: 540px;
       border: 1px solid $border;
       margin-bottom: 20px;
+      overflow-y: auto;
 
       &__title {
         padding: 0 10px;
         margin-bottom: 10px;
       }
 
-      &--bar, &--line, &--scatter {
+      &--bar,
+      &--line,
+      &--scatter {
         width: 96% !important;
         height: 92% !important;
       }
