@@ -270,9 +270,12 @@ const ButtonAdd: React.FC<IButtonAdd> = ({
     <>
       <Flex alignItems={'center'} columnGap={'10px'} p={'10px'}>
         {getIcon(conditionDisplayIcon())}
-        <Link>
-          @{userName} / {item.name}
-        </Link>
+        <Tooltip label={`${userName}/${item.name}`} hasArrow>
+          <Link className="user-name">
+            @{userName} / {item.name}
+          </Link>
+        </Tooltip>
+
         <Tooltip label={i.name} hasArrow>
           <Text className="visualization-name">
             {i.options.globalSeriesType}{' '}

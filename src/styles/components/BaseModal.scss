@@ -329,6 +329,12 @@
       max-width: 365px;
       font-weight: bold;
     }
+    .user-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 200px;
+    }
     .no-data {
       display: flex;
       height: 100%;
