@@ -159,7 +159,7 @@ export default class DashboardsRequest extends BaseRequest {
     return this.delete(url, id);
   }
   removeVisualization(id: ILayout) {
-    const url = `/dashboard/visualization-widgets/${id}/remove-visualization-widget`;
+    const url = `/dashboard/dashboard-visuals/${id}/remove-dashboard-visuals`;
     return this.delete(url, id);
   }
 
