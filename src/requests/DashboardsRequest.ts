@@ -155,11 +155,11 @@ export default class DashboardsRequest extends BaseRequest {
   }
 
   removeDashboardItem(id: ILayout) {
-    const url = `/text-widgets/${id}/remove-text-widget`;
+    const url = `/dashboard/text-widgets/${id}/remove-text-widget`;
     return this.delete(url, id);
   }
   removeVisualization(id: ILayout) {
-    const url = `/visualization-widgets/${id}/remove-visualization-widget`;
+    const url = `/dashboard/visualization-widgets/${id}/remove-visualization-widget`;
     return this.delete(url, id);
   }
 
