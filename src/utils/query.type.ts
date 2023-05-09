@@ -102,7 +102,7 @@ export interface IDashboardDetail {
   forkedDashboard?: IDashboard;
   createdAt: Date;
   updatedAt: Date;
-  visualizationWidgets?: IVisualizationWidget[];
+  dashboardVisuals?: IVisualizationWidget[];
   isTemp?: boolean;
   query?: string;
   textWidgets: ITextWidget[];
