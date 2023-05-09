@@ -156,14 +156,18 @@
       &__title {
         padding: 0 10px;
         margin-bottom: 10px;
+        font-size: 20px;
+        font-weight: 700;
       }
 
-      &--bar, &--line, &--scatter {
+      &--bar,
+      &--line,
+      &--scatter {
         width: 96% !important;
         height: 92% !important;
       }
 
-      &--areachart {
+      &--area {
         width: 96% !important;
         height: 96% !important;
       }
