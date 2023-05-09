@@ -1,4 +1,4 @@
-import { Flex, Spinner } from '@chakra-ui/react';
+import { Flex, Spinner, Tooltip } from '@chakra-ui/react';
 import moment from 'moment';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import 'react-grid-layout/css/styles.css';
@@ -165,13 +165,19 @@ const VisualizationItem = React.memo(
       return (
         <div className="visual-container__visualization">
           <div className="visual-container__visualization__title">
-            <span>{visualization.name}</span>
-            <Link
-              className="visual-container__visualization__title__query-link"
-              to={`/queries/${visualization.query.id}`}
-            >
-              {visualization.query.name}
-            </Link>
+            <Tooltip label={visualization.name} hasArrow>
+              <span className="visual-container__visualization__name">
+                {visualization.name}
+              </span>
+            </Tooltip>
+            <Tooltip label={visualization.query.name} hasArrow>
+              <Link
+                className="visual-container__visualization__title__query-link"
+                to={`/queries/${visualization.query.id}`}
+              >
+                {visualization.query.name}
+              </Link>
+            </Tooltip>
           </div>
           {errorMessage ? (
             <Flex

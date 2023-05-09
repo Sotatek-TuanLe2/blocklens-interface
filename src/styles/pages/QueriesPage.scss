@@ -163,6 +163,11 @@
       &__title {
         padding: 0 10px;
         margin-bottom: 10px;
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 100%;
       }
 
       &--bar,
