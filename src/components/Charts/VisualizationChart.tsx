@@ -243,7 +243,9 @@ const VisualizationChart: React.FC<Props> = (props) => {
           />
         )}
         <Tooltip
-          content={<CustomTooltip />}
+          content={
+            <CustomTooltip numberFormat={configs?.yAxisConfigs?.labelFormat} />
+          }
           animationDuration={200}
           animationEasing={'linear'}
         />

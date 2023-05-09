@@ -1,4 +1,4 @@
-import { Box, Flex, Text } from '@chakra-ui/react';
+import { Box, Flex, Text, Tooltip } from '@chakra-ui/react';
 import moment from 'moment';
 import { useMemo, useState } from 'react';
 import { useParams } from 'react-router';
@@ -298,9 +298,14 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
     return (
       <>
         <div className="visual-container__visualization">
-          <div className="visual-container__visualization__title">
-            {visualization.name || getDefaultVisualizationName(type)}
-          </div>
+          <Tooltip
+            label={visualization.name || getDefaultVisualizationName(type)}
+            hasArrow
+          >
+            <div className="visual-container__visualization__title">
+              {visualization.name || getDefaultVisualizationName(type)}
+            </div>
+          </Tooltip>
           {errorMessage ? (
             <Flex
               alignItems={'center'}
