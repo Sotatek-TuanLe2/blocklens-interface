@@ -10,11 +10,11 @@ import { AppButton } from 'src/components';
 
 import useUser from 'src/hooks/useUser';
 import { BasePage } from 'src/layouts';
-import ModalAddTextWidget from 'src/modals/ModalAddTextWidget';
-import ModalAddVisualization from 'src/modals/ModalAddVisualization';
-import ModalEditItemDashBoard from 'src/modals/ModalEditItemDashBoard';
-import ModalForkDashBoardDetails from 'src/modals/ModalForkDashBoardDetails';
-import ModalSettingDashboardDetails from 'src/modals/ModalSettingDashboardDetails';
+import ModalAddTextWidget from 'src/modals/querySQL/ModalAddTextWidget';
+import ModalAddVisualization from 'src/modals/querySQL/ModalAddVisualization';
+import ModalEditItemDashBoard from 'src/modals/querySQL/ModalEditItemDashBoard';
+import ModalForkDashBoardDetails from 'src/modals/querySQL/ModalForkDashBoardDetails';
+import ModalSettingDashboardDetails from 'src/modals/querySQL/ModalSettingDashboardDetails';
 import ModalShareDashboardDetails from 'src/modals/ModalShareDashboardDetails';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/TableValue.scss';
