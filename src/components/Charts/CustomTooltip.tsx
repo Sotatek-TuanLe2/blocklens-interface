@@ -22,7 +22,7 @@ const CustomTooltip = (props: any) => {
               className="custom-tooltip__desc__detail"
             >
               <span>
-                {`${entry.payload.name}:`}
+                {`${entry.name}:`}
                 <span className="tooltip-value">
                   {' '}
                   {_renderTooltipValue(entry.value)}
