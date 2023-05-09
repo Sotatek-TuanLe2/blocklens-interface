@@ -36,31 +36,21 @@
   .visual-container {
     &__visualization {
       height: 100%;
+
       .main-table {
         height: unset;
         overflow: unset;
       }
+
       .table-content {
         height: 75%;
         overflow: auto;
       }
+
       .chart-content {
         height: 100%;
       }
-      ::-webkit-scrollbar {
-        width: 10px;
-        background-color: #030821;
-        border-radius: 100px;
-        height: 10px;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #4b516d;
-        border-radius: 100px;
-      }
 
-      ::-webkit-scrollbar-corner {
-        background: #030821;
-      }
       &__title {
         padding: 0 10px;
         margin-bottom: 10px;

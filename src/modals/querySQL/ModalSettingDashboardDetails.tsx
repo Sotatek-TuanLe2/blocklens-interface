@@ -6,7 +6,7 @@ import 'src/styles/components/BaseModal.scss';
 import { IDashboardDetail } from 'src/utils/query.type';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
-import BaseModal from './BaseModal';
+import BaseModal from '../BaseModal';
 
 interface IModalSettingDashboardDetails {
   open: boolean;

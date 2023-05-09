@@ -1,7 +1,7 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
 import React, { useEffect, useRef, useState } from 'react';
 import { AppButton, AppInput } from 'src/components';
-import BaseModal from './BaseModal';
+import BaseModal from '../BaseModal';
 import { createValidator } from 'src/utils/utils-validator';
 
 export interface IModalSaveQuery {
