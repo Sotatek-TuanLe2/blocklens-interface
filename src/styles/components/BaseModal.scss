@@ -322,18 +322,23 @@
     border-radius: 2px;
     min-height: 250px;
     overflow: auto;
+    .visualization-row {
+      width: calc(100% - 100px);
+      padding: 10px;
+      column-gap: 10px;
+    }
     .visualization-name {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      max-width: 310px;
+      max-width: 40%;
       font-weight: bold;
     }
     .user-name {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      max-width: 180px;
+      max-width: 70%;
     }
     .no-data {
       display: flex;

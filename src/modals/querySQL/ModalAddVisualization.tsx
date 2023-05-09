@@ -268,7 +268,7 @@ const ButtonAdd: React.FC<IButtonAdd> = ({
   };
   return (
     <>
-      <Flex alignItems={'center'} columnGap={'10px'} p={'10px'}>
+      <Flex className="visualization-row" alignItems={'center'}>
         {getIcon(conditionDisplayIcon())}
         <Tooltip label={`${userName}/${item.name}`} hasArrow>
           <Link className="user-name">
