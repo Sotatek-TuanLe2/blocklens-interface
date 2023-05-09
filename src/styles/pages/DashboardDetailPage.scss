@@ -51,12 +51,26 @@
         height: 100%;
       }
 
+      &__name {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 53%;
+      }
+
       &__title {
+        display: flex;
         padding: 0 10px;
         margin-bottom: 10px;
 
         &__query-link {
           margin-left: 20px;
+          display: block;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          max-width: 30%;
         }
       }
 
