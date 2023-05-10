@@ -38,10 +38,10 @@ const VisualizationCounter = ({ data, visualization }: Props) => {
 
   const defaultSize =
     NUMBER_SIZE.start -
-    (dataCounter().length +
+    (dataCounter()?.length +
       Number(dataOptions?.stringDecimal || 0) +
-      (dataOptions?.stringPrefix?.toString().length || 0) +
-      (dataOptions?.stringSuffix?.toString().length || 0)) /
+      (dataOptions?.stringPrefix?.toString()?.length || 0) +
+      (dataOptions?.stringSuffix?.toString()?.length || 0)) /
       NUMBER_SIZE.percent;
 
   const checkColor = (value: string | number) => {

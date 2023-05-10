@@ -131,7 +131,7 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
                 placeholder="Price"
                 size={'sm'}
                 className="input-table"
-                value={dataColumn?.rowNumber}
+                value={dataColumn?.rowNumber || 1}
                 onChange={(e) =>
                   onChangeCounterConfigurations({
                     rowNumber: e.target.value,
@@ -231,7 +231,7 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
                 onKeyDown={onKeyDown}
                 onChange={(e) => {
                   const value = e?.target?.value.replace(/[-e]/gi, '');
-                  if (value.length > 1) return;
+                  if (value?.length > 1) return;
                   onChangeCounterConfigurations({
                     stringDecimal: value,
                   });
