@@ -14,6 +14,7 @@ import 'src/styles/components/TableValue.scss';
 import 'src/styles/pages/DashboardDetailPage.scss';
 import 'src/styles/components/Chart.scss';
 import {
+  IErrorExecuteQuery,
   QueryExecutedResponse,
   TYPE_VISUALIZATION,
   VisualizationType,
@@ -21,11 +22,14 @@ import {
 import { areYAxisesSameType, getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import { Link } from 'react-router-dom';
+import { QUERY_RESULT_STATUS } from 'src/utils/common';
 
 const VisualizationItem = React.memo(
   ({ visualization }: { visualization: VisualizationType }) => {
     const [queryResult, setQueryResult] = useState<unknown[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [errorExecuteQuery, setErrorExecuteQuery] =
+      useState<IErrorExecuteQuery>();
 
     const queryId = visualization?.query?.id;
     const fetchQueryResultInterval: any = useRef();
@@ -48,24 +52,25 @@ const VisualizationItem = React.memo(
         executionId,
       });
 
-      if (res.status !== 'DONE' && res.status !== 'FAILED') {
+      if (res.status === QUERY_RESULT_STATUS.WAITING) {
         fetchQueryResultInterval.current = setInterval(async () => {
           const resInterval = await rf
             .getRequest('DashboardsRequest')
             .getQueryResult({
               executionId,
             });
-          if (
-            resInterval.status === 'DONE' ||
-            resInterval.status === 'FAILED'
-          ) {
+          if (resInterval.status !== QUERY_RESULT_STATUS.WAITING) {
             clearInterval(fetchQueryResultInterval.current);
             setQueryResult(resInterval.result);
+            if (resInterval?.error) {
+              setErrorExecuteQuery(resInterval?.error);
+            }
             setIsLoading(false);
           }
         }, 2000);
       } else {
         setQueryResult(res.result);
+        setErrorExecuteQuery(res?.error);
         setIsLoading(false);
       }
     };
@@ -206,10 +211,20 @@ const VisualizationItem = React.memo(
       <div className="visual-container__visualization visual-container__visualization--loading">
         <Spinner />
       </div>
-    ) : (
+    ) : !!queryResult.length ? (
       renderVisualization(visualization)
+    ) : (
+      <NoDataItem errorMessage={errorExecuteQuery?.message} />
     );
   },
 );
+
+const NoDataItem: React.FC<{ errorMessage?: string }> = (props) => {
+  return (
+    <Flex w={'full'} h={'full'} justifyContent={'center'} alignItems="center">
+      {props.errorMessage || 'No data...'}
+    </Flex>
+  );
+};
 
 export default VisualizationItem;

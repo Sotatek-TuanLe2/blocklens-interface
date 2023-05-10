@@ -13,7 +13,11 @@ import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/mode-sql';
 import { getErrorMessage } from '../../utils/utils-helper';
 import { useHistory, useParams, Prompt } from 'react-router-dom';
-import { QueryExecutedResponse, IQuery } from '../../utils/query.type';
+import {
+  QueryExecutedResponse,
+  IQuery,
+  IErrorExecuteQuery,
+} from '../../utils/query.type';
 import 'src/styles/pages/QueriesPage.scss';
 import { AddParameterIcon, ExplandIcon } from 'src/assets/icons';
 import { MoonIcon, SettingsIcon, SunIcon } from '@chakra-ui/icons';
@@ -23,24 +27,14 @@ import rf from 'src/requests/RequestFactory';
 import { AppLoadingTable } from 'src/components';
 import useUser from 'src/hooks/useUser';
 import { debounce } from 'lodash';
+import { QUERY_RESULT_STATUS } from 'src/utils/common';
 
 interface ParamTypes {
   queryId: string;
 }
 
-interface IErrorExecuteQuery {
-  message: string;
-  name: string;
-  metadata: { position: string; code: string };
-}
-
 const QueriesPage = () => {
   const DEBOUNCE_TIME = 500;
-  const QUERY_RESULT_STATUS = {
-    DONE: 'DONE',
-    WAITING: 'WAITING',
-    FAILED: 'FAILED',
-  };
 
   const editorRef = useRef<any>();
   const { queryId } = useParams<ParamTypes>();

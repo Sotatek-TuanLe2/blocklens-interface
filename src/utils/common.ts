@@ -65,6 +65,7 @@ export const getHourAndMinute = (date: string) => {
 };
 
 export const INPUT_DEBOUNCE = 500;
+
 export const getDefaultVisualizationName = (chain: string | undefined) => {
   switch (chain) {
     case TYPE_VISUALIZATION.table:
@@ -91,4 +92,10 @@ export const getDefaultVisualizationName = (chain: string | undefined) => {
     default:
       return '';
   }
+};
+
+export const QUERY_RESULT_STATUS = {
+  DONE: 'DONE',
+  WAITING: 'WAITING',
+  FAILED: 'FAILED',
 };
