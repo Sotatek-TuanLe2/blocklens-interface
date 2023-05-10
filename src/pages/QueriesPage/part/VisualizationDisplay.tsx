@@ -27,7 +27,6 @@ import 'src/styles/components/Chart.scss';
 import TableConfigurations from '../../../components/VisualizationConfigs/TableConfigurations';
 import {
   IQuery,
-  LABEL_VISUALIZATION,
   TYPE_VISUALIZATION,
   VALUE_VISUALIZATION,
   VisualizationType,

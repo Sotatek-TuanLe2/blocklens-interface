@@ -195,3 +195,9 @@ export type QueryResultResponse = {
   createAt: string;
   updatedAt: string;
 };
+
+export interface IErrorExecuteQuery {
+  message: string;
+  name: string;
+  metadata: { position: string; code: string };
+}
