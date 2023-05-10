@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import React, { useMemo, useState } from 'react';
 import {
@@ -223,6 +224,44 @@ const VisualizationChart: React.FC<Props> = (props) => {
     return result;
   };
 
+  const yAxisDomain = useMemo(() => {
+    let minValue: number | string = 'auto';
+    let maxValue: number | string = 'auto';
+
+    if (data && !!data.length && xAxisKey && !!yAxisKeys?.length) {
+      const caculatedValues: any[] = [];
+      yAxisKeys.forEach((yAxis: string) => {
+        if (data.every((item: any) => isNumber(item[yAxis]))) {
+          caculatedValues.push(data.map((item: any) => +item[yAxis]));
+        }
+      });
+
+      if (chartOptionsConfigs?.stacking) {
+        const newCalculatedValues = [...caculatedValues];
+        Array(data.length).forEach((_, index) => {
+          newCalculatedValues[index] = caculatedValues.reduce((a, b) =>
+            new BigNumber(a[index]).plus(new BigNumber(b[index])),
+          );
+        });
+        minValue = BigNumber.min(...newCalculatedValues).toNumber();
+        maxValue = BigNumber.max(...newCalculatedValues).toNumber();
+      } else {
+        const newCalculatedValues: any[] = [];
+        caculatedValues.forEach((array) => {
+          newCalculatedValues.push(...array);
+        });
+        minValue = BigNumber.minimum(...newCalculatedValues).toNumber();
+        maxValue = BigNumber.maximum(...newCalculatedValues).toNumber();
+      }
+    }
+    return [
+      minValue,
+      Math.ceil(
+        new BigNumber(maxValue).multipliedBy(new BigNumber(1.01)).toNumber(),
+      ),
+    ];
+  }, [data, xAxisKey, yAxisKeys, chartOptionsConfigs]);
+
   return (
     <ResponsiveContainer className={containerClassName}>
       <ChartComponent
@@ -263,6 +302,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
             tick={{ fill: '#8D91A5', fontWeight: 400 }}
             tickLine={false}
             {...logarithmicProps}
+            domain={yAxisDomain}
           />
         )}
         <Tooltip
