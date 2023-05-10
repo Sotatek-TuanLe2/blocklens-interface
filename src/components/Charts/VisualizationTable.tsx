@@ -62,11 +62,20 @@ const VisualizationTable = <T,>({
     columns: getTableColumns(data, visualization),
     getCoreRowModel: getCoreRowModel(),
   });
-  const a = getTableColumns(data, visualization).map((i) => i.id);
-  console.log(a, ' a ');
-  const b = newQueryResult.map((i) => i.block_height);
-  const c = Math.max(...newQueryResult.map((i) => i.block_height));
-  console.log(b.map((number) => (Number(number) / c) * 100));
+
+  const groupedKeys = {} as any;
+  const arr = table.getRowModel()?.flatRows;
+  for (let i = 0; i < arr.length; i++) {
+    const obj = arr[i].original;
+    for (const key in obj) {
+      if (groupedKeys[key]) {
+        groupedKeys[key].push(obj[key]);
+      } else {
+        groupedKeys[key] = [obj[key]];
+      }
+    }
+  }
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setDataTable && setDataTable(table.getRowModel().rows);
@@ -141,7 +150,7 @@ const VisualizationTable = <T,>({
             ))}
           </thead>
           <tbody>
-            {table.getRowModel().rows.map((row) => (
+            {table.getRowModel().rows.map((row, index) => (
               <tr key={row.id}>
                 {row.getVisibleCells().map((cells: any) => {
                   const {
@@ -204,6 +213,9 @@ const VisualizationTable = <T,>({
                           ></div>
                         ) : null}
                         {!!value && formatVisualizationValue(format, value)}
+                        <span style={{ color: 'red' }}>
+                          {groupedKeys[cells.column.id][index]}
+                        </span>
                       </div>
                     </td>
                   );
