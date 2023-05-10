@@ -134,6 +134,9 @@ const VisualizationPieChart = ({
             nameKey={xAxisKey}
             innerRadius={'58%'}
             labelLine={false}
+            label={
+              chartOptionsConfigs?.showDataLabels && _renderCustomizedLabel
+            }
           >
             {dataCharts &&
               dataCharts.map((entry: any, index: number) => (
