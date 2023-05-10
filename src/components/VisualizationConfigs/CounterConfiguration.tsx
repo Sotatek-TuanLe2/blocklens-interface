@@ -134,7 +134,7 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
                 value={dataColumn?.rowNumber || 1}
                 onChange={(e) =>
                   onChangeCounterConfigurations({
-                    rowNumber: e.target.value,
+                    rowNumber: e.target.value || 1,
                   })
                 }
               />
