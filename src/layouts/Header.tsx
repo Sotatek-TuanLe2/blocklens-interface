@@ -152,25 +152,25 @@ const Header: FC = () => {
   };
 
   const _renderContent = () => {
-    if (isMobile) {
-      return (
-        <>
-          {isOpenMenuMobile ? (
-            <Box
-              className={'btn-close'}
-              onClick={() => setIsOpenMenuMobile(false)}
-            >
-              <CloseIcon width={'11px'} />
-            </Box>
-          ) : (
-            <Box
-              onClick={() => setIsOpenMenuMobile(true)}
-              className="icon-menu-mobile"
-            />
-          )}
-        </>
-      );
-    }
+    // if (isMobile) {
+    //   return (
+    //     <>
+    //       {isOpenMenuMobile ? (
+    //         <Box
+    //           className={'btn-close'}
+    //           onClick={() => setIsOpenMenuMobile(false)}
+    //         >
+    //           <CloseIcon width={'11px'} />
+    //         </Box>
+    //       ) : (
+    //         <Box
+    //           onClick={() => setIsOpenMenuMobile(true)}
+    //           className="icon-menu-mobile"
+    //         />
+    //       )}
+    //     </>
+    //   );
+    // }
 
     return (
       <>
@@ -190,7 +190,7 @@ const Header: FC = () => {
             width={isMobile ? '140px' : 'auto'}
           />
         </Box>
-        {/* {accessToken && _renderContent()} */}
+        {accessToken && _renderContent()}
       </Flex>
 
       <ModalSignInRequest
