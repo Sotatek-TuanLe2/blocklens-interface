@@ -253,13 +253,14 @@ const VisualizationChart: React.FC<Props> = (props) => {
         minValue = BigNumber.minimum(...newCalculatedValues).toNumber();
         maxValue = BigNumber.maximum(...newCalculatedValues).toNumber();
       }
+      return [
+        minValue > 0 ? 0 : minValue,
+        Math.ceil(
+          new BigNumber(maxValue).multipliedBy(new BigNumber(1.05)).toNumber(),
+        ),
+      ];
     }
-    return [
-      minValue > 0 ? 0 : minValue,
-      Math.ceil(
-        new BigNumber(maxValue).multipliedBy(new BigNumber(1.05)).toNumber(),
-      ),
-    ];
+    return [minValue, maxValue];
   }, [data, xAxisKey, yAxisKeys, chartOptionsConfigs]);
 
   return (
