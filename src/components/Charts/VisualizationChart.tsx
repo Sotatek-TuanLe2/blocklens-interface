@@ -255,7 +255,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
       }
     }
     return [
-      minValue,
+      minValue > 0 ? 0 : minValue,
       Math.ceil(
         new BigNumber(maxValue).multipliedBy(new BigNumber(1.05)).toNumber(),
       ),
