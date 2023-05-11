@@ -63,19 +63,18 @@ const VisualizationTable = <T,>({
     getCoreRowModel: getCoreRowModel(),
   });
 
-  const groupedKeys = {} as any;
-  const arr = table.getRowModel()?.flatRows;
-  for (let i = 0; i < arr.length; i++) {
-    const obj = arr[i].original;
-    for (const key in obj) {
-      if (groupedKeys[key]) {
-        groupedKeys[key].push(obj[key]);
+  const groupValuesByColumn = {} as any;
+  const rows = table.getRowModel()?.flatRows;
+  for (let i = 0; i < rows.length; i++) {
+    const rowValues = rows[i].original;
+    for (const column in rowValues) {
+      if (groupValuesByColumn[column]) {
+        groupValuesByColumn[column].push(rowValues[column]);
       } else {
-        groupedKeys[key] = [obj[key]];
+        groupValuesByColumn[column] = [rowValues[column]];
       }
     }
   }
-
   useEffect(() => {
     const timer = setTimeout(() => {
       setDataTable && setDataTable(table.getRowModel().rows);
@@ -214,7 +213,10 @@ const VisualizationTable = <T,>({
                         ) : null}
                         {!!value && formatVisualizationValue(format, value)}
                         <span style={{ color: 'red' }}>
-                          {groupedKeys[cells.column.id][index]}
+                          {typeof groupValuesByColumn[cells.column.id][
+                            index
+                          ] === 'number' &&
+                            groupValuesByColumn[cells.column.id][index]}
                         </span>
                       </div>
                     </td>
