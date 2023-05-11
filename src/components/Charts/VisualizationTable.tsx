@@ -199,7 +199,8 @@ const VisualizationTable = <T,>({
                             className="visual-progressbar"
                           ></div>
                         ) : null}
-                        {!!value && formatVisualizationValue(format, value)}
+                        {!!value?.toString() &&
+                          formatVisualizationValue(format, value)}
                       </div>
                     </td>
                   );
