@@ -63,18 +63,25 @@ const VisualizationTable = <T,>({
     getCoreRowModel: getCoreRowModel(),
   });
 
-  const groupValuesByColumn = {} as any;
+  const columnValues = {} as any;
   const rows = table.getRowModel()?.flatRows;
-  for (let i = 0; i < rows.length; i++) {
-    const rowValues = rows[i].original;
-    for (const column in rowValues) {
-      if (groupValuesByColumn[column]) {
-        groupValuesByColumn[column].push(rowValues[column]);
-      } else {
-        groupValuesByColumn[column] = [rowValues[column]];
-      }
+  rows.forEach((row) => {
+    for (const column in row.original) {
+      columnValues[column] = [
+        ...(columnValues[column] || []),
+        row.original[column],
+      ];
     }
-  }
+  });
+
+  const result = Object.entries(columnValues).reduce(
+    (acc, [column, values]: any) => {
+      acc[column] = Math.max(...values);
+      return acc;
+    },
+    {} as any,
+  );
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setDataTable && setDataTable(table.getRowModel().rows);
@@ -163,25 +170,10 @@ const VisualizationTable = <T,>({
                   } = cells.column.columnDef;
                   const value = cells.getValue();
                   const isNumberValue = isNumber(value);
-                  const cellValue = groupValuesByColumn[cells.column.id][index];
+                  const cellValue = columnValues[cells.column.id][index];
 
-                  const maxValues = [];
-
-                  for (const prop in groupValuesByColumn) {
-                    const arr = groupValuesByColumn[prop];
-                    const max = Math.max(...arr);
-                    console.log(`The maximum element of ${prop} is ${max}`);
-                    maxValues.push(max);
-                  }
-
-                  const result = {};
-                  let i = 0;
-                  for (const prop in groupValuesByColumn) {
-                    result[prop] = maxValues[i];
-                    i++;
-                  }
-
-                  console.log('All maximum values:', result);
+                  const percent =
+                    (Number(cellValue) / result[cells.column.id]) * 100;
 
                   const checkColor = (value: any) => {
                     switch (true) {
@@ -225,15 +217,13 @@ const VisualizationTable = <T,>({
                                 '--myColor': coloredProgress
                                   ? VISUALIZATION_COLORS.POSITIVE
                                   : '#3965ff',
+                                '--myProgressBar': `${percent}%`,
                               } as React.CSSProperties
                             }
                             className="visual-progressbar"
                           ></div>
                         ) : null}
                         {!!value && formatVisualizationValue(format, value)}
-                        <span style={{ color: 'red' }}>
-                          {typeof cellValue === 'number' && maxValues[index]}
-                        </span>
                       </div>
                     </td>
                   );
