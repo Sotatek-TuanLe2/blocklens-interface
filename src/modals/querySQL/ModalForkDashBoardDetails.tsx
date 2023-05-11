@@ -35,6 +35,7 @@ const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
   useEffect(() => {
     if (!open) {
       setDataForm(initDataForkModal);
+      validator.current.visibleFields = [];
     }
   }, [open]);
 

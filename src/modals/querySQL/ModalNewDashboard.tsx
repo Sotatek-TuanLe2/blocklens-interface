@@ -39,6 +39,7 @@ const ModalNewDashboard: React.FC<IModalNewDashboard> = ({ open, onClose }) => {
   useEffect(() => {
     if (!open) {
       setDataForm(initDataFormSetting);
+      validator.current.visibleFields = [];
     }
   }, [open]);
 
