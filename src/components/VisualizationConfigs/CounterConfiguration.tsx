@@ -231,7 +231,7 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
                 onKeyDown={onKeyDown}
                 onChange={(e) => {
                   const value = e?.target?.value.replace(/[-e]/gi, '');
-                  if (value?.length > 1) return;
+                  if (value.length > 1) return;
                   onChangeCounterConfigurations({
                     stringDecimal: value,
                   });
