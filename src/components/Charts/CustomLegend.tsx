@@ -7,6 +7,8 @@ const CustomLegend = (props: any) => {
     <div>
       {payload.map((entry: any, index: number) => (
         <div key={`item-${index}`} className="custom-legend">
+          <span style={{ backgroundColor: `${entry.color}` }}></span>
+
           <span
             className={
               hiddenCharts.includes(entry.dataKey) ? 'hide-legend' : ''
@@ -16,7 +18,6 @@ const CustomLegend = (props: any) => {
           >
             {entry.value}
           </span>
-          <span style={{ backgroundColor: `${entry.color}` }}></span>
         </div>
       ))}
     </div>
