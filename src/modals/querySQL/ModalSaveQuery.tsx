@@ -34,6 +34,7 @@ const ModalSaveQuery = ({ open, onClose, onSubmit }: IModalSaveQuery) => {
   useEffect(() => {
     if (!open) {
       setQueryName('');
+      validator.current.visibleFields = [];
     }
   }, [open]);
 
@@ -51,6 +52,11 @@ const ModalSaveQuery = ({ open, onClose, onSubmit }: IModalSaveQuery) => {
           onChange={handleChangeNameQuery}
           value={queryName}
           placeholder="Query name ..."
+          validate={{
+            name: `dashboard`,
+            validator: validator.current,
+            rule: ['required', 'max:150'],
+          }}
         />
         <Box pt={'20px'}>Don't worry, you can change this any time.</Box>
         <Flex className="modal-footer">
