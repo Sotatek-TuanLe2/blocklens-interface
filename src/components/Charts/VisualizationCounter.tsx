@@ -47,10 +47,10 @@ const VisualizationCounter = ({ data, visualization }: Props) => {
   const checkColor = (value: string | number) => {
     switch (true) {
       case new BigNumber(value).isGreaterThan(0) &&
-        dataOptions?.coloredPositiveValues:
+        dataOptions.coloredPositiveValues:
         return VISUALIZATION_COLORS.POSITIVE;
       case new BigNumber(value).isLessThan(0) &&
-        dataOptions?.coloredNegativeValues:
+        dataOptions.coloredNegativeValues:
         return VISUALIZATION_COLORS.NEGATIVE;
       default:
         return undefined;
