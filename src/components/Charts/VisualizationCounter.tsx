@@ -23,25 +23,25 @@ const VisualizationCounter = ({ data, visualization }: Props) => {
   useEffect(() => {
     setSize(defaultSize);
   }, [
-    dataOptions?.counterColName,
-    dataOptions?.stringPrefix,
-    dataOptions?.stringDecimal,
-    dataOptions?.rowNumber,
+    dataOptions.counterColName,
+    dataOptions.stringPrefix,
+    dataOptions.stringDecimal,
+    dataOptions.rowNumber,
   ]);
 
   const dataCounter = () => {
-    if (data[dataOptions?.rowNumber - 1] === undefined) return '';
-    const dataColumn: any = data[dataOptions?.rowNumber - 1];
-    const indexColumn = dataOptions?.counterColName;
+    if (data[dataOptions.rowNumber - 1] === undefined) return '';
+    const dataColumn: any = data[dataOptions.rowNumber - 1];
+    const indexColumn = dataOptions.counterColName;
     return dataColumn[indexColumn];
   };
 
   const defaultSize =
     NUMBER_SIZE.start -
-    (dataCounter()?.length +
-      Number(dataOptions?.stringDecimal || 0) +
-      (dataOptions?.stringPrefix?.toString()?.length || 0) +
-      (dataOptions?.stringSuffix?.toString()?.length || 0)) /
+    ((dataCounter()?.length || 0) +
+      Number(dataOptions.stringDecimal || 0) +
+      (dataOptions.stringPrefix?.toString().length || 0) +
+      (dataOptions.stringSuffix?.toString().length || 0)) /
       NUMBER_SIZE.percent;
 
   const checkColor = (value: string | number) => {
@@ -70,19 +70,19 @@ const VisualizationCounter = ({ data, visualization }: Props) => {
               fontSize: `${size}px`,
             }}
           >
-            {isNumberValue && dataOptions?.stringPrefix}
+            {isNumberValue && dataOptions.stringPrefix}
             <span>
               {isNumberValue
                 ? roundAndPadZeros(
                     dataCounter(),
-                    Number(dataOptions?.stringDecimal || 0),
+                    Number(dataOptions.stringDecimal || 0),
                   )
                 : dataCounter()}
             </span>
-            {isNumberValue && dataOptions?.stringSuffix}
+            {isNumberValue && dataOptions.stringSuffix}
           </div>
           <div className="counter-sub-label">
-            {dataOptions?.counterLabel ? dataOptions?.counterLabel : 'Counter'}
+            {dataOptions.counterLabel ? dataOptions.counterLabel : 'Counter'}
           </div>
         </div>
       </div>
