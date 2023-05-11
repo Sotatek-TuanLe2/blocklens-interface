@@ -131,10 +131,10 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
                 placeholder="Price"
                 size={'sm'}
                 className="input-table"
-                value={dataColumn?.rowNumber}
+                value={dataColumn?.rowNumber || 1}
                 onChange={(e) =>
                   onChangeCounterConfigurations({
-                    rowNumber: e.target.value,
+                    rowNumber: e.target.value || 1,
                   })
                 }
               />
