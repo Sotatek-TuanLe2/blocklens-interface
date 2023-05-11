@@ -163,6 +163,25 @@ const VisualizationTable = <T,>({
                   } = cells.column.columnDef;
                   const value = cells.getValue();
                   const isNumberValue = isNumber(value);
+                  const cellValue = groupValuesByColumn[cells.column.id][index];
+
+                  const maxValues = [];
+
+                  for (const prop in groupValuesByColumn) {
+                    const arr = groupValuesByColumn[prop];
+                    const max = Math.max(...arr);
+                    console.log(`The maximum element of ${prop} is ${max}`);
+                    maxValues.push(max);
+                  }
+
+                  const result = {};
+                  let i = 0;
+                  for (const prop in groupValuesByColumn) {
+                    result[prop] = maxValues[i];
+                    i++;
+                  }
+
+                  console.log('All maximum values:', result);
 
                   const checkColor = (value: any) => {
                     switch (true) {
@@ -213,10 +232,7 @@ const VisualizationTable = <T,>({
                         ) : null}
                         {!!value && formatVisualizationValue(format, value)}
                         <span style={{ color: 'red' }}>
-                          {typeof groupValuesByColumn[cells.column.id][
-                            index
-                          ] === 'number' &&
-                            groupValuesByColumn[cells.column.id][index]}
+                          {typeof cellValue === 'number' && maxValues[index]}
                         </span>
                       </div>
                     </td>
