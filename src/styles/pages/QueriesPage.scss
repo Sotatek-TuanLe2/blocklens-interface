@@ -163,6 +163,13 @@
       &__title {
         padding: 0 10px;
         margin-bottom: 10px;
+        font-size: 20px;
+        font-weight: 700;
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 100%;
       }
 
       &--bar,
@@ -172,7 +179,7 @@
         height: 92% !important;
       }
 
-      &--areachart {
+      &--area {
         width: 96% !important;
         height: 96% !important;
       }

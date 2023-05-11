@@ -8,13 +8,13 @@ import {
 } from 'recharts';
 import { COLORS } from 'src/utils/common';
 import { VisualizationOptionsType } from 'src/utils/query.type';
-import CustomTooltip from './CustomTooltip';
-import { Flex } from '@chakra-ui/react';
+import { Box, Flex } from '@chakra-ui/react';
 import { useEffect, useMemo, useState } from 'react';
 import _ from 'lodash';
 import BigNumber from 'bignumber.js';
 import { isNumber } from 'src/utils/utils-helper';
 import { ChartProps } from './VisualizationChart';
+import { formatVisualizationValue } from 'src/utils/utils-format';
 
 type ChartConfigType = VisualizationOptionsType;
 type Props = ChartProps & {
@@ -31,7 +31,7 @@ const VisualizationPieChart = ({
   const RADIAN = Math.PI / 180;
 
   const [dataCharts, setDataCharts] = useState<any>(data);
-  const [hiddenCharts, setHiddenCharts] = useState<any>([]);
+  const [hiddenKeys, setHiddenKeys] = useState<{ [key: string]: boolean }>({});
 
   useEffect(() => {
     setDataCharts(data);
@@ -42,46 +42,44 @@ const VisualizationPieChart = ({
       return [];
     }
 
-    const groupedData = dataCharts.reduce(
-      (acc: { [key: string]: number }, item: any) => {
-        acc[item[xAxisKey]] = item[yAxisKeys?.[0]];
-        return acc;
-      },
-      {},
-    );
+    const groupedData: any = [];
+    dataCharts.forEach((item: any) => {
+      const existedData = groupedData.find(
+        (data: any) => data.key === item[xAxisKey],
+      );
+      if (!existedData) {
+        groupedData.push({
+          key: item[xAxisKey],
+          value: item[yAxisKeys?.[0]],
+        });
+      } else {
+        existedData.value += item[yAxisKeys?.[0]];
+      }
+    });
 
-    const result = Object.keys(groupedData)
-      .filter((name) => {
+    const result = groupedData
+      .filter((item: { key: string; value: any }) => {
         return (
-          isNumber(groupedData[name]) &&
-          new BigNumber(groupedData[name]).isGreaterThan(0)
+          isNumber(item.value) && new BigNumber(item.value).isGreaterThan(0)
         );
       })
-      .map((name) => {
-        return { [xAxisKey]: name, [yAxisKeys?.[0]]: +groupedData[name] };
+      .map((item: { key: string; value: any }) => {
+        return { [xAxisKey]: item.key, [yAxisKeys?.[0]]: +item.value };
       });
+
     return result;
   }, [dataCharts, yAxisKeys]);
 
   const onToggleLegend = (dataKey: string) => {
-    // check datakey is added to hidden chart
-    const isRemoveHiddenChart = hiddenCharts.some((value: any) => {
-      return value[xAxisKey] === dataKey;
+    setHiddenKeys((prevState) => {
+      const newHiddenKeys = { ...prevState };
+      if (!!newHiddenKeys[dataKey]) {
+        delete newHiddenKeys[dataKey];
+      } else {
+        newHiddenKeys[dataKey] = true;
+      }
+      return newHiddenKeys;
     });
-
-    // logic add and remove hidden chart depend on isRemoveHiddenChart
-    const newHiddenChart = isRemoveHiddenChart
-      ? hiddenCharts.filter((value: any) => {
-          return value[xAxisKey] !== dataKey;
-        })
-      : [...hiddenCharts, { [xAxisKey]: dataKey }];
-
-    setHiddenCharts([...newHiddenChart]);
-
-    // creates an array of unique xAxiskey
-    const newHideChart = _.xorBy(data, newHiddenChart, xAxisKey as string);
-
-    setDataCharts(newHideChart);
   };
 
   const _renderCustomizedLabel = ({
@@ -104,7 +102,7 @@ const VisualizationPieChart = ({
         textAnchor={x > cx ? 'start' : 'end'}
         dominantBaseline="central"
       >
-        {`${(percent * 100).toFixed(0)}%`}
+        {`${(percent * 100).toFixed(2)}%`}
       </text>
     );
   };
@@ -112,34 +110,39 @@ const VisualizationPieChart = ({
   const pieSectionColor = useMemo(() => {
     const colors: { [key: string]: string } = {};
 
-    if (!data) {
+    if (!reducedData) {
       return colors;
     }
 
-    for (let index = 0; index < data.length; index++) {
-      const item = data[index];
-      colors[(item as any)[xAxisKey]] = COLORS[index % COLORS.length];
+    for (let index = 0; index < reducedData.length; index++) {
+      const item = reducedData[index];
+      colors[item[xAxisKey]] = COLORS[index % COLORS.length];
     }
 
     return colors;
-  }, [data]);
+  }, [reducedData]);
+
+  const shownData = useMemo(
+    () => reducedData.filter((entry: any) => !hiddenKeys[entry[xAxisKey]]),
+    [reducedData, hiddenKeys],
+  );
 
   return (
     <ResponsiveContainer width={'100%'} height={'92%'}>
       {yAxisKeys?.length === 1 ? (
         <PieChart className="pie-chart">
           <Pie
-            data={reducedData}
+            data={shownData}
             dataKey={yAxisKeys?.[0]}
+            nameKey={xAxisKey}
+            innerRadius={'58%'}
+            labelLine={false}
             label={
               chartOptionsConfigs?.showDataLabels && _renderCustomizedLabel
             }
-            nameKey={xAxisKey}
-            innerRadius={'38%'}
-            labelLine={false}
           >
-            {dataCharts &&
-              dataCharts.map((entry: any, index: number) => (
+            {shownData &&
+              shownData.map((entry: any) => (
                 <Cell
                   key={`cell-${entry[xAxisKey]}`}
                   fill={pieSectionColor[entry[xAxisKey]]}
@@ -147,9 +150,7 @@ const VisualizationPieChart = ({
               ))}
           </Pie>
           <Tooltip
-            content={
-              <CustomTooltip type="pie" numberFormat={configs?.numberFormat} />
-            }
+            content={<CustomTooltip numberFormat={configs?.numberFormat} />}
             animationDuration={200}
             animationEasing={'linear'}
           />
@@ -161,7 +162,7 @@ const VisualizationPieChart = ({
               content={
                 <CustomLegend
                   onToggleLegend={onToggleLegend}
-                  data={data}
+                  data={reducedData}
                   xAxisKey={xAxisKey}
                 />
               }
@@ -207,6 +208,12 @@ const CustomLegend = (props: any) => {
       {newData.map((entry: any, index: number) => (
         <div key={`item-${index}`} className="custom-legend">
           <span
+            style={{
+              backgroundColor: `${entry.color}`,
+              opacity: `${entry.type ? '1' : '0.5'}`,
+            }}
+          ></span>
+          <span
             onClick={() => onToggleLegend(entry.value)}
             style={{
               color: `${entry.color}`,
@@ -215,14 +222,45 @@ const CustomLegend = (props: any) => {
           >
             {entry.value}
           </span>
-          <span
-            style={{
-              backgroundColor: `${entry.color}`,
-              opacity: `${entry.type ? '1' : '0.5'}`,
-            }}
-          ></span>
         </div>
       ))}
     </div>
   );
+};
+
+const CustomTooltip = (props: any) => {
+  const { active, payload, numberFormat } = props;
+
+  const _renderTooltipValue = (value: any) => {
+    if (isNumber(value) && numberFormat) {
+      return formatVisualizationValue(numberFormat, Number(value));
+    }
+    return value;
+  };
+
+  if (active && payload && payload.length) {
+    return (
+      <div className="custom-tooltip">
+        {payload.map((entry: any, index: number) => (
+          <>
+            <p className="custom-tooltip__label">{entry.name}</p>
+            <div className="custom-tooltip__desc">
+              <Box
+                as={'div'}
+                key={index}
+                className="custom-tooltip__desc__detail"
+              >
+                <span style={{ backgroundColor: entry.fill }}></span>
+                <span>{`${entry.dataKey}: ${_renderTooltipValue(
+                  entry.value,
+                )}`}</span>
+                <br />
+              </Box>
+            </div>
+          </>
+        ))}
+      </div>
+    );
+  }
+  return null;
 };

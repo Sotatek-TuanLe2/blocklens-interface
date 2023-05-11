@@ -8,6 +8,15 @@ export enum VALUE_VISUALIZATION {
   counter = 'counter',
   table = 'table',
 }
+export enum LABEL_VISUALIZATION {
+  bar = 'Bar chart',
+  line = 'Line chart',
+  area = 'Area chart',
+  pie = 'Pie chart',
+  scatter = 'Scatter chart',
+  counter = 'Counter',
+  table = 'Table',
+}
 
 export enum TYPE_VISUALIZATION {
   table = 'table',
@@ -186,3 +195,9 @@ export type QueryResultResponse = {
   createAt: string;
   updatedAt: string;
 };
+
+export interface IErrorExecuteQuery {
+  message: string;
+  name: string;
+  metadata: { position: string; code: string };
+}

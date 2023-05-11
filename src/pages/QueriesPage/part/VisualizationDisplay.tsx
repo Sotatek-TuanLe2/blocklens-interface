@@ -1,4 +1,4 @@
-import { Box, Flex, Text } from '@chakra-ui/react';
+import { Box, Flex, Text, Tooltip } from '@chakra-ui/react';
 import moment from 'moment';
 import { useMemo, useState } from 'react';
 import { useParams } from 'react-router';
@@ -15,6 +15,7 @@ import BaseModal from '../../../modals/BaseModal';
 import {
   AreaChartIcon,
   BarChartIcon,
+  CounterIcon,
   LineChartIcon,
   PieChartIcon,
   QueryResultIcon,
@@ -32,6 +33,7 @@ import {
 } from '../../../utils/query.type';
 import { objectKeys } from 'src/utils/utils-network';
 import { areYAxisesSameType } from 'src/utils/utils-helper';
+import { getDefaultVisualizationName } from 'src/utils/common';
 
 type VisualizationConfigType = {
   value: string;
@@ -199,7 +201,6 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
     if (type === TYPE_VISUALIZATION.new) {
       return <AddVisualization onAddVisualize={addVisualizationHandler} />;
     }
-
     let errorMessage = null;
     let visualizationDisplay = null;
     let visualizationConfiguration = null;
@@ -296,9 +297,14 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
     return (
       <>
         <div className="visual-container__visualization">
-          <div className="visual-container__visualization__title">
-            {visualization.name}
-          </div>
+          <Tooltip
+            label={visualization.name || getDefaultVisualizationName(type)}
+            hasArrow
+          >
+            <div className="visual-container__visualization__title">
+              {visualization.name || getDefaultVisualizationName(type)}
+            </div>
+          </Tooltip>
           {errorMessage ? (
             <Flex
               alignItems={'center'}
@@ -337,6 +343,9 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
       case TYPE_VISUALIZATION.bar:
         return <BarChartIcon />;
 
+      case TYPE_VISUALIZATION.counter:
+        return <CounterIcon />;
+
       default:
         return <></>;
     }
@@ -359,7 +368,9 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
           },
         ].map((v) => ({
           icon: getIcon(v?.options?.globalSeriesType || v.type),
-          name: v.name,
+          name:
+            v.name ||
+            getDefaultVisualizationName(v?.options?.globalSeriesType || v.type),
           content: renderVisualization(v),
           id: v.id,
           closeable: v.type !== TYPE_VISUALIZATION.new,

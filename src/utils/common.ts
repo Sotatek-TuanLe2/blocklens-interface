@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { LABEL_VISUALIZATION, TYPE_VISUALIZATION } from './query.type';
 
 export interface IListAppResponse {
   pagingCounter?: number;
@@ -46,7 +47,7 @@ export const VISUALIZATION_COLORS = {
 };
 
 export const COLORS = [
-  'rgb(244, 96, 62)',
+  'rgb(0, 117, 245)',
   'rgb(200, 143, 251)',
   'rgb(230, 131, 16)',
   'rgb(36, 121, 108)',
@@ -64,3 +65,37 @@ export const getHourAndMinute = (date: string) => {
 };
 
 export const INPUT_DEBOUNCE = 500;
+
+export const getDefaultVisualizationName = (chain: string | undefined) => {
+  switch (chain) {
+    case TYPE_VISUALIZATION.table:
+      return LABEL_VISUALIZATION.table;
+
+    case TYPE_VISUALIZATION.scatter:
+      return LABEL_VISUALIZATION.scatter;
+
+    case TYPE_VISUALIZATION.area:
+      return LABEL_VISUALIZATION.area;
+
+    case TYPE_VISUALIZATION.line:
+      return LABEL_VISUALIZATION.line;
+
+    case TYPE_VISUALIZATION.pie:
+      return LABEL_VISUALIZATION.pie;
+
+    case TYPE_VISUALIZATION.bar:
+      return LABEL_VISUALIZATION.bar;
+
+    case TYPE_VISUALIZATION.counter:
+      return LABEL_VISUALIZATION.counter;
+
+    default:
+      return '';
+  }
+};
+
+export const QUERY_RESULT_STATUS = {
+  DONE: 'DONE',
+  WAITING: 'WAITING',
+  FAILED: 'FAILED',
+};

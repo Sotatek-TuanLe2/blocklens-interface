@@ -57,7 +57,6 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
       name: e.target.value,
     });
   };
-
   const onChangeCounterConfigurations = (data: any) => {
     onChangeVisualization({
       ...editVisualization,
@@ -107,9 +106,9 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
               <div>Title</div>
               <AppInput
                 value={editVisualization?.name}
-                placeholder="Price"
                 size={'sm'}
                 className="input-table"
+                placeholder="24h volume"
                 onChange={onChangeCounterName}
               />
             </div>
@@ -132,9 +131,11 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
                 placeholder="Price"
                 size={'sm'}
                 className="input-table"
-                value={dataColumn?.rowNumber}
+                value={dataColumn?.rowNumber || 1}
                 onChange={(e) =>
-                  onChangeCounterConfigurations({ rowNumber: e.target.value })
+                  onChangeCounterConfigurations({
+                    rowNumber: e.target.value || 1,
+                  })
                 }
               />
             </div>

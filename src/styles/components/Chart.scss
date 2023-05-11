@@ -1,19 +1,21 @@
 @import '../mixins.scss';
 
+.visual-container__visualization--bar {
+  path.recharts-tooltip-cursor {
+    display: none !important;
+  }
+}
 .bar-chart,
 .line-chart,
 .pie-chart,
 .scatter-chart,
 .area-chart {
-  path.recharts-tooltip-cursor {
-    display: none !important;
-  }
-
   .custom-tooltip {
+    background-color: #1a203b;
+    border-radius: 6px;
     font-size: 14px;
-    background-color: #696969;
-    border-radius: 4px;
-    padding: 6px 8px;
+    padding: 5px 10px;
+    color: #8d91a5;
     // width: 200px;
 
     &__desc {
@@ -23,33 +25,23 @@
       width: 100%;
       flex-direction: column;
       margin-top: 4px;
-
-      span:nth-child(1) {
-        position: absolute;
-        padding: 3px;
-        border-radius: 100px;
-        background-color: aliceblue;
-        top: 50%;
-        transform: translateY(-50%);
-      }
-      span:nth-child(2) {
-        margin: 0 10px;
+      .tooltip-value {
+        font-weight: 600;
       }
     }
   }
 
   .custom-legend {
-    padding-left: 50px;
+    padding-left: 20px;
     position: relative;
     display: flex;
     justify-content: space-between;
-
     @include mobile {
       display: none;
     }
 
-    span:nth-child(2) {
-      right: 0px;
+    span:nth-child(1) {
+      left: 10px;
       position: absolute;
       padding: 3px;
       border-radius: 100px;
@@ -58,7 +50,7 @@
       transform: translateY(-50%);
     }
 
-    span:nth-child(1) {
+    span:nth-child(2) {
       padding-right: 10px;
       cursor: pointer;
     }

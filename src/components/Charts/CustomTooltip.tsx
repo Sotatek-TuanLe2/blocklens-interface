@@ -1,18 +1,12 @@
 import { Box } from '@chakra-ui/react';
-import { TYPE_VISUALIZATION } from 'src/utils/query.type';
 import { formatVisualizationValue } from 'src/utils/utils-format';
-import { formatNumber } from 'src/utils/utils-format';
-import { isNumber } from 'src/utils/utils-helper';
 
 const CustomTooltip = (props: any) => {
-  const { active, payload, label, type, numberFormat } = props;
+  const { active, payload, label, numberFormat } = props;
 
   const _renderTooltipValue = (value: any) => {
-    if (type === TYPE_VISUALIZATION.pie && numberFormat) {
-      return formatVisualizationValue(numberFormat, Number(value));
-    }
-    if (isNumber(value)) {
-      return formatNumber(value);
+    if (numberFormat) {
+      return formatVisualizationValue(numberFormat, value);
     }
     return value;
   };
@@ -20,7 +14,6 @@ const CustomTooltip = (props: any) => {
   if (active && payload && payload.length) {
     return (
       <div className="custom-tooltip">
-        <p className="custom-tooltip__label">{label}</p>
         <div className="custom-tooltip__desc">
           {payload.map((entry: any, index: number) => (
             <Box
@@ -28,10 +21,13 @@ const CustomTooltip = (props: any) => {
               key={index}
               className="custom-tooltip__desc__detail"
             >
-              <span style={{ backgroundColor: entry.fill }}></span>
-              <span>{`${entry.name}: ${_renderTooltipValue(
-                entry.value,
-              )}`}</span>
+              <span>
+                {`${entry.name}:`}
+                <span className="tooltip-value">
+                  {' '}
+                  {_renderTooltipValue(entry.value)}
+                </span>
+              </span>
               <br />
             </Box>
           ))}

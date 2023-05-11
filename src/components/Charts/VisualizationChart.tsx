@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import React, { useMemo, useState } from 'react';
 import {
@@ -23,6 +24,7 @@ import {
   VisualizationOptionsType,
 } from 'src/utils/query.type';
 import { formatVisualizationValue } from 'src/utils/utils-format';
+import { isNumber } from 'src/utils/utils-helper';
 import { COLORS, getHourAndMinute } from '../../utils/common';
 import CustomLegend from './CustomLegend';
 import CustomTooltip from './CustomTooltip';
@@ -44,7 +46,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
   const xAxisConfigs = configs?.xAxisConfigs;
   const yAxisConfigs = configs?.yAxisConfigs;
 
-  const [hiddenCharts, setHiddenCharts] = useState<string[]>([]);
+  const [hiddenKeys, setHiddenKeys] = useState<string[]>([]);
 
   const tickFormatAxis = (axis: string) => (value: string) => {
     if (moment(new Date(value)).isValid() && isNaN(+value)) {
@@ -67,14 +69,14 @@ const VisualizationChart: React.FC<Props> = (props) => {
     : {};
 
   const onToggleLegend = (dataKey: string) => {
-    // check dataKey in hiddenCharts
-    const newHideChart = hiddenCharts.includes(dataKey)
-      ? hiddenCharts.filter((value) => {
+    // check dataKey in hiddenKeys
+    const newHiddenKeys = hiddenKeys.includes(dataKey)
+      ? hiddenKeys.filter((value) => {
           return value !== dataKey;
         })
-      : [...hiddenCharts, dataKey];
+      : [...hiddenKeys, dataKey];
 
-    setHiddenCharts(newHideChart);
+    setHiddenKeys(newHiddenKeys);
   };
 
   const labelFormat = (value: string) => {
@@ -105,8 +107,9 @@ const VisualizationChart: React.FC<Props> = (props) => {
             type="monotone"
             dataKey={yAxisKey}
             stroke={COLORS[index % COLORS.length]}
+            strokeWidth={3}
             dot={false}
-            hide={hiddenCharts.includes(yAxisKey)}
+            hide={hiddenKeys.includes(yAxisKey)}
           >
             {_renderLabelList(yAxisKey)}
           </Line>
@@ -114,16 +117,34 @@ const VisualizationChart: React.FC<Props> = (props) => {
 
       case TYPE_VISUALIZATION.area:
         return (
-          <Area
-            key={yAxisKey}
-            dataKey={yAxisKey}
-            stroke={COLORS[index % COLORS.length]}
-            fill={COLORS[index % COLORS.length]}
-            stackId={chartOptionsConfigs?.stacking ? 'area' : undefined}
-            hide={hiddenCharts.includes(yAxisKey)}
-          >
-            {_renderLabelList(yAxisKey)}
-          </Area>
+          <>
+            <Area
+              type="monotone"
+              key={yAxisKey}
+              dataKey={yAxisKey}
+              stroke={COLORS[index % COLORS.length]}
+              strokeWidth={3}
+              fill={`url(#${yAxisKey})`}
+              stackId={chartOptionsConfigs?.stacking ? 'area' : undefined}
+              hide={hiddenKeys.includes(yAxisKey)}
+            >
+              {_renderLabelList(yAxisKey)}
+            </Area>
+            <defs>
+              <linearGradient id={yAxisKey} x1="0" y1="0" x2="0" y2="1">
+                <stop
+                  offset="5%"
+                  stopColor={COLORS[index % COLORS.length]}
+                  stopOpacity={0.9}
+                />
+                <stop
+                  offset="95%"
+                  stopColor={COLORS[index % COLORS.length]}
+                  stopOpacity={0}
+                />
+              </linearGradient>
+            </defs>
+          </>
         );
       case TYPE_VISUALIZATION.bar:
         return (
@@ -132,7 +153,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
             dataKey={yAxisKey}
             fill={COLORS[index % COLORS.length]}
             stackId={chartOptionsConfigs?.stacking ? 'bar' : undefined}
-            hide={hiddenCharts.includes(yAxisKey)}
+            hide={hiddenKeys.includes(yAxisKey)}
           >
             {_renderLabelList(yAxisKey)}
           </Bar>
@@ -145,7 +166,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
             stroke={COLORS[index % COLORS.length]}
             fill={COLORS[index % COLORS.length]}
             name={yAxisKey}
-            hide={hiddenCharts.includes(yAxisKey)}
+            hide={hiddenKeys.includes(yAxisKey)}
           >
             {_renderLabelList(yAxisKey)}
           </Scatter>
@@ -191,6 +212,9 @@ const VisualizationChart: React.FC<Props> = (props) => {
     // sorting
     if (xAxisConfigs?.sortX) {
       result = result.sort((a: any, b: any) => {
+        if (isNumber(a[xAxisKey])) {
+          return Number(a[xAxisKey]) - Number(b[xAxisKey]);
+        }
         if (moment(a[xAxisKey]).isValid()) {
           return moment.utc(a[xAxisKey]).diff(moment.utc(b[xAxisKey]));
         }
@@ -199,6 +223,47 @@ const VisualizationChart: React.FC<Props> = (props) => {
     }
     return result;
   };
+
+  const yAxisDomain = useMemo(() => {
+    let minValue: number | string = 'auto';
+    let maxValue: number | string = 'auto';
+
+    if (data && !!data.length && xAxisKey && !!yAxisKeys?.length) {
+      const caculatedValues: any[] = [];
+      yAxisKeys
+        .filter((yAxis: string) => !hiddenKeys.includes(yAxis))
+        .forEach((yAxis: string) => {
+          if (data.every((item: any) => isNumber(item[yAxis]))) {
+            caculatedValues.push(data.map((item: any) => +item[yAxis]));
+          }
+        });
+
+      if (chartOptionsConfigs?.stacking) {
+        const newCalculatedValues = [...caculatedValues];
+        Array(data.length).forEach((_, index) => {
+          newCalculatedValues[index] = caculatedValues.reduce((a, b) =>
+            new BigNumber(a[index]).plus(new BigNumber(b[index])),
+          );
+        });
+        minValue = BigNumber.min(...newCalculatedValues).toNumber();
+        maxValue = BigNumber.max(...newCalculatedValues).toNumber();
+      } else {
+        const newCalculatedValues: any[] = [];
+        caculatedValues.forEach((array) => {
+          newCalculatedValues.push(...array);
+        });
+        minValue = BigNumber.minimum(...newCalculatedValues).toNumber();
+        maxValue = BigNumber.maximum(...newCalculatedValues).toNumber();
+      }
+      return [
+        minValue > 0 ? 0 : minValue,
+        Math.ceil(
+          new BigNumber(maxValue).multipliedBy(new BigNumber(1.05)).toNumber(),
+        ),
+      ];
+    }
+    return [minValue, maxValue];
+  }, [data, xAxisKey, yAxisKeys, hiddenKeys, chartOptionsConfigs]);
 
   return (
     <ResponsiveContainer className={containerClassName}>
@@ -212,12 +277,14 @@ const VisualizationChart: React.FC<Props> = (props) => {
           right: 10,
         }}
       >
-        <CartesianGrid vertical={false} strokeDasharray="4" />
+        <CartesianGrid vertical={false} stroke="#212D4A" />
         <XAxis
           tickFormatter={tickFormatAxis('x')}
           dataKey={xAxisKey}
           fill={'#ccc'}
           reversed={xAxisConfigs?.reverseX}
+          tick={{ fill: '#8D91A5', fontWeight: 400 }}
+          tickLine={false}
         >
           <Label
             offset={0}
@@ -235,11 +302,16 @@ const VisualizationChart: React.FC<Props> = (props) => {
               fill: '#ccc',
             }}
             tickFormatter={tickFormatAxis('y')}
+            tick={{ fill: '#8D91A5', fontWeight: 400 }}
+            tickLine={false}
             {...logarithmicProps}
+            domain={yAxisDomain}
           />
         )}
         <Tooltip
-          content={<CustomTooltip />}
+          content={
+            <CustomTooltip numberFormat={configs?.yAxisConfigs?.labelFormat} />
+          }
           animationDuration={200}
           animationEasing={'linear'}
         />
@@ -251,7 +323,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
             content={
               <CustomLegend
                 onToggleLegend={onToggleLegend}
-                hiddenCharts={hiddenCharts}
+                hiddenKeys={hiddenKeys}
               />
             }
           />
