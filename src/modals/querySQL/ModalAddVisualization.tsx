@@ -72,7 +72,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
 
   const handleSearch = debounce(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      setSearchTerm(event.target.value);
+      setSearchTerm(event.target.value.trim());
     },
     INPUT_DEBOUNCE,
   );
