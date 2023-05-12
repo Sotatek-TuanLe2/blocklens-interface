@@ -6,7 +6,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import BigNumber from 'bignumber.js';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import 'src/styles/components/TableValue.scss';
 import { VISUALIZATION_COLORS } from 'src/utils/common';
 import { VisualizationType } from 'src/utils/query.type';
@@ -20,6 +20,11 @@ interface ReactTableProps<T> {
   setDataTable?: React.Dispatch<React.SetStateAction<any[]>>;
   visualization?: VisualizationType;
 }
+
+const COLUMN_TYPES = {
+  NORMAL: 'normal',
+  PROGRESS: 'progress-bar',
+};
 
 export const getTableColumns = (
   table: any[],
@@ -41,7 +46,7 @@ export const getTableColumns = (
       enableResizing: true,
       size: 100,
       align: 'left',
-      type: 'normal',
+      type: COLUMN_TYPES.NORMAL,
       format: '',
       coloredPositive: false,
       coloredNegative: false,
@@ -63,29 +68,6 @@ const VisualizationTable = <T,>({
     getCoreRowModel: getCoreRowModel(),
   });
 
-  const columnValues = {} as any;
-  const rows = table.getRowModel()?.flatRows;
-
-  if (rows) {
-    rows.forEach((row) => {
-      row.getVisibleCells().forEach((cell: any) => {
-        if (cell.column.columnDef.type === 'progress-bar' && cell.column.id) {
-          columnValues[cell.column.id] = [
-            ...(columnValues[cell.column.id] || []),
-            row.original[cell.column.id],
-          ];
-        }
-      });
-    });
-  }
-
-  const maxValuesTable = Object.entries(columnValues).reduce(
-    (acc, [column, values]: any) => {
-      acc[column] = Math.max(...values);
-      return acc;
-    },
-    {} as any,
-  );
   useEffect(() => {
     const timer = setTimeout(() => {
       setDataTable && setDataTable(table.getRowModel().rows);
@@ -95,6 +77,31 @@ const VisualizationTable = <T,>({
       clearTimeout(timer);
     };
   }, []);
+
+  const columnMaxValues = useMemo((): { [key: string]: number } => {
+    const columnValues = {} as any;
+    const rows = table.getRowModel()?.flatRows;
+    if (rows) {
+      rows.forEach((row) => {
+        row.getVisibleCells().forEach((cell: any) => {
+          if (
+            cell.column.columnDef.type === COLUMN_TYPES.PROGRESS &&
+            cell.column.id
+          ) {
+            columnValues[cell.column.id] = [
+              ...(columnValues[cell.column.id] || []),
+              row.original[cell.column.id],
+            ];
+          }
+        });
+      });
+    }
+
+    return Object.entries(columnValues).reduce((acc, [column, values]: any) => {
+      acc[column] = Math.max(...values);
+      return acc;
+    }, {} as any);
+  }, [data]);
 
   return (
     <div>
@@ -174,12 +181,16 @@ const VisualizationTable = <T,>({
                   } = cells.column.columnDef;
                   const value = cells.getValue();
                   const isNumberValue = isNumber(value);
-                  const cellValue =
-                    type === 'progress-bar' &&
-                    columnValues[cells.column.id][index];
 
                   const percent =
-                    (cellValue / maxValuesTable[cells.column.id]) * 100;
+                    type === COLUMN_TYPES.PROGRESS
+                      ? new BigNumber(value)
+                          .dividedBy(
+                            new BigNumber(columnMaxValues[cells.column.id]),
+                          )
+                          .multipliedBy(100)
+                          .toNumber()
+                      : 0;
 
                   const checkColor = (value: any) => {
                     switch (true) {
@@ -216,7 +227,7 @@ const VisualizationTable = <T,>({
                           },
                         }}
                       >
-                        {type === 'normal' ? null : isNumberValue ? (
+                        {type === COLUMN_TYPES.PROGRESS && isNumberValue && (
                           <div
                             style={
                               {
@@ -227,8 +238,8 @@ const VisualizationTable = <T,>({
                               } as React.CSSProperties
                             }
                             className="visual-progressbar"
-                          ></div>
-                        ) : null}
+                          />
+                        )}
                         {!!value?.toString() &&
                           formatVisualizationValue(format, value)}
                       </div>
