@@ -316,7 +316,6 @@ const DashboardDetailPage: React.FC = () => {
         <ModalAddVisualization
           dashboardId={dashboardId}
           dataLayouts={dataLayouts}
-          setOpenModalFork={setOpenModalFork}
           open={openModalAddVisualization}
           onClose={() => setOpenModalAddVisualization(false)}
           userName={userName}
