@@ -225,7 +225,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
                 )),
             )
           ) : (
-            <div className="no-data">No data available.</div>
+            <div className="no-data">No data</div>
           )}
         </div>
         <Flex className="modal-footer">
