@@ -12,22 +12,11 @@ const CustomTooltip = (props: any) => {
   };
 
   if (active && payload && payload.length) {
-    const getKeyLabel = () => {
-      let title;
-      _.forOwn(payload[0].payload, function (value, key) {
-        if (label == value) {
-          title = key;
-          return;
-        }
-      });
-      return title;
-    };
     return (
       <div className="custom-tooltip">
         <div className="custom-tooltip__desc">
           <div className="custom-tooltip__desc__detail">
-            <span>{`${getKeyLabel()}: `}</span>{' '}
-            <span className="tooltip-value">{label}</span>
+            <span>{label}</span>
           </div>
           {payload.map((entry: any, index: number) => (
             <Box
