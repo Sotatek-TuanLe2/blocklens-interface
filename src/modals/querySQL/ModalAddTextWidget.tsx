@@ -108,7 +108,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
         text: markdownText,
         options: {
           sizeX: dataLayouts.length % 2 === 0 ? 0 : 6,
-          sizeY: 2,
+          sizeY: dataLayouts.length,
           col: 6,
           row: 2,
         },

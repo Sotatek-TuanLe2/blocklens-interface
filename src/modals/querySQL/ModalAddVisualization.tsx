@@ -112,7 +112,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
         text: visualizations.name,
         options: {
           sizeX: dataLayouts.length % 2 === 0 ? 0 : 6,
-          sizeY: 2,
+          sizeY: dataLayouts.length,
           col: 6,
           row: 2,
         },
