@@ -23,12 +23,12 @@ import { toastError } from 'src/utils/utils-notify';
 import BaseModal from '../BaseModal';
 import { debounce } from 'lodash';
 import { INPUT_DEBOUNCE } from 'src/utils/common';
+import ModalNewDashboard from './ModalNewDashboard';
 
 interface IModalAddVisualization {
   open: boolean;
   onClose: () => void;
   userName: string;
-  setOpenModalFork: React.Dispatch<React.SetStateAction<boolean>>;
   dataLayouts: ILayout[];
   onReload: () => Promise<void>;
   dashboardId: string;
@@ -54,12 +54,13 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   open,
   onClose,
   userName,
-  setOpenModalFork,
   dataLayouts,
   onReload,
   dashboardId,
 }) => {
   const [dataVisualization, setDataVisualization] = useState<any[]>([]);
+  const [openNewDashboardModal, setOpenNewDashboardModal] =
+    useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>('');
 
   const dataFilter = useMemo(
@@ -235,12 +236,20 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
           <AppButton
             size="sm"
             variant={'cancel'}
-            onClick={() => setOpenModalFork(true)}
+            onClick={() => setOpenNewDashboardModal(true)}
           >
             New dashboard
           </AppButton>
         </Flex>
       </form>
+
+      <ModalNewDashboard
+        open={openNewDashboardModal}
+        onClose={() => {
+          setOpenNewDashboardModal(false);
+          onClose();
+        }}
+      />
     </BaseModal>
   );
 };
