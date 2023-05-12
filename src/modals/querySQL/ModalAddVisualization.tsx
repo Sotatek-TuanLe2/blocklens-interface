@@ -72,7 +72,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
 
   const handleSearch = debounce(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      setSearchTerm(event.target.value);
+      setSearchTerm(event.target.value.trim());
     },
     INPUT_DEBOUNCE,
   );
@@ -225,7 +225,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
                 )),
             )
           ) : (
-            <div className="no-data">No data available.</div>
+            <div className="no-data">No data</div>
           )}
         </div>
         <Flex className="modal-footer">
