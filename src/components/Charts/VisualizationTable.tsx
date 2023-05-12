@@ -65,23 +65,27 @@ const VisualizationTable = <T,>({
 
   const columnValues = {} as any;
   const rows = table.getRowModel()?.flatRows;
-  rows.forEach((row) => {
-    for (const column in row.original) {
-      columnValues[column] = [
-        ...(columnValues[column] || []),
-        row.original[column],
-      ];
-    }
-  });
 
-  const result = Object.entries(columnValues).reduce(
+  if (rows) {
+    rows.forEach((row) => {
+      row.getVisibleCells().forEach((cell: any) => {
+        if (cell.column.columnDef.type === 'progress-bar' && cell.column.id) {
+          columnValues[cell.column.id] = [
+            ...(columnValues[cell.column.id] || []),
+            row.original[cell.column.id],
+          ];
+        }
+      });
+    });
+  }
+
+  const maxValuesTable = Object.entries(columnValues).reduce(
     (acc, [column, values]: any) => {
       acc[column] = Math.max(...values);
       return acc;
     },
     {} as any,
   );
-
   useEffect(() => {
     const timer = setTimeout(() => {
       setDataTable && setDataTable(table.getRowModel().rows);
@@ -170,10 +174,12 @@ const VisualizationTable = <T,>({
                   } = cells.column.columnDef;
                   const value = cells.getValue();
                   const isNumberValue = isNumber(value);
-                  const cellValue = columnValues[cells.column.id][index];
+                  const cellValue =
+                    type === 'progress-bar' &&
+                    columnValues[cells.column.id][index];
 
                   const percent =
-                    (Number(cellValue) / result[cells.column.id]) * 100;
+                    (cellValue / maxValuesTable[cells.column.id]) * 100;
 
                   const checkColor = (value: any) => {
                     switch (true) {
