@@ -32,12 +32,6 @@ const ModalSettingDashboardDetails: React.FC<IModalSettingDashboardDetails> = ({
   const [dataForm, setDataForm] =
     useState<IDataSettingForm>(initDataFormSetting);
 
-  useEffect(() => {
-    if (!open) {
-      setDataForm(initDataFormSetting);
-    }
-  }, [open]);
-
   const handleSubmitForm = async () => {
     try {
       const payload = {
