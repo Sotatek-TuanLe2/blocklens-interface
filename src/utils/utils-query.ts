@@ -34,6 +34,7 @@ export interface QueryInterface {
   name: string;
   createdAt: string;
   updatedAt: string;
+  tags: string[];
   privateMode: boolean;
   temporaryMode: boolean;
   query: string;
@@ -46,6 +47,7 @@ export interface QueryInterface {
   getName: () => string;
   getCreatedTime: () => string;
   getUpdatedTime: () => string;
+  getTags: () => string[];
   getQuery: () => string;
   getUser: () => UserInterface | string;
   getVisualizations: () => VisualizationInterface[];
@@ -109,6 +111,7 @@ export class Query implements QueryInterface {
   public name = '';
   public createdAt = '';
   public updatedAt = '';
+  public tags;
   public privateMode = false;
   public temporaryMode = false;
   public query = '';
@@ -122,6 +125,7 @@ export class Query implements QueryInterface {
     this.name = query.name;
     this.createdAt = query.createdAt;
     this.updatedAt = query.updatedAt;
+    this.tags = query.tags;
     this.privateMode = query.privateMode;
     this.temporaryMode = query.temporaryMode;
     this.query = query.query;
@@ -147,6 +151,10 @@ export class Query implements QueryInterface {
 
   getUpdatedTime() {
     return this.updatedAt;
+  }
+
+  getTags() {
+    return this.tags;
   }
 
   getQuery() {
