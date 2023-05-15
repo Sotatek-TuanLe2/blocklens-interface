@@ -53,7 +53,7 @@ const ModalSaveQuery = ({ open, onClose, onSubmit }: IModalSaveQuery) => {
           value={queryName}
           placeholder="Query name ..."
           validate={{
-            name: `dashboard`,
+            name: `query name`,
             validator: validator.current,
             rule: ['required', 'max:150'],
           }}

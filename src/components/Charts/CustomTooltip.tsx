@@ -24,7 +24,6 @@ const CustomTooltip = (props: any) => {
               <span>
                 {`${entry.name}:`}
                 <span className="tooltip-value">
-                  {' '}
                   {_renderTooltipValue(entry.value)}
                 </span>
               </span>

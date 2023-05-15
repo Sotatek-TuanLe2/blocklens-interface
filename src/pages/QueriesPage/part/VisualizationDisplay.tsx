@@ -34,6 +34,7 @@ import {
 import { objectKeys } from 'src/utils/utils-network';
 import { areYAxisesSameType } from 'src/utils/utils-helper';
 import { getDefaultVisualizationName } from 'src/utils/common';
+import { toastError } from 'src/utils/utils-notify';
 
 type VisualizationConfigType = {
   value: string;
@@ -176,11 +177,14 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
       (v) => v.id.toString() === visualizationId.toString(),
     );
     if (visualizationIndex === -1) return;
-
-    await rf
-      .getRequest('DashboardsRequest')
-      .deleteVisualization({ visualId: visualizationId });
-    await onReload();
+    try {
+      await rf
+        .getRequest('DashboardsRequest')
+        .deleteVisualization({ visualId: visualizationId });
+      await onReload();
+    } catch (error: any) {
+      toastError({ message: error.message });
+    }
   };
 
   const onChangeConfigurations = async (visualization: VisualizationType) => {
@@ -384,8 +388,8 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
         onClose={() => setCloseTabId('')}
         onActionLeft={() => setCloseTabId('')}
         onActionRight={() => {
-          removeVisualizationHandler(closeTabId);
           setCloseTabId('');
+          removeVisualizationHandler(closeTabId);
         }}
       >
         <></>

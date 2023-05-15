@@ -171,7 +171,7 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
               header: e.target.value,
             })
           }
-          placeholder="Price"
+          placeholder={data?.accessorKey}
           size={'sm'}
           className="input-table"
         />
