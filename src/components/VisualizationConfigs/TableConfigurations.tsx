@@ -164,7 +164,6 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
       <div className="box-table-children">
         <div>Title</div>
         <AppInput
-          value={data?.header}
           onChange={(e) =>
             onChange({
               ...selectedItem,
