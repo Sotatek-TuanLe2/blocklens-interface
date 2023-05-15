@@ -50,10 +50,10 @@ const VisualizationPieChart = ({
       if (!existedData) {
         groupedData.push({
           key: item[xAxisKey],
-          value: item[yAxisKeys?.[0]],
+          value: +item[yAxisKeys?.[0]] || 0,
         });
       } else {
-        existedData.value += item[yAxisKeys?.[0]];
+        existedData.value += +item[yAxisKeys?.[0]] || 0;
       }
     });
 
