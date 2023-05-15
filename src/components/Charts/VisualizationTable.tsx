@@ -144,7 +144,8 @@ const VisualizationTable = <T,>({
                       : flexRender(
                           header.column.columnDef.header,
                           header.getContext(),
-                        )}
+                        ) || header.column.columnDef.accessorKey}
+
                     <div
                       {...{
                         onMouseDown: header.getResizeHandler(),
