@@ -1,11 +1,12 @@
-import { Flex } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
+import { Flex, Text } from '@chakra-ui/react';
+import React, { useEffect, useRef, useState } from 'react';
 import { AppButton, AppField, AppInput } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/BaseModal.scss';
 import { IDashboardDetail } from 'src/utils/query.type';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
+import { createValidator } from 'src/utils/utils-validator';
 import BaseModal from '../BaseModal';
 
 interface IModalSettingDashboardDetails {
@@ -25,6 +26,12 @@ const ModalSettingDashboardDetails: React.FC<IModalSettingDashboardDetails> = ({
   dataDashboard,
   onReload,
 }) => {
+  const validator = useRef(
+    createValidator({
+      element: (message: string) => <Text color={'red.100'}>{message}</Text>,
+    }),
+  );
+
   const initDataFormSetting = {
     title: dataDashboard?.name,
   };
@@ -76,6 +83,11 @@ const ModalSettingDashboardDetails: React.FC<IModalSettingDashboardDetails> = ({
                   ...dataForm,
                   title: e.target.value,
                 });
+              }}
+              validate={{
+                name: `dashboard`,
+                validator: validator.current,
+                rule: ['required', 'max:150'],
               }}
             />
           </AppField>
