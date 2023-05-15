@@ -38,6 +38,12 @@ const ModalSettingDashboardDetails: React.FC<IModalSettingDashboardDetails> = ({
     }
   }, [open]);
 
+  useEffect(() => {
+    setDataForm({
+      title: dataDashboard?.name,
+    });
+  }, [dataDashboard?.name]);
+
   const handleSubmitForm = async () => {
     try {
       const payload = {
