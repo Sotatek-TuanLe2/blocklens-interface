@@ -213,20 +213,34 @@ export const roundAndPadZeros = (a: number, decimals: number): string => {
 };
 
 export const formatVisualizationValue = (format: string, value: any) => {
-  switch (isNumber(value)) {
-    case format.includes(','):
-      return value.toLocaleString('en-US');
-    case format.includes('0.'):
-      return formatNumberWithDecimalDigits(value, format);
-    case format === '0':
-      return parseInt(value);
-    case format === 'a':
-      return _formatLargeNumberIfNeed(value);
-    case format === '$':
-      return `$${value}`;
-    case format.includes('a') && format.includes('$'):
+  if (isNumber(value)) {
+    if (format.includes('a') && format.includes('$') && format.includes('.')) {
       return `$${_formatLargeNumberIfNeed(value)}`;
-    default:
-      return value;
+    }
+    if (format.includes(',')) {
+      return Number(value).toLocaleString('en-US');
+    }
+
+    if (format.includes('0.')) {
+      return formatNumberWithDecimalDigits(value, format);
+    }
+
+    if (format === '0') {
+      return parseInt(value);
+    }
+
+    if (format === 'a') {
+      return _formatLargeNumberIfNeed(value);
+    }
+
+    if (format === '$') {
+      return `$${value}`;
+    }
+
+    if (format.includes('a') && format.includes('$')) {
+      return `$${_formatLargeNumberIfNeed(value)}`;
+    }
   }
+
+  return value;
 };
