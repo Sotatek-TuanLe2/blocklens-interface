@@ -2,11 +2,18 @@ import { ArrowBackIcon } from '@chakra-ui/icons';
 import { Box, Flex, Text } from '@chakra-ui/react';
 import _, { debounce } from 'lodash';
 import moment from 'moment';
-import React, { ReactNode, useCallback, useEffect, useState } from 'react';
+import React, {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { CheckIcon, ClockIcon, SettingIcon } from 'src/assets/icons';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/EditorSidebar.scss';
 import { CHAIN_NAME, IQuery } from 'src/utils/query.type';
+import { Query } from 'src/utils/utils-query';
 import { AppInput, AppSelect2 } from '../../../components';
 import SchemaDescribe from '../../../components/SqlEditor/SchemaDescribe';
 import SchemaTitle from '../../../components/SqlEditor/SchemaTitle';
@@ -16,7 +23,7 @@ import { getLogoChainByChainId } from '../../../utils/utils-network';
 import { toastError } from '../../../utils/utils-notify';
 
 const TIME_DEBOUNCE = 1000;
-interface IEditerSideBar {
+interface IEditorSideBarProps {
   queryValue: IQuery | null;
   onAddParameter: (parameter: string) => void;
 }
@@ -28,23 +35,7 @@ interface IQueryInfo {
   contentRight?: boolean;
 }
 
-const defaultQueryInfo: { [key: string]: IQueryInfo } = {
-  LAST_SAVED: {
-    label: 'Last saved',
-    value: '',
-    icon: <SettingIcon />,
-    contentRight: true,
-  },
-  QUERY_CREATED: {
-    label: 'Query created',
-    value: '',
-    icon: <ClockIcon />,
-    contentRight: true,
-  },
-  QUERY_PUBLISHED: { label: 'Query is', value: '', icon: <CheckIcon /> },
-};
-
-const EditorSidebar: React.FC<IEditerSideBar> = ({
+const EditorSidebar: React.FC<IEditorSideBarProps> = ({
   queryValue,
   onAddParameter,
 }) => {
@@ -59,10 +50,10 @@ const EditorSidebar: React.FC<IEditerSideBar> = ({
     search: '',
   });
   const [schemaDescribe, setSchemaDescribe] = useState<SchemaType[] | null>();
-  const [queryInfo, setQueryInfo] = useState(defaultQueryInfo);
   const [chainsSupported, setChainsSupported] = useState<
     { value: string; label: string }[]
   >([]);
+
   useEffect(() => {
     (async () => {
       const listChainRes = await rf
@@ -76,6 +67,13 @@ const EditorSidebar: React.FC<IEditerSideBar> = ({
       setChainsSupported(listChain);
     })();
   }, []);
+
+  const queryClass = useMemo(() => {
+    if (!queryValue) {
+      return null;
+    }
+    return new Query(queryValue);
+  }, [queryValue]);
 
   const getChainIcon = (chainName: string) => {
     let iconClassName: string;
@@ -141,23 +139,6 @@ const EditorSidebar: React.FC<IEditerSideBar> = ({
     debounce(fetchDataTable, TIME_DEBOUNCE),
     [paramsSearch],
   );
-
-  useEffect(() => {
-    setQueryInfo((pre) => ({
-      LAST_SAVED: {
-        ...queryInfo.LAST_SAVED,
-        value: moment(queryValue?.updatedAt).fromNow(),
-      },
-      QUERY_CREATED: {
-        ...queryInfo.QUERY_CREATED,
-        value: moment(queryValue?.createdAt).fromNow(),
-      },
-      QUERY_PUBLISHED: {
-        ...queryInfo.QUERY_PUBLISHED,
-        value: queryValue?.isTemp ? 'keeped' : 'published',
-      },
-    }));
-  }, [queryValue]);
 
   useEffect(() => {
     debounceFetchTablaData();
@@ -266,24 +247,44 @@ const EditorSidebar: React.FC<IEditerSideBar> = ({
         {renderListSchema()}
         {renderTableDescribe()}
       </Box>
-      {!!queryValue && !queryValue?.isTemp && (
+      {!!queryClass && !queryClass.isTemp() && (
         <Flex direction={'column'} className="query-info-wrap">
-          {Object.values(queryInfo).map((query, id) => (
+          {(
+            [
+              {
+                label: 'Last saved',
+                value: moment(queryClass.getUpdatedTime()).fromNow(),
+                icon: <SettingIcon />,
+                contentRight: true,
+              },
+              {
+                label: 'Query created',
+                value: moment(queryClass.getCreatedTime()).fromNow(),
+                icon: <ClockIcon />,
+                contentRight: true,
+              },
+              {
+                label: 'Query is',
+                value: queryClass.isTemp() ? 'keeped' : 'published',
+                icon: <CheckIcon />,
+              },
+            ] as IQueryInfo[]
+          ).map((info, id) => (
             <Flex
               key={id + 'query_info'}
               className="query-info"
-              justifyContent={query.contentRight ? 'space-between' : 'left'}
+              justifyContent={info.contentRight ? 'space-between' : 'left'}
             >
               <Flex alignItems={'center'} gap={'6px'}>
-                <span>{query.icon}</span>
-                <Box className="query-info__label">{query.label} &nbsp;</Box>
+                <span>{info.icon}</span>
+                <Box className="query-info__label">{info.label} &nbsp;</Box>
               </Flex>
 
               <Box
                 className="query-info__value"
-                fontStyle={query.contentRight ? 'italic' : 'normal'}
+                fontStyle={info.contentRight ? 'italic' : 'normal'}
               >
-                {query.value}
+                {info.value}
               </Box>
             </Flex>
           ))}

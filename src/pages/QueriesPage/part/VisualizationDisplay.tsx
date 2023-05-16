@@ -35,6 +35,7 @@ import { objectKeys } from 'src/utils/utils-network';
 import { areYAxisesSameType } from 'src/utils/utils-helper';
 import { getDefaultVisualizationName } from 'src/utils/common';
 import { toastError } from 'src/utils/utils-notify';
+import { Query } from 'src/utils/utils-query';
 
 type VisualizationConfigType = {
   value: string;
@@ -96,6 +97,8 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
 
   const [closeTabId, setCloseTabId] = useState<string | number>('');
   const [dataTable, setDataTable] = useState<any[]>([]);
+
+  const queryClass = useMemo(() => new Query(queryValue), [queryValue]);
 
   const axisOptions =
     Array.isArray(queryResult) && queryResult[0]
@@ -167,10 +170,10 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
   const removeVisualizationHandler = async (
     visualizationId: string | number,
   ) => {
-    const visualizationIndex = queryValue.visualizations.findIndex(
-      (v) => v.id.toString() === visualizationId.toString(),
+    const visualization = queryClass?.getVisualizationById(
+      visualizationId.toString(),
     );
-    if (visualizationIndex === -1) return;
+    if (!visualization) return;
     try {
       await rf
         .getRequest('DashboardsRequest')
@@ -182,10 +185,8 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
   };
 
   const onChangeConfigurations = async (visualization: VisualizationType) => {
-    const index = queryValue.visualizations.findIndex(
-      (v) => v.id === visualization.id,
-    );
-    if (index >= 0) {
+    const visual = queryClass?.getVisualizationById(visualization.id);
+    if (!!visual) {
       await rf
         .getRequest('DashboardsRequest')
         .editVisualization(visualization, visualization.id);
