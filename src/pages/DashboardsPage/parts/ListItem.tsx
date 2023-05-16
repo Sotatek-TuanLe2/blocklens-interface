@@ -1,9 +1,10 @@
 import { Flex, Td, Tr } from '@chakra-ui/react';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
-import useUser from 'src/hooks/useUser';
 import { LIST_ITEM_TYPE } from '..';
 import Jazzicon, { jsNumberForAddress } from 'react-jazzicon';
+import { Dashboard, DashboardInterface } from 'src/utils/utils-dashboard';
+import { Query, QueryInterface } from 'src/utils/utils-query';
 
 interface IMember {
   id: number;
@@ -12,40 +13,39 @@ interface IMember {
 }
 
 interface IListItem {
-  id: string | number;
   type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
-  title: string;
-  createdAt?: Date;
-  author: string;
-  tags?: string[]; // used for dashboards and queries
+  item: DashboardInterface | QueryInterface;
 }
 
 const ListItem: React.FC<IListItem> = (props) => {
-  const { id, type, title, createdAt, tags } = props;
+  const { type, item } = props;
+
+  const itemClass =
+    type === LIST_ITEM_TYPE.DASHBOARDS
+      ? new Dashboard(item as DashboardInterface)
+      : new Query(item as QueryInterface);
 
   const getTitleUrl = (): string => {
     switch (type) {
       case LIST_ITEM_TYPE.DASHBOARDS:
-        return `/dashboards/${id}/`;
+        return `/dashboards/${itemClass.getId()}/`;
       case LIST_ITEM_TYPE.QUERIES:
-        return `/queries/${id}`;
+        return `/queries/${itemClass.getId()}`;
       default:
         return '/dashboards';
     }
   };
 
   const _renderSubContent = () => {
-    if (type === LIST_ITEM_TYPE.DASHBOARDS || type === LIST_ITEM_TYPE.QUERIES) {
-      return (
-        <div className="dashboard-list__item__sub__content">
-          Created
-          <span> &nbsp;</span>
-          {moment(createdAt).fromNow()}
-        </div>
-      );
-    }
-    return <>Created </>;
+    return (
+      <div className="dashboard-list__item__sub__content">
+        Created
+        <span> &nbsp;</span>
+        {moment(itemClass.getCreatedTime()).fromNow()}
+      </div>
+    );
   };
+
   return (
     <Tr>
       <Td border={'none'} padding={0}>
@@ -55,7 +55,10 @@ const ListItem: React.FC<IListItem> = (props) => {
           alignItems={'center'}
         >
           <div className="dashboard-list__item__avatar">
-            <Jazzicon diameter={40} seed={jsNumberForAddress(id.toString())} />
+            <Jazzicon
+              diameter={40}
+              seed={jsNumberForAddress(itemClass.getId().toString())}
+            />
           </div>
           <div className="dashboard-list__item__content">
             <Flex
@@ -63,11 +66,11 @@ const ListItem: React.FC<IListItem> = (props) => {
               alignItems={'center'}
             >
               <Link className="item-name" to={getTitleUrl()}>
-                {title}
+                {itemClass.getName()}
               </Link>
-              {tags && (
+              {itemClass.getTags() && (
                 <span className="tag-name">
-                  {tags.map((tag) => (
+                  {itemClass.getTags().map((tag) => (
                     <Tag key={tag} value={tag} />
                   ))}
                 </span>
