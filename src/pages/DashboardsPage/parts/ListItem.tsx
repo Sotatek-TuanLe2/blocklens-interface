@@ -3,18 +3,13 @@ import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { LIST_ITEM_TYPE } from '..';
 import Jazzicon, { jsNumberForAddress } from 'react-jazzicon';
-import { Dashboard, DashboardInterface } from 'src/utils/utils-dashboard';
-import { Query, QueryInterface } from 'src/utils/utils-query';
-
-interface IMember {
-  id: number;
-  name: string;
-  avatar: string;
-}
+import { Dashboard } from 'src/utils/utils-dashboard';
+import { Query } from 'src/utils/utils-query';
+import { IDashboardDetail, IQuery } from 'src/utils/query.type';
 
 interface IListItem {
   type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
-  item: DashboardInterface | QueryInterface;
+  item: IDashboardDetail | IQuery;
 }
 
 const ListItem: React.FC<IListItem> = (props) => {
@@ -22,8 +17,8 @@ const ListItem: React.FC<IListItem> = (props) => {
 
   const itemClass =
     type === LIST_ITEM_TYPE.DASHBOARDS
-      ? new Dashboard(item as DashboardInterface)
-      : new Query(item as QueryInterface);
+      ? new Dashboard(item as IDashboardDetail)
+      : new Query(item as IQuery);
 
   const getTitleUrl = (): string => {
     switch (type) {
@@ -70,7 +65,7 @@ const ListItem: React.FC<IListItem> = (props) => {
               </Link>
               {itemClass.getTags() && (
                 <span className="tag-name">
-                  {itemClass.getTags().map((tag) => (
+                  {itemClass.getTags()?.map((tag) => (
                     <Tag key={tag} value={tag} />
                   ))}
                 </span>

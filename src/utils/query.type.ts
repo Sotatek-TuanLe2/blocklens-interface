@@ -41,24 +41,32 @@ export enum CHAIN_NAME {
   POLYGON_MAINNET = 'polygon_mainnet',
 }
 
+export interface WidgetOptions {
+  col: number;
+  row: number;
+  sizeX: number;
+  sizeY: number;
+}
+
 export type VisualizationType = {
   id: string;
   name: string;
   type: string;
-  createdAt: Date | number;
-  updatedAt?: Date | number;
+  createdAt: string;
+  updatedAt: string;
   options: any;
-  query?: any;
+  query?: IQuery;
 };
 
 export interface IQuery {
   id: string;
   name: string;
-  isPrivate?: boolean;
-  isArchived?: boolean;
-  isTemp?: boolean;
-  createdAt: Date | number;
-  updatedAt?: Date | number;
+  isPrivate: boolean;
+  isArchived: boolean;
+  isTemp: boolean;
+  createdAt: string;
+  updatedAt: string;
+  tags?: string[];
   query: string;
   forkedQuery?: null;
   user?: {
@@ -75,31 +83,25 @@ export interface IDashboard {
   isArchived: boolean;
   user: string;
   forkedDashboard: string;
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface ITextWidget {
   id: string;
   text: string;
-  options: {
-    col: number;
-    row: number;
-    sizeX: number;
-    sizeY: number;
-  };
-  createdAt?: Date;
-  updatedAt?: Date;
+  options: WidgetOptions;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface IVisualizationWidget {
   id: string;
+  createdAt: string;
+  updatedAt: string;
+  options: WidgetOptions;
   visualization: VisualizationType;
-  dashboard: IDashboard;
   user: string;
-  options?: null;
-  createdAt?: Date;
-  updatedAt?: Date;
 }
 
 export interface IDashboardDetail {
@@ -107,14 +109,13 @@ export interface IDashboardDetail {
   name: string;
   isPrivate: boolean;
   isArchived: boolean;
+  createdAt: string;
+  updatedAt: string;
   user: string;
-  forkedDashboard?: IDashboard;
-  createdAt: Date;
-  updatedAt: Date;
+  forkedDashboardId: string | null;
+  tags?: string[];
   dashboardVisuals?: IVisualizationWidget[];
-  isTemp?: boolean;
-  query?: string;
-  textWidgets: ITextWidget[];
+  textWidgets?: ITextWidget[];
 }
 
 export type TableAttributeType = {
