@@ -120,12 +120,8 @@ const DashboardsPage: React.FC = () => {
               {data.map((item: any) => (
                 <ListItem
                   key={item.id}
-                  id={item.id}
-                  author={item.name}
-                  createdAt={item.createdAt}
-                  title={item.name}
+                  item={item}
                   type={LIST_ITEM_TYPE.DASHBOARDS}
-                  tags={item.tags}
                 />
               ))}
             </Tbody>
@@ -146,12 +142,8 @@ const DashboardsPage: React.FC = () => {
             data.map((item: any) => (
               <ListItem
                 key={item.id}
-                id={item.id}
-                author={item.user}
-                createdAt={item.createdAt}
-                title={item.name}
+                item={item}
                 type={LIST_ITEM_TYPE.QUERIES}
-                tags={item.tags}
               />
             ))
           }
