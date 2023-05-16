@@ -30,45 +30,48 @@ const VisualizationPieChart = ({
   const chartOptionsConfigs = configs?.chartOptionsConfigs;
   const RADIAN = Math.PI / 180;
 
-  const [dataCharts, setDataCharts] = useState<any>(data);
   const [hiddenKeys, setHiddenKeys] = useState<{ [key: string]: boolean }>({});
 
-  useEffect(() => {
-    setDataCharts(data);
-  }, [data]);
-
   const reducedData = useMemo(() => {
-    if (!yAxisKeys || !dataCharts) {
+    if (!yAxisKeys || !yAxisKeys.length || !data) {
       return [];
     }
 
     const groupedData: any = [];
-    dataCharts.forEach((item: any) => {
+    const [yAxisKey] = yAxisKeys;
+    data.forEach((item: any) => {
       const existedData = groupedData.find(
         (data: any) => data.key === item[xAxisKey],
       );
+      if (!isNumber(item[yAxisKey])) {
+        return;
+      }
+
+      const addedValue = item[yAxisKey]
+        ? new BigNumber(item[yAxisKey]).toNumber()
+        : 0;
       if (!existedData) {
         groupedData.push({
           key: item[xAxisKey],
-          value: item[yAxisKeys?.[0]],
+          value: addedValue,
         });
       } else {
-        existedData.value += item[yAxisKeys?.[0]];
+        existedData.value = new BigNumber(existedData.value)
+          .plus(new BigNumber(addedValue))
+          .toNumber();
       }
     });
 
     const result = groupedData
       .filter((item: { key: string; value: any }) => {
-        return (
-          isNumber(item.value) && new BigNumber(item.value).isGreaterThan(0)
-        );
+        return new BigNumber(item.value).isGreaterThan(0);
       })
       .map((item: { key: string; value: any }) => {
-        return { [xAxisKey]: item.key, [yAxisKeys?.[0]]: +item.value };
+        return { [xAxisKey]: item.key, [yAxisKeys?.[0]]: item.value };
       });
 
     return result;
-  }, [dataCharts, yAxisKeys]);
+  }, [data, yAxisKeys]);
 
   const onToggleLegend = (dataKey: string) => {
     setHiddenKeys((prevState) => {
