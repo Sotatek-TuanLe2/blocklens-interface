@@ -126,7 +126,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
     }
   };
   const handleUpdate = async () => {
-    const newItems = dataDashboard?.textWidgets.map((i: ITextWidget) => {
+    const newItems = dataDashboard?.textWidgets?.map((i: ITextWidget) => {
       if (i.id === selectedItem.id) {
         return {
           id: selectedItem.id,

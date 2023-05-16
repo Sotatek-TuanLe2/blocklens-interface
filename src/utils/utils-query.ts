@@ -1,14 +1,4 @@
-import { UserInterface } from './utils-user';
-
-interface VisualizationConfigs {
-  columns?: any[]; // for table
-  chartOptionsConfigs?: any;
-  columnMapping?: {
-    xAxis: string;
-    yAxis: string[];
-  };
-  globalSeriesType?: string;
-}
+import { IQuery, VisualizationType } from './query.type';
 
 export interface VisualizationInterface {
   id: string;
@@ -16,16 +6,16 @@ export interface VisualizationInterface {
   updatedAt: string;
   name: string;
   type: string;
-  options: VisualizationConfigs;
-  query?: QueryInterface;
+  options: any;
+  query?: Query;
 
   getId: () => string;
   getCreatedTime: () => string;
   getUpdatedTime: () => string;
   getName: () => string;
   getType: () => string;
-  getConfigs: () => VisualizationConfigs;
-  getQuery: () => QueryInterface | null;
+  getConfigs: () => any;
+  getQuery: () => Query | null;
 }
 
 export interface QueryInterface {
@@ -34,24 +24,24 @@ export interface QueryInterface {
   name: string;
   createdAt: string;
   updatedAt: string;
-  tags: string[];
+  tags?: string[];
   privateMode: boolean;
   temporaryMode: boolean;
   query: string;
 
-  user: UserInterface;
-  visualizations: VisualizationInterface[];
+  // user: UserInterface;
+  visualizations: Visualization[];
 
   getId: () => string;
   getResultId: () => string;
   getName: () => string;
   getCreatedTime: () => string;
   getUpdatedTime: () => string;
-  getTags: () => string[];
+  getTags: () => string[] | null;
   getQuery: () => string;
-  getUser: () => UserInterface | string;
-  getVisualizations: () => VisualizationInterface[];
-  getVisualizationById: (id: string) => VisualizationInterface | null;
+  // getUser: () => UserInterface | string;
+  getVisualizations: () => Visualization[];
+  getVisualizationById: (id: string) => Visualization | null;
 
   isPrivate: () => boolean;
   isTemp: () => boolean;
@@ -66,14 +56,16 @@ export class Visualization implements VisualizationInterface {
   public options;
   public query;
 
-  constructor(visualization: VisualizationInterface) {
+  constructor(visualization: VisualizationType) {
     this.id = visualization.id;
     this.createdAt = visualization.createdAt;
     this.updatedAt = visualization.updatedAt;
     this.name = visualization.name;
     this.type = visualization.type;
     this.options = visualization.options;
-    this.query = visualization.query;
+    if (visualization.query) {
+      this.query = new Query(visualization.query);
+    }
   }
 
   getId() {
@@ -109,28 +101,31 @@ export class Query implements QueryInterface {
   public id = '';
   public resultId = '';
   public name = '';
-  public createdAt = '';
-  public updatedAt = '';
+  public createdAt;
+  public updatedAt;
   public tags;
   public privateMode = false;
   public temporaryMode = false;
   public query = '';
 
-  public user;
-  public visualizations;
+  // public user;
+  public visualizations: Visualization[];
 
-  constructor(query: QueryInterface) {
+  constructor(query: IQuery) {
     this.id = query.id;
     this.resultId = query.id;
     this.name = query.name;
     this.createdAt = query.createdAt;
     this.updatedAt = query.updatedAt;
     this.tags = query.tags;
-    this.privateMode = query.privateMode;
-    this.temporaryMode = query.temporaryMode;
+    this.privateMode = query.isPrivate;
+    this.temporaryMode = query.isTemp;
     this.query = query.query;
-    this.user = query.user;
-    this.visualizations = query.visualizations;
+    // this.user = query.user;
+    this.visualizations = [];
+    query.visualizations.forEach((visual) => {
+      this.visualizations.push(new Visualization(visual));
+    });
   }
 
   getId() {
@@ -154,16 +149,16 @@ export class Query implements QueryInterface {
   }
 
   getTags() {
-    return this.tags;
+    return this.tags || null;
   }
 
   getQuery() {
     return this.query;
   }
 
-  getUser() {
-    return this.user;
-  }
+  // getUser() {
+  //   return this.user;
+  // }
 
   getVisualizations() {
     return this.visualizations;
