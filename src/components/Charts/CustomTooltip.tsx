@@ -1,9 +1,9 @@
 import { Box } from '@chakra-ui/react';
+import _ from 'lodash';
 import { formatVisualizationValue } from 'src/utils/utils-format';
 
 const CustomTooltip = (props: any) => {
   const { active, payload, label, numberFormat } = props;
-
   const _renderTooltipValue = (value: any) => {
     if (numberFormat) {
       return formatVisualizationValue(numberFormat, value);
@@ -15,6 +15,9 @@ const CustomTooltip = (props: any) => {
     return (
       <div className="custom-tooltip">
         <div className="custom-tooltip__desc">
+          <div className="custom-tooltip__desc__detail">
+            <span>{label}</span>
+          </div>
           {payload.map((entry: any, index: number) => (
             <Box
               as={'div'}
@@ -22,7 +25,7 @@ const CustomTooltip = (props: any) => {
               className="custom-tooltip__desc__detail"
             >
               <span>
-                {`${entry.name}:`}
+                {`${entry.name}: `}
                 <span className="tooltip-value">
                   {_renderTooltipValue(entry.value)}
                 </span>
