@@ -41,6 +41,7 @@ import { MetadataPlan } from 'src/store/metadata';
 import useMetadata from 'src/hooks/useMetadata';
 import ModalChangePaymentMethod from 'src/modals/ModalChangePaymentMethod';
 import { getErrorMessage } from '../../utils/utils-helper';
+import { ROUTES } from 'src/utils/common';
 
 export const PAYMENT_METHOD = {
   CARD: 'STRIPE',
@@ -431,7 +432,7 @@ const BillingPage = () => {
               <NoticeIcon />
               <Box textAlign={'center'} ml={2}>
                 If you need more apps or higher limits, please{' '}
-                <AppLink to="/contact-us" className="link">
+                <AppLink to={ROUTES.CONTACT_US} className="link">
                   Contact Us
                 </AppLink>
               </Box>

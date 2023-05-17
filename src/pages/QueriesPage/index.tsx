@@ -27,7 +27,7 @@ import rf from 'src/requests/RequestFactory';
 import { AppLoadingTable } from 'src/components';
 import useUser from 'src/hooks/useUser';
 import { debounce } from 'lodash';
-import { QUERY_RESULT_STATUS } from 'src/utils/common';
+import { QUERY_RESULT_STATUS, ROUTES } from 'src/utils/common';
 import { Query } from 'src/utils/utils-query';
 
 interface ParamTypes {
@@ -88,7 +88,7 @@ const QueriesPage = () => {
           query,
         });
       await rf.getRequest('DashboardsRequest').executeQuery(queryValue.id);
-      history.push(`/queries/${queryValue.id}`);
+      history.push(`${ROUTES.QUERY}/${queryValue.id}`);
     } catch (error: any) {
       toastError({ message: getErrorMessage(error) });
     }

@@ -14,6 +14,7 @@ import 'src/styles/pages/LoginPage.scss';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import ModalResendMail from 'src/modals/ModalResendMail';
+import { ROUTES } from 'src/utils/common';
 
 interface IDataForm {
   email: string;
@@ -102,7 +103,7 @@ const ForgotPasswordPage: FC = () => {
 
             <Box className="note" mt={5} textAlign={'center'}>
               Return to{' '}
-              <AppLink to={'/login'} fontWeight={500}>
+              <AppLink to={ROUTES.LOGIN} fontWeight={500}>
                 Login
               </AppLink>
             </Box>

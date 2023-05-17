@@ -38,6 +38,7 @@ import ModalSignatureRequired from './modals/ModalSignatureRequired';
 import QueriesPage from './pages/QueriesPage';
 import DashboardsPage from './pages/DashboardsPage';
 import DashboardDetailPage from './pages/DashboardDetailPage';
+import { ROUTES } from './utils/common';
 
 /**
  * Main App routes.
@@ -66,7 +67,7 @@ const Routes: FC<RouteComponentProps> = () => {
     if (!accessToken || isExpireTimeToken) {
       dispatch(clearUser());
       if (!GUEST_PATH.includes(pathname)) {
-        history.push('/login');
+        history.push(ROUTES.LOGIN);
       }
       return;
     }
@@ -79,12 +80,18 @@ const Routes: FC<RouteComponentProps> = () => {
       <Switch>
         {/* <PrivateRoute path={`/apps/:id/settings`} component={AppSettingsPage} />
         <PrivateRoute path={`/apps/:id`} component={AppDetail} /> */}
-        <PublicRoute path={'/login'} component={LoginPage} />
-        <PublicRoute path={'/sign-up'} component={SignUpPage} />
-        <PublicRoute path={'/verify-email'} component={VerifyAccountPage} />
-        <PublicRoute path={'/forgot-password'} component={ForgotPasswordPage} />
+        <PublicRoute path={ROUTES.LOGIN} component={LoginPage} />
+        <PublicRoute path={ROUTES.SIGN_UP} component={SignUpPage} />
+        <PublicRoute path={ROUTES.VERIFY_EMAIL} component={VerifyAccountPage} />
+        <PublicRoute
+          path={ROUTES.FORGOT_PASSWORD}
+          component={ForgotPasswordPage}
+        />
 
-        <PublicRoute path={'/reset-password'} component={ResetPasswordPage} />
+        <PublicRoute
+          path={ROUTES.RESET_PASSWORD}
+          component={ResetPasswordPage}
+        />
         {/* <PrivateRoute path={'/billing'} component={BillingPage} /> */}
         {/* <PrivateRoute path={'/account'} component={AccountPage} /> */}
         {/* <PrivateRoute path={'/billing-info'} component={BillingInfoPage} />
@@ -111,12 +118,15 @@ const Routes: FC<RouteComponentProps> = () => {
         />
         <PrivateRoute path={'/top-up'} component={TopUpPage} /> */}
         <PrivateRoute
-          path={'/dashboards/:dashboardId'}
+          path={`${ROUTES.DASHBOARD}/:dashboardId`}
           component={DashboardDetailPage}
         />
-        <PrivateRoute path={'/queries/:queryId?'} component={QueriesPage} />
-        <Route path={'/contact-us'} component={ContactUs} />
-        <PrivateRoute path={'/'} component={DashboardsPage} />
+        <PrivateRoute
+          path={`${ROUTES.QUERY}/:queryId?`}
+          component={QueriesPage}
+        />
+        <Route path={ROUTES.CONTACT_US} component={ContactUs} />
+        <PrivateRoute path={ROUTES.HOME} component={DashboardsPage} />
         {/* <PrivateRoute path={'/'} component={HomePage} /> */}
       </Switch>
       <>

@@ -9,6 +9,7 @@ import { toastError } from 'src/utils/utils-notify';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import rf from 'src/requests/RequestFactory';
 import { createValidator } from 'src/utils/utils-validator';
+import { ROUTES } from 'src/utils/common';
 
 interface IModalNewDashboard {
   open: boolean;
@@ -55,7 +56,7 @@ const ModalNewDashboard: React.FC<IModalNewDashboard> = ({ open, onClose }) => {
         .createNewDashboard({
           name: dataForm.title.trim(),
         });
-      history.push(`/dashboards/${result.id}`);
+      history.push(`${ROUTES.DASHBOARD}/${result.id}`);
       onClose();
     } catch (error) {
       toastError({ message: getErrorMessage(error) });

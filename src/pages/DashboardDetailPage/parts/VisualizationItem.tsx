@@ -22,7 +22,7 @@ import {
 import { areYAxisesSameType, getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import { Link } from 'react-router-dom';
-import { QUERY_RESULT_STATUS } from 'src/utils/common';
+import { QUERY_RESULT_STATUS, ROUTES } from 'src/utils/common';
 
 const VisualizationItem = React.memo(
   ({ visualization }: { visualization: VisualizationType }) => {
@@ -178,7 +178,7 @@ const VisualizationItem = React.memo(
             <Tooltip label={visualization.query?.name} hasArrow>
               <Link
                 className="visual-container__visualization__title__query-link"
-                to={`/queries/${visualization.query?.id}`}
+                to={`${ROUTES.QUERY}/${visualization.query?.id}`}
               >
                 {visualization.query?.name}
               </Link>
