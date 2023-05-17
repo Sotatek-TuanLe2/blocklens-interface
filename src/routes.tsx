@@ -39,6 +39,7 @@ import QueriesPage from './pages/QueriesPage';
 import DashboardsPage from './pages/DashboardsPage';
 import DashboardDetailPage from './pages/DashboardDetailPage';
 import { ROUTES } from './utils/common';
+import WorkspacePage from './pages/WorkspacePage';
 
 /**
  * Main App routes.
@@ -118,12 +119,12 @@ const Routes: FC<RouteComponentProps> = () => {
         />
         <PrivateRoute path={'/top-up'} component={TopUpPage} /> */}
         <PrivateRoute
-          path={`${ROUTES.DASHBOARD}/:dashboardId`}
-          component={DashboardDetailPage}
+          path={`${ROUTES.DASHBOARD}/:dashboardId?`}
+          component={WorkspacePage}
         />
         <PrivateRoute
           path={`${ROUTES.QUERY}/:queryId?`}
-          component={QueriesPage}
+          component={WorkspacePage}
         />
         <Route path={ROUTES.CONTACT_US} component={ContactUs} />
         <PrivateRoute path={ROUTES.HOME} component={DashboardsPage} />
