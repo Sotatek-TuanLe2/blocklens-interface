@@ -13,6 +13,25 @@ export const getLogoChainByChainId = (ChainId?: string) => {
   return config.chains[ChainId].icon;
 };
 
+export const getNetworkConfig = (
+  networkId: string | undefined,
+): Network | null => {
+  if (!networkId) {
+    return null;
+  }
+
+  const network =
+    config.networks[networkId] ||
+    _.find(
+      config.networks,
+      (network) => network.id.toUpperCase() === networkId.toUpperCase(),
+    );
+  if (!network) {
+    return null;
+  }
+  return network;
+};
+
 export const getNameChainByChainId = (ChainId?: string) => {
   if (!ChainId) return '--';
   return config.chains[ChainId].name;

@@ -1,5 +1,5 @@
 @import '../color-variables.scss';
-@import '../_mixins.scss';
+@import '../mixins.scss';
 
 .app-tab {
   &__name-tab {
@@ -9,7 +9,7 @@
     height: max-content !important;
     font-size: 16px !important;
     box-shadow: none;
-    margin-right: 18px;
+    margin-right: 14px;
 
     svg {
       margin-right: 10px;
@@ -18,9 +18,23 @@
     &[aria-selected='true'] {
       @include text-small-bold;
 
+      svg {
+        color: #1878ff;
+      }
+
       box-shadow: none !important;
       color: $title;
-      text-decoration: underline;
+      margin-bottom: -1px;
+      border-bottom: 2px solid #1878ff;
+    }
+
+    .tab-name-content {
+      font-weight: 700;
+      font-size: 20px;
+    }
+
+    &__detail {
+      padding: 0 12px;
     }
   }
 

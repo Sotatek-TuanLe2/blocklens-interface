@@ -1,10 +1,11 @@
-import { Flex, Tbody } from '@chakra-ui/react';
+import { Box, Flex, SimpleGrid } from '@chakra-ui/react';
 import _ from 'lodash';
 import { useCallback, useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
-import { DashboardsIcon, QueriesIcon } from 'src/assets/icons';
+import { DashboardListIcon, QueriesIcon } from 'src/assets/icons';
 import { AppDataTable, RequestParams } from 'src/components';
 import AppTabs, { ITabs } from 'src/components/AppTabs';
+import { VisibilityGridDashboardList } from 'src/constants';
 import { BasePage } from 'src/layouts';
 import {
   DashboardsParams,
@@ -34,9 +35,15 @@ const DashboardsPage: React.FC = () => {
   const [dashboardParams, setDashboardParams] = useState<IDashboardParams>({});
   const [queryParams, setQueryParams] = useState<IQueriesParams>({});
 
+  const [visibility, setVisibility] = useState<VisibilityGridDashboardList>(
+    VisibilityGridDashboardList.COLUMN,
+  );
+
   useEffect(() => {
     const searchParams = new URLSearchParams(searchUrl);
     const search = searchParams.get('search') || '';
+    const sort = searchParams.get('sort') || 'datehightolow';
+    const chain = searchParams.get('chain') || 'All';
 
     switch (tabType) {
       case LIST_ITEM_TYPE.DASHBOARDS:
@@ -44,6 +51,8 @@ const DashboardsPage: React.FC = () => {
           _.omitBy(
             {
               search: search,
+              sort: sort,
+              chain: chain,
             },
             (param) => !param,
           ),
@@ -96,36 +105,85 @@ const DashboardsPage: React.FC = () => {
     (appTable: any) => {
       return (
         <>
-          <div className="dashboard-filter dashboard-filter--mobile">
-            <FilterSearch type={tabType} />
+          <div className="dashboard-filter">
+            <FilterSearch
+              type={tabType}
+              typeVisiable={visibility}
+              setVisibility={setVisibility}
+            />
           </div>
-          {appTable}
+          <Box mt={'34px'}>{appTable}</Box>
         </>
       );
     },
-    [tabType],
+    [tabType, visibility],
   );
+
+  const _renderBody = useCallback(
+    (listItem: any) => {
+      return (
+        <>
+          {visibility === VisibilityGridDashboardList.COLUMN ? (
+            <SimpleGrid
+              className="infos"
+              columns={{ base: 1, sm: 2, lg: 3, xl: 4 }}
+              gap="18px"
+            >
+              {listItem}
+            </SimpleGrid>
+          ) : (
+            <>{listItem}</>
+          )}
+        </>
+      );
+    },
+    [visibility],
+  );
+
+  const _renderHeader = () => {
+    return (
+      <>
+        {visibility === VisibilityGridDashboardList.ROW ? (
+          <div className="dashboard-list__header">
+            <div className="item-title"></div>
+            <div className="item-creator">Creator</div>
+            <div className="item-chain">chain</div>
+            <div className="item-date">date</div>
+            <div className="item-tag">tag</div>
+            <div className="item-like">like</div>
+            <div className="item-btn"></div>
+          </div>
+        ) : (
+          <></>
+        )}
+      </>
+    );
+  };
 
   const tabs: ITabs[] = [
     {
       id: LIST_ITEM_TYPE.DASHBOARDS,
       name: 'Dashboards',
-      icon: <DashboardsIcon />,
+      icon: <DashboardListIcon />,
       content: _renderContentTable(
         <AppDataTable
           requestParams={dashboardParams}
           fetchData={fetchDashboards}
-          limit={10}
+          limit={12}
+          renderHeader={() => _renderHeader()}
           renderBody={(data) => (
-            <Tbody>
-              {data.map((item: any) => (
-                <ListItem
-                  key={item.id}
-                  item={item}
-                  type={LIST_ITEM_TYPE.DASHBOARDS}
-                />
-              ))}
-            </Tbody>
+            <>
+              {_renderBody(
+                data.map((item: any) => (
+                  <ListItem
+                    key={item.id}
+                    item={item}
+                    type={LIST_ITEM_TYPE.DASHBOARDS}
+                    typeVisiable={visibility}
+                  />
+                )),
+              )}
+            </>
           )}
         />,
       ),
@@ -139,15 +197,20 @@ const DashboardsPage: React.FC = () => {
           requestParams={queryParams}
           fetchData={fetchQueries}
           limit={10}
-          renderBody={(data) =>
-            data.map((item: any) => (
-              <ListItem
-                key={item.id}
-                item={item}
-                type={LIST_ITEM_TYPE.QUERIES}
-              />
-            ))
-          }
+          renderBody={(data) => (
+            <>
+              {_renderBody(
+                data.map((item: any) => (
+                  <ListItem
+                    key={item.id}
+                    item={item}
+                    type={LIST_ITEM_TYPE.DASHBOARDS}
+                    typeVisiable={visibility}
+                  />
+                )),
+              )}
+            </>
+          )}
         />,
       ),
     },
@@ -160,12 +223,13 @@ const DashboardsPage: React.FC = () => {
 
   return (
     <BasePage>
-      <Flex className="dashboards-page" justifyContent={'space-between'}>
+      <Flex
+        flexDirection="column"
+        className="dashboards-page"
+        justifyContent={'space-between'}
+      >
         <div className="dashboard-list">
           <AppTabs tabs={tabs} onChange={onChangeTab} />
-        </div>
-        <div className="dashboard-filter">
-          <FilterSearch type={tabType} />
         </div>
       </Flex>
     </BasePage>

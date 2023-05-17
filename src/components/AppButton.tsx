@@ -15,7 +15,8 @@ export interface AppButtonProps extends ButtonProps {
     | 'outline'
     | 'no-effects'
     | 'cancel'
-    | 'red';
+    | 'red'
+    | 'network';
 }
 
 const AppButton = forwardRef<HTMLButtonElement, AppButtonProps>(
@@ -109,6 +110,33 @@ export const appButtonStyles = {
           bg: 'none',
           color: 'white',
         },
+      },
+    }),
+    network: (props: StyleProps) => ({
+      borderRadius: '50px',
+      bg: 'none',
+      color: '#8D91A5',
+      fontSize: '16px',
+      borderWidth: '1px',
+      borderColor: 'line.100',
+      _hover: {
+        bg: 'linear-gradient(268.85deg, rgba(34, 108, 255, 0.12) 22.48%, rgba(16, 132, 255, 0.12) 83.59%)',
+        color: 'white',
+        borderColor: '#1B75FF',
+        _disabled: {
+          bg: mode('line.100', 'line.100')(props),
+        },
+      },
+      _disabled: {
+        bg: mode('line.100', 'line.100')(props),
+      },
+    }),
+    active: (props: StyleProps) => ({
+      bg: 'linear-gradient(268.85deg, rgba(34, 108, 255, 0.12) 22.48%, rgba(16, 132, 255, 0.12) 83.59%)',
+      color: 'white',
+      borderColor: '#1B75FF',
+      _disabled: {
+        bg: mode('line.100', 'line.100')(props),
       },
     }),
   },
