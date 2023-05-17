@@ -207,31 +207,33 @@ export const roundAndPadZeros = (a: number, decimals: number): string => {
 export const formatVisualizationValue = (format: string, value: any) => {
   let result = value;
 
-  if (isNumber(value)) {
-    if (format.includes('$')) {
-      if (format.includes('a') && format.includes('.')) {
-        result = `$${_formatLargeNumberIfNeed(value)}`;
-      } else {
-        result = `$${value}`;
-      }
-    } else if (format.includes('0.')) {
-      result = formatNumberWithDecimalDigits(value, format);
-      if (format.includes(',')) {
-        result = result.replace('.', ',');
-        const parts = result.split(',');
-        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-        result = parts.join(',');
-      }
-      if (format.includes('a')) {
-        result = _formatLargeNumberIfNeed(result);
-      }
-    } else if (format.includes(',')) {
-      result = commaNumber(value);
-    } else if (format === '0') {
-      result = parseInt(value).toLocaleString('en-US');
-    } else if (format.includes('a')) {
-      result = _formatLargeNumberIfNeed(value);
+  if (!isNumber(value)) {
+    return value;
+  }
+
+  if (format.includes('$')) {
+    if (format.includes('a') && format.includes('.')) {
+      result = `$${_formatLargeNumberIfNeed(value)}`;
+    } else {
+      result = `$${value}`;
     }
+  } else if (format.includes('0.')) {
+    result = formatNumberWithDecimalDigits(value, format);
+    if (format.includes(',')) {
+      result = result.replace('.', ',');
+      const parts = result.split(',');
+      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      result = parts.join(',');
+    }
+    if (format.includes('a')) {
+      result = _formatLargeNumberIfNeed(result);
+    }
+  } else if (format.includes(',')) {
+    result = commaNumber(value);
+  } else if (format === '0') {
+    result = parseInt(value).toLocaleString('en-US');
+  } else if (format.includes('a')) {
+    result = _formatLargeNumberIfNeed(value);
   }
 
   return result;
