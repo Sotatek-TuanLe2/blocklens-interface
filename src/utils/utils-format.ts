@@ -81,8 +81,12 @@ export const addTrailingZero = (
   return new BigNumber(number).toFixed(decimals).toString();
 };
 
-const _formatLargeNumberIfNeed = (number: string, digits = 0) => {
-  if (new BigNumber(number).comparedTo(10000) < 0) {
+const _formatLargeNumberIfNeed = (
+  number: string,
+  digits = 0,
+  replaceNumber = true,
+) => {
+  if (new BigNumber(number).comparedTo(10000) < 0 && replaceNumber) {
     return commaNumber(new BigNumber(number).toString(), ',', '.');
   }
   const SI = [
@@ -118,7 +122,11 @@ const _formatLargeNumberIfNeed = (number: string, digits = 0) => {
       break;
     }
   }
-  return (num / SI[i].value).toFixed(digits).replace(rx, '$1') + SI[i].symbol;
+  if (replaceNumber) {
+    return (num / SI[i].value).toFixed(digits).replace(rx, '$1') + SI[i].symbol;
+  } else {
+    return (num / SI[i].value).toFixed(digits) + SI[i].symbol;
+  }
 };
 
 export function formatWeiNumber(
@@ -185,7 +193,9 @@ export const formatNumberWithDecimalDigits = (
   number: number,
   format: string,
 ): string => {
-  const [integerPartFormat, decimalPartFormat] = format.split('.');
+  const [integerPartFormat, decimalPartFormat] = format
+    .replace('a', '')
+    .split('.');
   const decimalNumber = new Decimal(number);
   const integerPart = decimalNumber.floor().toString();
   let decimalPart = decimalNumber
@@ -213,7 +223,13 @@ export const formatVisualizationValue = (format: string, value: any) => {
 
   if (format.includes('$')) {
     if (format.includes('a') && format.includes('.')) {
-      result = `$${_formatLargeNumberIfNeed(value)}`;
+      result = formatNumberWithDecimalDigits(value, format);
+      const decimalPart = String(result).split('.')[1];
+      result = `$${_formatLargeNumberIfNeed(
+        result,
+        decimalPart.length || 0,
+        false,
+      )}`;
     } else {
       result = `$${value}`;
     }
@@ -226,12 +242,13 @@ export const formatVisualizationValue = (format: string, value: any) => {
       result = parts.join(',');
     }
     if (format.includes('a')) {
-      result = _formatLargeNumberIfNeed(result);
+      const decimalPart = String(result).split('.')[1];
+      result = _formatLargeNumberIfNeed(result, decimalPart.length || 0, false);
     }
   } else if (format.includes(',')) {
     result = commaNumber(value);
   } else if (format === '0') {
-    result = parseInt(value).toLocaleString('en-US');
+    result = parseInt(value);
   } else if (format.includes('a')) {
     result = _formatLargeNumberIfNeed(value);
   }
