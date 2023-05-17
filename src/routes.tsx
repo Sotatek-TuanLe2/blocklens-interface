@@ -77,17 +77,17 @@ const Routes: FC<RouteComponentProps> = () => {
   return (
     <>
       <Switch>
-        <PrivateRoute path={`/apps/:id/settings`} component={AppSettingsPage} />
-        <PrivateRoute path={`/apps/:id`} component={AppDetail} />
+        {/* <PrivateRoute path={`/apps/:id/settings`} component={AppSettingsPage} />
+        <PrivateRoute path={`/apps/:id`} component={AppDetail} /> */}
         <PublicRoute path={'/login'} component={LoginPage} />
         <PublicRoute path={'/sign-up'} component={SignUpPage} />
         <PublicRoute path={'/verify-email'} component={VerifyAccountPage} />
         <PublicRoute path={'/forgot-password'} component={ForgotPasswordPage} />
 
         <PublicRoute path={'/reset-password'} component={ResetPasswordPage} />
-        <PrivateRoute path={'/billing'} component={BillingPage} />
-        <PrivateRoute path={'/account'} component={AccountPage} />
-        <PrivateRoute path={'/billing-info'} component={BillingInfoPage} />
+        {/* <PrivateRoute path={'/billing'} component={BillingPage} /> */}
+        {/* <PrivateRoute path={'/account'} component={AccountPage} /> */}
+        {/* <PrivateRoute path={'/billing-info'} component={BillingInfoPage} />
         <PrivateRoute path={'/billing-history'} component={BillingHistory} />
         <PrivateRoute
           path={'/app/:appId/webhooks/:id/activities'}
@@ -109,15 +109,15 @@ const Routes: FC<RouteComponentProps> = () => {
           path={'/app/:appId/webhook/:webhookId/activities/:id'}
           component={MessagesHistory}
         />
-        <PrivateRoute path={'/top-up'} component={TopUpPage} />
+        <PrivateRoute path={'/top-up'} component={TopUpPage} /> */}
         <PrivateRoute
           path={'/dashboards/:dashboardId'}
           component={DashboardDetailPage}
         />
-        <PrivateRoute path={'/dashboards'} component={DashboardsPage} />
         <PrivateRoute path={'/queries/:queryId?'} component={QueriesPage} />
         <Route path={'/contact-us'} component={ContactUs} />
-        <PrivateRoute path={'/'} component={HomePage} />
+        <PrivateRoute path={'/'} component={DashboardsPage} />
+        {/* <PrivateRoute path={'/'} component={HomePage} /> */}
       </Switch>
       <>
         <ModalSignatureRequired />

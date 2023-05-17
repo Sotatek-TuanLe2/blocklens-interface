@@ -35,6 +35,7 @@ import { objectKeys } from 'src/utils/utils-network';
 import { areYAxisesSameType } from 'src/utils/utils-helper';
 import { getDefaultVisualizationName } from 'src/utils/common';
 import { toastError } from 'src/utils/utils-notify';
+import { Query } from 'src/utils/utils-query';
 
 type VisualizationConfigType = {
   value: string;
@@ -97,6 +98,8 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
   const [closeTabId, setCloseTabId] = useState<string | number>('');
   const [dataTable, setDataTable] = useState<any[]>([]);
 
+  const queryClass = useMemo(() => new Query(queryValue), [queryValue]);
+
   const axisOptions =
     Array.isArray(queryResult) && queryResult[0]
       ? objectKeys(queryResult[0])
@@ -123,22 +126,18 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
       (v) => v.value === visualizationValue,
     );
     if (!searchedVisualization) return;
-    let newVisualization: VisualizationType = {} as VisualizationType;
+    let newVisualization = {};
 
     if (searchedVisualization.type === TYPE_VISUALIZATION.table) {
       newVisualization = {
         name: 'Table',
-        id: (Math.floor(Math.random() * 100) + 1).toString(),
         type: 'table',
-        createdAt: moment().toDate(),
         options: {},
       };
     } else if (searchedVisualization.type === TYPE_VISUALIZATION.counter) {
       newVisualization = {
         name: 'Counter',
-        id: (Math.floor(Math.random() * 100) + 1).toString(),
         type: 'counter',
-        createdAt: moment().toDate(),
         options: {
           counterColName: !!axisOptions.length ? axisOptions[0] : '',
           rowNumber: 1,
@@ -146,10 +145,8 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
       };
     } else {
       newVisualization = {
-        id: (Math.floor(Math.random() * 100) + 1).toString(),
         name: searchedVisualization.label,
         type: 'chart',
-        createdAt: moment().toDate(),
         options: {
           globalSeriesType: searchedVisualization.type,
           columnMapping: {
@@ -173,10 +170,10 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
   const removeVisualizationHandler = async (
     visualizationId: string | number,
   ) => {
-    const visualizationIndex = queryValue.visualizations.findIndex(
-      (v) => v.id.toString() === visualizationId.toString(),
+    const visualization = queryClass?.getVisualizationById(
+      visualizationId.toString(),
     );
-    if (visualizationIndex === -1) return;
+    if (!visualization) return;
     try {
       await rf
         .getRequest('DashboardsRequest')
@@ -188,10 +185,8 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
   };
 
   const onChangeConfigurations = async (visualization: VisualizationType) => {
-    const index = queryValue.visualizations.findIndex(
-      (v) => v.id === visualization.id,
-    );
-    if (index >= 0) {
+    const visual = queryClass?.getVisualizationById(visualization.id);
+    if (!!visual) {
       await rf
         .getRequest('DashboardsRequest')
         .editVisualization(visualization, visualization.id);
@@ -202,9 +197,6 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
   const renderVisualization = (visualization: VisualizationType) => {
     const type = visualization.options?.globalSeriesType || visualization.type;
 
-    if (type === TYPE_VISUALIZATION.new) {
-      return <AddVisualization onAddVisualize={addVisualizationHandler} />;
-    }
     let errorMessage = null;
     let visualizationDisplay = null;
     let visualizationConfiguration = null;
@@ -362,23 +354,27 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
           setCloseTabId(tabId);
         }}
         tabs={[
-          ...queryValue.visualizations,
+          ...queryValue.visualizations.map((v) => ({
+            icon: getIcon(v?.options?.globalSeriesType || v.type),
+            name:
+              v.name ||
+              getDefaultVisualizationName(
+                v?.options?.globalSeriesType || v.type,
+              ),
+            content: renderVisualization(v),
+            id: v.id,
+            closeable: true,
+          })),
           {
-            id: TYPE_VISUALIZATION.new,
-            createdAt: moment().toDate(),
-            options: {},
+            icon: null,
             name: 'New Visualization',
-            type: TYPE_VISUALIZATION.new,
+            content: (
+              <AddVisualization onAddVisualize={addVisualizationHandler} />
+            ),
+            id: TYPE_VISUALIZATION.new,
+            closeable: false,
           },
-        ].map((v) => ({
-          icon: getIcon(v?.options?.globalSeriesType || v.type),
-          name:
-            v.name ||
-            getDefaultVisualizationName(v?.options?.globalSeriesType || v.type),
-          content: renderVisualization(v),
-          id: v.id,
-          closeable: v.type !== TYPE_VISUALIZATION.new,
-        }))}
+        ]}
       />
 
       <BaseModal

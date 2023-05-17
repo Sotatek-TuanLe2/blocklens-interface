@@ -1,12 +1,11 @@
-import { QueryInterface, VisualizationInterface } from './utils-query';
+import {
+  IDashboardDetail,
+  ITextWidget,
+  IVisualizationWidget,
+  WidgetOptions,
+} from './query.type';
+import { Visualization, VisualizationInterface } from './utils-query';
 import { UserInterface } from './utils-user';
-
-interface WidgetOptions {
-  col: number;
-  row: number;
-  sizeX: number;
-  sizeY: number;
-}
 
 export interface TextWidgetInterface {
   id: string;
@@ -26,14 +25,12 @@ export interface DashboardVisualInterface {
   createdAt: string;
   updatedAt: string;
   options: WidgetOptions;
-  visualization: VisualizationInterface & {
-    query: QueryInterface;
-  };
+  visualization: VisualizationInterface;
 
   getId: () => string;
   getCreatedTime: () => string;
   getOptions: () => WidgetOptions;
-  getVisualization: () => VisualizationInterface & { query: QueryInterface };
+  getVisualization: () => VisualizationInterface;
 }
 
 export interface DashboardInterface {
@@ -41,26 +38,26 @@ export interface DashboardInterface {
   name: string;
   createdAt: string;
   updatedAt: string;
+  tags?: string[];
   privateMode: boolean;
-  tags: string[];
 
   user: UserInterface | string;
 
-  forkedDashboardId?: string;
-  textWidgets?: TextWidgetInterface[];
-  dashboardVisuals?: DashboardVisualInterface[];
+  forkedDashboardId: string | null;
+  textWidgets?: TextWidget[];
+  dashboardVisuals?: DashboardVisual[];
 
   getId: () => string;
   getName: () => string;
   getUser: () => UserInterface | string;
   getCreatedTime: () => string;
   getUpdatedTime: () => string;
-  getTags: () => string[];
+  getTags: () => string[] | null;
   getForkedDashboardId: () => string | null;
-  getTextWidgets: () => TextWidgetInterface[] | null;
-  getDashboardVisuals: () => DashboardVisualInterface[] | null;
-  getTextWidgetById: (id: string) => TextWidgetInterface | null;
-  getDashboardVisualById: (id: string) => DashboardVisualInterface | null;
+  getTextWidgets: () => TextWidget[] | null;
+  getDashboardVisuals: () => DashboardVisual[] | null;
+  getTextWidgetById: (id: string) => TextWidget | null;
+  getDashboardVisualById: (id: string) => DashboardVisual | null;
 
   isPrivate: () => boolean;
 }
@@ -77,7 +74,7 @@ export class TextWidget implements TextWidgetInterface {
     sizeY: 0,
   };
 
-  constructor(textWidget: TextWidgetInterface) {
+  constructor(textWidget: ITextWidget) {
     this.id = textWidget.id;
     this.createdAt = textWidget.createdAt;
     this.updatedAt = textWidget.updatedAt;
@@ -114,12 +111,12 @@ export class DashboardVisual implements DashboardVisualInterface {
   };
   public visualization;
 
-  constructor(dashboardVisual: DashboardVisualInterface) {
+  constructor(dashboardVisual: IVisualizationWidget) {
     this.id = dashboardVisual.id;
     this.createdAt = dashboardVisual.createdAt;
     this.updatedAt = dashboardVisual.updatedAt;
     this.options = dashboardVisual.options;
-    this.visualization = dashboardVisual.visualization;
+    this.visualization = new Visualization(dashboardVisual.visualization);
   }
 
   getId() {
@@ -144,24 +141,34 @@ export class Dashboard implements DashboardInterface {
   public name = '';
   public createdAt = '';
   public updatedAt = '';
-  public privateMode = false;
   public tags;
+  public privateMode = false;
   public user;
   public forkedDashboardId;
-  public textWidgets;
-  public dashboardVisuals;
+  public textWidgets: TextWidget[];
+  public dashboardVisuals: DashboardVisual[];
 
-  constructor(dashboard: DashboardInterface) {
+  constructor(dashboard: IDashboardDetail) {
     this.id = dashboard.id;
     this.name = dashboard.name;
     this.createdAt = dashboard.createdAt;
     this.updatedAt = dashboard.updatedAt;
     this.tags = dashboard.tags;
-    this.privateMode = dashboard.privateMode;
+    this.privateMode = dashboard.isPrivate;
     this.user = dashboard.user;
     this.forkedDashboardId = dashboard.forkedDashboardId;
-    this.textWidgets = dashboard.textWidgets;
-    this.dashboardVisuals = dashboard.dashboardVisuals;
+    this.textWidgets = [];
+    if (dashboard.textWidgets) {
+      dashboard.textWidgets.forEach((item) => {
+        this.textWidgets.push(new TextWidget(item));
+      });
+    }
+    this.dashboardVisuals = [];
+    if (dashboard.dashboardVisuals) {
+      dashboard.dashboardVisuals.forEach((item) => {
+        this.dashboardVisuals.push(new DashboardVisual(item));
+      });
+    }
   }
 
   getId() {
@@ -181,7 +188,7 @@ export class Dashboard implements DashboardInterface {
   }
 
   getTags() {
-    return this.tags;
+    return this.tags || null;
   }
 
   getUser() {

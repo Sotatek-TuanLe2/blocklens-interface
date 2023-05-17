@@ -101,7 +101,7 @@ const VisualizationTable = <T,>({
       acc[column] = Math.max(...values);
       return acc;
     }, {} as any);
-  }, [data]);
+  }, [visualization, data]);
 
   return (
     <div>

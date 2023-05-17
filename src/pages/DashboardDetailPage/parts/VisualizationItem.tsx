@@ -175,12 +175,12 @@ const VisualizationItem = React.memo(
                 {visualization.name}
               </span>
             </Tooltip>
-            <Tooltip label={visualization.query.name} hasArrow>
+            <Tooltip label={visualization.query?.name} hasArrow>
               <Link
                 className="visual-container__visualization__title__query-link"
-                to={`/queries/${visualization.query.id}`}
+                to={`/queries/${visualization.query?.id}`}
               >
-                {visualization.query.name}
+                {visualization.query?.name}
               </Link>
             </Tooltip>
           </div>

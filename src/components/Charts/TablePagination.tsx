@@ -29,6 +29,7 @@ const TablePagination = ({ data, onChangeData }: any) => {
   };
   const handleSearch = debounce(
     (event: React.ChangeEvent<HTMLInputElement>) => {
+      setCurrentPage(1);
       setSearchTerm(event.target.value);
     },
     INPUT_DEBOUNCE,
