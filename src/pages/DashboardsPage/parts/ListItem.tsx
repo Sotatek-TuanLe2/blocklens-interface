@@ -26,6 +26,7 @@ import { Dashboard } from 'src/utils/utils-dashboard';
 import { Query } from 'src/utils/utils-query';
 import moment from 'moment';
 // import AppNetworkIcons from 'src/components/AppNetworkIcons';
+import { ROUTES } from 'src/utils/common';
 
 interface IListItem {
   type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
@@ -48,11 +49,11 @@ const ListItem: React.FC<IListItem> = (props) => {
   const getTitleUrl = (): string => {
     switch (type) {
       case LIST_ITEM_TYPE.DASHBOARDS:
-        return `/dashboards/${itemClass.getId()}/`;
+        return `${ROUTES.DASHBOARD}/${itemClass.getId()}/`;
       case LIST_ITEM_TYPE.QUERIES:
-        return `/queries/${itemClass.getId()}`;
+        return `${ROUTES.QUERY}/${itemClass.getId()}`;
       default:
-        return '/dashboards';
+        return ROUTES.HOME;
     }
   };
 

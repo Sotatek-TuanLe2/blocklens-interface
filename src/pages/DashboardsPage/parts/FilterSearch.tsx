@@ -14,6 +14,7 @@ import {
 } from 'src/assets/icons';
 import { AppButton, AppInput, AppSelect2, IOption } from 'src/components';
 import { VisibilityGridDashboardList } from 'src/constants';
+import { ROUTES } from 'src/utils/common';
 import { LIST_ITEM_TYPE } from '..';
 import ModalNewDashboard from 'src/modals/querySQL/ModalNewDashboard';
 
@@ -110,7 +111,13 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
     const searchParams = new URLSearchParams(searchUrl);
     searchParams.delete('search');
     searchParams.set('search', e.target.value);
-    history.push(`/dashboards?${searchParams.toString()}`);
+    history.push(`${ROUTES.HOME}?${searchParams.toString()}`);
+  };
+
+  const getRemoveTagUrl = () => {
+    const searchParams = new URLSearchParams(searchUrl);
+    searchParams.delete('tags');
+    return `${ROUTES.HOME}?${searchParams.toString()}`;
   };
 
   const onClickNew = () => {
@@ -119,7 +126,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
         onToggleNewDashboardModal();
         break;
       case LIST_ITEM_TYPE.QUERIES:
-        history.push('/queries');
+        history.push(ROUTES.QUERY);
         break;
       default:
         break;

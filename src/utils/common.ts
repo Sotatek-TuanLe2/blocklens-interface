@@ -1,6 +1,18 @@
 import moment from 'moment';
 import { LABEL_VISUALIZATION, TYPE_VISUALIZATION } from './query.type';
 
+export const ROUTES = {
+  HOME: '/',
+  DASHBOARD: '/dashboards',
+  QUERY: '/queries',
+  LOGIN: '/login',
+  SIGN_UP: '/sign-up',
+  VERIFY_EMAIL: '/verify-email',
+  FORGOT_PASSWORD: '/forgot-password',
+  RESET_PASSWORD: '/reset-password',
+  CONTACT_US: '/contact-us',
+};
+
 export interface IListAppResponse {
   pagingCounter?: number;
   offset?: number;

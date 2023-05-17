@@ -4,6 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import rf from 'src/requests/RequestFactory';
 import { LIST_ITEM_TYPE } from '..';
 import { TagIcon } from 'src/assets/icons';
+import { ROUTES } from 'src/utils/common';
 
 interface IFilterTags {
   type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
@@ -42,7 +43,7 @@ const FilterTags: React.FC<IFilterTags> = (props) => {
     const searchParams = new URLSearchParams(searchUrl);
     searchParams.delete('tags');
     searchParams.set('tags', tag);
-    return `/dashboards?${searchParams.toString()}`;
+    return `${ROUTES.HOME}?${searchParams.toString()}`;
   };
 
   return (

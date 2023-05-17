@@ -5,6 +5,7 @@ import { AppButton, AppCard, AppField, AppInput } from 'src/components';
 import GuestPage from 'src/layouts/GuestPage';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/pages/LoginPage.scss';
+import { ROUTES } from 'src/utils/common';
 import { setAuthorizationToRequest } from 'src/utils/utils-auth';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { createValidator } from 'src/utils/utils-validator';
@@ -40,7 +41,7 @@ const ResetPasswordPage: FC = () => {
       toastSuccess({ message: 'Reset password is successfully.' });
       setAuthorizationToRequest('');
       setDataForm({ ...initDataResetPassword });
-      history.replace('/login');
+      history.replace(ROUTES.LOGIN);
     } catch (error) {
       toastError({
         message: getErrorMessage(error),
@@ -62,7 +63,7 @@ const ResetPasswordPage: FC = () => {
   useEffect(() => {
     if (param.get('id')) {
       setAuthorizationToRequest(param.get('id'));
-    } else history.replace('/login');
+    } else history.replace(ROUTES.LOGIN);
   }, []);
 
   return (

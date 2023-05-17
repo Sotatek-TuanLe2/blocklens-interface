@@ -13,6 +13,7 @@ import {
 } from 'src/requests/DashboardsRequest';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/pages/DashboardsPage.scss';
+import { ROUTES } from 'src/utils/common';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import FilterSearch from './parts/FilterSearch';
@@ -216,7 +217,7 @@ const DashboardsPage: React.FC = () => {
   ];
 
   const onChangeTab = (tabId: string) => {
-    history.push('/');
+    history.push(ROUTES.HOME);
     setTabType(tabId);
   };
 
