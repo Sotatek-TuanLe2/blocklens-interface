@@ -181,30 +181,22 @@ export function formatToPercent(
   return new BigNumber(newValue).toString() + '%';
 }
 
-export function formatNumberWithDecimalDigits(
+export const formatNumberWithDecimalDigits = (
   number: number,
-  a: string,
-): string {
-  if (a === undefined) {
-    a = '0';
-  } else if (
-    typeof a !== 'string' ||
-    a.length === 0 ||
-    (!a.includes('0') && !a.includes('.'))
-  ) {
-    a = '0';
-  }
-
+  format: string,
+): string => {
+  const [integerPartFormat, decimalPartFormat] = format.split('.');
   const decimalNumber = new Decimal(number);
   const integerPart = decimalNumber.floor().toString();
-  const decimalPart = decimalNumber.minus(integerPart).toFixed(1).slice(1);
-  const formattedDecimalPart = decimalPart.padEnd(a.length - 1, '0');
-  const result =
-    integerPart +
-    (formattedDecimalPart !== '' ? '' + formattedDecimalPart : '');
-
-  return result;
-}
+  let decimalPart = decimalNumber
+    .minus(integerPart)
+    .toFixed(decimalPartFormat.length)
+    .slice(2);
+  if (decimalPart.length < decimalPartFormat.length) {
+    decimalPart = decimalPart.padEnd(decimalPartFormat.length, '0');
+  }
+  return `${integerPart}.${decimalPart}`;
+};
 
 export const roundAndPadZeros = (a: number, decimals: number): string => {
   const rounded = +(Math.round(Number(`${a}e${decimals}`)) + `e${-decimals}`);
@@ -213,34 +205,34 @@ export const roundAndPadZeros = (a: number, decimals: number): string => {
 };
 
 export const formatVisualizationValue = (format: string, value: any) => {
+  let result = value;
+
   if (isNumber(value)) {
-    if (format.includes('a') && format.includes('$') && format.includes('.')) {
-      return `$${_formatLargeNumberIfNeed(value)}`;
-    }
-    if (format.includes(',')) {
-      return Number(value).toLocaleString('en-US');
-    }
-
-    if (format.includes('0.')) {
-      return formatNumberWithDecimalDigits(value, format);
-    }
-
-    if (format === '0') {
-      return parseInt(value);
-    }
-
-    if (format === 'a') {
-      return _formatLargeNumberIfNeed(value);
-    }
-
-    if (format === '$') {
-      return `$${value}`;
-    }
-
-    if (format.includes('a') && format.includes('$')) {
-      return `$${_formatLargeNumberIfNeed(value)}`;
+    if (format.includes('$')) {
+      if (format.includes('a') && format.includes('.')) {
+        result = `$${_formatLargeNumberIfNeed(value)}`;
+      } else {
+        result = `$${value}`;
+      }
+    } else if (format.includes('0.')) {
+      result = formatNumberWithDecimalDigits(value, format);
+      if (format.includes(',')) {
+        result = result.replace('.', ',');
+        const parts = result.split(',');
+        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        result = parts.join(',');
+      }
+      if (format.includes('a')) {
+        result = _formatLargeNumberIfNeed(result);
+      }
+    } else if (format.includes(',')) {
+      result = commaNumber(value);
+    } else if (format === '0') {
+      result = parseInt(value).toLocaleString('en-US');
+    } else if (format.includes('a')) {
+      result = _formatLargeNumberIfNeed(value);
     }
   }
 
-  return value;
+  return result;
 };
