@@ -79,7 +79,6 @@ const VisualizationTable = <T,>({
   }, []);
 
   const columnMaxValues = useMemo((): { [key: string]: number } => {
-    console.log(1);
     const columnValues = {} as any;
     const rows = table.getRowModel()?.flatRows;
     if (rows) {
