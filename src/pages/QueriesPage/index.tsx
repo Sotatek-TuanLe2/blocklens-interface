@@ -2,7 +2,7 @@ import { BasePage } from '../../layouts';
 import { Avatar, Box, Flex, Text, Tooltip } from '@chakra-ui/react';
 import AceEditor from 'react-ace';
 import AppButton from '../../components/AppButton';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { EditorContext } from './context/EditorContext';
 import EditorSidebar from './part/EditorSidebar';
 import VisualizationDisplay from './part/VisualizationDisplay';
@@ -28,6 +28,7 @@ import { AppLoadingTable } from 'src/components';
 import useUser from 'src/hooks/useUser';
 import { debounce } from 'lodash';
 import { QUERY_RESULT_STATUS } from 'src/utils/common';
+import { Query } from 'src/utils/utils-query';
 
 interface ParamTypes {
   queryId: string;
@@ -70,6 +71,13 @@ const QueriesPage = () => {
       }
     };
   }, [queryId]);
+
+  const queryClass = useMemo(() => {
+    if (!queryValue) {
+      return null;
+    }
+    return new Query(queryValue);
+  }, [queryValue]);
 
   const createNewQuery = async (query: string) => {
     try {
@@ -280,7 +288,7 @@ const QueriesPage = () => {
           </div>
         </Tooltip>
 
-        {queryValue && (
+        {!!queryClass && (
           <Tooltip hasArrow placement="top" label="Add Parameter">
             <AppButton
               onClick={() => onAddParameter('{{unnamed_parameter}}')}
@@ -304,17 +312,17 @@ const QueriesPage = () => {
             queryResult: queryResult,
           }}
         >
-          {!!queryValue && (
+          {!!queryClass && (
             <Flex
               className="queries-page-header-buttons"
               justifyContent={'space-between'}
             >
-              {queryValue.name ? (
+              {queryClass.getName() ? (
                 <Flex gap={2}>
                   <Avatar name={user?.getFirstName()} size="sm" />
                   <div>
                     <div className="query-name">
-                      @{userName} / {queryValue.name || ''}
+                      @{userName} / {queryClass.getName() || ''}
                     </div>
                   </div>
                 </Flex>
@@ -420,7 +428,7 @@ const QueriesPage = () => {
           onSubmit={saveNameQuery}
         />
         <Prompt
-          when={!!queryValue && !queryValue.name}
+          when={!!queryClass && !queryClass.getName()}
           message="This query has not been saved yet. Discard unsaved changes?"
         />
       </>
