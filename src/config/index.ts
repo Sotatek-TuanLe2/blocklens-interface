@@ -50,6 +50,7 @@ export interface Network {
   icon: string;
   chainId: number;
   rpcUrls: string[];
+  iconURL?: string;
   blockExplorer: BlockExplorer;
   nativeCurrency: {
     name: string;

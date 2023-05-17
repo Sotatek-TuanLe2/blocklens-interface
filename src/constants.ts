@@ -706,6 +706,11 @@ export const COUNTRIES = [
   },
 ];
 
+export enum VisibilityGridDashboardList {
+  COLUMN = 'COLUMN',
+  ROW = 'ROW',
+}
+
 export const TIME_EXPIRE_TOKEN_CLIENT = 20 * 60 * 1000; //miliseconds
 
 export const COMMON_ERROR_MESSAGE = 'Something went wrong!';
