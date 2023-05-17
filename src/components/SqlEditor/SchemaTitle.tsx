@@ -5,7 +5,7 @@ import { ChevronRightIcon } from '@chakra-ui/icons';
 import {
   EditorContext,
   EditorContextType,
-} from '../../pages/QueriesPage/context/EditorContext';
+} from 'src/pages/WorkspacePage/context/EditorContext';
 import { CHAIN_NAME } from 'src/utils/query.type';
 
 type Props = {

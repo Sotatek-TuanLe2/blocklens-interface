@@ -1,0 +1,35 @@
+@import '../color-variables';
+@import '../variables';
+@import '../mixins.scss';
+
+.workspace-page {
+  &__header {
+
+  }
+
+  &__body {
+    &__sidebar {
+      &__categories {
+
+      }
+
+      &__content {
+        
+      }
+    }
+
+    &__editor {
+      &__title {
+
+      }
+
+      &__dashboard {
+
+      }
+
+      &__query {
+
+      }
+    }
+  }
+}
