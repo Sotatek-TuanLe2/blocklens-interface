@@ -66,7 +66,7 @@ const ListItem: React.FC<IListItem> = (props) => {
         </MenuButton>
         <MenuList className="menu-option">
           <MenuItem className="menu-info">
-            <IconCopy /> Copy
+            <IconCopy /> Fork
           </MenuItem>
           <MenuItem className="menu-info">
             <IconShare /> Share
@@ -84,7 +84,7 @@ const ListItem: React.FC<IListItem> = (props) => {
             <Link to={getTitleUrl()}>
               <img
                 src="/images/ThumnailDashboard.png"
-                alt=""
+                alt="thumbnail"
                 className="thumbnail"
               />
             </Link>
@@ -114,8 +114,7 @@ const ListItem: React.FC<IListItem> = (props) => {
                   ))}
                 </Flex>
               </Flex>
-
-              {_renderDropdown()}
+              <div>{_renderDropdown()}</div>
             </Flex>
             <Flex
               mt={'14px'}
@@ -126,7 +125,9 @@ const ListItem: React.FC<IListItem> = (props) => {
                 <img src="/images/AvatarDashboardCard.png" alt="avatar" />
                 <div className="dashboard-list__item--column__content__item-desc">
                   <Text>Tyler Covington</Text>
-                  <Text>{moment(item?.createdAt).format('YYYY MMMM Do')}</Text>
+                  <Text>
+                    {moment(itemClass.getCreatedTime()).format('YYYY MMMM Do')}
+                  </Text>
                 </div>
               </Flex>
               <ListNetworkIcon />
@@ -147,7 +148,7 @@ const ListItem: React.FC<IListItem> = (props) => {
           >
             <img
               src="/images/ThumnailDashboard.png"
-              alt=""
+              alt="thumbnail"
               className="thumbnail"
             />
 
@@ -161,7 +162,7 @@ const ListItem: React.FC<IListItem> = (props) => {
             <ListNetworkIcon />
           </div>
           <div className="item-date">
-            {moment(item?.createdAt).format('YYYY MMMM Do')}
+            {moment(itemClass.getCreatedTime()).format('YYYY MMMM Do')}
           </div>
           <div className="item-tag">
             {listTags.map((item) => (

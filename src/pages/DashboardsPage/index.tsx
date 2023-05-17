@@ -41,6 +41,8 @@ const DashboardsPage: React.FC = () => {
   useEffect(() => {
     const searchParams = new URLSearchParams(searchUrl);
     const search = searchParams.get('search') || '';
+    const sort = searchParams.get('sort') || 'datehightolow';
+    const chain = searchParams.get('chain') || 'All';
 
     switch (tabType) {
       case LIST_ITEM_TYPE.DASHBOARDS:
@@ -48,6 +50,8 @@ const DashboardsPage: React.FC = () => {
           _.omitBy(
             {
               search: search,
+              sort: sort,
+              chain: chain,
             },
             (param) => !param,
           ),
@@ -192,23 +196,27 @@ const DashboardsPage: React.FC = () => {
           requestParams={queryParams}
           fetchData={fetchQueries}
           limit={10}
-          renderBody={(data) =>
-            data.map((item: any) => (
-              <ListItem
-                key={item.id}
-                item={item}
-                type={LIST_ITEM_TYPE.QUERIES}
-                typeVisiable={visibility}
-              />
-            ))
-          }
+          renderBody={(data) => (
+            <>
+              {_renderBody(
+                data.map((item: any) => (
+                  <ListItem
+                    key={item.id}
+                    item={item}
+                    type={LIST_ITEM_TYPE.DASHBOARDS}
+                    typeVisiable={visibility}
+                  />
+                )),
+              )}
+            </>
+          )}
         />,
       ),
     },
   ];
 
   const onChangeTab = (tabId: string) => {
-    history.push('/dashboards');
+    history.push('/');
     setTabType(tabId);
   };
 

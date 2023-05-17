@@ -72,6 +72,27 @@
             padding-bottom: 14px;
             border-bottom: 1px solid #242b45;
 
+            .menu-option {
+              background: #2f3b58;
+              border-radius: 6px;
+              border: none;
+              min-width: 104px !important;
+              height: 90px;
+
+              .menu-info {
+                font-size: 16px;
+                font-weight: 400;
+
+                svg {
+                  margin-right: 10px;
+                }
+
+                &:focus {
+                  background: $gradient;
+                }
+              }
+            }
+
             .item-name {
               word-break: break-word;
               font-weight: 700;
@@ -89,27 +110,6 @@
             .item-options {
               background: #242b45;
               border-radius: 100%;
-            }
-
-            .menu-option {
-              background: #2f3b58;
-              border-radius: 6px;
-              border: none;
-              width: 104px !important;
-              height: 80px;
-
-              .menu-info {
-                font-size: 16px;
-                font-weight: 400;
-
-                svg {
-                  margin-right: 10px;
-                }
-
-                &:hover {
-                  color: #2f3b58;
-                }
-              }
             }
 
             .tag-name {
@@ -279,8 +279,8 @@
             background: #2f3b58;
             border-radius: 6px;
             border: none;
-            width: 104px !important;
-            height: 80px;
+            min-width: 104px !important;
+            height: 90px;
 
             .menu-info {
               font-size: 16px;
@@ -290,8 +290,8 @@
                 margin-right: 10px;
               }
 
-              &:hover {
-                color: #2f3b58;
+              &:focus {
+                background: $gradient;
               }
             }
           }
@@ -337,6 +337,16 @@
         width: 5%;
       }
     }
+  }
+
+  .btn-active {
+    border-color: #1878ff;
+    color: white;
+    padding: 0 24px;
+  }
+
+  .btn-inactive {
+    padding: 0 24px;
   }
 
   .dashboard-filter {

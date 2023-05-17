@@ -25,6 +25,7 @@ interface IFilterSearch {
 
 interface ILISTNETWORK {
   name: string;
+  value: string;
   iconActive?: ReactNode;
   iconInactive?: ReactNode;
 }
@@ -32,27 +33,31 @@ interface ILISTNETWORK {
 const LIST_NETWORK: ILISTNETWORK[] = [
   {
     name: 'All',
+    value: 'All',
     iconActive: <FireIcon />,
     iconInactive: <FireIcon />,
   },
   {
     name: 'BTC',
+    value: 'BTC',
     iconActive: <IconBTCActive />,
     iconInactive: <IconBTCInactive />,
   },
   {
     name: 'ETH',
+    value: 'ETH',
     iconActive: <IconETHActive />,
     iconInactive: <IconETHInactive />,
   },
   {
     name: 'BNB',
+    value: 'BNB',
     iconActive: <IconBNBActive />,
     iconInactive: <IconBNBInactive />,
   },
 ];
 
-const optionAlign: IOption[] = [
+const optionType: IOption[] = [
   { value: 'datelowtohigh', label: 'Date low to high' },
   { value: 'datehightolow', label: 'Date high to low' },
   { value: 'likedlowtohigh', label: 'Liked low to high' },
@@ -81,7 +86,8 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
 
   const [search, setSearch] = useState<string>('');
 
-  const [tag, setTag] = useState<string>('');
+  const [sort, setSort] = useState<string>('');
+  const [chain, setChain] = useState<string>('All');
   const [openNewDashboardModal, setOpenNewDashboardModal] =
     useState<boolean>(false);
 
@@ -89,10 +95,15 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
     const searchParams = new URLSearchParams(searchUrl);
 
     const search = searchParams.get('search') || '';
-    const tag = searchParams.get('tags') || '';
+    const sort = searchParams.get('sort') || '';
+    const chain = searchParams.get('chain') || '';
 
     setSearch(search || '');
-    setTag(tag || '');
+    setSort(sort || 'datehightolow');
+    setChain(chain || 'All');
+    type === LIST_ITEM_TYPE.QUERIES
+      ? setVisibility(VisibilityGridDashboardList.ROW)
+      : setVisibility(VisibilityGridDashboardList.COLUMN);
   }, [type, searchUrl]);
 
   const onChangeSearch = (e: ChangeEvent<HTMLInputElement>) => {
@@ -118,8 +129,18 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   const onToggleNewDashboardModal = () =>
     setOpenNewDashboardModal((prevState) => !prevState);
 
-  const onChange = () => {
-    return;
+  const onChange = (value: string) => {
+    const searchParams = new URLSearchParams(searchUrl);
+    searchParams.delete('sort');
+    searchParams.set('sort', value);
+    history.push(`/dashboards?${searchParams.toString()}`);
+  };
+
+  const onSelectChain = (value: string) => {
+    const searchParams = new URLSearchParams(searchUrl);
+    searchParams.delete('chain');
+    searchParams.set('chain', value);
+    history.push(`/dashboards?${searchParams.toString()}`);
   };
 
   return (
@@ -129,8 +150,17 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
           {LIST_NETWORK.map((network, index) => {
             return (
               <Flex mr={3}>
-                <AppButton key={index} variant="network">
-                  {network.iconActive}
+                <AppButton
+                  onClick={() => onSelectChain(network.value)}
+                  key={index}
+                  variant="network"
+                  className={
+                    chain === network.value ? 'btn-active' : 'btn-inactive'
+                  }
+                >
+                  {chain === network.value
+                    ? network.iconActive
+                    : network.iconInactive}
                   <Text ml={2}>{network.name}</Text>
                 </AppButton>
               </Flex>
@@ -151,31 +181,35 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
         />
         <AppSelect2
           size="medium"
-          value={'datehightolow'}
-          onChange={(e) => onChange()}
-          options={optionAlign}
+          value={sort}
+          onChange={onChange}
+          options={optionType}
           className="dashboard-filter__search__select"
         />
-        <Button
-          onClick={() => setVisibility(VisibilityGridDashboardList.ROW)}
-          className={`dashboard-filter__search__button ${
-            typeVisiable === VisibilityGridDashboardList.ROW
-              ? 'dashboard-filter__search__button--active'
-              : ''
-          }`}
-        >
-          <IconListDashboard />
-        </Button>
-        <Button
-          onClick={() => setVisibility(VisibilityGridDashboardList.COLUMN)}
-          className={`dashboard-filter__search__button ${
-            typeVisiable === VisibilityGridDashboardList.COLUMN
-              ? 'dashboard-filter__search__button--active'
-              : ''
-          }`}
-        >
-          <IconColumnDashboard />
-        </Button>
+        {type === LIST_ITEM_TYPE.DASHBOARDS && (
+          <>
+            <Button
+              onClick={() => setVisibility(VisibilityGridDashboardList.ROW)}
+              className={`dashboard-filter__search__button ${
+                typeVisiable === VisibilityGridDashboardList.ROW
+                  ? 'dashboard-filter__search__button--active'
+                  : ''
+              }`}
+            >
+              <IconListDashboard />
+            </Button>
+            <Button
+              onClick={() => setVisibility(VisibilityGridDashboardList.COLUMN)}
+              className={`dashboard-filter__search__button ${
+                typeVisiable === VisibilityGridDashboardList.COLUMN
+                  ? 'dashboard-filter__search__button--active'
+                  : ''
+              }`}
+            >
+              <IconColumnDashboard />
+            </Button>
+          </>
+        )}
       </Flex>
       <Flex mt={'14px'} flexDirection={'row'}>
         {listTags.map((item) => (
