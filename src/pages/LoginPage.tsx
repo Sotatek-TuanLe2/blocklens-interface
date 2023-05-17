@@ -18,6 +18,7 @@ import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { setUserAuth } from '../store/user';
 import { getErrorMessage } from '../utils/utils-helper';
+import { ROUTES } from 'src/utils/common';
 
 interface IDataForm {
   email: string;
@@ -111,7 +112,9 @@ const LoginPage: FC = () => {
                   rule: ['required', 'min:8', 'max:50'],
                 }}
               />
-              <AppLink to={'/forgot-password'}>Forgot your password?</AppLink>
+              <AppLink to={ROUTES.FORGOT_PASSWORD}>
+                Forgot your password?
+              </AppLink>
             </AppField>
 
             <AppButton
@@ -125,7 +128,8 @@ const LoginPage: FC = () => {
             </AppButton>
 
             <Box mt={2} className={'note'}>
-              Don't have an account? <AppLink to={'/sign-up'}>Sign up</AppLink>
+              Don't have an account?{' '}
+              <AppLink to={ROUTES.SIGN_UP}>Sign up</AppLink>
             </Box>
 
             <Box className="note" mt={3}>

@@ -13,6 +13,7 @@ import {
 } from 'src/requests/DashboardsRequest';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/pages/DashboardsPage.scss';
+import { ROUTES } from 'src/utils/common';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import FilterSearch from './parts/FilterSearch';
@@ -41,6 +42,8 @@ const DashboardsPage: React.FC = () => {
   useEffect(() => {
     const searchParams = new URLSearchParams(searchUrl);
     const search = searchParams.get('search') || '';
+    const sort = searchParams.get('sort') || 'datehightolow';
+    const chain = searchParams.get('chain') || 'All';
 
     switch (tabType) {
       case LIST_ITEM_TYPE.DASHBOARDS:
@@ -48,6 +51,8 @@ const DashboardsPage: React.FC = () => {
           _.omitBy(
             {
               search: search,
+              sort: sort,
+              chain: chain,
             },
             (param) => !param,
           ),
@@ -192,23 +197,27 @@ const DashboardsPage: React.FC = () => {
           requestParams={queryParams}
           fetchData={fetchQueries}
           limit={10}
-          renderBody={(data) =>
-            data.map((item: any) => (
-              <ListItem
-                key={item.id}
-                item={item}
-                type={LIST_ITEM_TYPE.QUERIES}
-                typeVisiable={visibility}
-              />
-            ))
-          }
+          renderBody={(data) => (
+            <>
+              {_renderBody(
+                data.map((item: any) => (
+                  <ListItem
+                    key={item.id}
+                    item={item}
+                    type={LIST_ITEM_TYPE.DASHBOARDS}
+                    typeVisiable={visibility}
+                  />
+                )),
+              )}
+            </>
+          )}
         />,
       ),
     },
   ];
 
   const onChangeTab = (tabId: string) => {
-    history.push('/dashboards');
+    history.push(ROUTES.HOME);
     setTabType(tabId);
   };
 

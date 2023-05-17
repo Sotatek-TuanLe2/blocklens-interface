@@ -16,6 +16,7 @@ import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { GoogleAuthButton } from 'src/components';
 import ModalResendMail from 'src/modals/ModalResendMail';
 import { getErrorMessage } from '../utils/utils-helper';
+import { ROUTES } from 'src/utils/common';
 
 interface IDataForm {
   firstName: string;
@@ -183,7 +184,7 @@ const SignUpPage: FC = () => {
           </AppButton>
 
           <Box mt={5} className={'note'} textAlign={'center'}>
-            Already have an account? <AppLink to={'/login'}>Login</AppLink>
+            Already have an account? <AppLink to={ROUTES.LOGIN}>Login</AppLink>
           </Box>
         </Box>
       </AppCard>

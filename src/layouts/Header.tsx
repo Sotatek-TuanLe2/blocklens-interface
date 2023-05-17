@@ -18,10 +18,10 @@ import { useLocation } from 'react-router-dom';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
 import ModalSignInRequest from 'src/modals/ModalSignInRequest';
 import { isMobile } from 'react-device-detect';
-import { CloseIcon } from '@chakra-ui/icons';
 import { ArrowLogout, DoorLogout } from 'src/assets/icons';
 import { clearUser } from 'src/store/user';
 import useUser from 'src/hooks/useUser';
+import { ROUTES } from 'src/utils/common';
 
 const menus = [
   {
@@ -75,7 +75,7 @@ const Header: FC = () => {
 
   const onLogout = () => {
     dispatch(clearUser());
-    history.push('/login');
+    history.push(ROUTES.LOGIN);
   };
 
   const _renderAvatar = () => {

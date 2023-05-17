@@ -31,6 +31,7 @@ export interface RequestParams {
   address?: string;
   tokenId?: string;
   txHash?: string;
+  chain?: string;
 }
 
 interface DataTableProps {

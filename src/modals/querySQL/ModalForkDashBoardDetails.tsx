@@ -8,6 +8,7 @@ import { toastError } from 'src/utils/utils-notify';
 import { createValidator } from 'src/utils/utils-validator';
 import BaseModal from '../BaseModal';
 import { useHistory } from 'react-router';
+import { ROUTES } from 'src/utils/common';
 
 interface IModalForkDashBoardDetails {
   open: boolean;
@@ -61,7 +62,7 @@ const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
         .getRequest('DashboardsRequest')
         .forkDashboard(payload, dashboardId);
       if (res) {
-        history.push(`/dashboards/${res.id}`);
+        history.push(`${ROUTES.DASHBOARD}/${res.id}`);
       }
       onClose();
     } catch (e) {

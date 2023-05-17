@@ -32,6 +32,8 @@ export interface ListParams {
 export interface QueriesParams {
   search?: string;
   tags?: string;
+  type?: string;
+  chain?: string;
 }
 
 export interface WizardsParams {

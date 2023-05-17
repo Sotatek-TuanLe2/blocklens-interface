@@ -8,6 +8,7 @@ import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { useHistory } from 'react-router';
 import Storage from 'src/utils/utils-storage';
 import { getErrorMessage } from '../utils/utils-helper';
+import { ROUTES } from 'src/utils/common';
 
 interface IFormChangePass {
   currentPassword: string;
@@ -63,7 +64,7 @@ const ModalChangePassword: React.FC<IChangePasswordModal> = ({
   };
   const handleClickForgotPassword = () => {
     Storage.logout();
-    history.push('/forgot-password');
+    history.push(ROUTES.FORGOT_PASSWORD);
   };
 
   useEffect(() => {

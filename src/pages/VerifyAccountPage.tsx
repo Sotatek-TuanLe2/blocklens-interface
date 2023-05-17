@@ -9,6 +9,7 @@ import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { useHistory } from 'react-router';
 import { getErrorMessage } from '../utils/utils-helper';
+import { ROUTES } from 'src/utils/common';
 
 const VerifyAccountPage: FC = () => {
   const { search } = useLocation();
@@ -52,7 +53,7 @@ const VerifyAccountPage: FC = () => {
           </Box>
           <AppButton
             mt={5}
-            onClick={() => history.push('/login')}
+            onClick={() => history.push(ROUTES.LOGIN)}
             size={'lg'}
             width={'full'}
           >
