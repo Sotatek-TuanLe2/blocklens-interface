@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   Flex,
   Menu,
@@ -16,7 +15,6 @@ import {
   IconHeartFavorite,
   IconOptions,
   IconShare,
-  ListNetworkIcon,
 } from 'src/assets/icons';
 import { VisibilityGridDashboardList } from 'src/constants';
 import { IDashboardDetail, IQuery } from 'src/utils/query.type';
@@ -25,7 +23,7 @@ import { listTags } from './FilterSearch';
 import { Dashboard } from 'src/utils/utils-dashboard';
 import { Query } from 'src/utils/utils-query';
 import moment from 'moment';
-// import AppNetworkIcons from 'src/components/AppNetworkIcons';
+import AppNetworkIcons from 'src/components/AppNetworkIcons';
 import { ROUTES } from 'src/utils/common';
 
 interface IListItem {
@@ -34,7 +32,7 @@ interface IListItem {
   typeVisiable: 'COLUMN' | 'ROW';
 }
 
-// const listNetworkCurrency = ['Goerli', 'BSC', 'POLYGON', 'BTC'];
+const listNetworkCurrency = ['eth_goerli', 'bsc_testnet', 'polygon_mainet'];
 
 const ListItem: React.FC<IListItem> = (props) => {
   const { type, item, typeVisiable } = props;
@@ -77,7 +75,7 @@ const ListItem: React.FC<IListItem> = (props) => {
     );
   };
 
-  const _renderDashboardListColumn = () => {
+  const _renderGridItem = () => {
     return (
       <div className="dashboard-list__item--column">
         <Flex flexDirection="column" alignItems={'center'}>
@@ -107,10 +105,10 @@ const ListItem: React.FC<IListItem> = (props) => {
                 <Link className="item-name" to={getTitleUrl()}>
                   {itemClass.getName()}
                 </Link>
-                <Flex flexDirection={'row'}>
+                <Flex flexWrap={'wrap'} flexDirection={'row'} maxW={52}>
                   {listTags.map((item) => (
                     <div key={item.id} className="tag-name">
-                      #{item.name}
+                      {Tag({ value: item.name })}
                     </div>
                   ))}
                 </Flex>
@@ -131,7 +129,7 @@ const ListItem: React.FC<IListItem> = (props) => {
                   </Text>
                 </div>
               </Flex>
-              <ListNetworkIcon />
+              <AppNetworkIcons networkIds={listNetworkCurrency} />
             </Flex>
           </div>
         </Flex>
@@ -139,7 +137,7 @@ const ListItem: React.FC<IListItem> = (props) => {
     );
   };
 
-  const _renderDashboardListRow = () => {
+  const _renderRowItem = () => {
     return (
       <div className="dashboard-list__item--row">
         <Flex flexDirection="row" alignItems={'center'}>
@@ -147,11 +145,13 @@ const ListItem: React.FC<IListItem> = (props) => {
             to={getTitleUrl()}
             className="dashboard-list__item--row__avatar"
           >
-            <img
-              src="/images/ThumnailDashboard.png"
-              alt="thumbnail"
-              className="thumbnail"
-            />
+            {type === LIST_ITEM_TYPE.DASHBOARDS && (
+              <img
+                src="/images/ThumnailDashboard.png"
+                alt="thumbnail"
+                className="thumbnail"
+              />
+            )}
 
             <div className="item-name">{itemClass.getName()}</div>
           </Link>
@@ -160,7 +160,7 @@ const ListItem: React.FC<IListItem> = (props) => {
             <p>Tyler Covington</p>
           </div>
           <div className="item-chain">
-            <ListNetworkIcon />
+            <AppNetworkIcons networkIds={listNetworkCurrency} />
           </div>
           <div className="item-date">
             {moment(itemClass.getCreatedTime()).format('YYYY MMMM Do')}
@@ -168,7 +168,7 @@ const ListItem: React.FC<IListItem> = (props) => {
           <div className="item-tag">
             {listTags.map((item) => (
               <div key={item.id} className="tag-name">
-                #{item.name}
+                {Tag({ value: item.name })}
               </div>
             ))}
           </div>
@@ -189,15 +189,15 @@ const ListItem: React.FC<IListItem> = (props) => {
   return (
     <>
       {typeVisiable === VisibilityGridDashboardList.COLUMN
-        ? _renderDashboardListColumn()
-        : _renderDashboardListRow()}
+        ? _renderGridItem()
+        : _renderRowItem()}
     </>
   );
 };
 
 const Tag: React.FC<{ value: string }> = ({ value }) => {
   return (
-    <Link className="item-tag" to={'/'} target={'_blank'}>
+    <Link to={'/'} target={'_blank'}>
       #{value}
     </Link>
   );

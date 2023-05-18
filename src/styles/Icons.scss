@@ -16,12 +16,6 @@
   background: url('../assets/icons/icon_networks.png') -10px -50px;
 }
 
-.icon-bsc {
-  width: 20px;
-  height: 20px;
-  background: url('../assets/icons/icon_networks.png') -10px -50px;
-}
-
 .icon-solana {
   width: 20px;
   height: 20px;
@@ -50,6 +44,54 @@
   width: 20px;
   height: 20px;
   background: url('../assets/icons/icon_networks.png') -10px -90px;
+}
+
+.icon-bitcoin-inactive {
+  width: 20px;
+  height: 20px;
+  background: url('../assets/icons/icon_networks-inactive.png') -10px -50px;
+}
+
+.icon-polygon-inactive {
+  width: 20px;
+  height: 20px;
+  background: url('../assets/icons/icon_networks-inactive.png') -50px -50px;
+}
+
+.icon-bsc-inactive {
+  width: 20px;
+  height: 20px;
+  background: url('../assets/icons/icon_networks-inactive.png') -10px -10px;
+}
+
+.icon-solana-inactive {
+  width: 20px;
+  height: 20px;
+  background: url('../assets/icons/icon_networks-inactive.png') -90px -10px;
+}
+
+.icon-ethereum-inactive {
+  width: 20px;
+  height: 20px;
+  background: url('../assets/icons/icon_networks-inactive.png') -10px -50px;
+}
+
+.icon-aptos-inactive {
+  width: 20px;
+  height: 20px;
+  background: url('../assets/icons/icon_networks-inactive.png')-50px -90px;
+}
+
+.icon-optimism-inactive {
+  width: 20px;
+  height: 20px;
+  background: url('../assets/icons/icon_networks-inactive.png') -90px -50px;
+}
+
+.icon-arbitrum-inactive {
+  width: 20px;
+  height: 20px;
+  background: url('../assets/icons/icon_networks-inactive.png') -10px -90px;
 }
 
 .icon-eye-close {
