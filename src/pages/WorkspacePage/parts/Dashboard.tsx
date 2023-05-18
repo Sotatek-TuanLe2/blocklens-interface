@@ -24,6 +24,8 @@ import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import VisualizationItem from './VisualizationItem';
 import ModalEmptyDashboard from 'src/modals/querySQL/ModalEmptyDashboard';
+import Header from './Header';
+import { WORKSPACE_TYPES } from '..';
 
 export interface ILayout extends Layout {
   options: any;
@@ -221,6 +223,11 @@ const DashboardPart: React.FC = () => {
 
   return (
     <div className="workspace-page__body__editor__dashboard">
+      <Header
+        type={WORKSPACE_TYPES.DASHBOARD}
+        author={user?.getFirstName() || ''}
+        title={dataDashboard?.name || ''}
+      />
       <div className="main-content-dashboard-details">
         {/* <header className="main-header-dashboard-details">
           <Flex gap={2}>

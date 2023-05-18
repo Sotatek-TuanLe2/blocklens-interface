@@ -41,8 +41,8 @@ const Sidebar: React.FC = () => {
   };
 
   return (
-    <div className="workspace-page__body__sidebar">
-      <div className="workspace-page__body__sidebar__categories">
+    <div className="workspace-page__sidebar">
+      <div className="workspace-page__sidebar__categories">
         {categoryList.map((item) => (
           <Box
             key={item.id}
@@ -53,9 +53,7 @@ const Sidebar: React.FC = () => {
           </Box>
         ))}
       </div>
-      <div className="workspace-page__body__sidebar__content">
-        {_renderContent()}
-      </div>
+      <div className="workspace-page__sidebar__content">{_renderContent()}</div>
     </div>
   );
 };

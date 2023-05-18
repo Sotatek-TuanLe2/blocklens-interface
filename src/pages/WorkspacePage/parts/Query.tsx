@@ -26,6 +26,8 @@ import useUser from 'src/hooks/useUser';
 import { debounce } from 'lodash';
 import { QUERY_RESULT_STATUS, ROUTES } from 'src/utils/common';
 import { Query } from 'src/utils/utils-query';
+import Header from './Header';
+import { WORKSPACE_TYPES } from '..';
 
 const QueryPart: React.FC = () => {
   const { queryId } = useParams<{ queryId: string }>();
@@ -298,6 +300,11 @@ const QueryPart: React.FC = () => {
 
   return (
     <div className="workspace-page__body__editor__query">
+      <Header
+        type={WORKSPACE_TYPES.QUERY}
+        author={user?.getFirstName() || ''}
+        title={queryClass?.getName() || ''}
+      />
       <EditorContext.Provider
         value={{
           editor: editorRef,

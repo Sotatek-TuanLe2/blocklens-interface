@@ -3,33 +3,17 @@
 @import '../mixins.scss';
 
 .workspace-page {
-  &__header {
+  &__sidebar {
+    &__categories {}
 
+    &__content {}
   }
 
-  &__body {
-    &__sidebar {
-      &__categories {
+  &__editor {
+    &__header {}
 
-      }
+    &__dashboard {}
 
-      &__content {
-        
-      }
-    }
-
-    &__editor {
-      &__title {
-
-      }
-
-      &__dashboard {
-
-      }
-
-      &__query {
-
-      }
-    }
+    &__query {}
   }
 }
