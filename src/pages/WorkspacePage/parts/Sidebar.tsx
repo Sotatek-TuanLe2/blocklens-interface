@@ -170,23 +170,29 @@ const Sidebar: React.FC = () => {
   };
 
   const fetchData = async (search?: string) => {
-    const data: any = await Promise.allSettled([
-      fetchDashboards(_.omitBy({ search }, (param) => !param)),
-      fetchQueries(_.omitBy({ search }, (param) => !param)),
-    ]);
-    setDataDashboards(() => {
-      if (data[0].status === PROMISE_STATUS.FULFILLED) {
-        return data[0].value.docs;
-      }
+    try {
+      const data: any = await Promise.allSettled([
+        fetchDashboards(_.omitBy({ search }, (param) => !param)),
+        fetchQueries(_.omitBy({ search }, (param) => !param)),
+      ]);
+      setDataDashboards(() => {
+        if (data[0].status === PROMISE_STATUS.FULFILLED) {
+          return data[0].value.docs;
+        }
 
-      return [];
-    });
-    setDataQueries(() => {
-      if (data[1].status === PROMISE_STATUS.FULFILLED) {
-        return data[1].value.docs;
-      }
-      return [];
-    });
+        return [];
+      });
+      setDataQueries(() => {
+        if (data[1].status === PROMISE_STATUS.FULFILLED) {
+          return data[1].value.docs;
+        }
+        return [];
+      });
+    } catch (error) {
+      toastError({
+        message: getErrorMessage(error),
+      });
+    }
   };
 
   useEffect(() => {
