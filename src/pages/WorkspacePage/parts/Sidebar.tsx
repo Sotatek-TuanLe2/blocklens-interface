@@ -124,13 +124,7 @@ const CollapseExplore = ({
         className="workspace-page__sidebar__content__explore-wrap__content-collapse"
       >
         {content.map((chain: any, index: number) => {
-          return (
-            <ItemNetworkChain chain={chain} key={index + 'chain'} />
-            // <Box display={'flex'}>
-            //   <div>{getChainIcon(chain.namespace)}</div>
-            //   <span>{chain.namespace}</span>
-            // </Box>
-          );
+          return <ItemNetworkChain chain={chain} key={index + 'chain'} />;
         })}
       </Collapse>
     </>
@@ -247,7 +241,6 @@ const Sidebar: React.FC = () => {
 
   const handleCreateNewDashboard = () => {
     setOpenNewDashboardModal(true);
-    console.log('new dashboard');
   };
 
   const handleClassNameWorkPlaceItem = (id: any) => {
@@ -342,7 +335,6 @@ const Sidebar: React.FC = () => {
       </Box>
     );
   };
-  console.log('dataExplore', dataExplore);
   const _renderContentExplore = () => {
     return (
       <div className="workspace-page__sidebar__content__explore-wrap">
@@ -362,19 +354,6 @@ const Sidebar: React.FC = () => {
                 title={nameChain}
                 content={Object.values(dataExplore)[index]}
               />
-              // <Box>
-              //   <Box className="workspace-page__sidebar__content__explore-wrap__content">
-              //     <span>{nameChain}</span>
-              //   </Box>
-              //   {Object.values(dataExplore)[index].map((chain: any) => {
-              //     return (
-              //       <Box display={'flex'}>
-              //         <div>{getChainIcon(chain.namespace)}</div>
-              //         <span>{chain.namespace}</span>
-              //       </Box>
-              //     );
-              //   })}
-              // </Box>
             ))}
           </>
         )}
@@ -387,7 +366,6 @@ const Sidebar: React.FC = () => {
       case CATEGORIES.WORK_PLACE:
         return _renderContentWorkPlace();
       case CATEGORIES.EXPLORE_DATA:
-        // return <ExploreData />; // the old EditorSidebar
         return _renderContentExplore();
     }
   };
