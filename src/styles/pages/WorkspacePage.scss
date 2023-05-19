@@ -3,17 +3,113 @@
 @import '../mixins.scss';
 
 .workspace-page {
+  display: flex;
   &__sidebar {
-    &__categories {}
+    display: flex;
+    width: 300px;
+    min-width: 300px;
 
-    &__content {}
+    &__categories {
+      padding: 14px;
+      border-right: 1px solid #2f3b58;
+      background-color: #101530;
+      border-top-left-radius: 6px;
+      border-bottom-left-radius: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    &__content {
+      flex: 1;
+      padding: 16px;
+      width: calc(100% - 61px);
+      background-color: #101530;
+      border-top-right-radius: 6px;
+      border-bottom-right-radius: 6px;
+      &__work-place-wrap {
+        &__work-place {
+          display: flex;
+          @include text-medium-bold;
+          text-transform: uppercase;
+          align-items: center;
+          justify-content: space-between;
+        }
+        &__work-place-content {
+          justify-content: space-between;
+          display: flex;
+          align-items: center;
+          margin-bottom: 12px;
+        }
+        &__work-place-detail {
+          @include text-small-regular;
+          color: $paragraph;
+          margin-bottom: 6px;
+          width: 100%;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          cursor: pointer;
+        }
+        .work-place-detail-active {
+          color: $title;
+          svg {
+            path {
+              fill: #226cff;
+            }
+          }
+        }
+      }
+      &__explore-wrap {
+        width: 100%;
+
+        &__content {
+          @include text-small-regular;
+
+          color: $paragraph;
+          margin-bottom: 12px;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+        &__title {
+          display: flex;
+          @include text-medium-bold;
+          text-transform: uppercase;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: 32px;
+        }
+
+        &__content-collapse {
+          padding-bottom: 10px;
+          .chain-info-title,
+          .chain-info-desc {
+            @include text-small-regular;
+            color: $paragraph;
+          }
+
+          .chain-info-title {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 0px;
+          }
+        }
+      }
+    }
   }
 
   &__editor {
-    &__header {}
+    &__header {
+    }
 
-    &__dashboard {}
+    &__dashboard {
+    }
 
-    &__query {}
+    &__query {
+    }
   }
 }

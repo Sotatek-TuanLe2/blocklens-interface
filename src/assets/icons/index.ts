@@ -72,6 +72,14 @@ import { ReactComponent as IconOptions } from './IconOptions.svg';
 import { ReactComponent as ListNetworkIcon } from './ListNetworkIcon.svg';
 import { ReactComponent as IconCopy } from './IconCopy.svg';
 import { ReactComponent as IconShare } from './IconShare.svg';
+import { ReactComponent as ExploreV2Icon } from './ExploreV2Icon.svg';
+import { ReactComponent as ExploreActiveV2Icon } from './ExploreActiveV2Icon.svg';
+import { ReactComponent as FolderV2Icon } from './FolderV2Icon.svg';
+import { ReactComponent as FolderActiveV2Icon } from './FolderActiveV2Icon.svg';
+import { ReactComponent as CloseBtnV2Icon } from './CloseBtnV2Icon.svg';
+import { ReactComponent as PlusV2Icon } from './PlusV2Icon.svg';
+import { ReactComponent as LogoDashboardV2Icon } from './LogoDashboardV2Icon.svg';
+import { ReactComponent as LogoQueryV2Icon } from './LogoQueryV2Icon.svg';
 
 export {
   CalendarIcon,
@@ -148,4 +156,12 @@ export {
   ListNetworkIcon,
   IconCopy,
   IconShare,
+  ExploreV2Icon,
+  ExploreActiveV2Icon,
+  FolderV2Icon,
+  FolderActiveV2Icon,
+  CloseBtnV2Icon,
+  PlusV2Icon,
+  LogoDashboardV2Icon,
+  LogoQueryV2Icon,
 };
