@@ -42,8 +42,9 @@ const DashboardsPage: React.FC = () => {
   useEffect(() => {
     const searchParams = new URLSearchParams(searchUrl);
     const search = searchParams.get('search') || '';
-    const sort = searchParams.get('sort') || 'datehightolow';
-    const chain = searchParams.get('chain') || 'All';
+    const sort = searchParams.get('sort') || '';
+    const chain = searchParams.get('chain') || '';
+    const tags = searchParams.get('tags') || '';
 
     switch (tabType) {
       case LIST_ITEM_TYPE.DASHBOARDS:
@@ -53,6 +54,7 @@ const DashboardsPage: React.FC = () => {
               search: search,
               sort: sort,
               chain: chain,
+              tags: tags,
             },
             (param) => !param,
           ),
@@ -63,6 +65,9 @@ const DashboardsPage: React.FC = () => {
           _.omitBy(
             {
               search: search,
+              sort: sort,
+              chain: chain,
+              tags: tags,
             },
             (param) => !param,
           ),

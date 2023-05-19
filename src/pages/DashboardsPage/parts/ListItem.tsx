@@ -7,24 +7,24 @@ import {
   MenuList,
   Text,
 } from '@chakra-ui/react';
+import moment from 'moment';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  IconCopy,
+  IconFork,
   IconHeart,
   IconHeartFavorite,
   IconOptions,
   IconShare,
 } from 'src/assets/icons';
+import AppNetworkIcons from 'src/components/AppNetworkIcons';
 import { VisibilityGridDashboardList } from 'src/constants';
+import { ROUTES } from 'src/utils/common';
 import { IDashboardDetail, IQuery } from 'src/utils/query.type';
-import { LIST_ITEM_TYPE } from '..';
-import { listTags } from './FilterSearch';
 import { Dashboard } from 'src/utils/utils-dashboard';
 import { Query } from 'src/utils/utils-query';
-import moment from 'moment';
-import AppNetworkIcons from 'src/components/AppNetworkIcons';
-import { ROUTES } from 'src/utils/common';
+import { LIST_ITEM_TYPE } from '..';
+import { listTags } from './FilterSearch';
 
 interface IListItem {
   type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
@@ -65,7 +65,7 @@ const ListItem: React.FC<IListItem> = (props) => {
         </MenuButton>
         <MenuList className="menu-option">
           <MenuItem className="menu-info">
-            <IconCopy /> Fork
+            <IconFork /> Fork
           </MenuItem>
           <MenuItem className="menu-info">
             <IconShare /> Share
