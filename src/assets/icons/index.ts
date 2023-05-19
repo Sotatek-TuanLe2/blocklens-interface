@@ -66,6 +66,7 @@ import { ReactComponent as IconOptions } from './IconOptions.svg';
 import { ReactComponent as IconCopy } from './IconCopy.svg';
 import { ReactComponent as IconShare } from './IconShare.svg';
 import { ReactComponent as FireIconInactive } from './FireIconInactive.svg';
+import { ReactComponent as IconFork } from './IconFork.svg';
 
 export {
   CalendarIcon,
@@ -136,4 +137,5 @@ export {
   IconCopy,
   IconShare,
   FireIconInactive,
+  IconFork,
 };
