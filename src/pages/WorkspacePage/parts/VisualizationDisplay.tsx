@@ -1,4 +1,4 @@
-import { Box, Flex, Text, Tooltip } from '@chakra-ui/react';
+import { Box, Flex, Tooltip } from '@chakra-ui/react';
 import moment from 'moment';
 import { useMemo, useState } from 'react';
 import { useParams } from 'react-router';
@@ -9,13 +9,15 @@ import {
   VisualizationTable,
   VisualizationCounter,
 } from '../../../components/Charts';
-import { AppTabs, AppButton, AppSelect2 } from '../../../components';
+import { AppTabs } from '../../../components';
 import ChartConfigurations from '../../../components/VisualizationConfigs/ChartConfigurations';
 import BaseModal from '../../../modals/BaseModal';
 import {
   AreaChartIcon,
   BarChartIcon,
   CounterIcon,
+  EditTabIcon,
+  ExpandIcon,
   LineChartIcon,
   PieChartIcon,
   QueryResultIcon,
@@ -367,6 +369,22 @@ const VisualizationDisplay = ({
         onCloseTab={(tabId: string) => {
           setCloseTabId(tabId);
         }}
+        rightElement={
+          <Flex gap={'10px'}>
+            <Tooltip label="Minimize" hasArrow>
+              <div
+                className="btn-expand"
+                onClick={() => onExpand((pre) => !pre)}
+              >
+                <ExpandIcon />
+              </div>
+            </Tooltip>
+
+            <div className="btn-expand">
+              <EditTabIcon />
+            </div>
+          </Flex>
+        }
         tabs={[
           ...queryValue.visualizations.map((v) => ({
             icon: getIcon(v?.options?.globalSeriesType || v.type),
@@ -385,9 +403,11 @@ const VisualizationDisplay = ({
           {
             icon: null,
             name: (
-              <Flex alignItems={'center'} onClick={() => onExpand(false)}>
-                <Box className="icon-plus-circle" mr={2} /> Add Chart
-              </Flex>
+              <Tooltip label="Add New Visualization" hasArrow>
+                <Flex alignItems={'center'} onClick={() => onExpand(false)}>
+                  <Box className="icon-plus-circle" mr={2} /> Add Chart
+                </Flex>
+              </Tooltip>
             ),
             content: (
               <AddVisualization

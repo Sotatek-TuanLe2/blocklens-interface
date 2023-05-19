@@ -74,6 +74,7 @@ import { ReactComponent as RunQueryIcon } from './RunQueryIcon.svg';
 import { ReactComponent as ListDotIcon } from './ListDotIcon.svg';
 import { ReactComponent as ExpandIcon } from './ExpandIcon.svg';
 import { ReactComponent as QueryIcon } from './QueryIcon.svg';
+import { ReactComponent as EditTabIcon } from './EditTabIcon.svg';
 
 export {
   CalendarIcon,
@@ -152,4 +153,5 @@ export {
   QueryIcon,
   DeleteIcon,
   SettingHeaderIcon,
+  EditTabIcon,
 };

@@ -6,6 +6,7 @@ import {
   MenuItem,
   MenuList,
   Switch,
+  Tooltip,
 } from '@chakra-ui/react';
 import { useHistory } from 'react-router';
 import {
@@ -40,14 +41,17 @@ const Header: React.FC<IHeaderProps> = (props) => {
   return (
     <div className="workspace-page__editor__header">
       <div className="workspace-page__editor__header__left">
-        <AppButton
-          onClick={() => history.push('/')}
-          size="sm"
-          variant="no-effects"
-          className="btn-back"
-        >
-          <BackHeaderIcon />
-        </AppButton>
+        <Tooltip label="Back" hasArrow placement="top">
+          <AppButton
+            onClick={() => history.push('/')}
+            size="sm"
+            variant="no-effects"
+            className="btn-back"
+          >
+            <BackHeaderIcon />
+          </AppButton>
+        </Tooltip>
+
         <div className="item-desc">
           <img src="/images/AvatarDashboardCard.png" alt="avatar" />
           <p className="user-name">Tyler Covington /</p>
@@ -61,14 +65,16 @@ const Header: React.FC<IHeaderProps> = (props) => {
             Publish
           </FormLabel>
         </div>
-        <AppButton
-          onClick={onRunQuery}
-          size="md"
-          leftIcon={<RunQueryIcon />}
-          me="21px"
-        >
-          Run
-        </AppButton>
+        <Tooltip label="Run Query" hasArrow placement="top">
+          <AppButton
+            onClick={onRunQuery}
+            size="md"
+            leftIcon={<RunQueryIcon />}
+            me="21px"
+          >
+            Run
+          </AppButton>
+        </Tooltip>
         <Menu>
           <MenuButton
             as={AppButton}

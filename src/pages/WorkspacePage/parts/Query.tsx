@@ -350,9 +350,11 @@ const QueryPart: React.FC = () => {
                   <QueryIcon />
                   Query
                 </div>
-                <div className="btn-expand" onClick={onExpand}>
-                  <ExpandIcon />
-                </div>
+                <Tooltip label="Minimize" hasArrow placement="top">
+                  <div className="btn-expand" onClick={onExpand}>
+                    <ExpandIcon />
+                  </div>
+                </Tooltip>
               </Box>
               <AceEditor
                 className={`custom-editor ${expandEditor ? 'expland' : ''}`}
