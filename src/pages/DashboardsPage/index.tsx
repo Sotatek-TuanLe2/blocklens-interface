@@ -175,7 +175,7 @@ const DashboardsPage: React.FC = () => {
           requestParams={dashboardParams}
           fetchData={fetchDashboards}
           limit={12}
-          renderHeader={() => _renderHeader()}
+          renderHeader={_renderHeader}
           renderBody={(data) => (
             <>
               {_renderBody(

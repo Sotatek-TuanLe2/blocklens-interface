@@ -40,7 +40,7 @@ const optionType: IOption[] = [
 
 export const listTags = [
   {
-    name: 'defidefidefidefidefidefidefi',
+    name: 'defi',
     id: 1,
   },
   {
