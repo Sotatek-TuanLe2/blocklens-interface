@@ -54,6 +54,13 @@ export const listTags = [
 ];
 
 const FilterSearch: React.FC<IFilterSearch> = (props) => {
+  const URL_PARAMS = {
+    SEARCH: 'search',
+    SORT: 'sort',
+    CHAIN: 'chain',
+    TAG: 'tag',
+  };
+
   const { type, typeVisiable, setVisibility } = props;
   const history = useHistory();
   const { search: searchUrl } = useLocation();
@@ -68,12 +75,32 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   const [chainsSupported, setChainsSupported] = useState<ILISTNETWORK[]>([]);
 
   useEffect(() => {
+    (async () => {
+      const listChainRes = await rf
+        .getRequest('DashboardsRequest')
+        .getSupportedChains();
+
+      const listChain = listChainRes.map((chain: string) => {
+        const chainName = chain.split('_')[0];
+        return {
+          value: chain,
+          label: chainName.toUpperCase(),
+          chain: chainName,
+        };
+      });
+
+      const result = _.uniqBy<ILISTNETWORK>(listChain, 'chain');
+      setChainsSupported(result);
+    })();
+  }, []);
+
+  useEffect(() => {
     const searchParams = new URLSearchParams(searchUrl);
 
-    const search = searchParams.get('search') || '';
-    const sort = searchParams.get('sort') || '';
-    const chain = searchParams.get('chain') || '';
-    const tag = searchParams.get('tag') || '';
+    const search = searchParams.get(URL_PARAMS.SEARCH) || '';
+    const sort = searchParams.get(URL_PARAMS.SORT) || '';
+    const chain = searchParams.get(URL_PARAMS.CHAIN) || '';
+    const tag = searchParams.get(URL_PARAMS.TAG) || '';
 
     setSearch(search);
     setSort(sort);
@@ -83,16 +110,6 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
       ? setVisibility(VisibilityGridDashboardList.ROW)
       : setVisibility(VisibilityGridDashboardList.COLUMN);
   }, [type, searchUrl]);
-
-  const onChangeSearch = (e: ChangeEvent<HTMLInputElement>) => {
-    const searchParams = new URLSearchParams(searchUrl);
-    searchParams.delete('search');
-    searchParams.set('search', e.target.value);
-    history.push({
-      pathname: ROUTES.HOME,
-      search: `${searchParams.toString()}`,
-    });
-  };
 
   const onClickNew = () => {
     switch (type) {
@@ -107,35 +124,25 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
     }
   };
 
-  useEffect(() => {
-    (async () => {
-      const listChainRes = await rf
-        .getRequest('DashboardsRequest')
-        .getSupportedChains();
-
-      const listChain = listChainRes.map((chain: string) => {
-        const chainName = chain.split('_')[0];
-
-        return {
-          value: chain,
-          label: chainName.toUpperCase(),
-          chain: chainName,
-        };
-      });
-
-      const result = _.uniqBy<ILISTNETWORK>(listChain, 'chain');
-
-      setChainsSupported(result);
-    })();
-  }, []);
-
   const onToggleNewDashboardModal = () =>
     setOpenNewDashboardModal((prevState) => !prevState);
 
+  const onChangeSearch = (e: ChangeEvent<HTMLInputElement>) => {
+    const searchParams = new URLSearchParams(searchUrl);
+    searchParams.delete(URL_PARAMS.SEARCH);
+    if (e.target.value) {
+      searchParams.set(URL_PARAMS.SEARCH, e.target.value);
+    }
+    history.push({
+      pathname: ROUTES.HOME,
+      search: `${searchParams.toString()}`,
+    });
+  };
+
   const onChangeSort = (value: string) => {
     const searchParams = new URLSearchParams(searchUrl);
-    searchParams.delete('sort');
-    searchParams.set('sort', value);
+    searchParams.delete(URL_PARAMS.SORT);
+    searchParams.set(URL_PARAMS.SORT, value);
     history.push({
       pathname: ROUTES.HOME,
       search: `${searchParams.toString()}`,
@@ -144,9 +151,9 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
 
   const onChangeChain = (value: string) => {
     const searchParams = new URLSearchParams(searchUrl);
-    searchParams.delete('chain');
+    searchParams.delete(URL_PARAMS.CHAIN);
     if (value) {
-      searchParams.set('chain', value);
+      searchParams.set(URL_PARAMS.CHAIN, value);
     }
     history.push({
       pathname: ROUTES.HOME,
@@ -156,10 +163,10 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
 
   const onChangeTag = (value: string) => {
     const searchParams = new URLSearchParams(searchUrl);
-    const currentTag = searchParams.get('tag');
-    searchParams.delete('tag');
+    const currentTag = searchParams.get(URL_PARAMS.TAG);
+    searchParams.delete(URL_PARAMS.TAG);
     if (currentTag !== value) {
-      searchParams.set('tag', value);
+      searchParams.set(URL_PARAMS.TAG, value);
     }
     history.push({
       pathname: ROUTES.HOME,
