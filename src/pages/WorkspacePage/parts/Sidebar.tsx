@@ -1,4 +1,4 @@
-import { Box, Collapse, Fade, Flex, Text } from '@chakra-ui/react';
+import { Box, Collapse, Flex, Text } from '@chakra-ui/react';
 import _, { debounce } from 'lodash';
 import { useCallback, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router';
@@ -16,41 +16,12 @@ import { AppInput } from 'src/components';
 import ModalNewDashboard from 'src/modals/querySQL/ModalNewDashboard';
 import rf from 'src/requests/RequestFactory';
 import { PROMISE_STATUS, ROUTES, SchemaType } from 'src/utils/common';
-import { CHAIN_NAME, IDashboardDetail, IQuery } from 'src/utils/query.type';
+import { IDashboardDetail, IQuery } from 'src/utils/query.type';
 import { getErrorMessage } from 'src/utils/utils-helper';
-import { getLogoChainByChainId } from 'src/utils/utils-network';
+import { getChainIconByChainName } from 'src/utils/utils-network';
 import { toastError } from 'src/utils/utils-notify';
 
-interface IValue {
-  queries: IQuery[];
-  dashboards: IDashboardDetail[];
-}
-
-const getChainIcon = (chainName: string) => {
-  let iconClassName: string;
-  switch (chainName) {
-    case CHAIN_NAME.ETH_GOERLI:
-    case CHAIN_NAME.ETH_MAINNET: {
-      iconClassName = getLogoChainByChainId('ETH') || '';
-      break;
-    }
-    case CHAIN_NAME.BSC_TESTNET:
-    case CHAIN_NAME.BSC_MAINNET: {
-      iconClassName = getLogoChainByChainId('BSC') || '';
-      break;
-    }
-    case CHAIN_NAME.APTOS_MAINNET:
-    case CHAIN_NAME.APTOS_TESTNET:
-      iconClassName = 'icon-aptos';
-      break;
-    default:
-      iconClassName = getLogoChainByChainId('POLYGON') || '';
-      break;
-  }
-  return <Box className={iconClassName}></Box>;
-};
-
-const ItemNetworkChain = ({ chain }: { chain: any }) => {
+const ChainItem = ({ chain }: { chain: SchemaType }) => {
   const [show, setShow] = useState(false);
   const [schemaDescribe, setSchemaDescribe] = useState<SchemaType[] | null>();
 
@@ -72,15 +43,18 @@ const ItemNetworkChain = ({ chain }: { chain: any }) => {
   return (
     <>
       <Box display={'flex'} onClick={handleToggle} className="chain-info-title">
-        <div>{getChainIcon(chain.namespace)}</div>
-        <span>{chain.table_name}</span>
+        <div className={getChainIconByChainName(chain.namespace)}></div>
+        <Text isTruncated maxW={'70%'}>
+          {chain.table_name}
+        </Text>
       </Box>
 
       <Collapse in={show} className="chain-info-desc">
         {/* <Box>{chain.namespace}</Box> */}
         {!!schemaDescribe &&
-          schemaDescribe.map((item) => (
+          schemaDescribe.map((item, index) => (
             <Flex
+              key={index + 'schema'}
               direction={'row'}
               py="6px"
               pl={'10px'}
@@ -102,7 +76,7 @@ const CollapseExplore = ({
   content,
 }: {
   title: string;
-  content: any;
+  content: SchemaType[];
 }) => {
   const [show, setShow] = useState(false);
 
@@ -115,7 +89,8 @@ const CollapseExplore = ({
         className="workspace-page__sidebar__content__explore-wrap__content"
         onClick={handleToggle}
       >
-        <span>{title}</span>
+        <div className={getChainIconByChainName(content[0].namespace)}></div>
+        <span>{title.toUpperCase()}</span>
       </Box>
 
       <Collapse
@@ -123,8 +98,8 @@ const CollapseExplore = ({
         in={show}
         className="workspace-page__sidebar__content__explore-wrap__content-collapse"
       >
-        {content.map((chain: any, index: number) => {
-          return <ItemNetworkChain chain={chain} key={index + 'chain'} />;
+        {content.map((chain: SchemaType, index: number) => {
+          return <ChainItem chain={chain} key={index + 'chain'} />;
         })}
       </Collapse>
     </>
@@ -146,22 +121,27 @@ const Sidebar: React.FC = () => {
     {
       id: CATEGORIES.WORK_PLACE,
       title: 'Work place',
-      icon: <FolderV2Icon></FolderV2Icon>,
-      activeIcon: <FolderActiveV2Icon></FolderActiveV2Icon>,
+      icon: <FolderV2Icon />,
+      activeIcon: <FolderActiveV2Icon />,
     },
     {
       id: CATEGORIES.EXPLORE_DATA,
       title: 'Explore data',
-      icon: <ExploreV2Icon></ExploreV2Icon>,
-      activeIcon: <ExploreActiveV2Icon></ExploreActiveV2Icon>,
+      icon: <ExploreV2Icon />,
+      activeIcon: <ExploreActiveV2Icon />,
     },
   ];
 
   const [category, setCategory] = useState<string>(CATEGORIES.WORK_PLACE);
   const [searchValue, setSearchValue] = useState<string>('');
-  const params: { queryId?: string; dashboardId?: string } = useParams();
-  const [value, setValue] = useState<IValue | null>();
-  const [dataExplore, setDataExplore] = useState<{
+  const { queryId, dashboardId }: { queryId?: string; dashboardId?: string } =
+    useParams();
+
+  const [dataQueries, setDataQueries] = useState<IQuery[] | []>([]);
+  const [dataDashboards, setDataDashboards] = useState<IDashboardDetail[] | []>(
+    [],
+  );
+  const [exploreData, setExploreData] = useState<{
     [key: string]: any;
   } | null>();
   const [toggleSideBarContent, setToogleSideBarContent] = useState(true);
@@ -189,40 +169,41 @@ const Sidebar: React.FC = () => {
     }
   };
 
-  const fetchData = async (search: any) => {
+  const fetchData = async (search?: string) => {
     const data: any = await Promise.allSettled([
       fetchDashboards(_.omitBy({ search }, (param) => !param)),
       fetchQueries(_.omitBy({ search }, (param) => !param)),
     ]);
-    setValue(() => {
-      let temp: any;
+    setDataDashboards(() => {
       if (data[0].status === PROMISE_STATUS.FULFILLED) {
-        temp = { ...temp, dashboards: data[0].value.docs };
+        return data[0].value.docs;
       }
+
+      return [];
+    });
+    setDataQueries(() => {
       if (data[1].status === PROMISE_STATUS.FULFILLED) {
-        temp = { ...temp, queries: data[1].value.docs };
+        return data[1].value.docs;
       }
-      return temp;
+      return [];
     });
   };
 
   useEffect(() => {
-    fetchData(null);
+    fetchData();
   }, []);
 
   useEffect(() => {
     (async () => {
       try {
-        const tables = await rf
-          .getRequest('DashboardsRequest')
-          .getTables(params);
+        const tables = await rf.getRequest('DashboardsRequest').getTables();
 
         const listChain = _.groupBy(
           tables,
           (item) => item.namespace.split('_')[0],
         );
 
-        setDataExplore(listChain);
+        setExploreData(listChain);
       } catch (error) {
         toastError(getErrorMessage(error));
       }
@@ -244,10 +225,10 @@ const Sidebar: React.FC = () => {
   };
 
   const handleClassNameWorkPlaceItem = (id: any) => {
-    if (id === params?.queryId || id === params?.dashboardId) {
-      return 'workspace-page__sidebar__content__work-place-wrap__work-place-detail work-place-detail-active ';
+    if (id === queryId || id === dashboardId) {
+      return 'workspace-page__sidebar__content__work-place-detail work-place-active ';
     }
-    return 'workspace-page__sidebar__content__work-place-wrap__work-place-detail ';
+    return 'workspace-page__sidebar__content__work-place-detail ';
   };
 
   const _renderContentWorkPlace = () => {
@@ -279,26 +260,23 @@ const Sidebar: React.FC = () => {
             <PlusV2Icon cursor={'pointer'} />
           </div>
         </div>
-        {!!value?.queries ? (
-          value?.queries.length ? (
-            <>
-              {value.queries.map((query) => (
-                <div
-                  className={handleClassNameWorkPlaceItem(query.id)}
-                  onClick={() => history.push(`${ROUTES.QUERY}/${query.id}?`)}
-                >
-                  <div>
-                    <LogoQueryV2Icon />
-                  </div>
-                  <Text isTruncated>{query.name}</Text>
+        {dataQueries.length ? (
+          <>
+            {dataQueries.map((query) => (
+              <div
+                key={query.id}
+                className={handleClassNameWorkPlaceItem(query.id)}
+                onClick={() => history.push(`${ROUTES.QUERY}/${query.id}?`)}
+              >
+                <div>
+                  <LogoQueryV2Icon />
                 </div>
-              ))}
-            </>
-          ) : (
-            <div>No data...</div>
-          )
+                <Text isTruncated>{query.name}</Text>
+              </div>
+            ))}
+          </>
         ) : (
-          <div>Some thing was wrong</div>
+          <div>No data...</div>
         )}
         <Box
           mt="20px"
@@ -309,28 +287,25 @@ const Sidebar: React.FC = () => {
             <PlusV2Icon cursor={'pointer'} />
           </div>
         </Box>
-        {!!value?.dashboards ? (
-          value?.dashboards.length ? (
-            <>
-              {value.dashboards.map((dashboard) => (
-                <div
-                  className={handleClassNameWorkPlaceItem(dashboard.id)}
-                  onClick={() =>
-                    history.push(`${ROUTES.DASHBOARD}/${dashboard.id}?`)
-                  }
-                >
-                  <div>
-                    <LogoDashboardV2Icon />
-                  </div>
-                  <Text isTruncated>{dashboard.name}</Text>
+        {dataDashboards.length ? (
+          <>
+            {dataDashboards.map((dashboard) => (
+              <div
+                key={dashboard.id}
+                className={handleClassNameWorkPlaceItem(dashboard.id)}
+                onClick={() =>
+                  history.push(`${ROUTES.DASHBOARD}/${dashboard.id}?`)
+                }
+              >
+                <div>
+                  <LogoDashboardV2Icon />
                 </div>
-              ))}
-            </>
-          ) : (
-            <div>No data...</div>
-          )
+                <Text isTruncated>{dashboard.name}</Text>
+              </div>
+            ))}
+          </>
         ) : (
-          <div>Some thing was wrong</div>
+          <div>No data...</div>
         )}
       </Box>
     );
@@ -347,12 +322,13 @@ const Sidebar: React.FC = () => {
             <CloseBtnV2Icon />
           </Box>
         </div>
-        {!!dataExplore && (
+        {!!exploreData && (
           <>
-            {Object.keys(dataExplore).map((nameChain: any, index) => (
+            {Object.keys(exploreData).map((nameChain: any, index) => (
               <CollapseExplore
+                key={index + 'explore'}
                 title={nameChain}
-                content={Object.values(dataExplore)[index]}
+                content={Object.values(exploreData)[index]}
               />
             ))}
           </>
@@ -371,7 +347,7 @@ const Sidebar: React.FC = () => {
   };
 
   return (
-    <div className="workspace-page__sidebar">
+    <div className={'workspace-page__sidebar'}>
       <div className="workspace-page__sidebar__categories">
         {categoryList.map((item) => (
           <Box
@@ -388,8 +364,12 @@ const Sidebar: React.FC = () => {
         ))}
       </div>
       <Box
-        display={toggleSideBarContent ? 'block' : 'none'}
-        className="workspace-page__sidebar__content"
+        // display={toggleSideBarContent ? 'block' : 'none'}
+        className={
+          toggleSideBarContent
+            ? 'workspace-page__sidebar__content show-sidebar'
+            : 'workspace-page__sidebar__content hidden-sidebar'
+        }
       >
         {_renderContent()}
       </Box>
@@ -398,7 +378,7 @@ const Sidebar: React.FC = () => {
         onClose={async () => {
           setOpenNewDashboardModal(false);
           const dataDashboard: any = await fetchDashboards();
-          setValue((pre: any) => ({ ...pre, dashboards: dataDashboard.docs }));
+          setDataDashboards(() => [...dataDashboard.docs]);
         }}
       />
     </div>

@@ -58,18 +58,11 @@ import { ReactComponent as ArrowDoubleLeftIcon } from './ArrowDoubleLeftIcon.svg
 import { ReactComponent as PrevIcon } from './PrevIcon.svg';
 import { ReactComponent as DashboardListIcon } from './DashboardListIcon.svg';
 import { ReactComponent as FireIcon } from './FireIcon.svg';
-import { ReactComponent as IconBTCActive } from './IconBTCActive.svg';
-import { ReactComponent as IconBTCInactive } from './IconBTCInactive.svg';
-import { ReactComponent as IconETHActive } from './IconETHActive.svg';
-import { ReactComponent as IconETHInactive } from './IconETHInactive.svg';
-import { ReactComponent as IconBNBActive } from './IconBNBActive.svg';
-import { ReactComponent as IconBNBInactive } from './IconBNBInactive.svg';
 import { ReactComponent as IconListDashboard } from './IconListDashboard.svg';
 import { ReactComponent as IconColumnDashboard } from './IconColumnDashboard.svg';
 import { ReactComponent as IconHeart } from './IconHeart.svg';
 import { ReactComponent as IconHeartFavorite } from './IconHeartFavorite.svg';
 import { ReactComponent as IconOptions } from './IconOptions.svg';
-import { ReactComponent as ListNetworkIcon } from './ListNetworkIcon.svg';
 import { ReactComponent as IconCopy } from './IconCopy.svg';
 import { ReactComponent as IconShare } from './IconShare.svg';
 import { ReactComponent as ExploreV2Icon } from './ExploreV2Icon.svg';
@@ -80,6 +73,8 @@ import { ReactComponent as CloseBtnV2Icon } from './CloseBtnV2Icon.svg';
 import { ReactComponent as PlusV2Icon } from './PlusV2Icon.svg';
 import { ReactComponent as LogoDashboardV2Icon } from './LogoDashboardV2Icon.svg';
 import { ReactComponent as LogoQueryV2Icon } from './LogoQueryV2Icon.svg';
+import { ReactComponent as FireIconInactive } from './FireIconInactive.svg';
+import { ReactComponent as IconFork } from './IconFork.svg';
 
 export {
   CalendarIcon,
@@ -142,18 +137,11 @@ export {
   PrevIcon,
   DashboardListIcon,
   FireIcon,
-  IconBTCActive,
-  IconBTCInactive,
-  IconETHActive,
-  IconETHInactive,
-  IconBNBActive,
-  IconBNBInactive,
   IconColumnDashboard,
   IconListDashboard,
   IconHeart,
   IconHeartFavorite,
   IconOptions,
-  ListNetworkIcon,
   IconCopy,
   IconShare,
   ExploreV2Icon,
@@ -164,4 +152,6 @@ export {
   PlusV2Icon,
   LogoDashboardV2Icon,
   LogoQueryV2Icon,
+  FireIconInactive,
+  IconFork,
 };
