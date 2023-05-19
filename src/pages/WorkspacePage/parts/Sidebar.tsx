@@ -2,16 +2,6 @@ import { Box, Collapse, Flex, Text } from '@chakra-ui/react';
 import _, { debounce } from 'lodash';
 import { useCallback, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router';
-import {
-  CloseBtnV2Icon,
-  ExploreActiveV2Icon,
-  ExploreV2Icon,
-  FolderActiveV2Icon,
-  FolderV2Icon,
-  LogoDashboardV2Icon,
-  LogoQueryV2Icon,
-  PlusV2Icon,
-} from 'src/assets/icons';
 import { AppInput } from 'src/components';
 import ModalNewDashboard from 'src/modals/querySQL/ModalNewDashboard';
 import rf from 'src/requests/RequestFactory';
@@ -43,7 +33,6 @@ const ChainItem = ({ chain }: { chain: SchemaType }) => {
   return (
     <>
       <Box display={'flex'} onClick={handleToggle} className="chain-info-title">
-        <div className={getChainIconByChainName(chain.namespace)}></div>
         <Text isTruncated maxW={'70%'}>
           {chain.table_name}
         </Text>
@@ -121,14 +110,14 @@ const Sidebar: React.FC = () => {
     {
       id: CATEGORIES.WORK_PLACE,
       title: 'Work place',
-      icon: <FolderV2Icon />,
-      activeIcon: <FolderActiveV2Icon />,
+      icon: <div className="bg-FolderIcon" />,
+      activeIcon: <div className="bg-FolderActiveIcon" />,
     },
     {
       id: CATEGORIES.EXPLORE_DATA,
       title: 'Explore data',
-      icon: <ExploreV2Icon />,
-      activeIcon: <ExploreActiveV2Icon />,
+      icon: <div className="bg-ExploreIcon" />,
+      activeIcon: <div className="bg-ExploreActiveIcon" />,
     },
   ];
 
@@ -176,17 +165,14 @@ const Sidebar: React.FC = () => {
         fetchQueries(_.omitBy({ search }, (param) => !param)),
       ]);
       setDataDashboards(() => {
-        if (data[0].status === PROMISE_STATUS.FULFILLED) {
-          return data[0].value.docs;
-        }
-
-        return [];
+        return data[0].status === PROMISE_STATUS.FULFILLED
+          ? data[0].value.docs
+          : [];
       });
       setDataQueries(() => {
-        if (data[1].status === PROMISE_STATUS.FULFILLED) {
-          return data[1].value.docs;
-        }
-        return [];
+        return data[1].status === PROMISE_STATUS.FULFILLED
+          ? data[1].value.docs
+          : [];
       });
     } catch (error) {
       toastError({
@@ -197,9 +183,6 @@ const Sidebar: React.FC = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
-
-  useEffect(() => {
     (async () => {
       try {
         const tables = await rf.getRequest('DashboardsRequest').getTables();
@@ -215,9 +198,10 @@ const Sidebar: React.FC = () => {
       }
     })();
   }, []);
+
   const getDataSearchWorkPlace = useCallback(
     debounce(async (search) => {
-      fetchData(search);
+      fetchData(search.trim());
     }, 500),
     [],
   );
@@ -231,10 +215,9 @@ const Sidebar: React.FC = () => {
   };
 
   const handleClassNameWorkPlaceItem = (id: any) => {
-    if (id === queryId || id === dashboardId) {
-      return 'workspace-page__sidebar__content__work-place-detail work-place-active ';
-    }
-    return 'workspace-page__sidebar__content__work-place-detail ';
+    return id === queryId || id === dashboardId
+      ? 'workspace-page__sidebar__content__work-place-detail work-place-active '
+      : 'workspace-page__sidebar__content__work-place-detail ';
   };
 
   const _renderContentWorkPlace = () => {
@@ -245,9 +228,8 @@ const Sidebar: React.FC = () => {
           <Box
             cursor={'pointer'}
             onClick={() => setToogleSideBarContent((pre) => !pre)}
-          >
-            <CloseBtnV2Icon />
-          </Box>
+            className={'bg-CloseBtnIcon'}
+          ></Box>
         </div>
         <AppInput
           value={searchValue}
@@ -263,7 +245,7 @@ const Sidebar: React.FC = () => {
         <div className="workspace-page__sidebar__content__work-place-wrap__work-place-content">
           <span>Query</span>{' '}
           <div onClick={handleCreateNewQuery}>
-            <PlusV2Icon cursor={'pointer'} />
+            <Box cursor={'pointer'} className="bg-PlusIcon" />
           </div>
         </div>
         {dataQueries.length ? (
@@ -275,7 +257,7 @@ const Sidebar: React.FC = () => {
                 onClick={() => history.push(`${ROUTES.QUERY}/${query.id}?`)}
               >
                 <div>
-                  <LogoQueryV2Icon />
+                  <div className="bg-LogoQueryIcon" />
                 </div>
                 <Text isTruncated>{query.name}</Text>
               </div>
@@ -290,7 +272,7 @@ const Sidebar: React.FC = () => {
         >
           <span>Dashboard</span>{' '}
           <div onClick={handleCreateNewDashboard}>
-            <PlusV2Icon cursor={'pointer'} />
+            <Box cursor={'pointer'} className="bg-PlusIcon" />
           </div>
         </Box>
         {dataDashboards.length ? (
@@ -304,7 +286,7 @@ const Sidebar: React.FC = () => {
                 }
               >
                 <div>
-                  <LogoDashboardV2Icon />
+                  <div className="bg-LogoDashboardIcon" />
                 </div>
                 <Text isTruncated>{dashboard.name}</Text>
               </div>
@@ -324,9 +306,8 @@ const Sidebar: React.FC = () => {
           <Box
             cursor={'pointer'}
             onClick={() => setToogleSideBarContent((pre) => !pre)}
-          >
-            <CloseBtnV2Icon />
-          </Box>
+            className="bg-CloseBtnIcon"
+          ></Box>
         </div>
         {!!exploreData && (
           <>
