@@ -15,6 +15,24 @@
   flex-direction: row;
   gap: 20px;
 
+  .expand {
+    height: 100% !important;
+    min-height: 400px;
+  }
+
+  .add-chart {
+    padding: 6px 14px;
+    background: $card;
+    border-radius: 6px;
+
+    .btn-expand {
+      height: 100%;
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+
   .recharts-wrapper .recharts-label-list .recharts-label {
     fill: $title;
   }
@@ -23,7 +41,25 @@
     flex-direction: column-reverse;
   }
 
+  .ace_content {
+    background-color: $card;
+  }
+
+  .ace_gutter-layer {
+    background: #161b36;
+    border-right: 1px solid #2f3b58;
+  }
+
+  .ace_gutter-active-line {
+    background: #161b36;
+  }
+
+  .ace_scroller {
+    background-color: $card;
+  }
+
   .custom-editor {
+    border-top: 1px solid #2f3b58;
     height: 250px !important;
 
     &.expland {
@@ -39,6 +75,9 @@
     padding: 16px 12px;
     display: flex;
     justify-content: space-between;
+    border-top: 1px solid #2f3b58;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
 
     .custom-button {
       display: flex;
@@ -110,10 +149,37 @@
   }
 
   &__right-side {
-    width: calc(100% - 380px - 20px);
+    width: 100%;
 
     @include desktop {
       width: 100%;
+    }
+
+    .header-tab {
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top-left-radius: 6px;
+      border-top-right-radius: 6px;
+
+      .tag-name {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        background-color: #242b45;
+        padding: 3px 10px;
+        width: fit-content;
+        gap: 6px;
+        border-radius: 4px;
+      }
+
+      .btn-expand {
+        height: 100%;
+        &:hover {
+          cursor: pointer;
+        }
+      }
     }
 
     .empty-table {
@@ -139,8 +205,8 @@
 
   .block-describe {
     padding: 2px;
-
     cursor: pointer;
+
     &:hover {
       background-color: #ffffff1a;
     }
@@ -159,6 +225,7 @@
       border: 1px solid $border;
       margin-bottom: 20px;
       overflow-y: auto;
+      margin-top: 20px;
 
       &__title {
         padding: 0 10px;
@@ -194,17 +261,13 @@
       .tabs-container {
         background-color: #111213;
         border-radius: 4px;
-        margin-bottom: 20px;
       }
 
       &__name-tab {
         margin-right: 0;
         border-radius: 4px;
         line-height: unset !important;
-
-        &__detail {
-          gap: 4px;
-        }
+        padding: 2px 2px;
 
         &:hover {
           background-color: #ffffff1a;
@@ -239,6 +302,40 @@
 
               font-weight: 400;
             }
+          }
+        }
+      }
+
+      .main-item {
+        margin-top: 115px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+
+        .top-items {
+          display: flex;
+          justify-content: center;
+          gap: 20px;
+        }
+
+        .bottom-items {
+          display: flex;
+          justify-content: center;
+          gap: 20px;
+        }
+
+        .item-visual {
+          display: flex;
+          align-items: center;
+          padding: 11px 16px;
+          border: 1px solid #465065;
+          border-radius: 8px;
+          gap: 10px;
+
+          &:hover {
+            background: linear-gradient(268.85deg, rgba(34, 108, 255, 0.12) 22.48%, rgba(16, 132, 255, 0.12) 83.59%);
+            border: 1px solid #226cff;
+            cursor: pointer;
           }
         }
       }

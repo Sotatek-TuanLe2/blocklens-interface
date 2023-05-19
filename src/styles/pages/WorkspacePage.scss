@@ -4,16 +4,77 @@
 
 .workspace-page {
   &__sidebar {
-    &__categories {}
+    &__categories {
+    }
 
-    &__content {}
+    &__content {
+    }
   }
 
   &__editor {
-    &__header {}
+    &__header {
+      margin-bottom: 8px;
+      padding: 13px 24px;
+      background: $card;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      &__left {
+        display: flex;
+        align-items: center;
+        gap: 20px;
 
-    &__dashboard {}
+        .btn-back {
+          &:hover {
+            background-color: #161b36;
+          }
+        }
 
-    &__query {}
+        .item-desc {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          .user-name {
+            color: $paragraph;
+          }
+        }
+      }
+
+      &__right {
+        display: flex;
+        align-items: center;
+
+        .btn-list {
+          &:hover {
+            background-color: #161b36;
+          }
+        }
+
+        .chakra-menu__menu-list {
+          background-color: $border;
+          border: unset;
+          min-width: 109px;
+        }
+
+        .chakra-menu__menuitem {
+          &:focus {
+            background: $main;
+          }
+        }
+
+        .switch-icon {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        }
+      }
+    }
+
+    &__dashboard {
+    }
+
+    &__query {
+    }
   }
 }
