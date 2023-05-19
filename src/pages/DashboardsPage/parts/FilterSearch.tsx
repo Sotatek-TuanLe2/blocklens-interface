@@ -59,9 +59,9 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   const { search: searchUrl } = useLocation();
 
   const [search, setSearch] = useState<string>('');
-
   const [sort, setSort] = useState<string>('');
-  const [chain, setChain] = useState<string>('All');
+  const [chain, setChain] = useState<string>('');
+  const [tag, setTag] = useState<string>('');
   const [openNewDashboardModal, setOpenNewDashboardModal] =
     useState<boolean>(false);
 
@@ -73,10 +73,12 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
     const search = searchParams.get('search') || '';
     const sort = searchParams.get('sort') || '';
     const chain = searchParams.get('chain') || '';
+    const tag = searchParams.get('tag') || '';
 
-    setSearch(search || '');
-    setSort(sort || 'datehightolow');
-    setChain(chain || 'All');
+    setSearch(search);
+    setSort(sort);
+    setChain(chain);
+    setTag(tag);
     type === LIST_ITEM_TYPE.QUERIES
       ? setVisibility(VisibilityGridDashboardList.ROW)
       : setVisibility(VisibilityGridDashboardList.COLUMN);
@@ -143,7 +145,22 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   const onChangeChain = (value: string) => {
     const searchParams = new URLSearchParams(searchUrl);
     searchParams.delete('chain');
-    searchParams.set('chain', value);
+    if (value) {
+      searchParams.set('chain', value);
+    }
+    history.push({
+      pathname: ROUTES.HOME,
+      search: `${searchParams.toString()}`,
+    });
+  };
+
+  const onChangeTag = (value: string) => {
+    const searchParams = new URLSearchParams(searchUrl);
+    const currentTag = searchParams.get('tag');
+    searchParams.delete('tag');
+    if (currentTag !== value) {
+      searchParams.set('tag', value);
+    }
     history.push({
       pathname: ROUTES.HOME,
       search: `${searchParams.toString()}`,
@@ -156,11 +173,11 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
         <Flex>
           <Flex mr={3}>
             <AppButton
-              onClick={() => onChangeChain('All')}
+              onClick={() => onChangeChain('')}
               variant="network"
-              className={chain === 'All' ? 'btn-active' : 'btn-inactive'}
+              className={chain === '' ? 'btn-active' : 'btn-inactive'}
             >
-              {chain === 'All' ? <FireIcon /> : <FireIconInactive />}
+              {chain === '' ? <FireIcon /> : <FireIconInactive />}
               <Text ml={2}>All</Text>
             </AppButton>
           </Flex>
@@ -236,7 +253,13 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
       </Flex>
       <Flex mt={'14px'} flexDirection={'row'}>
         {listTags.map((item) => (
-          <div key={item.id} className="dashboard-filter__item-tag">
+          <div
+            key={item.id}
+            onClick={() => onChangeTag(item.name)}
+            className={`dashboard-filter__item-tag ${
+              item.name === tag ? 'dashboard-filter__item-tag--active' : ''
+            }`}
+          >
             #{item.name}
           </div>
         ))}
