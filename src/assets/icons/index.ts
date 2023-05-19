@@ -50,6 +50,8 @@ import { ReactComponent as ExplandIcon } from './ExplandIcon.svg';
 import { ReactComponent as FormatIcon } from './FormatIcon.svg';
 import { ReactComponent as AddParameterIcon } from './AddParameterIcon.svg';
 import { ReactComponent as SettingIcon } from './SettingIcon.svg';
+import { ReactComponent as SettingHeaderIcon } from './SettingHeaderIcon.svg';
+import { ReactComponent as DeleteIcon } from './DeleteIcon.svg';
 import { ReactComponent as ClockIcon } from './ClockIcon.svg';
 import { ReactComponent as AvatarIcon } from './AvatarIcon.svg';
 import { ReactComponent as CheckIcon } from './CheckIcon.svg';
@@ -67,6 +69,11 @@ import { ReactComponent as IconCopy } from './IconCopy.svg';
 import { ReactComponent as IconShare } from './IconShare.svg';
 import { ReactComponent as FireIconInactive } from './FireIconInactive.svg';
 import { ReactComponent as IconFork } from './IconFork.svg';
+import { ReactComponent as BackHeaderIcon } from './BackHeaderIcon.svg';
+import { ReactComponent as RunQueryIcon } from './RunQueryIcon.svg';
+import { ReactComponent as ListDotIcon } from './ListDotIcon.svg';
+import { ReactComponent as ExpandIcon } from './ExpandIcon.svg';
+import { ReactComponent as QueryIcon } from './QueryIcon.svg';
 
 export {
   CalendarIcon,
@@ -138,4 +145,11 @@ export {
   IconShare,
   FireIconInactive,
   IconFork,
+  BackHeaderIcon,
+  ListDotIcon,
+  RunQueryIcon,
+  ExpandIcon,
+  QueryIcon,
+  DeleteIcon,
+  SettingHeaderIcon,
 };

@@ -1,4 +1,3 @@
-import { DeleteIcon } from '@chakra-ui/icons';
 import {
   Flex,
   FormLabel,
@@ -11,11 +10,12 @@ import {
 import { useHistory } from 'react-router';
 import {
   BackHeaderIcon,
-  ForkIcon,
+  IconFork,
   ListDotIcon,
   RunQueryIcon,
-  SettingIcon,
-  ShareIcon,
+  IconShare,
+  DeleteIcon,
+  SettingHeaderIcon,
 } from 'src/assets/icons';
 import { AppButton } from 'src/components';
 
@@ -27,9 +27,9 @@ interface IHeaderProps {
 }
 
 const ListItem = [
-  { label: 'Fork', icon: <ForkIcon /> },
-  { label: 'Setting', icon: <SettingIcon /> },
-  { label: 'Share', icon: <ShareIcon /> },
+  { label: 'Fork', icon: <IconFork /> },
+  { label: 'Setting', icon: <SettingHeaderIcon /> },
+  { label: 'Share', icon: <IconShare /> },
   { label: 'Delete', icon: <DeleteIcon /> },
 ];
 
