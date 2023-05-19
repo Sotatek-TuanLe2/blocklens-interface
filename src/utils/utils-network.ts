@@ -7,6 +7,7 @@ import {
 import _ from 'lodash';
 import config, { Chain, Network } from 'src/config';
 import { toastError } from './utils-notify';
+import { CHAIN_NAME } from './query.type';
 
 export const getLogoChainByChainId = (ChainId?: string) => {
   if (!ChainId) return;
@@ -244,4 +245,78 @@ const addNewNetwork = (network: string, provider: JsonRpcProvider) => {
     console.error(`[AddNewNetwork] throw exception: ${error.message}`, error);
     throw error;
   }
+};
+
+export const getChainIconByChainName = (chainName: string) => {
+  let iconClassName: string;
+
+  switch (chainName) {
+    case CHAIN_NAME.ETH_GOERLI:
+    case CHAIN_NAME.ETH_MAINNET: {
+      iconClassName = getLogoChainByChainId('ETH') || '';
+      break;
+    }
+    case CHAIN_NAME.BSC_TESTNET:
+    case CHAIN_NAME.BSC_MAINNET: {
+      iconClassName = getLogoChainByChainId('BSC') || '';
+      break;
+    }
+    case CHAIN_NAME.APTOS_MAINNET:
+    case CHAIN_NAME.APTOS_TESTNET:
+      iconClassName = 'icon-aptos';
+      break;
+    case CHAIN_NAME.OPTIMISM_MAINET:
+    case CHAIN_NAME.OPTIMISM_TESTNET:
+      iconClassName = 'icon-optimism';
+      break;
+    case CHAIN_NAME.SOLANA_MAINET:
+    case CHAIN_NAME.SOLANA_TESTNET:
+      iconClassName = 'icon-solana';
+      break;
+    case CHAIN_NAME.ARBITRUM_MAINET:
+    case CHAIN_NAME.ARBITRUM_TESTNET:
+      iconClassName = 'icon-arbitrum';
+      break;
+    default:
+      iconClassName = getLogoChainByChainId('POLYGON') || '';
+      break;
+  }
+  return iconClassName;
+};
+
+export const getChainIconInactiveByChainName = (chainName: string) => {
+  let iconClassName: string;
+
+  switch (chainName) {
+    case CHAIN_NAME.ETH_GOERLI:
+    case CHAIN_NAME.ETH_MAINNET: {
+      iconClassName = 'icon-ethereum-inactive';
+      break;
+    }
+    case CHAIN_NAME.BSC_TESTNET:
+    case CHAIN_NAME.BSC_MAINNET: {
+      iconClassName = 'icon-bsc-inactive';
+      break;
+    }
+    case CHAIN_NAME.APTOS_MAINNET:
+    case CHAIN_NAME.APTOS_TESTNET:
+      iconClassName = 'icon-aptos-inactive';
+      break;
+    case CHAIN_NAME.OPTIMISM_MAINET:
+    case CHAIN_NAME.OPTIMISM_TESTNET:
+      iconClassName = 'icon-optimism-inactive';
+      break;
+    case CHAIN_NAME.SOLANA_MAINET:
+    case CHAIN_NAME.SOLANA_TESTNET:
+      iconClassName = 'icon-solana-inactive';
+      break;
+    case CHAIN_NAME.ARBITRUM_MAINET:
+    case CHAIN_NAME.ARBITRUM_TESTNET:
+      iconClassName = 'icon-arbitrum-inactive';
+      break;
+    default:
+      iconClassName = 'icon-polygon-inactive';
+      break;
+  }
+  return iconClassName;
 };

@@ -6,6 +6,8 @@ import BaseRequest from './BaseRequest';
 export interface DashboardsParams {
   search?: string;
   tags?: string;
+  order?: string;
+  chain?: string;
 }
 
 export interface CreateDashboardParams {
@@ -32,7 +34,7 @@ export interface ListParams {
 export interface QueriesParams {
   search?: string;
   tags?: string;
-  type?: string;
+  order?: string;
   chain?: string;
 }
 

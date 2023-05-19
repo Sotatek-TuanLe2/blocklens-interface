@@ -39,6 +39,12 @@ export enum CHAIN_NAME {
   APTOS_MAINNET = 'aptos_mainnet',
   polygon_mumbai = 'polygon_mumbai',
   POLYGON_MAINNET = 'polygon_mainnet',
+  OPTIMISM_MAINET = 'optimism_mainet',
+  OPTIMISM_TESTNET = 'optimism_testnet',
+  SOLANA_MAINET = 'solana_mainet',
+  SOLANA_TESTNET = 'solana_testnet',
+  ARBITRUM_MAINET = 'arbitrum_mainet',
+  ARBITRUM_TESTNET = 'arbitrum_testnet',
 }
 
 export interface WidgetOptions {
