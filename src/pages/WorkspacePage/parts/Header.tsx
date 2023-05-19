@@ -70,10 +70,13 @@ const Header: React.FC<IHeaderProps> = (props) => {
           Run
         </AppButton>
         <Menu>
-          <MenuButton>
-            <AppButton size="sm" variant="no-effects" className="btn-list">
-              <ListDotIcon />
-            </AppButton>
+          <MenuButton
+            as={AppButton}
+            size="sm"
+            variant="no-effects"
+            className="btn-list"
+          >
+            <ListDotIcon />
           </MenuButton>
           <MenuList className="list-item">
             {ListItem.map((i) => (

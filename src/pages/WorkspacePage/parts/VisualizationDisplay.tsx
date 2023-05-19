@@ -117,6 +117,7 @@ type Props = {
   queryValue: IQuery;
   onReload: () => Promise<void>;
   expandEditor: boolean;
+  onExpand: (value: React.SetStateAction<boolean>) => void;
 };
 
 const VisualizationDisplay = ({
@@ -124,6 +125,7 @@ const VisualizationDisplay = ({
   queryValue,
   onReload,
   expandEditor,
+  onExpand,
 }: Props) => {
   interface ParamTypes {
     queryId: string;
@@ -368,11 +370,14 @@ const VisualizationDisplay = ({
         tabs={[
           ...queryValue.visualizations.map((v) => ({
             icon: getIcon(v?.options?.globalSeriesType || v.type),
-            name:
-              v.name ||
-              getDefaultVisualizationName(
-                v?.options?.globalSeriesType || v.type,
-              ),
+            name: (
+              <div onClick={() => onExpand(false)}>
+                {v.name ||
+                  getDefaultVisualizationName(
+                    v?.options?.globalSeriesType || v.type,
+                  )}
+              </div>
+            ),
             content: renderVisualization(v),
             id: v.id,
             closeable: true,
@@ -380,7 +385,7 @@ const VisualizationDisplay = ({
           {
             icon: null,
             name: (
-              <Flex alignItems={'center'}>
+              <Flex alignItems={'center'} onClick={() => onExpand(false)}>
                 <Box className="icon-plus-circle" mr={2} /> Add Chart
               </Flex>
             ),

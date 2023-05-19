@@ -425,6 +425,7 @@ const QueryPart: React.FC = () => {
                           queryValue={queryValue}
                           onReload={fetchQuery}
                           expandEditor={expandEditor}
+                          onExpand={setExpandEditor}
                         />
                       </Box>
                     ) : (
