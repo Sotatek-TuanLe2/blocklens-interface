@@ -1,22 +1,23 @@
 import { Box, Button, Flex, Text } from '@chakra-ui/react';
-import { ChangeEvent, ReactNode, useEffect, useState } from 'react';
+import _ from 'lodash';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router';
 import {
   FireIcon,
-  IconBNBActive,
-  IconBNBInactive,
-  IconBTCActive,
-  IconBTCInactive,
+  FireIconInactive,
   IconColumnDashboard,
-  IconETHActive,
-  IconETHInactive,
   IconListDashboard,
 } from 'src/assets/icons';
 import { AppButton, AppInput, AppSelect2, IOption } from 'src/components';
 import { VisibilityGridDashboardList } from 'src/constants';
-import { ROUTES } from 'src/utils/common';
-import { LIST_ITEM_TYPE } from '..';
 import ModalNewDashboard from 'src/modals/querySQL/ModalNewDashboard';
+import rf from 'src/requests/RequestFactory';
+import { ROUTES } from 'src/utils/common';
+import {
+  getChainIconByChainName,
+  getChainIconInactiveByChainName,
+} from 'src/utils/utils-network';
+import { LIST_ITEM_TYPE } from '..';
 
 interface IFilterSearch {
   type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
@@ -25,38 +26,10 @@ interface IFilterSearch {
 }
 
 interface ILISTNETWORK {
-  name: string;
   value: string;
-  iconActive?: ReactNode;
-  iconInactive?: ReactNode;
+  label: string;
+  chain: string;
 }
-
-const LIST_NETWORK: ILISTNETWORK[] = [
-  {
-    name: 'All',
-    value: 'All',
-    iconActive: <FireIcon />,
-    iconInactive: <FireIcon />,
-  },
-  {
-    name: 'BTC',
-    value: 'BTC',
-    iconActive: <IconBTCActive />,
-    iconInactive: <IconBTCInactive />,
-  },
-  {
-    name: 'ETH',
-    value: 'ETH',
-    iconActive: <IconETHActive />,
-    iconInactive: <IconETHInactive />,
-  },
-  {
-    name: 'BNB',
-    value: 'BNB',
-    iconActive: <IconBNBActive />,
-    iconInactive: <IconBNBInactive />,
-  },
-];
 
 const optionType: IOption[] = [
   { value: 'datelowtohigh', label: 'Date low to high' },
@@ -67,7 +40,7 @@ const optionType: IOption[] = [
 
 export const listTags = [
   {
-    name: 'defi',
+    name: 'defidefidefidefidefidefidefi',
     id: 1,
   },
   {
@@ -92,6 +65,8 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   const [openNewDashboardModal, setOpenNewDashboardModal] =
     useState<boolean>(false);
 
+  const [chainsSupported, setChainsSupported] = useState<ILISTNETWORK[]>([]);
+
   useEffect(() => {
     const searchParams = new URLSearchParams(searchUrl);
 
@@ -111,13 +86,10 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
     const searchParams = new URLSearchParams(searchUrl);
     searchParams.delete('search');
     searchParams.set('search', e.target.value);
-    history.push(`${ROUTES.HOME}?${searchParams.toString()}`);
-  };
-
-  const getRemoveTagUrl = () => {
-    const searchParams = new URLSearchParams(searchUrl);
-    searchParams.delete('tags');
-    return `${ROUTES.HOME}?${searchParams.toString()}`;
+    history.push({
+      pathname: ROUTES.HOME,
+      search: `${searchParams.toString()}`,
+    });
   };
 
   const onClickNew = () => {
@@ -133,46 +105,90 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
     }
   };
 
+  useEffect(() => {
+    (async () => {
+      const listChainRes = await rf
+        .getRequest('DashboardsRequest')
+        .getSupportedChains();
+
+      const listChain = listChainRes.map((chain: string) => {
+        const chainName = chain.split('_')[0];
+
+        return {
+          value: chain,
+          label: chainName.toUpperCase(),
+          chain: chainName,
+        };
+      });
+
+      const result = _.uniqBy<ILISTNETWORK>(listChain, 'chain');
+
+      setChainsSupported(result);
+    })();
+  }, []);
+
   const onToggleNewDashboardModal = () =>
     setOpenNewDashboardModal((prevState) => !prevState);
 
-  const onChange = (value: string) => {
+  const onChangeSort = (value: string) => {
     const searchParams = new URLSearchParams(searchUrl);
     searchParams.delete('sort');
     searchParams.set('sort', value);
-    history.push(`/dashboards?${searchParams.toString()}`);
+    history.push({
+      pathname: ROUTES.HOME,
+      search: `${searchParams.toString()}`,
+    });
   };
 
-  const onSelectChain = (value: string) => {
+  const onChangeChain = (value: string) => {
     const searchParams = new URLSearchParams(searchUrl);
     searchParams.delete('chain');
     searchParams.set('chain', value);
-    history.push(`/dashboards?${searchParams.toString()}`);
+    history.push({
+      pathname: ROUTES.HOME,
+      search: `${searchParams.toString()}`,
+    });
   };
 
   return (
     <div>
       <Flex flexDirection={'row'} justifyContent={'space-between'}>
-        <Flex flexDirection={'row'}>
-          {LIST_NETWORK.map((network, index) => {
-            return (
-              <Flex mr={3}>
-                <AppButton
-                  onClick={() => onSelectChain(network.value)}
-                  key={index}
-                  variant="network"
-                  className={
-                    chain === network.value ? 'btn-active' : 'btn-inactive'
-                  }
-                >
-                  {chain === network.value
-                    ? network.iconActive
-                    : network.iconInactive}
-                  <Text ml={2}>{network.name}</Text>
-                </AppButton>
-              </Flex>
-            );
-          })}
+        <Flex>
+          <Flex mr={3}>
+            <AppButton
+              onClick={() => onChangeChain('All')}
+              variant="network"
+              className={chain === 'All' ? 'btn-active' : 'btn-inactive'}
+            >
+              {chain === 'All' ? <FireIcon /> : <FireIconInactive />}
+              <Text ml={2}>All</Text>
+            </AppButton>
+          </Flex>
+          <Flex flexDirection={'row'}>
+            {chainsSupported.map((network, index) => {
+              return (
+                <Flex mr={3}>
+                  <AppButton
+                    onClick={() => onChangeChain(network.value)}
+                    key={index}
+                    variant="network"
+                    className={
+                      chain === network.value ? 'btn-active' : 'btn-inactive'
+                    }
+                  >
+                    <Box
+                      className={
+                        chain === network.value
+                          ? getChainIconByChainName(network.value)
+                          : getChainIconInactiveByChainName(network.value)
+                      }
+                    ></Box>
+                    <Text ml={2}>{network.label}</Text>
+                  </AppButton>
+                </Flex>
+              );
+            })}
+          </Flex>
         </Flex>
 
         <AppButton onClick={onClickNew}>
@@ -189,7 +205,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
         <AppSelect2
           size="medium"
           value={sort}
-          onChange={onChange}
+          onChange={onChangeSort}
           options={optionType}
           className="dashboard-filter__search__select"
         />

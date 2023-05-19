@@ -8,37 +8,38 @@ import {
   withRouter,
 } from 'react-router-dom';
 import { useHistory, useLocation } from 'react-router';
-import HomePage from './pages/HomePage';
+// import HomePage from './pages/HomePage';
 import SignUpPage from './pages/SignUpPage';
 import LoginPage from './pages/LoginPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import Storage from 'src/utils/utils-storage';
-import AppDetail from './pages/AppDetail';
+// import AppDetail from './pages/AppDetail';
 import VerifyAccountPage from './pages/VerifyAccountPage';
 import { useDispatch } from 'react-redux';
 import ResetPasswordPage from './pages/ResetPasswordPage';
-import CreateWebhookPage from './pages/CreateWebhookPage';
-import WebhookDetail from './pages/WebhookDetail';
-import MessagesHistory from './pages/MessagesHistoryPage';
-import BillingPage from './pages/BillingPage';
-import AccountPage from './pages/AccountPage';
-import BillingInfoPage from './pages/BillingInfoPage';
+// import CreateWebhookPage from './pages/CreateWebhookPage';
+// import WebhookDetail from './pages/WebhookDetail';
+// import MessagesHistory from './pages/MessagesHistoryPage';
+// import BillingPage from './pages/BillingPage';
+// import AccountPage from './pages/AccountPage';
+// import BillingInfoPage from './pages/BillingInfoPage';
 import ContactUs from './pages/ContactUs';
-import BillingHistory from './pages/BillingHistoryPage';
-import AllActivitiesPage from './pages/AllActivitiesPage';
-import TopUpPage from './pages/TopUp';
-import AppSettingsPage from './pages/AppSettingsPage';
-import WebhookSettingsPage from './pages/WebhookSettingsPage';
+// import BillingHistory from './pages/BillingHistoryPage';
+// import AllActivitiesPage from './pages/AllActivitiesPage';
+// import TopUpPage from './pages/TopUp';
+// import AppSettingsPage from './pages/AppSettingsPage';
+// import WebhookSettingsPage from './pages/WebhookSettingsPage';
 import { clearUser, getUser } from './store/user';
 import { initMetadata } from './store/metadata';
 import ModalSubmittingTransaction from './modals/ModalSubmittingTransaction';
 import ModalFinishTransaction from './modals/ModalFinishTransaction';
 import ModalSignatureRequired from './modals/ModalSignatureRequired';
 
-import QueriesPage from './pages/QueriesPage';
+// import QueriesPage from './pages/QueriesPage';
 import DashboardsPage from './pages/DashboardsPage';
-import DashboardDetailPage from './pages/DashboardDetailPage';
+// import DashboardDetailPage from './pages/DashboardDetailPage';
 import { ROUTES } from './utils/common';
+import WorkspacePage from './pages/WorkspacePage';
 
 /**
  * Main App routes.
@@ -118,12 +119,12 @@ const Routes: FC<RouteComponentProps> = () => {
         />
         <PrivateRoute path={'/top-up'} component={TopUpPage} /> */}
         <PrivateRoute
-          path={`${ROUTES.DASHBOARD}/:dashboardId`}
-          component={DashboardDetailPage}
+          path={`${ROUTES.DASHBOARD}/:dashboardId?`}
+          component={WorkspacePage}
         />
         <PrivateRoute
           path={`${ROUTES.QUERY}/:queryId?`}
-          component={QueriesPage}
+          component={WorkspacePage}
         />
         <Route path={ROUTES.CONTACT_US} component={ContactUs} />
         <PrivateRoute path={ROUTES.HOME} component={DashboardsPage} />

@@ -1,6 +1,6 @@
 import { Box, Flex } from '@chakra-ui/react';
 import 'src/styles/components/AppNetworkIcons.scss';
-import { getNetworkConfig } from 'src/utils/utils-network';
+import { getChainIconByChainName } from 'src/utils/utils-network';
 
 interface IAppNetworkIconsProps {
   networkIds: string[];
@@ -16,25 +16,11 @@ const AppNetworkIcons: React.FC<IAppNetworkIconsProps> = (props) => {
     showNetworks.length = showNumber;
   }
 
-  const getNetworkIcon = (networkId: string) => {
-    const networkConfig = getNetworkConfig(networkId);
-    if (!networkConfig) {
-      return null;
-    }
-    return (
-      <img
-        className="network-image"
-        src={networkConfig.iconURL}
-        alt={`${networkId} icon`}
-      />
-    );
-  };
-
   return (
     <Flex alignItems="center" className={`network-icons ${className}`}>
       {showNetworks.map((network, index) => (
         <Box key={index} className="network-icons__item">
-          {getNetworkIcon(network)}
+          <Box className={getChainIconByChainName(network)}></Box>
         </Box>
       ))}
     </Flex>
