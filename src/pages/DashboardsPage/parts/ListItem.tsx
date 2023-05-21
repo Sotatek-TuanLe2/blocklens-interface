@@ -8,15 +8,8 @@ import {
   Text,
 } from '@chakra-ui/react';
 import moment from 'moment';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import {
-  IconFork,
-  IconHeart,
-  IconHeartFavorite,
-  IconOptions,
-  IconShare,
-} from 'src/assets/icons';
+import { Link, useLocation } from 'react-router-dom';
+import { IconFork, IconOptions, IconShare } from 'src/assets/icons';
 import AppNetworkIcons from 'src/components/AppNetworkIcons';
 import { VisibilityGridDashboardList } from 'src/constants';
 import { ROUTES } from 'src/utils/common';
@@ -24,20 +17,23 @@ import { IDashboardDetail, IQuery } from 'src/utils/query.type';
 import { Dashboard } from 'src/utils/utils-dashboard';
 import { Query } from 'src/utils/utils-query';
 import { LIST_ITEM_TYPE } from '..';
-import { listTags } from './FilterSearch';
+import { TYPE_MYWORK, listTags } from './FilterSearch';
 
 interface IListItem {
   type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
   item?: IDashboardDetail | IQuery;
-  typeVisiable: 'COLUMN' | 'ROW';
+  typeVisiable?: 'COLUMN' | 'ROW';
 }
 
 const listNetworkCurrency = ['eth_goerli', 'bsc_testnet', 'polygon_mainet'];
 
 const ListItem: React.FC<IListItem> = (props) => {
   const { type, item, typeVisiable } = props;
+  const { search: searchUrl } = useLocation();
+  const searchParams = new URLSearchParams(searchUrl);
+  const mywork = searchParams.get('mywork') || '';
 
-  const [favorite, setFavorite] = useState<boolean>(false);
+  // const [favorite, setFavorite] = useState<boolean>(false);
 
   const itemClass =
     type === LIST_ITEM_TYPE.DASHBOARDS
@@ -87,14 +83,14 @@ const ListItem: React.FC<IListItem> = (props) => {
                 className="thumbnail"
               />
             </Link>
-            <div className="dashboard-list__item--column__box-favourite">
+            {/* <div className="dashboard-list__item--column__box-favourite">
               {favorite ? (
                 <IconHeartFavorite onClick={() => setFavorite((pre) => !pre)} />
               ) : (
                 <IconHeart onClick={() => setFavorite((pre) => !pre)} />
               )}
               25
-            </div>
+            </div> */}
           </div>
           <div className="dashboard-list__item--column__content">
             <Flex
@@ -145,7 +141,8 @@ const ListItem: React.FC<IListItem> = (props) => {
             to={getTitleUrl()}
             className="dashboard-list__item--row__avatar"
           >
-            {type === LIST_ITEM_TYPE.DASHBOARDS && (
+            {(type === LIST_ITEM_TYPE.DASHBOARDS ||
+              mywork !== TYPE_MYWORK.QUERIES) && (
               <img
                 src="/images/ThumnailDashboard.png"
                 alt="thumbnail"
@@ -172,14 +169,14 @@ const ListItem: React.FC<IListItem> = (props) => {
               </div>
             ))}
           </div>
-          <div className="item-favorite">
+          {/* <div className="item-favorite">
             {favorite ? (
               <IconHeartFavorite onClick={() => setFavorite((pre) => !pre)} />
             ) : (
               <IconHeart onClick={() => setFavorite((pre) => !pre)} />
             )}
             25
-          </div>
+          </div> */}
           <div className="item-btn-options">{_renderDropdown()}</div>
         </Flex>
       </div>

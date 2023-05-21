@@ -1,66 +1,27 @@
 import { Flex, Text } from '@chakra-ui/react';
-import React, { ChangeEvent, useEffect, useRef } from 'react';
-import { AppButton, AppField, AppInput } from 'src/components';
-import 'src/styles/components/BaseModal.scss';
-import BaseModal from '../BaseModal';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router';
-import { toastError } from 'src/utils/utils-notify';
-import { getErrorMessage } from 'src/utils/utils-helper';
-import rf from 'src/requests/RequestFactory';
-import { createValidator } from 'src/utils/utils-validator';
+import { DashboardListIcon, QueriesIcon } from 'src/assets/icons';
+import 'src/styles/components/BaseModal.scss';
 import { ROUTES } from 'src/utils/common';
+import BaseModal from '../BaseModal';
+import ModCreateDashboard from './ModCreateDashboard';
 
 interface IModalNewDashboard {
   open: boolean;
   onClose: () => void;
 }
 
-interface IDataSettingForm {
-  title: string;
-}
-
 const ModalNewDashboard: React.FC<IModalNewDashboard> = ({ open, onClose }) => {
-  const initDataFormSetting = {
-    title: '',
-  };
   const history = useHistory();
+  const [openNewDashboardModal, setOpenNewDashboardModal] =
+    useState<boolean>(false);
 
-  const [dataForm, setDataForm] =
-    useState<IDataSettingForm>(initDataFormSetting);
+  const onToggleCreateDashboardModal = () =>
+    setOpenNewDashboardModal((prevState) => !prevState);
 
-  const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
-
-  const validator = useRef(
-    createValidator({
-      element: (message: string) => <Text color={'red.100'}>{message}</Text>,
-    }),
-  );
-
-  useEffect(() => {
-    if (!open) {
-      setDataForm(initDataFormSetting);
-      validator.current.visibleFields = [];
-    }
-  }, [open]);
-
-  useEffect(() => {
-    const isDisabled = !validator.current.allValid();
-    setIsDisableSubmit(isDisabled);
-  }, [dataForm]);
-
-  const handleSubmitForm = async () => {
-    try {
-      const result = await rf
-        .getRequest('DashboardsRequest')
-        .createNewDashboard({
-          name: dataForm.title.trim(),
-        });
-      history.push(`${ROUTES.DASHBOARD}/${result.id}`);
-      onClose();
-    } catch (error) {
-      toastError({ message: getErrorMessage(error) });
-    }
+  const onCreateDashboard = () => {
+    onToggleCreateDashboardModal();
   };
 
   return (
@@ -70,37 +31,36 @@ const ModalNewDashboard: React.FC<IModalNewDashboard> = ({ open, onClose }) => {
         rowGap={'2rem'}
         className="main-modal-dashboard-details"
       >
-        <AppField label={'Dashboard name'}>
-          <AppInput
-            value={dataForm.title}
-            size="sm"
-            placeholder="My dashboard"
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              setDataForm({
-                ...dataForm,
-                title: e.target.value,
-              })
-            }
-            validate={{
-              name: `dashboard`,
-              validator: validator.current,
-              rule: ['required', 'max:150'],
-            }}
-          />
-        </AppField>
+        <div className="title-create-modal">Create New</div>
+        <Flex>
+          <Flex
+            mr={2.5}
+            className="content-create-modal"
+            onClick={() => onCreateDashboard()}
+          >
+            <DashboardListIcon />
+            <Text className="title-content">Dashboard</Text>
+            <Text className="desc-content">
+              You can add various content icluding chart, note and image.
+            </Text>
+          </Flex>
+          <div
+            className="content-create-modal"
+            onClick={() => history.push(ROUTES.QUERY)}
+          >
+            <QueriesIcon />
+            <Text className="title-content">Queries</Text>
+            <Text className="desc-content">
+              Create your chart and analysis with the no-code query builder or
+              native SQL
+            </Text>
+          </div>
+        </Flex>
       </Flex>
-      <Flex className="modal-footer">
-        <AppButton
-          size="sm"
-          onClick={handleSubmitForm}
-          disabled={!dataForm.title.trim() || isDisableSubmit}
-        >
-          Save and open
-        </AppButton>
-        <AppButton onClick={onClose} size="sm" variant={'cancel'}>
-          Cancel
-        </AppButton>
-      </Flex>
+      <ModCreateDashboard
+        open={openNewDashboardModal}
+        onClose={onToggleCreateDashboardModal}
+      />
     </BaseModal>
   );
 };

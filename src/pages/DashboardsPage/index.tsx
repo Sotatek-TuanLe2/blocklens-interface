@@ -2,7 +2,7 @@ import { Box, Flex, SimpleGrid } from '@chakra-ui/react';
 import _ from 'lodash';
 import { useCallback, useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
-import { DashboardListIcon, QueriesIcon } from 'src/assets/icons';
+import { DashboardListIcon, IconMywork, QueriesIcon } from 'src/assets/icons';
 import { AppDataTable, RequestParams } from 'src/components';
 import AppTabs, { ITabs } from 'src/components/AppTabs';
 import { VisibilityGridDashboardList } from 'src/constants';
@@ -22,6 +22,7 @@ import ListItem from './parts/ListItem';
 export const LIST_ITEM_TYPE = {
   DASHBOARDS: 'DASHBOARDS',
   QUERIES: 'QUERIES',
+  MYWORK: 'MYWORK',
 };
 
 interface IDashboardParams extends RequestParams, DashboardsParams {}
@@ -45,6 +46,7 @@ const DashboardsPage: React.FC = () => {
     const sort = searchParams.get('sort') || '';
     const chain = searchParams.get('chain') || '';
     const tags = searchParams.get('tags') || '';
+    const mywork = searchParams.get('mywork') || '';
 
     switch (tabType) {
       case LIST_ITEM_TYPE.DASHBOARDS:
@@ -68,6 +70,19 @@ const DashboardsPage: React.FC = () => {
               sort: sort,
               chain: chain,
               tags: tags,
+            },
+            (param) => !param,
+          ),
+        );
+        break;
+      case LIST_ITEM_TYPE.MYWORK:
+        setQueryParams(() =>
+          _.omitBy(
+            {
+              search: search,
+              sort: sort,
+              tags: tags,
+              mywork: mywork,
             },
             (param) => !param,
           ),
@@ -145,17 +160,17 @@ const DashboardsPage: React.FC = () => {
     [visibility],
   );
 
-  const _renderHeader = () => {
+  const _renderHeader = useCallback(() => {
     return (
       <>
         {visibility === VisibilityGridDashboardList.ROW ? (
           <div className="dashboard-list__header">
-            <div className="item-title"></div>
+            <div className="item-title">Name</div>
             <div className="item-creator">Creator</div>
             <div className="item-chain">chain</div>
             <div className="item-date">date</div>
             <div className="item-tag">tag</div>
-            <div className="item-like">like</div>
+            {/* <div className="item-like">like</div> */}
             <div className="item-btn"></div>
           </div>
         ) : (
@@ -163,7 +178,7 @@ const DashboardsPage: React.FC = () => {
         )}
       </>
     );
-  };
+  }, [visibility]);
 
   const tabs: ITabs[] = [
     {
@@ -201,7 +216,8 @@ const DashboardsPage: React.FC = () => {
         <AppDataTable
           requestParams={queryParams}
           fetchData={fetchQueries}
-          limit={10}
+          limit={15}
+          renderHeader={_renderHeader}
           renderBody={(data) => (
             <>
               {_renderBody(
@@ -210,6 +226,33 @@ const DashboardsPage: React.FC = () => {
                     key={item.id}
                     item={item}
                     type={LIST_ITEM_TYPE.QUERIES}
+                    typeVisiable={visibility}
+                  />
+                )),
+              )}
+            </>
+          )}
+        />,
+      ),
+    },
+    {
+      id: LIST_ITEM_TYPE.MYWORK,
+      name: 'My Work',
+      icon: <IconMywork />,
+      content: _renderContentTable(
+        <AppDataTable
+          requestParams={queryParams}
+          fetchData={fetchQueries}
+          limit={15}
+          renderHeader={_renderHeader}
+          renderBody={(data) => (
+            <>
+              {_renderBody(
+                data.map((item: any) => (
+                  <ListItem
+                    key={item.id}
+                    item={item}
+                    type={LIST_ITEM_TYPE.MYWORK}
                     typeVisiable={visibility}
                   />
                 )),
