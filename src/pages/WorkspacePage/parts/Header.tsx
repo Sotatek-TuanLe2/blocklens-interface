@@ -44,8 +44,8 @@ const Header: React.FC<IHeaderProps> = (props) => {
 
         <div className="item-desc">
           <img src="/images/AvatarDashboardCard.png" alt="avatar" />
-          <p className="user-name">Tyler Covington /</p>
-          <span>2023 May 10th</span>
+          <p className="user-name">{author} /</p>
+          <span>{title}</span>
         </div>
       </div>
       <div className="workspace-page__editor__header__right">
