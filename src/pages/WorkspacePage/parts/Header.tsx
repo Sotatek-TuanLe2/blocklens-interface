@@ -9,15 +9,6 @@ import {
   Tooltip,
 } from '@chakra-ui/react';
 import { useHistory } from 'react-router';
-import {
-  BackHeaderIcon,
-  IconFork,
-  ListDotIcon,
-  RunQueryIcon,
-  IconShare,
-  DeleteIcon,
-  SettingHeaderIcon,
-} from 'src/assets/icons';
 import { AppButton } from 'src/components';
 
 interface IHeaderProps {
@@ -28,10 +19,10 @@ interface IHeaderProps {
 }
 
 const ListItem = [
-  { label: 'Fork', icon: <IconFork /> },
-  { label: 'Setting', icon: <SettingHeaderIcon /> },
-  { label: 'Share', icon: <IconShare /> },
-  { label: 'Delete', icon: <DeleteIcon /> },
+  { label: 'Fork', icon: <p className="icon-query-fork" /> },
+  { label: 'Setting', icon: <p className="icon-query-setting" /> },
+  { label: 'Share', icon: <p className="icon-query-share" /> },
+  { label: 'Delete', icon: <p className="icon-query-delete" /> },
 ];
 
 const Header: React.FC<IHeaderProps> = (props) => {
@@ -46,10 +37,8 @@ const Header: React.FC<IHeaderProps> = (props) => {
             onClick={() => history.push('/')}
             size="sm"
             variant="no-effects"
-            className="btn-back"
-          >
-            <BackHeaderIcon />
-          </AppButton>
+            className="btn-back icon-query-back-header"
+          />
         </Tooltip>
 
         <div className="item-desc">
@@ -69,7 +58,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
           <AppButton
             onClick={onRunQuery}
             size="md"
-            leftIcon={<RunQueryIcon />}
+            leftIcon={<p className="icon-run-query" />}
             me="21px"
           >
             Run
@@ -82,7 +71,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
             variant="no-effects"
             className="btn-list"
           >
-            <ListDotIcon />
+            <p className="icon-query-list" />
           </MenuButton>
           <MenuList className="list-item">
             {ListItem.map((i) => (

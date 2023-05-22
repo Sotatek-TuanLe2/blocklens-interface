@@ -1,4 +1,4 @@
-import { Avatar, Box, Flex, Text, Tooltip } from '@chakra-ui/react';
+import { Box, Flex, Text, Tooltip } from '@chakra-ui/react';
 import AceEditor from 'react-ace';
 import { AppButton, AppLoadingTable } from 'src/components';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
@@ -17,12 +17,7 @@ import {
   IErrorExecuteQuery,
 } from 'src/utils/query.type';
 import 'src/styles/pages/QueriesPage.scss';
-import {
-  AddParameterIcon,
-  ExpandIcon,
-  ExplandIcon,
-  QueryIcon,
-} from 'src/assets/icons';
+import { AddParameterIcon, ExplandIcon } from 'src/assets/icons';
 import { MoonIcon, SettingsIcon, SunIcon } from '@chakra-ui/icons';
 import ModalSaveQuery from 'src/modals/querySQL/ModalSaveQuery';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
@@ -347,12 +342,12 @@ const QueryPart: React.FC = () => {
             <Box width={'100%'}>
               <Box bg={switchTheme ? '#fff' : '#101530'} className="header-tab">
                 <div className="tag-name">
-                  <QueryIcon />
+                  <p className="icon-query" />
                   Query
                 </div>
                 <Tooltip label="Minimize" hasArrow placement="top">
                   <div className="btn-expand" onClick={onExpand}>
-                    <ExpandIcon />
+                    <p className="icon-query-expand" />
                   </div>
                 </Tooltip>
               </Box>

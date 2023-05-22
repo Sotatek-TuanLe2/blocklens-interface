@@ -16,8 +16,6 @@ import {
   AreaChartIcon,
   BarChartIcon,
   CounterIcon,
-  EditTabIcon,
-  ExpandIcon,
   LineChartIcon,
   PieChartIcon,
   QueryResultIcon,
@@ -376,12 +374,12 @@ const VisualizationDisplay = ({
                 className="btn-expand"
                 onClick={() => onExpand((pre) => !pre)}
               >
-                <ExpandIcon />
+                <p className="icon-query-expand" />
               </div>
             </Tooltip>
 
             <div className="btn-expand">
-              <EditTabIcon />
+              <p className="icon-query-edit" />
             </div>
           </Flex>
         }
