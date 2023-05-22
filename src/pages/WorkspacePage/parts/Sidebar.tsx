@@ -95,7 +95,10 @@ const CollapseExplore = ({
   );
 };
 
-const Sidebar: React.FC = () => {
+const Sidebar: React.FC<{
+  expandSidebar: boolean;
+  onToggleExpandSidebar: (toggle?: boolean) => void;
+}> = ({ expandSidebar, onToggleExpandSidebar }) => {
   const CATEGORIES = {
     WORK_PLACE: 'WORK_PLACE',
     EXPLORE_DATA: 'EXPLORE_DATA',
@@ -121,11 +124,12 @@ const Sidebar: React.FC = () => {
     },
   ];
 
-  const [category, setCategory] = useState<string>(CATEGORIES.WORK_PLACE);
-  const [searchValue, setSearchValue] = useState<string>('');
   const { queryId, dashboardId }: { queryId?: string; dashboardId?: string } =
     useParams();
+  const history = useHistory();
 
+  const [category, setCategory] = useState<string>(CATEGORIES.WORK_PLACE);
+  const [searchValue, setSearchValue] = useState<string>('');
   const [dataQueries, setDataQueries] = useState<IQuery[] | []>([]);
   const [dataDashboards, setDataDashboards] = useState<IDashboardDetail[] | []>(
     [],
@@ -133,11 +137,10 @@ const Sidebar: React.FC = () => {
   const [exploreData, setExploreData] = useState<{
     [key: string]: any;
   } | null>();
-  const [toggleSideBarContent, setToogleSideBarContent] = useState(true);
-  const history = useHistory();
-  const [openNewDashboardModal, setOpenNewDashboardModal] = useState(false);
+  const [openNewDashboardModal, setOpenNewDashboardModal] =
+    useState<boolean>(false);
 
-  const fetchDashboards: any = async (params: any) => {
+  const fetchDashboards = async (params = {}) => {
     try {
       const res: any = await rf
         .getRequest('DashboardsRequest')
@@ -147,7 +150,8 @@ const Sidebar: React.FC = () => {
       toastError({ message: getErrorMessage(error) });
     }
   };
-  const fetchQueries: any = async (params: any) => {
+
+  const fetchQueries = async (params = {}) => {
     try {
       const res: any = await rf
         .getRequest('DashboardsRequest')
@@ -179,6 +183,13 @@ const Sidebar: React.FC = () => {
         message: getErrorMessage(error),
       });
     }
+  };
+
+  const onCreateDashboardSuccessfully = async () => {
+    setOpenNewDashboardModal(false);
+    setSearchValue(''); // reset search value in order to see the newly created dashboard
+    const dataDashboard = await fetchDashboards();
+    setDataDashboards(() => [...dataDashboard.docs]);
   };
 
   useEffect(() => {
@@ -227,7 +238,7 @@ const Sidebar: React.FC = () => {
           <span>work place</span>
           <Box
             cursor={'pointer'}
-            onClick={() => setToogleSideBarContent((pre) => !pre)}
+            onClick={() => onToggleExpandSidebar()}
             className={'bg-CloseBtnIcon'}
           ></Box>
         </div>
@@ -305,7 +316,7 @@ const Sidebar: React.FC = () => {
           <span>Explore data</span>
           <Box
             cursor={'pointer'}
-            onClick={() => setToogleSideBarContent((pre) => !pre)}
+            onClick={() => onToggleExpandSidebar()}
             className="bg-CloseBtnIcon"
           ></Box>
         </div>
@@ -343,7 +354,7 @@ const Sidebar: React.FC = () => {
             title={item.title}
             onClick={() => {
               setCategory(item.id);
-              setToogleSideBarContent(true);
+              onToggleExpandSidebar(true);
             }}
           >
             {category === item.id ? item.activeIcon : item.icon}
@@ -351,9 +362,8 @@ const Sidebar: React.FC = () => {
         ))}
       </div>
       <Box
-        // display={toggleSideBarContent ? 'block' : 'none'}
         className={
-          toggleSideBarContent
+          expandSidebar
             ? 'workspace-page__sidebar__content show-sidebar'
             : 'workspace-page__sidebar__content hidden-sidebar'
         }
@@ -362,11 +372,7 @@ const Sidebar: React.FC = () => {
       </Box>
       <ModalNewDashboard
         open={openNewDashboardModal}
-        onClose={async () => {
-          setOpenNewDashboardModal(false);
-          const dataDashboard: any = await fetchDashboards();
-          setDataDashboards(() => [...dataDashboard.docs]);
-        }}
+        onClose={onCreateDashboardSuccessfully}
       />
     </div>
   );

@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { BasePage } from 'src/layouts';
 import { ROUTES } from 'src/utils/common';
@@ -15,6 +15,8 @@ export const WORKSPACE_TYPES = {
 const WorkspacePage: React.FC = () => {
   const { pathname } = useLocation();
 
+  const [toggleExpandSidebar, setToggleExpandSidebar] = useState<boolean>(true);
+
   const type = useMemo(() => {
     if (pathname.includes(ROUTES.DASHBOARD)) {
       return WORKSPACE_TYPES.DASHBOARD;
@@ -22,11 +24,21 @@ const WorkspacePage: React.FC = () => {
     return WORKSPACE_TYPES.QUERY;
   }, [pathname]);
 
+  const onToggleExpandSidebar = (toggle?: boolean) =>
+    setToggleExpandSidebar((prevState) => toggle || !prevState);
+
   return (
     <BasePage>
       <div className="workspace-page">
-        <Sidebar />
-        <div className="workspace-page__editor">
+        <Sidebar
+          expandSidebar={toggleExpandSidebar}
+          onToggleExpandSidebar={onToggleExpandSidebar}
+        />
+        <div
+          className={`workspace-page__editor ${
+            toggleExpandSidebar ? '' : 'workspace-page__editor--expand'
+          }`}
+        >
           {type === WORKSPACE_TYPES.DASHBOARD ? <Dashboard /> : <Query />}
         </div>
       </div>
