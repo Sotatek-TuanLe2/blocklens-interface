@@ -3,11 +3,104 @@
 @import '../mixins.scss';
 
 .workspace-page {
+  display: flex;
   &__sidebar {
+    display: flex;
+
     &__categories {
+      padding: 14px;
+      border-right: 1px solid #2f3b58;
+      background-color: #101530;
+      border-top-left-radius: 6px;
+      border-bottom-left-radius: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
 
     &__content {
+      flex: 1;
+      padding: 16px;
+
+      background-color: #101530;
+      border-top-right-radius: 6px;
+      border-bottom-right-radius: 6px;
+
+      &__work-place-detail {
+        @include text-small-regular;
+        color: $paragraph;
+        margin-bottom: 6px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+      }
+      .work-place-active {
+        color: $title;
+        svg {
+          path {
+            fill: #226cff;
+          }
+        }
+      }
+      &__work-place-wrap {
+        width: 208px;
+
+        &__work-place {
+          display: flex;
+          @include text-medium-bold;
+          text-transform: uppercase;
+          align-items: center;
+          justify-content: space-between;
+        }
+        &__work-place-content {
+          justify-content: space-between;
+          display: flex;
+          align-items: center;
+          margin-bottom: 12px;
+        }
+      }
+      &__explore-wrap {
+        //
+        width: 208px;
+
+        &__content {
+          @include text-small-regular;
+
+          color: $paragraph;
+          margin-bottom: 12px;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+        &__title {
+          display: flex;
+          @include text-medium-bold;
+          text-transform: uppercase;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: 32px;
+        }
+
+        &__content-collapse {
+          padding-bottom: 10px;
+          .chain-info-title,
+          .chain-info-desc {
+            @include text-small-regular;
+            color: $paragraph;
+          }
+
+          .chain-info-title {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 0px;
+          }
+        }
+      }
     }
   }
 
@@ -70,11 +163,41 @@
         }
       }
     }
+  }
+}
 
-    &__dashboard {
-    }
+.hidden-sidebar {
+  overflow: hidden;
+  animation: hiddenSidebar 0.5s forwards;
+  opacity: 0;
+}
 
-    &__query {
-    }
+.show-sidebar {
+  overflow: hidden;
+  animation: showSidebar 0.5s forwards;
+}
+
+@keyframes hiddenSidebar {
+  from {
+    width: 240px;
+  }
+  to {
+    width: 0;
+    padding: 0;
+  }
+}
+
+@keyframes showSidebar {
+  0% {
+    opacity: 0;
+    width: 0px;
+    padding: 0;
+  }
+  99% {
+    opacity: 0.1;
+    width: 240px;
+  }
+  100% {
+    opacity: 1;
   }
 }

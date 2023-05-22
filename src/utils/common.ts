@@ -111,3 +111,9 @@ export const QUERY_RESULT_STATUS = {
   WAITING: 'WAITING',
   FAILED: 'FAILED',
 };
+
+export const PROMISE_STATUS = {
+  FULFILLED: 'fulfilled',
+  REJECTED: 'rejected',
+  PENDING: 'pending',
+};
