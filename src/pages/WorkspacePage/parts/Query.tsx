@@ -24,6 +24,7 @@ import { QUERY_RESULT_STATUS, ROUTES } from 'src/utils/common';
 import { Query } from 'src/utils/utils-query';
 import Header from './Header';
 import { WORKSPACE_TYPES } from '..';
+import moment from 'moment';
 
 const QueryPart: React.FC = () => {
   const { queryId } = useParams<{ queryId: string }>();
@@ -48,7 +49,10 @@ const QueryPart: React.FC = () => {
   useEffect(() => {
     if (queryId) {
       fetchInitalData();
+    } else {
+      resetEditor();
     }
+
     return () => {
       if (fetchQueryResultInterval.current) {
         clearInterval(fetchQueryResultInterval.current);
@@ -63,13 +67,19 @@ const QueryPart: React.FC = () => {
     return new Query(queryValue);
   }, [queryValue]);
 
+  const resetEditor = () => {
+    editorRef.current && editorRef.current.editor.setValue('');
+    setSelectedQuery('');
+  };
+
   const createNewQuery = async (query: string) => {
     try {
       const queryValue: IQuery = await rf
         .getRequest('DashboardsRequest')
         .createNewQuery({
-          name: ``,
+          name: moment().format('YYYY-MM-DD HH:mm a'),
           query,
+          isTemp: false,
         });
       await rf.getRequest('DashboardsRequest').executeQuery(queryValue.id);
       history.push(`${ROUTES.QUERY}/${queryValue.id}`);
@@ -90,13 +100,9 @@ const QueryPart: React.FC = () => {
 
   const saveNameQuery = async (name: string) => {
     try {
-      await rf.getRequest('DashboardsRequest').updateQuery(
-        {
-          name: name,
-          isTemp: false,
-        },
-        queryId,
-      );
+      await rf
+        .getRequest('DashboardsRequest')
+        .updateQuery({ name: name }, queryId);
       await fetchQuery();
       setShowSaveModal(false);
       toastSuccess({ message: 'Save query successfully.' });
@@ -152,12 +158,8 @@ const QueryPart: React.FC = () => {
         return;
       }
       const position = editorRef.current.editor.getCursorPosition();
-      const editorValue = editorRef.current.editor.getValue();
       editorRef.current.editor.setValue('');
-      editorRef.current.editor.session.insert(
-        position,
-        editorValue || dataQuery?.query,
-      );
+      editorRef.current.editor.session.insert(position, dataQuery?.query);
     } catch (error: any) {
       toastError({ message: getErrorMessage(error) });
     }
