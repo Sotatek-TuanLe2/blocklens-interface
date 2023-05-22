@@ -305,6 +305,7 @@ const QueryPart: React.FC = () => {
         author={user?.getFirstName() || ''}
         title={queryClass?.getName() || ''}
         onRunQuery={onRunQuery}
+        selectedQuery={selectedQuery}
       />
       <EditorContext.Provider
         value={{
@@ -345,7 +346,11 @@ const QueryPart: React.FC = () => {
                   <p className="icon-query" />
                   Query
                 </div>
-                <Tooltip label="Minimize" hasArrow placement="top">
+                <Tooltip
+                  label={expandEditor ? 'Minimize' : 'Maximum'}
+                  hasArrow
+                  placement="top"
+                >
                   <div className="btn-expand" onClick={onExpand}>
                     <p className="icon-query-expand" />
                   </div>

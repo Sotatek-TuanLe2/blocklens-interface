@@ -81,35 +81,6 @@ const visualizationConfigs: VisualizationConfigType[] = [
   },
 ];
 
-const getIcon = (chain: string | undefined) => {
-  switch (chain) {
-    case TYPE_VISUALIZATION.table:
-      return <QueryResultIcon />;
-
-    case TYPE_VISUALIZATION.scatter:
-      return <ScatterChartIcon />;
-
-    case TYPE_VISUALIZATION.area:
-      return <AreaChartIcon />;
-
-    case TYPE_VISUALIZATION.line: {
-      return <LineChartIcon />;
-    }
-
-    case TYPE_VISUALIZATION.pie:
-      return <PieChartIcon />;
-
-    case TYPE_VISUALIZATION.bar:
-      return <BarChartIcon />;
-
-    case TYPE_VISUALIZATION.counter:
-      return <CounterIcon />;
-
-    default:
-      return <></>;
-  }
-};
-
 export const VISUALIZATION_DEBOUNCE = 500;
 
 type Props = {
@@ -361,6 +332,35 @@ const VisualizationDisplay = ({
     );
   };
 
+  const getIcon = (chain: string | undefined) => {
+    switch (chain) {
+      case TYPE_VISUALIZATION.table:
+        return <QueryResultIcon />;
+
+      case TYPE_VISUALIZATION.scatter:
+        return <ScatterChartIcon />;
+
+      case TYPE_VISUALIZATION.area:
+        return <AreaChartIcon />;
+
+      case TYPE_VISUALIZATION.line: {
+        return <LineChartIcon />;
+      }
+
+      case TYPE_VISUALIZATION.pie:
+        return <PieChartIcon />;
+
+      case TYPE_VISUALIZATION.bar:
+        return <BarChartIcon />;
+
+      case TYPE_VISUALIZATION.counter:
+        return <CounterIcon />;
+
+      default:
+        return <></>;
+    }
+  };
+
   return (
     <Box className="visual-container">
       <AppTabs
@@ -369,7 +369,7 @@ const VisualizationDisplay = ({
         }}
         rightElement={
           <Flex gap={'10px'}>
-            <Tooltip label="Minimize" hasArrow>
+            <Tooltip label={!expandEditor ? 'Minimize' : 'Maximum'} hasArrow>
               <div
                 className="btn-expand"
                 onClick={() => onExpand((pre) => !pre)}
@@ -449,6 +449,36 @@ const AddVisualization = ({
   const [visualizationSelected, setVisualizationSelected] = useState<string>(
     VALUE_VISUALIZATION.bar,
   );
+
+  const getIcon = (chain: string | undefined) => {
+    switch (chain) {
+      case TYPE_VISUALIZATION.table:
+        return <p className="icon-table-chart-query" />;
+
+      case TYPE_VISUALIZATION.scatter:
+        return <p className="icon-scatter-chart-query" />;
+
+      case TYPE_VISUALIZATION.area:
+        return <p className="icon-area-chart-query" />;
+
+      case TYPE_VISUALIZATION.line: {
+        return <p className="icon-line-chart-query" />;
+      }
+
+      case TYPE_VISUALIZATION.pie:
+        return <p className="icon-pie-chart-query" />;
+
+      case TYPE_VISUALIZATION.bar:
+        return <p className="icon-bar-chart-query" />;
+
+      case TYPE_VISUALIZATION.counter:
+        return <p className="icon-counter-chart-query" />;
+
+      default:
+        return <></>;
+    }
+  };
+
   return (
     <Box>
       {/* <Text mb={2}>Select visualization type</Text>

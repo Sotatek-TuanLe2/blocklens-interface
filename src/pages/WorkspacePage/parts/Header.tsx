@@ -16,6 +16,7 @@ interface IHeaderProps {
   author: string;
   title: string;
   onRunQuery?: () => Promise<void>;
+  selectedQuery?: string;
 }
 
 const ListItem = [
@@ -26,7 +27,7 @@ const ListItem = [
 ];
 
 const Header: React.FC<IHeaderProps> = (props) => {
-  const { type, author, title, onRunQuery } = props;
+  const { type, author, title, onRunQuery, selectedQuery } = props;
   const history = useHistory();
 
   return (
@@ -61,7 +62,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
             leftIcon={<p className="icon-run-query" />}
             me="21px"
           >
-            Run
+            {selectedQuery ? 'Run selection' : 'Run'}
           </AppButton>
         </Tooltip>
         <Menu>
