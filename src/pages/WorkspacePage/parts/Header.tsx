@@ -24,7 +24,7 @@ interface IHeaderProps {
   type: string;
   author: string;
   title: string;
-  onRunQuery: () => Promise<void>;
+  onRunQuery?: () => Promise<void>;
 }
 
 const ListItem = [
