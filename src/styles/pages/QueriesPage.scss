@@ -61,6 +61,8 @@
   .custom-editor {
     border-top: 1px solid #2f3b58;
     height: 250px !important;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
     transition: height linear 0.5s;
 
     &.expand {

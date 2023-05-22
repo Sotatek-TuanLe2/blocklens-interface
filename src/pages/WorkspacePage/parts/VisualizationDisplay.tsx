@@ -16,8 +16,6 @@ import {
   AreaChartIcon,
   BarChartIcon,
   CounterIcon,
-  EditTabIcon,
-  ExpandIcon,
   LineChartIcon,
   PieChartIcon,
   QueryResultIcon,
@@ -82,35 +80,6 @@ const visualizationConfigs: VisualizationConfigType[] = [
     value: VALUE_VISUALIZATION.table,
   },
 ];
-
-const getIcon = (chain: string | undefined) => {
-  switch (chain) {
-    case TYPE_VISUALIZATION.table:
-      return <QueryResultIcon />;
-
-    case TYPE_VISUALIZATION.scatter:
-      return <ScatterChartIcon />;
-
-    case TYPE_VISUALIZATION.area:
-      return <AreaChartIcon />;
-
-    case TYPE_VISUALIZATION.line: {
-      return <LineChartIcon />;
-    }
-
-    case TYPE_VISUALIZATION.pie:
-      return <PieChartIcon />;
-
-    case TYPE_VISUALIZATION.bar:
-      return <BarChartIcon />;
-
-    case TYPE_VISUALIZATION.counter:
-      return <CounterIcon />;
-
-    default:
-      return <></>;
-  }
-};
 
 export const VISUALIZATION_DEBOUNCE = 500;
 
@@ -361,6 +330,35 @@ const VisualizationDisplay = ({
     );
   };
 
+  const getIcon = (chain: string | undefined) => {
+    switch (chain) {
+      case TYPE_VISUALIZATION.table:
+        return <QueryResultIcon />;
+
+      case TYPE_VISUALIZATION.scatter:
+        return <ScatterChartIcon />;
+
+      case TYPE_VISUALIZATION.area:
+        return <AreaChartIcon />;
+
+      case TYPE_VISUALIZATION.line: {
+        return <LineChartIcon />;
+      }
+
+      case TYPE_VISUALIZATION.pie:
+        return <PieChartIcon />;
+
+      case TYPE_VISUALIZATION.bar:
+        return <BarChartIcon />;
+
+      case TYPE_VISUALIZATION.counter:
+        return <CounterIcon />;
+
+      default:
+        return <></>;
+    }
+  };
+
   return (
     <Box className="visual-container">
       <AppTabs
@@ -369,17 +367,17 @@ const VisualizationDisplay = ({
         }}
         rightElement={
           <Flex gap={'10px'}>
-            <Tooltip label="Minimize" hasArrow>
+            <Tooltip label={!expandEditor ? 'Minimize' : 'Maximum'} hasArrow>
               <div
                 className="btn-expand"
                 onClick={() => onExpand((pre) => !pre)}
               >
-                <ExpandIcon />
+                <p className="icon-query-expand" />
               </div>
             </Tooltip>
 
             <div className="btn-expand">
-              <EditTabIcon />
+              <p className="icon-query-edit" />
             </div>
           </Flex>
         }
@@ -439,6 +437,35 @@ type AddVisualizationProps = {
 };
 
 const AddVisualization = ({ onAddVisualize }: AddVisualizationProps) => {
+  const getIcon = (chain: string | undefined) => {
+    switch (chain) {
+      case TYPE_VISUALIZATION.table:
+        return <p className="icon-table-chart-query" />;
+
+      case TYPE_VISUALIZATION.scatter:
+        return <p className="icon-scatter-chart-query" />;
+
+      case TYPE_VISUALIZATION.area:
+        return <p className="icon-area-chart-query" />;
+
+      case TYPE_VISUALIZATION.line: {
+        return <p className="icon-line-chart-query" />;
+      }
+
+      case TYPE_VISUALIZATION.pie:
+        return <p className="icon-pie-chart-query" />;
+
+      case TYPE_VISUALIZATION.bar:
+        return <p className="icon-bar-chart-query" />;
+
+      case TYPE_VISUALIZATION.counter:
+        return <p className="icon-counter-chart-query" />;
+
+      default:
+        return <></>;
+    }
+  };
+
   return (
     <Box>
       <div className="main-item">
