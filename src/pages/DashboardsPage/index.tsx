@@ -16,7 +16,7 @@ import 'src/styles/pages/DashboardsPage.scss';
 import { ROUTES } from 'src/utils/common';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
-import FilterSearch from './parts/FilterSearch';
+import FilterSearch, { TYPE_MYWORK } from './parts/FilterSearch';
 import ListItem from './parts/ListItem';
 
 export const LIST_ITEM_TYPE = {
@@ -204,7 +204,7 @@ const DashboardsPage: React.FC = () => {
       icon: <QueriesIcon />,
       content: _renderContentTable(
         <AppDataTable
-          requestParams={queryParams}
+          requestParams={dashboardParams}
           fetchData={fetchQueries}
           limit={15}
           renderHeader={_renderHeader}
@@ -232,7 +232,7 @@ const DashboardsPage: React.FC = () => {
       icon: <IconMywork />,
       content: _renderContentTable(
         <AppDataTable
-          requestParams={queryParams}
+          requestParams={dashboardParams}
           fetchData={fetchQueries}
           limit={15}
           renderHeader={_renderHeader}
@@ -259,6 +259,7 @@ const DashboardsPage: React.FC = () => {
   const onChangeTab = (tabId: string) => {
     history.push(ROUTES.HOME);
     setTabType(tabId);
+    setMyWorkType(TYPE_MYWORK.DASHBOARD);
   };
 
   return (

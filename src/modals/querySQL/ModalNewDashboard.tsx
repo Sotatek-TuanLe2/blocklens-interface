@@ -19,14 +19,14 @@ interface IModelNewDashboard {
 interface IDataSettingForm {
   title: string;
   tag: string;
-  imageData: string | null;
+  thumbnail: File | null;
 }
 
 const ModelNewDashboard: React.FC<IModelNewDashboard> = ({ open, onClose }) => {
   const initDataFormSetting = {
     title: '',
     tag: '',
-    imageData: '',
+    thumbnail: null,
   };
 
   const history = useHistory();
@@ -88,7 +88,7 @@ const ModelNewDashboard: React.FC<IModelNewDashboard> = ({ open, onClose }) => {
 
     setDataForm({
       ...dataForm,
-      imageData: imageData,
+      thumbnail: file,
     });
   };
 
