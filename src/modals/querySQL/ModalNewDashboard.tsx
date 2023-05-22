@@ -19,14 +19,14 @@ interface IModelNewDashboard {
 interface IDataSettingForm {
   title: string;
   tag: string;
-  file: File | null;
+  imageData: string | null;
 }
 
 const ModelNewDashboard: React.FC<IModelNewDashboard> = ({ open, onClose }) => {
   const initDataFormSetting = {
     title: '',
     tag: '',
-    file: null,
+    imageData: '',
   };
 
   const history = useHistory();
@@ -35,7 +35,7 @@ const ModelNewDashboard: React.FC<IModelNewDashboard> = ({ open, onClose }) => {
     useState<IDataSettingForm>(initDataFormSetting);
 
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [imageData, setImageData] = useState<string | null>(null);
 
   const validator = useRef(
     createValidator({
@@ -77,13 +77,19 @@ const ModelNewDashboard: React.FC<IModelNewDashboard> = ({ open, onClose }) => {
   };
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      setSelectedFile(event.target.files[0]);
-      setDataForm({
-        ...dataForm,
-        file: event.target.files[0],
-      });
+    const file = event.target.files && event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImageData(reader.result as string);
+      };
+      reader.readAsDataURL(file);
     }
+
+    setDataForm({
+      ...dataForm,
+      imageData: imageData,
+    });
   };
 
   return (
@@ -136,32 +142,45 @@ const ModelNewDashboard: React.FC<IModelNewDashboard> = ({ open, onClose }) => {
             alignItems={'center'}
             className="thumnail-create-modal"
           >
-            <IconUploadImg onClick={handleIconClick} />
-            <input
-              type="file"
-              accept="image/*"
-              style={{ display: 'none' }}
-              ref={fileInputRef}
-              onChange={handleFileChange}
-            />
-            <div className="desc">
-              Add a thumbnail image to show in the list
-            </div>
+            {imageData ? (
+              <img src={imageData} alt="Preview" />
+            ) : (
+              <>
+                <IconUploadImg onClick={handleIconClick} />
+
+                <input
+                  type="file"
+                  accept="image/*"
+                  style={{ display: 'none' }}
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                />
+                <div className="desc">
+                  Add a thumbnail image to show in the list
+                </div>
+              </>
+            )}
           </Flex>
           <div className="note">
             You can check the thumbnail image in the PC version.
           </div>
         </AppField>
         <Flex className="modal-footer">
-          <AppButton mr={2.5} onClick={onClose} size="lg" variant={'cancel'}>
+          <AppButton
+            mr={2.5}
+            onClick={() => {
+              setImageData('');
+              onClose();
+            }}
+            size="lg"
+            variant={'cancel'}
+          >
             Cancel
           </AppButton>
           <AppButton
             size="lg"
             onClick={handleSubmitForm}
-            disabled={
-              !dataForm.title.trim() || isDisableSubmit || !selectedFile
-            }
+            disabled={!dataForm.title.trim() || isDisableSubmit || !imageData}
           >
             Add
           </AppButton>
