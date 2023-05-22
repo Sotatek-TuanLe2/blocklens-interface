@@ -357,7 +357,7 @@ const QueryPart: React.FC = () => {
                 </Tooltip>
               </Box>
               <AceEditor
-                className={`custom-editor ${expandEditor ? 'expland' : ''}`}
+                className={`custom-editor ${expandEditor ? 'expand' : ''}`}
                 ref={editorRef}
                 // annotations={[
                 //   {
@@ -403,7 +403,7 @@ const QueryPart: React.FC = () => {
               <Box
                 mt={1}
                 bg={switchTheme ? '#f3f5f7' : '#101530'}
-                className={`add-chart ${expandEditor ? '' : 'expand'}`}
+                className="add-chart"
               >
                 {/* <AppButton variant="no-effects">
                   <Box className="icon-plus-circle" mr={2} /> Add Chart

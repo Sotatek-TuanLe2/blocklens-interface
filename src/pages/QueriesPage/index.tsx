@@ -345,7 +345,7 @@ const QueriesPage = () => {
               <Box width={'100%'}>
                 <Box bg={switchTheme ? '#fff' : '#272822'} h="10px"></Box>
                 <AceEditor
-                  className={`custom-editor ${expandEditor ? 'expland' : ''}`}
+                  className={`custom-editor ${expandEditor ? 'expand' : ''}`}
                   ref={editorRef}
                   // annotations={[
                   //   {
