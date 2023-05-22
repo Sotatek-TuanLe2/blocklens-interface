@@ -45,6 +45,8 @@ export enum CHAIN_NAME {
   SOLANA_TESTNET = 'solana_testnet',
   ARBITRUM_MAINET = 'arbitrum_mainet',
   ARBITRUM_TESTNET = 'arbitrum_testnet',
+  SUI_MAINET = 'sui_mainnet',
+  SUI_TESTNET = 'sui_testnet',
 }
 
 export interface WidgetOptions {
