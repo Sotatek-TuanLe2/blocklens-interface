@@ -16,6 +16,19 @@
 
     .chakra-tabs__tab {
       padding: 10px 0;
+
+      &[aria-selected='true'] {
+        border-bottom: 2px solid #1878ff;
+
+        svg {
+          color: #1878ff;
+        }
+      }
+
+      .tab-name-content {
+        font-weight: 700;
+        font-size: 18px;
+      }
     }
 
     .tab-list {
