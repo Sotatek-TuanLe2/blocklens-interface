@@ -23,7 +23,7 @@ interface IListItem {
   type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
   item?: IDashboardDetail | IQuery;
   typeVisiable?: 'COLUMN' | 'ROW';
-  myWorkType: string;
+  myWorkType: typeof TYPE_MYWORK[keyof typeof TYPE_MYWORK];
 }
 
 const listNetworkCurrency = ['eth_goerli', 'bsc_testnet', 'polygon_mainet'];
@@ -34,7 +34,7 @@ const ListItem: React.FC<IListItem> = (props) => {
   // const [favorite, setFavorite] = useState<boolean>(false);
 
   const itemClass =
-    type === LIST_ITEM_TYPE.DASHBOARDS
+    type === LIST_ITEM_TYPE.DASHBOARDS || type === LIST_ITEM_TYPE.MYWORK
       ? new Dashboard(item as IDashboardDetail)
       : new Query(item as IQuery);
 
@@ -44,6 +44,10 @@ const ListItem: React.FC<IListItem> = (props) => {
         return `${ROUTES.DASHBOARD}/${itemClass.getId()}/`;
       case LIST_ITEM_TYPE.QUERIES:
         return `${ROUTES.QUERY}/${itemClass.getId()}`;
+      case LIST_ITEM_TYPE.MYWORK:
+        return myWorkType === TYPE_MYWORK.DASHBOARDS
+          ? `${ROUTES.DASHBOARD}/${itemClass.getId()}/`
+          : `${ROUTES.QUERY}/${itemClass.getId()}`;
       default:
         return ROUTES.HOME;
     }
@@ -140,7 +144,8 @@ const ListItem: React.FC<IListItem> = (props) => {
             className="dashboard-list__item--row__avatar"
           >
             {(type === LIST_ITEM_TYPE.DASHBOARDS ||
-              myWorkType !== TYPE_MYWORK.QUERIES) && (
+              (myWorkType !== TYPE_MYWORK.QUERIES &&
+                type === LIST_ITEM_TYPE.MYWORK)) && (
               <img
                 src="/images/ThumnailDashboard.png"
                 alt="thumbnail"

@@ -72,7 +72,7 @@ const ModelNewDashboard: React.FC<IModelNewDashboard> = ({ open, onClose }) => {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleIconClick = () => {
+  const onUploadImg = () => {
     fileInputRef.current?.click();
   };
 
@@ -141,12 +141,13 @@ const ModelNewDashboard: React.FC<IModelNewDashboard> = ({ open, onClose }) => {
             flexDirection={'column'}
             alignItems={'center'}
             className="thumnail-create-modal"
+            onClick={onUploadImg}
           >
             {imageData ? (
               <img src={imageData} alt="Preview" />
             ) : (
               <>
-                <IconUploadImg onClick={handleIconClick} />
+                <IconUploadImg />
 
                 <input
                   type="file"
