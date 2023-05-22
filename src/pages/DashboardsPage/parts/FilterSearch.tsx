@@ -70,7 +70,6 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
     SORT: 'sort',
     CHAIN: 'chain',
     TAG: 'tag',
-    MYWORK: 'mywork',
   };
 
   const { type, typeVisiable, setVisibility, myWorkType, setMyWorkType } =

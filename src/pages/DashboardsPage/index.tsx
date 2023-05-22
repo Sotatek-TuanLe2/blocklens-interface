@@ -76,16 +76,27 @@ const DashboardsPage: React.FC = () => {
         );
         break;
       case LIST_ITEM_TYPE.MYWORK:
-        setDashboardParams(() =>
-          _.omitBy(
-            {
-              search: search,
-              sort: sort,
-              tags: tags,
-            },
-            (param) => !param,
-          ),
-        );
+        myWorkType === TYPE_MYWORK.DASHBOARDS
+          ? setDashboardParams(() =>
+              _.omitBy(
+                {
+                  search: search,
+                  sort: sort,
+                  tags: tags,
+                },
+                (param) => !param,
+              ),
+            )
+          : setQueryParams(() =>
+              _.omitBy(
+                {
+                  search: search,
+                  sort: sort,
+                  tags: tags,
+                },
+                (param) => !param,
+              ),
+            );
         break;
       default:
         break;
