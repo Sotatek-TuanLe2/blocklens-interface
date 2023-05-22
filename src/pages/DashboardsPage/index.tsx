@@ -35,6 +35,7 @@ const DashboardsPage: React.FC = () => {
   const [tabType, setTabType] = useState<string>(LIST_ITEM_TYPE.DASHBOARDS);
   const [dashboardParams, setDashboardParams] = useState<IDashboardParams>({});
   const [queryParams, setQueryParams] = useState<IQueriesParams>({});
+  const [myWorkType, setMyWorkType] = useState<string>('dashboard');
 
   const [visibility, setVisibility] = useState<VisibilityGridDashboardList>(
     VisibilityGridDashboardList.COLUMN,
@@ -46,24 +47,11 @@ const DashboardsPage: React.FC = () => {
     const sort = searchParams.get('sort') || '';
     const chain = searchParams.get('chain') || '';
     const tags = searchParams.get('tags') || '';
-    const mywork = searchParams.get('mywork') || '';
 
     switch (tabType) {
       case LIST_ITEM_TYPE.DASHBOARDS:
-        setDashboardParams(() =>
-          _.omitBy(
-            {
-              search: search,
-              sort: sort,
-              chain: chain,
-              tags: tags,
-            },
-            (param) => !param,
-          ),
-        );
-        break;
       case LIST_ITEM_TYPE.QUERIES:
-        setQueryParams(() =>
+        setDashboardParams(() =>
           _.omitBy(
             {
               search: search,
@@ -82,7 +70,6 @@ const DashboardsPage: React.FC = () => {
               search: search,
               sort: sort,
               tags: tags,
-              mywork: mywork,
             },
             (param) => !param,
           ),
@@ -118,7 +105,7 @@ const DashboardsPage: React.FC = () => {
         toastError({ message: getErrorMessage(error) });
       }
     },
-    [queryParams],
+    [queryParams, myWorkType],
   );
 
   const _renderContentTable = useCallback(
@@ -130,13 +117,15 @@ const DashboardsPage: React.FC = () => {
               type={tabType}
               typeVisiable={visibility}
               setVisibility={setVisibility}
+              myWorkType={myWorkType}
+              setMyWorkType={setMyWorkType}
             />
           </div>
           <Box mt={'34px'}>{appTable}</Box>
         </>
       );
     },
-    [tabType, visibility],
+    [tabType, visibility, myWorkType],
   );
 
   const _renderBody = useCallback(
@@ -200,6 +189,7 @@ const DashboardsPage: React.FC = () => {
                     item={item}
                     type={LIST_ITEM_TYPE.DASHBOARDS}
                     typeVisiable={visibility}
+                    myWorkType={myWorkType}
                   />
                 )),
               )}
@@ -227,6 +217,7 @@ const DashboardsPage: React.FC = () => {
                     item={item}
                     type={LIST_ITEM_TYPE.QUERIES}
                     typeVisiable={visibility}
+                    myWorkType={myWorkType}
                   />
                 )),
               )}
@@ -254,6 +245,7 @@ const DashboardsPage: React.FC = () => {
                     item={item}
                     type={LIST_ITEM_TYPE.MYWORK}
                     typeVisiable={visibility}
+                    myWorkType={myWorkType}
                   />
                 )),
               )}

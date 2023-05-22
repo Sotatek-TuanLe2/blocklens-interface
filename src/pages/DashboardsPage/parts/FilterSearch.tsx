@@ -14,7 +14,7 @@ import {
 } from 'src/assets/icons';
 import { AppButton, AppInput, AppSelect2, IOption } from 'src/components';
 import { VisibilityGridDashboardList } from 'src/constants';
-import ModalNewDashboard from 'src/modals/querySQL/ModalNewDashboard';
+import ModalCreateNew from 'src/modals/querySQL/ModCreateDashboard';
 import rf from 'src/requests/RequestFactory';
 import { ROUTES } from 'src/utils/common';
 import {
@@ -27,6 +27,8 @@ interface IFilterSearch {
   type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
   typeVisiable: 'COLUMN' | 'ROW';
   setVisibility: any;
+  myWorkType: string;
+  setMyWorkType: any;
 }
 
 interface ILISTNETWORK {
@@ -71,7 +73,8 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
     MYWORK: 'mywork',
   };
 
-  const { type, typeVisiable, setVisibility } = props;
+  const { type, typeVisiable, setVisibility, myWorkType, setMyWorkType } =
+    props;
   const history = useHistory();
 
   const isDashboard = type === LIST_ITEM_TYPE.DASHBOARDS;
@@ -82,7 +85,6 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   const [sort, setSort] = useState<string>('');
   const [chain, setChain] = useState<string>('');
   const [tag, setTag] = useState<string>('');
-  const [myWork, setMyWork] = useState<string>('');
   const [openNewDashboardModal, setOpenNewDashboardModal] =
     useState<boolean>(false);
 
@@ -115,13 +117,11 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
     const sort = searchParams.get(URL_PARAMS.SORT) || '';
     const chain = searchParams.get(URL_PARAMS.CHAIN) || '';
     const tag = searchParams.get(URL_PARAMS.TAG) || '';
-    const myWork = searchParams.get(URL_PARAMS.MYWORK) || 'dashboard';
 
     setSearch(search);
     setSort(sort);
     setChain(chain);
     setTag(tag);
-    setMyWork(myWork);
     isDashboard
       ? setVisibility(VisibilityGridDashboardList.COLUMN)
       : setVisibility(VisibilityGridDashboardList.ROW);
@@ -181,17 +181,9 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
     });
   };
 
-  const onChangeMyWork = (value: string) => {
-    const searchParams = new URLSearchParams(searchUrl);
-    const currentMywork = searchParams.get(URL_PARAMS.MYWORK);
-    searchParams.delete(URL_PARAMS.MYWORK);
-    if (currentMywork !== value) {
-      searchParams.set(URL_PARAMS.MYWORK, value);
-    }
-    history.push({
-      pathname: ROUTES.HOME,
-      search: `${searchParams.toString()}`,
-    });
+  const onChangeMyWorkType = (value: string) => {
+    setMyWorkType(value);
+    history.push(ROUTES.HOME);
   };
 
   const _renderNetWork = () => {
@@ -244,15 +236,15 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
             <Flex flexDirection={'row'}>
               <Flex mr={3}>
                 <AppButton
-                  onClick={() => onChangeMyWork(TYPE_MYWORK.DASHBOARD)}
+                  onClick={() => onChangeMyWorkType(TYPE_MYWORK.DASHBOARD)}
                   variant="network"
                   className={
-                    myWork === TYPE_MYWORK.DASHBOARD
+                    myWorkType === TYPE_MYWORK.DASHBOARD
                       ? 'btn-active'
                       : 'btn-inactive'
                   }
                 >
-                  {myWork === TYPE_MYWORK.DASHBOARD ? (
+                  {myWorkType === TYPE_MYWORK.DASHBOARD ? (
                     <IconDashboard />
                   ) : (
                     <IconDashboardInactive />
@@ -263,13 +255,15 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
             </Flex>
             <Flex mr={3}>
               <AppButton
-                onClick={() => onChangeMyWork(TYPE_MYWORK.QUERIES)}
+                onClick={() => onChangeMyWorkType(TYPE_MYWORK.QUERIES)}
                 variant="network"
                 className={
-                  myWork === TYPE_MYWORK.QUERIES ? 'btn-active' : 'btn-inactive'
+                  myWorkType === TYPE_MYWORK.QUERIES
+                    ? 'btn-active'
+                    : 'btn-inactive'
                 }
               >
-                {myWork === TYPE_MYWORK.QUERIES ? (
+                {myWorkType === TYPE_MYWORK.QUERIES ? (
                   <IconQueries />
                 ) : (
                   <IconQueriesInactive />
@@ -338,7 +332,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
           </div>
         ))}
       </Flex>
-      <ModalNewDashboard
+      <ModalCreateNew
         open={openNewDashboardModal}
         onClose={onToggleNewDashboardModal}
       />

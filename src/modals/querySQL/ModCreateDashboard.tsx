@@ -1,93 +1,26 @@
 import { Flex, Text } from '@chakra-ui/react';
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router';
-import { AppButton, AppField, AppInput } from 'src/components';
-import rf from 'src/requests/RequestFactory';
+import { DashboardListIcon, QueriesIcon } from 'src/assets/icons';
 import 'src/styles/components/BaseModal.scss';
 import { ROUTES } from 'src/utils/common';
-import { getErrorMessage } from 'src/utils/utils-helper';
-import { toastError } from 'src/utils/utils-notify';
-import { createValidator } from 'src/utils/utils-validator';
 import BaseModal from '../BaseModal';
-import { IconUploadImg } from 'src/assets/icons';
+import ModelNewDashboard from './ModalNewDashboard';
 
-interface IModCreateDashboard {
+interface IModalCreateNew {
   open: boolean;
   onClose: () => void;
 }
 
-interface IDataSettingForm {
-  title: string;
-  tag: string;
-  file: File | null;
-}
-
-const ModCreateDashboard: React.FC<IModCreateDashboard> = ({
-  open,
-  onClose,
-}) => {
-  const initDataFormSetting = {
-    title: '',
-    tag: '',
-    file: null,
-  };
-
+const ModalCreateNew: React.FC<IModalCreateNew> = ({ open, onClose }) => {
   const history = useHistory();
+  const [openModalCreateNew, setOpenModalCreateNew] = useState<boolean>(false);
 
-  const [dataForm, setDataForm] =
-    useState<IDataSettingForm>(initDataFormSetting);
+  const onToggleCreateDashboardModal = () =>
+    setOpenModalCreateNew((prevState) => !prevState);
 
-  const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-
-  const validator = useRef(
-    createValidator({
-      element: (message: string) => <Text color={'red.100'}>{message}</Text>,
-    }),
-  );
-
-  useEffect(() => {
-    if (!open) {
-      setDataForm(initDataFormSetting);
-      validator.current.visibleFields = [];
-    }
-  }, [open]);
-
-  useEffect(() => {
-    const isDisabled = !validator.current.allValid();
-    setIsDisableSubmit(isDisabled);
-  }, [dataForm]);
-
-  const handleSubmitForm = async () => {
-    try {
-      const result = await rf
-        .getRequest('DashboardsRequest')
-        .createNewDashboard({
-          name: dataForm.title.trim(),
-          tag: dataForm.tag.trim(),
-        });
-      history.push(`${ROUTES.DASHBOARD}/${result.id}`);
-      onClose();
-    } catch (error) {
-      toastError({ message: getErrorMessage(error) });
-    }
-    console.log('dataForm', dataForm);
-  };
-
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const handleIconClick = () => {
-    fileInputRef.current?.click();
-  };
-
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      setSelectedFile(event.target.files[0]);
-      setDataForm({
-        ...dataForm,
-        file: event.target.files[0],
-      });
-    }
+  const onCreateDashboard = () => {
+    onToggleCreateDashboardModal();
   };
 
   return (
@@ -97,82 +30,38 @@ const ModCreateDashboard: React.FC<IModCreateDashboard> = ({
         rowGap={'2rem'}
         className="main-modal-dashboard-details"
       >
-        <div className="title-create-modal">Create Dashboard</div>
-        <AppField label={'Dashboard Tittle'}>
-          <AppInput
-            value={dataForm.title}
-            size="sm"
-            placeholder="My dashboard"
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              setDataForm({
-                ...dataForm,
-                title: e.target.value,
-              })
-            }
-            validate={{
-              name: `dashboard`,
-              validator: validator.current,
-              rule: ['required', 'max:150'],
-            }}
-          />
-        </AppField>
-        <AppField label={'Tags (optional)'}>
-          <AppInput
-            value={dataForm.tag}
-            size="sm"
-            placeholder=""
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              setDataForm({
-                ...dataForm,
-                tag: e.target.value,
-              })
-            }
-            validate={{
-              name: `dashboard`,
-              validator: validator.current,
-              rule: ['required', 'max:150'],
-            }}
-          />
-        </AppField>
-        <AppField label={'Thumbnail Image (optional)'}>
+        <div className="title-create-modal">Create New</div>
+        <Flex>
           <Flex
-            flexDirection={'column'}
-            alignItems={'center'}
-            className="thumnail-create-modal"
+            mr={2.5}
+            className="content-create-modal"
+            onClick={() => onCreateDashboard()}
           >
-            <IconUploadImg onClick={handleIconClick} />
-            <input
-              type="file"
-              accept="image/*"
-              style={{ display: 'none' }}
-              ref={fileInputRef}
-              onChange={handleFileChange}
-            />
-            <div className="desc">
-              Add a thumbnail image to show in the list
-            </div>
+            <DashboardListIcon />
+            <Text className="title-content">Dashboard</Text>
+            <Text className="desc-content">
+              You can add various content icluding chart, note and image.
+            </Text>
           </Flex>
-          <div className="note">
-            You can check the thumbnail image in the PC version.
-          </div>
-        </AppField>
-        <Flex className="modal-footer">
-          <AppButton mr={2.5} onClick={onClose} size="lg" variant={'cancel'}>
-            Cancel
-          </AppButton>
-          <AppButton
-            size="lg"
-            onClick={handleSubmitForm}
-            disabled={
-              !dataForm.title.trim() || isDisableSubmit || !selectedFile
-            }
+          <div
+            className="content-create-modal"
+            onClick={() => history.push(ROUTES.QUERY)}
           >
-            Add
-          </AppButton>
+            <QueriesIcon />
+            <Text className="title-content">Queries</Text>
+            <Text className="desc-content">
+              Create your chart and analysis with the no-code query builder or
+              native SQL
+            </Text>
+          </div>
         </Flex>
       </Flex>
+      <ModelNewDashboard
+        open={openModalCreateNew}
+        onClose={onToggleCreateDashboardModal}
+      />
     </BaseModal>
   );
 };
 
-export default ModCreateDashboard;
+export default ModalCreateNew;

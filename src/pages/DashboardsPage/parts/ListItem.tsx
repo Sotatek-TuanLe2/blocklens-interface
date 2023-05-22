@@ -8,7 +8,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 import moment from 'moment';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { IconFork, IconOptions, IconShare } from 'src/assets/icons';
 import AppNetworkIcons from 'src/components/AppNetworkIcons';
 import { VisibilityGridDashboardList } from 'src/constants';
@@ -23,15 +23,13 @@ interface IListItem {
   type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
   item?: IDashboardDetail | IQuery;
   typeVisiable?: 'COLUMN' | 'ROW';
+  myWorkType: string;
 }
 
 const listNetworkCurrency = ['eth_goerli', 'bsc_testnet', 'polygon_mainet'];
 
 const ListItem: React.FC<IListItem> = (props) => {
-  const { type, item, typeVisiable } = props;
-  const { search: searchUrl } = useLocation();
-  const searchParams = new URLSearchParams(searchUrl);
-  const mywork = searchParams.get('mywork') || '';
+  const { type, item, typeVisiable, myWorkType } = props;
 
   // const [favorite, setFavorite] = useState<boolean>(false);
 
@@ -142,7 +140,7 @@ const ListItem: React.FC<IListItem> = (props) => {
             className="dashboard-list__item--row__avatar"
           >
             {(type === LIST_ITEM_TYPE.DASHBOARDS ||
-              mywork !== TYPE_MYWORK.QUERIES) && (
+              myWorkType !== TYPE_MYWORK.QUERIES) && (
               <img
                 src="/images/ThumnailDashboard.png"
                 alt="thumbnail"
