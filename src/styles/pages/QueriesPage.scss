@@ -63,8 +63,9 @@
     height: 250px !important;
     border-bottom-left-radius: 6px;
     border-bottom-right-radius: 6px;
+    transition: height linear 0.5s;
 
-    &.expland {
+    &.expand {
       height: 530px !important;
     }
 
@@ -221,6 +222,17 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
+
+    &__wrapper {
+      display: block;
+      transition: all linear 0.5s;
+
+      &--hidden {
+        height: 0;
+        display: none;
+      }
+    }
+
     &__visualization {
       min-height: 500px;
       height: 540px;
@@ -228,6 +240,14 @@
       margin-bottom: 20px;
       overflow-y: auto;
       margin-top: 20px;
+      opacity: 1;
+      transform: all linear 0.5s;
+
+      &--hidden {
+        min-height: 0;
+        height: 0;
+        opacity: 0;
+      }
 
       &__title {
         padding: 0 10px;
