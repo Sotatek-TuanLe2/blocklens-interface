@@ -1,4 +1,4 @@
-import { Avatar, Box, Flex, Text, Tooltip } from '@chakra-ui/react';
+import { Box, Flex, Text, Tooltip } from '@chakra-ui/react';
 import AceEditor from 'react-ace';
 import { AppButton, AppLoadingTable } from 'src/components';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
@@ -183,7 +183,7 @@ const QueryPart: React.FC = () => {
     }
   };
 
-  const onExpland = () => {
+  const onExpand = () => {
     setExpandEditor((pre) => !pre);
   };
 
@@ -263,7 +263,7 @@ const QueryPart: React.FC = () => {
           label={expandEditor ? 'Collapse' : 'Expand'}
         >
           <AppButton
-            onClick={onExpland}
+            onClick={onExpand}
             bg={backgroundButton}
             _hover={{ bg: hoverBackgroundButton }}
           >
@@ -304,6 +304,8 @@ const QueryPart: React.FC = () => {
         type={WORKSPACE_TYPES.QUERY}
         author={user?.getFirstName() || ''}
         title={queryClass?.getName() || ''}
+        onRunQuery={onRunQuery}
+        selectedQuery={selectedQuery}
       />
       <EditorContext.Provider
         value={{
@@ -335,12 +337,27 @@ const QueryPart: React.FC = () => {
               )}
             </Flex>
           )} */}
+
         <div className="queries-page">
           <Box className="queries-page__right-side">
             <Box width={'100%'}>
-              <Box bg={switchTheme ? '#fff' : '#272822'} h="10px"></Box>
+              <Box bg={switchTheme ? '#fff' : '#101530'} className="header-tab">
+                <div className="tag-name">
+                  <p className="icon-query" />
+                  Query
+                </div>
+                <Tooltip
+                  label={expandEditor ? 'Minimize' : 'Maximum'}
+                  hasArrow
+                  placement="top"
+                >
+                  <div className="btn-expand" onClick={onExpand}>
+                    <p className="icon-query-expand" />
+                  </div>
+                </Tooltip>
+              </Box>
               <AceEditor
-                className={`custom-editor ${expandEditor ? 'expland' : ''}`}
+                className={`custom-editor ${expandEditor ? 'expand' : ''}`}
                 ref={editorRef}
                 // annotations={[
                 //   {
@@ -368,8 +385,8 @@ const QueryPart: React.FC = () => {
                 }}
                 onSelectionChange={onSelectQuery}
               />
-              <Box
-                bg={switchTheme ? '#f3f5f7' : '#111213'}
+              {/* <Box
+                bg={switchTheme ? '#f3f5f7' : '#101530'}
                 className="control-editor"
               >
                 {_renderEditorButtons()}
@@ -382,38 +399,52 @@ const QueryPart: React.FC = () => {
                     {selectedQuery ? 'Run selection' : 'Run'}
                   </Text>
                 </AppButton>
+              </Box> */}
+              <Box
+                mt={1}
+                bg={switchTheme ? '#f3f5f7' : '#101530'}
+                className="add-chart"
+              >
+                {/* <AppButton variant="no-effects">
+                  <Box className="icon-plus-circle" mr={2} /> Add Chart
+                </AppButton>
+                <div className="btn-expand" onClick={onExpand}>
+                  <ExpandIcon />
+                </div> */}
+                <>
+                  {isLoadingResult ? (
+                    <AppLoadingTable
+                      widthColumns={[100]}
+                      className="visual-table"
+                    />
+                  ) : (
+                    queryId &&
+                    !!queryValue &&
+                    (!!queryResult.length ? (
+                      <Box>
+                        <VisualizationDisplay
+                          queryResult={queryResult}
+                          queryValue={queryValue}
+                          onReload={fetchQuery}
+                          expandEditor={expandEditor}
+                          onExpand={setExpandEditor}
+                        />
+                      </Box>
+                    ) : (
+                      <Flex
+                        className="empty-table"
+                        justifyContent={'center'}
+                        alignItems="center"
+                      >
+                        {errorExecuteQuery?.message
+                          ? errorExecuteQuery?.message
+                          : 'No data...'}
+                      </Flex>
+                    ))
+                  )}
+                </>
               </Box>
             </Box>
-            <>
-              {isLoadingResult ? (
-                <AppLoadingTable
-                  widthColumns={[100]}
-                  className="visual-table"
-                />
-              ) : (
-                queryId &&
-                !!queryValue &&
-                (!!queryResult.length ? (
-                  <Box mt={8}>
-                    <VisualizationDisplay
-                      queryResult={queryResult}
-                      queryValue={queryValue}
-                      onReload={fetchQuery}
-                    />
-                  </Box>
-                ) : (
-                  <Flex
-                    className="empty-table"
-                    justifyContent={'center'}
-                    alignItems="center"
-                  >
-                    {errorExecuteQuery?.message
-                      ? errorExecuteQuery?.message
-                      : 'No data...'}
-                  </Flex>
-                ))
-              )}
-            </>
           </Box>
         </div>
       </EditorContext.Provider>

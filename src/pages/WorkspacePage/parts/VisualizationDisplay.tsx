@@ -1,4 +1,4 @@
-import { Box, Flex, Text, Tooltip } from '@chakra-ui/react';
+import { Box, Flex, Tooltip } from '@chakra-ui/react';
 import moment from 'moment';
 import { useMemo, useState } from 'react';
 import { useParams } from 'react-router';
@@ -9,7 +9,7 @@ import {
   VisualizationTable,
   VisualizationCounter,
 } from '../../../components/Charts';
-import { AppTabs, AppButton, AppSelect2 } from '../../../components';
+import { AppTabs } from '../../../components';
 import ChartConfigurations from '../../../components/VisualizationConfigs/ChartConfigurations';
 import BaseModal from '../../../modals/BaseModal';
 import {
@@ -87,9 +87,17 @@ type Props = {
   queryResult: unknown[];
   queryValue: IQuery;
   onReload: () => Promise<void>;
+  expandEditor: boolean;
+  onExpand: (value: React.SetStateAction<boolean>) => void;
 };
 
-const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
+const VisualizationDisplay = ({
+  queryResult,
+  queryValue,
+  onReload,
+  expandEditor,
+  onExpand,
+}: Props) => {
   interface ParamTypes {
     queryId: string;
   }
@@ -291,16 +299,20 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
     }
 
     return (
-      <>
+      <div
+        className={`visual-container__wrapper ${
+          expandEditor ? 'visual-container__wrapper--hidden' : ''
+        }`}
+      >
         <div className="visual-container__visualization">
-          <Tooltip
-            label={visualization.name || getDefaultVisualizationName(type)}
-            hasArrow
-          >
-            <div className="visual-container__visualization__title">
+          <div className="visual-container__visualization__title">
+            <Tooltip
+              label={visualization.name || getDefaultVisualizationName(type)}
+              hasArrow
+            >
               {visualization.name || getDefaultVisualizationName(type)}
-            </div>
-          </Tooltip>
+            </Tooltip>
+          </div>
           {errorMessage ? (
             <Flex
               alignItems={'center'}
@@ -314,7 +326,7 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
           )}
         </div>
         {visualizationConfiguration}
-      </>
+      </div>
     );
   };
 
@@ -353,21 +365,46 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
         onCloseTab={(tabId: string) => {
           setCloseTabId(tabId);
         }}
+        rightElement={
+          <Flex gap={'10px'}>
+            <Tooltip label={!expandEditor ? 'Minimize' : 'Maximum'} hasArrow>
+              <div
+                className="btn-expand"
+                onClick={() => onExpand((pre) => !pre)}
+              >
+                <p className="icon-query-expand" />
+              </div>
+            </Tooltip>
+
+            <div className="btn-expand">
+              <p className="icon-query-edit" />
+            </div>
+          </Flex>
+        }
         tabs={[
           ...queryValue.visualizations.map((v) => ({
             icon: getIcon(v?.options?.globalSeriesType || v.type),
-            name:
-              v.name ||
-              getDefaultVisualizationName(
-                v?.options?.globalSeriesType || v.type,
-              ),
+            name: (
+              <div onClick={() => onExpand(false)}>
+                {v.name ||
+                  getDefaultVisualizationName(
+                    v?.options?.globalSeriesType || v.type,
+                  )}
+              </div>
+            ),
             content: renderVisualization(v),
             id: v.id,
             closeable: true,
           })),
           {
             icon: null,
-            name: 'New Visualization',
+            name: (
+              <Tooltip label="Add New Visualization" hasArrow>
+                <Flex alignItems={'center'} onClick={() => onExpand(false)}>
+                  <Box className="icon-plus-circle" mr={2} /> Add Chart
+                </Flex>
+              </Tooltip>
+            ),
             content: (
               <AddVisualization onAddVisualize={addVisualizationHandler} />
             ),
@@ -376,7 +413,6 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
           },
         ]}
       />
-
       <BaseModal
         title={'Remove visualization'}
         description={'Are you sure you want to remove this visualization?'}
@@ -401,30 +437,67 @@ type AddVisualizationProps = {
 };
 
 const AddVisualization = ({ onAddVisualize }: AddVisualizationProps) => {
-  const [visualizationSelected, setVisualizationSelected] = useState<string>(
-    VALUE_VISUALIZATION.bar,
-  );
+  const getIcon = (chain: string | undefined) => {
+    switch (chain) {
+      case TYPE_VISUALIZATION.table:
+        return <p className="icon-table-chart-query" />;
+
+      case TYPE_VISUALIZATION.scatter:
+        return <p className="icon-scatter-chart-query" />;
+
+      case TYPE_VISUALIZATION.area:
+        return <p className="icon-area-chart-query" />;
+
+      case TYPE_VISUALIZATION.line: {
+        return <p className="icon-line-chart-query" />;
+      }
+
+      case TYPE_VISUALIZATION.pie:
+        return <p className="icon-pie-chart-query" />;
+
+      case TYPE_VISUALIZATION.bar:
+        return <p className="icon-bar-chart-query" />;
+
+      case TYPE_VISUALIZATION.counter:
+        return <p className="icon-counter-chart-query" />;
+
+      default:
+        return <></>;
+    }
+  };
+
   return (
     <Box>
-      <Text mb={2}>Select visualization type</Text>
-      <Box className="select-visual-type">
-        <AppSelect2
-          options={visualizationConfigs}
-          value={visualizationSelected || ''}
-          onChange={(value) => setVisualizationSelected(value)}
-          className="visual-type-content"
-        />
-      </Box>
-
-      <AppButton
-        mt={4}
-        onClick={() => {
-          if (!visualizationSelected) return;
-          onAddVisualize(visualizationSelected);
-        }}
-      >
-        Add visualization
-      </AppButton>
+      <div className="main-item">
+        <div className="top-items">
+          {visualizationConfigs.slice(0, 3).map((i) => (
+            <div
+              className="item-visual"
+              key={i.value}
+              onClick={() => {
+                onAddVisualize(i.value);
+              }}
+            >
+              {getIcon(i.type)}
+              {i.label}
+            </div>
+          ))}
+        </div>
+        <div className="bottom-items">
+          {visualizationConfigs.slice(3).map((i) => (
+            <div
+              className="item-visual"
+              key={i.value}
+              onClick={() => {
+                onAddVisualize(i.value);
+              }}
+            >
+              {getIcon(i.type)}
+              {i.label}
+            </div>
+          ))}
+        </div>
+      </div>
     </Box>
   );
 };

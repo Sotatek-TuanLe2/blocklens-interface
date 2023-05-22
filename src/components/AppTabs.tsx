@@ -15,7 +15,7 @@ interface IAppTabs {
   defaultTab?: number;
   tabs: ITabs[];
   onChange?: (value: string) => void;
-  rightElement?: () => ReactNode;
+  rightElement?: ReactNode;
   onCloseTab?: (id: string) => void;
 }
 export interface ITabs {
@@ -81,7 +81,7 @@ const AppTabs: FC<IAppTabs> = ({
               );
             })}
           </Flex>
-          <Box>{rightElement ? rightElement() : ''}</Box>
+          <Box>{rightElement || ''}</Box>
         </Flex>
       </TabList>
 
