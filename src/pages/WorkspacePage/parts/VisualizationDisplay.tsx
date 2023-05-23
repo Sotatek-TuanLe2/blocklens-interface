@@ -468,7 +468,7 @@ const AddVisualization = ({
         return <p className="icon-bar-chart-query" />;
 
       case TYPE_VISUALIZATION.counter:
-        return <p className="icon-counter-chart-query" />;
+        return <p className="icon-counter-query" />;
 
       default:
         return <></>;
