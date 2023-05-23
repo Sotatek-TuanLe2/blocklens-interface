@@ -12,7 +12,13 @@ import {
   IconQueries,
   IconQueriesInactive,
 } from 'src/assets/icons';
-import { AppButton, AppInput, AppSelect2, IOption } from 'src/components';
+import {
+  AppButton,
+  AppInput,
+  AppSelect2,
+  AppTag,
+  IOption,
+} from 'src/components';
 import { VisibilityGridDashboardList } from 'src/constants';
 import ModalCreateNew from 'src/modals/querySQL/ModalCreateNew';
 import rf from 'src/requests/RequestFactory';
@@ -315,15 +321,13 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
       </Flex>
       <Flex mt={'14px'} flexDirection={'row'}>
         {listTags.map((item) => (
-          <div
+          <AppTag
             key={item.id}
+            value={item.name}
+            variant="md"
             onClick={() => onChangeTag(item.name)}
-            className={`dashboard-filter__item-tag ${
-              item.name === tag ? 'dashboard-filter__item-tag--active' : ''
-            }`}
-          >
-            #{item.name}
-          </div>
+            selected={item.name === tag}
+          />
         ))}
       </Flex>
       <ModalCreateNew

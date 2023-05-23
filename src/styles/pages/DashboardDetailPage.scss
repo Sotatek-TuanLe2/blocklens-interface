@@ -1,7 +1,10 @@
 @import '../color-variables.scss';
 @import '../mixins.scss';
 
-.main-content-dashboard-details {
+.dashboard-container {
+  background: $card;
+  border-radius: 6px;
+
   h1,
   h2,
   h3,
@@ -71,6 +74,7 @@
           text-overflow: ellipsis;
           white-space: nowrap;
           max-width: 30%;
+          color: #03CAFF;
         }
       }
 
@@ -202,7 +206,7 @@
   }
   .main-grid-layout {
     width: 100%;
-    margin-top: 20px;
+    height: 100%;
 
     .react-grid-item {
       a {
@@ -220,7 +224,9 @@
     }
 
     .box-layout {
-      border: 1px solid #808080;
+      background: $card;
+      border: 1px solid #465065;
+      border-radius: 10px;
       position: relative;
 
       .box-chart {

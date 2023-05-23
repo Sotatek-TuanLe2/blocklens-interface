@@ -20,6 +20,7 @@ export { default as AppFilter } from './AppFilter';
 export { default as AppConnectWalletButton } from './AppConnectWalletButton';
 export { default as AppLoadingTable } from './AppLoadingTable';
 export { default as AppTabs } from './AppTabs';
+export { default as AppTag } from './AppTag';
 
 export * from './AppCard';
 export * from './AppButton';
