@@ -46,6 +46,12 @@
   background: url('../assets/icons/icon_networks.png') -10px -90px;
 }
 
+.icon-sui {
+  width: 20px;
+  height: 20px;
+  background: url('../assets/icons/icon_networks.png') -90px -90px;
+}
+
 .icon-bitcoin-inactive {
   width: 20px;
   height: 20px;
@@ -92,6 +98,12 @@
   width: 20px;
   height: 20px;
   background: url('../assets/icons/icon_networks-inactive.png') -10px -90px;
+}
+
+.icon-sui-inactive {
+  width: 20px;
+  height: 20px;
+  background: url('../assets/icons/icon_networks-inactive.png') -90px -90px;
 }
 
 .icon-eye-close {
@@ -324,43 +336,49 @@
 .icon-query-back-header {
   width: 11px;
   height: 18px;
-  background: url('../assets/icons/icon_query.png') -121px -4px;
+  background: url('../assets/icons/icon_query.png') -50px -4px;
 }
 
 .icon-query-delete {
   width: 14px;
   height: 14px;
-  background: url('../assets/icons/icon_query.png') -80px -88px;
+  background: url('../assets/icons/icon_query.png') -131px -80px;
 }
 
 .icon-query-fork {
   width: 14px;
   height: 16px;
-  background: url('../assets/icons/icon_query.png') -10px -88px;
+  background: url('../assets/icons/icon_query.png') -131px -44px;
 }
 
 .icon-query-setting {
   width: 15px;
   height: 15px;
-
-  background: url('../assets/icons/icon_query.png') -95px -46px;
+  background: url('../assets/icons/icon_query.png') -81px -92px;
 }
+
 .icon-query-share {
   width: 16px;
   height: 14px;
-  background: url('../assets/icons/icon_query.png') -10px -88px;
+  background: url('../assets/icons/icon_query.png') -131px -10px;
 }
 
 .icon-query {
   width: 16px;
   height: 16px;
-  background: url('../assets/icons/icon_query.png') -95px -10px;
+  background: url('../assets/icons/icon_query.png') -10px -92px;
 }
 
 .icon-query-expand {
   width: 20px;
   height: 20px;
-  background: url('../assets/icons/icon_query.png') -55px -10px;
+  background: url('../assets/icons/icon_query.png') -48px -54px;
+}
+
+.icon-query-collapse {
+  width: 20px;
+  height: 20px;
+  background: url('../assets/icons/icon_query.png') -10px -54px;
 }
 
 .icon-query-list {
@@ -372,25 +390,25 @@
 .icon-query-edit {
   width: 17px;
   height: 16px;
-  background: url('../assets/icons/icon_query.png') -48px -50px;
+  background: url('../assets/icons/icon_query.png') -94px -46px;
 }
 
 .icon-run-query {
-  width: 18px;
-  height: 18px;
-  background: url('../assets/icons/icon_query.png') -10px -50px;
+  width: 16px;
+  height: 16px;
+  background: url('../assets/icons/icon_query.png') -8px -126px;
 }
 
 .icon-bar-chart-query {
   width: 20px;
   height: 20px;
-  background: url('../assets/icons/icon_chart_query.png') -50px -10px;
+  background: url('../assets/icons/icon_chart_query.png') -10px -90px;
 }
 
 .icon-counter-query {
   width: 20px;
   height: 20px;
-  background: url('../assets/icons/icon_chart_query.png') -10px -50px;
+  background: url('../assets/icons/icon_chart_query.png') -50px -50px;
 }
 
 .icon-area-chart-query {
@@ -402,7 +420,7 @@
 .icon-line-chart-query {
   width: 20px;
   height: 20px;
-  background: url('../assets/icons/icon_chart_query.png') -50px -50px;
+  background: url('../assets/icons/icon_chart_query.png') -50px -10px;
 }
 
 .icon-pie-chart-query {
@@ -414,13 +432,13 @@
 .icon-scatter-chart-query {
   width: 20px;
   height: 20px;
-  background: url('../assets/icons/icon_chart_query.png') -90px -50px;
+  background: url('../assets/icons/icon_chart_query.png') -10px -50px;
 }
 
 .icon-table-chart-query {
   width: 20px;
   height: 20px;
-  background: url('../assets/icons/icon_chart_query.png') -10px -90px;
+  background: url('../assets/icons/icon_chart_query.png') -90px -48px;
 }
 
 .bg-explore_active {

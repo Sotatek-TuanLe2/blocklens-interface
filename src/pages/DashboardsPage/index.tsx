@@ -2,7 +2,7 @@ import { Box, Flex, SimpleGrid } from '@chakra-ui/react';
 import _ from 'lodash';
 import { useCallback, useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
-import { DashboardListIcon, QueriesIcon } from 'src/assets/icons';
+import { DashboardListIcon, IconMywork, QueriesIcon } from 'src/assets/icons';
 import { AppDataTable, RequestParams } from 'src/components';
 import AppTabs, { ITabs } from 'src/components/AppTabs';
 import { VisibilityGridDashboardList } from 'src/constants';
@@ -16,12 +16,20 @@ import 'src/styles/pages/DashboardsPage.scss';
 import { ROUTES } from 'src/utils/common';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
-import FilterSearch from './parts/FilterSearch';
+import FilterSearch, { TYPE_MYWORK } from './parts/FilterSearch';
 import ListItem from './parts/ListItem';
 
 export const LIST_ITEM_TYPE = {
   DASHBOARDS: 'DASHBOARDS',
   QUERIES: 'QUERIES',
+  MYWORK: 'MYWORK',
+};
+
+export const HOME_URL_PARAMS = {
+  SEARCH: 'search',
+  SORT: 'sort',
+  CHAIN: 'chain',
+  TAG: 'tag',
 };
 
 interface IDashboardParams extends RequestParams, DashboardsParams {}
@@ -34,6 +42,7 @@ const DashboardsPage: React.FC = () => {
   const [tabType, setTabType] = useState<string>(LIST_ITEM_TYPE.DASHBOARDS);
   const [dashboardParams, setDashboardParams] = useState<IDashboardParams>({});
   const [queryParams, setQueryParams] = useState<IQueriesParams>({});
+  const [myWorkType, setMyWorkType] = useState<string>(TYPE_MYWORK.DASHBOARDS);
 
   const [visibility, setVisibility] = useState<VisibilityGridDashboardList>(
     VisibilityGridDashboardList.COLUMN,
@@ -41,10 +50,10 @@ const DashboardsPage: React.FC = () => {
 
   useEffect(() => {
     const searchParams = new URLSearchParams(searchUrl);
-    const search = searchParams.get('search') || '';
-    const sort = searchParams.get('sort') || '';
-    const chain = searchParams.get('chain') || '';
-    const tags = searchParams.get('tags') || '';
+    const search = searchParams.get(HOME_URL_PARAMS.SEARCH) || '';
+    const sort = searchParams.get(HOME_URL_PARAMS.SORT) || '';
+    const chain = searchParams.get(HOME_URL_PARAMS.CHAIN) || '';
+    const tag = searchParams.get(HOME_URL_PARAMS.TAG) || '';
 
     switch (tabType) {
       case LIST_ITEM_TYPE.DASHBOARDS:
@@ -54,7 +63,7 @@ const DashboardsPage: React.FC = () => {
               search: search,
               sort: sort,
               chain: chain,
-              tags: tags,
+              tags: tag,
             },
             (param) => !param,
           ),
@@ -67,11 +76,34 @@ const DashboardsPage: React.FC = () => {
               search: search,
               sort: sort,
               chain: chain,
-              tags: tags,
+              tags: tag,
             },
             (param) => !param,
           ),
         );
+        break;
+      case LIST_ITEM_TYPE.MYWORK:
+        myWorkType === TYPE_MYWORK.DASHBOARDS
+          ? setDashboardParams(() =>
+              _.omitBy(
+                {
+                  search: search,
+                  sort: sort,
+                  tags: tag,
+                },
+                (param) => !param,
+              ),
+            )
+          : setQueryParams(() =>
+              _.omitBy(
+                {
+                  search: search,
+                  sort: sort,
+                  tags: tag,
+                },
+                (param) => !param,
+              ),
+            );
         break;
       default:
         break;
@@ -113,15 +145,17 @@ const DashboardsPage: React.FC = () => {
           <div className="dashboard-filter">
             <FilterSearch
               type={tabType}
-              typeVisiable={visibility}
-              setVisibility={setVisibility}
+              visibility={visibility}
+              changeVisibility={setVisibility}
+              myWorkType={myWorkType}
+              changeMyWorkType={setMyWorkType}
             />
           </div>
           <Box mt={'34px'}>{appTable}</Box>
         </>
       );
     },
-    [tabType, visibility],
+    [tabType, visibility, myWorkType],
   );
 
   const _renderBody = useCallback(
@@ -142,20 +176,20 @@ const DashboardsPage: React.FC = () => {
         </>
       );
     },
-    [visibility],
+    [tabType, visibility, myWorkType],
   );
 
-  const _renderHeader = () => {
+  const _renderHeader = useCallback(() => {
     return (
       <>
         {visibility === VisibilityGridDashboardList.ROW ? (
           <div className="dashboard-list__header">
-            <div className="item-title"></div>
+            <div className="item-title">Name</div>
             <div className="item-creator">Creator</div>
             <div className="item-chain">chain</div>
             <div className="item-date">date</div>
             <div className="item-tag">tag</div>
-            <div className="item-like">like</div>
+            {/* <div className="item-like">like</div> */}
             <div className="item-btn"></div>
           </div>
         ) : (
@@ -163,7 +197,7 @@ const DashboardsPage: React.FC = () => {
         )}
       </>
     );
-  };
+  }, [visibility]);
 
   const tabs: ITabs[] = [
     {
@@ -176,20 +210,18 @@ const DashboardsPage: React.FC = () => {
           fetchData={fetchDashboards}
           limit={12}
           renderHeader={_renderHeader}
-          renderBody={(data) => (
-            <>
-              {_renderBody(
-                data.map((item: any) => (
-                  <ListItem
-                    key={item.id}
-                    item={item}
-                    type={LIST_ITEM_TYPE.DASHBOARDS}
-                    typeVisiable={visibility}
-                  />
-                )),
-              )}
-            </>
-          )}
+          renderBody={(data) =>
+            _renderBody(
+              data.map((item: any) => (
+                <ListItem
+                  key={item.id}
+                  item={item}
+                  type={LIST_ITEM_TYPE.DASHBOARDS}
+                  visibility={visibility}
+                />
+              )),
+            )
+          }
         />,
       ),
     },
@@ -201,22 +233,72 @@ const DashboardsPage: React.FC = () => {
         <AppDataTable
           requestParams={queryParams}
           fetchData={fetchQueries}
-          limit={10}
-          renderBody={(data) => (
-            <>
-              {_renderBody(
-                data.map((item: any) => (
-                  <ListItem
-                    key={item.id}
-                    item={item}
-                    type={LIST_ITEM_TYPE.QUERIES}
-                    typeVisiable={visibility}
-                  />
-                )),
-              )}
-            </>
-          )}
+          limit={15}
+          renderHeader={_renderHeader}
+          renderBody={(data) =>
+            _renderBody(
+              data.map((item: any) => (
+                <ListItem
+                  key={item.id}
+                  item={item}
+                  type={LIST_ITEM_TYPE.QUERIES}
+                  visibility={visibility}
+                />
+              )),
+            )
+          }
         />,
+      ),
+    },
+    {
+      id: LIST_ITEM_TYPE.MYWORK,
+      name: 'My Work',
+      icon: <IconMywork />,
+      content: _renderContentTable(
+        <>
+          <Box
+            display={myWorkType === TYPE_MYWORK.DASHBOARDS ? 'block' : 'none'}
+          >
+            <AppDataTable
+              requestParams={dashboardParams}
+              fetchData={fetchDashboards}
+              limit={12}
+              renderHeader={_renderHeader}
+              renderBody={(data) =>
+                _renderBody(
+                  data.map((item: any) => (
+                    <ListItem
+                      key={item.id}
+                      item={item}
+                      type={LIST_ITEM_TYPE.DASHBOARDS}
+                      visibility={visibility}
+                    />
+                  )),
+                )
+              }
+            />
+          </Box>
+          <Box display={myWorkType === TYPE_MYWORK.QUERIES ? 'block' : 'none'}>
+            <AppDataTable
+              requestParams={queryParams}
+              fetchData={fetchQueries}
+              limit={15}
+              renderHeader={_renderHeader}
+              renderBody={(data) =>
+                _renderBody(
+                  data.map((item: any) => (
+                    <ListItem
+                      key={item.id}
+                      item={item}
+                      type={LIST_ITEM_TYPE.QUERIES}
+                      visibility={visibility}
+                    />
+                  )),
+                )
+              }
+            />
+          </Box>
+        </>,
       ),
     },
   ];
@@ -224,6 +306,7 @@ const DashboardsPage: React.FC = () => {
   const onChangeTab = (tabId: string) => {
     history.push(ROUTES.HOME);
     setTabType(tabId);
+    setMyWorkType(TYPE_MYWORK.DASHBOARDS);
   };
 
   return (

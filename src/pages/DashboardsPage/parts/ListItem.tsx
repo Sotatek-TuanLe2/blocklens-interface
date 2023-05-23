@@ -8,15 +8,9 @@ import {
   Text,
 } from '@chakra-ui/react';
 import moment from 'moment';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import {
-  IconFork,
-  IconHeart,
-  IconHeartFavorite,
-  IconOptions,
-  IconShare,
-} from 'src/assets/icons';
+import { Link, useHistory } from 'react-router-dom';
+import { IconFork, IconOptions, IconShare } from 'src/assets/icons';
+import { AppTag } from 'src/components';
 import AppNetworkIcons from 'src/components/AppNetworkIcons';
 import { VisibilityGridDashboardList } from 'src/constants';
 import { ROUTES } from 'src/utils/common';
@@ -25,19 +19,23 @@ import { Dashboard } from 'src/utils/utils-dashboard';
 import { Query } from 'src/utils/utils-query';
 import { LIST_ITEM_TYPE } from '..';
 import { listTags } from './FilterSearch';
+import { toastError } from 'src/utils/utils-notify';
+import { getErrorMessage } from 'src/utils/utils-helper';
+import rf from 'src/requests/RequestFactory';
 
 interface IListItem {
   type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
   item?: IDashboardDetail | IQuery;
-  typeVisiable: 'COLUMN' | 'ROW';
+  visibility?: 'COLUMN' | 'ROW';
 }
 
 const listNetworkCurrency = ['eth_goerli', 'bsc_testnet', 'polygon_mainet'];
 
 const ListItem: React.FC<IListItem> = (props) => {
-  const { type, item, typeVisiable } = props;
+  const { type, item, visibility } = props;
+  const history = useHistory();
 
-  const [favorite, setFavorite] = useState<boolean>(false);
+  // const [favorite, setFavorite] = useState<boolean>(false);
 
   const itemClass =
     type === LIST_ITEM_TYPE.DASHBOARDS
@@ -55,6 +53,34 @@ const ListItem: React.FC<IListItem> = (props) => {
     }
   };
 
+  const onClickFork = async () => {
+    try {
+      let res;
+      if (type === LIST_ITEM_TYPE.DASHBOARDS) {
+        res = await rf
+          .getRequest('DashboardsRequest')
+          .forkDashboard(
+            { newDashboardName: `Forked from ${itemClass.getName()}` },
+            itemClass.getId(),
+          );
+      } else if (type === LIST_ITEM_TYPE.QUERIES) {
+        res = await rf
+          .getRequest('DashboardsRequest')
+          .forkQueries(itemClass.getId());
+      }
+
+      if (res) {
+        history.push(
+          `${
+            type === LIST_ITEM_TYPE.DASHBOARDS ? ROUTES.DASHBOARD : ROUTES.QUERY
+          }/${res.id}`,
+        );
+      }
+    } catch (e) {
+      toastError({ message: getErrorMessage(e) });
+    }
+  };
+
   const _renderDropdown = () => {
     return (
       <Menu>
@@ -64,7 +90,7 @@ const ListItem: React.FC<IListItem> = (props) => {
           </Button>
         </MenuButton>
         <MenuList className="menu-option">
-          <MenuItem className="menu-info">
+          <MenuItem onClick={onClickFork} className="menu-info">
             <IconFork /> Fork
           </MenuItem>
           <MenuItem className="menu-info">
@@ -87,14 +113,14 @@ const ListItem: React.FC<IListItem> = (props) => {
                 className="thumbnail"
               />
             </Link>
-            <div className="dashboard-list__item--column__box-favourite">
+            {/* <div className="dashboard-list__item--column__box-favourite">
               {favorite ? (
                 <IconHeartFavorite onClick={() => setFavorite((pre) => !pre)} />
               ) : (
                 <IconHeart onClick={() => setFavorite((pre) => !pre)} />
               )}
               25
-            </div>
+            </div> */}
           </div>
           <div className="dashboard-list__item--column__content">
             <Flex
@@ -107,9 +133,7 @@ const ListItem: React.FC<IListItem> = (props) => {
                 </Link>
                 <Flex flexWrap={'wrap'} flexDirection={'row'} maxW={52}>
                   {listTags.map((item) => (
-                    <div key={item.id} className="tag-name">
-                      {Tag({ value: item.name })}
-                    </div>
+                    <AppTag key={item.id} value={item.name} />
                   ))}
                 </Flex>
               </Flex>
@@ -167,19 +191,17 @@ const ListItem: React.FC<IListItem> = (props) => {
           </div>
           <div className="item-tag">
             {listTags.map((item) => (
-              <div key={item.id} className="tag-name">
-                {Tag({ value: item.name })}
-              </div>
+              <AppTag key={item.id} value={item.name} />
             ))}
           </div>
-          <div className="item-favorite">
+          {/* <div className="item-favorite">
             {favorite ? (
               <IconHeartFavorite onClick={() => setFavorite((pre) => !pre)} />
             ) : (
               <IconHeart onClick={() => setFavorite((pre) => !pre)} />
             )}
             25
-          </div>
+          </div> */}
           <div className="item-btn-options">{_renderDropdown()}</div>
         </Flex>
       </div>
@@ -188,18 +210,10 @@ const ListItem: React.FC<IListItem> = (props) => {
 
   return (
     <>
-      {typeVisiable === VisibilityGridDashboardList.COLUMN
+      {visibility === VisibilityGridDashboardList.COLUMN
         ? _renderGridItem()
         : _renderRowItem()}
     </>
-  );
-};
-
-const Tag: React.FC<{ value: string }> = ({ value }) => {
-  return (
-    <Link to={'/'} target={'_blank'}>
-      #{value}
-    </Link>
   );
 };
 
