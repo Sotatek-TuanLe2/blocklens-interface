@@ -158,7 +158,6 @@
 
         &__content-collapse {
           padding-bottom: 10px;
-          overflow: visible !important;
           .chain-info-title {
             @include text-small-regular;
             color: $paragraph;
