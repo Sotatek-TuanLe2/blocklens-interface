@@ -1,4 +1,4 @@
-import { Box } from '@chakra-ui/react';
+import { Box, Flex } from '@chakra-ui/react';
 import {
   ColumnDef,
   flexRender,
@@ -8,12 +8,14 @@ import {
 import BigNumber from 'bignumber.js';
 import { useEffect, useMemo, useState } from 'react';
 import 'src/styles/components/TableValue.scss';
-import { VISUALIZATION_COLORS } from 'src/utils/common';
+import { INPUT_DEBOUNCE, VISUALIZATION_COLORS } from 'src/utils/common';
 import { VisualizationType } from 'src/utils/query.type';
 import { formatVisualizationValue } from 'src/utils/utils-format';
 import { isNumber } from 'src/utils/utils-helper';
 import { objectKeys } from 'src/utils/utils-network';
-import TablePagination from './TablePagination';
+import AppPagination from '../AppPagination';
+import AppInput from '../AppInput';
+import { debounce } from 'lodash';
 
 interface ReactTableProps<T> {
   data: T[];
@@ -61,9 +63,35 @@ const VisualizationTable = <T,>({
   setDataTable,
   visualization,
 }: ReactTableProps<T>) => {
-  const [newQueryResult, setNewQueryResult] = useState<any[]>(data);
+  const [itemOffset, setItemOffset] = useState(0);
+  const [searchTerm, setSearchTerm] = useState<string>('');
+
+  const ITEMS_PER_PAGE = 15;
+  const pageCount = Math.ceil(data.length / ITEMS_PER_PAGE);
+  const endOffset = itemOffset + ITEMS_PER_PAGE;
+
+  const handleSearch = debounce(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchTerm(event.target.value);
+    },
+    INPUT_DEBOUNCE,
+  );
+
+  const filteredData = data.filter((item: any) =>
+    Object.keys(data[0] as any).some(
+      (field) =>
+        item[field] &&
+        item[field]
+          ?.toString()
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()),
+    ),
+  );
+
+  const currentItems = filteredData.slice(itemOffset, endOffset);
+
   const table = useReactTable({
-    data: newQueryResult,
+    data: currentItems,
     columns: getTableColumns(data, visualization),
     getCoreRowModel: getCoreRowModel(),
   });
@@ -78,6 +106,11 @@ const VisualizationTable = <T,>({
     };
   }, []);
 
+  const handlePageClick = (event: { selected: number }) => {
+    const newOffset = (event.selected * ITEMS_PER_PAGE) % data.length;
+    setItemOffset(newOffset);
+  };
+
   const columnMaxValues = useMemo((): { [key: string]: number } => {
     const columnValues = {} as any;
     const rows = table.getRowModel()?.flatRows;
@@ -88,9 +121,10 @@ const VisualizationTable = <T,>({
             cell.column.columnDef.type === COLUMN_TYPES.PROGRESS &&
             cell.column.id
           ) {
-            columnValues[cell.column.id] = [
-              ...(columnValues[cell.column.id] || []),
-              row.original[cell.column.id],
+            const columnId = cell.column.id as keyof T;
+            columnValues[columnId] = [
+              ...(columnValues[columnId] || []),
+              row.original[columnId],
             ];
           }
         });
@@ -105,6 +139,17 @@ const VisualizationTable = <T,>({
 
   return (
     <div>
+      <div className="header-table">
+        <AppInput
+          // isSearch
+          size="xs"
+          className={'input-search'}
+          type="text"
+          placeholder={'Search...'}
+          onChange={handleSearch}
+        />
+      </div>
+
       <Box className="main-table" height={'460px'} overflow={'auto'}>
         <table
           className={'table-value'}
@@ -112,7 +157,6 @@ const VisualizationTable = <T,>({
             style: {
               height: '100%',
               width: table.getCenterTotalSize(),
-              boxShadow: 'inset 0 0 0 1px lightgray',
             },
           }}
         >
@@ -130,8 +174,12 @@ const VisualizationTable = <T,>({
                     {...{
                       key: header.id,
                       style: {
+                        paddingLeft: '24px',
+                        textTransform: 'uppercase',
+                        color: '#465065',
+                        fontWeight: '700',
+                        fontSize: '14px',
                         width: header.getSize(),
-                        boxShadow: 'inset 0 0 0 1px lightgray',
                         textAlign: header.column.columnDef.align,
                         display: header.column.columnDef.isHidden
                           ? 'none'
@@ -221,6 +269,8 @@ const VisualizationTable = <T,>({
                         {...{
                           key: cells.id,
                           style: {
+                            fontWeight: 400,
+                            fontSize: '16px',
                             justifyContent: align,
                             color: isNumberValue
                               ? checkColor(cells.getValue())
@@ -252,9 +302,10 @@ const VisualizationTable = <T,>({
           </tbody>
         </table>
       </Box>
-      <div>
-        <TablePagination data={data} onChangeData={setNewQueryResult} />
-      </div>
+      <Flex justifyContent={'flex-end'} alignItems={'baseline'}>
+        <div className="data-length">{data.length} rows</div>
+        <AppPagination pageCount={pageCount} onPageChange={handlePageClick} />
+      </Flex>
     </div>
   );
 };

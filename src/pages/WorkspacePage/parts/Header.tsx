@@ -56,7 +56,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
       <div className="workspace-page__editor__header__right">
         {!isCreatingQuery && (
           <div className="switch-icon">
-            <Switch id="email-alerts" size="lg" />
+            <Switch id="email-alerts" size="sm" />
             <FormLabel htmlFor="email-alerts" mb="0" me="20px">
               Publish
             </FormLabel>
@@ -65,7 +65,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
         <Tooltip label="Run Query" hasArrow placement="top">
           <AppButton
             onClick={onRunQuery}
-            size="md"
+            size="sm"
             leftIcon={<p className="icon-run-query" />}
             me="21px"
           >

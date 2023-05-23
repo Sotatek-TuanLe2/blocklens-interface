@@ -1,0 +1,36 @@
+@import '../color-variables.scss';
+
+.app-tag {
+  background: #242B45;
+  border-radius: 6px;
+  color: $paragraph;
+  font-weight: 400;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 300px;
+
+  &--sm {
+    padding: 2px 6px;
+    margin-right: 4px;
+    font-size: 12px;
+    line-height: 16px;
+  }
+
+  &--md {
+    padding: 4px 10px;
+    margin-right: 10px;
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  &--clickable {
+    cursor: pointer;
+    border: 1px solid transparent;
+  }
+
+  &--selected {
+    color: $title;
+    border: 1px solid #1878ff;
+  }
+}

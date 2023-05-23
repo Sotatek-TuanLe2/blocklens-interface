@@ -10,6 +10,7 @@ import {
 import moment from 'moment';
 import { Link, useHistory } from 'react-router-dom';
 import { IconFork, IconOptions, IconShare } from 'src/assets/icons';
+import { AppTag } from 'src/components';
 import AppNetworkIcons from 'src/components/AppNetworkIcons';
 import { VisibilityGridDashboardList } from 'src/constants';
 import { ROUTES } from 'src/utils/common';
@@ -132,9 +133,7 @@ const ListItem: React.FC<IListItem> = (props) => {
                 </Link>
                 <Flex flexWrap={'wrap'} flexDirection={'row'} maxW={52}>
                   {listTags.map((item) => (
-                    <div key={item.id} className="tag-name">
-                      {Tag({ value: item.name })}
-                    </div>
+                    <AppTag key={item.id} value={item.name} />
                   ))}
                 </Flex>
               </Flex>
@@ -192,9 +191,7 @@ const ListItem: React.FC<IListItem> = (props) => {
           </div>
           <div className="item-tag">
             {listTags.map((item) => (
-              <div key={item.id} className="tag-name">
-                {Tag({ value: item.name })}
-              </div>
+              <AppTag key={item.id} value={item.name} />
             ))}
           </div>
           {/* <div className="item-favorite">
@@ -217,14 +214,6 @@ const ListItem: React.FC<IListItem> = (props) => {
         ? _renderGridItem()
         : _renderRowItem()}
     </>
-  );
-};
-
-const Tag: React.FC<{ value: string }> = ({ value }) => {
-  return (
-    <Link to={'/'} target={'_blank'}>
-      #{value}
-    </Link>
   );
 };
 

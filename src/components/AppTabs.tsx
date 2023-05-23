@@ -46,7 +46,12 @@ const AppTabs: FC<IAppTabs> = ({
       isLazy
     >
       <TabList className="tab-list">
-        <Flex justifyContent={'space-between'} alignItems="center" w="100%">
+        <Flex
+          justifyContent={'space-between'}
+          alignItems="center"
+          className="tabs-header"
+          w="100%"
+        >
           <Flex alignItems="center" flexWrap="wrap" className="tabs-container">
             {tabs.map((tab: ITabs) => {
               return (
