@@ -29,6 +29,17 @@
       border-top-right-radius: 6px;
       border-bottom-right-radius: 6px;
 
+      &.hidden-sidebar {
+        overflow: hidden;
+        animation: hiddenSidebar 0.5s forwards;
+        opacity: 0;
+      }
+      
+      &.show-sidebar {
+        overflow: hidden;
+        animation: showSidebar 0.5s forwards;
+      }
+
       &__work-place-detail {
         @include text-small-regular;
         color: $paragraph;
@@ -110,6 +121,14 @@
   &__editor {
     width: calc(100% - 300px - 10px);
 
+    &__dashboard, &__query {
+      height: 100%;
+      
+      .dashboard-container, .query-container {
+        height: calc(100% - 50px - 8px);
+      }
+    }
+
     &--expand {
       width: calc(100% - 60px);
     }
@@ -176,18 +195,54 @@
         }
       }
     }
+
+    .header-tab {
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #2F3B58;
+      
+      &__info {
+        display: flex;
+        align-items: center;
+
+        .network-icons {
+          margin-right: 24px;
+        }
+      }
+
+      .btn-expand {
+        height: 100%;
+        &:hover {
+          cursor: pointer;
+        }
+      }
+    }
   }
-}
 
-.hidden-sidebar {
-  overflow: hidden;
-  animation: hiddenSidebar 0.5s forwards;
-  opacity: 0;
-}
+  .dashboard-container {
+    position: relative;
 
-.show-sidebar {
-  overflow: hidden;
-  animation: showSidebar 0.5s forwards;
+    .float-add-button {
+      position: absolute;
+      bottom: 18px;
+      right: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(268.85deg, #226CFF 22.48%, #1084FF 83.59%);
+      border-radius: 50%;
+
+      &:hover {
+        background: $blue;
+      }
+    }
+  }
 }
 
 @keyframes hiddenSidebar {

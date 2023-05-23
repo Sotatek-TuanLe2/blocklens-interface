@@ -165,31 +165,6 @@
       border-radius: 6px;
     }
 
-    .header-tab {
-      padding: 12px 14px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-top-left-radius: 6px;
-      border-top-right-radius: 6px;
-      
-      &__info {
-        display: flex;
-        align-items: center;
-
-        .network-icons {
-          margin-right: 24px;
-        }
-      }
-
-      .btn-expand {
-        height: 100%;
-        &:hover {
-          cursor: pointer;
-        }
-      }
-    }
-
     .empty-table {
       height: 168px;
       border: 1px solid #747474;

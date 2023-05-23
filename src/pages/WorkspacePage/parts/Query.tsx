@@ -214,7 +214,7 @@ const QueryPart: React.FC = () => {
   };
 
   return (
-    <div className="workspace-page__body__editor__query">
+    <div className="workspace-page__editor__query">
       <Header
         type={WORKSPACE_TYPES.QUERY}
         author={user?.getFirstName() || ''}
@@ -228,7 +228,7 @@ const QueryPart: React.FC = () => {
           queryResult: queryResult,
         }}
       >
-        <div className="queries-page">
+        <div className="query-container queries-page">
           <Box className="queries-page__right-side">
             <Box className="editor-wrapper">
               <Box className="header-tab">
