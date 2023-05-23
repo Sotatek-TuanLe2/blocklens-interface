@@ -309,8 +309,6 @@ const DashboardsPage: React.FC = () => {
     setMyWorkType(TYPE_MYWORK.DASHBOARDS);
   };
 
-  console.log('dashboardParams', dashboardParams);
-
   return (
     <BasePage>
       <Flex

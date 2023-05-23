@@ -132,7 +132,7 @@ const ModelNewDashboard: React.FC<IModelNewDashboard> = ({ open, onClose }) => {
             validate={{
               name: `tag`,
               validator: validator.current,
-              rule: ['required', 'max:150'],
+              rule: ['max:150'],
             }}
           />
         </AppField>
@@ -181,7 +181,7 @@ const ModelNewDashboard: React.FC<IModelNewDashboard> = ({ open, onClose }) => {
           <AppButton
             size="lg"
             onClick={handleSubmitForm}
-            disabled={!dataForm.title.trim() || isDisableSubmit || !imageData}
+            disabled={!dataForm.title.trim() || isDisableSubmit}
           >
             Add
           </AppButton>
