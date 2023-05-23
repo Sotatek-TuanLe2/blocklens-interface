@@ -48,17 +48,17 @@ const QueryPart: React.FC = () => {
   const history = useHistory();
   const { user } = useUser();
 
-  const onAddParameter = (parameter: string) => {
+  const onAddTextToEditor = (text: string) => {
     const position = editorRef.current.editor.getCursorPosition();
 
-    editorRef.current.editor.session.insert(position, parameter);
+    editorRef.current.editor.session.insert(position, text);
     editorRef.current.editor.focus();
   };
 
   useEffect(() => {
     if (queryId) {
       fetchInitalData();
-      AppBroadcast.on('ADD_QUERY', onAddParameter);
+      AppBroadcast.on('ADD_TEXT_TO_EDITOR', onAddTextToEditor);
     } else {
       resetEditor();
     }
@@ -67,7 +67,7 @@ const QueryPart: React.FC = () => {
       if (fetchQueryResultInterval.current) {
         clearInterval(fetchQueryResultInterval.current);
       }
-      AppBroadcast.remove('ADD_QUERY');
+      AppBroadcast.remove('ADD_TEXT_TO_EDITOR');
     };
   }, [queryId]);
 

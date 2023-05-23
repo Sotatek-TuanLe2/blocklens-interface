@@ -52,7 +52,7 @@ const ChainItem = ({
   };
 
   const handleAddQuery = (tableName: string) => {
-    AppBroadcast.dispatch('ADD_QUERY', tableName);
+    AppBroadcast.dispatch('ADD_TEXT_TO_EDITOR', tableName);
   };
   return (
     <>
