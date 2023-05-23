@@ -135,7 +135,7 @@
 
     &__header {
       margin-bottom: 8px;
-      padding: 9px 24px;
+      padding: 9px 20px;
       background: $card;
       border-radius: 6px;
       display: flex;
@@ -171,6 +171,7 @@
         align-items: center;
 
         .btn-list {
+          padding: 0;
           &:hover {
             background-color: $bg1;
           }

@@ -120,55 +120,55 @@ const DashboardPart: React.FC = () => {
     }
   }, [dashboardId]);
 
-  const _renderButtons = () => {
-    const isAccountsDashboard = true;
-    const editButtons = [
-      { title: 'Settings', setModal: setOpenModalSetting },
-      { title: 'Add text widget', setModal: setOpenModalAddTextWidget },
-      { title: 'Add visualization', setModal: setOpenModalAddVisualization },
-    ];
+  // const _renderButtons = () => {
+  //   const isAccountsDashboard = true;
+  //   const editButtons = [
+  //     { title: 'Settings', setModal: setOpenModalSetting },
+  //     { title: 'Add text widget', setModal: setOpenModalAddTextWidget },
+  //     { title: 'Add visualization', setModal: setOpenModalAddVisualization },
+  //   ];
 
-    return (
-      <Flex gap={'10px'}>
-        {editMode ? (
-          editButtons.map((item, index) => (
-            <AppButton
-              className="btn-cancel"
-              key={index}
-              size={'sm'}
-              onClick={() => {
-                if (item.title === 'Add text widget') {
-                  setTypeModalTextWidget(TYPE_MODAL.ADD);
-                }
-                item.setModal(true);
-              }}
-            >
-              {item.title}
-            </AppButton>
-          ))
-        ) : (
-          <>
-            {isAccountsDashboard && (
-              <ButtonModalFork
-                openModalFork={openModalFork}
-                setOpenModalFork={setOpenModalFork}
-              />
-            )}
-            <ButtonShare />
-          </>
-        )}
-        {isAccountsDashboard && (
-          <AppButton
-            className={editMode ? 'btn-save' : 'btn-cancel'}
-            size={'sm'}
-            onClick={() => setEditMode((prevState) => !prevState)}
-          >
-            {editMode ? 'Done' : 'Edit'}
-          </AppButton>
-        )}
-      </Flex>
-    );
-  };
+  //   return (
+  //     <Flex gap={'10px'}>
+  //       {editMode ? (
+  //         editButtons.map((item, index) => (
+  //           <AppButton
+  //             className="btn-cancel"
+  //             key={index}
+  //             size={'sm'}
+  //             onClick={() => {
+  //               if (item.title === 'Add text widget') {
+  //                 setTypeModalTextWidget(TYPE_MODAL.ADD);
+  //               }
+  //               item.setModal(true);
+  //             }}
+  //           >
+  //             {item.title}
+  //           </AppButton>
+  //         ))
+  //       ) : (
+  //         <>
+  //           {isAccountsDashboard && (
+  //             <ButtonModalFork
+  //               openModalFork={openModalFork}
+  //               setOpenModalFork={setOpenModalFork}
+  //             />
+  //           )}
+  //           <ButtonShare />
+  //         </>
+  //       )}
+  //       {isAccountsDashboard && (
+  //         <AppButton
+  //           className={editMode ? 'btn-save' : 'btn-cancel'}
+  //           size={'sm'}
+  //           onClick={() => setEditMode((prevState) => !prevState)}
+  //         >
+  //           {editMode ? 'Done' : 'Edit'}
+  //         </AppButton>
+  //       )}
+  //     </Flex>
+  //   );
+  // };
 
   const onLayoutChange = async (layout: Layout[]) => {
     clearTimeout(layoutChangeTimeout.current);
@@ -229,6 +229,8 @@ const DashboardPart: React.FC = () => {
         type={WORKSPACE_TYPES.DASHBOARD}
         author={user?.getFirstName() || ''}
         title={dataDashboard?.name || ''}
+        isEdit={editMode}
+        onChangeEditMode={() => setEditMode((prevState) => !prevState)}
       />
       <div className="dashboard-container">
         <Box className="header-tab">
@@ -347,39 +349,39 @@ const DashboardPart: React.FC = () => {
 
 export default DashboardPart;
 
-const ButtonModalFork: React.FC<{
-  openModalFork: boolean;
-  setOpenModalFork: React.Dispatch<React.SetStateAction<boolean>>;
-}> = ({ setOpenModalFork }) => {
-  return (
-    <>
-      <AppButton
-        className="btn-cancel"
-        size={'sm'}
-        onClick={() => setOpenModalFork(true)}
-      >
-        Fork
-      </AppButton>
-    </>
-  );
-};
+// const ButtonModalFork: React.FC<{
+//   openModalFork: boolean;
+//   setOpenModalFork: React.Dispatch<React.SetStateAction<boolean>>;
+// }> = ({ setOpenModalFork }) => {
+//   return (
+//     <>
+//       <AppButton
+//         className="btn-cancel"
+//         size={'sm'}
+//         onClick={() => setOpenModalFork(true)}
+//       >
+//         Fork
+//       </AppButton>
+//     </>
+//   );
+// };
 
-const ButtonShare: React.FC = () => {
-  const [openModalShare, setOpenModalShare] = useState<boolean>(false);
+// const ButtonShare: React.FC = () => {
+//   const [openModalShare, setOpenModalShare] = useState<boolean>(false);
 
-  return (
-    <>
-      <AppButton
-        className="btn-cancel"
-        size={'sm'}
-        onClick={() => setOpenModalShare(true)}
-      >
-        Share
-      </AppButton>
-      <ModalShareDashboardDetails
-        open={openModalShare}
-        onClose={() => setOpenModalShare(false)}
-      />
-    </>
-  );
-};
+//   return (
+//     <>
+//       <AppButton
+//         className="btn-cancel"
+//         size={'sm'}
+//         onClick={() => setOpenModalShare(true)}
+//       >
+//         Share
+//       </AppButton>
+//       <ModalShareDashboardDetails
+//         open={openModalShare}
+//         onClose={() => setOpenModalShare(false)}
+//       />
+//     </>
+//   );
+// };
