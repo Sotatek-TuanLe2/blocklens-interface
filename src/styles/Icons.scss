@@ -423,62 +423,86 @@
   background: url('../assets/icons/icon_chart_query.png') -10px -90px;
 }
 
-.bg-LogoDashboardActiveIcon {
-  width: 18px;
-  height: 18px;
-  background: url('../assets/icons/icon-active-sidebar.png') -10px -62px;
-}
-
-.bg-LogoQueryActiveIcon {
-  width: 18px;
-  height: 18px;
-  background: url('../assets/icons/icon-active-sidebar.png') -48px -62px;
-}
-
-.bg-ExploreActiveIcon {
+.bg-explore_active {
   width: 32px;
   height: 32px;
-  background: url('../assets/icons/icon-active-sidebar.png') -10px -10px;
+  background: url('../assets/icons/icon-active-work-place.png') -10px -10px;
 }
 
-.bg-FolderActiveIcon {
+.bg-work_place_active {
   width: 32px;
   height: 32px;
-  background: url('../assets/icons/icon-active-sidebar.png') -62px -10px;
+  background: url('../assets/icons/icon-active-work-place.png') -62px -10px;
+}
+
+.bg-query_active {
+  width: 13px;
+  height: 13px;
+  background: url('../assets/icons/icon-active-work-place.png') -10px -62px;
+}
+
+.bg-dashboard_active {
+  width: 12px;
+  height: 12px;
+  background: url('../assets/icons/icon-active-work-place.png') -43px -62px;
 }
 
 .bg-CloseBtnIcon {
   width: 10px;
   height: 10px;
-  background: url('../assets/icons/icon-default-sidebar.png') -114px -10px;
+  background: url('../assets/icons/icon-default-work-place.png') -114px -10px;
 }
 
 .bg-ExploreIcon {
   width: 32px;
   height: 32px;
-  background: url('../assets/icons/icon-default-sidebar.png') -10px -10px;
+  background: url('../assets/icons/icon-default-work-place.png') -10px -10px;
 }
 
 .bg-FolderIcon {
   width: 32px;
   height: 32px;
-  background: url('../assets/icons/icon-default-sidebar.png') -62px -10px;
+  background: url('../assets/icons/icon-default-work-place.png') -62px -10px;
 }
 
 .bg-LogoDashboardIcon {
   width: 12px;
   height: 12px;
-  background: url('../assets/icons/icon-default-sidebar.png') -43px -62px;
+  background: url('../assets/icons/icon-default-work-place.png') -43px -62px;
 }
 
 .bg-LogoQueryIcon {
   width: 13px;
   height: 13px;
-  background: url('../assets/icons/icon-default-sidebar.png') -10px -62px;
+  background: url('../assets/icons/icon-default-work-place.png') -10px -62px;
 }
 
 .bg-PlusIcon {
   width: 12px;
   height: 12px;
-  background: url('../assets/icons/icon-default-sidebar.png') -75px -62px;
+  background: url('../assets/icons/icon-default-work-place.png') -75px -62px;
+}
+
+.bg-chain_active {
+  width: 18px;
+  height: 18px;
+  background: url('../assets/icons/icon-explore-data.png') -10px -10px;
+}
+
+.bg-chain_default {
+  width: 18px;
+  height: 18px;
+  background: url('../assets/icons/icon-explore-data.png') -48px -10px;
+}
+
+.bg-arrow_icon {
+  width: 18px;
+  height: 18px;
+  background: url('../assets/icons/icon-explore-data.png') -10px -48px;
+}
+
+.bg-kebab_icon {
+  width: 16px;
+  height: 16px;
+  background: url('../assets/icons/icon-explore-data.png') -48px -48px;
 }

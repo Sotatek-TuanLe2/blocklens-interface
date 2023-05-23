@@ -25,6 +25,7 @@ import { Query } from 'src/utils/utils-query';
 import Header from './Header';
 import { WORKSPACE_TYPES } from '..';
 import moment from 'moment';
+import { AppBroadcast } from 'src/utils/utils-broadcast';
 
 const QueryPart: React.FC = () => {
   const { queryId } = useParams<{ queryId: string }>();
@@ -46,9 +47,17 @@ const QueryPart: React.FC = () => {
   const history = useHistory();
   const { user } = useUser();
 
+  const onAddParameter = (parameter: string) => {
+    const position = editorRef.current.editor.getCursorPosition();
+
+    editorRef.current.editor.session.insert(position, parameter);
+    editorRef.current.editor.focus();
+  };
+
   useEffect(() => {
     if (queryId) {
       fetchInitalData();
+      AppBroadcast.on('ADD_QUERY', onAddParameter);
     } else {
       resetEditor();
     }
@@ -57,6 +66,7 @@ const QueryPart: React.FC = () => {
       if (fetchQueryResultInterval.current) {
         clearInterval(fetchQueryResultInterval.current);
       }
+      AppBroadcast.remove('ADD_QUERY');
     };
   }, [queryId]);
 
