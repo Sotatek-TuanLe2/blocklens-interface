@@ -117,7 +117,10 @@
 
   .modal-footer {
     margin-top: 20px;
-    justify-content: space-between;
+
+    & > button {
+      width: 213px;
+    }
   }
 }
 
@@ -282,11 +285,11 @@
     color: $red-400;
     font-size: 14px;
   }
-  .chakra-stack {
-    .label {
-      color: $whiteAlpha-900;
-    }
-  }
+  // .chakra-stack {
+  //   .label {
+  //     color: $whiteAlpha-900;
+  //   }
+  // }
   .chakra-accordion__item {
     border: unset;
 
@@ -298,6 +301,77 @@
     button {
       padding: unset;
     }
+  }
+
+  .title-create-modal {
+    text-align: center;
+    font-weight: 700;
+    font-size: 28px;
+  }
+
+  .content-create-modal {
+    margin-top: 10px;
+    padding: 30px 16px;
+    border-radius: 10px;
+    width: 213px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(36, 43, 69, 0.8);
+    border: 1px solid #465065;
+    cursor: pointer;
+
+    svg {
+      color: $paragraph;
+    }
+
+    &:hover {
+      background: linear-gradient(
+        268.85deg,
+        rgba(34, 108, 255, 0.12) 22.48%,
+        rgba(16, 132, 255, 0.12) 83.59%
+      );
+
+      &:hover {
+        border: 1px solid #1878ff;
+      }
+
+      svg {
+        color: #1878ff;
+      }
+    }
+
+    .title-content {
+      font-size: 16px;
+      font-weight: 700;
+      margin: 12px 0 4px;
+    }
+
+    .desc-content {
+      font-size: 12px;
+      font-weight: 400;
+      color: #8d91a5;
+      text-align: center;
+    }
+  }
+  .thumnail-create-modal {
+    border: 1px dashed #465065;
+    border-radius: 6px;
+    padding: 32px 0px;
+    cursor: pointer;
+
+    .desc {
+      font-size: 14px;
+      font-weight: 400;
+      color: #465065;
+      margin-top: 8px;
+    }
+  }
+
+  .note {
+    font-size: 14px;
+    color: #8d91a5;
+    font-weight: 400;
   }
 
   .main-markdown {

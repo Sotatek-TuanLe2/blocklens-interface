@@ -16,6 +16,19 @@
 
     .chakra-tabs__tab {
       padding: 10px 0;
+
+      &[aria-selected='true'] {
+        border-bottom: 2px solid #1878ff;
+
+        svg {
+          color: #1878ff;
+        }
+      }
+
+      .tab-name-content {
+        font-weight: 700;
+        font-size: 18px;
+      }
     }
 
     .tab-list {
@@ -31,6 +44,7 @@
         border: 1px solid #272d52;
         margin-bottom: 5px;
         border-radius: 16px;
+        background: $card;
 
         &__avatar {
           width: 279px;
@@ -88,7 +102,7 @@
                 }
 
                 &:focus {
-                  background: $gradient;
+                  background: #1a203b;
                 }
               }
             }
@@ -110,20 +124,6 @@
             .item-options {
               background: #242b45;
               border-radius: 100%;
-            }
-
-            .tag-name {
-              padding: 2px 6px;
-              background: #101530;
-              border-radius: 6px;
-              color: #8d91a5;
-              margin-right: 4px;
-              font-size: 12px;
-              white-space: nowrap;
-              overflow: hidden;
-              text-overflow: ellipsis;
-              max-width: 300px;
-              margin-bottom: 4px;
             }
 
             .item-tag {
@@ -190,7 +190,7 @@
         border-radius: 10px;
 
         &__avatar {
-          width: 20%;
+          width: 22%;
           display: flex;
           flex-direction: row;
           align-items: center;
@@ -200,6 +200,7 @@
             height: 48;
             object-fit: cover;
             border-radius: 6px;
+            margin-right: 12px;
           }
 
           .item-name {
@@ -213,7 +214,6 @@
             font-size: 16px;
             white-space: normal;
             line-height: 20px;
-            margin-left: 12px;
           }
         }
 
@@ -245,41 +245,27 @@
         }
 
         .item-tag {
-          width: 15%;
+          width: 25%;
           display: flex;
           flex-direction: row;
           flex-wrap: wrap;
-
-          .tag-name {
-            padding: 2px 6px;
-            background: #101530;
-            border-radius: 6px;
-            color: #8d91a5;
-            margin-right: 4px;
-            font-size: 12px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 95%;
-            margin-bottom: 4px;
-          }
         }
 
-        .item-favorite {
-          width: 10%;
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-          font-size: 16px;
+        // .item-favorite {
+        //   width: 10%;
+        //   display: flex;
+        //   flex-direction: row;
+        //   align-items: center;
+        //   font-size: 16px;
 
-          svg {
-            margin-right: 6px;
-            cursor: pointer;
-          }
-        }
+        //   svg {
+        //     margin-right: 6px;
+        //     cursor: pointer;
+        //   }
+        // }
 
         .item-btn-options {
-          width: 5%;
+          width: 3%;
 
           .item-options {
             background: #242b45;
@@ -321,7 +307,7 @@
       padding: 6px 20px;
 
       .item-title {
-        width: 20%;
+        width: 22%;
       }
 
       .item-creator {
@@ -337,15 +323,15 @@
       }
 
       .item-tag {
-        width: 15%;
+        width: 25%;
       }
 
-      .item-like {
-        width: 10%;
-      }
+      // .item-like {
+      //   width: 10%;
+      // }
 
       .item-btn {
-        width: 5%;
+        width: 3%;
       }
     }
   }
@@ -354,6 +340,11 @@
     border-color: #1878ff;
     color: white;
     padding: 0 24px;
+    background: linear-gradient(
+      268.85deg,
+      rgba(34, 108, 255, 0.12) 22.48%,
+      rgba(16, 132, 255, 0.12) 83.59%
+    );
   }
 
   .btn-inactive {
@@ -529,22 +520,6 @@
           font-size: 12px;
           line-height: 18px;
         }
-      }
-    }
-
-    &__item-tag {
-      padding: 4px 10px;
-      background: #101530;
-      border-radius: 6px;
-      color: #8d91a5;
-      margin-right: 10px;
-      cursor: pointer;
-      border: 1px solid transparent;
-
-      &--active {
-        background-color: transparent;
-        color: $title;
-        border: 1px solid #1878ff;
       }
     }
 

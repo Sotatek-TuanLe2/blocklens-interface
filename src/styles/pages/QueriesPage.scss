@@ -166,33 +166,6 @@
       border-radius: 6px;
     }
 
-    .header-tab {
-      padding: 10px 14px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-top-left-radius: 6px;
-      border-top-right-radius: 6px;
-
-      .tag-name {
-        height: 100%;
-        display: flex;
-        align-items: center;
-        background-color: #242b45;
-        padding: 3px 10px;
-        width: fit-content;
-        gap: 6px;
-        border-radius: 4px;
-      }
-
-      .btn-expand {
-        height: 100%;
-        &:hover {
-          cursor: pointer;
-        }
-      }
-    }
-
     .empty-table {
       height: 168px;
       margin-top: 32px;
