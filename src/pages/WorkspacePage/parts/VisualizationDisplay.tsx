@@ -204,7 +204,6 @@ const VisualizationDisplay = ({
 
   const renderVisualization = (visualization: VisualizationType) => {
     const type = visualization.options?.globalSeriesType || visualization.type;
-
     let errorMessage = null;
     let visualizationDisplay = null;
     let visualizationConfiguration = null;
@@ -322,10 +321,18 @@ const VisualizationDisplay = ({
               {errorMessage}
             </Flex>
           ) : (
-            visualizationDisplay
+            <div className="main-chart">
+              <div className="main-visualization">{visualizationDisplay}</div>
+              <div className="main-config">
+                <div className="header-config">
+                  <div className="title-config">{type} Options</div>
+                  <div className="">x</div>
+                </div>
+                {visualizationConfiguration}
+              </div>
+            </div>
           )}
         </div>
-        {visualizationConfiguration}
       </div>
     );
   };
@@ -468,7 +475,7 @@ const AddVisualization = ({
         return <p className="icon-bar-chart-query" />;
 
       case TYPE_VISUALIZATION.counter:
-        return <p className="icon-counter-chart-query" />;
+        return <p className="icon-counter-query" />;
 
       default:
         return <></>;

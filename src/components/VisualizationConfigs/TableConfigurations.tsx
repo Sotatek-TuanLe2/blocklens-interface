@@ -1,4 +1,4 @@
-import { Checkbox, Divider, Grid, GridItem, Text } from '@chakra-ui/react';
+import { Grid, GridItem, Switch, Text } from '@chakra-ui/react';
 import { ColumnDef } from '@tanstack/react-table';
 import { useRef, useState } from 'react';
 import { VISUALIZATION_DEBOUNCE } from 'src/pages/QueriesPage/part/VisualizationDisplay';
@@ -97,7 +97,7 @@ const TableConfigurations: React.FC<ITableConfigurations> = ({
       <Grid
         templateColumns={{
           sm: 'repeat(1, 1fr)',
-          md: 'repeat(2, 1fr)',
+          md: 'repeat(1, 1fr)',
         }}
       >
         <GridItem>
@@ -122,11 +122,10 @@ const TableConfigurations: React.FC<ITableConfigurations> = ({
           </div>
         </GridItem>
       </Grid>
-      <Divider orientation="horizontal" borderColor={'gray'} />
       <Grid
         templateColumns={{
           sm: 'repeat(1, 1fr)',
-          md: 'repeat(2, 1fr)',
+          md: 'repeat(1, 1fr)',
         }}
         gap={'10px'}
       >
@@ -181,7 +180,7 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
 
         <AppSelect2
           className="select-table z-100"
-          size="small"
+          size="medium"
           value={data?.align}
           onChange={(e) =>
             onChange({
@@ -226,8 +225,9 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
         </div>
       )}
 
-      <div className="main-checkbox">
-        <Checkbox
+      <div className="main-toggle">
+        <div className="label-toggle">Hide column</div>
+        <Switch
           size="sm"
           value={data?.isHidden}
           isChecked={data?.isHidden}
@@ -237,15 +237,14 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
               isHidden: e.target.checked,
             })
           }
-        >
-          Hide column
-        </Checkbox>
+        />
       </div>
       {isNumberValue &&
         (data?.type === 'normal' ? (
           <div>
-            <div className="main-checkbox">
-              <Checkbox
+            <div className="main-toggle">
+              <div className="label-toggle">Colored positive values</div>
+              <Switch
                 size="sm"
                 value={data?.coloredPositive}
                 isChecked={data?.coloredPositive}
@@ -255,12 +254,11 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
                     coloredPositive: e.target.checked,
                   })
                 }
-              >
-                Colored positive values
-              </Checkbox>
+              />
             </div>
-            <div className="main-checkbox">
-              <Checkbox
+            <div className="main-toggle">
+              <div className="label-toggle">Colored negative values</div>
+              <Switch
                 size="sm"
                 value={data?.coloredNegative}
                 isChecked={data?.coloredNegative}
@@ -270,14 +268,16 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
                     coloredNegative: e.target.checked,
                   })
                 }
-              >
-                Colored negative values
-              </Checkbox>
+              />
             </div>
           </div>
         ) : (
-          <div className="main-checkbox">
-            <Checkbox
+          <div className="main-toggle">
+            <div className="label-toggle">
+              {' '}
+              Colored positive/negative values
+            </div>
+            <Switch
               size="sm"
               value={data?.coloredProgress}
               isChecked={data?.coloredProgress}
@@ -287,9 +287,7 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
                   coloredProgress: e.target.checked,
                 })
               }
-            >
-              Colored positive/negative values
-            </Checkbox>
+            />
           </div>
         ))}
     </div>

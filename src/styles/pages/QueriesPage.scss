@@ -25,6 +25,7 @@
     background: $card;
     border-radius: 6px;
     margin-top: 4px;
+    margin-bottom: 20px;
 
     .btn-expand {
       height: 100%;
@@ -194,7 +195,6 @@
 
     .empty-table {
       height: 168px;
-      border: 1px solid #747474;
       margin-top: 32px;
     }
 
@@ -246,10 +246,7 @@
 
     &__visualization {
       min-height: 500px;
-      height: 600px;
-      margin-bottom: 20px;
-      // overflow-y: auto;
-      margin-top: 20px;
+      height: fit-content;
       opacity: 1;
       transform: all linear 0.5s;
 
@@ -278,6 +275,37 @@
 
       &__chart {
         margin-top: 30px;
+      }
+
+      .main-chart {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        gap: 30px;
+        .main-visualization {
+          width: 74%;
+          margin-top: 20px;
+        }
+
+        .main-config {
+          width: 25%;
+          overflow: auto;
+          max-height: 520px;
+
+          .header-config {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: $disable;
+
+            .title-config {
+              text-transform: uppercase;
+              font-weight: 700;
+              font-size: 12px;
+              line-height: 26px;
+            }
+          }
+        }
       }
 
       .data-length {
@@ -330,7 +358,7 @@
         }
 
         td {
-          padding-left: 24px;
+          padding: 8px 0px 8px 24px;
         }
 
         td,
@@ -338,7 +366,7 @@
           text-align: center;
           font-size: 12px;
           box-shadow: none;
-          border-bottom: 1px solid $line;
+          box-shadow: inset 0px -1px 0px #2f3b58;
         }
         thead {
           .resizer {

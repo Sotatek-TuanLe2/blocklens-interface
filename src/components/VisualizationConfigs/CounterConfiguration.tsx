@@ -89,7 +89,7 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
       <Grid
         templateColumns={{
           sm: 'repeat(1, 1fr)',
-          md: 'repeat(2, 1fr)',
+          md: 'repeat(1, 1fr)',
         }}
         gap={'10px'}
       >
