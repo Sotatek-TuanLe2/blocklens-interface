@@ -332,6 +332,10 @@
         rgba(16, 132, 255, 0.12) 83.59%
       );
 
+      &:hover {
+        border: 1px solid #1878ff;
+      }
+
       svg {
         color: #1878ff;
       }
