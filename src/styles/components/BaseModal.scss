@@ -332,6 +332,10 @@
         rgba(16, 132, 255, 0.12) 83.59%
       );
 
+      &:hover {
+        border: 1px solid #1878ff;
+      }
+
       svg {
         color: #1878ff;
       }
@@ -354,10 +358,7 @@
     border: 1px dashed #465065;
     border-radius: 6px;
     padding: 32px 0px;
-
-    svg {
-      cursor: pointer;
-    }
+    cursor: pointer;
 
     .desc {
       font-size: 14px;
@@ -366,6 +367,7 @@
       margin-top: 8px;
     }
   }
+
   .note {
     font-size: 14px;
     color: #8d91a5;

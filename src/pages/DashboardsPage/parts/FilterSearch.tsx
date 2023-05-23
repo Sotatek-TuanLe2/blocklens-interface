@@ -14,7 +14,7 @@ import {
 } from 'src/assets/icons';
 import { AppButton, AppInput, AppSelect2, IOption } from 'src/components';
 import { VisibilityGridDashboardList } from 'src/constants';
-import ModalCreateNew from 'src/modals/querySQL/ModCreateDashboard';
+import ModalCreateNew from 'src/modals/querySQL/ModalCreateNew';
 import rf from 'src/requests/RequestFactory';
 import { ROUTES } from 'src/utils/common';
 import {
@@ -60,8 +60,8 @@ export const listTags = [
 ];
 
 export const TYPE_MYWORK = {
-  DASHBOARD: 'dashboard',
-  QUERIES: 'queries',
+  DASHBOARDS: 'DASHBOARDS',
+  QUERIES: 'QUERIES',
 };
 
 const FilterSearch: React.FC<IFilterSearch> = (props) => {
@@ -70,7 +70,6 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
     SORT: 'sort',
     CHAIN: 'chain',
     TAG: 'tag',
-    MYWORK: 'mywork',
   };
 
   const { type, typeVisiable, setVisibility, myWorkType, setMyWorkType } =
@@ -236,15 +235,15 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
             <Flex flexDirection={'row'}>
               <Flex mr={3}>
                 <AppButton
-                  onClick={() => onChangeMyWorkType(TYPE_MYWORK.DASHBOARD)}
+                  onClick={() => onChangeMyWorkType(TYPE_MYWORK.DASHBOARDS)}
                   variant="network"
                   className={
-                    myWorkType === TYPE_MYWORK.DASHBOARD
+                    myWorkType === TYPE_MYWORK.DASHBOARDS
                       ? 'btn-active'
                       : 'btn-inactive'
                   }
                 >
-                  {myWorkType === TYPE_MYWORK.DASHBOARD ? (
+                  {myWorkType === TYPE_MYWORK.DASHBOARDS ? (
                     <IconDashboard />
                   ) : (
                     <IconDashboardInactive />

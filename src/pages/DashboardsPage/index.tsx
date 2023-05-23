@@ -35,7 +35,7 @@ const DashboardsPage: React.FC = () => {
   const [tabType, setTabType] = useState<string>(LIST_ITEM_TYPE.DASHBOARDS);
   const [dashboardParams, setDashboardParams] = useState<IDashboardParams>({});
   const [queryParams, setQueryParams] = useState<IQueriesParams>({});
-  const [myWorkType, setMyWorkType] = useState<string>('dashboard');
+  const [myWorkType, setMyWorkType] = useState<string>(TYPE_MYWORK.DASHBOARDS);
 
   const [visibility, setVisibility] = useState<VisibilityGridDashboardList>(
     VisibilityGridDashboardList.COLUMN,
@@ -50,7 +50,6 @@ const DashboardsPage: React.FC = () => {
 
     switch (tabType) {
       case LIST_ITEM_TYPE.DASHBOARDS:
-      case LIST_ITEM_TYPE.QUERIES:
         setDashboardParams(() =>
           _.omitBy(
             {
@@ -63,17 +62,41 @@ const DashboardsPage: React.FC = () => {
           ),
         );
         break;
-      case LIST_ITEM_TYPE.MYWORK:
+      case LIST_ITEM_TYPE.QUERIES:
         setQueryParams(() =>
           _.omitBy(
             {
               search: search,
               sort: sort,
+              chain: chain,
               tags: tags,
             },
             (param) => !param,
           ),
         );
+        break;
+      case LIST_ITEM_TYPE.MYWORK:
+        myWorkType === TYPE_MYWORK.DASHBOARDS
+          ? setDashboardParams(() =>
+              _.omitBy(
+                {
+                  search: search,
+                  sort: sort,
+                  tags: tags,
+                },
+                (param) => !param,
+              ),
+            )
+          : setQueryParams(() =>
+              _.omitBy(
+                {
+                  search: search,
+                  sort: sort,
+                  tags: tags,
+                },
+                (param) => !param,
+              ),
+            );
         break;
       default:
         break;
@@ -105,7 +128,7 @@ const DashboardsPage: React.FC = () => {
         toastError({ message: getErrorMessage(error) });
       }
     },
-    [queryParams, myWorkType],
+    [queryParams],
   );
 
   const _renderContentTable = useCallback(
@@ -204,7 +227,7 @@ const DashboardsPage: React.FC = () => {
       icon: <QueriesIcon />,
       content: _renderContentTable(
         <AppDataTable
-          requestParams={dashboardParams}
+          requestParams={queryParams}
           fetchData={fetchQueries}
           limit={15}
           renderHeader={_renderHeader}
@@ -232,9 +255,17 @@ const DashboardsPage: React.FC = () => {
       icon: <IconMywork />,
       content: _renderContentTable(
         <AppDataTable
-          requestParams={dashboardParams}
-          fetchData={fetchQueries}
-          limit={15}
+          requestParams={
+            myWorkType === TYPE_MYWORK.DASHBOARDS
+              ? dashboardParams
+              : queryParams
+          }
+          fetchData={
+            myWorkType === TYPE_MYWORK.DASHBOARDS
+              ? fetchDashboards
+              : fetchQueries
+          }
+          limit={12}
           renderHeader={_renderHeader}
           renderBody={(data) => (
             <>
@@ -259,7 +290,7 @@ const DashboardsPage: React.FC = () => {
   const onChangeTab = (tabId: string) => {
     history.push(ROUTES.HOME);
     setTabType(tabId);
-    setMyWorkType(TYPE_MYWORK.DASHBOARD);
+    setMyWorkType(TYPE_MYWORK.DASHBOARDS);
   };
 
   return (
