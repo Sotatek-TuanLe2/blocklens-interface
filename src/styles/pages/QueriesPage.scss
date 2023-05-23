@@ -222,7 +222,9 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-
+    .tabs-header {
+      align-items: baseline;
+    }
     &__wrapper {
       display: block;
       transition: all linear 0.5s;
@@ -235,10 +237,10 @@
 
     &__visualization {
       min-height: 500px;
-      height: 540px;
+      height: 600px;
       border: 1px solid $border;
       margin-bottom: 20px;
-      overflow-y: auto;
+      // overflow-y: auto;
       margin-top: 20px;
       opacity: 1;
       transform: all linear 0.5s;
@@ -247,18 +249,6 @@
         min-height: 0;
         height: 0;
         opacity: 0;
-      }
-
-      &__title {
-        padding: 0 10px;
-        margin-bottom: 10px;
-        font-size: 20px;
-        font-weight: 700;
-        display: block;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        max-width: 100%;
       }
 
       &--bar,
@@ -277,11 +267,27 @@
         width: 100%;
         height: 100%;
       }
+      .data-length {
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 24px;
+        color: $paragraph;
+      }
+      .app-pagination {
+        margin: 20px;
+      }
+      .header-table {
+        display: flex;
+        margin: 20px 0px 10px 14px;
+        .input-search {
+          padding: 15px;
+          width: 280px;
+        }
+      }
     }
 
     .app-tab {
       .tabs-container {
-        background-color: #111213;
         border-radius: 4px;
       }
 
@@ -297,14 +303,16 @@
       }
 
       &__name-tab[aria-selected='true'] {
-        background-color: #444444;
+        background-color: $disable;
         text-decoration: none;
       }
 
       .table-value {
         min-width: 100%;
         height: fit-content !important;
-        border: 1px solid #747474;
+
+        .header-table {
+        }
 
         td,
         th {
@@ -318,7 +326,6 @@
             display: none;
           }
           tr {
-            background-color: #444444;
             th {
               font-size: 12px;
 
@@ -329,7 +336,7 @@
       }
 
       .main-item {
-        margin-top: 115px;
+        padding: 120px 0px;
         display: flex;
         flex-direction: column;
         gap: 20px;

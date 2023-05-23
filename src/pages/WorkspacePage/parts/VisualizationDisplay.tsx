@@ -305,14 +305,14 @@ const VisualizationDisplay = ({
         }`}
       >
         <div className="visual-container__visualization">
-          <div className="visual-container__visualization__title">
+          {/* <div className="visual-container__visualization__title">
             <Tooltip
               label={visualization.name || getDefaultVisualizationName(type)}
               hasArrow
             >
               {visualization.name || getDefaultVisualizationName(type)}
             </Tooltip>
-          </div>
+          </div> */}
           {errorMessage ? (
             <Flex
               alignItems={'center'}
@@ -372,7 +372,11 @@ const VisualizationDisplay = ({
                 className="btn-expand"
                 onClick={() => onExpand((pre) => !pre)}
               >
-                <p className="icon-query-expand" />
+                {!expandEditor ? (
+                  <p className="icon-query-collapse" />
+                ) : (
+                  <p className="icon-query-expand" />
+                )}
               </div>
             </Tooltip>
 
@@ -381,17 +385,15 @@ const VisualizationDisplay = ({
             </div>
           </Flex>
         }
+        onChange={() => onExpand(false)}
         tabs={[
           ...queryValue.visualizations.map((v) => ({
             icon: getIcon(v?.options?.globalSeriesType || v.type),
-            name: (
-              <div onClick={() => onExpand(false)}>
-                {v.name ||
-                  getDefaultVisualizationName(
-                    v?.options?.globalSeriesType || v.type,
-                  )}
-              </div>
-            ),
+            name:
+              v.name ||
+              getDefaultVisualizationName(
+                v?.options?.globalSeriesType || v.type,
+              ),
             content: renderVisualization(v),
             id: v.id,
             closeable: true,
@@ -400,13 +402,16 @@ const VisualizationDisplay = ({
             icon: null,
             name: (
               <Tooltip label="Add New Visualization" hasArrow>
-                <Flex alignItems={'center'} onClick={() => onExpand(false)}>
+                <Flex alignItems={'center'}>
                   <Box className="icon-plus-circle" mr={2} /> Add Chart
                 </Flex>
               </Tooltip>
             ),
             content: (
-              <AddVisualization onAddVisualize={addVisualizationHandler} />
+              <AddVisualization
+                expandEditor={expandEditor}
+                onAddVisualize={addVisualizationHandler}
+              />
             ),
             id: TYPE_VISUALIZATION.new,
             closeable: false,
@@ -434,9 +439,13 @@ export default VisualizationDisplay;
 
 type AddVisualizationProps = {
   onAddVisualize: (visualizationValue: string) => void;
+  expandEditor?: boolean;
 };
 
-const AddVisualization = ({ onAddVisualize }: AddVisualizationProps) => {
+const AddVisualization = ({
+  onAddVisualize,
+  expandEditor,
+}: AddVisualizationProps) => {
   const getIcon = (chain: string | undefined) => {
     switch (chain) {
       case TYPE_VISUALIZATION.table:
@@ -465,39 +474,40 @@ const AddVisualization = ({ onAddVisualize }: AddVisualizationProps) => {
         return <></>;
     }
   };
-
   return (
     <Box>
-      <div className="main-item">
-        <div className="top-items">
-          {visualizationConfigs.slice(0, 3).map((i) => (
-            <div
-              className="item-visual"
-              key={i.value}
-              onClick={() => {
-                onAddVisualize(i.value);
-              }}
-            >
-              {getIcon(i.type)}
-              {i.label}
-            </div>
-          ))}
+      {!expandEditor && (
+        <div className="main-item">
+          <div className="top-items">
+            {visualizationConfigs.slice(0, 3).map((i) => (
+              <div
+                className="item-visual"
+                key={i.value}
+                onClick={() => {
+                  onAddVisualize(i.value);
+                }}
+              >
+                {getIcon(i.type)}
+                {i.label}
+              </div>
+            ))}
+          </div>
+          <div className="bottom-items">
+            {visualizationConfigs.slice(3).map((i) => (
+              <div
+                className="item-visual"
+                key={i.value}
+                onClick={() => {
+                  onAddVisualize(i.value);
+                }}
+              >
+                {getIcon(i.type)}
+                {i.label}
+              </div>
+            ))}
+          </div>
         </div>
-        <div className="bottom-items">
-          {visualizationConfigs.slice(3).map((i) => (
-            <div
-              className="item-visual"
-              key={i.value}
-              onClick={() => {
-                onAddVisualize(i.value);
-              }}
-            >
-              {getIcon(i.type)}
-              {i.label}
-            </div>
-          ))}
-        </div>
-      </div>
+      )}
     </Box>
   );
 };

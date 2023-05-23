@@ -352,7 +352,11 @@ const QueryPart: React.FC = () => {
                   placement="top"
                 >
                   <div className="btn-expand" onClick={onExpand}>
-                    <p className="icon-query-expand" />
+                    {expandEditor ? (
+                      <p className="icon-query-collapse" />
+                    ) : (
+                      <p className="icon-query-expand" />
+                    )}
                   </div>
                 </Tooltip>
               </Box>

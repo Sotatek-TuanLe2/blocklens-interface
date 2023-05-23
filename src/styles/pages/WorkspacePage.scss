@@ -107,7 +107,7 @@
   &__editor {
     &__header {
       margin-bottom: 8px;
-      padding: 13px 24px;
+      padding: 9px 24px;
       background: $card;
       border-radius: 6px;
       display: flex;
@@ -116,7 +116,7 @@
       &__left {
         display: flex;
         align-items: center;
-        gap: 20px;
+        gap: 14px;
 
         .btn-back {
           &:hover {
@@ -130,6 +130,10 @@
           gap: 8px;
           .user-name {
             color: $paragraph;
+          }
+          img {
+            width: 26px;
+            height: 26px;
           }
         }
       }
