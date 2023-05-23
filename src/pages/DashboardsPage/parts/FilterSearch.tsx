@@ -21,14 +21,14 @@ import {
   getChainIconByChainName,
   getChainIconInactiveByChainName,
 } from 'src/utils/utils-network';
-import { LIST_ITEM_TYPE } from '..';
+import { HOME_URL_PARAMS, LIST_ITEM_TYPE } from '..';
 
 interface IFilterSearch {
   type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
-  typeVisiable: 'COLUMN' | 'ROW';
-  setVisibility: any;
+  visibility: 'COLUMN' | 'ROW';
+  changeVisibility: (value: VisibilityGridDashboardList) => void;
   myWorkType: string;
-  setMyWorkType: any;
+  changeMyWorkType: (value: string) => void;
 }
 
 interface ILISTNETWORK {
@@ -65,14 +65,7 @@ export const TYPE_MYWORK = {
 };
 
 const FilterSearch: React.FC<IFilterSearch> = (props) => {
-  const URL_PARAMS = {
-    SEARCH: 'search',
-    SORT: 'sort',
-    CHAIN: 'chain',
-    TAG: 'tag',
-  };
-
-  const { type, typeVisiable, setVisibility, myWorkType, setMyWorkType } =
+  const { type, visibility, changeVisibility, myWorkType, changeMyWorkType } =
     props;
   const history = useHistory();
 
@@ -112,18 +105,18 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   useEffect(() => {
     const searchParams = new URLSearchParams(searchUrl);
 
-    const search = searchParams.get(URL_PARAMS.SEARCH) || '';
-    const sort = searchParams.get(URL_PARAMS.SORT) || '';
-    const chain = searchParams.get(URL_PARAMS.CHAIN) || '';
-    const tag = searchParams.get(URL_PARAMS.TAG) || '';
+    const search = searchParams.get(HOME_URL_PARAMS.SEARCH) || '';
+    const sort = searchParams.get(HOME_URL_PARAMS.SORT) || '';
+    const chain = searchParams.get(HOME_URL_PARAMS.CHAIN) || '';
+    const tag = searchParams.get(HOME_URL_PARAMS.TAG) || '';
 
     setSearch(search);
     setSort(sort);
     setChain(chain);
     setTag(tag);
     isDashboard
-      ? setVisibility(VisibilityGridDashboardList.COLUMN)
-      : setVisibility(VisibilityGridDashboardList.ROW);
+      ? changeVisibility(VisibilityGridDashboardList.COLUMN)
+      : changeVisibility(VisibilityGridDashboardList.ROW);
   }, [type, searchUrl]);
 
   const onClickNew = () => {
@@ -135,9 +128,9 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
 
   const onChangeSearch = (e: ChangeEvent<HTMLInputElement>) => {
     const searchParams = new URLSearchParams(searchUrl);
-    searchParams.delete(URL_PARAMS.SEARCH);
+    searchParams.delete(HOME_URL_PARAMS.SEARCH);
     if (e.target.value) {
-      searchParams.set(URL_PARAMS.SEARCH, e.target.value);
+      searchParams.set(HOME_URL_PARAMS.SEARCH, e.target.value);
     }
     history.push({
       pathname: ROUTES.HOME,
@@ -147,8 +140,8 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
 
   const onChangeSort = (value: string) => {
     const searchParams = new URLSearchParams(searchUrl);
-    searchParams.delete(URL_PARAMS.SORT);
-    searchParams.set(URL_PARAMS.SORT, value);
+    searchParams.delete(HOME_URL_PARAMS.SORT);
+    searchParams.set(HOME_URL_PARAMS.SORT, value);
     history.push({
       pathname: ROUTES.HOME,
       search: `${searchParams.toString()}`,
@@ -157,9 +150,9 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
 
   const onChangeChain = (value: string) => {
     const searchParams = new URLSearchParams(searchUrl);
-    searchParams.delete(URL_PARAMS.CHAIN);
+    searchParams.delete(HOME_URL_PARAMS.CHAIN);
     if (value) {
-      searchParams.set(URL_PARAMS.CHAIN, value);
+      searchParams.set(HOME_URL_PARAMS.CHAIN, value);
     }
     history.push({
       pathname: ROUTES.HOME,
@@ -169,10 +162,10 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
 
   const onChangeTag = (value: string) => {
     const searchParams = new URLSearchParams(searchUrl);
-    const currentTag = searchParams.get(URL_PARAMS.TAG);
-    searchParams.delete(URL_PARAMS.TAG);
+    const currentTag = searchParams.get(HOME_URL_PARAMS.TAG);
+    searchParams.delete(HOME_URL_PARAMS.TAG);
     if (currentTag !== value) {
-      searchParams.set(URL_PARAMS.TAG, value);
+      searchParams.set(HOME_URL_PARAMS.TAG, value);
     }
     history.push({
       pathname: ROUTES.HOME,
@@ -181,7 +174,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   };
 
   const onChangeMyWorkType = (value: string) => {
-    setMyWorkType(value);
+    changeMyWorkType(value);
     history.push(ROUTES.HOME);
   };
 
@@ -296,9 +289,9 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
         {isDashboard && (
           <>
             <Button
-              onClick={() => setVisibility(VisibilityGridDashboardList.ROW)}
+              onClick={() => changeVisibility(VisibilityGridDashboardList.ROW)}
               className={`dashboard-filter__search__button ${
-                typeVisiable === VisibilityGridDashboardList.ROW
+                visibility === VisibilityGridDashboardList.ROW
                   ? 'dashboard-filter__search__button--active'
                   : ''
               }`}
@@ -306,9 +299,11 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
               <IconListDashboard />
             </Button>
             <Button
-              onClick={() => setVisibility(VisibilityGridDashboardList.COLUMN)}
+              onClick={() =>
+                changeVisibility(VisibilityGridDashboardList.COLUMN)
+              }
               className={`dashboard-filter__search__button ${
-                typeVisiable === VisibilityGridDashboardList.COLUMN
+                visibility === VisibilityGridDashboardList.COLUMN
                   ? 'dashboard-filter__search__button--active'
                   : ''
               }`}

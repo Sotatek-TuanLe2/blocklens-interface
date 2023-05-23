@@ -25,6 +25,13 @@ export const LIST_ITEM_TYPE = {
   MYWORK: 'MYWORK',
 };
 
+export const HOME_URL_PARAMS = {
+  SEARCH: 'search',
+  SORT: 'sort',
+  CHAIN: 'chain',
+  TAG: 'tag',
+};
+
 interface IDashboardParams extends RequestParams, DashboardsParams {}
 interface IQueriesParams extends RequestParams, QueriesParams {}
 
@@ -43,10 +50,10 @@ const DashboardsPage: React.FC = () => {
 
   useEffect(() => {
     const searchParams = new URLSearchParams(searchUrl);
-    const search = searchParams.get('search') || '';
-    const sort = searchParams.get('sort') || '';
-    const chain = searchParams.get('chain') || '';
-    const tags = searchParams.get('tags') || '';
+    const search = searchParams.get(HOME_URL_PARAMS.SEARCH) || '';
+    const sort = searchParams.get(HOME_URL_PARAMS.SORT) || '';
+    const chain = searchParams.get(HOME_URL_PARAMS.CHAIN) || '';
+    const tag = searchParams.get(HOME_URL_PARAMS.TAG) || '';
 
     switch (tabType) {
       case LIST_ITEM_TYPE.DASHBOARDS:
@@ -56,7 +63,7 @@ const DashboardsPage: React.FC = () => {
               search: search,
               sort: sort,
               chain: chain,
-              tags: tags,
+              tags: tag,
             },
             (param) => !param,
           ),
@@ -69,7 +76,7 @@ const DashboardsPage: React.FC = () => {
               search: search,
               sort: sort,
               chain: chain,
-              tags: tags,
+              tags: tag,
             },
             (param) => !param,
           ),
@@ -82,7 +89,7 @@ const DashboardsPage: React.FC = () => {
                 {
                   search: search,
                   sort: sort,
-                  tags: tags,
+                  tags: tag,
                 },
                 (param) => !param,
               ),
@@ -92,7 +99,7 @@ const DashboardsPage: React.FC = () => {
                 {
                   search: search,
                   sort: sort,
-                  tags: tags,
+                  tags: tag,
                 },
                 (param) => !param,
               ),
@@ -138,10 +145,10 @@ const DashboardsPage: React.FC = () => {
           <div className="dashboard-filter">
             <FilterSearch
               type={tabType}
-              typeVisiable={visibility}
-              setVisibility={setVisibility}
+              visibility={visibility}
+              changeVisibility={setVisibility}
               myWorkType={myWorkType}
-              setMyWorkType={setMyWorkType}
+              changeMyWorkType={setMyWorkType}
             />
           </div>
           <Box mt={'34px'}>{appTable}</Box>
@@ -169,7 +176,7 @@ const DashboardsPage: React.FC = () => {
         </>
       );
     },
-    [visibility],
+    [tabType, visibility, myWorkType],
   );
 
   const _renderHeader = useCallback(() => {
@@ -203,21 +210,18 @@ const DashboardsPage: React.FC = () => {
           fetchData={fetchDashboards}
           limit={12}
           renderHeader={_renderHeader}
-          renderBody={(data) => (
-            <>
-              {_renderBody(
-                data.map((item: any) => (
-                  <ListItem
-                    key={item.id}
-                    item={item}
-                    type={LIST_ITEM_TYPE.DASHBOARDS}
-                    typeVisiable={visibility}
-                    myWorkType={myWorkType}
-                  />
-                )),
-              )}
-            </>
-          )}
+          renderBody={(data) =>
+            _renderBody(
+              data.map((item: any) => (
+                <ListItem
+                  key={item.id}
+                  item={item}
+                  type={LIST_ITEM_TYPE.DASHBOARDS}
+                  visibility={visibility}
+                />
+              )),
+            )
+          }
         />,
       ),
     },
@@ -231,21 +235,18 @@ const DashboardsPage: React.FC = () => {
           fetchData={fetchQueries}
           limit={15}
           renderHeader={_renderHeader}
-          renderBody={(data) => (
-            <>
-              {_renderBody(
-                data.map((item: any) => (
-                  <ListItem
-                    key={item.id}
-                    item={item}
-                    type={LIST_ITEM_TYPE.QUERIES}
-                    typeVisiable={visibility}
-                    myWorkType={myWorkType}
-                  />
-                )),
-              )}
-            </>
-          )}
+          renderBody={(data) =>
+            _renderBody(
+              data.map((item: any) => (
+                <ListItem
+                  key={item.id}
+                  item={item}
+                  type={LIST_ITEM_TYPE.QUERIES}
+                  visibility={visibility}
+                />
+              )),
+            )
+          }
         />,
       ),
     },
@@ -254,35 +255,50 @@ const DashboardsPage: React.FC = () => {
       name: 'My Work',
       icon: <IconMywork />,
       content: _renderContentTable(
-        <AppDataTable
-          requestParams={
-            myWorkType === TYPE_MYWORK.DASHBOARDS
-              ? dashboardParams
-              : queryParams
-          }
-          fetchData={
-            myWorkType === TYPE_MYWORK.DASHBOARDS
-              ? fetchDashboards
-              : fetchQueries
-          }
-          limit={12}
-          renderHeader={_renderHeader}
-          renderBody={(data) => (
-            <>
-              {_renderBody(
-                data.map((item: any) => (
-                  <ListItem
-                    key={item.id}
-                    item={item}
-                    type={LIST_ITEM_TYPE.MYWORK}
-                    typeVisiable={visibility}
-                    myWorkType={myWorkType}
-                  />
-                )),
-              )}
-            </>
-          )}
-        />,
+        <>
+          <Box
+            display={myWorkType === TYPE_MYWORK.DASHBOARDS ? 'block' : 'none'}
+          >
+            <AppDataTable
+              requestParams={dashboardParams}
+              fetchData={fetchDashboards}
+              limit={12}
+              renderHeader={_renderHeader}
+              renderBody={(data) =>
+                _renderBody(
+                  data.map((item: any) => (
+                    <ListItem
+                      key={item.id}
+                      item={item}
+                      type={LIST_ITEM_TYPE.DASHBOARDS}
+                      visibility={visibility}
+                    />
+                  )),
+                )
+              }
+            />
+          </Box>
+          <Box display={myWorkType === TYPE_MYWORK.QUERIES ? 'block' : 'none'}>
+            <AppDataTable
+              requestParams={queryParams}
+              fetchData={fetchQueries}
+              limit={15}
+              renderHeader={_renderHeader}
+              renderBody={(data) =>
+                _renderBody(
+                  data.map((item: any) => (
+                    <ListItem
+                      key={item.id}
+                      item={item}
+                      type={LIST_ITEM_TYPE.QUERIES}
+                      visibility={visibility}
+                    />
+                  )),
+                )
+              }
+            />
+          </Box>
+        </>,
       ),
     },
   ];
@@ -292,6 +308,8 @@ const DashboardsPage: React.FC = () => {
     setTabType(tabId);
     setMyWorkType(TYPE_MYWORK.DASHBOARDS);
   };
+
+  console.log('dashboardParams', dashboardParams);
 
   return (
     <BasePage>

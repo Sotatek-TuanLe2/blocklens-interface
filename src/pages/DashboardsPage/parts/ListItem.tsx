@@ -17,24 +17,23 @@ import { IDashboardDetail, IQuery } from 'src/utils/query.type';
 import { Dashboard } from 'src/utils/utils-dashboard';
 import { Query } from 'src/utils/utils-query';
 import { LIST_ITEM_TYPE } from '..';
-import { TYPE_MYWORK, listTags } from './FilterSearch';
+import { listTags } from './FilterSearch';
 
 interface IListItem {
   type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
   item?: IDashboardDetail | IQuery;
-  typeVisiable?: 'COLUMN' | 'ROW';
-  myWorkType: typeof TYPE_MYWORK[keyof typeof TYPE_MYWORK];
+  visibility?: 'COLUMN' | 'ROW';
 }
 
 const listNetworkCurrency = ['eth_goerli', 'bsc_testnet', 'polygon_mainet'];
 
 const ListItem: React.FC<IListItem> = (props) => {
-  const { type, item, typeVisiable, myWorkType } = props;
+  const { type, item, visibility } = props;
 
   // const [favorite, setFavorite] = useState<boolean>(false);
 
   const itemClass =
-    type === LIST_ITEM_TYPE.DASHBOARDS || type === LIST_ITEM_TYPE.MYWORK
+    type === LIST_ITEM_TYPE.DASHBOARDS
       ? new Dashboard(item as IDashboardDetail)
       : new Query(item as IQuery);
 
@@ -44,10 +43,6 @@ const ListItem: React.FC<IListItem> = (props) => {
         return `${ROUTES.DASHBOARD}/${itemClass.getId()}/`;
       case LIST_ITEM_TYPE.QUERIES:
         return `${ROUTES.QUERY}/${itemClass.getId()}`;
-      case LIST_ITEM_TYPE.MYWORK:
-        return myWorkType === TYPE_MYWORK.DASHBOARDS
-          ? `${ROUTES.DASHBOARD}/${itemClass.getId()}/`
-          : `${ROUTES.QUERY}/${itemClass.getId()}`;
       default:
         return ROUTES.HOME;
     }
@@ -143,9 +138,7 @@ const ListItem: React.FC<IListItem> = (props) => {
             to={getTitleUrl()}
             className="dashboard-list__item--row__avatar"
           >
-            {(type === LIST_ITEM_TYPE.DASHBOARDS ||
-              (myWorkType !== TYPE_MYWORK.QUERIES &&
-                type === LIST_ITEM_TYPE.MYWORK)) && (
+            {type === LIST_ITEM_TYPE.DASHBOARDS && (
               <img
                 src="/images/ThumnailDashboard.png"
                 alt="thumbnail"
@@ -188,7 +181,7 @@ const ListItem: React.FC<IListItem> = (props) => {
 
   return (
     <>
-      {typeVisiable === VisibilityGridDashboardList.COLUMN
+      {visibility === VisibilityGridDashboardList.COLUMN
         ? _renderGridItem()
         : _renderRowItem()}
     </>
