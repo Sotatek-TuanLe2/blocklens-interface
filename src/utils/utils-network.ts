@@ -277,6 +277,10 @@ export const getChainIconByChainName = (chainName: string) => {
     case CHAIN_NAME.ARBITRUM_TESTNET:
       iconClassName = 'icon-arbitrum';
       break;
+    case CHAIN_NAME.SUI_MAINET:
+    case CHAIN_NAME.SUI_TESTNET:
+      iconClassName = 'icon-sui';
+      break;
     default:
       iconClassName = getLogoChainByChainId('POLYGON') || '';
       break;
@@ -313,6 +317,10 @@ export const getChainIconInactiveByChainName = (chainName: string) => {
     case CHAIN_NAME.ARBITRUM_MAINET:
     case CHAIN_NAME.ARBITRUM_TESTNET:
       iconClassName = 'icon-arbitrum-inactive';
+      break;
+    case CHAIN_NAME.SUI_MAINET:
+    case CHAIN_NAME.SUI_TESTNET:
+      iconClassName = 'icon-sui-inactive';
       break;
     default:
       iconClassName = 'icon-polygon-inactive';
