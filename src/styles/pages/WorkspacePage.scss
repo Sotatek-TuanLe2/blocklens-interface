@@ -9,8 +9,8 @@
 
   &__sidebar {
     display: flex;
-    height: max-content;
-    min-height: 100vh;
+    height: 100%;
+
     &__categories {
       padding: 14px;
 
@@ -29,6 +29,8 @@
     }
 
     &__content {
+      overflow-y: scroll;
+      height: 100%;
       flex: 1;
       border-left: 1px solid #2f3b58;
       background-color: #101530;
@@ -74,6 +76,8 @@
       }
       &__work-place-wrap {
         width: 240px;
+        overflow-y: scroll;
+        height: 100%;
 
         &__work-place {
           padding: 16px 16px 8px 16px;
@@ -93,7 +97,9 @@
         }
       }
       &__explore-wrap {
-        //
+        overflow-y: scroll;
+        height: 100%;
+
         width: 240px;
 
         &__content {
