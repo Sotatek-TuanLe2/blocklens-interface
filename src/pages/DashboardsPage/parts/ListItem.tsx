@@ -56,12 +56,12 @@ const ListItem: React.FC<IListItem> = (props) => {
     try {
       let res;
       if (type === LIST_ITEM_TYPE.DASHBOARDS) {
-        const payload = {
-          newDashboardName: itemClass.getName(),
-        };
         res = await rf
           .getRequest('DashboardsRequest')
-          .forkDashboard(payload, itemClass.getId());
+          .forkDashboard(
+            { newDashboardName: `Forked from ${itemClass.getName()}` },
+            itemClass.getId(),
+          );
       } else if (type === LIST_ITEM_TYPE.QUERIES) {
         res = await rf
           .getRequest('DashboardsRequest')
@@ -69,9 +69,11 @@ const ListItem: React.FC<IListItem> = (props) => {
       }
 
       if (res) {
-        const route =
-          type === LIST_ITEM_TYPE.DASHBOARDS ? ROUTES.DASHBOARD : ROUTES.QUERY;
-        history.push(`${route}/${res.id}`);
+        history.push(
+          `${
+            type === LIST_ITEM_TYPE.DASHBOARDS ? ROUTES.DASHBOARD : ROUTES.QUERY
+          }/${res.id}`,
+        );
       }
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
