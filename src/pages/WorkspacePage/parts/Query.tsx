@@ -1,6 +1,6 @@
 import { Box, Flex, Tooltip } from '@chakra-ui/react';
 import AceEditor from 'react-ace';
-import { AppLoadingTable } from 'src/components';
+import { AppLoadingTable, AppTag } from 'src/components';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { EditorContext } from '../context/EditorContext';
 import VisualizationDisplay from './VisualizationDisplay';
@@ -25,6 +25,7 @@ import { Query } from 'src/utils/utils-query';
 import Header from './Header';
 import { WORKSPACE_TYPES } from '..';
 import moment from 'moment';
+import AppNetworkIcons from 'src/components/AppNetworkIcons';
 
 const QueryPart: React.FC = () => {
   const { queryId } = useParams<{ queryId: string }>();
@@ -231,9 +232,13 @@ const QueryPart: React.FC = () => {
           <Box className="queries-page__right-side">
             <Box className="editor-wrapper">
               <Box className="header-tab">
-                <div className="tag-name">
-                  <p className="icon-query" />
-                  Query
+                <div className="header-tab__info">
+                  <AppNetworkIcons
+                    networkIds={['eth_goerli', 'bsc_testnet', 'polygon_mainet']}
+                  />
+                  {['defi', 'gas', 'dex'].map((item) => (
+                    <AppTag key={item} value={item} />
+                  ))}
                 </div>
                 <Tooltip
                   label={expandEditor ? 'Minimize' : 'Maximum'}

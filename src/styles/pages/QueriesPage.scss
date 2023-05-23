@@ -166,22 +166,20 @@
     }
 
     .header-tab {
-      padding: 10px 14px;
+      padding: 12px 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       border-top-left-radius: 6px;
       border-top-right-radius: 6px;
-
-      .tag-name {
-        height: 100%;
+      
+      &__info {
         display: flex;
         align-items: center;
-        background-color: #242b45;
-        padding: 3px 10px;
-        width: fit-content;
-        gap: 6px;
-        border-radius: 4px;
+
+        .network-icons {
+          margin-right: 24px;
+        }
       }
 
       .btn-expand {
