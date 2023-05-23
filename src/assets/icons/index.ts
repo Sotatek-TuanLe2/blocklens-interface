@@ -67,6 +67,12 @@ import { ReactComponent as IconCopy } from './IconCopy.svg';
 import { ReactComponent as IconShare } from './IconShare.svg';
 import { ReactComponent as FireIconInactive } from './FireIconInactive.svg';
 import { ReactComponent as IconFork } from './IconFork.svg';
+import { ReactComponent as IconMywork } from './IconMywork.svg';
+import { ReactComponent as IconDashboard } from './IconDashboard.svg';
+import { ReactComponent as IconDashboardInactive } from './IconDashboardInactive.svg';
+import { ReactComponent as IconQueries } from './IconQueries.svg';
+import { ReactComponent as IconQueriesInactive } from './IconQueriesInactive.svg';
+import { ReactComponent as IconUploadImg } from './IconUploadImg.svg';
 
 export {
   CalendarIcon,
@@ -138,4 +144,10 @@ export {
   IconShare,
   FireIconInactive,
   IconFork,
+  IconMywork,
+  IconDashboard,
+  IconDashboardInactive,
+  IconQueries,
+  IconQueriesInactive,
+  IconUploadImg,
 };

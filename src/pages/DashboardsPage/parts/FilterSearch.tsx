@@ -6,23 +6,29 @@ import {
   FireIcon,
   FireIconInactive,
   IconColumnDashboard,
+  IconDashboard,
+  IconDashboardInactive,
   IconListDashboard,
+  IconQueries,
+  IconQueriesInactive,
 } from 'src/assets/icons';
 import { AppButton, AppInput, AppSelect2, IOption } from 'src/components';
 import { VisibilityGridDashboardList } from 'src/constants';
-import ModalNewDashboard from 'src/modals/querySQL/ModalNewDashboard';
+import ModalCreateNew from 'src/modals/querySQL/ModalCreateNew';
 import rf from 'src/requests/RequestFactory';
 import { ROUTES } from 'src/utils/common';
 import {
   getChainIconByChainName,
   getChainIconInactiveByChainName,
 } from 'src/utils/utils-network';
-import { LIST_ITEM_TYPE } from '..';
+import { HOME_URL_PARAMS, LIST_ITEM_TYPE } from '..';
 
 interface IFilterSearch {
   type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
-  typeVisiable: 'COLUMN' | 'ROW';
-  setVisibility: any;
+  visibility: 'COLUMN' | 'ROW';
+  changeVisibility: (value: VisibilityGridDashboardList) => void;
+  myWorkType: string;
+  changeMyWorkType: (value: string) => void;
 }
 
 interface ILISTNETWORK {
@@ -53,16 +59,18 @@ export const listTags = [
   },
 ];
 
-const FilterSearch: React.FC<IFilterSearch> = (props) => {
-  const URL_PARAMS = {
-    SEARCH: 'search',
-    SORT: 'sort',
-    CHAIN: 'chain',
-    TAG: 'tag',
-  };
+export const TYPE_MYWORK = {
+  DASHBOARDS: 'DASHBOARDS',
+  QUERIES: 'QUERIES',
+};
 
-  const { type, typeVisiable, setVisibility } = props;
+const FilterSearch: React.FC<IFilterSearch> = (props) => {
+  const { type, visibility, changeVisibility, myWorkType, changeMyWorkType } =
+    props;
   const history = useHistory();
+
+  const isDashboard = type === LIST_ITEM_TYPE.DASHBOARDS;
+  const isMyWork = type === LIST_ITEM_TYPE.MYWORK;
   const { search: searchUrl } = useLocation();
 
   const [search, setSearch] = useState<string>('');
@@ -97,31 +105,22 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   useEffect(() => {
     const searchParams = new URLSearchParams(searchUrl);
 
-    const search = searchParams.get(URL_PARAMS.SEARCH) || '';
-    const sort = searchParams.get(URL_PARAMS.SORT) || '';
-    const chain = searchParams.get(URL_PARAMS.CHAIN) || '';
-    const tag = searchParams.get(URL_PARAMS.TAG) || '';
+    const search = searchParams.get(HOME_URL_PARAMS.SEARCH) || '';
+    const sort = searchParams.get(HOME_URL_PARAMS.SORT) || '';
+    const chain = searchParams.get(HOME_URL_PARAMS.CHAIN) || '';
+    const tag = searchParams.get(HOME_URL_PARAMS.TAG) || '';
 
     setSearch(search);
     setSort(sort);
     setChain(chain);
     setTag(tag);
-    type === LIST_ITEM_TYPE.QUERIES
-      ? setVisibility(VisibilityGridDashboardList.ROW)
-      : setVisibility(VisibilityGridDashboardList.COLUMN);
+    isDashboard
+      ? changeVisibility(VisibilityGridDashboardList.COLUMN)
+      : changeVisibility(VisibilityGridDashboardList.ROW);
   }, [type, searchUrl]);
 
   const onClickNew = () => {
-    switch (type) {
-      case LIST_ITEM_TYPE.DASHBOARDS:
-        onToggleNewDashboardModal();
-        break;
-      case LIST_ITEM_TYPE.QUERIES:
-        history.push(ROUTES.QUERY);
-        break;
-      default:
-        break;
-    }
+    return onToggleNewDashboardModal();
   };
 
   const onToggleNewDashboardModal = () =>
@@ -129,9 +128,9 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
 
   const onChangeSearch = (e: ChangeEvent<HTMLInputElement>) => {
     const searchParams = new URLSearchParams(searchUrl);
-    searchParams.delete(URL_PARAMS.SEARCH);
+    searchParams.delete(HOME_URL_PARAMS.SEARCH);
     if (e.target.value) {
-      searchParams.set(URL_PARAMS.SEARCH, e.target.value);
+      searchParams.set(HOME_URL_PARAMS.SEARCH, e.target.value);
     }
     history.push({
       pathname: ROUTES.HOME,
@@ -141,8 +140,8 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
 
   const onChangeSort = (value: string) => {
     const searchParams = new URLSearchParams(searchUrl);
-    searchParams.delete(URL_PARAMS.SORT);
-    searchParams.set(URL_PARAMS.SORT, value);
+    searchParams.delete(HOME_URL_PARAMS.SORT);
+    searchParams.set(HOME_URL_PARAMS.SORT, value);
     history.push({
       pathname: ROUTES.HOME,
       search: `${searchParams.toString()}`,
@@ -151,9 +150,9 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
 
   const onChangeChain = (value: string) => {
     const searchParams = new URLSearchParams(searchUrl);
-    searchParams.delete(URL_PARAMS.CHAIN);
+    searchParams.delete(HOME_URL_PARAMS.CHAIN);
     if (value) {
-      searchParams.set(URL_PARAMS.CHAIN, value);
+      searchParams.set(HOME_URL_PARAMS.CHAIN, value);
     }
     history.push({
       pathname: ROUTES.HOME,
@@ -163,10 +162,10 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
 
   const onChangeTag = (value: string) => {
     const searchParams = new URLSearchParams(searchUrl);
-    const currentTag = searchParams.get(URL_PARAMS.TAG);
-    searchParams.delete(URL_PARAMS.TAG);
+    const currentTag = searchParams.get(HOME_URL_PARAMS.TAG);
+    searchParams.delete(HOME_URL_PARAMS.TAG);
     if (currentTag !== value) {
-      searchParams.set(URL_PARAMS.TAG, value);
+      searchParams.set(HOME_URL_PARAMS.TAG, value);
     }
     history.push({
       pathname: ROUTES.HOME,
@@ -174,46 +173,100 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
     });
   };
 
+  const onChangeMyWorkType = (value: string) => {
+    changeMyWorkType(value);
+    history.push(ROUTES.HOME);
+  };
+
+  const _renderNetWork = () => {
+    return (
+      <Flex>
+        <Flex mr={3}>
+          <AppButton
+            onClick={() => onChangeChain('')}
+            variant="network"
+            className={chain === '' ? 'btn-active' : 'btn-inactive'}
+          >
+            {chain === '' ? <FireIcon /> : <FireIconInactive />}
+            <Text ml={2}>All</Text>
+          </AppButton>
+        </Flex>
+        <Flex flexDirection={'row'}>
+          {chainsSupported.map((network, index) => {
+            return (
+              <Flex mr={3}>
+                <AppButton
+                  onClick={() => onChangeChain(network.value)}
+                  key={index}
+                  variant="network"
+                  className={
+                    chain === network.value ? 'btn-active' : 'btn-inactive'
+                  }
+                >
+                  <Box
+                    className={
+                      chain === network.value
+                        ? getChainIconByChainName(network.value)
+                        : getChainIconInactiveByChainName(network.value)
+                    }
+                  ></Box>
+                  <Text ml={2}>{network.label}</Text>
+                </AppButton>
+              </Flex>
+            );
+          })}
+        </Flex>
+      </Flex>
+    );
+  };
+
   return (
     <div>
       <Flex flexDirection={'row'} justifyContent={'space-between'}>
-        <Flex>
-          <Flex mr={3}>
-            <AppButton
-              onClick={() => onChangeChain('')}
-              variant="network"
-              className={chain === '' ? 'btn-active' : 'btn-inactive'}
-            >
-              {chain === '' ? <FireIcon /> : <FireIconInactive />}
-              <Text ml={2}>All</Text>
-            </AppButton>
+        {isMyWork ? (
+          <Flex>
+            <Flex flexDirection={'row'}>
+              <Flex mr={3}>
+                <AppButton
+                  onClick={() => onChangeMyWorkType(TYPE_MYWORK.DASHBOARDS)}
+                  variant="network"
+                  className={
+                    myWorkType === TYPE_MYWORK.DASHBOARDS
+                      ? 'btn-active'
+                      : 'btn-inactive'
+                  }
+                >
+                  {myWorkType === TYPE_MYWORK.DASHBOARDS ? (
+                    <IconDashboard />
+                  ) : (
+                    <IconDashboardInactive />
+                  )}
+                  <Text ml={2}>Dashboard</Text>
+                </AppButton>
+              </Flex>
+            </Flex>
+            <Flex mr={3}>
+              <AppButton
+                onClick={() => onChangeMyWorkType(TYPE_MYWORK.QUERIES)}
+                variant="network"
+                className={
+                  myWorkType === TYPE_MYWORK.QUERIES
+                    ? 'btn-active'
+                    : 'btn-inactive'
+                }
+              >
+                {myWorkType === TYPE_MYWORK.QUERIES ? (
+                  <IconQueries />
+                ) : (
+                  <IconQueriesInactive />
+                )}
+                <Text ml={2}>Queries</Text>
+              </AppButton>
+            </Flex>
           </Flex>
-          <Flex flexDirection={'row'}>
-            {chainsSupported.map((network, index) => {
-              return (
-                <Flex mr={3}>
-                  <AppButton
-                    onClick={() => onChangeChain(network.value)}
-                    key={index}
-                    variant="network"
-                    className={
-                      chain === network.value ? 'btn-active' : 'btn-inactive'
-                    }
-                  >
-                    <Box
-                      className={
-                        chain === network.value
-                          ? getChainIconByChainName(network.value)
-                          : getChainIconInactiveByChainName(network.value)
-                      }
-                    ></Box>
-                    <Text ml={2}>{network.label}</Text>
-                  </AppButton>
-                </Flex>
-              );
-            })}
-          </Flex>
-        </Flex>
+        ) : (
+          _renderNetWork()
+        )}
 
         <AppButton onClick={onClickNew}>
           <Box className="icon-plus-circle" mr={2} /> Create
@@ -228,17 +281,17 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
         />
         <AppSelect2
           size="medium"
-          value={sort}
+          value={sort || 'datelowtohigh'}
           onChange={onChangeSort}
           options={optionType}
           className="dashboard-filter__search__select"
         />
-        {type === LIST_ITEM_TYPE.DASHBOARDS && (
+        {isDashboard && (
           <>
             <Button
-              onClick={() => setVisibility(VisibilityGridDashboardList.ROW)}
+              onClick={() => changeVisibility(VisibilityGridDashboardList.ROW)}
               className={`dashboard-filter__search__button ${
-                typeVisiable === VisibilityGridDashboardList.ROW
+                visibility === VisibilityGridDashboardList.ROW
                   ? 'dashboard-filter__search__button--active'
                   : ''
               }`}
@@ -246,9 +299,11 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
               <IconListDashboard />
             </Button>
             <Button
-              onClick={() => setVisibility(VisibilityGridDashboardList.COLUMN)}
+              onClick={() =>
+                changeVisibility(VisibilityGridDashboardList.COLUMN)
+              }
               className={`dashboard-filter__search__button ${
-                typeVisiable === VisibilityGridDashboardList.COLUMN
+                visibility === VisibilityGridDashboardList.COLUMN
                   ? 'dashboard-filter__search__button--active'
                   : ''
               }`}
@@ -271,7 +326,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
           </div>
         ))}
       </Flex>
-      <ModalNewDashboard
+      <ModalCreateNew
         open={openNewDashboardModal}
         onClose={onToggleNewDashboardModal}
       />
