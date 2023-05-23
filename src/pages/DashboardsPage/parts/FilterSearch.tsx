@@ -14,7 +14,7 @@ import {
 } from 'src/assets/icons';
 import { AppButton, AppInput, AppSelect2, IOption } from 'src/components';
 import { VisibilityGridDashboardList } from 'src/constants';
-import ModalCreateNew from 'src/modals/querySQL/ModCreateNew';
+import ModalCreateNew from 'src/modals/querySQL/ModalCreateNew';
 import rf from 'src/requests/RequestFactory';
 import { ROUTES } from 'src/utils/common';
 import {
