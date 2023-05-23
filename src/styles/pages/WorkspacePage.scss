@@ -10,10 +10,11 @@
   &__sidebar {
     display: flex;
     height: 100%;
-
+    ::-webkit-scrollbar {
+      background-color: #101530;
+    }
     &__categories {
       padding: 14px;
-
       background-color: #101530;
       border-top-left-radius: 6px;
       border-bottom-left-radius: 6px;
@@ -29,7 +30,6 @@
     }
 
     &__content {
-      overflow-y: scroll;
       height: 100%;
       flex: 1;
       border-left: 1px solid #2f3b58;
@@ -76,7 +76,7 @@
       }
       &__work-place-wrap {
         width: 240px;
-        overflow-y: scroll;
+        overflow-y: hidden;
         height: 100%;
 
         &__work-place {
@@ -95,12 +95,27 @@
           align-items: center;
           margin-bottom: 12px;
         }
+        &__list-query,
+        &__list-dashboard {
+          height: calc(50% - 80px);
+          overflow-y: hidden;
+          &:hover {
+            overflow-y: auto;
+          }
+        }
       }
       &__explore-wrap {
-        overflow-y: scroll;
         height: 100%;
-
+        position: relative;
         width: 240px;
+
+        &__list-chain {
+          height: calc(100% - 154px);
+          overflow-y: hidden;
+          &:hover {
+            overflow-y: auto;
+          }
+        }
 
         &__content {
           @include text-small-regular;
@@ -122,10 +137,14 @@
         }
         .chain-info-desc {
           @include text-small-regular;
+          position: sticky;
+          bottom: 0;
+          width: 100%;
+          height: 40%;
+
           margin-top: 46px;
           color: $paragraph;
           background-color: #1a203b;
-
           padding-bottom: 16px;
 
           &__header {
@@ -145,6 +164,10 @@
                 cursor: pointer;
               }
             }
+          }
+          &__content {
+            height: calc(100% - 28px);
+            overflow-y: auto;
           }
         }
         &__title {

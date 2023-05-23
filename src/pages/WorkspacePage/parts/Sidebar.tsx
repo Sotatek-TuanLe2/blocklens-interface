@@ -319,7 +319,7 @@ const Sidebar: React.FC<{
           </div>
         </div>
         {dataQueries.length ? (
-          <>
+          <div className="workspace-page__sidebar__content__work-place-wrap__list-query">
             {dataQueries.map((query) => (
               <div
                 key={query.id}
@@ -342,7 +342,7 @@ const Sidebar: React.FC<{
                 <Box className="bg-kebab_icon"></Box>
               </div>
             ))}
-          </>
+          </div>
         ) : (
           <Box pl="16px">No data...</Box>
         )}
@@ -356,7 +356,7 @@ const Sidebar: React.FC<{
           </div>
         </Box>
         {dataDashboards.length ? (
-          <>
+          <div className="workspace-page__sidebar__content__work-place-wrap__list-dashboard">
             {dataDashboards.map((dashboard) => (
               <div
                 key={dashboard.id}
@@ -380,7 +380,7 @@ const Sidebar: React.FC<{
                 <Box className="bg-kebab_icon" />
               </div>
             ))}
-          </>
+          </div>
         ) : (
           <Box pl="16px">No data...</Box>
         )}
@@ -411,7 +411,7 @@ const Sidebar: React.FC<{
           />
         </Box>
         {!!Object.keys(exploreData).length ? (
-          <>
+          <div className="workspace-page__sidebar__content__explore-wrap__list-chain">
             {Object.keys(exploreData).map((nameChain: any, index) => (
               <CollapseExplore
                 key={index + 'explore'}
@@ -421,7 +421,7 @@ const Sidebar: React.FC<{
                 schemaDescribe={schemaDescribe}
               />
             ))}
-          </>
+          </div>
         ) : (
           <Box pl="16px">No data...</Box>
         )}
@@ -440,20 +440,22 @@ const Sidebar: React.FC<{
                 />
               </div>
             </div>
-            {schemaDescribe.map((item, index) => (
-              <Flex
-                key={index + 'schema'}
-                direction={'row'}
-                py="6px"
-                justifyContent={'space-between'}
-                px="16px"
-              >
-                <Box isTruncated maxW={'50%'}>
-                  {item.column_name}
-                </Box>
-                <Text isTruncated>{item.data_type}</Text>
-              </Flex>
-            ))}
+            <div className="chain-info-desc__content">
+              {schemaDescribe.map((item, index) => (
+                <Flex
+                  key={index + 'schema'}
+                  direction={'row'}
+                  py="6px"
+                  justifyContent={'space-between'}
+                  px="16px"
+                >
+                  <Box isTruncated maxW={'50%'}>
+                    {item.column_name}
+                  </Box>
+                  <Text isTruncated>{item.data_type}</Text>
+                </Flex>
+              ))}
+            </div>
           </Box>
         )}
       </div>
