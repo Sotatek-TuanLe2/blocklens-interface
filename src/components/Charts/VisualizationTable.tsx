@@ -174,6 +174,7 @@ const VisualizationTable = <T,>({
                     {...{
                       key: header.id,
                       style: {
+                        paddingLeft: '24px',
                         textTransform: 'uppercase',
                         color: '#465065',
                         fontWeight: '700',
