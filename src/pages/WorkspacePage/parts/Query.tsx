@@ -1,12 +1,10 @@
-import { Box, Flex, Text, Tooltip } from '@chakra-ui/react';
+import { Box, Flex, Tooltip } from '@chakra-ui/react';
 import AceEditor from 'react-ace';
-import { AppButton, AppLoadingTable } from 'src/components';
+import { AppLoadingTable } from 'src/components';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { EditorContext } from '../context/EditorContext';
 import VisualizationDisplay from './VisualizationDisplay';
-import 'ace-builds/src-noconflict/theme-github';
 import 'ace-builds/src-noconflict/theme-monokai';
-import 'ace-builds/src-noconflict/theme-kuroir';
 import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/mode-sql';
 import { getErrorMessage } from 'src/utils/utils-helper';
@@ -17,8 +15,6 @@ import {
   IErrorExecuteQuery,
 } from 'src/utils/query.type';
 import 'src/styles/pages/QueriesPage.scss';
-import { AddParameterIcon, ExplandIcon } from 'src/assets/icons';
-import { MoonIcon, SettingsIcon, SunIcon } from '@chakra-ui/icons';
 import ModalSaveQuery from 'src/modals/querySQL/ModalSaveQuery';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import rf from 'src/requests/RequestFactory';
@@ -28,6 +24,7 @@ import { QUERY_RESULT_STATUS, ROUTES } from 'src/utils/common';
 import { Query } from 'src/utils/utils-query';
 import Header from './Header';
 import { WORKSPACE_TYPES } from '..';
+import moment from 'moment';
 
 const QueryPart: React.FC = () => {
   const { queryId } = useParams<{ queryId: string }>();
@@ -37,8 +34,6 @@ const QueryPart: React.FC = () => {
 
   const [queryResult, setQueryResult] = useState<any>([]);
   const [queryValue, setQueryValue] = useState<IQuery | null>(null);
-  const [isSetting, setIsSetting] = useState<boolean>(false);
-  const [switchTheme, setSwitchTheme] = useState<boolean>(false);
   const [expandEditor, setExpandEditor] = useState<boolean>(false);
   const [showSaveModal, setShowSaveModal] = useState<boolean>(false);
   const [isLoadingResult, setIsLoadingResult] = useState<boolean>(!!queryId);
@@ -51,15 +46,13 @@ const QueryPart: React.FC = () => {
   const history = useHistory();
   const { user } = useUser();
 
-  const hoverBackgroundButton = switchTheme ? '#dadde0' : '#2a2c2f99';
-  const backgroundButton = switchTheme ? '#e9ebee' : '#2a2c2f';
-  const userName =
-    `${user?.getFirstName() || ''}` + `${user?.getLastName() || ''}`;
-
   useEffect(() => {
     if (queryId) {
       fetchInitalData();
+    } else {
+      resetEditor();
     }
+
     return () => {
       if (fetchQueryResultInterval.current) {
         clearInterval(fetchQueryResultInterval.current);
@@ -74,13 +67,19 @@ const QueryPart: React.FC = () => {
     return new Query(queryValue);
   }, [queryValue]);
 
+  const resetEditor = () => {
+    editorRef.current && editorRef.current.editor.setValue('');
+    setSelectedQuery('');
+  };
+
   const createNewQuery = async (query: string) => {
     try {
       const queryValue: IQuery = await rf
         .getRequest('DashboardsRequest')
         .createNewQuery({
-          name: ``,
+          name: moment().format('YYYY-MM-DD HH:mm a'),
           query,
+          isTemp: false,
         });
       await rf.getRequest('DashboardsRequest').executeQuery(queryValue.id);
       history.push(`${ROUTES.QUERY}/${queryValue.id}`);
@@ -101,13 +100,9 @@ const QueryPart: React.FC = () => {
 
   const saveNameQuery = async (name: string) => {
     try {
-      await rf.getRequest('DashboardsRequest').updateQuery(
-        {
-          name: name,
-          isTemp: false,
-        },
-        queryId,
-      );
+      await rf
+        .getRequest('DashboardsRequest')
+        .updateQuery({ name: name }, queryId);
       await fetchQuery();
       setShowSaveModal(false);
       toastSuccess({ message: 'Save query successfully.' });
@@ -163,12 +158,8 @@ const QueryPart: React.FC = () => {
         return;
       }
       const position = editorRef.current.editor.getCursorPosition();
-      const editorValue = editorRef.current.editor.getValue();
       editorRef.current.editor.setValue('');
-      editorRef.current.editor.session.insert(
-        position,
-        editorValue || dataQuery?.query,
-      );
+      editorRef.current.editor.session.insert(position, dataQuery?.query);
     } catch (error: any) {
       toastError({ message: getErrorMessage(error) });
     }
@@ -185,16 +176,6 @@ const QueryPart: React.FC = () => {
 
   const onExpand = () => {
     setExpandEditor((pre) => !pre);
-  };
-
-  const onSetting = () => {
-    setIsSetting((pre) => !pre);
-  };
-
-  const onAddParameter = (parameter: string) => {
-    const position = editorRef.current.editor.getCursorPosition();
-    editorRef.current.editor.session.insert(position, parameter);
-    editorRef.current.editor.focus();
   };
 
   const onSelectQuery = debounce((value) => {
@@ -231,73 +212,6 @@ const QueryPart: React.FC = () => {
     }
   };
 
-  const _renderMenuPanelSetting = () => {
-    return (
-      <Flex
-        flexDirection="column"
-        className={`menu-panel ${switchTheme ? 'theme-light' : 'theme-dark'}`}
-      >
-        <Flex
-          className={`menu-panel__item ${
-            switchTheme ? 'theme-light' : 'theme-dark'
-          }`}
-          justifyContent="space-between"
-          alignItems="center"
-          onClick={() => setSwitchTheme((pre) => !pre)}
-        >
-          <Text fontSize="14px">Switch to light theme</Text>
-          {switchTheme ? <MoonIcon /> : <SunIcon />}
-        </Flex>
-      </Flex>
-    );
-  };
-
-  const _renderEditorButtons = () => {
-    const colorIcon = switchTheme ? '#35373c' : '#fef5f7';
-
-    return (
-      <div className="custom-button">
-        <Tooltip
-          hasArrow
-          placement="top"
-          label={expandEditor ? 'Collapse' : 'Expand'}
-        >
-          <AppButton
-            onClick={onExpand}
-            bg={backgroundButton}
-            _hover={{ bg: hoverBackgroundButton }}
-          >
-            <ExplandIcon color={colorIcon} />
-          </AppButton>
-        </Tooltip>
-        <Tooltip hasArrow placement="top" label="Settings">
-          <div className="btn-setting">
-            <AppButton
-              onClick={onSetting}
-              bg={backgroundButton}
-              _hover={{ bg: hoverBackgroundButton }}
-            >
-              <SettingsIcon color={colorIcon} />
-            </AppButton>
-            {isSetting && _renderMenuPanelSetting()}
-          </div>
-        </Tooltip>
-
-        {!!queryClass && (
-          <Tooltip hasArrow placement="top" label="Add Parameter">
-            <AppButton
-              onClick={() => onAddParameter('{{unnamed_parameter}}')}
-              bg={backgroundButton}
-              _hover={{ bg: hoverBackgroundButton }}
-            >
-              <AddParameterIcon color={colorIcon} />
-            </AppButton>
-          </Tooltip>
-        )}
-      </div>
-    );
-  };
-
   return (
     <div className="workspace-page__body__editor__query">
       <Header
@@ -313,35 +227,10 @@ const QueryPart: React.FC = () => {
           queryResult: queryResult,
         }}
       >
-        {/* {!!queryClass && (
-            <Flex
-              className="queries-page-header-buttons"
-              justifyContent={'space-between'}
-            >
-              {queryClass.getName() ? (
-                <Flex gap={2}>
-                  <Avatar name={user?.getFirstName()} size="sm" />
-                  <div>
-                    <div className="query-name">
-                      @{userName} / {queryClass.getName() || ''}
-                    </div>
-                  </div>
-                </Flex>
-              ) : (
-                <AppButton
-                  className="query-button"
-                  onClick={() => setShowSaveModal(true)}
-                >
-                  Save
-                </AppButton>
-              )}
-            </Flex>
-          )} */}
-
         <div className="queries-page">
           <Box className="queries-page__right-side">
-            <Box width={'100%'}>
-              <Box bg={switchTheme ? '#fff' : '#101530'} className="header-tab">
+            <Box className="editor-wrapper">
+              <Box className="header-tab">
                 <div className="tag-name">
                   <p className="icon-query" />
                   Query
@@ -363,16 +252,8 @@ const QueryPart: React.FC = () => {
               <AceEditor
                 className={`custom-editor ${expandEditor ? 'expand' : ''}`}
                 ref={editorRef}
-                // annotations={[
-                //   {
-                //     row: 0,
-                //     column: 0,
-                //     type: 'error',
-                //     text: errorExecuteQuery?.message || '',
-                //   },
-                // ]}
                 mode="sql"
-                theme={switchTheme ? 'kuroir' : 'monokai'}
+                theme="monokai"
                 width="100%"
                 wrapEnabled={true}
                 name="sql_editor"
@@ -389,66 +270,37 @@ const QueryPart: React.FC = () => {
                 }}
                 onSelectionChange={onSelectQuery}
               />
-              {/* <Box
-                bg={switchTheme ? '#f3f5f7' : '#101530'}
-                className="control-editor"
-              >
-                {_renderEditorButtons()}
-                <AppButton
-                  onClick={onRunQuery}
-                  bg={backgroundButton}
-                  _hover={{ bg: hoverBackgroundButton }}
-                >
-                  <Text color={switchTheme ? '#1d1d20' : '#f3f5f7'}>
-                    {selectedQuery ? 'Run selection' : 'Run'}
-                  </Text>
-                </AppButton>
-              </Box> */}
-              <Box
-                mt={1}
-                bg={switchTheme ? '#f3f5f7' : '#101530'}
-                className="add-chart"
-              >
-                {/* <AppButton variant="no-effects">
-                  <Box className="icon-plus-circle" mr={2} /> Add Chart
-                </AppButton>
-                <div className="btn-expand" onClick={onExpand}>
-                  <ExpandIcon />
-                </div> */}
-                <>
-                  {isLoadingResult ? (
-                    <AppLoadingTable
-                      widthColumns={[100]}
-                      className="visual-table"
-                    />
-                  ) : (
-                    queryId &&
-                    !!queryValue &&
-                    (!!queryResult.length ? (
-                      <Box>
-                        <VisualizationDisplay
-                          queryResult={queryResult}
-                          queryValue={queryValue}
-                          onReload={fetchQuery}
-                          expandEditor={expandEditor}
-                          onExpand={setExpandEditor}
-                        />
-                      </Box>
-                    ) : (
-                      <Flex
-                        className="empty-table"
-                        justifyContent={'center'}
-                        alignItems="center"
-                      >
-                        {errorExecuteQuery?.message
-                          ? errorExecuteQuery?.message
-                          : 'No data...'}
-                      </Flex>
-                    ))
-                  )}
-                </>
-              </Box>
             </Box>
+            {queryId && !!queryValue && (
+              <div className="add-chart">
+                {isLoadingResult ? (
+                  <AppLoadingTable
+                    widthColumns={[100]}
+                    className="visual-table"
+                  />
+                ) : !!queryResult.length ? (
+                  <Box>
+                    <VisualizationDisplay
+                      queryResult={queryResult}
+                      queryValue={queryValue}
+                      onReload={fetchQuery}
+                      expandEditor={expandEditor}
+                      onExpand={setExpandEditor}
+                    />
+                  </Box>
+                ) : (
+                  <Flex
+                    className="empty-table"
+                    justifyContent={'center'}
+                    alignItems="center"
+                  >
+                    {errorExecuteQuery?.message
+                      ? errorExecuteQuery?.message
+                      : 'No data...'}
+                  </Flex>
+                )}
+              </div>
+            )}
           </Box>
         </div>
       </EditorContext.Provider>

@@ -8,8 +8,9 @@ import {
   Switch,
   Tooltip,
 } from '@chakra-ui/react';
-import { useHistory } from 'react-router';
+import { useHistory, useParams } from 'react-router-dom';
 import { AppButton } from 'src/components';
+import { WORKSPACE_TYPES } from '..';
 
 interface IHeaderProps {
   type: string;
@@ -29,6 +30,9 @@ const ListItem = [
 const Header: React.FC<IHeaderProps> = (props) => {
   const { type, author, title, onRunQuery, selectedQuery } = props;
   const history = useHistory();
+  const { queryId } = useParams<{ queryId: string }>();
+
+  const isCreatingQuery = type === WORKSPACE_TYPES.QUERY && !queryId;
 
   return (
     <div className="workspace-page__editor__header">
@@ -41,20 +45,23 @@ const Header: React.FC<IHeaderProps> = (props) => {
             className="btn-back icon-query-back-header"
           />
         </Tooltip>
-
-        <div className="item-desc">
-          <img src="/images/AvatarDashboardCard.png" alt="avatar" />
-          <p className="user-name">Tyler Covington /</p>
-          <span>2023 May 10th</span>
-        </div>
+        {!isCreatingQuery && (
+          <div className="item-desc">
+            <img src="/images/AvatarDashboardCard.png" alt="avatar" />
+            <p className="user-name">{author} /</p>
+            <span>{title}</span>
+          </div>
+        )}
       </div>
       <div className="workspace-page__editor__header__right">
-        <div className="switch-icon">
-          <Switch id="email-alerts" size="sm" />
-          <FormLabel htmlFor="email-alerts" mb="0" me="20px">
-            Publish
-          </FormLabel>
-        </div>
+        {!isCreatingQuery && (
+          <div className="switch-icon">
+            <Switch id="email-alerts" size="sm" />
+            <FormLabel htmlFor="email-alerts" mb="0" me="20px">
+              Publish
+            </FormLabel>
+          </div>
+        )}
         <Tooltip label="Run Query" hasArrow placement="top">
           <AppButton
             onClick={onRunQuery}
@@ -65,25 +72,27 @@ const Header: React.FC<IHeaderProps> = (props) => {
             {selectedQuery ? 'Run selection' : 'Run'}
           </AppButton>
         </Tooltip>
-        <Menu>
-          <MenuButton
-            as={AppButton}
-            size="sm"
-            variant="no-effects"
-            className="btn-list"
-          >
-            <p className="icon-query-list" />
-          </MenuButton>
-          <MenuList className="list-item">
-            {ListItem.map((i) => (
-              <MenuItem key={i.label}>
-                <Flex alignItems={'center'} gap={'8px'}>
-                  {i.icon} {i.label}
-                </Flex>
-              </MenuItem>
-            ))}
-          </MenuList>
-        </Menu>
+        {!isCreatingQuery && (
+          <Menu>
+            <MenuButton
+              as={AppButton}
+              size="sm"
+              variant="no-effects"
+              className="btn-list"
+            >
+              <p className="icon-query-list" />
+            </MenuButton>
+            <MenuList className="list-item">
+              {ListItem.map((i) => (
+                <MenuItem key={i.label}>
+                  <Flex alignItems={'center'} gap={'8px'}>
+                    {i.icon} {i.label}
+                  </Flex>
+                </MenuItem>
+              ))}
+            </MenuList>
+          </Menu>
+        )}
       </div>
     </div>
   );

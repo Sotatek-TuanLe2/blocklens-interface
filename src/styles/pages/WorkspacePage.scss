@@ -4,6 +4,9 @@
 
 .workspace-page {
   display: flex;
+  gap: 10px;
+  height: 860px;
+
   &__sidebar {
     display: flex;
 
@@ -105,6 +108,12 @@
   }
 
   &__editor {
+    width: calc(100% - 300px - 10px);
+
+    &--expand {
+      width: calc(100% - 60px);
+    }
+
     &__header {
       margin-bottom: 8px;
       padding: 9px 24px;
