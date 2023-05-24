@@ -12,8 +12,10 @@ import {
 import _, { debounce } from 'lodash';
 import { useCallback, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router';
-import { AppInput } from 'src/components';
+import { AppButton, AppInput } from 'src/components';
+import AppQueryMenu, { QUERY_MENU_LIST } from 'src/components/AppQueryMenu';
 import ModalNewDashboard from 'src/modals/querySQL/ModalNewDashboard';
+import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import rf from 'src/requests/RequestFactory';
 import { PROMISE_STATUS, ROUTES, SchemaType } from 'src/utils/common';
 import { IDashboardDetail, IQuery } from 'src/utils/query.type';
@@ -21,13 +23,6 @@ import { AppBroadcast } from 'src/utils/utils-broadcast';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { getChainIconByChainName } from 'src/utils/utils-network';
 import { toastError } from 'src/utils/utils-notify';
-
-const ListItem = [
-  { label: 'Fork', icon: <p className="icon-query-fork" /> },
-  { label: 'Setting', icon: <p className="icon-query-setting" /> },
-  { label: 'Share', icon: <p className="icon-query-share" /> },
-  { label: 'Delete', icon: <p className="icon-query-delete" /> },
-];
 
 const ChainItem = ({
   chain,
@@ -288,6 +283,30 @@ const Sidebar: React.FC<{
       : 'workspace-page__sidebar__content__work-place-detail ';
   };
 
+  const onClickFork = async (workPlaceItem: any) => {
+    console.log('workPlaceItem', workPlaceItem);
+    try {
+      let res;
+      if (!workPlaceItem.visualizations) {
+        res = await rf
+          .getRequest('DashboardsRequest')
+          .forkDashboard(
+            { newDashboardName: `Forked from ${workPlaceItem.name}` },
+            workPlaceItem.id,
+          );
+        history.push(`${ROUTES.DASHBOARD}/${res.id}`);
+      } else {
+        res = await rf
+          .getRequest('DashboardsRequest')
+          .forkQueries(workPlaceItem.id);
+        history.push(`${ROUTES.QUERY}/${res.id}`);
+      }
+      await fetchDataWorkPlace();
+    } catch (e) {
+      toastError({ message: getErrorMessage(e) });
+    }
+  };
+
   const _renderContentWorkPlace = () => {
     return (
       <Box className="workspace-page__sidebar__content__work-place-wrap">
@@ -326,7 +345,7 @@ const Sidebar: React.FC<{
                 className={handleClassNameWorkPlaceItem(query.id)}
                 onClick={() => history.push(`${ROUTES.QUERY}/${query.id}?`)}
               >
-                <Flex isTruncated alignItems={'center'} gap="10px">
+                <Flex isTruncated alignItems={'center'} gap="10px" maxW={'70%'}>
                   <div>
                     <div
                       className={
@@ -339,7 +358,12 @@ const Sidebar: React.FC<{
                   <Text isTruncated>{query.name}</Text>
                 </Flex>
 
-                <Box className="bg-kebab_icon"></Box>
+                <AppQueryMenu
+                  menu={[QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.SHARE]}
+                  onFork={() => {
+                    onClickFork(query);
+                  }}
+                />
               </div>
             ))}
           </div>
@@ -377,7 +401,12 @@ const Sidebar: React.FC<{
                   </div>
                   <Text isTruncated>{dashboard.name}</Text>
                 </Flex>
-                <Box className="bg-kebab_icon" />
+                <AppQueryMenu
+                  menu={[QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.SHARE]}
+                  onFork={() => {
+                    onClickFork(dashboard);
+                  }}
+                />
               </div>
             ))}
           </div>

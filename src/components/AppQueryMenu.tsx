@@ -83,6 +83,7 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
           size="sm"
           variant="no-effects"
           className="app-query-menu"
+          onClick={(e) => e.stopPropagation()}
         >
           <p className="icon-query-list" />
         </MenuButton>
