@@ -118,7 +118,7 @@ const ListItem: React.FC<IListItem> = (props) => {
                   ))}
                 </Flex>
               </Flex>
-              <div>{_renderDropdown()}</div>
+              <div className="item-options">{_renderDropdown()}</div>
             </Flex>
             <Flex
               mt={'14px'}
