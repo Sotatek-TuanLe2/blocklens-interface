@@ -68,7 +68,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
             <AppButton
               onClick={onChangeEditMode}
               size="sm"
-              leftIcon={<p className="icon-run-query" />}
+              leftIcon={<p className={isEdit ? '' : ''} />}
               me="10px"
             >
               {isEdit ? 'Done' : 'Edit'}
