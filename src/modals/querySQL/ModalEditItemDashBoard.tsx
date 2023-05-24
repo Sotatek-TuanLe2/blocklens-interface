@@ -3,7 +3,7 @@ import React from 'react';
 import { AppButton } from 'src/components';
 import 'src/styles/components/BaseModal.scss';
 import BaseModal from '../BaseModal';
-import { ILayout } from 'src/pages/DashboardDetailPage';
+import { ILayout, WIDGET_TYPE } from 'src/pages/WorkspacePage/parts/Dashboard';
 import { toastError } from 'src/utils/utils-notify';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import rf from 'src/requests/RequestFactory';
@@ -26,9 +26,15 @@ const ModalEditItemDashBoard: React.FC<IModalEditItemDashBoard> = ({
   ) => {
     try {
       e.preventDefault();
-      const res = await rf
-        .getRequest('DashboardsRequest')
-        .removeVisualization(selectedItem.id);
+      if (selectedItem.type === WIDGET_TYPE.TEXT) {
+        await rf
+          .getRequest('DashboardsRequest')
+          .removeTextWidget(selectedItem.id);
+      } else {
+        await rf
+          .getRequest('DashboardsRequest')
+          .removeVisualization(selectedItem.id);
+      }
       onReload();
       onClose();
     } catch (e) {

@@ -1,7 +1,7 @@
 import { Checkbox } from '@chakra-ui/checkbox';
 import { Grid, GridItem, Text } from '@chakra-ui/layout';
 import React, { useMemo, useRef, useState } from 'react';
-import { VISUALIZATION_DEBOUNCE } from 'src/pages/QueriesPage/part/VisualizationDisplay';
+import { VISUALIZATION_DEBOUNCE } from 'src/pages/WorkspacePage/parts/VisualizationDisplay';
 import 'src/styles/components/CounterConfigurations.scss';
 import { VisualizationType } from 'src/utils/query.type';
 import { objectKeys } from 'src/utils/utils-network';

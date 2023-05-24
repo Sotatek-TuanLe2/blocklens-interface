@@ -6,7 +6,7 @@ import ChartOptions from './ChartOptions';
 import ResultData from './ResultData';
 import { XAxisOptions, YAxisOptions } from './AxisOptions';
 import { objectKeys } from 'src/utils/utils-network';
-import { VISUALIZATION_DEBOUNCE } from 'src/pages/QueriesPage/part/VisualizationDisplay';
+import { VISUALIZATION_DEBOUNCE } from 'src/pages/WorkspacePage/parts/VisualizationDisplay';
 import AppInput from '../AppInput';
 
 type Props = {

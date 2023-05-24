@@ -1,30 +1,34 @@
 import { useParams } from 'react-router-dom';
-import { Avatar, Box, Flex } from '@chakra-ui/react';
+import {
+  Box,
+  Flex,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+} from '@chakra-ui/react';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Layout, Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import ReactMarkdown from 'react-markdown';
 import 'react-resizable/css/styles.css';
-import { PenIcon } from 'src/assets/icons';
 import PlusIcon from 'src/assets/icons/icon-plus.png';
-import { AppButton, AppTag } from 'src/components';
+import { AppTag } from 'src/components';
 import useUser from 'src/hooks/useUser';
 import ModalAddTextWidget from 'src/modals/querySQL/ModalAddTextWidget';
 import ModalAddVisualization from 'src/modals/querySQL/ModalAddVisualization';
 import ModalEditItemDashBoard from 'src/modals/querySQL/ModalEditItemDashBoard';
 import ModalForkDashBoardDetails from 'src/modals/querySQL/ModalForkDashBoardDetails';
 import ModalSettingDashboardDetails from 'src/modals/querySQL/ModalSettingDashboardDetails';
-import ModalShareDashboardDetails from 'src/modals/ModalShareDashboardDetails';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/TableValue.scss';
 import 'src/styles/pages/DashboardDetailPage.scss';
-
 import 'src/styles/components/Chart.scss';
+import 'src/styles/components/AppQueryMenu.scss';
 import { IDashboardDetail } from 'src/utils/query.type';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import VisualizationItem from './VisualizationItem';
-import ModalEmptyDashboard from 'src/modals/querySQL/ModalEmptyDashboard';
 import Header from './Header';
 import { WORKSPACE_TYPES } from '..';
 import AppNetworkIcons from 'src/components/AppNetworkIcons';
@@ -35,13 +39,20 @@ export interface ILayout extends Layout {
   id: string;
   dashboardVisuals: [];
   text: string;
+  type: string;
   visualization: any;
   content: any;
 }
+
 export enum TYPE_MODAL {
   ADD = 'add',
   EDIT = 'edit',
 }
+
+export const WIDGET_TYPE = {
+  VISUALIZATION: 'visualization',
+  TEXT: 'text',
+};
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -62,8 +73,7 @@ const DashboardPart: React.FC = () => {
   const [openModalEdit, setOpenModalEdit] = useState<boolean>(false);
   const [openModalAddTextWidget, setOpenModalAddTextWidget] =
     useState<boolean>(false);
-  const [openModalEmptyDashboard, setOpenModalEmptyDashboard] =
-    useState<boolean>(false);
+  const [isEmptyDashboard, setIsEmptyDashboard] = useState<boolean>(false);
 
   const layoutChangeTimeout = useRef() as any;
 
@@ -76,7 +86,22 @@ const DashboardPart: React.FC = () => {
         .getRequest('DashboardsRequest')
         .getDashboardById({ dashboardId });
       if (res) {
-        const visualization = res.dashboardVisuals.map((item: ILayout) => {
+        const visualization: ILayout[] = res.dashboardVisuals.map(
+          (item: ILayout) => {
+            const { options } = item;
+            return {
+              x: options.sizeX,
+              y: options.sizeY,
+              w: options.col,
+              h: options.row,
+              i: item.id,
+              id: item.id,
+              type: WIDGET_TYPE.VISUALIZATION,
+              content: item.visualization,
+            };
+          },
+        );
+        const textWidgets: ILayout[] = res.textWidgets.map((item: ILayout) => {
           const { options } = item;
           return {
             x: options.sizeX,
@@ -85,18 +110,7 @@ const DashboardPart: React.FC = () => {
             h: options.row,
             i: item.id,
             id: item.id,
-            content: item.visualization,
-          };
-        });
-        const textWidgets = res.textWidgets.map((item: ILayout) => {
-          const { options } = item;
-          return {
-            x: options.sizeX,
-            y: options.sizeY,
-            w: options.col,
-            h: options.row,
-            i: item.id,
-            id: item.id,
+            type: WIDGET_TYPE.TEXT,
             text: item.text,
             content: {},
           };
@@ -105,7 +119,7 @@ const DashboardPart: React.FC = () => {
         const layouts = visualization.concat(textWidgets);
         setDataDashboard(res);
         setDataLayouts(layouts);
-        setOpenModalEmptyDashboard(!layouts.length);
+        setIsEmptyDashboard(!layouts.length);
       }
     } catch (error) {
       toastError({
@@ -120,89 +134,44 @@ const DashboardPart: React.FC = () => {
     }
   }, [dashboardId]);
 
-  // const _renderButtons = () => {
-  //   const isAccountsDashboard = true;
-  //   const editButtons = [
-  //     { title: 'Settings', setModal: setOpenModalSetting },
-  //     { title: 'Add text widget', setModal: setOpenModalAddTextWidget },
-  //     { title: 'Add visualization', setModal: setOpenModalAddVisualization },
-  //   ];
+  const onOpenModalAddText = () => {
+    setTypeModalTextWidget(TYPE_MODAL.ADD);
+    setOpenModalAddTextWidget(true);
+  };
 
-  //   return (
-  //     <Flex gap={'10px'}>
-  //       {editMode ? (
-  //         editButtons.map((item, index) => (
-  //           <AppButton
-  //             className="btn-cancel"
-  //             key={index}
-  //             size={'sm'}
-  //             onClick={() => {
-  //               if (item.title === 'Add text widget') {
-  //                 setTypeModalTextWidget(TYPE_MODAL.ADD);
-  //               }
-  //               item.setModal(true);
-  //             }}
-  //           >
-  //             {item.title}
-  //           </AppButton>
-  //         ))
-  //       ) : (
-  //         <>
-  //           {isAccountsDashboard && (
-  //             <ButtonModalFork
-  //               openModalFork={openModalFork}
-  //               setOpenModalFork={setOpenModalFork}
-  //             />
-  //           )}
-  //           <ButtonShare />
-  //         </>
-  //       )}
-  //       {isAccountsDashboard && (
-  //         <AppButton
-  //           className={editMode ? 'btn-save' : 'btn-cancel'}
-  //           size={'sm'}
-  //           onClick={() => setEditMode((prevState) => !prevState)}
-  //         >
-  //           {editMode ? 'Done' : 'Edit'}
-  //         </AppButton>
-  //       )}
-  //     </Flex>
-  //   );
-  // };
+  const onOpenModalAddVisualization = () => setOpenModalAddVisualization(true);
 
   const onLayoutChange = async (layout: Layout[]) => {
     clearTimeout(layoutChangeTimeout.current);
-    const newWidget = (type: string) =>
-      dataLayouts.filter((e) =>
-        type === 'visualization'
-          ? e.content.hasOwnProperty('id')
-          : !e.content.hasOwnProperty('id'),
-      );
 
-    const dataVisualization = newWidget('visualization').map((item) => {
-      const newLayout = layout.filter((e) => e.i === item.id);
-      return {
-        id: item.id,
-        options: {
-          sizeX: newLayout[0].x,
-          sizeY: newLayout[0].y,
-          col: newLayout[0].w,
-          row: newLayout[0].h,
-        },
-      };
-    });
-    const dataTextWidget = newWidget('text').map((item) => {
-      const newLayout = layout.filter((e) => e.i === item.id);
-      return {
-        id: item.id,
-        options: {
-          sizeX: newLayout[0].x,
-          sizeY: newLayout[0].y,
-          col: newLayout[0].w,
-          row: newLayout[0].h,
-        },
-      };
-    });
+    const dataVisualization = dataLayouts
+      .filter((e) => e.type === WIDGET_TYPE.VISUALIZATION)
+      .map((item) => {
+        const newLayout = layout.filter((e) => e.i === item.id);
+        return {
+          id: item.id,
+          options: {
+            sizeX: newLayout[0].x,
+            sizeY: newLayout[0].y,
+            col: newLayout[0].w,
+            row: newLayout[0].h,
+          },
+        };
+      });
+    const dataTextWidget = dataLayouts
+      .filter((e) => e.type === WIDGET_TYPE.TEXT)
+      .map((item) => {
+        const newLayout = layout.filter((e) => e.i === item.id);
+        return {
+          id: item.id,
+          options: {
+            sizeX: newLayout[0].x,
+            sizeY: newLayout[0].y,
+            col: newLayout[0].w,
+            row: newLayout[0].h,
+          },
+        };
+      });
 
     // many widgets are changed at one time so need to update the latest change
     layoutChangeTimeout.current = setTimeout(async () => {
@@ -223,6 +192,23 @@ const DashboardPart: React.FC = () => {
     }, 500);
   };
 
+  const _renderEmptyDashboard = () => (
+    <Flex
+      className="empty-dashboard"
+      justifyContent={'center'}
+      alignItems={'center'}
+    >
+      <div className="add-widget" onClick={onOpenModalAddVisualization}>
+        <div className="icon-widget-big-visualization" />
+        Add Visualization
+      </div>
+      <div className="add-widget" onClick={onOpenModalAddText}>
+        <div className="icon-widget-big-text" />
+        Add Text Widget
+      </div>
+    </Flex>
+  );
+
   return (
     <div className="workspace-page__editor__dashboard">
       <Header
@@ -242,8 +228,31 @@ const DashboardPart: React.FC = () => {
               <AppTag key={item} value={item} />
             ))}
           </div>
+          {editMode && (
+            <Menu>
+              <MenuButton className="app-query-menu">
+                <Box className="add-button">
+                  <img src={PlusIcon} alt="icon-plus" />
+                </Box>
+              </MenuButton>
+              <MenuList>
+                <MenuItem onClick={onOpenModalAddVisualization}>
+                  <Flex alignItems={'center'} gap={'8px'}>
+                    <span className="icon-widget-small-visualization" />
+                    Add visualization
+                  </Flex>
+                </MenuItem>
+                <MenuItem onClick={onOpenModalAddText}>
+                  <Flex alignItems={'center'} gap={'8px'}>
+                    <span className="icon-widget-small-text" />
+                    Add text widget
+                  </Flex>
+                </MenuItem>
+              </MenuList>
+            </Menu>
+          )}
         </Box>
-        {!!dataLayouts.length ? (
+        {!!dataLayouts.length && (
           <ResponsiveGridLayout
             onLayoutChange={onLayoutChange}
             className="main-grid-layout"
@@ -257,47 +266,44 @@ const DashboardPart: React.FC = () => {
             {dataLayouts.map((item) => (
               <div className="box-layout" key={item.id}>
                 <div className="box-chart">
-                  {item.content.hasOwnProperty('id') ? (
-                    <>
-                      <VisualizationItem visualization={item.content} />
-                    </>
+                  {item.type === WIDGET_TYPE.VISUALIZATION ? (
+                    <VisualizationItem visualization={item.content} />
                   ) : (
                     <div className="box-text-widget">
                       <ReactMarkdown>{item.text}</ReactMarkdown>
                     </div>
                   )}
                 </div>
-
-                {editMode ? (
-                  <Box
-                    className="btn-edit"
-                    onClick={() => {
-                      setTypeModalTextWidget(TYPE_MODAL.EDIT);
-                      setSelectedItem(item);
-                      item.content.hasOwnProperty('id')
-                        ? setOpenModalEdit(true)
-                        : setOpenModalAddTextWidget(true);
-                    }}
+                {editMode && (
+                  <Flex
+                    alignItems={'center'}
+                    className="widget-buttons"
+                    columnGap={'12px'}
                   >
-                    <PenIcon />
-                  </Box>
-                ) : null}
+                    {item.type === WIDGET_TYPE.TEXT && (
+                      <Box
+                        className="icon-query-edit"
+                        onClick={() => {
+                          setTypeModalTextWidget(TYPE_MODAL.EDIT);
+                          setSelectedItem(item);
+                          setOpenModalAddTextWidget(true);
+                        }}
+                      />
+                    )}
+                    <Box
+                      className="icon-query-delete"
+                      onClick={() => {
+                        setSelectedItem(item);
+                        setOpenModalEdit(true);
+                      }}
+                    />
+                  </Flex>
+                )}
               </div>
             ))}
           </ResponsiveGridLayout>
-        ) : (
-          <Flex
-            width={'full'}
-            height={'calc(100vh - 118px);'}
-            justifyContent={'center'}
-            alignItems={'center'}
-          >
-            This dashboard is empty.
-          </Flex>
         )}
-        <Box className="float-add-button">
-          <img src={PlusIcon} alt="icon-plus" />
-        </Box>
+        {isEmptyDashboard && _renderEmptyDashboard()}
         <ModalSettingDashboardDetails
           open={openModalSetting}
           onClose={() => setOpenModalSetting(false)}
@@ -332,56 +338,9 @@ const DashboardPart: React.FC = () => {
           open={openModalFork}
           onClose={() => setOpenModalFork(false)}
         />
-        <ModalEmptyDashboard
-          open={openModalEmptyDashboard}
-          onAddText={() => {
-            setTypeModalTextWidget(TYPE_MODAL.ADD);
-            setOpenModalAddTextWidget(true);
-          }}
-          onAddVisualization={() => {
-            setOpenModalAddVisualization(true);
-          }}
-        />
       </div>
     </div>
   );
 };
 
 export default DashboardPart;
-
-// const ButtonModalFork: React.FC<{
-//   openModalFork: boolean;
-//   setOpenModalFork: React.Dispatch<React.SetStateAction<boolean>>;
-// }> = ({ setOpenModalFork }) => {
-//   return (
-//     <>
-//       <AppButton
-//         className="btn-cancel"
-//         size={'sm'}
-//         onClick={() => setOpenModalFork(true)}
-//       >
-//         Fork
-//       </AppButton>
-//     </>
-//   );
-// };
-
-// const ButtonShare: React.FC = () => {
-//   const [openModalShare, setOpenModalShare] = useState<boolean>(false);
-
-//   return (
-//     <>
-//       <AppButton
-//         className="btn-cancel"
-//         size={'sm'}
-//         onClick={() => setOpenModalShare(true)}
-//       >
-//         Share
-//       </AppButton>
-//       <ModalShareDashboardDetails
-//         open={openModalShare}
-//         onClose={() => setOpenModalShare(false)}
-//       />
-//     </>
-//   );
-// };
