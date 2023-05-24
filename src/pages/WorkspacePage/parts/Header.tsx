@@ -1,37 +1,34 @@
-import {
-  Flex,
-  FormLabel,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
-  Switch,
-  Tooltip,
-} from '@chakra-ui/react';
+import { FormLabel, Switch, Tooltip } from '@chakra-ui/react';
+import { ReactNode } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { AppButton } from 'src/components';
+import AppQueryMenu from 'src/components/AppQueryMenu';
 import { WORKSPACE_TYPES } from '..';
 
 interface IHeaderProps {
   type: string;
   author: string;
   title: string;
-  onRunQuery?: () => Promise<void>;
   selectedQuery?: string;
+  isEdit?: boolean;
+  onRunQuery?: () => Promise<void>;
+  onChangeEditMode?: () => void;
 }
 
-const ListItem = [
-  { label: 'Fork', icon: <p className="icon-query-fork" /> },
-  { label: 'Setting', icon: <p className="icon-query-setting" /> },
-  { label: 'Share', icon: <p className="icon-query-share" /> },
-  { label: 'Delete', icon: <p className="icon-query-delete" /> },
-];
-
 const Header: React.FC<IHeaderProps> = (props) => {
-  const { type, author, title, onRunQuery, selectedQuery } = props;
+  const {
+    type,
+    author,
+    title,
+    isEdit = false,
+    selectedQuery,
+    onRunQuery,
+    onChangeEditMode,
+  } = props;
   const history = useHistory();
   const { queryId } = useParams<{ queryId: string }>();
 
+  const isDashboard = type === WORKSPACE_TYPES.DASHBOARD;
   const isCreatingQuery = type === WORKSPACE_TYPES.QUERY && !queryId;
 
   return (
@@ -54,7 +51,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
         )}
       </div>
       <div className="workspace-page__editor__header__right">
-        {!isCreatingQuery && (
+        {!isCreatingQuery && !isEdit && (
           <div className="switch-icon">
             <Switch id="email-alerts" size="sm" />
             <FormLabel htmlFor="email-alerts" mb="0" me="20px">
@@ -62,37 +59,34 @@ const Header: React.FC<IHeaderProps> = (props) => {
             </FormLabel>
           </div>
         )}
-        <Tooltip label="Run Query" hasArrow placement="top">
-          <AppButton
-            onClick={onRunQuery}
-            size="sm"
-            leftIcon={<p className="icon-run-query" />}
-            me="21px"
+        {isDashboard ? (
+          <Tooltip
+            label={isEdit ? 'Edit Dashboard' : ''}
+            hasArrow
+            placement="top"
           >
-            {selectedQuery ? 'Run selection' : 'Run'}
-          </AppButton>
-        </Tooltip>
-        {!isCreatingQuery && (
-          <Menu>
-            <MenuButton
-              as={AppButton}
+            <AppButton
+              onClick={onChangeEditMode}
               size="sm"
-              variant="no-effects"
-              className="btn-list"
+              leftIcon={<p className="icon-run-query" />}
+              me="21px"
             >
-              <p className="icon-query-list" />
-            </MenuButton>
-            <MenuList className="list-item">
-              {ListItem.map((i) => (
-                <MenuItem key={i.label}>
-                  <Flex alignItems={'center'} gap={'8px'}>
-                    {i.icon} {i.label}
-                  </Flex>
-                </MenuItem>
-              ))}
-            </MenuList>
-          </Menu>
+              {isEdit ? 'Done' : 'Edit'}
+            </AppButton>
+          </Tooltip>
+        ) : (
+          <Tooltip label="Run Query" hasArrow placement="top">
+            <AppButton
+              onClick={onRunQuery}
+              size="sm"
+              leftIcon={<p className="icon-run-query" />}
+              me="21px"
+            >
+              {selectedQuery ? 'Run selection' : 'Run'}
+            </AppButton>
+          </Tooltip>
         )}
+        {!isCreatingQuery && <AppQueryMenu />}
       </div>
     </div>
   );
