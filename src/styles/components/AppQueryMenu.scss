@@ -3,30 +3,26 @@
 @import '../mixins.scss';
 
 .app-query-menu {
-  padding: 0;
+  padding: 0 !important;
 
-  &:hover {
-    background-color: $bg1;
+  > span {
+    flex: initial;
   }
+}
 
-  .menu-option {
-    background: #2f3b58;
-    border-radius: 6px;
-    border: none;
-    min-width: 104px !important;
-    height: 90px;
+.chakra-menu__menu-list {
+  background: #2f3b58 !important;
+  border: unset;
+  min-width: 109px;
+  border-radius: 6px;
+  border: none;
+  min-width: 104px !important;
+}
 
-    .menu-info {
-      font-size: 16px;
-      font-weight: 400;
-
-      svg {
-        margin-right: 10px;
-      }
-
-      &:focus {
-        background: #1a203b;
-      }
-    }
+.chakra-menu__menuitem {
+  &:hover, &:focus {
+    background: $main !important;
   }
+  
+  color: $title !important;
 }

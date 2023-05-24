@@ -10,7 +10,7 @@ import {
   ScatterChartIcon,
 } from 'src/assets/icons';
 import { AppButton, AppInput } from 'src/components';
-import { ILayout } from 'src/pages/DashboardDetailPage';
+import { ILayout } from 'src/pages/WorkspacePage/parts/Dashboard';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/BaseModal.scss';
 import {
@@ -83,7 +83,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
     try {
       const res = await rf
         .getRequest('DashboardsRequest')
-        .getListBrowseQueries(params);
+        .getMyListQueries(params);
       if (res) {
         setDataVisualization(res.data);
       }

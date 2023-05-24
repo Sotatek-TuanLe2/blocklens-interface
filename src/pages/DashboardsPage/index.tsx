@@ -115,7 +115,7 @@ const DashboardsPage: React.FC = () => {
       try {
         const res: any = await rf
           .getRequest('DashboardsRequest')
-          .getListBrowseDashboard(params);
+          .getAllDashboards(params);
         return { ...res, docs: res.data };
       } catch (error) {
         toastError({ message: getErrorMessage(error) });
@@ -129,7 +129,7 @@ const DashboardsPage: React.FC = () => {
       try {
         const res: any = await rf
           .getRequest('DashboardsRequest')
-          .getListBrowseQueries(params);
+          .getMyListQueries(params);
         return { ...res, docs: res.data };
       } catch (error) {
         toastError({ message: getErrorMessage(error) });

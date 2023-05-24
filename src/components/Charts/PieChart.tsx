@@ -138,7 +138,6 @@ const VisualizationPieChart = ({
             data={shownData}
             dataKey={yAxisKeys?.[0]}
             nameKey={xAxisKey}
-            innerRadius={'58%'}
             labelLine={false}
             label={
               chartOptionsConfigs?.showDataLabels && _renderCustomizedLabel
