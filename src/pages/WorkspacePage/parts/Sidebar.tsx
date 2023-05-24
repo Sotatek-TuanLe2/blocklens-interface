@@ -42,7 +42,7 @@ const ChainItem = ({
       onChangeSchemaDescribe(data);
       //get schema
     } catch (error) {
-      console.log('error', error);
+      toastError({ message: getErrorMessage(error) });
     }
   };
 
@@ -284,7 +284,6 @@ const Sidebar: React.FC<{
   };
 
   const onClickFork = async (workPlaceItem: any) => {
-    console.log('workPlaceItem', workPlaceItem);
     try {
       let res;
       if (!workPlaceItem.visualizations) {
