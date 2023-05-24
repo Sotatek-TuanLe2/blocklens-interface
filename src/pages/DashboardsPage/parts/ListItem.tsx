@@ -1,15 +1,6 @@
-import {
-  Button,
-  Flex,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
-  Text,
-} from '@chakra-ui/react';
+import { Flex, Text } from '@chakra-ui/react';
 import moment from 'moment';
 import { Link, useHistory } from 'react-router-dom';
-import { IconFork, IconOptions, IconShare } from 'src/assets/icons';
 import { AppTag } from 'src/components';
 import AppNetworkIcons from 'src/components/AppNetworkIcons';
 import { VisibilityGridDashboardList } from 'src/constants';
@@ -22,6 +13,7 @@ import { listTags } from './FilterSearch';
 import { toastError } from 'src/utils/utils-notify';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import rf from 'src/requests/RequestFactory';
+import AppQueryMenu, { QUERY_MENU_LIST } from 'src/components/AppQueryMenu';
 
 interface IListItem {
   type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
@@ -83,21 +75,10 @@ const ListItem: React.FC<IListItem> = (props) => {
 
   const _renderDropdown = () => {
     return (
-      <Menu>
-        <MenuButton>
-          <Button size="sm" className="item-options">
-            <IconOptions />
-          </Button>
-        </MenuButton>
-        <MenuList className="menu-option">
-          <MenuItem onClick={onClickFork} className="menu-info">
-            <IconFork /> Fork
-          </MenuItem>
-          <MenuItem className="menu-info">
-            <IconShare /> Share
-          </MenuItem>
-        </MenuList>
-      </Menu>
+      <AppQueryMenu
+        menu={[QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.SHARE]}
+        onFork={onClickFork}
+      />
     );
   };
 

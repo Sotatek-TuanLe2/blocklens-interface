@@ -1,16 +1,8 @@
-import {
-  Flex,
-  FormLabel,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
-  Switch,
-  Tooltip,
-} from '@chakra-ui/react';
+import { FormLabel, Switch, Tooltip } from '@chakra-ui/react';
 import { ReactNode } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { AppButton } from 'src/components';
+import AppQueryMenu from 'src/components/AppQueryMenu';
 import { WORKSPACE_TYPES } from '..';
 
 interface IHeaderProps {
@@ -22,16 +14,6 @@ interface IHeaderProps {
   onRunQuery?: () => Promise<void>;
   onChangeEditMode?: () => void;
 }
-
-const ListItem: {
-  label: string;
-  icon: ReactNode;
-}[] = [
-  { label: 'Fork', icon: <p className="icon-query-fork" /> },
-  { label: 'Setting', icon: <p className="icon-query-setting" /> },
-  { label: 'Share', icon: <p className="icon-query-share" /> },
-  { label: 'Delete', icon: <p className="icon-query-delete" /> },
-];
 
 const Header: React.FC<IHeaderProps> = (props) => {
   const {
@@ -104,27 +86,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
             </AppButton>
           </Tooltip>
         )}
-        {!isCreatingQuery && (
-          <Menu>
-            <MenuButton
-              as={AppButton}
-              size="sm"
-              variant="no-effects"
-              className="btn-list"
-            >
-              <p className="icon-query-list" />
-            </MenuButton>
-            <MenuList className="list-item">
-              {ListItem.map((i) => (
-                <MenuItem key={i.label}>
-                  <Flex alignItems={'center'} gap={'8px'}>
-                    {i.icon} {i.label}
-                  </Flex>
-                </MenuItem>
-              ))}
-            </MenuList>
-          </Menu>
-        )}
+        {!isCreatingQuery && <AppQueryMenu />}
       </div>
     </div>
   );
