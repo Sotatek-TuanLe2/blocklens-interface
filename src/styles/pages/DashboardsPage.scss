@@ -122,8 +122,10 @@
             }
 
             .item-options {
-              background: #242b45;
-              border-radius: 100%;
+              & > button {
+                background: #242b45;
+                border-radius: 100%;
+              }
             }
 
             .item-tag {
@@ -267,7 +269,7 @@
         .item-btn-options {
           width: 3%;
 
-          .item-options {
+          & > button {
             background: #242b45;
             border-radius: 100%;
           }
