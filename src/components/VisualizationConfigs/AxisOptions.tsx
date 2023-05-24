@@ -1,4 +1,4 @@
-import { Checkbox, CheckboxGroup, Text } from '@chakra-ui/react';
+import { Checkbox, CheckboxGroup, Switch, Text } from '@chakra-ui/react';
 import {
   ChartOptionConfigsType,
   XAxisConfigsType,
@@ -41,7 +41,7 @@ export const XAxisOptions: React.FC<IXAxisOptions> = ({
         x-axis options
       </Text>
       <div className={'box-table-children'}>
-        <Text>Axis title</Text>
+        <Text className="label-input">Axis title</Text>
         <AppInput
           className={'input-table'}
           value={xConfigs?.title || ''}
@@ -49,24 +49,8 @@ export const XAxisOptions: React.FC<IXAxisOptions> = ({
           name={'title'}
         />
       </div>
-      <CheckboxGroup>
-        {checkboxConfigs.map((option) => (
-          <div key={option.value} className={'main-checkbox'}>
-            <Checkbox
-              key={option.value}
-              // @ts-ignore
-              isChecked={xConfigs && !!xConfigs[option.value]}
-              onChange={(e) =>
-                changeValueHandle(option.value, e.target.checked)
-              }
-            >
-              {option.label}
-            </Checkbox>
-          </div>
-        ))}
-      </CheckboxGroup>
       <div className={'box-table-children'}>
-        <Text w={'max-content'} pr={2}>
+        <Text w={'max-content'} pr={2} className="label-input">
           Tick format
         </Text>
         <AppInput
@@ -78,6 +62,21 @@ export const XAxisOptions: React.FC<IXAxisOptions> = ({
           name={'tickFormat'}
         />
       </div>
+      <CheckboxGroup>
+        {checkboxConfigs.map((option) => (
+          <div className="main-toggle" key={option.value}>
+            <div className="label-toggle"> {option.label}</div>
+            <Switch
+              key={option.value}
+              // @ts-ignore
+              isChecked={xConfigs && !!xConfigs[option.value]}
+              onChange={(e) =>
+                changeValueHandle(option.value, e.target.checked)
+              }
+            />
+          </div>
+        ))}
+      </CheckboxGroup>
     </div>
   );
 };
@@ -112,7 +111,7 @@ export const YAxisOptions: React.FC<IYAxisOptions> = ({
         y-axis options
       </Text>
       <div className={'box-table-children'}>
-        <Text>Axis title</Text>
+        <Text className="label-input">Axis title</Text>
         <AppInput
           className={'input-table'}
           value={yConfigs?.title || ''}
@@ -120,17 +119,9 @@ export const YAxisOptions: React.FC<IYAxisOptions> = ({
           name={'title'}
         />
       </div>
-      <div className={'main-checkbox'}>
-        <Checkbox
-          isChecked={yConfigs?.logarithmic}
-          name={'logarithmic'}
-          onChange={(e) => changeValueHandle(e.target.name, e.target.checked)}
-        >
-          {'Logarithmic'}
-        </Checkbox>
-      </div>
+
       <div className={'box-table-children'}>
-        <Text w={'max-content'} pr={2}>
+        <Text w={'max-content'} pr={2} className="label-input">
           Tick format
         </Text>
         <AppInput
@@ -143,7 +134,7 @@ export const YAxisOptions: React.FC<IYAxisOptions> = ({
         />
       </div>
       <div className={'box-table-children'}>
-        <Text w={'max-content'} pr={2}>
+        <Text w={'max-content'} pr={2} className="label-input">
           Label format
         </Text>
         <AppInput
@@ -153,6 +144,14 @@ export const YAxisOptions: React.FC<IYAxisOptions> = ({
           value={yConfigs?.labelFormat || ''}
           onChange={(e) => changeValueHandle(e.target.name, e.target.value)}
           name={'labelFormat'}
+        />
+      </div>
+      <div className="main-toggle">
+        <div className="label-toggle"> Logarithmic</div>
+        <Switch
+          isChecked={yConfigs?.logarithmic}
+          name={'logarithmic'}
+          onChange={(e) => changeValueHandle(e.target.name, e.target.checked)}
         />
       </div>
     </div>

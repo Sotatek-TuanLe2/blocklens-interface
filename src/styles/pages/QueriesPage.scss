@@ -256,16 +256,19 @@
         height: 100%;
         gap: 30px;
         .main-visualization {
-          width: 74%;
+          width: 72%;
           margin-top: 20px;
         }
 
         .main-config {
-          width: 25%;
-          overflow: auto;
-          max-height: 520px;
+          width: 28%;
 
+          .body-config {
+            overflow: auto;
+            max-height: 520px;
+          }
           .header-config {
+            padding: 0px 12px;
             display: flex;
             align-items: center;
             justify-content: space-between;

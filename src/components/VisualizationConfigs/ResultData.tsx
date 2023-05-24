@@ -65,7 +65,7 @@ const ResultData: React.FC<IResultData> = ({
         Result data
       </Text>
       <div className={'box-table-children'}>
-        <Text w={'max-content'} mr={2}>
+        <Text w={'max-content'} mr={2} className="label-input">
           X column
         </Text>
         <AppSelect2
@@ -74,16 +74,18 @@ const ResultData: React.FC<IResultData> = ({
           options={axisOptionsConfigs}
           value={xAxis?.toString() || ''}
           onChange={changeXAxisHandle}
+          size="medium"
         />
       </div>
       {(yAxis ? [...yAxis, ''] : ['']).map((axis, index) => {
         return (
           <div className={'box-table-children'} key={axis}>
-            <Text w={'max-content'} mr={2}>
+            <Text w={'max-content'} mr={2} className="label-input">
               Y column {index + 1}
             </Text>
             <Box flex={1}>
               <AppSelect2
+                size="medium"
                 className={'select-table'}
                 zIndex={1000 - index}
                 width={'100%'}

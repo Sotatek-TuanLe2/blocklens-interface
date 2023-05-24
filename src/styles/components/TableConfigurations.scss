@@ -6,10 +6,7 @@
   color: $blackAlpha-800;
   min-height: 100%;
   display: grid;
-  grid-gap: 10px;
   background: #1a203b;
-
-  // border: 1px solid $border;
 
   .z-100 {
     z-index: 100;
@@ -22,11 +19,29 @@
 
   .first-box-table {
     min-height: unset !important;
+    margin-top: 10px;
+  }
+
+  .divider-bottom {
+    border-bottom: 1px solid #2f3b58;
+    padding: 4px;
+  }
+
+  .select-column {
+    padding: 2px 12px 2px 12px;
+    background: #1a203b;
+    color: $title;
+
+    .app-select__btn-select {
+      padding: 0px 2px;
+      font-size: 14px;
+      background: #1a203b;
+      border: unset;
+    }
   }
 
   .box-table {
-    padding: 12px;
-    border-bottom: 1px solid #2f3b58;
+    padding: 6px 12px;
     background: #1a203b;
 
     &__title {
@@ -57,12 +72,17 @@
     }
 
     .box-table-children {
-      align-items: center;
       display: grid;
-      padding-left: 10px;
       color: $title;
-      padding: 5px 0;
-      gap: 4px;
+      margin-bottom: 12px;
+
+      .label-input {
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 20px;
+        color: $paragraph;
+        margin-bottom: 4px;
+      }
 
       .select-table {
         .app-select__btn-select {
@@ -74,6 +94,10 @@
 
         .app-select__menu {
           color: $title;
+        }
+
+        .app-select__menu-item {
+          padding: 8px 16px;
         }
       }
 

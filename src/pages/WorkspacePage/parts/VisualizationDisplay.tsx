@@ -312,26 +312,28 @@ const VisualizationDisplay = ({
               {visualization.name || getDefaultVisualizationName(type)}
             </Tooltip>
           </div> */}
-          {errorMessage ? (
-            <Flex
-              alignItems={'center'}
-              justifyContent={'center'}
-              className="visual-container__visualization__error"
-            >
-              {errorMessage}
-            </Flex>
-          ) : (
-            <div className="main-chart">
-              <div className="main-visualization">{visualizationDisplay}</div>
-              <div className="main-config">
-                <div className="header-config">
-                  <div className="title-config">{type} Options</div>
-                  <div className="">x</div>
-                </div>
-                {visualizationConfiguration}
-              </div>
+          <div className="main-chart">
+            <div className="main-visualization">
+              {errorMessage ? (
+                <Flex
+                  alignItems={'center'}
+                  justifyContent={'center'}
+                  className="visual-container__visualization__error"
+                >
+                  {errorMessage}
+                </Flex>
+              ) : (
+                visualizationDisplay
+              )}
             </div>
-          )}
+            <div className="main-config">
+              <div className="header-config">
+                <div className="title-config">{type} Options</div>
+                <div className="">x</div>
+              </div>
+              <div className="body-config">{visualizationConfiguration}</div>
+            </div>
+          </div>
         </div>
       </div>
     );
