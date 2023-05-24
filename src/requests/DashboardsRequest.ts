@@ -107,12 +107,17 @@ export default class DashboardsRequest extends BaseRequest {
 
   /* Dashboards page */
 
-  getListBrowseDashboard(params: IGetBrowse) {
+  getAllDashboards(params: IGetBrowse) {
+    const url = `/public/dashboard`;
+    return this.get(url, params);
+  }
+
+  getMyListDashboards(params: IGetBrowse) {
     const url = `/dashboard/list-browse-dashboards`;
     return this.get(url, params);
   }
 
-  getListBrowseQueries(params: IGetBrowse) {
+  getMyListQueries(params: IGetBrowse) {
     const url = `/queries/list-browse-queries`;
     return this.get(url, params);
   }
@@ -121,17 +126,6 @@ export default class DashboardsRequest extends BaseRequest {
     const url = '/dashboard/create-dashboard';
     return this.post(url, data);
   }
-
-  // getPopularDashboardTags() {
-  //   const url = 'https://run.mocky.io/v3/fd2b3e65-6c5f-44f1-bc61-e7249645f1c3';
-  //   return this.get(url);
-  // }
-
-  // getPopularQueryTags() {
-  //   const url = 'https://run.mocky.io/v3/50864550-87f8-41ae-9985-a15289cf7f77';
-  //   return this.get(url);
-  // }
-
   /* End of Dashboards page */
 
   /* Dashboard's detail page */
