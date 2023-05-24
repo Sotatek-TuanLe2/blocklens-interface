@@ -1,4 +1,4 @@
-import { Flex } from '@chakra-ui/react';
+import { Box, Flex, Text } from '@chakra-ui/react';
 import React from 'react';
 import { AppButton } from 'src/components';
 import 'src/styles/components/BaseModal.scss';
@@ -41,24 +41,19 @@ const ModalEditItemDashBoard: React.FC<IModalEditItemDashBoard> = ({
       onClose={onClose}
       size="lg"
       className="modal-add-visualization"
+      icon="icon-delete"
+      title={'Remove Widget'}
+      description={
+        'Are you sure to remove this widget? All contents within this widget will be deleted'
+      }
     >
       <form className="main-modal-dashboard-details">
         <Flex flexWrap={'wrap'} gap={'10px'} className="group-action-query">
-          <AppButton
-            size="sm"
-            className="btn-remove"
-            variant={'cancel'}
-            onClick={(e) => handleRemoveItem(e)}
-          >
-            Remove this widget
-          </AppButton>
-          <AppButton
-            size="sm"
-            className="btn-remove"
-            variant={'cancel'}
-            onClick={onClose}
-          >
+          <AppButton onClick={onClose} size="lg" variant={'cancel'}>
             Cancel
+          </AppButton>
+          <AppButton size="lg" onClick={(e) => handleRemoveItem(e)}>
+            Delete
           </AppButton>
         </Flex>
       </form>

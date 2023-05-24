@@ -171,7 +171,12 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
   }, INPUT_DEBOUNCE);
 
   return (
-    <BaseModal isOpen={open} onClose={onClose} size="md">
+    <BaseModal
+      title={type === TYPE_MODAL.ADD ? 'Add Text Widget' : 'Edit Text Widget'}
+      isOpen={open}
+      onClose={onClose}
+      size="md"
+    >
       <div className="main-modal-dashboard-details">
         <AppField label={'Text widget context'}>
           <Textarea
@@ -194,19 +199,24 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
             </div>
           }
           title={'Some markdown is supported'}
+          className="table-main-markdown"
         />
 
         <Flex className="modal-footer">
+          <AppButton mr={2.5} size="lg" variant={'cancel'} onClick={onClose}>
+            Cancel
+          </AppButton>
           <AppButton
-            size="sm"
+            size="lg"
             onClick={() => {
               type === TYPE_MODAL.ADD ? handleSave() : handleUpdate();
             }}
             disabled={!markdownText.trim()}
           >
-            Save
+            {type === TYPE_MODAL.ADD ? 'Add' : 'Save'}
           </AppButton>
-          <Flex gap={'10px'}>
+
+          {/* <Flex gap={'10px'}>
             {type === TYPE_MODAL.EDIT && (
               <AppButton
                 onClick={(
@@ -221,7 +231,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
             <AppButton onClick={onClose} size="sm" variant={'cancel'}>
               Cancel
             </AppButton>
-          </Flex>
+          </Flex> */}
         </Flex>
       </div>
     </BaseModal>

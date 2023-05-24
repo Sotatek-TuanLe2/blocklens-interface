@@ -112,7 +112,7 @@
     max-width: 590px !important;
   }
   &.modal-add-visualization {
-    max-width: 715px !important;
+    max-width: 500px !important;
   }
 
   .modal-footer {
@@ -256,11 +256,13 @@
 .main-modal-dashboard-details {
   padding-top: 40px;
   row-gap: 1rem !important;
+
   .text-widget-input {
     height: 150px;
     border-radius: 7px;
     background-color: #101530;
     min-width: 250px;
+    border-color: #465065;
   }
   .btn-save {
     background: #1e1870;
@@ -277,6 +279,7 @@
   }
   .title-markdown {
     width: 160px;
+    color: #8d91a5;
   }
   .markdown {
     width: 100%;
@@ -300,6 +303,8 @@
 
     button {
       padding: unset;
+      display: flex;
+      justify-content: space-between;
     }
   }
 
@@ -374,47 +379,65 @@
     font-weight: 400;
   }
 
-  .main-markdown {
-    border-bottom: 1px solid $gray-500;
-    padding: 5px 0px;
-    a {
-      text-decoration: underline;
-      cursor: pointer;
-    }
-    p {
-      font-size: 12px;
-    }
+  .table-main-markdown {
+    .chakra-collapse {
+      background: #242b45;
+      border-radius: 6px;
+      margin-top: 10px;
 
-    &:last-child {
-      border: unset;
+      .chakra-accordion__panel {
+        padding: 0;
+
+        .main-markdown {
+          border-bottom: 1px solid #2f3b58;
+          padding: 12px 20px;
+          a {
+            text-decoration: underline;
+            cursor: pointer;
+          }
+          p {
+            font-size: 16px;
+            font-weight: 400;
+          }
+
+          &:last-child {
+            border: unset;
+          }
+        }
+      }
     }
   }
+
   .main-queries {
-    height: 250px;
+    height: 290px;
     margin-top: 20px;
-    background: #f2f2f2;
-    color: $blackAlpha-900;
+    // color: $blackAlpha-900;
     font-size: 14px;
     border-radius: 2px;
-    min-height: 250px;
+    min-height: 290px;
     overflow: auto;
     .visualization-row {
-      width: calc(100% - 100px);
-      padding: 10px;
-      column-gap: 10px;
+      width: calc(100% - 20px);
+      padding: 10px 0px 10px;
+
+      svg {
+        margin: 0 10px;
+      }
     }
     .visualization-name {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
       max-width: 40%;
-      font-weight: bold;
+      // font-weight: bold;
+      color: #8d91a5;
     }
     .user-name {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
       max-width: 70%;
+      margin-right: 4px;
     }
     .no-data {
       display: flex;
@@ -439,22 +462,11 @@
   }
 
   .group-action-query {
-    button {
-      font-size: 14px;
-    }
-    .btn-add-query {
-      color: #1e1870;
-      background: #e1e1f9;
-      padding: 10px 20px;
-      cursor: pointer;
-    }
+    width: 100%;
 
-    .btn-added-query {
-      color: $whiteAlpha-900;
-      background: #1e1870;
-      padding: 10px 20px;
-      cursor: pointer;
-      border: unset;
+    button {
+      font-size: 16px;
+      width: 213px;
     }
   }
 }

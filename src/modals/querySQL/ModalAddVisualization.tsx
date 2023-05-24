@@ -1,4 +1,4 @@
-import { Flex, Link, Text, Tooltip } from '@chakra-ui/react';
+import { Checkbox, Flex, Link, Text, Tooltip } from '@chakra-ui/react';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   AreaChartIcon,
@@ -24,6 +24,7 @@ import BaseModal from '../BaseModal';
 import { debounce } from 'lodash';
 import { INPUT_DEBOUNCE } from 'src/utils/common';
 import ModalNewDashboard from './ModalNewDashboard';
+import moment from 'moment';
 
 interface IModalAddVisualization {
   open: boolean;
@@ -34,7 +35,6 @@ interface IModalAddVisualization {
   dashboardId: string;
 }
 interface IButtonAdd {
-  userName: string;
   item: any;
   dataLayouts: ILayout[];
   handleRemoveVisualization: (
@@ -190,6 +190,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
       onClose={onClose}
       size="lg"
       className="modal-add-visualization"
+      title="Add Visualization"
     >
       <form className="main-modal-dashboard-details">
         <AppInput
@@ -199,7 +200,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
           }}
           mt={'10px'}
           size="sm"
-          placeholder="Search your queries"
+          placeholder="Find chart..."
         />
 
         <div className="main-queries">
@@ -208,13 +209,8 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
               (item) =>
                 item?.visualizations &&
                 item?.visualizations?.map((i: any, index: number) => (
-                  <Flex
-                    justifyContent={'space-between'}
-                    borderBottom={'1px solid white'}
-                    key={`${item.id}-${index}`}
-                  >
+                  <Flex key={`${item.id}-${index}`}>
                     <ButtonAdd
-                      userName={userName}
                       item={item}
                       dataLayouts={dataLayouts}
                       handleSaveVisualization={handleSaveVisualization}
@@ -230,15 +226,11 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
           )}
         </div>
         <Flex className="modal-footer">
-          <AppButton size="sm" onClick={onClose}>
-            Done
+          <AppButton variant="cancel" mr={2.5} size="lg" onClick={onClose}>
+            Cancel
           </AppButton>
-          <AppButton
-            size="sm"
-            variant={'cancel'}
-            onClick={() => setOpenNewDashboardModal(true)}
-          >
-            New dashboard
+          <AppButton size="lg" onClick={() => setOpenNewDashboardModal(true)}>
+            Confirm
           </AppButton>
         </Flex>
       </form>
@@ -257,7 +249,6 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
 export default ModalAddVisualization;
 
 const ButtonAdd: React.FC<IButtonAdd> = ({
-  userName,
   item,
   handleSaveVisualization,
   handleRemoveVisualization,
@@ -275,33 +266,25 @@ const ButtonAdd: React.FC<IButtonAdd> = ({
       return i.options.globalSeriesType;
     }
   };
+
   return (
     <>
       <Flex className="visualization-row" alignItems={'center'}>
+        <Checkbox
+          onChange={(e: any) => {
+            checkAdded
+              ? handleRemoveVisualization(dataLayouts, i, e)
+              : handleSaveVisualization(item, i);
+          }}
+        ></Checkbox>
         {getIcon(conditionDisplayIcon())}
-        <Tooltip label={`${userName}/${item.name}`} hasArrow>
-          <Link className="user-name">
-            @{userName} / {item.name}
-          </Link>
-        </Tooltip>
-
-        <Tooltip label={i.name} hasArrow>
-          <Text className="visualization-name">
-            {i.options.globalSeriesType}{' '}
-            {i.name === 'Table' ? 'Query results' : i.name}
-          </Text>
-        </Tooltip>
+        <Link className="user-name">
+          {i.name === 'Table' ? 'Query results' : i.name}
+        </Link>
+        <Text className="visualization-name">
+          / {moment(item?.createdAt).format('YYYY-MM-DD hh:mm A')}
+        </Text>
       </Flex>
-      <Text
-        onClick={(e: any) => {
-          checkAdded
-            ? handleRemoveVisualization(dataLayouts, i, e)
-            : handleSaveVisualization(item, i);
-        }}
-        className={checkAdded ? 'btn-added-query' : 'btn-add-query'}
-      >
-        {checkAdded ? 'Added' : 'Add'}
-      </Text>
     </>
   );
 };

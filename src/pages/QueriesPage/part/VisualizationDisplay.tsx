@@ -379,16 +379,33 @@ const VisualizationDisplay = ({ queryResult, queryValue, onReload }: Props) => {
 
       <BaseModal
         title={'Remove visualization'}
-        description={'Are you sure you want to remove this visualization?'}
+        description={
+          'Are you sure to remove this visualization? All contents within this visualization will be deleted'
+        }
+        icon="icon-delete"
         isOpen={closeTabId !== ''}
         onClose={() => setCloseTabId('')}
-        onActionLeft={() => setCloseTabId('')}
-        onActionRight={() => {
-          setCloseTabId('');
-          removeVisualizationHandler(closeTabId);
-        }}
       >
-        <></>
+        <form className="main-modal-dashboard-details">
+          <Flex flexWrap={'wrap'} gap={'10px'} className="group-action-query">
+            <AppButton
+              onClick={() => setCloseTabId('')}
+              size="lg"
+              variant={'cancel'}
+            >
+              Cancel
+            </AppButton>
+            <AppButton
+              size="lg"
+              onClick={() => {
+                setCloseTabId('');
+                removeVisualizationHandler(closeTabId);
+              }}
+            >
+              Delete
+            </AppButton>
+          </Flex>
+        </form>
       </BaseModal>
     </Box>
   );
