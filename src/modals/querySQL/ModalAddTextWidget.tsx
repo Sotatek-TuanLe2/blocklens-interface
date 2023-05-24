@@ -3,7 +3,7 @@ import { debounce } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { AppButton, AppField } from 'src/components';
 import AppAccordion from 'src/components/AppAccordion';
-import { ILayout, TYPE_MODAL } from 'src/pages/DashboardDetailPage';
+import { ILayout, TYPE_MODAL } from 'src/pages/WorkspacePage/parts/Dashboard';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/BaseModal.scss';
 import { getErrorMessage } from 'src/utils/utils-helper';

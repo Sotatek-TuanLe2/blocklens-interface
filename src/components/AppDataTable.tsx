@@ -183,7 +183,7 @@ const AppDataTable = forwardRef(
     const _renderPagination = () => {
       if (hidePagination) return;
       return (
-        <Flex justifyContent={'center'}>
+        <Flex justifyContent={'flex-end'}>
           <AppPagination
             pageCount={totalPages}
             forcePage={pagination.page - 1}

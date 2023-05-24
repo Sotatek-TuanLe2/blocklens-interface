@@ -196,6 +196,11 @@ export default class DashboardsRequest extends BaseRequest {
     return this.post(url, { queryId });
   }
 
+  forkQueries(queryId: string) {
+    const url = `/queries/fork-query/${queryId}`;
+    return this.post(url, { queryId });
+  }
+
   getQueryExecutionId(params: DataQuery) {
     const url = '/query-results/query-result';
     return this.get(url, params);

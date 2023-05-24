@@ -1,0 +1,32 @@
+@import '../color-variables';
+@import '../variables';
+@import '../mixins.scss';
+
+.app-query-menu {
+  padding: 0 !important;
+
+  > span {
+    flex: initial;
+  }
+
+  .menu-option {
+    background: #2f3b58;
+    border-radius: 6px;
+    border: none;
+    min-width: 104px !important;
+    height: 90px;
+
+    .menu-info {
+      font-size: 16px;
+      font-weight: 400;
+
+      svg {
+        margin-right: 10px;
+      }
+
+      &:focus {
+        background: #1a203b;
+      }
+    }
+  }
+}

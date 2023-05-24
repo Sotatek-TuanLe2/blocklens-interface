@@ -288,7 +288,7 @@
               }
 
               &:focus {
-                background: $gradient;
+                background: #1a203b;
               }
             }
           }
@@ -532,5 +532,9 @@
         display: block;
       }
     }
+  }
+
+  .app-pagination {
+    margin: 25px -5px 0 0;
   }
 }

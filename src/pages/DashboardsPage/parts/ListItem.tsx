@@ -1,15 +1,6 @@
-import {
-  Button,
-  Flex,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
-  Text,
-} from '@chakra-ui/react';
+import { Flex, Text } from '@chakra-ui/react';
 import moment from 'moment';
-import { Link } from 'react-router-dom';
-import { IconFork, IconOptions, IconShare } from 'src/assets/icons';
+import { Link, useHistory } from 'react-router-dom';
 import { AppTag } from 'src/components';
 import AppNetworkIcons from 'src/components/AppNetworkIcons';
 import { VisibilityGridDashboardList } from 'src/constants';
@@ -19,6 +10,10 @@ import { Dashboard } from 'src/utils/utils-dashboard';
 import { Query } from 'src/utils/utils-query';
 import { LIST_ITEM_TYPE } from '..';
 import { listTags } from './FilterSearch';
+import { toastError } from 'src/utils/utils-notify';
+import { getErrorMessage } from 'src/utils/utils-helper';
+import rf from 'src/requests/RequestFactory';
+import AppQueryMenu, { QUERY_MENU_LIST } from 'src/components/AppQueryMenu';
 
 interface IListItem {
   type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
@@ -30,6 +25,7 @@ const listNetworkCurrency = ['eth_goerli', 'bsc_testnet', 'polygon_mainet'];
 
 const ListItem: React.FC<IListItem> = (props) => {
   const { type, item, visibility } = props;
+  const history = useHistory();
 
   // const [favorite, setFavorite] = useState<boolean>(false);
 
@@ -49,23 +45,40 @@ const ListItem: React.FC<IListItem> = (props) => {
     }
   };
 
+  const onClickFork = async () => {
+    try {
+      let res;
+      if (type === LIST_ITEM_TYPE.DASHBOARDS) {
+        res = await rf
+          .getRequest('DashboardsRequest')
+          .forkDashboard(
+            { newDashboardName: `Forked from ${itemClass.getName()}` },
+            itemClass.getId(),
+          );
+      } else if (type === LIST_ITEM_TYPE.QUERIES) {
+        res = await rf
+          .getRequest('DashboardsRequest')
+          .forkQueries(itemClass.getId());
+      }
+
+      if (res) {
+        history.push(
+          `${
+            type === LIST_ITEM_TYPE.DASHBOARDS ? ROUTES.DASHBOARD : ROUTES.QUERY
+          }/${res.id}`,
+        );
+      }
+    } catch (e) {
+      toastError({ message: getErrorMessage(e) });
+    }
+  };
+
   const _renderDropdown = () => {
     return (
-      <Menu>
-        <MenuButton>
-          <Button size="sm" className="item-options">
-            <IconOptions />
-          </Button>
-        </MenuButton>
-        <MenuList className="menu-option">
-          <MenuItem className="menu-info">
-            <IconFork /> Fork
-          </MenuItem>
-          <MenuItem className="menu-info">
-            <IconShare /> Share
-          </MenuItem>
-        </MenuList>
-      </Menu>
+      <AppQueryMenu
+        menu={[QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.SHARE]}
+        onFork={onClickFork}
+      />
     );
   };
 

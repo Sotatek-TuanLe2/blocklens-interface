@@ -3,7 +3,7 @@ import React from 'react';
 import { AppButton } from 'src/components';
 import 'src/styles/components/BaseModal.scss';
 import BaseModal from '../BaseModal';
-import { ILayout } from 'src/pages/DashboardDetailPage';
+import { ILayout } from 'src/pages/WorkspacePage/parts/Dashboard';
 import { toastError } from 'src/utils/utils-notify';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import rf from 'src/requests/RequestFactory';

@@ -39,6 +39,7 @@
   .visual-container {
     &__visualization {
       height: 100%;
+      padding-right: 15px;
 
       .main-table {
         height: unset;
@@ -46,7 +47,7 @@
       }
 
       .table-content {
-        height: 75%;
+        height: 85%;
         overflow: auto;
       }
 
@@ -60,20 +61,27 @@
         text-overflow: ellipsis;
         white-space: nowrap;
         max-width: 53%;
+        font-weight: 700;
+        font-size: 14px;
+        line-height: 20px;
       }
 
       &__title {
         display: flex;
         padding: 0 10px;
         margin-bottom: 10px;
+        align-items: center;
 
         &__query-link {
-          margin-left: 20px;
+          margin-left: 10px;
           display: block;
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
           max-width: 30%;
+          color: #03CAFF;
+          font-size: 14px;
+          line-height: 26px;
         }
       }
 
@@ -205,7 +213,8 @@
   }
   .main-grid-layout {
     width: 100%;
-    height: 100%;
+    max-height: calc(100% - 58px);
+    overflow-y: overlay;
 
     .react-grid-item {
       a {
@@ -215,7 +224,11 @@
       color: $title;
       overflow: hidden;
       cursor: grab;
-      padding-bottom: 10px;
+
+      & > .react-resizable-handle.react-resizable-handle-se {
+        bottom: 15px;
+        right: 15px;
+      }
     }
 
     .react-draggable-dragging {
@@ -223,23 +236,26 @@
     }
 
     .box-layout {
-      border: 1px solid #808080;
+      background: $card;
+      border: 1px solid #465065;
+      border-radius: 10px;
       position: relative;
 
       .box-chart {
         width: 100%;
         height: 100%;
+        padding: 15px;
       }
 
       .box-text-widget {
-        padding: 10px 25px;
+        padding: 0 15px;
       }
 
-      .btn-edit {
+      .widget-buttons {
         position: absolute;
         cursor: pointer;
-        top: 4px;
-        right: 4px;
+        top: 15px;
+        right: 15px;
       }
     }
   }

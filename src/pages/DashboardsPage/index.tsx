@@ -166,7 +166,8 @@ const DashboardsPage: React.FC = () => {
             <SimpleGrid
               className="infos"
               columns={{ base: 1, sm: 2, lg: 3, xl: 4 }}
-              gap="18px"
+              columnGap="6px"
+              rowGap="18px"
             >
               {listItem}
             </SimpleGrid>

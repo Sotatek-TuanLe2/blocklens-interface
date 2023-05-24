@@ -12,14 +12,14 @@ import React, {
 import { CheckIcon, ClockIcon, SettingIcon } from 'src/assets/icons';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/EditorSidebar.scss';
-import { CHAIN_NAME, IQuery } from 'src/utils/query.type';
+import { IQuery } from 'src/utils/query.type';
 import { Query } from 'src/utils/utils-query';
 import { AppInput, AppSelect2 } from '../../../components';
 import SchemaDescribe from '../../../components/SqlEditor/SchemaDescribe';
 import SchemaTitle from '../../../components/SqlEditor/SchemaTitle';
 import { SchemaType, TableAttributeType } from '../../../utils/common';
 import { getErrorMessage } from '../../../utils/utils-helper';
-import { getLogoChainByChainId } from '../../../utils/utils-network';
+import { getChainIconByChainName } from '../../../utils/utils-network';
 import { toastError } from '../../../utils/utils-notify';
 
 const TIME_DEBOUNCE = 1000;
@@ -74,30 +74,6 @@ const ExploreData: React.FC<IExploreDataProps> = ({
     }
     return new Query(queryValue);
   }, [queryValue]);
-
-  const getChainIcon = (chainName: string) => {
-    let iconClassName: string;
-    switch (chainName) {
-      case CHAIN_NAME.ETH_GOERLI:
-      case CHAIN_NAME.ETH_MAINNET: {
-        iconClassName = getLogoChainByChainId('ETH') || '';
-        break;
-      }
-      case CHAIN_NAME.BSC_TESTNET:
-      case CHAIN_NAME.BSC_MAINNET: {
-        iconClassName = getLogoChainByChainId('BSC') || '';
-        break;
-      }
-      case CHAIN_NAME.APTOS_MAINNET:
-      case CHAIN_NAME.APTOS_TESTNET:
-        iconClassName = 'icon-aptos';
-        break;
-      default:
-        iconClassName = getLogoChainByChainId('POLYGON') || '';
-        break;
-    }
-    return <Box className={iconClassName}></Box>;
-  };
 
   const selectSchemaTitleHandler = async ({
     chain,
@@ -231,7 +207,7 @@ const ExploreData: React.FC<IExploreDataProps> = ({
                 isTruncated
               >
                 <ArrowBackIcon mr={2} />
-                <div>{getChainIcon(tableSelected?.chain)}</div>
+                <div>{getChainIconByChainName(tableSelected?.chain)}</div>
                 <Text isTruncated ml={2} title={tableSelected?.chain}>
                   {tableSelected?.chain}
                 </Text>
