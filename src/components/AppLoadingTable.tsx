@@ -19,7 +19,7 @@ const AppLoadingTable: FC<IAppLoadingTable> = ({
   const rowLoadings = [];
   for (let i = 0; i < rowNumber; i++) {
     rowLoadings.push(
-      <Tr className="tr-list">
+      <Tr className="tr-list" key={`${i}-row`}>
         {widthColumns.map((width: number, index: number) => {
           return (
             <Td w={`${width}%`} key={index}>
