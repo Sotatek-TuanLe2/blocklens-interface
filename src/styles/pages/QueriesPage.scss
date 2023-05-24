@@ -26,6 +26,7 @@
     border-radius: 6px;
     margin-top: 4px;
     margin-bottom: 20px;
+    max-height: 503px;
 
     .btn-expand {
       height: 100%;
@@ -254,9 +255,23 @@
         width: 100%;
         height: 100%;
         gap: 30px;
+
+        .show-full-visual {
+          width: 100% !important;
+        }
+
         .main-visualization {
           width: 72%;
           margin-top: 20px;
+        }
+
+        .hidden-config {
+          animation: hiddenConfig 0.5s forwards;
+          opacity: 0;
+        }
+
+        .show-config {
+          animation: showConfig 0.5s forwards;
         }
 
         .main-config {
@@ -264,7 +279,7 @@
 
           .body-config {
             overflow: auto;
-            max-height: 520px;
+            max-height: 401px;
           }
           .header-config {
             padding: 0px 12px;
@@ -272,7 +287,12 @@
             align-items: center;
             justify-content: space-between;
             background: $disable;
-
+            .close-config-icon {
+              width: 8px;
+              height: 8px;
+              background: url('../../assets/icons/icon-default-work-place.png') -115px -11px;
+              cursor: pointer;
+            }
             .title-config {
               text-transform: uppercase;
               font-weight: 700;
@@ -405,5 +425,29 @@
         }
       }
     }
+  }
+}
+
+@keyframes showConfig {
+  0% {
+    opacity: 0;
+    width: 0px;
+    padding: 0;
+  }
+  99% {
+    opacity: 0.5;
+    width: 100%;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes hiddenConfig {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0;
+    padding: 0;
   }
 }

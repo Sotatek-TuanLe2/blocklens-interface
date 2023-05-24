@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { TYPE_VISUALIZATION, VisualizationType } from 'src/utils/query.type';
-import { Checkbox, CheckboxGroup, Flex, Switch, Text } from '@chakra-ui/react';
+import { CheckboxGroup, Flex, Switch } from '@chakra-ui/react';
 import AppInput from '../AppInput';
 
 interface IChartOptions {

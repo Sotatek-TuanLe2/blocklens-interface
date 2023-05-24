@@ -77,6 +77,7 @@ export const XAxisOptions: React.FC<IXAxisOptions> = ({
           </div>
         ))}
       </CheckboxGroup>
+      <p className="divider-bottom" />
     </div>
   );
 };

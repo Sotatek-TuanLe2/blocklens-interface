@@ -99,6 +99,7 @@ const ResultData: React.FC<IResultData> = ({
           </div>
         );
       })}
+      <p className="divider-bottom" />
     </div>
   );
 };

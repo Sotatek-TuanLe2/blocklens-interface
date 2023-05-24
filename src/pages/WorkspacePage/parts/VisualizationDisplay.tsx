@@ -103,6 +103,7 @@ const VisualizationDisplay = ({
   }
   const { queryId } = useParams<ParamTypes>();
 
+  const [toggleCloseConfig, setToggleCloseConfig] = useState<boolean>(true);
   const [closeTabId, setCloseTabId] = useState<string | number>('');
   const [dataTable, setDataTable] = useState<any[]>([]);
 
@@ -297,6 +298,18 @@ const VisualizationDisplay = ({
         );
     }
 
+    const typeNameVisual = (type: string) => {
+      switch (type) {
+        case TYPE_VISUALIZATION.table:
+          return 'table';
+        case TYPE_VISUALIZATION.counter:
+          return 'counter';
+        default:
+          return 'chart';
+          break;
+      }
+    };
+
     return (
       <div
         className={`visual-container__wrapper ${
@@ -313,7 +326,11 @@ const VisualizationDisplay = ({
             </Tooltip>
           </div> */}
           <div className="main-chart">
-            <div className="main-visualization">
+            <div
+              className={`main-visualization ${
+                !toggleCloseConfig ? 'show-full-visual' : ''
+              }`}
+            >
               {errorMessage ? (
                 <Flex
                   alignItems={'center'}
@@ -326,13 +343,24 @@ const VisualizationDisplay = ({
                 visualizationDisplay
               )}
             </div>
-            <div className="main-config">
-              <div className="header-config">
-                <div className="title-config">{type} Options</div>
-                <div className="">x</div>
+            {toggleCloseConfig && (
+              <div
+                className={`main-config ${
+                  toggleCloseConfig ? 'show-config' : 'hidden-config'
+                }`}
+              >
+                <div className="header-config">
+                  <div className="title-config">
+                    {typeNameVisual(type)} Options
+                  </div>
+                  <p
+                    className="close-config-icon"
+                    onClick={() => setToggleCloseConfig(false)}
+                  />
+                </div>
+                <div className="body-config">{visualizationConfiguration}</div>
               </div>
-              <div className="body-config">{visualizationConfiguration}</div>
-            </div>
+            )}
           </div>
         </div>
       </div>
@@ -388,10 +416,16 @@ const VisualizationDisplay = ({
                 )}
               </div>
             </Tooltip>
-
-            <div className="btn-expand">
-              <p className="icon-query-edit" />
-            </div>
+            <Tooltip label="Edit" hasArrow>
+              <div
+                className="btn-expand"
+                onClick={() => {
+                  setToggleCloseConfig((pre) => !pre);
+                }}
+              >
+                <p className="icon-query-edit" />
+              </div>
+            </Tooltip>
           </Flex>
         }
         onChange={() => onExpand(false)}
