@@ -3,7 +3,11 @@
 @import '../mixins.scss';
 
 .app-query-menu {
-  padding: 0;
+  padding: 0 !important;
+
+  > span {
+    flex: initial;
+  }
 
   &:hover {
     background-color: $bg1;

@@ -69,7 +69,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
               onClick={onChangeEditMode}
               size="sm"
               leftIcon={<p className="icon-run-query" />}
-              me="21px"
+              me="10px"
             >
               {isEdit ? 'Done' : 'Edit'}
             </AppButton>
@@ -80,7 +80,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
               onClick={onRunQuery}
               size="sm"
               leftIcon={<p className="icon-run-query" />}
-              me="21px"
+              me="10px"
             >
               {selectedQuery ? 'Run selection' : 'Run'}
             </AppButton>

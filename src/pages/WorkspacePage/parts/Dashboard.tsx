@@ -1,20 +1,18 @@
 import { useParams } from 'react-router-dom';
-import { Avatar, Box, Flex } from '@chakra-ui/react';
+import { Box, Flex } from '@chakra-ui/react';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Layout, Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import ReactMarkdown from 'react-markdown';
 import 'react-resizable/css/styles.css';
-import { PenIcon } from 'src/assets/icons';
 import PlusIcon from 'src/assets/icons/icon-plus.png';
-import { AppButton, AppTag } from 'src/components';
+import { AppTag } from 'src/components';
 import useUser from 'src/hooks/useUser';
 import ModalAddTextWidget from 'src/modals/querySQL/ModalAddTextWidget';
 import ModalAddVisualization from 'src/modals/querySQL/ModalAddVisualization';
 import ModalEditItemDashBoard from 'src/modals/querySQL/ModalEditItemDashBoard';
 import ModalForkDashBoardDetails from 'src/modals/querySQL/ModalForkDashBoardDetails';
 import ModalSettingDashboardDetails from 'src/modals/querySQL/ModalSettingDashboardDetails';
-import ModalShareDashboardDetails from 'src/modals/ModalShareDashboardDetails';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/TableValue.scss';
 import 'src/styles/pages/DashboardDetailPage.scss';
@@ -35,9 +33,11 @@ export interface ILayout extends Layout {
   id: string;
   dashboardVisuals: [];
   text: string;
+  type: string;
   visualization: any;
   content: any;
 }
+
 export enum TYPE_MODAL {
   ADD = 'add',
   EDIT = 'edit',
@@ -46,6 +46,11 @@ export enum TYPE_MODAL {
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 const DashboardPart: React.FC = () => {
+  const WIDGET_TYPE = {
+    VISUALIZATION: 'visualization',
+    TEXT: 'text',
+  };
+
   const { dashboardId } = useParams<{ dashboardId: string }>();
 
   const { user } = useUser();
@@ -76,7 +81,22 @@ const DashboardPart: React.FC = () => {
         .getRequest('DashboardsRequest')
         .getDashboardById({ dashboardId });
       if (res) {
-        const visualization = res.dashboardVisuals.map((item: ILayout) => {
+        const visualization: ILayout[] = res.dashboardVisuals.map(
+          (item: ILayout) => {
+            const { options } = item;
+            return {
+              x: options.sizeX,
+              y: options.sizeY,
+              w: options.col,
+              h: options.row,
+              i: item.id,
+              id: item.id,
+              type: WIDGET_TYPE.VISUALIZATION,
+              content: item.visualization,
+            };
+          },
+        );
+        const textWidgets: ILayout[] = res.textWidgets.map((item: ILayout) => {
           const { options } = item;
           return {
             x: options.sizeX,
@@ -85,18 +105,7 @@ const DashboardPart: React.FC = () => {
             h: options.row,
             i: item.id,
             id: item.id,
-            content: item.visualization,
-          };
-        });
-        const textWidgets = res.textWidgets.map((item: ILayout) => {
-          const { options } = item;
-          return {
-            x: options.sizeX,
-            y: options.sizeY,
-            w: options.col,
-            h: options.row,
-            i: item.id,
-            id: item.id,
+            type: WIDGET_TYPE.TEXT,
             text: item.text,
             content: {},
           };
@@ -172,37 +181,35 @@ const DashboardPart: React.FC = () => {
 
   const onLayoutChange = async (layout: Layout[]) => {
     clearTimeout(layoutChangeTimeout.current);
-    const newWidget = (type: string) =>
-      dataLayouts.filter((e) =>
-        type === 'visualization'
-          ? e.content.hasOwnProperty('id')
-          : !e.content.hasOwnProperty('id'),
-      );
 
-    const dataVisualization = newWidget('visualization').map((item) => {
-      const newLayout = layout.filter((e) => e.i === item.id);
-      return {
-        id: item.id,
-        options: {
-          sizeX: newLayout[0].x,
-          sizeY: newLayout[0].y,
-          col: newLayout[0].w,
-          row: newLayout[0].h,
-        },
-      };
-    });
-    const dataTextWidget = newWidget('text').map((item) => {
-      const newLayout = layout.filter((e) => e.i === item.id);
-      return {
-        id: item.id,
-        options: {
-          sizeX: newLayout[0].x,
-          sizeY: newLayout[0].y,
-          col: newLayout[0].w,
-          row: newLayout[0].h,
-        },
-      };
-    });
+    const dataVisualization = dataLayouts
+      .filter((e) => e.type === WIDGET_TYPE.VISUALIZATION)
+      .map((item) => {
+        const newLayout = layout.filter((e) => e.i === item.id);
+        return {
+          id: item.id,
+          options: {
+            sizeX: newLayout[0].x,
+            sizeY: newLayout[0].y,
+            col: newLayout[0].w,
+            row: newLayout[0].h,
+          },
+        };
+      });
+    const dataTextWidget = dataLayouts
+      .filter((e) => e.type === WIDGET_TYPE.TEXT)
+      .map((item) => {
+        const newLayout = layout.filter((e) => e.i === item.id);
+        return {
+          id: item.id,
+          options: {
+            sizeX: newLayout[0].x,
+            sizeY: newLayout[0].y,
+            col: newLayout[0].w,
+            row: newLayout[0].h,
+          },
+        };
+      });
 
     // many widgets are changed at one time so need to update the latest change
     layoutChangeTimeout.current = setTimeout(async () => {
@@ -257,31 +264,39 @@ const DashboardPart: React.FC = () => {
             {dataLayouts.map((item) => (
               <div className="box-layout" key={item.id}>
                 <div className="box-chart">
-                  {item.content.hasOwnProperty('id') ? (
-                    <>
-                      <VisualizationItem visualization={item.content} />
-                    </>
+                  {item.type === WIDGET_TYPE.VISUALIZATION ? (
+                    <VisualizationItem visualization={item.content} />
                   ) : (
                     <div className="box-text-widget">
                       <ReactMarkdown>{item.text}</ReactMarkdown>
                     </div>
                   )}
                 </div>
-
-                {editMode ? (
-                  <Box
-                    className="btn-edit"
-                    onClick={() => {
-                      setTypeModalTextWidget(TYPE_MODAL.EDIT);
-                      setSelectedItem(item);
-                      item.content.hasOwnProperty('id')
-                        ? setOpenModalEdit(true)
-                        : setOpenModalAddTextWidget(true);
-                    }}
+                {editMode && (
+                  <Flex
+                    alignItems={'center'}
+                    className="widget-buttons"
+                    columnGap={'12px'}
                   >
-                    <PenIcon />
-                  </Box>
-                ) : null}
+                    {item.type === WIDGET_TYPE.TEXT && (
+                      <Box
+                        className="icon-query-edit"
+                        onClick={() => {
+                          setTypeModalTextWidget(TYPE_MODAL.EDIT);
+                          setSelectedItem(item);
+                          setOpenModalAddTextWidget(true);
+                        }}
+                      />
+                    )}
+                    <Box
+                      className="icon-query-delete"
+                      onClick={() => {
+                        setSelectedItem(item);
+                        setOpenModalEdit(true);
+                      }}
+                    />
+                  </Flex>
+                )}
               </div>
             ))}
           </ResponsiveGridLayout>
@@ -295,9 +310,11 @@ const DashboardPart: React.FC = () => {
             This dashboard is empty.
           </Flex>
         )}
-        <Box className="float-add-button">
-          <img src={PlusIcon} alt="icon-plus" />
-        </Box>
+        {editMode && (
+          <Box className="float-add-button">
+            <img src={PlusIcon} alt="icon-plus" />
+          </Box>
+        )}
         <ModalSettingDashboardDetails
           open={openModalSetting}
           onClose={() => setOpenModalSetting(false)}
@@ -348,40 +365,3 @@ const DashboardPart: React.FC = () => {
 };
 
 export default DashboardPart;
-
-// const ButtonModalFork: React.FC<{
-//   openModalFork: boolean;
-//   setOpenModalFork: React.Dispatch<React.SetStateAction<boolean>>;
-// }> = ({ setOpenModalFork }) => {
-//   return (
-//     <>
-//       <AppButton
-//         className="btn-cancel"
-//         size={'sm'}
-//         onClick={() => setOpenModalFork(true)}
-//       >
-//         Fork
-//       </AppButton>
-//     </>
-//   );
-// };
-
-// const ButtonShare: React.FC = () => {
-//   const [openModalShare, setOpenModalShare] = useState<boolean>(false);
-
-//   return (
-//     <>
-//       <AppButton
-//         className="btn-cancel"
-//         size={'sm'}
-//         onClick={() => setOpenModalShare(true)}
-//       >
-//         Share
-//       </AppButton>
-//       <ModalShareDashboardDetails
-//         open={openModalShare}
-//         onClose={() => setOpenModalShare(false)}
-//       />
-//     </>
-//   );
-// };
