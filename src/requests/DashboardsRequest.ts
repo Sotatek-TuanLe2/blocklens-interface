@@ -158,7 +158,7 @@ export default class DashboardsRequest extends BaseRequest {
     return this.patch(url, data);
   }
 
-  removeDashboardItem(id: ILayout) {
+  removeTextWidget(id: ILayout) {
     const url = `/dashboard/text-widgets/${id}/remove-text-widget`;
     return this.delete(url, id);
   }

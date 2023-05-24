@@ -49,14 +49,14 @@ export enum TYPE_MODAL {
   EDIT = 'edit',
 }
 
+export const WIDGET_TYPE = {
+  VISUALIZATION: 'visualization',
+  TEXT: 'text',
+};
+
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 const DashboardPart: React.FC = () => {
-  const WIDGET_TYPE = {
-    VISUALIZATION: 'visualization',
-    TEXT: 'text',
-  };
-
   const { dashboardId } = useParams<{ dashboardId: string }>();
 
   const { user } = useUser();
@@ -73,6 +73,7 @@ const DashboardPart: React.FC = () => {
   const [openModalEdit, setOpenModalEdit] = useState<boolean>(false);
   const [openModalAddTextWidget, setOpenModalAddTextWidget] =
     useState<boolean>(false);
+  const [isEmptyDashboard, setIsEmptyDashboard] = useState<boolean>(false);
 
   const layoutChangeTimeout = useRef() as any;
 
@@ -118,6 +119,7 @@ const DashboardPart: React.FC = () => {
         const layouts = visualization.concat(textWidgets);
         setDataDashboard(res);
         setDataLayouts(layouts);
+        setIsEmptyDashboard(!layouts.length);
       }
     } catch (error) {
       toastError({
@@ -250,7 +252,7 @@ const DashboardPart: React.FC = () => {
             </Menu>
           )}
         </Box>
-        {!!dataLayouts.length ? (
+        {!!dataLayouts.length && (
           <ResponsiveGridLayout
             onLayoutChange={onLayoutChange}
             className="main-grid-layout"
@@ -300,9 +302,8 @@ const DashboardPart: React.FC = () => {
               </div>
             ))}
           </ResponsiveGridLayout>
-        ) : (
-          _renderEmptyDashboard()
         )}
+        {isEmptyDashboard && _renderEmptyDashboard()}
         <ModalSettingDashboardDetails
           open={openModalSetting}
           onClose={() => setOpenModalSetting(false)}
