@@ -1,21 +1,10 @@
-import {
-  Box,
-  Collapse,
-  Flex,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
-  Text,
-  Tooltip,
-} from '@chakra-ui/react';
+import { Box, Collapse, Flex, Text, Tooltip } from '@chakra-ui/react';
 import _, { debounce } from 'lodash';
 import { useCallback, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router';
-import { AppButton, AppInput } from 'src/components';
+import { AppInput } from 'src/components';
 import AppQueryMenu, { QUERY_MENU_LIST } from 'src/components/AppQueryMenu';
 import ModalNewDashboard from 'src/modals/querySQL/ModalNewDashboard';
-import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import rf from 'src/requests/RequestFactory';
 import { PROMISE_STATUS, ROUTES, SchemaType } from 'src/utils/common';
 import { IDashboardDetail, IQuery } from 'src/utils/query.type';
@@ -49,6 +38,7 @@ const ChainItem = ({
   const handleAddQuery = (tableName: string) => {
     AppBroadcast.dispatch('ADD_TEXT_TO_EDITOR', tableName);
   };
+
   return (
     <>
       <Box display={'flex'} onClick={handleToggle} className="chain-info-title">
@@ -77,7 +67,7 @@ const ChainItem = ({
             className="bg-PlusIcon add-query-icon"
             onClick={(e) => {
               e.stopPropagation();
-              handleAddQuery(chain.table_name);
+              handleAddQuery(chain.full_name);
             }}
           ></div>
         </Tooltip>
@@ -283,6 +273,10 @@ const Sidebar: React.FC<{
       : 'workspace-page__sidebar__content__work-place-detail ';
   };
 
+  const handleAddQuery = (tableName: string) => {
+    AppBroadcast.dispatch('ADD_TEXT_TO_EDITOR', tableName);
+  };
+
   const onClickFork = async (workPlaceItem: any) => {
     try {
       let res;
@@ -415,6 +409,7 @@ const Sidebar: React.FC<{
       </Box>
     );
   };
+
   const _renderContentExplore = () => {
     return (
       <div className="workspace-page__sidebar__content__explore-wrap">
@@ -461,7 +456,10 @@ const Sidebar: React.FC<{
                 {schemaDescribe[0].table_name}
               </Text>
               <div className="header-icon">
-                <div className="bg-PlusIcon" />
+                <div
+                  className="bg-PlusIcon"
+                  onClick={() => handleAddQuery(schemaDescribe[0].full_name)}
+                />
                 <div
                   className="bg-CloseBtnIcon"
                   onClick={() => setSchemaDescribe([])}
@@ -476,6 +474,8 @@ const Sidebar: React.FC<{
                   py="6px"
                   justifyContent={'space-between'}
                   px="16px"
+                  cursor={'pointer'}
+                  onClick={() => handleAddQuery(item.column_name)}
                 >
                   <Box isTruncated maxW={'50%'}>
                     {item.column_name}
@@ -516,6 +516,7 @@ const Sidebar: React.FC<{
             onClick={() => {
               setCategory(item.id);
               onToggleExpandSidebar(true);
+              setSchemaDescribe([]);
             }}
           >
             {category === item.id ? item.activeIcon : item.icon}
