@@ -241,17 +241,6 @@
     text-transform: capitalize;
   }
 }
-.main-modal-share {
-  .btn-save {
-    background: #1e1870;
-    color: #fff;
-  }
-
-  .btn-cancel {
-    background: #ffeceb;
-    color: #000;
-  }
-}
 
 .main-modal-dashboard-details {
   padding-top: 40px;
@@ -455,6 +444,77 @@
       padding: 10px 20px;
       cursor: pointer;
       border: unset;
+    }
+  }
+}
+
+.modal-setting,
+.modal-share-domain {
+  &__title {
+    text-align: center;
+    margin-top: 40px;
+    width: 100%;
+    @include heading-5;
+  }
+  &__content {
+    margin-top: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .input-label {
+    @include text-medium-regular;
+    margin-bottom: 2px;
+    color: $paragraph;
+  }
+  .modal-footer {
+    margin-top: 30px;
+    gap: 10px;
+    @include text-medium-medium;
+    button {
+      height: max-content;
+    }
+  }
+}
+
+.modal-share-domain {
+  &__desc {
+    margin-top: 28px;
+    justify-content: center;
+    gap: 26px;
+    margin-bottom: 30px;
+    .social-media {
+      cursor: pointer;
+    }
+  }
+}
+.modal-delete {
+  &__img {
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+  &__title {
+    text-align: center;
+    margin-top: 28px;
+    width: 100%;
+    @include heading-5;
+  }
+  &__content {
+    margin-top: 8px;
+
+    text-align: center;
+    @include text-medium-regular;
+    color: $paragraph;
+  }
+
+  .modal-footer {
+    margin-top: 30px;
+    gap: 10px;
+    @include text-medium-medium;
+    button {
+      height: max-content;
     }
   }
 }

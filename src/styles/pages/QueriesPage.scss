@@ -101,6 +101,7 @@
 
     &.hidden-editor {
       height: 0px !important;
+      border-top: none;
     }
 
     .ace_print-margin {
@@ -286,8 +287,6 @@
       .main-chart {
         display: flex;
         width: 100%;
-        height: 100%;
-        gap: 30px;
 
         .show-full-visual {
           width: 100% !important;
