@@ -12,7 +12,7 @@ export interface IModalSetting {
 const ModalShareDomain = ({ open, onClose, link }: IModalSetting) => {
   const linkDefault = window.location.toString();
   const handleCopyLink = () => {
-    link ? copyToClipboard(link) : copyToClipboard(linkDefault);
+    copyToClipboard(link || linkDefault);
   };
   return (
     <BaseModal
@@ -33,7 +33,7 @@ const ModalShareDomain = ({ open, onClose, link }: IModalSetting) => {
           <Text className="input-label">Click to Copy Link </Text>
           <AppInput
             readOnly
-            value={link ? link : linkDefault}
+            value={link || linkDefault}
             pr="48px"
             endAdornment={
               <Box

@@ -538,7 +538,6 @@ const Sidebar: React.FC<{
         open={openNewDashboardModal}
         onClose={onCreateDashboardSuccessfully}
       />
-      <ModalShareDomain onClose={() => setOpenModal(false)} open={true} />
     </div>
   );
 };
