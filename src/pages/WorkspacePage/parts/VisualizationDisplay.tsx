@@ -462,10 +462,8 @@ const VisualizationDisplay = ({
         ]}
       />
       <BaseModal
-        title={'Remove visualization'}
-        description={
-          'Are you sure to remove this visualization? All contents within this visualization will be deleted'
-        }
+        title={'Remove Visualization'}
+        description={'All contents within this widget will be removed.'}
         icon="icon-delete"
         isOpen={closeTabId !== ''}
         onClose={() => setCloseTabId('')}
@@ -486,7 +484,7 @@ const VisualizationDisplay = ({
                 removeVisualizationHandler(closeTabId);
               }}
             >
-              Delete
+              Remove
             </AppButton>
           </Flex>
         </form>

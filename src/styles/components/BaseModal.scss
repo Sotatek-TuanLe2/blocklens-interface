@@ -370,6 +370,8 @@
 
   .table-main-markdown {
     .chakra-collapse {
+      max-height: 250px;
+      overflow-y: scroll !important;
       background: #242b45;
       border-radius: 6px;
       margin-top: 10px;
@@ -413,19 +415,19 @@
         margin: 0 10px;
       }
     }
+    .user-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 60%;
+      // font-weight: bold;
+      color: #8d91a5;
+    }
     .visualization-name {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
       max-width: 40%;
-      // font-weight: bold;
-      color: #8d91a5;
-    }
-    .user-name {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      max-width: 70%;
       margin-right: 4px;
     }
     .no-data {

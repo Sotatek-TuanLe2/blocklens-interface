@@ -34,7 +34,8 @@ interface IModalAddVisualization {
   onReload: () => Promise<void>;
   dashboardId: string;
 }
-interface IButtonAdd {
+interface IAddVisualizationCheckbox {
+  userName: string;
   item: any;
   dataLayouts: ILayout[];
   handleRemoveVisualization: (
@@ -211,7 +212,8 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
                 item?.visualizations &&
                 item?.visualizations?.map((i: any, index: number) => (
                   <Flex key={`${item.id}-${index}`}>
-                    <ButtonAdd
+                    <AddVisualizationCheckbox
+                      userName={userName}
                       item={item}
                       dataLayouts={dataLayouts}
                       handleSaveVisualization={handleSaveVisualization}
@@ -230,7 +232,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
           <AppButton variant="cancel" mr={2.5} size="lg" onClick={onClose}>
             Cancel
           </AppButton>
-          <AppButton size="lg" onClick={() => setOpenNewDashboardModal(true)}>
+          <AppButton size="lg" onClick={onClose}>
             Confirm
           </AppButton>
         </Flex>
@@ -249,7 +251,8 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
 
 export default ModalAddVisualization;
 
-const ButtonAdd: React.FC<IButtonAdd> = ({
+const AddVisualizationCheckbox: React.FC<IAddVisualizationCheckbox> = ({
+  userName,
   item,
   handleSaveVisualization,
   handleRemoveVisualization,
@@ -277,13 +280,12 @@ const ButtonAdd: React.FC<IButtonAdd> = ({
               ? handleRemoveVisualization(dataLayouts, i, e)
               : handleSaveVisualization(item, i);
           }}
-        ></Checkbox>
+          isChecked={checkAdded}
+        />
         {getIcon(conditionDisplayIcon())}
-        <Link className="user-name">
-          {i.name === 'Table' ? 'Query results' : i.name}
-        </Link>
-        <Text className="visualization-name">
-          / {moment(item?.createdAt).format('YYYY-MM-DD hh:mm A')}
+        <Link className="visualization-name">{i.name}</Link>
+        <Text className="user-name">
+          @{userName} / {item.name}
         </Text>
       </Flex>
     </>
