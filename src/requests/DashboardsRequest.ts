@@ -67,6 +67,7 @@ export interface IUpdateQuery {
   name?: string;
   query?: string;
   isTemp?: boolean;
+  tags?: string;
 }
 
 export interface SchemaParams {
@@ -109,6 +110,11 @@ export default class DashboardsRequest extends BaseRequest {
 
   getAllDashboards(params: IGetBrowse) {
     const url = `/public/dashboard`;
+    return this.get(url, params);
+  }
+
+  getAllQueries(params: IGetBrowse) {
+    const url = `/public/queries`;
     return this.get(url, params);
   }
 

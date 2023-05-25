@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { TYPE_VISUALIZATION, VisualizationType } from 'src/utils/query.type';
-import { Checkbox, CheckboxGroup, Flex, Text } from '@chakra-ui/react';
+import { CheckboxGroup, Flex, Switch } from '@chakra-ui/react';
 import AppInput from '../AppInput';
 
 interface IChartOptions {
@@ -101,17 +101,9 @@ const ChartOptions: React.FC<IChartOptions> = ({
   };
 
   return (
-    <div className={'box-table'}>
-      <Text
-        as={'h3'}
-        className={'box-table__title'}
-        fontWeight={'bold'}
-        mb={'10px'}
-      >
-        Chart options
-      </Text>
+    <div className={'box-table first-box-table'}>
       <Flex alignItems={'center'} mb={2} className={'box-table-children'}>
-        <div>Title</div>
+        <div className="label-input">Title</div>
         <AppInput
           className={'input-table'}
           value={visualization?.name || ''}
@@ -123,22 +115,21 @@ const ChartOptions: React.FC<IChartOptions> = ({
       <CheckboxGroup>
         {chartOptions.map((option) => {
           return (
-            <div className={'main-checkbox'} key={option.value}>
-              <Checkbox
-                key={option.value}
+            <div className="main-toggle" key={option.value}>
+              <div className="label-toggle"> {option.label}</div>
+              <Switch
                 name={option.value}
                 isChecked={option.disabled ? false : option.checked}
                 disabled={option.disabled}
                 onChange={(e) => {
                   changeValueHandle(option.value, e.target.checked);
                 }}
-              >
-                {option.label}
-              </Checkbox>
+              />
             </div>
           );
         })}
       </CheckboxGroup>
+      <p className="divider-bottom" />
     </div>
   );
 };

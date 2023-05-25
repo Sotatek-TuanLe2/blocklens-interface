@@ -93,7 +93,11 @@ const VisualizationChart: React.FC<Props> = (props) => {
     return (
       !configs?.chartOptionsConfigs?.stacking &&
       configs?.chartOptionsConfigs?.showDataLabels && (
-        <LabelList dataKey={yAxisKey} position="top" formatter={labelFormat} />
+        <LabelList
+          dataKey={yAxisKey}
+          position={yAxisConfigs?.logarithmic ? 'insideTop' : 'top'}
+          formatter={labelFormat}
+        />
       )
     );
   };
@@ -304,8 +308,8 @@ const VisualizationChart: React.FC<Props> = (props) => {
             tickFormatter={tickFormatAxis('y')}
             tick={{ fill: '#8D91A5', fontWeight: 400 }}
             tickLine={false}
-            {...logarithmicProps}
             domain={yAxisDomain}
+            {...logarithmicProps}
           />
         )}
         <Tooltip

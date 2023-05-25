@@ -36,16 +36,20 @@
 }
 
 .config-counter {
-  margin-top: 20px;
   font-size: 14px;
-  // color: $blackAlpha-800;
   display: grid;
   grid-gap: 10px;
-  padding: 10px;
   border: 1px solid $border;
+
+  .divider-bottom {
+    border-bottom: 1px solid #2f3b58;
+    padding: 4px;
+  }
+
   .z-100 {
     z-index: 100;
   }
+
   .btn-add {
     background: $gray-200;
     color: $blackAlpha-800;
@@ -54,14 +58,37 @@
       background: $gray-400;
     }
   }
+
+  .first-box-table {
+    padding: 16px 12px 4px 12px !important;
+  }
+
   .box-table {
-    min-height: 270px;
-    background-color: $card;
-    padding: 10px;
-    border: 1px solid transparent;
+    min-height: 100%;
+    padding: 12px 12px 4px 12px;
+    background: #1a203b;
 
     &__title {
       color: $title;
+    }
+
+    .main-toggle {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px 0px 10px;
+      color: $title;
+
+      .chakra-checkbox__label {
+        font-size: 14px !important;
+      }
+
+      .label-toggle {
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 20px;
+        color: $title;
+      }
     }
 
     .main-checkbox {
@@ -74,21 +101,32 @@
     }
 
     .box-table-children {
-      align-items: center;
       display: grid;
-      grid-template-columns: minmax(auto, 6rem) minmax(auto, 1fr);
-      padding-left: 10px;
       color: $title;
       padding: 5px 0;
+      gap: 4px;
+
+      .label-input {
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 20px;
+        color: $paragraph;
+      }
 
       .select-table {
         .app-select__btn-select {
           padding: 0px 17px;
           font-size: 14px;
+          background: #1a203b;
+          border: 1px solid $line;
         }
 
         .app-select__menu {
           color: $title;
+        }
+
+        .app-select__menu-item {
+          padding: 8px 16px;
         }
       }
 
@@ -97,9 +135,10 @@
         border-color: transparent;
         color: $title;
         border-radius: 5px;
-        border: 1px solid $border;
+        border: 1px solid $line;
         padding: 18px;
         height: 0;
+        background: #1a203b;
       }
     }
   }

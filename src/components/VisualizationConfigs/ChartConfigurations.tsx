@@ -48,9 +48,8 @@ const ChartConfigurations = ({
       <Grid
         templateColumns={{
           sm: 'repeat(1, 1fr)',
-          md: 'repeat(2, 1fr)',
+          md: 'repeat(1, 1fr)',
         }}
-        gap={'10px'}
       >
         <GridItem>
           <ChartOptions
@@ -91,7 +90,7 @@ const ChartConfigurations = ({
                 Pie options
               </Text>
               <div className="box-table-children grid-pie">
-                <div>Label format</div>
+                <div className="label-input">Label format</div>
                 <AppInput
                   placeholder="0.0"
                   size={'sm'}
