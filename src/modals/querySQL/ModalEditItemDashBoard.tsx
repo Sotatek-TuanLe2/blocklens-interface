@@ -48,8 +48,12 @@ const ModalEditItemDashBoard: React.FC<IModalEditItemDashBoard> = ({
       size="lg"
       className="modal-add-visualization"
       icon="icon-delete"
-      title={'Remove Widget'}
-      description={'All contents within this widget will be removed.'}
+      title={`Remove ${
+        selectedItem.type === WIDGET_TYPE.TEXT ? 'Widget' : 'Visualization'
+      }`}
+      description={`All contents within this ${
+        selectedItem.type === WIDGET_TYPE.TEXT ? 'widget' : 'visualization'
+      } will be removed.`}
     >
       <form className="main-modal-dashboard-details">
         <Flex flexWrap={'wrap'} gap={'10px'} className="group-action-query">
