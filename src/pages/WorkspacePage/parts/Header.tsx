@@ -71,8 +71,8 @@ const Header: React.FC<IHeaderProps> = (props) => {
                 <p
                   className={
                     isEdit
-                      ? 'bg-icon_edit_dashboard'
-                      : 'bg-icon_success_dashboard'
+                      ? 'bg-icon_success_dashboard'
+                      : 'bg-icon_edit_dashboard'
                   }
                 />
               }
