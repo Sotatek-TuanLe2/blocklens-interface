@@ -110,12 +110,12 @@ const DashboardsPage: React.FC = () => {
     }
   }, [searchUrl, tabType]);
 
-  const fetchDashboards: any = useCallback(
+  const fetchAllDashboards: any = useCallback(
     async (params: any) => {
       try {
         const res: any = await rf
           .getRequest('DashboardsRequest')
-          .getListBrowseDashboard(params);
+          .getAllDashboards(params);
         return { ...res, docs: res.data };
       } catch (error) {
         toastError({ message: getErrorMessage(error) });
@@ -124,12 +124,40 @@ const DashboardsPage: React.FC = () => {
     [dashboardParams],
   );
 
-  const fetchQueries: any = useCallback(
+  const fetchMyDashboards: any = useCallback(
     async (params: any) => {
       try {
         const res: any = await rf
           .getRequest('DashboardsRequest')
-          .getListBrowseQueries(params);
+          .getMyListDashboards(params);
+        return { ...res, docs: res.data };
+      } catch (error) {
+        toastError({ message: getErrorMessage(error) });
+      }
+    },
+    [dashboardParams],
+  );
+
+  const fetchAllQueries: any = useCallback(
+    async (params: any) => {
+      try {
+        const res: any = await rf
+          .getRequest('DashboardsRequest')
+          .getAllQueries(params);
+        return { ...res, docs: res.data };
+      } catch (error) {
+        toastError({ message: getErrorMessage(error) });
+      }
+    },
+    [queryParams],
+  );
+
+  const fetchMyQueries: any = useCallback(
+    async (params: any) => {
+      try {
+        const res: any = await rf
+          .getRequest('DashboardsRequest')
+          .getMyListQueries(params);
         return { ...res, docs: res.data };
       } catch (error) {
         toastError({ message: getErrorMessage(error) });
@@ -208,7 +236,7 @@ const DashboardsPage: React.FC = () => {
       content: _renderContentTable(
         <AppDataTable
           requestParams={dashboardParams}
-          fetchData={fetchDashboards}
+          fetchData={fetchAllDashboards}
           limit={12}
           renderHeader={_renderHeader}
           renderBody={(data) =>
@@ -233,7 +261,7 @@ const DashboardsPage: React.FC = () => {
       content: _renderContentTable(
         <AppDataTable
           requestParams={queryParams}
-          fetchData={fetchQueries}
+          fetchData={fetchAllQueries}
           limit={15}
           renderHeader={_renderHeader}
           renderBody={(data) =>
@@ -262,7 +290,7 @@ const DashboardsPage: React.FC = () => {
           >
             <AppDataTable
               requestParams={dashboardParams}
-              fetchData={fetchDashboards}
+              fetchData={fetchMyDashboards}
               limit={12}
               renderHeader={_renderHeader}
               renderBody={(data) =>
@@ -282,7 +310,7 @@ const DashboardsPage: React.FC = () => {
           <Box display={myWorkType === TYPE_MYWORK.QUERIES ? 'block' : 'none'}>
             <AppDataTable
               requestParams={queryParams}
-              fetchData={fetchQueries}
+              fetchData={fetchMyQueries}
               limit={15}
               renderHeader={_renderHeader}
               renderBody={(data) =>

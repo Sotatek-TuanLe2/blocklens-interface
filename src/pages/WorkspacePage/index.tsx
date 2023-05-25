@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { BasePage } from 'src/layouts';
 import { ROUTES } from 'src/utils/common';
@@ -24,8 +24,11 @@ const WorkspacePage: React.FC = () => {
     return WORKSPACE_TYPES.QUERY;
   }, [pathname]);
 
-  const onToggleExpandSidebar = (toggle?: boolean) =>
+  const onToggleExpandSidebar = (toggle?: boolean) => {
     setToggleExpandSidebar((prevState) => toggle || !prevState);
+    // resize widgets in dashboard
+    setTimeout(() => window.dispatchEvent(new Event('resize')), 500);
+  };
 
   return (
     <BasePage>

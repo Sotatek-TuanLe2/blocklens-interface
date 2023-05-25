@@ -176,7 +176,7 @@ const Sidebar: React.FC<{
     try {
       const res: any = await rf
         .getRequest('DashboardsRequest')
-        .getListBrowseDashboard(params);
+        .getMyListDashboards(params);
       return { ...res, docs: res.data };
     } catch (error) {
       toastError({ message: getErrorMessage(error) });
@@ -187,7 +187,7 @@ const Sidebar: React.FC<{
     try {
       const res: any = await rf
         .getRequest('DashboardsRequest')
-        .getListBrowseQueries(params);
+        .getMyListQueries(params);
       return { ...res, docs: res.data };
     } catch (error) {
       toastError({ message: getErrorMessage(error) });

@@ -65,8 +65,9 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
 
   const dataFilter = useMemo(
     () =>
-      dataVisualization?.filter((el) =>
-        el.name.toLowerCase().includes(searchTerm.toLowerCase()),
+      dataVisualization?.filter(
+        (el) =>
+          el.name && el.name.toLowerCase().includes(searchTerm.toLowerCase()),
       ),
     [dataVisualization, searchTerm],
   );
@@ -83,7 +84,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
     try {
       const res = await rf
         .getRequest('DashboardsRequest')
-        .getListBrowseQueries(params);
+        .getMyListQueries(params);
       if (res) {
         setDataVisualization(res.data);
       }

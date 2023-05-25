@@ -158,7 +158,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
       e.preventDefault();
       await rf
         .getRequest('DashboardsRequest')
-        .removeDashboardItem(selectedItem.id);
+        .removeTextWidget(selectedItem.id);
       onReload();
       onClose();
     } catch (e) {
