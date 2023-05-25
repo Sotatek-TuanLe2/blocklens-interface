@@ -1,12 +1,12 @@
 import { Flex } from '@chakra-ui/react';
 import React from 'react';
 import { AppButton } from 'src/components';
-import 'src/styles/components/BaseModal.scss';
-import BaseModal from '../BaseModal';
 import { ILayout, WIDGET_TYPE } from 'src/pages/WorkspacePage/parts/Dashboard';
-import { toastError } from 'src/utils/utils-notify';
-import { getErrorMessage } from 'src/utils/utils-helper';
 import rf from 'src/requests/RequestFactory';
+import 'src/styles/components/BaseModal.scss';
+import { getErrorMessage } from 'src/utils/utils-helper';
+import { toastError } from 'src/utils/utils-notify';
+import BaseModal from '../BaseModal';
 
 interface IModalEditItemDashBoard {
   open: boolean;
@@ -47,24 +47,17 @@ const ModalEditItemDashBoard: React.FC<IModalEditItemDashBoard> = ({
       onClose={onClose}
       size="lg"
       className="modal-add-visualization"
+      icon="icon-delete"
+      title={'Remove Widget'}
+      description={'All contents within this widget will be removed.'}
     >
       <form className="main-modal-dashboard-details">
         <Flex flexWrap={'wrap'} gap={'10px'} className="group-action-query">
-          <AppButton
-            size="sm"
-            className="btn-remove"
-            variant={'cancel'}
-            onClick={(e) => handleRemoveItem(e)}
-          >
-            Remove this widget
-          </AppButton>
-          <AppButton
-            size="sm"
-            className="btn-remove"
-            variant={'cancel'}
-            onClick={onClose}
-          >
+          <AppButton onClick={onClose} size="lg" variant={'cancel'}>
             Cancel
+          </AppButton>
+          <AppButton size="lg" onClick={(e) => handleRemoveItem(e)}>
+            Remove
           </AppButton>
         </Flex>
       </form>
