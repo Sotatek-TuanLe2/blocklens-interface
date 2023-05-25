@@ -123,9 +123,11 @@ export class Query implements QueryInterface {
     this.query = query.query;
     // this.user = query.user;
     this.visualizations = [];
-    query.visualizations.forEach((visual) => {
-      this.visualizations.push(new Visualization(visual));
-    });
+    if (!!query.visualizations) {
+      query.visualizations.forEach((visual) => {
+        this.visualizations.push(new Visualization(visual));
+      });
+    }
   }
 
   getId() {
