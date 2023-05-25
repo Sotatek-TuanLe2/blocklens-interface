@@ -20,6 +20,25 @@
     min-height: 400px;
   }
 
+  .expand-chart {
+    height: 752px !important;
+    max-height: unset !important;
+
+    .main-table {
+      height: 532px;
+    }
+
+    .btn-expand-full {
+      display: none !important;
+    }
+  }
+
+  .hidden-editor {
+    .tabs-header {
+      border-bottom: unset !important;
+    }
+  }
+
   .add-chart {
     padding: 6px 0px;
     background: $card;
@@ -29,6 +48,13 @@
     max-height: 503px;
 
     .btn-expand {
+      height: 100%;
+      &:hover {
+        cursor: pointer;
+      }
+    }
+
+    .btn-expand-full {
       height: 100%;
       &:hover {
         cursor: pointer;
@@ -68,8 +94,12 @@
     border-bottom-right-radius: 6px;
     transition: height linear 0.5s;
 
-    &.expand {
-      height: 530px !important;
+    &.full-editor {
+      height: 675px !important;
+    }
+
+    &.hidden-editor {
+      height: 0px !important;
     }
 
     .ace_print-margin {
@@ -202,11 +232,13 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
+
     .tabs-header {
       align-items: baseline;
       padding: 0px 17px 10px 17px;
       border-bottom: 1px solid $border;
     }
+
     &__wrapper {
       display: block;
       transition: all linear 0.5s;
@@ -232,13 +264,13 @@
       &--bar,
       &--line,
       &--scatter {
-        width: 96% !important;
-        height: 92% !important;
+        width: 100% !important;
+        height: 100% !important;
       }
 
       &--area {
-        width: 96% !important;
-        height: 96% !important;
+        width: 100% !important;
+        height: 100% !important;
       }
 
       &__error {
@@ -260,7 +292,13 @@
           width: 100% !important;
         }
 
+        .main-visualization-expand {
+          height: 660px !important;
+        }
+
         .main-visualization {
+          min-height: 420px;
+          height: 420px;
           width: 72%;
           margin-top: 20px;
         }
@@ -276,23 +314,32 @@
 
         .main-config {
           width: 28%;
+          max-width: 28%;
+
+          .body-config-expand {
+            overflow: auto;
+            max-height: 650px !important;
+          }
 
           .body-config {
             overflow: auto;
             max-height: 401px;
           }
+
           .header-config {
             padding: 0px 12px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             background: $disable;
+
             .close-config-icon {
               width: 8px;
               height: 8px;
               background: url('../../assets/icons/icon-default-work-place.png') -115px -11px;
               cursor: pointer;
             }
+
             .title-config {
               text-transform: uppercase;
               font-weight: 700;
@@ -377,8 +424,12 @@
         }
       }
 
+      .main-item-expand {
+        padding: 232px 0px !important;
+      }
+
       .main-item {
-        padding: 120px 0px;
+        padding: 155px 0px;
         display: flex;
         flex-direction: column;
         gap: 20px;

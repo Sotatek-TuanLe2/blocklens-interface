@@ -27,6 +27,7 @@ import 'src/styles/components/Chart.scss';
 import TableConfigurations from '../../../components/VisualizationConfigs/TableConfigurations';
 import {
   IQuery,
+  LAYOUT_QUERY,
   TYPE_VISUALIZATION,
   VALUE_VISUALIZATION,
   VisualizationType,
@@ -87,15 +88,15 @@ type Props = {
   queryResult: unknown[];
   queryValue: IQuery;
   onReload: () => Promise<void>;
-  expandEditor: boolean;
-  onExpand: (value: React.SetStateAction<boolean>) => void;
+  expandLayout: string;
+  onExpand: (value: React.SetStateAction<string>) => void;
 };
 
 const VisualizationDisplay = ({
   queryResult,
   queryValue,
   onReload,
-  expandEditor,
+  expandLayout,
   onExpand,
 }: Props) => {
   interface ParamTypes {
@@ -313,7 +314,11 @@ const VisualizationDisplay = ({
     return (
       <div
         className={`visual-container__wrapper ${
-          expandEditor ? 'visual-container__wrapper--hidden' : ''
+          expandLayout === LAYOUT_QUERY.FULL
+            ? 'visual-container__wrapper--hidden'
+            : expandLayout === LAYOUT_QUERY.HALF
+            ? ''
+            : 'hidden-editor'
         }`}
       >
         <div className="visual-container__visualization">
@@ -328,8 +333,10 @@ const VisualizationDisplay = ({
           <div className="main-chart">
             <div
               className={`main-visualization ${
-                !toggleCloseConfig ? 'show-full-visual' : ''
-              }`}
+                expandLayout === LAYOUT_QUERY.HIDDEN
+                  ? 'main-visualization-expand'
+                  : ''
+              } ${!toggleCloseConfig ? 'show-full-visual' : ''}`}
             >
               {errorMessage ? (
                 <Flex
@@ -358,7 +365,15 @@ const VisualizationDisplay = ({
                     onClick={() => setToggleCloseConfig(false)}
                   />
                 </div>
-                <div className="body-config">{visualizationConfiguration}</div>
+                <div
+                  className={`${
+                    expandLayout === LAYOUT_QUERY.HIDDEN
+                      ? 'body-config-expand'
+                      : ''
+                  } body-config`}
+                >
+                  {visualizationConfiguration}
+                </div>
               </div>
             )}
           </div>
@@ -404,15 +419,27 @@ const VisualizationDisplay = ({
         }}
         rightElement={
           <Flex gap={'10px'}>
-            <Tooltip label={!expandEditor ? 'Minimize' : 'Maximum'} hasArrow>
-              <div
-                className="btn-expand"
-                onClick={() => onExpand((pre) => !pre)}
-              >
-                {!expandEditor ? (
-                  <p className="icon-query-collapse" />
+            <Tooltip
+              label={
+                expandLayout === LAYOUT_QUERY.FULL
+                  ? 'Maximum'
+                  : expandLayout === LAYOUT_QUERY.HALF
+                  ? 'Minimize'
+                  : 'Minimize'
+              }
+              hasArrow
+            >
+              <div className="btn-expand">
+                {expandLayout === LAYOUT_QUERY.FULL ? (
+                  <p
+                    className="icon-query-expand"
+                    onClick={() => onExpand(LAYOUT_QUERY.HALF)}
+                  />
                 ) : (
-                  <p className="icon-query-expand" />
+                  <p
+                    className="icon-query-collapse"
+                    onClick={() => onExpand(LAYOUT_QUERY.FULL)}
+                  />
                 )}
               </div>
             </Tooltip>
@@ -426,9 +453,23 @@ const VisualizationDisplay = ({
                 <p className="icon-query-edit" />
               </div>
             </Tooltip>
+            <Tooltip label="Expand" hasArrow>
+              <div
+                className="btn-expand-full"
+                onClick={() => onExpand(LAYOUT_QUERY.HIDDEN)}
+              >
+                <p className="icon-expand-chart" />
+              </div>
+            </Tooltip>
           </Flex>
         }
-        onChange={() => onExpand(false)}
+        onChange={() =>
+          onExpand(
+            expandLayout === LAYOUT_QUERY.HIDDEN
+              ? LAYOUT_QUERY.HIDDEN
+              : LAYOUT_QUERY.HALF,
+          )
+        }
         tabs={[
           ...queryValue.visualizations.map((v) => ({
             icon: getIcon(v?.options?.globalSeriesType || v.type),
@@ -452,7 +493,7 @@ const VisualizationDisplay = ({
             ),
             content: (
               <AddVisualization
-                expandEditor={expandEditor}
+                expandLayout={expandLayout}
                 onAddVisualize={addVisualizationHandler}
               />
             ),
@@ -482,12 +523,12 @@ export default VisualizationDisplay;
 
 type AddVisualizationProps = {
   onAddVisualize: (visualizationValue: string) => void;
-  expandEditor?: boolean;
+  expandLayout?: string;
 };
 
 const AddVisualization = ({
   onAddVisualize,
-  expandEditor,
+  expandLayout,
 }: AddVisualizationProps) => {
   const getIcon = (chain: string | undefined) => {
     switch (chain) {
@@ -519,8 +560,13 @@ const AddVisualization = ({
   };
   return (
     <Box>
-      {!expandEditor && (
-        <div className="main-item">
+      {(expandLayout === LAYOUT_QUERY.HALF ||
+        expandLayout === LAYOUT_QUERY.HIDDEN) && (
+        <div
+          className={`main-item ${
+            expandLayout === LAYOUT_QUERY.HIDDEN ? 'main-item-expand' : ''
+          }`}
+        >
           <div className="top-items">
             {visualizationConfigs.slice(0, 3).map((i) => (
               <div

@@ -134,7 +134,8 @@ const TableConfigurations: React.FC<ITableConfigurations> = ({
       >
         <div className="select-column">
           <AppSelect2
-            className="select-table z-100"
+            className="select-table"
+            zIndex={1001}
             size="medium"
             value={columnValue}
             onChange={(e) => setColumnValue(e)}

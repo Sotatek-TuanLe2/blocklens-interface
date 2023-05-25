@@ -112,6 +112,11 @@ export default class DashboardsRequest extends BaseRequest {
     return this.get(url, params);
   }
 
+  getAllQueries(params: IGetBrowse) {
+    const url = `/public/queries`;
+    return this.get(url, params);
+  }
+
   getMyListDashboards(params: IGetBrowse) {
     const url = `/dashboard/list-browse-dashboards`;
     return this.get(url, params);
