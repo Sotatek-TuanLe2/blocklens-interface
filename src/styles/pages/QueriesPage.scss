@@ -21,11 +21,11 @@
   }
 
   .expand-chart {
-    height: 752px !important;
+    height: 750px !important;
     max-height: unset !important;
 
     .main-table {
-      height: 532px;
+      height: 554px;
     }
 
     .btn-expand-full {
@@ -36,6 +36,7 @@
   .hidden-editor {
     .tabs-header {
       border-bottom: unset !important;
+      padding: 0px 17px !important;
     }
   }
 
@@ -95,7 +96,7 @@
     transition: height linear 0.5s;
 
     &.full-editor {
-      height: 675px !important;
+      height: 711px !important;
     }
 
     &.hidden-editor {
@@ -293,11 +294,11 @@
         }
 
         .main-visualization-expand {
-          height: 660px !important;
+          height: 688px !important;
         }
 
         .main-visualization {
-          min-height: 420px;
+          min-height: 440px;
           height: 420px;
           width: 72%;
           margin-top: 20px;
@@ -318,12 +319,12 @@
 
           .body-config-expand {
             overflow: auto;
-            max-height: 650px !important;
+            max-height: 673px !important;
           }
 
           .body-config {
             overflow: auto;
-            max-height: 401px;
+            max-height: 422px;
           }
 
           .header-config {
@@ -374,6 +375,10 @@
     .app-tab {
       .tabs-container {
         border-radius: 4px;
+        width: 900px;
+        overflow: auto;
+        flex-wrap: unset;
+        height: 34px;
       }
 
       &__name-tab {
@@ -425,11 +430,11 @@
       }
 
       .main-item-expand {
-        padding: 232px 0px !important;
+        padding: 240px 0px !important;
       }
 
       .main-item {
-        padding: 155px 0px;
+        padding: 168px 0px;
         display: flex;
         flex-direction: column;
         gap: 20px;
