@@ -67,6 +67,7 @@ export interface IUpdateQuery {
   name?: string;
   query?: string;
   isTemp?: boolean;
+  tags?: string;
 }
 
 export interface SchemaParams {
