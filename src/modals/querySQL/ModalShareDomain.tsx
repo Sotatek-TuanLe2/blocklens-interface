@@ -1,7 +1,7 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
 import { AppInput } from 'src/components';
 import { copyToClipboard } from 'src/utils/utils-helper';
-import BaseModal from './BaseModal';
+import BaseModal from '../BaseModal';
 
 export interface IModalSetting {
   open: boolean;
