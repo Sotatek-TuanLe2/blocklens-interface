@@ -6,9 +6,7 @@
   color: $blackAlpha-800;
   min-height: 100%;
   display: grid;
-  grid-gap: 10px;
-  padding: 10px;
-  border: 1px solid $border;
+  background: #1a203b;
 
   .z-100 {
     z-index: 100;
@@ -21,24 +19,51 @@
 
   .first-box-table {
     min-height: unset !important;
+    margin-top: 10px;
+  }
+
+  .divider-bottom {
+    border-bottom: 1px solid #2f3b58;
+    padding: 4px;
+  }
+
+  .select-column {
+    padding: 2px 12px 2px 12px;
+    background: #1a203b;
+    color: $title;
+
+    .app-select__btn-select {
+      padding: 0px 2px;
+      font-size: 14px;
+      background: #1a203b;
+      border: unset;
+    }
   }
 
   .box-table {
-    min-height: 340px;
-    background-color: $card;
-    padding: 10px;
-    border: 1px solid transparent;
+    padding: 6px 12px;
+    background: #1a203b;
 
     &__title {
       color: $title;
     }
 
-    .main-checkbox {
+    .main-toggle {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       padding: 5px 0px 10px;
       color: $title;
 
       .chakra-checkbox__label {
         font-size: 14px !important;
+      }
+
+      .label-toggle {
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 20px;
+        color: $title;
       }
     }
 
@@ -47,21 +72,32 @@
     }
 
     .box-table-children {
-      align-items: center;
       display: grid;
-      grid-template-columns: minmax(auto, 4rem) minmax(auto, 1fr);
-      padding-left: 10px;
       color: $title;
-      padding: 5px 0;
+      margin-bottom: 12px;
+
+      .label-input {
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 20px;
+        color: $paragraph;
+        margin-bottom: 4px;
+      }
 
       .select-table {
         .app-select__btn-select {
           padding: 0px 17px;
           font-size: 14px;
+          background: #1a203b;
+          border: 1px solid $line;
         }
 
         .app-select__menu {
           color: $title;
+        }
+
+        .app-select__menu-item {
+          padding: 8px 16px;
         }
       }
 
@@ -70,9 +106,10 @@
         border-color: transparent;
         color: $title;
         border-radius: 5px;
-        border: 1px solid $border;
+        border: 1px solid $line;
         padding: 18px;
         height: 0;
+        background: #1a203b;
       }
     }
   }

@@ -7,6 +7,7 @@ import { VisualizationType } from 'src/utils/query.type';
 import { objectKeys } from 'src/utils/utils-network';
 import AppInput from '../AppInput';
 import AppSelect2 from '../AppSelect2';
+import { Switch } from '@chakra-ui/react';
 
 interface ICounterConfigurations {
   visualization: VisualizationType;
@@ -81,20 +82,14 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
 
   return (
     <div className="config-counter">
-      {/* <header>
-        <AppButton className="btn-add" size="sm">
-          Add to dashboard
-        </AppButton>
-      </header> */}
       <Grid
         templateColumns={{
           sm: 'repeat(1, 1fr)',
-          md: 'repeat(2, 1fr)',
+          md: 'repeat(1, 1fr)',
         }}
-        gap={'10px'}
       >
         <GridItem>
-          <div className="box-table">
+          <div className="box-table first-box-table">
             <Text
               className="box-table__title"
               fontWeight="bold"
@@ -103,7 +98,7 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
               Counter options
             </Text>
             <div className="box-table-children">
-              <div>Title</div>
+              <div className="label-input">Title</div>
               <AppInput
                 value={editVisualization?.name}
                 size={'sm'}
@@ -113,10 +108,10 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
               />
             </div>
             <div className="box-table-children">
-              <div>Column</div>
+              <div className="label-input">Column</div>
               <AppSelect2
                 className="select-table z-100"
-                size="small"
+                size="medium"
                 value={dataColumn?.counterColName}
                 options={axisOptionsConfigs}
                 onChange={(e) =>
@@ -125,7 +120,7 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
               />
             </div>
             <div className="box-table-children">
-              <div>Row number</div>
+              <div className="label-input">Row number</div>
               <AppInput
                 type="number"
                 placeholder="Price"
@@ -139,8 +134,9 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
                 }
               />
             </div>
-            <div className="main-checkbox">
-              <Checkbox
+            <div className="main-toggle">
+              <div className="label-toggle">Colored positive values</div>
+              <Switch
                 isChecked={dataColumn?.coloredPositiveValues}
                 value={dataColumn?.coloredPositiveValues}
                 onChange={(e) =>
@@ -149,12 +145,11 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
                   })
                 }
                 size="sm"
-              >
-                Colored positive values
-              </Checkbox>
+              />
             </div>
-            <div className="main-checkbox">
-              <Checkbox
+            <div className="main-toggle">
+              <div className="label-toggle"> Colored negative values</div>
+              <Switch
                 isChecked={dataColumn?.coloredNegativeValues}
                 value={dataColumn?.coloredNegativeValues}
                 onChange={(e) =>
@@ -163,10 +158,9 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
                   })
                 }
                 size="sm"
-              >
-                Colored negative values
-              </Checkbox>
+              />
             </div>
+            <p className="divider-bottom" />
           </div>
         </GridItem>
         <GridItem>
@@ -179,7 +173,7 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
               Formatting
             </Text>
             <div className="box-table-children">
-              <div>Prefix</div>
+              <div className="label-input">Prefix</div>
               <AppInput
                 placeholder="$"
                 size={'sm'}
@@ -193,7 +187,7 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
               />
             </div>
             <div className="box-table-children">
-              <div>Suffix</div>
+              <div className="label-input">Suffix</div>
               <AppInput
                 placeholder="M"
                 size={'sm'}
@@ -207,7 +201,7 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
               />
             </div>
             <div className="box-table-children">
-              <div>Label</div>
+              <div className="label-input">Label</div>
               <AppInput
                 placeholder="Current price"
                 size={'sm'}
@@ -221,7 +215,7 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
               />
             </div>
             <div className="box-table-children">
-              <div>Decimals</div>
+              <div className="label-input">Decimals</div>
               <AppInput
                 type="number"
                 placeholder="1"

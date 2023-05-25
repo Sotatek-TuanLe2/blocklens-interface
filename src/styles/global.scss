@@ -96,12 +96,12 @@ iframe {
 
 ::-webkit-scrollbar {
   width: 6px;
-  background-color: #030821;
+  background-color: #1a203b;
   border-radius: 100px;
   height: 6px;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1a203b;
+  background: $line;
   border-radius: 100px;
 }
 

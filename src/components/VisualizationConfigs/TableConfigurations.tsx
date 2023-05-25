@@ -1,6 +1,6 @@
-import { Checkbox, Divider, Grid, GridItem, Text } from '@chakra-ui/react';
+import { Grid, GridItem, Switch, Text } from '@chakra-ui/react';
 import { ColumnDef } from '@tanstack/react-table';
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { VISUALIZATION_DEBOUNCE } from 'src/pages/WorkspacePage/parts/VisualizationDisplay';
 import 'src/styles/components/TableConfigurations.scss';
 import { VisualizationType } from 'src/utils/query.type';
@@ -40,13 +40,23 @@ const TableConfigurations: React.FC<ITableConfigurations> = ({
 }) => {
   const [editVisualization, setEditVisualization] =
     useState<VisualizationType>(visualization);
+  const dataColumns = getTableColumns(data, editVisualization);
+
+  const optionColumn = useMemo(() => {
+    return dataColumns
+      .map((data: any) => data.accessorKey)
+      .map((item, index: number) => ({
+        value: index.toString(),
+        label: `Column ${index}: ${item}`,
+      }));
+  }, [dataColumns]);
+
+  const [columnValue, setColumnValue] = useState<string>(optionColumn[0].value);
   const timeout = useRef() as any;
 
   const typeData = dataTable?.map((row) =>
     row.getVisibleCells().map((cells: any) => cells.getValue()),
   );
-
-  const dataColumns = getTableColumns(data, editVisualization);
 
   const onChangeDebounce = (visualization: VisualizationType) => {
     clearTimeout(timeout.current);
@@ -97,20 +107,13 @@ const TableConfigurations: React.FC<ITableConfigurations> = ({
       <Grid
         templateColumns={{
           sm: 'repeat(1, 1fr)',
-          md: 'repeat(2, 1fr)',
+          md: 'repeat(1, 1fr)',
         }}
       >
         <GridItem>
           <div className="box-table first-box-table">
-            <Text
-              className="box-table__title"
-              fontWeight="bold"
-              marginBottom="10px"
-            >
-              Table options
-            </Text>
             <div className="box-table-children">
-              <div>Title</div>
+              <div className="label-input">Title</div>
               <AppInput
                 value={editVisualization.name}
                 size={'sm'}
@@ -119,28 +122,38 @@ const TableConfigurations: React.FC<ITableConfigurations> = ({
                 placeholder="24h volume"
               />
             </div>
+            <p className="divider-bottom" />
           </div>
         </GridItem>
       </Grid>
-      <Divider orientation="horizontal" borderColor={'gray'} />
       <Grid
         templateColumns={{
           sm: 'repeat(1, 1fr)',
-          md: 'repeat(2, 1fr)',
+          md: 'repeat(1, 1fr)',
         }}
-        gap={'10px'}
       >
+        <div className="select-column">
+          <AppSelect2
+            className="select-table z-100"
+            size="medium"
+            value={columnValue}
+            onChange={(e) => setColumnValue(e)}
+            options={optionColumn}
+          />
+        </div>
         {!!dataColumns?.length ? (
-          dataColumns?.map((data: any, index: number) => (
-            <GridItem key={index}>
-              <TableOptions
-                data={data}
-                typeData={typeData}
-                index={index}
-                onChange={onChangeColumnConfigurations}
-              />
-            </GridItem>
-          ))
+          dataColumns
+            ?.filter((i, index) => (index.toString() === columnValue ? i : ''))
+            ?.map((data: any, index: number) => (
+              <GridItem key={index}>
+                <TableOptions
+                  data={data}
+                  typeData={typeData}
+                  index={columnValue}
+                  onChange={onChangeColumnConfigurations}
+                />
+              </GridItem>
+            ))
         ) : (
           <>Loading</>
         )}
@@ -158,11 +171,8 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
 
   return (
     <div className="box-table" onClick={() => setSelectedItem(data)}>
-      <Text className="box-table__title" fontWeight="bold" marginBottom="10px">
-        Column {index}: {data.accessorKey}
-      </Text>
       <div className="box-table-children">
-        <div>Title</div>
+        <div className="label-input">Title</div>
         <AppInput
           value={data?.header}
           onChange={(e) =>
@@ -177,11 +187,11 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
         />
       </div>
       <div className="box-table-children">
-        <div>Align</div>
+        <div className="label-input">Align</div>
 
         <AppSelect2
           className="select-table z-100"
-          size="small"
+          size="medium"
           value={data?.align}
           onChange={(e) =>
             onChange({
@@ -193,7 +203,7 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
         />
       </div>
       <div className="box-table-children">
-        <div>Format</div>
+        <div className="label-input">Format</div>
         <AppInput
           placeholder="0.0"
           size={'sm'}
@@ -209,7 +219,7 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
       </div>
       {isNumberValue && (
         <div className="box-table-children">
-          <div>Type</div>
+          <div className="label-input">Type</div>
 
           <AppSelect2
             className="select-table"
@@ -226,8 +236,9 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
         </div>
       )}
 
-      <div className="main-checkbox">
-        <Checkbox
+      <div className="main-toggle">
+        <div className="label-toggle">Hide column</div>
+        <Switch
           size="sm"
           value={data?.isHidden}
           isChecked={data?.isHidden}
@@ -237,15 +248,14 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
               isHidden: e.target.checked,
             })
           }
-        >
-          Hide column
-        </Checkbox>
+        />
       </div>
       {isNumberValue &&
         (data?.type === 'normal' ? (
           <div>
-            <div className="main-checkbox">
-              <Checkbox
+            <div className="main-toggle">
+              <div className="label-toggle">Colored positive values</div>
+              <Switch
                 size="sm"
                 value={data?.coloredPositive}
                 isChecked={data?.coloredPositive}
@@ -255,12 +265,11 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
                     coloredPositive: e.target.checked,
                   })
                 }
-              >
-                Colored positive values
-              </Checkbox>
+              />
             </div>
-            <div className="main-checkbox">
-              <Checkbox
+            <div className="main-toggle">
+              <div className="label-toggle">Colored negative values</div>
+              <Switch
                 size="sm"
                 value={data?.coloredNegative}
                 isChecked={data?.coloredNegative}
@@ -270,14 +279,13 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
                     coloredNegative: e.target.checked,
                   })
                 }
-              >
-                Colored negative values
-              </Checkbox>
+              />
             </div>
           </div>
         ) : (
-          <div className="main-checkbox">
-            <Checkbox
+          <div className="main-toggle">
+            <div className="label-toggle">Colored positive/negative values</div>
+            <Switch
               size="sm"
               value={data?.coloredProgress}
               isChecked={data?.coloredProgress}
@@ -287,9 +295,7 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
                   coloredProgress: e.target.checked,
                 })
               }
-            >
-              Colored positive/negative values
-            </Checkbox>
+            />
           </div>
         ))}
     </div>
