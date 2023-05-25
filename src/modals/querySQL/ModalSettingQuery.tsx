@@ -22,13 +22,13 @@ const ModalSettingQuery = ({
   defaultValue,
   id,
 }: IModalSettingQuerry) => {
-  const [valueSettingQuerry, setValueSettingQuerry] = useState(defaultValue);
+  const [valueSettingQuery, setValueSettingQuery] = useState(defaultValue);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
 
   useEffect(() => {
     const isDisabled = !validator.current.allValid();
     setIsDisableSubmit(isDisabled);
-  }, [valueSettingQuerry]);
+  }, [valueSettingQuery]);
 
   const validator = useRef(
     createValidator({
@@ -37,10 +37,10 @@ const ModalSettingQuery = ({
   );
 
   const handleChangeTitle = (e: ChangeEvent<HTMLInputElement>) => {
-    setValueSettingQuerry((pre) => ({ ...pre, name: e.target.value }));
+    setValueSettingQuery((pre) => ({ ...pre, name: e.target.value }));
   };
   const handleChangeTags = (e: ChangeEvent<HTMLInputElement>) => {
-    setValueSettingQuerry((pre) => ({ ...pre, tags: e.target.value }));
+    setValueSettingQuery((pre) => ({ ...pre, tags: e.target.value }));
   };
 
   const handleSubmit = async () => {
@@ -48,7 +48,7 @@ const ModalSettingQuery = ({
       try {
         const res = await rf
           .getRequest('DashboardsRequest')
-          .updateQuery(valueSettingQuerry, id);
+          .updateQuery(valueSettingQuery, id);
         onSuccess(res);
       } catch (error) {
         toastError({ message: getErrorMessage(error) });
@@ -69,7 +69,7 @@ const ModalSettingQuery = ({
           <div>
             <Text className="input-label">Query Title</Text>
             <AppInput
-              value={valueSettingQuerry.name}
+              value={valueSettingQuery.name}
               validate={{
                 name: `Query title`,
                 validator: validator.current,
@@ -81,7 +81,7 @@ const ModalSettingQuery = ({
           <div>
             <Text className="input-label">{`Tags (optional)`} </Text>
             <AppInput
-              value={valueSettingQuerry.tags}
+              value={valueSettingQuery.tags}
               onChange={handleChangeTags}
             />
           </div>

@@ -171,7 +171,6 @@ const Sidebar: React.FC<{
     useState<boolean>(false);
 
   const [schemaDescribe, setSchemaDescribe] = useState<SchemaType[]>([]);
-  const [openModal, setOpenModal] = useState(true);
 
   const fetchDashboards: any = async (params: any) => {
     try {
