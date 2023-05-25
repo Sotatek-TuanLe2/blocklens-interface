@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router';
 import { AppInput } from 'src/components';
 import AppQueryMenu, { QUERY_MENU_LIST } from 'src/components/AppQueryMenu';
+import ModalShareDomain from 'src/modals/ModalShareDomain';
 import ModalNewDashboard from 'src/modals/querySQL/ModalNewDashboard';
 import rf from 'src/requests/RequestFactory';
 import { PROMISE_STATUS, ROUTES, SchemaType } from 'src/utils/common';
@@ -171,6 +172,7 @@ const Sidebar: React.FC<{
     useState<boolean>(false);
 
   const [schemaDescribe, setSchemaDescribe] = useState<SchemaType[]>([]);
+  const [openModal, setOpenModal] = useState(true);
 
   const fetchDashboards: any = async (params: any) => {
     try {
@@ -536,6 +538,7 @@ const Sidebar: React.FC<{
         open={openNewDashboardModal}
         onClose={onCreateDashboardSuccessfully}
       />
+      <ModalShareDomain onClose={() => setOpenModal(false)} open={true} />
     </div>
   );
 };

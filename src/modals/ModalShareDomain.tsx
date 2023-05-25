@@ -6,11 +6,13 @@ import BaseModal from './BaseModal';
 export interface IModalSetting {
   open: boolean;
   onClose: () => void;
+  link?: string;
 }
 
-const ModalShareDomain = ({ open, onClose }: IModalSetting) => {
+const ModalShareDomain = ({ open, onClose, link }: IModalSetting) => {
+  const linkDefault = window.location.toString();
   const handleCopyLink = () => {
-    copyToClipboard('https://dev-blocksniper.bunicorn.finance/');
+    link ? copyToClipboard(link) : copyToClipboard(linkDefault);
   };
   return (
     <BaseModal
@@ -31,7 +33,8 @@ const ModalShareDomain = ({ open, onClose }: IModalSetting) => {
           <Text className="input-label">Click to Copy Link </Text>
           <AppInput
             readOnly
-            value={'https://dev-blocksniper.bunicorn.finance/'}
+            value={link ? link : linkDefault}
+            pr="48px"
             endAdornment={
               <Box
                 className="bg-copy_icon"
