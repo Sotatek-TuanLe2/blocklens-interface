@@ -19,7 +19,7 @@ const ModalSettingQuery = ({
   open,
   onClose,
   onSuccess,
-  defaultValue,
+  defaultValue = { name: '', tags: '' },
   id,
 }: IModalSettingQuerry) => {
   const [valueSettingQuery, setValueSettingQuery] = useState(defaultValue);
