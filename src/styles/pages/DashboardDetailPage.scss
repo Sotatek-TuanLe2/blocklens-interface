@@ -215,6 +215,7 @@
     width: 100%;
     max-height: calc(100% - 48px);
     overflow-y: overlay;
+    border-top: 1px solid #2f3b58;
 
     .react-grid-item {
       a {

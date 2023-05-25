@@ -100,6 +100,7 @@
 
     &.hidden-editor {
       height: 0px !important;
+      border-top: none;
     }
 
     .ace_print-margin {
