@@ -293,12 +293,12 @@
         }
 
         .main-visualization-expand {
-          height: 688px !important;
+          height: 678px !important;
         }
 
         .main-visualization {
-          min-height: 440px;
-          height: 420px;
+          min-height: 428px;
+          height: 428px;
           width: 72%;
           margin-top: 20px;
         }
@@ -315,6 +315,7 @@
         .main-config {
           width: 28%;
           max-width: 28%;
+          background: #1a203b;
 
           .body-config-expand {
             overflow: auto;
