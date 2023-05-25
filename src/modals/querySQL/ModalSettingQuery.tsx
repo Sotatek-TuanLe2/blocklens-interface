@@ -3,22 +3,32 @@ import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { AppButton, AppInput } from 'src/components';
 import { createValidator } from 'src/utils/utils-validator';
 import BaseModal from '../BaseModal';
+import rf from 'src/requests/RequestFactory';
+import { toastError } from 'src/utils/utils-notify';
+import { getErrorMessage } from 'src/utils/utils-helper';
 
-export interface IModalSetting {
+export interface IModalSettingQuerry {
   open: boolean;
   onClose: () => void;
-  onSubmit: any;
-  type: string;
+  onSuccess: (res: any) => void;
+  defaultValue: { name: string; tags?: string };
+  id: string;
 }
 
-const ModalSetting = ({ open, onClose, onSubmit, type }: IModalSetting) => {
-  const [valueSetting, setValueSetting] = useState({ title: '', tags: '' });
+const ModalSettingQuery = ({
+  open,
+  onClose,
+  onSuccess,
+  defaultValue,
+  id,
+}: IModalSettingQuerry) => {
+  const [valueSettingQuerry, setValueSettingQuerry] = useState(defaultValue);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
 
   useEffect(() => {
     const isDisabled = !validator.current.allValid();
     setIsDisableSubmit(isDisabled);
-  }, [valueSetting]);
+  }, [valueSettingQuerry]);
 
   const validator = useRef(
     createValidator({
@@ -27,20 +37,23 @@ const ModalSetting = ({ open, onClose, onSubmit, type }: IModalSetting) => {
   );
 
   const handleChangeTitle = (e: ChangeEvent<HTMLInputElement>) => {
-    setValueSetting((pre) => ({ ...pre, title: e.target.value }));
+    setValueSettingQuerry((pre) => ({ ...pre, name: e.target.value }));
   };
   const handleChangeTags = (e: ChangeEvent<HTMLInputElement>) => {
-    setValueSetting((pre) => ({ ...pre, tags: e.target.value }));
+    setValueSettingQuerry((pre) => ({ ...pre, tags: e.target.value }));
   };
 
   const handleSubmit = async () => {
-    onSubmit(valueSetting);
-    onClose();
-  };
-
-  const getTitleModal = () => {
-    if (type === 'query') return 'Query';
-    if (type === 'dashboard') return 'Dashboard';
+    if (!isDisableSubmit) {
+      try {
+        const res = await rf
+          .getRequest('DashboardsRequest')
+          .updateQuery(valueSettingQuerry, id);
+        onSuccess(res);
+      } catch (error) {
+        toastError({ message: getErrorMessage(error) });
+      }
+    }
   };
 
   return (
@@ -51,14 +64,14 @@ const ModalSetting = ({ open, onClose, onSubmit, type }: IModalSetting) => {
       className="modal-setting"
     >
       <Flex direction={'column'}>
-        <div className="modal-setting__title">Setting {getTitleModal()}</div>
+        <div className="modal-setting__title">Setting Query</div>
         <Box className="modal-setting__content">
           <div>
-            <Text className="input-label">{getTitleModal()} Title</Text>
+            <Text className="input-label">Query Title</Text>
             <AppInput
-              value={valueSetting.title}
+              value={valueSettingQuerry.name}
               validate={{
-                name: `${getTitleModal()} title`,
+                name: `Query title`,
                 validator: validator.current,
                 rule: ['required', 'max:150'],
               }}
@@ -67,7 +80,10 @@ const ModalSetting = ({ open, onClose, onSubmit, type }: IModalSetting) => {
           </div>
           <div>
             <Text className="input-label">{`Tags (optional)`} </Text>
-            <AppInput value={valueSetting.tags} onChange={handleChangeTags} />
+            <AppInput
+              value={valueSettingQuerry.tags}
+              onChange={handleChangeTags}
+            />
           </div>
         </Box>
         <Flex className="modal-footer">
@@ -88,4 +104,4 @@ const ModalSetting = ({ open, onClose, onSubmit, type }: IModalSetting) => {
   );
 };
 
-export default ModalSetting;
+export default ModalSettingQuery;

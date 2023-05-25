@@ -1,5 +1,6 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
 import { AppInput } from 'src/components';
+import { copyToClipboard } from 'src/utils/utils-helper';
 import BaseModal from './BaseModal';
 
 export interface IModalSetting {
@@ -9,7 +10,7 @@ export interface IModalSetting {
 
 const ModalShareDomain = ({ open, onClose }: IModalSetting) => {
   const handleCopyLink = () => {
-    navigator.clipboard.writeText('https://www.google.com/');
+    copyToClipboard('https://dev-blocksniper.bunicorn.finance/');
   };
   return (
     <BaseModal
@@ -30,7 +31,7 @@ const ModalShareDomain = ({ open, onClose }: IModalSetting) => {
           <Text className="input-label">Click to Copy Link </Text>
           <AppInput
             readOnly
-            value={'https://www.google.com/'}
+            value={'https://dev-blocksniper.bunicorn.finance/'}
             endAdornment={
               <Box
                 className="bg-copy_icon"

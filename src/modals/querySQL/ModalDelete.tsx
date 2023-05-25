@@ -5,19 +5,19 @@ import BaseModal from '../BaseModal';
 export interface IModalDelete {
   open: boolean;
   onClose: () => void;
-  onSubmit: any;
+  id: string;
   type: string;
+  onSuccess: () => void;
 }
 
-const ModalDelete = ({ open, onClose, onSubmit, type }: IModalDelete) => {
+const ModalDelete = ({ open, onClose, id, type, onSuccess }: IModalDelete) => {
   const getTitleModal = () => {
     if (type === 'query') return 'Query';
     if (type === 'dashboard') return 'Dashboard';
   };
 
   const handleSubmit = async () => {
-    onSubmit();
-    onClose();
+    onSuccess();
   };
 
   return (
