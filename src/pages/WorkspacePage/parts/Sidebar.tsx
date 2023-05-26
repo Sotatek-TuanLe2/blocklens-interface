@@ -5,6 +5,7 @@ import { useHistory, useParams } from 'react-router';
 import { AppInput } from 'src/components';
 import AppQueryMenu, { QUERY_MENU_LIST } from 'src/components/AppQueryMenu';
 import ModalNewDashboard from 'src/modals/querySQL/ModalNewDashboard';
+import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import rf from 'src/requests/RequestFactory';
 import { PROMISE_STATUS, ROUTES, SchemaType } from 'src/utils/common';
 import { IDashboardDetail, IQuery } from 'src/utils/query.type';
@@ -245,6 +246,13 @@ const Sidebar: React.FC<{
     fetchDataExploreData();
   }, []);
 
+  useEffect(() => {
+    AppBroadcast.on('SETTING_QUERY', async () => {
+      await fetchDataWorkPlace();
+    });
+    return () => AppBroadcast.remove('SETTING_QUERY');
+  }, []);
+
   const getDataSearchWorkPlace = useCallback(
     debounce(async (search) => {
       fetchDataWorkPlace(search.trim());
@@ -356,6 +364,8 @@ const Sidebar: React.FC<{
                   onFork={() => {
                     onClickFork(query);
                   }}
+                  itemType={LIST_ITEM_TYPE.QUERIES}
+                  item={query}
                 />
               </div>
             ))}
@@ -399,6 +409,8 @@ const Sidebar: React.FC<{
                   onFork={() => {
                     onClickFork(dashboard);
                   }}
+                  itemType={LIST_ITEM_TYPE.DASHBOARDS}
+                  item={dashboard}
                 />
               </div>
             ))}

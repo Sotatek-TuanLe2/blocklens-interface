@@ -3,11 +3,17 @@ import { useState } from 'react';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import AppButton from './AppButton';
 import 'src/styles/components/AppQueryMenu.scss';
+import ModalShareDomain from 'src/modals/querySQL/ModalShareDomain';
+import ModalDelete from 'src/modals/querySQL/ModalDelete';
+import ModalSettingQuery from 'src/modals/querySQL/ModalSettingQuery';
+import { IDashboardDetail, IQuery } from 'src/utils/query.type';
+import { AppBroadcast } from 'src/utils/utils-broadcast';
 
 interface IAppQueryMenu {
   menu?: string[];
-  itemType?: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
+  itemType: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
   onFork?: () => void;
+  item: IQuery | IDashboardDetail;
 }
 
 export const QUERY_MENU_LIST = {
@@ -27,19 +33,29 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
     ],
     itemType,
     onFork = () => null,
+    item,
   } = props;
 
-  const [openModalSetting, setOpenModalSetting] = useState<boolean>(false);
+  const [openModalSettingQuery, setOpenModalSettingQuery] =
+    useState<boolean>(false);
   const [openModalShare, setOpenModalShare] = useState<boolean>(false);
   const [openModalDelete, setOpenModalDelete] = useState<boolean>(false);
 
   const onToggleModalSetting = () =>
-    setOpenModalSetting((prevState) => !prevState);
+    setOpenModalSettingQuery((prevState) => !prevState);
 
   const onToggleModalShare = () => setOpenModalShare((prevState) => !prevState);
 
   const onToggleModalDelete = () =>
     setOpenModalDelete((prevState) => !prevState);
+
+  const handleDeleteSuccess = () => {
+    console.log('delete success');
+  };
+
+  const handleSettingSuccess = () => {
+    AppBroadcast.dispatch('SETTING_QUERY');
+  };
 
   let itemList: {
     id: string;
@@ -98,8 +114,31 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
       {itemType === LIST_ITEM_TYPE.DASHBOARDS && (
         <>{/** Modal Setting Dashboard */}</>
       )}
-      {itemType === LIST_ITEM_TYPE.QUERIES && <>{/** Modal Setting Query */}</>}
+      {itemType === LIST_ITEM_TYPE.QUERIES && openModalSettingQuery && (
+        <ModalSettingQuery
+          open={openModalSettingQuery}
+          onClose={() => setOpenModalSettingQuery(false)}
+          id={item.id}
+          defaultValue={{ name: item.name, tags: item.tags }}
+          onSuccess={handleSettingSuccess}
+        />
+      )}
       {/** Modal Share */}
+      {openModalShare && (
+        <ModalShareDomain
+          open={openModalShare}
+          onClose={() => setOpenModalShare(false)}
+        />
+      )}
+      {openModalDelete && (
+        <ModalDelete
+          open={openModalDelete}
+          onClose={() => setOpenModalDelete(false)}
+          onSuccess={handleDeleteSuccess}
+          type={itemType}
+          id={item.id}
+        />
+      )}
       {/** Modal Delete */}
     </>
   );

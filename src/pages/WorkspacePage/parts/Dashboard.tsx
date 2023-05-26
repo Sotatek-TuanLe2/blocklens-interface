@@ -32,6 +32,7 @@ import VisualizationItem from './VisualizationItem';
 import Header from './Header';
 import { WORKSPACE_TYPES } from '..';
 import AppNetworkIcons from 'src/components/AppNetworkIcons';
+import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 
 export interface ILayout extends Layout {
   options: any;
@@ -211,13 +212,16 @@ const DashboardPart: React.FC = () => {
 
   return (
     <div className="workspace-page__editor__dashboard">
-      <Header
-        type={WORKSPACE_TYPES.DASHBOARD}
-        author={user?.getFirstName() || ''}
-        title={dataDashboard?.name || ''}
-        isEdit={editMode}
-        onChangeEditMode={() => setEditMode((prevState) => !prevState)}
-      />
+      {!!dataDashboard && (
+        <Header
+          type={LIST_ITEM_TYPE.DASHBOARDS}
+          author={user?.getFirstName() || ''}
+          data={dataDashboard}
+          isEdit={editMode}
+          onChangeEditMode={() => setEditMode((prevState) => !prevState)}
+        />
+      )}
+
       <div className="dashboard-container">
         <Box className="header-tab">
           <div className="header-tab__info">

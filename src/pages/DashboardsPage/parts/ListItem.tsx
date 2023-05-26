@@ -75,10 +75,14 @@ const ListItem: React.FC<IListItem> = (props) => {
 
   const _renderDropdown = () => {
     return (
-      <AppQueryMenu
-        menu={[QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.SHARE]}
-        onFork={onClickFork}
-      />
+      !!item && (
+        <AppQueryMenu
+          menu={[QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.SHARE]}
+          onFork={onClickFork}
+          item={item}
+          itemType={type}
+        />
+      )
     );
   };
 
