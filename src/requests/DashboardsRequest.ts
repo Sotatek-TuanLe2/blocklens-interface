@@ -193,7 +193,7 @@ export default class DashboardsRequest extends BaseRequest {
   }
 
   getPublicQueryById(params: DataQuery) {
-    const url = `public/queries?${params.queryId}`;
+    const url = `/public/queries/${params.queryId}`;
     return this.get(url);
   }
 
@@ -208,7 +208,7 @@ export default class DashboardsRequest extends BaseRequest {
   }
 
   executePublicQuery(queryId: string) {
-    const url = '/query-executors/execute-query';
+    const url = '/query-executors/execute-query-free';
     return this.post(url, { queryId });
   }
 

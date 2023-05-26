@@ -70,6 +70,7 @@ export type VisualizationType = {
   updatedAt: string;
   options: any;
   query?: IQuery;
+  queryId?: string;
 };
 
 export interface IQuery {

@@ -38,7 +38,7 @@ const VisualizationItem = React.memo(
     const [errorExecuteQuery, setErrorExecuteQuery] =
       useState<IErrorExecuteQuery>();
 
-    const queryId = visualization?.query?.id;
+    const queryId = visualization?.queryId;
     const fetchQueryResultInterval: any = useRef();
 
     useEffect(() => {
