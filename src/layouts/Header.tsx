@@ -77,7 +77,7 @@ const Header: FC = () => {
   const onLogout = () => {
     dispatch(clearUser());
     if (PRIVATE_PATH.some((path) => location.pathname.includes(path))) {
-      history.push(ROUTES.LOGIN);
+      history.push(ROUTES.HOME);
     }
   };
 
