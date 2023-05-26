@@ -1,5 +1,4 @@
 import { FormLabel, Switch, Tooltip } from '@chakra-ui/react';
-import { ReactNode } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { AppButton } from 'src/components';
 import AppQueryMenu from 'src/components/AppQueryMenu';
@@ -70,7 +69,15 @@ const Header: React.FC<IHeaderProps> = (props) => {
             <AppButton
               onClick={onChangeEditMode}
               size="sm"
-              leftIcon={<p className={isEdit ? '' : ''} />}
+              leftIcon={
+                <p
+                  className={
+                    isEdit
+                      ? 'bg-icon_success_dashboard'
+                      : 'bg-icon_edit_dashboard'
+                  }
+                />
+              }
               me="10px"
             >
               {isEdit ? 'Done' : 'Edit'}

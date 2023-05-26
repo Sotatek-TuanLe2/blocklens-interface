@@ -9,21 +9,23 @@ import 'ace-builds/src-noconflict/mode-sql';
 import 'ace-builds/src-noconflict/theme-monokai';
 import { Prompt, useHistory, useParams } from 'react-router-dom';
 import { AppLoadingTable, AppTag } from 'src/components';
-import AppNetworkIcons from 'src/components/AppNetworkIcons';
-import useUser from 'src/hooks/useUser';
+import { getErrorMessage } from 'src/utils/utils-helper';
+import {
+  QueryExecutedResponse,
+  IQuery,
+  IErrorExecuteQuery,
+  LAYOUT_QUERY,
+} from 'src/utils/query.type';
+import 'src/styles/pages/QueriesPage.scss';
 import ModalSaveQuery from 'src/modals/querySQL/ModalSaveQuery';
-import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import rf from 'src/requests/RequestFactory';
+import useUser from 'src/hooks/useUser';
+import AppNetworkIcons from 'src/components/AppNetworkIcons';
+import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import 'src/styles/pages/QueriesPage.scss';
 import { QUERY_RESULT_STATUS, ROUTES } from 'src/utils/common';
-import {
-  IErrorExecuteQuery,
-  IQuery,
-  QueryExecutedResponse,
-} from 'src/utils/query.type';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
-import { getErrorMessage } from 'src/utils/utils-helper';
-import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { Query } from 'src/utils/utils-query';
 import { EditorContext } from '../context/EditorContext';
 import Header from './Header';
@@ -37,7 +39,7 @@ const QueryPart: React.FC = () => {
 
   const [queryResult, setQueryResult] = useState<any>([]);
   const [queryValue, setQueryValue] = useState<IQuery | null>(null);
-  const [expandEditor, setExpandEditor] = useState<boolean>(false);
+  const [expandLayout, setExpandLayout] = useState<string>(LAYOUT_QUERY.HALF);
   const [showSaveModal, setShowSaveModal] = useState<boolean>(false);
   const [isLoadingResult, setIsLoadingResult] = useState<boolean>(!!queryId);
   const [errorExecuteQuery, setErrorExecuteQuery] =
@@ -60,7 +62,7 @@ const QueryPart: React.FC = () => {
     if (queryId) {
       fetchInitalData();
       AppBroadcast.on('ADD_TEXT_TO_EDITOR', onAddTextToEditor);
-      AppBroadcast.on('SETTING_QUERY', async () => await fetchInitalData());
+      AppBroadcast.on('SETTING_QUERY', async () => await fetchQuery());
     } else {
       resetEditor();
     }
@@ -188,10 +190,6 @@ const QueryPart: React.FC = () => {
     }
   };
 
-  const onExpand = () => {
-    setExpandEditor((pre) => !pre);
-  };
-
   const onSelectQuery = debounce((value) => {
     if (queryId) {
       setSelectedQuery(value.session.getTextRange());
@@ -257,21 +255,44 @@ const QueryPart: React.FC = () => {
                   ))}
                 </div>
                 <Tooltip
-                  label={expandEditor ? 'Minimize' : 'Maximum'}
+                  label={
+                    expandLayout === LAYOUT_QUERY.FULL
+                      ? 'Minimize'
+                      : expandLayout === LAYOUT_QUERY.HALF
+                      ? 'Minimize'
+                      : 'Maximum'
+                  }
                   hasArrow
                   placement="top"
                 >
-                  <div className="btn-expand" onClick={onExpand}>
-                    {expandEditor ? (
-                      <p className="icon-query-collapse" />
+                  <div className="btn-expand">
+                    {expandLayout === LAYOUT_QUERY.FULL ? (
+                      <p
+                        className="icon-query-collapse"
+                        onClick={() => setExpandLayout(LAYOUT_QUERY.HALF)}
+                      />
+                    ) : expandLayout === LAYOUT_QUERY.HALF ? (
+                      <p
+                        className="icon-query-collapse"
+                        onClick={() => setExpandLayout(LAYOUT_QUERY.HIDDEN)}
+                      />
                     ) : (
-                      <p className="icon-query-expand" />
+                      <p
+                        className="icon-query-expand"
+                        onClick={() => setExpandLayout(LAYOUT_QUERY.FULL)}
+                      />
                     )}
                   </div>
                 </Tooltip>
               </Box>
               <AceEditor
-                className={`custom-editor ${expandEditor ? 'expand' : ''}`}
+                className={`custom-editor ${
+                  expandLayout === LAYOUT_QUERY.FULL
+                    ? 'full-editor'
+                    : expandLayout === LAYOUT_QUERY.HALF
+                    ? ''
+                    : 'hidden-editor'
+                }`}
                 ref={editorRef}
                 mode="sql"
                 theme="monokai"
@@ -293,7 +314,15 @@ const QueryPart: React.FC = () => {
               />
             </Box>
             {queryId && !!queryValue && (
-              <div className="add-chart">
+              <div
+                className={`add-chart ${
+                  expandLayout === LAYOUT_QUERY.HIDDEN
+                    ? 'expand-chart'
+                    : expandLayout === LAYOUT_QUERY.HALF
+                    ? ''
+                    : 'hidden-editor'
+                }`}
+              >
                 {isLoadingResult ? (
                   <AppLoadingTable
                     widthColumns={[100]}
@@ -305,8 +334,8 @@ const QueryPart: React.FC = () => {
                       queryResult={queryResult}
                       queryValue={queryValue}
                       onReload={fetchQuery}
-                      expandEditor={expandEditor}
-                      onExpand={setExpandEditor}
+                      expandLayout={expandLayout}
+                      onExpand={setExpandLayout}
                     />
                   </Box>
                 ) : (

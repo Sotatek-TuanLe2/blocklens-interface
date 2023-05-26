@@ -20,15 +20,42 @@
     min-height: 400px;
   }
 
+  .expand-chart {
+    height: 750px !important;
+    max-height: unset !important;
+
+    .main-table {
+      height: 554px;
+    }
+
+    .btn-expand-full {
+      display: none !important;
+    }
+  }
+
+  .hidden-editor {
+    .tabs-header {
+      border-bottom: unset !important;
+      padding: 0px 17px !important;
+    }
+  }
+
   .add-chart {
     padding: 6px 0px;
     background: $card;
     border-radius: 6px;
     margin-top: 4px;
     margin-bottom: 20px;
-    max-height: 503px;
+    max-height: 500px;
 
     .btn-expand {
+      height: 100%;
+      &:hover {
+        cursor: pointer;
+      }
+    }
+
+    .btn-expand-full {
       height: 100%;
       &:hover {
         cursor: pointer;
@@ -68,8 +95,13 @@
     border-bottom-right-radius: 6px;
     transition: height linear 0.5s;
 
-    &.expand {
-      height: 530px !important;
+    &.full-editor {
+      height: 711px !important;
+    }
+
+    &.hidden-editor {
+      height: 0px !important;
+      border-top: none;
     }
 
     .ace_print-margin {
@@ -202,11 +234,14 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
+
     .tabs-header {
+      gap: 20px;
       align-items: baseline;
       padding: 0px 17px 10px 17px;
       border-bottom: 1px solid $border;
     }
+
     &__wrapper {
       display: block;
       transition: all linear 0.5s;
@@ -232,13 +267,13 @@
       &--bar,
       &--line,
       &--scatter {
-        width: 96% !important;
-        height: 92% !important;
+        width: 100% !important;
+        height: 100% !important;
       }
 
       &--area {
-        width: 96% !important;
-        height: 96% !important;
+        width: 100% !important;
+        height: 100% !important;
       }
 
       &__error {
@@ -253,14 +288,18 @@
       .main-chart {
         display: flex;
         width: 100%;
-        height: 100%;
-        gap: 30px;
 
         .show-full-visual {
           width: 100% !important;
         }
 
+        .main-visualization-expand {
+          height: 678px !important;
+        }
+
         .main-visualization {
+          min-height: 428px;
+          height: 428px;
           width: 72%;
           margin-top: 20px;
         }
@@ -276,23 +315,33 @@
 
         .main-config {
           width: 28%;
+          max-width: 28%;
+          background: #1a203b;
+
+          .body-config-expand {
+            overflow: auto;
+            max-height: 673px !important;
+          }
 
           .body-config {
             overflow: auto;
-            max-height: 401px;
+            max-height: 422px;
           }
+
           .header-config {
             padding: 0px 12px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             background: $disable;
+
             .close-config-icon {
               width: 8px;
               height: 8px;
               background: url('../../assets/icons/icon-default-work-place.png') -115px -11px;
               cursor: pointer;
             }
+
             .title-config {
               text-transform: uppercase;
               font-weight: 700;
@@ -327,6 +376,10 @@
     .app-tab {
       .tabs-container {
         border-radius: 4px;
+        width: 900px;
+        overflow: auto;
+        flex-wrap: unset;
+        height: 34px;
       }
 
       &__name-tab {
@@ -377,8 +430,12 @@
         }
       }
 
+      .main-item-expand {
+        padding: 240px 0px !important;
+      }
+
       .main-item {
-        padding: 120px 0px;
+        padding: 168px 0px;
         display: flex;
         flex-direction: column;
         gap: 20px;

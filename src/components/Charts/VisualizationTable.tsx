@@ -150,7 +150,7 @@ const VisualizationTable = <T,>({
         />
       </div>
 
-      <Box className="main-table" height={'290px'} overflow={'auto'}>
+      <Box className="main-table" height={'308px'} overflow={'auto'}>
         <table
           className={'table-value'}
           {...{
