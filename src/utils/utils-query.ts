@@ -37,6 +37,7 @@ export interface QueryInterface {
   getName: () => string;
   getCreatedTime: () => string;
   getUpdatedTime: () => string;
+  getThumnail: () => string | null;
   getTags: () => string[] | null;
   getQuery: () => string;
   // getUser: () => UserInterface | string;
@@ -103,6 +104,7 @@ export class Query implements QueryInterface {
   public name = '';
   public createdAt;
   public updatedAt;
+  public thumbnail;
   public tags;
   public privateMode = false;
   public temporaryMode = false;
@@ -121,6 +123,7 @@ export class Query implements QueryInterface {
     this.privateMode = query.isPrivate;
     this.temporaryMode = query.isTemp;
     this.query = query.query;
+    this.thumbnail = query.thumbnail;
     // this.user = query.user;
     this.visualizations = [];
     if (!!query.visualizations) {
@@ -148,6 +151,10 @@ export class Query implements QueryInterface {
 
   getUpdatedTime() {
     return this.updatedAt;
+  }
+
+  getThumnail() {
+    return this.thumbnail || null;
   }
 
   getTags() {
