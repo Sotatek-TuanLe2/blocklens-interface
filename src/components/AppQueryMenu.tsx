@@ -1,13 +1,14 @@
 import { Flex, Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/react';
 import { useState } from 'react';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
-import AppButton from './AppButton';
 import 'src/styles/components/AppQueryMenu.scss';
 import ModalShareDomain from 'src/modals/querySQL/ModalShareDomain';
 import ModalDelete from 'src/modals/querySQL/ModalDelete';
 import ModalSettingQuery from 'src/modals/querySQL/ModalSettingQuery';
 import { IDashboardDetail, IQuery } from 'src/utils/query.type';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
+import ModelNewDashboard from 'src/modals/querySQL/ModalNewDashboard';
+import { TYPE_MODAL } from 'src/pages/WorkspacePage/parts/Dashboard';
 
 interface IAppQueryMenu {
   menu?: string[];
@@ -36,13 +37,17 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
     item,
   } = props;
 
-  const [openModalSettingQuery, setOpenModalSettingQuery] =
-    useState<boolean>(false);
+  const [openModalSetting, setOpenModalSetting] = useState<boolean>(false);
   const [openModalShare, setOpenModalShare] = useState<boolean>(false);
   const [openModalDelete, setOpenModalDelete] = useState<boolean>(false);
+  // const [openModalSettingDashboard, setOpenModalSettingDashboard] =
+  //   useState<boolean>(false);
+
+  // const onToggleModalSettingDashboard = () =>
+  //   setOpenModalSettingDashboard((prevState) => !prevState);
 
   const onToggleModalSetting = () =>
-    setOpenModalSettingQuery((prevState) => !prevState);
+    setOpenModalSetting((prevState) => !prevState);
 
   const onToggleModalShare = () => setOpenModalShare((prevState) => !prevState);
 
@@ -111,13 +116,18 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
           ))}
         </MenuList>
       </Menu>
-      {itemType === LIST_ITEM_TYPE.DASHBOARDS && (
-        <>{/** Modal Setting Dashboard */}</>
+      {itemType === LIST_ITEM_TYPE.DASHBOARDS && openModalSetting && (
+        <ModelNewDashboard
+          open={openModalSetting}
+          onClose={onToggleModalSetting}
+          defaultValue={{ name: item.name, tags: item.tags }}
+          type={TYPE_MODAL.EDIT}
+        />
       )}
-      {itemType === LIST_ITEM_TYPE.QUERIES && openModalSettingQuery && (
+      {itemType === LIST_ITEM_TYPE.QUERIES && openModalSetting && (
         <ModalSettingQuery
-          open={openModalSettingQuery}
-          onClose={() => setOpenModalSettingQuery(false)}
+          open={openModalSetting}
+          onClose={onToggleModalSetting}
           id={item.id}
           defaultValue={{ name: item.name, tags: item.tags }}
           onSuccess={handleSettingSuccess}

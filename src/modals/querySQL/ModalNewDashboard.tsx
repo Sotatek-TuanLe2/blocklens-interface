@@ -10,10 +10,13 @@ import { toastError } from 'src/utils/utils-notify';
 import { createValidator } from 'src/utils/utils-validator';
 import BaseModal from '../BaseModal';
 import { IconUploadImg } from 'src/assets/icons';
+import { TYPE_MODAL } from 'src/pages/WorkspacePage/parts/Dashboard';
 
 interface IModelNewDashboard {
   open: boolean;
   onClose: () => void;
+  defaultValue: { name: string; tags?: string[] };
+  type: TYPE_MODAL.ADD | TYPE_MODAL.EDIT | string;
 }
 
 interface IDataSettingForm {
@@ -22,10 +25,14 @@ interface IDataSettingForm {
   thumbnail: File | null;
 }
 
-const ModelNewDashboard: React.FC<IModelNewDashboard> = ({ open, onClose }) => {
+const ModelNewDashboard: React.FC<IModelNewDashboard> = ({
+  open,
+  onClose,
+  defaultValue = { name: '', tags: [''] },
+}) => {
   const initDataFormSetting = {
-    title: '',
-    tag: '',
+    title: defaultValue.name || '',
+    tag: defaultValue.tags?.join(',') || '',
     thumbnail: null,
   };
 
