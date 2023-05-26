@@ -42,11 +42,14 @@ import WorkspacePage from './pages/WorkspacePage';
  * Main App routes.
  */
 
-const GUEST_PATH = [
-  '/forgot-password',
-  '/verify-email',
-  '/sign-up',
-  '/reset-password',
+export const GUEST_PATH = [
+  ROUTES.HOME,
+  ROUTES.FORGOT_PASSWORD,
+  ROUTES.VERIFY_EMAIL,
+  ROUTES.SIGN_UP,
+  ROUTES.RESET_PASSWORD,
+  ROUTES.DASHBOARD,
+  ROUTES.QUERY,
 ];
 
 const Routes: FC<RouteComponentProps> = () => {
@@ -115,16 +118,14 @@ const Routes: FC<RouteComponentProps> = () => {
           component={MessagesHistory}
         />
         <PrivateRoute path={'/top-up'} component={TopUpPage} /> */}
-        <PrivateRoute
+        <Route
           path={`${ROUTES.DASHBOARD}/:dashboardId?`}
           component={WorkspacePage}
         />
-        <PrivateRoute
-          path={`${ROUTES.QUERY}/:queryId?`}
-          component={WorkspacePage}
-        />
+        <Route path={`${ROUTES.QUERY}/:queryId?`} component={WorkspacePage} />
+        {/* TODO: create private route for my dashboard and my query */}
         <Route path={ROUTES.CONTACT_US} component={ContactUs} />
-        <PrivateRoute path={ROUTES.HOME} component={DashboardsPage} />
+        <Route path={ROUTES.HOME} component={DashboardsPage} />
         {/* <PrivateRoute path={'/'} component={HomePage} /> */}
       </Switch>
       <>

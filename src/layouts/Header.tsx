@@ -14,7 +14,7 @@ import {
   Flex,
   Avatar,
 } from '@chakra-ui/react';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
 import ModalSignInRequest from 'src/modals/ModalSignInRequest';
 import { isMobile } from 'react-device-detect';
@@ -22,6 +22,7 @@ import { ArrowLogout, DoorLogout } from 'src/assets/icons';
 import { clearUser } from 'src/store/user';
 import useUser from 'src/hooks/useUser';
 import { ROUTES } from 'src/utils/common';
+import { GUEST_PATH } from 'src/routes';
 
 const menus = [
   {
@@ -75,7 +76,9 @@ const Header: FC = () => {
 
   const onLogout = () => {
     dispatch(clearUser());
-    history.push(ROUTES.LOGIN);
+    if (!GUEST_PATH.includes(location.pathname)) {
+      history.push(ROUTES.LOGIN);
+    }
   };
 
   const _renderAvatar = () => {
@@ -180,6 +183,18 @@ const Header: FC = () => {
     );
   };
 
+  const _renderSignupLoginContent = () => (
+    <Box className="signup-login">
+      <Link className="signup-login__link" to={ROUTES.LOGIN}>
+        Sign in
+      </Link>
+      {' / '}
+      <Link className="signup-login__link" to={ROUTES.SIGN_UP}>
+        Sign Up
+      </Link>
+    </Box>
+  );
+
   return (
     <Box className="header">
       <Flex className={'content-header'}>
@@ -190,7 +205,7 @@ const Header: FC = () => {
             width={isMobile ? '140px' : 'auto'}
           />
         </Box>
-        {accessToken && _renderContent()}
+        {accessToken ? _renderContent() : _renderSignupLoginContent()}
       </Flex>
 
       <ModalSignInRequest

@@ -6,6 +6,7 @@ import { DashboardListIcon, IconMywork, QueriesIcon } from 'src/assets/icons';
 import { AppDataTable, RequestParams } from 'src/components';
 import AppTabs, { ITabs } from 'src/components/AppTabs';
 import { VisibilityGridDashboardList } from 'src/constants';
+import useUser from 'src/hooks/useUser';
 import { BasePage } from 'src/layouts';
 import {
   DashboardsParams,
@@ -38,6 +39,7 @@ interface IQueriesParams extends RequestParams, QueriesParams {}
 const DashboardsPage: React.FC = () => {
   const { search: searchUrl } = useLocation();
   const history = useHistory();
+  const { user } = useUser();
 
   const [tabType, setTabType] = useState<string>(LIST_ITEM_TYPE.DASHBOARDS);
   const [dashboardParams, setDashboardParams] = useState<IDashboardParams>({});
@@ -228,109 +230,117 @@ const DashboardsPage: React.FC = () => {
     );
   }, [visibility]);
 
-  const tabs: ITabs[] = [
-    {
-      id: LIST_ITEM_TYPE.DASHBOARDS,
-      name: 'Dashboards',
-      icon: <DashboardListIcon />,
-      content: _renderContentTable(
-        <AppDataTable
-          requestParams={dashboardParams}
-          fetchData={fetchAllDashboards}
-          limit={12}
-          renderHeader={_renderHeader}
-          renderBody={(data) =>
-            _renderBody(
-              data.map((item: any) => (
-                <ListItem
-                  key={item.id}
-                  item={item}
-                  type={LIST_ITEM_TYPE.DASHBOARDS}
-                  visibility={visibility}
-                />
-              )),
-            )
-          }
-        />,
-      ),
-    },
-    {
-      id: LIST_ITEM_TYPE.QUERIES,
-      name: 'Queries',
-      icon: <QueriesIcon />,
-      content: _renderContentTable(
-        <AppDataTable
-          requestParams={queryParams}
-          fetchData={fetchAllQueries}
-          limit={15}
-          renderHeader={_renderHeader}
-          renderBody={(data) =>
-            _renderBody(
-              data.map((item: any) => (
-                <ListItem
-                  key={item.id}
-                  item={item}
-                  type={LIST_ITEM_TYPE.QUERIES}
-                  visibility={visibility}
-                />
-              )),
-            )
-          }
-        />,
-      ),
-    },
-    {
-      id: LIST_ITEM_TYPE.MYWORK,
-      name: 'My Work',
-      icon: <IconMywork />,
-      content: _renderContentTable(
-        <>
-          <Box
-            display={myWorkType === TYPE_MYWORK.DASHBOARDS ? 'block' : 'none'}
-          >
-            <AppDataTable
-              requestParams={dashboardParams}
-              fetchData={fetchMyDashboards}
-              limit={12}
-              renderHeader={_renderHeader}
-              renderBody={(data) =>
-                _renderBody(
-                  data.map((item: any) => (
-                    <ListItem
-                      key={item.id}
-                      item={item}
-                      type={LIST_ITEM_TYPE.DASHBOARDS}
-                      visibility={visibility}
-                    />
-                  )),
-                )
-              }
-            />
-          </Box>
-          <Box display={myWorkType === TYPE_MYWORK.QUERIES ? 'block' : 'none'}>
-            <AppDataTable
-              requestParams={queryParams}
-              fetchData={fetchMyQueries}
-              limit={15}
-              renderHeader={_renderHeader}
-              renderBody={(data) =>
-                _renderBody(
-                  data.map((item: any) => (
-                    <ListItem
-                      key={item.id}
-                      item={item}
-                      type={LIST_ITEM_TYPE.QUERIES}
-                      visibility={visibility}
-                    />
-                  )),
-                )
-              }
-            />
-          </Box>
-        </>,
-      ),
-    },
-  ];
+  const generateTabs = (): ITabs[] => {
+    const tabs: ITabs[] = [
+      {
+        id: LIST_ITEM_TYPE.DASHBOARDS,
+        name: 'Dashboards',
+        icon: <DashboardListIcon />,
+        content: _renderContentTable(
+          <AppDataTable
+            requestParams={dashboardParams}
+            fetchData={fetchAllDashboards}
+            limit={12}
+            renderHeader={_renderHeader}
+            renderBody={(data) =>
+              _renderBody(
+                data.map((item: any) => (
+                  <ListItem
+                    key={item.id}
+                    item={item}
+                    type={LIST_ITEM_TYPE.DASHBOARDS}
+                    visibility={visibility}
+                  />
+                )),
+              )
+            }
+          />,
+        ),
+      },
+      {
+        id: LIST_ITEM_TYPE.QUERIES,
+        name: 'Queries',
+        icon: <QueriesIcon />,
+        content: _renderContentTable(
+          <AppDataTable
+            requestParams={queryParams}
+            fetchData={fetchAllQueries}
+            limit={15}
+            renderHeader={_renderHeader}
+            renderBody={(data) =>
+              _renderBody(
+                data.map((item: any) => (
+                  <ListItem
+                    key={item.id}
+                    item={item}
+                    type={LIST_ITEM_TYPE.QUERIES}
+                    visibility={visibility}
+                  />
+                )),
+              )
+            }
+          />,
+        ),
+      },
+    ];
+
+    if (!!user) {
+      tabs.push({
+        id: LIST_ITEM_TYPE.MYWORK,
+        name: 'My Work',
+        icon: <IconMywork />,
+        content: _renderContentTable(
+          <>
+            <Box
+              display={myWorkType === TYPE_MYWORK.DASHBOARDS ? 'block' : 'none'}
+            >
+              <AppDataTable
+                requestParams={dashboardParams}
+                fetchData={fetchMyDashboards}
+                limit={12}
+                renderHeader={_renderHeader}
+                renderBody={(data) =>
+                  _renderBody(
+                    data.map((item: any) => (
+                      <ListItem
+                        key={item.id}
+                        item={item}
+                        type={LIST_ITEM_TYPE.DASHBOARDS}
+                        visibility={visibility}
+                      />
+                    )),
+                  )
+                }
+              />
+            </Box>
+            <Box
+              display={myWorkType === TYPE_MYWORK.QUERIES ? 'block' : 'none'}
+            >
+              <AppDataTable
+                requestParams={queryParams}
+                fetchData={fetchMyQueries}
+                limit={15}
+                renderHeader={_renderHeader}
+                renderBody={(data) =>
+                  _renderBody(
+                    data.map((item: any) => (
+                      <ListItem
+                        key={item.id}
+                        item={item}
+                        type={LIST_ITEM_TYPE.QUERIES}
+                        visibility={visibility}
+                      />
+                    )),
+                  )
+                }
+              />
+            </Box>
+          </>,
+        ),
+      });
+    }
+    return tabs;
+  };
 
   const onChangeTab = (tabId: string) => {
     history.push(ROUTES.HOME);
@@ -346,7 +356,7 @@ const DashboardsPage: React.FC = () => {
         justifyContent={'space-between'}
       >
         <div className="dashboard-list">
-          <AppTabs tabs={tabs} onChange={onChangeTab} />
+          <AppTabs tabs={generateTabs()} onChange={onChangeTab} />
         </div>
       </Flex>
     </BasePage>
