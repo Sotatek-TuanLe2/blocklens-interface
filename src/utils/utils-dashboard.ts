@@ -52,6 +52,7 @@ export interface DashboardInterface {
   getUser: () => UserInterface | string;
   getCreatedTime: () => string;
   getUpdatedTime: () => string;
+  getThumnail: () => string | null;
   getTags: () => string[] | null;
   getForkedDashboardId: () => string | null;
   getTextWidgets: () => TextWidget[] | null;
@@ -141,6 +142,7 @@ export class Dashboard implements DashboardInterface {
   public name = '';
   public createdAt = '';
   public updatedAt = '';
+  public thumbnail;
   public tags;
   public privateMode = false;
   public user;
@@ -158,6 +160,7 @@ export class Dashboard implements DashboardInterface {
     this.user = dashboard.user;
     this.forkedDashboardId = dashboard.forkedDashboardId;
     this.textWidgets = [];
+    this.thumbnail = dashboard.thumbnail;
     if (dashboard.textWidgets) {
       dashboard.textWidgets.forEach((item) => {
         this.textWidgets.push(new TextWidget(item));
@@ -185,6 +188,10 @@ export class Dashboard implements DashboardInterface {
 
   getUpdatedTime() {
     return this.updatedAt;
+  }
+
+  getThumnail() {
+    return this.thumbnail || null;
   }
 
   getTags() {
