@@ -202,7 +202,10 @@ const DashboardPart: React.FC = () => {
               <div className="box-layout" key={item.id}>
                 <div className="box-chart">
                   {item.type === WIDGET_TYPE.VISUALIZATION ? (
-                    <VisualizationItem visualization={item.content} />
+                    <VisualizationItem
+                      visualization={item.content}
+                      isPrivate={false}
+                    />
                   ) : (
                     <div className="box-text-widget">
                       <ReactMarkdown>{item.text}</ReactMarkdown>

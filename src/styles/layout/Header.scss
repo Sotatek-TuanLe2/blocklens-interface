@@ -72,7 +72,8 @@
     }
     
     .signup-login {
-      color: $blue;
+      @include text-large-regular;
+      color: $paragraph;
       &__link:hover {
         color: $title;
       }

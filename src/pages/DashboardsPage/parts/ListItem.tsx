@@ -95,7 +95,9 @@ const ListItem: React.FC<IListItem> = (props) => {
           <div className="dashboard-list__item--column__avatar">
             <Link to={getTitleUrl()}>
               <img
-                src={itemClass.getThumnail() || ''}
+                src={
+                  itemClass.getThumnail() || '/images/ThumbnailDashboard.png'
+                }
                 alt="thumbnail"
                 className="thumbnail"
               />
@@ -158,7 +160,9 @@ const ListItem: React.FC<IListItem> = (props) => {
           >
             {type === LIST_ITEM_TYPE.DASHBOARDS && (
               <img
-                src={itemClass.getThumnail() || ''}
+                src={
+                  itemClass.getThumnail() || '/images/ThumbnailDashboard.png'
+                }
                 alt="thumbnail"
                 className="thumbnail"
               />

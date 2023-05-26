@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from 'react';
-import { AppLink } from 'src/components';
+import { AppButton, AppLink } from 'src/components';
 import { useHistory } from 'react-router';
 import 'src/styles/layout/Header.scss';
 import Storage from 'src/utils/utils-storage';
@@ -183,18 +183,6 @@ const Header: FC = () => {
     );
   };
 
-  const _renderSignupLoginContent = () => (
-    <Box className="signup-login">
-      <Link className="signup-login__link" to={ROUTES.LOGIN}>
-        Sign in
-      </Link>
-      {' / '}
-      <Link className="signup-login__link" to={ROUTES.SIGN_UP}>
-        Sign Up
-      </Link>
-    </Box>
-  );
-
   return (
     <Box className="header">
       <Flex className={'content-header'}>
@@ -205,7 +193,13 @@ const Header: FC = () => {
             width={isMobile ? '140px' : 'auto'}
           />
         </Box>
-        {accessToken ? _renderContent() : _renderSignupLoginContent()}
+        {accessToken ? (
+          _renderContent()
+        ) : (
+          <AppButton onClick={() => history.push(ROUTES.LOGIN)}>
+            Log In
+          </AppButton>
+        )}
       </Flex>
 
       <ModalSignInRequest

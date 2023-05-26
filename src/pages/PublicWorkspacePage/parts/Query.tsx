@@ -86,7 +86,7 @@ const QueryPart: React.FC = () => {
     setIsLoadingResult(true);
     const executedResponse: QueryExecutedResponse = await rf
       .getRequest('DashboardsRequest')
-      .executeQuery(queryId);
+      .executePublicQuery(queryId);
     const executionId = executedResponse.id;
     await getExecutionResultById(executionId);
   };

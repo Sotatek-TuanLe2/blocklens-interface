@@ -26,7 +26,13 @@ import { Link } from 'react-router-dom';
 import { QUERY_RESULT_STATUS, ROUTES } from 'src/utils/common';
 
 const VisualizationItem = React.memo(
-  ({ visualization }: { visualization: VisualizationType }) => {
+  ({
+    visualization,
+    isPrivate = true,
+  }: {
+    visualization: VisualizationType;
+    isPrivate?: boolean;
+  }) => {
     const [queryResult, setQueryResult] = useState<unknown[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [errorExecuteQuery, setErrorExecuteQuery] =
@@ -43,9 +49,9 @@ const VisualizationItem = React.memo(
 
     const fetchQueryResult = async () => {
       setIsLoading(true);
-      const executedResponse: QueryExecutedResponse = await rf
-        .getRequest('DashboardsRequest')
-        .executeQuery(queryId);
+      const executedResponse: QueryExecutedResponse = isPrivate
+        ? await rf.getRequest('DashboardsRequest').executeQuery(queryId)
+        : await rf.getRequest('DashboardsRequest').executePublicQuery(queryId);
       const executionId = executedResponse.id;
 
       const res = await rf.getRequest('DashboardsRequest').getQueryResult({
