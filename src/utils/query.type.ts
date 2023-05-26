@@ -89,6 +89,7 @@ export interface IQuery {
     avatarUrl: string;
   };
   visualizations: VisualizationType[];
+  thumbnail: string | null;
 }
 export interface IDashboard {
   id: string;
@@ -130,6 +131,7 @@ export interface IDashboardDetail {
   tags?: string[];
   dashboardVisuals?: IVisualizationWidget[];
   textWidgets?: ITextWidget[];
+  thumbnail: string | null;
 }
 
 export type TableAttributeType = {
