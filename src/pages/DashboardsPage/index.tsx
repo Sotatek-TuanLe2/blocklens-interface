@@ -305,7 +305,8 @@ const DashboardsPage: React.FC = () => {
                       <ListItem
                         key={item.id}
                         item={item}
-                        type={LIST_ITEM_TYPE.DASHBOARDS}
+                        type={LIST_ITEM_TYPE.MYWORK}
+                        myWorkType={TYPE_MYWORK.DASHBOARDS}
                         visibility={visibility}
                       />
                     )),
@@ -327,7 +328,8 @@ const DashboardsPage: React.FC = () => {
                       <ListItem
                         key={item.id}
                         item={item}
-                        type={LIST_ITEM_TYPE.QUERIES}
+                        type={LIST_ITEM_TYPE.MYWORK}
+                        myWorkType={TYPE_MYWORK.QUERIES}
                         visibility={visibility}
                       />
                     )),

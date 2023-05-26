@@ -22,7 +22,7 @@ import { ArrowLogout, DoorLogout } from 'src/assets/icons';
 import { clearUser } from 'src/store/user';
 import useUser from 'src/hooks/useUser';
 import { ROUTES } from 'src/utils/common';
-import { GUEST_PATH } from 'src/routes';
+import { PRIVATE_PATH } from 'src/routes';
 
 const menus = [
   {
@@ -76,7 +76,7 @@ const Header: FC = () => {
 
   const onLogout = () => {
     dispatch(clearUser());
-    if (!GUEST_PATH.includes(location.pathname)) {
+    if (PRIVATE_PATH.some((path) => location.pathname.includes(path))) {
       history.push(ROUTES.LOGIN);
     }
   };

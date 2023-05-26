@@ -163,7 +163,7 @@ const QueryPart: React.FC = () => {
     try {
       const dataQuery = await rf
         .getRequest('DashboardsRequest')
-        .getQueryById({ queryId });
+        .getMyQueryById({ queryId });
       setQueryValue(dataQuery);
       // set query into editor
       if (!editorRef.current) {

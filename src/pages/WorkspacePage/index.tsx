@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { BasePage } from 'src/layouts';
 import { ROUTES } from 'src/utils/common';
@@ -18,7 +18,7 @@ const WorkspacePage: React.FC = () => {
   const [toggleExpandSidebar, setToggleExpandSidebar] = useState<boolean>(true);
 
   const type = useMemo(() => {
-    if (pathname.includes(ROUTES.DASHBOARD)) {
+    if (pathname.includes(ROUTES.MY_DASHBOARD)) {
       return WORKSPACE_TYPES.DASHBOARD;
     }
     return WORKSPACE_TYPES.QUERY;
