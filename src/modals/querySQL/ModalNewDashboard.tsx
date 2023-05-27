@@ -15,7 +15,8 @@ import { TYPE_MODAL } from 'src/pages/WorkspacePage/parts/Dashboard';
 interface IModelNewDashboard {
   open: boolean;
   onClose: () => void;
-  defaultValue: { name: string; tags?: string[] };
+  id?: string;
+  defaultValue?: { name: string; tags?: string[] };
   type: TYPE_MODAL.ADD | TYPE_MODAL.EDIT | string;
 }
 
@@ -27,6 +28,8 @@ interface IDataSettingForm {
 
 const ModelNewDashboard: React.FC<IModelNewDashboard> = ({
   open,
+  id,
+  type,
   onClose,
   defaultValue = { name: '', tags: [''] },
 }) => {
@@ -64,12 +67,19 @@ const ModelNewDashboard: React.FC<IModelNewDashboard> = ({
 
   const handleSubmitForm = async () => {
     try {
-      const result = await rf
-        .getRequest('DashboardsRequest')
-        .createNewDashboard({
-          name: dataForm.title.trim(),
-          tag: dataForm.tag.trim(),
-        });
+      const result =
+        type === TYPE_MODAL.ADD
+          ? await rf.getRequest('DashboardsRequest').createNewDashboard({
+              name: dataForm.title.trim(),
+              tag: dataForm.tag.trim(),
+            })
+          : await rf.getRequest('DashboardsRequest').updateDashboardItem(
+              {
+                name: dataForm.title.trim(),
+                tag: dataForm.tag.trim(),
+              },
+              id,
+            );
       history.push(`${ROUTES.DASHBOARD}/${result.id}`);
       onClose();
     } catch (error) {
@@ -106,7 +116,9 @@ const ModelNewDashboard: React.FC<IModelNewDashboard> = ({
         rowGap={'2rem'}
         className="main-modal-dashboard-details"
       >
-        <div className="title-create-modal">Create Dashboard</div>
+        <div className="title-create-modal">
+          {type === TYPE_MODAL.ADD ? 'Create' : 'Setting'} Dashboard
+        </div>
         <AppField label={'Dashboard Tittle'}>
           <AppInput
             value={dataForm.title}
@@ -190,7 +202,7 @@ const ModelNewDashboard: React.FC<IModelNewDashboard> = ({
             onClick={handleSubmitForm}
             disabled={!dataForm.title.trim() || isDisableSubmit}
           >
-            Add
+            {type === TYPE_MODAL.ADD ? 'Add' : 'Save'}
           </AppButton>
         </Flex>
       </Flex>

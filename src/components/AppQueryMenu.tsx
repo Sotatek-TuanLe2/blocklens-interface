@@ -10,6 +10,7 @@ import { IDashboardDetail, IQuery } from 'src/utils/query.type';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
 import ModelNewDashboard from 'src/modals/querySQL/ModalNewDashboard';
 import { TYPE_MODAL } from 'src/pages/WorkspacePage/parts/Dashboard';
+import { BROADCAST_FETCH_QUERY } from 'src/pages/WorkspacePage/parts/Query';
 
 interface IAppQueryMenu {
   menu?: string[];
@@ -59,10 +60,6 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
 
   const handleDeleteSuccess = () => {
     console.log('delete success');
-  };
-
-  const handleSettingSuccess = () => {
-    AppBroadcast.dispatch('SETTING_QUERY');
   };
 
   const generateMenu = () => {
@@ -132,6 +129,7 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
         <ModelNewDashboard
           open={openModalSetting}
           onClose={onToggleModalSetting}
+          id={item.id}
           defaultValue={{ name: item.name, tags: item.tags }}
           type={TYPE_MODAL.EDIT}
         />
@@ -142,7 +140,7 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
           onClose={onToggleModalSetting}
           id={item.id}
           defaultValue={{ name: item.name, tags: item.tags }}
-          onSuccess={handleSettingSuccess}
+          onSuccess={() => AppBroadcast.dispatch(BROADCAST_FETCH_QUERY)}
         />
       )}
       {/** Modal Share */}

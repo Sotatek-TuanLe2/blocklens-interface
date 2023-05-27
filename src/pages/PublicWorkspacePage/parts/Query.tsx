@@ -20,8 +20,8 @@ import rf from 'src/requests/RequestFactory';
 import { QUERY_RESULT_STATUS } from 'src/utils/common';
 import { Query } from 'src/utils/utils-query';
 import Header from 'src/pages/WorkspacePage/parts/Header';
-import { WORKSPACE_TYPES } from 'src/pages/WorkspacePage';
 import AppNetworkIcons from 'src/components/AppNetworkIcons';
+import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 
 const QueryPart: React.FC = () => {
   const { queryId } = useParams<{ queryId: string }>();
@@ -120,12 +120,14 @@ const QueryPart: React.FC = () => {
 
   return (
     <div className="workspace-page__editor__query">
-      <Header
-        type={WORKSPACE_TYPES.QUERY}
-        author={''}
-        title={queryClass?.getName() || ''}
-        isPrivate={false}
-      />
+      {!!queryValue && (
+        <Header
+          type={LIST_ITEM_TYPE.QUERIES}
+          author={''}
+          data={queryValue}
+          isPrivate={false}
+        />
+      )}
       <div className="query-container queries-page">
         <Box className="queries-page__right-side">
           <Box className="editor-wrapper">

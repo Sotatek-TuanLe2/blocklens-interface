@@ -31,6 +31,7 @@ import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import { BROADCAST_FETCH_WORKPLACE_DATA } from './Sidebar';
 
 export const BROADCAST_ADD_TEXT_TO_EDITOR = 'ADD_TEXT_TO_EDITOR';
+export const BROADCAST_FETCH_QUERY = 'FETCH_QUERY';
 
 const QueryPart: React.FC = () => {
   const { queryId } = useParams<{ queryId: string }>();
@@ -60,11 +61,11 @@ const QueryPart: React.FC = () => {
 
   useEffect(() => {
     AppBroadcast.on(BROADCAST_ADD_TEXT_TO_EDITOR, onAddTextToEditor);
-    AppBroadcast.on('SETTING_QUERY', async () => await fetchQuery());
+    AppBroadcast.on(BROADCAST_FETCH_QUERY, async () => await fetchQuery());
 
     return () => {
       AppBroadcast.remove(BROADCAST_ADD_TEXT_TO_EDITOR, onAddTextToEditor);
-      AppBroadcast.on('SETTING_QUERY', async () => await fetchQuery());
+      AppBroadcast.on(BROADCAST_FETCH_QUERY, async () => await fetchQuery());
     };
   }, []);
 

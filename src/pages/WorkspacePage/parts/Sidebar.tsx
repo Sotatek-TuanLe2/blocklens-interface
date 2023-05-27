@@ -13,6 +13,7 @@ import { AppBroadcast } from 'src/utils/utils-broadcast';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { getChainIconByChainName } from 'src/utils/utils-network';
 import { toastError } from 'src/utils/utils-notify';
+import { TYPE_MODAL } from './Dashboard';
 import { BROADCAST_ADD_TEXT_TO_EDITOR } from './Query';
 
 export const BROADCAST_FETCH_WORKPLACE_DATA = 'FETCH_WORKPLACE_DATA';
@@ -255,13 +256,6 @@ const Sidebar: React.FC<{
   useEffect(() => {
     fetchDataWorkPlace();
     fetchDataExploreData();
-  }, []);
-
-  useEffect(() => {
-    AppBroadcast.on('SETTING_QUERY', async () => {
-      await fetchDataWorkPlace();
-    });
-    return () => AppBroadcast.remove('SETTING_QUERY');
   }, []);
 
   const getDataSearchWorkPlace = useCallback(
@@ -556,6 +550,7 @@ const Sidebar: React.FC<{
         {_renderContent()}
       </Box>
       <ModalNewDashboard
+        type={TYPE_MODAL.ADD}
         open={openNewDashboardModal}
         onClose={onCreateDashboardSuccessfully}
       />
