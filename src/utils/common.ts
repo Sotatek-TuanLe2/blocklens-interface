@@ -5,6 +5,8 @@ export const ROUTES = {
   HOME: '/',
   DASHBOARD: '/dashboards',
   QUERY: '/queries',
+  MY_DASHBOARD: '/my-dashboards',
+  MY_QUERY: '/my-queries',
   LOGIN: '/login',
   SIGN_UP: '/sign-up',
   VERIFY_EMAIL: '/verify-email',

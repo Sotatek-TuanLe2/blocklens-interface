@@ -4,13 +4,13 @@ import { AppButton } from 'src/components';
 import AppQueryMenu from 'src/components/AppQueryMenu';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import { IDashboardDetail, IQuery } from 'src/utils/query.type';
-import { WORKSPACE_TYPES } from '..';
 
 interface IHeaderProps {
   type: string;
   author: string;
   selectedQuery?: string;
   isEdit?: boolean;
+  isPrivate?: boolean;
   onRunQuery?: () => Promise<void>;
   onChangeEditMode?: () => void;
   data: IQuery | IDashboardDetail;
@@ -22,6 +22,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
     author,
     data,
     isEdit = false,
+    isPrivate = true,
     selectedQuery,
     onRunQuery,
     onChangeEditMode,
@@ -52,7 +53,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
         )}
       </div>
       <div className="workspace-page__editor__header__right">
-        {!isCreatingQuery && !isEdit && (
+        {isPrivate && !isCreatingQuery && !isEdit && (
           <div className="switch-icon">
             <Switch id="email-alerts" size="sm" />
             <FormLabel htmlFor="email-alerts" mb="0" me="20px">
@@ -60,41 +61,42 @@ const Header: React.FC<IHeaderProps> = (props) => {
             </FormLabel>
           </div>
         )}
-        {isDashboard ? (
-          <Tooltip
-            label={isEdit ? 'Edit Dashboard' : ''}
-            hasArrow
-            placement="top"
-          >
-            <AppButton
-              onClick={onChangeEditMode}
-              size="sm"
-              leftIcon={
-                <p
-                  className={
-                    isEdit
-                      ? 'bg-icon_success_dashboard'
-                      : 'bg-icon_edit_dashboard'
-                  }
-                />
-              }
-              me="10px"
+        {isPrivate &&
+          (isDashboard ? (
+            <Tooltip
+              label={isEdit ? 'Edit Dashboard' : ''}
+              hasArrow
+              placement="top"
             >
-              {isEdit ? 'Done' : 'Edit'}
-            </AppButton>
-          </Tooltip>
-        ) : (
-          <Tooltip label="Run Query" hasArrow placement="top">
-            <AppButton
-              onClick={onRunQuery}
-              size="sm"
-              leftIcon={<p className="icon-run-query" />}
-              me="10px"
-            >
-              {selectedQuery ? 'Run selection' : 'Run'}
-            </AppButton>
-          </Tooltip>
-        )}
+              <AppButton
+                onClick={onChangeEditMode}
+                size="sm"
+                leftIcon={
+                  <p
+                    className={
+                      isEdit
+                        ? 'bg-icon_success_dashboard'
+                        : 'bg-icon_edit_dashboard'
+                    }
+                  />
+                }
+                me="10px"
+              >
+                {isEdit ? 'Done' : 'Edit'}
+              </AppButton>
+            </Tooltip>
+          ) : (
+            <Tooltip label="Run Query" hasArrow placement="top">
+              <AppButton
+                onClick={onRunQuery}
+                size="sm"
+                leftIcon={<p className="icon-run-query" />}
+                me="10px"
+              >
+                {selectedQuery ? 'Run selection' : 'Run'}
+              </AppButton>
+            </Tooltip>
+          ))}
         {!isCreatingQuery && <AppQueryMenu item={data} itemType={type} />}
       </div>
     </div>

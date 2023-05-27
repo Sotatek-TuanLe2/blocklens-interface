@@ -70,6 +70,14 @@
         }
       }
     }
+    
+    .signup-login {
+      @include text-large-regular;
+      color: $paragraph;
+      &__link:hover {
+        color: $title;
+      }
+    }
   }
 
   .menu {

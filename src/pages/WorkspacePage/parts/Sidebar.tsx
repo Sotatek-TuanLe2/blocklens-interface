@@ -13,6 +13,9 @@ import { AppBroadcast } from 'src/utils/utils-broadcast';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { getChainIconByChainName } from 'src/utils/utils-network';
 import { toastError } from 'src/utils/utils-notify';
+import { BROADCAST_ADD_TEXT_TO_EDITOR } from './Query';
+
+export const BROADCAST_FETCH_WORKPLACE_DATA = 'FETCH_WORKPLACE_DATA';
 
 const ChainItem = ({
   chain,
@@ -37,7 +40,7 @@ const ChainItem = ({
   };
 
   const handleAddQuery = (tableName: string) => {
-    AppBroadcast.dispatch('ADD_TEXT_TO_EDITOR', tableName);
+    AppBroadcast.dispatch(BROADCAST_ADD_TEXT_TO_EDITOR, tableName);
   };
 
   return (
@@ -173,6 +176,14 @@ const Sidebar: React.FC<{
 
   const [schemaDescribe, setSchemaDescribe] = useState<SchemaType[]>([]);
 
+  useEffect(() => {
+    AppBroadcast.on(BROADCAST_FETCH_WORKPLACE_DATA, fetchDataWorkPlace);
+
+    return () => {
+      AppBroadcast.remove(BROADCAST_FETCH_WORKPLACE_DATA);
+    };
+  }, []);
+
   const fetchDashboards: any = async (params: any) => {
     try {
       const res: any = await rf
@@ -268,7 +279,7 @@ const Sidebar: React.FC<{
   );
 
   const handleCreateNewQuery = () => {
-    history.push('/queries');
+    history.push(ROUTES.MY_QUERY);
   };
 
   const handleCreateNewDashboard = () => {
@@ -282,7 +293,7 @@ const Sidebar: React.FC<{
   };
 
   const handleAddQuery = (tableName: string) => {
-    AppBroadcast.dispatch('ADD_TEXT_TO_EDITOR', tableName);
+    AppBroadcast.dispatch(BROADCAST_ADD_TEXT_TO_EDITOR, tableName);
   };
 
   const onClickFork = async (workPlaceItem: any) => {
@@ -300,7 +311,7 @@ const Sidebar: React.FC<{
         res = await rf
           .getRequest('DashboardsRequest')
           .forkQueries(workPlaceItem.id);
-        history.push(`${ROUTES.QUERY}/${res.id}`);
+        history.push(`${ROUTES.MY_QUERY}/${res.id}`);
       }
       await fetchDataWorkPlace();
     } catch (e) {
@@ -344,7 +355,7 @@ const Sidebar: React.FC<{
               <div
                 key={query.id}
                 className={handleClassNameWorkPlaceItem(query.id)}
-                onClick={() => history.push(`${ROUTES.QUERY}/${query.id}?`)}
+                onClick={() => history.push(`${ROUTES.MY_QUERY}/${query.id}?`)}
               >
                 <Flex isTruncated alignItems={'center'} gap="10px" maxW={'70%'}>
                   <div>

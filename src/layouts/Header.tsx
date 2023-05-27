@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from 'react';
-import { AppLink } from 'src/components';
+import { AppButton, AppLink } from 'src/components';
 import { useHistory } from 'react-router';
 import 'src/styles/layout/Header.scss';
 import Storage from 'src/utils/utils-storage';
@@ -14,7 +14,7 @@ import {
   Flex,
   Avatar,
 } from '@chakra-ui/react';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
 import ModalSignInRequest from 'src/modals/ModalSignInRequest';
 import { isMobile } from 'react-device-detect';
@@ -22,6 +22,7 @@ import { ArrowLogout, DoorLogout } from 'src/assets/icons';
 import { clearUser } from 'src/store/user';
 import useUser from 'src/hooks/useUser';
 import { ROUTES } from 'src/utils/common';
+import { PRIVATE_PATH } from 'src/routes';
 
 const menus = [
   {
@@ -75,7 +76,9 @@ const Header: FC = () => {
 
   const onLogout = () => {
     dispatch(clearUser());
-    history.push(ROUTES.LOGIN);
+    if (PRIVATE_PATH.some((path) => location.pathname.includes(path))) {
+      history.push(ROUTES.HOME);
+    }
   };
 
   const _renderAvatar = () => {
@@ -190,7 +193,13 @@ const Header: FC = () => {
             width={isMobile ? '140px' : 'auto'}
           />
         </Box>
-        {accessToken && _renderContent()}
+        {accessToken ? (
+          _renderContent()
+        ) : (
+          <AppButton onClick={() => history.push(ROUTES.LOGIN)}>
+            Log In
+          </AppButton>
+        )}
       </Flex>
 
       <ModalSignInRequest

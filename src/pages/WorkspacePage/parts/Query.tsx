@@ -2,12 +2,12 @@ import { Box, Flex, Tooltip } from '@chakra-ui/react';
 
 import { debounce } from 'lodash';
 import moment from 'moment';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import AceEditor from 'react-ace';
 import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/mode-sql';
 import 'ace-builds/src-noconflict/theme-monokai';
-import { Prompt, useHistory, useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { AppLoadingTable, AppTag } from 'src/components';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import {
@@ -17,19 +17,20 @@ import {
   LAYOUT_QUERY,
 } from 'src/utils/query.type';
 import 'src/styles/pages/QueriesPage.scss';
-import ModalSaveQuery from 'src/modals/querySQL/ModalSaveQuery';
-import { toastError, toastSuccess } from 'src/utils/utils-notify';
+import { toastError } from 'src/utils/utils-notify';
 import rf from 'src/requests/RequestFactory';
 import useUser from 'src/hooks/useUser';
-import AppNetworkIcons from 'src/components/AppNetworkIcons';
-import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
-import 'src/styles/pages/QueriesPage.scss';
 import { QUERY_RESULT_STATUS, ROUTES } from 'src/utils/common';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
-import { Query } from 'src/utils/utils-query';
 import { EditorContext } from '../context/EditorContext';
 import Header from './Header';
 import VisualizationDisplay from './VisualizationDisplay';
+
+import AppNetworkIcons from 'src/components/AppNetworkIcons';
+import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
+import { BROADCAST_FETCH_WORKPLACE_DATA } from './Sidebar';
+
+export const BROADCAST_ADD_TEXT_TO_EDITOR = 'ADD_TEXT_TO_EDITOR';
 
 const QueryPart: React.FC = () => {
   const { queryId } = useParams<{ queryId: string }>();
@@ -40,7 +41,6 @@ const QueryPart: React.FC = () => {
   const [queryResult, setQueryResult] = useState<any>([]);
   const [queryValue, setQueryValue] = useState<IQuery | null>(null);
   const [expandLayout, setExpandLayout] = useState<string>(LAYOUT_QUERY.HALF);
-  const [showSaveModal, setShowSaveModal] = useState<boolean>(false);
   const [isLoadingResult, setIsLoadingResult] = useState<boolean>(!!queryId);
   const [errorExecuteQuery, setErrorExecuteQuery] =
     useState<IErrorExecuteQuery>();
@@ -59,10 +59,18 @@ const QueryPart: React.FC = () => {
   };
 
   useEffect(() => {
+    AppBroadcast.on(BROADCAST_ADD_TEXT_TO_EDITOR, onAddTextToEditor);
+    AppBroadcast.on('SETTING_QUERY', async () => await fetchQuery());
+
+    return () => {
+      AppBroadcast.remove(BROADCAST_ADD_TEXT_TO_EDITOR, onAddTextToEditor);
+      AppBroadcast.on('SETTING_QUERY', async () => await fetchQuery());
+    };
+  }, []);
+
+  useEffect(() => {
     if (queryId) {
       fetchInitalData();
-      AppBroadcast.on('ADD_TEXT_TO_EDITOR', onAddTextToEditor);
-      AppBroadcast.on('SETTING_QUERY', async () => await fetchQuery());
     } else {
       resetEditor();
     }
@@ -71,17 +79,8 @@ const QueryPart: React.FC = () => {
       if (fetchQueryResultInterval.current) {
         clearInterval(fetchQueryResultInterval.current);
       }
-      AppBroadcast.remove('ADD_TEXT_TO_EDITOR');
-      AppBroadcast.remove('SETTING_QUERY');
     };
   }, [queryId]);
-
-  const queryClass = useMemo(() => {
-    if (!queryValue) {
-      return null;
-    }
-    return new Query(queryValue);
-  }, [queryValue]);
 
   const resetEditor = () => {
     editorRef.current && editorRef.current.editor.setValue('');
@@ -95,10 +94,10 @@ const QueryPart: React.FC = () => {
         .createNewQuery({
           name: moment().format('YYYY-MM-DD HH:mm a'),
           query,
-          isTemp: false,
         });
       await rf.getRequest('DashboardsRequest').executeQuery(queryValue.id);
-      history.push(`${ROUTES.QUERY}/${queryValue.id}`);
+      history.push(`${ROUTES.MY_QUERY}/${queryValue.id}`);
+      AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
     } catch (error: any) {
       toastError({ message: getErrorMessage(error) });
     }
@@ -109,19 +108,6 @@ const QueryPart: React.FC = () => {
       await rf.getRequest('DashboardsRequest').updateQuery({ query }, queryId);
       await fetchQueryResult();
       await fetchQuery();
-    } catch (error: any) {
-      toastError({ message: getErrorMessage(error) });
-    }
-  };
-
-  const saveNameQuery = async (name: string) => {
-    try {
-      await rf
-        .getRequest('DashboardsRequest')
-        .updateQuery({ name: name }, queryId);
-      await fetchQuery();
-      setShowSaveModal(false);
-      toastSuccess({ message: 'Save query successfully.' });
     } catch (error: any) {
       toastError({ message: getErrorMessage(error) });
     }
@@ -167,7 +153,7 @@ const QueryPart: React.FC = () => {
     try {
       const dataQuery = await rf
         .getRequest('DashboardsRequest')
-        .getQueryById({ queryId });
+        .getMyQueryById({ queryId });
       setQueryValue(dataQuery);
       // set query into editor
       if (!editorRef.current) {
@@ -354,15 +340,6 @@ const QueryPart: React.FC = () => {
           </Box>
         </div>
       </EditorContext.Provider>
-      <ModalSaveQuery
-        open={showSaveModal}
-        onClose={() => setShowSaveModal(false)}
-        onSubmit={saveNameQuery}
-      />
-      <Prompt
-        when={!!queryClass && !queryClass.getName()}
-        message="This query has not been saved yet. Discard unsaved changes?"
-      />
     </div>
   );
 };

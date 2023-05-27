@@ -213,6 +213,10 @@
   &__editor {
     width: calc(100% - 300px - 10px);
 
+    &--full {
+      width: 100%;
+    }
+
     &__dashboard,
     &__query {
       height: 100%;

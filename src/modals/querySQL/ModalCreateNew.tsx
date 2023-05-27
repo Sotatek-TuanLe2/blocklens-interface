@@ -45,7 +45,7 @@ const ModalCreateNew: React.FC<IModalCreateNew> = ({ open, onClose }) => {
           </Flex>
           <div
             className="content-create-modal"
-            onClick={() => history.push(ROUTES.QUERY)}
+            onClick={() => history.push(ROUTES.MY_QUERY)}
           >
             <QueriesIcon />
             <Text className="title-content">Queries</Text>

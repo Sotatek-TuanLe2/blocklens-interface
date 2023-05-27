@@ -26,13 +26,19 @@ import { Link } from 'react-router-dom';
 import { QUERY_RESULT_STATUS, ROUTES } from 'src/utils/common';
 
 const VisualizationItem = React.memo(
-  ({ visualization }: { visualization: VisualizationType }) => {
+  ({
+    visualization,
+    isPrivate = true,
+  }: {
+    visualization: VisualizationType;
+    isPrivate?: boolean;
+  }) => {
     const [queryResult, setQueryResult] = useState<unknown[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [errorExecuteQuery, setErrorExecuteQuery] =
       useState<IErrorExecuteQuery>();
 
-    const queryId = visualization?.query?.id;
+    const queryId = visualization?.queryId;
     const fetchQueryResultInterval: any = useRef();
 
     useEffect(() => {
@@ -43,9 +49,9 @@ const VisualizationItem = React.memo(
 
     const fetchQueryResult = async () => {
       setIsLoading(true);
-      const executedResponse: QueryExecutedResponse = await rf
-        .getRequest('DashboardsRequest')
-        .executeQuery(queryId);
+      const executedResponse: QueryExecutedResponse = isPrivate
+        ? await rf.getRequest('DashboardsRequest').executeQuery(queryId)
+        : await rf.getRequest('DashboardsRequest').executePublicQuery(queryId);
       const executionId = executedResponse.id;
 
       const res = await rf.getRequest('DashboardsRequest').getQueryResult({
@@ -179,7 +185,9 @@ const VisualizationItem = React.memo(
             <Tooltip label={visualization.query?.name} hasArrow>
               <Link
                 className="visual-container__visualization__title__query-link"
-                to={`${ROUTES.QUERY}/${visualization.query?.id}`}
+                to={`${isPrivate ? ROUTES.MY_QUERY : ROUTES.QUERY}/${
+                  visualization.queryId
+                }`}
               >
                 {visualization.query?.name}
               </Link>

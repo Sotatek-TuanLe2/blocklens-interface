@@ -2,6 +2,7 @@ import { Flex, Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/react';
 import { useState } from 'react';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import 'src/styles/components/AppQueryMenu.scss';
+import useUser from 'src/hooks/useUser';
 import ModalShareDomain from 'src/modals/querySQL/ModalShareDomain';
 import ModalDelete from 'src/modals/querySQL/ModalDelete';
 import ModalSettingQuery from 'src/modals/querySQL/ModalSettingQuery';
@@ -37,6 +38,8 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
     item,
   } = props;
 
+  const { user } = useUser();
+
   const [openModalSetting, setOpenModalSetting] = useState<boolean>(false);
   const [openModalShare, setOpenModalShare] = useState<boolean>(false);
   const [openModalDelete, setOpenModalDelete] = useState<boolean>(false);
@@ -62,39 +65,48 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
     AppBroadcast.dispatch('SETTING_QUERY');
   };
 
-  let itemList: {
-    id: string;
-    label: string;
-    icon: React.ReactNode;
-    onClick: () => any;
-  }[] = [
-    {
-      id: QUERY_MENU_LIST.FORK,
-      label: QUERY_MENU_LIST.FORK,
-      icon: <p className="icon-query-fork" />,
-      onClick: onFork,
-    },
-    {
-      id: QUERY_MENU_LIST.SETTING,
-      label: QUERY_MENU_LIST.SETTING,
-      icon: <p className="icon-query-setting" />,
-      onClick: onToggleModalSetting,
-    },
-    {
-      id: QUERY_MENU_LIST.SHARE,
-      label: QUERY_MENU_LIST.SHARE,
-      icon: <p className="icon-query-share" />,
-      onClick: onToggleModalShare,
-    },
-    {
-      id: QUERY_MENU_LIST.DELETE,
-      label: QUERY_MENU_LIST.DELETE,
-      icon: <p className="icon-query-delete" />,
-      onClick: onToggleModalDelete,
-    },
-  ];
+  const generateMenu = () => {
+    let itemList: {
+      id: string;
+      label: string;
+      icon: React.ReactNode;
+      onClick: () => any;
+    }[] = [
+      {
+        id: QUERY_MENU_LIST.FORK,
+        label: QUERY_MENU_LIST.FORK,
+        icon: <p className="icon-query-fork" />,
+        onClick: onFork,
+      },
+      {
+        id: QUERY_MENU_LIST.SETTING,
+        label: QUERY_MENU_LIST.SETTING,
+        icon: <p className="icon-query-setting" />,
+        onClick: onToggleModalSetting,
+      },
+      {
+        id: QUERY_MENU_LIST.SHARE,
+        label: QUERY_MENU_LIST.SHARE,
+        icon: <p className="icon-query-share" />,
+        onClick: onToggleModalShare,
+      },
+      {
+        id: QUERY_MENU_LIST.DELETE,
+        label: QUERY_MENU_LIST.DELETE,
+        icon: <p className="icon-query-delete" />,
+        onClick: onToggleModalDelete,
+      },
+    ];
 
-  itemList = itemList.filter((item) => menu.includes(item.id));
+    itemList = itemList.filter((item) => menu.includes(item.id));
+    if (!user) {
+      itemList = itemList.filter((item) =>
+        [QUERY_MENU_LIST.SHARE].includes(item.id),
+      );
+    }
+
+    return itemList;
+  };
 
   return (
     <>
@@ -106,8 +118,8 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
         >
           <p className="icon-query-list" />
         </MenuButton>
-        <MenuList>
-          {itemList.map((i) => (
+        <MenuList className="app-query-menu__list">
+          {generateMenu().map((i) => (
             <MenuItem key={i.id} onClick={i.onClick}>
               <Flex alignItems={'center'} gap={'8px'}>
                 {i.icon} {i.label}
