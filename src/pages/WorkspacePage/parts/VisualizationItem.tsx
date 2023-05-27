@@ -185,7 +185,9 @@ const VisualizationItem = React.memo(
             <Tooltip label={visualization.query?.name} hasArrow>
               <Link
                 className="visual-container__visualization__title__query-link"
-                to={`${ROUTES.QUERY}/${visualization.query?.id}`}
+                to={`${isPrivate ? ROUTES.MY_QUERY : ROUTES.QUERY}/${
+                  visualization.queryId
+                }`}
               >
                 {visualization.query?.name}
               </Link>

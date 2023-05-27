@@ -78,7 +78,6 @@ export interface IQuery {
   name: string;
   isPrivate: boolean;
   isArchived: boolean;
-  isTemp: boolean;
   createdAt: string;
   updatedAt: string;
   tags?: string[];

@@ -66,7 +66,6 @@ export interface DataQuery {
 export interface IUpdateQuery {
   name?: string;
   query?: string;
-  isTemp?: boolean;
   tags?: string;
 }
 

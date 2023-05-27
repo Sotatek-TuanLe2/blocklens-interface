@@ -183,6 +183,7 @@ const QueryPart: React.FC = () => {
               width="100%"
               wrapEnabled={true}
               readOnly
+              focus={false}
               name="sql_editor"
               editorProps={{ $blockScrolling: true }}
               showPrintMargin={true}

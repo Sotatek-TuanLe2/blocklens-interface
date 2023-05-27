@@ -26,7 +26,6 @@ export interface QueryInterface {
   updatedAt: string;
   tags?: string[];
   privateMode: boolean;
-  temporaryMode: boolean;
   query: string;
 
   // user: UserInterface;
@@ -45,7 +44,6 @@ export interface QueryInterface {
   getVisualizationById: (id: string) => Visualization | null;
 
   isPrivate: () => boolean;
-  isTemp: () => boolean;
 }
 
 export class Visualization implements VisualizationInterface {
@@ -107,7 +105,6 @@ export class Query implements QueryInterface {
   public thumbnail;
   public tags;
   public privateMode = false;
-  public temporaryMode = false;
   public query = '';
 
   // public user;
@@ -121,7 +118,6 @@ export class Query implements QueryInterface {
     this.updatedAt = query.updatedAt;
     this.tags = query.tags;
     this.privateMode = query.isPrivate;
-    this.temporaryMode = query.isTemp;
     this.query = query.query;
     this.thumbnail = query.thumbnail;
     // this.user = query.user;
@@ -179,9 +175,5 @@ export class Query implements QueryInterface {
 
   isPrivate() {
     return this.privateMode;
-  }
-
-  isTemp() {
-    return this.temporaryMode;
   }
 }
