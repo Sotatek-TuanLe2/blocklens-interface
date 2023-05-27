@@ -14,7 +14,7 @@ import { getChainIconByChainName } from 'src/utils/utils-network';
 import { toastError } from 'src/utils/utils-notify';
 import { BROADCAST_ADD_TEXT_TO_EDITOR } from './Query';
 
-export const BROADCAST_FETCH_QUERIES_LIST = 'FETCH_QUERIES_LIST';
+export const BROADCAST_FETCH_WORKPLACE_DATA = 'FETCH_WORKPLACE_DATA';
 
 const ChainItem = ({
   chain,
@@ -176,10 +176,10 @@ const Sidebar: React.FC<{
   const [schemaDescribe, setSchemaDescribe] = useState<SchemaType[]>([]);
 
   useEffect(() => {
-    AppBroadcast.on(BROADCAST_FETCH_QUERIES_LIST, fetchQueries);
+    AppBroadcast.on(BROADCAST_FETCH_WORKPLACE_DATA, fetchDataWorkPlace);
 
     return () => {
-      AppBroadcast.remove(BROADCAST_FETCH_QUERIES_LIST);
+      AppBroadcast.remove(BROADCAST_FETCH_WORKPLACE_DATA);
     };
   }, []);
 

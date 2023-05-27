@@ -27,7 +27,7 @@ import { WORKSPACE_TYPES } from '..';
 import moment from 'moment';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
 import AppNetworkIcons from 'src/components/AppNetworkIcons';
-import { BROADCAST_FETCH_QUERIES_LIST } from './Sidebar';
+import { BROADCAST_FETCH_WORKPLACE_DATA } from './Sidebar';
 
 export const BROADCAST_ADD_TEXT_TO_EDITOR = 'ADD_TEXT_TO_EDITOR';
 
@@ -101,7 +101,7 @@ const QueryPart: React.FC = () => {
         });
       await rf.getRequest('DashboardsRequest').executeQuery(queryValue.id);
       history.push(`${ROUTES.MY_QUERY}/${queryValue.id}`);
-      AppBroadcast.dispatch(BROADCAST_FETCH_QUERIES_LIST);
+      AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
     } catch (error: any) {
       toastError({ message: getErrorMessage(error) });
     }
