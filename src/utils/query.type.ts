@@ -70,6 +70,7 @@ export type VisualizationType = {
   updatedAt: string;
   options: any;
   query?: IQuery;
+  queryId?: string;
 };
 
 export interface IQuery {
@@ -77,7 +78,6 @@ export interface IQuery {
   name: string;
   isPrivate: boolean;
   isArchived: boolean;
-  isTemp: boolean;
   createdAt: string;
   updatedAt: string;
   tags?: string[];

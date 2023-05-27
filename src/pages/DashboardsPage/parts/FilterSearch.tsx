@@ -20,6 +20,7 @@ import {
   IOption,
 } from 'src/components';
 import { VisibilityGridDashboardList } from 'src/constants';
+import useUser from 'src/hooks/useUser';
 import ModalCreateNew from 'src/modals/querySQL/ModalCreateNew';
 import rf from 'src/requests/RequestFactory';
 import { ROUTES } from 'src/utils/common';
@@ -74,6 +75,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   const { type, visibility, changeVisibility, myWorkType, changeMyWorkType } =
     props;
   const history = useHistory();
+  const { user } = useUser();
 
   const isDashboard = type === LIST_ITEM_TYPE.DASHBOARDS;
   const isMyWork = type === LIST_ITEM_TYPE.MYWORK;
@@ -273,10 +275,11 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
         ) : (
           _renderNetWork()
         )}
-
-        <AppButton onClick={onClickNew}>
-          <Box className="icon-plus-circle" mr={2} /> Create
-        </AppButton>
+        {!!user && (
+          <AppButton onClick={onClickNew}>
+            <Box className="icon-plus-circle" mr={2} /> Create
+          </AppButton>
+        )}
       </Flex>
       <Flex mt={5} flexDirection="row">
         <AppInput
