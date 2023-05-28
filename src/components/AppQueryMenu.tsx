@@ -1,6 +1,7 @@
 import { Flex, Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/react';
 import { useState } from 'react';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
+import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/AppQueryMenu.scss';
 import useUser from 'src/hooks/useUser';
 import ModalShareDomain from 'src/modals/querySQL/ModalShareDomain';
@@ -11,12 +12,20 @@ import { AppBroadcast } from 'src/utils/utils-broadcast';
 import ModelNewDashboard from 'src/modals/querySQL/ModalNewDashboard';
 import { TYPE_MODAL } from 'src/pages/WorkspacePage/parts/Dashboard';
 import { BROADCAST_FETCH_QUERY } from 'src/pages/WorkspacePage/parts/Query';
+import { Dashboard } from 'src/utils/utils-dashboard';
+import { Query } from 'src/utils/utils-query';
+import { toastError } from 'src/utils/utils-notify';
+import { getErrorMessage } from 'src/utils/utils-helper';
 
 interface IAppQueryMenu {
   menu?: string[];
-  itemType: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
-  onFork?: () => void;
   item: IQuery | IDashboardDetail;
+  itemType: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
+  onDeleteSuccess?: () => void;
+  onForkSuccess?: (
+    response: any,
+    type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE],
+  ) => Promise<void>;
 }
 
 export const QUERY_MENU_LIST = {
@@ -35,7 +44,8 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
       QUERY_MENU_LIST.DELETE,
     ],
     itemType,
-    onFork = () => null,
+    onForkSuccess,
+    onDeleteSuccess,
     item,
   } = props;
 
@@ -55,6 +65,29 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
 
   const handleDeleteSuccess = () => {
     console.log('delete success');
+  };
+
+  const onFork = async () => {
+    try {
+      let response;
+      if (itemType === LIST_ITEM_TYPE.DASHBOARDS) {
+        const itemClass = new Dashboard(item as IDashboardDetail);
+        response = await rf
+          .getRequest('DashboardsRequest')
+          .forkDashboard(
+            { newDashboardName: `Forked from ${itemClass.getName()}` },
+            itemClass.getId(),
+          );
+      } else if (itemType === LIST_ITEM_TYPE.QUERIES) {
+        const itemClass = new Query(item as IQuery);
+        response = await rf
+          .getRequest('DashboardsRequest')
+          .forkQueries(itemClass.getId());
+      }
+      response && onForkSuccess && onForkSuccess(response, itemType);
+    } catch (error) {
+      toastError({ message: getErrorMessage(error) });
+    }
   };
 
   const generateMenu = () => {

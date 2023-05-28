@@ -3,7 +3,10 @@ import { useHistory, useParams } from 'react-router-dom';
 import { AppButton } from 'src/components';
 import AppQueryMenu from 'src/components/AppQueryMenu';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
+import { ROUTES } from 'src/utils/common';
 import { IDashboardDetail, IQuery } from 'src/utils/query.type';
+import { AppBroadcast } from 'src/utils/utils-broadcast';
+import { BROADCAST_FETCH_WORKPLACE_DATA } from './Sidebar';
 
 interface IHeaderProps {
   type: string;
@@ -32,6 +35,17 @@ const Header: React.FC<IHeaderProps> = (props) => {
 
   const isDashboard = type === LIST_ITEM_TYPE.DASHBOARDS;
   const isCreatingQuery = type === LIST_ITEM_TYPE.QUERIES && !queryId;
+
+  const onForkSuccess = async (response: any, type: string) => {
+    history.push(
+      `${
+        type === LIST_ITEM_TYPE.DASHBOARDS
+          ? ROUTES.MY_DASHBOARD
+          : ROUTES.MY_QUERY
+      }/${response.id}`,
+    );
+    AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
+  };
 
   return (
     <div className="workspace-page__editor__header">
@@ -97,7 +111,13 @@ const Header: React.FC<IHeaderProps> = (props) => {
               </AppButton>
             </Tooltip>
           ))}
-        {!isCreatingQuery && <AppQueryMenu item={data} itemType={type} />}
+        {!isCreatingQuery && (
+          <AppQueryMenu
+            item={data}
+            itemType={type}
+            onForkSuccess={onForkSuccess}
+          />
+        )}
       </div>
     </div>
   );

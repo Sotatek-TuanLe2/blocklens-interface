@@ -290,27 +290,15 @@ const Sidebar: React.FC<{
     AppBroadcast.dispatch(BROADCAST_ADD_TEXT_TO_EDITOR, tableName);
   };
 
-  const onClickFork = async (workPlaceItem: any) => {
-    try {
-      let res;
-      if (!workPlaceItem.visualizations) {
-        res = await rf
-          .getRequest('DashboardsRequest')
-          .forkDashboard(
-            { newDashboardName: `Forked from ${workPlaceItem.name}` },
-            workPlaceItem.id,
-          );
-        history.push(`${ROUTES.DASHBOARD}/${res.id}`);
-      } else {
-        res = await rf
-          .getRequest('DashboardsRequest')
-          .forkQueries(workPlaceItem.id);
-        history.push(`${ROUTES.MY_QUERY}/${res.id}`);
-      }
-      await fetchDataWorkPlace();
-    } catch (e) {
-      toastError({ message: getErrorMessage(e) });
-    }
+  const onForkSuccess = async (response: any, type: string) => {
+    history.push(
+      `${
+        type === LIST_ITEM_TYPE.DASHBOARDS
+          ? ROUTES.MY_DASHBOARD
+          : ROUTES.MY_QUERY
+      }/${response.id}`,
+    );
+    await fetchDataWorkPlace();
   };
 
   const _renderContentWorkPlace = () => {
@@ -366,11 +354,9 @@ const Sidebar: React.FC<{
 
                 <AppQueryMenu
                   menu={[QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.SHARE]}
-                  onFork={() => {
-                    onClickFork(query);
-                  }}
                   itemType={LIST_ITEM_TYPE.QUERIES}
                   item={query}
+                  onForkSuccess={onForkSuccess}
                 />
               </div>
             ))}
@@ -411,11 +397,9 @@ const Sidebar: React.FC<{
                 </Flex>
                 <AppQueryMenu
                   menu={[QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.SHARE]}
-                  onFork={() => {
-                    onClickFork(dashboard);
-                  }}
                   itemType={LIST_ITEM_TYPE.DASHBOARDS}
                   item={dashboard}
+                  onForkSuccess={onForkSuccess}
                 />
               </div>
             ))}
