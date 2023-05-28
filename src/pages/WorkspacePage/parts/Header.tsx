@@ -31,7 +31,10 @@ const Header: React.FC<IHeaderProps> = (props) => {
     onChangeEditMode,
   } = props;
   const history = useHistory();
-  const { queryId } = useParams<{ queryId: string }>();
+  const { queryId, dashboardId } = useParams<{
+    queryId: string;
+    dashboardId: string;
+  }>();
 
   const isDashboard = type === LIST_ITEM_TYPE.DASHBOARDS;
   const isCreatingQuery = type === LIST_ITEM_TYPE.QUERIES && !queryId;
@@ -45,6 +48,14 @@ const Header: React.FC<IHeaderProps> = (props) => {
       }/${response.id}`,
     );
     AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
+  };
+
+  const onDeleteSuccess = async (item: IQuery | IDashboardDetail) => {
+    if (item.id === queryId || item.id === dashboardId) {
+      history.push(ROUTES.HOME);
+    } else {
+      AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
+    }
   };
 
   return (
@@ -116,6 +127,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
             item={data}
             itemType={type}
             onForkSuccess={onForkSuccess}
+            onDeleteSuccess={onDeleteSuccess}
           />
         )}
       </div>

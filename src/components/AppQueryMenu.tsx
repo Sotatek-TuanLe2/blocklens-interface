@@ -21,7 +21,7 @@ interface IAppQueryMenu {
   menu?: string[];
   item: IQuery | IDashboardDetail;
   itemType: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
-  onDeleteSuccess?: () => void;
+  onDeleteSuccess?: (item: IQuery | IDashboardDetail) => Promise<void>;
   onForkSuccess?: (
     response: any,
     type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE],
@@ -44,8 +44,8 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
       QUERY_MENU_LIST.DELETE,
     ],
     itemType,
-    onForkSuccess,
-    onDeleteSuccess,
+    onForkSuccess = () => null,
+    onDeleteSuccess = () => null,
     item,
   } = props;
 
@@ -62,10 +62,6 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
 
   const onToggleModalDelete = () =>
     setOpenModalDelete((prevState) => !prevState);
-
-  const handleDeleteSuccess = () => {
-    console.log('delete success');
-  };
 
   const onFork = async () => {
     try {
@@ -84,7 +80,7 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
           .getRequest('DashboardsRequest')
           .forkQueries(itemClass.getId());
       }
-      response && onForkSuccess && onForkSuccess(response, itemType);
+      response && onForkSuccess(response, itemType);
     } catch (error) {
       toastError({ message: getErrorMessage(error) });
     }
@@ -182,7 +178,7 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
         <ModalDelete
           open={openModalDelete}
           onClose={() => setOpenModalDelete(false)}
-          onSuccess={handleDeleteSuccess}
+          onSuccess={() => onDeleteSuccess(item)}
           type={itemType}
           id={item.id}
         />
