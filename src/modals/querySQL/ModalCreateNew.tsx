@@ -6,7 +6,7 @@ import { TYPE_MODAL } from 'src/pages/WorkspacePage/parts/Dashboard';
 import 'src/styles/components/BaseModal.scss';
 import { ROUTES } from 'src/utils/common';
 import BaseModal from '../BaseModal';
-import ModelNewDashboard from './ModalNewDashboard';
+import ModalNewDashboard from './ModalNewDashboard';
 
 interface IModalCreateNew {
   open: boolean;
@@ -57,7 +57,7 @@ const ModalCreateNew: React.FC<IModalCreateNew> = ({ open, onClose }) => {
           </div>
         </Flex>
       </Flex>
-      <ModelNewDashboard
+      <ModalNewDashboard
         type={TYPE_MODAL.ADD}
         open={openModalCreateNew}
         onClose={onToggleCreateDashboardModal}

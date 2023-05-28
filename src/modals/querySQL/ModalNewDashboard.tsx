@@ -15,6 +15,7 @@ import { TYPE_MODAL } from 'src/pages/WorkspacePage/parts/Dashboard';
 interface IModelNewDashboard {
   open: boolean;
   onClose: () => void;
+  onSuccess?: () => void;
   id?: string;
   defaultValue?: { name: string; tags?: string[] };
   type: TYPE_MODAL.ADD | TYPE_MODAL.EDIT | string;
@@ -26,11 +27,12 @@ interface IDataSettingForm {
   thumbnail: File | null;
 }
 
-const ModelNewDashboard: React.FC<IModelNewDashboard> = ({
+const ModalNewDashboard: React.FC<IModelNewDashboard> = ({
   open,
   id,
   type,
   onClose,
+  onSuccess,
   defaultValue = { name: '', tags: [''] },
 }) => {
   const initDataFormSetting = {
@@ -80,8 +82,9 @@ const ModelNewDashboard: React.FC<IModelNewDashboard> = ({
               },
               id,
             );
-      history.push(`${ROUTES.DASHBOARD}/${result.id}`);
+      history.push(`${ROUTES.MY_DASHBOARD}/${result.id}`);
       onClose();
+      onSuccess && onSuccess();
     } catch (error) {
       toastError({ message: getErrorMessage(error) });
     }
@@ -210,4 +213,4 @@ const ModelNewDashboard: React.FC<IModelNewDashboard> = ({
   );
 };
 
-export default ModelNewDashboard;
+export default ModalNewDashboard;

@@ -8,10 +8,8 @@ import ModalShareDomain from 'src/modals/querySQL/ModalShareDomain';
 import ModalDelete from 'src/modals/querySQL/ModalDelete';
 import ModalSettingQuery from 'src/modals/querySQL/ModalSettingQuery';
 import { IDashboardDetail, IQuery } from 'src/utils/query.type';
-import { AppBroadcast } from 'src/utils/utils-broadcast';
-import ModelNewDashboard from 'src/modals/querySQL/ModalNewDashboard';
+import ModalNewDashboard from 'src/modals/querySQL/ModalNewDashboard';
 import { TYPE_MODAL } from 'src/pages/WorkspacePage/parts/Dashboard';
-import { BROADCAST_FETCH_QUERY } from 'src/pages/WorkspacePage/parts/Query';
 import { Dashboard } from 'src/utils/utils-dashboard';
 import { Query } from 'src/utils/utils-query';
 import { toastError } from 'src/utils/utils-notify';
@@ -26,6 +24,7 @@ interface IAppQueryMenu {
     response: any,
     type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE],
   ) => Promise<void>;
+  onSettingSuccess?: () => Promise<void>;
 }
 
 export const QUERY_MENU_LIST = {
@@ -46,6 +45,7 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
     itemType,
     onForkSuccess = () => null,
     onDeleteSuccess = () => null,
+    onSettingSuccess = () => null,
     item,
   } = props;
 
@@ -150,21 +150,22 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
         </MenuList>
       </Menu>
       {itemType === LIST_ITEM_TYPE.DASHBOARDS && openModalSetting && (
-        <ModelNewDashboard
+        <ModalNewDashboard
           open={openModalSetting}
-          onClose={onToggleModalSetting}
           id={item.id}
           defaultValue={{ name: item.name, tags: item.tags }}
           type={TYPE_MODAL.EDIT}
+          onClose={onToggleModalSetting}
+          onSuccess={onSettingSuccess}
         />
       )}
       {itemType === LIST_ITEM_TYPE.QUERIES && openModalSetting && (
         <ModalSettingQuery
           open={openModalSetting}
-          onClose={onToggleModalSetting}
           id={item.id}
           defaultValue={{ name: item.name, tags: item.tags }}
-          onSuccess={() => AppBroadcast.dispatch(BROADCAST_FETCH_QUERY)}
+          onClose={onToggleModalSetting}
+          onSuccess={onSettingSuccess}
         />
       )}
       {/** Modal Share */}

@@ -231,7 +231,6 @@ const Sidebar: React.FC<{
   };
 
   const onCreateDashboardSuccessfully = async () => {
-    setOpenNewDashboardModal(false);
     setSearchValueWorkPlace(''); // reset search value in order to see the newly created dashboard
     const dataDashboard = await fetchDashboards();
     setDataDashboards(() => [...dataDashboard.docs]);
@@ -380,7 +379,7 @@ const Sidebar: React.FC<{
                 key={dashboard.id}
                 className={handleClassNameWorkPlaceItem(dashboard.id)}
                 onClick={() =>
-                  history.push(`${ROUTES.DASHBOARD}/${dashboard.id}?`)
+                  history.push(`${ROUTES.MY_DASHBOARD}/${dashboard.id}?`)
                 }
               >
                 <Flex isTruncated alignItems={'center'} gap="10px">
@@ -536,7 +535,8 @@ const Sidebar: React.FC<{
       <ModalNewDashboard
         type={TYPE_MODAL.ADD}
         open={openNewDashboardModal}
-        onClose={onCreateDashboardSuccessfully}
+        onClose={() => setOpenNewDashboardModal(false)}
+        onSuccess={onCreateDashboardSuccessfully}
       />
     </div>
   );

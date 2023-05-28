@@ -6,6 +6,8 @@ import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import { ROUTES } from 'src/utils/common';
 import { IDashboardDetail, IQuery } from 'src/utils/query.type';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
+import { BROADCAST_FETCH_DASHBOARD } from './Dashboard';
+import { BROADCAST_FETCH_QUERY } from './Query';
 import { BROADCAST_FETCH_WORKPLACE_DATA } from './Sidebar';
 
 interface IHeaderProps {
@@ -55,6 +57,16 @@ const Header: React.FC<IHeaderProps> = (props) => {
       history.push(ROUTES.HOME);
     } else {
       AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
+    }
+  };
+
+  const onSettingSuccess = async () => {
+    if (type === LIST_ITEM_TYPE.DASHBOARDS) {
+      AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
+      AppBroadcast.dispatch(BROADCAST_FETCH_DASHBOARD);
+    } else {
+      AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
+      AppBroadcast.dispatch(BROADCAST_FETCH_QUERY);
     }
   };
 
@@ -128,6 +140,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
             itemType={type}
             onForkSuccess={onForkSuccess}
             onDeleteSuccess={onDeleteSuccess}
+            onSettingSuccess={onSettingSuccess}
           />
         )}
       </div>
