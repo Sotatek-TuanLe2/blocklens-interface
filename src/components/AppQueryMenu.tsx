@@ -44,11 +44,6 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
   const [openModalSetting, setOpenModalSetting] = useState<boolean>(false);
   const [openModalShare, setOpenModalShare] = useState<boolean>(false);
   const [openModalDelete, setOpenModalDelete] = useState<boolean>(false);
-  // const [openModalSettingDashboard, setOpenModalSettingDashboard] =
-  //   useState<boolean>(false);
-
-  // const onToggleModalSettingDashboard = () =>
-  //   setOpenModalSettingDashboard((prevState) => !prevState);
 
   const onToggleModalSetting = () =>
     setOpenModalSetting((prevState) => !prevState);
