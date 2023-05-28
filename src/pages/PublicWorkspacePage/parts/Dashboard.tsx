@@ -18,7 +18,7 @@ import { toastError } from 'src/utils/utils-notify';
 import Header from 'src/pages/WorkspacePage/parts/Header';
 import VisualizationItem from 'src/pages/WorkspacePage/parts/VisualizationItem';
 import AppNetworkIcons from 'src/components/AppNetworkIcons';
-import { WORKSPACE_TYPES } from 'src/pages/WorkspacePage';
+import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 
 export interface ILayout extends Layout {
   options: any;
@@ -170,12 +170,14 @@ const DashboardPart: React.FC = () => {
 
   return (
     <div className="workspace-page__editor__dashboard">
-      <Header
-        type={WORKSPACE_TYPES.DASHBOARD}
-        author={''}
-        title={dataDashboard?.name || ''}
-        isPrivate={false}
-      />
+      {!!dataDashboard && (
+        <Header
+          type={LIST_ITEM_TYPE.DASHBOARDS}
+          author={''}
+          data={dataDashboard}
+          isPrivate={false}
+        />
+      )}
       <div className="dashboard-container">
         <Box className="header-tab">
           <div className="header-tab__info">

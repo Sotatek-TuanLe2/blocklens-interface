@@ -1,4 +1,4 @@
-import { Checkbox, Flex, Link, Text, Tooltip } from '@chakra-ui/react';
+import { Checkbox, Flex, Link, Text } from '@chakra-ui/react';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   AreaChartIcon,
@@ -23,8 +23,6 @@ import { toastError } from 'src/utils/utils-notify';
 import BaseModal from '../BaseModal';
 import { debounce } from 'lodash';
 import { INPUT_DEBOUNCE } from 'src/utils/common';
-import ModalNewDashboard from './ModalNewDashboard';
-import moment from 'moment';
 
 interface IModalAddVisualization {
   open: boolean;
@@ -60,8 +58,6 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   dashboardId,
 }) => {
   const [dataVisualization, setDataVisualization] = useState<any[]>([]);
-  const [openNewDashboardModal, setOpenNewDashboardModal] =
-    useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>('');
 
   const dataFilter = useMemo(
@@ -237,14 +233,6 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
           </AppButton>
         </Flex>
       </form>
-
-      <ModalNewDashboard
-        open={openNewDashboardModal}
-        onClose={() => {
-          setOpenNewDashboardModal(false);
-          onClose();
-        }}
-      />
     </BaseModal>
   );
 };

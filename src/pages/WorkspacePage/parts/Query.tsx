@@ -1,14 +1,15 @@
 import { Box, Flex, Tooltip } from '@chakra-ui/react';
+
+import { debounce } from 'lodash';
+import moment from 'moment';
+import React, { useEffect, useRef, useState } from 'react';
 import AceEditor from 'react-ace';
-import { AppLoadingTable, AppTag } from 'src/components';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { EditorContext } from '../context/EditorContext';
-import VisualizationDisplay from './VisualizationDisplay';
-import 'ace-builds/src-noconflict/theme-monokai';
 import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/mode-sql';
-import { getErrorMessage } from 'src/utils/utils-helper';
+import 'ace-builds/src-noconflict/theme-monokai';
 import { useHistory, useParams } from 'react-router-dom';
+import { AppLoadingTable, AppTag } from 'src/components';
+import { getErrorMessage } from 'src/utils/utils-helper';
 import {
   QueryExecutedResponse,
   IQuery,
@@ -19,17 +20,18 @@ import 'src/styles/pages/QueriesPage.scss';
 import { toastError } from 'src/utils/utils-notify';
 import rf from 'src/requests/RequestFactory';
 import useUser from 'src/hooks/useUser';
-import { debounce } from 'lodash';
 import { QUERY_RESULT_STATUS, ROUTES } from 'src/utils/common';
-import { Query } from 'src/utils/utils-query';
-import Header from './Header';
-import { WORKSPACE_TYPES } from '..';
-import moment from 'moment';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
+import { EditorContext } from '../context/EditorContext';
+import Header from './Header';
+import VisualizationDisplay from './VisualizationDisplay';
+
 import AppNetworkIcons from 'src/components/AppNetworkIcons';
+import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import { BROADCAST_FETCH_WORKPLACE_DATA } from './Sidebar';
 
 export const BROADCAST_ADD_TEXT_TO_EDITOR = 'ADD_TEXT_TO_EDITOR';
+export const BROADCAST_FETCH_QUERY = 'FETCH_QUERY';
 
 const QueryPart: React.FC = () => {
   const { queryId } = useParams<{ queryId: string }>();
@@ -59,9 +61,11 @@ const QueryPart: React.FC = () => {
 
   useEffect(() => {
     AppBroadcast.on(BROADCAST_ADD_TEXT_TO_EDITOR, onAddTextToEditor);
+    AppBroadcast.on(BROADCAST_FETCH_QUERY, async () => await fetchQuery());
 
     return () => {
       AppBroadcast.remove(BROADCAST_ADD_TEXT_TO_EDITOR, onAddTextToEditor);
+      AppBroadcast.on(BROADCAST_FETCH_QUERY, async () => await fetchQuery());
     };
   }, []);
 
@@ -78,13 +82,6 @@ const QueryPart: React.FC = () => {
       }
     };
   }, [queryId]);
-
-  const queryClass = useMemo(() => {
-    if (!queryValue) {
-      return null;
-    }
-    return new Query(queryValue);
-  }, [queryValue]);
 
   const resetEditor = () => {
     editorRef.current && editorRef.current.editor.setValue('');
@@ -216,13 +213,16 @@ const QueryPart: React.FC = () => {
 
   return (
     <div className="workspace-page__editor__query">
-      <Header
-        type={WORKSPACE_TYPES.QUERY}
-        author={user?.getFirstName() || ''}
-        title={queryClass?.getName() || ''}
-        onRunQuery={onRunQuery}
-        selectedQuery={selectedQuery}
-      />
+      {!!queryValue && (
+        <Header
+          type={LIST_ITEM_TYPE.QUERIES}
+          author={user?.getFirstName() || ''}
+          data={queryValue}
+          onRunQuery={onRunQuery}
+          selectedQuery={selectedQuery}
+        />
+      )}
+
       <EditorContext.Provider
         value={{
           editor: editorRef,

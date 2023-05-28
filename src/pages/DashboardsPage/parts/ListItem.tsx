@@ -10,9 +10,6 @@ import { Dashboard } from 'src/utils/utils-dashboard';
 import { Query } from 'src/utils/utils-query';
 import { LIST_ITEM_TYPE } from '..';
 import { listTags, TYPE_MYWORK } from './FilterSearch';
-import { toastError } from 'src/utils/utils-notify';
-import { getErrorMessage } from 'src/utils/utils-helper';
-import rf from 'src/requests/RequestFactory';
 import AppQueryMenu, { QUERY_MENU_LIST } from 'src/components/AppQueryMenu';
 
 interface IListItem {
@@ -51,40 +48,26 @@ const ListItem: React.FC<IListItem> = (props) => {
     }
   };
 
-  const onClickFork = async () => {
-    try {
-      let res;
-      if (type === LIST_ITEM_TYPE.DASHBOARDS) {
-        res = await rf
-          .getRequest('DashboardsRequest')
-          .forkDashboard(
-            { newDashboardName: `Forked from ${itemClass.getName()}` },
-            itemClass.getId(),
-          );
-      } else if (type === LIST_ITEM_TYPE.QUERIES) {
-        res = await rf
-          .getRequest('DashboardsRequest')
-          .forkQueries(itemClass.getId());
-      }
-
-      if (res) {
-        history.push(
-          `${
-            type === LIST_ITEM_TYPE.DASHBOARDS ? ROUTES.DASHBOARD : ROUTES.QUERY
-          }/${res.id}`,
-        );
-      }
-    } catch (e) {
-      toastError({ message: getErrorMessage(e) });
-    }
+  const onForkSuccess = async (response: any, type: string) => {
+    history.push(
+      `${
+        type === LIST_ITEM_TYPE.DASHBOARDS
+          ? ROUTES.MY_DASHBOARD
+          : ROUTES.MY_QUERY
+      }/${response.id}`,
+    );
   };
 
   const _renderDropdown = () => {
     return (
-      <AppQueryMenu
-        menu={[QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.SHARE]}
-        onFork={onClickFork}
-      />
+      !!item && (
+        <AppQueryMenu
+          menu={[QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.SHARE]}
+          item={item}
+          itemType={type}
+          onForkSuccess={onForkSuccess}
+        />
+      )
     );
   };
 
