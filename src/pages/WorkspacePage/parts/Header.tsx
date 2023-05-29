@@ -1,7 +1,7 @@
 import { FormLabel, Switch, Tooltip, Spinner } from '@chakra-ui/react';
 import { useHistory, useParams } from 'react-router-dom';
 import { AppButton } from 'src/components';
-import AppQueryMenu from 'src/components/AppQueryMenu';
+import AppQueryMenu, { QUERY_MENU_LIST } from 'src/components/AppQueryMenu';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import { ROUTES } from 'src/utils/common';
 import { IDashboardDetail, IQuery } from 'src/utils/query.type';
@@ -145,6 +145,11 @@ const Header: React.FC<IHeaderProps> = (props) => {
           ))}
         {!isCreatingQuery && data && (
           <AppQueryMenu
+            menu={
+              !needAuthentication
+                ? [QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.SHARE]
+                : undefined
+            }
             item={data}
             itemType={type}
             onForkSuccess={onForkSuccess}
