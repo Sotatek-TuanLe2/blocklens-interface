@@ -170,14 +170,12 @@ const DashboardPart: React.FC = () => {
 
   return (
     <div className="workspace-page__editor__dashboard">
-      {!!dataDashboard && (
-        <Header
-          type={LIST_ITEM_TYPE.DASHBOARDS}
-          author={''}
-          data={dataDashboard}
-          isPrivate={false}
-        />
-      )}
+      <Header
+        type={LIST_ITEM_TYPE.DASHBOARDS}
+        author={''}
+        data={dataDashboard}
+        isPrivate={false}
+      />
       <div className="dashboard-container">
         <Box className="header-tab">
           <div className="header-tab__info">

@@ -120,14 +120,12 @@ const QueryPart: React.FC = () => {
 
   return (
     <div className="workspace-page__editor__query">
-      {!!queryValue && (
-        <Header
-          type={LIST_ITEM_TYPE.QUERIES}
-          author={''}
-          data={queryValue}
-          isPrivate={false}
-        />
-      )}
+      <Header
+        type={LIST_ITEM_TYPE.QUERIES}
+        author={''}
+        data={queryValue}
+        isPrivate={false}
+      />
       <div className="query-container queries-page">
         <Box className="queries-page__right-side">
           <Box className="editor-wrapper">

@@ -18,7 +18,7 @@ interface IHeaderProps {
   isPrivate?: boolean;
   onRunQuery?: () => Promise<void>;
   onChangeEditMode?: () => void;
-  data: IQuery | IDashboardDetail;
+  data: IQuery | IDashboardDetail | null | undefined;
 }
 
 const Header: React.FC<IHeaderProps> = (props) => {
@@ -85,7 +85,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
           <div className="item-desc">
             <img src="/images/AvatarDashboardCard.png" alt="avatar" />
             <p className="user-name">{author} /</p>
-            <span>{data.name}</span>
+            <span>{data?.name}</span>
           </div>
         )}
       </div>
@@ -134,7 +134,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
               </AppButton>
             </Tooltip>
           ))}
-        {!isCreatingQuery && (
+        {!isCreatingQuery && data && (
           <AppQueryMenu
             item={data}
             itemType={type}

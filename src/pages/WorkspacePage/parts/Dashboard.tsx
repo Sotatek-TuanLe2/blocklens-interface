@@ -222,16 +222,13 @@ const DashboardPart: React.FC = () => {
 
   return (
     <div className="workspace-page__editor__dashboard">
-      {!!dataDashboard && (
-        <Header
-          type={LIST_ITEM_TYPE.DASHBOARDS}
-          author={user?.getFirstName() || ''}
-          data={dataDashboard}
-          isEdit={editMode}
-          onChangeEditMode={() => setEditMode((prevState) => !prevState)}
-        />
-      )}
-
+      <Header
+        type={LIST_ITEM_TYPE.DASHBOARDS}
+        author={user?.getFirstName() || ''}
+        data={dataDashboard}
+        isEdit={editMode}
+        onChangeEditMode={() => setEditMode((prevState) => !prevState)}
+      />
       <div className="dashboard-container">
         <Box className="header-tab">
           <div className="header-tab__info">

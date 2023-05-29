@@ -213,16 +213,13 @@ const QueryPart: React.FC = () => {
 
   return (
     <div className="workspace-page__editor__query">
-      {!!queryValue && (
-        <Header
-          type={LIST_ITEM_TYPE.QUERIES}
-          author={user?.getFirstName() || ''}
-          data={queryValue}
-          onRunQuery={onRunQuery}
-          selectedQuery={selectedQuery}
-        />
-      )}
-
+      <Header
+        type={LIST_ITEM_TYPE.QUERIES}
+        author={user?.getFirstName() || ''}
+        data={queryValue}
+        onRunQuery={onRunQuery}
+        selectedQuery={selectedQuery}
+      />
       <EditorContext.Provider
         value={{
           editor: editorRef,
