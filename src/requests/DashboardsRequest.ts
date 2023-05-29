@@ -59,6 +59,16 @@ export interface DataTextWidget {
   };
   content: [];
 }
+
+export interface DataVisualWidget {
+  visualizationId: string;
+  options: {
+    col: number;
+    row: number;
+    sizeX: number;
+    sizeY: number;
+  };
+}
 export interface DataQuery {
   queryId: string;
 }
@@ -153,8 +163,12 @@ export default class DashboardsRequest extends BaseRequest {
     const url = `/dashboard/insert-text-widget`;
     return this.post(url, data);
   }
-  addVisualization(data: DataTextWidget) {
-    const url = `/dashboard/insert-visualization-widget`;
+
+  manageVisualizations(data: {
+    dashboardId: string;
+    listVisuals: DataVisualWidget[];
+  }) {
+    const url = `/dashboard/manage-dashboard-visuals`;
     return this.post(url, data);
   }
 

@@ -246,7 +246,7 @@ const DashboardPart: React.FC = () => {
                   <img src={PlusIcon} alt="icon-plus" />
                 </Box>
               </MenuButton>
-              <MenuList>
+              <MenuList className="app-query-menu__list">
                 <MenuItem onClick={onOpenModalAddVisualization}>
                   <Flex alignItems={'center'} gap={'8px'}>
                     <span className="icon-widget-small-visualization" />
