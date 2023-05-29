@@ -217,6 +217,7 @@ const QueryPart: React.FC = () => {
         type={LIST_ITEM_TYPE.QUERIES}
         author={user?.getFirstName() || ''}
         data={queryValue}
+        isLoadingRun={isLoadingResult}
         onRunQuery={onRunQuery}
         selectedQuery={selectedQuery}
       />
