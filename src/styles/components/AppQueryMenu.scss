@@ -8,21 +8,22 @@
   > span {
     flex: initial;
   }
-}
 
-.chakra-menu__menu-list {
-  background: #2f3b58 !important;
-  border: unset;
-  min-width: 109px;
-  border-radius: 6px;
-  border: none;
-  min-width: 104px !important;
-}
-
-.chakra-menu__menuitem {
-  &:hover, &:focus {
-    background: $main !important;
+  &__list {
+    background: #2f3b58 !important;
+    border: unset;
+    min-width: 109px;
+    border-radius: 6px;
+    border: none;
+    min-width: 104px !important;
+    
+    .chakra-menu__menuitem {
+      &:hover, &:focus {
+        background: $main !important;
+      }
+      
+      color: $title !important;
+    }
   }
   
-  color: $title !important;
 }

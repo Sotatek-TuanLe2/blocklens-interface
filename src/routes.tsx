@@ -37,17 +37,23 @@ import ModalSignatureRequired from './modals/ModalSignatureRequired';
 import DashboardsPage from './pages/DashboardsPage';
 import { ROUTES } from './utils/common';
 import WorkspacePage from './pages/WorkspacePage';
+import PublicWorkspacePage from './pages/PublicWorkspacePage';
 
 /**
  * Main App routes.
  */
 
 const GUEST_PATH = [
-  '/forgot-password',
-  '/verify-email',
-  '/sign-up',
-  '/reset-password',
+  ROUTES.HOME,
+  ROUTES.FORGOT_PASSWORD,
+  ROUTES.VERIFY_EMAIL,
+  ROUTES.SIGN_UP,
+  ROUTES.RESET_PASSWORD,
+  ROUTES.DASHBOARD,
+  ROUTES.QUERY,
 ];
+
+export const PRIVATE_PATH = [ROUTES.MY_DASHBOARD, ROUTES.MY_QUERY];
 
 const Routes: FC<RouteComponentProps> = () => {
   const { pathname } = useLocation();
@@ -115,16 +121,24 @@ const Routes: FC<RouteComponentProps> = () => {
           component={MessagesHistory}
         />
         <PrivateRoute path={'/top-up'} component={TopUpPage} /> */}
-        <PrivateRoute
+        <Route
           path={`${ROUTES.DASHBOARD}/:dashboardId?`}
+          component={PublicWorkspacePage}
+        />
+        <Route
+          path={`${ROUTES.QUERY}/:queryId?`}
+          component={PublicWorkspacePage}
+        />
+        <PrivateRoute
+          path={`${ROUTES.MY_DASHBOARD}/:dashboardId?`}
           component={WorkspacePage}
         />
         <PrivateRoute
-          path={`${ROUTES.QUERY}/:queryId?`}
+          path={`${ROUTES.MY_QUERY}/:queryId?`}
           component={WorkspacePage}
         />
         <Route path={ROUTES.CONTACT_US} component={ContactUs} />
-        <PrivateRoute path={ROUTES.HOME} component={DashboardsPage} />
+        <Route path={ROUTES.HOME} component={DashboardsPage} />
         {/* <PrivateRoute path={'/'} component={HomePage} /> */}
       </Switch>
       <>

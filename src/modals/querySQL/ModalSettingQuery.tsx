@@ -10,8 +10,8 @@ import { getErrorMessage } from 'src/utils/utils-helper';
 export interface IModalSettingQuerry {
   open: boolean;
   onClose: () => void;
-  onSuccess: (res: any) => void;
-  defaultValue: { name: string; tags?: string };
+  onSuccess?: (res: any) => void;
+  defaultValue: { name: string; tags?: string[] };
   id: string;
 }
 
@@ -19,10 +19,12 @@ const ModalSettingQuery = ({
   open,
   onClose,
   onSuccess,
-  defaultValue = { name: '', tags: '' },
+  defaultValue = { name: '', tags: [''] },
   id,
 }: IModalSettingQuerry) => {
-  const [valueSettingQuery, setValueSettingQuery] = useState(defaultValue);
+  const [valueSettingQuery, setValueSettingQuery] = useState({
+    ...defaultValue,
+  });
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
 
   useEffect(() => {
@@ -49,7 +51,8 @@ const ModalSettingQuery = ({
         const res = await rf
           .getRequest('DashboardsRequest')
           .updateQuery(valueSettingQuery, id);
-        onSuccess(res);
+        onSuccess && (await onSuccess(res));
+        onClose();
       } catch (error) {
         toastError({ message: getErrorMessage(error) });
       }
@@ -81,7 +84,7 @@ const ModalSettingQuery = ({
           <div>
             <Text className="input-label">{`Tags (optional)`} </Text>
             <AppInput
-              value={valueSettingQuery.tags}
+              value={valueSettingQuery.tags?.toString()}
               onChange={handleChangeTags}
             />
           </div>

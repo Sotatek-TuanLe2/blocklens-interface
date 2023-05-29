@@ -1,5 +1,6 @@
 import { Flex } from '@chakra-ui/react';
 import { AppButton } from 'src/components';
+import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import BaseModal from '../BaseModal';
 
 export interface IModalDelete {
@@ -12,12 +13,13 @@ export interface IModalDelete {
 
 const ModalDelete = ({ open, onClose, id, type, onSuccess }: IModalDelete) => {
   const getTitleModal = () => {
-    if (type === 'query') return 'Query';
-    if (type === 'dashboard') return 'Dashboard';
+    if (type === LIST_ITEM_TYPE.QUERIES) return 'Query';
+    if (type === LIST_ITEM_TYPE.DASHBOARDS) return 'Dashboard';
   };
 
   const handleSubmit = async () => {
     onSuccess();
+    onClose();
   };
 
   return (

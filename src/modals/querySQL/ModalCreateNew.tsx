@@ -2,10 +2,11 @@ import { Flex, Text } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { useHistory } from 'react-router';
 import { DashboardListIcon, QueriesIcon } from 'src/assets/icons';
+import { TYPE_MODAL } from 'src/pages/WorkspacePage/parts/Dashboard';
 import 'src/styles/components/BaseModal.scss';
 import { ROUTES } from 'src/utils/common';
 import BaseModal from '../BaseModal';
-import ModelNewDashboard from './ModalNewDashboard';
+import ModalNewDashboard from './ModalNewDashboard';
 
 interface IModalCreateNew {
   open: boolean;
@@ -45,7 +46,7 @@ const ModalCreateNew: React.FC<IModalCreateNew> = ({ open, onClose }) => {
           </Flex>
           <div
             className="content-create-modal"
-            onClick={() => history.push(ROUTES.QUERY)}
+            onClick={() => history.push(ROUTES.MY_QUERY)}
           >
             <QueriesIcon />
             <Text className="title-content">Queries</Text>
@@ -56,7 +57,8 @@ const ModalCreateNew: React.FC<IModalCreateNew> = ({ open, onClose }) => {
           </div>
         </Flex>
       </Flex>
-      <ModelNewDashboard
+      <ModalNewDashboard
+        type={TYPE_MODAL.ADD}
         open={openModalCreateNew}
         onClose={onToggleCreateDashboardModal}
       />

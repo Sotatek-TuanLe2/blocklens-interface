@@ -5,6 +5,7 @@ import { useHistory, useParams } from 'react-router';
 import { AppInput } from 'src/components';
 import AppQueryMenu, { QUERY_MENU_LIST } from 'src/components/AppQueryMenu';
 import ModalNewDashboard from 'src/modals/querySQL/ModalNewDashboard';
+import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import rf from 'src/requests/RequestFactory';
 import { PROMISE_STATUS, ROUTES, SchemaType } from 'src/utils/common';
 import { IDashboardDetail, IQuery } from 'src/utils/query.type';
@@ -12,6 +13,10 @@ import { AppBroadcast } from 'src/utils/utils-broadcast';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { getChainIconByChainName } from 'src/utils/utils-network';
 import { toastError } from 'src/utils/utils-notify';
+import { TYPE_MODAL } from './Dashboard';
+import { BROADCAST_ADD_TEXT_TO_EDITOR } from './Query';
+
+export const BROADCAST_FETCH_WORKPLACE_DATA = 'FETCH_WORKPLACE_DATA';
 
 const ChainItem = ({
   chain,
@@ -36,7 +41,7 @@ const ChainItem = ({
   };
 
   const handleAddQuery = (tableName: string) => {
-    AppBroadcast.dispatch('ADD_TEXT_TO_EDITOR', tableName);
+    AppBroadcast.dispatch(BROADCAST_ADD_TEXT_TO_EDITOR, tableName);
   };
 
   return (
@@ -172,6 +177,14 @@ const Sidebar: React.FC<{
 
   const [schemaDescribe, setSchemaDescribe] = useState<SchemaType[]>([]);
 
+  useEffect(() => {
+    AppBroadcast.on(BROADCAST_FETCH_WORKPLACE_DATA, fetchDataWorkPlace);
+
+    return () => {
+      AppBroadcast.remove(BROADCAST_FETCH_WORKPLACE_DATA);
+    };
+  }, []);
+
   const fetchDashboards: any = async (params: any) => {
     try {
       const res: any = await rf
@@ -218,7 +231,6 @@ const Sidebar: React.FC<{
   };
 
   const onCreateDashboardSuccessfully = async () => {
-    setOpenNewDashboardModal(false);
     setSearchValueWorkPlace(''); // reset search value in order to see the newly created dashboard
     const dataDashboard = await fetchDashboards();
     setDataDashboards(() => [...dataDashboard.docs]);
@@ -260,7 +272,7 @@ const Sidebar: React.FC<{
   );
 
   const handleCreateNewQuery = () => {
-    history.push('/queries');
+    history.push(ROUTES.MY_QUERY);
   };
 
   const handleCreateNewDashboard = () => {
@@ -274,30 +286,18 @@ const Sidebar: React.FC<{
   };
 
   const handleAddQuery = (tableName: string) => {
-    AppBroadcast.dispatch('ADD_TEXT_TO_EDITOR', tableName);
+    AppBroadcast.dispatch(BROADCAST_ADD_TEXT_TO_EDITOR, tableName);
   };
 
-  const onClickFork = async (workPlaceItem: any) => {
-    try {
-      let res;
-      if (!workPlaceItem.visualizations) {
-        res = await rf
-          .getRequest('DashboardsRequest')
-          .forkDashboard(
-            { newDashboardName: `Forked from ${workPlaceItem.name}` },
-            workPlaceItem.id,
-          );
-        history.push(`${ROUTES.DASHBOARD}/${res.id}`);
-      } else {
-        res = await rf
-          .getRequest('DashboardsRequest')
-          .forkQueries(workPlaceItem.id);
-        history.push(`${ROUTES.QUERY}/${res.id}`);
-      }
-      await fetchDataWorkPlace();
-    } catch (e) {
-      toastError({ message: getErrorMessage(e) });
-    }
+  const onForkSuccess = async (response: any, type: string) => {
+    history.push(
+      `${
+        type === LIST_ITEM_TYPE.DASHBOARDS
+          ? ROUTES.MY_DASHBOARD
+          : ROUTES.MY_QUERY
+      }/${response.id}`,
+    );
+    await fetchDataWorkPlace();
   };
 
   const _renderContentWorkPlace = () => {
@@ -336,7 +336,7 @@ const Sidebar: React.FC<{
               <div
                 key={query.id}
                 className={handleClassNameWorkPlaceItem(query.id)}
-                onClick={() => history.push(`${ROUTES.QUERY}/${query.id}?`)}
+                onClick={() => history.push(`${ROUTES.MY_QUERY}/${query.id}?`)}
               >
                 <Flex isTruncated alignItems={'center'} gap="10px" maxW={'70%'}>
                   <div>
@@ -353,9 +353,9 @@ const Sidebar: React.FC<{
 
                 <AppQueryMenu
                   menu={[QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.SHARE]}
-                  onFork={() => {
-                    onClickFork(query);
-                  }}
+                  itemType={LIST_ITEM_TYPE.QUERIES}
+                  item={query}
+                  onForkSuccess={onForkSuccess}
                 />
               </div>
             ))}
@@ -379,7 +379,7 @@ const Sidebar: React.FC<{
                 key={dashboard.id}
                 className={handleClassNameWorkPlaceItem(dashboard.id)}
                 onClick={() =>
-                  history.push(`${ROUTES.DASHBOARD}/${dashboard.id}?`)
+                  history.push(`${ROUTES.MY_DASHBOARD}/${dashboard.id}?`)
                 }
               >
                 <Flex isTruncated alignItems={'center'} gap="10px">
@@ -396,9 +396,9 @@ const Sidebar: React.FC<{
                 </Flex>
                 <AppQueryMenu
                   menu={[QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.SHARE]}
-                  onFork={() => {
-                    onClickFork(dashboard);
-                  }}
+                  itemType={LIST_ITEM_TYPE.DASHBOARDS}
+                  item={dashboard}
+                  onForkSuccess={onForkSuccess}
                 />
               </div>
             ))}
@@ -533,8 +533,10 @@ const Sidebar: React.FC<{
         {_renderContent()}
       </Box>
       <ModalNewDashboard
+        type={TYPE_MODAL.ADD}
         open={openNewDashboardModal}
-        onClose={onCreateDashboardSuccessfully}
+        onClose={() => setOpenNewDashboardModal(false)}
+        onSuccess={onCreateDashboardSuccessfully}
       />
     </div>
   );

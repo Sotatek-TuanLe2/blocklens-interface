@@ -66,7 +66,6 @@ export interface DataQuery {
 export interface IUpdateQuery {
   name?: string;
   query?: string;
-  isTemp?: boolean;
   tags?: string;
 }
 
@@ -135,10 +134,16 @@ export default class DashboardsRequest extends BaseRequest {
   /* End of Dashboards page */
 
   /* Dashboard's detail page */
-  getDashboardById(id: string) {
+  getMyDashboardById(id: string) {
     const url = `/dashboard/find-my-dashboard`;
     return this.get(url, id);
   }
+
+  getPublicDashboardById(id: string) {
+    const url = `/public/dashboard/${id}`;
+    return this.get(url);
+  }
+
   forkDashboard(data: ForkDashboard, id: ILayout) {
     const url = `/dashboard/fork-dashboard/${id}`;
     return this.post(url, data);
@@ -181,9 +186,14 @@ export default class DashboardsRequest extends BaseRequest {
     return this.get(url);
   }
 
-  getQueryById(params: DataQuery) {
+  getMyQueryById(params: DataQuery) {
     const url = '/queries/find-my-query';
     return this.get(url, params);
+  }
+
+  getPublicQueryById(params: DataQuery) {
+    const url = `/public/queries/${params.queryId}`;
+    return this.get(url);
   }
 
   createNewQuery(query: QueryType) {
@@ -193,6 +203,11 @@ export default class DashboardsRequest extends BaseRequest {
 
   executeQuery(queryId: string) {
     const url = '/query-executors/execute-query';
+    return this.post(url, { queryId });
+  }
+
+  executePublicQuery(queryId: string) {
+    const url = '/query-executors/execute-query-free';
     return this.post(url, { queryId });
   }
 

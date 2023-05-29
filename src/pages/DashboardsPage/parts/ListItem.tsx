@@ -9,14 +9,12 @@ import { IDashboardDetail, IQuery } from 'src/utils/query.type';
 import { Dashboard } from 'src/utils/utils-dashboard';
 import { Query } from 'src/utils/utils-query';
 import { LIST_ITEM_TYPE } from '..';
-import { listTags } from './FilterSearch';
-import { toastError } from 'src/utils/utils-notify';
-import { getErrorMessage } from 'src/utils/utils-helper';
-import rf from 'src/requests/RequestFactory';
+import { listTags, TYPE_MYWORK } from './FilterSearch';
 import AppQueryMenu, { QUERY_MENU_LIST } from 'src/components/AppQueryMenu';
 
 interface IListItem {
   type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
+  myWorkType?: typeof TYPE_MYWORK[keyof typeof TYPE_MYWORK];
   item?: IDashboardDetail | IQuery;
   visibility?: 'COLUMN' | 'ROW';
 }
@@ -24,7 +22,7 @@ interface IListItem {
 const listNetworkCurrency = ['eth_goerli', 'bsc_testnet', 'polygon_mainet'];
 
 const ListItem: React.FC<IListItem> = (props) => {
-  const { type, item, visibility } = props;
+  const { type, myWorkType, item, visibility } = props;
   const history = useHistory();
 
   // const [favorite, setFavorite] = useState<boolean>(false);
@@ -40,45 +38,36 @@ const ListItem: React.FC<IListItem> = (props) => {
         return `${ROUTES.DASHBOARD}/${itemClass.getId()}/`;
       case LIST_ITEM_TYPE.QUERIES:
         return `${ROUTES.QUERY}/${itemClass.getId()}`;
+      case LIST_ITEM_TYPE.MYWORK:
+        if (myWorkType === TYPE_MYWORK.DASHBOARDS) {
+          return `${ROUTES.MY_DASHBOARD}/${itemClass.getId()}`;
+        }
+        return `${ROUTES.MY_QUERY}/${itemClass.getId()}`;
       default:
         return ROUTES.HOME;
     }
   };
 
-  const onClickFork = async () => {
-    try {
-      let res;
-      if (type === LIST_ITEM_TYPE.DASHBOARDS) {
-        res = await rf
-          .getRequest('DashboardsRequest')
-          .forkDashboard(
-            { newDashboardName: `Forked from ${itemClass.getName()}` },
-            itemClass.getId(),
-          );
-      } else if (type === LIST_ITEM_TYPE.QUERIES) {
-        res = await rf
-          .getRequest('DashboardsRequest')
-          .forkQueries(itemClass.getId());
-      }
-
-      if (res) {
-        history.push(
-          `${
-            type === LIST_ITEM_TYPE.DASHBOARDS ? ROUTES.DASHBOARD : ROUTES.QUERY
-          }/${res.id}`,
-        );
-      }
-    } catch (e) {
-      toastError({ message: getErrorMessage(e) });
-    }
+  const onForkSuccess = async (response: any, type: string) => {
+    history.push(
+      `${
+        type === LIST_ITEM_TYPE.DASHBOARDS
+          ? ROUTES.MY_DASHBOARD
+          : ROUTES.MY_QUERY
+      }/${response.id}`,
+    );
   };
 
   const _renderDropdown = () => {
     return (
-      <AppQueryMenu
-        menu={[QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.SHARE]}
-        onFork={onClickFork}
-      />
+      !!item && (
+        <AppQueryMenu
+          menu={[QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.SHARE]}
+          item={item}
+          itemType={type}
+          onForkSuccess={onForkSuccess}
+        />
+      )
     );
   };
 
@@ -89,7 +78,9 @@ const ListItem: React.FC<IListItem> = (props) => {
           <div className="dashboard-list__item--column__avatar">
             <Link to={getTitleUrl()}>
               <img
-                src="/images/ThumnailDashboard.png"
+                src={
+                  itemClass.getThumnail() || '/images/ThumbnailDashboard.png'
+                }
                 alt="thumbnail"
                 className="thumbnail"
               />
@@ -152,7 +143,9 @@ const ListItem: React.FC<IListItem> = (props) => {
           >
             {type === LIST_ITEM_TYPE.DASHBOARDS && (
               <img
-                src="/images/ThumnailDashboard.png"
+                src={
+                  itemClass.getThumnail() || '/images/ThumbnailDashboard.png'
+                }
                 alt="thumbnail"
                 className="thumbnail"
               />
