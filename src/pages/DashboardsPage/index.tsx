@@ -110,7 +110,7 @@ const DashboardsPage: React.FC = () => {
       default:
         break;
     }
-  }, [searchUrl, tabType]);
+  }, [searchUrl, tabType, myWorkType]);
 
   const fetchAllDashboards: any = useCallback(
     async (params: any) => {
