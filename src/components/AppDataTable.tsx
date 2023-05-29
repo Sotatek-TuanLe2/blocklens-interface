@@ -225,8 +225,6 @@ const AppDataTable = forwardRef(
       return <>{renderBody(tableData)}</>;
     };
 
-    console.log('tableData.length', tableData.length);
-
     const _renderTable = () => {
       return (
         <>
