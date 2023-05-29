@@ -1,4 +1,4 @@
-import { Flex, Text } from '@chakra-ui/react';
+import { Flex, Text, Tooltip } from '@chakra-ui/react';
 import moment from 'moment';
 import { Link, useHistory } from 'react-router-dom';
 import { AppTag } from 'src/components';
@@ -150,8 +150,9 @@ const ListItem: React.FC<IListItem> = (props) => {
                 className="thumbnail"
               />
             )}
-
-            <div className="item-name">{itemClass.getName()}</div>
+            <Tooltip p={2} hasArrow placement="top" label={itemClass.getName()}>
+              <div className="item-name">{itemClass.getName()}</div>
+            </Tooltip>
           </Link>
           <div className="item-desc">
             <img src="/images/AvatarDashboardCard.png" alt="avatar" />
