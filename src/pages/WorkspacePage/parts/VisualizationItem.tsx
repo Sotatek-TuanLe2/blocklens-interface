@@ -39,6 +39,7 @@ const VisualizationItem = React.memo(
       useState<IErrorExecuteQuery>();
 
     const queryId = visualization?.queryId;
+    const query = visualization.query?.query;
     const fetchQueryResultInterval: any = useRef();
 
     useEffect(() => {
@@ -49,9 +50,9 @@ const VisualizationItem = React.memo(
 
     const fetchQueryResult = async () => {
       setIsLoading(true);
-      const executedResponse: QueryExecutedResponse = isPrivate
-        ? await rf.getRequest('DashboardsRequest').executeQuery(queryId)
-        : await rf.getRequest('DashboardsRequest').executePublicQuery(queryId);
+      const executedResponse: QueryExecutedResponse = await rf
+        .getRequest('DashboardsRequest')
+        .getTemporaryQueryResult(query);
       const executionId = executedResponse.id;
 
       const res = await rf.getRequest('DashboardsRequest').getQueryResult({
