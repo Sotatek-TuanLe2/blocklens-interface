@@ -42,22 +42,29 @@
       padding-right: 15px;
 
       .main-table {
-        height: unset;
-        overflow: unset;
+        // height: unset;
+        overflow: auto;
       }
 
       .table-content {
         height: 80%;
-        overflow: auto;
+        overflow: unset;
 
         th {
           padding-left: unset !important;
         }
 
         .table-pagination {
+          background: $card;
+          width: 100%;
           position: fixed;
-          bottom: 22px;
-          right: 1%;
+          bottom: 0px;
+          right: 0px;
+
+          .app-pagination {
+            margin: unset !important;
+            padding: 25px 25px 20px 10px;
+          }
         }
         .header-table {
           top: 45px;
