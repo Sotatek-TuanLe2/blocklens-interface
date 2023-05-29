@@ -61,11 +61,11 @@ export const VISUALIZATION_COLORS = {
 };
 
 export const COLORS = [
-  'rgb(0, 117, 245)',
-  'rgb(200, 143, 251)',
-  'rgb(230, 131, 16)',
-  'rgb(36, 121, 108)',
-  'rgb(153, 201, 69)',
+  '#0E8AFD',
+  '#FFB547',
+  '#67DF9D',
+  '#D53E54',
+  '#6651AF',
   'rgb(82, 188, 163)',
   'rgb(93, 105, 177)',
   'rgb(65, 100, 74)',
