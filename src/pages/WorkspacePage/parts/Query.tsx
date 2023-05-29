@@ -120,22 +120,18 @@ const QueryPart: React.FC = () => {
     });
     if (res.status === QUERY_RESULT_STATUS.WAITING) {
       fetchQueryResultInterval.current = setInterval(async () => {
-        try {
-          const resInterval = await rf
-            .getRequest('DashboardsRequest')
-            .getQueryResult({
-              executionId,
-            });
-          if (resInterval.status !== QUERY_RESULT_STATUS.WAITING) {
-            clearInterval(fetchQueryResultInterval.current);
-            setQueryResult(resInterval.result);
-            if (resInterval?.error) {
-              setErrorExecuteQuery(resInterval?.error);
-            }
-            setIsLoadingResult(false);
+        const resInterval = await rf
+          .getRequest('DashboardsRequest')
+          .getQueryResult({
+            executionId,
+          });
+        if (resInterval.status !== QUERY_RESULT_STATUS.WAITING) {
+          clearInterval(fetchQueryResultInterval.current);
+          setQueryResult(resInterval.result);
+          if (resInterval?.error) {
+            setErrorExecuteQuery(resInterval?.error);
           }
-        } catch (error) {
-          console.error(error);
+          setIsLoadingResult(false);
         }
       }, 2000);
     } else {
