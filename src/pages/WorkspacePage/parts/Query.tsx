@@ -120,18 +120,22 @@ const QueryPart: React.FC = () => {
     });
     if (res.status === QUERY_RESULT_STATUS.WAITING) {
       fetchQueryResultInterval.current = setInterval(async () => {
-        const resInterval = await rf
-          .getRequest('DashboardsRequest')
-          .getQueryResult({
-            executionId,
-          });
-        if (resInterval.status !== QUERY_RESULT_STATUS.WAITING) {
-          clearInterval(fetchQueryResultInterval.current);
-          setQueryResult(resInterval.result);
-          if (resInterval?.error) {
-            setErrorExecuteQuery(resInterval?.error);
+        try {
+          const resInterval = await rf
+            .getRequest('DashboardsRequest')
+            .getQueryResult({
+              executionId,
+            });
+          if (resInterval.status !== QUERY_RESULT_STATUS.WAITING) {
+            clearInterval(fetchQueryResultInterval.current);
+            setQueryResult(resInterval.result);
+            if (resInterval?.error) {
+              setErrorExecuteQuery(resInterval?.error);
+            }
+            setIsLoadingResult(false);
           }
-          setIsLoadingResult(false);
+        } catch (error) {
+          console.error(error);
         }
       }, 2000);
     } else {
@@ -313,7 +317,15 @@ const QueryPart: React.FC = () => {
                     widthColumns={[100]}
                     className="visual-table"
                   />
-                ) : !!queryResult.length ? (
+                ) : errorExecuteQuery?.message ? (
+                  <Flex
+                    className="empty-table"
+                    justifyContent={'center'}
+                    alignItems="center"
+                  >
+                    {errorExecuteQuery?.message}
+                  </Flex>
+                ) : (
                   <Box>
                     <VisualizationDisplay
                       queryResult={queryResult}
@@ -323,16 +335,6 @@ const QueryPart: React.FC = () => {
                       onExpand={setExpandLayout}
                     />
                   </Box>
-                ) : (
-                  <Flex
-                    className="empty-table"
-                    justifyContent={'center'}
-                    alignItems="center"
-                  >
-                    {errorExecuteQuery?.message
-                      ? errorExecuteQuery?.message
-                      : 'No data...'}
-                  </Flex>
                 )}
               </div>
             )}
