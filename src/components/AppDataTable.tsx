@@ -225,10 +225,12 @@ const AppDataTable = forwardRef(
       return <>{renderBody(tableData)}</>;
     };
 
+    console.log('tableData.length', tableData.length);
+
     const _renderTable = () => {
       return (
         <>
-          {renderHeader && renderHeader()}
+          {renderHeader && !isLoading && !!tableData.length && renderHeader()}
           {_renderBody()}
         </>
       );
