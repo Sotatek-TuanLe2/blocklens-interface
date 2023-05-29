@@ -122,10 +122,13 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
     setSort(sort);
     setChain(chain);
     setTag(tag);
+  }, [searchUrl]);
+
+  useEffect(() => {
     isDashboard
       ? changeVisibility(VisibilityGridDashboardList.COLUMN)
       : changeVisibility(VisibilityGridDashboardList.ROW);
-  }, [type, searchUrl]);
+  }, [type]);
 
   const onClickNew = () => {
     return onToggleNewDashboardModal();
@@ -286,6 +289,8 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
           className="dashboard-filter__search__input"
           placeholder={'Search...'}
           value={search}
+          variant="searchFilter"
+          isSearch
           onChange={onChangeSearch}
         />
         <AppSelect2
