@@ -107,21 +107,20 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
     try {
       const payload = {
         dashboardId,
-        visualizationId: visualizations.id,
-        text: visualizations.name,
-        options: {
-          sizeX: dataLayouts.length % 2 === 0 ? 0 : 6,
-          sizeY: dataLayouts.length,
-          col: 6,
-          row: 2,
-        },
+        listVisuals: [
+          {
+            visualizationId: visualizations.id,
+            options: {
+              sizeX: dataLayouts.length % 2 === 0 ? 0 : 6,
+              sizeY: dataLayouts.length,
+              col: 6,
+              row: 2,
+            },
+          },
+        ],
       };
-      const res = await rf
-        .getRequest('DashboardsRequest')
-        .addVisualization(payload);
-      if (res) {
-        onReload();
-      }
+      await rf.getRequest('DashboardsRequest').manageVisualizations(payload);
+      onReload();
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
     }
