@@ -124,7 +124,7 @@ const QueryPart: React.FC = () => {
         type={LIST_ITEM_TYPE.QUERIES}
         author={''}
         data={queryValue}
-        isPrivate={false}
+        needAuthentication={false}
       />
       <div className="query-container queries-page">
         <Box className="queries-page__right-side">

@@ -174,7 +174,7 @@ const DashboardPart: React.FC = () => {
         type={LIST_ITEM_TYPE.DASHBOARDS}
         author={''}
         data={dataDashboard}
-        isPrivate={false}
+        needAuthentication={false}
       />
       <div className="dashboard-container">
         <Box className="header-tab">

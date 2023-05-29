@@ -15,7 +15,7 @@ interface IHeaderProps {
   author: string;
   selectedQuery?: string;
   isEdit?: boolean;
-  isPrivate?: boolean;
+  needAuthentication?: boolean;
   onRunQuery?: () => Promise<void>;
   onChangeEditMode?: () => void;
   data: IQuery | IDashboardDetail | null | undefined;
@@ -27,7 +27,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
     author,
     data,
     isEdit = false,
-    isPrivate = true,
+    needAuthentication = true,
     selectedQuery,
     onRunQuery,
     onChangeEditMode,
@@ -90,7 +90,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
         )}
       </div>
       <div className="workspace-page__editor__header__right">
-        {isPrivate && !isCreatingQuery && !isEdit && (
+        {needAuthentication && !isCreatingQuery && !isEdit && (
           <div className="switch-icon">
             <Switch id="email-alerts" size="sm" />
             <FormLabel htmlFor="email-alerts" mb="0" me="20px">
@@ -98,7 +98,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
             </FormLabel>
           </div>
         )}
-        {isPrivate &&
+        {needAuthentication &&
           (isDashboard ? (
             <Tooltip
               label={isEdit ? 'Edit Dashboard' : ''}
