@@ -281,7 +281,11 @@ const VisualizationChart: React.FC<Props> = (props) => {
           right: 10,
         }}
       >
-        <CartesianGrid vertical={false} stroke="#212D4A" />
+        <CartesianGrid
+          vertical={false}
+          stroke="#2F3B58"
+          strokeDasharray="3 3"
+        />
         <XAxis
           tickFormatter={tickFormatAxis('x')}
           dataKey={xAxisKey}
