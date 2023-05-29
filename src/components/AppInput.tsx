@@ -21,7 +21,7 @@ interface ValidatorProps {
 }
 
 interface AppInputProps extends InputProps {
-  variant?: 'main' | 'auth' | 'authSecondary' | 'search';
+  variant?: 'main' | 'auth' | 'authSecondary' | 'search' | 'searchFilter';
   validate?: ValidatorProps;
   readOnly?: boolean;
   size?: string;
@@ -59,7 +59,7 @@ const AppInput = forwardRef(
         <InputGroup size={size}>
           {isSearch && (
             <InputLeftElement
-              top={'-8px'}
+              top={'-4px'}
               left={'5px'}
               children={<Box className="icon-search" />}
             />
@@ -171,6 +171,28 @@ export const appInputStyles = {
         borderRadius: '30px',
         _placeholder: { color: 'line.100', fontSize: '14px' },
         color: mode('gray.700', 'gray.100')(props),
+      },
+    }),
+    searchFilter: (props: StyleProps) => ({
+      field: {
+        bg: mode('card.100', 'card.100')(props),
+        border: '1px solid',
+        color: mode('white', 'white')(props),
+        borderColor: mode('line.100', 'line.300')(props),
+        borderRadius: '6px',
+        fontSize: '16px',
+        p: '20px 20px 20px 46px',
+        _focus: {
+          borderColor: mode('pressed.100', 'pressed.100')(props),
+        },
+        _placeholder: {
+          color: mode('line.100', 'line.100')(props),
+        },
+        _disabled: {
+          bg: mode('bg.200', 'bg.200')(props),
+          borderColor: mode('bg.200', 'bg.200')(props),
+          color: mode('paragraph.100', 'paragraph.100')(props),
+        },
       },
     }),
   },
