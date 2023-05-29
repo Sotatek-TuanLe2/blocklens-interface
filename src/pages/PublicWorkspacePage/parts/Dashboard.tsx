@@ -204,7 +204,7 @@ const DashboardPart: React.FC = () => {
                   {item.type === WIDGET_TYPE.VISUALIZATION ? (
                     <VisualizationItem
                       visualization={item.content}
-                      isPrivate={false}
+                      needAuthentication={false}
                     />
                   ) : (
                     <div className="box-text-widget">
