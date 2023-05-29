@@ -1,4 +1,5 @@
 import { FormLabel, Switch, Tooltip } from '@chakra-ui/react';
+import { useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { AppButton } from 'src/components';
 import AppQueryMenu from 'src/components/AppQueryMenu';
@@ -9,6 +10,9 @@ import { AppBroadcast } from 'src/utils/utils-broadcast';
 import { BROADCAST_FETCH_DASHBOARD } from './Dashboard';
 import { BROADCAST_FETCH_QUERY } from './Query';
 import { BROADCAST_FETCH_WORKPLACE_DATA } from './Sidebar';
+import rf from 'src/requests/RequestFactory';
+import { getErrorMessage } from 'src/utils/utils-helper';
+import { toastError } from 'src/utils/utils-notify';
 
 interface IHeaderProps {
   type: string;
@@ -37,6 +41,8 @@ const Header: React.FC<IHeaderProps> = (props) => {
     queryId: string;
     dashboardId: string;
   }>();
+
+  const [isPrivate, setIsPrivate] = useState(data?.isPrivate);
 
   const isDashboard = type === LIST_ITEM_TYPE.DASHBOARDS;
   const isCreatingQuery = type === LIST_ITEM_TYPE.QUERIES && !queryId;
@@ -69,7 +75,24 @@ const Header: React.FC<IHeaderProps> = (props) => {
       AppBroadcast.dispatch(BROADCAST_FETCH_QUERY);
     }
   };
-
+  console.log('data', data);
+  const onChangeStatus = async (e: any) => {
+    console.log(' e.target.checked', e.target.checked);
+    setIsPrivate(() => e.target.checked);
+    try {
+      isDashboard
+        ? await rf
+            .getRequest('DashboardsRequest')
+            .updateDashboardItem({ isPrivate: e.target.checked }, dashboardId)
+        : await rf
+            .getRequest('DashboardsRequest')
+            .updateQuery({ isPrivate: e.target.checked }, queryId);
+    } catch (error) {
+      toastError({
+        message: getErrorMessage(error),
+      });
+    }
+  };
   return (
     <div className="workspace-page__editor__header">
       <div className="workspace-page__editor__header__left">
@@ -92,7 +115,12 @@ const Header: React.FC<IHeaderProps> = (props) => {
       <div className="workspace-page__editor__header__right">
         {needAuthentication && !isCreatingQuery && !isEdit && (
           <div className="switch-icon">
-            <Switch id="email-alerts" size="sm" />
+            <Switch
+              id="email-alerts"
+              size="sm"
+              isChecked={isPrivate}
+              onChange={onChangeStatus}
+            />
             <FormLabel htmlFor="email-alerts" mb="0" me="20px">
               Publish
             </FormLabel>
