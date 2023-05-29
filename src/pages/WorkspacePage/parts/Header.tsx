@@ -1,5 +1,5 @@
 import { FormLabel, Switch, Tooltip } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { AppButton } from 'src/components';
 import AppQueryMenu from 'src/components/AppQueryMenu';
@@ -75,9 +75,10 @@ const Header: React.FC<IHeaderProps> = (props) => {
       AppBroadcast.dispatch(BROADCAST_FETCH_QUERY);
     }
   };
-  console.log('data', data);
+  useEffect(() => {
+    setIsPrivate(data?.isPrivate);
+  }, [data]);
   const onChangeStatus = async (e: any) => {
-    console.log(' e.target.checked', e.target.checked);
     setIsPrivate(() => e.target.checked);
     try {
       isDashboard
