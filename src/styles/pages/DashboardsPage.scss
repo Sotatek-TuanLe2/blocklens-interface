@@ -528,6 +528,12 @@
       }
     }
 
+    &__tag-list {
+      & > div {
+        background-color: $bg2;
+      }
+    }
+
     &--mobile {
       width: 100%;
       margin: 20px 0;

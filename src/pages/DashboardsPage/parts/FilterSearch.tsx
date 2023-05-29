@@ -47,8 +47,8 @@ interface ILISTNETWORK {
 const optionType: IOption[] = [
   { value: 'datelowtohigh', label: 'Date low to high' },
   { value: 'datehightolow', label: 'Date high to low' },
-  { value: 'likedlowtohigh', label: 'Liked low to high' },
-  { value: 'likedhightolow', label: 'Liked high to low' },
+  // { value: 'likedlowtohigh', label: 'Liked low to high' },
+  // { value: 'likedhightolow', label: 'Liked high to low' },
 ];
 
 export const listTags = [
@@ -322,7 +322,11 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
           </>
         )}
       </Flex>
-      <Flex mt={'14px'} flexDirection={'row'}>
+      <Flex
+        mt={'14px'}
+        flexDirection={'row'}
+        className="dashboard-filter__tag-list"
+      >
         {listTags.map((item) => (
           <AppTag
             key={item.id}
