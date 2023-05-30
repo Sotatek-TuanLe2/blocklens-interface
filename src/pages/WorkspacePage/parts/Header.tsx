@@ -95,7 +95,12 @@ const Header: React.FC<IHeaderProps> = (props) => {
         {needAuthentication && !isCreatingQuery && !isEdit && (
           <div className="switch-icon">
             <Switch id="email-alerts" size="sm" />
-            <FormLabel htmlFor="email-alerts" mb="0" me="20px">
+            <FormLabel
+              htmlFor="email-alerts"
+              mb="0"
+              me="20px"
+              fontSize={'14px'}
+            >
               Publish
             </FormLabel>
           </div>
@@ -129,9 +134,10 @@ const Header: React.FC<IHeaderProps> = (props) => {
               <AppButton
                 onClick={onRunQuery}
                 size="sm"
-                leftIcon={<p className="icon-run-query" />}
+                leftIcon={<span className="icon-run-query" />}
                 me="10px"
                 disabled={isLoadingRun}
+                fontSize={'14px'}
               >
                 {isLoadingRun ? (
                   <Spinner size="sm" />
