@@ -90,7 +90,6 @@ const ModalNewDashboard: React.FC<IModelNewDashboard> = ({
       });
       onClose();
       onSuccess && onSuccess();
-      toastSuccess({ message: 'Update was successful.' });
     } catch (error) {
       toastError({ message: getErrorMessage(error) });
     }

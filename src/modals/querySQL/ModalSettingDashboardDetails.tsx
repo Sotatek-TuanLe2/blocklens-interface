@@ -60,7 +60,6 @@ const ModalSettingDashboardDetails: React.FC<IModalSettingDashboardDetails> = ({
         .getRequest('DashboardsRequest')
         .updateDashboardItem(payload, dataDashboard?.id);
       if (res) {
-        toastSuccess({ message: 'Update was successful.' });
         onClose();
         onReload();
       }
