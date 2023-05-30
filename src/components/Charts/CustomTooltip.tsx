@@ -1,6 +1,6 @@
 import { Box } from '@chakra-ui/react';
 import _ from 'lodash';
-import { formatVisualizationValue } from 'src/utils/utils-format';
+import { formatNumber, formatVisualizationValue } from 'src/utils/utils-format';
 
 const CustomTooltip = (props: any) => {
   const { active, payload, label, numberFormat } = props;
@@ -8,7 +8,7 @@ const CustomTooltip = (props: any) => {
     if (numberFormat) {
       return formatVisualizationValue(numberFormat, value);
     }
-    return value;
+    return formatNumber(value);
   };
 
   if (active && payload && payload.length) {

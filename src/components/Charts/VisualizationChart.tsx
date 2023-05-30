@@ -23,7 +23,7 @@ import {
   TYPE_VISUALIZATION,
   VisualizationOptionsType,
 } from 'src/utils/query.type';
-import { formatVisualizationValue } from 'src/utils/utils-format';
+import { formatNumber, formatVisualizationValue } from 'src/utils/utils-format';
 import { isNumber } from 'src/utils/utils-helper';
 import { COLORS, getHourAndMinute } from '../../utils/common';
 import CustomLegend from './CustomLegend';
@@ -58,7 +58,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
     if (axis === 'y' && configs?.yAxisConfigs?.tickFormat) {
       return formatVisualizationValue(configs?.yAxisConfigs?.tickFormat, value);
     }
-    return value;
+    return formatNumber(value);
   };
 
   const logarithmicProps: any = yAxisConfigs?.logarithmic
@@ -86,7 +86,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
         value,
       );
     }
-    return value;
+    return formatNumber(value);
   };
 
   const _renderLabelList = (yAxisKey: string) => {
@@ -111,7 +111,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
             type="monotone"
             dataKey={yAxisKey}
             stroke={COLORS[index % COLORS.length]}
-            strokeWidth={3}
+            strokeWidth={2}
             dot={false}
             hide={hiddenKeys.includes(yAxisKey)}
           >
@@ -123,14 +123,14 @@ const VisualizationChart: React.FC<Props> = (props) => {
         return (
           <>
             <Area
-              type="monotone"
               key={yAxisKey}
               dataKey={yAxisKey}
               stroke={COLORS[index % COLORS.length]}
-              strokeWidth={3}
+              strokeWidth={2}
               fill={`url(#${yAxisKey})`}
               stackId={chartOptionsConfigs?.stacking ? 'area' : undefined}
               hide={hiddenKeys.includes(yAxisKey)}
+              dot={<CustomizedDot fill={COLORS[index % COLORS.length]} />}
             >
               {_renderLabelList(yAxisKey)}
             </Area>
@@ -170,6 +170,8 @@ const VisualizationChart: React.FC<Props> = (props) => {
             stroke={COLORS[index % COLORS.length]}
             fill={COLORS[index % COLORS.length]}
             name={yAxisKey}
+            strokeOpacity={0.3}
+            strokeWidth={6}
             hide={hiddenKeys.includes(yAxisKey)}
           >
             {_renderLabelList(yAxisKey)}
@@ -276,9 +278,10 @@ const VisualizationChart: React.FC<Props> = (props) => {
         data={sortData()}
         className={`${type}-chart`}
         margin={{
-          left: 20,
-          bottom: 30,
-          right: 10,
+          // left: 10,
+          bottom: 12,
+          right: 5,
+          top: 20,
         }}
       >
         <CartesianGrid
@@ -291,7 +294,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
           dataKey={xAxisKey}
           fill={'#ccc'}
           reversed={xAxisConfigs?.reverseX}
-          tick={{ fill: '#8D91A5', fontWeight: 400 }}
+          tick={{ fill: '#8D91A5', fontWeight: 400, fontSize: '12px' }}
           tickLine={false}
         >
           <Label
@@ -310,7 +313,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
               fill: '#ccc',
             }}
             tickFormatter={tickFormatAxis('y')}
-            tick={{ fill: '#8D91A5', fontWeight: 400 }}
+            tick={{ fill: '#8D91A5', fontWeight: 400, fontSize: '12px' }}
             tickLine={false}
             domain={yAxisDomain}
             {...logarithmicProps}
@@ -325,13 +328,12 @@ const VisualizationChart: React.FC<Props> = (props) => {
         />
         {chartOptionsConfigs?.showLegend && (
           <Legend
-            verticalAlign="middle"
-            align="right"
             layout="vertical"
             content={
               <CustomLegend
                 onToggleLegend={onToggleLegend}
                 hiddenKeys={hiddenKeys}
+                type={type}
               />
             }
           />
@@ -347,3 +349,14 @@ const VisualizationChart: React.FC<Props> = (props) => {
 };
 
 export default VisualizationChart;
+
+const CustomizedDot = (props: any) => {
+  const { cx, cy, fill } = props;
+
+  return (
+    <svg fill={fill} x={cx - 6.53516} y={cy - 6.53516}>
+      <circle opacity="0.3" cx="6.53516" cy="6" r="6" fill={fill} />
+      <circle cx="6.53516" cy="6" r="3" fill={fill} />
+    </svg>
+  );
+};

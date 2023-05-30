@@ -9,7 +9,7 @@ import {
 import { COLORS } from 'src/utils/common';
 import { VisualizationOptionsType } from 'src/utils/query.type';
 import { Box, Flex } from '@chakra-ui/react';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import _ from 'lodash';
 import BigNumber from 'bignumber.js';
 import { isNumber } from 'src/utils/utils-helper';
@@ -104,6 +104,7 @@ const VisualizationPieChart = ({
         fill="white"
         textAnchor={x > cx ? 'start' : 'end'}
         dominantBaseline="central"
+        fontSize={'12px'}
       >
         {`${(percent * 100).toFixed(2)}%`}
       </text>
@@ -131,7 +132,7 @@ const VisualizationPieChart = ({
   );
 
   return (
-    <ResponsiveContainer width={'100%'} height={'92%'}>
+    <ResponsiveContainer width={'100%'} height={'90%'}>
       {yAxisKeys?.length === 1 ? (
         <PieChart className="pie-chart">
           <Pie
@@ -142,10 +143,12 @@ const VisualizationPieChart = ({
             label={
               chartOptionsConfigs?.showDataLabels && _renderCustomizedLabel
             }
+            stroke="#101530"
           >
             {shownData &&
               shownData.map((entry: any) => (
                 <Cell
+                  style={{ outline: 'none', border: 'none' }}
                   key={`cell-${entry[xAxisKey]}`}
                   fill={pieSectionColor[entry[xAxisKey]]}
                 />
@@ -244,15 +247,16 @@ const CustomTooltip = (props: any) => {
       <div className="custom-tooltip">
         {payload.map((entry: any, index: number) => (
           <>
-            <p className="custom-tooltip__label">{entry.name}</p>
+            {/* <p className="custom-tooltip__label">{entry.name}</p> */}
             <div className="custom-tooltip__desc">
               <Box
                 as={'div'}
                 key={index}
                 className="custom-tooltip__desc__detail"
+                color={'white'}
               >
                 <span style={{ backgroundColor: entry.fill }}></span>
-                <span>{`${entry.dataKey}: ${_renderTooltipValue(
+                <span>{`${entry.name}: ${_renderTooltipValue(
                   entry.value,
                 )}`}</span>
                 <br />
