@@ -101,7 +101,14 @@ const ListItem: React.FC<IListItem> = (props) => {
             >
               <Flex flexDirection={'column'}>
                 <Link className="item-name" to={getTitleUrl()}>
-                  {itemClass.getName()}
+                  <Tooltip
+                    p={2}
+                    hasArrow
+                    placement="top"
+                    label={itemClass.getName()}
+                  >
+                    {itemClass.getName()}
+                  </Tooltip>
                 </Link>
                 <Flex flexWrap={'wrap'} flexDirection={'row'} maxW={52}>
                   {listTags.map((item) => (
