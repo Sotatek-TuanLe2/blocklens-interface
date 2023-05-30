@@ -116,7 +116,13 @@ const ChartOptions: React.FC<IChartOptions> = ({
         {chartOptions.map((option) => {
           return (
             <div className="main-toggle" key={option.value}>
-              <div className="label-toggle"> {option.label}</div>
+              <div
+                className={`"label-toggle" ${
+                  option.disabled ? ' label-disable' : ''
+                }`}
+              >
+                {option.label}
+              </div>
               <Switch
                 name={option.value}
                 isChecked={option.disabled ? false : option.checked}
