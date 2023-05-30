@@ -55,10 +55,9 @@ const VisualizationItem = React.memo(
         .getTemporaryQueryResult(query);
       const executionId = executedResponse.id;
 
-      const res = await rf.getRequest('DashboardsRequest').getQueryResult({
-        queryId,
-        executionId,
-      });
+      const res = await rf
+        .getRequest('DashboardsRequest')
+        .getQueryResult({ executionId });
 
       if (res.status === QUERY_RESULT_STATUS.WAITING) {
         fetchQueryResultInterval.current = setInterval(async () => {
