@@ -22,8 +22,8 @@
   .th,
   td,
   .td {
-    box-shadow: inset 0 0 0 1px lightgray;
-    padding: 0.25rem;
+    border-bottom: 1px solid $line;
+    padding: 8px 2px;
   }
 
   th,

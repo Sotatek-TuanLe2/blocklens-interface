@@ -9,7 +9,7 @@ import {
   VisualizationTable,
   VisualizationCounter,
 } from '../../../components/Charts';
-import { AppButton, AppTabs } from '../../../components';
+import { AppButton, AppTabs, ITabs } from '../../../components';
 import ChartConfigurations from '../../../components/VisualizationConfigs/ChartConfigurations';
 import BaseModal from '../../../modals/BaseModal';
 import {
@@ -87,16 +87,18 @@ export const VISUALIZATION_DEBOUNCE = 500;
 type Props = {
   queryResult: unknown[];
   queryValue: IQuery;
-  onReload: () => Promise<void>;
   expandLayout: string;
+  needAuthentication?: boolean;
+  onReload: () => Promise<void>;
   onExpand: (value: React.SetStateAction<string>) => void;
 };
 
 const VisualizationDisplay = ({
   queryResult,
   queryValue,
-  onReload,
   expandLayout,
+  needAuthentication = true,
+  onReload,
   onExpand,
 }: Props) => {
   interface ParamTypes {
@@ -104,7 +106,8 @@ const VisualizationDisplay = ({
   }
   const { queryId } = useParams<ParamTypes>();
 
-  const [toggleCloseConfig, setToggleCloseConfig] = useState<boolean>(true);
+  const [toggleCloseConfig, setToggleCloseConfig] =
+    useState<boolean>(needAuthentication);
   const [closeTabId, setCloseTabId] = useState<string | number>('');
   const [dataTable, setDataTable] = useState<any[]>([]);
 
@@ -411,6 +414,40 @@ const VisualizationDisplay = ({
     }
   };
 
+  const generateTabs = () => {
+    const tabs: ITabs[] = queryValue.visualizations.map((v) => ({
+      icon: getIcon(v?.options?.globalSeriesType || v.type),
+      name:
+        v.name ||
+        getDefaultVisualizationName(v?.options?.globalSeriesType || v.type),
+      content: renderVisualization(v),
+      id: v.id,
+      closeable: needAuthentication,
+    }));
+
+    if (needAuthentication) {
+      tabs.push({
+        name: (
+          <Tooltip label="Add New Visualization" hasArrow>
+            <Flex alignItems={'center'}>
+              <Box className="icon-plus-circle" mr={2} /> Add Chart
+            </Flex>
+          </Tooltip>
+        ),
+        content: (
+          <AddVisualization
+            expandLayout={expandLayout}
+            onAddVisualize={addVisualizationHandler}
+          />
+        ),
+        id: TYPE_VISUALIZATION.new,
+        closeable: false,
+      });
+    }
+
+    return tabs;
+  };
+
   return (
     <Box className="visual-container">
       <AppTabs
@@ -443,16 +480,18 @@ const VisualizationDisplay = ({
                 )}
               </div>
             </Tooltip>
-            <Tooltip label="Edit" hasArrow>
-              <div
-                className="btn-expand"
-                onClick={() => {
-                  setToggleCloseConfig((pre) => !pre);
-                }}
-              >
-                <p className="icon-query-edit" />
-              </div>
-            </Tooltip>
+            {needAuthentication && (
+              <Tooltip label="Edit" hasArrow>
+                <div
+                  className="btn-expand"
+                  onClick={() => {
+                    setToggleCloseConfig((pre) => !pre);
+                  }}
+                >
+                  <p className="icon-query-edit" />
+                </div>
+              </Tooltip>
+            )}
             <Tooltip label="Expand" hasArrow>
               <div
                 className="btn-expand-full"
@@ -470,37 +509,7 @@ const VisualizationDisplay = ({
               : LAYOUT_QUERY.HALF,
           )
         }
-        tabs={[
-          ...queryValue.visualizations.map((v) => ({
-            icon: getIcon(v?.options?.globalSeriesType || v.type),
-            name:
-              v.name ||
-              getDefaultVisualizationName(
-                v?.options?.globalSeriesType || v.type,
-              ),
-            content: renderVisualization(v),
-            id: v.id,
-            closeable: true,
-          })),
-          {
-            icon: null,
-            name: (
-              <Tooltip label="Add New Visualization" hasArrow>
-                <Flex alignItems={'center'}>
-                  <Box className="icon-plus-circle" mr={2} /> Add Chart
-                </Flex>
-              </Tooltip>
-            ),
-            content: (
-              <AddVisualization
-                expandLayout={expandLayout}
-                onAddVisualize={addVisualizationHandler}
-              />
-            ),
-            id: TYPE_VISUALIZATION.new,
-            closeable: false,
-          },
-        ]}
+        tabs={generateTabs()}
       />
       <BaseModal
         title={'Remove Visualization'}

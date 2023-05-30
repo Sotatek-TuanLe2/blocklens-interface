@@ -82,8 +82,12 @@ const ModalNewDashboard: React.FC<IModelNewDashboard> = ({
               },
               id,
             );
-      type === TYPE_MODAL.ADD &&
-        history.push(`${ROUTES.MY_DASHBOARD}/${result.id}`);
+      history.push(`${ROUTES.MY_DASHBOARD}/${result.id}`);
+      toastSuccess({
+        message: `${
+          type === TYPE_MODAL.ADD ? 'Create' : 'Update'
+        } successfully!`,
+      });
       onClose();
       onSuccess && onSuccess();
       toastSuccess({ message: 'Update was successful.' });

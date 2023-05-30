@@ -13,11 +13,7 @@ import { AppButton, AppInput } from 'src/components';
 import { ILayout } from 'src/pages/WorkspacePage/parts/Dashboard';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/BaseModal.scss';
-import {
-  QueryType,
-  TYPE_VISUALIZATION,
-  VisualizationType,
-} from 'src/utils/query.type';
+import { TYPE_VISUALIZATION, VisualizationType } from 'src/utils/query.type';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import BaseModal from '../BaseModal';
@@ -35,18 +31,10 @@ interface IModalAddVisualization {
 interface IAddVisualizationCheckbox {
   userName: string;
   item: any;
-  dataLayouts: ILayout[];
-  handleRemoveVisualization: (
-    item: ILayout[],
-    i: VisualizationType,
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  ) => Promise<void>;
-  handleSaveVisualization: (
-    data: QueryType,
-    visualizations: VisualizationType,
-  ) => Promise<void>;
   i: VisualizationType;
   getIcon: (chain: string | undefined) => JSX.Element;
+  selectedItems: any[];
+  setSelectedItems: React.Dispatch<React.SetStateAction<any[]>>;
 }
 
 const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
@@ -57,6 +45,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   onReload,
   dashboardId,
 }) => {
+  const [selectedItems, setSelectedItems] = useState<any[]>([]);
   const [dataVisualization, setDataVisualization] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
 
@@ -100,50 +89,32 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
     }
   }, [open]);
 
-  const handleSaveVisualization = async (
-    data: QueryType,
-    visualizations: VisualizationType,
-  ) => {
+  useEffect(() => {
+    if (!!dataLayouts.length) {
+      setSelectedItems(dataLayouts.map((i) => i.content));
+    }
+  }, [dataLayouts]);
+
+  const handleSaveVisualization = async () => {
+    const dataVisual = selectedItems.map((i) => {
+      return {
+        visualizationId: i.id,
+        options: {
+          sizeX: dataLayouts.length % 2 === 0 ? 0 : 6,
+          sizeY: dataLayouts.length,
+          col: 6,
+          row: 2,
+        },
+      };
+    });
     try {
       const payload = {
         dashboardId,
-        listVisuals: [
-          {
-            visualizationId: visualizations.id,
-            options: {
-              sizeX: dataLayouts.length % 2 === 0 ? 0 : 6,
-              sizeY: dataLayouts.length,
-              col: 6,
-              row: 2,
-            },
-          },
-        ],
+        listVisuals: dataVisual,
       };
       await rf.getRequest('DashboardsRequest').manageVisualizations(payload);
+      onClose();
       onReload();
-    } catch (e) {
-      toastError({ message: getErrorMessage(e) });
-    }
-  };
-
-  const handleRemoveVisualization = async (
-    item: ILayout[],
-    i: VisualizationType,
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  ) => {
-    try {
-      const result = item.map((e: any) => {
-        if (e.content.id === i.id) {
-          return e.id;
-        }
-      });
-      const removeId = result.find((item: any) => item !== undefined);
-
-      e.preventDefault();
-      await rf.getRequest('DashboardsRequest').removeVisualization(removeId);
-      onReload();
-      fetchVisualization();
-      // onClose();
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
     }
@@ -210,11 +181,10 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
                     <AddVisualizationCheckbox
                       userName={userName}
                       item={item}
-                      dataLayouts={dataLayouts}
-                      handleSaveVisualization={handleSaveVisualization}
-                      handleRemoveVisualization={handleRemoveVisualization}
                       i={i}
                       getIcon={getIcon}
+                      setSelectedItems={setSelectedItems}
+                      selectedItems={selectedItems}
                     />
                   </Flex>
                 )),
@@ -227,7 +197,13 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
           <AppButton variant="cancel" mr={2.5} size="lg" onClick={onClose}>
             Cancel
           </AppButton>
-          <AppButton size="lg" onClick={onClose}>
+          <AppButton
+            size="lg"
+            onClick={() => {
+              handleSaveVisualization();
+              onClose();
+            }}
+          >
             Confirm
           </AppButton>
         </Flex>
@@ -241,13 +217,13 @@ export default ModalAddVisualization;
 const AddVisualizationCheckbox: React.FC<IAddVisualizationCheckbox> = ({
   userName,
   item,
-  handleSaveVisualization,
-  handleRemoveVisualization,
-  dataLayouts,
   i,
   getIcon,
+  selectedItems,
+  setSelectedItems,
 }) => {
-  const checkAdded = dataLayouts.map((el: any) => el.content.id).includes(i.id);
+  const checkAdded = selectedItems.some((el) => el.id === i.id);
+
   const conditionDisplayIcon = () => {
     if (i.type === 'table') {
       return i.type;
@@ -258,15 +234,29 @@ const AddVisualizationCheckbox: React.FC<IAddVisualizationCheckbox> = ({
     }
   };
 
+  const handleCheckboxChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    itemId: string,
+  ) => {
+    const { checked } = event.target;
+
+    if (checked) {
+      setSelectedItems((prevItems) => [
+        ...prevItems,
+        item.visualizations.find((item: { id: string }) => item.id === itemId),
+      ]);
+    } else {
+      setSelectedItems((prevItems) =>
+        prevItems.filter((selectedItem) => selectedItem.id !== itemId),
+      );
+    }
+  };
+
   return (
     <>
       <Flex className="visualization-row" alignItems={'center'}>
         <Checkbox
-          onChange={(e: any) => {
-            checkAdded
-              ? handleRemoveVisualization(dataLayouts, i, e)
-              : handleSaveVisualization(item, i);
-          }}
+          onChange={(e) => handleCheckboxChange(e, i.id)}
           isChecked={checkAdded}
         />
         {getIcon(conditionDisplayIcon())}

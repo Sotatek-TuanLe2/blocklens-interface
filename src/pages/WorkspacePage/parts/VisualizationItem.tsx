@@ -24,21 +24,25 @@ import { areYAxisesSameType, getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import { Link } from 'react-router-dom';
 import { QUERY_RESULT_STATUS, ROUTES } from 'src/utils/common';
+import useUser from 'src/hooks/useUser';
 
 const VisualizationItem = React.memo(
   ({
     visualization,
-    isPrivate = true,
+    needAuthentication = true,
   }: {
     visualization: VisualizationType;
-    isPrivate?: boolean;
+    needAuthentication?: boolean;
   }) => {
+    const { user } = useUser();
+
     const [queryResult, setQueryResult] = useState<unknown[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [errorExecuteQuery, setErrorExecuteQuery] =
       useState<IErrorExecuteQuery>();
 
     const queryId = visualization?.queryId;
+    const query = visualization.query?.query;
     const fetchQueryResultInterval: any = useRef();
 
     useEffect(() => {
@@ -49,15 +53,16 @@ const VisualizationItem = React.memo(
 
     const fetchQueryResult = async () => {
       setIsLoading(true);
-      const executedResponse: QueryExecutedResponse = isPrivate
-        ? await rf.getRequest('DashboardsRequest').executeQuery(queryId)
+      const executedResponse: QueryExecutedResponse = user
+        ? await rf
+            .getRequest('DashboardsRequest')
+            .getTemporaryQueryResult(query)
         : await rf.getRequest('DashboardsRequest').executePublicQuery(queryId);
       const executionId = executedResponse.id;
 
-      const res = await rf.getRequest('DashboardsRequest').getQueryResult({
-        queryId,
-        executionId,
-      });
+      const res = await rf
+        .getRequest('DashboardsRequest')
+        .getQueryResult({ executionId });
 
       if (res.status === QUERY_RESULT_STATUS.WAITING) {
         fetchQueryResultInterval.current = setInterval(async () => {
@@ -145,7 +150,6 @@ const VisualizationItem = React.memo(
               visualization={visualization}
             />
           );
-
           break;
         case TYPE_VISUALIZATION.pie:
           visualizationDisplay = (
@@ -185,7 +189,7 @@ const VisualizationItem = React.memo(
             <Tooltip label={visualization.query?.name} hasArrow>
               <Link
                 className="visual-container__visualization__title__query-link"
-                to={`${isPrivate ? ROUTES.MY_QUERY : ROUTES.QUERY}/${
+                to={`${needAuthentication ? ROUTES.MY_QUERY : ROUTES.QUERY}/${
                   visualization.queryId
                 }`}
               >
