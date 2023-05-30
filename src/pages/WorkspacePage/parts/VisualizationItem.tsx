@@ -24,6 +24,7 @@ import { areYAxisesSameType, getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import { Link } from 'react-router-dom';
 import { QUERY_RESULT_STATUS, ROUTES } from 'src/utils/common';
+import useUser from 'src/hooks/useUser';
 
 const VisualizationItem = React.memo(
   ({
@@ -33,6 +34,8 @@ const VisualizationItem = React.memo(
     visualization: VisualizationType;
     needAuthentication?: boolean;
   }) => {
+    const { user } = useUser();
+
     const [queryResult, setQueryResult] = useState<unknown[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [errorExecuteQuery, setErrorExecuteQuery] =
@@ -50,9 +53,11 @@ const VisualizationItem = React.memo(
 
     const fetchQueryResult = async () => {
       setIsLoading(true);
-      const executedResponse: QueryExecutedResponse = await rf
-        .getRequest('DashboardsRequest')
-        .getTemporaryQueryResult(query);
+      const executedResponse: QueryExecutedResponse = user
+        ? await rf
+            .getRequest('DashboardsRequest')
+            .getTemporaryQueryResult(query)
+        : await rf.getRequest('DashboardsRequest').executePublicQuery(queryId);
       const executionId = executedResponse.id;
 
       const res = await rf
