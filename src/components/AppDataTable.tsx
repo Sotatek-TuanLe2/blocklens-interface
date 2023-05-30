@@ -225,10 +225,17 @@ const AppDataTable = forwardRef(
       return <>{renderBody(tableData)}</>;
     };
 
+    const _renderHeader = () => {
+      if (!renderHeader || !tableData.length || isLoading || props.loading) {
+        return;
+      }
+      return <>{renderHeader()}</>;
+    };
+
     const _renderTable = () => {
       return (
         <>
-          {renderHeader && renderHeader()}
+          {_renderHeader()}
           {_renderBody()}
         </>
       );

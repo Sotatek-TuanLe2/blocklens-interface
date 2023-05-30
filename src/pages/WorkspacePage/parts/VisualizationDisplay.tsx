@@ -87,16 +87,18 @@ export const VISUALIZATION_DEBOUNCE = 500;
 type Props = {
   queryResult: unknown[];
   queryValue: IQuery;
-  onReload: () => Promise<void>;
   expandLayout: string;
+  needAuthentication?: boolean;
+  onReload: () => Promise<void>;
   onExpand: (value: React.SetStateAction<string>) => void;
 };
 
 const VisualizationDisplay = ({
   queryResult,
   queryValue,
-  onReload,
   expandLayout,
+  needAuthentication = false,
+  onReload,
   onExpand,
 }: Props) => {
   interface ParamTypes {

@@ -217,6 +217,7 @@ const QueryPart: React.FC = () => {
         type={LIST_ITEM_TYPE.QUERIES}
         author={user?.getFirstName() || ''}
         data={queryValue}
+        isLoadingRun={isLoadingResult}
         onRunQuery={onRunQuery}
         selectedQuery={selectedQuery}
       />
@@ -312,7 +313,15 @@ const QueryPart: React.FC = () => {
                     widthColumns={[100]}
                     className="visual-table"
                   />
-                ) : !!queryResult.length ? (
+                ) : errorExecuteQuery?.message ? (
+                  <Flex
+                    className="empty-table"
+                    justifyContent={'center'}
+                    alignItems="center"
+                  >
+                    {errorExecuteQuery?.message}
+                  </Flex>
+                ) : (
                   <Box>
                     <VisualizationDisplay
                       queryResult={queryResult}
@@ -322,16 +331,6 @@ const QueryPart: React.FC = () => {
                       onExpand={setExpandLayout}
                     />
                   </Box>
-                ) : (
-                  <Flex
-                    className="empty-table"
-                    justifyContent={'center'}
-                    alignItems="center"
-                  >
-                    {errorExecuteQuery?.message
-                      ? errorExecuteQuery?.message
-                      : 'No data...'}
-                  </Flex>
                 )}
               </div>
             )}

@@ -47,8 +47,8 @@ interface ILISTNETWORK {
 const optionType: IOption[] = [
   { value: 'datelowtohigh', label: 'Date low to high' },
   { value: 'datehightolow', label: 'Date high to low' },
-  { value: 'likedlowtohigh', label: 'Liked low to high' },
-  { value: 'likedhightolow', label: 'Liked high to low' },
+  // { value: 'likedlowtohigh', label: 'Liked low to high' },
+  // { value: 'likedhightolow', label: 'Liked high to low' },
 ];
 
 export const listTags = [
@@ -122,10 +122,13 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
     setSort(sort);
     setChain(chain);
     setTag(tag);
+  }, [searchUrl]);
+
+  useEffect(() => {
     isDashboard
       ? changeVisibility(VisibilityGridDashboardList.COLUMN)
       : changeVisibility(VisibilityGridDashboardList.ROW);
-  }, [type, searchUrl]);
+  }, [type]);
 
   const onClickNew = () => {
     return onToggleNewDashboardModal();
@@ -286,6 +289,8 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
           className="dashboard-filter__search__input"
           placeholder={'Search...'}
           value={search}
+          variant="searchFilter"
+          isSearch
           onChange={onChangeSearch}
         />
         <AppSelect2
@@ -322,7 +327,11 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
           </>
         )}
       </Flex>
-      <Flex mt={'14px'} flexDirection={'row'}>
+      <Flex
+        mt={'14px'}
+        flexDirection={'row'}
+        className="dashboard-filter__tag-list"
+      >
         {listTags.map((item) => (
           <AppTag
             key={item.id}

@@ -174,7 +174,7 @@ const DashboardPart: React.FC = () => {
         type={LIST_ITEM_TYPE.DASHBOARDS}
         author={''}
         data={dataDashboard}
-        isPrivate={false}
+        needAuthentication={false}
       />
       <div className="dashboard-container">
         <Box className="header-tab">
@@ -204,7 +204,7 @@ const DashboardPart: React.FC = () => {
                   {item.type === WIDGET_TYPE.VISUALIZATION ? (
                     <VisualizationItem
                       visualization={item.content}
-                      isPrivate={false}
+                      needAuthentication={false}
                     />
                   ) : (
                     <div className="box-text-widget">

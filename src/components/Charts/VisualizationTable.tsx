@@ -143,7 +143,7 @@ const VisualizationTable = <T,>({
         <AppInput
           // isSearch
           size="xs"
-          className={'input-search'}
+          className="input-search"
           type="text"
           placeholder={'Search...'}
           onChange={handleSearch}
@@ -302,7 +302,11 @@ const VisualizationTable = <T,>({
           </tbody>
         </table>
       </Box>
-      <Flex justifyContent={'flex-end'} alignItems={'baseline'}>
+      <Flex
+        justifyContent={'flex-end'}
+        alignItems={'baseline'}
+        className="table-pagination"
+      >
         <div className="data-length">{data.length} rows</div>
         <AppPagination pageCount={pageCount} onPageChange={handlePageClick} />
       </Flex>

@@ -218,7 +218,6 @@ const CustomLegend = (props: any) => {
           <span
             onClick={() => onToggleLegend(entry.value)}
             style={{
-              color: `${entry.color}`,
               opacity: `${entry.type ? '1' : '0.5'}`,
             }}
           >

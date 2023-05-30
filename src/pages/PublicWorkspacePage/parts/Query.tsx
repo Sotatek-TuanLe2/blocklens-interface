@@ -124,7 +124,7 @@ const QueryPart: React.FC = () => {
         type={LIST_ITEM_TYPE.QUERIES}
         author={''}
         data={queryValue}
-        isPrivate={false}
+        needAuthentication={false}
       />
       <div className="query-container queries-page">
         <Box className="queries-page__right-side">
@@ -213,26 +213,25 @@ const QueryPart: React.FC = () => {
                   widthColumns={[100]}
                   className="visual-table"
                 />
-              ) : !!queryResult.length ? (
-                <Box>
-                  <VisualizationDisplay
-                    queryResult={queryResult}
-                    queryValue={queryValue}
-                    onReload={fetchQuery}
-                    expandLayout={expandLayout}
-                    onExpand={setExpandLayout}
-                  />
-                </Box>
-              ) : (
+              ) : errorExecuteQuery?.message ? (
                 <Flex
                   className="empty-table"
                   justifyContent={'center'}
                   alignItems="center"
                 >
-                  {errorExecuteQuery?.message
-                    ? errorExecuteQuery?.message
-                    : 'No data...'}
+                  {errorExecuteQuery?.message}
                 </Flex>
+              ) : (
+                <Box>
+                  <VisualizationDisplay
+                    queryResult={queryResult}
+                    queryValue={queryValue}
+                    expandLayout={expandLayout}
+                    needAuthentication={false}
+                    onReload={fetchQuery}
+                    onExpand={setExpandLayout}
+                  />
+                </Box>
               )}
             </div>
           )}

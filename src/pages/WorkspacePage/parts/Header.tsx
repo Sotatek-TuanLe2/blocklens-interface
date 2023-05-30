@@ -1,7 +1,7 @@
-import { FormLabel, Switch, Tooltip } from '@chakra-ui/react';
+import { FormLabel, Switch, Tooltip, Spinner } from '@chakra-ui/react';
 import { useHistory, useParams } from 'react-router-dom';
 import { AppButton } from 'src/components';
-import AppQueryMenu from 'src/components/AppQueryMenu';
+import AppQueryMenu, { QUERY_MENU_LIST } from 'src/components/AppQueryMenu';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import { ROUTES } from 'src/utils/common';
 import { IDashboardDetail, IQuery } from 'src/utils/query.type';
@@ -15,7 +15,8 @@ interface IHeaderProps {
   author: string;
   selectedQuery?: string;
   isEdit?: boolean;
-  isPrivate?: boolean;
+  needAuthentication?: boolean;
+  isLoadingRun?: boolean;
   onRunQuery?: () => Promise<void>;
   onChangeEditMode?: () => void;
   data: IQuery | IDashboardDetail | null | undefined;
@@ -27,8 +28,9 @@ const Header: React.FC<IHeaderProps> = (props) => {
     author,
     data,
     isEdit = false,
-    isPrivate = true,
+    needAuthentication = true,
     selectedQuery,
+    isLoadingRun = false,
     onRunQuery,
     onChangeEditMode,
   } = props;
@@ -90,7 +92,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
         )}
       </div>
       <div className="workspace-page__editor__header__right">
-        {isPrivate && !isCreatingQuery && !isEdit && (
+        {needAuthentication && !isCreatingQuery && !isEdit && (
           <div className="switch-icon">
             <Switch id="email-alerts" size="sm" />
             <FormLabel htmlFor="email-alerts" mb="0" me="20px">
@@ -98,7 +100,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
             </FormLabel>
           </div>
         )}
-        {isPrivate &&
+        {needAuthentication &&
           (isDashboard ? (
             <Tooltip
               label={isEdit ? 'Edit Dashboard' : ''}
@@ -129,13 +131,25 @@ const Header: React.FC<IHeaderProps> = (props) => {
                 size="sm"
                 leftIcon={<p className="icon-run-query" />}
                 me="10px"
+                disabled={isLoadingRun}
               >
-                {selectedQuery ? 'Run selection' : 'Run'}
+                {isLoadingRun ? (
+                  <Spinner size="sm" />
+                ) : selectedQuery ? (
+                  'Run selection'
+                ) : (
+                  'Run'
+                )}
               </AppButton>
             </Tooltip>
           ))}
         {!isCreatingQuery && data && (
           <AppQueryMenu
+            menu={
+              !needAuthentication
+                ? [QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.SHARE]
+                : undefined
+            }
             item={data}
             itemType={type}
             onForkSuccess={onForkSuccess}
