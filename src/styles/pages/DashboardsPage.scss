@@ -345,11 +345,7 @@
     border-color: #1878ff;
     color: white;
     padding: 0 24px;
-    background: linear-gradient(
-      268.85deg,
-      rgba(34, 108, 255, 0.12) 22.48%,
-      rgba(16, 132, 255, 0.12) 83.59%
-    );
+    background: linear-gradient(268.85deg, rgba(34, 108, 255, 0.12) 22.48%, rgba(16, 132, 255, 0.12) 83.59%);
   }
 
   .btn-inactive {
@@ -543,9 +539,5 @@
         display: block;
       }
     }
-  }
-
-  .app-pagination {
-    margin: 25px -5px 0 0;
   }
 }

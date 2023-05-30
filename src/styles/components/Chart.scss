@@ -44,8 +44,7 @@
     span:nth-child(1) {
       left: 10px;
       position: absolute;
-      padding: 3px;
-      border-radius: 100px;
+      padding: 5px;
       background-color: aliceblue;
       top: 50%;
       transform: translateY(-50%);
@@ -53,6 +52,7 @@
 
     span:nth-child(2) {
       padding-right: 10px;
+      padding-left: 9px;
       cursor: pointer;
     }
 
