@@ -20,10 +20,7 @@ const ModalShareDomain = ({ open, onClose, link }: IModalSetting) => {
   const handleCopyLink = () => {
     copyToClipboard(link || linkDefault);
   };
-  const getLinkShare = () => {
-    if (process.env.REACT_APP_ENV === 'prod') return linkDefault;
-    else return 'https://blocklens.io/';
-  };
+
   return (
     <BaseModal
       size="xl"
