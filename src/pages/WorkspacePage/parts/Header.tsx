@@ -1,3 +1,4 @@
+import { useEffect, useMemo, useState } from 'react';
 import { FormLabel, Switch, Tooltip, Spinner } from '@chakra-ui/react';
 import { useHistory, useParams } from 'react-router-dom';
 import { AppButton } from 'src/components';
@@ -9,6 +10,11 @@ import { AppBroadcast } from 'src/utils/utils-broadcast';
 import { BROADCAST_FETCH_DASHBOARD } from './Dashboard';
 import { BROADCAST_FETCH_QUERY } from './Query';
 import { BROADCAST_FETCH_WORKPLACE_DATA } from './Sidebar';
+import rf from 'src/requests/RequestFactory';
+import { getErrorMessage } from 'src/utils/utils-helper';
+import { toastError } from 'src/utils/utils-notify';
+import { Dashboard } from 'src/utils/utils-dashboard';
+import { Query } from 'src/utils/utils-query';
 
 interface IHeaderProps {
   type: string;
@@ -42,6 +48,14 @@ const Header: React.FC<IHeaderProps> = (props) => {
 
   const isDashboard = type === LIST_ITEM_TYPE.DASHBOARDS;
   const isCreatingQuery = type === LIST_ITEM_TYPE.QUERIES && !queryId;
+  const dataClass = useMemo(() => {
+    if (!data) {
+      return null;
+    }
+    return isDashboard
+      ? new Dashboard(data as IDashboardDetail)
+      : new Query(data as IQuery);
+  }, [data]);
 
   const onForkSuccess = async (response: any, type: string) => {
     history.push(
@@ -72,6 +86,38 @@ const Header: React.FC<IHeaderProps> = (props) => {
     }
   };
 
+  const onChangeStatus = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const isChecked = e.target.checked;
+    if (
+      isDashboard &&
+      isChecked &&
+      !(dataClass as Dashboard)?.getDashboardVisuals().length
+    ) {
+      toastError({
+        message:
+          'Dashboard must contain at least a visualization to be published!',
+      });
+      return;
+    }
+
+    try {
+      isDashboard
+        ? await rf
+            .getRequest('DashboardsRequest')
+            .updateDashboardItem({ isPrivate: isChecked }, dashboardId)
+        : await rf
+            .getRequest('DashboardsRequest')
+            .updateQuery({ isPrivate: isChecked }, queryId);
+      AppBroadcast.dispatch(
+        isDashboard ? BROADCAST_FETCH_DASHBOARD : BROADCAST_FETCH_QUERY,
+      );
+    } catch (error) {
+      toastError({
+        message: getErrorMessage(error),
+      });
+    }
+  };
+
   return (
     <div className="workspace-page__editor__header">
       <div className="workspace-page__editor__header__left">
@@ -87,14 +133,19 @@ const Header: React.FC<IHeaderProps> = (props) => {
           <div className="item-desc">
             <img src="/images/AvatarDashboardCard.png" alt="avatar" />
             <p className="user-name">{author} /</p>
-            <span>{data?.name}</span>
+            <span>{dataClass?.getName()}</span>
           </div>
         )}
       </div>
       <div className="workspace-page__editor__header__right">
         {needAuthentication && !isCreatingQuery && !isEdit && (
           <div className="switch-icon">
-            <Switch id="email-alerts" size="sm" />
+            <Switch
+              id="email-alerts"
+              size="sm"
+              isChecked={dataClass?.isPrivate()}
+              onChange={onChangeStatus}
+            />
             <FormLabel htmlFor="email-alerts" mb="0" me="20px">
               Publish
             </FormLabel>

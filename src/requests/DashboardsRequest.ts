@@ -77,6 +77,7 @@ export interface IUpdateQuery {
   name?: string;
   query?: string;
   tags?: string;
+  isPrivate?: boolean;
 }
 
 export interface SchemaParams {
