@@ -31,8 +31,6 @@ interface IModalAddVisualization {
 interface IAddVisualizationCheckbox {
   userName: string;
   item: any;
-  dataLayouts: ILayout[];
-
   i: VisualizationType;
   getIcon: (chain: string | undefined) => JSX.Element;
   selectedItems: any[];
@@ -91,10 +89,14 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
     }
   }, [open]);
 
-  const handleSaveVisualization = async (
-    visualizations: VisualizationType[],
-  ) => {
-    const dataVisual = visualizations.map((i) => {
+  useEffect(() => {
+    if (!!dataLayouts.length) {
+      setSelectedItems(dataLayouts.map((i) => i.content));
+    }
+  }, [dataLayouts]);
+
+  const handleSaveVisualization = async () => {
+    const dataVisual = selectedItems.map((i) => {
       return {
         visualizationId: i.id,
         options: {
@@ -111,6 +113,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
         listVisuals: dataVisual,
       };
       await rf.getRequest('DashboardsRequest').manageVisualizations(payload);
+      onClose();
       onReload();
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
@@ -178,7 +181,6 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
                     <AddVisualizationCheckbox
                       userName={userName}
                       item={item}
-                      dataLayouts={dataLayouts}
                       i={i}
                       getIcon={getIcon}
                       setSelectedItems={setSelectedItems}
@@ -198,7 +200,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
           <AppButton
             size="lg"
             onClick={() => {
-              handleSaveVisualization(selectedItems);
+              handleSaveVisualization();
               onClose();
             }}
           >
@@ -215,13 +217,12 @@ export default ModalAddVisualization;
 const AddVisualizationCheckbox: React.FC<IAddVisualizationCheckbox> = ({
   userName,
   item,
-  dataLayouts,
   i,
   getIcon,
   selectedItems,
   setSelectedItems,
 }) => {
-  const checkAdded = selectedItems.map((el: any) => el.id).includes(i.id);
+  const checkAdded = selectedItems.some((el) => el.id === i.id);
 
   const conditionDisplayIcon = () => {
     if (i.type === 'table') {
@@ -232,10 +233,6 @@ const AddVisualizationCheckbox: React.FC<IAddVisualizationCheckbox> = ({
       return i.options.globalSeriesType;
     }
   };
-
-  useEffect(() => {
-    setSelectedItems(dataLayouts.map((i) => i.content));
-  }, []);
 
   const handleCheckboxChange = (
     event: React.ChangeEvent<HTMLInputElement>,
