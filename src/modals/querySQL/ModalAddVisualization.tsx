@@ -197,7 +197,10 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
           </AppButton>
           <AppButton
             size="lg"
-            onClick={() => handleSaveVisualization(selectedItems)}
+            onClick={() => {
+              handleSaveVisualization(selectedItems);
+              onClose();
+            }}
           >
             Confirm
           </AppButton>
