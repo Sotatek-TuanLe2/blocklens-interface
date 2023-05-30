@@ -34,16 +34,16 @@ const ModalShareDomain = ({ open, onClose, link }: IModalSetting) => {
       <Flex direction={'column'}>
         <div className="modal-share-domain__title">Share</div>
         <Flex className="modal-share-domain__desc">
-          <FacebookShareButton url={getLinkShare()}>
+          <FacebookShareButton url={link || linkDefault}>
             <div className="bg-facebook_icon social-media" />
           </FacebookShareButton>
-          <TwitterShareButton url={getLinkShare()}>
+          <TwitterShareButton url={link || linkDefault}>
             <div className="bg-twitter_icon social-media" />
           </TwitterShareButton>
-          <TelegramShareButton url={getLinkShare()}>
+          <TelegramShareButton url={link || linkDefault}>
             <div className="bg-telegram_icon social-media" />
           </TelegramShareButton>
-          <LinkedinShareButton url={getLinkShare()}>
+          <LinkedinShareButton url={link || linkDefault}>
             <div className="bg-linkedin_icon social-media" />
           </LinkedinShareButton>
         </Flex>
