@@ -8,7 +8,7 @@ const CustomTooltip = (props: any) => {
     if (numberFormat) {
       return formatVisualizationValue(numberFormat, value);
     }
-    return formatNumber(value);
+    return formatNumber(value, 4, '0');
   };
 
   if (active && payload && payload.length) {

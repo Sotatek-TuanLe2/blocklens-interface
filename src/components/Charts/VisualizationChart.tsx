@@ -86,7 +86,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
         value,
       );
     }
-    return formatNumber(value);
+    return formatNumber(value, 4, '0');
   };
 
   const _renderLabelList = (yAxisKey: string) => {
