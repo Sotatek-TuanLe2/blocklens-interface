@@ -6,7 +6,7 @@ import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/BaseModal.scss';
 import { ROUTES } from 'src/utils/common';
 import { getErrorMessage } from 'src/utils/utils-helper';
-import { toastError } from 'src/utils/utils-notify';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { createValidator } from 'src/utils/utils-validator';
 import BaseModal from '../BaseModal';
 import { IconUploadImg } from 'src/assets/icons';
@@ -83,6 +83,11 @@ const ModalNewDashboard: React.FC<IModelNewDashboard> = ({
               id,
             );
       history.push(`${ROUTES.MY_DASHBOARD}/${result.id}`);
+      toastSuccess({
+        message: `${
+          type === TYPE_MODAL.ADD ? 'Create' : 'Update'
+        } successfully!`,
+      });
       onClose();
       onSuccess && onSuccess();
     } catch (error) {
