@@ -180,9 +180,10 @@ const Header: React.FC<IHeaderProps> = (props) => {
               <AppButton
                 onClick={onRunQuery}
                 size="sm"
-                leftIcon={<p className="icon-run-query" />}
+                leftIcon={<span className="icon-run-query" />}
                 me="10px"
                 disabled={isLoadingRun}
+                fontSize={'14px'}
               >
                 {isLoadingRun ? (
                   <Spinner size="sm" />
