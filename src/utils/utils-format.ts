@@ -217,6 +217,10 @@ export const roundAndPadZeros = (a: number, decimals: number): string => {
 export const formatVisualizationValue = (format: string, value: any) => {
   let result = value;
 
+  if (value == 0) {
+    return 0;
+  }
+
   if (!isNumber(value)) {
     return value;
   }
