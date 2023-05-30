@@ -239,7 +239,7 @@ const DashboardPart: React.FC = () => {
               <AppTag key={item} value={item} />
             ))}
           </div>
-          {editMode && (
+          {editMode && !isEmptyDashboard && (
             <Menu>
               <MenuButton className="app-query-menu">
                 <Box className="add-button">
