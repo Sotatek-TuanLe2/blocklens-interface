@@ -293,6 +293,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
           reversed={xAxisConfigs?.reverseX}
           tick={{ fill: '#8D91A5', fontWeight: 400 }}
           tickLine={false}
+          height={50}
         >
           <Label
             offset={0}
