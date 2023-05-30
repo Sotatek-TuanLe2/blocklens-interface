@@ -49,7 +49,7 @@ const ModalCreateNew: React.FC<IModalCreateNew> = ({ open, onClose }) => {
             onClick={() => history.push(ROUTES.MY_QUERY)}
           >
             <QueriesIcon />
-            <Text className="title-content">Queries</Text>
+            <Text className="title-content">Query</Text>
             <Text className="desc-content">
               Create your chart and analysis with the no-code query builder or
               native SQL

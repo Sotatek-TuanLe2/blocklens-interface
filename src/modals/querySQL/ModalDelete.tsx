@@ -30,8 +30,9 @@ const ModalDelete = ({ open, onClose, id, type, onSuccess }: IModalDelete) => {
         </div>
         <div className="modal-delete__title">Delete {getTitleModal()}</div>
         <div className="modal-delete__content">
-          Are you sure to delete this {getTitleModal()}? All contents within the
-          {getTitleModal()} will be deleted
+          Are you sure to delete this {getTitleModal()?.toLocaleLowerCase()}?
+          All contents within the {getTitleModal()?.toLocaleLowerCase()} will be
+          deleted
         </div>
 
         <Flex className="modal-footer">
