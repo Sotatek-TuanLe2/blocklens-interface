@@ -58,7 +58,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
     if (axis === 'y' && configs?.yAxisConfigs?.tickFormat) {
       return formatVisualizationValue(configs?.yAxisConfigs?.tickFormat, value);
     }
-    return formatNumber(value);
+    return formatNumber(value, 4, '0');
   };
 
   const logarithmicProps: any = yAxisConfigs?.logarithmic
@@ -158,6 +158,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
             fill={COLORS[index % COLORS.length]}
             stackId={chartOptionsConfigs?.stacking ? 'bar' : undefined}
             hide={hiddenKeys.includes(yAxisKey)}
+            barSize={18}
           >
             {_renderLabelList(yAxisKey)}
           </Bar>
@@ -316,6 +317,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
             tick={{ fill: '#8D91A5', fontWeight: 400, fontSize: '12px' }}
             tickLine={false}
             domain={yAxisDomain}
+            tickCount={6}
             {...logarithmicProps}
           />
         )}

@@ -10,7 +10,9 @@ const CustomLegend = (props: any) => {
       {payload.map((entry: any, index: number) => (
         <div key={`item-${index}`} className="custom-legend">
           <span
-            className={type === TYPE_VISUALIZATION.line ? 'line-chart' : ''}
+            className={
+              type === TYPE_VISUALIZATION.line ? 'line-chart-legend' : ''
+            }
             style={{ backgroundColor: `${entry.color}` }}
           ></span>
 

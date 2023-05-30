@@ -21,7 +21,6 @@ interface ReactTableProps<T> {
   data: T[];
   setDataTable?: React.Dispatch<React.SetStateAction<any[]>>;
   visualization?: VisualizationType;
-  searchTerm: string;
 }
 
 const COLUMN_TYPES = {
@@ -63,21 +62,20 @@ const VisualizationTable = <T,>({
   data,
   setDataTable,
   visualization,
-  searchTerm,
 }: ReactTableProps<T>) => {
   const [itemOffset, setItemOffset] = useState(0);
-  // const [searchTerm, setSearchTerm] = useState<string>('');
+  const [searchTerm, setSearchTerm] = useState<string>('');
 
   const ITEMS_PER_PAGE = 15;
   const pageCount = Math.ceil(data.length / ITEMS_PER_PAGE);
   const endOffset = itemOffset + ITEMS_PER_PAGE;
 
-  // const handleSearch = debounce(
-  //   (event: React.ChangeEvent<HTMLInputElement>) => {
-  //     setSearchTerm(event.target.value);
-  //   },
-  //   INPUT_DEBOUNCE,
-  // );
+  const handleSearch = debounce(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchTerm(event.target.value);
+    },
+    INPUT_DEBOUNCE,
+  );
 
   const filteredData = data.filter((item: any) =>
     Object.keys(data[0] as any).some(
@@ -141,16 +139,17 @@ const VisualizationTable = <T,>({
 
   return (
     <div>
-      {/* <div className="header-table">
+      <div className="header-table">
         <AppInput
-          // isSearch
+          isSearch
+          variant="searchFilter"
           size="xs"
           className="input-search"
           type="text"
           placeholder={'Search...'}
           onChange={handleSearch}
         />
-      </div> */}
+      </div>
 
       <Box className="main-table" height={'308px'} overflow={'auto'}>
         <table
@@ -158,7 +157,7 @@ const VisualizationTable = <T,>({
           {...{
             style: {
               height: '100%',
-              width: table.getCenterTotalSize(),
+              width: '100%',
             },
           }}
         >

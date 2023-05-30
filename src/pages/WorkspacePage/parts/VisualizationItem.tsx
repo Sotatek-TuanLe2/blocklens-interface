@@ -23,10 +23,8 @@ import {
 import { areYAxisesSameType, getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import { Link } from 'react-router-dom';
-import { INPUT_DEBOUNCE, QUERY_RESULT_STATUS, ROUTES } from 'src/utils/common';
+import { QUERY_RESULT_STATUS, ROUTES } from 'src/utils/common';
 import useUser from 'src/hooks/useUser';
-import { AppInput } from 'src/components';
-import { debounce } from 'lodash';
 
 const VisualizationItem = React.memo(
   ({
@@ -42,18 +40,10 @@ const VisualizationItem = React.memo(
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [errorExecuteQuery, setErrorExecuteQuery] =
       useState<IErrorExecuteQuery>();
-    const [searchTerm, setSearchTerm] = useState<string>('');
 
     const queryId = visualization?.queryId;
     const query = visualization.query?.query;
     const fetchQueryResultInterval: any = useRef();
-
-    const handleSearch = debounce(
-      (event: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchTerm(event.target.value);
-      },
-      INPUT_DEBOUNCE,
-    );
 
     useEffect(() => {
       if (queryId) {
@@ -148,7 +138,6 @@ const VisualizationItem = React.memo(
             <VisualizationTable
               data={queryResult}
               visualization={visualization}
-              searchTerm={searchTerm}
             />
           );
 
@@ -207,18 +196,6 @@ const VisualizationItem = React.memo(
                 {visualization.query?.name}
               </Link>
             </Tooltip>
-            <Flex justifyContent="flex-end" marginLeft="auto">
-              {type === TYPE_VISUALIZATION.table && (
-                <AppInput
-                  // isSearch
-                  size="xs"
-                  className="input-search"
-                  type="text"
-                  placeholder={'Search...'}
-                  onChange={handleSearch}
-                />
-              )}
-            </Flex>
           </div>
           {errorMessage ? (
             <Flex
