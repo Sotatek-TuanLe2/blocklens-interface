@@ -27,6 +27,8 @@ const ChainItem = ({
   onChangeSchemaDescribe: any;
   schemaDescribe: any;
 }) => {
+  const { queryId }: { queryId?: string } = useParams();
+
   const handleToggle = async () => {
     try {
       const data = await rf.getRequest('DashboardsRequest').getSchemaOfTable({
@@ -60,22 +62,24 @@ const ChainItem = ({
             {chain.table_name}
           </Text>
         </Flex>
-        <Tooltip
-          placement="top"
-          hasArrow
-          label="Add to query"
-          aria-label="A tooltip"
-          bg={'#2F3B58'}
-          borderRadius="6px"
-        >
-          <div
-            className="bg-PlusIcon add-query-icon"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleAddQuery(chain.full_name);
-            }}
-          ></div>
-        </Tooltip>
+        {!!queryId && (
+          <Tooltip
+            placement="top"
+            hasArrow
+            label="Add to query"
+            aria-label="A tooltip"
+            bg={'#2F3B58'}
+            borderRadius="6px"
+          >
+            <div
+              className="bg-PlusIcon add-query-icon"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleAddQuery(chain.full_name);
+              }}
+            ></div>
+          </Tooltip>
+        )}
       </Box>
     </>
   );
@@ -456,10 +460,6 @@ const Sidebar: React.FC<{
                 {schemaDescribe[0].table_name}
               </Text>
               <div className="header-icon">
-                <div
-                  className="bg-PlusIcon"
-                  onClick={() => handleAddQuery(schemaDescribe[0].full_name)}
-                />
                 <div
                   className="bg-CloseBtnIcon"
                   onClick={() => setSchemaDescribe([])}
