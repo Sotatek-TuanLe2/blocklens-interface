@@ -84,7 +84,7 @@ const VisualizationTable = <T,>({
         item[field]
           ?.toString()
           .toLowerCase()
-          .includes(searchTerm.toLowerCase()),
+          .includes(searchTerm.toLowerCase().trim()),
     ),
   );
 
@@ -141,7 +141,8 @@ const VisualizationTable = <T,>({
     <div>
       <div className="header-table">
         <AppInput
-          // isSearch
+          isSearch
+          variant="searchFilter"
           size="xs"
           className="input-search"
           type="text"
@@ -155,8 +156,7 @@ const VisualizationTable = <T,>({
           className={'table-value'}
           {...{
             style: {
-              height: '100%',
-              width: table.getCenterTotalSize(),
+              width: '100%',
             },
           }}
         >
@@ -178,7 +178,7 @@ const VisualizationTable = <T,>({
                         textTransform: 'uppercase',
                         color: '#465065',
                         fontWeight: '700',
-                        fontSize: '14px',
+                        fontSize: '12px',
                         width: header.getSize(),
                         textAlign: header.column.columnDef.align,
                         display: header.column.columnDef.isHidden
@@ -270,7 +270,7 @@ const VisualizationTable = <T,>({
                           key: cells.id,
                           style: {
                             fontWeight: 400,
-                            fontSize: '16px',
+                            fontSize: '14px',
                             justifyContent: align,
                             color: isNumberValue
                               ? checkColor(cells.getValue())

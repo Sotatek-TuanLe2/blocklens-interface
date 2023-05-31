@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js';
-import { isAddress, isHexString } from 'ethers/lib/utils';
 import moment from 'moment';
 import React, { useMemo, useState } from 'react';
 import {
@@ -25,8 +24,7 @@ import {
   VisualizationOptionsType,
 } from 'src/utils/query.type';
 import {
-  formatNumber,
-  formatShortAddress,
+  formatDefaultValueChart,
   formatVisualizationValue,
 } from 'src/utils/utils-format';
 import { isNumber } from 'src/utils/utils-helper';
@@ -53,16 +51,6 @@ const VisualizationChart: React.FC<Props> = (props) => {
 
   const [hiddenKeys, setHiddenKeys] = useState<string[]>([]);
 
-  const formatDefault = (value: string) => {
-    if (isNumber(value) && !new BigNumber(value).isEqualTo(0)) {
-      return formatNumber(value, 2);
-    }
-    if (isAddress(value) || isHexString(value) || value.length >= 10) {
-      return formatShortAddress(value);
-    }
-    return value;
-  };
-
   const tickFormatAxis = (axis: string) => (value: string) => {
     if (moment(new Date(value)).isValid() && isNaN(+value)) {
       return getHourAndMinute(value);
@@ -73,7 +61,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
     if (axis === 'y' && configs?.yAxisConfigs?.tickFormat) {
       return formatVisualizationValue(configs?.yAxisConfigs?.tickFormat, value);
     }
-    return formatDefault(value);
+    return formatDefaultValueChart(value);
   };
 
   const logarithmicProps: any = yAxisConfigs?.logarithmic
@@ -101,7 +89,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
         value,
       );
     }
-    return formatDefault(value);
+    return formatDefaultValueChart(value);
   };
 
   const _renderLabelList = (yAxisKey: string) => {
@@ -126,7 +114,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
             type="monotone"
             dataKey={yAxisKey}
             stroke={COLORS[index % COLORS.length]}
-            strokeWidth={3}
+            strokeWidth={2}
             dot={false}
             hide={hiddenKeys.includes(yAxisKey)}
           >
@@ -138,14 +126,14 @@ const VisualizationChart: React.FC<Props> = (props) => {
         return (
           <>
             <Area
-              type="monotone"
               key={yAxisKey}
               dataKey={yAxisKey}
               stroke={COLORS[index % COLORS.length]}
-              strokeWidth={3}
+              strokeWidth={2}
               fill={`url(#${yAxisKey})`}
               stackId={chartOptionsConfigs?.stacking ? 'area' : undefined}
               hide={hiddenKeys.includes(yAxisKey)}
+              dot={<CustomizedDot fill={COLORS[index % COLORS.length]} />}
             >
               {_renderLabelList(yAxisKey)}
             </Area>
@@ -173,6 +161,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
             fill={COLORS[index % COLORS.length]}
             stackId={chartOptionsConfigs?.stacking ? 'bar' : undefined}
             hide={hiddenKeys.includes(yAxisKey)}
+            barSize={18}
           >
             {_renderLabelList(yAxisKey)}
           </Bar>
@@ -185,6 +174,8 @@ const VisualizationChart: React.FC<Props> = (props) => {
             stroke={COLORS[index % COLORS.length]}
             fill={COLORS[index % COLORS.length]}
             name={yAxisKey}
+            strokeOpacity={0.3}
+            strokeWidth={6}
             hide={hiddenKeys.includes(yAxisKey)}
           >
             {_renderLabelList(yAxisKey)}
@@ -291,9 +282,10 @@ const VisualizationChart: React.FC<Props> = (props) => {
         data={sortData()}
         className={`${type}-chart`}
         margin={{
-          left: 20,
-          bottom: 30,
-          right: 10,
+          // left: 10,
+          bottom: 12,
+          right: 5,
+          top: 20,
         }}
       >
         <CartesianGrid
@@ -329,6 +321,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
             tick={{ fill: '#8D91A5', fontWeight: 400 }}
             tickLine={false}
             domain={yAxisDomain}
+            tickCount={6}
             {...logarithmicProps}
           />
         )}
@@ -341,13 +334,12 @@ const VisualizationChart: React.FC<Props> = (props) => {
         />
         {chartOptionsConfigs?.showLegend && (
           <Legend
-            verticalAlign="middle"
-            align="right"
             layout="vertical"
             content={
               <CustomLegend
                 onToggleLegend={onToggleLegend}
                 hiddenKeys={hiddenKeys}
+                type={type}
               />
             }
           />
@@ -363,3 +355,14 @@ const VisualizationChart: React.FC<Props> = (props) => {
 };
 
 export default VisualizationChart;
+
+const CustomizedDot = (props: any) => {
+  const { cx, cy, fill } = props;
+
+  return (
+    <svg fill={fill} x={cx - 6.53516} y={cy - 6.53516}>
+      <circle opacity="0.3" cx="6.53516" cy="6" r="6" fill={fill} />
+      <circle cx="6.53516" cy="6" r="3" fill={fill} />
+    </svg>
+  );
+};
