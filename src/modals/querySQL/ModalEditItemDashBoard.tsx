@@ -5,7 +5,7 @@ import { ILayout, WIDGET_TYPE } from 'src/pages/WorkspacePage/parts/Dashboard';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/BaseModal.scss';
 import { getErrorMessage } from 'src/utils/utils-helper';
-import { toastError } from 'src/utils/utils-notify';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import BaseModal from '../BaseModal';
 
 interface IModalEditItemDashBoard {
@@ -30,10 +30,12 @@ const ModalEditItemDashBoard: React.FC<IModalEditItemDashBoard> = ({
         await rf
           .getRequest('DashboardsRequest')
           .removeTextWidget(selectedItem.id);
+        toastSuccess({ message: 'Remove success' });
       } else {
         await rf
           .getRequest('DashboardsRequest')
           .removeVisualization(selectedItem.id);
+        toastSuccess({ message: 'Remove success' });
       }
       onReload();
       onClose();

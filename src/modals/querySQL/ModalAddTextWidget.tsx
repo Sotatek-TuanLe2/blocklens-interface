@@ -7,7 +7,7 @@ import { ILayout, TYPE_MODAL } from 'src/pages/WorkspacePage/parts/Dashboard';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/BaseModal.scss';
 import { getErrorMessage } from 'src/utils/utils-helper';
-import { toastError } from 'src/utils/utils-notify';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import BaseModal from '../BaseModal';
 import { IDashboardDetail, ITextWidget } from 'src/utils/query.type';
 import { INPUT_DEBOUNCE } from 'src/utils/common';
@@ -117,6 +117,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
         .getRequest('DashboardsRequest')
         .addDashboardItem(payload);
       if (res) {
+        toastSuccess({ message: 'Add success' });
         onReload();
         setMarkdownText('');
         onClose();
@@ -143,6 +144,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
         .getRequest('DashboardsRequest')
         .updateDashboardItem(payload, dataDashboard?.id);
       if (res) {
+        toastSuccess({ message: 'Update success' });
         onReload();
         setMarkdownText('');
         onClose();
