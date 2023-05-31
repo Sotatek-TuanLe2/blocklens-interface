@@ -166,7 +166,9 @@ const ListItem: React.FC<IListItem> = (props) => {
             <p>Tyler Covington</p>
           </div>
           <div className="item-chain">
-            <AppNetworkIcons networkIds={listNetworkCurrency} />
+            {itemClass.getUtilizedChains() && (
+              <AppNetworkIcons networkIds={itemClass.getUtilizedChains()} />
+            )}
           </div>
           <div className="item-date">
             {moment(itemClass.getCreatedTime()).format('YYYY MMMM Do')}
