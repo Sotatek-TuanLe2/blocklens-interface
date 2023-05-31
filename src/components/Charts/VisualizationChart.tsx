@@ -310,7 +310,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
           dataKey={xAxisKey}
           fill={'#ccc'}
           reversed={xAxisConfigs?.reverseX}
-          tick={{ fill: '#8D91A5', fontWeight: 400, fontSize: '12px' }}
+          tick={{ fill: '#8D91A5', fontWeight: 400 }}
           tickLine={false}
           height={50}
         >
@@ -330,7 +330,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
               fill: '#ccc',
             }}
             tickFormatter={tickFormatAxis('y')}
-            tick={{ fill: '#8D91A5', fontWeight: 400, fontSize: '12px' }}
+            tick={{ fill: '#8D91A5', fontWeight: 400 }}
             tickLine={false}
             domain={yAxisDomain}
             tickCount={6}
