@@ -106,7 +106,7 @@ const QueryPart: React.FC = () => {
       await rf.getRequest('DashboardsRequest').executeQuery(queryValue.id);
       history.push(`${ROUTES.MY_QUERY}/${queryValue.id}`);
       AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
-      //display setting query modal to change name modal
+
       setOpenModalSettingQuery(true);
     } catch (error: any) {
       toastError({ message: getErrorMessage(error) });
