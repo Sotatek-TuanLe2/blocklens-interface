@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import Decimal from 'decimal.js';
+import { isAddress, isHexString } from 'ethers/lib/utils';
 import { isNumber } from './utils-helper';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -212,6 +213,16 @@ export const roundAndPadZeros = (a: number, decimals: number): string => {
   const rounded = +(Math.round(Number(`${a}e${decimals}`)) + `e${-decimals}`);
   const formatted = rounded.toFixed(decimals);
   return formatted;
+};
+
+export const formatDefaultValueChart = (value: string) => {
+  if (isNumber(value)) {
+    return formatNumber(value, 2, '0');
+  }
+  if (isAddress(value) || isHexString(value) || value.length >= 10) {
+    return formatShortAddress(value);
+  }
+  return value;
 };
 
 export const formatVisualizationValue = (format: string, value: any) => {

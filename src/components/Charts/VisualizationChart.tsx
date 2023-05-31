@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js';
-import { isAddress, isHexString } from 'ethers/lib/utils';
 import moment from 'moment';
 import React, { useMemo, useState } from 'react';
 import {
@@ -25,8 +24,7 @@ import {
   VisualizationOptionsType,
 } from 'src/utils/query.type';
 import {
-  formatNumber,
-  formatShortAddress,
+  formatDefaultValueChart,
   formatVisualizationValue,
 } from 'src/utils/utils-format';
 import { isNumber } from 'src/utils/utils-helper';
@@ -53,16 +51,6 @@ const VisualizationChart: React.FC<Props> = (props) => {
 
   const [hiddenKeys, setHiddenKeys] = useState<string[]>([]);
 
-  const formatDefault = (value: string) => {
-    if (isNumber(value)) {
-      return formatNumber(value, 2, '0');
-    }
-    if (isAddress(value) || isHexString(value) || value.length >= 10) {
-      return formatShortAddress(value);
-    }
-    return value;
-  };
-
   const tickFormatAxis = (axis: string) => (value: string) => {
     if (moment(new Date(value)).isValid() && isNaN(+value)) {
       return getHourAndMinute(value);
@@ -73,7 +61,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
     if (axis === 'y' && configs?.yAxisConfigs?.tickFormat) {
       return formatVisualizationValue(configs?.yAxisConfigs?.tickFormat, value);
     }
-    return formatDefault(value);
+    return formatDefaultValueChart(value);
   };
 
   const logarithmicProps: any = yAxisConfigs?.logarithmic
@@ -101,7 +89,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
         value,
       );
     }
-    return formatDefault(value);
+    return formatDefaultValueChart(value);
   };
 
   const _renderLabelList = (yAxisKey: string) => {
