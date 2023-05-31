@@ -247,16 +247,15 @@ const CustomTooltip = (props: any) => {
       <div className="custom-tooltip">
         {payload.map((entry: any, index: number) => (
           <>
-            {/* <p className="custom-tooltip__label">{entry.name}</p> */}
+            <p className="custom-tooltip__label">{entry.name}</p>
             <div className="custom-tooltip__desc">
               <Box
                 as={'div'}
                 key={index}
                 className="custom-tooltip__desc__detail"
-                color={'white'}
               >
                 <span style={{ backgroundColor: entry.fill }}></span>
-                <span>{`${entry.name}: ${_renderTooltipValue(
+                <span>{`${entry.dataKey}: ${_renderTooltipValue(
                   entry.value,
                 )}`}</span>
                 <br />
