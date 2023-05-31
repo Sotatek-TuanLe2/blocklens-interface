@@ -356,7 +356,7 @@ const Sidebar: React.FC<{
                 </Flex>
 
                 <AppQueryMenu
-                  menu={[QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.SHARE]}
+                  menu={[QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.DELETE]}
                   itemType={LIST_ITEM_TYPE.QUERIES}
                   item={query}
                   onForkSuccess={onForkSuccess}
@@ -399,7 +399,7 @@ const Sidebar: React.FC<{
                   <Text isTruncated>{dashboard.name}</Text>
                 </Flex>
                 <AppQueryMenu
-                  menu={[QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.SHARE]}
+                  menu={[QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.DELETE]}
                   itemType={LIST_ITEM_TYPE.DASHBOARDS}
                   item={dashboard}
                   onForkSuccess={onForkSuccess}
