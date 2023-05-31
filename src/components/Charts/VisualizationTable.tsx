@@ -84,7 +84,7 @@ const VisualizationTable = <T,>({
         item[field]
           ?.toString()
           .toLowerCase()
-          .includes(searchTerm.toLowerCase()),
+          .includes(searchTerm.toLowerCase().trim()),
     ),
   );
 
@@ -156,7 +156,6 @@ const VisualizationTable = <T,>({
           className={'table-value'}
           {...{
             style: {
-              height: '100%',
               width: '100%',
             },
           }}
