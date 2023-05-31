@@ -29,6 +29,7 @@ import VisualizationDisplay from './VisualizationDisplay';
 import AppNetworkIcons from 'src/components/AppNetworkIcons';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import { BROADCAST_FETCH_WORKPLACE_DATA } from './Sidebar';
+import ModalSettingQuery from 'src/modals/querySQL/ModalSettingQuery';
 
 export const BROADCAST_ADD_TEXT_TO_EDITOR = 'ADD_TEXT_TO_EDITOR';
 export const BROADCAST_FETCH_QUERY = 'FETCH_QUERY';
@@ -49,6 +50,9 @@ const QueryPart: React.FC = () => {
 
   const fetchQueryResultInterval = useRef<any>(null);
 
+  const [openModalSettingQuery, setOpenModalSettingQuery] =
+    useState<boolean>(false);
+
   const history = useHistory();
   const { user } = useUser();
 
@@ -65,7 +69,10 @@ const QueryPart: React.FC = () => {
 
     return () => {
       AppBroadcast.remove(BROADCAST_ADD_TEXT_TO_EDITOR, onAddTextToEditor);
-      AppBroadcast.on(BROADCAST_FETCH_QUERY, async () => await fetchQuery());
+      AppBroadcast.remove(
+        BROADCAST_FETCH_QUERY,
+        async () => await fetchQuery(),
+      );
     };
   }, []);
 
@@ -99,6 +106,8 @@ const QueryPart: React.FC = () => {
       await rf.getRequest('DashboardsRequest').executeQuery(queryValue.id);
       history.push(`${ROUTES.MY_QUERY}/${queryValue.id}`);
       AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
+      //display setting query modal to change name modal
+      setOpenModalSettingQuery(true);
     } catch (error: any) {
       toastError({ message: getErrorMessage(error) });
     }
@@ -337,6 +346,18 @@ const QueryPart: React.FC = () => {
           </Box>
         </div>
       </EditorContext.Provider>
+      {!!openModalSettingQuery && !!queryValue?.id && !queryValue.isArchived && (
+        <ModalSettingQuery
+          defaultValue={{ name: queryValue.name, tags: queryValue.tags }}
+          id={queryValue.id}
+          open={openModalSettingQuery}
+          onClose={() => setOpenModalSettingQuery(false)}
+          onSuccess={async () => {
+            AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
+            await fetchQuery();
+          }}
+        />
+      )}
     </div>
   );
 };
