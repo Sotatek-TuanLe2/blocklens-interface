@@ -311,19 +311,21 @@ const VisualizationChart: React.FC<Props> = (props) => {
         </XAxis>
         {yAxisKeys && !!yAxisKeys.length && (
           <YAxis
-            label={{
-              value: yAxisConfigs?.title,
-              angle: -90,
-              position: 'insideLeft',
-              fill: '#ccc',
-            }}
             tickFormatter={tickFormatAxis('y')}
             tick={{ fill: '#8D91A5', fontWeight: 400 }}
             tickLine={false}
             domain={yAxisDomain}
             tickCount={6}
+            width={100}
             {...logarithmicProps}
-          />
+          >
+            <Label
+              position="center"
+              value={yAxisConfigs?.title}
+              angle={-90}
+              fill="#ccc"
+            />
+          </YAxis>
         )}
         <Tooltip
           content={
