@@ -50,10 +50,6 @@
         height: 80%;
         overflow: unset;
 
-        th {
-          padding-left: unset !important;
-        }
-
         .table-pagination {
           background: $card;
           width: 100%;
@@ -84,6 +80,8 @@
           .input-search {
             padding: 16px 16px 16px 30px;
             width: 160px;
+            font-size: 12px;
+            line-height: 16px;
           }
           .chakra-input__left-element {
             top: 4px;
@@ -95,6 +93,24 @@
 
           .input-search {
             width: 150px;
+          }
+        }
+
+        .table-value {
+          th,
+          td {
+            padding: 7px 120px 7px 24px;
+          }
+
+          th {
+            font-size: 12px;
+            line-height: 26px;
+            font-weight: 700;
+          }
+
+          td {
+            font-size: 14px;
+            line-height: 20px;
           }
         }
       }
@@ -191,6 +207,7 @@
           font-size: 12px;
           box-shadow: none;
           border-bottom: 1px solid #747474;
+          padding: 7px 120px 7px 24px;
         }
         thead {
           .resizer {
@@ -265,9 +282,6 @@
     border-top: 1px solid #2f3b58;
 
     .react-grid-item {
-      a {
-        text-decoration: underline;
-      }
       background: rgba(16, 21, 48, 0.5);
       color: $title;
       overflow: hidden;
@@ -276,6 +290,10 @@
       & > .react-resizable-handle.react-resizable-handle-se {
         bottom: 15px;
         right: 15px;
+      }
+
+      .visual-container__visualization__title__query-link {
+        text-decoration: underline;
       }
     }
 

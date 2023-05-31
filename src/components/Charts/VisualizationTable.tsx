@@ -179,8 +179,6 @@ const VisualizationTable = <T,>({
                         paddingLeft: '24px',
                         textTransform: 'uppercase',
                         color: '#465065',
-                        fontWeight: '700',
-                        fontSize: '12px',
                         width: header.getSize(),
                         textAlign: header.column.columnDef.align,
                         display: header.column.columnDef.isHidden
@@ -272,7 +270,6 @@ const VisualizationTable = <T,>({
                           key: cells.id,
                           style: {
                             fontWeight: 400,
-                            fontSize: '14px',
                             justifyContent: align,
                             color: isNumberValue
                               ? checkColor(cells.getValue())
