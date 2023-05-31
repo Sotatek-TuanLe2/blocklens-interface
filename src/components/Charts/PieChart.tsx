@@ -97,6 +97,11 @@ const VisualizationPieChart = ({
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
     const y = cy + radius * Math.sin(-midAngle * RADIAN);
 
+    const percentage = percent * 100;
+    if (percentage <= 5) {
+      return null;
+    }
+
     return (
       <text
         x={x}
@@ -106,7 +111,7 @@ const VisualizationPieChart = ({
         dominantBaseline="central"
         fontSize={'12px'}
       >
-        {`${(percent * 100).toFixed(2)}%`}
+        {`${percentage.toFixed(1)}%`}
       </text>
     );
   };
@@ -131,8 +136,20 @@ const VisualizationPieChart = ({
     [reducedData, hiddenKeys],
   );
 
+  const totalValue = useMemo(() => {
+    if (!yAxisKeys) {
+      return 0;
+    }
+    const [yAxisKey] = yAxisKeys;
+    return shownData
+      .map((item: any) => item[yAxisKey])
+      .reduce((a: any, b: any) => {
+        return new BigNumber(a).plus(new BigNumber(b)).toNumber();
+      });
+  }, [shownData]);
+
   return (
-    <ResponsiveContainer width={'100%'} height={'90%'}>
+    <ResponsiveContainer width={'100%'} height={'100%'}>
       {yAxisKeys?.length === 1 ? (
         <PieChart className="pie-chart">
           <Pie
@@ -155,7 +172,12 @@ const VisualizationPieChart = ({
               ))}
           </Pie>
           <Tooltip
-            content={<CustomTooltip numberFormat={configs?.numberFormat} />}
+            content={
+              <CustomTooltip
+                numberFormat={configs?.numberFormat}
+                totalValue={totalValue}
+              />
+            }
             animationDuration={200}
             animationEasing={'linear'}
           />
@@ -233,7 +255,7 @@ const CustomLegend = (props: any) => {
 };
 
 const CustomTooltip = (props: any) => {
-  const { active, payload, numberFormat } = props;
+  const { active, payload, numberFormat, totalValue } = props;
 
   const _renderTooltipValue = (value: any) => {
     if (isNumber(value) && numberFormat) {
@@ -257,7 +279,7 @@ const CustomTooltip = (props: any) => {
                 <span style={{ backgroundColor: entry.fill }}></span>
                 <span>{`${entry.dataKey}: ${_renderTooltipValue(
                   entry.value,
-                )}`}</span>
+                )} (${((entry.value / totalValue) * 100).toFixed(2)}%)`}</span>
                 <br />
               </Box>
             </div>
