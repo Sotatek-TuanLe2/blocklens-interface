@@ -60,7 +60,6 @@ const VisualizationChart: React.FC<Props> = (props) => {
     }
     return value;
   };
-
   const logarithmicProps: any = yAxisConfigs?.logarithmic
     ? {
         scale: 'log',
@@ -233,39 +232,48 @@ const VisualizationChart: React.FC<Props> = (props) => {
     let maxValue: number | string = 'auto';
 
     if (data && !!data.length && xAxisKey && !!yAxisKeys?.length) {
-      const caculatedValues: any[] = [];
+      const calculatedValues: any[] = [];
+      let hasNumberValues = false;
+
       yAxisKeys
         .filter((yAxis: string) => !hiddenKeys.includes(yAxis))
         .forEach((yAxis: string) => {
           if (data.every((item: any) => isNumber(item[yAxis]))) {
-            caculatedValues.push(data.map((item: any) => +item[yAxis]));
+            hasNumberValues = true;
+            calculatedValues.push(data.map((item: any) => +item[yAxis]));
           }
         });
 
-      if (chartOptionsConfigs?.stacking) {
-        const newCalculatedValues = [...caculatedValues];
-        Array(data.length).forEach((_, index) => {
-          newCalculatedValues[index] = caculatedValues.reduce((a, b) =>
-            new BigNumber(a[index]).plus(new BigNumber(b[index])),
-          );
-        });
-        minValue = BigNumber.min(...newCalculatedValues).toNumber();
-        maxValue = BigNumber.max(...newCalculatedValues).toNumber();
-      } else {
-        const newCalculatedValues: any[] = [];
-        caculatedValues.forEach((array) => {
-          newCalculatedValues.push(...array);
-        });
-        minValue = BigNumber.minimum(...newCalculatedValues).toNumber();
-        maxValue = BigNumber.maximum(...newCalculatedValues).toNumber();
+      if (hasNumberValues) {
+        if (chartOptionsConfigs?.stacking) {
+          const newCalculatedValues = [...calculatedValues];
+          Array(data.length).forEach((_, index) => {
+            newCalculatedValues[index] = calculatedValues.reduce((a, b) =>
+              new BigNumber(a[index]).plus(new BigNumber(b[index])),
+            );
+          });
+          minValue = BigNumber.min(...newCalculatedValues).toNumber();
+          maxValue = BigNumber.max(...newCalculatedValues).toNumber();
+        } else {
+          const newCalculatedValues: any[] = [];
+          calculatedValues.forEach((array) => {
+            newCalculatedValues.push(...array);
+          });
+          minValue = BigNumber.minimum(...newCalculatedValues).toNumber();
+          maxValue = BigNumber.maximum(...newCalculatedValues).toNumber();
+        }
       }
-      return [
-        minValue > 0 ? 0 : minValue,
-        Math.ceil(
-          new BigNumber(maxValue).multipliedBy(new BigNumber(1.05)).toNumber(),
-        ),
-      ];
     }
+
+    if (minValue === 'auto' && maxValue === 'auto') {
+      return [minValue, maxValue];
+    }
+
+    minValue = +minValue > 0 ? 0 : minValue;
+    maxValue = Math.ceil(
+      new BigNumber(maxValue).multipliedBy(new BigNumber(1.05)).toNumber(),
+    );
+
     return [minValue, maxValue];
   }, [data, xAxisKey, yAxisKeys, hiddenKeys, chartOptionsConfigs]);
 
