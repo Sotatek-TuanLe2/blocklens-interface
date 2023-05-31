@@ -29,7 +29,7 @@ export interface QueryInterface {
   query: string;
 
   // user: UserInterface;
-  utilizedChains: string[];
+  chains: string[];
   visualizations: Visualization[];
 
   getId: () => string;
@@ -40,7 +40,7 @@ export interface QueryInterface {
   getThumnail: () => string | null;
   getTags: () => string[] | null;
   getQuery: () => string;
-  getUtilizedChains: () => string[] | null;
+  getChains: () => string[] | null;
   // getUser: () => UserInterface | string;
   getVisualizations: () => Visualization[];
   getVisualizationById: (id: string) => Visualization | null;
@@ -110,7 +110,7 @@ export class Query implements QueryInterface {
   public query = '';
 
   // public user;
-  public utilizedChains: string[];
+  public chains: string[];
   public visualizations: Visualization[];
 
   constructor(query: IQuery) {
@@ -124,7 +124,7 @@ export class Query implements QueryInterface {
     this.query = query.query;
     this.thumbnail = query.thumbnail;
     // this.user = query.user;
-    this.utilizedChains = query.utilizedChains;
+    this.chains = query.utilizedChains;
     this.visualizations = [];
     if (!!query.visualizations) {
       query.visualizations.forEach((visual) => {
@@ -169,8 +169,8 @@ export class Query implements QueryInterface {
   //   return this.user;
   // }
 
-  getUtilizedChains() {
-    return this.utilizedChains;
+  getChains() {
+    return this.chains;
   }
 
   getVisualizations() {
