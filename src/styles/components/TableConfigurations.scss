@@ -64,10 +64,10 @@
         font-size: 14px;
         line-height: 20px;
         color: $title;
-      }
 
-      .label-disable {
-        color: #61687d;
+        &--disabled {
+          color: #61687d;
+        }
       }
     }
 
