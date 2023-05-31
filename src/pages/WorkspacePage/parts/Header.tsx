@@ -104,10 +104,10 @@ const Header: React.FC<IHeaderProps> = (props) => {
       isDashboard
         ? await rf
             .getRequest('DashboardsRequest')
-            .updateDashboardItem({ isPrivate: isChecked }, dashboardId)
+            .updateDashboardItem({ isPrivate: !isChecked }, dashboardId)
         : await rf
             .getRequest('DashboardsRequest')
-            .updateQuery({ isPrivate: isChecked }, queryId);
+            .updateQuery({ isPrivate: !isChecked }, queryId);
       AppBroadcast.dispatch(
         isDashboard ? BROADCAST_FETCH_DASHBOARD : BROADCAST_FETCH_QUERY,
       );
@@ -143,7 +143,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
             <Switch
               id="email-alerts"
               size="sm"
-              isChecked={dataClass?.isPrivate()}
+              isChecked={!dataClass?.isPrivate()}
               onChange={onChangeStatus}
             />
             <FormLabel htmlFor="email-alerts" mb="0" me="20px">
