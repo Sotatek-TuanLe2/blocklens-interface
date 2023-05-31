@@ -165,9 +165,12 @@ export default class DashboardsRequest extends BaseRequest {
     return this.post(url, data);
   }
 
-  manageVisualizations(data: DataVisualWidget[], dashboardId: string) {
-    const url = `/dashboard/${dashboardId}/manage-dashboard-visuals`;
-    return this.post(url, data);
+  manageVisualizations(data: {
+    dashboardId: string;
+    listVisuals: DataVisualWidget[];
+  }) {
+    const url = `/dashboard/${data.dashboardId}/manage-dashboard-visuals`;
+    return this.post(url, { listVisuals: data.listVisuals });
   }
 
   updateDashboardItem(data: ILayout, id: string) {
