@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import { isAddress, isHexString } from 'ethers/lib/utils';
 import moment from 'moment';
 import React, { useMemo, useState } from 'react';
 import {
@@ -23,7 +24,11 @@ import {
   TYPE_VISUALIZATION,
   VisualizationOptionsType,
 } from 'src/utils/query.type';
-import { formatNumber, formatVisualizationValue } from 'src/utils/utils-format';
+import {
+  formatNumber,
+  formatShortAddress,
+  formatVisualizationValue,
+} from 'src/utils/utils-format';
 import { isNumber } from 'src/utils/utils-helper';
 import { COLORS, getHourAndMinute } from '../../utils/common';
 import CustomLegend from './CustomLegend';
@@ -48,6 +53,16 @@ const VisualizationChart: React.FC<Props> = (props) => {
 
   const [hiddenKeys, setHiddenKeys] = useState<string[]>([]);
 
+  const formatDefault = (value: string) => {
+    if (isNumber(value)) {
+      return formatNumber(value, 2, '0');
+    }
+    if (isAddress(value) || isHexString(value) || value.length >= 10) {
+      return formatShortAddress(value);
+    }
+    return value;
+  };
+
   const tickFormatAxis = (axis: string) => (value: string) => {
     if (moment(new Date(value)).isValid() && isNaN(+value)) {
       return getHourAndMinute(value);
@@ -58,7 +73,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
     if (axis === 'y' && configs?.yAxisConfigs?.tickFormat) {
       return formatVisualizationValue(configs?.yAxisConfigs?.tickFormat, value);
     }
-    return formatNumber(value, 4, '0');
+    return formatDefault(value);
   };
 
   const logarithmicProps: any = yAxisConfigs?.logarithmic
@@ -86,7 +101,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
         value,
       );
     }
-    return formatNumber(value, 4, '0');
+    return formatDefault(value);
   };
 
   const _renderLabelList = (yAxisKey: string) => {
@@ -297,6 +312,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
           reversed={xAxisConfigs?.reverseX}
           tick={{ fill: '#8D91A5', fontWeight: 400, fontSize: '12px' }}
           tickLine={false}
+          height={50}
         >
           <Label
             offset={0}
