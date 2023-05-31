@@ -82,12 +82,13 @@
         &__work-place {
           padding: 16px 16px 8px 16px;
           display: flex;
-          @include text-medium-bold;
+          @include text-small-bold;
           text-transform: uppercase;
           align-items: center;
           justify-content: space-between;
         }
         &__work-place-content {
+          @include text-small-bold;
           padding-left: 16px;
           padding-right: 16px;
           justify-content: space-between;
@@ -245,7 +246,11 @@
 
             &:hover {
               border: 1px solid $blue;
-              background: linear-gradient(268.85deg, rgba(34, 108, 255, 0.12) 22.48%, rgba(16, 132, 255, 0.12) 83.59%);
+              background: linear-gradient(
+                268.85deg,
+                rgba(34, 108, 255, 0.12) 22.48%,
+                rgba(16, 132, 255, 0.12) 83.59%
+              );
             }
           }
         }
@@ -329,12 +334,12 @@
         display: flex;
         align-items: center;
         justify-content: center;
-  
+
         width: 28px;
         height: 28px;
         background: linear-gradient(268.85deg, #226cff 22.48%, #1084ff 83.59%);
         border-radius: 50%;
-  
+
         &:hover {
           background: $blue;
         }

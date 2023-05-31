@@ -68,6 +68,7 @@ const VisualizationCounter = ({ data, visualization }: Props) => {
             style={{
               color: (isNumberValue && checkColor(dataCounter())) || '',
               fontSize: `${size}px`,
+              fontWeight: 700,
             }}
           >
             {isNumberValue && dataOptions.stringPrefix}
