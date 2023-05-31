@@ -292,7 +292,7 @@ const VisualizationTable = <T,>({
                           />
                         )}
                         {!!value?.toString() &&
-                          formatVisualizationValue(format, value)}
+                          formatVisualizationValue(format, value.toString())}
                       </div>
                     </td>
                   );
