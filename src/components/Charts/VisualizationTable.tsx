@@ -21,6 +21,7 @@ interface ReactTableProps<T> {
   data: T[];
   setDataTable?: React.Dispatch<React.SetStateAction<any[]>>;
   visualization?: VisualizationType;
+  editMode?: boolean;
 }
 
 const COLUMN_TYPES = {
@@ -62,6 +63,7 @@ const VisualizationTable = <T,>({
   data,
   setDataTable,
   visualization,
+  editMode,
 }: ReactTableProps<T>) => {
   const [itemOffset, setItemOffset] = useState(0);
   const [searchTerm, setSearchTerm] = useState<string>('');
@@ -139,7 +141,7 @@ const VisualizationTable = <T,>({
 
   return (
     <div>
-      <div className="header-table">
+      <div className={`header-table ${editMode ? 'editMode' : ''}`}>
         <AppInput
           isSearch
           variant="searchFilter"
@@ -289,7 +291,7 @@ const VisualizationTable = <T,>({
                           />
                         )}
                         {!!value?.toString() &&
-                          formatVisualizationValue(format, value)}
+                          formatVisualizationValue(format, value.toString())}
                       </div>
                     </td>
                   );

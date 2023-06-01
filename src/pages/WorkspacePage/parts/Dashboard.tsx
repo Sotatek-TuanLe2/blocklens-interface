@@ -7,7 +7,13 @@ import {
   MenuItem,
   MenuList,
 } from '@chakra-ui/react';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { Layout, Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import ReactMarkdown from 'react-markdown';
@@ -33,6 +39,8 @@ import Header from './Header';
 import AppNetworkIcons from 'src/components/AppNetworkIcons';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
+import { Dashboard } from 'src/utils/utils-dashboard';
+import { DeleteIcon, EditIcon } from 'src/assets/icons';
 
 export interface ILayout extends Layout {
   options: any;
@@ -145,6 +153,13 @@ const DashboardPart: React.FC = () => {
     }
   }, [dashboardId]);
 
+  const dashboardClass = useMemo(() => {
+    if (!dataDashboard) {
+      return null;
+    }
+    return new Dashboard(dataDashboard);
+  }, [dataDashboard]);
+
   const onOpenModalAddText = () => {
     setTypeModalTextWidget(TYPE_MODAL.ADD);
     setOpenModalAddTextWidget(true);
@@ -232,9 +247,9 @@ const DashboardPart: React.FC = () => {
       <div className="dashboard-container">
         <Box className="header-tab">
           <div className="header-tab__info">
-            <AppNetworkIcons
-              networkIds={['eth_goerli', 'bsc_testnet', 'polygon_mainet']}
-            />
+            {dashboardClass?.getChains() && (
+              <AppNetworkIcons networkIds={dashboardClass?.getChains()} />
+            )}
             {['defi', 'gas', 'dex'].map((item) => (
               <AppTag key={item} value={item} />
             ))}
@@ -278,7 +293,10 @@ const DashboardPart: React.FC = () => {
               <div className="box-layout" key={item.id}>
                 <div className="box-chart">
                   {item.type === WIDGET_TYPE.VISUALIZATION ? (
-                    <VisualizationItem visualization={item.content} />
+                    <VisualizationItem
+                      editMode={editMode}
+                      visualization={item.content}
+                    />
                   ) : (
                     <div className="box-text-widget">
                       <ReactMarkdown>{item.text}</ReactMarkdown>
@@ -293,21 +311,23 @@ const DashboardPart: React.FC = () => {
                   >
                     {item.type === WIDGET_TYPE.TEXT && (
                       <Box
-                        className="icon-query-edit"
                         onClick={() => {
                           setTypeModalTextWidget(TYPE_MODAL.EDIT);
                           setSelectedItem(item);
                           setOpenModalAddTextWidget(true);
                         }}
-                      />
+                      >
+                        <EditIcon />
+                      </Box>
                     )}
                     <Box
-                      className="icon-query-delete"
                       onClick={() => {
                         setSelectedItem(item);
                         setOpenModalEdit(true);
                       }}
-                    />
+                    >
+                      <DeleteIcon />
+                    </Box>
                   </Flex>
                 )}
               </div>
@@ -336,14 +356,17 @@ const DashboardPart: React.FC = () => {
           open={openModalEdit}
           onClose={() => setOpenModalEdit(false)}
         />
-        <ModalAddVisualization
-          dashboardId={dashboardId}
-          dataLayouts={dataLayouts}
-          open={openModalAddVisualization}
-          onClose={() => setOpenModalAddVisualization(false)}
-          userName={userName}
-          onReload={fetchLayoutData}
-        />
+        {openModalAddVisualization && (
+          <ModalAddVisualization
+            dashboardId={dashboardId}
+            dataLayouts={dataLayouts}
+            open={openModalAddVisualization}
+            onClose={() => setOpenModalAddVisualization(false)}
+            userName={userName}
+            onReload={fetchLayoutData}
+          />
+        )}
+
         <ModalForkDashBoardDetails
           dashboardId={dashboardId}
           open={openModalFork}

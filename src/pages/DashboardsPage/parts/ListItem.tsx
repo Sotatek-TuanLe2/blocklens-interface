@@ -19,8 +19,6 @@ interface IListItem {
   visibility?: 'COLUMN' | 'ROW';
 }
 
-const listNetworkCurrency = ['eth_goerli', 'bsc_testnet', 'polygon_mainet'];
-
 const ListItem: React.FC<IListItem> = (props) => {
   const { type, myWorkType, item, visibility } = props;
   const history = useHistory();
@@ -59,10 +57,17 @@ const ListItem: React.FC<IListItem> = (props) => {
   };
 
   const _renderDropdown = () => {
+    let menu = [];
+    if (type === LIST_ITEM_TYPE.DASHBOARDS) {
+      menu.push(QUERY_MENU_LIST.SHARE);
+    } else {
+      menu = [QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.SHARE];
+    }
+
     return (
       !!item && (
         <AppQueryMenu
-          menu={[QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.SHARE]}
+          menu={menu}
           item={item}
           itemType={type}
           onForkSuccess={onForkSuccess}
@@ -132,7 +137,9 @@ const ListItem: React.FC<IListItem> = (props) => {
                   </Text>
                 </div>
               </Flex>
-              <AppNetworkIcons networkIds={listNetworkCurrency} />
+              {itemClass.getChains() && (
+                <AppNetworkIcons networkIds={itemClass.getChains()} />
+              )}
             </Flex>
           </div>
         </Flex>
@@ -166,7 +173,9 @@ const ListItem: React.FC<IListItem> = (props) => {
             <p>Tyler Covington</p>
           </div>
           <div className="item-chain">
-            <AppNetworkIcons networkIds={listNetworkCurrency} />
+            {itemClass.getChains() && (
+              <AppNetworkIcons networkIds={itemClass.getChains()} />
+            )}
           </div>
           <div className="item-date">
             {moment(itemClass.getCreatedTime()).format('YYYY MMMM Do')}

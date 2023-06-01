@@ -64,6 +64,10 @@
         font-size: 14px;
         line-height: 20px;
         color: $title;
+
+        &--disabled {
+          color: #61687d;
+        }
       }
     }
 
