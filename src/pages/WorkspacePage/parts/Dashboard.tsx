@@ -91,11 +91,12 @@ const DashboardPart: React.FC = () => {
   const userName =
     `${user?.getFirstName() || ''}` + `${user?.getLastName() || ''}`;
 
-  const fetchLayoutData = useCallback(async () => {
+  const fetchLayoutData = async (id?: string) => {
+    console.log('dashboardId', dashboardId);
     try {
       const res = await rf
         .getRequest('DashboardsRequest')
-        .getMyDashboardById({ dashboardId });
+        .getMyDashboardById({ dashboardId: id || dashboardId });
       if (res) {
         const visualization: ILayout[] = res.dashboardVisuals.map(
           (item: ILayout) => {
@@ -137,10 +138,12 @@ const DashboardPart: React.FC = () => {
         message: getErrorMessage(error),
       });
     }
-  }, [dashboardId]);
+  };
 
   useEffect(() => {
-    AppBroadcast.on(BROADCAST_FETCH_DASHBOARD, fetchLayoutData);
+    AppBroadcast.on(BROADCAST_FETCH_DASHBOARD, (id: any) => {
+      fetchLayoutData(id);
+    });
 
     return () => {
       AppBroadcast.remove(BROADCAST_FETCH_DASHBOARD);

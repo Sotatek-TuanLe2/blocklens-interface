@@ -20,7 +20,7 @@ import 'src/styles/pages/QueriesPage.scss';
 import { toastError } from 'src/utils/utils-notify';
 import rf from 'src/requests/RequestFactory';
 import useUser from 'src/hooks/useUser';
-import { QUERY_MODAL, QUERY_RESULT_STATUS, ROUTES } from 'src/utils/common';
+import { MODAL, QUERY_RESULT_STATUS, ROUTES } from 'src/utils/common';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
 import { EditorContext } from '../context/EditorContext';
 import Header from './Header';
@@ -103,21 +103,21 @@ const QueryPart: React.FC = () => {
     setSelectedQuery('');
   };
 
-  const createNewQuery = async (query: string) => {
-    try {
-      const queryValue: IQuery = await rf
-        .getRequest('DashboardsRequest')
-        .createNewQuery({
-          name: moment().format('YYYY-MM-DD HH:mm a'),
-          query,
-        });
-      await rf.getRequest('DashboardsRequest').executeQuery(queryValue.id);
-      history.push(`${ROUTES.MY_QUERY}/${queryValue.id}`);
-      AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
-    } catch (error: any) {
-      toastError({ message: getErrorMessage(error) });
-    }
-  };
+  // const createNewQuery = async (query: string) => {
+  //   try {
+  //     const queryValue: IQuery = await rf
+  //       .getRequest('DashboardsRequest')
+  //       .createNewQuery({
+  //         name: moment().format('YYYY-MM-DD HH:mm a'),
+  //         query,
+  //       });
+  //     await rf.getRequest('DashboardsRequest').executeQuery(queryValue.id);
+  //     history.push(`${ROUTES.MY_QUERY}/${queryValue.id}`);
+  //     AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
+  //   } catch (error: any) {
+  //     toastError({ message: getErrorMessage(error) });
+  //   }
+  // };
 
   const updateQuery = async (query: string) => {
     try {
@@ -363,7 +363,7 @@ const QueryPart: React.FC = () => {
             AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
             await fetchQuery();
           }}
-          type={QUERY_MODAL.CREATE}
+          type={MODAL.CREATE}
           query={editorRef.current.editor.getValue()}
         />
       )}

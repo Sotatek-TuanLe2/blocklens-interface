@@ -48,6 +48,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
 
   const isDashboard = type === LIST_ITEM_TYPE.DASHBOARDS;
   const isCreatingQuery = type === LIST_ITEM_TYPE.QUERIES && !queryId;
+
   const dataClass = useMemo(() => {
     if (!data) {
       return null;
@@ -58,14 +59,10 @@ const Header: React.FC<IHeaderProps> = (props) => {
   }, [data]);
 
   const onForkSuccess = async (response: any, type: string) => {
-    history.push(
-      `${
-        type === LIST_ITEM_TYPE.DASHBOARDS
-          ? ROUTES.MY_DASHBOARD
-          : ROUTES.MY_QUERY
-      }/${response.id}`,
-    );
     AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
+    type === LIST_ITEM_TYPE.DASHBOARDS
+      ? AppBroadcast.dispatch(BROADCAST_FETCH_DASHBOARD, response.id)
+      : AppBroadcast.dispatch(BROADCAST_FETCH_QUERY);
   };
 
   const onDeleteSuccess = async (item: IQuery | IDashboardDetail) => {
@@ -76,13 +73,13 @@ const Header: React.FC<IHeaderProps> = (props) => {
     }
   };
 
-  const onSettingSuccess = async () => {
+  const onSettingSuccess = async (res: any) => {
     if (type === LIST_ITEM_TYPE.DASHBOARDS) {
       AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
-      AppBroadcast.dispatch(BROADCAST_FETCH_DASHBOARD);
+      AppBroadcast.dispatch(BROADCAST_FETCH_DASHBOARD, res.id);
     } else {
       AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
-      AppBroadcast.dispatch(BROADCAST_FETCH_QUERY);
+      AppBroadcast.dispatch(BROADCAST_FETCH_QUERY, res.id);
     }
   };
 
@@ -108,9 +105,9 @@ const Header: React.FC<IHeaderProps> = (props) => {
         : await rf
             .getRequest('DashboardsRequest')
             .updateQuery({ isPrivate: !isChecked }, queryId);
-      AppBroadcast.dispatch(
-        isDashboard ? BROADCAST_FETCH_DASHBOARD : BROADCAST_FETCH_QUERY,
-      );
+      isDashboard
+        ? AppBroadcast.dispatch(BROADCAST_FETCH_DASHBOARD)
+        : AppBroadcast.dispatch(BROADCAST_FETCH_QUERY);
     } catch (error) {
       toastError({
         message: getErrorMessage(error),

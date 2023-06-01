@@ -14,7 +14,7 @@ import { Dashboard } from 'src/utils/utils-dashboard';
 import { Query } from 'src/utils/utils-query';
 import { toastError } from 'src/utils/utils-notify';
 import { getErrorMessage } from 'src/utils/utils-helper';
-import { QUERY_MODAL, ROUTES } from 'src/utils/common';
+import { MODAL, ROUTES } from 'src/utils/common';
 
 interface IAppQueryMenu {
   menu?: string[];
@@ -25,7 +25,7 @@ interface IAppQueryMenu {
     response: any,
     type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE],
   ) => Promise<void>;
-  onSettingSuccess?: () => Promise<void>;
+  onSettingSuccess?: (response: any) => Promise<void>;
 }
 
 export const QUERY_MENU_LIST = {
@@ -69,27 +69,27 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
   // const onToggleModalFork = () => setOpenModalFork((prevState) => !prevState);
 
   const onToggleModalFork = async () => {
-    try {
-      let response;
-      if (itemType === LIST_ITEM_TYPE.DASHBOARDS) {
-        const itemClass = new Dashboard(item as IDashboardDetail);
-        response = await rf
-          .getRequest('DashboardsRequest')
-          .forkDashboard(
-            { newDashboardName: `Forked from ${itemClass.getName()}` },
-            itemClass.getId(),
-          );
-        response && onForkSuccess(response, itemType);
-      } else if (itemType === LIST_ITEM_TYPE.QUERIES) {
-        // const itemClass = new Query(item as IQuery);
-        // response = await rf
-        //   .getRequest('DashboardsRequest')
-        //   .forkQueries(itemClass.getId());
-        setOpenModalFork((prevState) => !prevState);
-      }
-    } catch (error) {
-      toastError({ message: getErrorMessage(error) });
-    }
+    setOpenModalFork((prevState) => !prevState);
+    // try {
+    //   let response;
+    //   if (itemType === LIST_ITEM_TYPE.DASHBOARDS) {
+    //     const itemClass = new Dashboard(item as IDashboardDetail);
+    //     response = await rf
+    //       .getRequest('DashboardsRequest')
+    //       .forkDashboard(
+    //         { newDashboardName: `Forked from ${itemClass.getName()}` },
+    //         itemClass.getId(),
+    //       );
+    //     response && onForkSuccess(response, itemType);
+    //   } else if (itemType === LIST_ITEM_TYPE.QUERIES) {
+    //     const itemClass = new Query(item as IQuery);
+    //     response = await rf
+    //       .getRequest('DashboardsRequest')
+    //       .forkQueries(itemClass.getId());
+    //   }
+    // } catch (error) {
+    //   toastError({ message: getErrorMessage(error) });
+    // }
   };
 
   const generateMenu = () => {
@@ -168,19 +168,31 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
           open={openModalSetting}
           id={item.id}
           defaultValue={{ name: item.name, tags: item.tags }}
-          type={TYPE_MODAL.EDIT}
+          type={MODAL.SETTING}
           onClose={onToggleModalSetting}
-          onSuccess={onSettingSuccess}
+          onSuccess={(res) => onSettingSuccess(res)}
         />
       )}
+
+      {itemType === LIST_ITEM_TYPE.DASHBOARDS && openModalFork && (
+        <ModalNewDashboard
+          open={openModalFork}
+          id={item.id}
+          defaultValue={{ name: item.name, tags: item.tags }}
+          type={MODAL.FORK}
+          onClose={onToggleModalFork}
+          onSuccess={(res) => onForkSuccess(res, itemType)}
+        />
+      )}
+
       {itemType === LIST_ITEM_TYPE.QUERIES && openModalSetting && (
         <ModalQuery
-          type={QUERY_MODAL.SETTING}
+          type={MODAL.SETTING}
           open={openModalSetting}
           id={item.id}
           defaultValue={{ name: item.name, tags: item.tags }}
           onClose={onToggleModalSetting}
-          onSuccess={onSettingSuccess}
+          onSuccess={(res) => onSettingSuccess(res)}
         />
       )}
       {/** Modal Share */}
@@ -207,7 +219,7 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
           open={openModalFork}
           onClose={() => setOpenModalFork(false)}
           onSuccess={(res) => onForkSuccess(res, itemType)}
-          type={QUERY_MODAL.FORK}
+          type={MODAL.FORK}
           id={item.id}
         />
       )}

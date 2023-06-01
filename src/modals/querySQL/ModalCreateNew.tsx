@@ -4,7 +4,7 @@ import { useHistory } from 'react-router';
 import { DashboardListIcon, QueriesIcon } from 'src/assets/icons';
 import { TYPE_MODAL } from 'src/pages/WorkspacePage/parts/Dashboard';
 import 'src/styles/components/BaseModal.scss';
-import { ROUTES } from 'src/utils/common';
+import { MODAL, ROUTES } from 'src/utils/common';
 import BaseModal from '../BaseModal';
 import ModalNewDashboard from './ModalNewDashboard';
 
@@ -58,7 +58,7 @@ const ModalCreateNew: React.FC<IModalCreateNew> = ({ open, onClose }) => {
         </Flex>
       </Flex>
       <ModalNewDashboard
-        type={TYPE_MODAL.ADD}
+        type={MODAL.CREATE}
         open={openModalCreateNew}
         onClose={onToggleCreateDashboardModal}
       />

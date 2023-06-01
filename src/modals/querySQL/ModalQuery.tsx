@@ -3,12 +3,11 @@ import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router';
 import { AppButton, AppInput } from 'src/components';
 import rf from 'src/requests/RequestFactory';
-import { QUERY_MODAL, ROUTES } from 'src/utils/common';
+import { MODAL, ROUTES } from 'src/utils/common';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import { createValidator } from 'src/utils/utils-validator';
 import BaseModal from '../BaseModal';
-
 export interface IModalSettingQuerry {
   open: boolean;
   onClose: () => void;
@@ -18,6 +17,32 @@ export interface IModalSettingQuerry {
   type: string;
   query?: string;
 }
+
+export const generateTitleModal = (type: string) => {
+  switch (type) {
+    case MODAL.SETTING:
+      return 'Setting';
+    case MODAL.CREATE:
+      return 'Create';
+    case MODAL.FORK:
+      return 'Fork';
+    default:
+      return '';
+  }
+};
+
+export const generateSubmitBtn = (type: string) => {
+  switch (type) {
+    case MODAL.SETTING:
+      return 'Update';
+    case MODAL.CREATE:
+      return 'Add';
+    case MODAL.FORK:
+      return 'Save';
+    default:
+      return '';
+  }
+};
 
 const ModalQuery = ({
   open,
@@ -60,19 +85,19 @@ const ModalQuery = ({
       let res;
       try {
         switch (type) {
-          case QUERY_MODAL.SETTING:
+          case MODAL.SETTING:
             res = await rf
               .getRequest('DashboardsRequest')
               .updateQuery(valueSettingQuery, id);
             break;
-          case QUERY_MODAL.CREATE:
+          case MODAL.CREATE:
             res = await rf
               .getRequest('DashboardsRequest')
               .createNewQuery({ ...valueSettingQuery, query: query });
             await rf.getRequest('DashboardsRequest').executeQuery(res.id);
             history.push(`${ROUTES.MY_QUERY}/${res.id}`);
             break;
-          case QUERY_MODAL.FORK:
+          case MODAL.FORK:
             res = await rf
               .getRequest('DashboardsRequest')
               .forkQueries(id, { ...valueSettingQuery });
@@ -88,32 +113,6 @@ const ModalQuery = ({
     }
   };
 
-  const generateTitleModal = () => {
-    switch (type) {
-      case QUERY_MODAL.SETTING:
-        return 'Setting';
-      case QUERY_MODAL.CREATE:
-        return 'Create';
-      case QUERY_MODAL.FORK:
-        return 'Fork';
-      default:
-        return '';
-    }
-  };
-
-  const generateSubmitBtn = () => {
-    switch (type) {
-      case QUERY_MODAL.SETTING:
-        return 'Update';
-      case QUERY_MODAL.CREATE:
-        return 'Add';
-      case QUERY_MODAL.FORK:
-        return 'Save';
-      default:
-        return '';
-    }
-  };
-
   return (
     <BaseModal
       size="xl"
@@ -122,7 +121,9 @@ const ModalQuery = ({
       className="modal-setting"
     >
       <Flex direction={'column'}>
-        <div className="modal-setting__title">{generateTitleModal()} Query</div>
+        <div className="modal-setting__title">
+          {generateTitleModal(type)} Query
+        </div>
         <Box className="modal-setting__content">
           <div>
             <Text className="input-label">Query Title</Text>
@@ -154,7 +155,7 @@ const ModalQuery = ({
             disabled={isDisableSubmit}
             onClick={handleSubmit}
           >
-            {generateSubmitBtn()}
+            {generateSubmitBtn(type)}
           </AppButton>
         </Flex>
       </Flex>

@@ -7,14 +7,14 @@ import AppQueryMenu, { QUERY_MENU_LIST } from 'src/components/AppQueryMenu';
 import ModalNewDashboard from 'src/modals/querySQL/ModalNewDashboard';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import rf from 'src/requests/RequestFactory';
-import { PROMISE_STATUS, ROUTES, SchemaType } from 'src/utils/common';
+import { MODAL, PROMISE_STATUS, ROUTES, SchemaType } from 'src/utils/common';
 import { IDashboardDetail, IQuery } from 'src/utils/query.type';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { getChainIconByChainName } from 'src/utils/utils-network';
 import { toastError } from 'src/utils/utils-notify';
-import { TYPE_MODAL } from './Dashboard';
-import { BROADCAST_ADD_TEXT_TO_EDITOR } from './Query';
+import { BROADCAST_FETCH_DASHBOARD, TYPE_MODAL } from './Dashboard';
+import { BROADCAST_ADD_TEXT_TO_EDITOR, BROADCAST_FETCH_QUERY } from './Query';
 
 export const BROADCAST_FETCH_WORKPLACE_DATA = 'FETCH_WORKPLACE_DATA';
 
@@ -290,14 +290,10 @@ const Sidebar: React.FC<{
   };
 
   const onForkSuccess = async (response: any, type: string) => {
-    history.push(
-      `${
-        type === LIST_ITEM_TYPE.DASHBOARDS
-          ? ROUTES.MY_DASHBOARD
-          : ROUTES.MY_QUERY
-      }/${response.id}`,
-    );
     await fetchDataWorkPlace();
+    type === LIST_ITEM_TYPE.DASHBOARDS
+      ? AppBroadcast.dispatch(BROADCAST_FETCH_DASHBOARD, response.id)
+      : AppBroadcast.dispatch(BROADCAST_FETCH_QUERY);
   };
 
   const _renderContentWorkPlace = () => {
@@ -533,7 +529,7 @@ const Sidebar: React.FC<{
         {_renderContent()}
       </Box>
       <ModalNewDashboard
-        type={TYPE_MODAL.ADD}
+        type={MODAL.CREATE}
         open={openNewDashboardModal}
         onClose={() => setOpenNewDashboardModal(false)}
         onSuccess={onCreateDashboardSuccessfully}
