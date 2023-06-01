@@ -198,7 +198,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
             Cancel
           </AppButton>
           <AppButton
-            disabled={!dataFilter}
+            disabled={!dataVisualization.length}
             size="lg"
             onClick={() => {
               handleSaveVisualization();
