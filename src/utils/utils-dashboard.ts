@@ -42,7 +42,7 @@ export interface DashboardInterface {
   privateMode: boolean;
 
   user: UserInterface | string;
-
+  chains: string[] | null;
   forkedDashboardId: string | null;
   textWidgets?: TextWidget[];
   dashboardVisuals?: DashboardVisual[];
@@ -55,6 +55,7 @@ export interface DashboardInterface {
   getThumnail: () => string | null;
   getTags: () => string[] | null;
   getForkedDashboardId: () => string | null;
+  getChains: () => string[] | null;
   getTextWidgets: () => TextWidget[] | null;
   getDashboardVisuals: () => DashboardVisual[] | null;
   getTextWidgetById: (id: string) => TextWidget | null;
@@ -148,6 +149,7 @@ export class Dashboard implements DashboardInterface {
   public user;
   public forkedDashboardId;
   public textWidgets: TextWidget[];
+  public chains: string[];
   public dashboardVisuals: DashboardVisual[];
 
   constructor(dashboard: IDashboardDetail) {
@@ -161,6 +163,7 @@ export class Dashboard implements DashboardInterface {
     this.forkedDashboardId = dashboard.forkedDashboardId;
     this.textWidgets = [];
     this.thumbnail = dashboard.thumbnail;
+    this.chains = dashboard.utilizedChains;
     if (dashboard.textWidgets) {
       dashboard.textWidgets.forEach((item) => {
         this.textWidgets.push(new TextWidget(item));
@@ -200,6 +203,10 @@ export class Dashboard implements DashboardInterface {
 
   getUser() {
     return this.user;
+  }
+
+  getChains() {
+    return this.chains;
   }
 
   getTextWidgets() {

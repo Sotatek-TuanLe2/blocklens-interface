@@ -132,7 +132,9 @@ const ListItem: React.FC<IListItem> = (props) => {
                   </Text>
                 </div>
               </Flex>
-              <AppNetworkIcons networkIds={listNetworkCurrency} />
+              {itemClass.getChains() && (
+                <AppNetworkIcons networkIds={itemClass.getChains()} />
+              )}
             </Flex>
           </div>
         </Flex>
@@ -166,7 +168,9 @@ const ListItem: React.FC<IListItem> = (props) => {
             <p>Tyler Covington</p>
           </div>
           <div className="item-chain">
-            <AppNetworkIcons networkIds={listNetworkCurrency} />
+            {itemClass.getChains() && (
+              <AppNetworkIcons networkIds={itemClass.getChains()} />
+            )}
           </div>
           <div className="item-date">
             {moment(itemClass.getCreatedTime()).format('YYYY MMMM Do')}
