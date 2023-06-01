@@ -131,9 +131,9 @@ const QueryPart: React.FC = () => {
           <Box className="editor-wrapper">
             <Box className="header-tab">
               <div className="header-tab__info">
-                <AppNetworkIcons
-                  networkIds={['eth_goerli', 'bsc_testnet', 'polygon_mainet']}
-                />
+                {queryClass?.getChains() && (
+                  <AppNetworkIcons networkIds={queryClass?.getChains()} />
+                )}
                 {['defi', 'gas', 'dex'].map((item) => (
                   <AppTag key={item} value={item} />
                 ))}
