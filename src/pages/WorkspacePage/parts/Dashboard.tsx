@@ -356,14 +356,17 @@ const DashboardPart: React.FC = () => {
           open={openModalEdit}
           onClose={() => setOpenModalEdit(false)}
         />
-        <ModalAddVisualization
-          dashboardId={dashboardId}
-          dataLayouts={dataLayouts}
-          open={openModalAddVisualization}
-          onClose={() => setOpenModalAddVisualization(false)}
-          userName={userName}
-          onReload={fetchLayoutData}
-        />
+        {openModalAddVisualization && (
+          <ModalAddVisualization
+            dashboardId={dashboardId}
+            dataLayouts={dataLayouts}
+            open={openModalAddVisualization}
+            onClose={() => setOpenModalAddVisualization(false)}
+            userName={userName}
+            onReload={fetchLayoutData}
+          />
+        )}
+
         <ModalForkDashBoardDetails
           dashboardId={dashboardId}
           open={openModalFork}
