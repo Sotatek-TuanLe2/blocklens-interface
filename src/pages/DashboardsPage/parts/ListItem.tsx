@@ -19,8 +19,6 @@ interface IListItem {
   visibility?: 'COLUMN' | 'ROW';
 }
 
-const listNetworkCurrency = ['eth_goerli', 'bsc_testnet', 'polygon_mainet'];
-
 const ListItem: React.FC<IListItem> = (props) => {
   const { type, myWorkType, item, visibility } = props;
   const history = useHistory();
