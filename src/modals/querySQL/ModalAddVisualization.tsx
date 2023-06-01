@@ -93,7 +93,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
     if (!!dataLayouts.length) {
       setSelectedItems(dataLayouts.map((i) => i.content));
     }
-  }, [dataLayouts]);
+  }, []);
 
   const handleSaveVisualization = async () => {
     const dataVisual = selectedItems.map((i) => {
