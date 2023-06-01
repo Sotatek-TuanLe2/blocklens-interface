@@ -1,6 +1,12 @@
 import { useParams } from 'react-router-dom';
 import { Box, Flex } from '@chakra-ui/react';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { Layout, Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import ReactMarkdown from 'react-markdown';
@@ -19,6 +25,7 @@ import Header from 'src/pages/WorkspacePage/parts/Header';
 import VisualizationItem from 'src/pages/WorkspacePage/parts/VisualizationItem';
 import AppNetworkIcons from 'src/components/AppNetworkIcons';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
+import { Dashboard } from 'src/utils/utils-dashboard';
 
 export interface ILayout extends Layout {
   options: any;
@@ -107,6 +114,13 @@ const DashboardPart: React.FC = () => {
     }
   }, [dashboardId]);
 
+  const dashboardClass = useMemo(() => {
+    if (!dataDashboard) {
+      return null;
+    }
+    return new Dashboard(dataDashboard);
+  }, [dataDashboard]);
+
   const onLayoutChange = async (layout: Layout[]) => {
     clearTimeout(layoutChangeTimeout.current);
 
@@ -179,9 +193,9 @@ const DashboardPart: React.FC = () => {
       <div className="dashboard-container">
         <Box className="header-tab">
           <div className="header-tab__info">
-            <AppNetworkIcons
-              networkIds={['eth_goerli', 'bsc_testnet', 'polygon_mainet']}
-            />
+            {dashboardClass?.getChains() && (
+              <AppNetworkIcons networkIds={dashboardClass?.getChains()} />
+            )}
             {['defi', 'gas', 'dex'].map((item) => (
               <AppTag key={item} value={item} />
             ))}
