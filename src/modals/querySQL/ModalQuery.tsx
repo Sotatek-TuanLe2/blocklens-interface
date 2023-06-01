@@ -76,10 +76,8 @@ const ModalQuery = ({
             res = await rf
               .getRequest('DashboardsRequest')
               .forkQueries(id, { ...valueSettingQuery });
-
             break;
         }
-
         onSuccess && (await onSuccess(res));
         onClose();
       } catch (error) {
