@@ -46,6 +46,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   dashboardId,
 }) => {
   const [selectedItems, setSelectedItems] = useState<any[]>([]);
+  const [addedValue, setAddedValue] = useState<any[]>([]);
   const [dataVisualization, setDataVisualization] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
 
@@ -82,8 +83,13 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   };
 
   useEffect(() => {
+    setAddedValue(selectedItems);
+  }, [dataLayouts]);
+
+  useEffect(() => {
     if (open) {
       fetchVisualization();
+      setSelectedItems(addedValue);
     } else {
       setSearchTerm('');
     }
