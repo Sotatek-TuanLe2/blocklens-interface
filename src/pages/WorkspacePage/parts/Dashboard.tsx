@@ -40,6 +40,7 @@ import AppNetworkIcons from 'src/components/AppNetworkIcons';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
 import { Dashboard } from 'src/utils/utils-dashboard';
+import { DeleteIcon, EditIcon } from 'src/assets/icons';
 
 export interface ILayout extends Layout {
   options: any;
@@ -307,21 +308,23 @@ const DashboardPart: React.FC = () => {
                   >
                     {item.type === WIDGET_TYPE.TEXT && (
                       <Box
-                        className="icon-query-edit"
                         onClick={() => {
                           setTypeModalTextWidget(TYPE_MODAL.EDIT);
                           setSelectedItem(item);
                           setOpenModalAddTextWidget(true);
                         }}
-                      />
+                      >
+                        <EditIcon />
+                      </Box>
                     )}
                     <Box
-                      className="icon-query-delete"
                       onClick={() => {
                         setSelectedItem(item);
                         setOpenModalEdit(true);
                       }}
-                    />
+                    >
+                      <DeleteIcon />
+                    </Box>
                   </Flex>
                 )}
               </div>
