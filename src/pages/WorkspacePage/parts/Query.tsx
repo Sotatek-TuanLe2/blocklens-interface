@@ -321,15 +321,7 @@ const QueryPart: React.FC = () => {
                     widthColumns={[100]}
                     className="visual-table"
                   />
-                ) : errorExecuteQuery?.message ? (
-                  <Flex
-                    className="empty-table"
-                    justifyContent={'center'}
-                    alignItems="center"
-                  >
-                    {errorExecuteQuery?.message}
-                  </Flex>
-                ) : (
+                ) : !!queryResult.length && !errorExecuteQuery?.message ? (
                   <Box>
                     <VisualizationDisplay
                       queryResult={queryResult}
@@ -339,6 +331,16 @@ const QueryPart: React.FC = () => {
                       onExpand={setExpandLayout}
                     />
                   </Box>
+                ) : (
+                  <Flex
+                    className="empty-table"
+                    justifyContent={'center'}
+                    alignItems="center"
+                  >
+                    {errorExecuteQuery?.message
+                      ? errorExecuteQuery?.message
+                      : 'No data...'}
+                  </Flex>
                 )}
               </div>
             )}

@@ -213,25 +213,26 @@ const QueryPart: React.FC = () => {
                   widthColumns={[100]}
                   className="visual-table"
                 />
-              ) : errorExecuteQuery?.message ? (
+              ) : !!queryResult.length && !errorExecuteQuery?.message ? (
+                <Box>
+                  <VisualizationDisplay
+                    queryResult={queryResult}
+                    queryValue={queryValue}
+                    onReload={fetchQuery}
+                    expandLayout={expandLayout}
+                    onExpand={setExpandLayout}
+                  />
+                </Box>
+              ) : (
                 <Flex
                   className="empty-table"
                   justifyContent={'center'}
                   alignItems="center"
                 >
-                  {errorExecuteQuery?.message}
+                  {errorExecuteQuery?.message
+                    ? errorExecuteQuery?.message
+                    : 'No data...'}
                 </Flex>
-              ) : (
-                <Box>
-                  <VisualizationDisplay
-                    queryResult={queryResult}
-                    queryValue={queryValue}
-                    expandLayout={expandLayout}
-                    needAuthentication={false}
-                    onReload={fetchQuery}
-                    onExpand={setExpandLayout}
-                  />
-                </Box>
               )}
             </div>
           )}
