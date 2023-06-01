@@ -6,7 +6,7 @@ import 'src/styles/components/AppQueryMenu.scss';
 import useUser from 'src/hooks/useUser';
 import ModalShareDomain from 'src/modals/querySQL/ModalShareDomain';
 import ModalDelete from 'src/modals/querySQL/ModalDelete';
-import ModalSettingQuery from 'src/modals/querySQL/ModalSettingQuery';
+import ModalQuery from 'src/modals/querySQL/ModalQuery';
 import { IDashboardDetail, IQuery } from 'src/utils/query.type';
 import ModalNewDashboard from 'src/modals/querySQL/ModalNewDashboard';
 import { TYPE_MODAL } from 'src/pages/WorkspacePage/parts/Dashboard';
@@ -14,7 +14,7 @@ import { Dashboard } from 'src/utils/utils-dashboard';
 import { Query } from 'src/utils/utils-query';
 import { toastError } from 'src/utils/utils-notify';
 import { getErrorMessage } from 'src/utils/utils-helper';
-import { ROUTES } from 'src/utils/common';
+import { QUERY_MODAL, ROUTES } from 'src/utils/common';
 
 interface IAppQueryMenu {
   menu?: string[];
@@ -56,6 +56,7 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
   const [openModalSetting, setOpenModalSetting] = useState<boolean>(false);
   const [openModalShare, setOpenModalShare] = useState<boolean>(false);
   const [openModalDelete, setOpenModalDelete] = useState<boolean>(false);
+  const [openModalFork, setOpenModalFork] = useState<boolean>(false);
 
   const onToggleModalSetting = () =>
     setOpenModalSetting((prevState) => !prevState);
@@ -65,7 +66,7 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
   const onToggleModalDelete = () =>
     setOpenModalDelete((prevState) => !prevState);
 
-  const onFork = async () => {
+  const onToggleModalFork = async () => {
     try {
       let response;
       if (itemType === LIST_ITEM_TYPE.DASHBOARDS) {
@@ -76,13 +77,10 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
             { newDashboardName: `Forked from ${itemClass.getName()}` },
             itemClass.getId(),
           );
+        response && onForkSuccess(response, itemType);
       } else if (itemType === LIST_ITEM_TYPE.QUERIES) {
-        const itemClass = new Query(item as IQuery);
-        response = await rf
-          .getRequest('DashboardsRequest')
-          .forkQueries(itemClass.getId());
+        setOpenModalFork((prevState) => !prevState);
       }
-      response && onForkSuccess(response, itemType);
     } catch (error) {
       toastError({ message: getErrorMessage(error) });
     }
@@ -99,7 +97,7 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
         id: QUERY_MENU_LIST.FORK,
         label: QUERY_MENU_LIST.FORK,
         icon: <p className="icon-query-fork" />,
-        onClick: onFork,
+        onClick: onToggleModalFork,
       },
       {
         id: QUERY_MENU_LIST.SETTING,
@@ -170,7 +168,8 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
         />
       )}
       {itemType === LIST_ITEM_TYPE.QUERIES && openModalSetting && (
-        <ModalSettingQuery
+        <ModalQuery
+          type={QUERY_MODAL.SETTING}
           open={openModalSetting}
           id={item.id}
           defaultValue={{ name: item.name, tags: item.tags }}
@@ -186,6 +185,7 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
           link={linkShareItem}
         />
       )}
+      {/** Modal Delete */}
       {openModalDelete && (
         <ModalDelete
           open={openModalDelete}
@@ -195,7 +195,16 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
           id={item.id}
         />
       )}
-      {/** Modal Delete */}
+      {/**Modal fork */}
+      {itemType === LIST_ITEM_TYPE.QUERIES && openModalFork && (
+        <ModalQuery
+          open={openModalFork}
+          onClose={() => setOpenModalFork(false)}
+          onSuccess={(res) => onForkSuccess(res, itemType)}
+          type={QUERY_MODAL.FORK}
+          id={item.id}
+        />
+      )}
     </>
   );
 };
