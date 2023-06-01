@@ -20,7 +20,7 @@ import 'src/styles/pages/QueriesPage.scss';
 import { toastError } from 'src/utils/utils-notify';
 import rf from 'src/requests/RequestFactory';
 import useUser from 'src/hooks/useUser';
-import { QUERY_RESULT_STATUS, ROUTES } from 'src/utils/common';
+import { QUERY_MODAL, QUERY_RESULT_STATUS, ROUTES } from 'src/utils/common';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
 import { EditorContext } from '../context/EditorContext';
 import Header from './Header';
@@ -29,7 +29,7 @@ import VisualizationDisplay from './VisualizationDisplay';
 import AppNetworkIcons from 'src/components/AppNetworkIcons';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import { BROADCAST_FETCH_WORKPLACE_DATA } from './Sidebar';
-import ModalSettingQuery from 'src/modals/querySQL/ModalSettingQuery';
+import ModalQuery from 'src/modals/querySQL/ModalQuery';
 
 export const BROADCAST_ADD_TEXT_TO_EDITOR = 'ADD_TEXT_TO_EDITOR';
 export const BROADCAST_FETCH_QUERY = 'FETCH_QUERY';
@@ -106,8 +106,6 @@ const QueryPart: React.FC = () => {
       await rf.getRequest('DashboardsRequest').executeQuery(queryValue.id);
       history.push(`${ROUTES.MY_QUERY}/${queryValue.id}`);
       AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
-
-      setOpenModalSettingQuery(true);
     } catch (error: any) {
       toastError({ message: getErrorMessage(error) });
     }
@@ -213,7 +211,8 @@ const QueryPart: React.FC = () => {
       if (queryId) {
         await updateQuery(editorRef.current.editor.getValue());
       } else {
-        await createNewQuery(editorRef.current.editor.getValue());
+        setOpenModalSettingQuery(true);
+        // await createNewQuery(editorRef.current.editor.getValue());
       }
     } catch (err: any) {
       toastError({ message: getErrorMessage(err) });
@@ -346,16 +345,16 @@ const QueryPart: React.FC = () => {
           </Box>
         </div>
       </EditorContext.Provider>
-      {!!openModalSettingQuery && !!queryValue?.id && !queryValue.isArchived && (
-        <ModalSettingQuery
-          defaultValue={{ name: queryValue.name, tags: queryValue.tags }}
-          id={queryValue.id}
+      {openModalSettingQuery && (
+        <ModalQuery
           open={openModalSettingQuery}
           onClose={() => setOpenModalSettingQuery(false)}
           onSuccess={async () => {
             AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
             await fetchQuery();
           }}
+          type={QUERY_MODAL.CREATE}
+          query={editorRef.current.editor.getValue()}
         />
       )}
     </div>
