@@ -228,6 +228,10 @@ export const formatDefaultValueChart = (value: string) => {
 export const formatVisualizationValue = (format: string, value: any) => {
   let result = value;
 
+  if (value == 0) {
+    return 0;
+  }
+
   if (!isNumber(value)) {
     return value;
   }
@@ -255,6 +259,10 @@ export const formatVisualizationValue = (format: string, value: any) => {
     if (format.includes('a')) {
       const decimalPart = String(result).split('.')[1];
       result = _formatLargeNumberIfNeed(result, decimalPart.length || 0, false);
+    }
+
+    if (result !== '0') {
+      result = commaNumber(formatNumberWithDecimalDigits(value, format));
     }
   } else if (format.includes(',')) {
     result = commaNumber(value);

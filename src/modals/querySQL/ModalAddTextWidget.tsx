@@ -7,7 +7,7 @@ import { ILayout, TYPE_MODAL } from 'src/pages/WorkspacePage/parts/Dashboard';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/BaseModal.scss';
 import { getErrorMessage } from 'src/utils/utils-helper';
-import { toastError } from 'src/utils/utils-notify';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import BaseModal from '../BaseModal';
 import { IDashboardDetail, ITextWidget } from 'src/utils/query.type';
 import { INPUT_DEBOUNCE } from 'src/utils/common';
@@ -117,6 +117,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
         .getRequest('DashboardsRequest')
         .addDashboardItem(payload);
       if (res) {
+        toastSuccess({ message: 'Add successfully' });
         onReload();
         setMarkdownText('');
         onClose();
@@ -143,24 +144,11 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
         .getRequest('DashboardsRequest')
         .updateDashboardItem(payload, dataDashboard?.id);
       if (res) {
+        toastSuccess({ message: 'Update successfully' });
         onReload();
         setMarkdownText('');
         onClose();
       }
-    } catch (e) {
-      toastError({ message: getErrorMessage(e) });
-    }
-  };
-  const handleRemoveItem = async (
-    e: React.MouseEvent<HTMLButtonElement, globalThis.MouseEvent>,
-  ) => {
-    try {
-      e.preventDefault();
-      await rf
-        .getRequest('DashboardsRequest')
-        .removeTextWidget(selectedItem.id);
-      onReload();
-      onClose();
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
     }
