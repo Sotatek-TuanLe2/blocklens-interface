@@ -17,7 +17,7 @@ import { AppTag } from 'src/components';
 import useUser from 'src/hooks/useUser';
 import ModalAddTextWidget from 'src/modals/querySQL/ModalAddTextWidget';
 import ModalAddVisualization from 'src/modals/querySQL/ModalAddVisualization';
-import ModalEditItemDashBoard from 'src/modals/querySQL/ModalEditItemDashBoard';
+import ModalDeleteWidget from 'src/modals/querySQL/ModalDeleteWidget ';
 import ModalForkDashBoardDetails from 'src/modals/querySQL/ModalForkDashBoardDetails';
 import ModalSettingDashboardDetails from 'src/modals/querySQL/ModalSettingDashboardDetails';
 import rf from 'src/requests/RequestFactory';
@@ -330,7 +330,7 @@ const DashboardPart: React.FC = () => {
           onReload={fetchLayoutData}
           dataDashboard={dataDashboard}
         />
-        <ModalEditItemDashBoard
+        <ModalDeleteWidget
           selectedItem={selectedItem}
           onReload={fetchLayoutData}
           open={openModalEdit}

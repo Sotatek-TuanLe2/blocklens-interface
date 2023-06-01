@@ -114,7 +114,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
       await rf
         .getRequest('DashboardsRequest')
         .manageVisualizations(payload, dashboardId);
-      toastSuccess({ message: 'Update success' });
+      toastSuccess({ message: 'Update successfully' });
       onClose();
       onReload();
     } catch (e) {

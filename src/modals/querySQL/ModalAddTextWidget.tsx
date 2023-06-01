@@ -117,7 +117,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
         .getRequest('DashboardsRequest')
         .addDashboardItem(payload);
       if (res) {
-        toastSuccess({ message: 'Add success' });
+        toastSuccess({ message: 'Add successfully' });
         onReload();
         setMarkdownText('');
         onClose();
@@ -144,25 +144,11 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
         .getRequest('DashboardsRequest')
         .updateDashboardItem(payload, dataDashboard?.id);
       if (res) {
-        toastSuccess({ message: 'Update success' });
+        toastSuccess({ message: 'Update successfully' });
         onReload();
         setMarkdownText('');
         onClose();
       }
-    } catch (e) {
-      toastError({ message: getErrorMessage(e) });
-    }
-  };
-  const handleRemoveItem = async (
-    e: React.MouseEvent<HTMLButtonElement, globalThis.MouseEvent>,
-  ) => {
-    try {
-      e.preventDefault();
-      await rf
-        .getRequest('DashboardsRequest')
-        .removeTextWidget(selectedItem.id);
-      onReload();
-      onClose();
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
     }

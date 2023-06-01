@@ -15,7 +15,7 @@ interface IModalEditItemDashBoard {
   onReload: () => Promise<void>;
 }
 
-const ModalEditItemDashBoard: React.FC<IModalEditItemDashBoard> = ({
+const ModalDeleteWidget: React.FC<IModalEditItemDashBoard> = ({
   open,
   onClose,
   selectedItem,
@@ -30,12 +30,12 @@ const ModalEditItemDashBoard: React.FC<IModalEditItemDashBoard> = ({
         await rf
           .getRequest('DashboardsRequest')
           .removeTextWidget(selectedItem.id);
-        toastSuccess({ message: 'Remove success' });
+        toastSuccess({ message: 'Remove successfully' });
       } else {
         await rf
           .getRequest('DashboardsRequest')
           .removeVisualization(selectedItem.id);
-        toastSuccess({ message: 'Remove success' });
+        toastSuccess({ message: 'Remove successfully' });
       }
       onReload();
       onClose();
@@ -71,4 +71,4 @@ const ModalEditItemDashBoard: React.FC<IModalEditItemDashBoard> = ({
   );
 };
 
-export default ModalEditItemDashBoard;
+export default ModalDeleteWidget;
