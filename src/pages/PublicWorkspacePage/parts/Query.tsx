@@ -131,9 +131,9 @@ const QueryPart: React.FC = () => {
           <Box className="editor-wrapper">
             <Box className="header-tab">
               <div className="header-tab__info">
-                <AppNetworkIcons
-                  networkIds={['eth_goerli', 'bsc_testnet', 'polygon_mainet']}
-                />
+                {queryClass?.getChains() && (
+                  <AppNetworkIcons networkIds={queryClass?.getChains()} />
+                )}
                 {['defi', 'gas', 'dex'].map((item) => (
                   <AppTag key={item} value={item} />
                 ))}
@@ -213,25 +213,26 @@ const QueryPart: React.FC = () => {
                   widthColumns={[100]}
                   className="visual-table"
                 />
-              ) : errorExecuteQuery?.message ? (
+              ) : !!queryResult.length && !errorExecuteQuery?.message ? (
+                <Box>
+                  <VisualizationDisplay
+                    queryResult={queryResult}
+                    queryValue={queryValue}
+                    onReload={fetchQuery}
+                    expandLayout={expandLayout}
+                    onExpand={setExpandLayout}
+                  />
+                </Box>
+              ) : (
                 <Flex
                   className="empty-table"
                   justifyContent={'center'}
                   alignItems="center"
                 >
-                  {errorExecuteQuery?.message}
+                  {errorExecuteQuery?.message
+                    ? errorExecuteQuery?.message
+                    : 'No data...'}
                 </Flex>
-              ) : (
-                <Box>
-                  <VisualizationDisplay
-                    queryResult={queryResult}
-                    queryValue={queryValue}
-                    expandLayout={expandLayout}
-                    needAuthentication={false}
-                    onReload={fetchQuery}
-                    onExpand={setExpandLayout}
-                  />
-                </Box>
               )}
             </div>
           )}

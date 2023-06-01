@@ -2,7 +2,7 @@ import { Box, Flex, Tooltip } from '@chakra-ui/react';
 
 import { debounce } from 'lodash';
 import moment from 'moment';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import AceEditor from 'react-ace';
 import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/mode-sql';
@@ -30,6 +30,7 @@ import AppNetworkIcons from 'src/components/AppNetworkIcons';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import { BROADCAST_FETCH_WORKPLACE_DATA } from './Sidebar';
 import ModalQuery from 'src/modals/querySQL/ModalQuery';
+import { Query } from 'src/utils/utils-query';
 
 export const BROADCAST_ADD_TEXT_TO_EDITOR = 'ADD_TEXT_TO_EDITOR';
 export const BROADCAST_FETCH_QUERY = 'FETCH_QUERY';
@@ -89,6 +90,13 @@ const QueryPart: React.FC = () => {
       }
     };
   }, [queryId]);
+
+  const queryClass = useMemo(() => {
+    if (!queryValue) {
+      return null;
+    }
+    return new Query(queryValue);
+  }, [queryValue]);
 
   const resetEditor = () => {
     editorRef.current && editorRef.current.editor.setValue('');
@@ -240,9 +248,9 @@ const QueryPart: React.FC = () => {
             <Box className="editor-wrapper">
               <Box className="header-tab">
                 <div className="header-tab__info">
-                  <AppNetworkIcons
-                    networkIds={['eth_goerli', 'bsc_testnet', 'polygon_mainet']}
-                  />
+                  {queryClass?.getChains() && (
+                    <AppNetworkIcons networkIds={queryClass?.getChains()} />
+                  )}
                   {['defi', 'gas', 'dex'].map((item) => (
                     <AppTag key={item} value={item} />
                   ))}
@@ -321,15 +329,7 @@ const QueryPart: React.FC = () => {
                     widthColumns={[100]}
                     className="visual-table"
                   />
-                ) : errorExecuteQuery?.message ? (
-                  <Flex
-                    className="empty-table"
-                    justifyContent={'center'}
-                    alignItems="center"
-                  >
-                    {errorExecuteQuery?.message}
-                  </Flex>
-                ) : (
+                ) : !!queryResult.length && !errorExecuteQuery?.message ? (
                   <Box>
                     <VisualizationDisplay
                       queryResult={queryResult}
@@ -339,6 +339,16 @@ const QueryPart: React.FC = () => {
                       onExpand={setExpandLayout}
                     />
                   </Box>
+                ) : (
+                  <Flex
+                    className="empty-table"
+                    justifyContent={'center'}
+                    alignItems="center"
+                  >
+                    {errorExecuteQuery?.message
+                      ? errorExecuteQuery?.message
+                      : 'No data...'}
+                  </Flex>
                 )}
               </div>
             )}

@@ -19,8 +19,6 @@ interface IListItem {
   visibility?: 'COLUMN' | 'ROW';
 }
 
-const listNetworkCurrency = ['eth_goerli', 'bsc_testnet', 'polygon_mainet'];
-
 const ListItem: React.FC<IListItem> = (props) => {
   const { type, myWorkType, item, visibility } = props;
   const history = useHistory();
@@ -132,7 +130,9 @@ const ListItem: React.FC<IListItem> = (props) => {
                   </Text>
                 </div>
               </Flex>
-              <AppNetworkIcons networkIds={listNetworkCurrency} />
+              {itemClass.getChains() && (
+                <AppNetworkIcons networkIds={itemClass.getChains()} />
+              )}
             </Flex>
           </div>
         </Flex>
@@ -166,7 +166,9 @@ const ListItem: React.FC<IListItem> = (props) => {
             <p>Tyler Covington</p>
           </div>
           <div className="item-chain">
-            <AppNetworkIcons networkIds={listNetworkCurrency} />
+            {itemClass.getChains() && (
+              <AppNetworkIcons networkIds={itemClass.getChains()} />
+            )}
           </div>
           <div className="item-date">
             {moment(itemClass.getCreatedTime()).format('YYYY MMMM Do')}
