@@ -316,15 +316,27 @@ const VisualizationChart: React.FC<Props> = (props) => {
             tickLine={false}
             domain={yAxisDomain}
             tickCount={6}
-            width={100}
             {...logarithmicProps}
+            allowDataOverflow={false}
+            className="y-axis"
           >
             <Label
-              position="center"
+              position="insideLeft"
               value={yAxisConfigs?.title}
               angle={-90}
               fill="#ccc"
             />
+            {/* {(props: any) => {
+              console.log('props', props);
+              return (
+                <Label
+                  position="inside"
+                  angle={-90}
+                  fill="#ccc"
+                  value={yAxisConfigs?.title}
+                />
+              );
+            }} */}
           </YAxis>
         )}
         <Tooltip
