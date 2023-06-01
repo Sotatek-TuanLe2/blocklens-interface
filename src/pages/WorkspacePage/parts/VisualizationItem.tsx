@@ -30,9 +30,11 @@ const VisualizationItem = React.memo(
   ({
     visualization,
     needAuthentication = true,
+    editMode = false,
   }: {
     visualization: VisualizationType;
     needAuthentication?: boolean;
+    editMode?: boolean;
   }) => {
     const { user } = useUser();
 
@@ -138,6 +140,7 @@ const VisualizationItem = React.memo(
             <VisualizationTable
               data={queryResult}
               visualization={visualization}
+              editMode={editMode}
             />
           );
 
