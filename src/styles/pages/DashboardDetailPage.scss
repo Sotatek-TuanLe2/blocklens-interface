@@ -89,7 +89,8 @@
         }
 
         .table-value {
-          th, td {
+          th,
+          td {
             padding: 7px 120px 7px 24px;
           }
 
@@ -313,6 +314,14 @@
         cursor: pointer;
         top: 15px;
         right: 15px;
+
+        svg {
+          color: #8d91a5;
+
+          &:hover {
+            color: white;
+          }
+        }
       }
     }
   }
