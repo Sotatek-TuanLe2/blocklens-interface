@@ -43,12 +43,13 @@
 
       .main-table {
         // height: unset;
-        overflow: auto;
+        // overflow: auto;
+        height: 100%;
       }
 
       .table-content {
-        height: 80%;
-        overflow: unset;
+        height: 60%;
+        overflow: auto;
 
         .table-pagination {
           background: $card;
@@ -99,7 +100,7 @@
         .table-value {
           th,
           td {
-            padding: 7px 120px 7px 24px;
+            padding: 0px 120px 0px 24px;
           }
 
           th {
@@ -207,7 +208,7 @@
           font-size: 12px;
           box-shadow: none;
           border-bottom: 1px solid #747474;
-          padding: 7px 120px 7px 24px;
+          padding: 0px 120px 0px 24px;
         }
         thead {
           .resizer {
