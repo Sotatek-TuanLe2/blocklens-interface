@@ -57,10 +57,17 @@ const ListItem: React.FC<IListItem> = (props) => {
   };
 
   const _renderDropdown = () => {
+    let menu = [];
+    if (type === LIST_ITEM_TYPE.DASHBOARDS) {
+      menu.push(QUERY_MENU_LIST.SHARE);
+    } else {
+      menu = [QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.SHARE];
+    }
+
     return (
       !!item && (
         <AppQueryMenu
-          menu={[QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.SHARE]}
+          menu={menu}
           item={item}
           itemType={type}
           onForkSuccess={onForkSuccess}

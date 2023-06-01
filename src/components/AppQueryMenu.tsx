@@ -1,5 +1,5 @@
 import { Flex, Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/AppQueryMenu.scss';
@@ -14,7 +14,7 @@ import { Dashboard } from 'src/utils/utils-dashboard';
 import { Query } from 'src/utils/utils-query';
 import { toastError } from 'src/utils/utils-notify';
 import { getErrorMessage } from 'src/utils/utils-helper';
-import { QUERY_MODAL } from 'src/utils/common';
+import { QUERY_MODAL, ROUTES } from 'src/utils/common';
 
 interface IAppQueryMenu {
   menu?: string[];
@@ -51,6 +51,7 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
   } = props;
 
   const { user } = useUser();
+  const location = window.location;
 
   const [openModalSetting, setOpenModalSetting] = useState<boolean>(false);
   const [openModalShare, setOpenModalShare] = useState<boolean>(false);
@@ -134,6 +135,14 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
     return itemList;
   };
 
+  const linkShareItem = useMemo(
+    () =>
+      `${location.protocol}//${location.hostname}:${location.port}${
+        itemType === LIST_ITEM_TYPE.DASHBOARDS ? ROUTES.DASHBOARD : ROUTES.QUERY
+      }/${item.id}`,
+    [item],
+  );
+
   return (
     <>
       <Menu>
@@ -179,6 +188,7 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
         <ModalShareDomain
           open={openModalShare}
           onClose={() => setOpenModalShare(false)}
+          link={linkShareItem}
         />
       )}
       {/** Modal Delete */}

@@ -199,7 +199,9 @@ const Header: React.FC<IHeaderProps> = (props) => {
           <AppQueryMenu
             menu={
               !needAuthentication
-                ? [QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.SHARE]
+                ? type === LIST_ITEM_TYPE.DASHBOARDS
+                  ? [QUERY_MENU_LIST.SHARE]
+                  : [QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.SHARE]
                 : undefined
             }
             item={data}
