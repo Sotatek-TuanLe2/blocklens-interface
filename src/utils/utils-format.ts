@@ -256,6 +256,10 @@ export const formatVisualizationValue = (format: string, value: any) => {
       const decimalPart = String(result).split('.')[1];
       result = _formatLargeNumberIfNeed(result, decimalPart.length || 0, false);
     }
+
+    if (result !== '0') {
+      result = commaNumber(formatNumberWithDecimalDigits(value, format));
+    }
   } else if (format.includes(',')) {
     result = commaNumber(value);
   } else if (format === '0') {
