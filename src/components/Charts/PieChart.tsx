@@ -70,7 +70,7 @@ const VisualizationPieChart = ({
         return { [xAxisKey]: item.key, [yAxisKeys?.[0]]: item.value };
       });
 
-    return result;
+    return !result.length ? data : result;
   }, [data, yAxisKeys]);
 
   const onToggleLegend = (dataKey: string) => {
@@ -268,14 +268,10 @@ const CustomTooltip = (props: any) => {
     return (
       <div className="custom-tooltip">
         {payload.map((entry: any, index: number) => (
-          <>
+          <div key={index}>
             <p className="custom-tooltip__label">{entry.name}</p>
             <div className="custom-tooltip__desc">
-              <Box
-                as={'div'}
-                key={index}
-                className="custom-tooltip__desc__detail"
-              >
+              <Box as={'div'} className="custom-tooltip__desc__detail">
                 <span style={{ backgroundColor: entry.fill }}></span>
                 <span>{`${entry.dataKey}: ${_renderTooltipValue(
                   entry.value,
@@ -283,7 +279,7 @@ const CustomTooltip = (props: any) => {
                 <br />
               </Box>
             </div>
-          </>
+          </div>
         ))}
       </div>
     );
