@@ -312,7 +312,13 @@
       }
 
       .box-text-widget {
-        padding: 0 15px;
+        overflow: auto;
+        height: 100%;
+
+        &--edit {
+          height: 80%;
+          margin-top: 20px;
+        }
       }
 
       .widget-buttons {
