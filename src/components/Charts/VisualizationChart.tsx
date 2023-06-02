@@ -326,17 +326,6 @@ const VisualizationChart: React.FC<Props> = (props) => {
               angle={-90}
               fill="#ccc"
             />
-            {/* {(props: any) => {
-              console.log('props', props);
-              return (
-                <Label
-                  position="inside"
-                  angle={-90}
-                  fill="#ccc"
-                  value={yAxisConfigs?.title}
-                />
-              );
-            }} */}
           </YAxis>
         )}
         <Tooltip

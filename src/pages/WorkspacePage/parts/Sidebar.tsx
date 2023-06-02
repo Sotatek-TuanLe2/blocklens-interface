@@ -27,8 +27,6 @@ const ChainItem = ({
   onChangeSchemaDescribe: any;
   schemaDescribe: any;
 }) => {
-  const { queryId }: { queryId?: string } = useParams();
-
   const handleToggle = async () => {
     try {
       const data = await rf.getRequest('DashboardsRequest').getSchemaOfTable({
@@ -62,7 +60,7 @@ const ChainItem = ({
             {chain.table_name}
           </Text>
         </Flex>
-        {!!queryId && (
+        {location.pathname.includes('queries') && (
           <Tooltip
             placement="top"
             hasArrow
@@ -460,6 +458,10 @@ const Sidebar: React.FC<{
                 {schemaDescribe[0].table_name}
               </Text>
               <div className="header-icon">
+                <div
+                  className="bg-PlusIcon"
+                  onClick={() => handleAddQuery(schemaDescribe[0].full_name)}
+                ></div>
                 <div
                   className="bg-CloseBtnIcon"
                   onClick={() => setSchemaDescribe([])}
