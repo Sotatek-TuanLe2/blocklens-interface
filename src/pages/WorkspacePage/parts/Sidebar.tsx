@@ -1,7 +1,7 @@
 import { Box, Collapse, Flex, Text, Tooltip } from '@chakra-ui/react';
 import _, { debounce } from 'lodash';
 import { useCallback, useEffect, useState } from 'react';
-import { useHistory, useParams } from 'react-router';
+import { useHistory, useParams, useLocation } from 'react-router-dom';
 import { AppInput } from 'src/components';
 import AppQueryMenu, { QUERY_MENU_LIST } from 'src/components/AppQueryMenu';
 import ModalNewDashboard from 'src/modals/querySQL/ModalNewDashboard';
@@ -27,6 +27,8 @@ const ChainItem = ({
   onChangeSchemaDescribe: any;
   schemaDescribe: any;
 }) => {
+  const { pathname } = useLocation();
+
   const handleToggle = async () => {
     try {
       const data = await rf.getRequest('DashboardsRequest').getSchemaOfTable({
@@ -60,22 +62,24 @@ const ChainItem = ({
             {chain.table_name}
           </Text>
         </Flex>
-        <Tooltip
-          placement="top"
-          hasArrow
-          label="Add to query"
-          aria-label="A tooltip"
-          bg={'#2F3B58'}
-          borderRadius="6px"
-        >
-          <div
-            className="bg-PlusIcon add-query-icon"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleAddQuery(chain.full_name);
-            }}
-          ></div>
-        </Tooltip>
+        {pathname.includes(ROUTES.MY_QUERY) && (
+          <Tooltip
+            placement="top"
+            hasArrow
+            label="Add to query"
+            aria-label="A tooltip"
+            bg={'#2F3B58'}
+            borderRadius="6px"
+          >
+            <div
+              className="bg-PlusIcon add-query-icon"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleAddQuery(chain.full_name);
+              }}
+            ></div>
+          </Tooltip>
+        )}
       </Box>
     </>
   );
@@ -165,6 +169,7 @@ const Sidebar: React.FC<{
   const { queryId, dashboardId }: { queryId?: string; dashboardId?: string } =
     useParams();
   const history = useHistory();
+  const { pathname } = useLocation();
   const [dataQueries, setDataQueries] = useState<IQuery[] | []>([]);
   const [dataDashboards, setDataDashboards] = useState<IDashboardDetail[] | []>(
     [],
@@ -352,7 +357,7 @@ const Sidebar: React.FC<{
                 </Flex>
 
                 <AppQueryMenu
-                  menu={[QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.SHARE]}
+                  menu={[QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.DELETE]}
                   itemType={LIST_ITEM_TYPE.QUERIES}
                   item={query}
                   onForkSuccess={onForkSuccess}
@@ -395,7 +400,7 @@ const Sidebar: React.FC<{
                   <Text isTruncated>{dashboard.name}</Text>
                 </Flex>
                 <AppQueryMenu
-                  menu={[QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.SHARE]}
+                  menu={[QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.DELETE]}
                   itemType={LIST_ITEM_TYPE.DASHBOARDS}
                   item={dashboard}
                   onForkSuccess={onForkSuccess}
@@ -456,10 +461,12 @@ const Sidebar: React.FC<{
                 {schemaDescribe[0].table_name}
               </Text>
               <div className="header-icon">
-                <div
-                  className="bg-PlusIcon"
-                  onClick={() => handleAddQuery(schemaDescribe[0].full_name)}
-                />
+                {pathname.includes(ROUTES.MY_QUERY) && (
+                  <div
+                    className="bg-PlusIcon"
+                    onClick={() => handleAddQuery(schemaDescribe[0].full_name)}
+                  />
+                )}
                 <div
                   className="bg-CloseBtnIcon"
                   onClick={() => setSchemaDescribe([])}
