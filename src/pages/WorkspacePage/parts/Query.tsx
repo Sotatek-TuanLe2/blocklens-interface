@@ -66,14 +66,14 @@ const QueryPart: React.FC = () => {
 
   useEffect(() => {
     AppBroadcast.on(BROADCAST_ADD_TEXT_TO_EDITOR, onAddTextToEditor);
-    AppBroadcast.on(BROADCAST_FETCH_QUERY, async () => await fetchQuery());
+    AppBroadcast.on(
+      BROADCAST_FETCH_QUERY,
+      async (id: string) => await fetchQuery(id),
+    );
 
     return () => {
       AppBroadcast.remove(BROADCAST_ADD_TEXT_TO_EDITOR, onAddTextToEditor);
-      AppBroadcast.remove(
-        BROADCAST_FETCH_QUERY,
-        async () => await fetchQuery(),
-      );
+      AppBroadcast.remove(BROADCAST_FETCH_QUERY);
     };
   }, []);
 
@@ -165,11 +165,12 @@ const QueryPart: React.FC = () => {
     await getExecutionResultById(executionId);
   };
 
-  const fetchQuery = async () => {
+  const fetchQuery = async (id?: string) => {
+    console.log('id', id);
     try {
       const dataQuery = await rf
         .getRequest('DashboardsRequest')
-        .getMyQueryById({ queryId });
+        .getMyQueryById({ queryId: id || queryId });
       setQueryValue(dataQuery);
       // set query into editor
       if (!editorRef.current) {

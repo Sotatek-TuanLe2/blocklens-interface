@@ -101,6 +101,7 @@ const ModalQuery = ({
             res = await rf
               .getRequest('DashboardsRequest')
               .forkQueries(id, { ...valueSettingQuery });
+            history.push(`${ROUTES.MY_QUERY}/${res.id}`);
 
             break;
         }

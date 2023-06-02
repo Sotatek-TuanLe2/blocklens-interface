@@ -293,7 +293,7 @@ const Sidebar: React.FC<{
     await fetchDataWorkPlace();
     type === LIST_ITEM_TYPE.DASHBOARDS
       ? AppBroadcast.dispatch(BROADCAST_FETCH_DASHBOARD, response.id)
-      : AppBroadcast.dispatch(BROADCAST_FETCH_QUERY);
+      : AppBroadcast.dispatch(BROADCAST_FETCH_QUERY, response.id);
   };
 
   const _renderContentWorkPlace = () => {

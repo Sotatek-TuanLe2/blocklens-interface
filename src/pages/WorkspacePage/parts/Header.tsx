@@ -62,7 +62,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
     AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
     type === LIST_ITEM_TYPE.DASHBOARDS
       ? AppBroadcast.dispatch(BROADCAST_FETCH_DASHBOARD, response.id)
-      : AppBroadcast.dispatch(BROADCAST_FETCH_QUERY);
+      : AppBroadcast.dispatch(BROADCAST_FETCH_QUERY, response.id);
   };
 
   const onDeleteSuccess = async (item: IQuery | IDashboardDetail) => {
@@ -98,7 +98,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
     }
 
     try {
-      isDashboard
+      const res = isDashboard
         ? await rf
             .getRequest('DashboardsRequest')
             .updateDashboardItem({ isPrivate: !isChecked }, dashboardId)
@@ -106,8 +106,8 @@ const Header: React.FC<IHeaderProps> = (props) => {
             .getRequest('DashboardsRequest')
             .updateQuery({ isPrivate: !isChecked }, queryId);
       isDashboard
-        ? AppBroadcast.dispatch(BROADCAST_FETCH_DASHBOARD)
-        : AppBroadcast.dispatch(BROADCAST_FETCH_QUERY);
+        ? AppBroadcast.dispatch(BROADCAST_FETCH_DASHBOARD, res.id)
+        : AppBroadcast.dispatch(BROADCAST_FETCH_QUERY, res.id);
     } catch (error) {
       toastError({
         message: getErrorMessage(error),
