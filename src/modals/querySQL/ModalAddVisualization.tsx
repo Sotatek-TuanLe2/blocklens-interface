@@ -15,7 +15,7 @@ import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/BaseModal.scss';
 import { TYPE_VISUALIZATION, VisualizationType } from 'src/utils/query.type';
 import { getErrorMessage } from 'src/utils/utils-helper';
-import { toastError } from 'src/utils/utils-notify';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import BaseModal from '../BaseModal';
 import { debounce } from 'lodash';
 import { INPUT_DEBOUNCE } from 'src/utils/common';
@@ -118,6 +118,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
         listVisuals: dataVisual,
       };
       await rf.getRequest('DashboardsRequest').manageVisualizations(payload);
+      toastSuccess({ message: 'Update successfully' });
       onClose();
       onReload();
     } catch (e) {

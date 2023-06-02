@@ -20,7 +20,7 @@ import 'src/styles/pages/QueriesPage.scss';
 import { toastError } from 'src/utils/utils-notify';
 import rf from 'src/requests/RequestFactory';
 import useUser from 'src/hooks/useUser';
-import { QUERY_RESULT_STATUS, ROUTES } from 'src/utils/common';
+import { QUERY_MODAL, QUERY_RESULT_STATUS, ROUTES } from 'src/utils/common';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
 import { EditorContext } from '../context/EditorContext';
 import Header from './Header';
@@ -29,6 +29,7 @@ import VisualizationDisplay from './VisualizationDisplay';
 import AppNetworkIcons from 'src/components/AppNetworkIcons';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import { BROADCAST_FETCH_WORKPLACE_DATA } from './Sidebar';
+import ModalQuery from 'src/modals/querySQL/ModalQuery';
 import { Query } from 'src/utils/utils-query';
 
 export const BROADCAST_ADD_TEXT_TO_EDITOR = 'ADD_TEXT_TO_EDITOR';
@@ -50,6 +51,9 @@ const QueryPart: React.FC = () => {
 
   const fetchQueryResultInterval = useRef<any>(null);
 
+  const [openModalSettingQuery, setOpenModalSettingQuery] =
+    useState<boolean>(false);
+
   const history = useHistory();
   const { user } = useUser();
 
@@ -66,7 +70,10 @@ const QueryPart: React.FC = () => {
 
     return () => {
       AppBroadcast.remove(BROADCAST_ADD_TEXT_TO_EDITOR, onAddTextToEditor);
-      AppBroadcast.on(BROADCAST_FETCH_QUERY, async () => await fetchQuery());
+      AppBroadcast.remove(
+        BROADCAST_FETCH_QUERY,
+        async () => await fetchQuery(),
+      );
     };
   }, []);
 
@@ -212,7 +219,8 @@ const QueryPart: React.FC = () => {
       if (queryId) {
         await updateQuery(editorRef.current.editor.getValue());
       } else {
-        await createNewQuery(editorRef.current.editor.getValue());
+        setOpenModalSettingQuery(true);
+        // await createNewQuery(editorRef.current.editor.getValue());
       }
     } catch (err: any) {
       toastError({ message: getErrorMessage(err) });
@@ -321,15 +329,7 @@ const QueryPart: React.FC = () => {
                     widthColumns={[100]}
                     className="visual-table"
                   />
-                ) : errorExecuteQuery?.message ? (
-                  <Flex
-                    className="empty-table"
-                    justifyContent={'center'}
-                    alignItems="center"
-                  >
-                    {errorExecuteQuery?.message}
-                  </Flex>
-                ) : (
+                ) : !!queryResult.length && !errorExecuteQuery?.message ? (
                   <Box>
                     <VisualizationDisplay
                       queryResult={queryResult}
@@ -339,12 +339,34 @@ const QueryPart: React.FC = () => {
                       onExpand={setExpandLayout}
                     />
                   </Box>
+                ) : (
+                  <Flex
+                    className="empty-table"
+                    justifyContent={'center'}
+                    alignItems="center"
+                  >
+                    {errorExecuteQuery?.message
+                      ? errorExecuteQuery?.message
+                      : 'No data...'}
+                  </Flex>
                 )}
               </div>
             )}
           </Box>
         </div>
       </EditorContext.Provider>
+      {openModalSettingQuery && (
+        <ModalQuery
+          open={openModalSettingQuery}
+          onClose={() => setOpenModalSettingQuery(false)}
+          onSuccess={async () => {
+            AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
+            await fetchQuery();
+          }}
+          type={QUERY_MODAL.CREATE}
+          query={editorRef.current.editor.getValue()}
+        />
+      )}
     </div>
   );
 };

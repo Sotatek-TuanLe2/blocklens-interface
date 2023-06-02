@@ -128,3 +128,9 @@ export const PROMISE_STATUS = {
   REJECTED: 'rejected',
   PENDING: 'pending',
 };
+
+export const QUERY_MODAL = {
+  SETTING: 'SETTING',
+  FORK: 'FORK',
+  CREATE: 'CREATE',
+};

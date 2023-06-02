@@ -23,7 +23,7 @@ import { AppTag } from 'src/components';
 import useUser from 'src/hooks/useUser';
 import ModalAddTextWidget from 'src/modals/querySQL/ModalAddTextWidget';
 import ModalAddVisualization from 'src/modals/querySQL/ModalAddVisualization';
-import ModalEditItemDashBoard from 'src/modals/querySQL/ModalEditItemDashBoard';
+import ModalDeleteWidget from 'src/modals/querySQL/ModalDeleteWidget ';
 import ModalForkDashBoardDetails from 'src/modals/querySQL/ModalForkDashBoardDetails';
 import ModalSettingDashboardDetails from 'src/modals/querySQL/ModalSettingDashboardDetails';
 import rf from 'src/requests/RequestFactory';
@@ -40,6 +40,7 @@ import AppNetworkIcons from 'src/components/AppNetworkIcons';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
 import { Dashboard } from 'src/utils/utils-dashboard';
+import { DeleteIcon, EditIcon } from 'src/assets/icons';
 
 export interface ILayout extends Layout {
   options: any;
@@ -292,7 +293,10 @@ const DashboardPart: React.FC = () => {
               <div className="box-layout" key={item.id}>
                 <div className="box-chart">
                   {item.type === WIDGET_TYPE.VISUALIZATION ? (
-                    <VisualizationItem visualization={item.content} />
+                    <VisualizationItem
+                      editMode={editMode}
+                      visualization={item.content}
+                    />
                   ) : (
                     <div className="box-text-widget">
                       <ReactMarkdown>{item.text}</ReactMarkdown>
@@ -307,21 +311,23 @@ const DashboardPart: React.FC = () => {
                   >
                     {item.type === WIDGET_TYPE.TEXT && (
                       <Box
-                        className="icon-query-edit"
                         onClick={() => {
                           setTypeModalTextWidget(TYPE_MODAL.EDIT);
                           setSelectedItem(item);
                           setOpenModalAddTextWidget(true);
                         }}
-                      />
+                      >
+                        <EditIcon />
+                      </Box>
                     )}
                     <Box
-                      className="icon-query-delete"
                       onClick={() => {
                         setSelectedItem(item);
                         setOpenModalEdit(true);
                       }}
-                    />
+                    >
+                      <DeleteIcon />
+                    </Box>
                   </Flex>
                 )}
               </div>
@@ -344,20 +350,23 @@ const DashboardPart: React.FC = () => {
           onReload={fetchLayoutData}
           dataDashboard={dataDashboard}
         />
-        <ModalEditItemDashBoard
+        <ModalDeleteWidget
           selectedItem={selectedItem}
           onReload={fetchLayoutData}
           open={openModalEdit}
           onClose={() => setOpenModalEdit(false)}
         />
-        <ModalAddVisualization
-          dashboardId={dashboardId}
-          dataLayouts={dataLayouts}
-          open={openModalAddVisualization}
-          onClose={() => setOpenModalAddVisualization(false)}
-          userName={userName}
-          onReload={fetchLayoutData}
-        />
+        {openModalAddVisualization && (
+          <ModalAddVisualization
+            dashboardId={dashboardId}
+            dataLayouts={dataLayouts}
+            open={openModalAddVisualization}
+            onClose={() => setOpenModalAddVisualization(false)}
+            userName={userName}
+            onReload={fetchLayoutData}
+          />
+        )}
+
         <ModalForkDashBoardDetails
           dashboardId={dashboardId}
           open={openModalFork}
