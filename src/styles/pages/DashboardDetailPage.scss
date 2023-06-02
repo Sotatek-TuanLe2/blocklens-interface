@@ -39,16 +39,13 @@
   .visual-container {
     &__visualization {
       height: 90%;
-      // padding-right: 15px;
 
       .main-table {
-        // height: unset;
-        // overflow: auto;
         height: 100%;
       }
 
       .table-content {
-        height: 60%;
+        max-height: calc(100% - 80px);
         overflow: auto;
 
         .table-pagination {
@@ -100,7 +97,7 @@
         .table-value {
           th,
           td {
-            padding: 0px 120px 0px 24px;
+            padding: 0 120px 0 24px;
           }
 
           th {
@@ -208,7 +205,7 @@
           font-size: 12px;
           box-shadow: none;
           border-bottom: 1px solid #747474;
-          padding: 0px 120px 0px 24px;
+          padding: 0 120px 0 24px;
         }
         thead {
           .resizer {

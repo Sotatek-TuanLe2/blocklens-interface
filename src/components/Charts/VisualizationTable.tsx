@@ -140,7 +140,7 @@ const VisualizationTable = <T,>({
   }, [visualization, data]);
 
   return (
-    <div>
+    <>
       <div className={`header-table ${editMode ? 'editMode' : ''}`}>
         <AppInput
           isSearch
@@ -153,7 +153,7 @@ const VisualizationTable = <T,>({
         />
       </div>
 
-      <Box className="main-table" maxH={'308px'} overflow={'auto'}>
+      <Box className="main-table">
         <table
           className={'table-value'}
           {...{
@@ -309,7 +309,7 @@ const VisualizationTable = <T,>({
         <div className="data-length">{data.length} rows</div>
         <AppPagination pageCount={pageCount} onPageChange={handlePageClick} />
       </Flex>
-    </div>
+    </>
   );
 };
 
