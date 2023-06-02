@@ -11,6 +11,9 @@ import { Query } from 'src/utils/utils-query';
 import { LIST_ITEM_TYPE } from '..';
 import { listTags, TYPE_MYWORK } from './FilterSearch';
 import AppQueryMenu, { QUERY_MENU_LIST } from 'src/components/AppQueryMenu';
+import { AppBroadcast } from 'src/utils/utils-broadcast';
+import { BROADCAST_FETCH_DASHBOARD } from 'src/pages/WorkspacePage/parts/Dashboard';
+import { BROADCAST_FETCH_QUERY } from 'src/pages/WorkspacePage/parts/Query';
 
 interface IListItem {
   type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
@@ -46,14 +49,8 @@ const ListItem: React.FC<IListItem> = (props) => {
     }
   };
 
-  const onForkSuccess = async (response: any, type: string) => {
-    history.push(
-      `${
-        type === LIST_ITEM_TYPE.DASHBOARDS
-          ? ROUTES.MY_DASHBOARD
-          : ROUTES.MY_QUERY
-      }/${response.id}`,
-    );
+  const getTypeItem = () => {
+    return type === LIST_ITEM_TYPE.MYWORK ? myWorkType || '' : type;
   };
 
   const _renderDropdown = () => {
@@ -66,12 +63,7 @@ const ListItem: React.FC<IListItem> = (props) => {
 
     return (
       !!item && (
-        <AppQueryMenu
-          menu={menu}
-          item={item}
-          itemType={type}
-          onForkSuccess={onForkSuccess}
-        />
+        <AppQueryMenu menu={menu} item={item} itemType={getTypeItem()} />
       )
     );
   };

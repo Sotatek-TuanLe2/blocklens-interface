@@ -39,16 +39,14 @@
   .visual-container {
     &__visualization {
       height: 90%;
-      // padding-right: 15px;
 
       .main-table {
-        // height: unset;
-        overflow: auto;
+        height: 100%;
       }
 
       .table-content {
-        height: 80%;
-        overflow: unset;
+        max-height: calc(100% - 80px);
+        overflow: auto;
 
         .table-pagination {
           background: $card;
@@ -99,7 +97,7 @@
         .table-value {
           th,
           td {
-            padding: 7px 120px 7px 24px;
+            padding: 0 120px 0 24px;
           }
 
           th {
@@ -207,7 +205,7 @@
           font-size: 12px;
           box-shadow: none;
           border-bottom: 1px solid #747474;
-          padding: 7px 120px 7px 24px;
+          padding: 0 120px 0 24px;
         }
         thead {
           .resizer {
@@ -314,7 +312,13 @@
       }
 
       .box-text-widget {
-        padding: 0 15px;
+        overflow: auto;
+        height: 100%;
+
+        &--edit {
+          height: 80%;
+          margin-top: 20px;
+        }
       }
 
       .widget-buttons {
