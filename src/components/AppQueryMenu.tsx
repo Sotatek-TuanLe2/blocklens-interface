@@ -66,30 +66,8 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
   const onToggleModalDelete = () =>
     setOpenModalDelete((prevState) => !prevState);
 
-  // const onToggleModalFork = () => setOpenModalFork((prevState) => !prevState);
-
   const onToggleModalFork = async () => {
     setOpenModalFork((prevState) => !prevState);
-    // try {
-    //   let response;
-    //   if (itemType === LIST_ITEM_TYPE.DASHBOARDS) {
-    //     const itemClass = new Dashboard(item as IDashboardDetail);
-    //     response = await rf
-    //       .getRequest('DashboardsRequest')
-    //       .forkDashboard(
-    //         { newDashboardName: `Forked from ${itemClass.getName()}` },
-    //         itemClass.getId(),
-    //       );
-    //     response && onForkSuccess(response, itemType);
-    //   } else if (itemType === LIST_ITEM_TYPE.QUERIES) {
-    //     const itemClass = new Query(item as IQuery);
-    //     response = await rf
-    //       .getRequest('DashboardsRequest')
-    //       .forkQueries(itemClass.getId());
-    //   }
-    // } catch (error) {
-    //   toastError({ message: getErrorMessage(error) });
-    // }
   };
 
   const generateMenu = () => {

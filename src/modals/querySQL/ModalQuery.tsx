@@ -102,10 +102,8 @@ const ModalQuery = ({
               .getRequest('DashboardsRequest')
               .forkQueries(id, { ...valueSettingQuery });
             history.push(`${ROUTES.MY_QUERY}/${res.id}`);
-
             break;
         }
-
         onSuccess && (await onSuccess(res));
         onClose();
       } catch (error) {
