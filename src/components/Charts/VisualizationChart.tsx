@@ -27,7 +27,7 @@ import {
   formatDefaultValueChart,
   formatVisualizationValue,
 } from 'src/utils/utils-format';
-import { isNumber } from 'src/utils/utils-helper';
+import { isNumber, isString } from 'src/utils/utils-helper';
 import { COLORS, getHourAndMinute } from '../../utils/common';
 import CustomLegend from './CustomLegend';
 import CustomTooltip from './CustomTooltip';
@@ -226,6 +226,9 @@ const VisualizationChart: React.FC<Props> = (props) => {
         }
         if (moment(a[xAxisKey]).isValid()) {
           return moment.utc(a[xAxisKey]).diff(moment.utc(b[xAxisKey]));
+        }
+        if (isString(a[xAxisKey])) {
+          return a[xAxisKey].localeCompare(b[xAxisKey]);
         }
         return a[xAxisKey] - b[xAxisKey];
       });

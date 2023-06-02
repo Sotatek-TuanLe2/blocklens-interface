@@ -15,7 +15,7 @@ import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/BaseModal.scss';
 import { TYPE_VISUALIZATION, VisualizationType } from 'src/utils/query.type';
 import { getErrorMessage } from 'src/utils/utils-helper';
-import { toastError } from 'src/utils/utils-notify';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import BaseModal from '../BaseModal';
 import { debounce } from 'lodash';
 import { INPUT_DEBOUNCE } from 'src/utils/common';
@@ -46,6 +46,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   dashboardId,
 }) => {
   const [selectedItems, setSelectedItems] = useState<any[]>([]);
+  const [addedValue, setAddedValue] = useState<any[]>([]);
   const [dataVisualization, setDataVisualization] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
 
@@ -82,8 +83,13 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   };
 
   useEffect(() => {
+    setAddedValue(selectedItems);
+  }, [dataLayouts]);
+
+  useEffect(() => {
     if (open) {
       fetchVisualization();
+      setSelectedItems(addedValue);
     } else {
       setSearchTerm('');
     }
@@ -93,7 +99,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
     if (!!dataLayouts.length) {
       setSelectedItems(dataLayouts.map((i) => i.content));
     }
-  }, [dataLayouts]);
+  }, []);
 
   const handleSaveVisualization = async () => {
     const dataVisual = selectedItems.map((i) => {
@@ -113,6 +119,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
         listVisuals: dataVisual,
       };
       await rf.getRequest('DashboardsRequest').manageVisualizations(payload);
+      toastSuccess({ message: 'Update successfully' });
       onClose();
       onReload();
     } catch (e) {
