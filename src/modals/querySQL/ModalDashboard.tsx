@@ -4,18 +4,19 @@ import { useHistory } from 'react-router';
 import { AppButton, AppField, AppInput } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/BaseModal.scss';
-import { ROUTES } from 'src/utils/common';
+import { TYPE_OF_MODAL, ROUTES } from 'src/utils/common';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { createValidator } from 'src/utils/utils-validator';
 import BaseModal from '../BaseModal';
 import { IconUploadImg } from 'src/assets/icons';
 import { TYPE_MODAL } from 'src/pages/WorkspacePage/parts/Dashboard';
+import { generateSubmitBtn, generateTitleModal } from './ModalQuery';
 
 interface IModelNewDashboard {
   open: boolean;
   onClose: () => void;
-  onSuccess?: () => void;
+  onSuccess?: (params: any) => void;
   id?: string;
   defaultValue?: { name: string; tags?: string[] };
   type: TYPE_MODAL.ADD | TYPE_MODAL.EDIT | string;
@@ -27,7 +28,7 @@ interface IDataSettingForm {
   thumbnail: File | null;
 }
 
-const ModalNewDashboard: React.FC<IModelNewDashboard> = ({
+const ModalDashboard: React.FC<IModelNewDashboard> = ({
   open,
   id,
   type,
@@ -69,27 +70,43 @@ const ModalNewDashboard: React.FC<IModelNewDashboard> = ({
 
   const handleSubmitForm = async () => {
     try {
-      const result =
-        type === TYPE_MODAL.ADD
-          ? await rf.getRequest('DashboardsRequest').createNewDashboard({
+      let result;
+      switch (type) {
+        case TYPE_OF_MODAL.CREATE:
+          result = await rf.getRequest('DashboardsRequest').createNewDashboard({
+            name: dataForm.title.trim(),
+            tag: dataForm.tag.trim(),
+          });
+          history.push(`${ROUTES.MY_DASHBOARD}/${result.id}`);
+
+          break;
+        case TYPE_OF_MODAL.SETTING:
+          result = await rf.getRequest('DashboardsRequest').updateDashboardItem(
+            {
               name: dataForm.title.trim(),
               tag: dataForm.tag.trim(),
-            })
-          : await rf.getRequest('DashboardsRequest').updateDashboardItem(
-              {
-                name: dataForm.title.trim(),
-                tag: dataForm.tag.trim(),
-              },
-              id,
-            );
-      history.push(`${ROUTES.MY_DASHBOARD}/${result.id}`);
+            },
+            id,
+          );
+          break;
+
+        case TYPE_OF_MODAL.FORK:
+          result = await rf.getRequest('DashboardsRequest').forkDashboard(
+            {
+              newDashboardName: dataForm.title.trim(),
+              tag: dataForm.tag.trim(),
+            },
+            id,
+          );
+          history.push(`${ROUTES.MY_DASHBOARD}/${result.id}`);
+          break;
+      }
+
+      onSuccess && (await onSuccess(result));
       toastSuccess({
-        message: `${
-          type === TYPE_MODAL.ADD ? 'Create' : 'Update'
-        } successfully!`,
+        message: `${generateTitleModal(type)} successfully!`,
       });
       onClose();
-      onSuccess && onSuccess();
     } catch (error) {
       toastError({ message: getErrorMessage(error) });
     }
@@ -125,7 +142,7 @@ const ModalNewDashboard: React.FC<IModelNewDashboard> = ({
         className="main-modal-dashboard-details"
       >
         <div className="title-create-modal">
-          {type === TYPE_MODAL.ADD ? 'Create' : 'Setting'} Dashboard
+          {generateTitleModal(type)} Dashboard
         </div>
         <AppField label={'Dashboard Tittle'}>
           <AppInput
@@ -210,7 +227,7 @@ const ModalNewDashboard: React.FC<IModelNewDashboard> = ({
             onClick={handleSubmitForm}
             disabled={!dataForm.title.trim() || isDisableSubmit}
           >
-            {type === TYPE_MODAL.ADD ? 'Add' : 'Save'}
+            {generateSubmitBtn(type)}
           </AppButton>
         </Flex>
       </Flex>
@@ -218,4 +235,4 @@ const ModalNewDashboard: React.FC<IModelNewDashboard> = ({
   );
 };
 
-export default ModalNewDashboard;
+export default ModalDashboard;
