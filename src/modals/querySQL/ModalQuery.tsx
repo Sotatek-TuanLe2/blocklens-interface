@@ -3,7 +3,7 @@ import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router';
 import { AppButton, AppInput } from 'src/components';
 import rf from 'src/requests/RequestFactory';
-import { MODAL, ROUTES } from 'src/utils/common';
+import { TYPE_OF_MODAL, ROUTES } from 'src/utils/common';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import { createValidator } from 'src/utils/utils-validator';
@@ -20,11 +20,11 @@ export interface IModalSettingQuerry {
 
 export const generateTitleModal = (type: string) => {
   switch (type) {
-    case MODAL.SETTING:
+    case TYPE_OF_MODAL.SETTING:
       return 'Setting';
-    case MODAL.CREATE:
+    case TYPE_OF_MODAL.CREATE:
       return 'Create';
-    case MODAL.FORK:
+    case TYPE_OF_MODAL.FORK:
       return 'Fork';
     default:
       return '';
@@ -33,11 +33,11 @@ export const generateTitleModal = (type: string) => {
 
 export const generateSubmitBtn = (type: string) => {
   switch (type) {
-    case MODAL.SETTING:
+    case TYPE_OF_MODAL.SETTING:
       return 'Update';
-    case MODAL.CREATE:
+    case TYPE_OF_MODAL.CREATE:
       return 'Add';
-    case MODAL.FORK:
+    case TYPE_OF_MODAL.FORK:
       return 'Save';
     default:
       return '';
@@ -85,19 +85,21 @@ const ModalQuery = ({
       let res;
       try {
         switch (type) {
-          case MODAL.SETTING:
+          case TYPE_OF_MODAL.SETTING:
             res = await rf
               .getRequest('DashboardsRequest')
               .updateQuery(valueSettingQuery, id);
             break;
-          case MODAL.CREATE:
+
+          case TYPE_OF_MODAL.CREATE:
             res = await rf
               .getRequest('DashboardsRequest')
               .createNewQuery({ ...valueSettingQuery, query: query });
             await rf.getRequest('DashboardsRequest').executeQuery(res.id);
             history.push(`${ROUTES.MY_QUERY}/${res.id}`);
             break;
-          case MODAL.FORK:
+
+          case TYPE_OF_MODAL.FORK:
             res = await rf
               .getRequest('DashboardsRequest')
               .forkQueries(id, { ...valueSettingQuery });

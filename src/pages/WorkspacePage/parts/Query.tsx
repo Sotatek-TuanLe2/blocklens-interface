@@ -20,7 +20,7 @@ import 'src/styles/pages/QueriesPage.scss';
 import { toastError } from 'src/utils/utils-notify';
 import rf from 'src/requests/RequestFactory';
 import useUser from 'src/hooks/useUser';
-import { MODAL, QUERY_RESULT_STATUS, ROUTES } from 'src/utils/common';
+import { TYPE_OF_MODAL, QUERY_RESULT_STATUS, ROUTES } from 'src/utils/common';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
 import { EditorContext } from '../context/EditorContext';
 import Header from './Header';
@@ -103,22 +103,6 @@ const QueryPart: React.FC = () => {
     setSelectedQuery('');
   };
 
-  // const createNewQuery = async (query: string) => {
-  //   try {
-  //     const queryValue: IQuery = await rf
-  //       .getRequest('DashboardsRequest')
-  //       .createNewQuery({
-  //         name: moment().format('YYYY-MM-DD HH:mm a'),
-  //         query,
-  //       });
-  //     await rf.getRequest('DashboardsRequest').executeQuery(queryValue.id);
-  //     history.push(`${ROUTES.MY_QUERY}/${queryValue.id}`);
-  //     AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
-  //   } catch (error: any) {
-  //     toastError({ message: getErrorMessage(error) });
-  //   }
-  // };
-
   const updateQuery = async (query: string) => {
     try {
       await rf.getRequest('DashboardsRequest').updateQuery({ query }, queryId);
@@ -166,7 +150,6 @@ const QueryPart: React.FC = () => {
   };
 
   const fetchQuery = async (id?: string) => {
-    console.log('id', id);
     try {
       const dataQuery = await rf
         .getRequest('DashboardsRequest')
@@ -221,7 +204,6 @@ const QueryPart: React.FC = () => {
         await updateQuery(editorRef.current.editor.getValue());
       } else {
         setOpenModalSettingQuery(true);
-        // await createNewQuery(editorRef.current.editor.getValue());
       }
     } catch (err: any) {
       toastError({ message: getErrorMessage(err) });
@@ -364,7 +346,7 @@ const QueryPart: React.FC = () => {
             AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
             await fetchQuery();
           }}
-          type={MODAL.CREATE}
+          type={TYPE_OF_MODAL.CREATE}
           query={editorRef.current.editor.getValue()}
         />
       )}

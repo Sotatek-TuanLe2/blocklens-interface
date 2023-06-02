@@ -92,7 +92,6 @@ const DashboardPart: React.FC = () => {
     `${user?.getFirstName() || ''}` + `${user?.getLastName() || ''}`;
 
   const fetchLayoutData = async (id?: string) => {
-    console.log('dashboardId', dashboardId);
     try {
       const res = await rf
         .getRequest('DashboardsRequest')

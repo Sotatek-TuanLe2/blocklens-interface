@@ -49,10 +49,14 @@ const ListItem: React.FC<IListItem> = (props) => {
     }
   };
 
-  const onForkSuccess = async (response: any, type: string) => {
-    type === LIST_ITEM_TYPE.DASHBOARDS
-      ? AppBroadcast.dispatch(BROADCAST_FETCH_DASHBOARD, response.id)
-      : AppBroadcast.dispatch(BROADCAST_FETCH_QUERY, response.id);
+  // const onForkSuccess = async (response: any, type: string) => {
+  //   type === LIST_ITEM_TYPE.DASHBOARDS
+  //     ? AppBroadcast.dispatch(BROADCAST_FETCH_DASHBOARD, response.id)
+  //     : AppBroadcast.dispatch(BROADCAST_FETCH_QUERY, response.id);
+  // };
+
+  const getTypeItem = () => {
+    return type === LIST_ITEM_TYPE.MYWORK ? myWorkType || '' : type;
   };
 
   const _renderDropdown = () => {
@@ -68,8 +72,8 @@ const ListItem: React.FC<IListItem> = (props) => {
         <AppQueryMenu
           menu={menu}
           item={item}
-          itemType={type}
-          onForkSuccess={onForkSuccess}
+          itemType={getTypeItem()}
+          // onForkSuccess={onForkSuccess}
         />
       )
     );

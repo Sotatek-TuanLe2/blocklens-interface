@@ -4,10 +4,15 @@ import { useCallback, useEffect, useState } from 'react';
 import { useHistory, useParams, useLocation } from 'react-router-dom';
 import { AppInput } from 'src/components';
 import AppQueryMenu, { QUERY_MENU_LIST } from 'src/components/AppQueryMenu';
-import ModalNewDashboard from 'src/modals/querySQL/ModalNewDashboard';
+import ModalDashboard from 'src/modals/querySQL/ModalDashboard';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import rf from 'src/requests/RequestFactory';
-import { MODAL, PROMISE_STATUS, ROUTES, SchemaType } from 'src/utils/common';
+import {
+  TYPE_OF_MODAL,
+  PROMISE_STATUS,
+  ROUTES,
+  SchemaType,
+} from 'src/utils/common';
 import { IDashboardDetail, IQuery } from 'src/utils/query.type';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
 import { getErrorMessage } from 'src/utils/utils-helper';
@@ -535,8 +540,8 @@ const Sidebar: React.FC<{
       >
         {_renderContent()}
       </Box>
-      <ModalNewDashboard
-        type={MODAL.CREATE}
+      <ModalDashboard
+        type={TYPE_OF_MODAL.CREATE}
         open={openNewDashboardModal}
         onClose={() => setOpenNewDashboardModal(false)}
         onSuccess={onCreateDashboardSuccessfully}

@@ -4,7 +4,7 @@ import { useHistory } from 'react-router';
 import { AppButton, AppField, AppInput } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/BaseModal.scss';
-import { MODAL, ROUTES } from 'src/utils/common';
+import { TYPE_OF_MODAL, ROUTES } from 'src/utils/common';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { createValidator } from 'src/utils/utils-validator';
@@ -28,7 +28,7 @@ interface IDataSettingForm {
   thumbnail: File | null;
 }
 
-const ModalNewDashboard: React.FC<IModelNewDashboard> = ({
+const ModalDashboard: React.FC<IModelNewDashboard> = ({
   open,
   id,
   type,
@@ -72,13 +72,15 @@ const ModalNewDashboard: React.FC<IModelNewDashboard> = ({
     try {
       let result;
       switch (type) {
-        case MODAL.CREATE:
+        case TYPE_OF_MODAL.CREATE:
           result = await rf.getRequest('DashboardsRequest').createNewDashboard({
             name: dataForm.title.trim(),
             tag: dataForm.tag.trim(),
           });
+          history.push(`${ROUTES.MY_DASHBOARD}/${result.id}`);
+
           break;
-        case MODAL.SETTING:
+        case TYPE_OF_MODAL.SETTING:
           result = await rf.getRequest('DashboardsRequest').updateDashboardItem(
             {
               name: dataForm.title.trim(),
@@ -88,7 +90,7 @@ const ModalNewDashboard: React.FC<IModelNewDashboard> = ({
           );
           break;
 
-        case MODAL.FORK:
+        case TYPE_OF_MODAL.FORK:
           result = await rf.getRequest('DashboardsRequest').forkDashboard(
             {
               newDashboardName: dataForm.title.trim(),
@@ -96,21 +98,10 @@ const ModalNewDashboard: React.FC<IModelNewDashboard> = ({
             },
             id,
           );
+          history.push(`${ROUTES.MY_DASHBOARD}/${result.id}`);
           break;
       }
-      // type === TYPE_MODAL.ADD
-      //   ? await rf.getRequest('DashboardsRequest').createNewDashboard({
-      //       name: dataForm.title.trim(),
-      //       tag: dataForm.tag.trim(),
-      //     })
-      //   : await rf.getRequest('DashboardsRequest').updateDashboardItem(
-      //       {
-      //         name: dataForm.title.trim(),
-      //         tag: dataForm.tag.trim(),
-      //       },
-      //       id,
-      //     );
-      history.push(`${ROUTES.MY_DASHBOARD}/${result.id}`);
+
       onSuccess && (await onSuccess(result));
       toastSuccess({
         message: `${generateTitleModal(type)} successfully!`,
@@ -244,4 +235,4 @@ const ModalNewDashboard: React.FC<IModelNewDashboard> = ({
   );
 };
 
-export default ModalNewDashboard;
+export default ModalDashboard;

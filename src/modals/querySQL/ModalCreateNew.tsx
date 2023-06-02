@@ -4,9 +4,9 @@ import { useHistory } from 'react-router';
 import { DashboardListIcon, QueriesIcon } from 'src/assets/icons';
 import { TYPE_MODAL } from 'src/pages/WorkspacePage/parts/Dashboard';
 import 'src/styles/components/BaseModal.scss';
-import { MODAL, ROUTES } from 'src/utils/common';
+import { TYPE_OF_MODAL, ROUTES } from 'src/utils/common';
 import BaseModal from '../BaseModal';
-import ModalNewDashboard from './ModalNewDashboard';
+import ModalDashboard from './ModalDashboard';
 
 interface IModalCreateNew {
   open: boolean;
@@ -57,8 +57,8 @@ const ModalCreateNew: React.FC<IModalCreateNew> = ({ open, onClose }) => {
           </div>
         </Flex>
       </Flex>
-      <ModalNewDashboard
-        type={MODAL.CREATE}
+      <ModalDashboard
+        type={TYPE_OF_MODAL.CREATE}
         open={openModalCreateNew}
         onClose={onToggleCreateDashboardModal}
       />

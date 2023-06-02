@@ -1,20 +1,14 @@
 import { Flex, Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/react';
 import { useMemo, useState } from 'react';
-import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
-import rf from 'src/requests/RequestFactory';
-import 'src/styles/components/AppQueryMenu.scss';
 import useUser from 'src/hooks/useUser';
-import ModalShareDomain from 'src/modals/querySQL/ModalShareDomain';
+import ModalDashboard from 'src/modals/querySQL/ModalDashboard';
 import ModalDelete from 'src/modals/querySQL/ModalDelete';
 import ModalQuery from 'src/modals/querySQL/ModalQuery';
+import ModalShareDomain from 'src/modals/querySQL/ModalShareDomain';
+import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
+import 'src/styles/components/AppQueryMenu.scss';
+import { TYPE_OF_MODAL, ROUTES } from 'src/utils/common';
 import { IDashboardDetail, IQuery } from 'src/utils/query.type';
-import ModalNewDashboard from 'src/modals/querySQL/ModalNewDashboard';
-import { TYPE_MODAL } from 'src/pages/WorkspacePage/parts/Dashboard';
-import { Dashboard } from 'src/utils/utils-dashboard';
-import { Query } from 'src/utils/utils-query';
-import { toastError } from 'src/utils/utils-notify';
-import { getErrorMessage } from 'src/utils/utils-helper';
-import { MODAL, ROUTES } from 'src/utils/common';
 
 interface IAppQueryMenu {
   menu?: string[];
@@ -142,22 +136,21 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
         </MenuList>
       </Menu>
       {itemType === LIST_ITEM_TYPE.DASHBOARDS && openModalSetting && (
-        <ModalNewDashboard
+        <ModalDashboard
           open={openModalSetting}
           id={item.id}
           defaultValue={{ name: item.name, tags: item.tags }}
-          type={MODAL.SETTING}
+          type={TYPE_OF_MODAL.SETTING}
           onClose={onToggleModalSetting}
           onSuccess={(res) => onSettingSuccess(res)}
         />
       )}
 
       {itemType === LIST_ITEM_TYPE.DASHBOARDS && openModalFork && (
-        <ModalNewDashboard
+        <ModalDashboard
           open={openModalFork}
           id={item.id}
-          defaultValue={{ name: item.name, tags: item.tags }}
-          type={MODAL.FORK}
+          type={TYPE_OF_MODAL.FORK}
           onClose={onToggleModalFork}
           onSuccess={(res) => onForkSuccess(res, itemType)}
         />
@@ -165,7 +158,7 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
 
       {itemType === LIST_ITEM_TYPE.QUERIES && openModalSetting && (
         <ModalQuery
-          type={MODAL.SETTING}
+          type={TYPE_OF_MODAL.SETTING}
           open={openModalSetting}
           id={item.id}
           defaultValue={{ name: item.name, tags: item.tags }}
@@ -197,7 +190,7 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
           open={openModalFork}
           onClose={() => setOpenModalFork(false)}
           onSuccess={(res) => onForkSuccess(res, itemType)}
-          type={MODAL.FORK}
+          type={TYPE_OF_MODAL.FORK}
           id={item.id}
         />
       )}
