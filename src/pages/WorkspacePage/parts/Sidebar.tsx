@@ -339,18 +339,32 @@ const Sidebar: React.FC<{
                 className={handleClassNameWorkPlaceItem(query.id)}
                 onClick={() => history.push(`${ROUTES.MY_QUERY}/${query.id}?`)}
               >
-                <Flex isTruncated alignItems={'center'} gap="10px" maxW={'70%'}>
-                  <div>
-                    <div
-                      className={
-                        query.id === queryId
-                          ? 'bg-query_active'
-                          : 'bg-LogoQueryIcon'
-                      }
-                    />
-                  </div>
-                  <Text isTruncated>{query.name}</Text>
-                </Flex>
+                <Tooltip
+                  placement="top"
+                  hasArrow
+                  label={query.name}
+                  aria-label="A tooltip"
+                  bg={'#2F3B58'}
+                  borderRadius="6px"
+                >
+                  <Flex
+                    isTruncated
+                    alignItems={'center'}
+                    gap="10px"
+                    maxW={'70%'}
+                  >
+                    <div>
+                      <div
+                        className={
+                          query.id === queryId
+                            ? 'bg-query_active'
+                            : 'bg-LogoQueryIcon'
+                        }
+                      />
+                    </div>
+                    <Text isTruncated>{query.name}</Text>
+                  </Flex>
+                </Tooltip>
 
                 <AppQueryMenu
                   menu={[QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.DELETE]}
@@ -383,18 +397,27 @@ const Sidebar: React.FC<{
                   history.push(`${ROUTES.MY_DASHBOARD}/${dashboard.id}?`)
                 }
               >
-                <Flex isTruncated alignItems={'center'} gap="10px">
-                  <div>
-                    <div
-                      className={
-                        dashboard.id === dashboardId
-                          ? 'bg-dashboard_active'
-                          : 'bg-LogoDashboardIcon'
-                      }
-                    />
-                  </div>
-                  <Text isTruncated>{dashboard.name}</Text>
-                </Flex>
+                <Tooltip
+                  placement="top"
+                  hasArrow
+                  label={dashboard.name}
+                  aria-label="A tooltip"
+                  bg={'#2F3B58'}
+                  borderRadius="6px"
+                >
+                  <Flex isTruncated alignItems={'center'} gap="10px">
+                    <div>
+                      <div
+                        className={
+                          dashboard.id === dashboardId
+                            ? 'bg-dashboard_active'
+                            : 'bg-LogoDashboardIcon'
+                        }
+                      />
+                    </div>
+                    <Text isTruncated>{dashboard.name}</Text>
+                  </Flex>
+                </Tooltip>
                 <AppQueryMenu
                   menu={[QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.DELETE]}
                   itemType={LIST_ITEM_TYPE.DASHBOARDS}
