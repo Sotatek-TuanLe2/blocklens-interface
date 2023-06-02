@@ -111,7 +111,7 @@ const VisualizationPieChart = ({
         dominantBaseline="central"
         fontSize={'12px'}
       >
-        {`${percentage.toFixed(1)}%`}
+        {`${percentage.toFixed(2)}%`}
       </text>
     );
   };
