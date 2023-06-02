@@ -298,7 +298,11 @@ const DashboardPart: React.FC = () => {
                       visualization={item.content}
                     />
                   ) : (
-                    <div className="box-text-widget">
+                    <div
+                      className={`box-text-widget ${
+                        editMode ? 'box-text-widget--edit' : ''
+                      }`}
+                    >
                       <ReactMarkdown>{item.text}</ReactMarkdown>
                     </div>
                   )}

@@ -313,8 +313,12 @@
 
       .box-text-widget {
         overflow: auto;
-        padding: 0 15px;
         height: 100%;
+
+        &--edit {
+          height: 80%;
+          margin-top: 20px;
+        }
       }
 
       .widget-buttons {
