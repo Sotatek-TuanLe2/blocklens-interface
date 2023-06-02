@@ -1,13 +1,11 @@
 import { Box, Flex, Tooltip } from '@chakra-ui/react';
-
 import { debounce } from 'lodash';
-import moment from 'moment';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import AceEditor from 'react-ace';
 import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/mode-sql';
 import 'ace-builds/src-noconflict/theme-monokai';
-import { useHistory, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { AppLoadingTable, AppTag } from 'src/components';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import {
@@ -20,12 +18,11 @@ import 'src/styles/pages/QueriesPage.scss';
 import { toastError } from 'src/utils/utils-notify';
 import rf from 'src/requests/RequestFactory';
 import useUser from 'src/hooks/useUser';
-import { TYPE_OF_MODAL, QUERY_RESULT_STATUS, ROUTES } from 'src/utils/common';
+import { TYPE_OF_MODAL, QUERY_RESULT_STATUS } from 'src/utils/common';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
 import { EditorContext } from '../context/EditorContext';
 import Header from './Header';
 import VisualizationDisplay from './VisualizationDisplay';
-
 import AppNetworkIcons from 'src/components/AppNetworkIcons';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import { BROADCAST_FETCH_WORKPLACE_DATA } from './Sidebar';
@@ -48,13 +45,10 @@ const QueryPart: React.FC = () => {
   const [errorExecuteQuery, setErrorExecuteQuery] =
     useState<IErrorExecuteQuery>();
   const [selectedQuery, setSelectedQuery] = useState<string>('');
-
   const fetchQueryResultInterval = useRef<any>(null);
-
   const [openModalSettingQuery, setOpenModalSettingQuery] =
     useState<boolean>(false);
 
-  const history = useHistory();
   const { user } = useUser();
 
   const onAddTextToEditor = (text: string) => {
@@ -106,6 +100,14 @@ const QueryPart: React.FC = () => {
   const updateQuery = async (query: string) => {
     try {
       await rf.getRequest('DashboardsRequest').updateQuery({ query }, queryId);
+      if (!queryClass?.getVisualizations().length) {
+        await rf.getRequest('DashboardsRequest').insertVisualization({
+          name: 'Query results',
+          type: 'table',
+          options: {},
+          queryId: queryId,
+        });
+      }
       await fetchQueryResult();
       await fetchQuery();
     } catch (error: any) {
