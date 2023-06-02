@@ -314,7 +314,9 @@
       }
 
       .box-text-widget {
+        overflow: auto;
         padding: 0 15px;
+        height: 100%;
       }
 
       .widget-buttons {
