@@ -109,12 +109,13 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
 
   const linkShareItem = useMemo(
     () =>
-      `${location.protocol}//${location.hostname}:${location.port}${
+      `${location.protocol}//${location.hostname}${
+        location.port ? `:${location.port}` : ''
+      }${
         itemType === LIST_ITEM_TYPE.DASHBOARDS ? ROUTES.DASHBOARD : ROUTES.QUERY
       }/${item.id}`,
     [item],
   );
-
   return (
     <>
       <Menu>
