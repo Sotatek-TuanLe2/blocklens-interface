@@ -27,7 +27,7 @@ import {
   formatDefaultValueChart,
   formatVisualizationValue,
 } from 'src/utils/utils-format';
-import { isNumber } from 'src/utils/utils-helper';
+import { isNumber, isString } from 'src/utils/utils-helper';
 import { COLORS, getHourAndMinute } from '../../utils/common';
 import CustomLegend from './CustomLegend';
 import CustomTooltip from './CustomTooltip';
@@ -227,6 +227,9 @@ const VisualizationChart: React.FC<Props> = (props) => {
         if (moment(a[xAxisKey]).isValid()) {
           return moment.utc(a[xAxisKey]).diff(moment.utc(b[xAxisKey]));
         }
+        if (isString(a[xAxisKey])) {
+          return a[xAxisKey].localeCompare(b[xAxisKey]);
+        }
         return a[xAxisKey] - b[xAxisKey];
       });
     }
@@ -319,19 +322,22 @@ const VisualizationChart: React.FC<Props> = (props) => {
         </XAxis>
         {yAxisKeys && !!yAxisKeys.length && (
           <YAxis
-            label={{
-              value: yAxisConfigs?.title,
-              angle: -90,
-              position: 'insideLeft',
-              fill: '#ccc',
-            }}
             tickFormatter={tickFormatAxis('y')}
             tick={{ fill: '#8D91A5', fontWeight: 400 }}
             tickLine={false}
             domain={yAxisDomain}
             tickCount={6}
             {...logarithmicProps}
-          />
+            allowDataOverflow={false}
+            className="y-axis"
+          >
+            <Label
+              position="insideLeft"
+              value={yAxisConfigs?.title}
+              angle={-90}
+              fill="#ccc"
+            />
+          </YAxis>
         )}
         <Tooltip
           content={
