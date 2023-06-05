@@ -125,7 +125,7 @@ const Header: FC = () => {
     if (path === ROUTES.TRIGGERS) {
       return (
         location.pathname === path ||
-        location.pathname.includes('apps') ||
+        location.pathname.includes('app') ||
         location.pathname.includes('webhook') ||
         location.pathname.includes('activities')
       );
