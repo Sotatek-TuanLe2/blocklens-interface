@@ -16,6 +16,7 @@ export const ROUTES = {
   NOTIFICATION: '/notification',
   APP: '/app',
   WEBHOOKS: '/webhooks',
+  ACCOUNT: '/account',
 };
 
 export interface IListAppResponse {

@@ -25,7 +25,7 @@ import AccountPage from './pages/AccountPage';
 // import BillingInfoPage from './pages/BillingInfoPage';
 import ContactUs from './pages/ContactUs';
 // import BillingHistory from './pages/BillingHistoryPage';
- import AllActivitiesPage from './pages/AllActivitiesPage';
+import AllActivitiesPage from './pages/AllActivitiesPage';
 // import TopUpPage from './pages/TopUp';
 import AppSettingsPage from './pages/AppSettingsPage';
 import WebhookSettingsPage from './pages/WebhookSettingsPage';
@@ -82,7 +82,10 @@ const Routes: FC<RouteComponentProps> = () => {
   return (
     <>
       <Switch>
-        <PrivateRoute path={`${ROUTES.APP}/:id/settings`} component={AppSettingsPage} />
+        <PrivateRoute
+          path={`${ROUTES.APP}/:id/settings`}
+          component={AppSettingsPage}
+        />
         <PublicRoute path={ROUTES.LOGIN} component={LoginPage} />
         <PublicRoute path={ROUTES.SIGN_UP} component={SignUpPage} />
         <PublicRoute path={ROUTES.VERIFY_EMAIL} component={VerifyAccountPage} />
@@ -95,7 +98,7 @@ const Routes: FC<RouteComponentProps> = () => {
           path={ROUTES.RESET_PASSWORD}
           component={ResetPasswordPage}
         />
-        <PrivateRoute path={'/account'} component={AccountPage} />
+        <PrivateRoute path={ROUTES.ACCOUNT} component={AccountPage} />
         {/* <PrivateRoute path={'/billing'} component={BillingPage} /> */}
         {/*<PrivateRoute path={'/billing-info'} component={BillingInfoPage} />*/}
         {/*<PrivateRoute path={'/billing-history'} component={BillingHistory} />*/}

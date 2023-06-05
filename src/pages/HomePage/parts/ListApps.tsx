@@ -200,7 +200,7 @@ const ListApps: React.FC = () => {
         open={openCreateApp}
         onClose={() => setOpenCreateApp(false)}
       />
-    )
+    );
   };
 
   const _renderHeader = () => {
