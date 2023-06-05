@@ -202,8 +202,14 @@ const QueryPart: React.FC = () => {
       return executeSelectedQuery();
     }
     try {
+      const query = editorRef.current.editor.getValue();
+      if (!query) {
+        toastError({ message: 'Query must not be empty!' });
+        return;
+      }
+
       if (queryId) {
-        await updateQuery(editorRef.current.editor.getValue());
+        await updateQuery(query);
       } else {
         setOpenModalSettingQuery(true);
       }
