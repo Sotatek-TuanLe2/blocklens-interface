@@ -4,6 +4,7 @@ import { useHistory } from 'react-router';
 import 'src/styles/layout/Header.scss';
 import Storage from 'src/utils/utils-storage';
 import { RootState } from 'src/store';
+import { CloseIcon } from '@chakra-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Menu,
@@ -26,25 +27,17 @@ import { PRIVATE_PATH } from 'src/routes';
 
 const menus = [
   {
-    name: 'Dashboard',
+    name: 'Dashboards',
     path: ROUTES.HOME,
   },
   {
-    name: 'Notification',
-    path: ROUTES.NOTIFICATION,
+    name: 'Triggers ',
+    path: ROUTES.TRIGGERS,
   },
-  // {
-  //   name: 'Billing',
-  //   path: '/billing',
-  // },
   {
-    name: 'Account',
-    path: ROUTES.ACCOUNT,
+    name: 'APIs',
+    path: '/',
   },
-  // {
-  //   name: 'Query SQL',
-  //   path: '/dashboards',
-  // },
 ];
 
 const Header: FC = () => {
@@ -81,7 +74,7 @@ const Header: FC = () => {
   const onLogout = () => {
     dispatch(clearUser());
     if (PRIVATE_PATH.some((path) => location.pathname.includes(path))) {
-      history.push(ROUTES.HOME);
+      history.push(ROUTES.LOGIN);
     }
   };
 
@@ -93,7 +86,10 @@ const Header: FC = () => {
             <Avatar name={user?.getFirstName()} size="sm" />
           </MenuButton>
           <MenuList className="menu-header">
-            <MenuItem className="user-info">
+            <MenuItem
+              className="user-info"
+              onClick={() => history.push(ROUTES.ACCOUNT)}
+            >
               <div className="user-name">
                 {user?.getFirstName() + ' ' + user?.getLastName()}
               </div>
@@ -126,7 +122,7 @@ const Header: FC = () => {
       return location.pathname.includes('billing');
     }
 
-    if (path === ROUTES.NOTIFICATION) {
+    if (path === ROUTES.TRIGGERS) {
       return (
         location.pathname === path ||
         location.pathname.includes('apps') ||
@@ -163,25 +159,25 @@ const Header: FC = () => {
   };
 
   const _renderContent = () => {
-    // if (isMobile) {
-    //   return (
-    //     <>
-    //       {isOpenMenuMobile ? (
-    //         <Box
-    //           className={'btn-close'}
-    //           onClick={() => setIsOpenMenuMobile(false)}
-    //         >
-    //           <CloseIcon width={'11px'} />
-    //         </Box>
-    //       ) : (
-    //         <Box
-    //           onClick={() => setIsOpenMenuMobile(true)}
-    //           className="icon-menu-mobile"
-    //         />
-    //       )}
-    //     </>
-    //   );
-    // }
+    if (isMobile) {
+      return (
+        <>
+          {isOpenMenuMobile ? (
+            <Box
+              className={'btn-close'}
+              onClick={() => setIsOpenMenuMobile(false)}
+            >
+              <CloseIcon width={'11px'} />
+            </Box>
+          ) : (
+            <Box
+              onClick={() => setIsOpenMenuMobile(true)}
+              className="icon-menu-mobile"
+            />
+          )}
+        </>
+      );
+    }
 
     return (
       <>

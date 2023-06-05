@@ -56,7 +56,7 @@ const GUEST_PATH = [
 export const PRIVATE_PATH = [
   ROUTES.MY_DASHBOARD,
   ROUTES.MY_QUERY,
-  ROUTES.NOTIFICATION,
+  ROUTES.TRIGGERS,
   ROUTES.APP,
   ROUTES.WEBHOOKS,
   ROUTES.ACCOUNT,
@@ -133,7 +133,7 @@ const Routes: FC<RouteComponentProps> = () => {
         />
         <PrivateRoute path={`${ROUTES.APP}/:id`} component={AppDetail} />
 
-        <PrivateRoute path={`${ROUTES.NOTIFICATION}`} component={HomePage} />
+        <PrivateRoute path={`${ROUTES.TRIGGERS}`} component={HomePage} />
         <Route
           path={`${ROUTES.DASHBOARD}/:dashboardId?`}
           component={PublicWorkspacePage}

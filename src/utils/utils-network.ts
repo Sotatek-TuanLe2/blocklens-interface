@@ -11,7 +11,7 @@ import { CHAIN_NAME } from './query.type';
 
 export const getLogoChainByChainId = (ChainId?: string) => {
   if (!ChainId) return;
-  return config.chains[ChainId].icon;
+  return config.chains[ChainId]?.icon || '';
 };
 
 export const getNetworkConfig = (
@@ -33,14 +33,14 @@ export const getNetworkConfig = (
   return network;
 };
 
-export const getNameChainByChainId = (ChainId?: string) => {
-  if (!ChainId) return '--';
-  return config.chains[ChainId].name;
+export const getNameChainByChainId = (chainId?: string) => {
+  if (!chainId) return '--';
+  return config.chains[chainId]?.name || chainId;
 };
 
 export const isEVMNetwork = (chainId?: string) => {
   if (!chainId) return false;
-  return config.chains[chainId].family === 'ETH';
+  return config.chains[chainId]?.family === 'ETH';
 };
 
 export const getExplorerTxUrl = (
