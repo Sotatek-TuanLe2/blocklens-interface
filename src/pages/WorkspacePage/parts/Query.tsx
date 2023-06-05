@@ -43,7 +43,7 @@ const QueryPart: React.FC = () => {
   const [expandLayout, setExpandLayout] = useState<string>(LAYOUT_QUERY.HALF);
   const [isLoadingResult, setIsLoadingResult] = useState<boolean>(!!queryId);
   const [errorExecuteQuery, setErrorExecuteQuery] =
-    useState<IErrorExecuteQuery>();
+    useState<IErrorExecuteQuery | null>(null);
   const [selectedQuery, setSelectedQuery] = useState<string>('');
   const fetchQueryResultInterval = useRef<any>(null);
   const [openModalSettingQuery, setOpenModalSettingQuery] =
@@ -130,14 +130,14 @@ const QueryPart: React.FC = () => {
           clearInterval(fetchQueryResultInterval.current);
           setQueryResult(resInterval.result);
           if (resInterval?.error) {
-            setErrorExecuteQuery(resInterval?.error);
+            setErrorExecuteQuery(resInterval?.error || null);
           }
           setIsLoadingResult(false);
         }
       }, 2000);
     } else {
       setQueryResult(res.result);
-      setErrorExecuteQuery(res?.error);
+      setErrorExecuteQuery(res?.error || null);
       setIsLoadingResult(false);
     }
   };
