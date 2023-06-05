@@ -1,13 +1,11 @@
 import { Box, Flex, Tooltip } from '@chakra-ui/react';
-
 import { debounce } from 'lodash';
-import moment from 'moment';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import AceEditor from 'react-ace';
 import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/mode-sql';
 import 'ace-builds/src-noconflict/theme-monokai';
-import { useHistory, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { AppLoadingTable, AppTag } from 'src/components';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import {
@@ -20,12 +18,11 @@ import 'src/styles/pages/QueriesPage.scss';
 import { toastError } from 'src/utils/utils-notify';
 import rf from 'src/requests/RequestFactory';
 import useUser from 'src/hooks/useUser';
-import { QUERY_MODAL, QUERY_RESULT_STATUS, ROUTES } from 'src/utils/common';
+import { TYPE_OF_MODAL, QUERY_RESULT_STATUS } from 'src/utils/common';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
 import { EditorContext } from '../context/EditorContext';
 import Header from './Header';
 import VisualizationDisplay from './VisualizationDisplay';
-
 import AppNetworkIcons from 'src/components/AppNetworkIcons';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import { BROADCAST_FETCH_WORKPLACE_DATA } from './Sidebar';
@@ -48,13 +45,10 @@ const QueryPart: React.FC = () => {
   const [errorExecuteQuery, setErrorExecuteQuery] =
     useState<IErrorExecuteQuery>();
   const [selectedQuery, setSelectedQuery] = useState<string>('');
-
   const fetchQueryResultInterval = useRef<any>(null);
-
   const [openModalSettingQuery, setOpenModalSettingQuery] =
     useState<boolean>(false);
 
-  const history = useHistory();
   const { user } = useUser();
 
   const onAddTextToEditor = (text: string) => {
@@ -66,14 +60,14 @@ const QueryPart: React.FC = () => {
 
   useEffect(() => {
     AppBroadcast.on(BROADCAST_ADD_TEXT_TO_EDITOR, onAddTextToEditor);
-    AppBroadcast.on(BROADCAST_FETCH_QUERY, async () => await fetchQuery());
+    AppBroadcast.on(
+      BROADCAST_FETCH_QUERY,
+      async (id: string) => await fetchQuery(id),
+    );
 
     return () => {
       AppBroadcast.remove(BROADCAST_ADD_TEXT_TO_EDITOR, onAddTextToEditor);
-      AppBroadcast.remove(
-        BROADCAST_FETCH_QUERY,
-        async () => await fetchQuery(),
-      );
+      AppBroadcast.remove(BROADCAST_FETCH_QUERY);
     };
   }, []);
 
@@ -103,25 +97,17 @@ const QueryPart: React.FC = () => {
     setSelectedQuery('');
   };
 
-  const createNewQuery = async (query: string) => {
-    try {
-      const queryValue: IQuery = await rf
-        .getRequest('DashboardsRequest')
-        .createNewQuery({
-          name: moment().format('YYYY-MM-DD HH:mm a'),
-          query,
-        });
-      await rf.getRequest('DashboardsRequest').executeQuery(queryValue.id);
-      history.push(`${ROUTES.MY_QUERY}/${queryValue.id}`);
-      AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
-    } catch (error: any) {
-      toastError({ message: getErrorMessage(error) });
-    }
-  };
-
   const updateQuery = async (query: string) => {
     try {
       await rf.getRequest('DashboardsRequest').updateQuery({ query }, queryId);
+      if (!queryClass?.getVisualizations().length) {
+        await rf.getRequest('DashboardsRequest').insertVisualization({
+          name: 'Query results',
+          type: 'table',
+          options: {},
+          queryId: queryId,
+        });
+      }
       await fetchQueryResult();
       await fetchQuery();
     } catch (error: any) {
@@ -165,11 +151,11 @@ const QueryPart: React.FC = () => {
     await getExecutionResultById(executionId);
   };
 
-  const fetchQuery = async () => {
+  const fetchQuery = async (id?: string) => {
     try {
       const dataQuery = await rf
         .getRequest('DashboardsRequest')
-        .getMyQueryById({ queryId });
+        .getMyQueryById({ queryId: id || queryId });
       setQueryValue(dataQuery);
       // set query into editor
       if (!editorRef.current) {
@@ -220,7 +206,6 @@ const QueryPart: React.FC = () => {
         await updateQuery(editorRef.current.editor.getValue());
       } else {
         setOpenModalSettingQuery(true);
-        // await createNewQuery(editorRef.current.editor.getValue());
       }
     } catch (err: any) {
       toastError({ message: getErrorMessage(err) });
@@ -261,7 +246,7 @@ const QueryPart: React.FC = () => {
                       ? 'Minimize'
                       : expandLayout === LAYOUT_QUERY.HALF
                       ? 'Minimize'
-                      : 'Maximum'
+                      : 'Maximize'
                   }
                   hasArrow
                   placement="top"
@@ -363,7 +348,7 @@ const QueryPart: React.FC = () => {
             AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
             await fetchQuery();
           }}
-          type={QUERY_MODAL.CREATE}
+          type={TYPE_OF_MODAL.CREATE}
           query={editorRef.current.editor.getValue()}
         />
       )}

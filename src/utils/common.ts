@@ -133,7 +133,7 @@ export const PROMISE_STATUS = {
   PENDING: 'pending',
 };
 
-export const QUERY_MODAL = {
+export const TYPE_OF_MODAL = {
   SETTING: 'SETTING',
   FORK: 'FORK',
   CREATE: 'CREATE',

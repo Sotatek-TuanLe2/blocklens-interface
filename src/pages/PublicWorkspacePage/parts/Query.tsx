@@ -144,7 +144,7 @@ const QueryPart: React.FC = () => {
                     ? 'Minimize'
                     : expandLayout === LAYOUT_QUERY.HALF
                     ? 'Minimize'
-                    : 'Maximum'
+                    : 'Maximize'
                 }
                 hasArrow
                 placement="top"
@@ -218,6 +218,7 @@ const QueryPart: React.FC = () => {
                   <VisualizationDisplay
                     queryResult={queryResult}
                     queryValue={queryValue}
+                    needAuthentication={false}
                     onReload={fetchQuery}
                     expandLayout={expandLayout}
                     onExpand={setExpandLayout}

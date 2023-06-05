@@ -27,11 +27,11 @@ import { PRIVATE_PATH } from 'src/routes';
 const menus = [
   {
     name: 'Dashboard',
-    path: '/',
+    path: ROUTES.HOME,
   },
   {
     name: 'Notification',
-    path: '/notification',
+    path: ROUTES.NOTIFICATION,
   },
   // {
   //   name: 'Billing',
@@ -39,7 +39,7 @@ const menus = [
   // },
   {
     name: 'Account',
-    path: '/account',
+    path: ROUTES.ACCOUNT,
   },
   // {
   //   name: 'Query SQL',
@@ -118,7 +118,7 @@ const Header: FC = () => {
   };
 
   const isActiveMenu = (path: string) => {
-    if (path === '/account') {
+    if (path === ROUTES.ACCOUNT) {
       return location.pathname === path;
     }
 
@@ -126,7 +126,7 @@ const Header: FC = () => {
       return location.pathname.includes('billing');
     }
 
-    if (path === '/notification') {
+    if (path === ROUTES.NOTIFICATION) {
       return (
         location.pathname === path ||
         location.pathname.includes('apps') ||

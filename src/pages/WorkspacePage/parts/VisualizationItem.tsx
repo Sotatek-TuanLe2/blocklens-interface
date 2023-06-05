@@ -46,11 +46,21 @@ const VisualizationItem = React.memo(
     const queryId = visualization?.queryId;
     const query = visualization.query?.query;
     const fetchQueryResultInterval: any = useRef();
+    const refetchQueryResultInterval: any = useRef();
 
     useEffect(() => {
+      clearInterval(refetchQueryResultInterval.current);
       if (queryId) {
         fetchInitialData();
+        refetchQueryResultInterval.current = setInterval(
+          async () => await fetchInitialData(),
+          5 * 60 * 1000,
+        );
       }
+
+      return () => {
+        clearInterval(refetchQueryResultInterval.current);
+      };
     }, [queryId]);
 
     const fetchQueryResult = async () => {
@@ -65,7 +75,6 @@ const VisualizationItem = React.memo(
       const res = await rf
         .getRequest('DashboardsRequest')
         .getQueryResult({ executionId });
-
       if (res.status === QUERY_RESULT_STATUS.WAITING) {
         fetchQueryResultInterval.current = setInterval(async () => {
           const resInterval = await rf
@@ -181,63 +190,67 @@ const VisualizationItem = React.memo(
           );
       }
 
-      return (
-        <div className="visual-container__visualization">
-          <div className="visual-container__visualization__title">
-            <Tooltip label={visualization.name} hasArrow>
-              <span className="visual-container__visualization__name">
-                {visualization.name}
-              </span>
-            </Tooltip>
-            <Tooltip label={visualization.query?.name} hasArrow>
-              <Link
-                className="visual-container__visualization__title__query-link"
-                to={`${needAuthentication ? ROUTES.MY_QUERY : ROUTES.QUERY}/${
-                  visualization.queryId
-                }`}
-              >
-                {visualization.query?.name}
-              </Link>
-            </Tooltip>
-          </div>
-          {errorMessage ? (
-            <Flex
-              alignItems={'center'}
-              justifyContent={'center'}
-              className="visual-container__visualization__error"
-            >
-              {errorMessage}
-            </Flex>
-          ) : (
-            <div
-              className={`${
-                type === TYPE_VISUALIZATION.table
-                  ? 'table-content'
-                  : 'chart-content'
-              }`}
-            >
-              {visualizationDisplay}
-            </div>
-          )}
+      return errorMessage ? (
+        <Flex
+          alignItems={'center'}
+          justifyContent={'center'}
+          className="visual-container__visualization visual-container__visualization--error"
+        >
+          {errorMessage}
+        </Flex>
+      ) : (
+        <div
+          className={`${
+            type === TYPE_VISUALIZATION.table
+              ? 'table-content'
+              : 'chart-content'
+          }`}
+        >
+          {visualizationDisplay}
         </div>
       );
     };
 
-    return isLoading ? (
-      <div className="visual-container__visualization visual-container__visualization--loading">
-        <Spinner />
+    return (
+      <div className="visual-container__visualization">
+        <div className="visual-container__visualization__title">
+          <Tooltip label={visualization.name} hasArrow>
+            <span className="visual-container__visualization__name">
+              {visualization.name}
+            </span>
+          </Tooltip>
+          <Tooltip label={visualization.query?.name} hasArrow>
+            <Link
+              className="visual-container__visualization__title__query-link"
+              to={`${needAuthentication ? ROUTES.MY_QUERY : ROUTES.QUERY}/${
+                visualization.queryId
+              }`}
+            >
+              {visualization.query?.name}
+            </Link>
+          </Tooltip>
+        </div>
+        {isLoading ? (
+          <div className="visual-container__visualization visual-container__visualization--loading">
+            <Spinner />
+          </div>
+        ) : !!queryResult.length ? (
+          renderVisualization(visualization)
+        ) : (
+          <NoDataItem errorMessage={errorExecuteQuery?.message} />
+        )}
       </div>
-    ) : !!queryResult.length ? (
-      renderVisualization(visualization)
-    ) : (
-      <NoDataItem errorMessage={errorExecuteQuery?.message} />
     );
   },
 );
 
 const NoDataItem: React.FC<{ errorMessage?: string }> = (props) => {
   return (
-    <Flex w={'full'} h={'full'} justifyContent={'center'} alignItems="center">
+    <Flex
+      className="visual-container__visualization visual-container__visualization--empty"
+      justifyContent={'center'}
+      alignItems="center"
+    >
       {props.errorMessage || 'No data...'}
     </Flex>
   );

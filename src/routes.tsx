@@ -105,7 +105,7 @@ const Routes: FC<RouteComponentProps> = () => {
           path={ROUTES.RESET_PASSWORD}
           component={ResetPasswordPage}
         />
-        <PrivateRoute path={'/account'} component={AccountPage} />
+        <PrivateRoute path={ROUTES.ACCOUNT} component={AccountPage} />
         {/* <PrivateRoute path={'/billing'} component={BillingPage} /> */}
         {/*<PrivateRoute path={'/billing-info'} component={BillingInfoPage} />*/}
         {/*<PrivateRoute path={'/billing-history'} component={BillingHistory} />*/}
