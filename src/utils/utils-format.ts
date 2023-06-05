@@ -82,7 +82,7 @@ export const addTrailingZero = (
   return new BigNumber(number).toFixed(decimals).toString();
 };
 
-const _formatLargeNumberIfNeed = (
+export const _formatLargeNumberIfNeed = (
   number: string,
   digits = 0,
   replaceNumber = true,
@@ -125,8 +125,8 @@ const _formatLargeNumberIfNeed = (
   }
   if (replaceNumber) {
     let formattedNumber = (num / SI[i].value).toFixed(digits).replace(rx, '$1');
-    if (num < 1000) {
-      formattedNumber = (num / 1000).toFixed(digits).replace(rx, '$1') + 'K';
+    if (num >= 1000 && num < 10000) {
+      formattedNumber = (num / 1000).toFixed(digits).replace(rx, '$1');
     }
     return formattedNumber + SI[i].symbol;
   } else {
