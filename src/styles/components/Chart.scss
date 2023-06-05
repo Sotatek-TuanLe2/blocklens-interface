@@ -39,6 +39,7 @@
     margin-right: 10px;
     justify-content: space-between;
     align-items: center;
+    cursor: pointer;
     @include mobile {
       display: none;
     }
