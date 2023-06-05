@@ -1,20 +1,25 @@
 import { Box, Collapse, Flex, Text, Tooltip } from '@chakra-ui/react';
 import _, { debounce } from 'lodash';
 import { useCallback, useEffect, useState } from 'react';
-import { useHistory, useParams } from 'react-router';
+import { useHistory, useParams, useLocation } from 'react-router-dom';
 import { AppInput } from 'src/components';
 import AppQueryMenu, { QUERY_MENU_LIST } from 'src/components/AppQueryMenu';
-import ModalNewDashboard from 'src/modals/querySQL/ModalNewDashboard';
+import ModalDashboard from 'src/modals/querySQL/ModalDashboard';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import rf from 'src/requests/RequestFactory';
-import { PROMISE_STATUS, ROUTES, SchemaType } from 'src/utils/common';
+import {
+  TYPE_OF_MODAL,
+  PROMISE_STATUS,
+  ROUTES,
+  SchemaType,
+} from 'src/utils/common';
 import { IDashboardDetail, IQuery } from 'src/utils/query.type';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { getChainIconByChainName } from 'src/utils/utils-network';
 import { toastError } from 'src/utils/utils-notify';
-import { TYPE_MODAL } from './Dashboard';
-import { BROADCAST_ADD_TEXT_TO_EDITOR } from './Query';
+import { BROADCAST_FETCH_DASHBOARD, TYPE_MODAL } from './Dashboard';
+import { BROADCAST_ADD_TEXT_TO_EDITOR, BROADCAST_FETCH_QUERY } from './Query';
 
 export const BROADCAST_FETCH_WORKPLACE_DATA = 'FETCH_WORKPLACE_DATA';
 
@@ -27,6 +32,8 @@ const ChainItem = ({
   onChangeSchemaDescribe: any;
   schemaDescribe: any;
 }) => {
+  const { pathname } = useLocation();
+
   const handleToggle = async () => {
     try {
       const data = await rf.getRequest('DashboardsRequest').getSchemaOfTable({
@@ -60,22 +67,24 @@ const ChainItem = ({
             {chain.table_name}
           </Text>
         </Flex>
-        <Tooltip
-          placement="top"
-          hasArrow
-          label="Add to query"
-          aria-label="A tooltip"
-          bg={'#2F3B58'}
-          borderRadius="6px"
-        >
-          <div
-            className="bg-PlusIcon add-query-icon"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleAddQuery(chain.full_name);
-            }}
-          ></div>
-        </Tooltip>
+        {pathname.includes(ROUTES.MY_QUERY) && (
+          <Tooltip
+            placement="top"
+            hasArrow
+            label="Add to query"
+            aria-label="A tooltip"
+            bg={'#2F3B58'}
+            borderRadius="6px"
+          >
+            <div
+              className="bg-PlusIcon add-query-icon"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleAddQuery(chain.full_name);
+              }}
+            ></div>
+          </Tooltip>
+        )}
       </Box>
     </>
   );
@@ -165,6 +174,7 @@ const Sidebar: React.FC<{
   const { queryId, dashboardId }: { queryId?: string; dashboardId?: string } =
     useParams();
   const history = useHistory();
+  const { pathname } = useLocation();
   const [dataQueries, setDataQueries] = useState<IQuery[] | []>([]);
   const [dataDashboards, setDataDashboards] = useState<IDashboardDetail[] | []>(
     [],
@@ -290,14 +300,10 @@ const Sidebar: React.FC<{
   };
 
   const onForkSuccess = async (response: any, type: string) => {
-    history.push(
-      `${
-        type === LIST_ITEM_TYPE.DASHBOARDS
-          ? ROUTES.MY_DASHBOARD
-          : ROUTES.MY_QUERY
-      }/${response.id}`,
-    );
     await fetchDataWorkPlace();
+    type === LIST_ITEM_TYPE.DASHBOARDS
+      ? AppBroadcast.dispatch(BROADCAST_FETCH_DASHBOARD, response.id)
+      : AppBroadcast.dispatch(BROADCAST_FETCH_QUERY, response.id);
   };
 
   const _renderContentWorkPlace = () => {
@@ -338,21 +344,35 @@ const Sidebar: React.FC<{
                 className={handleClassNameWorkPlaceItem(query.id)}
                 onClick={() => history.push(`${ROUTES.MY_QUERY}/${query.id}?`)}
               >
-                <Flex isTruncated alignItems={'center'} gap="10px" maxW={'70%'}>
-                  <div>
-                    <div
-                      className={
-                        query.id === queryId
-                          ? 'bg-query_active'
-                          : 'bg-LogoQueryIcon'
-                      }
-                    />
-                  </div>
-                  <Text isTruncated>{query.name}</Text>
-                </Flex>
+                <Tooltip
+                  placement="top"
+                  hasArrow
+                  label={query.name}
+                  aria-label="A tooltip"
+                  bg={'#2F3B58'}
+                  borderRadius="6px"
+                >
+                  <Flex
+                    isTruncated
+                    alignItems={'center'}
+                    gap="10px"
+                    maxW={'70%'}
+                  >
+                    <div>
+                      <div
+                        className={
+                          query.id === queryId
+                            ? 'bg-query_active'
+                            : 'bg-LogoQueryIcon'
+                        }
+                      />
+                    </div>
+                    <Text isTruncated>{query.name}</Text>
+                  </Flex>
+                </Tooltip>
 
                 <AppQueryMenu
-                  menu={[QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.SHARE]}
+                  menu={[QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.DELETE]}
                   itemType={LIST_ITEM_TYPE.QUERIES}
                   item={query}
                   onForkSuccess={onForkSuccess}
@@ -382,20 +402,29 @@ const Sidebar: React.FC<{
                   history.push(`${ROUTES.MY_DASHBOARD}/${dashboard.id}?`)
                 }
               >
-                <Flex isTruncated alignItems={'center'} gap="10px">
-                  <div>
-                    <div
-                      className={
-                        dashboard.id === dashboardId
-                          ? 'bg-dashboard_active'
-                          : 'bg-LogoDashboardIcon'
-                      }
-                    />
-                  </div>
-                  <Text isTruncated>{dashboard.name}</Text>
-                </Flex>
+                <Tooltip
+                  placement="top"
+                  hasArrow
+                  label={dashboard.name}
+                  aria-label="A tooltip"
+                  bg={'#2F3B58'}
+                  borderRadius="6px"
+                >
+                  <Flex isTruncated alignItems={'center'} gap="10px">
+                    <div>
+                      <div
+                        className={
+                          dashboard.id === dashboardId
+                            ? 'bg-dashboard_active'
+                            : 'bg-LogoDashboardIcon'
+                        }
+                      />
+                    </div>
+                    <Text isTruncated>{dashboard.name}</Text>
+                  </Flex>
+                </Tooltip>
                 <AppQueryMenu
-                  menu={[QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.SHARE]}
+                  menu={[QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.DELETE]}
                   itemType={LIST_ITEM_TYPE.DASHBOARDS}
                   item={dashboard}
                   onForkSuccess={onForkSuccess}
@@ -456,10 +485,12 @@ const Sidebar: React.FC<{
                 {schemaDescribe[0].table_name}
               </Text>
               <div className="header-icon">
-                <div
-                  className="bg-PlusIcon"
-                  onClick={() => handleAddQuery(schemaDescribe[0].full_name)}
-                />
+                {pathname.includes(ROUTES.MY_QUERY) && (
+                  <div
+                    className="bg-PlusIcon"
+                    onClick={() => handleAddQuery(schemaDescribe[0].full_name)}
+                  />
+                )}
                 <div
                   className="bg-CloseBtnIcon"
                   onClick={() => setSchemaDescribe([])}
@@ -532,8 +563,8 @@ const Sidebar: React.FC<{
       >
         {_renderContent()}
       </Box>
-      <ModalNewDashboard
-        type={TYPE_MODAL.ADD}
+      <ModalDashboard
+        type={TYPE_OF_MODAL.CREATE}
         open={openNewDashboardModal}
         onClose={() => setOpenNewDashboardModal(false)}
         onSuccess={onCreateDashboardSuccessfully}

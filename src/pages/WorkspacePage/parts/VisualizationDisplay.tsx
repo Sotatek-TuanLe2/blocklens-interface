@@ -457,13 +457,7 @@ const VisualizationDisplay = ({
         rightElement={
           <Flex gap={'10px'}>
             <Tooltip
-              label={
-                expandLayout === LAYOUT_QUERY.FULL
-                  ? 'Maximum'
-                  : expandLayout === LAYOUT_QUERY.HALF
-                  ? 'Minimize'
-                  : 'Minimize'
-              }
+              label={expandLayout === LAYOUT_QUERY.FULL ? 'Expand' : 'Minimize'}
               hasArrow
             >
               <div className="btn-expand">
@@ -492,7 +486,7 @@ const VisualizationDisplay = ({
                 </div>
               </Tooltip>
             )}
-            <Tooltip label="Expand" hasArrow>
+            <Tooltip label="Maximize" hasArrow>
               <div
                 className="btn-expand-full"
                 onClick={() => onExpand(LAYOUT_QUERY.HIDDEN)}

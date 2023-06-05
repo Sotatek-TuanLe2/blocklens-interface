@@ -67,6 +67,7 @@ const VisualizationTable = <T,>({
 }: ReactTableProps<T>) => {
   const [itemOffset, setItemOffset] = useState(0);
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [pagination, setPagination] = useState(0);
 
   const ITEMS_PER_PAGE = 15;
   const pageCount = Math.ceil(data.length / ITEMS_PER_PAGE);
@@ -75,6 +76,8 @@ const VisualizationTable = <T,>({
   const handleSearch = debounce(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       setSearchTerm(event.target.value);
+      setPagination(0);
+      setItemOffset(0);
     },
     INPUT_DEBOUNCE,
   );
@@ -111,6 +114,7 @@ const VisualizationTable = <T,>({
   const handlePageClick = (event: { selected: number }) => {
     const newOffset = (event.selected * ITEMS_PER_PAGE) % data.length;
     setItemOffset(newOffset);
+    setPagination(event.selected);
   };
 
   const columnMaxValues = useMemo((): { [key: string]: number } => {
@@ -140,7 +144,7 @@ const VisualizationTable = <T,>({
   }, [visualization, data]);
 
   return (
-    <div>
+    <>
       <div className={`header-table ${editMode ? 'editMode' : ''}`}>
         <AppInput
           isSearch
@@ -153,7 +157,7 @@ const VisualizationTable = <T,>({
         />
       </div>
 
-      <Box className="main-table" height={'308px'} overflow={'auto'}>
+      <Box className="main-table">
         <table
           className={'table-value'}
           {...{
@@ -307,9 +311,13 @@ const VisualizationTable = <T,>({
         className="table-pagination"
       >
         <div className="data-length">{data.length} rows</div>
-        <AppPagination pageCount={pageCount} onPageChange={handlePageClick} />
+        <AppPagination
+          pageCount={pageCount}
+          forcePage={pagination}
+          onPageChange={handlePageClick}
+        />
       </Flex>
-    </div>
+    </>
   );
 };
 
