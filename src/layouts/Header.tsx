@@ -185,7 +185,7 @@ const Header: FC = () => {
 
     return (
       <>
-        {_renderMenu()}
+        {/*{_renderMenu()}*/}
         {_renderAvatar()}
       </>
     );
