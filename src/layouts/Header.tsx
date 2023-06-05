@@ -30,17 +30,21 @@ const menus = [
     path: '/',
   },
   {
-    name: 'Billing',
-    path: '/billing',
+    name: 'Notification',
+    path: '/notification',
   },
+  // {
+  //   name: 'Billing',
+  //   path: '/billing',
+  // },
   {
     name: 'Account',
     path: '/account',
   },
-  {
-    name: 'Query SQL',
-    path: '/dashboards',
-  },
+  // {
+  //   name: 'Query SQL',
+  //   path: '/dashboards',
+  // },
 ];
 
 const Header: FC = () => {
@@ -122,18 +126,22 @@ const Header: FC = () => {
       return location.pathname.includes('billing');
     }
 
-    if (path === '/dashboards') {
+    if (path === '/notification') {
       return (
+        location.pathname === path ||
+        location.pathname.includes('apps') ||
+        location.pathname.includes('webhook') ||
+        location.pathname.includes('activities')
+      );
+    }
+
+    if (path === '/') {
+      return (
+        location.pathname === path ||
         location.pathname.includes('dashboards') ||
         location.pathname.includes('queries')
       );
     }
-
-    return (
-      ['billing', 'dashboards', 'queries'].every(
-        (item) => !location.pathname.includes(item),
-      ) && location.pathname !== '/account'
-    );
   };
 
   const _renderMenu = () => {
@@ -177,7 +185,7 @@ const Header: FC = () => {
 
     return (
       <>
-        {/* {_renderMenu()} */}
+        {_renderMenu()}
         {_renderAvatar()}
       </>
     );

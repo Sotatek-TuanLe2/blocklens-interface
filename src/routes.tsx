@@ -8,27 +8,27 @@ import {
   withRouter,
 } from 'react-router-dom';
 import { useHistory, useLocation } from 'react-router';
-// import HomePage from './pages/HomePage';
+import HomePage from './pages/HomePage';
 import SignUpPage from './pages/SignUpPage';
 import LoginPage from './pages/LoginPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import Storage from 'src/utils/utils-storage';
-// import AppDetail from './pages/AppDetail';
+import AppDetail from './pages/AppDetail';
 import VerifyAccountPage from './pages/VerifyAccountPage';
 import { useDispatch } from 'react-redux';
 import ResetPasswordPage from './pages/ResetPasswordPage';
-// import CreateWebhookPage from './pages/CreateWebhookPage';
-// import WebhookDetail from './pages/WebhookDetail';
-// import MessagesHistory from './pages/MessagesHistoryPage';
+import CreateWebhookPage from './pages/CreateWebhookPage';
+import WebhookDetail from './pages/WebhookDetail';
+import MessagesHistory from './pages/MessagesHistoryPage';
 // import BillingPage from './pages/BillingPage';
-// import AccountPage from './pages/AccountPage';
+import AccountPage from './pages/AccountPage';
 // import BillingInfoPage from './pages/BillingInfoPage';
 import ContactUs from './pages/ContactUs';
 // import BillingHistory from './pages/BillingHistoryPage';
-// import AllActivitiesPage from './pages/AllActivitiesPage';
+ import AllActivitiesPage from './pages/AllActivitiesPage';
 // import TopUpPage from './pages/TopUp';
-// import AppSettingsPage from './pages/AppSettingsPage';
-// import WebhookSettingsPage from './pages/WebhookSettingsPage';
+import AppSettingsPage from './pages/AppSettingsPage';
+import WebhookSettingsPage from './pages/WebhookSettingsPage';
 import { clearUser, getUser } from './store/user';
 import { initMetadata } from './store/metadata';
 import ModalSubmittingTransaction from './modals/ModalSubmittingTransaction';
@@ -82,8 +82,8 @@ const Routes: FC<RouteComponentProps> = () => {
   return (
     <>
       <Switch>
-        {/* <PrivateRoute path={`/apps/:id/settings`} component={AppSettingsPage} />
-        <PrivateRoute path={`/apps/:id`} component={AppDetail} /> */}
+        <PrivateRoute path={`/apps/:id/settings`} component={AppSettingsPage} />
+        <PrivateRoute path={`/apps/:id`} component={AppDetail} />
         <PublicRoute path={ROUTES.LOGIN} component={LoginPage} />
         <PublicRoute path={ROUTES.SIGN_UP} component={SignUpPage} />
         <PublicRoute path={ROUTES.VERIFY_EMAIL} component={VerifyAccountPage} />
@@ -96,10 +96,12 @@ const Routes: FC<RouteComponentProps> = () => {
           path={ROUTES.RESET_PASSWORD}
           component={ResetPasswordPage}
         />
+        <PrivateRoute path={'/account'} component={AccountPage} />
         {/* <PrivateRoute path={'/billing'} component={BillingPage} /> */}
-        {/* <PrivateRoute path={'/account'} component={AccountPage} /> */}
-        {/* <PrivateRoute path={'/billing-info'} component={BillingInfoPage} />
-        <PrivateRoute path={'/billing-history'} component={BillingHistory} />
+        {/*<PrivateRoute path={'/billing-info'} component={BillingInfoPage} />*/}
+        {/*<PrivateRoute path={'/billing-history'} component={BillingHistory} />*/}
+        {/*<PrivateRoute path={'/top-up'} component={TopUpPage} /> *!/*/}
+
         <PrivateRoute
           path={'/app/:appId/webhooks/:id/activities'}
           component={AllActivitiesPage}
@@ -120,7 +122,7 @@ const Routes: FC<RouteComponentProps> = () => {
           path={'/app/:appId/webhook/:webhookId/activities/:id'}
           component={MessagesHistory}
         />
-        <PrivateRoute path={'/top-up'} component={TopUpPage} /> */}
+        <PrivateRoute path={'/notification'} component={HomePage} />
         <Route
           path={`${ROUTES.DASHBOARD}/:dashboardId?`}
           component={PublicWorkspacePage}
@@ -139,7 +141,6 @@ const Routes: FC<RouteComponentProps> = () => {
         />
         <Route path={ROUTES.CONTACT_US} component={ContactUs} />
         <Route path={ROUTES.HOME} component={DashboardsPage} />
-        {/* <PrivateRoute path={'/'} component={HomePage} /> */}
       </Switch>
       <>
         <ModalSignatureRequired />

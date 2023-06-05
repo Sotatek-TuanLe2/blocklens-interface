@@ -157,7 +157,7 @@ const AppDetail = () => {
     return (
       <>
         <Flex className="app-info">
-          <AppHeading title={appInfo.name} linkBack={'/'} />
+          <AppHeading title={appInfo.name} linkBack={'/notification'} />
 
           <Flex>
             {!isMobile && (

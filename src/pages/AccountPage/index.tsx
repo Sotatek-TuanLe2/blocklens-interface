@@ -65,29 +65,29 @@ const AccountPage = () => {
           <Box className={'box-account'}>
             <BasicDetail />
           </Box>
-          <Box className={'box-account'} mt={isMobile ? 5 : 0}>
-            <BillingInfos />
-          </Box>
-          <Box mt={5} className={'box-account'}>
-            <AppCard
-              className="box-info-account accounts"
-              justifyContent={'space-between'}
-            >
-              <Flex justifyContent={'space-between'}>
-                <Box className="info-item">
-                  <Box className="title">Linked Accounts</Box>
-                </Box>
-                {isMobile && user?.getLinkedAddress() && (
-                  <Box className={'link'} onClick={unlinkWallet}>
-                    Unlink
-                  </Box>
-                )}
-              </Flex>
-              {_renderLinkedAccounts()}
-            </AppCard>
-          </Box>
+          {/*<Box className={'box-account'} mt={isMobile ? 5 : 0}>*/}
+          {/*  <BillingInfos />*/}
+          {/*</Box>*/}
+          {/*<Box mt={5} className={'box-account'}>*/}
+          {/*  <AppCard*/}
+          {/*    className="box-info-account accounts"*/}
+          {/*    justifyContent={'space-between'}*/}
+          {/*  >*/}
+          {/*    <Flex justifyContent={'space-between'}>*/}
+          {/*      <Box className="info-item">*/}
+          {/*        <Box className="title">Linked Accounts</Box>*/}
+          {/*      </Box>*/}
+          {/*      {isMobile && user?.getLinkedAddress() && (*/}
+          {/*        <Box className={'link'} onClick={unlinkWallet}>*/}
+          {/*          Unlink*/}
+          {/*        </Box>*/}
+          {/*      )}*/}
+          {/*    </Flex>*/}
+          {/*    {_renderLinkedAccounts()}*/}
+          {/*  </AppCard>*/}
+          {/*</Box>*/}
 
-          <Box className={'box-account'} mt={5}>
+          <Box className={'box-account'}>
             <Notifications />
           </Box>
         </Flex>
@@ -96,9 +96,9 @@ const AccountPage = () => {
           <UserAPIKey />
         </Box>
 
-        <Box mt={5}>
-          <TopUpHistory />
-        </Box>
+        {/*<Box mt={5}>*/}
+        {/*  <TopUpHistory />*/}
+        {/*</Box>*/}
       </>
     </BasePage>
   );
