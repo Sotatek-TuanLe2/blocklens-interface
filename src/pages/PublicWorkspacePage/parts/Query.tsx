@@ -218,6 +218,7 @@ const QueryPart: React.FC = () => {
                   <VisualizationDisplay
                     queryResult={queryResult}
                     queryValue={queryValue}
+                    needAuthentication={false}
                     onReload={fetchQuery}
                     expandLayout={expandLayout}
                     onExpand={setExpandLayout}
