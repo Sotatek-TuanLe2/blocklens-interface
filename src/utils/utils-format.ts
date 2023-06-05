@@ -82,7 +82,7 @@ export const addTrailingZero = (
   return new BigNumber(number).toFixed(decimals).toString();
 };
 
-export const _formatLargeNumberIfNeed = (
+const _formatLargeNumberIfNeed = (
   number: string,
   digits = 0,
   replaceNumber = true,
