@@ -459,7 +459,7 @@ const VisualizationDisplay = ({
             <Tooltip
               label={
                 expandLayout === LAYOUT_QUERY.FULL
-                  ? 'Maximum'
+                  ? 'Expand'
                   : expandLayout === LAYOUT_QUERY.HALF
                   ? 'Minimize'
                   : 'Minimize'

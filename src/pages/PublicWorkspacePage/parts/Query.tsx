@@ -144,7 +144,7 @@ const QueryPart: React.FC = () => {
                     ? 'Minimize'
                     : expandLayout === LAYOUT_QUERY.HALF
                     ? 'Minimize'
-                    : 'Maximum'
+                    : 'Maximize'
                 }
                 hasArrow
                 placement="top"
