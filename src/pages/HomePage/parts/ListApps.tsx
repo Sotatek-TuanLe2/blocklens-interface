@@ -50,7 +50,7 @@ const AppMobile: FC<IAppMobile> = ({ app }) => {
     <>
       <Box
         className={`${isOpen ? 'open' : ''} card-mobile`}
-        onClick={() => history.push(`/apps/${app.appId}`)}
+        onClick={() => history.push(`/app/${app.appId}`)}
       >
         <Flex
           justifyContent="space-between"
@@ -140,7 +140,7 @@ const ListApps: React.FC = () => {
         });
       return res;
     } catch (error) {
-      return error;
+      return [];
     }
   };
 
@@ -149,17 +149,17 @@ const ListApps: React.FC = () => {
   const fetchDataTable: any = async (param: any) => {
     try {
       const res: any = await rf.getRequest('AppRequest').getListApp(param);
-      const appIds = res.docs.map((item: IAppResponse) => item?.appId) || [];
+      const appIds = res?.docs?.map((item: IAppResponse) => item?.appId) || [];
       const appMetric = await getAppMetricToday(appIds.join(',').toString());
       const totalWebhooks = await getTotalWebhookEachApp(
         appIds.join(',').toString(),
       );
 
-      const dataApps = res?.docs.map((app: IAppResponse, index: number) => {
+      const dataApps = res?.docs?.map((app: IAppResponse, index: number) => {
         return {
           ...app,
           totalWebhook: totalWebhooks[index].totalRegistration,
-          messageToday: appMetric[index].message,
+          messageToday: !!appMetric.length ? appMetric[index].message : '--',
         };
       });
 
@@ -177,16 +177,24 @@ const ListApps: React.FC = () => {
   };
 
   const _renderModalCreateApp = () => {
-    const isLimitApp =
-      userPlan?.appLimitation &&
-      !!userStats?.totalApp &&
-      userStats?.totalApp >= userPlan?.appLimitation;
-    return isLimitApp ? (
-      <ModalUpgradeCreateApp
-        open={openCreateApp}
-        onClose={() => setOpenCreateApp(false)}
-      />
-    ) : (
+    // const isLimitApp =
+    //   userPlan?.appLimitation &&
+    //   !!userStats?.totalApp &&
+    //   userStats?.totalApp >= userPlan?.appLimitation;
+    // return isLimitApp ? (
+    //   <ModalUpgradeCreateApp
+    //     open={openCreateApp}
+    //     onClose={() => setOpenCreateApp(false)}
+    //   />
+    // ) : (
+    //   <ModalCreateApp
+    //     reloadData={fetchDataTable}
+    //     open={openCreateApp}
+    //     onClose={() => setOpenCreateApp(false)}
+    //   />
+    // );
+
+    return (
       <ModalCreateApp
         reloadData={fetchDataTable}
         open={openCreateApp}
@@ -241,7 +249,7 @@ const ListApps: React.FC = () => {
             <Tr
               key={index}
               className="tr-list"
-              onClick={() => history.push(`/apps/${app.appId}`)}
+              onClick={() => history.push(`/app/${app.appId}`)}
             >
               <Td w="25%">{app.name}</Td>
               <Td w="20%">

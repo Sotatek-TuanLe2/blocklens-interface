@@ -27,20 +27,24 @@ import { PRIVATE_PATH } from 'src/routes';
 const menus = [
   {
     name: 'Dashboard',
-    path: '/',
+    path: ROUTES.HOME,
   },
   {
-    name: 'Billing',
-    path: '/billing',
+    name: 'Notification',
+    path: ROUTES.NOTIFICATION,
   },
+  // {
+  //   name: 'Billing',
+  //   path: '/billing',
+  // },
   {
     name: 'Account',
-    path: '/account',
+    path: ROUTES.ACCOUNT,
   },
-  {
-    name: 'Query SQL',
-    path: '/dashboards',
-  },
+  // {
+  //   name: 'Query SQL',
+  //   path: '/dashboards',
+  // },
 ];
 
 const Header: FC = () => {
@@ -114,7 +118,7 @@ const Header: FC = () => {
   };
 
   const isActiveMenu = (path: string) => {
-    if (path === '/account') {
+    if (path === ROUTES.ACCOUNT) {
       return location.pathname === path;
     }
 
@@ -122,18 +126,22 @@ const Header: FC = () => {
       return location.pathname.includes('billing');
     }
 
-    if (path === '/dashboards') {
+    if (path === ROUTES.NOTIFICATION) {
       return (
+        location.pathname === path ||
+        location.pathname.includes('apps') ||
+        location.pathname.includes('webhook') ||
+        location.pathname.includes('activities')
+      );
+    }
+
+    if (path === '/') {
+      return (
+        location.pathname === path ||
         location.pathname.includes('dashboards') ||
         location.pathname.includes('queries')
       );
     }
-
-    return (
-      ['billing', 'dashboards', 'queries'].every(
-        (item) => !location.pathname.includes(item),
-      ) && location.pathname !== '/account'
-    );
   };
 
   const _renderMenu = () => {
@@ -177,7 +185,7 @@ const Header: FC = () => {
 
     return (
       <>
-        {/* {_renderMenu()} */}
+        {/*{_renderMenu()}*/}
         {_renderAvatar()}
       </>
     );
@@ -193,13 +201,13 @@ const Header: FC = () => {
             width={isMobile ? '140px' : 'auto'}
           />
         </Box>
-        {accessToken ? (
-          _renderContent()
-        ) : (
-          <AppButton onClick={() => history.push(ROUTES.LOGIN)}>
-            Log In
-          </AppButton>
-        )}
+        {accessToken
+          ? _renderContent()
+          : location.pathname !== ROUTES.LOGIN && (
+              <AppButton onClick={() => history.push(ROUTES.LOGIN)}>
+                Log In
+              </AppButton>
+            )}
       </Flex>
 
       <ModalSignInRequest

@@ -70,7 +70,7 @@ const VisualizationPieChart = ({
         return { [xAxisKey]: item.key, [yAxisKeys?.[0]]: item.value };
       });
 
-    return result;
+    return !result.length ? data : result;
   }, [data, yAxisKeys]);
 
   const onToggleLegend = (dataKey: string) => {
@@ -111,7 +111,7 @@ const VisualizationPieChart = ({
         dominantBaseline="central"
         fontSize={'12px'}
       >
-        {`${percentage.toFixed(1)}%`}
+        {`${percentage.toFixed(2)}%`}
       </text>
     );
   };
@@ -137,7 +137,7 @@ const VisualizationPieChart = ({
   );
 
   const totalValue = useMemo(() => {
-    if (!yAxisKeys) {
+    if (!yAxisKeys || !shownData.length) {
       return 0;
     }
     const [yAxisKey] = yAxisKeys;
@@ -233,7 +233,11 @@ const CustomLegend = (props: any) => {
   return (
     <div>
       {newData.map((entry: any, index: number) => (
-        <div key={`item-${index}`} className="custom-legend">
+        <div
+          key={`item-${index}`}
+          className="custom-legend"
+          onClick={() => onToggleLegend(entry.value)}
+        >
           <span
             style={{
               backgroundColor: `${entry.color}`,
@@ -241,7 +245,6 @@ const CustomLegend = (props: any) => {
             }}
           ></span>
           <span
-            onClick={() => onToggleLegend(entry.value)}
             style={{
               opacity: `${entry.type ? '1' : '0.5'}`,
             }}
@@ -268,14 +271,10 @@ const CustomTooltip = (props: any) => {
     return (
       <div className="custom-tooltip">
         {payload.map((entry: any, index: number) => (
-          <>
+          <div key={index}>
             <p className="custom-tooltip__label">{entry.name}</p>
             <div className="custom-tooltip__desc">
-              <Box
-                as={'div'}
-                key={index}
-                className="custom-tooltip__desc__detail"
-              >
+              <Box as={'div'} className="custom-tooltip__desc__detail">
                 <span style={{ backgroundColor: entry.fill }}></span>
                 <span>{`${entry.dataKey}: ${_renderTooltipValue(
                   entry.value,
@@ -283,7 +282,7 @@ const CustomTooltip = (props: any) => {
                 <br />
               </Box>
             </div>
-          </>
+          </div>
         ))}
       </div>
     );

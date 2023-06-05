@@ -82,6 +82,7 @@
 
   .ace_scroller {
     background-color: $card;
+    overflow: unset;
   }
 
   .custom-editor {
@@ -92,7 +93,7 @@
     transition: height linear 0.5s;
 
     &.full-editor {
-      height: 711px !important;
+      height: 705px !important;
     }
 
     &.hidden-editor {
@@ -193,6 +194,17 @@
       width: 100%;
       background: #101530;
       border-radius: 6px;
+      .ace_gutter {
+        overflow: unset;
+      }
+
+      .ace_editor {
+        overflow-y: auto;
+      }
+
+      .ace_scrollbar-v {
+        display: none;
+      }
     }
 
     .empty-table {
@@ -470,11 +482,7 @@
           gap: 10px;
 
           &:hover {
-            background: linear-gradient(
-              268.85deg,
-              rgba(34, 108, 255, 0.12) 22.48%,
-              rgba(16, 132, 255, 0.12) 83.59%
-            );
+            background: linear-gradient(268.85deg, rgba(34, 108, 255, 0.12) 22.48%, rgba(16, 132, 255, 0.12) 83.59%);
             border: 1px solid #226cff;
             cursor: pointer;
           }
