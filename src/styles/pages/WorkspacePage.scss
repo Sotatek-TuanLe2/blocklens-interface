@@ -36,7 +36,9 @@
       background-color: #101530;
       border-top-right-radius: 6px;
       border-bottom-right-radius: 6px;
-
+      .infinite-scroll {
+        overflow: hidden !important;
+      }
       &.hidden-sidebar {
         overflow: hidden;
         animation: hiddenSidebar 0.5s forwards;
