@@ -362,8 +362,6 @@ const Sidebar: React.FC<{
       : 'workspace-page__sidebar__content__work-place-detail ';
   };
 
-  console.log('dataDashboards', dataDashboards);
-
   const handleAddQuery = (tableName: string) => {
     AppBroadcast.dispatch(BROADCAST_ADD_TEXT_TO_EDITOR, tableName);
   };
