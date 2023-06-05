@@ -87,7 +87,7 @@ const _formatLargeNumberIfNeed = (
   digits = 0,
   replaceNumber = true,
 ) => {
-  if (new BigNumber(number).comparedTo(10000) < 0 && replaceNumber) {
+  if (new BigNumber(number).comparedTo(1000) < 0 && replaceNumber) {
     return commaNumber(new BigNumber(number).toString(), ',', '.');
   }
   const SI = [
@@ -124,7 +124,11 @@ const _formatLargeNumberIfNeed = (
     }
   }
   if (replaceNumber) {
-    return (num / SI[i].value).toFixed(digits).replace(rx, '$1') + SI[i].symbol;
+    let formattedNumber = (num / SI[i].value).toFixed(digits).replace(rx, '$1');
+    if (num >= 1000 && num < 10000) {
+      formattedNumber = (num / 1000).toFixed(digits).replace(rx, '$1');
+    }
+    return formattedNumber + SI[i].symbol;
   } else {
     return (num / SI[i].value).toFixed(digits) + SI[i].symbol;
   }
