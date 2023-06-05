@@ -17,12 +17,24 @@ deploy-dev:
 	cp .env.dev.example .env
 	npm run build
 	echo "Uploading to s3"
-	aws s3 sync ./build s3://dev-blocksniper.bunicorn.finance
-	aws s3 sync ./build s3://dev-blocksniper.bunicorn.finance
+	aws s3 sync ./build s3://dev-console.blocklens.io
+	aws s3 sync ./build s3://dev-console.blocklens.io
 	  rm -f ./build/index.html
 	echo "Deploy client finished!"
 	aws cloudfront create-invalidation \
-        --distribution-id E38UEYF6YP6HN1 \
+        --distribution-id EAQQ1DG5R58QD \
+        --paths "/*"
+
+deploy-stg:
+	cp .env.dev.example .env
+	npm run build
+	echo "Uploading to s3"
+	aws s3 sync ./build s3://stg-console.blocklens.io
+	aws s3 sync ./build s3://stg-console.blocklens.io
+	  rm -f ./build/index.html
+	echo "Deploy client finished!"
+	aws cloudfront create-invalidation \
+        --distribution-id E2T117AFUGE3RH \
         --paths "/*"
 
 
