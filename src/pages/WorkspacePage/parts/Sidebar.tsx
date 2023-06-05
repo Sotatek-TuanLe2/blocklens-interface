@@ -280,21 +280,26 @@ const Sidebar: React.FC<{
           ? data[0].value.docs
           : [];
       });
-      const { currentPage, itemsPerPage, totalPages }: IPagination =
-        data[0].value;
-      setDataPaginationDashboard({ currentPage, itemsPerPage, totalPages });
+      if (data[0].value.docs) {
+        const { currentPage, itemsPerPage, totalPages }: IPagination =
+          data[0].value;
+        setDataPaginationDashboard({ currentPage, itemsPerPage, totalPages });
+      }
       setDataQueries(() => {
         return data[1].status === PROMISE_STATUS.FULFILLED
           ? data[1].value.docs
           : [];
       });
-      const dataPaginationQueries = {
-        currentPage: data[1].value.currentPage,
-        itemsPerPage: data[1].value.itemsPerPage,
-        totalPages: data[1].value.totalPages,
-      };
 
-      setDataPaginationQueries(dataPaginationQueries);
+      if (data[1].value.docs) {
+        const dataPaginationQueries = {
+          currentPage: data[1].value.currentPage,
+          itemsPerPage: data[1].value.itemsPerPage,
+          totalPages: data[1].value.totalPages,
+        };
+
+        setDataPaginationQueries(dataPaginationQueries);
+      }
     } catch (error) {
       toastError({
         message: getErrorMessage(error),
@@ -462,7 +467,9 @@ const Sidebar: React.FC<{
             </InfiniteScroll>
           </div>
         ) : (
-          <Box pl="16px">No data...</Box>
+          <Box pl="16px" className="data-empty">
+            No data...
+          </Box>
         )}
         <Box
           mt="20px"
@@ -529,7 +536,9 @@ const Sidebar: React.FC<{
             </InfiniteScroll>
           </div>
         ) : (
-          <Box pl="16px">No data...</Box>
+          <Box pl="16px" className="data-empty">
+            No data...
+          </Box>
         )}
       </Box>
     );
@@ -571,7 +580,9 @@ const Sidebar: React.FC<{
             ))}
           </div>
         ) : (
-          <Box pl="16px">No data...</Box>
+          <Box pl="16px" className="data-empty">
+            No data...
+          </Box>
         )}
 
         {!!schemaDescribe.length && (

@@ -36,6 +36,14 @@
       background-color: #101530;
       border-top-right-radius: 6px;
       border-bottom-right-radius: 6px;
+
+      .data-empty {
+        color: $paragraph;
+        font-size: 14px;
+        display: flex;
+        justify-content: center;
+      }
+
       .infinite-scroll {
         overflow: hidden !important;
       }
