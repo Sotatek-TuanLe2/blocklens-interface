@@ -50,7 +50,7 @@ const AppMobile: FC<IAppMobile> = ({ app }) => {
     <>
       <Box
         className={`${isOpen ? 'open' : ''} card-mobile`}
-        onClick={() => history.push(`/apps/${app.appId}`)}
+        onClick={() => history.push(`/app/${app.appId}`)}
       >
         <Flex
           justifyContent="space-between"
@@ -249,7 +249,7 @@ const ListApps: React.FC = () => {
             <Tr
               key={index}
               className="tr-list"
-              onClick={() => history.push(`/apps/${app.appId}`)}
+              onClick={() => history.push(`/app/${app.appId}`)}
             >
               <Td w="25%">{app.name}</Td>
               <Td w="20%">

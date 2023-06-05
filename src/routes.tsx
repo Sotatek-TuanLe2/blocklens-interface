@@ -82,8 +82,7 @@ const Routes: FC<RouteComponentProps> = () => {
   return (
     <>
       <Switch>
-        <PrivateRoute path={`/apps/:id/settings`} component={AppSettingsPage} />
-        <PrivateRoute path={`/apps/:id`} component={AppDetail} />
+        <PrivateRoute path={`${ROUTES.APP}/:id/settings`} component={AppSettingsPage} />
         <PublicRoute path={ROUTES.LOGIN} component={LoginPage} />
         <PublicRoute path={ROUTES.SIGN_UP} component={SignUpPage} />
         <PublicRoute path={ROUTES.VERIFY_EMAIL} component={VerifyAccountPage} />
@@ -103,15 +102,15 @@ const Routes: FC<RouteComponentProps> = () => {
         {/*<PrivateRoute path={'/top-up'} component={TopUpPage} /> *!/*/}
 
         <PrivateRoute
-          path={'/app/:appId/webhooks/:id/activities'}
+          path={`${ROUTES.APP}/:appId/webhooks/:id/activities`}
           component={AllActivitiesPage}
         />
         <PrivateRoute
-          path={'/app/:appId/webhooks/:id/settings'}
+          path={`${ROUTES.APP}/:appId/webhooks/:id/settings`}
           component={WebhookSettingsPage}
         />
         <PrivateRoute
-          path={'/app/:appId/webhooks/:id'}
+          path={`${ROUTES.APP}/:appId/webhooks/:id`}
           component={WebhookDetail}
         />
         <PrivateRoute
@@ -119,10 +118,12 @@ const Routes: FC<RouteComponentProps> = () => {
           component={CreateWebhookPage}
         />
         <PrivateRoute
-          path={'/app/:appId/webhook/:webhookId/activities/:id'}
+          path={`${ROUTES.APP}/:appId/webhook/:webhookId/activities/:id`}
           component={MessagesHistory}
         />
-        <PrivateRoute path={'/notification'} component={HomePage} />
+        <PrivateRoute path={`${ROUTES.APP}/:id`} component={AppDetail} />
+
+        <PrivateRoute path={`${ROUTES.NOTIFICATION}`} component={HomePage} />
         <Route
           path={`${ROUTES.DASHBOARD}/:dashboardId?`}
           component={PublicWorkspacePage}

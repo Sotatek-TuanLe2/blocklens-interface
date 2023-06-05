@@ -172,7 +172,7 @@ const AppDetail = () => {
             <AppButton
               size={'md'}
               variant="cancel"
-              onClick={() => history.push(`/apps/${appId}/settings`)}
+              onClick={() => history.push(`/app/${appId}/settings`)}
             >
               <Box className="icon-settings" />
               {!isMobile && <Box ml={2}>Setting</Box>}

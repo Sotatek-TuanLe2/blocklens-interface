@@ -13,6 +13,9 @@ export const ROUTES = {
   FORGOT_PASSWORD: '/forgot-password',
   RESET_PASSWORD: '/reset-password',
   CONTACT_US: '/contact-us',
+  NOTIFICATION: '/notification',
+  APP: '/app',
+  WEBHOOKS: '/webhooks',
 };
 
 export interface IListAppResponse {
