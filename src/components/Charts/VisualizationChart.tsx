@@ -1,3 +1,4 @@
+import { Box } from '@chakra-ui/react';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import React, { useMemo, useState } from 'react';
@@ -12,6 +13,7 @@ import {
   Legend,
   Line,
   LineChart,
+  ReferenceLine,
   ResponsiveContainer,
   Scatter,
   ScatterChart,
@@ -50,6 +52,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
   const yAxisConfigs = configs?.yAxisConfigs;
 
   const [hiddenKeys, setHiddenKeys] = useState<string[]>([]);
+  const [isShowRefZeroLine, setShowRefZeroLine] = useState(false);
 
   const tickFormatAxis = (axis: string) => (value: string) => {
     if (moment(new Date(value)).isValid() && isNaN(+value)) {
@@ -268,6 +271,12 @@ const VisualizationChart: React.FC<Props> = (props) => {
           calculatedValues.forEach((array) => {
             newCalculatedValues.push(...array);
           });
+          newCalculatedValues.push(0);
+          console.log('  newCalculatedValues', newCalculatedValues);
+          const hasNegativeNumber = newCalculatedValues.some((yValue) =>
+            new BigNumber(yValue).isNegative(),
+          );
+          setShowRefZeroLine(hasNegativeNumber);
           minValue = BigNumber.minimum(...newCalculatedValues).toNumber();
           maxValue = BigNumber.maximum(...newCalculatedValues).toNumber();
         }
@@ -320,6 +329,15 @@ const VisualizationChart: React.FC<Props> = (props) => {
             fill={'#ccc'}
           />
         </XAxis>
+        {isShowRefZeroLine && (
+          <ReferenceLine
+            className="ref-line"
+            y={0}
+            stroke="#2F3B58"
+            strokeDasharray="3 3"
+            label={<CustomizedLabel />}
+          />
+        )}
         {yAxisKeys && !!yAxisKeys.length && (
           <YAxis
             tickFormatter={tickFormatAxis('y')}
@@ -339,6 +357,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
             />
           </YAxis>
         )}
+
         <Tooltip
           content={
             <CustomTooltip numberFormat={configs?.yAxisConfigs?.labelFormat} />
@@ -380,3 +399,43 @@ const CustomizedDot = (props: any) => {
     </svg>
   );
 };
+
+const CustomizedLabel = (props: any) => {
+  const { offset, viewBox } = props;
+  const { y } = viewBox;
+  return (
+    <text
+      offset={offset}
+      x="0"
+      y={y}
+      className="recharts-text recharts-label"
+      stroke="none"
+      type="number"
+      fontWeight={400}
+    >
+      <tspan x="44" dy="0.355em">
+        0
+      </tspan>
+    </text>
+  );
+};
+
+{
+  /* <text
+  orientation="left"
+  width="60"
+  height="346"
+  type="number"
+  x="52"
+  y="20"
+  stroke="none"
+  fill="#8D91A5"
+  font-weight="400"
+  class="recharts-text recharts-cartesian-axis-tick-value"
+  text-anchor="end"
+>
+  <tspan x="52" dy="0.355em">
+    1.13K
+  </tspan>
+</text>; */
+}
