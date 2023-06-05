@@ -272,7 +272,6 @@ const VisualizationChart: React.FC<Props> = (props) => {
             newCalculatedValues.push(...array);
           });
           newCalculatedValues.push(0);
-          console.log('  newCalculatedValues', newCalculatedValues);
           const hasNegativeNumber = newCalculatedValues.some((yValue) =>
             new BigNumber(yValue).isNegative(),
           );
@@ -419,23 +418,3 @@ const CustomizedLabel = (props: any) => {
     </text>
   );
 };
-
-{
-  /* <text
-  orientation="left"
-  width="60"
-  height="346"
-  type="number"
-  x="52"
-  y="20"
-  stroke="none"
-  fill="#8D91A5"
-  font-weight="400"
-  class="recharts-text recharts-cartesian-axis-tick-value"
-  text-anchor="end"
->
-  <tspan x="52" dy="0.355em">
-    1.13K
-  </tspan>
-</text>; */
-}

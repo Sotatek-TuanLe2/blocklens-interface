@@ -10,8 +10,8 @@
     position: relative;
     text {
       tspan {
-        stroke: $paragraph;
         font-size: 12px;
+        fill: $paragraph;
       }
     }
   }
