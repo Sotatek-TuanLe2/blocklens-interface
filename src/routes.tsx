@@ -25,7 +25,7 @@ import AccountPage from './pages/AccountPage';
 // import BillingInfoPage from './pages/BillingInfoPage';
 import ContactUs from './pages/ContactUs';
 // import BillingHistory from './pages/BillingHistoryPage';
- import AllActivitiesPage from './pages/AllActivitiesPage';
+import AllActivitiesPage from './pages/AllActivitiesPage';
 // import TopUpPage from './pages/TopUp';
 import AppSettingsPage from './pages/AppSettingsPage';
 import WebhookSettingsPage from './pages/WebhookSettingsPage';
@@ -53,7 +53,14 @@ const GUEST_PATH = [
   ROUTES.QUERY,
 ];
 
-export const PRIVATE_PATH = [ROUTES.MY_DASHBOARD, ROUTES.MY_QUERY];
+export const PRIVATE_PATH = [
+  ROUTES.MY_DASHBOARD,
+  ROUTES.MY_QUERY,
+  ROUTES.NOTIFICATION,
+  ROUTES.APP,
+  ROUTES.WEBHOOKS,
+  ROUTES.ACCOUNT,
+];
 
 const Routes: FC<RouteComponentProps> = () => {
   const { pathname } = useLocation();
@@ -82,7 +89,10 @@ const Routes: FC<RouteComponentProps> = () => {
   return (
     <>
       <Switch>
-        <PrivateRoute path={`${ROUTES.APP}/:id/settings`} component={AppSettingsPage} />
+        <PrivateRoute
+          path={`${ROUTES.APP}/:id/settings`}
+          component={AppSettingsPage}
+        />
         <PublicRoute path={ROUTES.LOGIN} component={LoginPage} />
         <PublicRoute path={ROUTES.SIGN_UP} component={SignUpPage} />
         <PublicRoute path={ROUTES.VERIFY_EMAIL} component={VerifyAccountPage} />

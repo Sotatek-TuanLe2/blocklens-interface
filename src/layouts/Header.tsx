@@ -201,13 +201,13 @@ const Header: FC = () => {
             width={isMobile ? '140px' : 'auto'}
           />
         </Box>
-        {accessToken ? (
-          _renderContent()
-        ) : (
-          <AppButton onClick={() => history.push(ROUTES.LOGIN)}>
-            Log In
-          </AppButton>
-        )}
+        {accessToken
+          ? _renderContent()
+          : location.pathname !== ROUTES.LOGIN && (
+              <AppButton onClick={() => history.push(ROUTES.LOGIN)}>
+                Log In
+              </AppButton>
+            )}
       </Flex>
 
       <ModalSignInRequest
