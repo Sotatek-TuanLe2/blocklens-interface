@@ -43,7 +43,7 @@ const WebhookDetail = () => {
                 ? `wh: ${formatShortText(webhook?.registrationId)}`
                 : `Webhook: ${webhook?.registrationId}`
             }
-            linkBack={`/apps/${appId}`}
+            linkBack={`/app/${appId}`}
           />
           <Flex>
             {!isMobile && (

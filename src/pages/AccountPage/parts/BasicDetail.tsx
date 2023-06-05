@@ -42,15 +42,15 @@ const BasicDetail = () => {
             <EditIcon />
           </Box>
         </Flex>
-        <Flex justifyContent={'space-between'}>
-          <Flex>
-            <Box className="label">Balance:</Box>
-            <Box className="value">${user?.getBalance()}</Box>
-          </Flex>
-          <Box className="link" onClick={() => history.push('/top-up')}>
-            Top up
-          </Box>
-        </Flex>
+        {/*<Flex justifyContent={'space-between'}>*/}
+        {/*  <Flex>*/}
+        {/*    <Box className="label">Balance:</Box>*/}
+        {/*    <Box className="value">${user?.getBalance()}</Box>*/}
+        {/*  </Flex>*/}
+        {/*  <Box className="link" onClick={() => history.push('/top-up')}>*/}
+        {/*    Top up*/}
+        {/*  </Box>*/}
+        {/*</Flex>*/}
       </Box>
 
       <Box className="info-item">

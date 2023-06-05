@@ -155,7 +155,7 @@ const CreateWebhook = () => {
     try {
       await rf.getRequest('RegistrationRequest').addRegistrations(appId, data);
       dispatch(getUserStats());
-      history.push(`/apps/${appId}`);
+      history.push(`/app/${appId}`);
       toastSuccess({ message: 'Create Successfully!' });
     } catch (e: any) {
       toastError({ message: e?.message || 'Oops. Something went wrong!' });
@@ -487,7 +487,7 @@ const CreateWebhook = () => {
       <>
         <Flex className="app-info">
           <Flex className="name">
-            <AppLink to={`/apps/${appId}`}>
+            <AppLink to={`/app/${appId}`}>
               <Box className="icon-arrow-left" mr={6} />
             </AppLink>
             <Box className={'title-mobile'}>Create Webhook</Box>

@@ -184,7 +184,7 @@ const AppSettingsPage: FC<IAppSettings> = () => {
     <BasePage className="app-detail" onInitPage={getAppInfo}>
       <>
         <Flex className="app-info">
-          <AppHeading title="Settings" linkBack={`/apps/${appId}`} isCenter />
+          <AppHeading title="Settings" linkBack={`/app/${appId}`} isCenter />
 
           <Flex>
             <AppButton

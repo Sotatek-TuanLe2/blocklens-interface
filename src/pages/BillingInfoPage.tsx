@@ -9,6 +9,7 @@ import { toastError } from 'src/utils/utils-notify';
 import { isMobile } from 'react-device-detect';
 import ModalBillingInfo from '../modals/ModalBillingInfo';
 import { getErrorMessage } from '../utils/utils-helper';
+import { ROUTES } from 'src/utils/common';
 
 const BillingInfoPage = () => {
   const [isOpenEditBillingInfoModal, setIsOpenEditBillingInfoModal] =
@@ -42,7 +43,7 @@ const BillingInfoPage = () => {
     <BasePage className="billing account">
       <>
         <Flex className="title-billing">
-          <AppLink to={`/account`}>
+          <AppLink to={ROUTES.ACCOUNT}>
             <Box className="icon-arrow-left" mr={6} />
           </AppLink>
           <Box>Billing Info</Box>

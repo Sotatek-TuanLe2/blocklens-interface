@@ -23,6 +23,7 @@ import PartAppGraph from './parts/PartAppGraph';
 import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
 import useUser from 'src/hooks/useUser';
 import rf from 'src/requests/RequestFactory';
+import { ROUTES } from 'src/utils/common';
 
 const AppDetail = () => {
   const [type, setType] = useState<string>(WEBHOOK_TYPES.NFT_ACTIVITY);
@@ -157,7 +158,7 @@ const AppDetail = () => {
     return (
       <>
         <Flex className="app-info">
-          <AppHeading title={appInfo.name} linkBack={'/'} />
+          <AppHeading title={appInfo.name} linkBack={ROUTES.NOTIFICATION} />
 
           <Flex>
             {!isMobile && (
@@ -172,7 +173,7 @@ const AppDetail = () => {
             <AppButton
               size={'md'}
               variant="cancel"
-              onClick={() => history.push(`/apps/${appId}/settings`)}
+              onClick={() => history.push(`/app/${appId}/settings`)}
             >
               <Box className="icon-settings" />
               {!isMobile && <Box ml={2}>Setting</Box>}
