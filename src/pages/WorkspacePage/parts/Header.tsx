@@ -135,7 +135,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
         )}
       </div>
       <div className="workspace-page__editor__header__right">
-        {needAuthentication && !isCreatingQuery && !isEdit && (
+        {/* {needAuthentication && !isCreatingQuery && !isEdit && (
           <div className="switch-icon">
             <Switch
               id="email-alerts"
@@ -147,7 +147,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
               Publish
             </FormLabel>
           </div>
-        )}
+        )} */}
         {needAuthentication &&
           (isDashboard ? (
             (!!(dataClass as Dashboard)?.getDashboardVisuals().length ||
