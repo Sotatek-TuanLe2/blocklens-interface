@@ -52,7 +52,6 @@ const VisualizationChart: React.FC<Props> = (props) => {
   const yAxisConfigs = configs?.yAxisConfigs;
 
   const [hiddenKeys, setHiddenKeys] = useState<string[]>([]);
-  const [isShowRefZeroLine, setShowRefZeroLine] = useState(false);
 
   const tickFormatAxis = (axis: string) => (value: string) => {
     if (moment(new Date(value)).isValid() && isNaN(+value)) {
@@ -272,10 +271,6 @@ const VisualizationChart: React.FC<Props> = (props) => {
             newCalculatedValues.push(...array);
           });
 
-          const hasNegativeNumber = newCalculatedValues.some((yValue) =>
-            new BigNumber(yValue).isNegative(),
-          );
-          setShowRefZeroLine(hasNegativeNumber);
           minValue = BigNumber.minimum(...newCalculatedValues).toNumber();
           maxValue = BigNumber.maximum(...newCalculatedValues).toNumber();
         }
@@ -328,13 +323,31 @@ const VisualizationChart: React.FC<Props> = (props) => {
             fill={'#ccc'}
           />
         </XAxis>
-        {isShowRefZeroLine && (
+        {new BigNumber(yAxisDomain[0]).isNegative() && (
           <ReferenceLine
             className="ref-line"
             y={0}
             stroke="#2F3B58"
             strokeDasharray="3 3"
-            label={<CustomizedLabel />}
+            label={(props: any) => {
+              const { offset, viewBox } = props;
+              const { y } = viewBox;
+              return (
+                <text
+                  offset={offset}
+                  x="0"
+                  y={y}
+                  className="recharts-text recharts-label"
+                  stroke="none"
+                  type="number"
+                  fontWeight={400}
+                >
+                  <tspan x="44" dy="0.355em">
+                    0
+                  </tspan>
+                </text>
+              );
+            }}
           />
         )}
         {yAxisKeys && !!yAxisKeys.length && (
@@ -396,25 +409,5 @@ const CustomizedDot = (props: any) => {
       <circle opacity="0.3" cx="6.53516" cy="6" r="6" fill={fill} />
       <circle cx="6.53516" cy="6" r="3" fill={fill} />
     </svg>
-  );
-};
-
-const CustomizedLabel = (props: any) => {
-  const { offset, viewBox } = props;
-  const { y } = viewBox;
-  return (
-    <text
-      offset={offset}
-      x="0"
-      y={y}
-      className="recharts-text recharts-label"
-      stroke="none"
-      type="number"
-      fontWeight={400}
-    >
-      <tspan x="44" dy="0.355em">
-        0
-      </tspan>
-    </text>
   );
 };
