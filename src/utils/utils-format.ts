@@ -230,58 +230,64 @@ export const formatDefaultValueChart = (value: string) => {
 };
 
 export const formatVisualizationValue = (format: string, value: any) => {
-  let result = value;
+  const isValueZero = value === 0;
+  const isNotANumber = !isNumber(value);
+  const hasDollarSign = format.includes('$');
+  const hasAAndDot = format.includes('a') && format.includes('.');
+  const hasAAndDollarSign = format.includes('a') && format.includes('$');
+  const hasDot = format.includes('.');
+  const hasComma = format.includes(',');
+  const hasA = format.includes('a');
+  const isFormatZero = format === '0';
 
-  if (value == 0) {
+  if (isValueZero) {
     return 0;
   }
 
-  if (!isNumber(value)) {
+  if (isNotANumber) {
     return value;
   }
 
-  if (format.includes('$')) {
-    if (format.includes('a') && format.includes('.')) {
-      result = formatNumberWithDecimalDigits(value, format);
+  if (hasDollarSign) {
+    if (hasAAndDot) {
+      const result = formatNumberWithDecimalDigits(value, format);
       const decimalPart = String(result).split('.')[1];
-      result = `$${_formatLargeNumberIfNeed(
+      return `$${_formatLargeNumberIfNeed(
         result,
         decimalPart.length || 0,
         false,
       )}`;
-    } else if (format.includes('a') && format.includes('$')) {
-      if (format.includes('.')) {
-        result = `$${_formatLargeNumberIfNeed(
-          formatNumberWithDecimalDigits(result, format),
-          0,
-          false,
-        )}`;
+    } else if (hasAAndDollarSign) {
+      if (hasDot) {
+        const result = formatNumberWithDecimalDigits(value, format);
+        return `$${_formatLargeNumberIfNeed(result, 0, false)}`;
       } else {
-        result = `$${_formatLargeNumberIfNeed(result, 0, false)}`;
+        return `$${_formatLargeNumberIfNeed(value, 0, false)}`;
       }
     } else {
-      result = `$${value}`;
+      return `$${value}`;
     }
   } else if (format.includes('0.0')) {
-    result = formatNumberWithDecimalDigits(value, format);
-    if (format.includes(',')) {
-      result = commaNumber(formatNumberWithDecimalDigits(value, format));
+    let result = formatNumberWithDecimalDigits(value, format);
+    if (hasComma) {
+      result = commaNumber(result);
     }
-    if (format.includes('a')) {
+    if (hasA) {
       const decimalPart = String(result).split('.')[1];
-      result = _formatLargeNumberIfNeed(result, decimalPart.length || 0, false);
+      return _formatLargeNumberIfNeed(result, decimalPart.length || 0, false);
     }
+    return result;
   } else if (format.includes(',')) {
-    if (format.includes('a')) {
-      result = _formatLargeNumberIfNeed(value);
+    if (hasA) {
+      return _formatLargeNumberIfNeed(value);
     } else {
-      result = commaNumber(value);
+      return commaNumber(value);
     }
-  } else if (format === '0') {
-    result = parseInt(value);
-  } else if (format.includes('a')) {
-    result = _formatLargeNumberIfNeed(value);
+  } else if (isFormatZero) {
+    return parseInt(value);
+  } else if (hasA) {
+    return _formatLargeNumberIfNeed(value);
   }
 
-  return result;
+  return value;
 };
