@@ -57,7 +57,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
     IPagination | undefined
   >();
 
-  const filteredVisualizations: Array<{
+  const visualizations: Array<{
     visualization: VisualizationType;
     query: IQuery;
   }> = useMemo(() => {
@@ -70,16 +70,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
         });
       }
     });
-
-    return searchTerm
-      ? result.filter(
-          (item) =>
-            item.query.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item.visualization.name
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase()),
-        )
-      : result;
+    return result;
   }, [myQueries, searchTerm]);
 
   const handleSearch = debounce(
@@ -116,7 +107,9 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   };
 
   const fetchVisualization = async () => {
-    const params = {};
+    const params = {
+      search: searchTerm || undefined,
+    };
     try {
       const res = await rf
         .getRequest('DashboardsRequest')
@@ -156,6 +149,10 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
       );
     }
   }, [dataLayouts]);
+
+  useEffect(() => {
+    fetchVisualization();
+  }, [searchTerm]);
 
   const handleSaveVisualization = async () => {
     const dataVisual = selectedItems.map((i) => {
@@ -237,7 +234,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
         <div className="main-queries" id="main-queries">
           <InfiniteScroll
             className="infinite-scroll"
-            dataLength={myQueries.length}
+            dataLength={visualizations.length}
             next={fetchInfiniteScrollVisual}
             hasMore={
               (dataVisualPagination?.currentPage || 0) <
@@ -256,8 +253,8 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
             }
             scrollableTarget="main-queries"
           >
-            {!!filteredVisualizations.length ? (
-              filteredVisualizations?.map((item, index) => (
+            {!!visualizations.length ? (
+              visualizations.map((item, index) => (
                 <Flex
                   key={`${item.query.id}-${item.visualization.id}-${index}`}
                 >
