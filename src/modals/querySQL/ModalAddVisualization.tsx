@@ -1,4 +1,4 @@
-import { Checkbox, Flex, Link, Text } from '@chakra-ui/react';
+import { Checkbox, Flex, Link, Spinner, Text, Tooltip } from '@chakra-ui/react';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   AreaChartIcon,
@@ -21,8 +21,9 @@ import {
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import BaseModal from '../BaseModal';
-import { debounce } from 'lodash';
-import { INPUT_DEBOUNCE } from 'src/utils/common';
+import _, { debounce } from 'lodash';
+import { INPUT_DEBOUNCE, IPagination } from 'src/utils/common';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 interface IModalAddVisualization {
   open: boolean;
@@ -52,8 +53,11 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   const [selectedItems, setSelectedItems] = useState<any[]>([]);
   const [myQueries, setMyQueries] = useState<IQuery[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [dataVisualPagination, setDataVisualPagination] = useState<
+    IPagination | undefined
+  >();
 
-  const filteredVisualizations: Array<{
+  const visualizations: Array<{
     visualization: VisualizationType;
     query: IQuery;
   }> = useMemo(() => {
@@ -66,16 +70,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
         });
       }
     });
-
-    return searchTerm
-      ? result.filter(
-          (item) =>
-            item.query.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item.visualization.name
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase()),
-        )
-      : result;
+    return result;
   }, [myQueries, searchTerm]);
 
   const handleSearch = debounce(
@@ -85,14 +80,49 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
     INPUT_DEBOUNCE,
   );
 
+  const fetchInfiniteScrollVisual = async () => {
+    try {
+      const res = await rf.getRequest('DashboardsRequest').getMyListQueries(
+        _.omitBy(
+          {
+            search: searchTerm.trim(),
+            page: (dataVisualPagination?.currentPage || 1) + 1,
+          },
+          (param) => !param,
+        ),
+      );
+      if (res) {
+        const { itemsPerPage, totalPages, totalItem, currentPage } = res;
+        setMyQueries((pre) => [...pre, ...res.data]);
+        setDataVisualPagination({
+          itemsPerPage,
+          totalPages,
+          currentPage,
+          totalItem,
+        });
+      }
+    } catch (error) {
+      toastError({ message: getErrorMessage(error) });
+    }
+  };
+
   const fetchVisualization = async () => {
-    const params = {};
+    const params = {
+      search: searchTerm || undefined,
+    };
     try {
       const res = await rf
         .getRequest('DashboardsRequest')
         .getMyListQueries(params);
       if (res) {
+        const { itemsPerPage, totalPages, totalItem, currentPage } = res;
         setMyQueries(res.data);
+        setDataVisualPagination({
+          itemsPerPage,
+          totalPages,
+          currentPage,
+          totalItem,
+        });
       }
     } catch (error) {
       toastError({
@@ -119,6 +149,10 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
       );
     }
   }, [dataLayouts]);
+
+  useEffect(() => {
+    fetchVisualization();
+  }, [searchTerm]);
 
   const handleSaveVisualization = async () => {
     const dataVisual = selectedItems.map((i) => {
@@ -197,23 +231,47 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
           placeholder="Find chart..."
         />
 
-        <div className="main-queries">
-          {!!filteredVisualizations.length ? (
-            filteredVisualizations?.map((item, index) => (
-              <Flex key={`${item.query.id}-${item.visualization.id}-${index}`}>
-                <AddVisualizationCheckbox
-                  userName={userName}
-                  query={item.query}
-                  visualization={item.visualization}
-                  getIcon={getIcon}
-                  setSelectedItems={setSelectedItems}
-                  selectedItems={selectedItems}
+        <div className="main-queries" id="main-queries">
+          <InfiniteScroll
+            className="infinite-scroll"
+            dataLength={visualizations.length}
+            next={fetchInfiniteScrollVisual}
+            hasMore={
+              (dataVisualPagination?.currentPage || 0) <
+              (dataVisualPagination?.totalPages || 0)
+            }
+            loader={
+              <Flex justifyContent={'center'}>
+                <Spinner
+                  thickness="4px"
+                  speed="0.65s"
+                  emptyColor="gray.200"
+                  color="blue.500"
+                  size="md"
                 />
               </Flex>
-            ))
-          ) : (
-            <div className="no-data">No data</div>
-          )}
+            }
+            scrollableTarget="main-queries"
+          >
+            {!!visualizations.length ? (
+              visualizations.map((item, index) => (
+                <Flex
+                  key={`${item.query.id}-${item.visualization.id}-${index}`}
+                >
+                  <AddVisualizationCheckbox
+                    userName={userName}
+                    query={item.query}
+                    visualization={item.visualization}
+                    getIcon={getIcon}
+                    setSelectedItems={setSelectedItems}
+                    selectedItems={selectedItems}
+                  />
+                </Flex>
+              ))
+            ) : (
+              <div className="no-data">No data</div>
+            )}
+          </InfiniteScroll>
         </div>
         <Flex className="modal-footer">
           <AppButton variant="cancel" mr={2.5} size="lg" onClick={onClose}>
@@ -281,9 +339,13 @@ const AddVisualizationCheckbox: React.FC<IAddVisualizationCheckbox> = ({
           isChecked={checkAdded}
         />
         {getIcon(conditionDisplayIcon())}
-        <Link className="visualization-name">{visualization.name}</Link>
+        <Link className="visualization-name">
+          <Tooltip label={visualization.name}>{visualization.name}</Tooltip>
+        </Link>
         <Text className="user-name">
-          @{userName} / {query.name}
+          <Tooltip label={`@${userName} / ${query.name}`}>
+            {`@${userName} / ${query.name}`}
+          </Tooltip>
         </Text>
       </Flex>
     </>

@@ -1,4 +1,4 @@
-import { Box, Collapse, Flex, Text, Tooltip } from '@chakra-ui/react';
+import { Box, Collapse, Flex, Spinner, Text, Tooltip } from '@chakra-ui/react';
 import _, { debounce } from 'lodash';
 import { useCallback, useEffect, useState } from 'react';
 import { useHistory, useParams, useLocation } from 'react-router-dom';
@@ -12,6 +12,7 @@ import {
   PROMISE_STATUS,
   ROUTES,
   SchemaType,
+  IPagination,
 } from 'src/utils/common';
 import { IDashboardDetail, IQuery } from 'src/utils/query.type';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
@@ -20,6 +21,7 @@ import { getChainIconByChainName } from 'src/utils/utils-network';
 import { toastError } from 'src/utils/utils-notify';
 import { BROADCAST_FETCH_DASHBOARD, TYPE_MODAL } from './Dashboard';
 import { BROADCAST_ADD_TEXT_TO_EDITOR, BROADCAST_FETCH_QUERY } from './Query';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 export const BROADCAST_FETCH_WORKPLACE_DATA = 'FETCH_WORKPLACE_DATA';
 
@@ -187,6 +189,14 @@ const Sidebar: React.FC<{
 
   const [schemaDescribe, setSchemaDescribe] = useState<SchemaType[]>([]);
 
+  const [dataQueriesPagination, setDataQueriesPagination] = useState<
+    IPagination | undefined
+  >();
+
+  const [dataDashboardPagination, setDataDashboardPagination] = useState<
+    IPagination | undefined
+  >();
+
   useEffect(() => {
     AppBroadcast.on(BROADCAST_FETCH_WORKPLACE_DATA, fetchDataWorkPlace);
 
@@ -217,6 +227,43 @@ const Sidebar: React.FC<{
     }
   };
 
+  const fetchInfiniteScrollDashboard = async () => {
+    try {
+      const res = await fetchDashboards(
+        _.omitBy(
+          {
+            search: searchValueWorkPlace.trim(),
+            page: (dataDashboardPagination?.currentPage || 1) + 1,
+          },
+          (param) => !param,
+        ),
+      );
+      const { currentPage, itemsPerPage, totalPages }: IPagination = res;
+      setDataDashboardPagination({ currentPage, itemsPerPage, totalPages });
+      setDataDashboards((pre) => [...pre, ...res.docs]);
+    } catch (error) {
+      toastError({ message: getErrorMessage(error) });
+    }
+  };
+
+  const fetchInfiniteScrollQueries = async () => {
+    try {
+      const res = await fetchQueries(
+        _.omitBy(
+          {
+            search: searchValueWorkPlace.trim(),
+            page: (dataQueriesPagination?.currentPage || 1) + 1,
+          },
+          (param) => !param,
+        ),
+      );
+
+      const { currentPage, itemsPerPage, totalPages }: IPagination = res;
+      setDataQueriesPagination({ currentPage, itemsPerPage, totalPages });
+      setDataQueries((pre) => [...pre, ...res.docs]);
+    } catch (error) {}
+  };
+
   const fetchDataWorkPlace = async (search?: string) => {
     try {
       const data: any = await Promise.allSettled([
@@ -228,11 +275,26 @@ const Sidebar: React.FC<{
           ? data[0].value.docs
           : [];
       });
+      if (data[0].value.docs) {
+        const { currentPage, itemsPerPage, totalPages }: IPagination =
+          data[0].value;
+        setDataDashboardPagination({ currentPage, itemsPerPage, totalPages });
+      }
       setDataQueries(() => {
         return data[1].status === PROMISE_STATUS.FULFILLED
           ? data[1].value.docs
           : [];
       });
+
+      if (data[1].value.docs) {
+        const dataPaginationQueries = {
+          currentPage: data[1].value.currentPage,
+          itemsPerPage: data[1].value.itemsPerPage,
+          totalPages: data[1].value.totalPages,
+        };
+
+        setDataQueriesPagination(dataPaginationQueries);
+      }
     } catch (error) {
       toastError({
         message: getErrorMessage(error),
@@ -337,51 +399,80 @@ const Sidebar: React.FC<{
           </div>
         </div>
         {dataQueries.length ? (
-          <div className="workspace-page__sidebar__content__work-place-wrap__list-query">
-            {dataQueries.map((query) => (
-              <div
-                key={query.id}
-                className={handleClassNameWorkPlaceItem(query.id)}
-                onClick={() => history.push(`${ROUTES.MY_QUERY}/${query.id}?`)}
-              >
-                <Tooltip
-                  placement="top"
-                  hasArrow
-                  label={query.name}
-                  aria-label="A tooltip"
-                  bg={'#2F3B58'}
-                  borderRadius="6px"
+          <div
+            className="workspace-page__sidebar__content__work-place-wrap__list-query"
+            id={'scrollableDivQueries'}
+          >
+            <InfiniteScroll
+              className="infinite-scroll"
+              dataLength={dataQueries.length}
+              next={fetchInfiniteScrollQueries}
+              hasMore={
+                (dataQueriesPagination?.currentPage || 0) <
+                (dataQueriesPagination?.totalPages || 0)
+              }
+              loader={
+                <Flex justifyContent={'center'}>
+                  <Spinner
+                    thickness="4px"
+                    speed="0.65s"
+                    emptyColor="gray.200"
+                    color="blue.500"
+                    size="md"
+                  />
+                </Flex>
+              }
+              scrollableTarget="scrollableDivQueries"
+            >
+              {dataQueries.map((query) => (
+                <div
+                  key={query.id}
+                  className={handleClassNameWorkPlaceItem(query.id)}
+                  onClick={() =>
+                    history.push(`${ROUTES.MY_QUERY}/${query.id}?`)
+                  }
                 >
-                  <Flex
-                    isTruncated
-                    alignItems={'center'}
-                    gap="10px"
-                    maxW={'70%'}
+                  <Tooltip
+                    placement="top"
+                    hasArrow
+                    label={query.name}
+                    aria-label="A tooltip"
+                    bg={'#2F3B58'}
+                    borderRadius="6px"
                   >
-                    <div>
-                      <div
-                        className={
-                          query.id === queryId
-                            ? 'bg-query_active'
-                            : 'bg-LogoQueryIcon'
-                        }
-                      />
-                    </div>
-                    <Text isTruncated>{query.name}</Text>
-                  </Flex>
-                </Tooltip>
+                    <Flex
+                      isTruncated
+                      alignItems={'center'}
+                      gap="10px"
+                      maxW={'70%'}
+                    >
+                      <div>
+                        <div
+                          className={
+                            query.id === queryId
+                              ? 'bg-query_active'
+                              : 'bg-LogoQueryIcon'
+                          }
+                        />
+                      </div>
+                      <Text isTruncated>{query.name}</Text>
+                    </Flex>
+                  </Tooltip>
 
-                <AppQueryMenu
-                  menu={[QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.DELETE]}
-                  itemType={LIST_ITEM_TYPE.QUERIES}
-                  item={query}
-                  onForkSuccess={onForkSuccess}
-                />
-              </div>
-            ))}
+                  <AppQueryMenu
+                    menu={[QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.DELETE]}
+                    itemType={LIST_ITEM_TYPE.QUERIES}
+                    item={query}
+                    onForkSuccess={onForkSuccess}
+                  />
+                </div>
+              ))}
+            </InfiniteScroll>
           </div>
         ) : (
-          <Box pl="16px">No data...</Box>
+          <Box pl="16px" className="data-empty">
+            No data...
+          </Box>
         )}
         <Box
           mt="20px"
@@ -393,47 +484,74 @@ const Sidebar: React.FC<{
           </div>
         </Box>
         {dataDashboards.length ? (
-          <div className="workspace-page__sidebar__content__work-place-wrap__list-dashboard">
-            {dataDashboards.map((dashboard) => (
-              <div
-                key={dashboard.id}
-                className={handleClassNameWorkPlaceItem(dashboard.id)}
-                onClick={() =>
-                  history.push(`${ROUTES.MY_DASHBOARD}/${dashboard.id}?`)
-                }
-              >
-                <Tooltip
-                  placement="top"
-                  hasArrow
-                  label={dashboard.name}
-                  aria-label="A tooltip"
-                  bg={'#2F3B58'}
-                  borderRadius="6px"
+          <div
+            className="workspace-page__sidebar__content__work-place-wrap__list-dashboard"
+            id="scrollableDiv"
+          >
+            <InfiniteScroll
+              className="infinite-scroll"
+              dataLength={dataDashboards.length}
+              next={fetchInfiniteScrollDashboard}
+              hasMore={
+                (dataDashboardPagination?.currentPage || 0) <
+                (dataDashboardPagination?.totalPages || 0)
+              }
+              loader={
+                <Flex justifyContent={'center'}>
+                  <Spinner
+                    thickness="4px"
+                    speed="0.65s"
+                    emptyColor="gray.200"
+                    color="blue.500"
+                    size="md"
+                  />
+                </Flex>
+              }
+              scrollableTarget="scrollableDiv"
+            >
+              {dataDashboards.map((dashboard) => (
+                <div
+                  key={dashboard.id}
+                  className={handleClassNameWorkPlaceItem(dashboard.id)}
+                  onClick={() =>
+                    history.push(`${ROUTES.MY_DASHBOARD}/${dashboard.id}?`)
+                  }
                 >
-                  <Flex isTruncated alignItems={'center'} gap="10px">
-                    <div>
-                      <div
-                        className={
-                          dashboard.id === dashboardId
-                            ? 'bg-dashboard_active'
-                            : 'bg-LogoDashboardIcon'
-                        }
-                      />
-                    </div>
-                    <Text isTruncated>{dashboard.name}</Text>
-                  </Flex>
-                </Tooltip>
-                <AppQueryMenu
-                  menu={[QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.DELETE]}
-                  itemType={LIST_ITEM_TYPE.DASHBOARDS}
-                  item={dashboard}
-                  onForkSuccess={onForkSuccess}
-                />
-              </div>
-            ))}
+                  <Tooltip
+                    placement="top"
+                    hasArrow
+                    label={dashboard.name}
+                    aria-label="A tooltip"
+                    bg={'#2F3B58'}
+                    borderRadius="6px"
+                  >
+                    <Flex isTruncated alignItems={'center'} gap="10px">
+                      <div>
+                        <div
+                          className={
+                            dashboard.id === dashboardId
+                              ? 'bg-dashboard_active'
+                              : 'bg-LogoDashboardIcon'
+                          }
+                        />
+                      </div>
+                      <Text isTruncated>{dashboard.name}</Text>
+                    </Flex>
+                  </Tooltip>
+                  <AppQueryMenu
+                    menu={[QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.DELETE]}
+                    itemType={LIST_ITEM_TYPE.DASHBOARDS}
+                    item={dashboard}
+                    onForkSuccess={onForkSuccess}
+                  />
+                </div>
+              ))}
+            </InfiniteScroll>
           </div>
         ) : (
-          <Box pl="16px">No data...</Box>
+          <Box pl="16px" className="data-empty">
+            No data...
+          </Box>
         )}
       </Box>
     );
@@ -475,7 +593,9 @@ const Sidebar: React.FC<{
             ))}
           </div>
         ) : (
-          <Box pl="16px">No data...</Box>
+          <Box pl="16px" className="data-empty">
+            No data...
+          </Box>
         )}
 
         {!!schemaDescribe.length && (

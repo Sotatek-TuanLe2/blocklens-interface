@@ -45,6 +45,13 @@
       border-top-right-radius: 6px;
       border-bottom-right-radius: 6px;
 
+      .data-empty {
+        color: $paragraph;
+        font-size: 14px;
+        display: flex;
+        justify-content: center;
+      }
+
       &.hidden-sidebar {
         overflow: hidden;
         animation: hiddenSidebar 0.5s forwards;
