@@ -82,7 +82,8 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
       );
       if (res) {
         const { itemsPerPage, totalPages, totalItem, currentPage } = res;
-        setDataVisualization((pre) => [...pre, res.data]);
+
+        setDataVisualization((pre) => [...pre, ...res.data]);
         setDataVisualPagination({
           itemsPerPage,
           totalPages,
