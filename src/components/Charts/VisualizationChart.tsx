@@ -271,7 +271,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
           calculatedValues.forEach((array) => {
             newCalculatedValues.push(...array);
           });
-          newCalculatedValues.push(0);
+
           const hasNegativeNumber = newCalculatedValues.some((yValue) =>
             new BigNumber(yValue).isNegative(),
           );
