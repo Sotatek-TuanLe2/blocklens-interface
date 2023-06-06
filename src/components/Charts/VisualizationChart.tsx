@@ -52,7 +52,6 @@ const VisualizationChart: React.FC<Props> = (props) => {
   const yAxisConfigs = configs?.yAxisConfigs;
 
   const [hiddenKeys, setHiddenKeys] = useState<string[]>([]);
-  const [isShowRefZeroLine, setShowRefZeroLine] = useState(false);
 
   const tickFormatAxis = (axis: string) => (value: string) => {
     if (moment(new Date(value)).isValid() && isNaN(+value)) {
