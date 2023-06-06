@@ -1,4 +1,4 @@
-import { Checkbox, Flex, Link, Text } from '@chakra-ui/react';
+import { Checkbox, Flex, Link, Spinner, Text } from '@chakra-ui/react';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   AreaChartIcon,
@@ -17,8 +17,9 @@ import { TYPE_VISUALIZATION, VisualizationType } from 'src/utils/query.type';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import BaseModal from '../BaseModal';
-import { debounce } from 'lodash';
-import { INPUT_DEBOUNCE } from 'src/utils/common';
+import _, { debounce } from 'lodash';
+import { INPUT_DEBOUNCE, IPagination } from 'src/utils/common';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 interface IModalAddVisualization {
   open: boolean;
@@ -48,6 +49,9 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   const [selectedItems, setSelectedItems] = useState<any[]>([]);
   const [dataVisualization, setDataVisualization] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [dataVisualPagination, setDataVisualPagination] = useState<
+    IPagination | undefined
+  >();
 
   const dataFilter = useMemo(
     () =>
@@ -65,6 +69,32 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
     INPUT_DEBOUNCE,
   );
 
+  const fetchInfiniteScrollVisual = async () => {
+    try {
+      const res = await rf.getRequest('DashboardsRequest').getMyListQueries(
+        _.omitBy(
+          {
+            search: searchTerm.trim(),
+            page: (dataVisualPagination?.currentPage || 1) + 1,
+          },
+          (param) => !param,
+        ),
+      );
+      if (res) {
+        const { itemsPerPage, totalPages, totalItem, currentPage } = res;
+        setDataVisualization((pre) => [...pre, res.data]);
+        setDataVisualPagination({
+          itemsPerPage,
+          totalPages,
+          currentPage,
+          totalItem,
+        });
+      }
+    } catch (error) {
+      toastError({ message: getErrorMessage(error) });
+    }
+  };
+
   const fetchVisualization = async () => {
     const params = {};
     try {
@@ -72,7 +102,14 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
         .getRequest('DashboardsRequest')
         .getMyListQueries(params);
       if (res) {
+        const { itemsPerPage, totalPages, totalItem, currentPage } = res;
         setDataVisualization(res.data);
+        setDataVisualPagination({
+          itemsPerPage,
+          totalPages,
+          currentPage,
+          totalItem,
+        });
       }
     } catch (error) {
       toastError({
@@ -177,27 +214,49 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
           placeholder="Find chart..."
         />
 
-        <div className="main-queries">
-          {!!dataFilter.length ? (
-            dataFilter?.map(
-              (item) =>
-                item?.visualizations &&
-                item?.visualizations?.map((i: any, index: number) => (
-                  <Flex key={`${item.id}-${index}`}>
-                    <AddVisualizationCheckbox
-                      userName={userName}
-                      item={item}
-                      i={i}
-                      getIcon={getIcon}
-                      setSelectedItems={setSelectedItems}
-                      selectedItems={selectedItems}
-                    />
-                  </Flex>
-                )),
-            )
-          ) : (
-            <div className="no-data">No data</div>
-          )}
+        <div className="main-queries" id="main-queries">
+          <InfiniteScroll
+            className="infinite-scroll"
+            dataLength={dataVisualization.length}
+            next={fetchInfiniteScrollVisual}
+            hasMore={
+              (dataVisualPagination?.currentPage || 0) <
+              (dataVisualPagination?.totalPages || 0)
+            }
+            loader={
+              <Flex justifyContent={'center'}>
+                <Spinner
+                  thickness="4px"
+                  speed="0.65s"
+                  emptyColor="gray.200"
+                  color="blue.500"
+                  size="md"
+                />
+              </Flex>
+            }
+            scrollableTarget="main-queries"
+          >
+            {!!dataFilter.length ? (
+              dataFilter?.map(
+                (item) =>
+                  item?.visualizations &&
+                  item?.visualizations?.map((i: any, index: number) => (
+                    <Flex key={`${item.id}-${index}`}>
+                      <AddVisualizationCheckbox
+                        userName={userName}
+                        item={item}
+                        i={i}
+                        getIcon={getIcon}
+                        setSelectedItems={setSelectedItems}
+                        selectedItems={selectedItems}
+                      />
+                    </Flex>
+                  )),
+              )
+            ) : (
+              <div className="no-data">No data</div>
+            )}
+          </InfiniteScroll>
         </div>
         <Flex className="modal-footer">
           <AppButton variant="cancel" mr={2.5} size="lg" onClick={onClose}>

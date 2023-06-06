@@ -1,4 +1,4 @@
-import { Box, Collapse, Flex, Text, Tooltip } from '@chakra-ui/react';
+import { Box, Collapse, Flex, Spinner, Text, Tooltip } from '@chakra-ui/react';
 import _, { debounce } from 'lodash';
 import { useCallback, useEffect, useState } from 'react';
 import { useHistory, useParams, useLocation } from 'react-router-dom';
@@ -12,6 +12,7 @@ import {
   PROMISE_STATUS,
   ROUTES,
   SchemaType,
+  IPagination,
 } from 'src/utils/common';
 import { IDashboardDetail, IQuery } from 'src/utils/query.type';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
@@ -139,12 +140,6 @@ const CollapseExplore = ({
     </>
   );
 };
-
-interface IPagination {
-  currentPage: number;
-  itemsPerPage: number;
-  totalPages: number;
-}
 
 const Sidebar: React.FC<{
   expandSidebar: boolean;
@@ -416,7 +411,17 @@ const Sidebar: React.FC<{
                 (dataPaginationQueries?.currentPage || 0) <
                 (dataPaginationQueries?.totalPages || 0)
               }
-              loader={<h4 style={{ textAlign: 'center' }}>Loading...</h4>}
+              loader={
+                <Flex justifyContent={'center'}>
+                  <Spinner
+                    thickness="4px"
+                    speed="0.65s"
+                    emptyColor="gray.200"
+                    color="blue.500"
+                    size="md"
+                  />
+                </Flex>
+              }
               scrollableTarget="scrollableDivQueries"
             >
               {dataQueries.map((query) => (
@@ -491,7 +496,17 @@ const Sidebar: React.FC<{
                 (dataPaginationDashboard?.currentPage || 0) <
                 (dataPaginationDashboard?.totalPages || 0)
               }
-              loader={<h4 style={{ textAlign: 'center' }}>Loading...</h4>}
+              loader={
+                <Flex justifyContent={'center'}>
+                  <Spinner
+                    thickness="4px"
+                    speed="0.65s"
+                    emptyColor="gray.200"
+                    color="blue.500"
+                    size="md"
+                  />
+                </Flex>
+              }
               scrollableTarget="scrollableDiv"
             >
               {dataDashboards.map((dashboard) => (
