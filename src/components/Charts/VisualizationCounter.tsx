@@ -1,3 +1,4 @@
+import { Box, Tooltip } from '@chakra-ui/react';
 import BigNumber from 'bignumber.js';
 import React, { useEffect, useState } from 'react';
 import 'src/styles/components/CounterConfigurations.scss';
@@ -62,7 +63,6 @@ const VisualizationCounter = ({ data, visualization }: Props) => {
   return (
     <div className="main-counter">
       <div className="counter-result">
-        <div className="background-counter"></div>
         <div className="text-result">
           <div
             style={{
@@ -82,9 +82,17 @@ const VisualizationCounter = ({ data, visualization }: Props) => {
             </span>
             {isNumberValue && dataOptions.stringSuffix}
           </div>
-          <div className="counter-sub-label">
-            {dataOptions.counterLabel ? dataOptions.counterLabel : 'Counter'}
-          </div>
+          <Box isTruncated maxWidth={'300px'}>
+            <Tooltip
+              hasArrow
+              placement="top-start"
+              label={
+                dataOptions.counterLabel ? dataOptions.counterLabel : 'Counter'
+              }
+            >
+              {dataOptions.counterLabel ? dataOptions.counterLabel : 'Counter'}
+            </Tooltip>
+          </Box>
         </div>
       </div>
     </div>
