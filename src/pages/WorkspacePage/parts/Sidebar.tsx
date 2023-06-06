@@ -12,6 +12,7 @@ import {
   PROMISE_STATUS,
   ROUTES,
   SchemaType,
+  IPagination,
 } from 'src/utils/common';
 import { IDashboardDetail, IQuery } from 'src/utils/query.type';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
@@ -139,12 +140,6 @@ const CollapseExplore = ({
     </>
   );
 };
-
-interface IPagination {
-  currentPage: number;
-  itemsPerPage: number;
-  totalPages: number;
-}
 
 const Sidebar: React.FC<{
   expandSidebar: boolean;
