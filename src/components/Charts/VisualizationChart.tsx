@@ -329,25 +329,21 @@ const VisualizationChart: React.FC<Props> = (props) => {
             y={0}
             stroke="#2F3B58"
             strokeDasharray="3 3"
-            label={(props: any) => {
-              const { offset, viewBox } = props;
-              const { y } = viewBox;
-              return (
-                <text
-                  offset={offset}
-                  x="0"
-                  y={y}
-                  className="recharts-text recharts-label"
-                  stroke="none"
-                  type="number"
-                  fontWeight={400}
-                >
-                  <tspan x="44" dy="0.355em">
-                    0
-                  </tspan>
-                </text>
-              );
-            }}
+            label={({ offset, viewBox }) => (
+              <text
+                offset={offset}
+                x="0"
+                y={viewBox.y}
+                className="recharts-text recharts-label"
+                stroke="none"
+                type="number"
+                fontWeight={400}
+              >
+                <tspan x="44" dy="0.355em">
+                  0
+                </tspan>
+              </text>
+            )}
           />
         )}
         {yAxisKeys && !!yAxisKeys.length && (
