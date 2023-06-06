@@ -27,7 +27,7 @@ interface IMarkdown {
   mark: JSX.Element;
 }
 
-const linkSever = 'https://stg-console.blocklens.io';
+const linkDune = 'https://dune.com';
 const randomImage = 'https://unsplash.it/600/400';
 
 const MarkdownSupport: IMarkdown[] = [
@@ -40,7 +40,7 @@ const MarkdownSupport: IMarkdown[] = [
     title: 'Link',
     mark: (
       <>
-        [Link]<a href={linkSever}>({linkSever})</a>
+        [Link]<a href={linkDune}>({linkDune})</a>
       </>
     ),
   },
