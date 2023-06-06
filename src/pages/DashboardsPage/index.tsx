@@ -41,7 +41,8 @@ const DashboardsPage: React.FC = () => {
   const history = useHistory();
   const { user } = useUser();
 
-  const [tabType, setTabType] = useState<string>(LIST_ITEM_TYPE.DASHBOARDS);
+  const [tab, setTab] = useState<string>(LIST_ITEM_TYPE.DASHBOARDS);
+  const [tabIndex, setTabIndex] = useState<number>(0);
   const [dashboardParams, setDashboardParams] = useState<IDashboardParams>({});
   const [queryParams, setQueryParams] = useState<IQueriesParams>({});
   const [myWorkType, setMyWorkType] = useState<string>(TYPE_MYWORK.DASHBOARDS);
@@ -57,7 +58,7 @@ const DashboardsPage: React.FC = () => {
     const chain = searchParams.get(HOME_URL_PARAMS.CHAIN) || '';
     const tag = searchParams.get(HOME_URL_PARAMS.TAG) || '';
 
-    switch (tabType) {
+    switch (tab) {
       case LIST_ITEM_TYPE.DASHBOARDS:
         setDashboardParams(() =>
           _.omitBy(
@@ -110,7 +111,15 @@ const DashboardsPage: React.FC = () => {
       default:
         break;
     }
-  }, [searchUrl, tabType, myWorkType]);
+  }, [searchUrl, tab, myWorkType]);
+
+  useEffect(() => {
+    // user logs out when in My Work tab
+    if (!user && tab === LIST_ITEM_TYPE.MYWORK) {
+      setTab(LIST_ITEM_TYPE.DASHBOARDS);
+      setTabIndex(0);
+    }
+  }, [user]);
 
   const fetchAllDashboards: any = useCallback(
     async (params: any) => {
@@ -174,7 +183,7 @@ const DashboardsPage: React.FC = () => {
         <>
           <div className="dashboard-filter">
             <FilterSearch
-              type={tabType}
+              type={tab}
               visibility={visibility}
               changeVisibility={setVisibility}
               myWorkType={myWorkType}
@@ -185,7 +194,7 @@ const DashboardsPage: React.FC = () => {
         </>
       );
     },
-    [tabType, visibility, myWorkType],
+    [tab, visibility, myWorkType],
   );
 
   const _renderBody = useCallback(
@@ -207,7 +216,7 @@ const DashboardsPage: React.FC = () => {
         </>
       );
     },
-    [tabType, visibility, myWorkType],
+    [tab, visibility, myWorkType],
   );
 
   const _renderHeader = useCallback(() => {
@@ -344,9 +353,10 @@ const DashboardsPage: React.FC = () => {
     return tabs;
   };
 
-  const onChangeTab = (tabId: string) => {
+  const onChangeTab = (tabId: string, tabIndex: number) => {
     history.push(ROUTES.HOME);
-    setTabType(tabId);
+    setTab(tabId);
+    setTabIndex(tabIndex);
     setMyWorkType(TYPE_MYWORK.DASHBOARDS);
   };
 
@@ -358,7 +368,11 @@ const DashboardsPage: React.FC = () => {
         justifyContent={'space-between'}
       >
         <div className="dashboard-list">
-          <AppTabs tabs={generateTabs()} onChange={onChangeTab} />
+          <AppTabs
+            currentTabIndex={tabIndex}
+            tabs={generateTabs()}
+            onChange={onChangeTab}
+          />
         </div>
       </Flex>
     </BasePage>
