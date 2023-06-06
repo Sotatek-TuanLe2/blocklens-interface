@@ -13,7 +13,11 @@ import { AppButton, AppInput } from 'src/components';
 import { ILayout } from 'src/pages/WorkspacePage/parts/Dashboard';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/BaseModal.scss';
-import { TYPE_VISUALIZATION, VisualizationType } from 'src/utils/query.type';
+import {
+  IQuery,
+  TYPE_VISUALIZATION,
+  VisualizationType,
+} from 'src/utils/query.type';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import BaseModal from '../BaseModal';
@@ -30,8 +34,8 @@ interface IModalAddVisualization {
 }
 interface IAddVisualizationCheckbox {
   userName: string;
-  item: any;
-  i: VisualizationType;
+  query: IQuery;
+  visualization: VisualizationType;
   getIcon: (chain: string | undefined) => JSX.Element;
   selectedItems: any[];
   setSelectedItems: React.Dispatch<React.SetStateAction<any[]>>;
@@ -46,17 +50,33 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   dashboardId,
 }) => {
   const [selectedItems, setSelectedItems] = useState<any[]>([]);
-  const [dataVisualization, setDataVisualization] = useState<any[]>([]);
+  const [myQueries, setMyQueries] = useState<IQuery[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
 
-  const dataFilter = useMemo(
-    () =>
-      dataVisualization?.filter(
-        (el) =>
-          el.name && el.name.toLowerCase().includes(searchTerm.toLowerCase()),
-      ),
-    [dataVisualization, searchTerm],
-  );
+  const filteredVisualizations: Array<{
+    visualization: VisualizationType;
+    query: IQuery;
+  }> = useMemo(() => {
+    const result: Array<{ visualization: VisualizationType; query: IQuery }> =
+      [];
+    myQueries.forEach((query) => {
+      if (query.visualizations) {
+        query.visualizations.forEach((visualization) => {
+          result.push({ visualization, query });
+        });
+      }
+    });
+
+    return searchTerm
+      ? result.filter(
+          (item) =>
+            item.query.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item.visualization.name
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase()),
+        )
+      : result;
+  }, [myQueries, searchTerm]);
 
   const handleSearch = debounce(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -72,7 +92,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
         .getRequest('DashboardsRequest')
         .getMyListQueries(params);
       if (res) {
-        setDataVisualization(res.data);
+        setMyQueries(res.data);
       }
     } catch (error) {
       toastError({
@@ -178,23 +198,19 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
         />
 
         <div className="main-queries">
-          {!!dataFilter.length ? (
-            dataFilter?.map(
-              (item) =>
-                item?.visualizations &&
-                item?.visualizations?.map((i: any, index: number) => (
-                  <Flex key={`${item.id}-${index}`}>
-                    <AddVisualizationCheckbox
-                      userName={userName}
-                      item={item}
-                      i={i}
-                      getIcon={getIcon}
-                      setSelectedItems={setSelectedItems}
-                      selectedItems={selectedItems}
-                    />
-                  </Flex>
-                )),
-            )
+          {!!filteredVisualizations.length ? (
+            filteredVisualizations?.map((item, index) => (
+              <Flex key={`${item.query.id}-${item.visualization.id}-${index}`}>
+                <AddVisualizationCheckbox
+                  userName={userName}
+                  query={item.query}
+                  visualization={item.visualization}
+                  getIcon={getIcon}
+                  setSelectedItems={setSelectedItems}
+                  selectedItems={selectedItems}
+                />
+              </Flex>
+            ))
           ) : (
             <div className="no-data">No data</div>
           )}
@@ -204,7 +220,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
             Cancel
           </AppButton>
           <AppButton
-            disabled={!dataVisualization.length}
+            disabled={!myQueries.length}
             size="lg"
             onClick={() => {
               handleSaveVisualization();
@@ -223,21 +239,19 @@ export default ModalAddVisualization;
 
 const AddVisualizationCheckbox: React.FC<IAddVisualizationCheckbox> = ({
   userName,
-  item,
-  i,
+  query,
+  visualization,
   getIcon,
   selectedItems,
   setSelectedItems,
 }) => {
-  const checkAdded = selectedItems.some((el) => el.id === i.id);
+  const checkAdded = selectedItems.some((el) => el.id === visualization.id);
 
   const conditionDisplayIcon = () => {
-    if (i.type === 'table') {
-      return i.type;
-    } else if (i.type === 'counter') {
-      return i.type;
+    if (visualization.type === 'table' || visualization.type === 'counter') {
+      return visualization.type;
     } else {
-      return i.options.globalSeriesType;
+      return visualization.options.globalSeriesType;
     }
   };
 
@@ -250,7 +264,7 @@ const AddVisualizationCheckbox: React.FC<IAddVisualizationCheckbox> = ({
     if (checked) {
       setSelectedItems((prevItems) => [
         ...prevItems,
-        item.visualizations.find((item: { id: string }) => item.id === itemId),
+        query.visualizations.find((item: { id: string }) => item.id === itemId),
       ]);
     } else {
       setSelectedItems((prevItems) =>
@@ -263,13 +277,13 @@ const AddVisualizationCheckbox: React.FC<IAddVisualizationCheckbox> = ({
     <>
       <Flex className="visualization-row" alignItems={'center'}>
         <Checkbox
-          onChange={(e) => handleCheckboxChange(e, i.id)}
+          onChange={(e) => handleCheckboxChange(e, visualization.id)}
           isChecked={checkAdded}
         />
         {getIcon(conditionDisplayIcon())}
-        <Link className="visualization-name">{i.name}</Link>
+        <Link className="visualization-name">{visualization.name}</Link>
         <Text className="user-name">
-          @{userName} / {item.name}
+          @{userName} / {query.name}
         </Text>
       </Flex>
     </>

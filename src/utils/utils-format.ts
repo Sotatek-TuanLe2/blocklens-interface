@@ -249,27 +249,34 @@ export const formatVisualizationValue = (format: string, value: any) => {
         decimalPart.length || 0,
         false,
       )}`;
+    } else if (format.includes('a') && format.includes('$')) {
+      if (format.includes('.')) {
+        result = `$${_formatLargeNumberIfNeed(
+          formatNumberWithDecimalDigits(result, format),
+          0,
+          false,
+        )}`;
+      } else {
+        result = `$${_formatLargeNumberIfNeed(result, 0, false)}`;
+      }
     } else {
       result = `$${value}`;
     }
-  } else if (format.includes('0.')) {
+  } else if (format.includes('0.0')) {
     result = formatNumberWithDecimalDigits(value, format);
     if (format.includes(',')) {
-      result = result.replace('.', ',');
-      const parts = result.split(',');
-      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-      result = parts.join(',');
+      result = commaNumber(formatNumberWithDecimalDigits(value, format));
     }
     if (format.includes('a')) {
       const decimalPart = String(result).split('.')[1];
       result = _formatLargeNumberIfNeed(result, decimalPart.length || 0, false);
     }
-
-    if (result !== '0') {
-      result = commaNumber(formatNumberWithDecimalDigits(value, format));
-    }
   } else if (format.includes(',')) {
-    result = commaNumber(value);
+    if (format.includes('a')) {
+      result = _formatLargeNumberIfNeed(value);
+    } else {
+      result = commaNumber(value);
+    }
   } else if (format === '0') {
     result = parseInt(value);
   } else if (format.includes('a')) {

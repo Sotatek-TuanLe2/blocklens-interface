@@ -43,7 +43,7 @@ const QueryPart: React.FC = () => {
   const [expandLayout, setExpandLayout] = useState<string>(LAYOUT_QUERY.HALF);
   const [isLoadingResult, setIsLoadingResult] = useState<boolean>(!!queryId);
   const [errorExecuteQuery, setErrorExecuteQuery] =
-    useState<IErrorExecuteQuery>();
+    useState<IErrorExecuteQuery | null>(null);
   const [selectedQuery, setSelectedQuery] = useState<string>('');
   const fetchQueryResultInterval = useRef<any>(null);
   const [openModalSettingQuery, setOpenModalSettingQuery] =
@@ -130,14 +130,14 @@ const QueryPart: React.FC = () => {
           clearInterval(fetchQueryResultInterval.current);
           setQueryResult(resInterval.result);
           if (resInterval?.error) {
-            setErrorExecuteQuery(resInterval?.error);
+            setErrorExecuteQuery(resInterval?.error || null);
           }
           setIsLoadingResult(false);
         }
       }, 2000);
     } else {
       setQueryResult(res.result);
-      setErrorExecuteQuery(res?.error);
+      setErrorExecuteQuery(res?.error || null);
       setIsLoadingResult(false);
     }
   };
@@ -202,8 +202,14 @@ const QueryPart: React.FC = () => {
       return executeSelectedQuery();
     }
     try {
+      const query = editorRef.current.editor.getValue();
+      if (!query) {
+        toastError({ message: 'Query must not be empty!' });
+        return;
+      }
+
       if (queryId) {
-        await updateQuery(editorRef.current.editor.getValue());
+        await updateQuery(query);
       } else {
         setOpenModalSettingQuery(true);
       }
