@@ -11,6 +11,7 @@ import { isMobile } from 'react-device-detect';
 import { useDispatch } from 'react-redux';
 import { getUserStats } from '../store/user';
 import { getErrorMessage } from '../utils/utils-helper';
+import { ROUTES } from '../utils/common';
 
 interface IModalEditApp {
   open: boolean;
@@ -34,7 +35,7 @@ const ModalDeleteApp: FC<IModalEditApp> = ({ open, onClose, appInfo }) => {
       await rf.getRequest('AppRequest').deleteApp(appInfo.appId);
       toastSuccess({ message: 'Delete Successfully!' });
       dispatch(getUserStats());
-      history.push('/');
+      history.push(ROUTES.TRIGGERS);
       onCloseModal();
     } catch (e) {
       toastError({ message: getErrorMessage(e) });

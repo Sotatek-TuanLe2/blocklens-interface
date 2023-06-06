@@ -1,10 +1,9 @@
 import { Box, Flex, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
-import React, { useState, FC, useRef } from 'react';
+import React, { useState, FC } from 'react';
 import {
   AppButton,
   AppCard,
   AppDataTable,
-  DataTableRef,
   AppLoadingTable,
 } from 'src/components';
 import rf from 'src/requests/RequestFactory';
@@ -14,7 +13,7 @@ import {
   getLogoChainByChainId,
   getNameChainByChainId,
 } from 'src/utils/utils-network';
-import ModalUpgradeCreateApp from 'src/modals/ModalUpgradeCreateApp';
+// import ModalUpgradeCreateApp from 'src/modals/ModalUpgradeCreateApp';
 import { isMobile } from 'react-device-detect';
 import ModalCreateApp from 'src/modals/ModalCreateApp';
 import useUser from 'src/hooks/useUser';
@@ -40,6 +39,50 @@ const _renderChainApp = (chain: string, network: string) => {
       <Box mr={1}>{getNameChainByChainId(chain)}</Box>
       <Box textTransform="capitalize"> {network}</Box>
     </Flex>
+  );
+};
+
+interface IButtonCreateApp {
+  onReload: () => void;
+}
+
+const ButtonCreateApp: FC<IButtonCreateApp> = ({ onReload }) => {
+  const [openCreateApp, setOpenCreateApp] = useState(false);
+
+  const _renderModalCreateApp = () => {
+    // const isLimitApp =
+    //   userPlan?.appLimitation &&
+    //   !!userStats?.totalApp &&
+    //   userStats?.totalApp >= userPlan?.appLimitation;
+    // return isLimitApp ? (
+    //   <ModalUpgradeCreateApp
+    //     open={openCreateApp}
+    //     onClose={() => setOpenCreateApp(false)}
+    //   />
+    // ) : (
+    //   <ModalCreateApp
+    //     reloadData={fetchDataTable}
+    //     open={openCreateApp}
+    //     onClose={() => setOpenCreateApp(false)}
+    //   />
+    // );
+
+    return (
+      <ModalCreateApp
+        reloadData={onReload}
+        open={openCreateApp}
+        onClose={() => setOpenCreateApp(false)}
+      />
+    );
+  };
+
+  return (
+    <>
+      <AppButton size={'sm'} onClick={() => setOpenCreateApp(true)}>
+        <Box className="icon-plus-circle" mr={2} /> Create
+      </AppButton>
+      {openCreateApp && _renderModalCreateApp()}
+    </>
   );
 };
 
@@ -113,10 +156,10 @@ const AppMobile: FC<IAppMobile> = ({ app }) => {
 const ListApps: React.FC = () => {
   const history = useHistory();
   const { user } = useUser();
-  const userPlan = user?.getPlan();
+  // const userPlan = user?.getPlan();
   const userStats = user?.getStats();
 
-  const [openCreateApp, setOpenCreateApp] = useState(false);
+  const [params, setParams] = useState({});
 
   const getTotalWebhookEachApp = async (appIds: string) => {
     try {
@@ -144,8 +187,6 @@ const ListApps: React.FC = () => {
     }
   };
 
-  const dataTableRef = useRef<DataTableRef>();
-
   const fetchDataTable: any = async (param: any) => {
     try {
       const res: any = await rf.getRequest('AppRequest').getListApp(param);
@@ -170,37 +211,6 @@ const ListApps: React.FC = () => {
     } catch (error) {
       return error;
     }
-  };
-
-  const onCreateApp = () => {
-    setOpenCreateApp(true);
-  };
-
-  const _renderModalCreateApp = () => {
-    // const isLimitApp =
-    //   userPlan?.appLimitation &&
-    //   !!userStats?.totalApp &&
-    //   userStats?.totalApp >= userPlan?.appLimitation;
-    // return isLimitApp ? (
-    //   <ModalUpgradeCreateApp
-    //     open={openCreateApp}
-    //     onClose={() => setOpenCreateApp(false)}
-    //   />
-    // ) : (
-    //   <ModalCreateApp
-    //     reloadData={fetchDataTable}
-    //     open={openCreateApp}
-    //     onClose={() => setOpenCreateApp(false)}
-    //   />
-    // );
-
-    return (
-      <ModalCreateApp
-        reloadData={fetchDataTable}
-        open={openCreateApp}
-        onClose={() => setOpenCreateApp(false)}
-      />
-    );
   };
 
   const _renderHeader = () => {
@@ -287,19 +297,18 @@ const ListApps: React.FC = () => {
           <Text className="text-title">Apps</Text>
           <Flex alignItems={'center'}>
             {!isMobile && _renderTotalApp()}
-            <AppButton size={'sm'} onClick={onCreateApp}>
-              <Box className="icon-plus-circle" mr={2} /> Create
-            </AppButton>
+            <ButtonCreateApp onReload={() => setParams({ ...params })} />
           </Flex>
         </Flex>
+
         {isMobile && (
           <Box px={5} mb={3}>
             {_renderTotalApp()}
           </Box>
         )}
+
         <AppDataTable
-          //@ts-ignore
-          ref={dataTableRef}
+          requestParams={{ ...params }}
           renderLoading={_renderLoading}
           fetchData={fetchDataTable}
           renderBody={_renderBody}
@@ -307,7 +316,6 @@ const ListApps: React.FC = () => {
           limit={10}
         />
       </AppCard>
-      {_renderModalCreateApp()}
     </Box>
   );
 };
