@@ -189,11 +189,11 @@ const Sidebar: React.FC<{
 
   const [schemaDescribe, setSchemaDescribe] = useState<SchemaType[]>([]);
 
-  const [dataPaginationQueries, setDataPaginationQueries] = useState<
+  const [dataQueriesPagination, setDataQueriesPagination] = useState<
     IPagination | undefined
   >();
 
-  const [dataPaginationDashboard, setDataPaginationDashboard] = useState<
+  const [dataDashboardPagination, setDataDashboardPagination] = useState<
     IPagination | undefined
   >();
 
@@ -233,13 +233,13 @@ const Sidebar: React.FC<{
         _.omitBy(
           {
             search: searchValueWorkPlace.trim(),
-            page: (dataPaginationDashboard?.currentPage || 1) + 1,
+            page: (dataDashboardPagination?.currentPage || 1) + 1,
           },
           (param) => !param,
         ),
       );
       const { currentPage, itemsPerPage, totalPages }: IPagination = res;
-      setDataPaginationDashboard({ currentPage, itemsPerPage, totalPages });
+      setDataDashboardPagination({ currentPage, itemsPerPage, totalPages });
       setDataDashboards((pre) => [...pre, ...res.docs]);
     } catch (error) {
       toastError({ message: getErrorMessage(error) });
@@ -252,14 +252,14 @@ const Sidebar: React.FC<{
         _.omitBy(
           {
             search: searchValueWorkPlace.trim(),
-            page: (dataPaginationQueries?.currentPage || 1) + 1,
+            page: (dataQueriesPagination?.currentPage || 1) + 1,
           },
           (param) => !param,
         ),
       );
 
       const { currentPage, itemsPerPage, totalPages }: IPagination = res;
-      setDataPaginationQueries({ currentPage, itemsPerPage, totalPages });
+      setDataQueriesPagination({ currentPage, itemsPerPage, totalPages });
       setDataQueries((pre) => [...pre, ...res.docs]);
     } catch (error) {}
   };
@@ -278,7 +278,7 @@ const Sidebar: React.FC<{
       if (data[0].value.docs) {
         const { currentPage, itemsPerPage, totalPages }: IPagination =
           data[0].value;
-        setDataPaginationDashboard({ currentPage, itemsPerPage, totalPages });
+        setDataDashboardPagination({ currentPage, itemsPerPage, totalPages });
       }
       setDataQueries(() => {
         return data[1].status === PROMISE_STATUS.FULFILLED
@@ -293,7 +293,7 @@ const Sidebar: React.FC<{
           totalPages: data[1].value.totalPages,
         };
 
-        setDataPaginationQueries(dataPaginationQueries);
+        setDataQueriesPagination(dataPaginationQueries);
       }
     } catch (error) {
       toastError({
@@ -408,8 +408,8 @@ const Sidebar: React.FC<{
               dataLength={dataQueries.length}
               next={fetchInfiniteScrollQueries}
               hasMore={
-                (dataPaginationQueries?.currentPage || 0) <
-                (dataPaginationQueries?.totalPages || 0)
+                (dataQueriesPagination?.currentPage || 0) <
+                (dataQueriesPagination?.totalPages || 0)
               }
               loader={
                 <Flex justifyContent={'center'}>
@@ -493,8 +493,8 @@ const Sidebar: React.FC<{
               dataLength={dataDashboards.length}
               next={fetchInfiniteScrollDashboard}
               hasMore={
-                (dataPaginationDashboard?.currentPage || 0) <
-                (dataPaginationDashboard?.totalPages || 0)
+                (dataDashboardPagination?.currentPage || 0) <
+                (dataDashboardPagination?.totalPages || 0)
               }
               loader={
                 <Flex justifyContent={'center'}>
