@@ -1,4 +1,4 @@
-import { Checkbox, Flex, Link, Spinner, Text } from '@chakra-ui/react';
+import { Checkbox, Flex, Link, Spinner, Text, Tooltip } from '@chakra-ui/react';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   AreaChartIcon,
@@ -339,9 +339,13 @@ const AddVisualizationCheckbox: React.FC<IAddVisualizationCheckbox> = ({
           isChecked={checkAdded}
         />
         {getIcon(conditionDisplayIcon())}
-        <Link className="visualization-name">{visualization.name}</Link>
+        <Link className="visualization-name">
+          <Tooltip label={visualization.name}>{visualization.name}</Tooltip>
+        </Link>
         <Text className="user-name">
-          @{userName} / {query.name}
+          <Tooltip label={`@${userName} / ${query.name}`}>
+            {`@${userName} / ${query.name}`}
+          </Tooltip>
         </Text>
       </Flex>
     </>
