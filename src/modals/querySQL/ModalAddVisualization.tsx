@@ -1,4 +1,4 @@
-import { Checkbox, Flex, Link, Text } from '@chakra-ui/react';
+import { Checkbox, Flex, Link, Spinner, Text } from '@chakra-ui/react';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   AreaChartIcon,
@@ -223,7 +223,17 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
               (dataVisualPagination?.currentPage || 0) <
               (dataVisualPagination?.totalPages || 0)
             }
-            loader={<h4 style={{ textAlign: 'center' }}>Loading...</h4>}
+            loader={
+              <Flex justifyContent={'center'}>
+                <Spinner
+                  thickness="4px"
+                  speed="0.65s"
+                  emptyColor="gray.200"
+                  color="blue.500"
+                  size="md"
+                />
+              </Flex>
+            }
             scrollableTarget="main-queries"
           >
             {!!dataFilter.length ? (

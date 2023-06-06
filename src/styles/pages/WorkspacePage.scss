@@ -44,9 +44,6 @@
         justify-content: center;
       }
 
-      .infinite-scroll {
-        overflow: hidden !important;
-      }
       &.hidden-sidebar {
         overflow: hidden;
         animation: hiddenSidebar 0.5s forwards;
