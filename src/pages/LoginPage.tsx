@@ -13,7 +13,7 @@ import GuestPage from 'src/layouts/GuestPage';
 import { createValidator } from 'src/utils/utils-validator';
 import 'src/styles/pages/LoginPage.scss';
 import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router';
+import { useHistory, useLocation } from 'react-router';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { setUserAuth } from '../store/user';
@@ -33,6 +33,7 @@ const LoginPage: FC = () => {
 
   const dispatch = useDispatch();
   const history = useHistory();
+  const location = useLocation();
 
   const [dataForm, setDataForm] = useState<IDataForm>(initDataLogin);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
@@ -54,7 +55,7 @@ const LoginPage: FC = () => {
       if (res) {
         dispatch(setUserAuth(res));
         toastSuccess({ message: 'Welcome to Blocklens!' });
-        history.push('/');
+        history.push((location.state as any).originPath);
       }
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
