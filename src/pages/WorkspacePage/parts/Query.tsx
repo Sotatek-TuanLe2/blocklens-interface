@@ -129,9 +129,7 @@ const QueryPart: React.FC = () => {
         if (resInterval.status !== QUERY_RESULT_STATUS.WAITING) {
           clearInterval(fetchQueryResultInterval.current);
           setQueryResult(resInterval.result);
-          if (resInterval?.error) {
-            setErrorExecuteQuery(resInterval?.error || null);
-          }
+          setErrorExecuteQuery(resInterval?.error || null);
           setIsLoadingResult(false);
         }
       }, 2000);

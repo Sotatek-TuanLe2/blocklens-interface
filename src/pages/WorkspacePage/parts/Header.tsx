@@ -135,7 +135,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
         )}
       </div>
       <div className="workspace-page__editor__header__right">
-        {needAuthentication && !isCreatingQuery && !isEdit && (
+        {/* {needAuthentication && !isCreatingQuery && !isEdit && (
           <div className="switch-icon">
             <Switch
               id="email-alerts"
@@ -147,31 +147,34 @@ const Header: React.FC<IHeaderProps> = (props) => {
               Publish
             </FormLabel>
           </div>
-        )}
+        )} */}
         {needAuthentication &&
           (isDashboard ? (
-            <Tooltip
-              label={isEdit ? 'Edit Dashboard' : ''}
-              hasArrow
-              placement="top"
-            >
-              <AppButton
-                onClick={onChangeEditMode}
-                size="sm"
-                leftIcon={
-                  <p
-                    className={
-                      isEdit
-                        ? 'bg-icon_success_dashboard'
-                        : 'bg-icon_edit_dashboard'
-                    }
-                  />
-                }
-                me="10px"
+            (!!(dataClass as Dashboard)?.getDashboardVisuals().length ||
+              !!(dataClass as Dashboard)?.getTextWidgets().length) && (
+              <Tooltip
+                label={isEdit ? 'Edit Dashboard' : ''}
+                hasArrow
+                placement="top"
               >
-                {isEdit ? 'Done' : 'Edit'}
-              </AppButton>
-            </Tooltip>
+                <AppButton
+                  onClick={onChangeEditMode}
+                  size="sm"
+                  leftIcon={
+                    <p
+                      className={
+                        isEdit
+                          ? 'bg-icon_success_dashboard'
+                          : 'bg-icon_edit_dashboard'
+                      }
+                    />
+                  }
+                  me="10px"
+                >
+                  {isEdit ? 'Done' : 'Edit'}
+                </AppButton>
+              </Tooltip>
+            )
           ) : (
             <Tooltip label="Run Query" hasArrow placement="top">
               <AppButton

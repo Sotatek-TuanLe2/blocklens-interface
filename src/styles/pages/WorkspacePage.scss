@@ -6,7 +6,15 @@
   display: flex;
   gap: 10px;
   height: 860px;
-
+  .ref-line {
+    position: relative;
+    text {
+      tspan {
+        font-size: 12px;
+        fill: $paragraph;
+      }
+    }
+  }
   &__sidebar {
     display: flex;
     height: 100%;
@@ -36,6 +44,13 @@
       background-color: #101530;
       border-top-right-radius: 6px;
       border-bottom-right-radius: 6px;
+
+      .data-empty {
+        color: $paragraph;
+        font-size: 14px;
+        display: flex;
+        justify-content: center;
+      }
 
       &.hidden-sidebar {
         overflow: hidden;
