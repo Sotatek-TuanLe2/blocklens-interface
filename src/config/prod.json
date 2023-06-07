@@ -8,7 +8,7 @@
   "api": {
     "baseUrlApi": "https://blocksniper-api.sotatek.works/api/blocklens-users",
     "notificationsApi": "https://blocksniper-api.sotatek.works/api/blocklens-notifications",
-    "authApi": "https://buni-dev-api.sotatek.works/api/blocklens-auth",
+    "authApi": "https://blocksniper-api.sotatek.works/api/blocklens-auth",
     "dashboard": ""
   },
   "defaultNetwork": "ETH",

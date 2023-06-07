@@ -21,7 +21,7 @@ import {
 } from 'src/components';
 import AppUploadABI from 'src/components/AppUploadABI';
 import { createValidator } from 'src/utils/utils-validator';
-import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
+import { CHAINS, WEBHOOK_TYPES } from 'src/utils/utils-webhook';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { isValidAddressEVM } from 'src/utils/utils-helper';
@@ -33,6 +33,7 @@ import { useLocation } from 'react-router';
 import { DownloadIcon } from 'src/assets/icons';
 import { useDispatch } from 'react-redux';
 import { getUserStats } from 'src/store/user';
+import PartFormAddressAptos from './parts/PartFormAddressAptos';
 
 const FILE_CSV_EXAMPLE = '/abi/CSV_Example.csv';
 
@@ -253,6 +254,10 @@ const CreateWebhook = () => {
     [addressesInvalid],
   );
 
+  const _renderFormAddressAptos = () => {
+    return <PartFormAddressAptos />;
+  };
+
   const _renderFormAddressActivity = () => {
     const onChangeAddresses = (e: any) => {
       const value = e.target.value.split(new RegExp(/,|;|\n|\s/));
@@ -472,6 +477,13 @@ const CreateWebhook = () => {
 
     if (type === WEBHOOK_TYPES.CONTRACT_ACTIVITY) {
       return _renderFormContractActivity();
+    }
+
+    if (
+      type === WEBHOOK_TYPES.ADDRESS_ACTIVITY &&
+      appInfo.chain === CHAINS.APTOS
+    ) {
+      return _renderFormAddressAptos();
     }
 
     return _renderFormAddressActivity();
