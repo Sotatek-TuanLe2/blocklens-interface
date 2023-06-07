@@ -1,4 +1,3 @@
-import { Checkbox } from '@chakra-ui/checkbox';
 import { Grid, GridItem, Text } from '@chakra-ui/layout';
 import React, { useMemo, useRef, useState } from 'react';
 import { VISUALIZATION_DEBOUNCE } from 'src/pages/WorkspacePage/parts/VisualizationDisplay';
@@ -65,6 +64,18 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
         ...editVisualization.options,
         ...data,
       },
+    });
+  };
+
+  const onChangeStringDecimal = (e: any) => {
+    let value = e.target.value.replace(/[-e]/gi, '');
+    if (value <= 0) {
+      value = 0;
+    } else if (value >= 9) {
+      value = 9;
+    }
+    onChangeCounterConfigurations({
+      stringDecimal: value,
     });
   };
 
@@ -221,15 +232,9 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
                 placeholder="1"
                 size={'sm'}
                 className="input-table"
-                value={dataColumn?.stringDecimal}
+                value={parseInt(dataColumn?.stringDecimal, 10).toString()}
                 onKeyDown={onKeyDown}
-                onChange={(e) => {
-                  const value = e?.target?.value.replace(/[-e]/gi, '');
-                  if (value.length > 1) return;
-                  onChangeCounterConfigurations({
-                    stringDecimal: value,
-                  });
-                }}
+                onChange={onChangeStringDecimal}
               />
             </div>
           </div>
