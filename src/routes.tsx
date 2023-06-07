@@ -67,6 +67,8 @@ const Routes: FC<RouteComponentProps> = () => {
   const dispatch = useDispatch<any>();
   const accessToken = Storage.getAccessToken();
   const history = useHistory();
+  const location = useLocation();
+
   const isExpireTimeToken =
     Storage.getExpireTimeToken() &&
     new Date().getTime() >= Number(Storage.getExpireTimeToken());
@@ -78,7 +80,7 @@ const Routes: FC<RouteComponentProps> = () => {
     if (!accessToken || isExpireTimeToken) {
       dispatch(clearUser());
       if (!GUEST_PATH.includes(pathname)) {
-        history.push(ROUTES.LOGIN);
+        history.push(ROUTES.LOGIN, { originPath: location.pathname });
       }
       return;
     }
@@ -185,6 +187,7 @@ const PublicRoute = ({ component: Component, path, ...rest }: any) => {
 
 const PrivateRoute = ({ component: Component, ...rest }: any) => {
   const accessToken = Storage.getAccessToken();
+  const location = useLocation();
 
   return (
     <Route
@@ -197,6 +200,7 @@ const PrivateRoute = ({ component: Component, ...rest }: any) => {
           <Redirect
             to={{
               pathname: '/login',
+              state: { originPath: location.pathname },
             }}
           />
         )
