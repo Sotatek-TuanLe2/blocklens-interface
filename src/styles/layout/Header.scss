@@ -45,10 +45,17 @@
         padding-inline-end: 0;
 
         display: block;
-        text-align: center;
+        text-align: left;
         font-weight: 700;
         &:focus {
           background-color: transparent;
+        }
+
+        .user-account {
+          color: $paragraph;
+          &:hover {
+            color: $title;
+          }
         }
         .user-email,
         .user-name {
@@ -109,7 +116,7 @@
     font-weight: 600;
     font-family: 'DM Sans';
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     @include tablet {
       font-weight: 500;

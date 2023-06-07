@@ -36,7 +36,11 @@ const menus = [
   },
   {
     name: 'APIs',
-    path: '/',
+    path: ROUTES.HOME,
+  },
+  {
+    name: 'Account',
+    path: ROUTES.ACCOUNT,
   },
 ];
 
@@ -86,15 +90,22 @@ const Header: FC = () => {
             <Avatar name={user?.getFirstName()} size="sm" />
           </MenuButton>
           <MenuList className="menu-header">
-            <MenuItem
-              className="user-info"
-              onClick={() => history.push(ROUTES.ACCOUNT)}
-            >
+            <MenuItem className="user-info">
               <div className="user-name">
                 {user?.getFirstName() + ' ' + user?.getLastName()}
               </div>
 
               <div className="user-email">{user?.getEmail()}</div>
+
+              <Box
+                className="user-account"
+                textAlign={'left'}
+                mt={3}
+                fontWeight={500}
+                onClick={() => history.push(ROUTES.ACCOUNT)}
+              >
+                Account
+              </Box>
               <div className="user-divider"></div>
               <div className="user-logout" onClick={onLogout}>
                 {' '}
@@ -144,6 +155,10 @@ const Header: FC = () => {
     return (
       <Flex className={`${isMobile ? 'menu-mobile' : 'menu'}`}>
         {menus.map((item, index: number) => {
+          if (!isMobile && item.path === ROUTES.ACCOUNT) {
+            return;
+          }
+
           return (
             <AppLink
               to={item.path}
