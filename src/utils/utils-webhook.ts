@@ -112,3 +112,9 @@ export const getColorBrandStatus = (status: string) => {
       return 'inactive';
   }
 };
+
+export const CHAINS = {
+  APTOS: 'APTOS',
+  ETH: 'ETH',
+  SUI: 'SUI',
+};
