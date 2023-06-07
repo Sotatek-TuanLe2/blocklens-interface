@@ -17,7 +17,7 @@ const requestMap = {
   BillingRequest,
   AuthServiceRequest,
   DashboardsRequest,
-  AptosRequest
+  AptosRequest,
 };
 
 const instances = {};
