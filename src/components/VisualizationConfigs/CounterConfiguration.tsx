@@ -69,10 +69,10 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
 
   const onChangeStringDecimal = (e: any) => {
     let value = e.target.value.replace(/[-e]/gi, '');
-    if (value <= 0) {
-      value = 0;
-    } else if (value >= 9) {
-      value = 9;
+    if (+value <= 0) {
+      value = '0';
+    } else if (+value >= 9) {
+      value = '9';
     }
     onChangeCounterConfigurations({
       stringDecimal: value,
@@ -232,7 +232,11 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
                 placeholder="1"
                 size={'sm'}
                 className="input-table"
-                value={parseInt(dataColumn?.stringDecimal, 10).toString()}
+                value={
+                  dataColumn?.stringDecimal
+                    ? parseInt(dataColumn?.stringDecimal, 10)?.toString()
+                    : '0'
+                }
                 onKeyDown={onKeyDown}
                 onChange={onChangeStringDecimal}
               />
