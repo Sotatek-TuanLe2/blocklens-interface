@@ -230,6 +230,9 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
               onChange({
                 ...selectedItem,
                 type: e,
+                coloredProgress: false,
+                coloredPositive: false,
+                coloredNegative: false,
               })
             }
             options={optionType}
@@ -294,6 +297,8 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
                 onChange({
                   ...selectedItem,
                   coloredProgress: e.target.checked,
+                  coloredPositive: e.target.checked,
+                  coloredNegative: e.target.checked,
                 })
               }
             />
