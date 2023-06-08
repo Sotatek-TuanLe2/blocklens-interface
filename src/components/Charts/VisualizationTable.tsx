@@ -158,165 +158,173 @@ const VisualizationTable = <T,>({
       </div>
 
       <Box className="main-table">
-        <table
-          className={'table-value'}
-          {...{
-            style: {
-              width: '100%',
-            },
-          }}
-        >
-          <thead>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <tr
-                key={headerGroup.id}
-                style={{
-                  width: 'fit-content',
-                  // display: 'flex',
-                }}
-              >
-                {headerGroup.headers.map((header: any) => (
-                  <th
-                    {...{
-                      key: header.id,
-                      style: {
-                        paddingLeft: '24px',
-                        textTransform: 'uppercase',
-                        color: '#465065',
-                        width: header.getSize(),
-                        textAlign: header.column.columnDef.align,
-                        display: header.column.columnDef.isHidden
-                          ? 'none'
-                          : undefined,
-                      },
-                    }}
-                  >
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        ) || header.column.columnDef.accessorKey}
-
-                    <div
+        {!!table.getRowModel().rows?.length ? (
+          <table
+            className={'table-value'}
+            {...{
+              style: {
+                width: '100%',
+              },
+            }}
+          >
+            <thead>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <tr
+                  key={headerGroup.id}
+                  style={{
+                    width: 'fit-content',
+                    // display: 'flex',
+                  }}
+                >
+                  {headerGroup.headers.map((header: any) => (
+                    <th
                       {...{
-                        onMouseDown: header.getResizeHandler(),
-                        onTouchStart: header.getResizeHandler(),
-                        className: `resizer ${
-                          header.column.getIsResizing() ? 'isResizing' : ''
-                        }`,
+                        key: header.id,
                         style: {
-                          transform: header.column.getIsResizing()
-                            ? `translateX(${
-                                table.getState().columnSizingInfo.deltaOffset
-                              }px)`
-                            : '',
-                        },
-                      }}
-                    />
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </thead>
-          <tbody>
-            {table.getRowModel().rows.map((row, index) => (
-              <tr key={row.id}>
-                {row.getVisibleCells().map((cells: any) => {
-                  const {
-                    align,
-                    isHidden,
-                    coloredPositive,
-                    coloredNegative,
-                    type,
-                    format,
-                    coloredProgress,
-                  } = cells.column.columnDef;
-                  const value = cells.getValue();
-                  const isNumberValue = isNumber(value);
-
-                  const percent =
-                    type === COLUMN_TYPES.PROGRESS
-                      ? new BigNumber(value)
-                          .dividedBy(
-                            new BigNumber(columnMaxValues[cells.column.id]),
-                          )
-                          .multipliedBy(100)
-                          .toNumber()
-                      : 0;
-
-                  const checkColor = (value: any) => {
-                    switch (true) {
-                      case new BigNumber(value).isGreaterThan(0) &&
-                        coloredPositive:
-                        return VISUALIZATION_COLORS.POSITIVE;
-                      case new BigNumber(value).isLessThan(0) &&
-                        coloredNegative:
-                        return VISUALIZATION_COLORS.NEGATIVE;
-                      default:
-                        return undefined;
-                    }
-                  };
-
-                  return (
-                    <td
-                      {...{
-                        key: cells.id,
-                        style: {
-                          width: cells.column.getSize(),
-                          display: isHidden ? 'none' : undefined,
+                          paddingLeft: '24px',
+                          textTransform: 'uppercase',
+                          color: '#465065',
+                          width: header.getSize(),
+                          textAlign: header.column.columnDef.align,
+                          display: header.column.columnDef.isHidden
+                            ? 'none'
+                            : undefined,
                         },
                       }}
                     >
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          ) || header.column.columnDef.accessorKey}
+
                       <div
-                        className="progressbar"
+                        {...{
+                          onMouseDown: header.getResizeHandler(),
+                          onTouchStart: header.getResizeHandler(),
+                          className: `resizer ${
+                            header.column.getIsResizing() ? 'isResizing' : ''
+                          }`,
+                          style: {
+                            transform: header.column.getIsResizing()
+                              ? `translateX(${
+                                  table.getState().columnSizingInfo.deltaOffset
+                                }px)`
+                              : '',
+                          },
+                        }}
+                      />
+                    </th>
+                  ))}
+                </tr>
+              ))}
+            </thead>
+            <tbody>
+              {table.getRowModel().rows.map((row, index) => (
+                <tr key={row.id}>
+                  {row.getVisibleCells().map((cells: any) => {
+                    const {
+                      align,
+                      isHidden,
+                      coloredPositive,
+                      coloredNegative,
+                      type,
+                      format,
+                      coloredProgress,
+                    } = cells.column.columnDef;
+                    const value = cells.getValue();
+                    const isNumberValue = isNumber(value);
+
+                    const percent =
+                      type === COLUMN_TYPES.PROGRESS
+                        ? new BigNumber(value)
+                            .dividedBy(
+                              new BigNumber(columnMaxValues[cells.column.id]),
+                            )
+                            .multipliedBy(100)
+                            .toNumber()
+                        : 0;
+
+                    const checkColor = (value: any) => {
+                      switch (true) {
+                        case new BigNumber(value).isGreaterThan(0) &&
+                          coloredPositive:
+                          return VISUALIZATION_COLORS.POSITIVE;
+                        case new BigNumber(value).isLessThan(0) &&
+                          coloredNegative:
+                          return VISUALIZATION_COLORS.NEGATIVE;
+                        default:
+                          return undefined;
+                      }
+                    };
+
+                    return (
+                      <td
                         {...{
                           key: cells.id,
                           style: {
-                            fontWeight: 400,
-                            justifyContent: align,
-                            color: isNumberValue
-                              ? checkColor(cells.getValue())
-                              : undefined,
+                            width: cells.column.getSize(),
+                            display: isHidden ? 'none' : undefined,
                           },
                         }}
                       >
-                        {type === COLUMN_TYPES.PROGRESS && isNumberValue && (
-                          <div
-                            style={
-                              {
-                                '--myColor': coloredProgress
-                                  ? VISUALIZATION_COLORS.POSITIVE
-                                  : '#3965ff',
-                                '--myProgressBar': `${percent}%`,
-                              } as React.CSSProperties
-                            }
-                            className="visual-progressbar"
-                          />
-                        )}
-                        {!!value?.toString() &&
-                          formatVisualizationValue(format, value.toString())}
-                      </div>
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                        <div
+                          className="progressbar"
+                          {...{
+                            key: cells.id,
+                            style: {
+                              fontWeight: 400,
+                              justifyContent: align,
+                              color: isNumberValue
+                                ? checkColor(cells.getValue())
+                                : undefined,
+                            },
+                          }}
+                        >
+                          {type === COLUMN_TYPES.PROGRESS && isNumberValue && (
+                            <div
+                              style={
+                                {
+                                  '--myColor': coloredProgress
+                                    ? VISUALIZATION_COLORS.POSITIVE
+                                    : '#3965ff',
+                                  '--myProgressBar': `${percent}%`,
+                                } as React.CSSProperties
+                              }
+                              className="visual-progressbar"
+                            />
+                          )}
+                          {!!value?.toString() &&
+                            formatVisualizationValue(format, value.toString())}
+                        </div>
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <Flex justifyContent={'center'} alignItems={'center'} h={'100%'}>
+            No data...
+          </Flex>
+        )}
       </Box>
-      <Flex
-        justifyContent={'flex-end'}
-        alignItems={'baseline'}
-        className="table-pagination"
-      >
-        <div className="data-length">{data.length} rows</div>
-        <AppPagination
-          pageCount={pageCount}
-          forcePage={pagination}
-          onPageChange={handlePageClick}
-        />
-      </Flex>
+      {!!table.getRowModel().rows?.length && (
+        <Flex
+          justifyContent={'flex-end'}
+          alignItems={'baseline'}
+          className="table-pagination"
+        >
+          <div className="data-length">{data.length} rows</div>
+          <AppPagination
+            pageCount={pageCount}
+            forcePage={pagination}
+            onPageChange={handlePageClick}
+          />
+        </Flex>
+      )}
     </>
   );
 };
