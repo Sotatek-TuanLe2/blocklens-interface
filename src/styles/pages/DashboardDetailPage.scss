@@ -47,7 +47,6 @@
       .table-content {
         max-height: calc(100% - 80px);
         overflow: auto;
-        height: 100%;
 
         .table-pagination {
           background: $card;
@@ -163,9 +162,7 @@
         align-items: center;
       }
 
-      &--loading,
-      &--error,
-      &--empty {
+      &--loading, &--error, &--empty {
         height: calc(100% - 50px);
       }
     }
