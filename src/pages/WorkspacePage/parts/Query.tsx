@@ -234,15 +234,17 @@ const QueryPart: React.FC = () => {
       >
         <div className="query-container queries-page">
           <Box className="queries-page__right-side">
-            <Box className="editor-wrapper">
+            <Box className="editor-wrapper theme-background">
               <Box className="header-tab">
                 <div className="header-tab__info">
                   {queryClass?.getChains() && (
                     <AppNetworkIcons networkIds={queryClass?.getChains()} />
                   )}
-                  {['defi', 'gas', 'dex'].map((item) => (
-                    <AppTag key={item} value={item} />
-                  ))}
+                  <div className="header-tab__info tag">
+                    {['defi', 'gas', 'dex'].map((item) => (
+                      <AppTag key={item} value={item} />
+                    ))}
+                  </div>
                 </div>
                 <Tooltip
                   label={
@@ -305,7 +307,7 @@ const QueryPart: React.FC = () => {
             </Box>
             {queryId && !!queryValue && (
               <div
-                className={`add-chart ${
+                className={`add-chart theme-background${
                   expandLayout === LAYOUT_QUERY.HIDDEN
                     ? 'expand-chart'
                     : expandLayout === LAYOUT_QUERY.HALF

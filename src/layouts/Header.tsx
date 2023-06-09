@@ -13,6 +13,8 @@ import {
   Box,
   Flex,
   Avatar,
+  Button,
+  useColorMode,
 } from '@chakra-ui/react';
 import { Link, useLocation } from 'react-router-dom';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
@@ -51,6 +53,7 @@ const Header: FC = () => {
   const [isOpenSignInRequestModal, setIsOpenSignInRequestModal] =
     useState<boolean>(false);
   const [isOpenMenuMobile, setIsOpenMenuMobile] = useState<boolean>(false);
+  const { colorMode, toggleColorMode } = useColorMode();
   const history = useHistory();
   const { user } = useUser();
   const accessToken = Storage.getAccessToken();
@@ -113,6 +116,9 @@ const Header: FC = () => {
             </MenuItem>
           </MenuList>
         </Menu>
+        <Button size="sm" colorScheme="blue" onClick={toggleColorMode}>
+          Toggle Mode
+        </Button>
       </Box>
     );
   };

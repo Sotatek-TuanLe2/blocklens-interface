@@ -196,7 +196,9 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
           <AppButton
             onClick={() => onChangeChain('')}
             variant="network"
-            className={chain === '' ? 'btn-active' : 'btn-inactive'}
+            className={`dashboard-filter__network ${
+              chain === '' ? 'btn-active' : 'btn-inactive'
+            }`}
           >
             {chain === '' ? <FireIcon /> : <FireIconInactive />}
             <Text ml={2}>All</Text>
@@ -210,9 +212,9 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
                   onClick={() => onChangeChain(network.value)}
                   key={index}
                   variant="network"
-                  className={
+                  className={`dashboard-filter__network ${
                     chain === network.value ? 'btn-active' : 'btn-inactive'
-                  }
+                  }`}
                 >
                   <Box
                     className={
@@ -279,7 +281,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
           _renderNetWork()
         )}
         {!!user && (
-          <AppButton onClick={onClickNew}>
+          <AppButton className="btn-primary" onClick={onClickNew}>
             <Box className="icon-plus-circle" mr={2} /> Create
           </AppButton>
         )}
@@ -330,7 +332,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
       <Flex
         mt={'14px'}
         flexDirection={'row'}
-        className="dashboard-filter__tag-list"
+        className="dashboard-filter__tag-list tag "
       >
         {listTags.map((item) => (
           <AppTag

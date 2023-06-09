@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
-import { FormLabel, Switch, Tooltip, Spinner } from '@chakra-ui/react';
+import { useMemo } from 'react';
+import { Tooltip, Spinner } from '@chakra-ui/react';
 import { useHistory, useParams } from 'react-router-dom';
 import { AppButton } from 'src/components';
 import AppQueryMenu, { QUERY_MENU_LIST } from 'src/components/AppQueryMenu';
@@ -116,7 +116,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
   };
 
   return (
-    <div className="workspace-page__editor__header">
+    <div className="workspace-page__editor__header theme-background">
       <div className="workspace-page__editor__header__left">
         <Tooltip label="Back" hasArrow placement="top">
           <AppButton
@@ -178,9 +178,10 @@ const Header: React.FC<IHeaderProps> = (props) => {
           ) : (
             <Tooltip label="Run Query" hasArrow placement="top">
               <AppButton
+                className="btn-primary"
                 onClick={onRunQuery}
                 size="sm"
-                leftIcon={<span className="icon-run-query" />}
+                leftIcon={<span className="icon-run-query " />}
                 me="10px"
                 disabled={isLoadingRun}
                 fontSize={'14px'}

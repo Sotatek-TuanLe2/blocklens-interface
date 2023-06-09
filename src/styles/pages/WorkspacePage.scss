@@ -23,7 +23,6 @@
     }
     &__categories {
       padding: 14px;
-      background-color: #101530;
       border-top-left-radius: 6px;
       border-bottom-left-radius: 6px;
       display: flex;
@@ -40,8 +39,7 @@
     &__content {
       height: 100%;
       flex: 1;
-      border-left: 1px solid #2f3b58;
-      background-color: #101530;
+      border-left: 1px solid rgba(0, 2, 36, 0.1);
       border-top-right-radius: 6px;
       border-bottom-right-radius: 6px;
 
@@ -65,7 +63,7 @@
 
       &__work-place-detail {
         @include text-small-regular;
-        color: $paragraph;
+        color: $paragraph1;
         padding: 0px 16px;
         width: 100%;
         display: flex;
@@ -119,9 +117,9 @@
             overflow-y: auto;
           }
         }
-        // &__list-dashboard {
-        //   padding-bottom: 10px;
-        // }
+        &__input-search {
+          border: 1px solid #c7d2e1;
+        }
       }
 
       &__explore-wrap {
@@ -262,11 +260,7 @@
 
             &:hover {
               border: 1px solid $blue;
-              background: linear-gradient(
-                268.85deg,
-                rgba(34, 108, 255, 0.12) 22.48%,
-                rgba(16, 132, 255, 0.12) 83.59%
-              );
+              background: linear-gradient(268.85deg, rgba(34, 108, 255, 0.12) 22.48%, rgba(16, 132, 255, 0.12) 83.59%);
             }
           }
         }
@@ -343,6 +337,10 @@
         .network-icons {
           margin-right: 24px;
         }
+      }
+      &__tag {
+        display: flex;
+        align-items: center;
       }
 
       .add-button {
