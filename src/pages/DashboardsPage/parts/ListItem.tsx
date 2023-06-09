@@ -160,23 +160,23 @@ const ListItem: React.FC<IListItem> = (props) => {
               <div className="item-name">{itemClass.getName()}</div>
             </Tooltip>
           </Link>
-          <div className="item-desc">
+          <Link to={getTitleUrl()} className="item-desc">
             <img src="/images/AvatarDashboardCard.png" alt="avatar" />
             <p>Tyler Covington</p>
-          </div>
-          <div className="item-chain">
+          </Link>
+          <Link to={getTitleUrl()} className="item-chain">
             {itemClass.getChains() && (
               <AppNetworkIcons networkIds={itemClass.getChains()} />
             )}
-          </div>
-          <div className="item-date">
+          </Link>
+          <Link to={getTitleUrl()} className="item-date">
             {moment(itemClass.getCreatedTime()).format('YYYY MMMM Do')}
-          </div>
-          <div className="item-tag">
+          </Link>
+          <Link to={getTitleUrl()} className="item-tag">
             {listTags.map((item) => (
               <AppTag key={item.id} value={item.name} />
             ))}
-          </div>
+          </Link>
           {/* <div className="item-favorite">
             {favorite ? (
               <IconHeartFavorite onClick={() => setFavorite((pre) => !pre)} />
