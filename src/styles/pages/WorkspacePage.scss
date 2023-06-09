@@ -63,7 +63,6 @@
 
       &__work-place-detail {
         @include text-small-regular;
-        color: $paragraph1;
         padding: 0px 16px;
         width: 100%;
         display: flex;
@@ -78,14 +77,20 @@
           display: none;
         }
         &:hover {
-          background-color: #1a203b;
+          background-color: #0060db;
+          color: $title;
           .app-query-menu {
             display: block;
           }
         }
       }
       .work-place-active {
-        color: $title;
+        color: #0060db;
+        p {
+          &:hover {
+            color: $title !important;
+          }
+        }
       }
       &__work-place-wrap {
         width: 240px;

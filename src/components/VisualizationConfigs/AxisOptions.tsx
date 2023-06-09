@@ -64,8 +64,8 @@ export const XAxisOptions: React.FC<IXAxisOptions> = ({
       </div>
       <CheckboxGroup>
         {checkboxConfigs.map((option) => (
-          <div className="main-toggle" key={option.value}>
-            <div className="label-toggle"> {option.label}</div>
+          <div className="main-toggle theme-text" key={option.value}>
+            <div className="label-toggle theme-text"> {option.label}</div>
             <Switch
               key={option.value}
               // @ts-ignore
@@ -147,8 +147,8 @@ export const YAxisOptions: React.FC<IYAxisOptions> = ({
           name={'labelFormat'}
         />
       </div>
-      <div className="main-toggle">
-        <div className="label-toggle"> Logarithmic</div>
+      <div className="main-toggle theme-text">
+        <div className="label-toggle theme-text"> Logarithmic</div>
         <Switch
           isChecked={yConfigs?.logarithmic}
           name={'logarithmic'}

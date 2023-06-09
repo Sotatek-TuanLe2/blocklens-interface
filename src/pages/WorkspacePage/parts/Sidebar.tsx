@@ -381,7 +381,7 @@ const Sidebar: React.FC<{
         </div>
         <Box px={'16px'}>
           <AppInput
-            className="workspace-page__sidebar__content__work-place-wrap__input-search"
+            className="workspace-page__sidebar__content__work-place-wrap__input-search theme-background"
             value={searchValueWorkPlace}
             marginY={4}
             placeholder={'Search...'}

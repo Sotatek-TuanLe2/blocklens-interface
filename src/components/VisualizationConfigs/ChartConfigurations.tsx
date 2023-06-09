@@ -44,7 +44,7 @@ const ChartConfigurations = ({
   };
 
   return (
-    <div className={'main-layout'}>
+    <div className={'main-layout theme-background'}>
       <Grid
         templateColumns={{
           sm: 'repeat(1, 1fr)',

@@ -115,9 +115,9 @@ const ChartOptions: React.FC<IChartOptions> = ({
       <CheckboxGroup>
         {chartOptions.map((option) => {
           return (
-            <div className="main-toggle" key={option.value}>
+            <div className="main-toggle " key={option.value}>
               <div
-                className={`label-toggle ${
+                className={`label-toggle theme-text ${
                   option.disabled ? 'label-toggle--disabled' : ''
                 }`}
               >
