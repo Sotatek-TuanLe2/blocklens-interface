@@ -1,4 +1,12 @@
-import { Checkbox, Flex, Link, Spinner, Text, Tooltip } from '@chakra-ui/react';
+import {
+  Checkbox,
+  Flex,
+  Link,
+  Spinner,
+  Text,
+  Tooltip,
+  Box,
+} from '@chakra-ui/react';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   AreaChartIcon,
@@ -7,6 +15,8 @@ import {
   LineChartIcon,
   PieChartIcon,
   QueryResultIcon,
+  RadioChecked,
+  RadioNoCheckedIcon,
   ScatterChartIcon,
 } from 'src/assets/icons';
 import { AppButton, AppInput } from 'src/components';
@@ -24,6 +34,21 @@ import BaseModal from '../BaseModal';
 import _, { debounce } from 'lodash';
 import { INPUT_DEBOUNCE, IPagination } from 'src/utils/common';
 import InfiniteScroll from 'react-infinite-scroll-component';
+
+export const WIDTH_DASHBOARD = [
+  {
+    name: 'Small',
+    col: 3,
+  },
+  {
+    name: 'Medium',
+    col: 6,
+  },
+  {
+    name: 'Large',
+    col: 12,
+  },
+];
 
 interface IModalAddVisualization {
   open: boolean;
@@ -53,6 +78,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   const [selectedItems, setSelectedItems] = useState<any[]>([]);
   const [myQueries, setMyQueries] = useState<IQuery[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [widthWidget, setWidthWidget] = useState<number>(3);
   const [dataVisualPagination, setDataVisualPagination] = useState<
     IPagination | undefined
   >();
@@ -154,14 +180,33 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
     fetchVisualization();
   }, [searchTerm]);
 
-  const handleSaveVisualization = async () => {
+  const handleSaveVisualization = async (widthWidget: number) => {
+    const lastLayout = _.maxBy(dataLayouts, 'y');
+    const currentY = lastLayout?.y || 0;
+    const listWidgetCurrent = dataLayouts.filter(
+      (layout) => layout.y === currentY,
+    );
+
+    const totalWidthWidget = _.sumBy(listWidgetCurrent, 'w');
+
+    let sizeX = 0;
+    let sizeY = 0;
+
+    if (totalWidthWidget < 12) {
+      sizeY = currentY || 0;
+      sizeX = totalWidthWidget;
+    } else {
+      sizeY = currentY + 2;
+      sizeX = 0;
+    }
+
     const dataVisual = selectedItems.map((i) => {
       return {
         visualizationId: i.id,
         options: {
-          sizeX: dataLayouts.length % 2 === 0 ? 0 : 6,
-          sizeY: dataLayouts.length,
-          col: 6,
+          sizeX: sizeX,
+          sizeY: sizeY,
+          col: widthWidget,
           row: 2,
         },
       };
@@ -273,6 +318,29 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
             )}
           </InfiniteScroll>
         </div>
+
+        <Flex pt={5}>
+          Width:
+          <Flex ml={10}>
+            {WIDTH_DASHBOARD.map((item, index) => {
+              return (
+                <Flex
+                  mr={10}
+                  onClick={() => setWidthWidget(item.col)}
+                  cursor={'pointer'}
+                  key={index}
+                >
+                  {widthWidget === item.col ? (
+                    <RadioChecked />
+                  ) : (
+                    <RadioNoCheckedIcon />
+                  )}
+                  <Box ml={2}>{item.name}</Box>
+                </Flex>
+              );
+            })}
+          </Flex>
+        </Flex>
         <Flex className="modal-footer">
           <AppButton variant="cancel" mr={2.5} size="lg" onClick={onClose}>
             Cancel
@@ -281,7 +349,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
             disabled={!myQueries.length}
             size="lg"
             onClick={() => {
-              handleSaveVisualization();
+              handleSaveVisualization(widthWidget);
               onClose();
             }}
           >

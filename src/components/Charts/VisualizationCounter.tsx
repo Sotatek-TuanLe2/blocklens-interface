@@ -34,7 +34,7 @@ const VisualizationCounter = ({ data, visualization }: Props) => {
     if (data[dataOptions.rowNumber - 1] === undefined) return '';
     const dataColumn: any = data[dataOptions.rowNumber - 1];
     const indexColumn = dataOptions.counterColName;
-    return dataColumn[indexColumn].toString();
+    return dataColumn[indexColumn]?.toString();
   };
 
   const defaultSize =

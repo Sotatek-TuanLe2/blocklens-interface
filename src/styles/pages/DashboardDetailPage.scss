@@ -2,7 +2,7 @@
 @import '../mixins.scss';
 
 .dashboard-container {
-  background: $card;
+  //background: $card;
   border-radius: 6px;
 
   h1,
@@ -274,9 +274,8 @@
   }
   .main-grid-layout {
     width: 100%;
-    max-height: calc(100% - 48px);
-    overflow-y: overlay;
-    border-top: 1px solid #2f3b58;
+    height: 100% !important;
+    margin-bottom: 40px;
 
     .react-grid-item {
       background: rgba(16, 21, 48, 0.5);
@@ -300,8 +299,7 @@
 
     .box-layout {
       background: $card;
-      border: 1px solid #465065;
-      border-radius: 10px;
+      border-radius: 18px;
       position: relative;
 
       .box-chart {

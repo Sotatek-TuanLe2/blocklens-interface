@@ -1,7 +1,13 @@
 import { useParams } from 'react-router-dom';
-import { Box, Flex } from '@chakra-ui/react';
+import {
+  Box,
+  Flex,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+} from '@chakra-ui/react';
 import React, {
-  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -11,8 +17,13 @@ import { Layout, Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import ReactMarkdown from 'react-markdown';
 import 'react-resizable/css/styles.css';
-import { AppTag } from 'src/components';
+import PlusIcon from 'src/assets/icons/icon-plus.png';
+import useUser from 'src/hooks/useUser';
+import ModalAddTextWidget from 'src/modals/querySQL/ModalAddTextWidget';
+import ModalAddVisualization from 'src/modals/querySQL/ModalAddVisualization';
+import ModalDeleteWidget from 'src/modals/querySQL/ModalDeleteWidget ';
 import ModalForkDashBoardDetails from 'src/modals/querySQL/ModalForkDashBoardDetails';
+import ModalSettingDashboardDetails from 'src/modals/querySQL/ModalSettingDashboardDetails';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/TableValue.scss';
 import 'src/styles/pages/DashboardDetailPage.scss';
@@ -21,11 +32,13 @@ import 'src/styles/components/AppQueryMenu.scss';
 import { IDashboardDetail } from 'src/utils/query.type';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
-import Header from 'src/pages/WorkspacePage/parts/Header';
-import VisualizationItem from 'src/pages/WorkspacePage/parts/VisualizationItem';
+import VisualizationItem from './VisualizationItem';
+import Header from './Header';
 import AppNetworkIcons from 'src/components/AppNetworkIcons';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
+import { AppBroadcast } from 'src/utils/utils-broadcast';
 import { Dashboard } from 'src/utils/utils-dashboard';
+import { DeleteIcon, EditIcon } from 'src/assets/icons';
 
 export interface ILayout extends Layout {
   options: any;
@@ -48,23 +61,39 @@ export const WIDGET_TYPE = {
   TEXT: 'text',
 };
 
+export const BROADCAST_FETCH_DASHBOARD = 'FETCH_DASHBOARD';
+
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
-const DashboardPart: React.FC = () => {
+const NewDashboardPart: React.FC = () => {
   const { dashboardId } = useParams<{ dashboardId: string }>();
 
+  const { user } = useUser();
+
+  const [editMode, setEditMode] = useState<boolean>(false);
   const [dataLayouts, setDataLayouts] = useState<ILayout[]>([]);
   const [dataDashboard, setDataDashboard] = useState<IDashboardDetail>();
+  const [selectedItem, setSelectedItem] = useState<ILayout>(Object);
+  const [typeModalTextWidget, setTypeModalTextWidget] = useState<string>(``);
+  const [openModalAddVisualization, setOpenModalAddVisualization] =
+    useState<boolean>(false);
   const [openModalFork, setOpenModalFork] = useState<boolean>(false);
+  const [openModalSetting, setOpenModalSetting] = useState<boolean>(false);
+  const [openModalEdit, setOpenModalEdit] = useState<boolean>(false);
+  const [openModalAddTextWidget, setOpenModalAddTextWidget] =
+    useState<boolean>(false);
   const [isEmptyDashboard, setIsEmptyDashboard] = useState<boolean>(false);
 
   const layoutChangeTimeout = useRef() as any;
 
-  const fetchLayoutData = useCallback(async () => {
+  const userName =
+    `${user?.getFirstName() || ''}` + `${user?.getLastName() || ''}`;
+
+  const fetchLayoutData = async (id?: string) => {
     try {
       const res = await rf
         .getRequest('DashboardsRequest')
-        .getPublicDashboardById(dashboardId);
+        .getMyDashboardById({ dashboardId: id || dashboardId });
       if (res) {
         const visualization: ILayout[] = res.dashboardVisuals.map(
           (item: ILayout) => {
@@ -106,7 +135,17 @@ const DashboardPart: React.FC = () => {
         message: getErrorMessage(error),
       });
     }
-  }, [dashboardId]);
+  };
+
+  useEffect(() => {
+    AppBroadcast.on(BROADCAST_FETCH_DASHBOARD, (id: any) => {
+      fetchLayoutData(id);
+    });
+
+    return () => {
+      AppBroadcast.remove(BROADCAST_FETCH_DASHBOARD);
+    };
+  }, []);
 
   useEffect(() => {
     if (dashboardId) {
@@ -120,6 +159,13 @@ const DashboardPart: React.FC = () => {
     }
     return new Dashboard(dataDashboard);
   }, [dataDashboard]);
+
+  const onOpenModalAddText = () => {
+    setTypeModalTextWidget(TYPE_MODAL.ADD);
+    setOpenModalAddTextWidget(true);
+  };
+
+  const onOpenModalAddVisualization = () => setOpenModalAddVisualization(true);
 
   const onLayoutChange = async (layout: Layout[]) => {
     clearTimeout(layoutChangeTimeout.current);
@@ -178,7 +224,14 @@ const DashboardPart: React.FC = () => {
       justifyContent={'center'}
       alignItems={'center'}
     >
-      Dashboard is empty
+      <div className="add-widget" onClick={onOpenModalAddVisualization}>
+        <div className="icon-widget-big-visualization" />
+        Add Visualization
+      </div>
+      <div className="add-widget" onClick={onOpenModalAddText}>
+        <div className="icon-widget-big-text" />
+        Add Text Widget
+      </div>
     </Flex>
   );
 
@@ -186,21 +239,42 @@ const DashboardPart: React.FC = () => {
     <div className="workspace-page__editor__dashboard">
       <Header
         type={LIST_ITEM_TYPE.DASHBOARDS}
-        author={''}
+        author={user?.getFirstName() || ''}
         data={dataDashboard}
-        needAuthentication={false}
+        isEdit={editMode}
+        onChangeEditMode={() => setEditMode((prevState) => !prevState)}
       />
       <div className="dashboard-container">
-        {/*<Box className="header-tab">*/}
-        {/*  <div className="header-tab__info">*/}
-        {/*    {dashboardClass?.getChains() && (*/}
-        {/*      <AppNetworkIcons networkIds={dashboardClass?.getChains()} />*/}
-        {/*    )}*/}
-        {/*    {['defi', 'gas', 'dex'].map((item) => (*/}
-        {/*      <AppTag key={item} value={item} />*/}
-        {/*    ))}*/}
-        {/*  </div>*/}
-        {/*</Box>*/}
+        <Box className="header-tab">
+          <div className="header-tab__info">
+            {dashboardClass?.getChains() && (
+              <AppNetworkIcons networkIds={dashboardClass?.getChains()} />
+            )}
+          </div>
+          {editMode && !isEmptyDashboard && (
+            <Menu>
+              <MenuButton className="app-query-menu">
+                <Box className="add-button">
+                  <img src={PlusIcon} alt="icon-plus" />
+                </Box>
+              </MenuButton>
+              <MenuList className="app-query-menu__list">
+                <MenuItem onClick={onOpenModalAddVisualization}>
+                  <Flex alignItems={'center'} gap={'8px'}>
+                    <span className="icon-widget-small-visualization" />
+                    Add visualization
+                  </Flex>
+                </MenuItem>
+                <MenuItem onClick={onOpenModalAddText}>
+                  <Flex alignItems={'center'} gap={'8px'}>
+                    <span className="icon-widget-small-text" />
+                    Add text widget
+                  </Flex>
+                </MenuItem>
+              </MenuList>
+            </Menu>
+          )}
+        </Box>
         {!!dataLayouts.length && (
           <ResponsiveGridLayout
             onLayoutChange={onLayoutChange}
@@ -208,8 +282,8 @@ const DashboardPart: React.FC = () => {
             layouts={{ lg: dataLayouts }}
             breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
             cols={{ lg: 12, md: 12, sm: 12, xs: 6, xxs: 4 }}
-            isDraggable={false}
-            isResizable={false}
+            isDraggable={editMode}
+            isResizable={editMode}
             measureBeforeMount
             margin={[20, 20]}
           >
@@ -218,20 +292,83 @@ const DashboardPart: React.FC = () => {
                 <div className="box-chart">
                   {item.type === WIDGET_TYPE.VISUALIZATION ? (
                     <VisualizationItem
+                      editMode={editMode}
                       visualization={item.content}
-                      needAuthentication={false}
                     />
                   ) : (
-                    <div className="box-text-widget">
+                    <div
+                      className={`box-text-widget ${
+                        editMode ? 'box-text-widget--edit' : ''
+                      }`}
+                    >
                       <ReactMarkdown>{item.text}</ReactMarkdown>
                     </div>
                   )}
                 </div>
+                {editMode && (
+                  <Flex
+                    alignItems={'center'}
+                    className="widget-buttons"
+                    columnGap={'12px'}
+                  >
+                    {item.type === WIDGET_TYPE.TEXT && (
+                      <Box
+                        onClick={() => {
+                          setTypeModalTextWidget(TYPE_MODAL.EDIT);
+                          setSelectedItem(item);
+                          setOpenModalAddTextWidget(true);
+                        }}
+                      >
+                        <EditIcon />
+                      </Box>
+                    )}
+                    <Box
+                      onClick={() => {
+                        setSelectedItem(item);
+                        setOpenModalEdit(true);
+                      }}
+                    >
+                      <DeleteIcon />
+                    </Box>
+                  </Flex>
+                )}
               </div>
             ))}
           </ResponsiveGridLayout>
         )}
         {isEmptyDashboard && _renderEmptyDashboard()}
+        <ModalSettingDashboardDetails
+          open={openModalSetting}
+          onClose={() => setOpenModalSetting(false)}
+          dataDashboard={dataDashboard}
+          onReload={fetchLayoutData}
+        />
+        <ModalAddTextWidget
+          selectedItem={selectedItem}
+          dataLayouts={dataLayouts}
+          type={typeModalTextWidget}
+          open={openModalAddTextWidget}
+          onClose={() => setOpenModalAddTextWidget(false)}
+          onReload={fetchLayoutData}
+          dataDashboard={dataDashboard}
+        />
+        <ModalDeleteWidget
+          selectedItem={selectedItem}
+          onReload={fetchLayoutData}
+          open={openModalEdit}
+          onClose={() => setOpenModalEdit(false)}
+        />
+        {openModalAddVisualization && (
+          <ModalAddVisualization
+            dashboardId={dashboardId}
+            dataLayouts={dataLayouts}
+            open={openModalAddVisualization}
+            onClose={() => setOpenModalAddVisualization(false)}
+            userName={userName}
+            onReload={fetchLayoutData}
+          />
+        )}
+
         <ModalForkDashBoardDetails
           dashboardId={dashboardId}
           open={openModalFork}
@@ -242,4 +379,4 @@ const DashboardPart: React.FC = () => {
   );
 };
 
-export default DashboardPart;
+export default NewDashboardPart;
