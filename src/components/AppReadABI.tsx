@@ -36,8 +36,7 @@ interface IPackageContractAddress {
 }
 
 interface IAppReadABI {
-  onChange?: (abi: any[], abiFilter: any[]) => void;
-  type?: string;
+  onChange?: (abi: any[]) => void;
   dataPackageContractAddress?: PackageType[];
 }
 
@@ -62,6 +61,11 @@ const ListSelect: FC<IListSelect> = ({ type, data, onFetchData }) => {
   const [selectData, setSelectData] = useState<IStructAndFunction[]>(
     data || [],
   );
+
+  useEffect(() => {
+    data ? setSelectData(data) : setSelectData([]);
+  }, [data]);
+
   const [selectedAll, setSelectedAll] = useState<boolean>(false);
 
   const onSelectedAll = () => {
@@ -194,7 +198,6 @@ const DetailABI: FC<IDetailABI> = ({ packageItem, updateData }) => {
         f.name.toLowerCase().includes(valueSearch.toLowerCase()),
       );
       const structs = moduleItem.abi.structs.filter((f) => {
-        console.log(f.name.toLowerCase().includes(valueSearch.toLowerCase()));
         return f.name.toLowerCase().includes(valueSearch.toLowerCase());
       });
 
@@ -292,7 +295,6 @@ const DetailABI: FC<IDetailABI> = ({ packageItem, updateData }) => {
 
 const AppReadABI: FC<IAppReadABI> = ({
   onChange,
-  type,
   dataPackageContractAddress,
 }) => {
   const [mapPackageContractAddress, setMapPackageContractAddress] = useState<
@@ -300,7 +302,7 @@ const AppReadABI: FC<IAppReadABI> = ({
   >(null!);
 
   useEffect(() => {
-    console.log('mapPackageContractAddress: ', mapPackageContractAddress);
+    onChange && onChange(mapPackageContractAddress);
   }, [mapPackageContractAddress]);
 
   useEffect(() => {
@@ -358,8 +360,11 @@ const AppReadABI: FC<IAppReadABI> = ({
         const modules = packgeItem.modules.map((moduleItem) => {
           if (moduleItem.name === moduleName) {
             return type === 'exposed_functions'
-              ? { ...moduleItem, exposed_functions: data }
-              : { ...moduleItem, structs: data };
+              ? {
+                  ...moduleItem,
+                  abi: { ...moduleItem.abi, exposed_functions: data },
+                }
+              : { ...moduleItem, abi: { ...moduleItem.abi, structs: data } };
           }
           return moduleItem;
         });

@@ -21,7 +21,7 @@ export { default as AppConnectWalletButton } from './AppConnectWalletButton';
 export { default as AppLoadingTable } from './AppLoadingTable';
 export { default as AppTabs } from './AppTabs';
 export { default as AppTag } from './AppTag';
-export { default as AppReadABI} from './AppReadABI';
+export { default as AppReadABI } from './AppReadABI';
 
 export * from './AppCard';
 export * from './AppButton';

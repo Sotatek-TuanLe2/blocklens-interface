@@ -53,7 +53,6 @@ const PartFormAddressAptos = () => {
         }),
       );
 
-      console.log("data: ", data);
       setDataAddress(data);
     } catch (e) {
       toastError({ message: getErrorMessage(e) });

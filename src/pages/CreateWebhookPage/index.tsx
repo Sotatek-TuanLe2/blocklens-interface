@@ -98,6 +98,8 @@ const CreateWebhook = () => {
     useState<boolean>(true);
   const [, updateState] = useState<any>();
   const [abiContractAddress, setAbiContractAddress] = useState<any>();
+  const [payloadContractAddressAptos, setPayloadContractAddressAptos] =
+    useState<any[]>();
   const forceUpdate = useCallback(() => updateState({}), []);
   const inputRef = useRef<any>(null);
 
@@ -106,6 +108,11 @@ const CreateWebhook = () => {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const typeParams = params.get('type');
+
+  useEffect(() => {
+    // log data change...
+    console.log("payloadContractAddressAptos: ", payloadContractAddressAptos);
+  }, [payloadContractAddressAptos]);
 
   const getAppInfo = useCallback(async () => {
     try {
@@ -233,11 +240,7 @@ const CreateWebhook = () => {
         </AppField>
         {appInfo.chain === CHAINS.APTOS ? (
           <AppReadABI
-            type={TYPE_ABI.CONTRACT}
-            onChange={(abi, abiFilter) =>
-              setDataForm({ ...dataForm, abi, abiFilter })
-            }
-            // dataContractAddress={abiContractAddress}
+            onChange={(data) => setPayloadContractAddressAptos(data)}
             dataPackageContractAddress={abiContractAddress}
           />
         ) : (
@@ -287,14 +290,14 @@ const CreateWebhook = () => {
   );
 
   const _renderFormAddressAptos = () => {
-    return (
-      <PartFormAddressAptos />
-    );
+    return <PartFormAddressAptos />;
   };
 
   const _renderFormContractAptos = () => {
     return (
-      <PartFormContractAptos onFetchData={(data: any) => setAbiContractAddress(data)} />
+      <PartFormContractAptos
+        onFetchData={(data: any) => setAbiContractAddress(data)}
+      />
     );
   };
 
