@@ -20,7 +20,7 @@ import { getLogoChainByChainId, isEVMNetwork } from 'src/utils/utils-network';
 import { isMobile } from 'react-device-detect';
 import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
 import PartAppGraph from './parts/PartAppGraph';
-import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
+import { CHAINS, WEBHOOK_TYPES } from 'src/utils/utils-webhook';
 import useUser from 'src/hooks/useUser';
 import rf from 'src/requests/RequestFactory';
 import { ROUTES } from 'src/utils/common';
@@ -115,7 +115,8 @@ const AppDetail = () => {
               >
                 Address Activity
               </Tab>
-              {isEVMNetwork(appInfo.chain) && (
+              {(isEVMNetwork(appInfo.chain) ||
+                appInfo.chain === CHAINS.APTOS) && (
                 <Tab
                   className="app-tab"
                   onClick={() => setType(WEBHOOK_TYPES.CONTRACT_ACTIVITY)}
@@ -134,12 +135,15 @@ const AppDetail = () => {
             )}
             <TabPanel
               className={`${
-                isEVMNetwork(appInfo.chain) ? '' : 'no-tab'
+                isEVMNetwork(appInfo.chain) || appInfo.chain === CHAINS.APTOS
+                  ? ''
+                  : 'no-tab'
               } content-tab-app`}
             >
               <PartAddressWebhooks appInfo={appInfo} />
             </TabPanel>
-            {isEVMNetwork(appInfo.chain) && (
+            {(isEVMNetwork(appInfo.chain) ||
+              appInfo.chain === CHAINS.APTOS) && (
               <TabPanel className="content-tab-app">
                 <PartContractWebhooks appInfo={appInfo} />
               </TabPanel>

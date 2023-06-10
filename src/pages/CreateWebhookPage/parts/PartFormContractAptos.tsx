@@ -1,13 +1,18 @@
 import { AppField, AppInput } from 'src/components';
-import React, { useEffect, useCallback, useState } from 'react';
+import React, { useEffect, useCallback, useState, FC } from 'react';
 import rf from 'src/requests/RequestFactory';
 import { toastError } from 'src/utils/utils-notify';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import _ from 'lodash';
 
-const PartFormAddressAptos = () => {
+interface PartFormContractAptosProps {
+  onFetchData?: (data: any) => void;
+}
+
+const PartFormContractAptos: FC<PartFormContractAptosProps> = ({
+  onFetchData,
+}) => {
   const [address, setAddress] = useState<string>('');
-  const [dataAddress, setDataAddress] = useState<any>([]);
 
   const getABI = async (payload: any) => {
     try {
@@ -25,10 +30,6 @@ const PartFormAddressAptos = () => {
       const resourceAddress = await rf
         .getRequest('AptosRequest')
         .getModules(addressValue, '0x1::code::PackageRegistry');
-
-      if (!resourceAddress?.data || !resourceAddress?.data?.packages) {
-        setDataAddress([]);
-      }
 
       const data = await Promise.all(
         resourceAddress?.data?.packages?.map(async (item: any) => {
@@ -53,8 +54,7 @@ const PartFormAddressAptos = () => {
         }),
       );
 
-      console.log("data: ", data);
-      setDataAddress(data);
+      onFetchData && onFetchData(data);
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
     }
@@ -67,22 +67,15 @@ const PartFormAddressAptos = () => {
 
   return (
     <div>
-      <AppField label={'Address'} customWidth={'100%'} isRequired>
-        <AppInput
-          value={address}
-          onChange={(e) => {
-            setAddress(e.target.value);
-            debounceDropDown(e.target.value.trim());
-          }}
-          // validate={{
-          //   name: `address`,
-          //   validator: validator.current,
-          //   rule: ['required'],
-          // }}
-        />
-      </AppField>
+      <AppInput
+        value={address}
+        onChange={(e) => {
+          setAddress(e.target.value);
+          debounceDropDown(e.target.value.trim());
+        }}
+      />
     </div>
   );
 };
 
-export default PartFormAddressAptos;
+export default PartFormContractAptos;

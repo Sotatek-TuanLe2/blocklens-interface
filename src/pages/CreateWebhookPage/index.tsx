@@ -15,6 +15,7 @@ import {
   AppField,
   AppInput,
   AppLink,
+  AppReadABI,
   AppSelect2,
   AppTextarea,
   TYPE_ABI,
@@ -34,6 +35,7 @@ import { DownloadIcon } from 'src/assets/icons';
 import { useDispatch } from 'react-redux';
 import { getUserStats } from 'src/store/user';
 import PartFormAddressAptos from './parts/PartFormAddressAptos';
+import PartFormContractAptos from './parts/PartFormContractAptos';
 
 const FILE_CSV_EXAMPLE = '/abi/CSV_Example.csv';
 
@@ -52,6 +54,17 @@ const optionsWebhookType = [
     label: 'NFT Activity',
     value: WEBHOOK_TYPES.NFT_ACTIVITY,
   },
+  {
+    label: 'Address Activity',
+    value: WEBHOOK_TYPES.ADDRESS_ACTIVITY,
+  },
+  {
+    label: 'Contract Activity',
+    value: WEBHOOK_TYPES.CONTRACT_ACTIVITY,
+  },
+];
+
+const optionsWebhookTypeAptos = [
   {
     label: 'Address Activity',
     value: WEBHOOK_TYPES.ADDRESS_ACTIVITY,
@@ -84,6 +97,7 @@ const CreateWebhook = () => {
   const [isInsertManuallyAddress, setIsInsertManuallyAddress] =
     useState<boolean>(true);
   const [, updateState] = useState<any>();
+  const [abiContractAddress, setAbiContractAddress] = useState<any>();
   const forceUpdate = useCallback(() => updateState({}), []);
   const inputRef = useRef<any>(null);
 
@@ -106,6 +120,9 @@ const CreateWebhook = () => {
 
   const optionTypes = useMemo(() => {
     if (!isEVMNetwork(appInfo.chain)) {
+      if (appInfo.chain === CHAINS.APTOS) {
+        return optionsWebhookTypeAptos;
+      }
       return optionsWebhookType.filter(
         (item) => item.value === WEBHOOK_TYPES.ADDRESS_ACTIVITY,
       );
@@ -194,28 +211,43 @@ const CreateWebhook = () => {
     return (
       <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
         <AppField label={'Contract Address'} customWidth={'100%'} isRequired>
-          <AppInput
-            value={dataForm.address}
-            onChange={(e) =>
-              setDataForm({
-                ...dataForm,
-                address: e.target.value.trim(),
-              })
-            }
-            hiddenErrorText={type !== WEBHOOK_TYPES.CONTRACT_ACTIVITY}
-            validate={{
-              name: `contractAddress`,
-              validator: validator.current,
-              rule: 'required|isAddress',
-            }}
-          />
+          {appInfo.chain === CHAINS.APTOS ? (
+            _renderFormContractAptos()
+          ) : (
+            <AppInput
+              value={dataForm.address}
+              onChange={(e) =>
+                setDataForm({
+                  ...dataForm,
+                  address: e.target.value.trim(),
+                })
+              }
+              hiddenErrorText={type !== WEBHOOK_TYPES.CONTRACT_ACTIVITY}
+              validate={{
+                name: `contractAddress`,
+                validator: validator.current,
+                rule: 'required|isAddress',
+              }}
+            />
+          )}
         </AppField>
-        <AppUploadABI
-          type={TYPE_ABI.CONTRACT}
-          onChange={(abi, abiFilter) =>
-            setDataForm({ ...dataForm, abi, abiFilter })
-          }
-        />
+        {appInfo.chain === CHAINS.APTOS ? (
+          <AppReadABI
+            type={TYPE_ABI.CONTRACT}
+            onChange={(abi, abiFilter) =>
+              setDataForm({ ...dataForm, abi, abiFilter })
+            }
+            // dataContractAddress={abiContractAddress}
+            dataPackageContractAddress={abiContractAddress}
+          />
+        ) : (
+          <AppUploadABI
+            type={TYPE_ABI.CONTRACT}
+            onChange={(abi, abiFilter) =>
+              setDataForm({ ...dataForm, abi, abiFilter })
+            }
+          />
+        )}
       </Flex>
     );
   };
@@ -255,7 +287,15 @@ const CreateWebhook = () => {
   );
 
   const _renderFormAddressAptos = () => {
-    return <PartFormAddressAptos />;
+    return (
+      <PartFormAddressAptos />
+    );
+  };
+
+  const _renderFormContractAptos = () => {
+    return (
+      <PartFormContractAptos onFetchData={(data: any) => setAbiContractAddress(data)} />
+    );
   };
 
   const _renderFormAddressActivity = () => {
