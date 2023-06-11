@@ -117,45 +117,42 @@ export const globalStyles = {
   styles: {
     global: (props: StyleFunctionProps) => ({
       body: {
-        bg: props.colorMode === 'dark' ? '#000224' : 'bgLight',
+        bg: mode('bgLight', '#000224')(props),
       },
 
       '.btn-primary': { background: 'gradient', color: 'white' },
       span: {
-        color: props.colorMode === 'dark' ? '' : '#000224',
+        color: mode('#000224', '')(props),
       },
       '.theme-text': {
-        color: props.colorMode === 'dark' ? 'white' : '#000224',
+        color: mode('#000224', 'white')(props),
       },
       '.theme-border': {
-        boxShadow:
-          props.colorMode === 'dark'
-            ? ''
-            : ' 0px 15px 30px rgba(0, 0, 0, 0.04)',
-        border: props.colorMode === 'dark' ? '1px solid #272d52' : '',
+        boxShadow: mode('0px 15px 30px rgba(0, 0, 0, 0.04)', '')(props),
+        border: mode('', '1px solid #272d52')(props),
       },
 
       '.theme-background': {
-        background: props.colorMode === 'dark' ? 'bgDark' : 'white',
+        background: mode('white', 'bgDark')(props),
       },
       '.theme-background-item': {
-        background: props.colorMode === 'dark' ? 'bg2' : 'lightTag',
+        background: mode('lightTag', 'bg2')(props),
       },
       '.tag': {
         div: {
-          background: props.colorMode === 'dark' ? 'bg2' : 'lightTag',
-          color: props.colorMode === 'dark' ? 'white' : 'rgba(0, 2, 36, 0.5)',
+          background: mode('lightTag', 'bg2')(props),
+          color: mode('rgba(0, 2, 36, 0.5)', 'white')(props),
         },
       },
       '.dashboards-page ': {
         '.dashboard-list__item--column': {
-          background: props.colorMode === 'dark' ? '#101530' : 'white',
+          background: mode('white', '#101530')(props),
         },
         '.dashboard-list__item--column__content__title ': {
-          borderBottom:
-            props.colorMode === 'dark'
-              ? '1px solid #242b45'
-              : '1px solid rgba(0, 2, 36, 0.1)',
+          borderBottom: mode(
+            '1px solid #242b45',
+            '1px solid rgba(0, 2, 36, 0.1)',
+          )(props),
         },
       },
     }),
