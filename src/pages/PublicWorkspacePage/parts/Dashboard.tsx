@@ -182,6 +182,42 @@ const DashboardPart: React.FC = () => {
     </Flex>
   );
 
+  const _renderDashboard = () => {
+    if (isEmptyDashboard) {
+      return _renderEmptyDashboard();
+    }
+
+    return (
+      <ResponsiveGridLayout
+        onLayoutChange={onLayoutChange}
+        className="main-grid-layout"
+        layouts={{ lg: dataLayouts }}
+        breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
+        cols={{ lg: 12, md: 12, sm: 12, xs: 6, xxs: 4 }}
+        isDraggable={false}
+        isResizable={false}
+        measureBeforeMount
+      >
+        {dataLayouts.map((item) => (
+          <div className="box-layout" key={item.id}>
+            <div className="box-chart">
+              {item.type === WIDGET_TYPE.VISUALIZATION ? (
+                <VisualizationItem
+                  visualization={item.content}
+                  needAuthentication={false}
+                />
+              ) : (
+                <div className="box-text-widget">
+                  <ReactMarkdown>{item.text}</ReactMarkdown>
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
+      </ResponsiveGridLayout>
+    );
+  };
+
   return (
     <div className="workspace-page__editor__dashboard">
       <Header
@@ -201,36 +237,7 @@ const DashboardPart: React.FC = () => {
             ))}
           </div>
         </Box>
-        {!!dataLayouts.length && (
-          <ResponsiveGridLayout
-            onLayoutChange={onLayoutChange}
-            className="main-grid-layout"
-            layouts={{ lg: dataLayouts }}
-            breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
-            cols={{ lg: 12, md: 12, sm: 12, xs: 6, xxs: 4 }}
-            isDraggable={false}
-            isResizable={false}
-            measureBeforeMount
-          >
-            {dataLayouts.map((item) => (
-              <div className="box-layout" key={item.id}>
-                <div className="box-chart">
-                  {item.type === WIDGET_TYPE.VISUALIZATION ? (
-                    <VisualizationItem
-                      visualization={item.content}
-                      needAuthentication={false}
-                    />
-                  ) : (
-                    <div className="box-text-widget">
-                      <ReactMarkdown>{item.text}</ReactMarkdown>
-                    </div>
-                  )}
-                </div>
-              </div>
-            ))}
-          </ResponsiveGridLayout>
-        )}
-        {isEmptyDashboard && _renderEmptyDashboard()}
+        {_renderDashboard()}
         <ModalForkDashBoardDetails
           dashboardId={dashboardId}
           open={openModalFork}

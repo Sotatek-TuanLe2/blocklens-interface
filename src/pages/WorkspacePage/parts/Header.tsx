@@ -115,6 +115,67 @@ const Header: React.FC<IHeaderProps> = (props) => {
     }
   };
 
+  const _renderButtons = () => {
+    if (!needAuthentication) {
+      return null;
+    }
+
+    if (!isDashboard) {
+      // Query button
+      return (
+        <Tooltip label="Run Query" hasArrow placement="top">
+          <AppButton
+            className="btn-primary"
+            onClick={onRunQuery}
+            size="sm"
+            leftIcon={<span className="icon-run-query " />}
+            me="10px"
+            disabled={isLoadingRun}
+            fontSize={'14px'}
+          >
+            {isLoadingRun ? (
+              <Spinner size="sm" />
+            ) : (
+              `Run${selectedQuery ? ' selection' : ''}`
+            )}
+          </AppButton>
+        </Tooltip>
+      );
+    }
+
+    const isEmptyDashboard =
+      !(dataClass as Dashboard)?.getDashboardVisuals().length &&
+      !(dataClass as Dashboard)?.getTextWidgets().length;
+
+    // Dashboard button
+    return (
+      !isEmptyDashboard && (
+        <Tooltip
+          label={isEdit ? 'Edit Dashboard' : ''}
+          hasArrow
+          placement="top"
+        >
+          <AppButton
+            onClick={onChangeEditMode}
+            size="sm"
+            leftIcon={
+              <p
+                className={
+                  isEdit
+                    ? 'bg-icon_success_dashboard'
+                    : 'bg-icon_edit_dashboard'
+                }
+              />
+            }
+            me="10px"
+          >
+            {isEdit ? 'Done' : 'Edit'}
+          </AppButton>
+        </Tooltip>
+      )
+    );
+  };
+
   return (
     <div className="workspace-page__editor__header">
       <div className="workspace-page__editor__header__left">
@@ -148,54 +209,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
             </FormLabel>
           </div>
         )} */}
-        {needAuthentication &&
-          (isDashboard ? (
-            (!!(dataClass as Dashboard)?.getDashboardVisuals().length ||
-              !!(dataClass as Dashboard)?.getTextWidgets().length) && (
-              <Tooltip
-                label={isEdit ? 'Edit Dashboard' : ''}
-                hasArrow
-                placement="top"
-              >
-                <AppButton
-                  onClick={onChangeEditMode}
-                  size="sm"
-                  leftIcon={
-                    <p
-                      className={
-                        isEdit
-                          ? 'bg-icon_success_dashboard'
-                          : 'bg-icon_edit_dashboard'
-                      }
-                    />
-                  }
-                  me="10px"
-                >
-                  {isEdit ? 'Done' : 'Edit'}
-                </AppButton>
-              </Tooltip>
-            )
-          ) : (
-            <Tooltip label="Run Query" hasArrow placement="top">
-              <AppButton
-                className="btn-primary"
-                onClick={onRunQuery}
-                size="sm"
-                leftIcon={<span className="icon-run-query " />}
-                me="10px"
-                disabled={isLoadingRun}
-                fontSize={'14px'}
-              >
-                {isLoadingRun ? (
-                  <Spinner size="sm" />
-                ) : selectedQuery ? (
-                  'Run selection'
-                ) : (
-                  'Run'
-                )}
-              </AppButton>
-            </Tooltip>
-          ))}
+        {_renderButtons()}
         {!isCreatingQuery && data && (
           <AppQueryMenu
             menu={
