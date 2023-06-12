@@ -120,7 +120,7 @@ export const appInputStyles = {
   variants: {
     main: (props: StyleProps) => ({
       field: {
-        bg: mode('card.100', 'card.100')(props),
+        bg: mode('white.100', 'card.100')(props),
         border: '1px solid',
         color: mode('black', 'white')(props),
         borderColor: mode('line.100', 'line.300')(props),
