@@ -181,7 +181,7 @@ const DashboardsPage: React.FC = () => {
     (appTable: any) => {
       return (
         <>
-          <div className="dashboard-filter">
+          <Box mb={'0 !important'} className="dashboard-filter">
             <FilterSearch
               type={tab}
               visibility={visibility}
@@ -189,7 +189,7 @@ const DashboardsPage: React.FC = () => {
               myWorkType={myWorkType}
               changeMyWorkType={setMyWorkType}
             />
-          </div>
+          </Box>
           <Box mt={'34px'}>{appTable}</Box>
         </>
       );
@@ -372,6 +372,11 @@ const DashboardsPage: React.FC = () => {
             currentTabIndex={tabIndex}
             tabs={generateTabs()}
             onChange={onChangeTab}
+            sxTabList={{
+              border: 'none !important',
+              mb: { base: '34px', lg: 6 },
+            }}
+            sxTabsHeader={{ justifyContent: 'center !important' }}
           />
         </div>
       </Flex>
