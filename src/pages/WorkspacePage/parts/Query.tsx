@@ -257,7 +257,7 @@ const QueryPart: React.FC = () => {
       </Flex>
     );
   };
-  console.log(expandLayout);
+
   const _renderVisualizations = () => {
     if (!queryId || !queryValue) {
       return null;
