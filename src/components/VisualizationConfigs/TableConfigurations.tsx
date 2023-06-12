@@ -111,13 +111,13 @@ const TableConfigurations: React.FC<ITableConfigurations> = ({
         }}
       >
         <GridItem>
-          <div className="box-table first-box-table theme-background">
+          <div className="box-table first-box-table ">
             <div className="box-table-children">
               <div className="label-input">Title</div>
               <AppInput
                 value={editVisualization.name}
                 size={'sm'}
-                className="input-table theme-background theme-text"
+                className="input-table"
                 onChange={onChangeTableName}
                 placeholder="24h volume"
               />
@@ -135,7 +135,7 @@ const TableConfigurations: React.FC<ITableConfigurations> = ({
       >
         <div className="select-column ">
           <AppSelect2
-            className="select-table theme-background theme-text"
+            className="select-table"
             zIndex={1001}
             size="medium"
             value={columnValue}
@@ -185,14 +185,14 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
           }
           placeholder={data?.accessorKey}
           size={'sm'}
-          className="input-table theme-background theme-text"
+          className="input-table"
         />
       </div>
       <div className="box-table-children">
         <div className="label-input">Align</div>
 
         <AppSelect2
-          className="select-table z-100 theme-background theme-text theme-border"
+          className="select-table z-100 theme-border"
           size="medium"
           value={data?.align}
           onChange={(e) =>
@@ -209,7 +209,7 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
         <AppInput
           placeholder="0.0"
           size={'sm'}
-          className="input-table theme-background theme-text"
+          className="input-table"
           value={data?.format}
           onChange={(e) =>
             onChange({
@@ -239,7 +239,7 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
       )}
 
       <div className="main-toggle">
-        <div className="label-toggle theme-text">Hide column</div>
+        <div className="label-toggle">Hide column</div>
         <Switch
           size="sm"
           value={data?.isHidden}

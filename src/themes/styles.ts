@@ -120,6 +120,16 @@ export const globalStyles = {
         fontFamily: 'DM Sans',
         letterSpacing: '0.2px',
       },
+      '.chakra-ui-light': {
+        '.main-layout, .input-table, .first-box-table, .select-table, .dashboard-list__item--row, .editor-wrapper, .box-layout, .workspace-page__editor__header, .add-chart, .workspace-page__sidebar__categories, .workspace-page__sidebar__content':
+          {
+            background: mode('white', 'bgDark')(props),
+          },
+        '.label-toggle, .label-input, .input-table, .select-table, .title-config, .visual-container__visualization__name':
+          {
+            color: mode('bg.100', 'white')(props),
+          },
+      },
       '.table-temaplate': {
         table: {
           fontVariantNumeric: 'lining-nums tabular-nums',

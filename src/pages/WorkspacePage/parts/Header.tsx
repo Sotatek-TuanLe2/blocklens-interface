@@ -116,7 +116,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
   };
 
   return (
-    <div className="workspace-page__editor__header theme-background">
+    <div className="workspace-page__editor__header">
       <div className="workspace-page__editor__header__left">
         <Tooltip label="Back" hasArrow placement="top">
           <AppButton

@@ -117,7 +117,7 @@ const ChartOptions: React.FC<IChartOptions> = ({
           return (
             <div className="main-toggle " key={option.value}>
               <div
-                className={`label-toggle theme-text ${
+                className={`label-toggle ${
                   option.disabled ? 'label-toggle--disabled' : ''
                 }`}
               >

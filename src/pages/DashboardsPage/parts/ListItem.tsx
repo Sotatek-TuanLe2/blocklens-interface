@@ -146,7 +146,7 @@ const ListItem: React.FC<IListItem> = (props) => {
 
   const _renderRowItem = () => {
     return (
-      <div className="dashboard-list__item--row theme-border theme-background">
+      <div className="dashboard-list__item--row theme-border">
         <Flex flexDirection="row" alignItems={'center'}>
           <Link
             to={getTitleUrl()}
@@ -162,7 +162,7 @@ const ListItem: React.FC<IListItem> = (props) => {
               />
             )}
             <Tooltip p={2} hasArrow placement="top" label={itemClass.getName()}>
-              <div className="item-name theme-text">{itemClass.getName()}</div>
+              <div className="item-name">{itemClass.getName()}</div>
             </Tooltip>
           </Link>
           <div className="item-desc">

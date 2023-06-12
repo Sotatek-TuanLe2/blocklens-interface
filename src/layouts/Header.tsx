@@ -3,8 +3,7 @@ import { AppButton, AppLink } from 'src/components';
 import { useHistory } from 'react-router';
 import 'src/styles/layout/Header.scss';
 import Storage from 'src/utils/utils-storage';
-import { RootState } from 'src/store';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
   Menu,
   MenuButton,
@@ -13,8 +12,6 @@ import {
   Box,
   Flex,
   Avatar,
-  Button,
-  useColorMode,
 } from '@chakra-ui/react';
 import { Link, useLocation } from 'react-router-dom';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
@@ -53,7 +50,6 @@ const Header: FC = () => {
   const [isOpenSignInRequestModal, setIsOpenSignInRequestModal] =
     useState<boolean>(false);
   const [isOpenMenuMobile, setIsOpenMenuMobile] = useState<boolean>(false);
-  const { colorMode, toggleColorMode } = useColorMode();
   const history = useHistory();
   const { user } = useUser();
   const accessToken = Storage.getAccessToken();

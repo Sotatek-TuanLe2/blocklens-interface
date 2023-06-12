@@ -360,7 +360,7 @@ const VisualizationDisplay = ({
                 }`}
               >
                 <div className="header-config theme-background-item">
-                  <div className="title-config theme-text">
+                  <div className="title-config">
                     {typeNameVisual(type)} Options
                   </div>
                   <p

@@ -234,7 +234,7 @@ const QueryPart: React.FC = () => {
       >
         <div className="query-container queries-page">
           <Box className="queries-page__right-side">
-            <Box className="editor-wrapper theme-background">
+            <Box className="editor-wrapper">
               <Box className="header-tab">
                 <div className="header-tab__info">
                   {queryClass?.getChains() && (
@@ -307,7 +307,7 @@ const QueryPart: React.FC = () => {
             </Box>
             {queryId && !!queryValue && (
               <div
-                className={`add-chart theme-background${
+                className={`add-chart ${
                   expandLayout === LAYOUT_QUERY.HIDDEN
                     ? 'expand-chart'
                     : expandLayout === LAYOUT_QUERY.HALF
