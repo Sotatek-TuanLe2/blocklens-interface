@@ -117,6 +117,8 @@ export const globalStyles = {
     global: (props: StyleFunctionProps) => ({
       body: {
         bg: mode('bg.300', 'bg.100')(props),
+        fontFamily: 'DM Sans',
+        letterSpacing: '0.2px',
       },
 
       '.btn-primary': { background: 'main.200', color: 'white' },
