@@ -95,11 +95,11 @@
     border-bottom-right-radius: 6px;
     transition: height linear 0.5s;
 
-    &.full-editor {
+    &--full {
       height: 705px !important;
     }
 
-    &.hidden-editor {
+    &--hidden {
       height: 0px !important;
       border-top: none;
     }
@@ -333,15 +333,15 @@
         .main-config {
           width: 28%;
           max-width: 28%;
-
-          .body-config-expand {
-            overflow: auto;
-            max-height: 673px !important;
-          }
-
+          
           .body-config {
             overflow: auto;
             max-height: 422px;
+            
+            &--expand {
+              overflow: auto;
+              max-height: 673px !important;
+            }
           }
 
           .header-config {
