@@ -33,8 +33,8 @@ export const HOME_URL_PARAMS = {
   TAG: 'tag',
 };
 
-interface IDashboardParams extends RequestParams, DashboardsParams { }
-interface IQueriesParams extends RequestParams, QueriesParams { }
+interface IDashboardParams extends RequestParams, DashboardsParams {}
+interface IQueriesParams extends RequestParams, QueriesParams {}
 
 const DashboardsPage: React.FC = () => {
   const { search: searchUrl } = useLocation();
@@ -88,25 +88,25 @@ const DashboardsPage: React.FC = () => {
       case LIST_ITEM_TYPE.MYWORK:
         myWorkType === TYPE_MYWORK.DASHBOARDS
           ? setDashboardParams(() =>
-            _.omitBy(
-              {
-                search: search,
-                sort: sort,
-                tags: tag,
-              },
-              (param) => !param,
-            ),
-          )
+              _.omitBy(
+                {
+                  search: search,
+                  sort: sort,
+                  tags: tag,
+                },
+                (param) => !param,
+              ),
+            )
           : setQueryParams(() =>
-            _.omitBy(
-              {
-                search: search,
-                sort: sort,
-                tags: tag,
-              },
-              (param) => !param,
-            ),
-          );
+              _.omitBy(
+                {
+                  search: search,
+                  sort: sort,
+                  tags: tag,
+                },
+                (param) => !param,
+              ),
+            );
         break;
       default:
         break;
