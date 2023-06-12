@@ -207,7 +207,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
         <Flex flexDirection={'row'}>
           {chainsSupported.map((network, index) => {
             return (
-              <Flex mr={3}>
+              <Flex mr={3} key={network.value}>
                 <AppButton
                   onClick={() => onChangeChain(network.value)}
                   key={index}

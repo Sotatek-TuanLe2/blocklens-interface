@@ -56,6 +56,7 @@ const QueryPart: React.FC = () => {
   }, [queryValue]);
 
   const getExecutionResultById = async (executionId: string) => {
+    clearInterval(fetchQueryResultInterval.current);
     const res = await rf.getRequest('DashboardsRequest').getQueryResult({
       executionId,
     });
@@ -111,8 +112,8 @@ const QueryPart: React.FC = () => {
 
   const fetchInitalData = async () => {
     try {
-      await fetchQueryResult();
       await fetchQuery();
+      await fetchQueryResult();
     } catch (error) {
       toastError({ message: getErrorMessage(error) });
     }
