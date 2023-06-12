@@ -28,6 +28,7 @@ import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import { BROADCAST_FETCH_WORKPLACE_DATA } from './Sidebar';
 import ModalQuery from 'src/modals/querySQL/ModalQuery';
 import { Query } from 'src/utils/utils-query';
+import 'brace/theme/crimson_editor';
 
 export const BROADCAST_ADD_TEXT_TO_EDITOR = 'ADD_TEXT_TO_EDITOR';
 export const BROADCAST_FETCH_QUERY = 'FETCH_QUERY';
@@ -37,7 +38,6 @@ const QueryPart: React.FC = () => {
 
   const DEBOUNCE_TIME = 500;
   const editorRef = useRef<any>();
-
   const [queryResult, setQueryResult] = useState<any>([]);
   const [queryValue, setQueryValue] = useState<IQuery | null>(null);
   const [expandLayout, setExpandLayout] = useState<string>(LAYOUT_QUERY.HALF);
@@ -257,7 +257,7 @@ const QueryPart: React.FC = () => {
       </Flex>
     );
   };
-
+  console.log(expandLayout);
   const _renderVisualizations = () => {
     if (!queryId || !queryValue) {
       return null;
@@ -265,9 +265,11 @@ const QueryPart: React.FC = () => {
 
     return (
       <div
-        className={`add-chart ${
-          expandLayout === LAYOUT_QUERY.HIDDEN ? 'expand-chart' : ''
-        } ${expandLayout === LAYOUT_QUERY.HIDDEN ? 'hidden-editor' : ''}`}
+        className={` 
+        ${expandLayout === LAYOUT_QUERY.FULL ? 'add-chart-full' : 'add-chart'}
+         ${expandLayout === LAYOUT_QUERY.HIDDEN ? 'expand-chart' : ''} ${
+          expandLayout === LAYOUT_QUERY.HIDDEN ? 'hidden-editor' : ''
+        }`}
       >
         {_renderContent()}
       </div>
@@ -294,7 +296,7 @@ const QueryPart: React.FC = () => {
           <Box className="queries-page__right-side">
             <Box className="editor-wrapper">
               <Box className="header-tab">
-                <div className="header-tab__info tag">
+                <div className="header-tab__info">
                   {queryClass?.getChains() && (
                     <AppNetworkIcons networkIds={queryClass?.getChains()} />
                   )}
@@ -333,7 +335,7 @@ const QueryPart: React.FC = () => {
                 }`}
                 ref={editorRef}
                 mode="sql"
-                theme="monokai"
+                theme="crimson_editor"
                 width="100%"
                 wrapEnabled={true}
                 name="sql_editor"
