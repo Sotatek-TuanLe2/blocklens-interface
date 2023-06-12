@@ -175,9 +175,9 @@ export const appInputStyles = {
     }),
     searchFilter: (props: StyleProps) => ({
       field: {
-        bg: mode('card.100', 'card.100')(props),
+        bg: mode('white', 'card.100')(props),
         border: '1px solid',
-        color: mode('white', 'white')(props),
+        color: mode('black', 'white')(props),
         borderColor: mode('line.100', 'line.300')(props),
         borderRadius: '6px',
         fontSize: '16px',
