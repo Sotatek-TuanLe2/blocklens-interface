@@ -248,7 +248,7 @@ const DashboardPart: React.FC = () => {
       />
       <div className="dashboard-container">
         <Box className="header-tab">
-          <div className="header-tab__info">
+          <div className="header-tab__info tag">
             {dashboardClass?.getChains() && (
               <AppNetworkIcons networkIds={dashboardClass?.getChains()} />
             )}

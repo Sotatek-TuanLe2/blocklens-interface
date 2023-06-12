@@ -121,14 +121,39 @@ export const globalStyles = {
         letterSpacing: '0.2px',
       },
       '.chakra-ui-light': {
-        '.main-layout, .input-table, .first-box-table, .select-table, .dashboard-list__item--row, .editor-wrapper, .box-layout, .workspace-page__editor__header, .add-chart, .workspace-page__sidebar__categories, .workspace-page__sidebar__content':
+        '.layout-config, .main-layout, .input-table, .first-box-table, .select-table, .dashboard-list__item--row, .editor-wrapper, .box-layout, .workspace-page__editor__header, .add-chart, .workspace-page__sidebar__categories, .workspace-page__sidebar__content, .dashboard-container':
           {
-            background: mode('white', 'bgDark')(props),
+            background: mode('white.100', 'bgDark')(props),
           },
-        '.label-toggle, .label-input, .input-table, .select-table, .title-config, .visual-container__visualization__name':
+        '.text-result-data, .btn-cancel, .label-toggle, .label-input, .input-table, .select-table, .title-config, .visual-container__visualization__name, .visual-container__visualization':
           {
-            color: mode('bg.100', 'white')(props),
+            color: mode('bg.100', 'white.100')(props),
           },
+        '.dashboard-list__item--row': {
+          boxShadow: mode('0px 15px 30px rgba(0, 0, 0, 0.04)', '')(props),
+          border: mode('', '1px solid border.100')(props),
+        },
+
+        '.header-config': {
+          background: mode('bg.400', 'bg.200')(props),
+        },
+        '.tag': {
+          div: {
+            background: mode('bg.400', 'bg.200')(props),
+            color: mode('bg.500', 'white.100')(props),
+          },
+        },
+        '.dashboards-page ': {
+          '.dashboard-list__item--column': {
+            background: mode('white.100', 'card.100')(props),
+          },
+          '.dashboard-list__item--column__content__title ': {
+            borderBottom: mode(
+              '1px solid border.300',
+              '1px solid border.200',
+            )(props),
+          },
+        },
       },
       '.table-temaplate': {
         table: {
@@ -160,40 +185,9 @@ export const globalStyles = {
           },
         },
       },
-      '.btn-primary': { background: 'main.200', color: 'white' },
+      '.btn-primary': { background: 'main.200', color: 'white.100' },
       span: {
         color: mode('bg.100', '')(props),
-      },
-      '.theme-text': {
-        color: mode('bg.100', 'white')(props),
-      },
-      '.theme-border': {
-        boxShadow: mode('0px 15px 30px rgba(0, 0, 0, 0.04)', '')(props),
-        border: mode('', '1px solid border.100')(props),
-      },
-
-      '.theme-background': {
-        background: mode('white', 'bgDark')(props),
-      },
-      '.theme-background-item': {
-        background: mode('bg.400', 'bg.200')(props),
-      },
-      '.tag': {
-        div: {
-          background: mode('bg.400', 'bg.200')(props),
-          color: mode('bg.500', 'white')(props),
-        },
-      },
-      '.dashboards-page ': {
-        '.dashboard-list__item--column': {
-          background: mode('white', 'card.100')(props),
-        },
-        '.dashboard-list__item--column__content__title ': {
-          borderBottom: mode(
-            '1px solid border.300',
-            '1px solid border.200',
-          )(props),
-        },
       },
     }),
   },

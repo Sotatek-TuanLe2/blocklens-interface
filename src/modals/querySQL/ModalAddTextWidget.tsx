@@ -191,7 +191,13 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
         />
 
         <Flex className="modal-footer">
-          <AppButton mr={2.5} size="lg" variant={'cancel'} onClick={onClose}>
+          <AppButton
+            mr={2.5}
+            size="lg"
+            variant={'cancel'}
+            onClick={onClose}
+            className="btn-cancel"
+          >
             Cancel
           </AppButton>
           <AppButton

@@ -131,7 +131,7 @@ const TableConfigurations: React.FC<ITableConfigurations> = ({
           sm: 'repeat(1, 1fr)',
           md: 'repeat(1, 1fr)',
         }}
-        className="theme-background"
+        className="layout-config"
       >
         <div className="select-column ">
           <AppSelect2
@@ -192,7 +192,7 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
         <div className="label-input">Align</div>
 
         <AppSelect2
-          className="select-table z-100 theme-border"
+          className="select-table z-100"
           size="medium"
           value={data?.align}
           onChange={(e) =>
@@ -225,7 +225,7 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
 
           <AppSelect2
             className="select-table"
-            size="small"
+            size="medium"
             value={data?.type}
             onChange={(e) =>
               onChange({

@@ -219,6 +219,7 @@ const ModalDashboard: React.FC<IModelNewDashboard> = ({
             }}
             size="lg"
             variant={'cancel'}
+            className="btn-cancel"
           >
             Cancel
           </AppButton>

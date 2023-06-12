@@ -236,7 +236,7 @@ const QueryPart: React.FC = () => {
           <Box className="queries-page__right-side">
             <Box className="editor-wrapper">
               <Box className="header-tab">
-                <div className="header-tab__info">
+                <div className="header-tab__info tag">
                   {queryClass?.getChains() && (
                     <AppNetworkIcons networkIds={queryClass?.getChains()} />
                   )}
