@@ -108,14 +108,15 @@ const QueryPart: React.FC = () => {
           queryId: queryId,
         });
       }
-      await fetchQueryResult();
       await fetchQuery();
+      await fetchQueryResult();
     } catch (error: any) {
       toastError({ message: getErrorMessage(error) });
     }
   };
 
   const getExecutionResultById = async (executionId: string) => {
+    clearInterval(fetchQueryResultInterval.current);
     const res = await rf.getRequest('DashboardsRequest').getQueryResult({
       executionId,
     });
@@ -169,8 +170,8 @@ const QueryPart: React.FC = () => {
 
   const fetchInitalData = async () => {
     try {
-      await fetchQueryResult();
       await fetchQuery();
+      await fetchQueryResult();
     } catch (error) {
       toastError({ message: getErrorMessage(error) });
     }

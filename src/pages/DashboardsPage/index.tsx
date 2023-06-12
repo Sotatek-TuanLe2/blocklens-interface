@@ -309,54 +309,54 @@ const DashboardsPage: React.FC = () => {
         icon: <IconMywork />,
         content: _renderContentTable(
           <>
-            <Box
-              display={myWorkType === TYPE_MYWORK.DASHBOARDS ? 'block' : 'none'}
-            >
-              <AppDataTable
-                requestParams={dashboardParams}
-                fetchData={fetchMyDashboards}
-                limit={12}
-                renderHeader={_renderHeader}
-                renderBody={(data) =>
-                  _renderBody(
-                    data.map((item: any) => (
-                      <ListItem
-                        key={item.id}
-                        item={item}
-                        type={LIST_ITEM_TYPE.MYWORK}
-                        myWorkType={TYPE_MYWORK.DASHBOARDS}
-                        visibility={visibility}
-                        displayed={displayed}
-                      />
-                    )),
-                  )
-                }
-              />
-            </Box>
-            <Box
-              display={myWorkType === TYPE_MYWORK.QUERIES ? 'block' : 'none'}
-            >
-              <AppDataTable
-                requestParams={queryParams}
-                fetchData={fetchMyQueries}
-                limit={15}
-                renderHeader={_renderHeader}
-                renderBody={(data) =>
-                  _renderBody(
-                    data.map((item: any) => (
-                      <ListItem
-                        key={item.id}
-                        item={item}
-                        type={LIST_ITEM_TYPE.MYWORK}
-                        myWorkType={TYPE_MYWORK.QUERIES}
-                        visibility={visibility}
-                        displayed={displayed}
-                      />
-                    )),
-                  )
-                }
-              />
-            </Box>
+            {myWorkType === TYPE_MYWORK.DASHBOARDS && (
+              <Box>
+                <AppDataTable
+                  requestParams={dashboardParams}
+                  fetchData={fetchMyDashboards}
+                  limit={12}
+                  renderHeader={_renderHeader}
+                  renderBody={(data) =>
+                    _renderBody(
+                      data.map((item: any) => (
+                        <ListItem
+                          key={item.id}
+                          item={item}
+                          type={LIST_ITEM_TYPE.MYWORK}
+                          myWorkType={TYPE_MYWORK.DASHBOARDS}
+                          visibility={visibility}
+                          displayed={displayed}
+                        />
+                      )),
+                    )
+                  }
+                />
+              </Box>
+            )}
+            {myWorkType === TYPE_MYWORK.QUERIES && (
+              <Box>
+                <AppDataTable
+                  requestParams={queryParams}
+                  fetchData={fetchMyQueries}
+                  limit={15}
+                  renderHeader={_renderHeader}
+                  renderBody={(data) =>
+                    _renderBody(
+                      data.map((item: any) => (
+                        <ListItem
+                          key={item.id}
+                          item={item}
+                          type={LIST_ITEM_TYPE.MYWORK}
+                          myWorkType={TYPE_MYWORK.QUERIES}
+                          visibility={visibility}
+                          displayed={displayed}
+                        />
+                      )),
+                    )
+                  }
+                />
+              </Box>
+            )}
           </>,
         ),
       });
