@@ -38,7 +38,6 @@
 
   .add-chart {
     padding: 6px 0px;
-    background: $card;
     border-radius: 6px;
     margin-top: 4px;
     margin-bottom: 20px;
@@ -68,25 +67,29 @@
   }
 
   .ace_content {
-    background-color: $card;
+    background-color: $title;
   }
 
   .ace_gutter-layer {
-    background: #161b36;
-    border-right: 1px solid #2f3b58;
+    background: $title;
+    border-right: 1px solid rgba(0, 2, 36, 0.1);
   }
 
   .ace_gutter-active-line {
-    background: #161b36;
+    background: $title;
   }
 
   .ace_scroller {
+    caret-color: red;
     background-color: $card;
     overflow: unset;
+    .ace_active-line {
+      background: unset;
+    }
   }
 
   .custom-editor {
-    border-top: 1px solid #2f3b58;
+    border-top: 1px solid rgba(0, 2, 36, 0.1);
     height: 250px !important;
     border-bottom-left-radius: 6px;
     border-bottom-right-radius: 6px;
@@ -192,7 +195,6 @@
 
     .editor-wrapper {
       width: 100%;
-      background: #101530;
       border-radius: 6px;
       .ace_gutter {
         overflow: unset;
@@ -247,7 +249,7 @@
       gap: 20px;
       align-items: baseline;
       padding: 0px 17px 10px 17px;
-      border-bottom: 1px solid $border;
+      border-bottom: 1px solid rgba(0, 2, 36, 0.1);
     }
 
     &__wrapper {
@@ -331,7 +333,6 @@
         .main-config {
           width: 28%;
           max-width: 28%;
-          background: #1a203b;
 
           .body-config-expand {
             overflow: auto;
@@ -348,7 +349,6 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: $disable;
 
             .close-config-icon {
               width: 8px;
@@ -387,6 +387,8 @@
           width: 280px;
           font-size: 16px;
           line-height: 24px;
+          border: 1px solid #c7d2e1;
+          border-radius: 6px;
         }
         .chakra-input__left-element {
           top: 2px;
@@ -415,7 +417,7 @@
       }
 
       &__name-tab[aria-selected='true'] {
-        background-color: $disable;
+        background-color: rgba(0, 2, 36, 0.05);
         text-decoration: none;
       }
 
@@ -477,7 +479,8 @@
           display: flex;
           align-items: center;
           padding: 11px 16px;
-          border: 1px solid #465065;
+          background: $bg;
+          border: 1px solid #c7d2e1;
           border-radius: 8px;
           gap: 10px;
 

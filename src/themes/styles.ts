@@ -4,6 +4,7 @@ export const globalStyles = {
   colors: {
     main: {
       100: 'linear-gradient(268.85deg, #226CFF 22.48%, #1084FF 83.59%)',
+      200: 'linear-gradient(271.63deg, #1E72FF -2.92%, #0250BE 102.1%)',
     },
     paragraph: {
       100: '#8D91A5',
@@ -14,12 +15,17 @@ export const globalStyles = {
     bg: {
       100: '#000224',
       200: '#1A203B',
+      300: '#F4F6F9',
+      400: 'rgba(0, 2, 36, 0.05)',
+      500: 'rgba(0, 2, 36, 0.5)',
     },
     pressed: {
       100: '#0245C9',
     },
     border: {
       100: '#272D52',
+      200: '#242b45',
+      300: 'rgba(0, 2, 36, 0.1)',
     },
     yellow: {
       100: '#FFB547',
@@ -110,25 +116,19 @@ export const globalStyles = {
   styles: {
     global: (props: StyleFunctionProps) => ({
       body: {
-        overflowX: 'hidden',
-        bg: mode('bg.100', 'bg.100')(props),
+        bg: mode('bg.300', 'bg.100')(props),
         fontFamily: 'DM Sans',
         letterSpacing: '0.2px',
-        fontWeight: 500,
-        color: 'white',
       },
-      input: {
-        color: 'gray.700',
-      },
-      html: {
-        fontFamily: 'DM Sans',
-      },
-      '*::placeholder': {
-        color: mode('gray.400', 'whiteAlpha.400')(props),
-      },
-      '*, *::before, &::after': {
-        borderColor: mode('gray.200', 'whiteAlpha.300')(props),
-        wordWrap: 'break-word',
+      '.chakra-ui-light': {
+        '.main-layout, .input-table, .first-box-table, .select-table, .dashboard-list__item--row, .editor-wrapper, .box-layout, .workspace-page__editor__header, .add-chart, .workspace-page__sidebar__categories, .workspace-page__sidebar__content':
+          {
+            background: mode('white', 'bgDark')(props),
+          },
+        '.label-toggle, .label-input, .input-table, .select-table, .title-config, .visual-container__visualization__name':
+          {
+            color: mode('bg.100', 'white')(props),
+          },
       },
       '.table-temaplate': {
         table: {
@@ -158,6 +158,41 @@ export const globalStyles = {
             borderBottom: '1px',
             borderColor: mode('gray.100', 'gray.700')(props),
           },
+        },
+      },
+      '.btn-primary': { background: 'main.200', color: 'white' },
+      span: {
+        color: mode('bg.100', '')(props),
+      },
+      '.theme-text': {
+        color: mode('bg.100', 'white')(props),
+      },
+      '.theme-border': {
+        boxShadow: mode('0px 15px 30px rgba(0, 0, 0, 0.04)', '')(props),
+        border: mode('', '1px solid border.100')(props),
+      },
+
+      '.theme-background': {
+        background: mode('white', 'bgDark')(props),
+      },
+      '.theme-background-item': {
+        background: mode('bg.400', 'bg.200')(props),
+      },
+      '.tag': {
+        div: {
+          background: mode('bg.400', 'bg.200')(props),
+          color: mode('bg.500', 'white')(props),
+        },
+      },
+      '.dashboards-page ': {
+        '.dashboard-list__item--column': {
+          background: mode('white', 'card.100')(props),
+        },
+        '.dashboard-list__item--column__content__title ': {
+          borderBottom: mode(
+            '1px solid border.300',
+            '1px solid border.200',
+          )(props),
         },
       },
     }),

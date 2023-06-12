@@ -381,6 +381,7 @@ const Sidebar: React.FC<{
         </div>
         <Box px={'16px'}>
           <AppInput
+            className="workspace-page__sidebar__content__work-place-wrap__input-search"
             value={searchValueWorkPlace}
             marginY={4}
             placeholder={'Search...'}
@@ -677,7 +678,7 @@ const Sidebar: React.FC<{
       <Box
         className={
           expandSidebar
-            ? 'workspace-page__sidebar__content show-sidebar'
+            ? 'workspace-page__sidebar__content show-sidebar '
             : 'workspace-page__sidebar__content hidden-sidebar'
         }
       >

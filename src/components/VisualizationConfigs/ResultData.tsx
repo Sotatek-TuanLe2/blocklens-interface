@@ -56,12 +56,7 @@ const ResultData: React.FC<IResultData> = ({
 
   return (
     <div className={'box-table'}>
-      <Text
-        as={'h3'}
-        className={'box-table__title'}
-        fontWeight={'bold'}
-        mb={'10px'}
-      >
+      <Text as={'h3'} className={'theme-text'} fontWeight={'bold'} mb={'10px'}>
         Result data
       </Text>
       <div className={'box-table-children'}>

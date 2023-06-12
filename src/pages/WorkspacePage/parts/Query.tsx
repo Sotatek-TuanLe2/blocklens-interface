@@ -240,9 +240,11 @@ const QueryPart: React.FC = () => {
                   {queryClass?.getChains() && (
                     <AppNetworkIcons networkIds={queryClass?.getChains()} />
                   )}
-                  {['defi', 'gas', 'dex'].map((item) => (
-                    <AppTag key={item} value={item} />
-                  ))}
+                  <div className="header-tab__info tag">
+                    {['defi', 'gas', 'dex'].map((item) => (
+                      <AppTag key={item} value={item} />
+                    ))}
+                  </div>
                 </div>
                 <Tooltip
                   label={
