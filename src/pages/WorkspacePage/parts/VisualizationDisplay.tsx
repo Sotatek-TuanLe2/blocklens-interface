@@ -359,7 +359,7 @@ const VisualizationDisplay = ({
                   toggleCloseConfig ? 'show-config' : 'hidden-config'
                 }`}
               >
-                <div className="header-config theme-background-item">
+                <div className="header-config">
                   <div className="title-config">
                     {typeNameVisual(type)} Options
                   </div>

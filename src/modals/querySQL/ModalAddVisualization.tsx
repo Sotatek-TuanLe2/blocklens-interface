@@ -274,7 +274,13 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
           </InfiniteScroll>
         </div>
         <Flex className="modal-footer">
-          <AppButton variant="cancel" mr={2.5} size="lg" onClick={onClose}>
+          <AppButton
+            variant="cancel"
+            mr={2.5}
+            size="lg"
+            onClick={onClose}
+            className="btn-cancel"
+          >
             Cancel
           </AppButton>
           <AppButton

@@ -2,7 +2,6 @@
 @import '../mixins.scss';
 
 .modal {
-  background-color: $card !important;
   border-radius: 20px !important;
   padding: 8px;
   max-width: 500px !important;
@@ -254,19 +253,7 @@
     border-color: #465065;
     max-width: 100%;
   }
-  .btn-save {
-    background: #1e1870;
-    color: #fff;
-  }
-  .btn-remove {
-    background: #e1e1f9;
-    color: #1e1870;
-  }
 
-  .btn-cancel {
-    background: #ffeceb;
-    color: #000;
-  }
   .title-markdown {
     width: 160px;
     color: #8d91a5;
@@ -321,11 +308,7 @@
     }
 
     &:hover {
-      background: linear-gradient(
-        268.85deg,
-        rgba(34, 108, 255, 0.12) 22.48%,
-        rgba(16, 132, 255, 0.12) 83.59%
-      );
+      background: linear-gradient(268.85deg, rgba(34, 108, 255, 0.12) 22.48%, rgba(16, 132, 255, 0.12) 83.59%);
 
       &:hover {
         border: 1px solid #1878ff;
