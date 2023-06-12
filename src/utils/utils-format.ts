@@ -289,4 +289,6 @@ export const formatVisualizationValue = (format: string, value: any) => {
   if (hasA) {
     return (value = _formatLargeNumberIfNeed(value));
   }
+
+  return value;
 };
