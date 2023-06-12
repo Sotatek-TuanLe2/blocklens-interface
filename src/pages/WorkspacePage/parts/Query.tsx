@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import AceEditor from 'react-ace';
 import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/mode-sql';
-import 'ace-builds/src-noconflict/theme-monokai';
+import 'ace-builds/src-noconflict/theme-tomorrow';
 import { useParams } from 'react-router-dom';
 import { AppLoadingTable, AppTag } from 'src/components';
 import { getErrorMessage } from 'src/utils/utils-helper';
@@ -28,7 +28,6 @@ import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import { BROADCAST_FETCH_WORKPLACE_DATA } from './Sidebar';
 import ModalQuery from 'src/modals/querySQL/ModalQuery';
 import { Query } from 'src/utils/utils-query';
-import 'brace/theme/crimson_editor';
 
 export const BROADCAST_ADD_TEXT_TO_EDITOR = 'ADD_TEXT_TO_EDITOR';
 export const BROADCAST_FETCH_QUERY = 'FETCH_QUERY';
@@ -337,7 +336,7 @@ const QueryPart: React.FC = () => {
                 }`}
                 ref={editorRef}
                 mode="sql"
-                theme="crimson_editor"
+                theme="tomorrow"
                 width="100%"
                 wrapEnabled={true}
                 name="sql_editor"
