@@ -183,6 +183,12 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
 
   const [chainsSupported, setChainsSupported] = useState<ILISTNETWORK[]>([]);
 
+  const allChainSupprted: ILISTNETWORK = {
+    value: '',
+    label: 'All',
+    chain: 'All',
+  };
+
   useEffect(() => {
     (async () => {
       const listChainRes = await rf
@@ -288,138 +294,128 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
 
   const _renderNetWork = () => {
     return (
-      <Flex>
-        <Flex mr={3}>
-          <AppButton
-            onClick={() => onChangeChain('')}
-            variant="network"
-            className={`dashboard-filter__network ${
-              chain === '' ? 'btn-active' : 'btn-inactive'
-            }`}
-          >
-            {chain === '' ? <FireIcon /> : <FireIconInactive />}
-            <Text ml={2}>All</Text>
-          </AppButton>
-        </Flex>
-        <Flex flexDirection={'row'}>
-          {chainsSupported.map((network, index) => {
-            return (
-              <Flex mr={3}>
-                <AppButton
-                  onClick={() => onChangeChain(network.value)}
-                  key={index}
-                  variant="network"
-                  className={`dashboard-filter__network ${
-                    chain === network.value ? 'btn-active' : 'btn-inactive'
-                  }`}
-                >
-                  <Box
-                    className={
-                      chain === network.value
-                        ? getChainIconByChainName(network.value)
-                        : getChainIconInactiveByChainName(network.value)
-                    }
-                  ></Box>
-                  <Text ml={2}>{network.label}</Text>
-                </AppButton>
-              </Flex>
-            );
-          })}
-        </Flex>
-      </Flex>
+      <AppSelect2
+        size="medium"
+        value={chain || ''}
+        onChange={onChangeChain}
+        options={[allChainSupprted, ...chainsSupported] as IOption[]}
+        className="dashboard-filter__search__select"
+        sxWrapper={{
+          w: { base: '100% !important', lg: '200px !important' },
+          h: 11,
+        }}
+        customItem={(chainSp: IOption) => {
+          return (
+            <Flex align={'center'}>
+              {chainSp.value === '' ? (
+                <Box w={5}>
+                  <FireIcon />
+                </Box>
+              ) : (
+                <Box className={getChainIconByChainName(chainSp.value)} />
+              )}
+              <Text ml={2}>{chainSp.label}</Text>
+            </Flex>
+          );
+        }}
+      />
     );
   };
 
-  // return (
-  //   <>
-  //     <Flex align={'center'} pb={5}>
-  //       <Flex align={'center'} flexGrow={1}>
-  //         {isDashboard && (
-  //           <Flex flexGrow={{ base: 1, lg: 0 }}>
-  //             <MenuShowDisplay
-  //               displayType={displayed}
-  //               setDisplayType={setDisplayed}
-  //             />
-  //           </Flex>
-  //         )}
-  //         <Flex
-  //           flexGrow={{ base: 1, lg: 0 }}
-  //           align={'center'}
-  //           px={5}
-  //           h={10}
-  //           minW={'124px'}
-  //           bg={'white'}
-  //           border={'1px solid #C7D2E1'}
-  //           borderRadius={'6px'}
-  //           transition={'.2s linear'}
-  //           ml={2.5}
-  //           onClick={onToggle}
-  //           _hover={{ bg: 'gray.200' }}
-  //           cursor={'pointer'}
-  //           userSelect={'none'}
-  //         >
-  //           <FilterIcon />
-  //           <Text px={2}>Filter</Text>
-  //         </Flex>
-  //       </Flex>
-  //       <Box display={{ base: 'none', lg: 'block' }}>
-  //         <AppButton className="btn-primary" onClick={onClickNew} h={10}>
-  //           <Box className="icon-plus-circle" mr={2} /> Create
-  //         </AppButton>
-  //       </Box>
-  //     </Flex>
-  //     <Collapse
-  //       in={isOpen}
-  //       animateOpacity
-  //       style={{ overflow: 'visible !important' }}
-  //     >
-  //       <Box borderTop={'1px solid rgba(0, 2, 36, 0.1)'} pt={5}>
-  //         <Flex mt={5}>
-  //           <Box flexGrow={1}>
-  //             <AppInput
-  //               className="dashboard-filter__search__input"
-  //               placeholder={'Search...'}
-  //               value={search}
-  //               variant="searchFilter"
-  //               isSearch
-  //               onChange={onChangeSearch}
-  //             />
-  //             <Flex mt={'14px'}>
-  //               {listTags.map((item) => (
-  //                 <AppTag
-  //                   key={item.id}
-  //                   value={item.name}
-  //                   variant="md"
-  //                   onClick={() => onChangeTag(item.name)}
-  //                   selected={item.name === tag}
-  //                 />
-  //               ))}
-  //             </Flex>
-  //           </Box>
+  return (
+    <>
+      <Flex align={'center'}>
+        <Flex align={'center'} flexGrow={1}>
+          {isDashboard && (
+            <Flex flexGrow={{ base: 1, lg: 0 }}>
+              <MenuShowDisplay
+                displayType={displayed}
+                setDisplayType={setDisplayed}
+              />
+            </Flex>
+          )}
+          <Flex
+            flexGrow={{ base: 1, lg: 0 }}
+            align={'center'}
+            px={5}
+            h={10}
+            minW={'124px'}
+            bg={'white'}
+            border={'1px solid #C7D2E1'}
+            borderRadius={'6px'}
+            transition={'.2s linear'}
+            ml={2.5}
+            onClick={onToggle}
+            _hover={{ bg: 'gray.200' }}
+            cursor={'pointer'}
+            userSelect={'none'}
+          >
+            <FilterIcon />
+            <Text px={2}>Filter</Text>
+          </Flex>
+        </Flex>
+        <Box display={{ base: 'none', lg: 'block' }}>
+          <AppButton className="btn-primary" onClick={onClickNew} h={10}>
+            <Box className="icon-plus-circle" mr={2} /> Create
+          </AppButton>
+        </Box>
+      </Flex>
+      <Collapse
+        in={isOpen}
+        animateOpacity
+        style={{ overflow: 'visible !important' }}
+      >
+        <Box
+          borderTop={'1px solid rgba(0, 2, 36, 0.1)'}
+          mt={{ base: '22px', lg: '28px' }}
+          pt={{ base: '22px', lg: '20px' }}
+        >
+          <Flex flexDir={{ base: 'column', lg: 'row' }}>
+            <Box flexGrow={1} mb={{ base: 5, lg: 0 }}>
+              <AppInput
+                className="dashboard-filter__search__input"
+                placeholder={'Search...'}
+                value={search}
+                variant="searchFilter"
+                isSearch
+                onChange={onChangeSearch}
+              />
+              <Flex mt={'14px'}>
+                {listTags.map((item) => (
+                  <AppTag
+                    key={item.id}
+                    value={item.name}
+                    variant="md"
+                    onClick={() => onChangeTag(item.name)}
+                    selected={item.name === tag}
+                  />
+                ))}
+              </Flex>
+            </Box>
 
-  //           <AppSelect2
-  //             size="medium"
-  //             value={sort || 'datelowtohigh'}
-  //             onChange={onChangeSort}
-  //             options={optionType}
-  //             className="dashboard-filter__search__select"
-  //           />
-  //           <AppSelect2
-  //             size="medium"
-  //             value={sort || 'datelowtohigh'}
-  //             onChange={onChangeSort}
-  //             options={optionType}
-  //             className="dashboard-filter__search__select"
-  //           />
-  //         </Flex>
-  //       </Box>
-  //     </Collapse>
-  //     <ModalCreateNew
-  //       open={openNewDashboardModal}
-  //       onClose={onToggleNewDashboardModal}
-  //     />
-  //   </>
-  // );
+            <Box ml={{ lg: 2.5 }} mb={{ base: '13px', lg: 0 }}>
+              <AppSelect2
+                size="medium"
+                value={sort || 'datelowtohigh'}
+                onChange={onChangeSort}
+                options={optionType}
+                className="dashboard-filter__search__select"
+                sxWrapper={{
+                  w: { base: '100% !important', lg: '200px !important' },
+                  h: 11,
+                }}
+              />
+            </Box>
+            <Box ml={{ lg: 2.5 }}>{_renderNetWork()}</Box>
+          </Flex>
+        </Box>
+      </Collapse>
+      <ModalCreateNew
+        open={openNewDashboardModal}
+        onClose={onToggleNewDashboardModal}
+      />
+    </>
+  );
 
   return (
     <div>

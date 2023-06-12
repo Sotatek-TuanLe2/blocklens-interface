@@ -182,7 +182,11 @@ const DashboardsPage: React.FC = () => {
     (appTable: any) => {
       return (
         <>
-          <Box mb={'0 !important'} className="dashboard-filter">
+          <Box
+            mt={'0 !important'}
+            pb={{ base: '28px', lg: '34px' }}
+            className="dashboard-filter"
+          >
             <FilterSearch
               type={tab}
               visibility={visibility}
@@ -193,7 +197,7 @@ const DashboardsPage: React.FC = () => {
               changeMyWorkType={setMyWorkType}
             />
           </Box>
-          <Box mt={'34px'}>{appTable}</Box>
+          <Box>{appTable}</Box>
         </>
       );
     },

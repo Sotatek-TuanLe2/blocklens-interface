@@ -1,9 +1,9 @@
-import { Flex, Text, Tooltip } from '@chakra-ui/react';
+import { Box, Flex, Text, Tooltip } from '@chakra-ui/react';
 import moment from 'moment';
 import { Link, useHistory } from 'react-router-dom';
 import { AppTag } from 'src/components';
 import AppNetworkIcons from 'src/components/AppNetworkIcons';
-import { DisplayType, VisibilityGridDashboardList } from 'src/constants';
+import { DisplayType } from 'src/constants';
 import { ROUTES } from 'src/utils/common';
 import { IDashboardDetail, IQuery } from 'src/utils/query.type';
 import { Dashboard } from 'src/utils/utils-dashboard';
@@ -11,9 +11,6 @@ import { Query } from 'src/utils/utils-query';
 import { LIST_ITEM_TYPE } from '..';
 import { listTags, TYPE_MYWORK } from './FilterSearch';
 import AppQueryMenu, { QUERY_MENU_LIST } from 'src/components/AppQueryMenu';
-import { AppBroadcast } from 'src/utils/utils-broadcast';
-import { BROADCAST_FETCH_DASHBOARD } from 'src/pages/WorkspacePage/parts/Dashboard';
-import { BROADCAST_FETCH_QUERY } from 'src/pages/WorkspacePage/parts/Query';
 
 interface IListItem {
   type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
@@ -71,9 +68,16 @@ const ListItem: React.FC<IListItem> = (props) => {
 
   const _renderGridItem = () => {
     return (
-      <div className="dashboard-list__item--column">
-        <Flex flexDirection="column" alignItems={'center'}>
-          <div className="dashboard-list__item--column__avatar">
+      <Box
+        className="dashboard-list__item--column"
+        w={'100% !important'}
+        px={'0 !important'}
+      >
+        <Flex flexDirection="column" alignItems={'center'} w={'full'}>
+          <Box
+            className="dashboard-list__item--column__avatar"
+            w={'100% !important'}
+          >
             <Link to={getTitleUrl()}>
               <img
                 src={
@@ -91,8 +95,8 @@ const ListItem: React.FC<IListItem> = (props) => {
               )}
               25
             </div> */}
-          </div>
-          <div className="dashboard-list__item--column__content">
+          </Box>
+          <Box className="dashboard-list__item--column__content" px={4}>
             <Flex
               className="dashboard-list__item--column__content__title"
               alignItems={'center'}
@@ -139,9 +143,9 @@ const ListItem: React.FC<IListItem> = (props) => {
                 <AppNetworkIcons networkIds={itemClass.getChains()} />
               )}
             </Flex>
-          </div>
+          </Box>
         </Flex>
-      </div>
+      </Box>
     );
   };
 
@@ -199,14 +203,6 @@ const ListItem: React.FC<IListItem> = (props) => {
 
   return (
     <>{displayed === DisplayType.Grid ? _renderGridItem() : _renderRowItem()}</>
-  );
-
-  return (
-    <>
-      {visibility === VisibilityGridDashboardList.COLUMN
-        ? _renderGridItem()
-        : _renderRowItem()}
-    </>
   );
 };
 
