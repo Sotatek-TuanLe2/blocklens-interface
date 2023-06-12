@@ -5,7 +5,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { DashboardListIcon, IconMywork, QueriesIcon } from 'src/assets/icons';
 import { AppDataTable, RequestParams } from 'src/components';
 import AppTabs, { ITabs } from 'src/components/AppTabs';
-import { VisibilityGridDashboardList } from 'src/constants';
+import { DisplayType, VisibilityGridDashboardList } from 'src/constants';
 import useUser from 'src/hooks/useUser';
 import { BasePage } from 'src/layouts';
 import {
@@ -50,6 +50,7 @@ const DashboardsPage: React.FC = () => {
   const [visibility, setVisibility] = useState<VisibilityGridDashboardList>(
     VisibilityGridDashboardList.COLUMN,
   );
+  const [displayed, setDisplayed] = useState<DisplayType>(DisplayType.Grid);
 
   useEffect(() => {
     const searchParams = new URLSearchParams(searchUrl);
@@ -186,6 +187,8 @@ const DashboardsPage: React.FC = () => {
               type={tab}
               visibility={visibility}
               changeVisibility={setVisibility}
+              displayed={displayed}
+              setDisplayed={setDisplayed}
               myWorkType={myWorkType}
               changeMyWorkType={setMyWorkType}
             />
@@ -194,14 +197,14 @@ const DashboardsPage: React.FC = () => {
         </>
       );
     },
-    [tab, visibility, myWorkType],
+    [tab, visibility, myWorkType, displayed],
   );
 
   const _renderBody = useCallback(
     (listItem: any) => {
       return (
         <>
-          {visibility === VisibilityGridDashboardList.COLUMN ? (
+          {displayed === DisplayType.Grid ? (
             <SimpleGrid
               className="infos"
               columns={{ base: 1, sm: 2, lg: 3, xl: 4 }}
@@ -216,13 +219,13 @@ const DashboardsPage: React.FC = () => {
         </>
       );
     },
-    [tab, visibility, myWorkType],
+    [tab, myWorkType, displayed],
   );
 
   const _renderHeader = useCallback(() => {
     return (
       <>
-        {visibility === VisibilityGridDashboardList.ROW ? (
+        {displayed === DisplayType.List ? (
           <div className="dashboard-list__header">
             <div className="item-title">Name</div>
             <div className="item-creator">Creator</div>
@@ -237,7 +240,7 @@ const DashboardsPage: React.FC = () => {
         )}
       </>
     );
-  }, [visibility]);
+  }, [displayed]);
 
   const generateTabs = (): ITabs[] => {
     const tabs: ITabs[] = [
@@ -259,6 +262,7 @@ const DashboardsPage: React.FC = () => {
                     item={item}
                     type={LIST_ITEM_TYPE.DASHBOARDS}
                     visibility={visibility}
+                    displayed={displayed}
                   />
                 )),
               )
@@ -284,6 +288,7 @@ const DashboardsPage: React.FC = () => {
                     item={item}
                     type={LIST_ITEM_TYPE.QUERIES}
                     visibility={visibility}
+                    displayed={displayed}
                   />
                 )),
               )
@@ -317,6 +322,7 @@ const DashboardsPage: React.FC = () => {
                         type={LIST_ITEM_TYPE.MYWORK}
                         myWorkType={TYPE_MYWORK.DASHBOARDS}
                         visibility={visibility}
+                        displayed={displayed}
                       />
                     )),
                   )
@@ -340,6 +346,7 @@ const DashboardsPage: React.FC = () => {
                         type={LIST_ITEM_TYPE.MYWORK}
                         myWorkType={TYPE_MYWORK.QUERIES}
                         visibility={visibility}
+                        displayed={displayed}
                       />
                     )),
                   )
@@ -373,10 +380,13 @@ const DashboardsPage: React.FC = () => {
             tabs={generateTabs()}
             onChange={onChangeTab}
             sxTabList={{
-              border: 'none !important',
+              borderBottom: {
+                base: '1px solid #C7D2E1 !important',
+                lg: 'none !important',
+              },
               mb: { base: '34px', lg: 6 },
             }}
-            sxTabsHeader={{ justifyContent: 'center !important' }}
+            sxTabsHeader={{ justifyContent: { lg: 'center !important' } }}
           />
         </div>
       </Flex>

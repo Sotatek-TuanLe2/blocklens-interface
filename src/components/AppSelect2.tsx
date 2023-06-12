@@ -58,6 +58,7 @@ const AppSelect2: FC<IAppSelectPops> = ({
       width={width}
       ref={ref}
       zIndex={zIndex}
+      userSelect={'none'}
     >
       <Flex
         className="app-select__btn-select"

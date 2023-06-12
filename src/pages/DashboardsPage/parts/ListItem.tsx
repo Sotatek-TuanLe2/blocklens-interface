@@ -3,7 +3,7 @@ import moment from 'moment';
 import { Link, useHistory } from 'react-router-dom';
 import { AppTag } from 'src/components';
 import AppNetworkIcons from 'src/components/AppNetworkIcons';
-import { VisibilityGridDashboardList } from 'src/constants';
+import { DisplayType, VisibilityGridDashboardList } from 'src/constants';
 import { ROUTES } from 'src/utils/common';
 import { IDashboardDetail, IQuery } from 'src/utils/query.type';
 import { Dashboard } from 'src/utils/utils-dashboard';
@@ -20,10 +20,11 @@ interface IListItem {
   myWorkType?: typeof TYPE_MYWORK[keyof typeof TYPE_MYWORK];
   item?: IDashboardDetail | IQuery;
   visibility?: 'COLUMN' | 'ROW';
+  displayed?: DisplayType;
 }
 
 const ListItem: React.FC<IListItem> = (props) => {
-  const { type, myWorkType, item, visibility } = props;
+  const { type, myWorkType, item, visibility, displayed } = props;
   const history = useHistory();
 
   // const [favorite, setFavorite] = useState<boolean>(false);
@@ -195,6 +196,10 @@ const ListItem: React.FC<IListItem> = (props) => {
       </div>
     );
   };
+
+  return (
+    <>{displayed === DisplayType.Grid ? _renderGridItem() : _renderRowItem()}</>
+  );
 
   return (
     <>
