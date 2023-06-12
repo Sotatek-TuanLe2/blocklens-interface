@@ -234,10 +234,10 @@ export const formatVisualizationValue = (format: string, value: any) => {
   const hasComma = format.includes(',');
   const hasA = format.includes('a');
   const isFormatZero = format === '0';
-  const isValueZero = value === 0;
+  const isValueZero = new BigNumber(value).isEqualTo(0);
   const isNotANumber = !isNumber(value);
   const hasDollarSign = format.includes('$');
-  const checkNegativeValue = value < 0;
+  const checkNegativeValue = new BigNumber(value).isGreaterThan(0);
 
   if (isValueZero) {
     return 0;
