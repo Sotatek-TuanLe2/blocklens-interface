@@ -252,7 +252,7 @@ export const formatVisualizationValue = (format: string, value: any) => {
       value = formatNumberWithDecimalDigits(value, format);
       const decimalPart = String(value).split('.')[1];
       return checkNegativeValue
-        ? `$${_formatLargeNumberIfNeed(
+        ? `-$${_formatLargeNumberIfNeed(
             value.slice(1),
             decimalPart.length || 0,
             false,
@@ -261,7 +261,7 @@ export const formatVisualizationValue = (format: string, value: any) => {
     }
     if (hasA) {
       return checkNegativeValue
-        ? `$${_formatLargeNumberIfNeed(value.slice(1))}`
+        ? `-$${_formatLargeNumberIfNeed(value.slice(1))}`
         : `$${_formatLargeNumberIfNeed(value)}`;
     }
     return `$${value}`;
