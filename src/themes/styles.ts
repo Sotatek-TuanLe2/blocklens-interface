@@ -150,8 +150,8 @@ export const globalStyles = {
         },
         '.dashboard-list__item--column__content__title ': {
           borderBottom: mode(
-            '1px solid #242b45',
             '1px solid rgba(0, 2, 36, 0.1)',
+            '1px solid #242b45',
           )(props),
         },
       },
