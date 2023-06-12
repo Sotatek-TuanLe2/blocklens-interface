@@ -70,13 +70,13 @@ const AppSelect2: FC<IAppSelectPops> = ({
       ref={ref}
       zIndex={zIndex}
       userSelect={'none'}
-      {...sxWrapper}
     >
       <Flex
         className="app-select__btn-select"
         onClick={() => {
           !disabled && setOpen(!open);
         }}
+        {...sxWrapper}
       >
         {customItem && optionSelected ? (
           customItem(optionSelected)

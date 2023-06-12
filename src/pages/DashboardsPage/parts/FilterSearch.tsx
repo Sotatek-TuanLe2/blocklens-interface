@@ -302,7 +302,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
         className="dashboard-filter__search__select"
         sxWrapper={{
           w: { base: '100% !important', lg: '200px !important' },
-          h: 11,
+          h: '44px',
         }}
         customItem={(chainSp: IOption) => {
           return (
@@ -393,7 +393,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
               </Flex>
             </Box>
 
-            <Box ml={{ lg: 2.5 }} mb={{ base: '13px', lg: 0 }}>
+            <Box ml={{ lg: 2.5 }} mb={{ base: '13px', lg: 0 }} pos={'relative'} zIndex={10}>
               <AppSelect2
                 size="medium"
                 value={sort || 'datelowtohigh'}
@@ -402,7 +402,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
                 className="dashboard-filter__search__select"
                 sxWrapper={{
                   w: { base: '100% !important', lg: '200px !important' },
-                  h: 11,
+                  h: '44px'
                 }}
               />
             </Box>
