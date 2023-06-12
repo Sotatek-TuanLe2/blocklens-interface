@@ -120,7 +120,36 @@ export const globalStyles = {
         fontFamily: 'DM Sans',
         letterSpacing: '0.2px',
       },
-
+      '.table-temaplate': {
+        table: {
+          fontVariantNumeric: 'lining-nums tabular-nums',
+          borderCollapse: 'collapse',
+          w: 'full',
+          th: {
+            fontWeight: 'bold',
+            textTransform: 'uppercase',
+            letterSpacing: 'wider',
+            textAlign: 'start',
+            paddingInlineStart: 6,
+            paddingInlineEnd: 6,
+            pt: 3,
+            pb: 3,
+            lineHeight: '4',
+            fontSize: 'xs',
+            borderBottom: '1px',
+            borderColor: mode('gray.100', 'gray.700')(props),
+          },
+          td: {
+            paddingInlineStart: 6,
+            paddingInlineEnd: 6,
+            paddingTop: 4,
+            paddingBottom: 4,
+            lineHeight: 5,
+            borderBottom: '1px',
+            borderColor: mode('gray.100', 'gray.700')(props),
+          },
+        },
+      },
       '.btn-primary': { background: 'main.200', color: 'white' },
       span: {
         color: mode('bg.100', '')(props),
