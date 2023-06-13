@@ -1,18 +1,21 @@
-import { AppInput } from 'src/components';
-import React, { useEffect, useCallback, useState, FC } from 'react';
+import { AppField, AppInput, AppReadABI } from 'src/components';
+import React, { useCallback, FC, useState } from 'react';
 import rf from 'src/requests/RequestFactory';
 import { toastError } from 'src/utils/utils-notify';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import _ from 'lodash';
+import { Box } from '@chakra-ui/react';
 
 interface PartFormContractAptosProps {
-  onFetchData?: (data: any) => void;
+  dataForm: any;
+  onChangeForm: any;
 }
 
 const PartFormContractAptos: FC<PartFormContractAptosProps> = ({
-  onFetchData,
+  dataForm,
+  onChangeForm,
 }) => {
-  const [address, setAddress] = useState<string>('');
+  const [dataAddress, setDataAddress] = useState<any>();
 
   const getABI = async (payload: any) => {
     try {
@@ -53,8 +56,7 @@ const PartFormContractAptos: FC<PartFormContractAptosProps> = ({
           };
         }),
       );
-
-      onFetchData && onFetchData(data);
+      setDataAddress(data);
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
     }
@@ -62,19 +64,30 @@ const PartFormContractAptos: FC<PartFormContractAptosProps> = ({
 
   const debounceDropDown = useCallback(
     _.debounce((addressValue: string) => getDataAddress(addressValue), 2000),
-    [],
+    [dataForm.address],
   );
 
   return (
-    <div>
-      <AppInput
-        value={address}
-        onChange={(e) => {
-          setAddress(e.target.value);
-          debounceDropDown(e.target.value.trim());
-        }}
+    <Box width={'100%'}>
+      <AppField label={'Contract Address'} customWidth={'100%'} isRequired>
+        <AppInput
+          value={dataForm.address}
+          onChange={(e) => {
+            onChangeForm({
+              ...dataForm,
+              address: e.target.value.trim(),
+            });
+            debounceDropDown(e.target.value.trim());
+          }}
+        />
+      </AppField>
+
+      <AppReadABI
+        onChange={(data) => onChangeForm(data)}
+        address={dataForm.address}
+        dataAddress={dataAddress}
       />
-    </div>
+    </Box>
   );
 };
 

@@ -15,7 +15,6 @@ import {
   AppField,
   AppInput,
   AppLink,
-  AppReadABI,
   AppSelect2,
   AppTextarea,
   TYPE_ABI,
@@ -64,17 +63,6 @@ const optionsWebhookType = [
   },
 ];
 
-const optionsWebhookTypeAptos = [
-  {
-    label: 'Address Activity',
-    value: WEBHOOK_TYPES.ADDRESS_ACTIVITY,
-  },
-  {
-    label: 'Contract Activity',
-    value: WEBHOOK_TYPES.CONTRACT_ACTIVITY,
-  },
-];
-
 const CreateWebhook = () => {
   const { id: appId } = useParams<{ id: string }>();
   const initDataCreateWebHook = {
@@ -97,9 +85,7 @@ const CreateWebhook = () => {
   const [isInsertManuallyAddress, setIsInsertManuallyAddress] =
     useState<boolean>(true);
   const [, updateState] = useState<any>();
-  const [abiContractAddress, setAbiContractAddress] = useState<any>();
-  const [payloadContractAddressAptos, setPayloadContractAddressAptos] =
-    useState<any[]>();
+
   const forceUpdate = useCallback(() => updateState({}), []);
   const inputRef = useRef<any>(null);
 
@@ -108,11 +94,6 @@ const CreateWebhook = () => {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const typeParams = params.get('type');
-
-  useEffect(() => {
-    // log data change...
-    console.log("payloadContractAddressAptos: ", payloadContractAddressAptos);
-  }, [payloadContractAddressAptos]);
 
   const getAppInfo = useCallback(async () => {
     try {
@@ -126,19 +107,27 @@ const CreateWebhook = () => {
   }, [appId]);
 
   const optionTypes = useMemo(() => {
+    if (appInfo.chain === CHAINS.APTOS) {
+      return optionsWebhookType.filter(
+        (item) => item.value !== WEBHOOK_TYPES.NFT_ACTIVITY,
+      );
+    }
+
     if (!isEVMNetwork(appInfo.chain)) {
-      if (appInfo.chain === CHAINS.APTOS) {
-        return optionsWebhookTypeAptos;
-      }
       return optionsWebhookType.filter(
         (item) => item.value === WEBHOOK_TYPES.ADDRESS_ACTIVITY,
       );
     }
+
     return optionsWebhookType;
   }, [appInfo]);
 
   useEffect(() => {
-    if (!!Object.keys(appInfo).length && !isEVMNetwork(appInfo.chain)) {
+    if (
+      !!Object.keys(appInfo).length &&
+      !isEVMNetwork(appInfo.chain) &&
+      appInfo.chain !== CHAINS.APTOS
+    ) {
       setType(WEBHOOK_TYPES.ADDRESS_ACTIVITY);
       return;
     }
@@ -215,12 +204,10 @@ const CreateWebhook = () => {
   };
 
   const _renderFormContractActivity = () => {
-    return (
-      <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
-        <AppField label={'Contract Address'} customWidth={'100%'} isRequired>
-          {appInfo.chain === CHAINS.APTOS ? (
-            _renderFormContractAptos()
-          ) : (
+    if (appInfo.chain === CHAINS.ETH) {
+      return (
+        <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
+          <AppField label={'Contract Address'} customWidth={'100%'} isRequired>
             <AppInput
               value={dataForm.address}
               onChange={(e) =>
@@ -236,21 +223,21 @@ const CreateWebhook = () => {
                 rule: 'required|isAddress',
               }}
             />
-          )}
-        </AppField>
-        {appInfo.chain === CHAINS.APTOS ? (
-          <AppReadABI
-            onChange={(data) => setPayloadContractAddressAptos(data)}
-            dataPackageContractAddress={abiContractAddress}
-          />
-        ) : (
+          </AppField>
+
           <AppUploadABI
             type={TYPE_ABI.CONTRACT}
             onChange={(abi, abiFilter) =>
               setDataForm({ ...dataForm, abi, abiFilter })
             }
           />
-        )}
+        </Flex>
+      );
+    }
+
+    return (
+      <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
+        {_renderFormContractAptos()}
       </Flex>
     );
   };
@@ -295,9 +282,7 @@ const CreateWebhook = () => {
 
   const _renderFormContractAptos = () => {
     return (
-      <PartFormContractAptos
-        onFetchData={(data: any) => setAbiContractAddress(data)}
-      />
+      <PartFormContractAptos dataForm={dataForm} onChangeForm={setDataForm} />
     );
   };
 

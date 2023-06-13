@@ -1,21 +1,17 @@
 import { Box, Flex, Checkbox, Text } from '@chakra-ui/react';
-import React, { useState, FC, useRef, useEffect } from 'react';
+import React, {
+  useState,
+  FC,
+  useRef,
+  useEffect,
+  ChangeEvent,
+  useMemo,
+} from 'react';
 import { AppInput, AppSelect2 } from 'src/components';
-import { CloseIcon } from '@chakra-ui/icons';
 import 'src/styles/components/AppUploadABI.scss';
 import { isMobile } from 'react-device-detect';
 import { Scrollbars } from 'react-custom-scrollbars';
-import {
-  ExposedFunctionType,
-  ModuleType,
-  PackageType,
-  StructType,
-} from 'src/utils/utils-webhook';
-
-export const TYPE_ABI = {
-  NFT: 'NFT',
-  CONTRACT: 'CONTRACT',
-};
+import { PackageType } from 'src/utils/utils-webhook';
 
 interface IStructAndFunction {
   name: string;
@@ -36,14 +32,24 @@ interface IPackageContractAddress {
 }
 
 interface IAppReadABI {
-  onChange?: (abi: any[]) => void;
-  dataPackageContractAddress?: PackageType[];
+  onChange?: (data: any) => void;
+  dataAddress?: PackageType[];
+  address: string;
 }
 
 interface IListSelect {
-  data: IStructAndFunction[];
+  data: IABIItem[];
   type?: string;
-  onFetchData: (data: IStructAndFunction[]) => void;
+  valueSearch: string;
+  valueSort: string;
+  viewOnly?: boolean;
+  onChangeDataSelected: (data: IABIItem[]) => void;
+  dataSelected: IABIItem[];
+}
+
+interface IABIItem {
+  name: string;
+  type: string;
 }
 
 const options = [
@@ -57,40 +63,100 @@ const options = [
   },
 ];
 
-const ListSelect: FC<IListSelect> = ({ type, data, onFetchData }) => {
-  const [selectData, setSelectData] = useState<IStructAndFunction[]>(
-    data || [],
+const ListSelect: FC<IListSelect> = ({
+  type,
+  data,
+  valueSearch,
+  valueSort,
+  viewOnly,
+  dataSelected,
+  onChangeDataSelected,
+}) => {
+  const [itemSelected, setItemSelected] = useState<any>([]);
+
+  const onChangeSelect = (e: ChangeEvent<HTMLInputElement>, id: string) => {
+    let newItemsSelected = [];
+
+    if (!e.target.checked) {
+      newItemsSelected = [
+        ...itemSelected.filter((item: string) => item !== id),
+      ];
+      onChangeDataSelected([
+        ...dataSelected.filter((item: IABIItem) => item.name !== id),
+      ]);
+    } else {
+      newItemsSelected = [...itemSelected, id];
+      onChangeDataSelected([
+        ...dataSelected,
+        data.filter((item: IABIItem) => item.name === id)[0],
+      ]);
+    }
+
+    setItemSelected(newItemsSelected);
+  };
+
+  const dataShow = useMemo(() => {
+    let dataFiltered = data;
+
+    if (!!valueSearch) {
+      dataFiltered = dataFiltered.filter((item: IABIItem) =>
+        item.name.toLowerCase().includes(valueSearch.toLowerCase()),
+      );
+    }
+
+    if (valueSort === 'az') {
+      dataFiltered = dataFiltered.sort((a: any, b: any) => {
+        if (a.name.toLowerCase() < b.name.toLowerCase()) {
+          return -1;
+        }
+        if (a.name.toLowerCase() > b.name.toLowerCase()) {
+          return 1;
+        }
+        return 0;
+      });
+    }
+
+    if (valueSort === 'za') {
+      dataFiltered = dataFiltered.sort((a: any, b: any) => {
+        if (a.name.toLowerCase() < b.name.toLowerCase()) {
+          return 1;
+        }
+        if (a.name.toLowerCase() > b.name.toLowerCase()) {
+          return -1;
+        }
+        return 0;
+      });
+    }
+
+    return dataFiltered;
+  }, [data, valueSearch, valueSort]);
+
+  const allChecked = dataShow.every((data: IABIItem) =>
+    itemSelected.some((id: string) => data.name === id),
   );
 
-  useEffect(() => {
-    data ? setSelectData(data) : setSelectData([]);
-  }, [data]);
+  const onSelectAll = () => {
+    const dataRest = dataSelected.filter((item: IABIItem) => item.type !== type);
 
-  const [selectedAll, setSelectedAll] = useState<boolean>(false);
-
-  const onSelectedAll = () => {
-    const newData = selectData.map((m) => ({
-      ...m,
-      selected: !selectedAll,
-    }));
-    setSelectData(newData);
-    setSelectedAll(!selectedAll);
-    onFetchData(newData);
+    console.log(allChecked, "allChecked");
+    if (!allChecked) {
+      const allData = dataShow.map((item: any) => item.name);
+      onChangeDataSelected([...dataRest, ...dataShow]);
+      setItemSelected(allData);
+      return;
+    }
+    setItemSelected([]);
+    onChangeDataSelected([...dataRest]);
   };
 
-  const onSelectChange = (value: string) => {
-    const newData = selectData.map((m) =>
-      m.name === value ? { ...m, selected: !m.selected } : { ...m },
-    );
-    setSelectData(newData);
-    setSelectedAll(newData.every((e) => e.selected));
-    onFetchData(newData);
-  };
+  const isIndeterminate =
+    dataShow.some((data: IABIItem) =>
+      itemSelected.some((id: string) => data.name === id),
+    ) && !allChecked;
 
   return (
-    // @ts-ignore
     <Flex className="box-events">
-      <Box className="label-events">
+      <Box className="label-events" width={'200px'}>
         {type === 'function' ? 'Exposed Functions' : 'Structs'}
       </Box>
       <Box ml={5} width="100%">
@@ -109,22 +175,26 @@ const ListSelect: FC<IListSelect> = ({ type, data, onFetchData }) => {
             />
           )}
         >
-          <Checkbox
-            size="lg"
-            onChange={() => onSelectedAll()}
-            isChecked={selectedAll}
-            defaultChecked={selectedAll}
-          >
-            All
-          </Checkbox>
+          {!!dataShow.length && (
+            <Checkbox
+              size="lg"
+              isChecked={allChecked}
+              isIndeterminate={isIndeterminate}
+              onChange={onSelectAll}
+              isDisabled={viewOnly}
+            >
+              All
+            </Checkbox>
+          )}
 
-          {selectData.map((item: IStructAndFunction, index: number) => (
+          {dataShow.map((item: IABIItem, index: number) => (
             <Box key={index} my={2}>
               <Checkbox
                 size="lg"
+                isDisabled={viewOnly}
                 value={item.name}
-                onChange={() => onSelectChange(item.name)}
-                isChecked={item.selected}
+                isChecked={itemSelected.includes(item.name)}
+                onChange={(e) => onChangeSelect(e, item.name)}
               >
                 <Flex className="abi-option">{item.name}</Flex>
               </Checkbox>
@@ -137,261 +207,129 @@ const ListSelect: FC<IListSelect> = ({ type, data, onFetchData }) => {
 };
 
 interface IDetailABI {
-  packageItem: IPackageContractAddress;
-  updateData: (
-    packageName: string,
-    moduleName: string,
-    type: 'structs' | 'exposed_functions',
-    data: IStructAndFunction[],
-  ) => void;
+  dataABI: any;
+  onChange: any;
+  address: string;
 }
 
-const DetailABI: FC<IDetailABI> = ({ packageItem, updateData }) => {
+const DetailABI: FC<IDetailABI> = ({ dataABI, address, onChange }) => {
   const [valueSearch, setValueSearch] = useState<string>('');
   const [valueSort, setValueSort] = useState<string>('az');
-
-  const { name: packageName, modules: dataModules } = packageItem;
-
-  const [listModule, setListModule] = useState<IModule[]>(dataModules);
-
-  useEffect(() => {
-    const newModules = dataModules.map((moduleItem) => {
-      const exposed_functions = moduleItem.abi.exposed_functions.sort(
-        (a: any, b: any) => {
-          if (a.name.toLowerCase() < b.name.toLowerCase()) {
-            return -1;
-          }
-          if (a.name.toLowerCase() > b.name.toLowerCase()) {
-            return 1;
-          }
-          return 0;
-        },
-      );
-      const structs = moduleItem.abi.structs.sort((a: any, b: any) => {
-        if (a.name.toLowerCase() < b.name.toLowerCase()) {
-          return -1;
-        }
-        if (a.name.toLowerCase() > b.name.toLowerCase()) {
-          return 1;
-        }
-        return 0;
-      });
-
-      return {
-        name: moduleItem.name,
-        abi: {
-          exposed_functions:
-            valueSort === 'az'
-              ? exposed_functions
-              : exposed_functions.reverse(),
-          structs: valueSort === 'az' ? structs : structs.reverse(),
-        },
-      };
-    });
-
-    setListModule(newModules);
-  }, [valueSort]);
+  const [exposedFunctions, setExposedFunctions] = useState<IABIItem[]>([]);
+  const [structs, setStructs] = useState<IABIItem[]>([]);
+  const [dataSelected, setDataSelected] = useState<IABIItem[]>([]);
 
   useEffect(() => {
-    const newModules = dataModules.map((moduleItem) => {
-      const exposed_functions = moduleItem.abi.exposed_functions.filter((f) =>
-        f.name.toLowerCase().includes(valueSearch.toLowerCase()),
-      );
-      const structs = moduleItem.abi.structs.filter((f) => {
-        return f.name.toLowerCase().includes(valueSearch.toLowerCase());
+    const exposedFunctionsList: IABIItem[] = [];
+    const structsList: IABIItem[] = [];
+
+    if (dataABI && !!dataABI.length) {
+      dataABI?.forEach((packageItem: any) => {
+        if (packageItem && !!packageItem?.modules?.length) {
+          packageItem?.modules?.forEach((moduleItem: any) => {
+            if (moduleItem?.abi?.exposed_functions?.length) {
+              moduleItem?.abi?.exposed_functions?.forEach(
+                (functionItem: any) => {
+                  exposedFunctionsList.push({
+                    name: `${address.slice(0, 3)}::${moduleItem?.name}::${
+                      functionItem?.name
+                    }`,
+                    type: 'exposed_functions',
+                  });
+                },
+              );
+            }
+
+            if (moduleItem?.abi?.structs?.length) {
+              moduleItem?.abi?.structs?.forEach((structItem: any) => {
+                structsList.push({
+                  name: `${address.slice(0, 3)}::${moduleItem?.name}::${
+                    structItem?.name
+                  }`,
+                  type: 'structs',
+                });
+              });
+            }
+          });
+        }
       });
+    }
 
-      return {
-        name: moduleItem.name,
-        abi: { exposed_functions, structs },
-      };
-    });
-
-    setListModule(newModules);
-  }, [valueSearch]);
+    setExposedFunctions(exposedFunctionsList);
+    setStructs(structsList);
+  }, [dataABI]);
 
   return (
-    packageItem && (
-      <Box className="abi-detail" mb={4}>
-        <Flex
-          flexDirection={isMobile ? 'column' : 'row'}
-          justifyContent={'space-between'}
-          alignItems={isMobile ? 'flex-start' : 'center'}
-          mb={3}
-        >
-          <Flex align={'center'}>
-            <Box mr={2}>Package:</Box>
-            <Box className="file-name">{packageName}</Box>
-          </Flex>
-
-          <Flex>
-            {!isMobile && (
-              <Box width={'100px'}>
-                <AppSelect2
-                  onChange={setValueSort}
-                  options={options}
-                  value={valueSort}
-                />
-              </Box>
-            )}
-
-            <Box width={'215px'}>
-              <AppInput
-                isSearch
-                className={'input-search'}
-                type="text"
-                placeholder={'Search...'}
-                value={valueSearch}
-                onChange={(e) => setValueSearch(e.target.value.trim())}
+    <Box className="abi-detail" mb={4}>
+      <Flex
+        flexDirection={isMobile ? 'column' : 'row'}
+        justifyContent={'space-between'}
+        alignItems={isMobile ? 'flex-start' : 'center'}
+        mb={3}
+      >
+        <Flex>
+          {!isMobile && (
+            <Box width={'100px'}>
+              <AppSelect2
+                onChange={setValueSort}
+                options={options}
+                value={valueSort}
               />
             </Box>
+          )}
 
-            {isMobile && <Box ml={2.5} className="icon-filter-mobile" />}
-          </Flex>
+          <Box width={'215px'}>
+            <AppInput
+              isSearch
+              className={'input-search'}
+              type="text"
+              placeholder={'Search...'}
+              value={valueSearch}
+              onChange={(e) => setValueSearch(e.target.value.trim())}
+            />
+          </Box>
+
+          {isMobile && <Box ml={2.5} className="icon-filter-mobile" />}
         </Flex>
+      </Flex>
 
-        <Box>
-          {listModule.map((moduleItem, index) => (
-            <Box key={index} pb={4}>
-              <Text textTransform={'uppercase'} fontWeight={'600'} mb={4}>
-                {moduleItem.name}
-              </Text>
-              {!!moduleItem.abi.exposed_functions.length && (
-                <ListSelect
-                  type={'function'}
-                  data={moduleItem.abi.exposed_functions}
-                  onFetchData={(data: IStructAndFunction[]) => {
-                    updateData(
-                      packageItem.name,
-                      moduleItem.name,
-                      'exposed_functions',
-                      data,
-                    );
-                  }}
-                />
-              )}
+      <Box pb={4}>
+        {!!exposedFunctions.length && (
+          <ListSelect
+            type={'function'}
+            data={exposedFunctions}
+            valueSearch={valueSearch}
+            valueSort={valueSort}
+            onChangeDataSelected={setDataSelected}
+            dataSelected={dataSelected}
+          />
+        )}
 
-              {!!moduleItem.abi.structs.length && (
-                <ListSelect
-                  type={'struct'}
-                  data={moduleItem.abi.structs}
-                  onFetchData={(data: IStructAndFunction[]) => {
-                    updateData(
-                      packageItem.name,
-                      moduleItem.name,
-                      'structs',
-                      data,
-                    );
-                  }}
-                />
-              )}
-            </Box>
-          ))}
-        </Box>
+        {!!structs.length && (
+          <ListSelect
+            type={'struct'}
+            data={structs}
+            valueSearch={valueSearch}
+            valueSort={valueSort}
+            onChangeDataSelected={setDataSelected}
+            dataSelected={dataSelected}
+          />
+        )}
       </Box>
-    )
+    </Box>
   );
 };
 
-const AppReadABI: FC<IAppReadABI> = ({
-  onChange,
-  dataPackageContractAddress,
-}) => {
-  const [mapPackageContractAddress, setMapPackageContractAddress] = useState<
-    IPackageContractAddress[]
-  >(null!);
-
-  useEffect(() => {
-    onChange && onChange(mapPackageContractAddress);
-  }, [mapPackageContractAddress]);
-
-  useEffect(() => {
-    if (dataPackageContractAddress && !!dataPackageContractAddress.length) {
-      const mapPackages = dataPackageContractAddress
-        .map((packageItem: PackageType) => {
-          const modules = packageItem.modules
-            .map((moduleItem: ModuleType) => {
-              // exposed_functions...
-              const exposed_functions = moduleItem.abi.exposed_functions
-                .filter((f: ExposedFunctionType) => f.name)
-                .map((func: ExposedFunctionType) => ({
-                  name: func.name,
-                  selected: false,
-                }));
-              // structs...
-              const structs = moduleItem.abi.structs
-                .filter((f: StructType) => f.name)
-                .map((struct) => ({
-                  name: struct.name,
-                  selected: false,
-                }));
-
-              return {
-                name: moduleItem.name,
-                abi: {
-                  exposed_functions,
-                  structs,
-                },
-              };
-            })
-            .filter(
-              (f: IModule) =>
-                !!f.abi.exposed_functions.length || !!f.abi.structs.length,
-            );
-
-          return { name: packageItem.name, modules };
-        })
-        .filter((f: IPackageContractAddress) => !!f.modules.length);
-
-      setMapPackageContractAddress(mapPackages);
-    } else {
-      setMapPackageContractAddress(null!);
-    }
-  }, [dataPackageContractAddress]);
-
-  const onUpdateData = (
-    packageName: string,
-    moduleName: string,
-    type: 'structs' | 'exposed_functions',
-    data: IStructAndFunction[],
-  ) => {
-    const newMapPackages = mapPackageContractAddress.map((packgeItem) => {
-      if (packgeItem.name === packageName) {
-        const modules = packgeItem.modules.map((moduleItem) => {
-          if (moduleItem.name === moduleName) {
-            return type === 'exposed_functions'
-              ? {
-                  ...moduleItem,
-                  abi: { ...moduleItem.abi, exposed_functions: data },
-                }
-              : { ...moduleItem, abi: { ...moduleItem.abi, structs: data } };
-          }
-          return moduleItem;
-        });
-        return { ...packgeItem, modules };
-      }
-      return packgeItem;
-    });
-    setMapPackageContractAddress(newMapPackages);
-  };
-
-  return mapPackageContractAddress && !!mapPackageContractAddress.length ? (
+const AppReadABI: FC<IAppReadABI> = ({ onChange, dataAddress, address }) => {
+  return (
     <Box className="upload-abi">
       <Flex mb={1} className="label-abi">
         ABI
       </Flex>
-      {mapPackageContractAddress.map(
-        (packageItem, packageIndex: number) =>
-          !!packageItem.modules.length && (
-            <DetailABI
-              key={packageIndex}
-              packageItem={packageItem}
-              updateData={onUpdateData}
-            />
-          ),
-      )}
+
+      <DetailABI dataABI={dataAddress} onChange={onChange} address={address} />
     </Box>
-  ) : null;
+  );
 };
 
 export default AppReadABI;

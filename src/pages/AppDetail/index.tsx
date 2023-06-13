@@ -96,9 +96,7 @@ const AppDetail = () => {
           defaultIndex={defaultTab}
         >
           <TabList
-            className={`${
-              isEVMNetwork(appInfo.chain) ? '' : 'no-tab'
-            } app-tabs`}
+            className={`app-tabs`}
           >
             <Flex w={'100%'}>
               {isEVMNetwork(appInfo.chain) && (
@@ -133,15 +131,11 @@ const AppDetail = () => {
                 <PartNFTWebhooks appInfo={appInfo} />
               </TabPanel>
             )}
-            <TabPanel
-              className={`${
-                isEVMNetwork(appInfo.chain) || appInfo.chain === CHAINS.APTOS
-                  ? ''
-                  : 'no-tab'
-              } content-tab-app`}
-            >
+
+            <TabPanel className={`content-tab-app`}>
               <PartAddressWebhooks appInfo={appInfo} />
             </TabPanel>
+
             {(isEVMNetwork(appInfo.chain) ||
               appInfo.chain === CHAINS.APTOS) && (
               <TabPanel className="content-tab-app">
