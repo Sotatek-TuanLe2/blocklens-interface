@@ -237,7 +237,10 @@ export const formatVisualizationValue = (format: string, value: any) => {
   const isValueZero = new BigNumber(value).isEqualTo(0);
   const isNotANumber = !isNumber(value);
   const hasDollarSign = format.includes('$');
-  const checkNegativeValue = new BigNumber(value).isGreaterThan(0);
+  const checkNegativeValue = new BigNumber(value).isLessThan(0);
+  const negativeValue = (negativeValue: any, positiveValue: any) => {
+    return checkNegativeValue ? `-${negativeValue}` : positiveValue;
+  };
 
   if (isValueZero) {
     return 0;
@@ -251,69 +254,82 @@ export const formatVisualizationValue = (format: string, value: any) => {
     if (hasA && hasDot) {
       value = formatNumberWithDecimalDigits(value, format);
       const decimalPart = String(value).split('.')[1];
-      return checkNegativeValue
-        ? `-$${_formatLargeNumberIfNeed(
-            value.slice(1),
-            decimalPart.length || 0,
-            false,
-          )}`
-        : `$${_formatLargeNumberIfNeed(value, decimalPart.length || 0, false)}`;
+      return negativeValue(
+        `$${_formatLargeNumberIfNeed(
+          value.slice(1),
+          decimalPart.length || 0,
+          false,
+        )}`,
+        `$${_formatLargeNumberIfNeed(value, decimalPart.length || 0, false)}`,
+      );
     }
     if (hasA) {
-      return checkNegativeValue
-        ? `-$${_formatLargeNumberIfNeed(value.slice(1))}`
-        : `$${_formatLargeNumberIfNeed(value)}`;
+      return negativeValue(
+        `$${_formatLargeNumberIfNeed(value.slice(1))}`,
+        `$${_formatLargeNumberIfNeed(value)}`,
+      );
     }
-    return `$${value}`;
+    return negativeValue(`$${value.slice(1)}`, `$${value}`);
   }
   if (hasDot) {
     if (hasComma) {
       if (hasA) {
         value = formatNumberWithDecimalDigits(value, format);
         const decimalPart = String(value).split('.')[1];
-        return checkNegativeValue
-          ? `-${_formatLargeNumberIfNeed(
-              formatNumberWithDecimalDigits(value, format).slice(1),
-              decimalPart?.length || 0,
-              false,
-            )}`
-          : _formatLargeNumberIfNeed(
-              formatNumberWithDecimalDigits(value, format),
-              decimalPart?.length || 0,
-              false,
-            );
+
+        return negativeValue(
+          `${_formatLargeNumberIfNeed(
+            formatNumberWithDecimalDigits(value, format).slice(1),
+            decimalPart?.length || 0,
+            false,
+          )}`,
+          _formatLargeNumberIfNeed(
+            formatNumberWithDecimalDigits(value, format),
+            decimalPart?.length || 0,
+            false,
+          ),
+        );
       }
-      return commaNumber(formatNumberWithDecimalDigits(value, format));
+      return negativeValue(
+        commaNumber(formatNumberWithDecimalDigits(value.slice(1), format)),
+        formatNumberWithDecimalDigits(value, format),
+      );
     }
     if (hasA) {
       value = formatNumberWithDecimalDigits(value, format);
       const decimalPart = String(value).split('.')[1];
-      return checkNegativeValue
-        ? `-${_formatLargeNumberIfNeed(
-            value.slice(1),
-            decimalPart?.length || 0,
-            false,
-          )}`
-        : _formatLargeNumberIfNeed(value, decimalPart?.length || 0, false);
+      return negativeValue(
+        _formatLargeNumberIfNeed(
+          value.slice(1),
+          decimalPart?.length || 0,
+          false,
+        ),
+        _formatLargeNumberIfNeed(value, decimalPart?.length || 0, false),
+      );
     }
 
-    return formatNumberWithDecimalDigits(value, format);
+    return negativeValue(
+      formatNumberWithDecimalDigits(value.slice(1), format),
+      formatNumberWithDecimalDigits(value, format),
+    );
   }
   if (hasComma) {
     if (hasA) {
-      return checkNegativeValue
-        ? `-${_formatLargeNumberIfNeed(value.slice(1))}`
-        : _formatLargeNumberIfNeed(value);
+      return negativeValue(
+        _formatLargeNumberIfNeed(value.slice(1)),
+        _formatLargeNumberIfNeed(value),
+      );
     }
-    return commaNumber(value);
+    return negativeValue(commaNumber(value.slice(1)), commaNumber(value));
   }
   if (isFormatZero) {
-    return parseInt(value);
+    return negativeValue(parseInt(value.slice(1)), parseInt(value));
   }
   if (hasA) {
-    return checkNegativeValue
-      ? `-${_formatLargeNumberIfNeed(value.slice(1))}`
-      : _formatLargeNumberIfNeed(value);
+    return negativeValue(
+      _formatLargeNumberIfNeed(value.slice(1)),
+      _formatLargeNumberIfNeed(value),
+    );
   }
 
   return value;
