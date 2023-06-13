@@ -139,7 +139,7 @@ export const globalStyles = {
           borderBottom: mode('1px solid #E8EAED', '1px solid #2f3b58')(props),
         },
 
-        '.dashboard-list__item--row': {
+        '.dashboard-list__item--row, .box-layout': {
           boxShadow: mode('0px 15px 30px rgba(0, 0, 0, 0.04)', '')(props),
           border: mode('', '1px solid border.100')(props),
         },
