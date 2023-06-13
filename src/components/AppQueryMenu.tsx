@@ -17,7 +17,7 @@ import 'src/styles/components/AppQueryMenu.scss';
 import { TYPE_OF_MODAL, ROUTES } from 'src/utils/common';
 import { IDashboardDetail, IQuery } from 'src/utils/query.type';
 import AppButton from './AppButton';
-import {IconDotMore} from "../assets/icons";
+import { IconDotMore } from '../assets/icons';
 
 interface IAppQueryMenu {
   menu?: string[];
