@@ -548,7 +548,6 @@
   }
 }
 
-
 // start:: new style by chau.le@sotatek.com
 .article {
   .article-name {
@@ -578,7 +577,8 @@
     @include text-small-regular;
     margin-right: 10px;
   }
-  .m-article-creator, .m-article-date {
+  .m-article-creator,
+  .m-article-date {
     color: $bg1;
     @include text-small-regular;
   }
@@ -595,7 +595,5 @@
     opacity: 0.3;
     @include text-display-bold-small;
   }
-
-  
 }
 // end:: new style by chau.le@sotatek.com

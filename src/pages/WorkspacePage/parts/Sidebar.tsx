@@ -619,12 +619,12 @@ const Sidebar: React.FC<{
               <div className="header-icon">
                 {pathname.includes(ROUTES.MY_QUERY) && (
                   <div
-                    className="bg-PlusIcon"
+                    className="icon-plus-white"
                     onClick={() => handleAddQuery(schemaDescribe[0].full_name)}
                   />
                 )}
                 <div
-                  className="bg-CloseBtnIcon"
+                  className="icon-close-white"
                   onClick={() => setSchemaDescribe([])}
                 />
               </div>

@@ -19,7 +19,7 @@
     display: flex;
     height: 100%;
     ::-webkit-scrollbar {
-      background-color: $title;
+      background-color: white;
     }
     &__categories {
       padding: 14px;
@@ -216,7 +216,7 @@
               position: relative;
             }
             &:hover {
-              background-color: #1a203b;
+              background-color: #f4f6f9;
               .add-query-icon {
                 opacity: 1;
               }

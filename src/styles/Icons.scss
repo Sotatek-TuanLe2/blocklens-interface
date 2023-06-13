@@ -29,9 +29,9 @@
 }
 
 .icon-aptos {
-  width: 20px;
-  height: 20px;
-  background: url('../assets/icons/aptos-icon.png')-10px -10px;
+  width: 24px;
+  height: 24px;
+  background: url('../assets/icons/icon-light.png') -10px -62px;
 }
 
 .icon-optimism {
@@ -631,4 +631,16 @@
   width: 18px;
   height: 18px;
   background: url('../assets/icons/icon-light.png') -111px -10px;
+}
+
+.icon-close-white {
+  width: 18px;
+  height: 18px;
+  background: url('../assets/icons/icon-light.png') -10px -106px;
+}
+
+.icon-plus-white {
+  width: 18px;
+  height: 18px;
+  background: url('../assets/icons/icon-light.png') -114px -48px;
 }
