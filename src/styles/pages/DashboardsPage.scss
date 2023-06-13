@@ -4,7 +4,7 @@
 
 .dashboards-page {
   width: 100%;
-  padding: 20px;
+  // padding: 20px;
   gap: 20px;
 
   @include mobile {
@@ -547,3 +547,31 @@
     }
   }
 }
+
+
+// start:: new style by chau.le@sotatek.com
+.article {
+  .article-name {
+    color: $bg1;
+    text-transform: capitalize;
+    @include text-medium-bold;
+  }
+  .article-tag {
+    background: rgba(0, 2, 36, 0.05);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(0, 2, 36, 0.5);
+    @include text-small-regular;
+  }
+  .article-by {
+    color: $bg1;
+    @include text-small-medium;
+  }
+  .article-date {
+    color: rgba(0, 2, 36, 0.5);
+    @include text-small-regular;
+  }
+}
+// end:: new style by chau.le@sotatek.com

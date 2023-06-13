@@ -126,7 +126,7 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
         >
           <p className="icon-query-list" />
         </MenuButton>
-        <MenuList className="app-query-menu__list">
+        <MenuList boxShadow={'0px 10px 40px rgba(125, 143, 179, 0.2)'} className="app-query-menu__list">
           {generateMenu().map((i) => (
             <MenuItem key={i.id} onClick={i.onClick}>
               <Flex alignItems={'center'} gap={'8px'}>

@@ -1,4 +1,4 @@
-import { Box, Flex, Text, Tooltip } from '@chakra-ui/react';
+import { Box, Divider, Flex, Image, Text, Tooltip } from '@chakra-ui/react';
 import moment from 'moment';
 import { Link, useHistory } from 'react-router-dom';
 import { AppTag } from 'src/components';
@@ -149,6 +149,93 @@ const ListItem: React.FC<IListItem> = (props) => {
     );
   };
 
+  const _renderGridItemNew = () => {
+    return (
+      <Flex
+        w={'full'}
+        flexDir={'column'}
+        justify={'stretch'}
+        boxShadow={'0px 15px 30px rgba(0, 0, 0, 0.04)'}
+        bg={'white'}
+        borderRadius={{ base: 2.5, lg: '14px' }}
+        className="article"
+      >
+        <Box
+          borderTopLeftRadius={{ base: 2.5, lg: '14px' }}
+          borderTopRightRadius={{ base: 2.5, lg: '14px' }}
+          overflow={'hidden'}
+        >
+          <Link to={getTitleUrl()}>
+            <img
+              src={itemClass.getThumnail() || '/images/ThumbnailDashboard.png'}
+              alt="thumbnail"
+            />
+          </Link>
+        </Box>
+        <Flex w={'full'} flexDir={'column'} p={4}>
+          <Flex w={'full'} flexGrow={1}>
+            <Box flexGrow={1}>
+              <Link className="article-name" to={getTitleUrl()}>
+                <Tooltip
+                  p={2}
+                  hasArrow
+                  placement="top"
+                  label={itemClass.getName()}
+                >
+                  {itemClass.getName()}
+                </Tooltip>
+              </Link>
+              <Flex flexWrap={'wrap'} mt={{ base: 1, lg: 1.5 }}>
+                {listTags.map((item) => (
+                  <AppTag
+                    key={item.id}
+                    value={item.name}
+                    h={{ base: '24px', lg: '22px' }}
+                    classNames='article-tag'
+                  />
+                ))}
+              </Flex>
+            </Box>
+            <Box>
+              <Flex
+                bg={'rgba(0, 2, 36, 0.05)'}
+                w={{ base: '24px', lg: '22px' }}
+                h={{ base: '24px', lg: '22px' }}
+                borderRadius={{ base: '12px', lg: '11px' }}
+                justify={'center'}
+                align={'center'}
+              >
+                {_renderDropdown()}
+              </Flex>
+            </Box>
+          </Flex>
+          <Divider
+            my={{ base: '14px', lg: 4 }}
+            colorScheme="rgba(0, 2, 36, 0.1)"
+          />
+          <Flex w={'full'}>
+            <Flex align={'center'} flexGrow={1}>
+              <Box mr={2.5}>
+                <Image src="/images/AvatarDashboardCard.png" alt="avatar" />
+              </Box>
+              <Box>
+                <Text className='article-by' mb={{ base: '2px', lg: 0 }}>Tyler Covington</Text>
+                <Text className='article-date'>
+                  {moment(itemClass.getCreatedTime()).format('YYYY MMMM Do')}
+                </Text>
+              </Box>
+            </Flex>
+            <Flex align={'center'}>
+              {itemClass.getChains() && (
+                <AppNetworkIcons networkIds={itemClass.getChains()} />
+              )}
+            </Flex>
+          </Flex>
+        </Flex>
+      </Flex>
+    );
+  };
+
   const _renderRowItem = () => {
     return (
       <div className="dashboard-list__item--row theme-border">
@@ -202,7 +289,9 @@ const ListItem: React.FC<IListItem> = (props) => {
   };
 
   return (
-    <>{displayed === DisplayType.Grid ? _renderGridItem() : _renderRowItem()}</>
+    <>
+      {displayed === DisplayType.Grid ? _renderGridItemNew() : _renderRowItem()}
+    </>
   );
 };
 

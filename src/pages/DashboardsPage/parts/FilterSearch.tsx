@@ -41,7 +41,7 @@ import {
   getChainIconInactiveByChainName,
 } from 'src/utils/utils-network';
 import { HOME_URL_PARAMS, LIST_ITEM_TYPE } from '..';
-import { ChevronDownIcon } from '@chakra-ui/icons';
+import { ChevronDownIcon, AddIcon } from '@chakra-ui/icons';
 
 interface IFilterSearch {
   type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
@@ -169,6 +169,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   } = props;
   const history = useHistory();
   const { user } = useUser();
+  console.log('user: ', user);
 
   const isDashboard = type === LIST_ITEM_TYPE.DASHBOARDS;
   const isMyWork = type === LIST_ITEM_TYPE.MYWORK;
@@ -354,23 +355,44 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
             <Text px={2}>Filter</Text>
           </Flex>
         </Flex>
-        <Box display={{ base: 'none', lg: 'block' }}>
-          <AppButton className="btn-primary" onClick={onClickNew} h={10}>
-            <Box className="icon-plus-circle" mr={2} /> Create
-          </AppButton>
-        </Box>
+        {!user && (
+          <Box>
+            <AppButton
+              display={{ base: 'none', lg: 'flex' }}
+              className="btn-primary"
+              onClick={onClickNew}
+              h={10}
+            >
+              <Box className="icon-plus-circle" mr={2} /> Create
+            </AppButton>
+            <AppButton
+              display={{ base: 'flex', lg: 'none' }}
+              w={12}
+              h={12}
+              borderRadius={'24px'}
+              className="btn-primary"
+              onClick={onClickNew}
+              pos={'fixed'}
+              top={'68%'}
+              right={4}
+              zIndex={10}
+            >
+              <AddIcon fontWeight={700} fontSize={'25px'} />
+            </AppButton>
+          </Box>
+        )}
       </Flex>
       <Collapse
         in={isOpen}
         animateOpacity
         style={{ overflow: 'visible !important' }}
       >
-        <Box
-          borderTop={'1px solid rgba(0, 2, 36, 0.1)'}
-          mt={{ base: '22px', lg: '28px' }}
-          pt={{ base: '22px', lg: '20px' }}
-        >
-          <Flex flexDir={{ base: 'column', lg: 'row' }}>
+        <Box pt={{ base: '22px', lg: '28px' }}>
+          <Flex
+            flexDir={{ base: 'column', lg: 'row' }}
+            borderTop={'1px solid rgba(0, 2, 36, 0.1)'}
+            pt={{ base: '22px', lg: '20px' }}
+          >
             <Box flexGrow={1} mb={{ base: 5, lg: 0 }}>
               <AppInput
                 className="dashboard-filter__search__input"

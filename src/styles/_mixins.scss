@@ -208,7 +208,13 @@
 @mixin text-medium-bold {
   font-weight: 700;
   font-size: 16px;
-  line-height: 26px;
+  line-height: 24px;
+}
+
+@mixin text-small-medium {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
 }
 
 @mixin text-small-bold {
