@@ -59,6 +59,13 @@ export interface SchemaType {
   table_name: string;
 }
 
+export interface IPagination {
+  currentPage: number;
+  itemsPerPage: number;
+  totalPages: number;
+  totalItem?: number;
+}
+
 export const VISUALIZATION_COLORS = {
   POSITIVE: '#28c76f',
   NEGATIVE: '#ff3b2e',

@@ -100,7 +100,12 @@ const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
           >
             Save and open
           </AppButton>
-          <AppButton onClick={onClose} size="sm" variant={'cancel'}>
+          <AppButton
+            onClick={onClose}
+            size="sm"
+            variant={'cancel'}
+            className="btn-cancel"
+          >
             Cancel
           </AppButton>
         </Flex>

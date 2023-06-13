@@ -27,7 +27,7 @@ interface IMarkdown {
   mark: JSX.Element;
 }
 
-const linkDune = 'https://dune.com';
+const linkBlocklens = 'https://stg-console.blocklens.io/';
 const randomImage = 'https://unsplash.it/600/400';
 
 const MarkdownSupport: IMarkdown[] = [
@@ -40,7 +40,7 @@ const MarkdownSupport: IMarkdown[] = [
     title: 'Link',
     mark: (
       <>
-        [Link]<a href={linkDune}>({linkDune})</a>
+        [Link]<a href={linkBlocklens}>({linkBlocklens})</a>
       </>
     ),
   },
@@ -191,7 +191,13 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
         />
 
         <Flex className="modal-footer">
-          <AppButton mr={2.5} size="lg" variant={'cancel'} onClick={onClose}>
+          <AppButton
+            mr={2.5}
+            size="lg"
+            variant={'cancel'}
+            onClick={onClose}
+            className="btn-cancel"
+          >
             Cancel
           </AppButton>
           <AppButton

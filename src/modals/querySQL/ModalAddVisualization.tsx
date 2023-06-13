@@ -1,4 +1,4 @@
-import { Checkbox, Flex, Link, Text } from '@chakra-ui/react';
+import { Checkbox, Flex, Link, Spinner, Text, Tooltip } from '@chakra-ui/react';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   AreaChartIcon,
@@ -13,12 +13,17 @@ import { AppButton, AppInput } from 'src/components';
 import { ILayout } from 'src/pages/WorkspacePage/parts/Dashboard';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/BaseModal.scss';
-import { TYPE_VISUALIZATION, VisualizationType } from 'src/utils/query.type';
+import {
+  IQuery,
+  TYPE_VISUALIZATION,
+  VisualizationType,
+} from 'src/utils/query.type';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import BaseModal from '../BaseModal';
-import { debounce } from 'lodash';
-import { INPUT_DEBOUNCE } from 'src/utils/common';
+import _, { debounce } from 'lodash';
+import { INPUT_DEBOUNCE, IPagination } from 'src/utils/common';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 interface IModalAddVisualization {
   open: boolean;
@@ -30,8 +35,8 @@ interface IModalAddVisualization {
 }
 interface IAddVisualizationCheckbox {
   userName: string;
-  item: any;
-  i: VisualizationType;
+  query: IQuery;
+  visualization: VisualizationType;
   getIcon: (chain: string | undefined) => JSX.Element;
   selectedItems: any[];
   setSelectedItems: React.Dispatch<React.SetStateAction<any[]>>;
@@ -46,17 +51,27 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   dashboardId,
 }) => {
   const [selectedItems, setSelectedItems] = useState<any[]>([]);
-  const [dataVisualization, setDataVisualization] = useState<any[]>([]);
+  const [myQueries, setMyQueries] = useState<IQuery[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [dataVisualPagination, setDataVisualPagination] = useState<
+    IPagination | undefined
+  >();
 
-  const dataFilter = useMemo(
-    () =>
-      dataVisualization?.filter(
-        (el) =>
-          el.name && el.name.toLowerCase().includes(searchTerm.toLowerCase()),
-      ),
-    [dataVisualization, searchTerm],
-  );
+  const visualizations: Array<{
+    visualization: VisualizationType;
+    query: IQuery;
+  }> = useMemo(() => {
+    const result: Array<{ visualization: VisualizationType; query: IQuery }> =
+      [];
+    myQueries.forEach((query) => {
+      if (query.visualizations) {
+        query.visualizations.forEach((visualization) => {
+          result.push({ visualization, query });
+        });
+      }
+    });
+    return result;
+  }, [myQueries, searchTerm]);
 
   const handleSearch = debounce(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -65,14 +80,49 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
     INPUT_DEBOUNCE,
   );
 
+  const fetchInfiniteScrollVisual = async () => {
+    try {
+      const res = await rf.getRequest('DashboardsRequest').getMyListQueries(
+        _.omitBy(
+          {
+            search: searchTerm.trim(),
+            page: (dataVisualPagination?.currentPage || 1) + 1,
+          },
+          (param) => !param,
+        ),
+      );
+      if (res) {
+        const { itemsPerPage, totalPages, totalItem, currentPage } = res;
+        setMyQueries((pre) => [...pre, ...res.data]);
+        setDataVisualPagination({
+          itemsPerPage,
+          totalPages,
+          currentPage,
+          totalItem,
+        });
+      }
+    } catch (error) {
+      toastError({ message: getErrorMessage(error) });
+    }
+  };
+
   const fetchVisualization = async () => {
-    const params = {};
+    const params = {
+      search: searchTerm || undefined,
+    };
     try {
       const res = await rf
         .getRequest('DashboardsRequest')
         .getMyListQueries(params);
       if (res) {
-        setDataVisualization(res.data);
+        const { itemsPerPage, totalPages, totalItem, currentPage } = res;
+        setMyQueries(res.data);
+        setDataVisualPagination({
+          itemsPerPage,
+          totalPages,
+          currentPage,
+          totalItem,
+        });
       }
     } catch (error) {
       toastError({
@@ -99,6 +149,10 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
       );
     }
   }, [dataLayouts]);
+
+  useEffect(() => {
+    fetchVisualization();
+  }, [searchTerm]);
 
   const handleSaveVisualization = async () => {
     const dataVisual = selectedItems.map((i) => {
@@ -150,11 +204,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
         return <CounterIcon />;
 
       default:
-        return (
-          <>
-            <QueryResultIcon />
-          </>
-        );
+        return <QueryResultIcon />;
     }
   };
 
@@ -177,34 +227,60 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
           placeholder="Find chart..."
         />
 
-        <div className="main-queries">
-          {!!dataFilter.length ? (
-            dataFilter?.map(
-              (item) =>
-                item?.visualizations &&
-                item?.visualizations?.map((i: any, index: number) => (
-                  <Flex key={`${item.id}-${index}`}>
-                    <AddVisualizationCheckbox
-                      userName={userName}
-                      item={item}
-                      i={i}
-                      getIcon={getIcon}
-                      setSelectedItems={setSelectedItems}
-                      selectedItems={selectedItems}
-                    />
-                  </Flex>
-                )),
-            )
-          ) : (
-            <div className="no-data">No data</div>
-          )}
+        <div className="main-queries" id="main-queries">
+          <InfiniteScroll
+            className="infinite-scroll"
+            dataLength={visualizations.length}
+            next={fetchInfiniteScrollVisual}
+            hasMore={
+              (dataVisualPagination?.currentPage || 0) <
+              (dataVisualPagination?.totalPages || 0)
+            }
+            loader={
+              <Flex justifyContent={'center'}>
+                <Spinner
+                  thickness="4px"
+                  speed="0.65s"
+                  emptyColor="gray.200"
+                  color="blue.500"
+                  size="md"
+                />
+              </Flex>
+            }
+            scrollableTarget="main-queries"
+          >
+            {!!visualizations.length ? (
+              visualizations.map((item, index) => (
+                <Flex
+                  key={`${item.query.id}-${item.visualization.id}-${index}`}
+                >
+                  <AddVisualizationCheckbox
+                    userName={userName}
+                    query={item.query}
+                    visualization={item.visualization}
+                    getIcon={getIcon}
+                    setSelectedItems={setSelectedItems}
+                    selectedItems={selectedItems}
+                  />
+                </Flex>
+              ))
+            ) : (
+              <div className="no-data">No data</div>
+            )}
+          </InfiniteScroll>
         </div>
         <Flex className="modal-footer">
-          <AppButton variant="cancel" mr={2.5} size="lg" onClick={onClose}>
+          <AppButton
+            variant="cancel"
+            mr={2.5}
+            size="lg"
+            onClick={onClose}
+            className="btn-cancel"
+          >
             Cancel
           </AppButton>
           <AppButton
-            disabled={!dataVisualization.length}
+            disabled={!myQueries.length}
             size="lg"
             onClick={() => {
               handleSaveVisualization();
@@ -223,21 +299,19 @@ export default ModalAddVisualization;
 
 const AddVisualizationCheckbox: React.FC<IAddVisualizationCheckbox> = ({
   userName,
-  item,
-  i,
+  query,
+  visualization,
   getIcon,
   selectedItems,
   setSelectedItems,
 }) => {
-  const checkAdded = selectedItems.some((el) => el.id === i.id);
+  const checkAdded = selectedItems.some((el) => el.id === visualization.id);
 
   const conditionDisplayIcon = () => {
-    if (i.type === 'table') {
-      return i.type;
-    } else if (i.type === 'counter') {
-      return i.type;
+    if (visualization.type === 'table' || visualization.type === 'counter') {
+      return visualization.type;
     } else {
-      return i.options.globalSeriesType;
+      return visualization.options.globalSeriesType;
     }
   };
 
@@ -250,7 +324,7 @@ const AddVisualizationCheckbox: React.FC<IAddVisualizationCheckbox> = ({
     if (checked) {
       setSelectedItems((prevItems) => [
         ...prevItems,
-        item.visualizations.find((item: { id: string }) => item.id === itemId),
+        query.visualizations.find((item: { id: string }) => item.id === itemId),
       ]);
     } else {
       setSelectedItems((prevItems) =>
@@ -263,13 +337,17 @@ const AddVisualizationCheckbox: React.FC<IAddVisualizationCheckbox> = ({
     <>
       <Flex className="visualization-row" alignItems={'center'}>
         <Checkbox
-          onChange={(e) => handleCheckboxChange(e, i.id)}
+          onChange={(e) => handleCheckboxChange(e, visualization.id)}
           isChecked={checkAdded}
         />
         {getIcon(conditionDisplayIcon())}
-        <Link className="visualization-name">{i.name}</Link>
+        <Link className="visualization-name">
+          <Tooltip label={visualization.name}>{visualization.name}</Tooltip>
+        </Link>
         <Text className="user-name">
-          @{userName} / {item.name}
+          <Tooltip label={`@${userName} / ${query.name}`}>
+            {`@${userName} / ${query.name}`}
+          </Tooltip>
         </Text>
       </Flex>
     </>

@@ -59,7 +59,12 @@ const ModalDeleteWidget: React.FC<IModalEditItemDashBoard> = ({
     >
       <form className="main-modal-dashboard-details">
         <Flex flexWrap={'wrap'} gap={'10px'} className="group-action-query">
-          <AppButton onClick={onClose} size="lg" variant={'cancel'}>
+          <AppButton
+            onClick={onClose}
+            size="lg"
+            variant={'cancel'}
+            className="btn-cancel"
+          >
             Cancel
           </AppButton>
           <AppButton size="lg" onClick={(e) => handleRemoveItem(e)}>

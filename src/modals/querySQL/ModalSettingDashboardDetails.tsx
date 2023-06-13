@@ -101,7 +101,12 @@ const ModalSettingDashboardDetails: React.FC<IModalSettingDashboardDetails> = ({
             Save
           </AppButton>
           <Flex gap={1}>
-            <AppButton onClick={onClose} size="sm" variant={'cancel'}>
+            <AppButton
+              onClick={onClose}
+              size="sm"
+              variant={'cancel'}
+              className="btn-cancel"
+            >
               Cancel
             </AppButton>
           </Flex>

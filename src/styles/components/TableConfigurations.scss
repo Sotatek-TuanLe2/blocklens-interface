@@ -19,34 +19,26 @@
 
   .first-box-table {
     min-height: unset !important;
-    margin-top: 10px;
   }
 
   .divider-bottom {
-    border-bottom: 1px solid #2f3b58;
+    border-bottom: 1px solid #c7d2e1;
     padding: 4px;
   }
 
   .select-column {
     padding: 2px 12px 2px 12px;
-    background: #1a203b;
-    color: $title;
 
     .app-select__btn-select {
       padding: 0px 2px;
       font-size: 14px;
-      background: #1a203b;
       border: unset;
+      font-weight: 700;
     }
   }
 
   .box-table {
     padding: 6px 12px;
-    background: #1a203b;
-
-    &__title {
-      color: $title;
-    }
 
     .main-toggle {
       display: flex;
@@ -63,7 +55,6 @@
         font-weight: 400;
         font-size: 14px;
         line-height: 20px;
-        color: $title;
 
         &--disabled {
           color: #61687d;
@@ -92,12 +83,6 @@
         .app-select__btn-select {
           padding: 0px 17px;
           font-size: 14px;
-          background: #1a203b;
-          border: 1px solid $line;
-        }
-
-        .app-select__menu {
-          color: $title;
         }
 
         .app-select__menu-item {
@@ -108,12 +93,10 @@
       .input-table {
         font-size: 13px;
         border-color: transparent;
-        color: $title;
         border-radius: 5px;
-        border: 1px solid $line;
+        border: 1px solid #c7d2e1;
         padding: 18px;
         height: 0;
-        background: #1a203b;
       }
     }
   }

@@ -120,6 +120,9 @@ const Header: FC = () => {
             </MenuItem>
           </MenuList>
         </Menu>
+        {/* <Button size="sm" colorScheme="blue" onClick={toggleColorMode}>
+          Toggle Mode
+        </Button> */}
       </Box>
     );
   };

@@ -97,7 +97,7 @@ export default class BaseRequest {
   async _errorHandler(err: any) {
     if (
       err.response?.status === 401 &&
-      err.response.data?.message !== 'Credential is not correct'
+      err.response.data?.message.toString() !== 'Credential is not correct'
     ) {
       return this._error401Handler();
     }

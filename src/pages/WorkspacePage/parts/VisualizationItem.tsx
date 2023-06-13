@@ -122,13 +122,19 @@ const VisualizationItem = React.memo(
       return result;
     }, [queryResult]);
 
-    const renderVisualization = (visualization: VisualizationType) => {
+    const generateErrorMessage = (
+      visualization: VisualizationType,
+    ): string | null => {
       const type =
         visualization.options?.globalSeriesType || visualization.type;
+      if (
+        type === TYPE_VISUALIZATION.table ||
+        type === TYPE_VISUALIZATION.counter
+      ) {
+        return null;
+      }
 
       let errorMessage = null;
-      let visualizationDisplay = null;
-
       if (!visualization.options?.columnMapping?.xAxis) {
         errorMessage = 'Missing x-axis';
       } else if (!visualization.options?.columnMapping?.yAxis.length) {
@@ -142,9 +148,30 @@ const VisualizationItem = React.memo(
         errorMessage = 'All columns for a y-axis must have the same data type';
       }
 
+      return errorMessage;
+    };
+
+    const _renderVisualization = (visualization: VisualizationType) => {
+      const errorMessage = generateErrorMessage(visualization);
+
+      if (errorMessage) {
+        return (
+          <Flex
+            alignItems={'center'}
+            justifyContent={'center'}
+            className="visual-container__visualization visual-container__visualization--error"
+          >
+            {errorMessage}
+          </Flex>
+        );
+      }
+
+      const type =
+        visualization.options?.globalSeriesType || visualization.type;
+      let visualizationDisplay = null;
+
       switch (type) {
         case TYPE_VISUALIZATION.table:
-          errorMessage = null;
           visualizationDisplay = (
             <VisualizationTable
               data={queryResult}
@@ -152,10 +179,8 @@ const VisualizationItem = React.memo(
               editMode={editMode}
             />
           );
-
           break;
         case TYPE_VISUALIZATION.counter:
-          errorMessage = null;
           visualizationDisplay = (
             <VisualizationCounter
               data={queryResult}
@@ -190,15 +215,7 @@ const VisualizationItem = React.memo(
           );
       }
 
-      return errorMessage ? (
-        <Flex
-          alignItems={'center'}
-          justifyContent={'center'}
-          className="visual-container__visualization visual-container__visualization--error"
-        >
-          {errorMessage}
-        </Flex>
-      ) : (
+      return (
         <div
           className={`${
             type === TYPE_VISUALIZATION.table
@@ -209,6 +226,22 @@ const VisualizationItem = React.memo(
           {visualizationDisplay}
         </div>
       );
+    };
+
+    const _renderContent = () => {
+      if (isLoading) {
+        return (
+          <div className="visual-container__visualization visual-container__visualization--loading">
+            <Spinner />
+          </div>
+        );
+      }
+
+      if (!!queryResult.length) {
+        return _renderVisualization(visualization);
+      }
+
+      return <NoDataItem errorMessage={errorExecuteQuery?.message} />;
     };
 
     return (
@@ -230,15 +263,7 @@ const VisualizationItem = React.memo(
             </Link>
           </Tooltip>
         </div>
-        {isLoading ? (
-          <div className="visual-container__visualization visual-container__visualization--loading">
-            <Spinner />
-          </div>
-        ) : !!queryResult.length ? (
-          renderVisualization(visualization)
-        ) : (
-          <NoDataItem errorMessage={errorExecuteQuery?.message} />
-        )}
+        {_renderContent()}
       </div>
     );
   },

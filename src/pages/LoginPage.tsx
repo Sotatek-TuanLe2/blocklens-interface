@@ -69,7 +69,7 @@ const LoginPage: FC = () => {
           <Box className="box-form__title">Login</Box>
 
           <GoogleAuthButton>
-            <Box>Login with Google</Box>
+            <Box className="google-login">Login with Google</Box>
           </GoogleAuthButton>
 
           <Flex className="divider">
