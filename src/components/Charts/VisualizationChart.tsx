@@ -65,6 +65,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
     }
     return formatDefaultValueChart(value);
   };
+
   const logarithmicProps: any = yAxisConfigs?.logarithmic
     ? {
         scale: 'log',
