@@ -410,6 +410,10 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
                     variant="md"
                     onClick={() => onChangeTag(item.name)}
                     selected={item.name === tag}
+                    h={'32px'}
+                    color={'rgba(0, 2, 36, 0.5)'}
+                    bg={'rgba(0, 2, 36, 0.05)'}
+                    borderRadius={'6px'}
                   />
                 ))}
               </Flex>
