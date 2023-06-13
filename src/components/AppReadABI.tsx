@@ -136,9 +136,11 @@ const ListSelect: FC<IListSelect> = ({
   );
 
   const onSelectAll = () => {
-    const dataRest = dataSelected.filter((item: IABIItem) => item.type !== type);
+    const dataRest = dataSelected.filter(
+      (item: IABIItem) => item.type !== type,
+    );
 
-    console.log(allChecked, "allChecked");
+    console.log(allChecked, 'allChecked');
     if (!allChecked) {
       const allData = dataShow.map((item: any) => item.name);
       onChangeDataSelected([...dataRest, ...dataShow]);

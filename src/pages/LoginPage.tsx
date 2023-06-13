@@ -55,7 +55,7 @@ const LoginPage: FC = () => {
       if (res) {
         dispatch(setUserAuth(res));
         toastSuccess({ message: 'Welcome to Blocklens!' });
-        history.push((location.state as any).originPath);
+        history.push((location.state as any)?.originPath);
       }
     } catch (e) {
       toastError({ message: getErrorMessage(e) });

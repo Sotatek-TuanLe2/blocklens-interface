@@ -95,9 +95,7 @@ const AppDetail = () => {
           colorScheme="transparent"
           defaultIndex={defaultTab}
         >
-          <TabList
-            className={`app-tabs`}
-          >
+          <TabList className={`app-tabs`}>
             <Flex w={'100%'}>
               {isEVMNetwork(appInfo.chain) && (
                 <Tab
