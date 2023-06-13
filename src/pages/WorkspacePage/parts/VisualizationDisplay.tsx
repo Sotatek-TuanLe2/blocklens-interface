@@ -144,13 +144,13 @@ const VisualizationDisplay = ({
     if (searchedVisualization.type === TYPE_VISUALIZATION.table) {
       newVisualization = {
         name: 'Table',
-        type: 'table',
+        type: TYPE_VISUALIZATION.table,
         options: {},
       };
     } else if (searchedVisualization.type === TYPE_VISUALIZATION.counter) {
       newVisualization = {
         name: 'Counter',
-        type: 'counter',
+        type: TYPE_VISUALIZATION.counter,
         options: {
           counterColName: !!axisOptions.length ? axisOptions[0] : '',
           rowNumber: 1,
@@ -289,11 +289,18 @@ const VisualizationDisplay = ({
     );
   };
 
-  const _renderVisualization = (visualization: VisualizationType) => {
+  const generateErrorMessage = (
+    visualization: VisualizationType,
+  ): string | null => {
     const type = visualization.options?.globalSeriesType || visualization.type;
-    let errorMessage = null;
-    let visualizationDisplay = null;
+    if (
+      type === TYPE_VISUALIZATION.table ||
+      type === TYPE_VISUALIZATION.counter
+    ) {
+      return null;
+    }
 
+    let errorMessage = null;
     if (!visualization.options.columnMapping?.xAxis) {
       errorMessage = 'Missing x-axis';
     } else if (!visualization.options.columnMapping?.yAxis.length) {
@@ -306,9 +313,16 @@ const VisualizationDisplay = ({
     ) {
       errorMessage = 'All columns for a y-axis must have the same data type';
     }
+
+    return errorMessage;
+  };
+
+  const _renderVisualization = (visualization: VisualizationType) => {
+    const type = visualization.options?.globalSeriesType || visualization.type;
+    let visualizationDisplay = null;
+
     switch (type) {
       case TYPE_VISUALIZATION.table:
-        errorMessage = null;
         visualizationDisplay = (
           <VisualizationTable
             data={queryResult}
@@ -318,7 +332,6 @@ const VisualizationDisplay = ({
         );
         break;
       case TYPE_VISUALIZATION.counter:
-        errorMessage = null;
         visualizationDisplay = (
           <VisualizationCounter
             data={queryResult}
@@ -351,6 +364,8 @@ const VisualizationDisplay = ({
           />
         );
     }
+
+    const errorMessage = generateErrorMessage(visualization);
 
     return (
       <div
@@ -421,7 +436,7 @@ const VisualizationDisplay = ({
         return <CounterIcon />;
 
       default:
-        return <></>;
+        return <QueryResultIcon />;
     }
   };
 
@@ -560,33 +575,12 @@ const AddVisualization = ({
   expandLayout,
 }: AddVisualizationProps) => {
   const getIcon = (chain: string | undefined) => {
-    switch (chain) {
-      case TYPE_VISUALIZATION.table:
-        return <p className="icon-table-chart-query" />;
-
-      case TYPE_VISUALIZATION.scatter:
-        return <p className="icon-scatter-chart-query" />;
-
-      case TYPE_VISUALIZATION.area:
-        return <p className="icon-area-chart-query" />;
-
-      case TYPE_VISUALIZATION.line: {
-        return <p className="icon-line-chart-query" />;
-      }
-
-      case TYPE_VISUALIZATION.pie:
-        return <p className="icon-pie-chart-query" />;
-
-      case TYPE_VISUALIZATION.bar:
-        return <p className="icon-bar-chart-query" />;
-
-      case TYPE_VISUALIZATION.counter:
-        return <p className="icon-counter-query" />;
-
-      default:
-        return <></>;
+    if (!chain) {
+      return null;
     }
+    return <p className={`icon-${chain}-chart-query`} />;
   };
+
   return (
     <Box>
       {(expandLayout === LAYOUT_QUERY.HALF ||
