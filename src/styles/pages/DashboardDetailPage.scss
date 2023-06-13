@@ -274,9 +274,8 @@
   }
   .main-grid-layout {
     width: 100%;
-    max-height: calc(100% - 48px);
+    max-height: 100%;
     overflow-y: overlay;
-    border-top: 1px solid #2f3b58;
 
     .react-grid-item {
       color: $title;

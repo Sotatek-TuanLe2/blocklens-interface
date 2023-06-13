@@ -31,12 +31,12 @@
 
     &.selected {
       background: $gradient;
-      color: $title;
+      color: #fff;
     }
 
     &:hover {
       background: $gradient;
-      color: $title;
+      color: #fff;
     }
 
     &.disabled {
