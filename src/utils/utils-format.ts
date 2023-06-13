@@ -261,10 +261,15 @@ export function formatNumber(
     return '<0.000001';
   }
 
-  return _formatLargeNumberIfNeed(
-    roundNumber(value, BigNumber.ROUND_DOWN),
-    decimalPlaces,
-  );
+  return new BigNumber(value).isNegative()
+    ? `-${_formatLargeNumberIfNeed(
+        roundNumber(new BigNumber(value).abs(), BigNumber.ROUND_DOWN),
+        decimalPlaces,
+      )}`
+    : _formatLargeNumberIfNeed(
+        roundNumber(value, BigNumber.ROUND_DOWN),
+        decimalPlaces,
+      );
 }
 
 export function formatString(value: string): string {
@@ -316,7 +321,6 @@ export const formatDefaultValueChart = (value: string) => {
   if (isAddress(value) || isHexString(value) || value.length >= 10) {
     return formatShortAddress(value);
   }
-  console.log('value', value);
   return value;
 };
 

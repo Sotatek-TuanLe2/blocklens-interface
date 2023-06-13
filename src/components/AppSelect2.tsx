@@ -1,5 +1,12 @@
-import React, { FC, useMemo, useEffect, useRef, useState } from 'react';
-import { Box, Flex } from '@chakra-ui/react';
+import React, {
+  FC,
+  useMemo,
+  useEffect,
+  useRef,
+  useState,
+  ReactNode,
+} from 'react';
+import { Box, Flex, LayoutProps } from '@chakra-ui/react';
 import 'src/styles/components/AppSelect.scss';
 
 interface IAppSelectPops {
@@ -12,6 +19,8 @@ interface IAppSelectPops {
   onChange: (value: string) => void;
   disabled?: boolean;
   zIndex?: number;
+  customItem?: (optionItem: any) => ReactNode;
+  sxWrapper?: LayoutProps;
 }
 
 interface IOption {
@@ -30,6 +39,8 @@ const AppSelect2: FC<IAppSelectPops> = ({
   className,
   disabled,
   zIndex,
+  customItem,
+  sxWrapper,
 }) => {
   const [open, setOpen] = useState<boolean>(false);
   const ref = useRef<any>(null);
@@ -58,28 +69,37 @@ const AppSelect2: FC<IAppSelectPops> = ({
       width={width}
       ref={ref}
       zIndex={zIndex}
+      userSelect={'none'}
     >
       <Flex
         className="app-select__btn-select"
         onClick={() => {
           !disabled && setOpen(!open);
         }}
+        {...sxWrapper}
       >
-        <Flex alignItems={'center'}>
-          {optionSelected?.icon && (
-            <Box className={`${optionSelected?.icon} icon`} />
-          )}
-          {hiddenLabelDefault ? (
-            <Box>{optionSelected?.label ?? ''}</Box>
-          ) : (
-            <Box>{optionSelected?.label ?? 'Select'}</Box>
-          )}
-        </Flex>
+        {customItem && optionSelected ? (
+          customItem(optionSelected)
+        ) : (
+          <Flex alignItems={'center'}>
+            {optionSelected?.icon && (
+              <Box className={`${optionSelected?.icon} icon`} />
+            )}
+            {hiddenLabelDefault ? (
+              <Box>{optionSelected?.label ?? ''}</Box>
+            ) : (
+              <Box>{optionSelected?.label ?? 'Select'}</Box>
+            )}
+          </Flex>
+        )}
 
         <Box className="icon-arrow-down" ml={2} />
       </Flex>
       {open && (
-        <Box className={'app-select__menu'}>
+        <Box
+          className={'app-select__menu'}
+          boxShadow={'0px 10px 40px rgba(125, 143, 179, 0.2)'}
+        >
           {options.map((option: IOption, index: number) => {
             return (
               <Flex
@@ -95,7 +115,7 @@ const AppSelect2: FC<IAppSelectPops> = ({
                 {optionSelected?.icon && (
                   <Box className={`${option?.icon} icon`} />
                 )}
-                <Box>{option.label}</Box>
+                {customItem ? customItem(option) : <Box>{option.label}</Box>}
               </Flex>
             );
           })}
