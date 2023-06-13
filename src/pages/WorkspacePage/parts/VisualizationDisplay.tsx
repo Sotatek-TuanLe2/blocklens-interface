@@ -207,11 +207,92 @@ const VisualizationDisplay = ({
     }
   };
 
-  const renderVisualization = (visualization: VisualizationType) => {
+  const _renderConfigurations = (visualization: VisualizationType) => {
+    if (!toggleCloseConfig) {
+      return null;
+    }
+
+    const type = visualization.options?.globalSeriesType || visualization.type;
+    let configuration = null;
+
+    switch (type) {
+      case TYPE_VISUALIZATION.table:
+        configuration = (
+          <TableConfigurations
+            data={queryResult}
+            visualization={visualization}
+            onChangeConfigurations={onChangeConfigurations}
+            dataTable={dataTable}
+          />
+        );
+        break;
+      case TYPE_VISUALIZATION.counter:
+        configuration = (
+          <CounterConfiguration
+            data={queryResult}
+            visualization={visualization}
+            onChangeConfigurations={onChangeConfigurations}
+          />
+        );
+        break;
+      case TYPE_VISUALIZATION.pie:
+        configuration = (
+          <ChartConfigurations
+            data={queryResult}
+            visualization={visualization}
+            onChangeConfigurations={onChangeConfigurations}
+          />
+        );
+        break;
+      default:
+        configuration = (
+          <ChartConfigurations
+            data={queryResult}
+            visualization={visualization}
+            onChangeConfigurations={onChangeConfigurations}
+          />
+        );
+    }
+
+    const typeNameVisual = (type: string) => {
+      switch (type) {
+        case TYPE_VISUALIZATION.table:
+          return 'table';
+        case TYPE_VISUALIZATION.counter:
+          return 'counter';
+        default:
+          return 'chart';
+      }
+    };
+
+    return (
+      <div
+        className={`main-config ${
+          toggleCloseConfig ? 'show-config' : 'hidden-config'
+        }`}
+      >
+        <div className="header-config">
+          <div className="title-config">{typeNameVisual(type)} Options</div>
+          <p
+            className="close-config-icon"
+            onClick={() => setToggleCloseConfig(false)}
+          />
+        </div>
+        <div
+          className={`body-config ${
+            expandLayout === LAYOUT_QUERY.HIDDEN ? 'body-config--expand' : ''
+          }`}
+        >
+          {configuration}
+        </div>
+      </div>
+    );
+  };
+
+  const _renderVisualization = (visualization: VisualizationType) => {
     const type = visualization.options?.globalSeriesType || visualization.type;
     let errorMessage = null;
     let visualizationDisplay = null;
-    let visualizationConfiguration = null;
 
     if (!visualization.options.columnMapping?.xAxis) {
       errorMessage = 'Missing x-axis';
@@ -235,15 +316,6 @@ const VisualizationDisplay = ({
             visualization={visualization}
           />
         );
-        visualizationConfiguration = (
-          <TableConfigurations
-            data={queryResult}
-            visualization={visualization}
-            onChangeConfigurations={onChangeConfigurations}
-            dataTable={dataTable}
-          />
-        );
-
         break;
       case TYPE_VISUALIZATION.counter:
         errorMessage = null;
@@ -253,22 +325,8 @@ const VisualizationDisplay = ({
             visualization={visualization}
           />
         );
-        visualizationConfiguration = (
-          <CounterConfiguration
-            data={queryResult}
-            visualization={visualization}
-            onChangeConfigurations={onChangeConfigurations}
-          />
-        );
         break;
       case TYPE_VISUALIZATION.pie:
-        visualizationConfiguration = (
-          <ChartConfigurations
-            data={queryResult}
-            visualization={visualization}
-            onChangeConfigurations={onChangeConfigurations}
-          />
-        );
         visualizationDisplay = (
           <PieChart
             data={queryResult}
@@ -281,14 +339,6 @@ const VisualizationDisplay = ({
         );
         break;
       default:
-        // chart
-        visualizationConfiguration = (
-          <ChartConfigurations
-            data={queryResult}
-            visualization={visualization}
-            onChangeConfigurations={onChangeConfigurations}
-          />
-        );
         visualizationDisplay = (
           <VisualizationChart
             data={queryResult}
@@ -302,27 +352,13 @@ const VisualizationDisplay = ({
         );
     }
 
-    const typeNameVisual = (type: string) => {
-      switch (type) {
-        case TYPE_VISUALIZATION.table:
-          return 'table';
-        case TYPE_VISUALIZATION.counter:
-          return 'counter';
-        default:
-          return 'chart';
-          break;
-      }
-    };
-
     return (
       <div
         className={`visual-container__wrapper ${
           expandLayout === LAYOUT_QUERY.FULL
             ? 'visual-container__wrapper--hidden'
-            : expandLayout === LAYOUT_QUERY.HALF
-            ? ''
-            : 'hidden-editor'
-        }`}
+            : ''
+        } ${expandLayout === LAYOUT_QUERY.HIDDEN ? 'hidden-editor' : ''}`}
       >
         <div className="visual-container__visualization">
           {/* <div className="visual-container__visualization__title">
@@ -353,32 +389,7 @@ const VisualizationDisplay = ({
                 visualizationDisplay
               )}
             </div>
-            {toggleCloseConfig && (
-              <div
-                className={`main-config ${
-                  toggleCloseConfig ? 'show-config' : 'hidden-config'
-                }`}
-              >
-                <div className="header-config">
-                  <div className="title-config">
-                    {typeNameVisual(type)} Options
-                  </div>
-                  <p
-                    className="close-config-icon"
-                    onClick={() => setToggleCloseConfig(false)}
-                  />
-                </div>
-                <div
-                  className={`${
-                    expandLayout === LAYOUT_QUERY.HIDDEN
-                      ? 'body-config-expand'
-                      : ''
-                  } body-config`}
-                >
-                  {visualizationConfiguration}
-                </div>
-              </div>
-            )}
+            {_renderConfigurations(visualization)}
           </div>
         </div>
       </div>
@@ -420,7 +431,7 @@ const VisualizationDisplay = ({
       name:
         v.name ||
         getDefaultVisualizationName(v?.options?.globalSeriesType || v.type),
-      content: renderVisualization(v),
+      content: _renderVisualization(v),
       id: v.id,
       closeable: needAuthentication,
     }));

@@ -107,7 +107,12 @@ const ListItem: React.FC<IListItem> = (props) => {
                     {itemClass.getName()}
                   </Tooltip>
                 </Link>
-                <Flex flexWrap={'wrap'} flexDirection={'row'} maxW={52}>
+                <Flex
+                  flexWrap={'wrap'}
+                  flexDirection={'row'}
+                  maxW={52}
+                  className="tag"
+                >
                   {listTags.map((item) => (
                     <AppTag key={item.id} value={item.name} />
                   ))}
@@ -141,7 +146,7 @@ const ListItem: React.FC<IListItem> = (props) => {
 
   const _renderRowItem = () => {
     return (
-      <div className="dashboard-list__item--row">
+      <div className="dashboard-list__item--row theme-border">
         <Flex flexDirection="row" alignItems={'center'}>
           <Link
             to={getTitleUrl()}
@@ -172,7 +177,7 @@ const ListItem: React.FC<IListItem> = (props) => {
           <div className="item-date">
             {moment(itemClass.getCreatedTime()).format('YYYY MMMM Do')}
           </div>
-          <div className="item-tag">
+          <div className="item-tag tag">
             {listTags.map((item) => (
               <AppTag key={item.id} value={item.name} />
             ))}

@@ -23,11 +23,18 @@
         svg {
           color: #1878ff;
         }
+        .tab-name-content {
+          color: $bg1;
+        }
       }
 
       .tab-name-content {
         font-weight: 700;
         font-size: 18px;
+        color: rgba(0, 2, 36, 0.5);
+      }
+      svg {
+        color: rgba(0, 2, 36, 0.5);
       }
     }
 
@@ -41,10 +48,10 @@
       &--column {
         width: 279px;
         padding: 0px 20px;
-        border: 1px solid #272d52;
         margin-bottom: 5px;
         border-radius: 16px;
         background: $card;
+        box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.04);
 
         &__avatar {
           width: 279px;
@@ -87,7 +94,6 @@
             flex-direction: row;
             justify-content: space-between;
             padding-bottom: 14px;
-            border-bottom: 1px solid #242b45;
 
             .menu-option {
               background: #2f3b58;
@@ -126,7 +132,6 @@
 
             .item-options {
               & > button {
-                background: #242b45;
                 border-radius: 100%;
               }
             }
@@ -189,8 +194,7 @@
 
       &--row {
         width: 100%;
-        padding: 16px 20px;
-        border: 1px solid #272d52;
+        padding: 9px 20px;
         margin-bottom: 6px;
         border-radius: 10px;
 
@@ -215,7 +219,6 @@
             -webkit-line-clamp: 1;
             -webkit-box-orient: vertical;
             overflow: hidden;
-            color: $title;
             font-size: 16px;
             white-space: normal;
             line-height: 20px;
@@ -273,7 +276,6 @@
           width: 3%;
 
           & > button {
-            background: #242b45;
             border-radius: 100%;
           }
 
@@ -343,9 +345,13 @@
 
   .btn-active {
     border-color: #1878ff;
-    color: white;
+    color: #0060db;
     padding: 0 24px;
     background: linear-gradient(268.85deg, rgba(34, 108, 255, 0.12) 22.48%, rgba(16, 132, 255, 0.12) 83.59%);
+    &:focus {
+      box-shadow: unset;
+      border: 1px solid #0060db;
+    }
   }
 
   .btn-inactive {
@@ -355,6 +361,12 @@
   .dashboard-filter {
     width: 100%;
     margin-top: 30px;
+
+    &__network {
+      background: $title;
+      border: 1px solid #c7d2e1;
+      border-radius: 50px;
+    }
 
     &__search,
     &__tags {
@@ -379,7 +391,7 @@
       &__selects,
       &__input {
         height: 40px !important;
-
+        border: 1px solid #c7d2e1;
         &__item {
           padding: 5px 9px;
           margin-right: 6px;
@@ -465,8 +477,8 @@
       }
 
       &__button {
-        background-color: transparent;
-        border: 1px solid #465065;
+        background-color: $title;
+        border: 0.9375px solid #c7d2e1;
         margin-left: 10px;
         color: $paragraph;
 
@@ -521,12 +533,6 @@
           font-size: 12px;
           line-height: 18px;
         }
-      }
-    }
-
-    &__tag-list {
-      & > div {
-        background-color: $bg2;
       }
     }
 

@@ -36,7 +36,13 @@ const ModalDelete = ({ open, onClose, id, type, onSuccess }: IModalDelete) => {
         </div>
 
         <Flex className="modal-footer">
-          <AppButton py={'12px'} onClick={onClose} size="sm" variant={'cancel'}>
+          <AppButton
+            py={'12px'}
+            onClick={onClose}
+            size="sm"
+            variant={'cancel'}
+            className="btn-cancel"
+          >
             Cancel
           </AppButton>
           <AppButton py={'12px'} size="sm" onClick={handleSubmit}>

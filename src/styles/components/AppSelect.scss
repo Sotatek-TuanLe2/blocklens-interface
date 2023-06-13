@@ -30,9 +30,10 @@
     align-items: center;
     border-radius: 6px;
     z-index: 2;
-    background-color: $card;
+    background: $title;
     justify-content: space-between;
     cursor: pointer;
+    border: 1px solid #c7d2e1;
 
     .icon {
       margin-right: 10px;
@@ -62,7 +63,7 @@
 
   &__menu {
     position: absolute;
-    background: $border;
+    background: $title;
     border-radius: 0 0 8px 8px;
     width: 100%;
     padding-top: 30px;
@@ -86,11 +87,13 @@
     align-items: center;
     font-size: 14px;
     &:hover {
-      background-color: $bg2;
+      background: $gradient;
+      color: $title;
     }
 
     &.selected {
       background: $gradient;
+      color: $title;
     }
 
     .icon {

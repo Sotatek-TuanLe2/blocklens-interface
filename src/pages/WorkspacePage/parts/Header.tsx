@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
-import { FormLabel, Switch, Tooltip, Spinner } from '@chakra-ui/react';
+import { useMemo } from 'react';
+import { Tooltip, Spinner } from '@chakra-ui/react';
 import { useHistory, useParams } from 'react-router-dom';
 import { AppButton } from 'src/components';
 import AppQueryMenu, { QUERY_MENU_LIST } from 'src/components/AppQueryMenu';
@@ -15,6 +15,7 @@ import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import { Dashboard } from 'src/utils/utils-dashboard';
 import { Query } from 'src/utils/utils-query';
+import { BackIcon } from 'src/assets/icons';
 
 interface IHeaderProps {
   type: string;
@@ -115,6 +116,67 @@ const Header: React.FC<IHeaderProps> = (props) => {
     }
   };
 
+  const _renderButtons = () => {
+    if (!needAuthentication) {
+      return null;
+    }
+
+    if (!isDashboard) {
+      // Query button
+      return (
+        <Tooltip label="Run Query" hasArrow placement="top">
+          <AppButton
+            className="btn-primary"
+            onClick={onRunQuery}
+            size="sm"
+            leftIcon={<span className="icon-run-query " />}
+            me="10px"
+            disabled={isLoadingRun}
+            fontSize={'14px'}
+          >
+            {isLoadingRun ? (
+              <Spinner size="sm" />
+            ) : (
+              `Run${selectedQuery ? ' selection' : ''}`
+            )}
+          </AppButton>
+        </Tooltip>
+      );
+    }
+
+    const isEmptyDashboard =
+      !(dataClass as Dashboard)?.getDashboardVisuals().length &&
+      !(dataClass as Dashboard)?.getTextWidgets().length;
+
+    // Dashboard button
+    return (
+      !isEmptyDashboard && (
+        <Tooltip
+          label={isEdit ? 'Edit Dashboard' : ''}
+          hasArrow
+          placement="top"
+        >
+          <AppButton
+            onClick={onChangeEditMode}
+            size="sm"
+            leftIcon={
+              <p
+                className={
+                  isEdit
+                    ? 'bg-icon_success_dashboard'
+                    : 'bg-icon_edit_dashboard'
+                }
+              />
+            }
+            me="10px"
+          >
+            {isEdit ? 'Done' : 'Edit'}
+          </AppButton>
+        </Tooltip>
+      )
+    );
+  };
+
   return (
     <div className="workspace-page__editor__header">
       <div className="workspace-page__editor__header__left">
@@ -123,8 +185,9 @@ const Header: React.FC<IHeaderProps> = (props) => {
             onClick={() => history.push('/')}
             size="sm"
             variant="no-effects"
-            className="btn-back icon-query-back-header"
-          />
+          >
+            <BackIcon />
+          </AppButton>
         </Tooltip>
         {!isCreatingQuery && (
           <div className="item-desc">
@@ -148,53 +211,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
             </FormLabel>
           </div>
         )} */}
-        {needAuthentication &&
-          (isDashboard ? (
-            (!!(dataClass as Dashboard)?.getDashboardVisuals().length ||
-              !!(dataClass as Dashboard)?.getTextWidgets().length) && (
-              <Tooltip
-                label={isEdit ? 'Edit Dashboard' : ''}
-                hasArrow
-                placement="top"
-              >
-                <AppButton
-                  onClick={onChangeEditMode}
-                  size="sm"
-                  leftIcon={
-                    <p
-                      className={
-                        isEdit
-                          ? 'bg-icon_success_dashboard'
-                          : 'bg-icon_edit_dashboard'
-                      }
-                    />
-                  }
-                  me="10px"
-                >
-                  {isEdit ? 'Done' : 'Edit'}
-                </AppButton>
-              </Tooltip>
-            )
-          ) : (
-            <Tooltip label="Run Query" hasArrow placement="top">
-              <AppButton
-                onClick={onRunQuery}
-                size="sm"
-                leftIcon={<span className="icon-run-query" />}
-                me="10px"
-                disabled={isLoadingRun}
-                fontSize={'14px'}
-              >
-                {isLoadingRun ? (
-                  <Spinner size="sm" />
-                ) : selectedQuery ? (
-                  'Run selection'
-                ) : (
-                  'Run'
-                )}
-              </AppButton>
-            </Tooltip>
-          ))}
+        {_renderButtons()}
         {!isCreatingQuery && data && (
           <AppQueryMenu
             menu={

@@ -56,6 +56,7 @@ const QueryPart: React.FC = () => {
   }, [queryValue]);
 
   const getExecutionResultById = async (executionId: string) => {
+    clearInterval(fetchQueryResultInterval.current);
     const res = await rf.getRequest('DashboardsRequest').getQueryResult({
       executionId,
     });
@@ -111,11 +112,70 @@ const QueryPart: React.FC = () => {
 
   const fetchInitalData = async () => {
     try {
-      await fetchQueryResult();
       await fetchQuery();
+      await fetchQueryResult();
     } catch (error) {
       toastError({ message: getErrorMessage(error) });
     }
+  };
+
+  const onExpandEditor = () => {
+    setExpandLayout((prevState) => {
+      if (prevState === LAYOUT_QUERY.FULL) {
+        return LAYOUT_QUERY.HALF;
+      }
+      if (prevState === LAYOUT_QUERY.HALF) {
+        return LAYOUT_QUERY.HIDDEN;
+      }
+      return LAYOUT_QUERY.FULL;
+    });
+  };
+
+  const _renderContent = () => {
+    if (isLoadingResult) {
+      return <AppLoadingTable widthColumns={[100]} className="visual-table" />;
+    }
+
+    if (!!queryValue && !!queryResult.length && !errorExecuteQuery?.message) {
+      return (
+        <Box>
+          <VisualizationDisplay
+            queryResult={queryResult}
+            queryValue={queryValue}
+            needAuthentication={false}
+            onReload={fetchQuery}
+            expandLayout={expandLayout}
+            onExpand={setExpandLayout}
+          />
+        </Box>
+      );
+    }
+
+    return (
+      <Flex
+        className="empty-table"
+        justifyContent={'center'}
+        alignItems="center"
+      >
+        {errorExecuteQuery?.message || 'No data...'}
+      </Flex>
+    );
+  };
+
+  const _renderVisualizations = () => {
+    if (!queryId || !queryValue) {
+      return null;
+    }
+
+    return (
+      <div
+        className={`add-chart ${
+          expandLayout === LAYOUT_QUERY.HIDDEN ? 'expand-chart' : ''
+        } ${expandLayout === LAYOUT_QUERY.HIDDEN ? 'hidden-editor' : ''}`}
+      >
+        {_renderContent()}
+      </div>
+    );
   };
 
   return (
@@ -128,7 +188,7 @@ const QueryPart: React.FC = () => {
       />
       <div className="query-container queries-page">
         <Box className="queries-page__right-side">
-          <Box className="editor-wrapper">
+          <Box className="editor-wrapper ">
             <Box className="header-tab">
               <div className="header-tab__info">
                 {queryClass?.getChains() && (
@@ -140,42 +200,23 @@ const QueryPart: React.FC = () => {
               </div>
               <Tooltip
                 label={
-                  expandLayout === LAYOUT_QUERY.FULL
-                    ? 'Minimize'
-                    : expandLayout === LAYOUT_QUERY.HALF
-                    ? 'Minimize'
-                    : 'Maximize'
+                  expandLayout === LAYOUT_QUERY.HIDDEN ? 'Maximize' : 'Minimize'
                 }
                 hasArrow
                 placement="top"
               >
                 <div className="btn-expand">
-                  {expandLayout === LAYOUT_QUERY.FULL ? (
-                    <p
-                      className="icon-query-collapse"
-                      onClick={() => setExpandLayout(LAYOUT_QUERY.HALF)}
-                    />
-                  ) : expandLayout === LAYOUT_QUERY.HALF ? (
-                    <p
-                      className="icon-query-collapse"
-                      onClick={() => setExpandLayout(LAYOUT_QUERY.HIDDEN)}
-                    />
-                  ) : (
-                    <p
-                      className="icon-query-expand"
-                      onClick={() => setExpandLayout(LAYOUT_QUERY.FULL)}
-                    />
-                  )}
+                  <p className="icon-query-collapse" onClick={onExpandEditor} />
                 </div>
               </Tooltip>
             </Box>
             <AceEditor
               className={`custom-editor ${
-                expandLayout === LAYOUT_QUERY.FULL
-                  ? 'full-editor'
-                  : expandLayout === LAYOUT_QUERY.HALF
-                  ? ''
-                  : 'hidden-editor'
+                expandLayout === LAYOUT_QUERY.FULL ? 'custom-editor--full' : ''
+              } ${
+                expandLayout === LAYOUT_QUERY.HIDDEN
+                  ? 'custom-editor--hidden'
+                  : ''
               }`}
               ref={editorRef}
               mode="sql"
@@ -198,45 +239,7 @@ const QueryPart: React.FC = () => {
               }}
             />
           </Box>
-          {queryId && !!queryValue && (
-            <div
-              className={`add-chart ${
-                expandLayout === LAYOUT_QUERY.HIDDEN
-                  ? 'expand-chart'
-                  : expandLayout === LAYOUT_QUERY.HALF
-                  ? ''
-                  : 'hidden-editor'
-              }`}
-            >
-              {isLoadingResult ? (
-                <AppLoadingTable
-                  widthColumns={[100]}
-                  className="visual-table"
-                />
-              ) : !!queryResult.length && !errorExecuteQuery?.message ? (
-                <Box>
-                  <VisualizationDisplay
-                    queryResult={queryResult}
-                    queryValue={queryValue}
-                    needAuthentication={false}
-                    onReload={fetchQuery}
-                    expandLayout={expandLayout}
-                    onExpand={setExpandLayout}
-                  />
-                </Box>
-              ) : (
-                <Flex
-                  className="empty-table"
-                  justifyContent={'center'}
-                  alignItems="center"
-                >
-                  {errorExecuteQuery?.message
-                    ? errorExecuteQuery?.message
-                    : 'No data...'}
-                </Flex>
-              )}
-            </div>
-          )}
+          {_renderVisualizations()}
         </Box>
       </div>
     </div>

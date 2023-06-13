@@ -237,6 +237,73 @@ const DashboardPart: React.FC = () => {
     </Flex>
   );
 
+  const _renderDashboard = () => {
+    if (isEmptyDashboard) {
+      return _renderEmptyDashboard();
+    }
+
+    return (
+      <ResponsiveGridLayout
+        onLayoutChange={onLayoutChange}
+        className="main-grid-layout"
+        layouts={{ lg: dataLayouts }}
+        breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
+        cols={{ lg: 12, md: 12, sm: 12, xs: 6, xxs: 4 }}
+        isDraggable={editMode}
+        isResizable={editMode}
+        measureBeforeMount
+      >
+        {dataLayouts.map((item) => (
+          <div className="box-layout" key={item.id}>
+            <div className="box-chart">
+              {item.type === WIDGET_TYPE.VISUALIZATION ? (
+                <VisualizationItem
+                  editMode={editMode}
+                  visualization={item.content}
+                />
+              ) : (
+                <div
+                  className={`box-text-widget ${
+                    editMode ? 'box-text-widget--edit' : ''
+                  }`}
+                >
+                  <ReactMarkdown>{item.text}</ReactMarkdown>
+                </div>
+              )}
+            </div>
+            {editMode && (
+              <Flex
+                alignItems={'center'}
+                className="widget-buttons"
+                columnGap={'12px'}
+              >
+                {item.type === WIDGET_TYPE.TEXT && (
+                  <Box
+                    onClick={() => {
+                      setTypeModalTextWidget(TYPE_MODAL.EDIT);
+                      setSelectedItem(item);
+                      setOpenModalAddTextWidget(true);
+                    }}
+                  >
+                    <EditIcon />
+                  </Box>
+                )}
+                <Box
+                  onClick={() => {
+                    setSelectedItem(item);
+                    setOpenModalEdit(true);
+                  }}
+                >
+                  <DeleteIcon />
+                </Box>
+              </Flex>
+            )}
+          </div>
+        ))}
+      </ResponsiveGridLayout>
+    );
+  };
+
   return (
     <div className="workspace-page__editor__dashboard">
       <Header
@@ -248,7 +315,7 @@ const DashboardPart: React.FC = () => {
       />
       <div className="dashboard-container">
         <Box className="header-tab">
-          <div className="header-tab__info">
+          <div className="header-tab__info tag">
             {dashboardClass?.getChains() && (
               <AppNetworkIcons networkIds={dashboardClass?.getChains()} />
             )}
@@ -280,67 +347,7 @@ const DashboardPart: React.FC = () => {
             </Menu>
           )}
         </Box>
-        {!!dataLayouts.length && (
-          <ResponsiveGridLayout
-            onLayoutChange={onLayoutChange}
-            className="main-grid-layout"
-            layouts={{ lg: dataLayouts }}
-            breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
-            cols={{ lg: 12, md: 12, sm: 12, xs: 6, xxs: 4 }}
-            isDraggable={editMode}
-            isResizable={editMode}
-            measureBeforeMount
-          >
-            {dataLayouts.map((item) => (
-              <div className="box-layout" key={item.id}>
-                <div className="box-chart">
-                  {item.type === WIDGET_TYPE.VISUALIZATION ? (
-                    <VisualizationItem
-                      editMode={editMode}
-                      visualization={item.content}
-                    />
-                  ) : (
-                    <div
-                      className={`box-text-widget ${
-                        editMode ? 'box-text-widget--edit' : ''
-                      }`}
-                    >
-                      <ReactMarkdown>{item.text}</ReactMarkdown>
-                    </div>
-                  )}
-                </div>
-                {editMode && (
-                  <Flex
-                    alignItems={'center'}
-                    className="widget-buttons"
-                    columnGap={'12px'}
-                  >
-                    {item.type === WIDGET_TYPE.TEXT && (
-                      <Box
-                        onClick={() => {
-                          setTypeModalTextWidget(TYPE_MODAL.EDIT);
-                          setSelectedItem(item);
-                          setOpenModalAddTextWidget(true);
-                        }}
-                      >
-                        <EditIcon />
-                      </Box>
-                    )}
-                    <Box
-                      onClick={() => {
-                        setSelectedItem(item);
-                        setOpenModalEdit(true);
-                      }}
-                    >
-                      <DeleteIcon />
-                    </Box>
-                  </Flex>
-                )}
-              </div>
-            ))}
-          </ResponsiveGridLayout>
-        )}
-        {isEmptyDashboard && _renderEmptyDashboard()}
+        {_renderDashboard()}
         <ModalSettingDashboardDetails
           open={openModalSetting}
           onClose={() => setOpenModalSetting(false)}
@@ -372,7 +379,6 @@ const DashboardPart: React.FC = () => {
             onReload={fetchLayoutData}
           />
         )}
-
         <ModalForkDashBoardDetails
           dashboardId={dashboardId}
           open={openModalFork}

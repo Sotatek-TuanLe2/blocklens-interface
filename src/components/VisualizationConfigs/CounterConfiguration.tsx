@@ -90,11 +90,7 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
       >
         <GridItem>
           <div className="box-table first-box-table">
-            <Text
-              className="box-table__title"
-              fontWeight="bold"
-              marginBottom="10px"
-            >
+            <Text className="theme-title" fontWeight="bold" marginBottom="10px">
               Counter options
             </Text>
             <div className="box-table-children">

@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import AceEditor from 'react-ace';
 import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/mode-sql';
-import 'ace-builds/src-noconflict/theme-monokai';
+import 'ace-builds/src-noconflict/theme-tomorrow';
 import { useParams } from 'react-router-dom';
 import { AppLoadingTable, AppTag } from 'src/components';
 import { getErrorMessage } from 'src/utils/utils-helper';
@@ -37,7 +37,6 @@ const QueryPart: React.FC = () => {
 
   const DEBOUNCE_TIME = 500;
   const editorRef = useRef<any>();
-
   const [queryResult, setQueryResult] = useState<any>([]);
   const [queryValue, setQueryValue] = useState<IQuery | null>(null);
   const [expandLayout, setExpandLayout] = useState<string>(LAYOUT_QUERY.HALF);
@@ -108,14 +107,15 @@ const QueryPart: React.FC = () => {
           queryId: queryId,
         });
       }
-      await fetchQueryResult();
       await fetchQuery();
+      await fetchQueryResult();
     } catch (error: any) {
       toastError({ message: getErrorMessage(error) });
     }
   };
 
   const getExecutionResultById = async (executionId: string) => {
+    clearInterval(fetchQueryResultInterval.current);
     const res = await rf.getRequest('DashboardsRequest').getQueryResult({
       executionId,
     });
@@ -169,8 +169,8 @@ const QueryPart: React.FC = () => {
 
   const fetchInitalData = async () => {
     try {
-      await fetchQueryResult();
       await fetchQuery();
+      await fetchQueryResult();
     } catch (error) {
       toastError({ message: getErrorMessage(error) });
     }
@@ -216,6 +216,68 @@ const QueryPart: React.FC = () => {
     }
   };
 
+  const onExpandEditor = () => {
+    setExpandLayout((prevState) => {
+      if (prevState === LAYOUT_QUERY.FULL) {
+        return LAYOUT_QUERY.HALF;
+      }
+      if (prevState === LAYOUT_QUERY.HALF) {
+        return LAYOUT_QUERY.HIDDEN;
+      }
+      return LAYOUT_QUERY.FULL;
+    });
+  };
+
+  const _renderContent = () => {
+    if (isLoadingResult) {
+      return <AppLoadingTable widthColumns={[100]} className="visual-table" />;
+    }
+
+    if (!!queryValue && !!queryResult.length && !errorExecuteQuery?.message) {
+      return (
+        <Box>
+          <VisualizationDisplay
+            queryResult={queryResult}
+            queryValue={queryValue}
+            onReload={fetchQuery}
+            expandLayout={expandLayout}
+            onExpand={setExpandLayout}
+          />
+        </Box>
+      );
+    }
+
+    return (
+      <Flex
+        className="empty-table"
+        justifyContent={'center'}
+        alignItems="center"
+      >
+        {errorExecuteQuery?.message || 'No data...'}
+      </Flex>
+    );
+  };
+
+  const _renderVisualizations = () => {
+    if (!queryId || !queryValue) {
+      return null;
+    }
+
+    return (
+      <div
+        className={` 
+        ${expandLayout === LAYOUT_QUERY.FULL ? 'add-chart-full' : 'add-chart'}
+         ${
+           expandLayout === LAYOUT_QUERY.HIDDEN
+             ? 'expand-chart hidden-editor'
+             : ''
+         } `}
+      >
+        {_renderContent()}
+      </div>
+    );
+  };
+
   return (
     <div className="workspace-page__editor__query">
       <Header
@@ -240,52 +302,42 @@ const QueryPart: React.FC = () => {
                   {queryClass?.getChains() && (
                     <AppNetworkIcons networkIds={queryClass?.getChains()} />
                   )}
-                  {['defi', 'gas', 'dex'].map((item) => (
-                    <AppTag key={item} value={item} />
-                  ))}
+                  <div className="header-tab__info tag">
+                    {['defi', 'gas', 'dex'].map((item) => (
+                      <AppTag key={item} value={item} />
+                    ))}
+                  </div>
                 </div>
                 <Tooltip
                   label={
-                    expandLayout === LAYOUT_QUERY.FULL
-                      ? 'Minimize'
-                      : expandLayout === LAYOUT_QUERY.HALF
-                      ? 'Minimize'
-                      : 'Maximize'
+                    expandLayout === LAYOUT_QUERY.HIDDEN
+                      ? 'Maximize'
+                      : 'Minimize'
                   }
                   hasArrow
                   placement="top"
                 >
                   <div className="btn-expand">
-                    {expandLayout === LAYOUT_QUERY.FULL ? (
-                      <p
-                        className="icon-query-collapse"
-                        onClick={() => setExpandLayout(LAYOUT_QUERY.HALF)}
-                      />
-                    ) : expandLayout === LAYOUT_QUERY.HALF ? (
-                      <p
-                        className="icon-query-collapse"
-                        onClick={() => setExpandLayout(LAYOUT_QUERY.HIDDEN)}
-                      />
-                    ) : (
-                      <p
-                        className="icon-query-expand"
-                        onClick={() => setExpandLayout(LAYOUT_QUERY.FULL)}
-                      />
-                    )}
+                    <p
+                      className="icon-query-collapse"
+                      onClick={onExpandEditor}
+                    />
                   </div>
                 </Tooltip>
               </Box>
               <AceEditor
                 className={`custom-editor ${
                   expandLayout === LAYOUT_QUERY.FULL
-                    ? 'full-editor'
-                    : expandLayout === LAYOUT_QUERY.HALF
-                    ? ''
-                    : 'hidden-editor'
+                    ? 'custom-editor--full'
+                    : ''
+                } ${
+                  expandLayout === LAYOUT_QUERY.HIDDEN
+                    ? 'custom-editor--hidden'
+                    : ''
                 }`}
                 ref={editorRef}
                 mode="sql"
-                theme="monokai"
+                theme="tomorrow"
                 width="100%"
                 wrapEnabled={true}
                 name="sql_editor"
@@ -303,44 +355,7 @@ const QueryPart: React.FC = () => {
                 onSelectionChange={onSelectQuery}
               />
             </Box>
-            {queryId && !!queryValue && (
-              <div
-                className={`add-chart ${
-                  expandLayout === LAYOUT_QUERY.HIDDEN
-                    ? 'expand-chart'
-                    : expandLayout === LAYOUT_QUERY.HALF
-                    ? ''
-                    : 'hidden-editor'
-                }`}
-              >
-                {isLoadingResult ? (
-                  <AppLoadingTable
-                    widthColumns={[100]}
-                    className="visual-table"
-                  />
-                ) : !!queryResult.length && !errorExecuteQuery?.message ? (
-                  <Box>
-                    <VisualizationDisplay
-                      queryResult={queryResult}
-                      queryValue={queryValue}
-                      onReload={fetchQuery}
-                      expandLayout={expandLayout}
-                      onExpand={setExpandLayout}
-                    />
-                  </Box>
-                ) : (
-                  <Flex
-                    className="empty-table"
-                    justifyContent={'center'}
-                    alignItems="center"
-                  >
-                    {errorExecuteQuery?.message
-                      ? errorExecuteQuery?.message
-                      : 'No data...'}
-                  </Flex>
-                )}
-              </div>
-            )}
+            {_renderVisualizations()}
           </Box>
         </div>
       </EditorContext.Provider>

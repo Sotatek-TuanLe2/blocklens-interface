@@ -122,7 +122,7 @@ const VisualizationItem = React.memo(
       return result;
     }, [queryResult]);
 
-    const renderVisualization = (visualization: VisualizationType) => {
+    const _renderVisualization = (visualization: VisualizationType) => {
       const type =
         visualization.options?.globalSeriesType || visualization.type;
 
@@ -211,6 +211,22 @@ const VisualizationItem = React.memo(
       );
     };
 
+    const _renderContent = () => {
+      if (isLoading) {
+        return (
+          <div className="visual-container__visualization visual-container__visualization--loading">
+            <Spinner />
+          </div>
+        );
+      }
+
+      if (!!queryResult.length) {
+        return _renderVisualization(visualization);
+      }
+
+      return <NoDataItem errorMessage={errorExecuteQuery?.message} />;
+    };
+
     return (
       <div className="visual-container__visualization">
         <div className="visual-container__visualization__title">
@@ -230,15 +246,7 @@ const VisualizationItem = React.memo(
             </Link>
           </Tooltip>
         </div>
-        {isLoading ? (
-          <div className="visual-container__visualization visual-container__visualization--loading">
-            <Spinner />
-          </div>
-        ) : !!queryResult.length ? (
-          renderVisualization(visualization)
-        ) : (
-          <NoDataItem errorMessage={errorExecuteQuery?.message} />
-        )}
+        {_renderContent()}
       </div>
     );
   },
