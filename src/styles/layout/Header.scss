@@ -9,8 +9,6 @@
   width: 100vw;
   height: 80px;
   z-index: 1100;
-  background-color: $bg1;
-  border-bottom: 1px solid $border;
 
   .content-header {
     max-width: 1320px;
@@ -31,7 +29,6 @@
     .menu-header {
       font-size: 16px;
       max-width: 200px;
-      background: $bg2;
       border: none;
       padding: 18px 20px;
       border-radius: 18px;
