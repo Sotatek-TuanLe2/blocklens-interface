@@ -121,15 +121,25 @@ export const globalStyles = {
         letterSpacing: '0.2px',
       },
       '.chakra-ui-light': {
-        '.box-form, .menu-header, .header, .add-chart-full, .ace_scroller, .layout-config, .main-layout, .input-table, .first-box-table, .select-table, .dashboard-list__item--row, .editor-wrapper, .box-layout, .workspace-page__editor__header, .add-chart, .workspace-page__sidebar__categories, .workspace-page__sidebar__content, .dashboard-container':
+        '.text-widget-input, .box-form, .menu-header, .header, .add-chart-full, .ace_scroller, .layout-config, .main-layout, .input-table, .first-box-table, .select-table, .dashboard-list__item--row, .editor-wrapper, .box-layout, .workspace-page__editor__header, .add-chart, .workspace-page__sidebar__categories, .workspace-page__sidebar__content, .dashboard-container':
           {
             background: mode('white.100', 'bgDark')(props),
           },
-        '.google-login, .user-name, .text-result-data, .btn-cancel, .label-toggle, .label-input, .input-table, .select-table, .title-config, .visual-container__visualization__name, .visual-container__visualization':
+
+        '.box-text-widget, .google-login, .user-name, .text-result-data, .btn-cancel, .label-toggle, .label-input, .input-table, .select-table, .title-config, .visual-container__visualization__name, .visual-container__visualization':
           {
             color: mode('bg.100', 'white.100')(props),
           },
-        '.dashboard-list__item--row': {
+
+        '.table-main-markdown .chakra-collapse': {
+          bg: mode('bg.300', 'bg.100')(props),
+        },
+
+        '.main-markdown': {
+          borderBottom: mode('1px solid #E8EAED', '1px solid #2f3b58')(props),
+        },
+
+        '.dashboard-list__item--row, .box-layout': {
           boxShadow: mode('0px 15px 30px rgba(0, 0, 0, 0.04)', '')(props),
           border: mode('', '1px solid border.100')(props),
         },
@@ -137,12 +147,14 @@ export const globalStyles = {
         '.header-config': {
           background: mode('bg.400', 'bg.200')(props),
         },
+
         '.tag': {
           div: {
             background: mode('bg.400', 'bg.200')(props),
             color: mode('bg.500', 'white.100')(props),
           },
         },
+
         '.dashboards-page ': {
           '.dashboard-list__item--column': {
             background: mode('white.100', 'card.100')(props),
@@ -155,6 +167,7 @@ export const globalStyles = {
           },
         },
       },
+
       '.table-temaplate': {
         table: {
           fontVariantNumeric: 'lining-nums tabular-nums',

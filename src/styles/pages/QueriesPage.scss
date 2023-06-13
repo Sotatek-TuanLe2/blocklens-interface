@@ -421,13 +421,20 @@
         padding: 2px 2px;
 
         &:hover {
-          background-color: #ffffff1a;
+          background-color: rgba(0, 2, 36, 0.05);
         }
       }
 
       &__name-tab[aria-selected='true'] {
         background-color: rgba(0, 2, 36, 0.05);
         text-decoration: none;
+
+        span svg {
+          color: #0060db;
+        }
+        .chakra-icon {
+          color: rgba(0, 2, 36, 0.5);
+        }
       }
 
       .table-value {
