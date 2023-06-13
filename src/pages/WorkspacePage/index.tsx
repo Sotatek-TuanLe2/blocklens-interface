@@ -31,7 +31,7 @@ const WorkspacePage: React.FC = () => {
   };
 
   return (
-    <BasePage>
+    <BasePage isFullWidth>
       <div className="workspace-page">
         <Sidebar
           expandSidebar={toggleExpandSidebar}
