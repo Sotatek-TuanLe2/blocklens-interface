@@ -565,7 +565,7 @@
     color: rgba(0, 2, 36, 0.5);
     @include text-small-regular;
   }
-  .article-by {
+  .article-creator {
     color: $bg1;
     @include text-small-medium;
   }
@@ -573,5 +573,29 @@
     color: rgba(0, 2, 36, 0.5);
     @include text-small-regular;
   }
+  .m-article-label {
+    color: rgba(0, 2, 36, 0.5);
+    @include text-small-regular;
+    margin-right: 10px;
+  }
+  .m-article-creator, .m-article-date {
+    color: $bg1;
+    @include text-small-regular;
+  }
+  .article-row-creator {
+    color: $bg1;
+    @include text-medium-regular;
+  }
+}
+
+.dashboard-list {
+  .table-header {
+    text-transform: uppercase;
+    color: $bg1;
+    opacity: 0.3;
+    @include text-display-bold-small;
+  }
+
+  
 }
 // end:: new style by chau.le@sotatek.com

@@ -1,4 +1,13 @@
-import { Box, Flex, SimpleGrid } from '@chakra-ui/react';
+import {
+  Accordion,
+  Box,
+  Flex,
+  SimpleGrid,
+  Tbody,
+  Td,
+  Thead,
+  Tr,
+} from '@chakra-ui/react';
 import _ from 'lodash';
 import { useCallback, useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
@@ -218,7 +227,7 @@ const DashboardsPage: React.FC = () => {
               {listItem}
             </SimpleGrid>
           ) : (
-            <>{listItem}</>
+            listItem
           )}
         </>
       );
@@ -246,6 +255,40 @@ const DashboardsPage: React.FC = () => {
     );
   }, [displayed]);
 
+  const _renderHeaderNew = () => {
+    return (
+      <>
+        {displayed === DisplayType.List ? (
+          <Flex
+            px={'26px'}
+            mb={'6px'}
+            display={{ base: 'none', lg: 'flex' }}
+            className="table-header"
+          >
+            <Box w={'22%'} overflow={'hidden'} pr={2.5}>
+              Name
+            </Box>
+            <Box w={'22%'} overflow={'hidden'} pr={2.5}>
+              Creator
+            </Box>
+            <Box w={'15%'} overflow={'hidden'} pr={2.5}>
+              chain
+            </Box>
+            <Box w={'15%'} overflow={'hidden'} pr={2.5}>
+              date
+            </Box>
+            <Box w={'calc(26% - 24px)'} overflow={'hidden'} pr={2.5}>
+              tag
+            </Box>
+            <Box w={'24px'}></Box>
+          </Flex>
+        ) : (
+          <></>
+        )}
+      </>
+    );
+  };
+
   const generateTabs = (): ITabs[] => {
     const tabs: ITabs[] = [
       {
@@ -257,7 +300,7 @@ const DashboardsPage: React.FC = () => {
             requestParams={dashboardParams}
             fetchData={fetchAllDashboards}
             limit={12}
-            renderHeader={_renderHeader}
+            renderHeader={_renderHeaderNew}
             renderBody={(data) =>
               _renderBody(
                 data.map((item: any) => (
@@ -283,7 +326,7 @@ const DashboardsPage: React.FC = () => {
             requestParams={queryParams}
             fetchData={fetchAllQueries}
             limit={15}
-            renderHeader={_renderHeader}
+            renderHeader={_renderHeaderNew}
             renderBody={(data) =>
               _renderBody(
                 data.map((item: any) => (
@@ -315,7 +358,7 @@ const DashboardsPage: React.FC = () => {
                   requestParams={dashboardParams}
                   fetchData={fetchMyDashboards}
                   limit={12}
-                  renderHeader={_renderHeader}
+                  renderHeader={_renderHeaderNew}
                   renderBody={(data) =>
                     _renderBody(
                       data.map((item: any) => (
@@ -339,7 +382,7 @@ const DashboardsPage: React.FC = () => {
                   requestParams={queryParams}
                   fetchData={fetchMyQueries}
                   limit={15}
-                  renderHeader={_renderHeader}
+                  renderHeader={_renderHeaderNew}
                   renderBody={(data) =>
                     _renderBody(
                       data.map((item: any) => (
@@ -378,7 +421,7 @@ const DashboardsPage: React.FC = () => {
         className="dashboards-page"
         justifyContent={'space-between'}
       >
-        <div className="dashboard-list">
+        <Box className="dashboard-list">
           <AppTabs
             currentTabIndex={tabIndex}
             tabs={generateTabs()}
@@ -392,7 +435,7 @@ const DashboardsPage: React.FC = () => {
             }}
             sxTabsHeader={{ justifyContent: { lg: 'center !important' } }}
           />
-        </div>
+        </Box>
       </Flex>
     </BasePage>
   );
