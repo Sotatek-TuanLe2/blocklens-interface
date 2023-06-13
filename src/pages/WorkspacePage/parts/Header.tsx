@@ -15,7 +15,6 @@ import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import { Dashboard } from 'src/utils/utils-dashboard';
 import { Query } from 'src/utils/utils-query';
-import { BackIcon } from 'src/assets/icons';
 
 interface IHeaderProps {
   type: string;
@@ -185,9 +184,8 @@ const Header: React.FC<IHeaderProps> = (props) => {
             onClick={() => history.push('/')}
             size="sm"
             variant="no-effects"
-          >
-            <BackIcon />
-          </AppButton>
+            className="icon-back-light"
+          />
         </Tooltip>
         {!isCreatingQuery && (
           <div className="item-desc">

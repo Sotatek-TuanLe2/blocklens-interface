@@ -74,7 +74,6 @@ import { ReactComponent as IconQueries } from './IconQueries.svg';
 import { ReactComponent as IconQueriesInactive } from './IconQueriesInactive.svg';
 import { ReactComponent as IconUploadImg } from './IconUploadImg.svg';
 import { ReactComponent as DeleteIcon } from './DeleteIcon.svg';
-import { ReactComponent as BackIcon } from './BackIcon.svg';
 
 export {
   CalendarIcon,
@@ -153,5 +152,4 @@ export {
   IconQueriesInactive,
   IconUploadImg,
   DeleteIcon,
-  BackIcon,
 };
