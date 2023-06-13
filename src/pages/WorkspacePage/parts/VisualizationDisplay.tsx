@@ -237,13 +237,10 @@ const VisualizationDisplay = ({
         break;
       case TYPE_VISUALIZATION.pie:
         configuration = (
-          <PieChart
+          <ChartConfigurations
             data={queryResult}
-            xAxisKey={
-              visualization.options?.columnMapping?.xAxis || defaultTimeXAxis
-            }
-            yAxisKeys={visualization.options.columnMapping?.yAxis || []}
-            configs={visualization.options}
+            visualization={visualization}
+            onChangeConfigurations={onChangeConfigurations}
           />
         );
         break;
