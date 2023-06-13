@@ -204,11 +204,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
         return <CounterIcon />;
 
       default:
-        return (
-          <>
-            <QueryResultIcon />
-          </>
-        );
+        return <QueryResultIcon />;
     }
   };
 
