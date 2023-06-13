@@ -73,6 +73,13 @@ export type VisualizationType = {
   queryId?: string;
 };
 
+export type IUserInfo = {
+  email: string;
+  firstName: string;
+  lastName: string;
+  userId: string;
+};
+
 export interface IQuery {
   id: string;
   name: string;
@@ -83,14 +90,15 @@ export interface IQuery {
   tags?: string[];
   query: string;
   forkedQuery?: null;
-  user?: {
-    id: string | number;
-    name: string;
-    avatarUrl: string;
-  };
+  // user?: {
+  //   id: string | number;
+  //   name: string;
+  //   avatarUrl: string;
+  // };
   visualizations: VisualizationType[];
   utilizedChains: string[];
   thumbnail: string | null;
+  userInfo: IUserInfo;
 }
 export interface IDashboard {
   id: string;
@@ -134,6 +142,7 @@ export interface IDashboardDetail {
   textWidgets?: ITextWidget[];
   utilizedChains: string[];
   thumbnail: string | null;
+  userInfo: IUserInfo;
 }
 
 export type TableAttributeType = {

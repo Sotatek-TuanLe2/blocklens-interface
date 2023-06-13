@@ -11,7 +11,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import moment from 'moment';
-import { Link, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { AppTag } from 'src/components';
 import AppNetworkIcons from 'src/components/AppNetworkIcons';
 import { DisplayType } from 'src/constants';
@@ -34,7 +34,6 @@ interface IListItem {
 
 const ListItem: React.FC<IListItem> = (props) => {
   const { type, myWorkType, item, visibility, displayed } = props;
-  const history = useHistory();
 
   // const [favorite, setFavorite] = useState<boolean>(false);
 
@@ -42,6 +41,8 @@ const ListItem: React.FC<IListItem> = (props) => {
     type === LIST_ITEM_TYPE.DASHBOARDS
       ? new Dashboard(item as IDashboardDetail)
       : new Query(item as IQuery);
+
+  const { firstName, lastName } = itemClass.getUserInfo();
 
   const getTitleUrl = (): string => {
     switch (type) {
@@ -150,7 +151,9 @@ const ListItem: React.FC<IListItem> = (props) => {
               <Flex flexDirection={'row'}>
                 <img src="/images/AvatarDashboardCard.png" alt="avatar" />
                 <div className="dashboard-list__item--column__content__item-desc">
-                  <Text>Tyler Covington</Text>
+                  <Text>
+                    {firstName} {lastName}
+                  </Text>
                   <Text>
                     {moment(itemClass.getCreatedTime()).format('YYYY MMMM Do')}
                   </Text>
@@ -237,7 +240,7 @@ const ListItem: React.FC<IListItem> = (props) => {
               </Box>
               <Box>
                 <Text className="article-creator" mb={{ base: '2px', lg: 0 }}>
-                  Tyler Covington
+                  {firstName} {lastName}
                 </Text>
                 <Text className="article-date">
                   {moment(itemClass.getCreatedTime()).format('YYYY MMMM Do')}
@@ -278,7 +281,9 @@ const ListItem: React.FC<IListItem> = (props) => {
           </Link>
           <div className="item-desc">
             <img src="/images/AvatarDashboardCard.png" alt="avatar" />
-            <p>Tyler Covington</p>
+            <p>
+              {firstName} {lastName}
+            </p>
           </div>
           <div className="item-chain">
             {itemClass.getChains() && (
@@ -359,7 +364,7 @@ const ListItem: React.FC<IListItem> = (props) => {
             alt="avatar"
           />
           <Text ml={2} className="article-row-creator">
-            Tyler Covington
+            {firstName} {lastName}
           </Text>
         </Flex>
         <Flex flexGrow={1} w={'15%'} overflow={'hidden'} pr={2.5}>
@@ -465,7 +470,7 @@ const ListItem: React.FC<IListItem> = (props) => {
                 textAlign={'right'}
                 ml={2}
               >
-                Tyler Covington
+                {firstName} {lastName}
               </Text>
             </Flex>
             <Flex align={'center'} mb={3}>

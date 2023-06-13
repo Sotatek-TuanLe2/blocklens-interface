@@ -1,6 +1,7 @@
 import {
   IDashboardDetail,
   ITextWidget,
+  IUserInfo,
   IVisualizationWidget,
   WidgetOptions,
 } from './query.type';
@@ -40,12 +41,13 @@ export interface DashboardInterface {
   updatedAt: string;
   tags?: string[];
   privateMode: boolean;
-
   user: UserInterface | string;
   chains: string[] | null;
   forkedDashboardId: string | null;
   textWidgets?: TextWidget[];
   dashboardVisuals?: DashboardVisual[];
+
+  userInfo: IUserInfo;
 
   getId: () => string;
   getName: () => string;
@@ -57,6 +59,7 @@ export interface DashboardInterface {
   getForkedDashboardId: () => string | null;
   getChains: () => string[] | null;
   getTextWidgets: () => TextWidget[] | null;
+  getUserInfo: () => IUserInfo | null;
   getDashboardVisuals: () => DashboardVisual[] | null;
   getTextWidgetById: (id: string) => TextWidget | null;
   getDashboardVisualById: (id: string) => DashboardVisual | null;
@@ -148,6 +151,7 @@ export class Dashboard implements DashboardInterface {
   public privateMode = false;
   public user;
   public forkedDashboardId;
+  public userInfo: IUserInfo;
   public textWidgets: TextWidget[];
   public chains: string[];
   public dashboardVisuals: DashboardVisual[];
@@ -163,6 +167,7 @@ export class Dashboard implements DashboardInterface {
     this.forkedDashboardId = dashboard.forkedDashboardId;
     this.textWidgets = [];
     this.thumbnail = dashboard.thumbnail;
+    this.userInfo = dashboard.userInfo;
     this.chains = dashboard.utilizedChains;
     if (dashboard.textWidgets) {
       dashboard.textWidgets.forEach((item) => {
@@ -207,6 +212,10 @@ export class Dashboard implements DashboardInterface {
 
   getChains() {
     return this.chains;
+  }
+
+  getUserInfo() {
+    return this.userInfo || null;
   }
 
   getTextWidgets() {

@@ -1,4 +1,4 @@
-import { IQuery, VisualizationType } from './query.type';
+import { IQuery, IUserInfo, VisualizationType } from './query.type';
 
 export interface VisualizationInterface {
   id: string;
@@ -29,6 +29,7 @@ export interface QueryInterface {
   query: string;
 
   // user: UserInterface;
+  userInfo: IUserInfo;
   chains: string[];
   visualizations: Visualization[];
 
@@ -41,6 +42,8 @@ export interface QueryInterface {
   getTags: () => string[] | null;
   getQuery: () => string;
   getChains: () => string[] | null;
+
+  getUserInfo: () => IUserInfo | null;
   // getUser: () => UserInterface | string;
   getVisualizations: () => Visualization[];
   getVisualizationById: (id: string) => Visualization | null;
@@ -108,7 +111,7 @@ export class Query implements QueryInterface {
   public tags;
   public privateMode = false;
   public query = '';
-
+  public userInfo: IUserInfo;
   // public user;
   public chains: string[];
   public visualizations: Visualization[];
@@ -124,6 +127,7 @@ export class Query implements QueryInterface {
     this.query = query.query;
     this.thumbnail = query.thumbnail;
     // this.user = query.user;
+    this.userInfo = query.userInfo;
     this.chains = query.utilizedChains;
     this.visualizations = [];
     if (!!query.visualizations) {
@@ -168,6 +172,10 @@ export class Query implements QueryInterface {
   // getUser() {
   //   return this.user;
   // }
+
+  getUserInfo() {
+    return this.userInfo || null;
+  }
 
   getChains() {
     return this.chains;
