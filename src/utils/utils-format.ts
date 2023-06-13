@@ -91,29 +91,119 @@ const _formatLargeNumberIfNeed = (
     return commaNumber(new BigNumber(number).toString(), ',', '.');
   }
   const SI = [
-    { value: 1, symbol: '' },
-    { value: 1e3, symbol: 'K' }, //Thousand
-    { value: 1e6, symbol: 'M' }, //Million
-    { value: 1e9, symbol: 'B' }, //Billion
-    { value: 1e12, symbol: 't' }, //trillion
-    { value: 1e15, symbol: 'q' }, //quadrillion
-    { value: 1e18, symbol: 'Q' }, //Quintillion
-    { value: 1e21, symbol: 's' }, //sextillion
-    { value: 1e24, symbol: 'S' }, //Septillion
-    { value: 1e27, symbol: 'o' }, //octillion
-    { value: 1e30, symbol: 'n' }, //nonillion
-    { value: 1e33, symbol: 'd' }, //decillion
-    { value: 1e36, symbol: 'U' }, //Undecillion
-    { value: 1e39, symbol: 'D' }, //duodecillion
-    { value: 1e42, symbol: 'T' }, //Tredecillion
-    { value: 1e45, symbol: 'Qt' }, //quattuordecillion
-    { value: 1e48, symbol: 'Qd' }, //Quinquadecillion
-    { value: 1e51, symbol: 'Sd' }, //Sexdecillion
-    { value: 1e54, symbol: 'St' }, //Septendecillion
-    { value: 1e57, symbol: 'O' }, //Octodecillion
-    { value: 1e60, symbol: 'N' }, //Novendecillion
-    { value: 1e63, symbol: 'v' }, //vigintillion
-    { value: 1e66, symbol: 'c' }, //unvigintillion
+    {
+      value: 1,
+      symbol: '',
+    },
+    {
+      value: 1e3,
+      symbol: 'K',
+    },
+    {
+      // Thousand
+      value: 1e6,
+      symbol: 'M',
+    },
+    {
+      // Million
+      value: 1e9,
+      symbol: 'B',
+    },
+    {
+      // Billion
+      value: 1e12,
+      symbol: 't',
+    },
+    {
+      // trillion
+      value: 1e15,
+      symbol: 'q',
+    },
+    {
+      // quadrillion
+      value: 1e18,
+      symbol: 'Q',
+    },
+    {
+      // Quintillion
+      value: 1e21,
+      symbol: 's',
+    },
+    {
+      // sextillion
+      value: 1e24,
+      symbol: 'S',
+    },
+    {
+      // Septillion
+      value: 1e27,
+      symbol: 'o',
+    },
+    {
+      // octillion
+      value: 1e30,
+      symbol: 'n',
+    },
+    {
+      // nonillion
+      value: 1e33,
+      symbol: 'd',
+    },
+    {
+      // decillion
+      value: 1e36,
+      symbol: 'U',
+    },
+    {
+      // Undecillion
+      value: 1e39,
+      symbol: 'D',
+    },
+    {
+      // duodecillion
+      value: 1e42,
+      symbol: 'T',
+    },
+    {
+      // Tredecillion
+      value: 1e45,
+      symbol: 'Qt',
+    },
+    {
+      // quattuordecillion
+      value: 1e48,
+      symbol: 'Qd',
+    },
+    {
+      // Quinquadecillion
+      value: 1e51,
+      symbol: 'Sd',
+    },
+    {
+      // Sexdecillion
+      value: 1e54,
+      symbol: 'St',
+    },
+    {
+      // Septendecillion
+      value: 1e57,
+      symbol: 'O',
+    },
+    {
+      // Octodecillion
+      value: 1e60,
+      symbol: 'N',
+    },
+    {
+      // Novendecillion
+      value: 1e63,
+      symbol: 'v',
+    },
+    {
+      // vigintillion
+      value: 1e66,
+      symbol: 'c',
+    }, // unvigintillion
   ];
   const rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
   const num = parseFloat(number);
@@ -226,6 +316,7 @@ export const formatDefaultValueChart = (value: string) => {
   if (isAddress(value) || isHexString(value) || value.length >= 10) {
     return formatShortAddress(value);
   }
+  console.log('value', value);
   return value;
 };
 
@@ -238,8 +329,13 @@ export const formatVisualizationValue = (format: string, value: any) => {
   const isNotANumber = !isNumber(value);
   const hasDollarSign = format.includes('$');
   const checkNegativeValue = new BigNumber(value).isLessThan(0);
-  const negativeValue = (negativeValue: any, positiveValue: any) => {
+
+  const formatValue = (negativeValue: any, positiveValue: any) => {
     return checkNegativeValue ? `-${negativeValue}` : positiveValue;
+  };
+
+  const getAbsValue = (value: string | number): string => {
+    return new BigNumber(value).abs().toString();
   };
 
   if (isValueZero) {
@@ -250,84 +346,91 @@ export const formatVisualizationValue = (format: string, value: any) => {
     return value;
   }
 
+  if (hasDollarSign && hasA && hasDot) {
+    value = formatNumberWithDecimalDigits(value, format);
+    const decimalPart = String(value).split('.')[1];
+    return formatValue(
+      `$${_formatLargeNumberIfNeed(
+        getAbsValue(value),
+        decimalPart.length || 0,
+        false,
+      )}`,
+      `$${_formatLargeNumberIfNeed(value, decimalPart.length || 0, false)}`,
+    );
+  }
+
+  if (hasDollarSign && hasA) {
+    return formatValue(
+      `$${_formatLargeNumberIfNeed(getAbsValue(value))}`,
+      `$${_formatLargeNumberIfNeed(value)}`,
+    );
+  }
+
   if (hasDollarSign) {
-    if (hasA && hasDot) {
+    return formatValue(`$${getAbsValue(value)}`, `$${value}`);
+  }
+
+  if (hasDot && hasComma) {
+    if (hasA) {
       value = formatNumberWithDecimalDigits(value, format);
       const decimalPart = String(value).split('.')[1];
-      return negativeValue(
-        `$${_formatLargeNumberIfNeed(
-          value.slice(1),
-          decimalPart.length || 0,
+      return formatValue(
+        `${_formatLargeNumberIfNeed(
+          getAbsValue(formatNumberWithDecimalDigits(value, format)),
+          decimalPart?.length || 0,
           false,
         )}`,
-        `$${_formatLargeNumberIfNeed(value, decimalPart.length || 0, false)}`,
-      );
-    }
-    if (hasA) {
-      return negativeValue(
-        `$${_formatLargeNumberIfNeed(value.slice(1))}`,
-        `$${_formatLargeNumberIfNeed(value)}`,
-      );
-    }
-    return negativeValue(`$${value.slice(1)}`, `$${value}`);
-  }
-  if (hasDot) {
-    if (hasComma) {
-      if (hasA) {
-        value = formatNumberWithDecimalDigits(value, format);
-        const decimalPart = String(value).split('.')[1];
-
-        return negativeValue(
-          `${_formatLargeNumberIfNeed(
-            formatNumberWithDecimalDigits(value, format).slice(1),
-            decimalPart?.length || 0,
-            false,
-          )}`,
-          _formatLargeNumberIfNeed(
-            formatNumberWithDecimalDigits(value, format),
-            decimalPart?.length || 0,
-            false,
-          ),
-        );
-      }
-      return negativeValue(
-        commaNumber(formatNumberWithDecimalDigits(value.slice(1), format)),
-        formatNumberWithDecimalDigits(value, format),
-      );
-    }
-    if (hasA) {
-      value = formatNumberWithDecimalDigits(value, format);
-      const decimalPart = String(value).split('.')[1];
-      return negativeValue(
         _formatLargeNumberIfNeed(
-          value.slice(1),
+          formatNumberWithDecimalDigits(value, format),
           decimalPart?.length || 0,
           false,
         ),
-        _formatLargeNumberIfNeed(value, decimalPart?.length || 0, false),
       );
     }
-
-    return negativeValue(
-      formatNumberWithDecimalDigits(value.slice(1), format),
+    return formatValue(
+      commaNumber(formatNumberWithDecimalDigits(+getAbsValue(value), format)),
       formatNumberWithDecimalDigits(value, format),
     );
   }
+
+  if (hasDot && hasA) {
+    value = formatNumberWithDecimalDigits(value, format);
+    const decimalPart = String(value).split('.')[1];
+    return formatValue(
+      _formatLargeNumberIfNeed(
+        getAbsValue(value),
+        decimalPart?.length || 0,
+        false,
+      ),
+      _formatLargeNumberIfNeed(value, decimalPart?.length || 0, false),
+    );
+  }
+
+  if (hasDot) {
+    return formatValue(
+      formatNumberWithDecimalDigits(+getAbsValue(value), format),
+      formatNumberWithDecimalDigits(value, format),
+    );
+  }
+
+  if (hasComma && hasA) {
+    return formatValue(
+      _formatLargeNumberIfNeed(getAbsValue(value)),
+      _formatLargeNumberIfNeed(value),
+    );
+  }
+
   if (hasComma) {
-    if (hasA) {
-      return negativeValue(
-        _formatLargeNumberIfNeed(value.slice(1)),
-        _formatLargeNumberIfNeed(value),
-      );
-    }
-    return negativeValue(commaNumber(value.slice(1)), commaNumber(value));
+    return formatValue(commaNumber(getAbsValue(value)), commaNumber(value));
   }
+
   if (isFormatZero) {
-    return negativeValue(parseInt(value.slice(1)), parseInt(value));
+    return formatValue(parseInt(getAbsValue(value)), parseInt(value));
   }
+
   if (hasA) {
-    return negativeValue(
-      _formatLargeNumberIfNeed(value.slice(1)),
+    return formatValue(
+      _formatLargeNumberIfNeed(getAbsValue(value)),
       _formatLargeNumberIfNeed(value),
     );
   }
