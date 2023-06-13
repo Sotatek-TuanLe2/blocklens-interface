@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import AceEditor from 'react-ace';
 import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/mode-sql';
-import 'ace-builds/src-noconflict/theme-monokai';
+import 'ace-builds/src-noconflict/theme-tomorrow';
 import { useParams } from 'react-router-dom';
 import { AppLoadingTable, AppTag } from 'src/components';
 import { getErrorMessage } from 'src/utils/utils-helper';
@@ -37,7 +37,6 @@ const QueryPart: React.FC = () => {
 
   const DEBOUNCE_TIME = 500;
   const editorRef = useRef<any>();
-
   const [queryResult, setQueryResult] = useState<any>([]);
   const [queryValue, setQueryValue] = useState<IQuery | null>(null);
   const [expandLayout, setExpandLayout] = useState<string>(LAYOUT_QUERY.HALF);
@@ -266,9 +265,13 @@ const QueryPart: React.FC = () => {
 
     return (
       <div
-        className={`add-chart ${
-          expandLayout === LAYOUT_QUERY.HIDDEN ? 'expand-chart' : ''
-        } ${expandLayout === LAYOUT_QUERY.HIDDEN ? 'hidden-editor' : ''}`}
+        className={` 
+        ${expandLayout === LAYOUT_QUERY.FULL ? 'add-chart-full' : 'add-chart'}
+         ${
+           expandLayout === LAYOUT_QUERY.HIDDEN
+             ? 'expand-chart hidden-editor'
+             : ''
+         } `}
       >
         {_renderContent()}
       </div>
@@ -295,7 +298,7 @@ const QueryPart: React.FC = () => {
           <Box className="queries-page__right-side">
             <Box className="editor-wrapper">
               <Box className="header-tab">
-                <div className="header-tab__info tag">
+                <div className="header-tab__info">
                   {queryClass?.getChains() && (
                     <AppNetworkIcons networkIds={queryClass?.getChains()} />
                   )}
@@ -334,7 +337,7 @@ const QueryPart: React.FC = () => {
                 }`}
                 ref={editorRef}
                 mode="sql"
-                theme="monokai"
+                theme="tomorrow"
                 width="100%"
                 wrapEnabled={true}
                 name="sql_editor"

@@ -35,6 +35,17 @@
       padding: 0px 17px !important;
     }
   }
+  .add-chart-full {
+    border-radius: 6px;
+    margin-top: 4px;
+    margin-bottom: 20px;
+    max-height: 500px;
+
+    .tabs-header {
+      padding: 5px 17px 6px 17px !important;
+      border-bottom: unset !important;
+    }
+  }
 
   .add-chart {
     padding: 6px 0px;
@@ -80,8 +91,6 @@
   }
 
   .ace_scroller {
-    caret-color: red;
-    background-color: $card;
     overflow: unset;
     .ace_active-line {
       background: unset;
@@ -333,11 +342,11 @@
         .main-config {
           width: 28%;
           max-width: 28%;
-          
+
           .body-config {
             overflow: auto;
             max-height: 422px;
-            
+
             &--expand {
               overflow: auto;
               max-height: 673px !important;
