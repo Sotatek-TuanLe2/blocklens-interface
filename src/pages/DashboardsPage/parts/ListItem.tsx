@@ -181,7 +181,7 @@ const ListItem: React.FC<IListItem> = (props) => {
           borderTopLeftRadius={{ base: '10px', lg: '14px' }}
           borderTopRightRadius={{ base: '10px', lg: '14px' }}
           overflow={'hidden'}
-          style={{aspectRatio: '295 / 180'}}
+          style={{ aspectRatio: '295 / 180' }}
         >
           <Link to={getTitleUrl()}>
             <Image
@@ -194,7 +194,13 @@ const ListItem: React.FC<IListItem> = (props) => {
             />
           </Link>
         </Box>
-        <Flex w={'full'} flexGrow={1} flexDir={'column'} justify={'flex-end'} p={4}>
+        <Flex
+          w={'full'}
+          flexGrow={1}
+          flexDir={'column'}
+          justify={'flex-end'}
+          p={4}
+        >
           <Flex w={'full'}>
             <Box flexGrow={1}>
               <Link className="article-name" to={getTitleUrl()}>
@@ -346,9 +352,7 @@ const ListItem: React.FC<IListItem> = (props) => {
                 placement="top"
                 label={itemClass.getName()}
               >
-                <Box className="article-name">
-                  {itemClass.getName()}
-                </Box>
+                <Box className="article-name">{itemClass.getName()}</Box>
               </Tooltip>
             </Flex>
           </Link>

@@ -16,11 +16,12 @@ import { useHistory, useLocation } from 'react-router';
 import {
   FireIcon,
   IconDashboard,
-  IconDashboardInactive, IconFilter,
+  IconDashboardInactive,
+  IconFilter,
   IconQueries,
   IconQueriesInactive,
-    IconDisplayGrid,
-    IconDisplayList
+  IconDisplayGrid,
+  IconDisplayList,
 } from 'src/assets/icons';
 import {
   AppButton,
@@ -34,9 +35,7 @@ import useUser from 'src/hooks/useUser';
 import ModalCreateNew from 'src/modals/querySQL/ModalCreateNew';
 import rf from 'src/requests/RequestFactory';
 import { ROUTES } from 'src/utils/common';
-import {
-  getChainIconByChainName,
-} from 'src/utils/utils-network';
+import { getChainIconByChainName } from 'src/utils/utils-network';
 import { HOME_URL_PARAMS, LIST_ITEM_TYPE } from '..';
 import { ChevronDownIcon, AddIcon } from '@chakra-ui/icons';
 
@@ -89,18 +88,40 @@ const MenuShowDisplay: FC<{
 }> = ({ displayType, setDisplayType }) => {
   const _renderDisplayGrid = (isSelected?: boolean) => {
     return (
-      <Flex w={'full'} align={'center'} color={'#000224'} _hover={{color: 'white'}} px={isSelected ? 0 :4} py={'6px'}>
-        <IconDisplayGrid color={isSelected ? 'rgba(0, 2, 36, 0.5)' : 'currentColor'} />
-        <Text px={2} color={'currentColor'}>Grid</Text>
+      <Flex
+        w={'full'}
+        align={'center'}
+        color={'#000224'}
+        _hover={{ color: 'white' }}
+        px={isSelected ? 0 : 4}
+        py={'6px'}
+      >
+        <IconDisplayGrid
+          color={isSelected ? 'rgba(0, 2, 36, 0.5)' : 'currentColor'}
+        />
+        <Text px={2} color={'currentColor'}>
+          Grid
+        </Text>
       </Flex>
     );
   };
 
   const _renderDisplayList = (isSelected?: boolean) => {
     return (
-      <Flex w={'full'} align={'center'} color={'#000224'} _hover={{color: 'white'}} px={isSelected ? 0 : 4} py={'6px'}>
-        <IconDisplayList color={isSelected ? 'rgba(0, 2, 36, 0.5)' : 'currentColor'} />
-        <Text px={2} color={'currentColor'} >List</Text>
+      <Flex
+        w={'full'}
+        align={'center'}
+        color={'#000224'}
+        _hover={{ color: 'white' }}
+        px={isSelected ? 0 : 4}
+        py={'6px'}
+      >
+        <IconDisplayList
+          color={isSelected ? 'rgba(0, 2, 36, 0.5)' : 'currentColor'}
+        />
+        <Text px={2} color={'currentColor'}>
+          List
+        </Text>
       </Flex>
     );
   };
@@ -139,7 +160,7 @@ const MenuShowDisplay: FC<{
           {_renderDisplayGrid()}
         </MenuItem>
         <MenuItem
-            p={0}
+          p={0}
           h={8}
           color={'rgba(0, 2, 36, 0.5)'}
           _hover={{ bg: '#0060DB', color: 'white' }}
@@ -393,7 +414,9 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
             userSelect={'none'}
           >
             <IconFilter color={'rgba(0, 2, 36, 0.5)'} />
-            <Text className={'text-filter'} px={2}>Filter</Text>
+            <Text className={'text-filter'} px={2}>
+              Filter
+            </Text>
           </Flex>
         </Flex>
         {!!user && (
