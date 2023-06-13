@@ -160,7 +160,7 @@ const VisualizationPieChart = ({
             label={
               chartOptionsConfigs?.showDataLabels && _renderCustomizedLabel
             }
-            stroke="#101530"
+            // stroke="#101530"
           >
             {shownData &&
               shownData.map((entry: any) => (

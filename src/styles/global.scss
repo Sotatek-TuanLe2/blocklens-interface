@@ -103,17 +103,17 @@ text.recharts-text.recharts-label {
 
 ::-webkit-scrollbar {
   width: 6px;
-  background-color: #1a203b;
+  background-color: $title;
   border-radius: 100px;
   height: 6px;
 }
 ::-webkit-scrollbar-thumb {
-  background: $line;
+  background: #c7d2e1;
   border-radius: 100px;
 }
 
 ::-webkit-scrollbar-corner {
-  background: #030821;
+  background: #c7d2e1;
 }
 
 @keyframes spin {

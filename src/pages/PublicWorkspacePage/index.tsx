@@ -18,7 +18,7 @@ const PublicWorkspacePage: React.FC = () => {
   }, [pathname]);
 
   return (
-    <BasePage>
+    <BasePage isFullWidth>
       <div className="workspace-page">
         <div className="workspace-page__editor workspace-page__editor--full">
           {type === WORKSPACE_TYPES.DASHBOARD ? <Dashboard /> : <Query />}
