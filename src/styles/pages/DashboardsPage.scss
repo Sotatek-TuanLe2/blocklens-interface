@@ -4,7 +4,7 @@
 
 .dashboards-page {
   width: 100%;
-  padding: 20px;
+  // padding: 20px;
   gap: 20px;
 
   @include mobile {
@@ -16,6 +16,7 @@
 
     .chakra-tabs__tab {
       padding: 10px 0;
+      border-bottom: 2px solid transparent;
 
       &[aria-selected='true'] {
         border-bottom: 2px solid #1878ff;
@@ -380,7 +381,6 @@
       }
 
       &__select {
-        margin-left: 14px;
         height: 44px !important;
 
         & > .app-select__btn-select {
@@ -547,3 +547,55 @@
     }
   }
 }
+
+
+// start:: new style by chau.le@sotatek.com
+.article {
+  .article-name {
+    color: $bg1;
+    text-transform: capitalize;
+    @include text-medium-bold;
+  }
+  .article-tag {
+    background: rgba(0, 2, 36, 0.05);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(0, 2, 36, 0.5);
+    @include text-small-regular;
+  }
+  .article-creator {
+    color: $bg1;
+    @include text-small-medium;
+  }
+  .article-date {
+    color: rgba(0, 2, 36, 0.5);
+    @include text-small-regular;
+  }
+  .m-article-label {
+    color: rgba(0, 2, 36, 0.5);
+    @include text-small-regular;
+    margin-right: 10px;
+  }
+  .m-article-creator, .m-article-date {
+    color: $bg1;
+    @include text-small-regular;
+  }
+  .article-row-creator {
+    color: $bg1;
+    @include text-medium-regular;
+  }
+}
+
+.dashboard-list {
+  .table-header {
+    text-transform: uppercase;
+    color: $bg1;
+    opacity: 0.3;
+    @include text-display-bold-small;
+  }
+
+  
+}
+// end:: new style by chau.le@sotatek.com

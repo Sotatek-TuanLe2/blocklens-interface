@@ -1,8 +1,10 @@
 import {
   Box,
   Flex,
+  FlexProps,
   Tab,
   TabList,
+  TabListProps,
   TabPanel,
   TabPanels,
   Tabs,
@@ -18,6 +20,8 @@ interface IAppTabs {
   onChange?: (tabId: string, tabIndex: number) => void;
   rightElement?: ReactNode;
   onCloseTab?: (id: string) => void;
+  sxTabList?: TabListProps;
+  sxTabsHeader?: FlexProps;
 }
 export interface ITabs {
   name: string | JSX.Element;
@@ -35,6 +39,8 @@ const AppTabs: FC<IAppTabs> = ({
   onChange,
   rightElement,
   onCloseTab,
+  sxTabList,
+  sxTabsHeader,
 }) => {
   return (
     <Tabs
@@ -48,12 +54,13 @@ const AppTabs: FC<IAppTabs> = ({
       className="app-tab"
       isLazy
     >
-      <TabList className="tab-list">
+      <TabList className="tab-list" {...sxTabList}>
         <Flex
           justifyContent={'space-between'}
           alignItems="center"
           className="tabs-header"
           w="100%"
+          {...sxTabsHeader}
         >
           <Flex alignItems="center" flexWrap="wrap" className="tabs-container">
             {tabs.map((tab: ITabs, index: number) => {
