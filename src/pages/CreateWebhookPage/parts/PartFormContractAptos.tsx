@@ -5,9 +5,10 @@ import { toastError } from 'src/utils/utils-notify';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import _ from 'lodash';
 import { Box } from '@chakra-ui/react';
+import { IDataForm } from '../index';
 
 interface PartFormContractAptosProps {
-  dataForm: any;
+  dataForm: IDataForm;
   onChangeForm: any;
 }
 
@@ -83,8 +84,9 @@ const PartFormContractAptos: FC<PartFormContractAptosProps> = ({
       </AppField>
 
       <AppReadABI
-        onChange={(data) => onChangeForm(data)}
+        onChangeForm={(data) => onChangeForm(data)}
         address={dataForm.address}
+        dataForm={dataForm}
         dataAddress={dataAddress}
       />
     </Box>

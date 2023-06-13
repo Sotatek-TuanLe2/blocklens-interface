@@ -38,13 +38,19 @@ import PartFormContractAptos from './parts/PartFormContractAptos';
 
 const FILE_CSV_EXAMPLE = '/abi/CSV_Example.csv';
 
-interface IDataForm {
+interface IAptosABI {
+  functions: string[];
+  events: string[];
+}
+
+export interface IDataForm {
   webhook: string;
   address: string;
   addresses: string[];
   tokenIds: string;
   abi: any[];
   type: string;
+  aptosAbi: IAptosABI;
   abiFilter: any[];
 }
 
@@ -63,6 +69,25 @@ const optionsWebhookType = [
   },
 ];
 
+const optionsWebhookAptosType = [
+  {
+    label: 'Address Activity',
+    value: WEBHOOK_TYPES.ADDRESS_ACTIVITY,
+  },
+  {
+    label: 'Coin Activity',
+    value: WEBHOOK_TYPES.APTOS_COIN_ACTIVITY,
+  },
+  {
+    label: 'Token Activity',
+    value: WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY,
+  },
+  {
+    label: 'Module Activity',
+    value: WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY,
+  },
+];
+
 const CreateWebhook = () => {
   const { id: appId } = useParams<{ id: string }>();
   const initDataCreateWebHook = {
@@ -72,6 +97,10 @@ const CreateWebhook = () => {
     abi: [],
     type: '',
     abiFilter: [],
+    aptosAbi: {
+      functions: [],
+      events: [],
+    },
     addresses: [],
   };
 
@@ -108,9 +137,7 @@ const CreateWebhook = () => {
 
   const optionTypes = useMemo(() => {
     if (appInfo.chain === CHAINS.APTOS) {
-      return optionsWebhookType.filter(
-        (item) => item.value !== WEBHOOK_TYPES.NFT_ACTIVITY,
-      );
+      return optionsWebhookAptosType;
     }
 
     if (!isEVMNetwork(appInfo.chain)) {
@@ -151,7 +178,9 @@ const CreateWebhook = () => {
       return forceUpdate();
     }
 
-    if (!dataForm.abiFilter.length && type !== WEBHOOK_TYPES.ADDRESS_ACTIVITY) {
+    console.log(type, "fdgfgf");
+
+    if (!dataForm.abiFilter.length && type !== WEBHOOK_TYPES.ADDRESS_ACTIVITY && isEVMNetwork(appInfo.chain)) {
       toastError({ message: 'At least one checkbox must be checked.' });
       return;
     }
@@ -512,6 +541,10 @@ const CreateWebhook = () => {
       appInfo.chain === CHAINS.APTOS
     ) {
       return _renderFormAddressAptos();
+    }
+
+    if (type === WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY) {
+      return _renderFormContractAptos();
     }
 
     return _renderFormAddressActivity();

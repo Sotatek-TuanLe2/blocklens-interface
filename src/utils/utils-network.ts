@@ -8,6 +8,7 @@ import _ from 'lodash';
 import config, { Chain, Network } from 'src/config';
 import { toastError } from './utils-notify';
 import { CHAIN_NAME } from './query.type';
+import { CHAINS } from './utils-webhook';
 
 export const getLogoChainByChainId = (ChainId?: string) => {
   if (!ChainId) return;
@@ -40,7 +41,12 @@ export const getNameChainByChainId = (chainId?: string) => {
 
 export const isEVMNetwork = (chainId?: string) => {
   if (!chainId) return false;
-  return config.chains[chainId]?.family === 'ETH';
+  return config.chains[chainId]?.family === CHAINS.ETH;
+};
+
+export const isAptosNetwork = (chainId?: string) => {
+  if (!chainId) return false;
+  return chainId === CHAINS.APTOS;
 };
 
 export const getExplorerTxUrl = (

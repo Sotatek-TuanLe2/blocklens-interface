@@ -1,40 +1,17 @@
 import { Box, Flex, Checkbox, Text } from '@chakra-ui/react';
-import React, {
-  useState,
-  FC,
-  useRef,
-  useEffect,
-  ChangeEvent,
-  useMemo,
-} from 'react';
+import React, { useState, FC, useEffect, ChangeEvent, useMemo } from 'react';
 import { AppInput, AppSelect2 } from 'src/components';
 import 'src/styles/components/AppUploadABI.scss';
 import { isMobile } from 'react-device-detect';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { PackageType } from 'src/utils/utils-webhook';
-
-interface IStructAndFunction {
-  name: string;
-  selected: boolean;
-}
-
-interface IModule {
-  name: string;
-  abi: {
-    exposed_functions: IStructAndFunction[];
-    structs: IStructAndFunction[];
-  };
-}
-
-interface IPackageContractAddress {
-  name: string;
-  modules: IModule[];
-}
+import { IDataForm } from '../pages/CreateWebhookPage';
 
 interface IAppReadABI {
-  onChange?: (data: any) => void;
+  onChangeForm?: (data: any) => void;
   dataAddress?: PackageType[];
   address: string;
+  dataForm: IDataForm;
 }
 
 interface IListSelect {
@@ -131,24 +108,30 @@ const ListSelect: FC<IListSelect> = ({
     return dataFiltered;
   }, [data, valueSearch, valueSort]);
 
-  const allChecked = dataShow.every((data: IABIItem) =>
-    itemSelected.some((id: string) => data.name === id),
+  const allChecked = useMemo(
+    () =>
+      dataShow.every((data: IABIItem) =>
+        itemSelected.some((id: string) => data.name === id),
+      ),
+    [dataShow, itemSelected],
   );
 
   const onSelectAll = () => {
-    const dataRest = dataSelected.filter(
-      (item: IABIItem) => item.type !== type,
-    );
-
-    console.log(allChecked, 'allChecked');
-    if (!allChecked) {
+    if (!itemSelected.length) {
       const allData = dataShow.map((item: any) => item.name);
-      onChangeDataSelected([...dataRest, ...dataShow]);
       setItemSelected(allData);
+      onChangeDataSelected(dataShow);
       return;
     }
-    setItemSelected([]);
-    onChangeDataSelected([...dataRest]);
+
+    if (allChecked) {
+      onChangeDataSelected([]);
+      setItemSelected([]);
+    } else {
+      const allData = dataShow.map((item: any) => item.name);
+      setItemSelected(allData);
+      onChangeDataSelected(dataShow);
+    }
   };
 
   const isIndeterminate =
@@ -210,16 +193,23 @@ const ListSelect: FC<IListSelect> = ({
 
 interface IDetailABI {
   dataABI: any;
-  onChange: any;
+  onChangeForm: any;
   address: string;
+  dataForm: IDataForm;
 }
 
-const DetailABI: FC<IDetailABI> = ({ dataABI, address, onChange }) => {
+const DetailABI: FC<IDetailABI> = ({
+  dataABI,
+  address,
+  onChangeForm,
+  dataForm,
+}) => {
   const [valueSearch, setValueSearch] = useState<string>('');
   const [valueSort, setValueSort] = useState<string>('az');
   const [exposedFunctions, setExposedFunctions] = useState<IABIItem[]>([]);
   const [structs, setStructs] = useState<IABIItem[]>([]);
-  const [dataSelected, setDataSelected] = useState<IABIItem[]>([]);
+  const [functionSelected, setFunctionSelected] = useState<IABIItem[]>([]);
+  const [eventsSelected, setEventsSelected] = useState<IABIItem[]>([]);
 
   useEffect(() => {
     const exposedFunctionsList: IABIItem[] = [];
@@ -260,6 +250,18 @@ const DetailABI: FC<IDetailABI> = ({ dataABI, address, onChange }) => {
     setExposedFunctions(exposedFunctionsList);
     setStructs(structsList);
   }, [dataABI]);
+
+  useEffect(() => {
+    const functions = functionSelected.map((item) => item.name);
+    const events = eventsSelected.map((item) => item.name);
+    onChangeForm({
+      ...dataForm,
+      aptosAbi: {
+        functions,
+        events,
+      },
+    });
+  }, [functionSelected, eventsSelected]);
 
   return (
     <Box className="abi-detail" mb={4}>
@@ -302,8 +304,8 @@ const DetailABI: FC<IDetailABI> = ({ dataABI, address, onChange }) => {
             data={exposedFunctions}
             valueSearch={valueSearch}
             valueSort={valueSort}
-            onChangeDataSelected={setDataSelected}
-            dataSelected={dataSelected}
+            onChangeDataSelected={setFunctionSelected}
+            dataSelected={functionSelected}
           />
         )}
 
@@ -313,8 +315,8 @@ const DetailABI: FC<IDetailABI> = ({ dataABI, address, onChange }) => {
             data={structs}
             valueSearch={valueSearch}
             valueSort={valueSort}
-            onChangeDataSelected={setDataSelected}
-            dataSelected={dataSelected}
+            onChangeDataSelected={setEventsSelected}
+            dataSelected={eventsSelected}
           />
         )}
       </Box>
@@ -322,14 +324,24 @@ const DetailABI: FC<IDetailABI> = ({ dataABI, address, onChange }) => {
   );
 };
 
-const AppReadABI: FC<IAppReadABI> = ({ onChange, dataAddress, address }) => {
+const AppReadABI: FC<IAppReadABI> = ({
+  onChangeForm,
+  dataAddress,
+  address,
+  dataForm,
+}) => {
   return (
     <Box className="upload-abi">
       <Flex mb={1} className="label-abi">
         ABI
       </Flex>
 
-      <DetailABI dataABI={dataAddress} onChange={onChange} address={address} />
+      <DetailABI
+        dataABI={dataAddress}
+        onChangeForm={onChangeForm}
+        address={address}
+        dataForm={dataForm}
+      />
     </Box>
   );
 };

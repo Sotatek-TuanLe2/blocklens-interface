@@ -16,7 +16,11 @@ import PartAddressWebhooks from './parts/PartAddressWebhooks';
 import PartContractWebhooks from './parts/PartContractWebhooks';
 import { BasePage } from 'src/layouts';
 import { AppButton, AppCard, AppHeading } from 'src/components';
-import { getLogoChainByChainId, isEVMNetwork } from 'src/utils/utils-network';
+import {
+  getLogoChainByChainId,
+  isEVMNetwork,
+  isAptosNetwork,
+} from 'src/utils/utils-network';
 import { isMobile } from 'react-device-detect';
 import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
 import PartAppGraph from './parts/PartAppGraph';
@@ -24,6 +28,9 @@ import { CHAINS, WEBHOOK_TYPES } from 'src/utils/utils-webhook';
 import useUser from 'src/hooks/useUser';
 import rf from 'src/requests/RequestFactory';
 import { ROUTES } from 'src/utils/common';
+import PartAptosModuleWebhooks from './parts/PartAptosModuleWebhooks';
+import PartAptosCoinWebhooks from './parts/PartAptosCoinWebhooks';
+import PartAptosTokenWebhooks from './parts/PartAptosTokenWebhooks';
 
 const AppDetail = () => {
   const [type, setType] = useState<string>(WEBHOOK_TYPES.NFT_ACTIVITY);
@@ -105,14 +112,15 @@ const AppDetail = () => {
                   NFT Activity
                 </Tab>
               )}
+
               <Tab
                 className="app-tab"
                 onClick={() => setType(WEBHOOK_TYPES.ADDRESS_ACTIVITY)}
               >
                 Address Activity
               </Tab>
-              {(isEVMNetwork(appInfo.chain) ||
-                appInfo.chain === CHAINS.APTOS) && (
+
+              {isEVMNetwork(appInfo.chain) && (
                 <Tab
                   className="app-tab"
                   onClick={() => setType(WEBHOOK_TYPES.CONTRACT_ACTIVITY)}
@@ -120,27 +128,69 @@ const AppDetail = () => {
                   Contract Activity
                 </Tab>
               )}
+
+              {isAptosNetwork(appInfo.chain) && (
+                <>
+                  <Tab
+                    className="app-tab"
+                    onClick={() => setType(WEBHOOK_TYPES.APTOS_COIN_ACTIVITY)}
+                  >
+                    Coin Activity
+                  </Tab>
+                  <Tab
+                    className="app-tab"
+                    onClick={() => setType(WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY)}
+                  >
+                    Module Activity
+                  </Tab>
+                  <Tab
+                    className="app-tab"
+                    onClick={() => setType(WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY)}
+                  >
+                    Token Activity
+                  </Tab>
+                </>
+              )}
             </Flex>
           </TabList>
 
-          <TabPanels>
-            {isEVMNetwork(appInfo.chain) && (
+          {isEVMNetwork(appInfo.chain) && (
+            <TabPanels>
               <TabPanel className="content-tab-app">
                 <PartNFTWebhooks appInfo={appInfo} />
               </TabPanel>
-            )}
 
-            <TabPanel className={`content-tab-app`}>
-              <PartAddressWebhooks appInfo={appInfo} />
-            </TabPanel>
-
-            {(isEVMNetwork(appInfo.chain) ||
-              appInfo.chain === CHAINS.APTOS) && (
-              <TabPanel className="content-tab-app">
-                <PartContractWebhooks appInfo={appInfo} />
+              <TabPanel className={`content-tab-app`}>
+                <PartAddressWebhooks appInfo={appInfo} />
               </TabPanel>
-            )}
-          </TabPanels>
+
+              {isEVMNetwork(appInfo.chain) && (
+                <TabPanel className="content-tab-app">
+                  <PartContractWebhooks appInfo={appInfo} />
+                </TabPanel>
+              )}
+            </TabPanels>
+          )}
+
+          {isAptosNetwork(appInfo.chain) && (
+            <TabPanels>
+              <TabPanel className={`content-tab-app`}>
+                <PartAddressWebhooks appInfo={appInfo} />
+              </TabPanel>
+
+              <TabPanel className="content-tab-app">
+                <PartAptosCoinWebhooks appInfo={appInfo} />
+              </TabPanel>
+
+              <TabPanel className="content-tab-app">
+                <PartAptosModuleWebhooks appInfo={appInfo} />
+              </TabPanel>
+
+              <TabPanel className="content-tab-app">
+                <PartAptosTokenWebhooks appInfo={appInfo} />
+              </TabPanel>
+            </TabPanels>
+          )}
         </Tabs>
       </AppCard>
     );

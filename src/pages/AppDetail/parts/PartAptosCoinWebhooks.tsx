@@ -17,7 +17,7 @@ interface IParams {
   type?: string;
 }
 
-const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
+const PartAptosCoinWebhooks: FC<IListContract> = ({ appInfo }) => {
   const history = useHistory();
   const [params, setParams] = useState<IParams>({});
   const [totalWebhook, setTotalWebhook] = useState<any>();
@@ -27,14 +27,14 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
     return (
       <Flex className="box-create">
         <Box className="icon-no-data" mb={4} />
-        Create your webhook to start experiencing Blocklens with Contract
+        Create your webhook to start experiencing Blocklens with Aptos Coin
         Activity!
         <AppButton
           isDisabled={isDisabledApp}
           size={'lg'}
           onClick={() =>
             history.push(
-              `/create-webhook/${appInfo.appId}?type=${WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY}`,
+              `/create-webhook/${appInfo.appId}?type=${WEBHOOK_TYPES.APTOS_COIN_ACTIVITY}`,
             )
           }
         >
@@ -52,7 +52,7 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
         mx={isMobile ? 5 : 10}
       >
         <Box className="description">
-          Get notified whenever a contract occurs activity
+          Get notified whenever a coin occurs activity
         </Box>
       </Flex>
       <Box mt={3} className="list-table-wrap">
@@ -62,7 +62,7 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
           params={params}
           appInfo={appInfo}
           setParams={setParams}
-          type={WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY}
+          type={WEBHOOK_TYPES.APTOS_COIN_ACTIVITY}
         />
         {totalWebhook === 0 && _renderNoData()}
       </Box>
@@ -70,4 +70,4 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
   );
 };
 
-export default PartContractWebhooks;
+export default PartAptosCoinWebhooks;
