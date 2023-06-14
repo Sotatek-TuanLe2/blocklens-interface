@@ -56,8 +56,6 @@ const DashboardPart: React.FC = () => {
   const [openModalFork, setOpenModalFork] = useState<boolean>(false);
   const [isEmptyDashboard, setIsEmptyDashboard] = useState<boolean>(false);
 
-  const layoutChangeTimeout = useRef() as any;
-
   const fetchLayoutData = useCallback(async () => {
     try {
       const res = await rf
@@ -119,57 +117,6 @@ const DashboardPart: React.FC = () => {
     return new Dashboard(dataDashboard);
   }, [dataDashboard]);
 
-  const onLayoutChange = async (layout: Layout[]) => {
-    clearTimeout(layoutChangeTimeout.current);
-
-    const dataVisualization = dataLayouts
-      .filter((e) => e.type === WIDGET_TYPE.VISUALIZATION)
-      .map((item) => {
-        const newLayout = layout.filter((e) => e.i === item.id);
-        return {
-          id: item.id,
-          options: {
-            sizeX: newLayout[0].x,
-            sizeY: newLayout[0].y,
-            col: newLayout[0].w,
-            row: newLayout[0].h,
-          },
-        };
-      });
-    const dataTextWidget = dataLayouts
-      .filter((e) => e.type === WIDGET_TYPE.TEXT)
-      .map((item) => {
-        const newLayout = layout.filter((e) => e.i === item.id);
-        return {
-          id: item.id,
-          options: {
-            sizeX: newLayout[0].x,
-            sizeY: newLayout[0].y,
-            col: newLayout[0].w,
-            row: newLayout[0].h,
-          },
-        };
-      });
-
-    // many widgets are changed at one time so need to update the latest change
-    layoutChangeTimeout.current = setTimeout(async () => {
-      try {
-        const payload = {
-          dashboardVisuals: dataVisualization,
-          textWidgets: dataTextWidget,
-        };
-        const res = await rf
-          .getRequest('DashboardsRequest')
-          .updateDashboardItem(payload, dashboardId);
-        if (res) {
-          fetchLayoutData();
-        }
-      } catch (e) {
-        toastError({ message: getErrorMessage(e) });
-      }
-    }, 500);
-  };
-
   const _renderEmptyDashboard = () => (
     <Flex
       className="empty-dashboard"
@@ -187,7 +134,6 @@ const DashboardPart: React.FC = () => {
 
     return (
       <ResponsiveGridLayout
-        onLayoutChange={onLayoutChange}
         className="main-grid-layout"
         layouts={{ lg: dataLayouts }}
         breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
@@ -220,7 +166,13 @@ const DashboardPart: React.FC = () => {
     <div className="workspace-page__editor__dashboard">
       <Header
         type={LIST_ITEM_TYPE.DASHBOARDS}
-        author={''}
+        author={
+          dashboardClass
+            ? `${dashboardClass?.getUser().firstName} ${
+                dashboardClass?.getUser().lastName
+              }`
+            : ''
+        }
         data={dataDashboard}
         needAuthentication={false}
       />

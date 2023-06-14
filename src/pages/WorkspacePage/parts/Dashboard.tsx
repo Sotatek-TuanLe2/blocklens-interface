@@ -300,7 +300,13 @@ const DashboardPart: React.FC = () => {
     <div className="workspace-page__editor__dashboard">
       <Header
         type={LIST_ITEM_TYPE.DASHBOARDS}
-        author={user?.getFirstName() || ''}
+        author={
+          dashboardClass
+            ? `${dashboardClass?.getUser().firstName} ${
+                dashboardClass?.getUser().lastName
+              }`
+            : ''
+        }
         data={dataDashboard}
         isEdit={editMode}
         onChangeEditMode={() => setEditMode((prevState) => !prevState)}

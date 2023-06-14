@@ -173,7 +173,13 @@ const QueryPart: React.FC = () => {
     <div className="workspace-page__editor__query">
       <Header
         type={LIST_ITEM_TYPE.QUERIES}
-        author={''}
+        author={
+          queryClass
+            ? `${queryClass?.getUser().firstName} ${
+                queryClass?.getUser().lastName
+              }`
+            : ''
+        }
         data={queryValue}
         needAuthentication={false}
       />
