@@ -3,10 +3,6 @@ import {
   Button,
   Collapse,
   Flex,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
@@ -14,19 +10,17 @@ import _ from 'lodash';
 import { ChangeEvent, FC, useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router';
 import {
-  FilterIcon,
   FireIcon,
-  FireIconInactive,
-  IconColumnDashboard,
-  IconDashboard,
-  IconDashboardInactive,
-  IconListDashboard,
-  IconQueries,
-  IconQueriesInactive,
+  IconFilter,
+  IconDisplayGrid,
+  IconDisplayList,
+  DashboardListIcon,
+  QueriesIcon,
 } from 'src/assets/icons';
 import {
   AppButton,
   AppInput,
+  AppMenu,
   AppSelect2,
   AppTag,
   IOption,
@@ -36,17 +30,15 @@ import useUser from 'src/hooks/useUser';
 import ModalCreateNew from 'src/modals/querySQL/ModalCreateNew';
 import rf from 'src/requests/RequestFactory';
 import { ROUTES } from 'src/utils/common';
-import {
-  getChainIconByChainName,
-  getChainIconInactiveByChainName,
-} from 'src/utils/utils-network';
+import { getChainIconByChainName } from 'src/utils/utils-network';
 import { HOME_URL_PARAMS, LIST_ITEM_TYPE } from '..';
 import { ChevronDownIcon, AddIcon } from '@chakra-ui/icons';
+import { IDataMenu } from '../../../utils/utils-app';
 
 interface IFilterSearch {
   type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
-  displayed: DisplayType;
-  setDisplayed: (display: DisplayType) => void;
+  displayed: string;
+  setDisplayed: (display: string) => void;
   visibility: 'COLUMN' | 'ROW';
   changeVisibility: (value: VisibilityGridDashboardList) => void;
   myWorkType: string;
@@ -86,76 +78,6 @@ export const TYPE_MYWORK = {
   QUERIES: 'QUERIES',
 };
 
-const MenuShowDisplay: FC<{
-  displayType: DisplayType;
-  setDisplayType: (dis: DisplayType) => void;
-}> = ({ displayType, setDisplayType }) => {
-  const _renderDisplayGrid = () => {
-    return (
-      <Flex align={'center'}>
-        <IconColumnDashboard />
-        <Text px={2}>Grid</Text>
-      </Flex>
-    );
-  };
-
-  const _renderDisplayList = () => {
-    return (
-      <Flex align={'center'}>
-        <IconListDashboard />
-        <Text px={2}>List</Text>
-      </Flex>
-    );
-  };
-
-  return (
-    <Menu>
-      <MenuButton
-        w={'full'}
-        display={'flex'}
-        alignItems={'center'}
-        justify={'center'}
-        h={10}
-        minW={'124px'}
-        bg={'white'}
-        border={'1px solid #C7D2E1'}
-        borderRadius={'6px'}
-        as={Button}
-        rightIcon={<ChevronDownIcon />}
-      >
-        {displayType === DisplayType.Grid
-          ? _renderDisplayGrid()
-          : _renderDisplayList()}
-      </MenuButton>
-
-      <MenuList minW={'124px'} mt={-2} zIndex={4}>
-        <MenuItem
-          onClick={() => {
-            setDisplayType(DisplayType.Grid);
-          }}
-          px={5}
-          h={8}
-          _hover={{ bg: '#0060DB', color: 'white' }}
-          transition={'.2s linear'}
-        >
-          {_renderDisplayGrid()}
-        </MenuItem>
-        <MenuItem
-          px={5}
-          h={8}
-          _hover={{ bg: '#0060DB', color: 'white' }}
-          transition={'.2s linear'}
-          onClick={() => {
-            setDisplayType(DisplayType.List);
-          }}
-        >
-          {_renderDisplayList()}
-        </MenuItem>
-      </MenuList>
-    </Menu>
-  );
-};
-
 const FilterSearch: React.FC<IFilterSearch> = (props) => {
   const { isOpen, onToggle } = useDisclosure();
   const {
@@ -189,6 +111,32 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
     label: 'All',
     chain: 'All',
   };
+
+  const menuDashboardQueries: IDataMenu[] = [
+    {
+      value: LIST_ITEM_TYPE.DASHBOARDS,
+      icon: <DashboardListIcon />,
+      label: 'Dashboard',
+    },
+    {
+      value: LIST_ITEM_TYPE.QUERIES,
+      icon: <QueriesIcon />,
+      label: 'Queries',
+    },
+  ];
+
+  const menuGridList: IDataMenu[] = [
+    {
+      value: DisplayType.Grid,
+      icon: <IconDisplayGrid />,
+      label: 'Grid',
+    },
+    {
+      value: DisplayType.List,
+      icon: <IconDisplayList />,
+      label: 'List',
+    },
+  ];
 
   useEffect(() => {
     (async () => {
@@ -329,9 +277,21 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
         <Flex align={'center'} flexGrow={1}>
           {isDashboard && (
             <Flex flexGrow={{ base: 1, lg: 0 }}>
-              <MenuShowDisplay
-                displayType={displayed}
-                setDisplayType={setDisplayed}
+              <AppMenu
+                data={menuGridList}
+                value={displayed}
+                setValue={setDisplayed}
+                minW={'124px'}
+              />
+            </Flex>
+          )}
+          {isMyWork && (
+            <Flex flexGrow={{ base: 1, lg: 0 }}>
+              <AppMenu
+                data={menuDashboardQueries}
+                value={myWorkType}
+                setValue={onChangeMyWorkType}
+                minW={'179px'}
               />
             </Flex>
           )}
@@ -347,18 +307,20 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
             transition={'.2s linear'}
             ml={2.5}
             onClick={onToggle}
-            _hover={{ bg: 'gray.200' }}
             cursor={'pointer'}
             userSelect={'none'}
           >
-            <FilterIcon />
-            <Text px={2}>Filter</Text>
+            <IconFilter color={'rgba(0, 2, 36, 0.5)'} />
+            <Text className={'text-filter'} px={2}>
+              Filter
+            </Text>
           </Flex>
         </Flex>
-        {!user && (
+        {!!user && (
           <Box>
             <AppButton
               display={{ base: 'none', lg: 'flex' }}
+              minW={'120px'}
               className="btn-primary"
               onClick={onClickNew}
               h={10}
@@ -446,124 +408,6 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
         onClose={onToggleNewDashboardModal}
       />
     </>
-  );
-
-  return (
-    <div>
-      <Flex flexDirection={'row'} justifyContent={'space-between'}>
-        {isMyWork ? (
-          <Flex>
-            <Flex flexDirection={'row'}>
-              <Flex mr={3}>
-                <AppButton
-                  onClick={() => onChangeMyWorkType(TYPE_MYWORK.DASHBOARDS)}
-                  variant="network"
-                  className={
-                    myWorkType === TYPE_MYWORK.DASHBOARDS
-                      ? 'btn-active'
-                      : 'btn-inactive'
-                  }
-                >
-                  {myWorkType === TYPE_MYWORK.DASHBOARDS ? (
-                    <IconDashboard />
-                  ) : (
-                    <IconDashboardInactive />
-                  )}
-                  <Text ml={2}>Dashboard</Text>
-                </AppButton>
-              </Flex>
-            </Flex>
-            <Flex mr={3}>
-              <AppButton
-                onClick={() => onChangeMyWorkType(TYPE_MYWORK.QUERIES)}
-                variant="network"
-                className={
-                  myWorkType === TYPE_MYWORK.QUERIES
-                    ? 'btn-active'
-                    : 'btn-inactive'
-                }
-              >
-                {myWorkType === TYPE_MYWORK.QUERIES ? (
-                  <IconQueries />
-                ) : (
-                  <IconQueriesInactive />
-                )}
-                <Text ml={2}>Queries</Text>
-              </AppButton>
-            </Flex>
-          </Flex>
-        ) : (
-          _renderNetWork()
-        )}
-        {!!user && (
-          <AppButton className="btn-primary" onClick={onClickNew}>
-            <Box className="icon-plus-circle" mr={2} /> Create
-          </AppButton>
-        )}
-      </Flex>
-      <Flex mt={5} flexDirection="row">
-        <AppInput
-          className="dashboard-filter__search__input"
-          placeholder={'Search...'}
-          value={search}
-          variant="searchFilter"
-          isSearch
-          onChange={onChangeSearch}
-        />
-        <AppSelect2
-          size="medium"
-          value={sort || 'datelowtohigh'}
-          onChange={onChangeSort}
-          options={optionType}
-          className="dashboard-filter__search__select"
-        />
-        {isDashboard && (
-          <>
-            <Button
-              onClick={() => changeVisibility(VisibilityGridDashboardList.ROW)}
-              className={`dashboard-filter__search__button ${
-                visibility === VisibilityGridDashboardList.ROW
-                  ? 'dashboard-filter__search__button--active'
-                  : ''
-              }`}
-            >
-              <IconListDashboard />
-            </Button>
-            <Button
-              onClick={() =>
-                changeVisibility(VisibilityGridDashboardList.COLUMN)
-              }
-              className={`dashboard-filter__search__button ${
-                visibility === VisibilityGridDashboardList.COLUMN
-                  ? 'dashboard-filter__search__button--active'
-                  : ''
-              }`}
-            >
-              <IconColumnDashboard />
-            </Button>
-          </>
-        )}
-      </Flex>
-      <Flex
-        mt={'14px'}
-        flexDirection={'row'}
-        className="dashboard-filter__tag-list tag "
-      >
-        {listTags.map((item) => (
-          <AppTag
-            key={item.id}
-            value={item.name}
-            variant="md"
-            onClick={() => onChangeTag(item.name)}
-            selected={item.name === tag}
-          />
-        ))}
-      </Flex>
-      <ModalCreateNew
-        open={openNewDashboardModal}
-        onClose={onToggleNewDashboardModal}
-      />
-    </div>
   );
 };
 

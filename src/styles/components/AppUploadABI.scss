@@ -7,7 +7,7 @@
 
   .label-abi {
     @include text-medium-regular;
-    color: $paragraph;
+    color: $paragraph1;
   }
 
   .box-events {
@@ -75,10 +75,11 @@
 
   .input-search {
     @include text-medium-regular;
-    background-color: $card;
+    background-color: $white;
     padding: 4px 35px;
     height: 32px;
     margin-left: 8px;
+    border-color: $line;
 
     &::placeholder {
       color: $paragraph;
@@ -92,7 +93,7 @@
   }
 
   .box-upload {
-    background-color: $bg2;
+    background-color: $white;
     border: 1px dashed $line;
     border-radius: 6px;
     color: $paragraph;
@@ -106,7 +107,7 @@
 
   .download-template {
     @include text-medium-medium;
-    color: $link;
+    color: $main !important;
     margin-bottom: 20px;
     cursor: pointer;
   }
@@ -115,6 +116,7 @@
     background-color: $white;
     padding: 22px 24px;
     border-radius: 6px;
+    border: 1px solid $line;
 
     @include tablet {
       padding: 20px !important;

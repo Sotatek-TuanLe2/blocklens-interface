@@ -75,6 +75,10 @@ import { ReactComponent as IconQueriesInactive } from './IconQueriesInactive.svg
 import { ReactComponent as IconUploadImg } from './IconUploadImg.svg';
 import { ReactComponent as DeleteIcon } from './DeleteIcon.svg';
 import { ReactComponent as BackIcon } from './BackIcon.svg';
+import { ReactComponent as IconDisplayGrid } from './icon-display-grid.svg';
+import { ReactComponent as IconDisplayList } from './icon-display-list.svg';
+import { ReactComponent as IconDotMore } from './icon-dot-more.svg';
+import { ReactComponent as IconFilter } from './icon-filter.svg';
 
 export {
   CalendarIcon,
@@ -154,4 +158,8 @@ export {
   IconUploadImg,
   DeleteIcon,
   BackIcon,
+  IconDisplayGrid,
+  IconDisplayList,
+  IconDotMore,
+  IconFilter,
 };

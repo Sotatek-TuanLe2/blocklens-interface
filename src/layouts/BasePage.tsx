@@ -19,7 +19,6 @@ const BasePage: FC<BasePage> = ({
   isFullWidth = false,
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
   const onInit = async () => {
     try {
       setIsLoading(true);

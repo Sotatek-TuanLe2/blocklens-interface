@@ -66,7 +66,7 @@
 
       .label {
         @include text-medium-regular;
-        color: $paragraph;
+        color: $paragraph1;
         width: 120px;
 
         @include tablet {
@@ -80,11 +80,11 @@
       }
 
       .btn-edit {
-        color: $paragraph;
+        color: $paragraph1;
         cursor: pointer;
 
         &:hover {
-          color: $link;
+          color: $main;
         }
       }
 
@@ -225,9 +225,12 @@
   &__label {
     @include text-medium-regular;
 
-
-    color: $paragraph;
+    color: $paragraph1;
     margin-bottom: 4px;
+
+    .link {
+      color: $main !important
+    }
   }
 
   &__input {
@@ -242,6 +245,11 @@
 
     svg {
       margin-left: 15px;
+      color: $paragraph1;
+
+      &:hover {
+        color: $main;
+      }
     }
   }
 }

@@ -49,6 +49,11 @@ export const isAptosNetwork = (chainId?: string) => {
   return chainId === CHAINS.APTOS;
 };
 
+export const isSuiNetwork = (chainId?: string) => {
+  if (!chainId) return false;
+  return chainId === CHAINS.SUI;
+};
+
 export const getExplorerTxUrl = (
   chainId?: string,
   networkId?: string,

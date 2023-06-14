@@ -33,8 +33,7 @@ import { useLocation } from 'react-router';
 import { DownloadIcon } from 'src/assets/icons';
 import { useDispatch } from 'react-redux';
 import { getUserStats } from 'src/store/user';
-import PartFormAddressAptos from './parts/PartFormAddressAptos';
-import PartFormContractAptos from './parts/PartFormContractAptos';
+import PartFormModuleActivityAptos from './parts/PartFormModuleActivityAptos';
 
 const FILE_CSV_EXAMPLE = '/abi/CSV_Example.csv';
 
@@ -268,7 +267,7 @@ const CreateWebhook = () => {
 
     return (
       <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
-        {_renderFormContractAptos()}
+        {_renderFormModuleActivityAptos()}
       </Flex>
     );
   };
@@ -307,13 +306,12 @@ const CreateWebhook = () => {
     [addressesInvalid],
   );
 
-  const _renderFormAddressAptos = () => {
-    return <PartFormAddressAptos />;
-  };
-
-  const _renderFormContractAptos = () => {
+  const _renderFormModuleActivityAptos = () => {
     return (
-      <PartFormContractAptos dataForm={dataForm} onChangeForm={setDataForm} />
+      <PartFormModuleActivityAptos
+        dataForm={dataForm}
+        onChangeForm={setDataForm}
+      />
     );
   };
 
@@ -435,11 +433,12 @@ const CreateWebhook = () => {
                   to={FILE_CSV_EXAMPLE}
                   target="_blank"
                   download
-                  className="link"
                 >
                   <Flex>
                     <DownloadIcon />
-                    <Box ml={2}>Download Example</Box>
+                    <Box ml={2} color={'#0060db'}>
+                      Download Example
+                    </Box>
                   </Flex>
                 </Link>
               </Box>
@@ -538,15 +537,8 @@ const CreateWebhook = () => {
       return _renderFormContractActivity();
     }
 
-    if (
-      type === WEBHOOK_TYPES.ADDRESS_ACTIVITY &&
-      appInfo.chain === CHAINS.APTOS
-    ) {
-      return _renderFormAddressAptos();
-    }
-
     if (type === WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY) {
-      return _renderFormContractAptos();
+      return _renderFormModuleActivityAptos();
     }
 
     return _renderFormAddressActivity();
@@ -586,7 +578,6 @@ const CreateWebhook = () => {
               note="The endpoint to send notifications to."
             >
               <AppInput
-                borderRightRadius={0}
                 value={dataForm.webhook}
                 onChange={(e) => {
                   setDataForm({

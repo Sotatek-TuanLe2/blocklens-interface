@@ -62,12 +62,14 @@ const AppTabs: FC<IAppTabs> = ({
           w="100%"
           {...sxTabsHeader}
         >
-          <Flex alignItems="center" flexWrap="wrap" className="tabs-container">
+          <Flex alignItems="center" className="tabs-container">
             {tabs.map((tab: ITabs, index: number) => {
               return (
                 <Tab
                   key={tab.id}
                   className="app-tab__name-tab"
+                  userSelect={'none'}
+                  boxShadow={'none !important'}
                   onClick={() => onChange && onChange(tab.id, index)}
                 >
                   <Flex
@@ -76,7 +78,11 @@ const AppTabs: FC<IAppTabs> = ({
                     className="app-tab__name-tab__detail"
                   >
                     {tab.icon && <span>{tab.icon}</span>}
-                    <Box as="span" className="tab-name-content">
+                    <Box
+                      as="span"
+                      className="tab-name-content"
+                      whiteSpace={'nowrap'}
+                    >
                       {tab.name}
                     </Box>
                   </Flex>
