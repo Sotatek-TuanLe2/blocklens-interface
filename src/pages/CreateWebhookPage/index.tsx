@@ -33,7 +33,6 @@ import { useLocation } from 'react-router';
 import { DownloadIcon } from 'src/assets/icons';
 import { useDispatch } from 'react-redux';
 import { getUserStats } from 'src/store/user';
-import PartFormAddressAptos from './parts/PartFormAddressAptos';
 import PartFormModuleActivityAptos from './parts/PartFormModuleActivityAptos';
 
 const FILE_CSV_EXAMPLE = '/abi/CSV_Example.csv';
@@ -307,10 +306,6 @@ const CreateWebhook = () => {
     [addressesInvalid],
   );
 
-  const _renderFormAddressAptos = () => {
-    return <PartFormAddressAptos />;
-  };
-
   const _renderFormModuleActivityAptos = () => {
     return (
       <PartFormModuleActivityAptos
@@ -542,13 +537,6 @@ const CreateWebhook = () => {
       return _renderFormContractActivity();
     }
 
-    if (
-      type === WEBHOOK_TYPES.ADDRESS_ACTIVITY &&
-      appInfo.chain === CHAINS.APTOS
-    ) {
-      return _renderFormAddressAptos();
-    }
-
     if (type === WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY) {
       return _renderFormModuleActivityAptos();
     }
@@ -590,7 +578,6 @@ const CreateWebhook = () => {
               note="The endpoint to send notifications to."
             >
               <AppInput
-                borderRightRadius={0}
                 value={dataForm.webhook}
                 onChange={(e) => {
                   setDataForm({

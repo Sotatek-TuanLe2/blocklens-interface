@@ -34,7 +34,7 @@ import PartAptosCoinWebhooks from './parts/PartAptosCoinWebhooks';
 import PartAptosTokenWebhooks from './parts/PartAptosTokenWebhooks';
 
 const AppDetail = () => {
-  const [type, setType] = useState<string>(WEBHOOK_TYPES.NFT_ACTIVITY);
+  const [type, setType] = useState<string>('');
   const [defaultTab, setDefaultTab] = useState(0);
   const history = useHistory();
   const { user } = useUser();
@@ -77,6 +77,16 @@ const AppDetail = () => {
     if (!isEVMNetwork(appInfo.chain)) {
       setDefaultTab(0);
       return;
+    }
+  }, [appInfo]);
+
+  useEffect(() => {
+    if (isEVMNetwork(appInfo.chain)) {
+      setType(WEBHOOK_TYPES.NFT_ACTIVITY);
+    }
+
+    if (isSuiNetwork(appInfo.chain) || isAptosNetwork(appInfo.chain)) {
+      setType(WEBHOOK_TYPES.ADDRESS_ACTIVITY);
     }
   }, [appInfo]);
 

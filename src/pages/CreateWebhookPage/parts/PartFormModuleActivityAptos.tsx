@@ -1,5 +1,5 @@
 import { AppField, AppInput, AppReadABI } from 'src/components';
-import React, { useCallback, FC, useState } from 'react';
+import React, { useCallback, FC, useState, useEffect } from 'react';
 import rf from 'src/requests/RequestFactory';
 import { toastError } from 'src/utils/utils-notify';
 import { getErrorMessage } from 'src/utils/utils-helper';
@@ -16,7 +16,8 @@ const PartFormModuleActivityAptos: FC<PartFormContractAptosProps> = ({
   dataForm,
   onChangeForm,
 }) => {
-  const [dataAddress, setDataAddress] = useState<any>();
+  const [dataAddress, setDataAddress] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const getABI = async (payload: any) => {
     try {
@@ -31,6 +32,7 @@ const PartFormModuleActivityAptos: FC<PartFormContractAptosProps> = ({
 
   const getDataAddress = async (addressValue: string) => {
     try {
+      setIsLoading(true);
       const resourceAddress = await rf
         .getRequest('AptosRequest')
         .getModules(addressValue, '0x1::code::PackageRegistry');
@@ -58,15 +60,45 @@ const PartFormModuleActivityAptos: FC<PartFormContractAptosProps> = ({
         }),
       );
       setDataAddress(data);
+      setIsLoading(false);
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
+      setIsLoading(false);
+      setDataAddress(null);
     }
   };
 
   const debounceDropDown = useCallback(
-    _.debounce((addressValue: string) => getDataAddress(addressValue), 2000),
+    _.debounce((addressValue: string) => {
+      if (!addressValue) {
+        return;
+      }
+
+      getDataAddress(addressValue).then();
+    }, 2000),
     [dataForm.address],
   );
+
+  useEffect(() => {
+    if (!dataForm.address) {
+      setDataAddress(null);
+    }
+  }, [dataForm.address]);
+
+  const _renderABI = () => {
+    if (dataAddress) {
+      return (
+        <Box>
+          <AppReadABI
+            onChangeForm={(data) => onChangeForm(data)}
+            address={dataForm.address}
+            dataForm={dataForm}
+            dataAddress={dataAddress}
+          />
+        </Box>
+      );
+    }
+  };
 
   return (
     <Box width={'100%'}>
@@ -78,17 +110,21 @@ const PartFormModuleActivityAptos: FC<PartFormContractAptosProps> = ({
               ...dataForm,
               address: e.target.value.trim(),
             });
+            if (!e.target.value.trim()) {
+              setIsLoading(true);
+            }
             debounceDropDown(e.target.value.trim());
           }}
         />
       </AppField>
 
-      <AppReadABI
-        onChangeForm={(data) => onChangeForm(data)}
-        address={dataForm.address}
-        dataForm={dataForm}
-        dataAddress={dataAddress}
-      />
+      {!isLoading && !dataAddress && dataForm.address && (
+        <Box color={'#ee5d50'} fontSize={'14px'}>
+          Address Invalid
+        </Box>
+      )}
+
+      {isLoading ? <Box>Loading...</Box> : _renderABI()}
     </Box>
   );
 };
