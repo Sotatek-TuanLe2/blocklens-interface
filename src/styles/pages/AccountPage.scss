@@ -159,8 +159,20 @@
         color: $line;
         margin-left: 32px;
 
+        span {
+          color: $line;
+        }
+
         @include tablet {
           margin-left: 0;
+        }
+
+        &.active {
+          color: $title;
+
+          span {
+            color: $paragraph1;
+          }
         }
       }
     }
@@ -229,7 +241,7 @@
     margin-bottom: 4px;
 
     .link {
-      color: $main !important
+      color: $main !important;
     }
   }
 
