@@ -389,8 +389,12 @@ const VisualizationDisplay = ({
           <div className="main-chart">
             <div
               className={`main-visualization ${
+                type === TYPE_VISUALIZATION.table
+                  ? 'main-visualization--table'
+                  : ''
+              } ${
                 expandLayout === LAYOUT_QUERY.HIDDEN
-                  ? 'main-visualization-expand'
+                  ? 'main-visualization--expand'
                   : ''
               } ${!toggleCloseConfig ? 'show-full-visual' : ''}`}
             >
