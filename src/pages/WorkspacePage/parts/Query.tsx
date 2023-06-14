@@ -6,7 +6,7 @@ import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/mode-sql';
 import 'ace-builds/src-noconflict/theme-tomorrow';
 import { useParams } from 'react-router-dom';
-import { AppLoadingTable } from 'src/components';
+import { AppLoadingTable, AppTag } from 'src/components';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import {
   QueryExecutedResponse,
@@ -23,6 +23,7 @@ import { AppBroadcast } from 'src/utils/utils-broadcast';
 import { EditorContext } from '../context/EditorContext';
 import Header from './Header';
 import VisualizationDisplay from './VisualizationDisplay';
+import AppNetworkIcons from 'src/components/AppNetworkIcons';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import { BROADCAST_FETCH_WORKPLACE_DATA } from './Sidebar';
 import ModalQuery from 'src/modals/querySQL/ModalQuery';
@@ -98,6 +99,14 @@ const QueryPart: React.FC = () => {
   const updateQuery = async (query: string) => {
     try {
       await rf.getRequest('DashboardsRequest').updateQuery({ query }, queryId);
+      if (!queryClass?.getVisualizations().length) {
+        await rf.getRequest('DashboardsRequest').insertVisualization({
+          name: 'Query results',
+          type: 'table',
+          options: {},
+          queryId: queryId,
+        });
+      }
       await fetchQuery();
       await fetchQueryResult();
     } catch (error: any) {
@@ -249,20 +258,42 @@ const QueryPart: React.FC = () => {
     );
   };
 
+  const classExpand = (
+    layout: string,
+    firstClass: string,
+    secondClass: string,
+  ) => {
+    return expandLayout === layout ? firstClass : secondClass;
+  };
+
   const _renderVisualizations = () => {
     if (!queryId || !queryValue) {
-      return null;
+      return (
+        <div className="empty-query">
+          <Tooltip
+            label="Add New Visualization"
+            hasArrow
+            bg="black"
+            color="white"
+          >
+            <Flex alignItems={'center'}>
+              <Box className="icon-plus-circle" mr={2} /> Add Chart
+            </Flex>
+          </Tooltip>
+          <p className="icon-query-expand" />
+        </div>
+      );
     }
 
     return (
       <div
         className={` 
-        ${expandLayout === LAYOUT_QUERY.FULL ? 'add-chart-full' : 'add-chart'}
-         ${
-           expandLayout === LAYOUT_QUERY.HIDDEN
-             ? 'expand-chart hidden-editor'
-             : ''
-         } `}
+        ${classExpand(LAYOUT_QUERY.FULL, 'add-chart-full', 'add-chart')}
+         ${classExpand(
+           LAYOUT_QUERY.HIDDEN,
+           'expand-chart hidden-editor',
+           '',
+         )} `}
       >
         {_renderContent()}
       </div>
@@ -289,6 +320,16 @@ const QueryPart: React.FC = () => {
           <Box className="queries-page__right-side">
             <Box className="editor-wrapper">
               <Box className="header-tab">
+                <div className="header-tab__info">
+                  {queryClass?.getChains() && (
+                    <AppNetworkIcons networkIds={queryClass?.getChains()} />
+                  )}
+                  <div className="header-tab__info tag">
+                    {['defi', 'gas', 'dex'].map((item) => (
+                      <AppTag key={item} value={item} />
+                    ))}
+                  </div>
+                </div>
                 <Tooltip
                   label={
                     expandLayout === LAYOUT_QUERY.HIDDEN
@@ -297,10 +338,16 @@ const QueryPart: React.FC = () => {
                   }
                   hasArrow
                   placement="top"
+                  bg="white"
+                  color="black"
                 >
                   <div className="btn-expand">
                     <p
-                      className="icon-query-collapse"
+                      className={`${
+                        expandLayout === LAYOUT_QUERY.HIDDEN
+                          ? 'icon-query-expand'
+                          : 'icon-query-collapse'
+                      }`}
                       onClick={onExpandEditor}
                     />
                   </div>
@@ -308,14 +355,17 @@ const QueryPart: React.FC = () => {
               </Box>
               <AceEditor
                 className={`custom-editor ${
-                  expandLayout === LAYOUT_QUERY.FULL
-                    ? 'custom-editor--full'
-                    : ''
-                } ${
-                  expandLayout === LAYOUT_QUERY.HIDDEN
-                    ? 'custom-editor--hidden'
-                    : ''
-                }`}
+                  !queryId || !queryValue ? 'custom-editor--full' : ''
+                }
+                ${classExpand(
+                  LAYOUT_QUERY.FULL,
+                  'custom-editor--full',
+                  '',
+                )} ${classExpand(
+                  LAYOUT_QUERY.HIDDEN,
+                  'custom-editor--hidden',
+                  '',
+                )}`}
                 ref={editorRef}
                 mode="sql"
                 theme="tomorrow"
