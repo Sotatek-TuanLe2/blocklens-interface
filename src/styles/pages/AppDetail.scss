@@ -2,7 +2,6 @@
 @import '../mixins.scss';
 
 .app-detail {
-
   .app-info {
     justify-content: space-between;
     align-items: center;
@@ -314,7 +313,7 @@
     position: absolute;
     right: 0;
     top: -5px;
-    color: $main !important
+    color: $main !important;
   }
 
   .box-btn-create {
@@ -382,7 +381,8 @@
     color: $title;
   }
 
-  &__box-search, &__options {
+  &__box-search,
+  &__options {
     background-color: #2f3b58;
     padding: 14px 10px;
     border-radius: 6px;
@@ -408,7 +408,7 @@
     padding: 8px 10px;
 
     &.active {
-      background: linear-gradient(268.85deg, #226CFF 22.48%, #1084FF 83.59%);
+      background: linear-gradient(268.85deg, #226cff 22.48%, #1084ff 83.59%);
     }
   }
 }
@@ -420,6 +420,10 @@
 .box-invalid {
   margin-top: 26px !important;
   @include text-medium-regular;
+
+  .link {
+    color: $main !important;
+  }
 }
 
 .table-valid-address {
@@ -462,7 +466,7 @@
   display: flex;
   align-items: center;
   padding: 6px 12px;
-  background-color: $bg2;
+  background-color: $disable;
   border-radius: 6px;
   width: max-content;
   margin: 10px 0 !important;
@@ -475,8 +479,7 @@
   }
 }
 .stripe-form {
-  iframe{
+  iframe {
     display: block !important;
   }
 }
-
