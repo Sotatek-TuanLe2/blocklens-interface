@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { Box, Flex } from '@chakra-ui/react';
+import { Flex } from '@chakra-ui/react';
 import React, {
   useCallback,
   useEffect,
@@ -11,7 +11,6 @@ import { Layout, Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import ReactMarkdown from 'react-markdown';
 import 'react-resizable/css/styles.css';
-import { AppTag } from 'src/components';
 import ModalForkDashBoardDetails from 'src/modals/querySQL/ModalForkDashBoardDetails';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/TableValue.scss';
@@ -23,7 +22,6 @@ import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import Header from 'src/pages/WorkspacePage/parts/Header';
 import VisualizationItem from 'src/pages/WorkspacePage/parts/VisualizationItem';
-import AppNetworkIcons from 'src/components/AppNetworkIcons';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import { Dashboard } from 'src/utils/utils-dashboard';
 
@@ -143,6 +141,7 @@ const DashboardPart: React.FC = () => {
         isDraggable={false}
         isResizable={false}
         measureBeforeMount
+        containerPadding={[0, 30]}
       >
         {dataLayouts.map((item) => (
           <div className="box-layout" key={item.id}>
@@ -179,16 +178,6 @@ const DashboardPart: React.FC = () => {
         needAuthentication={false}
       />
       <div className="dashboard-container">
-        <Box className="header-tab">
-          <div className="header-tab__info">
-            {dashboardClass?.getChains() && (
-              <AppNetworkIcons networkIds={dashboardClass?.getChains()} />
-            )}
-            {['defi', 'gas', 'dex'].map((item) => (
-              <AppTag key={item} value={item} />
-            ))}
-          </div>
-        </Box>
         {_renderDashboard()}
         <ModalForkDashBoardDetails
           dashboardId={dashboardId}
