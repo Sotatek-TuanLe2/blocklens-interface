@@ -116,7 +116,7 @@ const AppDataTable = forwardRef(
       });
       setLoading(false);
       if (response && response.docs) {
-        setTableData((prevState) =>
+        setTableData((prevState: any) =>
           isLoadMore ? [...prevState, ...response.docs] : response.docs,
         );
         setPagination({ ...tablePagination });

@@ -178,9 +178,13 @@ const CreateWebhook = () => {
       return forceUpdate();
     }
 
-    console.log(type, "fdgfgf");
+    console.log(type, 'fdgfgf');
 
-    if (!dataForm.abiFilter.length && type !== WEBHOOK_TYPES.ADDRESS_ACTIVITY && isEVMNetwork(appInfo.chain)) {
+    if (
+      !dataForm.abiFilter.length &&
+      type !== WEBHOOK_TYPES.ADDRESS_ACTIVITY &&
+      isEVMNetwork(appInfo.chain)
+    ) {
       toastError({ message: 'At least one checkbox must be checked.' });
       return;
     }

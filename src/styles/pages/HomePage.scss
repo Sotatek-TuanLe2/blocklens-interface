@@ -79,12 +79,12 @@
 
   .tr-list {
     &:hover {
-      background-color: $bg2;
+      background-color: $bg3;
       cursor: pointer;
     }
 
     td {
-      border-bottom: 1px solid $border;
+      border-bottom: 1px solid $line;
       color: $title;
       @include text-medium-regular;
 
