@@ -106,8 +106,7 @@ const VisualizationDisplay = ({
   }
   const { queryId } = useParams<ParamTypes>();
 
-  const [toggleCloseConfig, setToggleCloseConfig] =
-    useState<boolean>(needAuthentication);
+  const [toggleCloseConfig, setToggleCloseConfig] = useState<boolean>(false);
   const [closeTabId, setCloseTabId] = useState<string | number>('');
   const [dataTable, setDataTable] = useState<any[]>([]);
 
@@ -317,7 +316,10 @@ const VisualizationDisplay = ({
     return errorMessage;
   };
 
-  const _renderVisualization = (visualization: VisualizationType) => {
+  const _renderVisualization = (
+    visualization: VisualizationType,
+    showConfiguration = true,
+  ) => {
     const type = visualization.options?.globalSeriesType || visualization.type;
     let visualizationDisplay = null;
 
@@ -404,7 +406,7 @@ const VisualizationDisplay = ({
                 visualizationDisplay
               )}
             </div>
-            {_renderConfigurations(visualization)}
+            {showConfiguration && _renderConfigurations(visualization)}
           </div>
         </div>
       </div>
@@ -440,16 +442,43 @@ const VisualizationDisplay = ({
     }
   };
 
+  const onChangeTab = (_tabId: string, tabIndex: number) => {
+    setToggleCloseConfig(needAuthentication && !!tabIndex);
+    onExpand(
+      expandLayout === LAYOUT_QUERY.HIDDEN
+        ? LAYOUT_QUERY.HIDDEN
+        : LAYOUT_QUERY.HALF,
+    );
+  };
+
   const generateTabs = () => {
-    const tabs: ITabs[] = queryValue.visualizations.map((v) => ({
-      icon: getIcon(v?.options?.globalSeriesType || v.type),
-      name:
-        v.name ||
-        getDefaultVisualizationName(v?.options?.globalSeriesType || v.type),
-      content: _renderVisualization(v),
-      id: v.id,
-      closeable: needAuthentication,
-    }));
+    const resultTableTab: VisualizationType = {
+      id: `${queryValue.id}-result-table`,
+      name: 'Result Table',
+      type: TYPE_VISUALIZATION.table,
+      createdAt: '',
+      updatedAt: '',
+      options: {},
+    };
+
+    const tabs: ITabs[] = [
+      {
+        icon: getIcon(resultTableTab.type),
+        name: resultTableTab.name,
+        content: _renderVisualization(resultTableTab, false),
+        id: resultTableTab.id,
+        closeable: false,
+      },
+      ...queryValue.visualizations.map((v) => ({
+        icon: getIcon(v?.options?.globalSeriesType || v.type),
+        name:
+          v.name ||
+          getDefaultVisualizationName(v?.options?.globalSeriesType || v.type),
+        content: _renderVisualization(v, needAuthentication),
+        id: v.id,
+        closeable: needAuthentication,
+      })),
+    ];
 
     if (needAuthentication) {
       tabs.push({
@@ -522,13 +551,7 @@ const VisualizationDisplay = ({
             </Tooltip>
           </Flex>
         }
-        onChange={() =>
-          onExpand(
-            expandLayout === LAYOUT_QUERY.HIDDEN
-              ? LAYOUT_QUERY.HIDDEN
-              : LAYOUT_QUERY.HALF,
-          )
-        }
+        onChange={onChangeTab}
         tabs={generateTabs()}
       />
       <BaseModal

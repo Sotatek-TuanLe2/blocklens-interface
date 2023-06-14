@@ -227,7 +227,9 @@ const Sidebar: React.FC<{
 
   const fetchDataWorkPlace = async (search?: string) => {
     try {
-      const res = await fetchQueries(_.omitBy({ search, limit: 40 }, (param) => !param));
+      const res = await fetchQueries(
+        _.omitBy({ search, limit: 40 }, (param) => !param),
+      );
       setDataQueries(res.docs);
 
       if (res.docs) {

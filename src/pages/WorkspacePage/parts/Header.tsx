@@ -102,11 +102,11 @@ const Header: React.FC<IHeaderProps> = (props) => {
     try {
       const res = isDashboard
         ? await rf
-          .getRequest('DashboardsRequest')
-          .updateDashboardItem({ isPrivate: !isChecked }, dashboardId)
+            .getRequest('DashboardsRequest')
+            .updateDashboardItem({ isPrivate: !isChecked }, dashboardId)
         : await rf
-          .getRequest('DashboardsRequest')
-          .updateQuery({ isPrivate: !isChecked }, queryId);
+            .getRequest('DashboardsRequest')
+            .updateQuery({ isPrivate: !isChecked }, queryId);
       isDashboard
         ? AppBroadcast.dispatch(BROADCAST_FETCH_DASHBOARD, res.id)
         : AppBroadcast.dispatch(BROADCAST_FETCH_QUERY, res.id);

@@ -40,8 +40,11 @@ const WorkspacePage: React.FC = () => {
           />
         )}
         <div
-          className={`workspace-page__editor ${type === WORKSPACE_TYPES.QUERY ? 'workspace-page__editor--query' : ''} ${toggleExpandSidebar ? '' : 'workspace-page__editor--expand'
-            }`}
+          className={`workspace-page__editor ${
+            type === WORKSPACE_TYPES.QUERY
+              ? 'workspace-page__editor--query'
+              : ''
+          } ${toggleExpandSidebar ? '' : 'workspace-page__editor--expand'}`}
         >
           {type === WORKSPACE_TYPES.DASHBOARD ? <Dashboard /> : <Query />}
         </div>

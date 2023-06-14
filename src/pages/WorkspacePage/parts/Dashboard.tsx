@@ -7,12 +7,7 @@ import {
   MenuItem,
   MenuList,
 } from '@chakra-ui/react';
-import React, {
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Layout, Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import ReactMarkdown from 'react-markdown';
@@ -260,8 +255,9 @@ const DashboardPart: React.FC = () => {
                 />
               ) : (
                 <div
-                  className={`box-text-widget ${editMode ? 'box-text-widget--edit' : ''
-                    }`}
+                  className={`box-text-widget ${
+                    editMode ? 'box-text-widget--edit' : ''
+                  }`}
                 >
                   <ReactMarkdown>{item.text}</ReactMarkdown>
                 </div>
