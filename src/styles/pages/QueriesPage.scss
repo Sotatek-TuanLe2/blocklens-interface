@@ -31,7 +31,6 @@
 
   .hidden-editor {
     .tabs-header {
-      border-bottom: unset !important;
       padding: 0px 17px !important;
     }
   }
@@ -346,6 +345,7 @@
         .main-config {
           width: 28%;
           max-width: 28%;
+          border-left: 1px solid rgba(0, 2, 36, 0.1);;
 
           .body-config {
             overflow: auto;
