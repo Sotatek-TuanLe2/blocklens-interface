@@ -249,12 +249,17 @@ const VisualizationItem = React.memo(
     return (
       <div className="visual-container__visualization">
         <div className="visual-container__visualization__title">
-          <Tooltip label={visualization.name} hasArrow>
+          <Tooltip label={visualization.name} hasArrow bg="white" color="black">
             <span className="visual-container__visualization__name">
               {visualization.name}
             </span>
           </Tooltip>
-          <Tooltip label={visualization.query?.name} hasArrow>
+          <Tooltip
+            label={visualization.query?.name}
+            hasArrow
+            bg="white"
+            color="black"
+          >
             <Link
               className="visual-container__visualization__title__query-link"
               to={`${needAuthentication ? ROUTES.MY_QUERY : ROUTES.QUERY}/${

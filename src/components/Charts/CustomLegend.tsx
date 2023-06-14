@@ -19,7 +19,6 @@ const CustomLegend = (props: any) => {
           <span
             className={hiddenKeys.includes(entry.dataKey) ? 'hide-legend' : ''}
             onClick={() => onToggleLegend(entry.dataKey)}
-            style={{ color: `${entry.color}` }}
           >
             {entry.value}
           </span>

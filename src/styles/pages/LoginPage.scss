@@ -20,7 +20,7 @@
 
     a {
       @include text-medium-medium;
-      color: $link;
+      color: #0060db !important;
       font-weight: 500;
     }
 
@@ -40,16 +40,25 @@
       color: $paragraph;
     }
 
+    .btn-login-google,
+    input {
+      border: 1px solid #c7d2e1;
+    }
+
+    .btn-login-google {
+      font-weight: 400;
+    }
+
     .divider {
       @include text-medium-regular;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 16px;
       margin-top: 10px;
-      color: $paragraph;
+      color: $paragraph1;
 
       .border {
-        border: 1px solid $border;
+        border: 1px solid #c7d2e1;
         width: 45%;
       }
     }
