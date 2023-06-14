@@ -265,7 +265,7 @@ const DashboardPart: React.FC = () => {
             </div>
             {editMode && (
               <Flex
-                alignItems={'center'}
+                alignItems={'flex-start'}
                 className="widget-buttons"
                 columnGap={'12px'}
               >
