@@ -438,11 +438,12 @@ const CreateWebhook = () => {
                   to={FILE_CSV_EXAMPLE}
                   target="_blank"
                   download
-                  className="link"
                 >
                   <Flex>
                     <DownloadIcon />
-                    <Box ml={2}>Download Example</Box>
+                    <Box ml={2} color={'#0060db'}>
+                      Download Example
+                    </Box>
                   </Flex>
                 </Link>
               </Box>

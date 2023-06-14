@@ -294,7 +294,7 @@
   }
 
   .box-upload {
-    background-color: $bg2;
+    background-color: $white;
     border: 1px dashed $line;
     border-radius: 6px;
     color: $paragraph;
@@ -314,6 +314,7 @@
     position: absolute;
     right: 0;
     top: -5px;
+    color: $main !important
   }
 
   .box-btn-create {
