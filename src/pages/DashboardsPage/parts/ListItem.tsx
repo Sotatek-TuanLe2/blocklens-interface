@@ -39,7 +39,9 @@ const ListItem: React.FC<IListItem> = (props) => {
       ? new Dashboard(item as IDashboardDetail)
       : new Query(item as IQuery);
 
-  const { firstName, lastName } = itemClass.getUserInfo();
+  const userName = `${itemClass.getUser()?.firstName} ${
+    itemClass.getUser()?.lastName
+  }`;
 
   const getTitleUrl = (): string => {
     switch (type) {
@@ -148,9 +150,7 @@ const ListItem: React.FC<IListItem> = (props) => {
               <Flex flexDirection={'row'}>
                 <img src="/images/AvatarDashboardCard.png" alt="avatar" />
                 <div className="dashboard-list__item--column__content__item-desc">
-                  <Text>
-                    {firstName} {lastName}
-                  </Text>
+                  <Text>{userName}</Text>
                   <Text>
                     {moment(itemClass.getCreatedTime()).format('YYYY MMMM Do')}
                   </Text>
@@ -248,7 +248,7 @@ const ListItem: React.FC<IListItem> = (props) => {
               </Box>
               <Box>
                 <Text className="article-creator" mb={{ base: '2px', lg: 0 }}>
-                  {firstName} {lastName}
+                  {userName}
                 </Text>
                 <Text className="article-date">
                   {moment(itemClass.getCreatedTime()).format('YYYY MMMM Do')}
@@ -289,9 +289,7 @@ const ListItem: React.FC<IListItem> = (props) => {
           </Link>
           <div className="item-desc">
             <img src="/images/AvatarDashboardCard.png" alt="avatar" />
-            <p>
-              {firstName} {lastName}
-            </p>
+            <p>{userName}</p>
           </div>
           <div className="item-chain">
             {itemClass.getChains() && (
@@ -371,7 +369,7 @@ const ListItem: React.FC<IListItem> = (props) => {
             alt="avatar"
           />
           <Text ml={2} className="article-row-creator">
-            {firstName} {lastName}
+            {userName}
           </Text>
         </Flex>
         <Flex flexGrow={1} w={'15%'} overflow={'hidden'} pr={2.5}>
@@ -477,7 +475,7 @@ const ListItem: React.FC<IListItem> = (props) => {
                 textAlign={'right'}
                 ml={2}
               >
-                {firstName} {lastName}
+                {userName}
               </Text>
             </Flex>
             <Flex align={'center'} mb={3}>

@@ -91,7 +91,6 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   } = props;
   const history = useHistory();
   const { user } = useUser();
-  // console.log('user: ', user);
 
   const isDashboard = type === LIST_ITEM_TYPE.DASHBOARDS;
   const isMyWork = type === LIST_ITEM_TYPE.MYWORK;

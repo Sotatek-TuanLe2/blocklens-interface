@@ -51,7 +51,6 @@ export interface DashboardInterface {
 
   getId: () => string;
   getName: () => string;
-  getUser: () => UserInterface | string;
   getCreatedTime: () => string;
   getUpdatedTime: () => string;
   getThumnail: () => string | null;
@@ -59,7 +58,7 @@ export interface DashboardInterface {
   getForkedDashboardId: () => string | null;
   getChains: () => string[] | null;
   getTextWidgets: () => TextWidget[] | null;
-  getUserInfo: () => IUserInfo | null;
+  getUser: () => IUserInfo | null;
   getDashboardVisuals: () => DashboardVisual[] | null;
   getTextWidgetById: (id: string) => TextWidget | null;
   getDashboardVisualById: (id: string) => DashboardVisual | null;
@@ -206,15 +205,11 @@ export class Dashboard implements DashboardInterface {
     return this.tags || null;
   }
 
-  getUser() {
-    return this.user;
-  }
-
   getChains() {
     return this.chains;
   }
 
-  getUserInfo() {
+  getUser() {
     return this.userInfo || null;
   }
 
