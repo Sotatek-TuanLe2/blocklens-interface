@@ -316,6 +316,8 @@ const QueryPart: React.FC = () => {
                   }
                   hasArrow
                   placement="top"
+                  bg="white"
+                  color="black"
                 >
                   <div className="btn-expand">
                     <p

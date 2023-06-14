@@ -179,7 +179,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
   return (
     <div className="workspace-page__editor__header">
       <div className="workspace-page__editor__header__left">
-        <Tooltip label="Back" hasArrow placement="top">
+        <Tooltip label="Back" hasArrow placement="top" bg="white" color="black">
           <AppButton
             onClick={() => history.push('/')}
             size="sm"

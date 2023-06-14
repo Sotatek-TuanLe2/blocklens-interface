@@ -27,6 +27,7 @@ export const globalStyles = {
       100: '#272D52',
       200: '#242b45',
       300: 'rgba(0, 2, 36, 0.1)',
+      400: '#C7D2E1',
     },
     yellow: {
       100: '#FFB547',
