@@ -59,10 +59,10 @@
   .number-app {
     @include text-medium-regular;
     margin-right: 20px;
-    color: $title;
+    color: $main;
 
     span {
-      color: $line;
+      color: $paragraph1;
     }
   }
 
@@ -73,6 +73,8 @@
 
 .list-table-wrap {
   padding: 0 0 40px 0 !important;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.04);
+
   @include tablet {
     padding-bottom: 10px !important;
   }
@@ -84,7 +86,7 @@
     }
 
     td {
-      border-bottom: 1px solid $line;
+      border-bottom: 1px solid $bg;
       color: $title;
       @include text-medium-regular;
 

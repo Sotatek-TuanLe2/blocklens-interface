@@ -107,6 +107,7 @@
 
       &:hover {
         color: $main;
+
       }
 
       &:last-child {
@@ -115,6 +116,7 @@
 
       &.active {
         color: $main;
+        font-weight: 500;
       }
     }
   }
@@ -154,6 +156,10 @@
       .arrow-logout {
         transform: translateX(-50%);
       }
+    }
+
+    span {
+      color: $red;
     }
   }
 
