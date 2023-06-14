@@ -3,7 +3,7 @@ import { AppButton, AppLink } from 'src/components';
 import { useHistory } from 'react-router';
 import 'src/styles/layout/Header.scss';
 import Storage from 'src/utils/utils-storage';
-import { RootState } from 'src/store';
+// import { RootState } from 'src/store';
 import { CloseIcon } from '@chakra-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -44,6 +44,7 @@ const menus = [
   },
 ];
 
+// const [isAccountActive, setIsAccountActive] = useState<boolean>(false);
 const Header: FC = () => {
   const [isOpenSignInRequestModal, setIsOpenSignInRequestModal] =
     useState<boolean>(false);
@@ -98,7 +99,10 @@ const Header: FC = () => {
               <div className="user-email">{user?.getEmail()}</div>
 
               <Box
-                className="user-account"
+                // className="user-account "
+                className={`user-account ${
+                  isActiveMenu(ROUTES.ACCOUNT) ? 'active' : ''
+                }`}
                 textAlign={'left'}
                 mt={3}
                 fontWeight={500}
