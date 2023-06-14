@@ -72,7 +72,7 @@ export const appButtonStyles = {
       },
     }),
     brand: (props: StyleProps) => ({
-      // bg: mode('main.100', 'main.100')(props),
+      bg: mode('main.100', 'main.100')(props),
       color: 'white',
       fontSize: '16px',
       _hover: {

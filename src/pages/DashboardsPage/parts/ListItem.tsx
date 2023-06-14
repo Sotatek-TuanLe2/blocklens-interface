@@ -80,7 +80,7 @@ const ListItem: React.FC<IListItem> = (props) => {
     );
   };
 
-  const _renderGridItemNew = () => {
+  const _renderGridItem = () => {
     return (
       <Flex
         w={'full'}
@@ -116,8 +116,8 @@ const ListItem: React.FC<IListItem> = (props) => {
           p={4}
         >
           <Flex w={'full'}>
-            <Box flexGrow={1}>
-              <Link className="article-name" to={getTitleUrl()}>
+            <Box flexGrow={1} maxW={'100%'} overflow={'hidden'}>
+              <Link className="article-name" to={getTitleUrl()} style={{display: 'block'}}>
                 <Tooltip
                   p={2}
                   hasArrow
@@ -180,7 +180,7 @@ const ListItem: React.FC<IListItem> = (props) => {
     );
   };
 
-  const _renderRowItemNew = () => {
+  const _renderRowItem = () => {
     return (
       <Flex
         align={'center'}
@@ -199,6 +199,7 @@ const ListItem: React.FC<IListItem> = (props) => {
                 myWorkType === LIST_ITEM_TYPE.DASHBOARDS) && (
                 <Box
                   h={'48px'}
+                  minW={'74px'}
                   overflow={'hidden'}
                   style={{ aspectRatio: '74 / 48' }}
                   mr={3}
@@ -387,12 +388,10 @@ const ListItem: React.FC<IListItem> = (props) => {
   return (
     <>
       {displayed === DisplayType.Grid ? (
-        _renderGridItemNew()
+        _renderGridItem()
       ) : (
         <>
-          <Box display={{ base: 'none', lg: 'block' }}>
-            {_renderRowItemNew()}
-          </Box>
+          <Box display={{ base: 'none', lg: 'block' }}>{_renderRowItem()}</Box>
           <Box display={{ lg: 'none' }}>{_renderRowItemMobile()}</Box>
         </>
       )}

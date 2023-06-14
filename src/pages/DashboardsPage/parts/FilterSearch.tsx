@@ -299,7 +299,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
             <AppButton
               display={{ base: 'none', lg: 'flex' }}
               minW={'120px'}
-              className="btn-primary"
+              className="btn-create"
               onClick={onClickNew}
               h={10}
             >
@@ -310,7 +310,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
               w={12}
               h={12}
               borderRadius={'24px'}
-              className="btn-primary"
+              className="btn-create"
               onClick={onClickNew}
               pos={'fixed'}
               top={'68%'}

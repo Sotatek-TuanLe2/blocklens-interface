@@ -225,26 +225,6 @@ const DashboardsPage: React.FC = () => {
     return (
       <>
         {displayed === DisplayType.List ? (
-          <div className="dashboard-list__header">
-            <div className="item-title">Name</div>
-            <div className="item-creator">Creator</div>
-            <div className="item-chain">chain</div>
-            <div className="item-date">date</div>
-            <div className="item-tag">tag</div>
-            {/* <div className="item-like">like</div> */}
-            <div className="item-btn"></div>
-          </div>
-        ) : (
-          <></>
-        )}
-      </>
-    );
-  }, [displayed]);
-
-  const _renderHeaderNew = () => {
-    return (
-      <>
-        {displayed === DisplayType.List ? (
           <Flex
             px={'26px'}
             mb={'6px'}
@@ -273,7 +253,7 @@ const DashboardsPage: React.FC = () => {
         )}
       </>
     );
-  };
+  }, [displayed]);
 
   const generateTabs = (): ITabs[] => {
     const tabs: ITabs[] = [
@@ -286,7 +266,7 @@ const DashboardsPage: React.FC = () => {
             requestParams={dashboardParams}
             fetchData={fetchAllDashboards}
             limit={12}
-            renderHeader={_renderHeaderNew}
+            renderHeader={_renderHeader}
             renderBody={(data) =>
               _renderBody(
                 data.map((item: any) => (
@@ -311,7 +291,7 @@ const DashboardsPage: React.FC = () => {
             requestParams={queryParams}
             fetchData={fetchAllQueries}
             limit={15}
-            renderHeader={_renderHeaderNew}
+            renderHeader={_renderHeader}
             renderBody={(data) =>
               _renderBody(
                 data.map((item: any) => (
@@ -342,7 +322,7 @@ const DashboardsPage: React.FC = () => {
                   requestParams={dashboardParams}
                   fetchData={fetchMyDashboards}
                   limit={12}
-                  renderHeader={_renderHeaderNew}
+                  renderHeader={_renderHeader}
                   renderBody={(data) =>
                     _renderBody(
                       data.map((item: any) => (
@@ -365,7 +345,7 @@ const DashboardsPage: React.FC = () => {
                   requestParams={queryParams}
                   fetchData={fetchMyQueries}
                   limit={15}
-                  renderHeader={_renderHeaderNew}
+                  renderHeader={_renderHeader}
                   renderBody={(data) =>
                     _renderBody(
                       data.map((item: any) => (
