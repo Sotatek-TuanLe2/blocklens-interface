@@ -299,7 +299,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: $bg;
+    background: #f4f6f9;
     border: 1px solid #465065;
     cursor: pointer;
 
@@ -308,7 +308,7 @@
     }
 
     &:hover {
-      background: $title;
+      background: white;
 
       &:hover {
         border: 1px solid #1878ff;
@@ -333,7 +333,7 @@
     }
   }
   .thumnail-create-modal {
-    border: 1px dashed #465065;
+    border: 1px dashed #c7d2e1;
     border-radius: 6px;
     padding: 32px 0px;
     cursor: pointer;
@@ -461,7 +461,7 @@
   .input-label {
     @include text-medium-regular;
     margin-bottom: 2px;
-    color: $paragraph;
+    color: $paragraph1;
   }
   .modal-footer {
     margin-top: 30px;
@@ -502,7 +502,7 @@
 
     text-align: center;
     @include text-medium-regular;
-    color: $paragraph;
+    color: $paragraph1;
   }
 
   .modal-footer {

@@ -62,7 +62,7 @@
     display: flex;
     align-items: center;
     padding: 6px 12px;
-    background-color: $card;
+    background-color: $disable;
     border-radius: 6px;
 
     .icon-clear {
@@ -110,6 +110,10 @@
     color: $main !important;
     margin-bottom: 20px;
     cursor: pointer;
+
+    svg {
+      color: $main !important;
+    }
   }
 
   .abi-detail {

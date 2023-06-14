@@ -343,7 +343,7 @@
     position: absolute;
     right: 0;
     top: -5px;
-    color: $main !important
+    color: $main !important;
   }
 
   .box-btn-create {
@@ -361,8 +361,11 @@
   &:hover {
     .link {
       text-decoration: underline;
+      color: $main;
     }
   }
+
+  color: $main;
 }
 
 .box-filter {
@@ -441,7 +444,7 @@
     padding: 8px 10px;
 
     &.active {
-      background: linear-gradient(268.85deg, #226CFF 22.48%, #1084FF 83.59%);
+      background: linear-gradient(268.85deg, #226cff 22.48%, #1084ff 83.59%);
     }
   }
 }
@@ -453,6 +456,10 @@
 .box-invalid {
   margin-top: 26px !important;
   @include text-medium-regular;
+
+  .link {
+    color: $main !important;
+  }
 }
 
 .table-valid-address {
@@ -497,7 +504,7 @@
   display: flex;
   align-items: center;
   padding: 6px 12px;
-  background-color: $bg2;
+  background-color: $disable;
   border-radius: 6px;
   width: max-content;
   margin: 10px 0 !important;

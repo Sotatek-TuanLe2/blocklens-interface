@@ -102,7 +102,7 @@ export const appButtonStyles = {
       fontWeight: 500,
       color: 'bg.100',
       borderWidth: '1px',
-      borderColor: 'line.100',
+      borderColor: 'border.400',
       _hover: {
         bg: mode('line.100', 'line.100')(props),
         color: 'white',

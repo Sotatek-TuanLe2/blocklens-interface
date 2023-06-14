@@ -5,6 +5,7 @@ export const globalStyles = {
     main: {
       100: 'linear-gradient(271.63deg, #1E72FF -2.92%, #0250BE 102.1%)',
       200: 'linear-gradient(271.63deg, #1E72FF -2.92%, #0250BE 102.1%)',
+      300: '#0060DB',
     },
     paragraph: {
       100: '#8D91A5',
@@ -26,6 +27,7 @@ export const globalStyles = {
       100: '#272D52',
       200: '#242b45',
       300: 'rgba(0, 2, 36, 0.1)',
+      400: '#C7D2E1',
     },
     yellow: {
       100: '#FFB547',
@@ -121,10 +123,10 @@ export const globalStyles = {
         letterSpacing: '0.2px',
       },
       '.chakra-ui-light': {
-        '.text-widget-input, .box-form, .menu-header, .header, .add-chart-full, .ace_scroller, .layout-config, .main-layout, .input-table, .first-box-table, .select-table, .dashboard-list__item--row, .editor-wrapper, .box-layout, .workspace-page__editor__header, .add-chart, .workspace-page__sidebar__categories, .workspace-page__sidebar__content, .dashboard-container':
-        {
-          background: mode('white.100', 'bgDark')(props),
-        },
+        '.chain-info-desc, .text-widget-input, .box-form, .menu-header, .header, .add-chart-full, .ace_scroller, .layout-config, .main-layout, .input-table, .first-box-table, .select-table, .dashboard-list__item--row, .editor-wrapper, .box-layout, .workspace-page__editor__header, .add-chart, .workspace-page__sidebar__categories, .workspace-page__sidebar__content, .dashboard-container':
+          {
+            background: mode('white.100', 'bgDark')(props),
+          },
 
         '.box-text-widget, .google-login, .user-name, .text-result-data, .btn-cancel, .label-toggle, .label-input, .input-table, .select-table, .title-config, .visual-container__visualization__name, .visual-container__visualization':
         {
@@ -146,6 +148,13 @@ export const globalStyles = {
 
         '.header-config': {
           background: mode('bg.400', 'bg.200')(props),
+        },
+
+        '.chain-info-desc__header': {
+          background: mode('main.300', 'border.200')(props),
+          p: {
+            color: mode('white.100', 'bg.100')(props),
+          },
         },
 
         '.tag': {

@@ -157,7 +157,6 @@ export {
   IconQueriesInactive,
   IconUploadImg,
   DeleteIcon,
-  BackIcon,
   IconDisplayGrid,
   IconDisplayList,
   IconDotMore,
