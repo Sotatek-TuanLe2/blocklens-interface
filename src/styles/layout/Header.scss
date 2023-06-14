@@ -165,7 +165,7 @@
 
   .header-mobile {
     height: calc(100vh - 80px);
-    background-color: $bg1;
+    background-color: $bg;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -180,14 +180,14 @@
       font-size: 20px;
       line-height: 26px;
       text-transform: uppercase;
-      color: $paragraph;
 
       a {
         display: block;
         margin-bottom: 40px;
+        color: $paragraph1;
 
         &:hover {
-          color: $title;
+          color: $main;
         }
 
         &:last-child {
@@ -196,7 +196,7 @@
 
         &.active {
           font-weight: 500;
-          color: $title;
+          color: $main;
         }
       }
     }

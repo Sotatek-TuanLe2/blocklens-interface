@@ -274,21 +274,23 @@
 }
 
 .icon-minus {
-  width: 16px;
-  height: 2px;
-  background: url('../assets/icons/icon_mobile.png') -103px -10px;
+  width: 16px; height: 2px;
+  background: url('../assets/icons/icon_mobile_v2.png') -46px -60px;
 }
 
 .icon-plus {
-  width: 16px;
-  height: 16px;
-  background: url('../assets/icons/icon_mobile.png') -50px -62px;
+  width: 16px; height: 16px;
+  background: url('../assets/icons/icon_mobile_v2.png') -10px -60px;
 }
 
 .icon-menu-mobile {
-  width: 20px;
-  height: 18px;
-  background: url('../assets/icons/icon_mobile.png') -10px -62px;
+  width: 20px; height: 18px;
+  background: url('../assets/icons/icon_mobile_v2.png') -60px -10px;
+}
+
+.icon-close-menu {
+  width: 30px; height: 30px;
+  background: url('../assets/icons/icon_mobile_v2.png') -10px -10px;
 }
 
 .icon-busd {

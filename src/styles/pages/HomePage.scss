@@ -224,8 +224,8 @@
 .list-card-mobile {
   margin: 0 20px;
   .card-mobile {
-    background: $card;
-    border: 1px solid $border;
+    background: $white;
+    border: 1px solid $line;
     border-radius: 12px;
     padding: 16px 14px;
     margin-bottom: 16px;
@@ -235,7 +235,7 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 18px;
-      color: $paragraph;
+      color: $paragraph2;
 
       &:last-child {
         margin-bottom: 0;
@@ -261,7 +261,7 @@
     }
 
     &.open {
-      background-color: $bg2;
+      background-color: $white;
     }
   }
 }
