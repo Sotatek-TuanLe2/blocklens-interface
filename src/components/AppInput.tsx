@@ -134,8 +134,8 @@ export const appInputStyles = {
           color: mode('#C7D2E1', '#C7D2E1')(props),
         },
         _disabled: {
-          bg: mode('bg.200', 'bg.200')(props),
-          borderColor: mode('bg.200', 'bg.200')(props),
+          bg: mode('line.100', 'line.100')(props),
+          borderColor: mode('line.100', 'line.100')(props),
           color: mode('paragraph.100', 'paragraph.100')(props),
         },
       },
