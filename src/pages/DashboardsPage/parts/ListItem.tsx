@@ -36,6 +36,10 @@ const ListItem: React.FC<IListItem> = (props) => {
       ? new Dashboard(item as IDashboardDetail)
       : new Query(item as IQuery);
 
+  const userName = `${itemClass.getUser()?.firstName} ${
+    itemClass.getUser()?.lastName
+  }`;
+
   const getTitleUrl = (): string => {
     switch (type) {
       case LIST_ITEM_TYPE.DASHBOARDS:
@@ -158,7 +162,7 @@ const ListItem: React.FC<IListItem> = (props) => {
               </Box>
               <Box>
                 <Text className="article-creator" mb={{ base: '2px', lg: 0 }}>
-                  Tyler Covington
+                  {userName}
                 </Text>
                 <Text className="article-date">
                   {moment(itemClass.getCreatedTime()).format('YYYY MMMM Do')}
@@ -227,7 +231,7 @@ const ListItem: React.FC<IListItem> = (props) => {
             alt="avatar"
           />
           <Text ml={2} className="article-row-creator">
-            Tyler Covington
+            {userName}
           </Text>
         </Flex>
         <Flex flexGrow={1} w={'15%'} overflow={'hidden'} pr={2.5}>
@@ -333,7 +337,7 @@ const ListItem: React.FC<IListItem> = (props) => {
                 textAlign={'right'}
                 ml={2}
               >
-                Tyler Covington
+                {userName}
               </Text>
             </Flex>
             <Flex align={'center'} mb={3}>

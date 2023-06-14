@@ -15,7 +15,6 @@ import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import { Dashboard } from 'src/utils/utils-dashboard';
 import { Query } from 'src/utils/utils-query';
-import { BackIcon } from 'src/assets/icons';
 
 interface IHeaderProps {
   type: string;
@@ -180,20 +179,21 @@ const Header: React.FC<IHeaderProps> = (props) => {
   return (
     <div className="workspace-page__editor__header">
       <div className="workspace-page__editor__header__left">
-        <Tooltip label="Back" hasArrow placement="top">
+        <Tooltip label="Back" hasArrow placement="top" bg="white" color="black">
           <AppButton
             onClick={() => history.push('/')}
             size="sm"
             variant="no-effects"
-          >
-            <BackIcon />
-          </AppButton>
+            className="icon-back-light"
+          />
         </Tooltip>
         {!isCreatingQuery && (
           <div className="item-desc">
             <img src="/images/AvatarDashboardCard.png" alt="avatar" />
-            <p className="user-name">{author} /</p>
-            <span>{dataClass?.getName()}</span>
+            <span>
+              <span className="user-name">{`${author} / `}</span>
+              <span>{dataClass?.getName()}</span>
+            </span>
           </div>
         )}
       </div>
