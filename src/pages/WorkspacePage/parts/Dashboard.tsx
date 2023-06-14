@@ -7,19 +7,12 @@ import {
   MenuItem,
   MenuList,
 } from '@chakra-ui/react';
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Layout, Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import ReactMarkdown from 'react-markdown';
 import 'react-resizable/css/styles.css';
 import PlusIcon from 'src/assets/icons/icon-plus.png';
-import { AppTag } from 'src/components';
 import useUser from 'src/hooks/useUser';
 import ModalAddTextWidget from 'src/modals/querySQL/ModalAddTextWidget';
 import ModalAddVisualization from 'src/modals/querySQL/ModalAddVisualization';
@@ -36,7 +29,6 @@ import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import VisualizationItem from './VisualizationItem';
 import Header from './Header';
-import AppNetworkIcons from 'src/components/AppNetworkIcons';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
 import { Dashboard } from 'src/utils/utils-dashboard';
@@ -252,6 +244,7 @@ const DashboardPart: React.FC = () => {
         isDraggable={editMode}
         isResizable={editMode}
         measureBeforeMount
+        containerPadding={[0, 30]}
       >
         {dataLayouts.map((item) => (
           <div className="box-layout" key={item.id}>
@@ -273,7 +266,7 @@ const DashboardPart: React.FC = () => {
             </div>
             {editMode && (
               <Flex
-                alignItems={'center'}
+                alignItems={'flex-start'}
                 className="widget-buttons"
                 columnGap={'12px'}
               >
@@ -320,40 +313,30 @@ const DashboardPart: React.FC = () => {
         onChangeEditMode={() => setEditMode((prevState) => !prevState)}
       />
       <div className="dashboard-container">
-        <Box className="header-tab">
-          <div className="header-tab__info tag">
-            {dashboardClass?.getChains() && (
-              <AppNetworkIcons networkIds={dashboardClass?.getChains()} />
-            )}
-            {['defi', 'gas', 'dex'].map((item) => (
-              <AppTag key={item} value={item} />
-            ))}
-          </div>
-          {editMode && !isEmptyDashboard && (
-            <Menu>
-              <MenuButton className="app-query-menu">
-                <Box className="add-button">
-                  <img src={PlusIcon} alt="icon-plus" />
-                </Box>
-              </MenuButton>
-              <MenuList className="app-query-menu__list">
-                <MenuItem onClick={onOpenModalAddVisualization}>
-                  <Flex alignItems={'center'} gap={'8px'}>
-                    <span className="icon-widget-small-visualization" />
-                    Add visualization
-                  </Flex>
-                </MenuItem>
-                <MenuItem onClick={onOpenModalAddText}>
-                  <Flex alignItems={'center'} gap={'8px'}>
-                    <span className="icon-widget-small-text" />
-                    Add text widget
-                  </Flex>
-                </MenuItem>
-              </MenuList>
-            </Menu>
-          )}
-        </Box>
         {_renderDashboard()}
+        {editMode && !isEmptyDashboard && (
+          <Menu>
+            <Box className="add-button">
+              <MenuButton className="app-query-menu">
+                <img src={PlusIcon} alt="icon-plus" />
+              </MenuButton>
+            </Box>
+            <MenuList className="app-query-menu__list">
+              <MenuItem onClick={onOpenModalAddVisualization}>
+                <Flex alignItems={'center'} gap={'8px'}>
+                  <span className="icon-widget-small-visualization" />
+                  Add visualization
+                </Flex>
+              </MenuItem>
+              <MenuItem onClick={onOpenModalAddText}>
+                <Flex alignItems={'center'} gap={'8px'}>
+                  <span className="icon-widget-small-text" />
+                  Add text widget
+                </Flex>
+              </MenuItem>
+            </MenuList>
+          </Menu>
+        )}
         <ModalSettingDashboardDetails
           open={openModalSetting}
           onClose={() => setOpenModalSetting(false)}

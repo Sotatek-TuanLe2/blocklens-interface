@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { Tooltip, Spinner } from '@chakra-ui/react';
 import { useHistory, useParams } from 'react-router-dom';
-import { AppButton } from 'src/components';
+import { AppButton, AppTag } from 'src/components';
 import AppQueryMenu, { QUERY_MENU_LIST } from 'src/components/AppQueryMenu';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import { ROUTES } from 'src/utils/common';
@@ -15,6 +15,7 @@ import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import { Dashboard } from 'src/utils/utils-dashboard';
 import { Query } from 'src/utils/utils-query';
+import AppNetworkIcons from 'src/components/AppNetworkIcons';
 
 interface IHeaderProps {
   type: string;
@@ -211,6 +212,14 @@ const Header: React.FC<IHeaderProps> = (props) => {
             </FormLabel>
           </div>
         )} */}
+        <div className="header-tab__info tag">
+          {['defi', 'gas', 'dex'].map((item) => (
+            <AppTag key={item} value={item} />
+          ))}
+        </div>
+        {dataClass?.getChains() && (
+          <AppNetworkIcons networkIds={dataClass?.getChains()} />
+        )}
         {_renderButtons()}
         {!isCreatingQuery && data && (
           <AppQueryMenu

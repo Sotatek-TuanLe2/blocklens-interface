@@ -62,7 +62,11 @@ const AppTabs: FC<IAppTabs> = ({
           w="100%"
           {...sxTabsHeader}
         >
-          <Flex alignItems="center" className="tabs-container">
+          <Flex
+            alignItems="center"
+            overflow={'auto'}
+            className="tabs-container"
+          >
             {tabs.map((tab: ITabs, index: number) => {
               return (
                 <Tab

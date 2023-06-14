@@ -73,11 +73,14 @@
         cursor: pointer;
         transition: all 0.2s ease;
         position: relative;
+        color: $paragraph1;
+
         .app-query-menu {
           display: none;
         }
+
         &:hover {
-          background-color: $bg;
+          color: $main;
           .app-query-menu {
             display: block;
           }
@@ -113,9 +116,8 @@
           align-items: center;
           margin-bottom: 12px;
         }
-        &__list-query,
-        &__list-dashboard {
-          height: calc(50% - 110px);
+        &__list-query {
+          height: calc(100% - 162px);
           overflow-y: hidden;
           &:hover {
             overflow-y: auto;
@@ -228,7 +230,11 @@
   }
 
   &__editor {
-    width: calc(100% - 300px - 10px);
+    width: 100%;
+
+    &--query {
+      width: calc(100% - 300px - 10px);
+    }
 
     &--full {
       width: 100%;
@@ -238,7 +244,6 @@
     &__query {
       height: 100%;
 
-      .dashboard-container,
       .query-container {
         height: calc(100% - 50px - 8px);
         padding-bottom: 20px;
@@ -262,10 +267,45 @@
 
             &:hover {
               border: 1px solid $blue;
+              background: linear-gradient(
+                268.85deg,
+                rgba(34, 108, 255, 0.12) 22.48%,
+                rgba(16, 132, 255, 0.12) 83.59%
+              );
               box-shadow: 0px 10px 40px rgba(125, 143, 179, 0.2);
-              background: linear-gradient(268.85deg, rgba(34, 108, 255, 0.12) 22.48%, rgba(16, 132, 255, 0.12) 83.59%);
             }
           }
+        }
+      }
+
+      .dashboard-container {
+        .add-button {
+          position: fixed;
+          bottom: 22px;
+          right: 22px;
+          z-index: 1000;
+
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          width: 56px;
+          height: 56px;
+          background: linear-gradient(
+            268.85deg,
+            #226cff 22.48%,
+            #1084ff 83.59%
+          );
+          border-radius: 50%;
+
+          &:hover {
+            background: $blue;
+          }
+        }
+
+        .app-query-menu__list {
+          margin-bottom: 8px;
         }
       }
     }
@@ -323,6 +363,14 @@
           align-items: center;
           gap: 6px;
         }
+
+        .network-icons {
+          margin-right: 24px;
+        }
+
+        .tag {
+          margin-right: 14px;
+        }
       }
     }
 
@@ -346,24 +394,10 @@
         align-items: center;
       }
 
-      .add-button {
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        width: 28px;
-        height: 28px;
-        background: linear-gradient(268.85deg, #226cff 22.48%, #1084ff 83.59%);
-        border-radius: 50%;
-
-        &:hover {
-          background: $blue;
-        }
-      }
-
       .btn-expand {
         height: 100%;
+        margin-left: auto;
+
         &:hover {
           cursor: pointer;
         }

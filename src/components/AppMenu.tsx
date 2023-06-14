@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import {
   Menu,
   MenuButton,
@@ -15,13 +15,18 @@ interface IAppMenuProps {
   data: IDataMenu[];
   value: string;
   setValue: (value: string) => void;
-  minW?: string;
+  minW?: any;
 }
 
 const AppMenu: FC<IAppMenuProps> = ({ data, value, setValue, minW }) => {
   const [currentData, setCurrentData] = useState<IDataMenu>(
     data.find((item) => item.value === value) || null!,
   );
+
+  useEffect(() => {
+    setCurrentData(data.find((item) => item.value === value) || null!);
+  }, [value]);
+
   return (
     <Menu>
       <MenuButton w={'full'} px={0} py={0}>

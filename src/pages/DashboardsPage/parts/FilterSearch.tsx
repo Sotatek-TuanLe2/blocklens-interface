@@ -1,11 +1,4 @@
-import {
-  Box,
-  Button,
-  Collapse,
-  Flex,
-  Text,
-  useDisclosure,
-} from '@chakra-ui/react';
+import { Box, Collapse, Flex, Text, useDisclosure } from '@chakra-ui/react';
 import _ from 'lodash';
 import { ChangeEvent, FC, useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router';
@@ -25,22 +18,20 @@ import {
   AppTag,
   IOption,
 } from 'src/components';
-import { DisplayType, VisibilityGridDashboardList } from 'src/constants';
+import { DisplayType } from 'src/constants';
 import useUser from 'src/hooks/useUser';
 import ModalCreateNew from 'src/modals/querySQL/ModalCreateNew';
 import rf from 'src/requests/RequestFactory';
 import { ROUTES } from 'src/utils/common';
 import { getChainIconByChainName } from 'src/utils/utils-network';
 import { HOME_URL_PARAMS, LIST_ITEM_TYPE } from '..';
-import { ChevronDownIcon, AddIcon } from '@chakra-ui/icons';
+import { AddIcon } from '@chakra-ui/icons';
 import { IDataMenu } from '../../../utils/utils-app';
 
 interface IFilterSearch {
   type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
   displayed: string;
   setDisplayed: (display: string) => void;
-  visibility: 'COLUMN' | 'ROW';
-  changeVisibility: (value: VisibilityGridDashboardList) => void;
   myWorkType: string;
   changeMyWorkType: (value: string) => void;
 }
@@ -80,15 +71,7 @@ export const TYPE_MYWORK = {
 
 const FilterSearch: React.FC<IFilterSearch> = (props) => {
   const { isOpen, onToggle } = useDisclosure();
-  const {
-    type,
-    visibility,
-    changeVisibility,
-    displayed,
-    setDisplayed,
-    myWorkType,
-    changeMyWorkType,
-  } = props;
+  const { type, displayed, setDisplayed, myWorkType, changeMyWorkType } = props;
   const history = useHistory();
   const { user } = useUser();
 
@@ -172,10 +155,6 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   }, [searchUrl]);
 
   useEffect(() => {
-    isDashboard
-      ? changeVisibility(VisibilityGridDashboardList.COLUMN)
-      : changeVisibility(VisibilityGridDashboardList.ROW);
-
     isDashboard
       ? setDisplayed(DisplayType.Grid)
       : setDisplayed(DisplayType.List);
@@ -285,12 +264,12 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
             </Flex>
           )}
           {isMyWork && (
-            <Flex flexGrow={{ base: 1, lg: 0 }}>
+            <Flex flexGrow={{ base: 1, lg: 0 }} maxW={'50%'}>
               <AppMenu
                 data={menuDashboardQueries}
                 value={myWorkType}
                 setValue={onChangeMyWorkType}
-                minW={'179px'}
+                minW={{ base: 'auto', lg: '179px' }}
               />
             </Flex>
           )}
@@ -304,7 +283,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
             border={'1px solid #C7D2E1'}
             borderRadius={'6px'}
             transition={'.2s linear'}
-            ml={2.5}
+            ml={!isDashboard && !isMyWork ? 0 : 2.5}
             onClick={onToggle}
             cursor={'pointer'}
             userSelect={'none'}
@@ -320,7 +299,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
             <AppButton
               display={{ base: 'none', lg: 'flex' }}
               minW={'120px'}
-              className="btn-primary"
+              className="btn-create"
               onClick={onClickNew}
               h={10}
             >
@@ -331,7 +310,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
               w={12}
               h={12}
               borderRadius={'24px'}
-              className="btn-primary"
+              className="btn-create"
               onClick={onClickNew}
               pos={'fixed'}
               top={'68%'}

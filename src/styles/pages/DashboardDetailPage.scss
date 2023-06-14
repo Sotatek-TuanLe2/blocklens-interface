@@ -3,6 +3,7 @@
 
 .dashboard-container {
   border-radius: 6px;
+  margin-top: -18px;
 
   h1,
   h2,
@@ -46,6 +47,7 @@
       .table-content {
         max-height: calc(100% - 80px);
         overflow: auto;
+        margin: 0 -17px;
 
         .table-pagination {
           width: 100%;
@@ -275,9 +277,8 @@
   }
   .main-grid-layout {
     width: 100%;
-    max-height: calc(100% - 48px);
-    overflow-y: overlay;
-    // border-top: 1px solid #2f3b58;
+    // max-height: 100%;
+    // overflow-y: overlay;
 
     .react-grid-item {
       color: $title;
@@ -323,6 +324,7 @@
         cursor: pointer;
         top: 15px;
         right: 15px;
+        height: 8%;
 
         svg {
           color: #8d91a5;

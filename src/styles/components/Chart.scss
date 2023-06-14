@@ -1,4 +1,5 @@
 @import '../mixins.scss';
+@import '../color-variables';
 
 .visual-container__visualization--bar {
   path.recharts-tooltip-cursor {
@@ -12,11 +13,11 @@
 .scatter-chart,
 .area-chart {
   .custom-tooltip {
-    background-color: #1a203b;
+    background-color: $bg;
     border-radius: 6px;
     font-size: 14px;
     padding: 5px 10px;
-    color: #8d91a5;
+    color: $paragraph1;
     // width: 200px;
 
     &__desc {
