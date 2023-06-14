@@ -123,7 +123,7 @@ export const appInputStyles = {
         bg: mode('white.100', 'card.100')(props),
         border: '1px solid',
         color: mode('black', 'white')(props),
-        borderColor: mode('line.100', 'line.300')(props),
+        borderColor: mode('border.400', 'line.300')(props),
         borderRadius: '6px',
         fontSize: '16px',
         p: '20px',
