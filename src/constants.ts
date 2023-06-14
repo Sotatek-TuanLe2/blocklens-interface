@@ -712,8 +712,8 @@ export enum VisibilityGridDashboardList {
 }
 
 export enum DisplayType {
-  Grid,
-  List,
+  Grid = 'Grid',
+  List = 'List',
 }
 
 export const TIME_EXPIRE_TOKEN_CLIENT = 20 * 60 * 1000; //miliseconds

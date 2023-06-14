@@ -57,6 +57,7 @@ const GoogleAuthButton: FC<IGoogleAuthButton> = ({ children }) => {
       onFailure={onFailure}
       render={(renderProps) => (
         <AppButton
+          className="btn-login-google"
           onClick={renderProps.onClick}
           borderRadius={'6px'}
           variant={'cancel'}
