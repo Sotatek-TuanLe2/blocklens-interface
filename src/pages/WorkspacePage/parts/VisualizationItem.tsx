@@ -59,12 +59,14 @@ const VisualizationItem = React.memo(
       }
 
       return () => {
+        clearInterval(fetchQueryResultInterval.current);
         clearInterval(refetchQueryResultInterval.current);
       };
     }, [queryId]);
 
     const fetchQueryResult = async () => {
       setIsLoading(true);
+      clearInterval(fetchQueryResultInterval.current);
       const executedResponse: QueryExecutedResponse = user
         ? await rf
             .getRequest('DashboardsRequest')

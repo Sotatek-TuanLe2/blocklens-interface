@@ -595,5 +595,11 @@
     opacity: 0.3;
     @include text-display-bold-small;
   }
+  .dashboard-filter {
+    .text-filter {
+      color: $bg1;
+      @include text-medium-medium;
+    }
+  }
 }
 // end:: new style by chau.le@sotatek.com
