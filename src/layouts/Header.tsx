@@ -188,8 +188,7 @@ const Header: FC = () => {
             <Box
               className="icon-close-menu"
               onClick={() => setIsOpenMenuMobile(false)}
-            >
-            </Box>
+            ></Box>
           ) : (
             <Box
               onClick={() => setIsOpenMenuMobile(true)}
