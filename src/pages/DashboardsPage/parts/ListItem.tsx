@@ -36,6 +36,10 @@ const ListItem: React.FC<IListItem> = (props) => {
       ? new Dashboard(item as IDashboardDetail)
       : new Query(item as IQuery);
 
+  const userName = `${itemClass.getUser()?.firstName} ${
+    itemClass.getUser()?.lastName
+  }`;
+
   const getTitleUrl = (): string => {
     switch (type) {
       case LIST_ITEM_TYPE.DASHBOARDS:
@@ -158,7 +162,7 @@ const ListItem: React.FC<IListItem> = (props) => {
               </Box>
               <Box>
                 <Text className="article-creator" mb={{ base: '2px', lg: 0 }}>
-                  Tyler Covington
+                  {userName}
                 </Text>
                 <Text className="article-date">
                   {moment(itemClass.getCreatedTime()).format('YYYY MMMM Do')}
@@ -189,11 +193,16 @@ const ListItem: React.FC<IListItem> = (props) => {
         className="article"
       >
         <Flex flexGrow={1} w={'22%'} overflow={'hidden'} pr={2.5}>
-          <Link to={getTitleUrl()}>
+          <Link to={getTitleUrl()} style={{ width: '100%' }}>
             <Flex align={'center'}>
               {(type === LIST_ITEM_TYPE.DASHBOARDS ||
                 myWorkType === LIST_ITEM_TYPE.DASHBOARDS) && (
-                <Box h={'48px'} style={{ aspectRatio: '74 / 48' }} mr={3}>
+                <Box
+                  h={'48px'}
+                  overflow={'hidden'}
+                  style={{ aspectRatio: '74 / 48' }}
+                  mr={3}
+                >
                   <Image
                     src={
                       itemClass.getThumnail() ||
@@ -202,6 +211,7 @@ const ListItem: React.FC<IListItem> = (props) => {
                     alt="thumbnail"
                     w={'auto'}
                     height={'full'}
+                    minW={'full'}
                   />
                 </Box>
               )}
@@ -227,7 +237,7 @@ const ListItem: React.FC<IListItem> = (props) => {
             alt="avatar"
           />
           <Text ml={2} className="article-row-creator">
-            Tyler Covington
+            {userName}
           </Text>
         </Flex>
         <Flex flexGrow={1} w={'15%'} overflow={'hidden'} pr={2.5}>
@@ -274,17 +284,22 @@ const ListItem: React.FC<IListItem> = (props) => {
         className="article"
       >
         <Flex align={'center'}>
-          <Box flexGrow={1}>
-            <Link to={getTitleUrl()}>
+          <Box flexGrow={1} maxW={'calc(100% - 50px)'}>
+            <Link
+              to={getTitleUrl()}
+              style={{ width: '100%', display: 'block' }}
+            >
               <Flex align={'center'}>
                 {type === LIST_ITEM_TYPE.DASHBOARDS && (
                   <Box
                     h={'48px'}
                     style={{ aspectRatio: '74 / 48' }}
                     mr={'10px'}
+                    overflow={'hidden'}
                   >
                     <Image
                       w={'auto'}
+                      minW={'full'}
                       height={'full'}
                       borderRadius={'6px'}
                       src={
@@ -295,7 +310,7 @@ const ListItem: React.FC<IListItem> = (props) => {
                     />
                   </Box>
                 )}
-                <Box>
+                <Box maxW={'calc(100% - 84px)'} overflow={'hidden'}>
                   <Text className="article-name">{itemClass.getName()}</Text>
                   <Flex>
                     {itemClass.getChains() && (
@@ -333,7 +348,7 @@ const ListItem: React.FC<IListItem> = (props) => {
                 textAlign={'right'}
                 ml={2}
               >
-                Tyler Covington
+                {userName}
               </Text>
             </Flex>
             <Flex align={'center'} mb={3}>

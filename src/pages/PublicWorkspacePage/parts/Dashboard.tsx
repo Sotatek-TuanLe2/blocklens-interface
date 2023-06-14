@@ -58,8 +58,6 @@ const DashboardPart: React.FC = () => {
   const [openModalFork, setOpenModalFork] = useState<boolean>(false);
   const [isEmptyDashboard, setIsEmptyDashboard] = useState<boolean>(false);
 
-  const layoutChangeTimeout = useRef() as any;
-
   const fetchLayoutData = useCallback(async () => {
     try {
       const res = await rf
@@ -170,7 +168,13 @@ const DashboardPart: React.FC = () => {
     <div className="workspace-page__editor__dashboard">
       <Header
         type={LIST_ITEM_TYPE.DASHBOARDS}
-        author={''}
+        author={
+          dashboardClass
+            ? `${dashboardClass?.getUser().firstName} ${
+                dashboardClass?.getUser().lastName
+              }`
+            : ''
+        }
         data={dataDashboard}
         needAuthentication={false}
       />

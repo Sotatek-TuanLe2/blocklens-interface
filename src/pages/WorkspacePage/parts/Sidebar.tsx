@@ -159,13 +159,13 @@ const Sidebar: React.FC<{
     {
       id: CATEGORIES.WORK_PLACE,
       title: 'Work place',
-      icon: <div className="bg-FolderIcon" />,
+      icon: <div className="icon-place-light" />,
       activeIcon: <div className="bg-work_place_active" />,
     },
     {
       id: CATEGORIES.EXPLORE_DATA,
       title: 'Explore data',
-      icon: <div className="bg-ExploreIcon" />,
+      icon: <div className="icon-explore-light" />,
       activeIcon: <div className="bg-explore_active" />,
     },
   ];
@@ -376,7 +376,7 @@ const Sidebar: React.FC<{
           <Box
             cursor={'pointer'}
             onClick={() => onToggleExpandSidebar()}
-            className={'bg-CloseBtnIcon'}
+            className="icon-close-light"
           ></Box>
         </div>
         <Box px={'16px'}>
@@ -385,7 +385,7 @@ const Sidebar: React.FC<{
             value={searchValueWorkPlace}
             marginY={4}
             placeholder={'Search...'}
-            size="md"
+            size="sm"
             onChange={(e) => {
               setSearchValueWorkPlace(e.target.value);
               getDataSearchWorkPlace(e.target.value);
@@ -396,7 +396,17 @@ const Sidebar: React.FC<{
         <div className="workspace-page__sidebar__content__work-place-wrap__work-place-content">
           <span>Query</span>{' '}
           <div onClick={handleCreateNewQuery}>
-            <Box cursor={'pointer'} className="bg-PlusIcon" />
+            <Tooltip
+              placement="top"
+              hasArrow
+              label="Add to query"
+              aria-label="A tooltip"
+              bg="white"
+              borderRadius="6px"
+              color="black"
+            >
+              <Box cursor={'pointer'} className="icon-plus-light" />
+            </Tooltip>
           </div>
         </div>
         {dataQueries.length ? (
@@ -438,8 +448,9 @@ const Sidebar: React.FC<{
                     hasArrow
                     label={query.name}
                     aria-label="A tooltip"
-                    bg={'#2F3B58'}
+                    bg="white"
                     borderRadius="6px"
+                    color="black"
                   >
                     <Flex
                       isTruncated
@@ -608,12 +619,12 @@ const Sidebar: React.FC<{
               <div className="header-icon">
                 {pathname.includes(ROUTES.MY_QUERY) && (
                   <div
-                    className="bg-PlusIcon"
+                    className="icon-plus-white"
                     onClick={() => handleAddQuery(schemaDescribe[0].full_name)}
                   />
                 )}
                 <div
-                  className="bg-CloseBtnIcon"
+                  className="icon-close-white"
                   onClick={() => setSchemaDescribe([])}
                 />
               </div>
