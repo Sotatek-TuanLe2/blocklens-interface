@@ -3,14 +3,14 @@ import { mode, StyleFunctionProps } from '@chakra-ui/theme-tools';
 export const globalStyles = {
   colors: {
     main: {
-      100: 'linear-gradient(268.85deg, #226CFF 22.48%, #1084FF 83.59%)',
+      100: 'linear-gradient(271.63deg, #1E72FF -2.92%, #0250BE 102.1%)',
       200: 'linear-gradient(271.63deg, #1E72FF -2.92%, #0250BE 102.1%)',
     },
     paragraph: {
       100: '#8D91A5',
     },
     line: {
-      100: '#465065',
+      100: '#C7D2E1',
     },
     bg: {
       100: '#000224',
@@ -122,14 +122,14 @@ export const globalStyles = {
       },
       '.chakra-ui-light': {
         '.text-widget-input, .box-form, .menu-header, .header, .add-chart-full, .ace_scroller, .layout-config, .main-layout, .input-table, .first-box-table, .select-table, .dashboard-list__item--row, .editor-wrapper, .box-layout, .workspace-page__editor__header, .add-chart, .workspace-page__sidebar__categories, .workspace-page__sidebar__content, .dashboard-container':
-          {
-            background: mode('white.100', 'bgDark')(props),
-          },
+        {
+          background: mode('white.100', 'bgDark')(props),
+        },
 
         '.box-text-widget, .google-login, .user-name, .text-result-data, .btn-cancel, .label-toggle, .label-input, .input-table, .select-table, .title-config, .visual-container__visualization__name, .visual-container__visualization':
-          {
-            color: mode('bg.100', 'white.100')(props),
-          },
+        {
+          color: mode('bg.100', 'white.100')(props),
+        },
 
         '.table-main-markdown .chakra-collapse': {
           bg: mode('bg.300', 'bg.100')(props),
