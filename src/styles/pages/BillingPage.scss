@@ -105,6 +105,7 @@
     padding: 0 40px;
     width: max-content;
     align-items: center;
+
     &:nth-child(2) {
       margin-bottom: 24px;
     }
@@ -155,6 +156,7 @@
 
   .box-payment-method {
     padding: 0 0 32px 0;
+
     .text-title {
       @include heading-6;
       color: $title;
@@ -188,6 +190,7 @@
 
     .box-form-crypto {
       padding: 30px 40px 14px 40px;
+
       @include tablet {
         padding: 20px;
       }
@@ -241,7 +244,8 @@
         color: $paragraph;
         cursor: pointer;
         height: max-content;
-        &:hover{
+
+        &:hover {
           border: 1px solid $link;
         }
 
@@ -296,6 +300,7 @@
     &__payment-method {
       padding-bottom: 30px;
       border-bottom: 1px dashed #2f3b58;
+
       .title {
         @include text-medium-bold;
         color: $line;
@@ -312,6 +317,7 @@
     &__order {
       margin-top: 30px;
       margin-bottom: 40px;
+
       @include tablet {
         margin-bottom: 60px;
       }
@@ -322,6 +328,7 @@
         text-transform: uppercase;
         margin-bottom: 10px;
       }
+
       .name-plan {
         @include text-large-bold;
         margin-bottom: 4px;
@@ -331,6 +338,7 @@
         @include text-medium-regular;
         align-items: center;
         margin-top: 10px;
+
         svg {
           color: $green;
           margin-right: 12px;
@@ -400,6 +408,7 @@
       width: 26px;
       height: 26px;
     }
+
     .is-reloading {
       animation: spin 1s infinite linear;
     }
@@ -418,7 +427,7 @@
     }
   }
 
-  & > div {
+  &>div {
     padding: 30px 36px;
 
     @include tablet {
