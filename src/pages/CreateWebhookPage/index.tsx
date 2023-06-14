@@ -34,7 +34,7 @@ import { DownloadIcon } from 'src/assets/icons';
 import { useDispatch } from 'react-redux';
 import { getUserStats } from 'src/store/user';
 import PartFormAddressAptos from './parts/PartFormAddressAptos';
-import PartFormContractAptos from './parts/PartFormContractAptos';
+import PartFormModuleActivityAptos from './parts/PartFormModuleActivityAptos';
 
 const FILE_CSV_EXAMPLE = '/abi/CSV_Example.csv';
 
@@ -268,7 +268,7 @@ const CreateWebhook = () => {
 
     return (
       <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
-        {_renderFormContractAptos()}
+        {_renderFormModuleActivityAptos()}
       </Flex>
     );
   };
@@ -311,9 +311,12 @@ const CreateWebhook = () => {
     return <PartFormAddressAptos />;
   };
 
-  const _renderFormContractAptos = () => {
+  const _renderFormModuleActivityAptos = () => {
     return (
-      <PartFormContractAptos dataForm={dataForm} onChangeForm={setDataForm} />
+      <PartFormModuleActivityAptos
+        dataForm={dataForm}
+        onChangeForm={setDataForm}
+      />
     );
   };
 
@@ -546,7 +549,7 @@ const CreateWebhook = () => {
     }
 
     if (type === WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY) {
-      return _renderFormContractAptos();
+      return _renderFormModuleActivityAptos();
     }
 
     return _renderFormAddressActivity();

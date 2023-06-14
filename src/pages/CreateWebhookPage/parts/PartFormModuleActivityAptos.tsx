@@ -12,7 +12,7 @@ interface PartFormContractAptosProps {
   onChangeForm: any;
 }
 
-const PartFormContractAptos: FC<PartFormContractAptosProps> = ({
+const PartFormModuleActivityAptos: FC<PartFormContractAptosProps> = ({
   dataForm,
   onChangeForm,
 }) => {
@@ -93,4 +93,4 @@ const PartFormContractAptos: FC<PartFormContractAptosProps> = ({
   );
 };
 
-export default PartFormContractAptos;
+export default PartFormModuleActivityAptos;

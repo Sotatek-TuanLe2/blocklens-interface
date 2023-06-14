@@ -5,12 +5,12 @@
   height: 18px;
   margin-bottom: 6px;
   border-radius: 15px;
-  background: $border;
+  background: $disable;
   background: linear-gradient(
     to right,
-    $border 8%,
+    $disable 8%,
     rgba(36, 43, 69, 0.3) 18%,
-    $border 33%
+    $disable 33%
   );
   background-size: 800px 100px;
   animation: wave-lines 2s infinite ease-out;

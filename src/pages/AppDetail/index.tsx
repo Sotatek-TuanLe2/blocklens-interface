@@ -20,6 +20,7 @@ import {
   getLogoChainByChainId,
   isEVMNetwork,
   isAptosNetwork,
+  isSuiNetwork,
 } from 'src/utils/utils-network';
 import { isMobile } from 'react-device-detect';
 import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
@@ -188,6 +189,14 @@ const AppDetail = () => {
 
               <TabPanel className="content-tab-app">
                 <PartAptosTokenWebhooks appInfo={appInfo} />
+              </TabPanel>
+            </TabPanels>
+          )}
+
+          {isSuiNetwork(appInfo?.chain) && (
+            <TabPanels>
+              <TabPanel className={`content-tab-app`}>
+                <PartAddressWebhooks appInfo={appInfo} />
               </TabPanel>
             </TabPanels>
           )}
