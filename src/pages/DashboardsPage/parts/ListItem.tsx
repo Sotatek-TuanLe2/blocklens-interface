@@ -29,15 +29,11 @@ interface IListItem {
   myWorkType?: typeof TYPE_MYWORK[keyof typeof TYPE_MYWORK];
   item?: IDashboardDetail | IQuery;
   visibility?: 'COLUMN' | 'ROW';
-  displayed?: DisplayType;
+  displayed?: string;
 }
 
 const ListItem: React.FC<IListItem> = (props) => {
   const { type, myWorkType, item, visibility, displayed } = props;
-  const history = useHistory();
-
-  // const [favorite, setFavorite] = useState<boolean>(false);
-
   const itemClass =
     type === LIST_ITEM_TYPE.DASHBOARDS
       ? new Dashboard(item as IDashboardDetail)
@@ -333,7 +329,7 @@ const ListItem: React.FC<IListItem> = (props) => {
         <Flex flexGrow={1} w={'22%'} overflow={'hidden'} pr={2.5}>
           <Link to={getTitleUrl()}>
             <Flex align={'center'}>
-              {type === LIST_ITEM_TYPE.DASHBOARDS && (
+              {(type === LIST_ITEM_TYPE.DASHBOARDS || myWorkType === LIST_ITEM_TYPE.DASHBOARDS) && (
                 <Box h={'48px'} style={{ aspectRatio: '74 / 48' }} mr={3}>
                   <Image
                     src={

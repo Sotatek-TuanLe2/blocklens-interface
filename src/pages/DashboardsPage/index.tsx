@@ -59,7 +59,7 @@ const DashboardsPage: React.FC = () => {
   const [visibility, setVisibility] = useState<VisibilityGridDashboardList>(
     VisibilityGridDashboardList.COLUMN,
   );
-  const [displayed, setDisplayed] = useState<DisplayType>(DisplayType.Grid);
+  const [displayed, setDisplayed] = useState<string>(DisplayType.Grid);
 
   useEffect(() => {
     const searchParams = new URLSearchParams(searchUrl);

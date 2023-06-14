@@ -3,10 +3,6 @@ import {
   Button,
   Collapse,
   Flex,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
@@ -15,17 +11,13 @@ import { ChangeEvent, FC, useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router';
 import {
   FireIcon,
-  IconDashboard,
-  IconDashboardInactive,
   IconFilter,
-  IconQueries,
-  IconQueriesInactive,
   IconDisplayGrid,
-  IconDisplayList,
+  IconDisplayList, DashboardListIcon, QueriesIcon,
 } from 'src/assets/icons';
 import {
   AppButton,
-  AppInput,
+  AppInput, AppMenu,
   AppSelect2,
   AppTag,
   IOption,
@@ -38,11 +30,12 @@ import { ROUTES } from 'src/utils/common';
 import { getChainIconByChainName } from 'src/utils/utils-network';
 import { HOME_URL_PARAMS, LIST_ITEM_TYPE } from '..';
 import { ChevronDownIcon, AddIcon } from '@chakra-ui/icons';
+import {IDataMenu} from "../../../utils/utils-app";
 
 interface IFilterSearch {
   type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
-  displayed: DisplayType;
-  setDisplayed: (display: DisplayType) => void;
+  displayed: string;
+  setDisplayed: (display: string) => void;
   visibility: 'COLUMN' | 'ROW';
   changeVisibility: (value: VisibilityGridDashboardList) => void;
   myWorkType: string;
@@ -82,100 +75,6 @@ export const TYPE_MYWORK = {
   QUERIES: 'QUERIES',
 };
 
-const MenuShowDisplay: FC<{
-  displayType: DisplayType;
-  setDisplayType: (dis: DisplayType) => void;
-}> = ({ displayType, setDisplayType }) => {
-  const _renderDisplayGrid = (isSelected?: boolean) => {
-    return (
-      <Flex
-        w={'full'}
-        align={'center'}
-        color={'#000224'}
-        _hover={{ color: 'white' }}
-        px={isSelected ? 0 : 4}
-        py={'6px'}
-      >
-        <IconDisplayGrid
-          color={isSelected ? 'rgba(0, 2, 36, 0.5)' : 'currentColor'}
-        />
-        <Text px={2} color={'currentColor'}>
-          Grid
-        </Text>
-      </Flex>
-    );
-  };
-
-  const _renderDisplayList = (isSelected?: boolean) => {
-    return (
-      <Flex
-        w={'full'}
-        align={'center'}
-        color={'#000224'}
-        _hover={{ color: 'white' }}
-        px={isSelected ? 0 : 4}
-        py={'6px'}
-      >
-        <IconDisplayList
-          color={isSelected ? 'rgba(0, 2, 36, 0.5)' : 'currentColor'}
-        />
-        <Text px={2} color={'currentColor'}>
-          List
-        </Text>
-      </Flex>
-    );
-  };
-
-  return (
-    <Menu>
-      <MenuButton
-        w={'full'}
-        display={'flex'}
-        alignItems={'center'}
-        justify={'center'}
-        h={10}
-        minW={'124px'}
-        bg={'white'}
-        border={'1px solid #C7D2E1'}
-        borderRadius={'6px'}
-        as={Button}
-        rightIcon={<ChevronDownIcon />}
-      >
-        {displayType === DisplayType.Grid
-          ? _renderDisplayGrid(true)
-          : _renderDisplayList(true)}
-      </MenuButton>
-
-      <MenuList minW={'124px'} mt={-2} zIndex={4}>
-        <MenuItem
-          onClick={() => {
-            setDisplayType(DisplayType.Grid);
-          }}
-          h={8}
-          color={'rgba(0, 2, 36, 0.5)'}
-          _hover={{ bg: '#0060DB', color: 'white' }}
-          transition={'.2s linear'}
-          p={0}
-        >
-          {_renderDisplayGrid()}
-        </MenuItem>
-        <MenuItem
-          p={0}
-          h={8}
-          color={'rgba(0, 2, 36, 0.5)'}
-          _hover={{ bg: '#0060DB', color: 'white' }}
-          transition={'.2s linear'}
-          onClick={() => {
-            setDisplayType(DisplayType.List);
-          }}
-        >
-          {_renderDisplayList()}
-        </MenuItem>
-      </MenuList>
-    </Menu>
-  );
-};
-
 const FilterSearch: React.FC<IFilterSearch> = (props) => {
   const { isOpen, onToggle } = useDisclosure();
   const {
@@ -209,6 +108,32 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
     label: 'All',
     chain: 'All',
   };
+
+  const menuDashboardQueries: IDataMenu[] = [
+    {
+      value: LIST_ITEM_TYPE.DASHBOARDS,
+      icon: <DashboardListIcon/>,
+      label: 'Dashboard'
+    },
+    {
+      value: LIST_ITEM_TYPE.QUERIES,
+      icon: <QueriesIcon/>,
+      label: 'Queries'
+    }
+  ];
+
+  const menuGridList: IDataMenu[] = [
+    {
+      value: DisplayType.Grid,
+      icon: <IconDisplayGrid/>,
+      label: 'Grid'
+    },
+    {
+      value: DisplayType.List,
+      icon: <IconDisplayList/>,
+      label: 'List'
+    }
+  ];
 
   useEffect(() => {
     (async () => {
@@ -349,53 +274,13 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
         <Flex align={'center'} flexGrow={1}>
           {isDashboard && (
             <Flex flexGrow={{ base: 1, lg: 0 }}>
-              <MenuShowDisplay
-                displayType={displayed}
-                setDisplayType={setDisplayed}
-              />
+              <AppMenu data={menuGridList} value={displayed} setValue={setDisplayed} minW={'124px'} />
             </Flex>
           )}
           {isMyWork && (
-            <Flex>
-              <Flex flexDirection={'row'}>
-                <Flex mr={3}>
-                  <AppButton
-                    onClick={() => onChangeMyWorkType(TYPE_MYWORK.DASHBOARDS)}
-                    variant="network"
-                    className={
-                      myWorkType === TYPE_MYWORK.DASHBOARDS
-                        ? 'btn-active'
-                        : 'btn-inactive'
-                    }
-                  >
-                    {myWorkType === TYPE_MYWORK.DASHBOARDS ? (
-                      <IconDashboard />
-                    ) : (
-                      <IconDashboardInactive />
-                    )}
-                    <Text ml={2}>Dashboard</Text>
-                  </AppButton>
-                </Flex>
+              <Flex flexGrow={{ base: 1, lg: 0 }}>
+              <AppMenu data={menuDashboardQueries} value={myWorkType} setValue={onChangeMyWorkType} minW={'179px'}/>
               </Flex>
-              <Flex mr={3}>
-                <AppButton
-                  onClick={() => onChangeMyWorkType(TYPE_MYWORK.QUERIES)}
-                  variant="network"
-                  className={
-                    myWorkType === TYPE_MYWORK.QUERIES
-                      ? 'btn-active'
-                      : 'btn-inactive'
-                  }
-                >
-                  {myWorkType === TYPE_MYWORK.QUERIES ? (
-                    <IconQueries />
-                  ) : (
-                    <IconQueriesInactive />
-                  )}
-                  <Text ml={2}>Queries</Text>
-                </AppButton>
-              </Flex>
-            </Flex>
           )}
           <Flex
             flexGrow={{ base: 1, lg: 0 }}
@@ -409,7 +294,6 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
             transition={'.2s linear'}
             ml={2.5}
             onClick={onToggle}
-            _hover={{ bg: 'gray.200' }}
             cursor={'pointer'}
             userSelect={'none'}
           >
