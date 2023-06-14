@@ -282,7 +282,13 @@ const QueryPart: React.FC = () => {
     <div className="workspace-page__editor__query">
       <Header
         type={LIST_ITEM_TYPE.QUERIES}
-        author={user?.getFirstName() || ''}
+        author={
+          queryClass
+            ? `${queryClass?.getUser().firstName} ${
+                queryClass?.getUser().lastName
+              }`
+            : ''
+        }
         data={queryValue}
         isLoadingRun={isLoadingResult}
         onRunQuery={onRunQuery}
@@ -316,6 +322,8 @@ const QueryPart: React.FC = () => {
                   }
                   hasArrow
                   placement="top"
+                  bg="white"
+                  color="black"
                 >
                   <div className="btn-expand">
                     <p
