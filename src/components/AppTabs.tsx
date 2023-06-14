@@ -72,6 +72,8 @@ const AppTabs: FC<IAppTabs> = ({
                 <Tab
                   key={tab.id}
                   className="app-tab__name-tab"
+                  userSelect={'none'}
+                  boxShadow={'none !important'}
                   onClick={() => onChange && onChange(tab.id, index)}
                 >
                   <Flex

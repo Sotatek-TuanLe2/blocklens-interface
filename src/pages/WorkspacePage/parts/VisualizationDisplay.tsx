@@ -389,8 +389,12 @@ const VisualizationDisplay = ({
           <div className="main-chart">
             <div
               className={`main-visualization ${
+                type === TYPE_VISUALIZATION.table
+                  ? 'main-visualization--table'
+                  : ''
+              } ${
                 expandLayout === LAYOUT_QUERY.HIDDEN
-                  ? 'main-visualization-expand'
+                  ? 'main-visualization--expand'
                   : ''
               } ${!toggleCloseConfig ? 'show-full-visual' : ''}`}
             >
@@ -514,6 +518,8 @@ const VisualizationDisplay = ({
             <Tooltip
               label={expandLayout === LAYOUT_QUERY.FULL ? 'Expand' : 'Minimize'}
               hasArrow
+              bg="white"
+              color="black"
             >
               <div className="btn-expand">
                 {expandLayout === LAYOUT_QUERY.FULL ? (
@@ -530,7 +536,7 @@ const VisualizationDisplay = ({
               </div>
             </Tooltip>
             {needAuthentication && (
-              <Tooltip label="Edit" hasArrow>
+              <Tooltip label="Edit" hasArrow bg="white" color="black">
                 <div
                   className="btn-expand"
                   onClick={() => {
@@ -541,7 +547,7 @@ const VisualizationDisplay = ({
                 </div>
               </Tooltip>
             )}
-            <Tooltip label="Maximize" hasArrow>
+            <Tooltip label="Maximize" hasArrow bg="white" color="black">
               <div
                 className="btn-expand-full"
                 onClick={() => onExpand(LAYOUT_QUERY.HIDDEN)}

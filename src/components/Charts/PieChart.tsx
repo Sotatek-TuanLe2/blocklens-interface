@@ -276,9 +276,14 @@ const CustomTooltip = (props: any) => {
             <div className="custom-tooltip__desc">
               <Box as={'div'} className="custom-tooltip__desc__detail">
                 <span style={{ backgroundColor: entry.fill }}></span>
-                <span>{`${entry.dataKey}: ${_renderTooltipValue(
-                  entry.value,
-                )} (${((entry.value / totalValue) * 100).toFixed(2)}%)`}</span>
+                <span>
+                  {entry.dataKey}:{' '}
+                  <span className="tooltip-value">{`${_renderTooltipValue(
+                    entry.value,
+                  )} (${((entry.value / totalValue) * 100).toFixed(
+                    2,
+                  )}%)`}</span>
+                </span>
                 <br />
               </Box>
             </div>
