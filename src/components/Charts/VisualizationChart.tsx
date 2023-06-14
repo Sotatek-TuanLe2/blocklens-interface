@@ -1,5 +1,6 @@
 import { Box } from '@chakra-ui/react';
 import BigNumber from 'bignumber.js';
+import { isNull, isUndefined } from 'lodash';
 import moment from 'moment';
 import React, { useMemo, useState } from 'react';
 import {
@@ -250,9 +251,14 @@ const VisualizationChart: React.FC<Props> = (props) => {
       yAxisKeys
         .filter((yAxis: string) => !hiddenKeys.includes(yAxis))
         .forEach((yAxis: string) => {
-          if (data.every((item: any) => isNumber(item[yAxis]))) {
+          const filteredData = data.filter(
+            (item: any) => !isNull(item[yAxis]) && !isUndefined(item[yAxis]),
+          );
+          if (filteredData.every((item: any) => isNumber(item[yAxis]))) {
             hasNumberValues = true;
-            calculatedValues.push(data.map((item: any) => +item[yAxis]));
+            calculatedValues.push(
+              filteredData.map((item: any) => +item[yAxis]),
+            );
           }
         });
 
@@ -289,6 +295,8 @@ const VisualizationChart: React.FC<Props> = (props) => {
 
     return [minValue, maxValue];
   }, [data, xAxisKey, yAxisKeys, hiddenKeys, chartOptionsConfigs]);
+
+  console.log('yAxisDomain', yAxisDomain);
 
   return (
     <ResponsiveContainer className={containerClassName}>
