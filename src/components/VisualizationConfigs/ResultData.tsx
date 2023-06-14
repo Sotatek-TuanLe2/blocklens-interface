@@ -58,7 +58,7 @@ const ResultData: React.FC<IResultData> = ({
     <div className={'box-table'}>
       <Text
         as={'h3'}
-        className={'box-table__title'}
+        className="text-result-data"
         fontWeight={'bold'}
         mb={'10px'}
       >

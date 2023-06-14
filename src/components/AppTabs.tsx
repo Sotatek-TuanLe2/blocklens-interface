@@ -1,8 +1,10 @@
 import {
   Box,
   Flex,
+  FlexProps,
   Tab,
   TabList,
+  TabListProps,
   TabPanel,
   TabPanels,
   Tabs,
@@ -12,11 +14,14 @@ import 'src/styles/components/AppTabs.scss';
 import { CloseIcon } from '@chakra-ui/icons';
 
 interface IAppTabs {
-  defaultTab?: number;
+  defaultTabIndex?: number;
+  currentTabIndex?: number;
   tabs: ITabs[];
-  onChange?: (value: string) => void;
+  onChange?: (tabId: string, tabIndex: number) => void;
   rightElement?: ReactNode;
   onCloseTab?: (id: string) => void;
+  sxTabList?: TabListProps;
+  sxTabsHeader?: FlexProps;
 }
 export interface ITabs {
   name: string | JSX.Element;
@@ -28,11 +33,14 @@ export interface ITabs {
 }
 
 const AppTabs: FC<IAppTabs> = ({
-  defaultTab = 0,
+  defaultTabIndex = 0,
+  currentTabIndex,
   tabs,
   onChange,
   rightElement,
   onCloseTab,
+  sxTabList,
+  sxTabsHeader,
 }) => {
   return (
     <Tabs
@@ -41,25 +49,26 @@ const AppTabs: FC<IAppTabs> = ({
       flexDirection={'column'}
       variant={'unstyled'}
       colorScheme="transparent"
-      defaultIndex={defaultTab}
+      defaultIndex={defaultTabIndex}
+      index={currentTabIndex}
       className="app-tab"
       isLazy
     >
-      <TabList className="tab-list">
+      <TabList className="tab-list" {...sxTabList}>
         <Flex
           justifyContent={'space-between'}
           alignItems="center"
           className="tabs-header"
           w="100%"
+          {...sxTabsHeader}
         >
           <Flex alignItems="center" flexWrap="wrap" className="tabs-container">
-            {tabs.map((tab: ITabs) => {
+            {tabs.map((tab: ITabs, index: number) => {
               return (
                 <Tab
                   key={tab.id}
                   className="app-tab__name-tab"
-                  onClick={() => onChange && onChange(tab.id)}
-                  // onClick={tab.onTabClick}
+                  onClick={() => onChange && onChange(tab.id, index)}
                 >
                   <Flex
                     justifyContent={'center'}

@@ -55,7 +55,7 @@ const LoginPage: FC = () => {
       if (res) {
         dispatch(setUserAuth(res));
         toastSuccess({ message: 'Welcome to Blocklens!' });
-        history.push((location.state as any).originPath);
+        history.push((location.state as any)?.originPath);
       }
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
@@ -69,7 +69,7 @@ const LoginPage: FC = () => {
           <Box className="box-form__title">Login</Box>
 
           <GoogleAuthButton>
-            <Box>Login with Google</Box>
+            <Box className="google-login">Login with Google</Box>
           </GoogleAuthButton>
 
           <Flex className="divider">

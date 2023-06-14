@@ -137,7 +137,7 @@ const VisualizationPieChart = ({
   );
 
   const totalValue = useMemo(() => {
-    if (!yAxisKeys) {
+    if (!yAxisKeys || !shownData.length) {
       return 0;
     }
     const [yAxisKey] = yAxisKeys;
@@ -160,7 +160,7 @@ const VisualizationPieChart = ({
             label={
               chartOptionsConfigs?.showDataLabels && _renderCustomizedLabel
             }
-            stroke="#101530"
+            // stroke="#101530"
           >
             {shownData &&
               shownData.map((entry: any) => (
@@ -233,7 +233,11 @@ const CustomLegend = (props: any) => {
   return (
     <div>
       {newData.map((entry: any, index: number) => (
-        <div key={`item-${index}`} className="custom-legend">
+        <div
+          key={`item-${index}`}
+          className="custom-legend"
+          onClick={() => onToggleLegend(entry.value)}
+        >
           <span
             style={{
               backgroundColor: `${entry.color}`,
@@ -241,7 +245,6 @@ const CustomLegend = (props: any) => {
             }}
           ></span>
           <span
-            onClick={() => onToggleLegend(entry.value)}
             style={{
               opacity: `${entry.type ? '1' : '0.5'}`,
             }}

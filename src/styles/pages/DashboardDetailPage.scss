@@ -2,7 +2,6 @@
 @import '../mixins.scss';
 
 .dashboard-container {
-  background: $card;
   border-radius: 6px;
 
   h1,
@@ -49,7 +48,6 @@
         overflow: auto;
 
         .table-pagination {
-          background: $card;
           width: 100%;
           position: fixed;
           bottom: 0px;
@@ -162,7 +160,9 @@
         align-items: center;
       }
 
-      &--loading, &--error, &--empty {
+      &--loading,
+      &--error,
+      &--empty {
         height: calc(100% - 50px);
       }
     }
@@ -279,7 +279,6 @@
     border-top: 1px solid #2f3b58;
 
     .react-grid-item {
-      background: rgba(16, 21, 48, 0.5);
       color: $title;
       overflow: hidden;
       cursor: grab;
@@ -299,8 +298,6 @@
     }
 
     .box-layout {
-      background: $card;
-      border: 1px solid #465065;
       border-radius: 10px;
       position: relative;
 

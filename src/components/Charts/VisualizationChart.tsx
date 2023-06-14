@@ -1,3 +1,4 @@
+import { Box } from '@chakra-ui/react';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import React, { useMemo, useState } from 'react';
@@ -12,6 +13,7 @@ import {
   Legend,
   Line,
   LineChart,
+  ReferenceLine,
   ResponsiveContainer,
   Scatter,
   ScatterChart,
@@ -63,6 +65,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
     }
     return formatDefaultValueChart(value);
   };
+
   const logarithmicProps: any = yAxisConfigs?.logarithmic
     ? {
         scale: 'log',
@@ -268,6 +271,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
           calculatedValues.forEach((array) => {
             newCalculatedValues.push(...array);
           });
+
           minValue = BigNumber.minimum(...newCalculatedValues).toNumber();
           maxValue = BigNumber.maximum(...newCalculatedValues).toNumber();
         }
@@ -320,6 +324,29 @@ const VisualizationChart: React.FC<Props> = (props) => {
             fill={'#ccc'}
           />
         </XAxis>
+        {new BigNumber(yAxisDomain[0]).isNegative() && (
+          <ReferenceLine
+            className="ref-line"
+            y={0}
+            stroke="#2F3B58"
+            strokeDasharray="3 3"
+            label={({ offset, viewBox }) => (
+              <text
+                offset={offset}
+                x="0"
+                y={viewBox.y}
+                className="recharts-text recharts-label"
+                stroke="none"
+                type="number"
+                fontWeight={400}
+              >
+                <tspan x="44" dy="0.355em">
+                  0
+                </tspan>
+              </text>
+            )}
+          />
+        )}
         {yAxisKeys && !!yAxisKeys.length && (
           <YAxis
             tickFormatter={tickFormatAxis('y')}
@@ -339,6 +366,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
             />
           </YAxis>
         )}
+
         <Tooltip
           content={
             <CustomTooltip numberFormat={configs?.yAxisConfigs?.labelFormat} />

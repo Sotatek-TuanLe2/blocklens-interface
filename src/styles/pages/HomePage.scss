@@ -59,10 +59,10 @@
   .number-app {
     @include text-medium-regular;
     margin-right: 20px;
-    color: $title;
+    color: $main;
 
     span {
-      color: $line;
+      color: $paragraph1;
     }
   }
 
@@ -73,18 +73,20 @@
 
 .list-table-wrap {
   padding: 0 0 40px 0 !important;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.04);
+
   @include tablet {
     padding-bottom: 10px !important;
   }
 
   .tr-list {
     &:hover {
-      background-color: $bg2;
+      background-color: $bg;
       cursor: pointer;
     }
 
     td {
-      border-bottom: 1px solid $border;
+      border-bottom: 1px solid $line;
       color: $title;
       @include text-medium-regular;
 
@@ -222,8 +224,8 @@
 .list-card-mobile {
   margin: 0 20px;
   .card-mobile {
-    background: $card;
-    border: 1px solid $border;
+    background: $white;
+    border: 1px solid $line;
     border-radius: 12px;
     padding: 16px 14px;
     margin-bottom: 16px;
@@ -233,7 +235,7 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 18px;
-      color: $paragraph;
+      color: $paragraph2;
 
       &:last-child {
         margin-bottom: 0;
@@ -259,7 +261,7 @@
     }
 
     &.open {
-      background-color: $bg2;
+      background-color: $white;
     }
   }
 }

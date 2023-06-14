@@ -21,6 +21,7 @@
     a {
       @include text-medium-medium;
       color: $link;
+      font-weight: 500;
     }
 
     &__title {

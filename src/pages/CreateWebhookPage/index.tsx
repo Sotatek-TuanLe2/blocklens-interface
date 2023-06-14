@@ -34,16 +34,23 @@ import { DownloadIcon } from 'src/assets/icons';
 import { useDispatch } from 'react-redux';
 import { getUserStats } from 'src/store/user';
 import PartFormAddressAptos from './parts/PartFormAddressAptos';
+import PartFormContractAptos from './parts/PartFormContractAptos';
 
 const FILE_CSV_EXAMPLE = '/abi/CSV_Example.csv';
 
-interface IDataForm {
+interface IAptosABI {
+  functions: string[];
+  events: string[];
+}
+
+export interface IDataForm {
   webhook: string;
   address: string;
   addresses: string[];
   tokenIds: string;
   abi: any[];
   type: string;
+  aptosAbi: IAptosABI;
   abiFilter: any[];
 }
 
@@ -62,6 +69,25 @@ const optionsWebhookType = [
   },
 ];
 
+const optionsWebhookAptosType = [
+  {
+    label: 'Address Activity',
+    value: WEBHOOK_TYPES.ADDRESS_ACTIVITY,
+  },
+  {
+    label: 'Coin Activity',
+    value: WEBHOOK_TYPES.APTOS_COIN_ACTIVITY,
+  },
+  {
+    label: 'Token Activity',
+    value: WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY,
+  },
+  {
+    label: 'Module Activity',
+    value: WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY,
+  },
+];
+
 const CreateWebhook = () => {
   const { id: appId } = useParams<{ id: string }>();
   const initDataCreateWebHook = {
@@ -71,6 +97,10 @@ const CreateWebhook = () => {
     abi: [],
     type: '',
     abiFilter: [],
+    aptosAbi: {
+      functions: [],
+      events: [],
+    },
     addresses: [],
   };
 
@@ -84,6 +114,7 @@ const CreateWebhook = () => {
   const [isInsertManuallyAddress, setIsInsertManuallyAddress] =
     useState<boolean>(true);
   const [, updateState] = useState<any>();
+
   const forceUpdate = useCallback(() => updateState({}), []);
   const inputRef = useRef<any>(null);
 
@@ -105,16 +136,25 @@ const CreateWebhook = () => {
   }, [appId]);
 
   const optionTypes = useMemo(() => {
+    if (appInfo.chain === CHAINS.APTOS) {
+      return optionsWebhookAptosType;
+    }
+
     if (!isEVMNetwork(appInfo.chain)) {
       return optionsWebhookType.filter(
         (item) => item.value === WEBHOOK_TYPES.ADDRESS_ACTIVITY,
       );
     }
+
     return optionsWebhookType;
   }, [appInfo]);
 
   useEffect(() => {
-    if (!!Object.keys(appInfo).length && !isEVMNetwork(appInfo.chain)) {
+    if (
+      !!Object.keys(appInfo).length &&
+      !isEVMNetwork(appInfo.chain) &&
+      appInfo.chain !== CHAINS.APTOS
+    ) {
       setType(WEBHOOK_TYPES.ADDRESS_ACTIVITY);
       return;
     }
@@ -138,7 +178,11 @@ const CreateWebhook = () => {
       return forceUpdate();
     }
 
-    if (!dataForm.abiFilter.length && type !== WEBHOOK_TYPES.ADDRESS_ACTIVITY) {
+    if (
+      !dataForm.abiFilter.length &&
+      type !== WEBHOOK_TYPES.ADDRESS_ACTIVITY &&
+      isEVMNetwork(appInfo.chain)
+    ) {
       toastError({ message: 'At least one checkbox must be checked.' });
       return;
     }
@@ -191,31 +235,40 @@ const CreateWebhook = () => {
   };
 
   const _renderFormContractActivity = () => {
+    if (appInfo.chain === CHAINS.ETH) {
+      return (
+        <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
+          <AppField label={'Contract Address'} customWidth={'100%'} isRequired>
+            <AppInput
+              value={dataForm.address}
+              onChange={(e) =>
+                setDataForm({
+                  ...dataForm,
+                  address: e.target.value.trim(),
+                })
+              }
+              hiddenErrorText={type !== WEBHOOK_TYPES.CONTRACT_ACTIVITY}
+              validate={{
+                name: `contractAddress`,
+                validator: validator.current,
+                rule: 'required|isAddress',
+              }}
+            />
+          </AppField>
+
+          <AppUploadABI
+            type={TYPE_ABI.CONTRACT}
+            onChange={(abi, abiFilter) =>
+              setDataForm({ ...dataForm, abi, abiFilter })
+            }
+          />
+        </Flex>
+      );
+    }
+
     return (
       <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
-        <AppField label={'Contract Address'} customWidth={'100%'} isRequired>
-          <AppInput
-            value={dataForm.address}
-            onChange={(e) =>
-              setDataForm({
-                ...dataForm,
-                address: e.target.value.trim(),
-              })
-            }
-            hiddenErrorText={type !== WEBHOOK_TYPES.CONTRACT_ACTIVITY}
-            validate={{
-              name: `contractAddress`,
-              validator: validator.current,
-              rule: 'required|isAddress',
-            }}
-          />
-        </AppField>
-        <AppUploadABI
-          type={TYPE_ABI.CONTRACT}
-          onChange={(abi, abiFilter) =>
-            setDataForm({ ...dataForm, abi, abiFilter })
-          }
-        />
+        {_renderFormContractAptos()}
       </Flex>
     );
   };
@@ -256,6 +309,12 @@ const CreateWebhook = () => {
 
   const _renderFormAddressAptos = () => {
     return <PartFormAddressAptos />;
+  };
+
+  const _renderFormContractAptos = () => {
+    return (
+      <PartFormContractAptos dataForm={dataForm} onChangeForm={setDataForm} />
+    );
   };
 
   const _renderFormAddressActivity = () => {
@@ -484,6 +543,10 @@ const CreateWebhook = () => {
       appInfo.chain === CHAINS.APTOS
     ) {
       return _renderFormAddressAptos();
+    }
+
+    if (type === WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY) {
+      return _renderFormContractAptos();
     }
 
     return _renderFormAddressActivity();

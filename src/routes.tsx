@@ -154,6 +154,7 @@ const Routes: FC<RouteComponentProps> = () => {
         />
         <Route path={ROUTES.CONTACT_US} component={ContactUs} />
         <Route path={ROUTES.HOME} component={DashboardsPage} />
+        {/* <PrivateRoute path={'/'} component={HomePage} /> */}
       </Switch>
       <>
         <ModalSignatureRequired />

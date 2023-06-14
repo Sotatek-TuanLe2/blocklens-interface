@@ -111,7 +111,7 @@ const TableConfigurations: React.FC<ITableConfigurations> = ({
         }}
       >
         <GridItem>
-          <div className="box-table first-box-table">
+          <div className="box-table first-box-table ">
             <div className="box-table-children">
               <div className="label-input">Title</div>
               <AppInput
@@ -131,8 +131,9 @@ const TableConfigurations: React.FC<ITableConfigurations> = ({
           sm: 'repeat(1, 1fr)',
           md: 'repeat(1, 1fr)',
         }}
+        className="layout-config"
       >
-        <div className="select-column">
+        <div className="select-column ">
           <AppSelect2
             className="select-table"
             zIndex={1001}
@@ -224,7 +225,7 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
 
           <AppSelect2
             className="select-table"
-            size="small"
+            size="medium"
             value={data?.type}
             onChange={(e) =>
               onChange({

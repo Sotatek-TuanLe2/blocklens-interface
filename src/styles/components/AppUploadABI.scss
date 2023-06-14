@@ -11,7 +11,7 @@
   }
 
   .box-events {
-    background-color: $card;
+    background-color: $paragraph;
     padding: 16px 24px;
     margin-bottom: 4px;
     border-radius: 6px 6px 0 0;
@@ -23,7 +23,7 @@
     .label-events {
       @include text-small-bold;
       text-transform: uppercase;
-      color: $line;
+      color: $title;
       width: 120px;
     }
 
@@ -112,7 +112,7 @@
   }
 
   .abi-detail {
-    background-color: $bg2;
+    background-color: $white;
     padding: 22px 24px;
     border-radius: 6px;
 
