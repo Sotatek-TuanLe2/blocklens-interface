@@ -102,7 +102,7 @@ const PartFormModuleActivityAptos: FC<PartFormContractAptosProps> = ({
 
   return (
     <Box width={'100%'}>
-      <AppField label={'Contract Address'} customWidth={'100%'} isRequired>
+      <AppField label={'Address ID'} customWidth={'100%'} isRequired>
         <AppInput
           value={dataForm.address}
           onChange={(e) => {

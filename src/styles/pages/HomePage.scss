@@ -86,7 +86,7 @@
     }
 
     td {
-      border-bottom: 1px solid $line;
+      border-bottom: 1px solid $disable;
       color: $title;
       @include text-medium-regular;
 
@@ -128,7 +128,8 @@
     th {
       @include text-small-bold;
       border-bottom: 0;
-      color: $line;
+      color: $paragraph1;
+      opacity: 0.3;
       padding: 13px 15px;
       font-family: 'DM Sans', sans-serif;
 

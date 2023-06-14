@@ -435,7 +435,7 @@ const CreateWebhook = () => {
                   download
                 >
                   <Flex>
-                    <DownloadIcon />
+                    <DownloadIcon color={'#0060db'} />
                     <Box ml={2} color={'#0060db'}>
                       Download Example
                     </Box>
