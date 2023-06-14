@@ -51,13 +51,13 @@
           color: $paragraph;
 
           &:hover {
-            color: $title;
+            color: $main;
           }
 
           &.active {
             color: $main;
+            font-weight: 500;
           }
-
         }
 
         .user-email,
