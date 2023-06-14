@@ -55,7 +55,7 @@ const HomePage = () => {
     <BasePage>
       <>
         <Box mb={7}>
-          <AppHeading title="Dashboard" />
+          <AppHeading title="Trigger" />
         </Box>
 
         {hasApp ? (

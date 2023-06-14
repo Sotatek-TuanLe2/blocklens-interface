@@ -11,7 +11,7 @@
   }
 
   .box-events {
-    background-color: $paragraph;
+    background-color: $bg;
     padding: 16px 24px;
     margin-bottom: 4px;
     border-radius: 6px 6px 0 0;
@@ -23,8 +23,10 @@
     .label-events {
       @include text-small-bold;
       text-transform: uppercase;
-      color: $title;
-      width: 120px;
+      color: $paragraph1;
+      min-width: 90px;
+      margin-right: 20px;
+      opacity: 0.3;
     }
 
     label {
@@ -49,7 +51,7 @@
       @include tablet {
         flex-direction: column;
       }
-      .inputs{
+      .inputs {
         color: $paragraph;
         margin-left: 5px;
       }
@@ -62,7 +64,7 @@
     display: flex;
     align-items: center;
     padding: 6px 12px;
-    background-color: $disable;
+    background-color: rgba(0, 2, 36, 0.05);
     border-radius: 6px;
 
     .icon-clear {
