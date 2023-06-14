@@ -569,6 +569,7 @@ const VisualizationDisplay = ({
               onClick={() => setCloseTabId('')}
               size="lg"
               variant={'cancel'}
+              className="btn-cancel"
             >
               Cancel
             </AppButton>

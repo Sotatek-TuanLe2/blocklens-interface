@@ -28,6 +28,7 @@ import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import { BROADCAST_FETCH_WORKPLACE_DATA } from './Sidebar';
 import ModalQuery from 'src/modals/querySQL/ModalQuery';
 import { Query } from 'src/utils/utils-query';
+import { AddChartIcon } from 'src/assets/icons';
 
 export const BROADCAST_ADD_TEXT_TO_EDITOR = 'ADD_TEXT_TO_EDITOR';
 export const BROADCAST_FETCH_QUERY = 'FETCH_QUERY';
@@ -273,11 +274,14 @@ const QueryPart: React.FC = () => {
           <Tooltip
             label="Add New Visualization"
             hasArrow
-            bg="black"
-            color="white"
+            bg="white"
+            color="black"
           >
             <Flex alignItems={'center'}>
-              <Box className="icon-plus-circle" mr={2} /> Add Chart
+              <Box mr={2}>
+                <AddChartIcon />
+              </Box>{' '}
+              Add Chart
             </Flex>
           </Tooltip>
           <p className="icon-query-expand" />
@@ -325,7 +329,7 @@ const QueryPart: React.FC = () => {
         <div className="query-container queries-page">
           <Box className="queries-page__right-side">
             <Box className="editor-wrapper">
-              <Box className="header-tab">
+              {/* <Box className="header-tab">
                 <div className="header-tab__info">
                   {queryClass?.getChains() && (
                     <AppNetworkIcons networkIds={queryClass?.getChains()} />
@@ -336,29 +340,7 @@ const QueryPart: React.FC = () => {
                     ))}
                   </div>
                 </div>
-                <Tooltip
-                  label={
-                    expandLayout === LAYOUT_QUERY.HIDDEN
-                      ? 'Maximize'
-                      : 'Minimize'
-                  }
-                  hasArrow
-                  placement="top"
-                  bg="white"
-                  color="black"
-                >
-                  <div className="btn-expand">
-                    <p
-                      className={`${
-                        expandLayout === LAYOUT_QUERY.HIDDEN
-                          ? 'icon-query-expand'
-                          : 'icon-query-collapse'
-                      }`}
-                      onClick={onExpandEditor}
-                    />
-                  </div>
-                </Tooltip>
-              </Box>
+              </Box> */}
               <AceEditor
                 className={`custom-editor ${
                   !queryId || !queryValue ? 'custom-editor--full' : ''
@@ -391,6 +373,26 @@ const QueryPart: React.FC = () => {
                 }}
                 onSelectionChange={onSelectQuery}
               />
+              <Tooltip
+                label={
+                  expandLayout === LAYOUT_QUERY.HIDDEN ? 'Maximize' : 'Minimize'
+                }
+                hasArrow
+                placement="top"
+                bg="white"
+                color="black"
+              >
+                <div className="btn-expand-query">
+                  <p
+                    className={`${
+                      expandLayout === LAYOUT_QUERY.HIDDEN
+                        ? 'icon-query-expand'
+                        : 'icon-query-collapse'
+                    }`}
+                    onClick={onExpandEditor}
+                  />
+                </div>
+              </Tooltip>
             </Box>
             {_renderVisualizations()}
           </Box>

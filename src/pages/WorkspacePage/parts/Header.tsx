@@ -15,7 +15,6 @@ import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import { Dashboard } from 'src/utils/utils-dashboard';
 import { Query } from 'src/utils/utils-query';
-import { BackIcon } from 'src/assets/icons';
 import AppNetworkIcons from 'src/components/AppNetworkIcons';
 
 interface IHeaderProps {

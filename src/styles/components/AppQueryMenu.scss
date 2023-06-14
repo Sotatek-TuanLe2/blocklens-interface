@@ -17,13 +17,19 @@
     min-width: 104px !important;
 
     .chakra-menu__menuitem {
+      svg {
+        opacity: 0.5;
+      }
       &:hover,
       &:focus {
         background: #0060db !important;
         color: white !important;
-      }
 
-      color: $bg1 !important;
+        svg {
+          color: white !important;
+          opacity: unset !important;
+        }
+      }
     }
   }
 }

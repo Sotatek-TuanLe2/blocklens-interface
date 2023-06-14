@@ -177,6 +177,11 @@ export const globalStyles = {
         },
       },
 
+      '.chakra-menu__menu-list': {
+        boxShadow: ' 0px 10px 40px rgba(125, 143, 179, 0.2) !important',
+        borderRadius: '6px  !important',
+      },
+
       '.table-temaplate': {
         table: {
           fontVariantNumeric: 'lining-nums tabular-nums',
