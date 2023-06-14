@@ -66,12 +66,12 @@ iframe {
   background-color: inherit !important;
 
   &[data-checked] {
-    background: $main !important;
+    background: $gradient !important;
     border: 0 !important;
   }
 
   &[data-indeterminate] {
-    background: $main !important;
+    background: $gradient !important;
     border: 0 !important;
   }
 
@@ -80,7 +80,7 @@ iframe {
   }
 
   svg {
-    color: $title;
+    color: $white;
   }
 }
 
