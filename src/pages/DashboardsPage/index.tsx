@@ -1,20 +1,11 @@
-import {
-  Accordion,
-  Box,
-  Flex,
-  SimpleGrid,
-  Tbody,
-  Td,
-  Thead,
-  Tr,
-} from '@chakra-ui/react';
+import { Box, Flex, SimpleGrid } from '@chakra-ui/react';
 import _ from 'lodash';
 import { useCallback, useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { DashboardListIcon, IconMywork, QueriesIcon } from 'src/assets/icons';
 import { AppDataTable, RequestParams } from 'src/components';
 import AppTabs, { ITabs } from 'src/components/AppTabs';
-import { DisplayType, VisibilityGridDashboardList } from 'src/constants';
+import { DisplayType } from 'src/constants';
 import useUser from 'src/hooks/useUser';
 import { BasePage } from 'src/layouts';
 import {
@@ -56,9 +47,6 @@ const DashboardsPage: React.FC = () => {
   const [queryParams, setQueryParams] = useState<IQueriesParams>({});
   const [myWorkType, setMyWorkType] = useState<string>(TYPE_MYWORK.DASHBOARDS);
 
-  const [visibility, setVisibility] = useState<VisibilityGridDashboardList>(
-    VisibilityGridDashboardList.COLUMN,
-  );
   const [displayed, setDisplayed] = useState<string>(DisplayType.Grid);
 
   useEffect(() => {
@@ -198,8 +186,6 @@ const DashboardsPage: React.FC = () => {
           >
             <FilterSearch
               type={tab}
-              visibility={visibility}
-              changeVisibility={setVisibility}
               displayed={displayed}
               setDisplayed={setDisplayed}
               myWorkType={myWorkType}
@@ -210,7 +196,7 @@ const DashboardsPage: React.FC = () => {
         </>
       );
     },
-    [tab, visibility, myWorkType, displayed],
+    [tab, myWorkType, displayed],
   );
 
   const _renderBody = useCallback(
@@ -236,26 +222,6 @@ const DashboardsPage: React.FC = () => {
   );
 
   const _renderHeader = useCallback(() => {
-    return (
-      <>
-        {displayed === DisplayType.List ? (
-          <div className="dashboard-list__header">
-            <div className="item-title">Name</div>
-            <div className="item-creator">Creator</div>
-            <div className="item-chain">chain</div>
-            <div className="item-date">date</div>
-            <div className="item-tag">tag</div>
-            {/* <div className="item-like">like</div> */}
-            <div className="item-btn"></div>
-          </div>
-        ) : (
-          <></>
-        )}
-      </>
-    );
-  }, [displayed]);
-
-  const _renderHeaderNew = () => {
     return (
       <>
         {displayed === DisplayType.List ? (
@@ -287,7 +253,7 @@ const DashboardsPage: React.FC = () => {
         )}
       </>
     );
-  };
+  }, [displayed]);
 
   const generateTabs = (): ITabs[] => {
     const tabs: ITabs[] = [
@@ -300,7 +266,7 @@ const DashboardsPage: React.FC = () => {
             requestParams={dashboardParams}
             fetchData={fetchAllDashboards}
             limit={12}
-            renderHeader={_renderHeaderNew}
+            renderHeader={_renderHeader}
             renderBody={(data) =>
               _renderBody(
                 data.map((item: any) => (
@@ -308,7 +274,6 @@ const DashboardsPage: React.FC = () => {
                     key={item.id}
                     item={item}
                     type={LIST_ITEM_TYPE.DASHBOARDS}
-                    visibility={visibility}
                     displayed={displayed}
                   />
                 )),
@@ -326,7 +291,7 @@ const DashboardsPage: React.FC = () => {
             requestParams={queryParams}
             fetchData={fetchAllQueries}
             limit={15}
-            renderHeader={_renderHeaderNew}
+            renderHeader={_renderHeader}
             renderBody={(data) =>
               _renderBody(
                 data.map((item: any) => (
@@ -334,7 +299,6 @@ const DashboardsPage: React.FC = () => {
                     key={item.id}
                     item={item}
                     type={LIST_ITEM_TYPE.QUERIES}
-                    visibility={visibility}
                     displayed={displayed}
                   />
                 )),
@@ -358,7 +322,7 @@ const DashboardsPage: React.FC = () => {
                   requestParams={dashboardParams}
                   fetchData={fetchMyDashboards}
                   limit={12}
-                  renderHeader={_renderHeaderNew}
+                  renderHeader={_renderHeader}
                   renderBody={(data) =>
                     _renderBody(
                       data.map((item: any) => (
@@ -367,7 +331,6 @@ const DashboardsPage: React.FC = () => {
                           item={item}
                           type={LIST_ITEM_TYPE.MYWORK}
                           myWorkType={TYPE_MYWORK.DASHBOARDS}
-                          visibility={visibility}
                           displayed={displayed}
                         />
                       )),
@@ -382,7 +345,7 @@ const DashboardsPage: React.FC = () => {
                   requestParams={queryParams}
                   fetchData={fetchMyQueries}
                   limit={15}
-                  renderHeader={_renderHeaderNew}
+                  renderHeader={_renderHeader}
                   renderBody={(data) =>
                     _renderBody(
                       data.map((item: any) => (
@@ -391,7 +354,6 @@ const DashboardsPage: React.FC = () => {
                           item={item}
                           type={LIST_ITEM_TYPE.MYWORK}
                           myWorkType={TYPE_MYWORK.QUERIES}
-                          visibility={visibility}
                           displayed={displayed}
                         />
                       )),
@@ -433,7 +395,11 @@ const DashboardsPage: React.FC = () => {
               },
               mb: { base: '34px', lg: 6 },
             }}
-            sxTabsHeader={{ justifyContent: { lg: 'center !important' } }}
+            sxTabsHeader={{
+              justifyContent: { lg: 'center !important' },
+              overflow: 'hidden',
+              borderBottom: { base: '1px solid #C7D2E1', lg: 'none' },
+            }}
           />
         </Box>
       </Flex>
