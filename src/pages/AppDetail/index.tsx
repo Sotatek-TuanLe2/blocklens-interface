@@ -238,11 +238,10 @@ const AppDetail = () => {
             <AppButton
               size={'md'}
               variant="cancel"
-
               onClick={() => history.push(`/app/${appId}/settings`)}
             >
               <Box className="icon-settings" />
-              {!isMobile && <Box bg='' color='black' ml={2}>Setting</Box>}
+              {!isMobile && <Box ml={2}>Setting</Box>}
             </AppButton>
           </Flex>
         </Flex>
