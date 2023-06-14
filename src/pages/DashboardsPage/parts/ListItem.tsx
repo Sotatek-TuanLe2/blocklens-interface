@@ -29,15 +29,11 @@ interface IListItem {
   myWorkType?: typeof TYPE_MYWORK[keyof typeof TYPE_MYWORK];
   item?: IDashboardDetail | IQuery;
   visibility?: 'COLUMN' | 'ROW';
-  displayed?: DisplayType;
+  displayed?: string;
 }
 
 const ListItem: React.FC<IListItem> = (props) => {
   const { type, myWorkType, item, visibility, displayed } = props;
-  const history = useHistory();
-
-  // const [favorite, setFavorite] = useState<boolean>(false);
-
   const itemClass =
     type === LIST_ITEM_TYPE.DASHBOARDS
       ? new Dashboard(item as IDashboardDetail)
@@ -174,23 +170,34 @@ const ListItem: React.FC<IListItem> = (props) => {
         justify={'stretch'}
         boxShadow={'0px 15px 30px rgba(0, 0, 0, 0.04)'}
         bg={'white'}
-        borderRadius={{ base: 2.5, lg: '14px' }}
+        borderRadius={{ base: '10px', lg: '14px' }}
         className="article"
       >
         <Box
-          borderTopLeftRadius={{ base: 2.5, lg: '14px' }}
-          borderTopRightRadius={{ base: 2.5, lg: '14px' }}
+          borderTopLeftRadius={{ base: '10px', lg: '14px' }}
+          borderTopRightRadius={{ base: '10px', lg: '14px' }}
           overflow={'hidden'}
+          style={{ aspectRatio: '295 / 180' }}
         >
           <Link to={getTitleUrl()}>
-            <img
+            <Image
               src={itemClass.getThumnail() || '/images/ThumbnailDashboard.png'}
               alt="thumbnail"
+              minW={'full'}
+              minH={'full'}
+              objectFit={'cover'}
+              objectPosition={'center'}
             />
           </Link>
         </Box>
-        <Flex w={'full'} flexDir={'column'} p={4}>
-          <Flex w={'full'} flexGrow={1}>
+        <Flex
+          w={'full'}
+          flexGrow={1}
+          flexDir={'column'}
+          justify={'flex-end'}
+          p={4}
+        >
+          <Flex w={'full'}>
             <Box flexGrow={1}>
               <Link className="article-name" to={getTitleUrl()}>
                 <Tooltip
@@ -322,8 +329,9 @@ const ListItem: React.FC<IListItem> = (props) => {
         <Flex flexGrow={1} w={'22%'} overflow={'hidden'} pr={2.5}>
           <Link to={getTitleUrl()}>
             <Flex align={'center'}>
-              {type === LIST_ITEM_TYPE.DASHBOARDS && (
-                <Box h={'48px'} style={{ aspectRatio: '74 / 48' }}>
+              {(type === LIST_ITEM_TYPE.DASHBOARDS ||
+                myWorkType === LIST_ITEM_TYPE.DASHBOARDS) && (
+                <Box h={'48px'} style={{ aspectRatio: '74 / 48' }} mr={3}>
                   <Image
                     src={
                       itemClass.getThumnail() ||
@@ -341,9 +349,7 @@ const ListItem: React.FC<IListItem> = (props) => {
                 placement="top"
                 label={itemClass.getName()}
               >
-                <Box ml={3} className="article-name">
-                  {itemClass.getName()}
-                </Box>
+                <Box className="article-name">{itemClass.getName()}</Box>
               </Tooltip>
             </Flex>
           </Link>
