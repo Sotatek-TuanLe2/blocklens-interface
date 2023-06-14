@@ -1,6 +1,6 @@
 import { Box, Flex, Tooltip } from '@chakra-ui/react';
 import AceEditor from 'react-ace';
-import { AppLoadingTable, AppTag } from 'src/components';
+import { AppLoadingTable } from 'src/components';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import VisualizationDisplay from 'src/pages/WorkspacePage/parts/VisualizationDisplay';
 import 'ace-builds/src-noconflict/theme-monokai';
@@ -18,10 +18,9 @@ import 'src/styles/pages/QueriesPage.scss';
 import { toastError } from 'src/utils/utils-notify';
 import rf from 'src/requests/RequestFactory';
 import { QUERY_RESULT_STATUS } from 'src/utils/common';
-import { Query } from 'src/utils/utils-query';
 import Header from 'src/pages/WorkspacePage/parts/Header';
-import AppNetworkIcons from 'src/components/AppNetworkIcons';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
+import { Query } from 'src/utils/utils-query';
 
 const QueryPart: React.FC = () => {
   const { queryId } = useParams<{ queryId: string }>();
@@ -36,6 +35,13 @@ const QueryPart: React.FC = () => {
 
   const fetchQueryResultInterval = useRef<any>(null);
 
+  const queryClass = useMemo(() => {
+    if (!queryValue) {
+      return null;
+    }
+    return new Query(queryValue);
+  }, [queryValue]);
+
   useEffect(() => {
     if (queryId) {
       fetchInitalData();
@@ -47,13 +53,6 @@ const QueryPart: React.FC = () => {
       }
     };
   }, [queryId]);
-
-  const queryClass = useMemo(() => {
-    if (!queryValue) {
-      return null;
-    }
-    return new Query(queryValue);
-  }, [queryValue]);
 
   const getExecutionResultById = async (executionId: string) => {
     clearInterval(fetchQueryResultInterval.current);
@@ -196,14 +195,6 @@ const QueryPart: React.FC = () => {
         <Box className="queries-page__right-side">
           <Box className="editor-wrapper ">
             <Box className="header-tab">
-              <div className="header-tab__info">
-                {queryClass?.getChains() && (
-                  <AppNetworkIcons networkIds={queryClass?.getChains()} />
-                )}
-                {['defi', 'gas', 'dex'].map((item) => (
-                  <AppTag key={item} value={item} />
-                ))}
-              </div>
               <Tooltip
                 label={
                   expandLayout === LAYOUT_QUERY.HIDDEN ? 'Maximize' : 'Minimize'

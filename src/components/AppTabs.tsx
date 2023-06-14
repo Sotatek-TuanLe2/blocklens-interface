@@ -64,8 +64,8 @@ const AppTabs: FC<IAppTabs> = ({
         >
           <Flex
             alignItems="center"
-            className="tabs-container"
             overflow={'auto'}
+            className="tabs-container"
           >
             {tabs.map((tab: ITabs, index: number) => {
               return (

@@ -117,7 +117,11 @@ const ListItem: React.FC<IListItem> = (props) => {
         >
           <Flex w={'full'}>
             <Box flexGrow={1} maxW={'100%'} overflow={'hidden'}>
-              <Link className="article-name" to={getTitleUrl()} style={{display: 'block'}}>
+              <Link
+                className="article-name"
+                to={getTitleUrl()}
+                style={{ display: 'block' }}
+              >
                 <Tooltip
                   p={2}
                   hasArrow
