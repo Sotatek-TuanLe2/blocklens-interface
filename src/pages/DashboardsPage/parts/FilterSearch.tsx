@@ -286,12 +286,12 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
             </Flex>
           )}
           {isMyWork && (
-            <Flex flexGrow={{ base: 1, lg: 0 }}>
+            <Flex flexGrow={{ base: 1, lg: 0 }} maxW={'50%'}>
               <AppMenu
                 data={menuDashboardQueries}
                 value={myWorkType}
                 setValue={onChangeMyWorkType}
-                minW={'179px'}
+                minW={{base: 'auto', lg: '179px'}}
               />
             </Flex>
           )}
@@ -305,7 +305,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
             border={'1px solid #C7D2E1'}
             borderRadius={'6px'}
             transition={'.2s linear'}
-            ml={2.5}
+            ml={!isDashboard && !isMyWork ? 0 : 2.5}
             onClick={onToggle}
             cursor={'pointer'}
             userSelect={'none'}

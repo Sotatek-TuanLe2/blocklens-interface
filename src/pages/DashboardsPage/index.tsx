@@ -433,7 +433,7 @@ const DashboardsPage: React.FC = () => {
               },
               mb: { base: '34px', lg: 6 },
             }}
-            sxTabsHeader={{ justifyContent: { lg: 'center !important' } }}
+            sxTabsHeader={{ justifyContent: { lg: 'center !important' }, overflow: 'hidden' }}
           />
         </Box>
       </Flex>

@@ -15,7 +15,7 @@ interface IAppMenuProps {
   data: IDataMenu[];
   value: string;
   setValue: (value: string) => void;
-  minW?: string;
+  minW?: any;
 }
 
 const AppMenu: FC<IAppMenuProps> = ({ data, value, setValue, minW }) => {
