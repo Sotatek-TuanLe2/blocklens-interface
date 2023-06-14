@@ -331,8 +331,11 @@
   &:hover {
     .link {
       text-decoration: underline;
+      color: $main;
     }
   }
+
+  color: $main;
 }
 
 .box-filter {
