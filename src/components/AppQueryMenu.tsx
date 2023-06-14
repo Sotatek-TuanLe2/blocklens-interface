@@ -17,6 +17,7 @@ import 'src/styles/components/AppQueryMenu.scss';
 import { TYPE_OF_MODAL, ROUTES } from 'src/utils/common';
 import { IDashboardDetail, IQuery } from 'src/utils/query.type';
 import AppButton from './AppButton';
+import { IconDotMore } from '../assets/icons';
 
 interface IAppQueryMenu {
   menu?: string[];
@@ -135,7 +136,9 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
             className="app-query-menu"
             onClick={(e) => e.stopPropagation()}
           >
-            <p className="icon-query-list" />
+            <Box>
+              <IconDotMore color={'rgba(0, 2, 36, 0.5)'} />
+            </Box>
           </MenuButton>
           <MenuList
             boxShadow={'0px 10px 40px rgba(125, 143, 179, 0.2)'}
