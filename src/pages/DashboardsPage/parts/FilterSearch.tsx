@@ -13,11 +13,14 @@ import {
   FireIcon,
   IconFilter,
   IconDisplayGrid,
-  IconDisplayList, DashboardListIcon, QueriesIcon,
+  IconDisplayList,
+  DashboardListIcon,
+  QueriesIcon,
 } from 'src/assets/icons';
 import {
   AppButton,
-  AppInput, AppMenu,
+  AppInput,
+  AppMenu,
   AppSelect2,
   AppTag,
   IOption,
@@ -30,7 +33,7 @@ import { ROUTES } from 'src/utils/common';
 import { getChainIconByChainName } from 'src/utils/utils-network';
 import { HOME_URL_PARAMS, LIST_ITEM_TYPE } from '..';
 import { ChevronDownIcon, AddIcon } from '@chakra-ui/icons';
-import {IDataMenu} from "../../../utils/utils-app";
+import { IDataMenu } from '../../../utils/utils-app';
 
 interface IFilterSearch {
   type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
@@ -112,27 +115,27 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   const menuDashboardQueries: IDataMenu[] = [
     {
       value: LIST_ITEM_TYPE.DASHBOARDS,
-      icon: <DashboardListIcon/>,
-      label: 'Dashboard'
+      icon: <DashboardListIcon />,
+      label: 'Dashboard',
     },
     {
       value: LIST_ITEM_TYPE.QUERIES,
-      icon: <QueriesIcon/>,
-      label: 'Queries'
-    }
+      icon: <QueriesIcon />,
+      label: 'Queries',
+    },
   ];
 
   const menuGridList: IDataMenu[] = [
     {
       value: DisplayType.Grid,
-      icon: <IconDisplayGrid/>,
-      label: 'Grid'
+      icon: <IconDisplayGrid />,
+      label: 'Grid',
     },
     {
       value: DisplayType.List,
-      icon: <IconDisplayList/>,
-      label: 'List'
-    }
+      icon: <IconDisplayList />,
+      label: 'List',
+    },
   ];
 
   useEffect(() => {
@@ -274,13 +277,23 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
         <Flex align={'center'} flexGrow={1}>
           {isDashboard && (
             <Flex flexGrow={{ base: 1, lg: 0 }}>
-              <AppMenu data={menuGridList} value={displayed} setValue={setDisplayed} minW={'124px'} />
+              <AppMenu
+                data={menuGridList}
+                value={displayed}
+                setValue={setDisplayed}
+                minW={'124px'}
+              />
             </Flex>
           )}
           {isMyWork && (
-              <Flex flexGrow={{ base: 1, lg: 0 }}>
-              <AppMenu data={menuDashboardQueries} value={myWorkType} setValue={onChangeMyWorkType} minW={'179px'}/>
-              </Flex>
+            <Flex flexGrow={{ base: 1, lg: 0 }}>
+              <AppMenu
+                data={menuDashboardQueries}
+                value={myWorkType}
+                setValue={onChangeMyWorkType}
+                minW={'179px'}
+              />
+            </Flex>
           )}
           <Flex
             flexGrow={{ base: 1, lg: 0 }}

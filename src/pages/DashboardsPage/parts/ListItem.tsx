@@ -329,7 +329,8 @@ const ListItem: React.FC<IListItem> = (props) => {
         <Flex flexGrow={1} w={'22%'} overflow={'hidden'} pr={2.5}>
           <Link to={getTitleUrl()}>
             <Flex align={'center'}>
-              {(type === LIST_ITEM_TYPE.DASHBOARDS || myWorkType === LIST_ITEM_TYPE.DASHBOARDS) && (
+              {(type === LIST_ITEM_TYPE.DASHBOARDS ||
+                myWorkType === LIST_ITEM_TYPE.DASHBOARDS) && (
                 <Box h={'48px'} style={{ aspectRatio: '74 / 48' }} mr={3}>
                   <Image
                     src={
