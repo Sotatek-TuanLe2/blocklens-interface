@@ -191,8 +191,10 @@ const Header: React.FC<IHeaderProps> = (props) => {
         {!isCreatingQuery && (
           <div className="item-desc">
             <img src="/images/AvatarDashboardCard.png" alt="avatar" />
-            <p className="user-name">{author} /</p>
-            <span>{dataClass?.getName()}</span>
+            <span>
+              <span className="user-name">{`${author} / `}</span>
+              <span>{dataClass?.getName()}</span>
+            </span>
           </div>
         )}
       </div>
