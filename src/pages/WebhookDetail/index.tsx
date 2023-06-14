@@ -58,12 +58,13 @@ const WebhookDetail = () => {
             <AppButton
               size={'md'}
               variant="cancel"
+              bg='main.100'
               onClick={() =>
                 history.push(`/app/${appId}/webhooks/${webhookId}/settings`)
               }
             >
               <Box className="icon-settings" />
-              {!isMobile && <Box ml={2}>Setting</Box>}
+              {!isMobile && <Box color='black' ml={2}>Setting</Box>}
             </AppButton>
           </Flex>
         </Flex>

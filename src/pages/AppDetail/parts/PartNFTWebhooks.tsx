@@ -26,7 +26,9 @@ const PartNFTWebhooks: FC<IListNTF> = ({ appInfo }) => {
     return (
       <Flex className="box-create">
         <Box className="icon-no-data" mb={4} />
-        Create your webhook to start experiencing Blocklens with NFT Activity!
+        <Box style={{color: 'black'}}>
+          Create your webhook to start experiencing Blocklens with NFT Activity!
+        </Box>
         <AppButton
           isDisabled={isDisabledApp}
           size={'lg'}

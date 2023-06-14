@@ -14,6 +14,7 @@
     @include heading-4;
     align-items: center;
     margin-bottom: 3px;
+
     @include tablet {
       @include heading-6;
     }
@@ -35,21 +36,27 @@
     background-color: $card;
     border-radius: 20px;
     margin-right: 12px;
+    background: $white;
   }
 
   .app-tabs {
     margin: 0 40px;
     border-bottom: 1px solid $border;
+
     @include tablet {
       margin: 0 20px;
       overflow-x: scroll;
-      -ms-overflow-style: none; /* Internet Explorer 10+ */
-      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none;
+      /* Internet Explorer 10+ */
+      scrollbar-width: none;
+
+      /* Firefox */
       &::-webkit-scrollbar {
-        display: none; /* Safari and Chrome */
+        display: none;
+        /* Safari and Chrome */
       }
 
-      & > div {
+      &>div {
         width: max-content;
       }
     }
@@ -87,6 +94,7 @@
 
       .app-tab {
         padding-bottom: 0;
+
         &[aria-selected='true'] {
           border-bottom: 0;
         }
@@ -109,6 +117,7 @@
 
   .list-webhook {
     padding: 30px 0 0 0 !important;
+
     @include tablet {
       padding-top: 24px !important;
     }
@@ -125,9 +134,11 @@
       font-size: 13px;
       text-transform: uppercase;
     }
+
     table th {
       background: #f9f9f9;
     }
+
     table tr {
       background-color: white;
     }
@@ -159,6 +170,7 @@
 
 .statics {
   margin-bottom: 30px;
+
   @include tablet {
     margin-bottom: 20px;
   }
@@ -198,17 +210,20 @@
     transform: translateY(-50%);
     right: 0;
   }
+
   .chartMobile {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
     right: 0;
   }
+
   .statsMobile {
     display: flex;
     width: 100%;
     flex-wrap: nowrap;
     overflow-x: scroll;
+
     &::-webkit-scrollbar {
       display: none;
     }
@@ -217,6 +232,7 @@
       min-width: 80%;
       margin-right: 10px;
     }
+
     :last-child {
       margin-right: 0px;
     }
@@ -253,11 +269,13 @@
   .chain-app {
     align-items: center;
     border-radius: 6px;
-    background-color: $bg2;
+    background-color: $white;
     width: 100%;
     padding: 0 14px;
     height: 48px;
     color: $paragraph;
+    /* Line */
+    border: 1px solid #C7D2E1;
   }
 }
 
@@ -273,6 +291,10 @@
   }
 }
 
+.button {
+  background: linear-gradient(271.63deg, #1E72FF -2.92%, #0250BE 102.1%) !important;
+}
+
 .field-disabled {
   @include text-medium-regular;
   padding: 12px 16px;
@@ -283,6 +305,7 @@
 
 .form-create {
   background-color: $card;
+
   @include tablet {
     padding: 20px !important;
   }
@@ -355,6 +378,7 @@
     @include tablet {
       margin: 20px;
       justify-content: space-between;
+
       .input-search {
         margin-left: 0;
         padding: 4px 20px 4px 45px;
@@ -365,6 +389,7 @@
 
 .link-redirect {
   color: $paragraph;
+
   &:hover {
     color: $link;
   }
@@ -372,6 +397,7 @@
 
 .filter-table {
   position: relative;
+
   &:hover {
     cursor: pointer;
     color: $title;
@@ -381,7 +407,8 @@
     color: $title;
   }
 
-  &__box-search, &__options {
+  &__box-search,
+  &__options {
     background-color: #2f3b58;
     padding: 14px 10px;
     border-radius: 6px;
@@ -436,9 +463,11 @@
   .header-list,
   .content-list {
     padding: 15px 40px;
+
     div:first-child {
       width: 60%;
     }
+
     div:last-child {
       width: 40%;
       text-align: center;
@@ -473,9 +502,9 @@
     cursor: pointer;
   }
 }
+
 .stripe-form {
-  iframe{
+  iframe {
     display: block !important;
   }
 }
-
