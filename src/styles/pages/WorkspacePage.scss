@@ -244,7 +244,7 @@
     &__dashboard,
     &__query {
       height: 100%;
-      
+
       .query-container {
         height: calc(100% - 50px - 8px);
         padding-bottom: 20px;
@@ -268,7 +268,11 @@
 
             &:hover {
               border: 1px solid $blue;
-              background: linear-gradient(268.85deg, rgba(34, 108, 255, 0.12) 22.48%, rgba(16, 132, 255, 0.12) 83.59%);
+              background: linear-gradient(
+                268.85deg,
+                rgba(34, 108, 255, 0.12) 22.48%,
+                rgba(16, 132, 255, 0.12) 83.59%
+              );
             }
           }
         }
@@ -279,17 +283,22 @@
           position: fixed;
           bottom: 22px;
           right: 22px;
+          z-index: 1000;
 
           cursor: pointer;
           display: flex;
           align-items: center;
           justify-content: center;
-  
+
           width: 56px;
           height: 56px;
-          background: linear-gradient(268.85deg, #226cff 22.48%, #1084ff 83.59%);
+          background: linear-gradient(
+            268.85deg,
+            #226cff 22.48%,
+            #1084ff 83.59%
+          );
           border-radius: 50%;
-  
+
           &:hover {
             background: $blue;
           }
