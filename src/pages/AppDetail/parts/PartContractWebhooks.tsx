@@ -34,7 +34,7 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
           size={'lg'}
           onClick={() =>
             history.push(
-              `/create-webhook/${appInfo.appId}?type=${WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY}`,
+              `/create-webhook/${appInfo.appId}?type=${WEBHOOK_TYPES.CONTRACT_ACTIVITY}`,
             )
           }
         >
@@ -62,7 +62,7 @@ const PartContractWebhooks: FC<IListContract> = ({ appInfo }) => {
           params={params}
           appInfo={appInfo}
           setParams={setParams}
-          type={WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY}
+          type={WEBHOOK_TYPES.CONTRACT_ACTIVITY}
         />
         {totalWebhook === 0 && _renderNoData()}
       </Box>
