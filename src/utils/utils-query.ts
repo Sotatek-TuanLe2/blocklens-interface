@@ -28,7 +28,6 @@ export interface QueryInterface {
   privateMode: boolean;
   query: string;
 
-  // user: UserInterface;
   userInfo: IUserInfo;
   chains: string[];
   visualizations: Visualization[];
@@ -111,7 +110,6 @@ export class Query implements QueryInterface {
   public privateMode = false;
   public query = '';
   public userInfo: IUserInfo;
-  // public user;
   public chains: string[];
   public visualizations: Visualization[];
 
@@ -125,7 +123,6 @@ export class Query implements QueryInterface {
     this.privateMode = query.isPrivate;
     this.query = query.query;
     this.thumbnail = query.thumbnail;
-    // this.user = query.user;
     this.userInfo = query.userInfo;
     this.chains = query.utilizedChains;
     this.visualizations = [];
@@ -167,10 +164,6 @@ export class Query implements QueryInterface {
   getQuery() {
     return this.query;
   }
-
-  // getUser() {
-  //   return this.user;
-  // }
 
   getUser() {
     return this.userInfo || null;
