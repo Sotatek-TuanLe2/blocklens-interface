@@ -41,8 +41,7 @@
 
   .app-tabs {
     margin: 0 40px;
-    border-bottom: 1px solid $border;
-
+    border-bottom: 1px solid $disable;
     @include tablet {
       margin: 0 20px;
       overflow-x: scroll;
@@ -65,7 +64,7 @@
       @include text-large-bold;
       padding: 0 0 8px 0;
       margin-right: 40px;
-      color: $line;
+      color: $paragraph2;
 
       @include tablet {
         width: max-content;
@@ -75,8 +74,8 @@
 
       &[aria-selected='true'] {
         box-shadow: none;
-        border-bottom: 2px solid $title;
-        color: $title;
+        border-bottom: 2px solid $main;
+        color: $main;
       }
 
       &:first-child {
@@ -104,10 +103,10 @@
 
   .content-tab-app {
     padding: 0;
-    margin-top: 30px;
+    margin-top: 10px;
 
     @include tablet {
-      margin-top: 14px !important;
+      margin-top: 10px !important;
     }
 
     &.no-tab {
@@ -125,7 +124,7 @@
 
   .description {
     @include text-medium-regular;
-    color: $paragraph;
+    color: $paragraph1;
   }
 
   .list-nft {
@@ -146,7 +145,7 @@
 
   .box-create {
     @include text-large-regular;
-    color: $paragraph;
+    color: $title;
     max-width: 480px;
     flex-direction: column;
     justify-content: center;
