@@ -178,8 +178,6 @@ const CreateWebhook = () => {
       return forceUpdate();
     }
 
-    console.log(type, 'fdgfgf');
-
     if (
       !dataForm.abiFilter.length &&
       type !== WEBHOOK_TYPES.ADDRESS_ACTIVITY &&

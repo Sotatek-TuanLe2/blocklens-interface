@@ -81,12 +81,12 @@
 
   .tr-list {
     &:hover {
-      background-color: $bg3;
+      background-color: $bg;
       cursor: pointer;
     }
 
     td {
-      border-bottom: 1px solid $bg;
+      border-bottom: 1px solid $line;
       color: $title;
       @include text-medium-regular;
 
