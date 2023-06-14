@@ -4,14 +4,12 @@ import {
   Divider,
   Flex,
   Image,
-  Td,
   Text,
   Tooltip,
-  Tr,
   useDisclosure,
 } from '@chakra-ui/react';
 import moment from 'moment';
-import { Link, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { AppTag } from 'src/components';
 import AppNetworkIcons from 'src/components/AppNetworkIcons';
 import { DisplayType } from 'src/constants';
@@ -28,12 +26,11 @@ interface IListItem {
   type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
   myWorkType?: typeof TYPE_MYWORK[keyof typeof TYPE_MYWORK];
   item?: IDashboardDetail | IQuery;
-  visibility?: 'COLUMN' | 'ROW';
   displayed?: string;
 }
 
 const ListItem: React.FC<IListItem> = (props) => {
-  const { type, myWorkType, item, visibility, displayed } = props;
+  const { type, myWorkType, item, displayed } = props;
   const itemClass =
     type === LIST_ITEM_TYPE.DASHBOARDS
       ? new Dashboard(item as IDashboardDetail)
@@ -76,89 +73,6 @@ const ListItem: React.FC<IListItem> = (props) => {
           isNavMenu={isNavMenu}
         />
       )
-    );
-  };
-
-  const _renderGridItem = () => {
-    return (
-      <Box
-        className="dashboard-list__item--column"
-        w={'100% !important'}
-        px={'0 !important'}
-      >
-        <Flex flexDirection="column" alignItems={'center'} w={'full'}>
-          <Box
-            className="dashboard-list__item--column__avatar"
-            w={'100% !important'}
-          >
-            <Link to={getTitleUrl()}>
-              <img
-                src={
-                  itemClass.getThumnail() || '/images/ThumbnailDashboard.png'
-                }
-                alt="thumbnail"
-                className="thumbnail"
-              />
-            </Link>
-            {/* <div className="dashboard-list__item--column__box-favourite">
-              {favorite ? (
-                <IconHeartFavorite onClick={() => setFavorite((pre) => !pre)} />
-              ) : (
-                <IconHeart onClick={() => setFavorite((pre) => !pre)} />
-              )}
-              25
-            </div> */}
-          </Box>
-          <Box className="dashboard-list__item--column__content" px={4}>
-            <Flex
-              className="dashboard-list__item--column__content__title"
-              alignItems={'center'}
-            >
-              <Flex flexDirection={'column'}>
-                <Link className="item-name" to={getTitleUrl()}>
-                  <Tooltip
-                    p={2}
-                    hasArrow
-                    placement="top"
-                    label={itemClass.getName()}
-                  >
-                    {itemClass.getName()}
-                  </Tooltip>
-                </Link>
-                <Flex
-                  flexWrap={'wrap'}
-                  flexDirection={'row'}
-                  maxW={52}
-                  className="tag"
-                >
-                  {listTags.map((item) => (
-                    <AppTag key={item.id} value={item.name} />
-                  ))}
-                </Flex>
-              </Flex>
-              <div className="item-options">{_renderDropdown()}</div>
-            </Flex>
-            <Flex
-              mt={'14px'}
-              flexDirection={'row'}
-              justifyContent="space-between"
-            >
-              <Flex flexDirection={'row'}>
-                <img src="/images/AvatarDashboardCard.png" alt="avatar" />
-                <div className="dashboard-list__item--column__content__item-desc">
-                  <Text>Tyler Covington</Text>
-                  <Text>
-                    {moment(itemClass.getCreatedTime()).format('YYYY MMMM Do')}
-                  </Text>
-                </div>
-              </Flex>
-              {itemClass.getChains() && (
-                <AppNetworkIcons networkIds={itemClass.getChains()} />
-              )}
-            </Flex>
-          </Box>
-        </Flex>
-      </Box>
     );
   };
 
@@ -259,58 +173,6 @@ const ListItem: React.FC<IListItem> = (props) => {
           </Flex>
         </Flex>
       </Flex>
-    );
-  };
-
-  const _renderRowItem = () => {
-    return (
-      <div className="dashboard-list__item--row theme-border">
-        <Flex flexDirection="row" alignItems={'center'}>
-          <Link
-            to={getTitleUrl()}
-            className="dashboard-list__item--row__avatar"
-          >
-            {type === LIST_ITEM_TYPE.DASHBOARDS && (
-              <img
-                src={
-                  itemClass.getThumnail() || '/images/ThumbnailDashboard.png'
-                }
-                alt="thumbnail"
-                className="thumbnail"
-              />
-            )}
-            <Tooltip p={2} hasArrow placement="top" label={itemClass.getName()}>
-              <div className="item-name">{itemClass.getName()}</div>
-            </Tooltip>
-          </Link>
-          <div className="item-desc">
-            <img src="/images/AvatarDashboardCard.png" alt="avatar" />
-            <p>Tyler Covington</p>
-          </div>
-          <div className="item-chain">
-            {itemClass.getChains() && (
-              <AppNetworkIcons networkIds={itemClass.getChains()} />
-            )}
-          </div>
-          <div className="item-date">
-            {moment(itemClass.getCreatedTime()).format('YYYY MMMM Do')}
-          </div>
-          <div className="item-tag tag">
-            {listTags.map((item) => (
-              <AppTag key={item.id} value={item.name} />
-            ))}
-          </div>
-          {/* <div className="item-favorite">
-            {favorite ? (
-              <IconHeartFavorite onClick={() => setFavorite((pre) => !pre)} />
-            ) : (
-              <IconHeart onClick={() => setFavorite((pre) => !pre)} />
-            )}
-            25
-          </div> */}
-          <div className="item-btn-options">{_renderDropdown()}</div>
-        </Flex>
-      </div>
     );
   };
 

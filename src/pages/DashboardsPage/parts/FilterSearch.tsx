@@ -1,11 +1,4 @@
-import {
-  Box,
-  Button,
-  Collapse,
-  Flex,
-  Text,
-  useDisclosure,
-} from '@chakra-ui/react';
+import { Box, Collapse, Flex, Text, useDisclosure } from '@chakra-ui/react';
 import _ from 'lodash';
 import { ChangeEvent, FC, useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router';
@@ -25,22 +18,20 @@ import {
   AppTag,
   IOption,
 } from 'src/components';
-import { DisplayType, VisibilityGridDashboardList } from 'src/constants';
+import { DisplayType } from 'src/constants';
 import useUser from 'src/hooks/useUser';
 import ModalCreateNew from 'src/modals/querySQL/ModalCreateNew';
 import rf from 'src/requests/RequestFactory';
 import { ROUTES } from 'src/utils/common';
 import { getChainIconByChainName } from 'src/utils/utils-network';
 import { HOME_URL_PARAMS, LIST_ITEM_TYPE } from '..';
-import { ChevronDownIcon, AddIcon } from '@chakra-ui/icons';
+import { AddIcon } from '@chakra-ui/icons';
 import { IDataMenu } from '../../../utils/utils-app';
 
 interface IFilterSearch {
   type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
   displayed: string;
   setDisplayed: (display: string) => void;
-  visibility: 'COLUMN' | 'ROW';
-  changeVisibility: (value: VisibilityGridDashboardList) => void;
   myWorkType: string;
   changeMyWorkType: (value: string) => void;
 }
@@ -80,15 +71,7 @@ export const TYPE_MYWORK = {
 
 const FilterSearch: React.FC<IFilterSearch> = (props) => {
   const { isOpen, onToggle } = useDisclosure();
-  const {
-    type,
-    visibility,
-    changeVisibility,
-    displayed,
-    setDisplayed,
-    myWorkType,
-    changeMyWorkType,
-  } = props;
+  const { type, displayed, setDisplayed, myWorkType, changeMyWorkType } = props;
   const history = useHistory();
   const { user } = useUser();
   console.log('user: ', user);
@@ -173,10 +156,6 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   }, [searchUrl]);
 
   useEffect(() => {
-    isDashboard
-      ? changeVisibility(VisibilityGridDashboardList.COLUMN)
-      : changeVisibility(VisibilityGridDashboardList.ROW);
-
     isDashboard
       ? setDisplayed(DisplayType.Grid)
       : setDisplayed(DisplayType.List);

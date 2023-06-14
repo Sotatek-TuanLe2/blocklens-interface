@@ -1,20 +1,11 @@
-import {
-  Accordion,
-  Box,
-  Flex,
-  SimpleGrid,
-  Tbody,
-  Td,
-  Thead,
-  Tr,
-} from '@chakra-ui/react';
+import { Box, Flex, SimpleGrid } from '@chakra-ui/react';
 import _ from 'lodash';
 import { useCallback, useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { DashboardListIcon, IconMywork, QueriesIcon } from 'src/assets/icons';
 import { AppDataTable, RequestParams } from 'src/components';
 import AppTabs, { ITabs } from 'src/components/AppTabs';
-import { DisplayType, VisibilityGridDashboardList } from 'src/constants';
+import { DisplayType } from 'src/constants';
 import useUser from 'src/hooks/useUser';
 import { BasePage } from 'src/layouts';
 import {
@@ -56,9 +47,6 @@ const DashboardsPage: React.FC = () => {
   const [queryParams, setQueryParams] = useState<IQueriesParams>({});
   const [myWorkType, setMyWorkType] = useState<string>(TYPE_MYWORK.DASHBOARDS);
 
-  const [visibility, setVisibility] = useState<VisibilityGridDashboardList>(
-    VisibilityGridDashboardList.COLUMN,
-  );
   const [displayed, setDisplayed] = useState<string>(DisplayType.Grid);
 
   useEffect(() => {
@@ -198,8 +186,6 @@ const DashboardsPage: React.FC = () => {
           >
             <FilterSearch
               type={tab}
-              visibility={visibility}
-              changeVisibility={setVisibility}
               displayed={displayed}
               setDisplayed={setDisplayed}
               myWorkType={myWorkType}
@@ -210,7 +196,7 @@ const DashboardsPage: React.FC = () => {
         </>
       );
     },
-    [tab, visibility, myWorkType, displayed],
+    [tab, myWorkType, displayed],
   );
 
   const _renderBody = useCallback(
@@ -308,7 +294,6 @@ const DashboardsPage: React.FC = () => {
                     key={item.id}
                     item={item}
                     type={LIST_ITEM_TYPE.DASHBOARDS}
-                    visibility={visibility}
                     displayed={displayed}
                   />
                 )),
@@ -334,7 +319,6 @@ const DashboardsPage: React.FC = () => {
                     key={item.id}
                     item={item}
                     type={LIST_ITEM_TYPE.QUERIES}
-                    visibility={visibility}
                     displayed={displayed}
                   />
                 )),
@@ -367,7 +351,6 @@ const DashboardsPage: React.FC = () => {
                           item={item}
                           type={LIST_ITEM_TYPE.MYWORK}
                           myWorkType={TYPE_MYWORK.DASHBOARDS}
-                          visibility={visibility}
                           displayed={displayed}
                         />
                       )),
@@ -391,7 +374,6 @@ const DashboardsPage: React.FC = () => {
                           item={item}
                           type={LIST_ITEM_TYPE.MYWORK}
                           myWorkType={TYPE_MYWORK.QUERIES}
-                          visibility={visibility}
                           displayed={displayed}
                         />
                       )),
