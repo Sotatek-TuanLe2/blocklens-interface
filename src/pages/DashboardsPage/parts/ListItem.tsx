@@ -80,7 +80,7 @@ const ListItem: React.FC<IListItem> = (props) => {
     );
   };
 
-  const _renderGridItemNew = () => {
+  const _renderGridItem = () => {
     return (
       <Flex
         w={'full'}
@@ -180,7 +180,7 @@ const ListItem: React.FC<IListItem> = (props) => {
     );
   };
 
-  const _renderRowItemNew = () => {
+  const _renderRowItem = () => {
     return (
       <Flex
         align={'center'}
@@ -376,12 +376,10 @@ const ListItem: React.FC<IListItem> = (props) => {
   return (
     <>
       {displayed === DisplayType.Grid ? (
-        _renderGridItemNew()
+        _renderGridItem()
       ) : (
         <>
-          <Box display={{ base: 'none', lg: 'block' }}>
-            {_renderRowItemNew()}
-          </Box>
+          <Box display={{ base: 'none', lg: 'block' }}>{_renderRowItem()}</Box>
           <Box display={{ lg: 'none' }}>{_renderRowItemMobile()}</Box>
         </>
       )}
