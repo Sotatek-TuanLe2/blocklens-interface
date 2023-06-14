@@ -63,7 +63,7 @@ const WebhookDetail = () => {
               }
             >
               <Box className="icon-settings" />
-              {!isMobile && <Box ml={2}>Setting</Box>}
+              {!isMobile && <Box className='setting-btn' ml={2}>Setting</Box>}
             </AppButton>
           </Flex>
         </Flex>

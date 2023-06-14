@@ -97,10 +97,10 @@ export const appButtonStyles = {
     }),
     cancel: (props: StyleProps) => ({
       borderRadius: '6px',
-      bg: 'none',
+      bg: 'white.100',
       fontSize: '16px',
       fontWeight: 500,
-      color: 'white',
+      color: 'bg.100',
       borderWidth: '1px',
       borderColor: 'line.100',
       _hover: {

@@ -8,7 +8,9 @@
     align-items: center;
     margin-bottom: 30px;
     position: relative;
+
   }
+
 
   .name {
     @include heading-4;
@@ -39,9 +41,14 @@
     background: $white;
   }
 
+  .setting-btn {
+    color: $title;
+  }
+
   .app-tabs {
     margin: 0 40px;
     border-bottom: 1px solid $disable;
+
     @include tablet {
       margin: 0 20px;
       overflow-x: scroll;
