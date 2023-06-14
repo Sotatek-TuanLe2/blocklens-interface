@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+
 export enum APP_STATUS {
   DISABLED = 0,
   ENABLE = 1,
@@ -15,4 +17,10 @@ export interface IAppResponse {
   createdAt: number;
   totalWebhook?: number;
   messageToday?: number;
+}
+
+export interface IDataMenu {
+  value: string;
+  icon?: ReactNode;
+  label: ReactNode;
 }
