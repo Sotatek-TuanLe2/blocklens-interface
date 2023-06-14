@@ -291,7 +291,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
                 data={menuDashboardQueries}
                 value={myWorkType}
                 setValue={onChangeMyWorkType}
-                minW={{base: 'auto', lg: '179px'}}
+                minW={{ base: 'auto', lg: '179px' }}
               />
             </Flex>
           )}

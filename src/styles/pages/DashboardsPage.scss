@@ -19,20 +19,26 @@
       border-bottom: 2px solid transparent;
 
       &[aria-selected='true'] {
-        border-bottom: 2px solid #1878ff;
+        border-bottom: 2px solid #0060DB;
 
         svg {
-          color: #1878ff;
+          color: #0060DB;
         }
         .tab-name-content {
           color: $bg1;
         }
       }
 
+      .app-tab__name-tab {
+        margin-right: 20px;
+      }
+
       .tab-name-content {
-        font-weight: 700;
-        font-size: 18px;
         color: rgba(0, 2, 36, 0.5);
+        @include text-large-bold;
+        @media (min-width: 992px) {
+          @include heading-8;
+        }
       }
       svg {
         color: rgba(0, 2, 36, 0.5);
