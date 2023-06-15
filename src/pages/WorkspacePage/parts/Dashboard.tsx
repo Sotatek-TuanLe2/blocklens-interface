@@ -245,6 +245,7 @@ const DashboardPart: React.FC = () => {
         isResizable={editMode}
         measureBeforeMount
         containerPadding={[0, 30]}
+        margin={[20, 20]}
       >
         {dataLayouts.map((item) => (
           <div className="box-layout" key={item.id}>

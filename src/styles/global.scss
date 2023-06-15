@@ -85,7 +85,10 @@ iframe {
 }
 
 .infinite-scroll-component.infinite-scroll {
-  overflow: hidden !important;
+  overflow: visible !important;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .chakra-checkbox__label {

@@ -17,7 +17,13 @@ import 'src/styles/components/AppQueryMenu.scss';
 import { TYPE_OF_MODAL, ROUTES } from 'src/utils/common';
 import { IDashboardDetail, IQuery } from 'src/utils/query.type';
 import AppButton from './AppButton';
-import { IconDotMore } from '../assets/icons';
+import {
+  DeleteQueryIcon,
+  ForkQueryIcon,
+  IconDotMore,
+  SettingQueryIcon,
+  ShareQueryIcon,
+} from '../assets/icons';
 
 interface IAppQueryMenu {
   menu?: string[];
@@ -85,25 +91,25 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
       {
         id: QUERY_MENU_LIST.FORK,
         label: QUERY_MENU_LIST.FORK,
-        icon: <p className="icon-query-fork" />,
+        icon: <ForkQueryIcon />,
         onClick: onToggleModalFork,
       },
       {
         id: QUERY_MENU_LIST.SETTING,
         label: QUERY_MENU_LIST.SETTING,
-        icon: <p className="icon-query-setting" />,
+        icon: <SettingQueryIcon />,
         onClick: onToggleModalSetting,
       },
       {
         id: QUERY_MENU_LIST.SHARE,
         label: QUERY_MENU_LIST.SHARE,
-        icon: <p className="icon-query-share" />,
+        icon: <ShareQueryIcon />,
         onClick: onToggleModalShare,
       },
       {
         id: QUERY_MENU_LIST.DELETE,
         label: QUERY_MENU_LIST.DELETE,
-        icon: <p className="icon-query-delete" />,
+        icon: <DeleteQueryIcon />,
         onClick: onToggleModalDelete,
       },
     ];

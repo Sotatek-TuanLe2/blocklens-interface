@@ -21,7 +21,7 @@
   }
 
   .expand-chart {
-    height: 750px !important;
+    height: 744px !important;
     max-height: unset !important;
 
     .btn-expand-full {
@@ -36,12 +36,12 @@
   }
   .add-chart-full {
     border-radius: 6px;
-    margin-top: 4px;
+    margin-top: 8px;
     margin-bottom: 20px;
     max-height: 500px;
 
     .tabs-header {
-      padding: 5px 17px 6px 17px !important;
+      padding: 7px 17px 7px 17px !important;
       border-bottom: unset !important;
     }
   }
@@ -91,24 +91,25 @@
 
   .ace_scroller {
     overflow: unset;
-    .ace_active-line {
-      background: unset;
+
+    .ace_active-line,
+    .ace_content {
+      background: unset !important;
     }
   }
 
   .custom-editor {
-    border-top: 1px solid rgba(0, 2, 36, 0.1);
-    height: 250px !important;
+    display: block;
     border-bottom-left-radius: 6px;
     border-bottom-right-radius: 6px;
     transition: height linear 0.5s;
 
     &--full {
-      height: 705px !important;
+      height: 746px !important;
     }
 
     &--hidden {
-      height: 0px !important;
+      height: 50px !important;
       border-top: none;
     }
 
@@ -201,11 +202,44 @@
       width: 100%;
     }
 
+    .btn-expand-public {
+      top: 15px;
+      width: fit-content;
+      position: absolute;
+      z-index: 5;
+      right: 20px;
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+
+    .btn-expand-query {
+      width: fit-content;
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      cursor: pointer;
+      animation: showConfig 0.5s forwards;
+    }
+
+    .ace_gutter-cell,
+    .ace_content {
+      top: 18px !important;
+    }
+
     .editor-wrapper {
       width: 100%;
       border-radius: 6px;
+      margin-bottom: 8px;
+      position: relative;
+
       .ace_gutter {
         overflow: unset;
+
+        .ace_gutter-layer {
+          height: 100% !important;
+        }
       }
 
       .ace_editor {
@@ -214,6 +248,20 @@
 
       .ace_scrollbar-v {
         display: none;
+      }
+    }
+
+    .empty-query {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.04);
+      border-radius: 6px;
+      margin-top: 8px;
+      padding: 12px 16px 12px 14px;
+
+      div {
+        cursor: pointer;
       }
     }
 
@@ -258,6 +306,12 @@
       align-items: baseline;
       padding: 0px 17px 10px 17px;
       border-bottom: 1px solid rgba(0, 2, 36, 0.1);
+
+      .btn-expand {
+        &:hover {
+          cursor: pointer;
+        }
+      }
     }
 
     &__wrapper {
@@ -345,7 +399,7 @@
         .main-config {
           width: 28%;
           max-width: 28%;
-          border-left: 1px solid rgba(0, 2, 36, 0.1);;
+          border-left: 1px solid rgba(0, 2, 36, 0.1);
 
           .body-config {
             overflow: auto;
@@ -412,7 +466,7 @@
     .app-tab {
       .tabs-container {
         border-radius: 4px;
-        width: 900px;
+        width: 90%;
         overflow: auto;
         flex-wrap: unset;
         height: 34px;

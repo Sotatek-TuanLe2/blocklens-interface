@@ -51,7 +51,6 @@ export enum CHAIN_NAME {
 
 export enum LAYOUT_QUERY {
   FULL = 'full',
-  HALF = 'half',
   HIDDEN = 'hidden',
 }
 
@@ -89,6 +88,7 @@ export interface IQuery {
   updatedAt: string;
   tags?: string[];
   query: string;
+  resultId: string;
   forkedQuery?: null;
   visualizations: VisualizationType[];
   utilizedChains: string[];
