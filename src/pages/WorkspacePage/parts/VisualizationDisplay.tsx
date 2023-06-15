@@ -13,6 +13,7 @@ import { AppButton, AppTabs, ITabs } from '../../../components';
 import ChartConfigurations from '../../../components/VisualizationConfigs/ChartConfigurations';
 import BaseModal from '../../../modals/BaseModal';
 import {
+  AddChartIcon,
   AreaChartIcon,
   BarChartIcon,
   CounterIcon,
@@ -485,7 +486,10 @@ const VisualizationDisplay = ({
         name: (
           <Tooltip label="Add New Visualization" hasArrow>
             <Flex alignItems={'center'}>
-              <Box className="icon-plus-circle" mr={2} /> Add Chart
+              <Box>
+                <AddChartIcon />
+              </Box>{' '}
+              Add Chart
             </Flex>
           </Tooltip>
         ),
