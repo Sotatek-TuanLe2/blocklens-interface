@@ -403,6 +403,7 @@ const DashboardsPage: React.FC = () => {
                 <AppDataTable
                   requestParams={queryParams}
                   fetchData={fetchMyQueries}
+                  isInfiniteScroll
                   limit={15}
                   renderHeader={_renderHeader}
                   renderBody={(data) =>
