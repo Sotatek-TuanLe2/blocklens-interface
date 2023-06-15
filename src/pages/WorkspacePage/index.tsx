@@ -31,8 +31,12 @@ const WorkspacePage: React.FC = () => {
   };
 
   return (
-    <BasePage isFullWidth>
-      <div className={`${type === WORKSPACE_TYPES.QUERY ? 'workspace-page__query' : ''} workspace-page`}>
+    <BasePage>
+      <div
+        className={`${
+          type === WORKSPACE_TYPES.QUERY ? 'workspace-page__query' : ''
+        } workspace-page`}
+      >
         {type === WORKSPACE_TYPES.QUERY && (
           <Sidebar
             expandSidebar={toggleExpandSidebar}
