@@ -547,14 +547,6 @@ const VisualizationDisplay = ({
                 </div>
               </Tooltip>
             )}
-            <Tooltip label="Maximize" hasArrow bg="white" color="black">
-              <div
-                className="btn-expand-full"
-                onClick={() => onExpand(LAYOUT_QUERY.HIDDEN)}
-              >
-                <p className="icon-expand-chart" />
-              </div>
-            </Tooltip>
           </Flex>
         }
         onChange={onChangeTab}
