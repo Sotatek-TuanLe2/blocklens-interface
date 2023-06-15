@@ -94,7 +94,6 @@ const DashboardPart: React.FC = () => {
 
         const layouts = visualization.concat(textWidgets);
         setDataDashboard(res);
-        console.log('>>>>>>>>>>>layouts', layouts);
         setDataLayouts(layouts);
         setIsEmptyDashboard(!layouts.length);
       }
