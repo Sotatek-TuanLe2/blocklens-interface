@@ -402,10 +402,25 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+
+      @media (max-width: 992px) {
+        flex-direction: column;
+
+        .icon-back-light {
+          display: none;
+        }
+      }
+
       &__left {
         display: flex;
         align-items: center;
         gap: 6px;
+
+        @media (max-width: 992px) {
+          padding-bottom: 14px;
+          border-bottom: 1px solid $disable;
+          margin-bottom: 14px;
+        }
 
         .btn-back {
           &:hover {
