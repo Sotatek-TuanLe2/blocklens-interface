@@ -470,6 +470,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
         hasArrow
         p={2}
         isOpen={isOpen}
+        className='tooltip-app'
         label={`This is an optional function. If you don't upload a custom ABI file, we would use default ERC-721 file.`}
       >
         <Box

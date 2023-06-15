@@ -124,3 +124,14 @@ text.recharts-text.recharts-label {
     transform: rotate(360deg);
   }
 }
+
+.tooltip-app {
+  color: $title !important;
+  background: $white !important;
+  padding: 10px 15px !important;
+  border-radius: 6px !important;
+
+  .chakra-tooltip__arrow {
+    background: $white !important;
+  }
+}
