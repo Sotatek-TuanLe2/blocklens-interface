@@ -255,6 +255,25 @@ const DashboardsPage: React.FC = () => {
     );
   }, [displayed]);
 
+  const _renderSkeleton = (listItem: any) => {
+    return (
+      <>
+        {displayed === DisplayType.Grid ? (
+          <SimpleGrid
+            className="infos"
+            columns={{ base: 1, sm: 2, lg: 3, xl: 4 }}
+            columnGap="20px"
+            rowGap="20px"
+          >
+            {listItem}
+          </SimpleGrid>
+        ) : (
+          listItem
+        )}
+      </>
+    );
+  };
+
   const generateTabs = (): ITabs[] => {
     const tabs: ITabs[] = [
       {
@@ -273,6 +292,18 @@ const DashboardsPage: React.FC = () => {
                   <ListItem
                     key={item.id}
                     item={item}
+                    type={LIST_ITEM_TYPE.DASHBOARDS}
+                    displayed={displayed}
+                  />
+                )),
+              )
+            }
+            renderLoading={() =>
+              _renderSkeleton(
+                [...Array(8)].map((_, index: number) => (
+                  <ListItem
+                    key={index}
+                    isLoading
                     type={LIST_ITEM_TYPE.DASHBOARDS}
                     displayed={displayed}
                   />
@@ -298,6 +329,18 @@ const DashboardsPage: React.FC = () => {
                   <ListItem
                     key={item.id}
                     item={item}
+                    type={LIST_ITEM_TYPE.QUERIES}
+                    displayed={displayed}
+                  />
+                )),
+              )
+            }
+            renderLoading={() =>
+              _renderSkeleton(
+                [...Array(8)].map((_, index: number) => (
+                  <ListItem
+                    key={index}
+                    isLoading
                     type={LIST_ITEM_TYPE.QUERIES}
                     displayed={displayed}
                   />
@@ -336,6 +379,19 @@ const DashboardsPage: React.FC = () => {
                       )),
                     )
                   }
+                  renderLoading={() =>
+                    _renderSkeleton(
+                      [...Array(8)].map((_, index: number) => (
+                        <ListItem
+                          key={index}
+                          isLoading
+                          type={LIST_ITEM_TYPE.MYWORK}
+                          myWorkType={TYPE_MYWORK.DASHBOARDS}
+                          displayed={displayed}
+                        />
+                      )),
+                    )
+                  }
                 />
               </Box>
             )}
@@ -352,6 +408,19 @@ const DashboardsPage: React.FC = () => {
                         <ListItem
                           key={item.id}
                           item={item}
+                          type={LIST_ITEM_TYPE.MYWORK}
+                          myWorkType={TYPE_MYWORK.QUERIES}
+                          displayed={displayed}
+                        />
+                      )),
+                    )
+                  }
+                  renderLoading={() =>
+                    _renderSkeleton(
+                      [...Array(8)].map((_, index: number) => (
+                        <ListItem
+                          key={index}
+                          isLoading
                           type={LIST_ITEM_TYPE.MYWORK}
                           myWorkType={TYPE_MYWORK.QUERIES}
                           displayed={displayed}

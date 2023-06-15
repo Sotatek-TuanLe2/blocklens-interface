@@ -80,6 +80,7 @@
             width: 160px;
             font-size: 12px;
             line-height: 16px;
+            border: 1px solid $line;
           }
           .chakra-input__left-element {
             top: 4px;
@@ -292,6 +293,10 @@
 
       .visual-container__visualization__title__query-link {
         text-decoration: underline;
+      }
+
+      &.react-grid-placeholder {
+        background-color: $line;
       }
     }
 

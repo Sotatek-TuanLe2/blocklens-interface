@@ -15,7 +15,7 @@ import { isNumber } from 'src/utils/utils-helper';
 import { objectKeys } from 'src/utils/utils-network';
 import AppPagination from '../AppPagination';
 import AppInput from '../AppInput';
-import { debounce } from 'lodash';
+import { debounce, isNull, isUndefined } from 'lodash';
 
 interface ReactTableProps<T> {
   data: T[];
@@ -294,7 +294,8 @@ const VisualizationTable = <T,>({
                             className="visual-progressbar"
                           />
                         )}
-                        {!!value?.toString() &&
+                        {!isNull(value) &&
+                          !isUndefined(value) &&
                           formatVisualizationValue(format, value.toString())}
                       </div>
                     </td>

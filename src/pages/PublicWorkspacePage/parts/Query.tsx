@@ -168,9 +168,13 @@ const QueryPart: React.FC = () => {
 
     return (
       <div
-        className={`add-chart ${
-          expandLayout === LAYOUT_QUERY.HIDDEN ? 'expand-chart' : ''
-        } ${expandLayout === LAYOUT_QUERY.HIDDEN ? 'hidden-editor' : ''}`}
+        className={` 
+      ${expandLayout === LAYOUT_QUERY.FULL ? 'add-chart-full' : 'add-chart'}
+       ${
+         expandLayout === LAYOUT_QUERY.HIDDEN
+           ? 'expand-chart hidden-editor'
+           : ''
+       } `}
       >
         {_renderContent()}
       </div>
