@@ -230,6 +230,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
         <div className="main-queries" id="main-queries">
           <InfiniteScroll
             className="infinite-scroll"
+            scrollThreshold={1}
             dataLength={visualizations.length}
             next={fetchInfiniteScrollVisual}
             hasMore={
