@@ -93,8 +93,8 @@ const DashboardPart: React.FC = () => {
           (item: ILayout) => {
             const { options } = item;
             return {
-              x: options.sizeX,
-              y: options.sizeY,
+              x: options.sizeX || 0,
+              y: options.sizeY || 0,
               w: options.col,
               h: options.row,
               i: item.id,
@@ -107,8 +107,8 @@ const DashboardPart: React.FC = () => {
         const textWidgets: ILayout[] = res.textWidgets.map((item: ILayout) => {
           const { options } = item;
           return {
-            x: options.sizeX,
-            y: options.sizeY,
+            x: options.sizeX || 0,
+            y: options.sizeY || 0,
             w: options.col,
             h: options.row,
             i: item.id,
@@ -245,6 +245,7 @@ const DashboardPart: React.FC = () => {
         isResizable={editMode}
         measureBeforeMount
         containerPadding={[0, 30]}
+        margin={[20, 20]}
       >
         {dataLayouts.map((item) => (
           <div className="box-layout" key={item.id}>

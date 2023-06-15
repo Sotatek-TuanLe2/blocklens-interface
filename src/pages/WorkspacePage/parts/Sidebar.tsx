@@ -374,6 +374,7 @@ const Sidebar: React.FC<{
           >
             <InfiniteScroll
               className="infinite-scroll"
+              scrollThreshold={1}
               dataLength={dataQueries.length}
               next={fetchInfiniteScrollQueries}
               hasMore={

@@ -173,6 +173,14 @@ export default class DashboardsRequest extends BaseRequest {
     return this.post(url, { listVisuals: data.listVisuals });
   }
 
+  insertVisualizations(data: {
+    dashboardId: string;
+    dataVisualWidget: DataVisualWidget;
+  }) {
+    const url = `/dashboard/${data.dashboardId}/insert-dashboard-visual`;
+    return this.post(url, data.dataVisualWidget);
+  }
+
   updateDashboardItem(data: ILayout, id: string) {
     const url = `/dashboard/${id}/update-dashboard`;
     return this.patch(url, data);

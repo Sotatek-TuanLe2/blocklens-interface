@@ -1,5 +1,5 @@
-import { Flex, Text, Textarea } from '@chakra-ui/react';
-import { debounce } from 'lodash';
+import { Box, Flex, Text, Textarea } from '@chakra-ui/react';
+import _, { debounce } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { AppButton, AppField } from 'src/components';
 import AppAccordion from 'src/components/AppAccordion';
@@ -11,6 +11,8 @@ import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import BaseModal from '../BaseModal';
 import { IDashboardDetail, ITextWidget } from 'src/utils/query.type';
 import { INPUT_DEBOUNCE } from 'src/utils/common';
+import { RadioChecked, RadioNoCheckedIcon } from '../../assets/icons';
+import { WIDTH_DASHBOARD, TOTAL_COL } from './ModalAddVisualization';
 
 interface IModalAddTextWidget {
   open: boolean;
@@ -96,20 +98,40 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
   dataDashboard,
 }) => {
   const [markdownText, setMarkdownText] = useState<string>('');
+  const [widthWidget, setWidthWidget] = useState<number>(TOTAL_COL / 4);
 
   useEffect(() => {
     setMarkdownText(selectedItem.text || '');
   }, [selectedItem]);
 
-  const handleSave = async () => {
+  const handleSave = async (widthWidget: number) => {
+    const lastLayout = _.maxBy(dataLayouts, 'y');
+    const currentY = lastLayout?.y || 0;
+    const listWidgetCurrent = dataLayouts.filter(
+      (layout) => layout.y === currentY,
+    );
+
+    const totalWidthWidget = _.sumBy(listWidgetCurrent, 'w');
+
+    let sizeX = 0;
+    let sizeY = 0;
+
+    if (totalWidthWidget < TOTAL_COL) {
+      sizeY = currentY;
+      sizeX = totalWidthWidget;
+    } else {
+      sizeY = currentY + 2;
+      sizeX = 0;
+    }
+
     try {
       const payload = {
         dashboardId: dataDashboard?.id,
         text: markdownText,
         options: {
-          sizeX: dataLayouts.length % 2 === 0 ? 0 : 6,
-          sizeY: dataLayouts.length,
-          col: 6,
+          sizeX: +sizeX,
+          sizeY: +sizeY,
+          col: widthWidget,
           row: 2,
         },
       };
@@ -190,6 +212,29 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
           className="table-main-markdown"
         />
 
+        <Flex pt={5}>
+          Width:
+          <Flex ml={{ base: 2, md: 10 }}>
+            {WIDTH_DASHBOARD.map((item, index) => {
+              return (
+                <Flex
+                  mr={{ base: 2, md: 10 }}
+                  onClick={() => setWidthWidget(item.col)}
+                  cursor={'pointer'}
+                  key={index}
+                >
+                  {widthWidget === item.col ? (
+                    <RadioChecked />
+                  ) : (
+                    <RadioNoCheckedIcon />
+                  )}
+                  <Box ml={2}>{item.name}</Box>
+                </Flex>
+              );
+            })}
+          </Flex>
+        </Flex>
+
         <Flex className="modal-footer">
           <AppButton
             mr={2.5}
@@ -203,7 +248,9 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
           <AppButton
             size="lg"
             onClick={() => {
-              type === TYPE_MODAL.ADD ? handleSave() : handleUpdate();
+              type === TYPE_MODAL.ADD
+                ? handleSave(widthWidget)
+                : handleUpdate();
             }}
             disabled={!markdownText.trim()}
           >

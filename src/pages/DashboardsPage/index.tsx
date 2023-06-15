@@ -285,6 +285,7 @@ const DashboardsPage: React.FC = () => {
             requestParams={dashboardParams}
             fetchData={fetchAllDashboards}
             limit={12}
+            isInfiniteScroll
             renderHeader={_renderHeader}
             renderBody={(data) =>
               _renderBody(
@@ -320,6 +321,7 @@ const DashboardsPage: React.FC = () => {
         content: _renderContentTable(
           <AppDataTable
             requestParams={queryParams}
+            isInfiniteScroll
             fetchData={fetchAllQueries}
             limit={15}
             renderHeader={_renderHeader}
@@ -363,6 +365,7 @@ const DashboardsPage: React.FC = () => {
               <Box>
                 <AppDataTable
                   requestParams={dashboardParams}
+                  isInfiniteScroll
                   fetchData={fetchMyDashboards}
                   limit={12}
                   renderHeader={_renderHeader}
@@ -400,6 +403,7 @@ const DashboardsPage: React.FC = () => {
                 <AppDataTable
                   requestParams={queryParams}
                   fetchData={fetchMyQueries}
+                  isInfiniteScroll
                   limit={15}
                   renderHeader={_renderHeader}
                   renderBody={(data) =>
