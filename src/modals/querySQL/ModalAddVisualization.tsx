@@ -177,7 +177,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   }, [dataLayouts]);
 
   useEffect(() => {
-    fetchVisualization();
+    fetchVisualization().then();
   }, [searchTerm]);
 
   const handleSaveVisualization = async (widthWidget: number) => {
@@ -211,6 +211,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
         },
       };
     });
+
     try {
       const payload = {
         dashboardId,
@@ -219,7 +220,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
       await rf.getRequest('DashboardsRequest').manageVisualizations(payload);
       toastSuccess({ message: 'Update successfully' });
       onClose();
-      onReload();
+      await onReload();
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
     }
@@ -373,8 +374,6 @@ const AddVisualizationCheckbox: React.FC<IAddVisualizationCheckbox> = ({
   selectedItems,
   setSelectedItems,
 }) => {
-  const checkAdded = selectedItems.some((el) => el.id === visualization.id);
-
   const conditionDisplayIcon = () => {
     if (visualization.type === 'table' || visualization.type === 'counter') {
       return visualization.type;
@@ -383,40 +382,38 @@ const AddVisualizationCheckbox: React.FC<IAddVisualizationCheckbox> = ({
     }
   };
 
-  const handleCheckboxChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-    itemId: string,
-  ) => {
-    const { checked } = event.target;
-
-    if (checked) {
-      setSelectedItems((prevItems) => [
-        ...prevItems,
-        query.visualizations.find((item: { id: string }) => item.id === itemId),
-      ]);
+  const handleCheckboxChange = (visualizationId: string) => {
+    if (selectedItems[0] === visualizationId) {
+      setSelectedItems([]);
     } else {
-      setSelectedItems((prevItems) =>
-        prevItems.filter((selectedItem) => selectedItem.id !== itemId),
-      );
+      setSelectedItems([visualizationId]);
     }
   };
 
   return (
     <>
       <Flex className="visualization-row" alignItems={'center'}>
-        <Checkbox
-          onChange={(e) => handleCheckboxChange(e, visualization.id)}
-          isChecked={checkAdded}
-        />
-        {getIcon(conditionDisplayIcon())}
-        <Link className="visualization-name">
-          <Tooltip label={visualization.name}>{visualization.name}</Tooltip>
-        </Link>
-        <Text className="user-name">
-          <Tooltip label={`@${userName} / ${query.name}`}>
-            {`@${userName} / ${query.name}`}
-          </Tooltip>
-        </Text>
+        <Flex
+          alignItems={'center'}
+          mr={10}
+          onClick={() => handleCheckboxChange(visualization.id)}
+          cursor={'pointer'}
+        >
+          {selectedItems[0] === visualization.id ? (
+            <RadioChecked />
+          ) : (
+            <RadioNoCheckedIcon />
+          )}
+          {getIcon(conditionDisplayIcon())}
+          <Link className="visualization-name">
+            <Tooltip label={visualization.name}>{visualization.name}</Tooltip>
+          </Link>
+          <Text className="user-name">
+            <Tooltip label={`@${userName} / ${query.name}`}>
+              {`@${userName} / ${query.name}`}
+            </Tooltip>
+          </Text>
+        </Flex>
       </Flex>
     </>
   );
