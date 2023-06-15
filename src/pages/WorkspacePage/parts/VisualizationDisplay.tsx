@@ -451,11 +451,7 @@ const VisualizationDisplay = ({
   const onChangeTab = (_tabId: string, tabIndex: number) => {
     setTabIndex(tabIndex);
     setToggleCloseConfig(needAuthentication && !!tabIndex);
-    onExpand(
-      expandLayout === LAYOUT_QUERY.HIDDEN
-        ? LAYOUT_QUERY.HIDDEN
-        : LAYOUT_QUERY.FULL,
-    );
+    onExpand(LAYOUT_QUERY.HIDDEN);
   };
 
   const generateTabs = () => {

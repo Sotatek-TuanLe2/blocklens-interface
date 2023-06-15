@@ -17,6 +17,10 @@
     min-width: 104px !important;
 
     .chakra-menu__menuitem {
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 24px;
+      color: $title;
       svg {
         opacity: 0.5;
       }
