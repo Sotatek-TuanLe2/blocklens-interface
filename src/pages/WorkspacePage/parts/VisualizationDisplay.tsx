@@ -614,8 +614,7 @@ const AddVisualization = ({
 
   return (
     <Box>
-      {(expandLayout === LAYOUT_QUERY.HALF ||
-        expandLayout === LAYOUT_QUERY.HIDDEN) && (
+      {expandLayout === LAYOUT_QUERY.HIDDEN && (
         <div
           className={`main-item ${
             expandLayout === LAYOUT_QUERY.HIDDEN ? 'main-item-expand' : ''

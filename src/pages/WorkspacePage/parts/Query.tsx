@@ -100,14 +100,6 @@ const QueryPart: React.FC = () => {
   const updateQuery = async (query: string) => {
     try {
       await rf.getRequest('DashboardsRequest').updateQuery({ query }, queryId);
-      if (!queryClass?.getVisualizations().length) {
-        await rf.getRequest('DashboardsRequest').insertVisualization({
-          name: 'Query results',
-          type: 'table',
-          options: {},
-          queryId: queryId,
-        });
-      }
       await fetchQuery();
       await fetchQueryResult();
     } catch (error: any) {
