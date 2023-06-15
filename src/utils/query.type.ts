@@ -88,6 +88,7 @@ export interface IQuery {
   updatedAt: string;
   tags?: string[];
   query: string;
+  resultId: string;
   forkedQuery?: null;
   visualizations: VisualizationType[];
   utilizedChains: string[];
