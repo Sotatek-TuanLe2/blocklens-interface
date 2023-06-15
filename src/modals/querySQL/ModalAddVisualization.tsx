@@ -80,7 +80,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   const [visualSelected, setVisualSelected] = useState<string>('');
   const [myQueries, setMyQueries] = useState<IQuery[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const [widthWidget, setWidthWidget] = useState<number>(3);
+  const [widthWidget, setWidthWidget] = useState<number>(TOTAL_COL / 4);
   const [dataVisualPagination, setDataVisualPagination] = useState<
     IPagination | undefined
   >();
