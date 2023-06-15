@@ -12,7 +12,7 @@ import BaseModal from '../BaseModal';
 import { IDashboardDetail, ITextWidget } from 'src/utils/query.type';
 import { INPUT_DEBOUNCE } from 'src/utils/common';
 import { RadioChecked, RadioNoCheckedIcon } from '../../assets/icons';
-import { WIDTH_DASHBOARD } from './ModalAddVisualization';
+import { WIDTH_DASHBOARD, TOTAL_COL } from './ModalAddVisualization';
 
 interface IModalAddTextWidget {
   open: boolean;
@@ -116,7 +116,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
     let sizeX = 0;
     let sizeY = 0;
 
-    if (totalWidthWidget < 12) {
+    if (totalWidthWidget < TOTAL_COL) {
       sizeY = currentY;
       sizeX = totalWidthWidget;
     } else {

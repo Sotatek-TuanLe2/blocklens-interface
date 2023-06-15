@@ -50,6 +50,8 @@ export const WIDTH_DASHBOARD = [
   },
 ];
 
+export const TOTAL_COL = 12;
+
 interface IModalAddVisualization {
   open: boolean;
   onClose: () => void;
@@ -173,7 +175,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
     let sizeX = 0;
     let sizeY = 0;
 
-    if (totalWidthWidget < 12) {
+    if (totalWidthWidget < TOTAL_COL) {
       sizeY = currentY || 0;
       sizeX = totalWidthWidget;
     } else {
