@@ -89,20 +89,20 @@ const AppRowItem: FC<AppRowItemProps> = ({
           </Flex>
           <Flex flexGrow={1} w={'22%'} overflow={'hidden'} pr={2.5}>
             <Flex align={'center'}>
-            <SkeletonCircle
-              color={'#E5E6E9'}
-              opacity={'1 !important'}
-              w={'24px'}
-              h={'24px'}
-              mr={'8px'}
-            />
-            <Skeleton
-              color={'#E5E6E9'}
-              opacity={'1 !important'}
-              w={'70px'}
-              h={'18px'}
-              rounded={'9px'}
-            />
+              <SkeletonCircle
+                color={'#E5E6E9'}
+                opacity={'1 !important'}
+                w={'24px'}
+                h={'24px'}
+                mr={'8px'}
+              />
+              <Skeleton
+                color={'#E5E6E9'}
+                opacity={'1 !important'}
+                w={'70px'}
+                h={'18px'}
+                rounded={'9px'}
+              />
             </Flex>
           </Flex>
           <Flex flexGrow={1} w={'15%'} overflow={'hidden'} pr={2.5}>
