@@ -76,7 +76,7 @@ export const appButtonStyles = {
       color: 'white',
       fontSize: '16px',
       _hover: {
-        bg: mode('pressed.100', 'pressed.100')(props),
+        bg: mode('main.400', 'main.400')(props),
         _disabled: {
           bg: mode('rgba(0, 2, 36, 0.1)', 'rgba(0, 2, 36, 0.1)')(props),
           color: 'rgba(0, 2, 36, 0.5)',
