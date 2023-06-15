@@ -47,14 +47,21 @@
   }
 
   .add-chart {
+    box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.04);
     padding: 6px 0px;
     border-radius: 6px;
     margin-top: 4px;
     margin-bottom: 20px;
     max-height: 500px;
 
+    .tabs-container {
+      margin-bottom: 7px;
+      margin-top: 4px;
+    }
+
     .btn-expand {
       height: 100%;
+
       &:hover {
         cursor: pointer;
       }
@@ -229,6 +236,7 @@
     }
 
     .editor-wrapper {
+      box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.04);
       width: 100%;
       border-radius: 6px;
       margin-bottom: 8px;

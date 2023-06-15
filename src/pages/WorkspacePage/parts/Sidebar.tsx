@@ -159,13 +159,35 @@ const Sidebar: React.FC<{
     {
       id: CATEGORIES.WORK_PLACE,
       title: 'Work place',
-      icon: <div className="icon-place-light" />,
+      icon: (
+        <Tooltip
+          placement="right"
+          hasArrow
+          label="Work place"
+          bg="white"
+          borderRadius="6px"
+          color="black"
+        >
+          <div className="icon-place-light" />
+        </Tooltip>
+      ),
       activeIcon: <div className="bg-work_place_active" />,
     },
     {
       id: CATEGORIES.EXPLORE_DATA,
       title: 'Explore data',
-      icon: <div className="icon-explore-light" />,
+      icon: (
+        <Tooltip
+          placement="right"
+          hasArrow
+          label="Explore data"
+          bg="white"
+          borderRadius="6px"
+          color="black"
+        >
+          <div className="icon-explore-light" />
+        </Tooltip>
+      ),
       activeIcon: <div className="bg-explore_active" />,
     },
   ];
