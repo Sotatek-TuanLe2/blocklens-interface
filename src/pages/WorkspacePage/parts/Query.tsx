@@ -323,7 +323,7 @@ const QueryPart: React.FC = () => {
           <Box className="queries-page__right-side">
             <Box className="editor-wrapper">
               <AceEditor
-                className={`custom-editor 
+                className={`ace_editor ace-tomorrow custom-editor 
                 ${classExpand(
                   LAYOUT_QUERY.FULL,
                   'custom-editor--full',
