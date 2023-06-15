@@ -328,9 +328,6 @@ export const formatVisualizationValue = (format: string, value: any) => {
   const hasDot = format.includes('.');
   const hasComma = format.includes(',');
   const hasA = format.includes('a');
-  const isFormatZero = format === '0';
-  const isValueZero = new BigNumber(value).isEqualTo(0);
-  const isNotANumber = !isNumber(value);
   const hasDollarSign = format.includes('$');
   const checkNegativeValue = new BigNumber(value).isLessThan(0);
 
@@ -342,12 +339,12 @@ export const formatVisualizationValue = (format: string, value: any) => {
     return new BigNumber(value).abs().toString();
   };
 
-  if (isValueZero) {
-    return 0;
+  if (!isNumber(value)) {
+    return value;
   }
 
-  if (isNotANumber) {
-    return value;
+  if (new BigNumber(value).isEqualTo(0)) {
+    return 0;
   }
 
   if (hasDollarSign && hasA && hasDot) {
@@ -428,7 +425,7 @@ export const formatVisualizationValue = (format: string, value: any) => {
     return formatValue(commaNumber(getAbsValue(value)), commaNumber(value));
   }
 
-  if (isFormatZero) {
+  if (format === '0') {
     return formatValue(parseInt(getAbsValue(value)), parseInt(value));
   }
 
