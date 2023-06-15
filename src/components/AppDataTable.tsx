@@ -284,7 +284,7 @@ const AppDataTable = forwardRef(
     };
 
     const _renderHeader = () => {
-      if (!renderHeader || !tableData.length || isLoading || props.loading) {
+      if (!renderHeader) {
         return;
       }
       return <>{renderHeader()}</>;
