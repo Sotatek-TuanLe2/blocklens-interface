@@ -17,7 +17,6 @@ import {
 import 'src/styles/pages/QueriesPage.scss';
 import { toastError } from 'src/utils/utils-notify';
 import rf from 'src/requests/RequestFactory';
-import useUser from 'src/hooks/useUser';
 import { TYPE_OF_MODAL, QUERY_RESULT_STATUS } from 'src/utils/common';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
 import { EditorContext } from '../context/EditorContext';
@@ -48,8 +47,6 @@ const QueryPart: React.FC = () => {
   const [openModalSettingQuery, setOpenModalSettingQuery] =
     useState<boolean>(false);
 
-  const { user } = useUser();
-
   const onAddTextToEditor = (text: string) => {
     const position = editorRef.current.editor.getCursorPosition();
 
@@ -73,6 +70,7 @@ const QueryPart: React.FC = () => {
   useEffect(() => {
     if (queryId) {
       fetchInitalData();
+      setExpandLayout(LAYOUT_QUERY.HIDDEN);
     } else {
       resetEditor();
     }
