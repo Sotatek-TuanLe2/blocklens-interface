@@ -308,6 +308,11 @@
       }
     }
 
+    &__dashboard {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
     &__dashboard,
     &__query {
       height: 100%;
