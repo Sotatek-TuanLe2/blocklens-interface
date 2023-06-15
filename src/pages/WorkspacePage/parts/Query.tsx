@@ -40,7 +40,7 @@ const QueryPart: React.FC = () => {
   const editorRef = useRef<any>();
   const [queryResult, setQueryResult] = useState<any>([]);
   const [queryValue, setQueryValue] = useState<IQuery | null>(null);
-  const [expandLayout, setExpandLayout] = useState<string>(LAYOUT_QUERY.HALF);
+  const [expandLayout, setExpandLayout] = useState<string>(LAYOUT_QUERY.HIDDEN);
   const [isLoadingResult, setIsLoadingResult] = useState<boolean>(!!queryId);
   const [errorExecuteQuery, setErrorExecuteQuery] =
     useState<IErrorExecuteQuery | null>(null);
@@ -220,10 +220,10 @@ const QueryPart: React.FC = () => {
   const onExpandEditor = () => {
     setExpandLayout((prevState) => {
       if (prevState === LAYOUT_QUERY.FULL) {
-        return LAYOUT_QUERY.HALF;
-      }
-      if (prevState === LAYOUT_QUERY.HALF) {
         return LAYOUT_QUERY.HIDDEN;
+      }
+      if (prevState === LAYOUT_QUERY.HIDDEN) {
+        return LAYOUT_QUERY.FULL;
       }
       return LAYOUT_QUERY.FULL;
     });
@@ -264,6 +264,7 @@ const QueryPart: React.FC = () => {
     firstClass: string,
     secondClass: string,
   ) => {
+    if (!queryId || !queryValue) return 'custom-editor--full';
     return expandLayout === layout ? firstClass : secondClass;
   };
 
@@ -329,22 +330,8 @@ const QueryPart: React.FC = () => {
         <div className="query-container queries-page">
           <Box className="queries-page__right-side">
             <Box className="editor-wrapper">
-              {/* <Box className="header-tab">
-                <div className="header-tab__info">
-                  {queryClass?.getChains() && (
-                    <AppNetworkIcons networkIds={queryClass?.getChains()} />
-                  )}
-                  <div className="header-tab__info tag">
-                    {['defi', 'gas', 'dex'].map((item) => (
-                      <AppTag key={item} value={item} />
-                    ))}
-                  </div>
-                </div>
-              </Box> */}
               <AceEditor
-                className={`custom-editor ${
-                  !queryId || !queryValue ? 'custom-editor--full' : ''
-                }
+                className={`custom-editor 
                 ${classExpand(
                   LAYOUT_QUERY.FULL,
                   'custom-editor--full',

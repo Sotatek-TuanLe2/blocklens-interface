@@ -488,7 +488,12 @@ const VisualizationDisplay = ({
     if (needAuthentication) {
       tabs.push({
         name: (
-          <Tooltip label="Add New Visualization" hasArrow>
+          <Tooltip
+            label="Add New Visualization"
+            hasArrow
+            bg="white"
+            color="black"
+          >
             <Flex alignItems={'center'}>
               <Box>
                 <AddChartIcon />
@@ -529,7 +534,7 @@ const VisualizationDisplay = ({
                 {expandLayout === LAYOUT_QUERY.FULL ? (
                   <p
                     className="icon-query-expand"
-                    onClick={() => onExpand(LAYOUT_QUERY.HALF)}
+                    onClick={() => onExpand(LAYOUT_QUERY.HIDDEN)}
                   />
                 ) : (
                   <p
