@@ -23,6 +23,7 @@ export { default as AppTabs } from './AppTabs';
 export { default as AppTag } from './AppTag';
 export { default as AppMenu } from './AppMenu';
 export { default as AppGridItem } from './AppGridItem';
+export { default as AppRowItem } from './AppRowItem';
 
 export * from './AppCard';
 export * from './AppButton';

@@ -1,7 +1,6 @@
 import {
   Box,
   Collapse,
-  Divider,
   Flex,
   Image,
   Text,
@@ -10,7 +9,7 @@ import {
 } from '@chakra-ui/react';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
-import { AppGridItem, AppTag } from 'src/components';
+import { AppGridItem, AppRowItem, AppTag } from 'src/components';
 import AppNetworkIcons from 'src/components/AppNetworkIcons';
 import { DisplayType } from 'src/constants';
 import { ROUTES } from 'src/utils/common';
@@ -34,7 +33,11 @@ const ListItem: React.FC<IListItem> = (props) => {
   const { type, myWorkType, item, displayed, isLoading } = props;
 
   if (isLoading) {
-    return displayed === DisplayType.Grid ? <AppGridItem isLoading /> : null;
+    return displayed === DisplayType.Grid ? (
+      <AppGridItem isLoading />
+    ) : (
+      <AppRowItem isLoading />
+    );
   }
 
   const itemClass =
@@ -306,10 +309,19 @@ const ListItem: React.FC<IListItem> = (props) => {
           srcAvatar={null!}
         />
       ) : (
-        <>
-          <Box display={{ base: 'none', lg: 'block' }}>{_renderRowItem()}</Box>
-          <Box display={{ lg: 'none' }}>{_renderRowItemMobile()}</Box>
-        </>
+        <AppRowItem
+          name={itemClass.getName()}
+          creator={userName}
+          date={moment(itemClass.getCreatedTime()).format('YYYY MMMM Do')}
+          toHref={getTitleUrl()}
+          tagList={listTags}
+          chainList={itemClass.getChains()}
+          shareComponent={_renderDropdown()}
+          srcThumb={itemClass.getThumnail()!}
+          srcAvatar={null!}
+          type={type}
+          myWorkType={myWorkType}
+        />
       )}
     </>
   );
