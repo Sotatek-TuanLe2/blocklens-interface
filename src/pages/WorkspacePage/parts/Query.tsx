@@ -253,8 +253,11 @@ const QueryPart: React.FC = () => {
     firstClass: string,
     secondClass: string,
   ) => {
-    if (!queryId || !queryValue) return 'custom-editor--full';
-    return expandLayout === layout ? firstClass : secondClass;
+    if (!queryId || !queryValue) {
+      return 'custom-editor--full';
+    } else {
+      return expandLayout === layout ? firstClass : secondClass;
+    }
   };
 
   const _renderVisualizations = () => {
@@ -320,7 +323,7 @@ const QueryPart: React.FC = () => {
           <Box className="queries-page__right-side">
             <Box className="editor-wrapper">
               <AceEditor
-                className={`custom-editor 
+                className={`custom-editor ace_editor ace-tomorrow
                 ${classExpand(
                   LAYOUT_QUERY.FULL,
                   'custom-editor--full',
