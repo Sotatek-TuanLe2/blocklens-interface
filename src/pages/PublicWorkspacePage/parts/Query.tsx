@@ -1,7 +1,7 @@
 import { Box, Flex, Tooltip } from '@chakra-ui/react';
 import AceEditor from 'react-ace';
 import { AppLoadingTable } from 'src/components';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import VisualizationDisplay from 'src/pages/WorkspacePage/parts/VisualizationDisplay';
 import 'ace-builds/src-noconflict/theme-monokai';
 import 'ace-builds/src-noconflict/ext-language_tools';
@@ -20,6 +20,7 @@ import rf from 'src/requests/RequestFactory';
 import { QUERY_RESULT_STATUS } from 'src/utils/common';
 import Header from 'src/pages/WorkspacePage/parts/Header';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
+import { Query } from 'src/utils/utils-query';
 
 const QueryPart: React.FC = () => {
   const { queryId } = useParams<{ queryId: string }>();
@@ -33,6 +34,13 @@ const QueryPart: React.FC = () => {
     useState<IErrorExecuteQuery>();
 
   const fetchQueryResultInterval = useRef<any>(null);
+
+  const queryClass = useMemo(() => {
+    if (!queryValue) {
+      return null;
+    }
+    return new Query(queryValue);
+  }, [queryValue]);
 
   useEffect(() => {
     if (queryId) {
@@ -160,9 +168,13 @@ const QueryPart: React.FC = () => {
 
     return (
       <div
-        className={`add-chart ${
-          expandLayout === LAYOUT_QUERY.HIDDEN ? 'expand-chart' : ''
-        } ${expandLayout === LAYOUT_QUERY.HIDDEN ? 'hidden-editor' : ''}`}
+        className={` 
+      ${expandLayout === LAYOUT_QUERY.FULL ? 'add-chart-full' : 'add-chart'}
+       ${
+         expandLayout === LAYOUT_QUERY.HIDDEN
+           ? 'expand-chart hidden-editor'
+           : ''
+       } `}
       >
         {_renderContent()}
       </div>

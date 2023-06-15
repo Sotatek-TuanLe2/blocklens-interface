@@ -244,6 +244,7 @@ const DashboardPart: React.FC = () => {
         isDraggable={editMode}
         isResizable={editMode}
         measureBeforeMount
+        containerPadding={[0, 30]}
       >
         {dataLayouts.map((item) => (
           <div className="box-layout" key={item.id}>
@@ -265,7 +266,7 @@ const DashboardPart: React.FC = () => {
             </div>
             {editMode && (
               <Flex
-                alignItems={'center'}
+                alignItems={'flex-start'}
                 className="widget-buttons"
                 columnGap={'12px'}
               >
@@ -315,11 +316,11 @@ const DashboardPart: React.FC = () => {
         {_renderDashboard()}
         {editMode && !isEmptyDashboard && (
           <Menu>
-            <MenuButton className="app-query-menu">
-              <Box className="add-button">
+            <Box className="add-button">
+              <MenuButton className="app-query-menu">
                 <img src={PlusIcon} alt="icon-plus" />
-              </Box>
-            </MenuButton>
+              </MenuButton>
+            </Box>
             <MenuList className="app-query-menu__list">
               <MenuItem onClick={onOpenModalAddVisualization}>
                 <Flex alignItems={'center'} gap={'8px'}>

@@ -13,7 +13,7 @@ const GuestPage: FC<IBasePage> = ({ children }) => {
     <Box>
       <Header />
       <Box
-        pt={'65px'}
+        pt={'80px'}
         mb={'60px'}
         minH={'calc(100vh - 80px)'}
         className={'main'}

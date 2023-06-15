@@ -3,6 +3,7 @@
 
 .dashboard-container {
   border-radius: 6px;
+  margin-top: -18px;
 
   h1,
   h2,
@@ -46,6 +47,7 @@
       .table-content {
         max-height: calc(100% - 80px);
         overflow: auto;
+        margin: 0 -17px;
 
         .table-pagination {
           width: 100%;
@@ -78,6 +80,7 @@
             width: 160px;
             font-size: 12px;
             line-height: 16px;
+            border: 1px solid $line;
           }
           .chakra-input__left-element {
             top: 4px;
@@ -291,6 +294,10 @@
       .visual-container__visualization__title__query-link {
         text-decoration: underline;
       }
+
+      &.react-grid-placeholder {
+        background-color: $line;
+      }
     }
 
     .react-draggable-dragging {
@@ -322,6 +329,7 @@
         cursor: pointer;
         top: 15px;
         right: 15px;
+        height: 8%;
 
         svg {
           color: #8d91a5;
