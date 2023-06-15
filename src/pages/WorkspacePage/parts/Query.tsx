@@ -6,7 +6,7 @@ import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/mode-sql';
 import 'ace-builds/src-noconflict/theme-tomorrow';
 import { useParams } from 'react-router-dom';
-import { AppLoadingTable, AppTag } from 'src/components';
+import { AppLoadingTable } from 'src/components';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import {
   QueryExecutedResponse,
@@ -23,7 +23,6 @@ import { AppBroadcast } from 'src/utils/utils-broadcast';
 import { EditorContext } from '../context/EditorContext';
 import Header from './Header';
 import VisualizationDisplay from './VisualizationDisplay';
-import AppNetworkIcons from 'src/components/AppNetworkIcons';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import { BROADCAST_FETCH_WORKPLACE_DATA } from './Sidebar';
 import ModalQuery from 'src/modals/querySQL/ModalQuery';

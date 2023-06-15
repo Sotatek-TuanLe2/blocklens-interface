@@ -107,6 +107,7 @@ const VisualizationDisplay = ({
   }
   const { queryId } = useParams<ParamTypes>();
 
+  const [tabIndex, setTabIndex] = useState<number>(0);
   const [toggleCloseConfig, setToggleCloseConfig] = useState<boolean>(false);
   const [closeTabId, setCloseTabId] = useState<string | number>('');
   const [dataTable, setDataTable] = useState<any[]>([]);
@@ -448,6 +449,7 @@ const VisualizationDisplay = ({
   };
 
   const onChangeTab = (_tabId: string, tabIndex: number) => {
+    setTabIndex(tabIndex);
     setToggleCloseConfig(needAuthentication && !!tabIndex);
     onExpand(
       expandLayout === LAYOUT_QUERY.HIDDEN
@@ -519,6 +521,7 @@ const VisualizationDisplay = ({
   return (
     <Box className="visual-container">
       <AppTabs
+        currentTabIndex={tabIndex}
         onCloseTab={(tabId: string) => {
           setCloseTabId(tabId);
         }}
@@ -544,7 +547,7 @@ const VisualizationDisplay = ({
                 )}
               </div>
             </Tooltip>
-            {needAuthentication && (
+            {needAuthentication && !!tabIndex && (
               <Tooltip label="Edit" hasArrow bg="white" color="black">
                 <div
                   className="btn-expand"
