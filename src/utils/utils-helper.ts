@@ -67,7 +67,7 @@ export const isString = (value: unknown) => {
 
 export const isNumber = (value: any) => {
   return (
-    !new BigNumber(value).isNaN() && !isAddress(value) && !isHexString(value)
+    !isAddress(value) && !isHexString(value) && !new BigNumber(value).isNaN()
   );
 };
 
