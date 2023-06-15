@@ -200,6 +200,18 @@
       width: 100%;
     }
 
+    .btn-expand-public {
+      top: 21%;
+      width: fit-content;
+      position: absolute;
+      z-index: 5;
+      right: 34px;
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+
     .btn-expand-query {
       width: fit-content;
       position: absolute !important;

@@ -28,7 +28,7 @@ const QueryPart: React.FC = () => {
 
   const [queryResult, setQueryResult] = useState<any>([]);
   const [queryValue, setQueryValue] = useState<IQuery | null>(null);
-  const [expandLayout, setExpandLayout] = useState<string>(LAYOUT_QUERY.HALF);
+  const [expandLayout, setExpandLayout] = useState<string>(LAYOUT_QUERY.HIDDEN);
   const [isLoadingResult, setIsLoadingResult] = useState<boolean>(!!queryId);
   const [errorExecuteQuery, setErrorExecuteQuery] =
     useState<IErrorExecuteQuery>();
@@ -121,10 +121,10 @@ const QueryPart: React.FC = () => {
   const onExpandEditor = () => {
     setExpandLayout((prevState) => {
       if (prevState === LAYOUT_QUERY.FULL) {
-        return LAYOUT_QUERY.HALF;
-      }
-      if (prevState === LAYOUT_QUERY.HALF) {
         return LAYOUT_QUERY.HIDDEN;
+      }
+      if (prevState === LAYOUT_QUERY.HIDDEN) {
+        return LAYOUT_QUERY.FULL;
       }
       return LAYOUT_QUERY.FULL;
     });
@@ -198,19 +198,19 @@ const QueryPart: React.FC = () => {
       <div className="query-container queries-page">
         <Box className="queries-page__right-side">
           <Box className="editor-wrapper ">
-            <Box className="header-tab">
-              <Tooltip
-                label={
-                  expandLayout === LAYOUT_QUERY.HIDDEN ? 'Maximize' : 'Minimize'
-                }
-                hasArrow
-                placement="top"
-              >
-                <div className="btn-expand">
-                  <p className="icon-query-collapse" onClick={onExpandEditor} />
-                </div>
-              </Tooltip>
-            </Box>
+            <Tooltip
+              label={
+                expandLayout === LAYOUT_QUERY.HIDDEN ? 'Maximize' : 'Minimize'
+              }
+              hasArrow
+              placement="top"
+              bg="white"
+              color="black"
+            >
+              <div className="btn-expand-public">
+                <p className="icon-query-collapse" onClick={onExpandEditor} />
+              </div>
+            </Tooltip>
             <AceEditor
               className={`custom-editor ${
                 expandLayout === LAYOUT_QUERY.FULL ? 'custom-editor--full' : ''
