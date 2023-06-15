@@ -452,7 +452,7 @@ const VisualizationDisplay = ({
     onExpand(
       expandLayout === LAYOUT_QUERY.HIDDEN
         ? LAYOUT_QUERY.HIDDEN
-        : LAYOUT_QUERY.HALF,
+        : LAYOUT_QUERY.FULL,
     );
   };
 
