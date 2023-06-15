@@ -45,6 +45,7 @@ const QueryPart: React.FC = () => {
   useEffect(() => {
     if (queryId) {
       fetchInitalData();
+      setExpandLayout(LAYOUT_QUERY.HIDDEN);
     }
 
     return () => {
