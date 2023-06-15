@@ -21,7 +21,7 @@
   }
 
   .expand-chart {
-    height: 748px !important;
+    height: 744px !important;
     max-height: unset !important;
 
     .btn-expand-full {
@@ -214,9 +214,9 @@
 
     .btn-expand-query {
       width: fit-content;
-      position: absolute !important;
-      top: 21%;
-      right: 30px;
+      position: absolute;
+      top: 15px;
+      right: 15px;
       cursor: pointer;
       animation: showConfig 0.5s forwards;
     }
@@ -229,9 +229,15 @@
     .editor-wrapper {
       width: 100%;
       border-radius: 6px;
+      margin-bottom: 8px;
+      position: relative;
 
       .ace_gutter {
         overflow: unset;
+
+        .ace_gutter-layer {
+          height: 100% !important;
+        }
       }
 
       .ace_editor {
