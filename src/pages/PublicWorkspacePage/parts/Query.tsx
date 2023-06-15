@@ -3,7 +3,7 @@ import AceEditor from 'react-ace';
 import { AppLoadingTable } from 'src/components';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import VisualizationDisplay from 'src/pages/WorkspacePage/parts/VisualizationDisplay';
-import 'ace-builds/src-noconflict/theme-monokai';
+import 'ace-builds/src-noconflict/theme-tomorrow';
 import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/mode-sql';
 import { getErrorMessage } from 'src/utils/utils-helper';
@@ -222,7 +222,7 @@ const QueryPart: React.FC = () => {
               }`}
               ref={editorRef}
               mode="sql"
-              theme="monokai"
+              theme="tomorrow"
               width="100%"
               wrapEnabled={true}
               readOnly
