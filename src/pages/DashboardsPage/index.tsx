@@ -279,6 +279,18 @@ const DashboardsPage: React.FC = () => {
                 )),
               )
             }
+            renderLoading={() => (
+              <Flex gap={'20px'}>
+                {[...Array(4)].map((_, index: number) => (
+                  <ListItem
+                    key={index}
+                    isLoading
+                    type={LIST_ITEM_TYPE.DASHBOARDS}
+                    displayed={displayed}
+                  />
+                ))}
+              </Flex>
+            )}
           />,
         ),
       },

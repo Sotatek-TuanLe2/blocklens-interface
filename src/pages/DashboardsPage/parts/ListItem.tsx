@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
-import { AppTag } from 'src/components';
+import { AppGridItem, AppTag } from 'src/components';
 import AppNetworkIcons from 'src/components/AppNetworkIcons';
 import { DisplayType } from 'src/constants';
 import { ROUTES } from 'src/utils/common';
@@ -23,6 +23,7 @@ import AppQueryMenu, { QUERY_MENU_LIST } from 'src/components/AppQueryMenu';
 import { ChevronRightIcon } from '@chakra-ui/icons';
 
 interface IListItem {
+  isLoading?: boolean;
   type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
   myWorkType?: typeof TYPE_MYWORK[keyof typeof TYPE_MYWORK];
   item?: IDashboardDetail | IQuery;
@@ -30,7 +31,12 @@ interface IListItem {
 }
 
 const ListItem: React.FC<IListItem> = (props) => {
-  const { type, myWorkType, item, displayed } = props;
+  const { type, myWorkType, item, displayed, isLoading } = props;
+
+  if (isLoading) {
+    return displayed === DisplayType.Grid ? <AppGridItem isLoading /> : null;
+  }
+
   const itemClass =
     type === LIST_ITEM_TYPE.DASHBOARDS
       ? new Dashboard(item as IDashboardDetail)
@@ -77,110 +83,6 @@ const ListItem: React.FC<IListItem> = (props) => {
           isNavMenu={isNavMenu}
         />
       )
-    );
-  };
-
-  const _renderGridItem = () => {
-    return (
-      <Flex
-        w={'full'}
-        flexDir={'column'}
-        justify={'stretch'}
-        boxShadow={'0px 15px 30px rgba(0, 0, 0, 0.04)'}
-        bg={'white'}
-        borderRadius={{ base: '10px', lg: '14px' }}
-        className="article"
-      >
-        <Box
-          borderTopLeftRadius={{ base: '10px', lg: '14px' }}
-          borderTopRightRadius={{ base: '10px', lg: '14px' }}
-          overflow={'hidden'}
-          style={{ aspectRatio: '295 / 180' }}
-        >
-          <Link to={getTitleUrl()}>
-            <Image
-              src={itemClass.getThumnail() || '/images/ThumbnailDashboard.png'}
-              alt="thumbnail"
-              minW={'full'}
-              minH={'full'}
-              objectFit={'cover'}
-              objectPosition={'center'}
-            />
-          </Link>
-        </Box>
-        <Flex
-          w={'full'}
-          flexGrow={1}
-          flexDir={'column'}
-          justify={'flex-end'}
-          p={4}
-        >
-          <Flex w={'full'}>
-            <Box flexGrow={1} maxW={'100%'} overflow={'hidden'}>
-              <Link
-                className="article-name"
-                to={getTitleUrl()}
-                style={{ display: 'block' }}
-              >
-                <Tooltip
-                  p={2}
-                  hasArrow
-                  placement="top"
-                  label={itemClass.getName()}
-                >
-                  {itemClass.getName()}
-                </Tooltip>
-              </Link>
-              <Flex flexWrap={'wrap'} mt={{ base: 1, lg: 1.5 }}>
-                {listTags.map((item) => (
-                  <AppTag
-                    key={item.id}
-                    value={item.name}
-                    h={{ base: '24px', lg: '22px' }}
-                    classNames="article-tag"
-                  />
-                ))}
-              </Flex>
-            </Box>
-            <Box>
-              <Flex
-                bg={'rgba(0, 2, 36, 0.05)'}
-                w={{ base: '24px', lg: '22px' }}
-                h={{ base: '24px', lg: '22px' }}
-                borderRadius={{ base: '12px', lg: '11px' }}
-                justify={'center'}
-                align={'center'}
-              >
-                {_renderDropdown()}
-              </Flex>
-            </Box>
-          </Flex>
-          <Divider
-            my={{ base: '14px', lg: 4 }}
-            colorScheme="rgba(0, 2, 36, 0.1)"
-          />
-          <Flex w={'full'}>
-            <Flex align={'center'} flexGrow={1}>
-              <Box mr={2.5}>
-                <Image src="/images/AvatarDashboardCard.png" alt="avatar" />
-              </Box>
-              <Box>
-                <Text className="article-creator" mb={{ base: '2px', lg: 0 }}>
-                  {userName}
-                </Text>
-                <Text className="article-date">
-                  {moment(itemClass.getCreatedTime()).format('YYYY MMMM Do')}
-                </Text>
-              </Box>
-            </Flex>
-            <Flex align={'center'}>
-              {itemClass.getChains() && (
-                <AppNetworkIcons networkIds={itemClass.getChains()} />
-              )}
-            </Flex>
-          </Flex>
-        </Flex>
-      </Flex>
     );
   };
 
@@ -392,7 +294,17 @@ const ListItem: React.FC<IListItem> = (props) => {
   return (
     <>
       {displayed === DisplayType.Grid ? (
-        _renderGridItem()
+        <AppGridItem
+          name={itemClass.getName()}
+          creator={userName}
+          date={moment(itemClass.getCreatedTime()).format('YYYY MMMM Do')}
+          toHref={getTitleUrl()}
+          tagList={listTags}
+          chainList={itemClass.getChains()}
+          shareComponent={_renderDropdown()}
+          srcThumb={itemClass.getThumnail()!}
+          srcAvatar={null!}
+        />
       ) : (
         <>
           <Box display={{ base: 'none', lg: 'block' }}>{_renderRowItem()}</Box>
