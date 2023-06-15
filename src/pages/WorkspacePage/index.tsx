@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { BasePage } from 'src/layouts';
 import { ROUTES } from 'src/utils/common';
-import NewDashboard from './parts/NewDashboard';
+import Dashboard from './parts/Dashboard';
 import Query from './parts/Query';
 import Sidebar from './parts/Sidebar';
 import 'src/styles/pages/WorkspacePage.scss';
@@ -31,12 +31,23 @@ const WorkspacePage: React.FC = () => {
   };
 
   return (
-    <BasePage>
+    <BasePage isFullWidth>
       <div className="workspace-page">
-        <div  className="workspace-page__dashboard-full">
-          <NewDashboard />
+        {type === WORKSPACE_TYPES.QUERY && (
+          <Sidebar
+            expandSidebar={toggleExpandSidebar}
+            onToggleExpandSidebar={onToggleExpandSidebar}
+          />
+        )}
+        <div
+          className={`workspace-page__editor ${
+            type === WORKSPACE_TYPES.QUERY
+              ? 'workspace-page__editor--query'
+              : ''
+          } ${toggleExpandSidebar ? '' : 'workspace-page__editor--expand'}`}
+        >
+          {type === WORKSPACE_TYPES.DASHBOARD ? <Dashboard /> : <Query />}
         </div>
-
       </div>
     </BasePage>
   );

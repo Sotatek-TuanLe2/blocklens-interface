@@ -1,39 +1,37 @@
-import { Box, Button, Flex, Text } from '@chakra-ui/react';
+import { Box, Collapse, Flex, Text, useDisclosure } from '@chakra-ui/react';
 import _ from 'lodash';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, FC, useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router';
 import {
   FireIcon,
-  FireIconInactive,
-  IconColumnDashboard,
-  IconDashboard,
-  IconDashboardInactive,
-  IconListDashboard,
-  IconQueries,
-  IconQueriesInactive,
+  IconFilter,
+  IconDisplayGrid,
+  IconDisplayList,
+  DashboardListIcon,
+  QueriesIcon,
 } from 'src/assets/icons';
 import {
   AppButton,
   AppInput,
+  AppMenu,
   AppSelect2,
   AppTag,
   IOption,
 } from 'src/components';
-import { VisibilityGridDashboardList } from 'src/constants';
+import { DisplayType } from 'src/constants';
 import useUser from 'src/hooks/useUser';
 import ModalCreateNew from 'src/modals/querySQL/ModalCreateNew';
 import rf from 'src/requests/RequestFactory';
 import { ROUTES } from 'src/utils/common';
-import {
-  getChainIconByChainName,
-  getChainIconInactiveByChainName,
-} from 'src/utils/utils-network';
+import { getChainIconByChainName } from 'src/utils/utils-network';
 import { HOME_URL_PARAMS, LIST_ITEM_TYPE } from '..';
+import { AddIcon } from '@chakra-ui/icons';
+import { IDataMenu } from '../../../utils/utils-app';
 
 interface IFilterSearch {
   type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
-  visibility: 'COLUMN' | 'ROW';
-  changeVisibility: (value: VisibilityGridDashboardList) => void;
+  displayed: string;
+  setDisplayed: (display: string) => void;
   myWorkType: string;
   changeMyWorkType: (value: string) => void;
 }
@@ -72,8 +70,8 @@ export const TYPE_MYWORK = {
 };
 
 const FilterSearch: React.FC<IFilterSearch> = (props) => {
-  const { type, visibility, changeVisibility, myWorkType, changeMyWorkType } =
-    props;
+  const { isOpen, onToggle } = useDisclosure();
+  const { type, displayed, setDisplayed, myWorkType, changeMyWorkType } = props;
   const history = useHistory();
   const { user } = useUser();
 
@@ -89,6 +87,38 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
     useState<boolean>(false);
 
   const [chainsSupported, setChainsSupported] = useState<ILISTNETWORK[]>([]);
+
+  const allChainSupprted: ILISTNETWORK = {
+    value: '',
+    label: 'All',
+    chain: 'All',
+  };
+
+  const menuDashboardQueries: IDataMenu[] = [
+    {
+      value: LIST_ITEM_TYPE.DASHBOARDS,
+      icon: <DashboardListIcon />,
+      label: 'Dashboard',
+    },
+    {
+      value: LIST_ITEM_TYPE.QUERIES,
+      icon: <QueriesIcon />,
+      label: 'Queries',
+    },
+  ];
+
+  const menuGridList: IDataMenu[] = [
+    {
+      value: DisplayType.Grid,
+      icon: <IconDisplayGrid />,
+      label: 'Grid',
+    },
+    {
+      value: DisplayType.List,
+      icon: <IconDisplayList />,
+      label: 'List',
+    },
+  ];
 
   useEffect(() => {
     (async () => {
@@ -126,8 +156,8 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
 
   useEffect(() => {
     isDashboard
-      ? changeVisibility(VisibilityGridDashboardList.COLUMN)
-      : changeVisibility(VisibilityGridDashboardList.ROW);
+      ? setDisplayed(DisplayType.Grid)
+      : setDisplayed(DisplayType.List);
   }, [type]);
 
   const onClickNew = () => {
@@ -191,162 +221,171 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
 
   const _renderNetWork = () => {
     return (
-      <Flex>
-        <Flex mr={3}>
-          <AppButton
-            onClick={() => onChangeChain('')}
-            variant="network"
-            className={chain === '' ? 'btn-active' : 'btn-inactive'}
-          >
-            {chain === '' ? <FireIcon /> : <FireIconInactive />}
-            <Text ml={2}>All</Text>
-          </AppButton>
-        </Flex>
-        <Flex flexDirection={'row'}>
-          {chainsSupported.map((network, index) => {
-            return (
-              <Flex mr={3}>
-                <AppButton
-                  onClick={() => onChangeChain(network.value)}
-                  key={index}
-                  variant="network"
-                  className={
-                    chain === network.value ? 'btn-active' : 'btn-inactive'
-                  }
-                >
-                  <Box
-                    className={
-                      chain === network.value
-                        ? getChainIconByChainName(network.value)
-                        : getChainIconInactiveByChainName(network.value)
-                    }
-                  ></Box>
-                  <Text ml={2}>{network.label}</Text>
-                </AppButton>
-              </Flex>
-            );
-          })}
-        </Flex>
-      </Flex>
+      <AppSelect2
+        size="medium"
+        value={chain || ''}
+        onChange={onChangeChain}
+        options={[allChainSupprted, ...chainsSupported] as IOption[]}
+        className="dashboard-filter__search__select"
+        sxWrapper={{
+          w: { base: '100% !important', lg: '200px !important' },
+          h: '44px',
+        }}
+        customItem={(chainSp: IOption) => {
+          return (
+            <Flex align={'center'}>
+              {chainSp.value === '' ? (
+                <Box w={5}>
+                  <FireIcon />
+                </Box>
+              ) : (
+                <Box className={getChainIconByChainName(chainSp.value)} />
+              )}
+              <Text ml={2}>{chainSp.label}</Text>
+            </Flex>
+          );
+        }}
+      />
     );
   };
 
   return (
-    <div>
-      <Flex flexDirection={'row'} justifyContent={'space-between'}>
-        {isMyWork ? (
-          <Flex>
-            <Flex flexDirection={'row'}>
-              <Flex mr={3}>
-                <AppButton
-                  onClick={() => onChangeMyWorkType(TYPE_MYWORK.DASHBOARDS)}
-                  variant="network"
-                  className={
-                    myWorkType === TYPE_MYWORK.DASHBOARDS
-                      ? 'btn-active'
-                      : 'btn-inactive'
-                  }
-                >
-                  {myWorkType === TYPE_MYWORK.DASHBOARDS ? (
-                    <IconDashboard />
-                  ) : (
-                    <IconDashboardInactive />
-                  )}
-                  <Text ml={2}>Dashboard</Text>
-                </AppButton>
-              </Flex>
+    <>
+      <Flex align={'center'}>
+        <Flex align={'center'} flexGrow={1}>
+          {isDashboard && (
+            <Flex flexGrow={{ base: 1, lg: 0 }}>
+              <AppMenu
+                data={menuGridList}
+                value={displayed}
+                setValue={setDisplayed}
+                minW={'124px'}
+              />
             </Flex>
-            <Flex mr={3}>
-              <AppButton
-                onClick={() => onChangeMyWorkType(TYPE_MYWORK.QUERIES)}
-                variant="network"
-                className={
-                  myWorkType === TYPE_MYWORK.QUERIES
-                    ? 'btn-active'
-                    : 'btn-inactive'
-                }
-              >
-                {myWorkType === TYPE_MYWORK.QUERIES ? (
-                  <IconQueries />
-                ) : (
-                  <IconQueriesInactive />
-                )}
-                <Text ml={2}>Queries</Text>
-              </AppButton>
+          )}
+          {isMyWork && (
+            <Flex flexGrow={{ base: 1, lg: 0 }} maxW={'50%'}>
+              <AppMenu
+                data={menuDashboardQueries}
+                value={myWorkType}
+                setValue={onChangeMyWorkType}
+                minW={{ base: 'auto', lg: '179px' }}
+              />
             </Flex>
+          )}
+          <Flex
+            flexGrow={{ base: 1, lg: 0 }}
+            align={'center'}
+            px={5}
+            h={10}
+            minW={'124px'}
+            bg={'white'}
+            border={'1px solid #C7D2E1'}
+            borderRadius={'6px'}
+            transition={'.2s linear'}
+            ml={!isDashboard && !isMyWork ? 0 : 2.5}
+            onClick={onToggle}
+            cursor={'pointer'}
+            userSelect={'none'}
+          >
+            <IconFilter color={'rgba(0, 2, 36, 0.5)'} />
+            <Text className={'text-filter'} px={2}>
+              Filter
+            </Text>
           </Flex>
-        ) : (
-          _renderNetWork()
-        )}
+        </Flex>
         {!!user && (
-          <AppButton onClick={onClickNew}>
-            <Box className="icon-plus-circle" mr={2} /> Create
-          </AppButton>
+          <Box>
+            <AppButton
+              display={{ base: 'none', lg: 'flex' }}
+              minW={'120px'}
+              className="btn-create"
+              onClick={onClickNew}
+              h={10}
+            >
+              <Box className="icon-plus-circle" mr={2} /> Create
+            </AppButton>
+            <AppButton
+              display={{ base: 'flex', lg: 'none' }}
+              w={12}
+              h={12}
+              borderRadius={'24px'}
+              className="btn-create"
+              onClick={onClickNew}
+              pos={'fixed'}
+              top={'68%'}
+              right={4}
+              zIndex={10}
+            >
+              <AddIcon fontWeight={700} fontSize={'25px'} />
+            </AppButton>
+          </Box>
         )}
       </Flex>
-      <Flex mt={5} flexDirection="row">
-        <AppInput
-          className="dashboard-filter__search__input"
-          placeholder={'Search...'}
-          value={search}
-          variant="searchFilter"
-          isSearch
-          onChange={onChangeSearch}
-        />
-        <AppSelect2
-          size="medium"
-          value={sort || 'datelowtohigh'}
-          onChange={onChangeSort}
-          options={optionType}
-          className="dashboard-filter__search__select"
-        />
-        {isDashboard && (
-          <>
-            <Button
-              onClick={() => changeVisibility(VisibilityGridDashboardList.ROW)}
-              className={`dashboard-filter__search__button ${
-                visibility === VisibilityGridDashboardList.ROW
-                  ? 'dashboard-filter__search__button--active'
-                  : ''
-              }`}
-            >
-              <IconListDashboard />
-            </Button>
-            <Button
-              onClick={() =>
-                changeVisibility(VisibilityGridDashboardList.COLUMN)
-              }
-              className={`dashboard-filter__search__button ${
-                visibility === VisibilityGridDashboardList.COLUMN
-                  ? 'dashboard-filter__search__button--active'
-                  : ''
-              }`}
-            >
-              <IconColumnDashboard />
-            </Button>
-          </>
-        )}
-      </Flex>
-      <Flex
-        mt={'14px'}
-        flexDirection={'row'}
-        className="dashboard-filter__tag-list"
+      <Collapse
+        in={isOpen}
+        animateOpacity
+        style={{ overflow: 'visible !important' }}
       >
-        {listTags.map((item) => (
-          <AppTag
-            key={item.id}
-            value={item.name}
-            variant="md"
-            onClick={() => onChangeTag(item.name)}
-            selected={item.name === tag}
-          />
-        ))}
-      </Flex>
+        <Box pt={{ base: '22px', lg: '28px' }}>
+          <Flex
+            flexDir={{ base: 'column', lg: 'row' }}
+            borderTop={'1px solid rgba(0, 2, 36, 0.1)'}
+            pt={{ base: '22px', lg: '20px' }}
+          >
+            <Box flexGrow={1} mb={{ base: 5, lg: 0 }}>
+              <AppInput
+                className="dashboard-filter__search__input"
+                placeholder={'Search...'}
+                value={search}
+                variant="searchFilter"
+                isSearch
+                onChange={onChangeSearch}
+              />
+              <Flex mt={'14px'}>
+                {listTags.map((item) => (
+                  <AppTag
+                    key={item.id}
+                    value={item.name}
+                    variant="md"
+                    onClick={() => onChangeTag(item.name)}
+                    selected={item.name === tag}
+                    h={'32px'}
+                    color={'rgba(0, 2, 36, 0.5)'}
+                    bg={'rgba(0, 2, 36, 0.05)'}
+                    borderRadius={'6px'}
+                  />
+                ))}
+              </Flex>
+            </Box>
+
+            <Box
+              ml={{ lg: 2.5 }}
+              mb={{ base: '13px', lg: 0 }}
+              pos={'relative'}
+              zIndex={10}
+            >
+              <AppSelect2
+                size="medium"
+                value={sort || 'datelowtohigh'}
+                onChange={onChangeSort}
+                options={optionType}
+                className="dashboard-filter__search__select"
+                sxWrapper={{
+                  w: { base: '100% !important', lg: '200px !important' },
+                  h: '44px',
+                }}
+              />
+            </Box>
+            <Box ml={{ lg: 2.5 }}>{_renderNetWork()}</Box>
+          </Flex>
+        </Box>
+      </Collapse>
       <ModalCreateNew
         open={openNewDashboardModal}
         onClose={onToggleNewDashboardModal}
       />
-    </div>
+    </>
   );
 };
 

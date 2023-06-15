@@ -5,7 +5,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { DashboardListIcon, IconMywork, QueriesIcon } from 'src/assets/icons';
 import { AppDataTable, RequestParams } from 'src/components';
 import AppTabs, { ITabs } from 'src/components/AppTabs';
-import { VisibilityGridDashboardList } from 'src/constants';
+import { DisplayType } from 'src/constants';
 import useUser from 'src/hooks/useUser';
 import { BasePage } from 'src/layouts';
 import {
@@ -47,9 +47,7 @@ const DashboardsPage: React.FC = () => {
   const [queryParams, setQueryParams] = useState<IQueriesParams>({});
   const [myWorkType, setMyWorkType] = useState<string>(TYPE_MYWORK.DASHBOARDS);
 
-  const [visibility, setVisibility] = useState<VisibilityGridDashboardList>(
-    VisibilityGridDashboardList.COLUMN,
-  );
+  const [displayed, setDisplayed] = useState<string>(DisplayType.Grid);
 
   useEffect(() => {
     const searchParams = new URLSearchParams(searchUrl);
@@ -181,63 +179,81 @@ const DashboardsPage: React.FC = () => {
     (appTable: any) => {
       return (
         <>
-          <div className="dashboard-filter">
+          <Box
+            mt={'0 !important'}
+            pb={{ base: '28px', lg: '34px' }}
+            className="dashboard-filter"
+          >
             <FilterSearch
               type={tab}
-              visibility={visibility}
-              changeVisibility={setVisibility}
+              displayed={displayed}
+              setDisplayed={setDisplayed}
               myWorkType={myWorkType}
               changeMyWorkType={setMyWorkType}
             />
-          </div>
-          <Box mt={'34px'}>{appTable}</Box>
+          </Box>
+          <Box>{appTable}</Box>
         </>
       );
     },
-    [tab, visibility, myWorkType],
+    [tab, myWorkType, displayed],
   );
 
   const _renderBody = useCallback(
     (listItem: any) => {
       return (
         <>
-          {visibility === VisibilityGridDashboardList.COLUMN ? (
+          {displayed === DisplayType.Grid ? (
             <SimpleGrid
               className="infos"
               columns={{ base: 1, sm: 2, lg: 3, xl: 4 }}
-              columnGap="6px"
-              rowGap="18px"
+              columnGap="20px"
+              rowGap="20px"
             >
               {listItem}
             </SimpleGrid>
           ) : (
-            <>{listItem}</>
+            listItem
           )}
         </>
       );
     },
-    [tab, visibility, myWorkType],
+    [tab, myWorkType, displayed],
   );
 
   const _renderHeader = useCallback(() => {
     return (
       <>
-        {visibility === VisibilityGridDashboardList.ROW ? (
-          <div className="dashboard-list__header">
-            <div className="item-title">Name</div>
-            <div className="item-creator">Creator</div>
-            <div className="item-chain">chain</div>
-            <div className="item-date">date</div>
-            <div className="item-tag">tag</div>
-            {/* <div className="item-like">like</div> */}
-            <div className="item-btn"></div>
-          </div>
+        {displayed === DisplayType.List ? (
+          <Flex
+            px={'26px'}
+            mb={'6px'}
+            display={{ base: 'none', lg: 'flex' }}
+            className="table-header"
+          >
+            <Box w={'22%'} overflow={'hidden'} pr={2.5}>
+              Name
+            </Box>
+            <Box w={'22%'} overflow={'hidden'} pr={2.5}>
+              Creator
+            </Box>
+            <Box w={'15%'} overflow={'hidden'} pr={2.5}>
+              chain
+            </Box>
+            <Box w={'15%'} overflow={'hidden'} pr={2.5}>
+              date
+            </Box>
+            <Box w={'calc(26% - 24px)'} overflow={'hidden'} pr={2.5}>
+              tag
+            </Box>
+            <Box w={'24px'}></Box>
+          </Flex>
         ) : (
           <></>
         )}
       </>
     );
-  }, [visibility]);
+  }, [displayed]);
 
   const generateTabs = (): ITabs[] => {
     const tabs: ITabs[] = [
@@ -258,7 +274,7 @@ const DashboardsPage: React.FC = () => {
                     key={item.id}
                     item={item}
                     type={LIST_ITEM_TYPE.DASHBOARDS}
-                    visibility={visibility}
+                    displayed={displayed}
                   />
                 )),
               )
@@ -283,7 +299,7 @@ const DashboardsPage: React.FC = () => {
                     key={item.id}
                     item={item}
                     type={LIST_ITEM_TYPE.QUERIES}
-                    visibility={visibility}
+                    displayed={displayed}
                   />
                 )),
               )
@@ -300,52 +316,52 @@ const DashboardsPage: React.FC = () => {
         icon: <IconMywork />,
         content: _renderContentTable(
           <>
-            <Box
-              display={myWorkType === TYPE_MYWORK.DASHBOARDS ? 'block' : 'none'}
-            >
-              <AppDataTable
-                requestParams={dashboardParams}
-                fetchData={fetchMyDashboards}
-                limit={12}
-                renderHeader={_renderHeader}
-                renderBody={(data) =>
-                  _renderBody(
-                    data.map((item: any) => (
-                      <ListItem
-                        key={item.id}
-                        item={item}
-                        type={LIST_ITEM_TYPE.MYWORK}
-                        myWorkType={TYPE_MYWORK.DASHBOARDS}
-                        visibility={visibility}
-                      />
-                    )),
-                  )
-                }
-              />
-            </Box>
-            <Box
-              display={myWorkType === TYPE_MYWORK.QUERIES ? 'block' : 'none'}
-            >
-              <AppDataTable
-                requestParams={queryParams}
-                fetchData={fetchMyQueries}
-                limit={15}
-                renderHeader={_renderHeader}
-                renderBody={(data) =>
-                  _renderBody(
-                    data.map((item: any) => (
-                      <ListItem
-                        key={item.id}
-                        item={item}
-                        type={LIST_ITEM_TYPE.MYWORK}
-                        myWorkType={TYPE_MYWORK.QUERIES}
-                        visibility={visibility}
-                      />
-                    )),
-                  )
-                }
-              />
-            </Box>
+            {myWorkType === TYPE_MYWORK.DASHBOARDS && (
+              <Box>
+                <AppDataTable
+                  requestParams={dashboardParams}
+                  fetchData={fetchMyDashboards}
+                  limit={12}
+                  renderHeader={_renderHeader}
+                  renderBody={(data) =>
+                    _renderBody(
+                      data.map((item: any) => (
+                        <ListItem
+                          key={item.id}
+                          item={item}
+                          type={LIST_ITEM_TYPE.MYWORK}
+                          myWorkType={TYPE_MYWORK.DASHBOARDS}
+                          displayed={displayed}
+                        />
+                      )),
+                    )
+                  }
+                />
+              </Box>
+            )}
+            {myWorkType === TYPE_MYWORK.QUERIES && (
+              <Box>
+                <AppDataTable
+                  requestParams={queryParams}
+                  fetchData={fetchMyQueries}
+                  limit={15}
+                  renderHeader={_renderHeader}
+                  renderBody={(data) =>
+                    _renderBody(
+                      data.map((item: any) => (
+                        <ListItem
+                          key={item.id}
+                          item={item}
+                          type={LIST_ITEM_TYPE.MYWORK}
+                          myWorkType={TYPE_MYWORK.QUERIES}
+                          displayed={displayed}
+                        />
+                      )),
+                    )
+                  }
+                />
+              </Box>
+            )}
           </>,
         ),
       });
@@ -367,13 +383,25 @@ const DashboardsPage: React.FC = () => {
         className="dashboards-page"
         justifyContent={'space-between'}
       >
-        <div className="dashboard-list">
+        <Box className="dashboard-list">
           <AppTabs
             currentTabIndex={tabIndex}
             tabs={generateTabs()}
             onChange={onChangeTab}
+            sxTabList={{
+              borderBottom: {
+                base: '1px solid #C7D2E1 !important',
+                lg: 'none !important',
+              },
+              mb: { base: '34px', lg: 6 },
+            }}
+            sxTabsHeader={{
+              justifyContent: { lg: 'center !important' },
+              overflow: 'hidden',
+              borderBottom: { base: '1px solid #C7D2E1', lg: 'none' },
+            }}
           />
-        </div>
+        </Box>
       </Flex>
     </BasePage>
   );

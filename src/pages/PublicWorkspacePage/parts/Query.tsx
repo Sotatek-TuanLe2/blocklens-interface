@@ -1,6 +1,6 @@
 import { Box, Flex, Tooltip } from '@chakra-ui/react';
 import AceEditor from 'react-ace';
-import { AppLoadingTable, AppTag } from 'src/components';
+import { AppLoadingTable } from 'src/components';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import VisualizationDisplay from 'src/pages/WorkspacePage/parts/VisualizationDisplay';
 import 'ace-builds/src-noconflict/theme-monokai';
@@ -18,10 +18,9 @@ import 'src/styles/pages/QueriesPage.scss';
 import { toastError } from 'src/utils/utils-notify';
 import rf from 'src/requests/RequestFactory';
 import { QUERY_RESULT_STATUS } from 'src/utils/common';
-import { Query } from 'src/utils/utils-query';
 import Header from 'src/pages/WorkspacePage/parts/Header';
-import AppNetworkIcons from 'src/components/AppNetworkIcons';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
+import { Query } from 'src/utils/utils-query';
 
 const QueryPart: React.FC = () => {
   const { queryId } = useParams<{ queryId: string }>();
@@ -36,6 +35,13 @@ const QueryPart: React.FC = () => {
 
   const fetchQueryResultInterval = useRef<any>(null);
 
+  const queryClass = useMemo(() => {
+    if (!queryValue) {
+      return null;
+    }
+    return new Query(queryValue);
+  }, [queryValue]);
+
   useEffect(() => {
     if (queryId) {
       fetchInitalData();
@@ -48,14 +54,8 @@ const QueryPart: React.FC = () => {
     };
   }, [queryId]);
 
-  const queryClass = useMemo(() => {
-    if (!queryValue) {
-      return null;
-    }
-    return new Query(queryValue);
-  }, [queryValue]);
-
   const getExecutionResultById = async (executionId: string) => {
+    clearInterval(fetchQueryResultInterval.current);
     const res = await rf.getRequest('DashboardsRequest').getQueryResult({
       executionId,
     });
@@ -111,71 +111,113 @@ const QueryPart: React.FC = () => {
 
   const fetchInitalData = async () => {
     try {
-      await fetchQueryResult();
       await fetchQuery();
+      await fetchQueryResult();
     } catch (error) {
       toastError({ message: getErrorMessage(error) });
     }
+  };
+
+  const onExpandEditor = () => {
+    setExpandLayout((prevState) => {
+      if (prevState === LAYOUT_QUERY.FULL) {
+        return LAYOUT_QUERY.HALF;
+      }
+      if (prevState === LAYOUT_QUERY.HALF) {
+        return LAYOUT_QUERY.HIDDEN;
+      }
+      return LAYOUT_QUERY.FULL;
+    });
+  };
+
+  const _renderContent = () => {
+    if (isLoadingResult) {
+      return <AppLoadingTable widthColumns={[100]} className="visual-table" />;
+    }
+
+    if (!!queryValue && !!queryResult.length && !errorExecuteQuery?.message) {
+      return (
+        <Box>
+          <VisualizationDisplay
+            queryResult={queryResult}
+            queryValue={queryValue}
+            needAuthentication={false}
+            onReload={fetchQuery}
+            expandLayout={expandLayout}
+            onExpand={setExpandLayout}
+          />
+        </Box>
+      );
+    }
+
+    return (
+      <Flex
+        className="empty-table"
+        justifyContent={'center'}
+        alignItems="center"
+      >
+        {errorExecuteQuery?.message || 'No data...'}
+      </Flex>
+    );
+  };
+
+  const _renderVisualizations = () => {
+    if (!queryId || !queryValue) {
+      return null;
+    }
+
+    return (
+      <div
+        className={` 
+      ${expandLayout === LAYOUT_QUERY.FULL ? 'add-chart-full' : 'add-chart'}
+       ${
+         expandLayout === LAYOUT_QUERY.HIDDEN
+           ? 'expand-chart hidden-editor'
+           : ''
+       } `}
+      >
+        {_renderContent()}
+      </div>
+    );
   };
 
   return (
     <div className="workspace-page__editor__query">
       <Header
         type={LIST_ITEM_TYPE.QUERIES}
-        author={''}
+        author={
+          queryClass
+            ? `${queryClass?.getUser().firstName} ${
+                queryClass?.getUser().lastName
+              }`
+            : ''
+        }
         data={queryValue}
         needAuthentication={false}
       />
       <div className="query-container queries-page">
         <Box className="queries-page__right-side">
-          <Box className="editor-wrapper">
+          <Box className="editor-wrapper ">
             <Box className="header-tab">
-              <div className="header-tab__info">
-                {queryClass?.getChains() && (
-                  <AppNetworkIcons networkIds={queryClass?.getChains()} />
-                )}
-                {['defi', 'gas', 'dex'].map((item) => (
-                  <AppTag key={item} value={item} />
-                ))}
-              </div>
               <Tooltip
                 label={
-                  expandLayout === LAYOUT_QUERY.FULL
-                    ? 'Minimize'
-                    : expandLayout === LAYOUT_QUERY.HALF
-                    ? 'Minimize'
-                    : 'Maximize'
+                  expandLayout === LAYOUT_QUERY.HIDDEN ? 'Maximize' : 'Minimize'
                 }
                 hasArrow
                 placement="top"
               >
                 <div className="btn-expand">
-                  {expandLayout === LAYOUT_QUERY.FULL ? (
-                    <p
-                      className="icon-query-collapse"
-                      onClick={() => setExpandLayout(LAYOUT_QUERY.HALF)}
-                    />
-                  ) : expandLayout === LAYOUT_QUERY.HALF ? (
-                    <p
-                      className="icon-query-collapse"
-                      onClick={() => setExpandLayout(LAYOUT_QUERY.HIDDEN)}
-                    />
-                  ) : (
-                    <p
-                      className="icon-query-expand"
-                      onClick={() => setExpandLayout(LAYOUT_QUERY.FULL)}
-                    />
-                  )}
+                  <p className="icon-query-collapse" onClick={onExpandEditor} />
                 </div>
               </Tooltip>
             </Box>
             <AceEditor
               className={`custom-editor ${
-                expandLayout === LAYOUT_QUERY.FULL
-                  ? 'full-editor'
-                  : expandLayout === LAYOUT_QUERY.HALF
-                  ? ''
-                  : 'hidden-editor'
+                expandLayout === LAYOUT_QUERY.FULL ? 'custom-editor--full' : ''
+              } ${
+                expandLayout === LAYOUT_QUERY.HIDDEN
+                  ? 'custom-editor--hidden'
+                  : ''
               }`}
               ref={editorRef}
               mode="sql"
@@ -198,45 +240,7 @@ const QueryPart: React.FC = () => {
               }}
             />
           </Box>
-          {queryId && !!queryValue && (
-            <div
-              className={`add-chart ${
-                expandLayout === LAYOUT_QUERY.HIDDEN
-                  ? 'expand-chart'
-                  : expandLayout === LAYOUT_QUERY.HALF
-                  ? ''
-                  : 'hidden-editor'
-              }`}
-            >
-              {isLoadingResult ? (
-                <AppLoadingTable
-                  widthColumns={[100]}
-                  className="visual-table"
-                />
-              ) : !!queryResult.length && !errorExecuteQuery?.message ? (
-                <Box>
-                  <VisualizationDisplay
-                    queryResult={queryResult}
-                    queryValue={queryValue}
-                    needAuthentication={false}
-                    onReload={fetchQuery}
-                    expandLayout={expandLayout}
-                    onExpand={setExpandLayout}
-                  />
-                </Box>
-              ) : (
-                <Flex
-                  className="empty-table"
-                  justifyContent={'center'}
-                  alignItems="center"
-                >
-                  {errorExecuteQuery?.message
-                    ? errorExecuteQuery?.message
-                    : 'No data...'}
-                </Flex>
-              )}
-            </div>
-          )}
+          {_renderVisualizations()}
         </Box>
       </div>
     </div>

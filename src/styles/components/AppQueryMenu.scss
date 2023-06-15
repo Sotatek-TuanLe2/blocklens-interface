@@ -10,20 +10,20 @@
   }
 
   &__list {
-    background: #2f3b58 !important;
     border: unset;
     min-width: 109px;
     border-radius: 6px;
     border: none;
     min-width: 104px !important;
-    
+
     .chakra-menu__menuitem {
-      &:hover, &:focus {
-        background: $main !important;
+      &:hover,
+      &:focus {
+        background: #0060db !important;
+        color: white !important;
       }
-      
-      color: $title !important;
+
+      color: $bg1 !important;
     }
   }
-  
 }

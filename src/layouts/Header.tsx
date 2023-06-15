@@ -3,8 +3,7 @@ import { AppButton, AppLink } from 'src/components';
 import { useHistory } from 'react-router';
 import 'src/styles/layout/Header.scss';
 import Storage from 'src/utils/utils-storage';
-import { RootState } from 'src/store';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
   Menu,
   MenuButton,
@@ -113,6 +112,9 @@ const Header: FC = () => {
             </MenuItem>
           </MenuList>
         </Menu>
+        {/* <Button size="sm" colorScheme="blue" onClick={toggleColorMode}>
+          Toggle Mode
+        </Button> */}
       </Box>
     );
   };

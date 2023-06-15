@@ -7,19 +7,12 @@ import {
   MenuItem,
   MenuList,
 } from '@chakra-ui/react';
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Layout, Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import ReactMarkdown from 'react-markdown';
 import 'react-resizable/css/styles.css';
 import PlusIcon from 'src/assets/icons/icon-plus.png';
-import { AppTag } from 'src/components';
 import useUser from 'src/hooks/useUser';
 import ModalAddTextWidget from 'src/modals/querySQL/ModalAddTextWidget';
 import ModalAddVisualization from 'src/modals/querySQL/ModalAddVisualization';
@@ -36,7 +29,6 @@ import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import VisualizationItem from './VisualizationItem';
 import Header from './Header';
-import AppNetworkIcons from 'src/components/AppNetworkIcons';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
 import { Dashboard } from 'src/utils/utils-dashboard';
@@ -237,110 +229,114 @@ const DashboardPart: React.FC = () => {
     </Flex>
   );
 
+  const _renderDashboard = () => {
+    if (isEmptyDashboard) {
+      return _renderEmptyDashboard();
+    }
+
+    return (
+      <ResponsiveGridLayout
+        onLayoutChange={onLayoutChange}
+        className="main-grid-layout"
+        layouts={{ lg: dataLayouts }}
+        breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
+        cols={{ lg: 12, md: 12, sm: 12, xs: 6, xxs: 4 }}
+        isDraggable={editMode}
+        isResizable={editMode}
+        measureBeforeMount
+        containerPadding={[0, 30]}
+      >
+        {dataLayouts.map((item) => (
+          <div className="box-layout" key={item.id}>
+            <div className="box-chart">
+              {item.type === WIDGET_TYPE.VISUALIZATION ? (
+                <VisualizationItem
+                  editMode={editMode}
+                  visualization={item.content}
+                />
+              ) : (
+                <div
+                  className={`box-text-widget ${
+                    editMode ? 'box-text-widget--edit' : ''
+                  }`}
+                >
+                  <ReactMarkdown>{item.text}</ReactMarkdown>
+                </div>
+              )}
+            </div>
+            {editMode && (
+              <Flex
+                alignItems={'flex-start'}
+                className="widget-buttons"
+                columnGap={'12px'}
+              >
+                {item.type === WIDGET_TYPE.TEXT && (
+                  <Box
+                    onClick={() => {
+                      setTypeModalTextWidget(TYPE_MODAL.EDIT);
+                      setSelectedItem(item);
+                      setOpenModalAddTextWidget(true);
+                    }}
+                  >
+                    <EditIcon />
+                  </Box>
+                )}
+                <Box
+                  onClick={() => {
+                    setSelectedItem(item);
+                    setOpenModalEdit(true);
+                  }}
+                >
+                  <DeleteIcon />
+                </Box>
+              </Flex>
+            )}
+          </div>
+        ))}
+      </ResponsiveGridLayout>
+    );
+  };
+
   return (
     <div className="workspace-page__editor__dashboard">
       <Header
         type={LIST_ITEM_TYPE.DASHBOARDS}
-        author={user?.getFirstName() || ''}
+        author={
+          dashboardClass
+            ? `${dashboardClass?.getUser().firstName} ${
+                dashboardClass?.getUser().lastName
+              }`
+            : ''
+        }
         data={dataDashboard}
         isEdit={editMode}
         onChangeEditMode={() => setEditMode((prevState) => !prevState)}
       />
       <div className="dashboard-container">
-        <Box className="header-tab">
-          <div className="header-tab__info">
-            {dashboardClass?.getChains() && (
-              <AppNetworkIcons networkIds={dashboardClass?.getChains()} />
-            )}
-            {['defi', 'gas', 'dex'].map((item) => (
-              <AppTag key={item} value={item} />
-            ))}
-          </div>
-          {editMode && !isEmptyDashboard && (
-            <Menu>
+        {_renderDashboard()}
+        {editMode && !isEmptyDashboard && (
+          <Menu>
+            <Box className="add-button">
               <MenuButton className="app-query-menu">
-                <Box className="add-button">
-                  <img src={PlusIcon} alt="icon-plus" />
-                </Box>
+                <img src={PlusIcon} alt="icon-plus" />
               </MenuButton>
-              <MenuList className="app-query-menu__list">
-                <MenuItem onClick={onOpenModalAddVisualization}>
-                  <Flex alignItems={'center'} gap={'8px'}>
-                    <span className="icon-widget-small-visualization" />
-                    Add visualization
-                  </Flex>
-                </MenuItem>
-                <MenuItem onClick={onOpenModalAddText}>
-                  <Flex alignItems={'center'} gap={'8px'}>
-                    <span className="icon-widget-small-text" />
-                    Add text widget
-                  </Flex>
-                </MenuItem>
-              </MenuList>
-            </Menu>
-          )}
-        </Box>
-        {!!dataLayouts.length && (
-          <ResponsiveGridLayout
-            onLayoutChange={onLayoutChange}
-            className="main-grid-layout"
-            layouts={{ lg: dataLayouts }}
-            breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
-            cols={{ lg: 12, md: 12, sm: 12, xs: 6, xxs: 4 }}
-            isDraggable={editMode}
-            isResizable={editMode}
-            measureBeforeMount
-          >
-            {dataLayouts.map((item) => (
-              <div className="box-layout" key={item.id}>
-                <div className="box-chart">
-                  {item.type === WIDGET_TYPE.VISUALIZATION ? (
-                    <VisualizationItem
-                      editMode={editMode}
-                      visualization={item.content}
-                    />
-                  ) : (
-                    <div
-                      className={`box-text-widget ${
-                        editMode ? 'box-text-widget--edit' : ''
-                      }`}
-                    >
-                      <ReactMarkdown>{item.text}</ReactMarkdown>
-                    </div>
-                  )}
-                </div>
-                {editMode && (
-                  <Flex
-                    alignItems={'center'}
-                    className="widget-buttons"
-                    columnGap={'12px'}
-                  >
-                    {item.type === WIDGET_TYPE.TEXT && (
-                      <Box
-                        onClick={() => {
-                          setTypeModalTextWidget(TYPE_MODAL.EDIT);
-                          setSelectedItem(item);
-                          setOpenModalAddTextWidget(true);
-                        }}
-                      >
-                        <EditIcon />
-                      </Box>
-                    )}
-                    <Box
-                      onClick={() => {
-                        setSelectedItem(item);
-                        setOpenModalEdit(true);
-                      }}
-                    >
-                      <DeleteIcon />
-                    </Box>
-                  </Flex>
-                )}
-              </div>
-            ))}
-          </ResponsiveGridLayout>
+            </Box>
+            <MenuList className="app-query-menu__list">
+              <MenuItem onClick={onOpenModalAddVisualization}>
+                <Flex alignItems={'center'} gap={'8px'}>
+                  <span className="icon-widget-small-visualization" />
+                  Add visualization
+                </Flex>
+              </MenuItem>
+              <MenuItem onClick={onOpenModalAddText}>
+                <Flex alignItems={'center'} gap={'8px'}>
+                  <span className="icon-widget-small-text" />
+                  Add text widget
+                </Flex>
+              </MenuItem>
+            </MenuList>
+          </Menu>
         )}
-        {isEmptyDashboard && _renderEmptyDashboard()}
         <ModalSettingDashboardDetails
           open={openModalSetting}
           onClose={() => setOpenModalSetting(false)}
@@ -372,7 +368,6 @@ const DashboardPart: React.FC = () => {
             onReload={fetchLayoutData}
           />
         )}
-
         <ModalForkDashBoardDetails
           dashboardId={dashboardId}
           open={openModalFork}

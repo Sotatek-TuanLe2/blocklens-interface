@@ -12,18 +12,17 @@
 
   li {
     @include text-small-regular;
-    border: 1px solid $border;
+    border: 1px solid #c7d2e1;
     margin: 0 5px;
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 3px;
-    color: $paragraph;
+    border-radius: 4px;
+    color: rgba(0, 2, 36, 0.8);
 
     a {
-      padding: 0 5px;
-      min-width: 30px;
-      height: 30px;
+      min-width: 32px;
+      height: 32px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -31,12 +30,12 @@
 
     &.selected {
       background: $gradient;
-      color: $title;
+      color: white;
     }
 
     &:hover {
       background: $gradient;
-      color: $title;
+      color: white;
     }
 
     &.disabled {

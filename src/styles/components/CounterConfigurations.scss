@@ -10,7 +10,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    
+
     .text-result {
       font-size: 21px;
       line-height: 32px;
@@ -25,7 +25,7 @@
   font-size: 14px;
   display: grid;
   grid-gap: 10px;
-  border: 1px solid $border;
+  border: 1px solid rgba(0, 2, 36, 0.1);
 
   .divider-bottom {
     border-bottom: 1px solid #2f3b58;
@@ -52,11 +52,6 @@
   .box-table {
     min-height: 100%;
     padding: 12px 12px 4px 12px;
-    background: #1a203b;
-
-    &__title {
-      color: $title;
-    }
 
     .main-toggle {
       display: flex;
@@ -73,7 +68,6 @@
         font-weight: 400;
         font-size: 14px;
         line-height: 20px;
-        color: $title;
       }
     }
 
@@ -96,19 +90,13 @@
         font-weight: 400;
         font-size: 14px;
         line-height: 20px;
-        color: $paragraph;
       }
 
       .select-table {
         .app-select__btn-select {
           padding: 0px 17px;
           font-size: 14px;
-          background: #1a203b;
           border: 1px solid $line;
-        }
-
-        .app-select__menu {
-          color: $title;
         }
 
         .app-select__menu-item {
@@ -119,12 +107,10 @@
       .input-table {
         font-size: 13px;
         border-color: transparent;
-        color: $title;
         border-radius: 5px;
         border: 1px solid $line;
         padding: 18px;
         height: 0;
-        background: #1a203b;
       }
     }
   }
