@@ -13,6 +13,7 @@ import { AppButton, AppTabs, ITabs } from '../../../components';
 import ChartConfigurations from '../../../components/VisualizationConfigs/ChartConfigurations';
 import BaseModal from '../../../modals/BaseModal';
 import {
+  AddChartIcon,
   AreaChartIcon,
   BarChartIcon,
   CounterIcon,
@@ -106,6 +107,7 @@ const VisualizationDisplay = ({
   }
   const { queryId } = useParams<ParamTypes>();
 
+  const [tabIndex, setTabIndex] = useState<number>(0);
   const [toggleCloseConfig, setToggleCloseConfig] = useState<boolean>(false);
   const [closeTabId, setCloseTabId] = useState<string | number>('');
   const [dataTable, setDataTable] = useState<any[]>([]);
@@ -447,12 +449,9 @@ const VisualizationDisplay = ({
   };
 
   const onChangeTab = (_tabId: string, tabIndex: number) => {
+    setTabIndex(tabIndex);
     setToggleCloseConfig(needAuthentication && !!tabIndex);
-    onExpand(
-      expandLayout === LAYOUT_QUERY.HIDDEN
-        ? LAYOUT_QUERY.HIDDEN
-        : LAYOUT_QUERY.HALF,
-    );
+    onExpand(LAYOUT_QUERY.HIDDEN);
   };
 
   const generateTabs = () => {
@@ -487,9 +486,17 @@ const VisualizationDisplay = ({
     if (needAuthentication) {
       tabs.push({
         name: (
-          <Tooltip label="Add New Visualization" hasArrow>
+          <Tooltip
+            label="Add New Visualization"
+            hasArrow
+            bg="white"
+            color="black"
+          >
             <Flex alignItems={'center'}>
-              <Box className="icon-plus-circle" mr={2} /> Add Chart
+              <Box>
+                <AddChartIcon />
+              </Box>{' '}
+              Add Chart
             </Flex>
           </Tooltip>
         ),
@@ -510,6 +517,7 @@ const VisualizationDisplay = ({
   return (
     <Box className="visual-container">
       <AppTabs
+        currentTabIndex={tabIndex}
         onCloseTab={(tabId: string) => {
           setCloseTabId(tabId);
         }}
@@ -525,7 +533,7 @@ const VisualizationDisplay = ({
                 {expandLayout === LAYOUT_QUERY.FULL ? (
                   <p
                     className="icon-query-expand"
-                    onClick={() => onExpand(LAYOUT_QUERY.HALF)}
+                    onClick={() => onExpand(LAYOUT_QUERY.HIDDEN)}
                   />
                 ) : (
                   <p
@@ -535,7 +543,7 @@ const VisualizationDisplay = ({
                 )}
               </div>
             </Tooltip>
-            {needAuthentication && (
+            {needAuthentication && !!tabIndex && (
               <Tooltip label="Edit" hasArrow bg="white" color="black">
                 <div
                   className="btn-expand"
@@ -547,14 +555,6 @@ const VisualizationDisplay = ({
                 </div>
               </Tooltip>
             )}
-            <Tooltip label="Maximize" hasArrow bg="white" color="black">
-              <div
-                className="btn-expand-full"
-                onClick={() => onExpand(LAYOUT_QUERY.HIDDEN)}
-              >
-                <p className="icon-expand-chart" />
-              </div>
-            </Tooltip>
           </Flex>
         }
         onChange={onChangeTab}
@@ -573,6 +573,7 @@ const VisualizationDisplay = ({
               onClick={() => setCloseTabId('')}
               size="lg"
               variant={'cancel'}
+              className="btn-cancel"
             >
               Cancel
             </AppButton>
@@ -612,8 +613,7 @@ const AddVisualization = ({
 
   return (
     <Box>
-      {(expandLayout === LAYOUT_QUERY.HALF ||
-        expandLayout === LAYOUT_QUERY.HIDDEN) && (
+      {expandLayout === LAYOUT_QUERY.HIDDEN && (
         <div
           className={`main-item ${
             expandLayout === LAYOUT_QUERY.HIDDEN ? 'main-item-expand' : ''

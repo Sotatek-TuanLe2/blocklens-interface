@@ -17,7 +17,6 @@ import {
 import 'src/styles/pages/QueriesPage.scss';
 import { toastError } from 'src/utils/utils-notify';
 import rf from 'src/requests/RequestFactory';
-import useUser from 'src/hooks/useUser';
 import { TYPE_OF_MODAL, QUERY_RESULT_STATUS } from 'src/utils/common';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
 import { EditorContext } from '../context/EditorContext';
@@ -27,6 +26,7 @@ import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import { BROADCAST_FETCH_WORKPLACE_DATA } from './Sidebar';
 import ModalQuery from 'src/modals/querySQL/ModalQuery';
 import { Query } from 'src/utils/utils-query';
+import { AddChartIcon } from 'src/assets/icons';
 
 export const BROADCAST_ADD_TEXT_TO_EDITOR = 'ADD_TEXT_TO_EDITOR';
 export const BROADCAST_FETCH_QUERY = 'FETCH_QUERY';
@@ -38,7 +38,7 @@ const QueryPart: React.FC = () => {
   const editorRef = useRef<any>();
   const [queryResult, setQueryResult] = useState<any>([]);
   const [queryValue, setQueryValue] = useState<IQuery | null>(null);
-  const [expandLayout, setExpandLayout] = useState<string>(LAYOUT_QUERY.HALF);
+  const [expandLayout, setExpandLayout] = useState<string>(LAYOUT_QUERY.HIDDEN);
   const [isLoadingResult, setIsLoadingResult] = useState<boolean>(!!queryId);
   const [errorExecuteQuery, setErrorExecuteQuery] =
     useState<IErrorExecuteQuery | null>(null);
@@ -46,8 +46,6 @@ const QueryPart: React.FC = () => {
   const fetchQueryResultInterval = useRef<any>(null);
   const [openModalSettingQuery, setOpenModalSettingQuery] =
     useState<boolean>(false);
-
-  const { user } = useUser();
 
   const onAddTextToEditor = (text: string) => {
     const position = editorRef.current.editor.getCursorPosition();
@@ -72,6 +70,7 @@ const QueryPart: React.FC = () => {
   useEffect(() => {
     if (queryId) {
       fetchInitalData();
+      setExpandLayout(LAYOUT_QUERY.HIDDEN);
     } else {
       resetEditor();
     }
@@ -210,10 +209,10 @@ const QueryPart: React.FC = () => {
   const onExpandEditor = () => {
     setExpandLayout((prevState) => {
       if (prevState === LAYOUT_QUERY.FULL) {
-        return LAYOUT_QUERY.HALF;
-      }
-      if (prevState === LAYOUT_QUERY.HALF) {
         return LAYOUT_QUERY.HIDDEN;
+      }
+      if (prevState === LAYOUT_QUERY.HIDDEN) {
+        return LAYOUT_QUERY.FULL;
       }
       return LAYOUT_QUERY.FULL;
     });
@@ -249,20 +248,49 @@ const QueryPart: React.FC = () => {
     );
   };
 
+  const classExpand = (
+    layout: string,
+    firstClass: string,
+    secondClass: string,
+  ) => {
+    if (!queryId || !queryValue) {
+      return 'custom-editor--full';
+    } else {
+      return expandLayout === layout ? firstClass : secondClass;
+    }
+  };
+
   const _renderVisualizations = () => {
     if (!queryId || !queryValue) {
-      return null;
+      return (
+        <div className="empty-query">
+          <Tooltip
+            label="Add New Visualization"
+            hasArrow
+            bg="white"
+            color="black"
+          >
+            <Flex alignItems={'center'}>
+              <Box mr={2}>
+                <AddChartIcon />
+              </Box>{' '}
+              Add Chart
+            </Flex>
+          </Tooltip>
+          <p className="icon-query-expand" />
+        </div>
+      );
     }
 
     return (
       <div
         className={` 
-        ${expandLayout === LAYOUT_QUERY.FULL ? 'add-chart-full' : 'add-chart'}
-         ${
-           expandLayout === LAYOUT_QUERY.HIDDEN
-             ? 'expand-chart hidden-editor'
-             : ''
-         } `}
+        ${classExpand(LAYOUT_QUERY.FULL, 'add-chart-full', 'add-chart')}
+         ${classExpand(
+           LAYOUT_QUERY.HIDDEN,
+           'expand-chart hidden-editor',
+           '',
+         )} `}
       >
         {_renderContent()}
       </div>
@@ -294,36 +322,17 @@ const QueryPart: React.FC = () => {
         <div className="query-container queries-page">
           <Box className="queries-page__right-side">
             <Box className="editor-wrapper">
-              <Box className="header-tab">
-                <Tooltip
-                  label={
-                    expandLayout === LAYOUT_QUERY.HIDDEN
-                      ? 'Maximize'
-                      : 'Minimize'
-                  }
-                  hasArrow
-                  placement="top"
-                  bg="white"
-                  color="black"
-                >
-                  <div className="btn-expand">
-                    <p
-                      className="icon-query-collapse"
-                      onClick={onExpandEditor}
-                    />
-                  </div>
-                </Tooltip>
-              </Box>
               <AceEditor
-                className={`custom-editor ${
-                  expandLayout === LAYOUT_QUERY.FULL
-                    ? 'custom-editor--full'
-                    : ''
-                } ${
-                  expandLayout === LAYOUT_QUERY.HIDDEN
-                    ? 'custom-editor--hidden'
-                    : ''
-                }`}
+                className={`custom-editor ace_editor ace-tomorrow
+                ${classExpand(
+                  LAYOUT_QUERY.FULL,
+                  'custom-editor--full',
+                  '',
+                )} ${classExpand(
+                  LAYOUT_QUERY.HIDDEN,
+                  'custom-editor--hidden',
+                  '',
+                )}`}
                 ref={editorRef}
                 mode="sql"
                 theme="tomorrow"
@@ -343,6 +352,26 @@ const QueryPart: React.FC = () => {
                 }}
                 onSelectionChange={onSelectQuery}
               />
+              <Tooltip
+                label={
+                  expandLayout === LAYOUT_QUERY.HIDDEN ? 'Maximize' : 'Minimize'
+                }
+                hasArrow
+                placement="top"
+                bg="white"
+                color="black"
+              >
+                <div className="btn-expand-query">
+                  <p
+                    className={`${
+                      expandLayout === LAYOUT_QUERY.HIDDEN
+                        ? 'icon-query-expand'
+                        : 'icon-query-collapse'
+                    }`}
+                    onClick={onExpandEditor}
+                  />
+                </div>
+              </Tooltip>
             </Box>
             {_renderVisualizations()}
           </Box>

@@ -123,7 +123,7 @@ export const globalStyles = {
         letterSpacing: '0.2px',
       },
       '.chakra-ui-light': {
-        '.chain-info-desc, .text-widget-input, .box-form, .menu-header, .header, .add-chart-full, .ace_scroller, .layout-config, .main-layout, .input-table, .first-box-table, .select-table, .dashboard-list__item--row, .editor-wrapper, .box-layout, .workspace-page__editor__header, .add-chart, .workspace-page__sidebar__categories, .workspace-page__sidebar__content':
+        '.chain-info-desc, .empty-query, .text-widget-input, .box-form, .menu-header, .header, .add-chart-full, .ace_scroller, .layout-config, .main-layout, .input-table, .first-box-table, .select-table, .dashboard-list__item--row, .editor-wrapper, .box-layout, .workspace-page__editor__header, .add-chart, .workspace-page__sidebar__categories, .workspace-page__sidebar__content':
           {
             background: mode('white.100', 'bgDark')(props),
           },
@@ -175,6 +175,11 @@ export const globalStyles = {
             )(props),
           },
         },
+      },
+
+      '.chakra-menu__menu-list': {
+        boxShadow: ' 0px 10px 40px rgba(125, 143, 179, 0.2) !important',
+        borderRadius: '6px  !important',
       },
 
       '.table-temaplate': {
