@@ -120,6 +120,7 @@ const QueryPart: React.FC = () => {
   };
 
   const onExpandEditor = () => {
+    if (errorExecuteQuery || !queryId || !queryValue) return;
     setExpandLayout((prevState) => {
       if (prevState === LAYOUT_QUERY.FULL) {
         return LAYOUT_QUERY.HIDDEN;
@@ -129,6 +130,24 @@ const QueryPart: React.FC = () => {
       }
       return LAYOUT_QUERY.FULL;
     });
+  };
+
+  const classExpand = (
+    layout: string,
+    firstClass: string,
+    secondClass: string,
+  ) => {
+    if (errorExecuteQuery) return;
+    if (!queryId || !queryValue) return 'custom-editor--full';
+    return expandLayout === layout ? firstClass : secondClass;
+  };
+
+  const onCheckedIconExpand = () => {
+    if (errorExecuteQuery || !queryId || !queryValue)
+      return 'icon-query-collapse';
+    return expandLayout === LAYOUT_QUERY.HIDDEN
+      ? 'icon-query-expand'
+      : 'icon-query-collapse';
   };
 
   const _renderContent = () => {
@@ -156,7 +175,9 @@ const QueryPart: React.FC = () => {
         className="empty-table"
         justifyContent={'center'}
         alignItems="center"
+        flexDirection="column"
       >
+        <span className="execution-error">Execution Error</span>
         {errorExecuteQuery?.message || 'No data...'}
       </Flex>
     );
@@ -169,13 +190,10 @@ const QueryPart: React.FC = () => {
 
     return (
       <div
-        className={` 
-      ${expandLayout === LAYOUT_QUERY.FULL ? 'add-chart-full' : 'add-chart'}
-       ${
-         expandLayout === LAYOUT_QUERY.HIDDEN
-           ? 'expand-chart hidden-editor'
-           : ''
-       } `}
+        className={`
+        ${errorExecuteQuery ? 'add-chart-empty' : ''}
+        ${classExpand(LAYOUT_QUERY.FULL, 'add-chart-full', 'add-chart')}
+        ${classExpand(LAYOUT_QUERY.HIDDEN, 'expand-chart hidden-editor', '')} `}
       >
         {_renderContent()}
       </div>
@@ -208,18 +226,31 @@ const QueryPart: React.FC = () => {
               bg="white"
               color="black"
             >
-              <div className="btn-expand-public">
-                <p className="icon-query-collapse" onClick={onExpandEditor} />
+              <div
+                className={`${
+                  errorExecuteQuery || !queryId || !queryValue
+                    ? 'cursor-not-allowed'
+                    : ''
+                } btn-expand-public`}
+              >
+                <p
+                  className={`${onCheckedIconExpand()}`}
+                  onClick={onExpandEditor}
+                />
               </div>
             </Tooltip>
             <AceEditor
-              className={`custom-editor ${
-                expandLayout === LAYOUT_QUERY.FULL ? 'custom-editor--full' : ''
-              } ${
-                expandLayout === LAYOUT_QUERY.HIDDEN
-                  ? 'custom-editor--hidden'
-                  : ''
-              }`}
+              className={`ace_editor ace-tomorrow custom-editor 
+                ${errorExecuteQuery ? 'custom-editor--half' : ''}
+                ${classExpand(
+                  LAYOUT_QUERY.FULL,
+                  'custom-editor--full',
+                  '',
+                )} ${classExpand(
+                LAYOUT_QUERY.HIDDEN,
+                'custom-editor--hidden',
+                '',
+              )}`}
               ref={editorRef}
               mode="sql"
               theme="tomorrow"

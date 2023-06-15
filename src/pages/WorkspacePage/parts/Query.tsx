@@ -207,6 +207,7 @@ const QueryPart: React.FC = () => {
   };
 
   const onExpandEditor = () => {
+    if (errorExecuteQuery || !queryId || !queryValue) return;
     setExpandLayout((prevState) => {
       if (prevState === LAYOUT_QUERY.FULL) {
         return LAYOUT_QUERY.HIDDEN;
@@ -216,6 +217,14 @@ const QueryPart: React.FC = () => {
       }
       return LAYOUT_QUERY.FULL;
     });
+  };
+
+  const onCheckedIconExpand = () => {
+    if (errorExecuteQuery || !queryId || !queryValue)
+      return 'icon-query-collapse';
+    return expandLayout === LAYOUT_QUERY.HIDDEN
+      ? 'icon-query-expand'
+      : 'icon-query-collapse';
   };
 
   const _renderContent = () => {
@@ -236,13 +245,14 @@ const QueryPart: React.FC = () => {
         </Box>
       );
     }
-
     return (
       <Flex
         className="empty-table"
         justifyContent={'center'}
         alignItems="center"
+        flexDirection="column"
       >
+        <span className="execution-error">Execution Error</span>
         {errorExecuteQuery?.message || 'No data...'}
       </Flex>
     );
@@ -253,11 +263,9 @@ const QueryPart: React.FC = () => {
     firstClass: string,
     secondClass: string,
   ) => {
-    if (!queryId || !queryValue) {
-      return 'custom-editor--full';
-    } else {
-      return expandLayout === layout ? firstClass : secondClass;
-    }
+    if (errorExecuteQuery) return;
+    if (!queryId || !queryValue) return 'custom-editor--full';
+    return expandLayout === layout ? firstClass : secondClass;
   };
 
   const _renderVisualizations = () => {
@@ -265,7 +273,7 @@ const QueryPart: React.FC = () => {
       return (
         <div className="empty-query">
           <Tooltip
-            label="Add New Visualization"
+            label="Visualization need data from result table."
             hasArrow
             bg="white"
             color="black"
@@ -277,20 +285,17 @@ const QueryPart: React.FC = () => {
               Add Chart
             </Flex>
           </Tooltip>
-          <p className="icon-query-expand" />
+          <p className="icon-query-expand cursor-not-allowed" />
         </div>
       );
     }
 
     return (
       <div
-        className={` 
+        className={`
+        ${errorExecuteQuery ? 'add-chart-empty' : ''}
         ${classExpand(LAYOUT_QUERY.FULL, 'add-chart-full', 'add-chart')}
-         ${classExpand(
-           LAYOUT_QUERY.HIDDEN,
-           'expand-chart hidden-editor',
-           '',
-         )} `}
+        ${classExpand(LAYOUT_QUERY.HIDDEN, 'expand-chart hidden-editor', '')} `}
       >
         {_renderContent()}
       </div>
@@ -324,6 +329,7 @@ const QueryPart: React.FC = () => {
             <Box className="editor-wrapper">
               <AceEditor
                 className={`ace_editor ace-tomorrow custom-editor 
+                ${errorExecuteQuery ? 'custom-editor--half' : ''}
                 ${classExpand(
                   LAYOUT_QUERY.FULL,
                   'custom-editor--full',
@@ -361,13 +367,15 @@ const QueryPart: React.FC = () => {
                 bg="white"
                 color="black"
               >
-                <div className="btn-expand-query">
+                <div
+                  className={`${
+                    errorExecuteQuery || !queryId || !queryValue
+                      ? 'cursor-not-allowed'
+                      : ''
+                  } btn-expand-query`}
+                >
                   <p
-                    className={`${
-                      expandLayout === LAYOUT_QUERY.HIDDEN
-                        ? 'icon-query-expand'
-                        : 'icon-query-collapse'
-                    }`}
+                    className={`${onCheckedIconExpand()}`}
                     onClick={onExpandEditor}
                   />
                 </div>

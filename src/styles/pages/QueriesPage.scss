@@ -46,6 +46,18 @@
     }
   }
 
+  .add-chart-empty {
+    display: flex;
+    align-items: center;
+    height: 375px;
+    box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.04);
+    justify-content: center;
+    padding: 6px 0px;
+    border-radius: 6px;
+    margin-top: 4px;
+    margin-bottom: 20px;
+  }
+
   .add-chart {
     box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.04);
     padding: 6px 0px;
@@ -113,6 +125,10 @@
 
     &--full {
       height: 746px !important;
+    }
+
+    &--half {
+      height: 419px !important;
     }
 
     &--hidden {
@@ -274,8 +290,12 @@
     }
 
     .empty-table {
-      height: 168px;
-      margin-top: 32px;
+      .execution-error {
+        font-weight: 700;
+        font-size: 18px;
+        line-height: 26px;
+        color: $red-500;
+      }
     }
 
     .visual-table {
@@ -310,6 +330,8 @@
     }
 
     .tabs-header {
+      box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.04);
+      border-radius: 6px;
       gap: 20px;
       align-items: baseline;
       padding: 0px 17px 10px 17px;
@@ -571,7 +593,11 @@
           gap: 10px;
 
           &:hover {
-            background: linear-gradient(268.85deg, rgba(34, 108, 255, 0.12) 22.48%, rgba(16, 132, 255, 0.12) 83.59%);
+            background: linear-gradient(
+              268.85deg,
+              rgba(34, 108, 255, 0.12) 22.48%,
+              rgba(16, 132, 255, 0.12) 83.59%
+            );
             border: 1px solid #226cff;
             cursor: pointer;
           }
