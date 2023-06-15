@@ -49,7 +49,11 @@ const AppGridItem: FC<AppGridItemProps> = ({
       borderRadius={{ base: '10px', lg: '14px' }}
       className="app-grid-item"
     >
-      <Skeleton color={'#E5E6E9'} opacity={'1 !important'}>
+      <Skeleton
+        startColor="#E5E6E9"
+        endColor="#BFC2C9"
+        opacity={'1 !important'}
+      >
         <Box
           borderTopLeftRadius={{ base: '10px', lg: '14px' }}
           borderTopRightRadius={{ base: '10px', lg: '14px' }}
@@ -67,7 +71,8 @@ const AppGridItem: FC<AppGridItemProps> = ({
         <Flex w={'full'}>
           <Box flexGrow={1} maxW={'100%'} overflow={'hidden'}>
             <Skeleton
-              color={'#E5E6E9'}
+              startColor="#E5E6E9"
+              endColor="#BFC2C9"
               opacity={'1 !important'}
               h={'14px'}
               w={'150px'}
@@ -75,7 +80,8 @@ const AppGridItem: FC<AppGridItemProps> = ({
               rounded={'7px'}
             />
             <Skeleton
-              color={'#E5E6E9'}
+              startColor="#E5E6E9"
+              endColor="#BFC2C9"
               opacity={'1 !important'}
               h={'14px'}
               w={'200px'}
@@ -83,7 +89,11 @@ const AppGridItem: FC<AppGridItemProps> = ({
             />
           </Box>
           <Box>
-            <SkeletonCircle color={'#E5E6E9'} opacity={'1 !important'}>
+            <SkeletonCircle
+              startColor="#E5E6E9"
+              endColor="#BFC2C9"
+              opacity={'1 !important'}
+            >
               <Flex
                 w={{ base: '24px', lg: '22px' }}
                 h={{ base: '24px', lg: '22px' }}
@@ -100,7 +110,8 @@ const AppGridItem: FC<AppGridItemProps> = ({
             <SkeletonCircle w={'34px'} h={'34px'} mr={'10px'} />
             <Box>
               <Skeleton
-                color={'#E5E6E9'}
+                startColor="#E5E6E9"
+                endColor="#BFC2C9"
                 opacity={'1 !important'}
                 h={'14px'}
                 w={'100px'}
@@ -108,7 +119,8 @@ const AppGridItem: FC<AppGridItemProps> = ({
                 rounded={'7px'}
               />
               <Skeleton
-                color={'#E5E6E9'}
+                startColor="#E5E6E9"
+                endColor="#BFC2C9"
                 opacity={'1 !important'}
                 h={'14px'}
                 w={'50px'}
@@ -120,7 +132,8 @@ const AppGridItem: FC<AppGridItemProps> = ({
             {[...Array(4)].map((_, index) => (
               <SkeletonCircle
                 key={index}
-                color={'#E5E6E9'}
+                startColor="#E5E6E9"
+                endColor="#BFC2C9"
                 opacity={'1 !important'}
                 w={'18px'}
                 h={'18px'}

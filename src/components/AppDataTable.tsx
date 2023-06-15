@@ -1,20 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, {
+import { Flex, Spinner, Table, TableContainer } from '@chakra-ui/react';
+import { debounce } from 'lodash';
+import {
   forwardRef,
-  useImperativeHandle,
-  Ref,
-  useState,
-  useEffect,
-  useCallback,
   ReactNode,
+  Ref,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
   useMemo,
+  useState,
 } from 'react';
 import { isMobile } from 'react-device-detect';
-import { debounce } from 'lodash';
-import AppPagination from './AppPagination';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import 'src/styles/components/AppDataTable.scss';
 import AppButton from './AppButton';
-import { Table, TableContainer, Flex, Tr, Td, Tbody } from '@chakra-ui/react';
+import AppPagination from './AppPagination';
 
 // For more params, please define them below with ? mark
 export interface RequestParams {
@@ -45,6 +46,7 @@ interface DataTableProps {
   loading?: boolean;
   isNotShowNoData?: boolean;
   hidePagination?: boolean;
+  isInfiniteScroll?: boolean;
 }
 
 export interface DataTableRef {
@@ -62,9 +64,17 @@ export interface Pagination {
 interface IResponseType {
   totalDocs: number;
   totalPages: number;
+  currentPage: number;
+  itemsPerPage: number;
   page: number;
   limit: number;
   docs: any[];
+}
+
+interface PageInfos {
+  totalPages: number;
+  currentPage: number;
+  itemsPerPage: number;
 }
 
 const AppDataTable = forwardRef(
@@ -86,12 +96,19 @@ const AppDataTable = forwardRef(
       renderLoading,
       isNotShowNoData = false,
       hidePagination = false,
+      isInfiniteScroll = false,
     } = props;
 
     const initialPagination: Pagination = { limit, page: 1 };
 
+    const initialPageInfos: PageInfos = {
+      currentPage: 0,
+      itemsPerPage: 0,
+      totalPages: 0,
+    };
+
     const [tableData, setTableData] = useState<any[]>([]);
-    const [totalPages, setTotalPages] = useState<number>(0);
+    const [pagesInfo, setPagesInfo] = useState<PageInfos>(initialPageInfos);
     const [pagination, setPagination] = useState<Pagination>(initialPagination);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
@@ -106,21 +123,26 @@ const AppDataTable = forwardRef(
     const fetchTableData = async (
       params: RequestParams,
       tablePagination: Pagination,
-      isLoadMore = false,
+      isLoadInfiniteScroll = false,
     ) => {
-      const setLoading = isLoadMore ? setIsLoadingMore : setIsLoading;
-      setLoading(true);
+      const setLoading = isLoadInfiniteScroll ? setIsLoadingMore : setIsLoading;
+      !isInfiniteScroll && setLoading(true);
       const response: IResponseType | any[] = await fetchData({
         ...params,
         ...tablePagination,
       });
       setLoading(false);
       if (response && response.docs) {
-        setTableData((prevState) =>
-          isLoadMore ? [...prevState, ...response.docs] : response.docs,
-        );
+        isLoadInfiniteScroll
+          ? setTableData((prevState) => [...prevState, ...response.docs])
+          : setTableData(() => response.docs);
+
         setPagination({ ...tablePagination });
-        setTotalPages(response.totalPages);
+        setPagesInfo({
+          totalPages: response.totalPages,
+          currentPage: response.currentPage,
+          itemsPerPage: response.itemsPerPage,
+        });
       } else setTableData([]);
     };
 
@@ -165,7 +187,7 @@ const AppDataTable = forwardRef(
     };
 
     const _renderLoadMore = () => {
-      return pagination.page < totalPages ? (
+      return pagination.page < pagesInfo.totalPages ? (
         <div className="load-more">
           <AppButton
             size={'sm'}
@@ -181,11 +203,11 @@ const AppDataTable = forwardRef(
       ) : null;
     };
     const _renderPagination = () => {
-      if (hidePagination) return;
+      if (hidePagination || isInfiniteScroll) return;
       return (
         <Flex justifyContent={'flex-end'}>
           <AppPagination
-            pageCount={totalPages}
+            pageCount={pagesInfo.totalPages}
             forcePage={pagination.page - 1}
             onPageChange={onChangePagination}
           />
@@ -194,7 +216,7 @@ const AppDataTable = forwardRef(
     };
 
     const _renderFooter = () => {
-      if (totalPages <= 1 || isLoading || props.loading) {
+      if (pagesInfo.totalPages <= 1 || isLoading || props.loading) {
         return null;
       }
       return _renderPagination();
@@ -222,11 +244,47 @@ const AppDataTable = forwardRef(
       if (!tableData.length || isLoading || props.loading) {
         return;
       }
+      if (isInfiniteScroll) {
+        return (
+          <InfiniteScroll
+            className="infinite-scroll"
+            scrollThreshold={1}
+            dataLength={tableData.length}
+            next={() =>
+              fetchTableData(
+                requestParams,
+                {
+                  ...pagination,
+                  page: pagesInfo.currentPage + 1,
+                },
+                true,
+              )
+            }
+            hasMore={
+              (pagesInfo?.currentPage || 0) < (pagesInfo?.totalPages || 0)
+            }
+            loader={
+              <Flex justifyContent={'center'} pt={'30px'}>
+                <Spinner
+                  thickness="4px"
+                  speed="0.65s"
+                  emptyColor="gray.200"
+                  color="blue.500"
+                  size="md"
+                />
+              </Flex>
+            }
+          >
+            <>{renderBody(tableData)}</>
+          </InfiniteScroll>
+        );
+      }
+
       return <>{renderBody(tableData)}</>;
     };
 
     const _renderHeader = () => {
-      if (!renderHeader || !tableData.length || isLoading || props.loading) {
+      if (!renderHeader) {
         return;
       }
       return <>{renderHeader()}</>;

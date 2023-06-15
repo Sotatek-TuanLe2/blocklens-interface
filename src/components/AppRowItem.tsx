@@ -65,7 +65,8 @@ const AppRowItem: FC<AppRowItemProps> = ({
               {(type === LIST_ITEM_TYPE.DASHBOARDS ||
                 myWorkType === LIST_ITEM_TYPE.DASHBOARDS) && (
                 <Skeleton
-                  color={'#E5E6E9'}
+                  startColor="#E5E6E9"
+                  endColor="#BFC2C9"
                   opacity={'1 !important'}
                   rounded={'6px'}
                   mr={3}
@@ -78,7 +79,8 @@ const AppRowItem: FC<AppRowItemProps> = ({
                 </Skeleton>
               )}
               <Skeleton
-                color={'#E5E6E9'}
+                startColor="#E5E6E9"
+                endColor="#BFC2C9"
                 opacity={'1 !important'}
                 h={'18px'}
                 w={'150px'}
@@ -90,14 +92,16 @@ const AppRowItem: FC<AppRowItemProps> = ({
           <Flex flexGrow={1} w={'22%'} overflow={'hidden'} pr={2.5}>
             <Flex align={'center'}>
               <SkeletonCircle
-                color={'#E5E6E9'}
+                startColor="#E5E6E9"
+                endColor="#BFC2C9"
                 opacity={'1 !important'}
                 w={'24px'}
                 h={'24px'}
                 mr={'8px'}
               />
               <Skeleton
-                color={'#E5E6E9'}
+                startColor="#E5E6E9"
+                endColor="#BFC2C9"
                 opacity={'1 !important'}
                 w={'70px'}
                 h={'18px'}
@@ -110,7 +114,8 @@ const AppRowItem: FC<AppRowItemProps> = ({
               {[...Array(4)].map((_, index) => (
                 <SkeletonCircle
                   key={index}
-                  color={'#E5E6E9'}
+                  startColor="#E5E6E9"
+                  endColor="#BFC2C9"
                   opacity={'1 !important'}
                   w={'24px'}
                   h={'24px'}
@@ -121,7 +126,8 @@ const AppRowItem: FC<AppRowItemProps> = ({
           </Flex>
           <Flex flexGrow={1} w={'15%'} overflow={'hidden'} pr={2.5}>
             <Skeleton
-              color={'#E5E6E9'}
+              startColor="#E5E6E9"
+              endColor="#BFC2C9"
               opacity={'1 !important'}
               w={'100px'}
               h={'18px'}
@@ -135,7 +141,8 @@ const AppRowItem: FC<AppRowItemProps> = ({
             pr={2.5}
           >
             <Skeleton
-              color={'#E5E6E9'}
+              startColor="#E5E6E9"
+              endColor="#BFC2C9"
               opacity={'1 !important'}
               w={'200px'}
               h={'18px'}
@@ -144,7 +151,8 @@ const AppRowItem: FC<AppRowItemProps> = ({
           </Flex>
           <Flex justify={'center'} align={'center'} w={'24px'} h={'24px'}>
             <SkeletonCircle
-              color={'#E5E6E9'}
+              startColor="#E5E6E9"
+              endColor="#BFC2C9"
               opacity={'1 !important'}
               w={'24px'}
               h={'24px'}
@@ -252,7 +260,8 @@ const AppRowItem: FC<AppRowItemProps> = ({
               <Flex align={'center'}>
                 {type === LIST_ITEM_TYPE.DASHBOARDS && (
                   <Skeleton
-                    color={'#E5E6E9'}
+                    startColor="#E5E6E9"
+                    endColor="#BFC2C9"
                     opacity={'1 !important'}
                     rounded={'6px'}
                     mr={'10px'}
@@ -262,7 +271,8 @@ const AppRowItem: FC<AppRowItemProps> = ({
                 )}
                 <Box maxW={'calc(100% - 84px)'} overflow={'hidden'}>
                   <Skeleton
-                    color={'#E5E6E9'}
+                    startColor="#E5E6E9"
+                    endColor="#BFC2C9"
                     opacity={'1 !important'}
                     w={'150px'}
                     h={'18px'}
@@ -272,7 +282,8 @@ const AppRowItem: FC<AppRowItemProps> = ({
                     {[...Array(4)].map((_, index) => (
                       <SkeletonCircle
                         key={index}
-                        color={'#E5E6E9'}
+                        startColor="#E5E6E9"
+                        endColor="#BFC2C9"
                         opacity={'1 !important'}
                         w={'24px'}
                         h={'24px'}
