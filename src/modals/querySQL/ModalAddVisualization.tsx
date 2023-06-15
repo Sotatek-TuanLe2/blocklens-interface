@@ -63,8 +63,8 @@ interface IAddVisualizationCheckbox {
   query: IQuery;
   visualization: VisualizationType;
   getIcon: (chain: string | undefined) => JSX.Element;
-  selectedItems: any[];
-  setSelectedItems: React.Dispatch<React.SetStateAction<any[]>>;
+  visualSelected: string;
+  setVisualSelected: (value: string) => void;
 }
 
 const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
@@ -75,7 +75,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   onReload,
   dashboardId,
 }) => {
-  const [selectedItems, setSelectedItems] = useState<any[]>([]);
+  const [visualSelected, setVisualSelected] = useState<string>('');
   const [myQueries, setMyQueries] = useState<IQuery[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [widthWidget, setWidthWidget] = useState<number>(3);
@@ -158,25 +158,6 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   };
 
   useEffect(() => {
-    if (open) {
-      fetchVisualization();
-      setSelectedItems(
-        dataLayouts.filter((i) => i.type !== 'text').map((el) => el.content),
-      );
-    } else {
-      setSearchTerm('');
-    }
-  }, [open]);
-
-  useEffect(() => {
-    if (!!dataLayouts.length) {
-      setSelectedItems(
-        dataLayouts.filter((i) => i.type !== 'text').map((el) => el.content),
-      );
-    }
-  }, [dataLayouts]);
-
-  useEffect(() => {
     fetchVisualization().then();
   }, [searchTerm]);
 
@@ -200,25 +181,22 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
       sizeX = 0;
     }
 
-    const dataVisual = selectedItems.map((i) => {
-      return {
-        visualizationId: i.id,
-        options: {
-          sizeX: sizeX,
-          sizeY: sizeY,
-          col: widthWidget,
-          row: 2,
-        },
-      };
-    });
-
     try {
       const payload = {
         dashboardId,
-        listVisuals: dataVisual,
+        dataVisualWidget: {
+          visualizationId: visualSelected,
+          options: {
+            sizeX: sizeX,
+            sizeY: sizeY,
+            col: widthWidget,
+            row: 2,
+          },
+        },
       };
-      await rf.getRequest('DashboardsRequest').manageVisualizations(payload);
-      toastSuccess({ message: 'Update successfully' });
+
+      await rf.getRequest('DashboardsRequest').insertVisualizations(payload);
+      toastSuccess({ message: 'Add successfully' });
       onClose();
       await onReload();
     } catch (e) {
@@ -305,8 +283,8 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
                     query={item.query}
                     visualization={item.visualization}
                     getIcon={getIcon}
-                    setSelectedItems={setSelectedItems}
-                    selectedItems={selectedItems}
+                    setVisualSelected={setVisualSelected}
+                    visualSelected={visualSelected}
                   />
                 </Flex>
               ))
@@ -318,11 +296,11 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
 
         <Flex pt={5}>
           Width:
-          <Flex ml={10}>
+          <Flex ml={{ base: 2, md: 10 }}>
             {WIDTH_DASHBOARD.map((item, index) => {
               return (
                 <Flex
-                  mr={10}
+                  mr={{ base: 2, md: 10 }}
                   onClick={() => setWidthWidget(item.col)}
                   cursor={'pointer'}
                   key={index}
@@ -352,7 +330,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
             disabled={!myQueries.length}
             size="lg"
             onClick={() => {
-              handleSaveVisualization(widthWidget);
+              handleSaveVisualization(widthWidget).then();
               onClose();
             }}
           >
@@ -371,8 +349,8 @@ const AddVisualizationCheckbox: React.FC<IAddVisualizationCheckbox> = ({
   query,
   visualization,
   getIcon,
-  selectedItems,
-  setSelectedItems,
+  visualSelected,
+  setVisualSelected,
 }) => {
   const conditionDisplayIcon = () => {
     if (visualization.type === 'table' || visualization.type === 'counter') {
@@ -383,10 +361,10 @@ const AddVisualizationCheckbox: React.FC<IAddVisualizationCheckbox> = ({
   };
 
   const handleCheckboxChange = (visualizationId: string) => {
-    if (selectedItems[0] === visualizationId) {
-      setSelectedItems([]);
+    if (visualSelected === visualizationId) {
+      setVisualSelected('');
     } else {
-      setSelectedItems([visualizationId]);
+      setVisualSelected(visualizationId);
     }
   };
 
@@ -399,7 +377,7 @@ const AddVisualizationCheckbox: React.FC<IAddVisualizationCheckbox> = ({
           onClick={() => handleCheckboxChange(visualization.id)}
           cursor={'pointer'}
         >
-          {selectedItems[0] === visualization.id ? (
+          {visualSelected === visualization.id ? (
             <RadioChecked />
           ) : (
             <RadioNoCheckedIcon />

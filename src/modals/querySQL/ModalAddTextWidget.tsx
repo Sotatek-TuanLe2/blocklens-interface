@@ -214,11 +214,11 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
 
         <Flex pt={5}>
           Width:
-          <Flex ml={10}>
+          <Flex ml={{ base: 2, md: 10 }}>
             {WIDTH_DASHBOARD.map((item, index) => {
               return (
                 <Flex
-                  mr={10}
+                  mr={{ base: 2, md: 10 }}
                   onClick={() => setWidthWidget(item.col)}
                   cursor={'pointer'}
                   key={index}
