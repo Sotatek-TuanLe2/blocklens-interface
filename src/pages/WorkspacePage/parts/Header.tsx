@@ -124,7 +124,13 @@ const Header: React.FC<IHeaderProps> = (props) => {
     if (!isDashboard) {
       // Query button
       return (
-        <Tooltip label="Run Query" hasArrow placement="top">
+        <Tooltip
+          label="Run Query"
+          hasArrow
+          placement="top"
+          bg="white"
+          color="black"
+        >
           <AppButton
             className="btn-primary"
             onClick={onRunQuery}
