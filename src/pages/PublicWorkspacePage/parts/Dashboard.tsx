@@ -1,12 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { Flex } from '@chakra-ui/react';
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Layout, Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import ReactMarkdown from 'react-markdown';
@@ -135,7 +129,6 @@ const DashboardPart: React.FC = () => {
     if (isEmptyDashboard) {
       return _renderEmptyDashboard();
     }
-
     return (
       <ResponsiveGridLayout
         className="main-grid-layout"

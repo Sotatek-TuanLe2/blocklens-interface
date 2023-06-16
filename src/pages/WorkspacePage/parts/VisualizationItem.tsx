@@ -22,6 +22,7 @@ import { areYAxisesSameType, getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import { Link } from 'react-router-dom';
 import { QUERY_RESULT_STATUS, ROUTES } from 'src/utils/common';
+import { ClockIcon } from 'src/assets/icons';
 
 const VisualizationItem = React.memo(
   ({
@@ -241,45 +242,62 @@ const VisualizationItem = React.memo(
     };
 
     return (
-      <div className="visual-container__visualization">
-        <div className="visual-container__visualization__title">
-          {isLoading ? (
-            <Flex align={'center'}>
-              <Skeleton w={'130px'} h={'18px'} rounded={'9px'} mr={'10px'} />
-              <Skeleton w={'80px'} h={'18px'} rounded={'9px'} />
-            </Flex>
-          ) : (
-            <>
-              <Tooltip
-                label={visualization.name}
-                hasArrow
-                bg="white"
-                color="black"
-              >
-                <span className="visual-container__visualization__name">
-                  {visualization.name}
-                </span>
-              </Tooltip>
-              <Tooltip
-                label={visualization.query?.name}
-                hasArrow
-                bg="white"
-                color="black"
-              >
-                <Link
-                  className="visual-container__visualization__title__query-link"
-                  to={`${needAuthentication ? ROUTES.MY_QUERY : ROUTES.QUERY}/${
-                    visualization.queryId
-                  }`}
+      <>
+        <div className="visual-container__visualization">
+          <div className="visual-container__visualization__title">
+            {isLoading ? (
+              <Flex align={'center'}>
+                <Skeleton w={'130px'} h={'18px'} rounded={'9px'} mr={'10px'} />
+                <Skeleton w={'80px'} h={'18px'} rounded={'9px'} />
+              </Flex>
+            ) : (
+              <>
+                <Tooltip
+                  label={visualization.name}
+                  hasArrow
+                  bg="white"
+                  color="black"
                 >
-                  {visualization.query?.name}
-                </Link>
-              </Tooltip>
-            </>
-          )}
+                  <span className="visual-container__visualization__name">
+                    {visualization.name}
+                  </span>
+                </Tooltip>
+                <Tooltip
+                  label={visualization.query?.name}
+                  hasArrow
+                  bg="white"
+                  color="black"
+                >
+                  <Link
+                    className="visual-container__visualization__title__query-link"
+                    to={`${
+                      needAuthentication ? ROUTES.MY_QUERY : ROUTES.QUERY
+                    }/${visualization.queryId}`}
+                  >
+                    {visualization.query?.name}
+                  </Link>
+                </Tooltip>
+              </>
+            )}
+          </div>
+          {_renderContent()}
         </div>
-        {_renderContent()}
-      </div>
+        <div className="box-updated">
+          <Tooltip
+            bg={'#FFFFFF'}
+            color={'#000224'}
+            fontWeight="400"
+            p={2}
+            label={`Updated: ${moment(visualization.query?.updatedAt).format(
+              'YYYY/MM/DD HH:MM',
+            )}`}
+            placement={'top-start'}
+            hasArrow
+          >
+            <ClockIcon />
+          </Tooltip>
+        </div>
+      </>
     );
   },
 );

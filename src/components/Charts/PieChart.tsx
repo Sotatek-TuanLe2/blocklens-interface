@@ -154,7 +154,14 @@ const VisualizationPieChart = ({
   if (isLoading) {
     return (
       <Flex align={'center'} justify={'center'} w={'full'} h={'full'}>
-        <FadeLoader color="rgba(0, 2, 36, 0.8)" />
+        <FadeLoader
+          cssOverride={{
+            transform: 'scale(0.4) translateY(-35px)',
+            transformOrigin: 'center',
+          }}
+          color="rgba(0, 2, 36, 0.8)"
+        />{' '}
+        Loading
       </Flex>
     );
   }
