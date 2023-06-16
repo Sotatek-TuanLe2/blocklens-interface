@@ -83,7 +83,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   const [visualSelected, setVisualSelected] = useState<any>('');
   const [myQueries, setMyQueries] = useState<IQuery[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const [widthWidget, setWidthWidget] = useState<number>(TOTAL_COL / 4);
+  const [widthWidget, setWidthWidget] = useState<number>(TOTAL_COL / 2);
   const [dataVisualPagination, setDataVisualPagination] = useState<
     IPagination | undefined
   >();
@@ -169,8 +169,10 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   useEffect(() => {
     if (visualSelected?.type === TYPE_VISUALIZATION.table) {
       setWidthWidget(TOTAL_COL);
-    } else {
+    } else if (visualSelected?.type === TYPE_VISUALIZATION.counter) {
       setWidthWidget(TOTAL_COL / 4);
+    } else {
+      setWidthWidget(TOTAL_COL / 2);
     }
   }, [visualSelected]);
 
