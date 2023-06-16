@@ -173,7 +173,7 @@ const VisualizationTable = <T,>({
               {[...Array(5)].map((_, i) => (
                 <tr key={i}>
                   {[...Array(4)].map((_, j) => (
-                    <td key={j}>
+                    <td key={j} style={{ padding: '0 24px' }}>
                       <Skeleton
                         w={j === 0 ? '140px' : '80px'}
                         h={'14px'}
