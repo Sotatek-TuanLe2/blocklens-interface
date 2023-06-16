@@ -144,7 +144,7 @@ const VisualizationItem = React.memo(
     const _renderVisualization = (visualization: VisualizationType) => {
       const errorMessage = generateErrorMessage(visualization);
 
-      if (errorMessage) {
+      if (!isLoading && errorMessage) {
         return (
           <Flex
             alignItems={'center'}
