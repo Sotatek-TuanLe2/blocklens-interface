@@ -212,23 +212,36 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
           className="table-main-markdown"
         />
 
-        <Flex pt={5}>
+        <Flex
+          pt={5}
+          fontSize={'14px'}
+          alignItems={{ base: 'flex-start', md: 'center' }}
+        >
           Width:
-          <Flex ml={{ base: 2, md: 10 }}>
+          <Flex
+            ml={{ base: 2, md: 3 }}
+            flexDirection={{ base: 'column', md: 'row' }}
+          >
             {WIDTH_DASHBOARD.map((item, index) => {
               return (
                 <Flex
-                  mr={{ base: 2, md: 10 }}
+                  mr={{ base: 2, md: 3 }}
                   onClick={() => setWidthWidget(item.col)}
                   cursor={'pointer'}
                   key={index}
+                  mb={{ base: 3, md: 0 }}
                 >
                   {widthWidget === item.col ? (
                     <RadioChecked />
                   ) : (
                     <RadioNoCheckedIcon />
                   )}
-                  <Box ml={2}>{item.name}</Box>
+                  <Flex ml={2} alignItems={'center'}>
+                    {item.name}{' '}
+                    <Box as={'span'} fontSize={'14px'} ml={1}>
+                      ({item.width})
+                    </Box>
+                  </Flex>
                 </Flex>
               );
             })}
