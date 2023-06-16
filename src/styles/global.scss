@@ -127,3 +127,7 @@ text.recharts-text.recharts-label {
     transform: rotate(360deg);
   }
 }
+
+.recharts-tooltip-wrapper {
+  outline: none !important;
+}
