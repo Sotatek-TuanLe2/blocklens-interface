@@ -15,9 +15,11 @@ import BigNumber from 'bignumber.js';
 import { isNumber } from 'src/utils/utils-helper';
 import { ChartProps } from './VisualizationChart';
 import { formatVisualizationValue } from 'src/utils/utils-format';
+import { FadeLoader } from 'react-spinners';
 
 type ChartConfigType = VisualizationOptionsType;
 type Props = ChartProps & {
+  isLoading?: boolean;
   configs?: Partial<ChartConfigType>;
 };
 
@@ -26,6 +28,7 @@ const VisualizationPieChart = ({
   yAxisKeys,
   xAxisKey = '0',
   configs,
+  isLoading,
 }: Props) => {
   const chartOptionsConfigs = configs?.chartOptionsConfigs;
   const RADIAN = Math.PI / 180;
@@ -147,6 +150,14 @@ const VisualizationPieChart = ({
         return new BigNumber(a).plus(new BigNumber(b)).toNumber();
       });
   }, [shownData]);
+
+  if (isLoading) {
+    return (
+      <Flex align={'center'} justify={'center'} w={'full'} h={'full'}>
+        <FadeLoader color="rgba(0, 2, 36, 0.8)" />
+      </Flex>
+    );
+  }
 
   return (
     <ResponsiveContainer width={'100%'} height={'100%'}>

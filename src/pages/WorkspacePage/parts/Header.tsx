@@ -1,5 +1,11 @@
 import { useMemo } from 'react';
-import { Tooltip, Spinner } from '@chakra-ui/react';
+import {
+  Tooltip,
+  Spinner,
+  Flex,
+  SkeletonCircle,
+  Skeleton,
+} from '@chakra-ui/react';
 import { useHistory, useParams } from 'react-router-dom';
 import { AppButton, AppTag } from 'src/components';
 import AppQueryMenu, { QUERY_MENU_LIST } from 'src/components/AppQueryMenu';
@@ -16,6 +22,7 @@ import { toastError } from 'src/utils/utils-notify';
 import { Dashboard } from 'src/utils/utils-dashboard';
 import { Query } from 'src/utils/utils-query';
 import AppNetworkIcons from 'src/components/AppNetworkIcons';
+import { IconDotMore } from 'src/assets/icons';
 
 interface IHeaderProps {
   type: string;
@@ -194,14 +201,23 @@ const Header: React.FC<IHeaderProps> = (props) => {
             className="icon-back-light"
           />
         </Tooltip>
-        {!isCreatingQuery && (
-          <div className="item-desc">
-            <img src="/images/AvatarDashboardCard.png" alt="avatar" />
-            <span>
-              <span className="user-name">{`${author} / `}</span>
-              <span>{dataClass?.getName()}</span>
-            </span>
-          </div>
+        {isLoadingRun ? (
+          <Flex align={'center'}>
+            <SkeletonCircle w={'26px'} h={'26px'} mr={'8px'} />
+            <Skeleton w={'200px'} h={'14px'} rounded={'7px'} />
+          </Flex>
+        ) : (
+          <>
+            {!isCreatingQuery && (
+              <div className="item-desc">
+                <img src="/images/AvatarDashboardCard.png" alt="avatar" />
+                <span>
+                  <span className="user-name">{`${author} / `}</span>
+                  <span>{dataClass?.getName()}</span>
+                </span>
+              </div>
+            )}
+          </>
         )}
       </div>
       <div className="workspace-page__editor__header__right">
@@ -219,29 +235,53 @@ const Header: React.FC<IHeaderProps> = (props) => {
           </div>
         )} */}
         <div className="header-tab__info tag">
-          {['defi', 'gas', 'dex'].map((item) => (
-            <AppTag key={item} value={item} />
-          ))}
+          {isLoadingRun ? (
+            <Skeleton w={'200px'} h={'14px'} rounded={'7px'} />
+          ) : (
+            <>
+              {['defi', 'gas', 'dex'].map((item) => (
+                <AppTag key={item} value={item} />
+              ))}
+            </>
+          )}
         </div>
-        {dataClass?.getChains() && (
-          <AppNetworkIcons networkIds={dataClass?.getChains()} />
+        {isLoadingRun ? (
+          <Flex align={'center'} mx={'14px'}>
+            {[...Array(4)].map((_, index) => (
+              <SkeletonCircle key={index} w={'20px'} h={'20px'} />
+            ))}
+          </Flex>
+        ) : (
+          <>
+            {dataClass?.getChains() && (
+              <AppNetworkIcons networkIds={dataClass?.getChains()} />
+            )}
+          </>
         )}
         {_renderButtons()}
-        {!isCreatingQuery && data && (
-          <AppQueryMenu
-            menu={
-              !needAuthentication
-                ? type === LIST_ITEM_TYPE.DASHBOARDS
-                  ? [QUERY_MENU_LIST.SHARE]
-                  : [QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.SHARE]
-                : undefined
-            }
-            item={data}
-            itemType={type}
-            onForkSuccess={onForkSuccess}
-            onDeleteSuccess={onDeleteSuccess}
-            onSettingSuccess={onSettingSuccess}
-          />
+        {isLoadingRun ? (
+          <Flex align={'center'} ml={'10px'}>
+            <IconDotMore color={'rgba(0, 2, 36, 0.5)'} />
+          </Flex>
+        ) : (
+          <>
+            {!isCreatingQuery && data && (
+              <AppQueryMenu
+                menu={
+                  !needAuthentication
+                    ? type === LIST_ITEM_TYPE.DASHBOARDS
+                      ? [QUERY_MENU_LIST.SHARE]
+                      : [QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.SHARE]
+                    : undefined
+                }
+                item={data}
+                itemType={type}
+                onForkSuccess={onForkSuccess}
+                onDeleteSuccess={onDeleteSuccess}
+                onSettingSuccess={onSettingSuccess}
+              />
+            )}
+          </>
         )}
       </div>
     </div>

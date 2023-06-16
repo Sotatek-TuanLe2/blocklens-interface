@@ -1,4 +1,4 @@
-import { Flex, Spinner, Tooltip } from '@chakra-ui/react';
+import { Flex, Skeleton, Spinner, Tooltip } from '@chakra-ui/react';
 import moment from 'moment';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import 'react-grid-layout/css/styles.css';
@@ -167,6 +167,7 @@ const VisualizationItem = React.memo(
               data={queryResult}
               visualization={visualization}
               editMode={editMode}
+              isLoading={isLoading}
             />
           );
           break;
@@ -175,6 +176,7 @@ const VisualizationItem = React.memo(
             <VisualizationCounter
               data={queryResult}
               visualization={visualization}
+              isLoading={isLoading}
             />
           );
           break;
@@ -187,6 +189,7 @@ const VisualizationItem = React.memo(
               }
               yAxisKeys={visualization.options.columnMapping?.yAxis || []}
               configs={visualization.options}
+              isLoading={isLoading}
             />
           );
           break;
@@ -201,6 +204,7 @@ const VisualizationItem = React.memo(
               yAxisKeys={visualization.options.columnMapping?.yAxis || []}
               configs={visualization.options}
               type={type}
+              isLoading={isLoading}
             />
           );
       }
@@ -219,15 +223,17 @@ const VisualizationItem = React.memo(
     };
 
     const _renderContent = () => {
-      if (isLoading) {
-        return (
-          <div className="visual-container__visualization visual-container__visualization--loading">
-            <Spinner />
-          </div>
-        );
-      }
+      // if (isLoading) {
+      //   return (
+      //     <div className="visual-container__visualization visual-container__visualization--loading">
+      //       <Spinner />
+      //     </div>
+      //   );
+      // }
 
-      if (!!queryResult.length) {
+      console.log("queryResult: ", queryResult);
+
+      if (!!queryResult.length || isLoading) {
         return _renderVisualization(visualization);
       }
 
@@ -237,26 +243,40 @@ const VisualizationItem = React.memo(
     return (
       <div className="visual-container__visualization">
         <div className="visual-container__visualization__title">
-          <Tooltip label={visualization.name} hasArrow bg="white" color="black">
-            <span className="visual-container__visualization__name">
-              {visualization.name}
-            </span>
-          </Tooltip>
-          <Tooltip
-            label={visualization.query?.name}
-            hasArrow
-            bg="white"
-            color="black"
-          >
-            <Link
-              className="visual-container__visualization__title__query-link"
-              to={`${needAuthentication ? ROUTES.MY_QUERY : ROUTES.QUERY}/${
-                visualization.queryId
-              }`}
-            >
-              {visualization.query?.name}
-            </Link>
-          </Tooltip>
+          {isLoading ? (
+            <Flex align={'center'}>
+              <Skeleton w={'130px'} h={'18px'} rounded={'9px'} mr={'10px'} />
+              <Skeleton w={'80px'} h={'18px'} rounded={'9px'} />
+            </Flex>
+          ) : (
+            <>
+              <Tooltip
+                label={visualization.name}
+                hasArrow
+                bg="white"
+                color="black"
+              >
+                <span className="visual-container__visualization__name">
+                  {visualization.name}
+                </span>
+              </Tooltip>
+              <Tooltip
+                label={visualization.query?.name}
+                hasArrow
+                bg="white"
+                color="black"
+              >
+                <Link
+                  className="visual-container__visualization__title__query-link"
+                  to={`${needAuthentication ? ROUTES.MY_QUERY : ROUTES.QUERY}/${
+                    visualization.queryId
+                  }`}
+                >
+                  {visualization.query?.name}
+                </Link>
+              </Tooltip>
+            </>
+          )}
         </div>
         {_renderContent()}
       </div>

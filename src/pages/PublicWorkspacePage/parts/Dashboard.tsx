@@ -55,9 +55,11 @@ const DashboardPart: React.FC = () => {
   const [dataDashboard, setDataDashboard] = useState<IDashboardDetail>();
   const [openModalFork, setOpenModalFork] = useState<boolean>(false);
   const [isEmptyDashboard, setIsEmptyDashboard] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchLayoutData = useCallback(async () => {
     try {
+      setIsLoading(true);
       const res = await rf
         .getRequest('DashboardsRequest')
         .getPublicDashboardById(dashboardId);
@@ -101,6 +103,8 @@ const DashboardPart: React.FC = () => {
       toastError({
         message: getErrorMessage(error),
       });
+    } finally {
+      setIsLoading(false);
     }
   }, [dashboardId]);
 
@@ -177,6 +181,7 @@ const DashboardPart: React.FC = () => {
         }
         data={dataDashboard}
         needAuthentication={false}
+        isLoadingRun={isLoading}
       />
       <div className="dashboard-container">
         {_renderDashboard()}

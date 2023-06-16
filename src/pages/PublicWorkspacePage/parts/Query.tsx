@@ -195,6 +195,7 @@ const QueryPart: React.FC = () => {
         }
         data={queryValue}
         needAuthentication={false}
+        isLoadingRun={isLoadingResult}
       />
       <div className="query-container queries-page">
         <Box className="queries-page__right-side">

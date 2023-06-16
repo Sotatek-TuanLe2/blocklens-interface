@@ -77,6 +77,7 @@ const DashboardPart: React.FC = () => {
   const [openModalAddTextWidget, setOpenModalAddTextWidget] =
     useState<boolean>(false);
   const [isEmptyDashboard, setIsEmptyDashboard] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const layoutChangeTimeout = useRef() as any;
 
@@ -85,6 +86,7 @@ const DashboardPart: React.FC = () => {
 
   const fetchLayoutData = async (id?: string) => {
     try {
+      setIsLoading(true);
       const res = await rf
         .getRequest('DashboardsRequest')
         .getMyDashboardById({ dashboardId: id || dashboardId });
@@ -128,6 +130,8 @@ const DashboardPart: React.FC = () => {
       toastError({
         message: getErrorMessage(error),
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -312,6 +316,7 @@ const DashboardPart: React.FC = () => {
         data={dataDashboard}
         isEdit={editMode}
         onChangeEditMode={() => setEditMode((prevState) => !prevState)}
+        isLoadingRun={isLoading}
       />
       <div className="dashboard-container">
         {_renderDashboard()}
