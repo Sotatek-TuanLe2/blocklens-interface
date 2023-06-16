@@ -475,6 +475,7 @@
             max-height: 422px;
 
             &--expand {
+              height: 100%;
               overflow: auto;
               max-height: 665px !important;
             }
