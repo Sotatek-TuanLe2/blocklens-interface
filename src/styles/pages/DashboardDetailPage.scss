@@ -329,7 +329,9 @@
       .box-text-widget {
         overflow: auto;
         height: 100%;
-
+        a {
+          text-decoration: underline;
+        }
         &--edit {
           height: 80%;
           margin-top: 20px;
