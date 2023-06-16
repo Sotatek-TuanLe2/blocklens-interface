@@ -6,7 +6,6 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
-  Tooltip,
 } from '@chakra-ui/react';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Layout, Responsive, WidthProvider } from 'react-grid-layout';
@@ -33,8 +32,7 @@ import Header from './Header';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
 import { Dashboard } from 'src/utils/utils-dashboard';
-import { ClockIcon, DeleteIcon, EditIcon } from 'src/assets/icons';
-import moment from 'moment';
+import { DeleteIcon, EditIcon } from 'src/assets/icons';
 
 export interface ILayout extends Layout {
   options: any;
@@ -258,21 +256,6 @@ const DashboardPart: React.FC = () => {
                     editMode={editMode}
                     visualization={item.content}
                   />
-                  <div className="box-updated">
-                    <Tooltip
-                      bg={'#FFFFFF'}
-                      color={'#000224'}
-                      fontWeight="400"
-                      p={2}
-                      label={`Updated: ${moment(item.content.updatedAt).format(
-                        'YYYY/MM/DD HH:MM',
-                      )}`}
-                      placement={'top-start'}
-                      hasArrow
-                    >
-                      <ClockIcon />
-                    </Tooltip>
-                  </div>
                 </>
               ) : (
                 <div
