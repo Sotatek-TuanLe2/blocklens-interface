@@ -1,12 +1,6 @@
 import { useParams } from 'react-router-dom';
-import { Flex, Tooltip } from '@chakra-ui/react';
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { Flex } from '@chakra-ui/react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Layout, Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import ReactMarkdown from 'react-markdown';
@@ -24,8 +18,6 @@ import Header from 'src/pages/WorkspacePage/parts/Header';
 import VisualizationItem from 'src/pages/WorkspacePage/parts/VisualizationItem';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import { Dashboard } from 'src/utils/utils-dashboard';
-import { ClockIcon } from 'src/assets/icons';
-import moment from 'moment';
 
 export interface ILayout extends Layout {
   options: any;
@@ -133,6 +125,7 @@ const DashboardPart: React.FC = () => {
     if (isEmptyDashboard) {
       return _renderEmptyDashboard();
     }
+    console.log('dataLayouts', dataLayouts);
     return (
       <ResponsiveGridLayout
         className="main-grid-layout"
@@ -154,21 +147,6 @@ const DashboardPart: React.FC = () => {
                     visualization={item.content}
                     needAuthentication={false}
                   />
-                  <div className="box-updated">
-                    <Tooltip
-                      bg={'#FFFFFF'}
-                      color={'#000224'}
-                      fontWeight="400"
-                      p={2}
-                      label={`Updated: ${moment(item.content.updatedAt).format(
-                        'YYYY/MM/DD HH:MM',
-                      )}`}
-                      placement={'top-start'}
-                      hasArrow
-                    >
-                      <ClockIcon />
-                    </Tooltip>
-                  </div>
                 </>
               ) : (
                 <div className="box-text-widget">
