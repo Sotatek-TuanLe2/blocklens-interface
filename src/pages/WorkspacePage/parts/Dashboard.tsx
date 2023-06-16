@@ -366,7 +366,10 @@ const DashboardPart: React.FC = () => {
             open={openModalAddVisualization}
             onClose={() => setOpenModalAddVisualization(false)}
             userName={userName}
-            onReload={fetchLayoutData}
+            onReload={() => {
+              fetchLayoutData().then();
+              setEditMode(true);
+            }}
           />
         )}
         <ModalForkDashBoardDetails
