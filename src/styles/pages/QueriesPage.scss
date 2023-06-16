@@ -91,6 +91,7 @@
 
   .ace_scroller {
     overflow: unset;
+    top: 18px;
 
     .ace_active-line,
     .ace_content {
@@ -223,9 +224,8 @@
       animation: showConfig 0.5s forwards;
     }
 
-    .ace_gutter-cell,
-    .ace_content {
-      top: 18px !important;
+    .ace_gutter-cell {
+      margin-top: 18px;
     }
 
     .editor-wrapper {
