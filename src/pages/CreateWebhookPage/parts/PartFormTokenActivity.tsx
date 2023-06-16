@@ -39,7 +39,7 @@ const PartFormTokenActivity: FC<IPartFormTokenActivity> = ({
         />
       </AppField>
       <AppUploadABI
-        type={TYPE_ABI.NFT}
+        type={TYPE_ABI.TOKEN}
         onChange={(abi, abiFilter) =>
           setDataForm({ ...dataForm, abi, abiFilter })
         }
