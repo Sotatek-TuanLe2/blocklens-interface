@@ -26,7 +26,7 @@ import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import { BROADCAST_FETCH_WORKPLACE_DATA } from './Sidebar';
 import ModalQuery from 'src/modals/querySQL/ModalQuery';
 import { Query } from 'src/utils/utils-query';
-import { AddChartIcon } from 'src/assets/icons';
+import { AddChartIcon, QueryResultIcon } from 'src/assets/icons';
 
 export const BROADCAST_ADD_TEXT_TO_EDITOR = 'ADD_TEXT_TO_EDITOR';
 export const BROADCAST_FETCH_QUERY = 'FETCH_QUERY';
@@ -207,6 +207,7 @@ const QueryPart: React.FC = () => {
   };
 
   const onExpandEditor = () => {
+    if (errorExecuteQuery || !queryId || !queryValue) return;
     setExpandLayout((prevState) => {
       if (prevState === LAYOUT_QUERY.FULL) {
         return LAYOUT_QUERY.HIDDEN;
@@ -218,9 +219,40 @@ const QueryPart: React.FC = () => {
     });
   };
 
+  const onCheckedIconExpand = () => {
+    if (errorExecuteQuery || !queryId || !queryValue)
+      return 'icon-query-collapse';
+    return expandLayout === LAYOUT_QUERY.HIDDEN
+      ? 'icon-query-expand'
+      : 'icon-query-collapse';
+  };
+
+  const _renderAddChart = () => {
+    return (
+      <div className="header-empty">
+        <Flex alignItems={'center'} gap="16px">
+          <div className="item-add-chart active-table">
+            <QueryResultIcon />
+            Result Table
+          </div>
+          <div className="item-add-chart">
+            <AddChartIcon />
+            Add Chart
+          </div>
+        </Flex>
+        <p className="icon-query-expand cursor-not-allowed" />
+      </div>
+    );
+  };
+
   const _renderContent = () => {
     if (isLoadingResult) {
-      return <AppLoadingTable widthColumns={[100]} className="visual-table" />;
+      return (
+        <>
+          {_renderAddChart()}
+          <AppLoadingTable widthColumns={[100]} className="visual-table" />
+        </>
+      );
     }
 
     if (!!queryValue && !!queryResult.length && !errorExecuteQuery?.message) {
@@ -236,15 +268,19 @@ const QueryPart: React.FC = () => {
         </Box>
       );
     }
-
     return (
-      <Flex
-        className="empty-table"
-        justifyContent={'center'}
-        alignItems="center"
-      >
-        {errorExecuteQuery?.message || 'No data...'}
-      </Flex>
+      <>
+        {_renderAddChart()}
+        <Flex
+          className="empty-table"
+          justifyContent={'center'}
+          alignItems="center"
+          flexDirection="column"
+        >
+          <span className="execution-error">Execution Error</span>
+          {errorExecuteQuery?.message || 'No data...'}
+        </Flex>
+      </>
     );
   };
 
@@ -253,11 +289,10 @@ const QueryPart: React.FC = () => {
     firstClass: string,
     secondClass: string,
   ) => {
-    if (!queryId || !queryValue) {
-      return 'custom-editor--full';
-    } else {
-      return expandLayout === layout ? firstClass : secondClass;
-    }
+    if (isLoadingResult) return 'add-chart-loading';
+    if (errorExecuteQuery) return;
+    if (!queryId || !queryValue) return 'custom-editor--full';
+    return expandLayout === layout ? firstClass : secondClass;
   };
 
   const _renderVisualizations = () => {
@@ -265,7 +300,7 @@ const QueryPart: React.FC = () => {
       return (
         <div className="empty-query">
           <Tooltip
-            label="Add New Visualization"
+            label="Visualization need data from result table."
             hasArrow
             bg="white"
             color="black"
@@ -277,20 +312,17 @@ const QueryPart: React.FC = () => {
               Add Chart
             </Flex>
           </Tooltip>
-          <p className="icon-query-expand" />
+          <p className="icon-query-expand cursor-not-allowed" />
         </div>
       );
     }
 
     return (
       <div
-        className={` 
+        className={`
+        ${errorExecuteQuery ? 'add-chart-empty' : ''}
         ${classExpand(LAYOUT_QUERY.FULL, 'add-chart-full', 'add-chart')}
-         ${classExpand(
-           LAYOUT_QUERY.HIDDEN,
-           'expand-chart hidden-editor',
-           '',
-         )} `}
+        ${classExpand(LAYOUT_QUERY.HIDDEN, 'expand-chart hidden-editor', '')} `}
       >
         {_renderContent()}
       </div>
@@ -323,7 +355,8 @@ const QueryPart: React.FC = () => {
           <Box className="queries-page__right-side">
             <Box className="editor-wrapper">
               <AceEditor
-                className={`custom-editor ace_editor ace-tomorrow
+                className={`ace_editor ace-tomorrow custom-editor 
+                ${errorExecuteQuery ? 'custom-editor--half' : ''}
                 ${classExpand(
                   LAYOUT_QUERY.FULL,
                   'custom-editor--full',
@@ -338,6 +371,7 @@ const QueryPart: React.FC = () => {
                 theme="tomorrow"
                 width="100%"
                 wrapEnabled={true}
+                readOnly={expandLayout === LAYOUT_QUERY.HIDDEN}
                 name="sql_editor"
                 editorProps={{ $blockScrolling: true }}
                 showPrintMargin={true}
@@ -361,13 +395,15 @@ const QueryPart: React.FC = () => {
                 bg="white"
                 color="black"
               >
-                <div className="btn-expand-query">
+                <div
+                  className={`${
+                    errorExecuteQuery || !queryId || !queryValue
+                      ? 'cursor-not-allowed'
+                      : ''
+                  } btn-expand-query`}
+                >
                   <p
-                    className={`${
-                      expandLayout === LAYOUT_QUERY.HIDDEN
-                        ? 'icon-query-expand'
-                        : 'icon-query-collapse'
-                    }`}
+                    className={`${onCheckedIconExpand()}`}
                     onClick={onExpandEditor}
                   />
                 </div>

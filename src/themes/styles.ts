@@ -123,7 +123,7 @@ export const globalStyles = {
         letterSpacing: '0.2px',
       },
       '.chakra-ui-light': {
-        '.chain-info-desc, .empty-query, .text-widget-input, .box-form, .menu-header, .header, .add-chart-full, .ace_scroller, .layout-config, .main-layout, .input-table, .first-box-table, .select-table, .dashboard-list__item--row, .editor-wrapper, .box-layout, .workspace-page__editor__header, .add-chart, .workspace-page__sidebar__categories, .workspace-page__sidebar__content':
+        '.add-chart-loading-public, .add-chart-loading, .chain-info-desc, .empty-query, .text-widget-input, .box-form, .menu-header, .header, .add-chart-full, .ace_scroller, .layout-config, .main-layout, .input-table, .first-box-table, .select-table, .dashboard-list__item--row, .editor-wrapper, .box-layout, .workspace-page__editor__header, .add-chart, .add-chart-empty, .workspace-page__sidebar__categories, .workspace-page__sidebar__content':
           {
             background: mode('white.100', 'bgDark')(props),
           },
@@ -215,6 +215,9 @@ export const globalStyles = {
       '.btn-primary': { background: 'main.200', color: 'white.100' },
       span: {
         color: mode('bg.100', '')(props),
+      },
+      '.cursor-not-allowed': {
+        cursor: 'not-allowed !important',
       },
     }),
   },
