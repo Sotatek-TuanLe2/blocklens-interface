@@ -251,12 +251,10 @@ const DashboardPart: React.FC = () => {
           <div className="box-layout" key={item.id}>
             <div className="box-chart">
               {item.type === WIDGET_TYPE.VISUALIZATION ? (
-                <>
-                  <VisualizationItem
-                    editMode={editMode}
-                    visualization={item.content}
-                  />
-                </>
+                <VisualizationItem
+                  editMode={editMode}
+                  visualization={item.content}
+                />
               ) : (
                 <div
                   className={`box-text-widget ${

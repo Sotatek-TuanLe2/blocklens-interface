@@ -125,7 +125,6 @@ const DashboardPart: React.FC = () => {
     if (isEmptyDashboard) {
       return _renderEmptyDashboard();
     }
-    console.log('dataLayouts', dataLayouts);
     return (
       <ResponsiveGridLayout
         className="main-grid-layout"
