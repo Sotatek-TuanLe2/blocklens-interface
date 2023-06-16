@@ -298,8 +298,6 @@ const VisualizationChart: React.FC<Props> = (props) => {
     return [minValue, maxValue];
   }, [data, xAxisKey, yAxisKeys, hiddenKeys, chartOptionsConfigs]);
 
-  console.log('yAxisDomain', yAxisDomain);
-
   if (isLoading) {
     return (
       <Flex align={'center'} justify={'center'} w={'full'} h={'full'}>
