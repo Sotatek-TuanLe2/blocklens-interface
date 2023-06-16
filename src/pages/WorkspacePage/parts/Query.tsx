@@ -26,7 +26,7 @@ import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import { BROADCAST_FETCH_WORKPLACE_DATA } from './Sidebar';
 import ModalQuery from 'src/modals/querySQL/ModalQuery';
 import { Query } from 'src/utils/utils-query';
-import { AddChartIcon } from 'src/assets/icons';
+import { AddChartIcon, QueryResultIcon } from 'src/assets/icons';
 
 export const BROADCAST_ADD_TEXT_TO_EDITOR = 'ADD_TEXT_TO_EDITOR';
 export const BROADCAST_FETCH_QUERY = 'FETCH_QUERY';
@@ -246,15 +246,30 @@ const QueryPart: React.FC = () => {
       );
     }
     return (
-      <Flex
-        className="empty-table"
-        justifyContent={'center'}
-        alignItems="center"
-        flexDirection="column"
-      >
-        <span className="execution-error">Execution Error</span>
-        {errorExecuteQuery?.message || 'No data...'}
-      </Flex>
+      <>
+        <div className="header-empty">
+          <Flex alignItems={'center'} gap="16px">
+            <div className="item-add-chart active-table">
+              <QueryResultIcon />
+              Result Table
+            </div>
+            <div className="item-add-chart">
+              <AddChartIcon />
+              Add Chart
+            </div>
+          </Flex>
+          <p className="icon-query-expand cursor-not-allowed" />
+        </div>
+        <Flex
+          className="empty-table"
+          justifyContent={'center'}
+          alignItems="center"
+          flexDirection="column"
+        >
+          <span className="execution-error">Execution Error</span>
+          {errorExecuteQuery?.message || 'No data...'}
+        </Flex>
+      </>
     );
   };
 
