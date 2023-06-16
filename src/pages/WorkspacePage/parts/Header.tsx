@@ -266,7 +266,12 @@ const Header: React.FC<IHeaderProps> = (props) => {
         {isLoadingRun ? (
           <Flex align={'center'} mx={'14px'}>
             {[...Array(4)].map((_, index) => (
-              <SkeletonCircle key={index} w={'20px'} h={'20px'} />
+              <SkeletonCircle
+                key={index}
+                w={'20px'}
+                h={'20px'}
+                mr={index < 3 ? '-5px' : 0}
+              />
             ))}
           </Flex>
         ) : (

@@ -70,8 +70,8 @@ const VisualizationCounter = ({ data, visualization, isLoading }: Props) => {
         h={'full'}
         flexDir={'column'}
       >
-        <Skeleton w={'80px'} h={'18px'} mb={'8px'} />
-        <Skeleton w={'180px'} h={'18px'} />
+        <Skeleton w={'80px'} h={'18px'} mb={'8px'} rounded={'9px'} />
+        <Skeleton w={'180px'} h={'18px'} rounded={'9px'} />
       </Flex>
     );
   }

@@ -18,6 +18,7 @@ import Header from 'src/pages/WorkspacePage/parts/Header';
 import VisualizationItem from 'src/pages/WorkspacePage/parts/VisualizationItem';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import { Dashboard } from 'src/utils/utils-dashboard';
+import { LoadingFullPage } from 'src/pages/LoadingFullPage';
 
 export interface ILayout extends Layout {
   options: any;
@@ -176,14 +177,19 @@ const DashboardPart: React.FC = () => {
         needAuthentication={false}
         isLoadingRun={isLoading}
       />
-      <div className="dashboard-container">
-        {_renderDashboard()}
-        <ModalForkDashBoardDetails
-          dashboardId={dashboardId}
-          open={openModalFork}
-          onClose={() => setOpenModalFork(false)}
-        />
-      </div>
+
+      {isLoading ? (
+        <LoadingFullPage />
+      ) : (
+        <div className="dashboard-container">
+          {_renderDashboard()}
+          <ModalForkDashBoardDetails
+            dashboardId={dashboardId}
+            open={openModalFork}
+            onClose={() => setOpenModalFork(false)}
+          />
+        </div>
+      )}
     </div>
   );
 };

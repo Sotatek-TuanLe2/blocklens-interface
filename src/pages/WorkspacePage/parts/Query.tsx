@@ -182,8 +182,6 @@ const QueryPart: React.FC = () => {
       await getExecutionResultById(executionId);
     } catch (error) {
       toastError({ message: getErrorMessage(error) });
-    } finally {
-      setIsLoadingResult(false);
     }
   };
 

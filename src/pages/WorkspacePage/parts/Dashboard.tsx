@@ -33,6 +33,7 @@ import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
 import { Dashboard } from 'src/utils/utils-dashboard';
 import { DeleteIcon, EditIcon } from 'src/assets/icons';
+import { LoadingFullPage } from 'src/pages/LoadingFullPage';
 
 export interface ILayout extends Layout {
   options: any;
@@ -318,69 +319,73 @@ const DashboardPart: React.FC = () => {
         onChangeEditMode={() => setEditMode((prevState) => !prevState)}
         isLoadingRun={isLoading}
       />
-      <div className="dashboard-container">
-        {_renderDashboard()}
-        {editMode && !isEmptyDashboard && (
-          <Menu>
-            <MenuButton className="app-query-menu add-button">
-              <img src={PlusIcon} alt="icon-plus" />
-            </MenuButton>
-            <MenuList className="app-query-menu__list">
-              <MenuItem onClick={onOpenModalAddVisualization}>
-                <Flex alignItems={'center'} gap={'8px'}>
-                  <span className="icon-widget-small-visualization" />
-                  Add visualization
-                </Flex>
-              </MenuItem>
-              <MenuItem onClick={onOpenModalAddText}>
-                <Flex alignItems={'center'} gap={'8px'}>
-                  <span className="icon-widget-small-text" />
-                  Add text widget
-                </Flex>
-              </MenuItem>
-            </MenuList>
-          </Menu>
-        )}
-        <ModalSettingDashboardDetails
-          open={openModalSetting}
-          onClose={() => setOpenModalSetting(false)}
-          dataDashboard={dataDashboard}
-          onReload={fetchLayoutData}
-        />
-        <ModalAddTextWidget
-          selectedItem={selectedItem}
-          dataLayouts={dataLayouts}
-          type={typeModalTextWidget}
-          open={openModalAddTextWidget}
-          onClose={() => setOpenModalAddTextWidget(false)}
-          onReload={fetchLayoutData}
-          dataDashboard={dataDashboard}
-        />
-        <ModalDeleteWidget
-          selectedItem={selectedItem}
-          onReload={fetchLayoutData}
-          open={openModalEdit}
-          onClose={() => setOpenModalEdit(false)}
-        />
-        {openModalAddVisualization && (
-          <ModalAddVisualization
-            dashboardId={dashboardId}
-            dataLayouts={dataLayouts}
-            open={openModalAddVisualization}
-            onClose={() => setOpenModalAddVisualization(false)}
-            userName={userName}
-            onReload={() => {
-              fetchLayoutData().then();
-              setEditMode(true);
-            }}
+      {isLoading ? (
+        <LoadingFullPage />
+      ) : (
+        <div className="dashboard-container">
+          {_renderDashboard()}
+          {editMode && !isEmptyDashboard && (
+            <Menu>
+              <MenuButton className="app-query-menu add-button">
+                <img src={PlusIcon} alt="icon-plus" />
+              </MenuButton>
+              <MenuList className="app-query-menu__list">
+                <MenuItem onClick={onOpenModalAddVisualization}>
+                  <Flex alignItems={'center'} gap={'8px'}>
+                    <span className="icon-widget-small-visualization" />
+                    Add visualization
+                  </Flex>
+                </MenuItem>
+                <MenuItem onClick={onOpenModalAddText}>
+                  <Flex alignItems={'center'} gap={'8px'}>
+                    <span className="icon-widget-small-text" />
+                    Add text widget
+                  </Flex>
+                </MenuItem>
+              </MenuList>
+            </Menu>
+          )}
+          <ModalSettingDashboardDetails
+            open={openModalSetting}
+            onClose={() => setOpenModalSetting(false)}
+            dataDashboard={dataDashboard}
+            onReload={fetchLayoutData}
           />
-        )}
-        <ModalForkDashBoardDetails
-          dashboardId={dashboardId}
-          open={openModalFork}
-          onClose={() => setOpenModalFork(false)}
-        />
-      </div>
+          <ModalAddTextWidget
+            selectedItem={selectedItem}
+            dataLayouts={dataLayouts}
+            type={typeModalTextWidget}
+            open={openModalAddTextWidget}
+            onClose={() => setOpenModalAddTextWidget(false)}
+            onReload={fetchLayoutData}
+            dataDashboard={dataDashboard}
+          />
+          <ModalDeleteWidget
+            selectedItem={selectedItem}
+            onReload={fetchLayoutData}
+            open={openModalEdit}
+            onClose={() => setOpenModalEdit(false)}
+          />
+          {openModalAddVisualization && (
+            <ModalAddVisualization
+              dashboardId={dashboardId}
+              dataLayouts={dataLayouts}
+              open={openModalAddVisualization}
+              onClose={() => setOpenModalAddVisualization(false)}
+              userName={userName}
+              onReload={() => {
+                fetchLayoutData().then();
+                setEditMode(true);
+              }}
+            />
+          )}
+          <ModalForkDashBoardDetails
+            dashboardId={dashboardId}
+            open={openModalFork}
+            onClose={() => setOpenModalFork(false)}
+          />
+        </div>
+      )}
     </div>
   );
 };
