@@ -39,14 +39,17 @@ export const WIDTH_DASHBOARD = [
   {
     name: 'Small',
     col: 3,
+    width: '25%',
   },
   {
     name: 'Medium',
     col: 6,
+    width: '50%',
   },
   {
     name: 'Large',
     col: 12,
+    width: '100%',
   },
 ];
 
@@ -57,7 +60,7 @@ interface IModalAddVisualization {
   onClose: () => void;
   userName: string;
   dataLayouts: ILayout[];
-  onReload: () => Promise<void>;
+  onReload: () => void;
   dashboardId: string;
 }
 interface IAddVisualizationCheckbox {
@@ -65,8 +68,8 @@ interface IAddVisualizationCheckbox {
   query: IQuery;
   visualization: VisualizationType;
   getIcon: (chain: string | undefined) => JSX.Element;
-  visualSelected: string;
-  setVisualSelected: (value: string) => void;
+  visualSelected: VisualizationType;
+  setVisualSelected: (value: VisualizationType | string) => void;
 }
 
 const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
@@ -77,7 +80,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   onReload,
   dashboardId,
 }) => {
-  const [visualSelected, setVisualSelected] = useState<string>('');
+  const [visualSelected, setVisualSelected] = useState<any>('');
   const [myQueries, setMyQueries] = useState<IQuery[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [widthWidget, setWidthWidget] = useState<number>(TOTAL_COL / 4);
@@ -163,6 +166,14 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
     fetchVisualization().then();
   }, [searchTerm]);
 
+  useEffect(() => {
+    if (visualSelected?.type === TYPE_VISUALIZATION.table) {
+      setWidthWidget(TOTAL_COL);
+    } else {
+      setWidthWidget(TOTAL_COL / 4);
+    }
+  }, [visualSelected]);
+
   const handleSaveVisualization = async (widthWidget: number) => {
     const lastLayout = _.maxBy(dataLayouts, 'y');
     const currentY = lastLayout?.y || 0;
@@ -187,7 +198,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
       const payload = {
         dashboardId,
         dataVisualWidget: {
-          visualizationId: visualSelected,
+          visualizationId: visualSelected.id,
           options: {
             sizeX: sizeX,
             sizeY: sizeY,
@@ -297,23 +308,36 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
           </InfiniteScroll>
         </div>
 
-        <Flex pt={5}>
+        <Flex
+          pt={5}
+          fontSize={'14px'}
+          alignItems={{ base: 'flex-start', md: 'center' }}
+        >
           Width:
-          <Flex ml={{ base: 2, md: 10 }}>
+          <Flex
+            ml={{ base: 2, md: 3 }}
+            flexDirection={{ base: 'column', md: 'row' }}
+          >
             {WIDTH_DASHBOARD.map((item, index) => {
               return (
                 <Flex
-                  mr={{ base: 2, md: 10 }}
+                  mr={{ base: 2, md: 3 }}
                   onClick={() => setWidthWidget(item.col)}
                   cursor={'pointer'}
                   key={index}
+                  mb={{ base: 3, md: 0 }}
                 >
                   {widthWidget === item.col ? (
                     <RadioChecked />
                   ) : (
                     <RadioNoCheckedIcon />
                   )}
-                  <Box ml={2}>{item.name}</Box>
+                  <Flex ml={2} alignItems={'center'}>
+                    {item.name}{' '}
+                    <Box as={'span'} fontSize={'14px'} ml={1}>
+                      ({item.width})
+                    </Box>
+                  </Flex>
                 </Flex>
               );
             })}
@@ -330,7 +354,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
             Cancel
           </AppButton>
           <AppButton
-            disabled={!myQueries.length}
+            disabled={!myQueries.length || !visualSelected}
             size="lg"
             onClick={() => {
               handleSaveVisualization(widthWidget).then();
@@ -363,11 +387,11 @@ const AddVisualizationCheckbox: React.FC<IAddVisualizationCheckbox> = ({
     }
   };
 
-  const handleCheckboxChange = (visualizationId: string) => {
-    if (visualSelected === visualizationId) {
+  const handleCheckboxChange = (data: VisualizationType) => {
+    if (visualSelected?.id === data.id) {
       setVisualSelected('');
     } else {
-      setVisualSelected(visualizationId);
+      setVisualSelected(data);
     }
   };
 
@@ -377,10 +401,10 @@ const AddVisualizationCheckbox: React.FC<IAddVisualizationCheckbox> = ({
         <Flex
           alignItems={'center'}
           mr={10}
-          onClick={() => handleCheckboxChange(visualization.id)}
+          onClick={() => handleCheckboxChange(visualization)}
           cursor={'pointer'}
         >
-          {visualSelected === visualization.id ? (
+          {visualSelected?.id === visualization.id ? (
             <RadioChecked />
           ) : (
             <RadioNoCheckedIcon />

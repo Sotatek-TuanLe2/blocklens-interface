@@ -16,6 +16,7 @@ import { toastError } from 'src/utils/utils-notify';
 import { Dashboard } from 'src/utils/utils-dashboard';
 import { Query } from 'src/utils/utils-query';
 import AppNetworkIcons from 'src/components/AppNetworkIcons';
+import { isMobile } from 'react-device-detect';
 
 interface IHeaderProps {
   type: string;
@@ -197,11 +198,28 @@ const Header: React.FC<IHeaderProps> = (props) => {
         {!isCreatingQuery && (
           <div className="item-desc">
             <img src="/images/AvatarDashboardCard.png" alt="avatar" />
-            <span>
+            <span className="item-desc__name">
               <span className="user-name">{`${author} / `}</span>
               <span>{dataClass?.getName()}</span>
             </span>
           </div>
+        )}
+
+        {!isCreatingQuery && data && isMobile && (
+          <AppQueryMenu
+            menu={
+              !needAuthentication
+                ? type === LIST_ITEM_TYPE.DASHBOARDS
+                  ? [QUERY_MENU_LIST.SHARE]
+                  : [QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.SHARE]
+                : undefined
+            }
+            item={data}
+            itemType={type}
+            onForkSuccess={onForkSuccess}
+            onDeleteSuccess={onDeleteSuccess}
+            onSettingSuccess={onSettingSuccess}
+          />
         )}
       </div>
       <div className="workspace-page__editor__header__right">
@@ -227,7 +245,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
           <AppNetworkIcons networkIds={dataClass?.getChains()} />
         )}
         {_renderButtons()}
-        {!isCreatingQuery && data && (
+        {!isCreatingQuery && data && !isMobile && (
           <AppQueryMenu
             menu={
               !needAuthentication
