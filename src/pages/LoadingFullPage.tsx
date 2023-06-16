@@ -31,7 +31,13 @@ export const LoadingFullPage = () => {
             break;
         }
         return (
-          <Box key={index} p={'10px'} w={'full'} maxW={maxW} style={{ aspectRatio }}>
+          <Box
+            key={index}
+            p={'10px'}
+            w={'full'}
+            maxW={maxW}
+            style={{ aspectRatio }}
+          >
             <Box
               bg={'white'}
               rounded={'10px'}
