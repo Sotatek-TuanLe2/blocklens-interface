@@ -21,6 +21,7 @@ import { QUERY_RESULT_STATUS } from 'src/utils/common';
 import Header from 'src/pages/WorkspacePage/parts/Header';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import { Query } from 'src/utils/utils-query';
+import { AddChartIcon, QueryResultIcon } from 'src/assets/icons';
 
 const QueryPart: React.FC = () => {
   const { queryId } = useParams<{ queryId: string }>();
@@ -137,6 +138,7 @@ const QueryPart: React.FC = () => {
     firstClass: string,
     secondClass: string,
   ) => {
+    if (isLoadingResult) return 'add-chart-loading-public';
     if (errorExecuteQuery) return;
     if (!queryId || !queryValue) return 'custom-editor--full';
     return expandLayout === layout ? firstClass : secondClass;
@@ -150,9 +152,32 @@ const QueryPart: React.FC = () => {
       : 'icon-query-collapse';
   };
 
+  const _renderAddChart = () => {
+    return (
+      <div className="header-empty">
+        <Flex alignItems={'center'} gap="16px">
+          <div className="item-add-chart active-table">
+            <QueryResultIcon />
+            Result Table
+          </div>
+          <div className="item-add-chart">
+            <AddChartIcon />
+            Add Chart
+          </div>
+        </Flex>
+        <p className="icon-query-expand cursor-not-allowed" />
+      </div>
+    );
+  };
+
   const _renderContent = () => {
     if (isLoadingResult) {
-      return <AppLoadingTable widthColumns={[100]} className="visual-table" />;
+      return (
+        <>
+          {_renderAddChart()}
+          <AppLoadingTable widthColumns={[100]} className="visual-table" />
+        </>
+      );
     }
 
     if (!!queryValue && !!queryResult.length && !errorExecuteQuery?.message) {
@@ -171,15 +196,18 @@ const QueryPart: React.FC = () => {
     }
 
     return (
-      <Flex
-        className="empty-table"
-        justifyContent={'center'}
-        alignItems="center"
-        flexDirection="column"
-      >
-        <span className="execution-error">Execution Error</span>
-        {errorExecuteQuery?.message || 'No data...'}
-      </Flex>
+      <>
+        {_renderAddChart()}
+        <Flex
+          className="empty-table"
+          justifyContent={'center'}
+          alignItems="center"
+          flexDirection="column"
+        >
+          <span className="execution-error">Execution Error</span>
+          {errorExecuteQuery?.message || 'No data...'}
+        </Flex>
+      </>
     );
   };
 

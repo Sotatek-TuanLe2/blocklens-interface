@@ -227,9 +227,32 @@ const QueryPart: React.FC = () => {
       : 'icon-query-collapse';
   };
 
+  const _renderAddChart = () => {
+    return (
+      <div className="header-empty">
+        <Flex alignItems={'center'} gap="16px">
+          <div className="item-add-chart active-table">
+            <QueryResultIcon />
+            Result Table
+          </div>
+          <div className="item-add-chart">
+            <AddChartIcon />
+            Add Chart
+          </div>
+        </Flex>
+        <p className="icon-query-expand cursor-not-allowed" />
+      </div>
+    );
+  };
+
   const _renderContent = () => {
     if (isLoadingResult) {
-      return <AppLoadingTable widthColumns={[100]} className="visual-table" />;
+      return (
+        <>
+          {_renderAddChart()}
+          <AppLoadingTable widthColumns={[100]} className="visual-table" />
+        </>
+      );
     }
 
     if (!!queryValue && !!queryResult.length && !errorExecuteQuery?.message) {
@@ -247,19 +270,7 @@ const QueryPart: React.FC = () => {
     }
     return (
       <>
-        <div className="header-empty">
-          <Flex alignItems={'center'} gap="16px">
-            <div className="item-add-chart active-table">
-              <QueryResultIcon />
-              Result Table
-            </div>
-            <div className="item-add-chart">
-              <AddChartIcon />
-              Add Chart
-            </div>
-          </Flex>
-          <p className="icon-query-expand cursor-not-allowed" />
-        </div>
+        {_renderAddChart()}
         <Flex
           className="empty-table"
           justifyContent={'center'}
@@ -278,6 +289,7 @@ const QueryPart: React.FC = () => {
     firstClass: string,
     secondClass: string,
   ) => {
+    if (isLoadingResult) return 'add-chart-loading';
     if (errorExecuteQuery) return;
     if (!queryId || !queryValue) return 'custom-editor--full';
     return expandLayout === layout ? firstClass : secondClass;
@@ -359,6 +371,7 @@ const QueryPart: React.FC = () => {
                 theme="tomorrow"
                 width="100%"
                 wrapEnabled={true}
+                readOnly={expandLayout === LAYOUT_QUERY.HIDDEN}
                 name="sql_editor"
                 editorProps={{ $blockScrolling: true }}
                 showPrintMargin={true}

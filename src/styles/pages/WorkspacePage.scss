@@ -8,7 +8,7 @@
   margin-top: -40px;
 
   &__query {
-    height: calc(100vh - 110px);
+    height: calc(100vh - 70px);
   }
 
   @media (max-width: 992px) {
@@ -177,7 +177,7 @@
         }
 
         &__list-chain-half {
-          height: calc(100% - 540px);
+          height: calc(100% - 480px);
           overflow-y: hidden;
           &:hover {
             overflow-y: auto;
