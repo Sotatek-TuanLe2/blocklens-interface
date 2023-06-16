@@ -287,7 +287,7 @@ const VisualizationTable = <T,>({
                               {
                                 '--myColor': coloredProgress
                                   ? VISUALIZATION_COLORS.POSITIVE
-                                  : '#3965ff',
+                                  : '#00022480',
                                 '--myProgressBar': `${percent}%`,
                               } as React.CSSProperties
                             }
