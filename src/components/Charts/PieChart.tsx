@@ -8,13 +8,16 @@ import {
 } from 'recharts';
 import { COLORS } from 'src/utils/common';
 import { VisualizationOptionsType } from 'src/utils/query.type';
-import { Box, Flex } from '@chakra-ui/react';
+import { Box, Flex, Tooltip as TooltipUI } from '@chakra-ui/react';
 import { useMemo, useState } from 'react';
 import _ from 'lodash';
 import BigNumber from 'bignumber.js';
 import { isNumber } from 'src/utils/utils-helper';
 import { ChartProps } from './VisualizationChart';
-import { formatVisualizationValue } from 'src/utils/utils-format';
+import {
+  formatDefaultValueChart,
+  formatVisualizationValue,
+} from 'src/utils/utils-format';
 import { FadeLoader } from 'react-spinners';
 
 type ChartConfigType = VisualizationOptionsType;
@@ -178,7 +181,6 @@ const VisualizationPieChart = ({
             label={
               chartOptionsConfigs?.showDataLabels && _renderCustomizedLabel
             }
-            // stroke="#101530"
           >
             {shownData &&
               shownData.map((entry: any) => (
@@ -262,13 +264,15 @@ const CustomLegend = (props: any) => {
               opacity: `${entry.type ? '1' : '0.5'}`,
             }}
           ></span>
-          <span
-            style={{
-              opacity: `${entry.type ? '1' : '0.5'}`,
-            }}
-          >
-            {entry.value}
-          </span>
+          <TooltipUI hasArrow placement="top" label={entry.value}>
+            <span
+              style={{
+                opacity: `${entry.type ? '1' : '0.5'}`,
+              }}
+            >
+              {formatDefaultValueChart(entry.value)}
+            </span>
+          </TooltipUI>
         </div>
       ))}
     </div>
