@@ -202,7 +202,7 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
                 value={dataColumn?.stringSuffix}
                 onChange={(e) =>
                   onChangeCounterConfigurations({
-                    stringSuffix: e.target.value,
+                    stringSuffix: e.target.value.trim(),
                   })
                 }
               />
