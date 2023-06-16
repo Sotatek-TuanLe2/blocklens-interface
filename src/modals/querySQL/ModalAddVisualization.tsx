@@ -167,7 +167,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   }, [searchTerm]);
 
   useEffect(() => {
-    if (visualSelected?.type === 'table') {
+    if (visualSelected?.type === TYPE_VISUALIZATION.table) {
       setWidthWidget(TOTAL_COL);
     } else {
       setWidthWidget(TOTAL_COL / 4);
