@@ -98,7 +98,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
   dataDashboard,
 }) => {
   const [markdownText, setMarkdownText] = useState<string>('');
-  const [widthWidget, setWidthWidget] = useState<number>(TOTAL_COL / 4);
+  const [widthWidget, setWidthWidget] = useState<number>(TOTAL_COL / 2);
 
   useEffect(() => {
     setMarkdownText(selectedItem.text || '');
