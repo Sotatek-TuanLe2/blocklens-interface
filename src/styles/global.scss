@@ -138,3 +138,9 @@ text.recharts-text.recharts-label {
     background: $white !important;
   }
 }
+
+.chakra-alert__icon {
+  svg {
+    color: $white;
+  }
+}
