@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { Flex } from '@chakra-ui/react';
+import { Flex, Tooltip } from '@chakra-ui/react';
 import React, {
   useCallback,
   useEffect,
@@ -24,6 +24,8 @@ import Header from 'src/pages/WorkspacePage/parts/Header';
 import VisualizationItem from 'src/pages/WorkspacePage/parts/VisualizationItem';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import { Dashboard } from 'src/utils/utils-dashboard';
+import { ClockIcon } from 'src/assets/icons';
+import moment from 'moment';
 
 export interface ILayout extends Layout {
   options: any;
@@ -131,7 +133,6 @@ const DashboardPart: React.FC = () => {
     if (isEmptyDashboard) {
       return _renderEmptyDashboard();
     }
-
     return (
       <ResponsiveGridLayout
         className="main-grid-layout"
@@ -148,10 +149,27 @@ const DashboardPart: React.FC = () => {
           <div className="box-layout" key={item.id}>
             <div className="box-chart">
               {item.type === WIDGET_TYPE.VISUALIZATION ? (
-                <VisualizationItem
-                  visualization={item.content}
-                  needAuthentication={false}
-                />
+                <>
+                  <VisualizationItem
+                    visualization={item.content}
+                    needAuthentication={false}
+                  />
+                  <div className="box-updated">
+                    <Tooltip
+                      bg={'#FFFFFF'}
+                      color={'#000224'}
+                      fontWeight="400"
+                      p={2}
+                      label={`Updated: ${moment(item.content.updatedAt).format(
+                        'YYYY/MM/DD HH:MM',
+                      )}`}
+                      placement={'top-start'}
+                      hasArrow
+                    >
+                      <ClockIcon />
+                    </Tooltip>
+                  </div>
+                </>
               ) : (
                 <div className="box-text-widget">
                   <ReactMarkdown>{item.text}</ReactMarkdown>
