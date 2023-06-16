@@ -9,12 +9,14 @@ import { IDataForm } from '../index';
 
 interface PartFormContractAptosProps {
   dataForm: IDataForm;
-  onChangeForm: any;
+  onChangeForm: (value: IDataForm) => void;
+  validator: any;
 }
 
 const PartFormModuleActivityAptos: FC<PartFormContractAptosProps> = ({
   dataForm,
   onChangeForm,
+  validator,
 }) => {
   const [dataAddress, setDataAddress] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -114,6 +116,11 @@ const PartFormModuleActivityAptos: FC<PartFormContractAptosProps> = ({
               setIsLoading(true);
             }
             debounceDropDown(e.target.value.trim());
+          }}
+          validate={{
+            name: `addressId`,
+            validator: validator.current,
+            rule: 'required',
           }}
         />
       </AppField>
