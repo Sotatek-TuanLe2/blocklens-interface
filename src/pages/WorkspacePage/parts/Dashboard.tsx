@@ -245,6 +245,7 @@ const DashboardPart: React.FC = () => {
         isResizable={editMode}
         measureBeforeMount
         containerPadding={[0, 30]}
+        margin={[20, 20]}
       >
         {dataLayouts.map((item) => (
           <div className="box-layout" key={item.id}>
@@ -316,11 +317,9 @@ const DashboardPart: React.FC = () => {
         {_renderDashboard()}
         {editMode && !isEmptyDashboard && (
           <Menu>
-            <Box className="add-button">
-              <MenuButton className="app-query-menu">
-                <img src={PlusIcon} alt="icon-plus" />
-              </MenuButton>
-            </Box>
+            <MenuButton className="app-query-menu add-button">
+              <img src={PlusIcon} alt="icon-plus" />
+            </MenuButton>
             <MenuList className="app-query-menu__list">
               <MenuItem onClick={onOpenModalAddVisualization}>
                 <Flex alignItems={'center'} gap={'8px'}>
@@ -365,7 +364,10 @@ const DashboardPart: React.FC = () => {
             open={openModalAddVisualization}
             onClose={() => setOpenModalAddVisualization(false)}
             userName={userName}
-            onReload={fetchLayoutData}
+            onReload={() => {
+              fetchLayoutData().then();
+              setEditMode(true);
+            }}
           />
         )}
         <ModalForkDashBoardDetails

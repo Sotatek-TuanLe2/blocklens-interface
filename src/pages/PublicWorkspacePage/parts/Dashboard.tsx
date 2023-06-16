@@ -1,12 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { Flex } from '@chakra-ui/react';
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Layout, Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import ReactMarkdown from 'react-markdown';
@@ -131,7 +125,6 @@ const DashboardPart: React.FC = () => {
     if (isEmptyDashboard) {
       return _renderEmptyDashboard();
     }
-
     return (
       <ResponsiveGridLayout
         className="main-grid-layout"
@@ -142,6 +135,7 @@ const DashboardPart: React.FC = () => {
         isResizable={false}
         measureBeforeMount
         containerPadding={[0, 30]}
+        margin={[20, 20]}
       >
         {dataLayouts.map((item) => (
           <div className="box-layout" key={item.id}>

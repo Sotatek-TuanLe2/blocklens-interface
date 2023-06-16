@@ -9,14 +9,12 @@ import {
   VisualizationTable,
   VisualizationCounter,
 } from 'src/components/Charts';
-
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/TableValue.scss';
 import 'src/styles/pages/DashboardDetailPage.scss';
 import 'src/styles/components/Chart.scss';
 import {
   IErrorExecuteQuery,
-  QueryExecutedResponse,
   TYPE_VISUALIZATION,
   VisualizationType,
 } from 'src/utils/query.type';
@@ -24,7 +22,7 @@ import { areYAxisesSameType, getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import { Link } from 'react-router-dom';
 import { QUERY_RESULT_STATUS, ROUTES } from 'src/utils/common';
-import useUser from 'src/hooks/useUser';
+import { ClockIcon } from 'src/assets/icons';
 
 const VisualizationItem = React.memo(
   ({
@@ -36,15 +34,12 @@ const VisualizationItem = React.memo(
     needAuthentication?: boolean;
     editMode?: boolean;
   }) => {
-    const { user } = useUser();
-
     const [queryResult, setQueryResult] = useState<unknown[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [errorExecuteQuery, setErrorExecuteQuery] =
       useState<IErrorExecuteQuery>();
 
     const queryId = visualization?.queryId;
-    const query = visualization.query?.query;
     const fetchQueryResultInterval: any = useRef();
     const refetchQueryResultInterval: any = useRef();
 
@@ -67,16 +62,10 @@ const VisualizationItem = React.memo(
     const fetchQueryResult = async () => {
       setIsLoading(true);
       clearInterval(fetchQueryResultInterval.current);
-      const executedResponse: QueryExecutedResponse = user
-        ? await rf
-            .getRequest('DashboardsRequest')
-            .getTemporaryQueryResult(query)
-        : await rf.getRequest('DashboardsRequest').executePublicQuery(queryId);
-      const executionId = executedResponse.id;
-
+      const executionId = visualization?.query?.resultId;
       const res = await rf
         .getRequest('DashboardsRequest')
-        .getQueryResult({ executionId });
+        .getQueryResult({ executionId: visualization?.query?.resultId });
       if (res.status === QUERY_RESULT_STATUS.WAITING) {
         fetchQueryResultInterval.current = setInterval(async () => {
           const resInterval = await rf
@@ -247,31 +236,53 @@ const VisualizationItem = React.memo(
     };
 
     return (
-      <div className="visual-container__visualization">
-        <div className="visual-container__visualization__title">
-          <Tooltip label={visualization.name} hasArrow bg="white" color="black">
-            <span className="visual-container__visualization__name">
-              {visualization.name}
-            </span>
-          </Tooltip>
-          <Tooltip
-            label={visualization.query?.name}
-            hasArrow
-            bg="white"
-            color="black"
-          >
-            <Link
-              className="visual-container__visualization__title__query-link"
-              to={`${needAuthentication ? ROUTES.MY_QUERY : ROUTES.QUERY}/${
-                visualization.queryId
-              }`}
+      <>
+        <div className="visual-container__visualization">
+          <div className="visual-container__visualization__title">
+            <Tooltip
+              label={visualization.name}
+              hasArrow
+              bg="white"
+              color="black"
             >
-              {visualization.query?.name}
-            </Link>
+              <span className="visual-container__visualization__name">
+                {visualization.name}
+              </span>
+            </Tooltip>
+            <Tooltip
+              label={visualization.query?.name}
+              hasArrow
+              bg="white"
+              color="black"
+            >
+              <Link
+                className="visual-container__visualization__title__query-link"
+                to={`${needAuthentication ? ROUTES.MY_QUERY : ROUTES.QUERY}/${
+                  visualization.queryId
+                }`}
+              >
+                {visualization.query?.name}
+              </Link>
+            </Tooltip>
+          </div>
+          {_renderContent()}
+        </div>
+        <div className="box-updated">
+          <Tooltip
+            bg={'#FFFFFF'}
+            color={'#000224'}
+            fontWeight="400"
+            p={2}
+            label={`Updated: ${moment(visualization.query?.updatedAt).format(
+              'YYYY/MM/DD HH:MM',
+            )}`}
+            placement={'top-start'}
+            hasArrow
+          >
+            <ClockIcon />
           </Tooltip>
         </div>
-        {_renderContent()}
-      </div>
+      </>
     );
   },
 );

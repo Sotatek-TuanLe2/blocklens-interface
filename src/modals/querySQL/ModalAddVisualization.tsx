@@ -1,4 +1,12 @@
-import { Checkbox, Flex, Link, Spinner, Text, Tooltip } from '@chakra-ui/react';
+import {
+  Checkbox,
+  Flex,
+  Link,
+  Spinner,
+  Text,
+  Tooltip,
+  Box,
+} from '@chakra-ui/react';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   AreaChartIcon,
@@ -7,6 +15,8 @@ import {
   LineChartIcon,
   PieChartIcon,
   QueryResultIcon,
+  RadioChecked,
+  RadioNoCheckedIcon,
   ScatterChartIcon,
 } from 'src/assets/icons';
 import { AppButton, AppInput } from 'src/components';
@@ -25,12 +35,32 @@ import _, { debounce } from 'lodash';
 import { INPUT_DEBOUNCE, IPagination } from 'src/utils/common';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
+export const WIDTH_DASHBOARD = [
+  {
+    name: 'Small',
+    col: 3,
+    width: '25%',
+  },
+  {
+    name: 'Medium',
+    col: 6,
+    width: '50%',
+  },
+  {
+    name: 'Large',
+    col: 12,
+    width: '100%',
+  },
+];
+
+export const TOTAL_COL = 12;
+
 interface IModalAddVisualization {
   open: boolean;
   onClose: () => void;
   userName: string;
   dataLayouts: ILayout[];
-  onReload: () => Promise<void>;
+  onReload: () => void;
   dashboardId: string;
 }
 interface IAddVisualizationCheckbox {
@@ -38,8 +68,8 @@ interface IAddVisualizationCheckbox {
   query: IQuery;
   visualization: VisualizationType;
   getIcon: (chain: string | undefined) => JSX.Element;
-  selectedItems: any[];
-  setSelectedItems: React.Dispatch<React.SetStateAction<any[]>>;
+  visualSelected: VisualizationType;
+  setVisualSelected: (value: VisualizationType | string) => void;
 }
 
 const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
@@ -50,9 +80,10 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   onReload,
   dashboardId,
 }) => {
-  const [selectedItems, setSelectedItems] = useState<any[]>([]);
+  const [visualSelected, setVisualSelected] = useState<any>('');
   const [myQueries, setMyQueries] = useState<IQuery[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [widthWidget, setWidthWidget] = useState<number>(TOTAL_COL / 4);
   const [dataVisualPagination, setDataVisualPagination] = useState<
     IPagination | undefined
   >();
@@ -132,49 +163,55 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   };
 
   useEffect(() => {
-    if (open) {
-      fetchVisualization();
-      setSelectedItems(
-        dataLayouts.filter((i) => i.type !== 'text').map((el) => el.content),
-      );
-    } else {
-      setSearchTerm('');
-    }
-  }, [open]);
-
-  useEffect(() => {
-    if (!!dataLayouts.length) {
-      setSelectedItems(
-        dataLayouts.filter((i) => i.type !== 'text').map((el) => el.content),
-      );
-    }
-  }, [dataLayouts]);
-
-  useEffect(() => {
-    fetchVisualization();
+    fetchVisualization().then();
   }, [searchTerm]);
 
-  const handleSaveVisualization = async () => {
-    const dataVisual = selectedItems.map((i) => {
-      return {
-        visualizationId: i.id,
-        options: {
-          sizeX: dataLayouts.length % 2 === 0 ? 0 : 6,
-          sizeY: dataLayouts.length,
-          col: 6,
-          row: 2,
-        },
-      };
-    });
+  useEffect(() => {
+    if (visualSelected?.type === TYPE_VISUALIZATION.table) {
+      setWidthWidget(TOTAL_COL);
+    } else {
+      setWidthWidget(TOTAL_COL / 4);
+    }
+  }, [visualSelected]);
+
+  const handleSaveVisualization = async (widthWidget: number) => {
+    const lastLayout = _.maxBy(dataLayouts, 'y');
+    const currentY = lastLayout?.y || 0;
+    const listWidgetCurrent = dataLayouts.filter(
+      (layout) => layout.y === currentY,
+    );
+
+    const totalWidthWidget = _.sumBy(listWidgetCurrent, 'w');
+
+    let sizeX = 0;
+    let sizeY = 0;
+
+    if (totalWidthWidget < TOTAL_COL) {
+      sizeY = currentY || 0;
+      sizeX = totalWidthWidget;
+    } else {
+      sizeY = currentY + 2;
+      sizeX = 0;
+    }
+
     try {
       const payload = {
         dashboardId,
-        listVisuals: dataVisual,
+        dataVisualWidget: {
+          visualizationId: visualSelected.id,
+          options: {
+            sizeX: sizeX,
+            sizeY: sizeY,
+            col: widthWidget,
+            row: 2,
+          },
+        },
       };
-      await rf.getRequest('DashboardsRequest').manageVisualizations(payload);
-      toastSuccess({ message: 'Update successfully' });
+
+      await rf.getRequest('DashboardsRequest').insertVisualizations(payload);
+      toastSuccess({ message: 'Add successfully' });
       onClose();
-      onReload();
+      await onReload();
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
     }
@@ -260,8 +297,8 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
                     query={item.query}
                     visualization={item.visualization}
                     getIcon={getIcon}
-                    setSelectedItems={setSelectedItems}
-                    selectedItems={selectedItems}
+                    setVisualSelected={setVisualSelected}
+                    visualSelected={visualSelected}
                   />
                 </Flex>
               ))
@@ -270,6 +307,42 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
             )}
           </InfiniteScroll>
         </div>
+
+        <Flex
+          pt={5}
+          fontSize={'14px'}
+          alignItems={{ base: 'flex-start', md: 'center' }}
+        >
+          Width:
+          <Flex
+            ml={{ base: 2, md: 3 }}
+            flexDirection={{ base: 'column', md: 'row' }}
+          >
+            {WIDTH_DASHBOARD.map((item, index) => {
+              return (
+                <Flex
+                  mr={{ base: 2, md: 3 }}
+                  onClick={() => setWidthWidget(item.col)}
+                  cursor={'pointer'}
+                  key={index}
+                  mb={{ base: 3, md: 0 }}
+                >
+                  {widthWidget === item.col ? (
+                    <RadioChecked />
+                  ) : (
+                    <RadioNoCheckedIcon />
+                  )}
+                  <Flex ml={2} alignItems={'center'}>
+                    {item.name}{' '}
+                    <Box as={'span'} fontSize={'14px'} ml={1}>
+                      ({item.width})
+                    </Box>
+                  </Flex>
+                </Flex>
+              );
+            })}
+          </Flex>
+        </Flex>
         <Flex className="modal-footer">
           <AppButton
             variant="cancel"
@@ -281,10 +354,10 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
             Cancel
           </AppButton>
           <AppButton
-            disabled={!myQueries.length}
+            disabled={!myQueries.length || !visualSelected}
             size="lg"
             onClick={() => {
-              handleSaveVisualization();
+              handleSaveVisualization(widthWidget).then();
               onClose();
             }}
           >
@@ -303,11 +376,9 @@ const AddVisualizationCheckbox: React.FC<IAddVisualizationCheckbox> = ({
   query,
   visualization,
   getIcon,
-  selectedItems,
-  setSelectedItems,
+  visualSelected,
+  setVisualSelected,
 }) => {
-  const checkAdded = selectedItems.some((el) => el.id === visualization.id);
-
   const conditionDisplayIcon = () => {
     if (visualization.type === 'table' || visualization.type === 'counter') {
       return visualization.type;
@@ -316,40 +387,38 @@ const AddVisualizationCheckbox: React.FC<IAddVisualizationCheckbox> = ({
     }
   };
 
-  const handleCheckboxChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-    itemId: string,
-  ) => {
-    const { checked } = event.target;
-
-    if (checked) {
-      setSelectedItems((prevItems) => [
-        ...prevItems,
-        query.visualizations.find((item: { id: string }) => item.id === itemId),
-      ]);
+  const handleCheckboxChange = (data: VisualizationType) => {
+    if (visualSelected?.id === data.id) {
+      setVisualSelected('');
     } else {
-      setSelectedItems((prevItems) =>
-        prevItems.filter((selectedItem) => selectedItem.id !== itemId),
-      );
+      setVisualSelected(data);
     }
   };
 
   return (
     <>
       <Flex className="visualization-row" alignItems={'center'}>
-        <Checkbox
-          onChange={(e) => handleCheckboxChange(e, visualization.id)}
-          isChecked={checkAdded}
-        />
-        {getIcon(conditionDisplayIcon())}
-        <Link className="visualization-name">
-          <Tooltip label={visualization.name}>{visualization.name}</Tooltip>
-        </Link>
-        <Text className="user-name">
-          <Tooltip label={`@${userName} / ${query.name}`}>
-            {`@${userName} / ${query.name}`}
-          </Tooltip>
-        </Text>
+        <Flex
+          alignItems={'center'}
+          mr={10}
+          onClick={() => handleCheckboxChange(visualization)}
+          cursor={'pointer'}
+        >
+          {visualSelected?.id === visualization.id ? (
+            <RadioChecked />
+          ) : (
+            <RadioNoCheckedIcon />
+          )}
+          {getIcon(conditionDisplayIcon())}
+          <Link className="visualization-name">
+            <Tooltip label={visualization.name}>{visualization.name}</Tooltip>
+          </Link>
+          <Text className="user-name">
+            <Tooltip label={`@${userName} / ${query.name}`}>
+              {`@${userName} / ${query.name}`}
+            </Tooltip>
+          </Text>
+        </Flex>
       </Flex>
     </>
   );

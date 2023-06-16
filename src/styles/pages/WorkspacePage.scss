@@ -5,7 +5,16 @@
 .workspace-page {
   display: flex;
   gap: 10px;
-  height: 860px;
+  margin-top: -40px;
+
+  &__query {
+    height: calc(100vh - 110px);
+  }
+
+  @media (max-width: 992px) {
+    margin-top: 15px;
+  }
+
   .ref-line {
     position: relative;
     text {
@@ -15,9 +24,35 @@
       }
     }
   }
+
+  &__dashboard-full {
+    width: 100%;
+
+    .dashboard-container {
+      background-color: transparent;
+
+      .main-grid-layout {
+        border: 0;
+        height: 100% !important;
+        max-height: 100%;
+        overflow-y: inherit;
+
+        .box-layout {
+          border: 0;
+          border-radius: 18px;
+          .box-chart {
+            padding: 20px;
+          }
+        }
+      }
+    }
+  }
+
   &__sidebar {
+    box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.04);
     display: flex;
-    height: 100%;
+    height: 860px;
+    max-height: 860px;
     ::-webkit-scrollbar {
       background-color: white;
     }
@@ -113,6 +148,7 @@
           display: flex;
           align-items: center;
           margin-bottom: 12px;
+          margin-top: 30px;
         }
         &__list-query {
           height: calc(100% - 162px);
@@ -134,6 +170,14 @@
 
         &__list-chain {
           height: calc(100% - 154px);
+          overflow-y: hidden;
+          &:hover {
+            overflow-y: auto;
+          }
+        }
+
+        &__list-chain-half {
+          height: calc(100% - 540px);
           overflow-y: hidden;
           &:hover {
             overflow-y: auto;
@@ -238,6 +282,55 @@
       width: 100%;
     }
 
+    .empty-dashboard {
+      width: 100%;
+      height: calc(100vh - 235px);
+      column-gap: 12px;
+      background-color: #ffffff;
+      margin-top: 40px;
+      border-radius: 6px;
+
+      .add-widget {
+        width: 300px;
+        height: 160px;
+        border: 1px solid $line;
+        border-radius: 10px;
+        background: $bg;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        row-gap: 10px;
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 18px;
+        line-height: 26px;
+
+        &:hover {
+          border: 1px solid $main;
+          background: #ffffff;
+          box-shadow: 0 10px 40px rgba(125, 143, 179, 0.2);
+          color: $main;
+        }
+
+        @media (max-width: 992px) {
+          font-weight: 400;
+          font-size: 14px;
+          line-height: 20px;
+          width: 150px;
+          //height: 60px;
+          padding: 10px 0;
+          height: max-content;
+          border-radius: 8px;
+        }
+      }
+    }
+
+    &__dashboard {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
     &__dashboard,
     &__query {
       height: 100%;
@@ -305,17 +398,37 @@
     }
 
     &__header {
+      box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.04);
       margin-bottom: 8px;
-      padding: 9px 20px;
+      padding: 9px 10px;
       background: $card;
       border-radius: 6px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+
+      @media (max-width: 992px) {
+        flex-direction: column;
+        padding: 14px;
+        align-items: flex-start;
+
+        .icon-back-light {
+          display: none;
+        }
+      }
+
       &__left {
         display: flex;
         align-items: center;
-        gap: 6px;
+        gap: 5px;
+
+        @media (max-width: 992px) {
+          padding-bottom: 14px;
+          border-bottom: 1px solid $disable;
+          margin-bottom: 14px;
+          width: 100%;
+          justify-content: space-between;
+        }
 
         .btn-back {
           &:hover {
@@ -330,6 +443,18 @@
           .user-name {
             color: $paragraph;
           }
+
+          &__name {
+            @media (max-width: 992px) {
+              width: 194px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              -webkit-line-clamp: 1;
+              display: -webkit-box;
+              -webkit-box-orient: vertical;
+            }
+          }
+
           img {
             width: 26px;
             height: 26px;
@@ -340,6 +465,11 @@
       &__right {
         display: flex;
         align-items: center;
+
+        @media (max-width: 992px) {
+          justify-content: flex-start;
+          width: 100%;
+        }
 
         .btn-list {
           padding: 0;
@@ -359,7 +489,7 @@
         }
 
         .tag {
-          margin-right: 14px;
+          margin-right: 10px;
         }
       }
     }
