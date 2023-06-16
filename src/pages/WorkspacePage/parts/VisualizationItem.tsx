@@ -1,4 +1,4 @@
-import { Flex, Spinner, Tooltip } from '@chakra-ui/react';
+import { Flex, Tooltip } from '@chakra-ui/react';
 import moment from 'moment';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import 'react-grid-layout/css/styles.css';
@@ -42,7 +42,6 @@ const VisualizationItem = React.memo(
     const queryId = visualization?.queryId;
     const fetchQueryResultInterval: any = useRef();
     const refetchQueryResultInterval: any = useRef();
-
     useEffect(() => {
       clearInterval(refetchQueryResultInterval.current);
       if (queryId) {
@@ -168,6 +167,7 @@ const VisualizationItem = React.memo(
               data={queryResult}
               visualization={visualization}
               editMode={editMode}
+              isLoading={isLoading}
             />
           );
           break;
@@ -176,6 +176,7 @@ const VisualizationItem = React.memo(
             <VisualizationCounter
               data={queryResult}
               visualization={visualization}
+              isLoading={isLoading}
             />
           );
           break;
@@ -188,6 +189,7 @@ const VisualizationItem = React.memo(
               }
               yAxisKeys={visualization.options.columnMapping?.yAxis || []}
               configs={visualization.options}
+              isLoading={isLoading}
             />
           );
           break;
@@ -202,6 +204,7 @@ const VisualizationItem = React.memo(
               yAxisKeys={visualization.options.columnMapping?.yAxis || []}
               configs={visualization.options}
               type={type}
+              isLoading={isLoading}
             />
           );
       }
@@ -220,15 +223,7 @@ const VisualizationItem = React.memo(
     };
 
     const _renderContent = () => {
-      if (isLoading) {
-        return (
-          <div className="visual-container__visualization visual-container__visualization--loading">
-            <Spinner />
-          </div>
-        );
-      }
-
-      if (!!queryResult.length) {
+      if (!!queryResult.length || isLoading) {
         return _renderVisualization(visualization);
       }
 

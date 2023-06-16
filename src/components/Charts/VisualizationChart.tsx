@@ -1,4 +1,4 @@
-import { Box } from '@chakra-ui/react';
+import { Box, Flex } from '@chakra-ui/react';
 import BigNumber from 'bignumber.js';
 import { isNull, isUndefined } from 'lodash';
 import moment from 'moment';
@@ -34,6 +34,7 @@ import { isNumber, isString } from 'src/utils/utils-helper';
 import { COLORS, getHourAndMinute } from '../../utils/common';
 import CustomLegend from './CustomLegend';
 import CustomTooltip from './CustomTooltip';
+import { FadeLoader } from 'react-spinners';
 
 type ChartConfigType = VisualizationOptionsType;
 export type ChartProps = {
@@ -42,12 +43,13 @@ export type ChartProps = {
   yAxisKeys?: string[];
 };
 type Props = ChartProps & {
+  isLoading?: boolean;
   type: typeof TYPE_VISUALIZATION[keyof typeof TYPE_VISUALIZATION];
   configs?: Partial<ChartConfigType>;
 };
 
 const VisualizationChart: React.FC<Props> = (props) => {
-  const { type, xAxisKey, yAxisKeys, data, configs } = props;
+  const { type, xAxisKey, yAxisKeys, data, configs, isLoading } = props;
   const chartOptionsConfigs = configs?.chartOptionsConfigs;
   const xAxisConfigs = configs?.xAxisConfigs;
   const yAxisConfigs = configs?.yAxisConfigs;
@@ -295,6 +297,21 @@ const VisualizationChart: React.FC<Props> = (props) => {
 
     return [minValue, maxValue];
   }, [data, xAxisKey, yAxisKeys, hiddenKeys, chartOptionsConfigs]);
+
+  if (isLoading) {
+    return (
+      <Flex align={'center'} justify={'center'} w={'full'} h={'full'}>
+        <FadeLoader
+          cssOverride={{
+            transform: 'scale(0.4) translateY(-35px)',
+            transformOrigin: 'center',
+          }}
+          color="rgba(0, 2, 36, 0.8)"
+        />{' '}
+        Loading
+      </Flex>
+    );
+  }
 
   return (
     <ResponsiveContainer className={containerClassName}>
