@@ -16,7 +16,6 @@ import { objectKeys } from 'src/utils/utils-network';
 import AppPagination from '../AppPagination';
 import AppInput from '../AppInput';
 import { debounce, isNull, isUndefined } from 'lodash';
-import { FadeLoader } from 'react-spinners';
 
 interface ReactTableProps<T> {
   data: T[];

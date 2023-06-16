@@ -231,7 +231,7 @@ const VisualizationItem = React.memo(
       //   );
       // }
 
-      console.log("queryResult: ", queryResult);
+      console.log('queryResult: ', queryResult);
 
       if (!!queryResult.length || isLoading) {
         return _renderVisualization(visualization);
