@@ -296,8 +296,6 @@ const VisualizationChart: React.FC<Props> = (props) => {
     return [minValue, maxValue];
   }, [data, xAxisKey, yAxisKeys, hiddenKeys, chartOptionsConfigs]);
 
-  console.log('yAxisDomain', yAxisDomain);
-
   return (
     <ResponsiveContainer className={containerClassName}>
       <ChartComponent
