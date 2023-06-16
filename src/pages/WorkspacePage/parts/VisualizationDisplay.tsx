@@ -13,6 +13,7 @@ import { AppButton, AppTabs, ITabs } from '../../../components';
 import ChartConfigurations from '../../../components/VisualizationConfigs/ChartConfigurations';
 import BaseModal from '../../../modals/BaseModal';
 import {
+  AddChartIcon,
   AreaChartIcon,
   BarChartIcon,
   CounterIcon,
@@ -106,8 +107,8 @@ const VisualizationDisplay = ({
   }
   const { queryId } = useParams<ParamTypes>();
 
-  const [toggleCloseConfig, setToggleCloseConfig] =
-    useState<boolean>(needAuthentication);
+  const [tabIndex, setTabIndex] = useState<number>(0);
+  const [toggleCloseConfig, setToggleCloseConfig] = useState<boolean>(false);
   const [closeTabId, setCloseTabId] = useState<string | number>('');
   const [dataTable, setDataTable] = useState<any[]>([]);
 
@@ -144,13 +145,13 @@ const VisualizationDisplay = ({
     if (searchedVisualization.type === TYPE_VISUALIZATION.table) {
       newVisualization = {
         name: 'Table',
-        type: 'table',
+        type: TYPE_VISUALIZATION.table,
         options: {},
       };
     } else if (searchedVisualization.type === TYPE_VISUALIZATION.counter) {
       newVisualization = {
         name: 'Counter',
-        type: 'counter',
+        type: TYPE_VISUALIZATION.counter,
         options: {
           counterColName: !!axisOptions.length ? axisOptions[0] : '',
           rowNumber: 1,
@@ -207,12 +208,100 @@ const VisualizationDisplay = ({
     }
   };
 
-  const renderVisualization = (visualization: VisualizationType) => {
-    const type = visualization.options?.globalSeriesType || visualization.type;
-    let errorMessage = null;
-    let visualizationDisplay = null;
-    let visualizationConfiguration = null;
+  const _renderConfigurations = (visualization: VisualizationType) => {
+    if (!toggleCloseConfig) {
+      return null;
+    }
 
+    const type = visualization.options?.globalSeriesType || visualization.type;
+    let configuration = null;
+
+    switch (type) {
+      case TYPE_VISUALIZATION.table:
+        configuration = (
+          <TableConfigurations
+            data={queryResult}
+            visualization={visualization}
+            onChangeConfigurations={onChangeConfigurations}
+            dataTable={dataTable}
+          />
+        );
+        break;
+      case TYPE_VISUALIZATION.counter:
+        configuration = (
+          <CounterConfiguration
+            data={queryResult}
+            visualization={visualization}
+            onChangeConfigurations={onChangeConfigurations}
+          />
+        );
+        break;
+      case TYPE_VISUALIZATION.pie:
+        configuration = (
+          <ChartConfigurations
+            data={queryResult}
+            visualization={visualization}
+            onChangeConfigurations={onChangeConfigurations}
+          />
+        );
+        break;
+      default:
+        configuration = (
+          <ChartConfigurations
+            data={queryResult}
+            visualization={visualization}
+            onChangeConfigurations={onChangeConfigurations}
+          />
+        );
+    }
+
+    const typeNameVisual = (type: string) => {
+      switch (type) {
+        case TYPE_VISUALIZATION.table:
+          return 'table';
+        case TYPE_VISUALIZATION.counter:
+          return 'counter';
+        default:
+          return 'chart';
+      }
+    };
+
+    return (
+      <div
+        className={`main-config ${
+          toggleCloseConfig ? 'show-config' : 'hidden-config'
+        }`}
+      >
+        <div className="header-config">
+          <div className="title-config">{typeNameVisual(type)} Options</div>
+          <p
+            className="close-config-icon"
+            onClick={() => setToggleCloseConfig(false)}
+          />
+        </div>
+        <div
+          className={`body-config ${
+            expandLayout === LAYOUT_QUERY.HIDDEN ? 'body-config--expand' : ''
+          }`}
+        >
+          {configuration}
+        </div>
+      </div>
+    );
+  };
+
+  const generateErrorMessage = (
+    visualization: VisualizationType,
+  ): string | null => {
+    const type = visualization.options?.globalSeriesType || visualization.type;
+    if (
+      type === TYPE_VISUALIZATION.table ||
+      type === TYPE_VISUALIZATION.counter
+    ) {
+      return null;
+    }
+
+    let errorMessage = null;
     if (!visualization.options.columnMapping?.xAxis) {
       errorMessage = 'Missing x-axis';
     } else if (!visualization.options.columnMapping?.yAxis.length) {
@@ -225,9 +314,19 @@ const VisualizationDisplay = ({
     ) {
       errorMessage = 'All columns for a y-axis must have the same data type';
     }
+
+    return errorMessage;
+  };
+
+  const _renderVisualization = (
+    visualization: VisualizationType,
+    showConfiguration = true,
+  ) => {
+    const type = visualization.options?.globalSeriesType || visualization.type;
+    let visualizationDisplay = null;
+
     switch (type) {
       case TYPE_VISUALIZATION.table:
-        errorMessage = null;
         visualizationDisplay = (
           <VisualizationTable
             data={queryResult}
@@ -235,40 +334,16 @@ const VisualizationDisplay = ({
             visualization={visualization}
           />
         );
-        visualizationConfiguration = (
-          <TableConfigurations
-            data={queryResult}
-            visualization={visualization}
-            onChangeConfigurations={onChangeConfigurations}
-            dataTable={dataTable}
-          />
-        );
-
         break;
       case TYPE_VISUALIZATION.counter:
-        errorMessage = null;
         visualizationDisplay = (
           <VisualizationCounter
             data={queryResult}
             visualization={visualization}
           />
         );
-        visualizationConfiguration = (
-          <CounterConfiguration
-            data={queryResult}
-            visualization={visualization}
-            onChangeConfigurations={onChangeConfigurations}
-          />
-        );
         break;
       case TYPE_VISUALIZATION.pie:
-        visualizationConfiguration = (
-          <ChartConfigurations
-            data={queryResult}
-            visualization={visualization}
-            onChangeConfigurations={onChangeConfigurations}
-          />
-        );
         visualizationDisplay = (
           <PieChart
             data={queryResult}
@@ -281,14 +356,6 @@ const VisualizationDisplay = ({
         );
         break;
       default:
-        // chart
-        visualizationConfiguration = (
-          <ChartConfigurations
-            data={queryResult}
-            visualization={visualization}
-            onChangeConfigurations={onChangeConfigurations}
-          />
-        );
         visualizationDisplay = (
           <VisualizationChart
             data={queryResult}
@@ -302,27 +369,15 @@ const VisualizationDisplay = ({
         );
     }
 
-    const typeNameVisual = (type: string) => {
-      switch (type) {
-        case TYPE_VISUALIZATION.table:
-          return 'table';
-        case TYPE_VISUALIZATION.counter:
-          return 'counter';
-        default:
-          return 'chart';
-          break;
-      }
-    };
+    const errorMessage = generateErrorMessage(visualization);
 
     return (
       <div
         className={`visual-container__wrapper ${
           expandLayout === LAYOUT_QUERY.FULL
             ? 'visual-container__wrapper--hidden'
-            : expandLayout === LAYOUT_QUERY.HALF
-            ? ''
-            : 'hidden-editor'
-        }`}
+            : ''
+        } ${expandLayout === LAYOUT_QUERY.HIDDEN ? 'hidden-editor' : ''}`}
       >
         <div className="visual-container__visualization">
           {/* <div className="visual-container__visualization__title">
@@ -336,8 +391,12 @@ const VisualizationDisplay = ({
           <div className="main-chart">
             <div
               className={`main-visualization ${
+                type === TYPE_VISUALIZATION.table
+                  ? 'main-visualization--table'
+                  : ''
+              } ${
                 expandLayout === LAYOUT_QUERY.HIDDEN
-                  ? 'main-visualization-expand'
+                  ? 'main-visualization--expand'
                   : ''
               } ${!toggleCloseConfig ? 'show-full-visual' : ''}`}
             >
@@ -353,32 +412,7 @@ const VisualizationDisplay = ({
                 visualizationDisplay
               )}
             </div>
-            {toggleCloseConfig && (
-              <div
-                className={`main-config ${
-                  toggleCloseConfig ? 'show-config' : 'hidden-config'
-                }`}
-              >
-                <div className="header-config">
-                  <div className="title-config">
-                    {typeNameVisual(type)} Options
-                  </div>
-                  <p
-                    className="close-config-icon"
-                    onClick={() => setToggleCloseConfig(false)}
-                  />
-                </div>
-                <div
-                  className={`${
-                    expandLayout === LAYOUT_QUERY.HIDDEN
-                      ? 'body-config-expand'
-                      : ''
-                  } body-config`}
-                >
-                  {visualizationConfiguration}
-                </div>
-              </div>
-            )}
+            {showConfiguration && _renderConfigurations(visualization)}
           </div>
         </div>
       </div>
@@ -410,27 +444,59 @@ const VisualizationDisplay = ({
         return <CounterIcon />;
 
       default:
-        return <></>;
+        return <QueryResultIcon />;
     }
   };
 
+  const onChangeTab = (_tabId: string, tabIndex: number) => {
+    setTabIndex(tabIndex);
+    setToggleCloseConfig(needAuthentication && !!tabIndex);
+    onExpand(LAYOUT_QUERY.HIDDEN);
+  };
+
   const generateTabs = () => {
-    const tabs: ITabs[] = queryValue.visualizations.map((v) => ({
-      icon: getIcon(v?.options?.globalSeriesType || v.type),
-      name:
-        v.name ||
-        getDefaultVisualizationName(v?.options?.globalSeriesType || v.type),
-      content: renderVisualization(v),
-      id: v.id,
-      closeable: needAuthentication,
-    }));
+    const resultTableTab: VisualizationType = {
+      id: `${queryValue.id}-result-table`,
+      name: 'Result Table',
+      type: TYPE_VISUALIZATION.table,
+      createdAt: '',
+      updatedAt: '',
+      options: {},
+    };
+
+    const tabs: ITabs[] = [
+      {
+        icon: getIcon(resultTableTab.type),
+        name: resultTableTab.name,
+        content: _renderVisualization(resultTableTab, false),
+        id: resultTableTab.id,
+        closeable: false,
+      },
+      ...queryValue.visualizations.map((v) => ({
+        icon: getIcon(v?.options?.globalSeriesType || v.type),
+        name:
+          v.name ||
+          getDefaultVisualizationName(v?.options?.globalSeriesType || v.type),
+        content: _renderVisualization(v, needAuthentication),
+        id: v.id,
+        closeable: needAuthentication,
+      })),
+    ];
 
     if (needAuthentication) {
       tabs.push({
         name: (
-          <Tooltip label="Add New Visualization" hasArrow>
+          <Tooltip
+            label="Add New Visualization"
+            hasArrow
+            bg="white"
+            color="black"
+          >
             <Flex alignItems={'center'}>
-              <Box className="icon-plus-circle" mr={2} /> Add Chart
+              <Box>
+                <AddChartIcon />
+              </Box>{' '}
+              Add Chart
             </Flex>
           </Tooltip>
         ),
@@ -451,6 +517,7 @@ const VisualizationDisplay = ({
   return (
     <Box className="visual-container">
       <AppTabs
+        currentTabIndex={tabIndex}
         onCloseTab={(tabId: string) => {
           setCloseTabId(tabId);
         }}
@@ -459,12 +526,14 @@ const VisualizationDisplay = ({
             <Tooltip
               label={expandLayout === LAYOUT_QUERY.FULL ? 'Expand' : 'Minimize'}
               hasArrow
+              bg="white"
+              color="black"
             >
               <div className="btn-expand">
                 {expandLayout === LAYOUT_QUERY.FULL ? (
                   <p
                     className="icon-query-expand"
-                    onClick={() => onExpand(LAYOUT_QUERY.HALF)}
+                    onClick={() => onExpand(LAYOUT_QUERY.HIDDEN)}
                   />
                 ) : (
                   <p
@@ -474,8 +543,8 @@ const VisualizationDisplay = ({
                 )}
               </div>
             </Tooltip>
-            {needAuthentication && (
-              <Tooltip label="Edit" hasArrow>
+            {needAuthentication && !!tabIndex && (
+              <Tooltip label="Edit" hasArrow bg="white" color="black">
                 <div
                   className="btn-expand"
                   onClick={() => {
@@ -486,23 +555,9 @@ const VisualizationDisplay = ({
                 </div>
               </Tooltip>
             )}
-            <Tooltip label="Maximize" hasArrow>
-              <div
-                className="btn-expand-full"
-                onClick={() => onExpand(LAYOUT_QUERY.HIDDEN)}
-              >
-                <p className="icon-expand-chart" />
-              </div>
-            </Tooltip>
           </Flex>
         }
-        onChange={() =>
-          onExpand(
-            expandLayout === LAYOUT_QUERY.HIDDEN
-              ? LAYOUT_QUERY.HIDDEN
-              : LAYOUT_QUERY.HALF,
-          )
-        }
+        onChange={onChangeTab}
         tabs={generateTabs()}
       />
       <BaseModal
@@ -518,6 +573,7 @@ const VisualizationDisplay = ({
               onClick={() => setCloseTabId('')}
               size="lg"
               variant={'cancel'}
+              className="btn-cancel"
             >
               Cancel
             </AppButton>
@@ -549,37 +605,15 @@ const AddVisualization = ({
   expandLayout,
 }: AddVisualizationProps) => {
   const getIcon = (chain: string | undefined) => {
-    switch (chain) {
-      case TYPE_VISUALIZATION.table:
-        return <p className="icon-table-chart-query" />;
-
-      case TYPE_VISUALIZATION.scatter:
-        return <p className="icon-scatter-chart-query" />;
-
-      case TYPE_VISUALIZATION.area:
-        return <p className="icon-area-chart-query" />;
-
-      case TYPE_VISUALIZATION.line: {
-        return <p className="icon-line-chart-query" />;
-      }
-
-      case TYPE_VISUALIZATION.pie:
-        return <p className="icon-pie-chart-query" />;
-
-      case TYPE_VISUALIZATION.bar:
-        return <p className="icon-bar-chart-query" />;
-
-      case TYPE_VISUALIZATION.counter:
-        return <p className="icon-counter-query" />;
-
-      default:
-        return <></>;
+    if (!chain) {
+      return null;
     }
+    return <p className={`icon-${chain}-chart-query`} />;
   };
+
   return (
     <Box>
-      {(expandLayout === LAYOUT_QUERY.HALF ||
-        expandLayout === LAYOUT_QUERY.HIDDEN) && (
+      {expandLayout === LAYOUT_QUERY.HIDDEN && (
         <div
           className={`main-item ${
             expandLayout === LAYOUT_QUERY.HIDDEN ? 'main-item-expand' : ''

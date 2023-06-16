@@ -51,7 +51,6 @@ export enum CHAIN_NAME {
 
 export enum LAYOUT_QUERY {
   FULL = 'full',
-  HALF = 'half',
   HIDDEN = 'hidden',
 }
 
@@ -73,6 +72,13 @@ export type VisualizationType = {
   queryId?: string;
 };
 
+export type IUserInfo = {
+  email: string;
+  firstName: string;
+  lastName: string;
+  userId: string;
+};
+
 export interface IQuery {
   id: string;
   name: string;
@@ -82,25 +88,12 @@ export interface IQuery {
   updatedAt: string;
   tags?: string[];
   query: string;
+  resultId: string;
   forkedQuery?: null;
-  user?: {
-    id: string | number;
-    name: string;
-    avatarUrl: string;
-  };
   visualizations: VisualizationType[];
   utilizedChains: string[];
   thumbnail: string | null;
-}
-export interface IDashboard {
-  id: string;
-  name: string;
-  isPrivate: boolean;
-  isArchived: boolean;
-  user: string;
-  forkedDashboard: string;
-  createdAt: string;
-  updatedAt: string;
+  userInfo: IUserInfo;
 }
 
 export interface ITextWidget {
@@ -134,6 +127,7 @@ export interface IDashboardDetail {
   textWidgets?: ITextWidget[];
   utilizedChains: string[];
   thumbnail: string | null;
+  userInfo: IUserInfo;
 }
 
 export type TableAttributeType = {

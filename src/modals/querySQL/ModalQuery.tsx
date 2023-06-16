@@ -147,7 +147,13 @@ const ModalQuery = ({
           </div>
         </Box>
         <Flex className="modal-footer">
-          <AppButton py={'12px'} onClick={onClose} size="sm" variant={'cancel'}>
+          <AppButton
+            py={'12px'}
+            onClick={onClose}
+            size="sm"
+            variant={'cancel'}
+            className="btn-cancel"
+          >
             Cancel
           </AppButton>
           <AppButton

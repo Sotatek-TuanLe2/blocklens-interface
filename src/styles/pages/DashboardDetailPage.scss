@@ -2,8 +2,8 @@
 @import '../mixins.scss';
 
 .dashboard-container {
-  background: $card;
   border-radius: 6px;
+  margin-top: -18px;
 
   h1,
   h2,
@@ -47,9 +47,9 @@
       .table-content {
         max-height: calc(100% - 80px);
         overflow: auto;
+        margin: 0 -17px;
 
         .table-pagination {
-          background: $card;
           width: 100%;
           position: fixed;
           bottom: 0px;
@@ -80,6 +80,7 @@
             width: 160px;
             font-size: 12px;
             line-height: 16px;
+            border: 1px solid $line;
           }
           .chakra-input__left-element {
             top: 4px;
@@ -109,6 +110,7 @@
           td {
             font-size: 14px;
             line-height: 20px;
+            box-shadow: inset 0px -1px 0px #e8eaed;
           }
         }
       }
@@ -140,7 +142,7 @@
           text-overflow: ellipsis;
           white-space: nowrap;
           max-width: 30%;
-          color: #03caff;
+          color: #0060db;
           font-size: 14px;
           line-height: 26px;
         }
@@ -162,7 +164,9 @@
         align-items: center;
       }
 
-      &--loading, &--error, &--empty {
+      &--loading,
+      &--error,
+      &--empty {
         height: calc(100% - 50px);
       }
     }
@@ -274,12 +278,10 @@
   }
   .main-grid-layout {
     width: 100%;
-    max-height: calc(100% - 48px);
+    max-height: 100%;
     overflow-y: overlay;
-    border-top: 1px solid #2f3b58;
 
     .react-grid-item {
-      background: rgba(16, 21, 48, 0.5);
       color: $title;
       overflow: hidden;
       cursor: grab;
@@ -292,6 +294,10 @@
       .visual-container__visualization__title__query-link {
         text-decoration: underline;
       }
+
+      &.react-grid-placeholder {
+        background-color: $line;
+      }
     }
 
     .react-draggable-dragging {
@@ -299,8 +305,6 @@
     }
 
     .box-layout {
-      background: $card;
-      border: 1px solid #465065;
       border-radius: 10px;
       position: relative;
 
@@ -308,6 +312,18 @@
         width: 100%;
         height: 100%;
         padding: 17px;
+        position: relative;
+        .box-updated {
+          position: absolute;
+          z-index: 1000;
+          left: 10px;
+          bottom: 10px;
+          svg {
+            path {
+              fill: rgba(0, 2, 36, 0.5);
+            }
+          }
+        }
       }
 
       .box-text-widget {
@@ -325,12 +341,13 @@
         cursor: pointer;
         top: 15px;
         right: 15px;
+        height: 8%;
 
         svg {
           color: #8d91a5;
 
           &:hover {
-            color: white;
+            box-shadow: 0px 10px 40px rgba(125, 143, 179, 0.2);
           }
         }
       }

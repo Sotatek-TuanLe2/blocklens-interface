@@ -1,9 +1,17 @@
-import { Flex, Text, Tooltip } from '@chakra-ui/react';
+import {
+  Box,
+  Collapse,
+  Flex,
+  Image,
+  Text,
+  Tooltip,
+  useDisclosure,
+} from '@chakra-ui/react';
 import moment from 'moment';
-import { Link, useHistory } from 'react-router-dom';
-import { AppTag } from 'src/components';
+import { Link } from 'react-router-dom';
+import { AppGridItem, AppRowItem, AppTag } from 'src/components';
 import AppNetworkIcons from 'src/components/AppNetworkIcons';
-import { VisibilityGridDashboardList } from 'src/constants';
+import { DisplayType } from 'src/constants';
 import { ROUTES } from 'src/utils/common';
 import { IDashboardDetail, IQuery } from 'src/utils/query.type';
 import { Dashboard } from 'src/utils/utils-dashboard';
@@ -11,27 +19,35 @@ import { Query } from 'src/utils/utils-query';
 import { LIST_ITEM_TYPE } from '..';
 import { listTags, TYPE_MYWORK } from './FilterSearch';
 import AppQueryMenu, { QUERY_MENU_LIST } from 'src/components/AppQueryMenu';
-import { AppBroadcast } from 'src/utils/utils-broadcast';
-import { BROADCAST_FETCH_DASHBOARD } from 'src/pages/WorkspacePage/parts/Dashboard';
-import { BROADCAST_FETCH_QUERY } from 'src/pages/WorkspacePage/parts/Query';
+import { ChevronRightIcon } from '@chakra-ui/icons';
 
 interface IListItem {
+  isLoading?: boolean;
   type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
   myWorkType?: typeof TYPE_MYWORK[keyof typeof TYPE_MYWORK];
   item?: IDashboardDetail | IQuery;
-  visibility?: 'COLUMN' | 'ROW';
+  displayed?: string;
 }
 
 const ListItem: React.FC<IListItem> = (props) => {
-  const { type, myWorkType, item, visibility } = props;
-  const history = useHistory();
+  const { type, myWorkType, item, displayed, isLoading } = props;
 
-  // const [favorite, setFavorite] = useState<boolean>(false);
+  if (isLoading) {
+    return displayed === DisplayType.Grid ? (
+      <AppGridItem isLoading />
+    ) : (
+      <AppRowItem isLoading type={type} myWorkType={myWorkType} />
+    );
+  }
 
   const itemClass =
     type === LIST_ITEM_TYPE.DASHBOARDS
       ? new Dashboard(item as IDashboardDetail)
       : new Query(item as IQuery);
+
+  const userName = `${itemClass.getUser()?.firstName} ${
+    itemClass.getUser()?.lastName
+  }`;
 
   const getTitleUrl = (): string => {
     switch (type) {
@@ -53,7 +69,7 @@ const ListItem: React.FC<IListItem> = (props) => {
     return type === LIST_ITEM_TYPE.MYWORK ? myWorkType || '' : type;
   };
 
-  const _renderDropdown = () => {
+  const _renderDropdown = (isNavMenu?: boolean) => {
     let menu = [];
     if (type === LIST_ITEM_TYPE.DASHBOARDS) {
       menu.push(QUERY_MENU_LIST.SHARE);
@@ -63,139 +79,45 @@ const ListItem: React.FC<IListItem> = (props) => {
 
     return (
       !!item && (
-        <AppQueryMenu menu={menu} item={item} itemType={getTypeItem()} />
+        <AppQueryMenu
+          menu={menu}
+          item={item}
+          itemType={getTypeItem()}
+          isNavMenu={isNavMenu}
+        />
       )
-    );
-  };
-
-  const _renderGridItem = () => {
-    return (
-      <div className="dashboard-list__item--column">
-        <Flex flexDirection="column" alignItems={'center'}>
-          <div className="dashboard-list__item--column__avatar">
-            <Link to={getTitleUrl()}>
-              <img
-                src={
-                  itemClass.getThumnail() || '/images/ThumbnailDashboard.png'
-                }
-                alt="thumbnail"
-                className="thumbnail"
-              />
-            </Link>
-            {/* <div className="dashboard-list__item--column__box-favourite">
-              {favorite ? (
-                <IconHeartFavorite onClick={() => setFavorite((pre) => !pre)} />
-              ) : (
-                <IconHeart onClick={() => setFavorite((pre) => !pre)} />
-              )}
-              25
-            </div> */}
-          </div>
-          <div className="dashboard-list__item--column__content">
-            <Flex
-              className="dashboard-list__item--column__content__title"
-              alignItems={'center'}
-            >
-              <Flex flexDirection={'column'}>
-                <Link className="item-name" to={getTitleUrl()}>
-                  <Tooltip
-                    p={2}
-                    hasArrow
-                    placement="top"
-                    label={itemClass.getName()}
-                  >
-                    {itemClass.getName()}
-                  </Tooltip>
-                </Link>
-                <Flex flexWrap={'wrap'} flexDirection={'row'} maxW={52}>
-                  {listTags.map((item) => (
-                    <AppTag key={item.id} value={item.name} />
-                  ))}
-                </Flex>
-              </Flex>
-              <div className="item-options">{_renderDropdown()}</div>
-            </Flex>
-            <Flex
-              mt={'14px'}
-              flexDirection={'row'}
-              justifyContent="space-between"
-            >
-              <Flex flexDirection={'row'}>
-                <img src="/images/AvatarDashboardCard.png" alt="avatar" />
-                <div className="dashboard-list__item--column__content__item-desc">
-                  <Text>Tyler Covington</Text>
-                  <Text>
-                    {moment(itemClass.getCreatedTime()).format('YYYY MMMM Do')}
-                  </Text>
-                </div>
-              </Flex>
-              {itemClass.getChains() && (
-                <AppNetworkIcons networkIds={itemClass.getChains()} />
-              )}
-            </Flex>
-          </div>
-        </Flex>
-      </div>
-    );
-  };
-
-  const _renderRowItem = () => {
-    return (
-      <div className="dashboard-list__item--row">
-        <Flex flexDirection="row" alignItems={'center'}>
-          <Link
-            to={getTitleUrl()}
-            className="dashboard-list__item--row__avatar"
-          >
-            {type === LIST_ITEM_TYPE.DASHBOARDS && (
-              <img
-                src={
-                  itemClass.getThumnail() || '/images/ThumbnailDashboard.png'
-                }
-                alt="thumbnail"
-                className="thumbnail"
-              />
-            )}
-            <Tooltip p={2} hasArrow placement="top" label={itemClass.getName()}>
-              <div className="item-name">{itemClass.getName()}</div>
-            </Tooltip>
-          </Link>
-          <div className="item-desc">
-            <img src="/images/AvatarDashboardCard.png" alt="avatar" />
-            <p>Tyler Covington</p>
-          </div>
-          <div className="item-chain">
-            {itemClass.getChains() && (
-              <AppNetworkIcons networkIds={itemClass.getChains()} />
-            )}
-          </div>
-          <div className="item-date">
-            {moment(itemClass.getCreatedTime()).format('YYYY MMMM Do')}
-          </div>
-          <div className="item-tag">
-            {listTags.map((item) => (
-              <AppTag key={item.id} value={item.name} />
-            ))}
-          </div>
-          {/* <div className="item-favorite">
-            {favorite ? (
-              <IconHeartFavorite onClick={() => setFavorite((pre) => !pre)} />
-            ) : (
-              <IconHeart onClick={() => setFavorite((pre) => !pre)} />
-            )}
-            25
-          </div> */}
-          <div className="item-btn-options">{_renderDropdown()}</div>
-        </Flex>
-      </div>
     );
   };
 
   return (
     <>
-      {visibility === VisibilityGridDashboardList.COLUMN
-        ? _renderGridItem()
-        : _renderRowItem()}
+      {displayed === DisplayType.Grid ? (
+        <AppGridItem
+          name={itemClass.getName()}
+          creator={userName}
+          date={moment(itemClass.getCreatedTime()).format('YYYY MMMM Do')}
+          toHref={getTitleUrl()}
+          tagList={listTags}
+          chainList={itemClass.getChains()}
+          shareComponent={_renderDropdown()}
+          srcThumb={itemClass.getThumnail()!}
+          srcAvatar={null!}
+        />
+      ) : (
+        <AppRowItem
+          name={itemClass.getName()}
+          creator={userName}
+          date={moment(itemClass.getCreatedTime()).format('YYYY MMMM Do')}
+          toHref={getTitleUrl()}
+          tagList={listTags}
+          chainList={itemClass.getChains()}
+          shareComponent={_renderDropdown()}
+          srcThumb={itemClass.getThumnail()!}
+          srcAvatar={null!}
+          type={type}
+          myWorkType={myWorkType}
+        />
+      )}
     </>
   );
 };

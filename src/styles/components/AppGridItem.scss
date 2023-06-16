@@ -1,0 +1,35 @@
+@import '../color-variables';
+@import '../variables';
+@import '../mixins.scss';
+
+.app-grid-item {
+  max-width: 100%;
+  overflow: hidden;
+  .item-name {
+    color: $bg1;
+    text-transform: capitalize;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    @include text-medium-bold;
+  }
+  .item-tag {
+    background: rgba(0, 2, 36, 0.05);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(0, 2, 36, 0.5);
+    @include text-small-regular;
+  }
+  .item-creator {
+    color: $bg1;
+    @include text-small-medium;
+  }
+
+  .item-date {
+    color: rgba(0, 2, 36, 0.5);
+    @include text-small-regular;
+  }
+}

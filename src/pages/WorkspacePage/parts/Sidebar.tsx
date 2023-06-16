@@ -159,13 +159,13 @@ const Sidebar: React.FC<{
     {
       id: CATEGORIES.WORK_PLACE,
       title: 'Work place',
-      icon: <div className="bg-FolderIcon" />,
+      icon: <div className="icon-place-light" />,
       activeIcon: <div className="bg-work_place_active" />,
     },
     {
       id: CATEGORIES.EXPLORE_DATA,
       title: 'Explore data',
-      icon: <div className="bg-ExploreIcon" />,
+      icon: <div className="icon-explore-light" />,
       activeIcon: <div className="bg-explore_active" />,
     },
   ];
@@ -178,22 +178,13 @@ const Sidebar: React.FC<{
   const history = useHistory();
   const { pathname } = useLocation();
   const [dataQueries, setDataQueries] = useState<IQuery[] | []>([]);
-  const [dataDashboards, setDataDashboards] = useState<IDashboardDetail[] | []>(
-    [],
-  );
   const [exploreData, setExploreData] = useState<{
     [key: string]: any;
   }>({});
-  const [openNewDashboardModal, setOpenNewDashboardModal] =
-    useState<boolean>(false);
 
   const [schemaDescribe, setSchemaDescribe] = useState<SchemaType[]>([]);
 
   const [dataQueriesPagination, setDataQueriesPagination] = useState<
-    IPagination | undefined
-  >();
-
-  const [dataDashboardPagination, setDataDashboardPagination] = useState<
     IPagination | undefined
   >();
 
@@ -205,42 +196,12 @@ const Sidebar: React.FC<{
     };
   }, []);
 
-  const fetchDashboards: any = async (params: any) => {
-    try {
-      const res: any = await rf
-        .getRequest('DashboardsRequest')
-        .getMyListDashboards(params);
-      return { ...res, docs: res.data };
-    } catch (error) {
-      toastError({ message: getErrorMessage(error) });
-    }
-  };
-
   const fetchQueries = async (params = {}) => {
     try {
       const res: any = await rf
         .getRequest('DashboardsRequest')
         .getMyListQueries(params);
       return { ...res, docs: res.data };
-    } catch (error) {
-      toastError({ message: getErrorMessage(error) });
-    }
-  };
-
-  const fetchInfiniteScrollDashboard = async () => {
-    try {
-      const res = await fetchDashboards(
-        _.omitBy(
-          {
-            search: searchValueWorkPlace.trim(),
-            page: (dataDashboardPagination?.currentPage || 1) + 1,
-          },
-          (param) => !param,
-        ),
-      );
-      const { currentPage, itemsPerPage, totalPages }: IPagination = res;
-      setDataDashboardPagination({ currentPage, itemsPerPage, totalPages });
-      setDataDashboards((pre) => [...pre, ...res.docs]);
     } catch (error) {
       toastError({ message: getErrorMessage(error) });
     }
@@ -266,31 +227,16 @@ const Sidebar: React.FC<{
 
   const fetchDataWorkPlace = async (search?: string) => {
     try {
-      const data: any = await Promise.allSettled([
-        fetchDashboards(_.omitBy({ search }, (param) => !param)),
-        fetchQueries(_.omitBy({ search }, (param) => !param)),
-      ]);
-      setDataDashboards(() => {
-        return data[0].status === PROMISE_STATUS.FULFILLED
-          ? data[0].value.docs
-          : [];
-      });
-      if (data[0].value.docs) {
-        const { currentPage, itemsPerPage, totalPages }: IPagination =
-          data[0].value;
-        setDataDashboardPagination({ currentPage, itemsPerPage, totalPages });
-      }
-      setDataQueries(() => {
-        return data[1].status === PROMISE_STATUS.FULFILLED
-          ? data[1].value.docs
-          : [];
-      });
+      const res = await fetchQueries(
+        _.omitBy({ search, limit: 40 }, (param) => !param),
+      );
+      setDataQueries(res.docs);
 
-      if (data[1].value.docs) {
+      if (res.docs) {
         const dataPaginationQueries = {
-          currentPage: data[1].value.currentPage,
-          itemsPerPage: data[1].value.itemsPerPage,
-          totalPages: data[1].value.totalPages,
+          currentPage: res.currentPage,
+          itemsPerPage: res.itemsPerPage,
+          totalPages: res.totalPages,
         };
 
         setDataQueriesPagination(dataPaginationQueries);
@@ -300,12 +246,6 @@ const Sidebar: React.FC<{
         message: getErrorMessage(error),
       });
     }
-  };
-
-  const onCreateDashboardSuccessfully = async () => {
-    setSearchValueWorkPlace(''); // reset search value in order to see the newly created dashboard
-    const dataDashboard = await fetchDashboards();
-    setDataDashboards(() => [...dataDashboard.docs]);
   };
 
   const fetchDataExploreData = async (search?: string) => {
@@ -347,10 +287,6 @@ const Sidebar: React.FC<{
     history.push(ROUTES.MY_QUERY);
   };
 
-  const handleCreateNewDashboard = () => {
-    setOpenNewDashboardModal(true);
-  };
-
   const handleClassNameWorkPlaceItem = (id: any) => {
     return id === queryId || id === dashboardId
       ? 'workspace-page__sidebar__content__work-place-detail work-place-active '
@@ -376,15 +312,16 @@ const Sidebar: React.FC<{
           <Box
             cursor={'pointer'}
             onClick={() => onToggleExpandSidebar()}
-            className={'bg-CloseBtnIcon'}
+            className="icon-close-light"
           ></Box>
         </div>
         <Box px={'16px'}>
           <AppInput
+            className="workspace-page__sidebar__content__work-place-wrap__input-search"
             value={searchValueWorkPlace}
             marginY={4}
             placeholder={'Search...'}
-            size="md"
+            size="sm"
             onChange={(e) => {
               setSearchValueWorkPlace(e.target.value);
               getDataSearchWorkPlace(e.target.value);
@@ -395,7 +332,17 @@ const Sidebar: React.FC<{
         <div className="workspace-page__sidebar__content__work-place-wrap__work-place-content">
           <span>Query</span>{' '}
           <div onClick={handleCreateNewQuery}>
-            <Box cursor={'pointer'} className="bg-PlusIcon" />
+            <Tooltip
+              placement="top"
+              hasArrow
+              label="Add to query"
+              aria-label="A tooltip"
+              bg="white"
+              borderRadius="6px"
+              color="black"
+            >
+              <Box cursor={'pointer'} className="icon-plus-light" />
+            </Tooltip>
           </div>
         </div>
         {dataQueries.length ? (
@@ -405,6 +352,7 @@ const Sidebar: React.FC<{
           >
             <InfiniteScroll
               className="infinite-scroll"
+              scrollThreshold={1}
               dataLength={dataQueries.length}
               next={fetchInfiniteScrollQueries}
               hasMore={
@@ -437,8 +385,9 @@ const Sidebar: React.FC<{
                     hasArrow
                     label={query.name}
                     aria-label="A tooltip"
-                    bg={'#2F3B58'}
+                    bg="white"
                     borderRadius="6px"
+                    color="black"
                   >
                     <Flex
                       isTruncated
@@ -463,85 +412,6 @@ const Sidebar: React.FC<{
                     menu={[QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.DELETE]}
                     itemType={LIST_ITEM_TYPE.QUERIES}
                     item={query}
-                    onForkSuccess={onForkSuccess}
-                  />
-                </div>
-              ))}
-            </InfiniteScroll>
-          </div>
-        ) : (
-          <Box pl="16px" className="data-empty">
-            No data...
-          </Box>
-        )}
-        <Box
-          mt="20px"
-          className="workspace-page__sidebar__content__work-place-wrap__work-place-content"
-        >
-          <span>Dashboard</span>{' '}
-          <div onClick={handleCreateNewDashboard}>
-            <Box cursor={'pointer'} className="bg-PlusIcon" />
-          </div>
-        </Box>
-        {dataDashboards.length ? (
-          <div
-            className="workspace-page__sidebar__content__work-place-wrap__list-dashboard"
-            id="scrollableDiv"
-          >
-            <InfiniteScroll
-              className="infinite-scroll"
-              dataLength={dataDashboards.length}
-              next={fetchInfiniteScrollDashboard}
-              hasMore={
-                (dataDashboardPagination?.currentPage || 0) <
-                (dataDashboardPagination?.totalPages || 0)
-              }
-              loader={
-                <Flex justifyContent={'center'}>
-                  <Spinner
-                    thickness="4px"
-                    speed="0.65s"
-                    emptyColor="gray.200"
-                    color="blue.500"
-                    size="md"
-                  />
-                </Flex>
-              }
-              scrollableTarget="scrollableDiv"
-            >
-              {dataDashboards.map((dashboard) => (
-                <div
-                  key={dashboard.id}
-                  className={handleClassNameWorkPlaceItem(dashboard.id)}
-                  onClick={() =>
-                    history.push(`${ROUTES.MY_DASHBOARD}/${dashboard.id}?`)
-                  }
-                >
-                  <Tooltip
-                    placement="top"
-                    hasArrow
-                    label={dashboard.name}
-                    aria-label="A tooltip"
-                    bg={'#2F3B58'}
-                    borderRadius="6px"
-                  >
-                    <Flex isTruncated alignItems={'center'} gap="10px">
-                      <div>
-                        <div
-                          className={
-                            dashboard.id === dashboardId
-                              ? 'bg-dashboard_active'
-                              : 'bg-LogoDashboardIcon'
-                          }
-                        />
-                      </div>
-                      <Text isTruncated>{dashboard.name}</Text>
-                    </Flex>
-                  </Tooltip>
-                  <AppQueryMenu
-                    menu={[QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.DELETE]}
-                    itemType={LIST_ITEM_TYPE.DASHBOARDS}
-                    item={dashboard}
                     onForkSuccess={onForkSuccess}
                   />
                 </div>
@@ -607,12 +477,12 @@ const Sidebar: React.FC<{
               <div className="header-icon">
                 {pathname.includes(ROUTES.MY_QUERY) && (
                   <div
-                    className="bg-PlusIcon"
+                    className="icon-plus-white"
                     onClick={() => handleAddQuery(schemaDescribe[0].full_name)}
                   />
                 )}
                 <div
-                  className="bg-CloseBtnIcon"
+                  className="icon-close-white"
                   onClick={() => setSchemaDescribe([])}
                 />
               </div>
@@ -677,18 +547,12 @@ const Sidebar: React.FC<{
       <Box
         className={
           expandSidebar
-            ? 'workspace-page__sidebar__content show-sidebar'
+            ? 'workspace-page__sidebar__content show-sidebar '
             : 'workspace-page__sidebar__content hidden-sidebar'
         }
       >
         {_renderContent()}
       </Box>
-      <ModalDashboard
-        type={TYPE_OF_MODAL.CREATE}
-        open={openNewDashboardModal}
-        onClose={() => setOpenNewDashboardModal(false)}
-        onSuccess={onCreateDashboardSuccessfully}
-      />
     </div>
   );
 };

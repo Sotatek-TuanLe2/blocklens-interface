@@ -32,15 +32,23 @@ const WorkspacePage: React.FC = () => {
 
   return (
     <BasePage>
-      <div className="workspace-page">
-        <Sidebar
-          expandSidebar={toggleExpandSidebar}
-          onToggleExpandSidebar={onToggleExpandSidebar}
-        />
+      <div
+        className={`${
+          type === WORKSPACE_TYPES.QUERY ? 'workspace-page__query' : ''
+        } workspace-page`}
+      >
+        {type === WORKSPACE_TYPES.QUERY && (
+          <Sidebar
+            expandSidebar={toggleExpandSidebar}
+            onToggleExpandSidebar={onToggleExpandSidebar}
+          />
+        )}
         <div
           className={`workspace-page__editor ${
-            toggleExpandSidebar ? '' : 'workspace-page__editor--expand'
-          }`}
+            type === WORKSPACE_TYPES.QUERY
+              ? 'workspace-page__editor--query'
+              : ''
+          } ${toggleExpandSidebar ? '' : 'workspace-page__editor--expand'}`}
         >
           {type === WORKSPACE_TYPES.DASHBOARD ? <Dashboard /> : <Query />}
         </div>
