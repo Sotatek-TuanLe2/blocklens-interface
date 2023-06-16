@@ -2,15 +2,12 @@
 @import '../mixins.scss';
 
 .app-detail {
-
   .app-info {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 30px;
     position: relative;
-
   }
-
 
   .name {
     @include heading-4;
@@ -62,7 +59,7 @@
         /* Safari and Chrome */
       }
 
-      &>div {
+      & > div {
         width: max-content;
       }
     }
@@ -297,7 +294,11 @@
 }
 
 .button {
-  background: linear-gradient(271.63deg, #1E72FF -2.92%, #0250BE 102.1%) !important;
+  background: linear-gradient(
+    271.63deg,
+    #1e72ff -2.92%,
+    #0250be 102.1%
+  ) !important;
 }
 
 .field-disabled {
@@ -418,18 +419,24 @@
 
   &__box-search,
   &__options {
-    background-color: #2f3b58;
+    background-color: $line;
     padding: 14px 10px;
     border-radius: 6px;
     position: absolute;
     width: 200px;
     top: 150%;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.04);
 
     .input-search {
-      background-color: $bg2;
+      background-color: $white;
       @include text-small-regular;
       padding: 6px 10px;
       height: 32px;
+      color: $title;
+
+      &::placeholder {
+        color: $line;
+      }
     }
   }
 

@@ -128,10 +128,13 @@
     th {
       @include text-small-bold;
       border-bottom: 0;
-      color: $paragraph1;
-      opacity: 0.3;
+      color: rgba(0, 2, 36, 0.3);
       padding: 13px 15px;
       font-family: 'DM Sans', sans-serif;
+
+      .filter-table {
+        opacity: 1;
+      }
 
       &:first-child {
         padding-left: 40px;
