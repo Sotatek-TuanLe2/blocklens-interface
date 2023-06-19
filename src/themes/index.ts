@@ -40,7 +40,7 @@ export default extendTheme({
         padding: '8px 10px',
         'border-radius': '6px',
         [cssVar('popper-arrow-bg').variable]: 'white',
-      }
-    }
+      },
+    },
   },
 });
