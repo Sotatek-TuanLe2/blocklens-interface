@@ -59,6 +59,8 @@ export interface DashboardInterface {
   getChains: () => string[] | null;
   getTextWidgets: () => TextWidget[] | null;
   getUser: () => IUserInfo | null;
+  getUserFirstName: () => string;
+  getUserLastName: () => string;
   getDashboardVisuals: () => DashboardVisual[] | null;
   getTextWidgetById: (id: string) => TextWidget | null;
   getDashboardVisualById: (id: string) => DashboardVisual | null;
@@ -211,6 +213,20 @@ export class Dashboard implements DashboardInterface {
 
   getUser() {
     return this.userInfo || null;
+  }
+
+  getUserFirstName() {
+    if (!this.getUser()) {
+      return '';
+    }
+    return this.getUser().firstName || '';
+  }
+
+  getUserLastName() {
+    if (!this.getUser()) {
+      return '';
+    }
+    return this.getUser().lastName || '';
   }
 
   getTextWidgets() {

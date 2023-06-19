@@ -43,6 +43,8 @@ export interface QueryInterface {
   getChains: () => string[] | null;
 
   getUser: () => IUserInfo | null;
+  getUserFirstName: () => string;
+  getUserLastName: () => string;
   getVisualizations: () => Visualization[];
   getVisualizationById: (id: string) => Visualization | null;
 
@@ -167,6 +169,20 @@ export class Query implements QueryInterface {
 
   getUser() {
     return this.userInfo || null;
+  }
+
+  getUserFirstName() {
+    if (!this.getUser()) {
+      return '';
+    }
+    return this.getUser().firstName || '';
+  }
+
+  getUserLastName() {
+    if (!this.getUser()) {
+      return '';
+    }
+    return this.getUser().lastName || '';
   }
 
   getChains() {
