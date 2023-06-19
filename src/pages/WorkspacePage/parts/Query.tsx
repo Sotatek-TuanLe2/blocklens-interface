@@ -190,6 +190,7 @@ const QueryPart: React.FC = () => {
     if (selectedQuery) {
       return executeSelectedQuery();
     }
+
     try {
       const query = editorRef.current.editor.getValue();
       if (!query) {
@@ -197,13 +198,15 @@ const QueryPart: React.FC = () => {
         return;
       }
 
+      if (
+        !errorExecuteQuery?.message.length &&
+        expandLayout === LAYOUT_QUERY.FULL
+      ) {
+        setExpandLayout(LAYOUT_QUERY.HIDDEN);
+      }
+
       if (queryId) {
         await updateQuery(query);
-        if (!errorExecuteQuery?.message.length) {
-          setExpandLayout(LAYOUT_QUERY.HIDDEN);
-        } else {
-          setExpandLayout(LAYOUT_QUERY.HALF);
-        }
       } else {
         setOpenModalSettingQuery(true);
       }
@@ -232,6 +235,18 @@ const QueryPart: React.FC = () => {
       ? 'icon-query-expand'
       : 'icon-query-collapse';
   };
+
+  useEffect(() => {
+    if (
+      !errorExecuteQuery?.message.length &&
+      (expandLayout === LAYOUT_QUERY.FULL || expandLayout === LAYOUT_QUERY.HALF)
+    ) {
+      setExpandLayout(LAYOUT_QUERY.HIDDEN);
+    }
+    if (errorExecuteQuery?.message.length) {
+      setExpandLayout(LAYOUT_QUERY.HALF);
+    }
+  }, [errorExecuteQuery?.message.length]);
 
   const _renderAddChart = () => {
     return (
@@ -278,18 +293,18 @@ const QueryPart: React.FC = () => {
     return (
       <>
         {_renderAddChart()}
-        {expandLayout === LAYOUT_QUERY.HIDDEN ||
-          (expandLayout === LAYOUT_QUERY.HALF && (
-            <Flex
-              className="empty-table"
-              justifyContent={'center'}
-              alignItems="center"
-              flexDirection="column"
-            >
-              <span className="execution-error">Execution Error</span>
-              {errorExecuteQuery?.message || 'No data...'}
-            </Flex>
-          ))}
+        {(expandLayout === LAYOUT_QUERY.HIDDEN ||
+          expandLayout === LAYOUT_QUERY.HALF) && (
+          <Flex
+            className="empty-table"
+            justifyContent={'center'}
+            alignItems="center"
+            flexDirection="column"
+          >
+            <span className="execution-error">Execution Error</span>
+            {errorExecuteQuery?.message || 'No data...'}
+          </Flex>
+        )}
       </>
     );
   };
