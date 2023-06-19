@@ -199,6 +199,11 @@ const QueryPart: React.FC = () => {
 
       if (queryId) {
         await updateQuery(query);
+        if (!errorExecuteQuery?.message.length) {
+          setExpandLayout(LAYOUT_QUERY.HIDDEN);
+        } else {
+          setExpandLayout(LAYOUT_QUERY.HALF);
+        }
       } else {
         setOpenModalSettingQuery(true);
       }
@@ -269,20 +274,22 @@ const QueryPart: React.FC = () => {
         </Box>
       );
     }
+
     return (
       <>
         {_renderAddChart()}
-        {expandLayout === LAYOUT_QUERY.HIDDEN && (
-          <Flex
-            className="empty-table"
-            justifyContent={'center'}
-            alignItems="center"
-            flexDirection="column"
-          >
-            <span className="execution-error">Execution Error</span>
-            {errorExecuteQuery?.message || 'No data...'}
-          </Flex>
-        )}
+        {expandLayout === LAYOUT_QUERY.HIDDEN ||
+          (expandLayout === LAYOUT_QUERY.HALF && (
+            <Flex
+              className="empty-table"
+              justifyContent={'center'}
+              alignItems="center"
+              flexDirection="column"
+            >
+              <span className="execution-error">Execution Error</span>
+              {errorExecuteQuery?.message || 'No data...'}
+            </Flex>
+          ))}
       </>
     );
   };
@@ -292,7 +299,11 @@ const QueryPart: React.FC = () => {
     firstClass: string,
     secondClass: string,
   ) => {
-    if (isLoadingResult || (errorExecuteQuery && isExpand))
+    if (
+      expandLayout === LAYOUT_QUERY.HALF ||
+      isLoadingResult ||
+      (errorExecuteQuery && isExpand)
+    )
       return 'custom-editor--half';
     if (!queryId || !queryValue) return 'custom-editor--full';
     return expandLayout === layout ? firstClass : secondClass;
@@ -321,7 +332,11 @@ const QueryPart: React.FC = () => {
     }
 
     const classContent = () => {
-      if (isLoadingResult || (errorExecuteQuery && isExpand))
+      if (
+        expandLayout === LAYOUT_QUERY.HALF ||
+        isLoadingResult ||
+        (errorExecuteQuery && isExpand)
+      )
         return 'add-chart-empty';
       return `${classExpand(
         LAYOUT_QUERY.FULL,

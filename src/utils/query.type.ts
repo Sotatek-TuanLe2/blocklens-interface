@@ -51,6 +51,7 @@ export enum CHAIN_NAME {
 
 export enum LAYOUT_QUERY {
   FULL = 'full',
+  HALF = 'half',
   HIDDEN = 'hidden',
 }
 
