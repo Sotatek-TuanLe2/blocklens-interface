@@ -167,7 +167,8 @@ const DashboardPart: React.FC = () => {
       <Header
         type={LIST_ITEM_TYPE.DASHBOARDS}
         author={
-          dashboardClass
+          dashboardClass?.getUser().firstName &&
+          dashboardClass?.getUser().lastName
             ? `${dashboardClass?.getUser().firstName} ${
                 dashboardClass?.getUser().lastName
               }`

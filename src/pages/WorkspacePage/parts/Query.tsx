@@ -334,7 +334,7 @@ const QueryPart: React.FC = () => {
       <Header
         type={LIST_ITEM_TYPE.QUERIES}
         author={
-          queryClass
+          queryClass?.getUser().firstName && queryClass?.getUser().lastName
             ? `${queryClass?.getUser().firstName} ${
                 queryClass?.getUser().lastName
               }`
