@@ -170,9 +170,7 @@ const DashboardPart: React.FC = () => {
         type={LIST_ITEM_TYPE.DASHBOARDS}
         author={
           dashboardClass
-            ? `${dashboardClass?.getUser().firstName} ${
-                dashboardClass?.getUser().lastName
-              }`
+            ? `${dashboardClass?.getUserFirstName()} ${dashboardClass?.getUserLastName()}`
             : ''
         }
         data={dataDashboard}

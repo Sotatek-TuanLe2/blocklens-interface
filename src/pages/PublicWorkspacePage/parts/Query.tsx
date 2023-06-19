@@ -234,9 +234,7 @@ const QueryPart: React.FC = () => {
         type={LIST_ITEM_TYPE.QUERIES}
         author={
           queryClass
-            ? `${queryClass?.getUser().firstName} ${
-                queryClass?.getUser().lastName
-              }`
+            ? `${queryClass?.getUserFirstName()} ${queryClass?.getUserLastName()}`
             : ''
         }
         data={queryValue}
