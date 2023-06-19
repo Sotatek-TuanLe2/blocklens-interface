@@ -185,7 +185,7 @@ const AppRowItem: FC<AppRowItemProps> = ({
                   mr={3}
                 >
                   <Image
-                    src={srcThumb || '/images/ThumbnailDashboard.png'}
+                    src={srcThumb || '/images/ThumbnailDashboardLight.png'}
                     alt="thumbnail"
                     w={'auto'}
                     height={'full'}
@@ -326,7 +326,7 @@ const AppRowItem: FC<AppRowItemProps> = ({
                       minW={'full'}
                       height={'full'}
                       borderRadius={'6px'}
-                      src={srcThumb || '/images/ThumbnailDashboard.png'}
+                      src={srcThumb || '/images/ThumbnailDashboardLight.png'}
                       alt="thumbnail"
                     />
                   </Box>
