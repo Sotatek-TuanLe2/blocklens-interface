@@ -68,6 +68,10 @@
       padding: 2px 11px;
     }
 
+    .icon-query-expand {
+      cursor: pointer;
+    }
+
     svg {
       color: rgba(0, 2, 36, 0.5);
     }
@@ -640,7 +644,11 @@
           gap: 10px;
 
           &:hover {
-            background: linear-gradient(268.85deg, rgba(34, 108, 255, 0.12) 22.48%, rgba(16, 132, 255, 0.12) 83.59%);
+            background: linear-gradient(
+              268.85deg,
+              rgba(34, 108, 255, 0.12) 22.48%,
+              rgba(16, 132, 255, 0.12) 83.59%
+            );
             border: 1px solid #226cff;
             cursor: pointer;
           }

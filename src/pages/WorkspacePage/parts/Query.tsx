@@ -36,6 +36,7 @@ const QueryPart: React.FC = () => {
 
   const DEBOUNCE_TIME = 500;
   const editorRef = useRef<any>();
+  const [isExpand, setIsExpand] = useState<boolean>(true);
   const [queryResult, setQueryResult] = useState<any>([]);
   const [queryValue, setQueryValue] = useState<IQuery | null>(null);
   const [expandLayout, setExpandLayout] = useState<string>(LAYOUT_QUERY.HIDDEN);
@@ -207,7 +208,8 @@ const QueryPart: React.FC = () => {
   };
 
   const onExpandEditor = () => {
-    if (errorExecuteQuery || !queryId || !queryValue) return;
+    setIsExpand(false);
+    if (!queryId || !queryValue) return;
     setExpandLayout((prevState) => {
       if (prevState === LAYOUT_QUERY.FULL) {
         return LAYOUT_QUERY.HIDDEN;
@@ -220,8 +222,7 @@ const QueryPart: React.FC = () => {
   };
 
   const onCheckedIconExpand = () => {
-    if (errorExecuteQuery || !queryId || !queryValue)
-      return 'icon-query-collapse';
+    if (!queryId || !queryValue) return 'icon-query-collapse';
     return expandLayout === LAYOUT_QUERY.HIDDEN
       ? 'icon-query-expand'
       : 'icon-query-collapse';
@@ -240,7 +241,7 @@ const QueryPart: React.FC = () => {
             Add Chart
           </div>
         </Flex>
-        <p className="icon-query-expand cursor-not-allowed" />
+        <p onClick={onExpandEditor} className="icon-query-expand" />
       </div>
     );
   };
@@ -271,15 +272,17 @@ const QueryPart: React.FC = () => {
     return (
       <>
         {_renderAddChart()}
-        <Flex
-          className="empty-table"
-          justifyContent={'center'}
-          alignItems="center"
-          flexDirection="column"
-        >
-          <span className="execution-error">Execution Error</span>
-          {errorExecuteQuery?.message || 'No data...'}
-        </Flex>
+        {expandLayout === LAYOUT_QUERY.HIDDEN && (
+          <Flex
+            className="empty-table"
+            justifyContent={'center'}
+            alignItems="center"
+            flexDirection="column"
+          >
+            <span className="execution-error">Execution Error</span>
+            {errorExecuteQuery?.message || 'No data...'}
+          </Flex>
+        )}
       </>
     );
   };
@@ -289,8 +292,8 @@ const QueryPart: React.FC = () => {
     firstClass: string,
     secondClass: string,
   ) => {
-    if (isLoadingResult) return 'add-chart-loading';
-    if (errorExecuteQuery) return;
+    if (isLoadingResult || (errorExecuteQuery && isExpand))
+      return 'custom-editor--half';
     if (!queryId || !queryValue) return 'custom-editor--full';
     return expandLayout === layout ? firstClass : secondClass;
   };
@@ -317,16 +320,17 @@ const QueryPart: React.FC = () => {
       );
     }
 
-    return (
-      <div
-        className={`
-        ${errorExecuteQuery ? 'add-chart-empty' : ''}
-        ${classExpand(LAYOUT_QUERY.FULL, 'add-chart-full', 'add-chart')}
-        ${classExpand(LAYOUT_QUERY.HIDDEN, 'expand-chart hidden-editor', '')} `}
-      >
-        {_renderContent()}
-      </div>
-    );
+    const classContent = () => {
+      if (isLoadingResult || (errorExecuteQuery && isExpand))
+        return 'add-chart-empty';
+      return `${classExpand(
+        LAYOUT_QUERY.FULL,
+        'add-chart-full',
+        'add-chart',
+      )} ${classExpand(LAYOUT_QUERY.HIDDEN, 'expand-chart hidden-editor', '')}`;
+    };
+
+    return <div className={`${classContent()}`}>{_renderContent()}</div>;
   };
 
   return (
@@ -356,7 +360,7 @@ const QueryPart: React.FC = () => {
             <Box className="editor-wrapper">
               <AceEditor
                 className={`ace_editor ace-tomorrow custom-editor 
-                ${errorExecuteQuery ? 'custom-editor--half' : ''}
+        
                 ${classExpand(
                   LAYOUT_QUERY.FULL,
                   'custom-editor--full',
@@ -371,7 +375,6 @@ const QueryPart: React.FC = () => {
                 theme="tomorrow"
                 width="100%"
                 wrapEnabled={true}
-                // readOnly={expandLayout === LAYOUT_QUERY.HIDDEN}
                 name="sql_editor"
                 editorProps={{ $blockScrolling: true }}
                 showPrintMargin={true}
@@ -397,9 +400,7 @@ const QueryPart: React.FC = () => {
               >
                 <div
                   className={`${
-                    errorExecuteQuery || !queryId || !queryValue
-                      ? 'cursor-not-allowed'
-                      : ''
+                    !queryId || !queryValue ? 'cursor-not-allowed' : ''
                   } btn-expand-query`}
                 >
                   <p

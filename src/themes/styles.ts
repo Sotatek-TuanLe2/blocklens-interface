@@ -123,7 +123,7 @@ export const globalStyles = {
         letterSpacing: '0.2px',
       },
       '.chakra-ui-light': {
-        '.add-chart-loading-public, .add-chart-loading, .chain-info-desc, .empty-query, .text-widget-input, .box-form, .menu-header, .header, .add-chart-full, .ace_scroller, .layout-config, .main-layout, .input-table, .first-box-table, .select-table, .dashboard-list__item--row, .editor-wrapper, .box-layout, .workspace-page__editor__header, .add-chart, .add-chart-empty, .workspace-page__sidebar__categories, .workspace-page__sidebar__content':
+        '.custom-editor--half, .add-chart-loading-public, .add-chart-loading, .chain-info-desc, .empty-query, .text-widget-input, .box-form, .menu-header, .header, .add-chart-full, .ace_scroller, .layout-config, .main-layout, .input-table, .first-box-table, .select-table, .dashboard-list__item--row, .editor-wrapper, .box-layout, .workspace-page__editor__header, .add-chart, .add-chart-empty, .workspace-page__sidebar__categories, .workspace-page__sidebar__content':
           {
             background: mode('white.100', 'bgDark')(props),
           },
