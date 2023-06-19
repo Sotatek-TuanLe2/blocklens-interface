@@ -31,7 +31,7 @@
 
   .hidden-editor {
     .tabs-header {
-      padding: 0px 17px !important;
+      padding: 0px 15px 0px 14px !important;
     }
   }
   .add-chart-full {
@@ -46,15 +46,79 @@
     }
   }
 
+  .header-empty {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 6px;
+    margin-top: 8px;
+    padding: 10px 16px 10px 14px;
+    border-bottom: 1px solid rgba(0, 2, 36, 0.1);
+
+    .item-add-chart {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      cursor: not-allowed;
+    }
+
+    .active-table {
+      background: rgba(0, 2, 36, 0.05);
+      border-radius: 4px;
+      padding: 2px 11px;
+    }
+
+    svg {
+      color: rgba(0, 2, 36, 0.5);
+    }
+  }
+
+  .add-chart-empty {
+    height: 375px;
+    box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.04);
+    justify-content: center;
+    border-radius: 6px;
+    margin-top: 4px;
+    margin-bottom: 20px;
+  }
+
+  .add-chart-loading-public {
+    height: 375px;
+    box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.04);
+    justify-content: center;
+    border-radius: 6px;
+    margin-top: 4px;
+    margin-bottom: 20px;
+  }
+
+  .add-chart-loading {
+    height: 375px !important;
+    box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.04);
+    justify-content: center;
+    border-radius: 6px;
+  }
+
+  .add-chart-loading-private {
+    height: 375px !important;
+    box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.04);
+    justify-content: center;
+    border-radius: 6px;
+  }
+
   .add-chart {
-    padding: 6px 0px;
+    box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.04);
     border-radius: 6px;
     margin-top: 4px;
     margin-bottom: 20px;
     max-height: 500px;
 
+    .tabs-container {
+      margin: 8px 0px;
+    }
+
     .btn-expand {
       height: 100%;
+
       &:hover {
         cursor: pointer;
       }
@@ -90,6 +154,7 @@
   }
 
   .ace_scroller {
+    margin-left: 14px;
     overflow: unset;
     top: 18px;
 
@@ -107,6 +172,10 @@
 
     &--full {
       height: 746px !important;
+    }
+
+    &--half {
+      height: 419px !important;
     }
 
     &--hidden {
@@ -229,6 +298,7 @@
     }
 
     .editor-wrapper {
+      box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.04);
       width: 100%;
       border-radius: 6px;
       margin-bottom: 8px;
@@ -262,8 +332,16 @@
     }
 
     .empty-table {
-      height: 168px;
-      margin-top: 32px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      .execution-error {
+        font-weight: 700;
+        font-size: 18px;
+        line-height: 26px;
+        color: $red-500;
+      }
     }
 
     .visual-table {
@@ -298,6 +376,8 @@
     }
 
     .tabs-header {
+      box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.04);
+      border-radius: 6px;
       gap: 20px;
       align-items: baseline;
       padding: 0px 17px 10px 17px;
@@ -366,14 +446,14 @@
           height: 428px;
           width: 72%;
           margin-top: 20px;
-          padding: 0 30px;
+          padding: 0 20px 0 30px;
 
           &--table {
             padding: 0;
           }
 
           &--expand {
-            height: 678px !important;
+            height: 672px !important;
           }
 
           .main-table {
@@ -402,8 +482,9 @@
             max-height: 422px;
 
             &--expand {
+              height: 100%;
               overflow: auto;
-              max-height: 673px !important;
+              max-height: 665px !important;
             }
           }
 
@@ -438,7 +519,7 @@
       }
 
       .app-pagination {
-        margin: 20px;
+        margin: 14px 14px 16px 20px;
       }
 
       .header-table {
@@ -473,6 +554,10 @@
         border-radius: 4px;
         line-height: unset !important;
         padding: 2px 2px;
+
+        span svg {
+          color: rgba(0, 2, 36, 0.5);
+        }
 
         &:hover {
           background-color: rgba(0, 2, 36, 0.05);

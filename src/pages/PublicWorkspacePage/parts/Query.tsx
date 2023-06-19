@@ -21,6 +21,7 @@ import { QUERY_RESULT_STATUS } from 'src/utils/common';
 import Header from 'src/pages/WorkspacePage/parts/Header';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import { Query } from 'src/utils/utils-query';
+import { AddChartIcon, QueryResultIcon } from 'src/assets/icons';
 
 const QueryPart: React.FC = () => {
   const { queryId } = useParams<{ queryId: string }>();
@@ -120,6 +121,7 @@ const QueryPart: React.FC = () => {
   };
 
   const onExpandEditor = () => {
+    if (errorExecuteQuery || !queryId || !queryValue) return;
     setExpandLayout((prevState) => {
       if (prevState === LAYOUT_QUERY.FULL) {
         return LAYOUT_QUERY.HIDDEN;
@@ -131,9 +133,51 @@ const QueryPart: React.FC = () => {
     });
   };
 
+  const classExpand = (
+    layout: string,
+    firstClass: string,
+    secondClass: string,
+  ) => {
+    if (isLoadingResult) return 'add-chart-loading-public';
+    if (errorExecuteQuery) return;
+    if (!queryId || !queryValue) return 'custom-editor--full';
+    return expandLayout === layout ? firstClass : secondClass;
+  };
+
+  const onCheckedIconExpand = () => {
+    if (errorExecuteQuery || !queryId || !queryValue)
+      return 'icon-query-collapse';
+    return expandLayout === LAYOUT_QUERY.HIDDEN
+      ? 'icon-query-expand'
+      : 'icon-query-collapse';
+  };
+
+  const _renderAddChart = () => {
+    return (
+      <div className="header-empty">
+        <Flex alignItems={'center'} gap="16px">
+          <div className="item-add-chart active-table">
+            <QueryResultIcon />
+            Result Table
+          </div>
+          <div className="item-add-chart">
+            <AddChartIcon />
+            Add Chart
+          </div>
+        </Flex>
+        <p className="icon-query-expand cursor-not-allowed" />
+      </div>
+    );
+  };
+
   const _renderContent = () => {
     if (isLoadingResult) {
-      return <AppLoadingTable widthColumns={[100]} className="visual-table" />;
+      return (
+        <>
+          {_renderAddChart()}
+          <AppLoadingTable widthColumns={[100]} className="visual-table" />
+        </>
+      );
     }
 
     if (!!queryValue && !!queryResult.length && !errorExecuteQuery?.message) {
@@ -152,13 +196,18 @@ const QueryPart: React.FC = () => {
     }
 
     return (
-      <Flex
-        className="empty-table"
-        justifyContent={'center'}
-        alignItems="center"
-      >
-        {errorExecuteQuery?.message || 'No data...'}
-      </Flex>
+      <>
+        {_renderAddChart()}
+        <Flex
+          className="empty-table"
+          justifyContent={'center'}
+          alignItems="center"
+          flexDirection="column"
+        >
+          <span className="execution-error">Execution Error</span>
+          {errorExecuteQuery?.message || 'No data...'}
+        </Flex>
+      </>
     );
   };
 
@@ -169,13 +218,10 @@ const QueryPart: React.FC = () => {
 
     return (
       <div
-        className={` 
-      ${expandLayout === LAYOUT_QUERY.FULL ? 'add-chart-full' : 'add-chart'}
-       ${
-         expandLayout === LAYOUT_QUERY.HIDDEN
-           ? 'expand-chart hidden-editor'
-           : ''
-       } `}
+        className={`
+        ${errorExecuteQuery ? 'add-chart-empty' : ''}
+        ${classExpand(LAYOUT_QUERY.FULL, 'add-chart-full', 'add-chart')}
+        ${classExpand(LAYOUT_QUERY.HIDDEN, 'expand-chart hidden-editor', '')} `}
       >
         {_renderContent()}
       </div>
@@ -208,18 +254,31 @@ const QueryPart: React.FC = () => {
               bg="white"
               color="black"
             >
-              <div className="btn-expand-public">
-                <p className="icon-query-collapse" onClick={onExpandEditor} />
+              <div
+                className={`${
+                  errorExecuteQuery || !queryId || !queryValue
+                    ? 'cursor-not-allowed'
+                    : ''
+                } btn-expand-public`}
+              >
+                <p
+                  className={`${onCheckedIconExpand()}`}
+                  onClick={onExpandEditor}
+                />
               </div>
             </Tooltip>
             <AceEditor
-              className={`custom-editor ${
-                expandLayout === LAYOUT_QUERY.FULL ? 'custom-editor--full' : ''
-              } ${
-                expandLayout === LAYOUT_QUERY.HIDDEN
-                  ? 'custom-editor--hidden'
-                  : ''
-              }`}
+              className={`ace_editor ace-tomorrow custom-editor 
+                ${errorExecuteQuery ? 'custom-editor--half' : ''}
+                ${classExpand(
+                  LAYOUT_QUERY.FULL,
+                  'custom-editor--full',
+                  '',
+                )} ${classExpand(
+                LAYOUT_QUERY.HIDDEN,
+                'custom-editor--hidden',
+                '',
+              )}`}
               ref={editorRef}
               mode="sql"
               theme="tomorrow"

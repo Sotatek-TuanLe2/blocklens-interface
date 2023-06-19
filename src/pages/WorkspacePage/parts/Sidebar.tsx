@@ -159,13 +159,35 @@ const Sidebar: React.FC<{
     {
       id: CATEGORIES.WORK_PLACE,
       title: 'Work place',
-      icon: <div className="icon-place-light" />,
+      icon: (
+        <Tooltip
+          placement="right"
+          hasArrow
+          label="Work place"
+          bg="white"
+          borderRadius="6px"
+          color="black"
+        >
+          <div className="icon-place-light" />
+        </Tooltip>
+      ),
       activeIcon: <div className="bg-work_place_active" />,
     },
     {
       id: CATEGORIES.EXPLORE_DATA,
       title: 'Explore data',
-      icon: <div className="icon-explore-light" />,
+      icon: (
+        <Tooltip
+          placement="right"
+          hasArrow
+          label="Explore data"
+          bg="white"
+          borderRadius="6px"
+          color="black"
+        >
+          <div className="icon-explore-light" />
+        </Tooltip>
+      ),
       activeIcon: <div className="bg-explore_active" />,
     },
   ];
@@ -319,7 +341,6 @@ const Sidebar: React.FC<{
           <AppInput
             className="workspace-page__sidebar__content__work-place-wrap__input-search"
             value={searchValueWorkPlace}
-            marginY={4}
             placeholder={'Search...'}
             size="sm"
             onChange={(e) => {
@@ -438,10 +459,9 @@ const Sidebar: React.FC<{
             className="bg-CloseBtnIcon"
           />
         </div>
-        <Box px={'16px'} mb={'30px'}>
+        <Box px={'16px'} mb={'26px'}>
           <AppInput
             value={searchExploreData}
-            marginY={4}
             placeholder={'Search...'}
             size="md"
             onChange={(e) => {
@@ -451,7 +471,13 @@ const Sidebar: React.FC<{
           />
         </Box>
         {!!Object.keys(exploreData).length ? (
-          <div className="workspace-page__sidebar__content__explore-wrap__list-chain">
+          <div
+            className={`${
+              !!schemaDescribe.length
+                ? 'workspace-page__sidebar__content__explore-wrap__list-chain-half'
+                : 'workspace-page__sidebar__content__explore-wrap__list-chain'
+            }`}
+          >
             {Object.keys(exploreData).map((nameChain: any, index) => (
               <CollapseExplore
                 key={index + 'explore'}

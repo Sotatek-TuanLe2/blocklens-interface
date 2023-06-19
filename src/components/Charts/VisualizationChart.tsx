@@ -322,7 +322,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
         margin={{
           // left: 10,
           bottom: 12,
-          right: 5,
+          right: 20,
           top: 20,
         }}
       >

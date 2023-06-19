@@ -8,7 +8,7 @@
   margin-top: -40px;
 
   &__query {
-    height: calc(100vh - 110px);
+    height: calc(100vh - 70px);
   }
 
   @media (max-width: 992px) {
@@ -49,8 +49,10 @@
   }
 
   &__sidebar {
+    box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.04);
     display: flex;
-    height: 100%;
+    height: 860px;
+    max-height: 860px;
     ::-webkit-scrollbar {
       background-color: white;
     }
@@ -146,6 +148,7 @@
           display: flex;
           align-items: center;
           margin-bottom: 12px;
+          margin-top: 30px;
         }
         &__list-query {
           height: calc(100% - 162px);
@@ -167,6 +170,14 @@
 
         &__list-chain {
           height: calc(100% - 154px);
+          overflow-y: hidden;
+          &:hover {
+            overflow-y: auto;
+          }
+        }
+
+        &__list-chain-half {
+          height: calc(100% - 480px);
           overflow-y: hidden;
           &:hover {
             overflow-y: auto;
@@ -347,11 +358,7 @@
 
             &:hover {
               border: 1px solid $blue;
-              background: linear-gradient(
-                268.85deg,
-                rgba(34, 108, 255, 0.12) 22.48%,
-                rgba(16, 132, 255, 0.12) 83.59%
-              );
+              background: linear-gradient(268.85deg, rgba(34, 108, 255, 0.12) 22.48%, rgba(16, 132, 255, 0.12) 83.59%);
               box-shadow: 0px 10px 40px rgba(125, 143, 179, 0.2);
             }
           }
@@ -372,11 +379,7 @@
 
           width: 56px;
           height: 56px;
-          background: linear-gradient(
-            268.85deg,
-            #226cff 22.48%,
-            #1084ff 83.59%
-          );
+          background: linear-gradient(268.85deg, #226cff 22.48%, #1084ff 83.59%);
           border-radius: 50%;
 
           &:hover {
@@ -395,8 +398,9 @@
     }
 
     &__header {
+      box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.04);
       margin-bottom: 8px;
-      padding: 9px 20px;
+      padding: 9px 20px 9px 10px;
       background: $card;
       border-radius: 6px;
       display: flex;
@@ -408,7 +412,6 @@
         padding: 14px;
         align-items: flex-start;
 
-
         .icon-back-light {
           display: none;
         }
@@ -417,7 +420,7 @@
       &__left {
         display: flex;
         align-items: center;
-        gap: 6px;
+        gap: 5px;
 
         @media (max-width: 992px) {
           padding-bottom: 14px;
@@ -486,7 +489,7 @@
         }
 
         .tag {
-          margin-right: 14px;
+          margin-right: 10px;
         }
       }
     }
