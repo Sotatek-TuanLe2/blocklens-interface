@@ -45,9 +45,7 @@ const ListItem: React.FC<IListItem> = (props) => {
       ? new Dashboard(item as IDashboardDetail)
       : new Query(item as IQuery);
 
-  const userName = `${
-    itemClass.getUser()?.firstName ? itemClass.getUser()?.firstName : ''
-  } ${itemClass.getUser()?.lastName ? itemClass.getUser()?.lastName : ''}`;
+  const userName = `${itemClass.getUserFirstName()} ${itemClass.getUserLastName()}`;
 
   const getTitleUrl = (): string => {
     switch (type) {

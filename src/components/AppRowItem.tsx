@@ -219,7 +219,7 @@ const AppRowItem: FC<AppRowItemProps> = ({
           {chainList && <AppNetworkIcons networkIds={chainList} />}
         </Flex>
         <Flex flexGrow={1} w={'15%'} overflow={'hidden'} pr={2.5}>
-          {date && creator}
+          {date && date}
         </Flex>
         <Flex flexGrow={1} w={'calc(26% - 24px)'} overflow={'hidden'} pr={2.5}>
           {tagList &&
