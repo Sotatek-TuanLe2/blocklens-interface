@@ -10,6 +10,7 @@ import ModalCreateApp from 'src/modals/ModalCreateApp';
 import { getUserStats } from 'src/store/user';
 import { useDispatch } from 'react-redux';
 import useUser from 'src/hooks/useUser';
+import { NoAppIcon } from 'src/assets/icons';
 
 const HomePage = () => {
   const { user } = useUser();
@@ -29,7 +30,10 @@ const HomePage = () => {
       <>
         <AppCard className={'no-app'}>
           <Flex my={14} flexDirection={'column'} alignItems={'center'}>
-            <Box className={'no-app__title'}>You don’t have any Apps</Box>
+            <NoAppIcon />
+            <Box className={'no-app__title'} mt={10}>
+              You Don’t Have Any App
+            </Box>
             <Box className={'no-app__description'}>
               Create a new App to start using Blocklens API
             </Box>
@@ -54,21 +58,18 @@ const HomePage = () => {
   return (
     <BasePage>
       <>
-        <Box mb={7}>
-          <AppHeading title="Trigger" />
-        </Box>
-
         {hasApp ? (
           <>
+            <Box mb={7}>
+              <AppHeading title="Trigger" />
+            </Box>
             <Box className={'statics'}>
               <PartUserStats
                 totalWebhookActive={userStats?.totalRegistrationActive}
                 totalWebhook={userStats?.totalRegistration}
               />
             </Box>
-
             <ListApps />
-
             <Box className={'user-graph'}>
               <PartUserGraph />
             </Box>
