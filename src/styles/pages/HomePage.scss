@@ -159,7 +159,7 @@
 
     .label-detail {
       @include text-small-bold;
-      color: $line;
+      color: rgba(0, 2, 36, 0.3);
       text-transform: uppercase;
       margin-bottom: 2px;
     }
@@ -168,7 +168,8 @@
       @include text-medium-regular;
 
       color: $title;
-      background-color: $card;
+      background-color: $white;
+      border: 1px solid $line;
       border-radius: 6px;
       overflow: hidden;
       height: 210px;
@@ -181,7 +182,7 @@
 
       .react-json-view {
         padding: 20px;
-        background-color: $card !important;
+        background-color: $white !important;
         color: $title;
         height: 210px;
         width: 100%;
