@@ -398,6 +398,8 @@
     }
 
     &__header {
+      position: relative;
+      z-index: 6;
       box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.04);
       margin-bottom: 8px;
       padding: 9px 20px 9px 10px;
