@@ -174,13 +174,17 @@ const Header: React.FC<IHeaderProps> = (props) => {
             onClick={onChangeEditMode}
             size="sm"
             leftIcon={
-              <p
-                className={
-                  isEdit
-                    ? 'bg-icon_success_dashboard'
-                    : 'bg-icon_edit_dashboard'
-                }
-              />
+              isLoadingRun ? (
+                <Spinner size="sm" color="white" />
+              ) : (
+                <p
+                  className={
+                    isEdit
+                      ? 'bg-icon_success_dashboard'
+                      : 'bg-icon_edit_dashboard'
+                  }
+                />
+              )
             }
             me="10px"
           >

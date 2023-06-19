@@ -371,7 +371,7 @@ const QueryPart: React.FC = () => {
                 theme="tomorrow"
                 width="100%"
                 wrapEnabled={true}
-                readOnly={expandLayout === LAYOUT_QUERY.HIDDEN}
+                // readOnly={expandLayout === LAYOUT_QUERY.HIDDEN}
                 name="sql_editor"
                 editorProps={{ $blockScrolling: true }}
                 showPrintMargin={true}

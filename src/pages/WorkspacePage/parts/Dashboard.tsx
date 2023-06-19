@@ -7,7 +7,7 @@ import {
   MenuItem,
   MenuList,
 } from '@chakra-ui/react';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Layout, Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import ReactMarkdown from 'react-markdown';
@@ -78,9 +78,8 @@ const DashboardPart: React.FC = () => {
   const [openModalAddTextWidget, setOpenModalAddTextWidget] =
     useState<boolean>(false);
   const [isEmptyDashboard, setIsEmptyDashboard] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const layoutChangeTimeout = useRef() as any;
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isSavingDashboard, setIsSavingDashboard] = useState<boolean>(false);
 
   const userName =
     `${user?.getFirstName() || ''}` + `${user?.getLastName() || ''}`;
@@ -167,54 +166,22 @@ const DashboardPart: React.FC = () => {
   const onOpenModalAddVisualization = () => setOpenModalAddVisualization(true);
 
   const onLayoutChange = async (layout: Layout[]) => {
-    clearTimeout(layoutChangeTimeout.current);
-
-    const dataVisualization = dataLayouts
-      .filter((e) => e.type === WIDGET_TYPE.VISUALIZATION)
-      .map((item) => {
-        const newLayout = layout.filter((e) => e.i === item.id);
-        return {
-          id: item.id,
-          options: {
-            sizeX: newLayout[0].x,
-            sizeY: newLayout[0].y,
-            col: newLayout[0].w,
-            row: newLayout[0].h,
-          },
-        };
-      });
-    const dataTextWidget = dataLayouts
-      .filter((e) => e.type === WIDGET_TYPE.TEXT)
-      .map((item) => {
-        const newLayout = layout.filter((e) => e.i === item.id);
-        return {
-          id: item.id,
-          options: {
-            sizeX: newLayout[0].x,
-            sizeY: newLayout[0].y,
-            col: newLayout[0].w,
-            row: newLayout[0].h,
-          },
-        };
-      });
-
-    // many widgets are changed at one time so need to update the latest change
-    layoutChangeTimeout.current = setTimeout(async () => {
-      try {
-        const payload = {
-          dashboardVisuals: dataVisualization,
-          textWidgets: dataTextWidget,
-        };
-        const res = await rf
-          .getRequest('DashboardsRequest')
-          .updateDashboardItem(payload, dashboardId);
-        if (res) {
-          fetchLayoutData();
+    setDataLayouts((prevState) => {
+      const newDataLayouts: ILayout[] = prevState.map((item) => {
+        const newLayout = layout.find((e) => e.i === item.id);
+        if (!newLayout) {
+          return item;
         }
-      } catch (e) {
-        toastError({ message: getErrorMessage(e) });
-      }
-    }, 500);
+        return {
+          ...item,
+          x: newLayout.x,
+          y: newLayout.y,
+          w: newLayout.w,
+          h: newLayout.h,
+        };
+      });
+      return newDataLayouts;
+    });
   };
 
   const _renderEmptyDashboard = () => (
@@ -233,6 +200,60 @@ const DashboardPart: React.FC = () => {
       </div>
     </Flex>
   );
+
+  const updateDashboard = async () => {
+    setIsSavingDashboard(true);
+    const dataVisualization = dataLayouts
+      .filter((e) => e.type === WIDGET_TYPE.VISUALIZATION)
+      .map((item) => {
+        return {
+          id: item.id,
+          options: {
+            sizeX: item.x,
+            sizeY: item.y,
+            col: item.w,
+            row: item.h,
+          },
+        };
+      });
+    const dataTextWidget = dataLayouts
+      .filter((e) => e.type === WIDGET_TYPE.TEXT)
+      .map((item) => {
+        return {
+          id: item.id,
+          options: {
+            sizeX: item.x,
+            sizeY: item.y,
+            col: item.w,
+            row: item.h,
+          },
+        };
+      });
+
+    try {
+      const payload = {
+        dashboardVisuals: dataVisualization,
+        textWidgets: dataTextWidget,
+      };
+      const res = await rf
+        .getRequest('DashboardsRequest')
+        .updateDashboardItem(payload, dashboardId);
+      setIsSavingDashboard(false);
+      if (res) {
+        await fetchLayoutData();
+      }
+    } catch (e) {
+      setIsSavingDashboard(false);
+      toastError({ message: getErrorMessage(e) });
+    }
+  };
+
+  const onChangeEditMode = async () => {
+    if (editMode) {
+      await updateDashboard();
+    }
+    setEditMode((prevState) => !prevState);
+  };
 
   const _renderDashboard = () => {
     if (isEmptyDashboard) {
@@ -316,8 +337,8 @@ const DashboardPart: React.FC = () => {
         }
         data={dataDashboard}
         isEdit={editMode}
-        onChangeEditMode={() => setEditMode((prevState) => !prevState)}
-        isLoadingRun={isLoading}
+        onChangeEditMode={onChangeEditMode}
+        isLoadingRun={isLoading || isSavingDashboard}
       />
       {isLoading ? (
         <LoadingFullPage />
