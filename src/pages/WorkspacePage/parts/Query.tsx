@@ -214,10 +214,7 @@ const QueryPart: React.FC = () => {
         return;
       }
 
-      if (
-        !errorExecuteQuery?.message.length &&
-        expandLayout === LAYOUT_QUERY.FULL
-      ) {
+      if (!errorExecuteQuery?.message && expandLayout === LAYOUT_QUERY.FULL) {
         setExpandLayout(LAYOUT_QUERY.HIDDEN);
       }
 
@@ -254,15 +251,15 @@ const QueryPart: React.FC = () => {
 
   useEffect(() => {
     if (
-      !errorExecuteQuery?.message.length &&
+      !errorExecuteQuery?.message &&
       (expandLayout === LAYOUT_QUERY.FULL || expandLayout === LAYOUT_QUERY.HALF)
     ) {
       setExpandLayout(LAYOUT_QUERY.HIDDEN);
     }
-    if (errorExecuteQuery?.message.length) {
+    if (errorExecuteQuery?.message) {
       setExpandLayout(LAYOUT_QUERY.HALF);
     }
-  }, [errorExecuteQuery?.message.length]);
+  }, [errorExecuteQuery?.message]);
 
   const _renderAddChart = () => {
     return (
