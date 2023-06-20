@@ -15,6 +15,7 @@ import AppTag from './AppTag';
 import { ChevronRightIcon } from '@chakra-ui/icons';
 import { FC, ReactNode } from 'react';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
+import Jazzicon from 'react-jazzicon';
 
 interface AppRowItemProps {
   isLoading?: boolean;
@@ -202,14 +203,9 @@ const AppRowItem: FC<AppRowItemProps> = ({
           </Link>
         </Flex>
         <Flex flexGrow={1} w={'22%'} overflow={'hidden'} pr={2.5}>
-          <Image
-            w={'24px'}
-            h={'24px'}
-            borderRadius={'12px'}
-            objectFit={'cover'}
-            objectPosition={'center'}
-            src={srcAvatar || '/images/AvatarDashboardCard.png'}
-            alt="avatar"
+          <Jazzicon
+            diameter={24}
+            seed={Number(srcAvatar?.length) + Number(creator?.length)}
           />
           <Text ml={2} className="article-row-creator">
             {creator && creator}

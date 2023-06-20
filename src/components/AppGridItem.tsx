@@ -13,6 +13,7 @@ import AppTag from './AppTag';
 import AppNetworkIcons from './AppNetworkIcons';
 import { FC, ReactNode } from 'react';
 import 'src/styles/components/AppGridItem.scss';
+import Jazzicon from 'react-jazzicon';
 
 interface AppGridItemProps {
   isLoading?: boolean;
@@ -221,9 +222,9 @@ const AppGridItem: FC<AppGridItemProps> = ({
         <Flex w={'full'}>
           <Flex align={'center'} flexGrow={1}>
             <Box w={'34px'} h={'34px'} borderRadius={'17px'} mr={2.5}>
-              <Image
-                src={srcAvatar || '/images/AvatarDashboardCard.png'}
-                alt="avatar"
+              <Jazzicon
+                diameter={34}
+                seed={Number(srcAvatar?.length) + Number(creator?.length)}
               />
             </Box>
             <Box>
