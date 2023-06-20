@@ -229,11 +229,6 @@ export default class DashboardsRequest extends BaseRequest {
     return this.post(url, { queryId });
   }
 
-  executePublicQuery(queryId: string) {
-    const url = '/query-executors/execute-query-free';
-    return this.post(url, { queryId });
-  }
-
   forkQueries(queryId: string, params: IUpdateQuery) {
     const url = `/queries/fork-query/${queryId}`;
     return this.post(url, { ...params, queryId });

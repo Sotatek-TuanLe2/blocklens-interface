@@ -90,7 +90,7 @@ type Props = {
   queryValue: IQuery;
   expandLayout: string;
   needAuthentication?: boolean;
-  onReload: () => Promise<void>;
+  onReload: () => Promise<any>;
   onExpand: (value: React.SetStateAction<string>) => void;
 };
 
