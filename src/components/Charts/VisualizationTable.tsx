@@ -315,7 +315,9 @@ const VisualizationTable = <T,>({
                               style={
                                 {
                                   '--myColor': coloredProgress
-                                    ? VISUALIZATION_COLORS.POSITIVE
+                                    ? new BigNumber(value).isLessThan(0)
+                                      ? VISUALIZATION_COLORS.NEGATIVE
+                                      : VISUALIZATION_COLORS.POSITIVE
                                     : '#00022480',
                                   '--myProgressBar': `${percent}%`,
                                 } as React.CSSProperties
@@ -336,18 +338,20 @@ const VisualizationTable = <T,>({
           </table>
         )}
       </Box>
-      <Flex
-        justifyContent={'flex-end'}
-        alignItems={'baseline'}
-        className="table-pagination"
-      >
-        <div className="data-length">{data.length} rows</div>
-        <AppPagination
-          pageCount={pageCount}
-          forcePage={pagination}
-          onPageChange={handlePageClick}
-        />
-      </Flex>
+      {!!filteredData.length && (
+        <Flex
+          justifyContent={'flex-end'}
+          alignItems={'baseline'}
+          className="table-pagination"
+        >
+          <div className="data-length">{data.length} rows</div>
+          <AppPagination
+            pageCount={pageCount}
+            forcePage={pagination}
+            onPageChange={handlePageClick}
+          />
+        </Flex>
+      )}
     </>
   );
 };

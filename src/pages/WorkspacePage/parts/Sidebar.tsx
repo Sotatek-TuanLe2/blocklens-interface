@@ -75,7 +75,6 @@ const ChainItem = ({
             hasArrow
             label="Add to query"
             aria-label="A tooltip"
-            bg={'#2F3B58'}
             borderRadius="6px"
           >
             <div
