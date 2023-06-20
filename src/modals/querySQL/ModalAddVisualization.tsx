@@ -1,12 +1,4 @@
-import {
-  Checkbox,
-  Flex,
-  Link,
-  Spinner,
-  Text,
-  Tooltip,
-  Box,
-} from '@chakra-ui/react';
+import { Flex, Link, Spinner, Text, Tooltip, Box } from '@chakra-ui/react';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   AreaChartIcon,
@@ -20,7 +12,7 @@ import {
   ScatterChartIcon,
 } from 'src/assets/icons';
 import { AppButton, AppInput } from 'src/components';
-import { ILayout } from 'src/pages/WorkspacePage/parts/Dashboard';
+import { ILayout, WIDGET_TYPE } from 'src/pages/WorkspacePage/parts/Dashboard';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/BaseModal.scss';
 import {
@@ -34,6 +26,7 @@ import BaseModal from '../BaseModal';
 import _, { debounce } from 'lodash';
 import { INPUT_DEBOUNCE, IPagination } from 'src/utils/common';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { nanoid } from '@reduxjs/toolkit';
 
 export const WIDTH_DASHBOARD = [
   {
@@ -57,11 +50,11 @@ export const TOTAL_COL = 12;
 
 interface IModalAddVisualization {
   open: boolean;
-  onClose: () => void;
   userName: string;
   dataLayouts: ILayout[];
-  onReload: () => void;
   dashboardId: string;
+  onClose: () => void;
+  onSave: (layouts: ILayout[]) => void;
 }
 interface IAddVisualizationCheckbox {
   userName: string;
@@ -74,11 +67,10 @@ interface IAddVisualizationCheckbox {
 
 const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   open,
-  onClose,
   userName,
   dataLayouts,
-  onReload,
-  dashboardId,
+  onClose,
+  onSave,
 }) => {
   const [visualSelected, setVisualSelected] = useState<any>('');
   const [myQueries, setMyQueries] = useState<IQuery[]>([]);
@@ -196,27 +188,26 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
       sizeX = 0;
     }
 
-    try {
-      const payload = {
-        dashboardId,
-        dataVisualWidget: {
-          visualizationId: visualSelected.id,
-          options: {
-            sizeX: sizeX,
-            sizeY: sizeY,
-            col: widthWidget,
-            row: 2,
-          },
-        },
-      };
+    const selectedItem = visualizations.find(
+      (item) =>
+        item.visualization.id === (visualSelected as VisualizationType).id,
+    );
 
-      await rf.getRequest('DashboardsRequest').insertVisualizations(payload);
-      toastSuccess({ message: 'Add successfully' });
-      onClose();
-      await onReload();
-    } catch (e) {
-      toastError({ message: getErrorMessage(e) });
-    }
+    const newId = nanoid();
+    const newVisualization = {
+      x: sizeX,
+      y: sizeY,
+      w: widthWidget,
+      h: 2,
+      i: newId,
+      id: newId,
+      type: WIDGET_TYPE.VISUALIZATION,
+      content: { ...visualSelected, query: selectedItem?.query },
+    };
+
+    onSave([...dataLayouts, newVisualization]);
+    onClose();
+    toastSuccess({ message: 'Add successfully' });
   };
 
   const getIcon = (chain: string | undefined) => {

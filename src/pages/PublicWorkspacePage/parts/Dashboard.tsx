@@ -11,7 +11,11 @@ import 'src/styles/components/TableValue.scss';
 import 'src/styles/pages/DashboardDetailPage.scss';
 import 'src/styles/components/Chart.scss';
 import 'src/styles/components/AppQueryMenu.scss';
-import { IDashboardDetail } from 'src/utils/query.type';
+import {
+  IDashboardDetail,
+  ITextWidget,
+  IVisualizationWidget,
+} from 'src/utils/query.type';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import Header from 'src/pages/WorkspacePage/parts/Header';
@@ -21,13 +25,9 @@ import { Dashboard } from 'src/utils/utils-dashboard';
 import { LoadingFullPage } from 'src/pages/LoadingFullPage';
 
 export interface ILayout extends Layout {
-  options: any;
-  i: string;
   id: string;
-  dashboardVisuals: [];
-  text: string;
+  text?: string;
   type: string;
-  visualization: any;
   content: any;
 }
 
@@ -60,7 +60,7 @@ const DashboardPart: React.FC = () => {
         .getPublicDashboardById(dashboardId);
       if (res) {
         const visualization: ILayout[] = res.dashboardVisuals.map(
-          (item: ILayout) => {
+          (item: IVisualizationWidget) => {
             const { options } = item;
             return {
               x: options.sizeX || 0,
@@ -74,20 +74,22 @@ const DashboardPart: React.FC = () => {
             };
           },
         );
-        const textWidgets: ILayout[] = res.textWidgets.map((item: ILayout) => {
-          const { options } = item;
-          return {
-            x: options.sizeX || 0,
-            y: options.sizeY || 0,
-            w: options.col,
-            h: options.row,
-            i: item.id,
-            id: item.id,
-            type: WIDGET_TYPE.TEXT,
-            text: item.text,
-            content: {},
-          };
-        });
+        const textWidgets: ILayout[] = res.textWidgets.map(
+          (item: ITextWidget) => {
+            const { options } = item;
+            return {
+              x: options.sizeX || 0,
+              y: options.sizeY || 0,
+              w: options.col,
+              h: options.row,
+              i: item.id,
+              id: item.id,
+              type: WIDGET_TYPE.TEXT,
+              text: item.text,
+              content: {},
+            };
+          },
+        );
 
         const layouts = visualization.concat(textWidgets);
         setDataDashboard(res);
@@ -152,7 +154,7 @@ const DashboardPart: React.FC = () => {
                 />
               ) : (
                 <div className="box-text-widget">
-                  <ReactMarkdown>{item.text}</ReactMarkdown>
+                  <ReactMarkdown>{item.text || ''}</ReactMarkdown>
                 </div>
               )}
             </div>
