@@ -84,16 +84,15 @@ const QueryPart: React.FC = () => {
     }
   };
 
-  const fetchQueryResult = async () => {
+  const fetchQueryResult = async (dataQuery: IQuery | null) => {
+    if (!dataQuery) {
+      return;
+    }
     setIsLoadingResult(true);
-    const executedResponse: QueryExecutedResponse = await rf
-      .getRequest('DashboardsRequest')
-      .executePublicQuery(queryId);
-    const executionId = executedResponse.id;
-    await getExecutionResultById(executionId);
+    await getExecutionResultById(dataQuery.resultId);
   };
 
-  const fetchQuery = async () => {
+  const fetchQuery = async (): Promise<IQuery | null> => {
     try {
       const dataQuery = await rf
         .getRequest('DashboardsRequest')
@@ -101,20 +100,23 @@ const QueryPart: React.FC = () => {
       setQueryValue(dataQuery);
       // set query into editor
       if (!editorRef.current) {
-        return;
+        return null;
       }
       const position = editorRef.current.editor.getCursorPosition();
       editorRef.current.editor.setValue('');
       editorRef.current.editor.session.insert(position, dataQuery?.query);
+
+      return dataQuery;
     } catch (error: any) {
       toastError({ message: getErrorMessage(error) });
+      return null;
     }
   };
 
   const fetchInitalData = async () => {
     try {
-      await fetchQuery();
-      await fetchQueryResult();
+      const dataQuery = await fetchQuery();
+      await fetchQueryResult(dataQuery);
     } catch (error) {
       toastError({ message: getErrorMessage(error) });
     }
