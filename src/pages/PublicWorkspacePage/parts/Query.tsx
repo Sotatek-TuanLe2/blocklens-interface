@@ -84,12 +84,12 @@ const QueryPart: React.FC = () => {
     }
   };
 
-  const fetchQueryResult = async (dataQuery: IQuery | null) => {
-    if (!dataQuery) {
+  const fetchQueryResult = async (executionId?: string) => {
+    if (!executionId) {
       return;
     }
     setIsLoadingResult(true);
-    await getExecutionResultById(dataQuery.resultId);
+    await getExecutionResultById(executionId);
   };
 
   const fetchQuery = async (): Promise<IQuery | null> => {
@@ -116,7 +116,7 @@ const QueryPart: React.FC = () => {
   const fetchInitalData = async () => {
     try {
       const dataQuery = await fetchQuery();
-      await fetchQueryResult(dataQuery);
+      await fetchQueryResult(dataQuery?.resultId);
     } catch (error) {
       toastError({ message: getErrorMessage(error) });
     }
