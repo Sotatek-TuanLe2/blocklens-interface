@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useParams, Prompt } from 'react-router-dom';
 import {
   Box,
   Flex,
@@ -405,6 +405,10 @@ const DashboardPart: React.FC = () => {
             dashboardId={dashboardId}
             open={openModalFork}
             onClose={() => setOpenModalFork(false)}
+          />
+          <Prompt
+            when={editMode}
+            message={`Your dashboard is not saved yet\nAre you sure you want to leave?`}
           />
         </div>
       )}
