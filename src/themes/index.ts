@@ -35,7 +35,7 @@ export default extendTheme({
     },
     Tooltip: {
       baseStyle: {
-        color: '$title',
+        color: '#000224',
         background: 'white',
         padding: '8px 10px',
         'border-radius': '6px',
