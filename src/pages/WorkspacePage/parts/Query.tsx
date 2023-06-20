@@ -5,7 +5,7 @@ import AceEditor from 'react-ace';
 import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/mode-sql';
 import 'ace-builds/src-noconflict/theme-tomorrow';
-import { useParams } from 'react-router-dom';
+import { useParams, Prompt } from 'react-router-dom';
 import { AppLoadingTable } from 'src/components';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import {
@@ -91,6 +91,11 @@ const QueryPart: React.FC = () => {
 
   const resetEditor = () => {
     editorRef.current && editorRef.current.editor.setValue('');
+    setQueryResult([]);
+    setQueryValue(null);
+    setExpandLayout(LAYOUT_QUERY.FULL);
+    setIsLoadingResult(false);
+    setErrorExecuteQuery(null);
     setSelectedQuery('');
   };
 
@@ -423,6 +428,10 @@ const QueryPart: React.FC = () => {
           query={editorRef.current.editor.getValue()}
         />
       )}
+      <Prompt
+        when={!queryId}
+        message={`You haven't created a query yet\nAre you sure you want to leave?`}
+      />
     </div>
   );
 };
