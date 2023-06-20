@@ -103,7 +103,8 @@ const QueryPart: React.FC = () => {
     try {
       await rf.getRequest('DashboardsRequest').updateQuery({ query }, queryId);
       await fetchQuery();
-      await fetchQueryResult();
+      const executionId = await executeQuery();
+      await fetchQueryResult(executionId);
     } catch (error: any) {
       toastError({ message: getErrorMessage(error) });
     }
@@ -135,16 +136,23 @@ const QueryPart: React.FC = () => {
     }
   };
 
-  const fetchQueryResult = async () => {
-    setIsLoadingResult(true);
+  const executeQuery = async (): Promise<string> => {
     const executedResponse: QueryExecutedResponse = await rf
       .getRequest('DashboardsRequest')
       .executeQuery(queryId);
     const executionId = executedResponse.id;
+    return executionId;
+  };
+
+  const fetchQueryResult = async (executionId?: string) => {
+    if (!executionId) {
+      return;
+    }
+    setIsLoadingResult(true);
     await getExecutionResultById(executionId);
   };
 
-  const fetchQuery = async (id?: string) => {
+  const fetchQuery = async (id?: string): Promise<IQuery | null> => {
     try {
       const dataQuery = await rf
         .getRequest('DashboardsRequest')
@@ -152,20 +160,23 @@ const QueryPart: React.FC = () => {
       setQueryValue(dataQuery);
       // set query into editor
       if (!editorRef.current) {
-        return;
+        return null;
       }
       const position = editorRef.current.editor.getCursorPosition();
       editorRef.current.editor.setValue('');
       editorRef.current.editor.session.insert(position, dataQuery?.query);
+
+      return dataQuery;
     } catch (error: any) {
       toastError({ message: getErrorMessage(error) });
+      return null;
     }
   };
 
   const fetchInitalData = async () => {
     try {
-      await fetchQuery();
-      await fetchQueryResult();
+      const dataQuery = await fetchQuery();
+      await fetchQueryResult(dataQuery?.resultId);
     } catch (error) {
       toastError({ message: getErrorMessage(error) });
     }
@@ -428,10 +439,6 @@ const QueryPart: React.FC = () => {
           query={editorRef.current.editor.getValue()}
         />
       )}
-      <Prompt
-        when={!queryId}
-        message={`You haven't created a query yet\nAre you sure you want to leave?`}
-      />
     </div>
   );
 };
