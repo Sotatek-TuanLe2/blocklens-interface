@@ -32,6 +32,7 @@ interface IHeaderProps {
   isEdit?: boolean;
   needAuthentication?: boolean;
   isLoadingRun?: boolean;
+  isEmptyDashboard?: boolean;
   onRunQuery?: () => Promise<void>;
   onChangeEditMode?: () => void;
   data: IQuery | IDashboardDetail | null | undefined;
@@ -46,6 +47,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
     needAuthentication = true,
     selectedQuery,
     isLoadingRun = false,
+    isEmptyDashboard = false,
     onRunQuery,
     onChangeEditMode,
   } = props;
@@ -157,10 +159,6 @@ const Header: React.FC<IHeaderProps> = (props) => {
         </Tooltip>
       );
     }
-
-    const isEmptyDashboard =
-      !(dataClass as Dashboard)?.getDashboardVisuals().length &&
-      !(dataClass as Dashboard)?.getTextWidgets().length;
 
     // Dashboard button
     return (
