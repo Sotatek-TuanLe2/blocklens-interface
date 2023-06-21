@@ -61,7 +61,7 @@ const HomePage = () => {
         {hasApp ? (
           <>
             <Box mb={7}>
-              <AppHeading title="Trigger" />
+              <AppHeading title="Triggers" />
             </Box>
             <Box className={'statics'}>
               <PartUserStats
