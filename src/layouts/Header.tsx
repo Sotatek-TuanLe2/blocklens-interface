@@ -200,7 +200,7 @@ const Header: FC = () => {
   const _renderContent = () => {
     if (isMobile) {
       return (
-        <>
+        <Flex width={'30px'} justifyContent={'flex-end'}>
           {isOpenMenuMobile ? (
             <Box
               className="icon-close-menu"
@@ -212,7 +212,7 @@ const Header: FC = () => {
               className="icon-menu-mobile"
             />
           )}
-        </>
+        </Flex>
       );
     }
 
@@ -234,13 +234,15 @@ const Header: FC = () => {
             width={isMobile ? '140px' : 'auto'}
           />
         </Box>
-        {isMobile && !accessToken && location.pathname !== ROUTES.LOGIN && (
-          <AppButton onClick={() => history.push(ROUTES.LOGIN)}>
-            Log In
-          </AppButton>
-        )}
+        <Flex alignItems={'center'}>
+          {isMobile && !accessToken && location.pathname !== ROUTES.LOGIN && (
+            <AppButton onClick={() => history.push(ROUTES.LOGIN)} mr={5}>
+              Log In
+            </AppButton>
+          )}
 
-        {_renderContent()}
+          {_renderContent()}
+        </Flex>
 
         {!isMobile && !accessToken && location.pathname !== ROUTES.LOGIN && (
           <AppButton onClick={() => history.push(ROUTES.LOGIN)}>
