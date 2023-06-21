@@ -27,7 +27,7 @@ import { PRIVATE_PATH } from 'src/routes';
 
 const menus = [
   {
-    name: 'Dashboards',
+    name: 'Insights',
     path: ROUTES.HOME,
   },
   {
@@ -36,7 +36,7 @@ const menus = [
   },
   {
     name: 'APIs',
-    path: ROUTES.HOME,
+    path: 'https://docsblocklens.readme.io/reference/overview',
   },
   {
     name: 'Account',
@@ -166,6 +166,23 @@ const Header: FC = () => {
             return;
           }
 
+          if (item.name === 'APIs') {
+            return (
+              <a
+                href={item.path}
+                target={'_blank'}
+                rel="noreferrer"
+                title="Click to APIs"
+              >
+                {item.name}
+              </a>
+            );
+          }
+
+          if (item.name === 'Account' && !accessToken) {
+            return;
+          }
+
           return (
             <AppLink
               to={item.path}
@@ -202,7 +219,7 @@ const Header: FC = () => {
     return (
       <>
         {_renderMenu()}
-        {_renderAvatar()}
+        {accessToken && _renderAvatar()}
       </>
     );
   };
@@ -217,13 +234,19 @@ const Header: FC = () => {
             width={isMobile ? '140px' : 'auto'}
           />
         </Box>
-        {accessToken
-          ? _renderContent()
-          : location.pathname !== ROUTES.LOGIN && (
-              <AppButton onClick={() => history.push(ROUTES.LOGIN)}>
-                Log In
-              </AppButton>
-            )}
+        {isMobile && !accessToken && location.pathname !== ROUTES.LOGIN && (
+          <AppButton onClick={() => history.push(ROUTES.LOGIN)}>
+            Log In
+          </AppButton>
+        )}
+
+        {_renderContent()}
+
+        {!isMobile && !accessToken && location.pathname !== ROUTES.LOGIN && (
+          <AppButton onClick={() => history.push(ROUTES.LOGIN)}>
+            Log In
+          </AppButton>
+        )}
       </Flex>
 
       <ModalSignInRequest
@@ -235,16 +258,18 @@ const Header: FC = () => {
         <Box className="header-mobile">
           {_renderMenu()}
 
-          <div className="user-logout" onClick={onLogout}>
-            {' '}
-            <span className="door-logout">
-              <DoorLogout />
-            </span>
-            <span className="arrow-logout">
-              <ArrowLogout />
-            </span>{' '}
-            <span>Log Out</span>
-          </div>
+          {accessToken && (
+            <div className="user-logout" onClick={onLogout}>
+              {' '}
+              <span className="door-logout">
+                <DoorLogout />
+              </span>
+              <span className="arrow-logout">
+                <ArrowLogout />
+              </span>{' '}
+              <span>Log Out</span>
+            </div>
+          )}
         </Box>
       )}
     </Box>

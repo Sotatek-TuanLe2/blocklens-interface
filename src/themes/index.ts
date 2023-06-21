@@ -38,7 +38,7 @@ export default extendTheme({
         color: '#000224',
         background: 'white',
         padding: '8px 10px',
-        'border-radius': '6px',
+        borderRadius: '6px',
         [cssVar('popper-arrow-bg').variable]: 'white',
       },
     },

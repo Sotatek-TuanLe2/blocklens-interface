@@ -14,7 +14,6 @@ import BaseModal from '../BaseModal';
 import { INPUT_DEBOUNCE } from 'src/utils/common';
 import { RadioChecked, RadioNoCheckedIcon } from '../../assets/icons';
 import { WIDTH_DASHBOARD, TOTAL_COL } from './ModalAddVisualization';
-import { nanoid } from '@reduxjs/toolkit';
 
 interface IModalAddTextWidget {
   open: boolean;
@@ -124,7 +123,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
       sizeX = 0;
     }
 
-    const newId = nanoid();
+    const newId = Date.now().toString();
     const newTextWidget = {
       x: +sizeX,
       y: +sizeY,

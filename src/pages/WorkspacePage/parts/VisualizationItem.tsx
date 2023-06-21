@@ -61,10 +61,10 @@ const VisualizationItem = React.memo(
     const fetchQueryResult = async () => {
       setIsLoading(true);
       clearInterval(fetchQueryResultInterval.current);
-      const executionId = visualization?.query?.resultId;
+      const executionId = visualization?.query?.executedId;
       const res = await rf
         .getRequest('DashboardsRequest')
-        .getQueryResult({ executionId: visualization?.query?.resultId });
+        .getQueryResult({ executionId });
       if (res.status === QUERY_RESULT_STATUS.WAITING) {
         fetchQueryResultInterval.current = setInterval(async () => {
           const resInterval = await rf

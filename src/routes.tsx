@@ -79,7 +79,7 @@ const Routes: FC<RouteComponentProps> = () => {
   useEffect(() => {
     if (!accessToken || isExpireTimeToken) {
       dispatch(clearUser());
-      if (!GUEST_PATH.includes(pathname)) {
+      if (!GUEST_PATH.some((path) => pathname.includes(path))) {
         history.push(ROUTES.LOGIN, { originPath: location.pathname });
       }
       return;
