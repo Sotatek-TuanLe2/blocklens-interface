@@ -1,5 +1,4 @@
 import { Flex, Link, Spinner, Text, Tooltip, Box } from '@chakra-ui/react';
-import { v4 as uuidv4 } from 'uuid';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   AreaChartIcon,
@@ -193,7 +192,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
         item.visualization.id === (visualSelected as VisualizationType).id,
     );
 
-    const newId = uuidv4();
+    const newId = Date.now().toString();
     const newVisualization = {
       x: sizeX,
       y: sizeY,
