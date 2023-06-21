@@ -7,7 +7,7 @@ export default class NotificationRequest extends BaseRequest {
   }
 
   getActivities(registrationId: string, params: any) {
-    const url = `/activities/${registrationId}`;
+    const url = `/webhook-${registrationId}/activities`;
     return this.get(url, { ...params });
   }
 
