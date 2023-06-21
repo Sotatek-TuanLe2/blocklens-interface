@@ -1,27 +1,28 @@
 import { Box, Flex, Text, Textarea } from '@chakra-ui/react';
+import { v4 as uuidv4 } from 'uuid';
 import _, { debounce } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { AppButton, AppField } from 'src/components';
 import AppAccordion from 'src/components/AppAccordion';
-import { ILayout, TYPE_MODAL } from 'src/pages/WorkspacePage/parts/Dashboard';
-import rf from 'src/requests/RequestFactory';
+import {
+  ILayout,
+  TYPE_MODAL,
+  WIDGET_TYPE,
+} from 'src/pages/WorkspacePage/parts/Dashboard';
 import 'src/styles/components/BaseModal.scss';
-import { getErrorMessage } from 'src/utils/utils-helper';
-import { toastError, toastSuccess } from 'src/utils/utils-notify';
+import { toastSuccess } from 'src/utils/utils-notify';
 import BaseModal from '../BaseModal';
-import { IDashboardDetail, ITextWidget } from 'src/utils/query.type';
 import { INPUT_DEBOUNCE } from 'src/utils/common';
 import { RadioChecked, RadioNoCheckedIcon } from '../../assets/icons';
 import { WIDTH_DASHBOARD, TOTAL_COL } from './ModalAddVisualization';
 
 interface IModalAddTextWidget {
   open: boolean;
-  onClose: () => void;
   type?: TYPE_MODAL.ADD | TYPE_MODAL.EDIT | string;
   selectedItem: ILayout;
   dataLayouts: ILayout[];
-  onReload: () => Promise<void>;
-  dataDashboard?: IDashboardDetail;
+  onClose: () => void;
+  onSave: (layouts: ILayout[]) => void;
 }
 
 interface IMarkdown {
@@ -90,12 +91,11 @@ const MarkdownSupport: IMarkdown[] = [
 ];
 const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
   open,
-  onClose,
   type,
   dataLayouts,
   selectedItem,
-  onReload,
-  dataDashboard,
+  onClose,
+  onSave,
 }) => {
   const [markdownText, setMarkdownText] = useState<string>('');
   const [widthWidget, setWidthWidget] = useState<number>(TOTAL_COL / 2);
@@ -124,56 +124,40 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
       sizeX = 0;
     }
 
-    try {
-      const payload = {
-        dashboardId: dataDashboard?.id,
-        text: markdownText,
-        options: {
-          sizeX: +sizeX,
-          sizeY: +sizeY,
-          col: widthWidget,
-          row: 2,
-        },
-      };
-      const res = await rf
-        .getRequest('DashboardsRequest')
-        .addDashboardItem(payload);
-      if (res) {
-        toastSuccess({ message: 'Add successfully' });
-        onReload();
-        setMarkdownText('');
-        onClose();
-      }
-    } catch (e) {
-      toastError({ message: getErrorMessage(e) });
-    }
+    const newId = uuidv4();
+    const newTextWidget = {
+      x: +sizeX,
+      y: +sizeY,
+      w: widthWidget,
+      h: 2,
+      i: newId,
+      id: newId,
+      type: WIDGET_TYPE.TEXT,
+      text: markdownText,
+      content: {},
+    };
+
+    onSave([...dataLayouts, newTextWidget]);
+    onClose();
+    toastSuccess({ message: 'Add successfully' });
   };
+
   const handleUpdate = async () => {
-    const newItems = dataDashboard?.textWidgets?.map((i: ITextWidget) => {
-      if (i.id === selectedItem.id) {
-        return {
-          id: selectedItem.id,
-          text: markdownText,
-        };
-      }
-      return { ...i };
-    });
-    try {
-      const payload = {
-        textWidgets: newItems,
-      };
-      const res = await rf
-        .getRequest('DashboardsRequest')
-        .updateDashboardItem(payload, dataDashboard?.id);
-      if (res) {
-        toastSuccess({ message: 'Update successfully' });
-        onReload();
-        setMarkdownText('');
-        onClose();
-      }
-    } catch (e) {
-      toastError({ message: getErrorMessage(e) });
+    const newDataLayouts = [...dataLayouts];
+    const index = newDataLayouts.findIndex(
+      (item) => item.id === selectedItem.id,
+    );
+    if (index < 0) {
+      return;
     }
+    newDataLayouts[index] = {
+      ...newDataLayouts[index],
+      text: markdownText,
+    };
+
+    onSave(newDataLayouts);
+    onClose();
+    toastSuccess({ message: 'Update successfully' });
   };
 
   const handleChangeMarkdownText = debounce((event) => {

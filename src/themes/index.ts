@@ -33,5 +33,14 @@ export default extendTheme({
         opacity: '1 !important',
       },
     },
+    Tooltip: {
+      baseStyle: {
+        color: '#000224',
+        background: 'white',
+        padding: '8px 10px',
+        borderRadius: '6px',
+        [cssVar('popper-arrow-bg').variable]: 'white',
+      },
+    },
   },
 });

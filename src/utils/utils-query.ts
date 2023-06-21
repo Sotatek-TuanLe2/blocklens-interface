@@ -20,7 +20,7 @@ export interface VisualizationInterface {
 
 export interface QueryInterface {
   id: string;
-  resultId: string;
+  executedId: string;
   name: string;
   createdAt: string;
   updatedAt: string;
@@ -33,7 +33,7 @@ export interface QueryInterface {
   visualizations: Visualization[];
 
   getId: () => string;
-  getResultId: () => string;
+  getExecutionId: () => string;
   getName: () => string;
   getCreatedTime: () => string;
   getUpdatedTime: () => string;
@@ -43,6 +43,8 @@ export interface QueryInterface {
   getChains: () => string[] | null;
 
   getUser: () => IUserInfo | null;
+  getUserFirstName: () => string;
+  getUserLastName: () => string;
   getVisualizations: () => Visualization[];
   getVisualizationById: (id: string) => Visualization | null;
 
@@ -101,7 +103,7 @@ export class Visualization implements VisualizationInterface {
 
 export class Query implements QueryInterface {
   public id = '';
-  public resultId = '';
+  public executedId = '';
   public name = '';
   public createdAt;
   public updatedAt;
@@ -115,7 +117,7 @@ export class Query implements QueryInterface {
 
   constructor(query: IQuery) {
     this.id = query.id;
-    this.resultId = query.id;
+    this.executedId = query.id;
     this.name = query.name;
     this.createdAt = query.createdAt;
     this.updatedAt = query.updatedAt;
@@ -137,8 +139,8 @@ export class Query implements QueryInterface {
     return this.id;
   }
 
-  getResultId() {
-    return this.resultId;
+  getExecutionId() {
+    return this.executedId;
   }
 
   getName() {
@@ -167,6 +169,20 @@ export class Query implements QueryInterface {
 
   getUser() {
     return this.userInfo || null;
+  }
+
+  getUserFirstName() {
+    if (!this.getUser()) {
+      return '';
+    }
+    return this.getUser().firstName || '';
+  }
+
+  getUserLastName() {
+    if (!this.getUser()) {
+      return '';
+    }
+    return this.getUser().lastName || '';
   }
 
   getChains() {

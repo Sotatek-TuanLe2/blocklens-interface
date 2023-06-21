@@ -162,7 +162,7 @@ const AppGridItem: FC<AppGridItemProps> = ({
       >
         <Link to={toHref || '#'}>
           <Image
-            src={srcThumb || '/images/ThumbnailDashboard.png'}
+            src={srcThumb || '/images/ThumbnailDashboardLight.png'}
             alt="thumbnail"
             minW={'full'}
             minH={'full'}

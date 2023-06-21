@@ -5,7 +5,7 @@ import AceEditor from 'react-ace';
 import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/mode-sql';
 import 'ace-builds/src-noconflict/theme-tomorrow';
-import { useParams } from 'react-router-dom';
+import { useParams, Prompt } from 'react-router-dom';
 import { AppLoadingTable } from 'src/components';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import {
@@ -91,6 +91,11 @@ const QueryPart: React.FC = () => {
 
   const resetEditor = () => {
     editorRef.current && editorRef.current.editor.setValue('');
+    setQueryResult([]);
+    setQueryValue(null);
+    setExpandLayout(LAYOUT_QUERY.FULL);
+    setIsLoadingResult(false);
+    setErrorExecuteQuery(null);
     setSelectedQuery('');
   };
 
@@ -98,7 +103,8 @@ const QueryPart: React.FC = () => {
     try {
       await rf.getRequest('DashboardsRequest').updateQuery({ query }, queryId);
       await fetchQuery();
-      await fetchQueryResult();
+      const executionId = await executeQuery();
+      await fetchQueryResult(executionId);
     } catch (error: any) {
       toastError({ message: getErrorMessage(error) });
     }
@@ -130,16 +136,23 @@ const QueryPart: React.FC = () => {
     }
   };
 
-  const fetchQueryResult = async () => {
-    setIsLoadingResult(true);
+  const executeQuery = async (): Promise<string> => {
     const executedResponse: QueryExecutedResponse = await rf
       .getRequest('DashboardsRequest')
       .executeQuery(queryId);
     const executionId = executedResponse.id;
+    return executionId;
+  };
+
+  const fetchQueryResult = async (executionId?: string) => {
+    if (!executionId) {
+      return;
+    }
+    setIsLoadingResult(true);
     await getExecutionResultById(executionId);
   };
 
-  const fetchQuery = async (id?: string) => {
+  const fetchQuery = async (id?: string): Promise<IQuery | null> => {
     try {
       const dataQuery = await rf
         .getRequest('DashboardsRequest')
@@ -147,20 +160,23 @@ const QueryPart: React.FC = () => {
       setQueryValue(dataQuery);
       // set query into editor
       if (!editorRef.current) {
-        return;
+        return null;
       }
       const position = editorRef.current.editor.getCursorPosition();
       editorRef.current.editor.setValue('');
       editorRef.current.editor.session.insert(position, dataQuery?.query);
+
+      return dataQuery;
     } catch (error: any) {
       toastError({ message: getErrorMessage(error) });
+      return null;
     }
   };
 
   const fetchInitalData = async () => {
     try {
-      await fetchQuery();
-      await fetchQueryResult();
+      const dataQuery = await fetchQuery();
+      await fetchQueryResult(dataQuery?.latestExecutionId);
     } catch (error) {
       toastError({ message: getErrorMessage(error) });
     }
@@ -335,9 +351,7 @@ const QueryPart: React.FC = () => {
         type={LIST_ITEM_TYPE.QUERIES}
         author={
           queryClass
-            ? `${queryClass?.getUser().firstName} ${
-                queryClass?.getUser().lastName
-              }`
+            ? `${queryClass?.getUserFirstName()} ${queryClass?.getUserLastName()}`
             : ''
         }
         data={queryValue}

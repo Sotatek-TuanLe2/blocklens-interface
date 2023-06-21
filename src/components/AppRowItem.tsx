@@ -185,7 +185,7 @@ const AppRowItem: FC<AppRowItemProps> = ({
                   mr={3}
                 >
                   <Image
-                    src={srcThumb || '/images/ThumbnailDashboard.png'}
+                    src={srcThumb || '/images/ThumbnailDashboardLight.png'}
                     alt="thumbnail"
                     w={'auto'}
                     height={'full'}
@@ -219,7 +219,7 @@ const AppRowItem: FC<AppRowItemProps> = ({
           {chainList && <AppNetworkIcons networkIds={chainList} />}
         </Flex>
         <Flex flexGrow={1} w={'15%'} overflow={'hidden'} pr={2.5}>
-          {date && creator}
+          {date && date}
         </Flex>
         <Flex flexGrow={1} w={'calc(26% - 24px)'} overflow={'hidden'} pr={2.5}>
           {tagList &&
@@ -326,7 +326,7 @@ const AppRowItem: FC<AppRowItemProps> = ({
                       minW={'full'}
                       height={'full'}
                       borderRadius={'6px'}
-                      src={srcThumb || '/images/ThumbnailDashboard.png'}
+                      src={srcThumb || '/images/ThumbnailDashboardLight.png'}
                       alt="thumbnail"
                     />
                   </Box>
