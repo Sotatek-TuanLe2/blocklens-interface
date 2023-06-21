@@ -1,5 +1,4 @@
 import { Box, Flex, Text, Textarea } from '@chakra-ui/react';
-import { v4 as uuidv4 } from 'uuid';
 import _, { debounce } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { AppButton, AppField } from 'src/components';
@@ -124,7 +123,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
       sizeX = 0;
     }
 
-    const newId = uuidv4();
+    const newId = Date.now().toString();
     const newTextWidget = {
       x: +sizeX,
       y: +sizeY,

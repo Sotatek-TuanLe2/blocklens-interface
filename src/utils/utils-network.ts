@@ -69,8 +69,9 @@ export const getExplorerTxUrl = (
   return `${network?.blockExplorer.url}/${txHash}`;
 };
 
-export const objectKeys = <Obj>(obj: Obj): (keyof Obj)[] =>
-  Object.keys(obj) as (keyof Obj)[];
+export const objectKeys = (obj: any) => {
+  return Object.keys(obj);
+}
 
 export const getChains: (filter?: (chain: Chain) => boolean) => {
   label: string;
