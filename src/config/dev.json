@@ -7,7 +7,7 @@
   },
   "api": {
     "baseUrlApi": "https://dev-blocksniper-api.sotatek.works/api/blocklens-users",
-    "notificationsApi": "https://dev-blocksniper-api.sotatek.works/api/blocklens-notifications",
+    "notificationsApi": "https://dev-blocksniper-api.sotatek.works/api/blocklens-insights",
     "authApi": "https://dev-blocksniper-api.sotatek.works/api/blocklens-auth",
     "dashboard": "https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor"
   },
