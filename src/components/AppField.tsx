@@ -51,7 +51,7 @@ const AppField = ({
               placement={'top'}
               hasArrow
               isOpen={isOpen}
-              className={"tooltip-app"}
+              className={'tooltip-app'}
             >
               <Box
                 className="icon-info"

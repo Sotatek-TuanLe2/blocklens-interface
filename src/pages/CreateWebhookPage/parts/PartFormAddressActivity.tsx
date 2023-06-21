@@ -146,7 +146,7 @@ const PartFormAddressActivity: FC<IPartFormAddressActivity> = ({
             setDataForm({ ...dataForm, addresses: [] });
             setAddressesValue('');
             validator.current.fields = [];
-           // forceUpdate();
+            // forceUpdate();
             onClearFile();
           }}
         >

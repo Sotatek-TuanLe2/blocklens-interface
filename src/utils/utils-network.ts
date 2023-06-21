@@ -71,7 +71,7 @@ export const getExplorerTxUrl = (
 
 export const objectKeys = (obj: any) => {
   return Object.keys(obj);
-}
+};
 
 export const getChains: (filter?: (chain: Chain) => boolean) => {
   label: string;
