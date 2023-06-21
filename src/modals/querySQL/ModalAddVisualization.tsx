@@ -1,4 +1,5 @@
 import { Flex, Link, Spinner, Text, Tooltip, Box } from '@chakra-ui/react';
+import { v4 as uuidv4 } from 'uuid';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   AreaChartIcon,
@@ -26,7 +27,6 @@ import BaseModal from '../BaseModal';
 import _, { debounce } from 'lodash';
 import { INPUT_DEBOUNCE, IPagination } from 'src/utils/common';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { nanoid } from '@reduxjs/toolkit';
 
 export const WIDTH_DASHBOARD = [
   {
@@ -193,7 +193,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
         item.visualization.id === (visualSelected as VisualizationType).id,
     );
 
-    const newId = nanoid();
+    const newId = uuidv4();
     const newVisualization = {
       x: sizeX,
       y: sizeY,

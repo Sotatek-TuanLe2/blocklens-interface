@@ -1,4 +1,5 @@
 import { Box, Flex, Text, Textarea } from '@chakra-ui/react';
+import { v4 as uuidv4 } from 'uuid';
 import _, { debounce } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { AppButton, AppField } from 'src/components';
@@ -14,7 +15,6 @@ import BaseModal from '../BaseModal';
 import { INPUT_DEBOUNCE } from 'src/utils/common';
 import { RadioChecked, RadioNoCheckedIcon } from '../../assets/icons';
 import { WIDTH_DASHBOARD, TOTAL_COL } from './ModalAddVisualization';
-import { nanoid } from '@reduxjs/toolkit';
 
 interface IModalAddTextWidget {
   open: boolean;
@@ -124,7 +124,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
       sizeX = 0;
     }
 
-    const newId = nanoid();
+    const newId = uuidv4();
     const newTextWidget = {
       x: +sizeX,
       y: +sizeY,
