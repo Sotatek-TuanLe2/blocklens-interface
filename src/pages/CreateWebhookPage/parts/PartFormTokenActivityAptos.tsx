@@ -15,12 +15,12 @@ interface IDataEvent {
 
 interface IListSelectEvent {
   eventsSelected: string[];
-  setEventsSelected: (value: string[]) => void;
+  setEventsSelected?: (value: string[]) => void;
   viewOnly?: boolean;
   dataEvent: IDataEvent[];
 }
 
-const TOKEN_EVENTS = [
+export const TOKEN_EVENTS = [
   {
     name: '0x3::token::DepositEvent',
   },
@@ -45,6 +45,7 @@ export const ListSelectEvent = ({
   dataEvent,
 }: IListSelectEvent) => {
   const onChangeSelect = (e: ChangeEvent<HTMLInputElement>, event: string) => {
+    if (!setEventsSelected) return;
     if (!e.target.checked) {
       setEventsSelected(eventsSelected.filter((item) => item !== event));
     } else {
@@ -53,6 +54,7 @@ export const ListSelectEvent = ({
   };
 
   const onSelectAll = (e: ChangeEvent<HTMLInputElement>) => {
+    if (!setEventsSelected) return;
     if (!e.target.checked) {
       setEventsSelected([]);
     } else {

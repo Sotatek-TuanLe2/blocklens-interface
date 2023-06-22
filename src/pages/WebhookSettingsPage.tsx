@@ -27,6 +27,11 @@ import { BasePage } from 'src/layouts';
 import useAppDetails from 'src/hooks/useAppDetails';
 import useWebhookDetails from 'src/hooks/useWebhook';
 import { getErrorMessage } from '../utils/utils-helper';
+import {
+  ListSelectEvent,
+  TOKEN_EVENTS,
+} from './CreateWebhookPage/parts/PartFormTokenActivityAptos';
+import { COIN_EVENTS } from './CreateWebhookPage/parts/PartFormCoinActivityAptos';
 
 const WebhookSettingsPage = () => {
   const { appId, id: webhookId } = useParams<{ appId: string; id: string }>();
@@ -109,6 +114,49 @@ const WebhookSettingsPage = () => {
     );
   };
 
+  const _renderDetailCoinActivityAptosWebhook = () => {
+    return (
+      <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
+        <AppField label={'Coin Type'} customWidth={'100%'}>
+          <AppInput value={webhook?.metadata?.coinType} isDisabled />
+        </AppField>
+        <Box>
+          <Box mb={5}>Events</Box>
+          <ListSelectEvent
+            viewOnly
+            eventsSelected={webhook?.metadata?.events}
+            dataEvent={COIN_EVENTS}
+          />
+        </Box>
+      </Flex>
+    );
+  };
+
+  const _renderDetailTokenActivityAptosWebhook = () => {
+    return (
+      <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
+        <AppField label={'Collection Name'} customWidth={'49%'}>
+          <AppInput value={webhook?.metadata?.collectionName} isDisabled />
+        </AppField>
+        <AppField label={'Creator Address'} customWidth={'49%'}>
+          <AppInput value={webhook?.metadata?.creatorAddress} isDisabled />
+        </AppField>
+        <AppField label={'Name'} customWidth={'100%'}>
+          <AppInput value={webhook?.metadata?.name} isDisabled />
+        </AppField>
+
+        <Box>
+          <Box mb={5}>Events</Box>
+          <ListSelectEvent
+            viewOnly
+            eventsSelected={webhook?.metadata?.events}
+            dataEvent={TOKEN_EVENTS}
+          />
+        </Box>
+      </Flex>
+    );
+  };
+
   const _renderDetailWebhook = () => {
     switch (webhook.type) {
       case WEBHOOK_TYPES.NFT_ACTIVITY:
@@ -117,6 +165,10 @@ const WebhookSettingsPage = () => {
         return _renderDetailAddressWebhook();
       case WEBHOOK_TYPES.CONTRACT_ACTIVITY:
         return _renderDetailContractWebhook();
+      case WEBHOOK_TYPES.APTOS_COIN_ACTIVITY:
+        return _renderDetailCoinActivityAptosWebhook();
+      case WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY:
+        return _renderDetailTokenActivityAptosWebhook();
     }
   };
 
