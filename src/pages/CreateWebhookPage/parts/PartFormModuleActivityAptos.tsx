@@ -78,14 +78,14 @@ const PartFormModuleActivityAptos: FC<PartFormContractAptosProps> = ({
 
       getDataAddress(addressValue).then();
     }, 2000),
-    [dataForm.address],
+    [dataForm.metadata?.address],
   );
 
   useEffect(() => {
-    if (!dataForm.address) {
+    if (!dataForm.metadata?.address) {
       setDataAddress(null);
     }
-  }, [dataForm.address]);
+  }, [dataForm.metadata?.address]);
 
   const _renderABI = () => {
     if (dataAddress) {
@@ -93,7 +93,7 @@ const PartFormModuleActivityAptos: FC<PartFormContractAptosProps> = ({
         <Box>
           <AppReadABI
             onChangeForm={(data) => onChangeForm(data)}
-            address={dataForm.address}
+            address={dataForm.metadata?.address || ''}
             dataForm={dataForm}
             dataAddress={dataAddress}
           />
@@ -106,11 +106,14 @@ const PartFormModuleActivityAptos: FC<PartFormContractAptosProps> = ({
     <Box width={'100%'}>
       <AppField label={'Address ID'} customWidth={'100%'} isRequired>
         <AppInput
-          value={dataForm.address}
+          value={dataForm.metadata?.address}
           onChange={(e) => {
             onChangeForm({
               ...dataForm,
-              address: e.target.value.trim(),
+              metadata: {
+                ...dataForm.metadata,
+                address: e.target.value.trim(),
+              },
             });
             if (!e.target.value.trim()) {
               setIsLoading(true);
@@ -125,7 +128,7 @@ const PartFormModuleActivityAptos: FC<PartFormContractAptosProps> = ({
         />
       </AppField>
 
-      {!isLoading && !dataAddress && dataForm.address && (
+      {!isLoading && !dataAddress && dataForm.metadata?.address && (
         <Box color={'#ee5d50'} fontSize={'14px'}>
           Address Invalid
         </Box>
