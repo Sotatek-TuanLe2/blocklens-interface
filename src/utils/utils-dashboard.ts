@@ -1,6 +1,7 @@
 import {
   IDashboardDetail,
   ITextWidget,
+  IUserInfo,
   IVisualizationWidget,
   WidgetOptions,
 } from './query.type';
@@ -40,16 +41,16 @@ export interface DashboardInterface {
   updatedAt: string;
   tags?: string[];
   privateMode: boolean;
-
   user: UserInterface | string;
   chains: string[] | null;
   forkedDashboardId: string | null;
   textWidgets?: TextWidget[];
   dashboardVisuals?: DashboardVisual[];
 
+  userInfo: IUserInfo;
+
   getId: () => string;
   getName: () => string;
-  getUser: () => UserInterface | string;
   getCreatedTime: () => string;
   getUpdatedTime: () => string;
   getThumnail: () => string | null;
@@ -57,6 +58,9 @@ export interface DashboardInterface {
   getForkedDashboardId: () => string | null;
   getChains: () => string[] | null;
   getTextWidgets: () => TextWidget[] | null;
+  getUser: () => IUserInfo | null;
+  getUserFirstName: () => string;
+  getUserLastName: () => string;
   getDashboardVisuals: () => DashboardVisual[] | null;
   getTextWidgetById: (id: string) => TextWidget | null;
   getDashboardVisualById: (id: string) => DashboardVisual | null;
@@ -148,6 +152,7 @@ export class Dashboard implements DashboardInterface {
   public privateMode = false;
   public user;
   public forkedDashboardId;
+  public userInfo: IUserInfo;
   public textWidgets: TextWidget[];
   public chains: string[];
   public dashboardVisuals: DashboardVisual[];
@@ -163,6 +168,7 @@ export class Dashboard implements DashboardInterface {
     this.forkedDashboardId = dashboard.forkedDashboardId;
     this.textWidgets = [];
     this.thumbnail = dashboard.thumbnail;
+    this.userInfo = dashboard.userInfo;
     this.chains = dashboard.utilizedChains;
     if (dashboard.textWidgets) {
       dashboard.textWidgets.forEach((item) => {
@@ -201,12 +207,26 @@ export class Dashboard implements DashboardInterface {
     return this.tags || null;
   }
 
-  getUser() {
-    return this.user;
-  }
-
   getChains() {
     return this.chains;
+  }
+
+  getUser() {
+    return this.userInfo || null;
+  }
+
+  getUserFirstName() {
+    if (!this.getUser()) {
+      return '';
+    }
+    return this.getUser().firstName || '';
+  }
+
+  getUserLastName() {
+    if (!this.getUser()) {
+      return '';
+    }
+    return this.getUser().lastName || '';
   }
 
   getTextWidgets() {

@@ -31,7 +31,6 @@ const AppSlider = ({ handleChange, value, ...props }: any) => {
       </SliderTrack>
       <Tooltip
         hasArrow
-        bg="pink.600"
         color="white"
         placement="top"
         isOpen={showTooltip}

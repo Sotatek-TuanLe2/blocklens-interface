@@ -173,6 +173,14 @@ export default class DashboardsRequest extends BaseRequest {
     return this.post(url, { listVisuals: data.listVisuals });
   }
 
+  insertVisualizations(data: {
+    dashboardId: string;
+    dataVisualWidget: DataVisualWidget;
+  }) {
+    const url = `/dashboard/${data.dashboardId}/insert-dashboard-visual`;
+    return this.post(url, data.dataVisualWidget);
+  }
+
   updateDashboardItem(data: ILayout, id: string) {
     const url = `/dashboard/${id}/update-dashboard`;
     return this.patch(url, data);
@@ -218,11 +226,6 @@ export default class DashboardsRequest extends BaseRequest {
 
   executeQuery(queryId: string) {
     const url = '/query-executors/execute-query';
-    return this.post(url, { queryId });
-  }
-
-  executePublicQuery(queryId: string) {
-    const url = '/query-executors/execute-query-free';
     return this.post(url, { queryId });
   }
 

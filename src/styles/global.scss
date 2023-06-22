@@ -11,7 +11,7 @@
 @font-face {
   font-family: 'DM Sans';
   src: url('../assets/fonts/DMSans-Medium.ttf');
-  font-weight: 400;
+  font-weight: 500;
 }
 
 @font-face {
@@ -38,7 +38,7 @@
   font-family: 'DM Sans';
   src: url('../assets/fonts/DMSans-MediumItalic.ttf');
   font-style: italic;
-  font-weight: 400;
+  font-weight: 500;
 }
 
 iframe {
@@ -66,12 +66,12 @@ iframe {
   background-color: inherit !important;
 
   &[data-checked] {
-    background: $main !important;
+    background: $gradient !important;
     border: 0 !important;
   }
 
   &[data-indeterminate] {
-    background: $main !important;
+    background: $gradient !important;
     border: 0 !important;
   }
 
@@ -80,12 +80,15 @@ iframe {
   }
 
   svg {
-    color: $title;
+    color: $white;
   }
 }
 
 .infinite-scroll-component.infinite-scroll {
-  overflow: hidden !important;
+  overflow: visible !important;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .chakra-checkbox__label {
@@ -97,23 +100,23 @@ text.recharts-text.recharts-label {
 }
 
 .link {
-  color: $link !important;
+  color: $main !important;
   cursor: pointer;
 }
 
 ::-webkit-scrollbar {
-  width: 6px;
-  background-color: #1a203b;
-  border-radius: 100px;
-  height: 6px;
+  width: 4px;
+  background-color: white;
+  height: 4px;
+  border-radius: 2px;
 }
 ::-webkit-scrollbar-thumb {
-  background: $line;
-  border-radius: 100px;
+  background: #c7d2e1;
+  border-radius: 2px;
 }
 
 ::-webkit-scrollbar-corner {
-  background: #030821;
+  background: #c7d2e1;
 }
 
 @keyframes spin {
@@ -122,5 +125,26 @@ text.recharts-text.recharts-label {
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+.recharts-tooltip-wrapper {
+  outline: none !important;
+}
+
+.tooltip-app {
+  color: $title !important;
+  background: $white !important;
+  padding: 10px 15px !important;
+  border-radius: 6px !important;
+
+  .chakra-tooltip__arrow {
+    background: $white !important;
+  }
+}
+
+.chakra-alert__icon {
+  svg {
+    color: $white;
   }
 }

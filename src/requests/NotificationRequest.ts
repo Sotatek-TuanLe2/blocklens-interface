@@ -7,37 +7,37 @@ export default class NotificationRequest extends BaseRequest {
   }
 
   getActivities(registrationId: string, params: any) {
-    const url = `/activities/${registrationId}`;
+    const url = `/webhook-${registrationId}/activities`;
     return this.get(url, { ...params });
   }
 
   getAppStats(appId: string, params: any) {
-    const url = `/stats/app/${appId}`;
+    const url = `/metrics/app-metrics`;
     return this.get(url, params);
   }
 
   getWebhookStats(registrationId: string, params: any) {
-    const url = `/stats/registration/${registrationId}`;
-    return this.get(url, params);
+    const url = `/metrics/registration-metrics`;
+    return this.get(url, { ...params, registrationId });
   }
 
   getUserStats(params: any) {
-    const url = `/stats`;
+    const url = `/metrics/user-metrics`;
     return this.get(url, params);
   }
 
   getAppStatsToday(appId: string) {
-    const url = `/stats/app/${appId}/metric-today`;
-    return this.get(url);
+    const url = `/app-${appId}/statistics`;
+    return this.get(url, { appId });
   }
 
   getAppMetricToday(params: any) {
-    const url = `/stats/app/metric-today`;
+    const url = `/metrics/app-metrics`;
     return this.get(url, params);
   }
 
   getWebhookStatsToday(registrationId: string) {
-    const url = `/stats/registration/${registrationId}/metric-today`;
+    const url = `/webhook-${registrationId}/statistics`;
     return this.get(url);
   }
 
@@ -47,7 +47,7 @@ export default class NotificationRequest extends BaseRequest {
   }
 
   getMessagesHistory(hash: string, params: any) {
-    const url = `/notifications/message-histories/${hash}`;
+    const url = `/activities/${hash}/message-histories`;
     return this.get(url, params);
   }
 

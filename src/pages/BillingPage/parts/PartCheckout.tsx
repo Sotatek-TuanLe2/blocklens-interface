@@ -88,7 +88,7 @@ const PartCheckout: FC<IPartCheckout> = ({
   return (
     <Box className="form-card">
       <Flex alignItems={'center'} mb={7}>
-        <Box className="icon-arrow-left" mr={6} onClick={onBack} />
+        <Box className="icon-arrow-left" mr={3.5} onClick={onBack} />
         <Box className={'sub-title'}>Billing Checkout</Box>
       </Flex>
 
