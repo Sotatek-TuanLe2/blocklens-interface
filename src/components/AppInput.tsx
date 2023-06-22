@@ -128,7 +128,7 @@ export const appInputStyles = {
         fontSize: '16px',
         p: '20px',
         _focus: {
-          borderColor: mode('pressed.100', 'pressed.100')(props),
+          borderColor: mode('#0060DB', '#0060DB')(props),
         },
         _placeholder: {
           color: mode('line.100', 'line.100')(props),
@@ -146,6 +146,9 @@ export const appInputStyles = {
         color: mode('navy.700', 'white')(props),
         bg: mode('transparent', 'transparent')(props),
         border: '1px solid',
+        _focus: {
+          borderColor: mode('#0060DB', '#0060DB')(props),
+        },
         borderColor: mode(
           'secondaryGray.100',
           'rgba(135, 140, 189, 0.3)',
@@ -183,7 +186,7 @@ export const appInputStyles = {
         fontSize: '16px',
         p: '20px 20px 20px 46px',
         _focus: {
-          borderColor: mode('pressed.100', 'pressed.100')(props),
+          borderColor: mode('#0060DB', '#0060DB')(props),
         },
         _placeholder: {
           color: mode('line.100', 'line.100')(props),
