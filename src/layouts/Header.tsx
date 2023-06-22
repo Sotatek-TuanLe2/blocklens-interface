@@ -90,22 +90,7 @@ const Header: FC = () => {
       <Box>
         <Menu>
           <MenuButton>
-            {user?.getInfo().avatar ? (
-              <Image
-                w={'24px'}
-                h={'24px'}
-                borderRadius={'12px'}
-                objectFit={'cover'}
-                objectPosition={'center'}
-                src={user?.getInfo().avatar}
-                alt="avatar"
-              />
-            ) : (
-              <Jazzicon
-                diameter={24}
-                seed={generateAvatarFromId(user?.getId())}
-              />
-            )}
+            <Avatar name={user?.getFirstName()} size="sm" />
           </MenuButton>
           <MenuList className="menu-header">
             <MenuItem className="user-info">
