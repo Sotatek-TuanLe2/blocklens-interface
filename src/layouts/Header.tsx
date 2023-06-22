@@ -89,7 +89,7 @@ const Header: FC = () => {
     } else {
       document.body.style.overflow = 'inherit';
     }
-  });
+  }, [isOpenMenuMobile]);
 
   const _renderAvatar = () => {
     return (
