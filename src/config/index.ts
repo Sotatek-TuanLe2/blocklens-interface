@@ -115,7 +115,6 @@ export interface Config {
   networks: {
     [key: string]: Network;
   };
-  reCaptchaKey: string;
 }
 
 export default config;
