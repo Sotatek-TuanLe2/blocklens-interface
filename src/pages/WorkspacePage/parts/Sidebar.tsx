@@ -156,23 +156,6 @@ const Sidebar: React.FC<{
     activeIcon: React.ReactNode;
   }[] = [
     {
-      id: CATEGORIES.WORK_PLACE,
-      title: 'Work place',
-      icon: (
-        <Tooltip
-          placement="right"
-          hasArrow
-          label="Work place"
-          bg="white"
-          borderRadius="6px"
-          color="black"
-        >
-          <div className="icon-place-light" />
-        </Tooltip>
-      ),
-      activeIcon: <div className="bg-work_place_active" />,
-    },
-    {
       id: CATEGORIES.EXPLORE_DATA,
       title: 'Explore data',
       icon: (
@@ -189,9 +172,26 @@ const Sidebar: React.FC<{
       ),
       activeIcon: <div className="bg-explore_active" />,
     },
+    {
+      id: CATEGORIES.WORK_PLACE,
+      title: 'Work place',
+      icon: (
+        <Tooltip
+          placement="right"
+          hasArrow
+          label="Work place"
+          bg="white"
+          borderRadius="6px"
+          color="black"
+        >
+          <div className="icon-place-light" />
+        </Tooltip>
+      ),
+      activeIcon: <div className="bg-work_place_active" />,
+    },
   ];
 
-  const [category, setCategory] = useState<string>(CATEGORIES.WORK_PLACE);
+  const [category, setCategory] = useState<string>(CATEGORIES.EXPLORE_DATA);
   const [searchValueWorkPlace, setSearchValueWorkPlace] = useState<string>('');
   const [searchExploreData, setSearchExploreData] = useState<string>('');
   const { queryId, dashboardId }: { queryId?: string; dashboardId?: string } =
