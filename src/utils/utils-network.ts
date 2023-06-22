@@ -261,12 +261,29 @@ const addNewNetwork = (network: string, provider: JsonRpcProvider) => {
 
 export const getChainIconByChainName = (chainName: string) => {
   let iconClassName: string;
+  const listChainName = [
+    CHAIN_NAME.ETH_GOERLI,
+    CHAIN_NAME.ETH_MAINNET,
+    CHAIN_NAME.BSC_TESTNET,
+    CHAIN_NAME.BSC_MAINNET,
+    CHAIN_NAME.APTOS_TESTNET,
+    CHAIN_NAME.APTOS_MAINNET,
+    CHAIN_NAME.polygon_mumbai,
+    CHAIN_NAME.POLYGON_MAINNET,
+    CHAIN_NAME.OPTIMISM_MAINET,
+    CHAIN_NAME.OPTIMISM_TESTNET,
+    CHAIN_NAME.SOLANA_MAINET,
+    CHAIN_NAME.SOLANA_TESTNET,
+    CHAIN_NAME.ARBITRUM_MAINET,
+    CHAIN_NAME.ARBITRUM_TESTNET,
+    CHAIN_NAME.SUI_MAINET,
+    CHAIN_NAME.SUI_TESTNET,
+  ];
 
-  switch (chainName) {
+  const chainNameValue = listChainName.find((item) => chainName.includes(item));
+
+  switch (chainNameValue) {
     case CHAIN_NAME.ETH_GOERLI:
-    case CHAIN_NAME.ETH_MAINNET_TOKEN_COLLECTOR:
-    case CHAIN_NAME.ETH_MAINNET_NFT_COLLECTOR:
-    case CHAIN_NAME.ETH_MAINNET_DECODED:
     case CHAIN_NAME.ETH_MAINNET: {
       iconClassName = getLogoChainByChainId('ETH') || '';
       break;
