@@ -82,6 +82,7 @@ export interface Config {
     message: string;
     secretKey: string;
     googleClientId: string;
+    reCaptchaKey: string;
   };
   api: {
     baseUrlApi: string;

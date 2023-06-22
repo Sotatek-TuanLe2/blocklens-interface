@@ -20,17 +20,16 @@ import { setUserAuth } from '../store/user';
 import { getErrorMessage } from '../utils/utils-helper';
 import { ROUTES } from 'src/utils/common';
 import {
-  GoogleReCaptchaProvider,
   useGoogleReCaptcha,
 } from 'react-google-recaptcha-v3';
-import { setRecaptchaToRequest } from 'src/utils/utils-recaptcha';
-import config from 'src/config';
+import { setRecaptchaToRequest } from 'src/utils/utils-auth';
+
 interface IDataForm {
   email: string;
   password: string;
 }
 
-const LoginPageContent: FC = () => {
+const LoginPage: FC = () => {
   const initDataLogin = {
     email: '',
     password: '',
@@ -172,11 +171,5 @@ const LoginPageContent: FC = () => {
     </GuestPage>
   );
 };
-
-const LoginPage = () => (
-  <GoogleReCaptchaProvider reCaptchaKey={config.reCaptchaKey}>
-    <LoginPageContent />
-  </GoogleReCaptchaProvider>
-);
 
 export default LoginPage;
