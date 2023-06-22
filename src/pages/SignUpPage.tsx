@@ -17,6 +17,8 @@ import { GoogleAuthButton } from 'src/components';
 import ModalResendMail from 'src/modals/ModalResendMail';
 import { getErrorMessage } from '../utils/utils-helper';
 import { ROUTES } from 'src/utils/common';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
+import { setRecaptchaToRequest } from 'src/utils/utils-auth';
 
 interface IDataForm {
   firstName: string;
@@ -34,6 +36,7 @@ const SignUpPage: FC = () => {
     password: '',
     confirmPassword: '',
   };
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   const [dataForm, setDataForm] = useState<IDataForm>(initDataSignUp);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
@@ -53,10 +56,19 @@ const SignUpPage: FC = () => {
 
   const onSignUp = async () => {
     try {
+      if (!executeRecaptcha) {
+        toastError({
+          message: 'Oops. Something went wrong!',
+        });
+        return;
+      }
+      const result = await executeRecaptcha('homepage');
+      setRecaptchaToRequest(result);
       const res = await rf.getRequest('AuthRequest').signUp(dataForm);
       setUserId(res?.userId || '');
       setOpenModalResendEmail(true);
     } catch (e) {
+      setRecaptchaToRequest(null);
       toastError({ message: getErrorMessage(e) });
     }
   };

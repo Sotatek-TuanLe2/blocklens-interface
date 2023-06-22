@@ -3,7 +3,8 @@
     "domain": "Blocklens",
     "message": "Join Blocklens",
     "secretKey": "0xA84Df05A9F758eca47A7060a9A6C004578F6E65B",
-    "googleClientId": "763245371014-3sb0h7slimmco6654lgfm5acmijlq0td.apps.googleusercontent.com"
+    "googleClientId": "763245371014-3sb0h7slimmco6654lgfm5acmijlq0td.apps.googleusercontent.com",
+    "reCaptchaKey": "6LcchvMjAAAAAG9Bqt0aP3KBWI9Gg-UtCVg6DGRH"
   },
   "api": {
     "baseUrlApi": "https://blocksniper-api.sotatek.works/api/blocklens-users",
@@ -71,7 +72,6 @@
             "decimals": 18
           }
         }
-
       }
     },
     "SUI": {

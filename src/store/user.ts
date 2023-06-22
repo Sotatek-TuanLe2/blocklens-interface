@@ -1,6 +1,9 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import rf from 'src/requests/RequestFactory';
-import { setAuthorizationToRequest } from 'src/utils/utils-auth';
+import {
+  setAuthorizationToRequest,
+  setRecaptchaToRequest,
+} from 'src/utils/utils-auth';
 import Storage from 'src/utils/utils-storage';
 import { TIME_EXPIRE_TOKEN_CLIENT } from 'src/constants';
 
@@ -219,6 +222,7 @@ const userSlice = createSlice({
     },
     clearUser: () => {
       setAuthorizationToRequest(null);
+      setRecaptchaToRequest(null);
       Storage.logout();
       return initialState;
     },

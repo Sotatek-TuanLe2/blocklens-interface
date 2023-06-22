@@ -10,3 +10,10 @@ export const setAuthorizationToRequest = (accessToken: string | null) => {
   axios.defaults.headers.common['x-app-version'] = 2;
   axios.defaults.headers.common['x-app-message'] = config.auth.message;
 };
+
+export const setRecaptchaToRequest = (recaptcha: string | null) => {
+  if (!recaptcha) {
+    return delete axios.defaults.headers.common['recaptcha'];
+  }
+  axios.defaults.headers.common['recaptcha'] = recaptcha;
+};

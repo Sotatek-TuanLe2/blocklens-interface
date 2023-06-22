@@ -23,11 +23,14 @@ const PartFormTokenActivity: FC<IPartFormTokenActivity> = ({
       <AppField label={'Token Address'} customWidth={'100%'} isRequired>
         <AppInput
           size="lg"
-          value={dataForm.address}
+          value={dataForm.metadata?.address}
           onChange={(e) => {
             setDataForm({
               ...dataForm,
-              address: e.target.value.trim(),
+              metadata: {
+                ...dataForm.metadata,
+                address: e.target.value.trim(),
+              },
             });
           }}
           hiddenErrorText={type !== WEBHOOK_TYPES.NFT_ACTIVITY}
@@ -41,7 +44,14 @@ const PartFormTokenActivity: FC<IPartFormTokenActivity> = ({
       <AppUploadABI
         type={TYPE_ABI.TOKEN}
         onChange={(abi, abiFilter) =>
-          setDataForm({ ...dataForm, abi, abiFilter })
+          setDataForm({
+            ...dataForm,
+            metadata: {
+              ...dataForm.metadata,
+              abi,
+              abiFilter,
+            },
+          })
         }
       />
     </Flex>
