@@ -1,8 +1,7 @@
 import { Box, Checkbox, Flex } from '@chakra-ui/react';
-import { AppField, AppInput, TYPE_ABI } from 'src/components';
+import { AppField, AppInput } from 'src/components';
 import React, { ChangeEvent, FC, useEffect, useMemo, useState } from 'react';
 import { IDataForm } from '../index';
-import { Scrollbars } from 'react-custom-scrollbars';
 
 interface IPartFormTokenActivityAptos {
   dataForm: IDataForm;
@@ -10,13 +9,18 @@ interface IPartFormTokenActivityAptos {
   validator: any;
 }
 
+interface IDataEvent {
+  name: string;
+}
+
 interface IListSelectEvent {
   eventsSelected: string[];
   setEventsSelected: (value: string[]) => void;
   viewOnly?: boolean;
+  dataEvent: IDataEvent[];
 }
 
-const dataEvent = [
+const TOKEN_EVENTS = [
   {
     name: '0x3::token::DepositEvent',
   },
@@ -38,6 +42,7 @@ export const ListSelectEvent = ({
   viewOnly,
   eventsSelected,
   setEventsSelected,
+  dataEvent,
 }: IListSelectEvent) => {
   const onChangeSelect = (e: ChangeEvent<HTMLInputElement>, event: string) => {
     if (!e.target.checked) {
@@ -186,6 +191,7 @@ const PartFormTokenActivityAptos: FC<IPartFormTokenActivityAptos> = ({
         </Box>
         <Box mt={5}>
           <ListSelectEvent
+            dataEvent={TOKEN_EVENTS}
             eventsSelected={eventsSelected}
             setEventsSelected={setEventsSelected}
           />

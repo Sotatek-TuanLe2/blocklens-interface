@@ -1,6 +1,6 @@
-import { Box, Checkbox, Flex } from '@chakra-ui/react';
-import { AppField, AppInput, TYPE_ABI } from 'src/components';
-import React, { ChangeEvent, FC, useEffect, useMemo, useState } from 'react';
+import { Box, Flex } from '@chakra-ui/react';
+import { AppField, AppInput } from 'src/components';
+import React, { FC, useEffect, useState } from 'react';
 import { IDataForm } from '../index';
 import { ListSelectEvent } from './PartFormTokenActivityAptos';
 
@@ -10,13 +10,7 @@ interface IPartFormCoinActivityAptos {
   validator: any;
 }
 
-interface IListSelectEvent {
-  eventsSelected: string[];
-  setEventsSelected: (value: string[]) => void;
-  viewOnly?: boolean;
-}
-
-const dataEvent = [
+const COIN_EVENTS = [
   {
     name: '0x1::coin::DepositEvent',
   },
@@ -70,6 +64,7 @@ const PartFormCoinActivityAptos: FC<IPartFormCoinActivityAptos> = ({
         </Box>
         <Box mt={5}>
           <ListSelectEvent
+            dataEvent={COIN_EVENTS}
             eventsSelected={eventsSelected}
             setEventsSelected={setEventsSelected}
           />
