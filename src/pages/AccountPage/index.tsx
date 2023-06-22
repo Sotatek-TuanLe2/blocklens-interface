@@ -1,15 +1,15 @@
 import { BasePage } from 'src/layouts';
 import { Box, Flex } from '@chakra-ui/react';
 import BasicDetail from './parts/BasicDetail';
-import BillingInfos from './parts/BillingInfos';
+//import BillingInfos from './parts/BillingInfos';
 import 'src/styles/pages/AccountPage.scss';
 import { isMobile } from 'react-device-detect';
-import { AppCard, AppHeading } from 'src/components';
+import { AppHeading } from 'src/components';
 import Notifications from './parts/Notifications';
 import AppConnectWalletButton from 'src/components/AppConnectWalletButton';
 import useUser from 'src/hooks/useUser';
 import { formatShortText, copyToClipboard } from 'src/utils/utils-helper';
-import TopUpHistory from './parts/TopUpHistory';
+//import TopUpHistory from './parts/TopUpHistory';
 import useWallet from 'src/hooks/useWallet';
 import { CopyIcon } from 'src/assets/icons';
 import React from 'react';
@@ -87,7 +87,7 @@ const AccountPage = () => {
           {/*  </AppCard>*/}
           {/*</Box>*/}
 
-          <Box className={'box-account'}>
+          <Box className={'box-account'} mt={{ base: 5, md: 0 }}>
             <Notifications />
           </Box>
         </Flex>

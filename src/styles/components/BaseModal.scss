@@ -2,7 +2,6 @@
 @import '../mixins.scss';
 
 .modal {
-  background-color: $card !important;
   border-radius: 20px !important;
   padding: 8px;
   max-width: 500px !important;
@@ -41,7 +40,7 @@
     position: absolute;
     right: 20px;
     top: 20px;
-    border: 2px solid $border;
+    border: 2px solid $line;
     border-radius: 48px;
     width: 38px;
     height: 38px;
@@ -109,7 +108,7 @@
   }
 
   &.modal-create-app {
-    max-width: 590px !important;
+    max-width: 500px !important;
   }
   &.modal-add-visualization {
     max-width: 500px !important;
@@ -127,7 +126,7 @@
 .infos {
   .info {
     @include text-medium-regular;
-    background-color: $bg2;
+    background-color: rgba(0, 2, 36, 0.05);
     color: $paragraph;
     padding: 12px 16px;
     margin-bottom: 4px;
@@ -254,19 +253,7 @@
     border-color: #465065;
     max-width: 100%;
   }
-  .btn-save {
-    background: #1e1870;
-    color: #fff;
-  }
-  .btn-remove {
-    background: #e1e1f9;
-    color: #1e1870;
-  }
 
-  .btn-cancel {
-    background: #ffeceb;
-    color: #000;
-  }
   .title-markdown {
     width: 160px;
     color: #8d91a5;
@@ -312,7 +299,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: rgba(36, 43, 69, 0.8);
+    background: #f4f6f9;
     border: 1px solid #465065;
     cursor: pointer;
 
@@ -321,11 +308,7 @@
     }
 
     &:hover {
-      background: linear-gradient(
-        268.85deg,
-        rgba(34, 108, 255, 0.12) 22.48%,
-        rgba(16, 132, 255, 0.12) 83.59%
-      );
+      background: white;
 
       &:hover {
         border: 1px solid #1878ff;
@@ -350,7 +333,7 @@
     }
   }
   .thumnail-create-modal {
-    border: 1px dashed #465065;
+    border: 1px dashed #c7d2e1;
     border-radius: 6px;
     padding: 32px 0px;
     cursor: pointer;
@@ -373,7 +356,6 @@
     .chakra-collapse {
       max-height: 250px;
       overflow-y: scroll !important;
-      background: #242b45;
       border-radius: 6px;
       margin-top: 10px;
 
@@ -381,7 +363,6 @@
         padding: 0;
 
         .main-markdown {
-          border-bottom: 1px solid #2f3b58;
           padding: 12px 20px;
           a {
             text-decoration: underline;
@@ -480,7 +461,7 @@
   .input-label {
     @include text-medium-regular;
     margin-bottom: 2px;
-    color: $paragraph;
+    color: $paragraph1;
   }
   .modal-footer {
     margin-top: 30px;
@@ -521,7 +502,7 @@
 
     text-align: center;
     @include text-medium-regular;
-    color: $paragraph;
+    color: $paragraph1;
   }
 
   .modal-footer {

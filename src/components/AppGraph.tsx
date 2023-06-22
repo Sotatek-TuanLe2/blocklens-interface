@@ -70,10 +70,10 @@ const AppGraph: FC<IChart> = ({ data, duration }) => {
           <XAxis
             dataKey="label"
             interval={isMobile ? undefined : 3}
-            tick={{ fill: '#B4B7BD' }}
+            tick={{ fill: '#E8EAED' }}
           />
           <YAxis
-            tick={{ fill: '#B4B7BD' }}
+            tick={{ fill: '#E8EAED' }}
             tickFormatter={(value: any) => formatNumber(value, 4, '0')}
             axisLine={false}
           />

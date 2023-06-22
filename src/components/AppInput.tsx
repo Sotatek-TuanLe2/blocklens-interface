@@ -120,10 +120,10 @@ export const appInputStyles = {
   variants: {
     main: (props: StyleProps) => ({
       field: {
-        bg: mode('card.100', 'card.100')(props),
+        bg: mode('white.100', 'card.100')(props),
         border: '1px solid',
-        color: mode('white', 'white')(props),
-        borderColor: mode('line.100', 'line.300')(props),
+        color: mode('black', 'white')(props),
+        borderColor: mode('border.400', 'line.300')(props),
         borderRadius: '6px',
         fontSize: '16px',
         p: '20px',
@@ -134,8 +134,8 @@ export const appInputStyles = {
           color: mode('line.100', 'line.100')(props),
         },
         _disabled: {
-          bg: mode('bg.200', 'bg.200')(props),
-          borderColor: mode('bg.200', 'bg.200')(props),
+          bg: mode('rgba(0, 2, 36, 0.05)', 'rgba(0, 2, 36, 0.05)')(props),
+          border: 0,
           color: mode('paragraph.100', 'paragraph.100')(props),
         },
       },
@@ -175,9 +175,9 @@ export const appInputStyles = {
     }),
     searchFilter: (props: StyleProps) => ({
       field: {
-        bg: mode('card.100', 'card.100')(props),
+        bg: mode('white', 'card.100')(props),
         border: '1px solid',
-        color: mode('white', 'white')(props),
+        color: mode('black', 'white')(props),
         borderColor: mode('line.100', 'line.300')(props),
         borderRadius: '6px',
         fontSize: '16px',

@@ -1,4 +1,4 @@
-import { extendTheme, ThemeConfig } from '@chakra-ui/react';
+import { extendTheme, ThemeConfig, cssVar } from '@chakra-ui/react';
 import { globalStyles } from 'src/themes/styles';
 import { appButtonStyles } from 'src/components/AppButton';
 import { appInputStyles } from 'src/components/AppInput';
@@ -26,5 +26,21 @@ export default extendTheme({
     Card: cardStyles,
     Link: appLinkStyles,
     Accordion: appAccordionStyle,
+    Skeleton: {
+      baseStyle: {
+        [cssVar('skeleton-start-color').variable]: '#E5E6E9',
+        [cssVar('skeleton-end-color').variable]: '#BFC2C9',
+        opacity: '1 !important',
+      },
+    },
+    Tooltip: {
+      baseStyle: {
+        color: '#000224',
+        background: 'white',
+        padding: '8px 10px',
+        borderRadius: '6px',
+        [cssVar('popper-arrow-bg').variable]: 'white',
+      },
+    },
   },
 });

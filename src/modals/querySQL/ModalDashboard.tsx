@@ -9,7 +9,6 @@ import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { createValidator } from 'src/utils/utils-validator';
 import BaseModal from '../BaseModal';
-import { IconUploadImg } from 'src/assets/icons';
 import { TYPE_MODAL } from 'src/pages/WorkspacePage/parts/Dashboard';
 import { generateSubmitBtn, generateTitleModal } from './ModalQuery';
 
@@ -25,7 +24,6 @@ interface IModelNewDashboard {
 interface IDataSettingForm {
   title: string;
   tag: string;
-  thumbnail: File | null;
 }
 
 const ModalDashboard: React.FC<IModelNewDashboard> = ({
@@ -39,7 +37,6 @@ const ModalDashboard: React.FC<IModelNewDashboard> = ({
   const initDataFormSetting = {
     title: defaultValue.name || '',
     tag: defaultValue.tags?.join(',') || '',
-    thumbnail: null,
   };
 
   const history = useHistory();
@@ -48,7 +45,6 @@ const ModalDashboard: React.FC<IModelNewDashboard> = ({
     useState<IDataSettingForm>(initDataFormSetting);
 
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
-  const [imageData, setImageData] = useState<string | null>(null);
 
   const validator = useRef(
     createValidator({
@@ -112,28 +108,6 @@ const ModalDashboard: React.FC<IModelNewDashboard> = ({
     }
   };
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const onUploadImg = () => {
-    fileInputRef.current?.click();
-  };
-
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files && event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImageData(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-
-    setDataForm({
-      ...dataForm,
-      thumbnail: file,
-    });
-  };
-
   return (
     <BaseModal isOpen={open} onClose={onClose} size="md">
       <Flex
@@ -180,45 +154,16 @@ const ModalDashboard: React.FC<IModelNewDashboard> = ({
             }}
           />
         </AppField>
-        <AppField label={'Thumbnail Image (optional)'}>
-          <Flex
-            flexDirection={'column'}
-            alignItems={'center'}
-            className="thumnail-create-modal"
-            onClick={onUploadImg}
-          >
-            {imageData ? (
-              <img src={imageData} alt="Preview" />
-            ) : (
-              <>
-                <IconUploadImg />
 
-                <input
-                  type="file"
-                  accept="image/*"
-                  style={{ display: 'none' }}
-                  ref={fileInputRef}
-                  onChange={handleFileChange}
-                />
-                <div className="desc">
-                  Add a thumbnail image to show in the list
-                </div>
-              </>
-            )}
-          </Flex>
-          <div className="note">
-            You can check the thumbnail image in the PC version.
-          </div>
-        </AppField>
         <Flex className="modal-footer">
           <AppButton
             mr={2.5}
             onClick={() => {
-              setImageData('');
               onClose();
             }}
             size="lg"
             variant={'cancel'}
+            className="btn-cancel"
           >
             Cancel
           </AppButton>

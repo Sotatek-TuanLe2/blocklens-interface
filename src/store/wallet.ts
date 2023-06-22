@@ -26,7 +26,7 @@ const initialState: IWalletState = {
   network: Storage.getNetwork() || config.defaultNetwork,
   chainId:
     Storage.getChainId() ||
-    String(getNetworkByEnv(getChainConfig(config.defaultNetwork)).chainId),
+    String(getNetworkByEnv(getChainConfig(config.defaultNetwork))?.chainId),
   connector: null,
   provider: null,
   address: '',

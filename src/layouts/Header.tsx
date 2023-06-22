@@ -3,7 +3,8 @@ import { AppButton, AppLink } from 'src/components';
 import { useHistory } from 'react-router';
 import 'src/styles/layout/Header.scss';
 import Storage from 'src/utils/utils-storage';
-import { RootState } from 'src/store';
+// import { RootState } from 'src/store';
+import { CloseIcon } from '@chakra-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Menu,
@@ -26,27 +27,24 @@ import { PRIVATE_PATH } from 'src/routes';
 
 const menus = [
   {
-    name: 'Dashboard',
+    name: 'Insights',
     path: ROUTES.HOME,
   },
   {
-    name: 'Notification',
-    path: ROUTES.NOTIFICATION,
+    name: 'Triggers ',
+    path: ROUTES.TRIGGERS,
   },
-  // {
-  //   name: 'Billing',
-  //   path: '/billing',
-  // },
+  {
+    name: 'APIs',
+    path: 'https://docsblocklens.readme.io/reference/overview',
+  },
   {
     name: 'Account',
     path: ROUTES.ACCOUNT,
   },
-  // {
-  //   name: 'Query SQL',
-  //   path: '/dashboards',
-  // },
 ];
 
+// const [isAccountActive, setIsAccountActive] = useState<boolean>(false);
 const Header: FC = () => {
   const [isOpenSignInRequestModal, setIsOpenSignInRequestModal] =
     useState<boolean>(false);
@@ -81,7 +79,7 @@ const Header: FC = () => {
   const onLogout = () => {
     dispatch(clearUser());
     if (PRIVATE_PATH.some((path) => location.pathname.includes(path))) {
-      history.push(ROUTES.HOME);
+      history.push(ROUTES.LOGIN);
     }
   };
 
@@ -99,6 +97,19 @@ const Header: FC = () => {
               </div>
 
               <div className="user-email">{user?.getEmail()}</div>
+
+              <Box
+                // className="user-account "
+                className={`user-account ${
+                  isActiveMenu(ROUTES.ACCOUNT) ? 'active' : ''
+                }`}
+                textAlign={'left'}
+                mt={3}
+                fontWeight={500}
+                onClick={() => history.push(ROUTES.ACCOUNT)}
+              >
+                Account
+              </Box>
               <div className="user-divider"></div>
               <div className="user-logout" onClick={onLogout}>
                 {' '}
@@ -113,6 +124,9 @@ const Header: FC = () => {
             </MenuItem>
           </MenuList>
         </Menu>
+        {/* <Button size="sm" colorScheme="blue" onClick={toggleColorMode}>
+          Toggle Mode
+        </Button> */}
       </Box>
     );
   };
@@ -126,10 +140,10 @@ const Header: FC = () => {
       return location.pathname.includes('billing');
     }
 
-    if (path === ROUTES.NOTIFICATION) {
+    if (path === ROUTES.TRIGGERS) {
       return (
         location.pathname === path ||
-        location.pathname.includes('apps') ||
+        location.pathname.includes('app') ||
         location.pathname.includes('webhook') ||
         location.pathname.includes('activities')
       );
@@ -148,6 +162,27 @@ const Header: FC = () => {
     return (
       <Flex className={`${isMobile ? 'menu-mobile' : 'menu'}`}>
         {menus.map((item, index: number) => {
+          if (!isMobile && item.path === ROUTES.ACCOUNT) {
+            return;
+          }
+
+          if (item.name === 'APIs') {
+            return (
+              <a
+                href={item.path}
+                target={'_blank'}
+                rel="noreferrer"
+                title="Click to APIs"
+              >
+                {item.name}
+              </a>
+            );
+          }
+
+          if (item.name === 'Account' && !accessToken) {
+            return;
+          }
+
           return (
             <AppLink
               to={item.path}
@@ -163,30 +198,28 @@ const Header: FC = () => {
   };
 
   const _renderContent = () => {
-    // if (isMobile) {
-    //   return (
-    //     <>
-    //       {isOpenMenuMobile ? (
-    //         <Box
-    //           className={'btn-close'}
-    //           onClick={() => setIsOpenMenuMobile(false)}
-    //         >
-    //           <CloseIcon width={'11px'} />
-    //         </Box>
-    //       ) : (
-    //         <Box
-    //           onClick={() => setIsOpenMenuMobile(true)}
-    //           className="icon-menu-mobile"
-    //         />
-    //       )}
-    //     </>
-    //   );
-    // }
+    if (isMobile) {
+      return (
+        <Flex width={'30px'} justifyContent={'flex-end'}>
+          {isOpenMenuMobile ? (
+            <Box
+              className="icon-close-menu"
+              onClick={() => setIsOpenMenuMobile(false)}
+            ></Box>
+          ) : (
+            <Box
+              onClick={() => setIsOpenMenuMobile(true)}
+              className="icon-menu-mobile"
+            />
+          )}
+        </Flex>
+      );
+    }
 
     return (
       <>
-        {/*{_renderMenu()}*/}
-        {_renderAvatar()}
+        {_renderMenu()}
+        {accessToken && _renderAvatar()}
       </>
     );
   };
@@ -201,13 +234,21 @@ const Header: FC = () => {
             width={isMobile ? '140px' : 'auto'}
           />
         </Box>
-        {accessToken
-          ? _renderContent()
-          : location.pathname !== ROUTES.LOGIN && (
-              <AppButton onClick={() => history.push(ROUTES.LOGIN)}>
-                Log In
-              </AppButton>
-            )}
+        <Flex alignItems={'center'}>
+          {isMobile && !accessToken && location.pathname !== ROUTES.LOGIN && (
+            <AppButton onClick={() => history.push(ROUTES.LOGIN)} mr={5}>
+              Log In
+            </AppButton>
+          )}
+
+          {_renderContent()}
+        </Flex>
+
+        {!isMobile && !accessToken && location.pathname !== ROUTES.LOGIN && (
+          <AppButton onClick={() => history.push(ROUTES.LOGIN)}>
+            Log In
+          </AppButton>
+        )}
       </Flex>
 
       <ModalSignInRequest
@@ -219,16 +260,18 @@ const Header: FC = () => {
         <Box className="header-mobile">
           {_renderMenu()}
 
-          <div className="user-logout" onClick={onLogout}>
-            {' '}
-            <span className="door-logout">
-              <DoorLogout />
-            </span>
-            <span className="arrow-logout">
-              <ArrowLogout />
-            </span>{' '}
-            <span>Log Out</span>
-          </div>
+          {accessToken && (
+            <div className="user-logout" onClick={onLogout}>
+              {' '}
+              <span className="door-logout">
+                <DoorLogout />
+              </span>
+              <span className="arrow-logout">
+                <ArrowLogout />
+              </span>{' '}
+              <span>Log Out</span>
+            </div>
+          )}
         </Box>
       )}
     </Box>

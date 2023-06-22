@@ -1,4 +1,4 @@
-import { Box, Tooltip } from '@chakra-ui/react';
+import { Box, Flex, Skeleton, Tooltip } from '@chakra-ui/react';
 import BigNumber from 'bignumber.js';
 import React, { useEffect, useState } from 'react';
 import 'src/styles/components/CounterConfigurations.scss';
@@ -10,6 +10,7 @@ import { isNumber } from 'src/utils/utils-helper';
 type Props = {
   data: unknown[];
   visualization: VisualizationType;
+  isLoading?: boolean;
 };
 
 const NUMBER_SIZE = {
@@ -17,7 +18,7 @@ const NUMBER_SIZE = {
   percent: 3,
 };
 
-const VisualizationCounter = ({ data, visualization }: Props) => {
+const VisualizationCounter = ({ data, visualization, isLoading }: Props) => {
   const [size, setSize] = useState<number>();
   const { options: dataOptions } = visualization;
 
@@ -34,7 +35,7 @@ const VisualizationCounter = ({ data, visualization }: Props) => {
     if (data[dataOptions.rowNumber - 1] === undefined) return '';
     const dataColumn: any = data[dataOptions.rowNumber - 1];
     const indexColumn = dataOptions.counterColName;
-    return dataColumn[indexColumn].toString();
+    return dataColumn[indexColumn]?.toString();
   };
 
   const defaultSize =
@@ -59,6 +60,21 @@ const VisualizationCounter = ({ data, visualization }: Props) => {
   };
 
   const isNumberValue = isNumber(dataCounter());
+
+  if (isLoading) {
+    return (
+      <Flex
+        align={'center'}
+        justify={'center'}
+        w={'full'}
+        h={'full'}
+        flexDir={'column'}
+      >
+        <Skeleton w={'80px'} h={'18px'} mb={'8px'} rounded={'9px'} />
+        <Skeleton w={'180px'} h={'18px'} rounded={'9px'} />
+      </Flex>
+    );
+  }
 
   return (
     <div className="main-counter">

@@ -10,39 +10,31 @@ import BaseModal from '../BaseModal';
 
 interface IModalEditItemDashBoard {
   open: boolean;
-  onClose: () => void;
   selectedItem: ILayout;
-  onReload: () => Promise<void>;
+  dataLayouts: ILayout[];
+  onClose: () => void;
+  onSave: (layouts: ILayout[]) => void;
 }
 
 const ModalDeleteWidget: React.FC<IModalEditItemDashBoard> = ({
   open,
-  onClose,
   selectedItem,
-  onReload,
+  dataLayouts,
+  onClose,
+  onSave,
 }) => {
   const handleRemoveItem = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
-    try {
-      e.preventDefault();
-      if (selectedItem.type === WIDGET_TYPE.TEXT) {
-        await rf
-          .getRequest('DashboardsRequest')
-          .removeTextWidget(selectedItem.id);
-        toastSuccess({ message: 'Remove successfully' });
-      } else {
-        await rf
-          .getRequest('DashboardsRequest')
-          .removeVisualization(selectedItem.id);
-        toastSuccess({ message: 'Remove successfully' });
-      }
-      onReload();
-      onClose();
-    } catch (e) {
-      toastError({ message: getErrorMessage(e) });
-    }
+    e.preventDefault();
+    const newDataLayouts = dataLayouts.filter(
+      (item) => item.id !== selectedItem.id,
+    );
+    onSave(newDataLayouts);
+    onClose();
+    toastSuccess({ message: 'Remove successfully' });
   };
+
   return (
     <BaseModal
       isOpen={open}
@@ -59,7 +51,12 @@ const ModalDeleteWidget: React.FC<IModalEditItemDashBoard> = ({
     >
       <form className="main-modal-dashboard-details">
         <Flex flexWrap={'wrap'} gap={'10px'} className="group-action-query">
-          <AppButton onClick={onClose} size="lg" variant={'cancel'}>
+          <AppButton
+            onClick={onClose}
+            size="lg"
+            variant={'cancel'}
+            className="btn-cancel"
+          >
             Cancel
           </AppButton>
           <AppButton size="lg" onClick={(e) => handleRemoveItem(e)}>

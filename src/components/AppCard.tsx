@@ -31,7 +31,7 @@ export const cardStyles = {
   }),
   variants: {
     main: (props: StyleProps) => ({
-      bg: mode('card.100', 'card.100')(props),
+      bg: mode('white', 'white')(props),
     }),
   },
 };

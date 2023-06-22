@@ -1,4 +1,3 @@
-import { Checkbox } from '@chakra-ui/checkbox';
 import { Grid, GridItem, Text } from '@chakra-ui/layout';
 import React, { useMemo, useRef, useState } from 'react';
 import { VISUALIZATION_DEBOUNCE } from 'src/pages/WorkspacePage/parts/VisualizationDisplay';
@@ -68,6 +67,18 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
     });
   };
 
+  const onChangeStringDecimal = (e: any) => {
+    let value = e.target.value.replace(/[-e]/gi, '');
+    if (+value <= 0) {
+      value = '0';
+    } else if (+value >= 9) {
+      value = '9';
+    }
+    onChangeCounterConfigurations({
+      stringDecimal: value,
+    });
+  };
+
   const onKeyDown = (e: { keyCode: number; preventDefault: () => void }) => {
     if (
       e.keyCode === 189 ||
@@ -90,11 +101,7 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
       >
         <GridItem>
           <div className="box-table first-box-table">
-            <Text
-              className="box-table__title"
-              fontWeight="bold"
-              marginBottom="10px"
-            >
+            <Text className="theme-title" fontWeight="bold" marginBottom="10px">
               Counter options
             </Text>
             <div className="box-table-children">
@@ -181,7 +188,7 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
                 value={dataColumn?.stringPrefix}
                 onChange={(e) =>
                   onChangeCounterConfigurations({
-                    stringPrefix: e.target.value,
+                    stringPrefix: e.target.value.trim(),
                   })
                 }
               />
@@ -195,7 +202,7 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
                 value={dataColumn?.stringSuffix}
                 onChange={(e) =>
                   onChangeCounterConfigurations({
-                    stringSuffix: e.target.value,
+                    stringSuffix: e.target.value.trim(),
                   })
                 }
               />
@@ -221,15 +228,13 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
                 placeholder="1"
                 size={'sm'}
                 className="input-table"
-                value={dataColumn?.stringDecimal}
+                value={
+                  dataColumn?.stringDecimal
+                    ? parseInt(dataColumn?.stringDecimal, 10)?.toString()
+                    : '0'
+                }
                 onKeyDown={onKeyDown}
-                onChange={(e) => {
-                  const value = e?.target?.value.replace(/[-e]/gi, '');
-                  if (value.length > 1) return;
-                  onChangeCounterConfigurations({
-                    stringDecimal: value,
-                  });
-                }}
+                onChange={onChangeStringDecimal}
               />
             </div>
           </div>

@@ -1,4 +1,4 @@
-import { IQuery, VisualizationType } from './query.type';
+import { IQuery, IUserInfo, VisualizationType } from './query.type';
 
 export interface VisualizationInterface {
   id: string;
@@ -20,7 +20,7 @@ export interface VisualizationInterface {
 
 export interface QueryInterface {
   id: string;
-  resultId: string;
+  executedId: string;
   name: string;
   createdAt: string;
   updatedAt: string;
@@ -28,12 +28,12 @@ export interface QueryInterface {
   privateMode: boolean;
   query: string;
 
-  // user: UserInterface;
+  userInfo: IUserInfo;
   chains: string[];
   visualizations: Visualization[];
 
   getId: () => string;
-  getResultId: () => string;
+  getExecutionId: () => string;
   getName: () => string;
   getCreatedTime: () => string;
   getUpdatedTime: () => string;
@@ -41,7 +41,10 @@ export interface QueryInterface {
   getTags: () => string[] | null;
   getQuery: () => string;
   getChains: () => string[] | null;
-  // getUser: () => UserInterface | string;
+
+  getUser: () => IUserInfo | null;
+  getUserFirstName: () => string;
+  getUserLastName: () => string;
   getVisualizations: () => Visualization[];
   getVisualizationById: (id: string) => Visualization | null;
 
@@ -100,7 +103,7 @@ export class Visualization implements VisualizationInterface {
 
 export class Query implements QueryInterface {
   public id = '';
-  public resultId = '';
+  public executedId = '';
   public name = '';
   public createdAt;
   public updatedAt;
@@ -108,14 +111,13 @@ export class Query implements QueryInterface {
   public tags;
   public privateMode = false;
   public query = '';
-
-  // public user;
+  public userInfo: IUserInfo;
   public chains: string[];
   public visualizations: Visualization[];
 
   constructor(query: IQuery) {
     this.id = query.id;
-    this.resultId = query.id;
+    this.executedId = query.id;
     this.name = query.name;
     this.createdAt = query.createdAt;
     this.updatedAt = query.updatedAt;
@@ -123,7 +125,7 @@ export class Query implements QueryInterface {
     this.privateMode = query.isPrivate;
     this.query = query.query;
     this.thumbnail = query.thumbnail;
-    // this.user = query.user;
+    this.userInfo = query.userInfo;
     this.chains = query.utilizedChains;
     this.visualizations = [];
     if (!!query.visualizations) {
@@ -137,8 +139,8 @@ export class Query implements QueryInterface {
     return this.id;
   }
 
-  getResultId() {
-    return this.resultId;
+  getExecutionId() {
+    return this.executedId;
   }
 
   getName() {
@@ -165,9 +167,23 @@ export class Query implements QueryInterface {
     return this.query;
   }
 
-  // getUser() {
-  //   return this.user;
-  // }
+  getUser() {
+    return this.userInfo || null;
+  }
+
+  getUserFirstName() {
+    if (!this.getUser()) {
+      return '';
+    }
+    return this.getUser().firstName || '';
+  }
+
+  getUserLastName() {
+    if (!this.getUser()) {
+      return '';
+    }
+    return this.getUser().lastName || '';
+  }
 
   getChains() {
     return this.chains;
