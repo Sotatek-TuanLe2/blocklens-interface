@@ -567,32 +567,50 @@
 .article {
   max-width: 100%;
   overflow: hidden;
-  .article-name {
-    color: $bg1;
-    text-transform: capitalize;
-    max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    @include text-medium-bold;
+  transition: all 0.4s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    border: 1px solid $line;
+
+    .article-link .article-name {
+      color: $main;
+    }
   }
-  .article-tag {
-    background: rgba(0, 2, 36, 0.05);
-    border-radius: 4px;
+
+  .article-link {
     display: flex;
+    flex-direction: row;
     align-items: center;
-    justify-content: center;
-    color: rgba(0, 2, 36, 0.5);
-    @include text-small-regular;
+
+    .article-name {
+      color: $bg1;
+      text-transform: capitalize;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      @include text-medium-bold;
+    }
+    .article-tag {
+      background: rgba(0, 2, 36, 0.05);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(0, 2, 36, 0.5);
+      @include text-small-regular;
+    }
+    .article-creator {
+      color: $bg1;
+      @include text-small-medium;
+    }
+    .article-date {
+      color: rgba(0, 2, 36, 0.5);
+      @include text-small-regular;
+    }
   }
-  .article-creator {
-    color: $bg1;
-    @include text-small-medium;
-  }
-  .article-date {
-    color: rgba(0, 2, 36, 0.5);
-    @include text-small-regular;
-  }
+
   .m-article-label {
     color: rgba(0, 2, 36, 0.5);
     @include text-small-regular;

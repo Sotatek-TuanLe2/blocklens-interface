@@ -5,6 +5,19 @@
 .app-grid-item {
   max-width: 100%;
   overflow: hidden;
+  transition: all 0.4s ease;
+
+  &:hover {
+    transform: translateY(-6px);
+    border: 1px solid $line;
+
+    .item-name {
+      & > span {
+        color: $main;
+      }
+    }
+  }
+
   .item-name {
     color: $bg1;
     text-transform: capitalize;
