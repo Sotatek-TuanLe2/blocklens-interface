@@ -27,6 +27,7 @@ import { BROADCAST_FETCH_WORKPLACE_DATA } from './Sidebar';
 import ModalQuery from 'src/modals/querySQL/ModalQuery';
 import { Query } from 'src/utils/utils-query';
 import { AddChartIcon, QueryResultIcon } from 'src/assets/icons';
+import { STATUS } from 'src/utils/utils-webhook';
 
 export const BROADCAST_ADD_TEXT_TO_EDITOR = 'ADD_TEXT_TO_EDITOR';
 export const BROADCAST_FETCH_QUERY = 'FETCH_QUERY';
@@ -43,6 +44,7 @@ const QueryPart: React.FC = () => {
   const [isLoadingResult, setIsLoadingResult] = useState<boolean>(!!queryId);
   const [errorExecuteQuery, setErrorExecuteQuery] =
     useState<IErrorExecuteQuery | null>(null);
+  const [statusExecuteQuery, setStatusExecuteQuery] = useState<string>();
   const [selectedQuery, setSelectedQuery] = useState<string>('');
   const fetchQueryResultInterval = useRef<any>(null);
   const [openModalSettingQuery, setOpenModalSettingQuery] =
@@ -98,6 +100,7 @@ const QueryPart: React.FC = () => {
     setIsLoadingResult(false);
     setErrorExecuteQuery(null);
     setSelectedQuery('');
+    setStatusExecuteQuery('');
   };
 
   const updateQuery = async (query: string) => {
@@ -133,6 +136,7 @@ const QueryPart: React.FC = () => {
     } else {
       setQueryResult(res.result);
       setErrorExecuteQuery(res?.error || null);
+      setStatusExecuteQuery(res?.status);
       setIsLoadingResult(false);
     }
   };
@@ -214,7 +218,10 @@ const QueryPart: React.FC = () => {
         return;
       }
 
-      if (!errorExecuteQuery?.message && expandLayout === LAYOUT_QUERY.FULL) {
+      if (
+        statusExecuteQuery === STATUS.DONE &&
+        expandLayout === LAYOUT_QUERY.FULL
+      ) {
         setExpandLayout(LAYOUT_QUERY.HIDDEN);
       }
 
@@ -251,15 +258,15 @@ const QueryPart: React.FC = () => {
 
   useEffect(() => {
     if (
-      !errorExecuteQuery?.message &&
+      statusExecuteQuery === STATUS.DONE &&
       (expandLayout === LAYOUT_QUERY.FULL || expandLayout === LAYOUT_QUERY.HALF)
     ) {
       setExpandLayout(LAYOUT_QUERY.HIDDEN);
     }
-    if (errorExecuteQuery?.message) {
+    if (statusExecuteQuery === STATUS.FAILED) {
       setExpandLayout(LAYOUT_QUERY.HALF);
     }
-  }, [errorExecuteQuery?.message]);
+  }, [statusExecuteQuery]);
 
   const _renderAddChart = () => {
     return (
@@ -289,7 +296,11 @@ const QueryPart: React.FC = () => {
       );
     }
 
-    if (!!queryValue && !!queryResult.length && !errorExecuteQuery?.message) {
+    if (
+      !!queryValue &&
+      !!queryResult.length &&
+      statusExecuteQuery === STATUS.DONE
+    ) {
       return (
         <Box>
           <VisualizationDisplay
@@ -315,7 +326,9 @@ const QueryPart: React.FC = () => {
             flexDirection="column"
           >
             <span className="execution-error">Execution Error</span>
-            {errorExecuteQuery?.message || 'No data...'}
+            {(statusExecuteQuery === STATUS.FAILED &&
+              errorExecuteQuery?.message) ||
+              'No data...'}
           </Flex>
         )}
       </>
@@ -330,7 +343,7 @@ const QueryPart: React.FC = () => {
     if (
       expandLayout === LAYOUT_QUERY.HALF ||
       isLoadingResult ||
-      (errorExecuteQuery && isExpand)
+      (statusExecuteQuery === STATUS.FAILED && isExpand)
     )
       return 'custom-editor--half';
     if (!queryId || !queryValue) return 'custom-editor--full';
@@ -363,7 +376,7 @@ const QueryPart: React.FC = () => {
       if (
         expandLayout === LAYOUT_QUERY.HALF ||
         isLoadingResult ||
-        (errorExecuteQuery && isExpand)
+        (statusExecuteQuery === STATUS.FAILED && isExpand)
       )
         return 'add-chart-empty';
       return `${classExpand(
