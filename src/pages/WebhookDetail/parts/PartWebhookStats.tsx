@@ -44,7 +44,7 @@ const PartWebhookStats = () => {
       const res: IWebhookStats = await rf
         .getRequest('NotificationRequest')
         .getWebhookStats(webhookId, {
-          resolution: 'DAY',
+          resolution: 86400,
         });
       setWebhookStats(res);
     } catch (error: any) {
@@ -59,7 +59,7 @@ const PartWebhookStats = () => {
         .getWebhookStats(webhookId, {
           from: moment().utc().subtract(24, 'hour').valueOf(),
           to: moment().utc().valueOf(),
-          resolution: 'HOUR',
+          resolution: 86400,
         });
       setDataChart(res);
     } catch (error: any) {
