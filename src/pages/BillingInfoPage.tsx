@@ -44,7 +44,7 @@ const BillingInfoPage = () => {
       <>
         <Flex className="title-billing">
           <AppLink to={ROUTES.ACCOUNT}>
-            <Box className="icon-arrow-left" mr={6} />
+            <Box className="icon-arrow-left" mr={3.5} />
           </AppLink>
           <Box>Billing Info</Box>
         </Flex>
