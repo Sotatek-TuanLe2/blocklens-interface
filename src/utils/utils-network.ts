@@ -264,6 +264,9 @@ export const getChainIconByChainName = (chainName: string) => {
 
   switch (chainName) {
     case CHAIN_NAME.ETH_GOERLI:
+    case CHAIN_NAME.ETH_MAINNET_TOKEN_COLLECTOR:
+    case CHAIN_NAME.ETH_MAINNET_NFT_COLLECTOR:
+    case CHAIN_NAME.ETH_MAINNET_DECODED:
     case CHAIN_NAME.ETH_MAINNET: {
       iconClassName = getLogoChainByChainId('ETH') || '';
       break;

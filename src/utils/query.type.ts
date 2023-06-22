@@ -47,6 +47,9 @@ export enum CHAIN_NAME {
   ARBITRUM_TESTNET = 'arbitrum_testnet',
   SUI_MAINET = 'sui_mainnet',
   SUI_TESTNET = 'sui_testnet',
+  ETH_MAINNET_TOKEN_COLLECTOR = 'eth_mainnet_token_collector',
+  ETH_MAINNET_NFT_COLLECTOR = 'eth_mainnet_nft_collector',
+  ETH_MAINNET_DECODED = 'eth_mainnet_decoded',
 }
 
 export enum LAYOUT_QUERY {
