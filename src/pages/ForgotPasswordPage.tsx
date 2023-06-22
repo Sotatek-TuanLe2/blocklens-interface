@@ -15,6 +15,8 @@ import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import ModalResendMail from 'src/modals/ModalResendMail';
 import { ROUTES } from 'src/utils/common';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
+import { setRecaptchaToRequest } from 'src/utils/utils-auth';
 
 interface IDataForm {
   email: string;
@@ -24,6 +26,7 @@ const ForgotPasswordPage: FC = () => {
   const initDataRestPassword = {
     email: '',
   };
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   const [dataForm, setDataForm] = useState<IDataForm>(initDataRestPassword);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
@@ -43,9 +46,18 @@ const ForgotPasswordPage: FC = () => {
       return;
     }
     try {
+      if (!executeRecaptcha) {
+        toastError({
+          message: 'Oops. Something went wrong!',
+        });
+        return;
+      }
+      const result = await executeRecaptcha('homepage');
+      setRecaptchaToRequest(result);
       await rf.getRequest('AuthRequest').forgotPassword(dataForm);
       setOpenModalResendEmail(true);
     } catch (error: any) {
+      setRecaptchaToRequest(null);
       toastError({
         message: `${error.message || 'Oops. Something went wrong!'}`,
       });
