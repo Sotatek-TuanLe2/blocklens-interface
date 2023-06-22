@@ -338,7 +338,7 @@ const VisualizationTable = <T,>({
           </table>
         )}
       </Box>
-      {!!filteredData.length && (
+      {filteredData.length > 15 && (
         <Flex
           justifyContent={'flex-end'}
           alignItems={'baseline'}
