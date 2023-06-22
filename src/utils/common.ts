@@ -13,7 +13,7 @@ export const ROUTES = {
   FORGOT_PASSWORD: '/forgot-password',
   RESET_PASSWORD: '/reset-password',
   CONTACT_US: '/contact-us',
-  NOTIFICATION: '/notification',
+  TRIGGERS: '/triggers',
   APP: '/app',
   WEBHOOKS: '/webhooks',
   ACCOUNT: '/account',

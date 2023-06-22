@@ -77,7 +77,6 @@ const DashboardPart: React.FC = () => {
   const [openModalEdit, setOpenModalEdit] = useState<boolean>(false);
   const [openModalAddTextWidget, setOpenModalAddTextWidget] =
     useState<boolean>(false);
-  const [isEmptyDashboard, setIsEmptyDashboard] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isSavingDashboard, setIsSavingDashboard] = useState<boolean>(false);
 
@@ -126,7 +125,6 @@ const DashboardPart: React.FC = () => {
         const layouts = visualization.concat(textWidgets);
         setDataDashboard(res);
         setDataLayouts(layouts);
-        setIsEmptyDashboard(!layouts.length);
       }
     } catch (error) {
       toastError({
@@ -259,10 +257,13 @@ const DashboardPart: React.FC = () => {
     setEditMode((prevState) => !prevState);
   };
 
-  const onSaveDataLayouts = (layouts: ILayout[]) => setDataLayouts(layouts);
+  const onSaveDataLayouts = (layouts: ILayout[]) => {
+    setDataLayouts(layouts);
+    setEditMode(true);
+  };
 
   const _renderDashboard = () => {
-    if (isEmptyDashboard) {
+    if (!dataLayouts.length) {
       return _renderEmptyDashboard();
     }
 
@@ -341,15 +342,16 @@ const DashboardPart: React.FC = () => {
         }
         data={dataDashboard}
         isEdit={editMode}
-        onChangeEditMode={onChangeEditMode}
         isLoadingRun={isLoading || isSavingDashboard}
+        isEmptyDashboard={!dataLayouts.length}
+        onChangeEditMode={onChangeEditMode}
       />
       {isLoading ? (
         <LoadingFullPage />
       ) : (
         <div className="dashboard-container">
           {_renderDashboard()}
-          {editMode && !isEmptyDashboard && (
+          {editMode && !!dataLayouts.length && (
             <Menu>
               <MenuButton className="app-query-menu add-button">
                 <img src={PlusIcon} alt="icon-plus" />

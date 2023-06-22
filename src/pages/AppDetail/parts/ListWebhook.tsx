@@ -164,7 +164,7 @@ const ListWebhook: FC<IListWebhook> = ({
         const res: IListAppResponse = await rf
           .getRequest('RegistrationRequest')
           .getRegistrations(appInfo.appId, params);
-        setTotalWebhook(res.totalDocs);
+        setTotalWebhook(res?.totalDocs || 0);
         return res;
       } catch (error) {
         toastError({ message: getErrorMessage(error) });

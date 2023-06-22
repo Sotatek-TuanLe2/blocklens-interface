@@ -83,6 +83,7 @@ import { ReactComponent as ShareQueryIcon } from './ShareQueryIcon.svg';
 import { ReactComponent as DeleteQueryIcon } from './DeleteQueryIcon.svg';
 import { ReactComponent as ForkQueryIcon } from './ForkQueryIcon.svg';
 import { ReactComponent as AddChartIcon } from './AddChartIcon.svg';
+import { ReactComponent as NoAppIcon } from './icon-no-app.svg';
 
 export {
   CalendarIcon,
@@ -170,4 +171,5 @@ export {
   DeleteQueryIcon,
   ForkQueryIcon,
   AddChartIcon,
+  NoAppIcon,
 };

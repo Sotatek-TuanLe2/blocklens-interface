@@ -20,9 +20,8 @@ const PartWebhookActivities: FC<IPartRecentActivities> = ({ webhook }) => {
 
   const _renderLinkShowAll = () => {
     return (
-      <Flex alignItems={'center'} className="view-all link">
+      <Flex alignItems={'center'} className="view-all">
         <Box
-          className="link"
           cursor={'pointer'}
           onClick={() =>
             history.push(

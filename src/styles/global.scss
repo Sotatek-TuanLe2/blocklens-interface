@@ -66,12 +66,12 @@ iframe {
   background-color: inherit !important;
 
   &[data-checked] {
-    background: $main !important;
+    background: $gradient !important;
     border: 0 !important;
   }
 
   &[data-indeterminate] {
-    background: $main !important;
+    background: $gradient !important;
     border: 0 !important;
   }
 
@@ -80,7 +80,7 @@ iframe {
   }
 
   svg {
-    color: $title;
+    color: $white;
   }
 }
 
@@ -100,7 +100,7 @@ text.recharts-text.recharts-label {
 }
 
 .link {
-  color: $link !important;
+  color: $main !important;
   cursor: pointer;
 }
 
@@ -130,4 +130,21 @@ text.recharts-text.recharts-label {
 
 .recharts-tooltip-wrapper {
   outline: none !important;
+}
+
+.tooltip-app {
+  color: $title !important;
+  background: $white !important;
+  padding: 10px 15px !important;
+  border-radius: 6px !important;
+
+  .chakra-tooltip__arrow {
+    background: $white !important;
+  }
+}
+
+.chakra-alert__icon {
+  svg {
+    color: $white;
+  }
 }

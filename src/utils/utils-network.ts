@@ -8,10 +8,11 @@ import _ from 'lodash';
 import config, { Chain, Network } from 'src/config';
 import { toastError } from './utils-notify';
 import { CHAIN_NAME } from './query.type';
+import { CHAINS } from './utils-webhook';
 
 export const getLogoChainByChainId = (ChainId?: string) => {
   if (!ChainId) return;
-  return config.chains[ChainId].icon;
+  return config.chains[ChainId]?.icon || '';
 };
 
 export const getNetworkConfig = (
@@ -33,14 +34,24 @@ export const getNetworkConfig = (
   return network;
 };
 
-export const getNameChainByChainId = (ChainId?: string) => {
-  if (!ChainId) return '--';
-  return config.chains[ChainId].name;
+export const getNameChainByChainId = (chainId?: string) => {
+  if (!chainId) return '--';
+  return config.chains[chainId]?.name || chainId;
 };
 
 export const isEVMNetwork = (chainId?: string) => {
   if (!chainId) return false;
-  return config.chains[chainId].family === 'ETH';
+  return config.chains[chainId]?.family === CHAINS.ETH;
+};
+
+export const isAptosNetwork = (chainId?: string) => {
+  if (!chainId) return false;
+  return chainId === CHAINS.APTOS;
+};
+
+export const isSuiNetwork = (chainId?: string) => {
+  if (!chainId) return false;
+  return chainId === CHAINS.SUI;
 };
 
 export const getExplorerTxUrl = (
@@ -58,8 +69,9 @@ export const getExplorerTxUrl = (
   return `${network?.blockExplorer.url}/${txHash}`;
 };
 
-export const objectKeys = <Obj>(obj: Obj): (keyof Obj)[] =>
-  Object.keys(obj) as (keyof Obj)[];
+export const objectKeys = (obj: any) => {
+  return Object.keys(obj);
+};
 
 export const getChains: (filter?: (chain: Chain) => boolean) => {
   label: string;

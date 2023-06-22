@@ -4,7 +4,7 @@ import { gapi } from 'gapi-script';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import rf from 'src/requests/RequestFactory';
 import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router';
+import { useHistory, useLocation } from 'react-router';
 import AppButton from './AppButton';
 import { Box } from '@chakra-ui/react';
 import config from 'src/config';
@@ -20,6 +20,7 @@ interface IGoogleAuthButton {
 const GoogleAuthButton: FC<IGoogleAuthButton> = ({ children }) => {
   const dispatch = useDispatch();
   const history = useHistory();
+  const location = useLocation();
 
   useEffect(() => {
     function start() {
@@ -40,7 +41,7 @@ const GoogleAuthButton: FC<IGoogleAuthButton> = ({ children }) => {
 
       dispatch(setUserAuth(res));
       toastSuccess({ message: 'Welcome to Blocklens!' });
-      history.push('/');
+      history.push((location.state as any)?.originPath);
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
     }

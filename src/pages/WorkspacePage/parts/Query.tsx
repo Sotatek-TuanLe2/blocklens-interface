@@ -177,7 +177,7 @@ const QueryPart: React.FC = () => {
   const fetchInitalData = async () => {
     try {
       const dataQuery = await fetchQuery();
-      await fetchQueryResult(dataQuery?.resultId);
+      await fetchQueryResult(dataQuery?.latestExecutionId);
     } catch (error) {
       toastError({ message: getErrorMessage(error) });
     }

@@ -3,15 +3,16 @@ import { mode, StyleFunctionProps } from '@chakra-ui/theme-tools';
 export const globalStyles = {
   colors: {
     main: {
-      100: 'linear-gradient(268.85deg, #226CFF 22.48%, #1084FF 83.59%)',
+      100: 'linear-gradient(271.63deg, #1E72FF -2.92%, #0250BE 102.1%)',
       200: 'linear-gradient(271.63deg, #1E72FF -2.92%, #0250BE 102.1%)',
       300: '#0060DB',
+      400: 'linear-gradient(271.63deg, #0250BE -2.92%, #0250BE 102.1%)',
     },
     paragraph: {
       100: '#8D91A5',
     },
     line: {
-      100: '#465065',
+      100: '#C7D2E1',
     },
     bg: {
       100: '#000224',

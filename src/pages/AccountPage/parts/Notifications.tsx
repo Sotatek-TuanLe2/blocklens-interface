@@ -54,7 +54,12 @@ const Notifications = () => {
           justifyContent={'space-between'}
           mt={2.5}
         >
-          <Box className="email">Receive Email: {user?.getBillingEmail()}</Box>
+          <Box
+            className={`${user?.isNotificationEnabled() ? 'active' : ''} email`}
+          >
+            <span>Receive Email: </span>
+            {user?.getBillingEmail()}
+          </Box>
           {user?.isNotificationEnabled() && (
             <Box
               className="btn-edit"

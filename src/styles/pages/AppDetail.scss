@@ -2,7 +2,6 @@
 @import '../mixins.scss';
 
 .app-detail {
-
   .app-info {
     justify-content: space-between;
     align-items: center;
@@ -14,6 +13,7 @@
     @include heading-4;
     align-items: center;
     margin-bottom: 3px;
+
     @include tablet {
       @include heading-6;
     }
@@ -35,18 +35,28 @@
     background-color: $card;
     border-radius: 20px;
     margin-right: 12px;
+    background: $white;
+  }
+
+  .setting-btn {
+    color: $title;
   }
 
   .app-tabs {
     margin: 0 40px;
-    border-bottom: 1px solid $border;
+    border-bottom: 1px solid $disable;
+
     @include tablet {
       margin: 0 20px;
       overflow-x: scroll;
-      -ms-overflow-style: none; /* Internet Explorer 10+ */
-      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none;
+      /* Internet Explorer 10+ */
+      scrollbar-width: none;
+
+      /* Firefox */
       &::-webkit-scrollbar {
-        display: none; /* Safari and Chrome */
+        display: none;
+        /* Safari and Chrome */
       }
 
       & > div {
@@ -58,7 +68,7 @@
       @include text-large-bold;
       padding: 0 0 8px 0;
       margin-right: 40px;
-      color: $line;
+      color: $paragraph2;
 
       @include tablet {
         width: max-content;
@@ -68,8 +78,8 @@
 
       &[aria-selected='true'] {
         box-shadow: none;
-        border-bottom: 2px solid $title;
-        color: $title;
+        border-bottom: 2px solid $main;
+        color: $main;
       }
 
       &:first-child {
@@ -87,6 +97,7 @@
 
       .app-tab {
         padding-bottom: 0;
+
         &[aria-selected='true'] {
           border-bottom: 0;
         }
@@ -96,10 +107,10 @@
 
   .content-tab-app {
     padding: 0;
-    margin-top: 30px;
+    margin-top: 10px;
 
     @include tablet {
-      margin-top: 14px !important;
+      margin-top: 10px !important;
     }
 
     &.no-tab {
@@ -109,6 +120,7 @@
 
   .list-webhook {
     padding: 30px 0 0 0 !important;
+
     @include tablet {
       padding-top: 24px !important;
     }
@@ -116,7 +128,7 @@
 
   .description {
     @include text-medium-regular;
-    color: $paragraph;
+    color: $paragraph1;
   }
 
   .list-nft {
@@ -125,9 +137,11 @@
       font-size: 13px;
       text-transform: uppercase;
     }
+
     table th {
       background: #f9f9f9;
     }
+
     table tr {
       background-color: white;
     }
@@ -135,7 +149,7 @@
 
   .box-create {
     @include text-large-regular;
-    color: $paragraph;
+    color: $title;
     max-width: 480px;
     flex-direction: column;
     justify-content: center;
@@ -159,6 +173,7 @@
 
 .statics {
   margin-bottom: 30px;
+
   @include tablet {
     margin-bottom: 20px;
   }
@@ -169,26 +184,21 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    background: $card;
+    background: $white;
     border-radius: 18px;
     padding: 28px 20px;
-    border: 1px solid $card;
+    border: 1px solid $white;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.04);
 
     &:hover {
-      background: linear-gradient(
-        180deg,
-        rgba(34, 108, 255, 0) -27.27%,
-        rgba(34, 108, 255, 0.2) 108.18%
-      );
-      filter: drop-shadow(0px 10px 40px rgba(34, 108, 255, 0.25));
       cursor: pointer;
-      border: 1.1px solid $blue;
+      border: 1.1px solid $main;
     }
 
     .label {
       @include text-medium-regular;
       margin-bottom: 4px;
-      color: $paragraph;
+      color: $paragraph1;
     }
 
     .value {
@@ -203,17 +213,20 @@
     transform: translateY(-50%);
     right: 0;
   }
+
   .chartMobile {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
     right: 0;
   }
+
   .statsMobile {
     display: flex;
     width: 100%;
     flex-wrap: nowrap;
     overflow-x: scroll;
+
     &::-webkit-scrollbar {
       display: none;
     }
@@ -222,6 +235,7 @@
       min-width: 80%;
       margin-right: 10px;
     }
+
     :last-child {
       margin-right: 0px;
     }
@@ -258,11 +272,12 @@
   .chain-app {
     align-items: center;
     border-radius: 6px;
-    background-color: $bg2;
+    background-color: rgba(0, 2, 36, 0.05);
     width: 100%;
     padding: 0 14px;
     height: 48px;
-    color: $paragraph;
+    color: $paragraph2;
+    opacity: 0.7;
   }
 }
 
@@ -278,16 +293,25 @@
   }
 }
 
+.button {
+  background: linear-gradient(
+    271.63deg,
+    #1e72ff -2.92%,
+    #0250be 102.1%
+  ) !important;
+}
+
 .field-disabled {
   @include text-medium-regular;
   padding: 12px 16px;
-  background-color: $bg2;
+  background-color: rgba(0, 2, 36, 0.05);
   border-radius: 6px;
   color: $paragraph;
 }
 
 .form-create {
   background-color: $card;
+
   @include tablet {
     padding: 20px !important;
   }
@@ -299,7 +323,7 @@
   }
 
   .box-upload {
-    background-color: $bg2;
+    background-color: $white;
     border: 1px dashed $line;
     border-radius: 6px;
     color: $paragraph;
@@ -319,6 +343,7 @@
     position: absolute;
     right: 0;
     top: -5px;
+    color: $main !important;
   }
 
   .box-btn-create {
@@ -336,8 +361,11 @@
   &:hover {
     .link {
       text-decoration: underline;
+      color: $main;
     }
   }
+
+  color: $main;
 }
 
 .box-filter {
@@ -360,6 +388,7 @@
     @include tablet {
       margin: 20px;
       justify-content: space-between;
+
       .input-search {
         margin-left: 0;
         padding: 4px 20px 4px 45px;
@@ -370,6 +399,7 @@
 
 .link-redirect {
   color: $paragraph;
+
   &:hover {
     color: $link;
   }
@@ -377,6 +407,7 @@
 
 .filter-table {
   position: relative;
+
   &:hover {
     cursor: pointer;
     color: $title;
@@ -386,19 +417,26 @@
     color: $title;
   }
 
-  &__box-search, &__options {
-    background-color: #2f3b58;
+  &__box-search,
+  &__options {
+    background-color: $line;
     padding: 14px 10px;
     border-radius: 6px;
     position: absolute;
     width: 200px;
     top: 150%;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.04);
 
     .input-search {
-      background-color: $bg2;
+      background-color: $white;
       @include text-small-regular;
       padding: 6px 10px;
       height: 32px;
+      color: $title;
+
+      &::placeholder {
+        color: $line;
+      }
     }
   }
 
@@ -412,7 +450,7 @@
     padding: 8px 10px;
 
     &.active {
-      background: linear-gradient(268.85deg, #226CFF 22.48%, #1084FF 83.59%);
+      background: linear-gradient(268.85deg, #226cff 22.48%, #1084ff 83.59%);
     }
   }
 }
@@ -424,6 +462,10 @@
 .box-invalid {
   margin-top: 26px !important;
   @include text-medium-regular;
+
+  .link {
+    color: $main !important;
+  }
 }
 
 .table-valid-address {
@@ -441,9 +483,11 @@
   .header-list,
   .content-list {
     padding: 15px 40px;
+
     div:first-child {
       width: 60%;
     }
+
     div:last-child {
       width: 40%;
       text-align: center;
@@ -466,7 +510,7 @@
   display: flex;
   align-items: center;
   padding: 6px 12px;
-  background-color: $bg2;
+  background-color: rgba(0, 2, 36, 0.05);
   border-radius: 6px;
   width: max-content;
   margin: 10px 0 !important;
@@ -478,9 +522,9 @@
     cursor: pointer;
   }
 }
+
 .stripe-form {
-  iframe{
+  iframe {
     display: block !important;
   }
 }
-

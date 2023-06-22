@@ -89,7 +89,8 @@ export interface IQuery {
   updatedAt: string;
   tags?: string[];
   query: string;
-  resultId: string;
+  executedId: string;
+  latestExecutionId?: string;
   forkedQuery?: null;
   visualizations: VisualizationType[];
   utilizedChains: string[];
@@ -205,7 +206,7 @@ export type QueryExecutedResponse = {
 export type QueryResultResponse = {
   id: string;
   query: IQuery;
-  resultId: string;
+  executedId: string;
   createAt: string;
   updatedAt: string;
 };

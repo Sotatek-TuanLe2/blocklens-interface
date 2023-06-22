@@ -14,7 +14,11 @@ export enum WEBHOOK_STATUS {
 export const WEBHOOK_TYPES = {
   NFT_ACTIVITY: 'NFT_ACTIVITY',
   ADDRESS_ACTIVITY: 'ADDRESS_ACTIVITY',
+  TOKEN_ACTIVITY: 'TOKEN_ACTIVITY',
   CONTRACT_ACTIVITY: 'CONTRACT_ACTIVITY',
+  APTOS_COIN_ACTIVITY: 'APTOS_COIN_ACTIVITY',
+  APTOS_TOKEN_ACTIVITY: 'APTOS_TOKEN_ACTIVITY',
+  APTOS_MODULE_ACTIVITY: 'APTOS_MODULE_ACTIVITY',
 };
 
 export const optionsFilter = [
@@ -112,3 +116,45 @@ export const getColorBrandStatus = (status: string) => {
       return 'inactive';
   }
 };
+
+export const CHAINS = {
+  APTOS: 'APTOS',
+  ETH: 'ETH',
+  SUI: 'SUI',
+};
+
+export interface ExposedFunctionType {
+  name: string;
+  generic_type_params: any[];
+  is_entry: boolean;
+  is_view: boolean;
+  params: string[];
+  return: any[];
+  visibility: string;
+}
+
+export interface StructType {
+  name: string;
+  abilities: string[];
+  fields: {
+    name: string;
+    type: string;
+  }[];
+  generic_type_params: any[];
+}
+
+export interface ModuleType {
+  name: string;
+  abi: {
+    address: string;
+    exposed_functions: ExposedFunctionType[];
+    friends: any[];
+    name: string;
+    structs: StructType[];
+  };
+}
+
+export interface PackageType {
+  name: string;
+  modules: ModuleType[];
+}

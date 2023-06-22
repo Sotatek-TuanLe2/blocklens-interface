@@ -76,13 +76,15 @@ export const appButtonStyles = {
       color: 'white',
       fontSize: '16px',
       _hover: {
-        bg: mode('pressed.100', 'pressed.100')(props),
+        bg: mode('main.400', 'main.400')(props),
         _disabled: {
-          bg: mode('line.100', 'line.100')(props),
+          bg: mode('rgba(0, 2, 36, 0.1)', 'rgba(0, 2, 36, 0.1)')(props),
+          color: 'rgba(0, 2, 36, 0.5)',
         },
       },
       _disabled: {
-        bg: mode('line.100', 'line.100')(props),
+        color: mode('rgba(0, 2, 36, 0.5)', 'rgba(0, 2, 36, 0.5)')(props),
+        bg: mode('rgba(0, 2, 36, 0.1)', 'rgba(0, 2, 36, 0.1)')(props),
       },
     }),
     red: (props: StyleProps) => ({
@@ -97,10 +99,10 @@ export const appButtonStyles = {
     }),
     cancel: (props: StyleProps) => ({
       borderRadius: '6px',
-      bg: 'none',
+      bg: 'white.100',
       fontSize: '16px',
       fontWeight: 500,
-      color: 'white',
+      color: 'bg.100',
       borderWidth: '1px',
       borderColor: 'border.400',
       _hover: {
@@ -124,11 +126,13 @@ export const appButtonStyles = {
         color: 'white',
         borderColor: '#1B75FF',
         _disabled: {
-          bg: mode('line.100', 'line.100')(props),
+          color: 'rgba(0, 2, 36, 0.5)',
+          bg: mode('rgba(0, 2, 36, 0.1)', 'rgba(0, 2, 36, 0.1)')(props),
         },
       },
       _disabled: {
-        bg: mode('line.100', 'line.100')(props),
+        color: mode('rgba(0, 2, 36, 0.5)', 'rgba(0, 2, 36, 0.5)')(props),
+        bg: mode('rgba(0, 2, 36, 0.1)', 'rgba(0, 2, 36, 0.1)')(props),
       },
     }),
     active: (props: StyleProps) => ({
@@ -136,7 +140,8 @@ export const appButtonStyles = {
       color: 'white',
       borderColor: '#1B75FF',
       _disabled: {
-        bg: mode('line.100', 'line.100')(props),
+        color: 'rgba(0, 2, 36, 0.5)',
+        bg: mode('rgba(0, 2, 36, 0.1)', 'rgba(0, 2, 36, 0.1)')(props),
       },
     }),
   },

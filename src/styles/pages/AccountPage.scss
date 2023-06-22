@@ -66,7 +66,7 @@
 
       .label {
         @include text-medium-regular;
-        color: $paragraph;
+        color: $paragraph1;
         width: 120px;
 
         @include tablet {
@@ -80,11 +80,11 @@
       }
 
       .btn-edit {
-        color: $paragraph;
+        color: $paragraph1;
         cursor: pointer;
 
         &:hover {
-          color: $link;
+          color: $main;
         }
       }
 
@@ -159,8 +159,20 @@
         color: $line;
         margin-left: 32px;
 
+        span {
+          color: $line;
+        }
+
         @include tablet {
           margin-left: 0;
+        }
+
+        &.active {
+          color: $title;
+
+          span {
+            color: $paragraph1;
+          }
         }
       }
     }
@@ -225,9 +237,12 @@
   &__label {
     @include text-medium-regular;
 
-
-    color: $paragraph;
+    color: $paragraph1;
     margin-bottom: 4px;
+
+    .link {
+      color: $main !important;
+    }
   }
 
   &__input {
@@ -242,6 +257,11 @@
 
     svg {
       margin-left: 15px;
+      color: $paragraph1;
+
+      &:hover {
+        color: $main;
+      }
     }
   }
 }

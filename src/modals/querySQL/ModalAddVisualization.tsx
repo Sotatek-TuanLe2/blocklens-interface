@@ -26,7 +26,6 @@ import BaseModal from '../BaseModal';
 import _, { debounce } from 'lodash';
 import { INPUT_DEBOUNCE, IPagination } from 'src/utils/common';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { nanoid } from '@reduxjs/toolkit';
 
 export const WIDTH_DASHBOARD = [
   {
@@ -193,7 +192,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
         item.visualization.id === (visualSelected as VisualizationType).id,
     );
 
-    const newId = nanoid();
+    const newId = Date.now().toString();
     const newVisualization = {
       x: sizeX,
       y: sizeY,
