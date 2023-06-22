@@ -31,7 +31,7 @@ interface AppInputProps extends InputProps {
   hiddenErrorText?: boolean;
 }
 
-const AppInput = forwardRef(
+const AppInput = forwardRef<AppInputProps, 'input'>(
   (
     {
       variant = 'main',
@@ -43,7 +43,7 @@ const AppInput = forwardRef(
       endAdornment,
       hiddenErrorText = false,
       ...props
-    }: AppInputProps,
+    },
     ref,
   ) => {
     const forceRender = useForceRender();
@@ -94,7 +94,7 @@ const AppInput = forwardRef(
             !readOnly &&
             validate.validator.message(
               validate.name,
-              props.value,
+              props.value ? props.value : ref ? (ref as any).current?.value : '',
               validate.rule,
               validate.options,
             )}
