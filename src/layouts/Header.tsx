@@ -83,6 +83,14 @@ const Header: FC = () => {
     }
   };
 
+  useEffect(() => {
+    if (isOpenMenuMobile) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'inherit';
+    }
+  }, [isOpenMenuMobile]);
+
   const _renderAvatar = () => {
     return (
       <Box>
@@ -173,6 +181,7 @@ const Header: FC = () => {
                 target={'_blank'}
                 rel="noreferrer"
                 title="Click to APIs"
+                key={index}
               >
                 {item.name}
               </a>

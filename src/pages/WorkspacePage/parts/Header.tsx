@@ -229,7 +229,10 @@ const Header: React.FC<IHeaderProps> = (props) => {
               !needAuthentication
                 ? type === LIST_ITEM_TYPE.DASHBOARDS
                   ? [QUERY_MENU_LIST.SHARE]
-                  : [QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.SHARE]
+                  : [
+                      // QUERY_MENU_LIST.FORK,
+                      QUERY_MENU_LIST.SHARE,
+                    ]
                 : undefined
             }
             item={data}
@@ -296,7 +299,10 @@ const Header: React.FC<IHeaderProps> = (props) => {
                   !needAuthentication
                     ? type === LIST_ITEM_TYPE.DASHBOARDS
                       ? [QUERY_MENU_LIST.SHARE]
-                      : [QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.SHARE]
+                      : [
+                          // QUERY_MENU_LIST.FORK,
+                          QUERY_MENU_LIST.SHARE,
+                        ]
                     : undefined
                 }
                 item={data}
