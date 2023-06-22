@@ -5,12 +5,13 @@ import {
   Flex,
   SkeletonCircle,
   Skeleton,
+  Image,
 } from '@chakra-ui/react';
 import { useHistory, useParams } from 'react-router-dom';
 import { AppButton, AppTag } from 'src/components';
 import AppQueryMenu, { QUERY_MENU_LIST } from 'src/components/AppQueryMenu';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
-import { ROUTES } from 'src/utils/common';
+import { generateAvatarFromId, ROUTES } from 'src/utils/common';
 import { IDashboardDetail, IQuery } from 'src/utils/query.type';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
 import { BROADCAST_FETCH_DASHBOARD } from './Dashboard';
@@ -24,6 +25,7 @@ import { Query } from 'src/utils/utils-query';
 import AppNetworkIcons from 'src/components/AppNetworkIcons';
 import { IconDotMore } from 'src/assets/icons';
 import { isMobile } from 'react-device-detect';
+import Jazzicon from 'react-jazzicon';
 
 interface IHeaderProps {
   type: string;
@@ -213,7 +215,14 @@ const Header: React.FC<IHeaderProps> = (props) => {
           <>
             {!isCreatingQuery && (
               <div className="item-desc">
-                <img src="/images/AvatarDashboardCard.png" alt="avatar" />
+                {dataClass?.getUser().avatar ? (
+                  <Image src={dataClass?.getUser().avatar} alt="avatar" />
+                ) : (
+                  <Jazzicon
+                    diameter={26}
+                    seed={generateAvatarFromId(dataClass?.getUser().userId)}
+                  />
+                )}
                 <span className="item-desc__name">
                   <span className="user-name">{`${author} / `}</span>
                   <span>{dataClass?.getName()}</span>

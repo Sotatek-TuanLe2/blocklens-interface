@@ -49,10 +49,7 @@ const Notifications = () => {
             Receive emails when you are at or near your daily request limit.
           </Box>
         </Flex>
-        <Flex
-          alignItems={'self-start'}
-          mt={2.5}
-        >
+        <Flex alignItems={'self-start'} mt={2.5}>
           <Box
             className={`${user?.isNotificationEnabled() ? 'active' : ''} email`}
           >

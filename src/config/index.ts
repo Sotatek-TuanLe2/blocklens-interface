@@ -82,6 +82,7 @@ export interface Config {
     message: string;
     secretKey: string;
     googleClientId: string;
+    reCaptchaKey: string;
   };
   api: {
     baseUrlApi: string;
@@ -94,6 +95,7 @@ export interface Config {
   stripe: {
     publishableKey: string;
   };
+
   chains: {
     [key: string]: Chain;
   };
