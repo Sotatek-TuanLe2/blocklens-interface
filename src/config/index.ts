@@ -94,6 +94,7 @@ export interface Config {
   stripe: {
     publishableKey: string;
   };
+
   chains: {
     [key: string]: Chain;
   };
@@ -113,6 +114,7 @@ export interface Config {
   networks: {
     [key: string]: Network;
   };
+  reCaptchaKey: string;
 }
 
 export default config;

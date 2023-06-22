@@ -19,13 +19,18 @@ import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { setUserAuth } from '../store/user';
 import { getErrorMessage } from '../utils/utils-helper';
 import { ROUTES } from 'src/utils/common';
-
+import {
+  GoogleReCaptchaProvider,
+  useGoogleReCaptcha,
+} from 'react-google-recaptcha-v3';
+import { setRecaptchaToRequest } from 'src/utils/utils-recaptcha';
+import config from 'src/config';
 interface IDataForm {
   email: string;
   password: string;
 }
 
-const LoginPage: FC = () => {
+const LoginPageContent: FC = () => {
   const initDataLogin = {
     email: '',
     password: '',
@@ -34,6 +39,7 @@ const LoginPage: FC = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const location = useLocation();
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   const [dataForm, setDataForm] = useState<IDataForm>(initDataLogin);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
@@ -51,6 +57,14 @@ const LoginPage: FC = () => {
 
   const onLogin = async () => {
     try {
+      if (!executeRecaptcha) {
+        toastError({
+          message: 'Oops. Something went wrong!',
+        });
+        return;
+      }
+      const result = await executeRecaptcha('homepage');
+      setRecaptchaToRequest(result);
       const res = await rf.getRequest('AuthRequest').login(dataForm);
       if (res) {
         dispatch(setUserAuth(res));
@@ -158,5 +172,11 @@ const LoginPage: FC = () => {
     </GuestPage>
   );
 };
+
+const LoginPage = () => (
+  <GoogleReCaptchaProvider reCaptchaKey={config.reCaptchaKey}>
+    <LoginPageContent />
+  </GoogleReCaptchaProvider>
+);
 
 export default LoginPage;

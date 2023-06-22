@@ -248,6 +248,7 @@
           "pollingInterval": 10000
         }
       }
-    }
+    },
+    "reCaptchaKey": "6LcchvMjAAAAAG9Bqt0aP3KBWI9Gg-UtCVg6DGRH"
   }
 }
