@@ -60,7 +60,13 @@ const PartFormAddressActivity: FC<IPartFormAddressActivity> = ({
   }, [addressesInput]);
 
   useEffect(() => {
-    setDataForm({ ...dataForm, addresses: addressValid });
+    setDataForm({
+      ...dataForm,
+      metadata: {
+        ...dataForm.metadata,
+        addresses: addressValid,
+      },
+    });
   }, [addressesInput]);
 
   const onClearFile = () => {
@@ -68,12 +74,24 @@ const PartFormAddressActivity: FC<IPartFormAddressActivity> = ({
       setFileSelected({});
       inputRef.current.value = null;
       setAddressesValue('');
-      setDataForm({ ...dataForm, addresses: [] });
+      setDataForm({
+        ...dataForm,
+        metadata: {
+          ...dataForm.metadata,
+          addresses: [],
+        },
+      });
     }
   };
 
   const onClearAddressInvalid = () => {
-    setDataForm({ ...dataForm, addresses: addressValid });
+    setDataForm({
+      ...dataForm,
+      metadata: {
+        ...dataForm.metadata,
+        addresses: addressValid,
+      },
+    });
     setAddressesValue(addressValid.join('\n'));
   };
 
@@ -143,7 +161,13 @@ const PartFormAddressActivity: FC<IPartFormAddressActivity> = ({
           cursor="pointer"
           onClick={() => {
             setIsInsertManuallyAddress(!isInsertManuallyAddress);
-            setDataForm({ ...dataForm, addresses: [] });
+            setDataForm({
+              ...dataForm,
+              metadata: {
+                ...dataForm.metadata,
+                addresses: [],
+              },
+            });
             setAddressesValue('');
             validator.current.fields = [];
             // forceUpdate();

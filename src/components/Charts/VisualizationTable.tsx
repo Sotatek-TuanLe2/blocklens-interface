@@ -303,10 +303,21 @@ const VisualizationTable = <T,>({
                             key: cells.id,
                             style: {
                               fontWeight: 400,
-                              justifyContent: align,
+                              justifyContent:
+                                type === COLUMN_TYPES.NORMAL ? align : '',
                               color: isNumberValue
                                 ? checkColor(cells.getValue())
                                 : undefined,
+                              flexDirection:
+                                type === COLUMN_TYPES.PROGRESS &&
+                                align === 'right'
+                                  ? 'row-reverse'
+                                  : 'row',
+                              gap:
+                                type === COLUMN_TYPES.PROGRESS &&
+                                align === 'right'
+                                  ? '10px'
+                                  : '',
                             },
                           }}
                         >

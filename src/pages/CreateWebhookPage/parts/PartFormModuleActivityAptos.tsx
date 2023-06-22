@@ -1,8 +1,6 @@
 import { AppField, AppInput, AppReadABI } from 'src/components';
-import React, { useCallback, FC, useState, useEffect } from 'react';
+import React, { FC, useState, useEffect, useRef } from 'react';
 import rf from 'src/requests/RequestFactory';
-import { toastError } from 'src/utils/utils-notify';
-import { getErrorMessage } from 'src/utils/utils-helper';
 import _ from 'lodash';
 import { Box } from '@chakra-ui/react';
 import { IDataForm } from '../index';
@@ -18,8 +16,11 @@ const PartFormModuleActivityAptos: FC<PartFormContractAptosProps> = ({
   onChangeForm,
   validator,
 }) => {
+  const inputRef = useRef(null);
+
   const [dataAddress, setDataAddress] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [payloadForm, setPayloadForm] = useState<IDataForm>(dataForm);
 
   const getABI = async (payload: any) => {
     try {
@@ -64,28 +65,32 @@ const PartFormModuleActivityAptos: FC<PartFormContractAptosProps> = ({
       setDataAddress(data);
       setIsLoading(false);
     } catch (e) {
-      toastError({ message: getErrorMessage(e) });
+      console.error(e);
       setIsLoading(false);
       setDataAddress(null);
     }
   };
 
-  const debounceDropDown = useCallback(
-    _.debounce((addressValue: string) => {
-      if (!addressValue) {
-        return;
-      }
+  useEffect(() => {
+    setPayloadForm(dataForm);
+  }, [dataForm]);
 
-      getDataAddress(addressValue).then();
-    }, 2000),
-    [dataForm.address],
-  );
+  const debouncedOnChange = _.debounce((e) => {
+    setPayloadForm({
+      ...payloadForm,
+      metadata: {
+        ...payloadForm.metadata,
+        address: e.target.value.trim(),
+      },
+    });
+  }, 2000);
 
   useEffect(() => {
-    if (!dataForm.address) {
-      setDataAddress(null);
+    if (payloadForm.metadata?.address) {
+      getDataAddress(payloadForm.metadata?.address).then();
     }
-  }, [dataForm.address]);
+    onChangeForm(payloadForm);
+  }, [payloadForm.metadata?.address]);
 
   const _renderABI = () => {
     if (dataAddress) {
@@ -93,8 +98,8 @@ const PartFormModuleActivityAptos: FC<PartFormContractAptosProps> = ({
         <Box>
           <AppReadABI
             onChangeForm={(data) => onChangeForm(data)}
-            address={dataForm.address}
-            dataForm={dataForm}
+            address={payloadForm.metadata?.address || ''}
+            dataForm={payloadForm}
             dataAddress={dataAddress}
           />
         </Box>
@@ -104,28 +109,34 @@ const PartFormModuleActivityAptos: FC<PartFormContractAptosProps> = ({
 
   return (
     <Box width={'100%'}>
-      <AppField label={'Address ID'} customWidth={'100%'} isRequired>
+      <AppField label={'Address'} customWidth={'100%'} isRequired>
         <AppInput
-          value={dataForm.address}
+          defaultValue={payloadForm.metadata?.address}
+          ref={inputRef}
           onChange={(e) => {
-            onChangeForm({
-              ...dataForm,
-              address: e.target.value.trim(),
-            });
-            if (!e.target.value.trim()) {
+            if (e.target.value.trim()) {
               setIsLoading(true);
+            } else {
+              setDataAddress(null);
+              setPayloadForm({
+                ...payloadForm,
+                metadata: {
+                  ...payloadForm.metadata,
+                  address: '',
+                },
+              });
+              setIsLoading(false);
             }
-            debounceDropDown(e.target.value.trim());
+            debouncedOnChange(e);
           }}
           validate={{
-            name: `addressId`,
+            name: `address`,
             validator: validator.current,
             rule: 'required',
           }}
         />
       </AppField>
-
-      {!isLoading && !dataAddress && dataForm.address && (
+      {!isLoading && !dataAddress && payloadForm.metadata?.address && (
         <Box color={'#ee5d50'} fontSize={'14px'}>
           Address Invalid
         </Box>

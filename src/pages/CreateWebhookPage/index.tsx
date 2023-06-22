@@ -31,21 +31,27 @@ import PartFormContractActivity from './parts/PartFormContractActivity';
 import PartFormNFTActivity from './parts/PartFormNFTActivity';
 import PartFormTokenActivity from './parts/PartFormTokenActivity';
 import PartFormAddressActivity from './parts/PartFormAddressActivity';
+import PartFormCoinActivityAptos from './parts/PartFormCoinActivityAptos';
+import PartFormTokenActivityAptos from './parts/PartFormTokenActivityAptos';
 
-interface IAptosABI {
-  functions: string[];
-  events: string[];
+interface IMetadata {
+  coinType?: string;
+  events?: string[];
+  functions?: string[];
+  addresses?: string[];
+  address?: string;
+  abi?: any[];
+  abiFilter?: any[];
+  tokenIds?: string;
+  creatorAddress?: string;
+  collectionName?: string;
+  name?: string;
 }
 
 export interface IDataForm {
   webhook: string;
-  address: string;
-  addresses: string[];
-  tokenIds: string;
-  abi: any[];
   type: string;
-  aptosAbi: IAptosABI;
-  abiFilter: any[];
+  metadata?: IMetadata;
 }
 
 const optionsWebhookType = [
@@ -90,16 +96,13 @@ const CreateWebhook = () => {
   const { id: appId } = useParams<{ id: string }>();
   const initDataCreateWebHook = {
     webhook: '',
-    address: '',
-    tokenIds: '',
-    abi: [],
     type: '',
-    abiFilter: [],
-    aptosAbi: {
-      functions: [],
+    metadata: {
+      coinType: '',
       events: [],
+      addresses: [],
+      address: '',
     },
-    addresses: [],
   };
 
   const history = useHistory();
@@ -172,7 +175,7 @@ const CreateWebhook = () => {
     }
 
     if (
-      !dataForm.abiFilter.length &&
+      !dataForm.metadata?.abiFilter?.length &&
       type !== WEBHOOK_TYPES.ADDRESS_ACTIVITY &&
       isEVMNetwork(appInfo.chain)
     ) {
@@ -183,8 +186,9 @@ const CreateWebhook = () => {
     const data = {
       ...dataForm,
       type,
-      tokenIds: dataForm.tokenIds
-        .split(',')
+      chain: appInfo.chain,
+      tokenIds: dataForm?.metadata?.tokenIds
+        ?.split(',')
         .filter((item: string) => !!item)
         .map((item: string) => +item.trim()),
     };
@@ -203,8 +207,16 @@ const CreateWebhook = () => {
     setTimeout(() => {
       const isDisabled =
         !validator.current.allValid() ||
-        (type === WEBHOOK_TYPES.CONTRACT_ACTIVITY && !dataForm.abi.length) ||
-        (type === WEBHOOK_TYPES.ADDRESS_ACTIVITY && !dataForm.addresses.length);
+        (type === WEBHOOK_TYPES.CONTRACT_ACTIVITY &&
+          !dataForm.metadata?.abi?.length) ||
+        (type === WEBHOOK_TYPES.ADDRESS_ACTIVITY &&
+          !dataForm?.metadata?.addresses?.length) ||
+        ((type === WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY ||
+          type === WEBHOOK_TYPES.APTOS_COIN_ACTIVITY) &&
+          !dataForm?.metadata?.events?.length) ||
+        (type === WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY &&
+          !dataForm.metadata?.events?.length &&
+          !dataForm.metadata?.functions?.length);
       setIsDisableSubmit(isDisabled);
     }, 0);
   }, [dataForm]);
@@ -273,6 +285,26 @@ const CreateWebhook = () => {
     );
   };
 
+  const _renderFormCoinActivityAptos = () => {
+    return (
+      <PartFormCoinActivityAptos
+        dataForm={dataForm}
+        setDataForm={setDataForm}
+        validator={validator}
+      />
+    );
+  };
+
+  const _renderFormTokenActivityAptos = () => {
+    return (
+      <PartFormTokenActivityAptos
+        dataForm={dataForm}
+        setDataForm={setDataForm}
+        validator={validator}
+      />
+    );
+  };
+
   const _renderFormWebhook = () => {
     if (type === WEBHOOK_TYPES.NFT_ACTIVITY) {
       return _renderFormNFTActivity();
@@ -288,6 +320,14 @@ const CreateWebhook = () => {
 
     if (type === WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY) {
       return _renderFormModuleActivityAptos();
+    }
+
+    if (type === WEBHOOK_TYPES.APTOS_COIN_ACTIVITY) {
+      return _renderFormCoinActivityAptos();
+    }
+
+    if (type === WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY) {
+      return _renderFormTokenActivityAptos();
     }
 
     return _renderFormAddressActivity();
