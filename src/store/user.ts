@@ -27,6 +27,7 @@ export type UserInfoType = {
   lastName: string;
   address?: string;
   billingEmail: string;
+  avatar?: string;
 };
 
 export type UserPlanType = {

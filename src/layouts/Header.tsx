@@ -14,6 +14,7 @@ import {
   Box,
   Flex,
   Avatar,
+  Image,
 } from '@chakra-ui/react';
 import { Link, useLocation } from 'react-router-dom';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
@@ -22,8 +23,9 @@ import { isMobile } from 'react-device-detect';
 import { ArrowLogout, DoorLogout } from 'src/assets/icons';
 import { clearUser } from 'src/store/user';
 import useUser from 'src/hooks/useUser';
-import { ROUTES } from 'src/utils/common';
+import { generateAvatarFromId, ROUTES } from 'src/utils/common';
 import { PRIVATE_PATH } from 'src/routes';
+import Jazzicon from 'react-jazzicon';
 
 const menus = [
   {
@@ -88,7 +90,22 @@ const Header: FC = () => {
       <Box>
         <Menu>
           <MenuButton>
-            <Avatar name={user?.getFirstName()} size="sm" />
+            {user?.getInfo().avatar ? (
+              <Image
+                w={'24px'}
+                h={'24px'}
+                borderRadius={'12px'}
+                objectFit={'cover'}
+                objectPosition={'center'}
+                src={user?.getInfo().avatar}
+                alt="avatar"
+              />
+            ) : (
+              <Jazzicon
+                diameter={24}
+                seed={generateAvatarFromId(user?.getId())}
+              />
+            )}
           </MenuButton>
           <MenuList className="menu-header">
             <MenuItem className="user-info">

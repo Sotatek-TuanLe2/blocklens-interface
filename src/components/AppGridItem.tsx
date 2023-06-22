@@ -14,6 +14,7 @@ import AppNetworkIcons from './AppNetworkIcons';
 import { FC, ReactNode } from 'react';
 import 'src/styles/components/AppGridItem.scss';
 import Jazzicon from 'react-jazzicon';
+import { generateAvatarFromId } from 'src/utils/common';
 
 interface AppGridItemProps {
   isLoading?: boolean;
@@ -227,10 +228,7 @@ const AppGridItem: FC<AppGridItemProps> = ({
               {srcAvatar ? (
                 <Image src={srcAvatar} alt="avatar" />
               ) : (
-                <Jazzicon
-                  diameter={34}
-                  seed={Number(userId?.replace(/[a-z -]/gm, ''))}
-                />
+                <Jazzicon diameter={34} seed={generateAvatarFromId(userId)} />
               )}
             </Box>
             <Box>

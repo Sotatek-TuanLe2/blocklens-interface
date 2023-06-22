@@ -128,6 +128,10 @@ export const getDefaultVisualizationName = (chain: string | undefined) => {
   }
 };
 
+export const generateAvatarFromId = (id: string | undefined) => {
+  return Number(id?.replace(/[a-z -]/gm, ''));
+};
+
 export const QUERY_RESULT_STATUS = {
   DONE: 'DONE',
   WAITING: 'WAITING',

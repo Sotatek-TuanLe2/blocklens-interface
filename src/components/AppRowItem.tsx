@@ -16,6 +16,7 @@ import { ChevronRightIcon } from '@chakra-ui/icons';
 import { FC, ReactNode } from 'react';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import Jazzicon from 'react-jazzicon';
+import { generateAvatarFromId } from 'src/utils/common';
 
 interface AppRowItemProps {
   isLoading?: boolean;
@@ -216,10 +217,7 @@ const AppRowItem: FC<AppRowItemProps> = ({
               alt="avatar"
             />
           ) : (
-            <Jazzicon
-              diameter={24}
-              seed={Number(userId?.replace(/[a-z -]/gm, ''))}
-            />
+            <Jazzicon diameter={24} seed={generateAvatarFromId(userId)} />
           )}
 
           <Text ml={2} className="article-row-creator">
