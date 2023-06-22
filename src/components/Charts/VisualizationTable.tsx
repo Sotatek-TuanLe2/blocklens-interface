@@ -312,7 +312,7 @@ const VisualizationTable = <T,>({
                                 type === COLUMN_TYPES.PROGRESS &&
                                 align === 'right'
                                   ? 'row-reverse'
-                                  : '',
+                                  : 'row',
                               gap:
                                 type === COLUMN_TYPES.PROGRESS &&
                                 align === 'right'
