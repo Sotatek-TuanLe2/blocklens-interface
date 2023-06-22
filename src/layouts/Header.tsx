@@ -173,6 +173,7 @@ const Header: FC = () => {
                 target={'_blank'}
                 rel="noreferrer"
                 title="Click to APIs"
+                key={index}
               >
                 {item.name}
               </a>
@@ -204,11 +205,17 @@ const Header: FC = () => {
           {isOpenMenuMobile ? (
             <Box
               className="icon-close-menu"
-              onClick={() => setIsOpenMenuMobile(false)}
+              onClick={() => {
+                setIsOpenMenuMobile(false);
+                document.body.style.overflow = 'inherit';
+              }}
             ></Box>
           ) : (
             <Box
-              onClick={() => setIsOpenMenuMobile(true)}
+              onClick={() => {
+                setIsOpenMenuMobile(true);
+                document.body.style.overflow = 'hidden';
+              }}
               className="icon-menu-mobile"
             />
           )}
