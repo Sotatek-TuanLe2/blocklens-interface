@@ -50,7 +50,6 @@ const ListItem: React.FC<IListItem> = (props) => {
     }
   };
 
-  // console.log('itemClass.getUser()', itemClass.getUser());
   const getTypeItem = () => {
     return type === LIST_ITEM_TYPE.MYWORK ? myWorkType || '' : type;
   };

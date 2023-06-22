@@ -42,7 +42,6 @@ const AppGridItem: FC<AppGridItemProps> = ({
   shareComponent,
   userId,
 }) => {
-  // The substituted value will be contained in the result variable
   return isLoading ? (
     <Flex
       w={'full'}
