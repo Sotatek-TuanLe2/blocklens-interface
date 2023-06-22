@@ -4,12 +4,9 @@ import React, { useEffect, useState } from 'react';
 import 'src/styles/components/CounterConfigurations.scss';
 import { VISUALIZATION_COLORS } from 'src/utils/common';
 import { VisualizationType } from 'src/utils/query.type';
-import {
-  formatNumber,
-  formatString,
-  roundAndPadZeros,
-} from 'src/utils/utils-format';
+import { roundAndPadZeros } from 'src/utils/utils-format';
 import { isNumber } from 'src/utils/utils-helper';
+const commaNumber = require('comma-number');
 
 type Props = {
   data: unknown[];
@@ -41,8 +38,8 @@ const VisualizationCounter = ({ data, visualization, isLoading }: Props) => {
     const indexColumn = dataOptions.counterColName;
 
     return isNumber(dataColumn[indexColumn])
-      ? formatNumber(dataColumn[indexColumn]?.toString())
-      : formatString(dataColumn[indexColumn]?.toString());
+      ? commaNumber(dataColumn[indexColumn]?.toString())
+      : dataColumn[indexColumn]?.toString();
   };
 
   const defaultSize =
