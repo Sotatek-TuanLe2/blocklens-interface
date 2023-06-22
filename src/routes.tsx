@@ -86,7 +86,7 @@ const Routes: FC<RouteComponentProps> = () => {
     }
     dispatch(getUser());
     dispatch(initMetadata());
-  }, [accessToken]);
+  }, [accessToken, isExpireTimeToken]);
 
   return (
     <>
