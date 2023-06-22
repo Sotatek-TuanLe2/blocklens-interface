@@ -150,7 +150,7 @@ const WebhookSettingsPage = () => {
                   className={isActive ? 'icon-active' : 'icon-inactive'}
                   mr={2}
                 />
-                <Box>{isActive ? 'Active' : 'Inactive'}</Box>
+                <Box>{isActive ? 'ACTIVE' : 'INACTIVE'}</Box>
               </Flex>
             </Flex>
 

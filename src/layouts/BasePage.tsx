@@ -19,7 +19,6 @@ const BasePage: FC<BasePage> = ({
   isFullWidth = false,
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
   const onInit = async () => {
     try {
       setIsLoading(true);
@@ -41,7 +40,7 @@ const BasePage: FC<BasePage> = ({
         className={`base-page-container ${className}`}
       >
         <Box
-          marginTop={{ base: '8px', lg: '60px' }}
+          marginTop={{ base: '20px', lg: '60px' }}
           className={`base-page-container__content ${
             isFullWidth ? 'base-page-container__content--full' : ''
           }`}

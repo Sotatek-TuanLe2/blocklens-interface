@@ -538,6 +538,7 @@ const ActivityDatatable: FC<IActivityDatatable> = ({
                  The status shows Failed if all retries failed or user’s daily limit is reached."
                 placement={'top'}
                 hasArrow
+                className={'tooltip-app'}
               >
                 <Box ml={2} cursor="pointer">
                   <InfoIcon />

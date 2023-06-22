@@ -19,6 +19,7 @@ import React, {
 import { AppInput, AppSelect2 } from 'src/components';
 import { CloseIcon } from '@chakra-ui/icons';
 import ERC721 from 'src/abi/ERC-721.json';
+import ERC20 from 'src/abi/erc20.json';
 import { Link as ReactLink } from 'react-router-dom';
 import 'src/styles/components/AppUploadABI.scss';
 import { isMobile } from 'react-device-detect';
@@ -28,6 +29,7 @@ import { Scrollbars } from 'react-custom-scrollbars';
 export const TYPE_ABI = {
   NFT: 'NFT',
   CONTRACT: 'CONTRACT',
+  TOKEN: 'TOKEN',
 };
 
 const FILE_TEMPLATE_NFT = '/abi/ERC-721.json';
@@ -383,8 +385,15 @@ const AppUploadABI: FC<IAppUploadABI> = ({
   const onDragOver = (e: any) => e.preventDefault();
 
   useEffect(() => {
-    if (type !== TYPE_ABI.NFT) return;
-    setABIData(ERC721.abi);
+    if (type == TYPE_ABI.TOKEN) {
+      setABIData(ERC20.abi);
+      return;
+    }
+
+    if (type == TYPE_ABI.NFT) {
+      setABIData(ERC721.abi);
+      return;
+    }
   }, []);
 
   useEffect(() => {
@@ -470,6 +479,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
         hasArrow
         p={2}
         isOpen={isOpen}
+        className="tooltip-app"
         label={`This is an optional function. If you don't upload a custom ABI file, we would use default ERC-721 file.`}
       >
         <Box
