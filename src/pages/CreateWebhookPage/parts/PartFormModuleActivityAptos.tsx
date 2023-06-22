@@ -1,8 +1,6 @@
 import { AppField, AppInput, AppReadABI } from 'src/components';
 import React, { FC, useState, useEffect, useRef } from 'react';
 import rf from 'src/requests/RequestFactory';
-import { toastError } from 'src/utils/utils-notify';
-import { getErrorMessage } from 'src/utils/utils-helper';
 import _ from 'lodash';
 import { Box } from '@chakra-ui/react';
 import { IDataForm } from '../index';
@@ -67,7 +65,7 @@ const PartFormModuleActivityAptos: FC<PartFormContractAptosProps> = ({
       setDataAddress(data);
       setIsLoading(false);
     } catch (e) {
-      toastError({ message: getErrorMessage(e) });
+      console.error(e);
       setIsLoading(false);
       setDataAddress(null);
     }
@@ -80,16 +78,19 @@ const PartFormModuleActivityAptos: FC<PartFormContractAptosProps> = ({
   const debouncedOnChange = _.debounce((e) => {
     setPayloadForm({
       ...payloadForm,
-      address: e.target.value.trim(),
+      metadata: {
+        ...payloadForm.metadata,
+        address: e.target.value.trim(),
+      },
     });
   }, 2000);
 
   useEffect(() => {
-    if (payloadForm.address) {
-      getDataAddress(payloadForm.address).then();
+    if (payloadForm.metadata?.address) {
+      getDataAddress(payloadForm.metadata?.address).then();
     }
     onChangeForm(payloadForm);
-  }, [payloadForm.address]);
+  }, [payloadForm.metadata?.address]);
 
   const _renderABI = () => {
     if (dataAddress) {
@@ -97,7 +98,7 @@ const PartFormModuleActivityAptos: FC<PartFormContractAptosProps> = ({
         <Box>
           <AppReadABI
             onChangeForm={(data) => onChangeForm(data)}
-            address={payloadForm.address}
+            address={payloadForm.metadata?.address || ''}
             dataForm={payloadForm}
             dataAddress={dataAddress}
           />
@@ -108,28 +109,34 @@ const PartFormModuleActivityAptos: FC<PartFormContractAptosProps> = ({
 
   return (
     <Box width={'100%'}>
-      <AppField label={'Address ID'} customWidth={'100%'} isRequired>
+      <AppField label={'Address'} customWidth={'100%'} isRequired>
         <AppInput
-          defaultValue={payloadForm.address}
+          defaultValue={payloadForm.metadata?.address}
           ref={inputRef}
           onChange={(e) => {
             if (e.target.value.trim()) {
               setIsLoading(true);
             } else {
               setDataAddress(null);
-              setPayloadForm({ ...payloadForm, address: '' });
+              setPayloadForm({
+                ...payloadForm,
+                metadata: {
+                  ...payloadForm.metadata,
+                  address: '',
+                },
+              });
               setIsLoading(false);
             }
             debouncedOnChange(e);
           }}
           validate={{
-            name: `addressId`,
+            name: `address`,
             validator: validator.current,
             rule: 'required',
           }}
         />
       </AppField>
-      {!isLoading && !dataAddress && payloadForm.address && (
+      {!isLoading && !dataAddress && payloadForm.metadata?.address && (
         <Box color={'#ee5d50'} fontSize={'14px'}>
           Address Invalid
         </Box>
