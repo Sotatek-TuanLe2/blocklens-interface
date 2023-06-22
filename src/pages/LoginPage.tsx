@@ -19,9 +19,7 @@ import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { setUserAuth } from '../store/user';
 import { getErrorMessage } from '../utils/utils-helper';
 import { ROUTES } from 'src/utils/common';
-import {
-  useGoogleReCaptcha,
-} from 'react-google-recaptcha-v3';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { setRecaptchaToRequest } from 'src/utils/utils-auth';
 
 interface IDataForm {
@@ -62,7 +60,7 @@ const LoginPage: FC = () => {
         });
         return;
       }
-      const result = await executeRecaptcha('homepage');
+      const result = await executeRecaptcha('login');
       setRecaptchaToRequest(result);
       const res = await rf.getRequest('AuthRequest').login(dataForm);
       if (res) {
@@ -71,6 +69,7 @@ const LoginPage: FC = () => {
         history.push((location.state as any)?.originPath);
       }
     } catch (e) {
+      setRecaptchaToRequest(null);
       toastError({ message: getErrorMessage(e) });
     }
   };
