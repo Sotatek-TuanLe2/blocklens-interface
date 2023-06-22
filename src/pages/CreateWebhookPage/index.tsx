@@ -34,14 +34,10 @@ import PartFormAddressActivity from './parts/PartFormAddressActivity';
 import PartFormCoinActivityAptos from './parts/PartFormCoinActivityAptos';
 import PartFormTokenActivityAptos from './parts/PartFormTokenActivityAptos';
 
-interface IAptosABI {
-  functions: string[];
-  events: string[];
-}
-
 interface IMetadata {
   coinType?: string;
   events?: string[];
+  functions?: string[];
   addresses?: string[];
   address?: string;
   abi?: any[];
@@ -214,10 +210,13 @@ const CreateWebhook = () => {
         (type === WEBHOOK_TYPES.CONTRACT_ACTIVITY &&
           !dataForm.metadata?.abi?.length) ||
         (type === WEBHOOK_TYPES.ADDRESS_ACTIVITY &&
-          !dataForm?.metadata?.addresses?.length);
-      (type === WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY ||
-        type === WEBHOOK_TYPES.APTOS_COIN_ACTIVITY) &&
-        !dataForm?.metadata?.events?.length;
+          !dataForm?.metadata?.addresses?.length) ||
+        ((type === WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY ||
+          type === WEBHOOK_TYPES.APTOS_COIN_ACTIVITY) &&
+          !dataForm?.metadata?.events?.length) ||
+        (type === WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY &&
+          !dataForm.metadata?.events?.length &&
+          !dataForm.metadata?.functions?.length);
       setIsDisableSubmit(isDisabled);
     }, 0);
   }, [dataForm]);
