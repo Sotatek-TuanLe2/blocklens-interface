@@ -83,6 +83,14 @@ const Header: FC = () => {
     }
   };
 
+  useEffect(() => {
+    if (isOpenMenuMobile) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'inherit';
+    }
+  });
+
   const _renderAvatar = () => {
     return (
       <Box>
@@ -205,17 +213,11 @@ const Header: FC = () => {
           {isOpenMenuMobile ? (
             <Box
               className="icon-close-menu"
-              onClick={() => {
-                setIsOpenMenuMobile(false);
-                document.body.style.overflow = 'inherit';
-              }}
+              onClick={() => setIsOpenMenuMobile(false)}
             ></Box>
           ) : (
             <Box
-              onClick={() => {
-                setIsOpenMenuMobile(true);
-                document.body.style.overflow = 'hidden';
-              }}
+              onClick={() => setIsOpenMenuMobile(true)}
               className="icon-menu-mobile"
             />
           )}
