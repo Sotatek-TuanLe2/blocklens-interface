@@ -256,7 +256,8 @@ const DetailABI: FC<IDetailABI> = ({
     const events = eventsSelected.map((item) => item.name);
     onChangeForm({
       ...dataForm,
-      aptosAbi: {
+      metadata: {
+        ...dataForm.metadata,
         functions,
         events,
       },

@@ -22,11 +22,14 @@ const PartFormContractActivity: FC<IPartFormContractActivity> = ({
     <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
       <AppField label={'Contract Address'} customWidth={'100%'} isRequired>
         <AppInput
-          value={dataForm.address}
+          value={dataForm?.metadata?.address}
           onChange={(e) =>
             setDataForm({
               ...dataForm,
-              address: e.target.value.trim(),
+              metadata: {
+                ...dataForm.metadata,
+                address: e.target.value.trim(),
+              },
             })
           }
           hiddenErrorText={type !== WEBHOOK_TYPES.CONTRACT_ACTIVITY}
@@ -41,7 +44,14 @@ const PartFormContractActivity: FC<IPartFormContractActivity> = ({
       <AppUploadABI
         type={TYPE_ABI.CONTRACT}
         onChange={(abi, abiFilter) =>
-          setDataForm({ ...dataForm, abi, abiFilter })
+          setDataForm({
+            ...dataForm,
+            metadata: {
+              ...dataForm.metadata,
+              abi,
+              abiFilter,
+            },
+          })
         }
       />
     </Flex>

@@ -8,12 +8,11 @@ import {
 } from 'src/utils/utils-webhook';
 import { Th, Thead, Tr, Tbody, Td, Box, Flex } from '@chakra-ui/react';
 import { AppDataTable, AppLoadingTable } from 'src/components';
-import { formatShortText, getErrorMessage } from 'src/utils/utils-helper';
+import { formatShortText } from 'src/utils/utils-helper';
 import _ from 'lodash';
 import { IAppResponse } from 'src/utils/utils-app';
 import { useHistory } from 'react-router';
 import { isMobile } from 'react-device-detect';
-import { toastError } from 'src/utils/utils-notify';
 
 interface IListWebhook {
   appInfo: IAppResponse;
@@ -167,7 +166,7 @@ const ListWebhook: FC<IListWebhook> = ({
         setTotalWebhook(res?.totalDocs || 0);
         return res;
       } catch (error) {
-        toastError({ message: getErrorMessage(error) });
+        console.error(error);
       }
     },
     [appInfo.appId, params],

@@ -23,11 +23,14 @@ const PartFormNFTActivity: FC<IPartFormNFTActivity> = ({
       <AppField label={'NFT Address'} customWidth={'49%'} isRequired>
         <AppInput
           size="lg"
-          value={dataForm.address}
+          value={dataForm.metadata?.address}
           onChange={(e) => {
             setDataForm({
               ...dataForm,
-              address: e.target.value.trim(),
+              metadata: {
+                ...dataForm.metadata,
+                address: e.target.value.trim(),
+              },
             });
           }}
           hiddenErrorText={type !== WEBHOOK_TYPES.NFT_ACTIVITY}
@@ -42,11 +45,14 @@ const PartFormNFTActivity: FC<IPartFormNFTActivity> = ({
         <AppInput
           size="lg"
           placeholder={'20,21,22'}
-          value={dataForm.tokenIds}
+          value={dataForm.metadata?.tokenIds}
           onChange={(e) =>
             setDataForm({
               ...dataForm,
-              tokenIds: e.target.value,
+              metadata: {
+                ...dataForm.metadata,
+                tokenIds: e.target.value.trim(),
+              },
             })
           }
           validate={{
@@ -59,7 +65,14 @@ const PartFormNFTActivity: FC<IPartFormNFTActivity> = ({
       <AppUploadABI
         type={TYPE_ABI.NFT}
         onChange={(abi, abiFilter) =>
-          setDataForm({ ...dataForm, abi, abiFilter })
+          setDataForm({
+            ...dataForm,
+            metadata: {
+              ...dataForm.metadata,
+              abi,
+              abiFilter,
+            },
+          })
         }
       />
     </Flex>
