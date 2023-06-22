@@ -429,7 +429,10 @@ const Sidebar: React.FC<{
                   </Tooltip>
 
                   <AppQueryMenu
-                    menu={[QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.DELETE]}
+                    menu={[
+                      // QUERY_MENU_LIST.FORK,
+                      QUERY_MENU_LIST.DELETE,
+                    ]}
                     itemType={LIST_ITEM_TYPE.QUERIES}
                     item={query}
                     onForkSuccess={onForkSuccess}

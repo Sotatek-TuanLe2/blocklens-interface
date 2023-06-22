@@ -48,7 +48,7 @@ export const QUERY_MENU_LIST = {
 const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
   const {
     menu = [
-      QUERY_MENU_LIST.FORK,
+      // QUERY_MENU_LIST.FORK,
       QUERY_MENU_LIST.SETTING,
       QUERY_MENU_LIST.SHARE,
       QUERY_MENU_LIST.DELETE,
@@ -88,12 +88,12 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
       icon: React.ReactNode;
       onClick: () => any;
     }[] = [
-      {
-        id: QUERY_MENU_LIST.FORK,
-        label: QUERY_MENU_LIST.FORK,
-        icon: <ForkQueryIcon />,
-        onClick: onToggleModalFork,
-      },
+      // {
+      //   id: QUERY_MENU_LIST.FORK,
+      //   label: QUERY_MENU_LIST.FORK,
+      //   icon: <ForkQueryIcon />,
+      //   onClick: onToggleModalFork,
+      // },
       {
         id: QUERY_MENU_LIST.SETTING,
         label: QUERY_MENU_LIST.SETTING,
