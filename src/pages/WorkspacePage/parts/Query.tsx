@@ -206,7 +206,7 @@ const QueryPart: React.FC = () => {
     if (selectedQuery) {
       return executeSelectedQuery();
     }
-
+    setIsExpand(false);
     try {
       const query = editorRef.current.editor.getValue();
       if (!query) {
