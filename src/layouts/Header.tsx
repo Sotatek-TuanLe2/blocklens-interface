@@ -1,29 +1,28 @@
 import { FC, useEffect, useState } from 'react';
-import { AppButton, AppLink } from 'src/components';
 import { useHistory } from 'react-router';
+import { AppButton, AppLink } from 'src/components';
 import 'src/styles/layout/Header.scss';
 import Storage from 'src/utils/utils-storage';
 // import { RootState } from 'src/store';
-import { CloseIcon } from '@chakra-ui/icons';
-import { useDispatch, useSelector } from 'react-redux';
 import {
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
+  Avatar,
   Box,
   Flex,
-  Avatar,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
 } from '@chakra-ui/react';
-import { Link, useLocation } from 'react-router-dom';
-import { AppBroadcast } from 'src/utils/utils-broadcast';
-import ModalSignInRequest from 'src/modals/ModalSignInRequest';
 import { isMobile } from 'react-device-detect';
+import { useDispatch } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import { ArrowLogout, DoorLogout } from 'src/assets/icons';
-import { clearUser } from 'src/store/user';
 import useUser from 'src/hooks/useUser';
-import { ROUTES } from 'src/utils/common';
+import ModalSignInRequest from 'src/modals/ModalSignInRequest';
 import { PRIVATE_PATH } from 'src/routes';
+import { clearUser } from 'src/store/user';
+import { ROUTES } from 'src/utils/common';
+import { AppBroadcast } from 'src/utils/utils-broadcast';
 
 const menus = [
   {
@@ -82,6 +81,14 @@ const Header: FC = () => {
       history.push(ROUTES.LOGIN);
     }
   };
+
+  useEffect(() => {
+    if (isOpenMenuMobile) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'inherit';
+    }
+  }, [isOpenMenuMobile]);
 
   const _renderAvatar = () => {
     return (
@@ -173,6 +180,7 @@ const Header: FC = () => {
                 target={'_blank'}
                 rel="noreferrer"
                 title="Click to APIs"
+                key={index}
               >
                 {item.name}
               </a>

@@ -303,7 +303,7 @@ const CreateWebhook = () => {
         <Flex className="app-info">
           <Flex className="name">
             <AppLink to={`/app/${appId}`}>
-              <Box className="icon-arrow-left" mr={6} />
+              <Box className="icon-arrow-left" mr={3.5} />
             </AppLink>
             <Box className={'title-mobile'}>Create Webhook</Box>
           </Flex>

@@ -1,16 +1,6 @@
-import {
-  Box,
-  Collapse,
-  Flex,
-  Image,
-  Text,
-  Tooltip,
-  useDisclosure,
-} from '@chakra-ui/react';
 import moment from 'moment';
-import { Link } from 'react-router-dom';
-import { AppGridItem, AppRowItem, AppTag } from 'src/components';
-import AppNetworkIcons from 'src/components/AppNetworkIcons';
+import { AppGridItem, AppRowItem } from 'src/components';
+import AppQueryMenu, { QUERY_MENU_LIST } from 'src/components/AppQueryMenu';
 import { DisplayType } from 'src/constants';
 import { ROUTES } from 'src/utils/common';
 import { IDashboardDetail, IQuery } from 'src/utils/query.type';
@@ -18,8 +8,6 @@ import { Dashboard } from 'src/utils/utils-dashboard';
 import { Query } from 'src/utils/utils-query';
 import { LIST_ITEM_TYPE } from '..';
 import { listTags, TYPE_MYWORK } from './FilterSearch';
-import AppQueryMenu, { QUERY_MENU_LIST } from 'src/components/AppQueryMenu';
-import { ChevronRightIcon } from '@chakra-ui/icons';
 
 interface IListItem {
   isLoading?: boolean;
@@ -44,7 +32,6 @@ const ListItem: React.FC<IListItem> = (props) => {
     type === LIST_ITEM_TYPE.DASHBOARDS
       ? new Dashboard(item as IDashboardDetail)
       : new Query(item as IQuery);
-
   const userName = `${itemClass.getUserFirstName()} ${itemClass.getUserLastName()}`;
 
   const getTitleUrl = (): string => {
@@ -72,7 +59,10 @@ const ListItem: React.FC<IListItem> = (props) => {
     if (type === LIST_ITEM_TYPE.DASHBOARDS) {
       menu.push(QUERY_MENU_LIST.SHARE);
     } else {
-      menu = [QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.SHARE];
+      menu = [
+        // QUERY_MENU_LIST.FORK,
+        QUERY_MENU_LIST.SHARE,
+      ];
     }
 
     return (
@@ -99,7 +89,8 @@ const ListItem: React.FC<IListItem> = (props) => {
           chainList={itemClass.getChains()}
           shareComponent={_renderDropdown()}
           srcThumb={itemClass.getThumnail()!}
-          srcAvatar={null!}
+          srcAvatar={itemClass.getUser().avatar}
+          userId={itemClass.getUser().userId}
         />
       ) : (
         <AppRowItem
@@ -111,7 +102,8 @@ const ListItem: React.FC<IListItem> = (props) => {
           chainList={itemClass.getChains()}
           shareComponent={_renderDropdown()}
           srcThumb={itemClass.getThumnail()!}
-          srcAvatar={null!}
+          srcAvatar={itemClass.getUser().avatar}
+          userId={itemClass.getUser().userId}
           type={type}
           myWorkType={myWorkType}
         />
