@@ -52,15 +52,15 @@ export const appTextareaStyles = {
 
   variants: {
     main: (props: StyleProps) => ({
-      bg: mode('card.100', 'card.100')(props),
+      bg: mode('white', 'white')(props),
       border: '1px solid',
-      color: mode('white', 'white')(props),
-      borderColor: mode('line.100', 'line.300')(props),
+      color: mode('#000224', '#000224')(props),
+      borderColor: mode('#C7D2E1', '#C7D2E1')(props),
       borderRadius: '6px',
       fontSize: '16px',
       p: '20px',
       _placeholder: {
-        color: mode('line.100', 'line.100')(props),
+        color: mode('#C7D2E1', '#C7D2E1')(props),
       },
       _focus: {
         borderColor: mode('pressed.100', 'pressed.100')(props),

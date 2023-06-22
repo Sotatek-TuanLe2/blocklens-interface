@@ -110,7 +110,9 @@ const PartUserStats = ({
     try {
       const res: IUserStats = await rf
         .getRequest('NotificationRequest')
-        .getUserStatsToday();
+        .getUserStats({
+          resolution: 86400,
+        });
       setUserStatsToday(res);
     } catch (error: any) {
       setUserStatsToday({});
@@ -124,7 +126,7 @@ const PartUserStats = ({
         .getUserStats({
           from: moment().utc().subtract(24, 'hour').valueOf(),
           to: moment().utc().valueOf(),
-          period: 'hour',
+          resolution: 86400,
         });
       setDataChart(res);
     } catch (error: any) {

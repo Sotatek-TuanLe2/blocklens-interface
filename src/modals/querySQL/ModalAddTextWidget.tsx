@@ -1,25 +1,27 @@
-import { Flex, Text, Textarea } from '@chakra-ui/react';
-import { debounce } from 'lodash';
+import { Box, Flex, Text, Textarea } from '@chakra-ui/react';
+import _, { debounce } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { AppButton, AppField } from 'src/components';
 import AppAccordion from 'src/components/AppAccordion';
-import { ILayout, TYPE_MODAL } from 'src/pages/WorkspacePage/parts/Dashboard';
-import rf from 'src/requests/RequestFactory';
+import {
+  ILayout,
+  TYPE_MODAL,
+  WIDGET_TYPE,
+} from 'src/pages/WorkspacePage/parts/Dashboard';
 import 'src/styles/components/BaseModal.scss';
-import { getErrorMessage } from 'src/utils/utils-helper';
-import { toastError, toastSuccess } from 'src/utils/utils-notify';
+import { toastSuccess } from 'src/utils/utils-notify';
 import BaseModal from '../BaseModal';
-import { IDashboardDetail, ITextWidget } from 'src/utils/query.type';
 import { INPUT_DEBOUNCE } from 'src/utils/common';
+import { RadioChecked, RadioNoCheckedIcon } from '../../assets/icons';
+import { WIDTH_DASHBOARD, TOTAL_COL } from './ModalAddVisualization';
 
 interface IModalAddTextWidget {
   open: boolean;
-  onClose: () => void;
   type?: TYPE_MODAL.ADD | TYPE_MODAL.EDIT | string;
   selectedItem: ILayout;
   dataLayouts: ILayout[];
-  onReload: () => Promise<void>;
-  dataDashboard?: IDashboardDetail;
+  onClose: () => void;
+  onSave: (layouts: ILayout[]) => void;
 }
 
 interface IMarkdown {
@@ -88,70 +90,73 @@ const MarkdownSupport: IMarkdown[] = [
 ];
 const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
   open,
-  onClose,
   type,
   dataLayouts,
   selectedItem,
-  onReload,
-  dataDashboard,
+  onClose,
+  onSave,
 }) => {
   const [markdownText, setMarkdownText] = useState<string>('');
+  const [widthWidget, setWidthWidget] = useState<number>(TOTAL_COL / 2);
 
   useEffect(() => {
     setMarkdownText(selectedItem.text || '');
   }, [selectedItem]);
 
-  const handleSave = async () => {
-    try {
-      const payload = {
-        dashboardId: dataDashboard?.id,
-        text: markdownText,
-        options: {
-          sizeX: dataLayouts.length % 2 === 0 ? 0 : 6,
-          sizeY: dataLayouts.length,
-          col: 6,
-          row: 2,
-        },
-      };
-      const res = await rf
-        .getRequest('DashboardsRequest')
-        .addDashboardItem(payload);
-      if (res) {
-        toastSuccess({ message: 'Add successfully' });
-        onReload();
-        setMarkdownText('');
-        onClose();
-      }
-    } catch (e) {
-      toastError({ message: getErrorMessage(e) });
+  const handleSave = async (widthWidget: number) => {
+    const lastLayout = _.maxBy(dataLayouts, 'y');
+    const currentY = lastLayout?.y || 0;
+    const listWidgetCurrent = dataLayouts.filter(
+      (layout) => layout.y === currentY,
+    );
+
+    const totalWidthWidget = _.sumBy(listWidgetCurrent, 'w');
+
+    let sizeX = 0;
+    let sizeY = 0;
+
+    if (totalWidthWidget < TOTAL_COL) {
+      sizeY = currentY;
+      sizeX = totalWidthWidget;
+    } else {
+      sizeY = currentY + 2;
+      sizeX = 0;
     }
+
+    const newId = Date.now().toString();
+    const newTextWidget = {
+      x: +sizeX,
+      y: +sizeY,
+      w: widthWidget,
+      h: 2,
+      i: newId,
+      id: newId,
+      type: WIDGET_TYPE.TEXT,
+      text: markdownText,
+      content: {},
+    };
+
+    onSave([...dataLayouts, newTextWidget]);
+    onClose();
+    toastSuccess({ message: 'Add successfully' });
   };
+
   const handleUpdate = async () => {
-    const newItems = dataDashboard?.textWidgets?.map((i: ITextWidget) => {
-      if (i.id === selectedItem.id) {
-        return {
-          id: selectedItem.id,
-          text: markdownText,
-        };
-      }
-      return { ...i };
-    });
-    try {
-      const payload = {
-        textWidgets: newItems,
-      };
-      const res = await rf
-        .getRequest('DashboardsRequest')
-        .updateDashboardItem(payload, dataDashboard?.id);
-      if (res) {
-        toastSuccess({ message: 'Update successfully' });
-        onReload();
-        setMarkdownText('');
-        onClose();
-      }
-    } catch (e) {
-      toastError({ message: getErrorMessage(e) });
+    const newDataLayouts = [...dataLayouts];
+    const index = newDataLayouts.findIndex(
+      (item) => item.id === selectedItem.id,
+    );
+    if (index < 0) {
+      return;
     }
+    newDataLayouts[index] = {
+      ...newDataLayouts[index],
+      text: markdownText,
+    };
+
+    onSave(newDataLayouts);
+    onClose();
+    toastSuccess({ message: 'Update successfully' });
   };
 
   const handleChangeMarkdownText = debounce((event) => {
@@ -190,6 +195,42 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
           className="table-main-markdown"
         />
 
+        <Flex
+          pt={5}
+          fontSize={'14px'}
+          alignItems={{ base: 'flex-start', md: 'center' }}
+        >
+          Width:
+          <Flex
+            ml={{ base: 2, md: 3 }}
+            flexDirection={{ base: 'column', md: 'row' }}
+          >
+            {WIDTH_DASHBOARD.map((item, index) => {
+              return (
+                <Flex
+                  mr={{ base: 2, md: 3 }}
+                  onClick={() => setWidthWidget(item.col)}
+                  cursor={'pointer'}
+                  key={index}
+                  mb={{ base: 3, md: 0 }}
+                >
+                  {widthWidget === item.col ? (
+                    <RadioChecked />
+                  ) : (
+                    <RadioNoCheckedIcon />
+                  )}
+                  <Flex ml={2} alignItems={'center'}>
+                    {item.name}{' '}
+                    <Box as={'span'} fontSize={'14px'} ml={1}>
+                      ({item.width})
+                    </Box>
+                  </Flex>
+                </Flex>
+              );
+            })}
+          </Flex>
+        </Flex>
+
         <Flex className="modal-footer">
           <AppButton
             mr={2.5}
@@ -203,7 +244,9 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
           <AppButton
             size="lg"
             onClick={() => {
-              type === TYPE_MODAL.ADD ? handleSave() : handleUpdate();
+              type === TYPE_MODAL.ADD
+                ? handleSave(widthWidget)
+                : handleUpdate();
             }}
             disabled={!markdownText.trim()}
           >

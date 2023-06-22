@@ -1,4 +1,11 @@
-import { Flex, Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/react';
+import {
+  Box,
+  Flex,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+} from '@chakra-ui/react';
 import { useMemo, useState } from 'react';
 import useUser from 'src/hooks/useUser';
 import ModalDashboard from 'src/modals/querySQL/ModalDashboard';
@@ -9,6 +16,14 @@ import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import 'src/styles/components/AppQueryMenu.scss';
 import { TYPE_OF_MODAL, ROUTES } from 'src/utils/common';
 import { IDashboardDetail, IQuery } from 'src/utils/query.type';
+import AppButton from './AppButton';
+import {
+  DeleteQueryIcon,
+  ForkQueryIcon,
+  IconDotMore,
+  SettingQueryIcon,
+  ShareQueryIcon,
+} from '../assets/icons';
 
 interface IAppQueryMenu {
   menu?: string[];
@@ -20,6 +35,7 @@ interface IAppQueryMenu {
     type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE],
   ) => Promise<void>;
   onSettingSuccess?: (response: any) => Promise<void>;
+  isNavMenu?: boolean;
 }
 
 export const QUERY_MENU_LIST = {
@@ -32,7 +48,7 @@ export const QUERY_MENU_LIST = {
 const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
   const {
     menu = [
-      QUERY_MENU_LIST.FORK,
+      // QUERY_MENU_LIST.FORK,
       QUERY_MENU_LIST.SETTING,
       QUERY_MENU_LIST.SHARE,
       QUERY_MENU_LIST.DELETE,
@@ -42,6 +58,7 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
     onDeleteSuccess = () => null,
     onSettingSuccess = () => null,
     item,
+    isNavMenu,
   } = props;
 
   const { user } = useUser();
@@ -71,28 +88,28 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
       icon: React.ReactNode;
       onClick: () => any;
     }[] = [
-      {
-        id: QUERY_MENU_LIST.FORK,
-        label: QUERY_MENU_LIST.FORK,
-        icon: <p className="icon-query-fork" />,
-        onClick: onToggleModalFork,
-      },
+      // {
+      //   id: QUERY_MENU_LIST.FORK,
+      //   label: QUERY_MENU_LIST.FORK,
+      //   icon: <ForkQueryIcon />,
+      //   onClick: onToggleModalFork,
+      // },
       {
         id: QUERY_MENU_LIST.SETTING,
         label: QUERY_MENU_LIST.SETTING,
-        icon: <p className="icon-query-setting" />,
+        icon: <SettingQueryIcon />,
         onClick: onToggleModalSetting,
       },
       {
         id: QUERY_MENU_LIST.SHARE,
         label: QUERY_MENU_LIST.SHARE,
-        icon: <p className="icon-query-share" />,
+        icon: <ShareQueryIcon />,
         onClick: onToggleModalShare,
       },
       {
         id: QUERY_MENU_LIST.DELETE,
         label: QUERY_MENU_LIST.DELETE,
-        icon: <p className="icon-query-delete" />,
+        icon: <DeleteQueryIcon />,
         onClick: onToggleModalDelete,
       },
     ];
@@ -118,24 +135,45 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
   );
   return (
     <>
-      <Menu>
-        <MenuButton
-          as={'button'}
-          className="app-query-menu"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <p className="icon-query-list" />
-        </MenuButton>
-        <MenuList className="app-query-menu__list">
-          {generateMenu().map((i) => (
-            <MenuItem key={i.id} onClick={i.onClick}>
-              <Flex alignItems={'center'} gap={'8px'}>
-                {i.icon} {i.label}
-              </Flex>
-            </MenuItem>
+      {!isNavMenu ? (
+        <Menu>
+          <MenuButton
+            as={'button'}
+            className="app-query-menu"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Box>
+              <IconDotMore color={'rgba(0, 2, 36, 0.5)'} />
+            </Box>
+          </MenuButton>
+          <MenuList
+            boxShadow={'0px 10px 40px rgba(125, 143, 179, 0.2)'}
+            className="app-query-menu__list"
+          >
+            {generateMenu().map((i) => (
+              <MenuItem key={i.id} onClick={i.onClick}>
+                <Flex alignItems={'center'} gap={'8px'}>
+                  {i.icon} {i.label}
+                </Flex>
+              </MenuItem>
+            ))}
+          </MenuList>
+        </Menu>
+      ) : (
+        <Flex align={'center'}>
+          {generateMenu().map((item, index) => (
+            <AppButton
+              key={item.id}
+              className="btn-primary"
+              onClick={item.onClick}
+              h={'36px'}
+              ml={index !== 0 ? '9px' : 0}
+            >
+              {item.icon}&nbsp;{item.label}
+            </AppButton>
           ))}
-        </MenuList>
-      </Menu>
+        </Flex>
+      )}
       {itemType === LIST_ITEM_TYPE.DASHBOARDS && openModalSetting && (
         <ModalDashboard
           open={openModalSetting}

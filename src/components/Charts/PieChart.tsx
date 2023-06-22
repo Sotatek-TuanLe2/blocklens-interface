@@ -8,16 +8,21 @@ import {
 } from 'recharts';
 import { COLORS } from 'src/utils/common';
 import { VisualizationOptionsType } from 'src/utils/query.type';
-import { Box, Flex } from '@chakra-ui/react';
+import { Box, Flex, Tooltip as TooltipUI } from '@chakra-ui/react';
 import { useMemo, useState } from 'react';
 import _ from 'lodash';
 import BigNumber from 'bignumber.js';
 import { isNumber } from 'src/utils/utils-helper';
 import { ChartProps } from './VisualizationChart';
-import { formatVisualizationValue } from 'src/utils/utils-format';
+import {
+  formatDefaultValueChart,
+  formatVisualizationValue,
+} from 'src/utils/utils-format';
+import { FadeLoader } from 'react-spinners';
 
 type ChartConfigType = VisualizationOptionsType;
 type Props = ChartProps & {
+  isLoading?: boolean;
   configs?: Partial<ChartConfigType>;
 };
 
@@ -26,6 +31,7 @@ const VisualizationPieChart = ({
   yAxisKeys,
   xAxisKey = '0',
   configs,
+  isLoading,
 }: Props) => {
   const chartOptionsConfigs = configs?.chartOptionsConfigs;
   const RADIAN = Math.PI / 180;
@@ -148,6 +154,21 @@ const VisualizationPieChart = ({
       });
   }, [shownData]);
 
+  if (isLoading) {
+    return (
+      <Flex align={'center'} justify={'center'} w={'full'} h={'full'}>
+        <FadeLoader
+          cssOverride={{
+            transform: 'scale(0.4) translateY(-35px)',
+            transformOrigin: 'center',
+          }}
+          color="rgba(0, 2, 36, 0.8)"
+        />{' '}
+        Loading
+      </Flex>
+    );
+  }
+
   return (
     <ResponsiveContainer width={'100%'} height={'100%'}>
       {yAxisKeys?.length === 1 ? (
@@ -160,7 +181,6 @@ const VisualizationPieChart = ({
             label={
               chartOptionsConfigs?.showDataLabels && _renderCustomizedLabel
             }
-            stroke="#101530"
           >
             {shownData &&
               shownData.map((entry: any) => (
@@ -244,13 +264,15 @@ const CustomLegend = (props: any) => {
               opacity: `${entry.type ? '1' : '0.5'}`,
             }}
           ></span>
-          <span
-            style={{
-              opacity: `${entry.type ? '1' : '0.5'}`,
-            }}
-          >
-            {entry.value}
-          </span>
+          <TooltipUI hasArrow placement="top" label={entry.value}>
+            <span
+              style={{
+                opacity: `${entry.type ? '1' : '0.5'}`,
+              }}
+            >
+              {formatDefaultValueChart(entry.value)}
+            </span>
+          </TooltipUI>
         </div>
       ))}
     </div>
@@ -276,9 +298,14 @@ const CustomTooltip = (props: any) => {
             <div className="custom-tooltip__desc">
               <Box as={'div'} className="custom-tooltip__desc__detail">
                 <span style={{ backgroundColor: entry.fill }}></span>
-                <span>{`${entry.dataKey}: ${_renderTooltipValue(
-                  entry.value,
-                )} (${((entry.value / totalValue) * 100).toFixed(2)}%)`}</span>
+                <span>
+                  {entry.dataKey}:{' '}
+                  <span className="tooltip-value">{`${_renderTooltipValue(
+                    entry.value,
+                  )} (${((entry.value / totalValue) * 100).toFixed(
+                    2,
+                  )}%)`}</span>
+                </span>
                 <br />
               </Box>
             </div>

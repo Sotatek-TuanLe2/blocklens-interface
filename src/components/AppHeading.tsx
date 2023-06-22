@@ -13,7 +13,7 @@ const AppHeading: FC<IHeading> = ({ title, linkBack, isCenter = false }) => {
     <Flex className="title-heading">
       {linkBack && (
         <AppLink to={linkBack}>
-          <Box className="icon-arrow-left" mr={6} />
+          <Box className="icon-arrow-left" mr={3.5} />
         </AppLink>
       )}
 

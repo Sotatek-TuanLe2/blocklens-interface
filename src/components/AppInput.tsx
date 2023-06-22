@@ -31,7 +31,7 @@ interface AppInputProps extends InputProps {
   hiddenErrorText?: boolean;
 }
 
-const AppInput = forwardRef(
+const AppInput = forwardRef<AppInputProps, any>(
   (
     {
       variant = 'main',
@@ -43,7 +43,7 @@ const AppInput = forwardRef(
       endAdornment,
       hiddenErrorText = false,
       ...props
-    }: AppInputProps,
+    },
     ref,
   ) => {
     const forceRender = useForceRender();
@@ -94,7 +94,11 @@ const AppInput = forwardRef(
             !readOnly &&
             validate.validator.message(
               validate.name,
-              props.value,
+              props.value
+                ? props.value
+                : ref
+                ? (ref as any).current?.value
+                : '',
               validate.rule,
               validate.options,
             )}
@@ -123,19 +127,19 @@ export const appInputStyles = {
         bg: mode('white.100', 'card.100')(props),
         border: '1px solid',
         color: mode('black', 'white')(props),
-        borderColor: mode('line.100', 'line.300')(props),
+        borderColor: mode('border.400', 'line.300')(props),
         borderRadius: '6px',
         fontSize: '16px',
         p: '20px',
         _focus: {
-          borderColor: mode('pressed.100', 'pressed.100')(props),
+          borderColor: mode('#0060DB', '#0060DB')(props),
         },
         _placeholder: {
           color: mode('line.100', 'line.100')(props),
         },
         _disabled: {
-          bg: mode('bg.200', 'bg.200')(props),
-          borderColor: mode('bg.200', 'bg.200')(props),
+          bg: mode('rgba(0, 2, 36, 0.05)', 'rgba(0, 2, 36, 0.05)')(props),
+          border: 0,
           color: mode('paragraph.100', 'paragraph.100')(props),
         },
       },
@@ -146,6 +150,9 @@ export const appInputStyles = {
         color: mode('navy.700', 'white')(props),
         bg: mode('transparent', 'transparent')(props),
         border: '1px solid',
+        _focus: {
+          borderColor: mode('#0060DB', '#0060DB')(props),
+        },
         borderColor: mode(
           'secondaryGray.100',
           'rgba(135, 140, 189, 0.3)',
@@ -183,7 +190,7 @@ export const appInputStyles = {
         fontSize: '16px',
         p: '20px 20px 20px 46px',
         _focus: {
-          borderColor: mode('pressed.100', 'pressed.100')(props),
+          borderColor: mode('#0060DB', '#0060DB')(props),
         },
         _placeholder: {
           color: mode('line.100', 'line.100')(props),

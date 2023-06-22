@@ -74,6 +74,16 @@ import { ReactComponent as IconQueries } from './IconQueries.svg';
 import { ReactComponent as IconQueriesInactive } from './IconQueriesInactive.svg';
 import { ReactComponent as IconUploadImg } from './IconUploadImg.svg';
 import { ReactComponent as DeleteIcon } from './DeleteIcon.svg';
+import { ReactComponent as IconDisplayGrid } from './icon-display-grid.svg';
+import { ReactComponent as IconDisplayList } from './icon-display-list.svg';
+import { ReactComponent as IconDotMore } from './icon-dot-more.svg';
+import { ReactComponent as IconFilter } from './icon-filter.svg';
+import { ReactComponent as SettingQueryIcon } from './SettingQueryIcon.svg';
+import { ReactComponent as ShareQueryIcon } from './ShareQueryIcon.svg';
+import { ReactComponent as DeleteQueryIcon } from './DeleteQueryIcon.svg';
+import { ReactComponent as ForkQueryIcon } from './ForkQueryIcon.svg';
+import { ReactComponent as AddChartIcon } from './AddChartIcon.svg';
+import { ReactComponent as NoAppIcon } from './icon-no-app.svg';
 
 export {
   CalendarIcon,
@@ -152,4 +162,14 @@ export {
   IconQueriesInactive,
   IconUploadImg,
   DeleteIcon,
+  IconDisplayGrid,
+  IconDisplayList,
+  IconDotMore,
+  IconFilter,
+  SettingQueryIcon,
+  ShareQueryIcon,
+  DeleteQueryIcon,
+  ForkQueryIcon,
+  AddChartIcon,
+  NoAppIcon,
 };

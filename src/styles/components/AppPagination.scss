@@ -17,13 +17,12 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 3px;
-    color: $paragraph;
+    border-radius: 4px;
+    color: rgba(0, 2, 36, 0.8);
 
     a {
-      padding: 0 5px;
-      min-width: 30px;
-      height: 30px;
+      min-width: 32px;
+      height: 32px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -31,12 +30,12 @@
 
     &.selected {
       background: $gradient;
-      color: $title;
+      color: #fff;
     }
 
     &:hover {
       background: $gradient;
-      color: $title;
+      color: #fff;
     }
 
     &.disabled {

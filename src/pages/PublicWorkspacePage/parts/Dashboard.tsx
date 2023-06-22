@@ -1,40 +1,33 @@
 import { useParams } from 'react-router-dom';
-import { Box, Flex } from '@chakra-ui/react';
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { Flex } from '@chakra-ui/react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Layout, Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import ReactMarkdown from 'react-markdown';
 import 'react-resizable/css/styles.css';
-import { AppTag } from 'src/components';
 import ModalForkDashBoardDetails from 'src/modals/querySQL/ModalForkDashBoardDetails';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/TableValue.scss';
 import 'src/styles/pages/DashboardDetailPage.scss';
 import 'src/styles/components/Chart.scss';
 import 'src/styles/components/AppQueryMenu.scss';
-import { IDashboardDetail } from 'src/utils/query.type';
+import {
+  IDashboardDetail,
+  ITextWidget,
+  IVisualizationWidget,
+} from 'src/utils/query.type';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import Header from 'src/pages/WorkspacePage/parts/Header';
 import VisualizationItem from 'src/pages/WorkspacePage/parts/VisualizationItem';
-import AppNetworkIcons from 'src/components/AppNetworkIcons';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import { Dashboard } from 'src/utils/utils-dashboard';
+import { LoadingFullPage } from 'src/pages/LoadingFullPage';
 
 export interface ILayout extends Layout {
-  options: any;
-  i: string;
   id: string;
-  dashboardVisuals: [];
-  text: string;
+  text?: string;
   type: string;
-  visualization: any;
   content: any;
 }
 
@@ -57,21 +50,21 @@ const DashboardPart: React.FC = () => {
   const [dataDashboard, setDataDashboard] = useState<IDashboardDetail>();
   const [openModalFork, setOpenModalFork] = useState<boolean>(false);
   const [isEmptyDashboard, setIsEmptyDashboard] = useState<boolean>(false);
-
-  const layoutChangeTimeout = useRef() as any;
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchLayoutData = useCallback(async () => {
     try {
+      setIsLoading(true);
       const res = await rf
         .getRequest('DashboardsRequest')
         .getPublicDashboardById(dashboardId);
       if (res) {
         const visualization: ILayout[] = res.dashboardVisuals.map(
-          (item: ILayout) => {
+          (item: IVisualizationWidget) => {
             const { options } = item;
             return {
-              x: options.sizeX,
-              y: options.sizeY,
+              x: options.sizeX || 0,
+              y: options.sizeY || 0,
               w: options.col,
               h: options.row,
               i: item.id,
@@ -81,20 +74,22 @@ const DashboardPart: React.FC = () => {
             };
           },
         );
-        const textWidgets: ILayout[] = res.textWidgets.map((item: ILayout) => {
-          const { options } = item;
-          return {
-            x: options.sizeX,
-            y: options.sizeY,
-            w: options.col,
-            h: options.row,
-            i: item.id,
-            id: item.id,
-            type: WIDGET_TYPE.TEXT,
-            text: item.text,
-            content: {},
-          };
-        });
+        const textWidgets: ILayout[] = res.textWidgets.map(
+          (item: ITextWidget) => {
+            const { options } = item;
+            return {
+              x: options.sizeX || 0,
+              y: options.sizeY || 0,
+              w: options.col,
+              h: options.row,
+              i: item.id,
+              id: item.id,
+              type: WIDGET_TYPE.TEXT,
+              text: item.text,
+              content: {},
+            };
+          },
+        );
 
         const layouts = visualization.concat(textWidgets);
         setDataDashboard(res);
@@ -105,6 +100,8 @@ const DashboardPart: React.FC = () => {
       toastError({
         message: getErrorMessage(error),
       });
+    } finally {
+      setIsLoading(false);
     }
   }, [dashboardId]);
 
@@ -121,57 +118,6 @@ const DashboardPart: React.FC = () => {
     return new Dashboard(dataDashboard);
   }, [dataDashboard]);
 
-  const onLayoutChange = async (layout: Layout[]) => {
-    clearTimeout(layoutChangeTimeout.current);
-
-    const dataVisualization = dataLayouts
-      .filter((e) => e.type === WIDGET_TYPE.VISUALIZATION)
-      .map((item) => {
-        const newLayout = layout.filter((e) => e.i === item.id);
-        return {
-          id: item.id,
-          options: {
-            sizeX: newLayout[0].x,
-            sizeY: newLayout[0].y,
-            col: newLayout[0].w,
-            row: newLayout[0].h,
-          },
-        };
-      });
-    const dataTextWidget = dataLayouts
-      .filter((e) => e.type === WIDGET_TYPE.TEXT)
-      .map((item) => {
-        const newLayout = layout.filter((e) => e.i === item.id);
-        return {
-          id: item.id,
-          options: {
-            sizeX: newLayout[0].x,
-            sizeY: newLayout[0].y,
-            col: newLayout[0].w,
-            row: newLayout[0].h,
-          },
-        };
-      });
-
-    // many widgets are changed at one time so need to update the latest change
-    layoutChangeTimeout.current = setTimeout(async () => {
-      try {
-        const payload = {
-          dashboardVisuals: dataVisualization,
-          textWidgets: dataTextWidget,
-        };
-        const res = await rf
-          .getRequest('DashboardsRequest')
-          .updateDashboardItem(payload, dashboardId);
-        if (res) {
-          fetchLayoutData();
-        }
-      } catch (e) {
-        toastError({ message: getErrorMessage(e) });
-      }
-    }, 500);
-  };
-
   const _renderEmptyDashboard = () => (
     <Flex
       className="empty-dashboard"
@@ -182,61 +128,68 @@ const DashboardPart: React.FC = () => {
     </Flex>
   );
 
+  const _renderDashboard = () => {
+    if (isEmptyDashboard) {
+      return _renderEmptyDashboard();
+    }
+    return (
+      <ResponsiveGridLayout
+        className="main-grid-layout"
+        layouts={{ lg: dataLayouts }}
+        breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
+        cols={{ lg: 12, md: 12, sm: 12, xs: 6, xxs: 4 }}
+        isDraggable={false}
+        isResizable={false}
+        measureBeforeMount
+        containerPadding={[0, 30]}
+        margin={[20, 20]}
+      >
+        {dataLayouts.map((item) => (
+          <div className="box-layout" key={item.id}>
+            <div className="box-chart">
+              {item.type === WIDGET_TYPE.VISUALIZATION ? (
+                <VisualizationItem
+                  visualization={item.content}
+                  needAuthentication={false}
+                />
+              ) : (
+                <div className="box-text-widget">
+                  <ReactMarkdown>{item.text || ''}</ReactMarkdown>
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
+      </ResponsiveGridLayout>
+    );
+  };
+
   return (
     <div className="workspace-page__editor__dashboard">
       <Header
         type={LIST_ITEM_TYPE.DASHBOARDS}
-        author={''}
+        author={
+          dashboardClass
+            ? `${dashboardClass?.getUserFirstName()} ${dashboardClass?.getUserLastName()}`
+            : ''
+        }
         data={dataDashboard}
         needAuthentication={false}
+        isLoadingRun={isLoading}
       />
-      <div className="dashboard-container">
-        <Box className="header-tab">
-          <div className="header-tab__info">
-            {dashboardClass?.getChains() && (
-              <AppNetworkIcons networkIds={dashboardClass?.getChains()} />
-            )}
-            {['defi', 'gas', 'dex'].map((item) => (
-              <AppTag key={item} value={item} />
-            ))}
-          </div>
-        </Box>
-        {!!dataLayouts.length && (
-          <ResponsiveGridLayout
-            onLayoutChange={onLayoutChange}
-            className="main-grid-layout"
-            layouts={{ lg: dataLayouts }}
-            breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
-            cols={{ lg: 12, md: 12, sm: 12, xs: 6, xxs: 4 }}
-            isDraggable={false}
-            isResizable={false}
-            measureBeforeMount
-          >
-            {dataLayouts.map((item) => (
-              <div className="box-layout" key={item.id}>
-                <div className="box-chart">
-                  {item.type === WIDGET_TYPE.VISUALIZATION ? (
-                    <VisualizationItem
-                      visualization={item.content}
-                      needAuthentication={false}
-                    />
-                  ) : (
-                    <div className="box-text-widget">
-                      <ReactMarkdown>{item.text}</ReactMarkdown>
-                    </div>
-                  )}
-                </div>
-              </div>
-            ))}
-          </ResponsiveGridLayout>
-        )}
-        {isEmptyDashboard && _renderEmptyDashboard()}
-        <ModalForkDashBoardDetails
-          dashboardId={dashboardId}
-          open={openModalFork}
-          onClose={() => setOpenModalFork(false)}
-        />
-      </div>
+
+      {isLoading ? (
+        <LoadingFullPage />
+      ) : (
+        <div className="dashboard-container">
+          {_renderDashboard()}
+          <ModalForkDashBoardDetails
+            dashboardId={dashboardId}
+            open={openModalFork}
+            onClose={() => setOpenModalFork(false)}
+          />
+        </div>
+      )}
     </div>
   );
 };

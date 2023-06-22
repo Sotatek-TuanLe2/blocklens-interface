@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useParams, Prompt } from 'react-router-dom';
 import {
   Box,
   Flex,
@@ -7,19 +7,12 @@ import {
   MenuItem,
   MenuList,
 } from '@chakra-ui/react';
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Layout, Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import ReactMarkdown from 'react-markdown';
 import 'react-resizable/css/styles.css';
 import PlusIcon from 'src/assets/icons/icon-plus.png';
-import { AppTag } from 'src/components';
 import useUser from 'src/hooks/useUser';
 import ModalAddTextWidget from 'src/modals/querySQL/ModalAddTextWidget';
 import ModalAddVisualization from 'src/modals/querySQL/ModalAddVisualization';
@@ -31,25 +24,25 @@ import 'src/styles/components/TableValue.scss';
 import 'src/styles/pages/DashboardDetailPage.scss';
 import 'src/styles/components/Chart.scss';
 import 'src/styles/components/AppQueryMenu.scss';
-import { IDashboardDetail } from 'src/utils/query.type';
+import {
+  IDashboardDetail,
+  ITextWidget,
+  IVisualizationWidget,
+} from 'src/utils/query.type';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import VisualizationItem from './VisualizationItem';
 import Header from './Header';
-import AppNetworkIcons from 'src/components/AppNetworkIcons';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
 import { Dashboard } from 'src/utils/utils-dashboard';
 import { DeleteIcon, EditIcon } from 'src/assets/icons';
+import { LoadingFullPage } from 'src/pages/LoadingFullPage';
 
 export interface ILayout extends Layout {
-  options: any;
-  i: string;
   id: string;
-  dashboardVisuals: [];
-  text: string;
+  text?: string;
   type: string;
-  visualization: any;
   content: any;
 }
 
@@ -84,25 +77,25 @@ const DashboardPart: React.FC = () => {
   const [openModalEdit, setOpenModalEdit] = useState<boolean>(false);
   const [openModalAddTextWidget, setOpenModalAddTextWidget] =
     useState<boolean>(false);
-  const [isEmptyDashboard, setIsEmptyDashboard] = useState<boolean>(false);
-
-  const layoutChangeTimeout = useRef() as any;
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isSavingDashboard, setIsSavingDashboard] = useState<boolean>(false);
 
   const userName =
     `${user?.getFirstName() || ''}` + `${user?.getLastName() || ''}`;
 
   const fetchLayoutData = async (id?: string) => {
     try {
+      setIsLoading(true);
       const res = await rf
         .getRequest('DashboardsRequest')
         .getMyDashboardById({ dashboardId: id || dashboardId });
       if (res) {
         const visualization: ILayout[] = res.dashboardVisuals.map(
-          (item: ILayout) => {
+          (item: IVisualizationWidget) => {
             const { options } = item;
             return {
-              x: options.sizeX,
-              y: options.sizeY,
+              x: options.sizeX || 0,
+              y: options.sizeY || 0,
               w: options.col,
               h: options.row,
               i: item.id,
@@ -112,30 +105,33 @@ const DashboardPart: React.FC = () => {
             };
           },
         );
-        const textWidgets: ILayout[] = res.textWidgets.map((item: ILayout) => {
-          const { options } = item;
-          return {
-            x: options.sizeX,
-            y: options.sizeY,
-            w: options.col,
-            h: options.row,
-            i: item.id,
-            id: item.id,
-            type: WIDGET_TYPE.TEXT,
-            text: item.text,
-            content: {},
-          };
-        });
+        const textWidgets: ILayout[] = res.textWidgets.map(
+          (item: ITextWidget) => {
+            const { options } = item;
+            return {
+              x: options.sizeX || 0,
+              y: options.sizeY || 0,
+              w: options.col,
+              h: options.row,
+              i: item.id,
+              id: item.id,
+              type: WIDGET_TYPE.TEXT,
+              text: item.text,
+              content: {},
+            };
+          },
+        );
 
         const layouts = visualization.concat(textWidgets);
         setDataDashboard(res);
         setDataLayouts(layouts);
-        setIsEmptyDashboard(!layouts.length);
       }
     } catch (error) {
       toastError({
         message: getErrorMessage(error),
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -170,54 +166,22 @@ const DashboardPart: React.FC = () => {
   const onOpenModalAddVisualization = () => setOpenModalAddVisualization(true);
 
   const onLayoutChange = async (layout: Layout[]) => {
-    clearTimeout(layoutChangeTimeout.current);
-
-    const dataVisualization = dataLayouts
-      .filter((e) => e.type === WIDGET_TYPE.VISUALIZATION)
-      .map((item) => {
-        const newLayout = layout.filter((e) => e.i === item.id);
-        return {
-          id: item.id,
-          options: {
-            sizeX: newLayout[0].x,
-            sizeY: newLayout[0].y,
-            col: newLayout[0].w,
-            row: newLayout[0].h,
-          },
-        };
-      });
-    const dataTextWidget = dataLayouts
-      .filter((e) => e.type === WIDGET_TYPE.TEXT)
-      .map((item) => {
-        const newLayout = layout.filter((e) => e.i === item.id);
-        return {
-          id: item.id,
-          options: {
-            sizeX: newLayout[0].x,
-            sizeY: newLayout[0].y,
-            col: newLayout[0].w,
-            row: newLayout[0].h,
-          },
-        };
-      });
-
-    // many widgets are changed at one time so need to update the latest change
-    layoutChangeTimeout.current = setTimeout(async () => {
-      try {
-        const payload = {
-          dashboardVisuals: dataVisualization,
-          textWidgets: dataTextWidget,
-        };
-        const res = await rf
-          .getRequest('DashboardsRequest')
-          .updateDashboardItem(payload, dashboardId);
-        if (res) {
-          fetchLayoutData();
+    setDataLayouts((prevState) => {
+      const newDataLayouts: ILayout[] = prevState.map((item) => {
+        const newLayout = layout.find((e) => e.i === item.id);
+        if (!newLayout) {
+          return item;
         }
-      } catch (e) {
-        toastError({ message: getErrorMessage(e) });
-      }
-    }, 500);
+        return {
+          ...item,
+          x: newLayout.x,
+          y: newLayout.y,
+          w: newLayout.w,
+          h: newLayout.h,
+        };
+      });
+      return newDataLayouts;
+    });
   };
 
   const _renderEmptyDashboard = () => (
@@ -237,31 +201,160 @@ const DashboardPart: React.FC = () => {
     </Flex>
   );
 
+  const updateDashboard = async () => {
+    setIsSavingDashboard(true);
+    const dataVisualization = dataLayouts
+      .filter((e) => e.type === WIDGET_TYPE.VISUALIZATION)
+      .map((item) => {
+        return {
+          id: item.id,
+          options: {
+            sizeX: item.x,
+            sizeY: item.y,
+            col: item.w,
+            row: item.h,
+          },
+          visualizationId: item.content.id,
+        };
+      });
+    const dataTextWidget = dataLayouts
+      .filter((e) => e.type === WIDGET_TYPE.TEXT)
+      .map((item) => {
+        return {
+          id: item.id,
+          options: {
+            sizeX: item.x,
+            sizeY: item.y,
+            col: item.w,
+            row: item.h,
+          },
+          text: item.text,
+        };
+      });
+
+    try {
+      const payload = {
+        dashboardVisuals: dataVisualization,
+        textWidgets: dataTextWidget,
+      };
+      const res = await rf
+        .getRequest('DashboardsRequest')
+        .updateDashboardItem(payload, dashboardId);
+      setIsSavingDashboard(false);
+      if (res) {
+        await fetchLayoutData();
+      }
+    } catch (e) {
+      setIsSavingDashboard(false);
+      toastError({ message: getErrorMessage(e) });
+    }
+  };
+
+  const onChangeEditMode = async () => {
+    if (editMode) {
+      await updateDashboard();
+    }
+    setEditMode((prevState) => !prevState);
+  };
+
+  const onSaveDataLayouts = (layouts: ILayout[]) => {
+    setDataLayouts(layouts);
+    setEditMode(true);
+  };
+
+  const _renderDashboard = () => {
+    if (!dataLayouts.length) {
+      return _renderEmptyDashboard();
+    }
+
+    return (
+      <ResponsiveGridLayout
+        onLayoutChange={onLayoutChange}
+        className="main-grid-layout"
+        layouts={{ lg: dataLayouts }}
+        breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
+        cols={{ lg: 12, md: 12, sm: 12, xs: 6, xxs: 4 }}
+        isDraggable={editMode}
+        isResizable={editMode}
+        measureBeforeMount
+        containerPadding={[0, 30]}
+        margin={[20, 20]}
+      >
+        {dataLayouts.map((item) => (
+          <div className="box-layout" key={item.id}>
+            <div className="box-chart">
+              {item.type === WIDGET_TYPE.VISUALIZATION ? (
+                <VisualizationItem
+                  editMode={editMode}
+                  visualization={item.content}
+                />
+              ) : (
+                <div
+                  className={`box-text-widget ${
+                    editMode ? 'box-text-widget--edit' : ''
+                  }`}
+                >
+                  <ReactMarkdown>{item.text || ''}</ReactMarkdown>
+                </div>
+              )}
+            </div>
+            {editMode && (
+              <Flex
+                alignItems={'flex-start'}
+                className="widget-buttons"
+                columnGap={'12px'}
+              >
+                {item.type === WIDGET_TYPE.TEXT && (
+                  <Box
+                    onClick={() => {
+                      setTypeModalTextWidget(TYPE_MODAL.EDIT);
+                      setSelectedItem(item);
+                      setOpenModalAddTextWidget(true);
+                    }}
+                  >
+                    <EditIcon />
+                  </Box>
+                )}
+                <Box
+                  onClick={() => {
+                    setSelectedItem(item);
+                    setOpenModalEdit(true);
+                  }}
+                >
+                  <DeleteIcon />
+                </Box>
+              </Flex>
+            )}
+          </div>
+        ))}
+      </ResponsiveGridLayout>
+    );
+  };
+
   return (
     <div className="workspace-page__editor__dashboard">
       <Header
         type={LIST_ITEM_TYPE.DASHBOARDS}
-        author={user?.getFirstName() || ''}
+        author={
+          dashboardClass
+            ? `${dashboardClass?.getUserFirstName()} ${dashboardClass?.getUserLastName()}`
+            : ''
+        }
         data={dataDashboard}
         isEdit={editMode}
-        onChangeEditMode={() => setEditMode((prevState) => !prevState)}
+        isLoadingRun={isLoading || isSavingDashboard}
+        isEmptyDashboard={!dataLayouts.length}
+        onChangeEditMode={onChangeEditMode}
       />
-      <div className="dashboard-container">
-        <Box className="header-tab">
-          <div className="header-tab__info tag">
-            {dashboardClass?.getChains() && (
-              <AppNetworkIcons networkIds={dashboardClass?.getChains()} />
-            )}
-            {['defi', 'gas', 'dex'].map((item) => (
-              <AppTag key={item} value={item} />
-            ))}
-          </div>
-          {editMode && !isEmptyDashboard && (
+      {isLoading ? (
+        <LoadingFullPage />
+      ) : (
+        <div className="dashboard-container">
+          {_renderDashboard()}
+          {editMode && !!dataLayouts.length && (
             <Menu>
-              <MenuButton className="app-query-menu">
-                <Box className="add-button">
-                  <img src={PlusIcon} alt="icon-plus" />
-                </Box>
+              <MenuButton className="app-query-menu add-button">
+                <img src={PlusIcon} alt="icon-plus" />
               </MenuButton>
               <MenuList className="app-query-menu__list">
                 <MenuItem onClick={onOpenModalAddVisualization}>
@@ -279,106 +372,48 @@ const DashboardPart: React.FC = () => {
               </MenuList>
             </Menu>
           )}
-        </Box>
-        {!!dataLayouts.length && (
-          <ResponsiveGridLayout
-            onLayoutChange={onLayoutChange}
-            className="main-grid-layout"
-            layouts={{ lg: dataLayouts }}
-            breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
-            cols={{ lg: 12, md: 12, sm: 12, xs: 6, xxs: 4 }}
-            isDraggable={editMode}
-            isResizable={editMode}
-            measureBeforeMount
-          >
-            {dataLayouts.map((item) => (
-              <div className="box-layout" key={item.id}>
-                <div className="box-chart">
-                  {item.type === WIDGET_TYPE.VISUALIZATION ? (
-                    <VisualizationItem
-                      editMode={editMode}
-                      visualization={item.content}
-                    />
-                  ) : (
-                    <div
-                      className={`box-text-widget ${
-                        editMode ? 'box-text-widget--edit' : ''
-                      }`}
-                    >
-                      <ReactMarkdown>{item.text}</ReactMarkdown>
-                    </div>
-                  )}
-                </div>
-                {editMode && (
-                  <Flex
-                    alignItems={'center'}
-                    className="widget-buttons"
-                    columnGap={'12px'}
-                  >
-                    {item.type === WIDGET_TYPE.TEXT && (
-                      <Box
-                        onClick={() => {
-                          setTypeModalTextWidget(TYPE_MODAL.EDIT);
-                          setSelectedItem(item);
-                          setOpenModalAddTextWidget(true);
-                        }}
-                      >
-                        <EditIcon />
-                      </Box>
-                    )}
-                    <Box
-                      onClick={() => {
-                        setSelectedItem(item);
-                        setOpenModalEdit(true);
-                      }}
-                    >
-                      <DeleteIcon />
-                    </Box>
-                  </Flex>
-                )}
-              </div>
-            ))}
-          </ResponsiveGridLayout>
-        )}
-        {isEmptyDashboard && _renderEmptyDashboard()}
-        <ModalSettingDashboardDetails
-          open={openModalSetting}
-          onClose={() => setOpenModalSetting(false)}
-          dataDashboard={dataDashboard}
-          onReload={fetchLayoutData}
-        />
-        <ModalAddTextWidget
-          selectedItem={selectedItem}
-          dataLayouts={dataLayouts}
-          type={typeModalTextWidget}
-          open={openModalAddTextWidget}
-          onClose={() => setOpenModalAddTextWidget(false)}
-          onReload={fetchLayoutData}
-          dataDashboard={dataDashboard}
-        />
-        <ModalDeleteWidget
-          selectedItem={selectedItem}
-          onReload={fetchLayoutData}
-          open={openModalEdit}
-          onClose={() => setOpenModalEdit(false)}
-        />
-        {openModalAddVisualization && (
-          <ModalAddVisualization
-            dashboardId={dashboardId}
-            dataLayouts={dataLayouts}
-            open={openModalAddVisualization}
-            onClose={() => setOpenModalAddVisualization(false)}
-            userName={userName}
+          <ModalSettingDashboardDetails
+            open={openModalSetting}
+            onClose={() => setOpenModalSetting(false)}
+            dataDashboard={dataDashboard}
             onReload={fetchLayoutData}
           />
-        )}
-
-        <ModalForkDashBoardDetails
-          dashboardId={dashboardId}
-          open={openModalFork}
-          onClose={() => setOpenModalFork(false)}
-        />
-      </div>
+          <ModalAddTextWidget
+            selectedItem={selectedItem}
+            dataLayouts={dataLayouts}
+            type={typeModalTextWidget}
+            open={openModalAddTextWidget}
+            onClose={() => setOpenModalAddTextWidget(false)}
+            onSave={onSaveDataLayouts}
+          />
+          <ModalDeleteWidget
+            selectedItem={selectedItem}
+            dataLayouts={dataLayouts}
+            open={openModalEdit}
+            onSave={onSaveDataLayouts}
+            onClose={() => setOpenModalEdit(false)}
+          />
+          {openModalAddVisualization && (
+            <ModalAddVisualization
+              dashboardId={dashboardId}
+              dataLayouts={dataLayouts}
+              open={openModalAddVisualization}
+              userName={userName}
+              onSave={onSaveDataLayouts}
+              onClose={() => setOpenModalAddVisualization(false)}
+            />
+          )}
+          <ModalForkDashBoardDetails
+            dashboardId={dashboardId}
+            open={openModalFork}
+            onClose={() => setOpenModalFork(false)}
+          />
+          <Prompt
+            when={editMode}
+            message={`Your dashboard is not saved yet\nAre you sure you want to leave?`}
+          />
+        </div>
+      )}
     </div>
   );
 };

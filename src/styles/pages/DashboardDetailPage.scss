@@ -3,6 +3,7 @@
 
 .dashboard-container {
   border-radius: 6px;
+  margin-top: -18px;
 
   h1,
   h2,
@@ -44,8 +45,10 @@
       }
 
       .table-content {
+        height: 100%;
         max-height: calc(100% - 80px);
         overflow: auto;
+        margin: 0 -17px;
 
         .table-pagination {
           width: 100%;
@@ -78,6 +81,7 @@
             width: 160px;
             font-size: 12px;
             line-height: 16px;
+            border: 1px solid $line;
           }
           .chakra-input__left-element {
             top: 4px;
@@ -107,6 +111,7 @@
           td {
             font-size: 14px;
             line-height: 20px;
+            box-shadow: inset 0px -1px 0px #e8eaed;
           }
         }
       }
@@ -138,7 +143,7 @@
           text-overflow: ellipsis;
           white-space: nowrap;
           max-width: 30%;
-          color: #03caff;
+          color: #0060db;
           font-size: 14px;
           line-height: 26px;
         }
@@ -274,9 +279,8 @@
   }
   .main-grid-layout {
     width: 100%;
-    max-height: calc(100% - 48px);
+    max-height: 100%;
     overflow-y: overlay;
-    border-top: 1px solid #2f3b58;
 
     .react-grid-item {
       color: $title;
@@ -291,6 +295,10 @@
       .visual-container__visualization__title__query-link {
         text-decoration: underline;
       }
+
+      &.react-grid-placeholder {
+        background-color: $line;
+      }
     }
 
     .react-draggable-dragging {
@@ -298,7 +306,6 @@
     }
 
     .box-layout {
-      border: 1px solid #465065;
       border-radius: 10px;
       position: relative;
 
@@ -306,12 +313,32 @@
         width: 100%;
         height: 100%;
         padding: 17px;
+        position: relative;
+        .box-updated {
+          position: absolute;
+          z-index: 1000;
+          left: 10px;
+          bottom: 10px;
+          svg {
+            path {
+              fill: rgba(0, 2, 36, 0.5);
+            }
+          }
+        }
       }
 
       .box-text-widget {
         overflow: auto;
         height: 100%;
 
+        & > ol,
+        ul {
+          margin-left: 18px;
+        }
+        a {
+          text-decoration: underline;
+          color: $main;
+        }
         &--edit {
           height: 80%;
           margin-top: 20px;
@@ -323,12 +350,13 @@
         cursor: pointer;
         top: 15px;
         right: 15px;
+        height: 8%;
 
         svg {
           color: #8d91a5;
 
           &:hover {
-            color: white;
+            box-shadow: 0px 10px 40px rgba(125, 143, 179, 0.2);
           }
         }
       }

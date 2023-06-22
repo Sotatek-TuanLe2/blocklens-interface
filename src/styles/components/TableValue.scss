@@ -22,7 +22,7 @@
   .th,
   td,
   .td {
-    border-bottom: 1px solid $line;
+    // border-bottom: 1px solid $line;
     padding: 8px 2px;
   }
 
@@ -47,7 +47,7 @@
         position: relative;
         width: 80px;
         height: 8px;
-        background: rgb(35 240 14 / 13%);
+        background: $disable;
         border-radius: 0.7rem;
         overflow: hidden;
         &::after {

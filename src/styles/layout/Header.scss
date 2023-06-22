@@ -9,8 +9,6 @@
   width: 100vw;
   height: 80px;
   z-index: 1100;
-  background-color: $bg1;
-  border-bottom: 1px solid $border;
 
   .content-header {
     max-width: 1320px;
@@ -31,21 +29,37 @@
     .menu-header {
       font-size: 16px;
       max-width: 200px;
-      background: $bg2;
       border: none;
       padding: 18px 20px;
       border-radius: 18px;
+      box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+
       .user-info {
         padding: 0;
         padding-inline-start: 0;
         padding-inline-end: 0;
 
         display: block;
-        text-align: center;
+        text-align: left;
         font-weight: 700;
+
         &:focus {
           background-color: transparent;
         }
+
+        .user-account {
+          color: $paragraph;
+
+          &:hover {
+            color: $main;
+          }
+
+          &.active {
+            color: $main;
+            font-weight: 500;
+          }
+        }
+
         .user-email,
         .user-name {
           overflow: hidden;
@@ -54,11 +68,13 @@
           text-overflow: ellipsis;
           line-height: 20px;
         }
+
         .user-email {
           font-size: 14px;
           color: $paragraph;
           font-weight: 400;
         }
+
         .user-divider {
           margin-top: 14px;
           width: 100%;
@@ -70,6 +86,7 @@
     .signup-login {
       @include text-large-regular;
       color: $paragraph;
+
       &__link:hover {
         color: $title;
       }
@@ -81,44 +98,53 @@
     left: 50%;
     transform: translateX(-50%);
 
+
     a {
       @include text-large-regular;
       display: block;
       margin-right: 40px;
-      color: $paragraph;
+      color: $paragraph1;
 
       &:hover {
-        color: $title;
+        color: $main;
+
       }
+
       &:last-child {
         margin-right: 0;
       }
 
       &.active {
-        color: $title;
+        color: $main;
+        font-weight: 500;
       }
     }
   }
+
   .user-logout {
     color: $red;
     padding-top: 14px;
     font-weight: 600;
     font-family: 'DM Sans';
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
+
     @include tablet {
       font-weight: 500;
       font-size: 18px;
     }
+
     span {
       &:last-child {
         transform: translateX(-5px);
       }
+
       &:first-child {
         transform: translateX(5px);
       }
     }
+
     .arrow-logout {
       transform: translateX(-70%);
       transition: all linear 0.5s;
@@ -126,14 +152,20 @@
 
     &:hover {
       text-decoration: underline;
+
       .arrow-logout {
         transform: translateX(-50%);
       }
     }
+
+    span {
+      color: $red;
+    }
   }
+
   .header-mobile {
     height: calc(100vh - 80px);
-    background-color: $bg1;
+    background-color: $bg;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -148,14 +180,14 @@
       font-size: 20px;
       line-height: 26px;
       text-transform: uppercase;
-      color: $paragraph;
 
       a {
         display: block;
         margin-bottom: 40px;
+        color: $paragraph1;
 
         &:hover {
-          color: $title;
+          color: $main;
         }
 
         &:last-child {
@@ -164,7 +196,7 @@
 
         &.active {
           font-weight: 500;
-          color: $title;
+          color: $main;
         }
       }
     }

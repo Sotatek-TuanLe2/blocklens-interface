@@ -1,4 +1,4 @@
-import { Flex, Spinner, Tooltip } from '@chakra-ui/react';
+import { Flex, Tooltip } from '@chakra-ui/react';
 import moment from 'moment';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import 'react-grid-layout/css/styles.css';
@@ -9,14 +9,12 @@ import {
   VisualizationTable,
   VisualizationCounter,
 } from 'src/components/Charts';
-
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/TableValue.scss';
 import 'src/styles/pages/DashboardDetailPage.scss';
 import 'src/styles/components/Chart.scss';
 import {
   IErrorExecuteQuery,
-  QueryExecutedResponse,
   TYPE_VISUALIZATION,
   VisualizationType,
 } from 'src/utils/query.type';
@@ -24,7 +22,7 @@ import { areYAxisesSameType, getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import { Link } from 'react-router-dom';
 import { QUERY_RESULT_STATUS, ROUTES } from 'src/utils/common';
-import useUser from 'src/hooks/useUser';
+import { ClockIcon } from 'src/assets/icons';
 
 const VisualizationItem = React.memo(
   ({
@@ -36,18 +34,14 @@ const VisualizationItem = React.memo(
     needAuthentication?: boolean;
     editMode?: boolean;
   }) => {
-    const { user } = useUser();
-
     const [queryResult, setQueryResult] = useState<unknown[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [errorExecuteQuery, setErrorExecuteQuery] =
       useState<IErrorExecuteQuery>();
 
     const queryId = visualization?.queryId;
-    const query = visualization.query?.query;
     const fetchQueryResultInterval: any = useRef();
     const refetchQueryResultInterval: any = useRef();
-
     useEffect(() => {
       clearInterval(refetchQueryResultInterval.current);
       if (queryId) {
@@ -59,19 +53,15 @@ const VisualizationItem = React.memo(
       }
 
       return () => {
+        clearInterval(fetchQueryResultInterval.current);
         clearInterval(refetchQueryResultInterval.current);
       };
     }, [queryId]);
 
     const fetchQueryResult = async () => {
       setIsLoading(true);
-      const executedResponse: QueryExecutedResponse = user
-        ? await rf
-            .getRequest('DashboardsRequest')
-            .getTemporaryQueryResult(query)
-        : await rf.getRequest('DashboardsRequest').executePublicQuery(queryId);
-      const executionId = executedResponse.id;
-
+      clearInterval(fetchQueryResultInterval.current);
+      const executionId = visualization?.query?.executedId;
       const res = await rf
         .getRequest('DashboardsRequest')
         .getQueryResult({ executionId });
@@ -122,13 +112,19 @@ const VisualizationItem = React.memo(
       return result;
     }, [queryResult]);
 
-    const renderVisualization = (visualization: VisualizationType) => {
+    const generateErrorMessage = (
+      visualization: VisualizationType,
+    ): string | null => {
       const type =
         visualization.options?.globalSeriesType || visualization.type;
+      if (
+        type === TYPE_VISUALIZATION.table ||
+        type === TYPE_VISUALIZATION.counter
+      ) {
+        return null;
+      }
 
       let errorMessage = null;
-      let visualizationDisplay = null;
-
       if (!visualization.options?.columnMapping?.xAxis) {
         errorMessage = 'Missing x-axis';
       } else if (!visualization.options?.columnMapping?.yAxis.length) {
@@ -142,24 +138,45 @@ const VisualizationItem = React.memo(
         errorMessage = 'All columns for a y-axis must have the same data type';
       }
 
+      return errorMessage;
+    };
+
+    const _renderVisualization = (visualization: VisualizationType) => {
+      const errorMessage = generateErrorMessage(visualization);
+
+      if (!isLoading && errorMessage) {
+        return (
+          <Flex
+            alignItems={'center'}
+            justifyContent={'center'}
+            className="visual-container__visualization visual-container__visualization--error"
+          >
+            {errorMessage}
+          </Flex>
+        );
+      }
+
+      const type =
+        visualization.options?.globalSeriesType || visualization.type;
+      let visualizationDisplay = null;
+
       switch (type) {
         case TYPE_VISUALIZATION.table:
-          errorMessage = null;
           visualizationDisplay = (
             <VisualizationTable
               data={queryResult}
               visualization={visualization}
               editMode={editMode}
+              isLoading={isLoading}
             />
           );
-
           break;
         case TYPE_VISUALIZATION.counter:
-          errorMessage = null;
           visualizationDisplay = (
             <VisualizationCounter
               data={queryResult}
               visualization={visualization}
+              isLoading={isLoading}
             />
           );
           break;
@@ -172,6 +189,7 @@ const VisualizationItem = React.memo(
               }
               yAxisKeys={visualization.options.columnMapping?.yAxis || []}
               configs={visualization.options}
+              isLoading={isLoading}
             />
           );
           break;
@@ -186,19 +204,12 @@ const VisualizationItem = React.memo(
               yAxisKeys={visualization.options.columnMapping?.yAxis || []}
               configs={visualization.options}
               type={type}
+              isLoading={isLoading}
             />
           );
       }
 
-      return errorMessage ? (
-        <Flex
-          alignItems={'center'}
-          justifyContent={'center'}
-          className="visual-container__visualization visual-container__visualization--error"
-        >
-          {errorMessage}
-        </Flex>
-      ) : (
+      return (
         <div
           className={`${
             type === TYPE_VISUALIZATION.table
@@ -211,35 +222,62 @@ const VisualizationItem = React.memo(
       );
     };
 
+    const _renderContent = () => {
+      if (!!queryResult.length || isLoading) {
+        return _renderVisualization(visualization);
+      }
+
+      return <NoDataItem errorMessage={errorExecuteQuery?.message} />;
+    };
+
     return (
-      <div className="visual-container__visualization">
-        <div className="visual-container__visualization__title">
-          <Tooltip label={visualization.name} hasArrow>
-            <span className="visual-container__visualization__name">
-              {visualization.name}
-            </span>
-          </Tooltip>
-          <Tooltip label={visualization.query?.name} hasArrow>
-            <Link
-              className="visual-container__visualization__title__query-link"
-              to={`${needAuthentication ? ROUTES.MY_QUERY : ROUTES.QUERY}/${
-                visualization.queryId
-              }`}
+      <>
+        <div className="visual-container__visualization">
+          <div className="visual-container__visualization__title">
+            <Tooltip
+              label={visualization.name}
+              hasArrow
+              bg="white"
+              color="black"
             >
-              {visualization.query?.name}
-            </Link>
+              <span className="visual-container__visualization__name">
+                {visualization.name}
+              </span>
+            </Tooltip>
+            <Tooltip
+              label={visualization.query?.name}
+              hasArrow
+              bg="white"
+              color="black"
+            >
+              <Link
+                className="visual-container__visualization__title__query-link"
+                to={`${needAuthentication ? ROUTES.MY_QUERY : ROUTES.QUERY}/${
+                  visualization.queryId
+                }`}
+              >
+                {visualization.query?.name}
+              </Link>
+            </Tooltip>
+          </div>
+          {_renderContent()}
+        </div>
+        <div className="box-updated">
+          <Tooltip
+            bg={'#FFFFFF'}
+            color={'#000224'}
+            fontWeight="400"
+            p={2}
+            label={`Updated: ${moment(visualization.query?.updatedAt).format(
+              'YYYY/MM/DD HH:MM',
+            )}`}
+            placement={'top-start'}
+            hasArrow
+          >
+            <ClockIcon />
           </Tooltip>
         </div>
-        {isLoading ? (
-          <div className="visual-container__visualization visual-container__visualization--loading">
-            <Spinner />
-          </div>
-        ) : !!queryResult.length ? (
-          renderVisualization(visualization)
-        ) : (
-          <NoDataItem errorMessage={errorExecuteQuery?.message} />
-        )}
-      </div>
+      </>
     );
   },
 );

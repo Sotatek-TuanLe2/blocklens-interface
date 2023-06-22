@@ -4,7 +4,6 @@
 .main-layout {
   font-size: 14px;
   color: $blackAlpha-800;
-  min-height: 100%;
   display: grid;
   background: #1a203b;
 
@@ -60,10 +59,6 @@
           color: #61687d;
         }
       }
-    }
-
-    .grid-pie {
-      grid-template-columns: minmax(auto, 6rem) minmax(auto, 1fr) !important;
     }
 
     .box-table-children {

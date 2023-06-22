@@ -27,7 +27,7 @@ import {
 } from '../utils/utils-helper';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { InfoIcon, LinkDetail, LinkIcon, RetryIcon } from 'src/assets/icons';
-import { getExplorerTxUrl, objectKeys } from 'src/utils/utils-network';
+import { getExplorerTxUrl } from 'src/utils/utils-network';
 import useWebhookDetails from 'src/hooks/useWebhook';
 import { getColorBrandStatus } from 'src/utils/utils-webhook';
 import ModalUpgradeMessage from '../modals/ModalUpgradeMessage';
@@ -413,9 +413,7 @@ const ActivityDatatable: FC<IActivityDatatable> = ({
         .getRequest('NotificationRequest')
         .getActivities(webhookId, filterParams(params));
     } catch (error) {
-      toastError({
-        message: getErrorMessage(error),
-      });
+      console.error(error);
     }
   }, []);
 
@@ -538,6 +536,7 @@ const ActivityDatatable: FC<IActivityDatatable> = ({
                  The status shows Failed if all retries failed or user’s daily limit is reached."
                 placement={'top'}
                 hasArrow
+                className={'tooltip-app'}
               >
                 <Box ml={2} cursor="pointer">
                   <InfoIcon />

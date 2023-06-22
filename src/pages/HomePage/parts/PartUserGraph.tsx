@@ -26,7 +26,7 @@ export const getParams = (duration: string) => {
     return {
       from: moment().utc().subtract(24, 'hour').valueOf(),
       to: moment().utc().valueOf(),
-      period: 'hour',
+      resolution: 86400,
     };
   }
 
@@ -34,14 +34,14 @@ export const getParams = (duration: string) => {
     return {
       from: moment().utc().subtract(7, 'days').valueOf(),
       to: moment().utc().valueOf(),
-      period: 'day',
+      resolution: 86400,
     };
   }
 
   return {
     from: moment().utc().subtract(30, 'days').valueOf(),
     to: moment().utc().valueOf(),
-    period: 'day',
+    resolution: 86400,
   };
 };
 

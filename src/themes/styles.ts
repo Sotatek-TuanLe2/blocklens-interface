@@ -3,14 +3,16 @@ import { mode, StyleFunctionProps } from '@chakra-ui/theme-tools';
 export const globalStyles = {
   colors: {
     main: {
-      100: 'linear-gradient(268.85deg, #226CFF 22.48%, #1084FF 83.59%)',
+      100: 'linear-gradient(271.63deg, #1E72FF -2.92%, #0250BE 102.1%)',
       200: 'linear-gradient(271.63deg, #1E72FF -2.92%, #0250BE 102.1%)',
+      300: '#0060DB',
+      400: 'linear-gradient(271.63deg, #0250BE -2.92%, #0250BE 102.1%)',
     },
     paragraph: {
       100: '#8D91A5',
     },
     line: {
-      100: '#465065',
+      100: '#C7D2E1',
     },
     bg: {
       100: '#000224',
@@ -26,6 +28,7 @@ export const globalStyles = {
       100: '#272D52',
       200: '#242b45',
       300: 'rgba(0, 2, 36, 0.1)',
+      400: '#C7D2E1',
     },
     yellow: {
       100: '#FFB547',
@@ -121,15 +124,25 @@ export const globalStyles = {
         letterSpacing: '0.2px',
       },
       '.chakra-ui-light': {
-        '.layout-config, .main-layout, .input-table, .first-box-table, .select-table, .dashboard-list__item--row, .editor-wrapper, .box-layout, .workspace-page__editor__header, .add-chart, .workspace-page__sidebar__categories, .workspace-page__sidebar__content, .dashboard-container':
+        '.add-chart-loading-public, .add-chart-loading, .chain-info-desc, .empty-query, .text-widget-input, .box-form, .menu-header, .header, .add-chart-full, .ace_scroller, .layout-config, .main-layout, .input-table, .first-box-table, .select-table, .dashboard-list__item--row, .editor-wrapper, .box-layout, .workspace-page__editor__header, .add-chart, .add-chart-empty, .workspace-page__sidebar__categories, .workspace-page__sidebar__content':
           {
             background: mode('white.100', 'bgDark')(props),
           },
-        '.text-result-data, .btn-cancel, .label-toggle, .label-input, .input-table, .select-table, .title-config, .visual-container__visualization__name, .visual-container__visualization':
+
+        '.box-text-widget, .google-login, .user-name, .text-result-data, .btn-cancel, .label-toggle, .label-input, .input-table, .select-table, .title-config, .visual-container__visualization__name, .visual-container__visualization':
           {
             color: mode('bg.100', 'white.100')(props),
           },
-        '.dashboard-list__item--row': {
+
+        '.table-main-markdown .chakra-collapse': {
+          bg: mode('bg.300', 'bg.100')(props),
+        },
+
+        '.main-markdown': {
+          borderBottom: mode('1px solid #E8EAED', '1px solid #2f3b58')(props),
+        },
+
+        '.dashboard-list__item--row, .box-layout': {
           boxShadow: mode('0px 15px 30px rgba(0, 0, 0, 0.04)', '')(props),
           border: mode('', '1px solid border.100')(props),
         },
@@ -137,12 +150,21 @@ export const globalStyles = {
         '.header-config': {
           background: mode('bg.400', 'bg.200')(props),
         },
+
+        '.chain-info-desc__header': {
+          background: mode('main.300', 'border.200')(props),
+          p: {
+            color: mode('white.100', 'bg.100')(props),
+          },
+        },
+
         '.tag': {
           div: {
             background: mode('bg.400', 'bg.200')(props),
             color: mode('bg.500', 'white.100')(props),
           },
         },
+
         '.dashboards-page ': {
           '.dashboard-list__item--column': {
             background: mode('white.100', 'card.100')(props),
@@ -155,6 +177,12 @@ export const globalStyles = {
           },
         },
       },
+
+      '.chakra-menu__menu-list': {
+        boxShadow: ' 0px 10px 40px rgba(125, 143, 179, 0.2) !important',
+        borderRadius: '6px  !important',
+      },
+
       '.table-temaplate': {
         table: {
           fontVariantNumeric: 'lining-nums tabular-nums',
@@ -188,6 +216,9 @@ export const globalStyles = {
       '.btn-primary': { background: 'main.200', color: 'white.100' },
       span: {
         color: mode('bg.100', '')(props),
+      },
+      '.cursor-not-allowed': {
+        cursor: 'not-allowed !important',
       },
     }),
   },

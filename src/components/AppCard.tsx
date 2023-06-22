@@ -27,11 +27,12 @@ export const cardStyles = {
     borderRadius: '18px',
     minWidth: '0px',
     wordWrap: 'break-word',
+    boxShadow: '0 15px 30px 0px rgba(0, 0, 0, 0.04)',
     backgroundClip: 'border-box',
   }),
   variants: {
     main: (props: StyleProps) => ({
-      bg: mode('card.100', 'card.100')(props),
+      bg: mode('white', 'white')(props),
     }),
   },
 };

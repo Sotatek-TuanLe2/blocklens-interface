@@ -711,6 +711,11 @@ export enum VisibilityGridDashboardList {
   ROW = 'ROW',
 }
 
+export enum DisplayType {
+  Grid = 'Grid',
+  List = 'List',
+}
+
 export const TIME_EXPIRE_TOKEN_CLIENT = 20 * 60 * 1000; //miliseconds
 
 export const COMMON_ERROR_MESSAGE = 'Something went wrong!';

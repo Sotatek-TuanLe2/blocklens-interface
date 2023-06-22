@@ -13,7 +13,7 @@ export const ROUTES = {
   FORGOT_PASSWORD: '/forgot-password',
   RESET_PASSWORD: '/reset-password',
   CONTACT_US: '/contact-us',
-  NOTIFICATION: '/notification',
+  TRIGGERS: '/triggers',
   APP: '/app',
   WEBHOOKS: '/webhooks',
   ACCOUNT: '/account',
@@ -126,6 +126,10 @@ export const getDefaultVisualizationName = (chain: string | undefined) => {
     default:
       return '';
   }
+};
+
+export const generateAvatarFromId = (id: string | undefined) => {
+  return Number(id?.replace(/[a-z -]/gm, ''));
 };
 
 export const QUERY_RESULT_STATUS = {

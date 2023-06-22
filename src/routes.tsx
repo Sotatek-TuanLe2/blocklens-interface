@@ -8,27 +8,27 @@ import {
   withRouter,
 } from 'react-router-dom';
 import { useHistory, useLocation } from 'react-router';
-// import HomePage from './pages/HomePage';
+import HomePage from './pages/HomePage';
 import SignUpPage from './pages/SignUpPage';
 import LoginPage from './pages/LoginPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import Storage from 'src/utils/utils-storage';
-// import AppDetail from './pages/AppDetail';
+import AppDetail from './pages/AppDetail';
 import VerifyAccountPage from './pages/VerifyAccountPage';
 import { useDispatch } from 'react-redux';
 import ResetPasswordPage from './pages/ResetPasswordPage';
-// import CreateWebhookPage from './pages/CreateWebhookPage';
-// import WebhookDetail from './pages/WebhookDetail';
-// import MessagesHistory from './pages/MessagesHistoryPage';
+import CreateWebhookPage from './pages/CreateWebhookPage';
+import WebhookDetail from './pages/WebhookDetail';
+import MessagesHistory from './pages/MessagesHistoryPage';
 // import BillingPage from './pages/BillingPage';
-// import AccountPage from './pages/AccountPage';
+import AccountPage from './pages/AccountPage';
 // import BillingInfoPage from './pages/BillingInfoPage';
 import ContactUs from './pages/ContactUs';
 // import BillingHistory from './pages/BillingHistoryPage';
-// import AllActivitiesPage from './pages/AllActivitiesPage';
+import AllActivitiesPage from './pages/AllActivitiesPage';
 // import TopUpPage from './pages/TopUp';
-// import AppSettingsPage from './pages/AppSettingsPage';
-// import WebhookSettingsPage from './pages/WebhookSettingsPage';
+import AppSettingsPage from './pages/AppSettingsPage';
+import WebhookSettingsPage from './pages/WebhookSettingsPage';
 import { clearUser, getUser } from './store/user';
 import { initMetadata } from './store/metadata';
 import ModalSubmittingTransaction from './modals/ModalSubmittingTransaction';
@@ -53,13 +53,22 @@ const GUEST_PATH = [
   ROUTES.QUERY,
 ];
 
-export const PRIVATE_PATH = [ROUTES.MY_DASHBOARD, ROUTES.MY_QUERY];
+export const PRIVATE_PATH = [
+  ROUTES.MY_DASHBOARD,
+  ROUTES.MY_QUERY,
+  ROUTES.TRIGGERS,
+  ROUTES.APP,
+  ROUTES.WEBHOOKS,
+  ROUTES.ACCOUNT,
+];
 
 const Routes: FC<RouteComponentProps> = () => {
   const { pathname } = useLocation();
   const dispatch = useDispatch<any>();
   const accessToken = Storage.getAccessToken();
   const history = useHistory();
+  const location = useLocation();
+
   const isExpireTimeToken =
     Storage.getExpireTimeToken() &&
     new Date().getTime() >= Number(Storage.getExpireTimeToken());
@@ -70,20 +79,22 @@ const Routes: FC<RouteComponentProps> = () => {
   useEffect(() => {
     if (!accessToken || isExpireTimeToken) {
       dispatch(clearUser());
-      if (!GUEST_PATH.includes(pathname)) {
-        history.push(ROUTES.LOGIN);
+      if (!GUEST_PATH.some((path) => pathname.includes(path))) {
+        history.push(ROUTES.LOGIN, { originPath: location.pathname });
       }
       return;
     }
     dispatch(getUser());
     dispatch(initMetadata());
-  }, [accessToken]);
+  }, [accessToken, isExpireTimeToken]);
 
   return (
     <>
       <Switch>
-        {/* <PrivateRoute path={`/apps/:id/settings`} component={AppSettingsPage} />
-        <PrivateRoute path={`/apps/:id`} component={AppDetail} /> */}
+        <PrivateRoute
+          path={`${ROUTES.APP}/:id/settings`}
+          component={AppSettingsPage}
+        />
         <PublicRoute path={ROUTES.LOGIN} component={LoginPage} />
         <PublicRoute path={ROUTES.SIGN_UP} component={SignUpPage} />
         <PublicRoute path={ROUTES.VERIFY_EMAIL} component={VerifyAccountPage} />
@@ -96,20 +107,22 @@ const Routes: FC<RouteComponentProps> = () => {
           path={ROUTES.RESET_PASSWORD}
           component={ResetPasswordPage}
         />
+        <PrivateRoute path={ROUTES.ACCOUNT} component={AccountPage} />
         {/* <PrivateRoute path={'/billing'} component={BillingPage} /> */}
-        {/* <PrivateRoute path={'/account'} component={AccountPage} /> */}
-        {/* <PrivateRoute path={'/billing-info'} component={BillingInfoPage} />
-        <PrivateRoute path={'/billing-history'} component={BillingHistory} />
+        {/*<PrivateRoute path={'/billing-info'} component={BillingInfoPage} />*/}
+        {/*<PrivateRoute path={'/billing-history'} component={BillingHistory} />*/}
+        {/*<PrivateRoute path={'/top-up'} component={TopUpPage} /> *!/*/}
+
         <PrivateRoute
-          path={'/app/:appId/webhooks/:id/activities'}
+          path={`${ROUTES.APP}/:appId/webhooks/:id/activities`}
           component={AllActivitiesPage}
         />
         <PrivateRoute
-          path={'/app/:appId/webhooks/:id/settings'}
+          path={`${ROUTES.APP}/:appId/webhooks/:id/settings`}
           component={WebhookSettingsPage}
         />
         <PrivateRoute
-          path={'/app/:appId/webhooks/:id'}
+          path={`${ROUTES.APP}/:appId/webhooks/:id`}
           component={WebhookDetail}
         />
         <PrivateRoute
@@ -117,10 +130,12 @@ const Routes: FC<RouteComponentProps> = () => {
           component={CreateWebhookPage}
         />
         <PrivateRoute
-          path={'/app/:appId/webhook/:webhookId/activities/:id'}
+          path={`${ROUTES.APP}/:appId/webhook/:webhookId/activities/:id`}
           component={MessagesHistory}
         />
-        <PrivateRoute path={'/top-up'} component={TopUpPage} /> */}
+        <PrivateRoute path={`${ROUTES.APP}/:id`} component={AppDetail} />
+
+        <PrivateRoute path={`${ROUTES.TRIGGERS}`} component={HomePage} />
         <Route
           path={`${ROUTES.DASHBOARD}/:dashboardId?`}
           component={PublicWorkspacePage}
@@ -173,6 +188,7 @@ const PublicRoute = ({ component: Component, path, ...rest }: any) => {
 
 const PrivateRoute = ({ component: Component, ...rest }: any) => {
   const accessToken = Storage.getAccessToken();
+  const location = useLocation();
 
   return (
     <Route
@@ -185,6 +201,7 @@ const PrivateRoute = ({ component: Component, ...rest }: any) => {
           <Redirect
             to={{
               pathname: '/login',
+              state: { originPath: location.pathname },
             }}
           />
         )

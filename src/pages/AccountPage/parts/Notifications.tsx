@@ -49,14 +49,16 @@ const Notifications = () => {
             Receive emails when you are at or near your daily request limit.
           </Box>
         </Flex>
-        <Flex
-          alignItems={'self-start'}
-          justifyContent={'space-between'}
-          mt={2.5}
-        >
-          <Box className="email">Receive Email: {user?.getBillingEmail()}</Box>
+        <Flex alignItems={'self-start'} mt={2.5}>
+          <Box
+            className={`${user?.isNotificationEnabled() ? 'active' : ''} email`}
+          >
+            <span>Receive Email: </span>
+            {user?.getBillingEmail()}
+          </Box>
           {user?.isNotificationEnabled() && (
             <Box
+              ml={5}
               className="btn-edit"
               onClick={() => setIsOpenEditReceiveEmailModal(true)}
             >
