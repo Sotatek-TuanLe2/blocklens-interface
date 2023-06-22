@@ -330,8 +330,14 @@
       .box-text-widget {
         overflow: auto;
         height: 100%;
+
+        & > ol,
+        ul {
+          margin-left: 18px;
+        }
         a {
           text-decoration: underline;
+          color: $main;
         }
         &--edit {
           height: 80%;
