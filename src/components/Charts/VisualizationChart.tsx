@@ -392,7 +392,10 @@ const VisualizationChart: React.FC<Props> = (props) => {
 
         <Tooltip
           content={
-            <CustomTooltip numberFormat={configs?.yAxisConfigs?.labelFormat} />
+            <CustomTooltip
+              numberFormat={configs?.yAxisConfigs?.labelFormat}
+              showLabel={type !== TYPE_VISUALIZATION.scatter}
+            />
           }
           animationDuration={200}
           animationEasing={'linear'}
