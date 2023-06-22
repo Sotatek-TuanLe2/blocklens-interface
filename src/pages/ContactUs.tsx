@@ -88,7 +88,7 @@ const ContactUs = () => {
         <Flex className={`title-wrap ${isMobile ? 'title-wrap-mobile' : ''}`}>
           <Box className="icon-arrow-wrap">
             <AppLink to={`/billing`}>
-              <Box className="icon-arrow-left" mr={6} />
+              <Box className="icon-arrow-left" mr={3.5} />
             </AppLink>
           </Box>
           <Box className="title-contact-us">Contact Our Team</Box>
