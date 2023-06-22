@@ -50,6 +50,7 @@ const ListItem: React.FC<IListItem> = (props) => {
     }
   };
 
+  // console.log('itemClass.getUser()', itemClass.getUser());
   const getTypeItem = () => {
     return type === LIST_ITEM_TYPE.MYWORK ? myWorkType || '' : type;
   };
@@ -86,7 +87,8 @@ const ListItem: React.FC<IListItem> = (props) => {
           chainList={itemClass.getChains()}
           shareComponent={_renderDropdown()}
           srcThumb={itemClass.getThumnail()!}
-          srcAvatar={itemClass.getUser().userId}
+          srcAvatar={itemClass.getUser().avatar}
+          userId={itemClass.getUser().userId}
         />
       ) : (
         <AppRowItem
@@ -98,7 +100,8 @@ const ListItem: React.FC<IListItem> = (props) => {
           chainList={itemClass.getChains()}
           shareComponent={_renderDropdown()}
           srcThumb={itemClass.getThumnail()!}
-          srcAvatar={itemClass.getUser().userId}
+          srcAvatar={itemClass.getUser().avatar}
+          userId={itemClass.getUser().userId}
           type={type}
           myWorkType={myWorkType}
         />

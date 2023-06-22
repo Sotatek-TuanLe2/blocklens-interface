@@ -30,6 +30,7 @@ interface AppRowItemProps {
   shareComponent?: ReactNode;
   type?: string;
   myWorkType?: string;
+  userId?: string;
 }
 
 const AppRowItem: FC<AppRowItemProps> = ({
@@ -45,6 +46,7 @@ const AppRowItem: FC<AppRowItemProps> = ({
   shareComponent,
   type,
   myWorkType,
+  userId,
 }) => {
   const { isOpen, onToggle } = useDisclosure();
 
@@ -203,10 +205,23 @@ const AppRowItem: FC<AppRowItemProps> = ({
           </Link>
         </Flex>
         <Flex flexGrow={1} w={'22%'} overflow={'hidden'} pr={2.5}>
-          <Jazzicon
-            diameter={24}
-            seed={Number(srcAvatar?.length) + Number(creator?.length)}
-          />
+          {srcAvatar ? (
+            <Image
+              w={'24px'}
+              h={'24px'}
+              borderRadius={'12px'}
+              objectFit={'cover'}
+              objectPosition={'center'}
+              src={srcAvatar}
+              alt="avatar"
+            />
+          ) : (
+            <Jazzicon
+              diameter={24}
+              seed={Number(userId?.replace(/[a-z -]/gm, ''))}
+            />
+          )}
+
           <Text ml={2} className="article-row-creator">
             {creator && creator}
           </Text>

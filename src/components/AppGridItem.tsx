@@ -26,6 +26,7 @@ interface AppGridItemProps {
   chainList?: string[];
   tagList?: any[];
   shareComponent?: ReactNode;
+  userId?: string;
 }
 
 const AppGridItem: FC<AppGridItemProps> = ({
@@ -39,7 +40,9 @@ const AppGridItem: FC<AppGridItemProps> = ({
   chainList,
   tagList,
   shareComponent,
+  userId,
 }) => {
+  // The substituted value will be contained in the result variable
   return isLoading ? (
     <Flex
       w={'full'}
@@ -222,10 +225,14 @@ const AppGridItem: FC<AppGridItemProps> = ({
         <Flex w={'full'}>
           <Flex align={'center'} flexGrow={1}>
             <Box w={'34px'} h={'34px'} borderRadius={'17px'} mr={2.5}>
-              <Jazzicon
-                diameter={34}
-                seed={Number(srcAvatar?.length) + Number(creator?.length)}
-              />
+              {srcAvatar ? (
+                <Image src={srcAvatar} alt="avatar" />
+              ) : (
+                <Jazzicon
+                  diameter={34}
+                  seed={Number(userId?.replace(/[a-z -]/gm, ''))}
+                />
+              )}
             </Box>
             <Box>
               <Text className="item-creator" mb={{ base: '2px', lg: 0 }}>
