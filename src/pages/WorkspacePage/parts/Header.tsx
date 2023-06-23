@@ -277,24 +277,6 @@ const Header: React.FC<IHeaderProps> = (props) => {
             </>
           )}
         </div>
-        {isLoadingRun ? (
-          <Flex align={'center'} mx={'14px'}>
-            {[...Array(4)].map((_, index) => (
-              <SkeletonCircle
-                key={index}
-                w={'20px'}
-                h={'20px'}
-                mr={index < 3 ? '-5px' : 0}
-              />
-            ))}
-          </Flex>
-        ) : (
-          <>
-            {dataClass?.getChains() && (
-              <AppNetworkIcons networkIds={dataClass?.getChains()} />
-            )}
-          </>
-        )}
         {_renderButtons()}
         {isLoadingRun ? (
           <Flex align={'center'} ml={'10px'}>

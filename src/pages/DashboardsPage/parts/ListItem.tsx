@@ -8,7 +8,7 @@ import { Dashboard } from 'src/utils/utils-dashboard';
 import { Query } from 'src/utils/utils-query';
 import { LIST_ITEM_TYPE } from '..';
 import { listTags, TYPE_MYWORK } from './FilterSearch';
-import { Box} from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 
 interface IListItem {
   isLoading?: boolean;
