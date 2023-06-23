@@ -60,7 +60,7 @@ const _renderDetailWebhook = (type: string, webhook: IWebhook) => {
   return '1 address';
 };
 
-const _renderTitleField = (type: string) => {
+const _renderTitleField = (type?: string) => {
   if (type === WEBHOOK_TYPES.APTOS_COIN_ACTIVITY) {
     return 'Coin Type';
   }
