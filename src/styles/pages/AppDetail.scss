@@ -280,6 +280,23 @@
     height: 48px;
     color: $paragraph2;
   }
+
+  .abi-detail {
+    background-color: rgba(0, 2, 36, 0.05);
+    border: 0;
+
+    .box-events {
+      background-color: $white;
+
+      .abi-option .inputs {
+        color: $paragraph1;
+      }
+
+      .chakra-checkbox__label {
+        opacity: 1;
+      }
+    }
+  }
 }
 
 .title-status {
