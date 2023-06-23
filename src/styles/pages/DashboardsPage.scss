@@ -567,10 +567,8 @@
 .article {
   max-width: 100%;
   overflow: hidden;
-  transition: all 0.4s ease;
 
   &:hover {
-    transform: translateY(-2px);
     border: 1px solid $line;
 
     .article-link .article-name {
