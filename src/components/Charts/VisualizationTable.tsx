@@ -1,4 +1,4 @@
-import { Box, Flex, Skeleton } from '@chakra-ui/react';
+import { Box, Flex, Skeleton, Tooltip } from '@chakra-ui/react';
 import {
   ColumnDef,
   flexRender,
@@ -10,7 +10,11 @@ import { useEffect, useMemo, useState } from 'react';
 import 'src/styles/components/TableValue.scss';
 import { INPUT_DEBOUNCE, VISUALIZATION_COLORS } from 'src/utils/common';
 import { VisualizationType } from 'src/utils/query.type';
-import { formatVisualizationValue } from 'src/utils/utils-format';
+import {
+  formatDefaultValueChart,
+  formatShortAddress,
+  formatVisualizationValue,
+} from 'src/utils/utils-format';
 import { isNumber } from 'src/utils/utils-helper';
 import { objectKeys } from 'src/utils/utils-network';
 import AppPagination from '../AppPagination';
@@ -144,6 +148,13 @@ const VisualizationTable = <T,>({
       return acc;
     }, {} as any);
   }, [visualization, data]);
+
+  const formatCellValue = (format: any, value: string) => {
+    if (!format) {
+      return value.length > 50 ? formatShortAddress(value, 10) : value;
+    }
+    return formatVisualizationValue(format, value.toString());
+  };
 
   return (
     <>
@@ -336,9 +347,11 @@ const VisualizationTable = <T,>({
                               className="visual-progressbar"
                             />
                           )}
-                          {!isNull(value) &&
-                            !isUndefined(value) &&
-                            formatVisualizationValue(format, value.toString())}
+                          {!isNull(value) && !isUndefined(value) && (
+                            <Tooltip hasArrow label={value.toString()}>
+                              {formatCellValue(format, value.toString())}
+                            </Tooltip>
+                          )}
                         </div>
                       </td>
                     );
