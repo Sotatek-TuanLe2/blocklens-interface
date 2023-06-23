@@ -39,6 +39,39 @@ const _renderStatus = (status?: WEBHOOK_STATUS) => {
   );
 };
 
+const _renderDetailWebhook = (type: string, webhook: IWebhook) => {
+  if (type === WEBHOOK_TYPES.ADDRESS_ACTIVITY) {
+    return (
+      <>
+        {webhook.metadata.addresses.length}{' '}
+        {webhook.metadata.addresses.length > 1 ? 'addresses' : 'address'}
+      </>
+    );
+  }
+
+  if (type === WEBHOOK_TYPES.APTOS_COIN_ACTIVITY) {
+    return <>{webhook.metadata.coinType} </>;
+  }
+
+  if (type === WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY) {
+    return <>{webhook.metadata.collectionName} </>;
+  }
+
+  return '1 address';
+};
+
+const _renderTitleField = (type?: string) => {
+  if (type === WEBHOOK_TYPES.APTOS_COIN_ACTIVITY) {
+    return 'Coin Type';
+  }
+
+  if (type === WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY) {
+    return 'Collection Name';
+  }
+
+  return 'Address';
+};
+
 const WebhookMobile: FC<IWebhookItem> = ({ webhook, appInfo, type }) => {
   const history = useHistory();
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -94,19 +127,8 @@ const WebhookMobile: FC<IWebhookItem> = ({ webhook, appInfo, type }) => {
               alignItems="center"
               className="info"
             >
-              <Box>Address</Box>
-              <Box className="value">
-                {type === WEBHOOK_TYPES.ADDRESS_ACTIVITY ? (
-                  <>
-                    {webhook.metadata.addresses.length}{' '}
-                    {webhook.metadata.addresses.length > 1
-                      ? 'addresses'
-                      : 'address'}
-                  </>
-                ) : (
-                  '1 address'
-                )}
-              </Box>
+              <Box>{_renderTitleField(type)}</Box>
+              <Box className="value">{_renderDetailWebhook(type, webhook)}</Box>
             </Flex>
           </Box>
         )}
@@ -131,16 +153,7 @@ const WebhookItem: FC<IWebhookItem> = ({ webhook, appInfo, type }) => {
         <Td w="45%">
           <Box className="short-text">{webhook.webhook}</Box>
         </Td>
-        <Td w="20%">
-          {type === WEBHOOK_TYPES.ADDRESS_ACTIVITY ? (
-            <>
-              {webhook.metadata.addresses.length}{' '}
-              {webhook.metadata.addresses.length > 1 ? 'addresses' : 'address'}
-            </>
-          ) : (
-            '1 address'
-          )}
-        </Td>
+        <Td w="20%">{_renderDetailWebhook(type, webhook)}</Td>
         <Td w="15%" textAlign={'right'}>
           {_renderStatus(webhook.status)}
         </Td>
@@ -192,12 +205,13 @@ const ListWebhook: FC<IListWebhook> = ({
 
   const _renderHeader = () => {
     if (isMobile) return;
+
     return (
       <Thead className="header-list">
         <Tr>
           <Th w="20%">ID</Th>
           <Th w="45%">Webhook URL</Th>
-          <Th w="20%">Address</Th>
+          <Th w="20%">{_renderTitleField(type)}</Th>
           <Th textAlign={'right'} w="15%">
             Status
           </Th>

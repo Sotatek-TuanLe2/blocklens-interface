@@ -120,8 +120,8 @@ const WebhookSettingsPage = () => {
         <AppField label={'Coin Type'} customWidth={'100%'}>
           <AppInput value={webhook?.metadata?.coinType} isDisabled />
         </AppField>
-        <Box>
-          <Box mb={5}>Events</Box>
+        <Box w={'full'}>
+          <Box mb={1}>Events</Box>
           <ListSelectEvent
             viewOnly
             eventsSelected={webhook?.metadata?.events}
@@ -145,8 +145,8 @@ const WebhookSettingsPage = () => {
           <AppInput value={webhook?.metadata?.name} isDisabled />
         </AppField>
 
-        <Box>
-          <Box mb={5}>Events</Box>
+        <Box w={'full'}>
+          <Box mb={1}>Events</Box>
           <ListSelectEvent
             viewOnly
             eventsSelected={webhook?.metadata?.events}
