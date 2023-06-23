@@ -1,9 +1,11 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { useHistory } from 'react-router';
 import { AppButton, AppInput } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import { TYPE_OF_MODAL, ROUTES } from 'src/utils/common';
+import { setRecaptchaToRequest } from 'src/utils/utils-auth';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import { createValidator } from 'src/utils/utils-validator';
@@ -59,6 +61,7 @@ const ModalQuery = ({
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
 
   const history = useHistory();
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   useEffect(() => {
     setTimeout(() => {
@@ -82,6 +85,14 @@ const ModalQuery = ({
 
   const handleSubmit = async () => {
     if (!isDisableSubmit) {
+      if (!executeRecaptcha) {
+        toastError({
+          message: 'Oops. Something went wrong!',
+        });
+        return;
+      }
+      const result = await executeRecaptcha('homepage');
+      setRecaptchaToRequest(result);
       let res;
       try {
         switch (type) {
