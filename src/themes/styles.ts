@@ -221,7 +221,8 @@ export const globalStyles = {
         cursor: 'not-allowed !important',
       },
       '.ace_autocomplete': {
-        top: '195px !important',
+        marginTop: "20px",
+        marginLeft: "20px",
       },
     }),
   },
