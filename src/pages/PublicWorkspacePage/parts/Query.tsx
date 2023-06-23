@@ -171,10 +171,6 @@ const QueryPart: React.FC = () => {
             <QueryResultIcon />
             Result Table
           </div>
-          <div className="item-add-chart">
-            <AddChartIcon />
-            Add Chart
-          </div>
         </Flex>
         <p
           onClick={onExpandEditor}
