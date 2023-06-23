@@ -7,10 +7,10 @@
     "reCaptchaKey": "6LcchvMjAAAAAG9Bqt0aP3KBWI9Gg-UtCVg6DGRH"
   },
   "api": {
-    "baseUrlApi": "https://dev-blocksniper-api.sotatek.works/api/blocklens-users",
-    "notificationsApi": "https://dev-blocksniper-api.sotatek.works/api/blocklens-insights",
-    "authApi": "https://dev-blocksniper-api.sotatek.works/api/blocklens-auth",
-    "dashboard": "https://dev-blocksniper-api.sotatek.works/api/blocklens-query-executor"
+    "baseUrlApi": "https://stg-api.blocklens.io/api/blocklens-users",
+    "notificationsApi": "https://stg-api.blocklens.io/api/blocklens-insights",
+    "authApi": "https://stg-api.blocklens.io/api/blocklens-auth",
+    "dashboard": "https://stg-api.blocklens.io/api/blocklens-query-executor"
   },
   "defaultNetwork": "ETH",
   "defaultChainId": 5,
