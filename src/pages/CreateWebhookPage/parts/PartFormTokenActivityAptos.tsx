@@ -76,7 +76,7 @@ export const ListSelectEvent = ({
     ) && !allChecked;
 
   return (
-    <Flex className="box-events">
+    <Flex className="box-list-events">
       <Box ml={5} width="100%">
         {!!dataEvent.length && (
           <Checkbox
@@ -186,12 +186,12 @@ const PartFormTokenActivityAptos: FC<IPartFormTokenActivityAptos> = ({
           }}
         />
       </AppField>
-      <Box>
+      <Box w={'full'}>
         Events{' '}
         <Box as={'span'} color={'red.500'}>
           *
         </Box>
-        <Box mt={5}>
+        <Box mt={1}>
           <ListSelectEvent
             dataEvent={TOKEN_EVENTS}
             eventsSelected={eventsSelected}

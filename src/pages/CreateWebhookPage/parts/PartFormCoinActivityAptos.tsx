@@ -57,12 +57,12 @@ const PartFormCoinActivityAptos: FC<IPartFormCoinActivityAptos> = ({
           }}
         />
       </AppField>
-      <Box>
+      <Box w={'full'}>
         Events{' '}
         <Box as={'span'} color={'red.500'}>
           *
         </Box>
-        <Box mt={5}>
+        <Box mt={1}>
           <ListSelectEvent
             dataEvent={COIN_EVENTS}
             eventsSelected={eventsSelected}
