@@ -11,6 +11,8 @@ import { createValidator } from 'src/utils/utils-validator';
 import BaseModal from '../BaseModal';
 import { TYPE_MODAL } from 'src/pages/WorkspacePage/parts/Dashboard';
 import { generateSubmitBtn, generateTitleModal } from './ModalQuery';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
+import { setRecaptchaToRequest } from 'src/utils/utils-auth';
 
 interface IModelNewDashboard {
   open: boolean;
@@ -40,6 +42,7 @@ const ModalDashboard: React.FC<IModelNewDashboard> = ({
   };
 
   const history = useHistory();
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   const [dataForm, setDataForm] =
     useState<IDataSettingForm>(initDataFormSetting);
@@ -66,7 +69,17 @@ const ModalDashboard: React.FC<IModelNewDashboard> = ({
 
   const handleSubmitForm = async () => {
     try {
+      if (!executeRecaptcha) {
+        toastError({
+          message: 'Oops. Something went wrong!',
+        });
+        return;
+      }
+      const res = await executeRecaptcha('homepage');
+      setRecaptchaToRequest(res);
+
       let result;
+
       switch (type) {
         case TYPE_OF_MODAL.CREATE:
           result = await rf.getRequest('DashboardsRequest').createNewDashboard({
