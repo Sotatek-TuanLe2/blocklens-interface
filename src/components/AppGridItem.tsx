@@ -14,6 +14,7 @@ import { FC, ReactNode } from 'react';
 import 'src/styles/components/AppGridItem.scss';
 import Jazzicon from 'react-jazzicon';
 import { generateAvatarFromId } from 'src/utils/common';
+import { IconEye } from 'src/assets/icons';
 
 interface AppGridItemProps {
   isLoading?: boolean;
@@ -51,18 +52,14 @@ const AppGridItem: FC<AppGridItemProps> = ({
       borderRadius={{ base: '10px', lg: '14px' }}
       className="app-grid-item"
     >
-      <Skeleton
-        startColor="#E5E6E9"
-        endColor="#BFC2C9"
-        opacity={'1 !important'}
+      <Box
+        borderTopLeftRadius={{ base: '10px', lg: '14px' }}
+        borderTopRightRadius={{ base: '10px', lg: '14px' }}
+        overflow={'hidden'}
+        style={{ aspectRatio: '295 / 180' }}
       >
-        <Box
-          borderTopLeftRadius={{ base: '10px', lg: '14px' }}
-          borderTopRightRadius={{ base: '10px', lg: '14px' }}
-          overflow={'hidden'}
-          style={{ aspectRatio: '295 / 180' }}
-        ></Box>
-      </Skeleton>
+        <Skeleton w={'full'} h={'full'} />
+      </Box>
       <Flex
         w={'full'}
         flexGrow={1}
@@ -72,35 +69,18 @@ const AppGridItem: FC<AppGridItemProps> = ({
       >
         <Flex w={'full'}>
           <Box flexGrow={1} maxW={'100%'} overflow={'hidden'}>
-            <Skeleton
-              startColor="#E5E6E9"
-              endColor="#BFC2C9"
-              opacity={'1 !important'}
-              h={'14px'}
-              w={'150px'}
-              mb={'10px'}
-              rounded={'7px'}
-            />
-            <Skeleton
-              startColor="#E5E6E9"
-              endColor="#BFC2C9"
-              opacity={'1 !important'}
-              h={'14px'}
-              w={'200px'}
-              rounded={'7px'}
-            />
+            <Flex align={'center'} h={'24px'}>
+              <Skeleton h={'14px'} w={'150px'} rounded={'7px'} />
+            </Flex>
+            <Flex mt={'6px'} h={'22px'}>
+              <Skeleton h={'14px'} w={'200px'} rounded={'7px'} />
+            </Flex>
           </Box>
           <Box>
             <SkeletonCircle
-              startColor="#E5E6E9"
-              endColor="#BFC2C9"
-              opacity={'1 !important'}
-            >
-              <Flex
-                w={{ base: '24px', lg: '22px' }}
-                h={{ base: '24px', lg: '22px' }}
-              />
-            </SkeletonCircle>
+              w={{ base: '24px', lg: '22px' }}
+              h={{ base: '24px', lg: '22px' }}
+            />
           </Box>
         </Flex>
         <Divider
@@ -108,26 +88,11 @@ const AppGridItem: FC<AppGridItemProps> = ({
           colorScheme="rgba(0, 2, 36, 0.1)"
         />
         <Flex w={'full'}>
-          <Flex align={'center'} flexGrow={1}>
+          <Flex align={'center'} flexGrow={1} h={'40px'}>
             <SkeletonCircle w={'34px'} h={'34px'} mr={'10px'} />
             <Box>
-              <Skeleton
-                startColor="#E5E6E9"
-                endColor="#BFC2C9"
-                opacity={'1 !important'}
-                h={'14px'}
-                w={'100px'}
-                mb={'4px'}
-                rounded={'7px'}
-              />
-              <Skeleton
-                startColor="#E5E6E9"
-                endColor="#BFC2C9"
-                opacity={'1 !important'}
-                h={'14px'}
-                w={'50px'}
-                rounded={'7px'}
-              />
+              <Skeleton h={'14px'} w={'100px'} mb={'4px'} rounded={'7px'} />
+              <Skeleton h={'14px'} w={'50px'} rounded={'7px'} />
             </Box>
           </Flex>
         </Flex>
@@ -222,6 +187,13 @@ const AppGridItem: FC<AppGridItemProps> = ({
               </Text>
               <Text className="item-date">{date && date}</Text>
             </Box>
+          </Flex>
+
+          <Flex alignSelf={'flex-start'} alignItems={'center'}>
+            <IconEye />
+            <Text textAlign={'right'} className="article-view" ml={'4px'}>
+              2.3M
+            </Text>
           </Flex>
         </Flex>
       </Flex>

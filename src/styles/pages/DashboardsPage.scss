@@ -692,7 +692,7 @@
   } 
 }
 .article-row { 
-  border: 1px solid transparent;
+  outline: transparent solid 1px;
   transition: all .15s linear;
   .article-name {
     color: $title;
@@ -721,7 +721,7 @@
     @include text-small-regular;
   }
   &:hover {
-    border: 1px solid #C7D2E1;
+    outline: #C7D2E1 solid 1px;
     box-shadow: 0px 15px 30px 0px rgba(0, 0, 0, 0.04);
   }
 }

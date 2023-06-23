@@ -110,7 +110,7 @@ const AppRowItem: FC<AppRowItemProps> = ({
           to={toHref || '#'}
           style={{ width: 'calc(100% - 24px)', display: 'block' }}
         >
-          <Flex align={'center'} py={'15px'}>
+          <Flex align={'center'} py={'16px'}>
             <Flex align={'center'} w={'24%'} pr={2.5} overflow={'hidden'}>
               {(type === LIST_ITEM_TYPE.DASHBOARDS ||
                 myWorkType === LIST_ITEM_TYPE.DASHBOARDS) && (
@@ -191,7 +191,7 @@ const AppRowItem: FC<AppRowItemProps> = ({
           </Flex>
         </Link>
 
-        <Flex w={'24px'} py={'15px'} align={'center'}>
+        <Flex w={'24px'} py={'16px'} align={'center'}>
           {shareComponent && shareComponent}
         </Flex>
       </Flex>
