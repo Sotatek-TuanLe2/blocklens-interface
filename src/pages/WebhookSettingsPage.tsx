@@ -1,5 +1,5 @@
 import { Box, Flex } from '@chakra-ui/react';
-import React, { useMemo, useState } from 'react';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 import 'src/styles/pages/AppDetail.scss';
 import {
   AppButton,
@@ -9,8 +9,13 @@ import {
   AppUploadABI,
   AppButtonLarge,
   TYPE_ABI,
+  AppReadABI,
 } from 'src/components';
-import { WEBHOOK_STATUS, WEBHOOK_TYPES } from 'src/utils/utils-webhook';
+import {
+  IWebhook,
+  WEBHOOK_STATUS,
+  WEBHOOK_TYPES,
+} from 'src/utils/utils-webhook';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import ModalDeleteWebhook from 'src/modals/ModalDeleteWebhook';
@@ -32,6 +37,39 @@ import {
   TOKEN_EVENTS,
 } from './CreateWebhookPage/parts/PartFormTokenActivityAptos';
 import { COIN_EVENTS } from './CreateWebhookPage/parts/PartFormCoinActivityAptos';
+import { getDataAddress } from './CreateWebhookPage/parts/PartFormModuleActivityAptos';
+
+interface IModuleAptosDetail {
+  address: string;
+  data: IWebhook;
+}
+
+const ModuleAptosDetail: FC<IModuleAptosDetail> = ({ address, data }) => {
+  const [dataAddress, setDataAddress] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (address) {
+      getDataAddress(address, setDataAddress, setIsLoading).then();
+    }
+  }, [address]);
+
+  if (!dataAddress) return <></>;
+
+  return (
+    <Box w={'full'}>
+      <AppReadABI
+        isViewOnly
+        address={address || ''}
+        dataWebhook={{
+          functions: data.metadata.functions,
+          events: data.metadata.events
+        }}
+        dataAddress={dataAddress}
+      />
+    </Box>
+  );
+};
 
 const WebhookSettingsPage = () => {
   const { appId, id: webhookId } = useParams<{ appId: string; id: string }>();
@@ -157,6 +195,21 @@ const WebhookSettingsPage = () => {
     );
   };
 
+  const _renderDetailModuleActivityAptosWebhook = () => {
+    return (
+      <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
+        <AppField label={'Address'} customWidth={'100%'}>
+          <AppInput value={webhook?.metadata?.address} isDisabled />
+        </AppField>
+
+        <ModuleAptosDetail
+          address={webhook?.metadata?.address}
+          data={webhook}
+        />
+      </Flex>
+    );
+  };
+
   const _renderDetailWebhook = () => {
     switch (webhook.type) {
       case WEBHOOK_TYPES.NFT_ACTIVITY:
@@ -169,6 +222,8 @@ const WebhookSettingsPage = () => {
         return _renderDetailCoinActivityAptosWebhook();
       case WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY:
         return _renderDetailTokenActivityAptosWebhook();
+      case WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY:
+        return _renderDetailModuleActivityAptosWebhook();
     }
   };
 
