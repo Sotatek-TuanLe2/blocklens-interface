@@ -250,11 +250,16 @@ const QueryPart: React.FC = () => {
     });
   };
 
-  const onCheckedIconExpand = () => {
-    if (!queryId || !queryValue) return 'icon-query-collapse';
+  const onCheckedIconExpand = (query: boolean) => {
+    if (!queryId || !queryValue)
+      return query ? 'icon-query-collapse' : 'icon-query-expand';
     return expandLayout === LAYOUT_QUERY.HIDDEN
-      ? 'icon-query-expand'
-      : 'icon-query-collapse';
+      ? query
+        ? 'icon-query-expand'
+        : 'icon-query-collapse'
+      : query
+      ? 'icon-query-collapse'
+      : 'icon-query-expand';
   };
 
   useEffect(() => {
@@ -282,7 +287,10 @@ const QueryPart: React.FC = () => {
             Add Chart
           </div>
         </Flex>
-        <p onClick={onExpandEditor} className="icon-query-expand" />
+        <p
+          onClick={onExpandEditor}
+          className={`${onCheckedIconExpand(false)}`}
+        />
       </div>
     );
   };
@@ -459,7 +467,7 @@ const QueryPart: React.FC = () => {
                   } btn-expand-query`}
                 >
                   <p
-                    className={`${onCheckedIconExpand()}`}
+                    className={`${onCheckedIconExpand(true)}`}
                     onClick={onExpandEditor}
                   />
                 </div>

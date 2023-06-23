@@ -220,6 +220,9 @@ export const globalStyles = {
       '.cursor-not-allowed': {
         cursor: 'not-allowed !important',
       },
+      '.ace_autocomplete': {
+        top: '195px !important',
+      },
     }),
   },
 };
