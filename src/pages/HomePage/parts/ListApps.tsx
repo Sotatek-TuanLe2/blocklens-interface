@@ -191,7 +191,7 @@ const ListApps: React.FC = () => {
     try {
       const res: any = await rf.getRequest('AppRequest').getListApp(param);
       const appIds = res?.docs?.map((item: IAppResponse) => item?.appId) || [];
-     // const appMetric = await getAppMetricToday(appIds.join(',').toString());
+      // const appMetric = await getAppMetricToday(appIds.join(',').toString());
       const totalWebhooks = await getTotalWebhookEachApp(
         appIds.join(',').toString(),
       );
@@ -200,7 +200,7 @@ const ListApps: React.FC = () => {
         return {
           ...app,
           totalWebhook: totalWebhooks[index].totalRegistration,
-         // messageToday: !!appMetric.length ? appMetric[index].message : '--',
+          // messageToday: !!appMetric.length ? appMetric[index].message : '--',
           messageToday: '--',
         };
       });

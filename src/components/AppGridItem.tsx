@@ -13,6 +13,8 @@ import AppTag from './AppTag';
 import AppNetworkIcons from './AppNetworkIcons';
 import { FC, ReactNode } from 'react';
 import 'src/styles/components/AppGridItem.scss';
+import Jazzicon from 'react-jazzicon';
+import { generateAvatarFromId } from 'src/utils/common';
 
 interface AppGridItemProps {
   isLoading?: boolean;
@@ -25,6 +27,7 @@ interface AppGridItemProps {
   chainList?: string[];
   tagList?: any[];
   shareComponent?: ReactNode;
+  userId?: string;
 }
 
 const AppGridItem: FC<AppGridItemProps> = ({
@@ -38,6 +41,7 @@ const AppGridItem: FC<AppGridItemProps> = ({
   chainList,
   tagList,
   shareComponent,
+  userId,
 }) => {
   return isLoading ? (
     <Flex
@@ -201,7 +205,7 @@ const AppGridItem: FC<AppGridItemProps> = ({
                 ))}
             </Flex>
           </Box>
-          <Box>
+          <Box position={'relative'}>
             <Flex
               bg={'rgba(0, 2, 36, 0.05)'}
               w={{ base: '24px', lg: '22px' }}
@@ -221,10 +225,11 @@ const AppGridItem: FC<AppGridItemProps> = ({
         <Flex w={'full'}>
           <Flex align={'center'} flexGrow={1}>
             <Box w={'34px'} h={'34px'} borderRadius={'17px'} mr={2.5}>
-              <Image
-                src={srcAvatar || '/images/AvatarDashboardCard.png'}
-                alt="avatar"
-              />
+              {srcAvatar ? (
+                <Image src={srcAvatar} alt="avatar" />
+              ) : (
+                <Jazzicon diameter={34} seed={generateAvatarFromId(userId)} />
+              )}
             </Box>
             <Box>
               <Text className="item-creator" mb={{ base: '2px', lg: 0 }}>

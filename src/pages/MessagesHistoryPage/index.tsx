@@ -17,10 +17,9 @@ import {
   IMessages,
 } from 'src/utils/utils-webhook';
 import MessageItem from './parts/MessageItem';
-import { toastError } from 'src/utils/utils-notify';
 import { isMobile } from 'react-device-detect';
 import MessagesItemMobile from './parts/MessagesItemMobile';
-import { filterParams, getErrorMessage } from 'src/utils/utils-helper';
+import { filterParams } from 'src/utils/utils-helper';
 import ModalFilterActivities from 'src/modals/ModalFilterActivities';
 import useWebhookDetails from 'src/hooks/useWebhook';
 import { getLogoChainByChainId } from 'src/utils/utils-network';
@@ -53,9 +52,7 @@ const MessagesHistory = () => {
         .getRequest('NotificationRequest')
         .getMessagesHistory(hashId, filterParams(params));
     } catch (error) {
-      toastError({
-        message: getErrorMessage(error),
-      });
+      console.error(error);
     }
   }, []);
 
@@ -214,7 +211,7 @@ const MessagesHistory = () => {
             <Box
               className="icon-arrow-left"
               cursor={'pointer'}
-              mr={6}
+              mr={3}
               onClick={() => history.goBack()}
             />
             <Box className="title-mobile">Messages History</Box>

@@ -303,10 +303,21 @@ const VisualizationTable = <T,>({
                             key: cells.id,
                             style: {
                               fontWeight: 400,
-                              justifyContent: align,
+                              justifyContent:
+                                type === COLUMN_TYPES.NORMAL ? align : '',
                               color: isNumberValue
                                 ? checkColor(cells.getValue())
                                 : undefined,
+                              flexDirection:
+                                type === COLUMN_TYPES.PROGRESS &&
+                                align === 'right'
+                                  ? 'row-reverse'
+                                  : 'row',
+                              gap:
+                                type === COLUMN_TYPES.PROGRESS &&
+                                align === 'right'
+                                  ? '10px'
+                                  : '',
                             },
                           }}
                         >
@@ -338,13 +349,13 @@ const VisualizationTable = <T,>({
           </table>
         )}
       </Box>
-      {!!filteredData.length && (
+      {filteredData?.length > 15 && (
         <Flex
           justifyContent={'flex-end'}
           alignItems={'baseline'}
           className="table-pagination"
         >
-          <div className="data-length">{data.length} rows</div>
+          <div className="data-length">{filteredData?.length} rows</div>
           <AppPagination
             pageCount={pageCount}
             forcePage={pagination}

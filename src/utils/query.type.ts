@@ -78,6 +78,7 @@ export type IUserInfo = {
   firstName: string;
   lastName: string;
   userId: string;
+  avatar?: string;
 };
 
 export interface IQuery {
