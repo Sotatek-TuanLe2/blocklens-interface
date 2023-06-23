@@ -33,6 +33,7 @@ const QueryPart: React.FC = () => {
   const [isLoadingResult, setIsLoadingResult] = useState<boolean>(!!queryId);
   const [errorExecuteQuery, setErrorExecuteQuery] =
     useState<IErrorExecuteQuery>();
+  const [statusExecuteQuery, setStatusExecuteQuery] = useState<string>();
 
   const fetchQueryResultInterval = useRef<any>(null);
 
@@ -71,15 +72,15 @@ const QueryPart: React.FC = () => {
         if (resInterval.status !== QUERY_RESULT_STATUS.WAITING) {
           clearInterval(fetchQueryResultInterval.current);
           setQueryResult(resInterval.result);
-          if (resInterval?.error) {
-            setErrorExecuteQuery(resInterval?.error);
-          }
+          setErrorExecuteQuery(resInterval?.error || null);
+          setStatusExecuteQuery(resInterval?.status);
           setIsLoadingResult(false);
         }
       }, 2000);
     } else {
       setQueryResult(res.result);
-      setErrorExecuteQuery(res?.error);
+      setErrorExecuteQuery(res?.error || null);
+      setStatusExecuteQuery(res?.status);
       setIsLoadingResult(false);
     }
   };
