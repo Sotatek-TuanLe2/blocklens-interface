@@ -63,7 +63,7 @@ const ModuleAptosDetail: FC<IModuleAptosDetail> = ({ address, data }) => {
         address={address || ''}
         dataWebhook={{
           functions: data.metadata.functions,
-          events: data.metadata.events
+          events: data.metadata.events,
         }}
         dataAddress={dataAddress}
       />
