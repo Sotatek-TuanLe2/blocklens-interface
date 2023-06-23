@@ -652,4 +652,77 @@
     }
   }
 }
+
+// 23/06
+.m-article-row {
+  .article-name {
+    color: $title;
+    text-transform: capitalize;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    @include text-medium-bold;
+  }
+  .article-row-creator {
+    color: $title;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    @include text-small-regular;
+  }
+  .article-label {
+    color: $title;
+    opacity: 0.5;
+    @include text-small-regular;
+  }
+  .article-date, .article-view {
+    color: $title;
+    @include text-small-regular;
+  }
+  .article-tag {
+    background: rgba(0, 2, 36, 0.05);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(0, 2, 36, 0.5);
+    @include text-small-regular;
+  } 
+}
+.article-row { 
+  border: 1px solid transparent;
+  transition: all .15s linear;
+  .article-name {
+    color: $title;
+    text-transform: capitalize;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    @include text-medium-bold;
+  }
+  .article-creator, .article-date, .article-view {
+    color: $title;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    @include text-medium-regular;
+  }
+  .article-tag {
+    background: rgba(0, 2, 36, 0.05);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(0, 2, 36, 0.5);
+    @include text-small-regular;
+  }
+  &:hover {
+    border: 1px solid #C7D2E1;
+    box-shadow: 0px 15px 30px 0px rgba(0, 0, 0, 0.04);
+  }
+}
 // end:: new style by chau.le@sotatek.com

@@ -8,6 +8,7 @@ import { Dashboard } from 'src/utils/utils-dashboard';
 import { Query } from 'src/utils/utils-query';
 import { LIST_ITEM_TYPE } from '..';
 import { listTags, TYPE_MYWORK } from './FilterSearch';
+import { Box} from '@chakra-ui/react';
 
 interface IListItem {
   isLoading?: boolean;
@@ -67,12 +68,42 @@ const ListItem: React.FC<IListItem> = (props) => {
 
     return (
       !!item && (
-        <AppQueryMenu
-          menu={menu}
-          item={item}
-          itemType={getTypeItem()}
-          isNavMenu={isNavMenu}
-        />
+        <>
+          {isNavMenu ? (
+            <>
+              <Box
+                display={{ base: 'none', lg: 'flex' }}
+                justifyContent={'center'}
+                alignItems={'center'}
+                w={'24px'}
+                h={'24px'}
+                borderRadius={'12px'}
+                bg={'rgba(0, 2, 36, 0.05)'}
+              >
+                <AppQueryMenu
+                  menu={menu}
+                  item={item}
+                  itemType={getTypeItem()}
+                />
+              </Box>
+              <Box display={{ lg: 'none' }}>
+                <AppQueryMenu
+                  menu={menu}
+                  item={item}
+                  itemType={getTypeItem()}
+                  isNavMenu={isNavMenu}
+                />
+              </Box>
+            </>
+          ) : (
+            <AppQueryMenu
+              menu={menu}
+              item={item}
+              itemType={getTypeItem()}
+              isNavMenu={isNavMenu}
+            />
+          )}
+        </>
       )
     );
   };
@@ -86,7 +117,6 @@ const ListItem: React.FC<IListItem> = (props) => {
           date={moment(itemClass.getCreatedTime()).format('YYYY MMMM Do')}
           toHref={getTitleUrl()}
           tagList={listTags}
-          chainList={itemClass.getChains()}
           shareComponent={_renderDropdown()}
           srcThumb={itemClass.getThumnail()!}
           srcAvatar={itemClass.getUser().avatar}
@@ -99,8 +129,7 @@ const ListItem: React.FC<IListItem> = (props) => {
           date={moment(itemClass.getCreatedTime()).format('YYYY MMMM Do')}
           toHref={getTitleUrl()}
           tagList={listTags}
-          chainList={itemClass.getChains()}
-          shareComponent={_renderDropdown()}
+          shareComponent={_renderDropdown(true)}
           srcThumb={itemClass.getThumnail()!}
           srcAvatar={itemClass.getUser().avatar}
           userId={itemClass.getUser().userId}

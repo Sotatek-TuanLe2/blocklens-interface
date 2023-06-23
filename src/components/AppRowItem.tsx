@@ -10,13 +10,13 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
-import AppNetworkIcons from './AppNetworkIcons';
 import AppTag from './AppTag';
 import { ChevronRightIcon } from '@chakra-ui/icons';
 import { FC, ReactNode } from 'react';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import Jazzicon from 'react-jazzicon';
 import { generateAvatarFromId } from 'src/utils/common';
+import { IconEye } from 'src/assets/icons';
 
 interface AppRowItemProps {
   isLoading?: boolean;
@@ -42,7 +42,6 @@ const AppRowItem: FC<AppRowItemProps> = ({
   name,
   creator,
   date,
-  chainList,
   tagList,
   shareComponent,
   type,
@@ -51,153 +50,85 @@ const AppRowItem: FC<AppRowItemProps> = ({
 }) => {
   const { isOpen, onToggle } = useDisclosure();
 
-  const _renderRow = () => {
-    if (isLoading) {
-      return (
-        <Flex
-          align={'center'}
-          bg={'white'}
-          boxShadow={'0px 15px 30px rgba(0, 0, 0, 0.04)'}
-          borderRadius={'10px'}
-          py={'16px'}
-          px={'26px'}
-          mb={'6px'}
-          className="article"
-        >
-          <Flex flexGrow={1} w={'22%'} overflow={'hidden'} pr={2.5}>
-            <Flex align={'center'}>
-              {(type === LIST_ITEM_TYPE.DASHBOARDS ||
-                myWorkType === LIST_ITEM_TYPE.DASHBOARDS) && (
-                <Skeleton
-                  startColor="#E5E6E9"
-                  endColor="#BFC2C9"
-                  opacity={'1 !important'}
-                  rounded={'6px'}
-                  mr={3}
-                >
-                  <Box
-                    h={'48px'}
-                    minW={'74px'}
-                    style={{ aspectRatio: '74 / 48' }}
-                  ></Box>
-                </Skeleton>
-              )}
-              <Skeleton
-                startColor="#E5E6E9"
-                endColor="#BFC2C9"
-                opacity={'1 !important'}
-                h={'18px'}
-                w={'150px'}
-                rounded={'9px'}
-                mr={3}
-              />
-            </Flex>
-          </Flex>
-          <Flex flexGrow={1} w={'22%'} overflow={'hidden'} pr={2.5}>
-            <Flex align={'center'}>
-              <SkeletonCircle
-                startColor="#E5E6E9"
-                endColor="#BFC2C9"
-                opacity={'1 !important'}
-                w={'24px'}
-                h={'24px'}
-                mr={'8px'}
-              />
-              <Skeleton
-                startColor="#E5E6E9"
-                endColor="#BFC2C9"
-                opacity={'1 !important'}
-                w={'70px'}
-                h={'18px'}
-                rounded={'9px'}
-              />
-            </Flex>
-          </Flex>
-          <Flex flexGrow={1} w={'15%'} overflow={'hidden'} pr={2.5}>
-            <Flex align={'center'}>
-              {[...Array(4)].map((_, index) => (
-                <SkeletonCircle
-                  key={index}
-                  startColor="#E5E6E9"
-                  endColor="#BFC2C9"
-                  opacity={'1 !important'}
-                  w={'24px'}
-                  h={'24px'}
-                  mr={index !== 3 ? '-5px' : '0'}
-                />
-              ))}
-            </Flex>
-          </Flex>
-          <Flex flexGrow={1} w={'15%'} overflow={'hidden'} pr={2.5}>
-            <Skeleton
-              startColor="#E5E6E9"
-              endColor="#BFC2C9"
-              opacity={'1 !important'}
-              w={'100px'}
-              h={'18px'}
-              rounded={'9px'}
-            />
-          </Flex>
-          <Flex
-            flexGrow={1}
-            w={'calc(26% - 24px)'}
-            overflow={'hidden'}
-            pr={2.5}
-          >
-            <Skeleton
-              startColor="#E5E6E9"
-              endColor="#BFC2C9"
-              opacity={'1 !important'}
-              w={'200px'}
-              h={'18px'}
-              rounded={'9px'}
-            />
-          </Flex>
-          <Flex justify={'center'} align={'center'} w={'24px'} h={'24px'}>
-            <SkeletonCircle
-              startColor="#E5E6E9"
-              endColor="#BFC2C9"
-              opacity={'1 !important'}
-              w={'24px'}
-              h={'24px'}
-            />
-          </Flex>
-        </Flex>
-      );
-    }
+  const _renderLoadingRow = () => {
     return (
       <Flex
-        align={'center'}
         bg={'white'}
-        boxShadow={'0px 15px 30px rgba(0, 0, 0, 0.04)'}
+        boxShadow={'0px 15px 30px 0px #0000000A'}
         borderRadius={'10px'}
-        py={'16px'}
-        px={'26px'}
         mb={'6px'}
-        className="article"
+        px={'26px'}
+        py={'16px'}
+        maxW={'full'}
+      >
+        <Flex align={'center'} w={'calc(100% - 24px)'}>
+          <Flex align={'center'} w={'24%'} pr={2.5}>
+            {(type === LIST_ITEM_TYPE.DASHBOARDS ||
+              myWorkType === LIST_ITEM_TYPE.DASHBOARDS) && (
+              <Skeleton w={'74px'} h={'48px'} mr={'10px'} rounded={'6px'} />
+            )}
+            <Skeleton h={'18px'} w={'150px'} rounded={'9px'} />
+          </Flex>
+
+          <Flex align={'center'} w={'24%'} pr={2.5}>
+            <SkeletonCircle w={'24px'} h={'24px'} rounded={'12px'} mr={'8px'} />
+            <Skeleton h={'18px'} w={'70px'} rounded={'9px'} />
+          </Flex>
+
+          <Flex align={'center'} w={'16%'} pr={2.5}>
+            <Skeleton h={'18px'} w={'100px'} rounded={'9px'} />
+          </Flex>
+
+          <Flex align={'center'} w={'10%'} pr={2.5}>
+            <Skeleton h={'18px'} w={'70px'} rounded={'9px'} />
+          </Flex>
+
+          <Flex align={'center'} w={'26%'} pr={2.5}>
+            <Skeleton h={'18px'} w={'200px'} rounded={'9px'} />
+          </Flex>
+        </Flex>
+
+        <Flex w={'24px'} alignSelf={'stretch'} alignItems={'center'}>
+          <SkeletonCircle w={'24px'} h={'24px'} rounded={'12px'} />
+        </Flex>
+      </Flex>
+    );
+  };
+
+  const _renderRow = () => {
+    return (
+      <Flex
+        bg={'white'}
+        boxShadow={'0px 15px 30px 0px #0000000A'}
+        borderRadius={'10px'}
+        mb={'6px'}
+        px={'26px'}
+        maxW={'full'}
+        className="article-row"
       >
         <Link
           to={toHref || '#'}
-          style={{ width: '100%' }}
-          className="article-link"
+          style={{ width: 'calc(100% - 24px)', display: 'block' }}
         >
-          <Flex flexGrow={1} w={'22%'} overflow={'hidden'} pr={2.5}>
-            <Flex align={'center'} w={'100%'}>
+          <Flex align={'center'} py={'15px'}>
+            <Flex align={'center'} w={'24%'} pr={2.5} overflow={'hidden'}>
               {(type === LIST_ITEM_TYPE.DASHBOARDS ||
                 myWorkType === LIST_ITEM_TYPE.DASHBOARDS) && (
                 <Box
                   h={'48px'}
-                  minW={'74px'}
-                  overflow={'hidden'}
                   style={{ aspectRatio: '74 / 48' }}
-                  mr={3}
+                  mr={'12px'}
+                  overflow={'hidden'}
                 >
                   <Image
+                    w={'auto'}
+                    minW={'full'}
+                    height={'full'}
+                    borderRadius={'6px'}
+                    objectFit={'cover'}
+                    objectPosition={'center'}
                     src={srcThumb || '/images/ThumbnailDashboardLight.png'}
                     alt="thumbnail"
-                    w={'auto'}
-                    height={'full'}
-                    minW={'full'}
                   />
                 </Box>
               )}
@@ -207,122 +138,111 @@ const AppRowItem: FC<AppRowItemProps> = ({
                 </Tooltip>
               )}
             </Flex>
-          </Flex>
-          <Flex flexGrow={1} w={'22%'} overflow={'hidden'} pr={2.5}>
-            {srcAvatar ? (
-              <Image
-                w={'24px'}
-                h={'24px'}
-                borderRadius={'12px'}
-                objectFit={'cover'}
-                objectPosition={'center'}
-                src={srcAvatar}
-                alt="avatar"
-              />
-            ) : (
-              <Jazzicon diameter={24} seed={generateAvatarFromId(userId)} />
-            )}
-            <Text ml={2} className="article-row-creator">
-              {creator && creator}
-            </Text>
-          </Flex>
-          <Flex flexGrow={1} w={'15%'} overflow={'hidden'} pr={2.5}>
-            {chainList && <AppNetworkIcons networkIds={chainList} />}
-          </Flex>
-          <Flex flexGrow={1} w={'15%'} overflow={'hidden'} pr={2.5}>
-            {date && date}
-          </Flex>
-          <Flex
-            flexGrow={1}
-            w={'calc(26% - 24px)'}
-            overflow={'hidden'}
-            pr={2.5}
-          >
-            {tagList &&
-              tagList.map((item) => (
-                <AppTag
-                  key={item.id}
-                  value={item.name}
-                  h={{ base: '24px', lg: '22px' }}
-                  classNames="article-tag"
-                />
-              ))}
+
+            <Flex align={'center'} w={'24%'} pr={2.5} overflow={'hidden'}>
+              <Flex minW={'24px'} align={'center'}>
+                {srcAvatar ? (
+                  <Image
+                    w={'24px'}
+                    h={'24px'}
+                    borderRadius={'12px'}
+                    objectFit={'cover'}
+                    objectPosition={'center'}
+                    src={srcAvatar}
+                    alt="avatar"
+                  />
+                ) : (
+                  <Jazzicon diameter={24} seed={generateAvatarFromId(userId)} />
+                )}
+              </Flex>
+              {creator && (
+                <Text ml={2} className="article-creator">
+                  {creator}
+                </Text>
+              )}
+            </Flex>
+
+            <Flex align={'center'} w={'16%'} pr={2.5} overflow={'hidden'}>
+              {date && <Text className="article-date">{date}</Text>}
+            </Flex>
+
+            <Flex align={'center'} w={'10%'} pr={2.5}>
+              <Flex align={'center'}>
+                <IconEye />
+                <Text textAlign={'right'} className="article-view" ml={'4px'}>
+                  2.3M
+                </Text>
+              </Flex>
+            </Flex>
+
+            <Flex align={'center'} w={'26%'} pr={2.5} overflow={'hidden'}>
+              <Flex flexGrow={1}>
+                {tagList &&
+                  tagList.map((item) => (
+                    <AppTag
+                      key={item.id}
+                      value={item.name}
+                      h={'24px'}
+                      classNames="article-tag"
+                    />
+                  ))}
+              </Flex>
+            </Flex>
           </Flex>
         </Link>
-        <Flex
-          justify={'center'}
-          align={'center'}
-          w={'24px'}
-          h={'24px'}
-          borderRadius={'12px'}
-          bg={'rgba(0, 2, 36, 0.05)'}
-        >
+
+        <Flex w={'24px'} py={'15px'} align={'center'}>
           {shareComponent && shareComponent}
         </Flex>
       </Flex>
     );
   };
 
-  const _renderRowMobile = () => {
-    if (isLoading) {
-      return (
-        <Box
-          boxShadow={'0px 15px 30px rgba(0, 0, 0, 0.04)'}
-          mb={3}
-          p={4}
-          className="article"
-        >
-          <Flex align={'center'}>
-            <Box flexGrow={1} maxW={'calc(100% - 50px)'}>
-              <Flex align={'center'}>
-                {type === LIST_ITEM_TYPE.DASHBOARDS && (
-                  <Skeleton
-                    startColor="#E5E6E9"
-                    endColor="#BFC2C9"
-                    opacity={'1 !important'}
-                    rounded={'6px'}
-                    mr={'10px'}
-                  >
-                    <Box h={'48px'} style={{ aspectRatio: '74 / 48' }}></Box>
-                  </Skeleton>
-                )}
-                <Box maxW={'calc(100% - 84px)'} overflow={'hidden'}>
-                  <Skeleton
-                    startColor="#E5E6E9"
-                    endColor="#BFC2C9"
-                    opacity={'1 !important'}
-                    w={'150px'}
-                    h={'18px'}
-                    rounded={'9px'}
-                  />
-                  <Flex>
-                    {[...Array(4)].map((_, index) => (
-                      <SkeletonCircle
-                        key={index}
-                        startColor="#E5E6E9"
-                        endColor="#BFC2C9"
-                        opacity={'1 !important'}
-                        w={'24px'}
-                        h={'24px'}
-                        mr={index !== 3 ? '-5px' : '0'}
-                      />
-                    ))}
-                  </Flex>
-                </Box>
-              </Flex>
-            </Box>
-          </Flex>
-        </Box>
-      );
-    }
+  const _renderLoadingMobile = () => {
     return (
       <Box
         bg={'white'}
-        boxShadow={'0px 15px 30px rgba(0, 0, 0, 0.04)'}
-        borderRadius={10}
-        mb={3}
+        boxShadow={'0px 15px 30px 0px #0000000A'}
+        borderRadius={'10px'}
+        mb={'12px'}
         p={4}
-        className="article"
+      >
+        <Flex align={'center'}>
+          <Box flexGrow={1}>
+            <Flex align={'center'}>
+              {(type === LIST_ITEM_TYPE.DASHBOARDS ||
+                myWorkType === LIST_ITEM_TYPE.DASHBOARDS) && (
+                <Skeleton w={'74px'} h={'48px'} mr={'10px'} rounded={'6px'} />
+              )}
+              <Box flexGrow={1}>
+                <Skeleton w={'150px'} h={'18px'} rounded={'9px'} mb={'12px'} />
+
+                <Flex align={'center'} overflow={'hidden'}>
+                  <SkeletonCircle
+                    h={'18px'}
+                    w={'18px'}
+                    rounded={'9px'}
+                    mr={'8px'}
+                  />
+                  <Skeleton w={'70px'} h={'18px'} rounded={'9px'} />
+                </Flex>
+              </Box>
+            </Flex>
+          </Box>
+        </Flex>
+      </Box>
+    );
+  };
+
+  const _renderRowMobile = () => {
+    return (
+      <Box
+        bg={'white'}
+        boxShadow={'0px 15px 30px 0px #0000000A'}
+        borderRadius={'10px'}
+        mb={'12px'}
+        p={4}
+        className="m-article-row"
       >
         <Flex align={'center'}>
           <Box flexGrow={1} maxW={'calc(100% - 50px)'}>
@@ -331,7 +251,8 @@ const AppRowItem: FC<AppRowItemProps> = ({
               style={{ width: '100%', display: 'block' }}
             >
               <Flex align={'center'}>
-                {type === LIST_ITEM_TYPE.DASHBOARDS && (
+                {(type === LIST_ITEM_TYPE.DASHBOARDS ||
+                  myWorkType === LIST_ITEM_TYPE.DASHBOARDS) && (
                   <Box
                     h={'48px'}
                     style={{ aspectRatio: '74 / 48' }}
@@ -348,15 +269,46 @@ const AppRowItem: FC<AppRowItemProps> = ({
                     />
                   </Box>
                 )}
-                <Box maxW={'calc(100% - 84px)'} overflow={'hidden'}>
-                  <Text className="article-name">{name && name}</Text>
-                  <Flex>
-                    {chainList && <AppNetworkIcons networkIds={chainList} />}
+                <Box flexGrow={1}>
+                  {name && (
+                    <Text
+                      className="article-name"
+                      mb={
+                        type === LIST_ITEM_TYPE.DASHBOARDS ||
+                        myWorkType === LIST_ITEM_TYPE.DASHBOARDS
+                          ? '2px'
+                          : '4px'
+                      }
+                    >
+                      {name}
+                    </Text>
+                  )}
+                  <Flex align={'center'} overflow={'hidden'}>
+                    {srcAvatar ? (
+                      <Image
+                        w={'20px'}
+                        h={'20px'}
+                        borderRadius={'12px'}
+                        objectFit={'cover'}
+                        objectPosition={'center'}
+                        src={srcAvatar}
+                        alt="avatar"
+                      />
+                    ) : (
+                      <Jazzicon
+                        diameter={20}
+                        seed={generateAvatarFromId(userId)}
+                      />
+                    )}
+                    <Text ml={2} className="article-row-creator">
+                      {creator && creator}
+                    </Text>
                   </Flex>
                 </Box>
               </Flex>
             </Link>
           </Box>
+
           <Flex
             w={'50px'}
             alignSelf={'stretch'}
@@ -366,7 +318,7 @@ const AppRowItem: FC<AppRowItemProps> = ({
             userSelect={'none'}
           >
             <ChevronRightIcon
-              fontSize={'20px'}
+              fontSize={'22px'}
               fontWeight={500}
               color={'rgba(0, 2, 36, 0.5)'}
               transition={'all 0.2s linear'}
@@ -374,47 +326,46 @@ const AppRowItem: FC<AppRowItemProps> = ({
             />
           </Flex>
         </Flex>
+
         <Collapse in={isOpen} animateOpacity>
           <Box pt={4}>
-            <Flex align={'center'} mb={3}>
-              <Text className="m-article-label">Creator</Text>
-              <Text
-                className="m-article-creator"
-                flexGrow={1}
-                textAlign={'right'}
-                ml={2}
-              >
-                {creator && creator}
-              </Text>
-            </Flex>
-            <Flex align={'center'} mb={3}>
-              <Text className="m-article-label">Date</Text>
-              <Text flexGrow={1} textAlign={'right'} className="m-article-date">
-                {date && date}
-              </Text>
-            </Flex>
-            <Flex align={'center'}>
-              <Text className="m-article-label">Tag</Text>
-              <Flex
-                flexGrow={1}
-                justify={'flex-end'}
-                flexWrap={'wrap'}
-                mt={{ base: 1, lg: 1.5 }}
-              >
-                {tagList &&
-                  tagList.map((item) => (
-                    <AppTag
-                      key={item.id}
-                      value={item.name}
-                      h={{ base: '24px', lg: '22px' }}
-                      classNames="article-tag"
-                    />
-                  ))}
+            <Box pb={'14px'}>
+              <Flex align={'center'} mb={'12px'}>
+                <Text className="article-label">Date</Text>
+                <Text flexGrow={1} textAlign={'right'} className="article-date">
+                  {date && date}
+                </Text>
               </Flex>
-            </Flex>
-            <Box pt={5} pb={2}>
-              {shareComponent && shareComponent}
+              <Flex align={'center'} mb={'12px'}>
+                <Text className="article-label">View</Text>
+                <Flex align={'center'} flexGrow={1} justify={'flex-end'}>
+                  <IconEye />
+                  <Text textAlign={'right'} className="article-view" ml={'4px'}>
+                    2.3M
+                  </Text>
+                </Flex>
+              </Flex>
+              <Flex align={'center'}>
+                <Text className="article-label">Tag</Text>
+                <Flex
+                  flexGrow={1}
+                  justify={'flex-end'}
+                  flexWrap={'wrap'}
+                  mt={{ base: 1, lg: 1.5 }}
+                >
+                  {tagList &&
+                    tagList.map((item) => (
+                      <AppTag
+                        key={item.id}
+                        value={item.name}
+                        h={'24px'}
+                        classNames="article-tag"
+                      />
+                    ))}
+                </Flex>
+              </Flex>
             </Box>
+            <Box py={2}>{shareComponent && shareComponent}</Box>
           </Box>
         </Collapse>
       </Box>
@@ -423,8 +374,12 @@ const AppRowItem: FC<AppRowItemProps> = ({
 
   return (
     <>
-      <Box display={{ base: 'none', lg: 'block' }}>{_renderRow()}</Box>
-      <Box display={{ lg: 'none' }}>{_renderRowMobile()}</Box>
+      <Box display={{ base: 'none', lg: 'block' }}>
+        {isLoading ? _renderLoadingRow() : _renderRow()}
+      </Box>
+      <Box display={{ lg: 'none' }}>
+        {isLoading ? _renderLoadingMobile() : _renderRowMobile()}
+      </Box>
     </>
   );
 };

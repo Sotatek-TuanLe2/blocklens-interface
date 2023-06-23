@@ -10,7 +10,6 @@ import {
 } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import AppTag from './AppTag';
-import AppNetworkIcons from './AppNetworkIcons';
 import { FC, ReactNode } from 'react';
 import 'src/styles/components/AppGridItem.scss';
 import Jazzicon from 'react-jazzicon';
@@ -38,7 +37,6 @@ const AppGridItem: FC<AppGridItemProps> = ({
   name,
   creator,
   date,
-  chainList,
   tagList,
   shareComponent,
   userId,
@@ -132,19 +130,6 @@ const AppGridItem: FC<AppGridItemProps> = ({
               />
             </Box>
           </Flex>
-          <Flex align={'center'}>
-            {[...Array(4)].map((_, index) => (
-              <SkeletonCircle
-                key={index}
-                startColor="#E5E6E9"
-                endColor="#BFC2C9"
-                opacity={'1 !important'}
-                w={'18px'}
-                h={'18px'}
-                mr={index !== 3 ? '-5px' : '0'}
-              />
-            ))}
-          </Flex>
         </Flex>
       </Flex>
     </Flex>
@@ -237,9 +222,6 @@ const AppGridItem: FC<AppGridItemProps> = ({
               </Text>
               <Text className="item-date">{date && date}</Text>
             </Box>
-          </Flex>
-          <Flex align={'center'}>
-            {chainList && <AppNetworkIcons networkIds={chainList} />}
           </Flex>
         </Flex>
       </Flex>

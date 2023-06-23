@@ -168,6 +168,7 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
               onClick={item.onClick}
               h={'36px'}
               ml={index !== 0 ? '9px' : 0}
+              minW={'calc(50% - 4.5px)'}
             >
               {item.icon}&nbsp;{item.label}
             </AppButton>
