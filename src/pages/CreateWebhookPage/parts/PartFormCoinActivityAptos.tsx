@@ -10,7 +10,7 @@ interface IPartFormCoinActivityAptos {
   validator: any;
 }
 
-const COIN_EVENTS = [
+export const COIN_EVENTS = [
   {
     name: '0x1::coin::DepositEvent',
   },
