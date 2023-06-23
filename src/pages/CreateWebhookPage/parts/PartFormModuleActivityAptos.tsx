@@ -11,6 +11,59 @@ interface PartFormContractAptosProps {
   validator: any;
 }
 
+const getABI = async (payload: any) => {
+  try {
+    const res = await rf
+      .getRequest('AptosRequest')
+      .getABI(payload.address, payload.moduleName);
+    return res?.abi;
+  } catch (error) {
+    return null;
+  }
+};
+
+export const getDataAddress = async (
+  addressValue: string,
+  setDataAddress: (data: any) => void,
+  setIsLoading: (value: boolean) => void,
+) => {
+  try {
+    setIsLoading(true);
+    const resourceAddress = await rf
+      .getRequest('AptosRequest')
+      .getModules(addressValue, '0x1::code::PackageRegistry');
+
+    const data = await Promise.all(
+      resourceAddress?.data?.packages?.map(async (item: any) => {
+        const moduleItem = await Promise.all(
+          (item?.modules || []).map(async (itemModule: any) => {
+            const abiData = await getABI({
+              address: addressValue,
+              moduleName: itemModule?.name,
+            });
+
+            return {
+              name: itemModule?.name,
+              abi: abiData,
+            };
+          }),
+        );
+
+        return {
+          name: item.name,
+          modules: moduleItem,
+        };
+      }),
+    );
+    setDataAddress(data);
+    setIsLoading(false);
+  } catch (e) {
+    console.error(e);
+    setIsLoading(false);
+    setDataAddress(null);
+  }
+};
+
 const PartFormModuleActivityAptos: FC<PartFormContractAptosProps> = ({
   dataForm,
   onChangeForm,
@@ -21,55 +74,6 @@ const PartFormModuleActivityAptos: FC<PartFormContractAptosProps> = ({
   const [dataAddress, setDataAddress] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [payloadForm, setPayloadForm] = useState<IDataForm>(dataForm);
-
-  const getABI = async (payload: any) => {
-    try {
-      const res = await rf
-        .getRequest('AptosRequest')
-        .getABI(payload.address, payload.moduleName);
-      return res?.abi;
-    } catch (error) {
-      return null;
-    }
-  };
-
-  const getDataAddress = async (addressValue: string) => {
-    try {
-      setIsLoading(true);
-      const resourceAddress = await rf
-        .getRequest('AptosRequest')
-        .getModules(addressValue, '0x1::code::PackageRegistry');
-
-      const data = await Promise.all(
-        resourceAddress?.data?.packages?.map(async (item: any) => {
-          const moduleItem = await Promise.all(
-            (item?.modules || []).map(async (itemModule: any) => {
-              const abiData = await getABI({
-                address: addressValue,
-                moduleName: itemModule?.name,
-              });
-
-              return {
-                name: itemModule?.name,
-                abi: abiData,
-              };
-            }),
-          );
-
-          return {
-            name: item.name,
-            modules: moduleItem,
-          };
-        }),
-      );
-      setDataAddress(data);
-      setIsLoading(false);
-    } catch (e) {
-      console.error(e);
-      setIsLoading(false);
-      setDataAddress(null);
-    }
-  };
 
   useEffect(() => {
     setPayloadForm(dataForm);
@@ -87,7 +91,11 @@ const PartFormModuleActivityAptos: FC<PartFormContractAptosProps> = ({
 
   useEffect(() => {
     if (payloadForm.metadata?.address) {
-      getDataAddress(payloadForm.metadata?.address).then();
+      getDataAddress(
+        payloadForm.metadata?.address,
+        setDataAddress,
+        setIsLoading,
+      ).then();
     }
     onChangeForm(payloadForm);
   }, [payloadForm.metadata?.address]);

@@ -1,4 +1,4 @@
-import { Box, Flex, Checkbox, Text } from '@chakra-ui/react';
+import { Box, Flex, Checkbox } from '@chakra-ui/react';
 import React, { useState, FC, useEffect, ChangeEvent, useMemo } from 'react';
 import { AppInput, AppSelect2 } from 'src/components';
 import 'src/styles/components/AppUploadABI.scss';
@@ -7,11 +7,18 @@ import { Scrollbars } from 'react-custom-scrollbars';
 import { PackageType } from 'src/utils/utils-webhook';
 import { IDataForm } from '../pages/CreateWebhookPage';
 
+interface IDataSelected {
+  events?: string[];
+  functions?: string[];
+}
+
 interface IAppReadABI {
   onChangeForm?: (data: any) => void;
   dataAddress?: PackageType[];
   address: string;
-  dataForm: IDataForm;
+  isViewOnly?: boolean;
+  dataForm?: IDataForm;
+  dataWebhook?: IDataSelected;
 }
 
 interface IListSelect {
@@ -19,9 +26,19 @@ interface IListSelect {
   type?: string;
   valueSearch: string;
   valueSort: string;
-  viewOnly?: boolean;
+  isViewOnly?: boolean;
   onChangeDataSelected: (data: IABIItem[]) => void;
   dataSelected: IABIItem[];
+  dataWebhook?: string[];
+}
+
+interface IDetailABI {
+  dataABI: any;
+  onChangeForm: any;
+  address: string;
+  dataForm?: IDataForm;
+  isViewOnly?: boolean;
+  dataWebhook?: IDataSelected;
 }
 
 interface IABIItem {
@@ -45,11 +62,18 @@ const ListSelect: FC<IListSelect> = ({
   data,
   valueSearch,
   valueSort,
-  viewOnly,
+  isViewOnly,
   dataSelected,
   onChangeDataSelected,
+  dataWebhook,
 }) => {
   const [itemSelected, setItemSelected] = useState<any>([]);
+
+  useEffect(() => {
+    if (isViewOnly) {
+      setItemSelected(dataWebhook);
+    }
+  }, [isViewOnly, dataWebhook]);
 
   const onChangeSelect = (e: ChangeEvent<HTMLInputElement>, id: string) => {
     let newItemsSelected = [];
@@ -166,7 +190,7 @@ const ListSelect: FC<IListSelect> = ({
               isChecked={allChecked}
               isIndeterminate={isIndeterminate}
               onChange={onSelectAll}
-              isDisabled={viewOnly}
+              isDisabled={isViewOnly}
             >
               All
             </Checkbox>
@@ -176,7 +200,7 @@ const ListSelect: FC<IListSelect> = ({
             <Box key={index} my={2}>
               <Checkbox
                 size="lg"
-                isDisabled={viewOnly}
+                isDisabled={isViewOnly}
                 value={item.name}
                 isChecked={itemSelected.includes(item.name)}
                 onChange={(e) => onChangeSelect(e, item.name)}
@@ -191,18 +215,13 @@ const ListSelect: FC<IListSelect> = ({
   );
 };
 
-interface IDetailABI {
-  dataABI: any;
-  onChangeForm: any;
-  address: string;
-  dataForm: IDataForm;
-}
-
 const DetailABI: FC<IDetailABI> = ({
   dataABI,
   address,
   onChangeForm,
   dataForm,
+  isViewOnly,
+  dataWebhook,
 }) => {
   const [valueSearch, setValueSearch] = useState<string>('');
   const [valueSort, setValueSort] = useState<string>('az');
@@ -252,25 +271,28 @@ const DetailABI: FC<IDetailABI> = ({
   }, [dataABI]);
 
   useEffect(() => {
+    if (isViewOnly) return;
     const functions = functionSelected.map((item) => item.name);
     const events = eventsSelected.map((item) => item.name);
-    onChangeForm({
-      ...dataForm,
-      metadata: {
-        ...dataForm.metadata,
-        functions,
-        events,
-      },
-    });
+    onChangeForm &&
+      onChangeForm({
+        ...dataForm,
+        metadata: {
+          ...dataForm?.metadata,
+          functions,
+          events,
+        },
+      });
   }, [functionSelected, eventsSelected]);
 
   return (
     <Box className="abi-detail" mb={4}>
       <Flex
         flexDirection={isMobile ? 'column' : 'row'}
-        justifyContent={'space-between'}
+        justifyContent={'flex-end'}
         alignItems={isMobile ? 'flex-start' : 'center'}
         mb={3}
+        w={'full'}
       >
         <Flex>
           {!isMobile && (
@@ -307,6 +329,8 @@ const DetailABI: FC<IDetailABI> = ({
             valueSort={valueSort}
             onChangeDataSelected={setFunctionSelected}
             dataSelected={functionSelected}
+            isViewOnly={isViewOnly}
+            dataWebhook={dataWebhook?.functions}
           />
         )}
 
@@ -318,6 +342,8 @@ const DetailABI: FC<IDetailABI> = ({
             valueSort={valueSort}
             onChangeDataSelected={setEventsSelected}
             dataSelected={eventsSelected}
+            isViewOnly={isViewOnly}
+            dataWebhook={dataWebhook?.events}
           />
         )}
       </Box>
@@ -330,6 +356,8 @@ const AppReadABI: FC<IAppReadABI> = ({
   dataAddress,
   address,
   dataForm,
+  isViewOnly,
+  dataWebhook,
 }) => {
   return (
     <Box className="upload-abi">
@@ -342,6 +370,8 @@ const AppReadABI: FC<IAppReadABI> = ({
         onChangeForm={onChangeForm}
         address={address}
         dataForm={dataForm}
+        isViewOnly={isViewOnly}
+        dataWebhook={dataWebhook}
       />
     </Box>
   );
