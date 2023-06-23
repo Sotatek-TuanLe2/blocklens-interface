@@ -535,9 +535,16 @@ const Sidebar: React.FC<{
                   cursor={'pointer'}
                   onClick={() => handleAddQuery(item.column_name)}
                 >
-                  <Box isTruncated maxW={'50%'}>
-                    {item.column_name}
-                  </Box>
+                  <Tooltip
+                    placement={'top'}
+                    hasArrow
+                    label={item.column_name}
+                    p={2}
+                  >
+                    <Box isTruncated maxW={'50%'}>
+                      {item.column_name}
+                    </Box>
+                  </Tooltip>
                   <Text isTruncated>{item.data_type}</Text>
                 </Flex>
               ))}
