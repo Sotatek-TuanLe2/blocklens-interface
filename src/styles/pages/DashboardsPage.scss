@@ -19,10 +19,10 @@
       border-bottom: 2px solid transparent;
 
       &[aria-selected='true'] {
-        border-bottom: 2px solid #0060DB;
+        border-bottom: 2px solid #0060db;
 
         svg {
-          color: #0060DB;
+          color: #0060db;
         }
         .tab-name-content {
           color: $bg1;
@@ -204,6 +204,11 @@
         padding: 9px 20px;
         margin-bottom: 6px;
         border-radius: 10px;
+        background-color: $card;
+
+        &:hover {
+          background-color: $bg2;
+        }
 
         &__avatar {
           width: 22%;
@@ -354,7 +359,11 @@
     border-color: #1878ff;
     color: #0060db;
     padding: 0 24px;
-    background: linear-gradient(268.85deg, rgba(34, 108, 255, 0.12) 22.48%, rgba(16, 132, 255, 0.12) 83.59%);
+    background: linear-gradient(
+      268.85deg,
+      rgba(34, 108, 255, 0.12) 22.48%,
+      rgba(16, 132, 255, 0.12) 83.59%
+    );
     &:focus {
       box-shadow: unset;
       border: 1px solid #0060db;
@@ -558,32 +567,50 @@
 .article {
   max-width: 100%;
   overflow: hidden;
-  .article-name {
-    color: $bg1;
-    text-transform: capitalize;
-    max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    @include text-medium-bold;
+  border: 1px solid transparent;
+
+  &:hover {
+    border: 1px solid $line;
+    background-color: $bg3;
+
+    .article-link .article-name {
+      color: $main;
+    }
   }
-  .article-tag {
-    background: rgba(0, 2, 36, 0.05);
-    border-radius: 4px;
+
+  .article-link {
     display: flex;
+    flex-direction: row;
     align-items: center;
-    justify-content: center;
-    color: rgba(0, 2, 36, 0.5);
-    @include text-small-regular;
+
+    .article-name {
+      color: $bg1;
+      text-transform: capitalize;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      @include text-medium-bold;
+    }
+    .article-tag {
+      background: rgba(0, 2, 36, 0.05);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(0, 2, 36, 0.5);
+      @include text-small-regular;
+    }
+    .article-creator {
+      color: $bg1;
+      @include text-small-medium;
+    }
+    .article-date {
+      color: rgba(0, 2, 36, 0.5);
+      @include text-small-regular;
+    }
   }
-  .article-creator {
-    color: $bg1;
-    @include text-small-medium;
-  }
-  .article-date {
-    color: rgba(0, 2, 36, 0.5);
-    @include text-small-regular;
-  }
+
   .m-article-label {
     color: rgba(0, 2, 36, 0.5);
     @include text-small-regular;
@@ -618,9 +645,9 @@
     }
 
     .btn-create {
-      background: linear-gradient(271.63deg, #1E72FF -2.92%, #0250BE 102.1%);
+      background: linear-gradient(271.63deg, #1e72ff -2.92%, #0250be 102.1%);
       &:hover {
-        background: linear-gradient(271.63deg, #0250BE -2.92%, #1E72FF 102.1%);
+        background: linear-gradient(271.63deg, #0250be -2.92%, #1e72ff 102.1%);
       }
     }
   }

@@ -70,6 +70,12 @@ export interface IWebhook {
     tokenIds: string[];
     abi: any[];
     abiFilter: any[];
+    coinType?: string;
+    events?: string[];
+    functions?: string[];
+    creatorAddress?: string;
+    collectionName?: string;
+    name?: string;
   };
 }
 

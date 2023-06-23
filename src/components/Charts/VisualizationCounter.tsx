@@ -6,6 +6,7 @@ import { VISUALIZATION_COLORS } from 'src/utils/common';
 import { VisualizationType } from 'src/utils/query.type';
 import { roundAndPadZeros } from 'src/utils/utils-format';
 import { isNumber } from 'src/utils/utils-helper';
+const commaNumber = require('comma-number');
 
 type Props = {
   data: unknown[];
@@ -35,7 +36,10 @@ const VisualizationCounter = ({ data, visualization, isLoading }: Props) => {
     if (data[dataOptions.rowNumber - 1] === undefined) return '';
     const dataColumn: any = data[dataOptions.rowNumber - 1];
     const indexColumn = dataOptions.counterColName;
-    return dataColumn[indexColumn]?.toString();
+
+    return isNumber(dataColumn[indexColumn])
+      ? commaNumber(dataColumn[indexColumn]?.toString())
+      : dataColumn[indexColumn]?.toString();
   };
 
   const defaultSize =

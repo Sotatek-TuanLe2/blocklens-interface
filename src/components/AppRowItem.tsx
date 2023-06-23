@@ -176,9 +176,13 @@ const AppRowItem: FC<AppRowItemProps> = ({
         mb={'6px'}
         className="article"
       >
-        <Flex flexGrow={1} w={'22%'} overflow={'hidden'} pr={2.5}>
-          <Link to={toHref || '#'} style={{ width: '100%' }}>
-            <Flex align={'center'}>
+        <Link
+          to={toHref || '#'}
+          style={{ width: '100%' }}
+          className="article-link"
+        >
+          <Flex flexGrow={1} w={'22%'} overflow={'hidden'} pr={2.5}>
+            <Flex align={'center'} w={'100%'}>
               {(type === LIST_ITEM_TYPE.DASHBOARDS ||
                 myWorkType === LIST_ITEM_TYPE.DASHBOARDS) && (
                 <Box
@@ -203,44 +207,48 @@ const AppRowItem: FC<AppRowItemProps> = ({
                 </Tooltip>
               )}
             </Flex>
-          </Link>
-        </Flex>
-        <Flex flexGrow={1} w={'22%'} overflow={'hidden'} pr={2.5}>
-          {srcAvatar ? (
-            <Image
-              w={'24px'}
-              h={'24px'}
-              borderRadius={'12px'}
-              objectFit={'cover'}
-              objectPosition={'center'}
-              src={srcAvatar}
-              alt="avatar"
-            />
-          ) : (
-            <Jazzicon diameter={24} seed={generateAvatarFromId(userId)} />
-          )}
-
-          <Text ml={2} className="article-row-creator">
-            {creator && creator}
-          </Text>
-        </Flex>
-        <Flex flexGrow={1} w={'15%'} overflow={'hidden'} pr={2.5}>
-          {chainList && <AppNetworkIcons networkIds={chainList} />}
-        </Flex>
-        <Flex flexGrow={1} w={'15%'} overflow={'hidden'} pr={2.5}>
-          {date && date}
-        </Flex>
-        <Flex flexGrow={1} w={'calc(26% - 24px)'} overflow={'hidden'} pr={2.5}>
-          {tagList &&
-            tagList.map((item) => (
-              <AppTag
-                key={item.id}
-                value={item.name}
-                h={{ base: '24px', lg: '22px' }}
-                classNames="article-tag"
+          </Flex>
+          <Flex flexGrow={1} w={'22%'} overflow={'hidden'} pr={2.5}>
+            {srcAvatar ? (
+              <Image
+                w={'24px'}
+                h={'24px'}
+                borderRadius={'12px'}
+                objectFit={'cover'}
+                objectPosition={'center'}
+                src={srcAvatar}
+                alt="avatar"
               />
-            ))}
-        </Flex>
+            ) : (
+              <Jazzicon diameter={24} seed={generateAvatarFromId(userId)} />
+            )}
+            <Text ml={2} className="article-row-creator">
+              {creator && creator}
+            </Text>
+          </Flex>
+          <Flex flexGrow={1} w={'15%'} overflow={'hidden'} pr={2.5}>
+            {chainList && <AppNetworkIcons networkIds={chainList} />}
+          </Flex>
+          <Flex flexGrow={1} w={'15%'} overflow={'hidden'} pr={2.5}>
+            {date && date}
+          </Flex>
+          <Flex
+            flexGrow={1}
+            w={'calc(26% - 24px)'}
+            overflow={'hidden'}
+            pr={2.5}
+          >
+            {tagList &&
+              tagList.map((item) => (
+                <AppTag
+                  key={item.id}
+                  value={item.name}
+                  h={{ base: '24px', lg: '22px' }}
+                  classNames="article-tag"
+                />
+              ))}
+          </Flex>
+        </Link>
         <Flex
           justify={'center'}
           align={'center'}
