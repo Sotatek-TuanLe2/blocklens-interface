@@ -68,6 +68,10 @@
       padding: 2px 11px;
     }
 
+    .icon-query-expand {
+      cursor: pointer;
+    }
+
     svg {
       color: rgba(0, 2, 36, 0.5);
     }
@@ -92,7 +96,7 @@
   }
 
   .add-chart-loading {
-    height: 397px !important;
+    height: 375px;
     box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.04);
     justify-content: center;
     border-radius: 6px;
@@ -270,7 +274,7 @@
       width: fit-content;
       position: absolute;
       z-index: 5;
-      right: 20px;
+      right: 15px;
 
       &:hover {
         cursor: pointer;
@@ -320,7 +324,7 @@
       padding: 12px 16px 12px 14px;
 
       div {
-        cursor: pointer;
+        cursor: not-allowed;
       }
     }
 
@@ -633,7 +637,11 @@
           gap: 10px;
 
           &:hover {
-            background: linear-gradient(268.85deg, rgba(34, 108, 255, 0.12) 22.48%, rgba(16, 132, 255, 0.12) 83.59%);
+            background: linear-gradient(
+              268.85deg,
+              rgba(34, 108, 255, 0.12) 22.48%,
+              rgba(16, 132, 255, 0.12) 83.59%
+            );
             border: 1px solid #226cff;
             cursor: pointer;
           }

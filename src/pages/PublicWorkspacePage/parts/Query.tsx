@@ -22,6 +22,7 @@ import Header from 'src/pages/WorkspacePage/parts/Header';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import { Query } from 'src/utils/utils-query';
 import { AddChartIcon, QueryResultIcon } from 'src/assets/icons';
+import { STATUS } from 'src/utils/utils-webhook';
 
 const QueryPart: React.FC = () => {
   const { queryId } = useParams<{ queryId: string }>();
@@ -33,6 +34,8 @@ const QueryPart: React.FC = () => {
   const [isLoadingResult, setIsLoadingResult] = useState<boolean>(!!queryId);
   const [errorExecuteQuery, setErrorExecuteQuery] =
     useState<IErrorExecuteQuery>();
+  const [isExpand, setIsExpand] = useState<boolean>(true);
+  const [statusExecuteQuery, setStatusExecuteQuery] = useState<string>();
 
   const fetchQueryResultInterval = useRef<any>(null);
 
@@ -71,15 +74,15 @@ const QueryPart: React.FC = () => {
         if (resInterval.status !== QUERY_RESULT_STATUS.WAITING) {
           clearInterval(fetchQueryResultInterval.current);
           setQueryResult(resInterval.result);
-          if (resInterval?.error) {
-            setErrorExecuteQuery(resInterval?.error);
-          }
+          setErrorExecuteQuery(resInterval?.error || null);
+          setStatusExecuteQuery(resInterval?.status);
           setIsLoadingResult(false);
         }
       }, 2000);
     } else {
       setQueryResult(res.result);
-      setErrorExecuteQuery(res?.error);
+      setErrorExecuteQuery(res?.error || null);
+      setStatusExecuteQuery(res?.status);
       setIsLoadingResult(false);
     }
   };
@@ -123,7 +126,8 @@ const QueryPart: React.FC = () => {
   };
 
   const onExpandEditor = () => {
-    if (errorExecuteQuery || !queryId || !queryValue) return;
+    setIsExpand(false);
+    if (!queryId || !queryValue) return;
     setExpandLayout((prevState) => {
       if (prevState === LAYOUT_QUERY.FULL) {
         return LAYOUT_QUERY.HIDDEN;
@@ -140,18 +144,23 @@ const QueryPart: React.FC = () => {
     firstClass: string,
     secondClass: string,
   ) => {
+    if (statusExecuteQuery === STATUS.FAILED && isExpand)
+      return 'custom-editor--half';
     if (isLoadingResult) return 'add-chart-loading-public';
-    if (errorExecuteQuery) return;
     if (!queryId || !queryValue) return 'custom-editor--full';
     return expandLayout === layout ? firstClass : secondClass;
   };
 
-  const onCheckedIconExpand = () => {
-    if (errorExecuteQuery || !queryId || !queryValue)
-      return 'icon-query-collapse';
+  const onCheckedIconExpand = (query: boolean) => {
+    if (!queryId || !queryValue)
+      return query ? 'icon-query-collapse' : 'icon-query-expand';
     return expandLayout === LAYOUT_QUERY.HIDDEN
-      ? 'icon-query-expand'
-      : 'icon-query-collapse';
+      ? query
+        ? 'icon-query-expand'
+        : 'icon-query-collapse'
+      : query
+      ? 'icon-query-collapse'
+      : 'icon-query-expand';
   };
 
   const _renderAddChart = () => {
@@ -167,7 +176,10 @@ const QueryPart: React.FC = () => {
             Add Chart
           </div>
         </Flex>
-        <p className="icon-query-expand cursor-not-allowed" />
+        <p
+          onClick={onExpandEditor}
+          className={`${onCheckedIconExpand(false)}`}
+        />
       </div>
     );
   };
@@ -200,15 +212,21 @@ const QueryPart: React.FC = () => {
     return (
       <>
         {_renderAddChart()}
-        <Flex
-          className="empty-table"
-          justifyContent={'center'}
-          alignItems="center"
-          flexDirection="column"
-        >
-          <span className="execution-error">Execution Error</span>
-          {errorExecuteQuery?.message || 'No data...'}
-        </Flex>
+        {(expandLayout === LAYOUT_QUERY.HIDDEN ||
+          expandLayout === LAYOUT_QUERY.HALF) && (
+          <Flex
+            className="empty-table"
+            justifyContent={'center'}
+            alignItems="center"
+            flexDirection="column"
+          >
+            <span className="execution-error">Execution Error</span>
+
+            {(statusExecuteQuery === STATUS.FAILED &&
+              errorExecuteQuery?.message) ||
+              'No data...'}
+          </Flex>
+        )}
       </>
     );
   };
@@ -221,7 +239,11 @@ const QueryPart: React.FC = () => {
     return (
       <div
         className={`
-        ${errorExecuteQuery ? 'add-chart-empty' : ''}
+        ${
+          statusExecuteQuery === STATUS.FAILED && isExpand
+            ? 'add-chart-empty'
+            : ''
+        }
         ${classExpand(LAYOUT_QUERY.FULL, 'add-chart-full', 'add-chart')}
         ${classExpand(LAYOUT_QUERY.HIDDEN, 'expand-chart hidden-editor', '')} `}
       >
@@ -256,20 +278,17 @@ const QueryPart: React.FC = () => {
             >
               <div
                 className={`${
-                  errorExecuteQuery || !queryId || !queryValue
-                    ? 'cursor-not-allowed'
-                    : ''
+                  !queryId || !queryValue ? 'cursor-not-allowed' : ''
                 } btn-expand-public`}
               >
                 <p
-                  className={`${onCheckedIconExpand()}`}
+                  className={`${onCheckedIconExpand(true)}`}
                   onClick={onExpandEditor}
                 />
               </div>
             </Tooltip>
             <AceEditor
               className={`ace_editor ace-tomorrow custom-editor 
-                ${errorExecuteQuery ? 'custom-editor--half' : ''}
                 ${classExpand(
                   LAYOUT_QUERY.FULL,
                   'custom-editor--full',
