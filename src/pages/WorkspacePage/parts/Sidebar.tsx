@@ -65,9 +65,11 @@ const ChainItem = ({
                 : 'bg-chain_default'
             }
           />
-          <Text isTruncated maxW={'70%'}>
-            {chain.table_name}
-          </Text>
+          <Tooltip placement={'top'} hasArrow label={chain.table_name} p={2}>
+            <Text isTruncated maxW={'70%'}>
+              {chain.table_name}
+            </Text>
+          </Tooltip>
         </Flex>
         {pathname.includes(ROUTES.MY_QUERY) && (
           <Tooltip
@@ -499,9 +501,16 @@ const Sidebar: React.FC<{
         {!!schemaDescribe.length && (
           <Box className="chain-info-desc">
             <div className="chain-info-desc__header">
-              <Text isTruncated maxW={'70%'}>
-                {schemaDescribe[0].table_name}
-              </Text>
+              <Tooltip
+                placement={'top'}
+                hasArrow
+                label={schemaDescribe[0].table_name}
+                p={2}
+              >
+                <Text isTruncated maxW={'70%'}>
+                  {schemaDescribe[0].table_name}
+                </Text>
+              </Tooltip>
               <div className="header-icon">
                 {pathname.includes(ROUTES.MY_QUERY) && (
                   <div
