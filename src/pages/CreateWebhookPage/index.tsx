@@ -187,10 +187,14 @@ const CreateWebhook = () => {
       ...dataForm,
       type,
       chain: appInfo.chain,
-      tokenIds: dataForm?.metadata?.tokenIds
-        ?.split(',')
-        .filter((item: string) => !!item)
-        .map((item: string) => +item.trim()),
+      metadata: {
+        ...dataForm.metadata,
+        tokenIds:
+          dataForm?.metadata?.tokenIds
+            ?.split(',')
+            .filter((item: string) => !!item)
+            .map((item: string) => +item.trim()) || [],
+      },
     };
 
     try {
