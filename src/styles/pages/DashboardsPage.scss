@@ -567,9 +567,11 @@
 .article {
   max-width: 100%;
   overflow: hidden;
+  border: 1px solid transparent;
 
   &:hover {
     border: 1px solid $line;
+    background-color: $bg3;
 
     .article-link .article-name {
       color: $main;
