@@ -7,7 +7,7 @@ import rf from 'src/requests/RequestFactory';
 import { TYPE_OF_MODAL, ROUTES } from 'src/utils/common';
 import { setRecaptchaToRequest } from 'src/utils/utils-auth';
 import { getErrorMessage } from 'src/utils/utils-helper';
-import { toastError } from 'src/utils/utils-notify';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { createValidator } from 'src/utils/utils-validator';
 import BaseModal from '../BaseModal';
 export interface IModalSettingQuerry {
@@ -100,6 +100,7 @@ const ModalQuery = ({
             res = await rf
               .getRequest('DashboardsRequest')
               .updateQuery(valueSettingQuery, id);
+            toastSuccess({ message: 'Update query successfully!' });
             break;
 
           case TYPE_OF_MODAL.CREATE:
@@ -108,6 +109,7 @@ const ModalQuery = ({
               .createNewQuery({ ...valueSettingQuery, query: query });
             await rf.getRequest('DashboardsRequest').executeQuery(res.id);
             history.push(`${ROUTES.MY_QUERY}/${res.id}`);
+            toastSuccess({ message: 'Create new query successfully!' });
             break;
 
           case TYPE_OF_MODAL.FORK:
@@ -115,6 +117,7 @@ const ModalQuery = ({
               .getRequest('DashboardsRequest')
               .forkQueries(id, { ...valueSettingQuery });
             history.push(`${ROUTES.MY_QUERY}/${res.id}`);
+            toastSuccess({ message: 'Fork query successfully!' });
             break;
         }
         onSuccess && (await onSuccess(res));

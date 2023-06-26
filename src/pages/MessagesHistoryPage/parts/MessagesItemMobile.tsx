@@ -212,19 +212,21 @@ const MessagesItemMobile: FC<IMessagesItemMobile> = ({
               <Box className="value">
                 <Flex alignItems="center">
                   {formatShortText(message?.input?.tx?.transactionHash)}
-                  <Box ml={2}>
-                    <a
-                      href={getExplorerTxUrl(
-                        message?.input?.chain,
-                        message?.input?.network,
-                        message?.input?.tx?.transactionHash,
-                      )}
-                      className="link-redirect"
-                      target="_blank"
-                    >
-                      <LinkIcon />
-                    </a>
-                  </Box>
+                  {message?.input?.tx?.transactionHash && (
+                    <Box ml={2}>
+                      <a
+                        href={getExplorerTxUrl(
+                          message?.input?.chain,
+                          message?.input?.network,
+                          message?.input?.tx?.transactionHash,
+                        )}
+                        className="link-redirect"
+                        target="_blank"
+                      >
+                        <LinkIcon />
+                      </a>
+                    </Box>
+                  )}
                 </Flex>
               </Box>
             </Flex>

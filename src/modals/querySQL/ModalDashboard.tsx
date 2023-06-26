@@ -87,7 +87,7 @@ const ModalDashboard: React.FC<IModelNewDashboard> = ({
             tag: dataForm.tag.trim(),
           });
           history.push(`${ROUTES.MY_DASHBOARD}/${result.id}`);
-
+          toastSuccess({ message: 'Create new dashboard successfully!' });
           break;
         case TYPE_OF_MODAL.SETTING:
           result = await rf.getRequest('DashboardsRequest').updateDashboardItem(
@@ -97,8 +97,8 @@ const ModalDashboard: React.FC<IModelNewDashboard> = ({
             },
             id,
           );
+          toastSuccess({ message: 'Update dashboard successfully!' });
           break;
-
         case TYPE_OF_MODAL.FORK:
           result = await rf.getRequest('DashboardsRequest').forkDashboard(
             {
@@ -108,6 +108,7 @@ const ModalDashboard: React.FC<IModelNewDashboard> = ({
             id,
           );
           history.push(`${ROUTES.MY_DASHBOARD}/${result.id}`);
+          toastSuccess({ message: 'Fork dashboard successfully!' });
           break;
       }
 

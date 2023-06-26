@@ -94,8 +94,8 @@ export const COLORS = [
   '#4942E4',
 ];
 
-export const getHourAndMinute = (date: string) => {
-  return moment(new Date(date)).format('HH:mm');
+export const getMonthAndDate = (date: string) => {
+  return moment(new Date(date)).format('MMM DD');
 };
 
 export const INPUT_DEBOUNCE = 500;
