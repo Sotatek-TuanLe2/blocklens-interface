@@ -463,9 +463,10 @@ const Sidebar: React.FC<{
         </div>
         <Box px={'16px'} mb={'26px'}>
           <AppInput
+            className="workspace-page__sidebar__content__work-place-wrap__input-search"
             value={searchExploreData}
             placeholder={'Search...'}
-            size="md"
+            size="sm"
             onChange={(e) => {
               setSearchExploreData(e.target.value);
               getDataSearchExploreData(e.target.value);
