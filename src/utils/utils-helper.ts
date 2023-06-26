@@ -101,5 +101,10 @@ export const areYAxisesSameType = (data: any[], yAxis: string[]) => {
   return areYAxisesAllNumber || areYAxisesAllString;
 };
 
+export const shortAddressType = (address: string, separator = ':') => {
+  const pos = address.indexOf(separator);
+  return formatShortText(address.slice(0, pos)).concat(address.slice(pos));
+};
+
 export const generatePositiveRandomNumber = (maxValue: number) =>
   Math.floor(Math.random() * maxValue) + 1;
