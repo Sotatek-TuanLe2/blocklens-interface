@@ -193,11 +193,12 @@ const AppRowItem: FC<AppRowItemProps> = ({
                   mr={3}
                 >
                   <Image
-                    src={srcThumb || '/images/ThumbnailDashboardLight.png'}
+                    src={srcThumb}
                     alt="thumbnail"
                     w={'auto'}
                     height={'full'}
                     minW={'full'}
+                    fallbackSrc="/images/ThumbnailDashboardLight.png"
                   />
                 </Box>
               )}
