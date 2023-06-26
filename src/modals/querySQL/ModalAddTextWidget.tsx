@@ -151,6 +151,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
     }
     newDataLayouts[index] = {
       ...newDataLayouts[index],
+      w: widthWidget,
       text: markdownText,
     };
 
