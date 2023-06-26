@@ -72,6 +72,7 @@ const QueryPart: React.FC = () => {
 
   useEffect(() => {
     if (queryId) {
+      console.log("queryId", queryId);
       fetchInitalData();
       setExpandLayout(LAYOUT_QUERY.HIDDEN);
     } else {
@@ -174,6 +175,7 @@ const QueryPart: React.FC = () => {
       }
       const position = editorRef.current.editor.getCursorPosition();
       editorRef.current.editor.setValue('');
+      console.log("dataQuery", dataQuery?.query);
       editorRef.current.editor.session.insert(position, dataQuery?.query);
 
       return dataQuery;
@@ -486,9 +488,8 @@ const QueryPart: React.FC = () => {
         <ModalQuery
           open={openModalSettingQuery}
           onClose={() => setOpenModalSettingQuery(false)}
-          onSuccess={async () => {
+          onSuccess={() => {
             AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
-            await fetchQuery();
           }}
           type={TYPE_OF_MODAL.CREATE}
           query={editorRef.current.editor.getValue()}
