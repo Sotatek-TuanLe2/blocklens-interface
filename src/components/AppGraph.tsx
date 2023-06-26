@@ -12,7 +12,7 @@ import {
 import { isMobile } from 'react-device-detect';
 import { formatTimestamp } from 'src/utils/utils-helper';
 import { formatNumber } from 'src/utils/utils-format';
-
+import { RadioChecked, RadioNoCheckedIcon } from 'src/assets/icons';
 interface IChart {
   data: any[];
   duration: string;
@@ -22,20 +22,12 @@ const CustomTooltip = (props: any) => {
   const { active, payload, label } = props;
   if (active && payload && payload.length) {
     return (
-      <Box p={2}>
-        {`${label}`}
-
-        <Box>{`${payload[1].name} : ${formatNumber(
-          payload[1].value,
-          4,
-          '0',
-        )}`}</Box>
-        <Box>{`${payload[0].name} : ${formatNumber(
-          payload[0].value,
-          4,
-          '0',
-        )}`}</Box>
-      </Box>
+      <Box
+        bg={'rgba(0,0,0,0.5)'}
+        color={'white'}
+        borderRadius={5}
+        p={2}
+      >{`${label} :${formatNumber(payload[0]?.value, 4, '0')}`}</Box>
     );
   }
 
@@ -44,6 +36,7 @@ const CustomTooltip = (props: any) => {
 
 const AppGraph: FC<IChart> = ({ data, duration }) => {
   const [key, setKey] = useState(0);
+  const [lineHide, setLineHide] = useState<string>('activities');
   const dataChart = useMemo(() => {
     if (duration === '24h') {
       return data.map((item: any) => {
@@ -68,11 +61,7 @@ const AppGraph: FC<IChart> = ({ data, duration }) => {
 
   return (
     <Box height={isMobile ? '400px' : '500px'} px={isMobile ? 0 : 5}>
-      <ResponsiveContainer
-        key={key}
-        width="100%"
-        height={isMobile ? '75%' : '85%'}
-      >
+      <ResponsiveContainer width="100%" height={isMobile ? '75%' : '85%'}>
         <LineChart
           width={500}
           height={300}
@@ -85,34 +74,37 @@ const AppGraph: FC<IChart> = ({ data, duration }) => {
           }}
         >
           <CartesianGrid vertical={false} horizontal stroke="#E8EAED" />
+          {lineHide === 'message' && (
+            <Line
+              key={key}
+              name="Numbers of messages"
+              dataKey="message"
+              stroke="#3A95FF"
+              strokeWidth={2}
+              dot={{
+                r: isMobile ? 2 : 8,
+                stroke: 'white',
+                strokeWidth: 3,
+                fill: '#3A95FF',
+              }}
+            />
+          )}
+          {lineHide === 'activities' && (
+            <Line
+              key={key}
+              dot={{
+                r: isMobile ? 2 : 8,
+                stroke: 'white',
+                strokeWidth: 3,
+                fill: '#FFB547',
+              }}
+              strokeWidth={2}
+              dataKey="activities"
+              stroke="#FFB547"
+              name="Numbers of activities"
+            />
+          )}
 
-          <Line
-            key={key}
-            name="Numbers of messages"
-            dataKey="message"
-            stroke="#3A95FF"
-            strokeWidth={2}
-            dot={{
-              r: isMobile ? 2 : 8,
-              stroke: 'white',
-              strokeWidth: 3,
-              fill: '#3A95FF',
-            }}
-          />
-
-          <Line
-            key={key + 1}
-            dot={{
-              r: isMobile ? 2 : 8,
-              stroke: 'white',
-              strokeWidth: 3,
-              fill: '#FFB547',
-            }}
-            strokeWidth={2}
-            dataKey="activities"
-            stroke="#FFB547"
-            name="Numbers of activities"
-          />
           <XAxis
             dataKey="label"
             interval={isMobile ? undefined : 3}
@@ -132,11 +124,33 @@ const AppGraph: FC<IChart> = ({ data, duration }) => {
       </ResponsiveContainer>
 
       <Flex my={isMobile ? 3 : 5} className={'legend'}>
-        <Flex>
+        <Flex
+          onClick={() => {
+            if (lineHide === 'message') {
+              setLineHide('activities');
+              return;
+            }
+            setLineHide('message');
+          }}
+        >
+          {lineHide === 'activities' ? (
+            <RadioChecked />
+          ) : (
+            <RadioNoCheckedIcon />
+          )}
           <Box className={`activities`}>Numbers of activities</Box>
         </Flex>
 
-        <Flex>
+        <Flex
+          onClick={() => {
+            if (lineHide === 'activities') {
+              setLineHide('message');
+              return;
+            }
+            setLineHide('activities');
+          }}
+        >
+          {lineHide === 'message' ? <RadioChecked /> : <RadioNoCheckedIcon />}
           <Box className={`message`}>Numbers of messages</Box>
         </Flex>
       </Flex>
