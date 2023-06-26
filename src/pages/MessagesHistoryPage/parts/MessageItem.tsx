@@ -16,11 +16,12 @@ export const StatusMessages = ({ message }: any) => {
   if (!!message.status) {
     return (
       <Box
+        textTransform={'capitalize'}
         className={`status ${
           message.status === STATUS.FAILED ? 'inactive' : 'active'
         }`}
       >
-        {message.status}
+        {message?.status?.toLowerCase()}
       </Box>
     );
   }
@@ -107,20 +108,22 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
         <Td w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '15%' : '20%'}>
           <Flex alignItems="center">
             {formatShortText(message?.input?.tx?.transactionHash)}
-            <Box ml={2}>
-              <a
-                onClick={(e) => onRedirectToBlockExplorer(e)}
-                href={getExplorerTxUrl(
-                  message?.input?.chain,
-                  message?.input?.network,
-                  message?.input?.tx?.transactionHash,
-                )}
-                className="link-redirect"
-                target="_blank"
-              >
-                <LinkIcon />
-              </a>
-            </Box>
+            {message?.input?.tx?.transactionHash && (
+              <Box ml={2}>
+                <a
+                  onClick={(e) => onRedirectToBlockExplorer(e)}
+                  href={getExplorerTxUrl(
+                    message?.input?.chain,
+                    message?.input?.network,
+                    message?.input?.tx?.transactionHash,
+                  )}
+                  className="link-redirect"
+                  target="_blank"
+                >
+                  <LinkIcon />
+                </a>
+              </Box>
+            )}
           </Flex>
         </Td>
         {_renderContentActivities()}
@@ -168,7 +171,7 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
                   >
                     <ReactJson
                       name={false}
-                      theme="monokai"
+                      theme="summerfruit:inverted"
                       src={message.input}
                       displayDataTypes={false}
                       collapsed={1}
@@ -209,7 +212,7 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
                   >
                     <ReactJson
                       name={false}
-                      theme="monokai"
+                      theme="summerfruit:inverted"
                       src={message.output}
                       displayDataTypes={false}
                       collapsed={1}

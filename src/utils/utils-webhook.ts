@@ -104,12 +104,14 @@ export interface IActivityResponse {
   webhook: string;
   metadata: any;
   errs: string[];
-  tokenId: string[];
+  tokenIds: string[];
   method: string;
   retryTime: number;
   createdAt: number;
   updatedAt: number;
+  block: string;
   trackingAddress: string;
+  transactionHash: string;
 }
 
 export const getColorBrandStatus = (status: string) => {
