@@ -115,7 +115,7 @@ const ActivityMobile: FC<IActivity> = ({ activity, webhook, onReload }) => {
           <Box>Address</Box>
           <Box className="value">
             <Flex alignItems="center">
-              {formatShortText(activity?.trackingAddress)}
+              {formatShortText(activity?.metadata?.trackingAddress)}
             </Flex>
           </Box>
         </Flex>
@@ -281,7 +281,7 @@ const ActivityDesktop: FC<IActivity> = ({ activity, webhook, onReload }) => {
   };
 
   const _renderContentAddress = () => {
-    return <Td w="15%">{formatShortText(activity?.trackingAddress)}</Td>;
+    return <Td w="15%">{formatShortText(activity?.metadata?.trackingAddress)}</Td>;
   };
 
   const _renderContentActivities = () => {
