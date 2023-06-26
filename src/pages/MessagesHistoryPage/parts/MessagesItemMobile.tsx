@@ -201,7 +201,9 @@ const MessagesItemMobile: FC<IMessagesItemMobile> = ({
               className="info"
             >
               <Box>Block</Box>
-              <Box>{message?.input?.tx?.blockNumber}</Box>
+              <Box>
+                {message?.input?.tx?.blockNumber || message?.input?.tx?.block}
+              </Box>
             </Flex>
             <Flex
               justifyContent="space-between"

@@ -1,5 +1,5 @@
 import React, { FC, MouseEvent, useState } from 'react';
-import { Box, Flex, Tbody, Td, Th, Tr } from '@chakra-ui/react';
+import { Box, Flex, Tbody, Td, Tr } from '@chakra-ui/react';
 import {
   IMessages,
   IWebhook,
@@ -103,7 +103,7 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
         </Td>
 
         <Td w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '12%' : '15%'}>
-          {message?.input?.tx?.blockNumber}
+          {message?.input?.tx?.blockNumber || message?.input?.tx?.block}
         </Td>
         <Td w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '15%' : '20%'}>
           <Flex alignItems="center">
