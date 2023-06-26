@@ -7,10 +7,6 @@
   gap: 10px;
   margin-top: -40px;
 
-  &__query {
-    height: calc(100vh - 70px);
-  }
-
   @media (max-width: 992px) {
     margin-top: 15px;
   }
