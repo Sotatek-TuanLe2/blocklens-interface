@@ -99,7 +99,7 @@ const ActivityMobile: FC<IActivity> = ({ activity, webhook, onReload }) => {
         >
           <Box>Method</Box>
           <Box className="value">
-            <Flex alignItems="center">{activity?.method || '--'}</Flex>
+            <Flex alignItems="center">{activity?.metadata?.tx?.method || '--'}</Flex>
           </Box>
         </Flex>
       );
