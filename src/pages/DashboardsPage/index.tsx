@@ -127,7 +127,7 @@ const DashboardsPage: React.FC = () => {
           .getAllDashboards(params);
         return { ...res, docs: res.data };
       } catch (error) {
-        console.log(error);
+        console.error(error);
         // toastError({ message: getErrorMessage(error) });
       }
     },
@@ -142,7 +142,7 @@ const DashboardsPage: React.FC = () => {
           .getMyListDashboards(params);
         return { ...res, docs: res.data };
       } catch (error) {
-        console.log(error);
+        console.error(error);
         // toastError({ message: getErrorMessage(error) });
       }
     },
@@ -157,7 +157,7 @@ const DashboardsPage: React.FC = () => {
           .getAllQueries(params);
         return { ...res, docs: res.data };
       } catch (error) {
-        console.log(error);
+        console.error(error);
         // toastError({ message: getErrorMessage(error) });
       }
     },
@@ -172,7 +172,7 @@ const DashboardsPage: React.FC = () => {
           .getMyListQueries(params);
         return { ...res, docs: res.data };
       } catch (error) {
-        console.log(error);
+        console.error(error);
         // toastError({ message: getErrorMessage(error) });
       }
     },

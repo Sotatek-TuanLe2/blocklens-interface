@@ -92,7 +92,7 @@ const VisualizationItem = React.memo(
       try {
         await fetchQueryResult();
       } catch (error) {
-        console.log(error);
+        console.error(error);
         // toastError({ message: getErrorMessage(error) });
       }
     };

@@ -121,7 +121,7 @@ const QueryPart: React.FC = () => {
       const dataQuery = await fetchQuery();
       await fetchQueryResult(dataQuery?.executedId);
     } catch (error) {
-      console.log(error);
+      console.error(error);
       // toastError({ message: getErrorMessage(error) });
     }
   };

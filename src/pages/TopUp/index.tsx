@@ -112,7 +112,7 @@ const TopUpPage = () => {
     setFetchingInfo(true);
     Promise.all([checkApproveToken(), fetchBalance()])
       .catch((error) => {
-        console.log(error);
+        console.error(error);
         // toastError({ message: getErrorMessage(error) });
       })
       .finally(() => setFetchingInfo(false));
@@ -203,7 +203,7 @@ const TopUpPage = () => {
       );
       await dispatch(getUserProfile());
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 

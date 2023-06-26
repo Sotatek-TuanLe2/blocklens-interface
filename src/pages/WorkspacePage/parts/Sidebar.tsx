@@ -265,7 +265,7 @@ const Sidebar: React.FC<{
         setDataQueriesPagination(dataPaginationQueries);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       // toastError({
       //   message: getErrorMessage(error),
       // });
@@ -284,7 +284,7 @@ const Sidebar: React.FC<{
       );
       setExploreData(listChain);
     } catch (error) {
-      console.log(error);
+      console.error(error);
       // toastError(getErrorMessage(error));
     }
   };
