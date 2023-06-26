@@ -47,7 +47,7 @@ const TableConfigurations: React.FC<ITableConfigurations> = ({
       .map((data: any) => data.accessorKey)
       .map((item, index: number) => ({
         value: index.toString(),
-        label: `Column ${index}: ${item}`,
+        label: `Column ${index + 1}: ${item}`,
       }));
   }, [dataColumns]);
 

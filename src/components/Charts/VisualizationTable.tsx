@@ -156,6 +156,14 @@ const VisualizationTable = <T,>({
     return formatVisualizationValue(format, value.toString());
   };
 
+  const alignClass = (align: string) => {
+    return align === 'right'
+      ? 'right-column'
+      : align === 'center'
+      ? 'center-column'
+      : '';
+  };
+
   return (
     <>
       <div className={`header-table ${editMode ? 'editMode' : ''}`}>
@@ -217,10 +225,10 @@ const VisualizationTable = <T,>({
                 >
                   {headerGroup.headers.map((header: any) => (
                     <th
+                      className={`${alignClass(header.column.columnDef.align)}`}
                       {...{
                         key: header.id,
                         style: {
-                          paddingLeft: '24px',
                           textTransform: 'uppercase',
                           color: '#465065',
                           width: header.getSize(),
@@ -300,6 +308,7 @@ const VisualizationTable = <T,>({
 
                     return (
                       <td
+                        className={`${alignClass(align)}`}
                         {...{
                           key: cells.id,
                           style: {

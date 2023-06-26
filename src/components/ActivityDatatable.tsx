@@ -99,7 +99,9 @@ const ActivityMobile: FC<IActivity> = ({ activity, webhook, onReload }) => {
         >
           <Box>Method</Box>
           <Box className="value">
-            <Flex alignItems="center">{activity?.metadata?.method || '--'}</Flex>
+            <Flex alignItems="center">
+              {activity?.metadata?.method || '--'}
+            </Flex>
           </Box>
         </Flex>
       );
@@ -281,7 +283,9 @@ const ActivityDesktop: FC<IActivity> = ({ activity, webhook, onReload }) => {
   };
 
   const _renderContentAddress = () => {
-    return <Td w="15%">{formatShortText(activity?.metadata?.trackingAddress)}</Td>;
+    return (
+      <Td w="15%">{formatShortText(activity?.metadata?.trackingAddress)}</Td>
+    );
   };
 
   const _renderContentActivities = () => {
