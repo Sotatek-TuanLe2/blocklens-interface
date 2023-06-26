@@ -21,7 +21,8 @@ const BillingInfoPage = () => {
       const res = await rf.getRequest('BillingRequest').getBillingInfo();
       setBillingInfo(res || {});
     } catch (e) {
-      toastError({ message: getErrorMessage(e) });
+      console.log(e);
+      // toastError({ message: getErrorMessage(e) });
     }
   };
   useEffect(() => {

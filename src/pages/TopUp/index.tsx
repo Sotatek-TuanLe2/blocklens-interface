@@ -112,7 +112,8 @@ const TopUpPage = () => {
     setFetchingInfo(true);
     Promise.all([checkApproveToken(), fetchBalance()])
       .catch((error) => {
-        toastError({ message: getErrorMessage(error) });
+        console.log(error);
+        // toastError({ message: getErrorMessage(error) });
       })
       .finally(() => setFetchingInfo(false));
   }, [wallet, currencyAddress]);
