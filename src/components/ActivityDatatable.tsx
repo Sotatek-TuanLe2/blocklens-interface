@@ -99,7 +99,7 @@ const ActivityMobile: FC<IActivity> = ({ activity, webhook, onReload }) => {
         >
           <Box>Method</Box>
           <Box className="value">
-            <Flex alignItems="center">{activity?.metadata?.tx?.method || '--'}</Flex>
+            <Flex alignItems="center">{activity?.metadata?.method || '--'}</Flex>
           </Box>
         </Flex>
       );
@@ -266,13 +266,13 @@ const ActivityDesktop: FC<IActivity> = ({ activity, webhook, onReload }) => {
   const [openModalUpgradeMessage, setOpenModalUpgradeMessage] = useState(false);
 
   const _renderContentContract = () => {
-    return <Td w="15%">{activity?.metadata?.tx?.method || '--'}</Td>;
+    return <Td w="15%">{activity?.metadata?.method || '--'}</Td>;
   };
 
   const _renderContentNFT = () => {
     return (
       <>
-        <Td w="13%">{activity?.metadata?.tx?.method || '--'}</Td>
+        <Td w="13%">{activity?.metadata?.method || '--'}</Td>
         <Td textAlign="center" w="10%">
           {activity?.metadata?.tx?.tokenIds?.join(', ') || '*'}
         </Td>
