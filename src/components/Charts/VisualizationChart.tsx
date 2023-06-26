@@ -31,7 +31,7 @@ import {
   formatVisualizationValue,
 } from 'src/utils/utils-format';
 import { isNumber, isString } from 'src/utils/utils-helper';
-import { COLORS, getHourAndMinute } from '../../utils/common';
+import { COLORS, getMonthAndDate } from '../../utils/common';
 import CustomLegend from './CustomLegend';
 import CustomTooltip from './CustomTooltip';
 import { FadeLoader } from 'react-spinners';
@@ -57,8 +57,8 @@ const VisualizationChart: React.FC<Props> = (props) => {
   const [hiddenKeys, setHiddenKeys] = useState<string[]>([]);
 
   const tickFormatAxis = (axis: string) => (value: string) => {
-    if (moment(new Date(value)).isValid() && isNaN(+value)) {
-      return getHourAndMinute(value);
+    if (moment(new Date(value)).isValid() && !isNumber(value)) {
+      return getMonthAndDate(value);
     }
     if (axis === 'x' && configs?.xAxisConfigs?.tickFormat) {
       return formatVisualizationValue(configs?.xAxisConfigs?.tickFormat, value);
