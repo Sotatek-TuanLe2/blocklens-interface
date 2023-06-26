@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react';
-import { Box, Flex } from '@chakra-ui/react';
+import { Box, Flex, Td } from '@chakra-ui/react';
 import { IWebhook, WEBHOOK_TYPES, IMessages } from 'src/utils/utils-webhook';
 import { formatShortText, formatTimestamp } from 'src/utils/utils-helper';
 import { LinkIcon } from 'src/assets/icons';
@@ -201,7 +201,9 @@ const MessagesItemMobile: FC<IMessagesItemMobile> = ({
               className="info"
             >
               <Box>Block</Box>
-              <Box>{message?.input?.tx?.blockNumber}</Box>
+              <Box>
+                {message?.input?.tx?.blockNumber || message?.input?.tx?.block}
+              </Box>
             </Flex>
             <Flex
               justifyContent="space-between"

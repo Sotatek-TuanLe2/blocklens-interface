@@ -103,7 +103,7 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
         </Td>
 
         <Td w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '12%' : '15%'}>
-          {message?.input?.tx?.blockNumber}
+          {message?.input?.tx?.blockNumber || message?.input?.tx?.block}
         </Td>
         <Td w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '15%' : '20%'}>
           <Flex alignItems="center">
