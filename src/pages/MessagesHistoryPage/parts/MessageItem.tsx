@@ -16,11 +16,12 @@ export const StatusMessages = ({ message }: any) => {
   if (!!message.status) {
     return (
       <Box
+        textTransform={'capitalize'}
         className={`status ${
           message.status === STATUS.FAILED ? 'inactive' : 'active'
         }`}
       >
-        {message.status}
+        {message?.status?.toLowerCase()}
       </Box>
     );
   }
@@ -170,7 +171,7 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
                   >
                     <ReactJson
                       name={false}
-                      theme="monokai"
+                      theme="summerfruit:inverted"
                       src={message.input}
                       displayDataTypes={false}
                       collapsed={1}
@@ -211,7 +212,7 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
                   >
                     <ReactJson
                       name={false}
-                      theme="monokai"
+                      theme="summerfruit:inverted"
                       src={message.output}
                       displayDataTypes={false}
                       collapsed={1}
