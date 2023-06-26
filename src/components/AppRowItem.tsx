@@ -32,6 +32,7 @@ interface AppRowItemProps {
   type?: string;
   myWorkType?: string;
   userId?: string;
+  views?: number | string;
 }
 
 const AppRowItem: FC<AppRowItemProps> = ({
@@ -47,6 +48,7 @@ const AppRowItem: FC<AppRowItemProps> = ({
   type,
   myWorkType,
   userId,
+  views,
 }) => {
   const { isOpen, onToggle } = useDisclosure();
 
@@ -176,7 +178,7 @@ const AppRowItem: FC<AppRowItemProps> = ({
               <Flex align={'center'}>
                 <IconEye />
                 <Text textAlign={'right'} className="article-view" ml={'4px'}>
-                  2.3M
+                  {views}
                 </Text>
               </Flex>
             </Flex>
@@ -350,7 +352,7 @@ const AppRowItem: FC<AppRowItemProps> = ({
                 <Flex align={'center'} flexGrow={1} justify={'flex-end'}>
                   <IconEye />
                   <Text textAlign={'right'} className="article-view" ml={'4px'}>
-                    2.3M
+                    {views}
                   </Text>
                 </Flex>
               </Flex>

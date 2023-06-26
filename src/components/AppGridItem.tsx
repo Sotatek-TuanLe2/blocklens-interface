@@ -28,6 +28,7 @@ interface AppGridItemProps {
   tagList?: any[];
   shareComponent?: ReactNode;
   userId?: string;
+  views?: number | string;
 }
 
 const AppGridItem: FC<AppGridItemProps> = ({
@@ -41,6 +42,7 @@ const AppGridItem: FC<AppGridItemProps> = ({
   tagList,
   shareComponent,
   userId,
+  views,
 }) => {
   return isLoading ? (
     <Flex
@@ -193,7 +195,7 @@ const AppGridItem: FC<AppGridItemProps> = ({
           <Flex alignSelf={'flex-start'} alignItems={'center'}>
             <IconEye />
             <Text textAlign={'right'} className="item-view" ml={'4px'}>
-              2.3M
+              {views}
             </Text>
           </Flex>
         </Flex>

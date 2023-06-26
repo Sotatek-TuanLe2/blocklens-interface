@@ -100,3 +100,6 @@ export const areYAxisesSameType = (data: any[], yAxis: string[]) => {
   );
   return areYAxisesAllNumber || areYAxisesAllString;
 };
+
+export const generatePositiveRandomNumber = (maxValue: number) =>
+  Math.floor(Math.random() * maxValue) + 1;
