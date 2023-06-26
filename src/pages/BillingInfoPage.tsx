@@ -22,7 +22,6 @@ const BillingInfoPage = () => {
       setBillingInfo(res || {});
     } catch (e) {
       console.error(e);
-      // toastError({ message: getErrorMessage(e) });
     }
   };
   useEffect(() => {

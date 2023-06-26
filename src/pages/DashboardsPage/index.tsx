@@ -128,7 +128,6 @@ const DashboardsPage: React.FC = () => {
         return { ...res, docs: res.data };
       } catch (error) {
         console.error(error);
-        // toastError({ message: getErrorMessage(error) });
       }
     },
     [dashboardParams],
@@ -143,7 +142,6 @@ const DashboardsPage: React.FC = () => {
         return { ...res, docs: res.data };
       } catch (error) {
         console.error(error);
-        // toastError({ message: getErrorMessage(error) });
       }
     },
     [dashboardParams],
@@ -158,7 +156,6 @@ const DashboardsPage: React.FC = () => {
         return { ...res, docs: res.data };
       } catch (error) {
         console.error(error);
-        // toastError({ message: getErrorMessage(error) });
       }
     },
     [queryParams],
@@ -173,7 +170,6 @@ const DashboardsPage: React.FC = () => {
         return { ...res, docs: res.data };
       } catch (error) {
         console.error(error);
-        // toastError({ message: getErrorMessage(error) });
       }
     },
     [queryParams],

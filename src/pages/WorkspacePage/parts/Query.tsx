@@ -187,7 +187,6 @@ const QueryPart: React.FC = () => {
       );
     } catch (error) {
       console.error(error);
-      // toastError({ message: getErrorMessage(error) });
     }
   };
 

@@ -113,7 +113,6 @@ const TopUpPage = () => {
     Promise.all([checkApproveToken(), fetchBalance()])
       .catch((error) => {
         console.error(error);
-        // toastError({ message: getErrorMessage(error) });
       })
       .finally(() => setFetchingInfo(false));
   }, [wallet, currencyAddress]);
