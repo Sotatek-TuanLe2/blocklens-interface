@@ -17,6 +17,7 @@ const GuestPage: FC<IBasePage> = ({ children }) => {
         mb={'60px'}
         minH={'calc(100vh - 80px)'}
         className={'main'}
+        overflow={'hidden'}
       >
         {children}
       </Box>
