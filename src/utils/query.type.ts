@@ -91,7 +91,7 @@ export interface IQuery {
   tags?: string[];
   query: string;
   executedId: string;
-  latestExecutionId?: string;
+  pendingExecutionId?: string;
   forkedQuery?: null;
   visualizations: VisualizationType[];
   utilizedChains: string[];
