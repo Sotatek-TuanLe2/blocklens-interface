@@ -8,7 +8,7 @@ import {
 } from 'src/utils/utils-webhook';
 import { Th, Thead, Tr, Tbody, Td, Box, Flex } from '@chakra-ui/react';
 import { AppDataTable, AppLoadingTable } from 'src/components';
-import { formatShortText } from 'src/utils/utils-helper';
+import { formatShortText, shortAddressType } from 'src/utils/utils-helper';
 import _ from 'lodash';
 import { IAppResponse } from 'src/utils/utils-app';
 import { useHistory } from 'react-router';
@@ -50,7 +50,7 @@ const _renderDetailWebhook = (type: string, webhook: IWebhook) => {
   }
 
   if (type === WEBHOOK_TYPES.APTOS_COIN_ACTIVITY) {
-    return <>{webhook.metadata.coinType} </>;
+    return <>{shortAddressType(webhook?.metadata?.coinType || '')} </>;
   }
 
   if (type === WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY) {
