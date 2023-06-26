@@ -105,11 +105,13 @@ const QueryPart: React.FC = () => {
 
   const updateQuery = async (query: string) => {
     try {
+      setIsLoadingResult(true);
       await rf.getRequest('DashboardsRequest').updateQuery({ query }, queryId);
       await fetchQuery();
       const executionId = await executeQuery();
       await fetchQueryResult(executionId);
     } catch (error: any) {
+      setIsLoadingResult(false);
       toastError({ message: getErrorMessage(error) });
     }
   };
@@ -131,6 +133,7 @@ const QueryPart: React.FC = () => {
           setQueryResult(resInterval.result);
           setErrorExecuteQuery(resInterval?.error || null);
           setStatusExecuteQuery(resInterval?.status);
+          onCheckExpandLayout(resInterval?.status);
           setIsLoadingResult(false);
         }
       }, 2000);
@@ -138,6 +141,7 @@ const QueryPart: React.FC = () => {
       setQueryResult(res.result);
       setErrorExecuteQuery(res?.error || null);
       setStatusExecuteQuery(res?.status);
+      onCheckExpandLayout(res?.status);
       setIsLoadingResult(false);
     }
   };
@@ -198,7 +202,6 @@ const QueryPart: React.FC = () => {
 
   const executeSelectedQuery = async () => {
     try {
-      setIsLoadingResult(true);
       const executedResponse: QueryExecutedResponse = await rf
         .getRequest('DashboardsRequest')
         .getTemporaryQueryResult(selectedQuery);
@@ -264,17 +267,17 @@ const QueryPart: React.FC = () => {
       : 'icon-query-expand';
   };
 
-  useEffect(() => {
+  const onCheckExpandLayout = (executeStatus: string) => {
     if (
-      statusExecuteQuery === STATUS.DONE &&
+      executeStatus === STATUS.DONE &&
       (expandLayout === LAYOUT_QUERY.FULL || expandLayout === LAYOUT_QUERY.HALF)
     ) {
       setExpandLayout(LAYOUT_QUERY.HIDDEN);
     }
-    if (statusExecuteQuery === STATUS.FAILED) {
+    if (executeStatus === STATUS.FAILED) {
       setExpandLayout(LAYOUT_QUERY.HALF);
     }
-  }, [statusExecuteQuery]);
+  };
 
   const _renderAddChart = () => {
     return (
