@@ -99,7 +99,7 @@ const ActivityMobile: FC<IActivity> = ({ activity, webhook, onReload }) => {
         >
           <Box>Method</Box>
           <Box className="value">
-            <Flex alignItems="center">{activity?.metadata?.method}</Flex>
+            <Flex alignItems="center">{activity?.method || '--'}</Flex>
           </Box>
         </Flex>
       );
@@ -115,7 +115,7 @@ const ActivityMobile: FC<IActivity> = ({ activity, webhook, onReload }) => {
           <Box>Address</Box>
           <Box className="value">
             <Flex alignItems="center">
-              {formatShortText(activity?.metadata?.trackingAddress)}
+              {formatShortText(activity?.trackingAddress)}
             </Flex>
           </Box>
         </Flex>
@@ -137,7 +137,7 @@ const ActivityMobile: FC<IActivity> = ({ activity, webhook, onReload }) => {
           <Box>Token ID</Box>
           <Box className="value">
             <Flex alignItems="center">
-              {activity?.metadata?.tokenIds?.join(', ') || '*'}
+              {activity?.metadata?.tx?.tokenIds?.join(', ') || '*'}
             </Flex>
           </Box>
         </Flex>
@@ -178,7 +178,7 @@ const ActivityMobile: FC<IActivity> = ({ activity, webhook, onReload }) => {
               className="info"
             >
               <Box>Block</Box>
-              <Box className="value">{activity?.metadata?.tx?.blockNumber}</Box>
+              <Box className="value">{activity?.block}</Box>
             </Flex>
             <Flex
               justifyContent="space-between"
@@ -188,20 +188,22 @@ const ActivityMobile: FC<IActivity> = ({ activity, webhook, onReload }) => {
               <Box>TXN ID</Box>
               <Box className="value">
                 <Flex alignItems="center">
-                  {formatShortText(activity?.metadata?.tx?.transactionHash)}
-                  <Box ml={2}>
-                    <a
-                      href={getExplorerTxUrl(
-                        webhook?.chain,
-                        webhook?.network,
-                        activity?.metadata?.tx?.transactionHash,
-                      )}
-                      className="link-redirect"
-                      target="_blank"
-                    >
-                      <LinkIcon />
-                    </a>
-                  </Box>
+                  {formatShortText(activity?.transactionHash)}
+                  {activity?.transactionHash && (
+                    <Box ml={2}>
+                      <a
+                        href={getExplorerTxUrl(
+                          webhook?.chain,
+                          webhook?.network,
+                          activity?.transactionHash,
+                        )}
+                        className="link-redirect"
+                        target="_blank"
+                      >
+                        <LinkIcon />
+                      </a>
+                    </Box>
+                  )}
                 </Flex>
               </Box>
             </Flex>
@@ -264,24 +266,22 @@ const ActivityDesktop: FC<IActivity> = ({ activity, webhook, onReload }) => {
   const [openModalUpgradeMessage, setOpenModalUpgradeMessage] = useState(false);
 
   const _renderContentContract = () => {
-    return <Td w="15%">{activity?.metadata?.method}</Td>;
+    return <Td w="15%">{activity?.metadata?.tx?.method || '--'}</Td>;
   };
 
   const _renderContentNFT = () => {
     return (
       <>
-        <Td w="13%">{activity?.metadata?.method}</Td>
+        <Td w="13%">{activity?.metadata?.tx?.method || '--'}</Td>
         <Td textAlign="center" w="10%">
-          {activity?.metadata?.tokenIds?.join(', ') || '*'}
+          {activity?.metadata?.tx?.tokenIds?.join(', ') || '*'}
         </Td>
       </>
     );
   };
 
   const _renderContentAddress = () => {
-    return (
-      <Td w="15%">{formatShortText(activity?.metadata?.trackingAddress)}</Td>
-    );
+    return <Td w="15%">{formatShortText(activity?.trackingAddress)}</Td>;
   };
 
   const _renderContentActivities = () => {
@@ -317,25 +317,27 @@ const ActivityDesktop: FC<IActivity> = ({ activity, webhook, onReload }) => {
             UTC
           </Td>
           <Td w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '12%' : '15%'}>
-            {activity.metadata?.tx?.blockNumber}
+            {activity?.block || '--'}
           </Td>
           <Td w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '15%' : '20%'}>
             <Flex alignItems="center">
-              {formatShortText(activity.metadata?.tx?.transactionHash)}
-              <Box ml={2}>
-                <a
-                  onClick={(e) => onRedirectToBlockExplorer(e)}
-                  href={getExplorerTxUrl(
-                    webhook?.chain,
-                    webhook?.network,
-                    activity.metadata?.tx?.transactionHash,
-                  )}
-                  className="link-redirect"
-                  target="_blank"
-                >
-                  <LinkIcon />
-                </a>
-              </Box>
+              {formatShortText(activity?.transactionHash)}
+              {activity?.transactionHash && (
+                <Box ml={2}>
+                  <a
+                    onClick={(e) => onRedirectToBlockExplorer(e)}
+                    href={getExplorerTxUrl(
+                      webhook?.chain,
+                      webhook?.network,
+                      activity?.transactionHash,
+                    )}
+                    className="link-redirect"
+                    target="_blank"
+                  >
+                    <LinkIcon />
+                  </a>
+                </Box>
+              )}
             </Flex>
           </Td>
           {_renderContentActivities()}

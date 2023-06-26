@@ -390,9 +390,13 @@
   justify-content: flex-end;
   margin: 30px 40px 20px 0;
 
+  .chakra-input__left-element {
+    top: -8px;
+  }
+
   .input-search {
     @include text-medium-regular;
-    background-color: $card;
+    background-color: $white;
     padding: 4px 35px;
     height: 32px;
     margin-left: 8px;
@@ -416,10 +420,10 @@
 }
 
 .link-redirect {
-  color: $paragraph;
+  color: $paragraph2;
 
   &:hover {
-    color: $link;
+    color: $main;
   }
 }
 
@@ -437,13 +441,13 @@
 
   &__box-search,
   &__options {
-    background-color: $line;
+    background-color: $white;
     padding: 14px 10px;
     border-radius: 6px;
     position: absolute;
     width: 200px;
     top: 150%;
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 15px 30px 0 rgba(0, 0, 0, 0.04);
 
     .input-search {
       background-color: $white;

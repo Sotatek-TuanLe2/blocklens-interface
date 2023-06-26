@@ -107,20 +107,22 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
         <Td w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '15%' : '20%'}>
           <Flex alignItems="center">
             {formatShortText(message?.input?.tx?.transactionHash)}
-            <Box ml={2}>
-              <a
-                onClick={(e) => onRedirectToBlockExplorer(e)}
-                href={getExplorerTxUrl(
-                  message?.input?.chain,
-                  message?.input?.network,
-                  message?.input?.tx?.transactionHash,
-                )}
-                className="link-redirect"
-                target="_blank"
-              >
-                <LinkIcon />
-              </a>
-            </Box>
+            {message?.input?.tx?.transactionHash && (
+              <Box ml={2}>
+                <a
+                  onClick={(e) => onRedirectToBlockExplorer(e)}
+                  href={getExplorerTxUrl(
+                    message?.input?.chain,
+                    message?.input?.network,
+                    message?.input?.tx?.transactionHash,
+                  )}
+                  className="link-redirect"
+                  target="_blank"
+                >
+                  <LinkIcon />
+                </a>
+              </Box>
+            )}
           </Flex>
         </Td>
         {_renderContentActivities()}
