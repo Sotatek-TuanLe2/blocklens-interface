@@ -6,6 +6,7 @@ import { isMobile } from 'react-device-detect';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { PackageType } from 'src/utils/utils-webhook';
 import { IDataForm } from '../pages/CreateWebhookPage';
+import { formatShortText, shortAddressType } from '../utils/utils-helper';
 
 interface IDataSelected {
   events?: string[];
@@ -163,6 +164,11 @@ const ListSelect: FC<IListSelect> = ({
       itemSelected.some((id: string) => data.name === id),
     ) && !allChecked;
 
+  const formatFunctions = (address: string) => {
+    const pos = address.indexOf('::');
+    return address.slice(pos + 2);
+  };
+
   return (
     <Flex className="box-events">
       <Box className="label-events" width={'200px'}>
@@ -205,7 +211,7 @@ const ListSelect: FC<IListSelect> = ({
                 isChecked={itemSelected.includes(item.name)}
                 onChange={(e) => onChangeSelect(e, item.name)}
               >
-                <Flex className="abi-option">{item.name}</Flex>
+                <Flex className="abi-option">{formatFunctions(item.name)}</Flex>
               </Checkbox>
             </Box>
           ))}
@@ -242,9 +248,7 @@ const DetailABI: FC<IDetailABI> = ({
               moduleItem?.abi?.exposed_functions?.forEach(
                 (functionItem: any) => {
                   exposedFunctionsList.push({
-                    name: `${address.slice(0, 3)}::${moduleItem?.name}::${
-                      functionItem?.name
-                    }`,
+                    name: `${address}::${moduleItem?.name}::${functionItem?.name}`,
                     type: 'exposed_functions',
                   });
                 },
@@ -254,9 +258,7 @@ const DetailABI: FC<IDetailABI> = ({
             if (moduleItem?.abi?.structs?.length) {
               moduleItem?.abi?.structs?.forEach((structItem: any) => {
                 structsList.push({
-                  name: `${address.slice(0, 3)}::${moduleItem?.name}::${
-                    structItem?.name
-                  }`,
+                  name: `${address}::${moduleItem?.name}::${structItem?.name}`,
                   type: 'structs',
                 });
               });
