@@ -70,10 +70,11 @@ const AppGraph: FC<IChart> = ({ data, duration }) => {
           <XAxis
             dataKey="label"
             interval={isMobile ? undefined : 3}
-            tick={{ fill: '#E8EAED' }}
+            tick={{ fill: 'rgba(0, 2, 36, 0.50)' }}
+            axisLine={false}
           />
           <YAxis
-            tick={{ fill: '#E8EAED' }}
+            tick={{ fill: 'rgba(0, 2, 36, 0.50)' }}
             tickFormatter={(value: any) => formatNumber(value, 4, '0')}
             axisLine={false}
           />
@@ -97,7 +98,7 @@ const AppGraph: FC<IChart> = ({ data, duration }) => {
               name="Numbers of activities"
             />
           )}
-          <CartesianGrid vertical={false} horizontal stroke="#41495F" />
+          <CartesianGrid vertical={false} horizontal stroke="#E8EAED" />
         </LineChart>
       </ResponsiveContainer>
 
