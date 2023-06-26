@@ -42,4 +42,8 @@
     color: rgba(0, 2, 36, 0.5);
     @include text-small-regular;
   }
+  .item-view {
+    color: rgba(0, 2, 36, 0.80);
+    @include text-small-regular;
+  }
 }

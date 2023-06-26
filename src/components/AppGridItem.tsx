@@ -155,7 +155,7 @@ const AppGridItem: FC<AppGridItemProps> = ({
                 ))}
             </Flex>
           </Box>
-          <Box position={'relative'}>
+          <Box position={'relative'} pt={{lg: '2px'}}>
             <Flex
               bg={'rgba(0, 2, 36, 0.05)'}
               w={{ base: '24px', lg: '22px' }}
@@ -191,7 +191,7 @@ const AppGridItem: FC<AppGridItemProps> = ({
 
           <Flex alignSelf={'flex-start'} alignItems={'center'}>
             <IconEye />
-            <Text textAlign={'right'} className="article-view" ml={'4px'}>
+            <Text textAlign={'right'} className="item-view" ml={'4px'}>
               2.3M
             </Text>
           </Flex>

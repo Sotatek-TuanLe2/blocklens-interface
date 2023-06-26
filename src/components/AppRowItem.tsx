@@ -115,8 +115,9 @@ const AppRowItem: FC<AppRowItemProps> = ({
               {(type === LIST_ITEM_TYPE.DASHBOARDS ||
                 myWorkType === LIST_ITEM_TYPE.DASHBOARDS) && (
                 <Box
-                  h={'48px'}
                   style={{ aspectRatio: '74 / 48' }}
+                  w={'74px'}
+                  minW={'74px'}
                   mr={'12px'}
                   overflow={'hidden'}
                 >
@@ -152,7 +153,11 @@ const AppRowItem: FC<AppRowItemProps> = ({
                     alt="avatar"
                   />
                 ) : (
-                  <Jazzicon diameter={24} seed={generateAvatarFromId(userId)} />
+                  <Jazzicon
+                    diameter={24}
+                    paperStyles={{ minWidth: '24px' }}
+                    seed={generateAvatarFromId(userId)}
+                  />
                 )}
               </Flex>
               {creator && (
@@ -245,7 +250,7 @@ const AppRowItem: FC<AppRowItemProps> = ({
         className="m-article-row"
       >
         <Flex align={'center'}>
-          <Box flexGrow={1} maxW={'calc(100% - 50px)'}>
+          <Box flexGrow={1} maxW={'calc(100% - 50px)'} overflow={'hidden'}>
             <Link
               to={toHref || '#'}
               style={{ width: '100%', display: 'block' }}
@@ -254,8 +259,9 @@ const AppRowItem: FC<AppRowItemProps> = ({
                 {(type === LIST_ITEM_TYPE.DASHBOARDS ||
                   myWorkType === LIST_ITEM_TYPE.DASHBOARDS) && (
                   <Box
-                    h={'48px'}
                     style={{ aspectRatio: '74 / 48' }}
+                    w={'74px'}
+                    minW={'74px'}
                     mr={'10px'}
                     overflow={'hidden'}
                   >
@@ -269,7 +275,7 @@ const AppRowItem: FC<AppRowItemProps> = ({
                     />
                   </Box>
                 )}
-                <Box flexGrow={1}>
+                <Box flexGrow={1} maxW={'full'} overflow={'hidden'}>
                   {name && (
                     <Text
                       className="article-name"
@@ -287,8 +293,9 @@ const AppRowItem: FC<AppRowItemProps> = ({
                     {srcAvatar ? (
                       <Image
                         w={'20px'}
+                        minW={'20px'}
                         h={'20px'}
-                        borderRadius={'12px'}
+                        borderRadius={'10px'}
                         objectFit={'cover'}
                         objectPosition={'center'}
                         src={srcAvatar}
@@ -297,6 +304,7 @@ const AppRowItem: FC<AppRowItemProps> = ({
                     ) : (
                       <Jazzicon
                         diameter={20}
+                        paperStyles={{ minWidth: '20px' }}
                         seed={generateAvatarFromId(userId)}
                       />
                     )}
