@@ -190,7 +190,7 @@ const QueryPart: React.FC = () => {
         dataQuery?.pendingExecutionId || dataQuery?.executedId,
       );
     } catch (error) {
-      toastError({ message: getErrorMessage(error) });
+      console.error(error);
     }
   };
 

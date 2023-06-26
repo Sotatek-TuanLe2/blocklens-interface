@@ -41,7 +41,7 @@ const BillingHistory = () => {
     try {
       return await rf.getRequest('BillingRequest').getListReceipt(receiptIds);
     } catch (error) {
-      toastError({ message: getErrorMessage(error) });
+      console.error(error);
     }
   };
 
@@ -65,9 +65,7 @@ const BillingHistory = () => {
         docs: dataTable,
       };
     } catch (error) {
-      toastError({
-        message: getErrorMessage(error),
-      });
+      console.error(error);
     }
   }, []);
 

@@ -124,7 +124,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
         });
       }
     } catch (error) {
-      toastError({ message: getErrorMessage(error) });
+      console.error(error);
     }
   };
 
