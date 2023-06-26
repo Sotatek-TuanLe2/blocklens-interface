@@ -155,7 +155,7 @@ const AppGridItem: FC<AppGridItemProps> = ({
                 ))}
             </Flex>
           </Box>
-          <Box position={'relative'} pt={{lg: '2px'}}>
+          <Box position={'relative'} pt={{ lg: '2px' }}>
             <Flex
               bg={'rgba(0, 2, 36, 0.05)'}
               w={{ base: '24px', lg: '22px' }}
