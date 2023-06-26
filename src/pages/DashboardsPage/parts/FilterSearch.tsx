@@ -81,18 +81,9 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
 
   const [search, setSearch] = useState<string>('');
   const [sort, setSort] = useState<string>('');
-  const [chain, setChain] = useState<string>('');
   const [tag, setTag] = useState<string>('');
   const [openNewDashboardModal, setOpenNewDashboardModal] =
     useState<boolean>(false);
-
-  const [chainsSupported, setChainsSupported] = useState<ILISTNETWORK[]>([]);
-
-  const allChainSupprted: ILISTNETWORK = {
-    value: '',
-    label: 'All',
-    chain: 'All',
-  };
 
   const menuDashboardQueries: IDataMenu[] = [
     {
@@ -121,36 +112,14 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   ];
 
   useEffect(() => {
-    (async () => {
-      const listChainRes = await rf
-        .getRequest('DashboardsRequest')
-        .getSupportedChains();
-
-      const listChain = listChainRes.map((chain: string) => {
-        const chainName = chain.split('_')[0];
-        return {
-          value: chain,
-          label: chainName.toUpperCase(),
-          chain: chainName,
-        };
-      });
-
-      const result = _.uniqBy<ILISTNETWORK>(listChain, 'chain');
-      setChainsSupported(result);
-    })();
-  }, []);
-
-  useEffect(() => {
     const searchParams = new URLSearchParams(searchUrl);
 
     const search = searchParams.get(HOME_URL_PARAMS.SEARCH) || '';
     const sort = searchParams.get(HOME_URL_PARAMS.SORT) || '';
-    const chain = searchParams.get(HOME_URL_PARAMS.CHAIN) || '';
     const tag = searchParams.get(HOME_URL_PARAMS.TAG) || '';
 
     setSearch(search);
     setSort(sort);
-    setChain(chain);
     setTag(tag);
   }, [searchUrl]);
 
@@ -189,18 +158,6 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
     });
   };
 
-  const onChangeChain = (value: string) => {
-    const searchParams = new URLSearchParams(searchUrl);
-    searchParams.delete(HOME_URL_PARAMS.CHAIN);
-    if (value) {
-      searchParams.set(HOME_URL_PARAMS.CHAIN, value);
-    }
-    history.push({
-      pathname: ROUTES.HOME,
-      search: `${searchParams.toString()}`,
-    });
-  };
-
   const onChangeTag = (value: string) => {
     const searchParams = new URLSearchParams(searchUrl);
     const currentTag = searchParams.get(HOME_URL_PARAMS.TAG);
@@ -217,36 +174,6 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   const onChangeMyWorkType = (value: string) => {
     changeMyWorkType(value);
     history.push(ROUTES.HOME);
-  };
-
-  const _renderNetWork = () => {
-    return (
-      <AppSelect2
-        size="medium"
-        value={chain || ''}
-        onChange={onChangeChain}
-        options={[allChainSupprted, ...chainsSupported] as IOption[]}
-        className="dashboard-filter__search__select"
-        sxWrapper={{
-          w: { base: '100% !important', lg: '200px !important' },
-          h: '44px',
-        }}
-        customItem={(chainSp: IOption) => {
-          return (
-            <Flex align={'center'}>
-              {chainSp.value === '' ? (
-                <Box w={5}>
-                  <FireIcon />
-                </Box>
-              ) : (
-                <Box className={getChainIconByChainName(chainSp.value)} />
-              )}
-              <Text ml={2}>{chainSp.label}</Text>
-            </Flex>
-          );
-        }}
-      />
-    );
   };
 
   return (
@@ -377,7 +304,6 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
                 }}
               />
             </Box>
-            <Box ml={{ lg: 2.5 }}>{_renderNetWork()}</Box>
           </Flex>
         </Box>
       </Collapse>
