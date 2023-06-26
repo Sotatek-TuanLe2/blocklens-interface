@@ -1,5 +1,5 @@
 import React, { FC, MouseEvent, useState } from 'react';
-import { Box, Flex, Tbody, Td, Th, Tr } from '@chakra-ui/react';
+import { Box, Flex, Tbody, Td, Tr } from '@chakra-ui/react';
 import {
   IMessages,
   IWebhook,
