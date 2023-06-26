@@ -116,12 +116,13 @@ const AppGridItem: FC<AppGridItemProps> = ({
       >
         <Link to={toHref || '#'}>
           <Image
-            src={srcThumb || '/images/ThumbnailDashboardLight.png'}
+            src={srcThumb}
             alt="thumbnail"
             minW={'full'}
             minH={'full'}
             objectFit={'cover'}
             objectPosition={'center'}
+            fallbackSrc="/images/ThumbnailDashboardLight.png"
           />
         </Link>
       </Box>

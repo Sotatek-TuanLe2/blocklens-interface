@@ -122,14 +122,15 @@ const AppRowItem: FC<AppRowItemProps> = ({
                   overflow={'hidden'}
                 >
                   <Image
+                    src={srcThumb}
+                    alt="thumbnail"
                     w={'auto'}
                     minW={'full'}
                     height={'full'}
                     borderRadius={'6px'}
                     objectFit={'cover'}
                     objectPosition={'center'}
-                    src={srcThumb || '/images/ThumbnailDashboardLight.png'}
-                    alt="thumbnail"
+                    fallbackSrc="/images/ThumbnailDashboardLight.png"
                   />
                 </Box>
               )}
