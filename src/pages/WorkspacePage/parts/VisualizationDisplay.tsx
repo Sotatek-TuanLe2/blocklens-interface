@@ -543,18 +543,20 @@ const VisualizationDisplay = ({
                 )}
               </div>
             </Tooltip>
-            {needAuthentication && !!tabIndex && (
-              <Tooltip label="Edit" hasArrow bg="white" color="black">
-                <div
-                  className="btn-expand"
-                  onClick={() => {
-                    setToggleCloseConfig((pre) => !pre);
-                  }}
-                >
-                  <p className="icon-query-edit" />
-                </div>
-              </Tooltip>
-            )}
+            {needAuthentication &&
+              !!tabIndex &&
+              tabIndex !== generateTabs().length - 1 && (
+                <Tooltip label="Edit" hasArrow bg="white" color="black">
+                  <div
+                    className="btn-expand"
+                    onClick={() => {
+                      setToggleCloseConfig((pre) => !pre);
+                    }}
+                  >
+                    <p className="icon-query-edit" />
+                  </div>
+                </Tooltip>
+              )}
           </Flex>
         }
         onChange={onChangeTab}
