@@ -180,7 +180,11 @@ const ActivityMobile: FC<IActivity> = ({ activity, webhook, onReload }) => {
               className="info"
             >
               <Box>Block</Box>
-              <Box className="value">{activity?.block}</Box>
+              <Box className="value">
+                {activity?.metadata?.tx?.block ||
+                  activity?.metadata?.tx?.blockNumber ||
+                  '--'}
+              </Box>
             </Flex>
             <Flex
               justifyContent="space-between"
@@ -321,7 +325,9 @@ const ActivityDesktop: FC<IActivity> = ({ activity, webhook, onReload }) => {
             UTC
           </Td>
           <Td w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '12%' : '15%'}>
-            {activity?.block || '--'}
+            {activity?.metadata?.tx?.block ||
+              activity?.metadata?.tx?.blockNumber ||
+              '--'}
           </Td>
           <Td w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '15%' : '20%'}>
             <Flex alignItems="center">
