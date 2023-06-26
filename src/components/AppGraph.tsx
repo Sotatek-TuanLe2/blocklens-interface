@@ -67,7 +67,7 @@ const AppGraph: FC<IChart> = ({ data, duration }) => {
           height={300}
           data={dataChart}
           margin={{
-            top: 5,
+            top: 15,
             right: 30,
             left: 20,
             bottom: 5,
