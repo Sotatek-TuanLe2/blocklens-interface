@@ -287,7 +287,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
             </Box>
 
             <Box
-              ml={{ lg: 5 }}
+              ml={{ lg: 2.5 }}
               mb={{ base: '13px', lg: 0 }}
               pos={'relative'}
               zIndex={10}
