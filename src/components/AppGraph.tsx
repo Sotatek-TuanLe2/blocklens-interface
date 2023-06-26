@@ -1,5 +1,5 @@
 import { Box, Flex } from '@chakra-ui/react';
-import React, { FC, useMemo, useState } from 'react';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 import {
   LineChart,
   Line,
@@ -13,13 +13,29 @@ import { isMobile } from 'react-device-detect';
 import { formatTimestamp } from 'src/utils/utils-helper';
 import { formatNumber } from 'src/utils/utils-format';
 import { RadioChecked, RadioNoCheckedIcon } from 'src/assets/icons';
-
 interface IChart {
   data: any[];
   duration: string;
 }
 
+const CustomTooltip = (props: any) => {
+  const { active, payload, label } = props;
+  if (active && payload && payload.length) {
+    return (
+      <Box
+        bg={'rgba(0,0,0,0.5)'}
+        color={'white'}
+        borderRadius={5}
+        p={2}
+      >{`${label} :${formatNumber(payload[0]?.value, 4, '0')}`}</Box>
+    );
+  }
+
+  return null;
+};
+
 const AppGraph: FC<IChart> = ({ data, duration }) => {
+  const [key, setKey] = useState(0);
   const [lineHide, setLineHide] = useState<string>('activities');
   const dataChart = useMemo(() => {
     if (duration === '24h') {
@@ -39,19 +55,9 @@ const AppGraph: FC<IChart> = ({ data, duration }) => {
     });
   }, [duration, data]);
 
-  const CustomTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length) {
-      return (
-        <Box p={2}>{`${label} : ${formatNumber(
-          payload[0].value,
-          4,
-          '0',
-        )}`}</Box>
-      );
-    }
-
-    return null;
-  };
+  useEffect(() => {
+    setKey((pre) => pre + 1);
+  }, [data]);
 
   return (
     <Box height={isMobile ? '400px' : '500px'} px={isMobile ? 0 : 5}>
@@ -67,38 +73,53 @@ const AppGraph: FC<IChart> = ({ data, duration }) => {
             bottom: 5,
           }}
         >
-          <XAxis
-            dataKey="label"
-            interval={isMobile ? undefined : 3}
-            tick={{ fill: 'rgba(0, 2, 36, 0.50)' }}
-            axisLine={false}
-          />
-          <YAxis
-            tick={{ fill: 'rgba(0, 2, 36, 0.50)' }}
-            tickFormatter={(value: any) => formatNumber(value, 4, '0')}
-            axisLine={false}
-          />
-          <Tooltip content={<CustomTooltip />} />
+          <CartesianGrid vertical={false} horizontal stroke="#E8EAED" />
           {lineHide === 'message' && (
             <Line
+              key={key}
               name="Numbers of messages"
               dataKey="message"
               stroke="#3A95FF"
               strokeWidth={2}
-              dot={{ r: isMobile ? 2 : 4 }}
+              dot={{
+                r: isMobile ? 2 : 8,
+                stroke: 'white',
+                strokeWidth: 3,
+                fill: '#3A95FF',
+              }}
             />
           )}
-
           {lineHide === 'activities' && (
             <Line
-              dot={{ r: isMobile ? 2 : 4 }}
+              key={key}
+              dot={{
+                r: isMobile ? 2 : 8,
+                stroke: 'white',
+                strokeWidth: 3,
+                fill: '#FFB547',
+              }}
               strokeWidth={2}
               dataKey="activities"
               stroke="#FFB547"
               name="Numbers of activities"
             />
           )}
-          <CartesianGrid vertical={false} horizontal stroke="#E8EAED" />
+
+          <XAxis
+            dataKey="label"
+            interval={isMobile ? undefined : 3}
+            axisLine={false}
+            dy={10}
+            tickLine={false}
+            domain={['auto', 'auto']}
+            padding={{ left: 20, right: 20 }}
+          />
+          <YAxis
+            tickLine={false}
+            tickFormatter={(value: any) => formatNumber(value, 4, '0')}
+            axisLine={false}
+          />
+          <Tooltip content={<CustomTooltip />} />
         </LineChart>
       </ResponsiveContainer>
 
