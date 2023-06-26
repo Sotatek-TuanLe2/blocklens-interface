@@ -231,21 +231,23 @@ const DashboardsPage: React.FC = () => {
             display={{ base: 'none', lg: 'flex' }}
             className="table-header"
           >
-            <Box w={'22%'} overflow={'hidden'} pr={2.5}>
-              Name
-            </Box>
-            <Box w={'22%'} overflow={'hidden'} pr={2.5}>
-              Creator
-            </Box>
-            <Box w={'15%'} overflow={'hidden'} pr={2.5}>
-              chain
-            </Box>
-            <Box w={'15%'} overflow={'hidden'} pr={2.5}>
-              date
-            </Box>
-            <Box w={'calc(26% - 24px)'} overflow={'hidden'} pr={2.5}>
-              tag
-            </Box>
+            <Flex align={'center'} w={'calc(100% - 24px)'}>
+              <Box w={'24%'} flexGrow={1} pr={2.5}>
+                Name
+              </Box>
+              <Box w={'24%'} flexGrow={1} pr={2.5}>
+                Creator
+              </Box>
+              <Box w={'16%'} flexGrow={1} pr={2.5}>
+                date
+              </Box>
+              <Box w={'10%'} flexGrow={1} pr={2.5}>
+                View
+              </Box>
+              <Box w={'26%'} flexGrow={1} pr={2.5}>
+                tag
+              </Box>
+            </Flex>
             <Box w={'24px'}></Box>
           </Flex>
         ) : (

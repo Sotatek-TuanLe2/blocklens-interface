@@ -8,6 +8,10 @@ import { Dashboard } from 'src/utils/utils-dashboard';
 import { Query } from 'src/utils/utils-query';
 import { LIST_ITEM_TYPE } from '..';
 import { listTags, TYPE_MYWORK } from './FilterSearch';
+import { Box } from '@chakra-ui/react';
+import { useMemo } from 'react';
+import { formatNumber } from 'src/utils/utils-format';
+import { generatePositiveRandomNumber } from 'src/utils/utils-helper';
 
 interface IListItem {
   isLoading?: boolean;
@@ -19,6 +23,11 @@ interface IListItem {
 
 const ListItem: React.FC<IListItem> = (props) => {
   const { type, myWorkType, item, displayed, isLoading } = props;
+
+  const randomViews = useMemo(
+    () => formatNumber(generatePositiveRandomNumber(1000), 2),
+    [item?.id],
+  );
 
   if (isLoading) {
     return displayed === DisplayType.Grid ? (
@@ -67,12 +76,42 @@ const ListItem: React.FC<IListItem> = (props) => {
 
     return (
       !!item && (
-        <AppQueryMenu
-          menu={menu}
-          item={item}
-          itemType={getTypeItem()}
-          isNavMenu={isNavMenu}
-        />
+        <>
+          {isNavMenu ? (
+            <>
+              <Box
+                display={{ base: 'none', lg: 'flex' }}
+                justifyContent={'center'}
+                alignItems={'center'}
+                w={'24px'}
+                h={'24px'}
+                borderRadius={'12px'}
+                bg={'rgba(0, 2, 36, 0.05)'}
+              >
+                <AppQueryMenu
+                  menu={menu}
+                  item={item}
+                  itemType={getTypeItem()}
+                />
+              </Box>
+              <Box display={{ lg: 'none' }}>
+                <AppQueryMenu
+                  menu={menu}
+                  item={item}
+                  itemType={getTypeItem()}
+                  isNavMenu={isNavMenu}
+                />
+              </Box>
+            </>
+          ) : (
+            <AppQueryMenu
+              menu={menu}
+              item={item}
+              itemType={getTypeItem()}
+              isNavMenu={isNavMenu}
+            />
+          )}
+        </>
       )
     );
   };
@@ -84,9 +123,9 @@ const ListItem: React.FC<IListItem> = (props) => {
           name={itemClass.getName()}
           creator={userName}
           date={moment(itemClass.getCreatedTime()).format('YYYY MMMM Do')}
+          views={randomViews}
           toHref={getTitleUrl()}
           tagList={listTags}
-          chainList={itemClass.getChains()}
           shareComponent={_renderDropdown()}
           srcThumb={itemClass.getThumnail()!}
           srcAvatar={itemClass.getUser().avatar}
@@ -97,10 +136,10 @@ const ListItem: React.FC<IListItem> = (props) => {
           name={itemClass.getName()}
           creator={userName}
           date={moment(itemClass.getCreatedTime()).format('YYYY MMMM Do')}
+          views={randomViews}
           toHref={getTitleUrl()}
           tagList={listTags}
-          chainList={itemClass.getChains()}
-          shareComponent={_renderDropdown()}
+          shareComponent={_renderDropdown(true)}
           srcThumb={itemClass.getThumnail()!}
           srcAvatar={itemClass.getUser().avatar}
           userId={itemClass.getUser().userId}

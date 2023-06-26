@@ -33,6 +33,13 @@ export default extendTheme({
         opacity: '1 !important',
       },
     },
+    SkeletonCircle: {
+      baseStyle: {
+        [cssVar('skeleton-start-color').variable]: '#E5E6E9',
+        [cssVar('skeleton-end-color').variable]: '#BFC2C9',
+        opacity: '1 !important',
+      },
+    },
     Tooltip: {
       baseStyle: {
         color: '#000224',
