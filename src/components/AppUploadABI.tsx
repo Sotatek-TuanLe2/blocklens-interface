@@ -549,28 +549,30 @@ const AppUploadABI: FC<IAppUploadABI> = ({
           {type === TYPE_ABI.NFT && _renderNoticeUpload()}
         </Flex>
 
-        <Box
-          className="link"
-          cursor="pointer"
-          onClick={() => {
-            setIsInsertManuallyAddress(!isInsertManuallyAddress);
-            setABIInput('');
-            setDataSelected([]);
-            setFileSelected({});
-            if (type === TYPE_ABI.NFT) {
-              setABIData(ERC721.abi);
-            } else if (type === TYPE_ABI.TOKEN) {
-              setABIData(ERC20.abi);
-            } else {
-              setABIData([]);
-            }
-          }}
-        >
-          {!isInsertManuallyAddress ? 'Insert Manually' : 'Upload File'}
-        </Box>
+        {!viewOnly && (
+          <Box
+            className="link"
+            cursor="pointer"
+            onClick={() => {
+              setIsInsertManuallyAddress(!isInsertManuallyAddress);
+              setABIInput('');
+              setDataSelected([]);
+              setFileSelected({});
+              if (type === TYPE_ABI.NFT) {
+                setABIData(ERC721.abi);
+              } else if (type === TYPE_ABI.TOKEN) {
+                setABIData(ERC20.abi);
+              } else {
+                setABIData([]);
+              }
+            }}
+          >
+            {!isInsertManuallyAddress ? 'Insert Manually' : 'Upload File'}
+          </Box>
+        )}
       </Flex>
 
-      {isInsertManuallyAddress && (
+      {isInsertManuallyAddress && !viewOnly && (
         <Box mb={5}>
           <AppTextarea
             placeholder="Input abi..."
