@@ -52,7 +52,7 @@ const PartAppStats = ({
       const res: IAppStats[] = await rf
         .getRequest('NotificationRequest')
         .getAppStats(appId, { resolution: 86400 });
-      setAppStats(res[0]);
+      setAppStats(res[0] || {});
     } catch (error: any) {
       setAppStats({});
     }
@@ -65,7 +65,7 @@ const PartAppStats = ({
         .getAppStats(appId, {
           from: moment().utc().subtract(24, 'hour').valueOf(),
           to: moment().utc().valueOf(),
-          resolution: 86400,
+          resolution: 3600,
         });
       setDataChart(res);
     } catch (error: any) {

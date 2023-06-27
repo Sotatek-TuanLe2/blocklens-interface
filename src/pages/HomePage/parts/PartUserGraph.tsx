@@ -38,7 +38,7 @@ export const getParams = (duration: string) => {
     return {
       from: moment().utc().subtract(24, 'hour').valueOf(),
       to: moment().utc().valueOf(),
-      resolution: 86400,
+      resolution: 3600,
     };
   }
 
