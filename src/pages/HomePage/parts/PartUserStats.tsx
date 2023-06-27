@@ -7,6 +7,53 @@ import moment from 'moment';
 import { formatLargeNumber } from 'src/utils/utils-helper';
 import useUser from 'src/hooks/useUser';
 
+const getStartOfByResolution = (timestamp: number, resolution: number) => {
+  return timestamp - (timestamp % resolution);
+};
+
+export const fillFullResolution = (
+  from: number,
+  to: number,
+  resolution: number,
+  data: any,
+  sampleData: any,
+) => {
+  const dataByKey: any[] = [];
+  data.map((e: any) => {
+    dataByKey[e.time] = e;
+  });
+
+  const result = [];
+  const convertedResolution = resolution * 1000;
+  let fromStartOfByResolution = getStartOfByResolution(
+    from,
+    convertedResolution,
+  );
+
+  const toStartOfByResolution = getStartOfByResolution(to, convertedResolution);
+
+  while (fromStartOfByResolution <= toStartOfByResolution) {
+    if (!dataByKey[fromStartOfByResolution]) {
+      sampleData.time = fromStartOfByResolution;
+      result.push(sampleData);
+    } else {
+      result.push(dataByKey[fromStartOfByResolution]);
+    }
+    fromStartOfByResolution = fromStartOfByResolution + convertedResolution;
+  }
+
+  return result;
+};
+
+export const SAMPLE_DATA = {
+  message: 0,
+  activities: 0,
+  successRate: 0,
+  webhooks: 0,
+  messagesSuccess: 0,
+  messagesFailed: 0,
+};
+
 interface IUserStats {
   message?: number;
   activities?: number;
@@ -120,15 +167,29 @@ const PartUserStats = ({
   }, []);
 
   const getUserStats = useCallback(async () => {
+    const formTime = moment().utc().subtract(24, 'hour').valueOf();
+    const toTime = moment().utc().valueOf();
+
     try {
-      const res: IUserStats = await rf
+      const res: IUserStats[] = await rf
         .getRequest('NotificationRequest')
         .getUserStats({
-          from: moment().utc().subtract(24, 'hour').valueOf(),
-          to: moment().utc().valueOf(),
+          from: formTime,
+          to: toTime,
           resolution: 3600,
         });
-      setDataChart(res);
+
+      if (!res?.length) return;
+
+      const dataFilled = fillFullResolution(
+        formTime,
+        toTime,
+        3600,
+        res,
+        SAMPLE_DATA,
+      );
+
+      setDataChart(dataFilled);
     } catch (error: any) {
       setDataChart([]);
     }
