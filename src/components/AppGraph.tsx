@@ -82,7 +82,7 @@ const AppGraph: FC<IChart> = ({ data, duration }) => {
               stroke="#3A95FF"
               strokeWidth={2}
               dot={{
-                r: isMobile ? 2 : 8,
+                r: isMobile ? 4 : 8,
                 stroke: 'white',
                 strokeWidth: 3,
                 fill: '#3A95FF',
@@ -93,7 +93,7 @@ const AppGraph: FC<IChart> = ({ data, duration }) => {
             <Line
               key={key}
               dot={{
-                r: isMobile ? 2 : 8,
+                r: isMobile ? 4 : 8,
                 stroke: 'white',
                 strokeWidth: 3,
                 fill: '#FFB547',
