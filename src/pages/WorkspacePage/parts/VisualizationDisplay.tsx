@@ -1,4 +1,4 @@
-import { Box, Flex, Tooltip } from '@chakra-ui/react';
+import { Box, Flex, Spinner, Tooltip } from '@chakra-ui/react';
 import moment from 'moment';
 import { useMemo, useState } from 'react';
 import { useParams } from 'react-router';
@@ -111,6 +111,7 @@ const VisualizationDisplay = ({
   const [toggleCloseConfig, setToggleCloseConfig] = useState<boolean>(false);
   const [closeTabId, setCloseTabId] = useState<string | number>('');
   const [dataTable, setDataTable] = useState<any[]>([]);
+  const [isConfiguring, setIsConfiguring] = useState<boolean>(false);
 
   const queryClass = useMemo(() => new Query(queryValue), [queryValue]);
 
@@ -174,11 +175,18 @@ const VisualizationDisplay = ({
       };
     }
 
-    await rf.getRequest('DashboardsRequest').insertVisualization({
-      ...newVisualization,
-      queryId: queryId,
-    });
-    await onReload();
+    setIsConfiguring(true);
+    try {
+      await rf.getRequest('DashboardsRequest').insertVisualization({
+        ...newVisualization,
+        queryId: queryId,
+      });
+      await onReload();
+      setIsConfiguring(false);
+    } catch (error) {
+      setIsConfiguring(false);
+      console.error(error);
+    }
   };
 
   const removeVisualizationHandler = async (
@@ -188,12 +196,15 @@ const VisualizationDisplay = ({
       visualizationId.toString(),
     );
     if (!visualization) return;
+    setIsConfiguring(true);
     try {
       await rf
         .getRequest('DashboardsRequest')
         .deleteVisualization({ visualId: visualizationId });
       await onReload();
+      setIsConfiguring(false);
     } catch (error: any) {
+      setIsConfiguring(false);
       toastError({ message: error.message });
     }
   };
@@ -201,10 +212,17 @@ const VisualizationDisplay = ({
   const onChangeConfigurations = async (visualization: VisualizationType) => {
     const visual = queryClass?.getVisualizationById(visualization.id);
     if (!!visual) {
-      await rf
-        .getRequest('DashboardsRequest')
-        .editVisualization(visualization, visualization.id);
-      await onReload();
+      setIsConfiguring(true);
+      try {
+        await rf
+          .getRequest('DashboardsRequest')
+          .editVisualization(visualization, visualization.id);
+        await onReload();
+        setIsConfiguring(false);
+      } catch (error) {
+        setIsConfiguring(false);
+        console.error(error);
+      }
     }
   };
 
@@ -388,6 +406,11 @@ const VisualizationDisplay = ({
               {visualization.name || getDefaultVisualizationName(type)}
             </Tooltip>
           </div> */}
+          {isConfiguring && (
+            <div className="visual-container__visualization__loading">
+              <Spinner size={'sm'} />
+            </div>
+          )}
           <div className="main-chart">
             <div
               className={`main-visualization ${

@@ -61,10 +61,10 @@ const QueryPart: React.FC = () => {
 
   useEffect(() => {
     AppBroadcast.on(BROADCAST_ADD_TEXT_TO_EDITOR, onAddTextToEditor);
-    AppBroadcast.on(
-      BROADCAST_FETCH_QUERY,
-      async (id: string) => await fetchQuery(id),
-    );
+    AppBroadcast.on(BROADCAST_FETCH_QUERY, async (id: string) => {
+      setIsLoadingQuery(true);
+      await fetchQuery(id);
+    });
 
     return () => {
       AppBroadcast.remove(BROADCAST_ADD_TEXT_TO_EDITOR, onAddTextToEditor);
@@ -107,10 +107,11 @@ const QueryPart: React.FC = () => {
 
   const updateQuery = async (query: string) => {
     try {
-      setIsLoadingResult(true);
       await rf.getRequest('DashboardsRequest').updateQuery({ query }, queryId);
+      setIsLoadingQuery(true);
       await fetchQuery();
       const executionId = await executeQuery(queryId);
+      setIsLoadingResult(true);
       await fetchQueryResult(executionId);
     } catch (error: any) {
       setIsLoadingResult(false);
@@ -165,7 +166,6 @@ const QueryPart: React.FC = () => {
   };
 
   const fetchQuery = async (id?: string): Promise<IQuery | null> => {
-    setIsLoadingQuery(true);
     try {
       const dataQuery = await rf
         .getRequest('DashboardsRequest')
@@ -189,6 +189,7 @@ const QueryPart: React.FC = () => {
 
   const fetchInitalData = async () => {
     try {
+      setIsLoadingQuery(true);
       const dataQuery = await fetchQuery();
       await fetchQueryResult(
         dataQuery?.pendingExecutionId || dataQuery?.executedId,

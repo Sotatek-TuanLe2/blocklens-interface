@@ -403,6 +403,20 @@
       height: fit-content;
       opacity: 1;
       transform: all linear 0.5s;
+      position: relative;
+
+      &__loading {
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(244, 246, 249, 0.3);
+        z-index: 999;
+      }
 
       &--hidden {
         min-height: 0;
