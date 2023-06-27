@@ -2,9 +2,14 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { keyStats } from 'src/components/AppStatistical';
 import rf from 'src/requests/RequestFactory';
 import { useParams } from 'react-router';
-import { ListStat } from 'src/pages/HomePage/parts/PartUserStats';
+import {
+  fillFullResolution,
+  ListStat,
+  SAMPLE_DATA,
+} from 'src/pages/HomePage/parts/PartUserStats';
 import moment from 'moment';
 import { formatLargeNumber } from 'src/utils/utils-helper';
+import { RESOLUTION_TIME } from 'src/utils/utils-webhook';
 
 interface IWebhookStats {
   message?: number;
@@ -44,7 +49,7 @@ const PartWebhookStats = () => {
       const res: IWebhookStats[] = await rf
         .getRequest('NotificationRequest')
         .getWebhookStats(webhookId, {
-          resolution: 86400,
+          resolution: RESOLUTION_TIME.DAY,
         });
       setWebhookStats(res[0] || {});
     } catch (error: any) {
@@ -53,15 +58,29 @@ const PartWebhookStats = () => {
   }, []);
 
   const getWebhookStats = useCallback(async () => {
+    const formTime = moment().utc().subtract(24, 'hour').valueOf();
+    const toTime = moment().utc().valueOf();
+
     try {
       const res: IWebhookStats[] = await rf
         .getRequest('NotificationRequest')
         .getWebhookStats(webhookId, {
-          from: moment().utc().subtract(24, 'hour').valueOf(),
-          to: moment().utc().valueOf(),
-          resolution: 3600,
+          from: formTime,
+          to: toTime,
+          resolution: RESOLUTION_TIME.HOUR,
         });
-      setDataChart(res);
+
+      if (!res?.length) return;
+
+      const dataFilled = fillFullResolution(
+        formTime,
+        toTime,
+        RESOLUTION_TIME.HOUR,
+        res,
+        SAMPLE_DATA,
+      );
+
+      setDataChart(dataFilled);
     } catch (error: any) {
       setDataChart([]);
     }

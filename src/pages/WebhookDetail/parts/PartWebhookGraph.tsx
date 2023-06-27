@@ -6,6 +6,10 @@ import ModalFilterGraph from 'src/modals/ModalFilterGraph';
 import rf from 'src/requests/RequestFactory';
 import { useParams } from 'react-router';
 import { getParams } from 'src/pages/HomePage/parts/PartUserGraph';
+import {
+  SAMPLE_DATA,
+  fillFullResolution,
+} from '../../HomePage/parts/PartUserStats';
 
 interface IDataChart {
   activities: number;
@@ -49,7 +53,18 @@ const PartWebhookGraph = () => {
       const res = await rf
         .getRequest('NotificationRequest')
         .getWebhookStats(webhookId, params);
-      setDataChart(res);
+
+      if (!res?.length) return;
+
+      const dataFill = fillFullResolution(
+        params.from,
+        params.to,
+        params.resolution,
+        res,
+        SAMPLE_DATA,
+      );
+
+      setDataChart(dataFill);
     } catch (error: any) {
       setDataChart([]);
     }
