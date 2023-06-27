@@ -514,6 +514,8 @@ const VisualizationDisplay = ({
     return tabs;
   };
 
+  const tabs = generateTabs();
+
   return (
     <Box className="visual-container">
       <AppTabs
@@ -543,24 +545,22 @@ const VisualizationDisplay = ({
                 )}
               </div>
             </Tooltip>
-            {needAuthentication &&
-              !!tabIndex &&
-              tabIndex !== generateTabs().length - 1 && (
-                <Tooltip label="Edit" hasArrow bg="white" color="black">
-                  <div
-                    className="btn-expand"
-                    onClick={() => {
-                      setToggleCloseConfig((pre) => !pre);
-                    }}
-                  >
-                    <p className="icon-query-edit" />
-                  </div>
-                </Tooltip>
-              )}
+            {needAuthentication && tabIndex > 0 && tabIndex < tabs.length - 1 && (
+              <Tooltip label="Edit" hasArrow bg="white" color="black">
+                <div
+                  className="btn-expand"
+                  onClick={() => {
+                    setToggleCloseConfig((pre) => !pre);
+                  }}
+                >
+                  <p className="icon-query-edit" />
+                </div>
+              </Tooltip>
+            )}
           </Flex>
         }
         onChange={onChangeTab}
-        tabs={generateTabs()}
+        tabs={tabs}
       />
       <BaseModal
         title={'Remove Visualization'}
