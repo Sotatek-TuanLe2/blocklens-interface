@@ -200,8 +200,8 @@ const ListApps: React.FC = () => {
           const appMetric = await getAppMetricToday(app?.appId);
           return {
             ...app,
-            totalWebhook: totalWebhooks[index].totalRegistration,
-            messageToday: appMetric[0]?.message,
+            totalWebhook: totalWebhooks[index]?.totalRegistration || '--',
+            messageToday: appMetric[0]?.message || '--',
           };
         }),
       );

@@ -6,6 +6,18 @@ import ModalFilterGraph from 'src/modals/ModalFilterGraph';
 import rf from 'src/requests/RequestFactory';
 import moment from 'moment';
 
+interface IDataChart {
+  activities: number;
+  apps: number;
+  message: number;
+  messagesFailed: number;
+  messagesSuccess: number;
+  resolution: number;
+  successRate: string;
+  time: number;
+  webhooks: number;
+}
+
 const optionsFilterByDuration = [
   {
     label: 'Last 24 hours',
@@ -49,7 +61,7 @@ const PartUserGraph = () => {
   const [duration, setDuration] = useState<string>('24h');
   const [isOpenFilterGraphModal, setIsOpenFilterGraphModal] =
     useState<boolean>(false);
-  const [dataChart, setDataChart] = useState<any[] | any>([]);
+  const [dataChart, setDataChart] = useState<IDataChart[]>([]);
 
   const params = useMemo(() => {
     return getParams(duration);
@@ -92,7 +104,12 @@ const PartUserGraph = () => {
     );
   };
 
-  if (!dataChart.length) return <></>;
+  if (
+    !dataChart.length ||
+    (dataChart.every((item: IDataChart) => item.message === 0) &&
+      dataChart.every((item: IDataChart) => item.activities === 0))
+  )
+    return <></>;
 
   return (
     <AppCard p={0}>
