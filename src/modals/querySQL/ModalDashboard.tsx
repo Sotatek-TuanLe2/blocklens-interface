@@ -153,7 +153,7 @@ const ModalDashboard: React.FC<IModelNewDashboard> = ({
           <AppInput
             value={dataForm.tag}
             size="sm"
-            placeholder=""
+            placeholder="tag1, tag2, tag3"
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
               setDataForm({
                 ...dataForm,
