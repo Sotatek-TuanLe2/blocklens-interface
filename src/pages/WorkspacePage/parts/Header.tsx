@@ -219,6 +219,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
                 ) : (
                   <Jazzicon
                     diameter={26}
+                    paperStyles={{ minWidth: '26px' }}
                     seed={generateAvatarFromId(dataClass?.getUser().userId)}
                   />
                 )}
