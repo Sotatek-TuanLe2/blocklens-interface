@@ -236,6 +236,12 @@ const ListSelect: FC<IListSelect> = ({
     onSelectData([...dataRest]);
   };
 
+  useEffect(() => {
+    if (!dataSelected.length) {
+      setItemSelected([]);
+    }
+  }, [dataSelected]);
+
   return (
     <Flex className="box-events">
       <Box className="label-events">
