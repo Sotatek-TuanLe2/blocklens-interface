@@ -107,7 +107,6 @@ const AppGraph: FC<IChart> = ({ data, duration }) => {
 
           <XAxis
             dataKey="label"
-            interval={isMobile ? undefined : 3}
             axisLine={false}
             dy={10}
             tickLine={false}
