@@ -79,13 +79,14 @@ const ModalDashboard: React.FC<IModelNewDashboard> = ({
       setRecaptchaToRequest(res);
 
       let result;
-
+      setIsDisableSubmit(true);
       switch (type) {
         case TYPE_OF_MODAL.CREATE:
           result = await rf.getRequest('DashboardsRequest').createNewDashboard({
             name: dataForm.title.trim(),
             tag: dataForm.tag.trim(),
           });
+          setIsDisableSubmit(false);
           history.push(`${ROUTES.MY_DASHBOARD}/${result.id}`);
           toastSuccess({ message: 'Create new dashboard successfully!' });
           break;
@@ -97,6 +98,7 @@ const ModalDashboard: React.FC<IModelNewDashboard> = ({
             },
             id,
           );
+          setIsDisableSubmit(false);
           toastSuccess({ message: 'Update dashboard successfully!' });
           break;
         case TYPE_OF_MODAL.FORK:
@@ -107,16 +109,13 @@ const ModalDashboard: React.FC<IModelNewDashboard> = ({
             },
             id,
           );
+          setIsDisableSubmit(false);
           history.push(`${ROUTES.MY_DASHBOARD}/${result.id}`);
           toastSuccess({ message: 'Fork dashboard successfully!' });
           break;
       }
-
-      onSuccess && (await onSuccess(result));
-      toastSuccess({
-        message: `${generateTitleModal(type)} successfully!`,
-      });
       onClose();
+      onSuccess && (await onSuccess(result));
     } catch (error) {
       toastError({ message: getErrorMessage(error) });
     }
