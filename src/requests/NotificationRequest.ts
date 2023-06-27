@@ -12,12 +12,12 @@ export default class NotificationRequest extends BaseRequest {
   }
 
   getAppStats(appId: string, params: any) {
-    const url = `/metrics/app-metrics`;
+    const url = `/metrics/app/${appId}/metrics`;
     return this.get(url, params);
   }
 
   getWebhookStats(registrationId: string, params: any) {
-    const url = `/metrics/registration-metrics`;
+    const url = `/metrics/registration/${registrationId}/metrics`;
     return this.get(url, { ...params, registrationId });
   }
 

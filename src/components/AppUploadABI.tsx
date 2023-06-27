@@ -16,7 +16,7 @@ import React, {
   ChangeEvent,
   useEffect,
 } from 'react';
-import { AppInput, AppSelect2 } from 'src/components';
+import { AppInput, AppSelect2, AppTextarea } from 'src/components';
 import { CloseIcon } from '@chakra-ui/icons';
 import ERC721 from 'src/abi/ERC-721.json';
 import ERC20 from 'src/abi/erc20.json';
@@ -80,6 +80,54 @@ const options = [
     value: 'za',
   },
 ];
+
+const ABIInputType = {
+  type: 'array',
+  items: {
+    type: 'object',
+    properties: {
+      name: { type: 'string' },
+      type: { type: 'string' },
+      indexed: { type: 'boolean' },
+      components: { type: 'array' },
+      internalType: { type: 'string' },
+    },
+    required: ['name', 'type'],
+  },
+};
+
+const ABIOutInputType = {
+  type: 'array',
+  items: {
+    type: 'object',
+    properties: {
+      name: { type: 'string' },
+      type: { type: 'string' },
+      components: { type: 'array' },
+      internalType: { type: 'string' },
+    },
+    required: ['name', 'type'],
+  },
+};
+
+const schema = {
+  type: 'array',
+  items: {
+    type: 'object',
+    properties: {
+      anonymous: { type: 'boolean' },
+      constant: { type: 'boolean' },
+      inputs: ABIInputType,
+      name: { type: 'string' },
+      outputs: ABIOutInputType,
+      payable: { type: 'boolean' },
+      stateMutability: { type: 'string' },
+      type: { type: 'string' },
+      gas: { type: 'number' },
+    },
+    required: ['type'],
+  },
+};
 
 const ListSelect: FC<IListSelect> = ({
   type,
@@ -188,6 +236,12 @@ const ListSelect: FC<IListSelect> = ({
     onSelectData([...dataRest]);
   };
 
+  useEffect(() => {
+    if (!dataSelected.length) {
+      setItemSelected([]);
+    }
+  }, [dataSelected]);
+
   return (
     <Flex className="box-events">
       <Box className="label-events">
@@ -273,6 +327,10 @@ const AppUploadABI: FC<IAppUploadABI> = ({
   const [valueSearch, setValueSearch] = useState<string>('');
   const [valueSort, setValueSort] = useState<string>('az');
   const inputRef = useRef<any>(null);
+  const [isInsertManuallyAddress, setIsInsertManuallyAddress] =
+    useState<boolean>(true);
+  const [ABIInput, setABIInput] = useState<string>('');
+  const [error, setError] = useState<string>('');
 
   const handleFileSelect = (evt: any, dropFile?: any) => {
     const file = dropFile || evt.target.files[0];
@@ -280,60 +338,6 @@ const AppUploadABI: FC<IAppUploadABI> = ({
       toastError({ message: 'The ABI file must be json file type' });
       return;
     }
-
-    const ABIInputType = {
-      type: 'array',
-      items: {
-        type: 'object',
-        properties: {
-          name: { type: 'string' },
-          type: { type: 'string' },
-          indexed: { type: 'boolean' },
-          components: { type: 'array' },
-          internalType: { type: 'string' },
-        },
-        required: ['name', 'type'],
-      },
-    };
-
-    const ABIOutInputType = {
-      type: 'array',
-      items: {
-        type: 'object',
-        properties: {
-          name: { type: 'string' },
-          type: { type: 'string' },
-          components: { type: 'array' },
-          internalType: { type: 'string' },
-        },
-        required: ['name', 'type'],
-      },
-    };
-
-    const schema = {
-      type: 'object',
-      properties: {
-        abi: {
-          type: 'array',
-          items: {
-            type: 'object',
-            properties: {
-              anonymous: { type: 'boolean' },
-              constant: { type: 'boolean' },
-              inputs: ABIInputType,
-              name: { type: 'string' },
-              outputs: ABIOutInputType,
-              payable: { type: 'boolean' },
-              stateMutability: { type: 'string' },
-              type: { type: 'string' },
-              gas: { type: 'number' },
-            },
-            required: ['type'],
-          },
-        },
-        required: ['abi'],
-      },
-    };
 
     const reader = new FileReader();
     reader.onload = (e: any) => {
@@ -345,7 +349,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
           return;
         }
 
-        const abi = JSON.parse(data).abi;
+        const abi = JSON.parse(data);
 
         const isCorrectFunctionAndEventOfNFT = listFunctionAndEventOfNFT.every(
           (name: string) => abi.some((abiItem: any) => abiItem.name === name),
@@ -494,17 +498,93 @@ const AppUploadABI: FC<IAppUploadABI> = ({
     );
   };
 
+  useEffect(() => {
+    if (!ABIInput) {
+      setError('');
+      if (type == TYPE_ABI.TOKEN) {
+        setABIData(ERC20.abi);
+      }
+
+      if (type == TYPE_ABI.NFT) {
+        setABIData(ERC721.abi);
+      }
+      return;
+    }
+
+    try {
+      if (!validateJson.validate(JSON.parse(ABIInput), schema).valid) {
+        setError('The ABI must be correct format');
+        setABIData([]);
+        return;
+      }
+
+      const abi = JSON.parse(ABIInput);
+
+      const isCorrectFunctionAndEventOfNFT = listFunctionAndEventOfNFT.every(
+        (name: string) => abi.some((abiItem: any) => abiItem.name === name),
+      );
+
+      if (type === TYPE_ABI.NFT && !isCorrectFunctionAndEventOfNFT) {
+        setError('The ABI must be correct format');
+        setABIData([]);
+        return;
+      }
+
+      setABIData(JSON.parse(ABIInput));
+      setError('');
+    } catch (e) {
+      setError('The ABI must be correct format');
+      setABIData([]);
+    }
+  }, [ABIInput]);
+
   return (
     <Box className="upload-abi">
-      <Flex mb={1} className="label-abi">
-        ABI{' '}
-        <Text as={'span'} className="text-error" ml={1}>
-          *
-        </Text>
-        {type === TYPE_ABI.NFT && _renderNoticeUpload()}
+      <Flex justifyContent={'space-between'}>
+        <Flex mb={1} className="label-abi">
+          ABI{' '}
+          <Text as={'span'} className="text-error" ml={1}>
+            *
+          </Text>
+          {type === TYPE_ABI.NFT && _renderNoticeUpload()}
+        </Flex>
+
+        <Box
+          className="link"
+          cursor="pointer"
+          onClick={() => {
+            setIsInsertManuallyAddress(!isInsertManuallyAddress);
+            setABIInput('');
+            setDataSelected([]);
+            setFileSelected({});
+            if (type === TYPE_ABI.NFT) {
+              setABIData(ERC721.abi);
+            } else if (type === TYPE_ABI.TOKEN) {
+              setABIData(ERC20.abi);
+            } else {
+              setABIData([]);
+            }
+          }}
+        >
+          {!isInsertManuallyAddress ? 'Insert Manually' : 'Upload File'}
+        </Box>
       </Flex>
 
-      {!viewOnly && (
+      {isInsertManuallyAddress && (
+        <Box mb={5}>
+          <AppTextarea
+            placeholder="Input abi..."
+            rows={6}
+            value={ABIInput}
+            onChange={(e) => setABIInput(e.target.value.trim())}
+          />
+          <Box color={'red.400'} fontSize={'14px'} mt={1}>
+            {error}
+          </Box>
+        </Box>
+      )}
+
+      {!viewOnly && !isInsertManuallyAddress && (
         <>
           <label onDrop={onDropHandler} onDragOver={onDragOver}>
             <Box className="box-upload">

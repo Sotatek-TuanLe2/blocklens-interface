@@ -49,10 +49,10 @@ const PartAppStats = ({
 
   const getAppStatsToday = useCallback(async () => {
     try {
-      const res: IAppStats = await rf
+      const res: IAppStats[] = await rf
         .getRequest('NotificationRequest')
-        .getAppStatsToday(appId);
-      setAppStats(res);
+        .getAppStats(appId, { resolution: 86400 });
+      setAppStats(res[0]);
     } catch (error: any) {
       setAppStats({});
     }
