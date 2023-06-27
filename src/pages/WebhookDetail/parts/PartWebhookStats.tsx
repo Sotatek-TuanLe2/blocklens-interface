@@ -41,12 +41,12 @@ const PartWebhookStats = () => {
 
   const getWebhookStatsToday = useCallback(async () => {
     try {
-      const res: IWebhookStats = await rf
+      const res: IWebhookStats[] = await rf
         .getRequest('NotificationRequest')
         .getWebhookStats(webhookId, {
           resolution: 86400,
         });
-      setWebhookStats(res);
+      setWebhookStats(res[0]);
     } catch (error: any) {
       setWebhookStats({});
     }
