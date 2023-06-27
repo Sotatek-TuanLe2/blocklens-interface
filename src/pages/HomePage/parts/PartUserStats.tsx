@@ -108,12 +108,12 @@ const PartUserStats = ({
 
   const getUserStatsToday = useCallback(async () => {
     try {
-      const res: IUserStats = await rf
+      const res: IUserStats[] = await rf
         .getRequest('NotificationRequest')
         .getUserStats({
           resolution: 86400,
         });
-      setUserStatsToday(res);
+      setUserStatsToday(res[0]);
     } catch (error: any) {
       setUserStatsToday({});
     }
