@@ -110,7 +110,7 @@ const QueryPart: React.FC = () => {
       return dataQuery;
     } catch (error: any) {
       setIsLoadingQuery(false);
-      toastError({ message: getErrorMessage(error) });
+      console.error(error);
       return null;
     }
   };

@@ -126,9 +126,7 @@ const TopUpHistory = () => {
     try {
       return await rf.getRequest('UserRequest').getTopUpHistories(params);
     } catch (error) {
-      toastError({
-        message: getErrorMessage(error),
-      });
+      console.error(error);
     }
   }, []);
 

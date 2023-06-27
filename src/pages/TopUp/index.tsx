@@ -220,7 +220,6 @@ const TopUpPage = () => {
       await fetchBalance();
       setAmount('');
     } catch (error) {
-      console.error(error);
       toastError({ message: getErrorMessage(error) });
     } finally {
       setProcessing(false);

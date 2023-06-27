@@ -137,7 +137,7 @@ const FormCard: FC<IFormCard> = ({ isEdit, onClose, onSuccess }) => {
       const res = await rf.getRequest('BillingRequest').getPaymentIntent();
       setPaymentIntent(res);
     } catch (e: any) {
-      toastError({ message: e?.message || 'Oops. Something went wrong!' });
+      console.error(e);
     }
   };
 
