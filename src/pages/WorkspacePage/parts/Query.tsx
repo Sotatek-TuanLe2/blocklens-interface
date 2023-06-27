@@ -288,16 +288,10 @@ const QueryPart: React.FC = () => {
   const _renderAddChart = () => {
     return (
       <div className="header-empty">
-        <Flex alignItems={'center'} gap="16px">
-          <div className="item-add-chart active-table">
-            <QueryResultIcon />
-            Result Table
-          </div>
-          <div className="item-add-chart">
-            <AddChartIcon />
-            Add Chart
-          </div>
-        </Flex>
+        <div className="item-add-chart active-table">
+          <QueryResultIcon />
+          Result Table
+        </div>
         <p
           onClick={onExpandEditor}
           className={`${onCheckedIconExpand(false)}`}
@@ -371,7 +365,7 @@ const QueryPart: React.FC = () => {
   };
 
   const _renderVisualizations = () => {
-    if (!queryId || !queryValue) {
+    if (!queryId) {
       return (
         <div className="empty-query">
           <Tooltip
