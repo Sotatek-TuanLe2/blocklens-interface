@@ -357,8 +357,10 @@ const VisualizationTable = <T,>({
                             />
                           )}
                           {!isNull(value) && !isUndefined(value) && (
-                            <Tooltip hasArrow label={value.toString()}>
-                              {formatCellValue(format, value.toString())}
+                            <Tooltip hasArrow label={value.toString()} as="div">
+                              <div>
+                                {formatCellValue(format, value.toString())}
+                              </div>
                             </Tooltip>
                           )}
                         </div>
