@@ -74,8 +74,8 @@ const QueryPart: React.FC = () => {
 
   useEffect(() => {
     if (queryId) {
-      fetchInitalData();
       setExpandLayout(LAYOUT_QUERY.HIDDEN);
+      fetchInitalData();
     } else {
       resetEditor();
     }
@@ -107,13 +107,14 @@ const QueryPart: React.FC = () => {
 
   const updateQuery = async (query: string) => {
     try {
-      await rf.getRequest('DashboardsRequest').updateQuery({ query }, queryId);
       setIsLoadingQuery(true);
+      setIsLoadingResult(true);
+      await rf.getRequest('DashboardsRequest').updateQuery({ query }, queryId);
       await fetchQuery();
       const executionId = await executeQuery(queryId);
-      setIsLoadingResult(true);
       await fetchQueryResult(executionId);
     } catch (error: any) {
+      setIsLoadingQuery(false);
       setIsLoadingResult(false);
       toastError({ message: getErrorMessage(error) });
     }
@@ -361,11 +362,15 @@ const QueryPart: React.FC = () => {
   ) => {
     if (
       expandLayout === LAYOUT_QUERY.HALF ||
-      isLoadingResult ||
       (statusExecuteQuery === STATUS.FAILED && isExpand)
-    )
+    ) {
       return 'custom-editor--half';
-    if (!queryId || !queryValue) return 'custom-editor--full';
+    }
+
+    if (!queryId) {
+      return 'custom-editor--full';
+    }
+
     return expandLayout === layout ? firstClass : secondClass;
   };
 
@@ -394,7 +399,6 @@ const QueryPart: React.FC = () => {
     const classContent = () => {
       if (
         expandLayout === LAYOUT_QUERY.HALF ||
-        isLoadingResult ||
         (statusExecuteQuery === STATUS.FAILED && isExpand)
       )
         return 'add-chart-empty';
