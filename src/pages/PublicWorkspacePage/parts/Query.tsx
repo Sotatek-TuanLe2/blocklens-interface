@@ -26,6 +26,7 @@ const QueryPart: React.FC = () => {
   const [queryResult, setQueryResult] = useState<any>([]);
   const [queryValue, setQueryValue] = useState<IQuery | null>(null);
   const [expandLayout, setExpandLayout] = useState<string>(LAYOUT_QUERY.HIDDEN);
+  const [isLoadingQuery, setIsLoadingQuery] = useState<boolean>(!!queryId);
   const [isLoadingResult, setIsLoadingResult] = useState<boolean>(!!queryId);
   const [errorExecuteQuery, setErrorExecuteQuery] =
     useState<IErrorExecuteQuery>();
@@ -91,11 +92,13 @@ const QueryPart: React.FC = () => {
   };
 
   const fetchQuery = async (): Promise<IQuery | null> => {
+    setIsLoadingQuery(true);
     try {
       const dataQuery = await rf
         .getRequest('DashboardsRequest')
         .getPublicQueryById({ queryId });
       setQueryValue(dataQuery);
+      setIsLoadingQuery(false);
       // set query into editor
       if (!editorRef.current) {
         return null;
@@ -103,9 +106,10 @@ const QueryPart: React.FC = () => {
       const position = editorRef.current.editor.getCursorPosition();
       editorRef.current.editor.setValue('');
       editorRef.current.editor.session.insert(position, dataQuery?.query);
-
+      setIsLoadingQuery(false);
       return dataQuery;
     } catch (error: any) {
+      setIsLoadingQuery(false);
       toastError({ message: getErrorMessage(error) });
       return null;
     }
@@ -250,6 +254,7 @@ const QueryPart: React.FC = () => {
             ? `${queryClass?.getUserFirstName()} ${queryClass?.getUserLastName()}`
             : ''
         }
+        isLoadingRun={isLoadingQuery}
         data={queryValue}
         needAuthentication={false}
       />

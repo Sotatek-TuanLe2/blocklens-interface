@@ -22,7 +22,6 @@ import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import { Dashboard } from 'src/utils/utils-dashboard';
 import { Query } from 'src/utils/utils-query';
-import AppNetworkIcons from 'src/components/AppNetworkIcons';
 import { IconDotMore } from 'src/assets/icons';
 import { isMobile } from 'react-device-detect';
 import Jazzicon from 'react-jazzicon';
@@ -224,8 +223,16 @@ const Header: React.FC<IHeaderProps> = (props) => {
                   />
                 )}
                 <span className="item-desc__name">
-                  <span className="user-name">{`${author} / `}</span>
-                  <span>{dataClass?.getName()}</span>
+                  <Tooltip label={author} hasArrow placement="top">
+                    <span className="user-name">{`${author} / `}</span>
+                  </Tooltip>
+                  <Tooltip
+                    label={dataClass?.getName()}
+                    hasArrow
+                    placement="top"
+                  >
+                    <span>{dataClass?.getName()}</span>
+                  </Tooltip>
                 </span>
               </div>
             )}
