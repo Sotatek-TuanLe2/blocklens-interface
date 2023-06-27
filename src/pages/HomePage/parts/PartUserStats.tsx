@@ -113,7 +113,7 @@ const PartUserStats = ({
         .getUserStats({
           resolution: 86400,
         });
-      setUserStatsToday(res[0]);
+      setUserStatsToday(res[0] || {});
     } catch (error: any) {
       setUserStatsToday({});
     }

@@ -52,7 +52,7 @@ const PartAppStats = ({
       const res: IAppStats[] = await rf
         .getRequest('NotificationRequest')
         .getAppStats(appId, { resolution: 86400 });
-      setAppStats(res[0]);
+      setAppStats(res[0] || {});
     } catch (error: any) {
       setAppStats({});
     }

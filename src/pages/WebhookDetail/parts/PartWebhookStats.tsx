@@ -46,7 +46,7 @@ const PartWebhookStats = () => {
         .getWebhookStats(webhookId, {
           resolution: 86400,
         });
-      setWebhookStats(res[0]);
+      setWebhookStats(res[0] || {});
     } catch (error: any) {
       setWebhookStats({});
     }
