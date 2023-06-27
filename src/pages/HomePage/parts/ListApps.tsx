@@ -174,12 +174,12 @@ const ListApps: React.FC = () => {
     }
   };
 
-  const getAppMetricToday = async (appIds: string) => {
+  const getAppMetricToday = async (appId: string) => {
     try {
       const res: any = await rf
         .getRequest('NotificationRequest')
-        .getAppMetricToday({
-          appIds,
+        .getAppStats(appId, {
+          resolution: 86400,
         });
       return res;
     } catch (error) {
@@ -191,19 +191,20 @@ const ListApps: React.FC = () => {
     try {
       const res: any = await rf.getRequest('AppRequest').getListApp(param);
       const appIds = res?.docs?.map((item: IAppResponse) => item?.appId) || [];
-      // const appMetric = await getAppMetricToday(appIds.join(',').toString());
       const totalWebhooks = await getTotalWebhookEachApp(
         appIds.join(',').toString(),
       );
 
-      const dataApps = res?.docs?.map((app: IAppResponse, index: number) => {
-        return {
-          ...app,
-          totalWebhook: totalWebhooks[index].totalRegistration,
-          // messageToday: !!appMetric.length ? appMetric[index].message : '--',
-          messageToday: '--',
-        };
-      });
+      const dataApps = await Promise.all(
+        res?.docs?.map(async (app: IAppResponse, index: number) => {
+          const appMetric = await getAppMetricToday(app?.appId);
+          return {
+            ...app,
+            totalWebhook: totalWebhooks[index].totalRegistration,
+            messageToday: appMetric[0]?.message,
+          };
+        }),
+      );
 
       return {
         ...res,
