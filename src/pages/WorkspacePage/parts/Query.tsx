@@ -5,7 +5,7 @@ import AceEditor from 'react-ace';
 import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/mode-sql';
 import 'ace-builds/src-noconflict/theme-tomorrow';
-import { useParams, Prompt } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { AppLoadingTable } from 'src/components';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import {
@@ -17,7 +17,7 @@ import {
 import 'src/styles/pages/QueriesPage.scss';
 import { toastError } from 'src/utils/utils-notify';
 import rf from 'src/requests/RequestFactory';
-import { TYPE_OF_MODAL, QUERY_RESULT_STATUS } from 'src/utils/common';
+import { TYPE_OF_MODAL, QUERY_RESULT_STATUS, ROUTES } from 'src/utils/common';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
 import { EditorContext } from '../context/EditorContext';
 import Header from './Header';
@@ -34,6 +34,7 @@ export const BROADCAST_FETCH_QUERY = 'FETCH_QUERY';
 
 const QueryPart: React.FC = () => {
   const { queryId } = useParams<{ queryId: string }>();
+  const history = useHistory();
 
   const DEBOUNCE_TIME = 500;
   const editorRef = useRef<any>();
@@ -41,6 +42,7 @@ const QueryPart: React.FC = () => {
   const [queryResult, setQueryResult] = useState<any>([]);
   const [queryValue, setQueryValue] = useState<IQuery | null>(null);
   const [expandLayout, setExpandLayout] = useState<string>(LAYOUT_QUERY.HIDDEN);
+  const [isLoadingQuery, setIsLoadingQuery] = useState<boolean>(!!queryId);
   const [isLoadingResult, setIsLoadingResult] = useState<boolean>(!!queryId);
   const [errorExecuteQuery, setErrorExecuteQuery] =
     useState<IErrorExecuteQuery | null>(null);
@@ -72,7 +74,6 @@ const QueryPart: React.FC = () => {
 
   useEffect(() => {
     if (queryId) {
-      console.log("queryId", queryId);
       fetchInitalData();
       setExpandLayout(LAYOUT_QUERY.HIDDEN);
     } else {
@@ -109,7 +110,7 @@ const QueryPart: React.FC = () => {
       setIsLoadingResult(true);
       await rf.getRequest('DashboardsRequest').updateQuery({ query }, queryId);
       await fetchQuery();
-      const executionId = await executeQuery();
+      const executionId = await executeQuery(queryId);
       await fetchQueryResult(executionId);
     } catch (error: any) {
       setIsLoadingResult(false);
@@ -147,7 +148,7 @@ const QueryPart: React.FC = () => {
     }
   };
 
-  const executeQuery = async (): Promise<string> => {
+  const executeQuery = async (queryId: string): Promise<string> => {
     const executedResponse: QueryExecutedResponse = await rf
       .getRequest('DashboardsRequest')
       .executeQuery(queryId);
@@ -164,22 +165,23 @@ const QueryPart: React.FC = () => {
   };
 
   const fetchQuery = async (id?: string): Promise<IQuery | null> => {
+    setIsLoadingQuery(true);
     try {
       const dataQuery = await rf
         .getRequest('DashboardsRequest')
         .getMyQueryById({ queryId: id || queryId });
       setQueryValue(dataQuery);
+      setIsLoadingQuery(false);
       // set query into editor
       if (!editorRef.current) {
         return null;
       }
       const position = editorRef.current.editor.getCursorPosition();
       editorRef.current.editor.setValue('');
-      console.log("dataQuery", dataQuery?.query);
       editorRef.current.editor.session.insert(position, dataQuery?.query);
-
       return dataQuery;
     } catch (error: any) {
+      setIsLoadingQuery(false);
       toastError({ message: getErrorMessage(error) });
       return null;
     }
@@ -281,19 +283,19 @@ const QueryPart: React.FC = () => {
     }
   };
 
+  const onSuccessCreateQuery = async (queryResponse: any) => {
+    await executeQuery(queryResponse.id);
+    history.push(`${ROUTES.MY_QUERY}/${queryResponse.id}`);
+    AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
+  };
+
   const _renderAddChart = () => {
     return (
       <div className="header-empty">
-        <Flex alignItems={'center'} gap="16px">
-          <div className="item-add-chart active-table">
-            <QueryResultIcon />
-            Result Table
-          </div>
-          <div className="item-add-chart">
-            <AddChartIcon />
-            Add Chart
-          </div>
-        </Flex>
+        <div className="item-add-chart active-table">
+          <QueryResultIcon />
+          Result Table
+        </div>
         <p
           onClick={onExpandEditor}
           className={`${onCheckedIconExpand(false)}`}
@@ -367,7 +369,7 @@ const QueryPart: React.FC = () => {
   };
 
   const _renderVisualizations = () => {
-    if (!queryId || !queryValue) {
+    if (!queryId) {
       return (
         <div className="empty-query">
           <Tooltip
@@ -415,7 +417,7 @@ const QueryPart: React.FC = () => {
             : ''
         }
         data={queryValue}
-        isLoadingRun={isLoadingResult}
+        isLoadingRun={isLoadingQuery}
         onRunQuery={onRunQuery}
         selectedQuery={selectedQuery}
       />
@@ -488,9 +490,7 @@ const QueryPart: React.FC = () => {
         <ModalQuery
           open={openModalSettingQuery}
           onClose={() => setOpenModalSettingQuery(false)}
-          onSuccess={() => {
-            AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
-          }}
+          onSuccess={onSuccessCreateQuery}
           type={TYPE_OF_MODAL.CREATE}
           query={editorRef.current.editor.getValue()}
         />

@@ -94,12 +94,14 @@ const ModalQuery = ({
       const result = await executeRecaptcha('homepage');
       setRecaptchaToRequest(result);
       let res;
+      setIsDisableSubmit(true);
       try {
         switch (type) {
           case TYPE_OF_MODAL.SETTING:
             res = await rf
               .getRequest('DashboardsRequest')
               .updateQuery(valueSettingQuery, id);
+            setIsDisableSubmit(false);
             toastSuccess({ message: 'Update query successfully!' });
             break;
 
@@ -107,8 +109,7 @@ const ModalQuery = ({
             res = await rf
               .getRequest('DashboardsRequest')
               .createNewQuery({ ...valueSettingQuery, query: query });
-            await rf.getRequest('DashboardsRequest').executeQuery(res.id);
-            history.push(`${ROUTES.MY_QUERY}/${res.id}`);
+            setIsDisableSubmit(false);
             toastSuccess({ message: 'Create new query successfully!' });
             break;
 
@@ -116,12 +117,13 @@ const ModalQuery = ({
             res = await rf
               .getRequest('DashboardsRequest')
               .forkQueries(id, { ...valueSettingQuery });
+            setIsDisableSubmit(false);
             history.push(`${ROUTES.MY_QUERY}/${res.id}`);
             toastSuccess({ message: 'Fork query successfully!' });
             break;
         }
-        onSuccess && (await onSuccess(res));
         onClose();
+        onSuccess && (await onSuccess(res));
       } catch (error) {
         toastError({ message: getErrorMessage(error) });
       }

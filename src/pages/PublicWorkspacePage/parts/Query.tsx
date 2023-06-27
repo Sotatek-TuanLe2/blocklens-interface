@@ -8,12 +8,7 @@ import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/mode-sql';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { useParams } from 'react-router-dom';
-import {
-  QueryExecutedResponse,
-  IQuery,
-  IErrorExecuteQuery,
-  LAYOUT_QUERY,
-} from 'src/utils/query.type';
+import { IQuery, IErrorExecuteQuery, LAYOUT_QUERY } from 'src/utils/query.type';
 import 'src/styles/pages/QueriesPage.scss';
 import { toastError } from 'src/utils/utils-notify';
 import rf from 'src/requests/RequestFactory';
@@ -21,7 +16,7 @@ import { QUERY_RESULT_STATUS } from 'src/utils/common';
 import Header from 'src/pages/WorkspacePage/parts/Header';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import { Query } from 'src/utils/utils-query';
-import { AddChartIcon, QueryResultIcon } from 'src/assets/icons';
+import { QueryResultIcon } from 'src/assets/icons';
 import { STATUS } from 'src/utils/utils-webhook';
 
 const QueryPart: React.FC = () => {
@@ -31,6 +26,7 @@ const QueryPart: React.FC = () => {
   const [queryResult, setQueryResult] = useState<any>([]);
   const [queryValue, setQueryValue] = useState<IQuery | null>(null);
   const [expandLayout, setExpandLayout] = useState<string>(LAYOUT_QUERY.HIDDEN);
+  const [isLoadingQuery, setIsLoadingQuery] = useState<boolean>(!!queryId);
   const [isLoadingResult, setIsLoadingResult] = useState<boolean>(!!queryId);
   const [errorExecuteQuery, setErrorExecuteQuery] =
     useState<IErrorExecuteQuery>();
@@ -96,11 +92,13 @@ const QueryPart: React.FC = () => {
   };
 
   const fetchQuery = async (): Promise<IQuery | null> => {
+    setIsLoadingQuery(true);
     try {
       const dataQuery = await rf
         .getRequest('DashboardsRequest')
         .getPublicQueryById({ queryId });
       setQueryValue(dataQuery);
+      setIsLoadingQuery(false);
       // set query into editor
       if (!editorRef.current) {
         return null;
@@ -108,9 +106,10 @@ const QueryPart: React.FC = () => {
       const position = editorRef.current.editor.getCursorPosition();
       editorRef.current.editor.setValue('');
       editorRef.current.editor.session.insert(position, dataQuery?.query);
-
+      setIsLoadingQuery(false);
       return dataQuery;
     } catch (error: any) {
+      setIsLoadingQuery(false);
       toastError({ message: getErrorMessage(error) });
       return null;
     }
@@ -166,12 +165,10 @@ const QueryPart: React.FC = () => {
   const _renderAddChart = () => {
     return (
       <div className="header-empty">
-        <Flex alignItems={'center'} gap="16px">
-          <div className="item-add-chart active-table">
-            <QueryResultIcon />
-            Result Table
-          </div>
-        </Flex>
+        <div className="item-add-chart active-table">
+          <QueryResultIcon />
+          Result Table
+        </div>
         <p
           onClick={onExpandEditor}
           className={`${onCheckedIconExpand(false)}`}
@@ -257,6 +254,7 @@ const QueryPart: React.FC = () => {
             ? `${queryClass?.getUserFirstName()} ${queryClass?.getUserLastName()}`
             : ''
         }
+        isLoadingRun={isLoadingQuery}
         data={queryValue}
         needAuthentication={false}
       />
