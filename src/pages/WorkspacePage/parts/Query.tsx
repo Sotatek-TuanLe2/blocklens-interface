@@ -74,8 +74,8 @@ const QueryPart: React.FC = () => {
 
   useEffect(() => {
     if (queryId) {
-      fetchInitalData();
       setExpandLayout(LAYOUT_QUERY.HIDDEN);
+      fetchInitalData();
     } else {
       resetEditor();
     }
@@ -363,9 +363,14 @@ const QueryPart: React.FC = () => {
     if (
       expandLayout === LAYOUT_QUERY.HALF ||
       (statusExecuteQuery === STATUS.FAILED && isExpand)
-    )
+    ) {
       return 'custom-editor--half';
-    if (!queryId || !queryValue) return 'custom-editor--full';
+    }
+
+    if (!queryId) {
+      return 'custom-editor--full';
+    }
+
     return expandLayout === layout ? firstClass : secondClass;
   };
 
