@@ -6,6 +6,7 @@ import ModalFilterGraph from 'src/modals/ModalFilterGraph';
 import rf from 'src/requests/RequestFactory';
 import moment from 'moment';
 import { fillFullResolution, SAMPLE_DATA } from './PartUserStats';
+import { RESOLUTION_TIME } from 'src/utils/utils-webhook';
 
 interface IDataChart {
   activities: number;
@@ -39,7 +40,7 @@ export const getParams = (duration: string) => {
     return {
       from: moment().utc().subtract(24, 'hour').valueOf(),
       to: moment().utc().valueOf(),
-      resolution: 3600,
+      resolution: RESOLUTION_TIME.HOUR,
     };
   }
 
@@ -47,14 +48,14 @@ export const getParams = (duration: string) => {
     return {
       from: moment().utc().subtract(7, 'days').valueOf(),
       to: moment().utc().valueOf(),
-      resolution: 86400,
+      resolution: RESOLUTION_TIME.DAY,
     };
   }
 
   return {
     from: moment().utc().subtract(30, 'days').valueOf(),
     to: moment().utc().valueOf(),
-    resolution: 86400,
+    resolution: RESOLUTION_TIME.DAY,
   };
 };
 

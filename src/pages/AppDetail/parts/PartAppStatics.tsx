@@ -10,6 +10,7 @@ import {
 import moment from 'moment';
 import { formatLargeNumber } from 'src/utils/utils-helper';
 import useUser from 'src/hooks/useUser';
+import { RESOLUTION_TIME } from 'src/utils/utils-webhook';
 
 interface IAppStats {
   message?: number;
@@ -55,7 +56,7 @@ const PartAppStats = ({
     try {
       const res: IAppStats[] = await rf
         .getRequest('NotificationRequest')
-        .getAppStats(appId, { resolution: 86400 });
+        .getAppStats(appId, { resolution: RESOLUTION_TIME.DAY });
       setAppStats(res[0] || {});
     } catch (error: any) {
       setAppStats({});
@@ -72,7 +73,7 @@ const PartAppStats = ({
         .getAppStats(appId, {
           from: formTime,
           to: toTime,
-          resolution: 3600,
+          resolution: RESOLUTION_TIME.HOUR,
         });
 
       if (!res?.length) return;
@@ -80,7 +81,7 @@ const PartAppStats = ({
       const dataFilled = fillFullResolution(
         formTime,
         toTime,
-        3600,
+        RESOLUTION_TIME.HOUR,
         res,
         SAMPLE_DATA,
       );

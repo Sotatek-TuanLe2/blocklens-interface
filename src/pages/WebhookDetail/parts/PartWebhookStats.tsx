@@ -9,6 +9,7 @@ import {
 } from 'src/pages/HomePage/parts/PartUserStats';
 import moment from 'moment';
 import { formatLargeNumber } from 'src/utils/utils-helper';
+import { RESOLUTION_TIME } from 'src/utils/utils-webhook';
 
 interface IWebhookStats {
   message?: number;
@@ -48,7 +49,7 @@ const PartWebhookStats = () => {
       const res: IWebhookStats[] = await rf
         .getRequest('NotificationRequest')
         .getWebhookStats(webhookId, {
-          resolution: 86400,
+          resolution: RESOLUTION_TIME.DAY,
         });
       setWebhookStats(res[0] || {});
     } catch (error: any) {
@@ -66,7 +67,7 @@ const PartWebhookStats = () => {
         .getWebhookStats(webhookId, {
           from: formTime,
           to: toTime,
-          resolution: 3600,
+          resolution: RESOLUTION_TIME.HOUR,
         });
 
       if (!res?.length) return;
@@ -74,7 +75,7 @@ const PartWebhookStats = () => {
       const dataFilled = fillFullResolution(
         formTime,
         toTime,
-        3600,
+        RESOLUTION_TIME.HOUR,
         res,
         SAMPLE_DATA,
       );

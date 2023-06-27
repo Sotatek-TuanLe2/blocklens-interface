@@ -6,6 +6,7 @@ import rf from 'src/requests/RequestFactory';
 import moment from 'moment';
 import { formatLargeNumber } from 'src/utils/utils-helper';
 import useUser from 'src/hooks/useUser';
+import { RESOLUTION_TIME } from 'src/utils/utils-webhook';
 
 const getStartOfByResolution = (timestamp: number, resolution: number) => {
   return timestamp - (timestamp % resolution);
@@ -158,7 +159,7 @@ const PartUserStats = ({
       const res: IUserStats[] = await rf
         .getRequest('NotificationRequest')
         .getUserStats({
-          resolution: 86400,
+          resolution: RESOLUTION_TIME.DAY,
         });
       setUserStatsToday(res[0] || {});
     } catch (error: any) {
@@ -176,7 +177,7 @@ const PartUserStats = ({
         .getUserStats({
           from: formTime,
           to: toTime,
-          resolution: 3600,
+          resolution: RESOLUTION_TIME.HOUR,
         });
 
       if (!res?.length) return;
@@ -184,7 +185,7 @@ const PartUserStats = ({
       const dataFilled = fillFullResolution(
         formTime,
         toTime,
-        3600,
+        RESOLUTION_TIME.HOUR,
         res,
         SAMPLE_DATA,
       );
