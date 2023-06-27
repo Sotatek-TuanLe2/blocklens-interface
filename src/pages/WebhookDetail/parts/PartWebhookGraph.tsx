@@ -7,6 +7,17 @@ import rf from 'src/requests/RequestFactory';
 import { useParams } from 'react-router';
 import { getParams } from 'src/pages/HomePage/parts/PartUserGraph';
 
+interface IDataChart {
+  activities: number;
+  message: number;
+  messagesFailed: number;
+  messagesSuccess: number;
+  registrationId: string;
+  resolution: number;
+  successRate: string;
+  time: number;
+}
+
 const optionsFilterByDuration = [
   {
     label: 'Last 24 hours',
@@ -26,7 +37,7 @@ const PartWebhookGraph = () => {
   const [duration, setDuration] = useState<string>('24h');
   const [isOpenFilterGraphModal, setIsOpenFilterGraphModal] =
     useState<boolean>(false);
-  const [dataChart, setDataChart] = useState<any[] | any>([]);
+  const [dataChart, setDataChart] = useState<IDataChart[]>([]);
   const { id: webhookId } = useParams<{ id: string }>();
 
   const params = useMemo(() => {
@@ -69,7 +80,12 @@ const PartWebhookGraph = () => {
     );
   };
 
-  if (!dataChart.length) return <></>;
+  if (
+    !dataChart.length ||
+    (dataChart.every((item: IDataChart) => item.message === 0) &&
+      dataChart.every((item: IDataChart) => item.activities === 0))
+  )
+    return <></>;
 
   return (
     <AppCard p={0}>
