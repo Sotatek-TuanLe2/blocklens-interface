@@ -326,7 +326,11 @@ const VisualizationChart: React.FC<Props> = (props) => {
           top: 20,
         }}
       >
-        <image href='/images/copyright-logo-name.png' x={'calc(50% - 88px)'} y={'calc(50% - 50px)'} />
+        <image
+          href="/images/copyright-logo-name.png"
+          x={'calc(50% - 88px)'}
+          y={'calc(50% - 50px)'}
+        />
         <CartesianGrid
           vertical={false}
           stroke="rgba(232, 234, 237, 1)"
