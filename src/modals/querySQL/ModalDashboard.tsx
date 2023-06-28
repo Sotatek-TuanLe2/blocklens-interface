@@ -78,11 +78,19 @@ const ModalDashboard: React.FC<IModelNewDashboard> = ({
 
       let result;
       setIsDisableSubmit(true);
+
+      const tags =
+        dataForm.tag
+          .split(',')
+          .filter((i) => i.trim().length)
+          .map((i) => i.trim())
+          .slice(0, 10) || [];
+
       switch (type) {
         case TYPE_OF_MODAL.CREATE:
           result = await rf.getRequest('DashboardsRequest').createNewDashboard({
             name: dataForm.title.trim(),
-            tag: dataForm.tag.trim(),
+            tags,
           });
           setIsDisableSubmit(false);
           history.push(`${ROUTES.MY_DASHBOARD}/${result.id}`);
@@ -91,12 +99,7 @@ const ModalDashboard: React.FC<IModelNewDashboard> = ({
         case TYPE_OF_MODAL.SETTING:
           const payload = {
             name: dataForm.title.trim(),
-            tags:
-              dataForm.tag
-                .split(',')
-                .filter((i) => i.trim().length)
-                .map((i) => i.trim())
-                .slice(0, 10) || [],
+            tags,
           };
 
           result = await rf

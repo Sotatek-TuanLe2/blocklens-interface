@@ -92,18 +92,21 @@ const ModalQuery = ({
       setRecaptchaToRequest(result);
       let res;
       setIsDisableSubmit(true);
+
+      const tags =
+        valueSettingQuery.tags
+          ?.toString()
+          .split(',')
+          .filter((i) => i.trim().length)
+          .map((i) => i.trim())
+          .slice(0, 10) || [];
+
       try {
         switch (type) {
           case TYPE_OF_MODAL.SETTING:
             const payload = {
               ...valueSettingQuery,
-              tags:
-                valueSettingQuery.tags
-                  ?.toString()
-                  .split(',')
-                  .filter((i) => i.trim().length)
-                  .map((i) => i.trim())
-                  .slice(0, 10) || [],
+              tags,
             };
             res = await rf
               .getRequest('DashboardsRequest')
@@ -115,7 +118,7 @@ const ModalQuery = ({
           case TYPE_OF_MODAL.CREATE:
             res = await rf
               .getRequest('DashboardsRequest')
-              .createNewQuery({ ...valueSettingQuery, query: query });
+              .createNewQuery({ ...valueSettingQuery, query: query, tags });
             setIsDisableSubmit(false);
             toastSuccess({ message: 'Create new query successfully!' });
             break;
