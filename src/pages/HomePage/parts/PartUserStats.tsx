@@ -211,7 +211,7 @@ const PartUserStats = ({
       if (item.key === 'message') {
         return {
           ...item,
-          value: +userStatsToday.message || '--',
+          value: `${formatLargeNumber(userStatsToday.message)}`,
         };
       }
 

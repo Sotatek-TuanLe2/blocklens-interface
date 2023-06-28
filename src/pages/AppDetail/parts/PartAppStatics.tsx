@@ -107,7 +107,7 @@ const PartAppStats = ({
       if (item.key === 'message') {
         return {
           ...item,
-          value: +appStats.message || '--',
+          value: `${formatLargeNumber(appStats.message)}`,
         };
       }
 
