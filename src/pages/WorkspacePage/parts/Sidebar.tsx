@@ -1,27 +1,21 @@
 import { Box, Collapse, Flex, Spinner, Text, Tooltip } from '@chakra-ui/react';
 import _, { debounce } from 'lodash';
 import { useCallback, useEffect, useState } from 'react';
-import { useHistory, useParams, useLocation } from 'react-router-dom';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import { useHistory, useLocation, useParams } from 'react-router-dom';
+import { CloseMenuIcon, CopyIcon } from 'src/assets/icons';
 import { AppInput } from 'src/components';
 import AppQueryMenu, { QUERY_MENU_LIST } from 'src/components/AppQueryMenu';
-import ModalDashboard from 'src/modals/querySQL/ModalDashboard';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import rf from 'src/requests/RequestFactory';
-import {
-  TYPE_OF_MODAL,
-  PROMISE_STATUS,
-  ROUTES,
-  SchemaType,
-  IPagination,
-} from 'src/utils/common';
-import { IDashboardDetail, IQuery } from 'src/utils/query.type';
+import { IPagination, ROUTES, SchemaType } from 'src/utils/common';
+import { IQuery } from 'src/utils/query.type';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
-import { getErrorMessage } from 'src/utils/utils-helper';
+import { copyToClipboard, getErrorMessage } from 'src/utils/utils-helper';
 import { getChainIconByChainName } from 'src/utils/utils-network';
 import { toastError } from 'src/utils/utils-notify';
-import { BROADCAST_FETCH_DASHBOARD, TYPE_MODAL } from './Dashboard';
-import { BROADCAST_ADD_TEXT_TO_EDITOR, BROADCAST_FETCH_QUERY } from './Query';
-import InfiniteScroll from 'react-infinite-scroll-component';
+import { BROADCAST_FETCH_DASHBOARD } from './Dashboard';
+import { BROADCAST_FETCH_QUERY } from './Query';
 
 export const BROADCAST_FETCH_WORKPLACE_DATA = 'FETCH_WORKPLACE_DATA';
 
@@ -49,8 +43,8 @@ const ChainItem = ({
     }
   };
 
-  const handleAddQuery = (tableName: string) => {
-    AppBroadcast.dispatch(BROADCAST_ADD_TEXT_TO_EDITOR, tableName);
+  const handleCopyQuery = (query: string) => {
+    copyToClipboard(query);
   };
 
   return (
@@ -75,17 +69,19 @@ const ChainItem = ({
           <Tooltip
             placement="top"
             hasArrow
-            label="Add to query"
+            label="Copy query"
             aria-label="A tooltip"
             borderRadius="6px"
           >
             <div
-              className="bg-PlusIcon add-query-icon"
+              className="add-query-icon"
               onClick={(e) => {
                 e.stopPropagation();
-                handleAddQuery(chain.full_name);
+                handleCopyQuery(chain.full_name);
               }}
-            ></div>
+            >
+              <CopyIcon />
+            </div>
           </Tooltip>
         )}
       </Box>
@@ -314,8 +310,8 @@ const Sidebar: React.FC<{
       : 'workspace-page__sidebar__content__work-place-detail ';
   };
 
-  const handleAddQuery = (tableName: string) => {
-    AppBroadcast.dispatch(BROADCAST_ADD_TEXT_TO_EDITOR, tableName);
+  const handleCopyQuery = (query: string) => {
+    copyToClipboard(query);
   };
 
   const onForkSuccess = async (response: any, type: string) => {
@@ -513,14 +509,14 @@ const Sidebar: React.FC<{
               <div className="header-icon">
                 {pathname.includes(ROUTES.MY_QUERY) && (
                   <div
-                    className="icon-plus-white"
-                    onClick={() => handleAddQuery(schemaDescribe[0].full_name)}
-                  />
+                    onClick={() => handleCopyQuery(schemaDescribe[0].full_name)}
+                  >
+                    <CopyIcon className="icon-header" />
+                  </div>
                 )}
-                <div
-                  className="icon-close-white"
-                  onClick={() => setSchemaDescribe([])}
-                />
+                <div onClick={() => setSchemaDescribe([])}>
+                  <CloseMenuIcon className="icon-header" />
+                </div>
               </div>
             </div>
             <div className="chain-info-desc__content">
@@ -532,7 +528,7 @@ const Sidebar: React.FC<{
                   justifyContent={'space-between'}
                   px="16px"
                   cursor={'pointer'}
-                  onClick={() => handleAddQuery(item.column_name)}
+                  onClick={() => handleCopyQuery(item.column_name)}
                 >
                   <Tooltip
                     placement={'top'}
@@ -544,7 +540,10 @@ const Sidebar: React.FC<{
                       {item.column_name}
                     </Box>
                   </Tooltip>
-                  <Text isTruncated>{item.data_type}</Text>
+                  <div className="data-type">
+                    <Text isTruncated>{item.data_type}</Text>
+                    <CopyIcon />
+                  </div>
                 </Flex>
               ))}
             </div>
