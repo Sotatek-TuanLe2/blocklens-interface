@@ -98,9 +98,18 @@ const ModalQuery = ({
       try {
         switch (type) {
           case TYPE_OF_MODAL.SETTING:
+            const payload = {
+              ...valueSettingQuery,
+              tags: valueSettingQuery.tags
+                ?.toString()
+                .split(',')
+                .filter((i) => i.trim().length)
+                .map((i) => i.trim()),
+            };
+            console.log('valueSettingQuery: ', payload);
             res = await rf
               .getRequest('DashboardsRequest')
-              .updateQuery(valueSettingQuery, id);
+              .updateQuery(payload, id);
             setIsDisableSubmit(false);
             toastSuccess({ message: 'Update query successfully!' });
             break;

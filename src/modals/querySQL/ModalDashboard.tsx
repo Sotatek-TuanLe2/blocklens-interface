@@ -38,7 +38,7 @@ const ModalDashboard: React.FC<IModelNewDashboard> = ({
 }) => {
   const initDataFormSetting = {
     title: defaultValue.name || '',
-    tag: defaultValue.tags?.join(',') || '',
+    tag: defaultValue.tags?.join(', ') || '',
   };
 
   const history = useHistory();
@@ -91,13 +91,18 @@ const ModalDashboard: React.FC<IModelNewDashboard> = ({
           toastSuccess({ message: 'Create new dashboard successfully!' });
           break;
         case TYPE_OF_MODAL.SETTING:
-          result = await rf.getRequest('DashboardsRequest').updateDashboardItem(
-            {
-              name: dataForm.title.trim(),
-              tag: dataForm.tag.trim(),
-            },
-            id,
-          );
+          const payload = {
+            name: dataForm.title.trim(),
+            tags: dataForm.tag
+              .split(',')
+              .filter((i) => i.trim().length)
+              .map((i) => i.trim()),
+          };
+
+          result = await rf
+            .getRequest('DashboardsRequest')
+            .updateDashboardItem(payload, id);
+
           setIsDisableSubmit(false);
           toastSuccess({ message: 'Update dashboard successfully!' });
           break;

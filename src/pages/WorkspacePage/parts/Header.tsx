@@ -279,9 +279,10 @@ const Header: React.FC<IHeaderProps> = (props) => {
             <Skeleton w={'200px'} h={'14px'} rounded={'7px'} />
           ) : (
             <>
-              {['defi', 'gas', 'dex'].map((item) => (
-                <AppTag key={item} value={item} />
-              ))}
+              {!!dataClass?.getTags()?.length &&
+                dataClass
+                  ?.getTags()
+                  ?.map((item) => <AppTag key={item} value={item} />)}
             </>
           )}
         </div>
