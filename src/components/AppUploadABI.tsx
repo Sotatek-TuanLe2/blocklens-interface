@@ -44,6 +44,7 @@ interface IAppUploadABI {
   viewOnly?: boolean;
   abi?: any[];
   abiFilter?: any[];
+  abiContract?: any[];
 }
 
 const listFunctionAndEventOfNFT = [
@@ -320,6 +321,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
   viewOnly,
   abi,
   abiFilter,
+  abiContract,
 }) => {
   const [fileSelected, setFileSelected] = useState<any>({});
   const [ABIData, setABIData] = useState<any>([]);
@@ -399,6 +401,12 @@ const AppUploadABI: FC<IAppUploadABI> = ({
       return;
     }
   }, []);
+
+  useEffect(() => {
+    if (abiContract && !!abiContract?.length) {
+      setABIData(abiContract);
+    }
+  }, [abiContract]);
 
   useEffect(() => {
     if (viewOnly) {
@@ -549,7 +557,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
           {type === TYPE_ABI.NFT && _renderNoticeUpload()}
         </Flex>
 
-        {!viewOnly && (
+        {!viewOnly && !abiContract?.length && (
           <Box
             className="link"
             cursor="pointer"
@@ -572,7 +580,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
         )}
       </Flex>
 
-      {isInsertManuallyAddress && !viewOnly && (
+      {isInsertManuallyAddress && !viewOnly && !abiContract?.length && (
         <Box mb={5}>
           <AppTextarea
             placeholder="Input abi..."

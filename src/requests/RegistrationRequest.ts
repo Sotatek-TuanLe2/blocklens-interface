@@ -30,4 +30,9 @@ export default class RegistrationRequest extends BaseRequest {
     const url = `/registrations/${registrationId}`;
     return this.get(url);
   }
+
+  getContractABI(address: string) {
+    const url = `/api.etherscan.io/api?module=contract&action=getabi&address=${address}&apikey=3CVYQVYCIFFT6VM8W3IZCPDKUYJMU23WRY`;
+    return this.get(url);
+  }
 }
