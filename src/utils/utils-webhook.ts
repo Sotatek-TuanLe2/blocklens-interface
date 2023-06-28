@@ -166,3 +166,8 @@ export interface PackageType {
   name: string;
   modules: ModuleType[];
 }
+
+export const RESOLUTION_TIME = {
+  DAY: 86400,
+  HOUR: 3600,
+};

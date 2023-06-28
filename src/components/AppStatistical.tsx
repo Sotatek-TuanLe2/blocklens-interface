@@ -27,7 +27,7 @@ export const ChartStatics: FC<IChartStatics> = ({ dataChart, keyStat }) => {
     };
   });
 
-  if (!!dataChart?.length) {
+  if (!!dataChart?.length && !dataChart.every((item) => +item[keyStat] === 0)) {
     return (
       <Box
         height={'50px'}

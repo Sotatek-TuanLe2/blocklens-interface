@@ -5,6 +5,8 @@ import { isMobile } from 'react-device-detect';
 import ModalFilterGraph from 'src/modals/ModalFilterGraph';
 import rf from 'src/requests/RequestFactory';
 import moment from 'moment';
+import { fillFullResolution, SAMPLE_DATA } from './PartUserStats';
+import { RESOLUTION_TIME } from 'src/utils/utils-webhook';
 
 interface IDataChart {
   activities: number;
@@ -38,7 +40,7 @@ export const getParams = (duration: string) => {
     return {
       from: moment().utc().subtract(24, 'hour').valueOf(),
       to: moment().utc().valueOf(),
-      resolution: 86400,
+      resolution: RESOLUTION_TIME.HOUR,
     };
   }
 
@@ -46,15 +48,24 @@ export const getParams = (duration: string) => {
     return {
       from: moment().utc().subtract(7, 'days').valueOf(),
       to: moment().utc().valueOf(),
-      resolution: 86400,
+      resolution: RESOLUTION_TIME.DAY,
     };
   }
 
   return {
     from: moment().utc().subtract(30, 'days').valueOf(),
     to: moment().utc().valueOf(),
-    resolution: 86400,
+    resolution: RESOLUTION_TIME.DAY,
   };
+};
+
+const sampleData = {
+  message: 0,
+  activities: 0,
+  successRate: 0,
+  webhooks: 0,
+  messagesSuccess: 0,
+  messagesFailed: 0,
 };
 
 const PartUserGraph = () => {
@@ -72,7 +83,18 @@ const PartUserGraph = () => {
       const res = await rf
         .getRequest('NotificationRequest')
         .getUserStats(params);
-      setDataChart(res);
+
+      if (!res?.length) return;
+
+      const dataFilled = fillFullResolution(
+        params.from,
+        params.to,
+        params.resolution,
+        res,
+        SAMPLE_DATA,
+      );
+
+      setDataChart(dataFilled);
     } catch (error: any) {
       setDataChart([]);
     }

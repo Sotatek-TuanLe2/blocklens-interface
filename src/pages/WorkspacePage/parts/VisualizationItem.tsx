@@ -22,6 +22,7 @@ import {
   VisualizationType,
 } from 'src/utils/query.type';
 import { areYAxisesSameType } from 'src/utils/utils-helper';
+import useUser from 'src/hooks/useUser';
 
 const VisualizationItem = React.memo(
   ({
@@ -33,6 +34,8 @@ const VisualizationItem = React.memo(
     needAuthentication?: boolean;
     editMode?: boolean;
   }) => {
+    const { user } = useUser();
+
     const [queryResult, setQueryResult] = useState<unknown[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [errorExecuteQuery, setErrorExecuteQuery] =
@@ -251,9 +254,12 @@ const VisualizationItem = React.memo(
             >
               <Link
                 className="visual-container__visualization__title__query-link"
-                to={`${needAuthentication ? ROUTES.MY_QUERY : ROUTES.QUERY}/${
-                  visualization.queryId
-                }`}
+                to={`${
+                  needAuthentication ||
+                  visualization.query?.user === user?.getId()
+                    ? ROUTES.MY_QUERY
+                    : ROUTES.QUERY
+                }/${visualization.queryId}`}
               >
                 {visualization.query?.name}
               </Link>

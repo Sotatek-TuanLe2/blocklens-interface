@@ -13,6 +13,7 @@ import { isMobile } from 'react-device-detect';
 import { formatTimestamp } from 'src/utils/utils-helper';
 import { formatNumber } from 'src/utils/utils-format';
 import { RadioChecked, RadioNoCheckedIcon } from 'src/assets/icons';
+import moment from 'moment';
 interface IChart {
   data: any[];
   duration: string;
@@ -42,7 +43,7 @@ const AppGraph: FC<IChart> = ({ data, duration }) => {
       return data.map((item: any) => {
         return {
           ...item,
-          label: formatTimestamp(item.time, 'hh:mm A'),
+          label: moment(item?.time).format('hh:mm A'),
         };
       });
     }
@@ -50,7 +51,7 @@ const AppGraph: FC<IChart> = ({ data, duration }) => {
     return data.map((item: any) => {
       return {
         ...item,
-        label: formatTimestamp(item.time, 'MMM DD'),
+        label: moment(item?.time).format('MMM DD'),
       };
     });
   }, [duration, data]);

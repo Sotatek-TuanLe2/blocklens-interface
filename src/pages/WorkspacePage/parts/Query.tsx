@@ -29,7 +29,6 @@ import { Query } from 'src/utils/utils-query';
 import { AddChartIcon, QueryResultIcon } from 'src/assets/icons';
 import { STATUS } from 'src/utils/utils-webhook';
 
-export const BROADCAST_ADD_TEXT_TO_EDITOR = 'ADD_TEXT_TO_EDITOR';
 export const BROADCAST_FETCH_QUERY = 'FETCH_QUERY';
 
 const QueryPart: React.FC = () => {
@@ -52,30 +51,21 @@ const QueryPart: React.FC = () => {
   const [openModalSettingQuery, setOpenModalSettingQuery] =
     useState<boolean>(false);
 
-  const onAddTextToEditor = (text: string) => {
-    const position = editorRef.current.editor.getCursorPosition();
-
-    editorRef.current.editor.session.insert(position, text);
-    editorRef.current.editor.focus();
-  };
-
   useEffect(() => {
-    AppBroadcast.on(BROADCAST_ADD_TEXT_TO_EDITOR, onAddTextToEditor);
     AppBroadcast.on(BROADCAST_FETCH_QUERY, async (id: string) => {
       setIsLoadingQuery(true);
       await fetchQuery(id);
     });
 
     return () => {
-      AppBroadcast.remove(BROADCAST_ADD_TEXT_TO_EDITOR, onAddTextToEditor);
       AppBroadcast.remove(BROADCAST_FETCH_QUERY);
     };
   }, []);
 
   useEffect(() => {
     if (queryId) {
-      fetchInitalData();
       setExpandLayout(LAYOUT_QUERY.HIDDEN);
+      fetchInitalData();
     } else {
       resetEditor();
     }
@@ -107,13 +97,14 @@ const QueryPart: React.FC = () => {
 
   const updateQuery = async (query: string) => {
     try {
-      await rf.getRequest('DashboardsRequest').updateQuery({ query }, queryId);
       setIsLoadingQuery(true);
+      setIsLoadingResult(true);
+      await rf.getRequest('DashboardsRequest').updateQuery({ query }, queryId);
       await fetchQuery();
       const executionId = await executeQuery(queryId);
-      setIsLoadingResult(true);
       await fetchQueryResult(executionId);
     } catch (error: any) {
+      setIsLoadingQuery(false);
       setIsLoadingResult(false);
       console.error(error);
     }
@@ -361,11 +352,15 @@ const QueryPart: React.FC = () => {
   ) => {
     if (
       expandLayout === LAYOUT_QUERY.HALF ||
-      isLoadingResult ||
       (statusExecuteQuery === STATUS.FAILED && isExpand)
-    )
+    ) {
       return 'custom-editor--half';
-    if (!queryId || !queryValue) return 'custom-editor--full';
+    }
+
+    if (!queryId) {
+      return 'custom-editor--full';
+    }
+
     return expandLayout === layout ? firstClass : secondClass;
   };
 
@@ -394,7 +389,6 @@ const QueryPart: React.FC = () => {
     const classContent = () => {
       if (
         expandLayout === LAYOUT_QUERY.HALF ||
-        isLoadingResult ||
         (statusExecuteQuery === STATUS.FAILED && isExpand)
       )
         return 'add-chart-empty';
