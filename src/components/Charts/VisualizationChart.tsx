@@ -1,4 +1,4 @@
-import { Box, Flex } from '@chakra-ui/react';
+import { Flex } from '@chakra-ui/react';
 import BigNumber from 'bignumber.js';
 import { isNull, isUndefined } from 'lodash';
 import moment from 'moment';
@@ -314,129 +314,112 @@ const VisualizationChart: React.FC<Props> = (props) => {
   }
 
   return (
-    <Box
-      w={'full'}
-      h={'full'}
-      _after={{
-        content: `''`,
-        pos: 'absolute',
-        top: '50%',
-        left: '50%',
-        w: '176px',
-        h: '50px',
-        maxW: 'full',
-        maxH: 'full',
-        transform: 'translate(-50%, -50%)',
-        bg: 'url(/images/copyright-logo-name.png) no-repeat center',
-        bgSize: 'contain',
-      }}
-    >
-      <ResponsiveContainer className={containerClassName}>
-        <ChartComponent
-          height={500}
-          data={sortData()}
-          className={`${type}-chart`}
-          margin={{
-            // left: 10,
-            bottom: 12,
-            right: 20,
-            top: 20,
-          }}
+    <ResponsiveContainer className={containerClassName}>
+      <ChartComponent
+        height={500}
+        data={sortData()}
+        className={`${type}-chart`}
+        margin={{
+          // left: 10,
+          bottom: 12,
+          right: 20,
+          top: 20,
+        }}
+        style={{ '--bg-copyright': 'url(/images/copyright-logo-name.png)' }}
+      >
+        <CartesianGrid
+          vertical={false}
+          stroke="rgba(232, 234, 237, 1)"
+          strokeDasharray="8 6"
+        />
+        <XAxis
+          tickFormatter={tickFormatAxis('x')}
+          dataKey={xAxisKey}
+          fill={'#ccc'}
+          reversed={xAxisConfigs?.reverseX}
+          tick={{ fill: '#8D91A5', fontWeight: 400 }}
+          tickLine={false}
+          height={50}
         >
-          <CartesianGrid
-            vertical={false}
-            stroke="rgba(232, 234, 237, 1)"
-            strokeDasharray="8 6"
-          />
-          <XAxis
-            tickFormatter={tickFormatAxis('x')}
-            dataKey={xAxisKey}
+          <Label
+            offset={0}
+            position="insideBottom"
+            value={xAxisConfigs?.title}
             fill={'#ccc'}
-            reversed={xAxisConfigs?.reverseX}
+          />
+        </XAxis>
+        {new BigNumber(yAxisDomain[0]).isNegative() && (
+          <ReferenceLine
+            className="ref-line"
+            y={0}
+            stroke="#2F3B58"
+            strokeDasharray="3 3"
+            label={({ offset, viewBox }) => (
+              <text
+                offset={offset}
+                x="0"
+                y={viewBox.y}
+                className="recharts-text recharts-label"
+                stroke="none"
+                type="number"
+                fontWeight={400}
+              >
+                <tspan x="44" dy="0.355em">
+                  0
+                </tspan>
+              </text>
+            )}
+          />
+        )}
+        {yAxisKeys && !!yAxisKeys.length && (
+          <YAxis
+            tickFormatter={tickFormatAxis('y')}
             tick={{ fill: '#8D91A5', fontWeight: 400 }}
             tickLine={false}
-            height={50}
+            domain={yAxisDomain}
+            tickCount={6}
+            {...logarithmicProps}
+            allowDataOverflow={false}
+            className="y-axis"
           >
             <Label
-              offset={0}
-              position="insideBottom"
-              value={xAxisConfigs?.title}
-              fill={'#ccc'}
+              position="insideLeft"
+              value={yAxisConfigs?.title}
+              angle={-90}
+              fill="#ccc"
             />
-          </XAxis>
-          {new BigNumber(yAxisDomain[0]).isNegative() && (
-            <ReferenceLine
-              className="ref-line"
-              y={0}
-              stroke="#2F3B58"
-              strokeDasharray="3 3"
-              label={({ offset, viewBox }) => (
-                <text
-                  offset={offset}
-                  x="0"
-                  y={viewBox.y}
-                  className="recharts-text recharts-label"
-                  stroke="none"
-                  type="number"
-                  fontWeight={400}
-                >
-                  <tspan x="44" dy="0.355em">
-                    0
-                  </tspan>
-                </text>
-              )}
-            />
-          )}
-          {yAxisKeys && !!yAxisKeys.length && (
-            <YAxis
-              tickFormatter={tickFormatAxis('y')}
-              tick={{ fill: '#8D91A5', fontWeight: 400 }}
-              tickLine={false}
-              domain={yAxisDomain}
-              tickCount={6}
-              {...logarithmicProps}
-              allowDataOverflow={false}
-              className="y-axis"
-            >
-              <Label
-                position="insideLeft"
-                value={yAxisConfigs?.title}
-                angle={-90}
-                fill="#ccc"
-              />
-            </YAxis>
-          )}
+          </YAxis>
+        )}
 
-          <Tooltip
+        <Tooltip
+          content={
+            <CustomTooltip
+              numberFormat={configs?.yAxisConfigs?.labelFormat}
+              showLabel={type !== TYPE_VISUALIZATION.scatter}
+            />
+          }
+          animationDuration={200}
+          animationEasing={'linear'}
+        />
+        {chartOptionsConfigs?.showLegend && (
+          <Legend
+            layout="vertical"
             content={
-              <CustomTooltip
-                numberFormat={configs?.yAxisConfigs?.labelFormat}
-                showLabel={type !== TYPE_VISUALIZATION.scatter}
+              <CustomLegend
+                onToggleLegend={onToggleLegend}
+                hiddenKeys={hiddenKeys}
+                type={type}
               />
             }
-            animationDuration={200}
-            animationEasing={'linear'}
           />
-          {chartOptionsConfigs?.showLegend && (
-            <Legend
-              layout="vertical"
-              content={
-                <CustomLegend
-                  onToggleLegend={onToggleLegend}
-                  hiddenKeys={hiddenKeys}
-                  type={type}
-                />
-              }
-            />
-          )}
-          {yAxisKeys?.map((yAxisKey, index) => (
-            <React.Fragment key={yAxisKey}>
-              {_renderChartType(yAxisKey, index)}
-            </React.Fragment>
-          ))}
-        </ChartComponent>
-      </ResponsiveContainer>
-    </Box>
+        )}
+        {yAxisKeys?.map((yAxisKey, index) => (
+          <React.Fragment key={yAxisKey}>
+            {_renderChartType(yAxisKey, index)}
+          </React.Fragment>
+        ))}
+      </ChartComponent>
+    </ResponsiveContainer>
   );
 };
 

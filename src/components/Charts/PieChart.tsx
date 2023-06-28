@@ -172,12 +172,10 @@ const VisualizationPieChart = ({
   return (
     <ResponsiveContainer width={'100%'} height={'100%'}>
       {yAxisKeys?.length === 1 ? (
-        <PieChart className="pie-chart">
-          <image
-            href="/images/copyright-logo-name.png"
-            x={'calc(50% - 88px)'}
-            y={'calc(50% - 50px)'}
-          />
+        <PieChart
+          className="pie-chart"
+          style={{ '--bg-copyright': 'url(/images/copyright-logo-name.png)' }}
+        >
           <Pie
             data={shownData}
             dataKey={yAxisKeys?.[0]}
