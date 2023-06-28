@@ -100,13 +100,14 @@ const ModalQuery = ({
           case TYPE_OF_MODAL.SETTING:
             const payload = {
               ...valueSettingQuery,
-              tags: valueSettingQuery.tags
-                ?.toString()
-                .split(',')
-                .filter((i) => i.trim().length)
-                .map((i) => i.trim()),
+              tags:
+                valueSettingQuery.tags
+                  ?.toString()
+                  .split(',')
+                  .filter((i) => i.trim().length)
+                  .map((i) => i.trim())
+                  .slice(0, 10) || [],
             };
-            console.log('valueSettingQuery: ', payload);
             res = await rf
               .getRequest('DashboardsRequest')
               .updateQuery(payload, id);
@@ -168,7 +169,6 @@ const ModalQuery = ({
             <AppInput
               placeholder="tag1, tag2, tag3"
               value={valueSettingQuery.tags?.toString()}
-              placeholder="tag1, tag2, tag3"
               onChange={handleChangeTags}
             />
           </div>

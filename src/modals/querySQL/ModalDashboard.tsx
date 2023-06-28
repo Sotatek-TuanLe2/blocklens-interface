@@ -93,10 +93,12 @@ const ModalDashboard: React.FC<IModelNewDashboard> = ({
         case TYPE_OF_MODAL.SETTING:
           const payload = {
             name: dataForm.title.trim(),
-            tags: dataForm.tag
-              .split(',')
-              .filter((i) => i.trim().length)
-              .map((i) => i.trim()),
+            tags:
+              dataForm.tag
+                .split(',')
+                .filter((i) => i.trim().length)
+                .map((i) => i.trim())
+                .slice(0, 10) || [],
           };
 
           result = await rf

@@ -185,11 +185,11 @@ const AppRowItem: FC<AppRowItemProps> = ({
 
             <Flex align={'center'} w={'26%'} pr={2.5} overflow={'hidden'}>
               <Flex flexGrow={1}>
-                {tagList &&
-                  tagList.map((item) => (
+                {!!tagList?.length &&
+                  tagList.map((item: string, index: number) => (
                     <AppTag
-                      key={item.id}
-                      value={item.name}
+                      key={index}
+                      value={item}
                       h={'24px'}
                       classNames="article-tag"
                     />
@@ -364,11 +364,11 @@ const AppRowItem: FC<AppRowItemProps> = ({
                   flexWrap={'wrap'}
                   mt={{ base: 1, lg: 1.5 }}
                 >
-                  {tagList &&
-                    tagList.map((item) => (
+                  {!!tagList?.length &&
+                    tagList.map((item, index: number) => (
                       <AppTag
-                        key={item.id}
-                        value={item.name}
+                        key={index}
+                        value={item}
                         h={'24px'}
                         classNames="article-tag"
                       />

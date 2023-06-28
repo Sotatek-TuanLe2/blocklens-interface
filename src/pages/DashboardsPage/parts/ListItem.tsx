@@ -125,7 +125,7 @@ const ListItem: React.FC<IListItem> = (props) => {
           date={moment(itemClass.getCreatedTime()).format('YYYY MMMM Do')}
           views={randomViews}
           toHref={getTitleUrl()}
-          tagList={listTags}
+          tagList={item?.tags || []}
           shareComponent={_renderDropdown()}
           srcThumb={itemClass.getThumnail()!}
           srcAvatar={itemClass.getUser().avatar}
@@ -138,7 +138,7 @@ const ListItem: React.FC<IListItem> = (props) => {
           date={moment(itemClass.getCreatedTime()).format('YYYY MMMM Do')}
           views={randomViews}
           toHref={getTitleUrl()}
-          tagList={listTags}
+          tagList={item?.tags || []}
           shareComponent={_renderDropdown(true)}
           srcThumb={itemClass.getThumnail()!}
           srcAvatar={itemClass.getUser().avatar}
