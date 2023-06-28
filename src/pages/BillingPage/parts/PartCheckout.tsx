@@ -1,18 +1,18 @@
-import { FC } from 'react';
 import { Box, Flex } from '@chakra-ui/react';
+import { FC } from 'react';
 import { useDispatch } from 'react-redux';
-import { PAYMENT_METHOD, paymentMethods } from '..';
-import useWallet from 'src/hooks/useWallet';
-import { AppButton } from 'src/components';
-import rf from 'src/requests/RequestFactory';
-import { toastError, toastSuccess } from 'src/utils/utils-notify';
-import AppAlertWarning from 'src/components/AppAlertWarning';
-import { formatShortText } from 'src/utils/utils-helper';
-import { CheckedIcon } from 'src/assets/icons';
 import { useHistory } from 'react-router-dom';
+import { CheckedIcon } from 'src/assets/icons';
+import { AppButton } from 'src/components';
+import AppAlertWarning from 'src/components/AppAlertWarning';
 import useUser from 'src/hooks/useUser';
+import useWallet from 'src/hooks/useWallet';
+import rf from 'src/requests/RequestFactory';
 import { MetadataPlan } from 'src/store/metadata';
 import { getUserPlan } from 'src/store/user';
+import { formatShortText } from 'src/utils/utils-helper';
+import { toastSuccess } from 'src/utils/utils-notify';
+import { paymentMethods, PAYMENT_METHOD } from '..';
 
 interface IPartCheckout {
   planSelected: MetadataPlan;
@@ -67,7 +67,7 @@ const PartCheckout: FC<IPartCheckout> = ({
       dispatch(getUserPlan());
       history.push('/billing-history');
     } catch (e: any) {
-      toastError({ message: e?.message || 'Oops. Something went wrong!' });
+      console.error(e);
     }
   };
 

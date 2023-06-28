@@ -15,9 +15,8 @@ import 'src/styles/pages/LoginPage.scss';
 import { useDispatch } from 'react-redux';
 import { useHistory, useLocation } from 'react-router';
 import rf from 'src/requests/RequestFactory';
-import { toastError, toastSuccess } from 'src/utils/utils-notify';
+import { toastSuccess } from 'src/utils/utils-notify';
 import { setUserAuth } from '../store/user';
-import { getErrorMessage } from '../utils/utils-helper';
 import { ROUTES } from 'src/utils/common';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { setRecaptchaToRequest } from 'src/utils/utils-auth';
@@ -55,9 +54,7 @@ const LoginPage: FC = () => {
   const onLogin = async () => {
     try {
       if (!executeRecaptcha) {
-        toastError({
-          message: 'Oops. Something went wrong!',
-        });
+        console.error('Oops. Something went wrong!');
         return;
       }
       const result = await executeRecaptcha('login');
@@ -70,7 +67,7 @@ const LoginPage: FC = () => {
       }
     } catch (e) {
       setRecaptchaToRequest(null);
-      toastError({ message: getErrorMessage(e) });
+      console.error(e);
     }
   };
 

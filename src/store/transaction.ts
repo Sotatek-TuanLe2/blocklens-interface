@@ -1,9 +1,8 @@
+import { Interface as AbiInterface } from '@ethersproject/abi';
 import { Web3Provider } from '@ethersproject/providers';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Contract } from 'ethers';
-import { Interface as AbiInterface } from '@ethersproject/abi';
-import { toastError, toastSuccess } from 'src/utils/utils-notify';
-import { getErrorMessage, isString } from '../utils/utils-helper';
+import { toastSuccess } from 'src/utils/utils-notify';
 
 interface ITransactionState {
   openSubmittingTransactionModal: boolean;
@@ -114,7 +113,7 @@ export const executeTransaction = createAsyncThunk(
       );
     } catch (error: any) {
       if (error.code === 'ACTION_REJECTED') {
-        toastError({ message: 'User denied transaction signature.' });
+        console.error('User denied transaction signature.');
       }
       throw new Error(error);
     }

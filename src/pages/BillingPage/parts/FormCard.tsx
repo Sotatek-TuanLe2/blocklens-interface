@@ -1,8 +1,4 @@
 import { Box, Flex } from '@chakra-ui/react';
-import React, { FC, useEffect, useMemo, useState } from 'react';
-import 'src/styles/pages/AppDetail.scss';
-import rf from 'src/requests/RequestFactory';
-import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import {
   Elements,
   PaymentElement,
@@ -10,12 +6,15 @@ import {
   useStripe,
 } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
-import config from 'src/config';
-import { AppButton, AppCard } from 'src/components';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import { useDispatch } from 'react-redux';
+import { AppButton, AppCard } from 'src/components';
+import config from 'src/config';
+import rf from 'src/requests/RequestFactory';
 import { getUserProfile } from 'src/store/user';
-import { getErrorMessage } from '../../../utils/utils-helper';
+import 'src/styles/pages/AppDetail.scss';
+import { toastSuccess } from 'src/utils/utils-notify';
 
 interface ICheckoutForm {
   onClose?: () => void;
@@ -42,9 +41,7 @@ const CheckoutForm: FC<ICheckoutForm> = ({ onClose, onSuccess, isEdit }) => {
     });
 
     if (result.error) {
-      toastError({
-        message: result.error?.message || 'Oops. Something went wrong!',
-      });
+      console.log(result.error);
       setIsLoading(false);
       return;
     }
@@ -60,7 +57,7 @@ const CheckoutForm: FC<ICheckoutForm> = ({ onClose, onSuccess, isEdit }) => {
           onSuccess && (await onSuccess());
           dispatch(getUserProfile());
         } catch (e) {
-          toastError({ message: getErrorMessage(e) });
+          console.error(e);
         } finally {
           setIsLoading(false);
         }
@@ -137,7 +134,7 @@ const FormCard: FC<IFormCard> = ({ isEdit, onClose, onSuccess }) => {
       const res = await rf.getRequest('BillingRequest').getPaymentIntent();
       setPaymentIntent(res);
     } catch (e: any) {
-      toastError({ message: e?.message || 'Oops. Something went wrong!' });
+      console.error(e);
     }
   };
 

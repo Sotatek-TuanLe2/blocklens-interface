@@ -1,28 +1,26 @@
-import { useParams } from 'react-router-dom';
 import { Flex } from '@chakra-ui/react';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Layout, Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import ReactMarkdown from 'react-markdown';
 import 'react-resizable/css/styles.css';
+import { useParams } from 'react-router-dom';
 import ModalForkDashBoardDetails from 'src/modals/querySQL/ModalForkDashBoardDetails';
+import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
+import { LoadingFullPage } from 'src/pages/LoadingFullPage';
+import Header from 'src/pages/WorkspacePage/parts/Header';
+import VisualizationItem from 'src/pages/WorkspacePage/parts/VisualizationItem';
 import rf from 'src/requests/RequestFactory';
+import 'src/styles/components/AppQueryMenu.scss';
+import 'src/styles/components/Chart.scss';
 import 'src/styles/components/TableValue.scss';
 import 'src/styles/pages/DashboardDetailPage.scss';
-import 'src/styles/components/Chart.scss';
-import 'src/styles/components/AppQueryMenu.scss';
 import {
   IDashboardDetail,
   ITextWidget,
   IVisualizationWidget,
 } from 'src/utils/query.type';
-import { getErrorMessage } from 'src/utils/utils-helper';
-import { toastError } from 'src/utils/utils-notify';
-import Header from 'src/pages/WorkspacePage/parts/Header';
-import VisualizationItem from 'src/pages/WorkspacePage/parts/VisualizationItem';
-import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import { Dashboard } from 'src/utils/utils-dashboard';
-import { LoadingFullPage } from 'src/pages/LoadingFullPage';
 
 export interface ILayout extends Layout {
   id: string;
@@ -97,9 +95,7 @@ const DashboardPart: React.FC = () => {
         setIsEmptyDashboard(!layouts.length);
       }
     } catch (error) {
-      toastError({
-        message: getErrorMessage(error),
-      });
+      console.error(error);
     } finally {
       setIsLoading(false);
     }

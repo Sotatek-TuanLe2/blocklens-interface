@@ -1,9 +1,3 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useHistory } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import useWallet from 'src/hooks/useWallet';
-import useUser from 'src/hooks/useUser';
-import { RootState } from 'src/store';
 import {
   Alert,
   AlertDescription,
@@ -14,21 +8,33 @@ import {
   Spinner,
   Text,
 } from '@chakra-ui/react';
+import { MaxUint256 } from '@ethersproject/constants';
+import { useEffect, useRef, useState } from 'react';
+import { isMobile } from 'react-device-detect';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import abi from 'src/abi';
+import { ConnectWalletIcon } from 'src/assets/icons';
 import {
-  AppCurrencyInput,
-  AppSelect2,
-  AppField,
-  AppInput,
   AppButton,
   AppCard,
   AppConnectWalletButton,
+  AppCurrencyInput,
+  AppField,
+  AppInput,
+  AppSelect2,
 } from 'src/components';
-import { ConnectWalletIcon } from 'src/assets/icons';
-import { isMobile } from 'react-device-detect';
-import { MaxUint256 } from '@ethersproject/constants';
+import config from 'src/config';
+import useUser from 'src/hooks/useUser';
+import useWallet from 'src/hooks/useWallet';
 import { BasePage } from 'src/layouts';
+import { RootState } from 'src/store';
 import { executeTransaction } from 'src/store/transaction';
 import { getUserProfile } from 'src/store/user';
+import 'src/styles/pages/AppDetail.scss';
+import 'src/styles/pages/BillingPage.scss';
+import { convertDecToWei } from 'src/utils/utils-format';
+import { convertCurrencyToNumber } from 'src/utils/utils-helper';
 import {
   getSupportChainsTopUp,
   getTopUpConfigByNetworkId,
@@ -36,18 +42,8 @@ import {
   getTopUpCurrencyOptions,
 } from 'src/utils/utils-network';
 import Storage from 'src/utils/utils-storage';
-import { toastError } from 'src/utils/utils-notify';
 import { getBalanceToken, isTokenApproved } from 'src/utils/utils-token';
-import { convertDecToWei } from 'src/utils/utils-format';
 import { createValidator } from 'src/utils/utils-validator';
-import {
-  convertCurrencyToNumber,
-  getErrorMessage,
-} from 'src/utils/utils-helper';
-import config from 'src/config';
-import abi from 'src/abi';
-import 'src/styles/pages/BillingPage.scss';
-import 'src/styles/pages/AppDetail.scss';
 
 const AMOUNT_OPTIONS = [300, 500, 1000];
 
@@ -167,7 +163,7 @@ const TopUpPage = () => {
 
       await checkApproveToken();
     } catch (error) {
-      toastError({ message: getErrorMessage(error) });
+      console.error(error);
     } finally {
       setProcessing(false);
     }
@@ -221,7 +217,6 @@ const TopUpPage = () => {
       setAmount('');
     } catch (error) {
       console.error(error);
-      toastError({ message: getErrorMessage(error) });
     } finally {
       setProcessing(false);
     }

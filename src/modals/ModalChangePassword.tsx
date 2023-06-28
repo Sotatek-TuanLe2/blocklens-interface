@@ -1,14 +1,13 @@
 import { Box, Text } from '@chakra-ui/react';
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useHistory } from 'react-router';
 import { AppButton, AppField, AppInput } from 'src/components';
+import rf from 'src/requests/RequestFactory';
+import { ROUTES } from 'src/utils/common';
+import { toastSuccess } from 'src/utils/utils-notify';
+import Storage from 'src/utils/utils-storage';
 import { createValidator } from 'src/utils/utils-validator';
 import BaseModal from './BaseModal';
-import rf from 'src/requests/RequestFactory';
-import { toastError, toastSuccess } from 'src/utils/utils-notify';
-import { useHistory } from 'react-router';
-import Storage from 'src/utils/utils-storage';
-import { getErrorMessage } from '../utils/utils-helper';
-import { ROUTES } from 'src/utils/common';
 
 interface IFormChangePass {
   currentPassword: string;
@@ -57,9 +56,7 @@ const ModalChangePassword: React.FC<IChangePasswordModal> = ({
       onClose();
       toastSuccess({ message: 'Update password was successfully' });
     } catch (error) {
-      toastError({
-        message: getErrorMessage(error),
-      });
+      console.error(error);
     }
   };
   const handleClickForgotPassword = () => {

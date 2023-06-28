@@ -1,20 +1,20 @@
 import { Box, Flex } from '@chakra-ui/react';
-import React, { FC } from 'react';
-import 'src/styles/pages/AppDetail.scss';
+import { FC } from 'react';
+import { useDispatch } from 'react-redux';
 import {
-  ListCardIcon,
-  CryptoIcon,
   CircleCheckedIcon,
+  CryptoIcon,
+  ListCardIcon,
   RadioNoCheckedIcon,
 } from 'src/assets/icons';
+import rf from 'src/requests/RequestFactory';
+import { MetadataPlan } from 'src/store/metadata';
+import { getUserProfile } from 'src/store/user';
+import 'src/styles/pages/AppDetail.scss';
+import { toastSuccess } from 'src/utils/utils-notify';
 import { PAYMENT_METHOD } from '../index';
 import FormCard from './FormCard';
 import FormCrypto from './FormCrypto';
-import { MetadataPlan } from 'src/store/metadata';
-import rf from 'src/requests/RequestFactory';
-import { toastError, toastSuccess } from 'src/utils/utils-notify';
-import { getUserProfile } from 'src/store/user';
-import { useDispatch } from 'react-redux';
 
 interface IPartPaymentInfo {
   onBack: () => void;
@@ -41,7 +41,7 @@ const PartPaymentInfo: FC<IPartPaymentInfo> = ({
       toastSuccess({ message: 'Update Successfully!' });
       await dispatch(getUserProfile());
     } catch (error: any) {
-      toastError({ message: error.message });
+      console.error(error);
     }
   };
 
