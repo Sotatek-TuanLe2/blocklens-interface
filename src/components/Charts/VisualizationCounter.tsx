@@ -37,9 +37,7 @@ const VisualizationCounter = ({ data, visualization, isLoading }: Props) => {
     const dataColumn: any = data[dataOptions.rowNumber - 1];
     const indexColumn = dataOptions.counterColName;
 
-    return isNumber(dataColumn[indexColumn])
-      ? commaNumber(dataColumn[indexColumn]?.toString())
-      : dataColumn[indexColumn]?.toString();
+    return dataColumn[indexColumn]?.toString();
   };
 
   const defaultSize =
@@ -92,11 +90,13 @@ const VisualizationCounter = ({ data, visualization, isLoading }: Props) => {
             }}
           >
             {isNumberValue && dataOptions.stringPrefix}
-            <span>
+            <span style={{ color: 'inherit' }}>
               {isNumberValue
-                ? roundAndPadZeros(
-                    dataCounter(),
-                    Number(dataOptions.stringDecimal || 0),
+                ? commaNumber(
+                    roundAndPadZeros(
+                      dataCounter(),
+                      Number(dataOptions.stringDecimal || 0),
+                    ),
                   )
                 : dataCounter()}
             </span>
