@@ -2,10 +2,15 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { keyStats } from 'src/components/AppStatistical';
 import rf from 'src/requests/RequestFactory';
 import { useParams } from 'react-router';
-import { ListStat } from 'src/pages/HomePage/parts/PartUserStats';
+import {
+  fillFullResolution,
+  ListStat,
+  SAMPLE_DATA,
+} from 'src/pages/HomePage/parts/PartUserStats';
 import moment from 'moment';
 import { formatLargeNumber } from 'src/utils/utils-helper';
 import useUser from 'src/hooks/useUser';
+import { RESOLUTION_TIME } from 'src/utils/utils-webhook';
 
 interface IAppStats {
   message?: number;
@@ -51,7 +56,7 @@ const PartAppStats = ({
     try {
       const res: IAppStats[] = await rf
         .getRequest('NotificationRequest')
-        .getAppStats(appId, { resolution: 86400 });
+        .getAppStats(appId, { resolution: RESOLUTION_TIME.DAY });
       setAppStats(res[0] || {});
     } catch (error: any) {
       setAppStats({});
@@ -59,15 +64,29 @@ const PartAppStats = ({
   }, []);
 
   const getAppStats = useCallback(async () => {
+    const formTime = moment().utc().subtract(24, 'hour').valueOf();
+    const toTime = moment().utc().valueOf();
+
     try {
       const res: IAppStats[] = await rf
         .getRequest('NotificationRequest')
         .getAppStats(appId, {
-          from: moment().utc().subtract(24, 'hour').valueOf(),
-          to: moment().utc().valueOf(),
-          resolution: 3600,
+          from: formTime,
+          to: toTime,
+          resolution: RESOLUTION_TIME.HOUR,
         });
-      setDataChart(res);
+
+      if (!res?.length) return;
+
+      const dataFilled = fillFullResolution(
+        formTime,
+        toTime,
+        RESOLUTION_TIME.HOUR,
+        res,
+        SAMPLE_DATA,
+      );
+
+      setDataChart(dataFilled);
     } catch (error: any) {
       setDataChart([]);
     }
