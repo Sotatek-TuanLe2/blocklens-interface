@@ -9,7 +9,6 @@ import { ROUTES } from 'src/utils/common';
 import { setAuthorizationToRequest } from 'src/utils/utils-auth';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { createValidator } from 'src/utils/utils-validator';
-import { getErrorMessage } from '../utils/utils-helper';
 
 interface IDataForm {
   newPassword: string;
@@ -43,9 +42,7 @@ const ResetPasswordPage: FC = () => {
       setDataForm({ ...initDataResetPassword });
       history.replace(ROUTES.LOGIN);
     } catch (error) {
-      toastError({
-        message: getErrorMessage(error),
-      });
+      console.error(error);
     }
   };
 

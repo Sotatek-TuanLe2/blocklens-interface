@@ -1,43 +1,42 @@
 import { Box, Flex } from '@chakra-ui/react';
-import React, { FC, useEffect, useMemo, useState } from 'react';
-import 'src/styles/pages/AppDetail.scss';
+import { FC, useEffect, useMemo, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { useParams } from 'react-router';
 import {
   AppButton,
+  AppButtonLarge,
   AppCard,
   AppField,
+  AppHeading,
   AppInput,
-  AppUploadABI,
-  AppButtonLarge,
-  TYPE_ABI,
   AppReadABI,
+  AppUploadABI,
+  TYPE_ABI,
 } from 'src/components';
-import {
-  IWebhook,
-  WEBHOOK_STATUS,
-  WEBHOOK_TYPES,
-} from 'src/utils/utils-webhook';
-import rf from 'src/requests/RequestFactory';
-import { toastError, toastSuccess } from 'src/utils/utils-notify';
+import useAppDetails from 'src/hooks/useAppDetails';
+import useWebhookDetails from 'src/hooks/useWebhook';
+import { BasePage } from 'src/layouts';
 import ModalDeleteWebhook from 'src/modals/ModalDeleteWebhook';
+import rf from 'src/requests/RequestFactory';
+import { getUserStats } from 'src/store/user';
+import 'src/styles/pages/AppDetail.scss';
 import { APP_STATUS } from 'src/utils/utils-app';
 import {
   getLogoChainByChainId,
   getNameChainByChainId,
 } from 'src/utils/utils-network';
-import { useDispatch } from 'react-redux';
-import { getUserStats } from 'src/store/user';
-import { useParams } from 'react-router';
-import { AppHeading } from 'src/components';
-import { BasePage } from 'src/layouts';
-import useAppDetails from 'src/hooks/useAppDetails';
-import useWebhookDetails from 'src/hooks/useWebhook';
-import { getErrorMessage } from '../utils/utils-helper';
+import { toastSuccess } from 'src/utils/utils-notify';
+import {
+  IWebhook,
+  WEBHOOK_STATUS,
+  WEBHOOK_TYPES,
+} from 'src/utils/utils-webhook';
+import { COIN_EVENTS } from './CreateWebhookPage/parts/PartFormCoinActivityAptos';
+import { getDataAddress } from './CreateWebhookPage/parts/PartFormModuleActivityAptos';
 import {
   ListSelectEvent,
   TOKEN_EVENTS,
 } from './CreateWebhookPage/parts/PartFormTokenActivityAptos';
-import { COIN_EVENTS } from './CreateWebhookPage/parts/PartFormCoinActivityAptos';
-import { getDataAddress } from './CreateWebhookPage/parts/PartFormModuleActivityAptos';
 
 interface IModuleAptosDetail {
   address: string;
@@ -98,7 +97,7 @@ const WebhookSettingsPage = () => {
       toastSuccess({ message: 'Update Successfully!' });
       await getWebhookInfo();
     } catch (e) {
-      toastError({ message: getErrorMessage(e) });
+      console.error(e);
     }
   };
 

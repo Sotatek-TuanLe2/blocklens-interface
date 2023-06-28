@@ -128,8 +128,8 @@ const ListItem: React.FC<IListItem> = (props) => {
           tagList={listTags}
           shareComponent={_renderDropdown()}
           srcThumb={itemClass.getThumnail()!}
-          srcAvatar={itemClass.getUser().avatar}
-          userId={itemClass.getUser().userId}
+          srcAvatar={itemClass.getUserAvatar()}
+          userId={itemClass.getUserId()}
         />
       ) : (
         <AppRowItem
@@ -141,8 +141,8 @@ const ListItem: React.FC<IListItem> = (props) => {
           tagList={listTags}
           shareComponent={_renderDropdown(true)}
           srcThumb={itemClass.getThumnail()!}
-          srcAvatar={itemClass.getUser().avatar}
-          userId={itemClass.getUser().userId}
+          srcAvatar={itemClass.getUserAvatar()}
+          userId={itemClass.getUserId()}
           type={type}
           myWorkType={myWorkType}
         />

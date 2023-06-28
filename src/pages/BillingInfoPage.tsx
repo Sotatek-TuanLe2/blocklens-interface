@@ -1,15 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { BasePage } from 'src/layouts';
-import 'src/styles/pages/AccountPage.scss';
 import { Box, Flex } from '@chakra-ui/react';
-import { AppCard, AppLink } from 'src/components';
-import { EditIcon } from 'src/assets/icons';
-import rf from 'src/requests/RequestFactory';
-import { toastError } from 'src/utils/utils-notify';
+import { useEffect, useState } from 'react';
 import { isMobile } from 'react-device-detect';
-import ModalBillingInfo from '../modals/ModalBillingInfo';
-import { getErrorMessage } from '../utils/utils-helper';
+import { EditIcon } from 'src/assets/icons';
+import { AppCard, AppLink } from 'src/components';
+import { BasePage } from 'src/layouts';
+import rf from 'src/requests/RequestFactory';
+import 'src/styles/pages/AccountPage.scss';
 import { ROUTES } from 'src/utils/common';
+import ModalBillingInfo from '../modals/ModalBillingInfo';
 
 const BillingInfoPage = () => {
   const [isOpenEditBillingInfoModal, setIsOpenEditBillingInfoModal] =

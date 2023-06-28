@@ -1,14 +1,7 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
-import { useHistory, useParams } from 'react-router';
-import 'src/styles/pages/AppDetail.scss';
-import { BasePage } from 'src/layouts';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { useHistory, useLocation, useParams } from 'react-router';
 import {
   AppButton,
   AppCard,
@@ -17,21 +10,21 @@ import {
   AppLink,
   AppSelect2,
 } from 'src/components';
-import { createValidator } from 'src/utils/utils-validator';
-import { CHAINS, WEBHOOK_TYPES } from 'src/utils/utils-webhook';
+import { BasePage } from 'src/layouts';
 import rf from 'src/requests/RequestFactory';
-import { toastError, toastSuccess } from 'src/utils/utils-notify';
+import { getUserStats } from 'src/store/user';
+import 'src/styles/pages/AppDetail.scss';
 import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
 import { isEVMNetwork } from 'src/utils/utils-network';
-import { useLocation } from 'react-router';
-import { useDispatch } from 'react-redux';
-import { getUserStats } from 'src/store/user';
-import PartFormModuleActivityAptos from './parts/PartFormModuleActivityAptos';
-import PartFormContractActivity from './parts/PartFormContractActivity';
-import PartFormNFTActivity from './parts/PartFormNFTActivity';
-import PartFormTokenActivity from './parts/PartFormTokenActivity';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
+import { createValidator } from 'src/utils/utils-validator';
+import { CHAINS, WEBHOOK_TYPES } from 'src/utils/utils-webhook';
 import PartFormAddressActivity from './parts/PartFormAddressActivity';
 import PartFormCoinActivityAptos from './parts/PartFormCoinActivityAptos';
+import PartFormContractActivity from './parts/PartFormContractActivity';
+import PartFormModuleActivityAptos from './parts/PartFormModuleActivityAptos';
+import PartFormNFTActivity from './parts/PartFormNFTActivity';
+import PartFormTokenActivity from './parts/PartFormTokenActivity';
 import PartFormTokenActivityAptos from './parts/PartFormTokenActivityAptos';
 
 interface IMetadata {
@@ -203,7 +196,7 @@ const CreateWebhook = () => {
       history.push(`/app/${appId}`);
       toastSuccess({ message: 'Create Successfully!' });
     } catch (e: any) {
-      toastError({ message: e?.message || 'Oops. Something went wrong!' });
+      console.error(e);
     }
   };
 

@@ -1,14 +1,13 @@
 import { Box, Flex } from '@chakra-ui/react';
-import React, { FC } from 'react';
-import BaseModal from './BaseModal';
-import rf from 'src/requests/RequestFactory';
-import { toastError, toastSuccess } from 'src/utils/utils-notify';
-import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
-import AppButton from 'src/components/AppButton';
+import { FC } from 'react';
 import { isMobile } from 'react-device-detect';
 import { useDispatch } from 'react-redux';
+import AppButton from 'src/components/AppButton';
+import rf from 'src/requests/RequestFactory';
+import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
+import { toastSuccess } from 'src/utils/utils-notify';
 import { getUserStats } from '../store/user';
-import { getErrorMessage } from '../utils/utils-helper';
+import BaseModal from './BaseModal';
 
 interface IModalChangeStatusApp {
   open: boolean;
@@ -32,7 +31,7 @@ const ModalChangeStatusApp: FC<IModalChangeStatusApp> = ({
       onClose();
       reloadData();
     } catch (error) {
-      toastError({ message: getErrorMessage(error) });
+      console.log(error);
     }
   };
 

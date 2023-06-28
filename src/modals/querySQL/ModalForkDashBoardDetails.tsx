@@ -1,14 +1,12 @@
 import { Flex, Text } from '@chakra-ui/react';
 import React, { useEffect, useRef, useState } from 'react';
+import { useHistory } from 'react-router';
 import { AppButton, AppField, AppInput } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/BaseModal.scss';
-import { getErrorMessage } from 'src/utils/utils-helper';
-import { toastError } from 'src/utils/utils-notify';
+import { ROUTES } from 'src/utils/common';
 import { createValidator } from 'src/utils/utils-validator';
 import BaseModal from '../BaseModal';
-import { useHistory } from 'react-router';
-import { ROUTES } from 'src/utils/common';
 
 interface IModalForkDashBoardDetails {
   open: boolean;
@@ -66,7 +64,7 @@ const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
       }
       onClose();
     } catch (e) {
-      toastError({ message: getErrorMessage(e) });
+      console.error(e);
     }
   };
 

@@ -1,16 +1,14 @@
 import { Box, Flex, Th, Thead, Tr } from '@chakra-ui/react';
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
+import { isMobile } from 'react-device-detect';
+import { useHistory } from 'react-router';
+import { AppCard, AppDataTable, AppLoadingTable } from 'src/components';
+import { BasePage } from 'src/layouts';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/pages/AppDetail.scss';
-import { BasePage } from 'src/layouts';
-import { AppCard, AppDataTable, AppLoadingTable } from 'src/components';
+import { toastSuccess } from 'src/utils/utils-notify';
 import BillingItem from './parts/BillingItem';
-import { toastError, toastSuccess } from 'src/utils/utils-notify';
-import { isMobile } from 'react-device-detect';
 import BillingItemMobile from './parts/BillingItemMobile';
-import { useHistory } from 'react-router';
-import { getErrorMessage } from '../../utils/utils-helper';
-import { getWidthColumns } from '../../components/ActivityDatatable';
 
 const fileDownload = require('js-file-download');
 
@@ -79,9 +77,7 @@ const BillingHistory = () => {
         message: 'Successfully!',
       });
     } catch (error) {
-      toastError({
-        message: getErrorMessage(error),
-      });
+      console.error(error);
     }
   }, []);
 
@@ -90,9 +86,7 @@ const BillingHistory = () => {
       await rf.getRequest('BillingRequest').retryPendingInvoice(id);
       toastSuccess({ message: 'Successfully!' });
     } catch (error) {
-      toastError({
-        message: getErrorMessage(error),
-      });
+      console.error(error);
     }
   }, []);
 

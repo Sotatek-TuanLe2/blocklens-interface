@@ -8,7 +8,6 @@ import { useLocation } from 'react-router';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { useHistory } from 'react-router';
-import { getErrorMessage } from '../utils/utils-helper';
 import { ROUTES } from 'src/utils/common';
 
 const VerifyAccountPage: FC = () => {
@@ -34,7 +33,7 @@ const VerifyAccountPage: FC = () => {
       setIsVerifyFail(false);
       toastSuccess({ message: 'Verify Successfully!' });
     } catch (e) {
-      toastError({ message: getErrorMessage(e) });
+      console.error(e);
       setIsVerifyFail(true);
     }
   };

@@ -4,10 +4,9 @@ import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { useHistory } from 'react-router';
 import { AppButton, AppInput } from 'src/components';
 import rf from 'src/requests/RequestFactory';
-import { TYPE_OF_MODAL, ROUTES } from 'src/utils/common';
+import { ROUTES, TYPE_OF_MODAL } from 'src/utils/common';
 import { setRecaptchaToRequest } from 'src/utils/utils-auth';
-import { getErrorMessage } from 'src/utils/utils-helper';
-import { toastError, toastSuccess } from 'src/utils/utils-notify';
+import { toastSuccess } from 'src/utils/utils-notify';
 import { createValidator } from 'src/utils/utils-validator';
 import BaseModal from '../BaseModal';
 export interface IModalSettingQuerry {
@@ -86,9 +85,7 @@ const ModalQuery = ({
   const handleSubmit = async () => {
     if (!isDisableSubmit) {
       if (!executeRecaptcha) {
-        toastError({
-          message: 'Oops. Something went wrong!',
-        });
+        console.error('Oops. Something went wrong!');
         return;
       }
       const result = await executeRecaptcha('homepage');
@@ -125,7 +122,7 @@ const ModalQuery = ({
         onClose();
         onSuccess && (await onSuccess(res));
       } catch (error) {
-        toastError({ message: getErrorMessage(error) });
+        console.error(error);
       }
     }
   };
@@ -157,6 +154,7 @@ const ModalQuery = ({
           <div>
             <Text className="input-label">{`Tags (optional)`} </Text>
             <AppInput
+              placeholder="tag1, tag2, tag3"
               value={valueSettingQuery.tags?.toString()}
               onChange={handleChangeTags}
             />

@@ -1,22 +1,21 @@
-import { FC, useEffect, useRef, useState } from 'react';
-import React from 'react';
 import { Box, Flex, Text } from '@chakra-ui/react';
+import { FC, useEffect, useRef, useState } from 'react';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import {
-  AppField,
-  AppCard,
-  AppInput,
   AppButton,
+  AppCard,
+  AppField,
+  AppInput,
   AppLink,
 } from 'src/components';
 import GuestPage from 'src/layouts/GuestPage';
-import { createValidator } from 'src/utils/utils-validator';
-import 'src/styles/pages/LoginPage.scss';
-import rf from 'src/requests/RequestFactory';
-import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import ModalResendMail from 'src/modals/ModalResendMail';
+import rf from 'src/requests/RequestFactory';
+import 'src/styles/pages/LoginPage.scss';
 import { ROUTES } from 'src/utils/common';
-import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { setRecaptchaToRequest } from 'src/utils/utils-auth';
+import { toastError } from 'src/utils/utils-notify';
+import { createValidator } from 'src/utils/utils-validator';
 
 interface IDataForm {
   email: string;
@@ -47,9 +46,8 @@ const ForgotPasswordPage: FC = () => {
     }
     try {
       if (!executeRecaptcha) {
-        toastError({
-          message: 'Oops. Something went wrong!',
-        });
+        console.log('Oops. Something went wrong!');
+
         return;
       }
       const result = await executeRecaptcha('homepage');
@@ -58,9 +56,7 @@ const ForgotPasswordPage: FC = () => {
       setOpenModalResendEmail(true);
     } catch (error: any) {
       setRecaptchaToRequest(null);
-      toastError({
-        message: `${error.message || 'Oops. Something went wrong!'}`,
-      });
+      console.error(error);
     }
   };
 

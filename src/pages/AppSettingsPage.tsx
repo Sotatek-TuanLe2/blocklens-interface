@@ -1,35 +1,27 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
-import React, {
-  FC,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
-import 'src/styles/pages/AppDetail.scss';
+import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useParams } from 'react-router';
 import {
   AppButton,
+  AppButtonLarge,
   AppCard,
   AppField,
   AppHeading,
   AppInput,
   AppTextarea,
-  AppButtonLarge,
 } from 'src/components';
-import ModalDeleteApp from 'src/modals/ModalDeleteApp';
-import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
+import { BasePage } from 'src/layouts';
 import ModalChangeStatusApp from 'src/modals/ModalChangeStatusApp';
-import { createValidator } from 'src/utils/utils-validator';
+import ModalDeleteApp from 'src/modals/ModalDeleteApp';
 import rf from 'src/requests/RequestFactory';
-import { toastError, toastSuccess } from 'src/utils/utils-notify';
+import 'src/styles/pages/AppDetail.scss';
+import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
 import {
   getLogoChainByChainId,
   getNameChainByChainId,
 } from 'src/utils/utils-network';
-import { useParams } from 'react-router';
-import { BasePage } from 'src/layouts';
-import { getErrorMessage } from '../utils/utils-helper';
+import { toastSuccess } from 'src/utils/utils-notify';
+import { createValidator } from 'src/utils/utils-validator';
 
 interface IAppSettings {
   onBack: () => void;
@@ -108,7 +100,7 @@ const AppSettingsPage: FC<IAppSettings> = () => {
       await getAppInfo();
       toastSuccess({ message: 'Update Successfully!' });
     } catch (e) {
-      toastError({ message: getErrorMessage(e) });
+      console.error(e);
     }
   };
 

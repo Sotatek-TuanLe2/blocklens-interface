@@ -96,6 +96,7 @@ export interface IQuery {
   visualizations: VisualizationType[];
   utilizedChains: string[];
   thumbnail: string | null;
+  user: string;
   userInfo: IUserInfo;
 }
 

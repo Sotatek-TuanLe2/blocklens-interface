@@ -1,17 +1,16 @@
 import { Flex } from '@chakra-ui/react';
-import React, { FC, useState } from 'react';
-import BaseModal from './BaseModal';
-import rf from 'src/requests/RequestFactory';
-import { toastError, toastSuccess } from 'src/utils/utils-notify';
-import { useHistory } from 'react-router';
-import { IAppResponse } from 'src/utils/utils-app';
-import { AppField, AppInput } from 'src/components';
-import AppButton from 'src/components/AppButton';
+import { FC, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router';
+import { AppField, AppInput } from 'src/components';
+import AppButton from 'src/components/AppButton';
+import rf from 'src/requests/RequestFactory';
+import { IAppResponse } from 'src/utils/utils-app';
+import { toastSuccess } from 'src/utils/utils-notify';
 import { getUserStats } from '../store/user';
-import { getErrorMessage } from '../utils/utils-helper';
 import { ROUTES } from '../utils/common';
+import BaseModal from './BaseModal';
 
 interface IModalEditApp {
   open: boolean;
@@ -38,7 +37,7 @@ const ModalDeleteApp: FC<IModalEditApp> = ({ open, onClose, appInfo }) => {
       history.push(ROUTES.TRIGGERS);
       onCloseModal();
     } catch (e) {
-      toastError({ message: getErrorMessage(e) });
+      console.error(e);
     }
   };
 

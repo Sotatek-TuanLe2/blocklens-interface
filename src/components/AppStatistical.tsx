@@ -27,6 +27,17 @@ export const ChartStatics: FC<IChartStatics> = ({ dataChart, keyStat }) => {
     };
   });
 
+  const getColorChart = () => {
+    if (
+      +dataChart[dataChart.length - 1][keyStat] >=
+      +dataChart[dataChart.length - 2][keyStat]
+    ) {
+      return '#05CD99';
+    } else {
+      return '#EE5D50';
+    }
+  };
+
   if (!!dataChart?.length && !dataChart.every((item) => +item[keyStat] === 0)) {
     return (
       <Box
@@ -40,7 +51,7 @@ export const ChartStatics: FC<IChartStatics> = ({ dataChart, keyStat }) => {
             <Line
               type="monotone"
               dataKey={keyStat}
-              stroke="#05CD99"
+              stroke={getColorChart()}
               strokeWidth={2}
               dot={false}
             />

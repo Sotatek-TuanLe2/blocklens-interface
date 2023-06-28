@@ -51,6 +51,8 @@ const QueryPart: React.FC = () => {
   const [openModalSettingQuery, setOpenModalSettingQuery] =
     useState<boolean>(false);
 
+  const isLoading = isLoadingQuery || isLoadingResult;
+
   useEffect(() => {
     AppBroadcast.on(BROADCAST_FETCH_QUERY, async (id: string) => {
       setIsLoadingQuery(true);
@@ -106,7 +108,7 @@ const QueryPart: React.FC = () => {
     } catch (error: any) {
       setIsLoadingQuery(false);
       setIsLoadingResult(false);
-      toastError({ message: getErrorMessage(error) });
+      console.error(error);
     }
   };
 
@@ -173,7 +175,7 @@ const QueryPart: React.FC = () => {
       return dataQuery;
     } catch (error: any) {
       setIsLoadingQuery(false);
-      toastError({ message: getErrorMessage(error) });
+      console.error(error);
       return null;
     }
   };
@@ -204,7 +206,7 @@ const QueryPart: React.FC = () => {
       const executionId = executedResponse.id;
       await getExecutionResultById(executionId);
     } catch (error) {
-      toastError({ message: getErrorMessage(error) });
+      console.log(error);
     }
   };
 
@@ -233,7 +235,7 @@ const QueryPart: React.FC = () => {
         setOpenModalSettingQuery(true);
       }
     } catch (err: any) {
-      toastError({ message: getErrorMessage(err) });
+      console.error(err);
     }
   };
 
@@ -288,10 +290,12 @@ const QueryPart: React.FC = () => {
           <QueryResultIcon />
           Result Table
         </div>
-        <p
-          onClick={onExpandEditor}
-          className={`${onCheckedIconExpand(false)}`}
-        />
+        {!isLoading && (
+          <p
+            onClick={onExpandEditor}
+            className={`${onCheckedIconExpand(false)}`}
+          />
+        )}
       </div>
     );
   };
@@ -470,10 +474,12 @@ const QueryPart: React.FC = () => {
                     !queryId || !queryValue ? 'cursor-not-allowed' : ''
                   } btn-expand-query`}
                 >
-                  <p
-                    className={`${onCheckedIconExpand(true)}`}
-                    onClick={onExpandEditor}
-                  />
+                  {!isLoading && (
+                    <p
+                      className={`${onCheckedIconExpand(true)}`}
+                      onClick={onExpandEditor}
+                    />
+                  )}
                 </div>
               </Tooltip>
             </Box>

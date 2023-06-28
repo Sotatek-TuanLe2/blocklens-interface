@@ -107,10 +107,7 @@ const PartAppStats = ({
       if (item.key === 'message') {
         return {
           ...item,
-          value: getValue(
-            +appStats.message,
-            user?.getPlan().notificationLimitation,
-          ),
+          value: `${formatLargeNumber(appStats.message)}`,
         };
       }
 

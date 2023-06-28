@@ -2,16 +2,6 @@ import { Box, Flex, Spinner, Tooltip } from '@chakra-ui/react';
 import moment from 'moment';
 import { useMemo, useState } from 'react';
 import { useParams } from 'react-router';
-import 'src/styles/components/Chart.scss';
-import {
-  PieChart,
-  VisualizationChart,
-  VisualizationTable,
-  VisualizationCounter,
-} from '../../../components/Charts';
-import { AppButton, AppTabs, ITabs } from '../../../components';
-import ChartConfigurations from '../../../components/VisualizationConfigs/ChartConfigurations';
-import BaseModal from '../../../modals/BaseModal';
 import {
   AddChartIcon,
   AreaChartIcon,
@@ -25,7 +15,20 @@ import {
 import CounterConfiguration from 'src/components/VisualizationConfigs/CounterConfiguration';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/Chart.scss';
+import { getDefaultVisualizationName } from 'src/utils/common';
+import { areYAxisesSameType } from 'src/utils/utils-helper';
+import { objectKeys } from 'src/utils/utils-network';
+import { Query } from 'src/utils/utils-query';
+import { AppButton, AppTabs, ITabs } from '../../../components';
+import {
+  PieChart,
+  VisualizationChart,
+  VisualizationCounter,
+  VisualizationTable,
+} from '../../../components/Charts';
+import ChartConfigurations from '../../../components/VisualizationConfigs/ChartConfigurations';
 import TableConfigurations from '../../../components/VisualizationConfigs/TableConfigurations';
+import BaseModal from '../../../modals/BaseModal';
 import {
   IQuery,
   LAYOUT_QUERY,
@@ -33,11 +36,6 @@ import {
   VALUE_VISUALIZATION,
   VisualizationType,
 } from '../../../utils/query.type';
-import { objectKeys } from 'src/utils/utils-network';
-import { areYAxisesSameType } from 'src/utils/utils-helper';
-import { getDefaultVisualizationName } from 'src/utils/common';
-import { toastError } from 'src/utils/utils-notify';
-import { Query } from 'src/utils/utils-query';
 
 type VisualizationConfigType = {
   value: string;
@@ -155,7 +153,7 @@ const VisualizationDisplay = ({
         type: TYPE_VISUALIZATION.counter,
         options: {
           counterColName: !!axisOptions.length ? axisOptions[0] : '',
-          rowNumber: 1,
+          rowNumber: '1',
         },
       };
     } else {
@@ -205,7 +203,7 @@ const VisualizationDisplay = ({
       setIsConfiguring(false);
     } catch (error: any) {
       setIsConfiguring(false);
-      toastError({ message: error.message });
+      console.error(error);
     }
   };
 
@@ -526,6 +524,7 @@ const VisualizationDisplay = ({
         content: (
           <AddVisualization
             expandLayout={expandLayout}
+            isConfiguring={isConfiguring}
             onAddVisualize={addVisualizationHandler}
           />
         ),
@@ -623,11 +622,13 @@ export default VisualizationDisplay;
 type AddVisualizationProps = {
   onAddVisualize: (visualizationValue: string) => void;
   expandLayout?: string;
+  isConfiguring: boolean;
 };
 
 const AddVisualization = ({
   onAddVisualize,
   expandLayout,
+  isConfiguring,
 }: AddVisualizationProps) => {
   const getIcon = (chain: string | undefined) => {
     if (!chain) {
@@ -644,6 +645,11 @@ const AddVisualization = ({
             expandLayout === LAYOUT_QUERY.HIDDEN ? 'main-item-expand' : ''
           }`}
         >
+          {isConfiguring && (
+            <div className="visual-container__visualization__loading">
+              <Spinner size={'sm'} />
+            </div>
+          )}
           <div className="top-items">
             {visualizationConfigs.slice(0, 3).map((i) => (
               <div

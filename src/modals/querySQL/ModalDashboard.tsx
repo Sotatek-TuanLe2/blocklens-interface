@@ -1,18 +1,17 @@
 import { Flex, Text } from '@chakra-ui/react';
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { useHistory } from 'react-router';
 import { AppButton, AppField, AppInput } from 'src/components';
+import { TYPE_MODAL } from 'src/pages/WorkspacePage/parts/Dashboard';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/BaseModal.scss';
-import { TYPE_OF_MODAL, ROUTES } from 'src/utils/common';
-import { getErrorMessage } from 'src/utils/utils-helper';
-import { toastError, toastSuccess } from 'src/utils/utils-notify';
+import { ROUTES, TYPE_OF_MODAL } from 'src/utils/common';
+import { setRecaptchaToRequest } from 'src/utils/utils-auth';
+import { toastSuccess } from 'src/utils/utils-notify';
 import { createValidator } from 'src/utils/utils-validator';
 import BaseModal from '../BaseModal';
-import { TYPE_MODAL } from 'src/pages/WorkspacePage/parts/Dashboard';
 import { generateSubmitBtn, generateTitleModal } from './ModalQuery';
-import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
-import { setRecaptchaToRequest } from 'src/utils/utils-auth';
 
 interface IModelNewDashboard {
   open: boolean;
@@ -70,9 +69,8 @@ const ModalDashboard: React.FC<IModelNewDashboard> = ({
   const handleSubmitForm = async () => {
     try {
       if (!executeRecaptcha) {
-        toastError({
-          message: 'Oops. Something went wrong!',
-        });
+        console.error('Oops. Something went wrong!');
+
         return;
       }
       const res = await executeRecaptcha('homepage');
@@ -117,7 +115,7 @@ const ModalDashboard: React.FC<IModelNewDashboard> = ({
       onClose();
       onSuccess && (await onSuccess(result));
     } catch (error) {
-      toastError({ message: getErrorMessage(error) });
+      console.error(error);
     }
   };
 
@@ -153,7 +151,7 @@ const ModalDashboard: React.FC<IModelNewDashboard> = ({
           <AppInput
             value={dataForm.tag}
             size="sm"
-            placeholder=""
+            placeholder="tag1, tag2, tag3"
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
               setDataForm({
                 ...dataForm,
