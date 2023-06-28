@@ -29,7 +29,6 @@ import { Query } from 'src/utils/utils-query';
 import { AddChartIcon, QueryResultIcon } from 'src/assets/icons';
 import { STATUS } from 'src/utils/utils-webhook';
 
-export const BROADCAST_ADD_TEXT_TO_EDITOR = 'ADD_TEXT_TO_EDITOR';
 export const BROADCAST_FETCH_QUERY = 'FETCH_QUERY';
 
 const QueryPart: React.FC = () => {
@@ -52,22 +51,13 @@ const QueryPart: React.FC = () => {
   const [openModalSettingQuery, setOpenModalSettingQuery] =
     useState<boolean>(false);
 
-  const onAddTextToEditor = (text: string) => {
-    const position = editorRef.current.editor.getCursorPosition();
-
-    editorRef.current.editor.session.insert(position, text);
-    editorRef.current.editor.focus();
-  };
-
   useEffect(() => {
-    AppBroadcast.on(BROADCAST_ADD_TEXT_TO_EDITOR, onAddTextToEditor);
     AppBroadcast.on(BROADCAST_FETCH_QUERY, async (id: string) => {
       setIsLoadingQuery(true);
       await fetchQuery(id);
     });
 
     return () => {
-      AppBroadcast.remove(BROADCAST_ADD_TEXT_TO_EDITOR, onAddTextToEditor);
       AppBroadcast.remove(BROADCAST_FETCH_QUERY);
     };
   }, []);

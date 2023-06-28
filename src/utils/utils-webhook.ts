@@ -171,4 +171,3 @@ export const RESOLUTION_TIME = {
   DAY: 86400,
   HOUR: 3600,
 };
-
