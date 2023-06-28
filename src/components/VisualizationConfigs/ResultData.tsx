@@ -16,7 +16,11 @@ const ResultData: React.FC<IResultData> = ({
   onChangeAxis,
 }) => {
   const axisOptionsConfigs = useMemo(
-    () => ['', ...axisOptions]?.map((axis) => ({ value: axis, label: axis })),
+    () =>
+      ['', ...axisOptions]?.map((axis) => ({
+        value: axis,
+        label: axis || '--Select--',
+      })),
     [axisOptions],
   );
 
