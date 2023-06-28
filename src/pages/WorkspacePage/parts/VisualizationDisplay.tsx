@@ -524,6 +524,7 @@ const VisualizationDisplay = ({
         content: (
           <AddVisualization
             expandLayout={expandLayout}
+            isConfiguring={isConfiguring}
             onAddVisualize={addVisualizationHandler}
           />
         ),
@@ -621,11 +622,13 @@ export default VisualizationDisplay;
 type AddVisualizationProps = {
   onAddVisualize: (visualizationValue: string) => void;
   expandLayout?: string;
+  isConfiguring: boolean;
 };
 
 const AddVisualization = ({
   onAddVisualize,
   expandLayout,
+  isConfiguring,
 }: AddVisualizationProps) => {
   const getIcon = (chain: string | undefined) => {
     if (!chain) {
@@ -642,6 +645,11 @@ const AddVisualization = ({
             expandLayout === LAYOUT_QUERY.HIDDEN ? 'main-item-expand' : ''
           }`}
         >
+          {isConfiguring && (
+            <div className="visual-container__visualization__loading">
+              <Spinner size={'sm'} />
+            </div>
+          )}
           <div className="top-items">
             {visualizationConfigs.slice(0, 3).map((i) => (
               <div
