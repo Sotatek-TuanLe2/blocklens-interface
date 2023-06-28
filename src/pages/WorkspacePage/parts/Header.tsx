@@ -121,9 +121,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
         ? AppBroadcast.dispatch(BROADCAST_FETCH_DASHBOARD, res.id)
         : AppBroadcast.dispatch(BROADCAST_FETCH_QUERY, res.id);
     } catch (error) {
-      toastError({
-        message: getErrorMessage(error),
-      });
+      console.error(error);
     }
   };
 

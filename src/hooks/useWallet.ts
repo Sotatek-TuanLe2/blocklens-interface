@@ -1,8 +1,12 @@
 import { BaseProvider, Web3Provider } from '@ethersproject/providers';
-import web3 from 'web3';
+import { useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import config from 'src/config';
 import ConnectorFactory, { WALLET_CONNECT } from 'src/connectors';
-import { useSelector, useDispatch } from 'react-redux';
+import BaseConnector from 'src/connectors/BaseConnector';
+import rf from 'src/requests/RequestFactory';
 import { RootState } from 'src/store';
+import { getUserProfile } from 'src/store/user';
 import {
   clearWallet,
   getBalance,
@@ -13,17 +17,12 @@ import {
   setOpenModalConnectWallet,
   setProvider,
 } from 'src/store/wallet';
-import config from 'src/config';
 import { getChainByChainId, switchNetwork } from 'src/utils/utils-network';
-import { useMemo } from 'react';
-import { IWallet, Wallet } from 'src/utils/utils-wallet';
-import Storage from 'src/utils/utils-storage';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
-import BaseConnector from 'src/connectors/BaseConnector';
+import Storage from 'src/utils/utils-storage';
+import { IWallet, Wallet } from 'src/utils/utils-wallet';
+import web3 from 'web3';
 import useUser from './useUser';
-import rf from 'src/requests/RequestFactory';
-import { getUserProfile } from 'src/store/user';
-import { getErrorMessage } from '../utils/utils-helper';
 
 type ReturnType = {
   currentNetwork: string;
@@ -179,7 +178,7 @@ const useWallet = (): ReturnType => {
       disconnectWallet();
       toastSuccess({ message: 'Unlink wallet successfully!' });
     } catch (error) {
-      toastError({ message: getErrorMessage(error) });
+      console.error(error);
     }
   };
 

@@ -55,9 +55,7 @@ const LoginPage: FC = () => {
   const onLogin = async () => {
     try {
       if (!executeRecaptcha) {
-        toastError({
-          message: 'Oops. Something went wrong!',
-        });
+        console.error('Oops. Something went wrong!');
         return;
       }
       const result = await executeRecaptcha('login');
@@ -70,7 +68,7 @@ const LoginPage: FC = () => {
       }
     } catch (e) {
       setRecaptchaToRequest(null);
-      toastError({ message: getErrorMessage(e) });
+      console.error(e);
     }
   };
 

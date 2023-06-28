@@ -1,5 +1,7 @@
-import { Flex, Link, Spinner, Text, Tooltip, Box } from '@chakra-ui/react';
+import { Box, Flex, Link, Spinner, Text, Tooltip } from '@chakra-ui/react';
+import _, { debounce } from 'lodash';
 import React, { useEffect, useMemo, useState } from 'react';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import {
   AreaChartIcon,
   BarChartIcon,
@@ -15,17 +17,14 @@ import { AppButton, AppInput } from 'src/components';
 import { ILayout, WIDGET_TYPE } from 'src/pages/WorkspacePage/parts/Dashboard';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/BaseModal.scss';
+import { INPUT_DEBOUNCE, IPagination } from 'src/utils/common';
 import {
   IQuery,
   TYPE_VISUALIZATION,
   VisualizationType,
 } from 'src/utils/query.type';
-import { getErrorMessage } from 'src/utils/utils-helper';
-import { toastError, toastSuccess } from 'src/utils/utils-notify';
+import { toastSuccess } from 'src/utils/utils-notify';
 import BaseModal from '../BaseModal';
-import _, { debounce } from 'lodash';
-import { INPUT_DEBOUNCE, IPagination } from 'src/utils/common';
-import InfiniteScroll from 'react-infinite-scroll-component';
 
 export const WIDTH_DASHBOARD = [
   {
@@ -147,9 +146,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
         });
       }
     } catch (error) {
-      toastError({
-        message: getErrorMessage(error),
-      });
+      console.log(error);
     }
   };
 

@@ -34,7 +34,7 @@ const VerifyAccountPage: FC = () => {
       setIsVerifyFail(false);
       toastSuccess({ message: 'Verify Successfully!' });
     } catch (e) {
-      toastError({ message: getErrorMessage(e) });
+      console.error(e);
       setIsVerifyFail(true);
     }
   };

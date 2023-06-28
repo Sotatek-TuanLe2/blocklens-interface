@@ -1,14 +1,13 @@
 import { Flex, Text } from '@chakra-ui/react';
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { AppButton, AppField, AppInput } from 'src/components';
+import useUser from 'src/hooks/useUser';
+import rf from 'src/requests/RequestFactory';
+import { getUserProfile } from 'src/store/user';
+import { toastSuccess } from 'src/utils/utils-notify';
 import { createValidator } from 'src/utils/utils-validator';
 import BaseModal from './BaseModal';
-import rf from 'src/requests/RequestFactory';
-import { toastError, toastSuccess } from 'src/utils/utils-notify';
-import { useDispatch } from 'react-redux';
-import { getUserProfile } from 'src/store/user';
-import useUser from 'src/hooks/useUser';
-import { getErrorMessage } from '../utils/utils-helper';
 
 interface IForm {
   lastName?: string;
@@ -62,9 +61,7 @@ const ModalEditInfo: React.FC<IModalEditInfo> = ({ open, onClose }) => {
       dispatch(getUserProfile());
       toastSuccess({ message: 'Update successfully' });
     } catch (error) {
-      toastError({
-        message: getErrorMessage(error),
-      });
+      console.error(error);
     }
   };
 

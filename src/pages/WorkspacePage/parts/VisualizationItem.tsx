@@ -3,26 +3,25 @@ import moment from 'moment';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
+import { Link } from 'react-router-dom';
+import { ClockIcon } from 'src/assets/icons';
 import {
   PieChart,
   VisualizationChart,
-  VisualizationTable,
   VisualizationCounter,
+  VisualizationTable,
 } from 'src/components/Charts';
 import rf from 'src/requests/RequestFactory';
+import 'src/styles/components/Chart.scss';
 import 'src/styles/components/TableValue.scss';
 import 'src/styles/pages/DashboardDetailPage.scss';
-import 'src/styles/components/Chart.scss';
+import { QUERY_RESULT_STATUS, ROUTES } from 'src/utils/common';
 import {
   IErrorExecuteQuery,
   TYPE_VISUALIZATION,
   VisualizationType,
 } from 'src/utils/query.type';
-import { areYAxisesSameType, getErrorMessage } from 'src/utils/utils-helper';
-import { toastError } from 'src/utils/utils-notify';
-import { Link } from 'react-router-dom';
-import { QUERY_RESULT_STATUS, ROUTES } from 'src/utils/common';
-import { ClockIcon } from 'src/assets/icons';
+import { areYAxisesSameType } from 'src/utils/utils-helper';
 
 const VisualizationItem = React.memo(
   ({

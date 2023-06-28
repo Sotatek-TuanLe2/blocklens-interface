@@ -1,6 +1,8 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
-import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
-import BaseModal from './BaseModal';
+import _ from 'lodash';
+import { FC, useCallback, useEffect, useRef, useState } from 'react';
+import { isMobile } from 'react-device-detect';
+import { useDispatch } from 'react-redux';
 import {
   AppButton,
   AppField,
@@ -8,16 +10,13 @@ import {
   AppSelect2,
   AppTextarea,
 } from 'src/components';
-import { createValidator } from 'src/utils/utils-validator';
-import rf from 'src/requests/RequestFactory';
-import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import config from 'src/config';
-import _ from 'lodash';
-import { isMobile } from 'react-device-detect';
-import { useDispatch } from 'react-redux';
-import { getUserStats } from '../store/user';
-import { getErrorMessage } from '../utils/utils-helper';
+import rf from 'src/requests/RequestFactory';
+import { toastSuccess } from 'src/utils/utils-notify';
+import { createValidator } from 'src/utils/utils-validator';
 import useUser from '../hooks/useUser';
+import { getUserStats } from '../store/user';
+import BaseModal from './BaseModal';
 
 interface IModalCreateApp {
   open: boolean;
@@ -115,7 +114,7 @@ const ModalCreateApp: FC<IModalCreateApp> = ({ open, onClose, reloadData }) => {
         onCloseModal();
       }
     } catch (e) {
-      toastError({ message: getErrorMessage(e) });
+      console.error(e);
     }
   };
 

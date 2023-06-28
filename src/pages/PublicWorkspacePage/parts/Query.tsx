@@ -1,22 +1,20 @@
 import { Box, Flex, Tooltip } from '@chakra-ui/react';
-import AceEditor from 'react-ace';
-import { AppLoadingTable } from 'src/components';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import VisualizationDisplay from 'src/pages/WorkspacePage/parts/VisualizationDisplay';
-import 'ace-builds/src-noconflict/theme-tomorrow';
 import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/mode-sql';
-import { getErrorMessage } from 'src/utils/utils-helper';
+import 'ace-builds/src-noconflict/theme-tomorrow';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import AceEditor from 'react-ace';
 import { useParams } from 'react-router-dom';
-import { IQuery, IErrorExecuteQuery, LAYOUT_QUERY } from 'src/utils/query.type';
-import 'src/styles/pages/QueriesPage.scss';
-import { toastError } from 'src/utils/utils-notify';
-import rf from 'src/requests/RequestFactory';
-import { QUERY_RESULT_STATUS } from 'src/utils/common';
-import Header from 'src/pages/WorkspacePage/parts/Header';
-import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
-import { Query } from 'src/utils/utils-query';
 import { QueryResultIcon } from 'src/assets/icons';
+import { AppLoadingTable } from 'src/components';
+import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
+import Header from 'src/pages/WorkspacePage/parts/Header';
+import VisualizationDisplay from 'src/pages/WorkspacePage/parts/VisualizationDisplay';
+import rf from 'src/requests/RequestFactory';
+import 'src/styles/pages/QueriesPage.scss';
+import { QUERY_RESULT_STATUS } from 'src/utils/common';
+import { IErrorExecuteQuery, IQuery, LAYOUT_QUERY } from 'src/utils/query.type';
+import { Query } from 'src/utils/utils-query';
 import { STATUS } from 'src/utils/utils-webhook';
 
 const QueryPart: React.FC = () => {

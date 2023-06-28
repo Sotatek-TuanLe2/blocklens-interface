@@ -1,21 +1,16 @@
 import { Box, Flex, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
-import React, { FC, useCallback, useState } from 'react';
+import { FC, useCallback, useState } from 'react';
+import { isMobile } from 'react-device-detect';
+import { LinkIcon } from 'src/assets/icons';
+import { AppCard, AppDataTable, AppLoadingTable } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/pages/AppDetail.scss';
-import { AppCard, AppDataTable, AppLoadingTable } from 'src/components';
-import { toastError } from 'src/utils/utils-notify';
-import { isMobile } from 'react-device-detect';
-import {
-  formatShortText,
-  formatTimestamp,
-  getErrorMessage,
-} from 'src/utils/utils-helper';
+import { formatShortText, formatTimestamp } from 'src/utils/utils-helper';
 import {
   getExplorerTxUrl,
   getLogoChainByChainId,
   getNameChainByChainId,
 } from 'src/utils/utils-network';
-import { LinkIcon } from 'src/assets/icons';
 
 interface ITopUp {
   blockNumber: number;

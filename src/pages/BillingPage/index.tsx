@@ -301,7 +301,7 @@ const BillingPage = () => {
       toastSuccess({ message: 'Downgrade Plan Successfully!' });
       dispatch(getUserPlan());
     } catch (error) {
-      toastError({ message: getErrorMessage(error) });
+      console.error(error);
     }
   };
 
