@@ -211,10 +211,7 @@ const PartUserStats = ({
       if (item.key === 'message') {
         return {
           ...item,
-          value: getValue(
-            +userStatsToday.message,
-            user?.getPlan().notificationLimitation,
-          ),
+          value: +userStatsToday.message || '--',
         };
       }
 
