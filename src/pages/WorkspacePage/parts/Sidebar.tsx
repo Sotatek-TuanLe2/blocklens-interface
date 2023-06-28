@@ -43,10 +43,6 @@ const ChainItem = ({
     }
   };
 
-  // const handleAddQuery = (tableName: string) => {
-  //   AppBroadcast.dispatch(BROADCAST_ADD_TEXT_TO_EDITOR, tableName);
-  // };
-
   const handleCopyQuery = (query: string) => {
     copyToClipboard(query);
   };
@@ -313,10 +309,6 @@ const Sidebar: React.FC<{
       ? 'workspace-page__sidebar__content__work-place-detail work-place-active '
       : 'workspace-page__sidebar__content__work-place-detail ';
   };
-
-  // const handleAddQuery = (tableName: string) => {
-  //   AppBroadcast.dispatch(BROADCAST_ADD_TEXT_TO_EDITOR, tableName);
-  // };
 
   const handleCopyQuery = (query: string) => {
     copyToClipboard(query);
