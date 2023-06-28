@@ -153,7 +153,7 @@ const VisualizationDisplay = ({
         type: TYPE_VISUALIZATION.counter,
         options: {
           counterColName: !!axisOptions.length ? axisOptions[0] : '',
-          rowNumber: 1,
+          rowNumber: '1',
         },
       };
     } else {
