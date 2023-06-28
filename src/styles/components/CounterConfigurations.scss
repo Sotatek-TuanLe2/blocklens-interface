@@ -2,6 +2,7 @@
 @import '../mixins.scss';
 
 .main-counter {
+  position: relative;
   height: 94%;
   display: flex;
   justify-content: center;
@@ -23,7 +24,6 @@
     content: '';
     display: block;
     position: absolute;
-    z-index: -1;
     width: 90px;
     height: 100px;
     max-width: 100%;
@@ -31,6 +31,8 @@
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
+    pointer-events: none;
+    user-select: none;
   }
 }
 
