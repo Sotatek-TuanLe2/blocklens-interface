@@ -214,13 +214,13 @@ const Header: React.FC<IHeaderProps> = (props) => {
           <>
             {!isCreatingQuery && (
               <div className="item-desc">
-                {dataClass?.getUser().avatar ? (
-                  <Image src={dataClass?.getUser().avatar} alt="avatar" />
+                {dataClass?.getUser()?.avatar ? (
+                  <Image src={dataClass?.getUser()?.avatar} alt="avatar" />
                 ) : (
                   <Jazzicon
                     diameter={26}
                     paperStyles={{ minWidth: '26px' }}
-                    seed={generateAvatarFromId(dataClass?.getUser().userId)}
+                    seed={generateAvatarFromId(dataClass?.getUser()?.userId)}
                   />
                 )}
                 <span className="item-desc__name">
