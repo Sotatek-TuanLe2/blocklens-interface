@@ -1,9 +1,22 @@
 import { Box, Flex, Tbody, Td, Th, Thead, Tooltip, Tr } from '@chakra-ui/react';
-import React, { useState, useCallback, FC, MouseEvent } from 'react';
-import rf from 'src/requests/RequestFactory';
+import { FC, MouseEvent, useCallback, useState } from 'react';
+import { isMobile } from 'react-device-detect';
 import { useHistory, useParams } from 'react-router';
-import 'src/styles/pages/AppDetail.scss';
+import { InfoIcon, LinkDetail, LinkIcon, RetryIcon } from 'src/assets/icons';
 import {
+  AppButton,
+  AppDataTable,
+  AppFilter,
+  AppLink,
+  AppLoadingTable,
+} from 'src/components';
+import useWebhookDetails from 'src/hooks/useWebhook';
+import rf from 'src/requests/RequestFactory';
+import 'src/styles/pages/AppDetail.scss';
+import { getExplorerTxUrl } from 'src/utils/utils-network';
+import { toastSuccess } from 'src/utils/utils-notify';
+import {
+  getColorBrandStatus,
   IActivityResponse,
   IWebhook,
   optionsFilter,
@@ -11,26 +24,13 @@ import {
   WEBHOOK_STATUS,
   WEBHOOK_TYPES,
 } from 'src/utils/utils-webhook';
-import {
-  AppButton,
-  AppDataTable,
-  AppLink,
-  AppFilter,
-  AppLoadingTable,
-} from 'src/components';
-import { isMobile } from 'react-device-detect';
+import ModalUpgradeMessage from '../modals/ModalUpgradeMessage';
 import {
   filterParams,
   formatShortText,
   formatTimestamp,
   getErrorMessage,
 } from '../utils/utils-helper';
-import { toastError, toastSuccess } from 'src/utils/utils-notify';
-import { InfoIcon, LinkDetail, LinkIcon, RetryIcon } from 'src/assets/icons';
-import { getExplorerTxUrl } from 'src/utils/utils-network';
-import useWebhookDetails from 'src/hooks/useWebhook';
-import { getColorBrandStatus } from 'src/utils/utils-webhook';
-import ModalUpgradeMessage from '../modals/ModalUpgradeMessage';
 
 interface IActivity {
   activity: IActivityResponse;
@@ -82,7 +82,7 @@ export const onRetry = async (
 const handlerRetryError = (error: any, handleLimitError: any) => {
   if (getErrorMessage(error) === 'Limit of daily messages is reached') {
     handleLimitError();
-  } else toastError({ message: getErrorMessage(error) });
+  } else console.error(error);
 };
 
 const ActivityMobile: FC<IActivity> = ({ activity, webhook, onReload }) => {

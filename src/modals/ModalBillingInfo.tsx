@@ -1,11 +1,10 @@
-import React, { FC, useEffect, useState } from 'react';
-import BaseModal from './BaseModal';
 import { Box, Flex } from '@chakra-ui/react';
+import { FC, useEffect, useState } from 'react';
 import { AppButton, AppField, AppInput, AppSelect2 } from 'src/components';
-import { toastError, toastSuccess } from 'src/utils/utils-notify';
-import rf from 'src/requests/RequestFactory';
 import { COUNTRIES } from 'src/constants';
-import { getErrorMessage } from '../utils/utils-helper';
+import rf from 'src/requests/RequestFactory';
+import { toastSuccess } from 'src/utils/utils-notify';
+import BaseModal from './BaseModal';
 
 interface IModalBillingInfo {
   open: boolean;
@@ -60,7 +59,7 @@ const ModalBillingInfo: FC<IModalBillingInfo> = ({
       reloadData();
       onClose();
     } catch (error) {
-      toastError({ message: getErrorMessage(error) });
+      console.error(error);
     }
   };
 

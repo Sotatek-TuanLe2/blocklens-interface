@@ -1,15 +1,14 @@
-import { useState } from 'react';
-import 'src/styles/pages/AccountPage.scss';
-import { AppCard } from 'src/components';
 import { Box, Checkbox, Flex } from '@chakra-ui/react';
+import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { EditIcon } from 'src/assets/icons';
-import rf from 'src/requests/RequestFactory';
-import { toastError, toastSuccess } from 'src/utils/utils-notify';
-import ModalEditReceiveEmail from 'src/modals/ModalEditReceiveEmail';
-import { getUserProfile } from 'src/store/user';
+import { AppCard } from 'src/components';
 import useUser from 'src/hooks/useUser';
-import { getErrorMessage } from '../../../utils/utils-helper';
+import ModalEditReceiveEmail from 'src/modals/ModalEditReceiveEmail';
+import rf from 'src/requests/RequestFactory';
+import { getUserProfile } from 'src/store/user';
+import 'src/styles/pages/AccountPage.scss';
+import { toastSuccess } from 'src/utils/utils-notify';
 
 const Notifications = () => {
   const [isOpenEditReceiveEmailModal, setIsOpenEditReceiveEmailModal] =
@@ -25,9 +24,7 @@ const Notifications = () => {
       dispatch(getUserProfile());
       toastSuccess({ message: 'Successfully' });
     } catch (error) {
-      toastError({
-        message: getErrorMessage(error),
-      });
+      console.error(error);
     }
   };
 

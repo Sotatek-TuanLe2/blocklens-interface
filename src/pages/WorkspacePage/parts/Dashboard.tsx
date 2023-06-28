@@ -1,4 +1,3 @@
-import { useParams, Prompt } from 'react-router-dom';
 import {
   Box,
   Flex,
@@ -12,6 +11,8 @@ import { Layout, Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import ReactMarkdown from 'react-markdown';
 import 'react-resizable/css/styles.css';
+import { Prompt, useParams } from 'react-router-dom';
+import { DeleteIcon, EditIcon } from 'src/assets/icons';
 import PlusIcon from 'src/assets/icons/icon-plus.png';
 import useUser from 'src/hooks/useUser';
 import ModalAddTextWidget from 'src/modals/querySQL/ModalAddTextWidget';
@@ -19,25 +20,22 @@ import ModalAddVisualization from 'src/modals/querySQL/ModalAddVisualization';
 import ModalDeleteWidget from 'src/modals/querySQL/ModalDeleteWidget ';
 import ModalForkDashBoardDetails from 'src/modals/querySQL/ModalForkDashBoardDetails';
 import ModalSettingDashboardDetails from 'src/modals/querySQL/ModalSettingDashboardDetails';
+import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
+import { LoadingFullPage } from 'src/pages/LoadingFullPage';
 import rf from 'src/requests/RequestFactory';
+import 'src/styles/components/AppQueryMenu.scss';
+import 'src/styles/components/Chart.scss';
 import 'src/styles/components/TableValue.scss';
 import 'src/styles/pages/DashboardDetailPage.scss';
-import 'src/styles/components/Chart.scss';
-import 'src/styles/components/AppQueryMenu.scss';
 import {
   IDashboardDetail,
   ITextWidget,
   IVisualizationWidget,
 } from 'src/utils/query.type';
-import { getErrorMessage } from 'src/utils/utils-helper';
-import { toastError } from 'src/utils/utils-notify';
-import VisualizationItem from './VisualizationItem';
-import Header from './Header';
-import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
 import { Dashboard } from 'src/utils/utils-dashboard';
-import { DeleteIcon, EditIcon } from 'src/assets/icons';
-import { LoadingFullPage } from 'src/pages/LoadingFullPage';
+import Header from './Header';
+import VisualizationItem from './VisualizationItem';
 
 export interface ILayout extends Layout {
   id: string;
@@ -127,9 +125,7 @@ const DashboardPart: React.FC = () => {
         setDataLayouts(layouts);
       }
     } catch (error) {
-      toastError({
-        message: getErrorMessage(error),
-      });
+      console.error(error);
     } finally {
       setIsLoading(false);
     }
@@ -258,7 +254,7 @@ const DashboardPart: React.FC = () => {
       }
     } catch (e) {
       setIsSavingDashboard(false);
-      toastError({ message: getErrorMessage(e) });
+      console.error(e);
     }
   };
 

@@ -39,7 +39,7 @@ const ChainItem = ({
       onChangeSchemaDescribe(data);
       //get schema
     } catch (error) {
-      toastError({ message: getErrorMessage(error) });
+      console.error(error);
     }
   };
 
@@ -222,7 +222,7 @@ const Sidebar: React.FC<{
         .getMyListQueries(params);
       return { ...res, docs: res.data };
     } catch (error) {
-      toastError({ message: getErrorMessage(error) });
+      console.error(error);
     }
   };
 

@@ -1,12 +1,11 @@
 import {
   BaseProvider,
   FallbackProvider,
-  StaticJsonRpcProvider,
   JsonRpcProvider,
+  StaticJsonRpcProvider,
 } from '@ethersproject/providers';
 import _ from 'lodash';
 import config, { Chain, Network } from 'src/config';
-import { toastError } from './utils-notify';
 import { CHAIN_NAME } from './query.type';
 import { CHAINS } from './utils-webhook';
 
@@ -226,9 +225,7 @@ export const switchNetwork = async (
     // This error code indicates that the chain has not been added to MetaMask.
     // TODO: change 4902 to constant variable
     if (error.code === 4902 || error.code === -32603) {
-      toastError({
-        message: 'Please add this network to your wallet to continue',
-      });
+      console.error('Please add this network to your wallet to continue');
       return addNewNetwork(network, provider);
     }
     // 4001: User rejected to switch network

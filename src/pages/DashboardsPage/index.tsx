@@ -15,8 +15,6 @@ import {
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/pages/DashboardsPage.scss';
 import { ROUTES } from 'src/utils/common';
-import { getErrorMessage } from 'src/utils/utils-helper';
-import { toastError } from 'src/utils/utils-notify';
 import FilterSearch, { TYPE_MYWORK } from './parts/FilterSearch';
 import ListItem from './parts/ListItem';
 

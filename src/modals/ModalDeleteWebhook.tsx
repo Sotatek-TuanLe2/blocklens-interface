@@ -1,15 +1,14 @@
 import { Box, Flex } from '@chakra-ui/react';
-import React, { FC } from 'react';
-import BaseModal from './BaseModal';
-import rf from 'src/requests/RequestFactory';
-import { toastError, toastSuccess } from 'src/utils/utils-notify';
-import { IWebhook } from 'src/utils/utils-webhook';
-import { AppButton } from 'src/components';
-import { useHistory } from 'react-router';
+import { FC } from 'react';
 import { isMobile } from 'react-device-detect';
 import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router';
+import { AppButton } from 'src/components';
+import rf from 'src/requests/RequestFactory';
+import { toastSuccess } from 'src/utils/utils-notify';
+import { IWebhook } from 'src/utils/utils-webhook';
 import { getUserStats } from '../store/user';
-import { getErrorMessage } from '../utils/utils-helper';
+import BaseModal from './BaseModal';
 
 interface IModalDeleteWebhook {
   open: boolean;
@@ -35,7 +34,7 @@ const ModalDeleteWebhook: FC<IModalDeleteWebhook> = ({
       history.push(`/apps/${webhook.appId}`);
       onClose();
     } catch (e) {
-      toastError({ message: getErrorMessage(e) });
+      console.error(e);
     }
   };
 

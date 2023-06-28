@@ -1,14 +1,13 @@
-import React, { FC } from 'react';
-import BaseModal from './BaseModal';
 import { Box, Flex, Text } from '@chakra-ui/react';
-import rf from 'src/requests/RequestFactory';
-import { toastError, toastSuccess } from '../utils/utils-notify';
-import 'src/styles/pages/ProfilePage.scss';
-import { AppCard } from 'src/components';
+import { FC } from 'react';
 import { useDispatch } from 'react-redux';
+import { AppCard } from 'src/components';
+import rf from 'src/requests/RequestFactory';
 import { MetadataPlan } from 'src/store/metadata';
 import { getUserPlan } from 'src/store/user';
-import { getErrorMessage } from '../utils/utils-helper';
+import 'src/styles/pages/ProfilePage.scss';
+import { toastSuccess } from '../utils/utils-notify';
+import BaseModal from './BaseModal';
 
 interface IModalChangePaymentMethod {
   open: boolean;
@@ -34,7 +33,7 @@ const ModalChangePlan: FC<IModalChangePaymentMethod> = ({
       dispatch(getUserPlan());
       onClose();
     } catch (e) {
-      toastError({ message: getErrorMessage(e) });
+      console.error(e);
     }
   };
 

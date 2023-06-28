@@ -1,16 +1,14 @@
 import { Box, Flex } from '@chakra-ui/react';
 import { FC } from 'react';
-import BaseModal from './BaseModal';
-import useWallet from 'src/hooks/useWallet';
-import config from 'src/config';
-import { toastError } from 'src/utils/utils-notify';
-import { METAMASK_WALLET } from 'src/connectors';
-import { switchNetwork } from 'src/utils/utils-network';
-import Storage from 'src/utils/utils-storage';
 import { isMobile } from 'react-device-detect';
 import { useDispatch } from 'react-redux';
+import config from 'src/config';
+import { METAMASK_WALLET } from 'src/connectors';
+import useWallet from 'src/hooks/useWallet';
 import { setOpenModalSignatureRequired } from 'src/store/wallet';
-import { getErrorMessage } from '../utils/utils-helper';
+import { switchNetwork } from 'src/utils/utils-network';
+import Storage from 'src/utils/utils-storage';
+import BaseModal from './BaseModal';
 
 interface IModalConnectWallet {
   open: boolean;
@@ -34,7 +32,7 @@ const ModalConnectWallet: FC<IModalConnectWallet> = ({ open, onClose }) => {
       }
       onClose();
     } catch (error) {
-      toastError({ message: getErrorMessage(error) });
+      console.error(error);
     }
   };
 
