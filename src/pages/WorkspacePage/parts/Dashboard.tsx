@@ -142,6 +142,18 @@ const DashboardPart: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    window.onbeforeunload = () => {
+      if (editMode) {
+        return ``;
+      }
+    };
+
+    return () => {
+      window.onbeforeunload = null;
+    };
+  }, [editMode]);
+
+  useEffect(() => {
     if (dashboardId) {
       fetchLayoutData();
     }

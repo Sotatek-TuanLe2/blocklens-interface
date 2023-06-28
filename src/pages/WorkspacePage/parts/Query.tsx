@@ -51,6 +51,8 @@ const QueryPart: React.FC = () => {
   const [openModalSettingQuery, setOpenModalSettingQuery] =
     useState<boolean>(false);
 
+  const isLoading = isLoadingQuery || isLoadingResult;
+
   useEffect(() => {
     AppBroadcast.on(BROADCAST_FETCH_QUERY, async (id: string) => {
       setIsLoadingQuery(true);
@@ -288,10 +290,12 @@ const QueryPart: React.FC = () => {
           <QueryResultIcon />
           Result Table
         </div>
-        <p
-          onClick={onExpandEditor}
-          className={`${onCheckedIconExpand(false)}`}
-        />
+        {!isLoading && (
+          <p
+            onClick={onExpandEditor}
+            className={`${onCheckedIconExpand(false)}`}
+          />
+        )}
       </div>
     );
   };
@@ -470,10 +474,12 @@ const QueryPart: React.FC = () => {
                     !queryId || !queryValue ? 'cursor-not-allowed' : ''
                   } btn-expand-query`}
                 >
-                  <p
-                    className={`${onCheckedIconExpand(true)}`}
-                    onClick={onExpandEditor}
-                  />
+                  {!isLoading && (
+                    <p
+                      className={`${onCheckedIconExpand(true)}`}
+                      onClick={onExpandEditor}
+                    />
+                  )}
                 </div>
               </Tooltip>
             </Box>

@@ -156,7 +156,6 @@ const ModalQuery = ({
             <AppInput
               placeholder="tag1, tag2, tag3"
               value={valueSettingQuery.tags?.toString()}
-              placeholder="tag1, tag2, tag3"
               onChange={handleChangeTags}
             />
           </div>
