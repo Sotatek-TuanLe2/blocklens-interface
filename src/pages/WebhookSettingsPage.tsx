@@ -152,6 +152,21 @@ const WebhookSettingsPage = () => {
     );
   };
 
+  const _renderDetailTokenWebhook = () => {
+    return (
+      <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
+        <AppField label={'Token Address'} customWidth={'100%'}>
+          <AppInput value={webhook?.metadata?.address} isDisabled />
+        </AppField>
+        <AppUploadABI
+          viewOnly
+          abi={webhook?.metadata?.abi}
+          abiFilter={webhook?.metadata?.abiFilter}
+        />
+      </Flex>
+    );
+  };
+
   const _renderDetailCoinActivityAptosWebhook = () => {
     return (
       <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
@@ -218,6 +233,8 @@ const WebhookSettingsPage = () => {
         return _renderDetailAddressWebhook();
       case WEBHOOK_TYPES.CONTRACT_ACTIVITY:
         return _renderDetailContractWebhook();
+      case WEBHOOK_TYPES.TOKEN_ACTIVITY:
+        return _renderDetailTokenWebhook();
       case WEBHOOK_TYPES.APTOS_COIN_ACTIVITY:
         return _renderDetailCoinActivityAptosWebhook();
       case WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY:

@@ -352,29 +352,29 @@ const ActivityDesktop: FC<IActivity> = ({ activity, webhook, onReload }) => {
           </Td>
           <Td w="15%">
             <Flex justifyContent={'flex-end'}>
-              {activity?.lastStatus !== STATUS.DONE && (
-                <Box
-                  className="link-redirect"
-                  mr={3}
-                  cursor={
-                    webhook.status === WEBHOOK_STATUS.DISABLED
-                      ? 'not-allowed'
-                      : 'pointer'
-                  }
-                >
-                  <RetryIcon
-                    onClick={async (e) => {
-                      try {
-                        await onRetry(e, activity, webhook, onReload);
-                      } catch (error) {
-                        handlerRetryError(error, () =>
-                          setOpenModalUpgradeMessage(true),
-                        );
-                      }
-                    }}
-                  />
-                </Box>
-              )}
+              {/*{activity?.lastStatus !== STATUS.DONE && (*/}
+              {/*  <Box*/}
+              {/*    className="link-redirect"*/}
+              {/*    mr={3}*/}
+              {/*    cursor={*/}
+              {/*      webhook.status === WEBHOOK_STATUS.DISABLED*/}
+              {/*        ? 'not-allowed'*/}
+              {/*        : 'pointer'*/}
+              {/*    }*/}
+              {/*  >*/}
+              {/*    <RetryIcon*/}
+              {/*      onClick={async (e) => {*/}
+              {/*        try {*/}
+              {/*          await onRetry(e, activity, webhook, onReload);*/}
+              {/*        } catch (error) {*/}
+              {/*          handlerRetryError(error, () =>*/}
+              {/*            setOpenModalUpgradeMessage(true),*/}
+              {/*          );*/}
+              {/*        }*/}
+              {/*      }}*/}
+              {/*    />*/}
+              {/*  </Box>*/}
+              {/*)}*/}
 
               <AppLink
                 to={`/app/${webhook?.appId}/webhook/${webhook.registrationId}/activities/${activity.hash}`}
