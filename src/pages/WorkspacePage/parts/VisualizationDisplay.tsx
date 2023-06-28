@@ -16,8 +16,9 @@ import CounterConfiguration from 'src/components/VisualizationConfigs/CounterCon
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/Chart.scss';
 import { getDefaultVisualizationName } from 'src/utils/common';
-import { areYAxisesSameType } from 'src/utils/utils-helper';
+import { areYAxisesSameType, getErrorMessage } from 'src/utils/utils-helper';
 import { objectKeys } from 'src/utils/utils-network';
+import { toastError } from 'src/utils/utils-notify';
 import { Query } from 'src/utils/utils-query';
 import { AppButton, AppTabs, ITabs } from '../../../components';
 import {
@@ -203,7 +204,7 @@ const VisualizationDisplay = ({
       setIsConfiguring(false);
     } catch (error: any) {
       setIsConfiguring(false);
-      console.error(error);
+      toastError({ message: getErrorMessage(error) });
     }
   };
 
