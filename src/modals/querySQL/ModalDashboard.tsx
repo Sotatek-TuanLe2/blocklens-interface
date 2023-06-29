@@ -8,7 +8,8 @@ import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/BaseModal.scss';
 import { ROUTES, TYPE_OF_MODAL } from 'src/utils/common';
 import { setRecaptchaToRequest } from 'src/utils/utils-auth';
-import { toastSuccess } from 'src/utils/utils-notify';
+import { getErrorMessage } from 'src/utils/utils-helper';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { createValidator } from 'src/utils/utils-validator';
 import BaseModal from '../BaseModal';
 import { generateSubmitBtn, generateTitleModal } from './ModalQuery';
@@ -115,7 +116,7 @@ const ModalDashboard: React.FC<IModelNewDashboard> = ({
       onClose();
       onSuccess && (await onSuccess(result));
     } catch (error) {
-      console.error(error);
+      toastError({ message: getErrorMessage(error) });
     }
   };
 

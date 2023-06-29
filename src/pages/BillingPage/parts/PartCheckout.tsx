@@ -11,7 +11,7 @@ import rf from 'src/requests/RequestFactory';
 import { MetadataPlan } from 'src/store/metadata';
 import { getUserPlan } from 'src/store/user';
 import { formatShortText } from 'src/utils/utils-helper';
-import { toastSuccess } from 'src/utils/utils-notify';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { paymentMethods, PAYMENT_METHOD } from '..';
 
 interface IPartCheckout {
@@ -67,7 +67,7 @@ const PartCheckout: FC<IPartCheckout> = ({
       dispatch(getUserPlan());
       history.push('/billing-history');
     } catch (e: any) {
-      console.error(e);
+      toastError({ message: e?.message || 'Oops. Something went wrong!' });
     }
   };
 

@@ -2,7 +2,8 @@ import { Flex } from '@chakra-ui/react';
 import { FC } from 'react';
 import { isMobile } from 'react-device-detect';
 import rf from 'src/requests/RequestFactory';
-import { toastSuccess } from 'src/utils/utils-notify';
+import { getErrorMessage } from 'src/utils/utils-helper';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import AppButton from '../components/AppButton';
 import BaseModal from './BaseModal';
 
@@ -21,7 +22,7 @@ const ModalCancelSubscription: FC<IModalCancelSubscription> = ({
       toastSuccess({ message: 'Cancel Subscription Successfully!' });
       onClose();
     } catch (e) {
-      console.error(e);
+      toastError({ message: getErrorMessage(e) });
     }
   };
 

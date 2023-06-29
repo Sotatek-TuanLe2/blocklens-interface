@@ -14,7 +14,8 @@ import config from 'src/config';
 import rf from 'src/requests/RequestFactory';
 import { getUserProfile } from 'src/store/user';
 import 'src/styles/pages/AppDetail.scss';
-import { toastSuccess } from 'src/utils/utils-notify';
+import { getErrorMessage } from 'src/utils/utils-helper';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
 
 interface ICheckoutForm {
   onClose?: () => void;
@@ -41,7 +42,9 @@ const CheckoutForm: FC<ICheckoutForm> = ({ onClose, onSuccess, isEdit }) => {
     });
 
     if (result.error) {
-      console.log(result.error);
+      toastError({
+        message: result.error?.message || 'Oops. Something went wrong!',
+      });
       setIsLoading(false);
       return;
     }
@@ -57,7 +60,7 @@ const CheckoutForm: FC<ICheckoutForm> = ({ onClose, onSuccess, isEdit }) => {
           onSuccess && (await onSuccess());
           dispatch(getUserProfile());
         } catch (e) {
-          console.error(e);
+          toastError({ message: getErrorMessage(e) });
         } finally {
           setIsLoading(false);
         }

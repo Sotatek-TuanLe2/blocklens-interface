@@ -15,11 +15,12 @@ import 'src/styles/pages/LoginPage.scss';
 import { useDispatch } from 'react-redux';
 import { useHistory, useLocation } from 'react-router';
 import rf from 'src/requests/RequestFactory';
-import { toastSuccess } from 'src/utils/utils-notify';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { setUserAuth } from '../store/user';
 import { ROUTES } from 'src/utils/common';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { setRecaptchaToRequest } from 'src/utils/utils-auth';
+import { getErrorMessage } from 'src/utils/utils-helper';
 
 interface IDataForm {
   email: string;
@@ -67,7 +68,7 @@ const LoginPage: FC = () => {
       }
     } catch (e) {
       setRecaptchaToRequest(null);
-      console.error(e);
+      toastError({ message: getErrorMessage(e) });
     }
   };
 

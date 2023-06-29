@@ -7,6 +7,7 @@ import {
 import _ from 'lodash';
 import config, { Chain, Network } from 'src/config';
 import { CHAIN_NAME } from './query.type';
+import { toastError } from './utils-notify';
 import { CHAINS } from './utils-webhook';
 
 export const getLogoChainByChainId = (ChainId?: string) => {
@@ -225,7 +226,9 @@ export const switchNetwork = async (
     // This error code indicates that the chain has not been added to MetaMask.
     // TODO: change 4902 to constant variable
     if (error.code === 4902 || error.code === -32603) {
-      console.error('Please add this network to your wallet to continue');
+      toastError({
+        message: 'Please add this network to your wallet to continue',
+      });
       return addNewNetwork(network, provider);
     }
     // 4001: User rejected to switch network

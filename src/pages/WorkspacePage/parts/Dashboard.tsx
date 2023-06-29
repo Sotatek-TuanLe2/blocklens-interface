@@ -34,6 +34,8 @@ import {
 } from 'src/utils/query.type';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
 import { Dashboard } from 'src/utils/utils-dashboard';
+import { getErrorMessage } from 'src/utils/utils-helper';
+import { toastError } from 'src/utils/utils-notify';
 import Header from './Header';
 import VisualizationItem from './VisualizationItem';
 
@@ -254,7 +256,7 @@ const DashboardPart: React.FC = () => {
       }
     } catch (e) {
       setIsSavingDashboard(false);
-      console.error(e);
+      toastError({ message: getErrorMessage(e) });
     }
   };
 

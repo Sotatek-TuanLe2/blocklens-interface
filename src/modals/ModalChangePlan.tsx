@@ -6,7 +6,8 @@ import rf from 'src/requests/RequestFactory';
 import { MetadataPlan } from 'src/store/metadata';
 import { getUserPlan } from 'src/store/user';
 import 'src/styles/pages/ProfilePage.scss';
-import { toastSuccess } from '../utils/utils-notify';
+import { getErrorMessage } from 'src/utils/utils-helper';
+import { toastError, toastSuccess } from '../utils/utils-notify';
 import BaseModal from './BaseModal';
 
 interface IModalChangePaymentMethod {
@@ -33,7 +34,7 @@ const ModalChangePlan: FC<IModalChangePaymentMethod> = ({
       dispatch(getUserPlan());
       onClose();
     } catch (e) {
-      console.error(e);
+      toastError({ message: getErrorMessage(e) });
     }
   };
 

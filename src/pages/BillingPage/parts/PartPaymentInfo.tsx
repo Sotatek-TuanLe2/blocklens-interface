@@ -11,7 +11,7 @@ import rf from 'src/requests/RequestFactory';
 import { MetadataPlan } from 'src/store/metadata';
 import { getUserProfile } from 'src/store/user';
 import 'src/styles/pages/AppDetail.scss';
-import { toastSuccess } from 'src/utils/utils-notify';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { PAYMENT_METHOD } from '../index';
 import FormCard from './FormCard';
 import FormCrypto from './FormCrypto';
@@ -41,7 +41,7 @@ const PartPaymentInfo: FC<IPartPaymentInfo> = ({
       toastSuccess({ message: 'Update Successfully!' });
       await dispatch(getUserProfile());
     } catch (error: any) {
-      console.error(error);
+      toastError({ message: error.message });
     }
   };
 

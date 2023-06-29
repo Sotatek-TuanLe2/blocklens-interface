@@ -5,7 +5,8 @@ import { AppButton, AppField, AppInput } from 'src/components';
 import useUser from 'src/hooks/useUser';
 import rf from 'src/requests/RequestFactory';
 import { getUserProfile } from 'src/store/user';
-import { toastSuccess } from 'src/utils/utils-notify';
+import { getErrorMessage } from 'src/utils/utils-helper';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { createValidator } from 'src/utils/utils-validator';
 import BaseModal from './BaseModal';
 
@@ -47,7 +48,7 @@ const ModalEditReceiveEmail: React.FC<IModalEditReceiveEmail> = ({
       dispatch(getUserProfile());
       toastSuccess({ message: 'Update successfully' });
     } catch (error) {
-      console.error(error);
+      toastError({ message: getErrorMessage(error) });
     }
   };
 

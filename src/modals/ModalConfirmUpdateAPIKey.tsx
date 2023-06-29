@@ -2,7 +2,8 @@ import { Flex } from '@chakra-ui/react';
 import { FC } from 'react';
 import AppButton from 'src/components/AppButton';
 import rf from 'src/requests/RequestFactory';
-import { toastSuccess } from 'src/utils/utils-notify';
+import { getErrorMessage } from 'src/utils/utils-helper';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import BaseModal from './BaseModal';
 
 interface IModalConfirmUpdateAPIKey {
@@ -23,7 +24,7 @@ const ModalConfirmUpdateAPIKey: FC<IModalConfirmUpdateAPIKey> = ({
       toastSuccess({ message: 'Regenerate successfully!' });
       onReloadData();
     } catch (e: any) {
-      console.error(e);
+      toastError({ message: getErrorMessage(e) });
     }
   };
 

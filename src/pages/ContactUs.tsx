@@ -71,7 +71,9 @@ const ContactUs = () => {
       validator.current.visibleFields = [];
       toastSuccess({ message: 'Send email successfully' });
     } catch (error: any) {
-      console.error(error);
+      toastError({
+        message: error?.message || 'Oops. Something went wrong!',
+      });
     }
   };
 

@@ -46,8 +46,9 @@ const ForgotPasswordPage: FC = () => {
     }
     try {
       if (!executeRecaptcha) {
-        console.log('Oops. Something went wrong!');
-
+        toastError({
+          message: 'Oops. Something went wrong!',
+        });
         return;
       }
       const result = await executeRecaptcha('homepage');
@@ -56,7 +57,9 @@ const ForgotPasswordPage: FC = () => {
       setOpenModalResendEmail(true);
     } catch (error: any) {
       setRecaptchaToRequest(null);
-      console.error(error);
+      toastError({
+        message: `${error.message || 'Oops. Something went wrong!'}`,
+      });
     }
   };
 

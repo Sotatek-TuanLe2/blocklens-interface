@@ -6,7 +6,8 @@ import { AppCard, AppDataTable, AppLoadingTable } from 'src/components';
 import { BasePage } from 'src/layouts';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/pages/AppDetail.scss';
-import { toastSuccess } from 'src/utils/utils-notify';
+import { getErrorMessage } from 'src/utils/utils-helper';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import BillingItem from './parts/BillingItem';
 import BillingItemMobile from './parts/BillingItemMobile';
 
@@ -77,7 +78,7 @@ const BillingHistory = () => {
         message: 'Successfully!',
       });
     } catch (error) {
-      console.error(error);
+      toastError({ message: getErrorMessage(error) });
     }
   }, []);
 
@@ -86,7 +87,7 @@ const BillingHistory = () => {
       await rf.getRequest('BillingRequest').retryPendingInvoice(id);
       toastSuccess({ message: 'Successfully!' });
     } catch (error) {
-      console.error(error);
+      toastError({ message: getErrorMessage(error) });
     }
   }, []);
 

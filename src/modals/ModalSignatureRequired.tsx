@@ -4,6 +4,8 @@ import { AppButton } from 'src/components';
 import useWallet from 'src/hooks/useWallet';
 import { RootState } from 'src/store';
 import { setOpenModalSignatureRequired } from 'src/store/wallet';
+import { getErrorMessage } from 'src/utils/utils-helper';
+import { toastError } from 'src/utils/utils-notify';
 import BaseModal from './BaseModal';
 
 const ModalSignatureRequired = () => {
@@ -24,7 +26,7 @@ const ModalSignatureRequired = () => {
       await linkWallet(connector, address);
       dispatch(setOpenModalSignatureRequired(false));
     } catch (error) {
-      console.error(error);
+      toastError({ message: getErrorMessage(error) });
     }
   };
 

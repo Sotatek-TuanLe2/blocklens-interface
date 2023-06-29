@@ -7,7 +7,8 @@ import { AppField, AppInput } from 'src/components';
 import AppButton from 'src/components/AppButton';
 import rf from 'src/requests/RequestFactory';
 import { IAppResponse } from 'src/utils/utils-app';
-import { toastSuccess } from 'src/utils/utils-notify';
+import { getErrorMessage } from 'src/utils/utils-helper';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { getUserStats } from '../store/user';
 import { ROUTES } from '../utils/common';
 import BaseModal from './BaseModal';
@@ -37,7 +38,7 @@ const ModalDeleteApp: FC<IModalEditApp> = ({ open, onClose, appInfo }) => {
       history.push(ROUTES.TRIGGERS);
       onCloseModal();
     } catch (e) {
-      console.error(e);
+      toastError({ message: getErrorMessage(e) });
     }
   };
 

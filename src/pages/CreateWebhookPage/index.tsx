@@ -196,7 +196,7 @@ const CreateWebhook = () => {
       history.push(`/app/${appId}`);
       toastSuccess({ message: 'Create Successfully!' });
     } catch (e: any) {
-      console.error(e);
+      toastError({ message: e?.message || 'Oops. Something went wrong!' });
     }
   };
 
