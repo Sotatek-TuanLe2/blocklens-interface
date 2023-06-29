@@ -1,4 +1,4 @@
-import { Box, Flex } from '@chakra-ui/react';
+import { Flex } from '@chakra-ui/react';
 import BigNumber from 'bignumber.js';
 import { isNull, isUndefined } from 'lodash';
 import moment from 'moment';
@@ -325,6 +325,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
           right: 20,
           top: 20,
         }}
+        style={{ '--bg-copyright': 'url(/images/copyright-logo-name.png)' }}
       >
         <CartesianGrid
           vertical={false}

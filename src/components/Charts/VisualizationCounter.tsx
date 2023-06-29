@@ -79,7 +79,13 @@ const VisualizationCounter = ({ data, visualization, isLoading }: Props) => {
   }
 
   return (
-    <div className="main-counter">
+    <Box
+      _after={{
+        bg: 'url(/images/copyright-logo.png) no-repeat center',
+        bgSize: 'contain',
+      }}
+      className="main-counter"
+    >
       <div className="counter-result">
         <div className="text-result">
           <div
@@ -115,7 +121,7 @@ const VisualizationCounter = ({ data, visualization, isLoading }: Props) => {
           </Box>
         </div>
       </div>
-    </div>
+    </Box>
   );
 };
 
