@@ -29,7 +29,7 @@
     max-width: 100%;
     max-height: calc(100% - 52px);
     left: 50%;
-    top: 50%;
+    top: calc(50% - 26px);
     transform: translate(-50%, -50%);
     pointer-events: none;
     user-select: none;
