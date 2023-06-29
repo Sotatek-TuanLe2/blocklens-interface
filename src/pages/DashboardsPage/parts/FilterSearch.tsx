@@ -189,14 +189,12 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
             .getPublicDashboardTagsTrending();
 
           setListTagsTrending(res?.tags || []);
-          console.log('res dashboard: ', res);
         } else {
           const res: any = await rf
             .getRequest('DashboardsRequest')
             .getPublicQueryTagsTrending();
 
           setListTagsTrending(res?.tags || []);
-          console.log('res query: ', res);
         }
       } catch (error) {
         setListTagsTrending([]);
