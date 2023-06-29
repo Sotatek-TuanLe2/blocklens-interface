@@ -54,7 +54,7 @@ export interface DashboardInterface {
   getCreatedTime: () => string;
   getUpdatedTime: () => string;
   getThumnail: () => string | null;
-  getTags: () => string[] | null;
+  getTags: () => string[];
   getForkedDashboardId: () => string | null;
   getChains: () => string[] | null;
   getTextWidgets: () => TextWidget[] | null;
@@ -206,7 +206,7 @@ export class Dashboard implements DashboardInterface {
   }
 
   getTags() {
-    return this.tags || null;
+    return this.tags || [];
   }
 
   getChains() {

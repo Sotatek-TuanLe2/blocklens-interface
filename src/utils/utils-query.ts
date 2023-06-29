@@ -38,7 +38,7 @@ export interface QueryInterface {
   getCreatedTime: () => string;
   getUpdatedTime: () => string;
   getThumnail: () => string | null;
-  getTags: () => string[] | null;
+  getTags: () => string[];
   getQuery: () => string;
   getChains: () => string[] | null;
 
@@ -162,7 +162,7 @@ export class Query implements QueryInterface {
   }
 
   getTags() {
-    return this.tags || null;
+    return this.tags || [];
   }
 
   getQuery() {

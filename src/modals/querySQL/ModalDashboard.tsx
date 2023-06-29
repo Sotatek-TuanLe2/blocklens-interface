@@ -24,8 +24,8 @@ interface IModelNewDashboard {
 }
 
 interface IDataSettingForm {
-  title: string;
-  tag: string;
+  name: string;
+  tags: string;
 }
 
 const ModalDashboard: React.FC<IModelNewDashboard> = ({
@@ -37,8 +37,8 @@ const ModalDashboard: React.FC<IModelNewDashboard> = ({
   defaultValue = { name: '', tags: [''] },
 }) => {
   const initDataFormSetting = {
-    title: defaultValue.name || '',
-    tag: defaultValue.tags?.join(',') || '',
+    name: defaultValue.name || '',
+    tags: defaultValue.tags?.join(', ') || '',
   };
 
   const history = useHistory();
@@ -79,35 +79,37 @@ const ModalDashboard: React.FC<IModelNewDashboard> = ({
 
       let result;
       setIsDisableSubmit(true);
+      const submitData: { name: string; tags: string[] } = {
+        name: dataForm.name.trim(),
+        tags:
+          !!dataForm.tags && !!dataForm.tags.length
+            ? dataForm.tags
+                .split(',')
+                .filter((i) => i.trim().length)
+                .map((i) => i.trim())
+            : [],
+      };
+
       switch (type) {
         case TYPE_OF_MODAL.CREATE:
-          result = await rf.getRequest('DashboardsRequest').createNewDashboard({
-            name: dataForm.title.trim(),
-            tag: dataForm.tag.trim(),
-          });
+          result = await rf
+            .getRequest('DashboardsRequest')
+            .createNewDashboard(submitData);
           setIsDisableSubmit(false);
           history.push(`${ROUTES.MY_DASHBOARD}/${result.id}`);
           toastSuccess({ message: 'Create new dashboard successfully!' });
           break;
         case TYPE_OF_MODAL.SETTING:
-          result = await rf.getRequest('DashboardsRequest').updateDashboardItem(
-            {
-              name: dataForm.title.trim(),
-              tag: dataForm.tag.trim(),
-            },
-            id,
-          );
+          result = await rf
+            .getRequest('DashboardsRequest')
+            .updateDashboardItem(submitData, id);
           setIsDisableSubmit(false);
           toastSuccess({ message: 'Update dashboard successfully!' });
           break;
         case TYPE_OF_MODAL.FORK:
-          result = await rf.getRequest('DashboardsRequest').forkDashboard(
-            {
-              newDashboardName: dataForm.title.trim(),
-              tag: dataForm.tag.trim(),
-            },
-            id,
-          );
+          result = await rf
+            .getRequest('DashboardsRequest')
+            .forkDashboard(submitData, id);
           setIsDisableSubmit(false);
           history.push(`${ROUTES.MY_DASHBOARD}/${result.id}`);
           toastSuccess({ message: 'Fork dashboard successfully!' });
@@ -132,13 +134,13 @@ const ModalDashboard: React.FC<IModelNewDashboard> = ({
         </div>
         <AppField label={'Dashboard Tittle'}>
           <AppInput
-            value={dataForm.title}
+            value={dataForm.name}
             size="sm"
             placeholder="My dashboard"
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
               setDataForm({
                 ...dataForm,
-                title: e.target.value,
+                name: e.target.value,
               })
             }
             validate={{
@@ -150,19 +152,19 @@ const ModalDashboard: React.FC<IModelNewDashboard> = ({
         </AppField>
         <AppField label={'Tags (optional)'}>
           <AppInput
-            value={dataForm.tag}
+            value={dataForm.tags}
             size="sm"
             placeholder="tag1, tag2, tag3"
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
               setDataForm({
                 ...dataForm,
-                tag: e.target.value,
+                tags: e.target.value,
               })
             }
             validate={{
-              name: `tag`,
+              name: `tags`,
               validator: validator.current,
-              rule: ['max:150'],
+              rule: ['maxTags'],
             }}
           />
         </AppField>
@@ -182,7 +184,7 @@ const ModalDashboard: React.FC<IModelNewDashboard> = ({
           <AppButton
             size="lg"
             onClick={handleSubmitForm}
-            disabled={!dataForm.title.trim() || isDisableSubmit}
+            disabled={!dataForm.name.trim() || isDisableSubmit}
           >
             {generateSubmitBtn(type)}
           </AppButton>

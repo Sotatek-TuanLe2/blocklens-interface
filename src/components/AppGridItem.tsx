@@ -25,7 +25,7 @@ interface AppGridItemProps {
   creator?: string;
   date?: string;
   chainList?: string[];
-  tagList?: any[];
+  tagList?: string[];
   shareComponent?: ReactNode;
   userId?: string;
   views?: number | string;
@@ -146,12 +146,12 @@ const AppGridItem: FC<AppGridItemProps> = ({
                 {name}
               </Tooltip>
             </Link>
-            <Flex flexWrap={'wrap'} mt={{ base: 1, lg: 1.5 }}>
-              {tagList &&
-                tagList.map((item) => (
+            <Flex flexWrap={'wrap'} mt={{ base: 1, lg: 1.5 }} h={'23px'}>
+              {!!tagList?.length &&
+                tagList.map((item, index: number) => (
                   <AppTag
-                    key={item.id}
-                    value={item.name}
+                    key={index}
+                    value={item}
                     h={{ base: '24px', lg: '22px' }}
                     classNames="item-tag"
                   />

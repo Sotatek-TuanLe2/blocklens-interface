@@ -89,7 +89,6 @@ const Header: React.FC<IHeaderProps> = (props) => {
 
   const onSettingSuccess = async (res: any) => {
     if (type === LIST_ITEM_TYPE.DASHBOARDS) {
-      AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
       AppBroadcast.dispatch(BROADCAST_FETCH_DASHBOARD, res.id);
     } else {
       AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
@@ -281,9 +280,10 @@ const Header: React.FC<IHeaderProps> = (props) => {
             <Skeleton w={'200px'} h={'14px'} rounded={'7px'} />
           ) : (
             <>
-              {['defi', 'gas', 'dex'].map((item) => (
-                <AppTag key={item} value={item} />
-              ))}
+              {!!dataClass?.getTags()?.length &&
+                dataClass
+                  ?.getTags()
+                  ?.map((item) => <AppTag key={item} value={item} />)}
             </>
           )}
         </div>
