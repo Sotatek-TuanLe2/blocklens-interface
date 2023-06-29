@@ -30,6 +30,7 @@ import {
   formatShortText,
   formatTimestamp,
   getErrorMessage,
+  shortAddressType,
 } from '../utils/utils-helper';
 
 interface IActivity {
@@ -129,6 +130,42 @@ const ActivityMobile: FC<IActivity> = ({ activity, webhook, onReload }) => {
 
     if (webhook.type === WEBHOOK_TYPES.CONTRACT_ACTIVITY) {
       return _renderInfoContractActivity();
+    }
+
+    if (webhook.type === WEBHOOK_TYPES.APTOS_COIN_ACTIVITY) {
+      return (
+        <Flex
+          justifyContent="space-between"
+          alignItems="center"
+          className="info"
+        >
+          <Box>Coin Type</Box>
+          <Box className="value">
+            <Flex alignItems="center">
+              {shortAddressType(webhook?.metadata?.coinType || '')}
+            </Flex>
+          </Box>
+        </Flex>
+      );
+    }
+
+    if (webhook.type === WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY) {
+      return (
+        <Flex
+          justifyContent="space-between"
+          alignItems="center"
+          className="info"
+        >
+          <Box>Token Data</Box>
+          <Box className="value">
+            <Flex alignItems="center">
+              {`${formatShortText(webhook?.metadata?.creatorAddress || '')}::${
+                webhook?.metadata?.collectionName
+              }::${webhook?.metadata?.name} `}
+            </Flex>
+          </Box>
+        </Flex>
+      );
     }
 
     return (
@@ -293,6 +330,22 @@ const ActivityDesktop: FC<IActivity> = ({ activity, webhook, onReload }) => {
     );
   };
 
+  const _renderContentAptosCoin = () => {
+    return (
+      <Td w="15%">{shortAddressType(webhook?.metadata?.coinType || '')}</Td>
+    );
+  };
+
+  const _renderContentAptosToken = () => {
+    return (
+      <Td w="15%">
+        {`${formatShortText(webhook?.metadata?.creatorAddress || '')}::${
+          webhook?.metadata?.collectionName
+        }::${webhook?.metadata?.name} `}
+      </Td>
+    );
+  };
+
   const _renderContentActivities = () => {
     if (webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY) {
       return _renderContentNFT();
@@ -300,6 +353,14 @@ const ActivityDesktop: FC<IActivity> = ({ activity, webhook, onReload }) => {
 
     if (webhook.type === WEBHOOK_TYPES.CONTRACT_ACTIVITY) {
       return _renderContentContract();
+    }
+
+    if (webhook.type === WEBHOOK_TYPES.APTOS_COIN_ACTIVITY) {
+      return _renderContentAptosCoin();
+    }
+
+    if (webhook.type === WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY) {
+      return _renderContentAptosToken();
     }
 
     return _renderContentAddress();
@@ -449,6 +510,26 @@ const ActivityDatatable: FC<IActivityDatatable> = ({
       );
     };
 
+    const _renderHeaderAptosCoin = () => {
+      return (
+        <Th textAlign="center" w={'15%'}>
+          <Flex alignItems="center">
+            Coin Type
+          </Flex>
+        </Th>
+      );
+    };
+
+    const _renderHeaderAptosToken = () => {
+      return (
+        <Th textAlign="center" w={'15%'}>
+          <Flex alignItems="center">
+            Token Data
+          </Flex>
+        </Th>
+      );
+    };
+
     const _renderHeaderAddress = () => {
       return (
         <Th w="15%">
@@ -497,6 +578,14 @@ const ActivityDatatable: FC<IActivityDatatable> = ({
 
       if (webhook.type === WEBHOOK_TYPES.CONTRACT_ACTIVITY) {
         return _renderHeaderContract();
+      }
+
+      if (webhook.type === WEBHOOK_TYPES.APTOS_COIN_ACTIVITY) {
+        return _renderHeaderAptosCoin();
+      }
+
+      if (webhook.type === WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY) {
+        return _renderHeaderAptosToken();
       }
 
       return _renderHeaderAddress();

@@ -1,7 +1,11 @@
 import React, { FC, useState } from 'react';
 import { Box, Flex } from '@chakra-ui/react';
 import { IWebhook, WEBHOOK_TYPES, IMessages } from 'src/utils/utils-webhook';
-import { formatShortText, formatTimestamp } from 'src/utils/utils-helper';
+import {
+  formatShortText,
+  formatTimestamp,
+  shortAddressType,
+} from 'src/utils/utils-helper';
 import { LinkIcon } from 'src/assets/icons';
 import { AppButton } from 'src/components';
 import ReactJson from 'react-json-view';
@@ -54,6 +58,48 @@ const MessagesItemMobile: FC<IMessagesItemMobile> = ({
             <Box className="value">
               <Flex alignItems="center">
                 {message.input?.tokenIds?.join(', ') || '*'}
+              </Flex>
+            </Box>
+          </Flex>
+        </>
+      );
+    }
+
+    if (webhook.type === WEBHOOK_TYPES.APTOS_COIN_ACTIVITY) {
+      return (
+        <>
+          <Flex
+            justifyContent="space-between"
+            alignItems="center"
+            className="info"
+          >
+            <Box>Coin Type</Box>
+            <Box className="value">
+              <Flex alignItems="center">
+                {shortAddressType(webhook?.metadata?.coinType || '')}
+              </Flex>
+            </Box>
+          </Flex>
+        </>
+      );
+    }
+
+    if (webhook.type === WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY) {
+      return (
+        <>
+          <Flex
+            justifyContent="space-between"
+            alignItems="center"
+            className="info"
+          >
+            <Box>Token Data</Box>
+            <Box className="value">
+              <Flex alignItems="center">
+                {`${formatShortText(
+                  webhook?.metadata?.creatorAddress || '',
+                )}::${webhook?.metadata?.collectionName}::${
+                  webhook?.metadata?.name
+                }`}
               </Flex>
             </Box>
           </Flex>
