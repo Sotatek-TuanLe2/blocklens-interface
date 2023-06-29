@@ -155,6 +155,11 @@ export default class DashboardsRequest extends BaseRequest {
     return this.get(url);
   }
 
+  getPublicDashboardTagsTrending() {
+    const url = `/public/dashboard/tags/trending`;
+    return this.get(url);
+  }
+
   forkDashboard(data: ForkDashboard, id: ILayout) {
     const url = `/dashboard/fork-dashboard/${id}`;
     return this.post(url, data);
@@ -216,6 +221,11 @@ export default class DashboardsRequest extends BaseRequest {
 
   getPublicQueryById(params: DataQuery) {
     const url = `/public/queries/${params.queryId}`;
+    return this.get(url);
+  }
+
+  getPublicQueryTagsTrending() {
+    const url = `/public/queries/tags/trending`;
     return this.get(url);
   }
 

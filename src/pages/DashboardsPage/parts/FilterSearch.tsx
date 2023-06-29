@@ -84,6 +84,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   const [tag, setTag] = useState<string>('');
   const [openNewDashboardModal, setOpenNewDashboardModal] =
     useState<boolean>(false);
+  const [listTagsTrending, setListTagsTrending] = useState<string[]>([]);
 
   const menuDashboardQueries: IDataMenu[] = [
     {
@@ -175,6 +176,35 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
     changeMyWorkType(value);
     history.push(ROUTES.HOME);
   };
+
+  useEffect(() => {
+    const fetchTagsTrending = async () => {
+      try {
+        if (
+          isDashboard ||
+          (isMyWork && myWorkType === LIST_ITEM_TYPE.DASHBOARDS)
+        ) {
+          const res: any = await rf
+            .getRequest('DashboardsRequest')
+            .getPublicDashboardTagsTrending();
+
+          setListTagsTrending(res?.tags || []);
+          console.log('res dashboard: ', res);
+        } else {
+          const res: any = await rf
+            .getRequest('DashboardsRequest')
+            .getPublicQueryTagsTrending();
+
+          setListTagsTrending(res?.tags || []);
+          console.log('res query: ', res);
+        }
+      } catch (error) {
+        setListTagsTrending([]);
+      }
+    };
+
+    fetchTagsTrending();
+  }, [myWorkType, type]);
 
   return (
     <>
@@ -270,13 +300,13 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
                 onChange={onChangeSearch}
               />
               <Flex mt={'14px'}>
-                {listTags.map((item) => (
+                {listTagsTrending.map((item: string, index: number) => (
                   <AppTag
-                    key={item.id}
-                    value={item.name}
+                    key={index}
+                    value={item}
                     variant="md"
-                    onClick={() => onChangeTag(item.name)}
-                    selected={item.name === tag}
+                    onClick={() => onChangeTag(item)}
+                    selected={item === tag}
                     h={'32px'}
                     color={'rgba(0, 2, 36, 0.5)'}
                     bg={'rgba(0, 2, 36, 0.05)'}
