@@ -25,6 +25,7 @@ import {
 } from 'src/utils/query.type';
 import { toastSuccess } from 'src/utils/utils-notify';
 import BaseModal from '../BaseModal';
+import { FadeLoader } from 'react-spinners';
 
 export const WIDTH_DASHBOARD = [
   {
@@ -77,6 +78,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   const [dataVisualPagination, setDataVisualPagination] = useState<
     IPagination | undefined
   >();
+  const [isLoading, setIsLoading] = useState(true);
 
   const visualizations: Array<{
     visualization: VisualizationType;
@@ -131,6 +133,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
     const params = {
       search: searchTerm || undefined,
     };
+    setIsLoading(true);
     try {
       const res = await rf
         .getRequest('DashboardsRequest')
@@ -147,6 +150,8 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -276,23 +281,55 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
             }
             scrollableTarget="main-queries"
           >
-            {!!visualizations.length ? (
-              visualizations.map((item, index) => (
-                <Flex
-                  key={`${item.query.id}-${item.visualization.id}-${index}`}
-                >
-                  <AddVisualizationCheckbox
-                    userName={userName}
-                    query={item.query}
-                    visualization={item.visualization}
-                    getIcon={getIcon}
-                    setVisualSelected={setVisualSelected}
-                    visualSelected={visualSelected}
-                  />
-                </Flex>
-              ))
+            {isLoading ? (
+              <Flex
+                align={'center'}
+                justify={'center'}
+                w={'full'}
+                h={'full'}
+                pos={'absolute'}
+                top={0}
+                left={0}
+              >
+                <FadeLoader
+                  cssOverride={{
+                    transform: 'scale(0.4) translateY(-35px)',
+                    transformOrigin: 'center',
+                  }}
+                  color="rgba(0, 2, 36, 0.8)"
+                />{' '}
+                Loading
+              </Flex>
             ) : (
-              <div className="no-data">No data</div>
+              <>
+                {!!visualizations.length ? (
+                  visualizations.map((item, index) => (
+                    <Flex
+                      key={`${item.query.id}-${item.visualization.id}-${index}`}
+                    >
+                      <AddVisualizationCheckbox
+                        userName={userName}
+                        query={item.query}
+                        visualization={item.visualization}
+                        getIcon={getIcon}
+                        setVisualSelected={setVisualSelected}
+                        visualSelected={visualSelected}
+                      />
+                    </Flex>
+                  ))
+                ) : (
+                  <Flex
+                    pos={'absolute'}
+                    top={0}
+                    left={0}
+                    w={'full'}
+                    h={'full'}
+                    className="no-data"
+                  >
+                    No data
+                  </Flex>
+                )}
+              </>
             )}
           </InfiniteScroll>
         </div>
