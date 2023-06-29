@@ -47,6 +47,10 @@
 
     .btn-login-google {
       font-weight: 400;
+      &:disabled {
+        background-color: $line;
+        color: $title;
+      }
     }
 
     .divider {

@@ -1,4 +1,4 @@
-import React, { FC, ReactElement, useEffect } from 'react';
+import React, { FC, ReactElement, useEffect, useState } from 'react';
 import { GoogleLogin } from 'react-google-login';
 import { gapi } from 'gapi-script';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
@@ -21,6 +21,7 @@ const GoogleAuthButton: FC<IGoogleAuthButton> = ({ children }) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const location = useLocation();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     function start() {
@@ -31,6 +32,13 @@ const GoogleAuthButton: FC<IGoogleAuthButton> = ({ children }) => {
     }
 
     gapi.load('client:auth2', start);
+  }, []);
+
+  useEffect(() => {
+    const onLoading = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+    return () => clearTimeout(onLoading);
   }, []);
 
   const onSuccess = async (response: any) => {
@@ -58,6 +66,7 @@ const GoogleAuthButton: FC<IGoogleAuthButton> = ({ children }) => {
       onFailure={onFailure}
       render={(renderProps) => (
         <AppButton
+          isDisabled={isLoading}
           className="btn-login-google"
           onClick={renderProps.onClick}
           borderRadius={'6px'}
