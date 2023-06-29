@@ -104,6 +104,26 @@ const MessagesHistory = () => {
       );
     };
 
+    const _renderHeaderAptosCoin = () => {
+      return (
+        <Th textAlign="center" w={'15%'}>
+          <Flex alignItems="center">
+            Coin Type
+          </Flex>
+        </Th>
+      );
+    };
+
+    const _renderHeaderAptosToken = () => {
+      return (
+        <Th textAlign="center" w={'15%'}>
+          <Flex alignItems="center">
+            Token Data
+          </Flex>
+        </Th>
+      );
+    };
+
     const _renderHeaderActivities = () => {
       if (webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY) {
         return _renderHeaderNFT();
@@ -112,6 +132,15 @@ const MessagesHistory = () => {
       if (webhook.type === WEBHOOK_TYPES.CONTRACT_ACTIVITY) {
         return _renderHeaderContract();
       }
+
+      if (webhook.type === WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY) {
+        return _renderHeaderAptosToken();
+      }
+
+      if (webhook.type === WEBHOOK_TYPES.APTOS_COIN_ACTIVITY) {
+        return _renderHeaderAptosCoin();
+      }
+
 
       return _renderHeaderAddress();
     };

@@ -6,7 +6,11 @@ import {
   STATUS,
   WEBHOOK_TYPES,
 } from 'src/utils/utils-webhook';
-import { formatShortText, formatTimestamp } from 'src/utils/utils-helper';
+import {
+  formatShortText,
+  formatTimestamp,
+  shortAddressType,
+} from 'src/utils/utils-helper';
 import { LinkIcon, ArrowDown } from 'src/assets/icons';
 import ReactJson from 'react-json-view';
 import { getExplorerTxUrl } from 'src/utils/utils-network';
@@ -62,6 +66,22 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
     return <Td w="15%">{formatShortText(message?.input?.trackingAddress)}</Td>;
   };
 
+  const _renderContentAptosCoin = () => {
+    return (
+      <Td w="15%">{shortAddressType(webhook?.metadata?.coinType || '')}</Td>
+    );
+  };
+
+  const _renderContentAptosToken = () => {
+    return (
+      <Td w="15%">
+        {`${formatShortText(webhook?.metadata?.creatorAddress || '')}::${
+          webhook?.metadata?.collectionName
+        }::${webhook?.metadata?.name}`}
+      </Td>
+    );
+  };
+
   const _renderContentActivities = () => {
     if (webhook?.type === WEBHOOK_TYPES.NFT_ACTIVITY) {
       return _renderContentNFT();
@@ -69,6 +89,14 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
 
     if (webhook?.type === WEBHOOK_TYPES.CONTRACT_ACTIVITY) {
       return _renderContentContract();
+    }
+
+    if (webhook?.type === WEBHOOK_TYPES.APTOS_COIN_ACTIVITY) {
+      return _renderContentAptosCoin();
+    }
+
+    if (webhook?.type === WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY) {
+      return _renderContentAptosToken();
     }
 
     return _renderContentAddress();
