@@ -108,7 +108,7 @@ const QueryPart: React.FC = () => {
     } catch (error: any) {
       setIsLoadingQuery(false);
       setIsLoadingResult(false);
-      console.error(error);
+      toastError({ message: getErrorMessage(error) });
     }
   };
 
@@ -235,7 +235,7 @@ const QueryPart: React.FC = () => {
         setOpenModalSettingQuery(true);
       }
     } catch (err: any) {
-      console.error(err);
+      toastError({ message: getErrorMessage(err) });
     }
   };
 
@@ -417,6 +417,7 @@ const QueryPart: React.FC = () => {
         }
         data={queryValue}
         isLoadingRun={isLoadingQuery}
+        isLoadingResult={isLoadingResult}
         onRunQuery={onRunQuery}
         selectedQuery={selectedQuery}
       />

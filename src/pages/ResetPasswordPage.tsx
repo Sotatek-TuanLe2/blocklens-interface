@@ -7,6 +7,7 @@ import rf from 'src/requests/RequestFactory';
 import 'src/styles/pages/LoginPage.scss';
 import { ROUTES } from 'src/utils/common';
 import { setAuthorizationToRequest } from 'src/utils/utils-auth';
+import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { createValidator } from 'src/utils/utils-validator';
 
@@ -42,7 +43,9 @@ const ResetPasswordPage: FC = () => {
       setDataForm({ ...initDataResetPassword });
       history.replace(ROUTES.LOGIN);
     } catch (error) {
-      console.error(error);
+      toastError({
+        message: getErrorMessage(error),
+      });
     }
   };
 

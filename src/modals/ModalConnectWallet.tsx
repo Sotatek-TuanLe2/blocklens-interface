@@ -6,7 +6,9 @@ import config from 'src/config';
 import { METAMASK_WALLET } from 'src/connectors';
 import useWallet from 'src/hooks/useWallet';
 import { setOpenModalSignatureRequired } from 'src/store/wallet';
+import { getErrorMessage } from 'src/utils/utils-helper';
 import { switchNetwork } from 'src/utils/utils-network';
+import { toastError } from 'src/utils/utils-notify';
 import Storage from 'src/utils/utils-storage';
 import BaseModal from './BaseModal';
 
@@ -32,7 +34,7 @@ const ModalConnectWallet: FC<IModalConnectWallet> = ({ open, onClose }) => {
       }
       onClose();
     } catch (error) {
-      console.error(error);
+      toastError({ message: getErrorMessage(error) });
     }
   };
 

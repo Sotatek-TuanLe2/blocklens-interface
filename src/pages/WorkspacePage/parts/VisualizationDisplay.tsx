@@ -184,7 +184,7 @@ const VisualizationDisplay = ({
       setIsConfiguring(false);
     } catch (error) {
       setIsConfiguring(false);
-      console.error(error);
+      toastError({ message: getErrorMessage(error) });
     }
   };
 
@@ -220,7 +220,7 @@ const VisualizationDisplay = ({
         setIsConfiguring(false);
       } catch (error) {
         setIsConfiguring(false);
-        console.error(error);
+        toastError({ message: getErrorMessage(error) });
       }
     }
   };

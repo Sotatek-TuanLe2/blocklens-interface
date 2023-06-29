@@ -34,13 +34,17 @@ import { getUserProfile } from 'src/store/user';
 import 'src/styles/pages/AppDetail.scss';
 import 'src/styles/pages/BillingPage.scss';
 import { convertDecToWei } from 'src/utils/utils-format';
-import { convertCurrencyToNumber } from 'src/utils/utils-helper';
+import {
+  convertCurrencyToNumber,
+  getErrorMessage,
+} from 'src/utils/utils-helper';
 import {
   getSupportChainsTopUp,
   getTopUpConfigByNetworkId,
   getTopUpCurrenciesByChainId,
   getTopUpCurrencyOptions,
 } from 'src/utils/utils-network';
+import { toastError } from 'src/utils/utils-notify';
 import Storage from 'src/utils/utils-storage';
 import { getBalanceToken, isTokenApproved } from 'src/utils/utils-token';
 import { createValidator } from 'src/utils/utils-validator';
@@ -163,7 +167,7 @@ const TopUpPage = () => {
 
       await checkApproveToken();
     } catch (error) {
-      console.error(error);
+      toastError({ message: getErrorMessage(error) });
     } finally {
       setProcessing(false);
     }
@@ -216,7 +220,7 @@ const TopUpPage = () => {
       await fetchBalance();
       setAmount('');
     } catch (error) {
-      console.error(error);
+      toastError({ message: getErrorMessage(error) });
     } finally {
       setProcessing(false);
     }

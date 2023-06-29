@@ -5,6 +5,8 @@ import { AppButton, AppField, AppInput } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/BaseModal.scss';
 import { ROUTES } from 'src/utils/common';
+import { getErrorMessage } from 'src/utils/utils-helper';
+import { toastError } from 'src/utils/utils-notify';
 import { createValidator } from 'src/utils/utils-validator';
 import BaseModal from '../BaseModal';
 
@@ -64,7 +66,7 @@ const ModalForkDashBoardDetails: React.FC<IModalForkDashBoardDetails> = ({
       }
       onClose();
     } catch (e) {
-      console.error(e);
+      toastError({ message: getErrorMessage(e) });
     }
   };
 

@@ -4,7 +4,8 @@ import { useHistory } from 'react-router';
 import { AppButton, AppField, AppInput } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import { ROUTES } from 'src/utils/common';
-import { toastSuccess } from 'src/utils/utils-notify';
+import { getErrorMessage } from 'src/utils/utils-helper';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import Storage from 'src/utils/utils-storage';
 import { createValidator } from 'src/utils/utils-validator';
 import BaseModal from './BaseModal';
@@ -56,7 +57,7 @@ const ModalChangePassword: React.FC<IChangePasswordModal> = ({
       onClose();
       toastSuccess({ message: 'Update password was successfully' });
     } catch (error) {
-      console.error(error);
+      toastError({ message: getErrorMessage(error) });
     }
   };
   const handleClickForgotPassword = () => {

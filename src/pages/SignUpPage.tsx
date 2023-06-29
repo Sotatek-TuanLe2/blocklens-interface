@@ -15,7 +15,8 @@ import rf from 'src/requests/RequestFactory';
 import 'src/styles/pages/LoginPage.scss';
 import { ROUTES } from 'src/utils/common';
 import { setRecaptchaToRequest } from 'src/utils/utils-auth';
-import { toastSuccess } from 'src/utils/utils-notify';
+import { getErrorMessage } from 'src/utils/utils-helper';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { createValidator } from 'src/utils/utils-validator';
 
 interface IDataForm {
@@ -55,8 +56,9 @@ const SignUpPage: FC = () => {
   const onSignUp = async () => {
     try {
       if (!executeRecaptcha) {
-        console.error('Oops. Something went wrong!');
-
+        toastError({
+          message: 'Oops. Something went wrong!',
+        });
         return;
       }
       const result = await executeRecaptcha('homepage');
@@ -66,7 +68,7 @@ const SignUpPage: FC = () => {
       setOpenModalResendEmail(true);
     } catch (e) {
       setRecaptchaToRequest(null);
-      console.error(e);
+      toastError({ message: getErrorMessage(e) });
     }
   };
 
