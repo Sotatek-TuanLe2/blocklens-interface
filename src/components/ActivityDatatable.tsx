@@ -379,13 +379,9 @@ const ActivityDesktop: FC<IActivity> = ({ activity, webhook, onReload }) => {
               {/*  </Box>*/}
               {/*)}*/}
 
-              <AppLink
-                to={`/app/${webhook?.appId}/webhook/${webhook.registrationId}/activities/${activity.hash}`}
-              >
-                <Box className="link-redirect">
-                  <LinkDetail />
-                </Box>
-              </AppLink>
+              <Box className="link-redirect">
+                <LinkDetail />
+              </Box>
             </Flex>
           </Td>
         </Tr>
