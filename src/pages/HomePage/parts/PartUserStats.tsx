@@ -35,8 +35,10 @@ export const fillFullResolution = (
 
   while (fromStartOfByResolution <= toStartOfByResolution) {
     if (!dataByKey[fromStartOfByResolution]) {
-      sampleData.time = fromStartOfByResolution;
-      result.push(sampleData);
+      result.push({
+        ...sampleData,
+        time: fromStartOfByResolution,
+      });
     } else {
       result.push(dataByKey[fromStartOfByResolution]);
     }
