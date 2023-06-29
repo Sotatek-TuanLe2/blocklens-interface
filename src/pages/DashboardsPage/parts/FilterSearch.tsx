@@ -69,6 +69,8 @@ export const TYPE_MYWORK = {
   QUERIES: 'QUERIES',
 };
 
+const MAX_TRENDING_TAGS = 3;
+
 const FilterSearch: React.FC<IFilterSearch> = (props) => {
   const { isOpen, onToggle } = useDisclosure();
   const { type, displayed, setDisplayed, myWorkType, changeMyWorkType } = props;
@@ -84,6 +86,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   const [tag, setTag] = useState<string>('');
   const [openNewDashboardModal, setOpenNewDashboardModal] =
     useState<boolean>(false);
+  const [listTagsTrending, setListTagsTrending] = useState<string[]>([]);
 
   const menuDashboardQueries: IDataMenu[] = [
     {
@@ -175,6 +178,33 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
     changeMyWorkType(value);
     history.push(ROUTES.HOME);
   };
+
+  useEffect(() => {
+    const fetchTagsTrending = async () => {
+      try {
+        if (
+          isDashboard ||
+          (isMyWork && myWorkType === LIST_ITEM_TYPE.DASHBOARDS)
+        ) {
+          const res: any = await rf
+            .getRequest('DashboardsRequest')
+            .getPublicDashboardTagsTrending();
+
+          setListTagsTrending(res?.tags || []);
+        } else {
+          const res: any = await rf
+            .getRequest('DashboardsRequest')
+            .getPublicQueryTagsTrending();
+
+          setListTagsTrending(res?.tags || []);
+        }
+      } catch (error) {
+        setListTagsTrending([]);
+      }
+    };
+
+    fetchTagsTrending();
+  }, [myWorkType, type]);
 
   return (
     <>
@@ -270,19 +300,21 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
                 onChange={onChangeSearch}
               />
               <Flex mt={'14px'}>
-                {listTags.map((item) => (
-                  <AppTag
-                    key={item.id}
-                    value={item.name}
-                    variant="md"
-                    onClick={() => onChangeTag(item.name)}
-                    selected={item.name === tag}
-                    h={'32px'}
-                    color={'rgba(0, 2, 36, 0.5)'}
-                    bg={'rgba(0, 2, 36, 0.05)'}
-                    borderRadius={'6px'}
-                  />
-                ))}
+                {listTagsTrending
+                  .slice(0, MAX_TRENDING_TAGS)
+                  .map((item: string, index: number) => (
+                    <AppTag
+                      key={index}
+                      value={item}
+                      variant="md"
+                      onClick={() => onChangeTag(item)}
+                      selected={item === tag}
+                      h={'32px'}
+                      color={'rgba(0, 2, 36, 0.5)'}
+                      bg={'rgba(0, 2, 36, 0.05)'}
+                      borderRadius={'6px'}
+                    />
+                  ))}
               </Flex>
             </Box>
 

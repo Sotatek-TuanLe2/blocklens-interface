@@ -151,9 +151,9 @@ export const createValidator = (options?: IOptions | undefined) => {
         },
       },
       maxTags: {
-        message: 'Tags must contain not more than 10 elements',
+        message: 'Tags must contain not more than 3 elements',
         rule: (value: string) => {
-          return value.split(',').filter((i) => i.trim().length).length <= 10;
+          return value.split(',').filter((i) => i.trim().length).length <= 3;
         },
       },
     },
