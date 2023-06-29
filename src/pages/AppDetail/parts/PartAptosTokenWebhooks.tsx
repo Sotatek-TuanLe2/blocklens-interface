@@ -27,8 +27,7 @@ const PartAptosTokenWebhooks: FC<IListContract> = ({ appInfo }) => {
     return (
       <Flex className="box-create">
         <Box className="icon-no-data" mb={4} />
-        Create your webhook to start experiencing Blocklens with Token
-        Activity!
+        Create your webhook to start experiencing Blocklens with Token Activity!
         <AppButton
           isDisabled={isDisabledApp}
           size={'lg'}
