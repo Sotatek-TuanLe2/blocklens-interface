@@ -3,7 +3,8 @@ import { FC, useEffect, useState } from 'react';
 import { AppButton, AppField, AppInput, AppSelect2 } from 'src/components';
 import { COUNTRIES } from 'src/constants';
 import rf from 'src/requests/RequestFactory';
-import { toastSuccess } from 'src/utils/utils-notify';
+import { getErrorMessage } from 'src/utils/utils-helper';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import BaseModal from './BaseModal';
 
 interface IModalBillingInfo {
@@ -59,7 +60,7 @@ const ModalBillingInfo: FC<IModalBillingInfo> = ({
       reloadData();
       onClose();
     } catch (error) {
-      console.error(error);
+      toastError({ message: getErrorMessage(error) });
     }
   };
 

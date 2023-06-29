@@ -5,7 +5,8 @@ import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
 import { AppButton } from 'src/components';
 import rf from 'src/requests/RequestFactory';
-import { toastSuccess } from 'src/utils/utils-notify';
+import { getErrorMessage } from 'src/utils/utils-helper';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { IWebhook } from 'src/utils/utils-webhook';
 import { getUserStats } from '../store/user';
 import BaseModal from './BaseModal';
@@ -34,7 +35,7 @@ const ModalDeleteWebhook: FC<IModalDeleteWebhook> = ({
       history.push(`/apps/${webhook.appId}`);
       onClose();
     } catch (e) {
-      console.error(e);
+      toastError({ message: getErrorMessage(e) });
     }
   };
 

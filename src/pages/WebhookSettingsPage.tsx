@@ -21,11 +21,12 @@ import rf from 'src/requests/RequestFactory';
 import { getUserStats } from 'src/store/user';
 import 'src/styles/pages/AppDetail.scss';
 import { APP_STATUS } from 'src/utils/utils-app';
+import { getErrorMessage } from 'src/utils/utils-helper';
 import {
   getLogoChainByChainId,
   getNameChainByChainId,
 } from 'src/utils/utils-network';
-import { toastSuccess } from 'src/utils/utils-notify';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import {
   IWebhook,
   WEBHOOK_STATUS,
@@ -97,7 +98,7 @@ const WebhookSettingsPage = () => {
       toastSuccess({ message: 'Update Successfully!' });
       await getWebhookInfo();
     } catch (e) {
-      console.error(e);
+      toastError({ message: getErrorMessage(e) });
     }
   };
 

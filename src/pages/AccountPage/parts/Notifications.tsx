@@ -8,7 +8,8 @@ import ModalEditReceiveEmail from 'src/modals/ModalEditReceiveEmail';
 import rf from 'src/requests/RequestFactory';
 import { getUserProfile } from 'src/store/user';
 import 'src/styles/pages/AccountPage.scss';
-import { toastSuccess } from 'src/utils/utils-notify';
+import { getErrorMessage } from 'src/utils/utils-helper';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
 
 const Notifications = () => {
   const [isOpenEditReceiveEmailModal, setIsOpenEditReceiveEmailModal] =
@@ -24,7 +25,7 @@ const Notifications = () => {
       dispatch(getUserProfile());
       toastSuccess({ message: 'Successfully' });
     } catch (error) {
-      console.error(error);
+      toastError({ message: getErrorMessage(error) });
     }
   };
 

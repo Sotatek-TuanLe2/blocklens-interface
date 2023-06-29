@@ -12,7 +12,8 @@ import {
 } from 'src/components';
 import config from 'src/config';
 import rf from 'src/requests/RequestFactory';
-import { toastSuccess } from 'src/utils/utils-notify';
+import { getErrorMessage } from 'src/utils/utils-helper';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { createValidator } from 'src/utils/utils-validator';
 import useUser from '../hooks/useUser';
 import { getUserStats } from '../store/user';
@@ -114,7 +115,7 @@ const ModalCreateApp: FC<IModalCreateApp> = ({ open, onClose, reloadData }) => {
         onCloseModal();
       }
     } catch (e) {
-      console.error(e);
+      toastError({ message: getErrorMessage(e) });
     }
   };
 

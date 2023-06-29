@@ -6,7 +6,8 @@ import { AppButton, AppInput } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import { ROUTES, TYPE_OF_MODAL } from 'src/utils/common';
 import { setRecaptchaToRequest } from 'src/utils/utils-auth';
-import { toastSuccess } from 'src/utils/utils-notify';
+import { getErrorMessage } from 'src/utils/utils-helper';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { createValidator } from 'src/utils/utils-validator';
 import BaseModal from '../BaseModal';
 export interface IModalSettingQuerry {
@@ -122,7 +123,7 @@ const ModalQuery = ({
         onClose();
         onSuccess && (await onSuccess(res));
       } catch (error) {
-        console.error(error);
+        toastError({ message: getErrorMessage(error) });
       }
     }
   };

@@ -6,8 +6,8 @@ import useUser from 'src/hooks/useUser';
 import { PAYMENT_METHOD } from 'src/pages/BillingPage';
 import rf from 'src/requests/RequestFactory';
 import { getUserProfile } from 'src/store/user';
-import { formatShortText } from 'src/utils/utils-helper';
-import { toastSuccess } from 'src/utils/utils-notify';
+import { formatShortText, getErrorMessage } from 'src/utils/utils-helper';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import FormCard from '../pages/BillingPage/parts/FormCard';
 import BaseModal from './BaseModal';
 
@@ -34,7 +34,7 @@ const ModalChangePaymentMethod: FC<IModalChangePaymentMethod> = ({
       await dispatch(getUserProfile());
       onClose();
     } catch (error) {
-      console.error(error);
+      toastError({ message: getErrorMessage(error) });
     }
   };
 

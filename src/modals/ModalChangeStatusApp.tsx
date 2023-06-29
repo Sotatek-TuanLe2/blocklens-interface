@@ -5,7 +5,8 @@ import { useDispatch } from 'react-redux';
 import AppButton from 'src/components/AppButton';
 import rf from 'src/requests/RequestFactory';
 import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
-import { toastSuccess } from 'src/utils/utils-notify';
+import { getErrorMessage } from 'src/utils/utils-helper';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { getUserStats } from '../store/user';
 import BaseModal from './BaseModal';
 
@@ -31,7 +32,7 @@ const ModalChangeStatusApp: FC<IModalChangeStatusApp> = ({
       onClose();
       reloadData();
     } catch (error) {
-      console.log(error);
+      toastError({ message: getErrorMessage(error) });
     }
   };
 
