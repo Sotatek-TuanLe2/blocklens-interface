@@ -43,7 +43,7 @@ const AppGraph: FC<IChart> = ({ data, duration }) => {
       return data.map((item: any) => {
         return {
           ...item,
-          label: moment(item?.time).format('hh:mm A'),
+          label: moment(item?.time).format('HH:mm MMM DD'),
         };
       });
     }
