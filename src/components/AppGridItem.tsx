@@ -25,7 +25,7 @@ interface AppGridItemProps {
   creator?: string;
   date?: string;
   chainList?: string[];
-  tagList?: any[];
+  tagList?: string[];
   shareComponent?: ReactNode;
   userId?: string;
   views?: number | string;

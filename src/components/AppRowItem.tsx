@@ -27,7 +27,7 @@ interface AppRowItemProps {
   creator?: string;
   date?: string;
   chainList?: any[];
-  tagList?: any[];
+  tagList?: string[];
   shareComponent?: ReactNode;
   type?: string;
   myWorkType?: string;
