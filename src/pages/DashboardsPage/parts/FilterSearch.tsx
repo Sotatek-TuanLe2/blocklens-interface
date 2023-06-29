@@ -69,6 +69,8 @@ export const TYPE_MYWORK = {
   QUERIES: 'QUERIES',
 };
 
+const MAX_TRENDING_TAGS = 3;
+
 const FilterSearch: React.FC<IFilterSearch> = (props) => {
   const { isOpen, onToggle } = useDisclosure();
   const { type, displayed, setDisplayed, myWorkType, changeMyWorkType } = props;
@@ -299,7 +301,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
               />
               <Flex mt={'14px'}>
                 {listTagsTrending
-                  .slice(0, 3)
+                  .slice(0, MAX_TRENDING_TAGS)
                   .map((item: string, index: number) => (
                     <AppTag
                       key={index}
