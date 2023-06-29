@@ -7,7 +7,7 @@ import { IDashboardDetail, IQuery } from 'src/utils/query.type';
 import { Dashboard } from 'src/utils/utils-dashboard';
 import { Query } from 'src/utils/utils-query';
 import { LIST_ITEM_TYPE } from '..';
-import { listTags, TYPE_MYWORK } from './FilterSearch';
+import { TYPE_MYWORK } from './FilterSearch';
 import { Box } from '@chakra-ui/react';
 import { useMemo } from 'react';
 import { formatNumber } from 'src/utils/utils-format';
@@ -125,7 +125,7 @@ const ListItem: React.FC<IListItem> = (props) => {
           date={moment(itemClass.getCreatedTime()).format('YYYY MMMM Do')}
           views={randomViews}
           toHref={getTitleUrl()}
-          tagList={listTags}
+          tagList={itemClass.getTags()}
           shareComponent={_renderDropdown()}
           srcThumb={itemClass.getThumnail()!}
           srcAvatar={itemClass.getUserAvatar()}
@@ -138,7 +138,7 @@ const ListItem: React.FC<IListItem> = (props) => {
           date={moment(itemClass.getCreatedTime()).format('YYYY MMMM Do')}
           views={randomViews}
           toHref={getTitleUrl()}
-          tagList={listTags}
+          tagList={itemClass.getTags()}
           shareComponent={_renderDropdown(true)}
           srcThumb={itemClass.getThumnail()!}
           srcAvatar={itemClass.getUserAvatar()}

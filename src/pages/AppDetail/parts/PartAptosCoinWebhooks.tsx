@@ -27,7 +27,7 @@ const PartAptosCoinWebhooks: FC<IListContract> = ({ appInfo }) => {
     return (
       <Flex className="box-create">
         <Box className="icon-no-data" mb={4} />
-        Create your webhook to start experiencing Blocklens with Aptos Coin
+        Create your webhook to start experiencing Blocklens with Coin
         Activity!
         <AppButton
           isDisabled={isDisabledApp}
