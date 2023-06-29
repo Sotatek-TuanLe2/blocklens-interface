@@ -5,7 +5,6 @@ import 'react-grid-layout/css/styles.css';
 import ReactMarkdown from 'react-markdown';
 import 'react-resizable/css/styles.css';
 import { useParams } from 'react-router-dom';
-import ModalForkDashBoardDetails from 'src/modals/querySQL/ModalForkDashBoardDetails';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import { LoadingFullPage } from 'src/pages/LoadingFullPage';
 import Header from 'src/pages/WorkspacePage/parts/Header';
@@ -177,14 +176,7 @@ const DashboardPart: React.FC = () => {
       {isLoading ? (
         <LoadingFullPage />
       ) : (
-        <div className="dashboard-container">
-          {_renderDashboard()}
-          <ModalForkDashBoardDetails
-            dashboardId={dashboardId}
-            open={openModalFork}
-            onClose={() => setOpenModalFork(false)}
-          />
-        </div>
+        <div className="dashboard-container">{_renderDashboard()}</div>
       )}
     </div>
   );

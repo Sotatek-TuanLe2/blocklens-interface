@@ -89,7 +89,6 @@ const Header: React.FC<IHeaderProps> = (props) => {
 
   const onSettingSuccess = async (res: any) => {
     if (type === LIST_ITEM_TYPE.DASHBOARDS) {
-      AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
       AppBroadcast.dispatch(BROADCAST_FETCH_DASHBOARD, res.id);
     } else {
       AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
