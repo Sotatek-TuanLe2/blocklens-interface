@@ -148,14 +148,16 @@ const AppGridItem: FC<AppGridItemProps> = ({
             </Link>
             <Flex flexWrap={'wrap'} mt={{ base: 1, lg: 1.5 }} h={'23px'}>
               {!!tagList?.length &&
-                tagList.map((item, index: number) => (
-                  <AppTag
-                    key={index}
-                    value={item}
-                    h={{ base: '24px', lg: '22px' }}
-                    classNames="item-tag"
-                  />
-                ))}
+                tagList
+                  .slice(0, 3)
+                  .map((item, index: number) => (
+                    <AppTag
+                      key={index}
+                      value={item}
+                      h={{ base: '24px', lg: '22px' }}
+                      classNames="item-tag"
+                    />
+                  ))}
             </Flex>
           </Box>
           <Box position={'relative'} pt={{ lg: '2px' }}>

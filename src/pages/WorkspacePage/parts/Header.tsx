@@ -283,7 +283,8 @@ const Header: React.FC<IHeaderProps> = (props) => {
               {!!dataClass?.getTags()?.length &&
                 dataClass
                   ?.getTags()
-                  ?.map((item) => <AppTag key={item} value={item} />)}
+                  .slice(0, 3)
+                  .map((item) => <AppTag key={item} value={item} />)}
             </>
           )}
         </div>
