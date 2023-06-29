@@ -169,9 +169,9 @@ const ModalDashboard: React.FC<IModelNewDashboard> = ({
               })
             }
             validate={{
-              name: `tag`,
+              name: `tags`,
               validator: validator.current,
-              rule: ['max:150'],
+              rule: ['maxTags'],
             }}
           />
         </AppField>

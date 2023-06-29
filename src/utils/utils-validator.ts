@@ -150,6 +150,12 @@ export const createValidator = (options?: IOptions | undefined) => {
           return convertCurrencyToNumber(value) <= +params[0];
         },
       },
+      maxTags: {
+        message: 'Tags must contain not more than 10 elements',
+        rule: (value: string) => {
+          return value.split(',').filter((i) => i.trim().length).length <= 10;
+        },
+      },
     },
   };
   if (options) {

@@ -170,6 +170,11 @@ const ModalQuery = ({
               placeholder="tag1, tag2, tag3"
               value={valueSettingQuery.tags?.toString()}
               onChange={handleChangeTags}
+              validate={{
+                name: `tags`,
+                validator: validator.current,
+                rule: ['maxTags'],
+              }}
             />
           </div>
         </Box>
