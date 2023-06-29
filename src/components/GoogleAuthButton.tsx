@@ -43,12 +43,12 @@ const GoogleAuthButton: FC<IGoogleAuthButton> = ({ children }) => {
       toastSuccess({ message: 'Welcome to Blocklens!' });
       history.push((location.state as any)?.originPath);
     } catch (e) {
-      console.error(e);
+      toastError({ message: getErrorMessage(e) });
     }
   };
 
   const onFailure = () => {
-    console.error('Oops. Something went wrong!');
+    toastError({ message: 'Oops. Something went wrong!' });
   };
 
   return (
