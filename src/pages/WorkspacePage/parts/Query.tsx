@@ -417,6 +417,7 @@ const QueryPart: React.FC = () => {
         }
         data={queryValue}
         isLoadingRun={isLoadingQuery}
+        isLoadingResult={isLoadingResult}
         onRunQuery={onRunQuery}
         selectedQuery={selectedQuery}
       />

@@ -33,6 +33,7 @@ interface IHeaderProps {
   isEdit?: boolean;
   needAuthentication?: boolean;
   isLoadingRun?: boolean;
+  isLoadingResult?: boolean;
   isEmptyDashboard?: boolean;
   onRunQuery?: () => Promise<void>;
   onChangeEditMode?: () => void;
@@ -48,6 +49,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
     needAuthentication = true,
     selectedQuery,
     isLoadingRun = false,
+    isLoadingResult = false,
     isEmptyDashboard = false,
     onRunQuery,
     onChangeEditMode,
@@ -148,10 +150,10 @@ const Header: React.FC<IHeaderProps> = (props) => {
             size="sm"
             leftIcon={<span className="icon-run-query " />}
             me="10px"
-            disabled={isLoadingRun}
+            disabled={isLoadingRun || isLoadingResult}
             fontSize={'14px'}
           >
-            {isLoadingRun ? (
+            {isLoadingRun || isLoadingResult ? (
               <Spinner size="sm" />
             ) : (
               `Run${selectedQuery ? ' selection' : ''}`
