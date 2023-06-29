@@ -18,8 +18,6 @@ import useUser from 'src/hooks/useUser';
 import ModalAddTextWidget from 'src/modals/querySQL/ModalAddTextWidget';
 import ModalAddVisualization from 'src/modals/querySQL/ModalAddVisualization';
 import ModalDeleteWidget from 'src/modals/querySQL/ModalDeleteWidget ';
-import ModalForkDashBoardDetails from 'src/modals/querySQL/ModalForkDashBoardDetails';
-import ModalSettingDashboardDetails from 'src/modals/querySQL/ModalSettingDashboardDetails';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import { LoadingFullPage } from 'src/pages/LoadingFullPage';
 import rf from 'src/requests/RequestFactory';
@@ -72,8 +70,6 @@ const DashboardPart: React.FC = () => {
   const [typeModalTextWidget, setTypeModalTextWidget] = useState<string>(``);
   const [openModalAddVisualization, setOpenModalAddVisualization] =
     useState<boolean>(false);
-  const [openModalFork, setOpenModalFork] = useState<boolean>(false);
-  const [openModalSetting, setOpenModalSetting] = useState<boolean>(false);
   const [openModalEdit, setOpenModalEdit] = useState<boolean>(false);
   const [openModalAddTextWidget, setOpenModalAddTextWidget] =
     useState<boolean>(false);
@@ -382,12 +378,6 @@ const DashboardPart: React.FC = () => {
               </MenuList>
             </Menu>
           )}
-          <ModalSettingDashboardDetails
-            open={openModalSetting}
-            onClose={() => setOpenModalSetting(false)}
-            dataDashboard={dataDashboard}
-            onReload={fetchLayoutData}
-          />
           <ModalAddTextWidget
             selectedItem={selectedItem}
             dataLayouts={dataLayouts}
@@ -413,11 +403,6 @@ const DashboardPart: React.FC = () => {
               onClose={() => setOpenModalAddVisualization(false)}
             />
           )}
-          <ModalForkDashBoardDetails
-            dashboardId={dashboardId}
-            open={openModalFork}
-            onClose={() => setOpenModalFork(false)}
-          />
           <Prompt
             when={editMode}
             message={`Your dashboard is not saved yet\nAre you sure you want to leave?`}
