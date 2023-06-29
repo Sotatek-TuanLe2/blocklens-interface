@@ -55,7 +55,8 @@ const _renderStatus = (activity: IActivityResponse) => {
 
   if (activity?.lastStatus === STATUS.PROCESSING) {
     return (
-      <Box className="status waiting">Processing
+      <Box className="status waiting">
+        Processing
         {/*{activity?.retryTime}/5*/}
       </Box>
     );
