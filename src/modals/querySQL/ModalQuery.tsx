@@ -46,6 +46,11 @@ export const generateSubmitBtn = (type: string) => {
   }
 };
 
+interface IDataSettingForm {
+  name: string;
+  tags: string;
+}
+
 const ModalQuery = ({
   open,
   onClose,
@@ -55,9 +60,12 @@ const ModalQuery = ({
   type,
   query,
 }: IModalSettingQuerry) => {
-  const [valueSettingQuery, setValueSettingQuery] = useState({
-    ...defaultValue,
-  });
+  const initDataFormSetting = {
+    name: defaultValue.name || '',
+    tags: defaultValue.tags?.join(', ') || '',
+  };
+  const [dataForm, setDataForm] =
+    useState<IDataSettingForm>(initDataFormSetting);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
 
   const history = useHistory();
@@ -68,7 +76,7 @@ const ModalQuery = ({
       const isDisabled = !validator.current.allValid();
       setIsDisableSubmit(isDisabled);
     }, 0);
-  }, [valueSettingQuery]);
+  }, [dataForm]);
 
   const validator = useRef(
     createValidator({
@@ -77,10 +85,10 @@ const ModalQuery = ({
   );
 
   const handleChangeTitle = (e: ChangeEvent<HTMLInputElement>) => {
-    setValueSettingQuery((pre) => ({ ...pre, name: e.target.value }));
+    setDataForm((pre) => ({ ...pre, name: e.target.value }));
   };
   const handleChangeTags = (e: ChangeEvent<HTMLInputElement>) => {
-    setValueSettingQuery((pre) => ({ ...pre, tags: e.target.value }));
+    setDataForm((pre) => ({ ...pre, tags: e.target.value }));
   };
 
   const handleSubmit = async () => {
@@ -93,41 +101,37 @@ const ModalQuery = ({
       setRecaptchaToRequest(result);
       let res;
       setIsDisableSubmit(true);
-
-      const tags =
-        valueSettingQuery.tags
-          ?.toString()
-          .split(',')
-          .filter((i) => i.trim().length)
-          .map((i) => i.trim())
-          .slice(0, 10) || [];
+      const submitData: { name: string; tags: string[] } = {
+        name: dataForm.name.trim(),
+        tags:
+          !!dataForm.tags && !!dataForm.tags.length
+            ? dataForm.tags
+                .split(',')
+                .filter((i) => i.trim().length)
+                .map((i) => i.trim())
+            : [],
+      };
 
       try {
         switch (type) {
           case TYPE_OF_MODAL.SETTING:
-            const payload = {
-              ...valueSettingQuery,
-              tags,
-            };
             res = await rf
               .getRequest('DashboardsRequest')
-              .updateQuery(payload, id);
+              .updateQuery(submitData, id);
             setIsDisableSubmit(false);
             toastSuccess({ message: 'Update query successfully!' });
             break;
-
           case TYPE_OF_MODAL.CREATE:
             res = await rf
               .getRequest('DashboardsRequest')
-              .createNewQuery({ ...valueSettingQuery, query: query, tags });
+              .createNewQuery({ ...submitData, query: query });
             setIsDisableSubmit(false);
             toastSuccess({ message: 'Create new query successfully!' });
             break;
-
           case TYPE_OF_MODAL.FORK:
             res = await rf
               .getRequest('DashboardsRequest')
-              .forkQueries(id, { ...valueSettingQuery });
+              .forkQueries(id, submitData);
             setIsDisableSubmit(false);
             history.push(`${ROUTES.MY_QUERY}/${res.id}`);
             toastSuccess({ message: 'Fork query successfully!' });
@@ -156,7 +160,7 @@ const ModalQuery = ({
           <div>
             <Text className="input-label">Query Title</Text>
             <AppInput
-              value={valueSettingQuery.name}
+              value={dataForm.name}
               validate={{
                 name: `Query title`,
                 validator: validator.current,
@@ -169,7 +173,7 @@ const ModalQuery = ({
             <Text className="input-label">{`Tags (optional)`} </Text>
             <AppInput
               placeholder="tag1, tag2, tag3"
-              value={valueSettingQuery.tags?.toString()}
+              value={dataForm.tags?.toString()}
               onChange={handleChangeTags}
               validate={{
                 name: `tags`,
