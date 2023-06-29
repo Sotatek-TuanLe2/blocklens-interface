@@ -8,7 +8,7 @@ import {
   Tabs,
 } from '@chakra-ui/react';
 import { useCallback, useEffect, useState } from 'react';
-import { useHistory, useParams } from 'react-router';
+import { useHistory, useLocation, useParams } from 'react-router';
 import 'src/styles/pages/AppDetail.scss';
 import PartNFTWebhooks from './parts/PartNFTWebhooks';
 import PartAppStatics from './parts/PartAppStatics';
@@ -26,7 +26,7 @@ import {
 import { isMobile } from 'react-device-detect';
 import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
 import PartAppGraph from './parts/PartAppGraph';
-import { CHAINS, WEBHOOK_TYPES } from 'src/utils/utils-webhook';
+import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
 import useUser from 'src/hooks/useUser';
 import rf from 'src/requests/RequestFactory';
 import { ROUTES } from 'src/utils/common';
@@ -34,12 +34,29 @@ import PartAptosModuleWebhooks from './parts/PartAptosModuleWebhooks';
 import PartAptosCoinWebhooks from './parts/PartAptosCoinWebhooks';
 import PartAptosTokenWebhooks from './parts/PartAptosTokenWebhooks';
 
+const TAB_EVM = [
+  WEBHOOK_TYPES.ADDRESS_ACTIVITY,
+  WEBHOOK_TYPES.CONTRACT_ACTIVITY,
+  WEBHOOK_TYPES.NFT_ACTIVITY,
+  WEBHOOK_TYPES.TOKEN_ACTIVITY,
+];
+
+const TAB_APTOS = [
+  WEBHOOK_TYPES.ADDRESS_ACTIVITY,
+  WEBHOOK_TYPES.APTOS_COIN_ACTIVITY,
+  WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY,
+  WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY,
+];
+
 const AppDetail = () => {
   const [type, setType] = useState<string>('');
   const [defaultTab, setDefaultTab] = useState(0);
   const history = useHistory();
   const { user } = useUser();
   const userStats = user?.getStats();
+  const { search: searchUrl } = useLocation();
+  const searchParams = new URLSearchParams(searchUrl);
+  const currentType = searchParams.get('type');
 
   const { id: appId } = useParams<{ id: string }>();
   const [appInfo, setAppInfo] = useState<IAppResponse | any>({});
@@ -75,15 +92,20 @@ const AppDetail = () => {
   ]);
 
   useEffect(() => {
-    if (!isEVMNetwork(appInfo.chain)) {
+    if (!currentType) {
       setDefaultTab(0);
+      setType(WEBHOOK_TYPES.ADDRESS_ACTIVITY);
       return;
     }
-  }, [appInfo]);
 
-  useEffect(() => {
-    setType(WEBHOOK_TYPES.ADDRESS_ACTIVITY);
-  }, [appInfo]);
+    if (isEVMNetwork(appInfo.chain)) {
+      setDefaultTab(TAB_EVM.indexOf(currentType || ''));
+    } else {
+      setDefaultTab(TAB_APTOS.indexOf(currentType || ''));
+    }
+
+    setType(currentType || '');
+  }, [currentType, appInfo]);
 
   const _renderListWebhook = () => {
     return (
@@ -112,7 +134,11 @@ const AppDetail = () => {
             <Flex w={'100%'}>
               <Tab
                 className="app-tab"
-                onClick={() => setType(WEBHOOK_TYPES.ADDRESS_ACTIVITY)}
+                onClick={() =>
+                  history.push(
+                    `/app/${appId}?type=${WEBHOOK_TYPES.ADDRESS_ACTIVITY}`,
+                  )
+                }
               >
                 Address Activity
               </Tab>
@@ -121,19 +147,31 @@ const AppDetail = () => {
                 <>
                   <Tab
                     className="app-tab"
-                    onClick={() => setType(WEBHOOK_TYPES.CONTRACT_ACTIVITY)}
+                    onClick={() =>
+                      history.push(
+                        `/app/${appId}?type=${WEBHOOK_TYPES.CONTRACT_ACTIVITY}`,
+                      )
+                    }
                   >
                     Contract Activity
                   </Tab>
                   <Tab
                     className="app-tab"
-                    onClick={() => setType(WEBHOOK_TYPES.NFT_ACTIVITY)}
+                    onClick={() =>
+                      history.push(
+                        `/app/${appId}?type=${WEBHOOK_TYPES.NFT_ACTIVITY}`,
+                      )
+                    }
                   >
                     NFT Activity
                   </Tab>
                   <Tab
                     className="app-tab"
-                    onClick={() => setType(WEBHOOK_TYPES.TOKEN_ACTIVITY)}
+                    onClick={() =>
+                      history.push(
+                        `/app/${appId}?type=${WEBHOOK_TYPES.TOKEN_ACTIVITY}`,
+                      )
+                    }
                   >
                     Token Activity
                   </Tab>
@@ -144,20 +182,32 @@ const AppDetail = () => {
                 <>
                   <Tab
                     className="app-tab"
-                    onClick={() => setType(WEBHOOK_TYPES.APTOS_COIN_ACTIVITY)}
+                    onClick={() =>
+                      history.push(
+                        `/app/${appId}?type=${WEBHOOK_TYPES.APTOS_COIN_ACTIVITY}`,
+                      )
+                    }
                   >
                     Coin Activity
                   </Tab>
 
                   <Tab
                     className="app-tab"
-                    onClick={() => setType(WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY)}
+                    onClick={() =>
+                      history.push(
+                        `/app/${appId}?type=${WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY}`,
+                      )
+                    }
                   >
                     Token Activity
                   </Tab>
                   <Tab
                     className="app-tab"
-                    onClick={() => setType(WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY)}
+                    onClick={() =>
+                      history.push(
+                        `/app/${appId}?type=${WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY}`,
+                      )
+                    }
                   >
                     Module Activity
                   </Tab>
