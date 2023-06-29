@@ -37,9 +37,7 @@ const VisualizationCounter = ({ data, visualization, isLoading }: Props) => {
     const dataColumn: any = data[dataOptions.rowNumber - 1];
     const indexColumn = dataOptions.counterColName;
 
-    return isNumber(dataColumn[indexColumn])
-      ? commaNumber(dataColumn[indexColumn]?.toString())
-      : dataColumn[indexColumn]?.toString();
+    return dataColumn[indexColumn]?.toString();
   };
 
   const defaultSize =
@@ -81,7 +79,13 @@ const VisualizationCounter = ({ data, visualization, isLoading }: Props) => {
   }
 
   return (
-    <div className="main-counter">
+    <Box
+      _after={{
+        bg: 'url(/images/copyright-logo.png) no-repeat center',
+        bgSize: 'contain',
+      }}
+      className="main-counter"
+    >
       <div className="counter-result">
         <div className="text-result">
           <div
@@ -92,11 +96,13 @@ const VisualizationCounter = ({ data, visualization, isLoading }: Props) => {
             }}
           >
             {isNumberValue && dataOptions.stringPrefix}
-            <span>
+            <span style={{ color: 'inherit' }}>
               {isNumberValue
-                ? roundAndPadZeros(
-                    dataCounter(),
-                    Number(dataOptions.stringDecimal || 0),
+                ? commaNumber(
+                    roundAndPadZeros(
+                      dataCounter(),
+                      Number(dataOptions.stringDecimal || 0),
+                    ),
                   )
                 : dataCounter()}
             </span>
@@ -115,7 +121,7 @@ const VisualizationCounter = ({ data, visualization, isLoading }: Props) => {
           </Box>
         </div>
       </div>
-    </div>
+    </Box>
   );
 };
 
