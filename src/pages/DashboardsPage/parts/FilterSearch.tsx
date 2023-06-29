@@ -298,19 +298,21 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
                 onChange={onChangeSearch}
               />
               <Flex mt={'14px'}>
-                {listTagsTrending.map((item: string, index: number) => (
-                  <AppTag
-                    key={index}
-                    value={item}
-                    variant="md"
-                    onClick={() => onChangeTag(item)}
-                    selected={item === tag}
-                    h={'32px'}
-                    color={'rgba(0, 2, 36, 0.5)'}
-                    bg={'rgba(0, 2, 36, 0.05)'}
-                    borderRadius={'6px'}
-                  />
-                ))}
+                {listTagsTrending
+                  .slice(0, 3)
+                  .map((item: string, index: number) => (
+                    <AppTag
+                      key={index}
+                      value={item}
+                      variant="md"
+                      onClick={() => onChangeTag(item)}
+                      selected={item === tag}
+                      h={'32px'}
+                      color={'rgba(0, 2, 36, 0.5)'}
+                      bg={'rgba(0, 2, 36, 0.05)'}
+                      borderRadius={'6px'}
+                    />
+                  ))}
               </Flex>
             </Box>
 
