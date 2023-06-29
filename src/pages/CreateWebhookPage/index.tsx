@@ -193,10 +193,10 @@ const CreateWebhook = () => {
     try {
       await rf.getRequest('RegistrationRequest').addRegistrations(appId, data);
       dispatch(getUserStats());
-      history.push(`/app/${appId}`);
+      history.push(`/app/${appId}?type=${type}`);
       toastSuccess({ message: 'Create Successfully!' });
     } catch (e: any) {
-      console.error(e);
+      toastError({ message: e?.message || 'Oops. Something went wrong!' });
     }
   };
 
