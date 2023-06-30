@@ -36,7 +36,7 @@
           "blockExplorer": {
             "name": "Apscan",
             "icon": "/images/etherscan.png",
-            "url": "https://apscan.io/tx"
+            "url": "https://explorer.aptoslabs.com/txn"
           },
           "nativeCurrency": {
             "name": "APTOS",
