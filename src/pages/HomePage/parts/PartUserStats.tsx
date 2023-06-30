@@ -5,7 +5,7 @@ import AppStatistical, { keyStats } from 'src/components/AppStatistical';
 import rf from 'src/requests/RequestFactory';
 import moment from 'moment';
 import { formatLargeNumber } from 'src/utils/utils-helper';
-import useUser from 'src/hooks/useUser';
+import _ from 'lodash';
 import { RESOLUTION_TIME } from 'src/utils/utils-webhook';
 
 const getStartOfByResolution = (timestamp: number, resolution: number) => {
@@ -154,20 +154,6 @@ const PartUserStats = ({
 }) => {
   const [userStatsToday, setUserStatsToday] = useState<IUserStats | any>({});
   const [dataChart, setDataChart] = useState<IUserStats[] | any>([]);
-  const { user } = useUser();
-
-  const getUserStatsToday = useCallback(async () => {
-    try {
-      const res: IUserStats[] = await rf
-        .getRequest('NotificationRequest')
-        .getUserStats({
-          resolution: RESOLUTION_TIME.DAY,
-        });
-      setUserStatsToday(res[0] || {});
-    } catch (error: any) {
-      setUserStatsToday({});
-    }
-  }, []);
 
   const getUserStats = useCallback(async () => {
     const formTime = moment().utc().subtract(24, 'hour').valueOf();
@@ -183,6 +169,23 @@ const PartUserStats = ({
         });
 
       if (!res?.length) return;
+
+      const totalMessage = _.sumBy(res, 'message');
+      const totalActivity = _.sumBy(res, 'activities');
+      const totalMessagesFailed = _.sumBy(res, 'messagesFailed');
+      const totalMessagesSuccess = _.sumBy(res, 'messagesSuccess');
+      const successRate = ((totalMessagesSuccess / totalMessage) * 100).toFixed(
+        2,
+      );
+
+      setUserStatsToday({
+        ...userStatsToday,
+        messagesFailed: totalMessagesFailed,
+        messagesSuccess: totalMessagesSuccess,
+        message: totalMessage,
+        activities: totalActivity,
+        successRate: successRate,
+      });
 
       const dataFilled = fillFullResolution(
         formTime,
@@ -200,7 +203,6 @@ const PartUserStats = ({
 
   useEffect(() => {
     getUserStats().then();
-    getUserStatsToday().then();
   }, []);
 
   const dataUserStatsToday = useMemo(() => {
