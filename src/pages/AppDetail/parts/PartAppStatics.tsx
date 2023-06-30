@@ -9,8 +9,8 @@ import {
 } from 'src/pages/HomePage/parts/PartUserStats';
 import moment from 'moment';
 import { formatLargeNumber } from 'src/utils/utils-helper';
-import useUser from 'src/hooks/useUser';
 import { RESOLUTION_TIME } from 'src/utils/utils-webhook';
+import _ from 'lodash';
 
 interface IAppStats {
   message?: number;
@@ -50,18 +50,6 @@ const PartAppStats = ({
   const [appStats, setAppStats] = useState<IAppStats | any>({});
   const [dataChart, setDataChart] = useState<IAppStats[] | any>([]);
   const { id: appId } = useParams<{ id: string }>();
-  const { user } = useUser();
-
-  const getAppStatsToday = useCallback(async () => {
-    try {
-      const res: IAppStats[] = await rf
-        .getRequest('NotificationRequest')
-        .getAppStats(appId, { resolution: RESOLUTION_TIME.DAY });
-      setAppStats(res[0] || {});
-    } catch (error: any) {
-      setAppStats({});
-    }
-  }, []);
 
   const getAppStats = useCallback(async () => {
     const formTime = moment().utc().subtract(24, 'hour').valueOf();
@@ -77,6 +65,23 @@ const PartAppStats = ({
         });
 
       if (!res?.length) return;
+
+      const totalMessage = _.sumBy(res, 'message');
+      const totalActivity = _.sumBy(res, 'activities');
+      const totalMessagesFailed = _.sumBy(res, 'messagesFailed');
+      const totalMessagesSuccess = _.sumBy(res, 'messagesSuccess');
+      const successRate = ((totalMessagesSuccess / totalMessage) * 100).toFixed(
+        2,
+      );
+
+      setAppStats({
+        ...appStats,
+        messagesFailed: totalMessagesFailed,
+        messagesSuccess: totalMessagesSuccess,
+        message: totalMessage,
+        activities: totalActivity,
+        successRate: successRate,
+      });
 
       const dataFilled = fillFullResolution(
         formTime,
@@ -94,7 +99,6 @@ const PartAppStats = ({
 
   useEffect(() => {
     getAppStats().then();
-    getAppStatsToday().then();
   }, []);
 
   const dataAppStats = useMemo(() => {

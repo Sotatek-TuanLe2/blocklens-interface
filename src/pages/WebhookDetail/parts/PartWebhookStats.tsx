@@ -10,6 +10,7 @@ import {
 import moment from 'moment';
 import { formatLargeNumber } from 'src/utils/utils-helper';
 import { RESOLUTION_TIME } from 'src/utils/utils-webhook';
+import _ from 'lodash';
 
 interface IWebhookStats {
   message?: number;
@@ -44,19 +45,6 @@ const PartWebhookStats = () => {
   const [dataChart, setDataChart] = useState<IWebhookStats[] | any>([]);
   const { id: webhookId } = useParams<{ id: string }>();
 
-  const getWebhookStatsToday = useCallback(async () => {
-    try {
-      const res: IWebhookStats[] = await rf
-        .getRequest('NotificationRequest')
-        .getWebhookStats(webhookId, {
-          resolution: RESOLUTION_TIME.DAY,
-        });
-      setWebhookStats(res[0] || {});
-    } catch (error: any) {
-      setWebhookStats({});
-    }
-  }, []);
-
   const getWebhookStats = useCallback(async () => {
     const formTime = moment().utc().subtract(24, 'hour').valueOf();
     const toTime = moment().utc().valueOf();
@@ -71,6 +59,23 @@ const PartWebhookStats = () => {
         });
 
       if (!res?.length) return;
+
+      const totalMessage = _.sumBy(res, 'message');
+      const totalActivity = _.sumBy(res, 'activities');
+      const totalMessagesFailed = _.sumBy(res, 'messagesFailed');
+      const totalMessagesSuccess = _.sumBy(res, 'messagesSuccess');
+      const successRate = ((totalMessagesSuccess / totalMessage) * 100).toFixed(
+        2,
+      );
+
+      setWebhookStats({
+        ...webhookStats,
+        messagesFailed: totalMessagesFailed,
+        messagesSuccess: totalMessagesSuccess,
+        message: totalMessage,
+        activities: totalActivity,
+        successRate: successRate,
+      });
 
       const dataFilled = fillFullResolution(
         formTime,
@@ -87,7 +92,6 @@ const PartWebhookStats = () => {
   }, []);
 
   useEffect(() => {
-    getWebhookStatsToday().then();
     getWebhookStats().then();
   }, []);
 
