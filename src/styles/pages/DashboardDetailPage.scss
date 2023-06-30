@@ -50,6 +50,22 @@
         overflow: auto;
         margin: 0 -17px;
 
+        &::-webkit-scrollbar {
+          width: 6px;
+          background-color: white;
+          height: 6px;
+          border-radius: 2px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          background: #c7d2e1;
+          border-radius: 10px;
+        }
+
+        &::-webkit-scrollbar-corner {
+          background: transparent;
+        }
+
         .table-pagination {
           width: 100%;
           position: fixed;
@@ -315,6 +331,12 @@
         height: 100%;
         padding: 17px;
         position: relative;
+        cursor: default;
+
+        &--edit {
+          cursor: grab;
+        }
+
         .box-updated {
           position: absolute;
           z-index: 1000;

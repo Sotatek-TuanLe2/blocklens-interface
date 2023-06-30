@@ -288,7 +288,7 @@ const DashboardPart: React.FC = () => {
       >
         {dataLayouts.map((item) => (
           <div className="box-layout" key={item.id}>
-            <div className="box-chart">
+            <div className={`box-chart ${editMode ? 'box-chart--edit' : ''}`}>
               {item.type === WIDGET_TYPE.VISUALIZATION ? (
                 <VisualizationItem
                   editMode={editMode}
