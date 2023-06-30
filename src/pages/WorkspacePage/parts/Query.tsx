@@ -256,6 +256,10 @@ const QueryPart: React.FC = () => {
   const onCheckedIconExpand = (query: boolean) => {
     if (!queryId || !queryValue)
       return query ? 'icon-query-collapse' : 'icon-query-expand';
+
+    if (expandLayout === LAYOUT_QUERY.HALF)
+      return query ? 'icon-query-expand' : 'icon-query-collapse';
+
     return expandLayout === LAYOUT_QUERY.HIDDEN
       ? query
         ? 'icon-query-expand'
