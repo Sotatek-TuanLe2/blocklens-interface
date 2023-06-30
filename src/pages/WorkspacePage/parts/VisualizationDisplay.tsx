@@ -18,7 +18,7 @@ import 'src/styles/components/Chart.scss';
 import { getDefaultVisualizationName } from 'src/utils/common';
 import { areYAxisesSameType, getErrorMessage } from 'src/utils/utils-helper';
 import { objectKeys } from 'src/utils/utils-network';
-import { toastError } from 'src/utils/utils-notify';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { Query } from 'src/utils/utils-query';
 import { AppButton, AppTabs, ITabs } from '../../../components';
 import {
@@ -201,6 +201,7 @@ const VisualizationDisplay = ({
         .getRequest('DashboardsRequest')
         .deleteVisualization({ visualId: visualizationId });
       await onReload();
+      toastSuccess({ message: "Delete visualization successfully!" });
       setIsConfiguring(false);
     } catch (error: any) {
       setIsConfiguring(false);
