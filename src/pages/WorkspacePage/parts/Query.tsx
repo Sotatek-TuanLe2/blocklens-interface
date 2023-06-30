@@ -146,6 +146,9 @@ const QueryPart: React.FC = () => {
     const executedResponse: QueryExecutedResponse = await rf
       .getRequest('DashboardsRequest')
       .executeQuery(queryId);
+    if (!executedResponse || !executedResponse.id) {
+      throw new Error('Execute query failed!');
+    }
     const executionId = executedResponse.id;
     return executionId;
   };
