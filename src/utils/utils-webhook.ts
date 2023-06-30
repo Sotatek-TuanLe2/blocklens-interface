@@ -83,10 +83,12 @@ export interface IMessages {
   appId: string;
   registrationId: string;
   txHash: string;
+  block: string;
   trackingAddress: string;
   notificationHash: string;
   output: any;
   input: any;
+  tnxId: string;
   startTime: number;
   endTime: number;
   createdAt: number;

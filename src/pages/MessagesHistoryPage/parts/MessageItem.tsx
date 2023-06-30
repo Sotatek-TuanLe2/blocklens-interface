@@ -131,19 +131,19 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
         </Td>
 
         <Td w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '12%' : '15%'}>
-          {message?.input?.tx?.blockNumber || message?.input?.tx?.block}
+          {message?.block || '--'}
         </Td>
         <Td w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '15%' : '20%'}>
           <Flex alignItems="center">
-            {formatShortText(message?.input?.tx?.transactionHash)}
-            {message?.input?.tx?.transactionHash && (
+            {formatShortText(message?.tnxId)}
+            {message?.tnxId && (
               <Box ml={2}>
                 <a
                   onClick={(e) => onRedirectToBlockExplorer(e)}
                   href={getExplorerTxUrl(
                     message?.input?.chain,
                     message?.input?.network,
-                    message?.input?.tx?.transactionHash,
+                    message?.tnxId,
                   )}
                   className="link-redirect"
                   target="_blank"

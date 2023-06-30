@@ -174,13 +174,11 @@ const ListApps: React.FC = () => {
     }
   };
 
-  const getAppMetricToday = async (appId: string) => {
+  const getAppMetricToday = async (appIds: string[]) => {
     try {
       const res: any = await rf
         .getRequest('NotificationRequest')
-        .getAppStats(appId, {
-          resolution: 86400,
-        });
+        .getAppMetricToday({ appIds });
       return res;
     } catch (error) {
       return [];
@@ -194,14 +192,18 @@ const ListApps: React.FC = () => {
       const totalWebhooks = await getTotalWebhookEachApp(
         appIds.join(',').toString(),
       );
+      const appsMetric = await getAppMetricToday(appIds);
 
       const dataApps = await Promise.all(
         res?.docs?.map(async (app: IAppResponse, index: number) => {
-          const appMetric = await getAppMetricToday(app?.appId);
+          const appMetricToday = appsMetric.find(
+            (item: any) => item.appId === app.appId,
+          );
+
           return {
             ...app,
             totalWebhook: totalWebhooks[index]?.totalRegistration || '--',
-            messageToday: appMetric[0]?.message || '--',
+            messageToday: appMetricToday?.message || '--',
           };
         }),
       );
