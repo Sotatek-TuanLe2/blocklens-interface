@@ -32,7 +32,7 @@ const ModalDeleteWebhook: FC<IModalDeleteWebhook> = ({
         .deleteRegistration(webhook.appId, webhook.registrationId);
       dispatch(getUserStats());
       toastSuccess({ message: 'Delete Successfully!' });
-      history.push(`/apps/${webhook.appId}`);
+      history.push(`/app/${webhook.appId}`);
       onClose();
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
