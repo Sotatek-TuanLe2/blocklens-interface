@@ -265,8 +265,8 @@ const QueryPart: React.FC = () => {
         ? 'icon-query-expand'
         : 'icon-query-collapse'
       : query
-      ? 'icon-query-collapse'
-      : 'icon-query-expand';
+        ? 'icon-query-collapse'
+        : 'icon-query-expand';
   };
 
   const onCheckExpandLayout = (executeStatus: string) => {
@@ -464,28 +464,17 @@ const QueryPart: React.FC = () => {
                 }}
                 onSelectionChange={onSelectQuery}
               />
-              <Tooltip
-                label={
-                  expandLayout === LAYOUT_QUERY.HIDDEN ? 'Maximize' : 'Minimize'
-                }
-                hasArrow
-                placement="top"
-                bg="white"
-                color="black"
-              >
-                <div
-                  className={`${
-                    !queryId || !queryValue ? 'cursor-not-allowed' : ''
+              <div
+                className={`${!queryId || !queryValue ? 'cursor-not-allowed' : ''
                   } btn-expand-query`}
-                >
-                  {!isLoading && (
-                    <p
-                      className={`${onCheckedIconExpand(true)}`}
-                      onClick={onExpandEditor}
-                    />
-                  )}
-                </div>
-              </Tooltip>
+              >
+                {!isLoading && (
+                  <p
+                    className={`${onCheckedIconExpand(true)}`}
+                    onClick={onExpandEditor}
+                  />
+                )}
+              </div>
             </Box>
             {_renderVisualizations()}
           </Box>
