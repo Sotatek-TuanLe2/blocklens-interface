@@ -139,9 +139,9 @@ const AppDataTable = forwardRef(
 
         setPagination({ ...tablePagination });
         setPagesInfo({
-          totalPages: response.totalPages,
-          currentPage: response.currentPage,
-          itemsPerPage: response.itemsPerPage,
+          totalPages: +response.totalPages,
+          currentPage: +response.currentPage,
+          itemsPerPage: +response.itemsPerPage,
         });
       } else setTableData([]);
     };
