@@ -315,6 +315,9 @@ export const roundAndPadZeros = (a: number, decimals: number): string => {
 };
 
 export const formatDefaultValueChart = (value: string) => {
+  if (!value) {
+    return '';
+  }
   if (isNumber(value)) {
     return formatNumber(value, 2, '0');
   }
