@@ -1,6 +1,6 @@
 import { Flex } from '@chakra-ui/react';
 import BigNumber from 'bignumber.js';
-import { isNull, isUndefined } from 'lodash';
+import { isNull, isUndefined, uniq } from 'lodash';
 import moment from 'moment';
 import React, { useMemo, useState } from 'react';
 import {
@@ -266,18 +266,22 @@ const VisualizationChart: React.FC<Props> = (props) => {
 
       if (hasNumberValues) {
         if (chartOptionsConfigs?.stacking) {
-          const newCalculatedValues = [...calculatedValues];
-          Array(data.length).forEach((_, index) => {
-            newCalculatedValues[index] = calculatedValues.reduce((a, b) =>
-              new BigNumber(a[index]).plus(new BigNumber(b[index])),
-            );
-          });
+          let newCalculatedValues: any[] = [];
+          for (let index = 0; index < data.length; index++) {
+            newCalculatedValues[index] = calculatedValues
+              .reduce((a, b) =>
+                new BigNumber(a[index]).plus(new BigNumber(b[index])),
+              )
+              .toNumber();
+          }
+          newCalculatedValues = uniq(newCalculatedValues);
           minValue = BigNumber.min(...newCalculatedValues).toNumber();
           maxValue = BigNumber.max(...newCalculatedValues).toNumber();
         } else {
-          const newCalculatedValues: any[] = [];
+          let newCalculatedValues: any[] = [];
           calculatedValues.forEach((array) => {
-            newCalculatedValues.push(...array);
+            newCalculatedValues.push(...uniq(array));
+            newCalculatedValues = uniq(newCalculatedValues);
           });
 
           minValue = BigNumber.minimum(...newCalculatedValues).toNumber();
