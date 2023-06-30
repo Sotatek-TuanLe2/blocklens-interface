@@ -513,9 +513,7 @@ const ActivityDatatable: FC<IActivityDatatable> = ({
     const _renderHeaderAptosCoin = () => {
       return (
         <Th textAlign="center" w={'15%'}>
-          <Flex alignItems="center">
-            Coin Type
-          </Flex>
+          <Flex alignItems="center">Coin Type</Flex>
         </Th>
       );
     };
@@ -523,9 +521,7 @@ const ActivityDatatable: FC<IActivityDatatable> = ({
     const _renderHeaderAptosToken = () => {
       return (
         <Th textAlign="center" w={'15%'}>
-          <Flex alignItems="center">
-            Token Data
-          </Flex>
+          <Flex alignItems="center">Token Data</Flex>
         </Th>
       );
     };

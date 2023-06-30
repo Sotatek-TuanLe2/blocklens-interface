@@ -107,9 +107,7 @@ const MessagesHistory = () => {
     const _renderHeaderAptosCoin = () => {
       return (
         <Th textAlign="center" w={'15%'}>
-          <Flex alignItems="center">
-            Coin Type
-          </Flex>
+          <Flex alignItems="center">Coin Type</Flex>
         </Th>
       );
     };
@@ -117,9 +115,7 @@ const MessagesHistory = () => {
     const _renderHeaderAptosToken = () => {
       return (
         <Th textAlign="center" w={'15%'}>
-          <Flex alignItems="center">
-            Token Data
-          </Flex>
+          <Flex alignItems="center">Token Data</Flex>
         </Th>
       );
     };
@@ -140,7 +136,6 @@ const MessagesHistory = () => {
       if (webhook.type === WEBHOOK_TYPES.APTOS_COIN_ACTIVITY) {
         return _renderHeaderAptosCoin();
       }
-
 
       return _renderHeaderAddress();
     };

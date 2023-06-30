@@ -201,7 +201,7 @@ const VisualizationDisplay = ({
         .getRequest('DashboardsRequest')
         .deleteVisualization({ visualId: visualizationId });
       await onReload();
-      toastSuccess({ message: "Delete visualization successfully!" });
+      toastSuccess({ message: 'Delete visualization successfully!' });
       setIsConfiguring(false);
     } catch (error: any) {
       setIsConfiguring(false);
@@ -549,26 +549,19 @@ const VisualizationDisplay = ({
         }}
         rightElement={
           <Flex gap={'10px'}>
-            <Tooltip
-              label={expandLayout === LAYOUT_QUERY.FULL ? 'Expand' : 'Minimize'}
-              hasArrow
-              bg="white"
-              color="black"
-            >
-              <div className="btn-expand">
-                {expandLayout === LAYOUT_QUERY.FULL ? (
-                  <p
-                    className="icon-query-expand"
-                    onClick={() => onExpand(LAYOUT_QUERY.HIDDEN)}
-                  />
-                ) : (
-                  <p
-                    className="icon-query-collapse"
-                    onClick={() => onExpand(LAYOUT_QUERY.FULL)}
-                  />
-                )}
-              </div>
-            </Tooltip>
+            <div className="btn-expand">
+              {expandLayout === LAYOUT_QUERY.FULL ? (
+                <p
+                  className="icon-query-expand"
+                  onClick={() => onExpand(LAYOUT_QUERY.HIDDEN)}
+                />
+              ) : (
+                <p
+                  className="icon-query-collapse"
+                  onClick={() => onExpand(LAYOUT_QUERY.FULL)}
+                />
+              )}
+            </div>
             {needAuthentication && tabIndex > 0 && tabIndex < tabs.length - 1 && (
               <Tooltip label="Edit" hasArrow bg="white" color="black">
                 <div
