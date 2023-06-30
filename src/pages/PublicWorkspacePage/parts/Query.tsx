@@ -160,8 +160,8 @@ const QueryPart: React.FC = () => {
         ? 'icon-query-expand'
         : 'icon-query-collapse'
       : query
-        ? 'icon-query-collapse'
-        : 'icon-query-expand';
+      ? 'icon-query-collapse'
+      : 'icon-query-expand';
   };
 
   const _renderAddChart = () => {
@@ -209,19 +209,19 @@ const QueryPart: React.FC = () => {
         {_renderAddChart()}
         {(expandLayout === LAYOUT_QUERY.HIDDEN ||
           expandLayout === LAYOUT_QUERY.HALF) && (
-            <Flex
-              className="empty-table"
-              justifyContent={'center'}
-              alignItems="center"
-              flexDirection="column"
-            >
-              <span className="execution-error">Execution Error</span>
+          <Flex
+            className="empty-table"
+            justifyContent={'center'}
+            alignItems="center"
+            flexDirection="column"
+          >
+            <span className="execution-error">Execution Error</span>
 
-              {(statusExecuteQuery === STATUS.FAILED &&
-                errorExecuteQuery?.message) ||
-                'No data...'}
-            </Flex>
-          )}
+            {(statusExecuteQuery === STATUS.FAILED &&
+              errorExecuteQuery?.message) ||
+              'No data...'}
+          </Flex>
+        )}
       </>
     );
   };
@@ -234,10 +234,11 @@ const QueryPart: React.FC = () => {
     return (
       <div
         className={`
-        ${statusExecuteQuery === STATUS.FAILED && isExpand
+        ${
+          statusExecuteQuery === STATUS.FAILED && isExpand
             ? 'add-chart-empty'
             : ''
-          }
+        }
         ${classExpand(LAYOUT_QUERY.FULL, 'add-chart-full', 'add-chart')}
         ${classExpand(LAYOUT_QUERY.HIDDEN, 'expand-chart hidden-editor', '')} `}
       >
@@ -263,8 +264,9 @@ const QueryPart: React.FC = () => {
         <Box className="queries-page__right-side">
           <Box className="editor-wrapper ">
             <div
-              className={`${!queryId || !queryValue ? 'cursor-not-allowed' : ''
-                } btn-expand-public`}
+              className={`${
+                !queryId || !queryValue ? 'cursor-not-allowed' : ''
+              } btn-expand-public`}
             >
               <p
                 className={`${onCheckedIconExpand(true)}`}
@@ -274,10 +276,10 @@ const QueryPart: React.FC = () => {
             <AceEditor
               className={`ace_editor ace-tomorrow custom-editor 
                 ${classExpand(
-                LAYOUT_QUERY.FULL,
-                'custom-editor--full',
-                '',
-              )} ${classExpand(
+                  LAYOUT_QUERY.FULL,
+                  'custom-editor--full',
+                  '',
+                )} ${classExpand(
                 LAYOUT_QUERY.HIDDEN,
                 'custom-editor--hidden',
                 '',

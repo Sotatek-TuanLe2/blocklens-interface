@@ -265,8 +265,8 @@ const QueryPart: React.FC = () => {
         ? 'icon-query-expand'
         : 'icon-query-collapse'
       : query
-        ? 'icon-query-collapse'
-        : 'icon-query-expand';
+      ? 'icon-query-collapse'
+      : 'icon-query-expand';
   };
 
   const onCheckExpandLayout = (executeStatus: string) => {
@@ -465,8 +465,9 @@ const QueryPart: React.FC = () => {
                 onSelectionChange={onSelectQuery}
               />
               <div
-                className={`${!queryId || !queryValue ? 'cursor-not-allowed' : ''
-                  } btn-expand-query`}
+                className={`${
+                  !queryId || !queryValue ? 'cursor-not-allowed' : ''
+                } btn-expand-query`}
               >
                 {!isLoading && (
                   <p
