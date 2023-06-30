@@ -247,9 +247,7 @@ const MessagesItemMobile: FC<IMessagesItemMobile> = ({
               className="info"
             >
               <Box>Block</Box>
-              <Box>
-                {message?.block || '--'}
-              </Box>
+              <Box>{message?.block || '--'}</Box>
             </Flex>
             <Flex
               justifyContent="space-between"
