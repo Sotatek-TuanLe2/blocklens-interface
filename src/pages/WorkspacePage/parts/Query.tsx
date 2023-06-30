@@ -199,13 +199,16 @@ const QueryPart: React.FC = () => {
   }, DEBOUNCE_TIME);
 
   const executeSelectedQuery = async () => {
+    setIsLoadingResult(true);
     try {
       const executedResponse: QueryExecutedResponse = await rf
         .getRequest('DashboardsRequest')
         .getTemporaryQueryResult(selectedQuery);
       const executionId = executedResponse.id;
       await getExecutionResultById(executionId);
+      setIsLoadingResult(false);
     } catch (error) {
+      setIsLoadingResult(false);
       console.log(error);
     }
   };
