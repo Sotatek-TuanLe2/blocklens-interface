@@ -248,7 +248,7 @@ const MessagesItemMobile: FC<IMessagesItemMobile> = ({
             >
               <Box>Block</Box>
               <Box>
-                {message?.input?.tx?.blockNumber || message?.input?.tx?.block}
+                {message?.block || '--'}
               </Box>
             </Flex>
             <Flex
@@ -259,14 +259,14 @@ const MessagesItemMobile: FC<IMessagesItemMobile> = ({
               <Box>TXN ID</Box>
               <Box className="value">
                 <Flex alignItems="center">
-                  {formatShortText(message?.input?.tx?.transactionHash)}
-                  {message?.input?.tx?.transactionHash && (
+                  {formatShortText(message?.tnxId)}
+                  {message?.tnxId && (
                     <Box ml={2}>
                       <a
                         href={getExplorerTxUrl(
                           message?.input?.chain,
                           message?.input?.network,
-                          message?.input?.tx?.transactionHash,
+                          message?.tnxId,
                         )}
                         className="link-redirect"
                         target="_blank"

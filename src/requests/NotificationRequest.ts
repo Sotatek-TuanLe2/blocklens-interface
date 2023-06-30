@@ -32,7 +32,7 @@ export default class NotificationRequest extends BaseRequest {
   }
 
   getAppMetricToday(params: any) {
-    const url = `/metrics/app-metrics`;
+    const url = `/metrics/app/metrics-today`;
     return this.get(url, params);
   }
 
