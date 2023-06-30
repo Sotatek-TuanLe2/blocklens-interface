@@ -113,10 +113,14 @@ const VisualizationCounter = ({ data, visualization, isLoading }: Props) => {
               hasArrow
               placement="top-start"
               label={
-                dataOptions.counterLabel ? dataOptions.counterLabel : 'Counter'
+                dataOptions.counterLabel
+                  ? dataOptions.counterLabel
+                  : visualization.name
               }
             >
-              {dataOptions.counterLabel ? dataOptions.counterLabel : 'Counter'}
+              {dataOptions.counterLabel
+                ? dataOptions.counterLabel
+                : visualization.name}
             </Tooltip>
           </Box>
         </div>
