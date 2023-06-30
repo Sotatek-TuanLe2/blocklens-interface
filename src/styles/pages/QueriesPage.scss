@@ -472,6 +472,22 @@
             height: calc(100% - 40px - 70px);
             max-height: calc(100% - 40px - 70px);
             overflow: auto;
+
+            &::-webkit-scrollbar {
+              width: 6px;
+              background-color: white;
+              height: 6px;
+              border-radius: 2px;
+            }
+    
+            &::-webkit-scrollbar-thumb {
+              background: #c7d2e1;
+              border-radius: 10px;
+            }
+    
+            &::-webkit-scrollbar-corner {
+              background: transparent;
+            }
           }
         }
 
