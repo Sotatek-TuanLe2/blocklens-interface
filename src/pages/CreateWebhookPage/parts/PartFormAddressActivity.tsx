@@ -1,7 +1,6 @@
 import { Box, Flex, Link } from '@chakra-ui/react';
-import { AppField, AppInput, AppTextarea, TYPE_ABI } from 'src/components';
+import { AppField, AppInput, AppTextarea } from 'src/components';
 import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
-import AppUploadABI from 'src/components/AppUploadABI';
 import React, { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { IDataForm } from '../index';
 import { toastError } from '../../../utils/utils-notify';

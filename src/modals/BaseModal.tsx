@@ -53,7 +53,6 @@ const BaseModal: FC<BaseModalProps> = ({
   icon,
   size = 'md',
   isCentered = true,
-  isFullScreen = false,
   isBack = false,
   isHideCloseIcon = false,
   children,

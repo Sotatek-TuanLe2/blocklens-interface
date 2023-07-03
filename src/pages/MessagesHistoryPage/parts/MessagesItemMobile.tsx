@@ -97,9 +97,8 @@ const MessagesItemMobile: FC<IMessagesItemMobile> = ({
               <Flex alignItems="center">
                 {`${formatShortText(
                   webhook?.metadata?.creatorAddress || '',
-                )}::${webhook?.metadata?.collectionName}::${
-                  webhook?.metadata?.name
-                }`}
+                )}::${webhook?.metadata?.collectionName}::${webhook?.metadata?.name
+                  }`}
               </Flex>
             </Box>
           </Flex>
@@ -284,7 +283,7 @@ const MessagesItemMobile: FC<IMessagesItemMobile> = ({
               <Flex flexWrap={'wrap'} my={2} justifyContent={'center'}>
                 <Box width={'48%'}>
                   <AppButton
-                    variant="cancel"
+                    variant="brand"
                     size="sm"
                     w={'100%'}
                     onClick={() => setIsShowDetail(true)}

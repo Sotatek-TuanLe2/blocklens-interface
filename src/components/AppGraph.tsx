@@ -10,7 +10,6 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { isMobile } from 'react-device-detect';
-import { formatTimestamp } from 'src/utils/utils-helper';
 import { formatNumber } from 'src/utils/utils-format';
 import { RadioChecked, RadioNoCheckedIcon } from 'src/assets/icons';
 import moment from 'moment';

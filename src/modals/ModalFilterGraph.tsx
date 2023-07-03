@@ -22,12 +22,9 @@ interface IModalFilterGraph {
 const ModalFilterGraph: FC<IModalFilterGraph> = ({
   open,
   onClose,
-  typeData,
-  onChangeType,
   onChangeTime,
   time,
   optionTimes,
-  optionTypes,
 }) => {
   const _renderFilterTime = () => {
     return (

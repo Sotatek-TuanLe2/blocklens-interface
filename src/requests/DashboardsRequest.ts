@@ -25,25 +25,11 @@ export interface ForkDashboard {
   newDashboardName: string;
 }
 
-export interface ListParams {
-  search: string;
-  limit: number;
-  page: number;
-}
-
 export interface QueriesParams {
   search?: string;
   tags?: string;
   order?: string;
   chain?: string;
-}
-
-export interface WizardsParams {
-  search?: string;
-}
-
-export interface TeamsParams {
-  search?: string;
 }
 
 export interface ILayout extends Layout {

@@ -36,6 +36,7 @@ const AccountPage = () => {
               <CopyIcon />
             </Box>
           </Flex>
+
           {!isMobile && (
             <Box className={'link'} onClick={unlinkWallet}>
               Unlink

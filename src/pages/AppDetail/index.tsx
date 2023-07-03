@@ -7,14 +7,10 @@ import {
   TabPanels,
   Tabs,
 } from '@chakra-ui/react';
-import { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory, useLocation, useParams } from 'react-router';
 import 'src/styles/pages/AppDetail.scss';
-import PartNFTWebhooks from './parts/PartNFTWebhooks';
 import PartAppStatics from './parts/PartAppStatics';
-import PartAddressWebhooks from './parts/PartAddressWebhooks';
-import PartContractWebhooks from './parts/PartContractWebhooks';
-import PartTokenWebhooks from './parts/PartTokenWebhooks';
 import { BasePage } from 'src/layouts';
 import { AppButton, AppCard, AppHeading } from 'src/components';
 import {
@@ -26,27 +22,15 @@ import {
 import { isMobile } from 'react-device-detect';
 import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
 import PartAppGraph from './parts/PartAppGraph';
-import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
+import {
+  WEBHOOK_TYPES,
+  WEBHOOK_TYPES_APTOS,
+  WEBHOOK_TYPES_EVM,
+} from 'src/utils/utils-webhook';
 import useUser from 'src/hooks/useUser';
 import rf from 'src/requests/RequestFactory';
 import { ROUTES } from 'src/utils/common';
-import PartAptosModuleWebhooks from './parts/PartAptosModuleWebhooks';
-import PartAptosCoinWebhooks from './parts/PartAptosCoinWebhooks';
-import PartAptosTokenWebhooks from './parts/PartAptosTokenWebhooks';
-
-const TAB_EVM = [
-  WEBHOOK_TYPES.ADDRESS_ACTIVITY,
-  WEBHOOK_TYPES.CONTRACT_ACTIVITY,
-  WEBHOOK_TYPES.NFT_ACTIVITY,
-  WEBHOOK_TYPES.TOKEN_ACTIVITY,
-];
-
-const TAB_APTOS = [
-  WEBHOOK_TYPES.ADDRESS_ACTIVITY,
-  WEBHOOK_TYPES.APTOS_COIN_ACTIVITY,
-  WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY,
-  WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY,
-];
+import PartWebhooks from './parts/PartWebhooks';
 
 const AppDetail = () => {
   const [type, setType] = useState<string>('');
@@ -99,13 +83,173 @@ const AppDetail = () => {
     }
 
     if (isEVMNetwork(appInfo.chain)) {
-      setDefaultTab(TAB_EVM.indexOf(currentType || ''));
+      setDefaultTab(WEBHOOK_TYPES_EVM.indexOf(currentType || ''));
     } else {
-      setDefaultTab(TAB_APTOS.indexOf(currentType || ''));
+      setDefaultTab(WEBHOOK_TYPES_APTOS.indexOf(currentType || ''));
     }
 
     setType(currentType || '');
   }, [currentType, appInfo]);
+
+  const _renderListTabsEVM = () => {
+    return (
+      <>
+        <Tab
+          className="app-tab"
+          onClick={() =>
+            history.push(
+              `/app/${appId}?type=${WEBHOOK_TYPES.CONTRACT_ACTIVITY}`,
+            )
+          }
+        >
+          Contract Activity
+        </Tab>
+        <Tab
+          className="app-tab"
+          onClick={() =>
+            history.push(`/app/${appId}?type=${WEBHOOK_TYPES.NFT_ACTIVITY}`)
+          }
+        >
+          NFT Activity
+        </Tab>
+        <Tab
+          className="app-tab"
+          onClick={() =>
+            history.push(`/app/${appId}?type=${WEBHOOK_TYPES.TOKEN_ACTIVITY}`)
+          }
+        >
+          Token Activity
+        </Tab>
+      </>
+    );
+  };
+
+  const _renderListTabsAptos = () => {
+    return (
+      <>
+        <Tab
+          className="app-tab"
+          onClick={() =>
+            history.push(
+              `/app/${appId}?type=${WEBHOOK_TYPES.APTOS_COIN_ACTIVITY}`,
+            )
+          }
+        >
+          Coin Activity
+        </Tab>
+
+        <Tab
+          className="app-tab"
+          onClick={() =>
+            history.push(
+              `/app/${appId}?type=${WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY}`,
+            )
+          }
+        >
+          Token Activity
+        </Tab>
+        <Tab
+          className="app-tab"
+          onClick={() =>
+            history.push(
+              `/app/${appId}?type=${WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY}`,
+            )
+          }
+        >
+          Module Activity
+        </Tab>
+      </>
+    );
+  };
+
+  const _renderTabPanelsEVM = () => {
+    return (
+      <TabPanels>
+        <TabPanel className={`content-tab-app`}>
+          <PartWebhooks
+            appInfo={appInfo}
+            type={WEBHOOK_TYPES.ADDRESS_ACTIVITY}
+            description={'Get notified whenever an address occurs activity'}
+          />
+        </TabPanel>
+
+        <TabPanel className="content-tab-app">
+          <PartWebhooks
+            appInfo={appInfo}
+            type={WEBHOOK_TYPES.CONTRACT_ACTIVITY}
+            description={'Get notified whenever an contract occurs activity'}
+          />
+        </TabPanel>
+
+        <TabPanel className="content-tab-app">
+          <PartWebhooks
+            appInfo={appInfo}
+            type={WEBHOOK_TYPES.NFT_ACTIVITY}
+            description={'Get notified whenever an NFT occurs activity'}
+          />
+        </TabPanel>
+
+        <TabPanel className="content-tab-app">
+          <PartWebhooks
+            appInfo={appInfo}
+            type={WEBHOOK_TYPES.TOKEN_ACTIVITY}
+            description={'Get notified whenever an token occurs activity'}
+          />
+        </TabPanel>
+      </TabPanels>
+    );
+  };
+
+  const _renderTabPanelsAptos = () => {
+    return (
+      <TabPanels>
+        <TabPanel className={`content-tab-app`}>
+          <PartWebhooks
+            appInfo={appInfo}
+            type={WEBHOOK_TYPES.ADDRESS_ACTIVITY}
+            description={'Get notified whenever an address occurs activity'}
+          />
+        </TabPanel>
+
+        <TabPanel className="content-tab-app">
+          <PartWebhooks
+            appInfo={appInfo}
+            type={WEBHOOK_TYPES.APTOS_COIN_ACTIVITY}
+            description={'Get notified whenever an coin occurs activity'}
+          />
+        </TabPanel>
+
+        <TabPanel className="content-tab-app">
+          <PartWebhooks
+            appInfo={appInfo}
+            type={WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY}
+            description={'Get notified whenever an token occurs activity'}
+          />
+        </TabPanel>
+        <TabPanel className="content-tab-app">
+          <PartWebhooks
+            appInfo={appInfo}
+            type={WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY}
+            description={'Get notified whenever an module occurs activity'}
+          />
+        </TabPanel>
+      </TabPanels>
+    );
+  };
+
+  const _renderTabPanelsSui = () => {
+    return (
+      <TabPanels>
+        <TabPanel className={`content-tab-app`}>
+          <PartWebhooks
+            appInfo={appInfo}
+            type={WEBHOOK_TYPES.ADDRESS_ACTIVITY}
+            description={'Get notified whenever an address occurs activity'}
+          />
+        </TabPanel>
+      </TabPanels>
+    );
+  };
 
   const _renderListWebhook = () => {
     return (
@@ -143,125 +287,17 @@ const AppDetail = () => {
                 Address Activity
               </Tab>
 
-              {isEVMNetwork(appInfo.chain) && (
-                <>
-                  <Tab
-                    className="app-tab"
-                    onClick={() =>
-                      history.push(
-                        `/app/${appId}?type=${WEBHOOK_TYPES.CONTRACT_ACTIVITY}`,
-                      )
-                    }
-                  >
-                    Contract Activity
-                  </Tab>
-                  <Tab
-                    className="app-tab"
-                    onClick={() =>
-                      history.push(
-                        `/app/${appId}?type=${WEBHOOK_TYPES.NFT_ACTIVITY}`,
-                      )
-                    }
-                  >
-                    NFT Activity
-                  </Tab>
-                  <Tab
-                    className="app-tab"
-                    onClick={() =>
-                      history.push(
-                        `/app/${appId}?type=${WEBHOOK_TYPES.TOKEN_ACTIVITY}`,
-                      )
-                    }
-                  >
-                    Token Activity
-                  </Tab>
-                </>
-              )}
+              {isEVMNetwork(appInfo.chain) && _renderListTabsEVM()}
 
-              {isAptosNetwork(appInfo.chain) && (
-                <>
-                  <Tab
-                    className="app-tab"
-                    onClick={() =>
-                      history.push(
-                        `/app/${appId}?type=${WEBHOOK_TYPES.APTOS_COIN_ACTIVITY}`,
-                      )
-                    }
-                  >
-                    Coin Activity
-                  </Tab>
-
-                  <Tab
-                    className="app-tab"
-                    onClick={() =>
-                      history.push(
-                        `/app/${appId}?type=${WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY}`,
-                      )
-                    }
-                  >
-                    Token Activity
-                  </Tab>
-                  <Tab
-                    className="app-tab"
-                    onClick={() =>
-                      history.push(
-                        `/app/${appId}?type=${WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY}`,
-                      )
-                    }
-                  >
-                    Module Activity
-                  </Tab>
-                </>
-              )}
+              {isAptosNetwork(appInfo.chain) && _renderListTabsAptos()}
             </Flex>
           </TabList>
 
-          {isEVMNetwork(appInfo.chain) && (
-            <TabPanels>
-              <TabPanel className={`content-tab-app`}>
-                <PartAddressWebhooks appInfo={appInfo} />
-              </TabPanel>
+          {isEVMNetwork(appInfo.chain) && _renderTabPanelsEVM()}
 
-              <TabPanel className="content-tab-app">
-                <PartContractWebhooks appInfo={appInfo} />
-              </TabPanel>
+          {isAptosNetwork(appInfo.chain) && _renderTabPanelsAptos()}
 
-              <TabPanel className="content-tab-app">
-                <PartNFTWebhooks appInfo={appInfo} />
-              </TabPanel>
-
-              <TabPanel className="content-tab-app">
-                <PartTokenWebhooks appInfo={appInfo} />
-              </TabPanel>
-            </TabPanels>
-          )}
-
-          {isAptosNetwork(appInfo.chain) && (
-            <TabPanels>
-              <TabPanel className={`content-tab-app`}>
-                <PartAddressWebhooks appInfo={appInfo} />
-              </TabPanel>
-
-              <TabPanel className="content-tab-app">
-                <PartAptosCoinWebhooks appInfo={appInfo} />
-              </TabPanel>
-
-              <TabPanel className="content-tab-app">
-                <PartAptosTokenWebhooks appInfo={appInfo} />
-              </TabPanel>
-              <TabPanel className="content-tab-app">
-                <PartAptosModuleWebhooks appInfo={appInfo} />
-              </TabPanel>
-            </TabPanels>
-          )}
-
-          {isSuiNetwork(appInfo?.chain) && (
-            <TabPanels>
-              <TabPanel className={`content-tab-app`}>
-                <PartAddressWebhooks appInfo={appInfo} />
-              </TabPanel>
-            </TabPanels>
-          )}
+          {isSuiNetwork(appInfo?.chain) && _renderTabPanelsSui()}
         </Tabs>
       </AppCard>
     );

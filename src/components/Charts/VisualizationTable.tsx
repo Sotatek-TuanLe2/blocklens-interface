@@ -11,7 +11,6 @@ import 'src/styles/components/TableValue.scss';
 import { INPUT_DEBOUNCE, VISUALIZATION_COLORS } from 'src/utils/common';
 import { VisualizationType } from 'src/utils/query.type';
 import {
-  formatDefaultValueChart,
   formatShortAddress,
   formatVisualizationValue,
 } from 'src/utils/utils-format';
@@ -269,7 +268,7 @@ const VisualizationTable = <T,>({
             </thead>
             {!!table.getRowModel().rows?.length ? (
               <tbody>
-                {table.getRowModel().rows.map((row, index) => (
+                {table.getRowModel().rows.map((row) => (
                   <tr key={row.id}>
                     {row.getVisibleCells().map((cells: any) => {
                       const {

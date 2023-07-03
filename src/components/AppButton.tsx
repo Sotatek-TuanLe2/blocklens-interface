@@ -1,4 +1,4 @@
-import React, { forwardRef, ReactNode } from 'react';
+import React, { forwardRef } from 'react';
 import { Button, ButtonProps } from '@chakra-ui/react';
 import { mode } from '@chakra-ui/theme-tools';
 import { StyleProps } from '@chakra-ui/system';
@@ -6,17 +6,17 @@ import { isMobile } from 'react-device-detect';
 
 export interface AppButtonProps extends ButtonProps {
   variant?:
-    | 'brand'
-    | 'darkBrand'
-    | 'lightBrand'
-    | 'light'
-    | 'action'
-    | 'setup'
-    | 'outline'
-    | 'no-effects'
-    | 'cancel'
-    | 'red'
-    | 'network';
+  | 'brand'
+  | 'darkBrand'
+  | 'lightBrand'
+  | 'light'
+  | 'action'
+  | 'setup'
+  | 'outline'
+  | 'no-effects'
+  | 'cancel'
+  | 'red'
+  | 'network';
 }
 
 const AppButton = forwardRef<HTMLButtonElement, AppButtonProps>(
@@ -87,7 +87,7 @@ export const appButtonStyles = {
         bg: mode('rgba(0, 2, 36, 0.1)', 'rgba(0, 2, 36, 0.1)')(props),
       },
     }),
-    red: (props: StyleProps) => ({
+    red: (_props: StyleProps) => ({
       bg: 'red.400',
       color: 'white',
       _hover: {

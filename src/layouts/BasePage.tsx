@@ -2,7 +2,6 @@ import { FC, ReactElement, useEffect, useState } from 'react';
 import { Box, Flex, Spinner } from '@chakra-ui/react';
 import React from 'react';
 import { GuestPage } from 'src/layouts';
-import { isMobile } from 'react-device-detect';
 import 'src/styles/layout/BasePage.scss';
 
 interface BasePage {
@@ -40,7 +39,7 @@ const BasePage: FC<BasePage> = ({
         className={`base-page-container ${className}`}
       >
         <Box
-          marginTop={{ base: '20px', lg: '60px' }}
+          marginTop={{ base: '30px', lg: '60px' }}
           className={`base-page-container__content ${
             isFullWidth ? 'base-page-container__content--full' : ''
           }`}

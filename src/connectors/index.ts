@@ -1,5 +1,4 @@
 import config from 'src/config';
-import Storage from 'src/utils/utils-storage';
 import MetamaskConnector from './MetamaskConnector';
 import WalletConnectConnector from './WalletConnectConnector';
 

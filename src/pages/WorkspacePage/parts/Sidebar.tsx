@@ -11,9 +11,8 @@ import rf from 'src/requests/RequestFactory';
 import { IPagination, ROUTES, SchemaType } from 'src/utils/common';
 import { IQuery } from 'src/utils/query.type';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
-import { copyToClipboard, getErrorMessage } from 'src/utils/utils-helper';
+import { copyToClipboard } from 'src/utils/utils-helper';
 import { getChainIconByChainName } from 'src/utils/utils-network';
-import { toastError } from 'src/utils/utils-notify';
 import { BROADCAST_FETCH_DASHBOARD } from './Dashboard';
 import { BROADCAST_FETCH_QUERY } from './Query';
 
@@ -25,8 +24,8 @@ const ChainItem = ({
   schemaDescribe,
 }: {
   chain: SchemaType;
-  onChangeSchemaDescribe: any;
-  schemaDescribe: any;
+  onChangeSchemaDescribe: React.Dispatch<React.SetStateAction<SchemaType[]>>;
+  schemaDescribe: SchemaType[];
 }) => {
   const { pathname } = useLocation();
 
@@ -97,8 +96,8 @@ const CollapseExplore = ({
 }: {
   title: string;
   content: SchemaType[];
-  onChangeSchemaDescribe: any;
-  schemaDescribe: any;
+  onChangeSchemaDescribe: React.Dispatch<React.SetStateAction<SchemaType[]>>;
+  schemaDescribe: SchemaType[];
 }) => {
   const [show, setShow] = useState(false);
 
@@ -304,7 +303,7 @@ const Sidebar: React.FC<{
     history.push(ROUTES.MY_QUERY);
   };
 
-  const handleClassNameWorkPlaceItem = (id: any) => {
+  const handleClassNameWorkPlaceItem = (id: string) => {
     return id === queryId || id === dashboardId
       ? 'workspace-page__sidebar__content__work-place-detail work-place-active '
       : 'workspace-page__sidebar__content__work-place-detail ';
@@ -477,7 +476,7 @@ const Sidebar: React.FC<{
                 : 'workspace-page__sidebar__content__explore-wrap__list-chain'
             }`}
           >
-            {Object.keys(exploreData).map((nameChain: any, index) => (
+            {Object.keys(exploreData).map((nameChain: string, index) => (
               <CollapseExplore
                 key={index + 'explore'}
                 title={nameChain}

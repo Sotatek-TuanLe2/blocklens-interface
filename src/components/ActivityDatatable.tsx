@@ -2,7 +2,7 @@ import { Box, Flex, Tbody, Td, Th, Thead, Tooltip, Tr } from '@chakra-ui/react';
 import { FC, MouseEvent, useCallback, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import { useHistory, useParams } from 'react-router';
-import { InfoIcon, LinkDetail, LinkIcon, RetryIcon } from 'src/assets/icons';
+import { InfoIcon, LinkDetail, LinkIcon } from 'src/assets/icons';
 import {
   AppButton,
   AppDataTable,
@@ -29,7 +29,6 @@ import {
   filterParams,
   formatShortText,
   formatTimestamp,
-  getErrorMessage,
   shortAddressType,
 } from '../utils/utils-helper';
 
@@ -70,26 +69,26 @@ const _renderStatus = (activity: IActivityResponse) => {
   );
 };
 
-export const onRetry = async (
-  e: MouseEvent<SVGSVGElement | HTMLButtonElement>,
-  activity: IActivityResponse,
-  webhook: IWebhook,
-  onReload: () => void,
-) => {
-  e.stopPropagation();
-  if (webhook.status === WEBHOOK_STATUS.DISABLED) return;
-  await rf.getRequest('NotificationRequest').retryActivity(activity.hash);
-  toastSuccess({ message: 'Retried!' });
-  onReload();
-};
+// const onRetry = async (
+//   e: MouseEvent<SVGSVGElement | HTMLButtonElement>,
+//   activity: IActivityResponse,
+//   webhook: IWebhook,
+//   onReload: () => void,
+// ) => {
+//   e.stopPropagation();
+//   if (webhook.status === WEBHOOK_STATUS.DISABLED) return;
+//   await rf.getRequest('NotificationRequest').retryActivity(activity.hash);
+//   toastSuccess({ message: 'Retried!' });
+//   onReload();
+// };
 
-const handlerRetryError = (error: any, handleLimitError: any) => {
-  if (getErrorMessage(error) === 'Limit of daily messages is reached') {
-    handleLimitError();
-  } else console.error(error);
-};
+// const handlerRetryError = (error: any, handleLimitError: any) => {
+//   if (getErrorMessage(error) === 'Limit of daily messages is reached') {
+//     handleLimitError();
+//   } else console.error(error);
+// };
 
-const ActivityMobile: FC<IActivity> = ({ activity, webhook, onReload }) => {
+const ActivityMobile: FC<IActivity> = ({ activity, webhook }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [openModalUpgradeMessage, setOpenUpgradeMessage] = useState(false);
 
@@ -159,9 +158,8 @@ const ActivityMobile: FC<IActivity> = ({ activity, webhook, onReload }) => {
           <Box>Token Data</Box>
           <Box className="value">
             <Flex alignItems="center">
-              {`${formatShortText(webhook?.metadata?.creatorAddress || '')}::${
-                webhook?.metadata?.collectionName
-              }::${webhook?.metadata?.name} `}
+              {`${formatShortText(webhook?.metadata?.creatorAddress || '')}::${webhook?.metadata?.collectionName
+                }::${webhook?.metadata?.name} `}
             </Flex>
           </Box>
         </Flex>
@@ -253,42 +251,34 @@ const ActivityMobile: FC<IActivity> = ({ activity, webhook, onReload }) => {
             </Flex>
             {_renderInfos()}
 
-            <Flex
-              flexWrap={'wrap'}
-              my={2}
-              justifyContent={
-                activity?.lastStatus !== STATUS.DONE
-                  ? 'space-between'
-                  : 'center'
-              }
-            >
-              {activity?.lastStatus !== STATUS.DONE && (
-                <Box width={'48%'}>
-                  <AppButton
-                    variant="cancel"
-                    size="sm"
-                    onClick={async (e) => {
-                      try {
-                        await onRetry(e, activity, webhook, onReload);
-                      } catch (error) {
-                        handlerRetryError(error, () =>
-                          setOpenUpgradeMessage(true),
-                        );
-                      }
-                    }}
-                    w={'100%'}
-                    isDisabled={webhook.status === WEBHOOK_STATUS.DISABLED}
-                  >
-                    Retry Now
-                  </AppButton>
-                </Box>
-              )}
+            <Flex flexWrap={'wrap'} my={2} justifyContent={'center'}>
+              {/*{activity?.lastStatus !== STATUS.DONE && (*/}
+              {/*  <Box width={'48%'}>*/}
+              {/*    <AppButton*/}
+              {/*      variant="cancel"*/}
+              {/*      size="sm"*/}
+              {/*      onClick={async (e) => {*/}
+              {/*        try {*/}
+              {/*          await onRetry(e, activity, webhook, onReload);*/}
+              {/*        } catch (error) {*/}
+              {/*          handlerRetryError(error, () =>*/}
+              {/*            setOpenUpgradeMessage(true),*/}
+              {/*          );*/}
+              {/*        }*/}
+              {/*      }}*/}
+              {/*      w={'100%'}*/}
+              {/*      isDisabled={webhook.status === WEBHOOK_STATUS.DISABLED}*/}
+              {/*    >*/}
+              {/*      Retry Now*/}
+              {/*    </AppButton>*/}
+              {/*  </Box>*/}
+              {/*)}*/}
 
               <Box width={'48%'}>
                 <AppLink
                   to={`/app/${webhook?.appId}/webhook/${webhook.registrationId}/activities/${activity?.hash}`}
                 >
-                  <AppButton variant="cancel" size="sm" w={'100%'}>
+                  <AppButton variant="brand" size="sm" w={'100%'}>
                     More Details
                   </AppButton>
                 </AppLink>
@@ -305,7 +295,7 @@ const ActivityMobile: FC<IActivity> = ({ activity, webhook, onReload }) => {
   );
 };
 
-const ActivityDesktop: FC<IActivity> = ({ activity, webhook, onReload }) => {
+const ActivityDesktop: FC<IActivity> = ({ activity, webhook }) => {
   const history = useHistory();
   const [openModalUpgradeMessage, setOpenModalUpgradeMessage] = useState(false);
 
@@ -339,9 +329,8 @@ const ActivityDesktop: FC<IActivity> = ({ activity, webhook, onReload }) => {
   const _renderContentAptosToken = () => {
     return (
       <Td w="15%">
-        {`${formatShortText(webhook?.metadata?.creatorAddress || '')}::${
-          webhook?.metadata?.collectionName
-        }::${webhook?.metadata?.name} `}
+        {`${formatShortText(webhook?.metadata?.creatorAddress || '')}::${webhook?.metadata?.collectionName
+          }::${webhook?.metadata?.name} `}
       </Td>
     );
   };

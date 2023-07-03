@@ -21,6 +21,59 @@ export const WEBHOOK_TYPES = {
   APTOS_MODULE_ACTIVITY: 'APTOS_MODULE_ACTIVITY',
 };
 
+export const WEBHOOK_TYPES_NAME = {
+  NFT_ACTIVITY: 'NFT ACTIVITY',
+  ADDRESS_ACTIVITY: 'ADDRESS ACTIVITY',
+  TOKEN_ACTIVITY: 'TOKEN ACTIVITY',
+  CONTRACT_ACTIVITY: 'CONTRACT ACTIVITY',
+  APTOS_COIN_ACTIVITY: 'COIN ACTIVITY',
+  APTOS_TOKEN_ACTIVITY: 'TOKEN ACTIVITY',
+  APTOS_MODULE_ACTIVITY: 'MODULE ACTIVITY',
+};
+
+export const WEBHOOK_TYPES_EVM = [
+  WEBHOOK_TYPES.ADDRESS_ACTIVITY,
+  WEBHOOK_TYPES.CONTRACT_ACTIVITY,
+  WEBHOOK_TYPES.NFT_ACTIVITY,
+  WEBHOOK_TYPES.TOKEN_ACTIVITY,
+];
+
+export const WEBHOOK_TYPES_APTOS = [
+  WEBHOOK_TYPES.ADDRESS_ACTIVITY,
+  WEBHOOK_TYPES.APTOS_COIN_ACTIVITY,
+  WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY,
+  WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY,
+];
+
+export const getNameWebhook = (type: string) => {
+  switch (type) {
+    case WEBHOOK_TYPES.ADDRESS_ACTIVITY: {
+      return 'Address Activity';
+    }
+    case WEBHOOK_TYPES.NFT_ACTIVITY: {
+      return 'NFT Activity';
+    }
+    case WEBHOOK_TYPES.CONTRACT_ACTIVITY: {
+      return 'Contract Activity';
+    }
+    case WEBHOOK_TYPES.TOKEN_ACTIVITY: {
+      return 'Token Activity';
+    }
+    case WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY: {
+      return 'Module Activity';
+    }
+    case WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY: {
+      return 'Token Activity';
+    }
+    case WEBHOOK_TYPES.APTOS_COIN_ACTIVITY: {
+      return 'Coin Activity';
+    }
+    default: {
+      return 'Address Activity';
+    }
+  }
+};
+
 export const optionsFilter = [
   {
     label: 'All status',

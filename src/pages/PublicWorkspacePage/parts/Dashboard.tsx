@@ -21,19 +21,14 @@ import {
 } from 'src/utils/query.type';
 import { Dashboard } from 'src/utils/utils-dashboard';
 
-export interface ILayout extends Layout {
+interface ILayout extends Layout {
   id: string;
   text?: string;
   type: string;
   content: any;
 }
 
-export enum TYPE_MODAL {
-  ADD = 'add',
-  EDIT = 'edit',
-}
-
-export const WIDGET_TYPE = {
+const WIDGET_TYPE = {
   VISUALIZATION: 'visualization',
   TEXT: 'text',
 };
@@ -45,7 +40,6 @@ const DashboardPart: React.FC = () => {
 
   const [dataLayouts, setDataLayouts] = useState<ILayout[]>([]);
   const [dataDashboard, setDataDashboard] = useState<IDashboardDetail>();
-  const [openModalFork, setOpenModalFork] = useState<boolean>(false);
   const [isEmptyDashboard, setIsEmptyDashboard] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
 
