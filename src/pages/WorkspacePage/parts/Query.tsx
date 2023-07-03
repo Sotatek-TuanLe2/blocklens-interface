@@ -50,7 +50,7 @@ const QueryPart: React.FC = () => {
   const [openModalSettingQuery, setOpenModalSettingQuery] =
     useState<boolean>(false);
 
-  const fetchQueryResultInterval = useRef<ReturnType<typeof setInterval>>();
+  const fetchQueryResultTimeout = useRef<ReturnType<typeof setTimeout>>();
   const isLoading = isLoadingQuery || isLoadingResult;
 
   useEffect(() => {
@@ -73,8 +73,8 @@ const QueryPart: React.FC = () => {
     }
 
     return () => {
-      if (fetchQueryResultInterval.current) {
-        clearInterval(fetchQueryResultInterval.current);
+      if (fetchQueryResultTimeout.current) {
+        clearTimeout(fetchQueryResultTimeout.current);
       }
     };
   }, [queryId]);
@@ -113,26 +113,15 @@ const QueryPart: React.FC = () => {
   };
 
   const getExecutionResultById = async (executionId: string) => {
-    clearInterval(fetchQueryResultInterval.current);
+    clearTimeout(fetchQueryResultTimeout.current);
     const res = await rf.getRequest('DashboardsRequest').getQueryResult({
       executionId,
     });
     if (res.status === QUERY_RESULT_STATUS.WAITING) {
-      fetchQueryResultInterval.current = setInterval(async () => {
-        const resInterval = await rf
-          .getRequest('DashboardsRequest')
-          .getQueryResult({
-            executionId,
-          });
-        if (resInterval.status !== QUERY_RESULT_STATUS.WAITING) {
-          clearInterval(fetchQueryResultInterval.current);
-          setQueryResult(resInterval.result);
-          setErrorExecuteQuery(resInterval?.error || null);
-          setStatusExecuteQuery(resInterval?.status);
-          onCheckExpandLayout(resInterval?.status);
-          setIsLoadingResult(false);
-        }
-      }, 2000);
+      fetchQueryResultTimeout.current = setTimeout(
+        () => getExecutionResultById(executionId),
+        2000,
+      );
     } else {
       setQueryResult(res.result);
       setErrorExecuteQuery(res?.error || null);
