@@ -25,6 +25,8 @@ import { areYAxisesSameType } from 'src/utils/utils-helper';
 import useUser from 'src/hooks/useUser';
 import { getDefaultTimeAxis } from './VisualizationDisplay';
 
+const REFETCH_QUERY_RESULT_MINUTES = 5;
+
 const VisualizationItem = React.memo(
   ({
     visualization,
@@ -52,7 +54,7 @@ const VisualizationItem = React.memo(
         fetchInitialData();
         refetchQueryResultInterval.current = setInterval(
           async () => await fetchInitialData(),
-          5 * 60 * 1000,
+          REFETCH_QUERY_RESULT_MINUTES * 60 * 1000,
         );
       }
 

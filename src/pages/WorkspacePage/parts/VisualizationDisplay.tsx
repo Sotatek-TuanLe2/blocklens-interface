@@ -123,7 +123,7 @@ const VisualizationDisplay = ({
 
   const [tabIndex, setTabIndex] = useState<number>(0);
   const [toggleCloseConfig, setToggleCloseConfig] = useState<boolean>(false);
-  const [closeTabId, setCloseTabId] = useState<string | number>('');
+  const [closeTabIndex, setCloseTabIndex] = useState<string | number>('');
   const [dataTable, setDataTable] = useState<any[]>([]);
   const [isConfiguring, setIsConfiguring] = useState<boolean>(false);
 
@@ -139,45 +139,51 @@ const VisualizationDisplay = ({
     [queryResult],
   );
 
-  const addVisualizationHandler = async (visualizationValue: string) => {
+  const getNewVisualization = (type: string, name: string) => {
+    switch (type) {
+      case TYPE_VISUALIZATION.table:
+        return {
+          name: 'Table',
+          type: TYPE_VISUALIZATION.table,
+          options: {},
+        };
+      case TYPE_VISUALIZATION.counter:
+        return {
+          name: 'Counter',
+          type: TYPE_VISUALIZATION.counter,
+          options: {
+            counterColName: !!axisOptions.length ? axisOptions[0] : '',
+            rowNumber: '1',
+          },
+        };
+      default:
+        return {
+          name,
+          type: 'chart',
+          options: {
+            globalSeriesType: type,
+            columnMapping: {
+              xAxis: defaultTimeXAxis,
+              yAxis: [],
+            },
+            chartOptionsConfigs: {
+              showLegend: true,
+            },
+          },
+        };
+    }
+  };
+
+  const addVisualizationHandler = async (visualizationType: string) => {
     const searchedVisualization = visualizationConfigs.find(
-      (v) => v.value === visualizationValue,
+      (v) => v.value === visualizationType,
     );
     if (!searchedVisualization) return;
-    let newVisualization = {};
 
-    if (searchedVisualization.type === TYPE_VISUALIZATION.table) {
-      newVisualization = {
-        name: 'Table',
-        type: TYPE_VISUALIZATION.table,
-        options: {},
-      };
-    } else if (searchedVisualization.type === TYPE_VISUALIZATION.counter) {
-      newVisualization = {
-        name: 'Counter',
-        type: TYPE_VISUALIZATION.counter,
-        options: {
-          counterColName: !!axisOptions.length ? axisOptions[0] : '',
-          rowNumber: '1',
-        },
-      };
-    } else {
-      newVisualization = {
-        name: searchedVisualization.label,
-        type: 'chart',
-        options: {
-          globalSeriesType: searchedVisualization.type,
-          columnMapping: {
-            xAxis: defaultTimeXAxis,
-            yAxis: [],
-          },
-          chartOptionsConfigs: {
-            showLegend: true,
-          },
-        },
-      };
-    }
-
+    const newVisualization = getNewVisualization(
+      searchedVisualization.type,
+      searchedVisualization.label,
+    );
     setIsConfiguring(true);
     try {
       await rf.getRequest('DashboardsRequest').insertVisualization({
@@ -402,14 +408,6 @@ const VisualizationDisplay = ({
         } ${expandLayout === LAYOUT_QUERY.HIDDEN ? 'hidden-editor' : ''}`}
       >
         <div className="visual-container__visualization">
-          {/* <div className="visual-container__visualization__title">
-            <Tooltip
-              label={visualization.name || getDefaultVisualizationName(type)}
-              hasArrow
-            >
-              {visualization.name || getDefaultVisualizationName(type)}
-            </Tooltip>
-          </div> */}
           {isConfiguring && (
             <div className="visual-container__visualization__loading">
               <Spinner size={'sm'} />
@@ -543,30 +541,35 @@ const VisualizationDisplay = ({
   };
 
   const tabs = generateTabs();
+  const showEditButton =
+    needAuthentication && tabIndex > 0 && tabIndex < tabs.length - 1;
 
   return (
     <Box className="visual-container">
       <AppTabs
         currentTabIndex={tabIndex}
         onCloseTab={(tabId: string) => {
-          setCloseTabId(tabId);
+          setCloseTabIndex(tabId);
         }}
         rightElement={
           <Flex gap={'10px'}>
             <div className="btn-expand">
-              {expandLayout === LAYOUT_QUERY.FULL ? (
-                <p
-                  className="icon-query-expand"
-                  onClick={() => onExpand(LAYOUT_QUERY.HIDDEN)}
-                />
-              ) : (
-                <p
-                  className="icon-query-collapse"
-                  onClick={() => onExpand(LAYOUT_QUERY.FULL)}
-                />
-              )}
+              <p
+                className={
+                  expandLayout === LAYOUT_QUERY.FULL
+                    ? 'icon-query-expand'
+                    : 'icon-query-collapse'
+                }
+                onClick={() =>
+                  onExpand(
+                    expandLayout === LAYOUT_QUERY.FULL
+                      ? LAYOUT_QUERY.HIDDEN
+                      : LAYOUT_QUERY.FULL,
+                  )
+                }
+              />
             </div>
-            {needAuthentication && tabIndex > 0 && tabIndex < tabs.length - 1 && (
+            {showEditButton && (
               <Tooltip label="Edit" hasArrow bg="white" color="black">
                 <div
                   className="btn-expand"
@@ -587,13 +590,13 @@ const VisualizationDisplay = ({
         title={'Remove Visualization'}
         description={'All contents within this widget will be removed.'}
         icon="icon-delete"
-        isOpen={closeTabId !== ''}
-        onClose={() => setCloseTabId('')}
+        isOpen={!!closeTabIndex}
+        onClose={() => setCloseTabIndex('')}
       >
         <form className="main-modal-dashboard-details">
           <Flex flexWrap={'wrap'} gap={'10px'} className="group-action-query">
             <AppButton
-              onClick={() => setCloseTabId('')}
+              onClick={() => setCloseTabIndex('')}
               size="lg"
               variant={'cancel'}
               className="btn-cancel"
@@ -603,8 +606,8 @@ const VisualizationDisplay = ({
             <AppButton
               size="lg"
               onClick={() => {
-                setCloseTabId('');
-                removeVisualizationHandler(closeTabId);
+                setCloseTabIndex('');
+                removeVisualizationHandler(closeTabIndex);
               }}
             >
               Remove
@@ -619,7 +622,7 @@ const VisualizationDisplay = ({
 export default VisualizationDisplay;
 
 type AddVisualizationProps = {
-  onAddVisualize: (visualizationValue: string) => void;
+  onAddVisualize: (visualizationType: string) => void;
   expandLayout?: string;
   isConfiguring: boolean;
 };
