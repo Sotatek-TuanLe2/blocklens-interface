@@ -1,3 +1,4 @@
+import React from 'react';
 import MaskedInput, { MaskedInputProps } from 'react-text-mask';
 import { createNumberMask } from 'text-mask-addons';
 

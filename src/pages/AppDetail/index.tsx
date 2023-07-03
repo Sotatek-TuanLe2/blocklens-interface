@@ -26,7 +26,6 @@ import {
   WEBHOOK_TYPES,
   WEBHOOK_TYPES_APTOS,
   WEBHOOK_TYPES_EVM,
-  WEBHOOK_TYPES_NAME,
 } from 'src/utils/utils-webhook';
 import useUser from 'src/hooks/useUser';
 import rf from 'src/requests/RequestFactory';

@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useState } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import { Box } from '@chakra-ui/react';
 import { FilterIcon } from '../assets/icons';
 import { AppInput } from './index';

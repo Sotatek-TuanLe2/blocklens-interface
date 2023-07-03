@@ -1,5 +1,5 @@
 import { Box, Flex } from '@chakra-ui/react';
-import { FC, useEffect, useMemo, useState } from 'react';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 import {
   LineChart,
   Line,

@@ -1,4 +1,4 @@
-import { FC, ReactNode } from 'react';
+import React, { FC, ReactNode } from 'react';
 import { Flex, Box } from '@chakra-ui/react';
 import { WarningIcon } from 'src/assets/icons';
 import 'src/styles/components/AppAlertWarning.scss';
