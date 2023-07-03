@@ -267,109 +267,123 @@ const VisualizationTable = <T,>({
                 </tr>
               ))}
             </thead>
-            <tbody>
-              {table.getRowModel().rows.map((row, index) => (
-                <tr key={row.id}>
-                  {row.getVisibleCells().map((cells: any) => {
-                    const {
-                      align,
-                      isHidden,
-                      coloredPositive,
-                      coloredNegative,
-                      type,
-                      format,
-                      coloredProgress,
-                    } = cells.column.columnDef;
-                    const value = cells.getValue();
-                    const isNumberValue = isNumber(value);
+            {!!table.getRowModel().rows?.length ? (
+              <tbody>
+                {table.getRowModel().rows.map((row, index) => (
+                  <tr key={row.id}>
+                    {row.getVisibleCells().map((cells: any) => {
+                      const {
+                        align,
+                        isHidden,
+                        coloredPositive,
+                        coloredNegative,
+                        type,
+                        format,
+                        coloredProgress,
+                      } = cells.column.columnDef;
+                      const value = cells.getValue();
+                      const isNumberValue = isNumber(value);
 
-                    const percent =
-                      type === COLUMN_TYPES.PROGRESS
-                        ? new BigNumber(value)
-                            .dividedBy(
-                              new BigNumber(columnMaxValues[cells.column.id]),
-                            )
-                            .multipliedBy(100)
-                            .toNumber()
-                        : 0;
+                      const percent =
+                        type === COLUMN_TYPES.PROGRESS
+                          ? new BigNumber(value)
+                              .dividedBy(
+                                new BigNumber(columnMaxValues[cells.column.id]),
+                              )
+                              .multipliedBy(100)
+                              .toNumber()
+                          : 0;
 
-                    const checkColor = (value: any) => {
-                      switch (true) {
-                        case new BigNumber(value).isGreaterThan(0) &&
-                          coloredPositive:
-                          return VISUALIZATION_COLORS.POSITIVE;
-                        case new BigNumber(value).isLessThan(0) &&
-                          coloredNegative:
-                          return VISUALIZATION_COLORS.NEGATIVE;
-                        default:
-                          return undefined;
-                      }
-                    };
+                      const checkColor = (value: any) => {
+                        switch (true) {
+                          case new BigNumber(value).isGreaterThan(0) &&
+                            coloredPositive:
+                            return VISUALIZATION_COLORS.POSITIVE;
+                          case new BigNumber(value).isLessThan(0) &&
+                            coloredNegative:
+                            return VISUALIZATION_COLORS.NEGATIVE;
+                          default:
+                            return undefined;
+                        }
+                      };
 
-                    return (
-                      <td
-                        className={`${alignClass(align)}`}
-                        {...{
-                          key: cells.id,
-                          style: {
-                            width: cells.column.getSize(),
-                            display: isHidden ? 'none' : undefined,
-                          },
-                        }}
-                      >
-                        <div
-                          className="progressbar"
+                      return (
+                        <td
+                          className={`${alignClass(align)}`}
                           {...{
                             key: cells.id,
                             style: {
-                              fontWeight: 400,
-                              justifyContent:
-                                type === COLUMN_TYPES.NORMAL ? align : '',
-                              color: isNumberValue
-                                ? checkColor(cells.getValue())
-                                : undefined,
-                              flexDirection:
-                                type === COLUMN_TYPES.PROGRESS &&
-                                align === 'right'
-                                  ? 'row-reverse'
-                                  : 'row',
-                              gap:
-                                type === COLUMN_TYPES.PROGRESS &&
-                                align === 'right'
-                                  ? '10px'
-                                  : '',
+                              width: cells.column.getSize(),
+                              display: isHidden ? 'none' : undefined,
                             },
                           }}
                         >
-                          {type === COLUMN_TYPES.PROGRESS && isNumberValue && (
-                            <div
-                              style={
-                                {
-                                  '--myColor': coloredProgress
-                                    ? new BigNumber(value).isLessThan(0)
-                                      ? VISUALIZATION_COLORS.NEGATIVE
-                                      : VISUALIZATION_COLORS.POSITIVE
-                                    : '#00022480',
-                                  '--myProgressBar': `${percent}%`,
-                                } as React.CSSProperties
-                              }
-                              className="visual-progressbar"
-                            />
-                          )}
-                          {!isNull(value) && !isUndefined(value) && (
-                            <Tooltip hasArrow label={value.toString()} as="div">
-                              <div>
-                                {formatCellValue(format, value.toString())}
-                              </div>
-                            </Tooltip>
-                          )}
-                        </div>
-                      </td>
-                    );
-                  })}
-                </tr>
-              ))}
-            </tbody>
+                          <div
+                            className="progressbar"
+                            {...{
+                              key: cells.id,
+                              style: {
+                                fontWeight: 400,
+                                justifyContent:
+                                  type === COLUMN_TYPES.NORMAL ? align : '',
+                                color: isNumberValue
+                                  ? checkColor(cells.getValue())
+                                  : undefined,
+                                flexDirection:
+                                  type === COLUMN_TYPES.PROGRESS &&
+                                  align === 'right'
+                                    ? 'row-reverse'
+                                    : 'row',
+                                gap:
+                                  type === COLUMN_TYPES.PROGRESS &&
+                                  align === 'right'
+                                    ? '10px'
+                                    : '',
+                              },
+                            }}
+                          >
+                            {type === COLUMN_TYPES.PROGRESS && isNumberValue && (
+                              <div
+                                style={
+                                  {
+                                    '--myColor': coloredProgress
+                                      ? new BigNumber(value).isLessThan(0)
+                                        ? VISUALIZATION_COLORS.NEGATIVE
+                                        : VISUALIZATION_COLORS.POSITIVE
+                                      : '#00022480',
+                                    '--myProgressBar': `${percent}%`,
+                                  } as React.CSSProperties
+                                }
+                                className="visual-progressbar"
+                              />
+                            )}
+                            {!isNull(value) && !isUndefined(value) && (
+                              <Tooltip
+                                hasArrow
+                                label={value.toString()}
+                                as="div"
+                              >
+                                <div>
+                                  {formatCellValue(format, value.toString())}
+                                </div>
+                              </Tooltip>
+                            )}
+                          </div>
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            ) : (
+              <Flex
+                justifyContent={'center'}
+                alignItems={'center'}
+                className="table-nodata"
+              >
+                No data...
+              </Flex>
+            )}
           </table>
         )}
       </Box>

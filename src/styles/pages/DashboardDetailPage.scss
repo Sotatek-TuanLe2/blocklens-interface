@@ -129,6 +129,12 @@
             line-height: 20px;
             box-shadow: inset 0px -1px 0px #e8eaed;
             white-space: nowrap;
+            position: relative;
+          }
+          .table-nodata {
+            width: 100%;
+            position: absolute;
+            margin-top: 50px;
           }
         }
       }

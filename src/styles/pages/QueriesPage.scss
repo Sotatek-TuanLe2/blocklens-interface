@@ -479,12 +479,12 @@
               height: 6px;
               border-radius: 2px;
             }
-    
+
             &::-webkit-scrollbar-thumb {
               background: #c7d2e1;
               border-radius: 10px;
             }
-    
+
             &::-webkit-scrollbar-corner {
               background: transparent;
             }
@@ -608,6 +608,12 @@
         min-width: 100%;
         height: fit-content !important;
 
+        .table-nodata {
+          width: 100%;
+          position: absolute;
+          margin-top: 50px;
+        }
+
         td,
         th {
           text-align: center;
@@ -678,7 +684,11 @@
           gap: 10px;
 
           &:hover {
-            background: linear-gradient(268.85deg, rgba(34, 108, 255, 0.12) 22.48%, rgba(16, 132, 255, 0.12) 83.59%);
+            background: linear-gradient(
+              268.85deg,
+              rgba(34, 108, 255, 0.12) 22.48%,
+              rgba(16, 132, 255, 0.12) 83.59%
+            );
             border: 1px solid #226cff;
             cursor: pointer;
           }
