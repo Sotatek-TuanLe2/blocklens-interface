@@ -232,7 +232,7 @@ export const switchNetwork = async (
       return addNewNetwork(network, provider);
     }
     // 4001: User rejected to switch network
-    return new Promise((resolve, reject) => reject(error));
+    return new Promise((_resolve, reject) => reject(error));
   }
 };
 

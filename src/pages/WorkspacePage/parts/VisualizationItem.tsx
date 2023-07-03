@@ -23,6 +23,7 @@ import {
 } from 'src/utils/query.type';
 import { areYAxisesSameType } from 'src/utils/utils-helper';
 import useUser from 'src/hooks/useUser';
+import { getDefaultTimeAxis } from './VisualizationDisplay';
 
 const VisualizationItem = React.memo(
   ({
@@ -41,9 +42,10 @@ const VisualizationItem = React.memo(
     const [errorExecuteQuery, setErrorExecuteQuery] =
       useState<IErrorExecuteQuery>();
 
+    const fetchQueryResultInterval = useRef<ReturnType<typeof setInterval>>();
+    const refetchQueryResultInterval = useRef<ReturnType<typeof setInterval>>();
     const queryId = visualization?.queryId;
-    const fetchQueryResultInterval: any = useRef();
-    const refetchQueryResultInterval: any = useRef();
+
     useEffect(() => {
       clearInterval(refetchQueryResultInterval.current);
       if (queryId) {
@@ -98,21 +100,10 @@ const VisualizationItem = React.memo(
       }
     };
 
-    const defaultTimeXAxis = useMemo(() => {
-      let result = '';
-      const firstResultInQuery: any =
-        queryResult && !!queryResult.length ? queryResult[0] : null;
-      if (firstResultInQuery) {
-        Object.keys(firstResultInQuery).forEach((key: string) => {
-          const date = moment(firstResultInQuery[key]);
-          if (date.isValid() && isNaN(+firstResultInQuery[key])) {
-            result = key;
-            return;
-          }
-        });
-      }
-      return result;
-    }, [queryResult]);
+    const defaultTimeXAxis = useMemo(
+      () => getDefaultTimeAxis(queryResult),
+      [queryResult],
+    );
 
     const generateErrorMessage = (
       visualization: VisualizationType,

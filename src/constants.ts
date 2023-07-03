@@ -706,11 +706,6 @@ export const COUNTRIES = [
   },
 ];
 
-export enum VisibilityGridDashboardList {
-  COLUMN = 'COLUMN',
-  ROW = 'ROW',
-}
-
 export enum DisplayType {
   Grid = 'Grid',
   List = 'List',

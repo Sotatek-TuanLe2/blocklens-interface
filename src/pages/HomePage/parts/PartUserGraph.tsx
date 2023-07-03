@@ -59,15 +59,6 @@ export const getParams = (duration: string) => {
   };
 };
 
-const sampleData = {
-  message: 0,
-  activities: 0,
-  successRate: 0,
-  webhooks: 0,
-  messagesSuccess: 0,
-  messagesFailed: 0,
-};
-
 const PartUserGraph = () => {
   const [duration, setDuration] = useState<string>('24h');
   const [isOpenFilterGraphModal, setIsOpenFilterGraphModal] =

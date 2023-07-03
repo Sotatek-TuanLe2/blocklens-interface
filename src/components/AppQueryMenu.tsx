@@ -19,7 +19,7 @@ import { IDashboardDetail, IQuery } from 'src/utils/query.type';
 import AppButton from './AppButton';
 import {
   DeleteQueryIcon,
-  ForkQueryIcon,
+  // ForkQueryIcon,
   IconDotMore,
   SettingQueryIcon,
   ShareQueryIcon,

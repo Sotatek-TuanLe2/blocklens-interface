@@ -47,10 +47,10 @@ const QueryPart: React.FC = () => {
     useState<IErrorExecuteQuery | null>(null);
   const [statusExecuteQuery, setStatusExecuteQuery] = useState<string>();
   const [selectedQuery, setSelectedQuery] = useState<string>('');
-  const fetchQueryResultInterval = useRef<any>(null);
   const [openModalSettingQuery, setOpenModalSettingQuery] =
     useState<boolean>(false);
 
+  const fetchQueryResultInterval = useRef<ReturnType<typeof setInterval>>();
   const isLoading = isLoadingQuery || isLoadingResult;
 
   useEffect(() => {

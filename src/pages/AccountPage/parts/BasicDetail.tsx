@@ -1,7 +1,6 @@
-import React, { FC, useState } from 'react';
+import React, { useState } from 'react';
 import 'src/styles/pages/AccountPage.scss';
 import { Box, Flex } from '@chakra-ui/react';
-import { useHistory } from 'react-router-dom';
 import { AppCard } from 'src/components';
 import { EditIcon } from 'src/assets/icons';
 import ModalChangePassword from 'src/modals/ModalChangePassword';
@@ -17,7 +16,6 @@ const BasicDetail = () => {
   const [isOpenEditCardModal, setIsOpenEditCardModal] =
     useState<boolean>(false);
 
-  const history = useHistory();
   const { user } = useUser();
 
   return (

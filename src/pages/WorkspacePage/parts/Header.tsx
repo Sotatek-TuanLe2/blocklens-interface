@@ -17,9 +17,9 @@ import { AppBroadcast } from 'src/utils/utils-broadcast';
 import { BROADCAST_FETCH_DASHBOARD } from './Dashboard';
 import { BROADCAST_FETCH_QUERY } from './Query';
 import { BROADCAST_FETCH_WORKPLACE_DATA } from './Sidebar';
-import rf from 'src/requests/RequestFactory';
-import { getErrorMessage } from 'src/utils/utils-helper';
-import { toastError } from 'src/utils/utils-notify';
+// import rf from 'src/requests/RequestFactory';
+// import { getErrorMessage } from 'src/utils/utils-helper';
+// import { toastError } from 'src/utils/utils-notify';
 import { Dashboard } from 'src/utils/utils-dashboard';
 import { Query } from 'src/utils/utils-query';
 import { IconDotMore } from 'src/assets/icons';
@@ -96,37 +96,37 @@ const Header: React.FC<IHeaderProps> = (props) => {
     }
   };
 
-  const onChangeStatus = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const isChecked = e.target.checked;
-    if (
-      isDashboard &&
-      isChecked &&
-      !(dataClass as Dashboard)?.getDashboardVisuals().length
-    ) {
-      toastError({
-        message:
-          'Dashboard must contain at least a visualization to be published!',
-      });
-      return;
-    }
+  // const onChangeStatus = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const isChecked = e.target.checked;
+  //   if (
+  //     isDashboard &&
+  //     isChecked &&
+  //     !(dataClass as Dashboard)?.getDashboardVisuals().length
+  //   ) {
+  //     toastError({
+  //       message:
+  //         'Dashboard must contain at least a visualization to be published!',
+  //     });
+  //     return;
+  //   }
 
-    try {
-      const res = isDashboard
-        ? await rf
-            .getRequest('DashboardsRequest')
-            .updateDashboardItem({ isPrivate: !isChecked }, dashboardId)
-        : await rf
-            .getRequest('DashboardsRequest')
-            .updateQuery({ isPrivate: !isChecked }, queryId);
-      isDashboard
-        ? AppBroadcast.dispatch(BROADCAST_FETCH_DASHBOARD, res.id)
-        : AppBroadcast.dispatch(BROADCAST_FETCH_QUERY, res.id);
-    } catch (error) {
-      toastError({
-        message: getErrorMessage(error),
-      });
-    }
-  };
+  //   try {
+  //     const res = isDashboard
+  //       ? await rf
+  //           .getRequest('DashboardsRequest')
+  //           .updateDashboardItem({ isPrivate: !isChecked }, dashboardId)
+  //       : await rf
+  //           .getRequest('DashboardsRequest')
+  //           .updateQuery({ isPrivate: !isChecked }, queryId);
+  //     isDashboard
+  //       ? AppBroadcast.dispatch(BROADCAST_FETCH_DASHBOARD, res.id)
+  //       : AppBroadcast.dispatch(BROADCAST_FETCH_QUERY, res.id);
+  //   } catch (error) {
+  //     toastError({
+  //       message: getErrorMessage(error),
+  //     });
+  //   }
+  // };
 
   const _renderButtons = () => {
     if (!needAuthentication) {
