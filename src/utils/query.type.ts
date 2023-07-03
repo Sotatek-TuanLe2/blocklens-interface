@@ -134,13 +134,6 @@ export interface IDashboardDetail {
   userInfo: IUserInfo;
 }
 
-export type TableAttributeType = {
-  blockchains: string[];
-  column_name: string;
-  data_type: string;
-  full_name: string;
-  id: string;
-};
 export type ResultDataConfigsType = {
   columnMapping: ColumnMappingType;
 };
@@ -189,27 +182,12 @@ export type QueryType = {
   // visualizations: VisualizationType[];
 };
 
-export type QueryTypeSingle = {
-  name: string;
-  query: string;
-  visualizations: VisualizationType;
-  id: number;
-};
-
 export type QueryExecutedResponse = {
   id: string;
   query: IQuery;
   createdAt: string;
   result: any;
   status: string;
-  updatedAt: string;
-};
-
-export type QueryResultResponse = {
-  id: string;
-  query: IQuery;
-  executedId: string;
-  createAt: string;
   updatedAt: string;
 };
 

@@ -32,13 +32,6 @@ interface IDataForm {
   description: string;
 }
 
-export interface IChain {
-  name: string;
-  id: string;
-  icon: string;
-  networks: { name: string; id: string; icon: string }[];
-}
-
 const CHAINS = Object.keys(config.chains).map((chainKey) => {
   const chain = config.chains[chainKey];
   const networksClone = Object.keys(chain.networks).map((networkKey) => {

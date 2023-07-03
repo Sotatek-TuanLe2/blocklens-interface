@@ -40,21 +40,6 @@ const optionType: IOption[] = [
   // { value: 'likedhightolow', label: 'Liked high to low' },
 ];
 
-export const listTags = [
-  {
-    name: 'defi',
-    id: 1,
-  },
-  {
-    name: 'gas',
-    id: 2,
-  },
-  {
-    name: 'dex',
-    id: 3,
-  },
-];
-
 export const TYPE_MYWORK = {
   DASHBOARDS: 'DASHBOARDS',
   QUERIES: 'QUERIES',

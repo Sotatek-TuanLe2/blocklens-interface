@@ -69,18 +69,18 @@ const _renderStatus = (activity: IActivityResponse) => {
   );
 };
 
-export const onRetry = async (
-  e: MouseEvent<SVGSVGElement | HTMLButtonElement>,
-  activity: IActivityResponse,
-  webhook: IWebhook,
-  onReload: () => void,
-) => {
-  e.stopPropagation();
-  if (webhook.status === WEBHOOK_STATUS.DISABLED) return;
-  await rf.getRequest('NotificationRequest').retryActivity(activity.hash);
-  toastSuccess({ message: 'Retried!' });
-  onReload();
-};
+// const onRetry = async (
+//   e: MouseEvent<SVGSVGElement | HTMLButtonElement>,
+//   activity: IActivityResponse,
+//   webhook: IWebhook,
+//   onReload: () => void,
+// ) => {
+//   e.stopPropagation();
+//   if (webhook.status === WEBHOOK_STATUS.DISABLED) return;
+//   await rf.getRequest('NotificationRequest').retryActivity(activity.hash);
+//   toastSuccess({ message: 'Retried!' });
+//   onReload();
+// };
 
 // const handlerRetryError = (error: any, handleLimitError: any) => {
 //   if (getErrorMessage(error) === 'Limit of daily messages is reached') {
