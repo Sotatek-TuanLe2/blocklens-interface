@@ -14,8 +14,6 @@ interface IModalFilterGraph {
   time: string;
   onClose: () => void;
   onChangeTime: (value: string) => void;
-  onChangeType?: (value: string) => void;
-  optionTypes?: IOption[];
   optionTimes: IOption[];
 }
 

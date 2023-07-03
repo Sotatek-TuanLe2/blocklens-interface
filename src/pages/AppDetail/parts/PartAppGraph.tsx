@@ -10,6 +10,7 @@ import {
   SAMPLE_DATA,
   fillFullResolution,
 } from '../../HomePage/parts/PartUserStats';
+import { optionsFilterByDuration } from 'src/utils/utils-webhook';
 
 interface IDataChart {
   activities: number;
@@ -22,21 +23,6 @@ interface IDataChart {
   time: number;
   webhooks: number;
 }
-
-const optionsFilterByDuration = [
-  {
-    label: 'Last 24 hours',
-    value: '24h',
-  },
-  {
-    label: 'Last 7 days',
-    value: '7d',
-  },
-  {
-    label: 'Last 30 days',
-    value: '30d',
-  },
-];
 
 const PartAppGraph = () => {
   const [duration, setDuration] = useState<string>('24h');

@@ -6,6 +6,7 @@ import ModalFilterGraph from 'src/modals/ModalFilterGraph';
 import rf from 'src/requests/RequestFactory';
 import { useParams } from 'react-router';
 import { getParams } from 'src/pages/HomePage/parts/PartUserGraph';
+import { optionsFilterByDuration } from 'src/utils/utils-webhook';
 import {
   SAMPLE_DATA,
   fillFullResolution,
@@ -21,21 +22,6 @@ interface IDataChart {
   successRate: string;
   time: number;
 }
-
-const optionsFilterByDuration = [
-  {
-    label: 'Last 24 hours',
-    value: '24h',
-  },
-  {
-    label: 'Last 7 days',
-    value: '7d',
-  },
-  {
-    label: 'Last 30 days',
-    value: '30d',
-  },
-];
 
 const PartWebhookGraph = () => {
   const [duration, setDuration] = useState<string>('24h');

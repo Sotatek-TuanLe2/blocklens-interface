@@ -6,7 +6,7 @@ import ModalFilterGraph from 'src/modals/ModalFilterGraph';
 import rf from 'src/requests/RequestFactory';
 import moment from 'moment';
 import { fillFullResolution, SAMPLE_DATA } from './PartUserStats';
-import { RESOLUTION_TIME } from 'src/utils/utils-webhook';
+import { RESOLUTION_TIME, optionsFilterByDuration } from 'src/utils/utils-webhook';
 
 interface IDataChart {
   activities: number;
@@ -19,21 +19,6 @@ interface IDataChart {
   time: number;
   webhooks: number;
 }
-
-const optionsFilterByDuration = [
-  {
-    label: 'Last 24 hours',
-    value: '24h',
-  },
-  {
-    label: 'Last 7 days',
-    value: '7d',
-  },
-  {
-    label: 'Last 30 days',
-    value: '30d',
-  },
-];
 
 export const getParams = (duration: string) => {
   if (duration === '24h') {
