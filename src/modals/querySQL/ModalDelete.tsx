@@ -11,7 +11,7 @@ export interface IModalDelete {
   onSuccess: () => void;
 }
 
-const ModalDelete = ({ open, onClose, id, type, onSuccess }: IModalDelete) => {
+const ModalDelete = ({ open, onClose, type, onSuccess }: IModalDelete) => {
   const getTitleModal = () => {
     if (type === LIST_ITEM_TYPE.QUERIES) return 'Query';
     if (type === LIST_ITEM_TYPE.DASHBOARDS) return 'Dashboard';

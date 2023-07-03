@@ -6,7 +6,7 @@ import {
   fillFullResolution,
   ListStat,
   SAMPLE_DATA,
-  listStats
+  listStats,
 } from 'src/pages/HomePage/parts/PartUserStats';
 import moment from 'moment';
 import { formatLargeNumber } from 'src/utils/utils-helper';
@@ -85,7 +85,6 @@ const PartAppStats = ({
 
   const dataAppStats = useMemo(() => {
     return listStats.map((item) => {
-
       const getValue = (value?: number, total?: number) => {
         if (!total || !value) return '--';
         return `${formatLargeNumber(value)}/${formatLargeNumber(total)}`;

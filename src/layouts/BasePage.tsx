@@ -2,7 +2,6 @@ import { FC, ReactElement, useEffect, useState } from 'react';
 import { Box, Flex, Spinner } from '@chakra-ui/react';
 import React from 'react';
 import { GuestPage } from 'src/layouts';
-import { isMobile } from 'react-device-detect';
 import 'src/styles/layout/BasePage.scss';
 
 interface BasePage {

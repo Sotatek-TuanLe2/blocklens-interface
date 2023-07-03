@@ -2,7 +2,7 @@ import { Box, Flex, Tbody, Td, Th, Thead, Tooltip, Tr } from '@chakra-ui/react';
 import { FC, MouseEvent, useCallback, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import { useHistory, useParams } from 'react-router';
-import { InfoIcon, LinkDetail, LinkIcon, RetryIcon } from 'src/assets/icons';
+import { InfoIcon, LinkDetail, LinkIcon } from 'src/assets/icons';
 import {
   AppButton,
   AppDataTable,
@@ -29,7 +29,6 @@ import {
   filterParams,
   formatShortText,
   formatTimestamp,
-  getErrorMessage,
   shortAddressType,
 } from '../utils/utils-helper';
 
@@ -83,13 +82,13 @@ export const onRetry = async (
   onReload();
 };
 
-const handlerRetryError = (error: any, handleLimitError: any) => {
-  if (getErrorMessage(error) === 'Limit of daily messages is reached') {
-    handleLimitError();
-  } else console.error(error);
-};
+// const handlerRetryError = (error: any, handleLimitError: any) => {
+//   if (getErrorMessage(error) === 'Limit of daily messages is reached') {
+//     handleLimitError();
+//   } else console.error(error);
+// };
 
-const ActivityMobile: FC<IActivity> = ({ activity, webhook, onReload }) => {
+const ActivityMobile: FC<IActivity> = ({ activity, webhook }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [openModalUpgradeMessage, setOpenUpgradeMessage] = useState(false);
 
@@ -297,7 +296,7 @@ const ActivityMobile: FC<IActivity> = ({ activity, webhook, onReload }) => {
   );
 };
 
-const ActivityDesktop: FC<IActivity> = ({ activity, webhook, onReload }) => {
+const ActivityDesktop: FC<IActivity> = ({ activity, webhook }) => {
   const history = useHistory();
   const [openModalUpgradeMessage, setOpenModalUpgradeMessage] = useState(false);
 

@@ -46,7 +46,7 @@ interface IModuleAptosDetail {
 
 const ModuleAptosDetail: FC<IModuleAptosDetail> = ({ address, data }) => {
   const [dataAddress, setDataAddress] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [_isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (address) {

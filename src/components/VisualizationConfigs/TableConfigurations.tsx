@@ -1,4 +1,4 @@
-import { Grid, GridItem, Switch, Text } from '@chakra-ui/react';
+import { Grid, GridItem, Switch } from '@chakra-ui/react';
 import { ColumnDef } from '@tanstack/react-table';
 import { useMemo, useRef, useState } from 'react';
 import { VISUALIZATION_DEBOUNCE } from 'src/pages/WorkspacePage/parts/VisualizationDisplay';

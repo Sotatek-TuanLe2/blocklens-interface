@@ -2,10 +2,8 @@ import { Flex } from '@chakra-ui/react';
 import React from 'react';
 import { AppButton } from 'src/components';
 import { ILayout, WIDGET_TYPE } from 'src/pages/WorkspacePage/parts/Dashboard';
-import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/BaseModal.scss';
-import { getErrorMessage } from 'src/utils/utils-helper';
-import { toastError, toastSuccess } from 'src/utils/utils-notify';
+import { toastSuccess } from 'src/utils/utils-notify';
 import BaseModal from '../BaseModal';
 
 interface IModalEditItemDashBoard {

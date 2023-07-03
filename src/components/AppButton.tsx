@@ -1,4 +1,4 @@
-import React, { forwardRef, ReactNode } from 'react';
+import React, { forwardRef } from 'react';
 import { Button, ButtonProps } from '@chakra-ui/react';
 import { mode } from '@chakra-ui/theme-tools';
 import { StyleProps } from '@chakra-ui/system';
@@ -87,7 +87,7 @@ export const appButtonStyles = {
         bg: mode('rgba(0, 2, 36, 0.1)', 'rgba(0, 2, 36, 0.1)')(props),
       },
     }),
-    red: (props: StyleProps) => ({
+    red: (_props: StyleProps) => ({
       bg: 'red.400',
       color: 'white',
       _hover: {

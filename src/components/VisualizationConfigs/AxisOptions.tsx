@@ -1,4 +1,4 @@
-import { Checkbox, CheckboxGroup, Switch, Text } from '@chakra-ui/react';
+import { CheckboxGroup, Switch, Text } from '@chakra-ui/react';
 import {
   ChartOptionConfigsType,
   XAxisConfigsType,

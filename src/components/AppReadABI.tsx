@@ -6,7 +6,6 @@ import { isMobile } from 'react-device-detect';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { PackageType } from 'src/utils/utils-webhook';
 import { IDataForm } from '../pages/CreateWebhookPage';
-import { formatShortText, shortAddressType } from '../utils/utils-helper';
 
 interface IDataSelected {
   events?: string[];
