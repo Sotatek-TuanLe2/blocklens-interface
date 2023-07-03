@@ -159,9 +159,8 @@ const ActivityMobile: FC<IActivity> = ({ activity, webhook, onReload }) => {
           <Box>Token Data</Box>
           <Box className="value">
             <Flex alignItems="center">
-              {`${formatShortText(webhook?.metadata?.creatorAddress || '')}::${
-                webhook?.metadata?.collectionName
-              }::${webhook?.metadata?.name} `}
+              {`${formatShortText(webhook?.metadata?.creatorAddress || '')}::${webhook?.metadata?.collectionName
+                }::${webhook?.metadata?.name} `}
             </Flex>
           </Box>
         </Flex>
@@ -280,7 +279,7 @@ const ActivityMobile: FC<IActivity> = ({ activity, webhook, onReload }) => {
                 <AppLink
                   to={`/app/${webhook?.appId}/webhook/${webhook.registrationId}/activities/${activity?.hash}`}
                 >
-                  <AppButton variant="cancel" size="sm" w={'100%'}>
+                  <AppButton variant="brand" size="sm" w={'100%'}>
                     More Details
                   </AppButton>
                 </AppLink>
@@ -331,9 +330,8 @@ const ActivityDesktop: FC<IActivity> = ({ activity, webhook, onReload }) => {
   const _renderContentAptosToken = () => {
     return (
       <Td w="15%">
-        {`${formatShortText(webhook?.metadata?.creatorAddress || '')}::${
-          webhook?.metadata?.collectionName
-        }::${webhook?.metadata?.name} `}
+        {`${formatShortText(webhook?.metadata?.creatorAddress || '')}::${webhook?.metadata?.collectionName
+          }::${webhook?.metadata?.name} `}
       </Td>
     );
   };
