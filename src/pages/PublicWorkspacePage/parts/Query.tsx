@@ -1,4 +1,4 @@
-import { Box, Flex, Tooltip } from '@chakra-ui/react';
+import { Box, Flex } from '@chakra-ui/react';
 import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/mode-sql';
 import 'ace-builds/src-noconflict/theme-tomorrow';
@@ -31,7 +31,7 @@ const QueryPart: React.FC = () => {
   const [isExpand, setIsExpand] = useState<boolean>(true);
   const [statusExecuteQuery, setStatusExecuteQuery] = useState<string>();
 
-  const fetchQueryResultInterval = useRef<any>(null);
+  const fetchQueryResultInterval = useRef<ReturnType<typeof setInterval>>();
 
   const queryClass = useMemo(() => {
     if (!queryValue) {

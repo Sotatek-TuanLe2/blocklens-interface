@@ -1,9 +1,7 @@
 import { Box, Collapse, Flex, Text, useDisclosure } from '@chakra-ui/react';
-import _ from 'lodash';
-import { ChangeEvent, FC, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router';
 import {
-  FireIcon,
   IconFilter,
   IconDisplayGrid,
   IconDisplayList,
@@ -23,7 +21,6 @@ import useUser from 'src/hooks/useUser';
 import ModalCreateNew from 'src/modals/querySQL/ModalCreateNew';
 import rf from 'src/requests/RequestFactory';
 import { ROUTES } from 'src/utils/common';
-import { getChainIconByChainName } from 'src/utils/utils-network';
 import { HOME_URL_PARAMS, LIST_ITEM_TYPE } from '..';
 import { AddIcon } from '@chakra-ui/icons';
 import { IDataMenu } from '../../../utils/utils-app';
@@ -34,12 +31,6 @@ interface IFilterSearch {
   setDisplayed: (display: string) => void;
   myWorkType: string;
   changeMyWorkType: (value: string) => void;
-}
-
-interface ILISTNETWORK {
-  value: string;
-  label: string;
-  chain: string;
 }
 
 const optionType: IOption[] = [
