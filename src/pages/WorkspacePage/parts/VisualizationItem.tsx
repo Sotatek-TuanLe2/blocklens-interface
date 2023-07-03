@@ -42,7 +42,7 @@ const VisualizationItem = React.memo(
     const [errorExecuteQuery, setErrorExecuteQuery] =
       useState<IErrorExecuteQuery>();
 
-    const fetchQueryResultInterval = useRef<ReturnType<typeof setInterval>>();
+    const fetchQueryResultTimeout = useRef<ReturnType<typeof setTimeout>>();
     const refetchQueryResultInterval = useRef<ReturnType<typeof setInterval>>();
     const queryId = visualization?.queryId;
 
@@ -57,37 +57,23 @@ const VisualizationItem = React.memo(
       }
 
       return () => {
-        clearInterval(fetchQueryResultInterval.current);
+        clearTimeout(fetchQueryResultTimeout.current);
         clearInterval(refetchQueryResultInterval.current);
       };
     }, [queryId]);
 
     const fetchQueryResult = async () => {
       setIsLoading(true);
-      clearInterval(fetchQueryResultInterval.current);
+      clearTimeout(fetchQueryResultTimeout.current);
       const executionId = visualization?.query?.executedId;
       const res = await rf
         .getRequest('DashboardsRequest')
         .getQueryResult({ executionId });
       if (res.status === QUERY_RESULT_STATUS.WAITING) {
-        fetchQueryResultInterval.current = setInterval(async () => {
-          const resInterval = await rf
-            .getRequest('DashboardsRequest')
-            .getQueryResult({
-              executionId,
-            });
-          if (resInterval.status !== QUERY_RESULT_STATUS.WAITING) {
-            clearInterval(fetchQueryResultInterval.current);
-            setQueryResult(resInterval.result);
-            if (resInterval?.error) {
-              setErrorExecuteQuery(resInterval?.error);
-            }
-            setIsLoading(false);
-          }
-        }, 2000);
+        fetchQueryResultTimeout.current = setTimeout(fetchQueryResult, 2000);
       } else {
         setQueryResult(res.result);
-        setErrorExecuteQuery(res?.error);
+        setErrorExecuteQuery(res?.error || null);
         setIsLoading(false);
       }
     };

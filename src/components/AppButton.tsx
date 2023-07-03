@@ -6,17 +6,17 @@ import { isMobile } from 'react-device-detect';
 
 export interface AppButtonProps extends ButtonProps {
   variant?:
-  | 'brand'
-  | 'darkBrand'
-  | 'lightBrand'
-  | 'light'
-  | 'action'
-  | 'setup'
-  | 'outline'
-  | 'no-effects'
-  | 'cancel'
-  | 'red'
-  | 'network';
+    | 'brand'
+    | 'darkBrand'
+    | 'lightBrand'
+    | 'light'
+    | 'action'
+    | 'setup'
+    | 'outline'
+    | 'no-effects'
+    | 'cancel'
+    | 'red'
+    | 'network';
 }
 
 const AppButton = forwardRef<HTMLButtonElement, AppButtonProps>(

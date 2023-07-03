@@ -125,14 +125,14 @@ export const globalStyles = {
       },
       '.chakra-ui-light': {
         '.custom-editor--half, .add-chart-loading-public, .add-chart-loading, .chain-info-desc, .empty-query, .text-widget-input, .box-form, .menu-header, .header, .add-chart-full, .ace_scroller, .layout-config, .main-layout, .input-table, .first-box-table, .select-table, .dashboard-list__item--row, .editor-wrapper, .box-layout, .workspace-page__editor__header, .add-chart, .add-chart-empty, .workspace-page__sidebar__categories, .workspace-page__sidebar__content':
-        {
-          background: mode('white.100', 'bgDark')(props),
-        },
+          {
+            background: mode('white.100', 'bgDark')(props),
+          },
 
         '.box-text-widget, .google-login, .user-name, .text-result-data, .btn-cancel, .label-toggle, .label-input, .input-table, .select-table, .title-config, .visual-container__visualization__name, .visual-container__visualization':
-        {
-          color: mode('bg.100', 'white.100')(props),
-        },
+          {
+            color: mode('bg.100', 'white.100')(props),
+          },
 
         '.table-main-markdown .chakra-collapse': {
           bg: mode('bg.300', 'bg.100')(props),
