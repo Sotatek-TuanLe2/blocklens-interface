@@ -253,36 +253,28 @@ const ActivityMobile: FC<IActivity> = ({ activity, webhook, onReload }) => {
             </Flex>
             {_renderInfos()}
 
-            <Flex
-              flexWrap={'wrap'}
-              my={2}
-              justifyContent={
-                activity?.lastStatus !== STATUS.DONE
-                  ? 'space-between'
-                  : 'center'
-              }
-            >
-              {activity?.lastStatus !== STATUS.DONE && (
-                <Box width={'48%'}>
-                  <AppButton
-                    variant="cancel"
-                    size="sm"
-                    onClick={async (e) => {
-                      try {
-                        await onRetry(e, activity, webhook, onReload);
-                      } catch (error) {
-                        handlerRetryError(error, () =>
-                          setOpenUpgradeMessage(true),
-                        );
-                      }
-                    }}
-                    w={'100%'}
-                    isDisabled={webhook.status === WEBHOOK_STATUS.DISABLED}
-                  >
-                    Retry Now
-                  </AppButton>
-                </Box>
-              )}
+            <Flex flexWrap={'wrap'} my={2} justifyContent={'center'}>
+              {/*{activity?.lastStatus !== STATUS.DONE && (*/}
+              {/*  <Box width={'48%'}>*/}
+              {/*    <AppButton*/}
+              {/*      variant="cancel"*/}
+              {/*      size="sm"*/}
+              {/*      onClick={async (e) => {*/}
+              {/*        try {*/}
+              {/*          await onRetry(e, activity, webhook, onReload);*/}
+              {/*        } catch (error) {*/}
+              {/*          handlerRetryError(error, () =>*/}
+              {/*            setOpenUpgradeMessage(true),*/}
+              {/*          );*/}
+              {/*        }*/}
+              {/*      }}*/}
+              {/*      w={'100%'}*/}
+              {/*      isDisabled={webhook.status === WEBHOOK_STATUS.DISABLED}*/}
+              {/*    >*/}
+              {/*      Retry Now*/}
+              {/*    </AppButton>*/}
+              {/*  </Box>*/}
+              {/*)}*/}
 
               <Box width={'48%'}>
                 <AppLink
