@@ -45,7 +45,6 @@ const DashboardPart: React.FC = () => {
 
   const [dataLayouts, setDataLayouts] = useState<ILayout[]>([]);
   const [dataDashboard, setDataDashboard] = useState<IDashboardDetail>();
-  const [openModalFork, setOpenModalFork] = useState<boolean>(false);
   const [isEmptyDashboard, setIsEmptyDashboard] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
 

@@ -334,7 +334,10 @@ export const formatVisualizationValue = (format: string, value: any) => {
   const hasDollarSign = format.includes('$');
   const checkNegativeValue = new BigNumber(value).isLessThan(0);
 
-  const formatValue = (negativeValue: any, positiveValue: any) => {
+  const formatValue = (
+    negativeValue: string | number | BigNumber,
+    positiveValue: string | number | BigNumber,
+  ) => {
     return checkNegativeValue ? `-${negativeValue}` : positiveValue;
   };
 

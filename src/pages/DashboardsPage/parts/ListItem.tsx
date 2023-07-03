@@ -127,7 +127,7 @@ const ListItem: React.FC<IListItem> = (props) => {
           toHref={getTitleUrl()}
           tagList={itemClass.getTags()}
           shareComponent={_renderDropdown()}
-          srcThumb={itemClass.getThumnail()!}
+          srcThumb={itemClass.getThumnail() || ''}
           srcAvatar={itemClass.getUserAvatar()}
           userId={itemClass.getUserId()}
         />
@@ -140,7 +140,7 @@ const ListItem: React.FC<IListItem> = (props) => {
           toHref={getTitleUrl()}
           tagList={itemClass.getTags()}
           shareComponent={_renderDropdown(true)}
-          srcThumb={itemClass.getThumnail()!}
+          srcThumb={itemClass.getThumnail() || ''}
           srcAvatar={itemClass.getUserAvatar()}
           userId={itemClass.getUserId()}
           type={type}
