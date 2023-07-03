@@ -14,7 +14,6 @@ import {
 import { isMobile } from 'react-device-detect';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import 'src/styles/components/AppDataTable.scss';
-import AppButton from './AppButton';
 import AppPagination from './AppPagination';
 
 // For more params, please define them below with ? mark
@@ -165,14 +164,14 @@ const AppDataTable = forwardRef(
       });
     };
 
-    const onLoadMore = () => {
-      const nextPage = pagination.page + 1;
-      fetchTableData(
-        requestParams,
-        { ...pagination, page: nextPage },
-        isMobile,
-      );
-    };
+    // const onLoadMore = () => {
+    //   const nextPage = pagination.page + 1;
+    //   fetchTableData(
+    //     requestParams,
+    //     { ...pagination, page: nextPage },
+    //     isMobile,
+    //   );
+    // };
 
     const _renderLoading = () => {
       if (!!renderLoading) {
@@ -186,22 +185,23 @@ const AppDataTable = forwardRef(
       );
     };
 
-    const _renderLoadMore = () => {
-      return pagination.page < pagesInfo.totalPages ? (
-        <div className="load-more">
-          <AppButton
-            size={'sm'}
-            variant="outline"
-            className="btn-load-more"
-            onClick={onLoadMore}
-            isLoading={isLoadingMore}
-            isDisabled={isLoadingMore}
-          >
-            See more
-          </AppButton>
-        </div>
-      ) : null;
-    };
+    // const _renderLoadMore = () => {
+    //   return pagination.page < pagesInfo.totalPages ? (
+    //     <div className="load-more">
+    //       <AppButton
+    //         size={'sm'}
+    //         variant="outline"
+    //         className="btn-load-more"
+    //         onClick={onLoadMore}
+    //         isLoading={isLoadingMore}
+    //         isDisabled={isLoadingMore}
+    //       >
+    //         See more
+    //       </AppButton>
+    //     </div>
+    //   ) : null;
+    // };
+
     const _renderPagination = () => {
       if (hidePagination || isInfiniteScroll) return;
       return (

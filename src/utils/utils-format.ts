@@ -293,7 +293,7 @@ export const formatNumberWithDecimalDigits = (
   number: number,
   format: string,
 ): string => {
-  const [integerPartFormat, decimalPartFormat] = format
+  const [_integerPartFormat, decimalPartFormat] = format
     .replace('a', '')
     .split('.');
   const decimalNumber = new Decimal(number);

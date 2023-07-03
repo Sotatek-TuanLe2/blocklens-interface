@@ -16,17 +16,17 @@ export default class RegistrationRequest extends BaseRequest {
     return this.post(url, params);
   }
 
-  updateStatus(appId: string, registrationId: string, params: any) {
+  updateStatus(_appId: string, registrationId: string, params: any) {
     const url = `/registrations/${registrationId}`;
     return this.patch(url, params);
   }
 
-  deleteRegistration(appId: string, registrationId: string) {
+  deleteRegistration(_appId: string, registrationId: string) {
     const url = `/registrations/${registrationId}`;
     return this.delete(url);
   }
 
-  getRegistration(appId: string, registrationId: any) {
+  getRegistration(_appId: string, registrationId: any) {
     const url = `/registrations/${registrationId}`;
     return this.get(url);
   }

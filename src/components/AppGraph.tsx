@@ -1,5 +1,5 @@
 import { Box, Flex } from '@chakra-ui/react';
-import React, { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import {
   LineChart,
   Line,
@@ -10,7 +10,6 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { isMobile } from 'react-device-detect';
-import { formatTimestamp } from 'src/utils/utils-helper';
 import { formatNumber } from 'src/utils/utils-format';
 import { RadioChecked, RadioNoCheckedIcon } from 'src/assets/icons';
 import moment from 'moment';

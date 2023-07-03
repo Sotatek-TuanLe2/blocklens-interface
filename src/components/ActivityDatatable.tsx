@@ -2,7 +2,7 @@ import { Box, Flex, Tbody, Td, Th, Thead, Tooltip, Tr } from '@chakra-ui/react';
 import { FC, MouseEvent, useCallback, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import { useHistory, useParams } from 'react-router';
-import { InfoIcon, LinkDetail, LinkIcon, RetryIcon } from 'src/assets/icons';
+import { InfoIcon, LinkDetail, LinkIcon } from 'src/assets/icons';
 import {
   AppButton,
   AppDataTable,
@@ -305,7 +305,7 @@ const ActivityMobile: FC<IActivity> = ({ activity, webhook, onReload }) => {
   );
 };
 
-const ActivityDesktop: FC<IActivity> = ({ activity, webhook, onReload }) => {
+const ActivityDesktop: FC<IActivity> = ({ activity, webhook }) => {
   const history = useHistory();
   const [openModalUpgradeMessage, setOpenModalUpgradeMessage] = useState(false);
 

@@ -6,7 +6,7 @@ import {
   fillFullResolution,
   ListStat,
   SAMPLE_DATA,
-  listStats
+  listStats,
 } from 'src/pages/HomePage/parts/PartUserStats';
 import moment from 'moment';
 import { formatLargeNumber } from 'src/utils/utils-helper';
@@ -79,7 +79,6 @@ const PartWebhookStats = () => {
 
   const dataWebhookStats = useMemo(() => {
     return listStats.map((item) => {
-
       if (item.key === 'message') {
         return {
           ...item,

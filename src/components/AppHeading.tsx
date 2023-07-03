@@ -1,6 +1,6 @@
 import { Box, Flex } from '@chakra-ui/react';
 import { AppLink } from './index';
-import React, { FC } from 'react';
+import { FC } from 'react';
 
 interface IHeading {
   title: string;

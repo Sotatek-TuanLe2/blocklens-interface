@@ -1,5 +1,5 @@
 import { InputGroup, InputRightElement } from '@chakra-ui/react';
-import React, { FC, forwardRef, Ref } from 'react';
+import { FC, forwardRef, Ref } from 'react';
 import ReactDatePicker, { ReactDatePickerProps } from 'react-datepicker';
 import { CalendarIcon } from 'src/assets/icons';
 import 'react-datepicker/dist/react-datepicker.css';
