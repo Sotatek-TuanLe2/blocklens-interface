@@ -84,6 +84,21 @@ const visualizationConfigs: VisualizationConfigType[] = [
 
 export const VISUALIZATION_DEBOUNCE = 500;
 
+export const getDefaultTimeAxis = (data: any[]): string => {
+  let result = '';
+  const firstResultInQuery: any = data && !!data.length ? data[0] : null;
+  if (firstResultInQuery) {
+    Object.keys(firstResultInQuery).forEach((key: string) => {
+      const date = moment(firstResultInQuery[key]);
+      if (date.isValid() && isNaN(+firstResultInQuery[key])) {
+        result = key;
+        return;
+      }
+    });
+  }
+  return result;
+};
+
 type Props = {
   queryResult: unknown[];
   queryValue: IQuery;
@@ -119,21 +134,10 @@ const VisualizationDisplay = ({
       ? objectKeys(queryResult[0])
       : [];
 
-  const defaultTimeXAxis = useMemo(() => {
-    let result = '';
-    const firstResultInQuery: any =
-      queryResult && !!queryResult.length ? queryResult[0] : null;
-    if (firstResultInQuery) {
-      Object.keys(firstResultInQuery).forEach((key: string) => {
-        const date = moment(firstResultInQuery[key]);
-        if (date.isValid() && isNaN(+firstResultInQuery[key])) {
-          result = key;
-          return;
-        }
-      });
-    }
-    return result;
-  }, [queryResult]);
+  const defaultTimeXAxis = useMemo(
+    () => getDefaultTimeAxis(queryResult),
+    [queryResult],
+  );
 
   const addVisualizationHandler = async (visualizationValue: string) => {
     const searchedVisualization = visualizationConfigs.find(
