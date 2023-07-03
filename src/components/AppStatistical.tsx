@@ -19,7 +19,7 @@ interface IChartStatics {
 
 export type keyStats = 'message' | 'activities' | 'successRate' | 'webhooks';
 
-export const ChartStatics: FC<IChartStatics> = ({ dataChart, keyStat }) => {
+const ChartStatics: FC<IChartStatics> = ({ dataChart, keyStat }) => {
   const dataFormat = dataChart.map((item) => {
     return {
       ...item,

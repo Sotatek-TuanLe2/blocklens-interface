@@ -31,26 +31,6 @@ export interface IListAppResponse {
   totalAppActive?: number;
 }
 
-export interface IAppResponse {
-  appId: number;
-  userId: number;
-  name?: string;
-  status?: string;
-  description?: string;
-  chain: string;
-  network: string;
-  key: string;
-}
-
-export type TableAttributeType = {
-  blockchains: string[];
-  full_name: string;
-  id: string;
-  namespace: string;
-  table_name: string;
-  __typename: string;
-};
-
 export interface SchemaType {
   column_name: string;
   data_type: string;
@@ -136,12 +116,6 @@ export const QUERY_RESULT_STATUS = {
   DONE: 'DONE',
   WAITING: 'WAITING',
   FAILED: 'FAILED',
-};
-
-export const PROMISE_STATUS = {
-  FULFILLED: 'fulfilled',
-  REJECTED: 'rejected',
-  PENDING: 'pending',
 };
 
 export const TYPE_OF_MODAL = {
