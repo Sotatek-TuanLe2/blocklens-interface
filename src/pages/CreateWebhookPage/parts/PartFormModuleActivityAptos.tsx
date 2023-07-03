@@ -1,5 +1,5 @@
 import { AppField, AppInput, AppReadABI } from 'src/components';
-import React, { FC, useState, useEffect, useRef } from 'react';
+import React, { FC, useState, useEffect, useRef, ChangeEvent } from 'react';
 import rf from 'src/requests/RequestFactory';
 import _ from 'lodash';
 import { Box } from '@chakra-ui/react';
@@ -115,28 +115,30 @@ const PartFormModuleActivityAptos: FC<PartFormContractAptosProps> = ({
     }
   };
 
+  const onChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value.trim()) {
+      setIsLoading(true);
+    } else {
+      setDataAddress(null);
+      setPayloadForm({
+        ...payloadForm,
+        metadata: {
+          ...payloadForm.metadata,
+          address: '',
+        },
+      });
+      setIsLoading(false);
+    }
+    debouncedOnChange(e);
+  };
+
   return (
     <Box width={'100%'}>
       <AppField label={'Address'} customWidth={'100%'} isRequired>
         <AppInput
           defaultValue={payloadForm.metadata?.address}
           ref={inputRef}
-          onChange={(e) => {
-            if (e.target.value.trim()) {
-              setIsLoading(true);
-            } else {
-              setDataAddress(null);
-              setPayloadForm({
-                ...payloadForm,
-                metadata: {
-                  ...payloadForm.metadata,
-                  address: '',
-                },
-              });
-              setIsLoading(false);
-            }
-            debouncedOnChange(e);
-          }}
+          onChange={(e) => onChangeInput(e)}
           validate={{
             name: `address`,
             validator: validator.current,

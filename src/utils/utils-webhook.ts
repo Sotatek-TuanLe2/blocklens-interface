@@ -226,3 +226,18 @@ export const RESOLUTION_TIME = {
   DAY: 86400,
   HOUR: 3600,
 };
+
+export const optionsFilterByDuration = [
+  {
+    label: 'Last 24 hours',
+    value: '24h',
+  },
+  {
+    label: 'Last 7 days',
+    value: '7d',
+  },
+  {
+    label: 'Last 30 days',
+    value: '30d',
+  },
+];
