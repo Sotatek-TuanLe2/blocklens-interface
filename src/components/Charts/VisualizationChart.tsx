@@ -60,11 +60,11 @@ const VisualizationChart: React.FC<Props> = (props) => {
     if (moment(new Date(value)).isValid() && !isNumber(value)) {
       return getMonthAndDate(value);
     }
-    if (axis === 'x' && configs?.xAxisConfigs?.tickFormat) {
-      return formatVisualizationValue(configs?.xAxisConfigs?.tickFormat, value);
+    if (axis === 'x' && xAxisConfigs?.tickFormat) {
+      return formatVisualizationValue(xAxisConfigs?.tickFormat, value);
     }
-    if (axis === 'y' && configs?.yAxisConfigs?.tickFormat) {
-      return formatVisualizationValue(configs?.yAxisConfigs?.tickFormat, value);
+    if (axis === 'y' && yAxisConfigs?.tickFormat) {
+      return formatVisualizationValue(yAxisConfigs?.tickFormat, value);
     }
     return formatDefaultValueChart(value);
   };
@@ -88,11 +88,8 @@ const VisualizationChart: React.FC<Props> = (props) => {
   };
 
   const labelFormat = (value: string) => {
-    if (configs?.yAxisConfigs?.labelFormat) {
-      return formatVisualizationValue(
-        configs?.yAxisConfigs?.labelFormat,
-        value,
-      );
+    if (yAxisConfigs?.labelFormat) {
+      return formatVisualizationValue(yAxisConfigs?.labelFormat, value);
     }
     return formatDefaultValueChart(value);
   };
@@ -188,19 +185,6 @@ const VisualizationChart: React.FC<Props> = (props) => {
         );
     }
   };
-
-  const containerClassName = useMemo(() => {
-    switch (type) {
-      case TYPE_VISUALIZATION.bar:
-        return 'visual-container__visualization--bar';
-      case TYPE_VISUALIZATION.line:
-        return 'visual-container__visualization--line';
-      case TYPE_VISUALIZATION.scatter:
-        return 'visual-container__visualization--scatter';
-      default:
-        return 'visual-container__visualization--area';
-    }
-  }, [type]);
 
   const ChartComponent = useMemo(() => {
     switch (type) {
@@ -317,8 +301,38 @@ const VisualizationChart: React.FC<Props> = (props) => {
     );
   }
 
+  const _renderZeroValueLine = () => {
+    const [minValue] = yAxisDomain;
+    if (new BigNumber(minValue).isNegative()) {
+      return (
+        <ReferenceLine
+          className="ref-line"
+          y={0}
+          stroke="#2F3B58"
+          strokeDasharray="3 3"
+          label={({ offset, viewBox }) => (
+            <text
+              offset={offset}
+              x="0"
+              y={viewBox.y}
+              className="recharts-text recharts-label"
+              stroke="none"
+              type="number"
+              fontWeight={400}
+            >
+              <tspan x="44" dy="0.355em">
+                0
+              </tspan>
+            </text>
+          )}
+        />
+      );
+    }
+    return null;
+  };
+
   return (
-    <ResponsiveContainer className={containerClassName}>
+    <ResponsiveContainer className={`visual-container__visualization--${type}`}>
       <ChartComponent
         height={500}
         data={sortData()}
@@ -352,29 +366,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
             fill={'#ccc'}
           />
         </XAxis>
-        {new BigNumber(yAxisDomain[0]).isNegative() && (
-          <ReferenceLine
-            className="ref-line"
-            y={0}
-            stroke="#2F3B58"
-            strokeDasharray="3 3"
-            label={({ offset, viewBox }) => (
-              <text
-                offset={offset}
-                x="0"
-                y={viewBox.y}
-                className="recharts-text recharts-label"
-                stroke="none"
-                type="number"
-                fontWeight={400}
-              >
-                <tspan x="44" dy="0.355em">
-                  0
-                </tspan>
-              </text>
-            )}
-          />
-        )}
+        {_renderZeroValueLine()}
         {yAxisKeys && !!yAxisKeys.length && (
           <YAxis
             tickFormatter={tickFormatAxis('y')}
@@ -382,9 +374,9 @@ const VisualizationChart: React.FC<Props> = (props) => {
             tickLine={false}
             domain={yAxisDomain}
             tickCount={6}
-            {...logarithmicProps}
             allowDataOverflow={false}
             className="y-axis"
+            {...logarithmicProps}
           >
             <Label
               position="insideLeft"
@@ -398,7 +390,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
         <Tooltip
           content={
             <CustomTooltip
-              numberFormat={configs?.yAxisConfigs?.labelFormat}
+              numberFormat={yAxisConfigs?.labelFormat}
               showLabel={type !== TYPE_VISUALIZATION.scatter}
             />
           }
