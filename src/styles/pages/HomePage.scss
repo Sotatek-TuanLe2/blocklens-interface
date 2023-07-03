@@ -74,6 +74,7 @@
 .list-table-wrap {
   padding: 0 0 40px 0 !important;
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.04);
+  border-radius: 18px;
 
   @include tablet {
     padding-bottom: 10px !important;
