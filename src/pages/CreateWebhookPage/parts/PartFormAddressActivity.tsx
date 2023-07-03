@@ -40,7 +40,7 @@ const PartFormAddressActivity: FC<IPartFormAddressActivity> = ({
 
   const isValidAddress = (address: string) => {
     if (isEVMNetwork(appInfo.chain)) return isValidAddressEVM(address);
-    return true;
+    return !!address;
   };
 
   const addressesInvalid = useMemo(() => {
