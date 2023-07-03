@@ -29,7 +29,6 @@ import {
   filterParams,
   formatShortText,
   formatTimestamp,
-  getErrorMessage,
   shortAddressType,
 } from '../utils/utils-helper';
 
@@ -83,13 +82,13 @@ export const onRetry = async (
   onReload();
 };
 
-const handlerRetryError = (error: any, handleLimitError: any) => {
-  if (getErrorMessage(error) === 'Limit of daily messages is reached') {
-    handleLimitError();
-  } else console.error(error);
-};
+// const handlerRetryError = (error: any, handleLimitError: any) => {
+//   if (getErrorMessage(error) === 'Limit of daily messages is reached') {
+//     handleLimitError();
+//   } else console.error(error);
+// };
 
-const ActivityMobile: FC<IActivity> = ({ activity, webhook, onReload }) => {
+const ActivityMobile: FC<IActivity> = ({ activity, webhook }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [openModalUpgradeMessage, setOpenUpgradeMessage] = useState(false);
 
