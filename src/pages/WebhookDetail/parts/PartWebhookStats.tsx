@@ -6,6 +6,7 @@ import {
   fillFullResolution,
   ListStat,
   SAMPLE_DATA,
+  listStats
 } from 'src/pages/HomePage/parts/PartUserStats';
 import moment from 'moment';
 import { formatLargeNumber } from 'src/utils/utils-helper';
@@ -20,25 +21,6 @@ interface IWebhookStats {
   messagesSuccess: number;
   messagesFailed: number;
 }
-
-export const listStats = [
-  {
-    key: 'message',
-    label: 'Total Messages (24hrs)',
-  },
-  {
-    key: 'activities',
-    label: 'Total Activities (24hrs)',
-  },
-  {
-    key: 'successRate',
-    label: 'Success Rate (24hrs)',
-  },
-  {
-    key: 'webhooks',
-    label: 'Active Webhook',
-  },
-];
 
 const PartWebhookStats = () => {
   const [webhookStats, setWebhookStats] = useState<IWebhookStats | any>({});
@@ -97,6 +79,7 @@ const PartWebhookStats = () => {
 
   const dataWebhookStats = useMemo(() => {
     return listStats.map((item) => {
+
       if (item.key === 'message') {
         return {
           ...item,

@@ -55,29 +55,29 @@ const HomePage = () => {
     );
   };
 
+  const _renderContent = () => {
+    return (
+      <>
+        <Box mb={7}>
+          <AppHeading title="Triggers" />
+        </Box>
+        <Box className={'statics'}>
+          <PartUserStats
+            totalWebhookActive={userStats?.totalRegistrationActive}
+            totalWebhook={userStats?.totalRegistration}
+          />
+        </Box>
+        <ListApps />
+        <Box className={'user-graph'}>
+          <PartUserGraph />
+        </Box>
+      </>
+    );
+  };
+
   return (
     <BasePage>
-      <>
-        {hasApp ? (
-          <>
-            <Box mb={7}>
-              <AppHeading title="Triggers" />
-            </Box>
-            <Box className={'statics'}>
-              <PartUserStats
-                totalWebhookActive={userStats?.totalRegistrationActive}
-                totalWebhook={userStats?.totalRegistration}
-              />
-            </Box>
-            <ListApps />
-            <Box className={'user-graph'}>
-              <PartUserGraph />
-            </Box>
-          </>
-        ) : (
-          _renderNoApp()
-        )}
-      </>
+      <>{hasApp ? _renderContent() : _renderNoApp()}</>
     </BasePage>
   );
 };
