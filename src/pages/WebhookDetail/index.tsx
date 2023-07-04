@@ -10,7 +10,7 @@ import { formatShortText } from 'src/utils/utils-helper';
 import PartWebhookGraph from './parts/PartWebhookGraph';
 import PartWebhookActivities from './parts/PartWebhookActivities';
 import { getLogoChainByChainId } from 'src/utils/utils-network';
-import { IWebhook } from 'src/utils/utils-webhook';
+import { IWebhook, WEBHOOK_STATUS } from 'src/utils/utils-webhook';
 import rf from 'src/requests/RequestFactory';
 
 const WebhookDetail = () => {
@@ -73,7 +73,11 @@ const WebhookDetail = () => {
         </Flex>
 
         <Box className={'statics'}>
-          <PartWebhookStats />
+          <PartWebhookStats
+            totalWebhookActive={
+              webhook.status === WEBHOOK_STATUS.DISABLED ? 0 : 1
+            }
+          />
         </Box>
 
         <PartWebhookActivities webhook={webhook} />
