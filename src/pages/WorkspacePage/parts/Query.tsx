@@ -352,14 +352,18 @@ const QueryPart: React.FC = () => {
     firstClass: string,
     secondClass: string,
   ) => {
-    return expandLayout === LAYOUT_QUERY.HALF ||
+    if (
+      expandLayout === LAYOUT_QUERY.HALF ||
       (statusExecuteQuery === STATUS.FAILED && isExpand)
-      ? 'custom-editor--half'
-      : !queryId
-      ? 'custom-editor--full'
-      : expandLayout === layout
-      ? firstClass
-      : secondClass;
+    ) {
+      return 'custom-editor--half';
+    }
+
+    if (!queryId) {
+      return 'custom-editor--full';
+    }
+
+    return expandLayout === layout ? firstClass : secondClass;
   };
 
   const _renderVisualizations = () => {
