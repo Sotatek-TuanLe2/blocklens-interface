@@ -39,18 +39,18 @@ const ModalChangeStatusApp: FC<IModalChangeStatusApp> = ({
   const getDescription = () => {
     if (appInfo?.status === APP_STATUS.DISABLED) {
       return (
-        <div>
-          This app will become Active. The webhooks in this app is <br />
-          still Inactive, you will need to activate your selected <br />
+        <div className='des-status-activate'>
+          This app will become Active. The webhooks in this app is
+          still Inactive, you will need to activate your selected
           webhooks to start receiving Notify.
         </div>
       );
     }
 
     return (
-      <div>
-        This app and all webhooks in it will become Inactive.<br />
-        You will stop receiving Notify for all webhooks<br />
+      <div className='des-status-deactivate'>
+        This app and all webhooks in it will become Inactive.
+        You will stop receiving Notify for all webhooks
         in this app. Continue?
       </div>
     );
