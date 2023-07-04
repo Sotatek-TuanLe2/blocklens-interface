@@ -21,9 +21,11 @@ import {
   TYPE_VISUALIZATION,
   VisualizationType,
 } from 'src/utils/query.type';
-import { areYAxisesSameType } from 'src/utils/utils-helper';
 import useUser from 'src/hooks/useUser';
-import { getDefaultTimeAxis } from './VisualizationDisplay';
+import {
+  generateErrorMessage,
+  getDefaultTimeAxis,
+} from './VisualizationDisplay';
 
 const REFETCH_QUERY_RESULT_MINUTES = 5;
 
@@ -93,37 +95,8 @@ const VisualizationItem = React.memo(
       [queryResult],
     );
 
-    const generateErrorMessage = (
-      visualization: VisualizationType,
-    ): string | null => {
-      const type =
-        visualization.options?.globalSeriesType || visualization.type;
-      if (
-        type === TYPE_VISUALIZATION.table ||
-        type === TYPE_VISUALIZATION.counter
-      ) {
-        return null;
-      }
-
-      let errorMessage = null;
-      if (!visualization.options?.columnMapping?.xAxis) {
-        errorMessage = 'Missing x-axis';
-      } else if (!visualization.options?.columnMapping?.yAxis.length) {
-        errorMessage = 'Missing y-axis';
-      } else if (
-        !areYAxisesSameType(
-          queryResult,
-          visualization.options.columnMapping?.yAxis,
-        )
-      ) {
-        errorMessage = 'All columns for a y-axis must have the same data type';
-      }
-
-      return errorMessage;
-    };
-
     const _renderVisualization = (visualization: VisualizationType) => {
-      const errorMessage = generateErrorMessage(visualization);
+      const errorMessage = generateErrorMessage(visualization, queryResult);
 
       if (!isLoading && errorMessage) {
         return (
