@@ -67,7 +67,7 @@ const QueryPart: React.FC = () => {
   useEffect(() => {
     if (queryId) {
       setExpandLayout(LAYOUT_QUERY.HIDDEN);
-      fetchInitalData();
+      fetchInitialData();
     } else {
       resetEditor();
     }
@@ -172,7 +172,7 @@ const QueryPart: React.FC = () => {
     }
   };
 
-  const fetchInitalData = async () => {
+  const fetchInitialData = async () => {
     try {
       setIsLoadingQuery(true);
       const dataQuery = await fetchQuery();
@@ -234,7 +234,7 @@ const QueryPart: React.FC = () => {
     }
   };
 
-  const onExpandEditor = () => {
+  const toggleExpandEditor = () => {
     setIsExpand(false);
     if (!queryId || !queryValue) return;
     setExpandLayout((prevState) => {
@@ -248,7 +248,7 @@ const QueryPart: React.FC = () => {
     });
   };
 
-  const onCheckedIconExpand = (query: boolean) => {
+  const getIconClassName = (query: boolean) => {
     if (!queryId || !queryValue)
       return query ? 'icon-query-collapse' : 'icon-query-expand';
 
@@ -291,8 +291,8 @@ const QueryPart: React.FC = () => {
         </div>
         {!isLoading && (
           <p
-            onClick={onExpandEditor}
-            className={`${onCheckedIconExpand(false)}`}
+            onClick={toggleExpandEditor}
+            className={`${getIconClassName(false)}`}
           />
         )}
       </div>
@@ -347,7 +347,7 @@ const QueryPart: React.FC = () => {
     );
   };
 
-  const classExpand = (
+  const getClassExpand = (
     layout: string,
     firstClass: string,
     secondClass: string,
@@ -388,20 +388,29 @@ const QueryPart: React.FC = () => {
       );
     }
 
-    const classContent = () => {
+    const getContentClassName = () => {
       if (
         expandLayout === LAYOUT_QUERY.HALF ||
         (statusExecuteQuery === STATUS.FAILED && isExpand)
-      )
+      ) {
         return 'add-chart-empty';
-      return `${classExpand(
+      }
+
+      const fullClass = getClassExpand(
         LAYOUT_QUERY.FULL,
         'add-chart-full',
         'add-chart',
-      )} ${classExpand(LAYOUT_QUERY.HIDDEN, 'expand-chart hidden-editor', '')}`;
+      );
+      const hiddenClass = getClassExpand(
+        LAYOUT_QUERY.HIDDEN,
+        'expand-chart hidden-editor',
+        '',
+      );
+
+      return `${fullClass} ${hiddenClass}`;
     };
 
-    return <div className={`${classContent()}`}>{_renderContent()}</div>;
+    return <div className={`${getContentClassName()}`}>{_renderContent()}</div>;
   };
 
   return (
@@ -431,11 +440,11 @@ const QueryPart: React.FC = () => {
               <AceEditor
                 className={`ace_editor ace-tomorrow custom-editor 
         
-                ${classExpand(
+                ${getClassExpand(
                   LAYOUT_QUERY.FULL,
                   'custom-editor--full',
                   '',
-                )} ${classExpand(
+                )} ${getClassExpand(
                   LAYOUT_QUERY.HIDDEN,
                   'custom-editor--hidden',
                   '',
@@ -466,8 +475,8 @@ const QueryPart: React.FC = () => {
               >
                 {!isLoading && (
                   <p
-                    className={`${onCheckedIconExpand(true)}`}
-                    onClick={onExpandEditor}
+                    className={`${getIconClassName(true)}`}
+                    onClick={toggleExpandEditor}
                   />
                 )}
               </div>

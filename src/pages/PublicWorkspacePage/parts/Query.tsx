@@ -42,7 +42,7 @@ const QueryPart: React.FC = () => {
 
   useEffect(() => {
     if (queryId) {
-      fetchInitalData();
+      fetchInitialData();
       setExpandLayout(LAYOUT_QUERY.HIDDEN);
     }
 
@@ -103,7 +103,7 @@ const QueryPart: React.FC = () => {
     }
   };
 
-  const fetchInitalData = async () => {
+  const fetchInitialData = async () => {
     try {
       const dataQuery = await fetchQuery();
       await fetchQueryResult(dataQuery?.executedId);
@@ -112,7 +112,7 @@ const QueryPart: React.FC = () => {
     }
   };
 
-  const onExpandEditor = () => {
+  const toggleExpandEditor = () => {
     setIsExpand(false);
     if (!queryId || !queryValue) return;
     setExpandLayout((prevState) => {
@@ -126,7 +126,7 @@ const QueryPart: React.FC = () => {
     });
   };
 
-  const classExpand = (
+  const getClassExpand = (
     layout: string,
     firstClass: string,
     secondClass: string,
@@ -138,7 +138,7 @@ const QueryPart: React.FC = () => {
     return expandLayout === layout ? firstClass : secondClass;
   };
 
-  const onCheckedIconExpand = (query: boolean) => {
+  const getIconClassName = (query: boolean) => {
     if (!queryId || !queryValue)
       return query ? 'icon-query-collapse' : 'icon-query-expand';
 
@@ -162,8 +162,8 @@ const QueryPart: React.FC = () => {
           Result Table
         </div>
         <p
-          onClick={onExpandEditor}
-          className={`${onCheckedIconExpand(false)}`}
+          onClick={toggleExpandEditor}
+          className={`${getIconClassName(false)}`}
         />
       </div>
     );
@@ -229,8 +229,12 @@ const QueryPart: React.FC = () => {
             ? 'add-chart-empty'
             : ''
         }
-        ${classExpand(LAYOUT_QUERY.FULL, 'add-chart-full', 'add-chart')}
-        ${classExpand(LAYOUT_QUERY.HIDDEN, 'expand-chart hidden-editor', '')} `}
+        ${getClassExpand(LAYOUT_QUERY.FULL, 'add-chart-full', 'add-chart')}
+        ${getClassExpand(
+          LAYOUT_QUERY.HIDDEN,
+          'expand-chart hidden-editor',
+          '',
+        )} `}
       >
         {_renderContent()}
       </div>
@@ -259,17 +263,17 @@ const QueryPart: React.FC = () => {
               } btn-expand-public`}
             >
               <p
-                className={`${onCheckedIconExpand(true)}`}
-                onClick={onExpandEditor}
+                className={`${getIconClassName(true)}`}
+                onClick={toggleExpandEditor}
               />
             </div>
             <AceEditor
               className={`ace_editor ace-tomorrow custom-editor 
-                ${classExpand(
+                ${getClassExpand(
                   LAYOUT_QUERY.FULL,
                   'custom-editor--full',
                   '',
-                )} ${classExpand(
+                )} ${getClassExpand(
                 LAYOUT_QUERY.HIDDEN,
                 'custom-editor--hidden',
                 '',
