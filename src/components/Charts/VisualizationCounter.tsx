@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import 'src/styles/components/CounterConfigurations.scss';
 import { VISUALIZATION_COLORS } from 'src/utils/common';
 import { VisualizationType } from 'src/utils/query.type';
-import { roundAndPadZeros } from 'src/utils/utils-format';
 import { isNumber } from 'src/utils/utils-helper';
 const commaNumber = require('comma-number');
 
@@ -99,9 +98,8 @@ const VisualizationCounter = ({ data, visualization, isLoading }: Props) => {
             <span style={{ color: 'inherit' }}>
               {isNumberValue
                 ? commaNumber(
-                    roundAndPadZeros(
-                      dataCounter(),
-                      Number(dataOptions.stringDecimal || 0),
+                    new BigNumber(dataCounter()).toFixed(
+                      +dataOptions.stringDecimal || 0,
                     ),
                   )
                 : dataCounter()}
