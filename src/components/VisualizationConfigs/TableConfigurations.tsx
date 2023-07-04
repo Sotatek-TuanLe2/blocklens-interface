@@ -7,23 +7,15 @@ import { VisualizationType } from 'src/utils/query.type';
 import { isNumber } from 'src/utils/utils-helper';
 import AppInput from '../AppInput';
 import AppSelect2 from '../AppSelect2';
-import { getTableColumns } from '../Charts/VisualizationTable';
+import {
+  getTableColumns,
+  TABLE_COLUMN_TYPES,
+} from '../Charts/VisualizationTable';
 
 interface IOption {
   value: string;
   label: string;
 }
-
-const optionType: IOption[] = [
-  { value: 'normal', label: 'Normal' },
-  { value: 'progress-bar', label: 'Progress bar' },
-];
-
-const optionAlign: IOption[] = [
-  { value: 'left', label: 'Left' },
-  { value: 'center', label: 'Center' },
-  { value: 'right', label: 'Right' },
-];
 
 interface ITableConfigurations {
   data: any[];
@@ -52,7 +44,7 @@ const TableConfigurations: React.FC<ITableConfigurations> = ({
   }, [dataColumns]);
 
   const [columnValue, setColumnValue] = useState<string>(optionColumn[0].value);
-  const timeout = useRef() as any;
+  const timeout = useRef<ReturnType<typeof setTimeout>>();
 
   const typeData = dataTable?.map((row) =>
     row.getVisibleCells().map((cells: any) => cells.getValue()),
@@ -70,7 +62,7 @@ const TableConfigurations: React.FC<ITableConfigurations> = ({
     onChangeDebounce(visualization);
   };
 
-  const onChangeTableName = (e: any) => {
+  const onChangeTableName = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChangeVisualization({
       ...editVisualization,
       name: e.target.value,
@@ -99,11 +91,6 @@ const TableConfigurations: React.FC<ITableConfigurations> = ({
 
   return (
     <div className="main-layout">
-      {/* <header>
-        <AppButton className="btn-add" size="sm">
-          Add to dashboard
-        </AppButton>
-      </header> */}
       <Grid
         templateColumns={{
           sm: 'repeat(1, 1fr)',
@@ -143,7 +130,7 @@ const TableConfigurations: React.FC<ITableConfigurations> = ({
             options={optionColumn}
           />
         </div>
-        {!!dataColumns?.length ? (
+        {!!dataColumns?.length &&
           dataColumns
             ?.filter((i, index) => (index.toString() === columnValue ? i : ''))
             ?.map((data: any, index: number) => (
@@ -155,10 +142,7 @@ const TableConfigurations: React.FC<ITableConfigurations> = ({
                   onChange={onChangeColumnConfigurations}
                 />
               </GridItem>
-            ))
-        ) : (
-          <>Loading</>
-        )}
+            ))}
       </Grid>
     </div>
   );
@@ -170,6 +154,75 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
   const [selectedItem, setSelectedItem] = useState(Object);
 
   const isNumberValue = isNumber(typeData?.[0]?.[index]);
+
+  const optionType: IOption[] = [
+    { value: TABLE_COLUMN_TYPES.NORMAL, label: 'Normal' },
+    { value: TABLE_COLUMN_TYPES.PROGRESS, label: 'Progress bar' },
+  ];
+
+  const optionAlign: IOption[] = [
+    { value: 'left', label: 'Left' },
+    { value: 'center', label: 'Center' },
+    { value: 'right', label: 'Right' },
+  ];
+
+  const _renderNormalConfigurations = () => (
+    <div>
+      <div className="main-toggle">
+        <div className="label-toggle">Colored positive values</div>
+        <Switch
+          size="sm"
+          value={data?.coloredPositive}
+          isChecked={data?.coloredPositive}
+          onChange={(e) =>
+            onChange({
+              ...selectedItem,
+              coloredPositive: e.target.checked,
+            })
+          }
+        />
+      </div>
+      <div className="main-toggle">
+        <div className="label-toggle">Colored negative values</div>
+        <Switch
+          size="sm"
+          value={data?.coloredNegative}
+          isChecked={data?.coloredNegative}
+          onChange={(e) =>
+            onChange({
+              ...selectedItem,
+              coloredNegative: e.target.checked,
+            })
+          }
+        />
+      </div>
+    </div>
+  );
+
+  const _renderProgressConfigurations = () => (
+    <div className="main-toggle">
+      <div className="label-toggle">Colored positive/negative values</div>
+      <Switch
+        size="sm"
+        value={data?.coloredProgress}
+        isChecked={data?.coloredProgress}
+        onChange={(e) =>
+          onChange({
+            ...selectedItem,
+            coloredProgress: e.target.checked,
+            coloredPositive: e.target.checked,
+            coloredNegative: e.target.checked,
+          })
+        }
+      />
+    </div>
+  );
+
+  const _renderNumberConfigurations = () => {
+    return data?.type === TABLE_COLUMN_TYPES.NORMAL
+      ? _renderNormalConfigurations()
+      : _renderProgressConfigurations();
+  };
 
   return (
     <div className="box-table" onClick={() => setSelectedItem(data)}>
@@ -190,7 +243,6 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
       </div>
       <div className="box-table-children">
         <div className="label-input">Align</div>
-
         <AppSelect2
           className="select-table z-100"
           size="medium"
@@ -222,7 +274,6 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
       {isNumberValue && (
         <div className="box-table-children">
           <div className="label-input">Type</div>
-
           <AppSelect2
             className="select-table"
             size="medium"
@@ -240,7 +291,6 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
           />
         </div>
       )}
-
       <div className="main-toggle">
         <div className="label-toggle">Hide column</div>
         <Switch
@@ -255,56 +305,7 @@ const TableOptions = ({ data, typeData, index, onChange }: any) => {
           }
         />
       </div>
-      {isNumberValue &&
-        (data?.type === 'normal' ? (
-          <div>
-            <div className="main-toggle">
-              <div className="label-toggle">Colored positive values</div>
-              <Switch
-                size="sm"
-                value={data?.coloredPositive}
-                isChecked={data?.coloredPositive}
-                onChange={(e) =>
-                  onChange({
-                    ...selectedItem,
-                    coloredPositive: e.target.checked,
-                  })
-                }
-              />
-            </div>
-            <div className="main-toggle">
-              <div className="label-toggle">Colored negative values</div>
-              <Switch
-                size="sm"
-                value={data?.coloredNegative}
-                isChecked={data?.coloredNegative}
-                onChange={(e) =>
-                  onChange({
-                    ...selectedItem,
-                    coloredNegative: e.target.checked,
-                  })
-                }
-              />
-            </div>
-          </div>
-        ) : (
-          <div className="main-toggle">
-            <div className="label-toggle">Colored positive/negative values</div>
-            <Switch
-              size="sm"
-              value={data?.coloredProgress}
-              isChecked={data?.coloredProgress}
-              onChange={(e) =>
-                onChange({
-                  ...selectedItem,
-                  coloredProgress: e.target.checked,
-                  coloredPositive: e.target.checked,
-                  coloredNegative: e.target.checked,
-                })
-              }
-            />
-          </div>
-        ))}
+      {isNumberValue && _renderNumberConfigurations()}
     </div>
   );
 };
