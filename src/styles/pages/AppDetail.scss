@@ -59,7 +59,7 @@
         /* Safari and Chrome */
       }
 
-      & > div {
+      &>div {
         width: max-content;
       }
     }
@@ -312,11 +312,9 @@
 }
 
 .button {
-  background: linear-gradient(
-    271.63deg,
-    #1e72ff -2.92%,
-    #0250be 102.1%
-  ) !important;
+  background: linear-gradient(271.63deg,
+      #1e72ff -2.92%,
+      #0250be 102.1%) !important;
 }
 
 .field-disabled {
@@ -471,7 +469,8 @@
     @include text-small-regular;
     padding: 8px 10px;
 
-    &:hover, &.active {
+    &:hover,
+    &.active {
       background-color: $main;
       color: $white;
     }
@@ -486,8 +485,13 @@
   margin-top: 26px !important;
   @include text-medium-regular;
 
+
   .link {
     color: $main !important;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 24px;
   }
 }
 
@@ -499,7 +503,8 @@
   .header-list {
     @include text-small-bold;
     padding: 12px 40px;
-    color: $line;
+    color: $title;
+    opacity: 0.3;
     text-transform: uppercase;
   }
 
@@ -509,6 +514,7 @@
 
     div:first-child {
       width: 60%;
+      color: $title;
     }
 
     div:last-child {
@@ -519,10 +525,11 @@
 
   .content-list {
     @include text-medium-regular;
-    border-bottom: 1px solid $border;
+    border-bottom: 1px solid $red-100;
 
     &:last-child {
-      border-radius: 0 0 6px 6px;
+      // border-radius: 0 0 6px 6px;
+      border: none
     }
   }
 }
