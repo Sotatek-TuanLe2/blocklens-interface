@@ -99,6 +99,32 @@ export const getDefaultTimeAxis = (data: any[]): string => {
   return result;
 };
 
+export const generateErrorMessage = (
+  visualization: VisualizationType,
+  data: any[],
+): string | null => {
+  const type = visualization.options?.globalSeriesType || visualization.type;
+  if (
+    type === TYPE_VISUALIZATION.table ||
+    type === TYPE_VISUALIZATION.counter
+  ) {
+    return null;
+  }
+
+  let errorMessage = null;
+  if (!visualization.options.columnMapping?.xAxis) {
+    errorMessage = 'Missing x-axis';
+  } else if (!visualization.options.columnMapping?.yAxis.length) {
+    errorMessage = 'Missing y-axis';
+  } else if (
+    !areYAxisesSameType(data, visualization.options.columnMapping?.yAxis)
+  ) {
+    errorMessage = 'All columns for a y-axis must have the same data type';
+  }
+
+  return errorMessage;
+};
+
 type Props = {
   queryResult: unknown[];
   queryValue: IQuery;
@@ -318,34 +344,6 @@ const VisualizationDisplay = ({
     );
   };
 
-  const generateErrorMessage = (
-    visualization: VisualizationType,
-  ): string | null => {
-    const type = visualization.options?.globalSeriesType || visualization.type;
-    if (
-      type === TYPE_VISUALIZATION.table ||
-      type === TYPE_VISUALIZATION.counter
-    ) {
-      return null;
-    }
-
-    let errorMessage = null;
-    if (!visualization.options.columnMapping?.xAxis) {
-      errorMessage = 'Missing x-axis';
-    } else if (!visualization.options.columnMapping?.yAxis.length) {
-      errorMessage = 'Missing y-axis';
-    } else if (
-      !areYAxisesSameType(
-        queryResult,
-        visualization.options.columnMapping?.yAxis,
-      )
-    ) {
-      errorMessage = 'All columns for a y-axis must have the same data type';
-    }
-
-    return errorMessage;
-  };
-
   const _renderVisualization = (
     visualization: VisualizationType,
     showConfiguration = true,
@@ -397,7 +395,7 @@ const VisualizationDisplay = ({
         );
     }
 
-    const errorMessage = generateErrorMessage(visualization);
+    const errorMessage = generateErrorMessage(visualization, queryResult);
 
     return (
       <div

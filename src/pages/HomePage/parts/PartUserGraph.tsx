@@ -6,7 +6,10 @@ import ModalFilterGraph from 'src/modals/ModalFilterGraph';
 import rf from 'src/requests/RequestFactory';
 import moment from 'moment';
 import { fillFullResolution, SAMPLE_DATA } from './PartUserStats';
-import { RESOLUTION_TIME, optionsFilterByDuration } from 'src/utils/utils-webhook';
+import {
+  RESOLUTION_TIME,
+  optionsFilterByDuration,
+} from 'src/utils/utils-webhook';
 
 interface IDataChart {
   activities: number;
