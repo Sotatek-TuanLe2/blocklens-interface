@@ -188,20 +188,19 @@ const Sidebar: React.FC<{
     },
   ];
 
-  const [category, setCategory] = useState<string>(CATEGORIES.EXPLORE_DATA);
-  const [searchValueWorkPlace, setSearchValueWorkPlace] = useState<string>('');
-  const [searchExploreData, setSearchExploreData] = useState<string>('');
   const { queryId, dashboardId }: { queryId?: string; dashboardId?: string } =
     useParams();
   const history = useHistory();
   const { pathname } = useLocation();
+
+  const [category, setCategory] = useState<string>(CATEGORIES.EXPLORE_DATA);
+  const [searchValueWorkPlace, setSearchValueWorkPlace] = useState<string>('');
+  const [searchExploreData, setSearchExploreData] = useState<string>('');
   const [dataQueries, setDataQueries] = useState<IQuery[] | []>([]);
   const [exploreData, setExploreData] = useState<{
     [key: string]: any;
   }>({});
-
   const [schemaDescribe, setSchemaDescribe] = useState<SchemaType[]>([]);
-
   const [dataQueriesPagination, setDataQueriesPagination] = useState<
     IPagination | undefined
   >();
@@ -303,7 +302,7 @@ const Sidebar: React.FC<{
     history.push(ROUTES.MY_QUERY);
   };
 
-  const handleClassNameWorkPlaceItem = (id: string) => {
+  const getWorkplaceItemClassname = (id: string) => {
     return id === queryId || id === dashboardId
       ? 'workspace-page__sidebar__content__work-place-detail work-place-active '
       : 'workspace-page__sidebar__content__work-place-detail ';
@@ -319,6 +318,12 @@ const Sidebar: React.FC<{
       ? AppBroadcast.dispatch(BROADCAST_FETCH_DASHBOARD, response.id)
       : AppBroadcast.dispatch(BROADCAST_FETCH_QUERY, response.id);
   };
+
+  const _renderNoData = () => (
+    <Box pl="16px" className="data-empty">
+      No data...
+    </Box>
+  );
 
   const _renderContentWorkPlace = () => {
     return (
@@ -360,7 +365,7 @@ const Sidebar: React.FC<{
             </Tooltip>
           </div>
         </div>
-        {dataQueries.length ? (
+        {!!dataQueries.length ? (
           <div
             className="workspace-page__sidebar__content__work-place-wrap__list-query"
             id={'scrollableDivQueries'}
@@ -390,7 +395,7 @@ const Sidebar: React.FC<{
               {dataQueries.map((query) => (
                 <div
                   key={query.id}
-                  className={handleClassNameWorkPlaceItem(query.id)}
+                  className={getWorkplaceItemClassname(query.id)}
                   onClick={() =>
                     history.push(`${ROUTES.MY_QUERY}/${query.id}?`)
                   }
@@ -437,9 +442,7 @@ const Sidebar: React.FC<{
             </InfiniteScroll>
           </div>
         ) : (
-          <Box pl="16px" className="data-empty">
-            No data...
-          </Box>
+          _renderNoData()
         )}
       </Box>
     );
@@ -487,9 +490,7 @@ const Sidebar: React.FC<{
             ))}
           </div>
         ) : (
-          <Box pl="16px" className="data-empty">
-            No data...
-          </Box>
+          _renderNoData()
         )}
 
         {!!schemaDescribe.length && (
@@ -552,15 +553,6 @@ const Sidebar: React.FC<{
     );
   };
 
-  const _renderContent = () => {
-    switch (category) {
-      case CATEGORIES.WORK_PLACE:
-        return _renderContentWorkPlace();
-      case CATEGORIES.EXPLORE_DATA:
-        return _renderContentExplore();
-    }
-  };
-
   return (
     <div className={'workspace-page__sidebar'}>
       <div
@@ -592,7 +584,9 @@ const Sidebar: React.FC<{
             : 'workspace-page__sidebar__content hidden-sidebar'
         }
       >
-        {_renderContent()}
+        {category === CATEGORIES.EXPLORE_DATA
+          ? _renderContentExplore()
+          : _renderContentWorkPlace()}
       </Box>
     </div>
   );
