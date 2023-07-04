@@ -46,7 +46,7 @@ interface IModuleAptosDetail {
 
 const ModuleAptosDetail: FC<IModuleAptosDetail> = ({ address, data }) => {
   const [dataAddress, setDataAddress] = useState<any>(null);
-  const [_isLoading, setIsLoading] = useState<boolean>(false);
+  const [_isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     if (address) {
@@ -54,7 +54,9 @@ const ModuleAptosDetail: FC<IModuleAptosDetail> = ({ address, data }) => {
     }
   }, [address]);
 
-  if (!dataAddress) return <></>;
+  if (!dataAddress && !_isLoading) return <></>;
+
+  if (_isLoading) return <Box>Loading...</Box>;
 
   return (
     <Box w={'full'}>
