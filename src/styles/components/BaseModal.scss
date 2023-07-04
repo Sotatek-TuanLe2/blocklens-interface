@@ -88,7 +88,7 @@
   &__description,
   &__description-email {
     @include text-medium-regular;
-    color: $paragraph;
+    color: $paragraph1;
     margin-bottom: 18px;
     padding: 0 28px;
     text-align: center;
@@ -99,7 +99,8 @@
     }
 
     .email {
-      color: $title;
+      color: $paragraph1;
+      font-weight: bold;
     }
   }
 
@@ -110,6 +111,7 @@
   &.modal-create-app {
     max-width: 500px !important;
   }
+
   &.modal-add-visualization {
     max-width: 500px !important;
   }
@@ -117,7 +119,7 @@
   .modal-footer {
     margin-top: 20px;
 
-    & > button {
+    &>button {
       width: 213px;
     }
   }
@@ -130,6 +132,7 @@
     color: $paragraph;
     padding: 12px 16px;
     margin-bottom: 4px;
+
     div:first-child {
       width: 30%;
     }
@@ -191,6 +194,7 @@
 
   .name-wallet {
     margin-top: 10px;
+
     @include tablet {
       margin-left: 10px;
       margin-top: 0;
@@ -200,6 +204,7 @@
   &:last-child {
     .name-wallet {
       margin-top: 15px;
+
       @include tablet {
         margin-top: 0;
       }
@@ -259,13 +264,16 @@
     width: 160px;
     color: #8d91a5;
   }
+
   .markdown {
     width: 100%;
   }
+
   .error-validate {
     color: $red-400;
     font-size: 14px;
   }
+
   // .chakra-stack {
   //   .label {
   //     color: $whiteAlpha-900;
@@ -333,8 +341,9 @@
       text-align: center;
     }
   }
+
   .thumnail-create-modal {
-    border: 1px dashed #c7d2e1;
+    border: 1px dashed $line;
     border-radius: 6px;
     padding: 32px 0px;
     cursor: pointer;
@@ -365,10 +374,12 @@
 
         .main-markdown {
           padding: 12px 20px;
+
           a {
             text-decoration: underline;
             cursor: pointer;
           }
+
           p {
             font-size: 16px;
             font-weight: 400;
@@ -391,6 +402,7 @@
     border-radius: 2px;
     min-height: 290px;
     overflow: auto;
+
     .visualization-row {
       width: calc(100% - 20px);
       padding: 10px 0px 10px;
@@ -399,6 +411,7 @@
         margin: 0 10px;
       }
     }
+
     .user-name {
       overflow: hidden;
       text-overflow: ellipsis;
@@ -407,6 +420,7 @@
       // font-weight: bold;
       color: #8d91a5;
     }
+
     .visualization-name {
       overflow: hidden;
       text-overflow: ellipsis;
@@ -414,6 +428,7 @@
       max-width: 40%;
       margin-right: 4px;
     }
+
     .no-data {
       display: flex;
       height: 100%;
@@ -454,21 +469,25 @@
     width: 100%;
     @include heading-5;
   }
+
   &__content {
     margin-top: 28px;
     display: flex;
     flex-direction: column;
     gap: 16px;
   }
+
   .input-label {
     @include text-medium-regular;
     margin-bottom: 2px;
     color: $paragraph1;
   }
+
   .modal-footer {
     margin-top: 30px;
     gap: 10px;
     @include text-medium-medium;
+
     button {
       height: max-content;
     }
@@ -481,11 +500,13 @@
     justify-content: center;
     gap: 26px;
     margin-bottom: 30px;
+
     .social-media {
       cursor: pointer;
     }
   }
 }
+
 .modal-delete {
   &__img {
     margin-top: 40px;
@@ -493,12 +514,14 @@
     justify-content: center;
     width: 100%;
   }
+
   &__title {
     text-align: center;
     margin-top: 28px;
     width: 100%;
     @include heading-5;
   }
+
   &__content {
     margin-top: 8px;
 
@@ -511,6 +534,7 @@
     margin-top: 30px;
     gap: 10px;
     @include text-medium-medium;
+
     button {
       height: max-content;
     }
