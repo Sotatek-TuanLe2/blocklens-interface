@@ -1,38 +1,23 @@
 import { Box, Flex } from '@chakra-ui/react';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { AppCard, AppGraph, AppSelect2 } from 'src/components';
-import { isMobile } from 'react-device-detect';
-import ModalFilterGraph from 'src/modals/ModalFilterGraph';
+import { AppCard, AppFilterGraph, AppGraph } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import { useParams } from 'react-router';
-import { getParams } from 'src/pages/HomePage/parts/PartUserGraph';
 import {
-  SAMPLE_DATA,
+  SAMPLE_DATA_CHART,
+  getParamsChart,
+  IDataChart,
+  isChartEmpty,
   fillFullResolution,
-} from '../../HomePage/parts/PartUserStats';
-import { optionsFilterByDuration } from 'src/utils/utils-webhook';
-
-interface IDataChart {
-  activities: number;
-  appId: string;
-  message: number;
-  messagesFailed: number;
-  messagesSuccess: number;
-  resolution: number;
-  successRate: string;
-  time: number;
-  webhooks: number;
-}
+} from 'src/utils/utils-app';
 
 const PartAppGraph = () => {
   const [duration, setDuration] = useState<string>('24h');
-  const [isOpenFilterGraphModal, setIsOpenFilterGraphModal] =
-    useState<boolean>(false);
   const [dataChart, setDataChart] = useState<IDataChart[] | any>([]);
   const { id: appId } = useParams<{ id: string }>();
 
   const params = useMemo(() => {
-    return getParams(duration);
+    return getParamsChart(duration);
   }, [duration]);
 
   const getUserStats = useCallback(async () => {
@@ -48,7 +33,7 @@ const PartAppGraph = () => {
         params.to,
         params.resolution,
         res,
-        SAMPLE_DATA,
+        SAMPLE_DATA_CHART,
       );
 
       setDataChart(dataFilled);
@@ -61,50 +46,15 @@ const PartAppGraph = () => {
     getUserStats().then();
   }, [appId, params]);
 
-  const _renderFilter = () => {
-    if (isMobile) {
-      return (
-        <Box
-          className="icon-filter-mobile"
-          onClick={() => setIsOpenFilterGraphModal(true)}
-        />
-      );
-    }
-
-    return (
-      <Flex>
-        <AppSelect2
-          width={'170px'}
-          value={duration}
-          onChange={setDuration}
-          options={optionsFilterByDuration}
-        />
-      </Flex>
-    );
-  };
-
-  if (
-    !dataChart.length ||
-    (dataChart.every((item: IDataChart) => item.message === 0) &&
-      dataChart.every((item: IDataChart) => item.activities === 0))
-  )
-    return <></>;
+  if (isChartEmpty(dataChart)) return <></>;
 
   return (
     <AppCard p={0}>
       <Flex className={'title-list-app'}>
         <Box className={'text-title'}>App's Graph</Box>
-        {_renderFilter()}
+        <AppFilterGraph duration={duration} setDuration={setDuration} />
       </Flex>
       <AppGraph data={dataChart} duration={duration} />
-
-      <ModalFilterGraph
-        optionTimes={optionsFilterByDuration}
-        open={isOpenFilterGraphModal}
-        time={duration}
-        onChangeTime={setDuration}
-        onClose={() => setIsOpenFilterGraphModal(false)}
-      />
     </AppCard>
   );
 };

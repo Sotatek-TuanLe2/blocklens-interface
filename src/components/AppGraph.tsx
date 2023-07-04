@@ -13,8 +13,13 @@ import { isMobile } from 'react-device-detect';
 import { formatNumber } from 'src/utils/utils-format';
 import { RadioChecked, RadioNoCheckedIcon } from 'src/assets/icons';
 import moment from 'moment';
+import ModalFilterGraph from '../modals/ModalFilterGraph';
+import { optionsFilterByDuration } from '../utils/utils-webhook';
+import { AppSelect2 } from './index';
+import { IDataChart } from '../pages/HomePage/parts/PartUserGraph';
+
 interface IChart {
-  data: any[];
+  data: IDataChart[];
   duration: string;
 }
 
@@ -34,12 +39,54 @@ const CustomTooltip = (props: any) => {
   return null;
 };
 
+interface IAppFilterGraph {
+  duration: string;
+  setDuration: (value: string) => void;
+}
+
+export const AppFilterGraph: FC<IAppFilterGraph> = ({
+  duration,
+  setDuration,
+}) => {
+  const [isOpenFilterGraphModal, setIsOpenFilterGraphModal] =
+    useState<boolean>(false);
+
+  if (isMobile) {
+    return (
+      <Box
+        className="icon-filter-mobile"
+        onClick={() => setIsOpenFilterGraphModal(true)}
+      />
+    );
+  }
+
+  return (
+    <Flex>
+      <AppSelect2
+        width={'170px'}
+        value={duration}
+        onChange={setDuration}
+        options={optionsFilterByDuration}
+      />
+      {isOpenFilterGraphModal && (
+        <ModalFilterGraph
+          optionTimes={optionsFilterByDuration}
+          open={isOpenFilterGraphModal}
+          time={duration}
+          onChangeTime={setDuration}
+          onClose={() => setIsOpenFilterGraphModal(false)}
+        />
+      )}
+    </Flex>
+  );
+};
+
 const AppGraph: FC<IChart> = ({ data, duration }) => {
   const [key, setKey] = useState(0);
   const [lineHide, setLineHide] = useState<string>('activities');
   const dataChart = useMemo(() => {
     if (duration === '24h') {
-      return data.map((item: any) => {
+      return data.map((item: IDataChart) => {
         return {
           ...item,
           label: moment(item?.time).format('HH:mm MMM DD'),
@@ -47,7 +94,7 @@ const AppGraph: FC<IChart> = ({ data, duration }) => {
       });
     }
 
-    return data.map((item: any) => {
+    return data.map((item: IDataChart) => {
       return {
         ...item,
         label: moment(item?.time).format('MMM DD'),

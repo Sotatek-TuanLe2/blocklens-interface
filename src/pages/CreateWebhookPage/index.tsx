@@ -212,11 +212,12 @@ const CreateWebhook = () => {
           type === WEBHOOK_TYPES.APTOS_COIN_ACTIVITY) &&
           !dataForm?.metadata?.events?.length) ||
         (type === WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY &&
-          !dataForm.metadata?.events?.length &&
-          !dataForm.metadata?.functions?.length);
+          !dataForm?.metadata?.events?.length &&
+          !dataForm?.metadata?.address &&
+          !dataForm?.metadata?.functions?.length);
       setIsDisableSubmit(isDisabled);
     }, 0);
-  }, [dataForm]);
+  }, [dataForm, type]);
 
   const onChangeWebhookType = (value: string) => {
     if (type === value) return;

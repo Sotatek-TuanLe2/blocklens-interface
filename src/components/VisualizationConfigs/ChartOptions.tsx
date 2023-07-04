@@ -107,7 +107,9 @@ const ChartOptions: React.FC<IChartOptions> = ({
         <AppInput
           className={'input-table'}
           value={visualization?.name || ''}
-          onChange={(e: any) => changeNameHandle(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            changeNameHandle(e.target.value)
+          }
           placeholder="My Chart"
           size={'sm'}
         />

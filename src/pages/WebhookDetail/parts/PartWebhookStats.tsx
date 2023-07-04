@@ -1,17 +1,15 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { keyStats } from 'src/components/AppStatistical';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import rf from 'src/requests/RequestFactory';
 import { useParams } from 'react-router';
-import {
-  fillFullResolution,
-  ListStat,
-  SAMPLE_DATA,
-  listStats,
-} from 'src/pages/HomePage/parts/PartUserStats';
 import moment from 'moment';
-import { formatLargeNumber } from 'src/utils/utils-helper';
 import { RESOLUTION_TIME } from 'src/utils/utils-webhook';
 import _ from 'lodash';
+import {
+  SAMPLE_DATA_CHART,
+  fillFullResolution,
+  formatDataStatistics,
+} from 'src/utils/utils-app';
+import AppListStatistics from 'src/components/AppListStatistics';
 
 interface IWebhookStats {
   message?: number;
@@ -22,7 +20,11 @@ interface IWebhookStats {
   messagesFailed: number;
 }
 
-const PartWebhookStats = () => {
+interface IPartWebhookStats {
+  totalWebhookActive: number;
+}
+
+const PartWebhookStats: FC<IPartWebhookStats> = ({ totalWebhookActive }) => {
   const [webhookStats, setWebhookStats] = useState<IWebhookStats | any>({});
   const [dataChart, setDataChart] = useState<IWebhookStats[] | any>([]);
   const { id: webhookId } = useParams<{ id: string }>();
@@ -64,7 +66,7 @@ const PartWebhookStats = () => {
         toTime,
         RESOLUTION_TIME.HOUR,
         res,
-        SAMPLE_DATA,
+        SAMPLE_DATA_CHART,
       );
 
       setDataChart(dataFilled);
@@ -78,46 +80,12 @@ const PartWebhookStats = () => {
   }, []);
 
   const dataWebhookStats = useMemo(() => {
-    return listStats.map((item) => {
-      if (item.key === 'message') {
-        return {
-          ...item,
-          value: `${formatLargeNumber(webhookStats.message)}`,
-        };
-      }
-
-      if (item.key === 'activities') {
-        return {
-          ...item,
-          value: `${formatLargeNumber(webhookStats.activities)}`,
-        };
-      }
-
-      if (item.key === 'successRate') {
-        if (
-          webhookStats.messagesFailed > 1 &&
-          webhookStats.messagesFailed === webhookStats.messagesSuccess
-        ) {
-          return {
-            ...item,
-            value: '0',
-          };
-        }
-
-        return {
-          ...item,
-          value: +webhookStats.successRate || '--',
-        };
-      }
-
-      return {
-        ...item,
-        value: webhookStats[item.key as keyStats] || '--',
-      };
-    });
+    return formatDataStatistics(webhookStats, totalWebhookActive, 1);
   }, [webhookStats]);
 
-  return <ListStat dataStats={dataWebhookStats} dataChart={dataChart} />;
+  return (
+    <AppListStatistics dataStats={dataWebhookStats} dataChart={dataChart} />
+  );
 };
 
 export default PartWebhookStats;

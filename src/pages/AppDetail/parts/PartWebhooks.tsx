@@ -28,8 +28,8 @@ const PartWebhooks: FC<IListAddress> = ({ appInfo, type, description }) => {
     return (
       <Flex className="box-create">
         <Box className="icon-no-data" mb={4} />
-        Create your webhook to start experiencing Blocklens with{' '}
-        {getNameWebhook(type)}!
+        No data yet. Create your first {getNameWebhook(type)} webhook to start
+        experiencing Blocklens!
         <AppButton
           isDisabled={isDisabledApp}
           size={'lg'}

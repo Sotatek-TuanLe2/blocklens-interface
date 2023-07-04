@@ -308,12 +308,6 @@ export const formatNumberWithDecimalDigits = (
   return `${integerPart}.${decimalPart}`;
 };
 
-export const roundAndPadZeros = (a: number, decimals: number): string => {
-  const rounded = +(Math.round(Number(`${a}e${decimals}`)) + `e${-decimals}`);
-  const formatted = rounded.toFixed(decimals);
-  return formatted;
-};
-
 export const formatDefaultValueChart = (value: string) => {
   if (!value) {
     return '';

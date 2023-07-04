@@ -113,6 +113,9 @@ const VisualizationItem = React.memo(
       const type =
         visualization.options?.globalSeriesType || visualization.type;
       let visualizationDisplay = null;
+      const xAxisKey =
+        visualization.options?.columnMapping?.xAxis || defaultTimeXAxis;
+      const yAxisKeys = visualization.options.columnMapping?.yAxis || [];
 
       switch (type) {
         case TYPE_VISUALIZATION.table:
@@ -138,10 +141,8 @@ const VisualizationItem = React.memo(
           visualizationDisplay = (
             <PieChart
               data={queryResult}
-              xAxisKey={
-                visualization.options?.columnMapping?.xAxis || defaultTimeXAxis
-              }
-              yAxisKeys={visualization.options.columnMapping?.yAxis || []}
+              xAxisKey={xAxisKey}
+              yAxisKeys={yAxisKeys}
               configs={visualization.options}
               isLoading={isLoading}
             />
@@ -152,10 +153,8 @@ const VisualizationItem = React.memo(
           visualizationDisplay = (
             <VisualizationChart
               data={queryResult}
-              xAxisKey={
-                visualization.options?.columnMapping?.xAxis || defaultTimeXAxis
-              }
-              yAxisKeys={visualization.options.columnMapping?.yAxis || []}
+              xAxisKey={xAxisKey}
+              yAxisKeys={yAxisKeys}
               configs={visualization.options}
               type={type}
               isLoading={isLoading}
