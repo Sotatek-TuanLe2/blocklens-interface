@@ -18,7 +18,7 @@ import { isNumber } from 'src/utils/utils-helper';
 import { objectKeys } from 'src/utils/utils-network';
 import AppPagination from '../AppPagination';
 import AppInput from '../AppInput';
-import { debounce, isNull, isUndefined } from 'lodash';
+import { debounce, isNull, isUndefined, uniq } from 'lodash';
 
 interface ReactTableProps<T> {
   data: T[];
@@ -123,27 +123,30 @@ const VisualizationTable = <T,>({
   };
 
   const columnMaxValues = useMemo((): { [key: string]: number } => {
-    const columnValues = {} as any;
-    const rows = table.getRowModel()?.flatRows;
-    if (rows) {
-      rows.forEach((row) => {
-        row.getVisibleCells().forEach((cell: any) => {
-          if (
-            cell.column.columnDef.type === COLUMN_TYPES.PROGRESS &&
-            cell.column.id
-          ) {
-            const columnId = cell.column.id as keyof T;
+    const columnValues: { [columnId: string]: any[] } = {};
+    const progressColumns: { [columnId: string]: boolean } = {};
+    table.getAllFlatColumns().forEach((column: any) => {
+      if (column.columnDef.type === COLUMN_TYPES.PROGRESS && column.id) {
+        progressColumns[column.id] = true;
+      }
+    });
+
+    if (!!data.length) {
+      data.forEach((item: any) => {
+        objectKeys(progressColumns).forEach((columnId) => {
+          if (!isNaN(item[columnId]) || !isUndefined(item[columnId])) {
             columnValues[columnId] = [
               ...(columnValues[columnId] || []),
-              row.original[columnId],
+              item[columnId],
             ];
+            columnValues[columnId] = uniq(columnValues[columnId]);
           }
         });
       });
     }
 
     return Object.entries(columnValues).reduce((acc, [column, values]: any) => {
-      acc[column] = Math.max(...values);
+      acc[column] = BigNumber.max(...values).toNumber();
       return acc;
     }, {} as any);
   }, [visualization, data]);
@@ -163,6 +166,207 @@ const VisualizationTable = <T,>({
       : '';
   };
 
+  const _renderLoadingTable = () => (
+    <table
+      className={'table-value'}
+      {...{
+        style: {
+          width: '100%',
+        },
+      }}
+    >
+      <tbody>
+        {[...Array(5)].map((_, i) => (
+          <tr key={i}>
+            {[...Array(4)].map((_, j) => (
+              <td key={j} style={{ padding: '0 24px' }}>
+                <Skeleton
+                  w={j === 0 ? '140px' : '80px'}
+                  h={'14px'}
+                  rounded={'7px'}
+                  my={'10px'}
+                />
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+
+  const _renderTableHeader = () => (
+    <thead>
+      {table.getHeaderGroups().map((headerGroup) => (
+        <tr
+          key={headerGroup.id}
+          style={{
+            width: 'fit-content',
+            // display: 'flex',
+          }}
+        >
+          {headerGroup.headers.map((header: any) => (
+            <th
+              className={`${alignClass(header.column.columnDef.align)}`}
+              {...{
+                key: header.id,
+                style: {
+                  textTransform: 'uppercase',
+                  color: '#465065',
+                  width: header.getSize(),
+                  textAlign: header.column.columnDef.align,
+                  display: header.column.columnDef.isHidden
+                    ? 'none'
+                    : undefined,
+                },
+              }}
+            >
+              {header.isPlaceholder
+                ? null
+                : flexRender(
+                    header.column.columnDef.header,
+                    header.getContext(),
+                  ) || header.column.columnDef.accessorKey}
+              <div
+                {...{
+                  onMouseDown: header.getResizeHandler(),
+                  onTouchStart: header.getResizeHandler(),
+                  className: `resizer ${
+                    header.column.getIsResizing() ? 'isResizing' : ''
+                  }`,
+                  style: {
+                    transform: header.column.getIsResizing()
+                      ? `translateX(${
+                          table.getState().columnSizingInfo.deltaOffset
+                        }px)`
+                      : '',
+                  },
+                }}
+              />
+            </th>
+          ))}
+        </tr>
+      ))}
+    </thead>
+  );
+
+  const _renderTableBody = () => {
+    if (!table.getRowModel().rows?.length) {
+      return (
+        <Flex
+          justifyContent={'center'}
+          alignItems={'center'}
+          className="table-nodata"
+        >
+          No data...
+        </Flex>
+      );
+    }
+
+    return (
+      <tbody>
+        {table.getRowModel().rows.map((row) => (
+          <tr key={row.id}>
+            {row.getVisibleCells().map((cells: any) => {
+              const {
+                align,
+                isHidden,
+                coloredPositive,
+                coloredNegative,
+                type,
+                format,
+                coloredProgress,
+              } = cells.column.columnDef;
+              const value = cells.getValue();
+              const isNumberValue = isNumber(value);
+
+              const percent =
+                type === COLUMN_TYPES.PROGRESS
+                  ? new BigNumber(value)
+                      .dividedBy(
+                        new BigNumber(columnMaxValues[cells.column.id]),
+                      )
+                      .multipliedBy(100)
+                      .toNumber()
+                  : 0;
+
+              const checkColor = (value: any) => {
+                if (new BigNumber(value).isGreaterThan(0) && coloredPositive) {
+                  return VISUALIZATION_COLORS.POSITIVE;
+                }
+                if (new BigNumber(value).isLessThan(0) && coloredNegative) {
+                  return VISUALIZATION_COLORS.NEGATIVE;
+                }
+                return undefined;
+              };
+
+              const checkProgressColor = (value: any) => {
+                if (!coloredProgress) {
+                  return '#00022480';
+                }
+                return new BigNumber(value).isLessThan(0)
+                  ? VISUALIZATION_COLORS.NEGATIVE
+                  : VISUALIZATION_COLORS.POSITIVE;
+              };
+
+              return (
+                <td
+                  className={`${alignClass(align)}`}
+                  {...{
+                    key: cells.id,
+                    style: {
+                      width: cells.column.getSize(),
+                      display: isHidden ? 'none' : undefined,
+                    },
+                  }}
+                >
+                  <div
+                    className="progressbar"
+                    {...{
+                      key: cells.id,
+                      style: {
+                        fontWeight: 400,
+                        justifyContent:
+                          type === COLUMN_TYPES.NORMAL ? align : '',
+                        color: isNumberValue
+                          ? checkColor(cells.getValue())
+                          : undefined,
+                        flexDirection:
+                          type === COLUMN_TYPES.PROGRESS && align === 'right'
+                            ? 'row-reverse'
+                            : 'row',
+                        gap:
+                          type === COLUMN_TYPES.PROGRESS && align === 'right'
+                            ? '10px'
+                            : '',
+                      },
+                    }}
+                  >
+                    {type === COLUMN_TYPES.PROGRESS && isNumberValue && (
+                      <div
+                        style={
+                          {
+                            '--myColor': checkProgressColor(value),
+                            '--myProgressBar': `${percent}%`,
+                          } as React.CSSProperties
+                        }
+                        className="visual-progressbar"
+                      />
+                    )}
+                    {!isNull(value) && !isUndefined(value) && (
+                      <Tooltip hasArrow label={value.toString()} as="div">
+                        <div>{formatCellValue(format, value.toString())}</div>
+                      </Tooltip>
+                    )}
+                  </div>
+                </td>
+              );
+            })}
+          </tr>
+        ))}
+      </tbody>
+    );
+  };
+
   return (
     <>
       <div className={`header-table ${editMode ? 'editMode' : ''}`}>
@@ -176,34 +380,9 @@ const VisualizationTable = <T,>({
           onChange={handleSearch}
         />
       </div>
-
       <Box className="main-table">
         {isLoading ? (
-          <table
-            className={'table-value'}
-            {...{
-              style: {
-                width: '100%',
-              },
-            }}
-          >
-            <tbody>
-              {[...Array(5)].map((_, i) => (
-                <tr key={i}>
-                  {[...Array(4)].map((_, j) => (
-                    <td key={j} style={{ padding: '0 24px' }}>
-                      <Skeleton
-                        w={j === 0 ? '140px' : '80px'}
-                        h={'14px'}
-                        rounded={'7px'}
-                        my={'10px'}
-                      />
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          _renderLoadingTable()
         ) : (
           <table
             className={'table-value'}
@@ -213,180 +392,12 @@ const VisualizationTable = <T,>({
               },
             }}
           >
-            <thead>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <tr
-                  key={headerGroup.id}
-                  style={{
-                    width: 'fit-content',
-                    // display: 'flex',
-                  }}
-                >
-                  {headerGroup.headers.map((header: any) => (
-                    <th
-                      className={`${alignClass(header.column.columnDef.align)}`}
-                      {...{
-                        key: header.id,
-                        style: {
-                          textTransform: 'uppercase',
-                          color: '#465065',
-                          width: header.getSize(),
-                          textAlign: header.column.columnDef.align,
-                          display: header.column.columnDef.isHidden
-                            ? 'none'
-                            : undefined,
-                        },
-                      }}
-                    >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          ) || header.column.columnDef.accessorKey}
-
-                      <div
-                        {...{
-                          onMouseDown: header.getResizeHandler(),
-                          onTouchStart: header.getResizeHandler(),
-                          className: `resizer ${
-                            header.column.getIsResizing() ? 'isResizing' : ''
-                          }`,
-                          style: {
-                            transform: header.column.getIsResizing()
-                              ? `translateX(${
-                                  table.getState().columnSizingInfo.deltaOffset
-                                }px)`
-                              : '',
-                          },
-                        }}
-                      />
-                    </th>
-                  ))}
-                </tr>
-              ))}
-            </thead>
-            {!!table.getRowModel().rows?.length ? (
-              <tbody>
-                {table.getRowModel().rows.map((row) => (
-                  <tr key={row.id}>
-                    {row.getVisibleCells().map((cells: any) => {
-                      const {
-                        align,
-                        isHidden,
-                        coloredPositive,
-                        coloredNegative,
-                        type,
-                        format,
-                        coloredProgress,
-                      } = cells.column.columnDef;
-                      const value = cells.getValue();
-                      const isNumberValue = isNumber(value);
-
-                      const percent =
-                        type === COLUMN_TYPES.PROGRESS
-                          ? new BigNumber(value)
-                              .dividedBy(
-                                new BigNumber(columnMaxValues[cells.column.id]),
-                              )
-                              .multipliedBy(100)
-                              .toNumber()
-                          : 0;
-
-                      const checkColor = (value: any) => {
-                        switch (true) {
-                          case new BigNumber(value).isGreaterThan(0) &&
-                            coloredPositive:
-                            return VISUALIZATION_COLORS.POSITIVE;
-                          case new BigNumber(value).isLessThan(0) &&
-                            coloredNegative:
-                            return VISUALIZATION_COLORS.NEGATIVE;
-                          default:
-                            return undefined;
-                        }
-                      };
-
-                      return (
-                        <td
-                          className={`${alignClass(align)}`}
-                          {...{
-                            key: cells.id,
-                            style: {
-                              width: cells.column.getSize(),
-                              display: isHidden ? 'none' : undefined,
-                            },
-                          }}
-                        >
-                          <div
-                            className="progressbar"
-                            {...{
-                              key: cells.id,
-                              style: {
-                                fontWeight: 400,
-                                justifyContent:
-                                  type === COLUMN_TYPES.NORMAL ? align : '',
-                                color: isNumberValue
-                                  ? checkColor(cells.getValue())
-                                  : undefined,
-                                flexDirection:
-                                  type === COLUMN_TYPES.PROGRESS &&
-                                  align === 'right'
-                                    ? 'row-reverse'
-                                    : 'row',
-                                gap:
-                                  type === COLUMN_TYPES.PROGRESS &&
-                                  align === 'right'
-                                    ? '10px'
-                                    : '',
-                              },
-                            }}
-                          >
-                            {type === COLUMN_TYPES.PROGRESS && isNumberValue && (
-                              <div
-                                style={
-                                  {
-                                    '--myColor': coloredProgress
-                                      ? new BigNumber(value).isLessThan(0)
-                                        ? VISUALIZATION_COLORS.NEGATIVE
-                                        : VISUALIZATION_COLORS.POSITIVE
-                                      : '#00022480',
-                                    '--myProgressBar': `${percent}%`,
-                                  } as React.CSSProperties
-                                }
-                                className="visual-progressbar"
-                              />
-                            )}
-                            {!isNull(value) && !isUndefined(value) && (
-                              <Tooltip
-                                hasArrow
-                                label={value.toString()}
-                                as="div"
-                              >
-                                <div>
-                                  {formatCellValue(format, value.toString())}
-                                </div>
-                              </Tooltip>
-                            )}
-                          </div>
-                        </td>
-                      );
-                    })}
-                  </tr>
-                ))}
-              </tbody>
-            ) : (
-              <Flex
-                justifyContent={'center'}
-                alignItems={'center'}
-                className="table-nodata"
-              >
-                No data...
-              </Flex>
-            )}
+            {_renderTableHeader()}
+            {_renderTableBody()}
           </table>
         )}
       </Box>
-      {filteredData?.length > 15 && (
+      {filteredData?.length > ITEMS_PER_PAGE && (
         <Flex
           justifyContent={'flex-end'}
           alignItems={'baseline'}
