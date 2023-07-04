@@ -1,8 +1,10 @@
 import { useMemo } from 'react';
 import { Box, Text } from '@chakra-ui/react';
 import AppSelect2 from '../AppSelect2';
+import { TYPE_VISUALIZATION } from 'src/utils/query.type';
 
 interface IResultData {
+  type: string;
   xAxis: string;
   yAxis: string[];
   axisOptions: string[];
@@ -10,11 +12,23 @@ interface IResultData {
 }
 
 const ResultData: React.FC<IResultData> = ({
+  type,
   axisOptions,
   xAxis,
   yAxis,
   onChangeAxis,
 }) => {
+  const isPieChart = type === TYPE_VISUALIZATION.pie;
+  const yColumns = (): string[] => {
+    if (!yAxis) {
+      return [''];
+    }
+    if (isPieChart) {
+      return yAxis;
+    }
+    return [...yAxis, ''];
+  };
+
   const axisOptionsConfigs = useMemo(
     () => [
       { value: '', label: '--Select--' },
@@ -80,11 +94,11 @@ const ResultData: React.FC<IResultData> = ({
           size="medium"
         />
       </div>
-      {(yAxis ? [...yAxis, ''] : ['']).map((axis, index) => {
+      {yColumns().map((axis, index) => {
         return (
           <div className={'box-table-children'} key={axis}>
             <Text w={'max-content'} mr={2} className="label-input">
-              Y column {index + 1}
+              Y column {isPieChart ? '' : index + 1}
             </Text>
             <Box flex={1}>
               <AppSelect2

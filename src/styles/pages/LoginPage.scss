@@ -42,7 +42,7 @@
 
     .btn-login-google,
     input {
-      border: 1px solid #c7d2e1;
+      border: 1px solid $line;
     }
 
     .btn-login-google {
@@ -63,7 +63,7 @@
       color: $paragraph1;
 
       .border {
-        border: 1px solid #c7d2e1;
+        border: 1px solid $line;
         width: 45%;
       }
     }

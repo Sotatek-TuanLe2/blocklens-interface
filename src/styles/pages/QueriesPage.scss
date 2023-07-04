@@ -477,7 +477,7 @@
             }
 
             &::-webkit-scrollbar-thumb {
-              background: #c7d2e1;
+              background: $line;
               border-radius: 10px;
             }
 
@@ -555,7 +555,7 @@
           width: 280px;
           font-size: 16px;
           line-height: 24px;
-          border: 1px solid #c7d2e1;
+          border: 1px solid $line;
           border-radius: 6px;
         }
         .chakra-input__left-element {
@@ -675,7 +675,7 @@
           align-items: center;
           padding: 11px 16px;
           background: $bg;
-          border: 1px solid #c7d2e1;
+          border: 1px solid $line;
           border-radius: 8px;
           gap: 10px;
 

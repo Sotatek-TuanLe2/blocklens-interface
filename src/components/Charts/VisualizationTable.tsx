@@ -28,7 +28,7 @@ interface ReactTableProps<T> {
   isLoading?: boolean;
 }
 
-const COLUMN_TYPES = {
+export const TABLE_COLUMN_TYPES = {
   NORMAL: 'normal',
   PROGRESS: 'progress-bar',
 };
@@ -53,7 +53,7 @@ export const getTableColumns = (
       enableResizing: true,
       size: 100,
       align: 'left',
-      type: COLUMN_TYPES.NORMAL,
+      type: TABLE_COLUMN_TYPES.NORMAL,
       format: '',
       coloredPositive: false,
       coloredNegative: false,
@@ -126,7 +126,7 @@ const VisualizationTable = <T,>({
     const columnValues: { [columnId: string]: any[] } = {};
     const progressColumns: { [columnId: string]: boolean } = {};
     table.getAllFlatColumns().forEach((column: any) => {
-      if (column.columnDef.type === COLUMN_TYPES.PROGRESS && column.id) {
+      if (column.columnDef.type === TABLE_COLUMN_TYPES.PROGRESS && column.id) {
         progressColumns[column.id] = true;
       }
     });
@@ -280,7 +280,7 @@ const VisualizationTable = <T,>({
               const isNumberValue = isNumber(value);
 
               const percent =
-                type === COLUMN_TYPES.PROGRESS
+                type === TABLE_COLUMN_TYPES.PROGRESS
                   ? new BigNumber(value)
                       .dividedBy(
                         new BigNumber(columnMaxValues[cells.column.id]),
@@ -326,22 +326,24 @@ const VisualizationTable = <T,>({
                       style: {
                         fontWeight: 400,
                         justifyContent:
-                          type === COLUMN_TYPES.NORMAL ? align : '',
+                          type === TABLE_COLUMN_TYPES.NORMAL ? align : '',
                         color: isNumberValue
                           ? checkColor(cells.getValue())
                           : undefined,
                         flexDirection:
-                          type === COLUMN_TYPES.PROGRESS && align === 'right'
+                          type === TABLE_COLUMN_TYPES.PROGRESS &&
+                          align === 'right'
                             ? 'row-reverse'
                             : 'row',
                         gap:
-                          type === COLUMN_TYPES.PROGRESS && align === 'right'
+                          type === TABLE_COLUMN_TYPES.PROGRESS &&
+                          align === 'right'
                             ? '10px'
                             : '',
                       },
                     }}
                   >
-                    {type === COLUMN_TYPES.PROGRESS && isNumberValue && (
+                    {type === TABLE_COLUMN_TYPES.PROGRESS && isNumberValue && (
                       <div
                         style={
                           {

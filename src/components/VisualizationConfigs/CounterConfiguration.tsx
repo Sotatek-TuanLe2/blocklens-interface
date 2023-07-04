@@ -21,6 +21,9 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
 }) => {
   const [editVisualization, setEditVisualization] =
     useState<VisualizationType>(visualization);
+
+  const MAX_DECIMAL_VALUE = 9;
+
   const axisOptions = useMemo(
     () => (Array.isArray(data) && data[0] ? objectKeys(data[0]) : []),
     [data],
@@ -37,7 +40,7 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
 
   const dataColumn = editVisualization.options;
 
-  const timeout = useRef() as any;
+  const timeout = useRef<ReturnType<typeof setTimeout>>();
 
   const onChangeDebounce = (visualization: VisualizationType) => {
     clearTimeout(timeout.current);
@@ -51,7 +54,7 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
     onChangeDebounce(visualization);
   };
 
-  const onChangeCounterName = (e: any) => {
+  const onChangeCounterName = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChangeVisualization({
       ...editVisualization,
       name: e.target.value,
@@ -67,12 +70,12 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
     });
   };
 
-  const onChangeStringDecimal = (e: any) => {
+  const onChangeStringDecimal = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value.replace(/[-e]/gi, '');
     if (+value <= 0) {
       value = '0';
-    } else if (+value >= 9) {
-      value = '9';
+    } else if (+value >= MAX_DECIMAL_VALUE) {
+      value = String(MAX_DECIMAL_VALUE);
     }
     onChangeCounterConfigurations({
       stringDecimal: value,
@@ -81,11 +84,11 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
 
   const onKeyDown = (e: { keyCode: number; preventDefault: () => void }) => {
     if (
-      e.keyCode === 189 ||
-      e.keyCode === 187 ||
-      e.keyCode === 107 ||
-      e.keyCode === 109 ||
-      e.keyCode === 69
+      e.keyCode === 189 || // minus
+      e.keyCode === 187 || // plus
+      e.keyCode === 107 || // plus numpad
+      e.keyCode === 109 || // minus numpad
+      e.keyCode === 69 // e
     ) {
       e.preventDefault();
     }
