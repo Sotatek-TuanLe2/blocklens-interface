@@ -177,11 +177,7 @@ const DashboardsPage: React.FC = () => {
     (appTable: any) => {
       return (
         <>
-          <Box
-            mt={'0 !important'}
-            pb={{ base: '28px', lg: '34px' }}
-            className="dashboard-filter"
-          >
+          <Box pb={{ base: '28px', lg: '34px' }} className="dashboard-filter">
             <FilterSearch
               type={tab}
               displayed={displayed}
@@ -223,12 +219,7 @@ const DashboardsPage: React.FC = () => {
     return (
       <>
         {displayed === DisplayType.List ? (
-          <Flex
-            px={'26px'}
-            mb={'6px'}
-            display={{ base: 'none', lg: 'flex' }}
-            className="table-header"
-          >
+          <Flex display={{ base: 'none', lg: 'flex' }} className="table-header">
             <Flex align={'center'} w={'calc(100% - 24px)'}>
               <Box w={'24%'} flexGrow={1} pr={2.5}>
                 Name

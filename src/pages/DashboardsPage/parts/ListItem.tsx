@@ -81,12 +81,7 @@ const ListItem: React.FC<IListItem> = (props) => {
             <>
               <Box
                 display={{ base: 'none', lg: 'flex' }}
-                justifyContent={'center'}
-                alignItems={'center'}
-                w={'24px'}
-                h={'24px'}
-                borderRadius={'12px'}
-                bg={'rgba(0, 2, 36, 0.05)'}
+                className="article-dropdown"
               >
                 <AppQueryMenu
                   menu={menu}

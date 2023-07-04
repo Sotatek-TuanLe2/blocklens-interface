@@ -21,6 +21,8 @@ const FilterTags: React.FC<IFilterTags> = (props) => {
   const [tags, setTags] = useState<ITagResponse[]>([]);
   const [selectedTag, setSelectedTag] = useState<string>('');
 
+  const searchParams = new URLSearchParams(searchUrl);
+
   const fetchTags = async (type: string) => {
     const tags =
       type === LIST_ITEM_TYPE.DASHBOARDS
@@ -34,13 +36,11 @@ const FilterTags: React.FC<IFilterTags> = (props) => {
   }, [type]);
 
   useEffect(() => {
-    const searchParams = new URLSearchParams(searchUrl);
     const selectedTag = searchParams.get('tags') || '';
     setSelectedTag(selectedTag);
   }, [searchUrl]);
 
   const getTagUrl = (tag: string) => () => {
-    const searchParams = new URLSearchParams(searchUrl);
     searchParams.delete('tags');
     searchParams.set('tags', tag);
     return `${ROUTES.HOME}?${searchParams.toString()}`;

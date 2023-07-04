@@ -2,7 +2,6 @@ import { Flex, Text } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { useHistory } from 'react-router';
 import { DashboardListIcon, QueriesIcon } from 'src/assets/icons';
-import { TYPE_MODAL } from 'src/pages/WorkspacePage/parts/Dashboard';
 import 'src/styles/components/BaseModal.scss';
 import { TYPE_OF_MODAL, ROUTES } from 'src/utils/common';
 import BaseModal from '../BaseModal';

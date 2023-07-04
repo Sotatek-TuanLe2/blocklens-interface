@@ -36,8 +36,6 @@ interface IFilterSearch {
 const optionType: IOption[] = [
   { value: 'datelowtohigh', label: 'Date low to high' },
   { value: 'datehightolow', label: 'Date high to low' },
-  // { value: 'likedlowtohigh', label: 'Liked low to high' },
-  // { value: 'likedhightolow', label: 'Liked high to low' },
 ];
 
 export const TYPE_MYWORK = {
@@ -60,6 +58,9 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   const [search, setSearch] = useState<string>('');
   const [sort, setSort] = useState<string>('');
   const [tag, setTag] = useState<string>('');
+
+  const searchParams = new URLSearchParams(searchUrl);
+
   const [openNewDashboardModal, setOpenNewDashboardModal] =
     useState<boolean>(false);
   const [listTagsTrending, setListTagsTrending] = useState<string[]>([]);
@@ -91,8 +92,6 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   ];
 
   useEffect(() => {
-    const searchParams = new URLSearchParams(searchUrl);
-
     const search = searchParams.get(HOME_URL_PARAMS.SEARCH) || '';
     const sort = searchParams.get(HOME_URL_PARAMS.SORT) || '';
     const tag = searchParams.get(HOME_URL_PARAMS.TAG) || '';
@@ -116,7 +115,6 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
     setOpenNewDashboardModal((prevState) => !prevState);
 
   const onChangeSearch = (e: ChangeEvent<HTMLInputElement>) => {
-    const searchParams = new URLSearchParams(searchUrl);
     searchParams.delete(HOME_URL_PARAMS.SEARCH);
     if (e.target.value) {
       searchParams.set(HOME_URL_PARAMS.SEARCH, e.target.value);
@@ -128,7 +126,6 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   };
 
   const onChangeSort = (value: string) => {
-    const searchParams = new URLSearchParams(searchUrl);
     searchParams.delete(HOME_URL_PARAMS.SORT);
     searchParams.set(HOME_URL_PARAMS.SORT, value);
     history.push({
@@ -138,7 +135,6 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   };
 
   const onChangeTag = (value: string) => {
-    const searchParams = new URLSearchParams(searchUrl);
     const currentTag = searchParams.get(HOME_URL_PARAMS.TAG);
     searchParams.delete(HOME_URL_PARAMS.TAG);
     if (currentTag !== value) {
@@ -155,30 +151,30 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
     history.push(ROUTES.HOME);
   };
 
-  useEffect(() => {
-    const fetchTagsTrending = async () => {
-      try {
-        if (
-          isDashboard ||
-          (isMyWork && myWorkType === LIST_ITEM_TYPE.DASHBOARDS)
-        ) {
-          const res: any = await rf
-            .getRequest('DashboardsRequest')
-            .getPublicDashboardTagsTrending();
+  const fetchTagsTrending = async () => {
+    try {
+      if (
+        isDashboard ||
+        (isMyWork && myWorkType === LIST_ITEM_TYPE.DASHBOARDS)
+      ) {
+        const res: any = await rf
+          .getRequest('DashboardsRequest')
+          .getPublicDashboardTagsTrending();
 
-          setListTagsTrending(res?.tags || []);
-        } else {
-          const res: any = await rf
-            .getRequest('DashboardsRequest')
-            .getPublicQueryTagsTrending();
+        setListTagsTrending(res?.tags || []);
+      } else {
+        const res: any = await rf
+          .getRequest('DashboardsRequest')
+          .getPublicQueryTagsTrending();
 
-          setListTagsTrending(res?.tags || []);
-        }
-      } catch (error) {
-        setListTagsTrending([]);
+        setListTagsTrending(res?.tags || []);
       }
-    };
+    } catch (error) {
+      setListTagsTrending([]);
+    }
+  };
 
+  useEffect(() => {
     fetchTagsTrending();
   }, [myWorkType, type]);
 
@@ -208,18 +204,11 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
           )}
           <Flex
             flexGrow={{ base: 1, lg: 0 }}
-            align={'center'}
-            px={5}
-            h={10}
-            minW={'124px'}
-            bg={'white'}
-            border={'1px solid #C7D2E1'}
-            borderRadius={'6px'}
             transition={'.2s linear'}
             ml={!isDashboard && !isMyWork ? 0 : 2.5}
             onClick={onToggle}
-            cursor={'pointer'}
             userSelect={'none'}
+            className="filter"
           >
             <IconFilter color={'rgba(0, 2, 36, 0.5)'} />
             <Text className={'text-filter'} px={2}>
