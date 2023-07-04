@@ -37,7 +37,7 @@
 
     .sub-text {
       @include text-medium-regular;
-      color: $paragraph;
+      color: $paragraph1;
     }
 
     .btn-login-google,
@@ -47,6 +47,7 @@
 
     .btn-login-google {
       font-weight: 400;
+
       &:disabled {
         background-color: $line;
         color: $title;
@@ -69,7 +70,7 @@
 
     .note {
       @include text-medium-regular;
-      color: $paragraph;
+      color: $paragraph1;
     }
 
     .link-back {
