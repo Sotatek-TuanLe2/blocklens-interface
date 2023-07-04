@@ -22,7 +22,8 @@ const ChartConfigurations = ({
 }: Props) => {
   const [editVisualization, setEditVisualization] =
     useState<VisualizationType>(visualization);
-  const timeout = useRef() as any;
+
+  const timeout = useRef<ReturnType<typeof setTimeout>>();
 
   const type = visualization.options?.globalSeriesType || visualization.type;
 
@@ -43,6 +44,73 @@ const ChartConfigurations = ({
     onChangeDebounce(visualization);
   };
 
+  const _renderPieOptionsConfigurations = () => (
+    <GridItem>
+      <div className="box-table">
+        <Text
+          className="box-table__title"
+          fontWeight="bold"
+          marginBottom="10px"
+        >
+          Pie options
+        </Text>
+        <div className="box-table-children grid-pie">
+          <div className="label-input">Label format</div>
+          <AppInput
+            placeholder="0.0"
+            size={'sm'}
+            className="input-table"
+            value={editVisualization?.options?.numberFormat}
+            onChange={(e) =>
+              onChangeVisualization({
+                ...editVisualization,
+                options: {
+                  ...editVisualization.options,
+                  numberFormat: e.target.value,
+                },
+              })
+            }
+          />
+        </div>
+      </div>
+    </GridItem>
+  );
+
+  const _renderChartAxisesConfigurations = () => (
+    <>
+      <GridItem>
+        <XAxisOptions
+          chartOptions={editVisualization.options.chartOptionsConfigs}
+          xConfigs={editVisualization.options.xAxisConfigs}
+          onChangeConfigs={(configs) => {
+            onChangeVisualization({
+              ...editVisualization,
+              options: {
+                ...editVisualization.options,
+                xAxisConfigs: configs,
+              },
+            });
+          }}
+        />
+      </GridItem>
+      <GridItem>
+        <YAxisOptions
+          chartOptions={editVisualization.options.chartOptionsConfigs}
+          yConfigs={editVisualization.options.yAxisConfigs}
+          onChangeConfigs={(configs) => {
+            onChangeVisualization({
+              ...editVisualization,
+              options: {
+                ...editVisualization.options,
+                yAxisConfigs: configs,
+              },
+            });
+          }}
+        />
+      </GridItem>
+    </>
+  );
+
   return (
     <div className={'main-layout'}>
       <Grid
@@ -61,6 +129,7 @@ const ChartConfigurations = ({
         </GridItem>
         <GridItem>
           <ResultData
+            type={type}
             axisOptions={axisOptions as string[]}
             xAxis={editVisualization.options?.columnMapping?.xAxis}
             yAxis={editVisualization.options?.columnMapping?.yAxis}
@@ -79,70 +148,9 @@ const ChartConfigurations = ({
             }}
           />
         </GridItem>
-        {type === TYPE_VISUALIZATION.pie ? (
-          <GridItem>
-            <div className="box-table">
-              <Text
-                className="box-table__title"
-                fontWeight="bold"
-                marginBottom="10px"
-              >
-                Pie options
-              </Text>
-              <div className="box-table-children grid-pie">
-                <div className="label-input">Label format</div>
-                <AppInput
-                  placeholder="0.0"
-                  size={'sm'}
-                  className="input-table"
-                  value={editVisualization?.options?.numberFormat}
-                  onChange={(e) =>
-                    onChangeVisualization({
-                      ...editVisualization,
-                      options: {
-                        ...editVisualization.options,
-                        numberFormat: e.target.value,
-                      },
-                    })
-                  }
-                />
-              </div>
-            </div>
-          </GridItem>
-        ) : (
-          <>
-            <GridItem>
-              <XAxisOptions
-                chartOptions={editVisualization.options.chartOptionsConfigs}
-                xConfigs={editVisualization.options.xAxisConfigs}
-                onChangeConfigs={(configs) => {
-                  onChangeVisualization({
-                    ...editVisualization,
-                    options: {
-                      ...editVisualization.options,
-                      xAxisConfigs: configs,
-                    },
-                  });
-                }}
-              />
-            </GridItem>
-            <GridItem>
-              <YAxisOptions
-                chartOptions={editVisualization.options.chartOptionsConfigs}
-                yConfigs={editVisualization.options.yAxisConfigs}
-                onChangeConfigs={(configs) => {
-                  onChangeVisualization({
-                    ...editVisualization,
-                    options: {
-                      ...editVisualization.options,
-                      yAxisConfigs: configs,
-                    },
-                  });
-                }}
-              />
-            </GridItem>
-          </>
-        )}
+        {type === TYPE_VISUALIZATION.pie
+          ? _renderPieOptionsConfigurations()
+          : _renderChartAxisesConfigurations()}
       </Grid>
     </div>
   );

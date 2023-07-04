@@ -1,17 +1,15 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { keyStats } from 'src/components/AppStatistical';
 import rf from 'src/requests/RequestFactory';
 import { useParams } from 'react-router';
-import {
-  fillFullResolution,
-  ListStat,
-  SAMPLE_DATA,
-  listStats,
-} from 'src/pages/HomePage/parts/PartUserStats';
 import moment from 'moment';
-import { formatLargeNumber } from 'src/utils/utils-helper';
 import { RESOLUTION_TIME } from 'src/utils/utils-webhook';
 import _ from 'lodash';
+import {
+  SAMPLE_DATA_CHART,
+  fillFullResolution,
+  formatDataStatistics,
+} from 'src/utils/utils-app';
+import AppListStatistics from 'src/components/AppListStatistics';
 
 interface IAppStats {
   message?: number;
@@ -70,7 +68,7 @@ const PartAppStats = ({
         toTime,
         RESOLUTION_TIME.HOUR,
         res,
-        SAMPLE_DATA,
+        SAMPLE_DATA_CHART,
       );
 
       setDataChart(dataFilled);
@@ -84,58 +82,10 @@ const PartAppStats = ({
   }, []);
 
   const dataAppStats = useMemo(() => {
-    return listStats.map((item) => {
-      const getValue = (value?: number, total?: number) => {
-        if (!total || !value) return '--';
-        return `${formatLargeNumber(value)}/${formatLargeNumber(total)}`;
-      };
-
-      if (item.key === 'message') {
-        return {
-          ...item,
-          value: `${formatLargeNumber(appStats.message)}`,
-        };
-      }
-
-      if (item.key === 'activities') {
-        return {
-          ...item,
-          value: `${formatLargeNumber(appStats.activities)}`,
-        };
-      }
-
-      if (item.key === 'successRate') {
-        if (
-          appStats.messagesFailed > 1 &&
-          appStats.messagesFailed === appStats.messagesSuccess
-        ) {
-          return {
-            ...item,
-            value: '0',
-          };
-        }
-
-        return {
-          ...item,
-          value: +appStats.successRate || '--',
-        };
-      }
-
-      if (item.key === 'webhooks') {
-        return {
-          ...item,
-          value: getValue(totalWebhookActive, totalWebhook),
-        };
-      }
-
-      return {
-        ...item,
-        value: appStats[item.key as keyStats],
-      };
-    });
+    return formatDataStatistics(appStats, totalWebhookActive, totalWebhook)
   }, [appStats]);
 
-  return <ListStat dataStats={dataAppStats} dataChart={dataChart} />;
+  return <AppListStatistics dataStats={dataAppStats} dataChart={dataChart} />;
 };
 
 export default PartAppStats;

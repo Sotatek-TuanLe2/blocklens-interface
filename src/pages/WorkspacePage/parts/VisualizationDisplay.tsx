@@ -350,6 +350,9 @@ const VisualizationDisplay = ({
   ) => {
     const type = visualization.options?.globalSeriesType || visualization.type;
     let visualizationDisplay = null;
+    const xAxisKey =
+      visualization.options?.columnMapping?.xAxis || defaultTimeXAxis;
+    const yAxisKeys = visualization.options.columnMapping?.yAxis || [];
 
     switch (type) {
       case TYPE_VISUALIZATION.table:
@@ -373,10 +376,8 @@ const VisualizationDisplay = ({
         visualizationDisplay = (
           <PieChart
             data={queryResult}
-            xAxisKey={
-              visualization.options?.columnMapping?.xAxis || defaultTimeXAxis
-            }
-            yAxisKeys={visualization.options.columnMapping?.yAxis || []}
+            xAxisKey={xAxisKey}
+            yAxisKeys={yAxisKeys}
             configs={visualization.options}
           />
         );
@@ -385,10 +386,8 @@ const VisualizationDisplay = ({
         visualizationDisplay = (
           <VisualizationChart
             data={queryResult}
-            xAxisKey={
-              visualization.options?.columnMapping?.xAxis || defaultTimeXAxis
-            }
-            yAxisKeys={visualization.options.columnMapping?.yAxis || []}
+            xAxisKey={xAxisKey}
+            yAxisKeys={yAxisKeys}
             configs={visualization.options}
             type={type}
           />
@@ -444,28 +443,18 @@ const VisualizationDisplay = ({
 
   const getIcon = (chain: string | undefined) => {
     switch (chain) {
-      case TYPE_VISUALIZATION.table:
-        return <QueryResultIcon />;
-
       case TYPE_VISUALIZATION.scatter:
         return <ScatterChartIcon />;
-
       case TYPE_VISUALIZATION.area:
         return <AreaChartIcon />;
-
-      case TYPE_VISUALIZATION.line: {
+      case TYPE_VISUALIZATION.line:
         return <LineChartIcon />;
-      }
-
       case TYPE_VISUALIZATION.pie:
         return <PieChartIcon />;
-
       case TYPE_VISUALIZATION.bar:
         return <BarChartIcon />;
-
       case TYPE_VISUALIZATION.counter:
         return <CounterIcon />;
-
       default:
         return <QueryResultIcon />;
     }
