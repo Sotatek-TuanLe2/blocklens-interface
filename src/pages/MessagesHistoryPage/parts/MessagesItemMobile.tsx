@@ -152,7 +152,7 @@ const MessagesItemMobile: FC<IMessagesItemMobile> = ({
               )}
             >
               <ReactJson
-                theme="monokai"
+                theme="summerfruit:inverted"
                 name={false}
                 src={message.input}
                 displayDataTypes={false}
@@ -194,7 +194,7 @@ const MessagesItemMobile: FC<IMessagesItemMobile> = ({
             >
               <ReactJson
                 name={false}
-                theme="monokai"
+                theme="summerfruit:inverted"
                 src={message.output}
                 displayDataTypes={false}
                 collapsed={1}
