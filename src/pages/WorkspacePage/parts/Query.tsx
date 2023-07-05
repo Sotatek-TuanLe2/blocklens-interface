@@ -327,6 +327,18 @@ const QueryPart: React.FC = () => {
       );
     }
 
+    if (statusExecuteQuery === STATUS.DONE && !queryResult.length) {
+      return (
+        <Flex
+          className="empty-table"
+          justifyContent={'center'}
+          alignItems="center"
+          flexDirection="column"
+        >
+          No data...
+        </Flex>
+      );
+    }
     return (
       <>
         {_renderAddChart()}
