@@ -611,7 +611,7 @@ const ActivityDatatable: FC<IActivityDatatable> = ({
                   options={optionsFilter}
                 />
               )}
-              <Tooltip
+              {/* <Tooltip
                 p={2}
                 label="Messages for each activity will retry 5 times if send failed, each auto-retry occurs after one minute.
                  The status shows Failed if all retries failed or user’s daily limit is reached."
@@ -620,9 +620,9 @@ const ActivityDatatable: FC<IActivityDatatable> = ({
                 className={'tooltip-app'}
               >
                 <Box ml={2} cursor="pointer">
-                  {/* <InfoIcon /> */}
+                  <InfoIcon />
                 </Box>
-              </Tooltip>
+              </Tooltip> */}
             </Flex>
           </Th>
           <Th w="15%" />
