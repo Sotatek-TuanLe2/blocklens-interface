@@ -116,3 +116,12 @@
     font-size: 12px;
   }
 }
+
+.pie-chart {
+  .recharts-pie-sector {
+    path {
+      outline: none;
+      border: none;
+    }
+  }
+}
