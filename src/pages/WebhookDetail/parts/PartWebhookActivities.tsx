@@ -23,6 +23,7 @@ const PartWebhookActivities: FC<IPartRecentActivities> = ({ webhook }) => {
       <Flex alignItems={'center'} className="view-all">
         <Box
           cursor={'pointer'}
+          _hover={{ textDecoration: 'underline' }}
           onClick={() =>
             history.push(
               `/app/${webhook?.appId}/webhooks/${webhookId}/activities`,
