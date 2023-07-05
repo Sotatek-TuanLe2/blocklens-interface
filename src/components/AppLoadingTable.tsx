@@ -1,5 +1,5 @@
 import { isMobile } from 'react-device-detect';
-import { Table, Tbody, Td, Tr } from '@chakra-ui/react';
+import { Table, Tbody, Td, Tr, Flex, Spinner } from '@chakra-ui/react';
 import React, { FC } from 'react';
 import 'src/styles/components/AppLoadingTable.scss';
 
@@ -14,7 +14,18 @@ const AppLoadingTable: FC<IAppLoadingTable> = ({
   rowNumber = 3,
   className,
 }) => {
-  if (isMobile) return null;
+  if (isMobile)
+    return (
+      <Flex justifyContent={'center'} my={5}>
+        <Spinner
+          thickness="4px"
+          speed="0.65s"
+          emptyColor="gray.200"
+          color="blue.500"
+          size="lg"
+        />
+      </Flex>
+    );
 
   const rowLoadings = [];
   for (let i = 0; i < rowNumber; i++) {
