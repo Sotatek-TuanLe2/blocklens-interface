@@ -16,7 +16,7 @@ import moment from 'moment';
 import ModalFilterGraph from '../modals/ModalFilterGraph';
 import { optionsFilterByDuration } from '../utils/utils-webhook';
 import { AppSelect2 } from './index';
-import { IDataChart } from '../pages/HomePage/parts/PartUserGraph';
+import { IDataChart } from 'src/utils/utils-app';
 
 interface IChart {
   data: IDataChart[];
@@ -53,10 +53,21 @@ export const AppFilterGraph: FC<IAppFilterGraph> = ({
 
   if (isMobile) {
     return (
-      <Box
-        className="icon-filter-mobile"
-        onClick={() => setIsOpenFilterGraphModal(true)}
-      />
+      <>
+        <Box
+          className="icon-filter-mobile"
+          onClick={() => setIsOpenFilterGraphModal(true)}
+        />
+        {isOpenFilterGraphModal && (
+          <ModalFilterGraph
+            optionTimes={optionsFilterByDuration}
+            open={isOpenFilterGraphModal}
+            time={duration}
+            onChangeTime={setDuration}
+            onClose={() => setIsOpenFilterGraphModal(false)}
+          />
+        )}
+      </>
     );
   }
 
@@ -68,15 +79,6 @@ export const AppFilterGraph: FC<IAppFilterGraph> = ({
         onChange={setDuration}
         options={optionsFilterByDuration}
       />
-      {isOpenFilterGraphModal && (
-        <ModalFilterGraph
-          optionTimes={optionsFilterByDuration}
-          open={isOpenFilterGraphModal}
-          time={duration}
-          onChangeTime={setDuration}
-          onClose={() => setIsOpenFilterGraphModal(false)}
-        />
-      )}
     </Flex>
   );
 };
