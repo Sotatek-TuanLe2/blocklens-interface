@@ -10,7 +10,7 @@ import { COLORS } from 'src/utils/common';
 import { VisualizationOptionsType } from 'src/utils/query.type';
 import { Box, Flex, Tooltip as TooltipUI } from '@chakra-ui/react';
 import { useMemo, useState } from 'react';
-import _ from 'lodash';
+import { isNull, isUndefined } from 'lodash';
 import BigNumber from 'bignumber.js';
 import { isNumber } from 'src/utils/utils-helper';
 import { ChartProps } from './VisualizationChart';
@@ -39,19 +39,27 @@ const VisualizationPieChart = ({
   const [hiddenKeys, setHiddenKeys] = useState<{ [key: string]: boolean }>({});
 
   const reducedData = useMemo(() => {
-    if (!yAxisKeys || !yAxisKeys.length || !data) {
+    if (!yAxisKeys || !yAxisKeys.length || !data || !data.length) {
       return [];
     }
 
     const groupedData: any = [];
     const [yAxisKey] = yAxisKeys;
+    let hasNumberValues = false;
     data.forEach((item: any) => {
       const existedData = groupedData.find(
         (data: any) => data.key === item[xAxisKey],
       );
-      if (!isNumber(item[yAxisKey])) {
+
+      if (isNull(item[yAxisKey]) || isUndefined(item[yAxisKey])) {
         return;
       }
+
+      if (!hasNumberValues && !isNumber(item[yAxisKey])) {
+        return;
+      }
+
+      hasNumberValues = true; // mark to not run isNumber again
 
       const addedValue = item[yAxisKey]
         ? new BigNumber(item[yAxisKey]).toNumber()
@@ -99,6 +107,10 @@ const VisualizationPieChart = ({
     outerRadius,
     percent,
   }: any) => {
+    if (!chartOptionsConfigs?.showDataLabels) {
+      return null;
+    }
+
     const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
     const y = cy + radius * Math.sin(-midAngle * RADIAN);
@@ -181,14 +193,14 @@ const VisualizationPieChart = ({
             dataKey={yAxisKeys?.[0]}
             nameKey={xAxisKey}
             labelLine={false}
-            label={
-              chartOptionsConfigs?.showDataLabels && _renderCustomizedLabel
-            }
+            label={_renderCustomizedLabel}
+            strokeWidth={`${
+              shownData.length > 100 ? 100 / shownData.length : 1
+            }px`}
           >
-            {shownData &&
+            {!!shownData.length &&
               shownData.map((entry: any) => (
                 <Cell
-                  style={{ outline: 'none', border: 'none' }}
                   key={`cell-${entry[xAxisKey]}`}
                   fill={pieSectionColor[entry[xAxisKey]]}
                 />
