@@ -158,9 +158,8 @@ const ActivityMobile: FC<IActivity> = ({ activity, webhook }) => {
           <Box>Token Data</Box>
           <Box className="value">
             <Flex alignItems="center">
-              {`${formatShortText(webhook?.metadata?.creatorAddress || '')}::${
-                webhook?.metadata?.collectionName
-              }::${webhook?.metadata?.name} `}
+              {`${formatShortText(webhook?.metadata?.creatorAddress || '')}::${webhook?.metadata?.collectionName
+                }::${webhook?.metadata?.name} `}
             </Flex>
           </Box>
         </Flex>
@@ -330,9 +329,8 @@ const ActivityDesktop: FC<IActivity> = ({ activity, webhook }) => {
   const _renderContentAptosToken = () => {
     return (
       <Td w="15%">
-        {`${formatShortText(webhook?.metadata?.creatorAddress || '')}::${
-          webhook?.metadata?.collectionName
-        }::${webhook?.metadata?.name} `}
+        {`${formatShortText(webhook?.metadata?.creatorAddress || '')}::${webhook?.metadata?.collectionName
+          }::${webhook?.metadata?.name} `}
       </Td>
     );
   };
@@ -613,7 +611,7 @@ const ActivityDatatable: FC<IActivityDatatable> = ({
                   options={optionsFilter}
                 />
               )}
-              <Tooltip
+              {/* <Tooltip
                 p={2}
                 label="Messages for each activity will retry 5 times if send failed, each auto-retry occurs after one minute.
                  The status shows Failed if all retries failed or user’s daily limit is reached."
@@ -624,7 +622,7 @@ const ActivityDatatable: FC<IActivityDatatable> = ({
                 <Box ml={2} cursor="pointer">
                   <InfoIcon />
                 </Box>
-              </Tooltip>
+              </Tooltip> */}
             </Flex>
           </Th>
           <Th w="15%" />
