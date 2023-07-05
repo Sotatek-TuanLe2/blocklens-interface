@@ -18,7 +18,6 @@ const AppListStatistics: FC<IAppListStatistics> = ({
   dataStats,
   dataChart,
 }) => {
-
   const _renderStatsDesktop = () => {
     return (
       <SimpleGrid

@@ -20,7 +20,7 @@ const ResultData: React.FC<IResultData> = ({
 }) => {
   const isPieChart = type === TYPE_VISUALIZATION.pie;
   const yColumns = (): string[] => {
-    if (!yAxis) {
+    if (!yAxis || !yAxis.length) {
       return [''];
     }
     if (isPieChart) {

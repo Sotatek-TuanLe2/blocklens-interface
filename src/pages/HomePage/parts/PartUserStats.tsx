@@ -1,7 +1,7 @@
 import { Box, SimpleGrid } from '@chakra-ui/react';
 import React, { useCallback, useEffect, useMemo, useState, FC } from 'react';
 import { isMobile } from 'react-device-detect';
-import AppStatistical  from 'src/components/AppStatistical';
+import AppStatistical from 'src/components/AppStatistical';
 import rf from 'src/requests/RequestFactory';
 import moment from 'moment';
 import _ from 'lodash';
@@ -91,7 +91,9 @@ const PartUserStats = ({
     );
   }, [userStatsToday]);
 
-  return <AppListStatistics dataStats={dataUserStatsToday} dataChart={dataChart} />;
+  return (
+    <AppListStatistics dataStats={dataUserStatsToday} dataChart={dataChart} />
+  );
 };
 
 export default PartUserStats;

@@ -156,7 +156,6 @@ export const formatDataStatistics = (
       return `${formatLargeNumber(value)}/${formatLargeNumber(total)}`;
     };
 
-
     if (item.key === 'message') {
       return {
         ...item,
