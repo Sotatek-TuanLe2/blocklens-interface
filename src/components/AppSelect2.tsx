@@ -88,7 +88,7 @@ const AppSelect2: FC<IAppSelectPops> = ({
             {hiddenLabelDefault ? (
               <Box>{optionSelected?.label ?? ''}</Box>
             ) : (
-              <Box>{optionSelected?.label ?? 'Select'}</Box>
+              <Box>{optionSelected?.label ?? '--Select--'}</Box>
             )}
           </Flex>
         )}

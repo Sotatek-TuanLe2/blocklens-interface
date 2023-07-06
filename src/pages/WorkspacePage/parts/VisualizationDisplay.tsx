@@ -104,11 +104,10 @@ export const generateErrorMessage = (
   visualization: VisualizationType,
   data: any[],
 ): string | null => {
-  const type = visualization.options?.globalSeriesType || visualization.type;
-
-  const xAxis = visualization.options.columnMapping?.xAxis;
-  const yAxis = visualization.options.columnMapping?.yAxis;
-
+  const { options } = visualization;
+  const type = options.globalSeriesType || visualization.type;
+  const xAxis = options.columnMapping?.xAxis;
+  const yAxis = options.columnMapping?.yAxis;
   const axisOptions = Array.isArray(data) && data[0] ? objectKeys(data[0]) : [];
 
   if (
