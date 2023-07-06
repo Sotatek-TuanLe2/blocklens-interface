@@ -331,18 +331,24 @@ const QueryPart: React.FC = () => {
       <>
         {_renderAddChart()}
         {(expandLayout === LAYOUT_QUERY.HIDDEN ||
-          expandLayout === LAYOUT_QUERY.HALF) &&
-          statusExecuteQuery === STATUS.FAILED && (
-            <Flex
-              className="empty-table"
-              justifyContent={'center'}
-              alignItems="center"
-              flexDirection="column"
-            >
-              <span className="execution-error">Execution Error</span>
-              {errorExecuteQuery?.message || 'No data...'}
-            </Flex>
-          )}
+          expandLayout === LAYOUT_QUERY.HALF) && (
+          <Flex
+            className="empty-table"
+            justifyContent={'center'}
+            alignItems="center"
+            flexDirection="column"
+          >
+            {statusExecuteQuery === STATUS.DONE &&
+              !queryResult.length &&
+              'No data...'}
+            {statusExecuteQuery === STATUS.FAILED && (
+              <>
+                <span className="execution-error">Execution Error</span>
+                {errorExecuteQuery?.message || 'No data...'}
+              </>
+            )}
+          </Flex>
+        )}
       </>
     );
   };

@@ -179,7 +179,11 @@ const QueryPart: React.FC = () => {
       );
     }
 
-    if (!!queryValue && !!queryResult.length && !errorExecuteQuery?.message) {
+    if (
+      !!queryValue &&
+      !!queryResult.length &&
+      statusExecuteQuery === STATUS.DONE
+    ) {
       return (
         <Box>
           <VisualizationDisplay
@@ -205,11 +209,15 @@ const QueryPart: React.FC = () => {
             alignItems="center"
             flexDirection="column"
           >
-            <span className="execution-error">Execution Error</span>
-
-            {(statusExecuteQuery === STATUS.FAILED &&
-              errorExecuteQuery?.message) ||
+            {statusExecuteQuery === STATUS.DONE &&
+              !queryResult.length &&
               'No data...'}
+            {statusExecuteQuery === STATUS.FAILED && (
+              <>
+                <span className="execution-error">Execution Error</span>
+                {errorExecuteQuery?.message || 'No data...'}
+              </>
+            )}
           </Flex>
         )}
       </>
