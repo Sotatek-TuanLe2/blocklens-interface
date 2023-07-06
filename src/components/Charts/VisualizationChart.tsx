@@ -251,12 +251,16 @@ const VisualizationChart: React.FC<Props> = (props) => {
       if (hasNumberValues) {
         if (chartOptionsConfigs?.stacking) {
           let newCalculatedValues: any[] = [];
-          for (let index = 0; index < data.length; index++) {
-            newCalculatedValues[index] = calculatedValues
-              .reduce((a, b) =>
-                new BigNumber(a[index]).plus(new BigNumber(b[index])),
-              )
-              .toNumber();
+          if (calculatedValues.length > 1) {
+            for (let index = 0; index < data.length; index++) {
+              newCalculatedValues[index] = calculatedValues
+                .reduce((a, b) =>
+                  new BigNumber(a[index]).plus(new BigNumber(b[index])),
+                )
+                .toNumber();
+            }
+          } else if (calculatedValues.length === 1) {
+            newCalculatedValues = calculatedValues[0];
           }
           newCalculatedValues = uniq(newCalculatedValues);
           minValue = BigNumber.min(...newCalculatedValues).toNumber();
@@ -330,6 +334,9 @@ const VisualizationChart: React.FC<Props> = (props) => {
     }
     return null;
   };
+
+  // const sampleData = largestTriangleThreeBuckets(sortData(), 1000, xAxisKey, yAxisKeys ? yAxisKeys[0] : '');
+  // console.log("sampleData", sampleData);
 
   return (
     <ResponsiveContainer className={`visual-container__visualization--${type}`}>

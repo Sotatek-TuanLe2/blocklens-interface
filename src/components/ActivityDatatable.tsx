@@ -158,8 +158,9 @@ const ActivityMobile: FC<IActivity> = ({ activity, webhook }) => {
           <Box>Token Data</Box>
           <Box className="value">
             <Flex alignItems="center">
-              {`${formatShortText(webhook?.metadata?.creatorAddress || '')}::${webhook?.metadata?.collectionName
-                }::${webhook?.metadata?.name} `}
+              {`${formatShortText(webhook?.metadata?.creatorAddress || '')}::${
+                webhook?.metadata?.collectionName
+              }::${webhook?.metadata?.name} `}
             </Flex>
           </Box>
         </Flex>
@@ -329,8 +330,9 @@ const ActivityDesktop: FC<IActivity> = ({ activity, webhook }) => {
   const _renderContentAptosToken = () => {
     return (
       <Td w="15%">
-        {`${formatShortText(webhook?.metadata?.creatorAddress || '')}::${webhook?.metadata?.collectionName
-          }::${webhook?.metadata?.name} `}
+        {`${formatShortText(webhook?.metadata?.creatorAddress || '')}::${
+          webhook?.metadata?.collectionName
+        }::${webhook?.metadata?.name} `}
       </Td>
     );
   };
