@@ -103,12 +103,13 @@ export const getDefaultTimeAxis = (data: any[]): string => {
 export const generateErrorMessage = (
   visualization: VisualizationType,
   data: any[],
-  axisOptions: string[],
 ): string | null => {
   const type = visualization.options?.globalSeriesType || visualization.type;
 
   const xAxis = visualization.options.columnMapping?.xAxis;
   const yAxis = visualization.options.columnMapping?.yAxis;
+
+  const axisOptions = Array.isArray(data) && data[0] ? objectKeys(data[0]) : [];
 
   if (
     type === TYPE_VISUALIZATION.table ||
@@ -398,11 +399,7 @@ const VisualizationDisplay = ({
         );
     }
 
-    const errorMessage = generateErrorMessage(
-      visualization,
-      queryResult,
-      axisOptions,
-    );
+    const errorMessage = generateErrorMessage(visualization, queryResult);
 
     return (
       <div
