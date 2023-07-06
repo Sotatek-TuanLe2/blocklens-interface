@@ -87,18 +87,52 @@ const VisualizationTable = <T,>({
     INPUT_DEBOUNCE,
   );
 
-  const filteredData = data.filter((item: any) =>
-    Object.keys(data[0] as any).some(
-      (field) =>
-        item[field] &&
-        item[field]
-          ?.toString()
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase().trim()),
-    ),
+  const tableData = useMemo(() => {
+    if (
+      !visualization ||
+      !visualization.options.columns ||
+      !visualization.options.columns.length
+    ) {
+      return data;
+    }
+    const formatColumns: { [key: string]: string } = {};
+    visualization.options.columns.forEach((item: any) => {
+      if (item.format) {
+        formatColumns[item.id] = item.format;
+      }
+    });
+
+    const result = JSON.parse(JSON.stringify(data));
+    return result.map((item: any) => {
+      if (isNull(item) || isUndefined(item)) {
+        return item;
+      }
+      objectKeys(formatColumns).forEach((col) => {
+        item[col] = formatVisualizationValue(formatColumns[col], item[col]);
+      });
+      return item;
+    });
+  }, [data, visualization]);
+
+  const filteredData = useMemo(
+    () =>
+      tableData.filter((item: any) =>
+        Object.keys(data[0] as any).some(
+          (field) =>
+            item[field] &&
+            item[field]
+              ?.toString()
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase().trim()),
+        ),
+      ),
+    [tableData, searchTerm],
   );
 
-  const currentItems = filteredData.slice(itemOffset, endOffset);
+  const currentItems = useMemo(
+    () => filteredData.slice(itemOffset, endOffset),
+    [filteredData, itemOffset, endOffset],
+  );
 
   const table = useReactTable({
     data: currentItems,
@@ -155,7 +189,8 @@ const VisualizationTable = <T,>({
     if (!format) {
       return value.length > 50 ? formatShortAddress(value, 10) : value;
     }
-    return formatVisualizationValue(format, value.toString());
+    // return formatVisualizationValue(format, value.toString());
+    return value.toString();
   };
 
   const alignClass = (align: string) => {
