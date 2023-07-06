@@ -37,6 +37,7 @@ import {
   VALUE_VISUALIZATION,
   VisualizationType,
 } from '../../../utils/query.type';
+import _ from 'lodash';
 
 type VisualizationConfigType = {
   value: string;
@@ -102,8 +103,13 @@ export const getDefaultTimeAxis = (data: any[]): string => {
 export const generateErrorMessage = (
   visualization: VisualizationType,
   data: any[],
+  axisOptions: string[],
 ): string | null => {
   const type = visualization.options?.globalSeriesType || visualization.type;
+
+  const xAxis = visualization.options.columnMapping?.xAxis;
+  const yAxis = visualization.options.columnMapping?.yAxis;
+
   if (
     type === TYPE_VISUALIZATION.table ||
     type === TYPE_VISUALIZATION.counter
@@ -112,13 +118,11 @@ export const generateErrorMessage = (
   }
 
   let errorMessage = null;
-  if (!visualization.options.columnMapping?.xAxis) {
+  if (!xAxis || !axisOptions.includes(xAxis)) {
     errorMessage = 'Missing x-axis';
-  } else if (!visualization.options.columnMapping?.yAxis.length) {
+  } else if (!yAxis.length || !_.intersection(yAxis, axisOptions).length) {
     errorMessage = 'Missing y-axis';
-  } else if (
-    !areYAxisesSameType(data, visualization.options.columnMapping?.yAxis)
-  ) {
+  } else if (!areYAxisesSameType(data, yAxis)) {
     errorMessage = 'All columns for a y-axis must have the same data type';
   }
 
@@ -394,7 +398,11 @@ const VisualizationDisplay = ({
         );
     }
 
-    const errorMessage = generateErrorMessage(visualization, queryResult);
+    const errorMessage = generateErrorMessage(
+      visualization,
+      queryResult,
+      axisOptions,
+    );
 
     return (
       <div

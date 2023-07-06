@@ -26,6 +26,7 @@ import {
   generateErrorMessage,
   getDefaultTimeAxis,
 } from './VisualizationDisplay';
+import { objectKeys } from 'src/utils/utils-network';
 
 const REFETCH_QUERY_RESULT_MINUTES = 5;
 
@@ -49,6 +50,11 @@ const VisualizationItem = React.memo(
     const fetchQueryResultTimeout = useRef<ReturnType<typeof setTimeout>>();
     const refetchQueryResultInterval = useRef<ReturnType<typeof setInterval>>();
     const queryId = visualization?.queryId;
+
+    const axisOptions =
+      Array.isArray(queryResult) && queryResult[0]
+        ? objectKeys(queryResult[0])
+        : [];
 
     useEffect(() => {
       clearInterval(refetchQueryResultInterval.current);
@@ -96,7 +102,11 @@ const VisualizationItem = React.memo(
     );
 
     const _renderVisualization = (visualization: VisualizationType) => {
-      const errorMessage = generateErrorMessage(visualization, queryResult);
+      const errorMessage = generateErrorMessage(
+        visualization,
+        queryResult,
+        axisOptions,
+      );
 
       if (!isLoading && errorMessage) {
         return (
