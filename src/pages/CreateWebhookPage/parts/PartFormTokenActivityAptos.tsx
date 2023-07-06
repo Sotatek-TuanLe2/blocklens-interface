@@ -166,7 +166,7 @@ const PartFormTokenActivityAptos: FC<IPartFormTokenActivityAptos> = ({
           }}
         />
       </AppField>
-      <AppField label={'Name'} customWidth={'100%'} isRequired>
+      <AppField label={'Name'} customWidth={'100%'}>
         <AppInput
           size="lg"
           value={dataForm.metadata?.name}
@@ -178,11 +178,6 @@ const PartFormTokenActivityAptos: FC<IPartFormTokenActivityAptos> = ({
                 name: e.target.value.trim(),
               },
             });
-          }}
-          validate={{
-            name: `name`,
-            validator: validator.current,
-            rule: 'required',
           }}
         />
       </AppField>
