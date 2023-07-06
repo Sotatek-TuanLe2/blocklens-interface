@@ -335,9 +335,6 @@ const VisualizationChart: React.FC<Props> = (props) => {
     return null;
   };
 
-  // const sampleData = largestTriangleThreeBuckets(sortData(), 1000, xAxisKey, yAxisKeys ? yAxisKeys[0] : '');
-  // console.log("sampleData", sampleData);
-
   return (
     <ResponsiveContainer className={`visual-container__visualization--${type}`}>
       <ChartComponent
