@@ -8,7 +8,9 @@ import {
   useCallback,
   useEffect,
   useImperativeHandle,
+  useLayoutEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import { isMobile } from 'react-device-detect';
@@ -111,6 +113,28 @@ const AppDataTable = forwardRef(
     const [pagination, setPagination] = useState<Pagination>(initialPagination);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
+    const refScrollInfinite = useRef<InfiniteScroll>(null);
+    const [scrollThreshold, setScrollThreshold] = useState<string | number>(1);
+
+    useLayoutEffect(() => {
+      if (isInfiniteScroll && refScrollInfinite) {
+        if (
+          (refScrollInfinite.current as any)?._infScroll?.clientHeight <
+            window.innerHeight &&
+          pagesInfo.currentPage < pagesInfo.totalPages
+        ) {
+          if ((refScrollInfinite.current as any)?.props?.next) {
+            (refScrollInfinite.current as any).props.next();
+          }
+
+          setScrollThreshold(
+            (refScrollInfinite.current as any)?._infScroll?.clientHeight +
+              10 +
+              'px' || 1,
+          );
+        }
+      }
+    }, [pagesInfo]);
 
     useImperativeHandle(ref, () => ({
       tableData,
@@ -185,23 +209,6 @@ const AppDataTable = forwardRef(
       );
     };
 
-    // const _renderLoadMore = () => {
-    //   return pagination.page < pagesInfo.totalPages ? (
-    //     <div className="load-more">
-    //       <AppButton
-    //         size={'sm'}
-    //         variant="outline"
-    //         className="btn-load-more"
-    //         onClick={onLoadMore}
-    //         isLoading={isLoadingMore}
-    //         isDisabled={isLoadingMore}
-    //       >
-    //         See more
-    //       </AppButton>
-    //     </div>
-    //   ) : null;
-    // };
-
     const _renderPagination = () => {
       if (hidePagination || isInfiniteScroll) return;
       return (
@@ -247,8 +254,9 @@ const AppDataTable = forwardRef(
       if (isInfiniteScroll) {
         return (
           <InfiniteScroll
+            ref={refScrollInfinite}
             className="infinite-scroll"
-            scrollThreshold={1}
+            scrollThreshold={scrollThreshold}
             dataLength={tableData.length}
             next={() =>
               fetchTableData(
