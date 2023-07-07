@@ -1,11 +1,15 @@
+import eventBus from 'js-event-bus';
+
+const broadcast = new eventBus();
+
 export const AppBroadcast = {
   on(event: string, callback: any) {
-    document.addEventListener(event, (e: any) => callback(e.detail));
+    broadcast.on(event, (e: any) => callback(e.detail));
   },
   dispatch(event: string, data?: any) {
-    document.dispatchEvent(new CustomEvent(event, { detail: data }));
+    broadcast.emit(event, null, { detail: data });
   },
-  remove(event: string, callback?: any) {
-    document.removeEventListener(event, callback);
+  remove(event: string) {
+    broadcast.die(event);
   },
 };

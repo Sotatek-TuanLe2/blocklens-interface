@@ -130,9 +130,7 @@ const DashboardPart: React.FC = () => {
   };
 
   useEffect(() => {
-    AppBroadcast.on(BROADCAST_FETCH_DASHBOARD, (id: string) => {
-      fetchLayoutData(id);
-    });
+    AppBroadcast.on(BROADCAST_FETCH_DASHBOARD, fetchLayoutData);
 
     return () => {
       AppBroadcast.remove(BROADCAST_FETCH_DASHBOARD);
