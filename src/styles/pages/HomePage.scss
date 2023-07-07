@@ -40,6 +40,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 30px 40px 20px 40px;
+
   .text-title {
     color: $title;
     font-weight: 700;
@@ -49,6 +50,7 @@
 
   @include tablet {
     padding: 24px 20px;
+
     .text-title {
       @include heading-8;
     }
@@ -104,6 +106,7 @@
 
     &.show {
       background-color: rgba(244, 246, 249, 0.5);
+
       td {
         border-bottom: 0;
       }
@@ -216,14 +219,17 @@
   @include text-tiny-regular;
   border-radius: 14px;
   display: inline-block;
+
   &.inactive {
     background: rgba(234, 84, 85, 0.14);
     color: $red;
   }
+
   &.active {
     background: rgba(40, 199, 111, 0.14);
     color: $green;
   }
+
   &.waiting {
     background: rgba(255, 181, 71, 0.14);
     color: $yellow;
@@ -232,6 +238,7 @@
 
 .list-card-mobile {
   margin: 0 20px;
+
   .card-mobile {
     background: $white;
     border: 1px solid $line;
@@ -250,7 +257,7 @@
         margin-bottom: 0;
       }
 
-      & > div:last-child {
+      &>div:last-child {
         color: $title;
       }
     }
