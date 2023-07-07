@@ -75,29 +75,26 @@ const VisualizationTable = <T,>({
   const [pagination, setPagination] = useState(0);
 
   const ITEMS_PER_PAGE = 15;
-  const pageCount = Math.ceil(data.length / ITEMS_PER_PAGE);
+
+  const filteredData = useMemo(() => {
+    if (!searchTerm) {
+      return data;
+    }
+
+    return data.filter((item: any) =>
+      Object.keys(data[0] as any).some(
+        (field) =>
+          item[field] &&
+          item[field]
+            ?.toString()
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase().trim()),
+      ),
+    );
+  }, [data, searchTerm]);
+
   const endOffset = itemOffset + ITEMS_PER_PAGE;
-
-  const handleSearch = debounce(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setSearchTerm(event.target.value);
-      setPagination(0);
-      setItemOffset(0);
-    },
-    INPUT_DEBOUNCE,
-  );
-
-  const filteredData = data.filter((item: any) =>
-    Object.keys(data[0] as any).some(
-      (field) =>
-        item[field] &&
-        item[field]
-          ?.toString()
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase().trim()),
-    ),
-  );
-
+  const pageCount = Math.ceil(filteredData.length / ITEMS_PER_PAGE);
   const currentItems = filteredData.slice(itemOffset, endOffset);
 
   const table = useReactTable({
@@ -115,6 +112,15 @@ const VisualizationTable = <T,>({
       clearTimeout(timer);
     };
   }, []);
+
+  const handleSearch = debounce(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchTerm(event.target.value);
+      setPagination(0);
+      setItemOffset(0);
+    },
+    INPUT_DEBOUNCE,
+  );
 
   const handlePageClick = (event: { selected: number }) => {
     const newOffset = (event.selected * ITEMS_PER_PAGE) % data.length;
