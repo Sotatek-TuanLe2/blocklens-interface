@@ -404,7 +404,7 @@ const AddVisualizationCheckbox: React.FC<IAddVisualizationCheckbox> = ({
     }
   };
 
-  const handleCheckboxChange = (data: VisualizationType) => {
+  const handleCheckboxChange = (data: IListMyQueries) => {
     if (visualSelected?.id === data.id) {
       setVisualSelected('');
     } else {
