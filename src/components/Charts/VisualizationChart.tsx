@@ -307,7 +307,11 @@ const VisualizationChart: React.FC<Props> = (props) => {
 
   const _renderZeroValueLine = () => {
     const [minValue] = yAxisDomain;
-    if (new BigNumber(minValue).isNegative()) {
+
+    if (
+      new BigNumber(minValue).isNegative() ||
+      new BigNumber(minValue).isZero()
+    ) {
       return (
         <ReferenceLine
           className="ref-line"
@@ -428,10 +432,13 @@ export default VisualizationChart;
 const CustomizedDot = (props: any) => {
   const { cx, cy, fill } = props;
 
-  return (
-    <svg fill={fill} x={cx - 6.53516} y={cy - 6.53516}>
-      <circle opacity="0.3" cx="6.53516" cy="6" r="6" fill={fill} />
-      <circle cx="6.53516" cy="6" r="3" fill={fill} />
-    </svg>
-  );
+  if (!!cx && !!cy && !!fill) {
+    return (
+      <svg fill={fill} x={cx - 6.53516} y={cy - 6.53516}>
+        <circle opacity="0.3" cx="6.53516" cy="6" r="6" fill={fill} />
+        <circle cx="6.53516" cy="6" r="3" fill={fill} />
+      </svg>
+    );
+  }
+  return null;
 };
