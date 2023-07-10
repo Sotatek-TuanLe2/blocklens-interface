@@ -78,15 +78,6 @@ const VisualizationTable = <T,>({
   const pageCount = Math.ceil(data.length / ITEMS_PER_PAGE);
   const endOffset = itemOffset + ITEMS_PER_PAGE;
 
-  const handleSearch = debounce(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setSearchTerm(event.target.value);
-      setPagination(0);
-      setItemOffset(0);
-    },
-    INPUT_DEBOUNCE,
-  );
-
   const tableData = useMemo(() => {
     if (
       !visualization ||
@@ -149,6 +140,15 @@ const VisualizationTable = <T,>({
       clearTimeout(timer);
     };
   }, []);
+
+  const handleSearch = debounce(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchTerm(event.target.value);
+      setPagination(0);
+      setItemOffset(0);
+    },
+    INPUT_DEBOUNCE,
+  );
 
   const handlePageClick = (event: { selected: number }) => {
     const newOffset = (event.selected * ITEMS_PER_PAGE) % data.length;

@@ -271,5 +271,11 @@ export default class DashboardsRequest extends BaseRequest {
     return this.get(url);
   }
 
+  getListMyQueriesVisualizations(params: IGetBrowse) {
+    const url = '/visualizations/list-my-queries-visualizations';
+
+    return this.get(url, params);
+  }
+
   /* End of Query page */
 }

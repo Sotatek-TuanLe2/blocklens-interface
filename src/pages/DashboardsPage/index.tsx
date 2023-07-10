@@ -15,16 +15,23 @@ import {
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/pages/DashboardsPage.scss';
 import { ROUTES } from 'src/utils/common';
-import FilterSearch, { TYPE_MYWORK } from './parts/FilterSearch';
+import FilterSearch from './parts/FilterSearch';
 import ListItem from './parts/ListItem';
 
 export const LIST_ITEM_TYPE = {
-  DASHBOARDS: 'DASHBOARDS',
-  QUERIES: 'QUERIES',
-  MYWORK: 'MYWORK',
+  DASHBOARDS: 'dashboards',
+  QUERIES: 'queries',
+  MYWORK: 'my-work',
+};
+
+export const MY_WORK_TYPE = {
+  DASHBOARDS: 'dashboards',
+  QUERIES: 'queries',
 };
 
 export const HOME_URL_PARAMS = {
+  TAB: 'tab',
+  MYWORK: 'my-work',
   SEARCH: 'search',
   SORT: 'sort',
   CHAIN: 'chain',
@@ -39,23 +46,32 @@ const DashboardsPage: React.FC = () => {
   const history = useHistory();
   const { user } = useUser();
 
+  const searchParams = new URLSearchParams(searchUrl);
+
   const [tab, setTab] = useState<string>(LIST_ITEM_TYPE.DASHBOARDS);
   const [tabIndex, setTabIndex] = useState<number>(0);
   const [dashboardParams, setDashboardParams] = useState<IDashboardParams>({});
   const [queryParams, setQueryParams] = useState<IQueriesParams>({});
-  const [myWorkType, setMyWorkType] = useState<string>(TYPE_MYWORK.DASHBOARDS);
+  const [myWorkType, setMyWorkType] = useState<string>(MY_WORK_TYPE.DASHBOARDS);
 
   const [displayed, setDisplayed] = useState<string>(DisplayType.Grid);
 
   useEffect(() => {
-    const searchParams = new URLSearchParams(searchUrl);
+    const tabId =
+      searchParams.get(HOME_URL_PARAMS.TAB) || LIST_ITEM_TYPE.DASHBOARDS;
+    const myWork =
+      searchParams.get(HOME_URL_PARAMS.MYWORK) || MY_WORK_TYPE.DASHBOARDS;
     const search = searchParams.get(HOME_URL_PARAMS.SEARCH) || '';
     const sort = searchParams.get(HOME_URL_PARAMS.SORT) || '';
     const chain = searchParams.get(HOME_URL_PARAMS.CHAIN) || '';
     const tag = searchParams.get(HOME_URL_PARAMS.TAG) || '';
 
-    switch (tab) {
+    setTab(tabId);
+    setMyWorkType(myWork);
+
+    switch (tabId) {
       case LIST_ITEM_TYPE.DASHBOARDS:
+        setTabIndex(0);
         setDashboardParams(() =>
           _.omitBy(
             {
@@ -69,6 +85,7 @@ const DashboardsPage: React.FC = () => {
         );
         break;
       case LIST_ITEM_TYPE.QUERIES:
+        setTabIndex(1);
         setQueryParams(() =>
           _.omitBy(
             {
@@ -82,7 +99,8 @@ const DashboardsPage: React.FC = () => {
         );
         break;
       case LIST_ITEM_TYPE.MYWORK:
-        myWorkType === TYPE_MYWORK.DASHBOARDS
+        setTabIndex(2);
+        myWork === MY_WORK_TYPE.DASHBOARDS
           ? setDashboardParams(() =>
               _.omitBy(
                 {
@@ -183,7 +201,6 @@ const DashboardsPage: React.FC = () => {
               displayed={displayed}
               setDisplayed={setDisplayed}
               myWorkType={myWorkType}
-              changeMyWorkType={setMyWorkType}
             />
           </Box>
           <Box>{appTable}</Box>
@@ -277,6 +294,7 @@ const DashboardsPage: React.FC = () => {
             fetchData={fetchAllDashboards}
             isInfiniteScroll
             renderHeader={_renderHeader}
+            wrapperClassName="block-table"
             renderBody={(data) =>
               _renderBody(
                 data.map((item: any) => (
@@ -314,6 +332,7 @@ const DashboardsPage: React.FC = () => {
             isInfiniteScroll
             fetchData={fetchAllQueries}
             renderHeader={_renderHeader}
+            wrapperClassName="block-table"
             renderBody={(data) =>
               _renderBody(
                 data.map((item: any) => (
@@ -350,13 +369,14 @@ const DashboardsPage: React.FC = () => {
         icon: <IconMywork />,
         content: _renderContentTable(
           <>
-            {myWorkType === TYPE_MYWORK.DASHBOARDS && (
+            {myWorkType === MY_WORK_TYPE.DASHBOARDS && (
               <Box>
                 <AppDataTable
                   requestParams={dashboardParams}
                   isInfiniteScroll
                   fetchData={fetchMyDashboards}
                   renderHeader={_renderHeader}
+                  wrapperClassName="block-table"
                   renderBody={(data) =>
                     _renderBody(
                       data.map((item: any) => (
@@ -364,7 +384,7 @@ const DashboardsPage: React.FC = () => {
                           key={item.id}
                           item={item}
                           type={LIST_ITEM_TYPE.MYWORK}
-                          myWorkType={TYPE_MYWORK.DASHBOARDS}
+                          myWorkType={MY_WORK_TYPE.DASHBOARDS}
                           displayed={displayed}
                         />
                       )),
@@ -377,7 +397,7 @@ const DashboardsPage: React.FC = () => {
                           key={index}
                           isLoading
                           type={LIST_ITEM_TYPE.MYWORK}
-                          myWorkType={TYPE_MYWORK.DASHBOARDS}
+                          myWorkType={MY_WORK_TYPE.DASHBOARDS}
                           displayed={displayed}
                         />
                       )),
@@ -386,13 +406,14 @@ const DashboardsPage: React.FC = () => {
                 />
               </Box>
             )}
-            {myWorkType === TYPE_MYWORK.QUERIES && (
+            {myWorkType === MY_WORK_TYPE.QUERIES && (
               <Box>
                 <AppDataTable
                   requestParams={queryParams}
                   fetchData={fetchMyQueries}
                   isInfiniteScroll
                   renderHeader={_renderHeader}
+                  wrapperClassName="block-table"
                   renderBody={(data) =>
                     _renderBody(
                       data.map((item: any) => (
@@ -400,7 +421,7 @@ const DashboardsPage: React.FC = () => {
                           key={item.id}
                           item={item}
                           type={LIST_ITEM_TYPE.MYWORK}
-                          myWorkType={TYPE_MYWORK.QUERIES}
+                          myWorkType={MY_WORK_TYPE.QUERIES}
                           displayed={displayed}
                         />
                       )),
@@ -413,7 +434,7 @@ const DashboardsPage: React.FC = () => {
                           key={index}
                           isLoading
                           type={LIST_ITEM_TYPE.MYWORK}
-                          myWorkType={TYPE_MYWORK.QUERIES}
+                          myWorkType={MY_WORK_TYPE.QUERIES}
                           displayed={displayed}
                         />
                       )),
@@ -429,11 +450,19 @@ const DashboardsPage: React.FC = () => {
     return tabs;
   };
 
-  const onChangeTab = (tabId: string, tabIndex: number) => {
-    history.push(ROUTES.HOME);
-    setTab(tabId);
-    setTabIndex(tabIndex);
-    setMyWorkType(TYPE_MYWORK.DASHBOARDS);
+  const onChangeTab = (tabId: string) => {
+    searchParams.delete(HOME_URL_PARAMS.TAB);
+    searchParams.delete(HOME_URL_PARAMS.MYWORK);
+    searchParams.delete(HOME_URL_PARAMS.SEARCH);
+    searchParams.delete(HOME_URL_PARAMS.SORT);
+    searchParams.delete(HOME_URL_PARAMS.TAG);
+    if (tabId !== LIST_ITEM_TYPE.DASHBOARDS) {
+      searchParams.set(HOME_URL_PARAMS.TAB, tabId);
+    }
+    history.push({
+      pathname: ROUTES.HOME,
+      search: `${searchParams.toString()}`,
+    });
   };
 
   return (
