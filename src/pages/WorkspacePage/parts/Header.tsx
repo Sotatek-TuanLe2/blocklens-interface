@@ -200,7 +200,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
       <div className="workspace-page__editor__header__left">
         <Tooltip label="Back" hasArrow placement="top" bg="white" color="black">
           <AppButton
-            onClick={() => history.push('/')}
+            onClick={() => history.goBack()}
             size="sm"
             variant="no-effects"
             className="icon-back-light"
