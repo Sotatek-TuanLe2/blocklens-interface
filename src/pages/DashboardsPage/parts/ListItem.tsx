@@ -6,8 +6,7 @@ import { ROUTES } from 'src/utils/common';
 import { IDashboardDetail, IQuery } from 'src/utils/query.type';
 import { Dashboard } from 'src/utils/utils-dashboard';
 import { Query } from 'src/utils/utils-query';
-import { LIST_ITEM_TYPE } from '..';
-import { TYPE_MYWORK } from './FilterSearch';
+import { LIST_ITEM_TYPE, MY_WORK_TYPE } from '..';
 import { Box } from '@chakra-ui/react';
 import { useMemo } from 'react';
 import { formatNumber } from 'src/utils/utils-format';
@@ -16,7 +15,7 @@ import { generatePositiveRandomNumber } from 'src/utils/utils-helper';
 interface IListItem {
   isLoading?: boolean;
   type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
-  myWorkType?: typeof TYPE_MYWORK[keyof typeof TYPE_MYWORK];
+  myWorkType?: typeof MY_WORK_TYPE[keyof typeof MY_WORK_TYPE];
   item?: IDashboardDetail | IQuery;
   displayed?: string;
 }
@@ -50,7 +49,7 @@ const ListItem: React.FC<IListItem> = (props) => {
       case LIST_ITEM_TYPE.QUERIES:
         return `${ROUTES.QUERY}/${itemClass.getId()}`;
       case LIST_ITEM_TYPE.MYWORK:
-        if (myWorkType === TYPE_MYWORK.DASHBOARDS) {
+        if (myWorkType === MY_WORK_TYPE.DASHBOARDS) {
           return `${ROUTES.MY_DASHBOARD}/${itemClass.getId()}`;
         }
         return `${ROUTES.MY_QUERY}/${itemClass.getId()}`;
