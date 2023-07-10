@@ -21,7 +21,7 @@ import useUser from 'src/hooks/useUser';
 import ModalCreateNew from 'src/modals/querySQL/ModalCreateNew';
 import rf from 'src/requests/RequestFactory';
 import { ROUTES } from 'src/utils/common';
-import { HOME_URL_PARAMS, LIST_ITEM_TYPE } from '..';
+import { HOME_URL_PARAMS, LIST_ITEM_TYPE, MY_WORK_TYPE } from '..';
 import { AddIcon } from '@chakra-ui/icons';
 import { IDataMenu } from '../../../utils/utils-app';
 
@@ -30,7 +30,6 @@ interface IFilterSearch {
   displayed: string;
   setDisplayed: (display: string) => void;
   myWorkType: string;
-  changeMyWorkType: (value: string) => void;
 }
 
 const optionType: IOption[] = [
@@ -38,16 +37,11 @@ const optionType: IOption[] = [
   { value: 'datehightolow', label: 'Date high to low' },
 ];
 
-export const TYPE_MYWORK = {
-  DASHBOARDS: 'DASHBOARDS',
-  QUERIES: 'QUERIES',
-};
-
 const MAX_TRENDING_TAGS = 3;
 
 const FilterSearch: React.FC<IFilterSearch> = (props) => {
   const { isOpen, onToggle } = useDisclosure();
-  const { type, displayed, setDisplayed, myWorkType, changeMyWorkType } = props;
+  const { type, displayed, setDisplayed, myWorkType } = props;
   const history = useHistory();
   const { user } = useUser();
 
@@ -67,12 +61,12 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
 
   const menuDashboardQueries: IDataMenu[] = [
     {
-      value: LIST_ITEM_TYPE.DASHBOARDS,
+      value: MY_WORK_TYPE.DASHBOARDS,
       icon: <DashboardListIcon />,
       label: 'Dashboard',
     },
     {
-      value: LIST_ITEM_TYPE.QUERIES,
+      value: MY_WORK_TYPE.QUERIES,
       icon: <QueriesIcon />,
       label: 'Queries',
     },
@@ -147,8 +141,14 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   };
 
   const onChangeMyWorkType = (value: string) => {
-    changeMyWorkType(value);
-    history.push(ROUTES.HOME);
+    searchParams.delete(HOME_URL_PARAMS.MYWORK);
+    if (value !== MY_WORK_TYPE.DASHBOARDS) {
+      searchParams.set(HOME_URL_PARAMS.MYWORK, value);
+    }
+    history.push({
+      pathname: ROUTES.HOME,
+      search: `${searchParams.toString()}`,
+    });
   };
 
   const fetchTagsTrending = async () => {
