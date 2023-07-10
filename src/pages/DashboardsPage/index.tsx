@@ -277,7 +277,7 @@ const DashboardsPage: React.FC = () => {
             fetchData={fetchAllDashboards}
             isInfiniteScroll
             renderHeader={_renderHeader}
-            displayTable="block"
+            wrapperClassName='block-table'
             renderBody={(data) =>
               _renderBody(
                 data.map((item: any) => (
@@ -315,7 +315,7 @@ const DashboardsPage: React.FC = () => {
             isInfiniteScroll
             fetchData={fetchAllQueries}
             renderHeader={_renderHeader}
-            displayTable="block"
+            wrapperClassName='block-table'
             renderBody={(data) =>
               _renderBody(
                 data.map((item: any) => (
@@ -359,7 +359,7 @@ const DashboardsPage: React.FC = () => {
                   isInfiniteScroll
                   fetchData={fetchMyDashboards}
                   renderHeader={_renderHeader}
-                  displayTable="block"
+                  wrapperClassName='block-table'
                   renderBody={(data) =>
                     _renderBody(
                       data.map((item: any) => (
@@ -396,7 +396,7 @@ const DashboardsPage: React.FC = () => {
                   fetchData={fetchMyQueries}
                   isInfiniteScroll
                   renderHeader={_renderHeader}
-                  displayTable="block"
+                  wrapperClassName='block-table'
                   renderBody={(data) =>
                     _renderBody(
                       data.map((item: any) => (

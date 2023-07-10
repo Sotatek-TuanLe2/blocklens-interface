@@ -48,7 +48,6 @@ interface DataTableProps {
   isNotShowNoData?: boolean;
   hidePagination?: boolean;
   isInfiniteScroll?: boolean;
-  displayTable?: 'block' | 'flex' | 'table';
 }
 
 export interface DataTableRef {
@@ -99,7 +98,7 @@ const AppDataTable = forwardRef(
       isNotShowNoData = false,
       hidePagination = false,
       isInfiniteScroll = false,
-      displayTable,
+      wrapperClassName,
     } = props;
 
     const initialPagination: Pagination = { limit, page: 1 };
@@ -315,7 +314,7 @@ const AppDataTable = forwardRef(
           _renderTable()
         ) : (
           <TableContainer overflowX="inherit" overflowY="inherit">
-            <Table colorScheme="gray" display={displayTable}>
+            <Table colorScheme="gray" className={wrapperClassName}>
               {_renderTable()}
             </Table>
           </TableContainer>
