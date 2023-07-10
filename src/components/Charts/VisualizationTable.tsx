@@ -188,12 +188,8 @@ const VisualizationTable = <T,>({
     }, {} as any);
   }, [visualization, data]);
 
-  const formatCellValue = (format: any, value: string) => {
-    if (!format) {
-      return value.length > 50 ? formatShortAddress(value, 10) : value;
-    }
-    // return formatVisualizationValue(format, value.toString());
-    return value.toString();
+  const formatCellValue = (value: string) => {
+    return value.length > 50 ? formatShortAddress(value, 10) : value;
   };
 
   const alignClass = (align: string) => {
@@ -394,7 +390,7 @@ const VisualizationTable = <T,>({
                     )}
                     {!isNull(value) && !isUndefined(value) && (
                       <Tooltip hasArrow label={value.toString()} as="div">
-                        <div>{formatCellValue(format, value.toString())}</div>
+                        <div>{formatCellValue(value.toString())}</div>
                       </Tooltip>
                     )}
                   </div>
