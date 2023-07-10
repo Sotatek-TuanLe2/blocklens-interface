@@ -75,6 +75,7 @@ const DashboardPart: React.FC = () => {
     useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isSavingDashboard, setIsSavingDashboard] = useState<boolean>(false);
+  const [isEmptyDashboard, setIsEmptyDashboard] = useState<boolean>(true);
 
   const userName =
     `${user?.getFirstName() || ''}` + `${user?.getLastName() || ''}`;
@@ -121,6 +122,7 @@ const DashboardPart: React.FC = () => {
         const layouts = visualization.concat(textWidgets);
         setDataDashboard(res);
         setDataLayouts(layouts);
+        setIsEmptyDashboard(!layouts.length);
       }
     } catch (error) {
       console.error(error);
@@ -347,7 +349,7 @@ const DashboardPart: React.FC = () => {
         data={dataDashboard}
         isEdit={editMode}
         isLoadingRun={isLoading || isSavingDashboard}
-        isEmptyDashboard={!dataLayouts.length}
+        isEmptyDashboard={isEmptyDashboard && !dataLayouts.length}
         onChangeEditMode={onChangeEditMode}
       />
       {isLoading ? (
