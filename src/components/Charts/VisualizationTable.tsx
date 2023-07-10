@@ -75,8 +75,6 @@ const VisualizationTable = <T,>({
   const [pagination, setPagination] = useState(0);
 
   const ITEMS_PER_PAGE = 15;
-  const pageCount = Math.ceil(data.length / ITEMS_PER_PAGE);
-  const endOffset = itemOffset + ITEMS_PER_PAGE;
 
   const tableData = useMemo(() => {
     if (
@@ -119,6 +117,9 @@ const VisualizationTable = <T,>({
       ),
     [tableData, searchTerm],
   );
+
+  const pageCount = Math.ceil(filteredData.length / ITEMS_PER_PAGE);
+  const endOffset = itemOffset + ITEMS_PER_PAGE;
 
   const currentItems = useMemo(
     () => filteredData.slice(itemOffset, endOffset),
