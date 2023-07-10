@@ -43,7 +43,7 @@ export interface IPagination {
   currentPage: number;
   itemsPerPage: number;
   totalPages: number;
-  totalItem?: number;
+  totalItems?: number;
 }
 
 export const VISUALIZATION_COLORS = {
