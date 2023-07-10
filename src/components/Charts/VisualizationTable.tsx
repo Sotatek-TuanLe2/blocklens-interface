@@ -97,7 +97,9 @@ const VisualizationTable = <T,>({
         return item;
       }
       objectKeys(formatColumns).forEach((col) => {
-        item[col] = formatVisualizationValue(formatColumns[col], item[col]);
+        item[col] = formatColumns[col]
+          ? formatVisualizationValue(formatColumns[col], item[col])
+          : item[col];
       });
       return item;
     });
