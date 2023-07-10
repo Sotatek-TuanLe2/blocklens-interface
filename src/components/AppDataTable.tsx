@@ -98,6 +98,7 @@ const AppDataTable = forwardRef(
       isNotShowNoData = false,
       hidePagination = false,
       isInfiniteScroll = false,
+      wrapperClassName,
     } = props;
 
     const initialPagination: Pagination = { limit, page: 1 };
@@ -313,7 +314,9 @@ const AppDataTable = forwardRef(
           _renderTable()
         ) : (
           <TableContainer overflowX="inherit" overflowY="inherit">
-            <Table colorScheme="gray">{_renderTable()}</Table>
+            <Table colorScheme="gray" className={wrapperClassName}>
+              {_renderTable()}
+            </Table>
           </TableContainer>
         )}
 
