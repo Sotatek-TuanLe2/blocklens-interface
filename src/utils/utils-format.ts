@@ -340,7 +340,7 @@ export const formatVisualizationValue = (format: string, value: any) => {
   };
 
   if (!isNumber(value)) {
-    return value.length > 50 ? formatShortAddress(value, 10) : value;
+    return value;
   }
 
   if (new BigNumber(value).isEqualTo(0)) {

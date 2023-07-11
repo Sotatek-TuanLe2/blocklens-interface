@@ -76,12 +76,40 @@ const VisualizationTable = <T,>({
 
   const ITEMS_PER_PAGE = 15;
 
-  const filteredData = useMemo(() => {
-    if (!searchTerm) {
+  const tableData = useMemo(() => {
+    if (
+      !visualization ||
+      !visualization.options.columns ||
+      !visualization.options.columns.length
+    ) {
       return data;
     }
+    const formatColumns: { [key: string]: string } = {};
+    visualization.options.columns.forEach((item: any) => {
+      if (item.format) {
+        formatColumns[item.id] = item.format;
+      }
+    });
 
-    return data.filter((item: any) =>
+    const result = JSON.parse(JSON.stringify(data));
+    return result.map((item: any) => {
+      if (isNull(item) || isUndefined(item)) {
+        return item;
+      }
+      objectKeys(formatColumns).forEach((col) => {
+        item[col] = formatColumns[col]
+          ? formatVisualizationValue(formatColumns[col], item[col])
+          : item[col];
+      });
+      return item;
+    });
+  }, [data, visualization]);
+
+  const filteredData = useMemo(() => {
+    if (!searchTerm) {
+      return tableData;
+    }
+    return tableData.filter((item: any) =>
       Object.keys(data[0] as any).some(
         (field) =>
           item[field] &&
@@ -91,11 +119,15 @@ const VisualizationTable = <T,>({
             .includes(searchTerm.toLowerCase().trim()),
       ),
     );
-  }, [data, searchTerm]);
+  }, [tableData, searchTerm]);
 
-  const endOffset = itemOffset + ITEMS_PER_PAGE;
   const pageCount = Math.ceil(filteredData.length / ITEMS_PER_PAGE);
-  const currentItems = filteredData.slice(itemOffset, endOffset);
+  const endOffset = itemOffset + ITEMS_PER_PAGE;
+
+  const currentItems = useMemo(
+    () => filteredData.slice(itemOffset, endOffset),
+    [filteredData, itemOffset, endOffset],
+  );
 
   const table = useReactTable({
     data: currentItems,
@@ -157,11 +189,8 @@ const VisualizationTable = <T,>({
     }, {} as any);
   }, [visualization, data]);
 
-  const formatCellValue = (format: any, value: string) => {
-    if (!format) {
-      return value.length > 50 ? formatShortAddress(value, 10) : value;
-    }
-    return formatVisualizationValue(format, value.toString());
+  const formatCellValue = (value: string) => {
+    return value.length > 50 ? formatShortAddress(value, 10) : value;
   };
 
   const alignClass = (align: string) => {
@@ -362,7 +391,7 @@ const VisualizationTable = <T,>({
                     )}
                     {!isNull(value) && !isUndefined(value) && (
                       <Tooltip hasArrow label={value.toString()} as="div">
-                        <div>{formatCellValue(format, value.toString())}</div>
+                        <div>{formatCellValue(value.toString())}</div>
                       </Tooltip>
                     )}
                   </div>
