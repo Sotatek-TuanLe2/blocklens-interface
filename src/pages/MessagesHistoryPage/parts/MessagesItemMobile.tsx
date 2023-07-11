@@ -57,7 +57,7 @@ const MessagesItemMobile: FC<IMessagesItemMobile> = ({
             <Box>Token ID</Box>
             <Box className="value">
               <Flex alignItems="center">
-                {message.input?.tokenIds?.join(', ') || '*'}
+                {message.input?.tx?.tokenIds?.join(', ') || '*'}
               </Flex>
             </Box>
           </Flex>

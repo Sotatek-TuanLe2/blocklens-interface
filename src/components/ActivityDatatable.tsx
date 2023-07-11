@@ -306,11 +306,16 @@ const ActivityDesktop: FC<IActivity> = ({ activity, webhook }) => {
   };
 
   const _renderContentNFT = () => {
+    const content = activity?.metadata?.tx?.tokenIds?.join(', ');
     return (
       <>
         <Td w="13%">{activity?.metadata?.method || '--'}</Td>
         <Td textAlign="center" w="10%">
-          {activity?.metadata?.tx?.tokenIds?.join(', ') || '*'}
+          <Tooltip hasArrow placement="top" label={content}>
+            <Box overflow={'hidden'} textOverflow={'ellipsis'}>
+              {content || '*'}
+            </Box>
+          </Tooltip>
         </Td>
       </>
     );
@@ -673,6 +678,7 @@ const ActivityDatatable: FC<IActivityDatatable> = ({
       hidePagination={hidePagination}
       requestParams={params}
       fetchData={fetchDataTable}
+      wrapperClassName="table-fixed"
       renderLoading={_renderLoading}
       renderBody={(data) =>
         isMobile

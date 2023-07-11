@@ -262,6 +262,7 @@ const MessagesHistory = () => {
               txHash,
               tokenId,
             }}
+            wrapperClassName="table-fixed"
             fetchData={fetchDataTable}
             renderBody={_renderBody}
             renderLoading={_renderLoading}
