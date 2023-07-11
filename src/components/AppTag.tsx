@@ -1,4 +1,4 @@
-import { Box, BoxProps } from '@chakra-ui/react';
+import { Box, BoxProps, Text } from '@chakra-ui/react';
 import 'src/styles/components/AppTag.scss';
 
 interface ITag extends Omit<BoxProps, 'onClick'> {
@@ -34,7 +34,7 @@ const AppTag: React.FC<ITag> = (props) => {
       onClick={onClickTag}
       {...otherProps}
     >
-      #{value}
+      <Text className={'app-tag-value'}>#{value}</Text>
     </Box>
   );
 };
