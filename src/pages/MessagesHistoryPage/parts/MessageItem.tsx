@@ -51,7 +51,7 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
 
   const _renderContentNFT = () => {
     const content = message?.input?.tokenIds?.join(', ');
-    
+
     return (
       <>
         <Td textAlign="left" w="13%">
