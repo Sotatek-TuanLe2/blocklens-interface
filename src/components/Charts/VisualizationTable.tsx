@@ -105,20 +105,21 @@ const VisualizationTable = <T,>({
     });
   }, [data, visualization]);
 
-  const filteredData = useMemo(
-    () =>
-      tableData.filter((item: any) =>
-        Object.keys(data[0] as any).some(
-          (field) =>
-            item[field] &&
-            item[field]
-              ?.toString()
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase().trim()),
-        ),
+  const filteredData = useMemo(() => {
+    if (!searchTerm) {
+      return tableData;
+    }
+    return tableData.filter((item: any) =>
+      Object.keys(data[0] as any).some(
+        (field) =>
+          item[field] &&
+          item[field]
+            ?.toString()
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase().trim()),
       ),
-    [tableData, searchTerm],
-  );
+    );
+  }, [tableData, searchTerm]);
 
   const pageCount = Math.ceil(filteredData.length / ITEMS_PER_PAGE);
   const endOffset = itemOffset + ITEMS_PER_PAGE;
