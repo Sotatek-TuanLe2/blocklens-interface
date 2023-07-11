@@ -50,7 +50,7 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
   };
 
   const _renderContentNFT = () => {
-    const content = message?.input?.tokenIds?.join(', ');
+    const content = message?.input?.tx?.tokenIds?.join(', ');
 
     return (
       <>
