@@ -1,5 +1,5 @@
 import React, { FC, MouseEvent, useState } from 'react';
-import { Box, Flex, Tbody, Td, Tr } from '@chakra-ui/react';
+import { Box, Flex, Tbody, Td, Tooltip, Tr } from '@chakra-ui/react';
 import {
   IMessages,
   IWebhook,
@@ -50,13 +50,19 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
   };
 
   const _renderContentNFT = () => {
+    const content = message?.input?.tokenIds?.join(', ');
+    
     return (
       <>
         <Td textAlign="left" w="13%">
           {message?.input?.method}
         </Td>
         <Td textAlign="center" w="13%">
-          {message?.input?.tokenIds?.join(', ') || '*'}
+          <Tooltip hasArrow placement="top" label={content}>
+            <Box overflow={'hidden'} textOverflow={'ellipsis'}>
+              {content || '*'}
+            </Box>
+          </Tooltip>
         </Td>
       </>
     );
