@@ -391,6 +391,8 @@ const AppUploadABI: FC<IAppUploadABI> = ({
   const onDragOver = (e: any) => e.preventDefault();
 
   useEffect(() => {
+    if (viewOnly) return;
+
     if (type == TYPE_ABI.TOKEN) {
       setABIData(ERC20.abi);
       return;
@@ -400,7 +402,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
       setABIData(ERC721.abi);
       return;
     }
-  }, []);
+  }, [viewOnly, type]);
 
   useEffect(() => {
     if (abiContract && !!abiContract?.length) {
@@ -507,6 +509,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
   };
 
   useEffect(() => {
+    if (viewOnly) return;
     if (!ABIInput) {
       setError('');
       if (type == TYPE_ABI.TOKEN) {
@@ -544,7 +547,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
       setError('The ABI must be correct format');
       setABIData([]);
     }
-  }, [ABIInput]);
+  }, [ABIInput, viewOnly]);
 
   return (
     <Box className="upload-abi">
