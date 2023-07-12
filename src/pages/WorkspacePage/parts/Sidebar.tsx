@@ -1,10 +1,22 @@
-import { Box, Collapse, Flex, Spinner, Text, Tooltip } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Collapse,
+  Drawer,
+  DrawerContent,
+  DrawerOverlay,
+  Flex,
+  Spinner,
+  Text,
+  Tooltip,
+  useDisclosure,
+} from '@chakra-ui/react';
 import _, { debounce } from 'lodash';
 import { useCallback, useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { CloseMenuIcon, CopyIcon } from 'src/assets/icons';
-import { AppInput } from 'src/components';
+import { AppButton, AppInput } from 'src/components';
 import AppQueryMenu, { QUERY_MENU_LIST } from 'src/components/AppQueryMenu';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import rf from 'src/requests/RequestFactory';
@@ -15,6 +27,7 @@ import { copyToClipboard } from 'src/utils/utils-helper';
 import { getChainIconByChainName } from 'src/utils/utils-network';
 import { BROADCAST_FETCH_DASHBOARD } from './Dashboard';
 import { BROADCAST_FETCH_QUERY } from './Query';
+import { ChevronRightIcon, CloseIcon } from '@chakra-ui/icons';
 
 export const BROADCAST_FETCH_WORKPLACE_DATA = 'FETCH_WORKPLACE_DATA';
 
@@ -137,10 +150,17 @@ const CollapseExplore = ({
   );
 };
 
-const Sidebar: React.FC<{
-  expandSidebar: boolean;
-  onToggleExpandSidebar: (toggle?: boolean) => void;
-}> = ({ expandSidebar, onToggleExpandSidebar }) => {
+interface SidebarProps {
+  expandSidebar?: boolean;
+  onToggleExpandSidebar?: (toggle?: boolean) => void;
+  onCloseFilter?: () => void;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({
+  expandSidebar,
+  onToggleExpandSidebar,
+  onCloseFilter,
+}) => {
   const CATEGORIES = {
     WORK_PLACE: 'WORK_PLACE',
     EXPLORE_DATA: 'EXPLORE_DATA',
@@ -329,10 +349,16 @@ const Sidebar: React.FC<{
     return (
       <Box className="workspace-page__sidebar__content__work-place-wrap">
         <div className="workspace-page__sidebar__content__work-place-wrap__work-place">
+          <Box
+            mr={'10px'}
+            display={{ lg: 'none' }}
+            className="icon-place-light"
+          />
           <span>work place</span>
           <Box
+            display={{ base: 'none', lg: 'block' }}
             cursor={'pointer'}
-            onClick={() => onToggleExpandSidebar()}
+            onClick={() => onToggleExpandSidebar && onToggleExpandSidebar()}
             className="icon-close-light"
           ></Box>
         </div>
@@ -452,14 +478,20 @@ const Sidebar: React.FC<{
     return (
       <div className="workspace-page__sidebar__content__explore-wrap">
         <div className="workspace-page__sidebar__content__explore-wrap__title">
+          <Box
+            mr={'10px'}
+            display={{ lg: 'none' }}
+            className="icon-explore-light"
+          />
           <span>Explore data</span>
           <Box
+            display={{ base: 'none', lg: 'block' }}
             cursor={'pointer'}
-            onClick={() => onToggleExpandSidebar()}
+            onClick={() => onToggleExpandSidebar && onToggleExpandSidebar()}
             className="bg-CloseBtnIcon"
           />
         </div>
-        <Box px={'16px'} mb={'26px'}>
+        <Box px={'16px'} mb={{ base: '24px', lg: '26px' }}>
           <AppInput
             className="workspace-page__sidebar__content__work-place-wrap__input-search"
             value={searchExploreData}
@@ -553,42 +585,122 @@ const Sidebar: React.FC<{
     );
   };
 
-  return (
-    <div className={'workspace-page__sidebar'}>
-      <div
-        className={
-          expandSidebar
-            ? 'workspace-page__sidebar__categories'
-            : 'workspace-page__sidebar__categories hidden-sidebar-content'
-        }
-      >
-        {categoryList.map((item) => (
-          <Box
-            cursor={'pointer'}
-            key={item.id}
-            title={item.title}
-            onClick={() => {
-              setCategory(item.id);
-              onToggleExpandSidebar(true);
-              setSchemaDescribe([]);
-            }}
-          >
-            {category === item.id ? item.activeIcon : item.icon}
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const _renderDrawerCategory = () => {
+    return (
+      <Drawer isOpen={isOpen} placement="left" onClose={onClose} size="full">
+        <DrawerOverlay />
+        <DrawerContent>
+          <Box className={'m-drawer-filter'} display={{ lg: 'none' }}>
+            <Flex className={'drawer-header'}>
+              <AppButton
+                onClick={onClose}
+                size="sm"
+                variant="no-effects"
+                className="icon-back-light"
+              />
+              <Flex align={'center'} justify={'center'} mx={'30px'}>
+                <Text className={'text-header'}>
+                  {categoryList.find((f) => f.id === category)?.title}
+                </Text>
+              </Flex>
+            </Flex>
+            {category === CATEGORIES.EXPLORE_DATA
+              ? _renderContentExplore()
+              : _renderContentWorkPlace()}
           </Box>
-        ))}
-      </div>
-      <Box
-        className={
-          expandSidebar
-            ? 'workspace-page__sidebar__content show-sidebar '
-            : 'workspace-page__sidebar__content hidden-sidebar'
-        }
-      >
-        {category === CATEGORIES.EXPLORE_DATA
-          ? _renderContentExplore()
-          : _renderContentWorkPlace()}
+        </DrawerContent>
+      </Drawer>
+    );
+  };
+
+  const _renderOnMobile = () => {
+    return (
+      <Box className={'m-drawer-filter'} display={{ lg: 'none' }}>
+        <Flex className={'drawer-header'}>
+          <Flex align={'center'} justify={'center'} mx={'30px'}>
+            <Text className={'text-header'}>Fillter</Text>
+          </Flex>
+          <Button
+            variant="ghost"
+            className={'btn-close-drawer'}
+            onClick={onCloseFilter && onCloseFilter}
+          >
+            <CloseIcon w={'12px'} />
+          </Button>
+        </Flex>
+        <Box>
+          {categoryList.map((item) => (
+            <Flex
+              key={item.id}
+              title={item.title}
+              align={'center'}
+              h={'32px'}
+              mb={'20px'}
+              onClick={() => {
+                setCategory(item.id);
+                setSchemaDescribe([]);
+                onOpen();
+              }}
+            >
+              <Flex align={'center'} flexGrow={1}>
+                {item.icon}{' '}
+                <Text ml={'10px'} className={'item-filter'}>
+                  {item.title}
+                </Text>
+              </Flex>
+              <ChevronRightIcon fontSize={'24px'} color={'#00022480'} />
+            </Flex>
+          ))}
+        </Box>
+        {_renderDrawerCategory()}
       </Box>
-    </div>
+    );
+  };
+
+  return (
+    <>
+      <Flex
+        display={{ base: 'none !important', lg: 'flex !important' }}
+        className={'workspace-page__sidebar'}
+      >
+        <div
+          className={
+            expandSidebar
+              ? 'workspace-page__sidebar__categories'
+              : 'workspace-page__sidebar__categories hidden-sidebar-content'
+          }
+        >
+          {categoryList.map((item) => (
+            <Box
+              cursor={'pointer'}
+              key={item.id}
+              title={item.title}
+              onClick={() => {
+                setCategory(item.id);
+                onToggleExpandSidebar && onToggleExpandSidebar(true);
+                setSchemaDescribe([]);
+              }}
+            >
+              {category === item.id ? item.activeIcon : item.icon}
+            </Box>
+          ))}
+        </div>
+        <Box
+          className={
+            expandSidebar
+              ? 'workspace-page__sidebar__content show-sidebar '
+              : 'workspace-page__sidebar__content hidden-sidebar'
+          }
+        >
+          {category === CATEGORIES.EXPLORE_DATA
+            ? _renderContentExplore()
+            : _renderContentWorkPlace()}
+        </Box>
+      </Flex>
+      {_renderOnMobile()}
+    </>
   );
 };
 
