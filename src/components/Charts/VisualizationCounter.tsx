@@ -1,6 +1,6 @@
-import { Box, Flex, Skeleton, Tooltip } from '@chakra-ui/react';
+import { Box, Flex, Skeleton, Text, Tooltip } from '@chakra-ui/react';
 import BigNumber from 'bignumber.js';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import 'src/styles/components/CounterConfigurations.scss';
 import { VISUALIZATION_COLORS } from 'src/utils/common';
 import { VisualizationType } from 'src/utils/query.type';
@@ -13,54 +13,8 @@ type Props = {
   isLoading?: boolean;
 };
 
-const NUMBER_SIZE = {
-  start: 35,
-  percent: 3,
-};
-
 const VisualizationCounter = ({ data, visualization, isLoading }: Props) => {
-  const [size, setSize] = useState<number>();
   const { options: dataOptions } = visualization;
-
-  useEffect(() => {
-    setSize(defaultSize);
-  }, [
-    dataOptions.counterColName,
-    dataOptions.stringPrefix,
-    dataOptions.stringDecimal,
-    dataOptions.rowNumber,
-  ]);
-
-  const dataCounter = () => {
-    if (data[dataOptions.rowNumber - 1] === undefined) return '';
-    const dataColumn: any = data[dataOptions.rowNumber - 1];
-    const indexColumn = dataOptions.counterColName;
-
-    return dataColumn[indexColumn]?.toString();
-  };
-
-  const defaultSize =
-    NUMBER_SIZE.start -
-    ((dataCounter()?.length || 0) +
-      Number(dataOptions.stringDecimal || 0) +
-      (dataOptions.stringPrefix?.toString().length || 0) +
-      (dataOptions.stringSuffix?.toString().length || 0)) /
-      NUMBER_SIZE.percent;
-
-  const checkColor = (value: string | number) => {
-    switch (true) {
-      case new BigNumber(value).isGreaterThan(0) &&
-        dataOptions.coloredPositiveValues:
-        return VISUALIZATION_COLORS.POSITIVE;
-      case new BigNumber(value).isLessThan(0) &&
-        dataOptions.coloredNegativeValues:
-        return VISUALIZATION_COLORS.NEGATIVE;
-      default:
-        return undefined;
-    }
-  };
-
-  const isNumberValue = isNumber(dataCounter());
 
   if (isLoading) {
     return (
@@ -77,6 +31,38 @@ const VisualizationCounter = ({ data, visualization, isLoading }: Props) => {
     );
   }
 
+  const dataCounter = () => {
+    if (data[dataOptions.rowNumber - 1] === undefined) return '';
+    const dataColumn: any = data[dataOptions.rowNumber - 1];
+    const indexColumn = dataOptions.counterColName;
+
+    return dataColumn[indexColumn]?.toString();
+  };
+
+  const checkColor = (value: string | number) => {
+    switch (true) {
+      case new BigNumber(value).isGreaterThan(0) &&
+        dataOptions.coloredPositiveValues:
+        return VISUALIZATION_COLORS.POSITIVE;
+      case new BigNumber(value).isLessThan(0) &&
+        dataOptions.coloredNegativeValues:
+        return VISUALIZATION_COLORS.NEGATIVE;
+      default:
+        return undefined;
+    }
+  };
+
+  const isNumberValue = isNumber(dataCounter());
+  const prefix = isNumberValue ? dataOptions.stringPrefix || '' : '';
+  const value = isNumberValue
+    ? commaNumber(
+        new BigNumber(dataCounter()).toFixed(+dataOptions.stringDecimal || 0),
+      )
+    : dataCounter();
+  const suffix = isNumberValue ? dataOptions.stringSuffix || '' : '';
+
+  const counterValue = `${prefix}${value}${suffix}`;
+
   return (
     <Box
       _after={{
@@ -85,43 +71,33 @@ const VisualizationCounter = ({ data, visualization, isLoading }: Props) => {
       }}
       className="main-counter"
     >
-      <div className="counter-result">
-        <div className="text-result">
-          <div
+      <div className="main-counter__content">
+        <Tooltip hasArrow placement="top" label={counterValue}>
+          <Text
+            className="main-counter__content__value"
+            isTruncated
             style={{
               color: (isNumberValue && checkColor(dataCounter())) || '',
-              fontSize: `${size}px`,
-              fontWeight: 700,
             }}
           >
-            {isNumberValue && dataOptions.stringPrefix}
-            <span style={{ color: 'inherit' }}>
-              {isNumberValue
-                ? commaNumber(
-                    new BigNumber(dataCounter()).toFixed(
-                      +dataOptions.stringDecimal || 0,
-                    ),
-                  )
-                : dataCounter()}
-            </span>
-            {isNumberValue && dataOptions.stringSuffix}
-          </div>
-          <Box isTruncated maxWidth={'300px'}>
-            <Tooltip
-              hasArrow
-              placement="top-start"
-              label={
-                dataOptions.counterLabel
-                  ? dataOptions.counterLabel
-                  : visualization.name
-              }
-            >
-              {dataOptions.counterLabel
-                ? dataOptions.counterLabel
-                : visualization.name}
-            </Tooltip>
-          </Box>
-        </div>
+            {counterValue}
+          </Text>
+        </Tooltip>
+        <Tooltip
+          hasArrow
+          placement="top"
+          label={
+            dataOptions.counterLabel
+              ? dataOptions.counterLabel
+              : visualization.name
+          }
+        >
+          <Text className="main-counter__content__label" isTruncated>
+            {dataOptions.counterLabel
+              ? dataOptions.counterLabel
+              : visualization.name}
+          </Text>
+        </Tooltip>
       </div>
     </Box>
   );
