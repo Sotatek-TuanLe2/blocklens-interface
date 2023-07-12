@@ -151,16 +151,16 @@ const SignUpPage: FC = () => {
                 value={dataForm.password}
                 type="password"
                 placeholder={'••••••••'}
-                onChange={(e) =>
+                onChange={(e) => {
                   setDataForm({
                     ...dataForm,
                     password: e.target.value,
-                  })
-                }
+                  });
+                }}
                 validate={{
                   name: `password`,
                   validator: validator.current,
-                  rule: 'required|min:8|max:50',
+                  rule: ['required|min:8|max:50', 'formatPassword'],
                 }}
               />
             </AppField>

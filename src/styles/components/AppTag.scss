@@ -35,3 +35,9 @@
     border: 1px solid #1878ff;
   }
 }
+.app-tag-value {
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
