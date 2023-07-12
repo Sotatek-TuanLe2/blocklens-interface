@@ -160,7 +160,7 @@ const ActivityMobile: FC<IActivity> = ({ activity, webhook }) => {
             <Flex alignItems="center">
               {`${formatShortText(webhook?.metadata?.creatorAddress || '')}
               ::${webhook?.metadata?.collectionName}
-             ${webhook?.metadata?.name ? `::${webhook?.metadata?.name}` : ''}
+              ${webhook?.metadata?.name ? `::${webhook?.metadata?.name}` : ''}
              `}
             </Flex>
           </Box>
