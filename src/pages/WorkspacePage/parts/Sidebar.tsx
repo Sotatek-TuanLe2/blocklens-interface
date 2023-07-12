@@ -2,7 +2,7 @@ import { Box, Collapse, Flex, Spinner, Text, Tooltip } from '@chakra-ui/react';
 import _, { debounce } from 'lodash';
 import { useCallback, useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { useHistory, useLocation, useParams } from 'react-router-dom';
+import { Link, useHistory, useLocation, useParams } from 'react-router-dom';
 import { CloseMenuIcon, CopyIcon } from 'src/assets/icons';
 import { AppInput } from 'src/components';
 import AppQueryMenu, { QUERY_MENU_LIST } from 'src/components/AppQueryMenu';
@@ -396,9 +396,6 @@ const Sidebar: React.FC<{
                 <div
                   key={query.id}
                   className={getWorkplaceItemClassname(query.id)}
-                  onClick={() =>
-                    history.push(`${ROUTES.MY_QUERY}/${query.id}?`)
-                  }
                 >
                   <Tooltip
                     placement="top"
@@ -424,10 +421,13 @@ const Sidebar: React.FC<{
                           }
                         />
                       </div>
-                      <Text isTruncated>{query.name}</Text>
+                      <Text isTruncated>
+                        <Link to={`${ROUTES.MY_QUERY}/${query.id}?`}>
+                          {query.name}
+                        </Link>
+                      </Text>
                     </Flex>
                   </Tooltip>
-
                   <AppQueryMenu
                     menu={[
                       // QUERY_MENU_LIST.FORK,
