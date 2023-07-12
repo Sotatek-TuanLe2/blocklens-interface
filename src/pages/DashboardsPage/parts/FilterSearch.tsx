@@ -1,10 +1,4 @@
-import {
-  Box,
-  Collapse,
-  Flex,
-  Text,
-  useDisclosure,
-} from '@chakra-ui/react';
+import { Box, Collapse, Flex, Text, useDisclosure } from '@chakra-ui/react';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router';
 import {
