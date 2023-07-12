@@ -82,10 +82,6 @@ const SignUpPage: FC = () => {
     }
   };
 
-  const formatPass = (event) => {
-    return;
-  };
-
   const _renderFormSignUp = () => {
     return (
       <AppCard className="box-form">
