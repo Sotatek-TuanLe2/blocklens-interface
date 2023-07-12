@@ -404,6 +404,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
           }
           animationDuration={200}
           animationEasing={'linear'}
+          filterNull={false}
         />
         {chartOptionsConfigs?.showLegend && (
           <Legend
