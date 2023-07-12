@@ -184,6 +184,13 @@
     .ace_print-margin {
       display: none;
     }
+    .ace_layer {
+      width: 93%;
+      white-space: unset;
+      .ace_line {
+        height: unset !important;
+      }
+    }
   }
 
   .control-editor {
@@ -680,11 +687,7 @@
           gap: 10px;
 
           &:hover {
-            background: linear-gradient(
-              268.85deg,
-              rgba(34, 108, 255, 0.12) 22.48%,
-              rgba(16, 132, 255, 0.12) 83.59%
-            );
+            background: linear-gradient(268.85deg, rgba(34, 108, 255, 0.12) 22.48%, rgba(16, 132, 255, 0.12) 83.59%);
             border: 1px solid #226cff;
             cursor: pointer;
           }
