@@ -82,6 +82,10 @@ const SignUpPage: FC = () => {
     }
   };
 
+  const formatPass = (event) => {
+    return;
+  }
+
   const _renderFormSignUp = () => {
     return (
       <AppCard className="box-form">
@@ -142,7 +146,7 @@ const SignUpPage: FC = () => {
                 validate={{
                   name: `email`,
                   validator: validator.current,
-                  rule: ['required', 'email', 'max:100',],
+                  rule: ['required', 'email', 'max:100'],
                 }}
               />
             </AppField>
@@ -151,12 +155,12 @@ const SignUpPage: FC = () => {
                 value={dataForm.password}
                 type="password"
                 placeholder={'••••••••'}
-                onChange={(e) =>
+                onChange={(e) => {
                   setDataForm({
                     ...dataForm,
-                    password: e.target.value,
+                    password: e.target.value
                   })
-                }
+                }}
                 validate={{
                   name: `password`,
                   validator: validator.current,
