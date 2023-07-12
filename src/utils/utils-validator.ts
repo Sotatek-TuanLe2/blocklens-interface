@@ -123,7 +123,7 @@ export const createValidator = (options?: IOptions | undefined) => {
         },
       },
       formatPassword: {
-        message: 'Your password can’t start or end with a blank space.',
+        message: 'Your password can’t start or end with a blank space',
         rule: (value: string) => {
           return !value.startsWith(' ') && !value.endsWith(' ');
         },
