@@ -84,7 +84,7 @@ const SignUpPage: FC = () => {
 
   const formatPass = (event) => {
     return;
-  }
+  };
 
   const _renderFormSignUp = () => {
     return (
@@ -158,8 +158,8 @@ const SignUpPage: FC = () => {
                 onChange={(e) => {
                   setDataForm({
                     ...dataForm,
-                    password: e.target.value
-                  })
+                    password: e.target.value,
+                  });
                 }}
                 validate={{
                   name: `password`,
