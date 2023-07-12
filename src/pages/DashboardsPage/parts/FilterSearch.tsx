@@ -3,7 +3,6 @@ import {
   Collapse,
   Flex,
   Text,
-  Tooltip,
   useDisclosure,
 } from '@chakra-ui/react';
 import { ChangeEvent, useEffect, useState } from 'react';
@@ -275,24 +274,17 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
                 {listTagsTrending
                   .slice(0, MAX_TRENDING_TAGS)
                   .map((item: string, index: number) => (
-                    <Tooltip
+                    <AppTag
                       key={index}
-                      p={2}
-                      hasArrow
-                      placement="top"
-                      label={item}
-                    >
-                      <AppTag
-                        value={item}
-                        variant="md"
-                        onClick={() => onChangeTag(item)}
-                        selected={item === tag}
-                        h={'32px'}
-                        color={'rgba(0, 2, 36, 0.5)'}
-                        bg={'rgba(0, 2, 36, 0.05)'}
-                        borderRadius={'6px'}
-                      />
-                    </Tooltip>
+                      value={item}
+                      variant="md"
+                      onClick={() => onChangeTag(item)}
+                      selected={item === tag}
+                      h={'32px'}
+                      color={'rgba(0, 2, 36, 0.5)'}
+                      bg={'rgba(0, 2, 36, 0.05)'}
+                      borderRadius={'6px'}
+                    />
                   ))}
               </Flex>
             </Box>

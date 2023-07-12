@@ -149,19 +149,12 @@ const AppGridItem: FC<AppGridItemProps> = ({
             <Flex flexWrap={'wrap'} mt={{ base: 1, lg: 1.5 }} h={'23px'}>
               {!!tagList?.length &&
                 tagList.map((item, index: number) => (
-                  <Tooltip
+                  <AppTag
                     key={index}
-                    p={2}
-                    hasArrow
-                    placement="top"
-                    label={item}
-                  >
-                    <AppTag
-                      value={item}
-                      h={{ base: '24px', lg: '22px' }}
-                      classNames="item-tag"
-                    />
-                  </Tooltip>
+                    value={item}
+                    h={{ base: '24px', lg: '22px' }}
+                    classNames="item-tag"
+                  />
                 ))}
             </Flex>
           </Box>

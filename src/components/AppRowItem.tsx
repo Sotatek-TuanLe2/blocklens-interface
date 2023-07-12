@@ -187,19 +187,12 @@ const AppRowItem: FC<AppRowItemProps> = ({
               <Flex flexGrow={1}>
                 {!!tagList?.length &&
                   tagList.map((item: string, index: number) => (
-                    <Tooltip
+                    <AppTag
                       key={index}
-                      p={2}
-                      hasArrow
-                      placement="top"
-                      label={item}
-                    >
-                      <AppTag
-                        value={item}
-                        h={'24px'}
-                        classNames="article-tag"
-                      />
-                    </Tooltip>
+                      value={item}
+                      h={'24px'}
+                      classNames="article-tag"
+                    />
                   ))}
               </Flex>
             </Flex>
@@ -373,19 +366,12 @@ const AppRowItem: FC<AppRowItemProps> = ({
                 >
                   {!!tagList?.length &&
                     tagList.map((item, index: number) => (
-                      <Tooltip
+                      <AppTag
                         key={index}
-                        p={2}
-                        hasArrow
-                        placement="top"
-                        label={item}
-                      >
-                        <AppTag
-                          value={item}
-                          h={'24px'}
-                          classNames="article-tag"
-                        />
-                      </Tooltip>
+                        value={item}
+                        h={'24px'}
+                        classNames="article-tag"
+                      />
                     ))}
                 </Flex>
               </Flex>

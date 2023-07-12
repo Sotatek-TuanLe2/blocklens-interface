@@ -281,17 +281,9 @@ const Header: React.FC<IHeaderProps> = (props) => {
           ) : (
             <>
               {!!dataClass?.getTags()?.length &&
-                dataClass?.getTags().map((item, index) => (
-                  <Tooltip
-                    key={index}
-                    p={2}
-                    hasArrow
-                    placement="top"
-                    label={item}
-                  >
-                    <AppTag value={item} />
-                  </Tooltip>
-                ))}
+                dataClass
+                  ?.getTags()
+                  .map((item, index) => <AppTag key={index} value={item} />)}
             </>
           )}
         </div>
