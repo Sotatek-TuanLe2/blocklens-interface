@@ -342,12 +342,14 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
               return (
                 <Flex
                   mr={{ base: 2, md: 3 }}
-                  onClick={() => setWidthWidget(item.col)}
+                  onClick={() =>
+                    !visualSelected ? null : setWidthWidget(item.col)
+                  }
                   cursor={'pointer'}
                   key={index}
                   mb={{ base: 3, md: 0 }}
                 >
-                  {widthWidget === item.col ? (
+                  {widthWidget === item.col && !!visualSelected ? (
                     <RadioChecked />
                   ) : (
                     <RadioNoCheckedIcon />
