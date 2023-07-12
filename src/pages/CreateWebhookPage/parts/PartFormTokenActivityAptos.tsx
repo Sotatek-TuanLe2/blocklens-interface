@@ -77,7 +77,7 @@ export const ListSelectEvent = ({
 
   return (
     <Flex className="box-list-events">
-      <Box ml={5} width="100%">
+      <Box ml={{sm: 0, md: 5}} width="100%">
         {!!dataEvent.length && (
           <Checkbox
             size="lg"
