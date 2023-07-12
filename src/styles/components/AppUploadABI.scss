@@ -127,6 +127,12 @@
     @include tablet {
       padding: 20px !important;
       margin-bottom: 20px;
+      background-color: $bg;
+      border: 0;
+
+      .box-events {
+        background-color: $white;
+      }
     }
 
     .chakra-input__left-element {
@@ -140,4 +146,8 @@
   padding: 16px 24px;
   border-radius: 6px;
   width: 100%;
+
+  @include tablet {
+    padding: 16px;
+  }
 }

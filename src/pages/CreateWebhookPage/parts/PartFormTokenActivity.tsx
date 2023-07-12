@@ -33,7 +33,7 @@ const PartFormTokenActivity: FC<IPartFormTokenActivity> = ({
               },
             });
           }}
-          hiddenErrorText={type !== WEBHOOK_TYPES.NFT_ACTIVITY}
+          hiddenErrorText={type !== WEBHOOK_TYPES.TOKEN_ACTIVITY}
           validate={{
             name: `tokenAddress`,
             validator: validator.current,
