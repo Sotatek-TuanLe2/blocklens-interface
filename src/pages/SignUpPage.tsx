@@ -1,6 +1,5 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
 import { FC, useEffect, useRef, useState } from 'react';
-import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import {
   AppButton,
   AppCard,
@@ -9,12 +8,12 @@ import {
   AppLink,
   GoogleAuthButton,
 } from 'src/components';
+import useRecaptcha from 'src/hooks/useRecaptcha';
 import GuestPage from 'src/layouts/GuestPage';
 import ModalResendMail from 'src/modals/ModalResendMail';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/pages/LoginPage.scss';
 import { ROUTES } from 'src/utils/common';
-import { setRecaptchaToRequest } from 'src/utils/utils-auth';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { createValidator } from 'src/utils/utils-validator';
@@ -35,7 +34,7 @@ const SignUpPage: FC = () => {
     password: '',
     confirmPassword: '',
   };
-  const { executeRecaptcha } = useGoogleReCaptcha();
+  const { getAndSetRecaptcha, resetRecaptcha } = useRecaptcha();
 
   const [dataForm, setDataForm] = useState<IDataForm>(initDataSignUp);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
@@ -55,19 +54,12 @@ const SignUpPage: FC = () => {
 
   const onSignUp = async () => {
     try {
-      if (!executeRecaptcha) {
-        toastError({
-          message: 'Oops. Something went wrong!',
-        });
-        return;
-      }
-      const result = await executeRecaptcha('homepage');
-      setRecaptchaToRequest(result);
+      await getAndSetRecaptcha();
       const res = await rf.getRequest('AuthRequest').signUp(dataForm);
       setUserId(res?.userId || '');
       setOpenModalResendEmail(true);
     } catch (e) {
-      setRecaptchaToRequest(null);
+      resetRecaptcha();
       toastError({ message: getErrorMessage(e) });
     }
   };

@@ -18,9 +18,8 @@ import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { setUserAuth } from '../store/user';
 import { ROUTES } from 'src/utils/common';
-import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
-import { setRecaptchaToRequest } from 'src/utils/utils-auth';
 import { getErrorMessage } from 'src/utils/utils-helper';
+import useRecaptcha, { RECAPTCHA_ACTIONS } from 'src/hooks/useRecaptcha';
 
 interface IDataForm {
   email: string;
@@ -36,7 +35,9 @@ const LoginPage: FC = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const location = useLocation();
-  const { executeRecaptcha } = useGoogleReCaptcha();
+  const { getAndSetRecaptcha, resetRecaptcha } = useRecaptcha(
+    RECAPTCHA_ACTIONS.LOGIN,
+  );
 
   const [dataForm, setDataForm] = useState<IDataForm>(initDataLogin);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
@@ -54,12 +55,7 @@ const LoginPage: FC = () => {
 
   const onLogin = async () => {
     try {
-      if (!executeRecaptcha) {
-        console.error('Oops. Something went wrong!');
-        return;
-      }
-      const result = await executeRecaptcha('login');
-      setRecaptchaToRequest(result);
+      await getAndSetRecaptcha();
       const res = await rf.getRequest('AuthRequest').login(dataForm);
       if (res) {
         dispatch(setUserAuth(res));
@@ -67,7 +63,7 @@ const LoginPage: FC = () => {
         history.push((location.state as any)?.originPath);
       }
     } catch (e) {
-      setRecaptchaToRequest(null);
+      resetRecaptcha();
       toastError({ message: getErrorMessage(e) });
     }
   };

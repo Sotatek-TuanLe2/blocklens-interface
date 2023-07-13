@@ -28,12 +28,14 @@ import ModalQuery from 'src/modals/querySQL/ModalQuery';
 import { Query } from 'src/utils/utils-query';
 import { AddChartIcon, QueryResultIcon } from 'src/assets/icons';
 import { STATUS } from 'src/utils/utils-webhook';
+import useRecaptcha from 'src/hooks/useRecaptcha';
 
 export const BROADCAST_FETCH_QUERY = 'FETCH_QUERY';
 
 const QueryPart: React.FC = () => {
   const { queryId } = useParams<{ queryId: string }>();
   const history = useHistory();
+  const { getAndSetRecaptcha } = useRecaptcha();
 
   const DEBOUNCE_TIME = 500;
   const editorRef = useRef<any>();
@@ -132,6 +134,7 @@ const QueryPart: React.FC = () => {
   };
 
   const executeQuery = async (queryId: string): Promise<string> => {
+    await getAndSetRecaptcha();
     const executedResponse: QueryExecutedResponse = await rf
       .getRequest('DashboardsRequest')
       .executeQuery(queryId);
@@ -201,7 +204,7 @@ const QueryPart: React.FC = () => {
       setIsLoadingResult(false);
     } catch (error) {
       setIsLoadingResult(false);
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -277,9 +280,13 @@ const QueryPart: React.FC = () => {
   };
 
   const onSuccessCreateQuery = async (queryResponse: any) => {
-    await executeQuery(queryResponse.id);
-    history.push(`${ROUTES.MY_QUERY}/${queryResponse.id}`);
-    AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
+    try {
+      await executeQuery(queryResponse.id);
+      history.push(`${ROUTES.MY_QUERY}/${queryResponse.id}`);
+      AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const _renderAddChart = () => {
