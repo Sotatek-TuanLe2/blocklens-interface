@@ -264,7 +264,7 @@ const QueryPart: React.FC = () => {
       />
       <div className="query-container queries-page">
         <Box className="queries-page__right-side">
-          <Box className="editor-wrapper ">
+          <Box className="editor-wrapper">
             <div
               className={`${
                 !queryId || !queryValue ? 'cursor-not-allowed' : ''
