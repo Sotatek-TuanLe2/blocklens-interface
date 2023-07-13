@@ -1,18 +1,21 @@
 import {
   Box,
+  BoxProps,
   Button,
   Collapse,
   Drawer,
   DrawerContent,
   DrawerOverlay,
   Flex,
+  Slide,
   Spinner,
   Text,
   Tooltip,
   useDisclosure,
+  useOutsideClick,
 } from '@chakra-ui/react';
 import _, { debounce } from 'lodash';
-import { useCallback, useEffect, useState } from 'react';
+import { FC, ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { Link, useHistory, useLocation, useParams } from 'react-router-dom';
 import { CloseMenuIcon, CopyIcon } from 'src/assets/icons';
@@ -377,7 +380,16 @@ const Sidebar: React.FC<SidebarProps> = ({
 
         <div className="workspace-page__sidebar__content__work-place-wrap__work-place-content">
           <span>Query</span>{' '}
-          <div onClick={handleCreateNewQuery}>
+          <BoxResponsive
+            propsOnlyDesktop={{ onClick: handleCreateNewQuery }}
+            propsOnlyMobile={{
+              onClick: () => {
+                handleCreateNewQuery();
+                onClose();
+                onCloseFilter && onCloseFilter();
+              },
+            }}
+          >
             <Tooltip
               placement="top"
               hasArrow
@@ -389,7 +401,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             >
               <Box cursor={'pointer'} className="icon-plus-light" />
             </Tooltip>
-          </div>
+          </BoxResponsive>
         </div>
         {!!dataQueries.length ? (
           <div
@@ -419,9 +431,16 @@ const Sidebar: React.FC<SidebarProps> = ({
               scrollableTarget="scrollableDivQueries"
             >
               {dataQueries.map((query) => (
-                <div
+                <BoxResponsive
                   key={query.id}
                   className={getWorkplaceItemClassname(query.id)}
+                  displayDesktop="flex"
+                  propsOnlyMobile={{
+                    onClick: () => {
+                      onClose();
+                      onCloseFilter && onCloseFilter();
+                    },
+                  }}
                 >
                   <Tooltip
                     placement="top"
@@ -463,7 +482,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                     item={query}
                     onForkSuccess={onForkSuccess}
                   />
-                </div>
+                </BoxResponsive>
               ))}
             </InfiniteScroll>
           </div>
@@ -471,6 +490,73 @@ const Sidebar: React.FC<SidebarProps> = ({
           _renderNoData()
         )}
       </Box>
+    );
+  };
+
+  const _renderDetailExplore = () => {
+    return (
+      <>
+        <div className="chain-info-desc__header">
+          <Flex align={'center'} maxW={'70%'}>
+            <Box
+              display={{ lg: 'none' }}
+              mr={'10px'}
+              className="bg-chain_default"
+            />
+            <Tooltip
+              placement={'top'}
+              hasArrow
+              label={schemaDescribe[0].table_name}
+              p={2}
+            >
+              <Text isTruncated maxW={'full'} className="info-detail-header">
+                {schemaDescribe[0].table_name}
+              </Text>
+            </Tooltip>
+          </Flex>
+          <div className="header-icon">
+            {pathname.includes(ROUTES.MY_QUERY) && (
+              <div onClick={() => handleCopyQuery(schemaDescribe[0].full_name)}>
+                <CopyIcon className="icon-header" />
+              </div>
+            )}
+            <Box
+              display={{ base: 'none', lg: 'block' }}
+              onClick={() => setSchemaDescribe([])}
+            >
+              <CloseMenuIcon className="icon-header" />
+            </Box>
+          </div>
+        </div>
+        <div className="chain-info-desc__content">
+          {schemaDescribe.map((item, index) => (
+            <Flex
+              key={index + 'schema'}
+              direction={'row'}
+              py="6px"
+              justifyContent={'space-between'}
+              px={{ base: '20px', lg: '16px' }}
+              cursor={'pointer'}
+              onClick={() => handleCopyQuery(item.column_name)}
+            >
+              <Tooltip
+                placement={'top'}
+                hasArrow
+                label={item.column_name}
+                p={2}
+              >
+                <Box isTruncated maxW={'50%'}>
+                  {item.column_name}
+                </Box>
+              </Tooltip>
+              <div className="data-type">
+                <Text isTruncated>{item.data_type}</Text>
+                <CopyIcon />
+              </div>
+            </Flex>
+          ))}
+        </div>
+      </>
     );
   };
 
@@ -526,61 +612,23 @@ const Sidebar: React.FC<SidebarProps> = ({
         )}
 
         {!!schemaDescribe.length && (
-          <Box className="chain-info-desc">
-            <div className="chain-info-desc__header">
-              <Tooltip
-                placement={'top'}
-                hasArrow
-                label={schemaDescribe[0].table_name}
-                p={2}
-              >
-                <Text isTruncated maxW={'70%'}>
-                  {schemaDescribe[0].table_name}
-                </Text>
-              </Tooltip>
-              <div className="header-icon">
-                {pathname.includes(ROUTES.MY_QUERY) && (
-                  <div
-                    onClick={() => handleCopyQuery(schemaDescribe[0].full_name)}
-                  >
-                    <CopyIcon className="icon-header" />
-                  </div>
-                )}
-                <div onClick={() => setSchemaDescribe([])}>
-                  <CloseMenuIcon className="icon-header" />
-                </div>
-              </div>
-            </div>
-            <div className="chain-info-desc__content">
-              {schemaDescribe.map((item, index) => (
-                <Flex
-                  key={index + 'schema'}
-                  direction={'row'}
-                  py="6px"
-                  justifyContent={'space-between'}
-                  px="16px"
-                  cursor={'pointer'}
-                  onClick={() => handleCopyQuery(item.column_name)}
-                >
-                  <Tooltip
-                    placement={'top'}
-                    hasArrow
-                    label={item.column_name}
-                    p={2}
-                  >
-                    <Box isTruncated maxW={'50%'}>
-                      {item.column_name}
-                    </Box>
-                  </Tooltip>
-                  <div className="data-type">
-                    <Text isTruncated>{item.data_type}</Text>
-                    <CopyIcon />
-                  </div>
-                </Flex>
-              ))}
-            </div>
+          <Box
+            display={{ base: 'none !important', lg: 'block !important' }}
+            className="chain-info-desc"
+          >
+            {_renderDetailExplore()}
           </Box>
         )}
+        {/*  */}
+        <Box display={{ lg: 'none !important' }} className="m-chain-info-desc">
+          <SideContentExplore
+            isOpen={!!schemaDescribe.length}
+            onClose={() => setSchemaDescribe([])}
+          >
+            {!!schemaDescribe.length && _renderDetailExplore()}
+          </SideContentExplore>
+        </Box>
+        {/*  */}
       </div>
     );
   };
@@ -659,8 +707,8 @@ const Sidebar: React.FC<SidebarProps> = ({
     );
   };
 
-  return (
-    <>
+  const _renderOnDesktop = () => {
+    return (
       <Flex
         display={{ base: 'none !important', lg: 'flex !important' }}
         className={'workspace-page__sidebar'}
@@ -699,8 +747,90 @@ const Sidebar: React.FC<SidebarProps> = ({
             : _renderContentWorkPlace()}
         </Box>
       </Flex>
-      {_renderOnMobile()}
+    );
+  };
+
+  return (
+    <>
+      <>{_renderOnDesktop()}</>
+      <>{_renderOnMobile()}</>
     </>
+  );
+};
+
+interface AppResponsiveProps extends BoxProps {
+  displayDesktop?: 'block' | 'flex' | 'grid';
+  propsOnlyMobile?: BoxProps;
+  propsOnlyDesktop?: BoxProps;
+}
+
+const BoxResponsive: FC<AppResponsiveProps> = ({
+  displayDesktop = 'block',
+  propsOnlyMobile,
+  propsOnlyDesktop,
+  ...otherProps
+}) => {
+  const restMobile = propsOnlyMobile
+    ? { ...otherProps, ...propsOnlyMobile }
+    : otherProps;
+
+  const restDesktop = propsOnlyDesktop
+    ? { ...otherProps, ...propsOnlyDesktop }
+    : otherProps;
+  return (
+    <>
+      <Box
+        display={{
+          base: 'none !important',
+          lg: `${displayDesktop} !important`,
+        }}
+        {...restDesktop}
+      />
+      <Box display={{ lg: 'none !important' }} {...restMobile} />
+    </>
+  );
+};
+
+interface SideContentExploreProps {
+  isOpen: boolean;
+  onClose: () => void;
+  children: ReactNode;
+}
+
+const SideContentExplore: FC<SideContentExploreProps> = ({
+  isOpen,
+  onClose,
+  children,
+}) => {
+  const [openSide, setOpenSide] = useState<boolean>(isOpen);
+
+  useEffect(() => {
+    setOpenSide(isOpen);
+  }, [isOpen]);
+
+  return (
+    <Slide direction="bottom" in={openSide} className="side-content-explore">
+      <div className="overlay-side" onClick={onClose} />
+      <Flex direction={'column'} className="content-side">
+        <Box pt={'8px'} pb={'11px'} px={4} onClick={onClose} mx={'auto'}>
+          <div className="close-bar" />
+        </Box>
+        <Box
+          flexGrow={1}
+          overflow={'auto'}
+          maxH={'calc(100% - 80px)'}
+          h={'full'}
+        >
+          <div className="body-side">{children}</div>
+        </Box>
+        <Flex align={'center'} gap={'10px'} py={4}>
+          {/* <AppButton size={'lg'} variant={'cancel'} onClick={onClose}>
+            Cancel
+          </AppButton>
+          <AppButton size={'lg'}>Add to Query</AppButton> */}
+        </Flex>
+      </Flex>
+    </Slide>
   );
 };
 
