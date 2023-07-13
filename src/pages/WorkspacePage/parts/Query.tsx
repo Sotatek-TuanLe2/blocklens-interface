@@ -465,7 +465,7 @@ const QueryPart: React.FC = () => {
                 ref={editorRef}
                 mode="sql"
                 theme="tomorrow"
-                width="100%"
+                width="93%"
                 wrapEnabled={true}
                 name="sql_editor"
                 editorProps={{ $blockScrolling: true }}
