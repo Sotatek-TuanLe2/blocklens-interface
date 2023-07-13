@@ -89,7 +89,6 @@
 
   .add-chart-loading-public {
     height: 375px;
-    box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.04);
     justify-content: center;
     border-radius: 6px;
     margin-top: 4px;
@@ -184,6 +183,9 @@
     .ace_print-margin {
       display: none;
     }
+    .ace_text-layer {
+      width: 100%;
+    }
   }
 
   .control-editor {
@@ -275,7 +277,7 @@
       width: fit-content;
       position: absolute;
       z-index: 5;
-      right: 15px;
+      right: 12px;
 
       &:hover {
         cursor: pointer;
@@ -286,7 +288,7 @@
       width: fit-content;
       position: absolute;
       top: 15px;
-      right: 15px;
+      right: 12px;
       cursor: pointer;
       animation: showConfig 0.5s forwards;
     }
@@ -301,13 +303,14 @@
       border-radius: 6px;
       margin-bottom: 8px;
       position: relative;
+      overflow-y: auto;
 
       .ace_gutter {
         overflow: unset;
       }
 
       .ace_editor {
-        overflow-y: auto;
+        overflow: unset;
       }
 
       .ace_scrollbar-v {
@@ -680,11 +683,7 @@
           gap: 10px;
 
           &:hover {
-            background: linear-gradient(
-              268.85deg,
-              rgba(34, 108, 255, 0.12) 22.48%,
-              rgba(16, 132, 255, 0.12) 83.59%
-            );
+            background: linear-gradient(268.85deg, rgba(34, 108, 255, 0.12) 22.48%, rgba(16, 132, 255, 0.12) 83.59%);
             border: 1px solid #226cff;
             cursor: pointer;
           }
