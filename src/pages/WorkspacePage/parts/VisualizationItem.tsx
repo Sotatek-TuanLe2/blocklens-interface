@@ -1,4 +1,4 @@
-import { Flex, Tooltip } from '@chakra-ui/react';
+import { Box, Flex, Tooltip } from '@chakra-ui/react';
 import moment from 'moment';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import 'react-grid-layout/css/styles.css';
@@ -218,7 +218,7 @@ const VisualizationItem = React.memo(
           </div>
           {_renderContent()}
         </div>
-        <div className="box-updated">
+        <Box display={{ base: 'none', lg: 'block' }} className="box-updated">
           <Tooltip
             bg={'#FFFFFF'}
             color={'#000224'}
@@ -232,7 +232,7 @@ const VisualizationItem = React.memo(
           >
             <ClockIcon />
           </Tooltip>
-        </div>
+        </Box>
       </>
     );
   },

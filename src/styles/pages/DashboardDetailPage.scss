@@ -68,18 +68,28 @@
 
         .table-pagination {
           width: 100%;
-          position: fixed;
+          position: absolute;
           bottom: 0px;
           right: 0px;
 
           .data-length {
-            font-size: 14px;
+            @include text-medium-regular;
             color: $paragraph;
+            white-space: nowrap;
+            @media (max-width: 992px) {
+              padding: 0 14px;
+            }
+            @media (max-width: 992px) {
+              @include text-small-regular;
+            }
           }
 
           .app-pagination {
             margin: unset !important;
             padding: 25px 25px 20px 10px;
+            @media (max-width: 992px) {
+              padding-right: 14px;
+            }
 
             & > li {
               font-size: 14px;

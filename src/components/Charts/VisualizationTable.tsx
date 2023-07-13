@@ -436,8 +436,8 @@ const VisualizationTable = <T,>({
       </Box>
       {filteredData?.length > ITEMS_PER_PAGE && (
         <Flex
-          justifyContent={'flex-end'}
-          alignItems={'baseline'}
+          align={'baseline'}
+          justify={{ base: 'space-between', lg: 'flex-end' }}
           className="table-pagination"
         >
           <div className="data-length">{filteredData?.length} rows</div>
