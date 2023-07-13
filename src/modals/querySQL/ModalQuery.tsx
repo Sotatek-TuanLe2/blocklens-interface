@@ -1,11 +1,10 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
-import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { useHistory } from 'react-router';
 import { AppButton, AppInput } from 'src/components';
+import useRecaptcha from 'src/hooks/useRecaptcha';
 import rf from 'src/requests/RequestFactory';
 import { ROUTES, TYPE_OF_MODAL } from 'src/utils/common';
-import { setRecaptchaToRequest } from 'src/utils/utils-auth';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { createValidator } from 'src/utils/utils-validator';
@@ -69,7 +68,7 @@ const ModalQuery = ({
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
 
   const history = useHistory();
-  const { executeRecaptcha } = useGoogleReCaptcha();
+  const { getAndSetRecaptcha } = useRecaptcha();
 
   useEffect(() => {
     setTimeout(() => {
@@ -93,12 +92,7 @@ const ModalQuery = ({
 
   const handleSubmit = async () => {
     if (!isDisableSubmit) {
-      if (!executeRecaptcha) {
-        console.error('Oops. Something went wrong!');
-        return;
-      }
-      const result = await executeRecaptcha('homepage');
-      setRecaptchaToRequest(result);
+      await getAndSetRecaptcha();
       let res;
       setIsDisableSubmit(true);
       const submitData: { name: string; tags: string[] } = {

@@ -1,6 +1,5 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
 import { FC, useEffect, useRef, useState } from 'react';
-import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import {
   AppButton,
   AppCard,
@@ -8,6 +7,7 @@ import {
   AppInput,
   AppLink,
 } from 'src/components';
+import useRecaptcha from 'src/hooks/useRecaptcha';
 import GuestPage from 'src/layouts/GuestPage';
 import ModalResendMail from 'src/modals/ModalResendMail';
 import rf from 'src/requests/RequestFactory';
@@ -25,7 +25,7 @@ const ForgotPasswordPage: FC = () => {
   const initDataRestPassword = {
     email: '',
   };
-  const { executeRecaptcha } = useGoogleReCaptcha();
+  const { getAndSetRecaptcha } = useRecaptcha();
 
   const [dataForm, setDataForm] = useState<IDataForm>(initDataRestPassword);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
@@ -45,14 +45,7 @@ const ForgotPasswordPage: FC = () => {
       return;
     }
     try {
-      if (!executeRecaptcha) {
-        toastError({
-          message: 'Oops. Something went wrong!',
-        });
-        return;
-      }
-      const result = await executeRecaptcha('homepage');
-      setRecaptchaToRequest(result);
+      await getAndSetRecaptcha();
       await rf.getRequest('AuthRequest').forgotPassword(dataForm);
       setOpenModalResendEmail(true);
     } catch (error: any) {
