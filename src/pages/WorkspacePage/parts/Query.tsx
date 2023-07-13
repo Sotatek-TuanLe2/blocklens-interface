@@ -442,7 +442,7 @@ const QueryPart: React.FC = () => {
       >
         <div className="query-container queries-page">
           <Box className="queries-page__right-side">
-            <Box className="editor-wrapper">
+            <Box className={`  editor-wrapper`}>
               <AceEditor
                 className={`ace_editor ace-tomorrow custom-editor 
         
@@ -458,7 +458,7 @@ const QueryPart: React.FC = () => {
                 ref={editorRef}
                 mode="sql"
                 theme="tomorrow"
-                width="100%"
+                width="93%"
                 wrapEnabled={true}
                 name="sql_editor"
                 editorProps={{ $blockScrolling: true }}

@@ -184,12 +184,8 @@
     .ace_print-margin {
       display: none;
     }
-    .ace_layer {
-      width: 93%;
-      white-space: unset;
-      .ace_line {
-        height: unset !important;
-      }
+    .ace_text-layer {
+      width: 100%;
     }
   }
 
@@ -282,7 +278,7 @@
       width: fit-content;
       position: absolute;
       z-index: 5;
-      right: 15px;
+      right: 12px;
 
       &:hover {
         cursor: pointer;
@@ -293,7 +289,7 @@
       width: fit-content;
       position: absolute;
       top: 15px;
-      right: 15px;
+      right: 12px;
       cursor: pointer;
       animation: showConfig 0.5s forwards;
     }
@@ -308,13 +304,14 @@
       border-radius: 6px;
       margin-bottom: 8px;
       position: relative;
+      overflow-y: auto;
 
       .ace_gutter {
         overflow: unset;
       }
 
       .ace_editor {
-        overflow-y: auto;
+        overflow: unset;
       }
 
       .ace_scrollbar-v {
