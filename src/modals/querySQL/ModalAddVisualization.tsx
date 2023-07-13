@@ -208,6 +208,11 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
     toastSuccess({ message: 'Add successfully' });
   };
 
+  const onSelectVisualization = (col: number) => {
+    if (!visualSelected) return undefined;
+    setWidthWidget(col);
+  };
+
   const getIcon = (chain: string | undefined) => {
     switch (chain) {
       case TYPE_VISUALIZATION.table:
@@ -342,10 +347,8 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
               return (
                 <Flex
                   mr={{ base: 2, md: 3 }}
-                  onClick={
-                    !visualSelected ? undefined : () => setWidthWidget(item.col)
-                  }
-                  cursor={!visualSelected ? 'default' : 'pointer'}
+                  onClick={() => onSelectVisualization(item.col)}
+                  cursor={!visualSelected ? 'not-allowed' : 'pointer'}
                   key={index}
                   mb={{ base: 3, md: 0 }}
                 >
