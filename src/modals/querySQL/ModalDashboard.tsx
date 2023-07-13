@@ -1,13 +1,12 @@
 import { Flex, Text } from '@chakra-ui/react';
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
-import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { useHistory } from 'react-router';
 import { AppButton, AppField, AppInput } from 'src/components';
+import useRecaptcha from 'src/hooks/useRecaptcha';
 import { TYPE_MODAL } from 'src/pages/WorkspacePage/parts/Dashboard';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/BaseModal.scss';
 import { ROUTES, TYPE_OF_MODAL } from 'src/utils/common';
-import { setRecaptchaToRequest } from 'src/utils/utils-auth';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { createValidator } from 'src/utils/utils-validator';
@@ -42,7 +41,7 @@ const ModalDashboard: React.FC<IModelNewDashboard> = ({
   };
 
   const history = useHistory();
-  const { executeRecaptcha } = useGoogleReCaptcha();
+  const { getAndSetRecaptcha } = useRecaptcha();
 
   const [dataForm, setDataForm] =
     useState<IDataSettingForm>(initDataFormSetting);
@@ -69,14 +68,7 @@ const ModalDashboard: React.FC<IModelNewDashboard> = ({
 
   const handleSubmitForm = async () => {
     try {
-      if (!executeRecaptcha) {
-        console.error('Oops. Something went wrong!');
-
-        return;
-      }
-      const res = await executeRecaptcha('homepage');
-      setRecaptchaToRequest(res);
-
+      await getAndSetRecaptcha();
       let result;
       setIsDisableSubmit(true);
       const submitData: { name: string; tags: string[] } = {
