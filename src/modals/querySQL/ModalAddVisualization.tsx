@@ -209,7 +209,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   };
 
   const onSelectVisualization = (col: number) => {
-    if (!visualSelected) return undefined;
+    if (!visualSelected) return;
     setWidthWidget(col);
   };
 
