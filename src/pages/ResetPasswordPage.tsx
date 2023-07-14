@@ -29,19 +29,28 @@ const ResetPasswordPage: FC = () => {
   const location = useLocation();
   const param: any = new URLSearchParams(location.search);
 
+  useEffect(() => {
+    if (param.get('id')) {
+      setAuthorizationToRequest(param.get('id'));
+    } else history.replace(ROUTES.LOGIN);
+  }, [param]);
+
   const handleSubmitResetPassword = async () => {
     if (!dataForm.confirmPassword || !dataForm.newPassword) {
       toastError({
-        message: `${'Oops. Something went wrong!'}`,
+        message: 'Oops. Something went wrong!',
       });
       return;
     }
+
     try {
-      await rf.getRequest('AuthRequest').resetPassword(dataForm);
-      toastSuccess({ message: 'Reset password is successfully.' });
-      setAuthorizationToRequest('');
-      setDataForm({ ...initDataResetPassword });
-      history.replace(ROUTES.LOGIN);
+      const res = await rf.getRequest('AuthRequest').resetPassword(dataForm);
+      if (res?.message === 'Successful') {
+        toastSuccess({ message: 'Reset password is successfully.' });
+        setAuthorizationToRequest('');
+        setDataForm({ ...initDataResetPassword });
+        history.replace(ROUTES.LOGIN);
+      }
     } catch (error) {
       toastError({
         message: getErrorMessage(error),
@@ -59,12 +68,6 @@ const ResetPasswordPage: FC = () => {
     const isDisabled = !validator.current.allValid();
     setIsDisableSubmit(isDisabled);
   }, [dataForm]);
-
-  useEffect(() => {
-    if (param.get('id')) {
-      setAuthorizationToRequest(param.get('id'));
-    } else history.replace(ROUTES.LOGIN);
-  }, []);
 
   return (
     <GuestPage>
