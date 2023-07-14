@@ -29,6 +29,12 @@ const ResetPasswordPage: FC = () => {
   const location = useLocation();
   const param: any = new URLSearchParams(location.search);
 
+  useEffect(() => {
+    if (param.get('id')) {
+      setAuthorizationToRequest(param.get('id'));
+    } else history.replace(ROUTES.LOGIN);
+  }, [param]);
+
   const handleSubmitResetPassword = async () => {
     if (!dataForm.confirmPassword || !dataForm.newPassword) {
       toastError({
@@ -59,12 +65,6 @@ const ResetPasswordPage: FC = () => {
     const isDisabled = !validator.current.allValid();
     setIsDisableSubmit(isDisabled);
   }, [dataForm]);
-
-  useEffect(() => {
-    if (param.get('id')) {
-      setAuthorizationToRequest(param.get('id'));
-    } else history.replace(ROUTES.LOGIN);
-  }, []);
 
   return (
     <GuestPage>
