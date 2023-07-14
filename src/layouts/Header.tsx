@@ -165,6 +165,17 @@ const Header: FC = () => {
     }
   };
 
+  const isShowLoginBtn = () => {
+    const hiddenBtnPath = [
+      ROUTES.LOGIN,
+      ROUTES.FORGOT_PASSWORD,
+      ROUTES.RESET_PASSWORD,
+      ROUTES.SIGN_UP,
+    ];
+    return !accessToken && !hiddenBtnPath.includes(location.pathname);
+  };
+  console.log(isShowLoginBtn(), 'isShowLoginBtn');
+
   const _renderMenu = () => {
     return (
       <Flex className={`${isMobile ? 'menu-mobile' : 'menu'}`}>
@@ -243,7 +254,7 @@ const Header: FC = () => {
           />
         </Box>
         <Flex alignItems={'center'}>
-          {isMobile && !accessToken && location.pathname !== ROUTES.LOGIN && (
+          {isMobile && isShowLoginBtn() && (
             <AppButton onClick={() => history.push(ROUTES.LOGIN)} mr={5}>
               Log In
             </AppButton>
@@ -252,7 +263,7 @@ const Header: FC = () => {
           {_renderContent()}
         </Flex>
 
-        {!isMobile && !accessToken && location.pathname !== ROUTES.LOGIN && (
+        {!isMobile && isShowLoginBtn() && (
           <AppButton onClick={() => history.push(ROUTES.LOGIN)}>
             Log In
           </AppButton>
