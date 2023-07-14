@@ -38,16 +38,19 @@ const ResetPasswordPage: FC = () => {
   const handleSubmitResetPassword = async () => {
     if (!dataForm.confirmPassword || !dataForm.newPassword) {
       toastError({
-        message: `${'Oops. Something went wrong!'}`,
+        message: 'Oops. Something went wrong!',
       });
       return;
     }
+
     try {
-      await rf.getRequest('AuthRequest').resetPassword(dataForm);
-      toastSuccess({ message: 'Reset password is successfully.' });
-      setAuthorizationToRequest('');
-      setDataForm({ ...initDataResetPassword });
-      history.replace(ROUTES.LOGIN);
+      const res = await rf.getRequest('AuthRequest').resetPassword(dataForm);
+      if (res?.message === 'Successful') {
+        toastSuccess({ message: 'Reset password is successfully.' });
+        setAuthorizationToRequest('');
+        setDataForm({ ...initDataResetPassword });
+        history.replace(ROUTES.LOGIN);
+      }
     } catch (error) {
       toastError({
         message: getErrorMessage(error),
