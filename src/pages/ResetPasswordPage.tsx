@@ -50,6 +50,13 @@ const ResetPasswordPage: FC = () => {
         setAuthorizationToRequest('');
         setDataForm({ ...initDataResetPassword });
         history.replace(ROUTES.LOGIN);
+        return;
+      }
+
+      if (!res) {
+        toastError({
+          message: 'Unauthorized',
+        });
       }
     } catch (error) {
       toastError({
