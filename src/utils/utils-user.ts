@@ -219,10 +219,10 @@ export class User implements UserInterface {
   }
 
   isPaymentMethodIntegrated(): boolean {
-    return !!this.billing.payment.isPaymentMethodIntegrated;
+    return this.billing.payment.isPaymentMethodIntegrated;
   }
 
   isNotificationEnabled(): boolean {
-    return !!this.settings.notificationEnabled;
+    return this.settings.notificationEnabled;
   }
 }

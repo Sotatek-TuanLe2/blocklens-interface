@@ -5,21 +5,29 @@
   position: relative;
   height: 94%;
   display: flex;
+  align-items: center;
   justify-content: center;
 
-  .counter-result {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  &__content {
+    font-size: 21px;
+    line-height: 32px;
+    text-align: center;
+    max-width: 80%;
 
-    .text-result {
-      font-size: 21px;
-      line-height: 32px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+    &__value {
+      font-size: 28px;
+      line-height: 38px;
+      font-weight: 700;
+    }
+
+    &__label {
+      font-size: 18px;
+      line-height: 26px;
+      font-weight: 400;
+      color: $paragraph2;
     }
   }
+
   &::after {
     content: '';
     display: block;

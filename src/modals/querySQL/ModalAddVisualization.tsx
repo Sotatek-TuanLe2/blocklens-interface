@@ -86,7 +86,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
     [],
   );
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const [widthWidget, setWidthWidget] = useState<number>(TOTAL_COL / 2);
+  const [widthWidget, setWidthWidget] = useState<number>(0);
   const [dataVisualPagination, setDataVisualPagination] = useState<
     IPagination | undefined
   >();
@@ -162,7 +162,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
       setWidthWidget(TOTAL_COL);
     } else if (visualSelected?.type === TYPE_VISUALIZATION.counter) {
       setWidthWidget(TOTAL_COL / 4);
-    } else {
+    } else if (visualSelected?.type) {
       setWidthWidget(TOTAL_COL / 2);
     }
   }, [visualSelected]);
@@ -206,6 +206,11 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
     onSave([...dataLayouts, newVisualization]);
     onClose();
     toastSuccess({ message: 'Add successfully' });
+  };
+
+  const onSelectVisualization = (col: number) => {
+    if (!visualSelected) return;
+    setWidthWidget(col);
   };
 
   const getIcon = (chain: string | undefined) => {
@@ -342,8 +347,8 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
               return (
                 <Flex
                   mr={{ base: 2, md: 3 }}
-                  onClick={() => setWidthWidget(item.col)}
-                  cursor={'pointer'}
+                  onClick={() => onSelectVisualization(item.col)}
+                  cursor={!visualSelected ? 'not-allowed' : 'pointer'}
                   key={index}
                   mb={{ base: 3, md: 0 }}
                 >
@@ -407,11 +412,7 @@ const AddVisualizationCheckbox: React.FC<IAddVisualizationCheckbox> = ({
   };
 
   const handleCheckboxChange = (data: IListMyQueries) => {
-    if (visualSelected?.id === data.id) {
-      setVisualSelected('');
-    } else {
-      setVisualSelected(data);
-    }
+    setVisualSelected(data);
   };
 
   return (

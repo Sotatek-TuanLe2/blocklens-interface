@@ -3,7 +3,6 @@ import { useHistory } from 'react-router';
 import { AppButton, AppLink } from 'src/components';
 import 'src/styles/layout/Header.scss';
 import Storage from 'src/utils/utils-storage';
-// import { RootState } from 'src/store';
 import {
   Avatar,
   Box,
@@ -43,7 +42,6 @@ const menus = [
   },
 ];
 
-// const [isAccountActive, setIsAccountActive] = useState<boolean>(false);
 const Header: FC = () => {
   const [isOpenSignInRequestModal, setIsOpenSignInRequestModal] =
     useState<boolean>(false);
@@ -62,7 +60,10 @@ const Header: FC = () => {
   }, []);
 
   useEffect(() => {
-    AppBroadcast.on('REQUEST_SIGN_IN', onSignInRequest);
+    if(location.pathname !== ROUTES.RESET_PASSWORD) {
+      AppBroadcast.on('REQUEST_SIGN_IN', onSignInRequest);
+    }
+
     return () => {
       AppBroadcast.remove('REQUEST_SIGN_IN');
     };
@@ -106,7 +107,6 @@ const Header: FC = () => {
               <div className="user-email">{user?.getEmail()}</div>
 
               <Box
-                // className="user-account "
                 className={`user-account ${
                   isActiveMenu(ROUTES.ACCOUNT) ? 'active' : ''
                 }`}
@@ -131,9 +131,6 @@ const Header: FC = () => {
             </MenuItem>
           </MenuList>
         </Menu>
-        {/* <Button size="sm" colorScheme="blue" onClick={toggleColorMode}>
-          Toggle Mode
-        </Button> */}
       </Box>
     );
   };
@@ -163,6 +160,16 @@ const Header: FC = () => {
         location.pathname.includes('queries')
       );
     }
+  };
+
+  const isShowLoginBtn = () => {
+    const hiddenBtnPath = [
+      ROUTES.LOGIN,
+      ROUTES.FORGOT_PASSWORD,
+      ROUTES.RESET_PASSWORD,
+      ROUTES.SIGN_UP,
+    ];
+    return !accessToken && !hiddenBtnPath.includes(location.pathname);
   };
 
   const _renderMenu = () => {
@@ -243,7 +250,7 @@ const Header: FC = () => {
           />
         </Box>
         <Flex alignItems={'center'}>
-          {isMobile && !accessToken && location.pathname !== ROUTES.LOGIN && (
+          {isMobile && isShowLoginBtn() && (
             <AppButton onClick={() => history.push(ROUTES.LOGIN)} mr={5}>
               Log In
             </AppButton>
@@ -252,7 +259,7 @@ const Header: FC = () => {
           {_renderContent()}
         </Flex>
 
-        {!isMobile && !accessToken && location.pathname !== ROUTES.LOGIN && (
+        {!isMobile && isShowLoginBtn() && (
           <AppButton onClick={() => history.push(ROUTES.LOGIN)}>
             Log In
           </AppButton>
