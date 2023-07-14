@@ -36,7 +36,11 @@ const UserAPIKey = () => {
       <Box>
         <Box className="user-api__label">
           You can query blockchain data via api by API keys now. See more in{' '}
-          <a href="https://docsblocklens.readme.io/reference/overview" target='_blank' className="link">
+          <a
+            href="https://docsblocklens.readme.io/reference/overview"
+            target="_blank"
+            className="link"
+          >
             Our docs.
           </a>
         </Box>
