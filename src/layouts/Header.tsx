@@ -60,7 +60,10 @@ const Header: FC = () => {
   }, []);
 
   useEffect(() => {
-    AppBroadcast.on('REQUEST_SIGN_IN', onSignInRequest);
+    if(location.pathname !== ROUTES.RESET_PASSWORD) {
+      AppBroadcast.on('REQUEST_SIGN_IN', onSignInRequest);
+    }
+
     return () => {
       AppBroadcast.remove('REQUEST_SIGN_IN');
     };
@@ -104,7 +107,6 @@ const Header: FC = () => {
               <div className="user-email">{user?.getEmail()}</div>
 
               <Box
-                // className="user-account "
                 className={`user-account ${
                   isActiveMenu(ROUTES.ACCOUNT) ? 'active' : ''
                 }`}
