@@ -3,7 +3,6 @@ import { useHistory } from 'react-router';
 import { AppButton, AppLink } from 'src/components';
 import 'src/styles/layout/Header.scss';
 import Storage from 'src/utils/utils-storage';
-// import { RootState } from 'src/store';
 import {
   Avatar,
   Box,
@@ -43,7 +42,6 @@ const menus = [
   },
 ];
 
-// const [isAccountActive, setIsAccountActive] = useState<boolean>(false);
 const Header: FC = () => {
   const [isOpenSignInRequestModal, setIsOpenSignInRequestModal] =
     useState<boolean>(false);
@@ -131,9 +129,6 @@ const Header: FC = () => {
             </MenuItem>
           </MenuList>
         </Menu>
-        {/* <Button size="sm" colorScheme="blue" onClick={toggleColorMode}>
-          Toggle Mode
-        </Button> */}
       </Box>
     );
   };
@@ -174,7 +169,6 @@ const Header: FC = () => {
     ];
     return !accessToken && !hiddenBtnPath.includes(location.pathname);
   };
-  console.log(isShowLoginBtn(), 'isShowLoginBtn');
 
   const _renderMenu = () => {
     return (
