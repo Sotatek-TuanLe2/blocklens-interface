@@ -60,7 +60,7 @@ const Header: FC = () => {
   }, []);
 
   useEffect(() => {
-    if(location.pathname !== ROUTES.RESET_PASSWORD) {
+    if (location.pathname !== ROUTES.RESET_PASSWORD) {
       AppBroadcast.on('REQUEST_SIGN_IN', onSignInRequest);
     }
 
