@@ -1,0 +1,20 @@
+@import '../color-variables.scss';
+@import '../mixins.scss';
+
+.app-editable {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  &__input {
+    height: 30px !important;
+    font-weight: 600;
+    &:focus {
+      border-color: none;
+      box-shadow: none !important;
+    }
+  }
+  &__preview{
+    font-weight: 600;
+
+  }
+}
