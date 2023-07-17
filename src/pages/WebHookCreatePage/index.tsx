@@ -74,6 +74,18 @@ const initDataCreateWebHook = {
   },
 };
 
+const initDataCreateWebHook = {
+  webhook: '',
+  type: '',
+  hashTags: [],
+  metadata: {
+    coinType: '',
+    events: [],
+    addresses: [],
+    address: '',
+  },
+};
+
 const WebHookCreatePage: React.FC = () => {
   const [dataForm, setDataForm] = useState<IDataForm>(initDataCreateWebHook);
   const [type, setType] = useState<string>(WEBHOOK_TYPES.ADDRESS_ACTIVITY);
