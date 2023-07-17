@@ -9,12 +9,13 @@ import AppQueryMenu, { QUERY_MENU_LIST } from 'src/components/AppQueryMenu';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import rf from 'src/requests/RequestFactory';
 import { IPagination, ROUTES, SchemaType } from 'src/utils/common';
-import { IQuery } from 'src/utils/query.type';
+import { IDashboardDetail, IQuery } from 'src/utils/query.type';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
-import { copyToClipboard } from 'src/utils/utils-helper';
+import { copyToClipboard, getErrorMessage } from 'src/utils/utils-helper';
 import { getChainIconByChainName } from 'src/utils/utils-network';
 import { BROADCAST_FETCH_DASHBOARD } from './Dashboard';
 import { BROADCAST_FETCH_QUERY } from './Query';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
 
 export const BROADCAST_FETCH_WORKPLACE_DATA = 'FETCH_WORKPLACE_DATA';
 
@@ -319,6 +320,18 @@ const Sidebar: React.FC<{
       : AppBroadcast.dispatch(BROADCAST_FETCH_QUERY, response.id);
   };
 
+  const onDeleteSuccess = async (item: IQuery | IDashboardDetail) => {
+    try {
+      await rf
+        .getRequest('DashboardsRequest')
+        .deleteVisualization({ visualId: dashboardId });
+      toastSuccess({ message: 'Delete query successfully!' });
+    } catch (error: any) {
+      toastError({ message: getErrorMessage(error) });
+    }
+    item.id === queryId || item.id === dashboardId ? history.goBack() : '';
+  };
+
   const _renderNoData = () => (
     <Box pl="16px" className="data-empty">
       No data...
@@ -436,6 +449,7 @@ const Sidebar: React.FC<{
                     itemType={LIST_ITEM_TYPE.QUERIES}
                     item={query}
                     onForkSuccess={onForkSuccess}
+                    onDeleteSuccess={onDeleteSuccess}
                   />
                 </div>
               ))}

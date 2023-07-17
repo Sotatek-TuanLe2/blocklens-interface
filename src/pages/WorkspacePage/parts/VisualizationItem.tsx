@@ -183,11 +183,6 @@ const VisualizationItem = React.memo(
       return <NoDataItem errorMessage={errorExecuteQuery?.message} />;
     };
 
-    console.log(
-      'visualization.query?.updatedAt',
-      visualization.query?.updatedAt,
-    );
-
     return (
       <>
         <div className="visual-container__visualization">

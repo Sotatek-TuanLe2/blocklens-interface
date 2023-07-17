@@ -17,9 +17,9 @@ import { AppBroadcast } from 'src/utils/utils-broadcast';
 import { BROADCAST_FETCH_DASHBOARD } from './Dashboard';
 import { BROADCAST_FETCH_QUERY } from './Query';
 import { BROADCAST_FETCH_WORKPLACE_DATA } from './Sidebar';
-// import rf from 'src/requests/RequestFactory';
-// import { getErrorMessage } from 'src/utils/utils-helper';
-// import { toastError } from 'src/utils/utils-notify';
+import rf from 'src/requests/RequestFactory';
+import { getErrorMessage } from 'src/utils/utils-helper';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { Dashboard } from 'src/utils/utils-dashboard';
 import { Query } from 'src/utils/utils-query';
 import { IconDotMore } from 'src/assets/icons';
@@ -54,6 +54,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
     onRunQuery,
     onChangeEditMode,
   } = props;
+
   const history = useHistory();
   const { queryId, dashboardId } = useParams<{
     queryId: string;
@@ -81,7 +82,15 @@ const Header: React.FC<IHeaderProps> = (props) => {
 
   const onDeleteSuccess = async (item: IQuery | IDashboardDetail) => {
     if (item.id === queryId || item.id === dashboardId) {
-      history.push(ROUTES.HOME);
+      try {
+        await rf
+          .getRequest('DashboardsRequest')
+          .deleteVisualization({ visualId: dashboardId });
+        toastSuccess({ message: 'Delete dashboard successfully!' });
+      } catch (error: any) {
+        toastError({ message: getErrorMessage(error) });
+      }
+      history.goBack();
     } else {
       AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
     }
