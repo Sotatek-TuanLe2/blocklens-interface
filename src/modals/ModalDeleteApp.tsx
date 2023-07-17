@@ -54,7 +54,7 @@ const ModalDeleteApp: FC<IModalEditApp> = ({ open, onClose, appInfo }) => {
       isFullScreen={isMobile}
     >
       <AppField
-        label={'Type App Name below to confirm'}
+        label={'Type Project Name below to confirm'}
         customWidth={'100%'}
         isRequired
       >

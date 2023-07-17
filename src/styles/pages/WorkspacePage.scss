@@ -219,14 +219,11 @@
               align-items: center;
               gap: 10px;
               justify-content: end;
-              div {
+              .icon-header {
                 cursor: pointer;
-
-                .icon-header {
-                  color: white;
-                  width: 14px;
-                  height: 14px;
-                }
+                color: white;
+                width: 14px;
+                height: 14px;
               }
             }
           }
@@ -338,7 +335,6 @@
           font-size: 14px;
           line-height: 20px;
           width: 150px;
-          //height: 60px;
           padding: 10px 0;
           height: max-content;
           border-radius: 8px;
@@ -454,14 +450,6 @@
         overflow: hidden;
         gap: 5px;
 
-        // @media (max-width: 992px) {
-        //   padding-bottom: 14px;
-        //   border-bottom: 1px solid $disable;
-        //   margin-bottom: 14px;
-        //   width: 100%;
-        //   justify-content: space-between;
-        // }
-
         .btn-back {
           &:hover {
             background-color: $bg1;
@@ -484,15 +472,6 @@
             white-space: nowrap;
             overflow: hidden;
             max-width: 100%;
-
-            // @media (max-width: 992px) {
-            //   width: 194px;
-            //   overflow: hidden;
-            //   text-overflow: ellipsis;
-            //   -webkit-line-clamp: 1;
-            //   display: -webkit-box;
-            //   -webkit-box-orient: vertical;
-            // }
           }
 
           img {
@@ -505,11 +484,6 @@
       &__right {
         display: flex;
         align-items: center;
-
-        @media (max-width: 992px) {
-          // justify-content: flex-start;
-          // width: 100%;
-        }
 
         .btn-list {
           padding: 0;
@@ -600,7 +574,6 @@
   }
 }
 
-// 
 .text-header {
   @include heading-7;
 }

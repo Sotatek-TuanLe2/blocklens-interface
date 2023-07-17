@@ -183,6 +183,11 @@ const VisualizationItem = React.memo(
       return <NoDataItem errorMessage={errorExecuteQuery?.message} />;
     };
 
+    console.log(
+      'visualization.query?.updatedAt',
+      visualization.query?.updatedAt,
+    );
+
     return (
       <>
         <div className="visual-container__visualization">
@@ -225,7 +230,7 @@ const VisualizationItem = React.memo(
             fontWeight="400"
             p={2}
             label={`Updated: ${moment(visualization.query?.updatedAt).format(
-              'YYYY/MM/DD HH:MM',
+              'YYYY/MM/DD HH:mm',
             )}`}
             placement={'top-start'}
             hasArrow

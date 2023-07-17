@@ -42,6 +42,7 @@ const AppInput = forwardRef<AppInputProps, any>(
       validate,
       endAdornment,
       hiddenErrorText = false,
+      className = '',
       ...props
     },
     ref,
@@ -67,6 +68,9 @@ const AppInput = forwardRef<AppInputProps, any>(
           <Input
             type={type === 'password' && isShowPassword ? 'text' : type}
             {...props}
+            className={`${className} ${
+              type === 'password' ? 'input-password' : ''
+            }`}
             variant={variant}
             onBlur={onBlur}
             ref={ref}
