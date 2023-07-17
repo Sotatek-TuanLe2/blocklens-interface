@@ -31,6 +31,7 @@ import { STATUS } from 'src/utils/utils-webhook';
 import useRecaptcha from 'src/hooks/useRecaptcha';
 
 export const BROADCAST_FETCH_QUERY = 'FETCH_QUERY';
+export const BROADCAST_ADD_TO_EDITOR = 'ADD_TO_EDITOR';
 
 const QueryPart: React.FC = () => {
   const { queryId } = useParams<{ queryId: string }>();
@@ -60,9 +61,18 @@ const QueryPart: React.FC = () => {
       setIsLoadingQuery(true);
       await fetchQuery(id);
     });
+    AppBroadcast.on(BROADCAST_ADD_TO_EDITOR, (text: string) => {
+      if (editorRef.current) {
+        editorRef.current.editor.session.insert(
+          editorRef.current.editor.getCursorPosition(),
+          ` ${text} `,
+        );
+      }
+    });
 
     return () => {
       AppBroadcast.remove(BROADCAST_FETCH_QUERY);
+      AppBroadcast.remove(BROADCAST_ADD_TO_EDITOR);
     };
   }, []);
 

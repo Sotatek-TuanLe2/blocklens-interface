@@ -349,7 +349,7 @@ const DashboardPart: React.FC = () => {
         data={dataDashboard}
         isEdit={editMode}
         isLoadingRun={isLoading || isSavingDashboard}
-        isEmptyDashboard={isEmptyDashboard && !!dataLayouts.length}
+        isEmptyDashboard={isEmptyDashboard && !dataLayouts.length}
         onChangeEditMode={onChangeEditMode}
       />
       {isLoading ? (
