@@ -1,9 +1,17 @@
 import { Box, Flex, Grid, GridItem, Text } from '@chakra-ui/react';
 import { CHAINS, WEBHOOK_TYPES } from 'src/utils/utils-webhook';
-import React from 'react';
-import { AppCard, AppLink, AppEditable, AppEditableTags } from 'src/components';
+import React, { useCallback, useRef, useState } from 'react';
+import {
+  AppCard,
+  AppLink,
+  AppEditable,
+  AppEditableTags,
+  AppField,
+  AppComplete,
+} from 'src/components';
 import 'src/styles/pages/CreateHookForm.scss';
 import { BasePage } from 'src/layouts';
+import { createValidator } from 'src/utils/utils-validator';
 
 interface IMetadata {
   coinType?: string;
@@ -22,6 +30,7 @@ interface IMetadata {
 export interface IDataForm {
   webhook: string;
   type: string;
+  hashTags: string[];
   metadata?: IMetadata;
 }
 
@@ -44,15 +53,75 @@ const optionsWebhookAptosType = [
   },
 ];
 
+const initDataCreateWebHook = {
+  webhook: '',
+  type: '',
+  hashTags: [],
+  metadata: {
+    coinType: '',
+    events: [],
+    addresses: [],
+    address: '',
+  },
+};
+
 const WebHookCreatePage: React.FC = () => {
+  const [dataForm, setDataForm] = useState<IDataForm>(initDataCreateWebHook);
+  const [type, setType] = useState<string>(WEBHOOK_TYPES.NFT_ACTIVITY);
+  const [, updateState] = useState<any>();
+
+  const forceUpdate = useCallback(() => updateState({}), []);
+
+  const validator = useRef(
+    createValidator({
+      element: (message: string) => (
+        <Text className="text-error">{message}</Text>
+      ),
+    }),
+  );
+
+  const onChangeWebhookType = (value: string) => {
+    if (type === value) return;
+    setDataForm(initDataCreateWebHook);
+    validator.current.fields = [];
+    forceUpdate();
+    setType(value);
+    // onClearFile();
+  };
+
   const _renderIdentification = () => {
     return (
       <>
         <Text className="title">Webhook Name</Text>
         <AppEditable defaultValue="Webhook 1" />
         <Text className="title">Hashtag</Text>
-        <AppEditableTags tags={['newproject1']} />
+        <AppEditableTags
+          onSubmit={(value) => {
+            setDataForm((pre) => ({
+              ...pre,
+              hashTags: [...pre.hashTags, value],
+            }));
+          }}
+          onRemove={(value) => {
+            const newValue = dataForm.hashTags.filter((tag) => value !== tag);
+            setDataForm((pre) => ({
+              ...pre,
+              hashTags: newValue,
+            }));
+          }}
+          tags={dataForm.hashTags}
+        />
         <Text className="title">Project</Text>
+        <AppField label={'Webhook Type'} customWidth={'100%'} isRequired>
+          <AppComplete
+            className="select-type-webhook"
+            size="large"
+            options={optionsWebhookAptosType}
+            value={type}
+            onChange={onChangeWebhookType}
+            extraFooter={() => <Box>hihi</Box>}
+          />
+        </AppField>
       </>
     );
   };

@@ -1,0 +1,104 @@
+@import '../color-variables.scss';
+@import '../mixins.scss';
+
+.complete-app {
+  &__control {
+    @include text-medium-regular;
+    background-color: $bg2 !important;
+    border-color: $line !important;
+    height: 48px;
+    border-radius: 6px !important;
+    cursor: pointer;
+
+    &:focus {
+      border-color: $main;
+    }
+
+    .label-option {
+      color: $title;
+    }
+  }
+}
+
+.app-complete {
+  position: relative;
+  z-index: 2;
+
+  &__btn-complete {
+    @include text-medium-regular;
+    border: 1px solid $line;
+    align-items: center;
+    border-radius: 6px;
+    z-index: 2;
+    background: #fff;
+    justify-content: space-between;
+    cursor: pointer;
+    border: 1px solid $line;
+
+    .icon {
+      margin-right: 10px;
+    }
+  }
+
+  &.small {
+    .app-complete__btn-complete {
+      height: 32px;
+      padding: 0 16px;
+    }
+  }
+
+  &.medium {
+    .app-complete__btn-complete {
+      height: 40px;
+      padding: 0 20px;
+    }
+  }
+
+  &.large {
+    .app-complete__btn-complete {
+      height: 48px;
+      padding: 0 24px;
+    }
+  }
+
+  &__menu {
+    box-shadow: 0px 10px 40px rgba(125, 143, 179, 0.2);
+    border-radius: 0 0 8px 8px;
+    width: 100%;
+    background: #fff;
+    top: 10px;
+    padding-top: 30px;
+    padding-bottom: 10px;
+    z-index: -1;
+  }
+  &__menu-content {
+    max-height: 200px;
+    overflow-y: auto;
+  }
+
+  &.large {
+    .app-complete__menu {
+      top: 30px;
+    }
+  }
+
+  &__menu-item {
+    @include text-medium-regular;
+    cursor: pointer;
+    padding: 8px 18px;
+    align-items: center;
+    font-size: 14px;
+    background-color: #fff;
+    color: $title;
+
+    &:hover,
+    &.completeed {
+      background: $gradient;
+      color: #fff;
+    }
+
+    .icon {
+      margin-right: 10px;
+    }
+  }
+}
