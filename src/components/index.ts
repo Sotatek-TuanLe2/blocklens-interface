@@ -27,6 +27,7 @@ export { default as AppRowItem } from './AppRowItem';
 export { default as AppReadABI } from './AppReadABI';
 export { default as AppEditable } from './AppEditable';
 export { default as AppEditableTags } from './AppEditableTags';
+export { default as AppComplete } from './AppComplete';
 
 export * from './AppCard';
 export * from './AppButton';
@@ -51,3 +52,4 @@ export * from './AppLoadingTable';
 export * from './AppCard';
 export * from './AppEditable';
 export * from './AppEditableTags';
+export * from './AppComplete';
