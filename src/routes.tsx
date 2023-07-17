@@ -154,7 +154,10 @@ const Routes: FC<RouteComponentProps> = () => {
           path={`${ROUTES.MY_QUERY}/:queryId?`}
           component={WorkspacePage}
         />
-        <PrivateRoute path={ROUTES.CREATE_WEBHOOK} component={WebHookCreatePage} />
+        <PrivateRoute
+          path={ROUTES.CREATE_WEBHOOK}
+          component={WebHookCreatePage}
+        />
         <Route path={ROUTES.CONTACT_US} component={ContactUs} />
         <Route path={ROUTES.HOME} component={DashboardsPage} />
 
