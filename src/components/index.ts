@@ -25,6 +25,8 @@ export { default as AppMenu } from './AppMenu';
 export { default as AppGridItem } from './AppGridItem';
 export { default as AppRowItem } from './AppRowItem';
 export { default as AppReadABI } from './AppReadABI';
+export { default as AppEditable } from './AppEditable';
+export { default as AppEditableTags } from './AppEditableTags';
 
 export * from './AppCard';
 export * from './AppButton';
@@ -46,4 +48,6 @@ export * from './AppGraph';
 export * from './AppHeading';
 export * from './AppFilter';
 export * from './AppLoadingTable';
-export * from './AppTabs';
+export * from './AppCard';
+export * from './AppEditable';
+export * from './AppEditableTags';
