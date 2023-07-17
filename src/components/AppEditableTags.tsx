@@ -1,13 +1,12 @@
-import React, { FC, useState, useRef } from 'react';
+import React, { FC, useState } from 'react';
+import { chakra } from '@chakra-ui/system';
 import {
-  ButtonGroup,
   Editable,
   EditableInput,
   EditablePreview,
   Flex,
   IconButton,
   Input,
-  EditableProps,
   InputLeftElement,
   InputRightElement,
   InputGroup,
@@ -20,6 +19,8 @@ import { CloseIcon, AddIcon } from '@chakra-ui/icons';
 interface IAppEditableTagsProps {
   tags: string[];
   className?: string;
+  onSubmit?: (value: string) => void;
+  onRemove?: (value: string) => void;
 }
 
 const CustomPreview = () => {
@@ -42,7 +43,7 @@ const CustomPreview = () => {
   );
 };
 
-const CustomInput = () => {
+const CustomInput = ({ onCancel }: { onCancel: () => void }) => {
   const { isEditing, getCancelButtonProps } = useEditableControls();
   return (
     <InputGroup size="sm" className={`hashtags-editable__input`}>
@@ -53,10 +54,11 @@ const CustomInput = () => {
           <IconButton
             className="icon-btn"
             aria-label="close"
-            // size="xs"
             variant="unstyled"
             icon={<CloseIcon />}
-            {...getCancelButtonProps()}
+            {...getCancelButtonProps({
+              onClick: onCancel,
+            })}
           />
         </InputRightElement>
       )}
@@ -64,11 +66,26 @@ const CustomInput = () => {
   );
 };
 
-const AddHashtags = () => {
+const AddHashtags = ({
+  onSubmit,
+}: {
+  onSubmit: (nextValue: string) => void;
+}) => {
+  const [value, setValue] = useState<string>();
+  const handleSubmit = (nextValue: string) => {
+    onSubmit(nextValue);
+    setValue('');
+  };
   return (
-    <Editable className={`hashtags-editable`}>
+    <Editable
+      submitOnBlur
+      onSubmit={handleSubmit}
+      value={value}
+      onChange={setValue}
+      className={`hashtags-editable`}
+    >
       <CustomPreview />
-      <CustomInput />
+      <CustomInput onCancel={() => setValue('')} />
     </Editable>
   );
 };
@@ -76,25 +93,28 @@ const AddHashtags = () => {
 const AppEditableTags: FC<IAppEditableTagsProps> = ({
   tags,
   className,
+  onSubmit,
+  onRemove,
   ...props
 }) => {
   return (
     <Flex wrap={'wrap'} className="app-hashtags" gap={2}>
-      {tags?.map((tag) => {
+      {tags?.map((tag, index) => {
         return (
-          <Flex key={tag} className="app-hashtags__item">
-            {tag}
+          <Flex key={tag + index} className="app-hashtags__item">
+            #{tag}
             <IconButton
               aria-label="close"
               className="icon-btn"
               variant="unstyled"
               size="xs"
+              onClick={() => onRemove(tag)}
               icon={<CloseIcon />}
             />
           </Flex>
         );
       })}
-      <AddHashtags />
+      <AddHashtags onSubmit={onSubmit} />
     </Flex>
   );
 };

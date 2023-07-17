@@ -41,4 +41,9 @@
       }
     }
   }
+  .select-type-webhook {
+    .app-select__btn-select {
+      z-index: 99;
+    }
+  }
 }
