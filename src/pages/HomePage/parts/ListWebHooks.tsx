@@ -13,7 +13,6 @@ import {
   getLogoChainByChainId,
   getNameChainByChainId,
 } from 'src/utils/utils-network';
-// import ModalUpgradeCreateApp from 'src/modals/ModalUpgradeCreateApp';
 import { isMobile } from 'react-device-detect';
 import ModalCreateApp from 'src/modals/ModalCreateApp';
 import useUser from 'src/hooks/useUser';
@@ -50,23 +49,6 @@ const ButtonCreateApp: FC<IButtonCreateApp> = ({ onReload }) => {
   const [openCreateApp, setOpenCreateApp] = useState(false);
 
   const _renderModalCreateApp = () => {
-    // const isLimitApp =
-    //   userPlan?.appLimitation &&
-    //   !!userStats?.totalApp &&
-    //   userStats?.totalApp >= userPlan?.appLimitation;
-    // return isLimitApp ? (
-    //   <ModalUpgradeCreateApp
-    //     open={openCreateApp}
-    //     onClose={() => setOpenCreateApp(false)}
-    //   />
-    // ) : (
-    //   <ModalCreateApp
-    //     reloadData={fetchDataTable}
-    //     open={openCreateApp}
-    //     onClose={() => setOpenCreateApp(false)}
-    //   />
-    // );
-
     return (
       <ModalCreateApp
         reloadData={onReload}
@@ -153,7 +135,7 @@ const AppMobile: FC<IAppMobile> = ({ app }) => {
   );
 };
 
-const ListApps: React.FC = () => {
+const ListWebHooksHomePage: React.FC = () => {
   const history = useHistory();
   const { user } = useUser();
   // const userPlan = user?.getPlan();
@@ -224,12 +206,10 @@ const ListApps: React.FC = () => {
       <Thead className="header-list">
         <Tr>
           <Th w="25%">NAME</Th>
-          <Th w="20%">NETWORK</Th>
+          <Th w="20%">TYPE</Th>
+          <Th w="20%">Network</Th>
           <Th w="20%" textAlign={'center'}>
             Messages today
-          </Th>
-          <Th w="20%" textAlign={'center'}>
-            number of webhook
           </Th>
           <Th w="15%" textAlign={'right'}>
             Status
@@ -266,14 +246,12 @@ const ListApps: React.FC = () => {
               onClick={() => history.push(`/app/${app.appId}`)}
             >
               <Td w="25%">{app.name}</Td>
+              <Td w="20%">This is type</Td>
               <Td w="20%">
                 {_renderChainApp(app.chain, app.network.toLowerCase())}
               </Td>
               <Td w="20%" textAlign={'center'}>
                 {app?.messageToday}
-              </Td>
-              <Td w="20%" textAlign={'center'}>
-                {app?.totalWebhook}
               </Td>
               <Td w="15%" textAlign={'right'}>
                 {_renderStatus(app.status)}
@@ -298,7 +276,7 @@ const ListApps: React.FC = () => {
     <Box className="list-app-hp">
       <AppCard className="list-table-wrap">
         <Flex className="title-list-app">
-          <Text className="text-title">Projects</Text>
+          <Text className="text-title">Webhooks</Text>
           <Flex alignItems={'center'}>
             {!isMobile && _renderTotalApp()}
             <ButtonCreateApp onReload={() => setParams({ ...params })} />
@@ -324,4 +302,4 @@ const ListApps: React.FC = () => {
   );
 };
 
-export default ListApps;
+export default ListWebHooksHomePage;
