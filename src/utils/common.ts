@@ -17,6 +17,7 @@ export const ROUTES = {
   APP: '/app',
   WEBHOOKS: '/webhooks',
   ACCOUNT: '/account',
+  CREATE_WEBHOOK: '/create-webhook-page',
 };
 
 export interface IListAppResponse {

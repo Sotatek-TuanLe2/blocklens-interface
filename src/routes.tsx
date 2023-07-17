@@ -38,6 +38,7 @@ import DashboardsPage from './pages/DashboardsPage';
 import { ROUTES } from './utils/common';
 import WorkspacePage from './pages/WorkspacePage';
 import PublicWorkspacePage from './pages/PublicWorkspacePage';
+import WebHookCreatePage from './pages/WebHookCreatePage';
 
 /**
  * Main App routes.
@@ -60,6 +61,7 @@ export const PRIVATE_PATH = [
   ROUTES.APP,
   ROUTES.WEBHOOKS,
   ROUTES.ACCOUNT,
+  ROUTES.CREATE_WEBHOOK,
 ];
 
 const Routes: FC<RouteComponentProps> = () => {
@@ -152,8 +154,10 @@ const Routes: FC<RouteComponentProps> = () => {
           path={`${ROUTES.MY_QUERY}/:queryId?`}
           component={WorkspacePage}
         />
+        <PrivateRoute path={ROUTES.CREATE_WEBHOOK} component={WebHookCreatePage} />
         <Route path={ROUTES.CONTACT_US} component={ContactUs} />
         <Route path={ROUTES.HOME} component={DashboardsPage} />
+
         {/* <PrivateRoute path={'/'} component={HomePage} /> */}
       </Switch>
       <>
