@@ -120,7 +120,7 @@ const AppSettingsPage: FC<IAppSettings> = () => {
         </Flex>
 
         <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
-          <AppField label={'App Name'} customWidth={'49%'} isRequired>
+          <AppField label={'Project Name'} customWidth={'49%'} isRequired>
             <AppInput
               placeholder="Gavin"
               value={dataForm.name}
@@ -195,7 +195,7 @@ const AppSettingsPage: FC<IAppSettings> = () => {
         <AppCard className="app-status">
           <Flex justifyContent={'space-between'}>
             <Flex className="box-status">
-              <Box className="title-status">App Status</Box>
+              <Box className="title-status">Project Status</Box>
               <Flex alignItems={'center'}>
                 <Box
                   className={isActive ? 'icon-active' : 'icon-inactive'}

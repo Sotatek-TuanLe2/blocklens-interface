@@ -2,6 +2,7 @@ import { useState } from 'react';
 import 'src/styles/pages/HomePage.scss';
 import { Flex, Box } from '@chakra-ui/react';
 import ListApps from './parts/ListApps';
+import ListWebHooksHomePage from './parts/ListWebHooks';
 import PartUserGraph from './parts/PartUserGraph';
 import { BasePage } from 'src/layouts';
 import PartUserStats from './parts/PartUserStats';
@@ -67,7 +68,12 @@ const HomePage = () => {
             totalWebhook={userStats?.totalRegistration}
           />
         </Box>
-        <ListApps />
+        <Box>
+          <ListApps />
+        </Box>
+        <Box className={'webhook'}>
+          <ListWebHooksHomePage />
+        </Box>
         <Box className={'user-graph'}>
           <PartUserGraph />
         </Box>
