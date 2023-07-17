@@ -25,13 +25,7 @@ import { BROADCAST_FETCH_QUERY } from './Query';
 import Sidebar, { BROADCAST_FETCH_WORKPLACE_DATA } from './Sidebar';
 import { Dashboard } from 'src/utils/utils-dashboard';
 import { Query } from 'src/utils/utils-query';
-import {
-  CheckedIcon,
-  IconDotMore,
-  IconEdit,
-  IconFilter,
-  IconRun,
-} from 'src/assets/icons';
+import { IconDotMore, IconFilter, IconRun } from 'src/assets/icons';
 import Jazzicon from 'react-jazzicon';
 
 interface IHeaderProps {
@@ -69,6 +63,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
   }>();
 
   const isDashboard = type === LIST_ITEM_TYPE.DASHBOARDS;
+  const isQuery = type === LIST_ITEM_TYPE.QUERIES;
   const isCreatingQuery = type === LIST_ITEM_TYPE.QUERIES && !queryId;
 
   const dataClass = useMemo(() => {
@@ -103,160 +98,143 @@ const Header: React.FC<IHeaderProps> = (props) => {
       AppBroadcast.dispatch(BROADCAST_FETCH_QUERY, res.id);
     }
   };
-  //
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const _renderNavSidebar = () => {
     return (
-      <Flex align={'center'} justifyContent={'space-between'} py={5}>
-        <Tooltip label="Back" hasArrow placement="top" bg="white" color="black">
-          <AppButton
-            onClick={() => history.goBack()}
-            size="sm"
-            w={'38px'}
-            h={'38px'}
-            variant="no-effects"
-            className="icon-back-light"
-          />
-        </Tooltip>
-        {!isDashboard ? (
-          <Button
-            bg="white !important"
-            color={'#C7D2E1'}
-            variant="outline"
-            w={'38px'}
-            h={'38px'}
-            px={0}
-            onClick={onOpen}
+      <Box display={{ lg: 'none' }} mt={'-30px'}>
+        <Flex align={'center'} justifyContent={'space-between'} py={5}>
+          <Tooltip
+            label="Back"
+            hasArrow
+            placement="top"
+            bg="white"
+            color="black"
           >
-            <IconFilter color={'rgba(0, 2, 36, 0.5)'} />
-          </Button>
-        ) : (
-          _renderButtons()
-        )}
-      </Flex>
+            <AppButton
+              onClick={() => history.goBack()}
+              size="sm"
+              w={'38px'}
+              h={'38px'}
+              variant="no-effects"
+              className="icon-back-light"
+            />
+          </Tooltip>
+          {isQuery && (
+            <Button
+              bg="white !important"
+              color={'#C7D2E1'}
+              variant="outline"
+              w={'38px'}
+              h={'38px'}
+              px={0}
+              onClick={onOpen}
+            >
+              <IconFilter color={'rgba(0, 2, 36, 0.5)'} />
+            </Button>
+          )}
+        </Flex>
+      </Box>
     );
   };
 
   const _renderDrawerSidebar = () => {
+    if (isDashboard) {
+      return null;
+    }
+
     return (
-      <Drawer isOpen={isOpen} placement="top" onClose={onClose} size="full">
-        <DrawerOverlay />
-        <DrawerContent>
-          <Sidebar onCloseFilter={onClose} />
-        </DrawerContent>
-      </Drawer>
+      <Box display={{ lg: 'none' }}>
+        <Drawer isOpen={isOpen} placement="top" onClose={onClose} size="full">
+          <DrawerOverlay />
+          <DrawerContent>
+            <Sidebar onCloseFilter={onClose} />
+          </DrawerContent>
+        </Drawer>
+      </Box>
     );
   };
-
-  // const onChangeStatus = async (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const isChecked = e.target.checked;
-  //   if (
-  //     isDashboard &&
-  //     isChecked &&
-  //     !(dataClass as Dashboard)?.getDashboardVisuals().length
-  //   ) {
-  //     toastError({
-  //       message:
-  //         'Dashboard must contain at least a visualization to be published!',
-  //     });
-  //     return;
-  //   }
-
-  //   try {
-  //     const res = isDashboard
-  //       ? await rf
-  //           .getRequest('DashboardsRequest')
-  //           .updateDashboardItem({ isPrivate: !isChecked }, dashboardId)
-  //       : await rf
-  //           .getRequest('DashboardsRequest')
-  //           .updateQuery({ isPrivate: !isChecked }, queryId);
-  //     isDashboard
-  //       ? AppBroadcast.dispatch(BROADCAST_FETCH_DASHBOARD, res.id)
-  //       : AppBroadcast.dispatch(BROADCAST_FETCH_QUERY, res.id);
-  //   } catch (error) {
-  //     toastError({
-  //       message: getErrorMessage(error),
-  //     });
-  //   }
-  // };
 
   const _renderButtons = () => {
     if (!needAuthentication) {
       return null;
     }
 
-    if (!isDashboard) {
+    if (isQuery) {
       // Query button
       return (
-        <Tooltip
-          label="Run Query"
-          hasArrow
-          placement="top"
-          bg="white"
-          color="black"
-        >
-          <AppButton
-            className="btn-primary"
-            onClick={onRunQuery}
-            size="sm"
-            leftIcon={<span className="icon-run-query " />}
-            me="10px"
-            disabled={isLoadingRun || isLoadingResult}
-            fontSize={'14px'}
+        <Box display={{ base: 'none', lg: 'block' }}>
+          <Tooltip
+            label="Run Query"
+            hasArrow
+            placement="top"
+            bg="white"
+            color="black"
           >
-            {isLoadingRun || isLoadingResult ? (
-              <Spinner size="sm" />
-            ) : (
-              `Run${selectedQuery ? ' selection' : ''}`
-            )}
-          </AppButton>
-        </Tooltip>
+            <AppButton
+              className="btn-primary"
+              onClick={onRunQuery}
+              size="sm"
+              leftIcon={<span className="icon-run-query " />}
+              me="10px"
+              disabled={isLoadingRun || isLoadingResult}
+              fontSize={'14px'}
+            >
+              {isLoadingRun || isLoadingResult ? (
+                <Spinner size="sm" />
+              ) : (
+                `Run${selectedQuery ? ' selection' : ''}`
+              )}
+            </AppButton>
+          </Tooltip>
+        </Box>
       );
     }
 
     // Dashboard button
     return (
       !isEmptyDashboard && (
-        <Tooltip
-          label={isEdit ? 'Edit Dashboard' : ''}
-          hasArrow
-          placement="top"
-        >
-          <AppButton
-            onClick={onChangeEditMode}
-            size="sm"
-            leftIcon={
-              isLoadingRun ? (
-                <Spinner size="sm" color="white" />
-              ) : (
-                <p
-                  className={
-                    isEdit
-                      ? 'bg-icon_success_dashboard'
-                      : 'bg-icon_edit_dashboard'
-                  }
-                />
-              )
-            }
-            me="10px"
+        <Box display={{ base: 'none', lg: 'block' }}>
+          <Tooltip
+            label={isEdit ? 'Edit Dashboard' : ''}
+            hasArrow
+            placement="top"
           >
-            {isEdit ? 'Done' : 'Edit'}
-          </AppButton>
-        </Tooltip>
+            <AppButton
+              onClick={onChangeEditMode}
+              size="sm"
+              leftIcon={
+                isLoadingRun ? (
+                  <Spinner size="sm" color="white" />
+                ) : (
+                  <p
+                    className={
+                      isEdit
+                        ? 'bg-icon_success_dashboard'
+                        : 'bg-icon_edit_dashboard'
+                    }
+                  />
+                )
+              }
+              me="10px"
+            >
+              {isEdit ? 'Done' : 'Edit'}
+            </AppButton>
+          </Tooltip>
+        </Box>
       )
     );
   };
 
   const _renderButtonsMobile = () => {
-    if (!needAuthentication) {
+    if (!needAuthentication || isDashboard) {
       return null;
     }
 
-    if (!isDashboard) {
-      // Query button
-      return (
+    // Query button
+    return (
+      <Box display={{ lg: 'none' }}>
         <Button
           variant="ghost"
           onClick={onRunQuery}
@@ -273,40 +251,14 @@ const Header: React.FC<IHeaderProps> = (props) => {
             <IconRun />
           )}
         </Button>
-      );
-    }
-
-    // Dashboard button
-    return (
-      !isEmptyDashboard && (
-        <Button
-          variant="ghost"
-          color={'transparent !important'}
-          onClick={onChangeEditMode}
-          px={0}
-          maxW={'24px'}
-          minW={'auto'}
-          minH={'auto'}
-          maxH={'24px'}
-        >
-          {isLoadingRun ? (
-            <Spinner size="sm" color="#00022480" />
-          ) : (
-            <>{isEdit ? <CheckedIcon color="#00022480" /> : <IconEdit />}</>
-          )}
-        </Button>
-      )
+      </Box>
     );
   };
 
   return (
     <>
-      <Box display={{ lg: 'none' }}>
-        {!isDashboard && _renderDrawerSidebar()}
-      </Box>
-      <Box display={{ lg: 'none' }} mt={'-30px'}>
-        {_renderNavSidebar()}
-      </Box>
+      {_renderDrawerSidebar()}
+      {_renderNavSidebar()}
       <div className="workspace-page__editor__header">
         <Flex align={'center'} justify={'center'} w={'full'}>
           <div className="workspace-page__editor__header__left">
@@ -360,19 +312,6 @@ const Header: React.FC<IHeaderProps> = (props) => {
             )}
           </div>
           <div className="workspace-page__editor__header__right">
-            {/* {needAuthentication && !isCreatingQuery && !isEdit && (
-          <div className="switch-icon">
-            <Switch
-              id="email-alerts"
-              size="sm"
-              isChecked={!dataClass?.isPrivate()}
-              onChange={onChangeStatus}
-            />
-            <FormLabel htmlFor="email-alerts" mb="0" me="20px">
-              Publish
-            </FormLabel>
-          </div>
-        )} */}
             <Box
               display={{ base: 'none !important', lg: 'flex !important' }}
               className="header-tab__info tag"
@@ -390,12 +329,8 @@ const Header: React.FC<IHeaderProps> = (props) => {
                 </>
               )}
             </Box>
-            <Box display={{ base: 'none', lg: 'block' }}>
-              {_renderButtons()}
-            </Box>
-            {type === LIST_ITEM_TYPE.QUERIES && (
-              <Box display={{ lg: 'none' }}>{_renderButtonsMobile()}</Box>
-            )}
+            {_renderButtons()}
+            {_renderButtonsMobile()}
             {isLoadingRun ? (
               <Flex align={'center'} ml={'10px'}>
                 <IconDotMore color={'rgba(0, 2, 36, 0.5)'} />
