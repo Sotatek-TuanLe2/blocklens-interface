@@ -32,7 +32,7 @@ export const _renderStatus = (status?: APP_STATUS) => {
   );
 };
 
-const _renderChainApp = (chain: string, network: string) => {
+export const _renderChainApp = (chain: string, network: string) => {
   return (
     <Flex alignItems={'center'}>
       <Box className={getLogoChainByChainId(chain) || ''} mr={2.5} />
@@ -288,8 +288,7 @@ const ListApps: React.FC = () => {
   const _renderTotalApp = () => {
     return (
       <Box className="number-app">
-        {userStats?.totalAppActive}/{userStats?.totalApp}
-        <span> </span>active
+        {userStats?.totalAppActive}/{userStats?.totalApp} active
       </Box>
     );
   };
