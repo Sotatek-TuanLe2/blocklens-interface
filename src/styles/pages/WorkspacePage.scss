@@ -218,14 +218,11 @@
               align-items: center;
               gap: 10px;
               justify-content: end;
-              div {
+              .icon-header {
                 cursor: pointer;
-
-                .icon-header {
-                  color: white;
-                  width: 14px;
-                  height: 14px;
-                }
+                color: white;
+                width: 14px;
+                height: 14px;
               }
             }
           }

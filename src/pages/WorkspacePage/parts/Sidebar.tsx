@@ -14,7 +14,7 @@ import { AppBroadcast } from 'src/utils/utils-broadcast';
 import { copyToClipboard } from 'src/utils/utils-helper';
 import { getChainIconByChainName } from 'src/utils/utils-network';
 import { BROADCAST_FETCH_DASHBOARD } from './Dashboard';
-import { BROADCAST_FETCH_QUERY } from './Query';
+import { BROADCAST_ADD_TO_EDITOR, BROADCAST_FETCH_QUERY } from './Query';
 
 export const BROADCAST_FETCH_WORKPLACE_DATA = 'FETCH_WORKPLACE_DATA';
 
@@ -42,7 +42,8 @@ const ChainItem = ({
     }
   };
 
-  const handleCopyQuery = (query: string) => {
+  const handleCopy = (query: string) => {
+    AppBroadcast.dispatch(BROADCAST_ADD_TO_EDITOR, query);
     copyToClipboard(query);
   };
 
@@ -68,7 +69,7 @@ const ChainItem = ({
           <Tooltip
             placement="top"
             hasArrow
-            label="Copy query"
+            label="Copy table's name"
             aria-label="A tooltip"
             borderRadius="6px"
           >
@@ -76,7 +77,7 @@ const ChainItem = ({
               className="add-query-icon"
               onClick={(e) => {
                 e.stopPropagation();
-                handleCopyQuery(chain.full_name);
+                handleCopy(chain.full_name);
               }}
             >
               <CopyIcon />
@@ -308,7 +309,8 @@ const Sidebar: React.FC<{
       : 'workspace-page__sidebar__content__work-place-detail ';
   };
 
-  const handleCopyQuery = (query: string) => {
+  const handleCopy = (query: string) => {
+    AppBroadcast.dispatch(BROADCAST_ADD_TO_EDITOR, query);
     copyToClipboard(query);
   };
 
@@ -508,11 +510,10 @@ const Sidebar: React.FC<{
               </Tooltip>
               <div className="header-icon">
                 {pathname.includes(ROUTES.MY_QUERY) && (
-                  <div
-                    onClick={() => handleCopyQuery(schemaDescribe[0].full_name)}
-                  >
-                    <CopyIcon className="icon-header" />
-                  </div>
+                  <CopyIcon
+                    className="icon-header"
+                    onClick={() => handleCopy(schemaDescribe[0].full_name)}
+                  />
                 )}
                 <div onClick={() => setSchemaDescribe([])}>
                   <CloseMenuIcon className="icon-header" />
@@ -528,7 +529,6 @@ const Sidebar: React.FC<{
                   justifyContent={'space-between'}
                   px="16px"
                   cursor={'pointer'}
-                  onClick={() => handleCopyQuery(item.column_name)}
                 >
                   <Tooltip
                     placement={'top'}
@@ -542,7 +542,7 @@ const Sidebar: React.FC<{
                   </Tooltip>
                   <div className="data-type">
                     <Text isTruncated>{item.data_type}</Text>
-                    <CopyIcon />
+                    <CopyIcon onClick={() => handleCopy(item.column_name)} />
                   </div>
                 </Flex>
               ))}
