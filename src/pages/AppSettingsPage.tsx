@@ -153,7 +153,7 @@ const AppSettingsPage: FC<IAppSettings> = () => {
           </AppField>
           <AppField label={'Description'} customWidth={'100%'}>
             <AppTextarea
-              placeholder="Write something about this app in 100 characters!"
+              placeholder="Write something about this project in 100 characters!"
               value={dataForm.description}
               onChange={(e) =>
                 setDataForm({

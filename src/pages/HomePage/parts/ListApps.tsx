@@ -288,8 +288,7 @@ const ListApps: React.FC = () => {
   const _renderTotalApp = () => {
     return (
       <Box className="number-app">
-        {userStats?.totalAppActive}/
-        {userStats?.totalApp}
+        {userStats?.totalAppActive}/{userStats?.totalApp}
         <span> </span>active
       </Box>
     );
