@@ -6,6 +6,12 @@ import {
   SkeletonCircle,
   Skeleton,
   Image,
+  Box,
+  Button,
+  useDisclosure,
+  Drawer,
+  DrawerOverlay,
+  DrawerContent,
 } from '@chakra-ui/react';
 import { useHistory, useParams } from 'react-router-dom';
 import { AppButton, AppTag } from 'src/components';
@@ -16,14 +22,16 @@ import { IDashboardDetail, IQuery } from 'src/utils/query.type';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
 import { BROADCAST_FETCH_DASHBOARD } from './Dashboard';
 import { BROADCAST_FETCH_QUERY } from './Query';
-import { BROADCAST_FETCH_WORKPLACE_DATA } from './Sidebar';
-// import rf from 'src/requests/RequestFactory';
-// import { getErrorMessage } from 'src/utils/utils-helper';
-// import { toastError } from 'src/utils/utils-notify';
+import Sidebar, { BROADCAST_FETCH_WORKPLACE_DATA } from './Sidebar';
 import { Dashboard } from 'src/utils/utils-dashboard';
 import { Query } from 'src/utils/utils-query';
-import { IconDotMore } from 'src/assets/icons';
-import { isMobile } from 'react-device-detect';
+import {
+  CheckedIcon,
+  IconDotMore,
+  IconEdit,
+  IconFilter,
+  IconRun,
+} from 'src/assets/icons';
 import Jazzicon from 'react-jazzicon';
 
 interface IHeaderProps {
@@ -94,6 +102,52 @@ const Header: React.FC<IHeaderProps> = (props) => {
       AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
       AppBroadcast.dispatch(BROADCAST_FETCH_QUERY, res.id);
     }
+  };
+  //
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const _renderNavSidebar = () => {
+    return (
+      <Flex align={'center'} justifyContent={'space-between'} py={5}>
+        <Tooltip label="Back" hasArrow placement="top" bg="white" color="black">
+          <AppButton
+            onClick={() => history.goBack()}
+            size="sm"
+            w={'38px'}
+            h={'38px'}
+            variant="no-effects"
+            className="icon-back-light"
+          />
+        </Tooltip>
+        {!isDashboard ? (
+          <Button
+            bg="white !important"
+            color={'#C7D2E1'}
+            variant="outline"
+            w={'38px'}
+            h={'38px'}
+            px={0}
+            onClick={onOpen}
+          >
+            <IconFilter color={'rgba(0, 2, 36, 0.5)'} />
+          </Button>
+        ) : (
+          _renderButtons()
+        )}
+      </Flex>
+    );
+  };
+
+  const _renderDrawerSidebar = () => {
+    return (
+      <Drawer isOpen={isOpen} placement="top" onClose={onClose} size="full">
+        <DrawerOverlay />
+        <DrawerContent>
+          <Sidebar onCloseFilter={onClose} />
+        </DrawerContent>
+      </Drawer>
+    );
   };
 
   // const onChangeStatus = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -195,74 +249,118 @@ const Header: React.FC<IHeaderProps> = (props) => {
     );
   };
 
-  return (
-    <div className="workspace-page__editor__header">
-      <div className="workspace-page__editor__header__left">
-        <Tooltip label="Back" hasArrow placement="top" bg="white" color="black">
-          <AppButton
-            onClick={() => history.goBack()}
-            size="sm"
-            variant="no-effects"
-            className="icon-back-light"
-          />
-        </Tooltip>
-        {isLoadingRun ? (
-          <Flex align={'center'}>
-            <SkeletonCircle w={'26px'} h={'26px'} mr={'8px'} />
-            <Skeleton w={'200px'} h={'14px'} rounded={'7px'} />
-          </Flex>
-        ) : (
-          <>
-            {!isCreatingQuery && (
-              <div className="item-desc">
-                {dataClass?.getUserAvatar() ? (
-                  <Image src={dataClass?.getUserAvatar()} alt="avatar" />
-                ) : (
-                  <Jazzicon
-                    diameter={26}
-                    paperStyles={{ minWidth: '26px' }}
-                    seed={generateAvatarFromId(dataClass?.getUserId())}
-                  />
-                )}
-                <span className="item-desc__name">
-                  <Tooltip label={author} hasArrow placement="top">
-                    <span className="user-name">{`${author} / `}</span>
-                  </Tooltip>
-                  <Tooltip
-                    label={dataClass?.getName()}
-                    hasArrow
-                    placement="top"
-                  >
-                    <span>{dataClass?.getName()}</span>
-                  </Tooltip>
-                </span>
-              </div>
-            )}
-          </>
-        )}
+  const _renderButtonsMobile = () => {
+    if (!needAuthentication) {
+      return null;
+    }
 
-        {!isCreatingQuery && data && isMobile && (
-          <AppQueryMenu
-            menu={
-              !needAuthentication
-                ? type === LIST_ITEM_TYPE.DASHBOARDS
-                  ? [QUERY_MENU_LIST.SHARE]
-                  : [
-                      // QUERY_MENU_LIST.FORK,
-                      QUERY_MENU_LIST.SHARE,
-                    ]
-                : undefined
-            }
-            item={data}
-            itemType={type}
-            onForkSuccess={onForkSuccess}
-            onDeleteSuccess={onDeleteSuccess}
-            onSettingSuccess={onSettingSuccess}
-          />
-        )}
-      </div>
-      <div className="workspace-page__editor__header__right">
-        {/* {needAuthentication && !isCreatingQuery && !isEdit && (
+    if (!isDashboard) {
+      // Query button
+      return (
+        <Button
+          variant="ghost"
+          onClick={onRunQuery}
+          disabled={isLoadingRun || isLoadingResult}
+          px={0}
+          maxW={'24px'}
+          minW={'auto'}
+          minH={'auto'}
+          maxH={'24px'}
+        >
+          {isLoadingRun || isLoadingResult ? (
+            <Spinner size="sm" />
+          ) : (
+            <IconRun />
+          )}
+        </Button>
+      );
+    }
+
+    // Dashboard button
+    return (
+      !isEmptyDashboard && (
+        <Button
+          variant="ghost"
+          color={'transparent !important'}
+          onClick={onChangeEditMode}
+          px={0}
+          maxW={'24px'}
+          minW={'auto'}
+          minH={'auto'}
+          maxH={'24px'}
+        >
+          {isLoadingRun ? (
+            <Spinner size="sm" color="#00022480" />
+          ) : (
+            <>{isEdit ? <CheckedIcon color="#00022480" /> : <IconEdit />}</>
+          )}
+        </Button>
+      )
+    );
+  };
+
+  return (
+    <>
+      <Box display={{ lg: 'none' }}>
+        {!isDashboard && _renderDrawerSidebar()}
+      </Box>
+      <Box display={{ lg: 'none' }} mt={'-30px'}>
+        {_renderNavSidebar()}
+      </Box>
+      <div className="workspace-page__editor__header">
+        <Flex align={'center'} justify={'center'} w={'full'}>
+          <div className="workspace-page__editor__header__left">
+            <Tooltip
+              label="Back"
+              hasArrow
+              placement="top"
+              bg="white"
+              color="black"
+            >
+              <AppButton
+                onClick={() => history.goBack()}
+                size="sm"
+                variant="no-effects"
+                className="icon-back-light"
+              />
+            </Tooltip>
+            {isLoadingRun ? (
+              <Flex align={'center'}>
+                <SkeletonCircle w={'26px'} h={'26px'} mr={'8px'} />
+                <Skeleton w={'200px'} h={'14px'} rounded={'7px'} />
+              </Flex>
+            ) : (
+              <>
+                {!isCreatingQuery && (
+                  <div className="item-desc">
+                    {dataClass?.getUserAvatar() ? (
+                      <Image src={dataClass?.getUserAvatar()} alt="avatar" />
+                    ) : (
+                      <Jazzicon
+                        diameter={26}
+                        paperStyles={{ minWidth: '26px' }}
+                        seed={generateAvatarFromId(dataClass?.getUserId())}
+                      />
+                    )}
+                    <span className="item-desc__name">
+                      <Tooltip label={author} hasArrow placement="top">
+                        <span className="user-name">{`${author} / `}</span>
+                      </Tooltip>
+                      <Tooltip
+                        label={dataClass?.getName()}
+                        hasArrow
+                        placement="top"
+                      >
+                        <span>{dataClass?.getName()}</span>
+                      </Tooltip>
+                    </span>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+          <div className="workspace-page__editor__header__right">
+            {/* {needAuthentication && !isCreatingQuery && !isEdit && (
           <div className="switch-icon">
             <Switch
               id="email-alerts"
@@ -275,48 +373,76 @@ const Header: React.FC<IHeaderProps> = (props) => {
             </FormLabel>
           </div>
         )} */}
-        <div className="header-tab__info tag">
-          {isLoadingRun ? (
-            <Skeleton w={'200px'} h={'14px'} rounded={'7px'} />
-          ) : (
-            <>
-              {!!dataClass?.getTags()?.length &&
-                dataClass
-                  ?.getTags()
-                  .map((item, index) => <AppTag key={index} value={item} />)}
-            </>
-          )}
-        </div>
-        {_renderButtons()}
-        {isLoadingRun ? (
-          <Flex align={'center'} ml={'10px'}>
-            <IconDotMore color={'rgba(0, 2, 36, 0.5)'} />
-          </Flex>
-        ) : (
-          <>
-            {!isCreatingQuery && data && !isMobile && (
-              <AppQueryMenu
-                menu={
-                  !needAuthentication
-                    ? type === LIST_ITEM_TYPE.DASHBOARDS
-                      ? [QUERY_MENU_LIST.SHARE]
-                      : [
-                          // QUERY_MENU_LIST.FORK,
-                          QUERY_MENU_LIST.SHARE,
-                        ]
-                    : undefined
-                }
-                item={data}
-                itemType={type}
-                onForkSuccess={onForkSuccess}
-                onDeleteSuccess={onDeleteSuccess}
-                onSettingSuccess={onSettingSuccess}
-              />
+            <Box
+              display={{ base: 'none !important', lg: 'flex !important' }}
+              className="header-tab__info tag"
+            >
+              {isLoadingRun ? (
+                <Skeleton w={'200px'} h={'14px'} rounded={'7px'} />
+              ) : (
+                <>
+                  {!!dataClass?.getTags()?.length &&
+                    dataClass
+                      ?.getTags()
+                      .map((item, index) => (
+                        <AppTag key={index} value={item} />
+                      ))}
+                </>
+              )}
+            </Box>
+            <Box display={{ base: 'none', lg: 'block' }}>
+              {_renderButtons()}
+            </Box>
+            {type === LIST_ITEM_TYPE.QUERIES && (
+              <Box display={{ lg: 'none' }}>{_renderButtonsMobile()}</Box>
             )}
-          </>
+            {isLoadingRun ? (
+              <Flex align={'center'} ml={'10px'}>
+                <IconDotMore color={'rgba(0, 2, 36, 0.5)'} />
+              </Flex>
+            ) : (
+              <Flex ml={'10px'} align={'center'}>
+                {!isCreatingQuery && data && (
+                  <AppQueryMenu
+                    menu={
+                      !needAuthentication
+                        ? type === LIST_ITEM_TYPE.DASHBOARDS
+                          ? [QUERY_MENU_LIST.SHARE]
+                          : [
+                              // QUERY_MENU_LIST.FORK,
+                              QUERY_MENU_LIST.SHARE,
+                            ]
+                        : undefined
+                    }
+                    item={data}
+                    itemType={type}
+                    onForkSuccess={onForkSuccess}
+                    onDeleteSuccess={onDeleteSuccess}
+                    onSettingSuccess={onSettingSuccess}
+                  />
+                )}
+              </Flex>
+            )}
+          </div>
+        </Flex>
+        {!!dataClass?.getTags()?.length && (
+          <Box
+            display={{ lg: 'none !important' }}
+            className="header-tab__info tag"
+          >
+            {isLoadingRun ? (
+              <Skeleton w={'200px'} h={'14px'} rounded={'7px'} />
+            ) : (
+              <>
+                {dataClass?.getTags().map((item, index) => (
+                  <AppTag key={index} value={item} />
+                ))}
+              </>
+            )}
+          </Box>
         )}
       </div>
-    </div>
+    </>
   );
 };
 

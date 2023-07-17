@@ -6,6 +6,7 @@ import Dashboard from './parts/Dashboard';
 import Query from './parts/Query';
 import Sidebar from './parts/Sidebar';
 import 'src/styles/pages/WorkspacePage.scss';
+import { Box } from '@chakra-ui/react';
 
 export const WORKSPACE_TYPES = {
   DASHBOARD: 'dashboard',
@@ -32,27 +33,31 @@ const WorkspacePage: React.FC = () => {
 
   return (
     <BasePage>
-      <div
-        className={`${
-          type === WORKSPACE_TYPES.QUERY ? 'workspace-page__query' : ''
-        } workspace-page`}
-      >
-        {type === WORKSPACE_TYPES.QUERY && (
-          <Sidebar
-            expandSidebar={toggleExpandSidebar}
-            onToggleExpandSidebar={onToggleExpandSidebar}
-          />
-        )}
+      <>
         <div
-          className={`workspace-page__editor ${
-            type === WORKSPACE_TYPES.QUERY
-              ? 'workspace-page__editor--query'
-              : ''
-          } ${toggleExpandSidebar ? '' : 'workspace-page__editor--expand'}`}
+          className={`${
+            type === WORKSPACE_TYPES.QUERY ? 'workspace-page__query' : ''
+          } workspace-page`}
         >
-          {type === WORKSPACE_TYPES.DASHBOARD ? <Dashboard /> : <Query />}
+          <Box display={{ base: 'none', lg: 'block' }}>
+            {type === WORKSPACE_TYPES.QUERY && (
+              <Sidebar
+                expandSidebar={toggleExpandSidebar}
+                onToggleExpandSidebar={onToggleExpandSidebar}
+              />
+            )}
+          </Box>
+          <div
+            className={`workspace-page__editor ${
+              type === WORKSPACE_TYPES.QUERY
+                ? 'workspace-page__editor--query'
+                : ''
+            } ${toggleExpandSidebar ? '' : 'workspace-page__editor--expand'}`}
+          >
+            {type === WORKSPACE_TYPES.DASHBOARD ? <Dashboard /> : <Query />}
+          </div>
         </div>
-      </div>
+      </>
     </BasePage>
   );
 };

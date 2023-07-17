@@ -730,3 +730,9 @@
     padding: 0;
   }
 }
+
+@media (max-width: 992px) {
+  .queries-page {
+    flex-direction: column;
+  }
+}

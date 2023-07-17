@@ -85,6 +85,8 @@ import { ReactComponent as ForkQueryIcon } from './ForkQueryIcon.svg';
 import { ReactComponent as AddChartIcon } from './AddChartIcon.svg';
 import { ReactComponent as NoAppIcon } from './icon-no-app.svg';
 import { ReactComponent as IconEye } from './IconEye.svg';
+import { ReactComponent as IconEdit } from './icon-edit.svg';
+import { ReactComponent as IconRun } from './icon-run.svg';
 
 export {
   CalendarIcon,
@@ -174,4 +176,6 @@ export {
   AddChartIcon,
   NoAppIcon,
   IconEye,
+  IconEdit,
+  IconRun,
 };
