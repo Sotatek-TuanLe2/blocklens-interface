@@ -51,7 +51,7 @@ const PartAppGraph = () => {
   return (
     <AppCard p={0}>
       <Flex className={'title-list-app'}>
-        <Box className={'text-title'}>App's Graph</Box>
+        <Box className={'text-title'}>Project's Graph</Box>
         <AppFilterGraph duration={duration} setDuration={setDuration} />
       </Flex>
       <AppGraph data={dataChart} duration={duration} />
