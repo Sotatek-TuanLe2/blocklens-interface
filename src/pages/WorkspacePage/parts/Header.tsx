@@ -7,7 +7,7 @@ import {
   Skeleton,
   Image,
 } from '@chakra-ui/react';
-import { useHistory, useParams } from 'react-router-dom';
+import { Link, useHistory, useParams } from 'react-router-dom';
 import { AppButton, AppTag } from 'src/components';
 import AppQueryMenu, { QUERY_MENU_LIST } from 'src/components/AppQueryMenu';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
@@ -209,7 +209,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
         {isLoadingRun ? (
           <Flex align={'center'}>
             <SkeletonCircle w={'26px'} h={'26px'} mr={'8px'} />
-            <Skeleton w={'200px'} h={'14px'} rounded={'7px'} />
+            <Skeleton w={'350px'} h={'14px'} rounded={'7px'} />
           </Flex>
         ) : (
           <>
@@ -236,6 +236,20 @@ const Header: React.FC<IHeaderProps> = (props) => {
                     <span>{dataClass?.getName()}</span>
                   </Tooltip>
                 </span>
+                {!isDashboard &&
+                  (dataClass?.getForkedId() || dataClass?.getForkedName()) && (
+                    <span className="item-desc__forked">
+                      {`(Forked from`}{' '}
+                      <Link
+                        style={{ color: '#0060DB' }}
+                        to={`${ROUTES.QUERY}/${dataClass?.getForkedId()}?`}
+                        target="_blank"
+                      >
+                        {dataClass?.getForkedName()}
+                      </Link>
+                      {`)`}
+                    </span>
+                  )}
               </div>
             )}
           </>
@@ -247,10 +261,13 @@ const Header: React.FC<IHeaderProps> = (props) => {
               !needAuthentication
                 ? type === LIST_ITEM_TYPE.DASHBOARDS
                   ? [QUERY_MENU_LIST.SHARE]
-                  : [
-                      // QUERY_MENU_LIST.FORK,
-                      QUERY_MENU_LIST.SHARE,
-                    ]
+                  : [QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.SHARE]
+                : type === LIST_ITEM_TYPE.DASHBOARDS
+                ? [
+                    QUERY_MENU_LIST.DELETE,
+                    QUERY_MENU_LIST.SETTING,
+                    QUERY_MENU_LIST.SHARE,
+                  ]
                 : undefined
             }
             item={data}
@@ -300,10 +317,13 @@ const Header: React.FC<IHeaderProps> = (props) => {
                   !needAuthentication
                     ? type === LIST_ITEM_TYPE.DASHBOARDS
                       ? [QUERY_MENU_LIST.SHARE]
-                      : [
-                          // QUERY_MENU_LIST.FORK,
-                          QUERY_MENU_LIST.SHARE,
-                        ]
+                      : [QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.SHARE]
+                    : type === LIST_ITEM_TYPE.DASHBOARDS
+                    ? [
+                        QUERY_MENU_LIST.DELETE,
+                        QUERY_MENU_LIST.SETTING,
+                        QUERY_MENU_LIST.SHARE,
+                      ]
                     : undefined
                 }
                 item={data}

@@ -44,6 +44,7 @@ export interface DashboardInterface {
   user: UserInterface | string;
   chains: string[] | null;
   forkedDashboardId: string | null;
+  forkedDashboardName: string | null;
   textWidgets?: TextWidget[];
   dashboardVisuals?: DashboardVisual[];
 
@@ -55,7 +56,8 @@ export interface DashboardInterface {
   getUpdatedTime: () => string;
   getThumnail: () => string | null;
   getTags: () => string[];
-  getForkedDashboardId: () => string | null;
+  getForkedId: () => string | null;
+  getForkedName: () => string | null;
   getChains: () => string[] | null;
   getTextWidgets: () => TextWidget[] | null;
   getUser: () => IUserInfo | null;
@@ -154,6 +156,7 @@ export class Dashboard implements DashboardInterface {
   public privateMode = false;
   public user;
   public forkedDashboardId;
+  public forkedDashboardName;
   public userInfo: IUserInfo;
   public textWidgets: TextWidget[];
   public chains: string[];
@@ -168,6 +171,7 @@ export class Dashboard implements DashboardInterface {
     this.privateMode = dashboard.isPrivate;
     this.user = dashboard.user;
     this.forkedDashboardId = dashboard.forkedDashboardId;
+    this.forkedDashboardName = dashboard.forkedDashboardName;
     this.textWidgets = [];
     this.thumbnail = dashboard.thumbnail;
     this.userInfo = dashboard.userInfo;
@@ -267,8 +271,12 @@ export class Dashboard implements DashboardInterface {
     return this.dashboardVisuals.find((item) => item.getId() === id) || null;
   }
 
-  getForkedDashboardId() {
+  getForkedId() {
     return this.forkedDashboardId || null;
+  }
+
+  getForkedName() {
+    return this.forkedDashboardName || null;
   }
 
   isPrivate() {

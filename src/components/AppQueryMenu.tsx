@@ -17,13 +17,18 @@ import 'src/styles/components/AppQueryMenu.scss';
 import { TYPE_OF_MODAL, ROUTES } from 'src/utils/common';
 import { IDashboardDetail, IQuery } from 'src/utils/query.type';
 import AppButton from './AppButton';
+import rf from 'src/requests/RequestFactory';
 import {
   DeleteQueryIcon,
-  // ForkQueryIcon,
+  ForkQueryIcon,
   IconDotMore,
   SettingQueryIcon,
   ShareQueryIcon,
 } from '../assets/icons';
+import useRecaptcha from 'src/hooks/useRecaptcha';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
+import { getErrorMessage } from 'src/utils/utils-helper';
+import { useHistory } from 'react-router';
 
 interface IAppQueryMenu {
   menu?: string[];
@@ -48,7 +53,7 @@ export const QUERY_MENU_LIST = {
 const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
   const {
     menu = [
-      // QUERY_MENU_LIST.FORK,
+      QUERY_MENU_LIST.FORK,
       QUERY_MENU_LIST.SETTING,
       QUERY_MENU_LIST.SHARE,
       QUERY_MENU_LIST.DELETE,
@@ -63,6 +68,8 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
 
   const { user } = useUser();
   const location = window.location;
+  const history = useHistory();
+  const { getAndSetRecaptcha } = useRecaptcha();
 
   const [openModalSetting, setOpenModalSetting] = useState<boolean>(false);
   const [openModalShare, setOpenModalShare] = useState<boolean>(false);
@@ -81,6 +88,29 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
     setOpenModalFork((prevState) => !prevState);
   };
 
+  const onForkQuery = async () => {
+    if (!user) {
+      return history.push(ROUTES.LOGIN);
+    }
+
+    await getAndSetRecaptcha();
+
+    try {
+      const res = await rf
+        .getRequest('DashboardsRequest')
+        .forkQueries(item.id, { newQueryName: item.name, tags: item.tags });
+      window.open(
+        `${ROUTES.MY_QUERY}/${res.id}`,
+        '_blank',
+        'noopener,noreferrer',
+      );
+      toastSuccess({ message: 'Fork query successfully!' });
+      onForkSuccess && (await onForkSuccess(res, itemType));
+    } catch (error) {
+      toastError({ message: getErrorMessage(error) });
+    }
+  };
+
   const generateMenu = () => {
     let itemList: {
       id: string;
@@ -88,12 +118,12 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
       icon: React.ReactNode;
       onClick: () => any;
     }[] = [
-      // {
-      //   id: QUERY_MENU_LIST.FORK,
-      //   label: QUERY_MENU_LIST.FORK,
-      //   icon: <ForkQueryIcon />,
-      //   onClick: onToggleModalFork,
-      // },
+      {
+        id: QUERY_MENU_LIST.FORK,
+        label: QUERY_MENU_LIST.FORK,
+        icon: <ForkQueryIcon />,
+        onClick: onForkQuery,
+      },
       {
         id: QUERY_MENU_LIST.SETTING,
         label: QUERY_MENU_LIST.SETTING,
@@ -115,11 +145,11 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
     ];
 
     itemList = itemList.filter((item) => menu.includes(item.id));
-    if (!user) {
-      itemList = itemList.filter((item) =>
-        [QUERY_MENU_LIST.SHARE].includes(item.id),
-      );
-    }
+    // if (!user) {
+    //   itemList = itemList.filter((item) =>
+    //     [QUERY_MENU_LIST.SHARE].includes(item.id),
+    //   );
+    // }
 
     return itemList;
   };
@@ -225,7 +255,7 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
         />
       )}
       {/**Modal fork */}
-      {itemType === LIST_ITEM_TYPE.QUERIES && openModalFork && (
+      {/* {itemType === LIST_ITEM_TYPE.QUERIES && openModalFork && (
         <ModalQuery
           open={openModalFork}
           onClose={() => setOpenModalFork(false)}
@@ -233,7 +263,7 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
           type={TYPE_OF_MODAL.FORK}
           id={item.id}
         />
-      )}
+      )} */}
     </>
   );
 };
