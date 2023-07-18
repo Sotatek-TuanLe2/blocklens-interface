@@ -245,6 +245,8 @@ export const optionsFilterByDuration = [
 ];
 
 export const formatTokenData = (webhook: IWebhook) => {
+  if (!webhook || !webhook?.metadata) return '--';
+
   const { name, creatorAddress, collectionName } = webhook?.metadata;
 
   return `${formatShortText(creatorAddress || '')}::${collectionName || ''} 

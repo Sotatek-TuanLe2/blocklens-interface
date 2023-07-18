@@ -7,14 +7,13 @@ import {
   WEBHOOK_TYPES,
   formatTokenData,
 } from 'src/utils/utils-webhook';
-import { Th, Thead, Tr, Tbody, Td, Box, Flex } from '@chakra-ui/react';
+import { Th, Thead, Tr, Tbody, Td, Box, Flex, Tooltip } from '@chakra-ui/react';
 import { AppDataTable, AppLoadingTable } from 'src/components';
 import { formatShortText, shortAddressType } from 'src/utils/utils-helper';
 import _ from 'lodash';
 import { IAppResponse } from 'src/utils/utils-app';
 import { useHistory } from 'react-router';
 import { isMobile } from 'react-device-detect';
-import { Tooltip } from 'recharts';
 
 interface IListWebhook {
   appInfo: IAppResponse;
@@ -51,18 +50,22 @@ const _renderDetailWebhook = (type: string, webhook: IWebhook) => {
     );
   }
 
-
   if (type === WEBHOOK_TYPES.APTOS_COIN_ACTIVITY) {
     return <>{shortAddressType(webhook?.metadata?.coinType || '')} </>;
   }
 
   if (type === WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY) {
-    const token = formatTokenData(webhook);
-    if (token) {
-      return token
-    }
-    return <>--</>
+    const content = formatTokenData(webhook);
 
+    return (
+      <Box>
+        <Tooltip hasArrow placement="top" label={content}>
+          <Box overflow={'hidden'} textOverflow={'ellipsis'}>
+            {content}
+          </Box>
+        </Tooltip>
+      </Box>
+    );
   }
 
   return '1 address';
@@ -265,6 +268,7 @@ const ListWebhook: FC<IListWebhook> = ({
       fetchData={fetchListWebhook}
       renderBody={_renderBody}
       renderLoading={_renderLoading}
+      wrapperClassName="table-fixed"
       isNotShowNoData
       renderHeader={totalWebhook > 0 ? _renderHeader : undefined}
       limit={10}
