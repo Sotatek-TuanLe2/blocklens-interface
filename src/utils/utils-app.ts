@@ -3,6 +3,7 @@ import moment from 'moment';
 import { RESOLUTION_TIME } from './utils-webhook';
 import { formatLargeNumber } from './utils-helper';
 import { keyStats } from '../components/AppStatistical';
+import config from '../config';
 
 export enum APP_STATUS {
   DISABLED = 0,
@@ -200,3 +201,18 @@ export const formatDataStatistics = (
     };
   });
 };
+
+export const CHAINS_CONFIG = Object.keys(config.chains).map((chainKey) => {
+  const chain = config.chains[chainKey];
+  const networksClone = Object.keys(chain.networks).map((networkKey) => {
+    const network = chain.networks[networkKey];
+    return { label: network.name, value: network.id, icon: network.icon };
+  });
+
+  return {
+    label: chain.name,
+    value: chain.id,
+    icon: chain.icon,
+    networks: [...networksClone],
+  };
+});

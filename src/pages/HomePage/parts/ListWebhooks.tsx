@@ -11,6 +11,7 @@ import { useHistory } from 'react-router';
 import { isMobile } from 'react-device-detect';
 import useUser from 'src/hooks/useUser';
 import { _renderChainApp, _renderStatus } from './ListApps';
+import { ROUTES } from '../../../utils/common';
 
 interface IWebhookMobile {
   webhook: IAppResponse;
@@ -177,7 +178,10 @@ const ListWebhooks: React.FC = () => {
           <Flex alignItems={'center'}>
             {!isMobile && _renderTotalWebhook()}
 
-            <AppButton size={'sm'} onClick={() => history.push('/')}>
+            <AppButton
+              size={'sm'}
+              onClick={() => history.push(ROUTES.CREATE_WEBHOOK)}
+            >
               <Box className="icon-plus-circle" mr={2} /> Create
             </AppButton>
           </Flex>

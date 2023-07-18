@@ -10,13 +10,13 @@ import {
   AppSelect2,
   AppTextarea,
 } from 'src/components';
-import config from 'src/config';
 import rf from 'src/requests/RequestFactory';
 import { getErrorMessage } from 'src/utils/utils-helper';
+import { CHAINS_CONFIG } from 'src/utils/utils-app';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { createValidator } from 'src/utils/utils-validator';
-import useUser from '../hooks/useUser';
-import { getUserStats } from '../store/user';
+import useUser from 'src/hooks/useUser';
+import { getUserStats } from 'src/store/user';
 import BaseModal from './BaseModal';
 
 interface IModalCreateApp {
@@ -31,21 +31,6 @@ interface IDataForm {
   network: string;
   description: string;
 }
-
-const CHAINS = Object.keys(config.chains).map((chainKey) => {
-  const chain = config.chains[chainKey];
-  const networksClone = Object.keys(chain.networks).map((networkKey) => {
-    const network = chain.networks[networkKey];
-    return { label: network.name, value: network.id, icon: network.icon };
-  });
-
-  return {
-    label: chain.name,
-    value: chain.id,
-    icon: chain.icon,
-    networks: [...networksClone],
-  };
-});
 
 const ModalCreateApp: FC<IModalCreateApp> = ({ open, onClose, reloadData }) => {
   const initDataCreateApp = {
@@ -71,9 +56,9 @@ const ModalCreateApp: FC<IModalCreateApp> = ({ open, onClose, reloadData }) => {
       ),
     }),
   );
-  const [chainSelected, setChainSelected] = useState<any>(CHAINS[0]);
+  const [chainSelected, setChainSelected] = useState<any>(CHAINS_CONFIG[0]);
   const [networkSelected, setNetworkSelected] = useState<any>(
-    CHAINS[0].networks[0],
+    CHAINS_CONFIG[0].networks[0],
   );
 
   useEffect(() => {
@@ -175,13 +160,13 @@ const ModalCreateApp: FC<IModalCreateApp> = ({ open, onClose, reloadData }) => {
                 size="large"
                 onChange={(value: string) => {
                   setChainSelected(
-                    CHAINS.find((chain) => chain.value === value),
+                    CHAINS_CONFIG.find((chain) => chain.value === value),
                   );
                   setNetworkSelected(
-                    CHAINS.find((chain) => chain.value === value)?.networks[0],
+                    CHAINS_CONFIG.find((chain) => chain.value === value)?.networks[0],
                   );
                 }}
-                options={CHAINS}
+                options={CHAINS_CONFIG}
                 value={chainSelected.value}
               />
             </AppField>
