@@ -3,8 +3,6 @@ import { AppButton } from 'src/components';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import BaseModal from '../BaseModal';
 import rf from 'src/requests/RequestFactory';
-import { useParams } from 'react-router';
-import { IDashboardDetail, IQuery } from 'src/utils/query.type';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { getErrorMessage } from 'src/utils/utils-helper';
 
@@ -25,20 +23,18 @@ const ModalDelete = ({
   selectedQueryId,
   id,
 }: IModalDelete) => {
-  const { dashboardId }: { queryId?: string; dashboardId?: string } =
-    useParams();
-
   const getTitleModal = () => {
     if (type === LIST_ITEM_TYPE.QUERIES) return 'Query';
     if (type === LIST_ITEM_TYPE.DASHBOARDS) return 'Dashboard';
   };
 
   const handleRemove = async (id: string) => {
-    const action = id === dashboardId ? 'removeDashboard' : 'removeQuery';
+    const action =
+      type === LIST_ITEM_TYPE.DASHBOARDS ? 'removeDashboard' : 'removeQuery';
     const successMessage = {
       type: 'success',
       message:
-        id === dashboardId
+        type === LIST_ITEM_TYPE.DASHBOARDS
           ? 'Delete dashboard successfully!'
           : 'Delete query successfully!',
     };
