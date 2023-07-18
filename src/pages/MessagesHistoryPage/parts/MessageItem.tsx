@@ -22,8 +22,9 @@ export const StatusMessages = ({ message }: any) => {
     return (
       <Box
         textTransform={'capitalize'}
-        className={`status ${message.status === STATUS.FAILED ? 'inactive' : 'active'
-          }`}
+        className={`status ${
+          message.status === STATUS.FAILED ? 'inactive' : 'active'
+        }`}
       >
         {message?.status?.toLowerCase()}
       </Box>
