@@ -8,7 +8,8 @@
   margin-top: -40px;
 
   @media (max-width: 992px) {
-    margin-top: 15px;
+    margin-top: 0;
+    gap: 0;
   }
 
   .ref-line {
@@ -218,14 +219,11 @@
               align-items: center;
               gap: 10px;
               justify-content: end;
-              div {
+              .icon-header {
                 cursor: pointer;
-
-                .icon-header {
-                  color: white;
-                  width: 14px;
-                  height: 14px;
-                }
+                color: white;
+                width: 14px;
+                height: 14px;
               }
             }
           }
@@ -337,7 +335,6 @@
           font-size: 14px;
           line-height: 20px;
           width: 150px;
-          //height: 60px;
           padding: 10px 0;
           height: max-content;
           border-radius: 8px;
@@ -437,8 +434,8 @@
 
       @media (max-width: 992px) {
         flex-direction: column;
-        padding: 14px;
         align-items: flex-start;
+        padding: 14px;
 
         .icon-back-light {
           display: none;
@@ -452,14 +449,6 @@
         max-width: 100%;
         overflow: hidden;
         gap: 5px;
-
-        @media (max-width: 992px) {
-          padding-bottom: 14px;
-          border-bottom: 1px solid $disable;
-          margin-bottom: 14px;
-          width: 100%;
-          justify-content: space-between;
-        }
 
         .btn-back {
           &:hover {
@@ -483,15 +472,6 @@
             white-space: nowrap;
             overflow: hidden;
             max-width: 100%;
-
-            @media (max-width: 992px) {
-              width: 194px;
-              overflow: hidden;
-              text-overflow: ellipsis;
-              -webkit-line-clamp: 1;
-              display: -webkit-box;
-              -webkit-box-orient: vertical;
-            }
           }
 
           img {
@@ -504,11 +484,6 @@
       &__right {
         display: flex;
         align-items: center;
-
-        @media (max-width: 992px) {
-          justify-content: flex-start;
-          width: 100%;
-        }
 
         .btn-list {
           padding: 0;
@@ -596,5 +571,133 @@
   }
   100% {
     opacity: 1;
+  }
+}
+
+.text-header {
+  @include heading-7;
+}
+.item-filter {
+  @include text-small-bold;
+  text-transform: uppercase;
+}
+.m-drawer-filter {
+  width: 100%;
+  height: 100%;
+  padding: 44px 16px;
+  .drawer-header {
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    height: 42px;
+    margin-bottom: 32px;
+    .icon-back-light {
+      position: absolute;
+      top: calc(50% - 19px);
+      left: 0;
+      width: 38px;
+      height: 38px;
+    }
+    .btn-close-drawer {
+      min-width: auto;
+      position: absolute;
+      top: calc(50% - 15px);
+      right: 0;
+      width: 30px;
+      height: 30px;
+      border-radius: 15px;
+      border: 1px solid #C7D2E1;
+      padding: 0;
+    }
+  }
+}
+
+@media (max-width: 992px) {
+  .workspace-page__sidebar__content__explore-wrap, .workspace-page__sidebar__content__work-place-wrap {
+    width: 100%;
+    .workspace-page__sidebar__content__explore-wrap__title, .workspace-page__sidebar__content__work-place-wrap__work-place {
+      justify-content: flex-start;
+      padding-bottom: 24px;
+      padding-top: 0;
+      @include text-small-bold;
+    }
+    .workspace-page__sidebar__content__work-place-wrap__work-place-content {
+      margin-top: 24px;
+    }
+  }
+  .workspace-page__editor--query {
+    width: 100%;
+  }
+  .workspace-page__editor__header {
+    border-radius: 10px;
+    .workspace-page__editor__header__left {
+      flex-grow: 1;
+      .item-desc {
+        width: 100%;
+        max-width: 100%;
+        overflow: hidden;
+        .item-desc__name {
+          display: block;
+          max-width: calc(100% - 34px);
+        }
+      }
+    }
+    .header-tab__info.tag {
+      width: 100%;
+      padding-top: 14px;
+      margin-top: 14px;
+      border-top: 1px solid rgba(0, 2, 36, 0.10);
+    }
+  }
+  .side-content-explore {
+    min-height: 100vh;
+    width: 100%;
+    z-index: 10;
+    .overlay-side {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1401;
+      background: #000;
+      opacity: 0.6;
+    }
+    .content-side {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      z-index: 1402;
+      max-height: 50vh;
+      width: 100%;
+      overflow: hidden;
+      background: white;
+      border-radius: 16px 16px 0px 0px;
+      .close-bar {
+        width: 48px;
+        height: 5px;
+        border-radius: 2.5px;
+        background: #C7D2E1;
+      }
+      .body-side {
+        width: 100%;
+        height: 100%;
+        padding-top: 14px;
+      }
+    }
+  }
+  .m-chain-info-desc {
+    .chain-info-desc__header {
+      background: #0002240D !important;
+      padding: 10px 20px;
+      margin-bottom: 14px;
+      .info-detail-header {
+        color: $title !important;
+        @include text-medium-medium;
+      }
+      .header-icon .icon-header {
+        color: #00022480 !important;
+      }
+    }
   }
 }

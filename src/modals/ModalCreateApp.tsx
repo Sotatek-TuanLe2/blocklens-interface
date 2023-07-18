@@ -121,7 +121,7 @@ const ModalCreateApp: FC<IModalCreateApp> = ({ open, onClose, reloadData }) => {
   return (
     <BaseModal
       size="lg"
-      title="Create New Apps"
+      title="Create New Projects"
       description={
         !userStats?.totalApp
           ? `We suggest you create an app and start experiencing our service,
@@ -135,7 +135,7 @@ const ModalCreateApp: FC<IModalCreateApp> = ({ open, onClose, reloadData }) => {
     >
       <Box>
         <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
-          <AppField label={'App Name'} customWidth={'100%'} isRequired>
+          <AppField label={'Project Name'} customWidth={'100%'} isRequired>
             <AppInput
               placeholder="Gavin"
               value={dataForm.name}
@@ -154,7 +154,7 @@ const ModalCreateApp: FC<IModalCreateApp> = ({ open, onClose, reloadData }) => {
           </AppField>
           <AppField label={'Description'} customWidth={'100%'}>
             <AppTextarea
-              placeholder="Write something about this app in 100 characters!"
+              placeholder="Write something about this project in 100 characters!"
               value={dataForm.description}
               onChange={(e) => {
                 setDataForm({

@@ -471,6 +471,9 @@
             height: calc(100% - 40px - 70px);
             max-height: calc(100% - 40px - 70px);
             overflow: auto;
+            position: relative;
+            background: var(--bg-copyright) no-repeat center;
+            background-size: auto;
 
             &::-webkit-scrollbar {
               width: 6px;
@@ -728,5 +731,11 @@
   to {
     width: 0;
     padding: 0;
+  }
+}
+
+@media (max-width: 992px) {
+  .queries-page {
+    flex-direction: column;
   }
 }

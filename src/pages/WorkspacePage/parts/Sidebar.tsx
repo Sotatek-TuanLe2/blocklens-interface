@@ -1,10 +1,24 @@
-import { Box, Collapse, Flex, Spinner, Text, Tooltip } from '@chakra-ui/react';
+import {
+  Box,
+  BoxProps,
+  Button,
+  Collapse,
+  Drawer,
+  DrawerContent,
+  DrawerOverlay,
+  Flex,
+  Slide,
+  Spinner,
+  Text,
+  Tooltip,
+  useDisclosure,
+} from '@chakra-ui/react';
 import _, { debounce } from 'lodash';
-import { useCallback, useEffect, useState } from 'react';
+import { FC, ReactNode, useCallback, useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { Link, useHistory, useLocation, useParams } from 'react-router-dom';
 import { CloseMenuIcon, CopyIcon } from 'src/assets/icons';
-import { AppInput } from 'src/components';
+import { AppButton, AppInput } from 'src/components';
 import AppQueryMenu, { QUERY_MENU_LIST } from 'src/components/AppQueryMenu';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import rf from 'src/requests/RequestFactory';
@@ -14,8 +28,9 @@ import { AppBroadcast } from 'src/utils/utils-broadcast';
 import { copyToClipboard, getErrorMessage } from 'src/utils/utils-helper';
 import { getChainIconByChainName } from 'src/utils/utils-network';
 import { BROADCAST_FETCH_DASHBOARD } from './Dashboard';
-import { BROADCAST_FETCH_QUERY } from './Query';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
+import { BROADCAST_ADD_TO_EDITOR, BROADCAST_FETCH_QUERY } from './Query';
+import { ChevronRightIcon, CloseIcon } from '@chakra-ui/icons';
 
 export const BROADCAST_FETCH_WORKPLACE_DATA = 'FETCH_WORKPLACE_DATA';
 
@@ -43,7 +58,8 @@ const ChainItem = ({
     }
   };
 
-  const handleCopyQuery = (query: string) => {
+  const handleCopy = (query: string) => {
+    AppBroadcast.dispatch(BROADCAST_ADD_TO_EDITOR, query);
     copyToClipboard(query);
   };
 
@@ -69,7 +85,7 @@ const ChainItem = ({
           <Tooltip
             placement="top"
             hasArrow
-            label="Copy query"
+            label="Copy table's name"
             aria-label="A tooltip"
             borderRadius="6px"
           >
@@ -77,7 +93,7 @@ const ChainItem = ({
               className="add-query-icon"
               onClick={(e) => {
                 e.stopPropagation();
-                handleCopyQuery(chain.full_name);
+                handleCopy(chain.full_name);
               }}
             >
               <CopyIcon />
@@ -138,10 +154,17 @@ const CollapseExplore = ({
   );
 };
 
-const Sidebar: React.FC<{
-  expandSidebar: boolean;
-  onToggleExpandSidebar: (toggle?: boolean) => void;
-}> = ({ expandSidebar, onToggleExpandSidebar }) => {
+interface SidebarProps {
+  expandSidebar?: boolean;
+  onToggleExpandSidebar?: (toggle?: boolean) => void;
+  onCloseFilter?: () => void;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({
+  expandSidebar,
+  onToggleExpandSidebar,
+  onCloseFilter,
+}) => {
   const CATEGORIES = {
     WORK_PLACE: 'WORK_PLACE',
     EXPLORE_DATA: 'EXPLORE_DATA',
@@ -205,7 +228,8 @@ const Sidebar: React.FC<{
   const [dataQueriesPagination, setDataQueriesPagination] = useState<
     IPagination | undefined
   >();
-
+  const [selectedQueryId, setSelectedQueryId] = useState<string>('');
+  console.log(selectedQueryId);
   useEffect(() => {
     AppBroadcast.on(BROADCAST_FETCH_WORKPLACE_DATA, fetchDataWorkPlace);
 
@@ -303,13 +327,14 @@ const Sidebar: React.FC<{
     history.push(ROUTES.MY_QUERY);
   };
 
-  const getWorkplaceItemClassname = (id: string) => {
+  const getWorkplaceItemClassName = (id: string) => {
     return id === queryId || id === dashboardId
       ? 'workspace-page__sidebar__content__work-place-detail work-place-active '
       : 'workspace-page__sidebar__content__work-place-detail ';
   };
 
-  const handleCopyQuery = (query: string) => {
+  const handleCopy = (query: string) => {
+    AppBroadcast.dispatch(BROADCAST_ADD_TO_EDITOR, query);
     copyToClipboard(query);
   };
 
@@ -322,14 +347,12 @@ const Sidebar: React.FC<{
 
   const onDeleteSuccess = async (item: IQuery | IDashboardDetail) => {
     try {
-      await rf
-        .getRequest('DashboardsRequest')
-        .deleteVisualization({ visualId: dashboardId });
+      await rf.getRequest('DashboardsRequest').removeQuery(selectedQueryId);
       toastSuccess({ message: 'Delete query successfully!' });
     } catch (error: any) {
       toastError({ message: getErrorMessage(error) });
     }
-    item.id === queryId || item.id === dashboardId ? history.goBack() : '';
+    item.id === queryId ? history.goBack() : fetchDataWorkPlace();
   };
 
   const _renderNoData = () => (
@@ -342,10 +365,16 @@ const Sidebar: React.FC<{
     return (
       <Box className="workspace-page__sidebar__content__work-place-wrap">
         <div className="workspace-page__sidebar__content__work-place-wrap__work-place">
+          <Box
+            mr={'10px'}
+            display={{ lg: 'none' }}
+            className="icon-place-light"
+          />
           <span>work place</span>
           <Box
+            display={{ base: 'none', lg: 'block' }}
             cursor={'pointer'}
-            onClick={() => onToggleExpandSidebar()}
+            onClick={() => onToggleExpandSidebar && onToggleExpandSidebar()}
             className="icon-close-light"
           ></Box>
         </div>
@@ -364,7 +393,16 @@ const Sidebar: React.FC<{
 
         <div className="workspace-page__sidebar__content__work-place-wrap__work-place-content">
           <span>Query</span>{' '}
-          <div onClick={handleCreateNewQuery}>
+          <BoxResponsive
+            propsOnlyDesktop={{ onClick: handleCreateNewQuery }}
+            propsOnlyMobile={{
+              onClick: () => {
+                handleCreateNewQuery();
+                onClose();
+                onCloseFilter && onCloseFilter();
+              },
+            }}
+          >
             <Tooltip
               placement="top"
               hasArrow
@@ -376,7 +414,7 @@ const Sidebar: React.FC<{
             >
               <Box cursor={'pointer'} className="icon-plus-light" />
             </Tooltip>
-          </div>
+          </BoxResponsive>
         </div>
         {!!dataQueries.length ? (
           <div
@@ -406,9 +444,19 @@ const Sidebar: React.FC<{
               scrollableTarget="scrollableDivQueries"
             >
               {dataQueries.map((query) => (
-                <div
+                <BoxResponsive
+                  onClick={() => {
+                    setSelectedQueryId(query.id);
+                  }}
                   key={query.id}
-                  className={getWorkplaceItemClassname(query.id)}
+                  className={getWorkplaceItemClassName(query.id)}
+                  displayDesktop="flex"
+                  propsOnlyMobile={{
+                    onClick: () => {
+                      onClose();
+                      onCloseFilter && onCloseFilter();
+                    },
+                  }}
                 >
                   <Tooltip
                     placement="top"
@@ -451,7 +499,7 @@ const Sidebar: React.FC<{
                     onForkSuccess={onForkSuccess}
                     onDeleteSuccess={onDeleteSuccess}
                   />
-                </div>
+                </BoxResponsive>
               ))}
             </InfiniteScroll>
           </div>
@@ -462,18 +510,92 @@ const Sidebar: React.FC<{
     );
   };
 
+  const _renderDetailExplore = () => {
+    return (
+      <>
+        <div className="chain-info-desc__header">
+          <Flex align={'center'} maxW={'70%'}>
+            <Box
+              display={{ lg: 'none' }}
+              mr={'10px'}
+              className="bg-chain_default"
+            />
+            <Tooltip
+              placement={'top'}
+              hasArrow
+              label={schemaDescribe[0].table_name}
+              p={2}
+            >
+              <Text isTruncated maxW={'full'} className="info-detail-header">
+                {schemaDescribe[0].table_name}
+              </Text>
+            </Tooltip>
+          </Flex>
+          <div className="header-icon">
+            {pathname.includes(ROUTES.MY_QUERY) && (
+              <CopyIcon
+                className="icon-header"
+                onClick={() => handleCopy(schemaDescribe[0].full_name)}
+              />
+            )}
+            <Box
+              display={{ base: 'none', lg: 'block' }}
+              onClick={() => setSchemaDescribe([])}
+            >
+              <CloseMenuIcon className="icon-header" />
+            </Box>
+          </div>
+        </div>
+        <div className="chain-info-desc__content">
+          {schemaDescribe.map((item, index) => (
+            <Flex
+              key={index + 'schema'}
+              direction={'row'}
+              py="6px"
+              justifyContent={'space-between'}
+              px={{ base: '20px', lg: '16px' }}
+              cursor={'pointer'}
+              onClick={() => handleCopy(item.column_name)}
+            >
+              <Tooltip
+                placement={'top'}
+                hasArrow
+                label={item.column_name}
+                p={2}
+              >
+                <Box isTruncated maxW={'50%'}>
+                  {item.column_name}
+                </Box>
+              </Tooltip>
+              <div className="data-type">
+                <Text isTruncated>{item.data_type}</Text>
+                <CopyIcon />
+              </div>
+            </Flex>
+          ))}
+        </div>
+      </>
+    );
+  };
+
   const _renderContentExplore = () => {
     return (
       <div className="workspace-page__sidebar__content__explore-wrap">
         <div className="workspace-page__sidebar__content__explore-wrap__title">
+          <Box
+            mr={'10px'}
+            display={{ lg: 'none' }}
+            className="icon-explore-light"
+          />
           <span>Explore data</span>
           <Box
+            display={{ base: 'none', lg: 'block' }}
             cursor={'pointer'}
-            onClick={() => onToggleExpandSidebar()}
+            onClick={() => onToggleExpandSidebar && onToggleExpandSidebar()}
             className="bg-CloseBtnIcon"
           />
         </div>
-        <Box px={'16px'} mb={'26px'}>
+        <Box px={'16px'} mb={{ base: '24px', lg: '26px' }}>
           <AppInput
             className="workspace-page__sidebar__content__work-place-wrap__input-search"
             value={searchExploreData}
@@ -508,101 +630,225 @@ const Sidebar: React.FC<{
         )}
 
         {!!schemaDescribe.length && (
-          <Box className="chain-info-desc">
-            <div className="chain-info-desc__header">
-              <Tooltip
-                placement={'top'}
-                hasArrow
-                label={schemaDescribe[0].table_name}
-                p={2}
-              >
-                <Text isTruncated maxW={'70%'}>
-                  {schemaDescribe[0].table_name}
-                </Text>
-              </Tooltip>
-              <div className="header-icon">
-                {pathname.includes(ROUTES.MY_QUERY) && (
-                  <div
-                    onClick={() => handleCopyQuery(schemaDescribe[0].full_name)}
-                  >
-                    <CopyIcon className="icon-header" />
-                  </div>
-                )}
-                <div onClick={() => setSchemaDescribe([])}>
-                  <CloseMenuIcon className="icon-header" />
-                </div>
-              </div>
-            </div>
-            <div className="chain-info-desc__content">
-              {schemaDescribe.map((item, index) => (
-                <Flex
-                  key={index + 'schema'}
-                  direction={'row'}
-                  py="6px"
-                  justifyContent={'space-between'}
-                  px="16px"
-                  cursor={'pointer'}
-                  onClick={() => handleCopyQuery(item.column_name)}
-                >
-                  <Tooltip
-                    placement={'top'}
-                    hasArrow
-                    label={item.column_name}
-                    p={2}
-                  >
-                    <Box isTruncated maxW={'50%'}>
-                      {item.column_name}
-                    </Box>
-                  </Tooltip>
-                  <div className="data-type">
-                    <Text isTruncated>{item.data_type}</Text>
-                    <CopyIcon />
-                  </div>
-                </Flex>
-              ))}
-            </div>
+          <Box
+            display={{ base: 'none !important', lg: 'block !important' }}
+            className="chain-info-desc"
+          >
+            {_renderDetailExplore()}
           </Box>
         )}
+        {/*  */}
+        <Box display={{ lg: 'none !important' }} className="m-chain-info-desc">
+          <SideContentExplore
+            isOpen={!!schemaDescribe.length}
+            onClose={() => setSchemaDescribe([])}
+          >
+            {!!schemaDescribe.length && _renderDetailExplore()}
+          </SideContentExplore>
+        </Box>
+        {/*  */}
       </div>
     );
   };
 
-  return (
-    <div className={'workspace-page__sidebar'}>
-      <div
-        className={
-          expandSidebar
-            ? 'workspace-page__sidebar__categories'
-            : 'workspace-page__sidebar__categories hidden-sidebar-content'
-        }
-      >
-        {categoryList.map((item) => (
-          <Box
-            cursor={'pointer'}
-            key={item.id}
-            title={item.title}
-            onClick={() => {
-              setCategory(item.id);
-              onToggleExpandSidebar(true);
-              setSchemaDescribe([]);
-            }}
-          >
-            {category === item.id ? item.activeIcon : item.icon}
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const _renderDrawerCategory = () => {
+    return (
+      <Drawer isOpen={isOpen} placement="left" onClose={onClose} size="full">
+        <DrawerOverlay />
+        <DrawerContent>
+          <Box className={'m-drawer-filter'} display={{ lg: 'none' }}>
+            <Flex className={'drawer-header'}>
+              <AppButton
+                onClick={onClose}
+                size="sm"
+                variant="no-effects"
+                className="icon-back-light"
+              />
+              <Flex align={'center'} justify={'center'} mx={'30px'}>
+                <Text className={'text-header'}>
+                  {categoryList.find((f) => f.id === category)?.title}
+                </Text>
+              </Flex>
+            </Flex>
+            {category === CATEGORIES.EXPLORE_DATA
+              ? _renderContentExplore()
+              : _renderContentWorkPlace()}
           </Box>
-        ))}
-      </div>
-      <Box
-        className={
-          expandSidebar
-            ? 'workspace-page__sidebar__content show-sidebar '
-            : 'workspace-page__sidebar__content hidden-sidebar'
-        }
-      >
-        {category === CATEGORIES.EXPLORE_DATA
-          ? _renderContentExplore()
-          : _renderContentWorkPlace()}
+        </DrawerContent>
+      </Drawer>
+    );
+  };
+
+  const _renderOnMobile = () => {
+    return (
+      <Box className={'m-drawer-filter'} display={{ lg: 'none' }}>
+        <Flex className={'drawer-header'}>
+          <Flex align={'center'} justify={'center'} mx={'30px'}>
+            <Text className={'text-header'}>Fillter</Text>
+          </Flex>
+          <Button
+            variant="ghost"
+            className={'btn-close-drawer'}
+            onClick={onCloseFilter && onCloseFilter}
+          >
+            <CloseIcon w={'12px'} />
+          </Button>
+        </Flex>
+        <Box>
+          {categoryList.map((item) => (
+            <Flex
+              key={item.id}
+              title={item.title}
+              align={'center'}
+              h={'32px'}
+              mb={'20px'}
+              onClick={() => {
+                setCategory(item.id);
+                setSchemaDescribe([]);
+                onOpen();
+              }}
+            >
+              <Flex align={'center'} flexGrow={1}>
+                {item.icon}{' '}
+                <Text ml={'10px'} className={'item-filter'}>
+                  {item.title}
+                </Text>
+              </Flex>
+              <ChevronRightIcon fontSize={'24px'} color={'#00022480'} />
+            </Flex>
+          ))}
+        </Box>
+        {_renderDrawerCategory()}
       </Box>
-    </div>
+    );
+  };
+
+  const _renderOnDesktop = () => {
+    return (
+      <Flex
+        display={{ base: 'none !important', lg: 'flex !important' }}
+        className={'workspace-page__sidebar'}
+      >
+        <div
+          className={
+            expandSidebar
+              ? 'workspace-page__sidebar__categories'
+              : 'workspace-page__sidebar__categories hidden-sidebar-content'
+          }
+        >
+          {categoryList.map((item) => (
+            <Box
+              cursor={'pointer'}
+              key={item.id}
+              title={item.title}
+              onClick={() => {
+                setCategory(item.id);
+                onToggleExpandSidebar && onToggleExpandSidebar(true);
+                setSchemaDescribe([]);
+              }}
+            >
+              {category === item.id ? item.activeIcon : item.icon}
+            </Box>
+          ))}
+        </div>
+        <Box
+          className={
+            expandSidebar
+              ? 'workspace-page__sidebar__content show-sidebar '
+              : 'workspace-page__sidebar__content hidden-sidebar'
+          }
+        >
+          {category === CATEGORIES.EXPLORE_DATA
+            ? _renderContentExplore()
+            : _renderContentWorkPlace()}
+        </Box>
+      </Flex>
+    );
+  };
+
+  return (
+    <>
+      <>{_renderOnDesktop()}</>
+      <>{_renderOnMobile()}</>
+    </>
+  );
+};
+
+interface AppResponsiveProps extends BoxProps {
+  displayDesktop?: 'block' | 'flex' | 'grid';
+  propsOnlyMobile?: BoxProps;
+  propsOnlyDesktop?: BoxProps;
+}
+
+const BoxResponsive: FC<AppResponsiveProps> = ({
+  displayDesktop = 'block',
+  propsOnlyMobile,
+  propsOnlyDesktop,
+  ...otherProps
+}) => {
+  const restMobile = propsOnlyMobile
+    ? { ...otherProps, ...propsOnlyMobile }
+    : otherProps;
+
+  const restDesktop = propsOnlyDesktop
+    ? { ...otherProps, ...propsOnlyDesktop }
+    : otherProps;
+  return (
+    <>
+      <Box
+        display={{
+          base: 'none !important',
+          lg: `${displayDesktop} !important`,
+        }}
+        {...restDesktop}
+      />
+      <Box display={{ lg: 'none !important' }} {...restMobile} />
+    </>
+  );
+};
+
+interface SideContentExploreProps {
+  isOpen: boolean;
+  onClose: () => void;
+  children: ReactNode;
+}
+
+const SideContentExplore: FC<SideContentExploreProps> = ({
+  isOpen,
+  onClose,
+  children,
+}) => {
+  const [openSide, setOpenSide] = useState<boolean>(isOpen);
+
+  useEffect(() => {
+    setOpenSide(isOpen);
+  }, [isOpen]);
+
+  return (
+    <Slide direction="bottom" in={openSide} className="side-content-explore">
+      <div className="overlay-side" onClick={onClose} />
+      <Flex direction={'column'} className="content-side">
+        <Box pt={'8px'} pb={'11px'} px={4} onClick={onClose} mx={'auto'}>
+          <div className="close-bar" />
+        </Box>
+        <Box
+          flexGrow={1}
+          overflow={'auto'}
+          maxH={'calc(100% - 80px)'}
+          h={'full'}
+        >
+          <div className="body-side">{children}</div>
+        </Box>
+        <Flex align={'center'} gap={'10px'} py={4}>
+          {/* <AppButton size={'lg'} variant={'cancel'} onClick={onClose}>
+            Cancel
+          </AppButton>
+          <AppButton size={'lg'}>Add to Query</AppButton> */}
+        </Flex>
+      </Flex>
+    </Slide>
   );
 };
 
