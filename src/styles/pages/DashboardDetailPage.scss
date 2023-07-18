@@ -42,12 +42,15 @@
 
       .main-table {
         height: 100%;
+        position: relative;
+        background: var(--bg-copyright) no-repeat center;
+        background-size: auto;
+        overflow: auto;
       }
 
       .table-content {
         height: 100%;
         max-height: calc(100% - 80px);
-        overflow: auto;
         margin: 0 -17px;
 
         &::-webkit-scrollbar {

@@ -417,7 +417,15 @@ const VisualizationTable = <T,>({
           onChange={handleSearch}
         />
       </div>
-      <Box className="main-table">
+      <Box
+        className="main-table"
+        style={
+          {
+            '--bg-copyright':
+              !isLoading && 'url(/images/copyright-logo-name.png)',
+          } as any
+        }
+      >
         {isLoading ? (
           _renderLoadingTable()
         ) : (
