@@ -163,8 +163,7 @@ const ListWebhooks: React.FC = () => {
   const _renderTotalWebhook = () => {
     return (
       <Box className="number-app">
-        {userStats?.totalRegistrationActive}/{userStats?.totalRegistration}
-        <span> </span>active
+        <Text as={'span'}> Active Webhooks:</Text> {userStats?.totalRegistrationActive}/{userStats?.totalRegistration}
       </Box>
     );
   };
