@@ -206,7 +206,8 @@
   }
 }
 
-.user-graph {
+.user-graph,
+.webhook {
   margin-top: 20px;
 
   @include tablet {

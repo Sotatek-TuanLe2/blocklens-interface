@@ -1,3 +1,5 @@
+import { formatShortText } from "./utils-helper";
+
 export const enum STATUS {
   WAITING = 'WAITING',
   DONE = 'DONE',
@@ -44,6 +46,8 @@ export const WEBHOOK_TYPES_APTOS = [
   WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY,
   WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY,
 ];
+
+
 
 export const getNameWebhook = (type: string) => {
   switch (type) {
@@ -241,3 +245,10 @@ export const optionsFilterByDuration = [
     value: '30d',
   },
 ];
+
+export const formatTokenData = (webhook: IWebhook) => {
+  const { name, creatorAddress, collectionName } = webhook?.metadata;
+
+  return `${formatShortText(creatorAddress || '')}::${collectionName || ''} 
+  ${name ? `::${formatShortText(name)}` : ''}`;
+}

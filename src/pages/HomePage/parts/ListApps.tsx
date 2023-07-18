@@ -32,7 +32,7 @@ export const _renderStatus = (status?: APP_STATUS) => {
   );
 };
 
-const _renderChainApp = (chain: string, network: string) => {
+export const _renderChainApp = (chain: string, network: string) => {
   return (
     <Flex alignItems={'center'}>
       <Box className={getLogoChainByChainId(chain) || ''} mr={2.5} />
@@ -288,8 +288,8 @@ const ListApps: React.FC = () => {
   const _renderTotalApp = () => {
     return (
       <Box className="number-app">
-        <Text as={'span'}>Active Apps:</Text> {userStats?.totalAppActive}/
-        {userStats?.totalApp}
+        <Text as={'span'}>Active Projects: </Text>
+        {userStats?.totalAppActive}/{userStats?.totalApp}
       </Box>
     );
   };
@@ -298,7 +298,7 @@ const ListApps: React.FC = () => {
     <Box className="list-app-hp">
       <AppCard className="list-table-wrap">
         <Flex className="title-list-app">
-          <Text className="text-title">Apps</Text>
+          <Text className="text-title">Projects</Text>
           <Flex alignItems={'center'}>
             {!isMobile && _renderTotalApp()}
             <ButtonCreateApp onReload={() => setParams({ ...params })} />
