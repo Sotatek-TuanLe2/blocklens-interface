@@ -13,7 +13,7 @@ export interface IModalDelete {
   onClose: () => void;
   id: string;
   type: string;
-  onSuccess?: () => void;
+  onSuccess: () => void;
   selectedQueryId?: string;
 }
 
