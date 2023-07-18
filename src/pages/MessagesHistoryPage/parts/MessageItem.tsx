@@ -5,6 +5,7 @@ import {
   IWebhook,
   STATUS,
   WEBHOOK_TYPES,
+  formatTokenData,
 } from 'src/utils/utils-webhook';
 import {
   formatShortText,
@@ -21,9 +22,8 @@ export const StatusMessages = ({ message }: any) => {
     return (
       <Box
         textTransform={'capitalize'}
-        className={`status ${
-          message.status === STATUS.FAILED ? 'inactive' : 'active'
-        }`}
+        className={`status ${message.status === STATUS.FAILED ? 'inactive' : 'active'
+          }`}
       >
         {message?.status?.toLowerCase()}
       </Box>
@@ -79,11 +79,7 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
   };
 
   const _renderContentAptosToken = () => {
-    const content = `${formatShortText(
-      webhook?.metadata?.creatorAddress || '',
-    )}::${webhook?.metadata?.collectionName}${
-      webhook?.metadata?.name ? `::${webhook?.metadata?.name}` : ''
-    }`;
+    const content = formatTokenData(webhook);
 
     return (
       <Td w="15%">

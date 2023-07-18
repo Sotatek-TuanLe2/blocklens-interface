@@ -16,6 +16,7 @@ import 'src/styles/pages/AppDetail.scss';
 import { getExplorerTxUrl } from 'src/utils/utils-network';
 import { toastSuccess } from 'src/utils/utils-notify';
 import {
+  formatTokenData,
   getColorBrandStatus,
   IActivityResponse,
   IWebhook,
@@ -158,10 +159,7 @@ const ActivityMobile: FC<IActivity> = ({ activity, webhook }) => {
           <Box>Token Data</Box>
           <Box className="value">
             <Flex alignItems="center">
-              {`${formatShortText(webhook?.metadata?.creatorAddress || '')}
-              ::${webhook?.metadata?.collectionName}
-              ${webhook?.metadata?.name ? `::${webhook?.metadata?.name}` : ''}
-             `}
+              {formatTokenData(webhook)}
             </Flex>
           </Box>
         </Flex>
@@ -334,11 +332,8 @@ const ActivityDesktop: FC<IActivity> = ({ activity, webhook }) => {
   };
 
   const _renderContentAptosToken = () => {
-    const content = `${formatShortText(
-      webhook?.metadata?.creatorAddress || '',
-    )}::${webhook?.metadata?.collectionName} ${
-      webhook?.metadata?.name ? `::${webhook?.metadata?.name}` : ''
-    } `;
+    const content = formatTokenData(webhook);
+
 
     return (
       <Td w="15%">
