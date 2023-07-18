@@ -7,17 +7,19 @@ import {
   MenuList,
 } from '@chakra-ui/react';
 import { useMemo, useState } from 'react';
+import { useHistory } from 'react-router';
 import useUser from 'src/hooks/useUser';
 import ModalDashboard from 'src/modals/querySQL/ModalDashboard';
 import ModalDelete from 'src/modals/querySQL/ModalDelete';
 import ModalQuery from 'src/modals/querySQL/ModalQuery';
 import ModalShareDomain from 'src/modals/querySQL/ModalShareDomain';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
-import 'src/styles/components/AppQueryMenu.scss';
-import { TYPE_OF_MODAL, ROUTES } from 'src/utils/common';
-import { IDashboardDetail, IQuery } from 'src/utils/query.type';
-import AppButton from './AppButton';
 import rf from 'src/requests/RequestFactory';
+import 'src/styles/components/AppQueryMenu.scss';
+import { ROUTES, TYPE_OF_MODAL } from 'src/utils/common';
+import { IDashboardDetail, IQuery } from 'src/utils/query.type';
+import { getErrorMessage } from 'src/utils/utils-helper';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import {
   DeleteQueryIcon,
   ForkQueryIcon,
@@ -25,10 +27,7 @@ import {
   SettingQueryIcon,
   ShareQueryIcon,
 } from '../assets/icons';
-import useRecaptcha from 'src/hooks/useRecaptcha';
-import { toastError, toastSuccess } from 'src/utils/utils-notify';
-import { getErrorMessage } from 'src/utils/utils-helper';
-import { useHistory } from 'react-router';
+import AppButton from './AppButton';
 
 interface IAppQueryMenu {
   menu?: string[];
@@ -69,7 +68,6 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
   const { user } = useUser();
   const location = window.location;
   const history = useHistory();
-  const { getAndSetRecaptcha } = useRecaptcha();
 
   const [openModalSetting, setOpenModalSetting] = useState<boolean>(false);
   const [openModalShare, setOpenModalShare] = useState<boolean>(false);
@@ -92,8 +90,6 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
     if (!user) {
       return history.push(ROUTES.LOGIN);
     }
-
-    await getAndSetRecaptcha();
 
     try {
       const res = await rf

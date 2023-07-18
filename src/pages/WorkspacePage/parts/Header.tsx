@@ -99,6 +99,22 @@ const Header: React.FC<IHeaderProps> = (props) => {
     }
   };
 
+  const menuAppQuery = () => {
+    if (type === LIST_ITEM_TYPE.DASHBOARDS) {
+      return !needAuthentication
+        ? [QUERY_MENU_LIST.SHARE]
+        : [
+            QUERY_MENU_LIST.DELETE,
+            QUERY_MENU_LIST.SETTING,
+            QUERY_MENU_LIST.SHARE,
+          ];
+    } else {
+      return !needAuthentication
+        ? [QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.SHARE]
+        : undefined;
+    }
+  };
+
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const _renderNavSidebar = () => {
@@ -354,19 +370,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
               <Flex ml={'10px'} align={'center'}>
                 {!isCreatingQuery && data && (
                   <AppQueryMenu
-                    menu={
-                      !needAuthentication
-                        ? type === LIST_ITEM_TYPE.DASHBOARDS
-                          ? [QUERY_MENU_LIST.SHARE]
-                          : [QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.SHARE]
-                        : type === LIST_ITEM_TYPE.DASHBOARDS
-                        ? [
-                            QUERY_MENU_LIST.DELETE,
-                            QUERY_MENU_LIST.SETTING,
-                            QUERY_MENU_LIST.SHARE,
-                          ]
-                        : undefined
-                    }
+                    menu={menuAppQuery()}
                     item={data}
                     itemType={type}
                     onForkSuccess={onForkSuccess}
