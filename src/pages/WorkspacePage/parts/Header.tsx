@@ -17,14 +17,11 @@ import { useHistory, useParams } from 'react-router-dom';
 import { AppButton, AppTag } from 'src/components';
 import AppQueryMenu, { QUERY_MENU_LIST } from 'src/components/AppQueryMenu';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
-import { generateAvatarFromId, ROUTES } from 'src/utils/common';
+import { generateAvatarFromId } from 'src/utils/common';
 import { IDashboardDetail, IQuery } from 'src/utils/query.type';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
 import { BROADCAST_FETCH_DASHBOARD } from './Dashboard';
 import { BROADCAST_FETCH_QUERY } from './Query';
-import rf from 'src/requests/RequestFactory';
-import { getErrorMessage } from 'src/utils/utils-helper';
-import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import Sidebar, { BROADCAST_FETCH_WORKPLACE_DATA } from './Sidebar';
 import { Dashboard } from 'src/utils/utils-dashboard';
 import { Query } from 'src/utils/utils-query';
@@ -87,25 +84,10 @@ const Header: React.FC<IHeaderProps> = (props) => {
   };
 
   const onDeleteSuccess = async (item: IQuery | IDashboardDetail) => {
-    const action = item.id === dashboardId ? 'removeDashboard' : 'removeQuery';
-    const successMessage = {
-      type: 'success',
-      message:
-        item.id === dashboardId
-          ? 'Delete dashboard successfully!'
-          : 'Delete query successfully!',
-    };
-
-    try {
-      await rf.getRequest('DashboardsRequest')[action](item.id);
+    if (item.id === queryId || item.id === dashboardId) {
       history.goBack();
-      toastSuccess(successMessage);
-    } catch (error: any) {
-      toastError(getErrorMessage(error));
-    } finally {
-      if (item.id !== dashboardId && item.id !== queryId) {
-        AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
-      }
+    } else {
+      AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
     }
   };
 

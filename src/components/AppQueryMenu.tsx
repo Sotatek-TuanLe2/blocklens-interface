@@ -36,6 +36,7 @@ interface IAppQueryMenu {
   ) => Promise<void>;
   onSettingSuccess?: (response: any) => Promise<void>;
   isNavMenu?: boolean;
+  selectedQueryId?: string;
 }
 
 export const QUERY_MENU_LIST = {
@@ -59,6 +60,7 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
     onSettingSuccess = () => null,
     item,
     isNavMenu,
+    selectedQueryId,
   } = props;
 
   const { user } = useUser();
@@ -222,6 +224,7 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
           onSuccess={() => onDeleteSuccess(item)}
           type={itemType}
           id={item.id}
+          selectedQueryId={selectedQueryId}
         />
       )}
       {/**Modal fork */}

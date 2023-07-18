@@ -2,22 +2,57 @@ import { Flex } from '@chakra-ui/react';
 import { AppButton } from 'src/components';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import BaseModal from '../BaseModal';
+import rf from 'src/requests/RequestFactory';
+import { useParams } from 'react-router';
+import { IDashboardDetail, IQuery } from 'src/utils/query.type';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
+import { getErrorMessage } from 'src/utils/utils-helper';
 
 export interface IModalDelete {
   open: boolean;
   onClose: () => void;
   id: string;
   type: string;
-  onSuccess: () => void;
+  onSuccess?: () => void;
+  selectedQueryId?: string;
 }
 
-const ModalDelete = ({ open, onClose, type, onSuccess }: IModalDelete) => {
+const ModalDelete = ({
+  open,
+  onClose,
+  type,
+  onSuccess,
+  selectedQueryId,
+  id,
+}: IModalDelete) => {
+  const { dashboardId }: { queryId?: string; dashboardId?: string } =
+    useParams();
+
   const getTitleModal = () => {
     if (type === LIST_ITEM_TYPE.QUERIES) return 'Query';
     if (type === LIST_ITEM_TYPE.DASHBOARDS) return 'Dashboard';
   };
 
+  const handleRemove = async (id: string) => {
+    const action = id === dashboardId ? 'removeDashboard' : 'removeQuery';
+    const successMessage = {
+      type: 'success',
+      message:
+        id === dashboardId
+          ? 'Delete dashboard successfully!'
+          : 'Delete query successfully!',
+    };
+
+    try {
+      await rf.getRequest('DashboardsRequest')[action](selectedQueryId || id);
+      toastSuccess(successMessage);
+    } catch (error: any) {
+      toastError(getErrorMessage(error));
+    }
+  };
+
   const handleSubmit = async () => {
+    handleRemove(id);
     onSuccess();
     onClose();
   };
