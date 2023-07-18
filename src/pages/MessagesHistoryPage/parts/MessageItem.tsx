@@ -79,11 +79,19 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
   };
 
   const _renderContentAptosToken = () => {
+    const content = `${formatShortText(
+      webhook?.metadata?.creatorAddress || '',
+    )}::${webhook?.metadata?.collectionName}${
+      webhook?.metadata?.name ? `::${webhook?.metadata?.name}` : ''
+    }`;
+
     return (
       <Td w="15%">
-        {`${formatShortText(webhook?.metadata?.creatorAddress || '')}::${
-          webhook?.metadata?.collectionName
-        }::${webhook?.metadata?.name}`}
+        <Tooltip hasArrow placement="top" label={content}>
+          <Box overflow={'hidden'} textOverflow={'ellipsis'}>
+            {content}
+          </Box>
+        </Tooltip>
       </Td>
     );
   };
