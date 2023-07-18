@@ -99,6 +99,10 @@ const DashboardsPage: React.FC = () => {
         );
         break;
       case LIST_ITEM_TYPE.MYWORK:
+        if (!user) {
+          history.push(ROUTES.HOME);
+          break;
+        }
         setTabIndex(2);
         myWork === MY_WORK_TYPE.DASHBOARDS
           ? setDashboardParams(() =>
