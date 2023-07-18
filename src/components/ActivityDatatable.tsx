@@ -158,9 +158,7 @@ const ActivityMobile: FC<IActivity> = ({ activity, webhook }) => {
         >
           <Box>Token Data</Box>
           <Box className="value">
-            <Flex alignItems="center">
-              {formatTokenData(webhook)}
-            </Flex>
+            <Flex alignItems="center">{formatTokenData(webhook)}</Flex>
           </Box>
         </Flex>
       );
@@ -333,7 +331,6 @@ const ActivityDesktop: FC<IActivity> = ({ activity, webhook }) => {
 
   const _renderContentAptosToken = () => {
     const content = formatTokenData(webhook);
-
 
     return (
       <Td w="15%">
