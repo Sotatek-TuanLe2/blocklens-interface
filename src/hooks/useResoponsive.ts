@@ -16,7 +16,7 @@ export const useResoponsive = (size: 'sm' | 'md' | 'lg' | 'xl' = 'lg') => {
   const handleResize = () => {
     setIsMobile(window.innerWidth <= dimensionMobile);
   };
-  
+
   useEffect(() => {
     window.addEventListener('resize', handleResize);
 

@@ -354,7 +354,7 @@ const VisualizationDisplay = ({
         </div>
       </BaseModal>
     );
-    
+
     return !isMobile ? ConfigOnDesktop : ConfigOnMobile;
   };
 
