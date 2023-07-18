@@ -1,5 +1,5 @@
 import { Box, Flex, Tbody, Td, Th, Thead, Tooltip, Tr } from '@chakra-ui/react';
-import { FC, MouseEvent, useCallback, useState } from 'react';
+import React, { FC, MouseEvent, useCallback, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import { useHistory, useParams } from 'react-router';
 import { InfoIcon, LinkDetail, LinkIcon } from 'src/assets/icons';
@@ -16,6 +16,7 @@ import 'src/styles/pages/AppDetail.scss';
 import { getExplorerTxUrl } from 'src/utils/utils-network';
 import { toastSuccess } from 'src/utils/utils-notify';
 import {
+  formatTokenData,
   getColorBrandStatus,
   IActivityResponse,
   IWebhook,
@@ -158,10 +159,7 @@ const ActivityMobile: FC<IActivity> = ({ activity, webhook }) => {
           <Box>Token Data</Box>
           <Box className="value">
             <Flex alignItems="center">
-              {`${formatShortText(webhook?.metadata?.creatorAddress || '')}
-              ::${webhook?.metadata?.collectionName}
-              ${webhook?.metadata?.name ? `::${webhook?.metadata?.name}` : ''}
-             `}
+              {formatTokenData(webhook)}
             </Flex>
           </Box>
         </Flex>
@@ -334,11 +332,16 @@ const ActivityDesktop: FC<IActivity> = ({ activity, webhook }) => {
   };
 
   const _renderContentAptosToken = () => {
+    const content = formatTokenData(webhook);
+
+
     return (
       <Td w="15%">
-        {`${formatShortText(webhook?.metadata?.creatorAddress || '')}::${
-          webhook?.metadata?.collectionName
-        } ${webhook?.metadata?.name ? `::${webhook?.metadata?.name}` : ''} `}
+        <Tooltip hasArrow placement="top" label={content}>
+          <Box overflow={'hidden'} textOverflow={'ellipsis'}>
+            {content}
+          </Box>
+        </Tooltip>
       </Td>
     );
   };
