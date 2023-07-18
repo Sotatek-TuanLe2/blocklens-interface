@@ -22,7 +22,7 @@ interface IAppCompletePops {
   zIndex?: number;
   customItem?: (optionItem: any) => ReactNode;
   sxWrapper?: LayoutProps;
-  extraFooter?: () => ReactNode;
+  extraFooter?: (onOpen?: (isOpen: boolean) => void) => ReactNode;
 }
 
 interface IOption {
@@ -37,7 +37,6 @@ const AppComplete: FC<IAppCompletePops> = ({
   onChange,
   width,
   size = 'small',
-  hiddenLabelDefault = false,
   className,
   disabled,
   zIndex,
@@ -57,7 +56,7 @@ const AppComplete: FC<IAppCompletePops> = ({
   const optionFilter = useMemo(
     () =>
       options.filter((item: IOption) =>
-        upperCase(item.value).includes(upperCase(inputValue)),
+        upperCase(item.label).includes(upperCase(inputValue)),
       ),
     [inputValue, options],
   );
@@ -65,6 +64,9 @@ const AppComplete: FC<IAppCompletePops> = ({
   const handleClickOutside = (event: any) => {
     if (ref.current && !ref.current?.contains(event.target)) {
       setOpen(false);
+      if (inputValue !== optionSelected?.label) {
+        setInputValue(optionSelected?.label || '');
+      }
     }
   };
 
@@ -92,7 +94,7 @@ const AppComplete: FC<IAppCompletePops> = ({
       <Flex
         className="app-complete__btn-complete"
         onClick={() => {
-          !disabled && setOpen(!open);
+          !disabled && setOpen(true);
         }}
         {...sxWrapper}
       >
@@ -111,15 +113,17 @@ const AppComplete: FC<IAppCompletePops> = ({
               placeholder="--Select--"
               onChange={(e) => setInputValue(e.target.value)}
             />
-            {/* {hiddenLabelDefault ? (
-              <Box>{optionSelected?.label ?? ''}</Box>
-            ) : (
-              <Box>{optionSelected?.label ?? '--Select--'}</Box>
-            )} */}
           </Flex>
         )}
 
-        <Box className="icon-arrow-down" ml={2} />
+        <Box
+          className="icon-arrow-down"
+          onClick={(e) => {
+            e.stopPropagation();
+            !disabled && setOpen(!open);
+          }}
+          ml={2}
+        />
       </Flex>
       {open && (
         <Box
@@ -148,7 +152,7 @@ const AppComplete: FC<IAppCompletePops> = ({
               );
             })}
           </Box>
-          {extraFooter?.()}
+          {extraFooter?.(setOpen)}
         </Box>
       )}
     </Box>

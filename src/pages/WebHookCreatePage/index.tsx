@@ -10,10 +10,7 @@ import React, {
 import {
   AppCard,
   AppLink,
-  AppEditable,
-  AppEditableTags,
   AppField,
-  AppComplete,
   AppSelect2,
   AppInput,
   AppButton,
@@ -26,17 +23,19 @@ import {
   optionsWebhookAptosType,
   optionsWebhookType,
 } from 'src/utils/utils-webhook';
-import { CHAINS_CONFIG } from 'src/utils/utils-app';
+import { CHAINS_CONFIG, IAppResponse } from 'src/utils/utils-app';
 import { toastError } from 'src/utils/utils-notify';
 import 'src/styles/pages/AppDetail.scss';
 import PartFormAddressActivity from '../CreateWebhookPage/parts/PartFormAddressActivity';
 import PartFormContractActivity from '../CreateWebhookPage/parts/PartFormContractActivity';
 import PartFormNFTActivity from '../CreateWebhookPage/parts/PartFormNFTActivity';
 import PartFormTokenActivity from '../CreateWebhookPage/parts/PartFormTokenActivity';
-import PartFormTokenAptos from './parts/PartFormTokenAptos';
+import PartFormTokenActivityAptos from '../CreateWebhookPage/parts/PartFormTokenActivityAptos';
 import PartFormModuleAptos from './parts/PartFormModuleAptos';
+import PartFormIdentification from './parts/PartFormIdentification';
 import { ROUTES } from '../../utils/common';
 import PartFormCoinActivityAptos from '../CreateWebhookPage/parts/PartFormCoinActivityAptos';
+import PartFormModuleActivityAptos from '../CreateWebhookPage/parts/PartFormModuleActivityAptos';
 
 interface IMetadata {
   coinType?: string;
@@ -55,7 +54,9 @@ interface IMetadata {
 export interface IDataForm {
   webhook: string;
   type: string;
-  hashTags: string[];
+  name?: string;
+  projectId?: string;
+  hashTags?: string[];
   metadata?: IMetadata;
 }
 
@@ -63,6 +64,8 @@ const initDataCreateWebHook = {
   webhook: '',
   type: '',
   hashTags: [],
+  projectId: '',
+  name: 'webhook 1',
   metadata: {
     coinType: '',
     events: [],
@@ -114,10 +117,6 @@ const WebHookCreatePage: React.FC = () => {
     return optionsWebhookType;
   }, [chainSelected]);
 
-  useEffect(() => {
-    setType(optionTypes[0].value);
-  }, [optionTypes]);
-
   const handleSubmitForm = async () => {
     if (!validator.current.allValid()) {
       validator.current.showMessages();
@@ -153,62 +152,6 @@ const WebHookCreatePage: React.FC = () => {
     } catch (e: any) {
       toastError({ message: e?.message || 'Oops. Something went wrong!' });
     }
-  };
-
-  useEffect(() => {
-    setTimeout(() => {
-      const isDisabled =
-        !validator.current.allValid() ||
-        (type === WEBHOOK_TYPES.CONTRACT_ACTIVITY &&
-          !dataForm.metadata?.abi?.length) ||
-        (type === WEBHOOK_TYPES.ADDRESS_ACTIVITY &&
-          !dataForm?.metadata?.addresses?.length) ||
-        ((type === WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY ||
-          type === WEBHOOK_TYPES.APTOS_COIN_ACTIVITY) &&
-          !dataForm?.metadata?.events?.length) ||
-        (type === WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY &&
-          !dataForm?.metadata?.events?.length &&
-          !dataForm?.metadata?.address &&
-          !dataForm?.metadata?.functions?.length);
-      setIsDisableSubmit(isDisabled);
-    }, 0);
-  }, [dataForm, type]);
-
-  const _renderIdentification = () => {
-    return (
-      <>
-        <Text className="title">Webhook Name</Text>
-        <AppEditable defaultValue="Webhook 1" />
-        <Text className="title">Hashtag</Text>
-        <AppEditableTags
-          onSubmit={(value) => {
-            setDataForm((pre) => ({
-              ...pre,
-              hashTags: [...pre.hashTags, value],
-            }));
-          }}
-          onRemove={(value) => {
-            const newValue = dataForm.hashTags.filter((tag) => value !== tag);
-            setDataForm((pre) => ({
-              ...pre,
-              hashTags: newValue,
-            }));
-          }}
-          tags={dataForm.hashTags}
-        />
-        <Text className="title">Project</Text>
-        <AppField label={'Webhook Type'} customWidth={'100%'} isRequired>
-          <AppComplete
-            className="select-type-webhook"
-            size="large"
-            options={optionTypes}
-            value={type}
-            onChange={onChangeWebhookType}
-            extraFooter={() => <Box>hihi</Box>}
-          />
-        </AppField>
-      </>
-    );
   };
 
   const _renderFormAddressActivity = () => {
@@ -258,7 +201,13 @@ const WebHookCreatePage: React.FC = () => {
   };
 
   const _renderFormModuleActivityAptos = () => {
-    return <PartFormModuleAptos />;
+    return (
+      <PartFormModuleActivityAptos
+        dataForm={dataForm}
+        onChangeForm={setDataForm}
+        validator={validator}
+      />
+    );
   };
 
   const _renderFormCoinActivityAptos = () => {
@@ -272,7 +221,14 @@ const WebHookCreatePage: React.FC = () => {
   };
 
   const _renderFormTokenActivityAptos = () => {
-    return <PartFormTokenAptos />;
+    return (
+      <PartFormTokenActivityAptos
+        dataForm={dataForm}
+        setDataForm={setDataForm}
+        validator={validator}
+        isHiddenName={true}
+      />
+    );
   };
 
   const _renderFormWebhook = () => {
@@ -301,6 +257,16 @@ const WebHookCreatePage: React.FC = () => {
     }
 
     return _renderFormAddressActivity();
+  };
+
+  const _renderIdentification = () => {
+    return (
+      <PartFormIdentification
+        dataForm={dataForm}
+        setDataForm={setDataForm}
+        validator={validator}
+      />
+    );
   };
 
   const _renderDetailInfo = () => {
@@ -354,6 +320,29 @@ const WebHookCreatePage: React.FC = () => {
       </Box>
     );
   };
+
+  useEffect(() => {
+    setTimeout(() => {
+      const isDisabled =
+        !validator.current.allValid() ||
+        (type === WEBHOOK_TYPES.CONTRACT_ACTIVITY &&
+          !dataForm.metadata?.abi?.length) ||
+        (type === WEBHOOK_TYPES.ADDRESS_ACTIVITY &&
+          !dataForm?.metadata?.addresses?.length) ||
+        ((type === WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY ||
+          type === WEBHOOK_TYPES.APTOS_COIN_ACTIVITY) &&
+          !dataForm?.metadata?.events?.length) ||
+        (type === WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY &&
+          !dataForm?.metadata?.events?.length &&
+          !dataForm?.metadata?.address &&
+          !dataForm?.metadata?.functions?.length);
+      setIsDisableSubmit(isDisabled);
+    }, 0);
+  }, [dataForm, type]);
+
+  useEffect(() => {
+    setType(optionTypes[0].value);
+  }, [optionTypes]);
 
   return (
     <BasePage className="create-webhook-container">

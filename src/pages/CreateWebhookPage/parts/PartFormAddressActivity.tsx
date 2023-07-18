@@ -150,11 +150,7 @@ const PartFormAddressActivity: FC<IPartFormAddressActivity> = ({
 
   return (
     <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
-      <AppField
-        label={`${chain} Addresses`}
-        customWidth={'100%'}
-        isRequired
-      >
+      <AppField label={`${chain} Addresses`} customWidth={'100%'} isRequired>
         <Box
           className="link type-upload-address"
           cursor="pointer"

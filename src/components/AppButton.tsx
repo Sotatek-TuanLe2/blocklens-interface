@@ -23,7 +23,7 @@ const AppButton = forwardRef<HTMLButtonElement, AppButtonProps>(
   (props, ref) => {
     const { variant = 'brand', children, ...rest } = props;
     return (
-      <Button {...rest} variant={variant} ref={ref}>
+      <Button {...rest}  variant={variant} ref={ref}>
         {children}
       </Button>
     );
