@@ -229,7 +229,6 @@ const Sidebar: React.FC<SidebarProps> = ({
     IPagination | undefined
   >();
   const [selectedQueryId, setSelectedQueryId] = useState<string>('');
-  console.log(selectedQueryId);
   useEffect(() => {
     AppBroadcast.on(BROADCAST_FETCH_WORKPLACE_DATA, fetchDataWorkPlace);
 
@@ -348,11 +347,11 @@ const Sidebar: React.FC<SidebarProps> = ({
   const onDeleteSuccess = async (item: IQuery | IDashboardDetail) => {
     try {
       await rf.getRequest('DashboardsRequest').removeQuery(selectedQueryId);
+      item.id === queryId ? history.goBack() : fetchDataWorkPlace();
       toastSuccess({ message: 'Delete query successfully!' });
     } catch (error: any) {
       toastError({ message: getErrorMessage(error) });
     }
-    item.id === queryId ? history.goBack() : fetchDataWorkPlace();
   };
 
   const _renderNoData = () => (

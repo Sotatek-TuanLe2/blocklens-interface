@@ -87,16 +87,25 @@ const Header: React.FC<IHeaderProps> = (props) => {
   };
 
   const onDeleteSuccess = async (item: IQuery | IDashboardDetail) => {
-    if (item.id === queryId || item.id === dashboardId) {
-      try {
-        await rf.getRequest('DashboardsRequest').removeDashboard(dashboardId);
-        toastSuccess({ message: 'Delete dashboard successfully!' });
-      } catch (error: any) {
-        toastError({ message: getErrorMessage(error) });
-      }
+    const action = item.id === dashboardId ? 'removeDashboard' : 'removeQuery';
+    const successMessage = {
+      type: 'success',
+      message:
+        item.id === dashboardId
+          ? 'Delete dashboard successfully!'
+          : 'Delete query successfully!',
+    };
+
+    try {
+      await rf.getRequest('DashboardsRequest')[action](item.id);
       history.goBack();
-    } else {
-      AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
+      toastSuccess(successMessage);
+    } catch (error: any) {
+      toastError(getErrorMessage(error));
+    } finally {
+      if (item.id !== dashboardId && item.id !== queryId) {
+        AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
+      }
     }
   };
 
