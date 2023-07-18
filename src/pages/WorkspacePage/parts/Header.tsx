@@ -75,11 +75,8 @@ const Header: React.FC<IHeaderProps> = (props) => {
       : new Query(data as IQuery);
   }, [data]);
 
-  const onForkSuccess = async (response: any, type: string) => {
+  const onForkSuccess = async () => {
     AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
-    type === LIST_ITEM_TYPE.DASHBOARDS
-      ? AppBroadcast.dispatch(BROADCAST_FETCH_DASHBOARD, response.id)
-      : AppBroadcast.dispatch(BROADCAST_FETCH_QUERY, response.id);
   };
 
   const onDeleteSuccess = async (item: IQuery | IDashboardDetail) => {
