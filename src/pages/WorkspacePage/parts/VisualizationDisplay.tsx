@@ -38,6 +38,7 @@ import {
   VisualizationType,
 } from '../../../utils/query.type';
 import _ from 'lodash';
+import { useResoponsive } from 'src/hooks/useResoponsive';
 
 type VisualizationConfigType = {
   value: string;
@@ -159,6 +160,8 @@ const VisualizationDisplay = ({
 
   const queryClass = useMemo(() => new Query(queryValue), [queryValue]);
 
+  const { isMobile } = useResoponsive();
+
   const axisOptions =
     Array.isArray(queryResult) && queryResult[0]
       ? objectKeys(queryResult[0])
@@ -267,10 +270,6 @@ const VisualizationDisplay = ({
   };
 
   const _renderConfigurations = (visualization: VisualizationType) => {
-    if (!toggleCloseConfig) {
-      return null;
-    }
-
     const type = visualization.options?.globalSeriesType || visualization.type;
     let configuration = null;
 
@@ -324,12 +323,8 @@ const VisualizationDisplay = ({
       }
     };
 
-    return (
-      <div
-        className={`main-config ${
-          toggleCloseConfig ? 'show-config' : 'hidden-config'
-        }`}
-      >
+    const ConfigOnDesktop = (
+      <div className={`main-config`}>
         <div className="header-config">
           <div className="title-config">{typeNameVisual(type)} Options</div>
           <p
@@ -346,6 +341,21 @@ const VisualizationDisplay = ({
         </div>
       </div>
     );
+
+    const ConfigOnMobile = (
+      <BaseModal
+        isOpen={toggleCloseConfig}
+        onClose={() => setToggleCloseConfig(false)}
+        isCentered={false}
+        title={`${typeNameVisual(type)} Options`}
+      >
+        <div className={'main-config'}>
+          <div className={'body-config'}>{configuration}</div>
+        </div>
+      </BaseModal>
+    );
+    
+    return !isMobile ? ConfigOnDesktop : ConfigOnMobile;
   };
 
   const _renderVisualization = (
@@ -424,7 +434,7 @@ const VisualizationDisplay = ({
                 expandLayout === LAYOUT_QUERY.HIDDEN
                   ? 'main-visualization--expand'
                   : ''
-              } ${!toggleCloseConfig ? 'show-full-visual' : ''}`}
+              } ${!toggleCloseConfig || isMobile ? 'show-full-visual' : ''}`}
             >
               {errorMessage ? (
                 <Flex
@@ -512,7 +522,7 @@ const VisualizationDisplay = ({
               <Box>
                 <AddChartIcon />
               </Box>{' '}
-              Add Chart
+              {!isMobile && 'Add Chart'}
             </Flex>
           </Tooltip>
         ),

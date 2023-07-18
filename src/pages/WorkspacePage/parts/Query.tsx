@@ -29,6 +29,7 @@ import { Query } from 'src/utils/utils-query';
 import { AddChartIcon, QueryResultIcon } from 'src/assets/icons';
 import { STATUS } from 'src/utils/utils-webhook';
 import useRecaptcha from 'src/hooks/useRecaptcha';
+import { useResoponsive } from 'src/hooks/useResoponsive';
 
 export const BROADCAST_FETCH_QUERY = 'FETCH_QUERY';
 export const BROADCAST_ADD_TO_EDITOR = 'ADD_TO_EDITOR';
@@ -55,6 +56,7 @@ const QueryPart: React.FC = () => {
 
   const fetchQueryResultTimeout = useRef<ReturnType<typeof setTimeout>>();
   const isLoading = isLoadingQuery || isLoadingResult;
+  const { isMobile } = useResoponsive();
 
   useEffect(() => {
     AppBroadcast.on(BROADCAST_FETCH_QUERY, async (id: string) => {
@@ -403,7 +405,7 @@ const QueryPart: React.FC = () => {
               <Box mr={2}>
                 <AddChartIcon />
               </Box>{' '}
-              Add Chart
+              {!isMobile && 'Add Chart'}
             </Flex>
           </Tooltip>
           <p className="icon-query-expand cursor-not-allowed" />
