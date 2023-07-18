@@ -6,7 +6,7 @@ import { ListSelectEvent } from './PartFormTokenActivityAptos';
 
 interface IPartFormCoinActivityAptos {
   dataForm: IDataForm;
-  setDataForm: (value: IDataForm) => void;
+  setDataForm: (value: any) => void;
   validator: any;
 }
 

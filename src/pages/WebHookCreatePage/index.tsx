@@ -33,10 +33,10 @@ import PartFormAddressActivity from '../CreateWebhookPage/parts/PartFormAddressA
 import PartFormContractActivity from '../CreateWebhookPage/parts/PartFormContractActivity';
 import PartFormNFTActivity from '../CreateWebhookPage/parts/PartFormNFTActivity';
 import PartFormTokenActivity from '../CreateWebhookPage/parts/PartFormTokenActivity';
-import PartFormCoinAptos from './parts/PartFormCoinAptos';
 import PartFormTokenAptos from './parts/PartFormTokenAptos';
 import PartFormModuleAptos from './parts/PartFormModuleAptos';
 import { ROUTES } from '../../utils/common';
+import PartFormCoinActivityAptos from '../CreateWebhookPage/parts/PartFormCoinActivityAptos';
 
 interface IMetadata {
   coinType?: string;
@@ -262,7 +262,13 @@ const WebHookCreatePage: React.FC = () => {
   };
 
   const _renderFormCoinActivityAptos = () => {
-    return <PartFormCoinAptos />;
+    return (
+      <PartFormCoinActivityAptos
+        dataForm={dataForm}
+        setDataForm={setDataForm}
+        validator={validator}
+      />
+    );
   };
 
   const _renderFormTokenActivityAptos = () => {
