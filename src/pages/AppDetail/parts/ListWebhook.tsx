@@ -5,6 +5,7 @@ import {
   IWebhook,
   WEBHOOK_STATUS,
   WEBHOOK_TYPES,
+  formatTokenData,
 } from 'src/utils/utils-webhook';
 import { Th, Thead, Tr, Tbody, Td, Box, Flex } from '@chakra-ui/react';
 import { AppDataTable, AppLoadingTable } from 'src/components';
@@ -13,6 +14,7 @@ import _ from 'lodash';
 import { IAppResponse } from 'src/utils/utils-app';
 import { useHistory } from 'react-router';
 import { isMobile } from 'react-device-detect';
+import { Tooltip } from 'recharts';
 
 interface IListWebhook {
   appInfo: IAppResponse;
@@ -49,12 +51,18 @@ const _renderDetailWebhook = (type: string, webhook: IWebhook) => {
     );
   }
 
+
   if (type === WEBHOOK_TYPES.APTOS_COIN_ACTIVITY) {
     return <>{shortAddressType(webhook?.metadata?.coinType || '')} </>;
   }
 
   if (type === WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY) {
-    return <>{webhook.metadata.collectionName} </>;
+    const token = formatTokenData(webhook);
+    if (token) {
+      return token
+    }
+    return <>--</>
+
   }
 
   return '1 address';
@@ -66,7 +74,7 @@ const _renderTitleField = (type?: string) => {
   }
 
   if (type === WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY) {
-    return 'Collection Name';
+    return 'Token Data';
   }
 
   return 'Address';
