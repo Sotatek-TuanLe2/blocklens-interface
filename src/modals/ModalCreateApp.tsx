@@ -163,7 +163,8 @@ const ModalCreateApp: FC<IModalCreateApp> = ({ open, onClose, reloadData }) => {
                     CHAINS_CONFIG.find((chain) => chain.value === value),
                   );
                   setNetworkSelected(
-                    CHAINS_CONFIG.find((chain) => chain.value === value)?.networks[0],
+                    CHAINS_CONFIG.find((chain) => chain.value === value)
+                      ?.networks[0],
                   );
                 }}
                 options={CHAINS_CONFIG}
