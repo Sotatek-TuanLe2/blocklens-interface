@@ -271,6 +271,80 @@ const WebHookCreatePage: React.FC = () => {
     return _renderFormAddressActivity();
   };
 
+  const optionTypes = useMemo(() => {
+    if (chainSelected.value === CHAINS.APTOS) {
+      return optionsWebhookAptosType;
+    }
+
+    if (!isEVMNetwork(chainSelected.value)) {
+      return optionsWebhookType.filter(
+        (item) => item.value === WEBHOOK_TYPES.ADDRESS_ACTIVITY,
+      );
+    }
+
+    return optionsWebhookType;
+  }, [chainSelected]);
+
+  useEffect(() => {
+    setType(optionTypes[0].value);
+  }, [optionTypes]);
+
+  const handleSubmitForm = async () => {
+    if (!validator.current.allValid()) {
+      validator.current.showMessages();
+      return forceUpdate();
+    }
+
+    if (
+      !dataForm.metadata?.abiFilter?.length &&
+      type !== WEBHOOK_TYPES.ADDRESS_ACTIVITY &&
+      isEVMNetwork(chainSelected.value)
+    ) {
+      toastError({ message: 'At least one checkbox must be checked.' });
+      return;
+    }
+
+    const data = {
+      ...dataForm,
+      type,
+      chain: chainSelected.value,
+      network: networkSelected.value,
+      metadata: {
+        ...dataForm.metadata,
+        tokenIds:
+          dataForm?.metadata?.tokenIds
+            ?.split(',')
+            .filter((item: string) => !!item)
+            .map((item: string) => +item.trim()) || [],
+      },
+    };
+
+    try {
+      console.log(data, 'dataForm');
+    } catch (e: any) {
+      toastError({ message: e?.message || 'Oops. Something went wrong!' });
+    }
+  };
+
+  useEffect(() => {
+    setTimeout(() => {
+      const isDisabled =
+        !validator.current.allValid() ||
+        (type === WEBHOOK_TYPES.CONTRACT_ACTIVITY &&
+          !dataForm.metadata?.abi?.length) ||
+        (type === WEBHOOK_TYPES.ADDRESS_ACTIVITY &&
+          !dataForm?.metadata?.addresses?.length) ||
+        ((type === WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY ||
+          type === WEBHOOK_TYPES.APTOS_COIN_ACTIVITY) &&
+          !dataForm?.metadata?.events?.length) ||
+        (type === WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY &&
+          !dataForm?.metadata?.events?.length &&
+          !dataForm?.metadata?.address &&
+          !dataForm?.metadata?.functions?.length);
+      setIsDisableSubmit(isDisabled);
+    }, 0);
+  }, [dataForm, type]);
+
   const _renderIdentification = () => {
     return (
       <PartFormIdentification
