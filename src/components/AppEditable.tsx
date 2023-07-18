@@ -57,7 +57,6 @@ const AppEditable: FC<IAppEditableProps> = ({
   inputClassName = '',
   className = '',
   isPreviewFocusable,
-  value,
   ...props
 }) => {
   return (

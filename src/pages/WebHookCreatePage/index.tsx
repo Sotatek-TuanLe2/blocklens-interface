@@ -23,7 +23,7 @@ import {
   optionsWebhookAptosType,
   optionsWebhookType,
 } from 'src/utils/utils-webhook';
-import { CHAINS_CONFIG, IAppResponse } from 'src/utils/utils-app';
+import { CHAINS_CONFIG } from 'src/utils/utils-app';
 import { toastError } from 'src/utils/utils-notify';
 import 'src/styles/pages/AppDetail.scss';
 import PartFormAddressActivity from '../CreateWebhookPage/parts/PartFormAddressActivity';
@@ -116,6 +116,10 @@ const WebHookCreatePage: React.FC = () => {
 
     return optionsWebhookType;
   }, [chainSelected]);
+
+  useEffect(() => {
+    setType(optionTypes[0].value);
+  }, [optionTypes]);
 
   const handleSubmitForm = async () => {
     if (!validator.current.allValid()) {
