@@ -271,6 +271,35 @@ const Header: React.FC<IHeaderProps> = (props) => {
     );
   };
 
+  const _renderForkedQuery = () => {
+    if (
+      isDashboard ||
+      (!dataClass?.getForkedId() && !dataClass?.getForkedName())
+    )
+      return null;
+    return (
+      <span className="item-desc__forked">
+        {`(Forked from`}{' '}
+        <Tooltip
+          label={dataClass?.getForkedName()}
+          hasArrow
+          placement="top"
+          bg="white"
+          color="black"
+        >
+          <Link
+            style={{ color: '#0060DB' }}
+            to={`${ROUTES.QUERY}/${dataClass?.getForkedId()}?`}
+            target="_blank"
+          >
+            {dataClass?.getForkedName()}
+          </Link>
+        </Tooltip>
+        {`)`}
+      </span>
+    );
+  };
+
   return (
     <>
       {_renderDrawerSidebar()}
@@ -322,21 +351,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
                         <span>{dataClass?.getName()}</span>
                       </Tooltip>
                     </span>
-                    {!isDashboard &&
-                      (dataClass?.getForkedId() ||
-                        dataClass?.getForkedName()) && (
-                        <span className="item-desc__forked">
-                          {`(Forked from`}{' '}
-                          <Link
-                            style={{ color: '#0060DB' }}
-                            to={`${ROUTES.QUERY}/${dataClass?.getForkedId()}?`}
-                            target="_blank"
-                          >
-                            {dataClass?.getForkedName()}
-                          </Link>
-                          {`)`}
-                        </span>
-                      )}
+                    {_renderForkedQuery()}
                   </div>
                 )}
               </>

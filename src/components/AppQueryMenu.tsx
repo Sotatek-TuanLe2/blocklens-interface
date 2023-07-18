@@ -94,7 +94,7 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
     try {
       const res = await rf
         .getRequest('DashboardsRequest')
-        .forkQueries(item.id, { newQueryName: item.name, tags: item.tags });
+        .forkQueries(item.id, { newQueryName: item.name });
       window.open(
         `${ROUTES.MY_QUERY}/${res.id}`,
         '_blank',
