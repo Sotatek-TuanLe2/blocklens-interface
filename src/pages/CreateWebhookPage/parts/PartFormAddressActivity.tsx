@@ -12,10 +12,10 @@ import { isValidAddressEVM } from '../../../utils/utils-helper';
 
 interface IPartFormAddressActivity {
   dataForm: IDataForm;
-  setDataForm: (value: IDataForm) => void;
+  setDataForm: (value: any) => void;
   type: string;
   validator: any;
-  appInfo: any;
+  chain: string;
 }
 
 const FILE_CSV_EXAMPLE = '/abi/CSV_Example.csv';
@@ -25,7 +25,7 @@ const PartFormAddressActivity: FC<IPartFormAddressActivity> = ({
   setDataForm,
   type,
   validator,
-  appInfo,
+  chain,
 }) => {
   const [fileSelected, setFileSelected] = useState<any>({});
   const [addressesValue, setAddressesValue] = useState<string>('');
@@ -38,7 +38,7 @@ const PartFormAddressActivity: FC<IPartFormAddressActivity> = ({
   }, [addressesValue]);
 
   const isValidAddress = (address: string) => {
-    if (isEVMNetwork(appInfo.chain)) return isValidAddressEVM(address);
+    if (isEVMNetwork(chain)) return isValidAddressEVM(address);
     return !!address;
   };
 
@@ -151,7 +151,7 @@ const PartFormAddressActivity: FC<IPartFormAddressActivity> = ({
   return (
     <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
       <AppField
-        label={`${appInfo.chain} Addresses`}
+        label={`${chain} Addresses`}
         customWidth={'100%'}
         isRequired
       >
