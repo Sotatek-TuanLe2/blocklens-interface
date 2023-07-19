@@ -460,7 +460,7 @@
           display: flex;
           align-items: center;
           gap: 8px;
-          max-width: calc(100% - 42px);
+          width: calc(100% - 42px);
           overflow: hidden;
 
           .user-name {
@@ -484,7 +484,6 @@
             flex-direction: row;
 
             .link-forked {
-              max-width: 100%;
               white-space: nowrap;
               overflow: hidden;
               text-overflow: ellipsis;
