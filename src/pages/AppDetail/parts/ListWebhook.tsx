@@ -71,14 +71,10 @@ const _renderDetailWebhook = (type: string, webhook: IWebhook) => {
   if (type === WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY) {
     const content = webhook.metadata.address;
     return (
-      <Box>
-        <Tooltip hasArrow placement="top" label={content}>
-          <Box overflow={'hidden'} textOverflow={'ellipsis'}>
-            {formatShortText(content)}
-          </Box>
-        </Tooltip>
+      <Box overflow={'hidden'} textOverflow={'ellipsis'}>
+        {formatShortText(content)}
       </Box>
-    )
+    );
   }
 
   return '1 address';

@@ -49,7 +49,7 @@ const ModalDeleteApp: FC<IModalEditApp> = ({ open, onClose, appInfo }) => {
       title="Delete Confirmation"
       isOpen={open}
       description="Any traffic going to deleted keys will stop working immediately.
-       Please make sure that all processes using this app has been reconfigured before deleting."
+       Please make sure that all processes using this project has been reconfigured before deleting."
       onClose={onCloseModal}
       isFullScreen={isMobile}
     >
