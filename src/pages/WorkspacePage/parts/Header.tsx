@@ -271,16 +271,19 @@ const Header: React.FC<IHeaderProps> = (props) => {
   const _renderForkedQuery = () => {
     if (
       isDashboard ||
-      (!dataClass?.getForkedId() && !dataClass?.getForkedName())
-    )
+      !dataClass?.getForkedId() ||
+      !dataClass?.getForkedName()
+    ) {
       return null;
+    }
+
     return (
       <span className="item-desc__forked">
-        {`(Forked from`}{' '}
+        {`(Forked from `}
         <Tooltip
           label={dataClass?.getForkedName()}
           hasArrow
-          placement="top"
+          placement="top-start"
           bg="white"
           color="black"
         >
