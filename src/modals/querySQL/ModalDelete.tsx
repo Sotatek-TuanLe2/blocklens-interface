@@ -35,7 +35,7 @@ const ModalDelete = ({ open, onClose, type, onSuccess, id }: IModalDelete) => {
       await rf.getRequest('DashboardsRequest')[action](id);
       toastSuccess(successMessage);
     } catch (error: any) {
-      toastError(getErrorMessage(error));
+      toastError({ message: error.message });
     }
   };
 
