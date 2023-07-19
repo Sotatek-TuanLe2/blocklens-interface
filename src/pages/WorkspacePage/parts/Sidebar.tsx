@@ -346,8 +346,9 @@ const Sidebar: React.FC<SidebarProps> = ({
   const onDeleteSuccess = async (item: IQuery | IDashboardDetail) => {
     if (item.id === queryId) {
       history.goBack();
+    } else {
+      fetchDataWorkPlace();
     }
-    fetchDataWorkPlace();
   };
 
   const _renderNoData = () => (
