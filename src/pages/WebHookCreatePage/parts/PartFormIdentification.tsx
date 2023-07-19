@@ -76,7 +76,7 @@ const PartFormIdentification: FC<IPartFormIdentificationProps> = ({
   return (
     <>
       <>
-        <Text pb={3} className="title">
+        <Text pb={1} className="title">
           Webhook Name
         </Text>
         <AppEditable
@@ -93,7 +93,7 @@ const PartFormIdentification: FC<IPartFormIdentificationProps> = ({
             rule: ['required'],
           }}
         />
-        <Text pb={3} className="title">
+        <Text pb={1} pt={5} className="title">
           Hashtag
         </Text>
         <AppEditableTags
@@ -115,7 +115,7 @@ const PartFormIdentification: FC<IPartFormIdentificationProps> = ({
           }}
           tags={dataForm?.hashTags || []}
         />
-        <Text py={3} className="title">
+        <Text pt={5} pb={1} className="title">
           Project
         </Text>
 

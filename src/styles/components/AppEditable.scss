@@ -9,16 +9,23 @@
     height: 30px !important;
     font-weight: 600;
     &:focus {
-      border-color: none;
+      border-color: transparent;
       box-shadow: none !important;
     }
   }
   &__preview {
-    font-weight: 600;
+    font-weight: 700 !important;
   }
   &__edit-btn {
     svg {
       color: $paragraph2 ;
+    }
+    background-color: transparent !important;
+
+    &:hover {
+      svg {
+        color: $main ;
+      }
     }
   }
 }

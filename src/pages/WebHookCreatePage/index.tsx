@@ -430,7 +430,7 @@ const WebHookCreatePage: React.FC = () => {
                 onClick={handleSubmitForm}
                 size={'lg'}
               >
-                Create webhook
+                Create
               </AppButton>
             </Flex>
           </Box>
