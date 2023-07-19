@@ -66,9 +66,6 @@ const AppComplete: FC<IAppCompletePops> = ({
   const handleClickOutside = (event: any) => {
     if (ref.current && !ref.current?.contains(event.target)) {
       setOpen(false);
-      if (inputValue !== optionSelected?.label) {
-        setInputValue(optionSelected?.label || '');
-      }
     }
   };
 
@@ -83,7 +80,7 @@ const AppComplete: FC<IAppCompletePops> = ({
     if (optionSelected) {
       setInputValue(optionSelected?.label);
     }
-  }, [optionSelected]);
+  }, [optionSelected, open]);
 
   return (
     <Box
@@ -113,7 +110,7 @@ const AppComplete: FC<IAppCompletePops> = ({
               value={inputValue}
               borderRadius={0}
               placeholder={placeholder || '"--Select--"'}
-              onChange={(e) => setInputValue(e.target.value)}
+              onChange={(e) => open && setInputValue(e.target.value)}
             />
           </Flex>
         )}
@@ -144,6 +141,7 @@ const AppComplete: FC<IAppCompletePops> = ({
                   onClick={() => {
                     onChange(option.value);
                     setOpen(false);
+                    setInputValue(option?.label);
                   }}
                 >
                   {optionSelected?.icon && (
