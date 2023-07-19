@@ -8,7 +8,7 @@ import {
   Text,
   Tooltip,
 } from '@chakra-ui/react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import AppTag from './AppTag';
 import { FC, ReactNode } from 'react';
 import 'src/styles/components/AppGridItem.scss';
@@ -44,6 +44,8 @@ const AppGridItem: FC<AppGridItemProps> = ({
   userId,
   views,
 }) => {
+  const location = useLocation();
+
   return isLoading ? (
     <Flex
       w={'full'}
@@ -116,7 +118,14 @@ const AppGridItem: FC<AppGridItemProps> = ({
         overflow={'hidden'}
         style={{ aspectRatio: '295 / 180' }}
       >
-        <Link to={toHref || '#'}>
+        <Link
+          to={{
+            pathname: toHref || '#',
+            state: {
+              originPath: `${location.pathname}${location.search}`,
+            },
+          }}
+        >
           <Image
             src={srcThumb}
             alt="thumbnail"
