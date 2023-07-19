@@ -88,7 +88,7 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
 
   const onForkQuery = async () => {
     if (!user) {
-      return history.push(ROUTES.LOGIN);
+      return history.push(ROUTES.LOGIN, { originPath: location.pathname });
     }
 
     try {
@@ -141,11 +141,6 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
     ];
 
     itemList = itemList.filter((item) => menu.includes(item.id));
-    // if (!user) {
-    //   itemList = itemList.filter((item) =>
-    //     [QUERY_MENU_LIST.SHARE].includes(item.id),
-    //   );
-    // }
 
     return itemList;
   };
@@ -250,16 +245,6 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
           id={item.id}
         />
       )}
-      {/**Modal fork */}
-      {/* {itemType === LIST_ITEM_TYPE.QUERIES && openModalFork && (
-        <ModalQuery
-          open={openModalFork}
-          onClose={() => setOpenModalFork(false)}
-          onSuccess={(res) => onForkSuccess(res, itemType)}
-          type={TYPE_OF_MODAL.FORK}
-          id={item.id}
-        />
-      )} */}
     </>
   );
 };
