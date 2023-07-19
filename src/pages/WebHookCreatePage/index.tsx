@@ -74,18 +74,6 @@ const initDataCreateWebHook = {
   },
 };
 
-const initDataCreateWebHook = {
-  webhook: '',
-  type: '',
-  hashTags: [],
-  metadata: {
-    coinType: '',
-    events: [],
-    addresses: [],
-    address: '',
-  },
-};
-
 const WebHookCreatePage: React.FC = () => {
   const [dataForm, setDataForm] = useState<IDataForm>(initDataCreateWebHook);
   const [type, setType] = useState<string>(WEBHOOK_TYPES.ADDRESS_ACTIVITY);
@@ -128,43 +116,6 @@ const WebHookCreatePage: React.FC = () => {
 
     return optionsWebhookType;
   }, [chainSelected]);
-
-  const handleSubmitForm = async () => {
-    if (!validator.current.allValid()) {
-      validator.current.showMessages();
-      return forceUpdate();
-    }
-
-    if (
-      !dataForm.metadata?.abiFilter?.length &&
-      type !== WEBHOOK_TYPES.ADDRESS_ACTIVITY &&
-      isEVMNetwork(chainSelected.value)
-    ) {
-      toastError({ message: 'At least one checkbox must be checked.' });
-      return;
-    }
-
-    const data = {
-      ...dataForm,
-      type,
-      chain: chainSelected.value,
-      network: networkSelected.value,
-      metadata: {
-        ...dataForm.metadata,
-        tokenIds:
-          dataForm?.metadata?.tokenIds
-            ?.split(',')
-            .filter((item: string) => !!item)
-            .map((item: string) => +item.trim()) || [],
-      },
-    };
-
-    try {
-      console.log(data, 'dataForm');
-    } catch (e: any) {
-      toastError({ message: e?.message || 'Oops. Something went wrong!' });
-    }
-  };
 
   const _renderFormAddressActivity = () => {
     return (
@@ -270,20 +221,6 @@ const WebHookCreatePage: React.FC = () => {
 
     return _renderFormAddressActivity();
   };
-
-  const optionTypes = useMemo(() => {
-    if (chainSelected.value === CHAINS.APTOS) {
-      return optionsWebhookAptosType;
-    }
-
-    if (!isEVMNetwork(chainSelected.value)) {
-      return optionsWebhookType.filter(
-        (item) => item.value === WEBHOOK_TYPES.ADDRESS_ACTIVITY,
-      );
-    }
-
-    return optionsWebhookType;
-  }, [chainSelected]);
 
   useEffect(() => {
     setType(optionTypes[0].value);
