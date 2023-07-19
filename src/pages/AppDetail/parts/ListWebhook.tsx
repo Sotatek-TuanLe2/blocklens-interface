@@ -56,7 +56,6 @@ const _renderDetailWebhook = (type: string, webhook: IWebhook) => {
 
   if (type === WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY) {
     const content = formatTokenData(webhook);
-
     return (
       <Box>
         <Tooltip hasArrow placement="top" label={content}>
@@ -68,16 +67,11 @@ const _renderDetailWebhook = (type: string, webhook: IWebhook) => {
     );
   }
 
-  if (type === WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY) {
-    const content = webhook.metadata.address;
-    return (
-      <Box overflow={'hidden'} textOverflow={'ellipsis'}>
-        {formatShortText(content)}
-      </Box>
-    );
-  }
-
-  return '1 address';
+  return (
+    <Box overflow={'hidden'} textOverflow={'ellipsis'}>
+      {formatShortText(webhook?.metadata?.address)}
+    </Box>
+  );
 };
 
 const _renderTitleField = (type?: string) => {
