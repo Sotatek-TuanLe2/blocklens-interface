@@ -20,7 +20,7 @@ const ModalDelete = ({ open, onClose, type, onSuccess, id }: IModalDelete) => {
     if (type === LIST_ITEM_TYPE.DASHBOARDS) return 'Dashboard';
   };
 
-  const handleRemove = async (id: string) => {
+  const handleSubmit = async () => {
     const action =
       type === LIST_ITEM_TYPE.DASHBOARDS ? 'removeDashboard' : 'removeQuery';
     const successMessage = {
@@ -33,16 +33,12 @@ const ModalDelete = ({ open, onClose, type, onSuccess, id }: IModalDelete) => {
 
     try {
       await rf.getRequest('DashboardsRequest')[action](id);
+      onSuccess();
+      onClose();
       toastSuccess(successMessage);
     } catch (error: any) {
       toastError({ message: error.message });
     }
-  };
-
-  const handleSubmit = async () => {
-    handleRemove(id);
-    onSuccess();
-    onClose();
   };
 
   return (

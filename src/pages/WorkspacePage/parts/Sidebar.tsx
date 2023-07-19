@@ -23,7 +23,7 @@ import AppQueryMenu, { QUERY_MENU_LIST } from 'src/components/AppQueryMenu';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import rf from 'src/requests/RequestFactory';
 import { IPagination, ROUTES, SchemaType } from 'src/utils/common';
-import { IQuery } from 'src/utils/query.type';
+import { IDashboardDetail, IQuery } from 'src/utils/query.type';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
 import { copyToClipboard } from 'src/utils/utils-helper';
 import { getChainIconByChainName } from 'src/utils/utils-network';
@@ -343,7 +343,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       : AppBroadcast.dispatch(BROADCAST_FETCH_QUERY, response.id);
   };
 
-  const onDeleteSuccess = async (item: IQuery) => {
+  const onDeleteSuccess = async (item: IQuery | IDashboardDetail) => {
     if (item.id === queryId) {
       history.goBack();
     }
