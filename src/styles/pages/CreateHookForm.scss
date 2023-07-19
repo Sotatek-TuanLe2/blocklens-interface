@@ -21,6 +21,35 @@
       .title {
         color: $paragraph2;
       }
+      @include tablet {
+        padding: 20px !important;
+      }
+    }
+    &__url {
+      @include tablet {
+        padding: 20px !important;
+        // .chakra-input__right-element {
+        //   width: 0px;
+        // }
+      }
+      .chakra-input__right-element {
+        width: 206px;
+        padding-right: 16px;
+        @include tablet {
+          // width: 26px !important;
+          display: none !important;
+        }
+      }
+    }
+    &__coin-aptos,
+    &__token-aptos {
+      .box-list-events {
+        &__wrapper {
+          margin-left: 0;
+        }
+        background-color: white;
+        border: 1px solid $line;
+      }
     }
   }
   .name {

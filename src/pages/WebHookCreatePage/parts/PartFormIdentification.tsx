@@ -1,4 +1,4 @@
-import React, { useEffect, FC, useMemo, useState, useCallback } from 'react';
+import React, { useEffect, FC, useState, useCallback } from 'react';
 import 'src/styles/pages/AppDetail.scss';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/pages/CreateHookForm.scss';
@@ -34,7 +34,7 @@ const PartFormIdentification: FC<IPartFormIdentificationProps> = ({
 
   const getProjects = useCallback(async () => {
     try {
-      const res = (await rf.getRequest('AppRequest').getListApp({})) as any;
+      const res = await rf.getRequest('AppRequest').getListApp({});
       setOptionProject(
         res.docs.map((el: IAppResponse) => ({
           value: el.appId,
@@ -82,12 +82,15 @@ const PartFormIdentification: FC<IPartFormIdentificationProps> = ({
         <AppEditable
           value={dataForm.name}
           onChange={(value) => {
-            if (value) {
-              setDataForm({
-                ...dataForm,
-                name: value,
-              });
-            }
+            setDataForm({
+              ...dataForm,
+              name: value,
+            });
+          }}
+          validate={{
+            name: `name`,
+            validator: validator.current,
+            rule: ['required'],
           }}
         />
         <Text pb={3} className="title">
@@ -121,6 +124,7 @@ const PartFormIdentification: FC<IPartFormIdentificationProps> = ({
           options={optionProjects}
           value={dataForm?.projectId || ''}
           onChange={onChangeProject}
+          placeholder="Add to a project"
           extraFooter={(onOpen) => (
             <Box px={2} pt={2}>
               <AppEditable2

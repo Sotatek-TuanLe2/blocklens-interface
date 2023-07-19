@@ -1,9 +1,7 @@
-import React, { FC, useState } from 'react';
-import { chakra } from '@chakra-ui/system';
+import React, { useState } from 'react';
 import {
   Editable,
   EditableInput,
-  EditablePreview,
   Flex,
   IconButton,
   Input,
@@ -13,6 +11,7 @@ import {
   useEditableControls,
   Box,
 } from '@chakra-ui/react';
+import { forwardRef } from '@chakra-ui/system';
 import 'src/styles/components/AppEditableTags.scss';
 import { CloseIcon, AddIcon } from '@chakra-ui/icons';
 
@@ -23,46 +22,36 @@ interface IAppEditableTagsProps {
   onRemove?: (value: string) => void;
 }
 
-const CustomPreview = () => {
-  const { isEditing, getEditButtonProps } = useEditableControls();
-  return (
-    <span as={<EditablePreview />} {...getEditButtonProps()}>
-      {!isEditing && (
-        <Box className="hashtag-add" p={'4px 10px'}>
-          <IconButton
-            aria-label="add"
-            className="icon-btn"
-            size="xs"
-            variant="unstyled"
-            icon={<AddIcon />}
-          />
-          Add
-        </Box>
-      )}
-    </span>
-  );
-};
-
 const CustomInput = ({ onCancel }: { onCancel: () => void }) => {
-  const { isEditing, getCancelButtonProps } = useEditableControls();
-  return (
+  const { isEditing, getCancelButtonProps, getEditButtonProps } =
+    useEditableControls();
+  return isEditing ? (
     <InputGroup size="sm" className={`hashtags-editable__input`}>
-      {isEditing && <InputLeftElement pointerEvents="none">#</InputLeftElement>}
+      {<InputLeftElement pointerEvents="none">#</InputLeftElement>}
       <Input as={EditableInput} max border="none" placeholder="" />
-      {isEditing && (
-        <InputRightElement>
-          <IconButton
-            className="icon-btn"
-            aria-label="close"
-            variant="unstyled"
-            icon={<CloseIcon />}
-            {...getCancelButtonProps({
-              onClick: onCancel,
-            })}
-          />
-        </InputRightElement>
-      )}
+      <InputRightElement>
+        <IconButton
+          className="icon-btn"
+          aria-label="close"
+          variant="unstyled"
+          icon={<CloseIcon w={'9px'} h={'9px'} />}
+          {...getCancelButtonProps({
+            onClick: onCancel,
+          })}
+        />
+      </InputRightElement>
     </InputGroup>
+  ) : (
+    <Box className="hashtag-add" {...getEditButtonProps()} p={'4px 11px'}>
+      <IconButton
+        aria-label="add"
+        className="icon-btn"
+        size="xs"
+        variant="unstyled"
+        icon={<AddIcon w={'11px'} h={'11px'} />}
+      />
+      Add
+    </Box>
   );
 };
 
@@ -84,39 +73,43 @@ const AddHashtags = ({
       onChange={setValue}
       className={`hashtags-editable`}
     >
-      <CustomPreview />
       <CustomInput onCancel={() => setValue('')} />
     </Editable>
   );
 };
 
-const AppEditableTags: FC<IAppEditableTagsProps> = ({
-  tags,
-  className,
-  onSubmit,
-  onRemove,
-  ...props
-}) => {
-  return (
-    <Flex wrap={'wrap'} className="app-hashtags" gap={2}>
-      {tags?.map((tag, index) => {
-        return (
-          <Flex key={tag + index} className="app-hashtags__item">
-            #{tag}
-            <IconButton
-              aria-label="close"
-              className="icon-btn"
-              variant="unstyled"
-              size="xs"
-              onClick={() => onRemove(tag)}
-              icon={<CloseIcon />}
-            />
-          </Flex>
-        );
-      })}
-      <AddHashtags onSubmit={onSubmit} />
-    </Flex>
-  );
-};
+const AppEditableTags = forwardRef<IAppEditableTagsProps, any>(
+  ({ tags, className = '', onSubmit, onRemove }, ref) => {
+    return (
+      <>
+        <Flex
+          ref={ref}
+          wrap={'wrap'}
+          className={`app-hashtags ${className}`}
+          gap={2}
+        >
+          {tags?.map((tag, index) => {
+            return (
+              <Flex key={tag + index} className="app-hashtags__item">
+                #{tag}
+                {onRemove && (
+                  <IconButton
+                    aria-label="close"
+                    className="icon-btn"
+                    variant="unstyled"
+                    size="xs"
+                    onClick={() => onRemove(tag)}
+                    icon={<CloseIcon w={'9px'} h={'9px'} />}
+                  />
+                )}
+              </Flex>
+            );
+          })}
+          <AddHashtags onSubmit={onSubmit} />
+        </Flex>
+      </>
+    );
+  },
+);
 
 export default AppEditableTags;

@@ -3,16 +3,13 @@ import {
   ButtonGroup,
   Editable,
   EditableInput,
-  EditablePreview,
-  Box,
-  Flex,
   IconButton,
   Input,
   EditableProps,
   useEditableControls,
 } from '@chakra-ui/react';
 import 'src/styles/components/AppEditable.scss';
-import { CheckIcon, CloseIcon, AddIcon } from '@chakra-ui/icons';
+import { CloseIcon, AddIcon } from '@chakra-ui/icons';
 import { AppButton } from 'src/components';
 
 interface IAppEditableProps extends EditableProps {

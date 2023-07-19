@@ -27,8 +27,6 @@
     cursor: pointer;
   }
   .hashtags-editable {
-    &__preview {
-    }
     &__input {
       color: $main;
       background: rgba(0, 96, 219, 0.1);
@@ -39,9 +37,5 @@
     width: 16px;
     height: 16px;
     margin-top: -11px;
-    svg{
-      width: 12px;
-      height: 12px;
-    }
   }
 }

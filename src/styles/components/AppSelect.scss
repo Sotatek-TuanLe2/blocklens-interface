@@ -22,7 +22,7 @@
 
 .app-select {
   position: relative;
-  z-index: 2;
+  // z-index: 2;
 
   &__btn-select {
     @include text-medium-regular;
@@ -67,17 +67,17 @@
     background: #fff;
     border-radius: 0 0 8px 8px;
     width: 100%;
-    padding-top: 30px;
+    padding-top: 12px;
     padding-bottom: 10px;
     top: 10px;
-    z-index: -1;
+    z-index: 2;
     max-height: 200px;
     overflow-y: auto;
   }
 
   &.large {
     .app-select__menu {
-      top: 30px;
+      top: 100%;
     }
   }
 

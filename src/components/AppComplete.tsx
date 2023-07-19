@@ -22,6 +22,7 @@ interface IAppCompletePops {
   zIndex?: number;
   customItem?: (optionItem: any) => ReactNode;
   sxWrapper?: LayoutProps;
+  placeholder?: string;
   extraFooter?: (onOpen?: (isOpen: boolean) => void) => ReactNode;
 }
 
@@ -43,6 +44,7 @@ const AppComplete: FC<IAppCompletePops> = ({
   customItem,
   extraFooter,
   sxWrapper,
+  placeholder,
 }) => {
   const [open, setOpen] = useState<boolean>(false);
   const [inputValue, setInputValue] = useState<string>('');
@@ -110,7 +112,7 @@ const AppComplete: FC<IAppCompletePops> = ({
               variant="unstyled"
               value={inputValue}
               borderRadius={0}
-              placeholder="--Select--"
+              placeholder={placeholder || '"--Select--"'}
               onChange={(e) => setInputValue(e.target.value)}
             />
           </Flex>

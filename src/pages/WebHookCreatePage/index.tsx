@@ -1,4 +1,4 @@
-import { Box, Flex, Text } from '@chakra-ui/react';
+import { Box, Flex, Hide, Show, Text } from '@chakra-ui/react';
 import { CHAINS, WEBHOOK_TYPES } from 'src/utils/utils-webhook';
 import React, {
   useCallback,
@@ -15,7 +15,6 @@ import {
   AppInput,
   AppButton,
 } from 'src/components';
-import 'src/styles/pages/CreateHookForm.scss';
 import { BasePage } from 'src/layouts';
 import { createValidator } from 'src/utils/utils-validator';
 import { isEVMNetwork } from 'src/utils/utils-network';
@@ -23,15 +22,16 @@ import {
   optionsWebhookAptosType,
   optionsWebhookType,
 } from 'src/utils/utils-webhook';
-import { CHAINS_CONFIG, IAppResponse } from 'src/utils/utils-app';
+import { CHAINS_CONFIG } from 'src/utils/utils-app';
 import { toastError } from 'src/utils/utils-notify';
 import 'src/styles/pages/AppDetail.scss';
+import 'src/styles/pages/CreateHookForm.scss';
 import PartFormAddressActivity from '../CreateWebhookPage/parts/PartFormAddressActivity';
 import PartFormContractActivity from '../CreateWebhookPage/parts/PartFormContractActivity';
 import PartFormNFTActivity from '../CreateWebhookPage/parts/PartFormNFTActivity';
 import PartFormTokenActivity from '../CreateWebhookPage/parts/PartFormTokenActivity';
 import PartFormTokenActivityAptos from '../CreateWebhookPage/parts/PartFormTokenActivityAptos';
-import PartFormModuleAptos from './parts/PartFormModuleAptos';
+
 import PartFormIdentification from './parts/PartFormIdentification';
 import { ROUTES } from '../../utils/common';
 import PartFormCoinActivityAptos from '../CreateWebhookPage/parts/PartFormCoinActivityAptos';
@@ -175,22 +175,26 @@ const WebHookCreatePage: React.FC = () => {
 
   const _renderFormCoinActivityAptos = () => {
     return (
-      <PartFormCoinActivityAptos
-        dataForm={dataForm}
-        setDataForm={setDataForm}
-        validator={validator}
-      />
+      <Box className="create-webhook__coin-aptos">
+        <PartFormCoinActivityAptos
+          dataForm={dataForm}
+          setDataForm={setDataForm}
+          validator={validator}
+        />
+      </Box>
     );
   };
 
   const _renderFormTokenActivityAptos = () => {
     return (
-      <PartFormTokenActivityAptos
-        dataForm={dataForm}
-        setDataForm={setDataForm}
-        validator={validator}
-        isHiddenName={true}
-      />
+      <Box className="create-webhook__token-aptos">
+        <PartFormTokenActivityAptos
+          dataForm={dataForm}
+          setDataForm={setDataForm}
+          validator={validator}
+          isHiddenName={true}
+        />
+      </Box>
     );
   };
 
@@ -378,20 +382,21 @@ const WebHookCreatePage: React.FC = () => {
             <Box className={'title-mobile'}>Create Webhook</Box>
           </Flex>
         </Flex>
-        <Flex gap={5}>
-          <Box w={330}>
+        <Flex gap={5} flexDir={{ base: 'column', lg: 'row' }}>
+          <Box w={{ base: 'full', lg: 330 }}>
             <AppCard className={'create-webhook__identification'}>
               {_renderIdentification()}
             </AppCard>
           </Box>
           <Box flex={1}>
-            <AppCard className={'create-webhook__identification form-create'}>
+            <AppCard className={'create-webhook__detail-info form-create'}>
               {_renderDetailInfo()}
             </AppCard>
 
-            <AppCard className={'create-webhook__identification'} mt={5}>
+            <AppCard className={'create-webhook__url'} mt={5}>
               <AppField label={'Your URL'} customWidth={'100%'} isRequired>
                 <AppInput
+                  className="create-webhook__url-input"
                   value={dataForm.webhook}
                   onChange={(e) => {
                     setDataForm({
@@ -404,7 +409,17 @@ const WebHookCreatePage: React.FC = () => {
                     validator: validator.current,
                     rule: ['required', 'url'],
                   }}
+                  endAdornment={
+                    <AppButton disabled w={190} size={'sm'}>
+                      Send Demo Message
+                    </AppButton>
+                  }
                 />
+                <Show below="md">
+                  <AppButton disabled w={190} size={'sm'}>
+                    Send Demo Message
+                  </AppButton>
+                </Show>
               </AppField>
             </AppCard>
 
