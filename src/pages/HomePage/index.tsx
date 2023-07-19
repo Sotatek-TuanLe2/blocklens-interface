@@ -33,17 +33,17 @@ const HomePage = () => {
           <Flex my={14} flexDirection={'column'} alignItems={'center'}>
             <NoAppIcon />
             <Box className={'no-app__title'} mt={10}>
-              You Don’t Have Any App
+              You Don’t Have Any Project
             </Box>
             <Box className={'no-app__description'}>
-              Create a new App to start using Blocklens API
+              Create a new Project to start using Blocklens API
             </Box>
             <AppButton
               className={'no-app__btn'}
               size={'md'}
               onClick={() => setOpenModalCreateApp(true)}
             >
-              Create New App
+              Create New Project
             </AppButton>
           </Flex>
         </AppCard>

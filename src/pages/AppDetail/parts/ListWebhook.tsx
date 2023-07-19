@@ -68,6 +68,15 @@ const _renderDetailWebhook = (type: string, webhook: IWebhook) => {
     );
   }
 
+  if (type === WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY) {
+    const content = webhook.metadata.address;
+    return (
+      <Box overflow={'hidden'} textOverflow={'ellipsis'}>
+        {formatShortText(content)}
+      </Box>
+    );
+  }
+
   return '1 address';
 };
 
