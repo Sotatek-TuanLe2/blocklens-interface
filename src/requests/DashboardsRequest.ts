@@ -185,6 +185,10 @@ export default class DashboardsRequest extends BaseRequest {
     const url = `/dashboard/dashboard-visuals/${id}/remove-dashboard-visuals`;
     return this.delete(url, id);
   }
+  removeDashboard(id: string) {
+    const url = `/dashboard/${id}`;
+    return this.delete(url);
+  }
 
   /* End of Dashboard's detail page */
 
@@ -248,6 +252,11 @@ export default class DashboardsRequest extends BaseRequest {
   updateQuery(params: IUpdateQuery, queryId: string) {
     const url = `/queries/${queryId}/update-query`;
     return this.patch(url, params);
+  }
+
+  removeQuery(id: string) {
+    const url = `/queries/${id}`;
+    return this.delete(url);
   }
 
   insertVisualization(data: IInsertVisualization) {

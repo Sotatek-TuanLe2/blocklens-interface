@@ -9,7 +9,7 @@ import {
   Tooltip,
   useDisclosure,
 } from '@chakra-ui/react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import AppTag from './AppTag';
 import { ChevronRightIcon } from '@chakra-ui/icons';
 import { FC, ReactNode } from 'react';
@@ -51,6 +51,7 @@ const AppRowItem: FC<AppRowItemProps> = ({
   views,
 }) => {
   const { isOpen, onToggle } = useDisclosure();
+  const location = useLocation();
 
   const _renderLoadingRow = () => {
     return (
@@ -109,7 +110,12 @@ const AppRowItem: FC<AppRowItemProps> = ({
         className="article-row"
       >
         <Link
-          to={toHref || '#'}
+          to={{
+            pathname: toHref || '#',
+            state: {
+              originPath: `${location.pathname}${location.search}`,
+            },
+          }}
           style={{ width: 'calc(100% - 24px)', display: 'block' }}
         >
           <Flex align={'center'} py={'16px'}>
