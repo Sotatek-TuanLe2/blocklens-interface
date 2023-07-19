@@ -68,7 +68,15 @@ const _renderDetailWebhook = (type: string, webhook: IWebhook) => {
     );
   }
 
-  return '1 address';
+  return (
+    <Box>
+      <Tooltip hasArrow placement="top">
+        <Box overflow={'hidden'} textOverflow={'ellipsis'}>
+          {formatShortText(webhook.metadata.address)}
+        </Box>
+      </Tooltip>
+    </Box>
+  )
 };
 
 const _renderTitleField = (type?: string) => {
