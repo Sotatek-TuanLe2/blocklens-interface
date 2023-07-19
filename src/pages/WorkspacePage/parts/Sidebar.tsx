@@ -214,7 +214,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   const { queryId, dashboardId }: { queryId?: string; dashboardId?: string } =
     useParams();
   const history = useHistory();
-  const { pathname } = useLocation();
+  const location = useLocation();
 
   const [category, setCategory] = useState<string>(CATEGORIES.EXPLORE_DATA);
   const [searchValueWorkPlace, setSearchValueWorkPlace] = useState<string>('');
@@ -345,7 +345,9 @@ const Sidebar: React.FC<SidebarProps> = ({
 
   const onDeleteSuccess = async (item: IQuery | IDashboardDetail) => {
     if (item.id === queryId) {
-      history.goBack();
+      location.state
+        ? history.push((location.state as any).originPath)
+        : history.goBack();
     } else {
       fetchDataWorkPlace();
     }
@@ -476,7 +478,14 @@ const Sidebar: React.FC<SidebarProps> = ({
                         />
                       </div>
                       <Text isTruncated>
-                        <Link to={`${ROUTES.MY_QUERY}/${query.id}?`}>
+                        <Link
+                          to={{
+                            pathname: `${ROUTES.MY_QUERY}/${query.id}`,
+                            state: {
+                              originPath: (location.state as any)?.originPath,
+                            },
+                          }}
+                        >
                           {query.name}
                         </Link>
                       </Text>
@@ -525,7 +534,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             </Tooltip>
           </Flex>
           <div className="header-icon">
-            {pathname.includes(ROUTES.MY_QUERY) && (
+            {location.pathname.includes(ROUTES.MY_QUERY) && (
               <CopyIcon
                 className="icon-header"
                 onClick={() => handleCopy(schemaDescribe[0].full_name)}
@@ -834,12 +843,7 @@ const SideContentExplore: FC<SideContentExploreProps> = ({
         >
           <div className="body-side">{children}</div>
         </Box>
-        <Flex align={'center'} gap={'10px'} py={4}>
-          {/* <AppButton size={'lg'} variant={'cancel'} onClick={onClose}>
-            Cancel
-          </AppButton>
-          <AppButton size={'lg'}>Add to Query</AppButton> */}
-        </Flex>
+        <Flex align={'center'} gap={'10px'} py={4}></Flex>
       </Flex>
     </Slide>
   );

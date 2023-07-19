@@ -13,7 +13,7 @@ import {
   DrawerOverlay,
   DrawerContent,
 } from '@chakra-ui/react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory, useParams, useLocation } from 'react-router-dom';
 import { AppButton, AppTag } from 'src/components';
 import AppQueryMenu, { QUERY_MENU_LIST } from 'src/components/AppQueryMenu';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
@@ -58,6 +58,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
   } = props;
 
   const history = useHistory();
+  const location = useLocation();
   const { queryId, dashboardId } = useParams<{
     queryId: string;
     dashboardId: string;
@@ -76,6 +77,12 @@ const Header: React.FC<IHeaderProps> = (props) => {
       : new Query(data as IQuery);
   }, [data]);
 
+  const onBack = () => {
+    location.state
+      ? history.push((location.state as any).originPath)
+      : history.goBack();
+  };
+
   const onForkSuccess = async (response: any, type: string) => {
     AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
     type === LIST_ITEM_TYPE.DASHBOARDS
@@ -85,7 +92,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
 
   const onDeleteSuccess = async (item: IQuery | IDashboardDetail) => {
     if (item.id === queryId || item.id === dashboardId) {
-      history.goBack();
+      onBack();
     } else {
       AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
     }
@@ -114,7 +121,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
             color="black"
           >
             <AppButton
-              onClick={() => history.goBack()}
+              onClick={onBack}
               size="sm"
               w={'38px'}
               h={'38px'}
@@ -271,7 +278,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
               color="black"
             >
               <AppButton
-                onClick={() => history.goBack()}
+                onClick={onBack}
                 size="sm"
                 variant="no-effects"
                 className="icon-back-light"
