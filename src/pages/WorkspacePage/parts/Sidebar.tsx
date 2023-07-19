@@ -23,12 +23,11 @@ import AppQueryMenu, { QUERY_MENU_LIST } from 'src/components/AppQueryMenu';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import rf from 'src/requests/RequestFactory';
 import { IPagination, ROUTES, SchemaType } from 'src/utils/common';
-import { IDashboardDetail, IQuery } from 'src/utils/query.type';
+import { IQuery } from 'src/utils/query.type';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
-import { copyToClipboard, getErrorMessage } from 'src/utils/utils-helper';
+import { copyToClipboard } from 'src/utils/utils-helper';
 import { getChainIconByChainName } from 'src/utils/utils-network';
 import { BROADCAST_FETCH_DASHBOARD } from './Dashboard';
-import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { BROADCAST_ADD_TO_EDITOR, BROADCAST_FETCH_QUERY } from './Query';
 import { ChevronRightIcon, CloseIcon } from '@chakra-ui/icons';
 
@@ -228,7 +227,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   const [dataQueriesPagination, setDataQueriesPagination] = useState<
     IPagination | undefined
   >();
-  const [selectedQueryId, setSelectedQueryId] = useState<string>('');
+
   useEffect(() => {
     AppBroadcast.on(BROADCAST_FETCH_WORKPLACE_DATA, fetchDataWorkPlace);
 
@@ -344,14 +343,11 @@ const Sidebar: React.FC<SidebarProps> = ({
       : AppBroadcast.dispatch(BROADCAST_FETCH_QUERY, response.id);
   };
 
-  const onDeleteSuccess = async (item: IQuery | IDashboardDetail) => {
-    try {
-      await rf.getRequest('DashboardsRequest').removeQuery(selectedQueryId);
-      item.id === queryId ? history.goBack() : fetchDataWorkPlace();
-      toastSuccess({ message: 'Delete query successfully!' });
-    } catch (error: any) {
-      toastError({ message: getErrorMessage(error) });
+  const onDeleteSuccess = async (item: IQuery) => {
+    if (item.id === queryId) {
+      history.goBack();
     }
+    fetchDataWorkPlace();
   };
 
   const _renderNoData = () => (
@@ -444,9 +440,6 @@ const Sidebar: React.FC<SidebarProps> = ({
             >
               {dataQueries.map((query) => (
                 <BoxResponsive
-                  onClick={() => {
-                    setSelectedQueryId(query.id);
-                  }}
                   key={query.id}
                   className={getWorkplaceItemClassName(query.id)}
                   displayDesktop="flex"

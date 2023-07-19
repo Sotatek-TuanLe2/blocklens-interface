@@ -2,6 +2,9 @@ import { Flex } from '@chakra-ui/react';
 import { AppButton } from 'src/components';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import BaseModal from '../BaseModal';
+import rf from 'src/requests/RequestFactory';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
+import { getErrorMessage } from 'src/utils/utils-helper';
 
 export interface IModalDelete {
   open: boolean;
@@ -11,13 +14,33 @@ export interface IModalDelete {
   onSuccess: () => void;
 }
 
-const ModalDelete = ({ open, onClose, type, onSuccess }: IModalDelete) => {
+const ModalDelete = ({ open, onClose, type, onSuccess, id }: IModalDelete) => {
   const getTitleModal = () => {
     if (type === LIST_ITEM_TYPE.QUERIES) return 'Query';
     if (type === LIST_ITEM_TYPE.DASHBOARDS) return 'Dashboard';
   };
 
+  const handleRemove = async (id: string) => {
+    const action =
+      type === LIST_ITEM_TYPE.DASHBOARDS ? 'removeDashboard' : 'removeQuery';
+    const successMessage = {
+      type: 'success',
+      message:
+        type === LIST_ITEM_TYPE.DASHBOARDS
+          ? 'Delete dashboard successfully!'
+          : 'Delete query successfully!',
+    };
+
+    try {
+      await rf.getRequest('DashboardsRequest')[action](id);
+      toastSuccess(successMessage);
+    } catch (error: any) {
+      toastError({ message: error.message });
+    }
+  };
+
   const handleSubmit = async () => {
+    handleRemove(id);
     onSuccess();
     onClose();
   };
