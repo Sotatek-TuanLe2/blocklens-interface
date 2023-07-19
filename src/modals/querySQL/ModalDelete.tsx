@@ -4,7 +4,6 @@ import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import BaseModal from '../BaseModal';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
-import { getErrorMessage } from 'src/utils/utils-helper';
 
 export interface IModalDelete {
   open: boolean;
@@ -20,7 +19,7 @@ const ModalDelete = ({ open, onClose, type, onSuccess, id }: IModalDelete) => {
     if (type === LIST_ITEM_TYPE.DASHBOARDS) return 'Dashboard';
   };
 
-  const handleSubmit = async () => {
+  const handleDelete = async () => {
     const action =
       type === LIST_ITEM_TYPE.DASHBOARDS ? 'removeDashboard' : 'removeQuery';
     const successMessage = {
@@ -64,7 +63,7 @@ const ModalDelete = ({ open, onClose, type, onSuccess, id }: IModalDelete) => {
           >
             Cancel
           </AppButton>
-          <AppButton py={'12px'} size="sm" onClick={handleSubmit}>
+          <AppButton py={'12px'} size="sm" onClick={handleDelete}>
             Delete
           </AppButton>
         </Flex>
