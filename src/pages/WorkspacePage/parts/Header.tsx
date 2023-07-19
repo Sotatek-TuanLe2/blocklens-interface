@@ -287,13 +287,14 @@ const Header: React.FC<IHeaderProps> = (props) => {
           bg="white"
           color="black"
         >
-          <Link
-            style={{ color: '#0060DB' }}
-            to={`${ROUTES.QUERY}/${dataClass?.getForkedId()}?`}
-            target="_blank"
-          >
-            {dataClass?.getForkedName()}
-          </Link>
+          <div className="link-forked">
+            <Link
+              to={`${ROUTES.QUERY}/${dataClass?.getForkedId()}?`}
+              target="_blank"
+            >
+              {dataClass?.getForkedName()}
+            </Link>
+          </div>
         </Tooltip>
         {`)`}
       </span>
