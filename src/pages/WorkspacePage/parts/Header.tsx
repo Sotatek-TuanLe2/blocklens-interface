@@ -13,11 +13,11 @@ import {
   DrawerOverlay,
   DrawerContent,
 } from '@chakra-ui/react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory, useParams, useLocation, Link } from 'react-router-dom';
 import { AppButton, AppTag } from 'src/components';
 import AppQueryMenu, { QUERY_MENU_LIST } from 'src/components/AppQueryMenu';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
-import { generateAvatarFromId, ROUTES } from 'src/utils/common';
+import { ROUTES, generateAvatarFromId } from 'src/utils/common';
 import { IDashboardDetail, IQuery } from 'src/utils/query.type';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
 import { BROADCAST_FETCH_DASHBOARD } from './Dashboard';
@@ -56,7 +56,9 @@ const Header: React.FC<IHeaderProps> = (props) => {
     onRunQuery,
     onChangeEditMode,
   } = props;
+
   const history = useHistory();
+  const location = useLocation();
   const { queryId, dashboardId } = useParams<{
     queryId: string;
     dashboardId: string;
@@ -75,16 +77,19 @@ const Header: React.FC<IHeaderProps> = (props) => {
       : new Query(data as IQuery);
   }, [data]);
 
-  const onForkSuccess = async (response: any, type: string) => {
+  const onBack = () => {
+    location.state
+      ? history.push((location.state as any).originPath)
+      : history.goBack();
+  };
+
+  const onForkSuccess = async () => {
     AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
-    type === LIST_ITEM_TYPE.DASHBOARDS
-      ? AppBroadcast.dispatch(BROADCAST_FETCH_DASHBOARD, response.id)
-      : AppBroadcast.dispatch(BROADCAST_FETCH_QUERY, response.id);
   };
 
   const onDeleteSuccess = async (item: IQuery | IDashboardDetail) => {
     if (item.id === queryId || item.id === dashboardId) {
-      history.push(ROUTES.HOME);
+      onBack();
     } else {
       AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
     }
@@ -96,6 +101,22 @@ const Header: React.FC<IHeaderProps> = (props) => {
     } else {
       AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
       AppBroadcast.dispatch(BROADCAST_FETCH_QUERY, res.id);
+    }
+  };
+
+  const menuAppQuery = () => {
+    if (type === LIST_ITEM_TYPE.DASHBOARDS) {
+      return !needAuthentication
+        ? [QUERY_MENU_LIST.SHARE]
+        : [
+            QUERY_MENU_LIST.DELETE,
+            QUERY_MENU_LIST.SETTING,
+            QUERY_MENU_LIST.SHARE,
+          ];
+    } else {
+      return !needAuthentication
+        ? [QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.SHARE]
+        : undefined;
     }
   };
 
@@ -113,7 +134,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
             color="black"
           >
             <AppButton
-              onClick={() => history.goBack()}
+              onClick={onBack}
               size="sm"
               w={'38px'}
               h={'38px'}
@@ -255,6 +276,39 @@ const Header: React.FC<IHeaderProps> = (props) => {
     );
   };
 
+  const _renderForkedQuery = () => {
+    if (
+      isDashboard ||
+      !dataClass?.getForkedId() ||
+      !dataClass?.getForkedName()
+    ) {
+      return null;
+    }
+
+    return (
+      <span className="item-desc__forked">
+        {`(Forked from `}
+        <Tooltip
+          label={dataClass?.getForkedName()}
+          hasArrow
+          placement="top-start"
+          bg="white"
+          color="black"
+        >
+          <div className="link-forked">
+            <Link
+              to={`${ROUTES.QUERY}/${dataClass?.getForkedId()}?`}
+              target="_blank"
+            >
+              {dataClass?.getForkedName()}
+            </Link>
+          </div>
+        </Tooltip>
+        {`)`}
+      </span>
+    );
+  };
+
   return (
     <>
       {_renderDrawerSidebar()}
@@ -270,7 +324,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
               color="black"
             >
               <AppButton
-                onClick={() => history.goBack()}
+                onClick={onBack}
                 size="sm"
                 variant="no-effects"
                 className="icon-back-light"
@@ -279,7 +333,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
             {isLoadingRun ? (
               <Flex align={'center'}>
                 <SkeletonCircle w={'26px'} h={'26px'} mr={'8px'} />
-                <Skeleton w={'200px'} h={'14px'} rounded={'7px'} />
+                <Skeleton w={'350px'} h={'14px'} rounded={'7px'} />
               </Flex>
             ) : (
               <>
@@ -306,6 +360,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
                         <span>{dataClass?.getName()}</span>
                       </Tooltip>
                     </span>
+                    {_renderForkedQuery()}
                   </div>
                 )}
               </>
@@ -339,16 +394,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
               <Flex ml={'10px'} align={'center'}>
                 {!isCreatingQuery && data && (
                   <AppQueryMenu
-                    menu={
-                      !needAuthentication
-                        ? type === LIST_ITEM_TYPE.DASHBOARDS
-                          ? [QUERY_MENU_LIST.SHARE]
-                          : [
-                              // QUERY_MENU_LIST.FORK,
-                              QUERY_MENU_LIST.SHARE,
-                            ]
-                        : undefined
-                    }
+                    menu={menuAppQuery()}
                     item={data}
                     itemType={type}
                     onForkSuccess={onForkSuccess}

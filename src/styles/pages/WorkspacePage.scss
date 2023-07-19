@@ -460,7 +460,7 @@
           display: flex;
           align-items: center;
           gap: 8px;
-          max-width: calc(100% - 42px);
+          width: calc(100% - 42px);
           overflow: hidden;
 
           .user-name {
@@ -472,6 +472,24 @@
             white-space: nowrap;
             overflow: hidden;
             max-width: 100%;
+          }
+
+          &__forked {
+            font-size: 16px;
+            font-style: italic;
+            color: $paragraph2;
+            max-width: 50%;
+            display: flex;
+            white-space: nowrap;
+            flex-direction: row;
+
+            .link-forked {
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              color: $main;
+              margin-left: 4px;
+            }
           }
 
           img {
@@ -606,16 +624,18 @@
       width: 30px;
       height: 30px;
       border-radius: 15px;
-      border: 1px solid #C7D2E1;
+      border: 1px solid #c7d2e1;
       padding: 0;
     }
   }
 }
 
 @media (max-width: 992px) {
-  .workspace-page__sidebar__content__explore-wrap, .workspace-page__sidebar__content__work-place-wrap {
+  .workspace-page__sidebar__content__explore-wrap,
+  .workspace-page__sidebar__content__work-place-wrap {
     width: 100%;
-    .workspace-page__sidebar__content__explore-wrap__title, .workspace-page__sidebar__content__work-place-wrap__work-place {
+    .workspace-page__sidebar__content__explore-wrap__title,
+    .workspace-page__sidebar__content__work-place-wrap__work-place {
       justify-content: flex-start;
       padding-bottom: 24px;
       padding-top: 0;
@@ -646,7 +666,7 @@
       width: 100%;
       padding-top: 14px;
       margin-top: 14px;
-      border-top: 1px solid rgba(0, 2, 36, 0.10);
+      border-top: 1px solid rgba(0, 2, 36, 0.1);
     }
   }
   .side-content-explore {
@@ -677,7 +697,7 @@
         width: 48px;
         height: 5px;
         border-radius: 2.5px;
-        background: #C7D2E1;
+        background: #c7d2e1;
       }
       .body-side {
         width: 100%;
@@ -688,7 +708,7 @@
   }
   .m-chain-info-desc {
     .chain-info-desc__header {
-      background: #0002240D !important;
+      background: #0002240d !important;
       padding: 10px 20px;
       margin-bottom: 14px;
       .info-detail-header {

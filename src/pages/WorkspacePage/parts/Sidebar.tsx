@@ -23,7 +23,7 @@ import AppQueryMenu, { QUERY_MENU_LIST } from 'src/components/AppQueryMenu';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import rf from 'src/requests/RequestFactory';
 import { IPagination, ROUTES, SchemaType } from 'src/utils/common';
-import { IQuery } from 'src/utils/query.type';
+import { IDashboardDetail, IQuery } from 'src/utils/query.type';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
 import { copyToClipboard } from 'src/utils/utils-helper';
 import { getChainIconByChainName } from 'src/utils/utils-network';
@@ -214,7 +214,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   const { queryId, dashboardId }: { queryId?: string; dashboardId?: string } =
     useParams();
   const history = useHistory();
-  const { pathname } = useLocation();
+  const location = useLocation();
 
   const [category, setCategory] = useState<string>(CATEGORIES.EXPLORE_DATA);
   const [searchValueWorkPlace, setSearchValueWorkPlace] = useState<string>('');
@@ -325,7 +325,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     history.push(ROUTES.MY_QUERY);
   };
 
-  const getWorkplaceItemClassname = (id: string) => {
+  const getWorkplaceItemClassName = (id: string) => {
     return id === queryId || id === dashboardId
       ? 'workspace-page__sidebar__content__work-place-detail work-place-active '
       : 'workspace-page__sidebar__content__work-place-detail ';
@@ -341,6 +341,16 @@ const Sidebar: React.FC<SidebarProps> = ({
     type === LIST_ITEM_TYPE.DASHBOARDS
       ? AppBroadcast.dispatch(BROADCAST_FETCH_DASHBOARD, response.id)
       : AppBroadcast.dispatch(BROADCAST_FETCH_QUERY, response.id);
+  };
+
+  const onDeleteSuccess = async (item: IQuery | IDashboardDetail) => {
+    if (item.id === queryId) {
+      location.state
+        ? history.push((location.state as any).originPath)
+        : history.goBack();
+    } else {
+      fetchDataWorkPlace();
+    }
   };
 
   const _renderNoData = () => (
@@ -434,7 +444,7 @@ const Sidebar: React.FC<SidebarProps> = ({
               {dataQueries.map((query) => (
                 <BoxResponsive
                   key={query.id}
-                  className={getWorkplaceItemClassname(query.id)}
+                  className={getWorkplaceItemClassName(query.id)}
                   displayDesktop="flex"
                   propsOnlyMobile={{
                     onClick: () => {
@@ -468,7 +478,14 @@ const Sidebar: React.FC<SidebarProps> = ({
                         />
                       </div>
                       <Text isTruncated>
-                        <Link to={`${ROUTES.MY_QUERY}/${query.id}?`}>
+                        <Link
+                          to={{
+                            pathname: `${ROUTES.MY_QUERY}/${query.id}`,
+                            state: {
+                              originPath: (location.state as any)?.originPath,
+                            },
+                          }}
+                        >
                           {query.name}
                         </Link>
                       </Text>
@@ -482,6 +499,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                     itemType={LIST_ITEM_TYPE.QUERIES}
                     item={query}
                     onForkSuccess={onForkSuccess}
+                    onDeleteSuccess={onDeleteSuccess}
                   />
                 </BoxResponsive>
               ))}
@@ -516,7 +534,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             </Tooltip>
           </Flex>
           <div className="header-icon">
-            {pathname.includes(ROUTES.MY_QUERY) && (
+            {location.pathname.includes(ROUTES.MY_QUERY) && (
               <CopyIcon
                 className="icon-header"
                 onClick={() => handleCopy(schemaDescribe[0].full_name)}
@@ -825,12 +843,7 @@ const SideContentExplore: FC<SideContentExploreProps> = ({
         >
           <div className="body-side">{children}</div>
         </Box>
-        <Flex align={'center'} gap={'10px'} py={4}>
-          {/* <AppButton size={'lg'} variant={'cancel'} onClick={onClose}>
-            Cancel
-          </AppButton>
-          <AppButton size={'lg'}>Add to Query</AppButton> */}
-        </Flex>
+        <Flex align={'center'} gap={'10px'} py={4}></Flex>
       </Flex>
     </Slide>
   );
