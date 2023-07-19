@@ -347,7 +347,6 @@ const Sidebar: React.FC<SidebarProps> = ({
     if (item.id === queryId) {
       history.goBack();
     }
-    AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
     fetchDataWorkPlace();
   };
 
