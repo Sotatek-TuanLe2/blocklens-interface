@@ -1,0 +1,78 @@
+@import '../color-variables.scss';
+@import '../mixins.scss';
+
+.create-webhook-container {
+  .create-webhook {
+    .title {
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 24px;
+      color: $paragraph1;
+    }
+    &__header {
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      position: relative;
+    }
+    &__identification {
+      padding: 30px 40px;
+      .title {
+        color: $paragraph2;
+      }
+      @include tablet {
+        padding: 20px !important;
+      }
+    }
+    &__url {
+      @include tablet {
+        padding: 20px !important;
+        // .chakra-input__right-element {
+        //   width: 0px;
+        // }
+      }
+      .chakra-input__right-element {
+        width: 206px;
+        padding-right: 16px;
+        @include tablet {
+          // width: 26px !important;
+          display: none !important;
+        }
+      }
+    }
+    &__coin-aptos,
+    &__token-aptos {
+      .box-list-events {
+        &__wrapper {
+          margin-left: 0;
+        }
+        background-color: white;
+        border: 1px solid $line;
+      }
+    }
+  }
+  .name {
+    @include heading-4;
+    align-items: center;
+    margin-bottom: 3px;
+
+    @include tablet {
+      @include heading-6;
+    }
+
+    .title-mobile {
+      @include tablet {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        width: max-content;
+      }
+    }
+  }
+  .select-type-webhook {
+    .app-select__btn-select {
+      z-index: 99;
+    }
+  }
+}

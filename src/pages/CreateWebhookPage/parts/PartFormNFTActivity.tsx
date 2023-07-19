@@ -7,9 +7,10 @@ import { IDataForm } from '../index';
 
 interface IPartFormNFTActivity {
   dataForm: IDataForm;
-  setDataForm: (value: IDataForm) => void;
+  setDataForm: (value: any) => void;
   type: string;
   validator: any;
+  isCreateWithoutProject?: boolean;
 }
 
 const PartFormNFTActivity: FC<IPartFormNFTActivity> = ({
@@ -17,10 +18,19 @@ const PartFormNFTActivity: FC<IPartFormNFTActivity> = ({
   setDataForm,
   type,
   validator,
+  isCreateWithoutProject,
 }) => {
   return (
     <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
-      <AppField label={'NFT Address'} customWidth={'49%'} isRequired>
+      <AppField
+        label={
+          isCreateWithoutProject
+            ? 'Collection’s Contract Address'
+            : 'NFT Address'
+        }
+        customWidth={isCreateWithoutProject ? '100%' : '49%'}
+        isRequired
+      >
         <AppInput
           size="lg"
           value={dataForm.metadata?.address}
@@ -41,7 +51,10 @@ const PartFormNFTActivity: FC<IPartFormNFTActivity> = ({
           }}
         />
       </AppField>
-      <AppField label={'Token ID'} customWidth={'49%'}>
+      <AppField
+        label={'Token ID'}
+        customWidth={isCreateWithoutProject ? '100%' : '49%'}
+      >
         <AppInput
           size="lg"
           placeholder={'20,21,22'}

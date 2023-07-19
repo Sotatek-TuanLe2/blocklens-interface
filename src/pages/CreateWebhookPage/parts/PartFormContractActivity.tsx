@@ -9,7 +9,7 @@ import { isAddress } from 'ethers/lib/utils';
 
 interface IPartFormContractActivity {
   dataForm: IDataForm;
-  setDataForm: (value: IDataForm) => void;
+  setDataForm: (value: any) => void;
   type: string;
   validator: any;
 }
