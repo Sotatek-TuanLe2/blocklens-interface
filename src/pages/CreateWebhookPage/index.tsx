@@ -332,7 +332,7 @@ const CreateWebhook = () => {
   };
 
   const _renderNoApp = () => {
-    return <Flex justifyContent="center">App Not Found</Flex>;
+    return <Flex justifyContent="center">Project Not Found</Flex>;
   };
 
   const _renderCreateWebhook = () => {

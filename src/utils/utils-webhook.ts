@@ -1,3 +1,5 @@
+import { formatShortText } from './utils-helper';
+
 export const enum STATUS {
   WAITING = 'WAITING',
   DONE = 'DONE',
@@ -241,3 +243,12 @@ export const optionsFilterByDuration = [
     value: '30d',
   },
 ];
+
+export const formatTokenData = (webhook: IWebhook) => {
+  if (!webhook || !webhook?.metadata) return '--';
+
+  const { name, creatorAddress, collectionName } = webhook?.metadata;
+
+  return `${formatShortText(creatorAddress || '')}::${collectionName || ''} 
+  ${name ? `::${formatShortText(name)}` : ''}`;
+};

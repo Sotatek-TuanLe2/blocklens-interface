@@ -97,8 +97,8 @@ const MessagesItemMobile: FC<IMessagesItemMobile> = ({
               <Flex alignItems="center">
                 {`${formatShortText(
                   webhook?.metadata?.creatorAddress || '',
-                )}::${webhook?.metadata?.collectionName}::${
-                  webhook?.metadata?.name
+                )}::${webhook?.metadata?.collectionName}${
+                  webhook?.metadata?.name ? `::${webhook?.metadata?.name}` : ''
                 }`}
               </Flex>
             </Box>
