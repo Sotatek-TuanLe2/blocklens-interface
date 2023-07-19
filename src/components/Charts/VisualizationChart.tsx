@@ -314,8 +314,8 @@ const VisualizationChart: React.FC<Props> = (props) => {
         <ReferenceLine
           className="ref-line"
           y={0}
-          stroke="#2F3B58"
-          strokeDasharray="3 3"
+          stroke="rgba(232, 234, 237, 1)"
+          strokeDasharray="8 6"
           label={({ offset, viewBox }) => (
             <text
               offset={offset}
