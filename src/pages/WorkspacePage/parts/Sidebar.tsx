@@ -227,7 +227,6 @@ const Sidebar: React.FC<SidebarProps> = ({
   const [dataQueriesPagination, setDataQueriesPagination] = useState<
     IPagination | undefined
   >();
-  const [selectedQueryId, setSelectedQueryId] = useState<string>('');
 
   useEffect(() => {
     AppBroadcast.on(BROADCAST_FETCH_WORKPLACE_DATA, fetchDataWorkPlace);
@@ -344,10 +343,11 @@ const Sidebar: React.FC<SidebarProps> = ({
       : AppBroadcast.dispatch(BROADCAST_FETCH_QUERY, response.id);
   };
 
-  const onDeleteSuccess = async () => {
-    if (selectedQueryId === queryId) {
+  const onDeleteSuccess = async (item: IQuery) => {
+    if (item.id === queryId) {
       history.goBack();
     }
+    AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
     fetchDataWorkPlace();
   };
 
@@ -441,9 +441,6 @@ const Sidebar: React.FC<SidebarProps> = ({
             >
               {dataQueries.map((query) => (
                 <BoxResponsive
-                  onClick={() => {
-                    setSelectedQueryId(query.id);
-                  }}
                   key={query.id}
                   className={getWorkplaceItemClassName(query.id)}
                   displayDesktop="flex"
@@ -494,7 +491,6 @@ const Sidebar: React.FC<SidebarProps> = ({
                     item={query}
                     onForkSuccess={onForkSuccess}
                     onDeleteSuccess={onDeleteSuccess}
-                    selectedQueryId={selectedQueryId}
                   />
                 </BoxResponsive>
               ))}

@@ -12,17 +12,9 @@ export interface IModalDelete {
   id: string;
   type: string;
   onSuccess: () => void;
-  selectedQueryId?: string;
 }
 
-const ModalDelete = ({
-  open,
-  onClose,
-  type,
-  onSuccess,
-  selectedQueryId,
-  id,
-}: IModalDelete) => {
+const ModalDelete = ({ open, onClose, type, onSuccess, id }: IModalDelete) => {
   const getTitleModal = () => {
     if (type === LIST_ITEM_TYPE.QUERIES) return 'Query';
     if (type === LIST_ITEM_TYPE.DASHBOARDS) return 'Dashboard';
@@ -40,7 +32,7 @@ const ModalDelete = ({
     };
 
     try {
-      await rf.getRequest('DashboardsRequest')[action](selectedQueryId || id);
+      await rf.getRequest('DashboardsRequest')[action](id);
       toastSuccess(successMessage);
     } catch (error: any) {
       toastError(getErrorMessage(error));
