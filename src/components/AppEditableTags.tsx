@@ -28,7 +28,12 @@ const CustomInput = ({ onCancel }: { onCancel: () => void }) => {
   return isEditing ? (
     <InputGroup size="sm" className={`hashtags-editable__input`}>
       {<InputLeftElement pointerEvents="none">#</InputLeftElement>}
-      <Input as={EditableInput} max border="none" placeholder="" />
+      <Input
+        as={EditableInput}
+        borderRadius={'6px'}
+        border="none"
+        placeholder=""
+      />
       <InputRightElement>
         <IconButton
           className="icon-btn"

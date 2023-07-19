@@ -409,6 +409,7 @@ const WebHookCreatePage: React.FC = () => {
                     validator: validator.current,
                     rule: ['required', 'url'],
                   }}
+                  pr={{ base: 5, md: '220px' }}
                   endAdornment={
                     <AppButton disabled w={190} size={'sm'}>
                       Send Demo Message
@@ -423,7 +424,7 @@ const WebHookCreatePage: React.FC = () => {
               </AppField>
             </AppCard>
 
-            <Flex justifyContent={'flex-end'} mt={5}>
+            <Flex justifyContent={['center', 'flex-end']} mt={5}>
               <AppButton
                 disabled={isDisableSubmit}
                 onClick={handleSubmitForm}

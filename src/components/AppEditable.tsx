@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React from 'react';
 import {
   ButtonGroup,
   Editable,
@@ -41,6 +41,7 @@ function EditableControls() {
       <IconButton
         h={'30px'}
         aria-label="EditIcon"
+        className="app-editable__edit-btn"
         icon={<EditIcon />}
         {...getCancelButtonProps()}
       />
@@ -50,6 +51,7 @@ function EditableControls() {
       <IconButton
         aria-label="EditIcon"
         h={'30px'}
+        className="app-editable__edit-btn"
         icon={<EditIcon />}
         {...getEditButtonProps()}
       />

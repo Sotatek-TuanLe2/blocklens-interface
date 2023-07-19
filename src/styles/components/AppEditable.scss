@@ -13,8 +13,12 @@
       box-shadow: none !important;
     }
   }
-  &__preview{
+  &__preview {
     font-weight: 600;
-
+  }
+  &__edit-btn {
+    svg {
+      color: $paragraph2 ;
+    }
   }
 }
