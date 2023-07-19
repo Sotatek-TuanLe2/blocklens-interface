@@ -5,6 +5,10 @@
   .create-webhook {
     &__detail-info {
       padding: 30px 40px !important;
+
+      @include tablet {
+        padding: 20px !important;
+      }
     }
     .title {
       font-size: 16px;
