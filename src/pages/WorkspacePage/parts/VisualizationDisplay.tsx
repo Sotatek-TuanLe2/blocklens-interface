@@ -223,6 +223,9 @@ const VisualizationDisplay = ({
       });
       await onReload();
       setIsConfiguring(false);
+      if (isMobile) {
+        setToggleCloseConfig(true);
+      }
     } catch (error) {
       setIsConfiguring(false);
       toastError({ message: getErrorMessage(error) });
@@ -535,7 +538,6 @@ const VisualizationDisplay = ({
             expandLayout={expandLayout}
             isConfiguring={isConfiguring}
             onAddVisualize={addVisualizationHandler}
-            onOpenModalConfig={() => setToggleCloseConfig(true)}
           />
         ),
         id: TYPE_VISUALIZATION.new,
@@ -638,7 +640,6 @@ type AddVisualizationProps = {
 
 const AddVisualization = ({
   onAddVisualize,
-  onOpenModalConfig,
   expandLayout,
   isConfiguring,
 }: AddVisualizationProps) => {
@@ -667,10 +668,7 @@ const AddVisualization = ({
               <div
                 className="item-visual"
                 key={i.value}
-                onClick={() => {
-                  onAddVisualize(i.value);
-                  if (isMobile && onOpenModalConfig) onOpenModalConfig();
-                }}
+                onClick={() => onAddVisualize(i.value)}
               >
                 {getIcon(i.type)}
                 {i.label}
@@ -682,10 +680,7 @@ const AddVisualization = ({
               <div
                 className="item-visual"
                 key={i.value}
-                onClick={() => {
-                  onAddVisualize(i.value);
-                  if (isMobile && onOpenModalConfig) onOpenModalConfig();
-                }}
+                onClick={() => onAddVisualize(i.value)}
               >
                 {getIcon(i.type)}
                 {i.label}
