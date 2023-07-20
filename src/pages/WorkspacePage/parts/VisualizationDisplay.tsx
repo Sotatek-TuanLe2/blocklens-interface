@@ -1,6 +1,6 @@
 import { Box, Flex, Spinner, Tooltip } from '@chakra-ui/react';
 import moment from 'moment';
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router';
 import {
   AddChartIcon,
@@ -38,7 +38,7 @@ import {
   VisualizationType,
 } from '../../../utils/query.type';
 import _ from 'lodash';
-import { useResoponsive } from 'src/hooks/useResoponsive';
+import { isMobile } from 'react-device-detect';
 
 type VisualizationConfigType = {
   value: string;
@@ -159,8 +159,6 @@ const VisualizationDisplay = ({
   const [isConfiguring, setIsConfiguring] = useState<boolean>(false);
 
   const queryClass = useMemo(() => new Query(queryValue), [queryValue]);
-
-  const { isMobile } = useResoponsive();
 
   const axisOptions =
     Array.isArray(queryResult) && queryResult[0]
@@ -347,7 +345,11 @@ const VisualizationDisplay = ({
         isOpen={toggleCloseConfig}
         onClose={() => setToggleCloseConfig(false)}
         isCentered={false}
-        title={`${typeNameVisual(type)} Options`}
+        title={
+          <Box textTransform={'capitalize'}>{`${typeNameVisual(
+            type,
+          )} Options`}</Box>
+        }
       >
         <div className={'main-config'}>
           <div className={'body-config'}>{configuration}</div>
@@ -474,10 +476,15 @@ const VisualizationDisplay = ({
     }
   };
 
+  const firstSelectTab = useRef<boolean>(false);
+
   const onChangeTab = (_tabId: string, tabIndex: number) => {
     setTabIndex(tabIndex);
-    setToggleCloseConfig(needAuthentication && !!tabIndex);
+    if ((isMobile && !firstSelectTab.current) || !isMobile) {
+      setToggleCloseConfig(needAuthentication && !!tabIndex);
+    }
     onExpand(LAYOUT_QUERY.HIDDEN);
+    firstSelectTab.current = true;
   };
 
   const generateTabs = () => {
@@ -601,11 +608,13 @@ const VisualizationDisplay = ({
               size="lg"
               variant={'cancel'}
               className="btn-cancel"
+              maxW={'48%'}
             >
               Cancel
             </AppButton>
             <AppButton
               size="lg"
+              maxW={'48%'}
               onClick={() => {
                 setCloseTabIndex('');
                 removeVisualizationHandler(closeTabIndex);
