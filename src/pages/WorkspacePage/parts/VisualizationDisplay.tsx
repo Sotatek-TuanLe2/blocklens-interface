@@ -1,6 +1,6 @@
 import { Box, Flex, Spinner, Tooltip } from '@chakra-ui/react';
 import moment from 'moment';
-import { useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import {
   AddChartIcon,
@@ -476,15 +476,12 @@ const VisualizationDisplay = ({
     }
   };
 
-  const firstSelectTab = useRef<boolean>(false);
-
   const onChangeTab = (_tabId: string, tabIndex: number) => {
     setTabIndex(tabIndex);
-    if ((isMobile && !firstSelectTab.current) || !isMobile) {
+    if (!isMobile) {
       setToggleCloseConfig(needAuthentication && !!tabIndex);
     }
     onExpand(LAYOUT_QUERY.HIDDEN);
-    firstSelectTab.current = true;
   };
 
   const generateTabs = () => {
@@ -538,6 +535,7 @@ const VisualizationDisplay = ({
             expandLayout={expandLayout}
             isConfiguring={isConfiguring}
             onAddVisualize={addVisualizationHandler}
+            onOpenModalConfig={() => setToggleCloseConfig(true)}
           />
         ),
         id: TYPE_VISUALIZATION.new,
@@ -633,12 +631,14 @@ export default VisualizationDisplay;
 
 type AddVisualizationProps = {
   onAddVisualize: (visualizationType: string) => void;
+  onOpenModalConfig?: () => void;
   expandLayout?: string;
   isConfiguring: boolean;
 };
 
 const AddVisualization = ({
   onAddVisualize,
+  onOpenModalConfig,
   expandLayout,
   isConfiguring,
 }: AddVisualizationProps) => {
@@ -669,6 +669,7 @@ const AddVisualization = ({
                 key={i.value}
                 onClick={() => {
                   onAddVisualize(i.value);
+                  if (isMobile && onOpenModalConfig) onOpenModalConfig();
                 }}
               >
                 {getIcon(i.type)}
@@ -683,6 +684,7 @@ const AddVisualization = ({
                 key={i.value}
                 onClick={() => {
                   onAddVisualize(i.value);
+                  if (isMobile && onOpenModalConfig) onOpenModalConfig();
                 }}
               >
                 {getIcon(i.type)}
