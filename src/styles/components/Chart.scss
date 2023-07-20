@@ -57,9 +57,9 @@
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
-    @include mobile {
-      display: none;
-    }
+    // @include mobile {
+    //   display: none;
+    // }
 
     .line-chart-legend {
       left: 10px;
