@@ -124,7 +124,7 @@ const ModalDashboard: React.FC<IModelNewDashboard> = ({
         <div className="title-create-modal">
           {generateTitleModal(type)} Dashboard
         </div>
-        <AppField label={'Dashboard Tittle'}>
+        <AppField label={'Dashboard Title'}>
           <AppInput
             value={dataForm.name}
             size="sm"

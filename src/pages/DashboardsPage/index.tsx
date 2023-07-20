@@ -144,7 +144,7 @@ const DashboardsPage: React.FC = () => {
       try {
         const res: any = await rf
           .getRequest('DashboardsRequest')
-          .getAllDashboards(params);
+          .getAllDashboards({ ...params, search: params.search?.trim() });
         return { ...res, docs: res.data };
       } catch (error) {
         console.error(error);
@@ -158,7 +158,7 @@ const DashboardsPage: React.FC = () => {
       try {
         const res: any = await rf
           .getRequest('DashboardsRequest')
-          .getMyListDashboards(params);
+          .getMyListDashboards({ ...params, search: params.search?.trim() });
         return { ...res, docs: res.data };
       } catch (error) {
         console.error(error);
@@ -172,7 +172,7 @@ const DashboardsPage: React.FC = () => {
       try {
         const res: any = await rf
           .getRequest('DashboardsRequest')
-          .getAllQueries(params);
+          .getAllQueries({ ...params, search: params.search?.trim() });
         return { ...res, docs: res.data };
       } catch (error) {
         console.error(error);
@@ -186,7 +186,7 @@ const DashboardsPage: React.FC = () => {
       try {
         const res: any = await rf
           .getRequest('DashboardsRequest')
-          .getMyListQueries(params);
+          .getMyListQueries({ ...params, search: params.search?.trim() });
         return { ...res, docs: res.data };
       } catch (error) {
         console.error(error);
