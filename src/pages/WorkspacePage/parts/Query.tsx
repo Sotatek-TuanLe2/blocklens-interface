@@ -176,12 +176,21 @@ const QueryPart: React.FC = () => {
       if (!editorRef.current) {
         return null;
       }
+      if (!dataQuery) {
+        setIsLoadingResult(false);
+        editorRef.current.editor.setValue('');
+        toastError({ message: 'Query does not exists' });
+        return null;
+      }
       const position = editorRef.current.editor.getCursorPosition();
       editorRef.current.editor.setValue('');
       editorRef.current.editor.session.insert(position, dataQuery?.query);
       return dataQuery;
     } catch (error: any) {
       setIsLoadingQuery(false);
+      if (error.message) {
+        toastError({ message: error.message.toString() });
+      }
       console.error(error);
       return null;
     }
