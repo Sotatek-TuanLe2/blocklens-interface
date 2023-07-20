@@ -27,7 +27,8 @@ export interface QueryInterface {
   tags?: string[];
   privateMode: boolean;
   query: string;
-
+  forkedQueryId: string | null;
+  forkedQueryName: string | null;
   userInfo: IUserInfo;
   chains: string[];
   visualizations: Visualization[];
@@ -40,6 +41,8 @@ export interface QueryInterface {
   getThumnail: () => string | null;
   getTags: () => string[];
   getQuery: () => string;
+  getForkedId: () => string | null;
+  getForkedName: () => string | null;
   getChains: () => string[] | null;
 
   getUser: () => IUserInfo | null;
@@ -113,6 +116,8 @@ export class Query implements QueryInterface {
   public tags;
   public privateMode = false;
   public query = '';
+  public forkedQueryId;
+  public forkedQueryName;
   public userInfo: IUserInfo;
   public chains: string[];
   public visualizations: Visualization[];
@@ -126,6 +131,8 @@ export class Query implements QueryInterface {
     this.tags = query.tags;
     this.privateMode = query.isPrivate;
     this.query = query.query;
+    this.forkedQueryId = query.forkedQueryId;
+    this.forkedQueryName = query.forkedQueryName;
     this.thumbnail = query.thumbnail;
     this.userInfo = query.userInfo;
     this.chains = query.utilizedChains;
@@ -167,6 +174,14 @@ export class Query implements QueryInterface {
 
   getQuery() {
     return this.query;
+  }
+
+  getForkedId() {
+    return this.forkedQueryId || '';
+  }
+
+  getForkedName() {
+    return this.forkedQueryName || '';
   }
 
   getUser() {

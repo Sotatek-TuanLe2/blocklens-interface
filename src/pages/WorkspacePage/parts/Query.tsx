@@ -69,6 +69,7 @@ const QueryPart: React.FC = () => {
           editorRef.current.editor.getCursorPosition(),
           ` ${text} `,
         );
+        editorRef.current.editor.focus();
       }
     });
 

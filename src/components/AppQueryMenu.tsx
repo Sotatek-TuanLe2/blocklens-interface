@@ -7,23 +7,27 @@ import {
   MenuList,
 } from '@chakra-ui/react';
 import { useMemo, useState } from 'react';
+import { useHistory } from 'react-router';
 import useUser from 'src/hooks/useUser';
 import ModalDashboard from 'src/modals/querySQL/ModalDashboard';
 import ModalDelete from 'src/modals/querySQL/ModalDelete';
 import ModalQuery from 'src/modals/querySQL/ModalQuery';
 import ModalShareDomain from 'src/modals/querySQL/ModalShareDomain';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
+import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/AppQueryMenu.scss';
-import { TYPE_OF_MODAL, ROUTES } from 'src/utils/common';
+import { ROUTES, TYPE_OF_MODAL } from 'src/utils/common';
 import { IDashboardDetail, IQuery } from 'src/utils/query.type';
-import AppButton from './AppButton';
+import { getErrorMessage } from 'src/utils/utils-helper';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import {
   DeleteQueryIcon,
-  // ForkQueryIcon,
+  ForkQueryIcon,
   IconDotMore,
   SettingQueryIcon,
   ShareQueryIcon,
 } from '../assets/icons';
+import AppButton from './AppButton';
 
 interface IAppQueryMenu {
   menu?: string[];
@@ -48,7 +52,7 @@ export const QUERY_MENU_LIST = {
 const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
   const {
     menu = [
-      // QUERY_MENU_LIST.FORK,
+      QUERY_MENU_LIST.FORK,
       QUERY_MENU_LIST.SETTING,
       QUERY_MENU_LIST.SHARE,
       QUERY_MENU_LIST.DELETE,
@@ -63,6 +67,7 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
 
   const { user } = useUser();
   const location = window.location;
+  const history = useHistory();
 
   const [openModalSetting, setOpenModalSetting] = useState<boolean>(false);
   const [openModalShare, setOpenModalShare] = useState<boolean>(false);
@@ -81,6 +86,27 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
     setOpenModalFork((prevState) => !prevState);
   };
 
+  const onForkQuery = async () => {
+    if (!user) {
+      return history.push(ROUTES.LOGIN, { originPath: location.pathname });
+    }
+
+    try {
+      const res = await rf
+        .getRequest('DashboardsRequest')
+        .forkQueries(item.id, { newQueryName: item.name });
+      window.open(
+        `${ROUTES.MY_QUERY}/${res.id}`,
+        '_blank',
+        'noopener,noreferrer',
+      );
+      toastSuccess({ message: 'Fork query successfully!' });
+      onForkSuccess && (await onForkSuccess(res, itemType));
+    } catch (error) {
+      toastError({ message: getErrorMessage(error) });
+    }
+  };
+
   const generateMenu = () => {
     let itemList: {
       id: string;
@@ -88,12 +114,12 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
       icon: React.ReactNode;
       onClick: () => any;
     }[] = [
-      // {
-      //   id: QUERY_MENU_LIST.FORK,
-      //   label: QUERY_MENU_LIST.FORK,
-      //   icon: <ForkQueryIcon />,
-      //   onClick: onToggleModalFork,
-      // },
+      {
+        id: QUERY_MENU_LIST.FORK,
+        label: QUERY_MENU_LIST.FORK,
+        icon: <ForkQueryIcon />,
+        onClick: onForkQuery,
+      },
       {
         id: QUERY_MENU_LIST.SETTING,
         label: QUERY_MENU_LIST.SETTING,
@@ -115,11 +141,6 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
     ];
 
     itemList = itemList.filter((item) => menu.includes(item.id));
-    if (!user) {
-      itemList = itemList.filter((item) =>
-        [QUERY_MENU_LIST.SHARE].includes(item.id),
-      );
-    }
 
     return itemList;
   };
@@ -221,16 +242,6 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
           onClose={() => setOpenModalDelete(false)}
           onSuccess={() => onDeleteSuccess(item)}
           type={itemType}
-          id={item.id}
-        />
-      )}
-      {/**Modal fork */}
-      {itemType === LIST_ITEM_TYPE.QUERIES && openModalFork && (
-        <ModalQuery
-          open={openModalFork}
-          onClose={() => setOpenModalFork(false)}
-          onSuccess={(res) => onForkSuccess(res, itemType)}
-          type={TYPE_OF_MODAL.FORK}
           id={item.id}
         />
       )}

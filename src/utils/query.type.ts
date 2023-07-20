@@ -93,6 +93,8 @@ export interface IQuery {
   executedId: string;
   pendingExecutionId?: string;
   forkedQuery?: null;
+  forkedQueryId: string | null;
+  forkedQueryName: string | null;
   visualizations: VisualizationType[];
   utilizedChains: string[];
   thumbnail: string | null;
@@ -126,6 +128,7 @@ export interface IDashboardDetail {
   updatedAt: string;
   user: string;
   forkedDashboardId: string | null;
+  forkedDashboardName: string | null;
   tags?: string[];
   dashboardVisuals?: IVisualizationWidget[];
   textWidgets?: ITextWidget[];
