@@ -14,6 +14,7 @@ import rf from 'src/requests/RequestFactory';
 import 'src/styles/pages/QueriesPage.scss';
 import { QUERY_RESULT_STATUS } from 'src/utils/common';
 import { IErrorExecuteQuery, IQuery, LAYOUT_QUERY } from 'src/utils/query.type';
+import { toastError } from 'src/utils/utils-notify';
 import { Query } from 'src/utils/utils-query';
 import { STATUS } from 'src/utils/utils-webhook';
 
@@ -91,13 +92,21 @@ const QueryPart: React.FC = () => {
       if (!editorRef.current) {
         return null;
       }
+      if (!dataQuery) {
+        setIsLoadingResult(false);
+        editorRef.current.editor.setValue('');
+        toastError({ message: 'Query does not exists' });
+        return null;
+      }
       const position = editorRef.current.editor.getCursorPosition();
       editorRef.current.editor.setValue('');
       editorRef.current.editor.session.insert(position, dataQuery?.query);
-      setIsLoadingQuery(false);
       return dataQuery;
     } catch (error: any) {
       setIsLoadingQuery(false);
+      if (error.message) {
+        toastError({ message: error.message.toString() });
+      }
       console.error(error);
       return null;
     }
