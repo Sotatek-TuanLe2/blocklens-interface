@@ -633,7 +633,6 @@ export default VisualizationDisplay;
 
 type AddVisualizationProps = {
   onAddVisualize: (visualizationType: string) => void;
-  onOpenModalConfig?: () => void;
   expandLayout?: string;
   isConfiguring: boolean;
 };
