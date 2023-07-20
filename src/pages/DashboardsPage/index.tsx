@@ -141,11 +141,10 @@ const DashboardsPage: React.FC = () => {
 
   const fetchAllDashboards: any = useCallback(
     async (params: any) => {
-      const paramsDashboard = { ...params, search: params.search?.trim() };
       try {
         const res: any = await rf
           .getRequest('DashboardsRequest')
-          .getAllDashboards(paramsDashboard);
+          .getAllDashboards({ ...params, search: params.search?.trim() });
         return { ...res, docs: res.data };
       } catch (error) {
         console.error(error);
@@ -156,11 +155,10 @@ const DashboardsPage: React.FC = () => {
 
   const fetchMyDashboards: any = useCallback(
     async (params: any) => {
-      const paramsMyDashboard = { ...params, search: params.search?.trim() };
       try {
         const res: any = await rf
           .getRequest('DashboardsRequest')
-          .getMyListDashboards(paramsMyDashboard);
+          .getMyListDashboards({ ...params, search: params.search?.trim() });
         return { ...res, docs: res.data };
       } catch (error) {
         console.error(error);
@@ -171,11 +169,10 @@ const DashboardsPage: React.FC = () => {
 
   const fetchAllQueries: any = useCallback(
     async (params: any) => {
-      const paramsAllQueries = { ...params, search: params.search?.trim() };
       try {
         const res: any = await rf
           .getRequest('DashboardsRequest')
-          .getAllQueries(paramsAllQueries);
+          .getAllQueries({ ...params, search: params.search?.trim() });
         return { ...res, docs: res.data };
       } catch (error) {
         console.error(error);
@@ -186,11 +183,10 @@ const DashboardsPage: React.FC = () => {
 
   const fetchMyQueries: any = useCallback(
     async (params: any) => {
-      const paramsMyQueries = { ...params, search: params.search?.trim() };
       try {
         const res: any = await rf
           .getRequest('DashboardsRequest')
-          .getMyListQueries(paramsMyQueries);
+          .getMyListQueries({ ...params, search: params.search?.trim() });
         return { ...res, docs: res.data };
       } catch (error) {
         console.error(error);
