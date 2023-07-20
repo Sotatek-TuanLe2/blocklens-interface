@@ -15,6 +15,7 @@ import 'src/styles/components/AppGridItem.scss';
 import Jazzicon from 'react-jazzicon';
 import { generateAvatarFromId } from 'src/utils/common';
 import { IconEye } from 'src/assets/icons';
+import useOriginPath from 'src/hooks/useOriginPath';
 
 interface AppGridItemProps {
   isLoading?: boolean;
@@ -45,6 +46,7 @@ const AppGridItem: FC<AppGridItemProps> = ({
   views,
 }) => {
   const location = useLocation();
+  const { generateLinkObject } = useOriginPath();
 
   return isLoading ? (
     <Flex
@@ -119,12 +121,10 @@ const AppGridItem: FC<AppGridItemProps> = ({
         style={{ aspectRatio: '295 / 180' }}
       >
         <Link
-          to={{
-            pathname: toHref || '#',
-            state: {
-              originPath: `${location.pathname}${location.search}`,
-            },
-          }}
+          to={generateLinkObject(
+            toHref || '#',
+            `${location.pathname}${location.search}`,
+          )}
         >
           <Image
             src={srcThumb}

@@ -7,7 +7,7 @@ import {
   Switch,
   withRouter,
 } from 'react-router-dom';
-import { useHistory, useLocation } from 'react-router';
+import { useLocation } from 'react-router';
 import HomePage from './pages/HomePage';
 import SignUpPage from './pages/SignUpPage';
 import LoginPage from './pages/LoginPage';
@@ -38,6 +38,7 @@ import DashboardsPage from './pages/DashboardsPage';
 import { ROUTES } from './utils/common';
 import WorkspacePage from './pages/WorkspacePage';
 import PublicWorkspacePage from './pages/PublicWorkspacePage';
+import useOriginPath from '././hooks/useOriginPath';
 
 /**
  * Main App routes.
@@ -66,8 +67,8 @@ const Routes: FC<RouteComponentProps> = () => {
   const { pathname } = useLocation();
   const dispatch = useDispatch<any>();
   const accessToken = Storage.getAccessToken();
-  const history = useHistory();
   const location = useLocation();
+  const { goWithOriginPath } = useOriginPath();
 
   const isExpireTimeToken =
     Storage.getExpireTimeToken() &&
@@ -80,7 +81,7 @@ const Routes: FC<RouteComponentProps> = () => {
     if (!accessToken || isExpireTimeToken) {
       dispatch(clearUser());
       if (!GUEST_PATH.some((path) => pathname.includes(path))) {
-        history.push(ROUTES.LOGIN, { originPath: location.pathname });
+        goWithOriginPath(ROUTES.LOGIN, location.pathname);
       }
       return;
     }
@@ -177,7 +178,7 @@ const PublicRoute = ({ component: Component, path, ...rest }: any) => {
         ) : (
           <Redirect
             to={{
-              pathname: '/',
+              pathname: ROUTES.HOME,
             }}
           />
         )
@@ -189,6 +190,7 @@ const PublicRoute = ({ component: Component, path, ...rest }: any) => {
 const PrivateRoute = ({ component: Component, ...rest }: any) => {
   const accessToken = Storage.getAccessToken();
   const location = useLocation();
+  const { generateLinkObject } = useOriginPath();
 
   return (
     <Route
@@ -198,12 +200,7 @@ const PrivateRoute = ({ component: Component, ...rest }: any) => {
         !!accessToken ? (
           <Component {...props} />
         ) : (
-          <Redirect
-            to={{
-              pathname: '/login',
-              state: { originPath: location.pathname },
-            }}
-          />
+          <Redirect to={generateLinkObject(ROUTES.LOGIN, location.pathname)} />
         )
       }
     />

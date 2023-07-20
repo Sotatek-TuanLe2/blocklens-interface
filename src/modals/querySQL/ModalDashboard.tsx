@@ -1,12 +1,11 @@
 import { Flex, Text } from '@chakra-ui/react';
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
-import { useHistory } from 'react-router';
 import { AppButton, AppField, AppInput } from 'src/components';
 import useRecaptcha from 'src/hooks/useRecaptcha';
 import { TYPE_MODAL } from 'src/pages/WorkspacePage/parts/Dashboard';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/BaseModal.scss';
-import { ROUTES, TYPE_OF_MODAL } from 'src/utils/common';
+import { TYPE_OF_MODAL } from 'src/utils/common';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { createValidator } from 'src/utils/utils-validator';
@@ -39,8 +38,6 @@ const ModalDashboard: React.FC<IModelNewDashboard> = ({
     name: defaultValue.name || '',
     tags: defaultValue.tags?.join(', ') || '',
   };
-
-  const history = useHistory();
   const { getAndSetRecaptcha } = useRecaptcha();
 
   const [dataForm, setDataForm] =
@@ -87,29 +84,25 @@ const ModalDashboard: React.FC<IModelNewDashboard> = ({
           result = await rf
             .getRequest('DashboardsRequest')
             .createNewDashboard(submitData);
-          setIsDisableSubmit(false);
-          history.push(`${ROUTES.MY_DASHBOARD}/${result.id}`);
           toastSuccess({ message: 'Create new dashboard successfully!' });
           break;
         case TYPE_OF_MODAL.SETTING:
           result = await rf
             .getRequest('DashboardsRequest')
             .updateDashboardItem(submitData, id);
-          setIsDisableSubmit(false);
           toastSuccess({ message: 'Update dashboard successfully!' });
           break;
         case TYPE_OF_MODAL.FORK:
           result = await rf
             .getRequest('DashboardsRequest')
             .forkDashboard(submitData, id);
-          setIsDisableSubmit(false);
-          history.push(`${ROUTES.MY_DASHBOARD}/${result.id}`);
           toastSuccess({ message: 'Fork dashboard successfully!' });
           break;
       }
       onClose();
       onSuccess && (await onSuccess(result));
     } catch (error) {
+      setIsDisableSubmit(false);
       toastError({ message: getErrorMessage(error) });
     }
   };
