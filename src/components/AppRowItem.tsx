@@ -261,7 +261,10 @@ const AppRowItem: FC<AppRowItemProps> = ({
         <Flex align={'center'}>
           <Box flexGrow={1} maxW={'calc(100% - 50px)'} overflow={'hidden'}>
             <Link
-              to={toHref || '#'}
+              to={generateLinkObject(
+                toHref || '#',
+                `${location.pathname}${location.search}`,
+              )}
               style={{ width: '100%', display: 'block' }}
             >
               <Flex align={'center'}>

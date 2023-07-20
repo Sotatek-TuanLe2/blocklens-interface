@@ -148,7 +148,10 @@ const AppGridItem: FC<AppGridItemProps> = ({
           <Box flexGrow={1} maxW={'100%'} overflow={'hidden'}>
             <Link
               className="item-name"
-              to={toHref || '#'}
+              to={generateLinkObject(
+                toHref || '#',
+                `${location.pathname}${location.search}`,
+              )}
               style={{ display: 'block' }}
             >
               <Tooltip p={2} hasArrow placement="top" label={name}>
