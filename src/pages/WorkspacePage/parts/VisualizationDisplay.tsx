@@ -38,6 +38,7 @@ import {
   VisualizationType,
 } from '../../../utils/query.type';
 import _ from 'lodash';
+import { isMobile } from 'react-device-detect';
 
 type VisualizationConfigType = {
   value: string;
@@ -222,6 +223,9 @@ const VisualizationDisplay = ({
       });
       await onReload();
       setIsConfiguring(false);
+      if (isMobile) {
+        setToggleCloseConfig(true);
+      }
     } catch (error) {
       setIsConfiguring(false);
       toastError({ message: getErrorMessage(error) });
@@ -267,10 +271,6 @@ const VisualizationDisplay = ({
   };
 
   const _renderConfigurations = (visualization: VisualizationType) => {
-    if (!toggleCloseConfig) {
-      return null;
-    }
-
     const type = visualization.options?.globalSeriesType || visualization.type;
     let configuration = null;
 
@@ -324,12 +324,8 @@ const VisualizationDisplay = ({
       }
     };
 
-    return (
-      <div
-        className={`main-config ${
-          toggleCloseConfig ? 'show-config' : 'hidden-config'
-        }`}
-      >
+    const ConfigOnDesktop = (
+      <div className={`main-config`}>
         <div className="header-config">
           <div className="title-config">{typeNameVisual(type)} Options</div>
           <p
@@ -346,6 +342,25 @@ const VisualizationDisplay = ({
         </div>
       </div>
     );
+
+    const ConfigOnMobile = (
+      <BaseModal
+        isOpen={toggleCloseConfig}
+        onClose={() => setToggleCloseConfig(false)}
+        isCentered={false}
+        title={
+          <Box textTransform={'capitalize'}>{`${typeNameVisual(
+            type,
+          )} Options`}</Box>
+        }
+      >
+        <div className={'main-config'}>
+          <div className={'body-config'}>{configuration}</div>
+        </div>
+      </BaseModal>
+    );
+
+    return !isMobile ? ConfigOnDesktop : ConfigOnMobile;
   };
 
   const _renderVisualization = (
@@ -424,7 +439,7 @@ const VisualizationDisplay = ({
                 expandLayout === LAYOUT_QUERY.HIDDEN
                   ? 'main-visualization--expand'
                   : ''
-              } ${!toggleCloseConfig ? 'show-full-visual' : ''}`}
+              } ${!toggleCloseConfig || isMobile ? 'show-full-visual' : ''}`}
             >
               {errorMessage ? (
                 <Flex
@@ -466,7 +481,9 @@ const VisualizationDisplay = ({
 
   const onChangeTab = (_tabId: string, tabIndex: number) => {
     setTabIndex(tabIndex);
-    setToggleCloseConfig(needAuthentication && !!tabIndex);
+    if (!isMobile) {
+      setToggleCloseConfig(needAuthentication && !!tabIndex);
+    }
     onExpand(LAYOUT_QUERY.HIDDEN);
   };
 
@@ -512,7 +529,7 @@ const VisualizationDisplay = ({
               <Box>
                 <AddChartIcon />
               </Box>{' '}
-              Add Chart
+              {!isMobile && 'Add Chart'}
             </Flex>
           </Tooltip>
         ),
@@ -591,11 +608,13 @@ const VisualizationDisplay = ({
               size="lg"
               variant={'cancel'}
               className="btn-cancel"
+              maxW={'48%'}
             >
               Cancel
             </AppButton>
             <AppButton
               size="lg"
+              maxW={'48%'}
               onClick={() => {
                 setCloseTabIndex('');
                 removeVisualizationHandler(closeTabIndex);
@@ -648,9 +667,7 @@ const AddVisualization = ({
               <div
                 className="item-visual"
                 key={i.value}
-                onClick={() => {
-                  onAddVisualize(i.value);
-                }}
+                onClick={() => onAddVisualize(i.value)}
               >
                 {getIcon(i.type)}
                 {i.label}
@@ -662,9 +679,7 @@ const AddVisualization = ({
               <div
                 className="item-visual"
                 key={i.value}
-                onClick={() => {
-                  onAddVisualize(i.value);
-                }}
+                onClick={() => onAddVisualize(i.value)}
               >
                 {getIcon(i.type)}
                 {i.label}

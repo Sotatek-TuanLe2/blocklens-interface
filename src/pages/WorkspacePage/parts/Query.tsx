@@ -30,6 +30,7 @@ import { AddChartIcon, QueryResultIcon } from 'src/assets/icons';
 import { STATUS } from 'src/utils/utils-webhook';
 import useRecaptcha from 'src/hooks/useRecaptcha';
 import useOriginPath from 'src/hooks/useOriginPath';
+import { isMobile } from 'react-device-detect';
 
 export const BROADCAST_FETCH_QUERY = 'FETCH_QUERY';
 export const BROADCAST_ADD_TO_EDITOR = 'ADD_TO_EDITOR';
@@ -179,12 +180,21 @@ const QueryPart: React.FC = () => {
       if (!editorRef.current) {
         return null;
       }
+      if (!dataQuery) {
+        setIsLoadingResult(false);
+        editorRef.current.editor.setValue('');
+        toastError({ message: 'Query does not exists' });
+        return null;
+      }
       const position = editorRef.current.editor.getCursorPosition();
       editorRef.current.editor.setValue('');
       editorRef.current.editor.session.insert(position, dataQuery?.query);
       return dataQuery;
     } catch (error: any) {
       setIsLoadingQuery(false);
+      if (error.message) {
+        toastError({ message: error.message.toString() });
+      }
       console.error(error);
       return null;
     }
@@ -408,7 +418,7 @@ const QueryPart: React.FC = () => {
               <Box mr={2}>
                 <AddChartIcon />
               </Box>{' '}
-              Add Chart
+              {!isMobile && 'Add Chart'}
             </Flex>
           </Tooltip>
           <p className="icon-query-expand cursor-not-allowed" />
