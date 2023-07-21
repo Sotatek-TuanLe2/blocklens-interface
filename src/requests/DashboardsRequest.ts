@@ -105,7 +105,7 @@ export default class DashboardsRequest extends BaseRequest {
   /* Dashboards page */
 
   getAllDashboards(params: IGetBrowse) {
-    const url = `/public/dashboard`;
+    const url = `/public/dashboards`;
     return this.get(url, params);
   }
 
@@ -115,7 +115,7 @@ export default class DashboardsRequest extends BaseRequest {
   }
 
   getMyListDashboards(params: IGetBrowse) {
-    const url = `/dashboard/list-browse-dashboards`;
+    const url = `/dashboards/list-browse-dashboards`;
     return this.get(url, params);
   }
 
@@ -125,34 +125,34 @@ export default class DashboardsRequest extends BaseRequest {
   }
 
   createNewDashboard(data: CreateDashboardParams) {
-    const url = '/dashboard/create-dashboard';
+    const url = '/dashboards/create-dashboard';
     return this.post(url, data);
   }
   /* End of Dashboards page */
 
   /* Dashboard's detail page */
   getMyDashboardById(id: string) {
-    const url = `/dashboard/find-my-dashboard`;
+    const url = `/dashboards/find-my-dashboard`;
     return this.get(url, id);
   }
 
   getPublicDashboardById(id: string) {
-    const url = `/public/dashboard/${id}`;
+    const url = `/public/dashboards/${id}`;
     return this.get(url);
   }
 
   getPublicDashboardTagsTrending() {
-    const url = `/public/dashboard/tags/trending`;
+    const url = `/public/dashboards/tags/trending`;
     return this.get(url);
   }
 
   forkDashboard(data: ForkDashboard, id: ILayout) {
-    const url = `/dashboard/fork-dashboard/${id}`;
+    const url = `/dashboards/fork-dashboard/${id}`;
     return this.post(url, data);
   }
 
   addDashboardItem(data: DataTextWidget) {
-    const url = `/dashboard/insert-text-widget`;
+    const url = `/dashboards/insert-text-widget`;
     return this.post(url, data);
   }
 
@@ -160,7 +160,7 @@ export default class DashboardsRequest extends BaseRequest {
     dashboardId: string;
     listVisuals: DataVisualWidget[];
   }) {
-    const url = `/dashboard/${data.dashboardId}/manage-dashboard-visuals`;
+    const url = `/dashboards/${data.dashboardId}/manage-dashboard-visuals`;
     return this.post(url, { listVisuals: data.listVisuals });
   }
 
@@ -168,25 +168,25 @@ export default class DashboardsRequest extends BaseRequest {
     dashboardId: string;
     dataVisualWidget: DataVisualWidget;
   }) {
-    const url = `/dashboard/${data.dashboardId}/insert-dashboard-visual`;
+    const url = `/dashboards/${data.dashboardId}/insert-dashboard-visual`;
     return this.post(url, data.dataVisualWidget);
   }
 
   updateDashboardItem(data: ILayout, id: string) {
-    const url = `/dashboard/${id}/update-dashboard`;
+    const url = `/dashboards/${id}/update-dashboard`;
     return this.patch(url, data);
   }
 
   removeTextWidget(id: ILayout) {
-    const url = `/dashboard/text-widgets/${id}/remove-text-widget`;
+    const url = `/dashboards/text-widgets/${id}/remove-text-widget`;
     return this.delete(url, id);
   }
   removeVisualization(id: ILayout) {
-    const url = `/dashboard/dashboard-visuals/${id}/remove-dashboard-visuals`;
+    const url = `/dashboards/dashboard-visuals/${id}/remove-dashboard-visuals`;
     return this.delete(url, id);
   }
   removeDashboard(id: string) {
-    const url = `/dashboard/${id}`;
+    const url = `/dashboards/${id}`;
     return this.delete(url);
   }
 
@@ -276,14 +276,17 @@ export default class DashboardsRequest extends BaseRequest {
 
   getSupportedChains() {
     const url = '/databases/supported-chains';
-
     return this.get(url);
   }
 
   getListMyQueriesVisualizations(params: IGetBrowse) {
     const url = '/visualizations/list-my-queries-visualizations';
-
     return this.get(url, params);
+  }
+
+  checkVisualizationsInDashboards(queryId: string) {
+    const url = `/queries/${queryId}/check-visualization-in-dashboard`;
+    return this.get(url);
   }
 
   /* End of Query page */
