@@ -243,13 +243,11 @@ const DashboardPart: React.FC = () => {
         dashboardVisuals: dataVisualization,
         textWidgets: dataTextWidget,
       };
-      const res = await rf
+      await rf
         .getRequest('DashboardsRequest')
         .updateDashboardItem(payload, dashboardId);
       setIsSavingDashboard(false);
-      if (res) {
-        await fetchLayoutData();
-      }
+      await fetchLayoutData();
     } catch (e) {
       setIsSavingDashboard(false);
       toastError({ message: getErrorMessage(e) });
