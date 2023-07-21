@@ -16,6 +16,11 @@ export default class RegistrationRequest extends BaseRequest {
     return this.post(url, params);
   }
 
+  addRegistrationWithoutApp(params: any) {
+    const url = `/registrations/without-appId`;
+    return this.post(url, params);
+  }
+
   updateStatus(_appId: string, registrationId: string, params: any) {
     const url = `/registrations/${registrationId}`;
     return this.patch(url, params);

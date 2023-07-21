@@ -23,7 +23,7 @@ import {
   optionsWebhookType,
 } from 'src/utils/utils-webhook';
 import { CHAINS_CONFIG } from 'src/utils/utils-app';
-import { toastError } from 'src/utils/utils-notify';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import 'src/styles/pages/AppDetail.scss';
 import 'src/styles/pages/CreateHookForm.scss';
 import PartFormAddressActivity from '../CreateWebhookPage/parts/PartFormAddressActivity';
@@ -36,6 +36,10 @@ import PartFormIdentification from './parts/PartFormIdentification';
 import { ROUTES } from '../../utils/common';
 import PartFormCoinActivityAptos from '../CreateWebhookPage/parts/PartFormCoinActivityAptos';
 import PartFormModuleActivityAptos from '../CreateWebhookPage/parts/PartFormModuleActivityAptos';
+import rf from '../../requests/RequestFactory';
+import { getUserStats } from 'src/store/user';
+import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router';
 
 interface IMetadata {
   coinType?: string;
@@ -54,7 +58,7 @@ interface IMetadata {
 export interface IDataForm {
   webhook: string;
   type: string;
-  name?: string;
+  webHookName?: string;
   projectId?: string;
   hashTags?: string[];
   metadata?: IMetadata;
@@ -65,7 +69,7 @@ const initDataCreateWebHook = {
   type: '',
   hashTags: [],
   projectId: '',
-  name: 'webhook 1',
+  webHookName: 'webhook 1',
   metadata: {
     coinType: '',
     events: [],
@@ -84,6 +88,9 @@ const WebHookCreatePage: React.FC = () => {
 
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
   const [, updateState] = useState<any>();
+
+  const dispatch = useDispatch();
+  const history = useHistory();
 
   const forceUpdate = useCallback(() => updateState({}), []);
 
@@ -261,7 +268,12 @@ const WebHookCreatePage: React.FC = () => {
     };
 
     try {
-      console.log(data, 'dataForm');
+      await rf
+        .getRequest('RegistrationRequest')
+        .addRegistrationWithoutApp(data);
+      dispatch(getUserStats());
+      history.push(ROUTES.TRIGGERS);
+      toastSuccess({ message: 'Create Successfully!' });
     } catch (e: any) {
       toastError({ message: e?.message || 'Oops. Something went wrong!' });
     }

@@ -80,11 +80,11 @@ const PartFormIdentification: FC<IPartFormIdentificationProps> = ({
           Webhook Name
         </Text>
         <AppEditable
-          value={dataForm.name}
+          value={dataForm.webHookName}
           onChange={(value) => {
             setDataForm({
               ...dataForm,
-              name: value,
+              webHookName: value,
             });
           }}
           validate={{
