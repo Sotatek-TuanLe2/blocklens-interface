@@ -12,21 +12,28 @@ import { getUserStats } from 'src/store/user';
 import { useDispatch } from 'react-redux';
 import useUser from 'src/hooks/useUser';
 import { NoAppIcon } from 'src/assets/icons';
+import { useHistory } from 'react-router';
+import { ROUTES } from 'src/utils/common';
 
 const HomePage = () => {
   const { user } = useUser();
   const userStats = user?.getStats();
-  const hasApp = !!userStats?.totalApp && userStats?.totalApp > 0;
+  const hasData =
+    !!userStats?.totalApp &&
+    userStats?.totalApp > 0 &&
+    !!userStats?.totalRegistration &&
+    userStats?.totalRegistration > 0;
 
   const [openModalCreateApp, setOpenModalCreateApp] = useState<boolean>(false);
 
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const onCreateAppSuccess = async () => {
     dispatch(getUserStats());
   };
 
-  const _renderNoApp = () => {
+  const _renderNoData = () => {
     return (
       <>
         <AppCard className={'no-app'}>
@@ -38,13 +45,24 @@ const HomePage = () => {
             <Box className={'no-app__description'}>
               Create a new Project to start using Blocklens API
             </Box>
-            <AppButton
-              className={'no-app__btn'}
-              size={'md'}
-              onClick={() => setOpenModalCreateApp(true)}
-            >
-              Create New Project
-            </AppButton>
+            <Flex>
+              <AppButton
+                className={'no-app__btn'}
+                size={'lg'}
+                onClick={() => history.push(ROUTES.CREATE_WEBHOOK)}
+                variant={'outline'}
+                mr={2}
+              >
+                Create New Webhook
+              </AppButton>
+              <AppButton
+                className={'no-app__btn'}
+                size={'lg'}
+                onClick={() => setOpenModalCreateApp(true)}
+              >
+                Create New Project
+              </AppButton>
+            </Flex>
           </Flex>
         </AppCard>
         <ModalCreateApp
@@ -83,7 +101,7 @@ const HomePage = () => {
 
   return (
     <BasePage>
-      <>{hasApp ? _renderContent() : _renderNoApp()}</>
+      <>{hasData ? _renderContent() : _renderNoData()}</>
     </BasePage>
   );
 };

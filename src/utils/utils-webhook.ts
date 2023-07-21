@@ -155,6 +155,8 @@ export interface IWebhook {
   network: string;
   chain: string;
   webhook: string;
+  webHookName: string;
+  messageToday: string | number;
   status: WEBHOOK_STATUS;
   type: string;
   metadata: {
