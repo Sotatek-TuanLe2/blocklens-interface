@@ -44,6 +44,7 @@ type CustomRule =
   | 'minValue'
   | 'maxValue'
   | 'isPositive'
+  | 'isDecimnals'
   | 'maxDigits'
   | 'isSame'
   | 'isAddress'
@@ -95,6 +96,12 @@ export const createValidator = (options?: IOptions | undefined) => {
         message: 'The value must be greater than 0',
         rule: (val: string) => {
           return +val > 0;
+        },
+      },
+      isDecimnals: {
+        message: 'Please input number from 0 to 9',
+        rule: (val: string) => {
+          return +val >= 0 && +val <= 9;
         },
       },
       isSame: {
