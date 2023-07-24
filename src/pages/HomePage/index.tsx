@@ -18,11 +18,7 @@ import { ROUTES } from 'src/utils/common';
 const HomePage = () => {
   const { user } = useUser();
   const userStats = user?.getStats();
-  const hasData =
-    !!userStats?.totalApp &&
-    userStats?.totalApp > 0 &&
-    !!userStats?.totalRegistration &&
-    userStats?.totalRegistration > 0;
+  const noData = !userStats?.totalApp && !userStats?.totalRegistration;
 
   const [openModalCreateApp, setOpenModalCreateApp] = useState<boolean>(false);
 
@@ -101,7 +97,7 @@ const HomePage = () => {
 
   return (
     <BasePage>
-      <>{hasData ? _renderContent() : _renderNoData()}</>
+      <>{_renderContent()}</>
     </BasePage>
   );
 };

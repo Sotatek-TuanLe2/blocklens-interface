@@ -20,9 +20,9 @@ const AllActivitiesPage = () => {
     tokenId: '',
     address: '',
   };
-  const { appId, id: webhookId } = useParams<{ appId: string; id: string }>();
+  const { id: webhookId } = useParams<{ appId: string; id: string }>();
   const [params, setParams] = useState<any>(initParams);
-  const { webhook } = useWebhookDetails(appId, webhookId);
+  const { webhook } = useWebhookDetails(webhookId);
   const [isOpenFilterModal, setIsOpenFilterModal] = useState<boolean>(false);
 
   const _renderBoxFilter = () => {
@@ -59,7 +59,7 @@ const AllActivitiesPage = () => {
           <AppHeading
             isCenter
             title="All Activities"
-            linkBack={`/app/${appId}/webhooks/${webhookId}`}
+            linkBack={`/webhooks/${webhookId}`}
           />
 
           {!isMobile && (

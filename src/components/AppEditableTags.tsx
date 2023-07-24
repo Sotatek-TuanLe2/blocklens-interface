@@ -63,11 +63,11 @@ const CustomInput = ({ onCancel }: { onCancel: () => void }) => {
 const AddHashtags = ({
   onSubmit,
 }: {
-  onSubmit: (nextValue: string) => void;
+  onSubmit?: (nextValue: string) => void;
 }) => {
   const [value, setValue] = useState<string>();
   const handleSubmit = (nextValue: string) => {
-    onSubmit(nextValue);
+    onSubmit && onSubmit(nextValue);
     setValue('');
   };
   return (

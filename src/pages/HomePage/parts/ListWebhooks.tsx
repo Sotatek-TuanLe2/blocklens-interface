@@ -26,7 +26,9 @@ const WebhookMobile: FC<IWebhookMobile> = ({ webhook }) => {
     <>
       <Box
         className={`${isOpen ? 'open' : ''} card-mobile`}
-        onClick={() => history.push(`/app/${webhook.appId}`)}
+        onClick={() =>
+          history.push(`/webhooks/${webhook.registrationId}`)
+        }
       >
         <Flex
           justifyContent="space-between"
@@ -151,7 +153,9 @@ const ListWebhooks: React.FC = () => {
             <Tr
               key={index}
               className="tr-list"
-              onClick={() => history.push(`/`)}
+              onClick={() =>
+                history.push(`/webhooks/${webhook.registrationId}`)
+              }
             >
               <Td w="25%">{webhook.webHookName}</Td>
               <Td w="20%">{getNameWebhook(webhook.type)}</Td>

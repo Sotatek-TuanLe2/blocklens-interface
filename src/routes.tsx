@@ -116,25 +116,27 @@ const Routes: FC<RouteComponentProps> = () => {
         {/*<PrivateRoute path={'/top-up'} component={TopUpPage} /> *!/*/}
 
         <PrivateRoute
-          path={`${ROUTES.APP}/:appId/webhooks/:id/activities`}
+          path={`/webhook/:webhookId/activities/:id`}
+          component={MessagesHistory}
+        />
+        <PrivateRoute
+          path={`${ROUTES.WEBHOOKS}/:id/activities`}
           component={AllActivitiesPage}
         />
         <PrivateRoute
-          path={`${ROUTES.APP}/:appId/webhooks/:id/settings`}
+          path={`${ROUTES.WEBHOOKS}/:id/settings`}
           component={WebhookSettingsPage}
         />
         <PrivateRoute
-          path={`${ROUTES.APP}/:appId/webhooks/:id`}
+          path={`${ROUTES.WEBHOOKS}/:id`}
           component={WebhookDetail}
         />
+
         <PrivateRoute
           path={'/create-webhook/:id'}
           component={CreateWebhookPage}
         />
-        <PrivateRoute
-          path={`${ROUTES.APP}/:appId/webhook/:webhookId/activities/:id`}
-          component={MessagesHistory}
-        />
+
         <PrivateRoute path={`${ROUTES.APP}/:id`} component={AppDetail} />
 
         <PrivateRoute path={`${ROUTES.TRIGGERS}`} component={HomePage} />

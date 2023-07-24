@@ -26,7 +26,7 @@ const PartWebhookActivities: FC<IPartRecentActivities> = ({ webhook }) => {
           _hover={{ textDecoration: 'underline' }}
           onClick={() =>
             history.push(
-              `/app/${webhook?.appId}/webhooks/${webhookId}/activities`,
+              `/webhooks/${webhookId}/activities`,
             )
           }
           mr={2}
