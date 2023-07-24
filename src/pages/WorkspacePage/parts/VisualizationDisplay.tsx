@@ -165,11 +165,6 @@ const VisualizationDisplay = ({
       ? objectKeys(queryResult[0])
       : [];
 
-  const defaultTimeXAxis = useMemo(
-    () => getDefaultTimeAxis(queryResult),
-    [queryResult],
-  );
-
   const getNewVisualization = (type: string, name: string) => {
     switch (type) {
       case TYPE_VISUALIZATION.table:
@@ -194,7 +189,7 @@ const VisualizationDisplay = ({
           options: {
             globalSeriesType: type,
             columnMapping: {
-              xAxis: defaultTimeXAxis,
+              xAxis: [],
               yAxis: [],
             },
             chartOptionsConfigs: {
@@ -369,8 +364,7 @@ const VisualizationDisplay = ({
   ) => {
     const type = visualization.options?.globalSeriesType || visualization.type;
     let visualizationDisplay = null;
-    const xAxisKey =
-      visualization.options?.columnMapping?.xAxis || defaultTimeXAxis;
+    const xAxisKey = visualization.options?.columnMapping?.xAxis || [];
     const yAxisKeys = visualization.options.columnMapping?.yAxis || [];
 
     switch (type) {

@@ -92,11 +92,6 @@ const VisualizationItem = React.memo(
       }
     };
 
-    const defaultTimeXAxis = useMemo(
-      () => getDefaultTimeAxis(queryResult),
-      [queryResult],
-    );
-
     const _renderVisualization = (visualization: VisualizationType) => {
       const errorMessage = generateErrorMessage(visualization, queryResult);
 
@@ -115,8 +110,7 @@ const VisualizationItem = React.memo(
       const type =
         visualization.options?.globalSeriesType || visualization.type;
       let visualizationDisplay = null;
-      const xAxisKey =
-        visualization.options?.columnMapping?.xAxis || defaultTimeXAxis;
+      const xAxisKey = visualization.options?.columnMapping?.xAxis || [];
       const yAxisKeys = visualization.options.columnMapping?.yAxis || [];
 
       switch (type) {
