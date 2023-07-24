@@ -97,7 +97,7 @@ const HomePage = () => {
 
   return (
     <BasePage>
-      <>{_renderContent()}</>
+      <>{noData ? _renderNoData() : _renderContent()}</>
     </BasePage>
   );
 };
