@@ -373,7 +373,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             display={{ base: 'none', lg: 'block' }}
             cursor={'pointer'}
             onClick={() => onToggleExpandSidebar && onToggleExpandSidebar()}
-            className="icon-close-light"
+            className="bg-CloseBtnIcon"
           ></Box>
         </div>
         <Box px={'16px'}>

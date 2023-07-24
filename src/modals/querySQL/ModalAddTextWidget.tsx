@@ -63,7 +63,15 @@ const MarkdownSupport: IMarkdown[] = [
       </>
     ),
   },
-  { title: 'Horizontal rule', mark: <>---</> },
+  {
+    title: 'Horizontal rule',
+    mark: (
+      <>
+        (Add new line) <br />
+        ---
+      </>
+    ),
+  },
   {
     title: 'Ordered list',
     mark: (

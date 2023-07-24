@@ -175,7 +175,7 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     setUserId: (state, action) => {
-      state.userId = action.payload.userId;
+      state.userId = action.payload.id;
     },
     setUserAuth: (state, action) => {
       const timeExpireToken = new Date().getTime() + TIME_EXPIRE_TOKEN_CLIENT;

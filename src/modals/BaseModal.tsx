@@ -16,7 +16,7 @@ import { isMobile } from 'react-device-detect';
 import { ArrowDown } from 'src/assets/icons';
 
 export interface BaseModalProps extends ModalProps {
-  title?: string;
+  title?: ReactNode | string;
   description?: string;
   size?:
     | 'xs'

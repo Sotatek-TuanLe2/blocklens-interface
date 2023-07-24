@@ -248,7 +248,7 @@
         &__title {
           display: flex;
           padding: 16px 16px 8px 16px;
-          @include text-medium-bold;
+          @include text-small-bold;
           text-transform: uppercase;
           align-items: center;
           justify-content: space-between;
