@@ -29,7 +29,7 @@ const ModalDeleteWebhook: FC<IModalDeleteWebhook> = ({
     try {
       await rf
         .getRequest('RegistrationRequest')
-        .deleteRegistration(webhook.appId, webhook.registrationId);
+        .deleteRegistration(webhook.registrationId);
       dispatch(getUserStats());
       toastSuccess({ message: 'Delete Successfully!' });
       history.push(`/app/${webhook.appId}?type=${webhook.type}`);
