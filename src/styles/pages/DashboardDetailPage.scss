@@ -28,8 +28,14 @@
       height: 8px;
     }
   }
-  .recharts-wrapper .recharts-label-list .recharts-label {
-    fill: $title;
+  .recharts-wrapper {
+    .recharts-label-list .recharts-label {
+      fill: $title;
+    }
+
+    .recharts-cartesian-axis .recharts-label {
+      fill: $paragraph1;
+    }
   }
 
   .main-counter {
