@@ -59,9 +59,10 @@ export const appButtonStyles = {
     outline: (props: StyleProps) => ({
       borderRadius: '6px',
       bg: 'none',
-      color: 'main.100',
+      color: '#1B75FF',
+      fontSize: '16px',
       borderWidth: '1px',
-      borderColor: 'main.100',
+      borderColor: '#1B75FF',
       _hover: {
         bg: mode('main.100', 'main.100')(props),
         color: 'white',

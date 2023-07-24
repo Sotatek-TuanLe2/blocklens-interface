@@ -95,7 +95,7 @@ const WebhookMobile: FC<IWebhookItem> = ({ webhook, appInfo, type }) => {
         className={`${isOpen ? 'open' : ''} card-mobile`}
         onClick={() =>
           history.push(
-            `/app/${appInfo.appId}/webhooks/${webhook.registrationId}`,
+            `/webhooks/${webhook.registrationId}`,
           )
         }
       >
@@ -159,7 +159,7 @@ const WebhookItem: FC<IWebhookItem> = ({ webhook, appInfo, type }) => {
         className="tr-list"
         onClick={() =>
           history.push(
-            `/app/${appInfo.appId}/webhooks/${webhook.registrationId}`,
+            `/webhooks/${webhook.registrationId}`,
           )
         }
       >

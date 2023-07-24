@@ -43,7 +43,7 @@ const MessagesHistory = () => {
   const [address, setAddress] = useState<string>('');
   const [isOpenFilterModal, setIsOpenFilterModal] = useState<boolean>(false);
 
-  const { webhook } = useWebhookDetails(appId, webhookId);
+  const { webhook } = useWebhookDetails(webhookId);
   const history = useHistory();
 
   const fetchDataTable: any = useCallback(async (params: any) => {

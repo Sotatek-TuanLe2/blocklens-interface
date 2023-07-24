@@ -7,6 +7,7 @@ interface IPartFormTokenActivityAptos {
   dataForm: IDataForm;
   setDataForm: (value: IDataForm) => void;
   validator: any;
+  isHiddenName?: boolean;
 }
 
 interface IDataEvent {
@@ -77,7 +78,11 @@ export const ListSelectEvent = ({
 
   return (
     <Flex className="box-list-events">
-      <Box ml={{ sm: 0, md: 5 }} width="100%">
+      <Box
+        ml={{ sm: 0, md: 5 }}
+        className="box-list-events__wrapper"
+        width="100%"
+      >
         {!!dataEvent.length && (
           <Checkbox
             size="lg"
@@ -112,6 +117,7 @@ const PartFormTokenActivityAptos: FC<IPartFormTokenActivityAptos> = ({
   dataForm,
   setDataForm,
   validator,
+  isHiddenName,
 }) => {
   const [eventsSelected, setEventsSelected] = useState<string[]>([]);
 
@@ -166,21 +172,24 @@ const PartFormTokenActivityAptos: FC<IPartFormTokenActivityAptos> = ({
           }}
         />
       </AppField>
-      <AppField label={'Name'} customWidth={'100%'}>
-        <AppInput
-          size="lg"
-          value={dataForm.metadata?.name}
-          onChange={(e) => {
-            setDataForm({
-              ...dataForm,
-              metadata: {
-                ...dataForm.metadata,
-                name: e.target.value.trim(),
-              },
-            });
-          }}
-        />
-      </AppField>
+      {!isHiddenName && (
+        <AppField label={'Name'} customWidth={'100%'}>
+          <AppInput
+            size="lg"
+            value={dataForm.metadata?.name}
+            onChange={(e) => {
+              setDataForm({
+                ...dataForm,
+                metadata: {
+                  ...dataForm.metadata,
+                  name: e.target.value.trim(),
+                },
+              });
+            }}
+          />
+        </AppField>
+      )}
+
       <Box w={'full'}>
         Events{' '}
         <Box as={'span'} color={'red.500'}>

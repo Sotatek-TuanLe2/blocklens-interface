@@ -77,7 +77,7 @@ const AppInput = forwardRef<AppInputProps, any>(
             readOnly={readOnly}
           />
 
-          {endAdornment && <InputRightElement children={<>{endAdornment}</>} />}
+          {endAdornment && <InputRightElement children={endAdornment} />}
           {type === 'password' && (
             <InputRightElement
               onClick={() => setIsShowPassword(!isShowPassword)}
