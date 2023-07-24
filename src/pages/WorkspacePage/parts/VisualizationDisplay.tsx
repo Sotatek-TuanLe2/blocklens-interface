@@ -189,7 +189,7 @@ const VisualizationDisplay = ({
           options: {
             globalSeriesType: type,
             columnMapping: {
-              xAxis: [],
+              xAxis: '',
               yAxis: [],
             },
             chartOptionsConfigs: {
