@@ -110,7 +110,7 @@ const VisualizationItem = React.memo(
       const type =
         visualization.options?.globalSeriesType || visualization.type;
       let visualizationDisplay = null;
-      const xAxisKey = visualization.options?.columnMapping?.xAxis || [];
+      const xAxisKey = visualization.options?.columnMapping?.xAxis || '';
       const yAxisKeys = visualization.options.columnMapping?.yAxis || [];
 
       switch (type) {
