@@ -90,7 +90,7 @@ const WebhookSettingsPage = () => {
     try {
       await rf
         .getRequest('RegistrationRequest')
-        .updateStatus(webhook.appId, webhook.registrationId, {
+        .updateStatus(webhook.registrationId, {
           status:
             webhook.status === WEBHOOK_STATUS.ENABLE
               ? WEBHOOK_STATUS.DISABLED

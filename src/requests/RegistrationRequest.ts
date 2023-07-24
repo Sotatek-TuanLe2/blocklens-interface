@@ -26,12 +26,12 @@ export default class RegistrationRequest extends BaseRequest {
     return this.post(url, params);
   }
 
-  updateStatus(_appId: string, registrationId: string, params: any) {
+  updateStatus(registrationId: string, params: any) {
     const url = `/registrations/${registrationId}`;
     return this.patch(url, params);
   }
 
-  deleteRegistration(_appId: string, registrationId: string) {
+  deleteRegistration(registrationId: string) {
     const url = `/registrations/${registrationId}`;
     return this.delete(url);
   }
