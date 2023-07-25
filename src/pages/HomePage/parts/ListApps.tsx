@@ -154,11 +154,11 @@ const ListApps: React.FC = () => {
     }
   };
 
-  const getAppMetricToday = async (appIds: string[]) => {
+  const getAppMetricToday = async (projectIds: string[]) => {
     try {
       const res: any = await rf
         .getRequest('NotificationRequest')
-        .getAppMetricToday({ appIds });
+        .getAppMetricToday({ projectIds });
       return res;
     } catch (error) {
       return [];
@@ -168,11 +168,12 @@ const ListApps: React.FC = () => {
   const fetchDataTable: any = async (param: any) => {
     try {
       const res: any = await rf.getRequest('AppRequest').getListApp(param);
-      const appIds = res?.docs?.map((item: IAppResponse) => item?.appId) || [];
+      const projectIds =
+        res?.docs?.map((item: IAppResponse) => item?.appId) || [];
       const totalWebhooks = await getTotalWebhookEachApp(
-        appIds.join(',').toString(),
+        projectIds.join(',').toString(),
       );
-      const appsMetric = await getAppMetricToday(appIds);
+      const appsMetric = await getAppMetricToday(projectIds);
 
       const dataApps = await Promise.all(
         res?.docs?.map(async (app: IAppResponse, index: number) => {

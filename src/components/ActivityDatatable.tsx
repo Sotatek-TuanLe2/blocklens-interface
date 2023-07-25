@@ -467,7 +467,7 @@ const ActivityDatatable: FC<IActivityDatatable> = ({
   limit,
   isFilter,
 }) => {
-  const { appId, id: webhookId } = useParams<{ appId: string; id: string }>();
+  const { id: webhookId } = useParams<{ id: string }>();
   const [, updateState] = useState<any>();
   const forceUpdate = useCallback(() => updateState({}), []);
   const { webhook } = useWebhookDetails(webhookId);

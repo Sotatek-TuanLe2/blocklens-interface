@@ -11,8 +11,8 @@ export default class NotificationRequest extends BaseRequest {
     return this.get(url, { ...params });
   }
 
-  getAppStats(appId: string, params: any) {
-    const url = `/metrics/app/${appId}/metrics`;
+  getAppStats(projectId: string, params: any) {
+    const url = `/metrics/project/${projectId}/metrics`;
     return this.get(url, params);
   }
 
@@ -32,7 +32,7 @@ export default class NotificationRequest extends BaseRequest {
   }
 
   getAppMetricToday(params: any) {
-    const url = `/metrics/app/metrics-today`;
+    const url = `/metrics/project/metrics-today`;
     return this.get(url, params);
   }
 
