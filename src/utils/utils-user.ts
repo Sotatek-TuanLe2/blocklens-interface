@@ -73,6 +73,8 @@ export class User implements UserInterface {
     totalAppInActive: 0,
     totalRegistration: 0,
     totalRegistrationActive: 0,
+    totalRegistrationWithoutAppId: 0,
+    totalRegistrationActiveWithoutAppId: 0,
   };
   public billing: UserBillingType = {
     plan: {

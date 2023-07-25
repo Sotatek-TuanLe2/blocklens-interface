@@ -101,7 +101,23 @@ const ListWebhooks: React.FC = () => {
       const res: any = await rf
         .getRequest('RegistrationRequest')
         .getRegistrationsWithoutApp(params);
-      return res;
+
+      const dataWebhook = await Promise.all(
+        res?.docs?.map(async (webhook: IWebhook, index: number) => {
+          const webhookStat = await rf
+            .getRequest('NotificationRequest')
+            .getWebhookStatsToday(webhook.registrationId);
+          return {
+            ...webhook,
+            messageToday: webhookStat?.totalToday || '--',
+          };
+        }),
+      );
+
+      return {
+        ...res,
+        docs: dataWebhook,
+      };
     } catch (error) {
       return error;
     }
