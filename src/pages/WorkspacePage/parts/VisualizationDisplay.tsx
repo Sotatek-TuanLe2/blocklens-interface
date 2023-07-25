@@ -87,21 +87,6 @@ const visualizationConfigs: VisualizationConfigType[] = [
 
 export const VISUALIZATION_DEBOUNCE = 500;
 
-export const getDefaultTimeAxis = (data: any[]): string => {
-  let result = '';
-  const firstResultInQuery: any = data && !!data.length ? data[0] : null;
-  if (firstResultInQuery) {
-    Object.keys(firstResultInQuery).forEach((key: string) => {
-      const date = moment(firstResultInQuery[key]);
-      if (date.isValid() && isNaN(+firstResultInQuery[key])) {
-        result = key;
-        return;
-      }
-    });
-  }
-  return result;
-};
-
 export const generateErrorMessage = (
   visualization: VisualizationType,
   data: any[],
@@ -166,11 +151,6 @@ const VisualizationDisplay = ({
       ? objectKeys(queryResult[0])
       : [];
 
-  const defaultTimeXAxis = useMemo(
-    () => getDefaultTimeAxis(queryResult),
-    [queryResult],
-  );
-
   const getNewVisualization = (type: string, name: string) => {
     switch (type) {
       case TYPE_VISUALIZATION.table:
@@ -195,7 +175,7 @@ const VisualizationDisplay = ({
           options: {
             globalSeriesType: type,
             columnMapping: {
-              xAxis: defaultTimeXAxis,
+              xAxis: '',
               yAxis: [],
             },
             chartOptionsConfigs: {
@@ -370,8 +350,7 @@ const VisualizationDisplay = ({
   ) => {
     const type = visualization.options?.globalSeriesType || visualization.type;
     let visualizationDisplay = null;
-    const xAxisKey =
-      visualization.options?.columnMapping?.xAxis || defaultTimeXAxis;
+    const xAxisKey = visualization.options?.columnMapping?.xAxis || '';
     const yAxisKeys = visualization.options.columnMapping?.yAxis || [];
 
     switch (type) {
