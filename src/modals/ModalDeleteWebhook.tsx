@@ -10,6 +10,7 @@ import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { IWebhook } from 'src/utils/utils-webhook';
 import { getUserStats } from '../store/user';
 import BaseModal from './BaseModal';
+import { ROUTES } from '../utils/common';
 
 interface IModalDeleteWebhook {
   open: boolean;
@@ -32,7 +33,7 @@ const ModalDeleteWebhook: FC<IModalDeleteWebhook> = ({
         .deleteRegistration(webhook.registrationId);
       dispatch(getUserStats());
       toastSuccess({ message: 'Delete Successfully!' });
-      history.push(`/app/${webhook.appId}?type=${webhook.type}`);
+      history.push(webhook.appId ? `/app/${webhook.appId}?type=${webhook.type}` : ROUTES.TRIGGERS);
       onClose();
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
