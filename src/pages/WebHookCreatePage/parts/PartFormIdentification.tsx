@@ -90,7 +90,7 @@ const PartFormIdentification: FC<IPartFormIdentificationProps> = ({
           validate={{
             name: `name`,
             validator: validator.current,
-            rule: ['required'],
+            rule: ['required', 'max:50'],
           }}
         />
         <Text pb={1} pt={5} className="title">
@@ -99,7 +99,7 @@ const PartFormIdentification: FC<IPartFormIdentificationProps> = ({
         <AppEditableTags
           onSubmit={(value) => {
             const hashTags = dataForm?.hashTags || [];
-            if (!value || hashTags.includes(value)) return;
+            if (!value.trim() || hashTags.includes(value)) return;
             setDataForm({
               ...dataForm,
               hashTags: [...hashTags, value],
