@@ -27,7 +27,7 @@ import { getWidthColumns } from 'src/components/ActivityDatatable';
 
 const MessagesHistory = () => {
   const {
-    id: hashId,
+    id: notificationHashId,
     webhookId,
     appId,
   } = useParams<{
@@ -50,7 +50,7 @@ const MessagesHistory = () => {
     try {
       return await rf
         .getRequest('NotificationRequest')
-        .getMessagesHistory(hashId, filterParams(params));
+        .getMessagesHistory(notificationHashId, filterParams(params));
     } catch (error) {
       console.error(error);
     }
