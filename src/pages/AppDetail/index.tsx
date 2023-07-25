@@ -42,19 +42,19 @@ const AppDetail = () => {
   const searchParams = new URLSearchParams(searchUrl);
   const currentType = searchParams.get('type');
 
-  const { id: appId } = useParams<{ id: string }>();
+  const { id: projectId } = useParams<{ id: string }>();
   const [appInfo, setAppInfo] = useState<IAppResponse | any>({});
 
   const getAppInfo = useCallback(async () => {
     try {
       const res = (await rf
         .getRequest('AppRequest')
-        .getAppDetail(appId)) as any;
+        .getAppDetail(projectId)) as any;
       setAppInfo(res);
     } catch (error: any) {
       setAppInfo({});
     }
-  }, [appId]);
+  }, [projectId]);
 
   const getActiveTab = () => {
     const tabs = [
@@ -98,7 +98,7 @@ const AppDetail = () => {
           className="app-tab"
           onClick={() =>
             history.push(
-              `/app/${appId}?type=${WEBHOOK_TYPES.CONTRACT_ACTIVITY}`,
+              `/app/${projectId}?type=${WEBHOOK_TYPES.CONTRACT_ACTIVITY}`,
             )
           }
         >
@@ -107,7 +107,7 @@ const AppDetail = () => {
         <Tab
           className="app-tab"
           onClick={() =>
-            history.push(`/app/${appId}?type=${WEBHOOK_TYPES.NFT_ACTIVITY}`)
+            history.push(`/app/${projectId}?type=${WEBHOOK_TYPES.NFT_ACTIVITY}`)
           }
         >
           NFT Activity
@@ -115,7 +115,9 @@ const AppDetail = () => {
         <Tab
           className="app-tab"
           onClick={() =>
-            history.push(`/app/${appId}?type=${WEBHOOK_TYPES.TOKEN_ACTIVITY}`)
+            history.push(
+              `/app/${projectId}?type=${WEBHOOK_TYPES.TOKEN_ACTIVITY}`,
+            )
           }
         >
           Token Activity
@@ -131,7 +133,7 @@ const AppDetail = () => {
           className="app-tab"
           onClick={() =>
             history.push(
-              `/app/${appId}?type=${WEBHOOK_TYPES.APTOS_COIN_ACTIVITY}`,
+              `/app/${projectId}?type=${WEBHOOK_TYPES.APTOS_COIN_ACTIVITY}`,
             )
           }
         >
@@ -142,7 +144,7 @@ const AppDetail = () => {
           className="app-tab"
           onClick={() =>
             history.push(
-              `/app/${appId}?type=${WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY}`,
+              `/app/${projectId}?type=${WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY}`,
             )
           }
         >
@@ -152,7 +154,7 @@ const AppDetail = () => {
           className="app-tab"
           onClick={() =>
             history.push(
-              `/app/${appId}?type=${WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY}`,
+              `/app/${projectId}?type=${WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY}`,
             )
           }
         >
@@ -261,7 +263,9 @@ const AppDetail = () => {
               size={'sm'}
               isDisabled={appInfo.status === APP_STATUS.DISABLED}
               onClick={() =>
-                history.push(`/create-webhook/${appInfo.appId}?type=${type}`)
+                history.push(
+                  `/create-webhook/${appInfo.projectId}?type=${type}`,
+                )
               }
             >
               <Box className="icon-plus-circle" mr={2} /> Create
@@ -280,7 +284,7 @@ const AppDetail = () => {
                 className="app-tab"
                 onClick={() =>
                   history.push(
-                    `/app/${appId}?type=${WEBHOOK_TYPES.ADDRESS_ACTIVITY}`,
+                    `/app/${projectId}?type=${WEBHOOK_TYPES.ADDRESS_ACTIVITY}`,
                   )
                 }
               >
@@ -326,7 +330,7 @@ const AppDetail = () => {
             <AppButton
               size={'md'}
               variant="cancel"
-              onClick={() => history.push(`/app/${appId}/settings`)}
+              onClick={() => history.push(`/app/${projectId}/settings`)}
             >
               <Box className="icon-settings" />
               {!isMobile && (

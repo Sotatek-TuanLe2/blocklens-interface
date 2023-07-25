@@ -71,7 +71,7 @@ const AppMobile: FC<IAppMobile> = ({ app }) => {
     <>
       <Box
         className={`${isOpen ? 'open' : ''} card-mobile`}
-        onClick={() => history.push(`/app/${app.appId}`)}
+        onClick={() => history.push(`/app/${app.projectId}`)}
       >
         <Flex
           justifyContent="space-between"
@@ -141,12 +141,12 @@ const ListApps: React.FC = () => {
 
   const [params, setParams] = useState({});
 
-  const getTotalWebhookEachApp = async (appIds: string) => {
+  const getTotalWebhookEachApp = async (projectIds: string) => {
     try {
       const res: any = await rf
         .getRequest('AppRequest')
         .getTotalWebhookEachApp({
-          appIds,
+          projectIds,
         });
       return res;
     } catch (error) {
@@ -169,7 +169,7 @@ const ListApps: React.FC = () => {
     try {
       const res: any = await rf.getRequest('AppRequest').getListApp(param);
       const projectIds =
-        res?.docs?.map((item: IAppResponse) => item?.appId) || [];
+        res?.docs?.map((item: IAppResponse) => item?.projectId) || [];
       const totalWebhooks = await getTotalWebhookEachApp(
         projectIds.join(',').toString(),
       );
@@ -178,7 +178,7 @@ const ListApps: React.FC = () => {
       const dataApps = await Promise.all(
         res?.docs?.map(async (app: IAppResponse, index: number) => {
           const appMetricToday = appsMetric.find(
-            (item: any) => item.appId === app.appId,
+            (item: any) => item.projectId === app.projectId,
           );
 
           return {
@@ -244,7 +244,7 @@ const ListApps: React.FC = () => {
             <Tr
               key={index}
               className="tr-list"
-              onClick={() => history.push(`/app/${app.appId}`)}
+              onClick={() => history.push(`/app/${app.projectId}`)}
             >
               <Td w="25%">{app.name}</Td>
               <Td w="20%">
@@ -270,7 +270,7 @@ const ListApps: React.FC = () => {
     return (
       <Box className="number-app">
         <Text as={'span'}>Active Projects: </Text>
-        {userStats?.totalAppActive}/{userStats?.totalApp}
+        {userStats?.totalProjectActive}/{userStats?.totalProject}
       </Box>
     );
   };

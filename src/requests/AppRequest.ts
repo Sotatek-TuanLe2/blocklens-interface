@@ -7,42 +7,42 @@ export default class AppRequest extends BaseRequest {
   }
 
   getListApp(params: any) {
-    const url = '/my/apps';
+    const url = '/my/projects';
     return this.get(url, { ...params });
   }
 
   getAppStatsOfUser() {
-    const url = '/my/apps/stats';
+    const url = '/my/projects/stats';
     return this.get(url);
   }
 
   getTotalWebhookEachApp(params: any) {
-    const url = '/my/apps/webhook/count';
+    const url = '/my/projects/webhook/count';
     return this.get(url, params);
   }
 
   createApp(params: any) {
-    const url = '/my/apps';
+    const url = '/my/projects';
     return this.post(url, params);
   }
 
-  updateApp(appId: string, params: any) {
-    const url = `/my/apps/${appId}`;
+  updateApp(projectId: string, params: any) {
+    const url = `/my/projects/${projectId}`;
     return this.patch(url, params);
   }
 
-  deleteApp(appId: string) {
-    const url = `/my/apps/${appId}`;
+  deleteApp(projectId: string) {
+    const url = `/my/projects/${projectId}`;
     return this.delete(url);
   }
 
-  toggleApp(appId: string) {
-    const url = `/my/apps/${appId}/toggle`;
+  toggleApp(projectId: string) {
+    const url = `/my/projects/${projectId}/toggle`;
     return this.patch(url);
   }
 
-  getAppDetail(id: string) {
-    const url = `/my/apps/${id}`;
+  getAppDetail(projectId: string) {
+    const url = `/my/projects/${projectId}`;
     return this.get(url);
   }
 }

@@ -16,9 +16,9 @@ export type UserStatsType = {
   numberOfAddressActivities: number;
   numberOfContractActivities: number;
   numberOfNftActivities: number;
-  totalApp: number;
-  totalAppActive: number;
-  totalAppInActive: number;
+  totalProject: number;
+  totalProjectActive: number;
+  totalProjectInActive: number;
   totalRegistration: number;
   totalRegistrationActive: number;
   totalRegistrationActiveWithoutAppId: number;
@@ -94,9 +94,9 @@ const initialState: UserState = {
     numberOfAddressActivities: 0,
     numberOfContractActivities: 0,
     numberOfNftActivities: 0,
-    totalApp: 0,
-    totalAppActive: 0,
-    totalAppInActive: 0,
+    totalProject: 0,
+    totalProjectActive: 0,
+    totalProjectInActive: 0,
     totalRegistration: 0,
     totalRegistrationActive: 0,
     totalRegistrationActiveWithoutAppId: 0,

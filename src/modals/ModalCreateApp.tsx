@@ -108,7 +108,7 @@ const ModalCreateApp: FC<IModalCreateApp> = ({ open, onClose, reloadData }) => {
       size="lg"
       title="Create New Projects"
       description={
-        !userStats?.totalApp
+        !userStats?.totalProject
           ? `We suggest you create an app and start experiencing our service,
        which grants real-time notifications to various blockchains' activities!`
           : ''
