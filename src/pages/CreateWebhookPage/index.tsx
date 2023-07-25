@@ -18,7 +18,12 @@ import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
 import { isEVMNetwork } from 'src/utils/utils-network';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { createValidator } from 'src/utils/utils-validator';
-import { CHAINS, WEBHOOK_TYPES } from 'src/utils/utils-webhook';
+import {
+  CHAINS,
+  WEBHOOK_TYPES,
+  optionsWebhookAptosType,
+  optionsWebhookType,
+} from 'src/utils/utils-webhook';
 import PartFormAddressActivity from './parts/PartFormAddressActivity';
 import PartFormCoinActivityAptos from './parts/PartFormCoinActivityAptos';
 import PartFormContractActivity from './parts/PartFormContractActivity';
@@ -46,44 +51,6 @@ export interface IDataForm {
   type: string;
   metadata?: IMetadata;
 }
-
-const optionsWebhookType = [
-  {
-    label: 'Address Activity',
-    value: WEBHOOK_TYPES.ADDRESS_ACTIVITY,
-  },
-  {
-    label: 'Contract Activity',
-    value: WEBHOOK_TYPES.CONTRACT_ACTIVITY,
-  },
-  {
-    label: 'NFT Activity',
-    value: WEBHOOK_TYPES.NFT_ACTIVITY,
-  },
-  {
-    label: 'Token Activity',
-    value: WEBHOOK_TYPES.TOKEN_ACTIVITY,
-  },
-];
-
-const optionsWebhookAptosType = [
-  {
-    label: 'Address Activity',
-    value: WEBHOOK_TYPES.ADDRESS_ACTIVITY,
-  },
-  {
-    label: 'Coin Activity',
-    value: WEBHOOK_TYPES.APTOS_COIN_ACTIVITY,
-  },
-  {
-    label: 'Token Activity',
-    value: WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY,
-  },
-  {
-    label: 'Module Activity',
-    value: WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY,
-  },
-];
 
 const CreateWebhook = () => {
   const { id: appId } = useParams<{ id: string }>();
@@ -235,7 +202,7 @@ const CreateWebhook = () => {
         setDataForm={setDataForm}
         type={type}
         validator={validator}
-        appInfo={appInfo}
+        chain={appInfo.chain}
       />
     );
   };

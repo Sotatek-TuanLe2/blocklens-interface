@@ -93,11 +93,7 @@ const WebhookMobile: FC<IWebhookItem> = ({ webhook, appInfo, type }) => {
     <>
       <Box
         className={`${isOpen ? 'open' : ''} card-mobile`}
-        onClick={() =>
-          history.push(
-            `/app/${appInfo.appId}/webhooks/${webhook.registrationId}`,
-          )
-        }
+        onClick={() => history.push(`/webhooks/${webhook.registrationId}`)}
       >
         <Flex
           justifyContent="space-between"
@@ -157,11 +153,7 @@ const WebhookItem: FC<IWebhookItem> = ({ webhook, appInfo, type }) => {
     <Tbody>
       <Tr
         className="tr-list"
-        onClick={() =>
-          history.push(
-            `/app/${appInfo.appId}/webhooks/${webhook.registrationId}`,
-          )
-        }
+        onClick={() => history.push(`/webhooks/${webhook.registrationId}`)}
       >
         <Td w="20%">{formatShortText(webhook.registrationId)}</Td>
         <Td w="45%">

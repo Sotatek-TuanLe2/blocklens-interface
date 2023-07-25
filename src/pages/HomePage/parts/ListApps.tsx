@@ -3,16 +3,14 @@ import React, { useState, FC } from 'react';
 import {
   AppButton,
   AppCard,
+  AppChainNetwork,
   AppDataTable,
   AppLoadingTable,
+  AppStatus,
 } from 'src/components';
 import rf from 'src/requests/RequestFactory';
-import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
+import { IAppResponse } from 'src/utils/utils-app';
 import { useHistory } from 'react-router';
-import {
-  getLogoChainByChainId,
-  getNameChainByChainId,
-} from 'src/utils/utils-network';
 // import ModalUpgradeCreateApp from 'src/modals/ModalUpgradeCreateApp';
 import { isMobile } from 'react-device-detect';
 import ModalCreateApp from 'src/modals/ModalCreateApp';
@@ -21,26 +19,6 @@ import useUser from 'src/hooks/useUser';
 interface IAppMobile {
   app: IAppResponse;
 }
-
-export const _renderStatus = (status?: APP_STATUS) => {
-  const isActive = status === APP_STATUS.ENABLE;
-
-  return (
-    <Box className={`status ${isActive ? 'active' : 'inactive'}`}>
-      {isActive ? 'Active' : 'Inactive'}
-    </Box>
-  );
-};
-
-export const _renderChainApp = (chain: string, network: string) => {
-  return (
-    <Flex alignItems={'center'}>
-      <Box className={getLogoChainByChainId(chain) || ''} mr={2.5} />
-      <Box mr={1}>{getNameChainByChainId(chain)}</Box>
-      <Box textTransform="capitalize"> {network}</Box>
-    </Flex>
-  );
-};
 
 interface IButtonCreateApp {
   onReload: () => void;
@@ -115,7 +93,9 @@ const AppMobile: FC<IAppMobile> = ({ app }) => {
           className="info"
         >
           <Box>Status</Box>
-          <Box>{_renderStatus(app.status)}</Box>
+          <Box>
+            <AppStatus status={app.status} />
+          </Box>
         </Flex>
 
         {isOpen && (
@@ -127,7 +107,7 @@ const AppMobile: FC<IAppMobile> = ({ app }) => {
             >
               <Box>Network</Box>
               <Box className="value">
-                {_renderChainApp(app.chain, app.network.toLowerCase())}
+                <AppChainNetwork chain={app.chain} network={app.network} />
               </Box>
             </Flex>
             <Flex
@@ -267,7 +247,7 @@ const ListApps: React.FC = () => {
             >
               <Td w="25%">{app.name}</Td>
               <Td w="20%">
-                {_renderChainApp(app.chain, app.network.toLowerCase())}
+                <AppChainNetwork chain={app.chain} network={app.network} />
               </Td>
               <Td w="20%" textAlign={'center'}>
                 {app?.messageToday}
@@ -276,7 +256,7 @@ const ListApps: React.FC = () => {
                 {app?.totalWebhook}
               </Td>
               <Td w="15%" textAlign={'right'}>
-                {_renderStatus(app.status)}
+                <AppStatus status={app.status} />
               </Td>
             </Tr>
           );

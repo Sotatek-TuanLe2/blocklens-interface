@@ -23,10 +23,7 @@ import {
   VisualizationType,
 } from 'src/utils/query.type';
 import useUser from 'src/hooks/useUser';
-import {
-  generateErrorMessage,
-  getDefaultTimeAxis,
-} from './VisualizationDisplay';
+import { generateErrorMessage } from './VisualizationDisplay';
 
 const REFETCH_QUERY_RESULT_MINUTES = 5;
 
@@ -92,11 +89,6 @@ const VisualizationItem = React.memo(
       }
     };
 
-    const defaultTimeXAxis = useMemo(
-      () => getDefaultTimeAxis(queryResult),
-      [queryResult],
-    );
-
     const _renderVisualization = (visualization: VisualizationType) => {
       const errorMessage = generateErrorMessage(visualization, queryResult);
 
@@ -115,8 +107,7 @@ const VisualizationItem = React.memo(
       const type =
         visualization.options?.globalSeriesType || visualization.type;
       let visualizationDisplay = null;
-      const xAxisKey =
-        visualization.options?.columnMapping?.xAxis || defaultTimeXAxis;
+      const xAxisKey = visualization.options?.columnMapping?.xAxis || '';
       const yAxisKeys = visualization.options.columnMapping?.yAxis || [];
 
       switch (type) {

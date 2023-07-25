@@ -38,6 +38,7 @@ import DashboardsPage from './pages/DashboardsPage';
 import { ROUTES } from './utils/common';
 import WorkspacePage from './pages/WorkspacePage';
 import PublicWorkspacePage from './pages/PublicWorkspacePage';
+import WebHookCreatePage from './pages/WebHookCreatePage';
 
 /**
  * Main App routes.
@@ -60,6 +61,7 @@ export const PRIVATE_PATH = [
   ROUTES.APP,
   ROUTES.WEBHOOKS,
   ROUTES.ACCOUNT,
+  ROUTES.CREATE_WEBHOOK,
 ];
 
 const Routes: FC<RouteComponentProps> = () => {
@@ -114,25 +116,27 @@ const Routes: FC<RouteComponentProps> = () => {
         {/*<PrivateRoute path={'/top-up'} component={TopUpPage} /> *!/*/}
 
         <PrivateRoute
-          path={`${ROUTES.APP}/:appId/webhooks/:id/activities`}
+          path={`/webhook/:webhookId/activities/:id`}
+          component={MessagesHistory}
+        />
+        <PrivateRoute
+          path={`${ROUTES.WEBHOOKS}/:id/activities`}
           component={AllActivitiesPage}
         />
         <PrivateRoute
-          path={`${ROUTES.APP}/:appId/webhooks/:id/settings`}
+          path={`${ROUTES.WEBHOOKS}/:id/settings`}
           component={WebhookSettingsPage}
         />
         <PrivateRoute
-          path={`${ROUTES.APP}/:appId/webhooks/:id`}
+          path={`${ROUTES.WEBHOOKS}/:id`}
           component={WebhookDetail}
         />
+
         <PrivateRoute
           path={'/create-webhook/:id'}
           component={CreateWebhookPage}
         />
-        <PrivateRoute
-          path={`${ROUTES.APP}/:appId/webhook/:webhookId/activities/:id`}
-          component={MessagesHistory}
-        />
+
         <PrivateRoute path={`${ROUTES.APP}/:id`} component={AppDetail} />
 
         <PrivateRoute path={`${ROUTES.TRIGGERS}`} component={HomePage} />
@@ -152,8 +156,10 @@ const Routes: FC<RouteComponentProps> = () => {
           path={`${ROUTES.MY_QUERY}/:queryId?`}
           component={WorkspacePage}
         />
+        <Route path={ROUTES.CREATE_WEBHOOK} component={WebHookCreatePage} />
         <Route path={ROUTES.CONTACT_US} component={ContactUs} />
         <Route path={ROUTES.HOME} component={DashboardsPage} />
+
         {/* <PrivateRoute path={'/'} component={HomePage} /> */}
       </Switch>
       <>
