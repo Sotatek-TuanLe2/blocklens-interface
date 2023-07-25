@@ -44,6 +44,7 @@ type CustomRule =
   | 'minValue'
   | 'maxValue'
   | 'isPositive'
+  | 'isDecimnals'
   | 'maxDigits'
   | 'isSame'
   | 'isAddress'
@@ -97,6 +98,12 @@ export const createValidator = (options?: IOptions | undefined) => {
           return +val > 0;
         },
       },
+      isDecimnals: {
+        message: 'Please input number from 0 to 9',
+        rule: (val: string) => {
+          return +val >= 0 && +val <= 9;
+        },
+      },
       isSame: {
         message: 'The value must be same password',
         rule: (value: string, params: string) => {
@@ -142,6 +149,22 @@ export const createValidator = (options?: IOptions | undefined) => {
         rule: (value: string) => {
           return value.split(',').filter((i) => i.trim().length).length <= 3;
         },
+      },
+      maxValue: {
+        message: 'The :attribute must not exceed :params',
+        rule: (valueInput: string, params: string) => {
+          return +valueInput <= +params;
+        },
+        messageReplace: (message: string, params: string) =>
+          message.replace(':params', params),
+      },
+      minValue: {
+        message: 'The :attribute must not smaller than :params',
+        rule: (valueInput: string, params: string) => {
+          return +valueInput >= +params;
+        },
+        messageReplace: (message: string, params: string) =>
+          message.replace(':params', params),
       },
     },
   };
