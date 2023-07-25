@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import rf from 'src/requests/RequestFactory';
 import { IWebhook } from 'src/utils/utils-webhook';
 
-const useWebhookDetails = ( webhookId: string) => {
+const useWebhookDetails = (webhookId: string) => {
   const [webhook, setWebhook] = useState<IWebhook | any>({});
 
   const getWebhookInfo = useCallback(async () => {

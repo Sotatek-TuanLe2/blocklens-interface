@@ -282,7 +282,7 @@ const WebhookSettingsPage = () => {
 
             <AppButtonLarge
               onClick={onUpdateStatus}
-           //   isDisabled={appInfo.status === APP_STATUS.DISABLED}
+              //   isDisabled={appInfo.status === APP_STATUS.DISABLED}
             >
               {isActive ? 'Deactivate' : 'Activate'}
             </AppButtonLarge>

@@ -23,10 +23,7 @@ import {
   VisualizationType,
 } from 'src/utils/query.type';
 import useUser from 'src/hooks/useUser';
-import {
-  generateErrorMessage,
-  getDefaultTimeAxis,
-} from './VisualizationDisplay';
+import { generateErrorMessage } from './VisualizationDisplay';
 
 const REFETCH_QUERY_RESULT_MINUTES = 5;
 

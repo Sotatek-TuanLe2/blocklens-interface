@@ -87,21 +87,6 @@ const visualizationConfigs: VisualizationConfigType[] = [
 
 export const VISUALIZATION_DEBOUNCE = 500;
 
-export const getDefaultTimeAxis = (data: any[]): string => {
-  let result = '';
-  const firstResultInQuery: any = data && !!data.length ? data[0] : null;
-  if (firstResultInQuery) {
-    Object.keys(firstResultInQuery).forEach((key: string) => {
-      const date = moment(firstResultInQuery[key]);
-      if (date.isValid() && isNaN(+firstResultInQuery[key])) {
-        result = key;
-        return;
-      }
-    });
-  }
-  return result;
-};
-
 export const generateErrorMessage = (
   visualization: VisualizationType,
   data: any[],

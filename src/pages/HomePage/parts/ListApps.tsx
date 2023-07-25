@@ -107,10 +107,7 @@ const AppMobile: FC<IAppMobile> = ({ app }) => {
             >
               <Box>Network</Box>
               <Box className="value">
-                <AppChainNetwork
-                  chain={app.chain}
-                  network={app.network}
-                />
+                <AppChainNetwork chain={app.chain} network={app.network} />
               </Box>
             </Flex>
             <Flex
@@ -250,10 +247,7 @@ const ListApps: React.FC = () => {
             >
               <Td w="25%">{app.name}</Td>
               <Td w="20%">
-                <AppChainNetwork
-                  chain={app.chain}
-                  network={app.network}
-                />
+                <AppChainNetwork chain={app.chain} network={app.network} />
               </Td>
               <Td w="20%" textAlign={'center'}>
                 {app?.messageToday}

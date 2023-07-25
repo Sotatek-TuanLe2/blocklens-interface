@@ -26,9 +26,7 @@ const WebhookMobile: FC<IWebhookMobile> = ({ webhook }) => {
     <>
       <Box
         className={`${isOpen ? 'open' : ''} card-mobile`}
-        onClick={() =>
-          history.push(`/webhooks/${webhook.registrationId}`)
-        }
+        onClick={() => history.push(`/webhooks/${webhook.registrationId}`)}
       >
         <Flex
           justifyContent="space-between"
