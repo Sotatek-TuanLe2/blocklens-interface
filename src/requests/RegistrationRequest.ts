@@ -6,6 +6,11 @@ export default class RegistrationRequest extends BaseRequest {
     return config.api.baseUrlApi;
   }
 
+  getWebhookWithoutAppStatsOfUser() {
+    const url = '/registrations/stats/without-appId';
+    return this.get(url);
+  }
+
   getRegistrations(appId: string, params: any) {
     const url = `/registrations/app-${appId}`;
     return this.get(url, params);
