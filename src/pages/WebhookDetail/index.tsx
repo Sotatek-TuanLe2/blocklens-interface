@@ -37,7 +37,11 @@ const WebhookDetail: FC<IWebhookDetail> = () => {
                 ? `wh: ${formatShortText(webhook?.registrationId)}`
                 : `Webhook: ${webhook?.registrationId || '--'}`
             }
-            linkBack={webhook.appId ? `${ROUTES.APP}/${webhook.appId}?type=${webhook.type}` : ROUTES.TRIGGERS}
+            linkBack={
+              webhook.appId
+                ? `${ROUTES.APP}/${webhook.appId}?type=${webhook.type}`
+                : ROUTES.TRIGGERS
+            }
           />
           <Flex>
             {!isMobile && (
