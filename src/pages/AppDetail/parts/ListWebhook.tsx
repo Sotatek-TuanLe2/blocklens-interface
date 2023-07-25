@@ -197,7 +197,6 @@ const ListWebhook: FC<IListWebhook> = ({
         {
           ...params,
           type,
-          projectId: appInfo.projectId,
         },
         _.isEmpty,
       ),
