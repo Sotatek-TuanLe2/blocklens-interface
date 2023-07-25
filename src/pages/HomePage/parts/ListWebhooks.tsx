@@ -180,7 +180,8 @@ const ListWebhooks: React.FC = () => {
     return (
       <Box className="number-app">
         <Text as={'span'}> Active Webhooks:</Text>{' '}
-        {userStats?.totalRegistrationActiveWithoutAppId}/{userStats?.totalRegistrationWithoutAppId}
+        {userStats?.totalRegistrationActiveWithoutAppId}/
+        {userStats?.totalRegistrationWithoutAppId}
       </Box>
     );
   };
