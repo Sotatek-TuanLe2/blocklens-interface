@@ -53,7 +53,7 @@ export interface IDataForm {
 }
 
 const CreateWebhook = () => {
-  const { id: appId } = useParams<{ id: string }>();
+  const { id: projectId } = useParams<{ id: string }>();
   const initDataCreateWebHook = {
     webhook: '',
     type: '',
@@ -84,12 +84,12 @@ const CreateWebhook = () => {
     try {
       const res = (await rf
         .getRequest('AppRequest')
-        .getAppDetail(appId)) as any;
+        .getAppDetail(projectId)) as any;
       setAppInfo(res);
     } catch (error: any) {
       setAppInfo({});
     }
-  }, [appId]);
+  }, [projectId]);
 
   const optionTypes = useMemo(() => {
     if (appInfo.chain === CHAINS.APTOS) {
@@ -158,9 +158,11 @@ const CreateWebhook = () => {
     };
 
     try {
-      await rf.getRequest('RegistrationRequest').addRegistrations(appId, data);
+      await rf
+        .getRequest('RegistrationRequest')
+        .addRegistrations(projectId, data);
       dispatch(getUserStats());
-      history.push(`/app/${appId}?type=${type}`);
+      history.push(`/app/${projectId}?type=${type}`);
       toastSuccess({ message: 'Create Successfully!' });
     } catch (e: any) {
       toastError({ message: e?.message || 'Oops. Something went wrong!' });
@@ -307,7 +309,7 @@ const CreateWebhook = () => {
       <>
         <Flex className="app-info">
           <Flex className="name">
-            <AppLink to={`/app/${appId}`}>
+            <AppLink to={`/app/${projectId}`}>
               <Box className="icon-arrow-left" mr={3.5} />
             </AppLink>
             <Box className={'title-mobile'}>Create Webhook</Box>
