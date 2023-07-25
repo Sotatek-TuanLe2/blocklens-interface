@@ -149,7 +149,7 @@ export const optionsFilterMessage = [
 ];
 
 export interface IWebhook {
-  appId: string;
+  projectId: string;
   userId: string;
   registrationId: string;
   network: string;
