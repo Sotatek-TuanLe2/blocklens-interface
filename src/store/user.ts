@@ -21,6 +21,8 @@ export type UserStatsType = {
   totalAppInActive: number;
   totalRegistration: number;
   totalRegistrationActive: number;
+  totalRegistrationActiveWithoutAppId: number;
+  totalRegistrationWithoutAppId: number;
 };
 
 export type UserInfoType = {
@@ -97,6 +99,8 @@ const initialState: UserState = {
     totalAppInActive: 0,
     totalRegistration: 0,
     totalRegistrationActive: 0,
+    totalRegistrationActiveWithoutAppId: 0,
+    totalRegistrationWithoutAppId: 0,
   },
   billing: {
     plan: {
