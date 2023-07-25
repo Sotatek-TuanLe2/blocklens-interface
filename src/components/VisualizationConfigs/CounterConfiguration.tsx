@@ -83,7 +83,7 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
     });
   };
 
-  const onChangeStringDecimal = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onChangeDecimals = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/[-e]/gi, '');
     setValueDecimals(value);
     if (+value < 0 || +value > MAX_DECIMAL_VALUE) {
@@ -145,7 +145,7 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
               <div className="label-input">Row number</div>
               <AppInput
                 type="number"
-                placeholder="Price"
+                placeholder="1"
                 size={'sm'}
                 className="input-table"
                 value={valueRowNumber}
@@ -246,7 +246,7 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
                 className="input-table"
                 value={valueDecimals}
                 onKeyDown={onKeyDown}
-                onChange={onChangeStringDecimal}
+                onChange={onChangeDecimals}
                 validate={{
                   name: `decimals`,
                   validator: validator.current,

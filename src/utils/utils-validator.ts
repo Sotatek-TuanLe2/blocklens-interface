@@ -150,6 +150,22 @@ export const createValidator = (options?: IOptions | undefined) => {
           return value.split(',').filter((i) => i.trim().length).length <= 3;
         },
       },
+      maxValue: {
+        message: 'The :attribute must not exceed :params',
+        rule: (valueInput: string, params: string) => {
+          return +valueInput <= +params;
+        },
+        messageReplace: (message: string, params: string) =>
+          message.replace(':params', params),
+      },
+      minValue: {
+        message: 'The :attribute must not smaller than :params',
+        rule: (valueInput: string, params: string) => {
+          return +valueInput >= +params;
+        },
+        messageReplace: (message: string, params: string) =>
+          message.replace(':params', params),
+      },
     },
   };
   if (options) {
