@@ -3,17 +3,20 @@ import React, { useState, FC } from 'react';
 import {
   AppButton,
   AppCard,
+  AppChainNetwork,
   AppDataTable,
   AppLoadingTable,
+  AppStatus,
 } from 'src/components';
-import { IAppResponse } from 'src/utils/utils-app';
 import { useHistory } from 'react-router';
 import { isMobile } from 'react-device-detect';
 import useUser from 'src/hooks/useUser';
-import { _renderChainApp, _renderStatus } from './ListApps';
+import { ROUTES } from 'src/utils/common';
+import rf from 'src/requests/RequestFactory';
+import { getNameWebhook, IWebhook } from 'src/utils/utils-webhook';
 
 interface IWebhookMobile {
-  webhook: IAppResponse;
+  webhook: IWebhook;
 }
 
 const WebhookMobile: FC<IWebhookMobile> = ({ webhook }) => {
@@ -23,14 +26,16 @@ const WebhookMobile: FC<IWebhookMobile> = ({ webhook }) => {
     <>
       <Box
         className={`${isOpen ? 'open' : ''} card-mobile`}
-        onClick={() => history.push(`/app/${webhook.appId}`)}
+        onClick={() =>
+          history.push(`/webhooks/${webhook.registrationId}`)
+        }
       >
         <Flex
           justifyContent="space-between"
           alignItems="center"
           className="info"
         >
-          <Box className="name-mobile">{webhook.name}</Box>
+          <Box className="name-mobile">{webhook.webHookName}</Box>
           <Box
             className={isOpen ? 'icon-minus' : 'icon-plus'}
             onClick={(e) => {
@@ -45,7 +50,9 @@ const WebhookMobile: FC<IWebhookMobile> = ({ webhook }) => {
           className="info"
         >
           <Box>Status</Box>
-          <Box>{_renderStatus(webhook.status)}</Box>
+          <Box>
+            <AppStatus status={webhook.status} />
+          </Box>
         </Flex>
 
         {isOpen && (
@@ -57,7 +64,10 @@ const WebhookMobile: FC<IWebhookMobile> = ({ webhook }) => {
             >
               <Box>Network</Box>
               <Box className="value">
-                {_renderChainApp(webhook.chain, webhook.network.toLowerCase())}
+                <AppChainNetwork
+                  chain={webhook.chain}
+                  network={webhook.network}
+                />
               </Box>
             </Flex>
             <Flex
@@ -88,9 +98,12 @@ const ListWebhooks: React.FC = () => {
   const { user } = useUser();
   const userStats = user?.getStats();
 
-  const fetchDataTable: any = async () => {
+  const fetchDataTable: any = async (params: any) => {
     try {
-      return [];
+      const res: any = await rf
+        .getRequest('RegistrationRequest')
+        .getRegistrationsWithoutApp(params);
+      return res;
     } catch (error) {
       return error;
     }
@@ -121,37 +134,42 @@ const ListWebhooks: React.FC = () => {
     return <AppLoadingTable widthColumns={widthColumns} />;
   };
 
-  const _renderListWebhookMobile = (data?: IAppResponse[]) => {
+  const _renderListWebhookMobile = (data?: IWebhook[]) => {
     return (
       <Box className="list-card-mobile">
-        {data?.map((webhook: IAppResponse, index: number) => {
+        {data?.map((webhook: IWebhook, index: number) => {
           return <WebhookMobile webhook={webhook} key={index} />;
         })}
       </Box>
     );
   };
 
-  const _renderBody = (data?: IAppResponse[]) => {
+  const _renderBody = (data?: IWebhook[]) => {
     if (isMobile) return _renderListWebhookMobile(data);
     return (
       <Tbody>
-        {data?.map((webhook: IAppResponse, index: number) => {
+        {data?.map((webhook: IWebhook, index: number) => {
           return (
             <Tr
               key={index}
               className="tr-list"
-              onClick={() => history.push(`/`)}
+              onClick={() =>
+                history.push(`/webhooks/${webhook.registrationId}`)
+              }
             >
-              <Td w="25%">{webhook.name}</Td>
-              <Td w="20%">--</Td>
+              <Td w="25%">{webhook.webHookName}</Td>
+              <Td w="20%">{getNameWebhook(webhook.type)}</Td>
               <Td w="20%">
-                {_renderChainApp(webhook.chain, webhook.network.toLowerCase())}
+                <AppChainNetwork
+                  chain={webhook.chain}
+                  network={webhook.network}
+                />
               </Td>
               <Td w="20%" textAlign={'center'}>
                 {webhook?.messageToday}
               </Td>
               <Td w="15%" textAlign={'right'}>
-                {_renderStatus(webhook.status)}
+                <AppStatus status={webhook.status} />
               </Td>
             </Tr>
           );
@@ -177,7 +195,10 @@ const ListWebhooks: React.FC = () => {
           <Flex alignItems={'center'}>
             {!isMobile && _renderTotalWebhook()}
 
-            <AppButton size={'sm'} onClick={() => history.push('/')}>
+            <AppButton
+              size={'sm'}
+              onClick={() => history.push(ROUTES.CREATE_WEBHOOK)}
+            >
               <Box className="icon-plus-circle" mr={2} /> Create
             </AppButton>
           </Flex>

@@ -1,7 +1,7 @@
 import { Box, Flex } from '@chakra-ui/react';
-import { FC, useEffect, useMemo, useState } from 'react';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useParams } from 'react-router';
+import { useHistory, useParams } from 'react-router';
 import {
   AppButton,
   AppButtonLarge,
@@ -74,12 +74,12 @@ const ModuleAptosDetail: FC<IModuleAptosDetail> = ({ address, data }) => {
 };
 
 const WebhookSettingsPage = () => {
-  const { appId, id: webhookId } = useParams<{ appId: string; id: string }>();
+  const { id: webhookId } = useParams<{ appId: string; id: string }>();
   const [isOpenModalDelete, setIsOpenModalDelete] = useState<boolean>(false);
 
   const dispatch = useDispatch();
-  const { appInfo } = useAppDetails(appId);
-  const { webhook, getWebhookInfo } = useWebhookDetails(appId, webhookId);
+  const { webhook, getWebhookInfo } = useWebhookDetails(webhookId);
+  const history = useHistory();
 
   const isActive = useMemo(
     () => webhook?.status === WEBHOOK_STATUS.ENABLE,
@@ -90,7 +90,7 @@ const WebhookSettingsPage = () => {
     try {
       await rf
         .getRequest('RegistrationRequest')
-        .updateStatus(webhook.appId, webhook.registrationId, {
+        .updateStatus(webhook.registrationId, {
           status:
             webhook.status === WEBHOOK_STATUS.ENABLE
               ? WEBHOOK_STATUS.DISABLED
@@ -253,7 +253,7 @@ const WebhookSettingsPage = () => {
           <AppHeading
             isCenter
             title="Settings"
-            linkBack={`/app/${appId}/webhooks/${webhookId}`}
+            linkBack={`/webhooks/${webhookId}`}
           />
 
           <Flex>
@@ -282,7 +282,7 @@ const WebhookSettingsPage = () => {
 
             <AppButtonLarge
               onClick={onUpdateStatus}
-              isDisabled={appInfo.status === APP_STATUS.DISABLED}
+           //   isDisabled={appInfo.status === APP_STATUS.DISABLED}
             >
               {isActive ? 'Deactivate' : 'Activate'}
             </AppButtonLarge>

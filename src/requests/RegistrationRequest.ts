@@ -11,22 +11,32 @@ export default class RegistrationRequest extends BaseRequest {
     return this.get(url, params);
   }
 
+  getRegistrationsWithoutApp(params: any) {
+    const url = `/registrations/without-appId`;
+    return this.get(url, params);
+  }
+
   addRegistrations(appId: string, params: any) {
     const url = `/registrations/app-${appId}`;
     return this.post(url, params);
   }
 
-  updateStatus(_appId: string, registrationId: string, params: any) {
+  addRegistrationWithoutApp(params: any) {
+    const url = `/registrations/without-appId`;
+    return this.post(url, params);
+  }
+
+  updateStatus(registrationId: string, params: any) {
     const url = `/registrations/${registrationId}`;
     return this.patch(url, params);
   }
 
-  deleteRegistration(_appId: string, registrationId: string) {
+  deleteRegistration(registrationId: string) {
     const url = `/registrations/${registrationId}`;
     return this.delete(url);
   }
 
-  getRegistration(_appId: string, registrationId: any) {
+  getRegistration(registrationId: any) {
     const url = `/registrations/${registrationId}`;
     return this.get(url);
   }

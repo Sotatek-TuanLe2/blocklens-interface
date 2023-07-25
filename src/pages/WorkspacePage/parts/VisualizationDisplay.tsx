@@ -20,7 +20,8 @@ import { areYAxisesSameType, getErrorMessage } from 'src/utils/utils-helper';
 import { objectKeys } from 'src/utils/utils-network';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { Query } from 'src/utils/utils-query';
-import { AppButton, AppTabs, ITabs } from '../../../components';
+import { AppButton, AppTabs } from 'src/components';
+import { ITabs } from 'src/components/AppTabs';
 import {
   PieChart,
   VisualizationChart,
