@@ -26,14 +26,9 @@ import { getLogoChainByChainId } from 'src/utils/utils-network';
 import { getWidthColumns } from 'src/components/ActivityDatatable';
 
 const MessagesHistory = () => {
-  const {
-    id: notificationHashId,
-    webhookId,
-    appId,
-  } = useParams<{
+  const { id: notificationHashId, webhookId } = useParams<{
     webhookId: string;
     id: string;
-    appId: string;
   }>();
   const [search, setSearch] = useState<string>('');
   const [status, setStatus] = useState<string>('');
@@ -175,7 +170,7 @@ const MessagesHistory = () => {
     if (isMobile) {
       return (
         <Box className="list-card-mobile">
-          {data?.map((message: any, index: number) => {
+          {data?.map((message: IMessages, index: number) => {
             return (
               <MessagesItemMobile
                 message={message}

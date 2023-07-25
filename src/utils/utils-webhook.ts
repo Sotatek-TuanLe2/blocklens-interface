@@ -175,7 +175,7 @@ export interface IWebhook {
 }
 
 export interface IMessages {
-  appId: string;
+  projectId: string;
   registrationId: string;
   txHash: string;
   block: string;
