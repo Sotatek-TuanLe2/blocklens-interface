@@ -32,7 +32,7 @@ const ModalDeleteApp: FC<IModalEditApp> = ({ open, onClose, appInfo }) => {
 
   const onDelete = async () => {
     try {
-      await rf.getRequest('AppRequest').deleteApp(appInfo.appId);
+      await rf.getRequest('AppRequest').deleteApp(appInfo.projectId);
       toastSuccess({ message: 'Delete Successfully!' });
       dispatch(getUserStats());
       history.push(ROUTES.TRIGGERS);

@@ -26,9 +26,9 @@ export default class NotificationRequest extends BaseRequest {
     return this.get(url, params);
   }
 
-  getAppStatsToday(appId: string) {
-    const url = `/app-${appId}/statistics`;
-    return this.get(url, { appId });
+  getAppStatsToday(projectId: string) {
+    const url = `/project-${projectId}/statistics`;
+    return this.get(url, { projectId });
   }
 
   getAppMetricToday(params: any) {
@@ -46,8 +46,8 @@ export default class NotificationRequest extends BaseRequest {
     return this.get(url);
   }
 
-  getMessagesHistory(hash: string, params: any) {
-    const url = `/activities/${hash}/message-histories`;
+  getMessagesHistory(notificationHash: string, params: any) {
+    const url = `/activities/${notificationHash}/message-histories`;
     return this.get(url, params);
   }
 
