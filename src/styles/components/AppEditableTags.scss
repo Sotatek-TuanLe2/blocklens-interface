@@ -14,11 +14,16 @@
     cursor: pointer;
     border-radius: 6px;
     background: rgba(0, 96, 219, 0.1);
+    &--text {
+      max-width: 200px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
   .hashtag-add {
     border-radius: 6px;
     height: 32px;
-
     font-size: 16px;
     font-style: normal;
     font-weight: 400;
@@ -26,7 +31,21 @@
     color: $paragraph2;
     background: rgba(0, 2, 36, 0.05);
     cursor: pointer;
+
+    &:hover {
+      background: rgba(0, 96, 219, 0.1);
+      color: $main;
+    }
+
+    &.disabled {
+      &:hover {
+        color: $paragraph2;
+        background: rgba(0, 2, 36, 0.05);
+        cursor: not-allowed;
+      }
+    }
   }
+
   .hashtags-editable {
     &__input {
       color: $main;
