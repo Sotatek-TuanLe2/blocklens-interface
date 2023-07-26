@@ -6,27 +6,42 @@ export default class RegistrationRequest extends BaseRequest {
     return config.api.baseUrlApi;
   }
 
-  getRegistrations(appId: string, params: any) {
-    const url = `/registrations/app-${appId}`;
+  getWebhookWithoutAppStatsOfUser() {
+    const url = '/registrations/stats/without-projectId';
+    return this.get(url);
+  }
+
+  getRegistrations(projectId: string, params: any) {
+    const url = `/registrations/project-${projectId}`;
     return this.get(url, params);
   }
 
-  addRegistrations(appId: string, params: any) {
-    const url = `/registrations/app-${appId}`;
+  getRegistrationsWithoutApp(params: any) {
+    const url = `/registrations/without-projectId`;
+    return this.get(url, params);
+  }
+
+  addRegistrations(projectId: string, params: any) {
+    const url = `/registrations/project-${projectId}`;
     return this.post(url, params);
   }
 
-  updateStatus(_appId: string, registrationId: string, params: any) {
+  addRegistrationWithoutApp(params: any) {
+    const url = `/registrations/without-projectId`;
+    return this.post(url, params);
+  }
+
+  updateStatus(registrationId: string, params: any) {
     const url = `/registrations/${registrationId}`;
     return this.patch(url, params);
   }
 
-  deleteRegistration(_appId: string, registrationId: string) {
+  deleteRegistration(registrationId: string) {
     const url = `/registrations/${registrationId}`;
     return this.delete(url);
   }
 
-  getRegistration(_appId: string, registrationId: any) {
+  getRegistration(registrationId: any) {
     const url = `/registrations/${registrationId}`;
     return this.get(url);
   }

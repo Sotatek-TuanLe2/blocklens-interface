@@ -68,11 +68,13 @@ export class User implements UserInterface {
     numberOfAddressActivities: 0,
     numberOfContractActivities: 0,
     numberOfNftActivities: 0,
-    totalApp: 0,
-    totalAppActive: 0,
-    totalAppInActive: 0,
+    totalProject: 0,
+    totalProjectActive: 0,
+    totalProjectInActive: 0,
     totalRegistration: 0,
     totalRegistrationActive: 0,
+    totalRegistrationWithoutAppId: 0,
+    totalRegistrationActiveWithoutAppId: 0,
   };
   public billing: UserBillingType = {
     plan: {

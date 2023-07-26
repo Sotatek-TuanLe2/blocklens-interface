@@ -3,16 +3,14 @@ import React, { useState, FC } from 'react';
 import {
   AppButton,
   AppCard,
+  AppChainNetwork,
   AppDataTable,
   AppLoadingTable,
+  AppStatus,
 } from 'src/components';
 import rf from 'src/requests/RequestFactory';
-import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
+import { IAppResponse } from 'src/utils/utils-app';
 import { useHistory } from 'react-router';
-import {
-  getLogoChainByChainId,
-  getNameChainByChainId,
-} from 'src/utils/utils-network';
 // import ModalUpgradeCreateApp from 'src/modals/ModalUpgradeCreateApp';
 import { isMobile } from 'react-device-detect';
 import ModalCreateApp from 'src/modals/ModalCreateApp';
@@ -21,26 +19,6 @@ import useUser from 'src/hooks/useUser';
 interface IAppMobile {
   app: IAppResponse;
 }
-
-export const _renderStatus = (status?: APP_STATUS) => {
-  const isActive = status === APP_STATUS.ENABLE;
-
-  return (
-    <Box className={`status ${isActive ? 'active' : 'inactive'}`}>
-      {isActive ? 'Active' : 'Inactive'}
-    </Box>
-  );
-};
-
-export const _renderChainApp = (chain: string, network: string) => {
-  return (
-    <Flex alignItems={'center'}>
-      <Box className={getLogoChainByChainId(chain) || ''} mr={2.5} />
-      <Box mr={1}>{getNameChainByChainId(chain)}</Box>
-      <Box textTransform="capitalize"> {network}</Box>
-    </Flex>
-  );
-};
 
 interface IButtonCreateApp {
   onReload: () => void;
@@ -93,7 +71,7 @@ const AppMobile: FC<IAppMobile> = ({ app }) => {
     <>
       <Box
         className={`${isOpen ? 'open' : ''} card-mobile`}
-        onClick={() => history.push(`/app/${app.appId}`)}
+        onClick={() => history.push(`/app/${app.projectId}`)}
       >
         <Flex
           justifyContent="space-between"
@@ -115,7 +93,9 @@ const AppMobile: FC<IAppMobile> = ({ app }) => {
           className="info"
         >
           <Box>Status</Box>
-          <Box>{_renderStatus(app.status)}</Box>
+          <Box>
+            <AppStatus status={app.status} />
+          </Box>
         </Flex>
 
         {isOpen && (
@@ -127,7 +107,7 @@ const AppMobile: FC<IAppMobile> = ({ app }) => {
             >
               <Box>Network</Box>
               <Box className="value">
-                {_renderChainApp(app.chain, app.network.toLowerCase())}
+                <AppChainNetwork chain={app.chain} network={app.network} />
               </Box>
             </Flex>
             <Flex
@@ -161,12 +141,12 @@ const ListApps: React.FC = () => {
 
   const [params, setParams] = useState({});
 
-  const getTotalWebhookEachApp = async (appIds: string) => {
+  const getTotalWebhookEachApp = async (projectIds: string) => {
     try {
       const res: any = await rf
         .getRequest('AppRequest')
         .getTotalWebhookEachApp({
-          appIds,
+          projectIds,
         });
       return res;
     } catch (error) {
@@ -174,11 +154,11 @@ const ListApps: React.FC = () => {
     }
   };
 
-  const getAppMetricToday = async (appIds: string[]) => {
+  const getAppMetricToday = async (projectIds: string[]) => {
     try {
       const res: any = await rf
         .getRequest('NotificationRequest')
-        .getAppMetricToday({ appIds });
+        .getAppMetricToday({ projectIds });
       return res;
     } catch (error) {
       return [];
@@ -188,16 +168,17 @@ const ListApps: React.FC = () => {
   const fetchDataTable: any = async (param: any) => {
     try {
       const res: any = await rf.getRequest('AppRequest').getListApp(param);
-      const appIds = res?.docs?.map((item: IAppResponse) => item?.appId) || [];
+      const projectIds =
+        res?.docs?.map((item: IAppResponse) => item?.projectId) || [];
       const totalWebhooks = await getTotalWebhookEachApp(
-        appIds.join(',').toString(),
+        projectIds.join(',').toString(),
       );
-      const appsMetric = await getAppMetricToday(appIds);
+      const appsMetric = await getAppMetricToday(projectIds);
 
       const dataApps = await Promise.all(
         res?.docs?.map(async (app: IAppResponse, index: number) => {
           const appMetricToday = appsMetric.find(
-            (item: any) => item.appId === app.appId,
+            (item: any) => item.projectId === app.projectId,
           );
 
           return {
@@ -263,11 +244,11 @@ const ListApps: React.FC = () => {
             <Tr
               key={index}
               className="tr-list"
-              onClick={() => history.push(`/app/${app.appId}`)}
+              onClick={() => history.push(`/app/${app.projectId}`)}
             >
               <Td w="25%">{app.name}</Td>
               <Td w="20%">
-                {_renderChainApp(app.chain, app.network.toLowerCase())}
+                <AppChainNetwork chain={app.chain} network={app.network} />
               </Td>
               <Td w="20%" textAlign={'center'}>
                 {app?.messageToday}
@@ -276,7 +257,7 @@ const ListApps: React.FC = () => {
                 {app?.totalWebhook}
               </Td>
               <Td w="15%" textAlign={'right'}>
-                {_renderStatus(app.status)}
+                <AppStatus status={app.status} />
               </Td>
             </Tr>
           );
@@ -286,10 +267,11 @@ const ListApps: React.FC = () => {
   };
 
   const _renderTotalApp = () => {
+    if (!userStats?.totalProject) return;
     return (
       <Box className="number-app">
         <Text as={'span'}>Active Projects: </Text>
-        {userStats?.totalAppActive}/{userStats?.totalApp}
+        {userStats?.totalProjectActive}/{userStats?.totalProject}
       </Box>
     );
   };

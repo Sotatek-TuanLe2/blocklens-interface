@@ -274,7 +274,7 @@ const ActivityMobile: FC<IActivity> = ({ activity, webhook }) => {
 
               <Box width={'48%'}>
                 <AppLink
-                  to={`/app/${webhook?.appId}/webhook/${webhook.registrationId}/activities/${activity?.hash}`}
+                  to={`/webhook/${webhook.registrationId}/activities/${activity?.hash}`}
                 >
                   <AppButton variant="brand" size="sm" w={'100%'}>
                     More Details
@@ -375,7 +375,7 @@ const ActivityDesktop: FC<IActivity> = ({ activity, webhook }) => {
           className="tr-list"
           onClick={() => {
             history.push(
-              `/app/${webhook?.appId}/webhook/${webhook.registrationId}/activities/${activity.hash}`,
+              `/webhook/${webhook.registrationId}/activities/${activity.hash}`,
             );
           }}
         >
@@ -467,10 +467,10 @@ const ActivityDatatable: FC<IActivityDatatable> = ({
   limit,
   isFilter,
 }) => {
-  const { appId, id: webhookId } = useParams<{ appId: string; id: string }>();
+  const { id: webhookId } = useParams<{ id: string }>();
   const [, updateState] = useState<any>();
   const forceUpdate = useCallback(() => updateState({}), []);
-  const { webhook } = useWebhookDetails(appId, webhookId);
+  const { webhook } = useWebhookDetails(webhookId);
 
   const fetchDataTable: any = useCallback(async (params: any) => {
     try {

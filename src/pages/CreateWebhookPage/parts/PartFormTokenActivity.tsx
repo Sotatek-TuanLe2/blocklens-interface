@@ -7,7 +7,7 @@ import { IDataForm } from '../index';
 
 interface IPartFormTokenActivity {
   dataForm: IDataForm;
-  setDataForm: (value: IDataForm) => void;
+  setDataForm: (value: any) => void;
   type: string;
   validator: any;
 }

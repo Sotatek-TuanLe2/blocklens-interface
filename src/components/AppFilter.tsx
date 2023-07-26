@@ -66,7 +66,7 @@ const AppFilter: FC<IFilter> = ({ value, onChange, type, options }) => {
               <AppInput
                 className={'input-search'}
                 value={value}
-                onChange={(e) => onChange(e.target.value)}
+                onChange={(e) => onChange(e.target.value.trim())}
                 placeholder={`Select ${type}`}
               />
             </Box>

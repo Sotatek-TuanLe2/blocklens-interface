@@ -7,6 +7,7 @@ import { objectKeys } from 'src/utils/utils-network';
 import AppInput from '../AppInput';
 import AppSelect2 from '../AppSelect2';
 import { Switch } from '@chakra-ui/react';
+import { createValidator } from 'src/utils/utils-validator';
 
 interface ICounterConfigurations {
   visualization: VisualizationType;
@@ -21,8 +22,22 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
 }) => {
   const [editVisualization, setEditVisualization] =
     useState<VisualizationType>(visualization);
+  const dataColumn = editVisualization.options;
 
   const MAX_DECIMAL_VALUE = 9;
+
+  const [valueRowNumber, setValueRowNumber] = useState<string | number>(
+    dataColumn?.rowNumber || '1',
+  );
+  const [valueDecimals, setValueDecimals] = useState<string | number>(
+    dataColumn?.stringDecimal || '0',
+  );
+
+  const validator = useRef(
+    createValidator({
+      element: (message: string) => <Text color={'red.100'}>{message}</Text>,
+    }),
+  );
 
   const axisOptions = useMemo(
     () => (Array.isArray(data) && data[0] ? objectKeys(data[0]) : []),
@@ -37,8 +52,6 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
       })),
     [axisOptions],
   );
-
-  const dataColumn = editVisualization.options;
 
   const timeout = useRef<ReturnType<typeof setTimeout>>();
 
@@ -70,12 +83,11 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
     });
   };
 
-  const onChangeStringDecimal = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value.replace(/[-e]/gi, '');
-    if (+value <= 0) {
-      value = '0';
-    } else if (+value >= MAX_DECIMAL_VALUE) {
-      value = String(MAX_DECIMAL_VALUE);
+  const onChangeDecimals = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/[-e]/gi, '');
+    setValueDecimals(value);
+    if (+value < 0 || +value > MAX_DECIMAL_VALUE) {
+      return;
     }
     onChangeCounterConfigurations({
       stringDecimal: value,
@@ -133,15 +145,16 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
               <div className="label-input">Row number</div>
               <AppInput
                 type="number"
-                placeholder="Price"
+                placeholder="1"
                 size={'sm'}
                 className="input-table"
-                value={dataColumn?.rowNumber || 1}
-                onChange={(e) =>
+                value={valueRowNumber}
+                onChange={(e) => {
+                  setValueRowNumber(e.target.value);
                   onChangeCounterConfigurations({
-                    rowNumber: e.target.value || '1',
-                  })
-                }
+                    rowNumber: e.target.value,
+                  });
+                }}
               />
             </div>
             <div className="main-toggle">
@@ -231,13 +244,14 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
                 placeholder="1"
                 size={'sm'}
                 className="input-table"
-                value={
-                  dataColumn?.stringDecimal
-                    ? parseInt(dataColumn?.stringDecimal, 10)?.toString()
-                    : '0'
-                }
+                value={valueDecimals}
                 onKeyDown={onKeyDown}
-                onChange={onChangeStringDecimal}
+                onChange={onChangeDecimals}
+                validate={{
+                  name: `decimals`,
+                  validator: validator.current,
+                  rule: ['isDecimnals'],
+                }}
               />
             </div>
           </div>

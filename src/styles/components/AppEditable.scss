@@ -1,0 +1,32 @@
+@import '../color-variables.scss';
+@import '../mixins.scss';
+
+.app-editable {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  &__input {
+    height: 30px !important;
+    font-weight: 700 !important;
+    &:focus {
+      border-color: transparent;
+      box-shadow: none !important;
+    }
+  }
+  &__preview {
+    font-weight: 700 !important;
+    word-break: break-word;
+  }
+  &__edit-btn {
+    svg {
+      color: $paragraph2 ;
+    }
+    background-color: transparent !important;
+
+    &:hover {
+      svg {
+        color: $main ;
+      }
+    }
+  }
+}

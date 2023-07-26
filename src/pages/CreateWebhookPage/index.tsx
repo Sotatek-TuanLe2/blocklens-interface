@@ -18,7 +18,12 @@ import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
 import { isEVMNetwork } from 'src/utils/utils-network';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { createValidator } from 'src/utils/utils-validator';
-import { CHAINS, WEBHOOK_TYPES } from 'src/utils/utils-webhook';
+import {
+  CHAINS,
+  WEBHOOK_TYPES,
+  optionsWebhookAptosType,
+  optionsWebhookType,
+} from 'src/utils/utils-webhook';
 import PartFormAddressActivity from './parts/PartFormAddressActivity';
 import PartFormCoinActivityAptos from './parts/PartFormCoinActivityAptos';
 import PartFormContractActivity from './parts/PartFormContractActivity';
@@ -47,46 +52,8 @@ export interface IDataForm {
   metadata?: IMetadata;
 }
 
-const optionsWebhookType = [
-  {
-    label: 'Address Activity',
-    value: WEBHOOK_TYPES.ADDRESS_ACTIVITY,
-  },
-  {
-    label: 'Contract Activity',
-    value: WEBHOOK_TYPES.CONTRACT_ACTIVITY,
-  },
-  {
-    label: 'NFT Activity',
-    value: WEBHOOK_TYPES.NFT_ACTIVITY,
-  },
-  {
-    label: 'Token Activity',
-    value: WEBHOOK_TYPES.TOKEN_ACTIVITY,
-  },
-];
-
-const optionsWebhookAptosType = [
-  {
-    label: 'Address Activity',
-    value: WEBHOOK_TYPES.ADDRESS_ACTIVITY,
-  },
-  {
-    label: 'Coin Activity',
-    value: WEBHOOK_TYPES.APTOS_COIN_ACTIVITY,
-  },
-  {
-    label: 'Token Activity',
-    value: WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY,
-  },
-  {
-    label: 'Module Activity',
-    value: WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY,
-  },
-];
-
 const CreateWebhook = () => {
-  const { id: appId } = useParams<{ id: string }>();
+  const { id: projectId } = useParams<{ id: string }>();
   const initDataCreateWebHook = {
     webhook: '',
     type: '',
@@ -117,12 +84,12 @@ const CreateWebhook = () => {
     try {
       const res = (await rf
         .getRequest('AppRequest')
-        .getAppDetail(appId)) as any;
+        .getAppDetail(projectId)) as any;
       setAppInfo(res);
     } catch (error: any) {
       setAppInfo({});
     }
-  }, [appId]);
+  }, [projectId]);
 
   const optionTypes = useMemo(() => {
     if (appInfo.chain === CHAINS.APTOS) {
@@ -191,9 +158,11 @@ const CreateWebhook = () => {
     };
 
     try {
-      await rf.getRequest('RegistrationRequest').addRegistrations(appId, data);
+      await rf
+        .getRequest('RegistrationRequest')
+        .addRegistrations(projectId, data);
       dispatch(getUserStats());
-      history.push(`/app/${appId}?type=${type}`);
+      history.push(`/app/${projectId}?type=${type}`);
       toastSuccess({ message: 'Create Successfully!' });
     } catch (e: any) {
       toastError({ message: e?.message || 'Oops. Something went wrong!' });
@@ -235,7 +204,7 @@ const CreateWebhook = () => {
         setDataForm={setDataForm}
         type={type}
         validator={validator}
-        appInfo={appInfo}
+        chain={appInfo.chain}
       />
     );
   };
@@ -340,7 +309,7 @@ const CreateWebhook = () => {
       <>
         <Flex className="app-info">
           <Flex className="name">
-            <AppLink to={`/app/${appId}`}>
+            <AppLink to={`/app/${projectId}`}>
               <Box className="icon-arrow-left" mr={3.5} />
             </AppLink>
             <Box className={'title-mobile'}>Create Webhook</Box>

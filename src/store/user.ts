@@ -16,11 +16,13 @@ export type UserStatsType = {
   numberOfAddressActivities: number;
   numberOfContractActivities: number;
   numberOfNftActivities: number;
-  totalApp: number;
-  totalAppActive: number;
-  totalAppInActive: number;
+  totalProject: number;
+  totalProjectActive: number;
+  totalProjectInActive: number;
   totalRegistration: number;
   totalRegistrationActive: number;
+  totalRegistrationActiveWithoutAppId: number;
+  totalRegistrationWithoutAppId: number;
 };
 
 export type UserInfoType = {
@@ -92,11 +94,13 @@ const initialState: UserState = {
     numberOfAddressActivities: 0,
     numberOfContractActivities: 0,
     numberOfNftActivities: 0,
-    totalApp: 0,
-    totalAppActive: 0,
-    totalAppInActive: 0,
+    totalProject: 0,
+    totalProjectActive: 0,
+    totalProjectInActive: 0,
     totalRegistration: 0,
     totalRegistrationActive: 0,
+    totalRegistrationActiveWithoutAppId: 0,
+    totalRegistrationWithoutAppId: 0,
   },
   billing: {
     plan: {
@@ -147,8 +151,18 @@ export const getUserProfile = createAsyncThunk(
 export const getUserStats = createAsyncThunk(
   'user/getUserStats',
   async (_params, thunkApi) => {
-    const res = await rf.getRequest('AppRequest').getAppStatsOfUser();
-    thunkApi.dispatch(setUserStats(res));
+    const appStat = await rf.getRequest('AppRequest').getAppStatsOfUser();
+    const webhookStat = await rf
+      .getRequest('RegistrationRequest')
+      .getWebhookWithoutAppStatsOfUser();
+    thunkApi.dispatch(
+      setUserStats({
+        ...appStat,
+        totalRegistrationActiveWithoutAppId:
+          webhookStat.totalRegistrationActive,
+        totalRegistrationWithoutAppId: webhookStat.totalRegistration,
+      }),
+    );
   },
 );
 

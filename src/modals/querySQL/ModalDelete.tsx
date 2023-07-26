@@ -14,20 +14,29 @@ export interface IModalDelete {
 }
 
 const ModalDelete = ({ open, onClose, type, onSuccess, id }: IModalDelete) => {
+  const isDashboard = type === LIST_ITEM_TYPE.DASHBOARDS;
+  const isQuery = type === LIST_ITEM_TYPE.QUERIES;
+
   const getTitleModal = () => {
-    if (type === LIST_ITEM_TYPE.QUERIES) return 'Query';
-    if (type === LIST_ITEM_TYPE.DASHBOARDS) return 'Dashboard';
+    if (isQuery) return 'Query';
+    if (isDashboard) return 'Dashboard';
+  };
+
+  const getContentModal = () => {
+    if (isDashboard) {
+      return `Are you sure to delete this ${getTitleModal()?.toLocaleLowerCase()}? All contents within the ${getTitleModal()?.toLocaleLowerCase()} will be deleted`;
+    }
+
+    return `Tables and charts from this query will be removed from all dashboards. Are you sure?`;
   };
 
   const handleDelete = async () => {
-    const action =
-      type === LIST_ITEM_TYPE.DASHBOARDS ? 'removeDashboard' : 'removeQuery';
+    const action = isDashboard ? 'removeDashboard' : 'removeQuery';
     const successMessage = {
       type: 'success',
-      message:
-        type === LIST_ITEM_TYPE.DASHBOARDS
-          ? 'Delete dashboard successfully!'
-          : 'Delete query successfully!',
+      message: isDashboard
+        ? 'Delete dashboard successfully!'
+        : 'Delete query successfully!',
     };
 
     try {
@@ -47,12 +56,7 @@ const ModalDelete = ({ open, onClose, type, onSuccess, id }: IModalDelete) => {
           <div className="bg-icon_bin" />
         </div>
         <div className="modal-delete__title">Delete {getTitleModal()}</div>
-        <div className="modal-delete__content">
-          Are you sure to delete this {getTitleModal()?.toLocaleLowerCase()}?
-          All contents within the {getTitleModal()?.toLocaleLowerCase()} will be
-          deleted
-        </div>
-
+        <div className="modal-delete__content">{getContentModal()}</div>
         <Flex className="modal-footer">
           <AppButton
             py={'12px'}

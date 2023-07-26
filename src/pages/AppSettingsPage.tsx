@@ -36,7 +36,7 @@ interface IDataForm {
 }
 
 const AppSettingsPage: FC<IAppSettings> = () => {
-  const { id: appId } = useParams<{ id: string }>();
+  const { id: projectId } = useParams<{ id: string }>();
   const [appInfo, setAppInfo] = useState<IAppResponse | any>({});
 
   const initData = {
@@ -80,12 +80,12 @@ const AppSettingsPage: FC<IAppSettings> = () => {
     try {
       const res = (await rf
         .getRequest('AppRequest')
-        .getAppDetail(appId)) as any;
+        .getAppDetail(projectId)) as any;
       setAppInfo(res);
     } catch (error: any) {
       setAppInfo({});
     }
-  }, [appId]);
+  }, [projectId]);
 
   const handleSubmitForm = async () => {
     if (!validator.current.allValid()) {
@@ -94,7 +94,7 @@ const AppSettingsPage: FC<IAppSettings> = () => {
     }
 
     try {
-      await rf.getRequest('AppRequest').updateApp(appInfo.appId, {
+      await rf.getRequest('AppRequest').updateApp(appInfo.projectId, {
         name: dataForm.name?.trim(),
         description: dataForm.description?.trim(),
       });
@@ -177,7 +177,11 @@ const AppSettingsPage: FC<IAppSettings> = () => {
     <BasePage className="app-detail" onInitPage={getAppInfo}>
       <>
         <Flex className="app-info">
-          <AppHeading title="Settings" linkBack={`/app/${appId}`} isCenter />
+          <AppHeading
+            title="Settings"
+            linkBack={`/app/${projectId}`}
+            isCenter
+          />
 
           <Flex>
             <AppButton

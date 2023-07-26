@@ -26,14 +26,9 @@ import { getLogoChainByChainId } from 'src/utils/utils-network';
 import { getWidthColumns } from 'src/components/ActivityDatatable';
 
 const MessagesHistory = () => {
-  const {
-    id: hashId,
-    webhookId,
-    appId,
-  } = useParams<{
+  const { id: notificationHashId, webhookId } = useParams<{
     webhookId: string;
     id: string;
-    appId: string;
   }>();
   const [search, setSearch] = useState<string>('');
   const [status, setStatus] = useState<string>('');
@@ -43,14 +38,14 @@ const MessagesHistory = () => {
   const [address, setAddress] = useState<string>('');
   const [isOpenFilterModal, setIsOpenFilterModal] = useState<boolean>(false);
 
-  const { webhook } = useWebhookDetails(appId, webhookId);
+  const { webhook } = useWebhookDetails(webhookId);
   const history = useHistory();
 
   const fetchDataTable: any = useCallback(async (params: any) => {
     try {
       return await rf
         .getRequest('NotificationRequest')
-        .getMessagesHistory(hashId, filterParams(params));
+        .getMessagesHistory(notificationHashId, filterParams(params));
     } catch (error) {
       console.error(error);
     }
@@ -175,7 +170,7 @@ const MessagesHistory = () => {
     if (isMobile) {
       return (
         <Box className="list-card-mobile">
-          {data?.map((message: any, index: number) => {
+          {data?.map((message: IMessages, index: number) => {
             return (
               <MessagesItemMobile
                 message={message}

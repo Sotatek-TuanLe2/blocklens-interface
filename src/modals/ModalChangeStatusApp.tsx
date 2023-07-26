@@ -26,7 +26,7 @@ const ModalChangeStatusApp: FC<IModalChangeStatusApp> = ({
   const dispatch = useDispatch();
   const onChangeStatus = async () => {
     try {
-      await rf.getRequest('AppRequest').toggleApp(appInfo?.appId);
+      await rf.getRequest('AppRequest').toggleApp(appInfo?.projectId);
       dispatch(getUserStats());
       toastSuccess({ message: 'Update Successfully!' });
       onClose();

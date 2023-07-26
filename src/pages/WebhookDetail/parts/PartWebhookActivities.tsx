@@ -24,11 +24,7 @@ const PartWebhookActivities: FC<IPartRecentActivities> = ({ webhook }) => {
         <Box
           cursor={'pointer'}
           _hover={{ textDecoration: 'underline' }}
-          onClick={() =>
-            history.push(
-              `/app/${webhook?.appId}/webhooks/${webhookId}/activities`,
-            )
-          }
+          onClick={() => history.push(`/webhooks/${webhookId}/activities`)}
           mr={2}
         >
           View More Activity

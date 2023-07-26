@@ -93,11 +93,7 @@ const WebhookMobile: FC<IWebhookItem> = ({ webhook, appInfo, type }) => {
     <>
       <Box
         className={`${isOpen ? 'open' : ''} card-mobile`}
-        onClick={() =>
-          history.push(
-            `/app/${appInfo.appId}/webhooks/${webhook.registrationId}`,
-          )
-        }
+        onClick={() => history.push(`/webhooks/${webhook.registrationId}`)}
       >
         <Flex
           justifyContent="space-between"
@@ -157,11 +153,7 @@ const WebhookItem: FC<IWebhookItem> = ({ webhook, appInfo, type }) => {
     <Tbody>
       <Tr
         className="tr-list"
-        onClick={() =>
-          history.push(
-            `/app/${appInfo.appId}/webhooks/${webhook.registrationId}`,
-          )
-        }
+        onClick={() => history.push(`/webhooks/${webhook.registrationId}`)}
       >
         <Td w="20%">{formatShortText(webhook.registrationId)}</Td>
         <Td w="45%">
@@ -189,14 +181,14 @@ const ListWebhook: FC<IListWebhook> = ({
       try {
         const res: IListAppResponse = await rf
           .getRequest('RegistrationRequest')
-          .getRegistrations(appInfo.appId, params);
+          .getRegistrations(appInfo.projectId, params);
         setTotalWebhook(res?.totalDocs || 0);
         return res;
       } catch (error) {
         console.error(error);
       }
     },
-    [appInfo.appId, params],
+    [appInfo.projectId, params],
   );
 
   useEffect(() => {
@@ -205,7 +197,6 @@ const ListWebhook: FC<IListWebhook> = ({
         {
           ...params,
           type,
-          appId: appInfo.appId,
         },
         _.isEmpty,
       ),

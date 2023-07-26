@@ -76,6 +76,44 @@ export const getNameWebhook = (type: string) => {
   }
 };
 
+export const optionsWebhookType = [
+  {
+    label: 'Address Activity',
+    value: WEBHOOK_TYPES.ADDRESS_ACTIVITY,
+  },
+  {
+    label: 'Contract Activity',
+    value: WEBHOOK_TYPES.CONTRACT_ACTIVITY,
+  },
+  {
+    label: 'NFT Activity',
+    value: WEBHOOK_TYPES.NFT_ACTIVITY,
+  },
+  {
+    label: 'Token Activity',
+    value: WEBHOOK_TYPES.TOKEN_ACTIVITY,
+  },
+];
+
+export const optionsWebhookAptosType = [
+  {
+    label: 'Address Activity',
+    value: WEBHOOK_TYPES.ADDRESS_ACTIVITY,
+  },
+  {
+    label: 'Coin Activity',
+    value: WEBHOOK_TYPES.APTOS_COIN_ACTIVITY,
+  },
+  {
+    label: 'Token Activity',
+    value: WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY,
+  },
+  {
+    label: 'Module Activity',
+    value: WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY,
+  },
+];
+
 export const optionsFilter = [
   {
     label: 'All status',
@@ -111,12 +149,14 @@ export const optionsFilterMessage = [
 ];
 
 export interface IWebhook {
-  appId: string;
+  projectId: string;
   userId: string;
   registrationId: string;
   network: string;
   chain: string;
   webhook: string;
+  webhookName: string;
+  messageToday: string | number;
   status: WEBHOOK_STATUS;
   type: string;
   metadata: {
@@ -135,7 +175,7 @@ export interface IWebhook {
 }
 
 export interface IMessages {
-  appId: string;
+  projectId: string;
   registrationId: string;
   txHash: string;
   block: string;

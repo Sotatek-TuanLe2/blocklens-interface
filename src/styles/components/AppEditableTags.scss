@@ -1,0 +1,62 @@
+@import '../color-variables.scss';
+@import '../mixins.scss';
+
+.app-hashtags {
+  &__item {
+    height: 32px;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px;
+    align-items: center;
+    color: $main;
+    padding: 0 8px 0 10px;
+    cursor: pointer;
+    border-radius: 6px;
+    background: rgba(0, 96, 219, 0.1);
+    &--text {
+      max-width: 200px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+  .hashtag-add {
+    border-radius: 6px;
+    height: 32px;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px;
+    color: $paragraph2;
+    background: rgba(0, 2, 36, 0.05);
+    cursor: pointer;
+
+    &:hover {
+      background: rgba(0, 96, 219, 0.1);
+      color: $main;
+    }
+
+    &.disabled {
+      &:hover {
+        color: $paragraph2;
+        background: rgba(0, 2, 36, 0.05);
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  .hashtags-editable {
+    &__input {
+      color: $main;
+      background: rgba(0, 96, 219, 0.1);
+      border-radius: 6px;
+      max-width: 100px;
+    }
+  }
+  .icon-btn {
+    width: 16px;
+    height: 16px;
+    margin-top: -11px;
+  }
+}
