@@ -34,8 +34,8 @@ const ModalDeleteWebhook: FC<IModalDeleteWebhook> = ({
       dispatch(getUserStats());
       toastSuccess({ message: 'Delete Successfully!' });
       history.push(
-        webhook.appId
-          ? `/app/${webhook.appId}?type=${webhook.type}`
+        webhook.projectId
+          ? `/app/${webhook.projectId}?type=${webhook.type}`
           : ROUTES.TRIGGERS,
       );
       onClose();

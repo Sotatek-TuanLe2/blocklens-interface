@@ -181,14 +181,14 @@ const ListWebhook: FC<IListWebhook> = ({
       try {
         const res: IListAppResponse = await rf
           .getRequest('RegistrationRequest')
-          .getRegistrations(appInfo.appId, params);
+          .getRegistrations(appInfo.projectId, params);
         setTotalWebhook(res?.totalDocs || 0);
         return res;
       } catch (error) {
         console.error(error);
       }
     },
-    [appInfo.appId, params],
+    [appInfo.projectId, params],
   );
 
   useEffect(() => {
@@ -197,7 +197,6 @@ const ListWebhook: FC<IListWebhook> = ({
         {
           ...params,
           type,
-          appId: appInfo.appId,
         },
         _.isEmpty,
       ),

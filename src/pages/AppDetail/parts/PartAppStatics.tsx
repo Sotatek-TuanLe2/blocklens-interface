@@ -29,7 +29,7 @@ const PartAppStats = ({
 }) => {
   const [appStats, setAppStats] = useState<IAppStats | any>({});
   const [dataChart, setDataChart] = useState<IAppStats[] | any>([]);
-  const { id: appId } = useParams<{ id: string }>();
+  const { id: projectId } = useParams<{ id: string }>();
 
   const getAppStats = useCallback(async () => {
     const formTime = moment().utc().subtract(24, 'hour').valueOf();
@@ -38,7 +38,7 @@ const PartAppStats = ({
     try {
       const res: IAppStats[] = await rf
         .getRequest('NotificationRequest')
-        .getAppStats(appId, {
+        .getAppStats(projectId, {
           from: formTime,
           to: toTime,
           resolution: RESOLUTION_TIME.HOUR,

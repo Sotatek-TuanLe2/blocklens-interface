@@ -37,7 +37,7 @@ const PartFormIdentification: FC<IPartFormIdentificationProps> = ({
       const res = await rf.getRequest('AppRequest').getListApp({});
       setOptionProject(
         res.docs.map((el: IAppResponse) => ({
-          value: el.appId,
+          value: el.projectId,
           label: el.name || '',
         })),
       );

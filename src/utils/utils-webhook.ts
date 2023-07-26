@@ -149,7 +149,7 @@ export const optionsFilterMessage = [
 ];
 
 export interface IWebhook {
-  appId: string;
+  projectId: string;
   userId: string;
   registrationId: string;
   network: string;
@@ -175,7 +175,7 @@ export interface IWebhook {
 }
 
 export interface IMessages {
-  appId: string;
+  projectId: string;
   registrationId: string;
   txHash: string;
   block: string;

@@ -103,7 +103,7 @@ const ListWebhooks: React.FC = () => {
         .getRegistrationsWithoutApp(params);
 
       const dataWebhook = await Promise.all(
-        res?.docs?.map(async (webhook: IWebhook, index: number) => {
+        res?.docs?.map(async (webhook: IWebhook) => {
           const webhookStat = await rf
             .getRequest('NotificationRequest')
             .getWebhookStatsToday(webhook.registrationId);

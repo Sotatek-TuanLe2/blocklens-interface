@@ -11,7 +11,7 @@ export enum APP_STATUS {
 }
 
 export interface IAppResponse {
-  appId: string;
+  projectId: string;
   userId: string;
   name?: string;
   description?: string;

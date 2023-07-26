@@ -19,7 +19,7 @@ const HomePage = () => {
   const { user } = useUser();
   const userStats = user?.getStats();
   const noData =
-    !userStats?.totalApp && !userStats?.totalRegistrationWithoutAppId;
+    !userStats?.totalProject && !userStats?.totalRegistrationWithoutAppId;
 
   const [openModalCreateApp, setOpenModalCreateApp] = useState<boolean>(false);
 
