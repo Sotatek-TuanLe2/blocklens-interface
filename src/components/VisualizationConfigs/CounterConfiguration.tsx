@@ -26,10 +26,10 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
 
   const MAX_DECIMAL_VALUE = 9;
 
-  const [valueRowNumber, setValueRowNumber] = useState<string | number>(
+  const [rowNumber, setRowNumber] = useState<string | number>(
     dataColumn?.rowNumber || '1',
   );
-  const [valueDecimals, setValueDecimals] = useState<string | number>(
+  const [decimals, setDecimals] = useState<string | number>(
     dataColumn?.stringDecimal || '0',
   );
 
@@ -93,7 +93,7 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
 
   const onChangeDecimals = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/[-e,\.]/g, '');
-    setValueDecimals(value);
+    setDecimals(value);
     if (+value < 0 || +value > MAX_DECIMAL_VALUE) {
       return;
     }
@@ -120,7 +120,7 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
 
   const onChangeRownumber = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/[-e,\.]/g, '');
-    setValueRowNumber(value);
+    setRowNumber(value);
     onChangeCounterConfigurations({
       rowNumber: value,
     });
@@ -182,7 +182,7 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
                 placeholder="1"
                 size={'sm'}
                 className="input-table"
-                value={valueRowNumber}
+                value={rowNumber}
                 onKeyDown={onKeyDown}
                 onChange={onChangeRownumber}
               />
@@ -266,7 +266,7 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
                 placeholder="1"
                 size={'sm'}
                 className="input-table"
-                value={valueDecimals}
+                value={decimals}
                 onKeyDown={onKeyDown}
                 onChange={onChangeDecimals}
                 validate={{
