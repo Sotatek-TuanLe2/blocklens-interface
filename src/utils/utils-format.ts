@@ -390,7 +390,7 @@ export const formatVisualizationValue = (format: string, value: any) => {
     }
     return formatValue(
       commaNumber(formatNumberWithDecimalDigits(+getAbsValue(value), format)),
-      formatNumberWithDecimalDigits(value, format),
+      commaNumber(formatNumberWithDecimalDigits(value, format)),
     );
   }
 
