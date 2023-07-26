@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import 'src/styles/pages/HomePage.scss';
-import { Flex, Box } from '@chakra-ui/react';
+import { Flex, Box, Spinner } from '@chakra-ui/react';
 import ListApps from './parts/ListApps';
 import ListWebhooks from './parts/ListWebhooks';
 import PartUserGraph from './parts/PartUserGraph';
@@ -9,15 +9,17 @@ import PartUserStats from './parts/PartUserStats';
 import { AppButton, AppCard, AppHeading } from 'src/components';
 import ModalCreateApp from 'src/modals/ModalCreateApp';
 import { getUserStats } from 'src/store/user';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import useUser from 'src/hooks/useUser';
 import { NoAppIcon } from 'src/assets/icons';
 import { useHistory } from 'react-router';
 import { ROUTES } from 'src/utils/common';
+import { RootState } from 'src/store';
 
 const HomePage = () => {
   const { user } = useUser();
   const userStats = user?.getStats();
+  const { isLoadingGetStatisticsUser } = useSelector((state: RootState) => state.user);
   const noData =
     !userStats?.totalProject && !userStats?.totalRegistrationWithoutAppId;
 
@@ -96,9 +98,30 @@ const HomePage = () => {
     );
   };
 
+  const _renderTriggerPage = () => {
+    if (isLoadingGetStatisticsUser) {
+      return (
+        <BasePage>
+          <Flex justifyContent={'center'}>
+            <Spinner
+              thickness="4px"
+              speed="0.65s"
+              emptyColor="gray.200"
+              color="blue.500"
+              size="xl"
+            />
+          </Flex>
+        </BasePage>
+      );
+    }
+
+    if (noData) return _renderNoData();
+    return _renderContent();
+  };
+
   return (
     <BasePage>
-      <>{noData ? _renderNoData() : _renderContent()}</>
+      <>{_renderTriggerPage()}</>
     </BasePage>
   );
 };
