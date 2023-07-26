@@ -92,7 +92,7 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
   };
 
   const onChangeDecimals = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/[-e]/gi, '');
+    const value = e.target.value.replace(/[-e,\.]/g, '');
     setValueDecimals(value);
     if (+value < 0 || +value > MAX_DECIMAL_VALUE) {
       return;
@@ -118,8 +118,18 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
     });
   };
 
+  const onChangeRownumber = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/[-e,\.]/g, '');
+    setValueRowNumber(value);
+    onChangeCounterConfigurations({
+      rowNumber: value,
+    });
+  };
+
   const onKeyDown = (e: { keyCode: number; preventDefault: () => void }) => {
     if (
+      e.keyCode === 190 || // dot
+      e.keyCode === 188 || // comma
       e.keyCode === 189 || // minus
       e.keyCode === 187 || // plus
       e.keyCode === 107 || // plus numpad
@@ -173,12 +183,8 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
                 size={'sm'}
                 className="input-table"
                 value={valueRowNumber}
-                onChange={(e) => {
-                  setValueRowNumber(e.target.value);
-                  onChangeCounterConfigurations({
-                    rowNumber: e.target.value,
-                  });
-                }}
+                onKeyDown={onKeyDown}
+                onChange={onChangeRownumber}
               />
             </div>
             <div className="main-toggle">

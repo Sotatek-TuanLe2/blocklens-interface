@@ -76,6 +76,7 @@ export type UserState = {
   stats: UserStatsType;
   billing: UserBillingType;
   settings: UserSettingsType;
+  isLoadingGetStatisticsUser: boolean;
 };
 
 const initialState: UserState = {
@@ -129,6 +130,7 @@ const initialState: UserState = {
   settings: {
     notificationEnabled: false,
   },
+  isLoadingGetStatisticsUser: false,
 };
 
 export const getUser = createAsyncThunk(
@@ -151,10 +153,12 @@ export const getUserProfile = createAsyncThunk(
 export const getUserStats = createAsyncThunk(
   'user/getUserStats',
   async (_params, thunkApi) => {
+    thunkApi.dispatch(setIsLoadingStat(true));
     const appStat = await rf.getRequest('AppRequest').getAppStatsOfUser();
     const webhookStat = await rf
       .getRequest('RegistrationRequest')
       .getWebhookWithoutAppStatsOfUser();
+    thunkApi.dispatch(setIsLoadingStat(false));
     thunkApi.dispatch(
       setUserStats({
         ...appStat,
@@ -214,6 +218,9 @@ const userSlice = createSlice({
     setUserPlan: (state, action) => {
       state.billing.plan = action.payload;
     },
+    setIsLoadingStat: (state, action) => {
+      state.isLoadingGetStatisticsUser = action.payload;
+    },
     setUserPayment: (state, action) => {
       const {
         activePaymentMethod,
@@ -252,6 +259,7 @@ export const {
   setUserPayment,
   setUserSettings,
   clearUser,
+  setIsLoadingStat,
 } = userSlice.actions;
 
 export default userSlice.reducer;

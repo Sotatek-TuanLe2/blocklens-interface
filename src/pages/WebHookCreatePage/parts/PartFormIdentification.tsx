@@ -11,8 +11,6 @@ import {
   AppButton,
 } from 'src/components';
 import { IDataForm } from '..';
-import ModalCreateApp from 'src/modals/ModalCreateApp';
-import { AddIcon } from '@chakra-ui/icons';
 
 interface IPartFormIdentificationProps {
   dataForm: IDataForm;
@@ -28,7 +26,6 @@ const PartFormIdentification: FC<IPartFormIdentificationProps> = ({
   setProjectSelected,
 }) => {
   const [projects, setProjects] = useState<IAppResponse[]>([]);
-  const [openCreateApp, setOpenCreateApp] = useState(false);
 
   const getProjects = useCallback(async () => {
     try {
@@ -111,31 +108,7 @@ const PartFormIdentification: FC<IPartFormIdentificationProps> = ({
           value={dataForm?.projectId || ''}
           onChange={onChangeProject}
           placeholder="Add to a project"
-          extraFooter={() => (
-            <Box px={2}>
-              <AppButton
-                w="100%"
-                size={'sm'}
-                color="bg.500"
-                variant="cancel"
-                border="none"
-                justifyContent="start"
-                onClick={() => setOpenCreateApp(true)}
-              >
-                <AddIcon mx={4} />
-                New Project
-              </AppButton>
-            </Box>
-          )}
         />
-
-        {openCreateApp && (
-          <ModalCreateApp
-            reloadData={getProjects}
-            open={openCreateApp}
-            onClose={() => setOpenCreateApp(false)}
-          />
-        )}
       </>
     </>
   );
