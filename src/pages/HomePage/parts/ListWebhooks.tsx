@@ -13,7 +13,10 @@ import { isMobile } from 'react-device-detect';
 import useUser from 'src/hooks/useUser';
 import { ROUTES } from 'src/utils/common';
 import rf from 'src/requests/RequestFactory';
-import { getNameWebhook, IWebhook } from 'src/utils/utils-webhook';
+import {
+  getNameWebhook,
+  IWebhook,
+} from 'src/utils/utils-webhook';
 
 interface IWebhookMobile {
   webhook: IWebhook;
@@ -33,7 +36,7 @@ const WebhookMobile: FC<IWebhookMobile> = ({ webhook }) => {
           alignItems="center"
           className="info"
         >
-          <Box className="name-mobile">{webhook.webHookName}</Box>
+          <Box className="name-mobile">{webhook?.webHookName}</Box>
           <Box
             className={isOpen ? 'icon-minus' : 'icon-plus'}
             onClick={(e) => {
@@ -63,8 +66,8 @@ const WebhookMobile: FC<IWebhookMobile> = ({ webhook }) => {
               <Box>Network</Box>
               <Box className="value">
                 <AppChainNetwork
-                  chain={webhook.chain}
-                  network={webhook.network}
+                  chain={webhook?.chain}
+                  network={webhook?.network}
                 />
               </Box>
             </Flex>
@@ -74,7 +77,7 @@ const WebhookMobile: FC<IWebhookMobile> = ({ webhook }) => {
               className="info"
             >
               <Box>Type</Box>
-              <Box className="value">--</Box>
+              <Box className="value">{getNameWebhook(webhook?.type)}</Box>
             </Flex>
             <Flex
               justifyContent="space-between"
@@ -82,7 +85,7 @@ const WebhookMobile: FC<IWebhookMobile> = ({ webhook }) => {
               className="info"
             >
               <Box>Message today</Box>
-              <Box className="value">{webhook.messageToday}</Box>
+              <Box className="value">{webhook?.messageToday}</Box>
             </Flex>
           </Box>
         )}
@@ -168,22 +171,22 @@ const ListWebhooks: React.FC = () => {
               key={index}
               className="tr-list"
               onClick={() =>
-                history.push(`/webhooks/${webhook.registrationId}`)
+                history.push(`/webhooks/${webhook?.registrationId}`)
               }
             >
-              <Td w="25%">{webhook.webHookName}</Td>
-              <Td w="20%">{getNameWebhook(webhook.type)}</Td>
+              <Td w="25%">{webhook?.webHookName}</Td>
+              <Td w="20%">{getNameWebhook(webhook?.type)}</Td>
               <Td w="20%">
                 <AppChainNetwork
-                  chain={webhook.chain}
-                  network={webhook.network}
+                  chain={webhook?.chain}
+                  network={webhook?.network}
                 />
               </Td>
               <Td w="20%" textAlign={'center'}>
                 {webhook?.messageToday}
               </Td>
               <Td w="15%" textAlign={'right'}>
-                <AppStatus status={webhook.status} />
+                <AppStatus status={webhook?.status} />
               </Td>
             </Tr>
           );
