@@ -69,7 +69,7 @@ const initDataCreateWebHook = {
   type: '',
   hashTags: [],
   projectId: '',
-  webHookName: 'webhook 1',
+  webHookName: 'Untitled Webhook',
   metadata: {
     coinType: '',
     events: [],
@@ -85,6 +85,7 @@ const WebHookCreatePage: React.FC = () => {
   const [networkSelected, setNetworkSelected] = useState<any>(
     CHAINS_CONFIG[0].networks[0],
   );
+  const [projectSelected, setProjectSelected] = useState<any>(null);
 
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
   const [, updateState] = useState<any>();
@@ -101,6 +102,14 @@ const WebHookCreatePage: React.FC = () => {
       ),
     }),
   );
+
+  useEffect(() => {
+    if (projectSelected && projectSelected.chain) {
+      setChainSelected(
+        CHAINS_CONFIG.find((item) => item.value === projectSelected?.chain),
+      );
+    }
+  }, [projectSelected]);
 
   const onChangeWebhookType = (value: string) => {
     if (type === value) return;
@@ -268,9 +277,15 @@ const WebHookCreatePage: React.FC = () => {
     };
 
     try {
-      await rf
-        .getRequest('RegistrationRequest')
-        .addRegistrationWithoutApp(data);
+      if (!!data.projectId) {
+        await rf
+          .getRequest('RegistrationRequest')
+          .addRegistrations(data.projectId, data);
+      } else {
+        await rf
+          .getRequest('RegistrationRequest')
+          .addRegistrationWithoutApp(data);
+      }
       dispatch(getUserStats());
       history.push(ROUTES.TRIGGERS);
       toastSuccess({ message: 'Create Successfully!' });
@@ -304,6 +319,7 @@ const WebHookCreatePage: React.FC = () => {
         dataForm={dataForm}
         setDataForm={setDataForm}
         validator={validator}
+        setProjectSelected={setProjectSelected}
       />
     );
   };
