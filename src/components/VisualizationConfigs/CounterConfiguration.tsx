@@ -33,11 +33,11 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
     dataColumn?.stringDecimal || '0',
   );
 
-  const [stringSuffix, setStringSuffix] = useState<string | number>(
+  const [suffix, setSuffix] = useState<string | number>(
     dataColumn?.stringDecimal,
   );
 
-  const [stringPrefix, setStringPrefix] = useState<string | number>(
+  const [prefix, setPrefix] = useState<string | number>(
     dataColumn?.stringPrefix,
   );
 
@@ -104,7 +104,7 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
 
   const onChangePrefix = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setStringPrefix(value);
+    setPrefix(value);
     onChangeCounterConfigurations({
       stringPrefix: value.trim(),
     });
@@ -112,7 +112,7 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
 
   const onChangeSuffix = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setStringSuffix(value);
+    setSuffix(value);
     onChangeCounterConfigurations({
       stringSuffix: value.trim(),
     });
@@ -231,7 +231,7 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
                 placeholder="$"
                 size={'sm'}
                 className="input-table"
-                value={stringPrefix}
+                value={prefix}
                 onChange={onChangePrefix}
               />
             </div>
@@ -241,7 +241,7 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
                 placeholder="M"
                 size={'sm'}
                 className="input-table"
-                value={stringSuffix}
+                value={suffix}
                 onChange={onChangeSuffix}
               />
             </div>
