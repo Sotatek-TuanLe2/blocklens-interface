@@ -151,8 +151,18 @@ export const getUserProfile = createAsyncThunk(
 export const getUserStats = createAsyncThunk(
   'user/getUserStats',
   async (_params, thunkApi) => {
-    const res = await rf.getRequest('AppRequest').getAppStatsOfUser();
-    thunkApi.dispatch(setUserStats(res));
+    const appStat = await rf.getRequest('AppRequest').getAppStatsOfUser();
+    const webhookStat = await rf
+      .getRequest('RegistrationRequest')
+      .getWebhookWithoutAppStatsOfUser();
+    thunkApi.dispatch(
+      setUserStats({
+        ...appStat,
+        totalRegistrationActiveWithoutAppId:
+          webhookStat.totalRegistrationActive,
+        totalRegistrationWithoutAppId: webhookStat.totalRegistration,
+      }),
+    );
   },
 );
 

@@ -7,7 +7,7 @@
   align-items: center;
   &__input {
     height: 30px !important;
-    font-weight: 600;
+    font-weight: 700 !important;
     &:focus {
       border-color: transparent;
       box-shadow: none !important;
@@ -15,6 +15,7 @@
   }
   &__preview {
     font-weight: 700 !important;
+    word-break: break-word;
   }
   &__edit-btn {
     svg {

@@ -193,6 +193,7 @@ const ListWebhooks: React.FC = () => {
   };
 
   const _renderTotalWebhook = () => {
+    if (!userStats?.totalRegistrationWithoutAppId) return;
     return (
       <Box className="number-app">
         <Text as={'span'}> Active Webhooks:</Text>{' '}

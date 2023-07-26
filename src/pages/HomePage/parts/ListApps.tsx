@@ -267,6 +267,7 @@ const ListApps: React.FC = () => {
   };
 
   const _renderTotalApp = () => {
+    if (!userStats?.totalApp) return;
     return (
       <Box className="number-app">
         <Text as={'span'}>Active Projects: </Text>

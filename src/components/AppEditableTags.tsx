@@ -14,6 +14,7 @@ import {
 import { forwardRef } from '@chakra-ui/system';
 import 'src/styles/components/AppEditableTags.scss';
 import { CloseIcon, AddIcon } from '@chakra-ui/icons';
+import { toastError } from 'src/utils/utils-notify';
 
 interface IAppEditableTagsProps {
   tags: string[];
@@ -22,7 +23,13 @@ interface IAppEditableTagsProps {
   onRemove?: (value: string) => void;
 }
 
-const CustomInput = ({ onCancel }: { onCancel: () => void }) => {
+const CustomInput = ({
+  onCancel,
+  isDisabled,
+}: {
+  onCancel: () => void;
+  isDisabled?: boolean;
+}) => {
   const { isEditing, getCancelButtonProps, getEditButtonProps } =
     useEditableControls();
   return isEditing ? (
@@ -47,7 +54,11 @@ const CustomInput = ({ onCancel }: { onCancel: () => void }) => {
       </InputRightElement>
     </InputGroup>
   ) : (
-    <Box className="hashtag-add" {...getEditButtonProps()} p={'4px 11px'}>
+    <Box
+      className={`${isDisabled ? 'disabled' : ''} hashtag-add`}
+      {...getEditButtonProps()}
+      p={'4px 11px'}
+    >
       <IconButton
         aria-label="add"
         className="icon-btn"
@@ -62,23 +73,33 @@ const CustomInput = ({ onCancel }: { onCancel: () => void }) => {
 
 const AddHashtags = ({
   onSubmit,
+  isDisabled,
 }: {
   onSubmit?: (nextValue: string) => void;
+  isDisabled?: boolean;
 }) => {
   const [value, setValue] = useState<string>();
   const handleSubmit = (nextValue: string) => {
+    if (nextValue.length > 30) {
+      toastError({
+        message: 'The hashtag may not be greater than 30 characters.',
+      });
+      return;
+    }
+
     onSubmit && onSubmit(nextValue);
     setValue('');
   };
   return (
     <Editable
       submitOnBlur
+      isDisabled={isDisabled}
       onSubmit={handleSubmit}
       value={value}
       onChange={setValue}
       className={`hashtags-editable`}
     >
-      <CustomInput onCancel={() => setValue('')} />
+      <CustomInput onCancel={() => setValue('')} isDisabled={isDisabled} />
     </Editable>
   );
 };
@@ -96,7 +117,7 @@ const AppEditableTags = forwardRef<IAppEditableTagsProps, any>(
           {tags?.map((tag, index) => {
             return (
               <Flex key={tag + index} className="app-hashtags__item">
-                #{tag}
+                <Box className="app-hashtags__item--text">#{tag}</Box>
                 {onRemove && (
                   <IconButton
                     aria-label="close"
@@ -110,7 +131,7 @@ const AppEditableTags = forwardRef<IAppEditableTagsProps, any>(
               </Flex>
             );
           })}
-          <AddHashtags onSubmit={onSubmit} />
+          <AddHashtags onSubmit={onSubmit} isDisabled={tags.length === 20} />
         </Flex>
       </>
     );
