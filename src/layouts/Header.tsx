@@ -22,6 +22,7 @@ import { PRIVATE_PATH } from 'src/routes';
 import { clearUser } from 'src/store/user';
 import { ROUTES } from 'src/utils/common';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
+import { toastError } from '../utils/utils-notify';
 
 const menus = [
   {
@@ -60,16 +61,23 @@ const Header: FC = () => {
   }, []);
 
   useEffect(() => {
-    if (location.pathname !== ROUTES.RESET_PASSWORD) {
-      AppBroadcast.on('REQUEST_SIGN_IN', onSignInRequest);
-    }
-
+    AppBroadcast.on('REQUEST_SIGN_IN', onSignInRequest);
     return () => {
       AppBroadcast.remove('REQUEST_SIGN_IN');
     };
   }, []);
 
   const onSignInRequest = () => {
+    if (
+      location.pathname == ROUTES.RESET_PASSWORD ||
+      location.pathname == ROUTES.LOGIN
+    ) {
+      toastError({
+        message: 'Unauthorized',
+      });
+      return;
+    }
+
     if (!isOpenSignInRequestModal) {
       onLogout();
       setIsOpenSignInRequestModal(true);
