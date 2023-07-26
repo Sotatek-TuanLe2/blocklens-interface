@@ -7,7 +7,7 @@ export default class RegistrationRequest extends BaseRequest {
   }
 
   getWebhookWithoutAppStatsOfUser() {
-    const url = '/registrations/stats/without-appId';
+    const url = '/registrations/stats/without-projectId';
     return this.get(url);
   }
 
