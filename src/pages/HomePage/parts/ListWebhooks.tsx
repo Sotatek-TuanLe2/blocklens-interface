@@ -36,7 +36,7 @@ const WebhookMobile: FC<IWebhookMobile> = ({ webhook }) => {
           alignItems="center"
           className="info"
         >
-          <Box className="name-mobile">{webhook?.webHookName}</Box>
+          <Box className="name-mobile">{webhook?.webhookName}</Box>
           <Box
             className={isOpen ? 'icon-minus' : 'icon-plus'}
             onClick={(e) => {
@@ -174,7 +174,7 @@ const ListWebhooks: React.FC = () => {
                 history.push(`/webhooks/${webhook?.registrationId}`)
               }
             >
-              <Td w="25%">{webhook?.webHookName}</Td>
+              <Td w="25%">{webhook?.webhookName}</Td>
               <Td w="20%">{getNameWebhook(webhook?.type)}</Td>
               <Td w="20%">
                 <AppChainNetwork

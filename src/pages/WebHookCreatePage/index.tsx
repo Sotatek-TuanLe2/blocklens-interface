@@ -58,7 +58,7 @@ interface IMetadata {
 export interface IDataForm {
   webhook: string;
   type: string;
-  webHookName?: string;
+  webhookName?: string;
   projectId?: string;
   hashTags?: string[];
   metadata?: IMetadata;
@@ -69,7 +69,7 @@ const initDataCreateWebHook = {
   type: '',
   hashTags: [],
   projectId: '',
-  webHookName: 'Untitled Webhook',
+  webhookName: 'Untitled Webhook',
   metadata: {
     coinType: '',
     events: [],
