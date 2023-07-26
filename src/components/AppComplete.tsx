@@ -9,6 +9,7 @@ import React, {
 import { Box, Flex, LayoutProps, Input } from '@chakra-ui/react';
 import 'src/styles/components/AppComplete.scss';
 import { upperCase } from 'lodash';
+import { CloseIcon } from '@chakra-ui/icons';
 
 interface IAppCompletePops {
   options: IOption[];
@@ -112,6 +113,21 @@ const AppComplete: FC<IAppCompletePops> = ({
               placeholder={placeholder || '"--Select--"'}
               onChange={(e) => open && setInputValue(e.target.value)}
             />
+
+            {inputValue && (
+              <Box
+                fontSize={'12px'}
+                color={'line.100'}
+                mr={2}
+                pl={1}
+                onClick={() => {
+                  setInputValue('');
+                  onChange('');
+                }}
+              >
+                <CloseIcon />
+              </Box>
+            )}
           </Flex>
         )}
 
@@ -131,26 +147,36 @@ const AppComplete: FC<IAppCompletePops> = ({
           boxShadow={'0px 10px 40px rgba(125, 143, 179, 0.2)'}
         >
           <Box className={'app-complete__menu-content'}>
-            {optionFilter.map((option: IOption, index: number) => {
-              return (
-                <Flex
-                  key={index}
-                  className={`app-complete__menu-item ${
-                    value === option.value ? 'completeed' : ''
-                  }`}
-                  onClick={() => {
-                    onChange(option.value);
-                    setOpen(false);
-                    setInputValue(option?.label);
-                  }}
-                >
-                  {optionSelected?.icon && (
-                    <Box className={`${option?.icon} icon`} />
-                  )}
-                  {customItem ? customItem(option) : <Box>{option.label}</Box>}
-                </Flex>
-              );
-            })}
+            {!!optionFilter.length ? (
+              optionFilter.map((option: IOption, index: number) => {
+                return (
+                  <Flex
+                    key={index}
+                    className={`app-complete__menu-item ${
+                      value === option.value ? 'completeed' : ''
+                    }`}
+                    onClick={() => {
+                      onChange(option.value);
+                      setOpen(false);
+                      setInputValue(option?.label);
+                    }}
+                  >
+                    {optionSelected?.icon && (
+                      <Box className={`${option?.icon} icon`} />
+                    )}
+                    {customItem ? (
+                      customItem(option)
+                    ) : (
+                      <Box>{option.label}</Box>
+                    )}
+                  </Flex>
+                );
+              })
+            ) : (
+              <Flex justifyContent={'center'} fontSize={'14px'}>
+                No options
+              </Flex>
+            )}
           </Box>
           {extraFooter?.(setOpen)}
         </Box>

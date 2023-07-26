@@ -340,6 +340,7 @@ const WebHookCreatePage: React.FC = () => {
                     ?.networks[0],
                 );
               }}
+              disabled={!!projectSelected}
               options={CHAINS_CONFIG}
               value={chainSelected.value}
             />
@@ -357,6 +358,7 @@ const WebHookCreatePage: React.FC = () => {
               }}
               options={chainSelected.networks}
               value={networkSelected.value}
+              disabled={!!projectSelected}
             />
           </AppField>
 
