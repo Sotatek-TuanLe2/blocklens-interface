@@ -33,6 +33,14 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
     dataColumn?.stringDecimal || '0',
   );
 
+  const [stringSuffix, setStringSuffix] = useState<string | number>(
+    dataColumn?.stringDecimal,
+  );
+
+  const [stringPrefix, setStringPrefix] = useState<string | number>(
+    dataColumn?.stringPrefix,
+  );
+
   const validator = useRef(
     createValidator({
       element: (message: string) => <Text color={'red.100'}>{message}</Text>,
@@ -91,6 +99,22 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
     }
     onChangeCounterConfigurations({
       stringDecimal: value,
+    });
+  };
+
+  const onChangePrefix = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setStringPrefix(value);
+    onChangeCounterConfigurations({
+      stringPrefix: value.trim(),
+    });
+  };
+
+  const onChangeSuffix = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setStringSuffix(value);
+    onChangeCounterConfigurations({
+      stringSuffix: value.trim(),
     });
   };
 
@@ -201,12 +225,8 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
                 placeholder="$"
                 size={'sm'}
                 className="input-table"
-                value={dataColumn?.stringPrefix}
-                onChange={(e) =>
-                  onChangeCounterConfigurations({
-                    stringPrefix: e.target.value,
-                  })
-                }
+                value={stringPrefix}
+                onChange={onChangePrefix}
               />
             </div>
             <div className="box-table-children">
@@ -215,12 +235,8 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
                 placeholder="M"
                 size={'sm'}
                 className="input-table"
-                value={dataColumn?.stringSuffix}
-                onChange={(e) =>
-                  onChangeCounterConfigurations({
-                    stringSuffix: e.target.value,
-                  })
-                }
+                value={stringSuffix}
+                onChange={onChangeSuffix}
               />
             </div>
             <div className="box-table-children">
