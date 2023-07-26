@@ -34,7 +34,7 @@ const PartWebhooks: FC<IListAddress> = ({ appInfo, type, description }) => {
           isDisabled={isDisabledApp}
           size={'lg'}
           onClick={() => {
-            history.push(`/create-webhook/${appInfo.appId}?type=${type}`);
+            history.push(`/create-webhook/${appInfo.projectId}?type=${type}`);
           }}
         >
           Create

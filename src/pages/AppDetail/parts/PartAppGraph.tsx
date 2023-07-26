@@ -14,7 +14,7 @@ import {
 const PartAppGraph = () => {
   const [duration, setDuration] = useState<string>('24h');
   const [dataChart, setDataChart] = useState<IDataChart[] | any>([]);
-  const { id: appId } = useParams<{ id: string }>();
+  const { id: projectId } = useParams<{ id: string }>();
 
   const params = useMemo(() => {
     return getParamsChart(duration);
@@ -24,7 +24,7 @@ const PartAppGraph = () => {
     try {
       const res = await rf
         .getRequest('NotificationRequest')
-        .getAppStats(appId, params);
+        .getAppStats(projectId, params);
 
       if (!res?.length) return;
 
@@ -44,7 +44,7 @@ const PartAppGraph = () => {
 
   useEffect(() => {
     getUserStats().then();
-  }, [appId, params]);
+  }, [projectId, params]);
 
   if (isChartEmpty(dataChart)) return <></>;
 
