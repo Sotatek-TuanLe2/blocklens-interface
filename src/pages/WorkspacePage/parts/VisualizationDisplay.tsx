@@ -239,9 +239,17 @@ const VisualizationDisplay = ({
     if (!!visual) {
       setIsConfiguring(true);
       try {
-        await rf
-          .getRequest('DashboardsRequest')
-          .editVisualization(visualization, visualization.id);
+        await rf.getRequest('DashboardsRequest').editVisualization(
+          {
+            ...visualization,
+            options: {
+              ...visualization.options,
+              stringPrefix: visualization.options.stringPrefix?.trim(),
+              stringSuffix: visualization.options.stringSuffix?.trim(),
+            },
+          },
+          visualization.id,
+        );
         await onReload();
         setIsConfiguring(false);
       } catch (error) {
