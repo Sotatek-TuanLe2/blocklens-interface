@@ -13,10 +13,7 @@ import { isMobile } from 'react-device-detect';
 import useUser from 'src/hooks/useUser';
 import { ROUTES } from 'src/utils/common';
 import rf from 'src/requests/RequestFactory';
-import {
-  getNameWebhook,
-  IWebhook,
-} from 'src/utils/utils-webhook';
+import { getNameWebhook, IWebhook } from 'src/utils/utils-webhook';
 
 interface IWebhookMobile {
   webhook: IWebhook;
@@ -105,17 +102,12 @@ const ListWebhooks: React.FC = () => {
         .getRequest('RegistrationRequest')
         .getRegistrationsWithoutApp(params);
 
-      const dataWebhook = await Promise.all(
-        res?.docs?.map(async (webhook: IWebhook) => {
-          const webhookStat = await rf
-            .getRequest('NotificationRequest')
-            .getWebhookStatsToday(webhook.registrationId);
-          return {
-            ...webhook,
-            messageToday: webhookStat?.totalToday || '--',
-          };
-        }),
-      );
+      const dataWebhook = res?.docs?.map((webhook: IWebhook) => {
+        return {
+          ...webhook,
+          messageToday: '--',
+        };
+      });
 
       return {
         ...res,
