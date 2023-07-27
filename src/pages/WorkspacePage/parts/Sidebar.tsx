@@ -14,7 +14,14 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import _, { debounce } from 'lodash';
-import { FC, ReactNode, useCallback, useEffect, useState } from 'react';
+import {
+  FC,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import { CloseMenuIcon, CopyIcon } from 'src/assets/icons';
@@ -36,26 +43,19 @@ export const BROADCAST_FETCH_WORKPLACE_DATA = 'FETCH_WORKPLACE_DATA';
 
 const ChainItem = ({
   chain,
-  onChangeSchemaDescribe,
-  schemaDescribe,
+  onChangeSelectedTable,
+  selectedTable,
 }: {
   chain: SchemaType;
-  onChangeSchemaDescribe: React.Dispatch<React.SetStateAction<SchemaType[]>>;
-  schemaDescribe: SchemaType[];
+  onChangeSelectedTable: React.Dispatch<
+    React.SetStateAction<SchemaType | null>
+  >;
+  selectedTable: SchemaType | null;
 }) => {
   const { pathname } = useLocation();
 
-  const handleToggle = async () => {
-    try {
-      const data = await rf.getRequest('DashboardsRequest').getSchemaOfTable({
-        namespace: chain.namespace,
-        tableName: chain.table_name,
-      });
-      onChangeSchemaDescribe(data);
-      //get schema
-    } catch (error) {
-      console.error(error);
-    }
+  const handleToggle = () => {
+    onChangeSelectedTable(chain);
   };
 
   const handleCopy = (query: string) => {
@@ -69,8 +69,7 @@ const ChainItem = ({
         <Flex flex={1} maxW={'80%'} gap="10px">
           <div
             className={
-              schemaDescribe.length &&
-              schemaDescribe[0]?.table_name === chain.table_name
+              !!selectedTable && selectedTable.table_name === chain.table_name
                 ? 'bg-chain_active'
                 : 'bg-chain_default'
             }
@@ -108,13 +107,15 @@ const ChainItem = ({
 const CollapseExplore = ({
   title,
   content,
-  onChangeSchemaDescribe,
-  schemaDescribe,
+  onChangeSelectedTable,
+  selectedTable,
 }: {
   title: string;
   content: SchemaType[];
-  onChangeSchemaDescribe: React.Dispatch<React.SetStateAction<SchemaType[]>>;
-  schemaDescribe: SchemaType[];
+  onChangeSelectedTable: React.Dispatch<
+    React.SetStateAction<SchemaType | null>
+  >;
+  selectedTable: SchemaType | null;
 }) => {
   const [show, setShow] = useState(false);
 
@@ -128,8 +129,8 @@ const CollapseExplore = ({
         onClick={handleToggle}
       >
         <Flex alignItems={'center'} gap="10px">
-          <div className={getChainIconByChainName(content[0].namespace)}></div>
-          <span>{title.toUpperCase()}</span>
+          <div className={getChainIconByChainName(title)}></div>
+          <span>{title.split('_')[0].toUpperCase()}</span>
         </Flex>
         <div className={show ? 'bg-arrow_icon collapsed' : 'bg-arrow_icon'} />
       </Box>
@@ -144,8 +145,8 @@ const CollapseExplore = ({
             <ChainItem
               chain={chain}
               key={index + 'chain'}
-              onChangeSchemaDescribe={onChangeSchemaDescribe}
-              schemaDescribe={schemaDescribe}
+              onChangeSelectedTable={onChangeSelectedTable}
+              selectedTable={selectedTable}
             />
           );
         })}
@@ -225,10 +226,12 @@ const Sidebar: React.FC<SidebarProps> = ({
   const [exploreData, setExploreData] = useState<{
     [key: string]: any;
   }>({});
-  const [schemaDescribe, setSchemaDescribe] = useState<SchemaType[]>([]);
+  const [selectedTable, setSelectedTable] = useState<SchemaType | null>(null);
   const [dataQueriesPagination, setDataQueriesPagination] = useState<
     IPagination | undefined
   >();
+
+  console.log('selectedTable', selectedTable);
 
   useEffect(() => {
     AppBroadcast.on(BROADCAST_FETCH_WORKPLACE_DATA, fetchDataWorkPlace);
@@ -288,16 +291,9 @@ const Sidebar: React.FC<SidebarProps> = ({
     }
   };
 
-  const fetchDataExploreData = async (search?: string) => {
+  const fetchDataExploreData = async () => {
     try {
-      const tables = await rf
-        .getRequest('DashboardsRequest')
-        .getTables(_.omitBy({ search }, (param) => !param));
-
-      const listChain = _.groupBy(
-        tables,
-        (item) => item.namespace.split('_')[0],
-      );
+      const listChain = await rf.getRequest('DashboardsRequest').getSchemas();
       setExploreData(listChain);
     } catch (error) {
       console.error(error);
@@ -316,12 +312,29 @@ const Sidebar: React.FC<SidebarProps> = ({
     [],
   );
 
-  const getDataSearchExploreData = useCallback(
-    debounce(async (search) => {
-      fetchDataExploreData(search.trim());
-    }, 500),
-    [],
-  );
+  const filteredData = useMemo(() => {
+    if (!searchExploreData) {
+      return exploreData;
+    }
+    const result: { [key: string]: any } = {};
+    for (const key in exploreData) {
+      if (Object.prototype.hasOwnProperty.call(exploreData, key)) {
+        const element = exploreData[key];
+        result[key] = [];
+        for (const iterator of element) {
+          if (iterator.table_name.includes(searchExploreData)) {
+            result[key].push(iterator);
+          }
+        }
+      }
+    }
+
+    return result;
+  }, [exploreData, searchExploreData]);
+
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchExploreData(event.target.value);
+  };
 
   const handleCreateNewQuery = () => goWithOriginPath(ROUTES.MY_QUERY);
 
@@ -376,6 +389,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         </div>
         <Box px={'16px'}>
           <AppInput
+            isSearch
             className="workspace-page__sidebar__content__work-place-wrap__input-search"
             value={searchValueWorkPlace}
             placeholder={'Search...'}
@@ -520,11 +534,11 @@ const Sidebar: React.FC<SidebarProps> = ({
             <Tooltip
               placement={'top'}
               hasArrow
-              label={schemaDescribe[0].table_name}
+              label={selectedTable?.table_name}
               p={2}
             >
               <Text isTruncated maxW={'full'} className="info-detail-header">
-                {schemaDescribe[0].table_name}
+                {selectedTable?.table_name}
               </Text>
             </Tooltip>
           </Flex>
@@ -532,19 +546,23 @@ const Sidebar: React.FC<SidebarProps> = ({
             {location.pathname.includes(ROUTES.MY_QUERY) && (
               <CopyIcon
                 className="icon-header"
-                onClick={() => handleCopy(schemaDescribe[0].full_name)}
+                onClick={() => {
+                  if (selectedTable?.full_name) {
+                    handleCopy(selectedTable?.full_name);
+                  }
+                }}
               />
             )}
             <Box
               display={{ base: 'none', lg: 'block' }}
-              onClick={() => setSchemaDescribe([])}
+              onClick={() => setSelectedTable(null)}
             >
               <CloseMenuIcon className="icon-header" />
             </Box>
           </div>
         </div>
         <div className="chain-info-desc__content">
-          {schemaDescribe.map((item, index) => (
+          {selectedTable?.table_details.map((item, index) => (
             <Flex
               key={index + 'schema'}
               direction={'row'}
@@ -576,6 +594,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   };
 
   const _renderContentExplore = () => {
+    const isOpenTableDetails = !!selectedTable;
     return (
       <div className="workspace-page__sidebar__content__explore-wrap">
         <div className="workspace-page__sidebar__content__explore-wrap__title">
@@ -594,31 +613,29 @@ const Sidebar: React.FC<SidebarProps> = ({
         </div>
         <Box px={'16px'} mb={{ base: '24px', lg: '26px' }}>
           <AppInput
+            isSearch
             className="workspace-page__sidebar__content__work-place-wrap__input-search"
             value={searchExploreData}
             placeholder={'Search...'}
             size="sm"
-            onChange={(e) => {
-              setSearchExploreData(e.target.value);
-              getDataSearchExploreData(e.target.value);
-            }}
+            onChange={handleSearch}
           />
         </Box>
-        {!!Object.keys(exploreData).length ? (
+        {!!Object.keys(filteredData).length ? (
           <div
             className={`${
-              !!schemaDescribe.length
+              isOpenTableDetails
                 ? 'workspace-page__sidebar__content__explore-wrap__list-chain-half'
                 : 'workspace-page__sidebar__content__explore-wrap__list-chain'
             }`}
           >
-            {Object.keys(exploreData).map((nameChain: string, index) => (
+            {Object.keys(filteredData).map((nameChain: string, index) => (
               <CollapseExplore
                 key={index + 'explore'}
                 title={nameChain}
-                content={Object.values(exploreData)[index]}
-                onChangeSchemaDescribe={setSchemaDescribe}
-                schemaDescribe={schemaDescribe}
+                content={Object.values(filteredData)[index]}
+                onChangeSelectedTable={setSelectedTable}
+                selectedTable={selectedTable}
               />
             ))}
           </div>
@@ -626,7 +643,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           _renderNoData()
         )}
 
-        {!!schemaDescribe.length && (
+        {isOpenTableDetails && (
           <Box
             display={{ base: 'none !important', lg: 'block !important' }}
             className="chain-info-desc"
@@ -637,10 +654,10 @@ const Sidebar: React.FC<SidebarProps> = ({
         {/*  */}
         <Box display={{ lg: 'none !important' }} className="m-chain-info-desc">
           <SideContentExplore
-            isOpen={!!schemaDescribe.length}
-            onClose={() => setSchemaDescribe([])}
+            isOpen={isOpenTableDetails}
+            onClose={() => setSelectedTable(null)}
           >
-            {!!schemaDescribe.length && _renderDetailExplore()}
+            {isOpenTableDetails && _renderDetailExplore()}
           </SideContentExplore>
         </Box>
         {/*  */}
@@ -703,7 +720,7 @@ const Sidebar: React.FC<SidebarProps> = ({
               mb={'20px'}
               onClick={() => {
                 setCategory(item.id);
-                setSchemaDescribe([]);
+                setSelectedTable(null);
                 onOpen();
               }}
             >
@@ -743,7 +760,7 @@ const Sidebar: React.FC<SidebarProps> = ({
               onClick={() => {
                 setCategory(item.id);
                 onToggleExpandSidebar && onToggleExpandSidebar(true);
-                setSchemaDescribe([]);
+                setSelectedTable(null);
               }}
             >
               {category === item.id ? item.activeIcon : item.icon}
