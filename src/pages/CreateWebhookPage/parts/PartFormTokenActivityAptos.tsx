@@ -168,7 +168,7 @@ const PartFormTokenActivityAptos: FC<IPartFormTokenActivityAptos> = ({
           validate={{
             name: `creatorAddress`,
             validator: validator.current,
-            rule: 'required',
+            rule: 'required|isAddressAptos',
           }}
         />
       </AppField>
