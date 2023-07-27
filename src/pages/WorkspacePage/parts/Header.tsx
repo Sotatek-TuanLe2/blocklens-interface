@@ -13,7 +13,7 @@ import {
   DrawerOverlay,
   DrawerContent,
 } from '@chakra-ui/react';
-import { useHistory, useParams, useLocation, Link } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { AppButton, AppTag } from 'src/components';
 import AppQueryMenu, { QUERY_MENU_LIST } from 'src/components/AppQueryMenu';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
@@ -27,6 +27,7 @@ import { Dashboard } from 'src/utils/utils-dashboard';
 import { Query } from 'src/utils/utils-query';
 import { IconDotMore, IconFilter, IconRun } from 'src/assets/icons';
 import Jazzicon from 'react-jazzicon';
+import useOriginPath from 'src/hooks/useOriginPath';
 
 interface IHeaderProps {
   type: string;
@@ -57,8 +58,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
     onChangeEditMode,
   } = props;
 
-  const history = useHistory();
-  const location = useLocation();
+  const { goToOriginPath } = useOriginPath();
   const { queryId, dashboardId } = useParams<{
     queryId: string;
     dashboardId: string;
@@ -77,12 +77,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
       : new Query(data as IQuery);
   }, [data]);
 
-  const onBack = () => {
-    location.state
-      ? history.push((location.state as any).originPath)
-      : history.goBack();
-  };
-
+  const onBack = () => goToOriginPath();
   const onForkSuccess = async () => {
     AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
   };
