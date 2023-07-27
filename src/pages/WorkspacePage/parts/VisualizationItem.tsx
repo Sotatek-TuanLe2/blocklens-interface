@@ -4,7 +4,7 @@ import moment from 'moment';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { ClockIcon } from 'src/assets/icons';
 import {
   PieChart,
@@ -24,6 +24,7 @@ import {
 } from 'src/utils/query.type';
 import useUser from 'src/hooks/useUser';
 import { generateErrorMessage } from './VisualizationDisplay';
+import useOriginPath from 'src/hooks/useOriginPath';
 
 const REFETCH_QUERY_RESULT_MINUTES = 5;
 
@@ -38,6 +39,8 @@ const VisualizationItem = React.memo(
     editMode?: boolean;
   }) => {
     const { user } = useUser();
+    const location = useLocation();
+    const { generateLinkObject } = useOriginPath();
 
     const [queryResult, setQueryResult] = useState<unknown[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -198,12 +201,15 @@ const VisualizationItem = React.memo(
             >
               <Link
                 className="visual-container__visualization__title__query-link"
-                to={`${
-                  needAuthentication ||
-                  visualization.query?.user === user?.getId()
-                    ? ROUTES.MY_QUERY
-                    : ROUTES.QUERY
-                }/${visualization.queryId}`}
+                to={generateLinkObject(
+                  `${
+                    needAuthentication ||
+                    visualization.query?.user === user?.getId()
+                      ? ROUTES.MY_QUERY
+                      : ROUTES.QUERY
+                  }/${visualization.queryId}`,
+                  location.pathname,
+                )}
               >
                 {visualization.query?.name}
               </Link>

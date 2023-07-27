@@ -7,7 +7,7 @@ import {
   MenuList,
 } from '@chakra-ui/react';
 import { useMemo, useState } from 'react';
-import { useHistory } from 'react-router';
+import useOriginPath from 'src/hooks/useOriginPath';
 import useUser from 'src/hooks/useUser';
 import ModalDashboard from 'src/modals/querySQL/ModalDashboard';
 import ModalDelete from 'src/modals/querySQL/ModalDelete';
@@ -66,8 +66,8 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
   } = props;
 
   const { user } = useUser();
+  const { goWithOriginPath } = useOriginPath();
   const location = window.location;
-  const history = useHistory();
 
   const [openModalSetting, setOpenModalSetting] = useState<boolean>(false);
   const [openModalShare, setOpenModalShare] = useState<boolean>(false);
@@ -88,7 +88,7 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
 
   const onForkQuery = async () => {
     if (!user) {
-      return history.push(ROUTES.LOGIN, { originPath: location.pathname });
+      return goWithOriginPath(ROUTES.LOGIN, location.pathname);
     }
 
     try {
