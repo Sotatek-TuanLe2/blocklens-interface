@@ -3,12 +3,15 @@ import { AppField, AppInput, AppTextarea } from 'src/components';
 import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
 import React, { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { IDataForm } from '../index';
-import { toastError } from '../../../utils/utils-notify';
+import { toastError } from 'src/utils/utils-notify';
 import { CloseIcon } from '@chakra-ui/icons';
 import { Link as ReactLink } from 'react-router-dom';
-import { DownloadIcon } from '../../../assets/icons';
-import { isEVMNetwork } from '../../../utils/utils-network';
-import { isValidAddressEVM } from '../../../utils/utils-helper';
+import { DownloadIcon } from 'src/assets/icons';
+import { isEVMNetwork } from 'src/utils/utils-network';
+import {
+  isValidAddressEVM,
+  isValidAddressSUIAndAptos,
+} from 'src/utils/utils-helper';
 
 interface IPartFormAddressActivity {
   dataForm: IDataForm;
@@ -17,8 +20,6 @@ interface IPartFormAddressActivity {
   validator: any;
   chain: string;
 }
-
-const FILE_CSV_EXAMPLE = '/abi/CSV_Example.csv';
 
 const PartFormAddressActivity: FC<IPartFormAddressActivity> = ({
   dataForm,
@@ -33,13 +34,15 @@ const PartFormAddressActivity: FC<IPartFormAddressActivity> = ({
     useState<boolean>(true);
   const inputRef = useRef<any>(null);
 
+  const FILE_CSV_EXAMPLE = `/abi/Address_Example_${chain}.csv`;
+
   const addressesInput = useMemo(() => {
     return addressesValue.split('\n');
   }, [addressesValue]);
 
   const isValidAddress = (address: string) => {
     if (isEVMNetwork(chain)) return isValidAddressEVM(address);
-    return !!address;
+    return isValidAddressSUIAndAptos(address);
   };
 
   const addressesInvalid = useMemo(() => {

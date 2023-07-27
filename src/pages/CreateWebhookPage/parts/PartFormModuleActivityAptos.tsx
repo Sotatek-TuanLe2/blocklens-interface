@@ -4,6 +4,7 @@ import rf from 'src/requests/RequestFactory';
 import _ from 'lodash';
 import { Box } from '@chakra-ui/react';
 import { IDataForm } from '../index';
+import { isValidAddressSUIAndAptos } from 'src/utils/utils-helper';
 
 interface PartFormContractAptosProps {
   dataForm: IDataForm;
@@ -90,7 +91,10 @@ const PartFormModuleActivityAptos: FC<PartFormContractAptosProps> = ({
   }, 2000);
 
   useEffect(() => {
-    if (payloadForm.metadata?.address) {
+    if (
+      payloadForm.metadata?.address &&
+      isValidAddressSUIAndAptos(payloadForm.metadata?.address)
+    ) {
       getDataAddress(
         payloadForm.metadata?.address,
         setDataAddress,
@@ -116,6 +120,11 @@ const PartFormModuleActivityAptos: FC<PartFormContractAptosProps> = ({
   };
 
   const onChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
+    if (!isValidAddressSUIAndAptos(e.target.value.trim())) {
+      setIsLoading(false);
+      return;
+    }
+
     if (e.target.value.trim()) {
       setIsLoading(true);
     } else {
@@ -142,17 +151,26 @@ const PartFormModuleActivityAptos: FC<PartFormContractAptosProps> = ({
           validate={{
             name: `address`,
             validator: validator.current,
-            rule: 'required',
+            rule: 'required|isAddressAptos',
           }}
         />
       </AppField>
-      {!isLoading && !dataAddress && payloadForm.metadata?.address && (
-        <Box color={'#ee5d50'} fontSize={'14px'}>
-          Address Invalid
-        </Box>
-      )}
 
-      {isLoading ? <Box>Loading...</Box> : _renderABI()}
+      {!isLoading &&
+        !dataAddress &&
+        payloadForm.metadata?.address &&
+        isValidAddressSUIAndAptos(payloadForm.metadata?.address) && (
+          <Box color={'#ee5d50'} fontSize={'14px'}>
+            Address Invalid
+          </Box>
+        )}
+
+      {isValidAddressSUIAndAptos(payloadForm.metadata?.address || '') &&
+      isLoading ? (
+        <Box>Loading...</Box>
+      ) : (
+        _renderABI()
+      )}
     </Box>
   );
 };

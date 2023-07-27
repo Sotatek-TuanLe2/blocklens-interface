@@ -73,7 +73,7 @@ const Header: FC = () => {
       location.pathname == ROUTES.LOGIN
     ) {
       toastError({
-        message: 'Unauthorized',
+        message: 'Credential is not correct',
       });
       return;
     }

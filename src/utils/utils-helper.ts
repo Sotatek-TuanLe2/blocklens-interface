@@ -53,6 +53,11 @@ export const isValidAddressEVM = (address: string) => {
   }
 };
 
+export const isValidAddressSUIAndAptos = (address: string) => {
+  const addressPattern = /^0x[a-fA-F0-9]{64}$/;
+  return addressPattern.test(address);
+};
+
 export const filterParams = (params: any) => {
   return Object.fromEntries(Object.entries(params).filter(([_, v]) => v));
 };

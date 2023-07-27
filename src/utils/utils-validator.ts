@@ -50,7 +50,8 @@ type CustomRule =
   | 'isAddress'
   | 'maxCountIds'
   | 'isIds'
-  | 'insufficientBalance';
+  | 'insufficientBalance'
+  | 'isAddressAptos';
 
 export type Rules = IRule | CustomRule;
 
@@ -116,6 +117,14 @@ export const createValidator = (options?: IOptions | undefined) => {
           return isAddress(value);
         },
       },
+      isAddressAptos: {
+        message: 'The value is wrong format address.',
+        rule: (value: string) => {
+          const addressPattern = /^0x[a-fA-F0-9]{64}$/;
+          return addressPattern.test(value);
+        },
+      },
+
       formatPassword: {
         message: 'Your password can’t start or end with a blank space',
         rule: (value: string) => {
