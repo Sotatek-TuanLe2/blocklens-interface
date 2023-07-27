@@ -22,24 +22,20 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
 }) => {
   const [editVisualization, setEditVisualization] =
     useState<VisualizationType>(visualization);
-  const dataColumn = editVisualization.options;
-
   const MAX_DECIMAL_VALUE = 9;
+  const optionsData = editVisualization.options;
 
-  const [rowNumber, setRowNumber] = useState<string | number>(
-    dataColumn?.rowNumber || '1',
-  );
-  const [decimals, setDecimals] = useState<string | number>(
-    dataColumn?.stringDecimal || '0',
-  );
-
-  const [suffix, setSuffix] = useState<string | number>(
-    dataColumn?.stringDecimal,
-  );
-
-  const [prefix, setPrefix] = useState<string | number>(
-    dataColumn?.stringPrefix,
-  );
+  const [counterForm, setCounterForm] = useState<{
+    rowNumber: string | number;
+    decimals: string | number;
+    suffix: string | number;
+    prefix: string | number;
+  }>({
+    rowNumber: editVisualization.options?.rowNumber || '1',
+    decimals: editVisualization.options?.stringDecimal || '0',
+    suffix: editVisualization.options?.stringDecimal,
+    prefix: editVisualization.options?.stringPrefix,
+  });
 
   const validator = useRef(
     createValidator({
@@ -93,7 +89,7 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
 
   const onChangeDecimals = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/[-e,\.]/g, '');
-    setDecimals(value);
+    setCounterForm((prevState) => ({ ...prevState, decimals: value }));
     if (+value < 0 || +value > MAX_DECIMAL_VALUE) {
       return;
     }
@@ -104,7 +100,7 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
 
   const onChangePrefix = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setPrefix(value);
+    setCounterForm((prevState) => ({ ...prevState, prefix: value }));
     onChangeCounterConfigurations({
       stringPrefix: value.trim(),
     });
@@ -112,7 +108,7 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
 
   const onChangeSuffix = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setSuffix(value);
+    setCounterForm((prevState) => ({ ...prevState, suffix: value }));
     onChangeCounterConfigurations({
       stringSuffix: value.trim(),
     });
@@ -120,7 +116,7 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
 
   const onChangeRownumber = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/[-e,\.]/g, '');
-    setRowNumber(value);
+    setCounterForm((prevState) => ({ ...prevState, rowNumber: value }));
     onChangeCounterConfigurations({
       rowNumber: value,
     });
@@ -168,7 +164,7 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
               <AppSelect2
                 className="select-table z-100"
                 size="medium"
-                value={dataColumn?.counterColName}
+                value={optionsData?.counterColName}
                 options={axisOptionsConfigs}
                 onChange={(e) =>
                   onChangeCounterConfigurations({ counterColName: e })
@@ -182,7 +178,7 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
                 placeholder="1"
                 size={'sm'}
                 className="input-table"
-                value={rowNumber}
+                value={counterForm.rowNumber}
                 onKeyDown={onKeyDown}
                 onChange={onChangeRownumber}
               />
@@ -190,8 +186,8 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
             <div className="main-toggle">
               <div className="label-toggle">Colored positive values</div>
               <Switch
-                isChecked={dataColumn?.coloredPositiveValues}
-                value={dataColumn?.coloredPositiveValues}
+                isChecked={optionsData?.coloredPositiveValues}
+                value={optionsData?.coloredPositiveValues}
                 onChange={(e) =>
                   onChangeCounterConfigurations({
                     coloredPositiveValues: e.target.checked,
@@ -203,8 +199,8 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
             <div className="main-toggle">
               <div className="label-toggle"> Colored negative values</div>
               <Switch
-                isChecked={dataColumn?.coloredNegativeValues}
-                value={dataColumn?.coloredNegativeValues}
+                isChecked={optionsData?.coloredNegativeValues}
+                value={optionsData?.coloredNegativeValues}
                 onChange={(e) =>
                   onChangeCounterConfigurations({
                     coloredNegativeValues: e.target.checked,
@@ -231,7 +227,7 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
                 placeholder="$"
                 size={'sm'}
                 className="input-table"
-                value={prefix}
+                value={counterForm.prefix}
                 onChange={onChangePrefix}
               />
             </div>
@@ -241,7 +237,7 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
                 placeholder="M"
                 size={'sm'}
                 className="input-table"
-                value={suffix}
+                value={counterForm.suffix}
                 onChange={onChangeSuffix}
               />
             </div>
@@ -251,7 +247,7 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
                 placeholder="Current price"
                 size={'sm'}
                 className="input-table"
-                value={dataColumn?.counterLabel}
+                value={optionsData?.counterLabel}
                 onChange={(e) =>
                   onChangeCounterConfigurations({
                     counterLabel: e.target.value,
@@ -266,7 +262,7 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
                 placeholder="1"
                 size={'sm'}
                 className="input-table"
-                value={decimals}
+                value={counterForm.decimals}
                 onKeyDown={onKeyDown}
                 onChange={onChangeDecimals}
                 validate={{
