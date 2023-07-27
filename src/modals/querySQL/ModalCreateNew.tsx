@@ -1,8 +1,7 @@
 import { Flex, Text } from '@chakra-ui/react';
 import React, { useState } from 'react';
-import { useLocation } from 'react-router';
+import { useHistory } from 'react-router';
 import { DashboardListIcon, QueriesIcon } from 'src/assets/icons';
-import useOriginPath from 'src/hooks/useOriginPath';
 import 'src/styles/components/BaseModal.scss';
 import { TYPE_OF_MODAL, ROUTES } from 'src/utils/common';
 import BaseModal from '../BaseModal';
@@ -14,11 +13,8 @@ interface IModalCreateNew {
 }
 
 const ModalCreateNew: React.FC<IModalCreateNew> = ({ open, onClose }) => {
-  const location = useLocation();
-  const { goWithOriginPath } = useOriginPath();
+  const history = useHistory();
   const [openModalCreateNew, setOpenModalCreateNew] = useState<boolean>(false);
-
-  const originPath = `${location.pathname}${location.search}`;
 
   const onToggleCreateDashboardModal = () =>
     setOpenModalCreateNew((prevState) => !prevState);
@@ -28,7 +24,7 @@ const ModalCreateNew: React.FC<IModalCreateNew> = ({ open, onClose }) => {
   };
 
   const onCreateDashboardSuccess = (response: any) => {
-    goWithOriginPath(`${ROUTES.MY_DASHBOARD}/${response.id}`, originPath);
+    history.push(`${ROUTES.MY_DASHBOARD}/${response.id}`);
   };
 
   return (
@@ -53,7 +49,7 @@ const ModalCreateNew: React.FC<IModalCreateNew> = ({ open, onClose }) => {
           </Flex>
           <div
             className="content-create-modal"
-            onClick={() => goWithOriginPath(ROUTES.MY_QUERY, originPath)}
+            onClick={() => history.push(ROUTES.MY_QUERY)}
           >
             <QueriesIcon />
             <Text className="title-content">Query</Text>

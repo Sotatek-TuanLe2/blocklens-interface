@@ -19,7 +19,9 @@ import { RootState } from 'src/store';
 const HomePage = () => {
   const { user } = useUser();
   const userStats = user?.getStats();
-  const { isLoadingGetStatisticsUser } = useSelector((state: RootState) => state.user);
+  const { isLoadingGetStatisticsUser } = useSelector(
+    (state: RootState) => state.user,
+  );
   const noData =
     !userStats?.totalProject && !userStats?.totalRegistrationWithoutAppId;
 
