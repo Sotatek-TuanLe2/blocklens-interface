@@ -312,13 +312,6 @@ const Sidebar: React.FC<SidebarProps> = ({
     [],
   );
 
-  // const getDataSearchExploreData = useCallback(
-  //   debounce(async (search) => {
-  //     fetchDataExploreData(search.trim());
-  //   }, 500),
-  //   [],
-  // );
-
   const filteredData = useMemo(() => {
     if (!searchExploreData) {
       return exploreData;
