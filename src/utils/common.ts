@@ -32,12 +32,17 @@ export interface IListAppResponse {
   totalAppActive?: number;
 }
 
-export interface SchemaType {
-  column_name: string;
+export interface ITableDetails {
   data_type: string;
+  column_name: string;
+}
+
+export interface SchemaType {
+  schema: string;
   full_name: string;
   namespace: string;
   table_name: string;
+  table_details: ITableDetails[];
 }
 
 export interface IPagination {

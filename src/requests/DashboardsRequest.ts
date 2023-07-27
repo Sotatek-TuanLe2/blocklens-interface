@@ -204,6 +204,11 @@ export default class DashboardsRequest extends BaseRequest {
     return this.get(url);
   }
 
+  getSchemas() {
+    const url = `/schemas`;
+    return this.get(url);
+  }
+
   getMyQueryById(params: DataQuery) {
     const url = '/queries/find-my-query';
     return this.get(url, params);
