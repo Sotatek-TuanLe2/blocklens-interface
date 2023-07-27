@@ -122,8 +122,6 @@ const CollapseExplore = ({
 
   const handleToggle = () => setShow(!show);
 
-  const schema = `${title}_mainnet`;
-
   return (
     <>
       <Box
@@ -132,8 +130,8 @@ const CollapseExplore = ({
         onClick={handleToggle}
       >
         <Flex alignItems={'center'} gap="10px">
-          <div className={getChainIconByChainName(schema)}></div>
-          <span>{title.toUpperCase()}</span>
+          <div className={getChainIconByChainName(title)}></div>
+          <span>{title.split('_')[0].toUpperCase()}</span>
         </Flex>
         <div className={show ? 'bg-arrow_icon collapsed' : 'bg-arrow_icon'} />
       </Box>
@@ -293,13 +291,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
   const fetchDataExploreData = async () => {
     try {
-      const tables = await rf.getRequest('DashboardsRequest').getSchemas();
-
-      const listChain: { [key: string]: any } = {};
-
-      for (const key in tables) {
-        listChain[key.split('_')[0]] = tables[key];
-      }
+      const listChain = await rf.getRequest('DashboardsRequest').getSchemas();
       setExploreData(listChain);
     } catch (error) {
       console.error(error);
