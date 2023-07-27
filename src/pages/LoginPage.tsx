@@ -13,13 +13,13 @@ import GuestPage from 'src/layouts/GuestPage';
 import { createValidator } from 'src/utils/utils-validator';
 import 'src/styles/pages/LoginPage.scss';
 import { useDispatch } from 'react-redux';
-import { useHistory, useLocation } from 'react-router';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { setUserAuth } from '../store/user';
 import { ROUTES } from 'src/utils/common';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import useRecaptcha, { RECAPTCHA_ACTIONS } from 'src/hooks/useRecaptcha';
+import useOriginPath from 'src/hooks/useOriginPath';
 
 interface IDataForm {
   email: string;
@@ -33,8 +33,7 @@ const LoginPage: FC = () => {
   };
 
   const dispatch = useDispatch();
-  const history = useHistory();
-  const location = useLocation();
+  const { goToOriginPath } = useOriginPath();
   const { getAndSetRecaptcha, resetRecaptcha } = useRecaptcha(
     RECAPTCHA_ACTIONS.LOGIN,
   );
@@ -60,7 +59,7 @@ const LoginPage: FC = () => {
       if (res) {
         dispatch(setUserAuth(res));
         toastSuccess({ message: 'Welcome to Blocklens!' });
-        history.push((location.state as any)?.originPath);
+        goToOriginPath();
       }
     } catch (e) {
       resetRecaptcha();

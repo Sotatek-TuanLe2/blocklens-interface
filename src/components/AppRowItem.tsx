@@ -17,6 +17,7 @@ import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import Jazzicon from 'react-jazzicon';
 import { generateAvatarFromId } from 'src/utils/common';
 import { IconEye } from 'src/assets/icons';
+import useOriginPath from 'src/hooks/useOriginPath';
 
 interface AppRowItemProps {
   isLoading?: boolean;
@@ -52,6 +53,7 @@ const AppRowItem: FC<AppRowItemProps> = ({
 }) => {
   const { isOpen, onToggle } = useDisclosure();
   const location = useLocation();
+  const { generateLinkObject } = useOriginPath();
 
   const _renderLoadingRow = () => {
     return (
@@ -110,12 +112,10 @@ const AppRowItem: FC<AppRowItemProps> = ({
         className="article-row"
       >
         <Link
-          to={{
-            pathname: toHref || '#',
-            state: {
-              originPath: `${location.pathname}${location.search}`,
-            },
-          }}
+          to={generateLinkObject(
+            toHref || '#',
+            `${location.pathname}${location.search}`,
+          )}
           style={{ width: 'calc(100% - 24px)', display: 'block' }}
         >
           <Flex align={'center'} py={'16px'}>
@@ -261,7 +261,10 @@ const AppRowItem: FC<AppRowItemProps> = ({
         <Flex align={'center'}>
           <Box flexGrow={1} maxW={'calc(100% - 50px)'} overflow={'hidden'}>
             <Link
-              to={toHref || '#'}
+              to={generateLinkObject(
+                toHref || '#',
+                `${location.pathname}${location.search}`,
+              )}
               style={{ width: '100%', display: 'block' }}
             >
               <Flex align={'center'}>

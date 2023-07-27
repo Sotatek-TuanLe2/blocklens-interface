@@ -23,7 +23,7 @@ import {
   useState,
 } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { Link, useHistory, useLocation, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import { CloseMenuIcon, CopyIcon } from 'src/assets/icons';
 import { AppButton, AppInput } from 'src/components';
 import AppQueryMenu, { QUERY_MENU_LIST } from 'src/components/AppQueryMenu';
@@ -42,6 +42,7 @@ import { getChainIconByChainName } from 'src/utils/utils-network';
 import { BROADCAST_FETCH_DASHBOARD } from './Dashboard';
 import { BROADCAST_ADD_TO_EDITOR, BROADCAST_FETCH_QUERY } from './Query';
 import { ChevronRightIcon, CloseIcon } from '@chakra-ui/icons';
+import useOriginPath from 'src/hooks/useOriginPath';
 
 export const BROADCAST_FETCH_WORKPLACE_DATA = 'FETCH_WORKPLACE_DATA';
 
@@ -216,8 +217,9 @@ const Sidebar: React.FC<SidebarProps> = ({
 
   const { queryId, dashboardId }: { queryId?: string; dashboardId?: string } =
     useParams();
-  const history = useHistory();
   const location = useLocation();
+  const { goWithOriginPath, goToOriginPath, generateLinkObject } =
+    useOriginPath();
 
   const [category, setCategory] = useState<string>(CATEGORIES.EXPLORE_DATA);
   const [searchValueWorkPlace, setSearchValueWorkPlace] = useState<string>('');
@@ -341,9 +343,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     setSearchExploreData(event.target.value);
   };
 
-  const handleCreateNewQuery = () => {
-    history.push(ROUTES.MY_QUERY);
-  };
+  const handleCreateNewQuery = () => goWithOriginPath(ROUTES.MY_QUERY);
 
   const getWorkplaceItemClassName = (id: string) => {
     return id === queryId || id === dashboardId
@@ -365,9 +365,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
   const onDeleteSuccess = async (item: IQuery | IDashboardDetail) => {
     if (item.id === queryId) {
-      location.state
-        ? history.push((location.state as any).originPath)
-        : history.goBack();
+      goToOriginPath();
     } else {
       fetchDataWorkPlace();
     }
@@ -500,12 +498,9 @@ const Sidebar: React.FC<SidebarProps> = ({
                       </div>
                       <Text isTruncated>
                         <Link
-                          to={{
-                            pathname: `${ROUTES.MY_QUERY}/${query.id}`,
-                            state: {
-                              originPath: (location.state as any)?.originPath,
-                            },
-                          }}
+                          to={generateLinkObject(
+                            `${ROUTES.MY_QUERY}/${query.id}`,
+                          )}
                         >
                           {query.name}
                         </Link>
