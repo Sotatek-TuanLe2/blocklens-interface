@@ -4,12 +4,12 @@ import { gapi } from 'gapi-script';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import rf from 'src/requests/RequestFactory';
 import { useDispatch } from 'react-redux';
-import { useHistory, useLocation } from 'react-router';
 import AppButton from './AppButton';
 import { Box } from '@chakra-ui/react';
 import config from 'src/config';
 import { setUserAuth } from '../store/user';
 import { getErrorMessage } from '../utils/utils-helper';
+import useOriginPath from 'src/hooks/useOriginPath';
 
 const clientId = config.auth.googleClientId;
 
@@ -19,8 +19,7 @@ interface IGoogleAuthButton {
 
 const GoogleAuthButton: FC<IGoogleAuthButton> = ({ children }) => {
   const dispatch = useDispatch();
-  const history = useHistory();
-  const location = useLocation();
+  const { goToOriginPath } = useOriginPath();
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -49,7 +48,7 @@ const GoogleAuthButton: FC<IGoogleAuthButton> = ({ children }) => {
 
       dispatch(setUserAuth(res));
       toastSuccess({ message: 'Welcome to Blocklens!' });
-      history.push((location.state as any)?.originPath);
+      goToOriginPath();
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
     }

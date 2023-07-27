@@ -5,7 +5,7 @@ import AceEditor from 'react-ace';
 import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/mode-sql';
 import 'ace-builds/src-noconflict/theme-tomorrow';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { AppLoadingTable } from 'src/components';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import {
@@ -29,6 +29,7 @@ import { Query } from 'src/utils/utils-query';
 import { AddChartIcon, QueryResultIcon } from 'src/assets/icons';
 import { STATUS } from 'src/utils/utils-webhook';
 import useRecaptcha from 'src/hooks/useRecaptcha';
+import useOriginPath from 'src/hooks/useOriginPath';
 import { isMobile } from 'react-device-detect';
 
 export const BROADCAST_FETCH_QUERY = 'FETCH_QUERY';
@@ -36,7 +37,7 @@ export const BROADCAST_ADD_TO_EDITOR = 'ADD_TO_EDITOR';
 
 const QueryPart: React.FC = () => {
   const { queryId } = useParams<{ queryId: string }>();
-  const history = useHistory();
+  const { goWithOriginPath } = useOriginPath();
   const { getAndSetRecaptcha } = useRecaptcha();
 
   const DEBOUNCE_TIME = 500;
@@ -101,7 +102,10 @@ const QueryPart: React.FC = () => {
   }, [queryValue]);
 
   const resetEditor = () => {
-    editorRef.current && editorRef.current.editor.setValue('');
+    if (editorRef.current) {
+      editorRef.current.editor.setValue('');
+      editorRef.current.editor.focus();
+    }
     setQueryResult([]);
     setQueryValue(null);
     setExpandLayout(LAYOUT_QUERY.FULL);
@@ -303,7 +307,7 @@ const QueryPart: React.FC = () => {
   const onSuccessCreateQuery = async (queryResponse: any) => {
     try {
       await executeQuery(queryResponse.id);
-      history.push(`${ROUTES.MY_QUERY}/${queryResponse.id}`);
+      goWithOriginPath(`${ROUTES.MY_QUERY}/${queryResponse.id}`);
       AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
     } catch (error) {
       console.error(error);

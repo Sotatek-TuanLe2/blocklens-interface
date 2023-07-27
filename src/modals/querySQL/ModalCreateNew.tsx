@@ -23,6 +23,10 @@ const ModalCreateNew: React.FC<IModalCreateNew> = ({ open, onClose }) => {
     onToggleCreateDashboardModal();
   };
 
+  const onCreateDashboardSuccess = (response: any) => {
+    history.push(`${ROUTES.MY_DASHBOARD}/${response.id}`);
+  };
+
   return (
     <BaseModal isOpen={open} onClose={onClose} size="md">
       <Flex
@@ -60,6 +64,7 @@ const ModalCreateNew: React.FC<IModalCreateNew> = ({ open, onClose }) => {
         type={TYPE_OF_MODAL.CREATE}
         open={openModalCreateNew}
         onClose={onToggleCreateDashboardModal}
+        onSuccess={onCreateDashboardSuccess}
       />
     </BaseModal>
   );
