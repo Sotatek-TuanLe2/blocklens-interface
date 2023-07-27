@@ -29,12 +29,7 @@ import { AppButton, AppInput } from 'src/components';
 import AppQueryMenu, { QUERY_MENU_LIST } from 'src/components/AppQueryMenu';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import rf from 'src/requests/RequestFactory';
-import {
-  INPUT_DEBOUNCE,
-  IPagination,
-  ROUTES,
-  SchemaType,
-} from 'src/utils/common';
+import { IPagination, ROUTES, SchemaType } from 'src/utils/common';
 import { IDashboardDetail, IQuery } from 'src/utils/query.type';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
 import { copyToClipboard } from 'src/utils/utils-helper';
@@ -48,17 +43,19 @@ export const BROADCAST_FETCH_WORKPLACE_DATA = 'FETCH_WORKPLACE_DATA';
 
 const ChainItem = ({
   chain,
-  onChangeSchemaDescribe,
-  schemaDescribe,
+  onChangeSelectedTable,
+  selectedTable,
 }: {
   chain: SchemaType;
-  onChangeSchemaDescribe: React.Dispatch<React.SetStateAction<SchemaType[]>>;
-  schemaDescribe: SchemaType[];
+  onChangeSelectedTable: React.Dispatch<
+    React.SetStateAction<SchemaType | null>
+  >;
+  selectedTable: SchemaType | null;
 }) => {
   const { pathname } = useLocation();
 
   const handleToggle = () => {
-    onChangeSchemaDescribe([chain]);
+    onChangeSelectedTable(chain);
   };
 
   const handleCopy = (query: string) => {
@@ -72,8 +69,7 @@ const ChainItem = ({
         <Flex flex={1} maxW={'80%'} gap="10px">
           <div
             className={
-              schemaDescribe.length &&
-              schemaDescribe[0]?.table_name === chain.table_name
+              !!selectedTable && selectedTable.table_name === chain.table_name
                 ? 'bg-chain_active'
                 : 'bg-chain_default'
             }
@@ -111,13 +107,15 @@ const ChainItem = ({
 const CollapseExplore = ({
   title,
   content,
-  onChangeSchemaDescribe,
-  schemaDescribe,
+  onChangeSelectedTable,
+  selectedTable,
 }: {
   title: string;
   content: SchemaType[];
-  onChangeSchemaDescribe: React.Dispatch<React.SetStateAction<SchemaType[]>>;
-  schemaDescribe: SchemaType[];
+  onChangeSelectedTable: React.Dispatch<
+    React.SetStateAction<SchemaType | null>
+  >;
+  selectedTable: SchemaType | null;
 }) => {
   const [show, setShow] = useState(false);
 
@@ -147,8 +145,8 @@ const CollapseExplore = ({
             <ChainItem
               chain={chain}
               key={index + 'chain'}
-              onChangeSchemaDescribe={onChangeSchemaDescribe}
-              schemaDescribe={schemaDescribe}
+              onChangeSelectedTable={onChangeSelectedTable}
+              selectedTable={selectedTable}
             />
           );
         })}
@@ -228,10 +226,12 @@ const Sidebar: React.FC<SidebarProps> = ({
   const [exploreData, setExploreData] = useState<{
     [key: string]: any;
   }>({});
-  const [schemaDescribe, setSchemaDescribe] = useState<SchemaType[]>([]);
+  const [selectedTable, setSelectedTable] = useState<SchemaType | null>(null);
   const [dataQueriesPagination, setDataQueriesPagination] = useState<
     IPagination | undefined
   >();
+
+  console.log('selectedTable', selectedTable);
 
   useEffect(() => {
     AppBroadcast.on(BROADCAST_FETCH_WORKPLACE_DATA, fetchDataWorkPlace);
@@ -534,11 +534,11 @@ const Sidebar: React.FC<SidebarProps> = ({
             <Tooltip
               placement={'top'}
               hasArrow
-              label={schemaDescribe[0].table_name}
+              label={selectedTable?.table_name}
               p={2}
             >
               <Text isTruncated maxW={'full'} className="info-detail-header">
-                {schemaDescribe[0].table_name}
+                {selectedTable?.table_name}
               </Text>
             </Tooltip>
           </Flex>
@@ -546,19 +546,23 @@ const Sidebar: React.FC<SidebarProps> = ({
             {location.pathname.includes(ROUTES.MY_QUERY) && (
               <CopyIcon
                 className="icon-header"
-                onClick={() => handleCopy(schemaDescribe[0].full_name)}
+                onClick={() => {
+                  if (selectedTable?.full_name) {
+                    handleCopy(selectedTable?.full_name);
+                  }
+                }}
               />
             )}
             <Box
               display={{ base: 'none', lg: 'block' }}
-              onClick={() => setSchemaDescribe([])}
+              onClick={() => setSelectedTable(null)}
             >
               <CloseMenuIcon className="icon-header" />
             </Box>
           </div>
         </div>
         <div className="chain-info-desc__content">
-          {schemaDescribe[0].table_details.map((item, index) => (
+          {selectedTable?.table_details.map((item, index) => (
             <Flex
               key={index + 'schema'}
               direction={'row'}
@@ -590,6 +594,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   };
 
   const _renderContentExplore = () => {
+    const isOpenTableDetails = !!selectedTable;
     return (
       <div className="workspace-page__sidebar__content__explore-wrap">
         <div className="workspace-page__sidebar__content__explore-wrap__title">
@@ -619,7 +624,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         {!!Object.keys(filteredData).length ? (
           <div
             className={`${
-              !!schemaDescribe.length
+              isOpenTableDetails
                 ? 'workspace-page__sidebar__content__explore-wrap__list-chain-half'
                 : 'workspace-page__sidebar__content__explore-wrap__list-chain'
             }`}
@@ -629,8 +634,8 @@ const Sidebar: React.FC<SidebarProps> = ({
                 key={index + 'explore'}
                 title={nameChain}
                 content={Object.values(filteredData)[index]}
-                onChangeSchemaDescribe={setSchemaDescribe}
-                schemaDescribe={schemaDescribe}
+                onChangeSelectedTable={setSelectedTable}
+                selectedTable={selectedTable}
               />
             ))}
           </div>
@@ -638,7 +643,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           _renderNoData()
         )}
 
-        {!!schemaDescribe.length && (
+        {isOpenTableDetails && (
           <Box
             display={{ base: 'none !important', lg: 'block !important' }}
             className="chain-info-desc"
@@ -649,10 +654,10 @@ const Sidebar: React.FC<SidebarProps> = ({
         {/*  */}
         <Box display={{ lg: 'none !important' }} className="m-chain-info-desc">
           <SideContentExplore
-            isOpen={!!schemaDescribe.length}
-            onClose={() => setSchemaDescribe([])}
+            isOpen={isOpenTableDetails}
+            onClose={() => setSelectedTable(null)}
           >
-            {!!schemaDescribe.length && _renderDetailExplore()}
+            {isOpenTableDetails && _renderDetailExplore()}
           </SideContentExplore>
         </Box>
         {/*  */}
@@ -715,7 +720,7 @@ const Sidebar: React.FC<SidebarProps> = ({
               mb={'20px'}
               onClick={() => {
                 setCategory(item.id);
-                setSchemaDescribe([]);
+                setSelectedTable(null);
                 onOpen();
               }}
             >
@@ -755,7 +760,7 @@ const Sidebar: React.FC<SidebarProps> = ({
               onClick={() => {
                 setCategory(item.id);
                 onToggleExpandSidebar && onToggleExpandSidebar(true);
-                setSchemaDescribe([]);
+                setSelectedTable(null);
               }}
             >
               {category === item.id ? item.activeIcon : item.icon}
