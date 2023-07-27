@@ -194,16 +194,6 @@ export default class DashboardsRequest extends BaseRequest {
 
   /* Query page */
 
-  getTables(params: TableParams) {
-    const url = '/databases/tables';
-    return this.get(url, { ...params });
-  }
-
-  getSchemaOfTable(params: SchemaParams) {
-    const url = `/databases/${params.namespace}/${params.tableName}/schema`;
-    return this.get(url);
-  }
-
   getSchemas() {
     const url = `/schemas`;
     return this.get(url);
