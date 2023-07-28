@@ -460,17 +460,20 @@ const AppUploadABI: FC<IAppUploadABI> = ({
   }, [ABIData, dataSelected]);
 
   const onClearFile = () => {
-    if (type !== TYPE_ABI.NFT) {
-      setDataSelected([]);
-      setABIData([]);
-      setFileSelected({});
-      inputRef.current.value = null;
+    setDataSelected([]);
+    setFileSelected({});
+    if (type == TYPE_ABI.NFT) {
+      setABIData(ERC721.abi);
       return;
     }
 
-    setFileSelected({});
-    setABIData(ERC721.abi);
-    inputRef.current.value = null;
+    if (type == TYPE_ABI.TOKEN) {
+      setABIData(ERC20.abi);
+      return;
+    }
+
+    setABIData([]);
+    return;
   };
 
   const _renderNameFile = () => {
