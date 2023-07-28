@@ -62,14 +62,40 @@ const PartFormAddressActivity: FC<IPartFormAddressActivity> = ({
   }, [addressesInput]);
 
   useEffect(() => {
+    onClearFile();
+    setAddressesValue('');
     setDataForm({
       ...dataForm,
       metadata: {
         ...dataForm.metadata,
-        addresses: addressValid,
+        addresses: [],
       },
     });
-  }, [addressesInput]);
+  }, [chain]);
+
+  useEffect(() => {
+    if (
+      !addressesInvalid ||
+      !addressesInvalid.length ||
+      addressesInvalid.every((item) => item.index === -1)
+    ) {
+      setDataForm({
+        ...dataForm,
+        metadata: {
+          ...dataForm.metadata,
+          addresses: addressValid,
+        },
+      });
+    } else {
+      setDataForm({
+        ...dataForm,
+        metadata: {
+          ...dataForm.metadata,
+          addresses: [],
+        },
+      });
+    }
+  }, [addressesInput, addressesInvalid]);
 
   const onClearFile = () => {
     if (!isInsertManuallyAddress) {
