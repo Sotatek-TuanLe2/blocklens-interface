@@ -112,11 +112,14 @@ const PartFormAddressActivity: FC<IPartFormAddressActivity> = ({
     const reader = new FileReader();
     reader.onload = (e: any) => {
       const data = e.target.result;
-      setAddressesValue(data?.split('\r\n').slice(0, -1).join('\n'));
+      const dataFormat = data?.split('\n').filter((item: string) => !!item);
+      setAddressesValue(
+        dataFormat.map((item: string) => item.replace('\r', '')).join('\n'),
+      );
       setFileSelected(dropFile || evt.target.files[0]);
     };
 
-    reader.readAsBinaryString(file);
+    reader.readAsText(file);
   };
 
   const _renderNameFile = () => {
