@@ -51,7 +51,15 @@ const _renderDetailWebhook = (type: string, webhook: IWebhook) => {
   }
 
   if (type === WEBHOOK_TYPES.APTOS_COIN_ACTIVITY) {
-    return <>{shortAddressType(webhook?.metadata?.coinType || '')} </>;
+    return (
+      <Box>
+        <Tooltip hasArrow placement="top" label={webhook?.metadata?.coinType}>
+          <Box overflow={'hidden'} textOverflow={'ellipsis'}>
+            {shortAddressType(webhook?.metadata?.coinType || '')}
+          </Box>
+        </Tooltip>
+      </Box>
+    );
   }
 
   if (type === WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY) {
@@ -156,10 +164,10 @@ const WebhookItem: FC<IWebhookItem> = ({ webhook, appInfo, type }) => {
         onClick={() => history.push(`/webhooks/${webhook.registrationId}`)}
       >
         <Td w="20%">{formatShortText(webhook.registrationId)}</Td>
-        <Td w="45%">
+        <Td w="35%">
           <Box className="short-text">{webhook.webhook}</Box>
         </Td>
-        <Td w="20%">{_renderDetailWebhook(type, webhook)}</Td>
+        <Td w="30%">{_renderDetailWebhook(type, webhook)}</Td>
         <Td w="15%" textAlign={'right'}>
           {_renderStatus(webhook.status)}
         </Td>
@@ -204,7 +212,7 @@ const ListWebhook: FC<IListWebhook> = ({
   }, [appInfo]);
 
   const _renderLoading = () => {
-    const widthColumns = [20, 45, 20, 15];
+    const widthColumns = [20, 35, 30, 15];
     return <AppLoadingTable widthColumns={widthColumns} />;
   };
 
@@ -215,8 +223,8 @@ const ListWebhook: FC<IListWebhook> = ({
       <Thead className="header-list">
         <Tr>
           <Th w="20%">ID</Th>
-          <Th w="45%">Webhook URL</Th>
-          <Th w="20%">{_renderTitleField(type)}</Th>
+          <Th w="35%">Webhook URL</Th>
+          <Th w="30%">{_renderTitleField(type)}</Th>
           <Th textAlign={'right'} w="15%">
             Status
           </Th>
