@@ -231,8 +231,6 @@ const Sidebar: React.FC<SidebarProps> = ({
     IPagination | undefined
   >();
 
-  console.log('selectedTable', selectedTable);
-
   useEffect(() => {
     AppBroadcast.on(BROADCAST_FETCH_WORKPLACE_DATA, fetchDataWorkPlace);
 
