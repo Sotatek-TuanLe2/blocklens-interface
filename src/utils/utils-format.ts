@@ -3,6 +3,7 @@ import moment from 'moment';
 import Decimal from 'decimal.js';
 import { isAddress, isHexString } from 'ethers/lib/utils';
 import { isNumber } from './utils-helper';
+import { isNull, isUndefined } from 'lodash';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const commaNumber = require('comma-number');
@@ -309,7 +310,7 @@ export const formatNumberWithDecimalDigits = (
 };
 
 export const formatDefaultValueChart = (value: string) => {
-  if (!value) {
+  if (isNull(value) || isUndefined(value)) {
     return '';
   }
   if (isNumber(value)) {

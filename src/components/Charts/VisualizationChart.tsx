@@ -305,11 +305,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
 
   const _renderZeroValueLine = () => {
     const [minValue] = yAxisDomain;
-
-    if (
-      new BigNumber(minValue).isNegative() ||
-      new BigNumber(minValue).isZero()
-    ) {
+    if (new BigNumber(minValue).isNegative()) {
       return (
         <ReferenceLine
           className="ref-line"
@@ -326,7 +322,7 @@ const VisualizationChart: React.FC<Props> = (props) => {
               type="number"
               fontWeight={400}
             >
-              <tspan x="44" dy="0.355em">
+              <tspan x="47" dy="0.355em">
                 0
               </tspan>
             </text>
