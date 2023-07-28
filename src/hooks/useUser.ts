@@ -11,7 +11,7 @@ const useUser = (): ReturnType => {
   const { user: userStore } = useSelector((state: RootState) => state);
 
   const user = useMemo(() => {
-    if (!userStore.userId) {
+    if (!userStore.info.email || !userStore.userId) {
       return null;
     }
     const newUser = new User(userStore);
