@@ -7,7 +7,7 @@ const env = process.env.REACT_APP_ENV || 'prod';
 const configs: any = {
   prod,
   dev,
-  preprod
+  preprod,
 };
 const config: Config = configs[env];
 
