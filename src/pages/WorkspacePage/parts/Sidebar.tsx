@@ -322,7 +322,11 @@ const Sidebar: React.FC<SidebarProps> = ({
         const element = exploreData[key];
         result[key] = [];
         for (const iterator of element) {
-          if (iterator.table_name.includes(searchExploreData)) {
+          if (
+            iterator.table_name
+              .toLowerCase()
+              .includes(searchExploreData.trim().toLowerCase())
+          ) {
             result[key].push(iterator);
           }
         }
