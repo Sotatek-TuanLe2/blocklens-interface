@@ -71,7 +71,7 @@ const PartFormNFTActivity: FC<IPartFormNFTActivity> = ({
           validate={{
             name: `tokenID`,
             validator: validator.current,
-            rule: ['maxCountIds', 'isIds'],
+            rule: 'isIds|maxCountIds'
           }}
         />
       </AppField>

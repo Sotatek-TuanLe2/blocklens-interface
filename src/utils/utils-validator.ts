@@ -134,7 +134,7 @@ export const createValidator = (options?: IOptions | undefined) => {
       maxCountIds: {
         message: 'TokenIds must contain not more than 20 elements',
         rule: (value: string) => {
-          const listTokenId = value.trim().split(', ');
+          const listTokenId = value.split(',').map((item) => item.trim());
           return listTokenId.length <= 20;
         },
       },
