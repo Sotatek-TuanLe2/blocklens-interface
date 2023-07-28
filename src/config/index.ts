@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import prod from './prod.json';
 import dev from './dev.json';
+import preprod from './preprod.json';
 
 const env = process.env.REACT_APP_ENV || 'prod';
 const configs: any = {
   prod,
   dev,
+  preprod
 };
 const config: Config = configs[env];
 
