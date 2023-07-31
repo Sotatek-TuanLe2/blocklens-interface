@@ -170,7 +170,7 @@ const ListSelect: FC<IListSelect> = ({
 
   return (
     <Flex className="box-events">
-      <Box className="label-events" width={'200px'}>
+      <Box className="label-events" width={'220px'}>
         {type === 'function' ? 'Exposed Functions' : 'Structs'}
       </Box>
       <Box ml={5} width="100%">
@@ -201,19 +201,27 @@ const ListSelect: FC<IListSelect> = ({
             </Checkbox>
           )}
 
-          {dataShow.map((item: IABIItem, index: number) => (
-            <Box key={index} my={2}>
-              <Checkbox
-                size="lg"
-                isDisabled={isViewOnly}
-                value={item.name}
-                isChecked={itemSelected.includes(item.name)}
-                onChange={(e) => onChangeSelect(e, item.name)}
-              >
-                <Flex className="abi-option">{formatFunctions(item.name)}</Flex>
-              </Checkbox>
-            </Box>
-          ))}
+          {!!dataShow.length ? (
+            dataShow.map((item: IABIItem, index: number) => (
+              <Box key={index} my={2}>
+                <Checkbox
+                  size="lg"
+                  isDisabled={isViewOnly}
+                  value={item.name}
+                  isChecked={itemSelected.includes(item.name)}
+                  onChange={(e) => onChangeSelect(e, item.name)}
+                >
+                  <Flex className="abi-option">
+                    {formatFunctions(item.name)}
+                  </Flex>
+                </Checkbox>
+              </Box>
+            ))
+          ) : (
+            <Flex justifyContent={'center'} mt={10}>
+              <Box> No data...</Box>
+            </Flex>
+          )}
         </Scrollbars>
       </Box>
     </Flex>
