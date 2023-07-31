@@ -100,9 +100,18 @@ const PartFormModuleActivityAptos: FC<PartFormContractAptosProps> = ({
         setDataAddress,
         setIsLoading,
       ).then();
+    } else {
+      setDataAddress(null);
     }
     onChangeForm(payloadForm);
   }, [payloadForm.metadata?.address]);
+
+  useEffect(() => {
+    if (!(inputRef.current as any).value) {
+      console.log(dataAddress, 'dsff');
+      setDataAddress(null);
+    }
+  }, [(inputRef?.current as any)?.value]);
 
   const _renderABI = () => {
     if (dataAddress) {
@@ -120,14 +129,12 @@ const PartFormModuleActivityAptos: FC<PartFormContractAptosProps> = ({
   };
 
   const onChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
-    if (!isValidAddressSUIAndAptos(e.target.value.trim())) {
-      setIsLoading(false);
-      return;
-    }
+    (inputRef.current as any).value = e.target.value.trim();
 
-    if (e.target.value.trim()) {
-      setIsLoading(true);
-    } else {
+    if (
+      !e.target.value.trim() ||
+      !isValidAddressSUIAndAptos(e.target.value.trim())
+    ) {
       setDataAddress(null);
       setPayloadForm({
         ...payloadForm,
@@ -137,7 +144,10 @@ const PartFormModuleActivityAptos: FC<PartFormContractAptosProps> = ({
         },
       });
       setIsLoading(false);
+      return;
     }
+
+    setIsLoading(true);
     debouncedOnChange(e);
   };
 
@@ -145,7 +155,7 @@ const PartFormModuleActivityAptos: FC<PartFormContractAptosProps> = ({
     <Box width={'100%'}>
       <AppField label={'Address'} customWidth={'100%'} isRequired>
         <AppInput
-          defaultValue={payloadForm.metadata?.address}
+          defaultValue={payloadForm.metadata?.address?.trim()}
           ref={inputRef}
           onChange={(e) => onChangeInput(e)}
           validate={{
