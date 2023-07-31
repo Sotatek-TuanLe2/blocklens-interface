@@ -106,12 +106,6 @@ const PartFormModuleActivityAptos: FC<PartFormContractAptosProps> = ({
     onChangeForm(payloadForm);
   }, [payloadForm.metadata?.address]);
 
-  useEffect(() => {
-    if (!(inputRef.current as any).value) {
-      console.log(dataAddress, 'dsff');
-      setDataAddress(null);
-    }
-  }, [(inputRef?.current as any)?.value]);
 
   const _renderABI = () => {
     if (dataAddress) {
