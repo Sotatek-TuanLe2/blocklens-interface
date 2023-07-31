@@ -142,7 +142,7 @@ const PartFormTokenActivityAptos: FC<IPartFormTokenActivityAptos> = ({
               ...dataForm,
               metadata: {
                 ...dataForm.metadata,
-                collectionName: e.target.value,
+                collectionName: e.target.value.trimStart(),
               },
             });
           }}
