@@ -106,7 +106,6 @@ const PartFormModuleActivityAptos: FC<PartFormContractAptosProps> = ({
     onChangeForm(payloadForm);
   }, [payloadForm.metadata?.address]);
 
-
   const _renderABI = () => {
     if (dataAddress) {
       return (

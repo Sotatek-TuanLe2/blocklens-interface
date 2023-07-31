@@ -53,7 +53,7 @@ const PartFormCoinActivityAptos: FC<IPartFormCoinActivityAptos> = ({
           validate={{
             name: `coinType`,
             validator: validator.current,
-            rule: 'required',
+            rule: 'required|isCoinType',
           }}
         />
       </AppField>

@@ -124,6 +124,13 @@ export const createValidator = (options?: IOptions | undefined) => {
           return addressPattern.test(value);
         },
       },
+      isCoinType: {
+        message: 'Invalid format for coin type',
+        rule: (value: string) => {
+          const addressPattern = /^0x([\w]+)::([\w]+)::([\w]+)$/;
+          return addressPattern.test(value);
+        },
+      },
 
       formatPassword: {
         message: 'Your password can’t start or end with a blank space',
