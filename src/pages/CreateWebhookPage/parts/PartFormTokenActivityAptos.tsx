@@ -38,9 +38,6 @@ export const TOKEN_EVENTS = [
     name: '0x3::token::BurnTokenEvent',
   },
   {
-    name: '0x3::token::CreateCollectionEvent',
-  },
-  {
     name: '0x3::token::MutateTokenPropertyMapEvent',
   },
 ];
