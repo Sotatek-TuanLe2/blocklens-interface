@@ -22,7 +22,7 @@ export default class NotificationRequest extends BaseRequest {
   }
 
   getUserStats(params: any) {
-    const url = `/metrics/user-metrics`;
+    const url = `/activities/statistics`;
     return this.get(url, params);
   }
 
