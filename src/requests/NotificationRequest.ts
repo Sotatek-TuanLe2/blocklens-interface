@@ -12,17 +12,17 @@ export default class NotificationRequest extends BaseRequest {
   }
 
   getAppStats(projectId: string, params: any) {
-    const url = `/metrics/project/${projectId}/metrics`;
+    const url = `/project-${projectId}/metrics`;
     return this.get(url, params);
   }
 
   getWebhookStats(registrationId: string, params: any) {
-    const url = `/metrics/registration/${registrationId}/metrics`;
+    const url = `/webhook-${registrationId}/metrics`;
     return this.get(url, { ...params, registrationId });
   }
 
   getUserStats(params: any) {
-    const url = `/activities/statistics`;
+    const url = `/user/metrics`;
     return this.get(url, params);
   }
 
@@ -32,7 +32,7 @@ export default class NotificationRequest extends BaseRequest {
   }
 
   getAppMetricToday(params: any) {
-    const url = `/metrics/project/metrics-today`;
+    const url = `/project/metrics-today`;
     return this.get(url, params);
   }
 
