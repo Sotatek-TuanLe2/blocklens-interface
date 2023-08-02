@@ -63,7 +63,7 @@ const ListItem: React.FC<IListItem> = (props) => {
   };
 
   const _renderDropdown = (isNavMenu?: boolean) => {
-    const menu = [QUERY_MENU_LIST.SHARE];
+    const menu = [QUERY_MENU_LIST.SAVE, QUERY_MENU_LIST.SHARE];
     return (
       !!item && (
         <>

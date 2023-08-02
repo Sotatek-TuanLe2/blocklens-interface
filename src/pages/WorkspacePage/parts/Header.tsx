@@ -102,16 +102,23 @@ const Header: React.FC<IHeaderProps> = (props) => {
   const menuAppQuery = () => {
     if (type === LIST_ITEM_TYPE.DASHBOARDS) {
       return !needAuthentication
-        ? [QUERY_MENU_LIST.SHARE]
+        ? [QUERY_MENU_LIST.SAVE, QUERY_MENU_LIST.SHARE]
         : [
-            QUERY_MENU_LIST.DELETE,
+            QUERY_MENU_LIST.SAVE,
             QUERY_MENU_LIST.SETTING,
             QUERY_MENU_LIST.SHARE,
+            QUERY_MENU_LIST.DELETE,
           ];
     } else {
       return !needAuthentication
-        ? [QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.SHARE]
-        : undefined;
+        ? [QUERY_MENU_LIST.FORK, QUERY_MENU_LIST.SAVE, QUERY_MENU_LIST.SHARE]
+        : [
+            QUERY_MENU_LIST.FORK,
+            QUERY_MENU_LIST.SAVE,
+            QUERY_MENU_LIST.SETTING,
+            QUERY_MENU_LIST.SHARE,
+            QUERY_MENU_LIST.DELETE,
+          ];
     }
   };
 

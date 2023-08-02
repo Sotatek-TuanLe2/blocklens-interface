@@ -26,11 +26,12 @@ import {
   IconDotMore,
   SettingQueryIcon,
   ShareQueryIcon,
+  UnsavedIcon,
 } from '../assets/icons';
 import AppButton from './AppButton';
 
 interface IAppQueryMenu {
-  menu?: string[];
+  menu: string[];
   item: IQuery | IDashboardDetail;
   itemType: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
   onDeleteSuccess?: (item: IQuery | IDashboardDetail) => Promise<void>;
@@ -43,6 +44,7 @@ interface IAppQueryMenu {
 }
 
 export const QUERY_MENU_LIST = {
+  SAVE: 'Save',
   FORK: 'Fork',
   SETTING: 'Setting',
   SHARE: 'Share',
@@ -51,12 +53,7 @@ export const QUERY_MENU_LIST = {
 
 const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
   const {
-    menu = [
-      QUERY_MENU_LIST.FORK,
-      QUERY_MENU_LIST.SETTING,
-      QUERY_MENU_LIST.SHARE,
-      QUERY_MENU_LIST.DELETE,
-    ],
+    menu,
     itemType,
     onForkSuccess = () => null,
     onDeleteSuccess = () => null,
@@ -86,9 +83,24 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
     setOpenModalFork((prevState) => !prevState);
   };
 
+  const onSave = async () => {
+    if (!user) {
+      return goWithOriginPath(
+        ROUTES.LOGIN,
+        `${location.pathname}${location.search}`,
+      );
+    }
+    true
+      ? toastSuccess({ message: 'Added to saved list' })
+      : toastSuccess({ message: 'Removed from saved list' });
+  };
+
   const onForkQuery = async () => {
     if (!user) {
-      return goWithOriginPath(ROUTES.LOGIN, location.pathname);
+      return goWithOriginPath(
+        ROUTES.LOGIN,
+        `${location.pathname}${location.search}`,
+      );
     }
 
     try {
@@ -108,39 +120,50 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
   };
 
   const generateMenu = () => {
-    let itemList: {
+    const itemList: {
       id: string;
       label: string;
       icon: React.ReactNode;
       onClick: () => any;
-    }[] = [
-      {
-        id: QUERY_MENU_LIST.FORK,
-        label: QUERY_MENU_LIST.FORK,
-        icon: <ForkQueryIcon />,
-        onClick: onForkQuery,
-      },
-      {
-        id: QUERY_MENU_LIST.SETTING,
-        label: QUERY_MENU_LIST.SETTING,
-        icon: <SettingQueryIcon />,
-        onClick: onToggleModalSetting,
-      },
-      {
-        id: QUERY_MENU_LIST.SHARE,
-        label: QUERY_MENU_LIST.SHARE,
-        icon: <ShareQueryIcon />,
-        onClick: onToggleModalShare,
-      },
-      {
-        id: QUERY_MENU_LIST.DELETE,
-        label: QUERY_MENU_LIST.DELETE,
-        icon: <DeleteQueryIcon />,
-        onClick: onToggleModalDelete,
-      },
-    ];
-
-    itemList = itemList.filter((item) => menu.includes(item.id));
+    }[] = menu.map((id) => {
+      switch (id) {
+        case QUERY_MENU_LIST.FORK:
+          return {
+            id: QUERY_MENU_LIST.FORK,
+            label: QUERY_MENU_LIST.FORK,
+            icon: <ForkQueryIcon />,
+            onClick: onForkQuery,
+          };
+        case QUERY_MENU_LIST.FORK:
+          return {
+            id: QUERY_MENU_LIST.SETTING,
+            label: QUERY_MENU_LIST.SETTING,
+            icon: <SettingQueryIcon />,
+            onClick: onToggleModalSetting,
+          };
+        case QUERY_MENU_LIST.SHARE:
+          return {
+            id: QUERY_MENU_LIST.SHARE,
+            label: QUERY_MENU_LIST.SHARE,
+            icon: <ShareQueryIcon />,
+            onClick: onToggleModalShare,
+          };
+        case QUERY_MENU_LIST.SAVE:
+          return {
+            id: QUERY_MENU_LIST.SAVE,
+            label: true ? QUERY_MENU_LIST.SAVE : 'Unsave',
+            icon: true ? <UnsavedIcon /> : <UnsavedIcon />,
+            onClick: onSave,
+          };
+        default:
+          return {
+            id: QUERY_MENU_LIST.DELETE,
+            label: QUERY_MENU_LIST.DELETE,
+            icon: <DeleteQueryIcon />,
+            onClick: onToggleModalDelete,
+          };
+      }
+    });
 
     return itemList;
   };

@@ -2,7 +2,12 @@ import { Box, Flex, SimpleGrid } from '@chakra-ui/react';
 import _ from 'lodash';
 import { useCallback, useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
-import { DashboardListIcon, IconMywork, QueriesIcon } from 'src/assets/icons';
+import {
+  DashboardListIcon,
+  QueriesIcon,
+  IconMywork,
+  SavedListIcon,
+} from 'src/assets/icons';
 import { AppDataTable, RequestParams } from 'src/components';
 import AppTabs, { ITabs } from 'src/components/AppTabs';
 import { DisplayType } from 'src/constants';
@@ -100,11 +105,12 @@ const DashboardsPage: React.FC = () => {
         );
         break;
       case LIST_ITEM_TYPE.MYWORK:
+      case LIST_ITEM_TYPE.SAVED:
         if (!user) {
           history.push(ROUTES.HOME);
           break;
         }
-        setTabIndex(2);
+        setTabIndex(tabId === LIST_ITEM_TYPE.MYWORK ? 2 : 3);
         myWork === ITEM_TYPE.DASHBOARDS
           ? setDashboardParams(() =>
               _.omitBy(
@@ -130,7 +136,7 @@ const DashboardsPage: React.FC = () => {
       default:
         break;
     }
-  }, [searchUrl, tab, itemType]);
+  }, [searchUrl, tab, itemType, user]);
 
   useEffect(() => {
     // user logs out when in My Work tab
@@ -360,35 +366,68 @@ const DashboardsPage: React.FC = () => {
     ];
 
     if (!!user) {
-      tabs.push({
-        id: LIST_ITEM_TYPE.MYWORK,
-        name: 'My Work',
-        icon: <IconMywork />,
-        content: _renderContentTable(
-          <>
-            {itemType === ITEM_TYPE.DASHBOARDS && (
-              <Box>
-                {_renderTable(
-                  dashboardParams,
-                  fetchMyDashboards,
-                  LIST_ITEM_TYPE.MYWORK,
-                  ITEM_TYPE.DASHBOARDS,
+      tabs.push(
+        ...[
+          {
+            id: LIST_ITEM_TYPE.MYWORK,
+            name: 'My Work',
+            icon: <IconMywork />,
+            content: _renderContentTable(
+              <>
+                {itemType === ITEM_TYPE.DASHBOARDS && (
+                  <Box>
+                    {_renderTable(
+                      dashboardParams,
+                      fetchMyDashboards,
+                      LIST_ITEM_TYPE.MYWORK,
+                      ITEM_TYPE.DASHBOARDS,
+                    )}
+                  </Box>
                 )}
-              </Box>
-            )}
-            {itemType === ITEM_TYPE.QUERIES && (
-              <Box>
-                {_renderTable(
-                  queryParams,
-                  fetchMyQueries,
-                  LIST_ITEM_TYPE.MYWORK,
-                  ITEM_TYPE.QUERIES,
+                {itemType === ITEM_TYPE.QUERIES && (
+                  <Box>
+                    {_renderTable(
+                      queryParams,
+                      fetchMyQueries,
+                      LIST_ITEM_TYPE.MYWORK,
+                      ITEM_TYPE.QUERIES,
+                    )}
+                  </Box>
                 )}
-              </Box>
-            )}
-          </>,
-        ),
-      });
+              </>,
+            ),
+          },
+          {
+            id: LIST_ITEM_TYPE.SAVED,
+            name: 'Saved',
+            icon: <SavedListIcon />,
+            content: _renderContentTable(
+              <>
+                {itemType === ITEM_TYPE.DASHBOARDS && (
+                  <Box>
+                    {_renderTable(
+                      dashboardParams,
+                      fetchMyDashboards,
+                      LIST_ITEM_TYPE.MYWORK,
+                      ITEM_TYPE.DASHBOARDS,
+                    )}
+                  </Box>
+                )}
+                {itemType === ITEM_TYPE.QUERIES && (
+                  <Box>
+                    {_renderTable(
+                      queryParams,
+                      fetchMyQueries,
+                      LIST_ITEM_TYPE.MYWORK,
+                      ITEM_TYPE.QUERIES,
+                    )}
+                  </Box>
+                )}
+              </>,
+            ),
+          },
+        ],
+      );
     }
     return tabs;
   };
