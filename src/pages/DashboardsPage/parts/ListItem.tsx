@@ -6,7 +6,7 @@ import { ROUTES } from 'src/utils/common';
 import { IDashboardDetail, IQuery } from 'src/utils/query.type';
 import { Dashboard } from 'src/utils/utils-dashboard';
 import { Query } from 'src/utils/utils-query';
-import { LIST_ITEM_TYPE, MY_WORK_TYPE } from '..';
+import { LIST_ITEM_TYPE, ITEM_TYPE } from '..';
 import { Box } from '@chakra-ui/react';
 import { useMemo } from 'react';
 import { formatNumber } from 'src/utils/utils-format';
@@ -15,13 +15,13 @@ import { generatePositiveRandomNumber } from 'src/utils/utils-helper';
 interface IListItem {
   isLoading?: boolean;
   type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
-  myWorkType?: typeof MY_WORK_TYPE[keyof typeof MY_WORK_TYPE];
+  itemType?: typeof ITEM_TYPE[keyof typeof ITEM_TYPE];
   item?: IDashboardDetail | IQuery;
   displayed?: string;
 }
 
 const ListItem: React.FC<IListItem> = (props) => {
-  const { type, myWorkType, item, displayed, isLoading } = props;
+  const { type, itemType, item, displayed, isLoading } = props;
 
   const randomViews = useMemo(
     () => formatNumber(generatePositiveRandomNumber(1000), 2),
@@ -32,7 +32,7 @@ const ListItem: React.FC<IListItem> = (props) => {
     return displayed === DisplayType.Grid ? (
       <AppGridItem isLoading />
     ) : (
-      <AppRowItem isLoading type={type} myWorkType={myWorkType} />
+      <AppRowItem isLoading type={type} itemType={itemType} />
     );
   }
 
@@ -49,7 +49,7 @@ const ListItem: React.FC<IListItem> = (props) => {
       case LIST_ITEM_TYPE.QUERIES:
         return `${ROUTES.QUERY}/${itemClass.getId()}`;
       case LIST_ITEM_TYPE.MYWORK:
-        if (myWorkType === MY_WORK_TYPE.DASHBOARDS) {
+        if (itemType === ITEM_TYPE.DASHBOARDS) {
           return `${ROUTES.MY_DASHBOARD}/${itemClass.getId()}`;
         }
         return `${ROUTES.MY_QUERY}/${itemClass.getId()}`;
@@ -59,7 +59,7 @@ const ListItem: React.FC<IListItem> = (props) => {
   };
 
   const getTypeItem = () => {
-    return type === LIST_ITEM_TYPE.MYWORK ? myWorkType || '' : type;
+    return type === LIST_ITEM_TYPE.MYWORK ? itemType || '' : type;
   };
 
   const _renderDropdown = (isNavMenu?: boolean) => {
@@ -129,7 +129,7 @@ const ListItem: React.FC<IListItem> = (props) => {
           srcAvatar={itemClass.getUserAvatar()}
           userId={itemClass.getUserId()}
           type={type}
-          myWorkType={myWorkType}
+          itemType={itemType}
         />
       )}
     </>

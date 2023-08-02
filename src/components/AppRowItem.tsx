@@ -31,7 +31,7 @@ interface AppRowItemProps {
   tagList?: string[];
   shareComponent?: ReactNode;
   type?: string;
-  myWorkType?: string;
+  itemType?: string;
   userId?: string;
   views?: number | string;
 }
@@ -47,7 +47,7 @@ const AppRowItem: FC<AppRowItemProps> = ({
   tagList,
   shareComponent,
   type,
-  myWorkType,
+  itemType,
   userId,
   views,
 }) => {
@@ -69,7 +69,7 @@ const AppRowItem: FC<AppRowItemProps> = ({
         <Flex align={'center'} w={'calc(100% - 24px)'}>
           <Flex align={'center'} w={'24%'} pr={2.5}>
             {(type === LIST_ITEM_TYPE.DASHBOARDS ||
-              myWorkType === LIST_ITEM_TYPE.DASHBOARDS) && (
+              itemType === LIST_ITEM_TYPE.DASHBOARDS) && (
               <Skeleton w={'74px'} h={'48px'} mr={'10px'} rounded={'6px'} />
             )}
             <Skeleton h={'18px'} w={'150px'} rounded={'9px'} />
@@ -121,7 +121,7 @@ const AppRowItem: FC<AppRowItemProps> = ({
           <Flex align={'center'} py={'16px'}>
             <Flex align={'center'} w={'24%'} pr={2.5} overflow={'hidden'}>
               {(type === LIST_ITEM_TYPE.DASHBOARDS ||
-                myWorkType === LIST_ITEM_TYPE.DASHBOARDS) && (
+                itemType === LIST_ITEM_TYPE.DASHBOARDS) && (
                 <Box
                   style={{ aspectRatio: '74 / 48' }}
                   w={'74px'}
@@ -225,7 +225,7 @@ const AppRowItem: FC<AppRowItemProps> = ({
           <Box flexGrow={1}>
             <Flex align={'center'}>
               {(type === LIST_ITEM_TYPE.DASHBOARDS ||
-                myWorkType === LIST_ITEM_TYPE.DASHBOARDS) && (
+                itemType === LIST_ITEM_TYPE.DASHBOARDS) && (
                 <Skeleton w={'74px'} h={'48px'} mr={'10px'} rounded={'6px'} />
               )}
               <Box flexGrow={1}>
@@ -269,7 +269,7 @@ const AppRowItem: FC<AppRowItemProps> = ({
             >
               <Flex align={'center'}>
                 {(type === LIST_ITEM_TYPE.DASHBOARDS ||
-                  myWorkType === LIST_ITEM_TYPE.DASHBOARDS) && (
+                  itemType === LIST_ITEM_TYPE.DASHBOARDS) && (
                   <Box
                     style={{ aspectRatio: '74 / 48' }}
                     w={'74px'}
@@ -293,7 +293,7 @@ const AppRowItem: FC<AppRowItemProps> = ({
                       className="article-name"
                       mb={
                         type === LIST_ITEM_TYPE.DASHBOARDS ||
-                        myWorkType === LIST_ITEM_TYPE.DASHBOARDS
+                        itemType === LIST_ITEM_TYPE.DASHBOARDS
                           ? '2px'
                           : '4px'
                       }
