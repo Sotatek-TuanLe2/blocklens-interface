@@ -21,7 +21,7 @@ import useUser from 'src/hooks/useUser';
 import ModalCreateNew from 'src/modals/querySQL/ModalCreateNew';
 import rf from 'src/requests/RequestFactory';
 import { ROUTES } from 'src/utils/common';
-import { HOME_URL_PARAMS, LIST_ITEM_TYPE, MY_WORK_TYPE } from '..';
+import { HOME_URL_PARAMS, LIST_ITEM_TYPE, ITEM_TYPE } from '..';
 import { AddIcon } from '@chakra-ui/icons';
 import { IDataMenu } from '../../../utils/utils-app';
 
@@ -29,7 +29,7 @@ interface IFilterSearch {
   type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
   displayed: string;
   setDisplayed: (display: string) => void;
-  myWorkType: string;
+  itemType: string;
 }
 
 const optionType: IOption[] = [
@@ -41,7 +41,7 @@ const MAX_TRENDING_TAGS = 3;
 
 const FilterSearch: React.FC<IFilterSearch> = (props) => {
   const { isOpen, onToggle } = useDisclosure();
-  const { type, displayed, setDisplayed, myWorkType } = props;
+  const { type, displayed, setDisplayed, itemType } = props;
   const history = useHistory();
   const { user } = useUser();
 
@@ -61,12 +61,12 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
 
   const menuDashboardQueries: IDataMenu[] = [
     {
-      value: MY_WORK_TYPE.DASHBOARDS,
+      value: ITEM_TYPE.DASHBOARDS,
       icon: <DashboardListIcon />,
       label: 'Dashboard',
     },
     {
-      value: MY_WORK_TYPE.QUERIES,
+      value: ITEM_TYPE.QUERIES,
       icon: <QueriesIcon />,
       label: 'Queries',
     },
@@ -140,10 +140,10 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
     });
   };
 
-  const onChangeMyWorkType = (value: string) => {
-    searchParams.delete(HOME_URL_PARAMS.MYWORK);
-    if (value !== MY_WORK_TYPE.DASHBOARDS) {
-      searchParams.set(HOME_URL_PARAMS.MYWORK, value);
+  const onChangeItemType = (value: string) => {
+    searchParams.delete(HOME_URL_PARAMS.ITEM_TYPE);
+    if (value !== ITEM_TYPE.DASHBOARDS) {
+      searchParams.set(HOME_URL_PARAMS.ITEM_TYPE, value);
     }
     history.push({
       pathname: ROUTES.HOME,
@@ -153,10 +153,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
 
   const fetchTagsTrending = async () => {
     try {
-      if (
-        isDashboard ||
-        (isMyWork && myWorkType === LIST_ITEM_TYPE.DASHBOARDS)
-      ) {
+      if (isDashboard || (isMyWork && itemType === LIST_ITEM_TYPE.DASHBOARDS)) {
         const res: any = await rf
           .getRequest('DashboardsRequest')
           .getPublicDashboardTagsTrending();
@@ -176,7 +173,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
 
   useEffect(() => {
     fetchTagsTrending();
-  }, [myWorkType, type]);
+  }, [itemType, type]);
 
   return (
     <>
@@ -196,8 +193,8 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
             <Flex flexGrow={{ base: 1, lg: 0 }} maxW={'50%'}>
               <AppMenu
                 data={menuDashboardQueries}
-                value={myWorkType}
-                setValue={onChangeMyWorkType}
+                value={itemType}
+                setValue={onChangeItemType}
                 minW={{ base: 'auto', lg: '179px' }}
               />
             </Flex>

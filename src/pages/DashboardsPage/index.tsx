@@ -22,16 +22,17 @@ export const LIST_ITEM_TYPE = {
   DASHBOARDS: 'dashboards',
   QUERIES: 'queries',
   MYWORK: 'my-work',
+  SAVED: 'saved',
 };
 
-export const MY_WORK_TYPE = {
+export const ITEM_TYPE = {
   DASHBOARDS: 'dashboards',
   QUERIES: 'queries',
 };
 
 export const HOME_URL_PARAMS = {
   TAB: 'tab',
-  MYWORK: 'my-work',
+  ITEM_TYPE: 'type',
   SEARCH: 'search',
   SORT: 'sort',
   CHAIN: 'chain',
@@ -52,7 +53,7 @@ const DashboardsPage: React.FC = () => {
   const [tabIndex, setTabIndex] = useState<number>(0);
   const [dashboardParams, setDashboardParams] = useState<IDashboardParams>({});
   const [queryParams, setQueryParams] = useState<IQueriesParams>({});
-  const [myWorkType, setMyWorkType] = useState<string>(MY_WORK_TYPE.DASHBOARDS);
+  const [itemType, setItemType] = useState<string>(ITEM_TYPE.DASHBOARDS);
 
   const [displayed, setDisplayed] = useState<string>(DisplayType.Grid);
 
@@ -60,14 +61,14 @@ const DashboardsPage: React.FC = () => {
     const tabId =
       searchParams.get(HOME_URL_PARAMS.TAB) || LIST_ITEM_TYPE.DASHBOARDS;
     const myWork =
-      searchParams.get(HOME_URL_PARAMS.MYWORK) || MY_WORK_TYPE.DASHBOARDS;
+      searchParams.get(HOME_URL_PARAMS.ITEM_TYPE) || ITEM_TYPE.DASHBOARDS;
     const search = searchParams.get(HOME_URL_PARAMS.SEARCH) || '';
     const sort = searchParams.get(HOME_URL_PARAMS.SORT) || '';
     const chain = searchParams.get(HOME_URL_PARAMS.CHAIN) || '';
     const tag = searchParams.get(HOME_URL_PARAMS.TAG) || '';
 
     setTab(tabId);
-    setMyWorkType(myWork);
+    setItemType(myWork);
 
     switch (tabId) {
       case LIST_ITEM_TYPE.DASHBOARDS:
@@ -104,7 +105,7 @@ const DashboardsPage: React.FC = () => {
           break;
         }
         setTabIndex(2);
-        myWork === MY_WORK_TYPE.DASHBOARDS
+        myWork === ITEM_TYPE.DASHBOARDS
           ? setDashboardParams(() =>
               _.omitBy(
                 {
@@ -129,7 +130,7 @@ const DashboardsPage: React.FC = () => {
       default:
         break;
     }
-  }, [searchUrl, tab, myWorkType]);
+  }, [searchUrl, tab, itemType]);
 
   useEffect(() => {
     // user logs out when in My Work tab
@@ -217,14 +218,14 @@ const DashboardsPage: React.FC = () => {
               type={tab}
               displayed={displayed}
               setDisplayed={setDisplayed}
-              myWorkType={myWorkType}
+              itemType={itemType}
             />
           </Box>
           <Box>{appTable}</Box>
         </>
       );
     },
-    [tab, myWorkType, displayed],
+    [tab, itemType, displayed],
   );
 
   const _renderBody = useCallback(
@@ -243,7 +244,7 @@ const DashboardsPage: React.FC = () => {
         </SimpleGrid>
       );
     },
-    [tab, myWorkType, displayed],
+    [tab, itemType, displayed],
   );
 
   const _renderHeader = useCallback(() => {
@@ -297,7 +298,7 @@ const DashboardsPage: React.FC = () => {
     params: IDashboardParams | IQueriesParams,
     fetchData: any,
     type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE],
-    myWorkType?: typeof MY_WORK_TYPE[keyof typeof MY_WORK_TYPE],
+    itemType?: typeof ITEM_TYPE[keyof typeof ITEM_TYPE],
   ) => (
     <AppDataTable
       requestParams={params}
@@ -312,7 +313,7 @@ const DashboardsPage: React.FC = () => {
               key={item.id}
               item={item}
               type={type}
-              myWorkType={myWorkType}
+              itemType={itemType}
               displayed={displayed}
             />
           )),
@@ -325,7 +326,7 @@ const DashboardsPage: React.FC = () => {
               key={index}
               isLoading
               type={type}
-              myWorkType={myWorkType}
+              itemType={itemType}
               displayed={displayed}
             />
           )),
@@ -365,23 +366,23 @@ const DashboardsPage: React.FC = () => {
         icon: <IconMywork />,
         content: _renderContentTable(
           <>
-            {myWorkType === MY_WORK_TYPE.DASHBOARDS && (
+            {itemType === ITEM_TYPE.DASHBOARDS && (
               <Box>
                 {_renderTable(
                   dashboardParams,
                   fetchMyDashboards,
                   LIST_ITEM_TYPE.MYWORK,
-                  MY_WORK_TYPE.DASHBOARDS,
+                  ITEM_TYPE.DASHBOARDS,
                 )}
               </Box>
             )}
-            {myWorkType === MY_WORK_TYPE.QUERIES && (
+            {itemType === ITEM_TYPE.QUERIES && (
               <Box>
                 {_renderTable(
                   queryParams,
                   fetchMyQueries,
                   LIST_ITEM_TYPE.MYWORK,
-                  MY_WORK_TYPE.QUERIES,
+                  ITEM_TYPE.QUERIES,
                 )}
               </Box>
             )}
@@ -394,7 +395,7 @@ const DashboardsPage: React.FC = () => {
 
   const onChangeTab = (tabId: string) => {
     searchParams.delete(HOME_URL_PARAMS.TAB);
-    searchParams.delete(HOME_URL_PARAMS.MYWORK);
+    searchParams.delete(HOME_URL_PARAMS.ITEM_TYPE);
     searchParams.delete(HOME_URL_PARAMS.SEARCH);
     searchParams.delete(HOME_URL_PARAMS.SORT);
     searchParams.delete(HOME_URL_PARAMS.TAG);
