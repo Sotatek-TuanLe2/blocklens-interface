@@ -45,12 +45,14 @@ const ChainItem = ({
   chain,
   onChangeSelectedTable,
   selectedTable,
+  isSearch,
 }: {
   chain: SchemaType;
   onChangeSelectedTable: React.Dispatch<
     React.SetStateAction<SchemaType | null>
   >;
   selectedTable: SchemaType | null;
+  isSearch: boolean;
 }) => {
   const { pathname } = useLocation();
 
@@ -66,7 +68,7 @@ const ChainItem = ({
   return (
     <>
       <Box display={'flex'} onClick={handleToggle} className="chain-info-title">
-        <Flex flex={1} maxW={'80%'} gap="10px">
+        <Flex flex={1} maxW={isSearch ? '70%' : '80%'} gap="10px">
           <div
             className={
               !!selectedTable && selectedTable.table_name === chain.table_name
@@ -98,6 +100,9 @@ const ChainItem = ({
               <CopyIcon />
             </div>
           </Tooltip>
+        )}
+        {isSearch && (
+          <div className={getChainIconByChainName(chain.schema)}></div>
         )}
       </Box>
     </>
@@ -147,6 +152,7 @@ const CollapseExplore = ({
               key={index + 'chain'}
               onChangeSelectedTable={onChangeSelectedTable}
               selectedTable={selectedTable}
+              isSearch={false}
             />
           );
         })}
@@ -231,6 +237,8 @@ const Sidebar: React.FC<SidebarProps> = ({
     IPagination | undefined
   >();
 
+  const [onKeyDownEnter, setOnKeyDownEnter] = useState<boolean>(false);
+
   useEffect(() => {
     AppBroadcast.on(BROADCAST_FETCH_WORKPLACE_DATA, fetchDataWorkPlace);
 
@@ -311,31 +319,39 @@ const Sidebar: React.FC<SidebarProps> = ({
   );
 
   const filteredData = useMemo(() => {
-    if (!searchExploreData) {
+    if (!searchExploreData || !onKeyDownEnter) {
       return exploreData;
     }
-    const result: { [key: string]: any } = {};
+    const result: { [key: string]: any } = [];
     for (const key in exploreData) {
       if (Object.prototype.hasOwnProperty.call(exploreData, key)) {
         const element = exploreData[key];
-        result[key] = [];
+
         for (const iterator of element) {
           if (
             iterator.table_name
               .toLowerCase()
               .includes(searchExploreData.trim().toLowerCase())
           ) {
-            result[key].push(iterator);
+            result.push(iterator);
           }
         }
       }
     }
 
     return result;
-  }, [exploreData, searchExploreData]);
+  }, [exploreData, searchExploreData, onKeyDownEnter]);
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchExploreData(event.target.value);
+  };
+
+  const onKeyDown = (e: { key: string }) => {
+    if (e.key === 'Enter') {
+      setOnKeyDownEnter(true);
+    } else {
+      setOnKeyDownEnter(false);
+    }
   };
 
   const handleCreateNewQuery = () => goWithOriginPath(ROUTES.MY_QUERY);
@@ -366,9 +382,11 @@ const Sidebar: React.FC<SidebarProps> = ({
     }
   };
 
+  const isOpenTableDetails = !!selectedTable;
+
   const _renderNoData = () => (
     <Box pl="16px" className="data-empty">
-      No data...
+      {!!searchExploreData ? 'No matched dataset' : 'No data...'}
     </Box>
   );
 
@@ -595,34 +613,9 @@ const Sidebar: React.FC<SidebarProps> = ({
     );
   };
 
-  const _renderContentExplore = () => {
-    const isOpenTableDetails = !!selectedTable;
+  const _renderTableExplore = () => {
     return (
-      <div className="workspace-page__sidebar__content__explore-wrap">
-        <div className="workspace-page__sidebar__content__explore-wrap__title">
-          <Box
-            mr={'10px'}
-            display={{ lg: 'none' }}
-            className="icon-explore-light"
-          />
-          <span>Explore data</span>
-          <Box
-            display={{ base: 'none', lg: 'block' }}
-            cursor={'pointer'}
-            onClick={() => onToggleExpandSidebar && onToggleExpandSidebar()}
-            className="bg-CloseBtnIcon"
-          />
-        </div>
-        <Box px={'16px'} mb={{ base: '24px', lg: '26px' }}>
-          <AppInput
-            isSearch
-            className="workspace-page__sidebar__content__work-place-wrap__input-search"
-            value={searchExploreData}
-            placeholder={'Search...'}
-            size="sm"
-            onChange={handleSearch}
-          />
-        </Box>
+      <>
         {!!Object.keys(filteredData).length ? (
           <div
             className={`${
@@ -644,6 +637,70 @@ const Sidebar: React.FC<SidebarProps> = ({
         ) : (
           _renderNoData()
         )}
+      </>
+    );
+  };
+
+  const _renderTableNameExplore = () => {
+    return (
+      <>
+        {filteredData.length ? (
+          <div className="workspace-page__sidebar__content__explore-wrap__table-search">
+            <div className="title">Tables</div>
+            {filteredData.map((chain: SchemaType, index: number) => {
+              return (
+                <ChainItem
+                  chain={chain}
+                  key={index + 'chain'}
+                  onChangeSelectedTable={setSelectedTable}
+                  selectedTable={selectedTable}
+                  isSearch={true}
+                />
+              );
+            })}
+          </div>
+        ) : (
+          _renderNoData()
+        )}
+      </>
+    );
+  };
+
+  const _renderContentExplore = () => {
+    return (
+      <div className="workspace-page__sidebar__content__explore-wrap">
+        <div className="workspace-page__sidebar__content__explore-wrap__title">
+          <Box
+            mr={'10px'}
+            display={{ lg: 'none' }}
+            className="icon-explore-light"
+          />
+          <span>Explore data</span>
+          <Box
+            display={{ base: 'none', lg: 'block' }}
+            cursor={'pointer'}
+            onClick={() => onToggleExpandSidebar && onToggleExpandSidebar()}
+            className="bg-CloseBtnIcon"
+          />
+        </div>
+        <Box px={'16px'} mb={{ base: '24px', lg: '26px' }}>
+          <AppInput
+            isSearch
+            className="workspace-page__sidebar__content__work-place-wrap__input-search"
+            value={searchExploreData}
+            placeholder={'Search datasets...'}
+            size="sm"
+            onChange={handleSearch}
+            onKeyDown={onKeyDown}
+            onFocus={(e) => {
+              e.target.select();
+            }}
+          />
+        </Box>
+
+        {!!searchExploreData && onKeyDownEnter
+          ? _renderTableNameExplore()
+          : _renderTableExplore()}
 
         {isOpenTableDetails && (
           <Box
