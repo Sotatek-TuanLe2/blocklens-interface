@@ -319,9 +319,6 @@ const Sidebar: React.FC<SidebarProps> = ({
   );
 
   const filteredData = useMemo(() => {
-    if (!searchExploreData || !onKeyDownEnter) {
-      return exploreData;
-    }
     const result: { [key: string]: any } = [];
     for (const key in exploreData) {
       if (Object.prototype.hasOwnProperty.call(exploreData, key)) {
@@ -340,7 +337,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     }
 
     return result;
-  }, [exploreData, searchExploreData, onKeyDownEnter]);
+  }, [exploreData, searchExploreData]);
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchExploreData(event.target.value);
@@ -616,7 +613,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   const _renderTableExplore = () => {
     return (
       <>
-        {!!Object.keys(filteredData).length ? (
+        {!!Object.keys(exploreData).length ? (
           <div
             className={`${
               isOpenTableDetails
@@ -624,11 +621,11 @@ const Sidebar: React.FC<SidebarProps> = ({
                 : 'workspace-page__sidebar__content__explore-wrap__list-chain'
             }`}
           >
-            {Object.keys(filteredData).map((nameChain: string, index) => (
+            {Object.keys(exploreData).map((nameChain: string, index) => (
               <CollapseExplore
                 key={index + 'explore'}
                 title={nameChain}
-                content={Object.values(filteredData)[index]}
+                content={Object.values(exploreData)[index]}
                 onChangeSelectedTable={setSelectedTable}
                 selectedTable={selectedTable}
               />
