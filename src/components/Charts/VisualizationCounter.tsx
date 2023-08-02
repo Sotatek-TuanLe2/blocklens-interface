@@ -53,15 +53,14 @@ const VisualizationCounter = ({ data, visualization, isLoading }: Props) => {
   };
   const isNumberValue = isNumber(dataCounter());
   const prefix = isNumberValue ? dataOptions.stringPrefix || '' : '';
-  const value = dataOptions.counterColName
-    ? isNumberValue
+  const value =
+    (dataOptions.counterColName && isNumberValue
       ? commaNumber(
           new BigNumber(dataCounter()).toFixed(+dataOptions.stringDecimal || 0),
         )
-      : dataCounter()
-    : '';
-  const suffix = isNumberValue ? dataOptions.stringSuffix || '' : '';
+      : dataCounter()) || '';
 
+  const suffix = isNumberValue ? dataOptions.stringSuffix || '' : '';
   const counterValue = `${prefix}${value}${suffix}`;
   return (
     <Box
