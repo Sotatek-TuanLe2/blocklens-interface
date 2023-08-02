@@ -51,18 +51,18 @@ const VisualizationCounter = ({ data, visualization, isLoading }: Props) => {
         return undefined;
     }
   };
-
   const isNumberValue = isNumber(dataCounter());
   const prefix = isNumberValue ? dataOptions.stringPrefix || '' : '';
-  const value = isNumberValue
-    ? commaNumber(
-        new BigNumber(dataCounter()).toFixed(+dataOptions.stringDecimal || 0),
-      )
-    : dataCounter();
+  const value = dataOptions.counterColName
+    ? isNumberValue
+      ? commaNumber(
+          new BigNumber(dataCounter()).toFixed(+dataOptions.stringDecimal || 0),
+        )
+      : dataCounter()
+    : '';
   const suffix = isNumberValue ? dataOptions.stringSuffix || '' : '';
 
   const counterValue = `${prefix}${value}${suffix}`;
-
   return (
     <Box
       _after={{
