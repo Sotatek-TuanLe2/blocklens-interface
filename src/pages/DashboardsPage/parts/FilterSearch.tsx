@@ -89,7 +89,6 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
     const search = searchParams.get(HOME_URL_PARAMS.SEARCH) || '';
     const sort = searchParams.get(HOME_URL_PARAMS.SORT) || '';
     const tag = searchParams.get(HOME_URL_PARAMS.TAG) || '';
-
     setSearch(search);
     setSort(sort);
     setTag(tag);
@@ -110,6 +109,9 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
 
   const onChangeSearch = (e: ChangeEvent<HTMLInputElement>) => {
     searchParams.delete(HOME_URL_PARAMS.SEARCH);
+    if (e.target.value.includes('#')) {
+      searchParams.set(HOME_URL_PARAMS.TAG, e.target.value);
+    }
     if (e.target.value) {
       searchParams.set(HOME_URL_PARAMS.SEARCH, e.target.value);
     }
@@ -174,7 +176,6 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   useEffect(() => {
     fetchTagsTrending();
   }, [itemType, type]);
-
   return (
     <>
       <Flex align={'center'}>
@@ -252,7 +253,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
             borderTop={'1px solid rgba(0, 2, 36, 0.1)'}
             pt={{ base: '22px', lg: '20px' }}
           >
-            <Box flexGrow={1} mb={{ base: 5, lg: 0 }}>
+            <Box flexGrow={1} mb={{ base: 5, lg: 0 }} position="relative">
               <AppInput
                 className="dashboard-filter__search__input"
                 placeholder={'Search...'}
@@ -261,6 +262,14 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
                 isSearch
                 onChange={onChangeSearch}
               />
+              {search.includes('#') && (
+                <Box bg="antiquewhite" position="absolute" w="100%">
+                  <div>sdsd</div>
+                  <div>sdsd</div>
+                  <div>sdsd</div>
+                </Box>
+              )}
+
               <Flex mt={'14px'}>
                 {listTagsTrending
                   .slice(0, MAX_TRENDING_TAGS)
