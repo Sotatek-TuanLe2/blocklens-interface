@@ -229,54 +229,48 @@ const DashboardsPage: React.FC = () => {
 
   const _renderBody = useCallback(
     (listItem: any) => {
+      if (displayed === DisplayType.List) {
+        return listItem;
+      }
       return (
-        <>
-          {displayed === DisplayType.Grid ? (
-            <SimpleGrid
-              className="infos"
-              columns={{ base: 1, sm: 2, lg: 3, xl: 4 }}
-              columnGap="20px"
-              rowGap="20px"
-            >
-              {listItem}
-            </SimpleGrid>
-          ) : (
-            listItem
-          )}
-        </>
+        <SimpleGrid
+          className="infos"
+          columns={{ base: 1, sm: 2, lg: 3, xl: 4 }}
+          columnGap="20px"
+          rowGap="20px"
+        >
+          {listItem}
+        </SimpleGrid>
       );
     },
     [tab, myWorkType, displayed],
   );
 
   const _renderHeader = useCallback(() => {
+    if (displayed !== DisplayType.List) {
+      return null;
+    }
     return (
-      <>
-        {displayed === DisplayType.List ? (
-          <Flex display={{ base: 'none', lg: 'flex' }} className="table-header">
-            <Flex align={'center'} w={'calc(100% - 24px)'}>
-              <Box w={'24%'} flexGrow={1} pr={2.5}>
-                Name
-              </Box>
-              <Box w={'24%'} flexGrow={1} pr={2.5}>
-                Creator
-              </Box>
-              <Box w={'16%'} flexGrow={1} pr={2.5}>
-                date
-              </Box>
-              <Box w={'10%'} flexGrow={1} pr={2.5}>
-                View
-              </Box>
-              <Box w={'26%'} flexGrow={1} pr={2.5}>
-                tag
-              </Box>
-            </Flex>
-            <Box w={'24px'}></Box>
-          </Flex>
-        ) : (
-          <></>
-        )}
-      </>
+      <Flex display={{ base: 'none', lg: 'flex' }} className="table-header">
+        <Flex align={'center'} w={'calc(100% - 24px)'}>
+          <Box w={'24%'} flexGrow={1} pr={2.5}>
+            Name
+          </Box>
+          <Box w={'24%'} flexGrow={1} pr={2.5}>
+            Creator
+          </Box>
+          <Box w={'16%'} flexGrow={1} pr={2.5}>
+            date
+          </Box>
+          <Box w={'10%'} flexGrow={1} pr={2.5}>
+            View
+          </Box>
+          <Box w={'26%'} flexGrow={1} pr={2.5}>
+            tag
+          </Box>
+        </Flex>
+        <Box w={'24px'}></Box>
+      </Flex>
     );
   }, [displayed]);
 
@@ -299,6 +293,47 @@ const DashboardsPage: React.FC = () => {
     );
   };
 
+  const _renderTable = (
+    params: IDashboardParams | IQueriesParams,
+    fetchData: any,
+    type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE],
+    myWorkType?: typeof MY_WORK_TYPE[keyof typeof MY_WORK_TYPE],
+  ) => (
+    <AppDataTable
+      requestParams={params}
+      fetchData={fetchData}
+      isInfiniteScroll
+      renderHeader={_renderHeader}
+      wrapperClassName="block-table"
+      renderBody={(data) =>
+        _renderBody(
+          data.map((item: any) => (
+            <ListItem
+              key={item.id}
+              item={item}
+              type={type}
+              myWorkType={myWorkType}
+              displayed={displayed}
+            />
+          )),
+        )
+      }
+      renderLoading={() =>
+        _renderSkeleton(
+          [...Array(8)].map((_, index: number) => (
+            <ListItem
+              key={index}
+              isLoading
+              type={type}
+              myWorkType={myWorkType}
+              displayed={displayed}
+            />
+          )),
+        )
+      }
+    />
+  );
+
   const generateTabs = (): ITabs[] => {
     const tabs: ITabs[] = [
       {
@@ -306,37 +341,11 @@ const DashboardsPage: React.FC = () => {
         name: 'Dashboards',
         icon: <DashboardListIcon />,
         content: _renderContentTable(
-          <AppDataTable
-            requestParams={dashboardParams}
-            fetchData={fetchAllDashboards}
-            isInfiniteScroll
-            renderHeader={_renderHeader}
-            wrapperClassName="block-table"
-            renderBody={(data) =>
-              _renderBody(
-                data.map((item: any) => (
-                  <ListItem
-                    key={item.id}
-                    item={item}
-                    type={LIST_ITEM_TYPE.DASHBOARDS}
-                    displayed={displayed}
-                  />
-                )),
-              )
-            }
-            renderLoading={() =>
-              _renderSkeleton(
-                [...Array(8)].map((_, index: number) => (
-                  <ListItem
-                    key={index}
-                    isLoading
-                    type={LIST_ITEM_TYPE.DASHBOARDS}
-                    displayed={displayed}
-                  />
-                )),
-              )
-            }
-          />,
+          _renderTable(
+            dashboardParams,
+            fetchAllDashboards,
+            LIST_ITEM_TYPE.DASHBOARDS,
+          ),
         ),
       },
       {
@@ -344,37 +353,7 @@ const DashboardsPage: React.FC = () => {
         name: 'Queries',
         icon: <QueriesIcon />,
         content: _renderContentTable(
-          <AppDataTable
-            requestParams={queryParams}
-            isInfiniteScroll
-            fetchData={fetchAllQueries}
-            renderHeader={_renderHeader}
-            wrapperClassName="block-table"
-            renderBody={(data) =>
-              _renderBody(
-                data.map((item: any) => (
-                  <ListItem
-                    key={item.id}
-                    item={item}
-                    type={LIST_ITEM_TYPE.QUERIES}
-                    displayed={displayed}
-                  />
-                )),
-              )
-            }
-            renderLoading={() =>
-              _renderSkeleton(
-                [...Array(8)].map((_, index: number) => (
-                  <ListItem
-                    key={index}
-                    isLoading
-                    type={LIST_ITEM_TYPE.QUERIES}
-                    displayed={displayed}
-                  />
-                )),
-              )
-            }
-          />,
+          _renderTable(queryParams, fetchAllQueries, LIST_ITEM_TYPE.QUERIES),
         ),
       },
     ];
@@ -388,76 +367,22 @@ const DashboardsPage: React.FC = () => {
           <>
             {myWorkType === MY_WORK_TYPE.DASHBOARDS && (
               <Box>
-                <AppDataTable
-                  requestParams={dashboardParams}
-                  isInfiniteScroll
-                  fetchData={fetchMyDashboards}
-                  renderHeader={_renderHeader}
-                  wrapperClassName="block-table"
-                  renderBody={(data) =>
-                    _renderBody(
-                      data.map((item: any) => (
-                        <ListItem
-                          key={item.id}
-                          item={item}
-                          type={LIST_ITEM_TYPE.MYWORK}
-                          myWorkType={MY_WORK_TYPE.DASHBOARDS}
-                          displayed={displayed}
-                        />
-                      )),
-                    )
-                  }
-                  renderLoading={() =>
-                    _renderSkeleton(
-                      [...Array(8)].map((_, index: number) => (
-                        <ListItem
-                          key={index}
-                          isLoading
-                          type={LIST_ITEM_TYPE.MYWORK}
-                          myWorkType={MY_WORK_TYPE.DASHBOARDS}
-                          displayed={displayed}
-                        />
-                      )),
-                    )
-                  }
-                />
+                {_renderTable(
+                  dashboardParams,
+                  fetchMyDashboards,
+                  LIST_ITEM_TYPE.MYWORK,
+                  MY_WORK_TYPE.DASHBOARDS,
+                )}
               </Box>
             )}
             {myWorkType === MY_WORK_TYPE.QUERIES && (
               <Box>
-                <AppDataTable
-                  requestParams={queryParams}
-                  fetchData={fetchMyQueries}
-                  isInfiniteScroll
-                  renderHeader={_renderHeader}
-                  wrapperClassName="block-table"
-                  renderBody={(data) =>
-                    _renderBody(
-                      data.map((item: any) => (
-                        <ListItem
-                          key={item.id}
-                          item={item}
-                          type={LIST_ITEM_TYPE.MYWORK}
-                          myWorkType={MY_WORK_TYPE.QUERIES}
-                          displayed={displayed}
-                        />
-                      )),
-                    )
-                  }
-                  renderLoading={() =>
-                    _renderSkeleton(
-                      [...Array(8)].map((_, index: number) => (
-                        <ListItem
-                          key={index}
-                          isLoading
-                          type={LIST_ITEM_TYPE.MYWORK}
-                          myWorkType={MY_WORK_TYPE.QUERIES}
-                          displayed={displayed}
-                        />
-                      )),
-                    )
-                  }
-                />
+                {_renderTable(
+                  queryParams,
+                  fetchMyQueries,
+                  LIST_ITEM_TYPE.MYWORK,
+                  MY_WORK_TYPE.QUERIES,
+                )}
               </Box>
             )}
           </>,
