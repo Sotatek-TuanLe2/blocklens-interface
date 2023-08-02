@@ -45,14 +45,14 @@ const ChainItem = ({
   chain,
   onChangeSelectedTable,
   selectedTable,
-  isSearch,
+  isSearchTableName,
 }: {
   chain: SchemaType;
   onChangeSelectedTable: React.Dispatch<
     React.SetStateAction<SchemaType | null>
   >;
   selectedTable: SchemaType | null;
-  isSearch: boolean;
+  isSearchTableName: boolean;
 }) => {
   const { pathname } = useLocation();
 
@@ -68,7 +68,7 @@ const ChainItem = ({
   return (
     <>
       <Box display={'flex'} onClick={handleToggle} className="chain-info-title">
-        <Flex flex={1} maxW={isSearch ? '70%' : '80%'} gap="10px">
+        <Flex flex={1} maxW={isSearchTableName ? '70%' : '80%'} gap="10px">
           <div
             className={
               !!selectedTable && selectedTable.table_name === chain.table_name
@@ -101,7 +101,7 @@ const ChainItem = ({
             </div>
           </Tooltip>
         )}
-        {isSearch && (
+        {isSearchTableName && (
           <div className={getChainIconByChainName(chain.schema)}></div>
         )}
       </Box>
@@ -152,7 +152,7 @@ const CollapseExplore = ({
               key={index + 'chain'}
               onChangeSelectedTable={onChangeSelectedTable}
               selectedTable={selectedTable}
-              isSearch={false}
+              isSearchTableName={false}
             />
           );
         })}
@@ -654,7 +654,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                   key={index + 'chain'}
                   onChangeSelectedTable={setSelectedTable}
                   selectedTable={selectedTable}
-                  isSearch={true}
+                  isSearchTableName={true}
                 />
               );
             })}
