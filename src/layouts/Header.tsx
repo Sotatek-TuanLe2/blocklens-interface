@@ -35,7 +35,7 @@ const menus = [
   },
   {
     name: 'APIs',
-    path: 'https://docsblocklens.readme.io/reference/overview',
+    path: 'https://stg-docs.blocklens.io/',
   },
   {
     name: 'Account',
