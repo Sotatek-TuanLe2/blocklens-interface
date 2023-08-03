@@ -24,7 +24,7 @@ import {
 } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { Link, useLocation, useParams } from 'react-router-dom';
-import { CloseMenuIcon, CopyIcon } from 'src/assets/icons';
+import { CloseMenuIcon } from 'src/assets/icons';
 import { AppButton, AppInput } from 'src/components';
 import AppQueryMenu, { QUERY_MENU_LIST } from 'src/components/AppQueryMenu';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
@@ -32,11 +32,10 @@ import rf from 'src/requests/RequestFactory';
 import { IPagination, ROUTES, SchemaType } from 'src/utils/common';
 import { IDashboardDetail, IQuery } from 'src/utils/query.type';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
-import { copyToClipboard } from 'src/utils/utils-helper';
 import { getChainIconByChainName } from 'src/utils/utils-network';
 import { BROADCAST_FETCH_DASHBOARD } from './Dashboard';
 import { BROADCAST_ADD_TO_EDITOR, BROADCAST_FETCH_QUERY } from './Query';
-import { ChevronRightIcon, CloseIcon } from '@chakra-ui/icons';
+import { ChevronRightIcon, CloseIcon, AddIcon } from '@chakra-ui/icons';
 import useOriginPath from 'src/hooks/useOriginPath';
 
 export const BROADCAST_FETCH_WORKPLACE_DATA = 'FETCH_WORKPLACE_DATA';
@@ -45,12 +44,14 @@ const ChainItem = ({
   chain,
   onChangeSelectedTable,
   selectedTable,
+  isSearchTableName,
 }: {
   chain: SchemaType;
   onChangeSelectedTable: React.Dispatch<
     React.SetStateAction<SchemaType | null>
   >;
   selectedTable: SchemaType | null;
+  isSearchTableName: boolean;
 }) => {
   const { pathname } = useLocation();
 
@@ -58,15 +59,14 @@ const ChainItem = ({
     onChangeSelectedTable(chain);
   };
 
-  const handleCopy = (query: string) => {
+  const handleAddToEditor = (query: string) => {
     AppBroadcast.dispatch(BROADCAST_ADD_TO_EDITOR, query);
-    copyToClipboard(query);
   };
 
   return (
     <>
       <Box display={'flex'} onClick={handleToggle} className="chain-info-title">
-        <Flex flex={1} maxW={'80%'} gap="10px">
+        <Flex flex={1} maxW={isSearchTableName ? '70%' : '80%'} gap="10px">
           <div
             className={
               !!selectedTable && selectedTable.table_name === chain.table_name
@@ -92,12 +92,15 @@ const ChainItem = ({
               className="add-query-icon"
               onClick={(e) => {
                 e.stopPropagation();
-                handleCopy(chain.full_name);
+                handleAddToEditor(chain.full_name);
               }}
             >
-              <CopyIcon />
+              <AddIcon />
             </div>
           </Tooltip>
+        )}
+        {isSearchTableName && (
+          <div className={getChainIconByChainName(chain.schema)}></div>
         )}
       </Box>
     </>
@@ -147,6 +150,7 @@ const CollapseExplore = ({
               key={index + 'chain'}
               onChangeSelectedTable={onChangeSelectedTable}
               selectedTable={selectedTable}
+              isSearchTableName={false}
             />
           );
         })}
@@ -311,21 +315,18 @@ const Sidebar: React.FC<SidebarProps> = ({
   );
 
   const filteredData = useMemo(() => {
-    if (!searchExploreData) {
-      return exploreData;
-    }
-    const result: { [key: string]: any } = {};
+    const result: { [key: string]: any } = [];
     for (const key in exploreData) {
       if (Object.prototype.hasOwnProperty.call(exploreData, key)) {
         const element = exploreData[key];
-        result[key] = [];
+
         for (const iterator of element) {
           if (
             iterator.table_name
               .toLowerCase()
               .includes(searchExploreData.trim().toLowerCase())
           ) {
-            result[key].push(iterator);
+            result.push(iterator);
           }
         }
       }
@@ -346,9 +347,8 @@ const Sidebar: React.FC<SidebarProps> = ({
       : 'workspace-page__sidebar__content__work-place-detail ';
   };
 
-  const handleCopy = (query: string) => {
+  const handleAddToEditor = (query: string) => {
     AppBroadcast.dispatch(BROADCAST_ADD_TO_EDITOR, query);
-    copyToClipboard(query);
   };
 
   const onForkSuccess = async (response: any, type: string) => {
@@ -366,9 +366,13 @@ const Sidebar: React.FC<SidebarProps> = ({
     }
   };
 
+  const isOpenTableDetails = !!selectedTable;
+
   const _renderNoData = () => (
-    <Box pl="16px" className="data-empty">
-      No data...
+    <Box pl={{ base: '16px', lg: '0' }} className="data-empty">
+      {!!searchExploreData && category === CATEGORIES.EXPLORE_DATA
+        ? 'No matched dataset'
+        : 'No data...'}
     </Box>
   );
 
@@ -399,6 +403,9 @@ const Sidebar: React.FC<SidebarProps> = ({
             onChange={(e) => {
               setSearchValueWorkPlace(e.target.value);
               getDataSearchWorkPlace(e.target.value);
+            }}
+            onFocus={(e) => {
+              e.target.select();
             }}
           />
         </Box>
@@ -543,11 +550,11 @@ const Sidebar: React.FC<SidebarProps> = ({
           </Flex>
           <div className="header-icon">
             {location.pathname.includes(ROUTES.MY_QUERY) && (
-              <CopyIcon
+              <AddIcon
                 className="icon-header"
                 onClick={() => {
                   if (selectedTable?.full_name) {
-                    handleCopy(selectedTable?.full_name);
+                    handleAddToEditor(selectedTable?.full_name);
                   }
                 }}
               />
@@ -568,8 +575,6 @@ const Sidebar: React.FC<SidebarProps> = ({
               py="6px"
               justifyContent={'space-between'}
               px={{ base: '20px', lg: '16px' }}
-              cursor={'pointer'}
-              onClick={() => handleCopy(item.column_name)}
             >
               <Tooltip
                 placement={'top'}
@@ -583,7 +588,10 @@ const Sidebar: React.FC<SidebarProps> = ({
               </Tooltip>
               <div className="data-type">
                 <Text isTruncated>{item.data_type}</Text>
-                <CopyIcon />
+                <AddIcon
+                  cursor={'pointer'}
+                  onClick={() => handleAddToEditor(item.column_name)}
+                />
               </div>
             </Flex>
           ))}
@@ -592,8 +600,60 @@ const Sidebar: React.FC<SidebarProps> = ({
     );
   };
 
+  const _renderTableExplore = () => {
+    return (
+      <>
+        {!!Object.keys(exploreData).length ? (
+          <div
+            className={`${
+              isOpenTableDetails
+                ? 'workspace-page__sidebar__content__explore-wrap__list-chain-half'
+                : 'workspace-page__sidebar__content__explore-wrap__list-chain'
+            }`}
+          >
+            {Object.keys(exploreData).map((nameChain: string, index) => (
+              <CollapseExplore
+                key={index + 'explore'}
+                title={nameChain}
+                content={Object.values(exploreData)[index]}
+                onChangeSelectedTable={setSelectedTable}
+                selectedTable={selectedTable}
+              />
+            ))}
+          </div>
+        ) : (
+          _renderNoData()
+        )}
+      </>
+    );
+  };
+
+  const _renderTableNameExplore = () => {
+    return (
+      <>
+        {filteredData.length ? (
+          <div className="workspace-page__sidebar__content__explore-wrap__table-search">
+            <div className="title">Tables</div>
+            {filteredData.map((chain: SchemaType, index: number) => {
+              return (
+                <ChainItem
+                  chain={chain}
+                  key={index + 'chain'}
+                  onChangeSelectedTable={setSelectedTable}
+                  selectedTable={selectedTable}
+                  isSearchTableName={true}
+                />
+              );
+            })}
+          </div>
+        ) : (
+          _renderNoData()
+        )}
+      </>
+    );
+  };
+
   const _renderContentExplore = () => {
-    const isOpenTableDetails = !!selectedTable;
     return (
       <div className="workspace-page__sidebar__content__explore-wrap">
         <div className="workspace-page__sidebar__content__explore-wrap__title">
@@ -615,32 +675,18 @@ const Sidebar: React.FC<SidebarProps> = ({
             isSearch
             className="workspace-page__sidebar__content__work-place-wrap__input-search"
             value={searchExploreData}
-            placeholder={'Search...'}
+            placeholder={'Search datasets...'}
             size="sm"
             onChange={handleSearch}
+            onFocus={(e) => {
+              e.target.select();
+            }}
           />
         </Box>
-        {!!Object.keys(filteredData).length ? (
-          <div
-            className={`${
-              isOpenTableDetails
-                ? 'workspace-page__sidebar__content__explore-wrap__list-chain-half'
-                : 'workspace-page__sidebar__content__explore-wrap__list-chain'
-            }`}
-          >
-            {Object.keys(filteredData).map((nameChain: string, index) => (
-              <CollapseExplore
-                key={index + 'explore'}
-                title={nameChain}
-                content={Object.values(filteredData)[index]}
-                onChangeSelectedTable={setSelectedTable}
-                selectedTable={selectedTable}
-              />
-            ))}
-          </div>
-        ) : (
-          _renderNoData()
-        )}
+
+        {!!searchExploreData
+          ? _renderTableNameExplore()
+          : _renderTableExplore()}
 
         {isOpenTableDetails && (
           <Box
