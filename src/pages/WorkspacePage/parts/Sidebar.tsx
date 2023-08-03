@@ -237,8 +237,6 @@ const Sidebar: React.FC<SidebarProps> = ({
     IPagination | undefined
   >();
 
-  const [onKeyDownEnter, setOnKeyDownEnter] = useState<boolean>(false);
-
   useEffect(() => {
     AppBroadcast.on(BROADCAST_FETCH_WORKPLACE_DATA, fetchDataWorkPlace);
 
@@ -341,14 +339,6 @@ const Sidebar: React.FC<SidebarProps> = ({
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchExploreData(event.target.value);
-  };
-
-  const onKeyDown = (e: { key: string }) => {
-    if (e.key === 'Enter') {
-      setOnKeyDownEnter(true);
-    } else {
-      setOnKeyDownEnter(false);
-    }
   };
 
   const handleCreateNewQuery = () => goWithOriginPath(ROUTES.MY_QUERY);
@@ -688,14 +678,13 @@ const Sidebar: React.FC<SidebarProps> = ({
             placeholder={'Search datasets...'}
             size="sm"
             onChange={handleSearch}
-            onKeyDown={onKeyDown}
             onFocus={(e) => {
               e.target.select();
             }}
           />
         </Box>
 
-        {!!searchExploreData && onKeyDownEnter
+        {!!searchExploreData
           ? _renderTableNameExplore()
           : _renderTableExplore()}
 
