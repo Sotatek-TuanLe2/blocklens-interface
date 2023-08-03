@@ -1,5 +1,5 @@
 import { Flex } from '@chakra-ui/react';
-import { AppField, AppInput, AppTextarea, TYPE_ABI } from 'src/components';
+import { AppField, AppInput, TYPE_ABI } from 'src/components';
 import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
 import AppUploadABI from 'src/components/AppUploadABI';
 import React, { FC } from 'react';
@@ -42,23 +42,6 @@ const PartFormTokenActivity: FC<IPartFormTokenActivity> = ({
             name: `tokenAddress`,
             validator: validator.current,
             rule: 'required|isAddress',
-          }}
-        />
-      </AppField>
-      <AppField label={'Token Name'}>
-        <AppTextarea
-          className="token-name"
-          value={dataForm.metadata?.name}
-          placeholder="name1,name2,name3"
-          autoResize={true}
-          onChange={(e) => {
-            setDataForm({
-              ...dataForm,
-              metadata: {
-                ...dataForm.metadata,
-                name: e.target.value,
-              },
-            });
           }}
         />
       </AppField>

@@ -181,25 +181,23 @@ const PartFormTokenActivityAptos: FC<IPartFormTokenActivityAptos> = ({
           }}
         />
       </AppField>
-      {!isHiddenName && (
-        <AppField label={'Token Name'}>
-          <AppTextarea
-            className="token-name"
-            value={dataForm.metadata?.name}
-            placeholder="name1,name2,name3"
-            autoResize={true}
-            onChange={(e) => {
-              setDataForm({
-                ...dataForm,
-                metadata: {
-                  ...dataForm.metadata,
-                  name: e.target.value,
-                },
-              });
-            }}
-          />
-        </AppField>
-      )}
+      <AppField label={'Token Name'}>
+        <AppTextarea
+          className="token-name"
+          value={dataForm.metadata?.name}
+          placeholder="name1,name2,name3"
+          autoResize={true}
+          onChange={(e) => {
+            setDataForm({
+              ...dataForm,
+              metadata: {
+                ...dataForm.metadata,
+                name: e.target.value,
+              },
+            });
+          }}
+        />
+      </AppField>
 
       <Box w={'full'}>
         Events{' '}
