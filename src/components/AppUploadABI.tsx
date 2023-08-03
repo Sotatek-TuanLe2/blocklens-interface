@@ -2,7 +2,6 @@ import {
   Box,
   Flex,
   Link,
-  Text,
   Checkbox,
   Tooltip,
   useDisclosure,
