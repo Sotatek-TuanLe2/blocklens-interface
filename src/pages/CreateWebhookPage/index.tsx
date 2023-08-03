@@ -15,7 +15,7 @@ import rf from 'src/requests/RequestFactory';
 import { getUserStats } from 'src/store/user';
 import 'src/styles/pages/AppDetail.scss';
 import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
-import { isEVMNetwork } from 'src/utils/utils-network';
+import { isAptosNetwork, isEVMNetwork } from 'src/utils/utils-network';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { createValidator } from 'src/utils/utils-validator';
 import {
@@ -134,11 +134,16 @@ const CreateWebhook = () => {
       return forceUpdate();
     }
 
-    if (
+    const isEvmConditionInvalid =
+      isEVMNetwork(appInfo.chain) &&
       !dataForm.metadata?.abiFilter?.length &&
-      type !== WEBHOOK_TYPES.ADDRESS_ACTIVITY &&
-      isEVMNetwork(appInfo.chain)
-    ) {
+      type !== WEBHOOK_TYPES.ADDRESS_ACTIVITY;
+    const isAptosConditionInvalid =
+      isAptosNetwork(appInfo.chain) &&
+      !dataForm.metadata?.events?.length &&
+      !dataForm.metadata?.functions?.length;
+
+    if (isEvmConditionInvalid || isAptosConditionInvalid) {
       toastError({ message: 'At least one checkbox must be checked.' });
       return;
     }

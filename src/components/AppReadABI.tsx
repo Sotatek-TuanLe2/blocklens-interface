@@ -1,4 +1,4 @@
-import { Box, Flex, Checkbox } from '@chakra-ui/react';
+import { Box, Flex, Checkbox, Text } from '@chakra-ui/react';
 import React, { useState, FC, useEffect, ChangeEvent, useMemo } from 'react';
 import { AppInput, AppSelect2 } from 'src/components';
 import 'src/styles/components/AppUploadABI.scss';
@@ -371,7 +371,10 @@ const AppReadABI: FC<IAppReadABI> = ({
   return (
     <Box className="upload-abi">
       <Flex mb={1} className="label-abi">
-        ABI
+        ABI{' '}
+        <Text as={'span'} className="text-error" ml={1}>
+          *
+        </Text>
       </Flex>
 
       <DetailABI
