@@ -74,12 +74,11 @@ const ModuleAptosDetail: FC<IModuleAptosDetail> = ({ address, data }) => {
 };
 
 const WebhookSettingsPage = () => {
-  const { id: webhookId } = useParams<{ appId: string; id: string }>();
+  const { id: webhookId } = useParams<{ id: string }>();
   const [isOpenModalDelete, setIsOpenModalDelete] = useState<boolean>(false);
 
   const dispatch = useDispatch();
   const { webhook, getWebhookInfo } = useWebhookDetails(webhookId);
-  const history = useHistory();
 
   const isActive = useMemo(
     () => webhook?.status === WEBHOOK_STATUS.ENABLE,
