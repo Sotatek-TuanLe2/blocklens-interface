@@ -108,8 +108,8 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
     setOpenNewDashboardModal((prevState) => !prevState);
 
   const onChangeSearch = (e: ChangeEvent<HTMLInputElement>) => {
-    searchParams.delete(HOME_URL_PARAMS.SEARCH);
     searchParams.delete(HOME_URL_PARAMS.TAG);
+    searchParams.delete(HOME_URL_PARAMS.SEARCH);
     if (e.target.value.includes('#')) {
       searchParams.set(HOME_URL_PARAMS.TAG, e.target.value);
     } else {
