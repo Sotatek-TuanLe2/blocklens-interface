@@ -109,10 +109,10 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
 
   const onChangeSearch = (e: ChangeEvent<HTMLInputElement>) => {
     searchParams.delete(HOME_URL_PARAMS.SEARCH);
+    searchParams.delete(HOME_URL_PARAMS.TAG);
     if (e.target.value.includes('#')) {
       searchParams.set(HOME_URL_PARAMS.TAG, e.target.value);
-    }
-    if (e.target.value) {
+    } else {
       searchParams.set(HOME_URL_PARAMS.SEARCH, e.target.value);
     }
     history.push({
@@ -257,19 +257,18 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
               <AppInput
                 className="dashboard-filter__search__input"
                 placeholder={'Search...'}
-                value={search}
+                value={search || tag}
                 variant="searchFilter"
                 isSearch
                 onChange={onChangeSearch}
               />
-              {search.includes('#') && (
+              {tag?.includes('#') && (
                 <Box bg="antiquewhite" position="absolute" w="100%">
                   <div>sdsd</div>
                   <div>sdsd</div>
                   <div>sdsd</div>
                 </Box>
               )}
-
               <Flex mt={'14px'}>
                 {listTagsTrending
                   .slice(0, MAX_TRENDING_TAGS)

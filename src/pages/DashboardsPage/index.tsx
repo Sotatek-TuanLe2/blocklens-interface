@@ -65,7 +65,7 @@ const DashboardsPage: React.FC = () => {
     const search = searchParams.get(HOME_URL_PARAMS.SEARCH) || '';
     const sort = searchParams.get(HOME_URL_PARAMS.SORT) || '';
     const chain = searchParams.get(HOME_URL_PARAMS.CHAIN) || '';
-    const tag = searchParams.get(HOME_URL_PARAMS.TAG) || '';
+    const tag = (searchParams.get(HOME_URL_PARAMS.TAG) || '').replace('#', '');
 
     setTab(tabId);
     setItemType(myWork);
