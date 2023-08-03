@@ -44,12 +44,14 @@ const ChainItem = ({
   chain,
   onChangeSelectedTable,
   selectedTable,
+  isSearchTableName,
 }: {
   chain: SchemaType;
   onChangeSelectedTable: React.Dispatch<
     React.SetStateAction<SchemaType | null>
   >;
   selectedTable: SchemaType | null;
+  isSearchTableName: boolean;
 }) => {
   const { pathname } = useLocation();
 
@@ -64,7 +66,7 @@ const ChainItem = ({
   return (
     <>
       <Box display={'flex'} onClick={handleToggle} className="chain-info-title">
-        <Flex flex={1} maxW={'80%'} gap="10px">
+        <Flex flex={1} maxW={isSearchTableName ? '70%' : '80%'} gap="10px">
           <div
             className={
               !!selectedTable && selectedTable.table_name === chain.table_name
@@ -96,6 +98,9 @@ const ChainItem = ({
               <AddIcon />
             </div>
           </Tooltip>
+        )}
+        {isSearchTableName && (
+          <div className={getChainIconByChainName(chain.schema)}></div>
         )}
       </Box>
     </>
@@ -145,6 +150,7 @@ const CollapseExplore = ({
               key={index + 'chain'}
               onChangeSelectedTable={onChangeSelectedTable}
               selectedTable={selectedTable}
+              isSearchTableName={false}
             />
           );
         })}
@@ -309,21 +315,18 @@ const Sidebar: React.FC<SidebarProps> = ({
   );
 
   const filteredData = useMemo(() => {
-    if (!searchExploreData) {
-      return exploreData;
-    }
-    const result: { [key: string]: any } = {};
+    const result: { [key: string]: any } = [];
     for (const key in exploreData) {
       if (Object.prototype.hasOwnProperty.call(exploreData, key)) {
         const element = exploreData[key];
-        result[key] = [];
+
         for (const iterator of element) {
           if (
             iterator.table_name
               .toLowerCase()
               .includes(searchExploreData.trim().toLowerCase())
           ) {
-            result[key].push(iterator);
+            result.push(iterator);
           }
         }
       }
@@ -363,9 +366,13 @@ const Sidebar: React.FC<SidebarProps> = ({
     }
   };
 
+  const isOpenTableDetails = !!selectedTable;
+
   const _renderNoData = () => (
-    <Box pl="16px" className="data-empty">
-      No data...
+    <Box pl={{ base: '16px', lg: '0' }} className="data-empty">
+      {!!searchExploreData && category === CATEGORIES.EXPLORE_DATA
+        ? 'No matched dataset'
+        : 'No data...'}
     </Box>
   );
 
@@ -396,6 +403,9 @@ const Sidebar: React.FC<SidebarProps> = ({
             onChange={(e) => {
               setSearchValueWorkPlace(e.target.value);
               getDataSearchWorkPlace(e.target.value);
+            }}
+            onFocus={(e) => {
+              e.target.select();
             }}
           />
         </Box>
@@ -593,8 +603,60 @@ const Sidebar: React.FC<SidebarProps> = ({
     );
   };
 
+  const _renderTableExplore = () => {
+    return (
+      <>
+        {!!Object.keys(exploreData).length ? (
+          <div
+            className={`${
+              isOpenTableDetails
+                ? 'workspace-page__sidebar__content__explore-wrap__list-chain-half'
+                : 'workspace-page__sidebar__content__explore-wrap__list-chain'
+            }`}
+          >
+            {Object.keys(exploreData).map((nameChain: string, index) => (
+              <CollapseExplore
+                key={index + 'explore'}
+                title={nameChain}
+                content={Object.values(exploreData)[index]}
+                onChangeSelectedTable={setSelectedTable}
+                selectedTable={selectedTable}
+              />
+            ))}
+          </div>
+        ) : (
+          _renderNoData()
+        )}
+      </>
+    );
+  };
+
+  const _renderTableNameExplore = () => {
+    return (
+      <>
+        {filteredData.length ? (
+          <div className="workspace-page__sidebar__content__explore-wrap__table-search">
+            <div className="title">Tables</div>
+            {filteredData.map((chain: SchemaType, index: number) => {
+              return (
+                <ChainItem
+                  chain={chain}
+                  key={index + 'chain'}
+                  onChangeSelectedTable={setSelectedTable}
+                  selectedTable={selectedTable}
+                  isSearchTableName={true}
+                />
+              );
+            })}
+          </div>
+        ) : (
+          _renderNoData()
+        )}
+      </>
+    );
+  };
+
   const _renderContentExplore = () => {
-    const isOpenTableDetails = !!selectedTable;
     return (
       <div className="workspace-page__sidebar__content__explore-wrap">
         <div className="workspace-page__sidebar__content__explore-wrap__title">
@@ -616,32 +678,18 @@ const Sidebar: React.FC<SidebarProps> = ({
             isSearch
             className="workspace-page__sidebar__content__work-place-wrap__input-search"
             value={searchExploreData}
-            placeholder={'Search...'}
+            placeholder={'Search datasets...'}
             size="sm"
             onChange={handleSearch}
+            onFocus={(e) => {
+              e.target.select();
+            }}
           />
         </Box>
-        {!!Object.keys(filteredData).length ? (
-          <div
-            className={`${
-              isOpenTableDetails
-                ? 'workspace-page__sidebar__content__explore-wrap__list-chain-half'
-                : 'workspace-page__sidebar__content__explore-wrap__list-chain'
-            }`}
-          >
-            {Object.keys(filteredData).map((nameChain: string, index) => (
-              <CollapseExplore
-                key={index + 'explore'}
-                title={nameChain}
-                content={Object.values(filteredData)[index]}
-                onChangeSelectedTable={setSelectedTable}
-                selectedTable={selectedTable}
-              />
-            ))}
-          </div>
-        ) : (
-          _renderNoData()
-        )}
+
+        {!!searchExploreData
+          ? _renderTableNameExplore()
+          : _renderTableExplore()}
 
         {isOpenTableDetails && (
           <Box
