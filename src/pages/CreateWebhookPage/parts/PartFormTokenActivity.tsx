@@ -19,11 +19,7 @@ const PartFormTokenActivity: FC<IPartFormTokenActivity> = ({
   validator,
 }) => {
   return (
-    <Flex
-      className="token-activity"
-      flexWrap={'wrap'}
-      justifyContent={'space-between'}
-    >
+    <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
       <AppField label={'Token Address'} customWidth={'100%'} isRequired>
         <AppInput
           size="lg"
