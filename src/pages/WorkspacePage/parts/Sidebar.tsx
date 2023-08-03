@@ -24,7 +24,7 @@ import {
 } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { Link, useLocation, useParams } from 'react-router-dom';
-import { CloseMenuIcon, CopyIcon } from 'src/assets/icons';
+import { CloseMenuIcon } from 'src/assets/icons';
 import { AppButton, AppInput } from 'src/components';
 import AppQueryMenu, { QUERY_MENU_LIST } from 'src/components/AppQueryMenu';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
@@ -32,11 +32,10 @@ import rf from 'src/requests/RequestFactory';
 import { IPagination, ROUTES, SchemaType } from 'src/utils/common';
 import { IDashboardDetail, IQuery } from 'src/utils/query.type';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
-import { copyToClipboard } from 'src/utils/utils-helper';
 import { getChainIconByChainName } from 'src/utils/utils-network';
 import { BROADCAST_FETCH_DASHBOARD } from './Dashboard';
 import { BROADCAST_ADD_TO_EDITOR, BROADCAST_FETCH_QUERY } from './Query';
-import { ChevronRightIcon, CloseIcon } from '@chakra-ui/icons';
+import { ChevronRightIcon, CloseIcon, AddIcon } from '@chakra-ui/icons';
 import useOriginPath from 'src/hooks/useOriginPath';
 
 export const BROADCAST_FETCH_WORKPLACE_DATA = 'FETCH_WORKPLACE_DATA';
@@ -58,9 +57,8 @@ const ChainItem = ({
     onChangeSelectedTable(chain);
   };
 
-  const handleCopy = (query: string) => {
+  const handleAddToEditor = (query: string) => {
     AppBroadcast.dispatch(BROADCAST_ADD_TO_EDITOR, query);
-    copyToClipboard(query);
   };
 
   return (
@@ -92,10 +90,10 @@ const ChainItem = ({
               className="add-query-icon"
               onClick={(e) => {
                 e.stopPropagation();
-                handleCopy(chain.full_name);
+                handleAddToEditor(chain.full_name);
               }}
             >
-              <CopyIcon />
+              <AddIcon />
             </div>
           </Tooltip>
         )}
@@ -346,9 +344,8 @@ const Sidebar: React.FC<SidebarProps> = ({
       : 'workspace-page__sidebar__content__work-place-detail ';
   };
 
-  const handleCopy = (query: string) => {
+  const handleAddToEditor = (query: string) => {
     AppBroadcast.dispatch(BROADCAST_ADD_TO_EDITOR, query);
-    copyToClipboard(query);
   };
 
   const onForkSuccess = async (response: any, type: string) => {
@@ -546,11 +543,11 @@ const Sidebar: React.FC<SidebarProps> = ({
           </Flex>
           <div className="header-icon">
             {location.pathname.includes(ROUTES.MY_QUERY) && (
-              <CopyIcon
+              <AddIcon
                 className="icon-header"
                 onClick={() => {
                   if (selectedTable?.full_name) {
-                    handleCopy(selectedTable?.full_name);
+                    handleAddToEditor(selectedTable?.full_name);
                   }
                 }}
               />
@@ -571,8 +568,6 @@ const Sidebar: React.FC<SidebarProps> = ({
               py="6px"
               justifyContent={'space-between'}
               px={{ base: '20px', lg: '16px' }}
-              cursor={'pointer'}
-              onClick={() => handleCopy(item.column_name)}
             >
               <Tooltip
                 placement={'top'}
@@ -586,7 +581,10 @@ const Sidebar: React.FC<SidebarProps> = ({
               </Tooltip>
               <div className="data-type">
                 <Text isTruncated>{item.data_type}</Text>
-                <CopyIcon />
+                <AddIcon
+                  cursor={'pointer'}
+                  onClick={() => handleAddToEditor(item.column_name)}
+                />
               </div>
             </Flex>
           ))}
