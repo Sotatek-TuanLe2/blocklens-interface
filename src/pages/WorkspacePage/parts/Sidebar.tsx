@@ -369,7 +369,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   const isOpenTableDetails = !!selectedTable;
 
   const _renderNoData = () => (
-    <Box className="data-empty">
+    <Box pl={{ base: '16px', lg: '0' }} className="data-empty">
       {!!searchExploreData && category === CATEGORIES.EXPLORE_DATA
         ? 'No matched dataset'
         : 'No data...'}
@@ -403,6 +403,9 @@ const Sidebar: React.FC<SidebarProps> = ({
             onChange={(e) => {
               setSearchValueWorkPlace(e.target.value);
               getDataSearchWorkPlace(e.target.value);
+            }}
+            onFocus={(e) => {
+              e.target.select();
             }}
           />
         </Box>
