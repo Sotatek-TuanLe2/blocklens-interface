@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import { StyleProps, Textarea, TextareaProps } from '@chakra-ui/react';
 import { mode } from '@chakra-ui/theme-tools';
 import SimpleReactValidator from 'simple-react-validator';
@@ -15,22 +15,50 @@ interface AppTextareaProps extends TextareaProps {
   variant?: 'main' | 'auth' | 'authSecondary' | 'search';
   validate?: ValidatorProps;
   hiddenErrorText?: boolean;
+  autoResize?: boolean;
 }
 
 const AppTextarea: FC<AppTextareaProps> = ({
   variant = 'main',
   validate,
   hiddenErrorText = false,
+  autoResize = false,
   ...props
 }) => {
   const forceRender = useForceRender();
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [height, setHeight] = useState('auto');
+
+  const handleResize = () => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.style.height = 'auto';
+      textarea.style.height = `${textarea.scrollHeight}px`;
+      setHeight(`${textarea.scrollHeight}px`);
+    }
+  };
+
+  useEffect(() => {
+    handleResize();
+  }, [props.value]);
+
   const onBlur = () => {
     validate?.validator.showMessageFor(validate.name);
     forceRender();
   };
   return (
     <>
-      <Textarea variant={variant} onBlur={onBlur} {...props} />
+      {autoResize ? (
+        <Textarea
+          variant={variant}
+          onBlur={onBlur}
+          ref={textareaRef}
+          style={{ height }}
+          {...props}
+        />
+      ) : (
+        <Textarea variant={variant} onBlur={onBlur} {...props} />
+      )}
       {!hiddenErrorText &&
         validate &&
         validate.validator.message(

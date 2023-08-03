@@ -1,5 +1,5 @@
 import { Box, Checkbox, Flex } from '@chakra-ui/react';
-import { AppField, AppInput } from 'src/components';
+import { AppField, AppInput, AppTextarea } from 'src/components';
 import React, { ChangeEvent, FC, useEffect, useMemo, useState } from 'react';
 import { IDataForm } from '../index';
 
@@ -134,7 +134,11 @@ const PartFormTokenActivityAptos: FC<IPartFormTokenActivityAptos> = ({
     });
   }, [eventsSelected]);
   return (
-    <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
+    <Flex
+      className="token-activity"
+      flexWrap={'wrap'}
+      justifyContent={'space-between'}
+    >
       <AppField label={'Collection Name'} customWidth={'49%'} isRequired>
         <AppInput
           size="lg"
@@ -174,6 +178,24 @@ const PartFormTokenActivityAptos: FC<IPartFormTokenActivityAptos> = ({
             name: `creatorAddress`,
             validator: validator.current,
             rule: 'required|isAddressAptos',
+          }}
+        />
+      </AppField>
+
+      <AppField label={'Token Name'}>
+        <AppTextarea
+          className="token-name"
+          value={dataForm.metadata?.tokenName}
+          placeholder="name1,name2,name3"
+          autoResize={true}
+          onChange={(e) => {
+            setDataForm({
+              ...dataForm,
+              metadata: {
+                ...dataForm.metadata,
+                tokenName: e.target.value,
+              },
+            });
           }}
         />
       </AppField>
