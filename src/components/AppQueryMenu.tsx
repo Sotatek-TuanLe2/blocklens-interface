@@ -27,6 +27,7 @@ import {
   SettingQueryIcon,
   ShareQueryIcon,
   UnsavedIcon,
+  SavedIcon,
 } from '../assets/icons';
 import AppButton from './AppButton';
 
@@ -152,7 +153,7 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
           return {
             id: QUERY_MENU_LIST.SAVE,
             label: true ? QUERY_MENU_LIST.SAVE : 'Unsave',
-            icon: true ? <UnsavedIcon /> : <UnsavedIcon />,
+            icon: true ? <SavedIcon /> : <UnsavedIcon />,
             onClick: onSave,
           };
         default:

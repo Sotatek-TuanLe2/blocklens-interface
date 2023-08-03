@@ -59,6 +59,7 @@ import { ReactComponent as PrevIcon } from './PrevIcon.svg';
 import { ReactComponent as DashboardListIcon } from './DashboardListIcon.svg';
 import { ReactComponent as SavedListIcon } from './SavedListIcon.svg';
 import { ReactComponent as UnsavedIcon } from './UnsavedIcon.svg';
+import { ReactComponent as SavedIcon } from './SavedIcon.svg';
 import { ReactComponent as FireIcon } from './FireIcon.svg';
 import { ReactComponent as IconListDashboard } from './IconListDashboard.svg';
 import { ReactComponent as IconColumnDashboard } from './IconColumnDashboard.svg';
@@ -152,6 +153,7 @@ export {
   DashboardListIcon,
   SavedListIcon,
   UnsavedIcon,
+  SavedIcon,
   FireIcon,
   IconColumnDashboard,
   IconListDashboard,
