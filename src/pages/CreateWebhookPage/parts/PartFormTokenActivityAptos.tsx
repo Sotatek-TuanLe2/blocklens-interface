@@ -7,7 +7,6 @@ interface IPartFormTokenActivityAptos {
   dataForm: IDataForm;
   setDataForm: (value: IDataForm) => void;
   validator: any;
-  isHiddenName?: boolean;
 }
 
 interface IDataEvent {
@@ -120,7 +119,6 @@ const PartFormTokenActivityAptos: FC<IPartFormTokenActivityAptos> = ({
   dataForm,
   setDataForm,
   validator,
-  isHiddenName,
 }) => {
   const [eventsSelected, setEventsSelected] = useState<string[]>([]);
 

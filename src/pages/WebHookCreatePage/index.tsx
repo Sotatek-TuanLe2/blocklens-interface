@@ -208,7 +208,6 @@ const WebHookCreatePage: React.FC = () => {
           dataForm={dataForm}
           setDataForm={setDataForm}
           validator={validator}
-          isHiddenName={true}
         />
       </Box>
     );
