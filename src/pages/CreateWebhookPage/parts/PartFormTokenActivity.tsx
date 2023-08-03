@@ -48,7 +48,7 @@ const PartFormTokenActivity: FC<IPartFormTokenActivity> = ({
       <AppField label={'Token Name'}>
         <AppTextarea
           className="token-name"
-          value={dataForm.metadata?.tokenName}
+          value={dataForm.metadata?.name}
           placeholder="name1,name2,name3"
           autoResize={true}
           onChange={(e) => {
@@ -56,7 +56,7 @@ const PartFormTokenActivity: FC<IPartFormTokenActivity> = ({
               ...dataForm,
               metadata: {
                 ...dataForm.metadata,
-                tokenName: e.target.value,
+                name: e.target.value,
               },
             });
           }}

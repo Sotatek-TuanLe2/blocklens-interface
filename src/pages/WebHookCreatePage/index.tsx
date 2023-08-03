@@ -52,7 +52,6 @@ interface IMetadata {
   creatorAddress?: string;
   collectionName?: string;
   name?: string;
-  tokenName?: string;
 }
 
 export interface IDataForm {
@@ -75,7 +74,7 @@ const initDataCreateWebHook = {
     events: [],
     addresses: [],
     address: '',
-    tokenName: '',
+    name: '',
   },
 };
 
@@ -274,8 +273,8 @@ const WebHookCreatePage: React.FC = () => {
             ?.split(',')
             .filter((item: string) => !!item)
             .map((item: string) => +item.trim()) || [],
-        tokenName:
-          dataForm?.metadata?.tokenName
+        name:
+          dataForm?.metadata?.name
             ?.split(',')
             .filter((i) => i.trim().length)
             .map((i) => i.trim()) || [],
