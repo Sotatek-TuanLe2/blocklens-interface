@@ -369,7 +369,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   const isOpenTableDetails = !!selectedTable;
 
   const _renderNoData = () => (
-    <Box pl="16px" className="data-empty">
+    <Box className="data-empty">
       {!!searchExploreData && category === CATEGORIES.EXPLORE_DATA
         ? 'No matched dataset'
         : 'No data...'}
