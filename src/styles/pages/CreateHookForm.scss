@@ -59,6 +59,14 @@
         background-color: white;
         border: 1px solid $line;
       }
+      .token-activity {
+        .field {
+          .token-name {
+            min-height: 48px !important;
+            padding: 14px 20px 0;
+          }
+        }
+      }
     }
   }
   .name {

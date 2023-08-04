@@ -74,6 +74,7 @@ const initDataCreateWebHook = {
     events: [],
     addresses: [],
     address: '',
+    name: '',
   },
 };
 
@@ -207,7 +208,6 @@ const WebHookCreatePage: React.FC = () => {
           dataForm={dataForm}
           setDataForm={setDataForm}
           validator={validator}
-          isHiddenName={true}
         />
       </Box>
     );
@@ -272,6 +272,7 @@ const WebHookCreatePage: React.FC = () => {
             ?.split(',')
             .filter((item: string) => !!item)
             .map((item: string) => +item.trim()) || [],
+        name: dataForm?.metadata?.name,
       },
     };
 
