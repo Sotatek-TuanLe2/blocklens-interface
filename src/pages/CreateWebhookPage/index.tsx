@@ -62,6 +62,7 @@ const CreateWebhook = () => {
       events: [],
       addresses: [],
       address: '',
+      name: '',
     },
   };
 
@@ -159,6 +160,7 @@ const CreateWebhook = () => {
             ?.split(',')
             .filter((item: string) => !!item)
             .map((item: string) => +item.trim()) || [],
+        name: dataForm?.metadata?.name,
       },
     };
 

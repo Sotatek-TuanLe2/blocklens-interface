@@ -1,7 +1,7 @@
 import { Box, Flex } from '@chakra-ui/react';
 import React, { FC, useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useHistory, useParams } from 'react-router';
+import { useParams } from 'react-router';
 import {
   AppButton,
   AppButtonLarge,
@@ -10,17 +10,16 @@ import {
   AppHeading,
   AppInput,
   AppReadABI,
+  AppTextarea,
   AppUploadABI,
   TYPE_ABI,
 } from 'src/components';
-import useAppDetails from 'src/hooks/useAppDetails';
 import useWebhookDetails from 'src/hooks/useWebhook';
 import { BasePage } from 'src/layouts';
 import ModalDeleteWebhook from 'src/modals/ModalDeleteWebhook';
 import rf from 'src/requests/RequestFactory';
 import { getUserStats } from 'src/store/user';
 import 'src/styles/pages/AppDetail.scss';
-import { APP_STATUS } from 'src/utils/utils-app';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import {
   getLogoChainByChainId,
@@ -195,8 +194,12 @@ const WebhookSettingsPage = () => {
         <AppField label={'Creator Address'} customWidth={'49%'}>
           <AppInput value={webhook?.metadata?.creatorAddress} isDisabled />
         </AppField>
-        <AppField label={'Name'} customWidth={'100%'}>
-          <AppInput value={webhook?.metadata?.name} isDisabled />
+        <AppField label={'Token name'} customWidth={'100%'}>
+          <AppTextarea
+            value={webhook?.metadata?.name}
+            variant="disabled"
+            autoResize
+          />
         </AppField>
 
         <Box w={'full'}>
