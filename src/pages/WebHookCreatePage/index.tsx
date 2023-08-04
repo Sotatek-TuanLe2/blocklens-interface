@@ -112,7 +112,7 @@ const WebHookCreatePage: React.FC = () => {
 
   const onChangeWebhookType = (value: string) => {
     if (type === value) return;
-    setDataForm(initDataCreateWebHook);
+    setDataForm({ ...initDataCreateWebHook, projectId: dataForm?.projectId });
     validator.current.fields = [];
     forceUpdate();
     setType(value);
