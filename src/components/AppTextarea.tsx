@@ -12,7 +12,7 @@ interface ValidatorProps {
 }
 
 interface AppTextareaProps extends TextareaProps {
-  variant?: 'main' | 'auth' | 'authSecondary' | 'search';
+  variant?: 'main' | 'disabled' | 'auth' | 'authSecondary' | 'search';
   validate?: ValidatorProps;
   hiddenErrorText?: boolean;
   autoResize?: boolean;
@@ -46,6 +46,7 @@ const AppTextarea: FC<AppTextareaProps> = ({
     validate?.validator.showMessageFor(validate.name);
     forceRender();
   };
+
   return (
     <>
       {autoResize ? (
@@ -93,6 +94,14 @@ export const appTextareaStyles = {
       _focus: {
         borderColor: mode('pressed.100', 'pressed.100')(props),
       },
+    }),
+    disabled: (props: StyleProps) => ({
+      bg: mode('rgba(0, 2, 36, 0.05)', 'rgba(0, 2, 36, 0.05)')(props),
+      border: 0,
+      color: mode('paragraph.100', 'paragraph.100')(props),
+      borderRadius: '6px',
+      fontSize: '16px',
+      p: '20px',
     }),
   },
 };

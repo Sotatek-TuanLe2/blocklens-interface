@@ -272,11 +272,7 @@ const WebHookCreatePage: React.FC = () => {
             ?.split(',')
             .filter((item: string) => !!item)
             .map((item: string) => +item.trim()) || [],
-        name:
-          dataForm?.metadata?.name
-            ?.split(',')
-            .filter((i) => i.trim().length)
-            .map((i) => i.trim()) || [],
+        name: dataForm?.metadata?.name,
       },
     };
 
