@@ -184,7 +184,7 @@ const PartFormTokenActivityAptos: FC<IPartFormTokenActivityAptos> = ({
           className="token-name"
           value={dataForm.metadata?.name}
           placeholder="name1,name2,name3"
-          autoResize={true}
+          autoResize
           onChange={(e) => {
             setDataForm({
               ...dataForm,
