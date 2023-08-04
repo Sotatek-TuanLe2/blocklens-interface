@@ -38,8 +38,8 @@ const WebhookDetail: FC<IWebhookDetail> = () => {
                 : `Webhook: ${webhook?.registrationId || '--'}`
             }
             linkBack={
-              webhook.appId
-                ? `${ROUTES.APP}/${webhook.appId}?type=${webhook.type}`
+              webhook.projectId
+                ? `${ROUTES.APP}/${webhook.projectId}?type=${webhook.type}`
                 : ROUTES.TRIGGERS
             }
           />
