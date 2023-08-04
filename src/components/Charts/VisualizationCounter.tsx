@@ -31,12 +31,12 @@ const VisualizationCounter = ({ data, visualization, isLoading }: Props) => {
     );
   }
 
-  const dataCounter = () => {
+  const getCounterValue = (): string => {
     if (data[dataOptions.rowNumber - 1] === undefined) return '';
     const dataColumn: any = data[dataOptions.rowNumber - 1];
     const indexColumn = dataOptions.counterColName;
 
-    return dataColumn[indexColumn]?.toString();
+    return dataColumn[indexColumn]?.toString() || '';
   };
 
   const checkColor = (value: string | number) => {
@@ -52,16 +52,16 @@ const VisualizationCounter = ({ data, visualization, isLoading }: Props) => {
     }
   };
 
-  const isNumberValue = isNumber(dataCounter());
+  const counterValue = getCounterValue();
+  const isNumberValue = isNumber(counterValue);
   const prefix = isNumberValue ? dataOptions.stringPrefix || '' : '';
   const value = isNumberValue
     ? commaNumber(
-        new BigNumber(dataCounter()).toFixed(+dataOptions.stringDecimal || 0),
+        new BigNumber(counterValue).toFixed(+dataOptions.stringDecimal || 0),
       )
-    : dataCounter();
+    : counterValue;
   const suffix = isNumberValue ? dataOptions.stringSuffix || '' : '';
-
-  const counterValue = `${prefix}${value}${suffix}`;
+  const counterValueText = `${prefix}${value}${suffix}`;
 
   return (
     <Box
@@ -72,15 +72,15 @@ const VisualizationCounter = ({ data, visualization, isLoading }: Props) => {
       className="main-counter"
     >
       <div className="main-counter__content">
-        <Tooltip hasArrow placement="top" label={counterValue}>
+        <Tooltip hasArrow placement="top" label={counterValueText}>
           <Text
             className="main-counter__content__value"
             isTruncated
             style={{
-              color: (isNumberValue && checkColor(dataCounter())) || '',
+              color: (isNumberValue && checkColor(counterValue)) || '',
             }}
           >
-            {counterValue}
+            {counterValueText}
           </Text>
         </Tooltip>
         <Tooltip

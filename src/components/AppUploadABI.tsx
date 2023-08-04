@@ -2,7 +2,6 @@ import {
   Box,
   Flex,
   Link,
-  Text,
   Checkbox,
   Tooltip,
   useDisclosure,
@@ -556,11 +555,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
     <Box className="upload-abi">
       <Flex justifyContent={'space-between'}>
         <Flex mb={1} className="label-abi">
-          ABI{' '}
-          <Text as={'span'} className="text-error" ml={1}>
-            *
-          </Text>
-          {type === TYPE_ABI.NFT && _renderNoticeUpload()}
+          ABI {type === TYPE_ABI.NFT && _renderNoticeUpload()}
         </Flex>
 
         {!viewOnly && !abiContract?.length && (

@@ -73,7 +73,7 @@ const Header: FC = () => {
       location.pathname == ROUTES.LOGIN
     ) {
       toastError({
-        message: 'Credential is not correct',
+        message: 'Username or password does not exist',
       });
       return;
     }
