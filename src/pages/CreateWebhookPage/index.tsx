@@ -160,7 +160,7 @@ const CreateWebhook = () => {
             ?.split(',')
             .filter((item: string) => !!item)
             .map((item: string) => +item.trim()) || [],
-        name: dataForm?.metadata?.name,
+        name: dataForm?.metadata?.name ? dataForm?.metadata?.name.trim() : '',
       },
     };
 
