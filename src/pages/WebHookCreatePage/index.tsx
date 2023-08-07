@@ -311,9 +311,6 @@ const WebHookCreatePage: React.FC = () => {
           !dataForm.metadata?.abi?.length) ||
         (type === WEBHOOK_TYPES.ADDRESS_ACTIVITY &&
           !dataForm?.metadata?.addresses?.length) ||
-        ((type === WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY ||
-          type === WEBHOOK_TYPES.APTOS_COIN_ACTIVITY) &&
-          !!dataForm?.metadata?.events?.length) ||
         (type === WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY &&
           !dataForm?.metadata?.events?.length &&
           !dataForm?.metadata?.address &&
