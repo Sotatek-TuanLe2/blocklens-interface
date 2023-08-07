@@ -96,12 +96,19 @@ const ListSelect: FC<IListSelect> = ({
     setItemSelected(newItemsSelected);
   };
 
+  const formatFunctions = (address: string) => {
+    const pos = address.indexOf('::');
+    return address.slice(pos + 2);
+  };
+
   const dataShow = useMemo(() => {
     let dataFiltered = data;
 
     if (!!valueSearch) {
       dataFiltered = dataFiltered.filter((item: IABIItem) =>
-        item.name.toLowerCase().includes(valueSearch.toLowerCase()),
+        formatFunctions(item.name)
+          .toLowerCase()
+          .includes(valueSearch.toLowerCase()),
       );
     }
 
@@ -162,11 +169,6 @@ const ListSelect: FC<IListSelect> = ({
     dataShow.some((data: IABIItem) =>
       itemSelected.some((id: string) => data.name === id),
     ) && !allChecked;
-
-  const formatFunctions = (address: string) => {
-    const pos = address.indexOf('::');
-    return address.slice(pos + 2);
-  };
 
   return (
     <Flex className="box-events">
