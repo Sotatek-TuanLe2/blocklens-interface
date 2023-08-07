@@ -50,7 +50,7 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
 
   const axisOptionsConfigs = useMemo(
     () =>
-      ['', ...axisOptions]?.map((axis) => ({
+      ['--Select--', ...axisOptions]?.map((axis) => ({
         value: axis as string,
         label: axis as string,
       })),
