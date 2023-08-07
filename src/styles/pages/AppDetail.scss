@@ -59,7 +59,7 @@
         /* Safari and Chrome */
       }
 
-      &>div {
+      & > div {
         width: max-content;
       }
     }
@@ -312,9 +312,11 @@
 }
 
 .button {
-  background: linear-gradient(271.63deg,
-      #1e72ff -2.92%,
-      #0250be 102.1%) !important;
+  background: linear-gradient(
+    271.63deg,
+    #1e72ff -2.92%,
+    #0250be 102.1%
+  ) !important;
 }
 
 .field-disabled {
@@ -335,6 +337,15 @@
   .select-type-webhook {
     .app-select__btn-select {
       z-index: 99;
+    }
+  }
+
+  .token-activity {
+    .field {
+      .token-name {
+        min-height: 48px !important;
+        padding: 14px 20px 0;
+      }
     }
   }
 
@@ -485,7 +496,6 @@
   margin-top: 26px !important;
   @include text-medium-regular;
 
-
   .link {
     color: $main !important;
     font-size: 16px;
@@ -529,7 +539,7 @@
 
     &:last-child {
       // border-radius: 0 0 6px 6px;
-      border: none
+      border: none;
     }
   }
 }

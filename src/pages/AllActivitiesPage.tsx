@@ -20,7 +20,7 @@ const AllActivitiesPage = () => {
     tokenId: '',
     address: '',
   };
-  const { id: webhookId } = useParams<{ appId: string; id: string }>();
+  const { id: webhookId } = useParams<{ id: string }>();
   const [params, setParams] = useState<any>(initParams);
   const { webhook } = useWebhookDetails(webhookId);
   const [isOpenFilterModal, setIsOpenFilterModal] = useState<boolean>(false);

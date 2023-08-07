@@ -31,10 +31,10 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
     suffix: string | number;
     prefix: string | number;
   }>({
-    rowNumber: editVisualization.options?.rowNumber || '1',
-    decimals: editVisualization.options?.stringDecimal || '0',
-    suffix: editVisualization.options?.stringDecimal,
-    prefix: editVisualization.options?.stringPrefix,
+    rowNumber: optionsData?.rowNumber || '1',
+    decimals: optionsData?.stringDecimal || '0',
+    suffix: optionsData?.stringSuffix,
+    prefix: optionsData?.stringPrefix,
   });
 
   const validator = useRef(
@@ -81,7 +81,7 @@ const CounterConfiguration: React.FC<ICounterConfigurations> = ({
     onChangeVisualization({
       ...editVisualization,
       options: {
-        ...editVisualization.options,
+        ...optionsData,
         ...data,
       },
     });

@@ -80,6 +80,8 @@ const AppComplete: FC<IAppCompletePops> = ({
   useEffect(() => {
     if (optionSelected) {
       setInputValue(optionSelected?.label);
+    } else {
+      setInputValue('');
     }
   }, [optionSelected, open]);
 

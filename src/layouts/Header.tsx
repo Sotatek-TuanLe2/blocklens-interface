@@ -35,7 +35,7 @@ const menus = [
   },
   {
     name: 'APIs',
-    path: 'https://docsblocklens.readme.io/reference/overview',
+    path: 'https://stg-docs.blocklens.io/',
   },
   {
     name: 'Account',
@@ -73,7 +73,7 @@ const Header: FC = () => {
       location.pathname == ROUTES.LOGIN
     ) {
       toastError({
-        message: 'Credential is not correct',
+        message: 'Username or password does not exist',
       });
       return;
     }

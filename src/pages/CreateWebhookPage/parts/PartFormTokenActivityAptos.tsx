@@ -1,5 +1,5 @@
 import { Box, Checkbox, Flex } from '@chakra-ui/react';
-import { AppField, AppInput } from 'src/components';
+import { AppField, AppInput, AppTextarea } from 'src/components';
 import React, { ChangeEvent, FC, useEffect, useMemo, useState } from 'react';
 import { IDataForm } from '../index';
 
@@ -7,7 +7,6 @@ interface IPartFormTokenActivityAptos {
   dataForm: IDataForm;
   setDataForm: (value: IDataForm) => void;
   validator: any;
-  isHiddenName?: boolean;
 }
 
 interface IDataEvent {
@@ -120,7 +119,6 @@ const PartFormTokenActivityAptos: FC<IPartFormTokenActivityAptos> = ({
   dataForm,
   setDataForm,
   validator,
-  isHiddenName,
 }) => {
   const [eventsSelected, setEventsSelected] = useState<string[]>([]);
 
@@ -134,7 +132,11 @@ const PartFormTokenActivityAptos: FC<IPartFormTokenActivityAptos> = ({
     });
   }, [eventsSelected]);
   return (
-    <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
+    <Flex
+      className="token-activity"
+      flexWrap={'wrap'}
+      justifyContent={'space-between'}
+    >
       <AppField label={'Collection Name'} customWidth={'49%'} isRequired>
         <AppInput
           size="lg"
@@ -177,23 +179,23 @@ const PartFormTokenActivityAptos: FC<IPartFormTokenActivityAptos> = ({
           }}
         />
       </AppField>
-      {!isHiddenName && (
-        <AppField label={'Name'} customWidth={'100%'}>
-          <AppInput
-            size="lg"
-            value={dataForm.metadata?.name}
-            onChange={(e) => {
-              setDataForm({
-                ...dataForm,
-                metadata: {
-                  ...dataForm.metadata,
-                  name: e.target.value,
-                },
-              });
-            }}
-          />
-        </AppField>
-      )}
+      <AppField label={'Token Name'}>
+        <AppTextarea
+          className="token-name"
+          value={dataForm.metadata?.name}
+          placeholder="name1,name2,name3"
+          autoResize
+          onChange={(e) => {
+            setDataForm({
+              ...dataForm,
+              metadata: {
+                ...dataForm.metadata,
+                name: e.target.value,
+              },
+            });
+          }}
+        />
+      </AppField>
 
       <Box w={'full'}>
         Events{' '}
