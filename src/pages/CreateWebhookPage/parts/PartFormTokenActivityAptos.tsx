@@ -140,7 +140,6 @@ const PartFormTokenActivityAptos: FC<IPartFormTokenActivityAptos> = ({
       <AppField label={'Collection Name'} customWidth={'49%'} isRequired>
         <AppInput
           size="lg"
-          placeholder="Search token/ collection"
           value={dataForm.metadata?.collectionName}
           onChange={(e) => {
             setDataForm({
@@ -162,7 +161,6 @@ const PartFormTokenActivityAptos: FC<IPartFormTokenActivityAptos> = ({
         <AppInput
           size="lg"
           value={dataForm.metadata?.creatorAddress}
-          placeholder="Search token/ collection"
           onChange={(e) => {
             setDataForm({
               ...dataForm,
