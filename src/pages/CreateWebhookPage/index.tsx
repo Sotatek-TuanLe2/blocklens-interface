@@ -135,16 +135,17 @@ const CreateWebhook = () => {
       return forceUpdate();
     }
 
-    const isEvmConditionInvalid =
+    const isEvmCheckboxInvalid =
       isEVMNetwork(appInfo.chain) &&
       !dataForm.metadata?.abiFilter?.length &&
       type !== WEBHOOK_TYPES.ADDRESS_ACTIVITY;
-    const isAptosConditionInvalid =
+    const isAptosCheckboxInvalid =
       isAptosNetwork(appInfo.chain) &&
-      !dataForm.metadata?.events?.length &&
-      !dataForm.metadata?.functions?.length;
+      type !== WEBHOOK_TYPES.ADDRESS_ACTIVITY &&
+      type !== WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY &&
+      !dataForm.metadata?.events?.length;
 
-    if (isEvmConditionInvalid || isAptosConditionInvalid) {
+    if (isEvmCheckboxInvalid || isAptosCheckboxInvalid) {
       toastError({ message: 'At least one checkbox must be checked.' });
       return;
     }

@@ -255,16 +255,17 @@ const WebHookCreatePage: React.FC = () => {
       return forceUpdate();
     }
 
-    const isEvmConditionInvalid =
+    const isEvmCheckboxInvalid =
       isEVMNetwork(chainSelected.value) &&
       !dataForm.metadata?.abiFilter?.length &&
       type !== WEBHOOK_TYPES.ADDRESS_ACTIVITY;
-    const isAptosConditionInvalid =
+    const isAptosCheckboxInvalid =
       isAptosNetwork(chainSelected.value) &&
-      !dataForm.metadata?.events?.length &&
-      !dataForm.metadata?.functions?.length;
+      type !== WEBHOOK_TYPES.ADDRESS_ACTIVITY &&
+      type !== WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY &&
+      !dataForm.metadata?.events?.length;
 
-    if (isEvmConditionInvalid || isAptosConditionInvalid) {
+    if (isEvmCheckboxInvalid || isAptosCheckboxInvalid) {
       toastError({ message: 'At least one checkbox must be checked.' });
       return;
     }
