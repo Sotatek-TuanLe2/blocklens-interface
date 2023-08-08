@@ -135,16 +135,17 @@ const CreateWebhook = () => {
       return forceUpdate();
     }
 
-    const isEvmConditionInvalid =
+    const isEvmCheckboxInvalid =
       isEVMNetwork(appInfo.chain) &&
       !dataForm.metadata?.abiFilter?.length &&
       type !== WEBHOOK_TYPES.ADDRESS_ACTIVITY;
-    const isAptosConditionInvalid =
+    const isAptosCheckboxInvalid =
       isAptosNetwork(appInfo.chain) &&
-      !dataForm.metadata?.events?.length &&
-      !dataForm.metadata?.functions?.length;
+      type !== WEBHOOK_TYPES.ADDRESS_ACTIVITY &&
+      type !== WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY &&
+      !dataForm.metadata?.events?.length;
 
-    if (isEvmConditionInvalid || isAptosConditionInvalid) {
+    if (isEvmCheckboxInvalid || isAptosCheckboxInvalid) {
       toastError({ message: 'At least one checkbox must be checked.' });
       return;
     }
@@ -160,7 +161,7 @@ const CreateWebhook = () => {
             ?.split(',')
             .filter((item: string) => !!item)
             .map((item: string) => +item.trim()) || [],
-        name: dataForm?.metadata?.name,
+        name: dataForm?.metadata?.name ? dataForm?.metadata?.name.trim() : '',
       },
     };
 
@@ -184,9 +185,6 @@ const CreateWebhook = () => {
           !dataForm.metadata?.abi?.length) ||
         (type === WEBHOOK_TYPES.ADDRESS_ACTIVITY &&
           !dataForm?.metadata?.addresses?.length) ||
-        ((type === WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY ||
-          type === WEBHOOK_TYPES.APTOS_COIN_ACTIVITY) &&
-          !dataForm?.metadata?.events?.length) ||
         (type === WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY &&
           !dataForm?.metadata?.events?.length &&
           !dataForm?.metadata?.address &&
