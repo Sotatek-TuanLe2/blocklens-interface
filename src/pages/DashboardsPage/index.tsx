@@ -18,6 +18,11 @@ import { ROUTES } from 'src/utils/common';
 import FilterSearch from './parts/FilterSearch';
 import ListItem from './parts/ListItem';
 
+interface ITags {
+  search?: string;
+  page?: number;
+  limit?: number;
+}
 export const LIST_ITEM_TYPE = {
   DASHBOARDS: 'dashboards',
   QUERIES: 'queries',
@@ -54,6 +59,7 @@ const DashboardsPage: React.FC = () => {
   const [dashboardParams, setDashboardParams] = useState<IDashboardParams>({});
   const [queryParams, setQueryParams] = useState<IQueriesParams>({});
   const [itemType, setItemType] = useState<string>(ITEM_TYPE.DASHBOARDS);
+  const [suggestTag, setSuggestTag] = useState<string[]>([]);
 
   const [displayed, setDisplayed] = useState<string>(DisplayType.Grid);
 
@@ -143,6 +149,27 @@ const DashboardsPage: React.FC = () => {
   const getSearchParam = (value: string) => {
     return value?.trim() || undefined;
   };
+  const fetchListTagQuery = async (params: ITags) => {
+    try {
+      const res: any = await rf
+        .getRequest('DashboardsRequest')
+        .getListTagQuery(params);
+      setSuggestTag(res.data.reverse());
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const fetchListTagDashboard = async (params: ITags) => {
+    try {
+      const res: any = await rf
+        .getRequest('DashboardsRequest')
+        .getListTagDashboard(params);
+      setSuggestTag(res.data.reverse());
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const fetchAllDashboards: any = useCallback(
     async (params: any) => {
@@ -210,7 +237,11 @@ const DashboardsPage: React.FC = () => {
   );
 
   const _renderContentTable = useCallback(
-    (appTable: any) => {
+    (
+      appTable: any,
+      fetchListTag: (params: ITags) => Promise<void>,
+      suggestTag: string[],
+    ) => {
       return (
         <>
           <Box pb={{ base: '28px', lg: '34px' }} className="dashboard-filter">
@@ -219,6 +250,8 @@ const DashboardsPage: React.FC = () => {
               displayed={displayed}
               setDisplayed={setDisplayed}
               itemType={itemType}
+              fetchListTag={fetchListTag}
+              suggestTag={suggestTag}
             />
           </Box>
           <Box>{appTable}</Box>
@@ -347,6 +380,8 @@ const DashboardsPage: React.FC = () => {
             fetchAllDashboards,
             LIST_ITEM_TYPE.DASHBOARDS,
           ),
+          fetchListTagDashboard,
+          suggestTag,
         ),
       },
       {
@@ -355,6 +390,8 @@ const DashboardsPage: React.FC = () => {
         icon: <QueriesIcon />,
         content: _renderContentTable(
           _renderTable(queryParams, fetchAllQueries, LIST_ITEM_TYPE.QUERIES),
+          fetchListTagQuery,
+          suggestTag,
         ),
       },
     ];
@@ -387,6 +424,10 @@ const DashboardsPage: React.FC = () => {
               </Box>
             )}
           </>,
+          itemType === ITEM_TYPE.DASHBOARDS
+            ? fetchListTagDashboard
+            : fetchListTagQuery,
+          suggestTag,
         ),
       });
     }

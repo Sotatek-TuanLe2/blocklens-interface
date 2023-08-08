@@ -1,5 +1,5 @@
 import { Box, Collapse, Flex, Text, useDisclosure } from '@chakra-ui/react';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { useHistory, useLocation } from 'react-router';
 import {
   IconFilter,
@@ -7,6 +7,7 @@ import {
   IconDisplayList,
   DashboardListIcon,
   QueriesIcon,
+  IconEye,
 } from 'src/assets/icons';
 import {
   AppButton,
@@ -30,6 +31,14 @@ interface IFilterSearch {
   displayed: string;
   setDisplayed: (display: string) => void;
   itemType: string;
+  fetchListTag: (params: ITags) => Promise<void>;
+  suggestTag: string[];
+}
+
+interface ITags {
+  search?: string;
+  page?: number;
+  limit?: number;
 }
 
 const optionType: IOption[] = [
@@ -40,10 +49,13 @@ const optionType: IOption[] = [
 const MAX_TRENDING_TAGS = 3;
 
 const FilterSearch: React.FC<IFilterSearch> = (props) => {
+  const LIMIT_RECORD = 10;
   const { isOpen, onToggle } = useDisclosure();
-  const { type, displayed, setDisplayed, itemType } = props;
+  const { type, displayed, setDisplayed, itemType, fetchListTag, suggestTag } =
+    props;
   const history = useHistory();
   const { user } = useUser();
+  const ref = useRef<any>(null);
 
   const isDashboard = type === LIST_ITEM_TYPE.DASHBOARDS;
   const isMyWork = type === LIST_ITEM_TYPE.MYWORK;
@@ -52,6 +64,9 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   const [search, setSearch] = useState<string>('');
   const [sort, setSort] = useState<string>('');
   const [tag, setTag] = useState<string>('');
+  const [tagHistory, setTagHistory] = useState<string[]>([]);
+
+  const [isOpenListTag, setIsOpenListTag] = useState<boolean>(false);
 
   const searchParams = new URLSearchParams(searchUrl);
 
@@ -173,9 +188,61 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
     }
   };
 
+  const listTagHistory = useMemo(() => {
+    const savedTag = localStorage.getItem(
+      isDashboard ? 'savedTagDashboard' : 'savedTagQuery',
+    );
+    return savedTag ? JSON.parse(savedTag) : [];
+  }, [tagHistory]);
+
+  useEffect(() => {
+    function handleClickOutside(event: any) {
+      if (ref.current && !ref.current?.contains(event.target)) {
+        isOpenListTag && setIsOpenListTag(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [ref, isOpenListTag]);
+
   useEffect(() => {
     fetchTagsTrending();
   }, [itemType, type]);
+
+  const onSelectedTag = (value: string) => {
+    setTagHistory((prevTagHistory) => {
+      const updatedTagHistory = Array.from(new Set([...prevTagHistory, value]));
+      localStorage.setItem(
+        isDashboard ? 'savedTagDashboard' : 'savedTagQuery',
+        JSON.stringify(updatedTagHistory),
+      );
+      setIsOpenListTag(false);
+      return updatedTagHistory;
+    });
+    searchParams.delete(HOME_URL_PARAMS.TAG);
+    searchParams.set(HOME_URL_PARAMS.TAG, `#${value}`);
+    history.push({
+      pathname: ROUTES.HOME,
+      search: `${searchParams.toString()}`,
+    });
+  };
+
+  useEffect(() => {
+    if (tag && tag.includes('#')) {
+      const params = { search: tag.replace('#', ''), limit: LIMIT_RECORD };
+      fetchListTag(params);
+    }
+  }, [tag]);
+
+  const listTag = () => {
+    if (tag?.includes('#')) {
+      return suggestTag;
+    }
+    return search === '' && tag === '' ? listTagHistory : [''];
+  };
+
   return (
     <>
       <Flex align={'center'}>
@@ -261,14 +328,33 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
                 variant="searchFilter"
                 isSearch
                 onChange={onChangeSearch}
+                onClick={() => setIsOpenListTag(true)}
               />
-              {tag?.includes('#') && (
-                <Box bg="antiquewhite" position="absolute" w="100%">
-                  <div>sdsd</div>
-                  <div>sdsd</div>
-                  <div>sdsd</div>
+
+              {isOpenListTag && !search && (
+                <Box className="dashboard-filter__search__search-box" ref={ref}>
+                  {listTag().length > 0 ? (
+                    listTag()?.map((item: string) => (
+                      <Flex
+                        alignItems="center"
+                        gap="5px"
+                        key={item}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          onSelectedTag(item);
+                        }}
+                        className="dashboard-filter__search__search-box--item"
+                      >
+                        {search === '' && tag === '' && <IconEye />}{' '}
+                        <Text>#{item}</Text>
+                      </Flex>
+                    ))
+                  ) : (
+                    <Text className="no-result">No matching result</Text>
+                  )}
                 </Box>
               )}
+
               <Flex mt={'14px'}>
                 {listTagsTrending
                   .slice(0, MAX_TRENDING_TAGS)
