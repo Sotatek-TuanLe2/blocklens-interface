@@ -1,4 +1,4 @@
-import { Box, Flex, Checkbox } from '@chakra-ui/react';
+import { Box, Flex, Checkbox, Text } from '@chakra-ui/react';
 import React, { useState, FC, useEffect, ChangeEvent, useMemo } from 'react';
 import { AppInput, AppSelect2 } from 'src/components';
 import 'src/styles/components/AppUploadABI.scss';
@@ -96,12 +96,19 @@ const ListSelect: FC<IListSelect> = ({
     setItemSelected(newItemsSelected);
   };
 
+  const formatFunctions = (address: string) => {
+    const pos = address.indexOf('::');
+    return address.slice(pos + 2);
+  };
+
   const dataShow = useMemo(() => {
     let dataFiltered = data;
 
     if (!!valueSearch) {
       dataFiltered = dataFiltered.filter((item: IABIItem) =>
-        item.name.toLowerCase().includes(valueSearch.toLowerCase()),
+        formatFunctions(item.name)
+          .toLowerCase()
+          .includes(valueSearch.toLowerCase()),
       );
     }
 
@@ -162,11 +169,6 @@ const ListSelect: FC<IListSelect> = ({
     dataShow.some((data: IABIItem) =>
       itemSelected.some((id: string) => data.name === id),
     ) && !allChecked;
-
-  const formatFunctions = (address: string) => {
-    const pos = address.indexOf('::');
-    return address.slice(pos + 2);
-  };
 
   return (
     <Flex className="box-events">
@@ -371,7 +373,10 @@ const AppReadABI: FC<IAppReadABI> = ({
   return (
     <Box className="upload-abi">
       <Flex mb={1} className="label-abi">
-        ABI
+        ABI{' '}
+        <Text as={'span'} className="text-error" ml={1}>
+          *
+        </Text>
       </Flex>
 
       <DetailABI

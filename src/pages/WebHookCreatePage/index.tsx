@@ -17,7 +17,7 @@ import {
 } from 'src/components';
 import { BasePage } from 'src/layouts';
 import { createValidator } from 'src/utils/utils-validator';
-import { isEVMNetwork } from 'src/utils/utils-network';
+import { isAptosNetwork, isEVMNetwork } from 'src/utils/utils-network';
 import {
   optionsWebhookAptosType,
   optionsWebhookType,
@@ -74,6 +74,7 @@ const initDataCreateWebHook = {
     events: [],
     addresses: [],
     address: '',
+    name: '',
   },
 };
 
@@ -112,7 +113,11 @@ const WebHookCreatePage: React.FC = () => {
 
   const onChangeWebhookType = (value: string) => {
     if (type === value) return;
-    setDataForm(initDataCreateWebHook);
+    setDataForm({
+      ...initDataCreateWebHook,
+      projectId: dataForm?.projectId,
+      webhookName: dataForm?.webhookName,
+    });
     validator.current.fields = [];
     forceUpdate();
     setType(value);
@@ -207,7 +212,6 @@ const WebHookCreatePage: React.FC = () => {
           dataForm={dataForm}
           setDataForm={setDataForm}
           validator={validator}
-          isHiddenName={true}
         />
       </Box>
     );
@@ -251,11 +255,17 @@ const WebHookCreatePage: React.FC = () => {
       return forceUpdate();
     }
 
-    if (
+    const isEvmCheckboxInvalid =
+      isEVMNetwork(chainSelected.value) &&
       !dataForm.metadata?.abiFilter?.length &&
+      type !== WEBHOOK_TYPES.ADDRESS_ACTIVITY;
+    const isAptosCheckboxInvalid =
+      isAptosNetwork(chainSelected.value) &&
       type !== WEBHOOK_TYPES.ADDRESS_ACTIVITY &&
-      isEVMNetwork(chainSelected.value)
-    ) {
+      type !== WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY &&
+      !dataForm.metadata?.events?.length;
+
+    if (isEvmCheckboxInvalid || isAptosCheckboxInvalid) {
       toastError({ message: 'At least one checkbox must be checked.' });
       return;
     }
@@ -272,6 +282,7 @@ const WebHookCreatePage: React.FC = () => {
             ?.split(',')
             .filter((item: string) => !!item)
             .map((item: string) => +item.trim()) || [],
+        name: dataForm?.metadata?.name ? dataForm?.metadata?.name.trim() : '',
       },
     };
 
@@ -301,9 +312,6 @@ const WebHookCreatePage: React.FC = () => {
           !dataForm.metadata?.abi?.length) ||
         (type === WEBHOOK_TYPES.ADDRESS_ACTIVITY &&
           !dataForm?.metadata?.addresses?.length) ||
-        ((type === WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY ||
-          type === WEBHOOK_TYPES.APTOS_COIN_ACTIVITY) &&
-          !dataForm?.metadata?.events?.length) ||
         (type === WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY &&
           !dataForm?.metadata?.events?.length &&
           !dataForm?.metadata?.address &&
@@ -376,25 +384,6 @@ const WebHookCreatePage: React.FC = () => {
       </Box>
     );
   };
-
-  useEffect(() => {
-    setTimeout(() => {
-      const isDisabled =
-        !validator.current.allValid() ||
-        (type === WEBHOOK_TYPES.CONTRACT_ACTIVITY &&
-          !dataForm.metadata?.abi?.length) ||
-        (type === WEBHOOK_TYPES.ADDRESS_ACTIVITY &&
-          !dataForm?.metadata?.addresses?.length) ||
-        ((type === WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY ||
-          type === WEBHOOK_TYPES.APTOS_COIN_ACTIVITY) &&
-          !dataForm?.metadata?.events?.length) ||
-        (type === WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY &&
-          !dataForm?.metadata?.events?.length &&
-          !dataForm?.metadata?.address &&
-          !dataForm?.metadata?.functions?.length);
-      setIsDisableSubmit(isDisabled);
-    }, 0);
-  }, [dataForm, type]);
 
   useEffect(() => {
     setType(optionTypes[0].value);

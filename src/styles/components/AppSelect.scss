@@ -75,10 +75,8 @@
     overflow-y: auto;
   }
 
-  &.large {
-    .app-select__menu {
-      top: 100%;
-    }
+  .app-select__menu {
+    top: 100%;
   }
 
   &__menu-item {
