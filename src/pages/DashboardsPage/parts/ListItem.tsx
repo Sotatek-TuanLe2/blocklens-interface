@@ -80,10 +80,6 @@ const ListItem: React.FC<IListItem> = (props) => {
     }
   };
 
-  const getTypeItem = () => {
-    return type === LIST_ITEM_TYPE.MYWORK ? itemType || '' : type;
-  };
-
   const _renderDropdown = (isNavMenu?: boolean) => {
     const menu = [QUERY_MENU_LIST.SAVE, QUERY_MENU_LIST.SHARE];
     return (
@@ -98,7 +94,7 @@ const ListItem: React.FC<IListItem> = (props) => {
                 <AppQueryMenu
                   menu={menu}
                   item={item}
-                  itemType={getTypeItem()}
+                  itemType={itemType}
                   isSaved={isSaved}
                   onSaveSuccess={onSaveSuccess}
                 />
@@ -107,7 +103,7 @@ const ListItem: React.FC<IListItem> = (props) => {
                 <AppQueryMenu
                   menu={menu}
                   item={item}
-                  itemType={getTypeItem()}
+                  itemType={itemType}
                   isNavMenu={isNavMenu}
                   isSaved={isSaved}
                   onSaveSuccess={onSaveSuccess}
@@ -118,7 +114,7 @@ const ListItem: React.FC<IListItem> = (props) => {
             <AppQueryMenu
               menu={menu}
               item={item}
-              itemType={getTypeItem()}
+              itemType={itemType}
               isNavMenu={isNavMenu}
               isSaved={isSaved}
               onSaveSuccess={onSaveSuccess}
