@@ -166,6 +166,9 @@ const DashboardsPage: React.FC = () => {
       return;
     }
     const dashboardIds = data.map((item) => item.id);
+    if (!dashboardIds.length) {
+      return;
+    }
     const savedDashboards = await rf
       .getRequest('DashboardsRequest')
       .filterSavedDashboardsByIds(dashboardIds);
@@ -179,6 +182,9 @@ const DashboardsPage: React.FC = () => {
       return;
     }
     const queryIds = data.map((item) => item.id);
+    if (!queryIds.length) {
+      return;
+    }
     const savedQueries = await rf
       .getRequest('DashboardsRequest')
       .filterSavedQueriesByIds(queryIds);
