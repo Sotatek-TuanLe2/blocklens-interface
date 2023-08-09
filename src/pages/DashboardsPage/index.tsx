@@ -418,6 +418,19 @@ const DashboardsPage: React.FC = () => {
                 : savedQueryIds.includes(item.id),
             );
           }
+          if (!displayedData.length) {
+            return (
+              <div
+                style={{
+                  marginTop: '25px',
+                  width: '100%',
+                  textAlign: 'center',
+                }}
+              >
+                No data...
+              </div>
+            );
+          }
           return displayedData.map((item) => {
             const isSaved = getSavedStatus(item.id);
             return (
