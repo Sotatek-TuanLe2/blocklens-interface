@@ -13,7 +13,7 @@ import ModalDashboard from 'src/modals/querySQL/ModalDashboard';
 import ModalDelete from 'src/modals/querySQL/ModalDelete';
 import ModalQuery from 'src/modals/querySQL/ModalQuery';
 import ModalShareDomain from 'src/modals/querySQL/ModalShareDomain';
-import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
+import { ITEM_TYPE, LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/AppQueryMenu.scss';
 import { ROUTES, TYPE_OF_MODAL } from 'src/utils/common';
@@ -26,11 +26,13 @@ import {
   IconDotMore,
   SettingQueryIcon,
   ShareQueryIcon,
+  UnsavedIcon,
+  SavedIcon,
 } from '../assets/icons';
 import AppButton from './AppButton';
 
 interface IAppQueryMenu {
-  menu?: string[];
+  menu: string[];
   item: IQuery | IDashboardDetail;
   itemType: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
   onDeleteSuccess?: (item: IQuery | IDashboardDetail) => Promise<void>;
@@ -39,10 +41,13 @@ interface IAppQueryMenu {
     type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE],
   ) => Promise<void>;
   onSettingSuccess?: (response: any) => Promise<void>;
+  onSaveSuccess?: () => Promise<void>;
   isNavMenu?: boolean;
+  isSaved?: boolean;
 }
 
 export const QUERY_MENU_LIST = {
+  SAVE: 'Save',
   FORK: 'Fork',
   SETTING: 'Setting',
   SHARE: 'Share',
@@ -51,18 +56,15 @@ export const QUERY_MENU_LIST = {
 
 const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
   const {
-    menu = [
-      QUERY_MENU_LIST.FORK,
-      QUERY_MENU_LIST.SETTING,
-      QUERY_MENU_LIST.SHARE,
-      QUERY_MENU_LIST.DELETE,
-    ],
+    menu,
     itemType,
     onForkSuccess = () => null,
     onDeleteSuccess = () => null,
     onSettingSuccess = () => null,
+    onSaveSuccess = () => null,
     item,
     isNavMenu,
+    isSaved = false,
   } = props;
 
   const { user } = useUser();
@@ -86,9 +88,37 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
     setOpenModalFork((prevState) => !prevState);
   };
 
+  const onSave = async () => {
+    if (!user) {
+      return goWithOriginPath(
+        ROUTES.LOGIN,
+        `${location.pathname}${location.search}`,
+      );
+    }
+    try {
+      if (isSaved) {
+        itemType === ITEM_TYPE.DASHBOARDS
+          ? await rf.getRequest('DashboardsRequest').unSaveDashboard(item.id)
+          : await rf.getRequest('DashboardsRequest').unSaveQuery(item.id);
+        toastSuccess({ message: 'Removed from saved list' });
+      } else {
+        itemType === ITEM_TYPE.DASHBOARDS
+          ? await rf.getRequest('DashboardsRequest').saveDashboard(item.id)
+          : await rf.getRequest('DashboardsRequest').saveQuery(item.id);
+        toastSuccess({ message: 'Added to saved list' });
+      }
+      onSaveSuccess();
+    } catch (error) {
+      toastError({ message: getErrorMessage(error) });
+    }
+  };
+
   const onForkQuery = async () => {
     if (!user) {
-      return goWithOriginPath(ROUTES.LOGIN, location.pathname);
+      return goWithOriginPath(
+        ROUTES.LOGIN,
+        `${location.pathname}${location.search}`,
+      );
     }
 
     try {
@@ -108,39 +138,50 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
   };
 
   const generateMenu = () => {
-    let itemList: {
+    const itemList: {
       id: string;
       label: string;
       icon: React.ReactNode;
       onClick: () => any;
-    }[] = [
-      {
-        id: QUERY_MENU_LIST.FORK,
-        label: QUERY_MENU_LIST.FORK,
-        icon: <ForkQueryIcon />,
-        onClick: onForkQuery,
-      },
-      {
-        id: QUERY_MENU_LIST.SETTING,
-        label: QUERY_MENU_LIST.SETTING,
-        icon: <SettingQueryIcon />,
-        onClick: onToggleModalSetting,
-      },
-      {
-        id: QUERY_MENU_LIST.SHARE,
-        label: QUERY_MENU_LIST.SHARE,
-        icon: <ShareQueryIcon />,
-        onClick: onToggleModalShare,
-      },
-      {
-        id: QUERY_MENU_LIST.DELETE,
-        label: QUERY_MENU_LIST.DELETE,
-        icon: <DeleteQueryIcon />,
-        onClick: onToggleModalDelete,
-      },
-    ];
-
-    itemList = itemList.filter((item) => menu.includes(item.id));
+    }[] = menu.map((id) => {
+      switch (id) {
+        case QUERY_MENU_LIST.FORK:
+          return {
+            id: QUERY_MENU_LIST.FORK,
+            label: QUERY_MENU_LIST.FORK,
+            icon: <ForkQueryIcon />,
+            onClick: onForkQuery,
+          };
+        case QUERY_MENU_LIST.FORK:
+          return {
+            id: QUERY_MENU_LIST.SETTING,
+            label: QUERY_MENU_LIST.SETTING,
+            icon: <SettingQueryIcon />,
+            onClick: onToggleModalSetting,
+          };
+        case QUERY_MENU_LIST.SHARE:
+          return {
+            id: QUERY_MENU_LIST.SHARE,
+            label: QUERY_MENU_LIST.SHARE,
+            icon: <ShareQueryIcon />,
+            onClick: onToggleModalShare,
+          };
+        case QUERY_MENU_LIST.SAVE:
+          return {
+            id: QUERY_MENU_LIST.SAVE,
+            label: isSaved ? 'Unsave' : QUERY_MENU_LIST.SAVE,
+            icon: isSaved ? <UnsavedIcon /> : <SavedIcon />,
+            onClick: onSave,
+          };
+        default:
+          return {
+            id: QUERY_MENU_LIST.DELETE,
+            label: QUERY_MENU_LIST.DELETE,
+            icon: <DeleteQueryIcon />,
+            onClick: onToggleModalDelete,
+          };
+      }
+    });
 
     return itemList;
   };

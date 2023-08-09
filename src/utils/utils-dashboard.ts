@@ -243,10 +243,7 @@ export class Dashboard implements DashboardInterface {
   }
 
   getUserId() {
-    if (!this.getUser()) {
-      return '';
-    }
-    return this.getUser().userId || '';
+    return this.user || '';
   }
 
   getTextWidgets() {

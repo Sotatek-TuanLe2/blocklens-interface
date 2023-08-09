@@ -46,7 +46,8 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   const { user } = useUser();
 
   const isDashboard = type === LIST_ITEM_TYPE.DASHBOARDS;
-  const isMyWork = type === LIST_ITEM_TYPE.MYWORK;
+  const hasTypeSelection =
+    type === LIST_ITEM_TYPE.MYWORK || type === LIST_ITEM_TYPE.SAVED;
   const { search: searchUrl } = useLocation();
 
   const [search, setSearch] = useState<string>('');
@@ -87,7 +88,8 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
 
   useEffect(() => {
     const search = searchParams.get(HOME_URL_PARAMS.SEARCH) || '';
-    const orderBy = searchParams.get(HOME_URL_PARAMS.ORDERBY) || '';
+    const orderBy =
+      searchParams.get(HOME_URL_PARAMS.ORDERBY) || 'created_at:desc';
     const tag = searchParams.get(HOME_URL_PARAMS.TAG) || '';
 
     setSearch(search);
@@ -153,7 +155,10 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
 
   const fetchTagsTrending = async () => {
     try {
-      if (isDashboard || (isMyWork && itemType === LIST_ITEM_TYPE.DASHBOARDS)) {
+      if (
+        isDashboard ||
+        (hasTypeSelection && itemType === LIST_ITEM_TYPE.DASHBOARDS)
+      ) {
         const res: any = await rf
           .getRequest('DashboardsRequest')
           .getPublicDashboardTagsTrending();
@@ -189,7 +194,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
               />
             </Flex>
           )}
-          {isMyWork && (
+          {hasTypeSelection && (
             <Flex flexGrow={{ base: 1, lg: 0 }} maxW={'50%'}>
               <AppMenu
                 data={menuDashboardQueries}
@@ -202,7 +207,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
           <Flex
             flexGrow={{ base: 1, lg: 0 }}
             transition={'.2s linear'}
-            ml={!isDashboard && !isMyWork ? 0 : 2.5}
+            ml={!isDashboard && !hasTypeSelection ? 0 : 2.5}
             onClick={onToggle}
             userSelect={'none'}
             className="filter"
@@ -288,7 +293,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
             >
               <AppSelect2
                 size="medium"
-                value={orderBy || 'created_at:desc'}
+                value={orderBy}
                 onChange={onChangeOrderBy}
                 options={optionType}
                 className="dashboard-filter__search__select"
