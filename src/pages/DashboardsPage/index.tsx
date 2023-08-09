@@ -43,6 +43,7 @@ export const HOME_URL_PARAMS = {
   SORT: 'sort',
   CHAIN: 'chain',
   TAG: 'tag',
+  ORDERBY: 'orderBy',
 };
 
 interface IDashboardParams extends RequestParams, DashboardsParams {}
@@ -70,7 +71,7 @@ const DashboardsPage: React.FC = () => {
     const type =
       searchParams.get(HOME_URL_PARAMS.ITEM_TYPE) || ITEM_TYPE.DASHBOARDS;
     const search = searchParams.get(HOME_URL_PARAMS.SEARCH) || '';
-    const sort = searchParams.get(HOME_URL_PARAMS.SORT) || '';
+    const orderBy = searchParams.get(HOME_URL_PARAMS.ORDERBY) || '';
     const chain = searchParams.get(HOME_URL_PARAMS.CHAIN) || '';
     const tag = searchParams.get(HOME_URL_PARAMS.TAG) || '';
 
@@ -84,7 +85,7 @@ const DashboardsPage: React.FC = () => {
           _.omitBy(
             {
               search: search,
-              sort: sort,
+              orderBy: orderBy,
               chain: chain,
               'tags[]': tag,
             },
@@ -100,7 +101,7 @@ const DashboardsPage: React.FC = () => {
           _.omitBy(
             {
               search: search,
-              sort: sort,
+              orderBy: orderBy,
               chain: chain,
               'tags[]': tag,
             },
@@ -122,7 +123,7 @@ const DashboardsPage: React.FC = () => {
             _.omitBy(
               {
                 search: search,
-                sort: sort,
+                orderBy: orderBy,
                 'tags[]': tag,
               },
               (param) => !param,
@@ -134,7 +135,7 @@ const DashboardsPage: React.FC = () => {
             _.omitBy(
               {
                 search: search,
-                sort: sort,
+                orderBy: orderBy,
                 'tags[]': tag,
               },
               (param) => !param,
@@ -527,7 +528,7 @@ const DashboardsPage: React.FC = () => {
     searchParams.delete(HOME_URL_PARAMS.TAB);
     searchParams.delete(HOME_URL_PARAMS.ITEM_TYPE);
     searchParams.delete(HOME_URL_PARAMS.SEARCH);
-    searchParams.delete(HOME_URL_PARAMS.SORT);
+    searchParams.delete(HOME_URL_PARAMS.ORDERBY);
     searchParams.delete(HOME_URL_PARAMS.TAG);
     if (tabId !== LIST_ITEM_TYPE.DASHBOARDS) {
       searchParams.set(HOME_URL_PARAMS.TAB, tabId);

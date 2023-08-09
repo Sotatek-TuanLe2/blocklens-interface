@@ -33,8 +33,8 @@ interface IFilterSearch {
 }
 
 const optionType: IOption[] = [
-  { value: 'datelowtohigh', label: 'Date low to high' },
-  { value: 'datehightolow', label: 'Date high to low' },
+  { value: 'created_at:desc', label: 'Date low to high' },
+  { value: 'created_at:asc', label: 'Date high to low' },
 ];
 
 const MAX_TRENDING_TAGS = 3;
@@ -51,7 +51,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   const { search: searchUrl } = useLocation();
 
   const [search, setSearch] = useState<string>('');
-  const [sort, setSort] = useState<string>('');
+  const [orderBy, setOrderBy] = useState<string>('');
   const [tag, setTag] = useState<string>('');
 
   const searchParams = new URLSearchParams(searchUrl);
@@ -88,11 +88,12 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
 
   useEffect(() => {
     const search = searchParams.get(HOME_URL_PARAMS.SEARCH) || '';
-    const sort = searchParams.get(HOME_URL_PARAMS.SORT) || '';
+    const orderBy =
+      searchParams.get(HOME_URL_PARAMS.ORDERBY) || 'created_at:desc';
     const tag = searchParams.get(HOME_URL_PARAMS.TAG) || '';
 
     setSearch(search);
-    setSort(sort);
+    setOrderBy(orderBy);
     setTag(tag);
   }, [searchUrl]);
 
@@ -120,9 +121,9 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
     });
   };
 
-  const onChangeSort = (value: string) => {
-    searchParams.delete(HOME_URL_PARAMS.SORT);
-    searchParams.set(HOME_URL_PARAMS.SORT, value);
+  const onChangeOrderBy = (value: string) => {
+    searchParams.delete(HOME_URL_PARAMS.ORDERBY);
+    searchParams.set(HOME_URL_PARAMS.ORDERBY, value);
     history.push({
       pathname: ROUTES.HOME,
       search: `${searchParams.toString()}`,
@@ -292,8 +293,8 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
             >
               <AppSelect2
                 size="medium"
-                value={sort || 'datelowtohigh'}
-                onChange={onChangeSort}
+                value={orderBy}
+                onChange={onChangeOrderBy}
                 options={optionType}
                 className="dashboard-filter__search__select"
                 sxWrapper={{
