@@ -164,7 +164,7 @@ const DashboardsPage: React.FC = () => {
     if (!user) {
       return;
     }
-    const dashboardIds = data.map((item: IDashboardDetail) => item.id);
+    const dashboardIds = data.map((item) => item.id);
     const savedDashboards = await rf
       .getRequest('DashboardsRequest')
       .filterSavedDashboardsByIds(dashboardIds);
@@ -185,19 +185,15 @@ const DashboardsPage: React.FC = () => {
   };
 
   const onSaveSuccess = async (id: string, isSaved: boolean) => {
-    if (tab === LIST_ITEM_TYPE.SAVED) {
-      //
-    } else {
-      const setState =
-        itemType === ITEM_TYPE.DASHBOARDS
-          ? setSavedDashboardIds
-          : setSavedQueryIds;
-      setState((prevState) =>
-        isSaved
-          ? prevState.filter((prevId) => prevId !== id)
-          : [...prevState, id],
-      );
-    }
+    const setState =
+      itemType === ITEM_TYPE.DASHBOARDS
+        ? setSavedDashboardIds
+        : setSavedQueryIds;
+    setState((prevState) =>
+      isSaved
+        ? prevState.filter((prevId) => prevId !== id)
+        : [...prevState, id],
+    );
   };
 
   const fetchAllDashboards = useCallback(
@@ -243,6 +239,12 @@ const DashboardsPage: React.FC = () => {
             ...params,
             search: getSearchParam(params.search),
           });
+        setSavedDashboardIds((prevState) =>
+          _.uniq([
+            ...prevState,
+            ...res.data.map((item: IDashboardDetail) => item.id),
+          ]),
+        );
         return { ...res, docs: res.data };
       } catch (error) {
         console.error(error);
@@ -289,6 +291,9 @@ const DashboardsPage: React.FC = () => {
           ...params,
           search: getSearchParam(params.search),
         });
+        setSavedQueryIds((prevState) =>
+          _.uniq([...prevState, ...res.data.map((item: IQuery) => item.id)]),
+        );
         return { ...res, docs: res.data };
       } catch (error) {
         console.error(error);
@@ -317,9 +322,9 @@ const DashboardsPage: React.FC = () => {
   );
 
   const _renderBody = useCallback(
-    (listItem) => {
+    (renderList: () => any) => {
       if (displayed === DisplayType.List) {
-        return listItem;
+        return renderList();
       }
       return (
         <SimpleGrid
@@ -328,7 +333,7 @@ const DashboardsPage: React.FC = () => {
           columnGap="20px"
           rowGap="20px"
         >
-          {listItem}
+          {renderList()}
         </SimpleGrid>
       );
     },
@@ -403,8 +408,16 @@ const DashboardsPage: React.FC = () => {
       renderHeader={_renderHeader}
       wrapperClassName="block-table"
       renderBody={(data) =>
-        _renderBody(
-          data.map((item) => {
+        _renderBody(() => {
+          let displayedData = [...data];
+          if (tab === LIST_ITEM_TYPE.SAVED) {
+            displayedData = displayedData.filter((item) =>
+              itemType === ITEM_TYPE.DASHBOARDS
+                ? savedDashboardIds.includes(item.id)
+                : savedQueryIds.includes(item.id),
+            );
+          }
+          return displayedData.map((item) => {
             const isSaved = getSavedStatus(item.id);
             return (
               <ListItem
@@ -417,8 +430,8 @@ const DashboardsPage: React.FC = () => {
                 onSaveSuccess={() => onSaveSuccess(item.id, isSaved)}
               />
             );
-          }),
-        )
+          });
+        })
       }
       renderLoading={() =>
         _renderSkeleton(
