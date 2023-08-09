@@ -11,17 +11,29 @@ import { Box } from '@chakra-ui/react';
 import { useMemo } from 'react';
 import { formatNumber } from 'src/utils/utils-format';
 import { generatePositiveRandomNumber } from 'src/utils/utils-helper';
+import useUser from 'src/hooks/useUser';
 
 interface IListItem {
   isLoading?: boolean;
   type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
-  itemType?: typeof ITEM_TYPE[keyof typeof ITEM_TYPE];
+  itemType: typeof ITEM_TYPE[keyof typeof ITEM_TYPE];
   item?: IDashboardDetail | IQuery;
   displayed?: string;
+  isSaved?: boolean;
+  onSaveSuccess?: () => Promise<void>;
 }
 
 const ListItem: React.FC<IListItem> = (props) => {
-  const { type, itemType, item, displayed, isLoading } = props;
+  const {
+    type,
+    itemType,
+    item,
+    displayed,
+    isSaved = false,
+    isLoading,
+    onSaveSuccess,
+  } = props;
+  const { user } = useUser();
 
   const randomViews = useMemo(
     () => formatNumber(generatePositiveRandomNumber(1000), 2),
@@ -53,17 +65,23 @@ const ListItem: React.FC<IListItem> = (props) => {
           return `${ROUTES.MY_DASHBOARD}/${itemClass.getId()}`;
         }
         return `${ROUTES.MY_QUERY}/${itemClass.getId()}`;
+      case LIST_ITEM_TYPE.SAVED:
+        const isUserOwner = itemClass.getUserId() === user?.getId();
+        if (itemType === ITEM_TYPE.DASHBOARDS) {
+          return `${
+            isUserOwner ? ROUTES.MY_DASHBOARD : ROUTES.DASHBOARD
+          }/${itemClass.getId()}`;
+        }
+        return `${
+          isUserOwner ? ROUTES.MY_QUERY : ROUTES.QUERY
+        }/${itemClass.getId()}`;
       default:
         return ROUTES.HOME;
     }
   };
 
-  const getTypeItem = () => {
-    return type === LIST_ITEM_TYPE.MYWORK ? itemType || '' : type;
-  };
-
   const _renderDropdown = (isNavMenu?: boolean) => {
-    const menu = [QUERY_MENU_LIST.SHARE];
+    const menu = [QUERY_MENU_LIST.SAVE, QUERY_MENU_LIST.SHARE];
     return (
       !!item && (
         <>
@@ -76,15 +94,19 @@ const ListItem: React.FC<IListItem> = (props) => {
                 <AppQueryMenu
                   menu={menu}
                   item={item}
-                  itemType={getTypeItem()}
+                  itemType={itemType}
+                  isSaved={isSaved}
+                  onSaveSuccess={onSaveSuccess}
                 />
               </Box>
               <Box display={{ lg: 'none' }}>
                 <AppQueryMenu
                   menu={menu}
                   item={item}
-                  itemType={getTypeItem()}
+                  itemType={itemType}
                   isNavMenu={isNavMenu}
+                  isSaved={isSaved}
+                  onSaveSuccess={onSaveSuccess}
                 />
               </Box>
             </>
@@ -92,8 +114,10 @@ const ListItem: React.FC<IListItem> = (props) => {
             <AppQueryMenu
               menu={menu}
               item={item}
-              itemType={getTypeItem()}
+              itemType={itemType}
               isNavMenu={isNavMenu}
+              isSaved={isSaved}
+              onSaveSuccess={onSaveSuccess}
             />
           )}
         </>

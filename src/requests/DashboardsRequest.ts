@@ -93,6 +93,8 @@ export interface IEditVisualization {
 
 export interface IGetBrowse {
   search?: string;
+  tags?: string[];
+  orderBy?: string;
   limit?: number;
   page?: number;
 }
@@ -130,6 +132,26 @@ export default class DashboardsRequest extends BaseRequest {
   getListTagQuery(params: IGetBrowse) {
     const url = `/queries/tags`;
     return this.get(url, params);
+  }
+
+  getMySavedDashboards(params: IGetBrowse) {
+    const url = `/dashboard-saveds`;
+    return this.get(url, params);
+  }
+
+  getMySavedQueries(params: IGetBrowse) {
+    const url = `/query-saveds`;
+    return this.get(url, params);
+  }
+
+  filterSavedDashboardsByIds(dashboardIds: string[]) {
+    const url = '/dashboard-saveds/filters';
+    return this.get(url, { dashboardIds });
+  }
+
+  filterSavedQueriesByIds(queryIds: string[]) {
+    const url = '/query-saveds/filters';
+    return this.get(url, { queryIds });
   }
 
   createNewDashboard(data: CreateDashboardParams) {
@@ -189,13 +211,25 @@ export default class DashboardsRequest extends BaseRequest {
     const url = `/dashboards/text-widgets/${id}/remove-text-widget`;
     return this.delete(url, id);
   }
+
   removeVisualization(id: ILayout) {
     const url = `/dashboards/dashboard-visuals/${id}/remove-dashboard-visuals`;
     return this.delete(url, id);
   }
+
   removeDashboard(id: string) {
     const url = `/dashboards/${id}`;
     return this.delete(url);
+  }
+
+  saveDashboard(dashboardId: string) {
+    const url = '/dashboard-saveds';
+    return this.post(url, { dashboardId });
+  }
+
+  unSaveDashboard(dashboardId: string) {
+    const url = '/dashboard-saveds';
+    return this.delete(url, { dashboardId });
   }
 
   /* End of Dashboard's detail page */
@@ -290,6 +324,16 @@ export default class DashboardsRequest extends BaseRequest {
   checkVisualizationsInDashboards(queryId: string) {
     const url = `/queries/${queryId}/check-visualization-in-dashboard`;
     return this.get(url);
+  }
+
+  saveQuery(queryId: string) {
+    const url = '/query-saveds';
+    return this.post(url, { queryId });
+  }
+
+  unSaveQuery(queryId: string) {
+    const url = '/query-saveds';
+    return this.delete(url, { queryId });
   }
 
   /* End of Query page */

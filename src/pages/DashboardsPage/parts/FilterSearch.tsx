@@ -42,8 +42,8 @@ interface ITags {
 }
 
 const optionType: IOption[] = [
-  { value: 'datelowtohigh', label: 'Date low to high' },
-  { value: 'datehightolow', label: 'Date high to low' },
+  { value: 'created_at:desc', label: 'Date low to high' },
+  { value: 'created_at:asc', label: 'Date high to low' },
 ];
 
 const MAX_TRENDING_TAGS = 3;
@@ -58,11 +58,12 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   const ref = useRef<any>(null);
 
   const isDashboard = type === LIST_ITEM_TYPE.DASHBOARDS;
-  const isMyWork = type === LIST_ITEM_TYPE.MYWORK;
+  const hasTypeSelection =
+    type === LIST_ITEM_TYPE.MYWORK || type === LIST_ITEM_TYPE.SAVED;
   const { search: searchUrl } = useLocation();
 
   const [search, setSearch] = useState<string>('');
-  const [sort, setSort] = useState<string>('');
+  const [orderBy, setOrderBy] = useState<string>('');
   const [tag, setTag] = useState<string>('');
   const [tagHistory, setTagHistory] = useState<string[]>([]);
 
@@ -102,10 +103,11 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
 
   useEffect(() => {
     const search = searchParams.get(HOME_URL_PARAMS.SEARCH) || '';
-    const sort = searchParams.get(HOME_URL_PARAMS.SORT) || '';
+    const orderBy =
+      searchParams.get(HOME_URL_PARAMS.ORDERBY) || 'created_at:desc';
     const tag = searchParams.get(HOME_URL_PARAMS.TAG) || '';
     setSearch(search);
-    setSort(sort);
+    setOrderBy(orderBy);
     setTag(tag);
   }, [searchUrl]);
 
@@ -136,9 +138,9 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
     });
   };
 
-  const onChangeSort = (value: string) => {
-    searchParams.delete(HOME_URL_PARAMS.SORT);
-    searchParams.set(HOME_URL_PARAMS.SORT, value);
+  const onChangeOrderBy = (value: string) => {
+    searchParams.delete(HOME_URL_PARAMS.ORDERBY);
+    searchParams.set(HOME_URL_PARAMS.ORDERBY, value);
     history.push({
       pathname: ROUTES.HOME,
       search: `${searchParams.toString()}`,
@@ -170,7 +172,10 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
 
   const fetchTagsTrending = async () => {
     try {
-      if (isDashboard || (isMyWork && itemType === LIST_ITEM_TYPE.DASHBOARDS)) {
+      if (
+        isDashboard ||
+        (hasTypeSelection && itemType === LIST_ITEM_TYPE.DASHBOARDS)
+      ) {
         const res: any = await rf
           .getRequest('DashboardsRequest')
           .getPublicDashboardTagsTrending();
@@ -257,7 +262,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
               />
             </Flex>
           )}
-          {isMyWork && (
+          {hasTypeSelection && (
             <Flex flexGrow={{ base: 1, lg: 0 }} maxW={'50%'}>
               <AppMenu
                 data={menuDashboardQueries}
@@ -270,7 +275,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
           <Flex
             flexGrow={{ base: 1, lg: 0 }}
             transition={'.2s linear'}
-            ml={!isDashboard && !isMyWork ? 0 : 2.5}
+            ml={!isDashboard && !hasTypeSelection ? 0 : 2.5}
             onClick={onToggle}
             userSelect={'none'}
             className="filter"
@@ -382,8 +387,8 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
             >
               <AppSelect2
                 size="medium"
-                value={sort || 'datelowtohigh'}
-                onChange={onChangeSort}
+                value={orderBy}
+                onChange={onChangeOrderBy}
                 options={optionType}
                 className="dashboard-filter__search__select"
                 sxWrapper={{
