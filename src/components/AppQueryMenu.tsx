@@ -13,7 +13,7 @@ import ModalDashboard from 'src/modals/querySQL/ModalDashboard';
 import ModalDelete from 'src/modals/querySQL/ModalDelete';
 import ModalQuery from 'src/modals/querySQL/ModalQuery';
 import ModalShareDomain from 'src/modals/querySQL/ModalShareDomain';
-import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
+import { ITEM_TYPE, LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/AppQueryMenu.scss';
 import { ROUTES, TYPE_OF_MODAL } from 'src/utils/common';
@@ -41,7 +41,9 @@ interface IAppQueryMenu {
     type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE],
   ) => Promise<void>;
   onSettingSuccess?: (response: any) => Promise<void>;
+  onSaveSuccess?: () => Promise<void>;
   isNavMenu?: boolean;
+  isSaved?: boolean;
 }
 
 export const QUERY_MENU_LIST = {
@@ -59,8 +61,10 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
     onForkSuccess = () => null,
     onDeleteSuccess = () => null,
     onSettingSuccess = () => null,
+    onSaveSuccess = () => null,
     item,
     isNavMenu,
+    isSaved = false,
   } = props;
 
   const { user } = useUser();
@@ -91,9 +95,18 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
         `${location.pathname}${location.search}`,
       );
     }
-    true
-      ? toastSuccess({ message: 'Added to saved list' })
-      : toastSuccess({ message: 'Removed from saved list' });
+    if (isSaved) {
+      itemType === ITEM_TYPE.DASHBOARDS
+        ? await rf.getRequest('DashboardsRequest').unSaveDashboard(item.id)
+        : await rf.getRequest('DashboardsRequest').unSaveQuery(item.id);
+      toastSuccess({ message: 'Removed from saved list' });
+    } else {
+      itemType === ITEM_TYPE.DASHBOARDS
+        ? await rf.getRequest('DashboardsRequest').saveDashboard(item.id)
+        : await rf.getRequest('DashboardsRequest').saveQuery(item.id);
+      toastSuccess({ message: 'Added to saved list' });
+    }
+    onSaveSuccess();
   };
 
   const onForkQuery = async () => {
@@ -152,8 +165,8 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
         case QUERY_MENU_LIST.SAVE:
           return {
             id: QUERY_MENU_LIST.SAVE,
-            label: true ? QUERY_MENU_LIST.SAVE : 'Unsave',
-            icon: true ? <SavedIcon /> : <UnsavedIcon />,
+            label: isSaved ? 'Unsave' : QUERY_MENU_LIST.SAVE,
+            icon: isSaved ? <UnsavedIcon /> : <SavedIcon />,
             onClick: onSave,
           };
         default:

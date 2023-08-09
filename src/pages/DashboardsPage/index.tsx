@@ -20,6 +20,7 @@ import {
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/pages/DashboardsPage.scss';
 import { ROUTES } from 'src/utils/common';
+import { IDashboardDetail, IQuery } from 'src/utils/query.type';
 import FilterSearch from './parts/FilterSearch';
 import ListItem from './parts/ListItem';
 
@@ -58,8 +59,9 @@ const DashboardsPage: React.FC = () => {
   const [tabIndex, setTabIndex] = useState<number>(0);
   const [dashboardParams, setDashboardParams] = useState<IDashboardParams>({});
   const [queryParams, setQueryParams] = useState<IQueriesParams>({});
+  const [savedDashboardIds, setSavedDashboardIds] = useState<string[]>([]);
+  const [savedQueryIds, setSavedQueryIds] = useState<string[]>([]);
   const [itemType, setItemType] = useState<string>(ITEM_TYPE.DASHBOARDS);
-
   const [displayed, setDisplayed] = useState<string>(DisplayType.Grid);
 
   useEffect(() => {
@@ -89,6 +91,7 @@ const DashboardsPage: React.FC = () => {
             (param) => !param,
           ),
         );
+        setSavedDashboardIds([]);
         break;
       case LIST_ITEM_TYPE.QUERIES:
         setTabIndex(1);
@@ -103,6 +106,7 @@ const DashboardsPage: React.FC = () => {
             (param) => !param,
           ),
         );
+        setSavedQueryIds([]);
         break;
       case LIST_ITEM_TYPE.MYWORK:
       case LIST_ITEM_TYPE.SAVED:
@@ -111,27 +115,31 @@ const DashboardsPage: React.FC = () => {
           break;
         }
         setTabIndex(tabId === LIST_ITEM_TYPE.MYWORK ? 2 : 3);
-        myWork === ITEM_TYPE.DASHBOARDS
-          ? setDashboardParams(() =>
-              _.omitBy(
-                {
-                  search: search,
-                  sort: sort,
-                  'tags[]': tag,
-                },
-                (param) => !param,
-              ),
-            )
-          : setQueryParams(() =>
-              _.omitBy(
-                {
-                  search: search,
-                  sort: sort,
-                  'tags[]': tag,
-                },
-                (param) => !param,
-              ),
-            );
+        if (myWork === ITEM_TYPE.DASHBOARDS) {
+          setDashboardParams(() =>
+            _.omitBy(
+              {
+                search: search,
+                sort: sort,
+                'tags[]': tag,
+              },
+              (param) => !param,
+            ),
+          );
+          setSavedDashboardIds([]);
+        } else {
+          setQueryParams(() =>
+            _.omitBy(
+              {
+                search: search,
+                sort: sort,
+                'tags[]': tag,
+              },
+              (param) => !param,
+            ),
+          );
+          setSavedQueryIds([]);
+        }
         break;
       default:
         break;
@@ -150,15 +158,38 @@ const DashboardsPage: React.FC = () => {
     return value?.trim() || undefined;
   };
 
+  const getSavedDashboardIds = async (data: IDashboardDetail[]) => {
+    if (!user) {
+      return;
+    }
+    const dashboardIds = data.map((item: IDashboardDetail) => item.id);
+    const savedDashboards = await rf
+      .getRequest('DashboardsRequest')
+      .filterSavedDashboardsByIds(dashboardIds);
+    setSavedDashboardIds((prevState) =>
+      _.uniq([...prevState, ...savedDashboards]),
+    );
+  };
+
+  const getSavedQueryIds = async (data: IQuery[]) => {
+    if (!user) {
+      return;
+    }
+    const queryIds = data.map((item) => item.id);
+    const savedQueries = await rf
+      .getRequest('DashboardsRequest')
+      .filterSavedQueriesByIds(queryIds);
+    setSavedQueryIds((prevState) => _.uniq([...prevState, ...savedQueries]));
+  };
+
   const fetchAllDashboards: any = useCallback(
     async (params: any) => {
       try {
-        const res: any = await rf
-          .getRequest('DashboardsRequest')
-          .getAllDashboards({
-            ...params,
-            search: getSearchParam(params.search),
-          });
+        const res = await rf.getRequest('DashboardsRequest').getAllDashboards({
+          ...params,
+          search: getSearchParam(params.search),
+        });
+        await getSavedDashboardIds(res.data);
         return { ...res, docs: res.data };
       } catch (error) {
         console.error(error);
@@ -176,6 +207,24 @@ const DashboardsPage: React.FC = () => {
             ...params,
             search: getSearchParam(params.search),
           });
+        await getSavedDashboardIds(res.data);
+        return { ...res, docs: res.data };
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [dashboardParams],
+  );
+
+  const fetchMySavedDashboards: any = useCallback(
+    async (params: any) => {
+      try {
+        const res: any = await rf
+          .getRequest('DashboardsRequest')
+          .getMySavedDashboards({
+            ...params,
+            search: getSearchParam(params.search),
+          });
         return { ...res, docs: res.data };
       } catch (error) {
         console.error(error);
@@ -190,6 +239,7 @@ const DashboardsPage: React.FC = () => {
         const res: any = await rf
           .getRequest('DashboardsRequest')
           .getAllQueries({ ...params, search: getSearchParam(params.search) });
+        await getSavedQueryIds(res.data);
         return { ...res, docs: res.data };
       } catch (error) {
         console.error(error);
@@ -204,6 +254,24 @@ const DashboardsPage: React.FC = () => {
         const res: any = await rf
           .getRequest('DashboardsRequest')
           .getMyListQueries({
+            ...params,
+            search: getSearchParam(params.search),
+          });
+        await getSavedQueryIds(res.data);
+        return { ...res, docs: res.data };
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [queryParams],
+  );
+
+  const fetchMySavedQueries: any = useCallback(
+    async (params: any) => {
+      try {
+        const res: any = await rf
+          .getRequest('DashboardsRequest')
+          .getMySavedQueries({
             ...params,
             search: getSearchParam(params.search),
           });
@@ -300,11 +368,26 @@ const DashboardsPage: React.FC = () => {
     );
   };
 
+  const getSavedStatus = (
+    type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE],
+    itemType: typeof ITEM_TYPE[keyof typeof ITEM_TYPE],
+    id: string,
+  ) => {
+    console.log('type', type, 'itemType', itemType);
+    if (type === LIST_ITEM_TYPE.SAVED) {
+      return true;
+    }
+
+    return itemType === ITEM_TYPE.DASHBOARDS
+      ? savedDashboardIds.includes(id)
+      : savedQueryIds.includes(id);
+  };
+
   const _renderTable = (
     params: IDashboardParams | IQueriesParams,
     fetchData: any,
     type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE],
-    itemType?: typeof ITEM_TYPE[keyof typeof ITEM_TYPE],
+    itemType: typeof ITEM_TYPE[keyof typeof ITEM_TYPE],
   ) => (
     <AppDataTable
       requestParams={params}
@@ -321,6 +404,7 @@ const DashboardsPage: React.FC = () => {
               type={type}
               itemType={itemType}
               displayed={displayed}
+              isSaved={getSavedStatus(type, itemType, item.id)}
             />
           )),
         )
@@ -352,6 +436,7 @@ const DashboardsPage: React.FC = () => {
             dashboardParams,
             fetchAllDashboards,
             LIST_ITEM_TYPE.DASHBOARDS,
+            ITEM_TYPE.DASHBOARDS,
           ),
         ),
       },
@@ -360,7 +445,12 @@ const DashboardsPage: React.FC = () => {
         name: 'Queries',
         icon: <QueriesIcon />,
         content: _renderContentTable(
-          _renderTable(queryParams, fetchAllQueries, LIST_ITEM_TYPE.QUERIES),
+          _renderTable(
+            queryParams,
+            fetchAllQueries,
+            LIST_ITEM_TYPE.QUERIES,
+            ITEM_TYPE.QUERIES,
+          ),
         ),
       },
     ];
@@ -407,8 +497,8 @@ const DashboardsPage: React.FC = () => {
                   <Box>
                     {_renderTable(
                       dashboardParams,
-                      fetchMyDashboards,
-                      LIST_ITEM_TYPE.MYWORK,
+                      fetchMySavedDashboards,
+                      LIST_ITEM_TYPE.SAVED,
                       ITEM_TYPE.DASHBOARDS,
                     )}
                   </Box>
@@ -417,8 +507,8 @@ const DashboardsPage: React.FC = () => {
                   <Box>
                     {_renderTable(
                       queryParams,
-                      fetchMyQueries,
-                      LIST_ITEM_TYPE.MYWORK,
+                      fetchMySavedQueries,
+                      LIST_ITEM_TYPE.SAVED,
                       ITEM_TYPE.QUERIES,
                     )}
                   </Box>

@@ -11,17 +11,20 @@ import { Box } from '@chakra-ui/react';
 import { useMemo } from 'react';
 import { formatNumber } from 'src/utils/utils-format';
 import { generatePositiveRandomNumber } from 'src/utils/utils-helper';
+import useUser from 'src/hooks/useUser';
 
 interface IListItem {
   isLoading?: boolean;
   type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
-  itemType?: typeof ITEM_TYPE[keyof typeof ITEM_TYPE];
+  itemType: typeof ITEM_TYPE[keyof typeof ITEM_TYPE];
   item?: IDashboardDetail | IQuery;
   displayed?: string;
+  isSaved?: boolean;
 }
 
 const ListItem: React.FC<IListItem> = (props) => {
-  const { type, itemType, item, displayed, isLoading } = props;
+  const { type, itemType, item, displayed, isSaved = false, isLoading } = props;
+  const { user } = useUser();
 
   const randomViews = useMemo(
     () => formatNumber(generatePositiveRandomNumber(1000), 2),
@@ -53,6 +56,16 @@ const ListItem: React.FC<IListItem> = (props) => {
           return `${ROUTES.MY_DASHBOARD}/${itemClass.getId()}`;
         }
         return `${ROUTES.MY_QUERY}/${itemClass.getId()}`;
+      case LIST_ITEM_TYPE.SAVED:
+        const isUserOwner = itemClass.getUserId() === user?.getId();
+        if (itemType === ITEM_TYPE.DASHBOARDS) {
+          return `${
+            isUserOwner ? ROUTES.MY_DASHBOARD : ROUTES.DASHBOARD
+          }/${itemClass.getId()}`;
+        }
+        return `${
+          isUserOwner ? ROUTES.MY_QUERY : ROUTES.QUERY
+        }/${itemClass.getId()}`;
       default:
         return ROUTES.HOME;
     }
@@ -77,6 +90,7 @@ const ListItem: React.FC<IListItem> = (props) => {
                   menu={menu}
                   item={item}
                   itemType={getTypeItem()}
+                  isSaved={isSaved}
                 />
               </Box>
               <Box display={{ lg: 'none' }}>
@@ -85,6 +99,7 @@ const ListItem: React.FC<IListItem> = (props) => {
                   item={item}
                   itemType={getTypeItem()}
                   isNavMenu={isNavMenu}
+                  isSaved={isSaved}
                 />
               </Box>
             </>
@@ -94,6 +109,7 @@ const ListItem: React.FC<IListItem> = (props) => {
               item={item}
               itemType={getTypeItem()}
               isNavMenu={isNavMenu}
+              isSaved={isSaved}
             />
           )}
         </>
