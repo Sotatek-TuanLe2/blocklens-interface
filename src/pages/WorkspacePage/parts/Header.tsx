@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   Tooltip,
   Spinner,
@@ -28,6 +28,7 @@ import { Query } from 'src/utils/utils-query';
 import { IconDotMore, IconFilter, IconRun } from 'src/assets/icons';
 import Jazzicon from 'react-jazzicon';
 import useOriginPath from 'src/hooks/useOriginPath';
+import rf from 'src/requests/RequestFactory';
 
 interface IHeaderProps {
   type: string;
@@ -58,6 +59,8 @@ const Header: React.FC<IHeaderProps> = (props) => {
     onChangeEditMode,
   } = props;
 
+  const [isDataSaved, setIsDataSaved] = useState<boolean>(false);
+
   const { goToOriginPath } = useOriginPath();
   const { queryId, dashboardId } = useParams<{
     queryId: string;
@@ -77,7 +80,25 @@ const Header: React.FC<IHeaderProps> = (props) => {
       : new Query(data as IQuery);
   }, [data]);
 
+  useEffect(() => {
+    if (dataClass) {
+      checkSavedStatus(dataClass);
+    }
+  }, [dataClass]);
+
+  const checkSavedStatus = async (dataClass: Dashboard | Query) => {
+    const response = isDashboard
+      ? await rf
+          .getRequest('DashboardsRequest')
+          .filterSavedDashboardsByIds([dataClass.getId()])
+      : await rf
+          .getRequest('DashboardsRequest')
+          .filterSavedQueriesByIds([dataClass.getId()]);
+    setIsDataSaved(!!response.length);
+  };
+
   const onBack = () => goToOriginPath();
+
   const onForkSuccess = async () => {
     AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
   };
@@ -96,6 +117,12 @@ const Header: React.FC<IHeaderProps> = (props) => {
     } else {
       AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
       AppBroadcast.dispatch(BROADCAST_FETCH_QUERY, res.id);
+    }
+  };
+
+  const onSaveSuccess = async () => {
+    if (dataClass) {
+      checkSavedStatus(dataClass);
     }
   };
 
@@ -399,9 +426,11 @@ const Header: React.FC<IHeaderProps> = (props) => {
                     menu={menuAppQuery()}
                     item={data}
                     itemType={type}
+                    isSaved={isDataSaved}
                     onForkSuccess={onForkSuccess}
                     onDeleteSuccess={onDeleteSuccess}
                     onSettingSuccess={onSettingSuccess}
+                    onSaveSuccess={onSaveSuccess}
                   />
                 )}
               </Flex>
