@@ -115,6 +115,7 @@ export class Query implements QueryInterface {
   public thumbnail;
   public tags;
   public privateMode = false;
+  public user;
   public query = '';
   public forkedQueryId;
   public forkedQueryName;
@@ -130,6 +131,7 @@ export class Query implements QueryInterface {
     this.updatedAt = query.updatedAt;
     this.tags = query.tags;
     this.privateMode = query.isPrivate;
+    this.user = query.user;
     this.query = query.query;
     this.forkedQueryId = query.forkedQueryId;
     this.forkedQueryName = query.forkedQueryName;
@@ -210,10 +212,7 @@ export class Query implements QueryInterface {
   }
 
   getUserId() {
-    if (!this.getUser()) {
-      return '';
-    }
-    return this.getUser().userId || '';
+    return this.user || '';
   }
 
   getChains() {
