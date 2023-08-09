@@ -95,18 +95,22 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
         `${location.pathname}${location.search}`,
       );
     }
-    if (isSaved) {
-      itemType === ITEM_TYPE.DASHBOARDS
-        ? await rf.getRequest('DashboardsRequest').unSaveDashboard(item.id)
-        : await rf.getRequest('DashboardsRequest').unSaveQuery(item.id);
-      toastSuccess({ message: 'Removed from saved list' });
-    } else {
-      itemType === ITEM_TYPE.DASHBOARDS
-        ? await rf.getRequest('DashboardsRequest').saveDashboard(item.id)
-        : await rf.getRequest('DashboardsRequest').saveQuery(item.id);
-      toastSuccess({ message: 'Added to saved list' });
+    try {
+      if (isSaved) {
+        itemType === ITEM_TYPE.DASHBOARDS
+          ? await rf.getRequest('DashboardsRequest').unSaveDashboard(item.id)
+          : await rf.getRequest('DashboardsRequest').unSaveQuery(item.id);
+        toastSuccess({ message: 'Removed from saved list' });
+      } else {
+        itemType === ITEM_TYPE.DASHBOARDS
+          ? await rf.getRequest('DashboardsRequest').saveDashboard(item.id)
+          : await rf.getRequest('DashboardsRequest').saveQuery(item.id);
+        toastSuccess({ message: 'Added to saved list' });
+      }
+      onSaveSuccess();
+    } catch (error) {
+      toastError({ message: getErrorMessage(error) });
     }
-    onSaveSuccess();
   };
 
   const onForkQuery = async () => {

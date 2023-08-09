@@ -20,10 +20,19 @@ interface IListItem {
   item?: IDashboardDetail | IQuery;
   displayed?: string;
   isSaved?: boolean;
+  onSaveSuccess?: () => Promise<void>;
 }
 
 const ListItem: React.FC<IListItem> = (props) => {
-  const { type, itemType, item, displayed, isSaved = false, isLoading } = props;
+  const {
+    type,
+    itemType,
+    item,
+    displayed,
+    isSaved = false,
+    isLoading,
+    onSaveSuccess,
+  } = props;
   const { user } = useUser();
 
   const randomViews = useMemo(
@@ -91,6 +100,7 @@ const ListItem: React.FC<IListItem> = (props) => {
                   item={item}
                   itemType={getTypeItem()}
                   isSaved={isSaved}
+                  onSaveSuccess={onSaveSuccess}
                 />
               </Box>
               <Box display={{ lg: 'none' }}>
@@ -100,6 +110,7 @@ const ListItem: React.FC<IListItem> = (props) => {
                   itemType={getTypeItem()}
                   isNavMenu={isNavMenu}
                   isSaved={isSaved}
+                  onSaveSuccess={onSaveSuccess}
                 />
               </Box>
             </>
@@ -110,6 +121,7 @@ const ListItem: React.FC<IListItem> = (props) => {
               itemType={getTypeItem()}
               isNavMenu={isNavMenu}
               isSaved={isSaved}
+              onSaveSuccess={onSaveSuccess}
             />
           )}
         </>
