@@ -30,8 +30,8 @@ const ResetPasswordPage: FC = () => {
   const param: any = new URLSearchParams(location.search);
 
   useEffect(() => {
-    if (param.get('id')) {
-      setAuthorizationToRequest(param.get('id'));
+    if (param.get('token')) {
+      setAuthorizationToRequest(param.get('token'));
     } else history.replace(ROUTES.LOGIN);
   }, [param]);
 
