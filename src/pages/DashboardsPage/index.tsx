@@ -172,6 +172,9 @@ const DashboardsPage: React.FC = () => {
     const savedDashboards = await rf
       .getRequest('DashboardsRequest')
       .filterSavedDashboardsByIds(dashboardIds);
+    if (!savedDashboards) {
+      return;
+    }
     setSavedDashboardIds((prevState) =>
       _.uniq([...prevState, ...savedDashboards]),
     );
@@ -188,6 +191,9 @@ const DashboardsPage: React.FC = () => {
     const savedQueries = await rf
       .getRequest('DashboardsRequest')
       .filterSavedQueriesByIds(queryIds);
+    if (!savedQueries) {
+      return;
+    }
     setSavedQueryIds((prevState) => _.uniq([...prevState, ...savedQueries]));
   };
 
