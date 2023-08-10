@@ -13,6 +13,7 @@ type StorageInterface = {
   connectorId?: string;
   account?: string;
   expireTime?: number;
+  listTagHistory?: string[];
 };
 
 const defaultPreferences: StorageInterface = {
@@ -73,6 +74,14 @@ class Storage {
     return account || '';
   }
 
+  static getSavedTagHistory(isDashboard: boolean): string[] {
+    const storageKey = isDashboard
+      ? 'recentlyDashboardTagSearch '
+      : 'recentlyQueryTagSearch';
+    const savedTagHistory = localStorage.getItem(storageKey);
+    return savedTagHistory ? JSON.parse(savedTagHistory) : [];
+  }
+
   static setAccessToken(accessToken: string, expireTime: number) {
     const preferences = getStorage();
     preferences.accessToken = accessToken;
@@ -110,6 +119,12 @@ class Storage {
     setStorage(PREFERENCES, preferences);
   }
 
+  static saveTagHistory(isDashboard: boolean, updatedTagHistory: string[]) {
+    const storageKey = isDashboard
+      ? 'recentlyDashboardTagSearch'
+      : 'recentlyQueryTagSearch';
+    localStorage.setItem(storageKey, JSON.stringify(updatedTagHistory));
+  }
   static clearAccessToken() {
     const preferences = getStorage();
     delete preferences.accessToken;

@@ -25,6 +25,7 @@ import { ROUTES } from 'src/utils/common';
 import { HOME_URL_PARAMS, LIST_ITEM_TYPE, ITEM_TYPE } from '..';
 import { AddIcon } from '@chakra-ui/icons';
 import { IDataMenu } from '../../../utils/utils-app';
+import Storage from 'src/utils/utils-storage';
 
 interface IFilterSearch {
   type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
@@ -124,10 +125,31 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   const onToggleNewDashboardModal = () =>
     setOpenNewDashboardModal((prevState) => !prevState);
 
+  const listTagHistory = useMemo(() => {
+    return Storage.getSavedTagHistory(isDashboard);
+  }, [tagHistory]);
+
+  const listTag = () => {
+    if (tag?.includes('#')) {
+      return suggestTag;
+    }
+    return search === '' && tag === '' ? listTagHistory : [''];
+  };
+
   const onChangeSearch = (e: ChangeEvent<HTMLInputElement>) => {
     searchParams.delete(HOME_URL_PARAMS.TAG);
     searchParams.delete(HOME_URL_PARAMS.SEARCH);
-    if (e.target.value.includes('#')) {
+    if (listTagsTrending.includes(e.target.value.slice(1))) {
+      setTagHistory((prevTagHistory) => {
+        const updatedTagHistory = Array.from(
+          new Set([...prevTagHistory, e.target.value.slice(1)]),
+        );
+        Storage.saveTagHistory(isDashboard, updatedTagHistory);
+        setIsOpenListTag(false);
+        return updatedTagHistory;
+      });
+    }
+    if (e.target.value.includes('#') && e.target.value.length > 1) {
       searchParams.set(HOME_URL_PARAMS.TAG, e.target.value);
     } else {
       searchParams.set(HOME_URL_PARAMS.SEARCH, e.target.value);
@@ -193,13 +215,6 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
     }
   };
 
-  const listTagHistory = useMemo(() => {
-    const savedTag = localStorage.getItem(
-      isDashboard ? 'savedTagDashboard' : 'savedTagQuery',
-    );
-    return savedTag ? JSON.parse(savedTag) : [];
-  }, [tagHistory]);
-
   useEffect(() => {
     function handleClickOutside(event: any) {
       if (ref.current && !ref.current?.contains(event.target)) {
@@ -219,15 +234,12 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   const onSelectedTag = (value: string) => {
     setTagHistory((prevTagHistory) => {
       const updatedTagHistory = Array.from(new Set([...prevTagHistory, value]));
-      localStorage.setItem(
-        isDashboard ? 'savedTagDashboard' : 'savedTagQuery',
-        JSON.stringify(updatedTagHistory),
-      );
+      Storage.saveTagHistory(isDashboard, updatedTagHistory);
       setIsOpenListTag(false);
       return updatedTagHistory;
     });
     searchParams.delete(HOME_URL_PARAMS.TAG);
-    searchParams.set(HOME_URL_PARAMS.TAG, `${value}`);
+    searchParams.set(HOME_URL_PARAMS.TAG, `#${value}`);
     history.push({
       pathname: ROUTES.HOME,
       search: `${searchParams.toString()}`,
@@ -235,18 +247,11 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   };
 
   useEffect(() => {
-    if (tag && tag.includes('#')) {
+    if (tag.includes('#') && tag.length > 1) {
       const params = { search: tag.replace('#', ''), limit: LIMIT_RECORD };
       fetchListTag(params);
     }
   }, [tag]);
-
-  const listTag = () => {
-    if (tag?.includes('#')) {
-      return suggestTag;
-    }
-    return search === '' && tag === '' ? listTagHistory : [''];
-  };
 
   return (
     <>
