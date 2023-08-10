@@ -24,12 +24,6 @@ import { IDashboardDetail, IQuery } from 'src/utils/query.type';
 import FilterSearch from './parts/FilterSearch';
 import ListItem from './parts/ListItem';
 
-interface ITags {
-  search?: string;
-  page?: number;
-  limit?: number;
-}
-
 export const LIST_ITEM_TYPE = {
   DASHBOARDS: 'dashboards',
   QUERIES: 'queries',
@@ -322,7 +316,7 @@ const DashboardsPage: React.FC = () => {
   );
 
   const _renderContentTable = useCallback(
-    (appTable: any) => {
+    (appTable) => {
       return (
         <>
           <Box pb={{ base: '28px', lg: '34px' }} className="dashboard-filter">
