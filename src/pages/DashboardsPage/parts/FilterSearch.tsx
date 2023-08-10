@@ -227,7 +227,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
       return updatedTagHistory;
     });
     searchParams.delete(HOME_URL_PARAMS.TAG);
-    searchParams.set(HOME_URL_PARAMS.TAG, `#${value}`);
+    searchParams.set(HOME_URL_PARAMS.TAG, `${value}`);
     history.push({
       pathname: ROUTES.HOME,
       search: `${searchParams.toString()}`,
