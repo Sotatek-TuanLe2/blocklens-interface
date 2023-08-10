@@ -152,7 +152,7 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
             icon: <ForkQueryIcon />,
             onClick: onForkQuery,
           };
-        case QUERY_MENU_LIST.FORK:
+        case QUERY_MENU_LIST.SETTING:
           return {
             id: QUERY_MENU_LIST.SETTING,
             label: QUERY_MENU_LIST.SETTING,
