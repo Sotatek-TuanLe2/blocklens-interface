@@ -1,5 +1,5 @@
 import { Box, Collapse, Flex, Text, useDisclosure } from '@chakra-ui/react';
-import { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useHistory, useLocation } from 'react-router';
 import {
   IconFilter,
@@ -32,8 +32,6 @@ interface IFilterSearch {
   displayed: string;
   setDisplayed: (display: string) => void;
   itemType: string;
-  fetchListTag: (params: ITags) => Promise<void>;
-  suggestTag: string[];
 }
 
 interface ITags {
@@ -50,10 +48,9 @@ const optionType: IOption[] = [
 const MAX_TRENDING_TAGS = 3;
 
 const FilterSearch: React.FC<IFilterSearch> = (props) => {
-  const LIMIT_RECORD = 10;
+  const SUGGEST_TAGS_LIMIT = 10;
   const { isOpen, onToggle } = useDisclosure();
-  const { type, displayed, setDisplayed, itemType, fetchListTag, suggestTag } =
-    props;
+  const { type, displayed, setDisplayed, itemType } = props;
   const history = useHistory();
   const { user } = useUser();
   const ref = useRef<any>(null);
@@ -66,15 +63,15 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   const [search, setSearch] = useState<string>('');
   const [orderBy, setOrderBy] = useState<string>('');
   const [tag, setTag] = useState<string>('');
-  const [tagHistory, setTagHistory] = useState<string[]>([]);
-
-  const [isOpenListTag, setIsOpenListTag] = useState<boolean>(false);
-
-  const searchParams = new URLSearchParams(searchUrl);
-
+  const [inputSearch, setInputSearch] = useState<string>('');
+  const [tagSearch, setTagSearch] = useState<string>('');
+  const [suggestTags, setSuggestTags] = useState<string[]>([]);
+  const [isOpenSuggestTags, setIsOpenSuggestTags] = useState<boolean>(false);
   const [openNewDashboardModal, setOpenNewDashboardModal] =
     useState<boolean>(false);
   const [listTagsTrending, setListTagsTrending] = useState<string[]>([]);
+
+  const searchParams = new URLSearchParams(searchUrl);
 
   const menuDashboardQueries: IDataMenu[] = [
     {
@@ -108,15 +105,71 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
       searchParams.get(HOME_URL_PARAMS.ORDERBY) || 'created_at:desc';
     const tag = searchParams.get(HOME_URL_PARAMS.TAG) || '';
     setSearch(search);
+    setInputSearch(search);
     setOrderBy(orderBy);
     setTag(tag);
   }, [searchUrl]);
 
   useEffect(() => {
-    isDashboard
-      ? setDisplayed(DisplayType.Grid)
-      : setDisplayed(DisplayType.List);
+    setDisplayed(isDashboard ? DisplayType.Grid : DisplayType.List);
   }, [type]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: any) => {
+      if (ref.current && !ref.current?.contains(event.target)) {
+        isOpenSuggestTags && setIsOpenSuggestTags(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [ref, isOpenSuggestTags]);
+
+  const fetchTrendingTags = async () => {
+    try {
+      if (
+        isDashboard ||
+        (hasTypeSelection && itemType === LIST_ITEM_TYPE.DASHBOARDS)
+      ) {
+        const res: any = await rf
+          .getRequest('DashboardsRequest')
+          .getPublicDashboardTagsTrending();
+        setListTagsTrending(res?.tags || []);
+      } else {
+        const res: any = await rf
+          .getRequest('DashboardsRequest')
+          .getPublicQueryTagsTrending();
+        setListTagsTrending(res?.tags || []);
+      }
+    } catch (error) {
+      setListTagsTrending([]);
+    }
+  };
+
+  useEffect(() => {
+    fetchTrendingTags();
+  }, [type, itemType]);
+
+  const fetchSearchTags = async () => {
+    const res = isDashboard
+      ? await rf
+          .getRequest('DashboardsRequest')
+          .getDashboardTags({ search: tagSearch, limit: SUGGEST_TAGS_LIMIT })
+      : await rf
+          .getRequest('DashboardsRequest')
+          .getQueryTags({ search: tagSearch, limit: SUGGEST_TAGS_LIMIT });
+    if (res && res.data) {
+      setSuggestTags(res.data.reverse());
+      setIsOpenSuggestTags(true);
+    }
+  };
+
+  useEffect(() => {
+    fetchSearchTags();
+  }, [tagSearch]);
 
   const onClickNew = () => {
     return onToggleNewDashboardModal();
@@ -125,30 +178,25 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   const onToggleNewDashboardModal = () =>
     setOpenNewDashboardModal((prevState) => !prevState);
 
-  const listTagHistory = useMemo(() => {
-    return Storage.getSavedTagHistory(isDashboard);
-  }, [tagHistory]);
-
-  const listTag = () => {
-    if (tag?.startsWith('#')) {
-      return suggestTag;
-    }
-    return search === '' && tag === '' ? listTagHistory : [''];
-  };
-
   const onChangeSearch = (e: ChangeEvent<HTMLInputElement>) => {
-    searchParams.delete(HOME_URL_PARAMS.TAG);
     searchParams.delete(HOME_URL_PARAMS.SEARCH);
-
-    if (e.target.value.startsWith('#') && e.target.value.length > 1) {
-      searchParams.set(HOME_URL_PARAMS.TAG, e.target.value);
+    const inputValue = e.target.value;
+    if (inputValue.startsWith('#')) {
+      setTagSearch(inputValue.slice(1, inputValue.length));
+      setInputSearch(inputValue);
     } else {
-      searchParams.set(HOME_URL_PARAMS.SEARCH, e.target.value);
+      inputValue && searchParams.set(HOME_URL_PARAMS.SEARCH, inputValue);
     }
     history.push({
       pathname: ROUTES.HOME,
       search: `${searchParams.toString()}`,
     });
+  };
+
+  const onClickSearch = () => {
+    if (!search) {
+      setIsOpenSuggestTags(true);
+    }
   };
 
   const onChangeOrderBy = (value: string) => {
@@ -183,52 +231,12 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
     });
   };
 
-  const fetchTagsTrending = async () => {
-    try {
-      if (
-        isDashboard ||
-        (hasTypeSelection && itemType === LIST_ITEM_TYPE.DASHBOARDS)
-      ) {
-        const res: any = await rf
-          .getRequest('DashboardsRequest')
-          .getPublicDashboardTagsTrending();
-
-        setListTagsTrending(res?.tags || []);
-      } else {
-        const res: any = await rf
-          .getRequest('DashboardsRequest')
-          .getPublicQueryTagsTrending();
-
-        setListTagsTrending(res?.tags || []);
-      }
-    } catch (error) {
-      setListTagsTrending([]);
-    }
-  };
-
-  useEffect(() => {
-    function handleClickOutside(event: any) {
-      if (ref.current && !ref.current?.contains(event.target)) {
-        isOpenListTag && setIsOpenListTag(false);
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [ref, isOpenListTag]);
-
-  useEffect(() => {
-    fetchTagsTrending();
-  }, [itemType, type]);
-
   const onSelectedTag = (value: string) => {
-    setTagHistory((prevTagHistory) => {
-      const updatedTagHistory = Array.from(new Set([...prevTagHistory, value]));
-      Storage.saveTagHistory(isDashboard, updatedTagHistory);
-      setIsOpenListTag(false);
-      return updatedTagHistory;
-    });
+    const historyTags = Storage.getSavedTagHistory(isDashboard);
+    Storage.setSavedTagHistory(
+      isDashboard,
+      Array.from(new Set([...historyTags, value])),
+    );
     searchParams.delete(HOME_URL_PARAMS.TAG);
     searchParams.set(HOME_URL_PARAMS.TAG, `${value}`);
     history.push({
@@ -236,13 +244,6 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
       search: `${searchParams.toString()}`,
     });
   };
-
-  useEffect(() => {
-    if (tag.startsWith('#') && tag.length > 1) {
-      const params = { search: tag.replace('#', ''), limit: LIMIT_RECORD };
-      fetchListTag(params);
-    }
-  }, [tag]);
 
   const _generatePlaceHolder = () => {
     switch (type) {
@@ -253,6 +254,40 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
       default:
         return 'Search #hastag, dashboard or query';
     }
+  };
+
+  const _renderSuggestTags = () => {
+    const suggestTagList = tagSearch
+      ? suggestTags
+      : Storage.getSavedTagHistory(isDashboard);
+
+    if (!suggestTagList.length) {
+      return (
+        <Box className="dashboard-filter__search__search-box" ref={ref}>
+          <Text className="no-result">No matching result</Text>
+        </Box>
+      );
+    }
+
+    return (
+      <Box className="dashboard-filter__search__search-box" ref={ref}>
+        {suggestTagList.map((item: string) => (
+          <Flex
+            alignItems="center"
+            gap="5px"
+            key={item}
+            onClick={(e) => {
+              e.preventDefault();
+              onSelectedTag(item);
+              setIsOpenSuggestTags(false);
+            }}
+            className="dashboard-filter__search__search-box--item"
+          >
+            {search === '' && tag === '' && <IconEye />} <Text>#{item}</Text>
+          </Flex>
+        ))}
+      </Box>
+    );
   };
 
   return (
@@ -336,37 +371,13 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
               <AppInput
                 className="dashboard-filter__search__input"
                 placeholder={_generatePlaceHolder()}
-                value={search || tag}
+                value={inputSearch}
                 variant="searchFilter"
                 isSearch
                 onChange={onChangeSearch}
-                onClick={() => setIsOpenListTag(true)}
+                onClick={onClickSearch}
               />
-
-              {isOpenListTag && !search && (
-                <Box className="dashboard-filter__search__search-box" ref={ref}>
-                  {listTag().length > 0 ? (
-                    listTag()?.map((item: string) => (
-                      <Flex
-                        alignItems="center"
-                        gap="5px"
-                        key={item}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          onSelectedTag(item);
-                        }}
-                        className="dashboard-filter__search__search-box--item"
-                      >
-                        {search === '' && tag === '' && <IconEye />}{' '}
-                        <Text>#{item}</Text>
-                      </Flex>
-                    ))
-                  ) : (
-                    <Text className="no-result">No matching result</Text>
-                  )}
-                </Box>
-              )}
-
+              {isOpenSuggestTags && _renderSuggestTags()}
               <Flex mt={'14px'}>
                 {listTagsTrending
                   .slice(0, MAX_TRENDING_TAGS)

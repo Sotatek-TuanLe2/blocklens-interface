@@ -119,7 +119,7 @@ class Storage {
     setStorage(PREFERENCES, preferences);
   }
 
-  static saveTagHistory(isDashboard: boolean, updatedTagHistory: string[]) {
+  static setSavedTagHistory(isDashboard: boolean, updatedTagHistory: string[]) {
     const storageKey = isDashboard
       ? 'recentlyDashboardTagSearch'
       : 'recentlyQueryTagSearch';

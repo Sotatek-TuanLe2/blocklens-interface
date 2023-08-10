@@ -120,7 +120,8 @@ export default class DashboardsRequest extends BaseRequest {
     const url = `/dashboards/list-browse-dashboards`;
     return this.get(url, params);
   }
-  getListTagDashboard(params: IGetBrowse) {
+
+  getDashboardTags(params: IGetBrowse) {
     const url = `/dashboards/tags`;
     return this.get(url, params);
   }
@@ -129,7 +130,7 @@ export default class DashboardsRequest extends BaseRequest {
     const url = `/queries/list-browse-queries`;
     return this.get(url, params);
   }
-  getListTagQuery(params: IGetBrowse) {
+  getQueryTags(params: IGetBrowse) {
     const url = `/queries/tags`;
     return this.get(url, params);
   }

@@ -29,6 +29,7 @@ interface ITags {
   page?: number;
   limit?: number;
 }
+
 export const LIST_ITEM_TYPE = {
   DASHBOARDS: 'dashboards',
   QUERIES: 'queries',
@@ -68,8 +69,6 @@ const DashboardsPage: React.FC = () => {
   const [savedDashboardIds, setSavedDashboardIds] = useState<string[]>([]);
   const [savedQueryIds, setSavedQueryIds] = useState<string[]>([]);
   const [itemType, setItemType] = useState<string>(ITEM_TYPE.DASHBOARDS);
-  const [suggestTag, setSuggestTag] = useState<string[]>([]);
-
   const [displayed, setDisplayed] = useState<string>(DisplayType.Grid);
 
   useEffect(() => {
@@ -166,27 +165,6 @@ const DashboardsPage: React.FC = () => {
 
   const getSearchParam = (value?: string) => {
     return value?.trim() || undefined;
-  };
-  const fetchListTagQuery = async (params: ITags) => {
-    try {
-      const res: any = await rf
-        .getRequest('DashboardsRequest')
-        .getListTagQuery(params);
-      setSuggestTag(res.data.reverse());
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const fetchListTagDashboard = async (params: ITags) => {
-    try {
-      const res: any = await rf
-        .getRequest('DashboardsRequest')
-        .getListTagDashboard(params);
-      setSuggestTag(res.data.reverse());
-    } catch (error) {
-      console.error(error);
-    }
   };
 
   const getSavedDashboardIds = async (data: IDashboardDetail[]) => {
@@ -344,11 +322,7 @@ const DashboardsPage: React.FC = () => {
   );
 
   const _renderContentTable = useCallback(
-    (
-      appTable: any,
-      fetchListTag: (params: ITags) => Promise<void>,
-      suggestTag: string[],
-    ) => {
+    (appTable: any) => {
       return (
         <>
           <Box pb={{ base: '28px', lg: '34px' }} className="dashboard-filter">
@@ -357,8 +331,6 @@ const DashboardsPage: React.FC = () => {
               displayed={displayed}
               setDisplayed={setDisplayed}
               itemType={itemType}
-              fetchListTag={fetchListTag}
-              suggestTag={suggestTag}
             />
           </Box>
           <Box>{appTable}</Box>
@@ -517,8 +489,6 @@ const DashboardsPage: React.FC = () => {
         icon: <DashboardListIcon />,
         content: _renderContentTable(
           _renderTable(dashboardParams, fetchAllDashboards),
-          fetchListTagDashboard,
-          suggestTag,
         ),
       },
       {
@@ -527,8 +497,6 @@ const DashboardsPage: React.FC = () => {
         icon: <QueriesIcon />,
         content: _renderContentTable(
           _renderTable(queryParams, fetchAllQueries),
-          fetchListTagQuery,
-          suggestTag,
         ),
       },
     ];
@@ -549,10 +517,6 @@ const DashboardsPage: React.FC = () => {
                   <Box>{_renderTable(queryParams, fetchMyQueries)}</Box>
                 )}
               </>,
-              itemType === ITEM_TYPE.DASHBOARDS
-                ? fetchListTagDashboard
-                : fetchListTagQuery,
-              suggestTag,
             ),
           },
           {
@@ -570,10 +534,6 @@ const DashboardsPage: React.FC = () => {
                   <Box>{_renderTable(queryParams, fetchMySavedQueries)}</Box>
                 )}
               </>,
-              itemType === ITEM_TYPE.DASHBOARDS
-                ? fetchListTagDashboard
-                : fetchListTagQuery,
-              suggestTag,
             ),
           },
         ],
