@@ -130,7 +130,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   }, [tagHistory]);
 
   const listTag = () => {
-    if (tag?.includes('#')) {
+    if (tag?.startsWith('#')) {
       return suggestTag;
     }
     return search === '' && tag === '' ? listTagHistory : [''];
@@ -139,17 +139,8 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   const onChangeSearch = (e: ChangeEvent<HTMLInputElement>) => {
     searchParams.delete(HOME_URL_PARAMS.TAG);
     searchParams.delete(HOME_URL_PARAMS.SEARCH);
-    if (listTagsTrending.includes(e.target.value.slice(1))) {
-      setTagHistory((prevTagHistory) => {
-        const updatedTagHistory = Array.from(
-          new Set([...prevTagHistory, e.target.value.slice(1)]),
-        );
-        Storage.saveTagHistory(isDashboard, updatedTagHistory);
-        setIsOpenListTag(false);
-        return updatedTagHistory;
-      });
-    }
-    if (e.target.value.includes('#') && e.target.value.length > 1) {
+
+    if (e.target.value.startsWith('#') && e.target.value.length > 1) {
       searchParams.set(HOME_URL_PARAMS.TAG, e.target.value);
     } else {
       searchParams.set(HOME_URL_PARAMS.SEARCH, e.target.value);
@@ -239,7 +230,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
       return updatedTagHistory;
     });
     searchParams.delete(HOME_URL_PARAMS.TAG);
-    searchParams.set(HOME_URL_PARAMS.TAG, `#${value}`);
+    searchParams.set(HOME_URL_PARAMS.TAG, `${value}`);
     history.push({
       pathname: ROUTES.HOME,
       search: `${searchParams.toString()}`,
@@ -247,18 +238,11 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   };
 
   useEffect(() => {
-    if (tag.includes('#') && tag.length > 1) {
+    if (tag.startsWith('#') && tag.length > 1) {
       const params = { search: tag.replace('#', ''), limit: LIMIT_RECORD };
       fetchListTag(params);
     }
   }, [tag]);
-
-  const listTag = () => {
-    if (tag?.includes('#')) {
-      return suggestTag;
-    }
-    return search === '' && tag === '' ? listTagHistory : [''];
-  };
 
   const _generatePlaceHolder = () => {
     switch (type) {

@@ -80,7 +80,7 @@ const DashboardsPage: React.FC = () => {
     const search = searchParams.get(HOME_URL_PARAMS.SEARCH) || '';
     const orderBy = searchParams.get(HOME_URL_PARAMS.ORDERBY) || '';
     const chain = searchParams.get(HOME_URL_PARAMS.CHAIN) || '';
-    const tag = (searchParams.get(HOME_URL_PARAMS.TAG) || '').replace('#', '');
+    const tag = searchParams.get(HOME_URL_PARAMS.TAG) || '';
 
     setTab(tabId);
 
