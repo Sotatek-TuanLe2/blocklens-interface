@@ -26,8 +26,8 @@ export default class AuthRequest extends BaseRequest {
     return this.post(url, { email });
   }
 
-  verifyMail(uid: number, vid: string) {
-    const url = `/public/users/verify-email/?uid=${uid}&vid=${vid}`;
+  verifyMail(token: string) {
+    const url = `/public/users/verify-email/?token=${token}`;
     return this.get(url);
   }
 
@@ -42,7 +42,7 @@ export default class AuthRequest extends BaseRequest {
   }
 
   resetPassword(data: any) {
-    const url = '/my/users/password';
+    const url = '/public/users/reset-password';
     return this.put(url, data);
   }
 

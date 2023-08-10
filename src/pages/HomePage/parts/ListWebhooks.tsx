@@ -14,6 +14,7 @@ import useUser from 'src/hooks/useUser';
 import { ROUTES } from 'src/utils/common';
 import rf from 'src/requests/RequestFactory';
 import { getNameWebhook, IWebhook } from 'src/utils/utils-webhook';
+import { IAppResponse } from '../../../utils/utils-app';
 
 interface IWebhookMobile {
   webhook: IWebhook;
@@ -96,16 +97,35 @@ const ListWebhooks: React.FC = () => {
   const { user } = useUser();
   const userStats = user?.getStats();
 
+  const getWebhookMetricToday = async (registrationIds: string[]) => {
+    try {
+      const res: any = await rf
+        .getRequest('NotificationRequest')
+        .getWebhookMetricToday({ registrationIds });
+      return res;
+    } catch (error) {
+      return [];
+    }
+  };
+
   const fetchDataTable: any = async (params: any) => {
     try {
       const res: any = await rf
         .getRequest('RegistrationRequest')
         .getRegistrationsWithoutApp(params);
 
+      const registrationIds =
+        res?.docs?.map((item: IWebhook) => item?.registrationId) || [];
+
+      const webhooksMetric = await getWebhookMetricToday(registrationIds);
       const dataWebhook = res?.docs?.map((webhook: IWebhook) => {
+        const webhookMetricToday = webhooksMetric.find(
+          (item: any) => item.registrationId === webhook.registrationId,
+        );
+
         return {
           ...webhook,
-          messageToday: '--',
+          messageToday: webhookMetricToday?.message || '--',
         };
       });
 
