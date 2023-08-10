@@ -44,8 +44,11 @@ const ResetPasswordPage: FC = () => {
     }
 
     try {
-      const res = await rf.getRequest('AuthRequest').resetPassword(dataForm);
-      if (res?.message === 'Successful') {
+      const res = await rf.getRequest('AuthRequest').resetPassword({
+        newPassword: dataForm.newPassword,
+        resetToken: param.get('token'),
+      });
+      if (res?.message === 'OK') {
         toastSuccess({ message: 'Reset password is successfully.' });
         setAuthorizationToRequest('');
         setDataForm({ ...initDataResetPassword });

@@ -19,18 +19,17 @@ const VerifyAccountPage: FC = () => {
     return new URLSearchParams(search);
   };
   const query = useQuery();
-  const uid = query.get('uid');
-  const vid = query.get('vid');
+  const token = query.get('token');
   const [isVerifyFail, setIsVerifyFail] = useState<boolean>(false);
 
   const onVerify = async () => {
-    if (!uid || !vid) {
+    if (!token) {
       toastError({ message: 'Oops. Something went wrong!' });
       setIsVerifyFail(true);
       return;
     }
     try {
-      await rf.getRequest('AuthRequest').verifyMail(uid, vid);
+      await rf.getRequest('AuthRequest').verifyMail(token);
       setIsVerifyFail(false);
       toastSuccess({ message: 'Verify Successfully!' });
     } catch (e) {
