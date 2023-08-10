@@ -253,6 +253,24 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
     }
   }, [tag]);
 
+  const listTag = () => {
+    if (tag?.includes('#')) {
+      return suggestTag;
+    }
+    return search === '' && tag === '' ? listTagHistory : [''];
+  };
+
+  const _generatePlaceHolder = () => {
+    switch (type) {
+      case LIST_ITEM_TYPE.DASHBOARDS:
+        return 'Search #hastag or dashboard name';
+      case LIST_ITEM_TYPE.QUERIES:
+        return 'Search #hastag or query name';
+      default:
+        return 'Search #hastag, dashboard or query';
+    }
+  };
+
   return (
     <>
       <Flex align={'center'}>
@@ -333,7 +351,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
             <Box flexGrow={1} mb={{ base: 5, lg: 0 }} position="relative">
               <AppInput
                 className="dashboard-filter__search__input"
-                placeholder={'Search...'}
+                placeholder={_generatePlaceHolder()}
                 value={search || tag}
                 variant="searchFilter"
                 isSearch
