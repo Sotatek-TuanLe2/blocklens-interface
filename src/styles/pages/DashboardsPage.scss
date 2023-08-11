@@ -104,6 +104,7 @@
         z-index: 100;
         border-end-start-radius: 5px;
         border-end-end-radius: 5px;
+        box-shadow: 0 15px 30px 0 rgba(0, 0, 0, 0.04);
 
         &--item {
           cursor: pointer;
@@ -225,6 +226,10 @@
           color: #1878ff;
           border: 1px solid #1878ff;
         }
+      }
+
+      &__clear-tag {
+        height: 32px;
       }
     }
 

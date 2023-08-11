@@ -76,7 +76,7 @@ class Storage {
 
   static getSavedTagHistory(isDashboard: boolean): string[] {
     const storageKey = isDashboard
-      ? 'recentlyDashboardTagSearch '
+      ? 'recentlyDashboardTagSearch'
       : 'recentlyQueryTagSearch';
     const savedTagHistory = localStorage.getItem(storageKey);
     return savedTagHistory ? JSON.parse(savedTagHistory) : [];

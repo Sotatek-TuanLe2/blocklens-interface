@@ -1,5 +1,5 @@
 import { Box, Collapse, Flex, Text, useDisclosure } from '@chakra-ui/react';
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useHistory, useLocation } from 'react-router';
 import {
   IconFilter,
@@ -32,12 +32,6 @@ interface IFilterSearch {
   displayed: string;
   setDisplayed: (display: string) => void;
   itemType: string;
-}
-
-interface ITags {
-  search?: string;
-  page?: number;
-  limit?: number;
 }
 
 const optionType: IOption[] = [
@@ -105,9 +99,9 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
       searchParams.get(HOME_URL_PARAMS.ORDERBY) || 'created_at:desc';
     const tag = searchParams.get(HOME_URL_PARAMS.TAG) || '';
     setSearch(search);
-    setInputSearch(search);
     setOrderBy(orderBy);
     setTag(tag);
+    setInputSearch(search);
   }, [searchUrl]);
 
   useEffect(() => {
@@ -154,6 +148,9 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   }, [type, itemType]);
 
   const fetchSearchTags = async () => {
+    if (!tagSearch) {
+      return;
+    }
     const res = isDashboard
       ? await rf
           .getRequest('DashboardsRequest')
@@ -179,12 +176,12 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
     setOpenNewDashboardModal((prevState) => !prevState);
 
   const onChangeSearch = (e: ChangeEvent<HTMLInputElement>) => {
-    searchParams.delete(HOME_URL_PARAMS.SEARCH);
     const inputValue = e.target.value;
     if (inputValue.startsWith('#')) {
       setTagSearch(inputValue.slice(1, inputValue.length));
       setInputSearch(inputValue);
     } else {
+      searchParams.delete(HOME_URL_PARAMS.SEARCH);
       inputValue && searchParams.set(HOME_URL_PARAMS.SEARCH, inputValue);
     }
     history.push({
@@ -245,6 +242,14 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
     });
   };
 
+  const onClearTag = () => {
+    searchParams.delete(HOME_URL_PARAMS.TAG);
+    history.push({
+      pathname: ROUTES.HOME,
+      search: `${searchParams.toString()}`,
+    });
+  };
+
   const _generatePlaceHolder = () => {
     switch (type) {
       case LIST_ITEM_TYPE.DASHBOARDS:
@@ -259,7 +264,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   const _renderSuggestTags = () => {
     const suggestTagList = tagSearch
       ? suggestTags
-      : Storage.getSavedTagHistory(isDashboard);
+      : Storage.getSavedTagHistory(isDashboard).slice(0, SUGGEST_TAGS_LIMIT);
 
     if (!suggestTagList.length) {
       return (
@@ -269,21 +274,26 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
       );
     }
 
+    const onClickTag =
+      (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => (tag: string) => {
+        e.preventDefault();
+        onSelectedTag(tag);
+        setTagSearch('');
+        setInputSearch('');
+        setIsOpenSuggestTags(false);
+      };
+
     return (
       <Box className="dashboard-filter__search__search-box" ref={ref}>
-        {suggestTagList.map((item: string) => (
+        {suggestTagList.map((tag: string) => (
           <Flex
             alignItems="center"
             gap="5px"
-            key={item}
-            onClick={(e) => {
-              e.preventDefault();
-              onSelectedTag(item);
-              setIsOpenSuggestTags(false);
-            }}
+            key={tag}
+            onClick={(e) => onClickTag(e)(tag)}
             className="dashboard-filter__search__search-box--item"
           >
-            {search === '' && tag === '' && <IconEye />} <Text>#{item}</Text>
+            {search === '' && tag === '' && <IconEye />} <Text>#{tag}</Text>
           </Flex>
         ))}
       </Box>
@@ -394,6 +404,13 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
                       borderRadius={'6px'}
                     />
                   ))}
+                <AppButton
+                  variant="action"
+                  className="dashboard-filter__search__clear-tag"
+                  onClick={onClearTag}
+                >
+                  Clear tag
+                </AppButton>
               </Flex>
             </Box>
 
