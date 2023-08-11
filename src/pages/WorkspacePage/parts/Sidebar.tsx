@@ -56,6 +56,8 @@ const ChainItem = ({
   const { pathname } = useLocation();
 
   const handleToggle = () => {
+    console.log('chain', chain);
+
     onChangeSelectedTable(chain);
   };
 
@@ -69,7 +71,9 @@ const ChainItem = ({
         <Flex flex={1} maxW={isSearchTableName ? '70%' : '80%'} gap="10px">
           <div
             className={
-              !!selectedTable && selectedTable.table_name === chain.table_name
+              !!selectedTable &&
+              selectedTable.table_name === chain.table_name &&
+              selectedTable.schema === chain.schema
                 ? 'bg-chain_active'
                 : 'bg-chain_default'
             }
