@@ -180,7 +180,11 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
     if (inputValue.startsWith('#')) {
       setTagSearch(inputValue.slice(1, inputValue.length));
       setInputSearch(inputValue);
+      setIsOpenSuggestTags(true);
     } else {
+      setTagSearch('');
+      setInputSearch(inputValue);
+      setIsOpenSuggestTags(false);
       searchParams.delete(HOME_URL_PARAMS.SEARCH);
       inputValue && searchParams.set(HOME_URL_PARAMS.SEARCH, inputValue);
     }
@@ -404,13 +408,15 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
                       borderRadius={'6px'}
                     />
                   ))}
-                <AppButton
-                  variant="action"
-                  className="dashboard-filter__search__clear-tag"
-                  onClick={onClearTag}
-                >
-                  Clear tag
-                </AppButton>
+                {!!tag && (
+                  <AppButton
+                    variant="action"
+                    className="dashboard-filter__search__clear-tag"
+                    onClick={onClearTag}
+                  >
+                    Clear tag
+                  </AppButton>
+                )}
               </Flex>
             </Box>
 
