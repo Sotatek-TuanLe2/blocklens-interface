@@ -57,11 +57,7 @@
     border-color: #1878ff;
     color: #0060db;
     padding: 0 24px;
-    background: linear-gradient(
-      268.85deg,
-      rgba(34, 108, 255, 0.12) 22.48%,
-      rgba(16, 132, 255, 0.12) 83.59%
-    );
+    background: linear-gradient(268.85deg, rgba(34, 108, 255, 0.12) 22.48%, rgba(16, 132, 255, 0.12) 83.59%);
     &:focus {
       box-shadow: unset;
       border: 1px solid #0060db;
@@ -98,6 +94,31 @@
 
         & > .app-select__btn-select {
           width: 200px;
+        }
+      }
+
+      &__search-box {
+        background-color: $white;
+        position: absolute;
+        width: 100%;
+        z-index: 100;
+        border-end-start-radius: 5px;
+        border-end-end-radius: 5px;
+        box-shadow: 0 15px 30px 0 rgba(0, 0, 0, 0.04);
+
+        &--item {
+          cursor: pointer;
+          padding: 7px 25px;
+          font-weight: bold;
+
+          &:hover {
+            background-color: $bg;
+          }
+        }
+
+        .no-result {
+          padding: 7px 25px;
+          color: $line;
         }
       }
 
@@ -205,6 +226,10 @@
           color: #1878ff;
           border: 1px solid #1878ff;
         }
+      }
+
+      &__clear-tag {
+        height: 32px;
       }
     }
 
