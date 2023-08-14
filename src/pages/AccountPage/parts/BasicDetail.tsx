@@ -51,23 +51,23 @@ const BasicDetail = () => {
         {/*</Flex>*/}
       </Box>
 
-      <Box className="info-item">
-        <Box className="title">Security</Box>
-        <Flex justifyContent={'space-between'}>
-          <Flex>
-            <Box className="label">Password:</Box>
-            <Box className="value">********</Box>
-          </Flex>
-          {user?.isLoginViaEmail() && (
+      {user?.isLoginViaEmail() && (
+        <Box className="info-item">
+          <Box className="title">Security</Box>
+          <Flex justifyContent={'space-between'}>
+            <Flex>
+              <Box className="label">Password:</Box>
+              <Box className="value">********</Box>
+            </Flex>
             <Box
               className="btn-edit"
               onClick={() => setIsChangePasswordModal(true)}
             >
               <EditIcon />
             </Box>
-          )}
-        </Flex>
-      </Box>
+          </Flex>
+        </Box>
+      )}
 
       {isOpenChangePasswordModal && (
         <ModalChangePassword
