@@ -50,7 +50,7 @@ const SignUpPage: FC = () => {
   useEffect(() => {
     const isDisabled = !validator.current.allValid();
     setIsDisableSubmit(isDisabled);
-  }, [dataForm]);
+  }, [dataForm, msgError]);
 
   const onSignUp = async () => {
     try {
@@ -138,7 +138,7 @@ const SignUpPage: FC = () => {
                     'required',
                     'email',
                     'max:100',
-                    `msgErrorForm:${msgError}`,
+                    `hasErrorMessage:${msgError}`,
                   ],
                 }}
               />
@@ -186,7 +186,7 @@ const SignUpPage: FC = () => {
             onClick={onSignUp}
             size={'lg'}
             width={'full'}
-            disabled={isDisableSubmit || !!msgError}
+            disabled={isDisableSubmit}
           >
             Sign up
           </AppButton>

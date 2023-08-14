@@ -72,7 +72,7 @@ const ModalChangePassword: React.FC<IChangePasswordModal> = ({
       setIsDisableSubmit(isDisable);
     }, 0);
     return () => clearTimeout(statusSubmitBtn);
-  }, [dataForm]);
+  }, [dataForm, msgError]);
 
   return (
     <BaseModal
@@ -95,7 +95,7 @@ const ModalChangePassword: React.FC<IChangePasswordModal> = ({
           validate={{
             name: `currentPassword`,
             validator: validators.current,
-            rule: ['required', 'formatPassword', `msgErrorForm:${msgError}`],
+            rule: ['required', 'formatPassword', `hasErrorMessage:${msgError}`],
           }}
         />
       </AppField>
@@ -141,7 +141,7 @@ const ModalChangePassword: React.FC<IChangePasswordModal> = ({
       <AppButton
         w={'100%'}
         size="lg"
-        disabled={isDisableSubmit || !!msgError}
+        disabled={isDisableSubmit}
         onClick={handleOnSubmit}
       >
         Set password

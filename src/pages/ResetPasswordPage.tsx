@@ -76,7 +76,7 @@ const ResetPasswordPage: FC = () => {
   useEffect(() => {
     const isDisabled = !validator.current.allValid();
     setIsDisableSubmit(isDisabled);
-  }, [dataForm]);
+  }, [dataForm, msgError]);
 
   return (
     <GuestPage>
@@ -109,7 +109,7 @@ const ResetPasswordPage: FC = () => {
                     'required',
                     'min:8',
                     'max:50',
-                    `msgErrorForm:${msgError}`,
+                    `hasErrorMessage:${msgError}`,
                   ],
                 }}
               />
@@ -139,7 +139,7 @@ const ResetPasswordPage: FC = () => {
               size={'lg'}
               width={'full'}
               mt={3}
-              disabled={isDisableSubmit || !!msgError}
+              disabled={isDisableSubmit}
             >
               Set password
             </AppButton>

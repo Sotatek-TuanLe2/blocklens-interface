@@ -47,7 +47,7 @@ type CustomRule =
   | 'isDecimnals'
   | 'maxDigits'
   | 'isSame'
-  | 'msgErrorForm'
+  | 'hasErrorMessage'
   | 'isAddress'
   | 'maxCountIds'
   | 'isIds'
@@ -112,7 +112,7 @@ export const createValidator = (options?: IOptions | undefined) => {
           return value === params[0];
         },
       },
-      msgErrorForm: {
+      hasErrorMessage: {
         message: '',
         rule: (value: string, params: string) => {
           return !params[0];

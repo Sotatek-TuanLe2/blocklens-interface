@@ -48,7 +48,7 @@ const LoginPage: FC = () => {
   useEffect(() => {
     const isDisabled = !validator.current.allValid();
     setIsDisableSubmit(isDisabled);
-  }, [dataForm]);
+  }, [dataForm, msgError]);
 
   const onLogin = async () => {
     try {
@@ -98,7 +98,7 @@ const LoginPage: FC = () => {
                     'required',
                     'email',
                     'max:100',
-                    `msgErrorForm:${msgError}`,
+                    `hasErrorMessage:${msgError}`,
                   ],
                 }}
               />
@@ -132,7 +132,7 @@ const LoginPage: FC = () => {
               onClick={onLogin}
               size={'lg'}
               width={'full'}
-              disabled={isDisableSubmit || !!msgError}
+              disabled={isDisableSubmit}
             >
               Log in
             </AppButton>
