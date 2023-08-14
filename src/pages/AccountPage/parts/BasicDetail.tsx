@@ -58,12 +58,14 @@ const BasicDetail = () => {
             <Box className="label">Password:</Box>
             <Box className="value">********</Box>
           </Flex>
-          <Box
-            className="btn-edit"
-            onClick={() => setIsChangePasswordModal(true)}
-          >
-            <EditIcon />
-          </Box>
+          {user?.isLoginViaEmail() && (
+            <Box
+              className="btn-edit"
+              onClick={() => setIsChangePasswordModal(true)}
+            >
+              <EditIcon />
+            </Box>
+          )}
         </Flex>
       </Box>
 

@@ -26,6 +26,7 @@ export type UserStatsType = {
 };
 
 export type UserInfoType = {
+  authProviders: string[];
   email: string;
   isEmailVerified?: boolean;
   firstName: string;
@@ -86,6 +87,7 @@ const initialState: UserState = {
     refreshToken: Storage.getRefreshToken() || '',
   },
   info: {
+    authProviders: [],
     email: '',
     firstName: '',
     lastName: '',
@@ -204,8 +206,10 @@ const userSlice = createSlice({
       Storage.setRefreshToken(refreshToken);
     },
     setUserInfo: (state, action) => {
-      const { email, firstName, lastName, billingEmail } = action.payload;
+      const { authProviders, email, firstName, lastName, billingEmail } =
+        action.payload;
       state.info = {
+        authProviders,
         email,
         firstName,
         lastName,
