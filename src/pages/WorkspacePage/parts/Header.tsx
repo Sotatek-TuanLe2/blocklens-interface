@@ -29,6 +29,7 @@ import { IconDotMore, IconFilter, IconRun } from 'src/assets/icons';
 import Jazzicon from 'react-jazzicon';
 import useOriginPath from 'src/hooks/useOriginPath';
 import rf from 'src/requests/RequestFactory';
+import useUser from 'src/hooks/useUser';
 
 interface IHeaderProps {
   type: string;
@@ -62,6 +63,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
   const [isDataSaved, setIsDataSaved] = useState<boolean>(false);
 
   const { goToOriginPath } = useOriginPath();
+  const { user } = useUser();
   const { queryId, dashboardId } = useParams<{
     queryId: string;
     dashboardId: string;
@@ -81,10 +83,17 @@ const Header: React.FC<IHeaderProps> = (props) => {
   }, [data]);
 
   useEffect(() => {
-    if (dataClass) {
-      checkSavedStatus(dataClass);
+    if (!dataClass || !user) {
+      return;
     }
+    checkSavedStatus(dataClass);
   }, [dataClass]);
+
+  useEffect(() => {
+    if (!user) {
+      setIsDataSaved(false);
+    }
+  }, [user]);
 
   const checkSavedStatus = async (dataClass: Dashboard | Query) => {
     const response = isDashboard
