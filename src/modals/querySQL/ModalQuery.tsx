@@ -2,7 +2,6 @@ import { Box, Flex, Text } from '@chakra-ui/react';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router';
 import { AppButton, AppInput } from 'src/components';
-import useRecaptcha from 'src/hooks/useRecaptcha';
 import rf from 'src/requests/RequestFactory';
 import { ROUTES, TYPE_OF_MODAL } from 'src/utils/common';
 import { getErrorMessage } from 'src/utils/utils-helper';
@@ -68,7 +67,6 @@ const ModalQuery = ({
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
 
   const history = useHistory();
-  const { getAndSetRecaptcha } = useRecaptcha();
 
   useEffect(() => {
     setTimeout(() => {
@@ -92,7 +90,6 @@ const ModalQuery = ({
 
   const handleSubmit = async () => {
     if (!isDisableSubmit) {
-      await getAndSetRecaptcha();
       let res;
       setIsDisableSubmit(true);
       const submitData: { name: string; tags: string[] } = {

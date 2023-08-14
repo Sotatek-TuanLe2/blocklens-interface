@@ -1,5 +1,6 @@
 import { Layout } from 'react-grid-layout';
 import config from 'src/config';
+import { RECAPTCHA_ACTIONS } from 'src/utils/common';
 import { QueryType } from '../utils/query.type';
 import BaseRequest from './BaseRequest';
 
@@ -13,12 +14,6 @@ export interface DashboardsParams {
 export interface CreateDashboardParams {
   name: string;
   isPrivate: boolean;
-}
-
-interface TableParams {
-  network?: string;
-  chain?: string;
-  search?: string;
 }
 
 export interface ForkDashboard {
@@ -157,7 +152,7 @@ export default class DashboardsRequest extends BaseRequest {
 
   createNewDashboard(data: CreateDashboardParams) {
     const url = '/dashboards/create-dashboard';
-    return this.post(url, data);
+    return this.post(url, data, RECAPTCHA_ACTIONS.HOMEPAGE);
   }
   /* End of Dashboards page */
 
@@ -259,12 +254,12 @@ export default class DashboardsRequest extends BaseRequest {
 
   createNewQuery(query: QueryType) {
     const url = '/queries/create-query';
-    return this.post(url, query);
+    return this.post(url, query, RECAPTCHA_ACTIONS.HOMEPAGE);
   }
 
   executeQuery(queryId: string) {
     const url = '/query-executors/execute-query';
-    return this.post(url, { queryId });
+    return this.post(url, { queryId }, RECAPTCHA_ACTIONS.HOMEPAGE);
   }
 
   forkQueries(queryId: string, params: IUpdateQuery) {

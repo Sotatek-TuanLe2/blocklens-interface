@@ -8,14 +8,14 @@ import {
   AppLink,
   GoogleAuthButton,
 } from 'src/components';
-import useRecaptcha from 'src/hooks/useRecaptcha';
 import GuestPage from 'src/layouts/GuestPage';
 import ModalResendMail from 'src/modals/ModalResendMail';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/pages/LoginPage.scss';
 import { ROUTES } from 'src/utils/common';
+import { setRecaptchaToRequest } from 'src/utils/utils-auth';
 import { getErrorMessage } from 'src/utils/utils-helper';
-import { toastError, toastSuccess } from 'src/utils/utils-notify';
+import { toastSuccess } from 'src/utils/utils-notify';
 import { createValidator } from 'src/utils/utils-validator';
 
 interface IDataForm {
@@ -34,7 +34,6 @@ const SignUpPage: FC = () => {
     password: '',
     confirmPassword: '',
   };
-  const { getAndSetRecaptcha, resetRecaptcha } = useRecaptcha();
 
   const [dataForm, setDataForm] = useState<IDataForm>(initDataSignUp);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
@@ -55,12 +54,11 @@ const SignUpPage: FC = () => {
 
   const onSignUp = async () => {
     try {
-      await getAndSetRecaptcha();
       const res = await rf.getRequest('AuthRequest').signUp(dataForm);
       setUserId(res?.userId || '');
       setOpenModalResendEmail(true);
     } catch (e) {
-      resetRecaptcha();
+      setRecaptchaToRequest(null);
       setMsgError(getErrorMessage(e));
     }
   };
