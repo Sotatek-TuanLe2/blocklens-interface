@@ -85,7 +85,7 @@ const AllActivitiesPage = () => {
           {isOpenFilterModal && (
             <ModalFilterActivities
               open={isOpenFilterModal}
-              value={status}
+              value={params.status}
               onClose={() => setIsOpenFilterModal(false)}
               onChange={(status) => {
                 setParams({
