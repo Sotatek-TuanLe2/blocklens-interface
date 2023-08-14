@@ -56,8 +56,6 @@ const ChainItem = ({
   const { pathname } = useLocation();
 
   const handleToggle = () => {
-    console.log('chain', chain);
-
     onChangeSelectedTable(chain);
   };
 
