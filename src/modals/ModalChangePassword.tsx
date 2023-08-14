@@ -32,6 +32,7 @@ const ModalChangePassword: React.FC<IChangePasswordModal> = ({
   };
   const [dataForm, setDataForm] = useState<IFormChangePass>(initialData);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
+  const [msgError, setMsgError] = useState<string>('');
   const history = useHistory();
   const [, updateState] = useState<any>();
   const forceUpdate = useCallback(() => updateState({}), []);
@@ -57,7 +58,7 @@ const ModalChangePassword: React.FC<IChangePasswordModal> = ({
       onClose();
       toastSuccess({ message: 'Update password was successfully' });
     } catch (error) {
-      toastError({ message: getErrorMessage(error) });
+      setMsgError(getErrorMessage(error));
     }
   };
   const handleClickForgotPassword = () => {
@@ -85,6 +86,7 @@ const ModalChangePassword: React.FC<IChangePasswordModal> = ({
           value={dataForm.currentPassword}
           type="password"
           onChange={(e) => {
+            setMsgError('');
             setDataForm({
               ...dataForm,
               currentPassword: e.target.value,
@@ -93,7 +95,7 @@ const ModalChangePassword: React.FC<IChangePasswordModal> = ({
           validate={{
             name: `currentPassword`,
             validator: validators.current,
-            rule: ['required', 'formatPassword'],
+            rule: ['required', 'formatPassword', `msgErrorForm:${msgError}`],
           }}
         />
       </AppField>
@@ -139,7 +141,7 @@ const ModalChangePassword: React.FC<IChangePasswordModal> = ({
       <AppButton
         w={'100%'}
         size="lg"
-        disabled={isDisableSubmit}
+        disabled={isDisableSubmit || !!msgError}
         onClick={handleOnSubmit}
       >
         Set password

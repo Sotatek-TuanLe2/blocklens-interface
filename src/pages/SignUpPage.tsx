@@ -38,6 +38,7 @@ const SignUpPage: FC = () => {
 
   const [dataForm, setDataForm] = useState<IDataForm>(initDataSignUp);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
+  const [msgError, setMsgError] = useState<string>('');
   const [openModalResendEmail, setOpenModalResendEmail] =
     useState<boolean>(false);
   const [userId, setUserId] = useState<string>('');
@@ -60,7 +61,7 @@ const SignUpPage: FC = () => {
       setOpenModalResendEmail(true);
     } catch (e) {
       resetRecaptcha();
-      toastError({ message: getErrorMessage(e) });
+      setMsgError(getErrorMessage(e));
     }
   };
 
@@ -125,16 +126,22 @@ const SignUpPage: FC = () => {
             <AppField label={'Email'}>
               <AppInput
                 value={dataForm.email}
-                onChange={(e) =>
+                onChange={(e) => {
+                  setMsgError('');
                   setDataForm({
                     ...dataForm,
                     email: e.target.value,
-                  })
-                }
+                  });
+                }}
                 validate={{
                   name: `email`,
                   validator: validator.current,
-                  rule: ['required', 'email', 'max:100'],
+                  rule: [
+                    'required',
+                    'email',
+                    'max:100',
+                    `msgErrorForm:${msgError}`,
+                  ],
                 }}
               />
             </AppField>
@@ -181,7 +188,7 @@ const SignUpPage: FC = () => {
             onClick={onSignUp}
             size={'lg'}
             width={'full'}
-            disabled={isDisableSubmit}
+            disabled={isDisableSubmit || !!msgError}
           >
             Sign up
           </AppButton>

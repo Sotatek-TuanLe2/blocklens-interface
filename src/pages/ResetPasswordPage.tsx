@@ -24,6 +24,7 @@ const ResetPasswordPage: FC = () => {
 
   const [dataForm, setDataForm] = useState<IDataForm>(initDataResetPassword);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
+  const [msgError, setMsgError] = useState<string>('');
 
   const history = useHistory();
   const location = useLocation();
@@ -62,9 +63,7 @@ const ResetPasswordPage: FC = () => {
         });
       }
     } catch (error) {
-      toastError({
-        message: getErrorMessage(error),
-      });
+      setMsgError(getErrorMessage(error));
     }
   };
 
@@ -106,7 +105,12 @@ const ResetPasswordPage: FC = () => {
                 validate={{
                   name: `newPassword`,
                   validator: validator.current,
-                  rule: 'required|min:8|max:50',
+                  rule: [
+                    'required',
+                    'min:8',
+                    'max:50',
+                    `msgErrorForm:${msgError}`,
+                  ],
                 }}
               />
             </AppField>
@@ -135,7 +139,7 @@ const ResetPasswordPage: FC = () => {
               size={'lg'}
               width={'full'}
               mt={3}
-              disabled={isDisableSubmit}
+              disabled={isDisableSubmit || !!msgError}
             >
               Set password
             </AppButton>
