@@ -159,7 +159,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
           .getRequest('DashboardsRequest')
           .getQueryTags({ search: tagSearch, limit: SUGGEST_TAGS_LIMIT });
     if (res && res.data) {
-      setSuggestTags(res.data.reverse());
+      setSuggestTags(res.data);
       setIsOpenSuggestTags(true);
     }
   };
