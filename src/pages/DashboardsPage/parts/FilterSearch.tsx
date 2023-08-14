@@ -35,8 +35,8 @@ interface IFilterSearch {
 }
 
 const optionType: IOption[] = [
-  { value: 'created_at:desc', label: 'Date low to high' },
-  { value: 'created_at:asc', label: 'Date high to low' },
+  { value: 'created_at:asc', label: 'Date low to high' },
+  { value: 'created_at:desc', label: 'Date high to low' },
 ];
 
 const MAX_TRENDING_TAGS = 3;
@@ -96,7 +96,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   useEffect(() => {
     const search = searchParams.get(HOME_URL_PARAMS.SEARCH) || '';
     const orderBy =
-      searchParams.get(HOME_URL_PARAMS.ORDERBY) || 'created_at:desc';
+      searchParams.get(HOME_URL_PARAMS.ORDERBY) || 'created_at:asc';
     const tag = searchParams.get(HOME_URL_PARAMS.TAG) || '';
     setSearch(search);
     setOrderBy(orderBy);
