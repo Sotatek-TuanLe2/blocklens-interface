@@ -32,7 +32,6 @@ export type UserInfoType = {
   firstName: string;
   lastName: string;
   address?: string;
-  billingEmail: string;
 };
 
 export type UserPlanType = {
@@ -63,6 +62,7 @@ export type UserPaymentType = {
 
 export type UserSettingsType = {
   notificationEnabled: boolean;
+  billingEmail?: string;
 };
 
 export type UserBillingType = {
@@ -91,7 +91,6 @@ const initialState: UserState = {
     email: '',
     firstName: '',
     lastName: '',
-    billingEmail: '',
   },
   stats: {
     numberOfAddressActivities: 0,
@@ -206,14 +205,12 @@ const userSlice = createSlice({
       Storage.setRefreshToken(refreshToken);
     },
     setUserInfo: (state, action) => {
-      const { authProviders, email, firstName, lastName, billingEmail } =
-        action.payload;
+      const { authProviders, email, firstName, lastName } = action.payload;
       state.info = {
         authProviders,
         email,
         firstName,
         lastName,
-        billingEmail,
       };
     },
     setUserStats: (state, action) => {
@@ -242,8 +239,11 @@ const userSlice = createSlice({
       };
     },
     setUserSettings: (state, action) => {
-      const { notificationEnabled } = action.payload;
-      state.settings = { notificationEnabled };
+      const { notificationEnabled, setting } = action.payload;
+      state.settings = {
+        notificationEnabled,
+        billingEmail: setting.billingEmail,
+      };
     },
     clearUser: () => {
       setAuthorizationToRequest(null);

@@ -64,7 +64,6 @@ export class User implements UserInterface {
     email: '',
     firstName: '',
     lastName: '',
-    billingEmail: '',
   };
   public stats: UserStatsType = {
     numberOfAddressActivities: 0,
@@ -183,7 +182,7 @@ export class User implements UserInterface {
   }
 
   getBillingEmail(): string {
-    return this.info.billingEmail;
+    return this.settings.billingEmail || '';
   }
 
   getFirstName(): string {
