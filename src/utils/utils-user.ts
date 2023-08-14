@@ -50,6 +50,7 @@ export interface UserInterface {
   isUserStriped: () => boolean;
   isPaymentMethodIntegrated: () => boolean;
   isNotificationEnabled: () => boolean;
+  isLoginViaEmail: () => boolean;
 }
 
 export class User implements UserInterface {
@@ -59,10 +60,10 @@ export class User implements UserInterface {
     refreshToken: '',
   };
   public info: UserInfoType = {
+    authProviders: [],
     email: '',
     firstName: '',
     lastName: '',
-    billingEmail: '',
   };
   public stats: UserStatsType = {
     numberOfAddressActivities: 0,
@@ -181,7 +182,7 @@ export class User implements UserInterface {
   }
 
   getBillingEmail(): string {
-    return this.info.billingEmail;
+    return this.settings.billingEmail || '';
   }
 
   getFirstName(): string {
@@ -190,6 +191,10 @@ export class User implements UserInterface {
 
   getLastName(): string {
     return this.info.lastName;
+  }
+
+  getAuthProviders(): string[] {
+    return this.info.authProviders;
   }
 
   getBalance(): number {
@@ -226,5 +231,9 @@ export class User implements UserInterface {
 
   isNotificationEnabled(): boolean {
     return this.settings.notificationEnabled;
+  }
+
+  isLoginViaEmail(): boolean {
+    return this.info.authProviders.includes('email');
   }
 }
