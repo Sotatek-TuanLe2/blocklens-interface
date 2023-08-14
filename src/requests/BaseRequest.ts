@@ -1,8 +1,13 @@
+import { load } from 'recaptcha-v3';
 import config from 'src/config';
 import axios from 'axios';
 import Storage from 'src/utils/utils-storage';
-import { setAuthorizationToRequest } from 'src/utils/utils-auth';
+import {
+  setAuthorizationToRequest,
+  setRecaptchaToRequest,
+} from 'src/utils/utils-auth';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
+import { RECAPTCHA_ACTIONS } from 'src/utils/common';
 
 export default class BaseRequest {
   protected accessToken = '';
@@ -16,6 +21,18 @@ export default class BaseRequest {
 
   getUrlPrefix() {
     return config.api.baseUrlApi;
+  }
+
+  async getAndSetRecaptcha(
+    recaptchaAction: typeof RECAPTCHA_ACTIONS[keyof typeof RECAPTCHA_ACTIONS],
+  ) {
+    try {
+      const recaptcha = await load(config.auth.reCaptchaKey);
+      const token = await recaptcha.execute(recaptchaAction);
+      setRecaptchaToRequest(token);
+    } catch (error) {
+      throw new Error('Execute Recaptcha failed!');
+    }
   }
 
   async get(url: string, params?: any) {
@@ -48,8 +65,15 @@ export default class BaseRequest {
     }
   }
 
-  async post(url: any, data?: any) {
+  async post(
+    url: any,
+    data?: any,
+    recaptchaAction?: typeof RECAPTCHA_ACTIONS[keyof typeof RECAPTCHA_ACTIONS],
+  ) {
     try {
+      if (recaptchaAction) {
+        await this.getAndSetRecaptcha(recaptchaAction);
+      }
       const response = await axios.post(this.getUrlPrefix() + url, data);
       return this._responseHandler(response);
     } catch (error) {
