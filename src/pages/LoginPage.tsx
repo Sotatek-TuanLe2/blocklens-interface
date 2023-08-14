@@ -39,6 +39,7 @@ const LoginPage: FC = () => {
   );
 
   const [dataForm, setDataForm] = useState<IDataForm>(initDataLogin);
+  const [msgError, setMsgError] = useState<string>('');
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
 
   const validator = useRef(
@@ -63,7 +64,7 @@ const LoginPage: FC = () => {
       }
     } catch (e) {
       resetRecaptcha();
-      toastError({ message: getErrorMessage(e) });
+      setMsgError(getErrorMessage(e));
     }
   };
 
@@ -87,16 +88,22 @@ const LoginPage: FC = () => {
             <AppField label={'Email'}>
               <AppInput
                 value={dataForm.email}
-                onChange={(e) =>
+                onChange={(e) => {
+                  setMsgError('');
                   setDataForm({
                     ...dataForm,
                     email: e.target.value.trim(),
-                  })
-                }
+                  });
+                }}
                 validate={{
                   name: `email`,
                   validator: validator.current,
-                  rule: 'required|email|max:100',
+                  rule: [
+                    'required',
+                    'email',
+                    'max:100',
+                    `msgErrorForm:${msgError}`,
+                  ],
                 }}
               />
             </AppField>
@@ -105,12 +112,13 @@ const LoginPage: FC = () => {
               <AppInput
                 type="password"
                 value={dataForm.password}
-                onChange={(e) =>
+                onChange={(e) => {
+                  setMsgError('');
                   setDataForm({
                     ...dataForm,
                     password: e.target.value,
-                  })
-                }
+                  });
+                }}
                 placeholder={'••••••••'}
                 validate={{
                   name: `password`,
@@ -128,7 +136,7 @@ const LoginPage: FC = () => {
               onClick={onLogin}
               size={'lg'}
               width={'full'}
-              disabled={isDisableSubmit}
+              disabled={isDisableSubmit || !!msgError}
             >
               Log in
             </AppButton>
