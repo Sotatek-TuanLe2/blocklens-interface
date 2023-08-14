@@ -9,6 +9,7 @@ import {
   AppFilter,
   AppLink,
   AppLoadingTable,
+  RequestParams,
 } from 'src/components';
 import useWebhookDetails from 'src/hooks/useWebhook';
 import rf from 'src/requests/RequestFactory';
@@ -458,6 +459,7 @@ interface IActivityDatatable {
   hidePagination?: boolean;
   limit: number;
   setParams?: (params: any) => void;
+  fetchDataTable: (requestParams: RequestParams) => Promise<any>;
 }
 
 const ActivityDatatable: FC<IActivityDatatable> = ({
@@ -466,21 +468,12 @@ const ActivityDatatable: FC<IActivityDatatable> = ({
   setParams,
   limit,
   isFilter,
+  fetchDataTable,
 }) => {
   const { id: webhookId } = useParams<{ id: string }>();
   const [, updateState] = useState<any>();
   const forceUpdate = useCallback(() => updateState({}), []);
   const { webhook } = useWebhookDetails(webhookId);
-
-  const fetchDataTable: any = useCallback(async (params: any) => {
-    try {
-      return await rf
-        .getRequest('NotificationRequest')
-        .getActivities(webhookId, filterParams(params));
-    } catch (error) {
-      console.error(error);
-    }
-  }, []);
 
   const _renderHeader = () => {
     if (isMobile) return;
