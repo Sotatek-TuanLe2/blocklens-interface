@@ -1,5 +1,6 @@
 import BaseRequest from './BaseRequest';
 import config from 'src/config';
+import { RECAPTCHA_ACTIONS } from 'src/utils/common';
 
 export default class AuthRequest extends BaseRequest {
   getUrlPrefix() {
@@ -8,12 +9,12 @@ export default class AuthRequest extends BaseRequest {
 
   signUp(params: any) {
     const url = `/public/users/signup`;
-    return this.post(url, params);
+    return this.post(url, params, RECAPTCHA_ACTIONS.HOMEPAGE);
   }
 
   login(params: any) {
     const url = `/public/users/signin`;
-    return this.post(url, params);
+    return this.post(url, params, RECAPTCHA_ACTIONS.LOGIN);
   }
 
   loginByGoogle(params: any) {
@@ -38,7 +39,7 @@ export default class AuthRequest extends BaseRequest {
 
   forgotPassword(data: any) {
     const url = '/public/users/forgot-password';
-    return this.post(url, data);
+    return this.post(url, data, RECAPTCHA_ACTIONS.HOMEPAGE);
   }
 
   resetPassword(data: any) {

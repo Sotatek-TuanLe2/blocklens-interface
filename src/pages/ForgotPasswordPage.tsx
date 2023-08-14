@@ -7,7 +7,6 @@ import {
   AppInput,
   AppLink,
 } from 'src/components';
-import useRecaptcha from 'src/hooks/useRecaptcha';
 import GuestPage from 'src/layouts/GuestPage';
 import ModalResendMail from 'src/modals/ModalResendMail';
 import rf from 'src/requests/RequestFactory';
@@ -25,7 +24,6 @@ const ForgotPasswordPage: FC = () => {
   const initDataRestPassword = {
     email: '',
   };
-  const { getAndSetRecaptcha } = useRecaptcha();
 
   const [dataForm, setDataForm] = useState<IDataForm>(initDataRestPassword);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
@@ -45,7 +43,6 @@ const ForgotPasswordPage: FC = () => {
       return;
     }
     try {
-      await getAndSetRecaptcha();
       await rf.getRequest('AuthRequest').forgotPassword(dataForm);
       setOpenModalResendEmail(true);
     } catch (error: any) {
