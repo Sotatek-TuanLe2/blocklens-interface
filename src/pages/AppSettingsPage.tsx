@@ -50,8 +50,6 @@ const AppSettingsPage: FC<IAppSettings> = () => {
 
   const [isOpenDeleteAppModal, setIsOpenDeleteAppModal] =
     useState<boolean>(false);
-  const [isOpenChangeStatusAppModal, setIsOpenChangeStatusAppModal] =
-    useState<boolean>(false);
 
   const isActive = useMemo(
     () => appInfo.status === APP_STATUS.ENABLE,
@@ -208,26 +206,12 @@ const AppSettingsPage: FC<IAppSettings> = () => {
                 <Box>{isActive ? 'ACTIVE' : 'INACTIVE'}</Box>
               </Flex>
             </Flex>
-
-            <AppButtonLarge onClick={() => setIsOpenChangeStatusAppModal(true)}>
-              {isActive ? 'Deactivate' : 'Activate'}
-            </AppButtonLarge>
           </Flex>
         </AppCard>
-
         {isOpenDeleteAppModal && (
           <ModalDeleteApp
             open={isOpenDeleteAppModal}
             onClose={() => setIsOpenDeleteAppModal(false)}
-            appInfo={appInfo}
-          />
-        )}
-
-        {isOpenChangeStatusAppModal && (
-          <ModalChangeStatusApp
-            open={isOpenChangeStatusAppModal}
-            onClose={() => setIsOpenChangeStatusAppModal(false)}
-            reloadData={getAppInfo}
             appInfo={appInfo}
           />
         )}
