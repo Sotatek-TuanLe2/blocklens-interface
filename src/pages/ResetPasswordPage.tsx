@@ -24,6 +24,7 @@ const ResetPasswordPage: FC = () => {
 
   const [dataForm, setDataForm] = useState<IDataForm>(initDataResetPassword);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
   const history = useHistory();
   const location = useLocation();
@@ -62,9 +63,7 @@ const ResetPasswordPage: FC = () => {
         });
       }
     } catch (error) {
-      toastError({
-        message: getErrorMessage(error),
-      });
+      setErrorMessage(getErrorMessage(error));
     }
   };
 
@@ -77,7 +76,10 @@ const ResetPasswordPage: FC = () => {
   useEffect(() => {
     const isDisabled = !validator.current.allValid();
     setIsDisableSubmit(isDisabled);
-  }, [dataForm]);
+    if (errorMessage) {
+      validator.current.showMessages();
+    }
+  }, [dataForm, errorMessage]);
 
   return (
     <GuestPage>
@@ -106,7 +108,12 @@ const ResetPasswordPage: FC = () => {
                 validate={{
                   name: `newPassword`,
                   validator: validator.current,
-                  rule: 'required|min:8|max:50',
+                  rule: [
+                    'required',
+                    'min:8',
+                    'max:50',
+                    `hasErrorMessage:${errorMessage}`,
+                  ],
                 }}
               />
             </AppField>

@@ -15,7 +15,7 @@ import 'src/styles/pages/LoginPage.scss';
 import { ROUTES } from 'src/utils/common';
 import { setRecaptchaToRequest } from 'src/utils/utils-auth';
 import { getErrorMessage } from 'src/utils/utils-helper';
-import { toastError, toastSuccess } from 'src/utils/utils-notify';
+import { toastSuccess } from 'src/utils/utils-notify';
 import { createValidator } from 'src/utils/utils-validator';
 
 interface IDataForm {
@@ -37,6 +37,7 @@ const SignUpPage: FC = () => {
 
   const [dataForm, setDataForm] = useState<IDataForm>(initDataSignUp);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
+  const [errorMessage, setErrorMessage] = useState<string>('');
   const [openModalResendEmail, setOpenModalResendEmail] =
     useState<boolean>(false);
   const [userId, setUserId] = useState<string>('');
@@ -49,7 +50,10 @@ const SignUpPage: FC = () => {
   useEffect(() => {
     const isDisabled = !validator.current.allValid();
     setIsDisableSubmit(isDisabled);
-  }, [dataForm]);
+    if (errorMessage) {
+      validator.current.showMessages();
+    }
+  }, [dataForm, errorMessage]);
 
   const onSignUp = async () => {
     try {
@@ -58,7 +62,7 @@ const SignUpPage: FC = () => {
       setOpenModalResendEmail(true);
     } catch (e) {
       setRecaptchaToRequest(null);
-      toastError({ message: getErrorMessage(e) });
+      setErrorMessage(getErrorMessage(e));
     }
   };
 
@@ -123,16 +127,22 @@ const SignUpPage: FC = () => {
             <AppField label={'Email'}>
               <AppInput
                 value={dataForm.email}
-                onChange={(e) =>
+                onChange={(e) => {
+                  setErrorMessage('');
                   setDataForm({
                     ...dataForm,
                     email: e.target.value,
-                  })
-                }
+                  });
+                }}
                 validate={{
                   name: `email`,
                   validator: validator.current,
-                  rule: ['required', 'email', 'max:100'],
+                  rule: [
+                    'required',
+                    'email',
+                    'max:100',
+                    `hasErrorMessage:${errorMessage}`,
+                  ],
                 }}
               />
             </AppField>

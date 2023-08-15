@@ -47,6 +47,7 @@ type CustomRule =
   | 'isDecimnals'
   | 'maxDigits'
   | 'isSame'
+  | 'hasErrorMessage'
   | 'isAddress'
   | 'maxCountIds'
   | 'isIds'
@@ -109,6 +110,15 @@ export const createValidator = (options?: IOptions | undefined) => {
         message: 'The value must be same password',
         rule: (value: string, params: string) => {
           return value === params[0];
+        },
+      },
+      hasErrorMessage: {
+        message: '',
+        rule: (value: string, params: string) => {
+          return !params[0];
+        },
+        messageReplace: (message: string, params: string) => {
+          return message.replace('', params);
         },
       },
       isAddress: {

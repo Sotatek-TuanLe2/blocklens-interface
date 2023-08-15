@@ -13,6 +13,7 @@ import rf from 'src/requests/RequestFactory';
 import 'src/styles/pages/LoginPage.scss';
 import { ROUTES } from 'src/utils/common';
 import { setRecaptchaToRequest } from 'src/utils/utils-auth';
+import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import { createValidator } from 'src/utils/utils-validator';
 
@@ -27,9 +28,9 @@ const ForgotPasswordPage: FC = () => {
 
   const [dataForm, setDataForm] = useState<IDataForm>(initDataRestPassword);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
-  const [hiddenErrorText, setHiddenErrorText] = useState(false);
   const [openModalResendEmail, setOpenModalResendEmail] =
     useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
   const validator = useRef(
     createValidator({
@@ -47,16 +48,17 @@ const ForgotPasswordPage: FC = () => {
       setOpenModalResendEmail(true);
     } catch (error: any) {
       setRecaptchaToRequest(null);
-      toastError({
-        message: `${error.message || 'Oops. Something went wrong!'}`,
-      });
+      setErrorMessage(getErrorMessage(error));
     }
   };
 
   useEffect(() => {
     const isDisabled = !validator.current.allValid();
     setIsDisableSubmit(isDisabled);
-  }, [dataForm]);
+    if (errorMessage) {
+      validator.current.showMessages();
+    }
+  }, [dataForm, errorMessage]);
 
   return (
     <GuestPage>
@@ -74,11 +76,9 @@ const ForgotPasswordPage: FC = () => {
           <Box mt={5}>
             <AppField label={'Email'}>
               <AppInput
-                hiddenErrorText={hiddenErrorText}
                 value={dataForm.email}
                 onChange={(e) => {
-                  setHiddenErrorText(false);
-
+                  setErrorMessage('');
                   setDataForm({
                     ...dataForm,
                     email: e.target.value,
@@ -87,7 +87,11 @@ const ForgotPasswordPage: FC = () => {
                 validate={{
                   name: `email`,
                   validator: validator.current,
-                  rule: 'required|email',
+                  rule: [
+                    'required',
+                    'email',
+                    `hasErrorMessage:${errorMessage}`,
+                  ],
                 }}
               />
             </AppField>
