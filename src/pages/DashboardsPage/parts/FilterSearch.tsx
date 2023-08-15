@@ -255,14 +255,10 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   };
 
   const _generatePlaceHolder = () => {
-    switch (type) {
-      case LIST_ITEM_TYPE.DASHBOARDS:
-        return 'Search #hastag or dashboard name';
-      case LIST_ITEM_TYPE.QUERIES:
-        return 'Search #hastag or query name';
-      default:
-        return 'Search #hastag, dashboard or query';
+    if (itemType === LIST_ITEM_TYPE.DASHBOARDS) {
+      return 'Search #hastag or dashboard name';
     }
+    return 'Search #hastag or query name';
   };
 
   const _renderSuggestTags = () => {
