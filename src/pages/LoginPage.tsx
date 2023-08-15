@@ -36,7 +36,7 @@ const LoginPage: FC = () => {
   const { goToOriginPath } = useOriginPath();
 
   const [dataForm, setDataForm] = useState<IDataForm>(initDataLogin);
-  const [msgError, setMsgError] = useState<string>('');
+  const [errorMessage, setErrorMessage] = useState<string>('');
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
 
   const validator = useRef(
@@ -48,10 +48,10 @@ const LoginPage: FC = () => {
   useEffect(() => {
     const isDisabled = !validator.current.allValid();
     setIsDisableSubmit(isDisabled);
-    if (isDisabled) {
+    if (errorMessage) {
       validator.current.showMessages();
     }
-  }, [dataForm, msgError]);
+  }, [dataForm, errorMessage]);
 
   const onLogin = async () => {
     try {
@@ -63,7 +63,7 @@ const LoginPage: FC = () => {
       }
     } catch (e) {
       setRecaptchaToRequest(null);
-      setMsgError(getErrorMessage(e));
+      setErrorMessage(getErrorMessage(e));
     }
   };
 
@@ -88,7 +88,7 @@ const LoginPage: FC = () => {
               <AppInput
                 value={dataForm.email}
                 onChange={(e) => {
-                  setMsgError('');
+                  setErrorMessage('');
                   setDataForm({
                     ...dataForm,
                     email: e.target.value.trim(),
@@ -101,7 +101,7 @@ const LoginPage: FC = () => {
                     'required',
                     'email',
                     'max:100',
-                    `hasErrorMessage:${msgError}`,
+                    `hasErrorMessage:${errorMessage}`,
                   ],
                 }}
               />
@@ -112,7 +112,7 @@ const LoginPage: FC = () => {
                 type="password"
                 value={dataForm.password}
                 onChange={(e) => {
-                  setMsgError('');
+                  setErrorMessage('');
                   setDataForm({
                     ...dataForm,
                     password: e.target.value,

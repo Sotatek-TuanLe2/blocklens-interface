@@ -28,10 +28,9 @@ const ForgotPasswordPage: FC = () => {
 
   const [dataForm, setDataForm] = useState<IDataForm>(initDataRestPassword);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
-  const [hiddenErrorText, setHiddenErrorText] = useState(false);
   const [openModalResendEmail, setOpenModalResendEmail] =
     useState<boolean>(false);
-  const [msgError, setMsgError] = useState<string>('');
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
   const validator = useRef(
     createValidator({
@@ -49,17 +48,17 @@ const ForgotPasswordPage: FC = () => {
       setOpenModalResendEmail(true);
     } catch (error: any) {
       setRecaptchaToRequest(null);
-      setMsgError(getErrorMessage(error));
+      setErrorMessage(getErrorMessage(error));
     }
   };
 
   useEffect(() => {
     const isDisabled = !validator.current.allValid();
     setIsDisableSubmit(isDisabled);
-    if (isDisabled) {
+    if (errorMessage) {
       validator.current.showMessages();
     }
-  }, [dataForm]);
+  }, [dataForm, errorMessage]);
 
   return (
     <GuestPage>
@@ -77,11 +76,9 @@ const ForgotPasswordPage: FC = () => {
           <Box mt={5}>
             <AppField label={'Email'}>
               <AppInput
-                hiddenErrorText={hiddenErrorText}
                 value={dataForm.email}
                 onChange={(e) => {
-                  setHiddenErrorText(false);
-
+                  setErrorMessage('');
                   setDataForm({
                     ...dataForm,
                     email: e.target.value,
@@ -90,7 +87,11 @@ const ForgotPasswordPage: FC = () => {
                 validate={{
                   name: `email`,
                   validator: validator.current,
-                  rule: ['required', 'email', `hasErrorMessage:${msgError}`],
+                  rule: [
+                    'required',
+                    'email',
+                    `hasErrorMessage:${errorMessage}`,
+                  ],
                 }}
               />
             </AppField>

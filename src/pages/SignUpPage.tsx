@@ -37,7 +37,7 @@ const SignUpPage: FC = () => {
 
   const [dataForm, setDataForm] = useState<IDataForm>(initDataSignUp);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
-  const [msgError, setMsgError] = useState<string>('');
+  const [errorMessage, setErrorMessage] = useState<string>('');
   const [openModalResendEmail, setOpenModalResendEmail] =
     useState<boolean>(false);
   const [userId, setUserId] = useState<string>('');
@@ -50,10 +50,10 @@ const SignUpPage: FC = () => {
   useEffect(() => {
     const isDisabled = !validator.current.allValid();
     setIsDisableSubmit(isDisabled);
-    if (isDisabled) {
+    if (errorMessage) {
       validator.current.showMessages();
     }
-  }, [dataForm, msgError]);
+  }, [dataForm, errorMessage]);
 
   const onSignUp = async () => {
     try {
@@ -62,7 +62,7 @@ const SignUpPage: FC = () => {
       setOpenModalResendEmail(true);
     } catch (e) {
       setRecaptchaToRequest(null);
-      setMsgError(getErrorMessage(e));
+      setErrorMessage(getErrorMessage(e));
     }
   };
 
@@ -128,7 +128,7 @@ const SignUpPage: FC = () => {
               <AppInput
                 value={dataForm.email}
                 onChange={(e) => {
-                  setMsgError('');
+                  setErrorMessage('');
                   setDataForm({
                     ...dataForm,
                     email: e.target.value,
@@ -141,7 +141,7 @@ const SignUpPage: FC = () => {
                     'required',
                     'email',
                     'max:100',
-                    `hasErrorMessage:${msgError}`,
+                    `hasErrorMessage:${errorMessage}`,
                   ],
                 }}
               />
