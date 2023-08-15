@@ -236,7 +236,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
     const historyTags = Storage.getSavedTagHistory(isDashboard);
     Storage.setSavedTagHistory(
       isDashboard,
-      Array.from(new Set([...historyTags, value])),
+      Array.from(new Set([value, ...historyTags])),
     );
     searchParams.delete(HOME_URL_PARAMS.TAG);
     searchParams.set(HOME_URL_PARAMS.TAG, `${value}`);
