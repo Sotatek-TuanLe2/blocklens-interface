@@ -13,6 +13,7 @@ import rf from 'src/requests/RequestFactory';
 import 'src/styles/pages/LoginPage.scss';
 import { ROUTES } from 'src/utils/common';
 import { setRecaptchaToRequest } from 'src/utils/utils-auth';
+import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 import { createValidator } from 'src/utils/utils-validator';
 
@@ -30,6 +31,7 @@ const ForgotPasswordPage: FC = () => {
   const [hiddenErrorText, setHiddenErrorText] = useState(false);
   const [openModalResendEmail, setOpenModalResendEmail] =
     useState<boolean>(false);
+  const [msgError, setMsgError] = useState<string>('');
 
   const validator = useRef(
     createValidator({
@@ -47,15 +49,16 @@ const ForgotPasswordPage: FC = () => {
       setOpenModalResendEmail(true);
     } catch (error: any) {
       setRecaptchaToRequest(null);
-      toastError({
-        message: `${error.message || 'Oops. Something went wrong!'}`,
-      });
+      setMsgError(getErrorMessage(error));
     }
   };
 
   useEffect(() => {
     const isDisabled = !validator.current.allValid();
     setIsDisableSubmit(isDisabled);
+    if (isDisabled) {
+      validator.current.showMessages();
+    }
   }, [dataForm]);
 
   return (
@@ -87,7 +90,7 @@ const ForgotPasswordPage: FC = () => {
                 validate={{
                   name: `email`,
                   validator: validator.current,
-                  rule: 'required|email',
+                  rule: ['required', 'email', `hasErrorMessage:${msgError}`],
                 }}
               />
             </AppField>

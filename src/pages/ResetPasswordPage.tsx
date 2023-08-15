@@ -76,6 +76,9 @@ const ResetPasswordPage: FC = () => {
   useEffect(() => {
     const isDisabled = !validator.current.allValid();
     setIsDisableSubmit(isDisabled);
+    if (isDisabled) {
+      validator.current.showMessages();
+    }
   }, [dataForm, msgError]);
 
   return (
