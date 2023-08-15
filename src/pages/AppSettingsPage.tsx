@@ -11,7 +11,6 @@ import {
   AppTextarea,
 } from 'src/components';
 import { BasePage } from 'src/layouts';
-import ModalChangeStatusApp from 'src/modals/ModalChangeStatusApp';
 import ModalDeleteApp from 'src/modals/ModalDeleteApp';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/pages/AppDetail.scss';
