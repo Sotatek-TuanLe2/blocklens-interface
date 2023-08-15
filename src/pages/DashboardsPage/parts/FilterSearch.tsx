@@ -262,16 +262,20 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   };
 
   const _renderSuggestTags = () => {
-    const suggestTagList = tagSearch
+    const suggestTagList = !!tagSearch
       ? suggestTags
       : Storage.getSavedTagHistory(isDashboard).slice(0, SUGGEST_TAGS_LIMIT);
 
-    if (!suggestTagList.length) {
+    if (!!tagSearch && !suggestTagList.length) {
       return (
         <Box className="dashboard-filter__search__search-box" ref={ref}>
           <Text className="no-result">No matching result</Text>
         </Box>
       );
+    }
+
+    if (!suggestTagList.length) {
+      return null;
     }
 
     const onClickTag =
