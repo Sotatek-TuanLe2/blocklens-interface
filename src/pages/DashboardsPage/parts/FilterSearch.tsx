@@ -212,6 +212,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   const onChangeTag = (value: string) => {
     const currentTag = searchParams.get(HOME_URL_PARAMS.TAG);
     searchParams.delete(HOME_URL_PARAMS.TAG);
+    searchParams.delete(HOME_URL_PARAMS.SEARCH);
     if (currentTag !== value) {
       searchParams.set(HOME_URL_PARAMS.TAG, value);
     }
@@ -226,28 +227,6 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
     if (value !== ITEM_TYPE.DASHBOARDS) {
       searchParams.set(HOME_URL_PARAMS.ITEM_TYPE, value);
     }
-    history.push({
-      pathname: ROUTES.HOME,
-      search: `${searchParams.toString()}`,
-    });
-  };
-
-  const onSelectedTag = (value: string) => {
-    const historyTags = Storage.getSavedTagHistory(isDashboard);
-    Storage.setSavedTagHistory(
-      isDashboard,
-      Array.from(new Set([value, ...historyTags])),
-    );
-    searchParams.delete(HOME_URL_PARAMS.TAG);
-    searchParams.set(HOME_URL_PARAMS.TAG, `${value}`);
-    history.push({
-      pathname: ROUTES.HOME,
-      search: `${searchParams.toString()}`,
-    });
-  };
-
-  const onClearTag = () => {
-    searchParams.delete(HOME_URL_PARAMS.TAG);
     history.push({
       pathname: ROUTES.HOME,
       search: `${searchParams.toString()}`,
@@ -281,10 +260,15 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
     const onClickTag =
       (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => (tag: string) => {
         e.preventDefault();
-        onSelectedTag(tag);
         setTagSearch('');
         setInputSearch('');
         setIsOpenSuggestTags(false);
+        onChangeTag(tag);
+        const historyTags = Storage.getSavedTagHistory(isDashboard);
+        Storage.setSavedTagHistory(
+          isDashboard,
+          Array.from(new Set([tag, ...historyTags])),
+        );
       };
 
     return (
@@ -301,6 +285,36 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
           </Flex>
         ))}
       </Box>
+    );
+  };
+
+  const _renderSearchInput = () => {
+    if (!!tag) {
+      return (
+        <Box className="dashboard-filter__search__input dashboard-filter__search__input--tag">
+          <AppTag
+            value={tag}
+            variant="sm"
+            closable
+            onClose={() => onChangeTag(tag)}
+          />
+        </Box>
+      );
+    }
+
+    return (
+      <>
+        <AppInput
+          className="dashboard-filter__search__input"
+          placeholder={_generatePlaceHolder()}
+          value={inputSearch}
+          variant="searchFilter"
+          isSearch
+          onChange={onChangeSearch}
+          onClick={onClickSearch}
+        />
+        {isOpenSuggestTags && _renderSuggestTags()}
+      </>
     );
   };
 
@@ -382,16 +396,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
             pt={{ base: '22px', lg: '20px' }}
           >
             <Box flexGrow={1} mb={{ base: 5, lg: 0 }} position="relative">
-              <AppInput
-                className="dashboard-filter__search__input"
-                placeholder={_generatePlaceHolder()}
-                value={inputSearch}
-                variant="searchFilter"
-                isSearch
-                onChange={onChangeSearch}
-                onClick={onClickSearch}
-              />
-              {isOpenSuggestTags && _renderSuggestTags()}
+              {_renderSearchInput()}
               <Flex mt={'14px'}>
                 {listTagsTrending
                   .slice(0, MAX_TRENDING_TAGS)
@@ -408,15 +413,6 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
                       borderRadius={'6px'}
                     />
                   ))}
-                {!!tag && (
-                  <AppButton
-                    variant="action"
-                    className="dashboard-filter__search__clear-tag"
-                    onClick={onClearTag}
-                  >
-                    Clear tag
-                  </AppButton>
-                )}
               </Flex>
             </Box>
 
