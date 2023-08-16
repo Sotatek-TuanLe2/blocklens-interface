@@ -1,4 +1,5 @@
 @import '../color-variables.scss';
+@import '../mixins';
 
 .app-tag {
   background: #242b45;
@@ -33,6 +34,15 @@
   &--selected {
     color: $title;
     border: 1px solid #1878ff;
+  }
+
+  &--closable {
+    @include flex-items-center;
+    justify-content: space-between;
+  }
+
+  &__close-button {
+    margin-left: 4px;
   }
 }
 .app-tag-value {

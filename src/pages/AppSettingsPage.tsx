@@ -11,7 +11,6 @@ import {
   AppTextarea,
 } from 'src/components';
 import { BasePage } from 'src/layouts';
-import ModalChangeStatusApp from 'src/modals/ModalChangeStatusApp';
 import ModalDeleteApp from 'src/modals/ModalDeleteApp';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/pages/AppDetail.scss';
@@ -49,8 +48,6 @@ const AppSettingsPage: FC<IAppSettings> = () => {
   const forceUpdate = useCallback(() => updateState({}), []);
 
   const [isOpenDeleteAppModal, setIsOpenDeleteAppModal] =
-    useState<boolean>(false);
-  const [isOpenChangeStatusAppModal, setIsOpenChangeStatusAppModal] =
     useState<boolean>(false);
 
   const isActive = useMemo(
@@ -208,26 +205,12 @@ const AppSettingsPage: FC<IAppSettings> = () => {
                 <Box>{isActive ? 'ACTIVE' : 'INACTIVE'}</Box>
               </Flex>
             </Flex>
-
-            <AppButtonLarge onClick={() => setIsOpenChangeStatusAppModal(true)}>
-              {isActive ? 'Deactivate' : 'Activate'}
-            </AppButtonLarge>
           </Flex>
         </AppCard>
-
         {isOpenDeleteAppModal && (
           <ModalDeleteApp
             open={isOpenDeleteAppModal}
             onClose={() => setIsOpenDeleteAppModal(false)}
-            appInfo={appInfo}
-          />
-        )}
-
-        {isOpenChangeStatusAppModal && (
-          <ModalChangeStatusApp
-            open={isOpenChangeStatusAppModal}
-            onClose={() => setIsOpenChangeStatusAppModal(false)}
-            reloadData={getAppInfo}
             appInfo={appInfo}
           />
         )}

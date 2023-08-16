@@ -1,7 +1,6 @@
 import { Flex, Text } from '@chakra-ui/react';
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { AppButton, AppField, AppInput } from 'src/components';
-import useRecaptcha from 'src/hooks/useRecaptcha';
 import { TYPE_MODAL } from 'src/pages/WorkspacePage/parts/Dashboard';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/BaseModal.scss';
@@ -38,7 +37,6 @@ const ModalDashboard: React.FC<IModelNewDashboard> = ({
     name: defaultValue.name || '',
     tags: defaultValue.tags?.join(', ') || '',
   };
-  const { getAndSetRecaptcha } = useRecaptcha();
 
   const [dataForm, setDataForm] =
     useState<IDataSettingForm>(initDataFormSetting);
@@ -65,7 +63,6 @@ const ModalDashboard: React.FC<IModelNewDashboard> = ({
 
   const handleSubmitForm = async () => {
     try {
-      await getAndSetRecaptcha();
       let result;
       setIsDisableSubmit(true);
       const submitData: { name: string; tags: string[] } = {

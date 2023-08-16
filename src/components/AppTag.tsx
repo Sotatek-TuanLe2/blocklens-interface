@@ -1,4 +1,4 @@
-import { Box, BoxProps, Text, Tooltip } from '@chakra-ui/react';
+import { Box, BoxProps, TagCloseButton, Text, Tooltip } from '@chakra-ui/react';
 import 'src/styles/components/AppTag.scss';
 
 interface ITag extends Omit<BoxProps, 'onClick'> {
@@ -7,6 +7,8 @@ interface ITag extends Omit<BoxProps, 'onClick'> {
   selected?: boolean;
   onClick?: (value: string) => void;
   classNames?: string;
+  closable?: boolean;
+  onClose?: (value: string) => void;
 }
 
 const AppTag: React.FC<ITag> = (props) => {
@@ -16,12 +18,21 @@ const AppTag: React.FC<ITag> = (props) => {
     selected = false,
     onClick,
     classNames,
+    closable = false,
+    onClose,
     ...otherProps
   } = props;
 
   const onClickTag = () => {
     if (onClick) {
       onClick(value);
+    }
+    return;
+  };
+
+  const onCloseTag = () => {
+    if (onClose) {
+      onClose(value);
     }
     return;
   };
@@ -33,11 +44,17 @@ const AppTag: React.FC<ITag> = (props) => {
           onClick ? 'app-tag--clickable' : ''
         } ${selected ? 'app-tag--selected' : ''} ${
           classNames ? classNames : ''
-        }`}
+        } ${closable ? 'app-tag--closable' : ''}`}
         onClick={onClickTag}
         {...otherProps}
       >
         <Text className={'app-tag-value'}>#{value}</Text>
+        {closable && (
+          <TagCloseButton
+            className="app-tag__close-button"
+            onClick={onCloseTag}
+          />
+        )}
       </Box>
     </Tooltip>
   );

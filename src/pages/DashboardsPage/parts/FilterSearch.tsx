@@ -49,7 +49,8 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   const { user } = useUser();
   const ref = useRef<any>(null);
 
-  const isDashboard = type === LIST_ITEM_TYPE.DASHBOARDS;
+  const isDashboardTab = type === LIST_ITEM_TYPE.DASHBOARDS;
+  const isDashboard = itemType === ITEM_TYPE.DASHBOARDS;
   const hasTypeSelection =
     type === LIST_ITEM_TYPE.MYWORK || type === LIST_ITEM_TYPE.SAVED;
   const { search: searchUrl } = useLocation();
@@ -105,7 +106,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   }, [searchUrl]);
 
   useEffect(() => {
-    setDisplayed(isDashboard ? DisplayType.Grid : DisplayType.List);
+    setDisplayed(isDashboardTab ? DisplayType.Grid : DisplayType.List);
   }, [type]);
 
   useEffect(() => {
@@ -124,10 +125,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
 
   const fetchTrendingTags = async () => {
     try {
-      if (
-        isDashboard ||
-        (hasTypeSelection && itemType === LIST_ITEM_TYPE.DASHBOARDS)
-      ) {
+      if (isDashboardTab || (hasTypeSelection && isDashboard)) {
         const res: any = await rf
           .getRequest('DashboardsRequest')
           .getPublicDashboardTagsTrending();
@@ -159,7 +157,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
           .getRequest('DashboardsRequest')
           .getQueryTags({ search: tagSearch, limit: SUGGEST_TAGS_LIMIT });
     if (res && res.data) {
-      setSuggestTags(res.data.reverse());
+      setSuggestTags(res.data);
       setIsOpenSuggestTags(true);
     }
   };
@@ -212,6 +210,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   const onChangeTag = (value: string) => {
     const currentTag = searchParams.get(HOME_URL_PARAMS.TAG);
     searchParams.delete(HOME_URL_PARAMS.TAG);
+    searchParams.delete(HOME_URL_PARAMS.SEARCH);
     if (currentTag !== value) {
       searchParams.set(HOME_URL_PARAMS.TAG, value);
     }
@@ -223,6 +222,9 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
 
   const onChangeItemType = (value: string) => {
     searchParams.delete(HOME_URL_PARAMS.ITEM_TYPE);
+    searchParams.delete(HOME_URL_PARAMS.SEARCH);
+    searchParams.delete(HOME_URL_PARAMS.ORDERBY);
+    searchParams.delete(HOME_URL_PARAMS.TAG);
     if (value !== ITEM_TYPE.DASHBOARDS) {
       searchParams.set(HOME_URL_PARAMS.ITEM_TYPE, value);
     }
@@ -232,45 +234,19 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
     });
   };
 
-  const onSelectedTag = (value: string) => {
-    const historyTags = Storage.getSavedTagHistory(isDashboard);
-    Storage.setSavedTagHistory(
-      isDashboard,
-      Array.from(new Set([...historyTags, value])),
-    );
-    searchParams.delete(HOME_URL_PARAMS.TAG);
-    searchParams.set(HOME_URL_PARAMS.TAG, `${value}`);
-    history.push({
-      pathname: ROUTES.HOME,
-      search: `${searchParams.toString()}`,
-    });
-  };
-
-  const onClearTag = () => {
-    searchParams.delete(HOME_URL_PARAMS.TAG);
-    history.push({
-      pathname: ROUTES.HOME,
-      search: `${searchParams.toString()}`,
-    });
-  };
-
   const _generatePlaceHolder = () => {
-    switch (type) {
-      case LIST_ITEM_TYPE.DASHBOARDS:
-        return 'Search #hastag or dashboard name';
-      case LIST_ITEM_TYPE.QUERIES:
-        return 'Search #hastag or query name';
-      default:
-        return 'Search #hastag, dashboard or query';
+    if (isDashboard) {
+      return 'Search #hastag or dashboard name';
     }
+    return 'Search #hastag or query name';
   };
 
   const _renderSuggestTags = () => {
-    const suggestTagList = tagSearch
+    const suggestTagList = !!tagSearch
       ? suggestTags
       : Storage.getSavedTagHistory(isDashboard).slice(0, SUGGEST_TAGS_LIMIT);
 
-    if (!suggestTagList.length) {
+    if (!!tagSearch && !suggestTagList.length) {
       return (
         <Box className="dashboard-filter__search__search-box" ref={ref}>
           <Text className="no-result">No matching result</Text>
@@ -278,13 +254,22 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
       );
     }
 
+    if (!suggestTagList.length) {
+      return null;
+    }
+
     const onClickTag =
       (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => (tag: string) => {
         e.preventDefault();
-        onSelectedTag(tag);
         setTagSearch('');
         setInputSearch('');
         setIsOpenSuggestTags(false);
+        onChangeTag(tag);
+        const historyTags = Storage.getSavedTagHistory(isDashboard);
+        Storage.setSavedTagHistory(
+          isDashboard,
+          Array.from(new Set([tag, ...historyTags])),
+        );
       };
 
     return (
@@ -297,10 +282,40 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
             onClick={(e) => onClickTag(e)(tag)}
             className="dashboard-filter__search__search-box--item"
           >
-            {search === '' && tag === '' && <IconEye />} <Text>#{tag}</Text>
+            {!tagSearch && <IconEye />} <Text>#{tag}</Text>
           </Flex>
         ))}
       </Box>
+    );
+  };
+
+  const _renderSearchInput = () => {
+    if (!!tag) {
+      return (
+        <Box className="dashboard-filter__search__input dashboard-filter__search__input--tag">
+          <AppTag
+            value={tag}
+            variant="sm"
+            closable
+            onClose={() => onChangeTag(tag)}
+          />
+        </Box>
+      );
+    }
+
+    return (
+      <>
+        <AppInput
+          className="dashboard-filter__search__input"
+          placeholder={_generatePlaceHolder()}
+          value={inputSearch}
+          variant="searchFilter"
+          isSearch
+          onChange={onChangeSearch}
+          onClick={onClickSearch}
+        />
+        {isOpenSuggestTags && _renderSuggestTags()}
+      </>
     );
   };
 
@@ -308,7 +323,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
     <>
       <Flex align={'center'}>
         <Flex align={'center'} flexGrow={1}>
-          {isDashboard && (
+          {isDashboardTab && (
             <Flex flexGrow={{ base: 1, lg: 0 }}>
               <AppMenu
                 data={menuGridList}
@@ -331,7 +346,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
           <Flex
             flexGrow={{ base: 1, lg: 0 }}
             transition={'.2s linear'}
-            ml={!isDashboard && !hasTypeSelection ? 0 : 2.5}
+            ml={!isDashboardTab && !hasTypeSelection ? 0 : 2.5}
             onClick={onToggle}
             userSelect={'none'}
             className="filter"
@@ -382,16 +397,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
             pt={{ base: '22px', lg: '20px' }}
           >
             <Box flexGrow={1} mb={{ base: 5, lg: 0 }} position="relative">
-              <AppInput
-                className="dashboard-filter__search__input"
-                placeholder={_generatePlaceHolder()}
-                value={inputSearch}
-                variant="searchFilter"
-                isSearch
-                onChange={onChangeSearch}
-                onClick={onClickSearch}
-              />
-              {isOpenSuggestTags && _renderSuggestTags()}
+              {_renderSearchInput()}
               <Flex mt={'14px'}>
                 {listTagsTrending
                   .slice(0, MAX_TRENDING_TAGS)
@@ -408,15 +414,6 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
                       borderRadius={'6px'}
                     />
                   ))}
-                {!!tag && (
-                  <AppButton
-                    variant="action"
-                    className="dashboard-filter__search__clear-tag"
-                    onClick={onClearTag}
-                  >
-                    Clear tag
-                  </AppButton>
-                )}
               </Flex>
             </Box>
 

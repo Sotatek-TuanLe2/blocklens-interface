@@ -8,14 +8,14 @@ import {
   AppLink,
   GoogleAuthButton,
 } from 'src/components';
-import useRecaptcha from 'src/hooks/useRecaptcha';
 import GuestPage from 'src/layouts/GuestPage';
 import ModalResendMail from 'src/modals/ModalResendMail';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/pages/LoginPage.scss';
 import { ROUTES } from 'src/utils/common';
+import { setRecaptchaToRequest } from 'src/utils/utils-auth';
 import { getErrorMessage } from 'src/utils/utils-helper';
-import { toastError, toastSuccess } from 'src/utils/utils-notify';
+import { toastSuccess } from 'src/utils/utils-notify';
 import { createValidator } from 'src/utils/utils-validator';
 
 interface IDataForm {
@@ -34,10 +34,10 @@ const SignUpPage: FC = () => {
     password: '',
     confirmPassword: '',
   };
-  const { getAndSetRecaptcha, resetRecaptcha } = useRecaptcha();
 
   const [dataForm, setDataForm] = useState<IDataForm>(initDataSignUp);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
+  const [errorMessage, setErrorMessage] = useState<string>('');
   const [openModalResendEmail, setOpenModalResendEmail] =
     useState<boolean>(false);
   const [userId, setUserId] = useState<string>('');
@@ -50,17 +50,19 @@ const SignUpPage: FC = () => {
   useEffect(() => {
     const isDisabled = !validator.current.allValid();
     setIsDisableSubmit(isDisabled);
-  }, [dataForm]);
+    if (errorMessage) {
+      validator.current.showMessages();
+    }
+  }, [dataForm, errorMessage]);
 
   const onSignUp = async () => {
     try {
-      await getAndSetRecaptcha();
       const res = await rf.getRequest('AuthRequest').signUp(dataForm);
       setUserId(res?.userId || '');
       setOpenModalResendEmail(true);
     } catch (e) {
-      resetRecaptcha();
-      toastError({ message: getErrorMessage(e) });
+      setRecaptchaToRequest(null);
+      setErrorMessage(getErrorMessage(e));
     }
   };
 
@@ -125,16 +127,22 @@ const SignUpPage: FC = () => {
             <AppField label={'Email'}>
               <AppInput
                 value={dataForm.email}
-                onChange={(e) =>
+                onChange={(e) => {
+                  setErrorMessage('');
                   setDataForm({
                     ...dataForm,
                     email: e.target.value,
-                  })
-                }
+                  });
+                }}
                 validate={{
                   name: `email`,
                   validator: validator.current,
-                  rule: ['required', 'email', 'max:100'],
+                  rule: [
+                    'required',
+                    'email',
+                    'max:100',
+                    `hasErrorMessage:${errorMessage}`,
+                  ],
                 }}
               />
             </AppField>

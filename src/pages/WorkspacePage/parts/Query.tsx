@@ -28,7 +28,6 @@ import ModalQuery from 'src/modals/querySQL/ModalQuery';
 import { Query } from 'src/utils/utils-query';
 import { AddChartIcon, QueryResultIcon } from 'src/assets/icons';
 import { STATUS } from 'src/utils/utils-webhook';
-import useRecaptcha from 'src/hooks/useRecaptcha';
 import useOriginPath from 'src/hooks/useOriginPath';
 import { isMobile } from 'react-device-detect';
 
@@ -38,7 +37,6 @@ export const BROADCAST_ADD_TO_EDITOR = 'ADD_TO_EDITOR';
 const QueryPart: React.FC = () => {
   const { queryId } = useParams<{ queryId: string }>();
   const { goWithOriginPath } = useOriginPath();
-  const { getAndSetRecaptcha } = useRecaptcha();
 
   const DEBOUNCE_TIME = 500;
   const editorRef = useRef<any>();
@@ -124,6 +122,7 @@ const QueryPart: React.FC = () => {
       const executionId = await executeQuery(queryId);
       await fetchQueryResult(executionId);
     } catch (error: any) {
+      console.error(error);
       setIsLoadingQuery(false);
       setIsLoadingResult(false);
       toastError({ message: getErrorMessage(error) });
@@ -150,7 +149,6 @@ const QueryPart: React.FC = () => {
   };
 
   const executeQuery = async (queryId: string): Promise<string> => {
-    await getAndSetRecaptcha();
     const executedResponse: QueryExecutedResponse = await rf
       .getRequest('DashboardsRequest')
       .executeQuery(queryId);

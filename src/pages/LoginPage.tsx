@@ -14,12 +14,12 @@ import { createValidator } from 'src/utils/utils-validator';
 import 'src/styles/pages/LoginPage.scss';
 import { useDispatch } from 'react-redux';
 import rf from 'src/requests/RequestFactory';
-import { toastError, toastSuccess } from 'src/utils/utils-notify';
+import { toastSuccess } from 'src/utils/utils-notify';
 import { setUserAuth } from '../store/user';
 import { ROUTES } from 'src/utils/common';
 import { getErrorMessage } from 'src/utils/utils-helper';
-import useRecaptcha, { RECAPTCHA_ACTIONS } from 'src/hooks/useRecaptcha';
 import useOriginPath from 'src/hooks/useOriginPath';
+import { setRecaptchaToRequest } from 'src/utils/utils-auth';
 
 interface IDataForm {
   email: string;
@@ -34,11 +34,9 @@ const LoginPage: FC = () => {
 
   const dispatch = useDispatch();
   const { goToOriginPath } = useOriginPath();
-  const { getAndSetRecaptcha, resetRecaptcha } = useRecaptcha(
-    RECAPTCHA_ACTIONS.LOGIN,
-  );
 
   const [dataForm, setDataForm] = useState<IDataForm>(initDataLogin);
+  const [errorMessage, setErrorMessage] = useState<string>('');
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
 
   const validator = useRef(
@@ -50,11 +48,13 @@ const LoginPage: FC = () => {
   useEffect(() => {
     const isDisabled = !validator.current.allValid();
     setIsDisableSubmit(isDisabled);
-  }, [dataForm]);
+    if (errorMessage) {
+      validator.current.showMessages();
+    }
+  }, [dataForm, errorMessage]);
 
   const onLogin = async () => {
     try {
-      await getAndSetRecaptcha();
       const res = await rf.getRequest('AuthRequest').login(dataForm);
       if (res) {
         dispatch(setUserAuth(res));
@@ -62,8 +62,8 @@ const LoginPage: FC = () => {
         goToOriginPath();
       }
     } catch (e) {
-      resetRecaptcha();
-      toastError({ message: getErrorMessage(e) });
+      setRecaptchaToRequest(null);
+      setErrorMessage(getErrorMessage(e));
     }
   };
 
@@ -87,16 +87,22 @@ const LoginPage: FC = () => {
             <AppField label={'Email'}>
               <AppInput
                 value={dataForm.email}
-                onChange={(e) =>
+                onChange={(e) => {
+                  setErrorMessage('');
                   setDataForm({
                     ...dataForm,
                     email: e.target.value.trim(),
-                  })
-                }
+                  });
+                }}
                 validate={{
                   name: `email`,
                   validator: validator.current,
-                  rule: 'required|email|max:100',
+                  rule: [
+                    'required',
+                    'email',
+                    'max:100',
+                    `hasErrorMessage:${errorMessage}`,
+                  ],
                 }}
               />
             </AppField>
@@ -105,12 +111,13 @@ const LoginPage: FC = () => {
               <AppInput
                 type="password"
                 value={dataForm.password}
-                onChange={(e) =>
+                onChange={(e) => {
+                  setErrorMessage('');
                   setDataForm({
                     ...dataForm,
                     password: e.target.value,
-                  })
-                }
+                  });
+                }}
                 placeholder={'••••••••'}
                 validate={{
                   name: `password`,

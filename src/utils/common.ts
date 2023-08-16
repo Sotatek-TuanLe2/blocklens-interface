@@ -20,6 +20,13 @@ export const ROUTES = {
   CREATE_WEBHOOK: '/create-webhook-page',
 };
 
+export const RECAPTCHA_ACTIONS = {
+  HOMEPAGE: 'homepage',
+  LOGIN: 'login',
+  SOCIAL: 'social',
+  E_COMMERCE: 'e-commerce',
+};
+
 export interface IListAppResponse {
   pagingCounter?: number;
   offset?: number;

@@ -47,6 +47,7 @@ type CustomRule =
   | 'isDecimnals'
   | 'maxDigits'
   | 'isSame'
+  | 'hasErrorMessage'
   | 'isAddress'
   | 'maxCountIds'
   | 'isIds'
@@ -111,6 +112,15 @@ export const createValidator = (options?: IOptions | undefined) => {
           return value === params[0];
         },
       },
+      hasErrorMessage: {
+        message: '',
+        rule: (value: string, params: string) => {
+          return !params[0];
+        },
+        messageReplace: (message: string, params: string) => {
+          return message.replace('', params);
+        },
+      },
       isAddress: {
         message: 'The value is wrong format address.',
         rule: (value: string) => {
@@ -120,7 +130,7 @@ export const createValidator = (options?: IOptions | undefined) => {
       isAddressAptos: {
         message: 'The value is wrong format address.',
         rule: (value: string) => {
-          const addressPattern = /^0x[a-fA-F0-9]{64}$/;
+          const addressPattern = /^0x[a-fA-F0-9]{62}$/;
           return addressPattern.test(value);
         },
       },
