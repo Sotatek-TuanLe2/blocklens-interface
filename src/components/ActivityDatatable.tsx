@@ -2,19 +2,18 @@ import { Box, Flex, Tbody, Td, Th, Thead, Tooltip, Tr } from '@chakra-ui/react';
 import React, { FC, MouseEvent, useCallback, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import { useHistory, useParams } from 'react-router';
-import { InfoIcon, LinkDetail, LinkIcon } from 'src/assets/icons';
+import { LinkDetail, LinkIcon } from 'src/assets/icons';
 import {
   AppButton,
   AppDataTable,
   AppFilter,
   AppLink,
   AppLoadingTable,
+  RequestParams,
 } from 'src/components';
 import useWebhookDetails from 'src/hooks/useWebhook';
-import rf from 'src/requests/RequestFactory';
 import 'src/styles/pages/AppDetail.scss';
 import { getExplorerTxUrl } from 'src/utils/utils-network';
-import { toastSuccess } from 'src/utils/utils-notify';
 import {
   formatTokenData,
   getColorBrandStatus,
@@ -22,12 +21,10 @@ import {
   IWebhook,
   optionsFilter,
   STATUS,
-  WEBHOOK_STATUS,
   WEBHOOK_TYPES,
 } from 'src/utils/utils-webhook';
 import ModalUpgradeMessage from '../modals/ModalUpgradeMessage';
 import {
-  filterParams,
   formatShortText,
   formatTimestamp,
   shortAddressType,
@@ -458,6 +455,7 @@ interface IActivityDatatable {
   hidePagination?: boolean;
   limit: number;
   setParams?: (params: any) => void;
+  fetchDataTable: (requestParams: RequestParams) => Promise<any>;
 }
 
 const ActivityDatatable: FC<IActivityDatatable> = ({
@@ -466,21 +464,12 @@ const ActivityDatatable: FC<IActivityDatatable> = ({
   setParams,
   limit,
   isFilter,
+  fetchDataTable,
 }) => {
   const { id: webhookId } = useParams<{ id: string }>();
   const [, updateState] = useState<any>();
   const forceUpdate = useCallback(() => updateState({}), []);
   const { webhook } = useWebhookDetails(webhookId);
-
-  const fetchDataTable: any = useCallback(async (params: any) => {
-    try {
-      return await rf
-        .getRequest('NotificationRequest')
-        .getActivities(webhookId, filterParams(params));
-    } catch (error) {
-      console.error(error);
-    }
-  }, []);
 
   const _renderHeader = () => {
     if (isMobile) return;

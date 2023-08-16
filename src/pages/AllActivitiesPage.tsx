@@ -1,5 +1,5 @@
 import { Box, Flex } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useParams } from 'react-router';
 import 'src/styles/pages/AppDetail.scss';
 import { BasePage } from 'src/layouts';
@@ -10,6 +10,8 @@ import ModalFilterActivities from '../modals/ModalFilterActivities';
 import { getLogoChainByChainId } from 'src/utils/utils-network';
 import useWebhookDetails from 'src/hooks/useWebhook';
 import ActivityDatatable from 'src/components/ActivityDatatable';
+import { filterParams } from 'src/utils/utils-helper';
+import rf from 'src/requests/RequestFactory';
 
 const AllActivitiesPage = () => {
   const initParams = {
@@ -24,6 +26,17 @@ const AllActivitiesPage = () => {
   const [params, setParams] = useState<any>(initParams);
   const { webhook } = useWebhookDetails(webhookId);
   const [isOpenFilterModal, setIsOpenFilterModal] = useState<boolean>(false);
+
+  const fetchDataActivity: any = useCallback(async (params: any) => {
+    try {
+      const dataActivities = await rf
+        .getRequest('NotificationRequest')
+        .getActivities(webhookId, filterParams(params));
+      return dataActivities;
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
 
   const _renderBoxFilter = () => {
     if (!isMobile) return <Box p={5} />;
@@ -80,6 +93,7 @@ const AllActivitiesPage = () => {
             setParams={setParams}
             isFilter
             limit={15}
+            fetchDataTable={fetchDataActivity}
           />
 
           {isOpenFilterModal && (
