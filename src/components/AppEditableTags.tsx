@@ -80,9 +80,7 @@ const AddHashtags = ({
 }) => {
   const [value, setValue] = useState<string>();
   const handleSubmit = (nextValue: string) => {
-    const newValue = nextValue.slice(0, 30);
-
-    onSubmit && onSubmit(newValue);
+    onSubmit && onSubmit(nextValue.slice(0, 30));
     setValue('');
   };
   return (
