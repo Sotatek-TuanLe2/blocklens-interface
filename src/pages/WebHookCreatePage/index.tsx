@@ -308,7 +308,9 @@ const WebHookCreatePage: React.FC = () => {
     setTimeout(() => {
       const isDisabled =
         !validator.current.allValid() ||
-        (type === WEBHOOK_TYPES.CONTRACT_ACTIVITY &&
+        ((type === WEBHOOK_TYPES.CONTRACT_ACTIVITY ||
+          type === WEBHOOK_TYPES.TOKEN_ACTIVITY ||
+          type === WEBHOOK_TYPES.NFT_ACTIVITY) &&
           !dataForm.metadata?.abi?.length) ||
         (type === WEBHOOK_TYPES.ADDRESS_ACTIVITY &&
           !dataForm?.metadata?.addresses?.length) ||
