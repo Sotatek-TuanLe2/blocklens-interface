@@ -68,16 +68,6 @@ const Header: FC = () => {
   }, []);
 
   const onSignInRequest = () => {
-    if (
-      location.pathname == ROUTES.RESET_PASSWORD ||
-      location.pathname == ROUTES.LOGIN
-    ) {
-      toastError({
-        message: 'Username or password does not exist',
-      });
-      return;
-    }
-
     if (!isOpenSignInRequestModal) {
       onLogout();
       setIsOpenSignInRequestModal(true);
