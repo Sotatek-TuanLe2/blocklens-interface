@@ -49,7 +49,8 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   const { user } = useUser();
   const ref = useRef<any>(null);
 
-  const isDashboard = type === LIST_ITEM_TYPE.DASHBOARDS;
+  const isDashboardTab = type === LIST_ITEM_TYPE.DASHBOARDS;
+  const isDashboard = itemType === ITEM_TYPE.DASHBOARDS;
   const hasTypeSelection =
     type === LIST_ITEM_TYPE.MYWORK || type === LIST_ITEM_TYPE.SAVED;
   const { search: searchUrl } = useLocation();
@@ -105,7 +106,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   }, [searchUrl]);
 
   useEffect(() => {
-    setDisplayed(isDashboard ? DisplayType.Grid : DisplayType.List);
+    setDisplayed(isDashboardTab ? DisplayType.Grid : DisplayType.List);
   }, [type]);
 
   useEffect(() => {
@@ -124,10 +125,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
 
   const fetchTrendingTags = async () => {
     try {
-      if (
-        isDashboard ||
-        (hasTypeSelection && itemType === LIST_ITEM_TYPE.DASHBOARDS)
-      ) {
+      if (isDashboardTab || (hasTypeSelection && isDashboard)) {
         const res: any = await rf
           .getRequest('DashboardsRequest')
           .getPublicDashboardTagsTrending();
@@ -224,6 +222,9 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
 
   const onChangeItemType = (value: string) => {
     searchParams.delete(HOME_URL_PARAMS.ITEM_TYPE);
+    searchParams.delete(HOME_URL_PARAMS.SEARCH);
+    searchParams.delete(HOME_URL_PARAMS.ORDERBY);
+    searchParams.delete(HOME_URL_PARAMS.TAG);
     if (value !== ITEM_TYPE.DASHBOARDS) {
       searchParams.set(HOME_URL_PARAMS.ITEM_TYPE, value);
     }
@@ -234,7 +235,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   };
 
   const _generatePlaceHolder = () => {
-    if (itemType === LIST_ITEM_TYPE.DASHBOARDS) {
+    if (isDashboard) {
       return 'Search #hastag or dashboard name';
     }
     return 'Search #hastag or query name';
@@ -281,7 +282,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
             onClick={(e) => onClickTag(e)(tag)}
             className="dashboard-filter__search__search-box--item"
           >
-            {search === '' && tag === '' && <IconEye />} <Text>#{tag}</Text>
+            {!tagSearch && <IconEye />} <Text>#{tag}</Text>
           </Flex>
         ))}
       </Box>
@@ -322,7 +323,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
     <>
       <Flex align={'center'}>
         <Flex align={'center'} flexGrow={1}>
-          {isDashboard && (
+          {isDashboardTab && (
             <Flex flexGrow={{ base: 1, lg: 0 }}>
               <AppMenu
                 data={menuGridList}
@@ -345,7 +346,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
           <Flex
             flexGrow={{ base: 1, lg: 0 }}
             transition={'.2s linear'}
-            ml={!isDashboard && !hasTypeSelection ? 0 : 2.5}
+            ml={!isDashboardTab && !hasTypeSelection ? 0 : 2.5}
             onClick={onToggle}
             userSelect={'none'}
             className="filter"
