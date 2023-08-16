@@ -1,5 +1,5 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
-import React, { FC, useCallback, useEffect, useState } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 import { AppCard } from 'src/components';
 import 'src/styles/pages/NotificationPage.scss';
 import 'src/styles/pages/AppDetail.scss';
@@ -16,9 +16,9 @@ interface IPartRecentActivities {
   webhook: IWebhook;
 }
 
-const PartWebhookActivities: FC<IPartRecentActivities> = ({ webhook }) => {
+const PartWebhookActivities: FC<IPartRecentActivities> = () => {
   const { id: webhookId } = useParams<{ id: string }>();
-  const [activity, setActivity] = useState<any[]>([]);
+  const [activities, setActivities] = useState<any[]>([]);
   const history = useHistory();
 
   const fetchDataActivity: any = useCallback(async (params: any) => {
@@ -26,7 +26,7 @@ const PartWebhookActivities: FC<IPartRecentActivities> = ({ webhook }) => {
       const dataActivities = await rf
         .getRequest('NotificationRequest')
         .getActivities(webhookId, filterParams(params));
-      setActivity(dataActivities.docs);
+      setActivities(dataActivities.docs);
       return dataActivities;
     } catch (error) {
       console.error(error);
@@ -53,7 +53,7 @@ const PartWebhookActivities: FC<IPartRecentActivities> = ({ webhook }) => {
     <AppCard className="list-table-wrap">
       <Flex className="title-list-app">
         <Text className="text-title">Recent Activities</Text>
-        {!isMobile && !!activity.length && _renderLinkShowAll()}
+        {!isMobile && !!activities.length && _renderLinkShowAll()}
       </Flex>
 
       <ActivityDatatable
@@ -64,7 +64,7 @@ const PartWebhookActivities: FC<IPartRecentActivities> = ({ webhook }) => {
 
       {isMobile && (
         <Flex justifyContent={'center'} my={4}>
-          {!!activity.length && _renderLinkShowAll()}
+          {!!activities.length && _renderLinkShowAll()}
         </Flex>
       )}
     </AppCard>

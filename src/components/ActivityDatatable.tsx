@@ -2,7 +2,7 @@ import { Box, Flex, Tbody, Td, Th, Thead, Tooltip, Tr } from '@chakra-ui/react';
 import React, { FC, MouseEvent, useCallback, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import { useHistory, useParams } from 'react-router';
-import { InfoIcon, LinkDetail, LinkIcon } from 'src/assets/icons';
+import { LinkDetail, LinkIcon } from 'src/assets/icons';
 import {
   AppButton,
   AppDataTable,
@@ -12,10 +12,8 @@ import {
   RequestParams,
 } from 'src/components';
 import useWebhookDetails from 'src/hooks/useWebhook';
-import rf from 'src/requests/RequestFactory';
 import 'src/styles/pages/AppDetail.scss';
 import { getExplorerTxUrl } from 'src/utils/utils-network';
-import { toastSuccess } from 'src/utils/utils-notify';
 import {
   formatTokenData,
   getColorBrandStatus,
@@ -23,12 +21,10 @@ import {
   IWebhook,
   optionsFilter,
   STATUS,
-  WEBHOOK_STATUS,
   WEBHOOK_TYPES,
 } from 'src/utils/utils-webhook';
 import ModalUpgradeMessage from '../modals/ModalUpgradeMessage';
 import {
-  filterParams,
   formatShortText,
   formatTimestamp,
   shortAddressType,
