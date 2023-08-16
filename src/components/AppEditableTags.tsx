@@ -80,14 +80,9 @@ const AddHashtags = ({
 }) => {
   const [value, setValue] = useState<string>();
   const handleSubmit = (nextValue: string) => {
-    if (nextValue.length > 30) {
-      toastError({
-        message: 'The hashtag may not be greater than 30 characters.',
-      });
-      return;
-    }
+    const newValue = nextValue.slice(0, 30);
 
-    onSubmit && onSubmit(nextValue);
+    onSubmit && onSubmit(newValue);
     setValue('');
   };
   return (
