@@ -1,4 +1,5 @@
 import { load } from 'recaptcha-v3';
+import retry from 'async-retry';
 import config from 'src/config';
 import axios from 'axios';
 import Storage from 'src/utils/utils-storage';
@@ -26,13 +27,17 @@ export default class BaseRequest {
   async getAndSetRecaptcha(
     recaptchaAction: typeof RECAPTCHA_ACTIONS[keyof typeof RECAPTCHA_ACTIONS],
   ) {
-    try {
-      const recaptcha = await load(config.auth.reCaptchaKey);
-      const token = await recaptcha.execute(recaptchaAction);
-      setRecaptchaToRequest(token);
-    } catch (error) {
-      throw new Error('Execute Recaptcha failed!');
-    }
+    return retry(
+      async () => {
+        const recaptcha = await load(config.auth.reCaptchaKey);
+        const token = await recaptcha.execute(recaptchaAction);
+        setRecaptchaToRequest(token);
+      },
+      {
+        retries: 3,
+        maxTimeout: 200,
+      },
+    );
   }
 
   async get(url: string, params?: any) {
