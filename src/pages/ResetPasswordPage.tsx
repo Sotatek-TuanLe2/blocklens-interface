@@ -97,7 +97,6 @@ const ResetPasswordPage: FC = () => {
             <AppField label={'New Password'}>
               <AppInput
                 type={'password'}
-                placeholder="••••••••"
                 value={dataForm.newPassword}
                 onChange={(e) =>
                   setDataForm({
@@ -121,7 +120,6 @@ const ResetPasswordPage: FC = () => {
             <AppField label={'Confirm Password'}>
               <AppInput
                 type={'password'}
-                placeholder="••••••••"
                 value={dataForm.confirmPassword}
                 onChange={(e) =>
                   setDataForm({

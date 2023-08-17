@@ -150,7 +150,6 @@ const SignUpPage: FC = () => {
               <AppInput
                 value={dataForm.password}
                 type="password"
-                placeholder={'••••••••'}
                 onChange={(e) => {
                   setDataForm({
                     ...dataForm,
@@ -167,7 +166,6 @@ const SignUpPage: FC = () => {
             <AppField label={'Confirm Password'} customWidth={'49%'}>
               <AppInput
                 type={'password'}
-                placeholder={'••••••••'}
                 value={dataForm.confirmPassword}
                 onChange={(e) =>
                   setDataForm({
