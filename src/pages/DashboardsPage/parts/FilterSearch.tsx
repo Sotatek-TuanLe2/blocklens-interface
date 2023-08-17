@@ -7,7 +7,7 @@ import {
   IconDisplayList,
   DashboardListIcon,
   QueriesIcon,
-  IconEye,
+  HistoryTagsIcon,
 } from 'src/assets/icons';
 import {
   AppButton,
@@ -278,12 +278,12 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
         {suggestTagList.map((tag: string) => (
           <Flex
             alignItems="center"
-            gap="5px"
+            gap="9px"
             key={tag}
             onClick={(e) => onClickTag(e)(tag)}
             className="dashboard-filter__search__search-box--item"
           >
-            {!tagSearch && <IconEye />} <Text>#{tag}</Text>
+            {!tagSearch && <HistoryTagsIcon />} <Text>#{tag}</Text>
           </Flex>
         ))}
       </Box>
