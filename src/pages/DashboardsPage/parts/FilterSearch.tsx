@@ -40,10 +40,10 @@ const optionType: IOption[] = [
 ];
 
 const MAX_TRENDING_TAGS = 3;
+const SUGGEST_TAGS_LIMIT = 10;
+const TAGS_HISTORY_LIMIT = 8;
 
 const FilterSearch: React.FC<IFilterSearch> = (props) => {
-  const SUGGEST_TAGS_LIMIT = 10;
-  const TAGS_HISTORY_LIMIT = 8;
   const { isOpen, onToggle } = useDisclosure();
   const { type, displayed, setDisplayed, itemType } = props;
   const history = useHistory();
