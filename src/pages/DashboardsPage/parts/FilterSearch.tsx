@@ -43,6 +43,7 @@ const MAX_TRENDING_TAGS = 3;
 
 const FilterSearch: React.FC<IFilterSearch> = (props) => {
   const SUGGEST_TAGS_LIMIT = 10;
+  const TAGS_HISTORY_LIMIT = 8;
   const { isOpen, onToggle } = useDisclosure();
   const { type, displayed, setDisplayed, itemType } = props;
   const history = useHistory();
@@ -244,7 +245,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   const _renderSuggestTags = () => {
     const suggestTagList = !!tagSearch
       ? suggestTags
-      : Storage.getSavedTagHistory(isDashboard).slice(0, SUGGEST_TAGS_LIMIT);
+      : Storage.getSavedTagHistory(isDashboard).slice(0, TAGS_HISTORY_LIMIT);
 
     if (!!tagSearch && !suggestTagList.length) {
       return (
