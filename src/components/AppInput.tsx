@@ -85,7 +85,7 @@ const AppInput = forwardRef<AppInputProps, any>(
                 <Box
                   cursor={'pointer'}
                   className={`${
-                    isShowPassword ? 'icon-eye-close' : 'icon-eye'
+                    isShowPassword ? 'icon-eye' : 'icon-eye-close'
                   }`}
                 />
               }

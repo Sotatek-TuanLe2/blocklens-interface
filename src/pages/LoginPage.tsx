@@ -115,19 +115,20 @@ const LoginPage: FC = () => {
                   setErrorMessage('');
                   setDataForm({
                     ...dataForm,
-                    password: e.target.value,
+                    password: e.target.value.trim(),
                   });
                 }}
-                placeholder={'••••••••'}
                 validate={{
                   name: `password`,
                   validator: validator.current,
                   rule: ['required', 'min:8', 'max:50'],
                 }}
               />
-              <AppLink to={ROUTES.FORGOT_PASSWORD}>
-                Forgot your password?
-              </AppLink>
+              <div>
+                <AppLink to={ROUTES.FORGOT_PASSWORD}>
+                  Forgot your password?
+                </AppLink>
+              </div>
             </AppField>
 
             <AppButton
@@ -146,7 +147,7 @@ const LoginPage: FC = () => {
             </Box>
 
             <Box className="note" mt={3}>
-              This site is protected by reCAPTCHA and the{' '}
+              <p>This site is protected by reCAPTCHA and the </p>
               <a
                 href="https://policies.google.com/privacy"
                 className={'link'}
