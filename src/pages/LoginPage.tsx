@@ -118,7 +118,6 @@ const LoginPage: FC = () => {
                     password: e.target.value,
                   });
                 }}
-                placeholder={'••••••••'}
                 validate={{
                   name: `password`,
                   validator: validator.current,
@@ -146,7 +145,7 @@ const LoginPage: FC = () => {
             </Box>
 
             <Box className="note" mt={3}>
-              This site is protected by reCAPTCHA and the{' '}
+              <p>This site is protected by reCAPTCHA and the </p>
               <a
                 href="https://policies.google.com/privacy"
                 className={'link'}
