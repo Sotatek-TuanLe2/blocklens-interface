@@ -35,6 +35,7 @@ export default class BaseRequest {
       },
       {
         retries: 3,
+        minTimeout: 100,
         maxTimeout: 200,
       },
     );

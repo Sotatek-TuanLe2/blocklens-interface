@@ -90,6 +90,7 @@ import { ReactComponent as NoAppIcon } from './icon-no-app.svg';
 import { ReactComponent as IconEye } from './IconEye.svg';
 import { ReactComponent as IconEdit } from './icon-edit.svg';
 import { ReactComponent as IconRun } from './icon-run.svg';
+import { ReactComponent as HistoryTagsIcon } from './HistoryTagsIcon.svg';
 
 export {
   CalendarIcon,
@@ -184,4 +185,5 @@ export {
   IconEye,
   IconEdit,
   IconRun,
+  HistoryTagsIcon,
 };
