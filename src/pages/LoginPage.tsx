@@ -115,7 +115,7 @@ const LoginPage: FC = () => {
                   setErrorMessage('');
                   setDataForm({
                     ...dataForm,
-                    password: e.target.value,
+                    password: e.target.value.trim(),
                   });
                 }}
                 validate={{
@@ -124,9 +124,11 @@ const LoginPage: FC = () => {
                   rule: ['required', 'min:8', 'max:50'],
                 }}
               />
-              <AppLink to={ROUTES.FORGOT_PASSWORD}>
-                Forgot your password?
-              </AppLink>
+              <div>
+                <AppLink to={ROUTES.FORGOT_PASSWORD}>
+                  Forgot your password?
+                </AppLink>
+              </div>
             </AppField>
 
             <AppButton
