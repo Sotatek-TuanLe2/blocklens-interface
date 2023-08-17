@@ -141,6 +141,14 @@ export const createValidator = (options?: IOptions | undefined) => {
           return addressPattern.test(value);
         },
       },
+      email: {
+        message: 'The email must be a valid email address',
+        rule: (value: string) => {
+          const emailPattern =
+            /^(?!.*\.\.)(?!\.)[a-zA-Z0-9._]+@[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(?!.*\.$)$/;
+          return emailPattern.test(value);
+        },
+      },
 
       formatPassword: {
         message: 'Your password can’t start or end with a blank space',
