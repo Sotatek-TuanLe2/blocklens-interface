@@ -54,7 +54,7 @@ const Header: FC = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    AppBroadcast.on('LOGOUT_USER', onLogout);
+    AppBroadcast.on('LOGOUT_USER', onLogoutRequest);
     return () => {
       AppBroadcast.remove('LOGOUT_USER');
     };
@@ -72,6 +72,11 @@ const Header: FC = () => {
       onLogout();
       setIsOpenSignInRequestModal(true);
     }
+  };
+
+  const onLogoutRequest = () => {
+    dispatch(clearUser());
+    history.push(ROUTES.LOGIN);
   };
 
   const onLogout = () => {
