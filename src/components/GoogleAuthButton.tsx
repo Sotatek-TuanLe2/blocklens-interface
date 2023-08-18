@@ -54,7 +54,11 @@ const GoogleAuthButton: FC<IGoogleAuthButton> = ({ children }) => {
     }
   };
 
-  const onFailure = () => {
+  const onFailure = (error: any) => {
+    if (error?.details) {
+      return toastError({ message: error?.details });
+    }
+
     toastError({ message: 'Oops. Something went wrong!' });
   };
 
