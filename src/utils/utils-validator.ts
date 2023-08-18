@@ -130,7 +130,7 @@ export const createValidator = (options?: IOptions | undefined) => {
       isAddressAptos: {
         message: 'The value is wrong format address.',
         rule: (value: string) => {
-          const addressPattern = /^0x[a-fA-F0-9]{62}$/;
+          const addressPattern = /^0x[a-fA-F0-9]{62}$|^0x[a-fA-F0-9]{64}$/;
           return addressPattern.test(value);
         },
       },
