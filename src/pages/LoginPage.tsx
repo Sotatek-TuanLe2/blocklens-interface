@@ -115,7 +115,7 @@ const LoginPage: FC = () => {
                   setErrorMessage('');
                   setDataForm({
                     ...dataForm,
-                    password: e.target.value.trim(),
+                    password: e.target.value,
                   });
                 }}
                 validate={{
