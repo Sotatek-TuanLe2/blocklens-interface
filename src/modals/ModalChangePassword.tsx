@@ -95,11 +95,7 @@ const ModalChangePassword: React.FC<IChangePasswordModal> = ({
           validate={{
             name: `currentPassword`,
             validator: validators.current,
-            rule: [
-              'required',
-              'formatPassword',
-              `hasErrorMessage:${errorMessage}`,
-            ],
+            rule: ['required', `hasErrorMessage:${errorMessage}`],
           }}
         />
       </AppField>
@@ -117,7 +113,7 @@ const ModalChangePassword: React.FC<IChangePasswordModal> = ({
           validate={{
             name: `newPassword`,
             validator: validators.current,
-            rule: ['required|min:8|max:50|formatPassword', 'formatPassword'],
+            rule: ['required', 'min:8', 'max:50'],
           }}
         />
       </AppField>
