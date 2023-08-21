@@ -161,6 +161,8 @@ const SignUpPage: FC = () => {
                   validator: validator.current,
                   rule: ['required', 'min:8', 'max:50'],
                 }}
+                autoComplete="new-password"
+                role="presentation"
               />
             </AppField>
             <AppField label={'Confirm Password'} customWidth={'49%'} isRequired>
