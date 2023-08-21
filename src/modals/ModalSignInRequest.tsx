@@ -2,7 +2,10 @@ import { Flex } from '@chakra-ui/react';
 import React, { FC } from 'react';
 import BaseModal from './BaseModal';
 import AppButton from 'src/components/AppButton';
-import { AppBroadcast } from 'src/utils/utils-broadcast';
+import { useDispatch } from 'react-redux';
+import { clearUser } from 'src/store/user';
+import { ROUTES } from 'src/utils/common';
+import { useHistory } from 'react-router-dom';
 
 interface IModalSignInRequest {
   open: boolean;
@@ -10,13 +13,17 @@ interface IModalSignInRequest {
 }
 
 const ModalSignInRequest: FC<IModalSignInRequest> = ({ open, onClose }) => {
+  const dispatch = useDispatch();
+  const history = useHistory();
+
   const onCloseModal = () => {
     onClose();
   };
 
   const onLogin = async () => {
-    AppBroadcast.dispatch('LOGOUT_USER');
     onClose();
+    dispatch(clearUser());
+    history.push(ROUTES.LOGIN);
   };
 
   return (
