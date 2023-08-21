@@ -94,7 +94,7 @@ const ResetPasswordPage: FC = () => {
           </Box>
 
           <Box mt={5}>
-            <AppField label={'New Password'}>
+            <AppField label={'New Password'} isRequired>
               <AppInput
                 type={'password'}
                 value={dataForm.newPassword}
@@ -117,7 +117,7 @@ const ResetPasswordPage: FC = () => {
               />
             </AppField>
 
-            <AppField label={'Confirm Password'}>
+            <AppField label={'Confirm Password'} isRequired>
               <AppInput
                 type={'password'}
                 value={dataForm.confirmPassword}
