@@ -159,7 +159,7 @@ const SignUpPage: FC = () => {
                 validate={{
                   name: `password`,
                   validator: validator.current,
-                  rule: ['required|min:8|max:50', 'formatPassword'],
+                  rule: ['required', 'min:8', 'max:50', 'formatPassword'],
                 }}
               />
             </AppField>
