@@ -153,7 +153,7 @@ export default class BaseRequest {
       console.log('==errorHandler', JSON.stringify(err));
     }
 
-    if (err.response?.status === 0) {
+    if (err.response?.status === 0 || err.response?.status === 500) {
       // Network error
       throw new Error(COMMON_ERROR_MESSAGE);
     }
