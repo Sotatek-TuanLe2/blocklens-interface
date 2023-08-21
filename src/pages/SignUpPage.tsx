@@ -8,6 +8,7 @@ import {
   AppLink,
   GoogleAuthButton,
 } from 'src/components';
+import { COMMON_ERROR_MESSAGE } from 'src/constants';
 import GuestPage from 'src/layouts/GuestPage';
 import ModalResendMail from 'src/modals/ModalResendMail';
 import rf from 'src/requests/RequestFactory';
@@ -15,7 +16,7 @@ import 'src/styles/pages/LoginPage.scss';
 import { ROUTES } from 'src/utils/common';
 import { setRecaptchaToRequest } from 'src/utils/utils-auth';
 import { getErrorMessage } from 'src/utils/utils-helper';
-import { toastSuccess } from 'src/utils/utils-notify';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { createValidator } from 'src/utils/utils-validator';
 
 interface IDataForm {
@@ -62,7 +63,12 @@ const SignUpPage: FC = () => {
       setOpenModalResendEmail(true);
     } catch (e) {
       setRecaptchaToRequest(null);
-      setErrorMessage(getErrorMessage(e));
+      const errorMessage = getErrorMessage(e);
+      if (errorMessage !== COMMON_ERROR_MESSAGE) {
+        setErrorMessage(errorMessage);
+      } else {
+        toastError({ message: errorMessage });
+      }
     }
   };
 
