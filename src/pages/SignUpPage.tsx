@@ -59,7 +59,7 @@ const SignUpPage: FC = () => {
   const onSignUp = async () => {
     try {
       const res = await rf.getRequest('AuthRequest').signUp(dataForm);
-      setUserId(res?.userId || '');
+      setUserId(res?.id || '');
       setOpenModalResendEmail(true);
     } catch (e) {
       setRecaptchaToRequest(null);
