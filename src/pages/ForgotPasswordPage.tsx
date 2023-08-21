@@ -74,7 +74,7 @@ const ForgotPasswordPage: FC = () => {
           </Box>
 
           <Box mt={5}>
-            <AppField label={'Email'}>
+            <AppField label={'Email'} isRequired>
               <AppInput
                 value={dataForm.email}
                 onChange={(e) => {
