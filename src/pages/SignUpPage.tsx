@@ -92,7 +92,7 @@ const SignUpPage: FC = () => {
 
         <Box>
           <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
-            <AppField label={'First Name'} customWidth={'49%'}>
+            <AppField label={'First Name'} customWidth={'49%'} isRequired>
               <AppInput
                 value={dataForm.firstName}
                 onChange={(e) =>
@@ -108,7 +108,7 @@ const SignUpPage: FC = () => {
                 }}
               />
             </AppField>
-            <AppField label={'Last Name'} customWidth={'49%'}>
+            <AppField label={'Last Name'} customWidth={'49%'} isRequired>
               <AppInput
                 value={dataForm.lastName}
                 onChange={(e) =>
@@ -124,7 +124,7 @@ const SignUpPage: FC = () => {
                 }}
               />
             </AppField>
-            <AppField label={'Email'}>
+            <AppField label={'Email'} isRequired>
               <AppInput
                 value={dataForm.email}
                 onChange={(e) => {
@@ -146,7 +146,7 @@ const SignUpPage: FC = () => {
                 }}
               />
             </AppField>
-            <AppField label={'Password'} customWidth={'49%'}>
+            <AppField label={'Password'} customWidth={'49%'} isRequired>
               <AppInput
                 value={dataForm.password}
                 type="password"
@@ -163,7 +163,7 @@ const SignUpPage: FC = () => {
                 }}
               />
             </AppField>
-            <AppField label={'Confirm Password'} customWidth={'49%'}>
+            <AppField label={'Confirm Password'} customWidth={'49%'} isRequired>
               <AppInput
                 type={'password'}
                 value={dataForm.confirmPassword}
