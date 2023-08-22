@@ -54,7 +54,7 @@ export const isValidAddressEVM = (address: string) => {
 };
 
 export const isValidAddressSUIAndAptos = (address: string) => {
-  const addressPattern = /^0x[a-fA-F0-9]{62}$|^0x[a-fA-F0-9]{64}$/;
+  const addressPattern = /^0x[a-fA-F0-9]{62,64}$/;
   return addressPattern.test(address);
 };
 
