@@ -144,6 +144,7 @@ const SignUpPage: FC = () => {
                     `hasErrorMessage:${errorMessage}`,
                   ],
                 }}
+                autoComplete="off"
               />
             </AppField>
             <AppField label={'Password'} customWidth={'49%'} isRequired>
@@ -162,7 +163,6 @@ const SignUpPage: FC = () => {
                   rule: ['required', 'min:8', 'max:50'],
                 }}
                 autoComplete="new-password"
-                role="presentation"
               />
             </AppField>
             <AppField label={'Confirm Password'} customWidth={'49%'} isRequired>
