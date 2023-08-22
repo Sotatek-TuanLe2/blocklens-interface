@@ -322,7 +322,15 @@ const ActivityDesktop: FC<IActivity> = ({ activity, webhook }) => {
 
   const _renderContentAptosCoin = () => {
     return (
-      <Td w="15%">{shortAddressType(webhook?.metadata?.coinType || '')}</Td>
+      <Td w="15%" isTruncated>
+        <Tooltip
+          hasArrow
+          placement="top"
+          label={webhook?.metadata?.coinType || ''}
+        >
+          {shortAddressType(webhook?.metadata?.coinType || '')}
+        </Tooltip>
+      </Td>
     );
   };
 
@@ -330,11 +338,9 @@ const ActivityDesktop: FC<IActivity> = ({ activity, webhook }) => {
     const content = formatTokenData(webhook);
 
     return (
-      <Td w="15%">
+      <Td w="15%" isTruncated>
         <Tooltip hasArrow placement="top" label={content}>
-          <Box overflow={'hidden'} textOverflow={'ellipsis'}>
-            {content}
-          </Box>
+          {content}
         </Tooltip>
       </Td>
     );

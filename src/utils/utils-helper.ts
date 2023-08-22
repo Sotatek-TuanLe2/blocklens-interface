@@ -108,7 +108,10 @@ export const areYAxisesSameType = (data: any[], yAxis: string[]) => {
 
 export const shortAddressType = (address: string, separator = ':') => {
   const pos = address.indexOf(separator);
-  return formatShortText(address.slice(0, pos)).concat(address.slice(pos));
+  if (address.slice(0, pos).length >= 64) {
+    return formatShortText(address.slice(0, pos)).concat(address.slice(pos));
+  }
+  return address;
 };
 
 export const generatePositiveRandomNumber = (maxValue: number) =>
