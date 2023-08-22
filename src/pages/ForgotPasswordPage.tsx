@@ -7,6 +7,7 @@ import {
   AppInput,
   AppLink,
 } from 'src/components';
+import { COMMON_ERROR_MESSAGE } from 'src/constants';
 import GuestPage from 'src/layouts/GuestPage';
 import ModalResendMail from 'src/modals/ModalResendMail';
 import rf from 'src/requests/RequestFactory';
@@ -48,7 +49,12 @@ const ForgotPasswordPage: FC = () => {
       setOpenModalResendEmail(true);
     } catch (error: any) {
       setRecaptchaToRequest(null);
-      setErrorMessage(getErrorMessage(error));
+      const errorMessage = getErrorMessage(error);
+      if (errorMessage !== COMMON_ERROR_MESSAGE) {
+        setErrorMessage(errorMessage);
+      } else {
+        toastError({ message: errorMessage });
+      }
     }
   };
 

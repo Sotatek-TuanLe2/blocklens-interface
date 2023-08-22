@@ -9,6 +9,8 @@ import {
 } from 'src/utils/utils-auth';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
 import { RECAPTCHA_ACTIONS } from 'src/utils/common';
+import { toastError } from 'src/utils/utils-notify';
+import { COMMON_ERROR_MESSAGE } from 'src/constants';
 
 export default class BaseRequest {
   protected accessToken = '';
@@ -150,6 +152,12 @@ export default class BaseRequest {
     } else {
       console.log('==errorHandler', JSON.stringify(err));
     }
+
+    if (err.response?.status === 0 || err.response?.status === 500) {
+      // Network error
+      throw new Error(COMMON_ERROR_MESSAGE);
+    }
+
     if (err.response && err.response.data && err.response.data.message) {
       if (typeof err.response.data.message === 'string') {
         throw new Error(err.response.data.message);

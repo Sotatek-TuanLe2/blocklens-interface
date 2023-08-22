@@ -14,12 +14,13 @@ import { createValidator } from 'src/utils/utils-validator';
 import 'src/styles/pages/LoginPage.scss';
 import { useDispatch } from 'react-redux';
 import rf from 'src/requests/RequestFactory';
-import { toastSuccess } from 'src/utils/utils-notify';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { setUserAuth } from '../store/user';
 import { ROUTES } from 'src/utils/common';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import useOriginPath from 'src/hooks/useOriginPath';
 import { setRecaptchaToRequest } from 'src/utils/utils-auth';
+import { COMMON_ERROR_MESSAGE } from 'src/constants';
 
 interface IDataForm {
   email: string;
@@ -63,7 +64,12 @@ const LoginPage: FC = () => {
       }
     } catch (e) {
       setRecaptchaToRequest(null);
-      setErrorMessage(getErrorMessage(e));
+      const errorMessage = getErrorMessage(e);
+      if (errorMessage !== COMMON_ERROR_MESSAGE) {
+        setErrorMessage(errorMessage);
+      } else {
+        toastError({ message: errorMessage });
+      }
     }
   };
 
