@@ -54,7 +54,7 @@ export const isValidAddressEVM = (address: string) => {
 };
 
 export const isValidAddressSUIAndAptos = (address: string) => {
-  const addressPattern = /^0x[a-fA-F0-9]{62}$|^0x[a-fA-F0-9]{64}$/;
+  const addressPattern = /^0x[a-fA-F0-9]{62,64}$/;
   return addressPattern.test(address);
 };
 
@@ -108,7 +108,10 @@ export const areYAxisesSameType = (data: any[], yAxis: string[]) => {
 
 export const shortAddressType = (address: string, separator = ':') => {
   const pos = address.indexOf(separator);
-  return formatShortText(address.slice(0, pos)).concat(address.slice(pos));
+  if (address.slice(0, pos).length >= 64) {
+    return formatShortText(address.slice(0, pos)).concat(address.slice(pos));
+  }
+  return address;
 };
 
 export const generatePositiveRandomNumber = (maxValue: number) =>
