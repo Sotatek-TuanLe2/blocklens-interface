@@ -63,7 +63,7 @@ const PartFormCoinActivityAptos: FC<IPartFormCoinActivityAptos> = ({
           placement="top"
           label="Choosing which activities you want to be notified"
         >
-          Notification filter
+          Notification filter&nbsp;
         </Tooltip>
         <Box as={'span'} color={'red.500'}>
           *

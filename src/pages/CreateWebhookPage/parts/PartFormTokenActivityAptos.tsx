@@ -1,4 +1,4 @@
-import { Box, Checkbox, Flex, Text } from '@chakra-ui/react';
+import { Box, Checkbox, Flex, Text, Tooltip } from '@chakra-ui/react';
 import { AppField, AppInput, AppTextarea } from 'src/components';
 import React, { ChangeEvent, FC, useEffect, useMemo, useState } from 'react';
 import { IDataForm } from '../index';
@@ -211,7 +211,13 @@ const PartFormTokenActivityAptos: FC<IPartFormTokenActivityAptos> = ({
       </AppField>
 
       <Box w={'full'}>
-        Notification filter{' '}
+        <Tooltip
+          hasArrow
+          placement="top"
+          label="Choosing which activities you want to be notified"
+        >
+          Notification filter&nbsp;
+        </Tooltip>
         <Box as={'span'} color={'red.500'}>
           *
         </Box>
