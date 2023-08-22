@@ -1,5 +1,12 @@
 import { Box, Flex, Checkbox, Text } from '@chakra-ui/react';
-import React, { useState, FC, useEffect, ChangeEvent, useMemo } from 'react';
+import React, {
+  useState,
+  FC,
+  useEffect,
+  ChangeEvent,
+  useMemo,
+  useRef,
+} from 'react';
 import { AppInput, AppSelect2 } from 'src/components';
 import 'src/styles/components/AppUploadABI.scss';
 import { isMobile } from 'react-device-detect';
@@ -31,6 +38,7 @@ interface IListSelect {
   dataSelected: IABIItem[];
   dataWebhook?: string[];
   dataForm?: IDataForm;
+  isMounted: React.MutableRefObject<boolean>;
 }
 
 interface IDetailABI {
@@ -68,10 +76,12 @@ const ListSelect: FC<IListSelect> = ({
   onChangeDataSelected,
   dataWebhook,
   dataForm,
+  isMounted,
 }) => {
   const ITEM_LIMIT = 10;
   const HEIGHT_CHECKBOX = 32;
   const [itemSelected, setItemSelected] = useState<any>([]);
+
   useEffect(() => {
     if (isViewOnly) {
       setItemSelected(dataWebhook);
@@ -172,6 +182,7 @@ const ListSelect: FC<IListSelect> = ({
     const allData = dataShow.map((item: any) => item.name);
     setItemSelected(allData);
     onChangeDataSelected(dataShow);
+    isMounted.current = true;
   }, [dataShow]);
 
   const isIndeterminate =
@@ -257,9 +268,7 @@ const DetailABI: FC<IDetailABI> = ({
   const [structs, setStructs] = useState<IABIItem[]>([]);
   const [functionSelected, setFunctionSelected] = useState<IABIItem[]>([]);
   const [eventsSelected, setEventsSelected] = useState<IABIItem[]>([]);
-
-  const notificationFilterData =
-    dataForm?.metadata?.events.concat(dataForm?.metadata?.functions) || [];
+  const isMounted = useRef<boolean>(false);
 
   useEffect(() => {
     const exposedFunctionsList: IABIItem[] = [];
@@ -350,6 +359,7 @@ const DetailABI: FC<IDetailABI> = ({
       <Box pb={4}>
         {!!exposedFunctions.length && (
           <ListSelect
+            isMounted={isMounted}
             type={'function'}
             data={exposedFunctions}
             valueSearch={valueSearch}
@@ -364,6 +374,7 @@ const DetailABI: FC<IDetailABI> = ({
 
         {!!structs.length && (
           <ListSelect
+            isMounted={isMounted}
             type={'struct'}
             data={structs}
             valueSearch={valueSearch}
@@ -375,11 +386,14 @@ const DetailABI: FC<IDetailABI> = ({
             dataForm={dataForm}
           />
         )}
-        {!notificationFilterData?.length && (
-          <Text className="text-error">
-            The notification filter field is required
-          </Text>
-        )}
+
+        {!functionSelected?.length &&
+          !eventsSelected.length &&
+          isMounted.current && (
+            <Text className="text-error">
+              The notification filter field is required
+            </Text>
+          )}
       </Box>
     </Box>
   );
