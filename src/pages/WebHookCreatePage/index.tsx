@@ -82,6 +82,7 @@ const WebHookCreatePage: React.FC = () => {
   const [dataForm, setDataForm] = useState<IDataForm>(initDataCreateWebHook);
   const [type, setType] = useState<string>(WEBHOOK_TYPES.ADDRESS_ACTIVITY);
   const [chainSelected, setChainSelected] = useState<any>(CHAINS_CONFIG[0]);
+  const [isSendDemoMsg, setIsSendDemoMsg] = useState(false);
   const [networkSelected, setNetworkSelected] = useState<any>(
     CHAINS_CONFIG[0].networks[0],
   );
@@ -304,6 +305,22 @@ const WebHookCreatePage: React.FC = () => {
     }
   };
 
+  const handleSendDemoMsg = async () => {
+    if (isSendDemoMsg) return;
+    setIsSendDemoMsg(true);
+
+    try {
+      // call api
+      toastSuccess({ message: 'Demo Successfully!' });
+    } catch (e: any) {
+      toastError({ message: e?.message || 'Demo Fail!' });
+    }
+
+    setTimeout(() => {
+      setIsSendDemoMsg(false);
+    }, 4000);
+  };
+
   useEffect(() => {
     setTimeout(() => {
       const isDisabled =
@@ -431,14 +448,24 @@ const WebHookCreatePage: React.FC = () => {
                   }}
                   pr={{ base: 5, md: '220px' }}
                   endAdornment={
-                    <AppButton disabled w={190} size={'sm'}>
-                      Send Demo Message
+                    <AppButton
+                      onClick={handleSendDemoMsg}
+                      disabled={isDisableSubmit}
+                      w={190}
+                      size={'sm'}
+                    >
+                      {isSendDemoMsg ? 'Message sent!' : 'Send Demo Message'}
                     </AppButton>
                   }
                 />
                 <Show below="md">
-                  <AppButton disabled w={190} size={'sm'}>
-                    Send Demo Message
+                  <AppButton
+                    onClick={handleSendDemoMsg}
+                    disabled={isDisableSubmit}
+                    w={190}
+                    size={'sm'}
+                  >
+                    {isSendDemoMsg ? 'Message sent!' : 'Send Demo Message'}
                   </AppButton>
                 </Show>
               </AppField>
