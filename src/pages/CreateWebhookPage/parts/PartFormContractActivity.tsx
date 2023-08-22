@@ -79,6 +79,7 @@ const PartFormContractActivity: FC<IPartFormContractActivity> = ({
         isAddress(dataForm.metadata?.address || '') && (
           <>
             <AppUploadABI
+              dataForm={dataForm}
               type={TYPE_ABI.CONTRACT}
               onChange={(abi, abiFilter) =>
                 setDataForm({

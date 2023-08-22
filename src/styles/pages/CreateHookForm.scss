@@ -6,6 +6,12 @@
     &__detail-info {
       padding: 30px 40px !important;
 
+      .select-module {
+        .app-select__menu {
+          z-index: 10;
+        }
+      }
+
       @include tablet {
         padding: 20px !important;
       }

@@ -30,6 +30,7 @@ interface IListSelect {
   onChangeDataSelected: (data: IABIItem[]) => void;
   dataSelected: IABIItem[];
   dataWebhook?: string[];
+  dataForm?: IDataForm;
 }
 
 interface IDetailABI {
@@ -66,11 +67,11 @@ const ListSelect: FC<IListSelect> = ({
   dataSelected,
   onChangeDataSelected,
   dataWebhook,
+  dataForm,
 }) => {
   const ITEM_LIMIT = 10;
   const HEIGHT_CHECKBOX = 32;
   const [itemSelected, setItemSelected] = useState<any>([]);
-
   useEffect(() => {
     if (isViewOnly) {
       setItemSelected(dataWebhook);
@@ -139,7 +140,7 @@ const ListSelect: FC<IListSelect> = ({
     }
 
     return dataFiltered;
-  }, [data, valueSearch, valueSort]);
+  }, [data, valueSearch, valueSort, dataForm?.metadata?.module]);
 
   const allChecked = useMemo(
     () =>
@@ -171,8 +172,7 @@ const ListSelect: FC<IListSelect> = ({
     const allData = dataShow.map((item: any) => item.name);
     setItemSelected(allData);
     onChangeDataSelected(dataShow);
-    return;
-  }, []);
+  }, [dataShow]);
 
   const isIndeterminate =
     dataShow.some((data: IABIItem) =>
@@ -358,6 +358,7 @@ const DetailABI: FC<IDetailABI> = ({
             dataSelected={functionSelected}
             isViewOnly={isViewOnly}
             dataWebhook={dataWebhook?.functions}
+            dataForm={dataForm}
           />
         )}
 
@@ -371,6 +372,7 @@ const DetailABI: FC<IDetailABI> = ({
             dataSelected={eventsSelected}
             isViewOnly={isViewOnly}
             dataWebhook={dataWebhook?.events}
+            dataForm={dataForm}
           />
         )}
         {!notificationFilterData?.length && (
