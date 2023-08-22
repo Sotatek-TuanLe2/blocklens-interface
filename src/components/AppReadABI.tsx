@@ -67,6 +67,8 @@ const ListSelect: FC<IListSelect> = ({
   onChangeDataSelected,
   dataWebhook,
 }) => {
+  const ITEM_LIMIT = 10;
+  const HEIGHT_CHECKBOX = 32;
   const [itemSelected, setItemSelected] = useState<any>([]);
 
   useEffect(() => {
@@ -165,6 +167,13 @@ const ListSelect: FC<IListSelect> = ({
     }
   };
 
+  useEffect(() => {
+    const allData = dataShow.map((item: any) => item.name);
+    setItemSelected(allData);
+    onChangeDataSelected(dataShow);
+    return;
+  }, []);
+
   const isIndeterminate =
     dataShow.some((data: IABIItem) =>
       itemSelected.some((id: string) => data.name === id),
@@ -177,8 +186,12 @@ const ListSelect: FC<IListSelect> = ({
       </Box>
       <Box ml={5} width="100%">
         <Scrollbars
-          style={{ width: '100%', height: 300 }}
+          style={{
+            width: '100%',
+            height: dataShow.length < ITEM_LIMIT ? '' : 9 * HEIGHT_CHECKBOX,
+          }}
           autoHide
+          autoHeight={dataShow.length < ITEM_LIMIT}
           renderThumbVertical={({ style, ...props }: any) => (
             <div
               style={{
@@ -244,6 +257,9 @@ const DetailABI: FC<IDetailABI> = ({
   const [structs, setStructs] = useState<IABIItem[]>([]);
   const [functionSelected, setFunctionSelected] = useState<IABIItem[]>([]);
   const [eventsSelected, setEventsSelected] = useState<IABIItem[]>([]);
+
+  const notificationFilterData =
+    dataForm?.metadata?.events.concat(dataForm?.metadata?.functions) || [];
 
   useEffect(() => {
     const exposedFunctionsList: IABIItem[] = [];
@@ -357,6 +373,11 @@ const DetailABI: FC<IDetailABI> = ({
             dataWebhook={dataWebhook?.events}
           />
         )}
+        {!notificationFilterData?.length && (
+          <Text className="text-error">
+            The notification filter field is required
+          </Text>
+        )}
       </Box>
     </Box>
   );
@@ -373,7 +394,7 @@ const AppReadABI: FC<IAppReadABI> = ({
   return (
     <Box className="upload-abi">
       <Flex mb={1} className="label-abi">
-        ABI{' '}
+        Notification filter{' '}
         <Text as={'span'} className="text-error" ml={1}>
           *
         </Text>

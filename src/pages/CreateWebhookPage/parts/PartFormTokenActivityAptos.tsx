@@ -1,4 +1,4 @@
-import { Box, Checkbox, Flex } from '@chakra-ui/react';
+import { Box, Checkbox, Flex, Text } from '@chakra-ui/react';
 import { AppField, AppInput, AppTextarea } from 'src/components';
 import React, { ChangeEvent, FC, useEffect, useMemo, useState } from 'react';
 import { IDataForm } from '../index';
@@ -47,6 +47,8 @@ export const ListSelectEvent = ({
   setEventsSelected,
   dataEvent,
 }: IListSelectEvent) => {
+  const [initialized, setInitialized] = useState(false);
+
   const onChangeSelect = (e: ChangeEvent<HTMLInputElement>, event: string) => {
     if (!setEventsSelected) return;
     if (!e.target.checked) {
@@ -72,6 +74,14 @@ export const ListSelectEvent = ({
       ),
     [eventsSelected],
   );
+
+  useEffect(() => {
+    if (!initialized) {
+      const initialEvents = dataEvent.map((item) => item.name);
+      setEventsSelected && setEventsSelected(initialEvents);
+      setInitialized(true);
+    }
+  }, [initialized, dataEvent, setEventsSelected]);
 
   const isIndeterminate =
     dataEvent.some((data: { name: string }) =>
@@ -110,6 +120,11 @@ export const ListSelectEvent = ({
             </Checkbox>
           </Box>
         ))}
+        {!eventsSelected.length && (
+          <Text className="text-error">
+            The notification filter field is required
+          </Text>
+        )}
       </Box>
     </Flex>
   );
@@ -196,7 +211,7 @@ const PartFormTokenActivityAptos: FC<IPartFormTokenActivityAptos> = ({
       </AppField>
 
       <Box w={'full'}>
-        Events{' '}
+        Notification filter{' '}
         <Box as={'span'} color={'red.500'}>
           *
         </Box>

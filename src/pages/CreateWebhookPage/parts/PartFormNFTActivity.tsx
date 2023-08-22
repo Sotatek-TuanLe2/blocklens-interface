@@ -76,6 +76,7 @@ const PartFormNFTActivity: FC<IPartFormNFTActivity> = ({
         />
       </AppField>
       <AppUploadABI
+        dataForm={dataForm}
         type={TYPE_ABI.NFT}
         onChange={(abi, abiFilter) =>
           setDataForm({

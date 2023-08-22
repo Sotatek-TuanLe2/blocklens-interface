@@ -44,6 +44,7 @@ interface IMetadata {
   creatorAddress?: string;
   collectionName?: string;
   name?: string;
+  module?: string;
 }
 
 export interface IDataForm {
@@ -63,6 +64,7 @@ const CreateWebhook = () => {
       addresses: [],
       address: '',
       name: '',
+      module: '',
     },
   };
 
@@ -190,11 +192,11 @@ const CreateWebhook = () => {
         (type === WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY &&
           !dataForm?.metadata?.events?.length &&
           !dataForm?.metadata?.address &&
-          !dataForm?.metadata?.functions?.length);
+          !dataForm?.metadata?.functions?.length &&
+          !dataForm?.metadata?.module?.length);
       setIsDisableSubmit(isDisabled);
     }, 0);
   }, [dataForm, type]);
-
   const onChangeWebhookType = (value: string) => {
     if (type === value) return;
     setDataForm(initDataCreateWebHook);

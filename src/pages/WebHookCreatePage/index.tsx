@@ -52,6 +52,7 @@ interface IMetadata {
   creatorAddress?: string;
   collectionName?: string;
   name?: string;
+  module?: string;
 }
 
 export interface IDataForm {
@@ -75,6 +76,7 @@ const initDataCreateWebHook = {
     addresses: [],
     address: '',
     name: '',
+    module: '',
   },
 };
 
@@ -313,11 +315,13 @@ const WebHookCreatePage: React.FC = () => {
           type === WEBHOOK_TYPES.NFT_ACTIVITY) &&
           !dataForm.metadata?.abi?.length) ||
         (type === WEBHOOK_TYPES.ADDRESS_ACTIVITY &&
-          !dataForm?.metadata?.addresses?.length) ||
+          !dataForm?.metadata?.addresses?.length &&
+          !dataForm?.metadata?.events?.length) ||
         (type === WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY &&
           !dataForm?.metadata?.events?.length &&
           !dataForm?.metadata?.address &&
-          !dataForm?.metadata?.functions?.length);
+          !dataForm?.metadata?.functions?.length &&
+          !dataForm?.metadata?.module?.length);
       setIsDisableSubmit(isDisabled);
     }, 0);
   }, [dataForm, type]);

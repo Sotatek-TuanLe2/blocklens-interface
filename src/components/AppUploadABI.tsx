@@ -5,6 +5,7 @@ import {
   Checkbox,
   Tooltip,
   useDisclosure,
+  Text,
 } from '@chakra-ui/react';
 import { toastError } from 'src/utils/utils-notify';
 import React, {
@@ -15,7 +16,7 @@ import React, {
   ChangeEvent,
   useEffect,
 } from 'react';
-import { AppInput, AppSelect2, AppTextarea } from 'src/components';
+import { AppInput, AppSelect2 } from 'src/components';
 import { CloseIcon } from '@chakra-ui/icons';
 import ERC721 from 'src/abi/ERC-721.json';
 import ERC20 from 'src/abi/erc20.json';
@@ -44,6 +45,7 @@ interface IAppUploadABI {
   abi?: any[];
   abiFilter?: any[];
   abiContract?: any[];
+  dataForm?: IDataForm;
 }
 
 const listFunctionAndEventOfNFT = [
@@ -138,6 +140,8 @@ const ListSelect: FC<IListSelect> = ({
   valueSort,
   viewOnly,
 }) => {
+  const ITEM_LIMIT = 10;
+  const HEIGHT_CHECKBOX = 32;
   const [itemSelected, setItemSelected] = useState<any>([]);
 
   const onChangeSelect = (e: ChangeEvent<HTMLInputElement>, id: string) => {
@@ -236,81 +240,96 @@ const ListSelect: FC<IListSelect> = ({
     onSelectData([...dataRest]);
   };
 
+  const [initialized, setInitialized] = useState(false);
+
   useEffect(() => {
-    if (!dataSelected.length) {
-      setItemSelected([]);
+    if (!initialized && !dataSelected.length) {
+      const initialSelected = dataShow.map((item: any) => item.id);
+      setItemSelected(initialSelected);
+      onSelectData([...dataShow]);
+      setInitialized(true);
     }
-  }, [dataSelected]);
+  }, [initialized, dataSelected, dataShow, onSelectData]);
 
+  // useEffect(() => {
+  //   if (!dataSelected.length) {
+  //     setItemSelected([]);
+  //   }
+  // }, [dataSelected]);
   return (
-    <Flex className="box-events">
-      <Box className="label-events">
-        {type === 'function' ? 'Functions' : 'Events'}
-      </Box>
-      <Box ml={5} width="100%">
-        <Scrollbars
-          style={{ width: '100%', height: 300 }}
-          autoHide
-          renderThumbVertical={({ style, ...props }: any) => (
-            <div
-              style={{
-                ...style,
-                backgroundColor: '#8D91A5',
-                borderRadius: '5px',
-                cursor: 'pointer',
-              }}
-              {...props}
-            />
-          )}
-        >
-          {!!dataShow.length && (
-            <Checkbox
-              size="lg"
-              isChecked={allCheckedViewOnly || allChecked}
-              isIndeterminate={isIndeterminateViewOnly || isIndeterminate}
-              onChange={onSelectAll}
-              isDisabled={viewOnly}
-            >
-              All
-            </Checkbox>
-          )}
+    <>
+      <Flex className="box-events">
+        <Box className="label-events">
+          {type === 'function' ? 'Functions' : 'Events'}
+        </Box>
+        <Box ml={5} width="100%">
+          <Scrollbars
+            style={{
+              width: '100%',
+              height: dataShow.length < ITEM_LIMIT ? '' : 9 * HEIGHT_CHECKBOX,
+            }}
+            autoHide
+            autoHeight={dataShow.length < ITEM_LIMIT}
+            renderThumbVertical={({ style, ...props }: any) => (
+              <div
+                style={{
+                  ...style,
+                  backgroundColor: '#8D91A5',
+                  borderRadius: '5px',
+                  cursor: 'pointer',
+                }}
+                {...props}
+              />
+            )}
+          >
+            {!!dataShow.length && (
+              <Checkbox
+                size="lg"
+                isChecked={allCheckedViewOnly || allChecked}
+                isIndeterminate={isIndeterminateViewOnly || isIndeterminate}
+                onChange={onSelectAll}
+                isDisabled={viewOnly}
+              >
+                All
+              </Checkbox>
+            )}
+            {!!dataShow.length ? (
+              dataShow?.map((item: any, index: number) => {
+                const inputs = item.inputs?.map((input: any) => {
+                  return input.name;
+                });
 
-          {!!dataShow.length ? (
-            dataShow?.map((item: any, index: number) => {
-              const inputs = item.inputs?.map((input: any) => {
-                return input.name;
-              });
-
-              return (
-                <Box key={index} my={2}>
-                  <Checkbox
-                    size="lg"
-                    isDisabled={viewOnly}
-                    value={item.name}
-                    isChecked={
-                      itemSelected.includes(item.id) ||
-                      IdsSelected.includes(item.id)
-                    }
-                    onChange={(e) => onChangeSelect(e, item.id)}
-                  >
-                    <Flex className="abi-option">
-                      {item.name}
-                      {!!inputs.length && (
-                        <Box className="inputs">({inputs.join(', ')})</Box>
-                      )}
-                    </Flex>
-                  </Checkbox>
-                </Box>
-              );
-            })
-          ) : (
-            <Flex justifyContent={'center'}>
-              <Box> No data...</Box>
-            </Flex>
-          )}
-        </Scrollbars>
-      </Box>
-    </Flex>
+                return (
+                  <Box key={index} my={2}>
+                    <Checkbox
+                      size="lg"
+                      isDisabled={viewOnly}
+                      value={item.name}
+                      isChecked={
+                        itemSelected.includes(item.id) ||
+                        IdsSelected.includes(item.id)
+                      }
+                      onChange={(e) => onChangeSelect(e, item.id)}
+                    >
+                      <Flex className="abi-option">
+                        {item.name}
+                        {!!inputs.length && (
+                          <Box className="inputs">({inputs.join(', ')})</Box>
+                        )}
+                      </Flex>
+                    </Checkbox>
+                  </Box>
+                );
+              })
+            ) : (
+              <Flex justifyContent={'center'}>
+                <Box> No data...</Box>
+              </Flex>
+            )}
+          </Scrollbars>
+        </Box>
+      </Flex>
+    </>
   );
 };
 
@@ -321,6 +340,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
   abi,
   abiFilter,
   abiContract,
+  dataForm,
 }) => {
   const [fileSelected, setFileSelected] = useState<any>({});
   const [ABIData, setABIData] = useState<any>([]);
@@ -555,7 +575,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
     <Box className="upload-abi">
       <Flex justifyContent={'space-between'}>
         <Flex mb={1} className="label-abi">
-          ABI {type === TYPE_ABI.NFT && _renderNoticeUpload()}
+          Notification filter {type === TYPE_ABI.NFT && _renderNoticeUpload()}
         </Flex>
 
         {!viewOnly && !abiContract?.length && (
@@ -583,7 +603,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
 
       {isInsertManuallyAddress && !viewOnly && !abiContract?.length && (
         <Box mb={5}>
-          <AppTextarea
+          <AppInput
             placeholder="Input abi..."
             rows={6}
             value={ABIInput}
@@ -691,6 +711,11 @@ const AppUploadABI: FC<IAppUploadABI> = ({
               viewOnly={viewOnly}
             />
           </>
+          {!dataForm?.metadata?.abiFilter?.length && (
+            <Text className="text-error">
+              The notification filter field is required
+            </Text>
+          )}
         </Box>
       )}
     </Box>

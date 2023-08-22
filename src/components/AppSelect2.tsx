@@ -6,9 +6,17 @@ import React, {
   useState,
   ReactNode,
 } from 'react';
-import { Box, Flex, LayoutProps } from '@chakra-ui/react';
+import { Box, Flex, LayoutProps, Spinner } from '@chakra-ui/react';
 import 'src/styles/components/AppSelect.scss';
+import SimpleReactValidator from 'simple-react-validator';
+import { useForceRender } from 'src/hooks/useForceRender';
 
+interface ValidatorProps {
+  validator: SimpleReactValidator;
+  name: string;
+  rule: string | Array<string | { [key: string]: unknown }>;
+  options?: { [key: string]: unknown };
+}
 interface IAppSelectPops {
   options: IOption[];
   value: string;
@@ -18,9 +26,13 @@ interface IAppSelectPops {
   hiddenLabelDefault?: boolean;
   onChange: (value: string) => void;
   disabled?: boolean;
+  isLoading?: boolean;
   zIndex?: number;
   customItem?: (optionItem: any) => ReactNode;
   sxWrapper?: LayoutProps;
+  validate?: ValidatorProps;
+  readOnly?: boolean;
+  hiddenErrorText?: boolean;
 }
 
 interface IOption {
@@ -41,8 +53,14 @@ const AppSelect2: FC<IAppSelectPops> = ({
   zIndex,
   customItem,
   sxWrapper,
+  isLoading,
+  hiddenErrorText = false,
+  validate,
+  readOnly,
+  ...props
 }) => {
   const [open, setOpen] = useState<boolean>(false);
+  const forceRender = useForceRender();
   const ref = useRef<any>(null);
 
   const optionSelected = useMemo(
@@ -63,6 +81,11 @@ const AppSelect2: FC<IAppSelectPops> = ({
     };
   }, []);
 
+  const onBlur = () => {
+    validate?.validator.showMessageFor(validate.name);
+    forceRender();
+  };
+
   return (
     <Box
       className={`app-select ${size} ${className}`}
@@ -72,6 +95,7 @@ const AppSelect2: FC<IAppSelectPops> = ({
       userSelect={'none'}
     >
       <Flex
+        background={disabled && '#F5F5F5'}
         className="app-select__btn-select"
         onClick={() => {
           !disabled && setOpen(!open);
@@ -92,9 +116,9 @@ const AppSelect2: FC<IAppSelectPops> = ({
             )}
           </Flex>
         )}
-
-        <Box className="icon-arrow-down" ml={2} />
+        {isLoading ? <Spinner /> : <Box className="icon-arrow-down" ml={2} />}
       </Flex>
+
       {open && (
         <Box
           className={'app-select__menu'}
@@ -107,6 +131,7 @@ const AppSelect2: FC<IAppSelectPops> = ({
                 className={`app-select__menu-item ${
                   value === option.value ? 'selected' : ''
                 }`}
+                onBlur={onBlur}
                 onClick={() => {
                   onChange(option.value);
                   setOpen(false);
@@ -121,6 +146,17 @@ const AppSelect2: FC<IAppSelectPops> = ({
           })}
         </Box>
       )}
+      <Box>
+        {!hiddenErrorText &&
+          validate &&
+          !readOnly &&
+          validate.validator.message(
+            validate.name,
+            value ? value : ref ? (ref as any).current?.value : '',
+            validate.rule,
+            validate.options,
+          )}
+      </Box>
     </Box>
   );
 };
