@@ -98,12 +98,12 @@ const PartFormModuleActivityAptos: FC<PartFormContractAptosProps> = ({
     });
   }, 2000);
 
-  const onChangeModule = (e: any) => {
+  const onChangeModule = (module: string) => {
     setPayloadForm({
       ...payloadForm,
       metadata: {
         ...payloadForm.metadata,
-        module: e,
+        module,
       },
     });
   };
