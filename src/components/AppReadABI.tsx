@@ -12,7 +12,8 @@ import 'src/styles/components/AppUploadABI.scss';
 import { isMobile } from 'react-device-detect';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { PackageType } from 'src/utils/utils-webhook';
-import { IDataForm } from '../pages/CreateWebhookPage';
+import { IDataForm } from '../pages/WebHookCreatePage';
+import { ABI_OPTIONS, ABI_TYPES } from 'src/utils/common';
 
 interface IDataSelected {
   events?: string[];
@@ -38,7 +39,6 @@ interface IListSelect {
   dataSelected: IABIItem[];
   dataWebhook?: string[];
   dataForm?: IDataForm;
-  isMounted: React.MutableRefObject<boolean>;
 }
 
 interface IDetailABI {
@@ -58,11 +58,11 @@ interface IABIItem {
 const options = [
   {
     label: 'A - Z',
-    value: 'az',
+    value: ABI_OPTIONS.AZ,
   },
   {
     label: 'Z - A',
-    value: 'za',
+    value: ABI_OPTIONS.ZA,
   },
 ];
 
@@ -76,7 +76,6 @@ const ListSelect: FC<IListSelect> = ({
   onChangeDataSelected,
   dataWebhook,
   dataForm,
-  isMounted,
 }) => {
   const ITEM_LIMIT = 10;
   const HEIGHT_CHECKBOX = 32;
@@ -125,7 +124,7 @@ const ListSelect: FC<IListSelect> = ({
       );
     }
 
-    if (valueSort === 'az') {
+    if (valueSort === ABI_OPTIONS.AZ) {
       dataFiltered = dataFiltered.sort((a: any, b: any) => {
         if (a.name.toLowerCase() < b.name.toLowerCase()) {
           return -1;
@@ -137,7 +136,7 @@ const ListSelect: FC<IListSelect> = ({
       });
     }
 
-    if (valueSort === 'za') {
+    if (valueSort === ABI_OPTIONS.ZA) {
       dataFiltered = dataFiltered.sort((a: any, b: any) => {
         if (a.name.toLowerCase() < b.name.toLowerCase()) {
           return 1;
@@ -182,7 +181,6 @@ const ListSelect: FC<IListSelect> = ({
     const allData = dataShow.map((item: any) => item.name);
     setItemSelected(allData);
     onChangeDataSelected(dataShow);
-    isMounted.current = true;
   }, [dataShow]);
 
   const isIndeterminate =
@@ -193,7 +191,7 @@ const ListSelect: FC<IListSelect> = ({
   return (
     <Flex className="box-events">
       <Box className="label-events" width={'220px'}>
-        {type === 'function' ? 'Exposed Functions' : 'Structs'}
+        {type === ABI_TYPES.FUNCTION ? 'Exposed Functions' : 'Structs'}
       </Box>
       <Box ml={5} width="100%">
         <Scrollbars
@@ -268,16 +266,15 @@ const DetailABI: FC<IDetailABI> = ({
   dataWebhook,
 }) => {
   const [valueSearch, setValueSearch] = useState<string>('');
-  const [valueSort, setValueSort] = useState<string>('az');
-  const [exposedFunctions, setExposedFunctions] = useState<IABIItem[]>([]);
-  const [structs, setStructs] = useState<IABIItem[]>([]);
+  const [valueSort, setValueSort] = useState<string>(ABI_OPTIONS.AZ);
+  const [functionList, setFunctionList] = useState<IABIItem[]>([]);
+  const [structList, setStructList] = useState<IABIItem[]>([]);
   const [functionSelected, setFunctionSelected] = useState<IABIItem[]>([]);
   const [eventsSelected, setEventsSelected] = useState<IABIItem[]>([]);
-  const isMounted = useRef<boolean>(false);
 
   useEffect(() => {
-    const exposedFunctionsList: IABIItem[] = [];
-    const structsList: IABIItem[] = [];
+    const functions: IABIItem[] = [];
+    const structs: IABIItem[] = [];
 
     if (dataABI && !!dataABI.length) {
       dataABI?.forEach((packageItem: any) => {
@@ -286,7 +283,7 @@ const DetailABI: FC<IDetailABI> = ({
             if (moduleItem?.abi?.exposed_functions?.length) {
               moduleItem?.abi?.exposed_functions?.forEach(
                 (functionItem: any) => {
-                  exposedFunctionsList.push({
+                  functions.push({
                     name: `${address}::${moduleItem?.name}::${functionItem?.name}`,
                     type: 'exposed_functions',
                   });
@@ -296,7 +293,7 @@ const DetailABI: FC<IDetailABI> = ({
 
             if (moduleItem?.abi?.structs?.length) {
               moduleItem?.abi?.structs?.forEach((structItem: any) => {
-                structsList.push({
+                structs.push({
                   name: `${address}::${moduleItem?.name}::${structItem?.name}`,
                   type: 'structs',
                 });
@@ -307,8 +304,8 @@ const DetailABI: FC<IDetailABI> = ({
       });
     }
 
-    setExposedFunctions(exposedFunctionsList);
-    setStructs(structsList);
+    setFunctionList(functions);
+    setStructList(structs);
   }, [dataABI]);
 
   useEffect(() => {
@@ -325,6 +322,14 @@ const DetailABI: FC<IDetailABI> = ({
         },
       });
   }, [functionSelected, eventsSelected]);
+
+  const isInvalidChecklist = useMemo(() => {
+    if (!functionList.length && !structList.length) {
+      return false;
+    }
+
+    return !functionSelected.length && !eventsSelected.length;
+  }, [functionList, structList, functionSelected, eventsSelected]);
 
   return (
     <Box className="abi-detail" mb={4}>
@@ -362,11 +367,10 @@ const DetailABI: FC<IDetailABI> = ({
       </Flex>
 
       <Box pb={4}>
-        {!!exposedFunctions.length && (
+        {!!functionList.length && (
           <ListSelect
-            isMounted={isMounted}
-            type={'function'}
-            data={exposedFunctions}
+            type={ABI_TYPES.FUNCTION}
+            data={functionList}
             valueSearch={valueSearch}
             valueSort={valueSort}
             onChangeDataSelected={setFunctionSelected}
@@ -377,11 +381,10 @@ const DetailABI: FC<IDetailABI> = ({
           />
         )}
 
-        {!!structs.length && (
+        {!!structList.length && (
           <ListSelect
-            isMounted={isMounted}
-            type={'struct'}
-            data={structs}
+            type={ABI_TYPES.STRUCT}
+            data={structList}
             valueSearch={valueSearch}
             valueSort={valueSort}
             onChangeDataSelected={setEventsSelected}
@@ -391,15 +394,12 @@ const DetailABI: FC<IDetailABI> = ({
             dataForm={dataForm}
           />
         )}
-
-        {!functionSelected?.length &&
-          !eventsSelected.length &&
-          isMounted.current && (
-            <Text className="text-error">
-              The notification filter field is required
-            </Text>
-          )}
       </Box>
+      {isInvalidChecklist && (
+        <Box className="text-error">
+          The notification filter field is required
+        </Box>
+      )}
     </Box>
   );
 };

@@ -38,6 +38,11 @@
     .icon {
       margin-right: 10px;
     }
+
+    &--disabled {
+      background-color: $disable;
+      cursor: not-allowed;
+    }
   }
 
   &.small {

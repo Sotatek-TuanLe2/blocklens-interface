@@ -31,12 +31,12 @@ import {
   WEBHOOK_STATUS,
   WEBHOOK_TYPES,
 } from 'src/utils/utils-webhook';
-import { COIN_EVENTS } from './CreateWebhookPage/parts/PartFormCoinActivityAptos';
-import { getDataAddress } from './CreateWebhookPage/parts/PartFormModuleActivityAptos';
+import { COIN_EVENTS } from './WebHookCreatePage/parts/PartFormCoinActivityAptos';
+import { getDataAddress } from './WebHookCreatePage/parts/PartFormModuleActivityAptos';
 import {
   ListSelectEvent,
   TOKEN_EVENTS,
-} from './CreateWebhookPage/parts/PartFormTokenActivityAptos';
+} from './WebHookCreatePage/parts/PartFormTokenActivityAptos';
 
 interface IModuleAptosDetail {
   address: string;

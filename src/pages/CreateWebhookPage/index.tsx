@@ -24,34 +24,14 @@ import {
   optionsWebhookAptosType,
   optionsWebhookType,
 } from 'src/utils/utils-webhook';
-import PartFormAddressActivity from './parts/PartFormAddressActivity';
-import PartFormCoinActivityAptos from './parts/PartFormCoinActivityAptos';
-import PartFormContractActivity from './parts/PartFormContractActivity';
-import PartFormModuleActivityAptos from './parts/PartFormModuleActivityAptos';
-import PartFormNFTActivity from './parts/PartFormNFTActivity';
-import PartFormTokenActivity from './parts/PartFormTokenActivity';
-import PartFormTokenActivityAptos from './parts/PartFormTokenActivityAptos';
-
-interface IMetadata {
-  coinType?: string;
-  events?: string[];
-  functions?: string[];
-  addresses?: string[];
-  address?: string;
-  abi?: any[];
-  abiFilter?: any[];
-  tokenIds?: string;
-  creatorAddress?: string;
-  collectionName?: string;
-  name?: string;
-  module?: string;
-}
-
-export interface IDataForm {
-  webhook: string;
-  type: string;
-  metadata?: IMetadata;
-}
+import { IDataForm } from '../WebHookCreatePage';
+import PartFormAddressActivity from '../WebHookCreatePage/parts/PartFormAddressActivity';
+import PartFormCoinActivityAptos from '../WebHookCreatePage/parts/PartFormCoinActivityAptos';
+import PartFormContractActivity from '../WebHookCreatePage/parts/PartFormContractActivity';
+import PartFormModuleActivityAptos from '../WebHookCreatePage/parts/PartFormModuleActivityAptos';
+import PartFormNFTActivity from '../WebHookCreatePage/parts/PartFormNFTActivity';
+import PartFormTokenActivity from '../WebHookCreatePage/parts/PartFormTokenActivity';
+import PartFormTokenActivityAptos from '../WebHookCreatePage/parts/PartFormTokenActivityAptos';
 
 const CreateWebhook = () => {
   const { id: projectId } = useParams<{ id: string }>();

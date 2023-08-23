@@ -1,15 +1,11 @@
 import React, { useEffect, FC, useState, useCallback, useMemo } from 'react';
+import { useParams } from 'react-router';
 import 'src/styles/pages/AppDetail.scss';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/pages/CreateHookForm.scss';
-import { Box, Text } from '@chakra-ui/react';
+import { Text } from '@chakra-ui/react';
 import { IAppResponse } from 'src/utils/utils-app';
-import {
-  AppEditable,
-  AppEditableTags,
-  AppComplete,
-  AppButton,
-} from 'src/components';
+import { AppEditable, AppEditableTags, AppComplete } from 'src/components';
 import { IDataForm } from '..';
 
 interface IPartFormIdentificationProps {
@@ -25,6 +21,8 @@ const PartFormIdentification: FC<IPartFormIdentificationProps> = ({
   validator,
   setProjectSelected,
 }) => {
+  const { id: projectId } = useParams<{ id: string }>();
+
   const [projects, setProjects] = useState<IAppResponse[]>([]);
 
   const getProjects = useCallback(async () => {
@@ -35,6 +33,12 @@ const PartFormIdentification: FC<IPartFormIdentificationProps> = ({
       setProjects([]);
     }
   }, []);
+
+  useEffect(() => {
+    getProjects().then();
+  }, []);
+
+  const createByProject = !!projectId;
 
   const optionProjects = useMemo(() => {
     return projects.map((el: IAppResponse) => ({
@@ -51,10 +55,6 @@ const PartFormIdentification: FC<IPartFormIdentificationProps> = ({
 
     setDataForm({ ...dataForm, projectId: value });
   };
-
-  useEffect(() => {
-    getProjects().then();
-  }, []);
 
   return (
     <>
@@ -108,6 +108,7 @@ const PartFormIdentification: FC<IPartFormIdentificationProps> = ({
           value={dataForm?.projectId || ''}
           onChange={onChangeProject}
           placeholder="Add to a project"
+          disabled={createByProject}
         />
       </>
     </>

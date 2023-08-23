@@ -24,8 +24,9 @@ import { Link as ReactLink } from 'react-router-dom';
 import 'src/styles/components/AppUploadABI.scss';
 import { isMobile } from 'react-device-detect';
 import { DownloadIcon } from 'src/assets/icons';
-import { IDataForm } from '../pages/CreateWebhookPage';
+import { IDataForm } from '../pages/WebHookCreatePage';
 import { Scrollbars } from 'react-custom-scrollbars';
+import { ABI_OPTIONS, ABI_TYPES } from 'src/utils/common';
 
 export const TYPE_ABI = {
   NFT: 'NFT',
@@ -76,11 +77,11 @@ interface IListSelect {
 const options = [
   {
     label: 'A - Z',
-    value: 'az',
+    value: ABI_OPTIONS.AZ,
   },
   {
     label: 'Z - A',
-    value: 'za',
+    value: ABI_OPTIONS.ZA,
   },
 ];
 
@@ -172,7 +173,7 @@ const ListSelect: FC<IListSelect> = ({
       );
     }
 
-    if (valueSort === 'az') {
+    if (valueSort === ABI_OPTIONS.AZ) {
       dataFiltered = dataFiltered.sort((a: any, b: any) => {
         if (a.name.toLowerCase() < b.name.toLowerCase()) {
           return -1;
@@ -184,7 +185,7 @@ const ListSelect: FC<IListSelect> = ({
       });
     }
 
-    if (valueSort === 'za') {
+    if (valueSort === ABI_OPTIONS.ZA) {
       dataFiltered = dataFiltered.sort((a: any, b: any) => {
         if (a.name.toLowerCase() < b.name.toLowerCase()) {
           return 1;
@@ -248,79 +249,77 @@ const ListSelect: FC<IListSelect> = ({
   }, []);
 
   return (
-    <>
-      <Flex className="box-events">
-        <Box className="label-events">
-          {type === 'function' ? 'Functions' : 'Events'}
-        </Box>
-        <Box ml={5} width="100%">
-          <Scrollbars
-            style={{
-              width: '100%',
-              height: dataShow.length < ITEM_LIMIT ? '' : 9 * HEIGHT_CHECKBOX,
-            }}
-            autoHide
-            autoHeight={dataShow.length < ITEM_LIMIT}
-            renderThumbVertical={({ style, ...props }: any) => (
-              <div
-                style={{
-                  ...style,
-                  backgroundColor: '#8D91A5',
-                  borderRadius: '5px',
-                  cursor: 'pointer',
-                }}
-                {...props}
-              />
-            )}
-          >
-            {!!dataShow.length && (
-              <Checkbox
-                size="lg"
-                isChecked={allCheckedViewOnly || allChecked}
-                isIndeterminate={isIndeterminateViewOnly || isIndeterminate}
-                onChange={onSelectAll}
-                isDisabled={viewOnly}
-              >
-                All
-              </Checkbox>
-            )}
-            {!!dataShow.length ? (
-              dataShow?.map((item: any, index: number) => {
-                const inputs = item.inputs?.map((input: any) => {
-                  return input.name;
-                });
+    <Flex className="box-events">
+      <Box className="label-events">
+        {type === ABI_TYPES.FUNCTION ? 'Functions' : 'Events'}
+      </Box>
+      <Box ml={5} width="100%">
+        <Scrollbars
+          style={{
+            width: '100%',
+            height: dataShow.length < ITEM_LIMIT ? '' : 9 * HEIGHT_CHECKBOX,
+          }}
+          autoHide
+          autoHeight={dataShow.length < ITEM_LIMIT}
+          renderThumbVertical={({ style, ...props }: any) => (
+            <div
+              style={{
+                ...style,
+                backgroundColor: '#8D91A5',
+                borderRadius: '5px',
+                cursor: 'pointer',
+              }}
+              {...props}
+            />
+          )}
+        >
+          {!!dataShow.length && (
+            <Checkbox
+              size="lg"
+              isChecked={allCheckedViewOnly || allChecked}
+              isIndeterminate={isIndeterminateViewOnly || isIndeterminate}
+              onChange={onSelectAll}
+              isDisabled={viewOnly}
+            >
+              All
+            </Checkbox>
+          )}
+          {!!dataShow.length ? (
+            dataShow?.map((item: any, index: number) => {
+              const inputs = item.inputs?.map((input: any) => {
+                return input.name;
+              });
 
-                return (
-                  <Box key={index} my={2}>
-                    <Checkbox
-                      size="lg"
-                      isDisabled={viewOnly}
-                      value={item.name}
-                      isChecked={
-                        itemSelected.includes(item.id) ||
-                        IdsSelected.includes(item.id)
-                      }
-                      onChange={(e) => onChangeSelect(e, item.id)}
-                    >
-                      <Flex className="abi-option">
-                        {item.name}
-                        {!!inputs.length && (
-                          <Box className="inputs">({inputs.join(', ')})</Box>
-                        )}
-                      </Flex>
-                    </Checkbox>
-                  </Box>
-                );
-              })
-            ) : (
-              <Flex justifyContent={'center'}>
-                <Box> No data...</Box>
-              </Flex>
-            )}
-          </Scrollbars>
-        </Box>
-      </Flex>
-    </>
+              return (
+                <Box key={index} my={2}>
+                  <Checkbox
+                    size="lg"
+                    isDisabled={viewOnly}
+                    value={item.name}
+                    isChecked={
+                      itemSelected.includes(item.id) ||
+                      IdsSelected.includes(item.id)
+                    }
+                    onChange={(e) => onChangeSelect(e, item.id)}
+                  >
+                    <Flex className="abi-option">
+                      {item.name}
+                      {!!inputs.length && (
+                        <Box className="inputs">({inputs.join(', ')})</Box>
+                      )}
+                    </Flex>
+                  </Checkbox>
+                </Box>
+              );
+            })
+          ) : (
+            <Flex justifyContent={'center'}>
+              <Box> No data...</Box>
+            </Flex>
+          )}
+        </Scrollbars>
+      </Box>
+    </Flex>
   );
 };
 
@@ -337,7 +336,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
   const [ABIData, setABIData] = useState<any>([]);
   const [dataSelected, setDataSelected] = useState<any>([]);
   const [valueSearch, setValueSearch] = useState<string>('');
-  const [valueSort, setValueSort] = useState<string>('az');
+  const [valueSort, setValueSort] = useState<string>(ABI_OPTIONS.AZ);
   const inputRef = useRef<any>(null);
   const [isInsertManuallyAddress, setIsInsertManuallyAddress] =
     useState<boolean>(true);
@@ -450,7 +449,9 @@ const AppUploadABI: FC<IAppUploadABI> = ({
 
   const listFunction = useMemo(() => {
     const data = ABIData.filter((item: any) => {
-      return item.type === 'function' && item.stateMutability !== 'view';
+      return (
+        item.type === ABI_TYPES.FUNCTION && item.stateMutability !== 'view'
+      );
     });
 
     return data.map((func: any) => {
@@ -683,7 +684,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
 
           <>
             <ListSelect
-              type={'function'}
+              type={ABI_TYPES.FUNCTION}
               data={listFunction}
               dataSelected={dataSelected}
               onSelectData={setDataSelected}
@@ -693,7 +694,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
             />
 
             <ListSelect
-              type={'event'}
+              type={ABI_TYPES.EVENT}
               data={listEvent}
               dataSelected={dataSelected}
               onSelectData={setDataSelected}
