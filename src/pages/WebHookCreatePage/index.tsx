@@ -8,7 +8,7 @@ import React, {
   useState,
 } from 'react';
 import { useDispatch } from 'react-redux';
-import { useHistory, useParams } from 'react-router';
+import { useHistory, useLocation, useParams } from 'react-router';
 import {
   AppCard,
   AppLink,
@@ -91,16 +91,20 @@ const WebHookCreatePage: React.FC = () => {
   const { id: projectId } = useParams<{ id: string }>();
   const dispatch = useDispatch();
   const history = useHistory();
+  const location = useLocation();
   const forceUpdate = useForceRender();
 
-  const [dataForm, setDataForm] = useState<IDataForm>(initDataCreateWebHook);
-  const [type, setType] = useState<string>(WEBHOOK_TYPES.ADDRESS_ACTIVITY);
-  const [chainSelected, setChainSelected] = useState<ISelect & { networks: ISelect[] }>(CHAINS_CONFIG[0]);
+  const [projectSelected, setProjectSelected] = useState<any>(null);
+  const [chainSelected, setChainSelected] = useState<
+    ISelect & { networks: ISelect[] }
+  >(CHAINS_CONFIG[0]);
   const [networkSelected, setNetworkSelected] = useState<ISelect>(
     CHAINS_CONFIG[0].networks[0],
   );
-  const [projectSelected, setProjectSelected] = useState<any>(null);
-
+  const [typeSelected, setTypeSelected] = useState<string>(
+    WEBHOOK_TYPES.ADDRESS_ACTIVITY,
+  );
+  const [dataForm, setDataForm] = useState<IDataForm>(initDataCreateWebHook);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
 
   const validator = useRef(
@@ -111,14 +115,83 @@ const WebHookCreatePage: React.FC = () => {
     }),
   );
 
-  useEffect(() => {
-    if (projectSelected && projectSelected.chain) {
-      const newChain = CHAINS_CONFIG.find((item) => item.value === projectSelected?.chain);
-      if (!!newChain) {
-        setChainSelected(newChain);
+  const onChangeChain = (chain: string, updateNetwork = false) => {
+    const newChain = CHAINS_CONFIG.find((item) => item.value === chain);
+    if (!!newChain) {
+      setChainSelected(newChain);
+      if (updateNetwork) {
+        setNetworkSelected(newChain?.networks[0]);
       }
     }
+  };
+
+  const onChangeNetwork = (network: string) => {
+    const newNetwork = chainSelected.networks.find(
+      (item) => item.value === network,
+    );
+    if (!!newNetwork) {
+      setNetworkSelected(newNetwork);
+    }
+  };
+
+  const initProject = useCallback(async () => {
+    if (!projectId) {
+      return;
+    }
+    const project = await rf.getRequest('AppRequest').getAppDetail(projectId);
+    setDataForm((prevState) => ({
+      ...prevState,
+      projectId,
+    }));
+    setProjectSelected(project);
+    onChangeChain(project.chain);
+    onChangeNetwork(project.network);
+  }, [projectId]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const typeParams = params.get('type');
+
+    if (!!typeParams) {
+      setTypeSelected(typeParams);
+      return;
+    }
+
+    if (!!projectSelected && projectSelected.chain === CHAINS.SUI) {
+      setTypeSelected(WEBHOOK_TYPES.ADDRESS_ACTIVITY);
+    }
+  }, [location.search, projectSelected]);
+
+  useEffect(() => {
+    if (!!projectSelected && projectSelected.chain) {
+      setDataForm((prevState) => ({
+        ...prevState,
+        projectId: projectSelected.projectId,
+      }));
+      onChangeChain(projectSelected.chain);
+      onChangeNetwork(projectSelected.network);
+    }
   }, [projectSelected]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      const isDisabled =
+        !validator.current.allValid() ||
+        ((typeSelected === WEBHOOK_TYPES.CONTRACT_ACTIVITY ||
+          typeSelected === WEBHOOK_TYPES.TOKEN_ACTIVITY ||
+          typeSelected === WEBHOOK_TYPES.NFT_ACTIVITY) &&
+          !dataForm.metadata?.abi?.length) ||
+        (typeSelected === WEBHOOK_TYPES.ADDRESS_ACTIVITY &&
+          !dataForm?.metadata?.addresses?.length &&
+          !dataForm?.metadata?.events?.length) ||
+        (typeSelected === WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY &&
+          (!dataForm?.metadata?.events?.length ||
+            !dataForm?.metadata?.functions?.length) &&
+          !dataForm?.metadata?.address &&
+          !dataForm?.metadata?.module?.length);
+      setIsDisableSubmit(isDisabled);
+    }, 0);
+  }, [dataForm, typeSelected]);
 
   const optionTypes = useMemo(() => {
     if (chainSelected.value === CHAINS.APTOS) {
@@ -134,15 +207,8 @@ const WebHookCreatePage: React.FC = () => {
     return optionsWebhookType;
   }, [chainSelected]);
 
-  const initProject = useCallback(async () => {
-    setDataForm(prevState => ({
-      ...prevState,
-      projectId,
-    }));
-  }, [projectId]);
-
   const onChangeWebhookType = (value: string) => {
-    if (type === value) return;
+    if (typeSelected === value) return;
     setDataForm({
       ...initDataCreateWebHook,
       projectId: dataForm?.projectId,
@@ -150,7 +216,7 @@ const WebHookCreatePage: React.FC = () => {
     });
     validator.current.fields = [];
     forceUpdate();
-    setType(value);
+    setTypeSelected(value);
   };
 
   const _renderFormAddressActivity = () => {
@@ -158,7 +224,7 @@ const WebHookCreatePage: React.FC = () => {
       <PartFormAddressActivity
         dataForm={dataForm}
         setDataForm={setDataForm}
-        type={type}
+        type={typeSelected}
         validator={validator}
         chain={chainSelected.value}
       />
@@ -170,7 +236,7 @@ const WebHookCreatePage: React.FC = () => {
       <PartFormContractActivity
         dataForm={dataForm}
         setDataForm={setDataForm}
-        type={type}
+        type={typeSelected}
         validator={validator}
       />
     );
@@ -181,7 +247,7 @@ const WebHookCreatePage: React.FC = () => {
       <PartFormNFTActivity
         dataForm={dataForm}
         setDataForm={setDataForm}
-        type={type}
+        type={typeSelected}
         validator={validator}
         isCreateWithoutProject
       />
@@ -193,7 +259,7 @@ const WebHookCreatePage: React.FC = () => {
       <PartFormTokenActivity
         dataForm={dataForm}
         setDataForm={setDataForm}
-        type={type}
+        type={typeSelected}
         validator={validator}
       />
     );
@@ -234,36 +300,32 @@ const WebHookCreatePage: React.FC = () => {
   };
 
   const _renderFormWebhook = () => {
-    if (type === WEBHOOK_TYPES.NFT_ACTIVITY) {
+    if (typeSelected === WEBHOOK_TYPES.NFT_ACTIVITY) {
       return _renderFormNFTActivity();
     }
 
-    if (type === WEBHOOK_TYPES.CONTRACT_ACTIVITY) {
+    if (typeSelected === WEBHOOK_TYPES.CONTRACT_ACTIVITY) {
       return _renderFormContractActivity();
     }
 
-    if (type === WEBHOOK_TYPES.TOKEN_ACTIVITY) {
+    if (typeSelected === WEBHOOK_TYPES.TOKEN_ACTIVITY) {
       return _renderFormTokenActivity();
     }
 
-    if (type === WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY) {
+    if (typeSelected === WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY) {
       return _renderFormModuleActivityAptos();
     }
 
-    if (type === WEBHOOK_TYPES.APTOS_COIN_ACTIVITY) {
+    if (typeSelected === WEBHOOK_TYPES.APTOS_COIN_ACTIVITY) {
       return _renderFormCoinActivityAptos();
     }
 
-    if (type === WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY) {
+    if (typeSelected === WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY) {
       return _renderFormTokenActivityAptos();
     }
 
     return _renderFormAddressActivity();
   };
-
-  useEffect(() => {
-    setType(optionTypes[0].value);
-  }, [optionTypes]);
 
   const handleSubmitForm = async () => {
     if (!validator.current.allValid()) {
@@ -274,11 +336,11 @@ const WebHookCreatePage: React.FC = () => {
     const isEvmCheckboxInvalid =
       isEVMNetwork(chainSelected.value) &&
       !dataForm.metadata?.abiFilter?.length &&
-      type !== WEBHOOK_TYPES.ADDRESS_ACTIVITY;
+      typeSelected !== WEBHOOK_TYPES.ADDRESS_ACTIVITY;
     const isAptosCheckboxInvalid =
       isAptosNetwork(chainSelected.value) &&
-      type !== WEBHOOK_TYPES.ADDRESS_ACTIVITY &&
-      type !== WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY &&
+      typeSelected !== WEBHOOK_TYPES.ADDRESS_ACTIVITY &&
+      typeSelected !== WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY &&
       !dataForm.metadata?.events?.length;
 
     if (isEvmCheckboxInvalid || isAptosCheckboxInvalid) {
@@ -288,7 +350,7 @@ const WebHookCreatePage: React.FC = () => {
 
     const data = {
       ...dataForm,
-      type,
+      type: typeSelected,
       chain: chainSelected.value,
       network: networkSelected.value,
       metadata: {
@@ -320,26 +382,6 @@ const WebHookCreatePage: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    setTimeout(() => {
-      const isDisabled =
-        !validator.current.allValid() ||
-        ((type === WEBHOOK_TYPES.CONTRACT_ACTIVITY ||
-          type === WEBHOOK_TYPES.TOKEN_ACTIVITY ||
-          type === WEBHOOK_TYPES.NFT_ACTIVITY) &&
-          !dataForm.metadata?.abi?.length) ||
-        (type === WEBHOOK_TYPES.ADDRESS_ACTIVITY &&
-          !dataForm?.metadata?.addresses?.length &&
-          !dataForm?.metadata?.events?.length) ||
-        (type === WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY &&
-          (!dataForm?.metadata?.events?.length ||
-            !dataForm?.metadata?.functions?.length) &&
-          !dataForm?.metadata?.address &&
-          !dataForm?.metadata?.module?.length);
-      setIsDisableSubmit(isDisabled);
-    }, 0);
-  }, [dataForm, type]);
-
   const _renderIdentification = () => {
     return (
       <PartFormIdentification
@@ -352,19 +394,9 @@ const WebHookCreatePage: React.FC = () => {
   };
 
   const _renderDetailInfo = () => {
-    const onChangeChain = (value: string) => {
-      const newChain = CHAINS_CONFIG.find((chain) => chain.value === value);
-      if (!!newChain) {
-        setChainSelected(newChain);
-        setNetworkSelected(newChain?.networks[0]);
-      }
-    };
-
-    const onChangeNetwork = (value: string) => {
-      const newNetwork = chainSelected.networks.find(network => network.value === value);
-      if (!!newNetwork) {
-        setNetworkSelected(newNetwork);
-      }
+    const onSelectChain = (chain: string) => {
+      onChangeChain(chain, true);
+      setTypeSelected(optionTypes[0].value);
     };
 
     return (
@@ -373,7 +405,7 @@ const WebHookCreatePage: React.FC = () => {
           <AppField label={'Chain'} customWidth={'32%'} isRequired>
             <AppSelect2
               size="large"
-              onChange={onChangeChain}
+              onChange={onSelectChain}
               disabled={!!projectSelected}
               options={CHAINS_CONFIG}
               value={chainSelected.value}
@@ -395,7 +427,7 @@ const WebHookCreatePage: React.FC = () => {
               className="select-type-webhook"
               size="large"
               options={optionTypes}
-              value={type}
+              value={typeSelected}
               onChange={onChangeWebhookType}
             />
           </AppField>
@@ -405,10 +437,6 @@ const WebHookCreatePage: React.FC = () => {
       </Box>
     );
   };
-
-  useEffect(() => {
-    setType(optionTypes[0].value);
-  }, [optionTypes]);
 
   return (
     <BasePage className="create-webhook-container" onInitPage={initProject}>

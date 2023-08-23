@@ -5,11 +5,7 @@ import rf from 'src/requests/RequestFactory';
 import 'src/styles/pages/CreateHookForm.scss';
 import { Text } from '@chakra-ui/react';
 import { IAppResponse } from 'src/utils/utils-app';
-import {
-  AppEditable,
-  AppEditableTags,
-  AppComplete,
-} from 'src/components';
+import { AppEditable, AppEditableTags, AppComplete } from 'src/components';
 import { IDataForm } from '..';
 
 interface IPartFormIdentificationProps {

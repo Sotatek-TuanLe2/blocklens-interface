@@ -94,7 +94,9 @@ const AppComplete: FC<IAppCompletePops> = ({
       userSelect={'none'}
     >
       <Flex
-        className={`app-complete__btn-complete ${disabled ? 'app-complete__btn-complete--disabled' : ''}`}
+        className={`app-complete__btn-complete ${
+          disabled ? 'app-complete__btn-complete--disabled' : ''
+        }`}
         onClick={() => {
           !disabled && setOpen(true);
         }}
