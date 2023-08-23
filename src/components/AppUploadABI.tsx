@@ -241,22 +241,12 @@ const ListSelect: FC<IListSelect> = ({
     onSelectData([...dataRest]);
   };
 
-  const [initialized, setInitialized] = useState(false);
-
   useEffect(() => {
-    if (!initialized && !dataSelected.length) {
-      const initialSelected = dataShow.map((item: any) => item.id);
-      setItemSelected(initialSelected);
-      onSelectData([...dataShow]);
-      setInitialized(true);
-    }
-  }, [initialized, dataSelected, dataShow, onSelectData]);
+    const initialSelected = dataShow.map((item: any) => item.id);
+    setItemSelected(initialSelected);
+    onSelectData([...dataShow]);
+  }, []);
 
-  // useEffect(() => {
-  //   if (!dataSelected.length) {
-  //     setItemSelected([]);
-  //   }
-  // }, [dataSelected]);
   return (
     <>
       <Flex className="box-events">
