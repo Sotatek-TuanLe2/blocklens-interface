@@ -95,7 +95,7 @@ const AppSelect2: FC<IAppSelectPops> = ({
       userSelect={'none'}
     >
       <Flex
-        background={disabled && '#F5F5F5'}
+        background={disabled ? '#F5F5F5' : ''}
         className="app-select__btn-select"
         onClick={() => {
           !disabled && setOpen(!open);
