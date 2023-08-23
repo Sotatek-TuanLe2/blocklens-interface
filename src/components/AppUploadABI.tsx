@@ -26,6 +26,7 @@ import { isMobile } from 'react-device-detect';
 import { DownloadIcon } from 'src/assets/icons';
 import { IDataForm } from '../pages/WebHookCreatePage';
 import { Scrollbars } from 'react-custom-scrollbars';
+import { ABI_OPTIONS, ABI_TYPES } from 'src/utils/common';
 
 export const TYPE_ABI = {
   NFT: 'NFT',
@@ -76,11 +77,11 @@ interface IListSelect {
 const options = [
   {
     label: 'A - Z',
-    value: 'az',
+    value: ABI_OPTIONS.AZ,
   },
   {
     label: 'Z - A',
-    value: 'za',
+    value: ABI_OPTIONS.ZA,
   },
 ];
 
@@ -172,7 +173,7 @@ const ListSelect: FC<IListSelect> = ({
       );
     }
 
-    if (valueSort === 'az') {
+    if (valueSort === ABI_OPTIONS.AZ) {
       dataFiltered = dataFiltered.sort((a: any, b: any) => {
         if (a.name.toLowerCase() < b.name.toLowerCase()) {
           return -1;
@@ -184,7 +185,7 @@ const ListSelect: FC<IListSelect> = ({
       });
     }
 
-    if (valueSort === 'za') {
+    if (valueSort === ABI_OPTIONS.ZA) {
       dataFiltered = dataFiltered.sort((a: any, b: any) => {
         if (a.name.toLowerCase() < b.name.toLowerCase()) {
           return 1;
@@ -261,7 +262,7 @@ const ListSelect: FC<IListSelect> = ({
     <>
       <Flex className="box-events">
         <Box className="label-events">
-          {type === 'function' ? 'Functions' : 'Events'}
+          {type === ABI_TYPES.FUNCTION ? 'Functions' : 'Events'}
         </Box>
         <Box ml={5} width="100%">
           <Scrollbars
@@ -347,7 +348,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
   const [ABIData, setABIData] = useState<any>([]);
   const [dataSelected, setDataSelected] = useState<any>([]);
   const [valueSearch, setValueSearch] = useState<string>('');
-  const [valueSort, setValueSort] = useState<string>('az');
+  const [valueSort, setValueSort] = useState<string>(ABI_OPTIONS.AZ);
   const inputRef = useRef<any>(null);
   const [isInsertManuallyAddress, setIsInsertManuallyAddress] =
     useState<boolean>(true);
@@ -460,7 +461,9 @@ const AppUploadABI: FC<IAppUploadABI> = ({
 
   const listFunction = useMemo(() => {
     const data = ABIData.filter((item: any) => {
-      return item.type === 'function' && item.stateMutability !== 'view';
+      return (
+        item.type === ABI_TYPES.FUNCTION && item.stateMutability !== 'view'
+      );
     });
 
     return data.map((func: any) => {
@@ -693,7 +696,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
 
           <>
             <ListSelect
-              type={'function'}
+              type={ABI_TYPES.FUNCTION}
               data={listFunction}
               dataSelected={dataSelected}
               onSelectData={setDataSelected}
@@ -703,7 +706,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
             />
 
             <ListSelect
-              type={'event'}
+              type={ABI_TYPES.EVENT}
               data={listEvent}
               dataSelected={dataSelected}
               onSelectData={setDataSelected}

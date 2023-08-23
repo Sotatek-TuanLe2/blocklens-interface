@@ -136,3 +136,14 @@ export const TYPE_OF_MODAL = {
   FORK: 'FORK',
   CREATE: 'CREATE',
 };
+
+export const ABI_OPTIONS = {
+  AZ: 'az',
+  ZA: 'za',
+};
+
+export const ABI_TYPES = {
+  FUNCTION: 'function',
+  STRUCT: 'struct',
+  EVENT: 'event',
+};
