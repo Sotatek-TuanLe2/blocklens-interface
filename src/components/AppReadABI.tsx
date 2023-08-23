@@ -115,7 +115,7 @@ const ListSelect: FC<IListSelect> = ({
 
   const dataShow = useMemo(() => {
     let dataFiltered = data;
-
+    onChangeDataSelected([]);
     if (!!valueSearch) {
       dataFiltered = dataFiltered.filter((item: IABIItem) =>
         formatFunctions(item.name)
@@ -158,7 +158,6 @@ const ListSelect: FC<IListSelect> = ({
       ),
     [dataShow, itemSelected],
   );
-
   const onSelectAll = () => {
     if (!itemSelected.length) {
       const allData = dataShow.map((item: any) => item.name);
