@@ -24,7 +24,7 @@ import { Link as ReactLink } from 'react-router-dom';
 import 'src/styles/components/AppUploadABI.scss';
 import { isMobile } from 'react-device-detect';
 import { DownloadIcon } from 'src/assets/icons';
-import { IDataForm } from '../pages/CreateWebhookPage';
+import { IDataForm } from '../pages/WebHookCreatePage';
 import { Scrollbars } from 'react-custom-scrollbars';
 
 export const TYPE_ABI = {
