@@ -246,7 +246,7 @@ const ListSelect: FC<IListSelect> = ({
     const initialSelected = dataShow.map((item: any) => item.id);
     setItemSelected(initialSelected);
     onSelectData([...dataShow]);
-  }, []);
+  }, [dataShow]);
 
   return (
     <Flex className="box-events">
