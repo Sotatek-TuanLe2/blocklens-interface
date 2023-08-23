@@ -189,6 +189,8 @@ const ListSelect: FC<IListSelect> = ({
           style={{
             width: '100%',
             height: dataShow.length < ITEM_LIMIT ? '' : 9 * HEIGHT_CHECKBOX,
+            minHeight: 'unset',
+            maxHeight: 'unset',
           }}
           autoHide
           autoHeight={dataShow.length < ITEM_LIMIT}
@@ -199,6 +201,8 @@ const ListSelect: FC<IListSelect> = ({
                 backgroundColor: '#8D91A5',
                 borderRadius: '5px',
                 cursor: 'pointer',
+                minHeight: 'unset',
+                maxHeight: 'unset',
               }}
               {...props}
             />
@@ -258,8 +262,10 @@ const DetailABI: FC<IDetailABI> = ({
   const [functionSelected, setFunctionSelected] = useState<IABIItem[]>([]);
   const [eventsSelected, setEventsSelected] = useState<IABIItem[]>([]);
 
-  const notificationFilterData =
-    dataForm?.metadata?.events.concat(dataForm?.metadata?.functions) || [];
+  const notificationFilterData = [
+    ...(dataForm?.metadata?.events ?? []),
+    ...(dataForm?.metadata?.functions ?? []),
+  ];
 
   useEffect(() => {
     const exposedFunctionsList: IABIItem[] = [];
@@ -375,7 +381,8 @@ const DetailABI: FC<IDetailABI> = ({
             dataForm={dataForm}
           />
         )}
-        {!notificationFilterData?.length && (
+
+        {!notificationFilterData.length && (
           <Text className="text-error">
             The notification filter field is required
           </Text>
