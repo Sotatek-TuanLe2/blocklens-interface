@@ -7,6 +7,8 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import { useDispatch } from 'react-redux';
+import { useHistory, useParams } from 'react-router';
 import {
   AppCard,
   AppLink,
@@ -37,8 +39,7 @@ import PartFormCoinActivityAptos from '../CreateWebhookPage/parts/PartFormCoinAc
 import PartFormModuleActivityAptos from '../CreateWebhookPage/parts/PartFormModuleActivityAptos';
 import rf from 'src/requests/RequestFactory';
 import { getUserStats } from 'src/store/user';
-import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router';
+import { useForceRender } from 'src/hooks/useForceRender';
 
 interface IMetadata {
   coinType?: string;
@@ -80,22 +81,27 @@ const initDataCreateWebHook = {
   },
 };
 
+interface ISelect {
+  label: string;
+  value: string;
+  icon: string;
+}
+
 const WebHookCreatePage: React.FC = () => {
+  const { id: projectId } = useParams<{ id: string }>();
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const forceUpdate = useForceRender();
+
   const [dataForm, setDataForm] = useState<IDataForm>(initDataCreateWebHook);
   const [type, setType] = useState<string>(WEBHOOK_TYPES.ADDRESS_ACTIVITY);
-  const [chainSelected, setChainSelected] = useState<any>(CHAINS_CONFIG[0]);
-  const [networkSelected, setNetworkSelected] = useState<any>(
+  const [chainSelected, setChainSelected] = useState<ISelect & { networks: ISelect[] }>(CHAINS_CONFIG[0]);
+  const [networkSelected, setNetworkSelected] = useState<ISelect>(
     CHAINS_CONFIG[0].networks[0],
   );
   const [projectSelected, setProjectSelected] = useState<any>(null);
 
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
-  const [, updateState] = useState<any>();
-
-  const dispatch = useDispatch();
-  const history = useHistory();
-
-  const forceUpdate = useCallback(() => updateState({}), []);
 
   const validator = useRef(
     createValidator({
@@ -107,23 +113,12 @@ const WebHookCreatePage: React.FC = () => {
 
   useEffect(() => {
     if (projectSelected && projectSelected.chain) {
-      setChainSelected(
-        CHAINS_CONFIG.find((item) => item.value === projectSelected?.chain),
-      );
+      const newChain = CHAINS_CONFIG.find((item) => item.value === projectSelected?.chain);
+      if (!!newChain) {
+        setChainSelected(newChain);
+      }
     }
   }, [projectSelected]);
-
-  const onChangeWebhookType = (value: string) => {
-    if (type === value) return;
-    setDataForm({
-      ...initDataCreateWebHook,
-      projectId: dataForm?.projectId,
-      webhookName: dataForm?.webhookName,
-    });
-    validator.current.fields = [];
-    forceUpdate();
-    setType(value);
-  };
 
   const optionTypes = useMemo(() => {
     if (chainSelected.value === CHAINS.APTOS) {
@@ -138,6 +133,25 @@ const WebHookCreatePage: React.FC = () => {
 
     return optionsWebhookType;
   }, [chainSelected]);
+
+  const initProject = useCallback(async () => {
+    setDataForm(prevState => ({
+      ...prevState,
+      projectId,
+    }));
+  }, [projectId]);
+
+  const onChangeWebhookType = (value: string) => {
+    if (type === value) return;
+    setDataForm({
+      ...initDataCreateWebHook,
+      projectId: dataForm?.projectId,
+      webhookName: dataForm?.webhookName,
+    });
+    validator.current.fields = [];
+    forceUpdate();
+    setType(value);
+  };
 
   const _renderFormAddressActivity = () => {
     return (
@@ -338,21 +352,28 @@ const WebHookCreatePage: React.FC = () => {
   };
 
   const _renderDetailInfo = () => {
+    const onChangeChain = (value: string) => {
+      const newChain = CHAINS_CONFIG.find((chain) => chain.value === value);
+      if (!!newChain) {
+        setChainSelected(newChain);
+        setNetworkSelected(newChain?.networks[0]);
+      }
+    };
+
+    const onChangeNetwork = (value: string) => {
+      const newNetwork = chainSelected.networks.find(network => network.value === value);
+      if (!!newNetwork) {
+        setNetworkSelected(newNetwork);
+      }
+    };
+
     return (
       <Box>
         <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
           <AppField label={'Chain'} customWidth={'32%'} isRequired>
             <AppSelect2
               size="large"
-              onChange={(value: string) => {
-                setChainSelected(
-                  CHAINS_CONFIG.find((chain) => chain.value === value),
-                );
-                setNetworkSelected(
-                  CHAINS_CONFIG.find((chain) => chain.value === value)
-                    ?.networks[0],
-                );
-              }}
+              onChange={onChangeChain}
               disabled={!!projectSelected}
               options={CHAINS_CONFIG}
               value={chainSelected.value}
@@ -362,13 +383,7 @@ const WebHookCreatePage: React.FC = () => {
           <AppField label={'Network'} customWidth={'32%'} isRequired>
             <AppSelect2
               size="large"
-              onChange={(value: string) => {
-                setNetworkSelected(
-                  chainSelected.networks.find(
-                    (network: any) => network.value === value,
-                  ),
-                );
-              }}
+              onChange={onChangeNetwork}
               options={chainSelected.networks}
               value={networkSelected.value}
               disabled={!!projectSelected}
@@ -396,7 +411,7 @@ const WebHookCreatePage: React.FC = () => {
   }, [optionTypes]);
 
   return (
-    <BasePage className="create-webhook-container">
+    <BasePage className="create-webhook-container" onInitPage={initProject}>
       <>
         <Flex className="create-webhook__header">
           <Flex className="name">

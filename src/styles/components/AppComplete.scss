@@ -24,6 +24,7 @@
   position: relative;
   z-index: 2;
 
+
   &__btn-complete {
     @include text-medium-regular;
     border: 1px solid $line;
@@ -37,6 +38,11 @@
 
     .icon {
       margin-right: 10px;
+    }
+
+    &--disabled {
+      background-color: $disable;
+      cursor: not-allowed;
     }
   }
 

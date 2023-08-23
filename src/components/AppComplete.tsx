@@ -94,7 +94,7 @@ const AppComplete: FC<IAppCompletePops> = ({
       userSelect={'none'}
     >
       <Flex
-        className="app-complete__btn-complete"
+        className={`app-complete__btn-complete ${disabled ? 'app-complete__btn-complete--disabled' : ''}`}
         onClick={() => {
           !disabled && setOpen(true);
         }}
@@ -116,7 +116,7 @@ const AppComplete: FC<IAppCompletePops> = ({
               onChange={(e) => open && setInputValue(e.target.value)}
             />
 
-            {inputValue && (
+            {inputValue && !disabled && (
               <Box
                 fontSize={'12px'}
                 color={'line.100'}
