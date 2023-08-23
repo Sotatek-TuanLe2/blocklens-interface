@@ -310,10 +310,17 @@ const WebHookCreatePage: React.FC = () => {
     setIsSendDemoMsg(true);
 
     try {
-      // call api
-      toastSuccess({ message: 'Demo Successfully!' });
+      await rf.getRequest('RegistrationRequest').sendDemoWebhook({
+        chain: chainSelected?.value,
+        type: type,
+        network: networkSelected?.value,
+        webhook: dataForm.webhook,
+      });
+      toastSuccess({
+        message: 'Send Demo Successfully!',
+      });
     } catch (e: any) {
-      toastError({ message: e?.message || 'Demo Fail!' });
+      toastError({ message: e?.message || 'Send Demo Fail!' });
     }
 
     setTimeout(() => {

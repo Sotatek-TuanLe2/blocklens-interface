@@ -50,4 +50,9 @@ export default class RegistrationRequest extends BaseRequest {
     const url = `/api.etherscan.io/api?module=contract&action=getabi&address=${address}&apikey=3CVYQVYCIFFT6VM8W3IZCPDKUYJMU23WRY`;
     return this.get(url);
   }
+
+  sendDemoWebhook(params: any) {
+    const url = '/registrations/test-webhook';
+    return this.post(url, params);
+  }
 }
