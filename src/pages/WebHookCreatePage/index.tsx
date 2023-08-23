@@ -318,9 +318,9 @@ const WebHookCreatePage: React.FC = () => {
           !dataForm?.metadata?.addresses?.length &&
           !dataForm?.metadata?.events?.length) ||
         (type === WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY &&
-          !dataForm?.metadata?.events?.length &&
+          (!dataForm?.metadata?.events?.length ||
+            !dataForm?.metadata?.functions?.length) &&
           !dataForm?.metadata?.address &&
-          !dataForm?.metadata?.functions?.length &&
           !dataForm?.metadata?.module?.length);
       setIsDisableSubmit(isDisabled);
     }, 0);
