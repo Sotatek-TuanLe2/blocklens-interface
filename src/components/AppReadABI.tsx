@@ -79,33 +79,18 @@ const ListSelect: FC<IListSelect> = ({
 }) => {
   const ITEM_LIMIT = 10;
   const HEIGHT_CHECKBOX = 32;
-  const [itemSelected, setItemSelected] = useState<any>([]);
-
-  useEffect(() => {
-    if (isViewOnly) {
-      setItemSelected(dataWebhook);
-    }
-  }, [isViewOnly, dataWebhook]);
 
   const onChangeSelect = (e: ChangeEvent<HTMLInputElement>, id: string) => {
-    let newItemsSelected = [];
-
     if (!e.target.checked) {
-      newItemsSelected = [
-        ...itemSelected.filter((item: string) => item !== id),
-      ];
       onChangeDataSelected([
         ...dataSelected.filter((item: IABIItem) => item.name !== id),
       ]);
     } else {
-      newItemsSelected = [...itemSelected, id];
       onChangeDataSelected([
         ...dataSelected,
         data.filter((item: IABIItem) => item.name === id)[0],
       ]);
     }
-
-    setItemSelected(newItemsSelected);
   };
 
   const formatFunctions = (address: string) => {
@@ -115,7 +100,6 @@ const ListSelect: FC<IListSelect> = ({
 
   const dataShow = useMemo(() => {
     let dataFiltered = data;
-    onChangeDataSelected([]);
     if (!!valueSearch) {
       dataFiltered = dataFiltered.filter((item: IABIItem) =>
         formatFunctions(item.name)
@@ -149,42 +133,28 @@ const ListSelect: FC<IListSelect> = ({
     }
 
     return dataFiltered;
-  }, [data, valueSearch, valueSort, dataForm?.metadata?.module]);
+  }, [data, valueSearch, valueSort]);
 
   const allChecked = useMemo(
     () =>
       dataShow.every((data: IABIItem) =>
-        itemSelected.some((id: string) => data.name === id),
+        dataSelected.some((item) => data.name === item.name),
       ),
-    [dataShow, itemSelected],
+    [dataShow, dataSelected],
   );
+
   const onSelectAll = () => {
-    if (!itemSelected.length) {
-      const allData = dataShow.map((item: any) => item.name);
-      setItemSelected(allData);
+    if (!dataSelected.length) {
       onChangeDataSelected(dataShow);
       return;
     }
 
-    if (allChecked) {
-      onChangeDataSelected([]);
-      setItemSelected([]);
-    } else {
-      const allData = dataShow.map((item: any) => item.name);
-      setItemSelected(allData);
-      onChangeDataSelected(dataShow);
-    }
+    onChangeDataSelected(allChecked ? [] : dataShow);
   };
-
-  useEffect(() => {
-    const allData = dataShow.map((item: any) => item.name);
-    setItemSelected(allData);
-    onChangeDataSelected(dataShow);
-  }, [dataShow]);
 
   const isIndeterminate =
     dataShow.some((data: IABIItem) =>
-      itemSelected.some((id: string) => data.name === id),
+      dataSelected.some((item) => data.name === item.name),
     ) && !allChecked;
 
   return (
@@ -236,7 +206,9 @@ const ListSelect: FC<IListSelect> = ({
                   size="lg"
                   isDisabled={isViewOnly}
                   value={item.name}
-                  isChecked={itemSelected.includes(item.name)}
+                  isChecked={dataSelected.some(
+                    (data) => data.name === item.name,
+                  )}
                   onChange={(e) => onChangeSelect(e, item.name)}
                 >
                   <Flex className="abi-option">
@@ -305,6 +277,8 @@ const DetailABI: FC<IDetailABI> = ({
 
     setFunctionList(functions);
     setStructList(structs);
+    setFunctionSelected(functions);
+    setEventsSelected(structs);
   }, [dataABI]);
 
   useEffect(() => {
