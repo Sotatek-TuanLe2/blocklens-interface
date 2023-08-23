@@ -37,8 +37,6 @@ interface IListSelect {
   isViewOnly?: boolean;
   onChangeDataSelected: (data: IABIItem[]) => void;
   dataSelected: IABIItem[];
-  dataWebhook?: string[];
-  dataForm?: IDataForm;
 }
 
 interface IDetailABI {
@@ -74,8 +72,6 @@ const ListSelect: FC<IListSelect> = ({
   isViewOnly,
   dataSelected,
   onChangeDataSelected,
-  dataWebhook,
-  dataForm,
 }) => {
   const ITEM_LIMIT = 10;
   const HEIGHT_CHECKBOX = 32;
@@ -277,8 +273,17 @@ const DetailABI: FC<IDetailABI> = ({
 
     setFunctionList(functions);
     setStructList(structs);
-    setFunctionSelected(functions);
-    setEventsSelected(structs);
+    if (isViewOnly) {
+      setFunctionSelected(
+        functions.filter((item) => dataWebhook?.functions?.includes(item.name)),
+      );
+      setEventsSelected(
+        structs.filter((item) => dataWebhook?.events?.includes(item.name)),
+      );
+    } else {
+      setFunctionSelected(functions);
+      setEventsSelected(structs);
+    }
   }, [dataABI]);
 
   useEffect(() => {
@@ -349,8 +354,6 @@ const DetailABI: FC<IDetailABI> = ({
             onChangeDataSelected={setFunctionSelected}
             dataSelected={functionSelected}
             isViewOnly={isViewOnly}
-            dataWebhook={dataWebhook?.functions}
-            dataForm={dataForm}
           />
         )}
 
@@ -363,8 +366,6 @@ const DetailABI: FC<IDetailABI> = ({
             onChangeDataSelected={setEventsSelected}
             dataSelected={eventsSelected}
             isViewOnly={isViewOnly}
-            dataWebhook={dataWebhook?.events}
-            dataForm={dataForm}
           />
         )}
       </Box>
