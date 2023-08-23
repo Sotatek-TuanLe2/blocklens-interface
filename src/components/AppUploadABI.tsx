@@ -253,85 +253,78 @@ const ListSelect: FC<IListSelect> = ({
     }
   }, [initialized, dataSelected, dataShow, onSelectData]);
 
-  // useEffect(() => {
-  //   if (!dataSelected.length) {
-  //     setItemSelected([]);
-  //   }
-  // }, [dataSelected]);
   return (
-    <>
-      <Flex className="box-events">
-        <Box className="label-events">
-          {type === ABI_TYPES.FUNCTION ? 'Functions' : 'Events'}
-        </Box>
-        <Box ml={5} width="100%">
-          <Scrollbars
-            style={{
-              width: '100%',
-              height: dataShow.length < ITEM_LIMIT ? '' : 9 * HEIGHT_CHECKBOX,
-            }}
-            autoHide
-            autoHeight={dataShow.length < ITEM_LIMIT}
-            renderThumbVertical={({ style, ...props }: any) => (
-              <div
-                style={{
-                  ...style,
-                  backgroundColor: '#8D91A5',
-                  borderRadius: '5px',
-                  cursor: 'pointer',
-                }}
-                {...props}
-              />
-            )}
-          >
-            {!!dataShow.length && (
-              <Checkbox
-                size="lg"
-                isChecked={allCheckedViewOnly || allChecked}
-                isIndeterminate={isIndeterminateViewOnly || isIndeterminate}
-                onChange={onSelectAll}
-                isDisabled={viewOnly}
-              >
-                All
-              </Checkbox>
-            )}
-            {!!dataShow.length ? (
-              dataShow?.map((item: any, index: number) => {
-                const inputs = item.inputs?.map((input: any) => {
-                  return input.name;
-                });
+    <Flex className="box-events">
+      <Box className="label-events">
+        {type === ABI_TYPES.FUNCTION ? 'Functions' : 'Events'}
+      </Box>
+      <Box ml={5} width="100%">
+        <Scrollbars
+          style={{
+            width: '100%',
+            height: dataShow.length < ITEM_LIMIT ? '' : 9 * HEIGHT_CHECKBOX,
+          }}
+          autoHide
+          autoHeight={dataShow.length < ITEM_LIMIT}
+          renderThumbVertical={({ style, ...props }: any) => (
+            <div
+              style={{
+                ...style,
+                backgroundColor: '#8D91A5',
+                borderRadius: '5px',
+                cursor: 'pointer',
+              }}
+              {...props}
+            />
+          )}
+        >
+          {!!dataShow.length && (
+            <Checkbox
+              size="lg"
+              isChecked={allCheckedViewOnly || allChecked}
+              isIndeterminate={isIndeterminateViewOnly || isIndeterminate}
+              onChange={onSelectAll}
+              isDisabled={viewOnly}
+            >
+              All
+            </Checkbox>
+          )}
+          {!!dataShow.length ? (
+            dataShow?.map((item: any, index: number) => {
+              const inputs = item.inputs?.map((input: any) => {
+                return input.name;
+              });
 
-                return (
-                  <Box key={index} my={2}>
-                    <Checkbox
-                      size="lg"
-                      isDisabled={viewOnly}
-                      value={item.name}
-                      isChecked={
-                        itemSelected.includes(item.id) ||
-                        IdsSelected.includes(item.id)
-                      }
-                      onChange={(e) => onChangeSelect(e, item.id)}
-                    >
-                      <Flex className="abi-option">
-                        {item.name}
-                        {!!inputs.length && (
-                          <Box className="inputs">({inputs.join(', ')})</Box>
-                        )}
-                      </Flex>
-                    </Checkbox>
-                  </Box>
-                );
-              })
-            ) : (
-              <Flex justifyContent={'center'}>
-                <Box> No data...</Box>
-              </Flex>
-            )}
-          </Scrollbars>
-        </Box>
-      </Flex>
-    </>
+              return (
+                <Box key={index} my={2}>
+                  <Checkbox
+                    size="lg"
+                    isDisabled={viewOnly}
+                    value={item.name}
+                    isChecked={
+                      itemSelected.includes(item.id) ||
+                      IdsSelected.includes(item.id)
+                    }
+                    onChange={(e) => onChangeSelect(e, item.id)}
+                  >
+                    <Flex className="abi-option">
+                      {item.name}
+                      {!!inputs.length && (
+                        <Box className="inputs">({inputs.join(', ')})</Box>
+                      )}
+                    </Flex>
+                  </Checkbox>
+                </Box>
+              );
+            })
+          ) : (
+            <Flex justifyContent={'center'}>
+              <Box> No data...</Box>
+            </Flex>
+          )}
+        </Scrollbars>
+      </Box>
+    </Flex>
   );
 };
 
