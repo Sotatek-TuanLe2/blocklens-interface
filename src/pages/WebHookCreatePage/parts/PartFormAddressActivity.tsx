@@ -2,7 +2,7 @@ import { Box, Flex, Link } from '@chakra-ui/react';
 import { AppField, AppInput, AppTextarea } from 'src/components';
 import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
 import React, { FC, useEffect, useMemo, useRef, useState } from 'react';
-import { IDataForm } from '../index';
+import { IDataForm } from '../../WebHookCreatePage';
 import { toastError } from 'src/utils/utils-notify';
 import { CloseIcon } from '@chakra-ui/icons';
 import { Link as ReactLink } from 'react-router-dom';
