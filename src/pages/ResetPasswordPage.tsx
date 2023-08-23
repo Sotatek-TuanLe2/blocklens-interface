@@ -2,6 +2,7 @@ import { Box, Flex, Text } from '@chakra-ui/react';
 import { FC, useEffect, useRef, useState } from 'react';
 import { useHistory, useLocation } from 'react-router';
 import { AppButton, AppCard, AppField, AppInput } from 'src/components';
+import { COMMON_ERROR_MESSAGE } from 'src/constants';
 import GuestPage from 'src/layouts/GuestPage';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/pages/LoginPage.scss';
@@ -63,7 +64,12 @@ const ResetPasswordPage: FC = () => {
         });
       }
     } catch (error) {
-      setErrorMessage(getErrorMessage(error));
+      const errorMessage = getErrorMessage(error);
+      if (errorMessage !== COMMON_ERROR_MESSAGE) {
+        setErrorMessage(errorMessage);
+      } else {
+        toastError({ message: errorMessage });
+      }
     }
   };
 
