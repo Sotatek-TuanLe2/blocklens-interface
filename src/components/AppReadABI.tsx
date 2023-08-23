@@ -197,6 +197,7 @@ const ListSelect: FC<IListSelect> = ({
       </Box>
       <Box ml={5} width="100%">
         <Scrollbars
+          className="scroll-filter"
           style={{
             width: '100%',
             height: dataShow.length < ITEM_LIMIT ? '' : 9 * HEIGHT_CHECKBOX,
