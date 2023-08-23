@@ -17,7 +17,6 @@ import AppDetail from './pages/AppDetail';
 import VerifyAccountPage from './pages/VerifyAccountPage';
 import { useDispatch } from 'react-redux';
 import ResetPasswordPage from './pages/ResetPasswordPage';
-import CreateWebhookPage from './pages/CreateWebhookPage';
 import WebhookDetail from './pages/WebhookDetail';
 import MessagesHistory from './pages/MessagesHistoryPage';
 // import BillingPage from './pages/BillingPage';
@@ -135,7 +134,7 @@ const Routes: FC<RouteComponentProps> = () => {
 
         <PrivateRoute
           path={'/create-webhook/:id'}
-          component={CreateWebhookPage}
+          component={WebHookCreatePage}
         />
 
         <PrivateRoute path={`${ROUTES.APP}/:id`} component={AppDetail} />
