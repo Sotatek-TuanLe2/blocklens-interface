@@ -11,7 +11,7 @@ import { IDataForm } from '..';
 interface IPartFormIdentificationProps {
   dataForm: IDataForm;
   setDataForm: (value: IDataForm) => void;
-  setProjectSelected: (app: IAppResponse | null) => void;
+  onSelectProject: (app: IAppResponse | null) => void;
   validator: any;
 }
 
@@ -19,7 +19,7 @@ const PartFormIdentification: FC<IPartFormIdentificationProps> = ({
   dataForm,
   setDataForm,
   validator,
-  setProjectSelected,
+  onSelectProject,
 }) => {
   const { id: projectId } = useParams<{ id: string }>();
 
@@ -49,7 +49,7 @@ const PartFormIdentification: FC<IPartFormIdentificationProps> = ({
 
   const onChangeProject = (value: string) => {
     const projectSelected = projects.find((item) => item.projectId === value);
-    setProjectSelected(projectSelected || null);
+    onSelectProject(projectSelected || null);
 
     if (dataForm.projectId === value) return;
 
