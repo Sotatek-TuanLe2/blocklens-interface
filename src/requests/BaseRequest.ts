@@ -9,7 +9,6 @@ import {
 } from 'src/utils/utils-auth';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
 import { RECAPTCHA_ACTIONS } from 'src/utils/common';
-import { toastError } from 'src/utils/utils-notify';
 import { COMMON_ERROR_MESSAGE } from 'src/constants';
 
 export default class BaseRequest {

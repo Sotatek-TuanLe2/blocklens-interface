@@ -713,4 +713,5 @@ export enum DisplayType {
 
 export const TIME_EXPIRE_TOKEN_CLIENT = 120 * 60 * 1000; //miliseconds
 
-export const COMMON_ERROR_MESSAGE = 'Something went wrong!';
+export const COMMON_ERROR_MESSAGE =
+  'The blocklens is busy, please try again later!';

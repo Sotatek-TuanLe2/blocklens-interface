@@ -65,11 +65,9 @@ const LoginPage: FC = () => {
     } catch (e) {
       setRecaptchaToRequest(null);
       const errorMessage = getErrorMessage(e);
-      if (errorMessage !== COMMON_ERROR_MESSAGE) {
-        setErrorMessage(errorMessage);
-      } else {
-        toastError({ message: errorMessage });
-      }
+      errorMessage !== COMMON_ERROR_MESSAGE
+        ? setErrorMessage(errorMessage)
+        : toastError({ message: errorMessage });
     }
   };
 
