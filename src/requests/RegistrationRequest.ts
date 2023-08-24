@@ -41,7 +41,7 @@ export default class RegistrationRequest extends BaseRequest {
     return this.delete(url);
   }
 
-  getRegistration(registrationId: any) {
+  getRegistration(registrationId: string) {
     const url = `/registrations/${registrationId}`;
     return this.get(url);
   }
@@ -49,5 +49,15 @@ export default class RegistrationRequest extends BaseRequest {
   getContractABI(address: string) {
     const url = `/api.etherscan.io/api?module=contract&action=getabi&address=${address}&apikey=3CVYQVYCIFFT6VM8W3IZCPDKUYJMU23WRY`;
     return this.get(url);
+  }
+
+  sendDemoWebhook(params: {
+    chain: string;
+    network: string;
+    type: string;
+    webhook: string;
+  }) {
+    const url = '/registrations/test-webhook';
+    return this.post(url, params);
   }
 }

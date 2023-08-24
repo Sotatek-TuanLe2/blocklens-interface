@@ -104,6 +104,7 @@ const WebHookCreatePage: React.FC = () => {
   const [typeSelected, setTypeSelected] = useState<string>('');
   const [dataForm, setDataForm] = useState<IDataForm>(initDataCreateWebHook);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
+  const [isSendingDemoMsg, setIsSendingDemoMsg] = useState(false);
 
   const validator = useRef(
     createValidator({
@@ -330,6 +331,29 @@ const WebHookCreatePage: React.FC = () => {
     }
   };
 
+  const handleSendDemoMsg = async () => {
+    if (isSendingDemoMsg) return;
+    setIsSendingDemoMsg(true);
+
+    try {
+      await rf.getRequest('RegistrationRequest').sendDemoWebhook({
+        chain: chainSelected.value,
+        type: typeSelected,
+        network: networkSelected.value,
+        webhook: dataForm.webhook,
+      });
+      toastSuccess({
+        message: 'Send Demo Successfully!',
+      });
+    } catch (e: any) {
+      toastError({ message: e?.message || 'Send Demo Fail!' });
+    }
+
+    setTimeout(() => {
+      setIsSendingDemoMsg(false);
+    }, 4000);
+  };
+
   const handleSubmitForm = async () => {
     if (!validator.current.allValid()) {
       validator.current.showMessages();
@@ -480,14 +504,24 @@ const WebHookCreatePage: React.FC = () => {
                   }}
                   pr={{ base: 5, md: '220px' }}
                   endAdornment={
-                    <AppButton disabled w={190} size={'sm'}>
-                      Send Demo Message
+                    <AppButton
+                      onClick={handleSendDemoMsg}
+                      disabled={isDisableSubmit}
+                      w={190}
+                      size={'sm'}
+                    >
+                      {isSendingDemoMsg ? 'Message sent!' : 'Send Demo Message'}
                     </AppButton>
                   }
                 />
                 <Show below="md">
-                  <AppButton disabled w={190} size={'sm'}>
-                    Send Demo Message
+                  <AppButton
+                    onClick={handleSendDemoMsg}
+                    disabled={isDisableSubmit}
+                    w={190}
+                    size={'sm'}
+                  >
+                    {isSendingDemoMsg ? 'Message sent!' : 'Send Demo Message'}
                   </AppButton>
                 </Show>
               </AppField>
