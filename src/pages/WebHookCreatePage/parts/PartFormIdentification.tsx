@@ -1,21 +1,17 @@
 import React, { useEffect, FC, useState, useCallback, useMemo } from 'react';
+import { useParams } from 'react-router';
 import 'src/styles/pages/AppDetail.scss';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/pages/CreateHookForm.scss';
-import { Box, Text } from '@chakra-ui/react';
+import { Text } from '@chakra-ui/react';
 import { IAppResponse } from 'src/utils/utils-app';
-import {
-  AppEditable,
-  AppEditableTags,
-  AppComplete,
-  AppButton,
-} from 'src/components';
+import { AppEditable, AppEditableTags, AppComplete } from 'src/components';
 import { IDataForm } from '..';
 
 interface IPartFormIdentificationProps {
   dataForm: IDataForm;
   setDataForm: (value: IDataForm) => void;
-  setProjectSelected: (app: IAppResponse | null) => void;
+  onSelectProject: (app: IAppResponse | null) => void;
   validator: any;
 }
 
@@ -23,8 +19,10 @@ const PartFormIdentification: FC<IPartFormIdentificationProps> = ({
   dataForm,
   setDataForm,
   validator,
-  setProjectSelected,
+  onSelectProject,
 }) => {
+  const { id: projectId } = useParams<{ id: string }>();
+
   const [projects, setProjects] = useState<IAppResponse[]>([]);
 
   const getProjects = useCallback(async () => {
@@ -36,6 +34,12 @@ const PartFormIdentification: FC<IPartFormIdentificationProps> = ({
     }
   }, []);
 
+  useEffect(() => {
+    getProjects().then();
+  }, []);
+
+  const createByProject = !!projectId;
+
   const optionProjects = useMemo(() => {
     return projects.map((el: IAppResponse) => ({
       value: el.projectId,
@@ -45,16 +49,12 @@ const PartFormIdentification: FC<IPartFormIdentificationProps> = ({
 
   const onChangeProject = (value: string) => {
     const projectSelected = projects.find((item) => item.projectId === value);
-    setProjectSelected(projectSelected || null);
+    onSelectProject(projectSelected || null);
 
     if (dataForm.projectId === value) return;
 
     setDataForm({ ...dataForm, projectId: value });
   };
-
-  useEffect(() => {
-    getProjects().then();
-  }, []);
 
   return (
     <>
@@ -108,6 +108,7 @@ const PartFormIdentification: FC<IPartFormIdentificationProps> = ({
           value={dataForm?.projectId || ''}
           onChange={onChangeProject}
           placeholder="Add to a project"
+          disabled={createByProject}
         />
       </>
     </>

@@ -5,6 +5,7 @@ import {
   Checkbox,
   Tooltip,
   useDisclosure,
+  Text,
 } from '@chakra-ui/react';
 import { toastError } from 'src/utils/utils-notify';
 import React, {
@@ -15,7 +16,7 @@ import React, {
   ChangeEvent,
   useEffect,
 } from 'react';
-import { AppInput, AppSelect2, AppTextarea } from 'src/components';
+import { AppInput, AppSelect2 } from 'src/components';
 import { CloseIcon } from '@chakra-ui/icons';
 import ERC721 from 'src/abi/ERC-721.json';
 import ERC20 from 'src/abi/erc20.json';
@@ -23,7 +24,9 @@ import { Link as ReactLink } from 'react-router-dom';
 import 'src/styles/components/AppUploadABI.scss';
 import { isMobile } from 'react-device-detect';
 import { DownloadIcon } from 'src/assets/icons';
+import { IDataForm } from '../pages/WebHookCreatePage';
 import { Scrollbars } from 'react-custom-scrollbars';
+import { ABI_OPTIONS, ABI_TYPES } from 'src/utils/common';
 
 export const TYPE_ABI = {
   NFT: 'NFT',
@@ -73,11 +76,11 @@ interface IListSelect {
 const options = [
   {
     label: 'A - Z',
-    value: 'az',
+    value: ABI_OPTIONS.AZ,
   },
   {
     label: 'Z - A',
-    value: 'za',
+    value: ABI_OPTIONS.ZA,
   },
 ];
 
@@ -138,6 +141,8 @@ const ListSelect: FC<IListSelect> = ({
   valueSort,
   viewOnly,
 }) => {
+  const ITEM_LIMIT = 10;
+  const HEIGHT_CHECKBOX = 32;
   const [itemSelected, setItemSelected] = useState<any>([]);
 
   const onChangeSelect = (e: ChangeEvent<HTMLInputElement>, id: string) => {
@@ -167,7 +172,7 @@ const ListSelect: FC<IListSelect> = ({
       );
     }
 
-    if (valueSort === 'az') {
+    if (valueSort === ABI_OPTIONS.AZ) {
       dataFiltered = dataFiltered.sort((a: any, b: any) => {
         if (a.name.toLowerCase() < b.name.toLowerCase()) {
           return -1;
@@ -179,7 +184,7 @@ const ListSelect: FC<IListSelect> = ({
       });
     }
 
-    if (valueSort === 'za') {
+    if (valueSort === ABI_OPTIONS.ZA) {
       dataFiltered = dataFiltered.sort((a: any, b: any) => {
         if (a.name.toLowerCase() < b.name.toLowerCase()) {
           return 1;
@@ -237,20 +242,24 @@ const ListSelect: FC<IListSelect> = ({
   };
 
   useEffect(() => {
-    if (!dataSelected.length) {
-      setItemSelected([]);
-    }
-  }, [dataSelected]);
+    const initialSelected = dataShow.map((item: any) => item.id);
+    setItemSelected(initialSelected);
+    onSelectData([...dataShow]);
+  }, [dataShow]);
 
   return (
     <Flex className="box-events">
       <Box className="label-events">
-        {type === 'function' ? 'Functions' : 'Events'}
+        {type === ABI_TYPES.FUNCTION ? 'Functions' : 'Events'}
       </Box>
       <Box ml={5} width="100%">
         <Scrollbars
-          style={{ width: '100%', height: 300 }}
+          style={{
+            width: '100%',
+            height: dataShow.length < ITEM_LIMIT ? '' : 9 * HEIGHT_CHECKBOX,
+          }}
           autoHide
+          autoHeight={dataShow.length < ITEM_LIMIT}
           renderThumbVertical={({ style, ...props }: any) => (
             <div
               style={{
@@ -274,7 +283,6 @@ const ListSelect: FC<IListSelect> = ({
               All
             </Checkbox>
           )}
-
           {!!dataShow.length ? (
             dataShow?.map((item: any, index: number) => {
               const inputs = item.inputs?.map((input: any) => {
@@ -326,7 +334,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
   const [ABIData, setABIData] = useState<any>([]);
   const [dataSelected, setDataSelected] = useState<any>([]);
   const [valueSearch, setValueSearch] = useState<string>('');
-  const [valueSort, setValueSort] = useState<string>('az');
+  const [valueSort, setValueSort] = useState<string>(ABI_OPTIONS.AZ);
   const inputRef = useRef<any>(null);
   const [isInsertManuallyAddress, setIsInsertManuallyAddress] =
     useState<boolean>(true);
@@ -423,7 +431,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
     }
   }, [abi, abiFilter, viewOnly]);
 
-  const listEvent = useMemo(() => {
+  const structList = useMemo(() => {
     const data = ABIData.filter((item: any) => {
       return item.type === 'event';
     });
@@ -437,9 +445,11 @@ const AppUploadABI: FC<IAppUploadABI> = ({
     });
   }, [ABIData]);
 
-  const listFunction = useMemo(() => {
+  const functionList = useMemo(() => {
     const data = ABIData.filter((item: any) => {
-      return item.type === 'function' && item.stateMutability !== 'view';
+      return (
+        item.type === ABI_TYPES.FUNCTION && item.stateMutability !== 'view'
+      );
     });
 
     return data.map((func: any) => {
@@ -551,11 +561,19 @@ const AppUploadABI: FC<IAppUploadABI> = ({
     }
   }, [ABIInput, viewOnly]);
 
+  const isInvalidChecklist = useMemo(() => {
+    if (!functionList.length && !structList.length) {
+      return false;
+    }
+
+    return !dataSelected.length;
+  }, [functionList, structList, dataSelected]);
+
   return (
     <Box className="upload-abi">
       <Flex justifyContent={'space-between'}>
         <Flex mb={1} className="label-abi">
-          ABI {type === TYPE_ABI.NFT && _renderNoticeUpload()}
+          Notification filter {type === TYPE_ABI.NFT && _renderNoticeUpload()}
         </Flex>
 
         {!viewOnly && !abiContract?.length && (
@@ -583,7 +601,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
 
       {isInsertManuallyAddress && !viewOnly && !abiContract?.length && (
         <Box mb={5}>
-          <AppTextarea
+          <AppInput
             placeholder="Input abi..."
             rows={6}
             value={ABIInput}
@@ -672,8 +690,8 @@ const AppUploadABI: FC<IAppUploadABI> = ({
 
           <>
             <ListSelect
-              type={'function'}
-              data={listFunction}
+              type={ABI_TYPES.FUNCTION}
+              data={functionList}
               dataSelected={dataSelected}
               onSelectData={setDataSelected}
               valueSearch={valueSearch}
@@ -682,8 +700,8 @@ const AppUploadABI: FC<IAppUploadABI> = ({
             />
 
             <ListSelect
-              type={'event'}
-              data={listEvent}
+              type={ABI_TYPES.EVENT}
+              data={structList}
               dataSelected={dataSelected}
               onSelectData={setDataSelected}
               valueSearch={valueSearch}
@@ -691,6 +709,11 @@ const AppUploadABI: FC<IAppUploadABI> = ({
               viewOnly={viewOnly}
             />
           </>
+          {isInvalidChecklist && (
+            <Text className="text-error">
+              The notification filter field is required
+            </Text>
+          )}
         </Box>
       )}
     </Box>

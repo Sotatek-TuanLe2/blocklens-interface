@@ -1,4 +1,4 @@
-import { Box, Checkbox, Flex } from '@chakra-ui/react';
+import { Box, Checkbox, Flex, Text, Tooltip } from '@chakra-ui/react';
 import { AppField, AppInput, AppTextarea } from 'src/components';
 import React, { ChangeEvent, FC, useEffect, useMemo, useState } from 'react';
 import { IDataForm } from '../index';
@@ -110,6 +110,11 @@ export const ListSelectEvent = ({
             </Checkbox>
           </Box>
         ))}
+        {!eventsSelected.length && (
+          <Text className="text-error">
+            The notification filter field is required
+          </Text>
+        )}
       </Box>
     </Flex>
   );
@@ -120,7 +125,9 @@ const PartFormTokenActivityAptos: FC<IPartFormTokenActivityAptos> = ({
   setDataForm,
   validator,
 }) => {
-  const [eventsSelected, setEventsSelected] = useState<string[]>([]);
+  const [eventsSelected, setEventsSelected] = useState<string[]>(
+    TOKEN_EVENTS.map((item) => item.name),
+  );
 
   useEffect(() => {
     setDataForm({
@@ -131,6 +138,7 @@ const PartFormTokenActivityAptos: FC<IPartFormTokenActivityAptos> = ({
       },
     });
   }, [eventsSelected]);
+
   return (
     <Flex
       className="token-activity"
@@ -196,7 +204,13 @@ const PartFormTokenActivityAptos: FC<IPartFormTokenActivityAptos> = ({
       </AppField>
 
       <Box w={'full'}>
-        Events{' '}
+        <Tooltip
+          hasArrow
+          placement="top"
+          label="Choosing which activities you want to be notified"
+        >
+          Notification filter&nbsp;
+        </Tooltip>
         <Box as={'span'} color={'red.500'}>
           *
         </Box>

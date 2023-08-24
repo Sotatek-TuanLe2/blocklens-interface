@@ -7,6 +7,8 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import { useDispatch } from 'react-redux';
+import { useHistory, useLocation, useParams } from 'react-router';
 import {
   AppCard,
   AppLink,
@@ -22,23 +24,22 @@ import {
   optionsWebhookAptosType,
   optionsWebhookType,
 } from 'src/utils/utils-webhook';
-import { CHAINS_CONFIG } from 'src/utils/utils-app';
+import { CHAINS_CONFIG, IAppResponse } from 'src/utils/utils-app';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import 'src/styles/pages/AppDetail.scss';
 import 'src/styles/pages/CreateHookForm.scss';
-import PartFormAddressActivity from '../CreateWebhookPage/parts/PartFormAddressActivity';
-import PartFormContractActivity from '../CreateWebhookPage/parts/PartFormContractActivity';
-import PartFormNFTActivity from '../CreateWebhookPage/parts/PartFormNFTActivity';
-import PartFormTokenActivity from '../CreateWebhookPage/parts/PartFormTokenActivity';
-import PartFormTokenActivityAptos from '../CreateWebhookPage/parts/PartFormTokenActivityAptos';
+import PartFormAddressActivity from './parts/PartFormAddressActivity';
+import PartFormContractActivity from './parts/PartFormContractActivity';
+import PartFormNFTActivity from './parts/PartFormNFTActivity';
+import PartFormTokenActivity from './parts/PartFormTokenActivity';
+import PartFormTokenActivityAptos from './parts/PartFormTokenActivityAptos';
 import PartFormIdentification from './parts/PartFormIdentification';
 import { ROUTES } from 'src/utils/common';
-import PartFormCoinActivityAptos from '../CreateWebhookPage/parts/PartFormCoinActivityAptos';
-import PartFormModuleActivityAptos from '../CreateWebhookPage/parts/PartFormModuleActivityAptos';
+import PartFormCoinActivityAptos from './parts/PartFormCoinActivityAptos';
+import PartFormModuleActivityAptos from './parts/PartFormModuleActivityAptos';
 import rf from 'src/requests/RequestFactory';
 import { getUserStats } from 'src/store/user';
-import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router';
+import { useForceRender } from 'src/hooks/useForceRender';
 
 interface IMetadata {
   coinType?: string;
@@ -52,6 +53,7 @@ interface IMetadata {
   creatorAddress?: string;
   collectionName?: string;
   name?: string;
+  module?: string;
 }
 
 export interface IDataForm {
@@ -75,25 +77,33 @@ const initDataCreateWebHook = {
     addresses: [],
     address: '',
     name: '',
+    module: '',
   },
 };
 
+interface ISelect {
+  label: string;
+  value: string;
+  icon: string;
+}
+
 const WebHookCreatePage: React.FC = () => {
-  const [dataForm, setDataForm] = useState<IDataForm>(initDataCreateWebHook);
-  const [type, setType] = useState<string>(WEBHOOK_TYPES.ADDRESS_ACTIVITY);
-  const [chainSelected, setChainSelected] = useState<any>(CHAINS_CONFIG[0]);
-  const [networkSelected, setNetworkSelected] = useState<any>(
-    CHAINS_CONFIG[0].networks[0],
-  );
-  const [projectSelected, setProjectSelected] = useState<any>(null);
-
-  const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
-  const [, updateState] = useState<any>();
-
+  const { id: projectId } = useParams<{ id: string }>();
   const dispatch = useDispatch();
   const history = useHistory();
+  const location = useLocation();
+  const forceUpdate = useForceRender();
 
-  const forceUpdate = useCallback(() => updateState({}), []);
+  const [projectSelected, setProjectSelected] = useState<any>(null);
+  const [chainSelected, setChainSelected] = useState<
+    ISelect & { networks: ISelect[] }
+  >(CHAINS_CONFIG[0]);
+  const [networkSelected, setNetworkSelected] = useState<ISelect>(
+    CHAINS_CONFIG[0].networks[0],
+  );
+  const [typeSelected, setTypeSelected] = useState<string>('');
+  const [dataForm, setDataForm] = useState<IDataForm>(initDataCreateWebHook);
+  const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
 
   const validator = useRef(
     createValidator({
@@ -103,25 +113,95 @@ const WebHookCreatePage: React.FC = () => {
     }),
   );
 
+  const onChangeProject = (project: IAppResponse | null) => {
+    setProjectSelected(project);
+    if (!!project) {
+      setTypeSelected(WEBHOOK_TYPES.ADDRESS_ACTIVITY);
+    }
+  };
+
+  const onChangeChain = (chain: string, updateNetwork = false) => {
+    const newChain = CHAINS_CONFIG.find((item) => item.value === chain);
+    if (!!newChain) {
+      setChainSelected(newChain);
+      if (updateNetwork) {
+        setNetworkSelected(newChain?.networks[0]);
+      }
+    }
+  };
+
+  const onChangeNetwork = (network: string) => {
+    const newNetwork = chainSelected.networks.find(
+      (item) => item.value === network,
+    );
+    if (!!newNetwork) {
+      setNetworkSelected(newNetwork);
+    }
+  };
+
+  const initProject = useCallback(async () => {
+    if (!projectId) {
+      return;
+    }
+    const project = await rf.getRequest('AppRequest').getAppDetail(projectId);
+    setDataForm((prevState) => ({
+      ...prevState,
+      projectId,
+    }));
+    setProjectSelected(project);
+    onChangeChain(project.chain);
+    onChangeNetwork(project.network);
+  }, [projectId]);
+
   useEffect(() => {
-    if (projectSelected && projectSelected.chain) {
-      setChainSelected(
-        CHAINS_CONFIG.find((item) => item.value === projectSelected?.chain),
-      );
+    const params = new URLSearchParams(location.search);
+    const typeParams = params.get('type');
+    setTypeSelected(typeParams || WEBHOOK_TYPES.ADDRESS_ACTIVITY);
+  }, [location.search]);
+
+  useEffect(() => {
+    if (!!projectSelected && projectSelected.chain) {
+      setDataForm((prevState) => ({
+        ...prevState,
+        projectId: projectSelected.projectId,
+      }));
+      onChangeChain(projectSelected.chain);
+      onChangeNetwork(projectSelected.network);
     }
   }, [projectSelected]);
 
-  const onChangeWebhookType = (value: string) => {
-    if (type === value) return;
-    setDataForm({
-      ...initDataCreateWebHook,
-      projectId: dataForm?.projectId,
-      webhookName: dataForm?.webhookName,
-    });
-    validator.current.fields = [];
-    forceUpdate();
-    setType(value);
-  };
+  useEffect(() => {
+    let isDisabled = !validator.current.allValid();
+
+    if (isDisabled) {
+      setIsDisableSubmit(isDisabled);
+      return;
+    }
+
+    switch (typeSelected) {
+      case WEBHOOK_TYPES.CONTRACT_ACTIVITY:
+      case WEBHOOK_TYPES.TOKEN_ACTIVITY:
+      case WEBHOOK_TYPES.NFT_ACTIVITY:
+        isDisabled = !dataForm.metadata?.abi?.length;
+        break;
+      case WEBHOOK_TYPES.ADDRESS_ACTIVITY:
+        isDisabled =
+          !dataForm?.metadata?.addresses?.length &&
+          !dataForm?.metadata?.events?.length;
+        break;
+      case WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY:
+        isDisabled =
+          (!dataForm?.metadata?.events?.length ||
+            !dataForm?.metadata?.functions?.length) &&
+          !dataForm?.metadata?.address &&
+          !dataForm?.metadata?.module?.length;
+        break;
+      default:
+        break;
+    }
+
+    setIsDisableSubmit(isDisabled);
+  }, [dataForm, typeSelected]);
 
   const optionTypes = useMemo(() => {
     if (chainSelected.value === CHAINS.APTOS) {
@@ -137,12 +217,24 @@ const WebHookCreatePage: React.FC = () => {
     return optionsWebhookType;
   }, [chainSelected]);
 
+  const onChangeWebhookType = (value: string) => {
+    if (typeSelected === value) return;
+    setDataForm({
+      ...initDataCreateWebHook,
+      projectId: dataForm?.projectId,
+      webhookName: dataForm?.webhookName,
+    });
+    validator.current.fields = [];
+    forceUpdate();
+    setTypeSelected(value);
+  };
+
   const _renderFormAddressActivity = () => {
     return (
       <PartFormAddressActivity
         dataForm={dataForm}
         setDataForm={setDataForm}
-        type={type}
+        type={typeSelected}
         validator={validator}
         chain={chainSelected.value}
       />
@@ -154,7 +246,7 @@ const WebHookCreatePage: React.FC = () => {
       <PartFormContractActivity
         dataForm={dataForm}
         setDataForm={setDataForm}
-        type={type}
+        type={typeSelected}
         validator={validator}
       />
     );
@@ -165,7 +257,7 @@ const WebHookCreatePage: React.FC = () => {
       <PartFormNFTActivity
         dataForm={dataForm}
         setDataForm={setDataForm}
-        type={type}
+        type={typeSelected}
         validator={validator}
         isCreateWithoutProject
       />
@@ -177,7 +269,7 @@ const WebHookCreatePage: React.FC = () => {
       <PartFormTokenActivity
         dataForm={dataForm}
         setDataForm={setDataForm}
-        type={type}
+        type={typeSelected}
         validator={validator}
       />
     );
@@ -218,36 +310,25 @@ const WebHookCreatePage: React.FC = () => {
   };
 
   const _renderFormWebhook = () => {
-    if (type === WEBHOOK_TYPES.NFT_ACTIVITY) {
-      return _renderFormNFTActivity();
+    switch (typeSelected) {
+      case WEBHOOK_TYPES.ADDRESS_ACTIVITY:
+        return _renderFormAddressActivity();
+      case WEBHOOK_TYPES.NFT_ACTIVITY:
+        return _renderFormNFTActivity();
+      case WEBHOOK_TYPES.CONTRACT_ACTIVITY:
+        return _renderFormContractActivity();
+      case WEBHOOK_TYPES.TOKEN_ACTIVITY:
+        return _renderFormTokenActivity();
+      case WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY:
+        return _renderFormModuleActivityAptos();
+      case WEBHOOK_TYPES.APTOS_COIN_ACTIVITY:
+        return _renderFormCoinActivityAptos();
+      case WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY:
+        return _renderFormTokenActivityAptos();
+      default:
+        return null;
     }
-
-    if (type === WEBHOOK_TYPES.CONTRACT_ACTIVITY) {
-      return _renderFormContractActivity();
-    }
-
-    if (type === WEBHOOK_TYPES.TOKEN_ACTIVITY) {
-      return _renderFormTokenActivity();
-    }
-
-    if (type === WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY) {
-      return _renderFormModuleActivityAptos();
-    }
-
-    if (type === WEBHOOK_TYPES.APTOS_COIN_ACTIVITY) {
-      return _renderFormCoinActivityAptos();
-    }
-
-    if (type === WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY) {
-      return _renderFormTokenActivityAptos();
-    }
-
-    return _renderFormAddressActivity();
   };
-
-  useEffect(() => {
-    setType(optionTypes[0].value);
-  }, [optionTypes]);
 
   const handleSubmitForm = async () => {
     if (!validator.current.allValid()) {
@@ -258,11 +339,11 @@ const WebHookCreatePage: React.FC = () => {
     const isEvmCheckboxInvalid =
       isEVMNetwork(chainSelected.value) &&
       !dataForm.metadata?.abiFilter?.length &&
-      type !== WEBHOOK_TYPES.ADDRESS_ACTIVITY;
+      typeSelected !== WEBHOOK_TYPES.ADDRESS_ACTIVITY;
     const isAptosCheckboxInvalid =
       isAptosNetwork(chainSelected.value) &&
-      type !== WEBHOOK_TYPES.ADDRESS_ACTIVITY &&
-      type !== WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY &&
+      typeSelected !== WEBHOOK_TYPES.ADDRESS_ACTIVITY &&
+      typeSelected !== WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY &&
       !dataForm.metadata?.events?.length;
 
     if (isEvmCheckboxInvalid || isAptosCheckboxInvalid) {
@@ -272,7 +353,7 @@ const WebHookCreatePage: React.FC = () => {
 
     const data = {
       ...dataForm,
-      type,
+      type: typeSelected,
       chain: chainSelected.value,
       network: networkSelected.value,
       metadata: {
@@ -304,51 +385,30 @@ const WebHookCreatePage: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    setTimeout(() => {
-      const isDisabled =
-        !validator.current.allValid() ||
-        ((type === WEBHOOK_TYPES.CONTRACT_ACTIVITY ||
-          type === WEBHOOK_TYPES.TOKEN_ACTIVITY ||
-          type === WEBHOOK_TYPES.NFT_ACTIVITY) &&
-          !dataForm.metadata?.abi?.length) ||
-        (type === WEBHOOK_TYPES.ADDRESS_ACTIVITY &&
-          !dataForm?.metadata?.addresses?.length) ||
-        (type === WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY &&
-          !dataForm?.metadata?.events?.length &&
-          !dataForm?.metadata?.address &&
-          !dataForm?.metadata?.functions?.length);
-      setIsDisableSubmit(isDisabled);
-    }, 0);
-  }, [dataForm, type]);
-
   const _renderIdentification = () => {
     return (
       <PartFormIdentification
         dataForm={dataForm}
         setDataForm={setDataForm}
         validator={validator}
-        setProjectSelected={setProjectSelected}
+        onSelectProject={onChangeProject}
       />
     );
   };
 
   const _renderDetailInfo = () => {
+    const onSelectChain = (chain: string) => {
+      onChangeChain(chain, true);
+      setTypeSelected(optionTypes[0].value);
+    };
+
     return (
       <Box>
         <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
           <AppField label={'Chain'} customWidth={'32%'} isRequired>
             <AppSelect2
               size="large"
-              onChange={(value: string) => {
-                setChainSelected(
-                  CHAINS_CONFIG.find((chain) => chain.value === value),
-                );
-                setNetworkSelected(
-                  CHAINS_CONFIG.find((chain) => chain.value === value)
-                    ?.networks[0],
-                );
-              }}
+              onChange={onSelectChain}
               disabled={!!projectSelected}
               options={CHAINS_CONFIG}
               value={chainSelected.value}
@@ -358,13 +418,7 @@ const WebHookCreatePage: React.FC = () => {
           <AppField label={'Network'} customWidth={'32%'} isRequired>
             <AppSelect2
               size="large"
-              onChange={(value: string) => {
-                setNetworkSelected(
-                  chainSelected.networks.find(
-                    (network: any) => network.value === value,
-                  ),
-                );
-              }}
+              onChange={onChangeNetwork}
               options={chainSelected.networks}
               value={networkSelected.value}
               disabled={!!projectSelected}
@@ -376,23 +430,18 @@ const WebHookCreatePage: React.FC = () => {
               className="select-type-webhook"
               size="large"
               options={optionTypes}
-              value={type}
+              value={typeSelected}
               onChange={onChangeWebhookType}
             />
           </AppField>
         </Flex>
-
         {_renderFormWebhook()}
       </Box>
     );
   };
 
-  useEffect(() => {
-    setType(optionTypes[0].value);
-  }, [optionTypes]);
-
   return (
-    <BasePage className="create-webhook-container">
+    <BasePage className="create-webhook-container" onInitPage={initProject}>
       <>
         <Flex className="create-webhook__header">
           <Flex className="name">
