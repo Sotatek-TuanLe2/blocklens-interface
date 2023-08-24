@@ -25,6 +25,7 @@ import {
 import useUser from 'src/hooks/useUser';
 import { generateErrorMessage } from './VisualizationDisplay';
 import useOriginPath from 'src/hooks/useOriginPath';
+import { Visualization } from 'src/utils/utils-query';
 
 const REFETCH_QUERY_RESULT_MINUTES = 5;
 
@@ -50,7 +51,13 @@ const VisualizationItem = React.memo(
 
     const fetchQueryResultTimeout = useRef<ReturnType<typeof setTimeout>>();
     const refetchQueryResultInterval = useRef<ReturnType<typeof setInterval>>();
-    const queryId = visualization?.queryId;
+
+    const visualizationClass = useMemo(
+      () => new Visualization(visualization),
+      [visualization],
+    );
+
+    const queryId = visualizationClass.getQuery()?.getId();
 
     useEffect(() => {
       clearInterval(refetchQueryResultInterval.current);
@@ -71,7 +78,7 @@ const VisualizationItem = React.memo(
     const fetchQueryResult = async () => {
       setIsLoading(true);
       clearTimeout(fetchQueryResultTimeout.current);
-      const executionId = visualization?.query?.executedId;
+      const executionId = visualizationClass.getQuery()?.getExecutionId();
       const res = await rf
         .getRequest('DashboardsRequest')
         .getQueryResult({ executionId });
@@ -108,10 +115,13 @@ const VisualizationItem = React.memo(
       }
 
       const type =
-        visualization.options?.globalSeriesType || visualization.type;
+        visualizationClass.getConfigs()?.globalSeriesType ||
+        visualizationClass.getType();
       let visualizationDisplay = null;
-      const xAxisKey = visualization.options?.columnMapping?.xAxis || '';
-      const yAxisKeys = visualization.options.columnMapping?.yAxis || [];
+      const xAxisKey =
+        visualizationClass.getConfigs()?.columnMapping?.xAxis || '';
+      const yAxisKeys =
+        visualizationClass.getConfigs()?.columnMapping?.yAxis || [];
 
       switch (type) {
         case TYPE_VISUALIZATION.table:
@@ -139,7 +149,7 @@ const VisualizationItem = React.memo(
               data={queryResult}
               xAxisKey={xAxisKey}
               yAxisKeys={yAxisKeys}
-              configs={visualization.options}
+              configs={visualizationClass.getConfigs()}
               isLoading={isLoading}
             />
           );
@@ -151,7 +161,7 @@ const VisualizationItem = React.memo(
               data={queryResult}
               xAxisKey={xAxisKey}
               yAxisKeys={yAxisKeys}
-              configs={visualization.options}
+              configs={visualizationClass.getConfigs()}
               type={type}
               isLoading={isLoading}
             />
@@ -184,17 +194,17 @@ const VisualizationItem = React.memo(
         <div className="visual-container__visualization">
           <div className="visual-container__visualization__title">
             <Tooltip
-              label={visualization.name}
+              label={visualizationClass.getName()}
               hasArrow
               bg="white"
               color="black"
             >
               <span className="visual-container__visualization__name">
-                {visualization.name}
+                {visualizationClass.getName()}
               </span>
             </Tooltip>
             <Tooltip
-              label={visualization.query?.name}
+              label={visualizationClass.getQuery()?.getName()}
               hasArrow
               bg="white"
               color="black"
@@ -204,14 +214,14 @@ const VisualizationItem = React.memo(
                 to={generateLinkObject(
                   `${
                     needAuthentication ||
-                    visualization.query?.user === user?.getId()
+                    visualizationClass.getQuery()?.getUserId() === user?.getId()
                       ? ROUTES.MY_QUERY
                       : ROUTES.QUERY
-                  }/${visualization.queryId}`,
+                  }/${queryId}`,
                   location.pathname,
                 )}
               >
-                {visualization.query?.name}
+                {visualizationClass.getQuery()?.getName()}
               </Link>
             </Tooltip>
           </div>
@@ -227,9 +237,9 @@ const VisualizationItem = React.memo(
             color={'#000224'}
             fontWeight="400"
             p={2}
-            label={`Updated: ${moment(visualization.query?.updatedAt).format(
-              'YYYY/MM/DD HH:mm',
-            )}`}
+            label={`Updated: ${moment(
+              visualizationClass.getQuery()?.getUpdatedTime(),
+            ).format('YYYY/MM/DD HH:mm')}`}
             placement={'top-start'}
             hasArrow
             isOpen={isMobile ? showUpdated : undefined}

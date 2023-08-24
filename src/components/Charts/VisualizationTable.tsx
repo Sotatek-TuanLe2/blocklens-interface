@@ -19,11 +19,12 @@ import { objectKeys } from 'src/utils/utils-network';
 import AppPagination from '../AppPagination';
 import AppInput from '../AppInput';
 import { debounce, isNull, isUndefined, uniq } from 'lodash';
+import { Visualization } from 'src/utils/utils-query';
 
 interface ReactTableProps<T> {
   data: T[];
   setDataTable?: React.Dispatch<React.SetStateAction<any[]>>;
-  visualization?: VisualizationType;
+  visualization: VisualizationType;
   editMode?: boolean;
   isLoading?: boolean;
 }
@@ -76,16 +77,21 @@ const VisualizationTable = <T,>({
 
   const ITEMS_PER_PAGE = 15;
 
+  const visualizationClass = useMemo(
+    () => new Visualization(visualization),
+    [visualization],
+  );
+
   const tableData = useMemo(() => {
     if (
-      !visualization ||
-      !visualization.options.columns ||
-      !visualization.options.columns.length
+      !visualizationClass ||
+      !visualizationClass.getConfigs().columns ||
+      !visualizationClass.getConfigs().columns.length
     ) {
       return data;
     }
     const formatColumns: { [key: string]: string } = {};
-    visualization.options.columns.forEach((item: any) => {
+    visualizationClass.getConfigs().columns.forEach((item: any) => {
       if (item.format) {
         formatColumns[item.id] = item.format;
       }
