@@ -41,7 +41,12 @@ export default class RegistrationRequest extends BaseRequest {
     return this.delete(url);
   }
 
-  getRegistration(registrationId: any) {
+  getRegistration(registrationId: {
+    chain: string;
+    network: string;
+    type: string;
+    webhook: string;
+  }) {
     const url = `/registrations/${registrationId}`;
     return this.get(url);
   }

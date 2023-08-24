@@ -104,7 +104,7 @@ const WebHookCreatePage: React.FC = () => {
   const [typeSelected, setTypeSelected] = useState<string>('');
   const [dataForm, setDataForm] = useState<IDataForm>(initDataCreateWebHook);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
-  const [isSendDemoMsg, setIsSendDemoMsg] = useState(false);
+  const [isSendingDemoMsg, setIsSendingDemoMsg] = useState(false);
 
   const validator = useRef(
     createValidator({
@@ -332,8 +332,8 @@ const WebHookCreatePage: React.FC = () => {
   };
 
   const handleSendDemoMsg = async () => {
-    if (isSendDemoMsg) return;
-    setIsSendDemoMsg(true);
+    if (isSendingDemoMsg) return;
+    setIsSendingDemoMsg(true);
 
     try {
       await rf.getRequest('RegistrationRequest').sendDemoWebhook({
@@ -350,7 +350,7 @@ const WebHookCreatePage: React.FC = () => {
     }
 
     setTimeout(() => {
-      setIsSendDemoMsg(false);
+      setIsSendingDemoMsg(false);
     }, 4000);
   };
 
@@ -510,7 +510,7 @@ const WebHookCreatePage: React.FC = () => {
                       w={190}
                       size={'sm'}
                     >
-                      {isSendDemoMsg ? 'Message sent!' : 'Send Demo Message'}
+                      {isSendingDemoMsg ? 'Message sent!' : 'Send Demo Message'}
                     </AppButton>
                   }
                 />
@@ -521,7 +521,7 @@ const WebHookCreatePage: React.FC = () => {
                     w={190}
                     size={'sm'}
                   >
-                    {isSendDemoMsg ? 'Message sent!' : 'Send Demo Message'}
+                    {isSendingDemoMsg ? 'Message sent!' : 'Send Demo Message'}
                   </AppButton>
                 </Show>
               </AppField>
