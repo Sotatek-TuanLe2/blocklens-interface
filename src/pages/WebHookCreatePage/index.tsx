@@ -337,9 +337,9 @@ const WebHookCreatePage: React.FC = () => {
 
     try {
       await rf.getRequest('RegistrationRequest').sendDemoWebhook({
-        chain: chainSelected?.value,
+        chain: chainSelected.value,
         type: typeSelected,
-        network: networkSelected?.value,
+        network: networkSelected.value,
         webhook: dataForm.webhook,
       });
       toastSuccess({
