@@ -24,7 +24,9 @@ const PartFormCoinActivityAptos: FC<IPartFormCoinActivityAptos> = ({
   setDataForm,
   validator,
 }) => {
-  const [eventsSelected, setEventsSelected] = useState<string[]>([]);
+  const [eventsSelected, setEventsSelected] = useState<string[]>(
+    COIN_EVENTS.map((item) => item.name),
+  );
 
   useEffect(() => {
     setDataForm({

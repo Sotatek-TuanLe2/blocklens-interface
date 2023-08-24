@@ -47,7 +47,6 @@ interface IAppUploadABI {
   abi?: any[];
   abiFilter?: any[];
   abiContract?: any[];
-  dataForm?: IDataForm;
 }
 
 const listFunctionAndEventOfNFT = [
@@ -330,7 +329,6 @@ const AppUploadABI: FC<IAppUploadABI> = ({
   abi,
   abiFilter,
   abiContract,
-  dataForm,
 }) => {
   const [fileSelected, setFileSelected] = useState<any>({});
   const [ABIData, setABIData] = useState<any>([]);
@@ -433,7 +431,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
     }
   }, [abi, abiFilter, viewOnly]);
 
-  const listEvent = useMemo(() => {
+  const structList = useMemo(() => {
     const data = ABIData.filter((item: any) => {
       return item.type === 'event';
     });
@@ -447,7 +445,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
     });
   }, [ABIData]);
 
-  const listFunction = useMemo(() => {
+  const functionList = useMemo(() => {
     const data = ABIData.filter((item: any) => {
       return (
         item.type === ABI_TYPES.FUNCTION && item.stateMutability !== 'view'
@@ -562,6 +560,14 @@ const AppUploadABI: FC<IAppUploadABI> = ({
       setABIData([]);
     }
   }, [ABIInput, viewOnly]);
+
+  const isInvalidChecklist = useMemo(() => {
+    if (!functionList.length && !structList.length) {
+      return false;
+    }
+
+    return !dataSelected.length;
+  }, [functionList, structList, dataSelected]);
 
   return (
     <Box className="upload-abi">
@@ -685,7 +691,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
           <>
             <ListSelect
               type={ABI_TYPES.FUNCTION}
-              data={listFunction}
+              data={functionList}
               dataSelected={dataSelected}
               onSelectData={setDataSelected}
               valueSearch={valueSearch}
@@ -695,7 +701,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
 
             <ListSelect
               type={ABI_TYPES.EVENT}
-              data={listEvent}
+              data={structList}
               dataSelected={dataSelected}
               onSelectData={setDataSelected}
               valueSearch={valueSearch}
@@ -703,7 +709,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
               viewOnly={viewOnly}
             />
           </>
-          {!dataForm?.metadata?.abiFilter?.length && (
+          {isInvalidChecklist && (
             <Text className="text-error">
               The notification filter field is required
             </Text>

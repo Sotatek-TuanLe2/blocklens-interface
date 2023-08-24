@@ -13,11 +13,8 @@
   .box-events {
     background-color: $bg;
     padding: 16px 24px;
-    border-radius: 6px 6px 0 0;
-
-    &:last-child {
-      border-radius: 0 0 6px 6px;
-    }
+    border-radius: 6px;
+    margin-bottom: 8px;
 
     .label-events {
       @include text-small-bold;

@@ -47,8 +47,6 @@ export const ListSelectEvent = ({
   setEventsSelected,
   dataEvent,
 }: IListSelectEvent) => {
-  const [initialized, setInitialized] = useState(false);
-
   const onChangeSelect = (e: ChangeEvent<HTMLInputElement>, event: string) => {
     if (!setEventsSelected) return;
     if (!e.target.checked) {
@@ -74,14 +72,6 @@ export const ListSelectEvent = ({
       ),
     [eventsSelected],
   );
-
-  useEffect(() => {
-    if (!initialized) {
-      const initialEvents = dataEvent.map((item) => item.name);
-      setEventsSelected && setEventsSelected(initialEvents);
-      setInitialized(true);
-    }
-  }, [initialized, dataEvent, setEventsSelected]);
 
   const isIndeterminate =
     dataEvent.some((data: { name: string }) =>
@@ -135,7 +125,9 @@ const PartFormTokenActivityAptos: FC<IPartFormTokenActivityAptos> = ({
   setDataForm,
   validator,
 }) => {
-  const [eventsSelected, setEventsSelected] = useState<string[]>([]);
+  const [eventsSelected, setEventsSelected] = useState<string[]>(
+    TOKEN_EVENTS.map((item) => item.name),
+  );
 
   useEffect(() => {
     setDataForm({
@@ -146,6 +138,7 @@ const PartFormTokenActivityAptos: FC<IPartFormTokenActivityAptos> = ({
       },
     });
   }, [eventsSelected]);
+
   return (
     <Flex
       className="token-activity"

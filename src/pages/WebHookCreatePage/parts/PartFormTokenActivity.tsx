@@ -42,7 +42,6 @@ const PartFormTokenActivity: FC<IPartFormTokenActivity> = ({
         />
       </AppField>
       <AppUploadABI
-        dataForm={dataForm}
         type={TYPE_ABI.TOKEN}
         onChange={(abi, abiFilter) =>
           setDataForm({
