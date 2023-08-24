@@ -65,11 +65,9 @@ const ResetPasswordPage: FC = () => {
       }
     } catch (error) {
       const errorMessage = getErrorMessage(error);
-      if (errorMessage !== COMMON_ERROR_MESSAGE) {
-        setErrorMessage(errorMessage);
-      } else {
-        toastError({ message: errorMessage });
-      }
+      errorMessage !== COMMON_ERROR_MESSAGE
+        ? setErrorMessage(errorMessage)
+        : toastError({ message: errorMessage });
     }
   };
 

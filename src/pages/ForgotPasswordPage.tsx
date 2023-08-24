@@ -50,11 +50,9 @@ const ForgotPasswordPage: FC = () => {
     } catch (error: any) {
       setRecaptchaToRequest(null);
       const errorMessage = getErrorMessage(error);
-      if (errorMessage !== COMMON_ERROR_MESSAGE) {
-        setErrorMessage(errorMessage);
-      } else {
-        toastError({ message: errorMessage });
-      }
+      errorMessage !== COMMON_ERROR_MESSAGE
+        ? setErrorMessage(errorMessage)
+        : toastError({ message: errorMessage });
     }
   };
 
