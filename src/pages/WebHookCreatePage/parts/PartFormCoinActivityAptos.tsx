@@ -1,4 +1,4 @@
-import { Box, Flex } from '@chakra-ui/react';
+import { Box, Flex, Tooltip } from '@chakra-ui/react';
 import { AppField, AppInput } from 'src/components';
 import React, { FC, useEffect, useState } from 'react';
 import { IDataForm } from '../index';
@@ -24,7 +24,9 @@ const PartFormCoinActivityAptos: FC<IPartFormCoinActivityAptos> = ({
   setDataForm,
   validator,
 }) => {
-  const [eventsSelected, setEventsSelected] = useState<string[]>([]);
+  const [eventsSelected, setEventsSelected] = useState<string[]>(
+    COIN_EVENTS.map((item) => item.name),
+  );
 
   useEffect(() => {
     setDataForm({
@@ -58,7 +60,13 @@ const PartFormCoinActivityAptos: FC<IPartFormCoinActivityAptos> = ({
         />
       </AppField>
       <Box w={'full'}>
-        Events{' '}
+        <Tooltip
+          hasArrow
+          placement="top"
+          label="Choosing which activities you want to be notified"
+        >
+          Notification filter&nbsp;
+        </Tooltip>
         <Box as={'span'} color={'red.500'}>
           *
         </Box>

@@ -1,11 +1,19 @@
 import { Box, Flex, Checkbox, Text } from '@chakra-ui/react';
-import React, { useState, FC, useEffect, ChangeEvent, useMemo } from 'react';
+import React, {
+  useState,
+  FC,
+  useEffect,
+  ChangeEvent,
+  useMemo,
+  useRef,
+} from 'react';
 import { AppInput, AppSelect2 } from 'src/components';
 import 'src/styles/components/AppUploadABI.scss';
 import { isMobile } from 'react-device-detect';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { PackageType } from 'src/utils/utils-webhook';
-import { IDataForm } from '../pages/CreateWebhookPage';
+import { IDataForm } from '../pages/WebHookCreatePage';
+import { ABI_OPTIONS, ABI_TYPES } from 'src/utils/common';
 
 interface IDataSelected {
   events?: string[];
@@ -29,7 +37,6 @@ interface IListSelect {
   isViewOnly?: boolean;
   onChangeDataSelected: (data: IABIItem[]) => void;
   dataSelected: IABIItem[];
-  dataWebhook?: string[];
 }
 
 interface IDetailABI {
@@ -49,11 +56,11 @@ interface IABIItem {
 const options = [
   {
     label: 'A - Z',
-    value: 'az',
+    value: ABI_OPTIONS.AZ,
   },
   {
     label: 'Z - A',
-    value: 'za',
+    value: ABI_OPTIONS.ZA,
   },
 ];
 
@@ -65,35 +72,21 @@ const ListSelect: FC<IListSelect> = ({
   isViewOnly,
   dataSelected,
   onChangeDataSelected,
-  dataWebhook,
 }) => {
-  const [itemSelected, setItemSelected] = useState<any>([]);
-
-  useEffect(() => {
-    if (isViewOnly) {
-      setItemSelected(dataWebhook);
-    }
-  }, [isViewOnly, dataWebhook]);
+  const ITEM_LIMIT = 10;
+  const HEIGHT_CHECKBOX = 32;
 
   const onChangeSelect = (e: ChangeEvent<HTMLInputElement>, id: string) => {
-    let newItemsSelected = [];
-
     if (!e.target.checked) {
-      newItemsSelected = [
-        ...itemSelected.filter((item: string) => item !== id),
-      ];
       onChangeDataSelected([
         ...dataSelected.filter((item: IABIItem) => item.name !== id),
       ]);
     } else {
-      newItemsSelected = [...itemSelected, id];
       onChangeDataSelected([
         ...dataSelected,
         data.filter((item: IABIItem) => item.name === id)[0],
       ]);
     }
-
-    setItemSelected(newItemsSelected);
   };
 
   const formatFunctions = (address: string) => {
@@ -103,7 +96,6 @@ const ListSelect: FC<IListSelect> = ({
 
   const dataShow = useMemo(() => {
     let dataFiltered = data;
-
     if (!!valueSearch) {
       dataFiltered = dataFiltered.filter((item: IABIItem) =>
         formatFunctions(item.name)
@@ -112,7 +104,7 @@ const ListSelect: FC<IListSelect> = ({
       );
     }
 
-    if (valueSort === 'az') {
+    if (valueSort === ABI_OPTIONS.AZ) {
       dataFiltered = dataFiltered.sort((a: any, b: any) => {
         if (a.name.toLowerCase() < b.name.toLowerCase()) {
           return -1;
@@ -124,7 +116,7 @@ const ListSelect: FC<IListSelect> = ({
       });
     }
 
-    if (valueSort === 'za') {
+    if (valueSort === ABI_OPTIONS.ZA) {
       dataFiltered = dataFiltered.sort((a: any, b: any) => {
         if (a.name.toLowerCase() < b.name.toLowerCase()) {
           return 1;
@@ -142,43 +134,41 @@ const ListSelect: FC<IListSelect> = ({
   const allChecked = useMemo(
     () =>
       dataShow.every((data: IABIItem) =>
-        itemSelected.some((id: string) => data.name === id),
+        dataSelected.some((item) => data.name === item.name),
       ),
-    [dataShow, itemSelected],
+    [dataShow, dataSelected],
   );
 
   const onSelectAll = () => {
-    if (!itemSelected.length) {
-      const allData = dataShow.map((item: any) => item.name);
-      setItemSelected(allData);
+    if (!dataSelected.length) {
       onChangeDataSelected(dataShow);
       return;
     }
 
-    if (allChecked) {
-      onChangeDataSelected([]);
-      setItemSelected([]);
-    } else {
-      const allData = dataShow.map((item: any) => item.name);
-      setItemSelected(allData);
-      onChangeDataSelected(dataShow);
-    }
+    onChangeDataSelected(allChecked ? [] : dataShow);
   };
 
   const isIndeterminate =
     dataShow.some((data: IABIItem) =>
-      itemSelected.some((id: string) => data.name === id),
+      dataSelected.some((item) => data.name === item.name),
     ) && !allChecked;
 
   return (
     <Flex className="box-events">
       <Box className="label-events" width={'220px'}>
-        {type === 'function' ? 'Exposed Functions' : 'Structs'}
+        {type === ABI_TYPES.FUNCTION ? 'Exposed Functions' : 'Structs'}
       </Box>
       <Box ml={5} width="100%">
         <Scrollbars
-          style={{ width: '100%', height: 300 }}
+          className="scroll-filter"
+          style={{
+            width: '100%',
+            height: dataShow.length < ITEM_LIMIT ? '' : 9 * HEIGHT_CHECKBOX,
+            minHeight: 'unset',
+            maxHeight: 'unset',
+          }}
           autoHide
+          autoHeight={dataShow.length < ITEM_LIMIT}
           renderThumbVertical={({ style, ...props }: any) => (
             <div
               style={{
@@ -186,6 +176,8 @@ const ListSelect: FC<IListSelect> = ({
                 backgroundColor: '#8D91A5',
                 borderRadius: '5px',
                 cursor: 'pointer',
+                minHeight: 'unset',
+                maxHeight: 'unset',
               }}
               {...props}
             />
@@ -210,7 +202,9 @@ const ListSelect: FC<IListSelect> = ({
                   size="lg"
                   isDisabled={isViewOnly}
                   value={item.name}
-                  isChecked={itemSelected.includes(item.name)}
+                  isChecked={dataSelected.some(
+                    (data) => data.name === item.name,
+                  )}
                   onChange={(e) => onChangeSelect(e, item.name)}
                 >
                   <Flex className="abi-option">
@@ -239,15 +233,15 @@ const DetailABI: FC<IDetailABI> = ({
   dataWebhook,
 }) => {
   const [valueSearch, setValueSearch] = useState<string>('');
-  const [valueSort, setValueSort] = useState<string>('az');
-  const [exposedFunctions, setExposedFunctions] = useState<IABIItem[]>([]);
-  const [structs, setStructs] = useState<IABIItem[]>([]);
+  const [valueSort, setValueSort] = useState<string>(ABI_OPTIONS.AZ);
+  const [functionList, setFunctionList] = useState<IABIItem[]>([]);
+  const [structList, setStructList] = useState<IABIItem[]>([]);
   const [functionSelected, setFunctionSelected] = useState<IABIItem[]>([]);
   const [eventsSelected, setEventsSelected] = useState<IABIItem[]>([]);
 
   useEffect(() => {
-    const exposedFunctionsList: IABIItem[] = [];
-    const structsList: IABIItem[] = [];
+    const functions: IABIItem[] = [];
+    const structs: IABIItem[] = [];
 
     if (dataABI && !!dataABI.length) {
       dataABI?.forEach((packageItem: any) => {
@@ -256,7 +250,7 @@ const DetailABI: FC<IDetailABI> = ({
             if (moduleItem?.abi?.exposed_functions?.length) {
               moduleItem?.abi?.exposed_functions?.forEach(
                 (functionItem: any) => {
-                  exposedFunctionsList.push({
+                  functions.push({
                     name: `${address}::${moduleItem?.name}::${functionItem?.name}`,
                     type: 'exposed_functions',
                   });
@@ -266,7 +260,7 @@ const DetailABI: FC<IDetailABI> = ({
 
             if (moduleItem?.abi?.structs?.length) {
               moduleItem?.abi?.structs?.forEach((structItem: any) => {
-                structsList.push({
+                structs.push({
                   name: `${address}::${moduleItem?.name}::${structItem?.name}`,
                   type: 'structs',
                 });
@@ -277,8 +271,19 @@ const DetailABI: FC<IDetailABI> = ({
       });
     }
 
-    setExposedFunctions(exposedFunctionsList);
-    setStructs(structsList);
+    setFunctionList(functions);
+    setStructList(structs);
+    if (isViewOnly) {
+      setFunctionSelected(
+        functions.filter((item) => dataWebhook?.functions?.includes(item.name)),
+      );
+      setEventsSelected(
+        structs.filter((item) => dataWebhook?.events?.includes(item.name)),
+      );
+    } else {
+      setFunctionSelected(functions);
+      setEventsSelected(structs);
+    }
   }, [dataABI]);
 
   useEffect(() => {
@@ -295,6 +300,14 @@ const DetailABI: FC<IDetailABI> = ({
         },
       });
   }, [functionSelected, eventsSelected]);
+
+  const isInvalidChecklist = useMemo(() => {
+    if (!functionList.length && !structList.length) {
+      return false;
+    }
+
+    return !functionSelected.length && !eventsSelected.length;
+  }, [functionList, structList, functionSelected, eventsSelected]);
 
   return (
     <Box className="abi-detail" mb={4}>
@@ -332,32 +345,35 @@ const DetailABI: FC<IDetailABI> = ({
       </Flex>
 
       <Box pb={4}>
-        {!!exposedFunctions.length && (
+        {!!functionList.length && (
           <ListSelect
-            type={'function'}
-            data={exposedFunctions}
+            type={ABI_TYPES.FUNCTION}
+            data={functionList}
             valueSearch={valueSearch}
             valueSort={valueSort}
             onChangeDataSelected={setFunctionSelected}
             dataSelected={functionSelected}
             isViewOnly={isViewOnly}
-            dataWebhook={dataWebhook?.functions}
           />
         )}
 
-        {!!structs.length && (
+        {!!structList.length && (
           <ListSelect
-            type={'struct'}
-            data={structs}
+            type={ABI_TYPES.STRUCT}
+            data={structList}
             valueSearch={valueSearch}
             valueSort={valueSort}
             onChangeDataSelected={setEventsSelected}
             dataSelected={eventsSelected}
             isViewOnly={isViewOnly}
-            dataWebhook={dataWebhook?.events}
           />
         )}
       </Box>
+      {isInvalidChecklist && (
+        <Box className="text-error">
+          The notification filter field is required
+        </Box>
+      )}
     </Box>
   );
 };
@@ -373,7 +389,7 @@ const AppReadABI: FC<IAppReadABI> = ({
   return (
     <Box className="upload-abi">
       <Flex mb={1} className="label-abi">
-        ABI{' '}
+        Notification filter{' '}
         <Text as={'span'} className="text-error" ml={1}>
           *
         </Text>

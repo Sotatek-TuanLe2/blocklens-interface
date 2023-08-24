@@ -1,10 +1,18 @@
-import { AppField, AppInput, AppReadABI } from 'src/components';
-import React, { FC, useState, useEffect, useRef, ChangeEvent } from 'react';
+import { AppField, AppInput, AppReadABI, AppSelect2 } from 'src/components';
+import React, {
+  FC,
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+  ChangeEvent,
+} from 'react';
 import rf from 'src/requests/RequestFactory';
 import _ from 'lodash';
 import { Box } from '@chakra-ui/react';
 import { IDataForm } from '../index';
 import { isValidAddressSUIAndAptos } from 'src/utils/utils-helper';
+import { PackageType } from 'src/utils/utils-webhook';
 
 interface PartFormContractAptosProps {
   dataForm: IDataForm;
@@ -90,6 +98,16 @@ const PartFormModuleActivityAptos: FC<PartFormContractAptosProps> = ({
     });
   }, 2000);
 
+  const onChangeModule = (module: string) => {
+    setPayloadForm({
+      ...payloadForm,
+      metadata: {
+        ...payloadForm.metadata,
+        module,
+      },
+    });
+  };
+
   useEffect(() => {
     if (
       payloadForm.metadata?.address &&
@@ -106,6 +124,19 @@ const PartFormModuleActivityAptos: FC<PartFormContractAptosProps> = ({
     onChangeForm(payloadForm);
   }, [payloadForm.metadata?.address]);
 
+  const filteredModules = useMemo(() => {
+    if (!dataAddress) return [];
+
+    const filteredData = dataAddress.map((item: PackageType) => ({
+      ...item,
+      modules: item.modules.filter(
+        (i: any) => i.name === payloadForm.metadata?.module,
+      ),
+    }));
+
+    return filteredData.filter((item: PackageType) => item.modules.length > 0);
+  }, [dataAddress, payloadForm.metadata?.module]);
+
   const _renderABI = () => {
     if (dataAddress) {
       return (
@@ -114,7 +145,7 @@ const PartFormModuleActivityAptos: FC<PartFormContractAptosProps> = ({
             onChangeForm={(data) => onChangeForm(data)}
             address={payloadForm.metadata?.address || ''}
             dataForm={payloadForm}
-            dataAddress={dataAddress}
+            dataAddress={filteredModules || dataAddress}
           />
         </Box>
       );
@@ -144,6 +175,20 @@ const PartFormModuleActivityAptos: FC<PartFormContractAptosProps> = ({
     debouncedOnChange(e);
   };
 
+  const getModuleNames = (data: PackageType[]) => {
+    if (dataAddress) {
+      const moduleOptions = data.flatMap((item) =>
+        (item.modules || []).map((module) => ({
+          label: module.name,
+          value: module.name,
+        })),
+      );
+      return moduleOptions;
+    }
+  };
+
+  const moduleNames = useMemo(() => getModuleNames(dataAddress), [dataAddress]);
+
   return (
     <Box width={'100%'}>
       <AppField label={'Address'} customWidth={'100%'} isRequired>
@@ -159,6 +204,25 @@ const PartFormModuleActivityAptos: FC<PartFormContractAptosProps> = ({
         />
       </AppField>
 
+      <AppField label={'Module'} isRequired>
+        <AppSelect2
+          disabled={!dataAddress}
+          className="select-module"
+          size="large"
+          options={moduleNames || []}
+          value={payloadForm.metadata?.module || ''}
+          onChange={onChangeModule}
+          validate={{
+            name: `module`,
+            validator: validator.current,
+            rule: 'required',
+          }}
+          isLoading={
+            isValidAddressSUIAndAptos(payloadForm.metadata?.address || '') &&
+            isLoading
+          }
+        />
+      </AppField>
       {!isLoading &&
         !dataAddress &&
         payloadForm.metadata?.address &&
@@ -168,12 +232,7 @@ const PartFormModuleActivityAptos: FC<PartFormContractAptosProps> = ({
           </Box>
         )}
 
-      {isValidAddressSUIAndAptos(payloadForm.metadata?.address || '') &&
-      isLoading ? (
-        <Box>Loading...</Box>
-      ) : (
-        _renderABI()
-      )}
+      <>{payloadForm.metadata?.module && _renderABI()}</>
     </Box>
   );
 };
