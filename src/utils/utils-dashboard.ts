@@ -41,7 +41,7 @@ export interface DashboardInterface {
   updatedAt: string;
   tags?: string[];
   privateMode: boolean;
-  user: UserInterface | string;
+  userId: UserInterface | string;
   chains: string[] | null;
   forkedDashboardId: string | null;
   forkedDashboardName: string | null;
@@ -154,7 +154,7 @@ export class Dashboard implements DashboardInterface {
   public thumbnail;
   public tags;
   public privateMode = false;
-  public user;
+  public userId;
   public forkedDashboardId;
   public forkedDashboardName;
   public userInfo: IUserInfo;
@@ -169,7 +169,7 @@ export class Dashboard implements DashboardInterface {
     this.updatedAt = dashboard.updatedAt;
     this.tags = dashboard.tags;
     this.privateMode = dashboard.isPrivate;
-    this.user = dashboard.user;
+    this.userId = dashboard.userId;
     this.forkedDashboardId = dashboard.forkedDashboardId;
     this.forkedDashboardName = dashboard.forkedDashboardName;
     this.textWidgets = [];
@@ -243,7 +243,7 @@ export class Dashboard implements DashboardInterface {
   }
 
   getUserId() {
-    return this.user || '';
+    return this.userId || '';
   }
 
   getTextWidgets() {
