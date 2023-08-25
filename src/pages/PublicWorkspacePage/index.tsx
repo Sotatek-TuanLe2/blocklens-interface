@@ -17,8 +17,10 @@ const PublicWorkspacePage: React.FC = () => {
     return WORKSPACE_TYPES.QUERY;
   }, [pathname]);
 
+  const isQuery = type === WORKSPACE_TYPES.QUERY;
+
   return (
-    <BasePage isFullWidth={type === WORKSPACE_TYPES.QUERY}>
+    <BasePage isFullWidth={isQuery} noHeader={isQuery}>
       <div className="workspace-page">
         <div className="workspace-page__editor workspace-page__editor--full">
           {type === WORKSPACE_TYPES.DASHBOARD ? <Dashboard /> : <Query />}
