@@ -12,6 +12,8 @@ import 'src/styles/components/Chart.scss';
 import 'src/styles/components/TableValue.scss';
 import 'src/styles/pages/DashboardDetailPage.scss';
 import { ITextWidget, IVisualizationWidget } from 'src/utils/query.type';
+import { getErrorMessage } from 'src/utils/utils-helper';
+import { toastError } from 'src/utils/utils-notify';
 
 interface ILayout extends Layout {
   id: string;
@@ -79,6 +81,7 @@ const DashboardScreenShot: React.FC = () => {
         setIsEmptyDashboard(!layouts.length);
       }
     } catch (error) {
+      toastError({ message: getErrorMessage(error) });
       console.error(error);
     } finally {
       setIsLoading(false);
