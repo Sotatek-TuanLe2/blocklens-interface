@@ -42,6 +42,7 @@ const QueryPart: React.FC = () => {
   const editorRef = useRef<any>();
   const [isExpand, setIsExpand] = useState<boolean>(true);
   const [isTemporary, setIsTemporary] = useState<boolean>(false);
+  const [createQueryId, setCreateQueryId] = useState<string>('');
   const [queryResult, setQueryResult] = useState<any>([]);
   const [queryValue, setQueryValue] = useState<IQuery | null>(null);
   const [expandLayout, setExpandLayout] = useState<string>(LAYOUT_QUERY.HIDDEN);
@@ -80,7 +81,7 @@ const QueryPart: React.FC = () => {
 
   useEffect(() => {
     if (queryId) {
-      setExpandLayout(LAYOUT_QUERY.HIDDEN);
+      setExpandLayout(LAYOUT_QUERY.HALF);
       setIsTemporary(false);
       fetchInitialData();
     } else {
@@ -109,6 +110,7 @@ const QueryPart: React.FC = () => {
     }
     setQueryResult([]);
     setQueryValue(null);
+    setCreateQueryId('');
     setExpandLayout(LAYOUT_QUERY.FULL);
     setIsLoadingResult(false);
     setErrorExecuteQuery(null);
@@ -147,6 +149,7 @@ const QueryPart: React.FC = () => {
       setErrorExecuteQuery(res?.error || null);
       setStatusExecuteQuery(res?.status);
       onCheckExpandLayout(res?.status);
+      setCreateQueryId(res.queryId);
       setIsLoadingResult(false);
     }
   };
@@ -249,13 +252,7 @@ const QueryPart: React.FC = () => {
         return;
       }
 
-      if (
-        statusExecuteQuery === STATUS.DONE &&
-        expandLayout === LAYOUT_QUERY.FULL
-      ) {
-        setExpandLayout(LAYOUT_QUERY.HIDDEN);
-      }
-
+      setExpandLayout(LAYOUT_QUERY.HALF);
       if (queryId) {
         await updateQuery(query);
       } else {
@@ -271,7 +268,6 @@ const QueryPart: React.FC = () => {
 
   const toggleExpandEditor = () => {
     setIsExpand(false);
-    if (!queryId || !queryValue) return;
     setExpandLayout((prevState) => {
       if (prevState === LAYOUT_QUERY.FULL) {
         return LAYOUT_QUERY.HIDDEN;
@@ -300,13 +296,9 @@ const QueryPart: React.FC = () => {
   };
 
   const onCheckExpandLayout = (executeStatus: string) => {
-    if (
-      executeStatus === STATUS.DONE &&
-      (expandLayout === LAYOUT_QUERY.FULL || expandLayout === LAYOUT_QUERY.HALF)
-    ) {
+    if (executeStatus === STATUS.DONE) {
       setExpandLayout(LAYOUT_QUERY.HIDDEN);
-    }
-    if (executeStatus === STATUS.FAILED) {
+    } else if (executeStatus === STATUS.FAILED) {
       setExpandLayout(LAYOUT_QUERY.HALF);
     }
   };
@@ -347,10 +339,7 @@ const QueryPart: React.FC = () => {
       );
     }
 
-    if (
-      !!queryResult.length &&
-      statusExecuteQuery === STATUS.DONE
-    ) {
+    if (!!queryResult.length && statusExecuteQuery === STATUS.DONE) {
       return (
         <Box>
           <VisualizationDisplay
@@ -513,11 +502,7 @@ const QueryPart: React.FC = () => {
                 }}
                 onSelectionChange={onSelectQuery}
               />
-              <div
-                className={`${
-                  !queryId || !queryValue ? 'cursor-not-allowed' : ''
-                } btn-expand-query`}
-              >
+              <div className="btn-expand-query">
                 {!isLoading && (
                   <p
                     className={`${getIconClassName(true)}`}
@@ -537,6 +522,7 @@ const QueryPart: React.FC = () => {
           onSuccess={onSuccessCreateQuery}
           type={TYPE_OF_MODAL.CREATE}
           query={editorRef.current.editor.getValue()}
+          createQueryId={createQueryId}
         />
       )}
     </div>

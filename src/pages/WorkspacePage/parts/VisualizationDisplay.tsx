@@ -202,7 +202,9 @@ const VisualizationDisplay = ({
 
   const addVisualizationHandler = async (visualizationType: string) => {
     if (!queryClass) {
-      return toastWarning({ message: 'You need to save query before creating visualization!' })
+      return toastWarning({
+        message: 'You need to save query before creating visualization!',
+      });
     }
 
     const searchedVisualization = visualizationConfigs.find(
@@ -338,8 +340,9 @@ const VisualizationDisplay = ({
           />
         </div>
         <div
-          className={`body-config ${expandLayout === LAYOUT_QUERY.HIDDEN ? 'body-config--expand' : ''
-            }`}
+          className={`body-config ${
+            expandLayout === LAYOUT_QUERY.HIDDEN ? 'body-config--expand' : ''
+          }`}
         >
           {configuration}
         </div>
@@ -423,10 +426,11 @@ const VisualizationDisplay = ({
 
     return (
       <div
-        className={`visual-container__wrapper ${expandLayout === LAYOUT_QUERY.FULL
-          ? 'visual-container__wrapper--hidden'
-          : ''
-          } ${expandLayout === LAYOUT_QUERY.HIDDEN ? 'hidden-editor' : ''}`}
+        className={`visual-container__wrapper ${
+          expandLayout === LAYOUT_QUERY.FULL
+            ? 'visual-container__wrapper--hidden'
+            : ''
+        } ${expandLayout === LAYOUT_QUERY.HIDDEN ? 'hidden-editor' : ''}`}
       >
         <div className="visual-container__visualization">
           {isConfiguring && (
@@ -436,13 +440,15 @@ const VisualizationDisplay = ({
           )}
           <div className="main-chart">
             <div
-              className={`main-visualization ${type === TYPE_VISUALIZATION.table
-                ? 'main-visualization--table'
-                : ''
-                } ${expandLayout === LAYOUT_QUERY.HIDDEN
+              className={`main-visualization ${
+                type === TYPE_VISUALIZATION.table
+                  ? 'main-visualization--table'
+                  : ''
+              } ${
+                expandLayout === LAYOUT_QUERY.HIDDEN
                   ? 'main-visualization--expand'
                   : ''
-                } ${!toggleCloseConfig || isMobile ? 'show-full-visual' : ''}`}
+              } ${!toggleCloseConfig || isMobile ? 'show-full-visual' : ''}`}
             >
               {errorMessage ? (
                 <Flex
@@ -502,17 +508,20 @@ const VisualizationDisplay = ({
     ];
 
     if (!!queryValue) {
-      tabs.push(...queryValue.visualizations.map((v) => {
-        const visualizationClass = new Visualization(v);
-        return {
-          icon: getIcon(visualizationClass.getType()),
-          name:
-            v.name || getDefaultVisualizationName(visualizationClass.getType()),
-          content: _renderVisualization(v, needAuthentication),
-          id: v.id,
-          closeable: needAuthentication,
-        };
-      }));
+      tabs.push(
+        ...queryValue.visualizations.map((v) => {
+          const visualizationClass = new Visualization(v);
+          return {
+            icon: getIcon(visualizationClass.getType()),
+            name:
+              v.name ||
+              getDefaultVisualizationName(visualizationClass.getType()),
+            content: _renderVisualization(v, needAuthentication),
+            id: v.id,
+            closeable: needAuthentication,
+          };
+        }),
+      );
     }
 
     if (needAuthentication) {
@@ -652,8 +661,9 @@ const AddVisualization = ({
     <Box>
       {expandLayout === LAYOUT_QUERY.HIDDEN && (
         <div
-          className={`main-item ${expandLayout === LAYOUT_QUERY.HIDDEN ? 'main-item-expand' : ''
-            }`}
+          className={`main-item ${
+            expandLayout === LAYOUT_QUERY.HIDDEN ? 'main-item-expand' : ''
+          }`}
         >
           {isConfiguring && (
             <div className="visual-container__visualization__loading">
