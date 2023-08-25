@@ -32,7 +32,7 @@ const WorkspacePage: React.FC = () => {
   };
 
   return (
-    <BasePage>
+    <BasePage isFullWidth={type === WORKSPACE_TYPES.QUERY}>
       <>
         <div
           className={`${

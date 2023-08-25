@@ -8,6 +8,7 @@ import { XAxisOptions, YAxisOptions } from './AxisOptions';
 import { objectKeys } from 'src/utils/utils-network';
 import { VISUALIZATION_DEBOUNCE } from 'src/pages/WorkspacePage/parts/VisualizationDisplay';
 import AppInput from '../AppInput';
+import { Visualization } from 'src/utils/utils-query';
 
 type Props = {
   data: unknown[];
@@ -20,12 +21,17 @@ const ChartConfigurations = ({
   visualization,
   onChangeConfigurations,
 }: Props) => {
+  const visualizationClass = useMemo(
+    () => new Visualization(visualization),
+    [visualization],
+  );
+
   const [editVisualization, setEditVisualization] =
     useState<VisualizationType>(visualization);
 
   const timeout = useRef<ReturnType<typeof setTimeout>>();
 
-  const type = visualization.options?.globalSeriesType || visualization.type;
+  const type = visualizationClass.getType();
 
   const axisOptions = useMemo(
     () => (Array.isArray(data) && data[0] ? objectKeys(data[0]) : []),

@@ -1,10 +1,11 @@
 import { Box, Flex, Skeleton, Text, Tooltip } from '@chakra-ui/react';
 import BigNumber from 'bignumber.js';
-import React from 'react';
+import React, { useMemo } from 'react';
 import 'src/styles/components/CounterConfigurations.scss';
 import { VISUALIZATION_COLORS } from 'src/utils/common';
 import { VisualizationType } from 'src/utils/query.type';
 import { isNumber } from 'src/utils/utils-helper';
+import { Visualization } from 'src/utils/utils-query';
 const commaNumber = require('comma-number');
 
 type Props = {
@@ -14,7 +15,12 @@ type Props = {
 };
 
 const VisualizationCounter = ({ data, visualization, isLoading }: Props) => {
-  const { options: dataOptions } = visualization;
+  const visualizationClass = useMemo(
+    () => new Visualization(visualization),
+    [visualization],
+  );
+
+  const dataOptions = visualizationClass.getConfigs();
 
   if (isLoading) {
     return (
@@ -89,13 +95,13 @@ const VisualizationCounter = ({ data, visualization, isLoading }: Props) => {
           label={
             dataOptions.counterLabel
               ? dataOptions.counterLabel
-              : visualization.name
+              : visualizationClass.getName()
           }
         >
           <Text className="main-counter__content__label" isTruncated>
             {dataOptions.counterLabel
               ? dataOptions.counterLabel
-              : visualization.name}
+              : visualizationClass.getName()}
           </Text>
         </Tooltip>
       </div>

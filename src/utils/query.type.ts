@@ -98,7 +98,7 @@ export interface IQuery {
   visualizations: VisualizationType[];
   utilizedChains: string[];
   thumbnail: string | null;
-  user: string;
+  userId: string;
   userInfo: IUserInfo;
 }
 
@@ -126,7 +126,7 @@ export interface IDashboardDetail {
   isArchived: boolean;
   createdAt: string;
   updatedAt: string;
-  user: string;
+  userId: string;
   forkedDashboardId: string | null;
   forkedDashboardName: string | null;
   tags?: string[];
@@ -180,9 +180,11 @@ export type VisualizationOptionsType = ChartType &
   } & { yAxisConfigs: YAxisConfigsType } & { numberFormat?: string };
 
 export type QueryType = {
-  name: string;
+  id?: string;
+  name?: string;
   query: string;
-  // visualizations: VisualizationType[];
+  parameters?: [string];
+  tags?: [string];
 };
 
 export type QueryExecutedResponse = {

@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { TYPE_VISUALIZATION, VisualizationType } from 'src/utils/query.type';
 import { CheckboxGroup, Flex, Switch } from '@chakra-ui/react';
 import AppInput from '../AppInput';
+import { Visualization } from 'src/utils/utils-query';
 
 interface IChartOptions {
   visualization: VisualizationType;
@@ -12,6 +13,11 @@ const ChartOptions: React.FC<IChartOptions> = ({
   visualization,
   onChangeConfigurations,
 }) => {
+  const visualizationClass = useMemo(
+    () => new Visualization(visualization),
+    [visualization],
+  );
+
   const [chartOptions, setChartOptions] = useState([
     {
       label: 'Show chart legend',
@@ -38,18 +44,13 @@ const ChartOptions: React.FC<IChartOptions> = ({
       disabled: false,
     },
   ]);
-  const chartType =
-    visualization.options?.globalSeriesType || visualization.type;
-
+  const chartType = visualizationClass.getType();
   const getStatusDisableStacking =
     chartType !== TYPE_VISUALIZATION.bar &&
     chartType !== TYPE_VISUALIZATION.area;
 
-  // const getStatusDisablePercentage =
-  //   chartType === TYPE_VISUALIZATION.pie ? true : false;
-
   useEffect(() => {
-    const options = visualization.options.chartOptionsConfigs;
+    const options = visualizationClass.getConfigs()?.chartOptionsConfigs;
 
     setChartOptions([
       {
@@ -88,13 +89,13 @@ const ChartOptions: React.FC<IChartOptions> = ({
 
   const changeValueHandle = (key: string, value: boolean | string) => {
     const newChartOptionsConfigs = {
-      ...visualization.options.chartOptionsConfigs,
+      ...visualizationClass.getConfigs()?.chartOptionsConfigs,
       [key]: value,
     };
     onChangeConfigurations({
       ...visualization,
       options: {
-        ...visualization.options,
+        ...visualizationClass.getConfigs(),
         chartOptionsConfigs: newChartOptionsConfigs,
       },
     });
@@ -106,7 +107,7 @@ const ChartOptions: React.FC<IChartOptions> = ({
         <div className="label-input">Title</div>
         <AppInput
           className={'input-table'}
-          value={visualization?.name || ''}
+          value={visualizationClass.getName() || ''}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             changeNameHandle(e.target.value)
           }
