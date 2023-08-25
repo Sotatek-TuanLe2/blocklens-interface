@@ -95,11 +95,7 @@ const DashboardScreenShot: React.FC = () => {
   }, [dashboardId]);
 
   const _renderEmptyDashboardScreenShot = () => (
-    <Flex
-      className="empty-dashboard"
-      justifyContent={'center'}
-      alignItems={'center'}
-    >
+    <Flex justifyContent={'center'} alignItems={'center'} height={'90vh'}>
       Dashboard is empty
     </Flex>
   );
