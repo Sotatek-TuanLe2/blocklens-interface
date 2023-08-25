@@ -573,7 +573,14 @@ const AppUploadABI: FC<IAppUploadABI> = ({
     <Box className="upload-abi">
       <Flex justifyContent={'space-between'}>
         <Flex mb={1} className="label-abi">
-          Notification filter {type === TYPE_ABI.NFT && _renderNoticeUpload()}
+          <Tooltip
+            hasArrow
+            placement="top"
+            label="Choosing which activities you want to be notified"
+          >
+            Notification filter
+          </Tooltip>
+          {type === TYPE_ABI.NFT && _renderNoticeUpload()}
         </Flex>
 
         {!viewOnly && !abiContract?.length && (
