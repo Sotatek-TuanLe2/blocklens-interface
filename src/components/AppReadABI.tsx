@@ -1,12 +1,5 @@
-import { Box, Flex, Checkbox, Text } from '@chakra-ui/react';
-import React, {
-  useState,
-  FC,
-  useEffect,
-  ChangeEvent,
-  useMemo,
-  useRef,
-} from 'react';
+import { Box, Flex, Checkbox, Text, Tooltip } from '@chakra-ui/react';
+import React, { useState, FC, useEffect, ChangeEvent, useMemo } from 'react';
 import { AppInput, AppSelect2 } from 'src/components';
 import 'src/styles/components/AppUploadABI.scss';
 import { isMobile } from 'react-device-detect';
@@ -389,7 +382,13 @@ const AppReadABI: FC<IAppReadABI> = ({
   return (
     <Box className="upload-abi">
       <Flex mb={1} className="label-abi">
-        Notification filter{' '}
+        <Tooltip
+          hasArrow
+          placement="top"
+          label="Choosing which activities you want to be notified"
+        >
+          Notification filter
+        </Tooltip>
         <Text as={'span'} className="text-error" ml={1}>
           *
         </Text>
