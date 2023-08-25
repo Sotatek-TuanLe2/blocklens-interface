@@ -160,7 +160,7 @@ const QueryPart: React.FC = () => {
   ): Promise<any> => {
     const executedResponse: QueryExecutedResponse = await rf
       .getRequest('DashboardsRequest')
-      .executeQuery({ queryId, statement });
+      .executeQuery({ id: queryId, statement });
     if (!executedResponse || !executedResponse.id) {
       throw new Error('Execute query failed!');
     }
