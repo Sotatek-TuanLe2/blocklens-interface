@@ -16,6 +16,7 @@ export interface IModalSettingQuerry {
   id?: string;
   type: string;
   query?: string;
+  createQueryId?: string;
 }
 
 export const generateTitleModal = (type: string) => {
@@ -23,7 +24,7 @@ export const generateTitleModal = (type: string) => {
     case TYPE_OF_MODAL.SETTING:
       return 'Setting';
     case TYPE_OF_MODAL.CREATE:
-      return 'Create';
+      return 'Save';
     case TYPE_OF_MODAL.FORK:
       return 'Fork';
     default:
@@ -57,6 +58,7 @@ const ModalQuery = ({
   id,
   type,
   query,
+  createQueryId,
 }: IModalSettingQuerry) => {
   const initDataFormSetting = {
     name: defaultValue.name || '',
@@ -115,7 +117,7 @@ const ModalQuery = ({
           case TYPE_OF_MODAL.CREATE:
             res = await rf
               .getRequest('DashboardsRequest')
-              .createNewQuery({ ...submitData, query: query });
+              .createNewQuery({ ...submitData, query, id: createQueryId });
             setIsDisableSubmit(false);
             toastSuccess({ message: 'Create new query successfully!' });
             break;
