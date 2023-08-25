@@ -202,15 +202,15 @@ const PartFormModuleActivityAptos: FC<PartFormContractAptosProps> = ({
             rule: 'required|isAddressAptos',
           }}
         />
+        {!isLoading &&
+          !dataAddress &&
+          payloadForm.metadata?.address &&
+          isValidAddressSUIAndAptos(payloadForm.metadata?.address) && (
+            <Box color={'#ee5d50'} fontSize={'14px'}>
+              The address is invalid
+            </Box>
+          )}
       </AppField>
-      {!isLoading &&
-        !dataAddress &&
-        payloadForm.metadata?.address &&
-        isValidAddressSUIAndAptos(payloadForm.metadata?.address) && (
-          <Box color={'#ee5d50'} fontSize={'14px'}>
-            Address Invalid
-          </Box>
-        )}
       <AppField label={'Module'} isRequired>
         <AppSelect2
           disabled={!dataAddress}
