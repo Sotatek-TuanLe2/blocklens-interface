@@ -31,8 +31,10 @@ const WorkspacePage: React.FC = () => {
     setTimeout(() => window.dispatchEvent(new Event('resize')), 500);
   };
 
+  const isQuery = type === WORKSPACE_TYPES.QUERY;
+
   return (
-    <BasePage isFullWidth={type === WORKSPACE_TYPES.QUERY}>
+    <BasePage isFullWidth={isQuery} noHeader={isQuery}>
       <>
         <div
           className={`${

@@ -125,7 +125,7 @@ export class Query implements QueryInterface {
 
   constructor(query: IQuery) {
     this.id = query.id;
-    this.executedId = query.id;
+    this.executedId = query.executedId;
     this.name = query.name;
     this.createdAt = query.createdAt;
     this.updatedAt = query.updatedAt;
