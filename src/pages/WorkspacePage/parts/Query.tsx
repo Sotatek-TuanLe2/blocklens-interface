@@ -348,7 +348,6 @@ const QueryPart: React.FC = () => {
     }
 
     if (
-      !!queryValue &&
       !!queryResult.length &&
       statusExecuteQuery === STATUS.DONE
     ) {

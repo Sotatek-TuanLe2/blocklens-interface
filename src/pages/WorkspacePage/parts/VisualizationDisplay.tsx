@@ -18,7 +18,7 @@ import 'src/styles/components/Chart.scss';
 import { getDefaultVisualizationName } from 'src/utils/common';
 import { areYAxisesSameType, getErrorMessage } from 'src/utils/utils-helper';
 import { objectKeys } from 'src/utils/utils-network';
-import { toastError, toastSuccess } from 'src/utils/utils-notify';
+import { toastError, toastSuccess, toastWarning } from 'src/utils/utils-notify';
 import { Query, Visualization } from 'src/utils/utils-query';
 import { AppButton, AppTabs } from 'src/components';
 import { ITabs } from 'src/components/AppTabs';
@@ -85,6 +85,15 @@ const visualizationConfigs: VisualizationConfigType[] = [
   },
 ];
 
+const resultTableTab: VisualizationType = {
+  id: 'result-table',
+  name: 'Result Table',
+  type: TYPE_VISUALIZATION.table,
+  createdAt: '',
+  updatedAt: '',
+  options: {},
+};
+
 export const VISUALIZATION_DEBOUNCE = 500;
 
 export const generateErrorMessage = (
@@ -118,7 +127,7 @@ export const generateErrorMessage = (
 
 type Props = {
   queryResult: unknown[];
-  queryValue: IQuery;
+  queryValue: IQuery | null;
   expandLayout: string;
   needAuthentication?: boolean;
   onReload: () => Promise<any>;
@@ -144,7 +153,12 @@ const VisualizationDisplay = ({
   const [dataTable, setDataTable] = useState<any[]>([]);
   const [isConfiguring, setIsConfiguring] = useState<boolean>(false);
 
-  const queryClass = useMemo(() => new Query(queryValue), [queryValue]);
+  const queryClass = useMemo(() => {
+    if (!queryValue) {
+      return null;
+    }
+    return new Query(queryValue);
+  }, [queryValue]);
 
   const axisOptions =
     Array.isArray(queryResult) && queryResult[0]
@@ -187,6 +201,10 @@ const VisualizationDisplay = ({
   };
 
   const addVisualizationHandler = async (visualizationType: string) => {
+    if (!queryClass) {
+      return toastWarning({ message: 'You need to save query before creating visualization!' })
+    }
+
     const searchedVisualization = visualizationConfigs.find(
       (v) => v.value === visualizationType,
     );
@@ -216,6 +234,10 @@ const VisualizationDisplay = ({
   const removeVisualizationHandler = async (
     visualizationId: string | number,
   ) => {
+    if (!queryClass) {
+      return;
+    }
+
     const visualization = queryClass?.getVisualizationById(
       visualizationId.toString(),
     );
@@ -316,9 +338,8 @@ const VisualizationDisplay = ({
           />
         </div>
         <div
-          className={`body-config ${
-            expandLayout === LAYOUT_QUERY.HIDDEN ? 'body-config--expand' : ''
-          }`}
+          className={`body-config ${expandLayout === LAYOUT_QUERY.HIDDEN ? 'body-config--expand' : ''
+            }`}
         >
           {configuration}
         </div>
@@ -402,11 +423,10 @@ const VisualizationDisplay = ({
 
     return (
       <div
-        className={`visual-container__wrapper ${
-          expandLayout === LAYOUT_QUERY.FULL
-            ? 'visual-container__wrapper--hidden'
-            : ''
-        } ${expandLayout === LAYOUT_QUERY.HIDDEN ? 'hidden-editor' : ''}`}
+        className={`visual-container__wrapper ${expandLayout === LAYOUT_QUERY.FULL
+          ? 'visual-container__wrapper--hidden'
+          : ''
+          } ${expandLayout === LAYOUT_QUERY.HIDDEN ? 'hidden-editor' : ''}`}
       >
         <div className="visual-container__visualization">
           {isConfiguring && (
@@ -416,15 +436,13 @@ const VisualizationDisplay = ({
           )}
           <div className="main-chart">
             <div
-              className={`main-visualization ${
-                type === TYPE_VISUALIZATION.table
-                  ? 'main-visualization--table'
-                  : ''
-              } ${
-                expandLayout === LAYOUT_QUERY.HIDDEN
+              className={`main-visualization ${type === TYPE_VISUALIZATION.table
+                ? 'main-visualization--table'
+                : ''
+                } ${expandLayout === LAYOUT_QUERY.HIDDEN
                   ? 'main-visualization--expand'
                   : ''
-              } ${!toggleCloseConfig || isMobile ? 'show-full-visual' : ''}`}
+                } ${!toggleCloseConfig || isMobile ? 'show-full-visual' : ''}`}
             >
               {errorMessage ? (
                 <Flex
@@ -473,15 +491,6 @@ const VisualizationDisplay = ({
   };
 
   const generateTabs = () => {
-    const resultTableTab: VisualizationType = {
-      id: `${queryClass.getId()}-result-table`,
-      name: 'Result Table',
-      type: TYPE_VISUALIZATION.table,
-      createdAt: '',
-      updatedAt: '',
-      options: {},
-    };
-
     const tabs: ITabs[] = [
       {
         icon: getIcon(resultTableTab.type),
@@ -490,7 +499,10 @@ const VisualizationDisplay = ({
         id: resultTableTab.id,
         closeable: false,
       },
-      ...queryValue.visualizations.map((v) => {
+    ];
+
+    if (!!queryValue) {
+      tabs.push(...queryValue.visualizations.map((v) => {
         const visualizationClass = new Visualization(v);
         return {
           icon: getIcon(visualizationClass.getType()),
@@ -500,8 +512,8 @@ const VisualizationDisplay = ({
           id: v.id,
           closeable: needAuthentication,
         };
-      }),
-    ];
+      }));
+    }
 
     if (needAuthentication) {
       tabs.push({
@@ -640,9 +652,8 @@ const AddVisualization = ({
     <Box>
       {expandLayout === LAYOUT_QUERY.HIDDEN && (
         <div
-          className={`main-item ${
-            expandLayout === LAYOUT_QUERY.HIDDEN ? 'main-item-expand' : ''
-          }`}
+          className={`main-item ${expandLayout === LAYOUT_QUERY.HIDDEN ? 'main-item-expand' : ''
+            }`}
         >
           {isConfiguring && (
             <div className="visual-container__visualization__loading">
