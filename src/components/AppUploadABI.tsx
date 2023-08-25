@@ -578,8 +578,11 @@ const AppUploadABI: FC<IAppUploadABI> = ({
             placement="top"
             label="Choosing which activities you want to be notified"
           >
-            Notification filter
+            Notification filter&nbsp;
           </Tooltip>
+          <Box as={'span'} color={'red.500'}>
+            *
+          </Box>
           {type === TYPE_ABI.NFT && _renderNoticeUpload()}
         </Flex>
 
