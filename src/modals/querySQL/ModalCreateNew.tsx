@@ -23,6 +23,10 @@ const ModalCreateNew: React.FC<IModalCreateNew> = ({ open, onClose }) => {
     onToggleCreateDashboardModal();
   };
 
+  const onCreateQuery = () => {
+    window.open(ROUTES.MY_QUERY, '_blank');
+  };
+
   const onCreateDashboardSuccess = (response: any) => {
     history.push(`${ROUTES.MY_DASHBOARD}/${response.id}`);
   };
@@ -47,10 +51,7 @@ const ModalCreateNew: React.FC<IModalCreateNew> = ({ open, onClose }) => {
               You can add various content icluding chart, note and image.
             </Text>
           </Flex>
-          <div
-            className="content-create-modal"
-            onClick={() => history.push(ROUTES.MY_QUERY)}
-          >
+          <div className="content-create-modal" onClick={onCreateQuery}>
             <QueriesIcon />
             <Text className="title-content">Query</Text>
             <Text className="desc-content">

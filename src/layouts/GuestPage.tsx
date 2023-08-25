@@ -6,15 +6,16 @@ import 'src/styles/layout/Header.scss';
 
 interface IBasePage {
   children?: ReactNode;
+  noHeader?: boolean;
 }
 
-const GuestPage: FC<IBasePage> = ({ children }) => {
+const GuestPage: FC<IBasePage> = ({ children, noHeader = false }) => {
   return (
     <Box>
-      <Header />
+      {!noHeader && <Header />}
       <Box
-        pt={'80px'}
-        pb={'60px'}
+        pt={noHeader ? '0' : '80px'}
+        pb={noHeader ? '0' : '60px'}
         minH={'calc(100vh - 80px)'}
         className={'main'}
         overflow={'hidden'}

@@ -9,6 +9,7 @@ interface BasePage {
   onInitPage?: () => void;
   children: ReactElement;
   isFullWidth?: boolean;
+  noHeader?: boolean;
 }
 
 const BasePage: FC<BasePage> = ({
@@ -16,6 +17,7 @@ const BasePage: FC<BasePage> = ({
   children,
   className = '',
   isFullWidth = false,
+  noHeader = false,
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const onInit = async () => {
@@ -33,7 +35,7 @@ const BasePage: FC<BasePage> = ({
   }, []);
 
   return (
-    <GuestPage>
+    <GuestPage noHeader={noHeader}>
       <Flex
         justifyContent={'center'}
         className={`base-page-container ${className}`}

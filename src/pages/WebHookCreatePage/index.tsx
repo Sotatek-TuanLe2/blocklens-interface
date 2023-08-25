@@ -506,7 +506,9 @@ const WebHookCreatePage: React.FC = () => {
                   endAdornment={
                     <AppButton
                       onClick={handleSendDemoMsg}
-                      disabled={isDisableSubmit}
+                      disabled={
+                        isDisableSubmit || chainSelected.value === CHAINS.SUI
+                      }
                       w={190}
                       size={'sm'}
                     >
@@ -517,7 +519,9 @@ const WebHookCreatePage: React.FC = () => {
                 <Show below="md">
                   <AppButton
                     onClick={handleSendDemoMsg}
-                    disabled={isDisableSubmit}
+                    disabled={
+                      isDisableSubmit || chainSelected.value === CHAINS.SUI
+                    }
                     w={190}
                     size={'sm'}
                   >

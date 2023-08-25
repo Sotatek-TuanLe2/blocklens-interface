@@ -257,9 +257,9 @@ export default class DashboardsRequest extends BaseRequest {
     return this.post(url, query, RECAPTCHA_ACTIONS.HOMEPAGE);
   }
 
-  executeQuery(queryId: string) {
+  executeQuery(data: { queryId?: string; statement: string }) {
     const url = '/query-executors/execute-query';
-    return this.post(url, { queryId }, RECAPTCHA_ACTIONS.HOMEPAGE);
+    return this.post(url, data, RECAPTCHA_ACTIONS.HOMEPAGE);
   }
 
   forkQueries(queryId: string, params: IUpdateQuery) {

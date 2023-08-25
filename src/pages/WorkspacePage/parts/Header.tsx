@@ -40,7 +40,9 @@ interface IHeaderProps {
   isLoadingRun?: boolean;
   isLoadingResult?: boolean;
   isEmptyDashboard?: boolean;
+  isTemporaryQuery?: boolean;
   onRunQuery?: () => Promise<void>;
+  onSaveQuery?: () => void;
   onChangeEditMode?: () => void;
   data: IQuery | IDashboardDetail | null | undefined;
 }
@@ -56,7 +58,9 @@ const Header: React.FC<IHeaderProps> = (props) => {
     isLoadingRun = false,
     isLoadingResult = false,
     isEmptyDashboard = false,
+    isTemporaryQuery = false,
     onRunQuery,
+    onSaveQuery,
     onChangeEditMode,
   } = props;
 
@@ -223,7 +227,18 @@ const Header: React.FC<IHeaderProps> = (props) => {
     if (isQuery) {
       // Query button
       return (
-        <Box display={{ base: 'none', lg: 'block' }}>
+        <Flex display={{ base: 'none', lg: 'flex' }}>
+          {isTemporaryQuery && !isLoadingResult && (
+            <AppButton
+              className="btn-primary"
+              onClick={onSaveQuery}
+              size="sm"
+              me="10px"
+              fontSize={'14px'}
+            >
+              Save
+            </AppButton>
+          )}
           <Tooltip
             label="Run Query"
             hasArrow
@@ -247,7 +262,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
               )}
             </AppButton>
           </Tooltip>
-        </Box>
+        </Flex>
       );
     }
 

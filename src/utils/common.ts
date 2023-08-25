@@ -18,6 +18,7 @@ export const ROUTES = {
   WEBHOOKS: '/webhooks',
   ACCOUNT: '/account',
   CREATE_WEBHOOK: '/create-webhook-page',
+  DASHBOARD_SCREENSHOT: '/dashboard-screenshot',
 };
 
 export const RECAPTCHA_ACTIONS = {
