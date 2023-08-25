@@ -19,7 +19,7 @@ import { getDefaultVisualizationName } from 'src/utils/common';
 import { areYAxisesSameType, getErrorMessage } from 'src/utils/utils-helper';
 import { objectKeys } from 'src/utils/utils-network';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
-import { Query } from 'src/utils/utils-query';
+import { Query, Visualization } from 'src/utils/utils-query';
 import { AppButton, AppTabs } from 'src/components';
 import { ITabs } from 'src/components/AppTabs';
 import {
@@ -91,10 +91,10 @@ export const generateErrorMessage = (
   visualization: VisualizationType,
   data: any[],
 ): string | null => {
-  const { options } = visualization;
-  const type = options.globalSeriesType || visualization.type;
-  const xAxis = options.columnMapping?.xAxis;
-  const yAxis = options.columnMapping?.yAxis;
+  const visualizationClass = new Visualization(visualization);
+  const type = visualizationClass.getType();
+  const xAxis = visualizationClass.getConfigs()?.columnMapping?.xAxis;
+  const yAxis = visualizationClass.getConfigs()?.columnMapping?.yAxis;
   const axisOptions = Array.isArray(data) && data[0] ? objectKeys(data[0]) : [];
 
   if (
@@ -252,7 +252,8 @@ const VisualizationDisplay = ({
   };
 
   const _renderConfigurations = (visualization: VisualizationType) => {
-    const type = visualization.options?.globalSeriesType || visualization.type;
+    const visualizationClass = new Visualization(visualization);
+    const type = visualizationClass.getType();
     let configuration = null;
 
     switch (type) {
@@ -348,10 +349,14 @@ const VisualizationDisplay = ({
     visualization: VisualizationType,
     showConfiguration = true,
   ) => {
-    const type = visualization.options?.globalSeriesType || visualization.type;
+    const visualizationClass = new Visualization(visualization);
+
+    const type = visualizationClass.getType();
     let visualizationDisplay = null;
-    const xAxisKey = visualization.options?.columnMapping?.xAxis || '';
-    const yAxisKeys = visualization.options.columnMapping?.yAxis || [];
+    const xAxisKey =
+      visualizationClass.getConfigs()?.columnMapping?.xAxis || '';
+    const yAxisKeys =
+      visualizationClass.getConfigs()?.columnMapping?.yAxis || [];
 
     switch (type) {
       case TYPE_VISUALIZATION.table:
@@ -377,7 +382,7 @@ const VisualizationDisplay = ({
             data={queryResult}
             xAxisKey={xAxisKey}
             yAxisKeys={yAxisKeys}
-            configs={visualization.options}
+            configs={visualizationClass.getConfigs()}
           />
         );
         break;
@@ -387,7 +392,7 @@ const VisualizationDisplay = ({
             data={queryResult}
             xAxisKey={xAxisKey}
             yAxisKeys={yAxisKeys}
-            configs={visualization.options}
+            configs={visualizationClass.getConfigs()}
             type={type}
           />
         );
@@ -469,7 +474,7 @@ const VisualizationDisplay = ({
 
   const generateTabs = () => {
     const resultTableTab: VisualizationType = {
-      id: `${queryValue.id}-result-table`,
+      id: `${queryClass.getId()}-result-table`,
       name: 'Result Table',
       type: TYPE_VISUALIZATION.table,
       createdAt: '',
@@ -485,15 +490,17 @@ const VisualizationDisplay = ({
         id: resultTableTab.id,
         closeable: false,
       },
-      ...queryValue.visualizations.map((v) => ({
-        icon: getIcon(v?.options?.globalSeriesType || v.type),
-        name:
-          v.name ||
-          getDefaultVisualizationName(v?.options?.globalSeriesType || v.type),
-        content: _renderVisualization(v, needAuthentication),
-        id: v.id,
-        closeable: needAuthentication,
-      })),
+      ...queryValue.visualizations.map((v) => {
+        const visualizationClass = new Visualization(v);
+        return {
+          icon: getIcon(visualizationClass.getType()),
+          name:
+            v.name || getDefaultVisualizationName(visualizationClass.getType()),
+          content: _renderVisualization(v, needAuthentication),
+          id: v.id,
+          closeable: needAuthentication,
+        };
+      }),
     ];
 
     if (needAuthentication) {

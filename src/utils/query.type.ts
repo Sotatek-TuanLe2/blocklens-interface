@@ -180,9 +180,11 @@ export type VisualizationOptionsType = ChartType &
   } & { yAxisConfigs: YAxisConfigsType } & { numberFormat?: string };
 
 export type QueryType = {
-  name: string;
+  id?: string;
+  name?: string;
   query: string;
-  // visualizations: VisualizationType[];
+  parameters?: [string];
+  tags?: [string];
 };
 
 export type QueryExecutedResponse = {

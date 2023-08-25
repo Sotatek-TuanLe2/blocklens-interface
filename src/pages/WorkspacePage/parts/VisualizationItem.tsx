@@ -114,9 +114,7 @@ const VisualizationItem = React.memo(
         );
       }
 
-      const type =
-        visualizationClass.getConfigs()?.globalSeriesType ||
-        visualizationClass.getType();
+      const type = visualizationClass.getType();
       let visualizationDisplay = null;
       const xAxisKey =
         visualizationClass.getConfigs()?.columnMapping?.xAxis || '';

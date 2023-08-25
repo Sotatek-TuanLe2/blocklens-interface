@@ -23,7 +23,7 @@ export const generateTitleModal = (type: string) => {
     case TYPE_OF_MODAL.SETTING:
       return 'Setting';
     case TYPE_OF_MODAL.CREATE:
-      return 'Create';
+      return 'Save';
     case TYPE_OF_MODAL.FORK:
       return 'Fork';
     default:

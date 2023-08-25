@@ -94,7 +94,7 @@ export class Visualization implements VisualizationInterface {
   }
 
   getType() {
-    return this.type;
+    return this.options?.globalSeriesType || this.type;
   }
 
   getConfigs() {
