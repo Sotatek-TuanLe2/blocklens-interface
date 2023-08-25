@@ -1,5 +1,5 @@
 import { Box, Flex, Tooltip } from '@chakra-ui/react';
-import { debounce } from 'lodash';
+import { debounce, update } from 'lodash';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import AceEditor from 'react-ace';
 import 'ace-builds/src-noconflict/ext-language_tools';
@@ -41,6 +41,8 @@ const QueryPart: React.FC = () => {
   const DEBOUNCE_TIME = 500;
   const editorRef = useRef<any>();
   const [isExpand, setIsExpand] = useState<boolean>(true);
+  const [isTemporary, setIsTemporary] = useState<boolean>(false);
+  const [createQueryId, setCreateQueryId] = useState<string>('');
   const [queryResult, setQueryResult] = useState<any>([]);
   const [queryValue, setQueryValue] = useState<IQuery | null>(null);
   const [expandLayout, setExpandLayout] = useState<string>(LAYOUT_QUERY.HIDDEN);
@@ -79,9 +81,11 @@ const QueryPart: React.FC = () => {
 
   useEffect(() => {
     if (queryId) {
-      setExpandLayout(LAYOUT_QUERY.HIDDEN);
+      setExpandLayout(LAYOUT_QUERY.HALF);
+      setIsTemporary(false);
       fetchInitialData();
     } else {
+      setIsTemporary(false);
       resetEditor();
     }
 
@@ -106,6 +110,7 @@ const QueryPart: React.FC = () => {
     }
     setQueryResult([]);
     setQueryValue(null);
+    setCreateQueryId('');
     setExpandLayout(LAYOUT_QUERY.FULL);
     setIsLoadingResult(false);
     setErrorExecuteQuery(null);
@@ -119,7 +124,7 @@ const QueryPart: React.FC = () => {
       setIsLoadingResult(true);
       await rf.getRequest('DashboardsRequest').updateQuery({ query }, queryId);
       await fetchQuery();
-      const executionId = await executeQuery(queryId);
+      const executionId = await executeQuery(query, queryId);
       await fetchQueryResult(executionId);
     } catch (error: any) {
       console.error(error);
@@ -144,14 +149,18 @@ const QueryPart: React.FC = () => {
       setErrorExecuteQuery(res?.error || null);
       setStatusExecuteQuery(res?.status);
       onCheckExpandLayout(res?.status);
+      setCreateQueryId(res.queryId);
       setIsLoadingResult(false);
     }
   };
 
-  const executeQuery = async (queryId: string): Promise<string> => {
+  const executeQuery = async (
+    statement: string,
+    queryId?: string,
+  ): Promise<any> => {
     const executedResponse: QueryExecutedResponse = await rf
       .getRequest('DashboardsRequest')
-      .executeQuery(queryId);
+      .executeQuery({ queryId, statement });
     if (!executedResponse || !executedResponse.id) {
       throw new Error('Execute query failed!');
     }
@@ -221,9 +230,9 @@ const QueryPart: React.FC = () => {
     try {
       const executedResponse: QueryExecutedResponse = await rf
         .getRequest('DashboardsRequest')
-        .getTemporaryQueryResult(selectedQuery);
+        .executeQuery({ statement: selectedQuery });
       const executionId = executedResponse.id;
-      await getExecutionResultById(executionId);
+      await fetchQueryResult(executionId);
       setIsLoadingResult(false);
     } catch (error) {
       setIsLoadingResult(false);
@@ -243,17 +252,14 @@ const QueryPart: React.FC = () => {
         return;
       }
 
-      if (
-        statusExecuteQuery === STATUS.DONE &&
-        expandLayout === LAYOUT_QUERY.FULL
-      ) {
-        setExpandLayout(LAYOUT_QUERY.HIDDEN);
-      }
-
+      setExpandLayout(LAYOUT_QUERY.HALF);
       if (queryId) {
         await updateQuery(query);
       } else {
-        setOpenModalSettingQuery(true);
+        setIsLoadingResult(true);
+        setIsTemporary(true);
+        const executionId = await executeQuery(query, queryId);
+        await fetchQueryResult(executionId);
       }
     } catch (err: any) {
       toastError({ message: getErrorMessage(err) });
@@ -262,7 +268,6 @@ const QueryPart: React.FC = () => {
 
   const toggleExpandEditor = () => {
     setIsExpand(false);
-    if (!queryId || !queryValue) return;
     setExpandLayout((prevState) => {
       if (prevState === LAYOUT_QUERY.FULL) {
         return LAYOUT_QUERY.HIDDEN;
@@ -291,20 +296,15 @@ const QueryPart: React.FC = () => {
   };
 
   const onCheckExpandLayout = (executeStatus: string) => {
-    if (
-      executeStatus === STATUS.DONE &&
-      (expandLayout === LAYOUT_QUERY.FULL || expandLayout === LAYOUT_QUERY.HALF)
-    ) {
+    if (executeStatus === STATUS.DONE) {
       setExpandLayout(LAYOUT_QUERY.HIDDEN);
-    }
-    if (executeStatus === STATUS.FAILED) {
+    } else if (executeStatus === STATUS.FAILED) {
       setExpandLayout(LAYOUT_QUERY.HALF);
     }
   };
 
   const onSuccessCreateQuery = async (queryResponse: any) => {
     try {
-      await executeQuery(queryResponse.id);
       goWithOriginPath(`${ROUTES.MY_QUERY}/${queryResponse.id}`);
       AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
     } catch (error) {
@@ -339,11 +339,7 @@ const QueryPart: React.FC = () => {
       );
     }
 
-    if (
-      !!queryValue &&
-      !!queryResult.length &&
-      statusExecuteQuery === STATUS.DONE
-    ) {
+    if (!!queryResult.length && statusExecuteQuery === STATUS.DONE) {
       return (
         <Box>
           <VisualizationDisplay
@@ -395,7 +391,7 @@ const QueryPart: React.FC = () => {
       return 'custom-editor--half';
     }
 
-    if (!queryId) {
+    if (!isTemporary && !queryId) {
       return 'custom-editor--full';
     }
 
@@ -403,7 +399,7 @@ const QueryPart: React.FC = () => {
   };
 
   const _renderVisualizations = () => {
-    if (!queryId) {
+    if (!isTemporary && !queryId) {
       return (
         <div className="empty-query">
           <Tooltip
@@ -461,7 +457,9 @@ const QueryPart: React.FC = () => {
         data={queryValue}
         isLoadingRun={isLoadingQuery}
         isLoadingResult={isLoadingResult}
+        isTemporaryQuery={isTemporary}
         onRunQuery={onRunQuery}
+        onSaveQuery={() => setOpenModalSettingQuery(true)}
         selectedQuery={selectedQuery}
       />
       <EditorContext.Provider
@@ -504,11 +502,7 @@ const QueryPart: React.FC = () => {
                 }}
                 onSelectionChange={onSelectQuery}
               />
-              <div
-                className={`${
-                  !queryId || !queryValue ? 'cursor-not-allowed' : ''
-                } btn-expand-query`}
-              >
+              <div className="btn-expand-query">
                 {!isLoading && (
                   <p
                     className={`${getIconClassName(true)}`}
@@ -528,6 +522,7 @@ const QueryPart: React.FC = () => {
           onSuccess={onSuccessCreateQuery}
           type={TYPE_OF_MODAL.CREATE}
           query={editorRef.current.editor.getValue()}
+          createQueryId={createQueryId}
         />
       )}
     </div>

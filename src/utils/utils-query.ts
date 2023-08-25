@@ -94,7 +94,7 @@ export class Visualization implements VisualizationInterface {
   }
 
   getType() {
-    return this.type;
+    return this.options?.globalSeriesType || this.type;
   }
 
   getConfigs() {
@@ -115,7 +115,7 @@ export class Query implements QueryInterface {
   public thumbnail;
   public tags;
   public privateMode = false;
-  public user;
+  public userId;
   public query = '';
   public forkedQueryId;
   public forkedQueryName;
@@ -131,7 +131,7 @@ export class Query implements QueryInterface {
     this.updatedAt = query.updatedAt;
     this.tags = query.tags;
     this.privateMode = query.isPrivate;
-    this.user = query.user;
+    this.userId = query.userId;
     this.query = query.query;
     this.forkedQueryId = query.forkedQueryId;
     this.forkedQueryName = query.forkedQueryName;
@@ -212,7 +212,7 @@ export class Query implements QueryInterface {
   }
 
   getUserId() {
-    return this.user || '';
+    return this.userId || '';
   }
 
   getChains() {
