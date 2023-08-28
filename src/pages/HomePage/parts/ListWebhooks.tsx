@@ -148,7 +148,7 @@ const ListWebhooks: React.FC = () => {
           <Th w="20%">TYPE</Th>
           <Th w="20%">Network</Th>
           <Th w="20%" textAlign={'center'}>
-            Messages today
+            Message(24hrs)
           </Th>
           <Th w="15%" textAlign={'right'}>
             Status
