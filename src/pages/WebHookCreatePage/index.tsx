@@ -207,7 +207,6 @@ const WebHookCreatePage: React.FC = () => {
     }
     setIsDisableSubmit(isDisabled);
   }, [dataForm, typeSelected]);
-  console.log(dataForm);
 
   const optionTypes = useMemo(() => {
     if (chainSelected.value === CHAINS.APTOS) {
