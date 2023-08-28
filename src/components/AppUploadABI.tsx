@@ -498,25 +498,39 @@ const AppUploadABI: FC<IAppUploadABI> = ({
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const _renderNoticeUpload = () => {
+  const _renderAbi = () => {
+    let tootipAbi = '';
+    if (type === TYPE_ABI.NFT) {
+      tootipAbi =
+        "This is an optional function. If you don't upload a custom ABI file, we would use default ERC-721 file.";
+    }
+
     return (
-      <Tooltip
-        placement={'top'}
-        hasArrow
-        p={2}
-        isOpen={isOpen}
-        className="tooltip-app"
-        label={`This is an optional function. If you don't upload a custom ABI file, we would use default ERC-721 file.`}
-      >
-        <Box
-          onMouseEnter={onOpen}
-          onMouseLeave={onClose}
-          onClick={onOpen}
-          className="icon-info"
-          ml={2}
-          cursor={'pointer'}
-        />
-      </Tooltip>
+      <Flex mb={1} className="label-abi">
+        <Tooltip hasArrow placement="top" label={tootipAbi}>
+          ABI&nbsp;
+        </Tooltip>
+        <Box as={'span'} color={'red.500'}>
+          *
+        </Box>
+        <Tooltip
+          placement={'top'}
+          hasArrow
+          p={2}
+          isOpen={isOpen}
+          className="tooltip-app"
+          label={`Choosing which activities you want to be notified`}
+        >
+          <Box
+            onMouseEnter={onOpen}
+            onMouseLeave={onClose}
+            onClick={onOpen}
+            className="icon-info"
+            ml={2}
+            cursor={'pointer'}
+          />
+        </Tooltip>
+      </Flex>
     );
   };
 
@@ -571,22 +585,9 @@ const AppUploadABI: FC<IAppUploadABI> = ({
 
   return (
     <Box className="upload-abi">
-      <Flex justifyContent={'space-between'}>
-        <Flex mb={1} className="label-abi">
-          <Tooltip
-            hasArrow
-            placement="top"
-            label="Choosing which activities you want to be notified"
-          >
-            Notification filter&nbsp;
-          </Tooltip>
-          <Box as={'span'} color={'red.500'}>
-            *
-          </Box>
-          {type === TYPE_ABI.NFT && _renderNoticeUpload()}
-        </Flex>
-
-        {!viewOnly && !abiContract?.length && (
+      {!viewOnly && !abiContract?.length && (
+        <Flex justifyContent={'space-between'}>
+          {_renderAbi()}
           <Box
             className="link"
             cursor="pointer"
@@ -606,8 +607,8 @@ const AppUploadABI: FC<IAppUploadABI> = ({
           >
             {!isInsertManuallyAddress ? 'Insert Manually' : 'Upload File'}
           </Box>
-        )}
-      </Flex>
+        </Flex>
+      )}
 
       {isInsertManuallyAddress && !viewOnly && !abiContract?.length && (
         <Box mb={5}>
@@ -663,68 +664,86 @@ const AppUploadABI: FC<IAppUploadABI> = ({
       )}
 
       {ABIData && !!ABIData.length && (
-        <Box className="abi-detail">
-          <Flex
-            flexDirection={isMobile ? 'column' : 'row'}
-            justifyContent={fileSelected?.name ? 'space-between' : 'flex-end'}
-            alignItems={isMobile ? 'flex-start' : 'center'}
-            mb={3}
-          >
-            {_renderNameFile()}
-
-            <Flex>
-              {!isMobile && (
-                <Box width={'100px'}>
-                  <AppSelect2
-                    onChange={setValueSort}
-                    options={options}
-                    value={valueSort}
-                  />
-                </Box>
-              )}
-
-              <Box width={'215px'}>
-                <AppInput
-                  isSearch
-                  className={'input-search'}
-                  type="text"
-                  placeholder={'Search...'}
-                  value={valueSearch}
-                  onChange={(e) => setValueSearch(e.target.value.trim())}
-                />
-              </Box>
-
-              {isMobile && <Box ml={2.5} className="icon-filter-mobile" />}
-            </Flex>
+        <>
+          <Flex mb={2}>
+            <span>Notification filter</span>
+            <Box as={'span'} color={'red.500'} ml={1}>
+              *
+            </Box>
+            <Tooltip
+              placement={'top'}
+              hasArrow
+              p={2}
+              className="tooltip-app"
+              label={`Choosing which activities you want to be notified`}
+            >
+              <Box className="icon-info" ml={2} cursor={'pointer'} />
+            </Tooltip>
           </Flex>
 
-          <>
-            <ListSelect
-              type={ABI_TYPES.FUNCTION}
-              data={functionList}
-              dataSelected={dataSelected}
-              onSelectData={setDataSelected}
-              valueSearch={valueSearch}
-              valueSort={valueSort}
-              viewOnly={viewOnly}
-            />
+          <Box className="abi-detail">
+            <Flex
+              flexDirection={isMobile ? 'column' : 'row'}
+              justifyContent={fileSelected?.name ? 'space-between' : 'flex-end'}
+              alignItems={isMobile ? 'flex-start' : 'center'}
+              mb={3}
+            >
+              {_renderNameFile()}
 
-            <ListSelect
-              type={ABI_TYPES.EVENT}
-              data={structList}
-              dataSelected={dataSelected}
-              onSelectData={setDataSelected}
-              valueSearch={valueSearch}
-              valueSort={valueSort}
-              viewOnly={viewOnly}
-            />
-          </>
-          {isInvalidChecklist && (
-            <Text className="text-error">
-              The notification filter field is required
-            </Text>
-          )}
-        </Box>
+              <Flex>
+                {!isMobile && (
+                  <Box width={'100px'}>
+                    <AppSelect2
+                      onChange={setValueSort}
+                      options={options}
+                      value={valueSort}
+                    />
+                  </Box>
+                )}
+
+                <Box width={'215px'}>
+                  <AppInput
+                    isSearch
+                    className={'input-search'}
+                    type="text"
+                    placeholder={'Search...'}
+                    value={valueSearch}
+                    onChange={(e) => setValueSearch(e.target.value.trim())}
+                  />
+                </Box>
+
+                {isMobile && <Box ml={2.5} className="icon-filter-mobile" />}
+              </Flex>
+            </Flex>
+
+            <>
+              <ListSelect
+                type={ABI_TYPES.FUNCTION}
+                data={functionList}
+                dataSelected={dataSelected}
+                onSelectData={setDataSelected}
+                valueSearch={valueSearch}
+                valueSort={valueSort}
+                viewOnly={viewOnly}
+              />
+
+              <ListSelect
+                type={ABI_TYPES.EVENT}
+                data={structList}
+                dataSelected={dataSelected}
+                onSelectData={setDataSelected}
+                valueSearch={valueSearch}
+                valueSort={valueSort}
+                viewOnly={viewOnly}
+              />
+            </>
+            {isInvalidChecklist && (
+              <Text className="text-error">
+                The notification filter field is required
+              </Text>
+            )}
+          </Box>
+        </>
       )}
     </Box>
   );
