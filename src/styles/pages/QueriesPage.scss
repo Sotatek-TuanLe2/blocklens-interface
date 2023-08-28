@@ -273,6 +273,9 @@
 
   &__right-side {
     width: 100%;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
 
     @include desktop {
       width: 100%;
@@ -304,6 +307,7 @@
     }
 
     .editor-wrapper {
+      flex: 60;
       box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.04);
       width: 100%;
       border-radius: 6px;
@@ -325,8 +329,9 @@
     }
 
     .empty-query {
+      flex: 40;
       display: flex;
-      align-items: center;
+      align-items: start;
       justify-content: space-between;
       box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.04);
       border-radius: 6px;
@@ -695,11 +700,7 @@
           gap: 10px;
 
           &:hover {
-            background: linear-gradient(
-              268.85deg,
-              rgba(34, 108, 255, 0.12) 22.48%,
-              rgba(16, 132, 255, 0.12) 83.59%
-            );
+            background: linear-gradient(268.85deg, rgba(34, 108, 255, 0.12) 22.48%, rgba(16, 132, 255, 0.12) 83.59%);
             border: 1px solid #226cff;
             cursor: pointer;
           }
