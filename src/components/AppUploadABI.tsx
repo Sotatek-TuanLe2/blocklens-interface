@@ -498,42 +498,6 @@ const AppUploadABI: FC<IAppUploadABI> = ({
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const _renderAbi = () => {
-    let tootipAbi = '';
-    if (type === TYPE_ABI.NFT) {
-      tootipAbi =
-        "This is an optional function. If you don't upload a custom ABI file, we would use default ERC-721 file.";
-    }
-
-    return (
-      <Flex mb={1} className="label-abi">
-        <Tooltip hasArrow placement="top" label={tootipAbi}>
-          ABI&nbsp;
-        </Tooltip>
-        <Box as={'span'} color={'red.500'}>
-          *
-        </Box>
-        <Tooltip
-          placement={'top'}
-          hasArrow
-          p={2}
-          isOpen={isOpen}
-          className="tooltip-app"
-          label={`Choosing which activities you want to be notified`}
-        >
-          <Box
-            onMouseEnter={onOpen}
-            onMouseLeave={onClose}
-            onClick={onOpen}
-            className="icon-info"
-            ml={2}
-            cursor={'pointer'}
-          />
-        </Tooltip>
-      </Flex>
-    );
-  };
-
   useEffect(() => {
     if (viewOnly) return;
     if (!ABIInput) {
@@ -587,7 +551,29 @@ const AppUploadABI: FC<IAppUploadABI> = ({
     <Box className="upload-abi">
       {!viewOnly && !abiContract?.length && (
         <Flex justifyContent={'space-between'}>
-          {_renderAbi()}
+          <Flex mb={1} className="label-abi">
+            <span>ABI&nbsp;</span>
+            <Box as={'span'} color={'red.500'}>
+              *
+            </Box>
+            <Tooltip
+              placement={'top'}
+              hasArrow
+              p={2}
+              isOpen={isOpen}
+              className="tooltip-app"
+              label={`Inputing a valid ABI helps us detect more functions/events to customize your Notification Filter below`}
+            >
+              <Box
+                onMouseEnter={onOpen}
+                onMouseLeave={onClose}
+                onClick={onOpen}
+                className="icon-info"
+                ml={2}
+                cursor={'pointer'}
+              />
+            </Tooltip>
+          </Flex>
           <Box
             className="link"
             cursor="pointer"
@@ -675,7 +661,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
               hasArrow
               p={2}
               className="tooltip-app"
-              label={`Choosing which activities you want to be notified`}
+              label={`Filter out which activities you want to be notified`}
             >
               <Box className="icon-info" ml={2} cursor={'pointer'} />
             </Tooltip>
