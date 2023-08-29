@@ -3,16 +3,16 @@ import config from 'src/config';
 
 export default class AuthServiceRequest extends BaseRequest {
   getUrlPrefix() {
-    return config.api.authApi;
+    return config.api.baseUrlApi;
   }
 
   getAPIKey() {
-    const url = `/auth/api-key`;
+    const url = `/my/users/api-key`;
     return this.get(url);
   }
 
   updateAPIKey() {
-    const url = `/auth/api-key`;
+    const url = `/my/users/api-key`;
     return this.put(url);
   }
 }

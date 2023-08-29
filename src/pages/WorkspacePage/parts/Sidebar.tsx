@@ -799,6 +799,9 @@ const Sidebar: React.FC<SidebarProps> = ({
               : 'workspace-page__sidebar__categories hidden-sidebar-content'
           }
         >
+          <Link to={ROUTES.HOME}>
+            <img src="/android-chrome-48x48.png" alt="logo" width={32} />
+          </Link>
           {categoryList.map((item) => (
             <Box
               cursor={'pointer'}

@@ -1,4 +1,4 @@
-import { Flex, Box } from '@chakra-ui/react';
+import { Flex, Box, Text } from '@chakra-ui/react';
 import { AppField, AppInput, TYPE_ABI } from 'src/components';
 import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
 import AppUploadABI from 'src/components/AppUploadABI';
@@ -50,6 +50,29 @@ const PartFormContractActivity: FC<IPartFormContractActivity> = ({
     }
   }, [dataForm.metadata?.address]);
 
+  const _renderNotificationFilter = () => {
+    if (!!dataContractABI.length) {
+      return (
+        <AppUploadABI
+          type={TYPE_ABI.CONTRACT}
+          onChange={(abi, abiFilter) =>
+            setDataForm({
+              ...dataForm,
+              metadata: {
+                ...dataForm.metadata,
+                abi,
+                abiFilter,
+              },
+            })
+          }
+          abiContract={dataContractABI}
+        />
+      );
+    }
+
+    return <Text className="text-error">The Contract Address is invalid.</Text>;
+  };
+
   return (
     <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
       <AppField label={'Contract Address'} customWidth={'100%'} isRequired>
@@ -72,28 +95,12 @@ const PartFormContractActivity: FC<IPartFormContractActivity> = ({
           }}
         />
       </AppField>
-
       {isLoading ? (
         <Box>Loading...</Box>
       ) : (
-        isAddress(dataForm.metadata?.address || '') && (
-          <>
-            <AppUploadABI
-              type={TYPE_ABI.CONTRACT}
-              onChange={(abi, abiFilter) =>
-                setDataForm({
-                  ...dataForm,
-                  metadata: {
-                    ...dataForm.metadata,
-                    abi,
-                    abiFilter,
-                  },
-                })
-              }
-              abiContract={dataContractABI}
-            />
-          </>
-        )
+        isAddress(dataForm.metadata?.address || '') &&
+        dataContractABI &&
+        _renderNotificationFilter()
       )}
     </Flex>
   );

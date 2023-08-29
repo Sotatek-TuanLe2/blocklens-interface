@@ -147,7 +147,7 @@ const ListSelect: FC<IListSelect> = ({
     ) && !allChecked;
 
   return (
-    <Flex className="box-events">
+    <Flex className="box-item">
       <Box className="label-events" width={'220px'}>
         {type === ABI_TYPES.FUNCTION ? 'Exposed Functions' : 'Structs'}
       </Box>
@@ -337,7 +337,7 @@ const DetailABI: FC<IDetailABI> = ({
         </Flex>
       </Flex>
 
-      <Box pb={4}>
+      <Box pb={4} className="box-events">
         {!!functionList.length && (
           <ListSelect
             type={ABI_TYPES.FUNCTION}
@@ -382,16 +382,19 @@ const AppReadABI: FC<IAppReadABI> = ({
   return (
     <Box className="upload-abi">
       <Flex mb={1} className="label-abi">
-        <Tooltip
-          hasArrow
-          placement="top"
-          label="Choosing which activities you want to be notified"
-        >
-          Notification filter
-        </Tooltip>
+        <span>Notification filter</span>
         <Text as={'span'} className="text-error" ml={1}>
           *
         </Text>
+        <Tooltip
+          placement={'top'}
+          hasArrow
+          p={2}
+          className="tooltip-app"
+          label={`Filter out which activities you want to be notified`}
+        >
+          <Box className="icon-info" ml={2} cursor={'pointer'} />
+        </Tooltip>
       </Flex>
 
       <DetailABI

@@ -5,7 +5,7 @@ import {
   setRecaptchaToRequest,
 } from 'src/utils/utils-auth';
 import Storage from 'src/utils/utils-storage';
-import { TIME_EXPIRE_TOKEN_CLIENT } from 'src/constants';
+import { parseJWT } from 'src/utils/utils-format';
 
 export type UserAuthType = {
   accessToken: string;
@@ -197,8 +197,8 @@ const userSlice = createSlice({
       state.userId = action.payload.id;
     },
     setUserAuth: (state, action) => {
-      const timeExpireToken = new Date().getTime() + TIME_EXPIRE_TOKEN_CLIENT;
       const { accessToken, refreshToken } = action.payload;
+      const timeExpireToken = parseJWT(accessToken).exp * 1000;
       state.auth = { accessToken, refreshToken };
       setAuthorizationToRequest(accessToken);
       Storage.setAccessToken(accessToken, timeExpireToken);

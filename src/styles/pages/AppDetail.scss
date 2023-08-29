@@ -295,6 +295,12 @@
       .chakra-checkbox__label {
         opacity: 1;
       }
+
+      .box-item {
+        &:first-child {
+          padding-bottom: 16px;
+        }
+      }
     }
   }
 }
@@ -312,11 +318,7 @@
 }
 
 .button {
-  background: linear-gradient(
-    271.63deg,
-    #1e72ff -2.92%,
-    #0250be 102.1%
-  ) !important;
+  background: linear-gradient(271.63deg, #1e72ff -2.92%, #0250be 102.1%) !important;
 }
 
 .field-disabled {
