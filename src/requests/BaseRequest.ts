@@ -13,71 +13,6 @@ import { COMMON_ERROR_MESSAGE } from 'src/constants';
 import store from 'src/store';
 import { setUserAuth } from 'src/store/user';
 
-// axios.interceptors.response.use(
-//   function (response) {
-//     console.log(">>>>>>>>response", response);
-//     return response;
-//   },
-//   async (error) => {
-//     const { response, config } = error;
-//     const status = response?.status;
-
-//     console.log("status", status);
-//     console.log("response", response.data);
-
-//     if (
-//       status === 401 &&
-//       response.data?.message.toString() !== 'Credential is not correct'
-//     ) {
-//       const refreshToken = Storage.getRefreshToken();
-//       if (!refreshToken) {
-//         return AppBroadcast.dispatch('REQUEST_SIGN_IN');
-//       }
-
-//       try {
-//         const response = await axios.post(
-//           config.api.baseUrlApi + '/public/users/refresh-token',
-//           { refreshToken },
-//         );
-//         store().store.dispatch(setUserAuth(response));
-//         return axios(error.config);
-//       } catch (error) {
-//         return AppBroadcast.dispatch('REQUEST_SIGN_IN');
-//       }
-//     }
-
-//     if (status === 403) {
-//       return AppBroadcast.dispatch('LOGOUT_USER');
-//     }
-
-//     if (response) {
-//       console.log('===errorHandler', JSON.stringify(response));
-//       console.log('===errorHandler data', JSON.stringify(response.data));
-//       console.log('===errorHandler status', JSON.stringify(status));
-//       console.log('===errorHandler headers', JSON.stringify(response.headers));
-//     } else {
-//       console.log('==errorHandler', JSON.stringify(error));
-//     }
-
-//     if (status === 0 || status === 500) {
-//       // Network error
-//       throw new Error(COMMON_ERROR_MESSAGE);
-//     }
-
-//     if (response && response.data && response.data.message) {
-//       if (typeof response.data.message === 'string') {
-//         throw new Error(response.data.message);
-//       }
-//       throw new Error(response.data.message[0]);
-//     }
-//     if (response && response.data && response.data.error) {
-//       throw new Error(response.data.error);
-//     }
-
-//     throw error;
-//   },
-// );
-
 export default class BaseRequest {
   protected accessToken = '';
   constructor() {
@@ -195,25 +130,23 @@ export default class BaseRequest {
     }
 
     try {
-      console.log('refreshToken', refreshToken);
       const response = await axios.post(
         config.api.baseUrlApi + '/public/users/refresh-token',
         { refreshToken },
       );
-      console.log('response', response);
       store().store.dispatch(setUserAuth(response.data));
       error.config.headers = {
         Authorization: 'Bearer ' + response.data.accessToken,
+        'Content-Type': 'application/json',
       };
-      console.log('error.config', error.config);
-      return axios(error.config);
+      const retryResponse = await axios(error.config);
+      return Promise.resolve(retryResponse.data);
     } catch (error) {
       return AppBroadcast.dispatch('REQUEST_SIGN_IN');
     }
   }
 
   async _errorHandler(err: any) {
-    console.log('_errorHandler', err);
     if (
       err.response?.status === 401 &&
       err.response.data?.message.toString() !== 'Credential is not correct'

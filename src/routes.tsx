@@ -72,15 +72,12 @@ const Routes: FC<RouteComponentProps> = () => {
   const location = useLocation();
   const { goWithOriginPath } = useOriginPath();
 
-  const isExpireTimeToken =
-    Storage.getExpireTimeToken() &&
-    new Date().getTime() >= Number(Storage.getExpireTimeToken());
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
 
   useEffect(() => {
-    if (!accessToken || isExpireTimeToken) {
+    if (!accessToken) {
       dispatch(clearUser());
       if (!GUEST_PATH.some((path) => pathname.includes(path))) {
         goWithOriginPath(ROUTES.LOGIN, location.pathname);
@@ -89,7 +86,7 @@ const Routes: FC<RouteComponentProps> = () => {
     }
     dispatch(getUser());
     dispatch(initMetadata());
-  }, [accessToken, isExpireTimeToken]);
+  }, [accessToken]);
 
   return (
     <>
