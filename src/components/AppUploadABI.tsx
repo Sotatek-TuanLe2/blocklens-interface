@@ -248,7 +248,7 @@ const ListSelect: FC<IListSelect> = ({
   }, [dataShow]);
 
   return (
-    <Flex className="box-events">
+    <Flex className="box-item">
       <Box className="label-events">
         {type === ABI_TYPES.FUNCTION ? 'Functions' : 'Events'}
       </Box>
@@ -698,7 +698,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
               </Flex>
             </Flex>
 
-            <>
+            <Box className="box-events">
               <ListSelect
                 type={ABI_TYPES.FUNCTION}
                 data={functionList}
@@ -718,7 +718,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
                 valueSort={valueSort}
                 viewOnly={viewOnly}
               />
-            </>
+            </Box>
             {isInvalidChecklist && (
               <Text className="text-error">
                 The notification filter field is required

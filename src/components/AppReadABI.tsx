@@ -147,7 +147,7 @@ const ListSelect: FC<IListSelect> = ({
     ) && !allChecked;
 
   return (
-    <Flex className="box-events">
+    <Flex className="box-item">
       <Box className="label-events" width={'220px'}>
         {type === ABI_TYPES.FUNCTION ? 'Exposed Functions' : 'Structs'}
       </Box>
@@ -337,7 +337,7 @@ const DetailABI: FC<IDetailABI> = ({
         </Flex>
       </Flex>
 
-      <Box pb={4}>
+      <Box pb={4} className="box-events">
         {!!functionList.length && (
           <ListSelect
             type={ABI_TYPES.FUNCTION}

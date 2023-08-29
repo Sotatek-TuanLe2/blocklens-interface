@@ -62,7 +62,9 @@
         &__wrapper {
           margin-left: 0;
         }
-        background-color: white;
+        background-color: $bg;
+        padding: 16px 24px;
+        border-radius: 6px;
         border: 1px solid $line;
       }
       .token-activity {

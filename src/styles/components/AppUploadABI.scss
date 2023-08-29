@@ -14,8 +14,12 @@
     background-color: $bg;
     padding: 16px 24px;
     border-radius: 6px;
-    margin-bottom: 8px;
 
+    .box-item {
+      &:first-child {
+        padding-bottom: 16px;
+      }
+    }
     .label-events {
       @include text-small-bold;
       text-transform: uppercase;
@@ -131,6 +135,12 @@
 
       .box-events {
         background-color: $white;
+
+        .box-item {
+          &:first-child {
+            padding-bottom: 16px;
+          }
+        }
       }
     }
 
