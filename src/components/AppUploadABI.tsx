@@ -698,33 +698,34 @@ const AppUploadABI: FC<IAppUploadABI> = ({
               </Flex>
             </Flex>
 
-          <Box className="box-events">
-            <ListSelect
-              type={ABI_TYPES.FUNCTION}
-              data={functionList}
-              dataSelected={dataSelected}
-              onSelectData={setDataSelected}
-              valueSearch={valueSearch}
-              valueSort={valueSort}
-              viewOnly={viewOnly}
-            />
+            <Box className="box-events">
+              <ListSelect
+                type={ABI_TYPES.FUNCTION}
+                data={functionList}
+                dataSelected={dataSelected}
+                onSelectData={setDataSelected}
+                valueSearch={valueSearch}
+                valueSort={valueSort}
+                viewOnly={viewOnly}
+              />
 
-            <ListSelect
-              type={ABI_TYPES.EVENT}
-              data={structList}
-              dataSelected={dataSelected}
-              onSelectData={setDataSelected}
-              valueSearch={valueSearch}
-              valueSort={valueSort}
-              viewOnly={viewOnly}
-            />
+              <ListSelect
+                type={ABI_TYPES.EVENT}
+                data={structList}
+                dataSelected={dataSelected}
+                onSelectData={setDataSelected}
+                valueSearch={valueSearch}
+                valueSort={valueSort}
+                viewOnly={viewOnly}
+              />
+            </Box>
+            {isInvalidChecklist && (
+              <Text className="text-error">
+                The notification filter field is required
+              </Text>
+            )}
           </Box>
-          {isInvalidChecklist && (
-            <Text className="text-error">
-              The notification filter field is required
-            </Text>
-          )}
-        </Box>
+        </>
       )}
     </Box>
   );
