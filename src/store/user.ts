@@ -197,6 +197,7 @@ const userSlice = createSlice({
       state.userId = action.payload.id;
     },
     setUserAuth: (state, action) => {
+      console.log('action.payload', action.payload);
       const { accessToken, refreshToken } = action.payload;
       const timeExpireToken = parseJWT(accessToken).exp * 1000;
       state.auth = { accessToken, refreshToken };
