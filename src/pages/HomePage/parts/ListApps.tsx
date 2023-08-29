@@ -207,7 +207,7 @@ const ListApps: React.FC = () => {
           <Th w="25%">NAME</Th>
           <Th w="20%">NETWORK</Th>
           <Th w="20%" textAlign={'center'}>
-            Messages today
+            Message(24hrs)
           </Th>
           <Th w="20%" textAlign={'center'}>
             number of webhook
