@@ -504,7 +504,7 @@ const WebHookCreatePage: React.FC = () => {
                   validate={{
                     name: `webhook`,
                     validator: validator.current,
-                    rule: ['required', 'url'],
+                    rule: ['required', 'url', 'maxYourUrl'],
                   }}
                   pr={{ base: 5, md: '220px' }}
                   endAdornment={

@@ -52,7 +52,8 @@ type CustomRule =
   | 'maxCountIds'
   | 'isIds'
   | 'insufficientBalance'
-  | 'isAddressAptos';
+  | 'isAddressAptos'
+  | 'maxYourUrl';
 
 export type Rules = IRule | CustomRule;
 
@@ -182,6 +183,12 @@ export const createValidator = (options?: IOptions | undefined) => {
         message: 'Tags must contain not more than 3 elements',
         rule: (value: string) => {
           return value.split(',').filter((i) => i.trim().length).length <= 3;
+        },
+      },
+      maxYourUrl: {
+        message: 'The Your URL may not be greater than 200 characters',
+        rule: (value: string) => {
+          return value.length < 201;
         },
       },
       maxValue: {
