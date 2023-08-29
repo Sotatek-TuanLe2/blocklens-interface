@@ -382,16 +382,19 @@ const AppReadABI: FC<IAppReadABI> = ({
   return (
     <Box className="upload-abi">
       <Flex mb={1} className="label-abi">
-        <Tooltip
-          hasArrow
-          placement="top"
-          label="Choosing which activities you want to be notified"
-        >
-          Notification filter
-        </Tooltip>
+        <span>Notification filter</span>
         <Text as={'span'} className="text-error" ml={1}>
           *
         </Text>
+        <Tooltip
+          placement={'top'}
+          hasArrow
+          p={2}
+          className="tooltip-app"
+          label={`Filter out which activities you want to be notified`}
+        >
+          <Box className="icon-info" ml={2} cursor={'pointer'} />
+        </Tooltip>
       </Flex>
 
       <DetailABI
