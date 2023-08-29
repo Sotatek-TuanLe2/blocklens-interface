@@ -30,6 +30,9 @@ import { AddChartIcon, QueryResultIcon } from 'src/assets/icons';
 import { STATUS } from 'src/utils/utils-webhook';
 import useOriginPath from 'src/hooks/useOriginPath';
 import { isMobile } from 'react-device-detect';
+import Storage from 'src/utils/utils-storage';
+import SplitterLayout from 'react-splitter-layout';
+import 'react-splitter-layout/lib/index.css';
 
 export const BROADCAST_FETCH_QUERY = 'FETCH_QUERY';
 export const BROADCAST_ADD_TO_EDITOR = 'ADD_TO_EDITOR';
@@ -54,9 +57,16 @@ const QueryPart: React.FC = () => {
   const [selectedQuery, setSelectedQuery] = useState<string>('');
   const [openModalSettingQuery, setOpenModalSettingQuery] =
     useState<boolean>(false);
+  const [panelHeight, setPanelHeight] = useState<any>(
+    Storage.getHeightPanelQuery() || '600',
+  );
 
   const fetchQueryResultTimeout = useRef<ReturnType<typeof setTimeout>>();
   const isLoading = isLoadingQuery || isLoadingResult;
+  const handleSecondaryPaneSizeChange = (secondaryPaneSize: string) => {
+    Storage.setHeightPanelQuery(secondaryPaneSize);
+    setPanelHeight(secondaryPaneSize);
+  };
 
   useEffect(() => {
     AppBroadcast.on(BROADCAST_FETCH_QUERY, async (id: string) => {
@@ -379,70 +389,35 @@ const QueryPart: React.FC = () => {
     );
   };
 
-  const getClassExpand = (
-    layout: string,
-    firstClass: string,
-    secondClass: string,
-  ) => {
-    if (
-      expandLayout === LAYOUT_QUERY.HALF ||
-      (statusExecuteQuery === STATUS.FAILED && isExpand)
-    ) {
-      return 'custom-editor--half';
-    }
-
-    if (!isTemporary && !queryId) {
-      return 'custom-editor--full';
-    }
-
-    return expandLayout === layout ? firstClass : secondClass;
-  };
-
   const _renderVisualizations = () => {
     if (!isTemporary && !queryId) {
       return (
         <div className="empty-query">
-          <Tooltip
-            label="Visualization need data from result table."
-            hasArrow
-            bg="white"
-            color="black"
+          <Flex
+            alignItems="center"
+            justifyContent="space-between"
+            className="empty-query__main-header"
           >
-            <Flex alignItems={'center'}>
-              <Box mr={2}>
-                <AddChartIcon />
-              </Box>{' '}
-              {!isMobile && 'Add Chart'}
-            </Flex>
-          </Tooltip>
-          <p className="icon-query-expand cursor-not-allowed" />
+            <Tooltip
+              label="Visualization need data from result table."
+              hasArrow
+              bg="white"
+              color="black"
+            >
+              <Flex alignItems={'center'}>
+                <Box mr={2}>
+                  <AddChartIcon />
+                </Box>{' '}
+                {!isMobile && 'Add Chart'}
+              </Flex>
+            </Tooltip>
+            <p className="icon-query-expand cursor-not-allowed" />
+          </Flex>
         </div>
       );
     }
 
-    const getContentClassName = () => {
-      if (
-        expandLayout === LAYOUT_QUERY.HALF ||
-        (statusExecuteQuery === STATUS.FAILED && isExpand)
-      ) {
-        return 'add-chart-empty';
-      }
-
-      const fullClass = getClassExpand(
-        LAYOUT_QUERY.FULL,
-        'add-chart-full',
-        'add-chart',
-      );
-      const hiddenClass = getClassExpand(
-        LAYOUT_QUERY.HIDDEN,
-        'expand-chart hidden-editor',
-        '',
-      );
-
-      return `${fullClass} ${hiddenClass}`;
-    };
-
-    return <div className={`${getContentClassName()}`}>{_renderContent()}</div>;
+    return <>{_renderContent()}</>;
   };
 
   return (
@@ -470,48 +445,47 @@ const QueryPart: React.FC = () => {
       >
         <div className="query-container queries-page">
           <Box className="queries-page__right-side">
-            <Box className="editor-wrapper">
-              <AceEditor
-                className={`ace_editor ace-tomorrow custom-editor 
-        
-                ${getClassExpand(
-                  LAYOUT_QUERY.FULL,
-                  'custom-editor--full',
-                  '',
-                )} ${getClassExpand(
-                  LAYOUT_QUERY.HIDDEN,
-                  'custom-editor--hidden',
-                  '',
-                )}`}
-                ref={editorRef}
-                mode="sql"
-                theme="tomorrow"
-                width="93%"
-                wrapEnabled={true}
-                name="sql_editor"
-                editorProps={{ $blockScrolling: true }}
-                showPrintMargin={true}
-                showGutter={true}
-                highlightActiveLine={true}
-                setOptions={{
-                  enableLiveAutocompletion: true,
-                  enableBasicAutocompletion: true,
-                  enableSnippets: false,
-                  showLineNumbers: true,
-                  tabSize: 2,
-                }}
-                onSelectionChange={onSelectQuery}
-              />
-              <div className="btn-expand-query">
-                {!isLoading && (
-                  <p
-                    className={`${getIconClassName(true)}`}
-                    onClick={toggleExpandEditor}
-                  />
-                )}
-              </div>
-            </Box>
-            {_renderVisualizations()}
+            <SplitterLayout
+              primaryIndex={0}
+              primaryMinSize={50}
+              secondaryMinSize={120}
+              vertical
+              onSecondaryPaneSizeChange={handleSecondaryPaneSizeChange}
+              secondaryInitialSize={panelHeight}
+            >
+              <Box className="editor-wrapper">
+                <AceEditor
+                  className={`ace_editor ace-tomorrow custom-editor`}
+                  ref={editorRef}
+                  mode="sql"
+                  theme="tomorrow"
+                  width="93%"
+                  wrapEnabled={true}
+                  name="sql_editor"
+                  editorProps={{ $blockScrolling: true }}
+                  showPrintMargin={true}
+                  showGutter={true}
+                  highlightActiveLine={true}
+                  setOptions={{
+                    enableLiveAutocompletion: true,
+                    enableBasicAutocompletion: true,
+                    enableSnippets: false,
+                    showLineNumbers: true,
+                    tabSize: 2,
+                  }}
+                  onSelectionChange={onSelectQuery}
+                />
+                <div className="btn-expand-query">
+                  {!isLoading && (
+                    <p
+                      className={`${getIconClassName(true)}`}
+                      onClick={toggleExpandEditor}
+                    />
+                  )}
+                </div>
+              </Box>
+              {_renderVisualizations()}
+            </SplitterLayout>
           </Box>
         </div>
       </EditorContext.Provider>

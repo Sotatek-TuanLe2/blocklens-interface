@@ -14,6 +14,7 @@ type StorageInterface = {
   account?: string;
   expireTime?: number;
   listTagHistory?: string[];
+  heightPanelQuery?: string;
 };
 
 const defaultPreferences: StorageInterface = {
@@ -74,6 +75,11 @@ class Storage {
     return account || '';
   }
 
+  static getHeightPanelQuery(): string | undefined {
+    const { heightPanelQuery } = getStorage();
+    return heightPanelQuery || '';
+  }
+
   static getSavedTagHistory(isDashboard: boolean): string[] {
     const storageKey = isDashboard
       ? 'recentlyDashboardTagSearch'
@@ -92,6 +98,12 @@ class Storage {
   static setRefreshToken(refreshToken: string) {
     const preferences = getStorage();
     preferences.refreshToken = refreshToken;
+    setStorage(PREFERENCES, preferences);
+  }
+
+  static setHeightPanelQuery(heightPanelQuery: string) {
+    const preferences = getStorage();
+    preferences.heightPanelQuery = heightPanelQuery;
     setStorage(PREFERENCES, preferences);
   }
 
