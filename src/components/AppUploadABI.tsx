@@ -553,9 +553,6 @@ const AppUploadABI: FC<IAppUploadABI> = ({
         <Flex justifyContent={'space-between'}>
           <Flex mb={1} className="label-abi">
             <span>ABI&nbsp;</span>
-            <Box as={'span'} color={'red.500'}>
-              *
-            </Box>
             <Tooltip
               placement={'top'}
               hasArrow
@@ -580,7 +577,6 @@ const AppUploadABI: FC<IAppUploadABI> = ({
             onClick={() => {
               setIsInsertManuallyAddress(!isInsertManuallyAddress);
               setABIInput('');
-              setDataSelected([]);
               setFileSelected({});
               if (type === TYPE_ABI.NFT) {
                 setABIData(ERC721.abi);
