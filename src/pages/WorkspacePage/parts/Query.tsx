@@ -42,6 +42,8 @@ const QueryPart: React.FC = () => {
 
   const DEBOUNCE_TIME = 500;
   const editorRef = useRef<any>();
+  const visualizationHeightRef = useRef<number>();
+
   const [isTemporary, setIsTemporary] = useState<boolean>(false);
   const [createQueryId, setCreateQueryId] = useState<string>('');
   const [queryResult, setQueryResult] = useState<any>([]);
@@ -359,8 +361,15 @@ const QueryPart: React.FC = () => {
   };
 
   const onChangeVisualizationHeight = (secondaryPanelSize: number) => {
-    Storage.setQueryVisualizationHeight(secondaryPanelSize);
-    setVisualizationHeight(secondaryPanelSize);
+    visualizationHeightRef.current = secondaryPanelSize;
+  };
+
+  const onDragEnd = () => {
+    if (!visualizationHeightRef.current) {
+      return;
+    }
+    setVisualizationHeight(visualizationHeightRef.current);
+    Storage.setQueryVisualizationHeight(visualizationHeightRef.current);
   };
 
   return (
@@ -393,8 +402,9 @@ const QueryPart: React.FC = () => {
               primaryMinSize={50}
               secondaryMinSize={60}
               vertical
-              onSecondaryPaneSizeChange={onChangeVisualizationHeight}
               secondaryInitialSize={visualizationHeight}
+              onSecondaryPaneSizeChange={onChangeVisualizationHeight}
+              onDragEnd={onDragEnd}
             >
               <Box className="editor-wrapper">
                 <AceEditor
