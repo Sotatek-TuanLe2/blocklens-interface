@@ -1,5 +1,5 @@
 import { Box, Flex, Tooltip } from '@chakra-ui/react';
-import { debounce, update } from 'lodash';
+import { debounce } from 'lodash';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import AceEditor from 'react-ace';
 import 'ace-builds/src-noconflict/ext-language_tools';
@@ -12,7 +12,6 @@ import {
   QueryExecutedResponse,
   IQuery,
   IErrorExecuteQuery,
-  LAYOUT_QUERY,
 } from 'src/utils/query.type';
 import 'src/styles/pages/QueriesPage.scss';
 import { toastError } from 'src/utils/utils-notify';
@@ -42,13 +41,14 @@ const QueryPart: React.FC = () => {
   const { goWithOriginPath } = useOriginPath();
 
   const DEBOUNCE_TIME = 500;
+  const DEFAULT_PANEL_HEIGHT = 600;
+  const defaultPanelHeight = Storage.getHeightPanelQuery();
+
   const editorRef = useRef<any>();
-  const [isExpand, setIsExpand] = useState<boolean>(true);
   const [isTemporary, setIsTemporary] = useState<boolean>(false);
   const [createQueryId, setCreateQueryId] = useState<string>('');
   const [queryResult, setQueryResult] = useState<any>([]);
   const [queryValue, setQueryValue] = useState<IQuery | null>(null);
-  const [expandLayout, setExpandLayout] = useState<string>(LAYOUT_QUERY.HIDDEN);
   const [isLoadingQuery, setIsLoadingQuery] = useState<boolean>(!!queryId);
   const [isLoadingResult, setIsLoadingResult] = useState<boolean>(!!queryId);
   const [errorExecuteQuery, setErrorExecuteQuery] =
@@ -57,15 +57,15 @@ const QueryPart: React.FC = () => {
   const [selectedQuery, setSelectedQuery] = useState<string>('');
   const [openModalSettingQuery, setOpenModalSettingQuery] =
     useState<boolean>(false);
-  const [panelHeight, setPanelHeight] = useState<any>(
-    Storage.getHeightPanelQuery() || '600',
+  const [panelHeight, setPanelHeight] = useState<number>(
+    defaultPanelHeight ? +defaultPanelHeight : DEFAULT_PANEL_HEIGHT,
   );
 
   const fetchQueryResultTimeout = useRef<ReturnType<typeof setTimeout>>();
   const isLoading = isLoadingQuery || isLoadingResult;
 
-  const handleSecondaryPaneSizeChange = (secondaryPaneSize: string) => {
-    Storage.setHeightPanelQuery(secondaryPaneSize);
+  const handleSecondaryPaneSizeChange = (secondaryPaneSize: number) => {
+    Storage.setHeightPanelQuery(String(secondaryPaneSize));
     setPanelHeight(secondaryPaneSize);
   };
 
@@ -92,7 +92,6 @@ const QueryPart: React.FC = () => {
 
   useEffect(() => {
     if (queryId) {
-      setExpandLayout(LAYOUT_QUERY.HALF);
       setIsTemporary(false);
       fetchInitialData();
     } else {
@@ -122,7 +121,6 @@ const QueryPart: React.FC = () => {
     setQueryResult([]);
     setQueryValue(null);
     setCreateQueryId('');
-    setExpandLayout(LAYOUT_QUERY.FULL);
     setIsLoadingResult(false);
     setErrorExecuteQuery(null);
     setSelectedQuery('');
@@ -159,7 +157,6 @@ const QueryPart: React.FC = () => {
       setQueryResult(res.result);
       setErrorExecuteQuery(res?.error || null);
       setStatusExecuteQuery(res?.status);
-      onCheckExpandLayout(res?.status);
       setCreateQueryId(res.queryId);
       setIsLoadingResult(false);
     }
@@ -255,15 +252,12 @@ const QueryPart: React.FC = () => {
     if (selectedQuery) {
       return executeSelectedQuery();
     }
-    setIsExpand(false);
     try {
       const query = editorRef.current.editor.getValue();
       if (!query) {
         toastError({ message: 'Query must not be empty!' });
         return;
       }
-
-      setExpandLayout(LAYOUT_QUERY.HALF);
       if (queryId) {
         await updateQuery(query);
       } else {
@@ -274,43 +268,6 @@ const QueryPart: React.FC = () => {
       }
     } catch (err: any) {
       toastError({ message: getErrorMessage(err) });
-    }
-  };
-
-  const toggleExpandEditor = () => {
-    setIsExpand(false);
-    setExpandLayout((prevState) => {
-      if (prevState === LAYOUT_QUERY.FULL) {
-        return LAYOUT_QUERY.HIDDEN;
-      }
-      if (prevState === LAYOUT_QUERY.HIDDEN) {
-        return LAYOUT_QUERY.FULL;
-      }
-      return LAYOUT_QUERY.FULL;
-    });
-  };
-
-  const getIconClassName = (query: boolean) => {
-    if (!queryId || !queryValue)
-      return query ? 'icon-query-collapse' : 'icon-query-expand';
-
-    if (expandLayout === LAYOUT_QUERY.HALF)
-      return query ? 'icon-query-expand' : 'icon-query-collapse';
-
-    return expandLayout === LAYOUT_QUERY.HIDDEN
-      ? query
-        ? 'icon-query-expand'
-        : 'icon-query-collapse'
-      : query
-      ? 'icon-query-collapse'
-      : 'icon-query-expand';
-  };
-
-  const onCheckExpandLayout = (executeStatus: string) => {
-    if (executeStatus === STATUS.DONE) {
-      setExpandLayout(LAYOUT_QUERY.HIDDEN);
-    } else if (executeStatus === STATUS.FAILED) {
-      setExpandLayout(LAYOUT_QUERY.HALF);
     }
   };
 
@@ -330,12 +287,6 @@ const QueryPart: React.FC = () => {
           <QueryResultIcon />
           Result Table
         </div>
-        {!isLoading && (
-          <p
-            onClick={toggleExpandEditor}
-            className={`${getIconClassName(false)}`}
-          />
-        )}
       </div>
     );
   };
@@ -357,8 +308,6 @@ const QueryPart: React.FC = () => {
             queryResult={queryResult}
             queryValue={queryValue}
             onReload={fetchQuery}
-            expandLayout={expandLayout}
-            onExpand={setExpandLayout}
           />
         </Box>
       );
@@ -367,25 +316,22 @@ const QueryPart: React.FC = () => {
     return (
       <>
         {_renderAddChart()}
-        {(expandLayout === LAYOUT_QUERY.HIDDEN ||
-          expandLayout === LAYOUT_QUERY.HALF) && (
-          <Flex
-            className="empty-table"
-            justifyContent={'center'}
-            alignItems="center"
-            flexDirection="column"
-          >
-            {statusExecuteQuery === STATUS.DONE &&
-              !queryResult.length &&
-              'No data...'}
-            {statusExecuteQuery === STATUS.FAILED && (
-              <>
-                <span className="execution-error">Execution Error</span>
-                {errorExecuteQuery?.message || 'No data...'}
-              </>
-            )}
-          </Flex>
-        )}
+        <Flex
+          className="empty-table"
+          justifyContent={'center'}
+          alignItems="center"
+          flexDirection="column"
+        >
+          {statusExecuteQuery === STATUS.DONE &&
+            !queryResult.length &&
+            'No data...'}
+          {statusExecuteQuery === STATUS.FAILED && (
+            <>
+              <span className="execution-error">Execution Error</span>
+              {errorExecuteQuery?.message || 'No data...'}
+            </>
+          )}
+        </Flex>
       </>
     );
   };
@@ -412,7 +358,6 @@ const QueryPart: React.FC = () => {
                 {!isMobile && 'Add Chart'}
               </Flex>
             </Tooltip>
-            <p className="icon-query-expand cursor-not-allowed" />
           </Flex>
         </div>
       );
@@ -476,14 +421,6 @@ const QueryPart: React.FC = () => {
                   }}
                   onSelectionChange={onSelectQuery}
                 />
-                <div className="btn-expand-query">
-                  {!isLoading && (
-                    <p
-                      className={`${getIconClassName(true)}`}
-                      onClick={toggleExpandEditor}
-                    />
-                  )}
-                </div>
               </Box>
               {_renderVisualizations()}
             </SplitterLayout>

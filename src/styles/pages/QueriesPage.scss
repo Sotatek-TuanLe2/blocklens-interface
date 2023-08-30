@@ -29,11 +29,6 @@
     }
   }
 
-  .hidden-editor {
-    .tabs-header {
-      padding: 0px 15px 0px 14px !important;
-    }
-  }
   .add-chart-full {
     border-radius: 6px;
     margin-top: 8px;
@@ -66,11 +61,6 @@
       background: rgba(0, 2, 36, 0.05);
       border-radius: 4px;
       padding: 2px 11px;
-    }
-
-    .icon-query-expand,
-    .icon-query-collapse {
-      cursor: pointer;
     }
 
     svg {
@@ -289,15 +279,6 @@
       }
     }
 
-    .btn-expand-query {
-      width: fit-content;
-      position: absolute;
-      top: 15px;
-      right: 12px;
-      cursor: pointer;
-      animation: showConfig 0.5s forwards;
-    }
-
     .ace_gutter-cell {
       margin-top: 18px;
     }
@@ -401,16 +382,6 @@
       }
     }
 
-    &__wrapper {
-      display: block;
-      transition: all linear 0.5s;
-
-      &--hidden {
-        height: 0;
-        display: none;
-      }
-    }
-
     &__visualization {
       min-height: 500px;
       height: fit-content;
@@ -472,10 +443,6 @@
             padding: 0;
           }
 
-          &--expand {
-            height: 672px !important;
-          }
-
           .main-table {
             height: calc(100% - 40px - 70px);
             max-height: calc(100% - 40px - 70px);
@@ -516,12 +483,6 @@
           .body-config {
             overflow: auto;
             max-height: 422px;
-
-            &--expand {
-              height: 100%;
-              overflow: auto;
-              max-height: 665px !important;
-            }
           }
 
           .header-config {
@@ -663,10 +624,6 @@
           font-size: 16px;
           line-height: 24px;
         }
-      }
-
-      .main-item-expand {
-        padding: 240px 0px !important;
       }
 
       .main-item {

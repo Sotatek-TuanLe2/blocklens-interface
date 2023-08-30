@@ -49,12 +49,6 @@ export enum CHAIN_NAME {
   SUI_TESTNET = 'sui_testnet',
 }
 
-export enum LAYOUT_QUERY {
-  FULL = 'full',
-  HALF = 'half',
-  HIDDEN = 'hidden',
-}
-
 export interface WidgetOptions {
   col: number;
   row: number;
