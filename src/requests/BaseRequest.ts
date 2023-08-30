@@ -10,6 +10,8 @@ import {
 import { AppBroadcast } from 'src/utils/utils-broadcast';
 import { RECAPTCHA_ACTIONS } from 'src/utils/common';
 import { COMMON_ERROR_MESSAGE } from 'src/constants';
+import store from 'src/store';
+import { setUserAuth } from 'src/store/user';
 
 export default class BaseRequest {
   protected accessToken = '';
@@ -29,10 +31,14 @@ export default class BaseRequest {
     recaptchaAction: typeof RECAPTCHA_ACTIONS[keyof typeof RECAPTCHA_ACTIONS],
   ) {
     return retry(
-      async () => {
-        const recaptcha = await load(config.auth.reCaptchaKey);
-        const token = await recaptcha.execute(recaptchaAction);
-        setRecaptchaToRequest(token);
+      async (bail) => {
+        try {
+          const recaptcha = await load(config.auth.reCaptchaKey);
+          const token = await recaptcha.execute(recaptchaAction);
+          setRecaptchaToRequest(token);
+        } catch (error) {
+          bail(new Error(COMMON_ERROR_MESSAGE));
+        }
       },
       {
         retries: 3,
@@ -121,8 +127,27 @@ export default class BaseRequest {
     return AppBroadcast.dispatch('LOGOUT_USER');
   }
 
-  _error401Handler() {
-    return AppBroadcast.dispatch('REQUEST_SIGN_IN');
+  async _error401Handler(error: any) {
+    const refreshToken = Storage.getRefreshToken();
+    if (!refreshToken) {
+      return AppBroadcast.dispatch('REQUEST_SIGN_IN');
+    }
+
+    try {
+      const response = await axios.post(
+        config.api.baseUrlApi + '/public/users/refresh-token',
+        { refreshToken },
+      );
+      store().store.dispatch(setUserAuth(response.data));
+      error.config.headers = {
+        Authorization: 'Bearer ' + response.data.accessToken,
+        'Content-Type': 'application/json',
+      };
+      const retryResponse = await axios(error.config);
+      return Promise.resolve(retryResponse.data);
+    } catch (error) {
+      return AppBroadcast.dispatch('REQUEST_SIGN_IN');
+    }
   }
 
   async _errorHandler(err: any) {
@@ -130,7 +155,7 @@ export default class BaseRequest {
       err.response?.status === 401 &&
       err.response.data?.message.toString() !== 'Credential is not correct'
     ) {
-      return this._error401Handler();
+      return this._error401Handler(err);
     }
 
     if (err.response?.status === 403) {

@@ -60,16 +60,21 @@ const PartFormCoinActivityAptos: FC<IPartFormCoinActivityAptos> = ({
         />
       </AppField>
       <Box w={'full'}>
-        <Tooltip
-          hasArrow
-          placement="top"
-          label="Choosing which activities you want to be notified"
-        >
-          Notification filter&nbsp;
-        </Tooltip>
-        <Box as={'span'} color={'red.500'}>
-          *
-        </Box>
+        <Flex mb={1}>
+          <span>Notification filter&nbsp;</span>
+          <Box as={'span'} color={'red.500'}>
+            *
+          </Box>
+          <Tooltip
+            placement={'top'}
+            hasArrow
+            p={2}
+            className="tooltip-app"
+            label={`Filter out which activities you want to be notified`}
+          >
+            <Box className="icon-info" ml={2} cursor={'pointer'} />
+          </Tooltip>
+        </Flex>
         <Box mt={1}>
           <ListSelectEvent
             dataEvent={COIN_EVENTS}

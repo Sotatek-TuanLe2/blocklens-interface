@@ -180,27 +180,31 @@ const WebHookCreatePage: React.FC = () => {
     }
 
     switch (typeSelected) {
+      case WEBHOOK_TYPES.APTOS_COIN_ACTIVITY:
+      case WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY:
+        isDisabled = !dataForm?.metadata?.events?.length;
+        break;
       case WEBHOOK_TYPES.CONTRACT_ACTIVITY:
-      case WEBHOOK_TYPES.TOKEN_ACTIVITY:
       case WEBHOOK_TYPES.NFT_ACTIVITY:
-        isDisabled = !dataForm.metadata?.abi?.length;
+      case WEBHOOK_TYPES.TOKEN_ACTIVITY:
+        isDisabled =
+          !dataForm?.metadata?.abiFilter?.length ||
+          !dataForm.metadata?.abi?.length;
         break;
       case WEBHOOK_TYPES.ADDRESS_ACTIVITY:
         isDisabled =
           !dataForm?.metadata?.addresses?.length &&
           !dataForm?.metadata?.events?.length;
         break;
+
       case WEBHOOK_TYPES.APTOS_MODULE_ACTIVITY:
         isDisabled =
-          (!dataForm?.metadata?.events?.length ||
-            !dataForm?.metadata?.functions?.length) &&
-          !dataForm?.metadata?.address &&
-          !dataForm?.metadata?.module?.length;
+          !dataForm?.metadata?.events?.length &&
+          !dataForm?.metadata?.functions?.length;
         break;
       default:
         break;
     }
-
     setIsDisableSubmit(isDisabled);
   }, [dataForm, typeSelected]);
 
