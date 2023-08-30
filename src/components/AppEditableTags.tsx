@@ -124,9 +124,7 @@ const AppEditableTags = forwardRef<IAppEditableTagsProps, any>(
               </Flex>
             );
           })}
-          {tags.length < 20 && (
-            <AddHashtags onSubmit={onSubmit} isDisabled={tags.length === 20} />
-          )}
+          {tags.length < 20 && <AddHashtags onSubmit={onSubmit} />}
         </Flex>
       </>
     );
