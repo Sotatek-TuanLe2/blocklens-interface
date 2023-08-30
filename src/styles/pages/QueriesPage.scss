@@ -261,6 +261,12 @@
 
     .splitter-layout {
       position: unset !important;
+
+      .layout-pane {
+        &:first-child {
+          overflow: hidden !important;
+        }
+      }
     }
 
     .btn-expand-public {
