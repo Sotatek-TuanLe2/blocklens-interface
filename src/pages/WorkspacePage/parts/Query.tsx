@@ -449,7 +449,7 @@ const QueryPart: React.FC = () => {
             <SplitterLayout
               primaryIndex={0}
               primaryMinSize={50}
-              secondaryMinSize={120}
+              secondaryMinSize={60}
               vertical
               onSecondaryPaneSizeChange={handleSecondaryPaneSizeChange}
               secondaryInitialSize={panelHeight}

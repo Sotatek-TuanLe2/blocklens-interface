@@ -35,13 +35,13 @@ const QueryPart: React.FC = () => {
   const [isExpand, setIsExpand] = useState<boolean>(true);
   const [statusExecuteQuery, setStatusExecuteQuery] = useState<string>();
   const [panelHeight, setPanelHeight] = useState<any>(
-    Storage.getHeightPanelQuery() || '600',
+    Storage.getHeightPanelQueryPublic() || '600',
   );
 
   const fetchQueryResultTimeout = useRef<ReturnType<typeof setTimeout>>();
 
   const handleSecondaryPaneSizeChange = (secondaryPaneSize: string) => {
-    Storage.setHeightPanelQuery(secondaryPaneSize);
+    Storage.setHeightPanelQueryPublic(secondaryPaneSize);
     setPanelHeight(secondaryPaneSize);
   };
 
@@ -258,7 +258,7 @@ const QueryPart: React.FC = () => {
           <SplitterLayout
             primaryIndex={0}
             primaryMinSize={50}
-            secondaryMinSize={120}
+            secondaryMinSize={60}
             vertical
             onSecondaryPaneSizeChange={handleSecondaryPaneSizeChange}
             secondaryInitialSize={panelHeight}
