@@ -38,6 +38,7 @@ import {
 } from '../../../utils/query.type';
 import _ from 'lodash';
 import { isMobile } from 'react-device-detect';
+import Storage from 'src/utils/utils-storage';
 
 type VisualizationConfigType = {
   value: string;
@@ -325,7 +326,12 @@ const VisualizationDisplay = ({
     };
 
     const ConfigOnDesktop = (
-      <div className={`main-config`}>
+      <div
+        style={{
+          height: Number(Storage.getQueryVisualizationHeight() - 130),
+        }}
+        className={`main-config`}
+      >
         <div className="header-config">
           <div className="title-config">{typeNameVisual(type)} Options</div>
           <p
@@ -422,11 +428,12 @@ const VisualizationDisplay = ({
           )}
           <div className="main-chart">
             <div
+              style={{
+                height: Number(Storage.getQueryVisualizationHeight() - 120),
+              }}
               className={`main-visualization ${
-                type === TYPE_VISUALIZATION.table
-                  ? 'main-visualization--table'
-                  : ''
-              } ${!toggleCloseConfig || isMobile ? 'show-full-visual' : ''}`}
+                !toggleCloseConfig || isMobile ? 'show-full-visual' : ''
+              }`}
             >
               {errorMessage ? (
                 <Flex
