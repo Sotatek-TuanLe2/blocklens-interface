@@ -17,6 +17,9 @@ import { IErrorExecuteQuery, IQuery, LAYOUT_QUERY } from 'src/utils/query.type';
 import { toastError } from 'src/utils/utils-notify';
 import { Query } from 'src/utils/utils-query';
 import { STATUS } from 'src/utils/utils-webhook';
+import Storage from 'src/utils/utils-storage';
+import SplitterLayout from 'react-splitter-layout';
+import 'react-splitter-layout/lib/index.css';
 
 const QueryPart: React.FC = () => {
   const { queryId } = useParams<{ queryId: string }>();
@@ -31,8 +34,16 @@ const QueryPart: React.FC = () => {
     useState<IErrorExecuteQuery>();
   const [isExpand, setIsExpand] = useState<boolean>(true);
   const [statusExecuteQuery, setStatusExecuteQuery] = useState<string>();
+  const [panelHeight, setPanelHeight] = useState<any>(
+    Storage.getHeightPanelQuery() || '600',
+  );
 
   const fetchQueryResultTimeout = useRef<ReturnType<typeof setTimeout>>();
+
+  const handleSecondaryPaneSizeChange = (secondaryPaneSize: string) => {
+    Storage.setHeightPanelQuery(secondaryPaneSize);
+    setPanelHeight(secondaryPaneSize);
+  };
 
   const queryClass = useMemo(() => {
     if (!queryValue) {
@@ -135,18 +146,6 @@ const QueryPart: React.FC = () => {
     });
   };
 
-  const getClassExpand = (
-    layout: string,
-    firstClass: string,
-    secondClass: string,
-  ) => {
-    if (statusExecuteQuery === STATUS.FAILED && isExpand)
-      return 'custom-editor--half';
-    if (isLoadingResult) return 'add-chart-loading-public';
-    if (!queryId || !queryValue) return 'custom-editor--full';
-    return expandLayout === layout ? firstClass : secondClass;
-  };
-
   const getIconClassName = (query: boolean) => {
     if (!queryId || !queryValue)
       return query ? 'icon-query-collapse' : 'icon-query-expand';
@@ -238,24 +237,7 @@ const QueryPart: React.FC = () => {
       return null;
     }
 
-    return (
-      <div
-        className={`
-        ${
-          statusExecuteQuery === STATUS.FAILED && isExpand
-            ? 'add-chart-empty'
-            : ''
-        }
-        ${getClassExpand(LAYOUT_QUERY.FULL, 'add-chart-full', 'add-chart')}
-        ${getClassExpand(
-          LAYOUT_QUERY.HIDDEN,
-          'expand-chart hidden-editor',
-          '',
-        )} `}
-      >
-        {_renderContent()}
-      </div>
-    );
+    return <>{_renderContent()}</>;
   };
 
   return (
@@ -273,50 +255,50 @@ const QueryPart: React.FC = () => {
       />
       <div className="query-container queries-page">
         <Box className="queries-page__right-side">
-          <Box className="editor-wrapper">
-            <div
-              className={`${
-                !queryId || !queryValue ? 'cursor-not-allowed' : ''
-              } btn-expand-public`}
-            >
-              <p
-                className={`${getIconClassName(true)}`}
-                onClick={toggleExpandEditor}
+          <SplitterLayout
+            primaryIndex={0}
+            primaryMinSize={50}
+            secondaryMinSize={120}
+            vertical
+            onSecondaryPaneSizeChange={handleSecondaryPaneSizeChange}
+            secondaryInitialSize={panelHeight}
+          >
+            <Box className="editor-wrapper">
+              <div
+                className={`${
+                  !queryId || !queryValue ? 'cursor-not-allowed' : ''
+                } btn-expand-public`}
+              >
+                <p
+                  className={`${getIconClassName(true)}`}
+                  onClick={toggleExpandEditor}
+                />
+              </div>
+              <AceEditor
+                className={`ace_editor ace-tomorrow custom-editor`}
+                ref={editorRef}
+                mode="sql"
+                theme="tomorrow"
+                width="93%"
+                wrapEnabled={true}
+                readOnly
+                focus={false}
+                name="sql_editor"
+                editorProps={{ $blockScrolling: true }}
+                showPrintMargin={true}
+                showGutter={true}
+                highlightActiveLine={true}
+                setOptions={{
+                  enableLiveAutocompletion: true,
+                  enableBasicAutocompletion: true,
+                  enableSnippets: false,
+                  showLineNumbers: true,
+                  tabSize: 2,
+                }}
               />
-            </div>
-            <AceEditor
-              className={`ace_editor ace-tomorrow custom-editor 
-                ${getClassExpand(
-                  LAYOUT_QUERY.FULL,
-                  'custom-editor--full',
-                  '',
-                )} ${getClassExpand(
-                LAYOUT_QUERY.HIDDEN,
-                'custom-editor--hidden',
-                '',
-              )}`}
-              ref={editorRef}
-              mode="sql"
-              theme="tomorrow"
-              width="93%"
-              wrapEnabled={true}
-              readOnly
-              focus={false}
-              name="sql_editor"
-              editorProps={{ $blockScrolling: true }}
-              showPrintMargin={true}
-              showGutter={true}
-              highlightActiveLine={true}
-              setOptions={{
-                enableLiveAutocompletion: true,
-                enableBasicAutocompletion: true,
-                enableSnippets: false,
-                showLineNumbers: true,
-                tabSize: 2,
-              }}
-            />
-          </Box>
-          {_renderVisualizations()}
+            </Box>
+            {_renderVisualizations()}
+          </SplitterLayout>
         </Box>
       </div>
     </div>

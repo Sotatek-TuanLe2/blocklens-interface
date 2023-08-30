@@ -174,19 +174,6 @@
     border-bottom-right-radius: 6px;
     transition: height linear 0.5s;
 
-    &--full {
-      height: 746px !important;
-    }
-
-    &--half {
-      height: 419px !important;
-    }
-
-    &--hidden {
-      height: 50px !important;
-      border-top: none;
-    }
-
     .ace_print-margin {
       display: none;
     }

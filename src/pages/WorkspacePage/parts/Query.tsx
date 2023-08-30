@@ -63,6 +63,7 @@ const QueryPart: React.FC = () => {
 
   const fetchQueryResultTimeout = useRef<ReturnType<typeof setTimeout>>();
   const isLoading = isLoadingQuery || isLoadingResult;
+
   const handleSecondaryPaneSizeChange = (secondaryPaneSize: string) => {
     Storage.setHeightPanelQuery(secondaryPaneSize);
     setPanelHeight(secondaryPaneSize);
