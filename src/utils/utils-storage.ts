@@ -1,5 +1,6 @@
 import config from 'src/config';
 import { WALLET_CONNECT } from 'src/connectors';
+import { DEFAULT_QUERY_VISUALIZATION_HEIGHT } from './common';
 
 const env = process.env.REACT_APP_ENV || 'prod';
 
@@ -14,12 +15,12 @@ type StorageInterface = {
   account?: string;
   expireTime?: number;
   listTagHistory?: string[];
-  heightPanelQuery?: string;
-  heightPanelQueryPublic?: string;
+  queryVisualizationHeight: number;
 };
 
 const defaultPreferences: StorageInterface = {
   network: config.defaultNetwork,
+  queryVisualizationHeight: DEFAULT_QUERY_VISUALIZATION_HEIGHT,
 };
 
 function getStorage(): StorageInterface {
@@ -76,13 +77,9 @@ class Storage {
     return account || '';
   }
 
-  static getHeightPanelQuery(): string | undefined {
-    const { heightPanelQuery } = getStorage();
-    return heightPanelQuery || '';
-  }
-  static getHeightPanelQueryPublic(): string | undefined {
-    const { heightPanelQueryPublic } = getStorage();
-    return heightPanelQueryPublic || '';
+  static getQueryVisualizationHeight(): number {
+    const { queryVisualizationHeight } = getStorage();
+    return queryVisualizationHeight;
   }
 
   static getSavedTagHistory(isDashboard: boolean): string[] {
@@ -106,15 +103,9 @@ class Storage {
     setStorage(PREFERENCES, preferences);
   }
 
-  static setHeightPanelQuery(heightPanelQuery: string) {
+  static setQueryVisualizationHeight(queryVisualizationHeight: number) {
     const preferences = getStorage();
-    preferences.heightPanelQuery = heightPanelQuery;
-    setStorage(PREFERENCES, preferences);
-  }
-
-  static setHeightPanelQueryPublic(heightPanelQueryPublic: string) {
-    const preferences = getStorage();
-    preferences.heightPanelQueryPublic = heightPanelQueryPublic;
+    preferences.queryVisualizationHeight = queryVisualizationHeight;
     setStorage(PREFERENCES, preferences);
   }
 

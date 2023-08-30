@@ -25,25 +25,22 @@ const QueryPart: React.FC = () => {
   const { queryId } = useParams<{ queryId: string }>();
   const editorRef = useRef<any>();
 
-  const DEFAULT_PANEL_HEIGHT = 600;
-  const defaultPanelHeight = Storage.getHeightPanelQuery();
-
   const [queryResult, setQueryResult] = useState<any>([]);
   const [queryValue, setQueryValue] = useState<IQuery | null>(null);
+  const [visualizationHeight, setVisualizationHeight] = useState<number>(
+    Storage.getQueryVisualizationHeight(),
+  );
   const [isLoadingQuery, setIsLoadingQuery] = useState<boolean>(!!queryId);
   const [isLoadingResult, setIsLoadingResult] = useState<boolean>(!!queryId);
   const [errorExecuteQuery, setErrorExecuteQuery] =
     useState<IErrorExecuteQuery>();
   const [statusExecuteQuery, setStatusExecuteQuery] = useState<string>();
-  const [panelHeight, setPanelHeight] = useState<number>(
-    defaultPanelHeight ? +defaultPanelHeight : DEFAULT_PANEL_HEIGHT,
-  );
 
   const fetchQueryResultTimeout = useRef<ReturnType<typeof setTimeout>>();
 
-  const handleSecondaryPaneSizeChange = (secondaryPaneSize: number) => {
-    Storage.setHeightPanelQueryPublic(String(secondaryPaneSize));
-    setPanelHeight(secondaryPaneSize);
+  const handleSecondaryPaneSizeChange = (secondaryPanelSize: number) => {
+    Storage.setQueryVisualizationHeight(secondaryPanelSize);
+    setVisualizationHeight(secondaryPanelSize);
   };
 
   const queryClass = useMemo(() => {
@@ -222,7 +219,7 @@ const QueryPart: React.FC = () => {
             secondaryMinSize={60}
             vertical
             onSecondaryPaneSizeChange={handleSecondaryPaneSizeChange}
-            secondaryInitialSize={panelHeight}
+            secondaryInitialSize={visualizationHeight}
           >
             <Box className="editor-wrapper">
               <div

@@ -41,14 +41,14 @@ const QueryPart: React.FC = () => {
   const { goWithOriginPath } = useOriginPath();
 
   const DEBOUNCE_TIME = 500;
-  const DEFAULT_PANEL_HEIGHT = 600;
-  const defaultPanelHeight = Storage.getHeightPanelQuery();
-
   const editorRef = useRef<any>();
   const [isTemporary, setIsTemporary] = useState<boolean>(false);
   const [createQueryId, setCreateQueryId] = useState<string>('');
   const [queryResult, setQueryResult] = useState<any>([]);
   const [queryValue, setQueryValue] = useState<IQuery | null>(null);
+  const [visualizationHeight, setVisualizationHeight] = useState<number>(
+    Storage.getQueryVisualizationHeight(),
+  );
   const [isLoadingQuery, setIsLoadingQuery] = useState<boolean>(!!queryId);
   const [isLoadingResult, setIsLoadingResult] = useState<boolean>(!!queryId);
   const [errorExecuteQuery, setErrorExecuteQuery] =
@@ -57,16 +57,13 @@ const QueryPart: React.FC = () => {
   const [selectedQuery, setSelectedQuery] = useState<string>('');
   const [openModalSettingQuery, setOpenModalSettingQuery] =
     useState<boolean>(false);
-  const [panelHeight, setPanelHeight] = useState<number>(
-    defaultPanelHeight ? +defaultPanelHeight : DEFAULT_PANEL_HEIGHT,
-  );
 
   const fetchQueryResultTimeout = useRef<ReturnType<typeof setTimeout>>();
   const isLoading = isLoadingQuery || isLoadingResult;
 
-  const handleSecondaryPaneSizeChange = (secondaryPaneSize: number) => {
-    Storage.setHeightPanelQuery(String(secondaryPaneSize));
-    setPanelHeight(secondaryPaneSize);
+  const handleSecondaryPaneSizeChange = (secondaryPanelSize: number) => {
+    Storage.setQueryVisualizationHeight(secondaryPanelSize);
+    setVisualizationHeight(secondaryPanelSize);
   };
 
   useEffect(() => {
@@ -397,7 +394,7 @@ const QueryPart: React.FC = () => {
               secondaryMinSize={60}
               vertical
               onSecondaryPaneSizeChange={handleSecondaryPaneSizeChange}
-              secondaryInitialSize={panelHeight}
+              secondaryInitialSize={visualizationHeight}
             >
               <Box className="editor-wrapper">
                 <AceEditor
