@@ -35,7 +35,6 @@ import PartFormTokenActivity from './parts/PartFormTokenActivity';
 import PartFormTokenActivityAptos from './parts/PartFormTokenActivityAptos';
 import PartFormIdentification from './parts/PartFormIdentification';
 import { ROUTES } from 'src/utils/common';
-import { AppBroadcast } from 'src/utils/utils-broadcast';
 import PartFormCoinActivityAptos from './parts/PartFormCoinActivityAptos';
 import PartFormModuleActivityAptos from './parts/PartFormModuleActivityAptos';
 import rf from 'src/requests/RequestFactory';
@@ -174,21 +173,11 @@ const WebHookCreatePage: React.FC = () => {
   }, [projectSelected]);
 
   useEffect(() => {
-    AppBroadcast.on('NOT_STANDARD_ERC', () => setIsStandardERC20(false));
-    return () => {
-      AppBroadcast.remove('NOT_STANDARD_ERC');
-    };
-  }, []);
-
-  useEffect(() => {
-    AppBroadcast.on('STANDARD_ERC', () => setIsStandardERC20(true));
-    return () => {
-      AppBroadcast.remove('STANDARD_ERC');
-    };
-  }, []);
-
-  useEffect(() => {
     let isDisabled = !validator.current.allValid();
+
+    if (!isStandardERC20) {
+      return setIsDisableSubmit(true);
+    }
 
     if (isDisabled) {
       setIsDisableSubmit(isDisabled);
@@ -222,7 +211,7 @@ const WebHookCreatePage: React.FC = () => {
         break;
     }
     setIsDisableSubmit(isDisabled);
-  }, [dataForm, typeSelected]);
+  }, [dataForm, typeSelected, isStandardERC20]);
 
   const optionTypes = useMemo(() => {
     if (chainSelected.value === CHAINS.APTOS) {
@@ -281,6 +270,8 @@ const WebHookCreatePage: React.FC = () => {
         type={typeSelected}
         validator={validator}
         isCreateWithoutProject
+        isStandardERC20={isStandardERC20}
+        setIsStandardERC20={setIsStandardERC20}
       />
     );
   };
@@ -292,6 +283,8 @@ const WebHookCreatePage: React.FC = () => {
         setDataForm={setDataForm}
         type={typeSelected}
         validator={validator}
+        isStandardERC20={isStandardERC20}
+        setIsStandardERC20={setIsStandardERC20}
       />
     );
   };
@@ -527,9 +520,7 @@ const WebHookCreatePage: React.FC = () => {
                     <AppButton
                       onClick={handleSendDemoMsg}
                       disabled={
-                        isDisableSubmit ||
-                        chainSelected.value === CHAINS.SUI ||
-                        !isStandardERC20
+                        isDisableSubmit || chainSelected.value === CHAINS.SUI
                       }
                       w={190}
                       size={'sm'}
@@ -542,9 +533,7 @@ const WebHookCreatePage: React.FC = () => {
                   <AppButton
                     onClick={handleSendDemoMsg}
                     disabled={
-                      isDisableSubmit ||
-                      chainSelected.value === CHAINS.SUI ||
-                      !isStandardERC20
+                      isDisableSubmit || chainSelected.value === CHAINS.SUI
                     }
                     w={190}
                     size={'sm'}
@@ -557,7 +546,7 @@ const WebHookCreatePage: React.FC = () => {
 
             <Flex justifyContent={['center', 'flex-end']} mt={5}>
               <AppButton
-                disabled={isDisableSubmit || !isStandardERC20}
+                disabled={isDisableSubmit}
                 onClick={handleSubmitForm}
                 size={'lg'}
               >

@@ -11,6 +11,8 @@ interface IPartFormNFTActivity {
   type: string;
   validator: any;
   isCreateWithoutProject?: boolean;
+  isStandardERC20?: boolean;
+  setIsStandardERC20?: any;
 }
 
 const PartFormNFTActivity: FC<IPartFormNFTActivity> = ({
@@ -19,6 +21,8 @@ const PartFormNFTActivity: FC<IPartFormNFTActivity> = ({
   type,
   validator,
   isCreateWithoutProject,
+  isStandardERC20,
+  setIsStandardERC20,
 }) => {
   return (
     <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
@@ -77,6 +81,8 @@ const PartFormNFTActivity: FC<IPartFormNFTActivity> = ({
       </AppField>
       <AppUploadABI
         type={TYPE_ABI.NFT}
+        isStandardERC20={isStandardERC20}
+        setIsStandardERC20={setIsStandardERC20}
         onChange={(abi, abiFilter) =>
           setDataForm({
             ...dataForm,

@@ -27,7 +27,6 @@ import { DownloadIcon } from 'src/assets/icons';
 import { IDataForm } from '../pages/WebHookCreatePage';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { ABI_OPTIONS, ABI_TYPES } from 'src/utils/common';
-import { AppBroadcast } from 'src/utils/utils-broadcast';
 
 export const TYPE_ABI = {
   NFT: 'NFT',
@@ -48,6 +47,8 @@ interface IAppUploadABI {
   abi?: any[];
   abiFilter?: any[];
   abiContract?: any[];
+  isStandardERC20?: boolean;
+  setIsStandardERC20?: any;
 }
 
 const listFunctionAndEventOfNFT = [
@@ -330,6 +331,8 @@ const AppUploadABI: FC<IAppUploadABI> = ({
   abi,
   abiFilter,
   abiContract,
+  isStandardERC20,
+  setIsStandardERC20,
 }) => {
   const [fileSelected, setFileSelected] = useState<any>({});
   const [ABIData, setABIData] = useState<any>([]);
@@ -341,7 +344,6 @@ const AppUploadABI: FC<IAppUploadABI> = ({
     useState<boolean>(true);
   const [ABIInput, setABIInput] = useState<string>('');
   const [error, setError] = useState<string>('');
-  const [isStandardERC20, setIsStandardERC20] = useState<boolean>(true);
 
   const handleFileSelect = (evt: any, dropFile?: any) => {
     const file = dropFile || evt.target.files[0];
@@ -565,14 +567,6 @@ const AppUploadABI: FC<IAppUploadABI> = ({
 
     return !dataSelected.length;
   }, [functionList, structList, dataSelected]);
-
-  useEffect(() => {
-    if (!isStandardERC20) {
-      return AppBroadcast.dispatch('NOT_STANDARD_ERC');
-    } else {
-      return AppBroadcast.dispatch('STANDARD_ERC');
-    }
-  }, [isStandardERC20]);
 
   return (
     <Box className="upload-abi">

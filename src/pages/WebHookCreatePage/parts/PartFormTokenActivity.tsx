@@ -10,6 +10,8 @@ interface IPartFormTokenActivity {
   setDataForm: (value: any) => void;
   type: string;
   validator: any;
+  isStandardERC20?: boolean;
+  setIsStandardERC20?: any;
 }
 
 const PartFormTokenActivity: FC<IPartFormTokenActivity> = ({
@@ -17,6 +19,8 @@ const PartFormTokenActivity: FC<IPartFormTokenActivity> = ({
   setDataForm,
   type,
   validator,
+  isStandardERC20,
+  setIsStandardERC20,
 }) => {
   return (
     <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
@@ -43,6 +47,8 @@ const PartFormTokenActivity: FC<IPartFormTokenActivity> = ({
       </AppField>
       <AppUploadABI
         type={TYPE_ABI.TOKEN}
+        isStandardERC20={isStandardERC20}
+        setIsStandardERC20={setIsStandardERC20}
         onChange={(abi, abiFilter) =>
           setDataForm({
             ...dataForm,
