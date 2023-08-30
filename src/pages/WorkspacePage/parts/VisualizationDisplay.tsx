@@ -1,5 +1,4 @@
 import { Box, Flex, Spinner, Tooltip } from '@chakra-ui/react';
-import moment from 'moment';
 import { useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import {
@@ -33,13 +32,13 @@ import TableConfigurations from '../../../components/VisualizationConfigs/TableC
 import BaseModal from '../../../modals/BaseModal';
 import {
   IQuery,
-  LAYOUT_QUERY,
   TYPE_VISUALIZATION,
   VALUE_VISUALIZATION,
   VisualizationType,
 } from '../../../utils/query.type';
 import _ from 'lodash';
 import { isMobile } from 'react-device-detect';
+import Storage from 'src/utils/utils-storage';
 
 type VisualizationConfigType = {
   value: string;
@@ -128,19 +127,15 @@ export const generateErrorMessage = (
 type Props = {
   queryResult: unknown[];
   queryValue: IQuery | null;
-  expandLayout: string;
   needAuthentication?: boolean;
   onReload: () => Promise<any>;
-  onExpand: (value: React.SetStateAction<string>) => void;
 };
 
 const VisualizationDisplay = ({
   queryResult,
   queryValue,
-  expandLayout,
   needAuthentication = true,
   onReload,
-  onExpand,
 }: Props) => {
   interface ParamTypes {
     queryId: string;
@@ -331,7 +326,12 @@ const VisualizationDisplay = ({
     };
 
     const ConfigOnDesktop = (
-      <div className={`main-config`}>
+      <div
+        style={{
+          height: Number(Storage.getQueryVisualizationHeight() - 130),
+        }}
+        className={`main-config`}
+      >
         <div className="header-config">
           <div className="title-config">{typeNameVisual(type)} Options</div>
           <p
@@ -339,13 +339,7 @@ const VisualizationDisplay = ({
             onClick={() => setToggleCloseConfig(false)}
           />
         </div>
-        <div
-          className={`body-config ${
-            expandLayout === LAYOUT_QUERY.HIDDEN ? 'body-config--expand' : ''
-          }`}
-        >
-          {configuration}
-        </div>
+        <div className="body-config">{configuration}</div>
       </div>
     );
 
@@ -425,13 +419,7 @@ const VisualizationDisplay = ({
     const errorMessage = generateErrorMessage(visualization, queryResult);
 
     return (
-      <div
-        className={`visual-container__wrapper ${
-          expandLayout === LAYOUT_QUERY.FULL
-            ? 'visual-container__wrapper--hidden'
-            : ''
-        } ${expandLayout === LAYOUT_QUERY.HIDDEN ? 'hidden-editor' : ''}`}
-      >
+      <div className="visual-container__wrapper">
         <div className="visual-container__visualization">
           {isConfiguring && (
             <div className="visual-container__visualization__loading">
@@ -440,15 +428,12 @@ const VisualizationDisplay = ({
           )}
           <div className="main-chart">
             <div
+              style={{
+                height: Number(Storage.getQueryVisualizationHeight() - 120),
+              }}
               className={`main-visualization ${
-                type === TYPE_VISUALIZATION.table
-                  ? 'main-visualization--table'
-                  : ''
-              } ${
-                expandLayout === LAYOUT_QUERY.HIDDEN
-                  ? 'main-visualization--expand'
-                  : ''
-              } ${!toggleCloseConfig || isMobile ? 'show-full-visual' : ''}`}
+                !toggleCloseConfig || isMobile ? 'show-full-visual' : ''
+              }`}
             >
               {errorMessage ? (
                 <Flex
@@ -493,7 +478,6 @@ const VisualizationDisplay = ({
     if (!isMobile) {
       setToggleCloseConfig(needAuthentication && !!tabIndex);
     }
-    onExpand(LAYOUT_QUERY.HIDDEN);
   };
 
   const generateTabs = () => {
@@ -543,7 +527,6 @@ const VisualizationDisplay = ({
         ),
         content: (
           <AddVisualization
-            expandLayout={expandLayout}
             isConfiguring={isConfiguring}
             onAddVisualize={addVisualizationHandler}
           />
@@ -569,22 +552,6 @@ const VisualizationDisplay = ({
         }}
         rightElement={
           <Flex gap={'10px'}>
-            <div className="btn-expand">
-              <p
-                className={
-                  expandLayout === LAYOUT_QUERY.FULL
-                    ? 'icon-query-expand'
-                    : 'icon-query-collapse'
-                }
-                onClick={() =>
-                  onExpand(
-                    expandLayout === LAYOUT_QUERY.FULL
-                      ? LAYOUT_QUERY.HIDDEN
-                      : LAYOUT_QUERY.FULL,
-                  )
-                }
-              />
-            </div>
             {showEditButton && (
               <Tooltip label="Edit" hasArrow bg="white" color="black">
                 <div
@@ -641,13 +608,11 @@ export default VisualizationDisplay;
 
 type AddVisualizationProps = {
   onAddVisualize: (visualizationType: string) => void;
-  expandLayout?: string;
   isConfiguring: boolean;
 };
 
 const AddVisualization = ({
   onAddVisualize,
-  expandLayout,
   isConfiguring,
 }: AddVisualizationProps) => {
   const getIcon = (chain: string | undefined) => {
@@ -659,43 +624,37 @@ const AddVisualization = ({
 
   return (
     <Box>
-      {expandLayout === LAYOUT_QUERY.HIDDEN && (
-        <div
-          className={`main-item ${
-            expandLayout === LAYOUT_QUERY.HIDDEN ? 'main-item-expand' : ''
-          }`}
-        >
-          {isConfiguring && (
-            <div className="visual-container__visualization__loading">
-              <Spinner size={'sm'} />
+      <div className="main-item">
+        {isConfiguring && (
+          <div className="visual-container__visualization__loading">
+            <Spinner size={'sm'} />
+          </div>
+        )}
+        <div className="top-items">
+          {visualizationConfigs.slice(0, 3).map((i) => (
+            <div
+              className="item-visual"
+              key={i.value}
+              onClick={() => onAddVisualize(i.value)}
+            >
+              {getIcon(i.type)}
+              {i.label}
             </div>
-          )}
-          <div className="top-items">
-            {visualizationConfigs.slice(0, 3).map((i) => (
-              <div
-                className="item-visual"
-                key={i.value}
-                onClick={() => onAddVisualize(i.value)}
-              >
-                {getIcon(i.type)}
-                {i.label}
-              </div>
-            ))}
-          </div>
-          <div className="bottom-items">
-            {visualizationConfigs.slice(3).map((i) => (
-              <div
-                className="item-visual"
-                key={i.value}
-                onClick={() => onAddVisualize(i.value)}
-              >
-                {getIcon(i.type)}
-                {i.label}
-              </div>
-            ))}
-          </div>
+          ))}
         </div>
-      )}
+        <div className="bottom-items">
+          {visualizationConfigs.slice(3).map((i) => (
+            <div
+              className="item-visual"
+              key={i.value}
+              onClick={() => onAddVisualize(i.value)}
+            >
+              {getIcon(i.type)}
+              {i.label}
+            </div>
+          ))}
+        </div>
+      </div>
     </Box>
   );
 };

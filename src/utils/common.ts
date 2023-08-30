@@ -92,6 +92,8 @@ export const getMonthAndDate = (date: string) => {
   return moment(new Date(date)).format('MMM DD');
 };
 
+export const DEFAULT_QUERY_VISUALIZATION_HEIGHT = 600;
+
 export const INPUT_DEBOUNCE = 500;
 
 export const getDefaultVisualizationName = (chain: string | undefined) => {

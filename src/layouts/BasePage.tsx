@@ -41,7 +41,7 @@ const BasePage: FC<BasePage> = ({
         className={`base-page-container ${className}`}
       >
         <Box
-          marginTop={{ base: '30px', lg: '60px' }}
+          marginTop={{ base: '30px', lg: '40px' }}
           className={`base-page-container__content ${
             isFullWidth ? 'base-page-container__content--full' : ''
           }`}
