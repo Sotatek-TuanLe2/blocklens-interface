@@ -27,6 +27,7 @@ import { DownloadIcon } from 'src/assets/icons';
 import { IDataForm } from '../pages/WebHookCreatePage';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { ABI_OPTIONS, ABI_TYPES } from 'src/utils/common';
+import { AppBroadcast } from 'src/utils/utils-broadcast';
 
 export const TYPE_ABI = {
   NFT: 'NFT',
@@ -340,6 +341,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
     useState<boolean>(true);
   const [ABIInput, setABIInput] = useState<string>('');
   const [error, setError] = useState<string>('');
+  const [isStandardERC20, setIsStandardERC20] = useState<boolean>(true);
 
   const handleFileSelect = (evt: any, dropFile?: any) => {
     const file = dropFile || evt.target.files[0];
@@ -368,6 +370,14 @@ const AppUploadABI: FC<IAppUploadABI> = ({
           toastError({ message: 'The ABI file must be correct format' });
           return;
         }
+
+        setIsStandardERC20(
+          ABIData.every((value: any) =>
+            abi.some(
+              (item: any) => JSON.stringify(item) === JSON.stringify(value),
+            ),
+          ),
+        );
 
         setFileSelected(dropFile || evt.target.files[0]);
         setABIData(abi);
@@ -471,6 +481,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
   const onClearFile = () => {
     setDataSelected([]);
     setFileSelected({});
+    setIsStandardERC20(true);
     if (type == TYPE_ABI.NFT) {
       setABIData(ERC721.abi);
       return;
@@ -531,6 +542,14 @@ const AppUploadABI: FC<IAppUploadABI> = ({
         return;
       }
 
+      setIsStandardERC20(
+        ABIData.every((value: any) =>
+          abi.some(
+            (item: any) => JSON.stringify(item) === JSON.stringify(value),
+          ),
+        ),
+      );
+
       setABIData(JSON.parse(ABIInput));
       setError('');
     } catch (e) {
@@ -546,6 +565,14 @@ const AppUploadABI: FC<IAppUploadABI> = ({
 
     return !dataSelected.length;
   }, [functionList, structList, dataSelected]);
+
+  useEffect(() => {
+    if (!isStandardERC20) {
+      return AppBroadcast.dispatch('NOT_STANDARD_ERC');
+    } else {
+      return AppBroadcast.dispatch('STANDARD_ERC');
+    }
+  }, [isStandardERC20]);
 
   return (
     <Box className="upload-abi">
@@ -578,6 +605,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
               setIsInsertManuallyAddress(!isInsertManuallyAddress);
               setABIInput('');
               setFileSelected({});
+              setIsStandardERC20(true);
               if (type === TYPE_ABI.NFT) {
                 setABIData(ERC721.abi);
               } else if (type === TYPE_ABI.TOKEN) {
@@ -722,6 +750,13 @@ const AppUploadABI: FC<IAppUploadABI> = ({
             {isInvalidChecklist && (
               <Text className="text-error">
                 The notification filter field is required
+              </Text>
+            )}
+            {!isStandardERC20 && (
+              <Text className="text-error">
+                {type === TYPE_ABI.TOKEN
+                  ? 'ABI of token must meet erc20 standard'
+                  : 'ABI of NFT must meet erc721 standard'}
               </Text>
             )}
           </Box>
