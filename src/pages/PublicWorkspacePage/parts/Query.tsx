@@ -38,11 +38,6 @@ const QueryPart: React.FC = () => {
 
   const fetchQueryResultTimeout = useRef<ReturnType<typeof setTimeout>>();
 
-  const handleSecondaryPaneSizeChange = (secondaryPanelSize: number) => {
-    Storage.setQueryVisualizationHeight(secondaryPanelSize);
-    setVisualizationHeight(secondaryPanelSize);
-  };
-
   const queryClass = useMemo(() => {
     if (!queryValue) {
       return null;
@@ -198,6 +193,11 @@ const QueryPart: React.FC = () => {
     return <>{_renderContent()}</>;
   };
 
+  const onChangeVisualizationHeight = (secondaryPanelSize: number) => {
+    Storage.setQueryVisualizationHeight(secondaryPanelSize);
+    setVisualizationHeight(secondaryPanelSize);
+  };
+
   return (
     <div className="workspace-page__editor__query">
       <Header
@@ -218,7 +218,7 @@ const QueryPart: React.FC = () => {
             primaryMinSize={50}
             secondaryMinSize={60}
             vertical
-            onSecondaryPaneSizeChange={handleSecondaryPaneSizeChange}
+            onSecondaryPaneSizeChange={onChangeVisualizationHeight}
             secondaryInitialSize={visualizationHeight}
           >
             <Box className="editor-wrapper">
