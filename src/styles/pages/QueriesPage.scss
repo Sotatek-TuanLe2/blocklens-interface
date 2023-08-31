@@ -29,11 +29,6 @@
     }
   }
 
-  .hidden-editor {
-    .tabs-header {
-      padding: 0px 15px 0px 14px !important;
-    }
-  }
   .add-chart-full {
     border-radius: 6px;
     margin-top: 8px;
@@ -66,11 +61,6 @@
       background: rgba(0, 2, 36, 0.05);
       border-radius: 4px;
       padding: 2px 11px;
-    }
-
-    .icon-query-expand,
-    .icon-query-collapse {
-      cursor: pointer;
     }
 
     svg {
@@ -168,23 +158,11 @@
   }
 
   .custom-editor {
+    height: 100vh !important;
     display: block;
     border-bottom-left-radius: 6px;
     border-bottom-right-radius: 6px;
     transition: height linear 0.5s;
-
-    &--full {
-      height: 746px !important;
-    }
-
-    &--half {
-      height: 419px !important;
-    }
-
-    &--hidden {
-      height: 50px !important;
-      border-top: none;
-    }
 
     .ace_print-margin {
       display: none;
@@ -273,9 +251,22 @@
 
   &__right-side {
     width: 100%;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
 
     @include desktop {
       width: 100%;
+    }
+
+    .splitter-layout {
+      position: unset !important;
+
+      .layout-pane {
+        &:first-child {
+          overflow: hidden !important;
+        }
+      }
     }
 
     .btn-expand-public {
@@ -288,15 +279,6 @@
       &:hover {
         cursor: pointer;
       }
-    }
-
-    .btn-expand-query {
-      width: fit-content;
-      position: absolute;
-      top: 15px;
-      right: 12px;
-      cursor: pointer;
-      animation: showConfig 0.5s forwards;
     }
 
     .ace_gutter-cell {
@@ -325,13 +307,17 @@
     }
 
     .empty-query {
-      display: flex;
-      align-items: center;
+      height: 100%;
+      align-items: start;
       justify-content: space-between;
       box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.04);
       border-radius: 6px;
       margin-top: 8px;
-      padding: 12px 16px 12px 14px;
+
+      &__main-header {
+        padding: 3px 16px 10px 16px;
+        border-bottom: 1px solid rgba(0, 2, 36, 0.1);
+      }
 
       div {
         cursor: not-allowed;
@@ -388,7 +374,7 @@
       border-radius: 6px;
       gap: 20px;
       align-items: baseline;
-      padding: 0px 17px 10px 17px;
+      padding: 10px 14px;
       border-bottom: 1px solid rgba(0, 2, 36, 0.1);
 
       .btn-expand {
@@ -398,18 +384,8 @@
       }
     }
 
-    &__wrapper {
-      display: block;
-      transition: all linear 0.5s;
-
-      &--hidden {
-        height: 0;
-        display: none;
-      }
-    }
-
     &__visualization {
-      min-height: 500px;
+      min-height: 200px;
       height: fit-content;
       opacity: 1;
       transform: all linear 0.5s;
@@ -457,8 +433,7 @@
         overflow: hidden;
 
         .main-visualization {
-          min-height: 428px;
-          height: 428px;
+          min-height: 150px;
           min-width: 72%;
           width: 72%;
           margin-top: 20px;
@@ -467,10 +442,6 @@
 
           &--table {
             padding: 0;
-          }
-
-          &--expand {
-            height: 672px !important;
           }
 
           .main-table {
@@ -505,20 +476,15 @@
         }
 
         .main-config {
+          min-height: 120px;
           min-width: 28%;
           width: 28%;
           max-width: 28%;
-          border-left: 1px solid rgba(0, 2, 36, 0.1);
 
           .body-config {
+            border-left: 1px solid rgba(0, 2, 36, 0.1);
             overflow: auto;
-            max-height: 422px;
-
-            &--expand {
-              height: 100%;
-              overflow: auto;
-              max-height: 665px !important;
-            }
+            height: 100%;
           }
 
           .header-config {
@@ -662,10 +628,6 @@
         }
       }
 
-      .main-item-expand {
-        padding: 240px 0px !important;
-      }
-
       .main-item {
         padding: 168px 0px;
         display: flex;
@@ -695,11 +657,7 @@
           gap: 10px;
 
           &:hover {
-            background: linear-gradient(
-              268.85deg,
-              rgba(34, 108, 255, 0.12) 22.48%,
-              rgba(16, 132, 255, 0.12) 83.59%
-            );
+            background: linear-gradient(268.85deg, rgba(34, 108, 255, 0.12) 22.48%, rgba(16, 132, 255, 0.12) 83.59%);
             border: 1px solid #226cff;
             cursor: pointer;
           }
