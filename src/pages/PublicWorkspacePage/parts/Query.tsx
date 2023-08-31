@@ -157,6 +157,7 @@ const QueryPart: React.FC = () => {
             queryResult={queryResult}
             queryValue={queryValue}
             needAuthentication={false}
+            containerHeight={visualizationHeight}
             onReload={fetchQuery}
           />
         </Box>

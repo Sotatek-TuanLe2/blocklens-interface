@@ -301,6 +301,7 @@ const QueryPart: React.FC = () => {
           <VisualizationDisplay
             queryResult={queryResult}
             queryValue={queryValue}
+            containerHeight={visualizationHeight}
             onReload={fetchQuery}
           />
         </Box>

@@ -38,7 +38,6 @@ import {
 } from '../../../utils/query.type';
 import _ from 'lodash';
 import { isMobile } from 'react-device-detect';
-import Storage from 'src/utils/utils-storage';
 
 type VisualizationConfigType = {
   value: string;
@@ -128,6 +127,7 @@ type Props = {
   queryResult: unknown[];
   queryValue: IQuery | null;
   needAuthentication?: boolean;
+  containerHeight: number;
   onReload: () => Promise<any>;
 };
 
@@ -135,6 +135,7 @@ const VisualizationDisplay = ({
   queryResult,
   queryValue,
   needAuthentication = true,
+  containerHeight,
   onReload,
 }: Props) => {
   interface ParamTypes {
@@ -328,7 +329,7 @@ const VisualizationDisplay = ({
     const ConfigOnDesktop = (
       <div
         style={{
-          height: Number(Storage.getQueryVisualizationHeight() - 130),
+          height: containerHeight - 130,
         }}
         className={`main-config`}
       >
@@ -429,7 +430,7 @@ const VisualizationDisplay = ({
           <div className="main-chart">
             <div
               style={{
-                height: Number(Storage.getQueryVisualizationHeight() - 120),
+                height: containerHeight - 120,
               }}
               className={`main-visualization ${
                 !toggleCloseConfig || isMobile ? 'show-full-visual' : ''
