@@ -52,8 +52,7 @@ type CustomRule =
   | 'maxCountIds'
   | 'isIds'
   | 'insufficientBalance'
-  | 'isAddressAptos'
-  | 'maxYourUrl';
+  | 'isAddressAptos';
 
 export type Rules = IRule | CustomRule;
 
@@ -185,12 +184,7 @@ export const createValidator = (options?: IOptions | undefined) => {
           return value.split(',').filter((i) => i.trim().length).length <= 3;
         },
       },
-      maxYourUrl: {
-        message: 'The Your URL may not be greater than 200 characters',
-        rule: (value: string) => {
-          return value.length < 201;
-        },
-      },
+
       maxValue: {
         message: 'The :attribute must not exceed :params',
         rule: (valueInput: string, params: string) => {

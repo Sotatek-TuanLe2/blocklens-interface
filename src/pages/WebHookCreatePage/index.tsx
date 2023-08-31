@@ -111,6 +111,12 @@ const WebHookCreatePage: React.FC = () => {
       element: (message: string) => (
         <Text className="text-error">{message}</Text>
       ),
+      validators: {
+        max: {
+          message: 'The Your URL may not be greater than 200 characters.',
+          rule: (value: string) => value.length < 201,
+        },
+      },
     }),
   );
 
@@ -504,7 +510,7 @@ const WebHookCreatePage: React.FC = () => {
                   validate={{
                     name: `webhook`,
                     validator: validator.current,
-                    rule: ['required', 'url', 'maxYourUrl'],
+                    rule: ['required', 'url', 'max'],
                   }}
                   pr={{ base: 5, md: '220px' }}
                   endAdornment={
