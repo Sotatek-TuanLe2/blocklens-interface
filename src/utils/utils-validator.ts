@@ -184,7 +184,6 @@ export const createValidator = (options?: IOptions | undefined) => {
           return value.split(',').filter((i) => i.trim().length).length <= 3;
         },
       },
-
       maxValue: {
         message: 'The :attribute must not exceed :params',
         rule: (valueInput: string, params: string) => {
