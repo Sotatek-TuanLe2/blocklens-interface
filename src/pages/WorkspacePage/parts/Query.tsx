@@ -140,20 +140,25 @@ const QueryPart: React.FC = () => {
   };
 
   const getExecutionResultById = async (executionId: string) => {
-    clearTimeout(fetchQueryResultTimeout.current);
-    const res = await rf.getRequest('DashboardsRequest').getQueryResult({
-      executionId,
-    });
-    if (res.status === QUERY_RESULT_STATUS.WAITING) {
-      fetchQueryResultTimeout.current = setTimeout(
-        () => getExecutionResultById(executionId),
-        2000,
-      );
-    } else {
-      setQueryResult(res.result);
-      setErrorExecuteQuery(res?.error || null);
-      setStatusExecuteQuery(res?.status);
-      setCreateQueryId(res.queryId);
+    try {
+      clearTimeout(fetchQueryResultTimeout.current);
+      const res = await rf.getRequest('DashboardsRequest').getQueryResult({
+        executionId,
+      });
+      if (res.status === QUERY_RESULT_STATUS.WAITING) {
+        fetchQueryResultTimeout.current = setTimeout(
+          () => getExecutionResultById(executionId),
+          2000,
+        );
+      } else {
+        setQueryResult(res.result);
+        setErrorExecuteQuery(res?.error || null);
+        setStatusExecuteQuery(res?.status);
+        setCreateQueryId(res.queryId);
+        setIsLoadingResult(false);
+      }
+    } catch (error) {
+      console.error(error);
       setIsLoadingResult(false);
     }
   };
@@ -207,6 +212,8 @@ const QueryPart: React.FC = () => {
       return dataQuery;
     } catch (error: any) {
       setIsLoadingQuery(false);
+      setIsLoadingResult(false);
+      editorRef.current.editor.setValue('');
       if (error.message) {
         toastError({ message: error.message.toString() });
       }
@@ -216,15 +223,11 @@ const QueryPart: React.FC = () => {
   };
 
   const fetchInitialData = async () => {
-    try {
-      setIsLoadingQuery(true);
-      const dataQuery = await fetchQuery();
-      await fetchQueryResult(
-        dataQuery?.pendingExecutionId || dataQuery?.executedId,
-      );
-    } catch (error) {
-      console.error(error);
-    }
+    setIsLoadingQuery(true);
+    const dataQuery = await fetchQuery();
+    await fetchQueryResult(
+      dataQuery?.pendingExecutionId || dataQuery?.executedId,
+    );
   };
 
   const onSelectQuery = debounce((value) => {
@@ -267,6 +270,7 @@ const QueryPart: React.FC = () => {
         await fetchQueryResult(executionId);
       }
     } catch (error) {
+      setIsLoadingResult(false);
       toastError({ message: getErrorMessage(error) });
     }
   };
@@ -291,12 +295,8 @@ const QueryPart: React.FC = () => {
   };
 
   const onSuccessCreateQuery = async (queryResponse: any) => {
-    try {
-      goWithOriginPath(`${ROUTES.MY_QUERY}/${queryResponse.id}`);
-      AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
-    } catch (error) {
-      console.error(error);
-    }
+    goWithOriginPath(`${ROUTES.MY_QUERY}/${queryResponse.id}`);
+    AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
   };
 
   const _renderAddChart = () => {
