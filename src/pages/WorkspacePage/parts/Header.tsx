@@ -41,7 +41,9 @@ interface IHeaderProps {
   isLoadingResult?: boolean;
   isEmptyDashboard?: boolean;
   isTemporaryQuery?: boolean;
+  isInitialLoad?: boolean;
   onRunQuery?: () => Promise<void>;
+  onCancelExecution?: () => Promise<void>;
   onSaveQuery?: () => void;
   onChangeEditMode?: () => void;
   data: IQuery | IDashboardDetail | null | undefined;
@@ -59,7 +61,9 @@ const Header: React.FC<IHeaderProps> = (props) => {
     isLoadingResult = false,
     isEmptyDashboard = false,
     isTemporaryQuery = false,
+    isInitialLoad = true,
     onRunQuery,
+    onCancelExecution,
     onSaveQuery,
     onChangeEditMode,
   } = props;
@@ -237,6 +241,17 @@ const Header: React.FC<IHeaderProps> = (props) => {
               fontSize={'14px'}
             >
               Save
+            </AppButton>
+          )}
+          {!isInitialLoad && isLoadingResult && (
+            <AppButton
+              variant="red"
+              onClick={onCancelExecution}
+              size="sm"
+              me="10px"
+              fontSize={'14px'}
+            >
+              Cancel
             </AppButton>
           )}
           <Tooltip
