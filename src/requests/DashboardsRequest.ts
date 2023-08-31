@@ -262,6 +262,11 @@ export default class DashboardsRequest extends BaseRequest {
     return this.post(url, data, RECAPTCHA_ACTIONS.HOMEPAGE);
   }
 
+  cancelQueryExecution(executionId: string) {
+    const url = `/query-executors/cancel-query/${executionId}`;
+    return this.post(url);
+  }
+
   forkQueries(queryId: string, params: IUpdateQuery) {
     const url = `/queries/fork-query/${queryId}`;
     return this.post(url, { ...params, queryId });
