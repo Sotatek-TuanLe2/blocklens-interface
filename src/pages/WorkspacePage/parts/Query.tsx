@@ -61,6 +61,8 @@ const QueryPart: React.FC = () => {
     useState<boolean>(false);
 
   const fetchQueryResultTimeout = useRef<ReturnType<typeof setTimeout>>();
+  const currentExecutionId = useRef<string>();
+  const isInitialLoad = useRef<boolean>(true);
   const isLoading = isLoadingQuery || isLoadingResult;
 
   useEffect(() => {
@@ -175,6 +177,10 @@ const QueryPart: React.FC = () => {
       return;
     }
     setIsLoadingResult(true);
+    currentExecutionId.current = executionId;
+    if (!!isInitialLoad.current) {
+      isInitialLoad.current = false;
+    }
     await getExecutionResultById(executionId);
   };
 
@@ -260,8 +266,27 @@ const QueryPart: React.FC = () => {
         const executionId = await executeQuery(query, queryId);
         await fetchQueryResult(executionId);
       }
-    } catch (err: any) {
-      toastError({ message: getErrorMessage(err) });
+    } catch (error) {
+      toastError({ message: getErrorMessage(error) });
+    }
+  };
+
+  const onCancelExecution = async () => {
+    if (!currentExecutionId.current) {
+      return;
+    }
+
+    try {
+      await rf
+        .getRequest('DashboardsRequest')
+        .cancelQueryExecution(currentExecutionId.current);
+      if (fetchQueryResultTimeout.current) {
+        clearTimeout(fetchQueryResultTimeout.current);
+      }
+      setIsLoadingQuery(false);
+      setIsLoadingResult(false);
+    } catch (error) {
+      toastError({ message: getErrorMessage(error) });
     }
   };
 
@@ -386,7 +411,9 @@ const QueryPart: React.FC = () => {
         isLoadingRun={isLoadingQuery}
         isLoadingResult={isLoadingResult}
         isTemporaryQuery={isTemporary}
+        isInitialLoad={isInitialLoad.current}
         onRunQuery={onRunQuery}
+        onCancelExecution={onCancelExecution}
         onSaveQuery={() => setOpenModalSettingQuery(true)}
         selectedQuery={selectedQuery}
       />
