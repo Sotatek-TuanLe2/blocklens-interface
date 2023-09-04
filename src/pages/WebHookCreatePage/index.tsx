@@ -105,7 +105,7 @@ const WebHookCreatePage: React.FC = () => {
   const [dataForm, setDataForm] = useState<IDataForm>(initDataCreateWebHook);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
   const [isSendingDemoMsg, setIsSendingDemoMsg] = useState(false);
-  const [isStandardERC20, setIsStandardERC20] = useState<boolean>(true);
+  const [isStandardERC, setIsStandardERC] = useState<boolean>(true);
 
   const validator = useRef(
     createValidator({
@@ -175,7 +175,7 @@ const WebHookCreatePage: React.FC = () => {
   useEffect(() => {
     let isDisabled = !validator.current.allValid();
 
-    if (!isStandardERC20) {
+    if (!isStandardERC) {
       return setIsDisableSubmit(true);
     }
 
@@ -183,6 +183,14 @@ const WebHookCreatePage: React.FC = () => {
       setIsDisableSubmit(isDisabled);
       return;
     }
+
+    // if (
+    //   chainSelected.value === CHAINS.ETH &&
+    //   typeSelected ===
+    //     (WEBHOOK_TYPES.NFT_ACTIVITY || WEBHOOK_TYPES.TOKEN_ACTIVITY)
+    // ) {
+    //   return;
+    // }
 
     switch (typeSelected) {
       case WEBHOOK_TYPES.APTOS_COIN_ACTIVITY:
@@ -211,7 +219,7 @@ const WebHookCreatePage: React.FC = () => {
         break;
     }
     setIsDisableSubmit(isDisabled);
-  }, [dataForm, typeSelected, isStandardERC20]);
+  }, [dataForm, typeSelected, isStandardERC]);
 
   const optionTypes = useMemo(() => {
     if (chainSelected.value === CHAINS.APTOS) {
@@ -235,6 +243,7 @@ const WebHookCreatePage: React.FC = () => {
       webhookName: dataForm?.webhookName,
     });
     validator.current.fields = [];
+    setIsStandardERC(true);
     forceUpdate();
     setTypeSelected(value);
   };
@@ -270,8 +279,8 @@ const WebHookCreatePage: React.FC = () => {
         type={typeSelected}
         validator={validator}
         isCreateWithoutProject
-        isStandardERC20={isStandardERC20}
-        setIsStandardERC20={setIsStandardERC20}
+        isStandardERC={isStandardERC}
+        setIsStandardERC={setIsStandardERC}
       />
     );
   };
@@ -283,8 +292,8 @@ const WebHookCreatePage: React.FC = () => {
         setDataForm={setDataForm}
         type={typeSelected}
         validator={validator}
-        isStandardERC20={isStandardERC20}
-        setIsStandardERC20={setIsStandardERC20}
+        isStandardERC={isStandardERC}
+        setIsStandardERC={setIsStandardERC}
       />
     );
   };

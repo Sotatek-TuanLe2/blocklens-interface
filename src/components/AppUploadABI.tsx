@@ -47,8 +47,8 @@ interface IAppUploadABI {
   abi?: any[];
   abiFilter?: any[];
   abiContract?: any[];
-  isStandardERC20?: boolean;
-  setIsStandardERC20?: any;
+  isStandardERC?: boolean;
+  setIsStandardERC?: any;
 }
 
 const listFunctionAndEventOfNFT = [
@@ -331,8 +331,8 @@ const AppUploadABI: FC<IAppUploadABI> = ({
   abi,
   abiFilter,
   abiContract,
-  isStandardERC20,
-  setIsStandardERC20,
+  isStandardERC,
+  setIsStandardERC,
 }) => {
   const [fileSelected, setFileSelected] = useState<any>({});
   const [ABIData, setABIData] = useState<any>([]);
@@ -373,7 +373,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
           return;
         }
 
-        setIsStandardERC20(
+        setIsStandardERC(
           ABIData.every((value: any) =>
             abi.some(
               (item: any) => JSON.stringify(item) === JSON.stringify(value),
@@ -483,7 +483,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
   const onClearFile = () => {
     setDataSelected([]);
     setFileSelected({});
-    setIsStandardERC20(true);
+    setIsStandardERC(true);
     if (type == TYPE_ABI.NFT) {
       setABIData(ERC721.abi);
       return;
@@ -544,7 +544,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
         return;
       }
 
-      setIsStandardERC20(
+      setIsStandardERC(
         ABIData.every((value: any) =>
           abi.some(
             (item: any) => JSON.stringify(item) === JSON.stringify(value),
@@ -599,7 +599,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
               setIsInsertManuallyAddress(!isInsertManuallyAddress);
               setABIInput('');
               setFileSelected({});
-              setIsStandardERC20(true);
+              setIsStandardERC(true);
               if (type === TYPE_ABI.NFT) {
                 setABIData(ERC721.abi);
               } else if (type === TYPE_ABI.TOKEN) {
@@ -746,7 +746,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
                 The notification filter field is required
               </Text>
             )}
-            {!isStandardERC20 && (
+            {!isStandardERC && (
               <Text className="text-error">
                 {type === TYPE_ABI.TOKEN
                   ? 'ABI of token must meet erc20 standard'
