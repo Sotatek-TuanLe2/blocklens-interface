@@ -322,7 +322,8 @@ const AppUploadABI: FC<IAppUploadABI> = ({
 }) => {
   const [fileSelected, setFileSelected] = useState<any>({});
   const [ABIData, setABIData] = useState<any>([]);
-  const [dataSelected, setDataSelected] = useState<any>([]);
+  const [functionsSelected, setFunctionsSelected] = useState<any>([]);
+  const [structsSelected, setStructsSelected] = useState<any>([]);
   const [valueSearch, setValueSearch] = useState<string>('');
   const [valueSort, setValueSort] = useState<string>(ABI_OPTIONS.AZ);
   const inputRef = useRef<any>(null);
@@ -407,7 +408,12 @@ const AppUploadABI: FC<IAppUploadABI> = ({
         };
       });
       setABIData(abi);
-      setDataSelected(datABIFilterFormat);
+      setFunctionsSelected(
+        datABIFilterFormat?.filter((item) => item.type === ABI_TYPES.FUNCTION),
+      );
+      setStructsSelected(
+        datABIFilterFormat?.filter((item) => item.type === ABI_TYPES.EVENT),
+      );
     }
   }, [abi, abiFilter, viewOnly]);
 
@@ -444,12 +450,15 @@ const AppUploadABI: FC<IAppUploadABI> = ({
   }, [ABIData]);
 
   useEffect(() => {
-    const ABISelected = dataSelected.map(({ id, ...rest }: any) => rest);
+    const ABISelected = [...functionsSelected, ...structsSelected].map(
+      ({ id, ...rest }: any) => rest,
+    );
     onChange && onChange(ABIData, ABISelected);
-  }, [ABIData, dataSelected]);
+  }, [ABIData, functionsSelected, structsSelected]);
 
   const onClearFile = () => {
-    setDataSelected([]);
+    setFunctionsSelected([]);
+    setStructsSelected([]);
     setFileSelected({});
     if (type == TYPE_ABI.NFT) {
       setABIData(ERC721.abi);
@@ -512,8 +521,8 @@ const AppUploadABI: FC<IAppUploadABI> = ({
       return false;
     }
 
-    return !dataSelected.length;
-  }, [functionList, structList, dataSelected]);
+    return !functionsSelected.length && !structsSelected.length;
+  }, [functionList, structList, functionsSelected, structsSelected]);
 
   const _renderErrorMessage = () => {
     if (!isStandardERC) {
@@ -692,8 +701,8 @@ const AppUploadABI: FC<IAppUploadABI> = ({
               <ListSelect
                 type={ABI_TYPES.FUNCTION}
                 data={functionList}
-                dataSelected={dataSelected}
-                onSelectData={setDataSelected}
+                dataSelected={functionsSelected}
+                onSelectData={setFunctionsSelected}
                 valueSearch={valueSearch}
                 valueSort={valueSort}
                 viewOnly={viewOnly}
@@ -702,8 +711,8 @@ const AppUploadABI: FC<IAppUploadABI> = ({
               <ListSelect
                 type={ABI_TYPES.EVENT}
                 data={structList}
-                dataSelected={dataSelected}
-                onSelectData={setDataSelected}
+                dataSelected={structsSelected}
+                onSelectData={setStructsSelected}
                 valueSearch={valueSearch}
                 valueSort={valueSort}
                 viewOnly={viewOnly}
