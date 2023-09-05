@@ -59,19 +59,24 @@ const QueryPart: React.FC = () => {
   }, [queryId]);
 
   const getExecutionResultById = async (executionId: string) => {
-    clearTimeout(fetchQueryResultTimeout.current);
-    const res = await rf.getRequest('DashboardsRequest').getQueryResult({
-      executionId,
-    });
-    if (res.status === QUERY_RESULT_STATUS.WAITING) {
-      fetchQueryResultTimeout.current = setTimeout(
-        () => getExecutionResultById(executionId),
-        2000,
-      );
-    } else {
-      setQueryResult(res.result);
-      setErrorExecuteQuery(res?.error || null);
-      setStatusExecuteQuery(res?.status);
+    try {
+      clearTimeout(fetchQueryResultTimeout.current);
+      const res = await rf.getRequest('DashboardsRequest').getQueryResult({
+        executionId,
+      });
+      if (res.status === QUERY_RESULT_STATUS.WAITING) {
+        fetchQueryResultTimeout.current = setTimeout(
+          () => getExecutionResultById(executionId),
+          2000,
+        );
+      } else {
+        setQueryResult(res.result);
+        setErrorExecuteQuery(res?.error || null);
+        setStatusExecuteQuery(res?.status);
+        setIsLoadingResult(false);
+      }
+    } catch (error) {
+      console.error(error);
       setIsLoadingResult(false);
     }
   };
@@ -97,7 +102,6 @@ const QueryPart: React.FC = () => {
         return null;
       }
       if (!dataQuery) {
-        setIsLoadingResult(false);
         editorRef.current.editor.setValue('');
         toastError({ message: 'Query does not exists' });
         return null;
@@ -108,6 +112,7 @@ const QueryPart: React.FC = () => {
       return dataQuery;
     } catch (error: any) {
       setIsLoadingQuery(false);
+      editorRef.current.editor.setValue('');
       if (error.message) {
         toastError({ message: error.message.toString() });
       }
@@ -117,12 +122,8 @@ const QueryPart: React.FC = () => {
   };
 
   const fetchInitialData = async () => {
-    try {
-      const dataQuery = await fetchQuery();
-      await fetchQueryResult(dataQuery?.executedId);
-    } catch (error) {
-      console.error(error);
-    }
+    const dataQuery = await fetchQuery();
+    await fetchQueryResult(dataQuery?.executedId);
   };
 
   const _renderAddChart = () => {
