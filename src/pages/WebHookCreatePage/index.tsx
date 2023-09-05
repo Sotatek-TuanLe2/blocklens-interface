@@ -259,7 +259,6 @@ const WebHookCreatePage: React.FC = () => {
         setDataForm={setDataForm}
         type={typeSelected}
         validator={validator}
-        isStandardERC={isStandardERC}
       />
     );
   };

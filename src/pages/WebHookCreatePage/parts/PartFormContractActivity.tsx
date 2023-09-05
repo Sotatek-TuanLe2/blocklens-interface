@@ -12,7 +12,6 @@ interface IPartFormContractActivity {
   setDataForm: (value: any) => void;
   type: string;
   validator: any;
-  isStandardERC?: boolean;
 }
 
 const PartFormContractActivity: FC<IPartFormContractActivity> = ({
