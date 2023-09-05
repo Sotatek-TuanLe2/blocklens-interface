@@ -105,6 +105,7 @@ const WebHookCreatePage: React.FC = () => {
   const [dataForm, setDataForm] = useState<IDataForm>(initDataCreateWebHook);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
   const [isSendingDemoMsg, setIsSendingDemoMsg] = useState(false);
+  const [isStandardERC, setIsStandardERC] = useState<boolean>(true);
 
   const validator = useRef(
     createValidator({
@@ -174,6 +175,10 @@ const WebHookCreatePage: React.FC = () => {
   useEffect(() => {
     let isDisabled = !validator.current.allValid();
 
+    if (!isStandardERC) {
+      return setIsDisableSubmit(true);
+    }
+
     if (isDisabled) {
       setIsDisableSubmit(isDisabled);
       return;
@@ -206,7 +211,7 @@ const WebHookCreatePage: React.FC = () => {
         break;
     }
     setIsDisableSubmit(isDisabled);
-  }, [dataForm, typeSelected]);
+  }, [dataForm, typeSelected, isStandardERC]);
 
   const optionTypes = useMemo(() => {
     if (chainSelected.value === CHAINS.APTOS) {
@@ -230,6 +235,7 @@ const WebHookCreatePage: React.FC = () => {
       webhookName: dataForm?.webhookName,
     });
     validator.current.fields = [];
+    setIsStandardERC(true);
     forceUpdate();
     setTypeSelected(value);
   };
@@ -265,6 +271,8 @@ const WebHookCreatePage: React.FC = () => {
         type={typeSelected}
         validator={validator}
         isCreateWithoutProject
+        isStandardERC={isStandardERC}
+        setIsStandardERC={setIsStandardERC}
       />
     );
   };
@@ -276,6 +284,8 @@ const WebHookCreatePage: React.FC = () => {
         setDataForm={setDataForm}
         type={typeSelected}
         validator={validator}
+        isStandardERC={isStandardERC}
+        setIsStandardERC={setIsStandardERC}
       />
     );
   };

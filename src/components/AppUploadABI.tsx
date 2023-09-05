@@ -24,7 +24,6 @@ import { Link as ReactLink } from 'react-router-dom';
 import 'src/styles/components/AppUploadABI.scss';
 import { isMobile } from 'react-device-detect';
 import { DownloadIcon } from 'src/assets/icons';
-import { IDataForm } from '../pages/WebHookCreatePage';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { ABI_OPTIONS, ABI_TYPES } from 'src/utils/common';
 
@@ -47,21 +46,8 @@ interface IAppUploadABI {
   abi?: any[];
   abiFilter?: any[];
   abiContract?: any[];
+  isStandardERC?: boolean;
 }
-
-const listFunctionAndEventOfNFT = [
-  'balanceOf',
-  'ownerOf',
-  'safeTransferFrom',
-  'transferFrom',
-  'approve',
-  'getApproved',
-  'setApprovalForAll',
-  'isApprovedForAll',
-  'Transfer',
-  'Approval',
-  'ApprovalForAll',
-];
 
 interface IListSelect {
   data: any;
@@ -146,7 +132,7 @@ const ListSelect: FC<IListSelect> = ({
   const [itemSelected, setItemSelected] = useState<any>([]);
 
   useEffect(() => {
-    if (!data.length || !!dataSelected.length) {
+    if (!data.length) {
       return;
     }
     const initialSelected = data.map((item: any) => item.id);
@@ -332,10 +318,12 @@ const AppUploadABI: FC<IAppUploadABI> = ({
   abi,
   abiFilter,
   abiContract,
+  isStandardERC = true,
 }) => {
   const [fileSelected, setFileSelected] = useState<any>({});
   const [ABIData, setABIData] = useState<any>([]);
-  const [dataSelected, setDataSelected] = useState<any>([]);
+  const [functionsSelected, setFunctionsSelected] = useState<any>([]);
+  const [structsSelected, setStructsSelected] = useState<any>([]);
   const [valueSearch, setValueSearch] = useState<string>('');
   const [valueSort, setValueSort] = useState<string>(ABI_OPTIONS.AZ);
   const inputRef = useRef<any>(null);
@@ -362,16 +350,6 @@ const AppUploadABI: FC<IAppUploadABI> = ({
         }
 
         const abi = JSON.parse(data);
-
-        const isCorrectFunctionAndEventOfNFT = listFunctionAndEventOfNFT.every(
-          (name: string) => abi.some((abiItem: any) => abiItem.name === name),
-        );
-
-        if (type === TYPE_ABI.NFT && !isCorrectFunctionAndEventOfNFT) {
-          toastError({ message: 'The ABI file must be correct format' });
-          return;
-        }
-
         setFileSelected(dropFile || evt.target.files[0]);
         setABIData(abi);
       } catch (e) {
@@ -430,13 +408,18 @@ const AppUploadABI: FC<IAppUploadABI> = ({
         };
       });
       setABIData(abi);
-      setDataSelected(datABIFilterFormat);
+      setFunctionsSelected(
+        datABIFilterFormat?.filter((item) => item.type === ABI_TYPES.FUNCTION),
+      );
+      setStructsSelected(
+        datABIFilterFormat?.filter((item) => item.type === ABI_TYPES.EVENT),
+      );
     }
   }, [abi, abiFilter, viewOnly]);
 
   const structList = useMemo(() => {
     const data = ABIData.filter((item: any) => {
-      return item.type === 'event';
+      return item.type === ABI_TYPES.EVENT;
     });
 
     return data.map((event: any) => {
@@ -467,12 +450,15 @@ const AppUploadABI: FC<IAppUploadABI> = ({
   }, [ABIData]);
 
   useEffect(() => {
-    const ABISelected = dataSelected.map(({ id, ...rest }: any) => rest);
+    const ABISelected = [...functionsSelected, ...structsSelected].map(
+      ({ id, ...rest }: any) => rest,
+    );
     onChange && onChange(ABIData, ABISelected);
-  }, [ABIData, dataSelected]);
+  }, [ABIData, functionsSelected, structsSelected]);
 
   const onClearFile = () => {
-    setDataSelected([]);
+    setFunctionsSelected([]);
+    setStructsSelected([]);
     setFileSelected({});
     if (type == TYPE_ABI.NFT) {
       setABIData(ERC721.abi);
@@ -522,18 +508,6 @@ const AppUploadABI: FC<IAppUploadABI> = ({
         return;
       }
 
-      const abi = JSON.parse(ABIInput);
-
-      const isCorrectFunctionAndEventOfNFT = listFunctionAndEventOfNFT.every(
-        (name: string) => abi.some((abiItem: any) => abiItem.name === name),
-      );
-
-      if (type === TYPE_ABI.NFT && !isCorrectFunctionAndEventOfNFT) {
-        setError('The ABI must be correct format');
-        setABIData([]);
-        return;
-      }
-
       setABIData(JSON.parse(ABIInput));
       setError('');
     } catch (e) {
@@ -547,8 +521,30 @@ const AppUploadABI: FC<IAppUploadABI> = ({
       return false;
     }
 
-    return !dataSelected.length;
-  }, [functionList, structList, dataSelected]);
+    return !functionsSelected.length && !structsSelected.length;
+  }, [functionList, structList, functionsSelected, structsSelected]);
+
+  const _renderErrorMessage = () => {
+    if (!isStandardERC) {
+      return (
+        <Text className="text-error" mt={2}>
+          {type === TYPE_ABI.TOKEN
+            ? 'ABI of token must meet erc20 standard'
+            : 'ABI of NFT must meet erc721 standard'}
+        </Text>
+      );
+    }
+
+    if (isInvalidChecklist) {
+      return (
+        <Text className="text-error" mt={2}>
+          The notification filter field is required
+        </Text>
+      );
+    }
+
+    return null;
+  };
 
   return (
     <Box className="upload-abi">
@@ -705,8 +701,8 @@ const AppUploadABI: FC<IAppUploadABI> = ({
               <ListSelect
                 type={ABI_TYPES.FUNCTION}
                 data={functionList}
-                dataSelected={dataSelected}
-                onSelectData={setDataSelected}
+                dataSelected={functionsSelected}
+                onSelectData={setFunctionsSelected}
                 valueSearch={valueSearch}
                 valueSort={valueSort}
                 viewOnly={viewOnly}
@@ -715,18 +711,14 @@ const AppUploadABI: FC<IAppUploadABI> = ({
               <ListSelect
                 type={ABI_TYPES.EVENT}
                 data={structList}
-                dataSelected={dataSelected}
-                onSelectData={setDataSelected}
+                dataSelected={structsSelected}
+                onSelectData={setStructsSelected}
                 valueSearch={valueSearch}
                 valueSort={valueSort}
                 viewOnly={viewOnly}
               />
             </Box>
-            {isInvalidChecklist && (
-              <Text className="text-error">
-                The notification filter field is required
-              </Text>
-            )}
+            {_renderErrorMessage()}
           </Box>
         </>
       )}

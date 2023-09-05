@@ -1,5 +1,5 @@
 import { Flex, Box, Text } from '@chakra-ui/react';
-import { AppField, AppInput, TYPE_ABI } from 'src/components';
+import { AppField, AppInput } from 'src/components';
 import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
 import AppUploadABI from 'src/components/AppUploadABI';
 import React, { FC, useEffect, useState } from 'react';
@@ -54,7 +54,6 @@ const PartFormContractActivity: FC<IPartFormContractActivity> = ({
     if (!!dataContractABI.length) {
       return (
         <AppUploadABI
-          type={TYPE_ABI.CONTRACT}
           onChange={(abi, abiFilter) =>
             setDataForm({
               ...dataForm,

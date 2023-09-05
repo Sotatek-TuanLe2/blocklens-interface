@@ -4,6 +4,8 @@ import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
 import AppUploadABI from 'src/components/AppUploadABI';
 import React, { FC } from 'react';
 import { IDataForm } from '../index';
+import standardABI from 'src/abi';
+import { ABI_TYPES } from 'src/utils/common';
 
 interface IPartFormNFTActivity {
   dataForm: IDataForm;
@@ -11,6 +13,8 @@ interface IPartFormNFTActivity {
   type: string;
   validator: any;
   isCreateWithoutProject?: boolean;
+  isStandardERC?: boolean;
+  setIsStandardERC?: any;
 }
 
 const PartFormNFTActivity: FC<IPartFormNFTActivity> = ({
@@ -19,7 +23,32 @@ const PartFormNFTActivity: FC<IPartFormNFTActivity> = ({
   type,
   validator,
   isCreateWithoutProject,
+  isStandardERC,
+  setIsStandardERC,
 }) => {
+  const onChangeDataForm = (abi: any[], abiFilter: any[]) => {
+    if (!!abi.length) {
+      setIsStandardERC(
+        standardABI['ERC-721']
+          .filter(
+            (value: any) =>
+              value.type === ABI_TYPES.EVENT ||
+              (value.type === ABI_TYPES.FUNCTION &&
+                value.stateMutability !== 'view'),
+          )
+          .every((value: any) => abi.some((item) => item.name === value.name)),
+      );
+    }
+    setDataForm({
+      ...dataForm,
+      metadata: {
+        ...dataForm.metadata,
+        abi,
+        abiFilter,
+      },
+    });
+  };
+
   return (
     <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
       <AppField
@@ -77,16 +106,8 @@ const PartFormNFTActivity: FC<IPartFormNFTActivity> = ({
       </AppField>
       <AppUploadABI
         type={TYPE_ABI.NFT}
-        onChange={(abi, abiFilter) =>
-          setDataForm({
-            ...dataForm,
-            metadata: {
-              ...dataForm.metadata,
-              abi,
-              abiFilter,
-            },
-          })
-        }
+        isStandardERC={isStandardERC}
+        onChange={onChangeDataForm}
       />
     </Flex>
   );

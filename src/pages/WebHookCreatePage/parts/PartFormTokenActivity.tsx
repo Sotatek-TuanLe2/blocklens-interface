@@ -4,12 +4,16 @@ import { WEBHOOK_TYPES } from 'src/utils/utils-webhook';
 import AppUploadABI from 'src/components/AppUploadABI';
 import React, { FC } from 'react';
 import { IDataForm } from '../index';
+import standardABI from 'src/abi';
+import { ABI_TYPES } from 'src/utils/common';
 
 interface IPartFormTokenActivity {
   dataForm: IDataForm;
   setDataForm: (value: any) => void;
   type: string;
   validator: any;
+  isStandardERC?: boolean;
+  setIsStandardERC?: any;
 }
 
 const PartFormTokenActivity: FC<IPartFormTokenActivity> = ({
@@ -17,7 +21,32 @@ const PartFormTokenActivity: FC<IPartFormTokenActivity> = ({
   setDataForm,
   type,
   validator,
+  isStandardERC,
+  setIsStandardERC,
 }) => {
+  const onChangeDataForm = (abi: any[], abiFilter: any[]) => {
+    if (!!abi.length) {
+      setIsStandardERC(
+        standardABI['erc20']
+          .filter(
+            (value: any) =>
+              value.type === ABI_TYPES.EVENT ||
+              (value.type === ABI_TYPES.FUNCTION &&
+                value.stateMutability !== 'view'),
+          )
+          .every((value: any) => abi.some((item) => item.name === value.name)),
+      );
+    }
+    setDataForm({
+      ...dataForm,
+      metadata: {
+        ...dataForm.metadata,
+        abi,
+        abiFilter,
+      },
+    });
+  };
+
   return (
     <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
       <AppField label={'Token Address'} customWidth={'100%'} isRequired>
@@ -43,16 +72,8 @@ const PartFormTokenActivity: FC<IPartFormTokenActivity> = ({
       </AppField>
       <AppUploadABI
         type={TYPE_ABI.TOKEN}
-        onChange={(abi, abiFilter) =>
-          setDataForm({
-            ...dataForm,
-            metadata: {
-              ...dataForm.metadata,
-              abi,
-              abiFilter,
-            },
-          })
-        }
+        isStandardERC={isStandardERC}
+        onChange={onChangeDataForm}
       />
     </Flex>
   );
