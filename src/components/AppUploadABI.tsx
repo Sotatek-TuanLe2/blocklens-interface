@@ -508,11 +508,10 @@ const AppUploadABI: FC<IAppUploadABI> = ({
   }, [ABIInput, viewOnly]);
 
   const isInvalidChecklist = useMemo(() => {
-    console.log('functionList', functionList, 'structList', structList);
     if (!functionList.length && !structList.length) {
       return false;
     }
-    console.log('dataSelected', dataSelected);
+
     return !dataSelected.length;
   }, [functionList, structList, dataSelected]);
 
