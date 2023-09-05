@@ -716,14 +716,13 @@ const AppUploadABI: FC<IAppUploadABI> = ({
                 The notification filter field is required
               </Text>
             )}
-            {!isStandardERC &&
-              (type === TYPE_ABI.NFT || type === TYPE_ABI.TOKEN) && (
-                <Text className="text-error">
-                  {type === TYPE_ABI.TOKEN
-                    ? 'ABI of token must meet erc20 standard'
-                    : 'ABI of NFT must meet erc721 standard'}
-                </Text>
-              )}
+            {isStandardERC && !isStandardERC && (
+              <Text className="text-error">
+                {type === TYPE_ABI.TOKEN
+                  ? 'ABI of token must meet erc20 standard'
+                  : 'ABI of NFT must meet erc721 standard'}
+              </Text>
+            )}
           </Box>
         </>
       )}
