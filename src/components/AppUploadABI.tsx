@@ -145,6 +145,15 @@ const ListSelect: FC<IListSelect> = ({
   const HEIGHT_CHECKBOX = 32;
   const [itemSelected, setItemSelected] = useState<any>([]);
 
+  useEffect(() => {
+    if (!data.length) {
+      return;
+    }
+    const initialSelected = data.map((item: any) => item.id);
+    setItemSelected(initialSelected);
+    onSelectData([...data]);
+  }, [data]);
+
   const onChangeSelect = (e: ChangeEvent<HTMLInputElement>, id: string) => {
     let newItemsSelected = [];
 
@@ -240,12 +249,6 @@ const ListSelect: FC<IListSelect> = ({
     setItemSelected([]);
     onSelectData([...dataRest]);
   };
-
-  useEffect(() => {
-    const initialSelected = dataShow.map((item: any) => item.id);
-    setItemSelected(initialSelected);
-    onSelectData([...dataShow]);
-  }, [dataShow]);
 
   return (
     <Flex className="box-item">
