@@ -51,20 +51,6 @@ interface IAppUploadABI {
   setIsStandardERC?: any;
 }
 
-const listFunctionAndEventOfNFT = [
-  'balanceOf',
-  'ownerOf',
-  'safeTransferFrom',
-  'transferFrom',
-  'approve',
-  'getApproved',
-  'setApprovalForAll',
-  'isApprovedForAll',
-  'Transfer',
-  'Approval',
-  'ApprovalForAll',
-];
-
 interface IListSelect {
   data: any;
   type: string;
@@ -367,15 +353,6 @@ const AppUploadABI: FC<IAppUploadABI> = ({
 
         const abi = JSON.parse(data);
 
-        const isCorrectFunctionAndEventOfNFT = listFunctionAndEventOfNFT.every(
-          (name: string) => abi.some((abiItem: any) => abiItem.name === name),
-        );
-
-        if (type === TYPE_ABI.NFT && !isCorrectFunctionAndEventOfNFT) {
-          toastError({ message: 'The ABI file must be correct format' });
-          return;
-        }
-
         setIsStandardERC(
           ABIData.every((value: any) =>
             abi.some(
@@ -536,16 +513,6 @@ const AppUploadABI: FC<IAppUploadABI> = ({
       }
 
       const abi = JSON.parse(ABIInput);
-
-      const isCorrectFunctionAndEventOfNFT = listFunctionAndEventOfNFT.every(
-        (name: string) => abi.some((abiItem: any) => abiItem.name === name),
-      );
-
-      if (type === TYPE_ABI.NFT && !isCorrectFunctionAndEventOfNFT) {
-        setError('The ABI must be correct format');
-        setABIData([]);
-        return;
-      }
 
       setIsStandardERC(
         ABIData.every((value: any) =>
