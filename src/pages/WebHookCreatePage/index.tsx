@@ -184,14 +184,6 @@ const WebHookCreatePage: React.FC = () => {
       return;
     }
 
-    // if (
-    //   chainSelected.value === CHAINS.ETH &&
-    //   typeSelected ===
-    //     (WEBHOOK_TYPES.NFT_ACTIVITY || WEBHOOK_TYPES.TOKEN_ACTIVITY)
-    // ) {
-    //   return;
-    // }
-
     switch (typeSelected) {
       case WEBHOOK_TYPES.APTOS_COIN_ACTIVITY:
       case WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY:
