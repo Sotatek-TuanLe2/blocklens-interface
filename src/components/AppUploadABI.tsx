@@ -132,7 +132,7 @@ const ListSelect: FC<IListSelect> = ({
   const [itemSelected, setItemSelected] = useState<any>([]);
 
   useEffect(() => {
-    if (!data.length || !!dataSelected.length) {
+    if (!data.length) {
       return;
     }
     const initialSelected = data.map((item: any) => item.id);
