@@ -142,7 +142,7 @@ const ListSelect: FC<IListSelect> = ({
   viewOnly,
 }) => {
   const ITEM_LIMIT = 10;
-  const HEIGHT_CHECKBOX = 32;
+  const HEIGHT_CHECKBOX = 34;
   const [itemSelected, setItemSelected] = useState<any>([]);
 
   useEffect(() => {
@@ -257,9 +257,12 @@ const ListSelect: FC<IListSelect> = ({
       </Box>
       <Box ml={5} width="100%">
         <Scrollbars
+          className="scroll-bar"
           style={{
             width: '100%',
             height: dataShow.length < ITEM_LIMIT ? '' : 9 * HEIGHT_CHECKBOX,
+            minHeight: 'unset',
+            maxHeight: 'unset',
           }}
           autoHide
           autoHeight={dataShow.length < ITEM_LIMIT}
@@ -270,6 +273,8 @@ const ListSelect: FC<IListSelect> = ({
                 backgroundColor: '#8D91A5',
                 borderRadius: '5px',
                 cursor: 'pointer',
+                minHeight: 'unset',
+                maxHeight: 'unset',
               }}
               {...props}
             />
