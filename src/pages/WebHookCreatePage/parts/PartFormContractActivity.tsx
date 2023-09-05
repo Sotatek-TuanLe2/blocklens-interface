@@ -12,6 +12,7 @@ interface IPartFormContractActivity {
   setDataForm: (value: any) => void;
   type: string;
   validator: any;
+  isStandardERC?: boolean;
 }
 
 const PartFormContractActivity: FC<IPartFormContractActivity> = ({
@@ -19,6 +20,7 @@ const PartFormContractActivity: FC<IPartFormContractActivity> = ({
   setDataForm,
   type,
   validator,
+  isStandardERC,
 }) => {
   const [dataContractABI, setDataContractABI] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -55,6 +57,7 @@ const PartFormContractActivity: FC<IPartFormContractActivity> = ({
       return (
         <AppUploadABI
           type={TYPE_ABI.CONTRACT}
+          isStandardERC={isStandardERC}
           onChange={(abi, abiFilter) =>
             setDataForm({
               ...dataForm,
