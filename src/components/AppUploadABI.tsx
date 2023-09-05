@@ -59,6 +59,7 @@ interface IListSelect {
   dataSelected: any;
   viewOnly?: boolean;
   onSelectData: (value: any) => void;
+  listABI: any;
 }
 
 const options = [
@@ -128,18 +129,19 @@ const ListSelect: FC<IListSelect> = ({
   valueSearch,
   valueSort,
   viewOnly,
+  listABI,
 }) => {
   const ITEM_LIMIT = 10;
   const HEIGHT_CHECKBOX = 32;
   const [itemSelected, setItemSelected] = useState<any>([]);
 
   useEffect(() => {
-    if (!data.length) {
+    if (!listABI.length) {
       return;
     }
-    const initialSelected = data.map((item: any) => item.id);
+    const initialSelected = listABI.map((item: any) => item.id);
     setItemSelected(initialSelected);
-    onSelectData([...data]);
+    onSelectData([...listABI]);
   }, [data]);
 
   const onChangeSelect = (e: ChangeEvent<HTMLInputElement>, id: string) => {
@@ -530,6 +532,8 @@ const AppUploadABI: FC<IAppUploadABI> = ({
     }
   }, [ABIInput, viewOnly]);
 
+  const listABI = functionList.concat(structList);
+
   const isInvalidChecklist = useMemo(() => {
     if (!functionList.length && !structList.length) {
       return false;
@@ -699,6 +703,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
                 valueSearch={valueSearch}
                 valueSort={valueSort}
                 viewOnly={viewOnly}
+                listABI={listABI}
               />
 
               <ListSelect
@@ -709,6 +714,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
                 valueSearch={valueSearch}
                 valueSort={valueSort}
                 viewOnly={viewOnly}
+                listABI={listABI}
               />
             </Box>
             {isInvalidChecklist && (
