@@ -55,18 +55,22 @@ const ListItem: React.FC<IListItem> = (props) => {
   const userName = `${itemClass.getUserFirstName()} ${itemClass.getUserLastName()}`;
 
   const getTitleUrl = (): string => {
+    const isUserOwner = itemClass.getUserId() === user?.getId();
     switch (type) {
       case LIST_ITEM_TYPE.DASHBOARDS:
-        return `${ROUTES.DASHBOARD}/${itemClass.getId()}/`;
+        return `${
+          isUserOwner ? ROUTES.MY_DASHBOARD : ROUTES.DASHBOARD
+        }/${itemClass.getId()}/`;
       case LIST_ITEM_TYPE.QUERIES:
-        return `${ROUTES.QUERY}/${itemClass.getId()}`;
+        return `${
+          isUserOwner ? ROUTES.MY_QUERY : ROUTES.QUERY
+        }/${itemClass.getId()}`;
       case LIST_ITEM_TYPE.MYWORK:
         if (itemType === ITEM_TYPE.DASHBOARDS) {
           return `${ROUTES.MY_DASHBOARD}/${itemClass.getId()}`;
         }
         return `${ROUTES.MY_QUERY}/${itemClass.getId()}`;
       case LIST_ITEM_TYPE.SAVED:
-        const isUserOwner = itemClass.getUserId() === user?.getId();
         if (itemType === ITEM_TYPE.DASHBOARDS) {
           return `${
             isUserOwner ? ROUTES.MY_DASHBOARD : ROUTES.DASHBOARD
