@@ -24,7 +24,6 @@ import { Link as ReactLink } from 'react-router-dom';
 import 'src/styles/components/AppUploadABI.scss';
 import { isMobile } from 'react-device-detect';
 import { DownloadIcon } from 'src/assets/icons';
-import { IDataForm } from '../pages/WebHookCreatePage';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { ABI_OPTIONS, ABI_TYPES } from 'src/utils/common';
 
@@ -48,7 +47,6 @@ interface IAppUploadABI {
   abiFilter?: any[];
   abiContract?: any[];
   isStandardERC?: boolean;
-  setIsStandardERC?: any;
 }
 
 interface IListSelect {
@@ -320,8 +318,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
   abi,
   abiFilter,
   abiContract,
-  isStandardERC,
-  setIsStandardERC,
+  isStandardERC = true,
 }) => {
   const [fileSelected, setFileSelected] = useState<any>({});
   const [ABIData, setABIData] = useState<any>([]);
@@ -352,15 +349,6 @@ const AppUploadABI: FC<IAppUploadABI> = ({
         }
 
         const abi = JSON.parse(data);
-
-        setIsStandardERC(
-          ABIData.every((value: any) =>
-            abi.some(
-              (item: any) => JSON.stringify(item) === JSON.stringify(value),
-            ),
-          ),
-        );
-
         setFileSelected(dropFile || evt.target.files[0]);
         setABIData(abi);
       } catch (e) {
@@ -425,7 +413,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
 
   const structList = useMemo(() => {
     const data = ABIData.filter((item: any) => {
-      return item.type === 'event';
+      return item.type === ABI_TYPES.EVENT;
     });
 
     return data.map((event: any) => {
@@ -463,7 +451,6 @@ const AppUploadABI: FC<IAppUploadABI> = ({
   const onClearFile = () => {
     setDataSelected([]);
     setFileSelected({});
-    setIsStandardERC(true);
     if (type == TYPE_ABI.NFT) {
       setABIData(ERC721.abi);
       return;
@@ -512,16 +499,6 @@ const AppUploadABI: FC<IAppUploadABI> = ({
         return;
       }
 
-      const abi = JSON.parse(ABIInput);
-
-      setIsStandardERC(
-        ABIData.every((value: any) =>
-          abi.some(
-            (item: any) => JSON.stringify(item) === JSON.stringify(value),
-          ),
-        ),
-      );
-
       setABIData(JSON.parse(ABIInput));
       setError('');
     } catch (e) {
@@ -531,12 +508,35 @@ const AppUploadABI: FC<IAppUploadABI> = ({
   }, [ABIInput, viewOnly]);
 
   const isInvalidChecklist = useMemo(() => {
+    console.log('functionList', functionList, 'structList', structList);
     if (!functionList.length && !structList.length) {
       return false;
     }
-
+    console.log('dataSelected', dataSelected);
     return !dataSelected.length;
   }, [functionList, structList, dataSelected]);
+
+  const _renderErrorMessage = () => {
+    if (!isStandardERC) {
+      return (
+        <Text className="text-error" mt={2}>
+          {type === TYPE_ABI.TOKEN
+            ? 'ABI of token must meet erc20 standard'
+            : 'ABI of NFT must meet erc721 standard'}
+        </Text>
+      );
+    }
+
+    if (isInvalidChecklist) {
+      return (
+        <Text className="text-error" mt={2}>
+          The notification filter field is required
+        </Text>
+      );
+    }
+
+    return null;
+  };
 
   return (
     <Box className="upload-abi">
@@ -569,7 +569,6 @@ const AppUploadABI: FC<IAppUploadABI> = ({
               setIsInsertManuallyAddress(!isInsertManuallyAddress);
               setABIInput('');
               setFileSelected({});
-              setIsStandardERC(true);
               if (type === TYPE_ABI.NFT) {
                 setABIData(ERC721.abi);
               } else if (type === TYPE_ABI.TOKEN) {
@@ -711,18 +710,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
                 viewOnly={viewOnly}
               />
             </Box>
-            {isInvalidChecklist && (
-              <Text className="text-error">
-                The notification filter field is required
-              </Text>
-            )}
-            {!isStandardERC && (
-              <Text className="text-error">
-                {type === TYPE_ABI.TOKEN
-                  ? 'ABI of token must meet erc20 standard'
-                  : 'ABI of NFT must meet erc721 standard'}
-              </Text>
-            )}
+            {_renderErrorMessage()}
           </Box>
         </>
       )}
