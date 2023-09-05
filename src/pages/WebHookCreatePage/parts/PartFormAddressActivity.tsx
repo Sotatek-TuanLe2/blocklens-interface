@@ -33,7 +33,6 @@ const PartFormAddressActivity: FC<IPartFormAddressActivity> = ({
   const [isInsertManuallyAddress, setIsInsertManuallyAddress] =
     useState<boolean>(true);
   const inputRef = useRef<any>(null);
-
   const FILE_CSV_EXAMPLE = `/abi/Address_Example_${chain}.csv`;
 
   const addressesInput = useMemo(() => {
@@ -60,6 +59,12 @@ const PartFormAddressActivity: FC<IPartFormAddressActivity> = ({
   const addressValid = useMemo(() => {
     return addressesInput.filter((address: string) => isValidAddress(address));
   }, [addressesInput]);
+
+  useEffect(() => {
+    if (!addressesValue.length && isNotCorrectAddress && fileSelected?.name) {
+      toastError({ message: 'The Addresses file must be correct format' });
+    }
+  }, [addressesValue, fileSelected, isNotCorrectAddress]);
 
   useEffect(() => {
     onClearFile();
