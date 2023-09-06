@@ -122,7 +122,7 @@ const WebhookSettingsPage = () => {
         </AppField>
         <AppField label={'Token ID'} customWidth={'49%'}>
           <AppInput
-            value={webhook?.metadata?.tokenIds.join(', ') || '*'}
+            value={webhook?.metadata?.tokenIds.join(', ') || ''}
             isDisabled
           />
         </AppField>
