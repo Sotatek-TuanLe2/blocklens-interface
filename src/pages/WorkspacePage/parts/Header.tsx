@@ -41,7 +41,7 @@ interface IHeaderProps {
   isLoadingResult?: boolean;
   isEmptyDashboard?: boolean;
   isTemporaryQuery?: boolean;
-  isInitialLoad?: boolean;
+  allowCancelExecution?: boolean;
   onRunQuery?: () => Promise<void>;
   onCancelExecution?: () => Promise<void>;
   onSaveQuery?: () => void;
@@ -61,7 +61,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
     isLoadingResult = false,
     isEmptyDashboard = false,
     isTemporaryQuery = false,
-    isInitialLoad = true,
+    allowCancelExecution = false,
     onRunQuery,
     onCancelExecution,
     onSaveQuery,
@@ -243,7 +243,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
               Save
             </AppButton>
           )}
-          {!isInitialLoad && isLoadingResult && (
+          {allowCancelExecution && isLoadingResult && (
             <AppButton
               variant="red"
               onClick={onCancelExecution}
