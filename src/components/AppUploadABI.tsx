@@ -142,7 +142,7 @@ const ListSelect: FC<IListSelect> = ({
   viewOnly,
 }) => {
   const ITEM_LIMIT = 10;
-  const HEIGHT_CHECKBOX = 34;
+  const HEIGHT_CHECKBOX = 32;
   const [itemSelected, setItemSelected] = useState<any>([]);
 
   useEffect(() => {
@@ -309,12 +309,18 @@ const ListSelect: FC<IListSelect> = ({
                     }
                     onChange={(e) => onChangeSelect(e, item.id)}
                   >
-                    <Flex className="abi-option">
-                      {item.name}
-                      {!!inputs.length && (
-                        <Box className="inputs">({inputs.join(', ')})</Box>
-                      )}
-                    </Flex>
+                    <Tooltip
+                      hasArrow
+                      placement="top"
+                      label={`${item.name} (${inputs.join(', ')})`}
+                    >
+                      <Flex className="abi-option">
+                        {item.name}
+                        {!!inputs.length && (
+                          <Box className="inputs">({inputs.join(', ')})</Box>
+                        )}
+                      </Flex>
+                    </Tooltip>
                   </Checkbox>
                 </Box>
               );
