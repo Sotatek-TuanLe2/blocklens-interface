@@ -31,13 +31,13 @@ export default class BaseRequest {
     recaptchaAction: typeof RECAPTCHA_ACTIONS[keyof typeof RECAPTCHA_ACTIONS],
   ) {
     return retry(
-      async (bail) => {
+      async () => {
         try {
           const recaptcha = await load(config.auth.reCaptchaKey);
           const token = await recaptcha.execute(recaptchaAction);
           setRecaptchaToRequest(token);
         } catch (error) {
-          bail(new Error(COMMON_ERROR_MESSAGE));
+          throw new Error(COMMON_ERROR_MESSAGE);
         }
       },
       {
