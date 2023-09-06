@@ -19,6 +19,13 @@
       &:first-child {
         padding-bottom: 16px;
       }
+
+      div {
+        &:first-child {
+          min-height: unset !important;
+          max-height: unset !important;
+        }
+      }
     }
     .label-events {
       @include text-small-bold;
@@ -57,6 +64,10 @@
       .inputs {
         color: $paragraph;
         margin-left: 5px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 16rem;
       }
     }
   }

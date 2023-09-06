@@ -243,9 +243,12 @@ const ListSelect: FC<IListSelect> = ({
       </Box>
       <Box ml={5} width="100%">
         <Scrollbars
+          className="scroll-bar"
           style={{
             width: '100%',
             height: dataShow.length < ITEM_LIMIT ? '' : 9 * HEIGHT_CHECKBOX,
+            minHeight: 'unset',
+            maxHeight: 'unset',
           }}
           autoHide
           autoHeight={dataShow.length < ITEM_LIMIT}
@@ -256,6 +259,8 @@ const ListSelect: FC<IListSelect> = ({
                 backgroundColor: '#8D91A5',
                 borderRadius: '5px',
                 cursor: 'pointer',
+                minHeight: 'unset',
+                maxHeight: 'unset',
               }}
               {...props}
             />
@@ -290,12 +295,18 @@ const ListSelect: FC<IListSelect> = ({
                     }
                     onChange={(e) => onChangeSelect(e, item.id)}
                   >
-                    <Flex className="abi-option">
-                      {item.name}
-                      {!!inputs.length && (
-                        <Box className="inputs">({inputs.join(', ')})</Box>
-                      )}
-                    </Flex>
+                    <Tooltip
+                      hasArrow
+                      placement="top"
+                      label={`${item.name} (${inputs.join(', ')})`}
+                    >
+                      <Flex className="abi-option">
+                        {item.name}
+                        {!!inputs.length && (
+                          <Box className="inputs">({inputs.join(', ')})</Box>
+                        )}
+                      </Flex>
+                    </Tooltip>
                   </Checkbox>
                 </Box>
               );
