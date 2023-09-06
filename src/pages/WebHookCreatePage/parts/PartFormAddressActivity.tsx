@@ -33,7 +33,6 @@ const PartFormAddressActivity: FC<IPartFormAddressActivity> = ({
   const [isInsertManuallyAddress, setIsInsertManuallyAddress] =
     useState<boolean>(true);
   const inputRef = useRef<any>(null);
-
   const FILE_CSV_EXAMPLE = `/abi/Address_Example_${chain}.csv`;
 
   const addressesInput = useMemo(() => {
@@ -139,9 +138,14 @@ const PartFormAddressActivity: FC<IPartFormAddressActivity> = ({
     reader.onload = (e: any) => {
       const data = e.target.result;
       const dataFormat = data?.split('\n').filter((item: string) => !!item);
-      setAddressesValue(
-        dataFormat.map((item: string) => item.replace('\r', '')).join('\n'),
-      );
+      const uploadedAddresses = dataFormat
+        .map((item: string) => item.replace('\r', ''))
+        .join('\n');
+      if (!uploadedAddresses) {
+        toastError({ message: 'The Addresses file must be correct format' });
+        return;
+      }
+      setAddressesValue(uploadedAddresses);
       setFileSelected(dropFile || evt.target.files[0]);
     };
 
