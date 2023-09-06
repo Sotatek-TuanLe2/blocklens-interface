@@ -61,12 +61,6 @@ const PartFormAddressActivity: FC<IPartFormAddressActivity> = ({
   }, [addressesInput]);
 
   useEffect(() => {
-    if (!addressesValue.length && isNotCorrectAddress && fileSelected?.name) {
-      toastError({ message: 'The Addresses file must be correct format' });
-    }
-  }, [addressesValue, fileSelected, isNotCorrectAddress]);
-
-  useEffect(() => {
     onClearFile();
     setAddressesValue('');
     setDataForm({
@@ -144,9 +138,13 @@ const PartFormAddressActivity: FC<IPartFormAddressActivity> = ({
     reader.onload = (e: any) => {
       const data = e.target.result;
       const dataFormat = data?.split('\n').filter((item: string) => !!item);
-      setAddressesValue(
-        dataFormat.map((item: string) => item.replace('\r', '')).join('\n'),
-      );
+      const uploadedAddresses = dataFormat
+        .map((item: string) => item.replace('\r', ''))
+        .join('\n');
+      if (!uploadedAddresses) {
+        toastError({ message: 'The Addresses file must be correct format' });
+        return;
+      }
       setFileSelected(dropFile || evt.target.files[0]);
     };
 
