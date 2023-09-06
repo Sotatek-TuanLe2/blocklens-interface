@@ -61,12 +61,6 @@ const PartFormAddressActivity: FC<IPartFormAddressActivity> = ({
   }, [addressesInput]);
 
   useEffect(() => {
-    if (!addressesValue.length && isNotCorrectAddress && fileSelected?.name) {
-      toastError({ message: 'The Addresses file must be correct format' });
-    }
-  }, [addressesValue, fileSelected, isNotCorrectAddress]);
-
-  useEffect(() => {
     onClearFile();
     setAddressesValue('');
     setDataForm({
