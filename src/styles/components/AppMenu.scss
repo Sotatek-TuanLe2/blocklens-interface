@@ -1,0 +1,17 @@
+@import '../color-variables.scss';
+@import '../mixins.scss';
+.app-menu {
+  &__menu-item {
+    .selected {
+      &:hover,
+      &.selected {
+        background: $gradient;
+        color: #fff;
+
+        svg {
+          color: #fff !important;
+        }
+      }
+    }
+  }
+}
