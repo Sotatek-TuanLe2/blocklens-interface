@@ -38,7 +38,7 @@ interface IAppSelectPops {
 interface IOption {
   value: string;
   label: string;
-  icon?: string;
+  icon?: Element;
 }
 
 const AppSelect2: FC<IAppSelectPops> = ({
@@ -108,7 +108,7 @@ const AppSelect2: FC<IAppSelectPops> = ({
         ) : (
           <Flex alignItems={'center'}>
             {optionSelected?.icon && (
-              <Box className={`${optionSelected?.icon} icon`} />
+              <Box className="icon">{optionSelected?.icon}</Box>
             )}
             {hiddenLabelDefault ? (
               <Box>{optionSelected?.label ?? ''}</Box>
@@ -138,9 +138,7 @@ const AppSelect2: FC<IAppSelectPops> = ({
                   setOpen(false);
                 }}
               >
-                {optionSelected?.icon && (
-                  <Box className={`${option?.icon} icon`} />
-                )}
+                {optionSelected?.icon && option?.icon}
                 {customItem ? customItem(option) : <Box>{option.label}</Box>}
               </Flex>
             );

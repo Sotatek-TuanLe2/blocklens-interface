@@ -36,7 +36,11 @@
     border: 1px solid $line;
 
     .icon {
-      margin-right: 10px;
+      margin-right: 8px;
+
+      svg {
+        color: $paragraph2;
+      }
     }
 
     &--disabled {
@@ -75,7 +79,7 @@
     padding-top: 12px;
     padding-bottom: 10px;
     top: 10px;
-    z-index: 2;
+    z-index: 3;
     max-height: 200px;
     overflow-y: auto;
   }
@@ -92,16 +96,11 @@
     font-size: 14px;
     background-color: #fff;
     color: $title;
-    overflow: hidden;
 
     &:hover,
     &.selected {
-      background: $gradient !important;
-      color: #fff !important;
-
-      svg {
-        color: #fff !important;
-      }
+      background: $gradient;
+      color: #fff;
     }
 
     .icon {
