@@ -24,6 +24,10 @@
   position: relative;
   // z-index: 2;
 
+  svg {
+    color: $paragraph2;
+  }
+
   &__btn-select {
     @include text-medium-regular;
     border: 1px solid $line;
@@ -37,10 +41,6 @@
 
     .icon {
       margin-right: 8px;
-
-      svg {
-        color: $paragraph2;
-      }
     }
 
     &--disabled {
@@ -101,6 +101,10 @@
     &.selected {
       background: $gradient;
       color: #fff;
+
+      svg {
+        color: #fff;
+      }
     }
 
     .icon {
