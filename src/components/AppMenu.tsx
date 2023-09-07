@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import { IDataMenu } from '../utils/utils-app';
-import 'src/styles/components/AppMenu.scss';
+import 'src/styles/components/AppSelect.scss';
 
 interface IAppMenuProps {
   data: IDataMenu[];
@@ -29,7 +29,7 @@ const AppMenu: FC<IAppMenuProps> = ({ data, value, setValue, minW }) => {
   }, [value]);
 
   return (
-    <div className="app-menu">
+    <Box w="full" className="app-select">
       <Menu>
         <MenuButton w={'full'} px={0} py={0}>
           {!!currentData && (
@@ -41,7 +41,7 @@ const AppMenu: FC<IAppMenuProps> = ({ data, value, setValue, minW }) => {
               bg={'white'}
               borderRadius={'6px'}
               border={'1px solid #C7D2E1'}
-              px={'20px'}
+              px={'19px'}
               py={'10px'}
             >
               <Flex align={'center'}>
@@ -63,11 +63,13 @@ const AppMenu: FC<IAppMenuProps> = ({ data, value, setValue, minW }) => {
           minW={'124px'}
           mt={-2}
           zIndex={4}
-          className="app-menu__menu-item"
+          className="app-select__menu"
         >
           {data.map((item, index) => (
             <MenuItem
-              className={`${value === item?.value ? 'selected' : ''}`}
+              className={`${
+                value === item?.value ? 'selected' : ''
+              } app-select__menu-item`}
               key={index}
               px={0}
               py={0}
@@ -78,7 +80,7 @@ const AppMenu: FC<IAppMenuProps> = ({ data, value, setValue, minW }) => {
             >
               <Flex
                 align={'center'}
-                h={'40px'}
+                h={'32px'}
                 minW={minW}
                 px={'20px'}
                 py={'10px'}
@@ -104,7 +106,7 @@ const AppMenu: FC<IAppMenuProps> = ({ data, value, setValue, minW }) => {
           ))}
         </MenuList>
       </Menu>
-    </div>
+    </Box>
   );
 };
 

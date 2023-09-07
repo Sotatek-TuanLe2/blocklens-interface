@@ -92,10 +92,16 @@
     font-size: 14px;
     background-color: #fff;
     color: $title;
+    overflow: hidden;
 
-    &:hover, &.selected {
-      background: $gradient;
-      color: #fff;
+    &:hover,
+    &.selected {
+      background: $gradient !important;
+      color: #fff !important;
+
+      svg {
+        color: #fff !important;
+      }
     }
 
     .icon {
