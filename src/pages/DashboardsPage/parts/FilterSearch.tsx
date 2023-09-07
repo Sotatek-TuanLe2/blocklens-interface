@@ -332,6 +332,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
                 value={displayed}
                 onChange={setDisplayed}
                 width="100%"
+                fontWeight="500"
                 sxWrapper={{
                   w: { base: '100% !important', lg: '129px !important' },
                   h: '44px',
@@ -347,6 +348,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
                 value={itemType}
                 onChange={onChangeItemType}
                 width="100%"
+                fontWeight="500"
                 sxWrapper={{
                   w: { base: '100% !important', lg: '129px !important' },
                   h: '44px',
