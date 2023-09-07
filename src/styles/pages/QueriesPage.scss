@@ -129,10 +129,6 @@
     }
   }
 
-  @include desktop {
-    flex-direction: column-reverse;
-  }
-
   .ace_content {
     background-color: #fff;
   }
