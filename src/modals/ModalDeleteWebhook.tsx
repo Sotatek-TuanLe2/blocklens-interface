@@ -1,5 +1,5 @@
 import { Box, Flex } from '@chakra-ui/react';
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
@@ -25,9 +25,11 @@ const ModalDeleteWebhook: FC<IModalDeleteWebhook> = ({
 }) => {
   const history = useHistory();
   const dispatch = useDispatch();
+  const [disabledDelete, setDisabledDelete] = useState<boolean>(false);
 
   const onDelete = async () => {
     try {
+      setDisabledDelete(true);
       await rf
         .getRequest('RegistrationRequest')
         .deleteRegistration(webhook.registrationId);
@@ -41,6 +43,7 @@ const ModalDeleteWebhook: FC<IModalDeleteWebhook> = ({
       onClose();
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
+      setDisabledDelete(false);
     }
   };
 
@@ -73,7 +76,12 @@ const ModalDeleteWebhook: FC<IModalDeleteWebhook> = ({
         >
           Cancel
         </AppButton>
-        <AppButton width={'49%'} size={'lg'} onClick={onDelete}>
+        <AppButton
+          width={'49%'}
+          size={'lg'}
+          disabled={disabledDelete}
+          onClick={onDelete}
+        >
           Delete
         </AppButton>
       </Flex>
