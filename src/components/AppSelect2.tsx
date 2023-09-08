@@ -10,6 +10,7 @@ import { Box, Flex, LayoutProps, Spinner, Text } from '@chakra-ui/react';
 import 'src/styles/components/AppSelect.scss';
 import SimpleReactValidator from 'simple-react-validator';
 import { useForceRender } from 'src/hooks/useForceRender';
+import { IOption } from './AppSelect';
 
 interface ValidatorProps {
   validator: SimpleReactValidator;
@@ -34,12 +35,6 @@ interface IAppSelectPops {
   readOnly?: boolean;
   hiddenErrorText?: boolean;
   fontWeight?: string;
-}
-
-interface IOption {
-  value: string;
-  label: string;
-  icon?: string;
 }
 
 const AppSelect2: FC<IAppSelectPops> = ({
