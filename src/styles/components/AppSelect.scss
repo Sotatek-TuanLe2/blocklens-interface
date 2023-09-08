@@ -24,6 +24,10 @@
   position: relative;
   // z-index: 2;
 
+  svg {
+    color: $paragraph2;
+  }
+
   &__btn-select {
     @include text-medium-regular;
     border: 1px solid $line;
@@ -36,7 +40,7 @@
     border: 1px solid $line;
 
     .icon {
-      margin-right: 10px;
+      margin-right: 8px;
     }
 
     &--disabled {
@@ -75,7 +79,7 @@
     padding-top: 12px;
     padding-bottom: 10px;
     top: 10px;
-    z-index: 2;
+    z-index: 3;
     max-height: 200px;
     overflow-y: auto;
   }
@@ -93,9 +97,14 @@
     background-color: #fff;
     color: $title;
 
-    &:hover, &.selected {
+    &:hover,
+    &.selected {
       background: $gradient;
       color: #fff;
+
+      svg {
+        color: #fff;
+      }
     }
 
     .icon {

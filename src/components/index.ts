@@ -23,7 +23,6 @@ export { default as AppConnectWalletButton } from './AppConnectWalletButton';
 export { default as AppLoadingTable } from './AppLoadingTable';
 export { default as AppTabs } from './AppTabs';
 export { default as AppTag } from './AppTag';
-export { default as AppMenu } from './AppMenu';
 export { default as AppGridItem } from './AppGridItem';
 export { default as AppRowItem } from './AppRowItem';
 export { default as AppReadABI } from './AppReadABI';
