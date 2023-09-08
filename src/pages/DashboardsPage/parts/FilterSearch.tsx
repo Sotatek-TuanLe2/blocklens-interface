@@ -350,7 +350,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
                 width="100%"
                 fontWeight="500"
                 sxWrapper={{
-                  w: { base: '100% !important', lg: '129px !important' },
+                  w: { base: '100% !important', lg: '179px !important' },
                   h: '44px',
                 }}
               />
