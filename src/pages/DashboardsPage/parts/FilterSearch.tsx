@@ -69,20 +69,20 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
 
   const searchParams = new URLSearchParams(searchUrl);
 
-  const menuDashboardQueries: IDataMenu[] = [
+  const menuDashboardQueries: IOption[] = [
     {
       value: ITEM_TYPE.DASHBOARDS,
-      icon: <DashboardListIcon />,
       label: 'Dashboard',
+      icon: <DashboardListIcon />,
     },
     {
       value: ITEM_TYPE.QUERIES,
-      icon: <QueriesIcon />,
       label: 'Queries',
+      icon: <QueriesIcon />,
     },
   ];
 
-  const menuGridList: IDataMenu[] = [
+  const menuGridList: IOption[] = [
     {
       value: DisplayType.Grid,
       icon: <IconDisplayGrid />,
@@ -326,21 +326,33 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
         <Flex align={'center'} flexGrow={1}>
           {isDashboardTab && (
             <Flex flexGrow={{ base: 1, lg: 0 }}>
-              <AppMenu
-                data={menuGridList}
+              <AppSelect2
+                size="medium"
+                options={menuGridList}
                 value={displayed}
-                setValue={setDisplayed}
-                minW={'124px'}
+                onChange={setDisplayed}
+                width="100%"
+                fontWeight="500"
+                sxWrapper={{
+                  w: { base: '100% !important', lg: '129px !important' },
+                  h: '44px',
+                }}
               />
             </Flex>
           )}
           {hasTypeSelection && (
             <Flex flexGrow={{ base: 1, lg: 0 }} maxW={'50%'}>
-              <AppMenu
-                data={menuDashboardQueries}
+              <AppSelect2
+                size="medium"
+                options={menuDashboardQueries}
                 value={itemType}
-                setValue={onChangeItemType}
-                minW={{ base: 'auto', lg: '179px' }}
+                onChange={onChangeItemType}
+                width="100%"
+                fontWeight="500"
+                sxWrapper={{
+                  w: { base: '100% !important', lg: '179px !important' },
+                  h: '44px',
+                }}
               />
             </Flex>
           )}

@@ -6,7 +6,7 @@ import React, {
   useState,
   ReactNode,
 } from 'react';
-import { Box, Flex, LayoutProps, Spinner } from '@chakra-ui/react';
+import { Box, Flex, LayoutProps, Spinner, Text } from '@chakra-ui/react';
 import 'src/styles/components/AppSelect.scss';
 import SimpleReactValidator from 'simple-react-validator';
 import { useForceRender } from 'src/hooks/useForceRender';
@@ -33,6 +33,7 @@ interface IAppSelectPops {
   validate?: ValidatorProps;
   readOnly?: boolean;
   hiddenErrorText?: boolean;
+  fontWeight?: string;
 }
 
 interface IOption {
@@ -57,6 +58,7 @@ const AppSelect2: FC<IAppSelectPops> = ({
   hiddenErrorText = false,
   validate,
   readOnly,
+  fontWeight,
   ...props
 }) => {
   const [open, setOpen] = useState<boolean>(false);
@@ -108,12 +110,14 @@ const AppSelect2: FC<IAppSelectPops> = ({
         ) : (
           <Flex alignItems={'center'}>
             {optionSelected?.icon && (
-              <Box className={`${optionSelected?.icon} icon`} />
+              <Box className="icon">{optionSelected?.icon}</Box>
             )}
             {hiddenLabelDefault ? (
-              <Box>{optionSelected?.label ?? ''}</Box>
+              <Text fontWeight={fontWeight}>{optionSelected?.label ?? ''}</Text>
             ) : (
-              <Box>{optionSelected?.label ?? '--Select--'}</Box>
+              <Text fontWeight={fontWeight}>
+                {optionSelected?.label ?? '--Select--'}
+              </Text>
             )}
           </Flex>
         )}
@@ -139,9 +143,9 @@ const AppSelect2: FC<IAppSelectPops> = ({
                 }}
               >
                 {optionSelected?.icon && (
-                  <Box className={`${option?.icon} icon`} />
+                  <Box className="icon">{option?.icon}</Box>
                 )}
-                {customItem ? customItem(option) : <Box>{option.label}</Box>}
+                {customItem ? customItem(option) : <Text>{option.label}</Text>}
               </Flex>
             );
           })}
