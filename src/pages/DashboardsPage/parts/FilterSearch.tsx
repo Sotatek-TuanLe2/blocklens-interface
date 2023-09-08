@@ -12,7 +12,6 @@ import {
 import {
   AppButton,
   AppInput,
-  AppMenu,
   AppSelect2,
   AppTag,
   IOption,
@@ -24,7 +23,6 @@ import rf from 'src/requests/RequestFactory';
 import { ROUTES } from 'src/utils/common';
 import { HOME_URL_PARAMS, LIST_ITEM_TYPE, ITEM_TYPE } from '..';
 import { AddIcon } from '@chakra-ui/icons';
-import { IDataMenu } from '../../../utils/utils-app';
 import Storage from 'src/utils/utils-storage';
 
 interface IFilterSearch {
