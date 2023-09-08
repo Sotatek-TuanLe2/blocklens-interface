@@ -38,31 +38,29 @@ const PartUserStats = ({
     const toTime = moment().utc().valueOf();
 
     try {
-      const res: IUserStats[] = await rf
+      const res: IUserStats = await rf
         .getRequest('NotificationRequest')
-        .getUserStats({
-          from: formTime,
-          to: toTime,
-          resolution: RESOLUTION_TIME.HOUR,
-        });
+        .getUserStats24h();
 
-      if (!res?.length) return;
+      if (!res) {
+        return;
+      }
 
-      const totalMessage = _.sumBy(res, 'message');
-      const totalActivity = _.sumBy(res, 'activities');
-      const totalMessagesFailed = _.sumBy(res, 'messagesFailed');
-      const totalMessagesSuccess = _.sumBy(res, 'messagesSuccess');
-      const successRate = ((totalMessagesSuccess / totalMessage) * 100).toFixed(
-        2,
-      );
+      const {
+        messagesSuccess,
+        messagesFailed,
+        message,
+        activities,
+        successRate,
+      } = res;
 
       setUserStatsToday({
         ...userStatsToday,
-        messagesFailed: totalMessagesFailed,
-        messagesSuccess: totalMessagesSuccess,
-        message: totalMessage,
-        activities: totalActivity,
-        successRate: successRate,
+        messagesFailed,
+        messagesSuccess,
+        message,
+        activities,
+        successRate,
       });
 
       const dataFilled = fillFullResolution(

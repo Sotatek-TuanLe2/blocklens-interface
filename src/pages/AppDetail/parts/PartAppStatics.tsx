@@ -11,13 +11,14 @@ import {
 } from 'src/utils/utils-app';
 import AppListStatistics from 'src/components/AppListStatistics';
 
-interface IAppStats {
+export interface IAppStats {
   message?: number;
   activities?: number;
   successRate?: number;
   webhooks?: number;
   messagesSuccess: number;
   messagesFailed: number;
+  projectId: string;
 }
 
 const PartAppStats = ({
@@ -38,29 +39,21 @@ const PartAppStats = ({
     try {
       const res: IAppStats[] = await rf
         .getRequest('NotificationRequest')
-        .getAppStats(projectId, {
-          from: formTime,
-          to: toTime,
-          resolution: RESOLUTION_TIME.HOUR,
-        });
+        .getAppStats24h([projectId]);
 
       if (!res?.length) return;
 
-      const totalMessage = _.sumBy(res, 'message');
-      const totalActivity = _.sumBy(res, 'activities');
-      const totalMessagesFailed = _.sumBy(res, 'messagesFailed');
-      const totalMessagesSuccess = _.sumBy(res, 'messagesSuccess');
-      const successRate = ((totalMessagesSuccess / totalMessage) * 100).toFixed(
-        2,
-      );
+      const [
+        { messagesSuccess, messagesFailed, message, activities, successRate },
+      ] = res;
 
       setAppStats({
         ...appStats,
-        messagesFailed: totalMessagesFailed,
-        messagesSuccess: totalMessagesSuccess,
-        message: totalMessage,
-        activities: totalActivity,
-        successRate: successRate,
+        messagesFailed,
+        messagesSuccess,
+        message,
+        activities,
+        successRate,
       });
 
       const dataFilled = fillFullResolution(

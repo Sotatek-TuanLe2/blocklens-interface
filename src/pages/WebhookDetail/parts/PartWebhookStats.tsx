@@ -11,13 +11,14 @@ import {
 } from 'src/utils/utils-app';
 import AppListStatistics from 'src/components/AppListStatistics';
 
-interface IWebhookStats {
+export interface IWebhookStats {
   message?: number;
   activities?: number;
   successRate?: number;
   webhooks?: number;
   messagesSuccess: number;
   messagesFailed: number;
+  registrationId: string;
 }
 
 interface IPartWebhookStats {
@@ -36,29 +37,21 @@ const PartWebhookStats: FC<IPartWebhookStats> = ({ totalWebhookActive }) => {
     try {
       const res: IWebhookStats[] = await rf
         .getRequest('NotificationRequest')
-        .getWebhookStats(webhookId, {
-          from: formTime,
-          to: toTime,
-          resolution: RESOLUTION_TIME.HOUR,
-        });
+        .getWebhookStats24h([webhookId]);
 
       if (!res?.length) return;
 
-      const totalMessage = _.sumBy(res, 'message');
-      const totalActivity = _.sumBy(res, 'activities');
-      const totalMessagesFailed = _.sumBy(res, 'messagesFailed');
-      const totalMessagesSuccess = _.sumBy(res, 'messagesSuccess');
-      const successRate = ((totalMessagesSuccess / totalMessage) * 100).toFixed(
-        2,
-      );
+      const [
+        { messagesSuccess, messagesFailed, message, activities, successRate },
+      ] = res;
 
       setWebhookStats({
         ...webhookStats,
-        messagesFailed: totalMessagesFailed,
-        messagesSuccess: totalMessagesSuccess,
-        message: totalMessage,
-        activities: totalActivity,
-        successRate: successRate,
+        messagesFailed,
+        messagesSuccess,
+        message,
+        activities,
+        successRate,
       });
 
       const dataFilled = fillFullResolution(

@@ -1,6 +1,12 @@
 import config from 'src/config';
 import BaseRequest from './BaseRequest';
 
+interface IStatParams {
+  from: number;
+  to: number;
+  resolution: number;
+}
+
 export default class NotificationRequest extends BaseRequest {
   getUrlPrefix(): string {
     return config.api.notificationsApi;
@@ -11,19 +17,34 @@ export default class NotificationRequest extends BaseRequest {
     return this.get(url, { ...params });
   }
 
-  getAppStats(projectId: string, params: any) {
+  getAppStats(projectId: string, params: IStatParams) {
     const url = `/project-${projectId}/metrics`;
     return this.get(url, params);
   }
 
-  getWebhookStats(registrationId: string, params: any) {
-    const url = `/webhook-${registrationId}/metrics`;
-    return this.get(url, { ...params, registrationId });
+  getAppStats24h(projectIds: string[]) {
+    const url = '/projects/metrics-24h';
+    return this.get(url, { projectIds });
   }
 
-  getUserStats(params: any) {
-    const url = `/user/metrics`;
+  getWebhookStats(registrationId: string, params: IStatParams) {
+    const url = `/webhook-${registrationId}/metrics`;
     return this.get(url, params);
+  }
+
+  getWebhookStats24h(webhookIds: string[]) {
+    const url = '/webhooks/metrics-24h';
+    return this.get(url, { webhookIds });
+  }
+
+  getUserStats(params: IStatParams) {
+    const url = `/users/metrics`;
+    return this.get(url, params);
+  }
+
+  getUserStats24h() {
+    const url = `/users/metrics-24h`;
+    return this.get(url);
   }
 
   getAppStatsToday(projectId: string) {

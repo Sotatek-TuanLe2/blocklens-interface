@@ -15,6 +15,7 @@ import { ROUTES } from 'src/utils/common';
 import rf from 'src/requests/RequestFactory';
 import { getNameWebhook, IWebhook } from 'src/utils/utils-webhook';
 import { IAppResponse } from '../../../utils/utils-app';
+import { IWebhookStats } from 'src/pages/WebhookDetail/parts/PartWebhookStats';
 
 interface IWebhookMobile {
   webhook: IWebhook;
@@ -97,17 +98,6 @@ const ListWebhooks: React.FC = () => {
   const { user } = useUser();
   const userStats = user?.getStats();
 
-  const getWebhookMetricToday = async (registrationIds: string[]) => {
-    try {
-      const res: any = await rf
-        .getRequest('NotificationRequest')
-        .getWebhookMetricToday({ registrationIds });
-      return res;
-    } catch (error) {
-      return [];
-    }
-  };
-
   const fetchDataTable: any = async (params: any) => {
     try {
       const res: any = await rf
@@ -117,10 +107,14 @@ const ListWebhooks: React.FC = () => {
       const registrationIds =
         res?.docs?.map((item: IWebhook) => item?.registrationId) || [];
 
-      const webhooksMetric = await getWebhookMetricToday(registrationIds);
-      const dataWebhook = res?.docs?.map((webhook: IWebhook) => {
-        const webhookMetricToday = webhooksMetric.find(
-          (item: any) => item.registrationId === webhook.registrationId,
+      const res24h: IWebhookStats[] = await rf
+        .getRequest('NotificationRequest')
+        .getWebhookStats24h(registrationIds);
+
+      const dataWebhook = res?.docs?.map((webhook: IAppResponse) => {
+        const webhookMetricToday = res24h.find(
+          (item: IWebhookStats) =>
+            item.registrationId === webhook.registrationId,
         );
 
         return {
