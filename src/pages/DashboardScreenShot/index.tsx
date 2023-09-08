@@ -109,7 +109,7 @@ const DashboardScreenShot: React.FC = () => {
       <>
         {dataLayout && (
           <ResponsiveGridLayout
-            className="main-grid-layout"
+            className="main-grid-layout layout-screenshot"
             layouts={{ lg: [dataLayout] }}
             isDraggable={false}
             isResizable={false}
@@ -138,7 +138,7 @@ const DashboardScreenShot: React.FC = () => {
   };
 
   return (
-    <div className="workspace-page__editor__dashboard">
+    <div className="workspace-page__editor">
       {isLoading ? (
         <Box
           p={'10px'}
@@ -162,9 +162,9 @@ const DashboardScreenShot: React.FC = () => {
           </Box>
         </Box>
       ) : (
-        <div className="dashboard-container">
+        <Box mt="0" className="dashboard-container">
           {_renderDashboardScreenShot()}
-        </div>
+        </Box>
       )}
     </div>
   );
