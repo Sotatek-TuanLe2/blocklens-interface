@@ -83,6 +83,13 @@ const AppSelect2: FC<IAppSelectPops> = ({
     forceRender();
   };
 
+  const generateIcon = (icon: string | JSX.Element) => {
+    if (typeof icon === 'string') {
+      return <Box className={`${icon} icon`} />;
+    }
+    return <Box className="icon">{icon}</Box>;
+  };
+
   return (
     <Box
       className={`app-select ${size} ${className}`}
@@ -104,9 +111,7 @@ const AppSelect2: FC<IAppSelectPops> = ({
           customItem(optionSelected)
         ) : (
           <Flex alignItems={'center'}>
-            {optionSelected?.icon && (
-              <Box className="icon">{optionSelected?.icon}</Box>
-            )}
+            {optionSelected?.icon && generateIcon(optionSelected?.icon)}
             {hiddenLabelDefault ? (
               <Text fontWeight={fontWeight}>{optionSelected?.label ?? ''}</Text>
             ) : (
@@ -137,9 +142,7 @@ const AppSelect2: FC<IAppSelectPops> = ({
                   setOpen(false);
                 }}
               >
-                {optionSelected?.icon && (
-                  <Box className="icon">{option?.icon}</Box>
-                )}
+                {option?.icon && generateIcon(option?.icon)}
                 {customItem ? customItem(option) : <Text>{option.label}</Text>}
               </Flex>
             );
