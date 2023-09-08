@@ -389,6 +389,7 @@ const WebHookCreatePage: React.FC = () => {
       return;
     }
 
+    setIsDisableSubmit(true);
     const data = {
       ...dataForm,
       type: typeSelected,
@@ -420,6 +421,7 @@ const WebHookCreatePage: React.FC = () => {
       toastSuccess({ message: 'Create Successfully!' });
     } catch (e: any) {
       toastError({ message: e?.message || 'Oops. Something went wrong!' });
+      setIsDisableSubmit(false);
     }
   };
 

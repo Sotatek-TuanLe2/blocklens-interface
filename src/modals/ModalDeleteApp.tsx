@@ -1,5 +1,5 @@
 import { Flex } from '@chakra-ui/react';
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
@@ -21,9 +21,14 @@ interface IModalEditApp {
 
 const ModalDeleteApp: FC<IModalEditApp> = ({ open, onClose, appInfo }) => {
   const [nameApp, setNameApp] = useState<string>('');
+  const [disabledDelete, setDisabledDelete] = useState<boolean>(true);
   const history = useHistory();
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    setDisabledDelete(nameApp !== appInfo.name);
+  }, [nameApp, appInfo.name]);
 
   const onCloseModal = () => {
     onClose();
@@ -32,6 +37,7 @@ const ModalDeleteApp: FC<IModalEditApp> = ({ open, onClose, appInfo }) => {
 
   const onDelete = async () => {
     try {
+      setDisabledDelete(true);
       await rf.getRequest('AppRequest').deleteApp(appInfo.projectId);
       toastSuccess({ message: 'Delete Successfully!' });
       dispatch(getUserStats());
@@ -39,6 +45,7 @@ const ModalDeleteApp: FC<IModalEditApp> = ({ open, onClose, appInfo }) => {
       onCloseModal();
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
+      setDisabledDelete(false);
     }
   };
 
@@ -76,7 +83,7 @@ const ModalDeleteApp: FC<IModalEditApp> = ({ open, onClose, appInfo }) => {
         <AppButton
           width={'49%'}
           size={'lg'}
-          isDisabled={nameApp !== appInfo.name}
+          isDisabled={disabledDelete}
           onClick={onDelete}
         >
           Delete Forever
