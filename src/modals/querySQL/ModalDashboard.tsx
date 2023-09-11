@@ -9,7 +9,6 @@ import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { createValidator } from 'src/utils/utils-validator';
 import BaseModal from '../BaseModal';
-import { generateSubmitBtn, generateTitleModal } from './ModalQuery';
 
 interface IModelNewDashboard {
   open: boolean;
@@ -24,6 +23,32 @@ interface IDataSettingForm {
   name: string;
   tags: string;
 }
+
+const generateTitleModal = (type: string) => {
+  switch (type) {
+    case TYPE_OF_MODAL.SETTING:
+      return 'Setting';
+    case TYPE_OF_MODAL.CREATE:
+      return 'Create';
+    case TYPE_OF_MODAL.FORK:
+      return 'Fork';
+    default:
+      return '';
+  }
+};
+
+const generateSubmitBtn = (type: string) => {
+  switch (type) {
+    case TYPE_OF_MODAL.SETTING:
+      return 'Update';
+    case TYPE_OF_MODAL.CREATE:
+      return 'Add';
+    case TYPE_OF_MODAL.FORK:
+      return 'Save';
+    default:
+      return '';
+  }
+};
 
 const ModalDashboard: React.FC<IModelNewDashboard> = ({
   open,
@@ -114,7 +139,7 @@ const ModalDashboard: React.FC<IModelNewDashboard> = ({
         <div className="title-create-modal">
           {generateTitleModal(type)} Dashboard
         </div>
-        <AppField label={'Dashboard Title'}>
+        <AppField label={'Dashboard Title'} isRequired>
           <AppInput
             value={dataForm.name}
             size="sm"
