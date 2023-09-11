@@ -32,7 +32,7 @@ const ResponsiveGridLayout = WidthProvider(Responsive);
 const DashboardScreenShot: React.FC = () => {
   const { dashboardId } = useParams<{ dashboardId: string }>();
 
-  const [dataLayout, setDataLayout] = useState<ILayout>();
+  const [dataLayout, setDataLayout] = useState<ILayout[]>([]);
   const [isEmptyDashboard, setIsEmptyDashboard] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -44,41 +44,80 @@ const DashboardScreenShot: React.FC = () => {
         .getPublicDashboardById(dashboardId);
 
       if (res) {
-        const visualization: ILayout[] = res.dashboardVisuals.map(
-          (item: IVisualizationWidget) => {
-            const { options } = item;
-            return {
-              x: options.sizeX || 0,
-              y: options.sizeY || 0,
-              w: 12,
-              h: 4,
-              i: item.id,
-              id: item.id,
-              type: WIDGET_TYPE.VISUALIZATION,
-              content: item.visualization,
-            };
-          },
-        );
-        const textWidgets: ILayout[] = res.textWidgets.map(
-          (item: ITextWidget) => {
-            const { options } = item;
-            return {
-              x: options.sizeX || 0,
-              y: options.sizeY || 0,
-              w: 12,
-              h: 4,
-              i: item.id,
-              id: item.id,
-              type: WIDGET_TYPE.TEXT,
-              text: item.text,
-              content: {},
-            };
-          },
-        );
-
-        const layouts = visualization.concat(textWidgets);
-        setDataLayout(layouts[0]);
-        setIsEmptyDashboard(!layouts.length);
+        if (res.dashboardVisuals.length === 3) {
+          const visualization: ILayout[] = res.dashboardVisuals
+            .slice(1, 3)
+            .map((item: IVisualizationWidget) => {
+              const { options } = item;
+              return {
+                x: options.sizeX || 0,
+                y: options.sizeY || 0,
+                w: 6,
+                h: 3,
+                i: item.id,
+                id: item.id,
+                type: WIDGET_TYPE.VISUALIZATION,
+                content: item.visualization,
+              };
+            });
+          const thirdVisualization: ILayout[] = res.dashboardVisuals
+            .slice(0, 1)
+            .map((item: IVisualizationWidget) => {
+              const { options } = item;
+              return {
+                x: options.sizeX || 0,
+                y: options.sizeY || 0,
+                w: 12,
+                h: 3,
+                i: item.id,
+                id: item.id,
+                type: WIDGET_TYPE.VISUALIZATION,
+                content: item.visualization,
+              };
+            });
+          const layouts = visualization.concat(thirdVisualization);
+          setDataLayout(layouts);
+          setIsEmptyDashboard(!layouts.length);
+        } else if (
+          res.dashboardVisuals.length === 1 ||
+          res.dashboardVisuals.length === 2
+        ) {
+          const visualization: ILayout[] = res.dashboardVisuals
+            .slice(0, 1)
+            .map((item: IVisualizationWidget) => {
+              const { options } = item;
+              return {
+                x: options.sizeX || 0,
+                y: options.sizeY || 0,
+                w: 12,
+                h: 6,
+                i: item.id,
+                id: item.id,
+                type: WIDGET_TYPE.VISUALIZATION,
+                content: item.visualization,
+              };
+            });
+          setDataLayout(visualization);
+          setIsEmptyDashboard(!visualization.length);
+        } else {
+          const visualization: ILayout[] = res.dashboardVisuals
+            .slice(0, 4)
+            .map((item: IVisualizationWidget) => {
+              const { options } = item;
+              return {
+                x: options.sizeX || 0,
+                y: options.sizeY || 0,
+                w: 6,
+                h: 3,
+                i: item.id,
+                id: item.id,
+                type: WIDGET_TYPE.VISUALIZATION,
+                content: item.visualization,
+              };
+            });
+          setDataLayout(visualization);
+          setIsEmptyDashboard(!visualization.length);
+        }
       }
     } catch (error) {
       toastError({ message: getErrorMessage(error) });
@@ -109,28 +148,30 @@ const DashboardScreenShot: React.FC = () => {
       <>
         {dataLayout && (
           <ResponsiveGridLayout
-            className="main-grid-layout layout-screenshot"
-            layouts={{ lg: [dataLayout] }}
+            className="main-grid-layout"
+            layouts={{ lg: dataLayout }}
             isDraggable={false}
             isResizable={false}
             measureBeforeMount
             containerPadding={[0, 30]}
             margin={[20, 20]}
           >
-            <div className="box-layout" key={dataLayout.id}>
-              <div className="box-chart">
-                {dataLayout.type === WIDGET_TYPE.VISUALIZATION ? (
-                  <VisualizationItem
-                    visualization={dataLayout.content}
-                    needAuthentication={false}
-                  />
-                ) : (
-                  <div className="box-text-widget">
-                    <ReactMarkdown>{dataLayout.text || ''}</ReactMarkdown>
-                  </div>
-                )}
+            {dataLayout.map((item) => (
+              <div className="box-layout" key={item.id}>
+                <div className="box-chart">
+                  {item.type === WIDGET_TYPE.VISUALIZATION ? (
+                    <VisualizationItem
+                      visualization={item.content}
+                      needAuthentication={false}
+                    />
+                  ) : (
+                    <div className="box-text-widget">
+                      <ReactMarkdown>{item.text || ''}</ReactMarkdown>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
+            ))}
           </ResponsiveGridLayout>
         )}
       </>

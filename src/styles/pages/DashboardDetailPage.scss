@@ -320,15 +320,6 @@
     }
   }
 
-  .layout-screenshot {
-    height: 100vh !important;
-    overflow: hidden !important;
-    .react-grid-item {
-      height: 100% !important;
-      transform: unset !important;
-    }
-  }
-
   .main-grid-layout {
     width: 100%;
     max-height: 100%;
