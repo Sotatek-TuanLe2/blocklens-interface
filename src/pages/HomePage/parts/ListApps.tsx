@@ -15,6 +15,7 @@ import { useHistory } from 'react-router';
 import { isMobile } from 'react-device-detect';
 import ModalCreateApp from 'src/modals/ModalCreateApp';
 import useUser from 'src/hooks/useUser';
+import { IAppStats } from 'src/pages/AppDetail/parts/PartAppStatics';
 
 interface IAppMobile {
   app: IAppResponse;
@@ -141,53 +142,27 @@ const ListApps: React.FC = () => {
 
   const [params, setParams] = useState({});
 
-  const getTotalWebhookEachApp = async (projectIds: string) => {
-    try {
-      const res: any = await rf
-        .getRequest('AppRequest')
-        .getTotalWebhookEachApp({
-          projectIds,
-        });
-      return res;
-    } catch (error) {
-      return error;
-    }
-  };
-
-  const getAppMetricToday = async (projectIds: string[]) => {
-    try {
-      const res: any = await rf
-        .getRequest('NotificationRequest')
-        .getAppMetricToday({ projectIds });
-      return res;
-    } catch (error) {
-      return [];
-    }
-  };
-
   const fetchDataTable: any = async (param: any) => {
     try {
       const res: any = await rf.getRequest('AppRequest').getListApp(param);
       const projectIds =
         res?.docs?.map((item: IAppResponse) => item?.projectId) || [];
-      const totalWebhooks = await getTotalWebhookEachApp(
-        projectIds.join(',').toString(),
-      );
-      const appsMetric = await getAppMetricToday(projectIds);
 
-      const dataApps = await Promise.all(
-        res?.docs?.map(async (app: IAppResponse, index: number) => {
-          const appMetricToday = appsMetric.find(
-            (item: any) => item.projectId === app.projectId,
-          );
+      const res24h: IAppStats[] = await rf
+        .getRequest('NotificationRequest')
+        .getAppStats24h(projectIds);
 
-          return {
-            ...app,
-            totalWebhook: totalWebhooks[index]?.totalRegistration || '--',
-            messageToday: appMetricToday?.message || '--',
-          };
-        }),
-      );
+      const dataApps = res?.docs?.map((app: IAppResponse) => {
+        const appMetricToday = res24h.find(
+          (item: IAppStats) => item.projectId === app.projectId,
+        );
+
+        return {
+          ...app,
+          totalWebhook: appMetricToday?.webhooks || '--',
+          messageToday: appMetricToday?.message || '--',
+        };
+      });
 
       return {
         ...res,

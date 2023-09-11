@@ -12,7 +12,7 @@ interface AppSelectPops extends SelectProps {
 export interface IOption {
   value: string;
   label: string;
-  icon?: string;
+  icon?: string | JSX.Element;
 }
 
 const { Option } = components;

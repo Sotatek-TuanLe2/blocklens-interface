@@ -6,10 +6,11 @@ import React, {
   useState,
   ReactNode,
 } from 'react';
-import { Box, Flex, LayoutProps, Spinner } from '@chakra-ui/react';
+import { Box, Flex, LayoutProps, Spinner, Text } from '@chakra-ui/react';
 import 'src/styles/components/AppSelect.scss';
 import SimpleReactValidator from 'simple-react-validator';
 import { useForceRender } from 'src/hooks/useForceRender';
+import { IOption } from './AppSelect';
 
 interface ValidatorProps {
   validator: SimpleReactValidator;
@@ -33,12 +34,7 @@ interface IAppSelectPops {
   validate?: ValidatorProps;
   readOnly?: boolean;
   hiddenErrorText?: boolean;
-}
-
-interface IOption {
-  value: string;
-  label: string;
-  icon?: string;
+  fontWeight?: string;
 }
 
 const AppSelect2: FC<IAppSelectPops> = ({
@@ -57,6 +53,7 @@ const AppSelect2: FC<IAppSelectPops> = ({
   hiddenErrorText = false,
   validate,
   readOnly,
+  fontWeight,
   ...props
 }) => {
   const [open, setOpen] = useState<boolean>(false);
@@ -86,6 +83,13 @@ const AppSelect2: FC<IAppSelectPops> = ({
     forceRender();
   };
 
+  const generateIcon = (icon: string | JSX.Element) => {
+    if (typeof icon === 'string') {
+      return <Box className={`${icon} icon`} />;
+    }
+    return <Box className="icon">{icon}</Box>;
+  };
+
   return (
     <Box
       className={`app-select ${size} ${className}`}
@@ -107,13 +111,13 @@ const AppSelect2: FC<IAppSelectPops> = ({
           customItem(optionSelected)
         ) : (
           <Flex alignItems={'center'}>
-            {optionSelected?.icon && (
-              <Box className={`${optionSelected?.icon} icon`} />
-            )}
+            {optionSelected?.icon && generateIcon(optionSelected?.icon)}
             {hiddenLabelDefault ? (
-              <Box>{optionSelected?.label ?? ''}</Box>
+              <Text fontWeight={fontWeight}>{optionSelected?.label ?? ''}</Text>
             ) : (
-              <Box>{optionSelected?.label ?? '--Select--'}</Box>
+              <Text fontWeight={fontWeight}>
+                {optionSelected?.label ?? '--Select--'}
+              </Text>
             )}
           </Flex>
         )}
@@ -138,10 +142,8 @@ const AppSelect2: FC<IAppSelectPops> = ({
                   setOpen(false);
                 }}
               >
-                {optionSelected?.icon && (
-                  <Box className={`${option?.icon} icon`} />
-                )}
-                {customItem ? customItem(option) : <Box>{option.label}</Box>}
+                {option?.icon && generateIcon(option?.icon)}
+                {customItem ? customItem(option) : <Text>{option.label}</Text>}
               </Flex>
             );
           })}
