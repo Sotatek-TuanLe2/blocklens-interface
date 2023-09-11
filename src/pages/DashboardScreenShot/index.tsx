@@ -135,7 +135,7 @@ const DashboardScreenShot: React.FC = () => {
 
   const _renderEmptyDashboardScreenShot = () => (
     <Flex justifyContent={'center'} alignItems={'center'} height={'90vh'}>
-      Dashboard is empty
+      <img src="/images/logo.png" alt="logo" width={'auto'} />
     </Flex>
   );
 
