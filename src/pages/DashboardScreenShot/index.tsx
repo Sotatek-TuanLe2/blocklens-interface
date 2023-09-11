@@ -11,7 +11,7 @@ import 'src/styles/components/AppQueryMenu.scss';
 import 'src/styles/components/Chart.scss';
 import 'src/styles/components/TableValue.scss';
 import 'src/styles/pages/DashboardDetailPage.scss';
-import { ITextWidget, IVisualizationWidget } from 'src/utils/query.type';
+import { IVisualizationWidget } from 'src/utils/query.type';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError } from 'src/utils/utils-notify';
 
@@ -36,6 +36,23 @@ const DashboardScreenShot: React.FC = () => {
   const [isEmptyDashboard, setIsEmptyDashboard] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  const generateVisualizationItem = (
+    item: IVisualizationWidget,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+  ) => ({
+    x: x,
+    y: y,
+    w: width,
+    h: height,
+    i: item.id,
+    id: item.id,
+    type: WIDGET_TYPE.VISUALIZATION,
+    content: item.visualization,
+  });
+
   const fetchLayoutData = useCallback(async () => {
     try {
       setIsLoading(true);
@@ -43,82 +60,36 @@ const DashboardScreenShot: React.FC = () => {
         .getRequest('DashboardsRequest')
         .getPublicDashboardById(dashboardId);
 
-      if (res) {
-        if (res.dashboardVisuals.length === 3) {
-          const visualization: ILayout[] = res.dashboardVisuals
-            .slice(1, 3)
-            .map((item: IVisualizationWidget) => {
-              const { options } = item;
-              return {
-                x: options.sizeX || 0,
-                y: options.sizeY || 0,
-                w: 6,
-                h: 3,
-                i: item.id,
-                id: item.id,
-                type: WIDGET_TYPE.VISUALIZATION,
-                content: item.visualization,
-              };
-            });
-          const thirdVisualization: ILayout[] = res.dashboardVisuals
-            .slice(0, 1)
-            .map((item: IVisualizationWidget) => {
-              const { options } = item;
-              return {
-                x: options.sizeX || 0,
-                y: options.sizeY || 0,
-                w: 12,
-                h: 3,
-                i: item.id,
-                id: item.id,
-                type: WIDGET_TYPE.VISUALIZATION,
-                content: item.visualization,
-              };
-            });
-          const layouts = visualization.concat(thirdVisualization);
-          setDataLayout(layouts);
-          setIsEmptyDashboard(!layouts.length);
-        } else if (
-          res.dashboardVisuals.length === 1 ||
-          res.dashboardVisuals.length === 2
-        ) {
-          const visualization: ILayout[] = res.dashboardVisuals
-            .slice(0, 1)
-            .map((item: IVisualizationWidget) => {
-              const { options } = item;
-              return {
-                x: options.sizeX || 0,
-                y: options.sizeY || 0,
-                w: 12,
-                h: 6,
-                i: item.id,
-                id: item.id,
-                type: WIDGET_TYPE.VISUALIZATION,
-                content: item.visualization,
-              };
-            });
-          setDataLayout(visualization);
-          setIsEmptyDashboard(!visualization.length);
-        } else {
-          const visualization: ILayout[] = res.dashboardVisuals
-            .slice(0, 4)
-            .map((item: IVisualizationWidget) => {
-              const { options } = item;
-              return {
-                x: options.sizeX || 0,
-                y: options.sizeY || 0,
-                w: 6,
-                h: 3,
-                i: item.id,
-                id: item.id,
-                type: WIDGET_TYPE.VISUALIZATION,
-                content: item.visualization,
-              };
-            });
-          setDataLayout(visualization);
-          setIsEmptyDashboard(!visualization.length);
-        }
+      if (!res || !res.dashboardVisuals.length) {
+        setIsEmptyDashboard(true);
+        return;
       }
+
+      const { dashboardVisuals } = res;
+      let layouts: ILayout[] = [];
+
+      if (dashboardVisuals.length <= 2) {
+        const [one] = dashboardVisuals;
+        layouts = [generateVisualizationItem(one, 0, 0, 12, 6)];
+      } else if (dashboardVisuals.length === 3) {
+        const [one, two, three] = dashboardVisuals;
+        layouts = [
+          generateVisualizationItem(one, 0, 0, 6, 3),
+          generateVisualizationItem(two, 6, 0, 6, 3),
+          generateVisualizationItem(three, 0, 3, 12, 3),
+        ];
+      } else {
+        const [one, two, three, four] = dashboardVisuals;
+        layouts = [
+          generateVisualizationItem(one, 0, 0, 6, 3),
+          generateVisualizationItem(two, 6, 0, 6, 3),
+          generateVisualizationItem(three, 0, 3, 6, 3),
+          generateVisualizationItem(four, 6, 3, 6, 3),
+        ];
+      }
+
+      setDataLayout(layouts);
+      setIsEmptyDashboard(false);
     } catch (error) {
       toastError({ message: getErrorMessage(error) });
       console.error(error);
@@ -156,7 +127,7 @@ const DashboardScreenShot: React.FC = () => {
             containerPadding={[0, 30]}
             margin={[20, 20]}
           >
-            {dataLayout.map((item) => (
+            {dataLayout.map((item: ILayout) => (
               <div className="box-layout" key={item.id}>
                 <div className="box-chart">
                   {item.type === WIDGET_TYPE.VISUALIZATION ? (
