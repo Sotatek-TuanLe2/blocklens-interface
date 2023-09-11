@@ -1,7 +1,7 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router';
-import { AppButton, AppInput } from 'src/components';
+import { AppButton, AppField, AppInput } from 'src/components';
 import rf from 'src/requests/RequestFactory';
 import { ROUTES, TYPE_OF_MODAL } from 'src/utils/common';
 import { getErrorMessage } from 'src/utils/utils-helper';
@@ -19,7 +19,7 @@ export interface IModalSettingQuerry {
   createQueryId?: string;
 }
 
-export const generateTitleModal = (type: string) => {
+const generateTitleModal = (type: string) => {
   switch (type) {
     case TYPE_OF_MODAL.SETTING:
       return 'Setting';
@@ -32,7 +32,7 @@ export const generateTitleModal = (type: string) => {
   }
 };
 
-export const generateSubmitBtn = (type: string) => {
+const generateSubmitBtn = (type: string) => {
   switch (type) {
     case TYPE_OF_MODAL.SETTING:
       return 'Update';
@@ -150,8 +150,7 @@ const ModalQuery = ({
           {generateTitleModal(type)} Query
         </div>
         <Box className="modal-setting__content">
-          <div>
-            <Text className="input-label">Query Title</Text>
+          <AppField label={'Query Title'} isRequired>
             <AppInput
               value={dataForm.name}
               validate={{
@@ -161,9 +160,8 @@ const ModalQuery = ({
               }}
               onChange={handleChangeTitle}
             />
-          </div>
-          <div>
-            <Text className="input-label">{`Tags (optional)`} </Text>
+          </AppField>
+          <AppField label={'Tags (optional)'}>
             <AppInput
               placeholder="tag1, tag2, tag3"
               value={dataForm.tags?.toString()}
@@ -174,7 +172,7 @@ const ModalQuery = ({
                 rule: ['maxTags'],
               }}
             />
-          </div>
+          </AppField>
         </Box>
         <Flex className="modal-footer">
           <AppButton
