@@ -144,8 +144,6 @@ const DashboardScreenShot: React.FC = () => {
       return _renderEmptyDashboardScreenShot();
     }
 
-    console.log('dataLayout', dataLayout);
-
     return (
       <>
         {dataLayout && (
