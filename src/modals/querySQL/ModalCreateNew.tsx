@@ -24,8 +24,8 @@ const ModalCreateNew: React.FC<IModalCreateNew> = ({ open, onClose }) => {
   };
 
   const onCreateQuery = () => {
-    window.open(ROUTES.MY_QUERY, '_blank');
     onClose();
+    window.open(ROUTES.MY_QUERY, '_blank');
   };
 
   const onCreateDashboardSuccess = (response: any) => {
