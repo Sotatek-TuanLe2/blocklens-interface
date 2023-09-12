@@ -87,7 +87,7 @@ const PartUserStats = ({
       totalWebhookActive,
       totalWebhook,
     );
-  }, [userStatsToday]);
+  }, [userStatsToday, totalWebhookActive, totalWebhook]);
 
   return (
     <AppListStatistics dataStats={dataUserStatsToday} dataChart={dataChart} />

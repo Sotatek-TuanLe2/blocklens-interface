@@ -71,7 +71,9 @@ const WebhookDetail: FC<IWebhookDetail> = () => {
         <Box className={'statics'}>
           <PartWebhookStats
             totalWebhookActive={
-              webhook.status === WEBHOOK_STATUS.DISABLED ? 0 : 1
+              !webhook.status || webhook.status === WEBHOOK_STATUS.DISABLED
+                ? 0
+                : 1
             }
           />
         </Box>
