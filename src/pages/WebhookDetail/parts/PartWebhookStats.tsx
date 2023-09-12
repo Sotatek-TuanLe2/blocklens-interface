@@ -74,7 +74,7 @@ const PartWebhookStats: FC<IPartWebhookStats> = ({ totalWebhookActive }) => {
 
   const dataWebhookStats = useMemo(() => {
     return formatDataStatistics(webhookStats, totalWebhookActive, 1);
-  }, [webhookStats]);
+  }, [webhookStats, totalWebhookActive]);
 
   return (
     <AppListStatistics dataStats={dataWebhookStats} dataChart={dataChart} />

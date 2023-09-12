@@ -76,7 +76,7 @@ const PartAppStats = ({
 
   const dataAppStats = useMemo(() => {
     return formatDataStatistics(appStats, totalWebhookActive, totalWebhook);
-  }, [appStats]);
+  }, [appStats, totalWebhookActive, totalWebhook]);
 
   return <AppListStatistics dataStats={dataAppStats} dataChart={dataChart} />;
 };
