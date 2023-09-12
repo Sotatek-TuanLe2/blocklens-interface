@@ -449,10 +449,12 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
           </Flex>
         </Box>
       </Collapse>
-      <ModalCreateNew
-        open={openNewDashboardModal}
-        onClose={onToggleNewDashboardModal}
-      />
+      {openNewDashboardModal && (
+        <ModalCreateNew
+          open={openNewDashboardModal}
+          onClose={onToggleNewDashboardModal}
+        />
+      )}
     </>
   );
 };
