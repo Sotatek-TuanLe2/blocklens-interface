@@ -124,7 +124,7 @@ const DashboardScreenShot: React.FC = () => {
             isDraggable={false}
             isResizable={false}
             measureBeforeMount
-            containerPadding={[0, 30]}
+            containerPadding={[0, 0]}
             margin={[20, 20]}
           >
             {dataLayout.map((item: ILayout) => (
