@@ -13,7 +13,7 @@ import AppListStatistics from '../../../components/AppListStatistics';
 import { formatToPercent } from 'src/utils/utils-format';
 
 interface IUserStats {
-  message?: number;
+  message: number;
   activities?: number;
   successRate?: number;
   webhooks?: number;
@@ -36,40 +36,45 @@ const PartUserStats = ({
     const toTime = moment().utc().valueOf();
 
     try {
-      const res: IUserStats = await rf
-        .getRequest('NotificationRequest')
-        .getUserStats24h();
+      const responses = await Promise.allSettled([
+        rf.getRequest('NotificationRequest').getUserStats24h(),
+        rf.getRequest('NotificationRequest').getUserStats({
+          from: formTime,
+          to: toTime,
+          resolution: RESOLUTION_TIME.HOUR,
+        }),
+      ]);
 
-      if (!res) {
-        return;
+      const [userStats24h, userStatsChart] = responses;
+
+      if (userStats24h.status === 'fulfilled') {
+        const { messagesSuccess, messagesFailed, message, activities } =
+          userStats24h.value;
+
+        setUserStatsToday({
+          ...userStatsToday,
+          messagesFailed,
+          messagesSuccess,
+          message,
+          activities,
+          successRate: formatToPercent(messagesSuccess / message),
+        });
       }
 
-      const {
-        messagesSuccess,
-        messagesFailed,
-        message,
-        activities,
-        successRate,
-      } = res;
+      if (
+        userStatsChart.status === 'fulfilled' &&
+        !!userStatsChart.value.length
+      ) {
+        const dataFilled = fillFullResolution(
+          formTime,
+          toTime,
+          RESOLUTION_TIME.HOUR,
+          userStatsChart.value,
+          SAMPLE_DATA_CHART,
+        );
 
-      setUserStatsToday({
-        ...userStatsToday,
-        messagesFailed,
-        messagesSuccess,
-        message,
-        activities,
-        successRate: formatToPercent(successRate || 0),
-      });
-
-      const dataFilled = fillFullResolution(
-        formTime,
-        toTime,
-        RESOLUTION_TIME.HOUR,
-        res,
-        SAMPLE_DATA_CHART,
-      );
-
-      setDataChart(dataFilled);
+        setDataChart(dataFilled);
+      }
     } catch (error: any) {
       setDataChart([]);
     }
