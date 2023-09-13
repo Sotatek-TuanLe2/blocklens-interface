@@ -12,6 +12,69 @@
         }
       }
 
+      .frame-address {
+        border-radius: 6px;
+        border: 1px solid #d5dde9;
+        padding: 5px 3px 7px 3px;
+
+        input {
+          padding: 0px !important;
+          border: unset !important;
+          height: unset !important;
+        }
+
+        .btn-delete-address {
+          border-radius: 6px;
+          background: linear-gradient(180deg, #1979ff 0%, #0756c9 63.54%);
+          padding: 6px 16px;
+          color: $white;
+          font-size: 16px;
+          font-weight: 400;
+          line-height: 24px;
+          cursor: pointer;
+          margin-left: 10px;
+
+          &:hover {
+            background: linear-gradient(180deg, #408cf8 0%, #2069d7 63.54%);
+          }
+        }
+
+        .number-index {
+          color: #8d91a5;
+          font-size: 14px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: 24px;
+          min-width: 9px;
+        }
+
+        .input-address {
+          padding: 5px 15px;
+        }
+
+        .line-address {
+          padding: 5px 15px;
+
+          &:hover {
+            background: #f4f6f9;
+          }
+
+          .invalid-card {
+            border-radius: 6px;
+            background: #e02323;
+            font-size: 12px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 24px;
+            color: $white;
+            padding: 0px 4px;
+          }
+
+          .text-address-error {
+            color: #e02323;
+          }
+        }
+      }
       @include tablet {
         padding: 20px !important;
       }
