@@ -242,7 +242,7 @@ const Header: FC = () => {
       <Flex className={'content-header'}>
         <Box onClick={() => history.push('/')} cursor={'pointer'}>
           <img
-            src="/images/logo.png"
+            src="/images/logo.svg"
             alt="logo"
             width={isMobile ? '140px' : 'auto'}
           />
