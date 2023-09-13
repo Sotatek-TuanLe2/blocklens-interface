@@ -137,8 +137,8 @@ const DashboardScreenShot: React.FC = () => {
     <Flex
       justifyContent={'center'}
       alignItems={'center'}
-      height={'90vh'}
-      bg="rgba(0, 0, 0, 0)"
+      height={'100vh'}
+      bg="white"
     >
       <img src="/images/logo.svg" alt="logo" width={'50%'} />
     </Flex>
