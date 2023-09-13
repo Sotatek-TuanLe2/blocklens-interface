@@ -1,7 +1,4 @@
-import { Box, SimpleGrid } from '@chakra-ui/react';
 import React, { useCallback, useEffect, useMemo, useState, FC } from 'react';
-import { isMobile } from 'react-device-detect';
-import AppStatistical from 'src/components/AppStatistical';
 import rf from 'src/requests/RequestFactory';
 import moment from 'moment';
 import _ from 'lodash';
@@ -13,6 +10,7 @@ import {
   formatDataStatistics,
 } from 'src/utils/utils-app';
 import AppListStatistics from '../../../components/AppListStatistics';
+import { formatToPercent } from 'src/utils/utils-format';
 
 interface IUserStats {
   message?: number;
@@ -60,7 +58,7 @@ const PartUserStats = ({
         messagesSuccess,
         message,
         activities,
-        successRate,
+        successRate: formatToPercent(successRate || 0),
       });
 
       const dataFilled = fillFullResolution(

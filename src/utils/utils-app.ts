@@ -185,7 +185,7 @@ export const formatDataStatistics = (
 
       return {
         ...item,
-        value: +data.successRate || '--',
+        value: data.successRate || '--',
       };
     }
 
