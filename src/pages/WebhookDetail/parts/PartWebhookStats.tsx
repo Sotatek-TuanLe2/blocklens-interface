@@ -3,13 +3,13 @@ import rf from 'src/requests/RequestFactory';
 import { useParams } from 'react-router';
 import moment from 'moment';
 import { RESOLUTION_TIME } from 'src/utils/utils-webhook';
-import _ from 'lodash';
 import {
   SAMPLE_DATA_CHART,
   fillFullResolution,
   formatDataStatistics,
 } from 'src/utils/utils-app';
 import AppListStatistics from 'src/components/AppListStatistics';
+import { formatToPercent } from 'src/utils/utils-format';
 
 export interface IWebhookStats {
   message?: number;
@@ -51,7 +51,7 @@ const PartWebhookStats: FC<IPartWebhookStats> = ({ totalWebhookActive }) => {
         messagesSuccess,
         message,
         activities,
-        successRate,
+        successRate: formatToPercent(successRate || 0),
       });
 
       const dataFilled = fillFullResolution(
