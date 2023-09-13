@@ -23,7 +23,8 @@ const ChartStatics: FC<IChartStatics> = ({ dataChart, keyStat }) => {
   const dataFormat = dataChart.map((item) => {
     return {
       ...item,
-      successRate: +item.successRate,
+      // successRate: +item.successRate,
+      successRate: item.messagesSuccess / item.message,
     };
   });
 
