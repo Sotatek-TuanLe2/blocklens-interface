@@ -343,6 +343,10 @@ const AppUploadABI: FC<IAppUploadABI> = ({
   const [ABIInput, setABIInput] = useState<string>('');
   const [error, setError] = useState<string>('');
 
+  const onResetFileSelect = (event: any) => {
+    event.target.value = '';
+  };
+
   const handleFileSelect = (evt: any, dropFile?: any) => {
     const file = dropFile || evt.target.files[0];
     if (file.type !== 'application/json') {
@@ -535,26 +539,20 @@ const AppUploadABI: FC<IAppUploadABI> = ({
     return !functionsSelected.length && !structsSelected.length;
   }, [functionList, structList, functionsSelected, structsSelected]);
 
-  const _renderErrorMessage = () => {
-    if (!isStandardERC) {
-      return (
-        <Text className="text-error" mt={2}>
-          {type === TYPE_ABI.TOKEN
-            ? 'ABI of token must meet erc20 standard'
-            : 'ABI of NFT must meet erc721 standard'}
-        </Text>
-      );
+  const _renderErrorMessage = (
+    condition: boolean,
+    message: string,
+    props?: any,
+  ) => {
+    if (!condition) {
+      return null;
     }
 
-    if (isInvalidChecklist) {
-      return (
-        <Text className="text-error" mt={2}>
-          The notification filter field is required
-        </Text>
-      );
-    }
-
-    return null;
+    return (
+      <Text className="text-error" {...props}>
+        {message}
+      </Text>
+    );
   };
 
   return (
@@ -613,6 +611,13 @@ const AppUploadABI: FC<IAppUploadABI> = ({
           <Box color={'red.400'} fontSize={'14px'} mt={1}>
             {error}
           </Box>
+          {_renderErrorMessage(
+            !isStandardERC,
+            type === TYPE_ABI.TOKEN
+              ? 'ABI of token must meet erc20 standard'
+              : 'ABI of NFT must meet erc721 standard',
+            { mt: 2 },
+          )}
         </Box>
       )}
 
@@ -626,15 +631,21 @@ const AppUploadABI: FC<IAppUploadABI> = ({
                 computer.
               </Box>
             </Box>
-
             <AppInput
               type="file"
               onChange={handleFileSelect}
+              onClick={onResetFileSelect}
               display="none"
               ref={inputRef}
             />
           </label>
-
+          {_renderErrorMessage(
+            !isStandardERC,
+            type === TYPE_ABI.TOKEN
+              ? 'ABI of token must meet erc20 standard'
+              : 'ABI of NFT must meet erc721 standard',
+            { mb: 2 },
+          )}
           <Box className="download-template">
             <Link
               as={ReactLink}
@@ -729,7 +740,11 @@ const AppUploadABI: FC<IAppUploadABI> = ({
                 viewOnly={viewOnly}
               />
             </Box>
-            {_renderErrorMessage()}
+            {_renderErrorMessage(
+              isStandardERC && isInvalidChecklist,
+              'The notification filter field is required',
+              { mt: 2 },
+            )}
           </Box>
         </>
       )}

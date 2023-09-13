@@ -27,8 +27,6 @@ const WorkspacePage: React.FC = () => {
 
   const onToggleExpandSidebar = (toggle?: boolean) => {
     setToggleExpandSidebar((prevState) => toggle || !prevState);
-    // resize widgets in dashboard
-    setTimeout(() => window.dispatchEvent(new Event('resize')), 500);
   };
 
   const isQuery = type === WORKSPACE_TYPES.QUERY;

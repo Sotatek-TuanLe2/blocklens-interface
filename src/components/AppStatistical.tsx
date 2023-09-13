@@ -23,14 +23,14 @@ const ChartStatics: FC<IChartStatics> = ({ dataChart, keyStat }) => {
   const dataFormat = dataChart.map((item) => {
     return {
       ...item,
-      successRate: +item.successRate,
+      successRate: !!item.message ? item.messagesSuccess / item.message : 0,
     };
   });
 
   const getColorChart = () => {
     if (
-      +dataChart[dataChart.length - 1][keyStat] >=
-      +dataChart[dataChart.length - 2][keyStat]
+      +dataFormat[dataFormat.length - 1][keyStat] >=
+      +dataFormat[dataFormat.length - 2][keyStat]
     ) {
       return '#05CD99';
     } else {

@@ -53,6 +53,32 @@ const DashboardScreenShot: React.FC = () => {
     content: item.visualization,
   });
 
+  const getTheFirstFourVisualizations = (
+    result: any[] = [],
+    inputVisualizations: any[],
+  ): any[] => {
+    if (result.length === 4 || !inputVisualizations.length) {
+      return result;
+    }
+
+    let [item] = inputVisualizations;
+    inputVisualizations.forEach((visual) => {
+      if (
+        visual.options.sizeY < item.options.sizeY ||
+        (visual.options.sizeY === item.options.sizeY &&
+          visual.options.sizeX < item.options.sizeX)
+      ) {
+        item = visual;
+      }
+    });
+
+    result.push(item);
+    return getTheFirstFourVisualizations(
+      result,
+      inputVisualizations.filter((visual) => visual.id !== item.id),
+    );
+  };
+
   const fetchLayoutData = useCallback(async () => {
     try {
       setIsLoading(true);
@@ -65,21 +91,24 @@ const DashboardScreenShot: React.FC = () => {
         return;
       }
 
-      const { dashboardVisuals } = res;
+      const theFirstFourVisualizations = getTheFirstFourVisualizations(
+        [],
+        res.dashboardVisuals,
+      );
       let layouts: ILayout[] = [];
 
-      if (dashboardVisuals.length <= 2) {
-        const [one] = dashboardVisuals;
+      if (theFirstFourVisualizations.length <= 2) {
+        const [one] = theFirstFourVisualizations;
         layouts = [generateVisualizationItem(one, 0, 0, 12, 6)];
-      } else if (dashboardVisuals.length === 3) {
-        const [one, two, three] = dashboardVisuals;
+      } else if (theFirstFourVisualizations.length === 3) {
+        const [one, two, three] = theFirstFourVisualizations;
         layouts = [
           generateVisualizationItem(one, 0, 0, 6, 3),
           generateVisualizationItem(two, 6, 0, 6, 3),
           generateVisualizationItem(three, 0, 3, 12, 3),
         ];
       } else {
-        const [one, two, three, four] = dashboardVisuals;
+        const [one, two, three, four] = theFirstFourVisualizations;
         layouts = [
           generateVisualizationItem(one, 0, 0, 6, 3),
           generateVisualizationItem(two, 6, 0, 6, 3),
@@ -105,8 +134,13 @@ const DashboardScreenShot: React.FC = () => {
   }, [dashboardId]);
 
   const _renderEmptyDashboardScreenShot = () => (
-    <Flex justifyContent={'center'} alignItems={'center'} height={'90vh'}>
-      <img src="/images/logo.png" alt="logo" width={'auto'} />
+    <Flex
+      justifyContent={'center'}
+      alignItems={'center'}
+      height={'100vh'}
+      bg="white"
+    >
+      <img src="/images/logo.svg" alt="logo" width={'50%'} />
     </Flex>
   );
 
@@ -124,7 +158,7 @@ const DashboardScreenShot: React.FC = () => {
             isDraggable={false}
             isResizable={false}
             measureBeforeMount
-            containerPadding={[0, 30]}
+            containerPadding={[0, 0]}
             margin={[20, 20]}
           >
             {dataLayout.map((item: ILayout) => (

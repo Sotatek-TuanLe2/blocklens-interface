@@ -1,7 +1,4 @@
-import { Box, SimpleGrid } from '@chakra-ui/react';
 import React, { useCallback, useEffect, useMemo, useState, FC } from 'react';
-import { isMobile } from 'react-device-detect';
-import AppStatistical from 'src/components/AppStatistical';
 import rf from 'src/requests/RequestFactory';
 import moment from 'moment';
 import _ from 'lodash';
@@ -13,9 +10,10 @@ import {
   formatDataStatistics,
 } from 'src/utils/utils-app';
 import AppListStatistics from '../../../components/AppListStatistics';
+import { formatToPercent } from 'src/utils/utils-format';
 
 interface IUserStats {
-  message?: number;
+  message: number;
   activities?: number;
   successRate?: number;
   webhooks?: number;
@@ -38,40 +36,45 @@ const PartUserStats = ({
     const toTime = moment().utc().valueOf();
 
     try {
-      const res: IUserStats = await rf
-        .getRequest('NotificationRequest')
-        .getUserStats24h();
+      const responses = await Promise.allSettled([
+        rf.getRequest('NotificationRequest').getUserStats24h(),
+        rf.getRequest('NotificationRequest').getUserStats({
+          from: formTime,
+          to: toTime,
+          resolution: RESOLUTION_TIME.HOUR,
+        }),
+      ]);
 
-      if (!res) {
-        return;
+      const [userStats24h, userStatsChart] = responses;
+
+      if (userStats24h.status === 'fulfilled') {
+        const { messagesSuccess, messagesFailed, message, activities } =
+          userStats24h.value;
+
+        setUserStatsToday({
+          ...userStatsToday,
+          messagesFailed,
+          messagesSuccess,
+          message,
+          activities,
+          successRate: formatToPercent(messagesSuccess / message),
+        });
       }
 
-      const {
-        messagesSuccess,
-        messagesFailed,
-        message,
-        activities,
-        successRate,
-      } = res;
+      if (
+        userStatsChart.status === 'fulfilled' &&
+        !!userStatsChart.value.length
+      ) {
+        const dataFilled = fillFullResolution(
+          formTime,
+          toTime,
+          RESOLUTION_TIME.HOUR,
+          userStatsChart.value,
+          SAMPLE_DATA_CHART,
+        );
 
-      setUserStatsToday({
-        ...userStatsToday,
-        messagesFailed,
-        messagesSuccess,
-        message,
-        activities,
-        successRate,
-      });
-
-      const dataFilled = fillFullResolution(
-        formTime,
-        toTime,
-        RESOLUTION_TIME.HOUR,
-        res,
-        SAMPLE_DATA_CHART,
-      );
-
-      setDataChart(dataFilled);
+        setDataChart(dataFilled);
+      }
     } catch (error: any) {
       setDataChart([]);
     }
@@ -87,7 +90,7 @@ const PartUserStats = ({
       totalWebhookActive,
       totalWebhook,
     );
-  }, [userStatsToday]);
+  }, [userStatsToday, totalWebhookActive, totalWebhook]);
 
   return (
     <AppListStatistics dataStats={dataUserStatsToday} dataChart={dataChart} />

@@ -3,16 +3,16 @@ import rf from 'src/requests/RequestFactory';
 import { useParams } from 'react-router';
 import moment from 'moment';
 import { RESOLUTION_TIME } from 'src/utils/utils-webhook';
-import _ from 'lodash';
 import {
   SAMPLE_DATA_CHART,
   fillFullResolution,
   formatDataStatistics,
 } from 'src/utils/utils-app';
 import AppListStatistics from 'src/components/AppListStatistics';
+import { formatToPercent } from 'src/utils/utils-format';
 
 export interface IWebhookStats {
-  message?: number;
+  message: number;
   activities?: number;
   successRate?: number;
   webhooks?: number;
@@ -35,34 +35,48 @@ const PartWebhookStats: FC<IPartWebhookStats> = ({ totalWebhookActive }) => {
     const toTime = moment().utc().valueOf();
 
     try {
-      const res: IWebhookStats[] = await rf
-        .getRequest('NotificationRequest')
-        .getWebhookStats24h([webhookId]);
+      const responses = await Promise.allSettled([
+        rf.getRequest('NotificationRequest').getWebhookStats24h([webhookId]),
+        rf.getRequest('NotificationRequest').getWebhookStats(webhookId, {
+          from: formTime,
+          to: toTime,
+          resolution: RESOLUTION_TIME.HOUR,
+        }),
+      ]);
 
-      if (!res?.length) return;
+      const [webhookStats24h, webhookStatsChart] = responses;
 
-      const [
-        { messagesSuccess, messagesFailed, message, activities, successRate },
-      ] = res;
+      if (
+        webhookStats24h.status === 'fulfilled' &&
+        !!webhookStats24h.value.length
+      ) {
+        const [{ messagesSuccess, messagesFailed, message, activities }] =
+          webhookStats24h.value;
 
-      setWebhookStats({
-        ...webhookStats,
-        messagesFailed,
-        messagesSuccess,
-        message,
-        activities,
-        successRate,
-      });
+        setWebhookStats({
+          ...webhookStats,
+          messagesFailed,
+          messagesSuccess,
+          message,
+          activities,
+          successRate: formatToPercent(messagesSuccess / message),
+        });
+      }
 
-      const dataFilled = fillFullResolution(
-        formTime,
-        toTime,
-        RESOLUTION_TIME.HOUR,
-        res,
-        SAMPLE_DATA_CHART,
-      );
+      if (
+        webhookStatsChart.status === 'fulfilled' &&
+        !!webhookStatsChart.value.length
+      ) {
+        const dataFilled = fillFullResolution(
+          formTime,
+          toTime,
+          RESOLUTION_TIME.HOUR,
+          webhookStatsChart.value,
+          SAMPLE_DATA_CHART,
+        );
 
-      setDataChart(dataFilled);
+        setDataChart(dataFilled);
+      }
     } catch (error: any) {
       setDataChart([]);
     }
@@ -74,7 +88,7 @@ const PartWebhookStats: FC<IPartWebhookStats> = ({ totalWebhookActive }) => {
 
   const dataWebhookStats = useMemo(() => {
     return formatDataStatistics(webhookStats, totalWebhookActive, 1);
-  }, [webhookStats]);
+  }, [webhookStats, totalWebhookActive]);
 
   return (
     <AppListStatistics dataStats={dataWebhookStats} dataChart={dataChart} />
