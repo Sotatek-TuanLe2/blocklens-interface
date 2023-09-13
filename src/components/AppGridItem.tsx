@@ -131,6 +131,7 @@ const AppGridItem: FC<AppGridItemProps> = ({
             alt="thumbnail"
             minW={'full'}
             minH={'full'}
+            height={'full'}
             objectFit={'cover'}
             objectPosition={'center'}
             fallbackSrc="/images/ThumbnailDashboardLight.png"

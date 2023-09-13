@@ -134,8 +134,13 @@ const DashboardScreenShot: React.FC = () => {
   }, [dashboardId]);
 
   const _renderEmptyDashboardScreenShot = () => (
-    <Flex justifyContent={'center'} alignItems={'center'} height={'90vh'}>
-      <img src="/images/logo.png" alt="logo" width={'auto'} />
+    <Flex
+      justifyContent={'center'}
+      alignItems={'center'}
+      height={'90vh'}
+      bg="rgba(0, 0, 0, 0)"
+    >
+      <img src="/images/logo.svg" alt="logo" width={'50%'} />
     </Flex>
   );
 
