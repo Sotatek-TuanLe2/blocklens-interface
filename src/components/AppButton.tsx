@@ -1,5 +1,5 @@
-import React, { forwardRef } from 'react';
-import { Button, ButtonProps } from '@chakra-ui/react';
+import React, { forwardRef, useState } from 'react';
+import { Button, ButtonProps, Spinner } from '@chakra-ui/react';
 import { mode } from '@chakra-ui/theme-tools';
 import { StyleProps } from '@chakra-ui/system';
 import { isMobile } from 'react-device-detect';
@@ -17,13 +17,38 @@ export interface AppButtonProps extends ButtonProps {
     | 'cancel'
     | 'red'
     | 'network';
+  showSubmitting?: boolean;
 }
 
 const AppButton = forwardRef<HTMLButtonElement, AppButtonProps>(
   (props, ref) => {
-    const { variant = 'brand', children, ...rest } = props;
+    const {
+      variant = 'brand',
+      children,
+      showSubmitting = false,
+      isDisabled,
+      onClick,
+      ...rest
+    } = props;
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
+    const onClickButton = async (e: React.MouseEvent<HTMLButtonElement>) => {
+      if (showSubmitting) {
+        setIsSubmitting(true);
+      }
+      onClick && (await onClick(e));
+      setIsSubmitting(false);
+    };
+
     return (
-      <Button {...rest} variant={variant} ref={ref}>
+      <Button
+        variant={variant}
+        ref={ref}
+        onClick={onClickButton}
+        disabled={isDisabled || isSubmitting}
+        {...rest}
+      >
+        {isSubmitting && <Spinner size={'sm'} mr={2} />}
         {children}
       </Button>
     );
@@ -31,9 +56,32 @@ const AppButton = forwardRef<HTMLButtonElement, AppButtonProps>(
 );
 
 export const AppButtonLarge = (props: AppButtonProps) => {
-  const { children, ...rest } = props;
+  const {
+    children,
+    showSubmitting = false,
+    isDisabled,
+    onClick,
+    ...rest
+  } = props;
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
+  const onClickButton = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (showSubmitting) {
+      setIsSubmitting(true);
+    }
+    onClick && (await onClick(e));
+    setIsSubmitting(false);
+  };
+
   return (
-    <AppButton size={isMobile ? 'sm' : 'lg'} px={6} {...rest}>
+    <AppButton
+      size={isMobile ? 'sm' : 'lg'}
+      px={6}
+      onClick={onClickButton}
+      isDisabled={isDisabled || isSubmitting}
+      {...rest}
+    >
+      {isSubmitting && <Spinner size={'sm'} mr={2} />}
       {children}
     </AppButton>
   );

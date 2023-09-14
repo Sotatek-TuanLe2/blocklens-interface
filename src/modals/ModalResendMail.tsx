@@ -42,7 +42,7 @@ const ModalResendMail: FC<ModalUpgradeCreateApp> = ({
       <Box mt={7}>{renderDescription()}</Box>
 
       <Flex flexWrap={'wrap'} justifyContent={'center'}>
-        <AppButton size={'lg'} onClick={onResend}>
+        <AppButton size={'lg'} onClick={onResend} showSubmitting>
           Resend Email
         </AppButton>
       </Flex>

@@ -128,7 +128,7 @@ const ModalEditInfo: React.FC<IModalEditInfo> = ({ open, onClose }) => {
         <AppButton
           w={'49%'}
           size="lg"
-          disabled={isDisableSubmit}
+          isDisabled={isDisableSubmit}
           onClick={handleOnSubmit}
         >
           Save
