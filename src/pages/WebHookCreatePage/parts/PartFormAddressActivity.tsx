@@ -29,9 +29,6 @@ const PartFormAddressActivity: FC<IPartFormAddressActivity> = ({
 }) => {
   const [fileSelected, setFileSelected] = useState<any>({});
   const [addressesValue, setAddressesValue] = useState<string>('');
-  const [currentAddress, setCurrentAddress] = useState<string>('');
-  const [editingAddress, setEditingAddress] = useState<string>('');
-  const [editIndex, setEditIndex] = useState<number>(-1);
   const [isInsertManuallyAddress, setIsInsertManuallyAddress] =
     useState<boolean>(true);
   const inputRef = useRef<any>(null);
@@ -52,11 +49,6 @@ const PartFormAddressActivity: FC<IPartFormAddressActivity> = ({
       index: !isValidAddress(address) ? index : -1,
     }));
   }, [addressesInput]);
-
-  const isNotCorrectAddress = useMemo(
-    () => addressesInvalid.some(({ index }) => index > -1),
-    [addressesInvalid],
-  );
 
   const addressValid = useMemo(() => {
     return addressesInput.filter((address: string) => isValidAddress(address));
@@ -122,51 +114,6 @@ const PartFormAddressActivity: FC<IPartFormAddressActivity> = ({
       },
     });
     setAddressesValue(addressValid.join('\n'));
-  };
-
-  const onChangeAddresses = (e: any) => {
-    setCurrentAddress(e.target.value);
-  };
-
-  const handleEditingInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setEditingAddress(event.target.value);
-  };
-
-  const handleEnterPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key !== 'Enter') {
-      return;
-    }
-
-    if (editIndex === -1 && currentAddress.trim() !== '') {
-      setAddressesValue((prevAddresses) =>
-        prevAddresses ? `${prevAddresses}\n${currentAddress}` : currentAddress,
-      );
-      setCurrentAddress('');
-    } else {
-      const newAddresses = [...addressesInput];
-      if (editingAddress === '') {
-        newAddresses.splice(editIndex, 1);
-      } else {
-        newAddresses[editIndex] = editingAddress;
-      }
-      const filteredAddresses = newAddresses.filter(
-        (address) => address.trim() !== '',
-      );
-      setAddressesValue(filteredAddresses.join('\n'));
-      setEditingAddress('');
-      setEditIndex(-1);
-    }
-  };
-
-  const handleEditClick = (index: number) => {
-    setEditIndex(index);
-    setEditingAddress(addressesInput[index]);
-  };
-
-  const stopEditing = () => {
-    setEditIndex(-1);
   };
 
   const handleFileSelect = (evt: any, dropFile?: any) => {
@@ -250,95 +197,14 @@ const PartFormAddressActivity: FC<IPartFormAddressActivity> = ({
         </Box>
 
         {isInsertManuallyAddress ? (
-          <>
-            <Box className="frame-address">
-              {addressesValue &&
-                addressesInput.map((address, index) => {
-                  const inValidAddress = !isValidAddress(address);
-                  return (
-                    <Flex
-                      className={`${
-                        editIndex === index ? 'input-address' : 'line-address'
-                      }`}
-                      alignItems="center"
-                      key={index}
-                      onBlur={stopEditing}
-                    >
-                      <Text className="number-index">
-                        {!!addressesValue && index + 1}
-                      </Text>
-                      {editIndex === index ? (
-                        <AppInput
-                          size="sm"
-                          value={editingAddress}
-                          onChange={handleEditingInputChange}
-                          onKeyPress={handleEnterPress}
-                          ml="12px"
-                        />
-                      ) : (
-                        !!addressesValue && (
-                          <Flex
-                            justifyContent="space-between"
-                            onClick={() => handleEditClick(index)}
-                            ml="12px"
-                            w="100%"
-                          >
-                            <Text
-                              className={`${
-                                inValidAddress ? 'text-address-error' : ''
-                              }`}
-                            >
-                              {address}
-                            </Text>
-
-                            {inValidAddress && (
-                              <Text className="invalid-card">Invalid</Text>
-                            )}
-                          </Flex>
-                        )
-                      )}
-                    </Flex>
-                  );
-                })}
-              {/* {isHiddenInputAddress && ( */}
-              <Flex className="input-address" alignItems="center">
-                <Text className="number-index">
-                  {!!addressesValue
-                    ? addressesInput.length + 1
-                    : addressesInput.length}
-                </Text>
-
-                <AppInput
-                  ml="12px"
-                  size="sm"
-                  value={currentAddress}
-                  onChange={onChangeAddresses}
-                  onKeyPress={handleEnterPress}
-                />
-              </Flex>
-              {/* )} */}
-
-              {!!addressesValue && isNotCorrectAddress && (
-                <Flex alignItems="center" mt="28px" ml="16px">
-                  <Text fontStyle="italic">
-                    Invalid address:{' '}
-                    {addressesInput.filter((i) => !isValidAddress(i)).length}
-                  </Text>
-                  <Box
-                    className="btn-delete-address"
-                    onClick={onClearAddressInvalid}
-                  >
-                    Delete all invalid
-                  </Box>
-                </Flex>
-              )}
-            </Box>
-            {!addressesValue && (
-              <Text className="text-error">
-                The addresses field is required
-              </Text>
-            )}
-          </>
+          <AddressList
+            addressesInput={addressesInput}
+            isValidAddress={isValidAddress}
+            setAddressesValue={setAddressesValue}
+            addressesValue={addressesValue}
+            onClearAddressInvalid={onClearAddressInvalid}
+            addressesInvalid={addressesInvalid}
+          />
         ) : (
           <>
             {!addressesValue ? (
@@ -360,90 +226,14 @@ const PartFormAddressActivity: FC<IPartFormAddressActivity> = ({
               </label>
             ) : (
               <>
-                <Box className="frame-address">
-                  {addressesInput.map((address, index) => {
-                    const inValidAddress = !isValidAddress(address);
-                    return (
-                      <Flex
-                        className={`${
-                          editIndex === index ? 'input-address' : 'line-address'
-                        }`}
-                        alignItems="center"
-                        key={index}
-                        onBlur={stopEditing}
-                      >
-                        <Text className="number-index">
-                          {!!addressesValue && index + 1}
-                        </Text>
-                        {editIndex === index ? (
-                          <AppInput
-                            size="sm"
-                            value={editingAddress}
-                            onChange={handleEditingInputChange}
-                            onKeyPress={handleEnterPress}
-                            ml="12px"
-                          />
-                        ) : (
-                          !!addressesValue && (
-                            <Flex
-                              justifyContent="space-between"
-                              onClick={() => handleEditClick(index)}
-                              ml="12px"
-                              w="100%"
-                            >
-                              <Text
-                                className={`${
-                                  inValidAddress ? 'text-address-error' : ''
-                                }`}
-                              >
-                                {address}
-                              </Text>
-
-                              {inValidAddress && (
-                                <Text className="invalid-card">Invalid</Text>
-                              )}
-                            </Flex>
-                          )
-                        )}
-                      </Flex>
-                    );
-                  })}
-                  <Flex className="input-address" alignItems="center">
-                    <Text className="number-index">
-                      {!!addressesValue
-                        ? addressesInput.length + 1
-                        : addressesInput.length}
-                    </Text>
-
-                    <AppInput
-                      ml="12px"
-                      size="sm"
-                      value={currentAddress}
-                      onChange={onChangeAddresses}
-                      onKeyPress={handleEnterPress}
-                    />
-                  </Flex>
-                  {!!addressesValue && isNotCorrectAddress && (
-                    <Flex alignItems="center" mt="28px" ml="16px">
-                      <Text fontStyle="italic">
-                        Invalid address:{' '}
-                        {
-                          addressesInput.filter((i) => !isValidAddress(i))
-                            .length
-                        }
-                      </Text>
-                      <Box
-                        className="btn-delete-address"
-                        onClick={onClearAddressInvalid}
-                      >
-                        Delete all invalid
-                      </Box>
-                    </Flex>
-                  )}
-                </Box>
-                {inValidAddress && (
-                  <Text className="invalid-card">Invalid</Text>
-                )}
+                <AddressList
+                  addressesInput={addressesInput}
+                  isValidAddress={isValidAddress}
+                  setAddressesValue={setAddressesValue}
+                  addressesValue={addressesValue}
+                  onClearAddressInvalid={onClearAddressInvalid}
+                  addressesInvalid={addressesInvalid}
+                />
               </>
             )}
 
@@ -471,3 +261,155 @@ const PartFormAddressActivity: FC<IPartFormAddressActivity> = ({
 };
 
 export default PartFormAddressActivity;
+
+interface IAddressListProps {
+  addressesInput: string[];
+  isValidAddress: (address: string) => boolean;
+  setAddressesValue: (value: string) => void;
+  onClearAddressInvalid: () => void;
+  addressesInvalid: { value: string; index: number }[];
+  addressesValue: string;
+}
+
+const AddressList: FC<IAddressListProps> = ({
+  addressesInput,
+  isValidAddress,
+  setAddressesValue,
+  addressesValue,
+  addressesInvalid,
+  onClearAddressInvalid,
+}) => {
+  const [editingIndex, setEditingIndex] = useState<number>(-1);
+  const [inputValue, setInputValue] = useState<string>('');
+  const [hasInteracted, setHasInteracted] = useState<boolean>(false);
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(event.target.value);
+    setHasInteracted(false);
+  };
+
+  const handleEnterPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key !== 'Enter') {
+      return;
+    }
+
+    const newAddresses = [...addressesInput];
+    if (inputValue === '') {
+      newAddresses.splice(editingIndex, 1);
+    } else {
+      if (editingIndex === -1) {
+        newAddresses.push(inputValue);
+      } else {
+        newAddresses[editingIndex] = inputValue;
+      }
+    }
+    const filteredAddresses = newAddresses.filter(
+      (address) => address.trim() !== '',
+    );
+    setAddressesValue(filteredAddresses.join('\n'));
+    setInputValue('');
+    setEditingIndex(-1);
+    setHasInteracted(true);
+  };
+
+  const handleEditClick = (index: number) => {
+    setEditingIndex(index);
+    setInputValue(addressesInput[index]);
+  };
+
+  const stopEditing = () => {
+    setEditingIndex(-1);
+  };
+
+  const isNotCorrectAddress = useMemo(
+    () => addressesInvalid.some(({ index }) => index > -1),
+    [addressesInvalid],
+  );
+  console.log(addressesInput, addressesValue, addressesInput[0] === '');
+  return (
+    <>
+      <Box className="frame-address">
+        {addressesValue &&
+          addressesInput.map((address, index) => {
+            const inValidAddress = !isValidAddress(address);
+            return (
+              <Flex
+                className={`${
+                  editingIndex === index ? 'input-address' : 'line-address'
+                }`}
+                alignItems="center"
+                key={index}
+                onBlur={stopEditing}
+              >
+                <Text className="number-index">
+                  {!!addressesValue && index + 1}
+                </Text>
+                {editingIndex === index ? (
+                  <AppInput
+                    size="sm"
+                    value={inputValue}
+                    onChange={handleInputChange}
+                    onKeyPress={handleEnterPress}
+                    ml="12px"
+                  />
+                ) : (
+                  !!addressesValue && (
+                    <Flex
+                      justifyContent="space-between"
+                      onClick={() => handleEditClick(index)}
+                      ml="12px"
+                      w="100%"
+                    >
+                      <Text
+                        className={`${
+                          inValidAddress ? 'text-address-error' : ''
+                        }`}
+                      >
+                        {address}
+                      </Text>
+
+                      {inValidAddress && (
+                        <Text className="invalid-card">Invalid</Text>
+                      )}
+                    </Flex>
+                  )
+                )}
+              </Flex>
+            );
+          })}
+        <Flex className="input-address" alignItems="center">
+          <Text className="number-index">
+            {!!addressesValue
+              ? addressesInput.length + 1
+              : addressesInput.length}
+          </Text>
+
+          <AppInput
+            ml="12px"
+            size="sm"
+            value={inputValue}
+            onChange={handleInputChange}
+            onKeyPress={handleEnterPress}
+          />
+        </Flex>
+        {!!addressesValue && isNotCorrectAddress && (
+          <Flex alignItems="center" mt="28px" ml="16px">
+            <Text fontStyle="italic">
+              Invalid address:{' '}
+              {addressesInput.filter((i) => !isValidAddress(i)).length}
+            </Text>
+            <Box className="btn-delete-address" onClick={onClearAddressInvalid}>
+              Delete all invalid
+            </Box>
+          </Flex>
+        )}
+      </Box>
+      {!addressesValue &&
+        hasInteracted &&
+        (addressesInput.length === 0 ||
+          addressesInput.every((address) => address === '')) && (
+          <Text className="text-error">The addresses field is required</Text>
+        )}
+    </>
+  );
+};
