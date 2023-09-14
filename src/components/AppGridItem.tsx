@@ -54,7 +54,7 @@ const AppGridItem: FC<AppGridItemProps> = ({
       flexDir={'column'}
       justify={'stretch'}
       boxShadow={'0px 15px 30px rgba(0, 0, 0, 0.04)'}
-      bg={'white'}
+      bg={'#fafafa'}
       borderRadius={{ base: '10px', lg: '14px' }}
       className="app-grid-item"
     >
@@ -110,7 +110,7 @@ const AppGridItem: FC<AppGridItemProps> = ({
       flexDir={'column'}
       justify={'stretch'}
       boxShadow={'0px 15px 30px rgba(0, 0, 0, 0.04)'}
-      bg={'white'}
+      bg={'#fafafa'}
       borderRadius={{ base: '10px', lg: '14px' }}
       className="app-grid-item"
     >
@@ -138,6 +138,7 @@ const AppGridItem: FC<AppGridItemProps> = ({
           />
         </Link>
       </Box>
+      {/* <Divider colorScheme="rgba(0, 2, 36, 0.1)" /> */}
       <Flex
         w={'full'}
         flexGrow={1}
