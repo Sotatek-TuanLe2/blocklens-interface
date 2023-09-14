@@ -359,7 +359,7 @@ const TopUpPage = () => {
           <AppButton
             type={'submit'}
             size={'lg'}
-            disabled={
+            isDisabled={
               !hasApproveToken || fetchingInfo || processing || inValidAmount
             }
           >
@@ -370,7 +370,7 @@ const TopUpPage = () => {
               marginLeft={'8px'}
               type={'button'}
               size={'lg'}
-              disabled={fetchingInfo || processing || inValidAmount}
+              isDisabled={fetchingInfo || processing || inValidAmount}
               onClick={approveToken}
             >
               Approve token

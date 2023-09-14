@@ -93,7 +93,6 @@ const ModalQuery = ({
   const handleSubmit = async () => {
     if (!isDisableSubmit) {
       let res;
-      setIsDisableSubmit(true);
       const submitData: { name: string; tags: string[] } = {
         name: dataForm.name.trim(),
         tags:
@@ -111,21 +110,18 @@ const ModalQuery = ({
             res = await rf
               .getRequest('DashboardsRequest')
               .updateQuery(submitData, id);
-            setIsDisableSubmit(false);
             toastSuccess({ message: 'Update query successfully!' });
             break;
           case TYPE_OF_MODAL.CREATE:
             res = await rf
               .getRequest('DashboardsRequest')
               .createNewQuery({ ...submitData, query, id: createQueryId });
-            setIsDisableSubmit(false);
             toastSuccess({ message: 'Create new query successfully!' });
             break;
           case TYPE_OF_MODAL.FORK:
             res = await rf
               .getRequest('DashboardsRequest')
               .forkQueries(id, submitData);
-            setIsDisableSubmit(false);
             history.push(`${ROUTES.MY_QUERY}/${res.id}`);
             toastSuccess({ message: 'Fork query successfully!' });
             break;
@@ -187,8 +183,9 @@ const ModalQuery = ({
           <AppButton
             py={'12px'}
             size="sm"
-            disabled={isDisableSubmit}
+            isDisabled={isDisableSubmit}
             onClick={handleSubmit}
+            showSubmitting
           >
             {generateSubmitBtn(type)}
           </AppButton>

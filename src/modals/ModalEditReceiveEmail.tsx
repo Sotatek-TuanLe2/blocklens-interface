@@ -101,7 +101,7 @@ const ModalEditReceiveEmail: React.FC<IModalEditReceiveEmail> = ({
         <AppButton
           w={'49%'}
           size="lg"
-          disabled={isDisableSubmit}
+          isDisabled={isDisableSubmit}
           onClick={handleOnSubmit}
         >
           Save

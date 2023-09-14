@@ -267,7 +267,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
               size="sm"
               leftIcon={<span className="icon-run-query " />}
               me="10px"
-              disabled={isLoadingRun || isLoadingResult}
+              isDisabled={isLoadingRun || isLoadingResult}
               fontSize={'14px'}
             >
               {isLoadingRun || isLoadingResult ? (

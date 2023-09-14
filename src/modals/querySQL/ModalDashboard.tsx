@@ -89,7 +89,6 @@ const ModalDashboard: React.FC<IModelNewDashboard> = ({
   const handleSubmitForm = async () => {
     try {
       let result;
-      setIsDisableSubmit(true);
       const submitData: { name: string; tags: string[] } = {
         name: dataForm.name.trim(),
         tags:
@@ -124,7 +123,6 @@ const ModalDashboard: React.FC<IModelNewDashboard> = ({
       onClose();
       onSuccess && (await onSuccess(result));
     } catch (error) {
-      setIsDisableSubmit(false);
       toastError({ message: getErrorMessage(error) });
     }
   };
@@ -191,7 +189,8 @@ const ModalDashboard: React.FC<IModelNewDashboard> = ({
           <AppButton
             size="lg"
             onClick={handleSubmitForm}
-            disabled={!dataForm.name.trim() || isDisableSubmit}
+            isDisabled={!dataForm.name.trim() || isDisableSubmit}
+            showSubmitting
           >
             {generateSubmitBtn(type)}
           </AppButton>

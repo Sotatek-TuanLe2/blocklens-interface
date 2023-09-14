@@ -140,7 +140,8 @@ const LoginPage: FC = () => {
               onClick={onLogin}
               size={'lg'}
               width={'full'}
-              disabled={isDisableSubmit}
+              isDisabled={isDisableSubmit}
+              showSubmitting
             >
               Log in
             </AppButton>
