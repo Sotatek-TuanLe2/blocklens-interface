@@ -225,23 +225,6 @@ const PartFormAddressActivity: FC<IPartFormAddressActivity> = ({
 
   const onDragOver = (e: any) => e.preventDefault();
 
-  interface AddressFrameProps {
-    addressesInput: string[];
-    editIndex: number;
-    editingAddress: string;
-    isValidAddress: (address: string) => boolean;
-    handleEditClick: (index: number) => void;
-    handleEditingInputChange: (
-      event: React.ChangeEvent<HTMLInputElement>,
-    ) => void;
-    handleEnterPress: (event: React.KeyboardEvent<HTMLInputElement>) => void;
-    currentAddress: string;
-    onChangeAddresses: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    stopEditing: () => void;
-    isNotCorrectAddress: boolean;
-    onClearAddressInvalid: () => void;
-  }
-
   return (
     <Flex flexWrap={'wrap'} justifyContent={'space-between'}>
       <AppField label={`${chain} Addresses`} customWidth={'100%'} isRequired>
