@@ -58,7 +58,7 @@ const AppRowItem: FC<AppRowItemProps> = ({
   const _renderLoadingRow = () => {
     return (
       <Flex
-        bg={'white'}
+        bg={'#fafafa'}
         boxShadow={'0px 15px 30px 0px #0000000A'}
         borderRadius={'10px'}
         mb={'6px'}
@@ -103,7 +103,7 @@ const AppRowItem: FC<AppRowItemProps> = ({
   const _renderRow = () => {
     return (
       <Flex
-        bg={'white'}
+        bg={'#fafafa'}
         boxShadow={'0px 15px 30px 0px #0000000A'}
         borderRadius={'10px'}
         mb={'6px'}
