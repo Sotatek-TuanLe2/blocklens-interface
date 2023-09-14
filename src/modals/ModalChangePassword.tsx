@@ -141,7 +141,7 @@ const ModalChangePassword: React.FC<IChangePasswordModal> = ({
       <AppButton
         w={'100%'}
         size="lg"
-        disabled={isDisableSubmit}
+        isDisabled={isDisableSubmit}
         onClick={handleOnSubmit}
       >
         Set password

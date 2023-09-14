@@ -37,7 +37,6 @@ const ModalDeleteApp: FC<IModalEditApp> = ({ open, onClose, appInfo }) => {
 
   const onDelete = async () => {
     try {
-      setDisabledDelete(true);
       await rf.getRequest('AppRequest').deleteApp(appInfo.projectId);
       toastSuccess({ message: 'Delete Successfully!' });
       dispatch(getUserStats());
@@ -45,7 +44,6 @@ const ModalDeleteApp: FC<IModalEditApp> = ({ open, onClose, appInfo }) => {
       onCloseModal();
     } catch (e) {
       toastError({ message: getErrorMessage(e) });
-      setDisabledDelete(false);
     }
   };
 
@@ -84,6 +82,7 @@ const ModalDeleteApp: FC<IModalEditApp> = ({ open, onClose, appInfo }) => {
           width={'49%'}
           size={'lg'}
           isDisabled={disabledDelete}
+          showSubmitting
           onClick={onDelete}
         >
           Delete Forever

@@ -105,7 +105,8 @@ const ForgotPasswordPage: FC = () => {
               size={'lg'}
               width={'full'}
               mt={3}
-              disabled={isDisableSubmit}
+              isDisabled={isDisableSubmit}
+              showSubmitting
             >
               Send reset email
             </AppButton>

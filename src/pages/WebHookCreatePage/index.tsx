@@ -389,7 +389,6 @@ const WebHookCreatePage: React.FC = () => {
       return;
     }
 
-    setIsDisableSubmit(true);
     const data = {
       ...dataForm,
       type: typeSelected,
@@ -421,7 +420,6 @@ const WebHookCreatePage: React.FC = () => {
       toastSuccess({ message: 'Create Successfully!' });
     } catch (e: any) {
       toastError({ message: e?.message || 'Oops. Something went wrong!' });
-      setIsDisableSubmit(false);
     }
   };
 
@@ -527,7 +525,7 @@ const WebHookCreatePage: React.FC = () => {
                   endAdornment={
                     <AppButton
                       onClick={handleSendDemoMsg}
-                      disabled={
+                      isDisabled={
                         isDisableSubmit || chainSelected.value === CHAINS.SUI
                       }
                       w={190}
@@ -540,7 +538,7 @@ const WebHookCreatePage: React.FC = () => {
                 <Show below="md">
                   <AppButton
                     onClick={handleSendDemoMsg}
-                    disabled={
+                    isDisabled={
                       isDisableSubmit || chainSelected.value === CHAINS.SUI
                     }
                     w={190}
@@ -554,9 +552,10 @@ const WebHookCreatePage: React.FC = () => {
 
             <Flex justifyContent={['center', 'flex-end']} mt={5}>
               <AppButton
-                disabled={isDisableSubmit}
+                isDisabled={isDisableSubmit}
                 onClick={handleSubmitForm}
                 size={'lg'}
+                showSubmitting
               >
                 Create
               </AppButton>

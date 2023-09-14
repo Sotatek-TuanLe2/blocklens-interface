@@ -144,7 +144,8 @@ const ResetPasswordPage: FC = () => {
               size={'lg'}
               width={'full'}
               mt={3}
-              disabled={isDisableSubmit}
+              isDisabled={isDisableSubmit}
+              showSubmitting
             >
               Set password
             </AppButton>

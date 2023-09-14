@@ -379,7 +379,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
             Cancel
           </AppButton>
           <AppButton
-            disabled={!myVisualizations.length || !visualSelected}
+            isDisabled={!myVisualizations.length || !visualSelected}
             size="lg"
             onClick={() => {
               handleSaveVisualization(widthWidget).then();

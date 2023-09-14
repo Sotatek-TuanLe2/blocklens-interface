@@ -193,7 +193,8 @@ const SignUpPage: FC = () => {
             onClick={onSignUp}
             size={'lg'}
             width={'full'}
-            disabled={isDisableSubmit}
+            isDisabled={isDisableSubmit}
+            showSubmitting
           >
             Sign up
           </AppButton>

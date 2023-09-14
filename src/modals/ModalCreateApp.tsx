@@ -75,7 +75,6 @@ const ModalCreateApp: FC<IModalCreateApp> = ({ open, onClose, reloadData }) => {
       return forceUpdate();
     }
 
-    setIsDisableSubmit(true);
     const dataSubmit = {
       name: dataForm.name.trim(),
       description: dataForm.description.trim(),
@@ -94,7 +93,6 @@ const ModalCreateApp: FC<IModalCreateApp> = ({ open, onClose, reloadData }) => {
         onCloseModal();
       }
     } catch (e) {
-      setIsDisableSubmit(false);
       toastError({ message: getErrorMessage(e) });
     }
   };
@@ -207,6 +205,7 @@ const ModalCreateApp: FC<IModalCreateApp> = ({ open, onClose, reloadData }) => {
             size={'lg'}
             isDisabled={isDisableSubmit}
             onClick={handleSubmitForm}
+            showSubmitting
           >
             Next
           </AppButton>

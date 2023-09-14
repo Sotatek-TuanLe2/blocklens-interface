@@ -282,10 +282,7 @@ const WebhookSettingsPage = () => {
               </Flex>
             </Flex>
 
-            <AppButtonLarge
-              onClick={onUpdateStatus}
-              //   isDisabled={appInfo.status === APP_STATUS.DISABLED}
-            >
+            <AppButtonLarge onClick={onUpdateStatus} showSubmitting>
               {isActive ? 'Deactivate' : 'Activate'}
             </AppButtonLarge>
           </Flex>

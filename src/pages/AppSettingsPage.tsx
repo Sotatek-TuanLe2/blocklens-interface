@@ -111,6 +111,7 @@ const AppSettingsPage: FC<IAppSettings> = () => {
           <AppButtonLarge
             onClick={handleSubmitForm}
             isDisabled={isDisableSubmit}
+            showSubmitting
           >
             Save
           </AppButtonLarge>
