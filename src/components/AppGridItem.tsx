@@ -138,7 +138,6 @@ const AppGridItem: FC<AppGridItemProps> = ({
           />
         </Link>
       </Box>
-      {/* <Divider colorScheme="rgba(0, 2, 36, 0.1)" /> */}
       <Flex
         w={'full'}
         flexGrow={1}
