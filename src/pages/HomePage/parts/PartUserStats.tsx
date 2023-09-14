@@ -47,7 +47,7 @@ const PartUserStats = ({
 
       const [userStats24h, userStatsChart] = responses;
 
-      if (userStats24h.status === 'fulfilled') {
+      if (userStats24h.status === 'fulfilled' && !!userStats24h.value) {
         const { messagesSuccess, messagesFailed, message, activities } =
           userStats24h.value;
 
@@ -57,7 +57,9 @@ const PartUserStats = ({
           messagesSuccess,
           message,
           activities,
-          successRate: formatToPercent(messagesSuccess / message),
+          successRate: !!message
+            ? formatToPercent(messagesSuccess / message)
+            : 0,
         });
       }
 
