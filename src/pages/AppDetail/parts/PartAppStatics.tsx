@@ -58,7 +58,9 @@ const PartAppStats = ({
           messagesSuccess,
           message,
           activities,
-          successRate: formatToPercent(messagesSuccess / message),
+          successRate: !!message
+            ? formatToPercent(messagesSuccess / message)
+            : 0,
         });
       }
 
