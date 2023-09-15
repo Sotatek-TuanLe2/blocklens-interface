@@ -47,6 +47,7 @@
           font-weight: 400;
           line-height: 24px;
           min-width: 19px;
+          letter-spacing: 0.1px;
         }
 
         .input-address {
@@ -55,6 +56,14 @@
 
         .line-address {
           padding: 5px 15px;
+
+          p {
+            letter-spacing: 0.02px !important;
+          }
+
+          input {
+            letter-spacing: 0.1px !important;
+          }
 
           &:hover {
             background: #f4f6f9;
