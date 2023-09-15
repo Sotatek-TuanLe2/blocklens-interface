@@ -159,7 +159,7 @@ const ListApps: React.FC = () => {
 
         return {
           ...app,
-          totalWebhook: appMetricToday?.webhooks || '--',
+          totalWebhook: app?.numOfWebhook || '--',
           messageToday: appMetricToday?.message || '--',
         };
       });
