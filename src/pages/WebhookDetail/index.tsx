@@ -34,8 +34,8 @@ const WebhookDetail: FC<IWebhookDetail> = () => {
           <AppHeading
             title={
               isMobile
-                ? `wh: ${formatShortText(webhook?.registrationId)}`
-                : `Webhook: ${webhook?.registrationId || '--'}`
+                ? `wh: ${formatShortText(webhook?.webhookName)}`
+                : `Webhook: ${webhook?.webhookName || '--'}`
             }
             linkBack={
               webhook.projectId
