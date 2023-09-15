@@ -1,13 +1,18 @@
-import { Box, Flex } from '@chakra-ui/react';
+import { Box, Flex, Text } from '@chakra-ui/react';
 import React, { FC } from 'react';
 import BaseModal from './BaseModal';
 import AppButton from 'src/components/AppButton';
+
+export enum SendMailType {
+  SING_UP,
+  RESET_PASS,
+}
 
 interface ModalUpgradeCreateApp {
   open: boolean;
   onClose: () => void;
   onResend: () => void;
-  type: 'Sign up' | 'Reset password';
+  type: SendMailType;
   email: string;
 }
 
@@ -18,32 +23,50 @@ const ModalResendMail: FC<ModalUpgradeCreateApp> = ({
   email,
   onResend,
 }) => {
-  const renderDescription = () => {
-    if (type === 'Sign up') {
-      return (
-        <Box className={'modal__description-email'}>
-          An emails has been sent to <span className="email">{email}</span>{' '}
-          <br />
-          Click the link in the email to complete signup.
-        </Box>
-      );
-    }
+  const SignUpComp = (
+    <Box className={'modal__description-email'}>
+      Check your email <span className="email">{email}</span> for the
+      verification link to complete sign up.
+    </Box>
+  );
 
-    return (
-      <Box className={'modal__description-email'}>
-        An emails has been sent to <span className="email">{email}</span> <br />
-        Click the link in the email to choose a new password.
-      </Box>
-    );
-  };
+  const ResetPassComp = (
+    <Box className={'modal__description-email'}>
+      Check your email <span className="email">{email}</span> for the link to
+      set up new password.
+    </Box>
+  );
 
   return (
     <BaseModal size="xl" icon="icon-sent-mail" isOpen={open} onClose={onClose}>
-      <Box mt={7}>{renderDescription()}</Box>
+      <Box mt={7}>
+        <Text
+          display={{ base: 'none', lg: 'block' }}
+          className="modal__title-send-mail"
+          as={'h2'}
+        >
+          One last step!
+        </Text>
+        <Box className={'modal__description-email'}>
+          {type === SendMailType.SING_UP ? SignUpComp : ResetPassComp}
+          <Flex justify={'center'}>
+            Didn’t receive it?
+            <Text
+              ml={1}
+              textColor={'#1979FF'}
+              cursor={'pointer'}
+              _hover={{ textDecor: 'underline' }}
+              onClick={onResend}
+            >
+              Resend
+            </Text>
+          </Flex>
+        </Box>
+      </Box>
 
-      <Flex flexWrap={'wrap'} justifyContent={'center'}>
-        <AppButton size={'lg'} onClick={onResend} showSubmitting>
-          Resend Email
+      <Flex flexWrap={'wrap'} justifyContent={'center'} pt={4}>
+        <AppButton size={'lg'} onClick={onClose} showSubmitting>
+          Finish
         </AppButton>
       </Flex>
     </BaseModal>

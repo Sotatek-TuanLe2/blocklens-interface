@@ -89,7 +89,7 @@
   &__description-email {
     @include text-medium-regular;
     color: $paragraph1;
-    margin-bottom: 18px;
+    margin-bottom: 7px;
     padding: 0 28px;
     text-align: center;
     white-space: pre-line;
@@ -102,6 +102,17 @@
       color: $paragraph1;
       font-weight: bold;
     }
+  }
+  &__title-send-mail {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 24px;
+    letter-spacing: 0em;
+    text-align: center;
+    background: linear-gradient(180deg, rgba(5, 83, 195, 0.8) 52.6%, rgba(28, 112, 251, 0.8) 100%);
+    background-clip: text;
+    color: transparent;
+    margin-bottom: 20px;
   }
 
   &__description-email {
@@ -119,7 +130,7 @@
   .modal-footer {
     margin-top: 20px;
 
-    &>button {
+    & > button {
       width: 213px;
     }
   }
