@@ -27,8 +27,6 @@ const WebhookDetail: FC<IWebhookDetail> = () => {
     return <Flex justifyContent="center">Webhook Not Found</Flex>;
   };
 
-  console.log(webhook);
-
   const _renderWebhookDetail = () => {
     return (
       <>
