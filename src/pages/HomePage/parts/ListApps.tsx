@@ -125,7 +125,7 @@ const AppMobile: FC<IAppMobile> = ({ app }) => {
               className="info"
             >
               <Box>Number of webhook</Box>
-              <Box className="value">{app.totalWebhook}</Box>
+              <Box className="value">{app.numOfWebhook}</Box>
             </Flex>
           </Box>
         )}
@@ -159,7 +159,7 @@ const ListApps: React.FC = () => {
 
         return {
           ...app,
-          totalWebhook: appMetricToday?.webhooks || '--',
+          totalWebhook: app?.numOfWebhook || '--',
           messageToday: appMetricToday?.message || '--',
         };
       });
@@ -229,7 +229,7 @@ const ListApps: React.FC = () => {
                 {app?.messageToday}
               </Td>
               <Td w="20%" textAlign={'center'}>
-                {app?.totalWebhook}
+                {app?.numOfWebhook}
               </Td>
               <Td w="15%" textAlign={'right'}>
                 <AppStatus status={app.status} />
