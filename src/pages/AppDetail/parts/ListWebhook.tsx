@@ -14,6 +14,7 @@ import _ from 'lodash';
 import { IAppResponse } from 'src/utils/utils-app';
 import { useHistory } from 'react-router';
 import { isMobile } from 'react-device-detect';
+import { formatNumber } from 'src/utils/utils-format';
 
 interface IListWebhook {
   appInfo: IAppResponse;
@@ -26,8 +27,6 @@ interface IListWebhook {
 
 interface IWebhookItem {
   webhook: IWebhook;
-  appInfo: IAppResponse;
-  type: string;
 }
 
 const _renderStatus = (status?: WEBHOOK_STATUS) => {
@@ -40,61 +39,61 @@ const _renderStatus = (status?: WEBHOOK_STATUS) => {
   );
 };
 
-const _renderDetailWebhook = (type: string, webhook: IWebhook) => {
-  if (type === WEBHOOK_TYPES.ADDRESS_ACTIVITY) {
-    return (
-      <>
-        {webhook.metadata.addresses.length}{' '}
-        {webhook.metadata.addresses.length > 1 ? 'addresses' : 'address'}
-      </>
-    );
-  }
+// const _renderDetailWebhook = (type: string, webhook: IWebhook) => {
+//   if (type === WEBHOOK_TYPES.ADDRESS_ACTIVITY) {
+//     return (
+//       <>
+//         {webhook.metadata.addresses.length}{' '}
+//         {webhook.metadata.addresses.length > 1 ? 'addresses' : 'address'}
+//       </>
+//     );
+//   }
 
-  if (type === WEBHOOK_TYPES.APTOS_COIN_ACTIVITY) {
-    return (
-      <Box>
-        <Tooltip hasArrow placement="top" label={webhook?.metadata?.coinType}>
-          <Box overflow={'hidden'} textOverflow={'ellipsis'}>
-            {shortAddressType(webhook?.metadata?.coinType || '')}
-          </Box>
-        </Tooltip>
-      </Box>
-    );
-  }
+//   if (type === WEBHOOK_TYPES.APTOS_COIN_ACTIVITY) {
+//     return (
+//       <Box>
+//         <Tooltip hasArrow placement="top" label={webhook?.metadata?.coinType}>
+//           <Box overflow={'hidden'} textOverflow={'ellipsis'}>
+//             {shortAddressType(webhook?.metadata?.coinType || '')}
+//           </Box>
+//         </Tooltip>
+//       </Box>
+//     );
+//   }
 
-  if (type === WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY) {
-    const content = formatTokenData(webhook);
-    return (
-      <Box>
-        <Tooltip hasArrow placement="top" label={content}>
-          <Box overflow={'hidden'} textOverflow={'ellipsis'}>
-            {content}
-          </Box>
-        </Tooltip>
-      </Box>
-    );
-  }
+//   if (type === WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY) {
+//     const content = formatTokenData(webhook);
+//     return (
+//       <Box>
+//         <Tooltip hasArrow placement="top" label={content}>
+//           <Box overflow={'hidden'} textOverflow={'ellipsis'}>
+//             {content}
+//           </Box>
+//         </Tooltip>
+//       </Box>
+//     );
+//   }
 
-  return (
-    <Box overflow={'hidden'} textOverflow={'ellipsis'}>
-      {formatShortText(webhook?.metadata?.address)}
-    </Box>
-  );
-};
+//   return (
+//     <Box overflow={'hidden'} textOverflow={'ellipsis'}>
+//       {formatShortText(webhook?.metadata?.address)}
+//     </Box>
+//   );
+// };
 
-const _renderTitleField = (type?: string) => {
-  if (type === WEBHOOK_TYPES.APTOS_COIN_ACTIVITY) {
-    return 'Coin Type';
-  }
+// const _renderTitleField = (type?: string) => {
+//   if (type === WEBHOOK_TYPES.APTOS_COIN_ACTIVITY) {
+//     return 'Coin Type';
+//   }
 
-  if (type === WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY) {
-    return 'Token Data';
-  }
+//   if (type === WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY) {
+//     return 'Token Data';
+//   }
 
-  return 'Address';
-};
+//   return 'Address';
+// };
 
-const WebhookMobile: FC<IWebhookItem> = ({ webhook, appInfo, type }) => {
+const WebhookMobile: FC<IWebhookItem> = ({ webhook }) => {
   const history = useHistory();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   return (
@@ -108,9 +107,7 @@ const WebhookMobile: FC<IWebhookItem> = ({ webhook, appInfo, type }) => {
           alignItems="center"
           className="info"
         >
-          <Box className="name-mobile">
-            {formatShortText(webhook.registrationId)}
-          </Box>
+          <Box className="name-mobile">{webhook.webhookName}</Box>
           <Box
             className={isOpen ? 'icon-minus' : 'icon-plus'}
             onClick={(e) => {
@@ -118,6 +115,14 @@ const WebhookMobile: FC<IWebhookItem> = ({ webhook, appInfo, type }) => {
               setIsOpen(!isOpen);
             }}
           />
+        </Flex>
+        <Flex
+          justifyContent="space-between"
+          alignItems="center"
+          className="info"
+        >
+          <Box>Id</Box>
+          <Box>{webhook.registrationId}</Box>
         </Flex>
         <Flex
           justifyContent="space-between"
@@ -135,7 +140,7 @@ const WebhookMobile: FC<IWebhookItem> = ({ webhook, appInfo, type }) => {
               alignItems="center"
               className="info"
             >
-              <Box>Webhook</Box>
+              <Box>Webhook URL</Box>
               <Box className="short-text value" ml={3}>
                 {webhook.webhook}
               </Box>
@@ -145,8 +150,8 @@ const WebhookMobile: FC<IWebhookItem> = ({ webhook, appInfo, type }) => {
               alignItems="center"
               className="info"
             >
-              <Box>{_renderTitleField(type)}</Box>
-              <Box className="value">{_renderDetailWebhook(type, webhook)}</Box>
+              <Box>In 24h</Box>
+              <Box className="value">{formatNumber(webhook.messageToday)}</Box>
             </Flex>
           </Box>
         )}
@@ -155,7 +160,7 @@ const WebhookMobile: FC<IWebhookItem> = ({ webhook, appInfo, type }) => {
   );
 };
 
-const WebhookItem: FC<IWebhookItem> = ({ webhook, appInfo, type }) => {
+const WebhookItem: FC<IWebhookItem> = ({ webhook }) => {
   const history = useHistory();
   return (
     <Tbody>
@@ -163,14 +168,23 @@ const WebhookItem: FC<IWebhookItem> = ({ webhook, appInfo, type }) => {
         className="tr-list"
         onClick={() => history.push(`/webhooks/${webhook.registrationId}`)}
       >
-        <Td w="20%">{formatShortText(webhook.registrationId)}</Td>
-        <Td w="35%">
-          <Box className="short-text">{webhook.webhook}</Box>
+        <Td w="25%" isTruncated>
+          <Tooltip hasArrow placement="top" label={webhook.webhookName}>
+            {webhook.webhookName}
+          </Tooltip>
         </Td>
-        <Td w="30%">{_renderDetailWebhook(type, webhook)}</Td>
-        <Td w="15%" textAlign={'right'}>
-          {_renderStatus(webhook.status)}
+        <Td w="20%" isTruncated>
+          <Tooltip hasArrow placement="top" label={webhook.registrationId}>
+            {formatShortText(webhook.registrationId)}
+          </Tooltip>
         </Td>
+        <Td w="25%" isTruncated>
+          <Tooltip hasArrow placement="top" label={webhook.webhook}>
+            {webhook.webhook}
+          </Tooltip>
+        </Td>
+        <Td>{formatNumber(webhook.messageToday)}</Td>
+        <Td textAlign={'right'}>{_renderStatus(webhook.status)}</Td>
       </Tr>
     </Tbody>
   );
@@ -190,6 +204,25 @@ const ListWebhook: FC<IListWebhook> = ({
         const res: IListAppResponse = await rf
           .getRequest('RegistrationRequest')
           .getRegistrations(appInfo.projectId, params);
+
+        if (!!res.docs.length) {
+          const res24h = await rf
+            .getRequest('NotificationRequest')
+            .getWebhookStats24h(res.docs.map((item) => item.registrationId));
+
+          if (!!res24h.length) {
+            res.docs.forEach((item) => {
+              const itemInRes24h = res24h.find(
+                (item24h: any) =>
+                  item24h.registrationId === item.registrationId,
+              );
+              if (itemInRes24h) {
+                item.messageToday = itemInRes24h.message;
+              }
+            });
+          }
+        }
+
         setTotalWebhook(res?.totalDocs || 0);
         return res;
       } catch (error) {
@@ -222,12 +255,11 @@ const ListWebhook: FC<IListWebhook> = ({
     return (
       <Thead className="header-list">
         <Tr>
+          <Th w="25%">NAME</Th>
           <Th w="20%">ID</Th>
-          <Th w="35%">Webhook URL</Th>
-          <Th w="30%">{_renderTitleField(type)}</Th>
-          <Th textAlign={'right'} w="15%">
-            Status
-          </Th>
+          <Th w="25%">WEBHOOK URL</Th>
+          <Th>IN 24H</Th>
+          <Th textAlign={'right'}>STATUS</Th>
         </Tr>
       </Thead>
     );
@@ -237,14 +269,7 @@ const ListWebhook: FC<IListWebhook> = ({
     return (
       <Box className="list-card-mobile">
         {webhooks?.map((webhook: IWebhook, index: number) => {
-          return (
-            <WebhookMobile
-              appInfo={appInfo}
-              key={index}
-              webhook={webhook}
-              type={webhook.type}
-            />
-          );
+          return <WebhookMobile key={index} webhook={webhook} />;
         })}
       </Box>
     );
@@ -253,14 +278,7 @@ const ListWebhook: FC<IListWebhook> = ({
   const _renderBody = (webhooks?: IWebhook[]) => {
     if (isMobile) return _renderListWebhookMobile(webhooks);
     return webhooks?.map((webhook: IWebhook, index: number) => {
-      return (
-        <WebhookItem
-          key={index}
-          webhook={webhook}
-          appInfo={appInfo}
-          type={webhook.type}
-        />
-      );
+      return <WebhookItem key={index} webhook={webhook} />;
     });
   };
 

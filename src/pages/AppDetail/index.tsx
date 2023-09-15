@@ -277,6 +277,7 @@ const AppDetail = () => {
           variant={'unstyled'}
           colorScheme="transparent"
           defaultIndex={defaultTab}
+          isLazy
         >
           <TabList className={`app-tabs`}>
             <Flex w={'100%'}>
@@ -290,9 +291,7 @@ const AppDetail = () => {
               >
                 Address Activity
               </Tab>
-
               {isEVMNetwork(appInfo.chain) && _renderListTabsEVM()}
-
               {isAptosNetwork(appInfo.chain) && _renderListTabsAptos()}
             </Flex>
           </TabList>
@@ -301,7 +300,7 @@ const AppDetail = () => {
 
           {isAptosNetwork(appInfo.chain) && _renderTabPanelsAptos()}
 
-          {isSuiNetwork(appInfo?.chain) && _renderTabPanelsSui()}
+          {/* {isSuiNetwork(appInfo?.chain) && _renderTabPanelsSui()} */}
         </Tabs>
       </AppCard>
     );
