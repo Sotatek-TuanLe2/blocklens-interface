@@ -36,7 +36,7 @@ export interface IListAppResponse {
   totalDocs: number;
   limit?: number;
   page: number;
-  docs: IListAppResponse;
+  docs: any[];
   totalAppActive?: number;
 }
 
