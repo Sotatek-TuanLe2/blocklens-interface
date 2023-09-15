@@ -70,12 +70,30 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
   };
 
   const _renderContentAddress = () => {
-    return <Td w="15%">{formatShortText(message?.input?.trackingAddress)}</Td>;
+    return (
+      <Td w="15%">
+        <Tooltip
+          hasArrow
+          placement="top"
+          label={message?.input?.trackingAddress || ''}
+        >
+          {shortAddressType(message?.input?.trackingAddress || '')}
+        </Tooltip>
+      </Td>
+    );
   };
 
   const _renderContentAptosCoin = () => {
     return (
-      <Td w="15%">{shortAddressType(webhook?.metadata?.coinType || '')}</Td>
+      <Td w="15%" isTruncated>
+        <Tooltip
+          hasArrow
+          placement="top"
+          label={webhook?.metadata?.coinType || ''}
+        >
+          {shortAddressType(webhook?.metadata?.coinType || '')}
+        </Tooltip>
+      </Td>
     );
   };
 
