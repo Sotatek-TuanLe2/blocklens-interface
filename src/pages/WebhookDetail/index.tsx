@@ -27,6 +27,8 @@ const WebhookDetail: FC<IWebhookDetail> = () => {
     return <Flex justifyContent="center">Webhook Not Found</Flex>;
   };
 
+  console.log(webhook);
+
   const _renderWebhookDetail = () => {
     return (
       <>
@@ -34,8 +36,8 @@ const WebhookDetail: FC<IWebhookDetail> = () => {
           <AppHeading
             title={
               isMobile
-                ? `wh: ${formatShortText(webhook?.registrationId)}`
-                : `Webhook: ${webhook?.registrationId || '--'}`
+                ? `wh: ${formatShortText(webhook?.webhookName)}`
+                : `Webhook: ${webhook?.webhookName || '--'}`
             }
             linkBack={
               webhook.projectId
