@@ -87,10 +87,11 @@ const PartFormAddressActivity: FC<IPartFormAddressActivity> = ({
   }, [addressesInput, addressesInvalid]);
 
   const onClearFile = () => {
+    setAddressesInput(['']);
+
     if (!isInsertManuallyAddress) {
       setFileSelected({});
       inputRef.current.value = null;
-      setAddressesInput(['']);
       setDataForm({
         ...dataForm,
         metadata: {
@@ -123,14 +124,14 @@ const PartFormAddressActivity: FC<IPartFormAddressActivity> = ({
     reader.onload = (e: any) => {
       const data = e.target.result;
       const dataFormat = data?.split('\n').filter((item: string) => !!item);
-      const uploadedAddresses = dataFormat
-        .map((item: string) => item.replace('\r', ''))
-        .join('\n');
+      const uploadedAddresses = dataFormat.map((item: string) =>
+        item.replace('\r', ''),
+      );
       if (!uploadedAddresses) {
         toastError({ message: 'The Addresses file must be correct format' });
         return;
       }
-      setAddressesInput(dataFormat);
+      setAddressesInput(uploadedAddresses);
       setFileSelected(dropFile || evt.target.files[0]);
     };
 
@@ -143,7 +144,11 @@ const PartFormAddressActivity: FC<IPartFormAddressActivity> = ({
         <>
           <Box className="file-name">
             {fileSelected?.name}
-            <CloseIcon onClick={onClearFile} className={'icon-clear'} ml={3} />
+            <CloseIcon
+              onClick={() => onClearFile()}
+              className={'icon-clear'}
+              ml={3}
+            />
           </Box>
         </>
       );
@@ -284,7 +289,7 @@ const AddressList: FC<IAddressListProps> = ({
   const [hasInteracted, setHasInteracted] = useState<boolean>(false);
 
   useEffect(() => {
-    if (!fileSelected.name) return;
+    if (!fileSelected?.name) return;
     setEditingIndex(null);
   }, [fileSelected]);
 
@@ -320,6 +325,11 @@ const AddressList: FC<IAddressListProps> = ({
 
   const handleEditClick = (index: number) => {
     setEditingIndex(index);
+    setTimeout(() => {
+      if (inputRef.current) {
+        inputRef.current.focus();
+      }
+    }, 0);
   };
 
   const stopEditing = () => {
