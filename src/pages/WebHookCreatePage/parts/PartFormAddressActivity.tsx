@@ -287,7 +287,7 @@ const AddressList: FC<IAddressListProps> = ({
 }) => {
   const [editingIndex, setEditingIndex] = useState<number | null>(0);
   const [hasInteracted, setHasInteracted] = useState<boolean>(false);
-
+  console.log(hasInteracted);
   useEffect(() => {
     if (!fileSelected?.name) return;
     setEditingIndex(null);
@@ -297,7 +297,7 @@ const AddressList: FC<IAddressListProps> = ({
     const updatedAddresses = [...addressesInput];
     updatedAddresses[index] = newValue;
     setAddressesInput(updatedAddresses);
-    setHasInteracted(true);
+    setHasInteracted(false);
   };
 
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -337,6 +337,7 @@ const AddressList: FC<IAddressListProps> = ({
       setAddressesInput(addressesInput.filter((i) => i !== ''));
     }
     setEditingIndex(null);
+    setHasInteracted(true);
   };
 
   const isNotCorrectAddress = useMemo(
@@ -387,17 +388,23 @@ const AddressList: FC<IAddressListProps> = ({
             </Flex>
           );
         })}
-        {addressesInput.length && !isBlankAddress && isNotCorrectAddress && (
-          <Flex alignItems="center" mt="28px" ml="16px">
-            <Text fontStyle="italic">
-              Invalid address:{' '}
-              {addressesInput.filter((i) => !isValidAddress(i)).length}
-            </Text>
-            <Box className="btn-delete-address" onClick={onClearAddressInvalid}>
-              Delete all invalid
-            </Box>
-          </Flex>
-        )}
+        {hasInteracted &&
+          addressesInput.length &&
+          !isBlankAddress &&
+          isNotCorrectAddress && (
+            <Flex alignItems="center" mt="28px" ml="16px">
+              <Text fontStyle="italic">
+                Invalid address:{' '}
+                {addressesInput.filter((i) => !isValidAddress(i)).length}
+              </Text>
+              <Box
+                className="btn-delete-address"
+                onClick={onClearAddressInvalid}
+              >
+                Delete all invalid
+              </Box>
+            </Flex>
+          )}
       </Box>
       {hasInteracted && !addressesInput[0].length && (
         <Text className="text-error">The addresses field is required</Text>
