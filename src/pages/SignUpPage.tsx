@@ -10,7 +10,7 @@ import {
 } from 'src/components';
 import { COMMON_ERROR_MESSAGE } from 'src/constants';
 import GuestPage from 'src/layouts/GuestPage';
-import ModalResendMail from 'src/modals/ModalResendMail';
+import ModalResendMail, { SendMailType } from 'src/modals/ModalResendMail';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/pages/LoginPage.scss';
 import { ROUTES } from 'src/utils/common';
@@ -213,7 +213,7 @@ const SignUpPage: FC = () => {
         {_renderFormSignUp()}
 
         <ModalResendMail
-          type="Sign up"
+          type={SendMailType.SING_UP}
           email={dataForm.email}
           open={openModalResendEmail}
           onClose={() => setOpenModalResendEmail(false)}
