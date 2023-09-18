@@ -287,7 +287,6 @@ const AddressList: FC<IAddressListProps> = ({
 }) => {
   const [editingIndex, setEditingIndex] = useState<number | null>(0);
   const [hasInteracted, setHasInteracted] = useState<boolean>(false);
-  console.log(hasInteracted);
   useEffect(() => {
     if (!fileSelected?.name) return;
     setEditingIndex(null);
