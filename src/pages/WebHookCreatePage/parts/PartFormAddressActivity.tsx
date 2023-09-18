@@ -379,8 +379,10 @@ const AddressList: FC<IAddressListProps> = ({
                   >
                     {address}
                   </Text>
-                  {inValidAddress && (
+                  {inValidAddress && !!addressesInput[0].length ? (
                     <Text className="invalid-card">Invalid</Text>
+                  ) : (
+                    <Box w="10px" h="10px"></Box>
                   )}
                 </Flex>
               )}
