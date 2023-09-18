@@ -306,7 +306,7 @@ const AddressList: FC<IAddressListProps> = ({
           const inValidAddress = !!address && !isValidAddress(chain, address);
           return (
             <AddressInput
-              key={index}
+              key={`${index}-${Date.now()}`}
               index={index}
               value={address}
               isInvalid={inValidAddress}
@@ -357,11 +357,19 @@ const AddressInput: FC<IAddressInputProps> = ({
 
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  useEffect(() => {
-    if ((isEditing || initialEditing) && inputRef.current) {
+  const focusInput = () => {
+    if (isEditing && inputRef.current) {
       inputRef.current.focus();
     }
-  }, [initialEditing, isEditing, inputRef.current]);
+  };
+
+  useEffect(() => {
+    focusInput();
+  }, []);
+
+  useEffect(() => {
+    focusInput();
+  }, [isEditing]);
 
   useEffect(() => {
     setInputValue(value);
@@ -373,6 +381,10 @@ const AddressInput: FC<IAddressInputProps> = ({
   };
 
   const onChangeInputValue = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.value) {
+      onChangeInputAtIndex('', index, false, true);
+      setIsEditing(false);
+    }
     setInputValue(e.target.value);
   };
 
