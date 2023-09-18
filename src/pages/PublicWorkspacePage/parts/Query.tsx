@@ -221,6 +221,9 @@ const QueryPart: React.FC = () => {
         data={queryValue}
         needAuthentication={false}
       />
+      <Box className="space-top-editor" height="10px" width="100%">
+        <Box className="space-top-editor" height="10px" width="50px"></Box>
+      </Box>
       <div className="query-container queries-page">
         <Box className="queries-page__right-side">
           <SplitterLayout
