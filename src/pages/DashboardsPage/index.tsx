@@ -150,12 +150,15 @@ const DashboardsPage: React.FC = () => {
   }, [searchUrl, tab, itemType, user]);
 
   useEffect(() => {
-    // user logs out when in My Work tab
-    if (!user && tab === LIST_ITEM_TYPE.MYWORK) {
+    // user logs out when in My Work tab or Saved tab
+    if (
+      !user &&
+      (tab === LIST_ITEM_TYPE.MYWORK || tab === LIST_ITEM_TYPE.SAVED)
+    ) {
       setTab(LIST_ITEM_TYPE.DASHBOARDS);
       setTabIndex(0);
     }
-  }, [user]);
+  }, [user, tab]);
 
   const getSearchParam = (value?: string) => {
     return value?.trim() || undefined;
