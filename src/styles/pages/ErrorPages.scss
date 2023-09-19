@@ -1,0 +1,7 @@
+@import '../color-variables';
+
+.error-page {
+  color: $red;
+  white-space: pre-line;
+  height: calc(100vh - 180px);
+}
