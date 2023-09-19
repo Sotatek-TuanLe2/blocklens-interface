@@ -10,6 +10,7 @@ import {
   InputGroup,
   useEditableControls,
   Box,
+  Tooltip,
 } from '@chakra-ui/react';
 import { forwardRef } from '@chakra-ui/system';
 import 'src/styles/components/AppEditableTags.scss';
@@ -110,7 +111,19 @@ const AppEditableTags = forwardRef<IAppEditableTagsProps, any>(
           {tags?.map((tag, index) => {
             return (
               <Flex key={tag + index} className="app-hashtags__item">
-                <Box className="app-hashtags__item--text">#{tag}</Box>
+                <Flex className="app-hashtags__item--text">
+                  #
+                  {tag.length > 10 ? (
+                    <Tooltip hasArrow placement="top" label={tag}>
+                      <Flex className="app-hashtags__item--text">
+                        {tag.slice(0, 10)}
+                        ...
+                      </Flex>
+                    </Tooltip>
+                  ) : (
+                    tag
+                  )}
+                </Flex>
                 {onRemove && (
                   <IconButton
                     aria-label="close"
