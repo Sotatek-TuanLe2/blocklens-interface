@@ -113,7 +113,7 @@ const DashboardsPage: React.FC = () => {
       case LIST_ITEM_TYPE.MYWORK:
       case LIST_ITEM_TYPE.SAVED:
         if (!user) {
-          history.push(ROUTES.HOME);
+          setTab(LIST_ITEM_TYPE.DASHBOARDS);
           break;
         }
         setItemType(type);
