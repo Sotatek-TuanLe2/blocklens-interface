@@ -572,7 +572,9 @@ const VisualizationDisplay = ({
       />
       <BaseModal
         title={'Remove Visualization'}
-        description={'All contents within this widget will be removed.'}
+        description={
+          'Tables and charts from this query will be removed from all dashboards. Are you sure?'
+        }
         icon="icon-delete"
         isOpen={!!closeTabIndex}
         onClose={() => setCloseTabIndex('')}
