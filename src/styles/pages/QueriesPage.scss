@@ -11,9 +11,36 @@
 }
 
 .queries-page {
+  margin-top: 32px;
+  position: relative;
   display: flex;
   flex-direction: row;
   gap: 20px;
+
+  &::before {
+    content: '';
+    display: block;
+    height: 18px;
+    width: 50px;
+    background: #fff;
+    position: absolute;
+    top: -18px;
+    left: 0;
+    z-index: 1;
+    border-right: 1px solid rgba(0, 2, 36, 0.1);
+  }
+
+  &::after {
+    content: '';
+    display: block;
+    height: 18px;
+    width: calc(100% - 50px);
+    background: #fff;
+    position: absolute;
+    top: -18px;
+    left: 50px;
+    z-index: 1;
+  }
 
   .expand {
     height: 100% !important;
@@ -136,6 +163,7 @@
   .ace_gutter-layer {
     background: #fff;
     border-right: 1px solid rgba(0, 2, 36, 0.1);
+    width: 50px !important;
   }
 
   .ace_gutter-active-line {
@@ -145,7 +173,6 @@
   .ace_scroller {
     margin-left: 14px;
     overflow: unset;
-    top: 18px;
 
     .ace_active-line,
     .ace_content {
@@ -154,7 +181,7 @@
   }
 
   .custom-editor {
-    height: 100vh !important;
+    height: 96% !important;
     display: block;
     border-bottom-left-radius: 6px;
     border-bottom-right-radius: 6px;
@@ -277,17 +304,13 @@
       }
     }
 
-    .ace_gutter-cell {
-      margin-top: 18px;
-    }
-
     .editor-wrapper {
+      height: 100%;
       box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.04);
       width: 100%;
       border-radius: 6px;
       margin-bottom: 8px;
       position: relative;
-      overflow-y: auto;
 
       .ace_text-input {
         top: 18px !important;
@@ -296,6 +319,9 @@
 
       .ace_gutter {
         overflow: unset;
+        background: #fff;
+        border-right: 1px solid rgba(0, 2, 36, 0.1);
+        width: 50px !important;
       }
 
       .ace_editor {
