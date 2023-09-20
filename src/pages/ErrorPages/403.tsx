@@ -29,11 +29,8 @@ const Error403Page = () => {
             className="error-page"
           >
             <Stack textAlign={'center'} spacing={'20px'} alignItems="center">
-              <Heading size={'2xl'}>403</Heading>
-              <Heading size={'lg'}>Access Denied</Heading>
-              <Heading size={'md'}>
-                You do not have permission to access this page
-              </Heading>
+              <img src="/images/403_forbidden.png" alt="403 forbidden" />
+              <Heading size={'lg'}>You don't have access to this page</Heading>
               <AppButton
                 onClick={onLogout}
                 width={'fit-content'}
