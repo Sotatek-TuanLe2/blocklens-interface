@@ -113,7 +113,7 @@ const DashboardsPage: React.FC = () => {
       case LIST_ITEM_TYPE.MYWORK:
       case LIST_ITEM_TYPE.SAVED:
         if (!user) {
-          history.push(ROUTES.HOME);
+          setTab(LIST_ITEM_TYPE.DASHBOARDS);
           break;
         }
         setItemType(type);
@@ -150,12 +150,15 @@ const DashboardsPage: React.FC = () => {
   }, [searchUrl, tab, itemType, user]);
 
   useEffect(() => {
-    // user logs out when in My Work tab
-    if (!user && tab === LIST_ITEM_TYPE.MYWORK) {
+    // user logs out when in My Work tab or Saved tab
+    if (
+      !user &&
+      (tab === LIST_ITEM_TYPE.MYWORK || tab === LIST_ITEM_TYPE.SAVED)
+    ) {
       setTab(LIST_ITEM_TYPE.DASHBOARDS);
       setTabIndex(0);
     }
-  }, [user]);
+  }, [user, tab]);
 
   const getSearchParam = (value?: string) => {
     return value?.trim() || undefined;
@@ -222,7 +225,7 @@ const DashboardsPage: React.FC = () => {
         console.error(error);
       }
     },
-    [dashboardParams],
+    [dashboardParams, user],
   );
 
   const fetchMyDashboards = useCallback(
@@ -240,7 +243,7 @@ const DashboardsPage: React.FC = () => {
         console.error(error);
       }
     },
-    [dashboardParams],
+    [dashboardParams, user],
   );
 
   const fetchMySavedDashboards = useCallback(
@@ -263,7 +266,7 @@ const DashboardsPage: React.FC = () => {
         console.error(error);
       }
     },
-    [dashboardParams],
+    [dashboardParams, user],
   );
 
   const fetchAllQueries = useCallback(
@@ -278,7 +281,7 @@ const DashboardsPage: React.FC = () => {
         console.error(error);
       }
     },
-    [queryParams],
+    [queryParams, user],
   );
 
   const fetchMyQueries = useCallback(
@@ -294,7 +297,7 @@ const DashboardsPage: React.FC = () => {
         console.error(error);
       }
     },
-    [queryParams],
+    [queryParams, user],
   );
 
   const fetchMySavedQueries = useCallback(
@@ -312,7 +315,7 @@ const DashboardsPage: React.FC = () => {
         console.error(error);
       }
     },
-    [queryParams],
+    [queryParams, user],
   );
 
   const _renderContentTable = useCallback(

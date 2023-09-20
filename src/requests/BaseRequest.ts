@@ -12,6 +12,7 @@ import { RECAPTCHA_ACTIONS } from 'src/utils/common';
 import { COMMON_ERROR_MESSAGE } from 'src/constants';
 import store from 'src/store';
 import { setUserAuth } from 'src/store/user';
+import { TOGGLE_403_PAGE } from 'src/layouts/BasePage';
 
 export default class BaseRequest {
   protected accessToken = '';
@@ -123,10 +124,6 @@ export default class BaseRequest {
     return response.data;
   }
 
-  _error403Handler() {
-    return AppBroadcast.dispatch('LOGOUT_USER');
-  }
-
   async _error401Handler(error: any) {
     const refreshToken = Storage.getRefreshToken();
     if (!refreshToken) {
@@ -150,16 +147,23 @@ export default class BaseRequest {
     }
   }
 
-  async _errorHandler(err: any) {
-    if (
-      err.response?.status === 401 &&
-      err.response.data?.message.toString() !== 'Credential is not correct'
-    ) {
-      return this._error401Handler(err);
-    }
+  _error403Handler() {
+    return AppBroadcast.dispatch(TOGGLE_403_PAGE, true);
+  }
 
-    if (err.response?.status === 403) {
-      return this._error403Handler();
+  async _errorHandler(err: any) {
+    switch (err.response?.status) {
+      case 401:
+        if (
+          err.response.data?.message.toString() !== 'Credential is not correct'
+        ) {
+          return this._error401Handler(err);
+        }
+        break;
+      case 403:
+        return this._error403Handler();
+      default:
+        break;
     }
 
     if (err.response) {

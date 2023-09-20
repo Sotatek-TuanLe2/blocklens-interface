@@ -245,7 +245,6 @@ const WebHookCreatePage: React.FC = () => {
       <PartFormAddressActivity
         dataForm={dataForm}
         setDataForm={setDataForm}
-        type={typeSelected}
         validator={validator}
         chain={chainSelected.value}
       />
