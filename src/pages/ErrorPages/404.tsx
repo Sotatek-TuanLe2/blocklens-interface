@@ -22,10 +22,9 @@ const Error404Page = () => (
         </Flex>
         <Box>
           <Heading size={'sm'} color={'#c5c6ca'}>
-            Uh oh, we can't seem to find the page you're looking for.
-          </Heading>
-          <Heading size={'sm'} color={'#c5c6ca'}>
-            Try going back to previous page or Contact us for more information
+            {
+              'The page you are looking for might be removed\n or is temporarily unavailable'
+            }
           </Heading>
         </Box>
 
