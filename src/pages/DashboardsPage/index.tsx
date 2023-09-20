@@ -155,8 +155,7 @@ const DashboardsPage: React.FC = () => {
       !user &&
       (tab === LIST_ITEM_TYPE.MYWORK || tab === LIST_ITEM_TYPE.SAVED)
     ) {
-      setTab(LIST_ITEM_TYPE.DASHBOARDS);
-      setTabIndex(0);
+      history.push(ROUTES.HOME);
     }
   }, [user, tab]);
 
