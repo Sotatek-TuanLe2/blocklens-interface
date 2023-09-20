@@ -40,6 +40,7 @@ import PublicWorkspacePage from './pages/PublicWorkspacePage';
 import useOriginPath from '././hooks/useOriginPath';
 import WebHookCreatePage from './pages/WebHookCreatePage';
 import DashboardScreenShot from './pages/DashboardScreenShot';
+import { Error404Page } from './pages/ErrorPages';
 
 /**
  * Main App routes.
@@ -102,7 +103,6 @@ const Routes: FC<RouteComponentProps> = () => {
           path={ROUTES.FORGOT_PASSWORD}
           component={ForgotPasswordPage}
         />
-
         <PublicRoute
           path={ROUTES.RESET_PASSWORD}
           component={ResetPasswordPage}
@@ -112,7 +112,6 @@ const Routes: FC<RouteComponentProps> = () => {
         {/*<PrivateRoute path={'/billing-info'} component={BillingInfoPage} />*/}
         {/*<PrivateRoute path={'/billing-history'} component={BillingHistory} />*/}
         {/*<PrivateRoute path={'/top-up'} component={TopUpPage} /> *!/*/}
-
         <PrivateRoute
           path={`/webhook/:webhookId/activities/:id`}
           component={MessagesHistory}
@@ -129,14 +128,11 @@ const Routes: FC<RouteComponentProps> = () => {
           path={`${ROUTES.WEBHOOKS}/:id`}
           component={WebhookDetail}
         />
-
         <PrivateRoute
           path={'/create-webhook/:id'}
           component={WebHookCreatePage}
         />
-
         <PrivateRoute path={`${ROUTES.APP}/:id`} component={AppDetail} />
-
         <PrivateRoute path={`${ROUTES.TRIGGERS}`} component={HomePage} />
         <Route
           path={`${ROUTES.DASHBOARD}/:dashboardId?`}
@@ -160,8 +156,8 @@ const Routes: FC<RouteComponentProps> = () => {
         />
         <Route path={ROUTES.CREATE_WEBHOOK} component={WebHookCreatePage} />
         <Route path={ROUTES.CONTACT_US} component={ContactUs} />
-        <Route path={ROUTES.HOME} component={DashboardsPage} />
-
+        <Route exact path={ROUTES.HOME} component={DashboardsPage} />
+        <Route path="*" component={Error404Page} />
         {/* <PrivateRoute path={'/'} component={HomePage} /> */}
       </Switch>
       <>

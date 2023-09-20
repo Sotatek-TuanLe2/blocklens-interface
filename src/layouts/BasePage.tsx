@@ -3,6 +3,8 @@ import { Box, Flex, Spinner } from '@chakra-ui/react';
 import React from 'react';
 import { GuestPage } from 'src/layouts';
 import 'src/styles/layout/BasePage.scss';
+import { AppBroadcast } from 'src/utils/utils-broadcast';
+import { Error403Page } from 'src/pages/ErrorPages';
 
 interface BasePage {
   className?: string;
@@ -12,6 +14,8 @@ interface BasePage {
   noHeader?: boolean;
 }
 
+export const TOGGLE_403_PAGE = 'TOGGLE_403_PAGE';
+
 const BasePage: FC<BasePage> = ({
   onInitPage,
   children,
@@ -20,6 +24,8 @@ const BasePage: FC<BasePage> = ({
   noHeader = false,
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [show403Page, setShow403Page] = useState<boolean>(false);
+
   const onInit = async () => {
     try {
       setIsLoading(true);
@@ -31,8 +37,18 @@ const BasePage: FC<BasePage> = ({
   };
 
   useEffect(() => {
+    AppBroadcast.on(TOGGLE_403_PAGE, setShow403Page);
+
     onInit().then();
+
+    return () => {
+      AppBroadcast.remove(TOGGLE_403_PAGE);
+    };
   }, []);
+
+  if (show403Page) {
+    return <Error403Page />;
+  }
 
   return (
     <GuestPage noHeader={noHeader}>
