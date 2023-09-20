@@ -225,8 +225,8 @@ const QueryPart: React.FC = () => {
         <Box className="queries-page__right-side">
           <SplitterLayout
             primaryIndex={0}
-            primaryMinSize={50}
-            secondaryMinSize={60}
+            primaryMinSize={30}
+            secondaryMinSize={140}
             vertical
             secondaryInitialSize={visualizationHeight}
             onSecondaryPaneSizeChange={onChangeVisualizationHeight}

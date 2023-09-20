@@ -11,7 +11,7 @@
 }
 
 .queries-page {
-  margin-top: 20px;
+  margin-top: 32px;
   position: relative;
   display: flex;
   flex-direction: row;
@@ -24,7 +24,7 @@
     width: 50px;
     background: #fff;
     position: absolute;
-    top: -10px;
+    top: -18px;
     left: 0;
     z-index: 1;
     border-right: 1px solid rgba(0, 2, 36, 0.1);
@@ -37,7 +37,7 @@
     width: calc(100% - 50px);
     background: #fff;
     position: absolute;
-    top: -10px;
+    top: -18px;
     left: 50px;
     z-index: 1;
   }
@@ -311,7 +311,6 @@
       border-radius: 6px;
       margin-bottom: 8px;
       position: relative;
-      margin-top: 8px;
 
       .ace_text-input {
         top: 18px !important;
