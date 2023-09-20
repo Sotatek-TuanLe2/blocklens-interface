@@ -212,91 +212,111 @@ const DashboardsPage: React.FC = () => {
     );
   };
 
-  const fetchAllDashboards = async (params: RequestParams) => {
-    try {
-      const res = await rf.getRequest('DashboardsRequest').getAllDashboards({
-        ...params,
-        search: getSearchParam(params.search),
-      });
-      await getSavedDashboardIds(res.data);
-      return { ...res, docs: res.data };
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const fetchMyDashboards = async (params: RequestParams) => {
-    try {
-      const res = await rf.getRequest('DashboardsRequest').getMyListDashboards({
-        ...params,
-        search: getSearchParam(params.search),
-      });
-      await getSavedDashboardIds(res.data);
-      return { ...res, docs: res.data };
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const fetchMySavedDashboards = async (params: RequestParams) => {
-    try {
-      const res = await rf
-        .getRequest('DashboardsRequest')
-        .getMySavedDashboards({
+  const fetchAllDashboards = useCallback(
+    async (params: RequestParams) => {
+      try {
+        const res = await rf.getRequest('DashboardsRequest').getAllDashboards({
           ...params,
           search: getSearchParam(params.search),
         });
-      setSavedDashboardIds((prevState) =>
-        _.uniq([
-          ...prevState,
-          ...res.data.map((item: IDashboardDetail) => item.id),
-        ]),
-      );
-      return { ...res, docs: res.data };
-    } catch (error) {
-      console.error(error);
-    }
-  };
+        await getSavedDashboardIds(res.data);
+        return { ...res, docs: res.data };
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [dashboardParams, user],
+  );
 
-  const fetchAllQueries = async (params: RequestParams) => {
-    try {
-      const res = await rf
-        .getRequest('DashboardsRequest')
-        .getAllQueries({ ...params, search: getSearchParam(params.search) });
-      await getSavedQueryIds(res.data);
-      return { ...res, docs: res.data };
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const fetchMyDashboards = useCallback(
+    async (params: RequestParams) => {
+      try {
+        const res = await rf
+          .getRequest('DashboardsRequest')
+          .getMyListDashboards({
+            ...params,
+            search: getSearchParam(params.search),
+          });
+        await getSavedDashboardIds(res.data);
+        return { ...res, docs: res.data };
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [dashboardParams, user],
+  );
 
-  const fetchMyQueries = async (params: RequestParams) => {
-    try {
-      const res = await rf.getRequest('DashboardsRequest').getMyListQueries({
-        ...params,
-        search: getSearchParam(params.search),
-      });
-      await getSavedQueryIds(res.data);
-      return { ...res, docs: res.data };
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const fetchMySavedDashboards = useCallback(
+    async (params: RequestParams) => {
+      try {
+        const res = await rf
+          .getRequest('DashboardsRequest')
+          .getMySavedDashboards({
+            ...params,
+            search: getSearchParam(params.search),
+          });
+        setSavedDashboardIds((prevState) =>
+          _.uniq([
+            ...prevState,
+            ...res.data.map((item: IDashboardDetail) => item.id),
+          ]),
+        );
+        return { ...res, docs: res.data };
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [dashboardParams, user],
+  );
 
-  const fetchMySavedQueries = async (params: RequestParams) => {
-    try {
-      const res = await rf.getRequest('DashboardsRequest').getMySavedQueries({
-        ...params,
-        search: getSearchParam(params.search),
-      });
-      setSavedQueryIds((prevState) =>
-        _.uniq([...prevState, ...res.data.map((item: IQuery) => item.id)]),
-      );
-      return { ...res, docs: res.data };
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const fetchAllQueries = useCallback(
+    async (params: RequestParams) => {
+      try {
+        const res = await rf
+          .getRequest('DashboardsRequest')
+          .getAllQueries({ ...params, search: getSearchParam(params.search) });
+        await getSavedQueryIds(res.data);
+        return { ...res, docs: res.data };
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [queryParams, user],
+  );
+
+  const fetchMyQueries = useCallback(
+    async (params: RequestParams) => {
+      try {
+        const res = await rf.getRequest('DashboardsRequest').getMyListQueries({
+          ...params,
+          search: getSearchParam(params.search),
+        });
+        await getSavedQueryIds(res.data);
+        return { ...res, docs: res.data };
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [queryParams, user],
+  );
+
+  const fetchMySavedQueries = useCallback(
+    async (params: RequestParams) => {
+      try {
+        const res = await rf.getRequest('DashboardsRequest').getMySavedQueries({
+          ...params,
+          search: getSearchParam(params.search),
+        });
+        setSavedQueryIds((prevState) =>
+          _.uniq([...prevState, ...res.data.map((item: IQuery) => item.id)]),
+        );
+        return { ...res, docs: res.data };
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [queryParams, user],
+  );
 
   const _renderContentTable = useCallback(
     (appTable) => {

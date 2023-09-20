@@ -96,7 +96,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   useEffect(() => {
     const search = searchParams.get(HOME_URL_PARAMS.SEARCH) || '';
     const orderBy =
-      searchParams.get(HOME_URL_PARAMS.ORDERBY) || 'created_at:asc';
+      searchParams.get(HOME_URL_PARAMS.ORDERBY) || 'created_at:desc';
     const tag = searchParams.get(HOME_URL_PARAMS.TAG) || '';
     setSearch(search);
     setOrderBy(orderBy);
