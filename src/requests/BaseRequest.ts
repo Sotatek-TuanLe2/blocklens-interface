@@ -12,6 +12,7 @@ import { RECAPTCHA_ACTIONS } from 'src/utils/common';
 import { COMMON_ERROR_MESSAGE } from 'src/constants';
 import store from 'src/store';
 import { setUserAuth } from 'src/store/user';
+import { TOGGLE_403_PAGE } from 'src/layouts/BasePage';
 
 export default class BaseRequest {
   protected accessToken = '';
@@ -147,7 +148,7 @@ export default class BaseRequest {
   }
 
   _error403Handler() {
-    return AppBroadcast.dispatch('LOGOUT_USER');
+    return AppBroadcast.dispatch(TOGGLE_403_PAGE, true);
   }
 
   async _errorHandler(err: any) {
