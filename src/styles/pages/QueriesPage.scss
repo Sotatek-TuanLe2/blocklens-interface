@@ -285,6 +285,36 @@
     .splitter-layout {
       position: unset !important;
 
+      .layout-splitter {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: $bg;
+
+        &::after {
+          content: '...';
+          color: $title;
+          font-size: 25px;
+          position: absolute;
+          z-index: 1;
+          height: 100%;
+          top: -20px;
+          font-weight: bold;
+        }
+
+        &:hover {
+          background-color: $line;
+          &::after {
+            color: $white;
+          }
+        }
+      }
+
+      &.splitter-layout-vertical > .layout-splitter {
+        height: 10px;
+      }
+
       .layout-pane {
         &:first-child {
           overflow: hidden !important;
