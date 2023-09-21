@@ -2,12 +2,12 @@
 @import '../mixins.scss';
 
 .modal {
-  border-radius: 20px !important;
+  border-radius: 20px !important;gla
   padding: 8px;
   max-width: 500px !important;
 
   @include tablet {
-    margin: 0 16px !important;
+    margin: auto 16px !important;
   }
 
   &.modal-filter {
