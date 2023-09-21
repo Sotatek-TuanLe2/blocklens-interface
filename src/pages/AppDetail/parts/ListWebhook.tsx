@@ -150,7 +150,7 @@ const WebhookMobile: FC<IWebhookItem> = ({ webhook }) => {
               alignItems="center"
               className="info"
             >
-              <Box>In 24h</Box>
+              <Box>IN 24H</Box>
               <Box className="value">{formatNumber(webhook.messageToday)}</Box>
             </Flex>
           </Box>
