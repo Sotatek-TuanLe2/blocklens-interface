@@ -285,6 +285,10 @@
     .splitter-layout {
       position: unset !important;
 
+      .layout-splitter {
+        height: 10px !important;
+      }
+
       .layout-pane {
         &:first-child {
           overflow: hidden !important;

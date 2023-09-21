@@ -160,6 +160,10 @@ input::-ms-clear {
   display: none;
 }
 
-.input-password{
+.input-password {
   padding-right: 42px !important;
+}
+
+.chakra-modal__content-container {
+  align-items: center !important;
 }

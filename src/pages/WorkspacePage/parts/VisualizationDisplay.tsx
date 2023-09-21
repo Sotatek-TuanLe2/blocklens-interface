@@ -428,9 +428,10 @@ const VisualizationDisplay = ({
             </div>
           )}
           <div className="main-chart">
-            <div
-              style={{
-                height: containerHeight - 120,
+            <Box
+              height={{
+                base: containerHeight - 175,
+                lg: containerHeight - 125,
               }}
               className={`main-visualization ${
                 !toggleCloseConfig || isMobile ? 'show-full-visual' : ''
@@ -447,7 +448,7 @@ const VisualizationDisplay = ({
               ) : (
                 visualizationDisplay
               )}
-            </div>
+            </Box>
             {showConfiguration && _renderConfigurations(visualization)}
           </div>
         </div>
