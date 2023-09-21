@@ -188,7 +188,10 @@ const ActivityMobile: FC<IActivity> = ({ activity, webhook }) => {
           className="info"
         >
           <Box className="name-mobile">
-            {formatTimestamp(activity?.createdAt * 1000, 'YYYY-MM-DD HH:mm:ss')}{' '}
+            {formatTimestamp(
+              activity?.metadata?.tx?.timestamp * 1000,
+              'YYYY-MM-DD HH:mm:ss',
+            )}{' '}
             UTC
           </Box>
           <Box
@@ -383,7 +386,10 @@ const ActivityDesktop: FC<IActivity> = ({ activity, webhook }) => {
           }}
         >
           <Td w="25%">
-            {formatTimestamp(activity.createdAt * 1000, 'YYYY-MM-DD HH:mm:ss')}{' '}
+            {formatTimestamp(
+              activity?.metadata?.tx?.timestamp,
+              'YYYY-MM-DD HH:mm:ss',
+            )}{' '}
             UTC
           </Td>
           <Td w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '12%' : '15%'}>
