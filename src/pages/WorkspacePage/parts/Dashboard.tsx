@@ -376,21 +376,25 @@ const DashboardPart: React.FC = () => {
               </MenuList>
             </Menu>
           )}
-          <ModalAddTextWidget
-            selectedItem={selectedItem}
-            dataLayouts={dataLayouts}
-            type={typeModalTextWidget}
-            open={openModalAddTextWidget}
-            onClose={() => setOpenModalAddTextWidget(false)}
-            onSave={onSaveDataLayouts}
-          />
-          <ModalDeleteWidget
-            selectedItem={selectedItem}
-            dataLayouts={dataLayouts}
-            open={openModalEdit}
-            onSave={onSaveDataLayouts}
-            onClose={() => setOpenModalEdit(false)}
-          />
+          {openModalAddTextWidget && (
+            <ModalAddTextWidget
+              selectedItem={selectedItem}
+              dataLayouts={dataLayouts}
+              type={typeModalTextWidget}
+              open={openModalAddTextWidget}
+              onClose={() => setOpenModalAddTextWidget(false)}
+              onSave={onSaveDataLayouts}
+            />
+          )}
+          {openModalEdit && (
+            <ModalDeleteWidget
+              selectedItem={selectedItem}
+              dataLayouts={dataLayouts}
+              open={openModalEdit}
+              onSave={onSaveDataLayouts}
+              onClose={() => setOpenModalEdit(false)}
+            />
+          )}
           {openModalAddVisualization && (
             <ModalAddVisualization
               dashboardId={dashboardId}
