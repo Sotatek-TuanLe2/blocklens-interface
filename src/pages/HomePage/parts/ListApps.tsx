@@ -182,7 +182,7 @@ const ListApps: React.FC = () => {
           <Th w="25%">NAME</Th>
           <Th w="20%">NETWORK</Th>
           <Th w="20%" textAlign={'center'}>
-            MSG(IN 24H)
+            MSG (IN 24H)
           </Th>
           <Th w="20%" textAlign={'center'}>
             number of webhook
