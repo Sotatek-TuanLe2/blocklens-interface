@@ -145,6 +145,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
     };
 
     onSave([...dataLayouts, newTextWidget]);
+    setMarkdownText('');
     onClose();
     toastSuccess({ message: 'Add successfully' });
   };
@@ -164,6 +165,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
     };
 
     onSave(newDataLayouts);
+    setMarkdownText('');
     onClose();
     toastSuccess({ message: 'Update successfully' });
   };
