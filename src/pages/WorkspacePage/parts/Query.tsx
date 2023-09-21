@@ -328,7 +328,10 @@ const QueryPart: React.FC = () => {
       return (
         <>
           {_renderAddChart()}
-          <AppLoadingTable widthColumns={[100]} className="visual-table" />
+          <AppLoadingTable
+            widthColumns={[36, 22, 22, 22]}
+            className="visual-table"
+          />
         </>
       );
     }
