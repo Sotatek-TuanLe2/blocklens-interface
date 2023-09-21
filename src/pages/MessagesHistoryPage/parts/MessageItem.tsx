@@ -77,7 +77,7 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
           placement="top"
           label={message?.input?.trackingAddress || ''}
         >
-          {shortAddressType(message?.input?.trackingAddress || '')}
+          {formatShortText(message?.input?.trackingAddress || '')}
         </Tooltip>
       </Td>
     );
@@ -164,7 +164,9 @@ const MessageItem: FC<IMessageItem> = ({ message, webhook }: any) => {
         </Td>
         <Td w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '15%' : '20%'}>
           <Flex alignItems="center">
-            {formatShortText(message?.tnxId)}
+            <Tooltip hasArrow placement="top" label={message?.tnxId}>
+              {formatShortText(message?.tnxId)}
+            </Tooltip>
             {message?.tnxId && (
               <Box ml={2}>
                 <a
