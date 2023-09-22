@@ -11,6 +11,7 @@ import {
   isValidAddressEVM,
   isValidAddressSUIAndAptos,
 } from 'src/utils/utils-helper';
+import _ from 'lodash';
 
 interface IPartFormAddressActivity {
   dataForm: IDataForm;
@@ -126,7 +127,7 @@ const PartFormAddressActivity: FC<IPartFormAddressActivity> = ({
         toastError({ message: 'The Addresses file must be correct format' });
         return;
       }
-      setAddressInputs(uploadedAddresses);
+      setAddressInputs(_.uniq(uploadedAddresses));
       setFileSelected(dropFile || evt.target.files[0]);
     };
 
@@ -295,7 +296,8 @@ const AddressList: FC<IAddressListProps> = ({
     if (!!updatedAddresses[0].length && filterEmpty) {
       updatedAddresses = updatedAddresses.filter((input) => input !== '');
     }
-    setAddressInputs(updatedAddresses);
+
+    setAddressInputs(_.uniq(updatedAddresses));
     setIsPristine(true);
   };
 
@@ -356,7 +358,6 @@ const AddressInput: FC<IAddressInputProps> = ({
   const [inputValue, setInputValue] = useState<string>(value);
 
   const inputRef = useRef<HTMLInputElement | null>(null);
-
   const focusInput = () => {
     if (isEditing && inputRef.current) {
       inputRef.current.focus();
