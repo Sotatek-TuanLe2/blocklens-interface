@@ -358,7 +358,6 @@ const AddressInput: FC<IAddressInputProps> = ({
   const [inputValue, setInputValue] = useState<string>(value);
 
   const inputRef = useRef<HTMLInputElement | null>(null);
-  console.log(inputValue, 'inputValue');
   const focusInput = () => {
     if (isEditing && inputRef.current) {
       inputRef.current.focus();
