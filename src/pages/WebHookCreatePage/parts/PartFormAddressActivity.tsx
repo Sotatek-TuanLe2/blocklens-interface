@@ -301,8 +301,6 @@ const AddressList: FC<IAddressListProps> = ({
     setIsPristine(true);
   };
 
-  console.log(_.uniq(addressInputs), 'addressInputs');
-
   return (
     <>
       <Box className="frame-address">
