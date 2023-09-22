@@ -106,7 +106,7 @@ const ModalCreateApp: FC<IModalCreateApp> = ({ open, onClose, reloadData }) => {
   return (
     <BaseModal
       size="lg"
-      title="Create New Projects"
+      title="Create New Project"
       description={
         !userStats?.totalProject
           ? `We suggest you create an app and start experiencing our service,
