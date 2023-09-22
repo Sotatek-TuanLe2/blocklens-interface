@@ -327,9 +327,9 @@ const VisualizationDisplay = ({
     };
 
     const ConfigOnDesktop = (
-      <div
-        style={{
-          height: containerHeight - 130,
+      <Box
+        height={{
+          lg: containerHeight - 160,
         }}
         className={`main-config`}
       >
@@ -341,7 +341,7 @@ const VisualizationDisplay = ({
           />
         </div>
         <div className="body-config">{configuration}</div>
-      </div>
+      </Box>
     );
 
     const ConfigOnMobile = (
@@ -430,8 +430,8 @@ const VisualizationDisplay = ({
           <div className="main-chart">
             <Box
               height={{
-                base: containerHeight - 175,
-                lg: containerHeight - 125,
+                base: containerHeight - 200,
+                lg: containerHeight - 150,
               }}
               className={`main-visualization ${
                 !toggleCloseConfig || isMobile ? 'show-full-visual' : ''
