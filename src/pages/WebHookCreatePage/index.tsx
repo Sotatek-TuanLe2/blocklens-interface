@@ -106,6 +106,11 @@ const WebHookCreatePage: React.FC = () => {
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
   const [isSendingDemoMsg, setIsSendingDemoMsg] = useState(false);
   const [isStandardERC, setIsStandardERC] = useState<boolean>(true);
+  const [isDisableSendDemo, setIsDisableSendDemo] = useState<boolean>(true);
+
+  useEffect(() => {
+    setIsDisableSendDemo(!validator.current.fields.webhook);
+  }, [dataForm.webhook]);
 
   const validator = useRef(
     createValidator({
@@ -212,7 +217,6 @@ const WebHookCreatePage: React.FC = () => {
     }
     setIsDisableSubmit(isDisabled);
   }, [dataForm, typeSelected, isStandardERC]);
-
   const optionTypes = useMemo(() => {
     if (chainSelected.value === CHAINS.APTOS) {
       return optionsWebhookAptosType;
@@ -525,7 +529,7 @@ const WebHookCreatePage: React.FC = () => {
                     <AppButton
                       onClick={handleSendDemoMsg}
                       isDisabled={
-                        isDisableSubmit || chainSelected.value === CHAINS.SUI
+                        isDisableSendDemo || chainSelected.value === CHAINS.SUI
                       }
                       w={190}
                       size={'sm'}
@@ -538,7 +542,7 @@ const WebHookCreatePage: React.FC = () => {
                   <AppButton
                     onClick={handleSendDemoMsg}
                     isDisabled={
-                      isDisableSubmit || chainSelected.value === CHAINS.SUI
+                      isDisableSendDemo || chainSelected.value === CHAINS.SUI
                     }
                     w={190}
                     size={'sm'}
