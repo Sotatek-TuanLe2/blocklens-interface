@@ -37,7 +37,7 @@ const PartFormAddressActivity: FC<IPartFormAddressActivity> = ({
     useState<boolean>(true);
   const inputRef = useRef<any>(null);
   const FILE_CSV_EXAMPLE = `/abi/Address_Example_${chain}.csv`;
-  console.log(fileSelected);
+
   const invalidAddresses = useMemo(() => {
     return addressInputs.filter(
       (address) => !!address && !isValidAddress(chain, address),
