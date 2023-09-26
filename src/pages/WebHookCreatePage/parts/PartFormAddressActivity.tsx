@@ -321,7 +321,14 @@ const AddressList: FC<IAddressListProps> = ({
             <Text fontStyle="italic">
               Invalid address: {invalidAddresses.length}
             </Text>
-            <Box className="btn-delete-address" onClick={onClearAddressInvalid}>
+            <Box
+              className="btn-delete-address"
+              onClick={onClearAddressInvalid}
+              onMouseDown={(e) => {
+                e.preventDefault();
+                onClearAddressInvalid();
+              }}
+            >
               Delete all invalid
             </Box>
           </Flex>
