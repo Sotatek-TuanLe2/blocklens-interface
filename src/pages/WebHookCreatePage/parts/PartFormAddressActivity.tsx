@@ -37,7 +37,7 @@ const PartFormAddressActivity: FC<IPartFormAddressActivity> = ({
     useState<boolean>(true);
   const inputRef = useRef<any>(null);
   const FILE_CSV_EXAMPLE = `/abi/Address_Example_${chain}.csv`;
-
+  console.log(fileSelected);
   const invalidAddresses = useMemo(() => {
     return addressInputs.filter(
       (address) => !!address && !isValidAddress(chain, address),
@@ -134,23 +134,6 @@ const PartFormAddressActivity: FC<IPartFormAddressActivity> = ({
     reader.readAsText(file);
   };
 
-  const _renderNameFile = () => {
-    if (fileSelected?.name) {
-      return (
-        <>
-          <Box className="file-name">
-            {fileSelected?.name}
-            <CloseIcon
-              onClick={() => onClearFile()}
-              className={'icon-clear'}
-              ml={3}
-            />
-          </Box>
-        </>
-      );
-    }
-  };
-
   const onDropHandler = (ev: any) => {
     ev.preventDefault();
 
@@ -176,6 +159,7 @@ const PartFormAddressActivity: FC<IPartFormAddressActivity> = ({
       invalidAddresses={invalidAddresses}
       setAddressInputs={setAddressInputs}
       onClearAddressInvalid={onClearAddressInvalid}
+      fileSelected={fileSelected}
     />
   );
 
@@ -236,22 +220,23 @@ const PartFormAddressActivity: FC<IPartFormAddressActivity> = ({
         ) : (
           <>
             {_renderFileDropbox()}
-            <Box className="download-template">
-              <Link
-                as={ReactLink}
-                to={FILE_CSV_EXAMPLE}
-                target="_blank"
-                download
-              >
-                <Flex>
-                  <DownloadIcon color={'#0060db'} />
-                  <Box ml={2} color={'#0060db'}>
-                    Download Example
-                  </Box>
-                </Flex>
-              </Link>
-            </Box>
-            {_renderNameFile()}
+            {!fileSelected?.name && (
+              <Box className="download-template">
+                <Link
+                  as={ReactLink}
+                  to={FILE_CSV_EXAMPLE}
+                  target="_blank"
+                  download
+                >
+                  <Flex>
+                    <DownloadIcon color={'#0060db'} />
+                    <Box ml={2} color={'#0060db'}>
+                      Download Example
+                    </Box>
+                  </Flex>
+                </Link>
+              </Box>
+            )}
           </>
         )}
       </AppField>
@@ -267,6 +252,7 @@ interface IAddressListProps {
   onClearAddressInvalid: () => void;
   invalidAddresses: string[];
   setAddressInputs: (value: string[]) => void;
+  fileSelected: string;
 }
 
 const AddressList: FC<IAddressListProps> = ({
@@ -275,6 +261,7 @@ const AddressList: FC<IAddressListProps> = ({
   chain,
   onClearAddressInvalid,
   setAddressInputs,
+  fileSelected,
 }) => {
   const [isPristine, setIsPristine] = useState<boolean>(false);
 
@@ -301,9 +288,28 @@ const AddressList: FC<IAddressListProps> = ({
     setIsPristine(true);
   };
 
+  const _renderNameFile = () => {
+    if (fileSelected?.name) {
+      return (
+        <>
+          <Box className="file-name">
+            {fileSelected?.name}
+            <CloseIcon
+              onClick={() => onClearFile()}
+              className={'icon-clear'}
+              ml={3}
+            />
+          </Box>
+        </>
+      );
+    }
+  };
+
   return (
     <>
       <Box className="frame-address">
+        {_renderNameFile()}
+
         {addressInputs.map((address, index) => {
           const inValidAddress = !!address && !isValidAddress(chain, address);
           return (
