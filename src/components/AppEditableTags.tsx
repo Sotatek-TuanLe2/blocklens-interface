@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   Editable,
   EditableInput,
@@ -15,7 +15,7 @@ import {
 import { forwardRef } from '@chakra-ui/system';
 import 'src/styles/components/AppEditableTags.scss';
 import { CloseIcon, AddIcon } from '@chakra-ui/icons';
-import { toastError } from 'src/utils/utils-notify';
+import _ from 'lodash';
 
 interface IAppEditableTagsProps {
   tags: string[];
@@ -100,6 +100,10 @@ const AddHashtags = ({
 
 const AppEditableTags = forwardRef<IAppEditableTagsProps, any>(
   ({ tags, className = '', onSubmit, onRemove }, ref) => {
+    const uniqueTags = useMemo(() => {
+      return _.uniq(tags.map((i) => i.toLowerCase()));
+    }, [tags]);
+
     return (
       <>
         <Flex
@@ -108,7 +112,7 @@ const AppEditableTags = forwardRef<IAppEditableTagsProps, any>(
           className={`app-hashtags ${className}`}
           gap={2}
         >
-          {tags?.map((tag, index) => {
+          {uniqueTags?.map((tag, index) => {
             return (
               <Flex key={tag + index} className="app-hashtags__item">
                 <Flex className="app-hashtags__item--text">
