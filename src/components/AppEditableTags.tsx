@@ -15,7 +15,6 @@ import {
 import { forwardRef } from '@chakra-ui/system';
 import 'src/styles/components/AppEditableTags.scss';
 import { CloseIcon, AddIcon } from '@chakra-ui/icons';
-import { toastError } from 'src/utils/utils-notify';
 
 interface IAppEditableTagsProps {
   tags: string[];
@@ -90,7 +89,7 @@ const AddHashtags = ({
       isDisabled={isDisabled}
       onSubmit={handleSubmit}
       value={value}
-      onChange={setValue}
+      onChange={(e) => setValue(e.toLowerCase())}
       className={`hashtags-editable`}
     >
       <CustomInput onCancel={() => setValue('')} isDisabled={isDisabled} />
