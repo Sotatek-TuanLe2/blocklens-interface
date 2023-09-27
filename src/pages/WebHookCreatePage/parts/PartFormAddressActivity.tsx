@@ -326,7 +326,6 @@ const AddressList: FC<IAddressListProps> = ({
               onClick={onClearAddressInvalid}
               onMouseDown={(e) => {
                 e.preventDefault();
-                onClearAddressInvalid();
               }}
             >
               Delete all invalid
