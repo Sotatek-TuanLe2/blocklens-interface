@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import {
   Editable,
   EditableInput,
@@ -15,7 +15,6 @@ import {
 import { forwardRef } from '@chakra-ui/system';
 import 'src/styles/components/AppEditableTags.scss';
 import { CloseIcon, AddIcon } from '@chakra-ui/icons';
-import _ from 'lodash';
 
 interface IAppEditableTagsProps {
   tags: string[];
