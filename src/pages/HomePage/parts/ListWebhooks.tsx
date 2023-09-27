@@ -104,29 +104,33 @@ const ListWebhooks: React.FC = () => {
         .getRequest('RegistrationRequest')
         .getRegistrationsWithoutApp(params);
 
-      const registrationIds =
-        res?.docs?.map((item: IWebhook) => item?.registrationId) || [];
+      if (!!res?.docs?.length) {
+        const registrationIds =
+          res?.docs?.map((item: IWebhook) => item?.registrationId) || [];
 
-      const res24h: IWebhookStats[] = await rf
-        .getRequest('NotificationRequest')
-        .getWebhookStats24h(registrationIds);
+        const res24h: IWebhookStats[] = await rf
+          .getRequest('NotificationRequest')
+          .getWebhookStats24h(registrationIds);
 
-      const dataWebhook = res?.docs?.map((webhook: IAppResponse) => {
-        const webhookMetricToday = res24h.find(
-          (item: IWebhookStats) =>
-            item.registrationId === webhook.registrationId,
-        );
+        const dataWebhook = res?.docs?.map((webhook: IAppResponse) => {
+          const webhookMetricToday = res24h.find(
+            (item: IWebhookStats) =>
+              item.registrationId === webhook.registrationId,
+          );
+
+          return {
+            ...webhook,
+            messageToday: webhookMetricToday?.message || '--',
+          };
+        });
 
         return {
-          ...webhook,
-          messageToday: webhookMetricToday?.message || '--',
+          ...res,
+          docs: dataWebhook,
         };
-      });
+      }
 
-      return {
-        ...res,
-        docs: dataWebhook,
-      };
+      return res;
     } catch (error) {
       return error;
     }

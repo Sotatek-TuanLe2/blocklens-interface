@@ -72,8 +72,8 @@ export default class NotificationRequest extends BaseRequest {
     return this.get(url);
   }
 
-  getMessagesHistory(notificationHash: string, params: any) {
-    const url = `/activities/${notificationHash}/message-histories`;
+  getMessagesHistory(activityHash: string, params: any) {
+    const url = `/activities/${activityHash}/message-histories`;
     return this.get(url, params);
   }
 
