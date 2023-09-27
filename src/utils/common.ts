@@ -124,8 +124,15 @@ export const getDefaultVisualizationName = (chain: string | undefined) => {
   }
 };
 
-export const generateAvatarFromId = (id: string | undefined) => {
-  return Number(id?.replace(/[a-z -]/gm, ''));
+export const generateAvatarFromId = (id: string | undefined): string => {
+  if (!id) {
+    return '0';
+  }
+  const result: number[] = [];
+  for (let i = 0; i < id.length; i++) {
+    result.push(id.charCodeAt(i));
+  }
+  return Number(result.join('')).toString(16);
 };
 
 export const QUERY_RESULT_STATUS = {

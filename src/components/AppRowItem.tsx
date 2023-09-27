@@ -14,7 +14,7 @@ import AppTag from './AppTag';
 import { ChevronRightIcon } from '@chakra-ui/icons';
 import { FC, ReactNode } from 'react';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
-import Jazzicon from 'react-jazzicon';
+import Jazzicon, { jsNumberForAddress } from 'react-jazzicon';
 import { generateAvatarFromId } from 'src/utils/common';
 import { IconEye } from 'src/assets/icons';
 import useOriginPath from 'src/hooks/useOriginPath';
@@ -165,7 +165,7 @@ const AppRowItem: FC<AppRowItemProps> = ({
                   <Jazzicon
                     diameter={24}
                     paperStyles={{ minWidth: '24px' }}
-                    seed={generateAvatarFromId(userId)}
+                    seed={jsNumberForAddress(generateAvatarFromId(userId))}
                   />
                 )}
               </Flex>
@@ -317,7 +317,7 @@ const AppRowItem: FC<AppRowItemProps> = ({
                       <Jazzicon
                         diameter={20}
                         paperStyles={{ minWidth: '20px' }}
-                        seed={generateAvatarFromId(userId)}
+                        seed={jsNumberForAddress(generateAvatarFromId(userId))}
                       />
                     )}
                     <Text ml={2} className="article-row-creator">
