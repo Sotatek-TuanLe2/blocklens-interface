@@ -90,7 +90,7 @@ const AddHashtags = ({
       isDisabled={isDisabled}
       onSubmit={handleSubmit}
       value={value}
-      onChange={setValue}
+      onChange={(e) => setValue(e.toLowerCase())}
       className={`hashtags-editable`}
     >
       <CustomInput onCancel={() => setValue('')} isDisabled={isDisabled} />
@@ -100,10 +100,6 @@ const AddHashtags = ({
 
 const AppEditableTags = forwardRef<IAppEditableTagsProps, any>(
   ({ tags, className = '', onSubmit, onRemove }, ref) => {
-    const uniqueTags = useMemo(() => {
-      return _.uniq(tags.map((i) => i.toLowerCase()));
-    }, [tags]);
-
     return (
       <>
         <Flex
@@ -112,7 +108,7 @@ const AppEditableTags = forwardRef<IAppEditableTagsProps, any>(
           className={`app-hashtags ${className}`}
           gap={2}
         >
-          {uniqueTags?.map((tag, index) => {
+          {tags?.map((tag, index) => {
             return (
               <Flex key={tag + index} className="app-hashtags__item">
                 <Flex className="app-hashtags__item--text">

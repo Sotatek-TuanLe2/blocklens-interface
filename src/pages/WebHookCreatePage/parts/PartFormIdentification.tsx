@@ -7,6 +7,7 @@ import { Text } from '@chakra-ui/react';
 import { IAppResponse } from 'src/utils/utils-app';
 import { AppEditable, AppEditableTags, AppComplete } from 'src/components';
 import { IDataForm } from '..';
+import _ from 'lodash';
 
 interface IPartFormIdentificationProps {
   dataForm: IDataForm;
@@ -85,7 +86,7 @@ const PartFormIdentification: FC<IPartFormIdentificationProps> = ({
             if (!value.trim() || hashTags.includes(value)) return;
             setDataForm({
               ...dataForm,
-              hashTags: [...hashTags, value],
+              hashTags: _.uniq([...hashTags, value]),
             });
           }}
           onRemove={(value) => {
