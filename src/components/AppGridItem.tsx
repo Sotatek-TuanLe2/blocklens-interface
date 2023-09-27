@@ -12,7 +12,7 @@ import { Link, useLocation } from 'react-router-dom';
 import AppTag from './AppTag';
 import { FC, ReactNode } from 'react';
 import 'src/styles/components/AppGridItem.scss';
-import Jazzicon from 'react-jazzicon';
+import Jazzicon, { jsNumberForAddress } from 'react-jazzicon';
 import { generateAvatarFromId } from 'src/utils/common';
 import { IconEye } from 'src/assets/icons';
 import useOriginPath from 'src/hooks/useOriginPath';
@@ -194,7 +194,10 @@ const AppGridItem: FC<AppGridItemProps> = ({
               {srcAvatar ? (
                 <Image src={srcAvatar} alt="avatar" />
               ) : (
-                <Jazzicon diameter={34} seed={generateAvatarFromId(userId)} />
+                <Jazzicon
+                  diameter={34}
+                  seed={jsNumberForAddress(generateAvatarFromId(userId))}
+                />
               )}
             </Box>
             <Box>
