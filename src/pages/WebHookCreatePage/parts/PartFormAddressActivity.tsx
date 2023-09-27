@@ -160,6 +160,7 @@ const PartFormAddressActivity: FC<IPartFormAddressActivity> = ({
       setAddressInputs={setAddressInputs}
       onClearAddressInvalid={onClearAddressInvalid}
       fileSelected={fileSelected}
+      onClearFile={onClearFile}
     />
   );
 
@@ -252,7 +253,8 @@ interface IAddressListProps {
   onClearAddressInvalid: () => void;
   invalidAddresses: string[];
   setAddressInputs: (value: string[]) => void;
-  fileSelected: string;
+  fileSelected: any;
+  onClearFile: () => void;
 }
 
 const AddressList: FC<IAddressListProps> = ({
@@ -262,6 +264,7 @@ const AddressList: FC<IAddressListProps> = ({
   onClearAddressInvalid,
   setAddressInputs,
   fileSelected,
+  onClearFile,
 }) => {
   const [isPristine, setIsPristine] = useState<boolean>(false);
 
