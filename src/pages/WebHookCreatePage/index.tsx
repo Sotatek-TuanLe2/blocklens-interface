@@ -521,6 +521,7 @@ const WebHookCreatePage: React.FC = () => {
                     options: {
                       messages: {
                         max: 'The Your URL may not be greater than 200 characters.',
+                        url: 'The Your URL format is invalid.',
                       },
                     },
                   }}
