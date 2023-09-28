@@ -12,12 +12,14 @@ import Header from 'src/pages/WorkspacePage/parts/Header';
 import VisualizationDisplay from 'src/pages/WorkspacePage/parts/VisualizationDisplay';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/pages/QueriesPage.scss';
-import { QUERY_RESULT_STATUS } from 'src/utils/common';
+import {
+  DEFAULT_QUERY_VISUALIZATION_HEIGHT,
+  QUERY_RESULT_STATUS,
+} from 'src/utils/common';
 import { IErrorExecuteQuery, IQuery } from 'src/utils/query.type';
 import { toastError } from 'src/utils/utils-notify';
 import { Query } from 'src/utils/utils-query';
 import { STATUS } from 'src/utils/utils-webhook';
-import Storage from 'src/utils/utils-storage';
 import SplitterLayout from 'react-splitter-layout';
 import 'react-splitter-layout/lib/index.css';
 
@@ -29,7 +31,7 @@ const QueryPart: React.FC = () => {
   const [queryResult, setQueryResult] = useState<any>([]);
   const [queryValue, setQueryValue] = useState<IQuery | null>(null);
   const [visualizationHeight, setVisualizationHeight] = useState<number>(
-    Storage.getQueryVisualizationHeight(),
+    DEFAULT_QUERY_VISUALIZATION_HEIGHT,
   );
   const [isLoadingQuery, setIsLoadingQuery] = useState<boolean>(!!queryId);
   const [isLoadingResult, setIsLoadingResult] = useState<boolean>(!!queryId);
@@ -208,7 +210,6 @@ const QueryPart: React.FC = () => {
       return;
     }
     setVisualizationHeight(visualizationHeightRef.current);
-    Storage.setQueryVisualizationHeight(visualizationHeightRef.current);
   };
 
   return (

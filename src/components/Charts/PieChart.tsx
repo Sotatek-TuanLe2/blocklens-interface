@@ -265,6 +265,8 @@ const CustomLegend = (props: any) => {
     }
   }
 
+  console.log('newData', newData);
+
   return (
     <div>
       {newData.map((entry: any, index: number) => (
@@ -279,13 +281,13 @@ const CustomLegend = (props: any) => {
               opacity: `${entry.type ? '1' : '0.5'}`,
             }}
           ></span>
-          <TooltipUI hasArrow placement="top" label={entry.value}>
+          <TooltipUI hasArrow placement="top" label={String(entry.value)}>
             <span
               style={{
                 opacity: `${entry.type ? '1' : '0.5'}`,
               }}
             >
-              {formatDefaultValueChart(entry.value)}
+              {formatDefaultValueChart(String(entry.value))}
             </span>
           </TooltipUI>
         </div>

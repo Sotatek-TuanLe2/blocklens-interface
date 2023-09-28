@@ -16,7 +16,12 @@ import {
 import 'src/styles/pages/QueriesPage.scss';
 import { toastError } from 'src/utils/utils-notify';
 import rf from 'src/requests/RequestFactory';
-import { TYPE_OF_MODAL, QUERY_RESULT_STATUS, ROUTES } from 'src/utils/common';
+import {
+  TYPE_OF_MODAL,
+  QUERY_RESULT_STATUS,
+  ROUTES,
+  DEFAULT_QUERY_VISUALIZATION_HEIGHT,
+} from 'src/utils/common';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
 import { EditorContext } from '../context/EditorContext';
 import Header from './Header';
@@ -29,7 +34,6 @@ import { AddChartIcon, QueryResultIcon } from 'src/assets/icons';
 import { STATUS } from 'src/utils/utils-webhook';
 import useOriginPath from 'src/hooks/useOriginPath';
 import { isMobile } from 'react-device-detect';
-import Storage from 'src/utils/utils-storage';
 import SplitterLayout from 'react-splitter-layout';
 import 'react-splitter-layout/lib/index.css';
 
@@ -49,7 +53,7 @@ const QueryPart: React.FC = () => {
   const [queryResult, setQueryResult] = useState<any>([]);
   const [queryValue, setQueryValue] = useState<IQuery | null>(null);
   const [visualizationHeight, setVisualizationHeight] = useState<number>(
-    Storage.getQueryVisualizationHeight(),
+    DEFAULT_QUERY_VISUALIZATION_HEIGHT,
   );
   const [isLoadingQuery, setIsLoadingQuery] = useState<boolean>(!!queryId);
   const [isLoadingResult, setIsLoadingResult] = useState<boolean>(!!queryId);
@@ -405,7 +409,6 @@ const QueryPart: React.FC = () => {
       return;
     }
     setVisualizationHeight(visualizationHeightRef.current);
-    Storage.setQueryVisualizationHeight(visualizationHeightRef.current);
   };
 
   return (

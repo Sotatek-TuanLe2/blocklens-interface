@@ -26,7 +26,7 @@ import { getLogoChainByChainId } from 'src/utils/utils-network';
 import { getWidthColumns } from 'src/components/ActivityDatatable';
 
 const MessagesHistory = () => {
-  const { id: notificationHashId, webhookId } = useParams<{
+  const { id: activityHash, webhookId } = useParams<{
     webhookId: string;
     id: string;
   }>();
@@ -45,7 +45,7 @@ const MessagesHistory = () => {
     try {
       return await rf
         .getRequest('NotificationRequest')
-        .getMessagesHistory(notificationHashId, filterParams(params));
+        .getMessagesHistory(activityHash, filterParams(params));
     } catch (error) {
       console.error(error);
     }

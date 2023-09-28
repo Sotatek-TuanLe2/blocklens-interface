@@ -26,7 +26,7 @@ import Sidebar, { BROADCAST_FETCH_WORKPLACE_DATA } from './Sidebar';
 import { Dashboard } from 'src/utils/utils-dashboard';
 import { Query } from 'src/utils/utils-query';
 import { IconDotMore, IconFilter, IconRun } from 'src/assets/icons';
-import Jazzicon from 'react-jazzicon';
+import Jazzicon, { jsNumberForAddress } from 'react-jazzicon';
 import useOriginPath from 'src/hooks/useOriginPath';
 import rf from 'src/requests/RequestFactory';
 import useUser from 'src/hooks/useUser';
@@ -413,7 +413,9 @@ const Header: React.FC<IHeaderProps> = (props) => {
                       <Jazzicon
                         diameter={26}
                         paperStyles={{ minWidth: '26px' }}
-                        seed={generateAvatarFromId(dataClass?.getUserId())}
+                        seed={jsNumberForAddress(
+                          generateAvatarFromId(dataClass?.getUserId()),
+                        )}
                       />
                     )}
                     <span className="item-desc__name">
