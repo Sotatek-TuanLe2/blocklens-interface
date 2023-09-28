@@ -135,7 +135,6 @@ const VisualizationChart: React.FC<Props> = (props) => {
               fill={`url(#${yAxisKey})`}
               stackId={chartOptionsConfigs?.stacking ? 'area' : undefined}
               hide={hiddenKeys.includes(yAxisKey)}
-              dot={<CustomizedDot fill={COLORS[index % COLORS.length]} />}
             >
               {_renderLabelList(yAxisKey)}
             </Area>
@@ -423,15 +422,3 @@ const VisualizationChart: React.FC<Props> = (props) => {
 };
 
 export default VisualizationChart;
-
-const CustomizedDot = (props: any) => {
-  const { cx, cy, fill } = props;
-
-  if (!cx || !cy || !fill) return null;
-  return (
-    <svg fill={fill} x={cx - 6.53516} y={cy - 6.53516}>
-      <circle opacity="0.3" cx="6.53516" cy="6" r="6" fill={fill} />
-      <circle cx="6.53516" cy="6" r="3" fill={fill} />
-    </svg>
-  );
-};
