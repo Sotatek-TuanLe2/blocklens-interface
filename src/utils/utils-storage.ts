@@ -1,6 +1,5 @@
 import config from 'src/config';
 import { WALLET_CONNECT } from 'src/connectors';
-import { DEFAULT_QUERY_VISUALIZATION_HEIGHT } from './common';
 
 const env = process.env.REACT_APP_ENV || 'prod';
 
@@ -15,12 +14,10 @@ type StorageInterface = {
   account?: string;
   expireTime?: number;
   listTagHistory?: string[];
-  queryVisualizationHeight: number;
 };
 
 const defaultPreferences: StorageInterface = {
   network: config.defaultNetwork,
-  queryVisualizationHeight: DEFAULT_QUERY_VISUALIZATION_HEIGHT,
 };
 
 function getStorage(): StorageInterface {
@@ -77,11 +74,6 @@ class Storage {
     return account || '';
   }
 
-  static getQueryVisualizationHeight(): number {
-    const { queryVisualizationHeight } = getStorage();
-    return queryVisualizationHeight;
-  }
-
   static getSavedTagHistory(isDashboard: boolean): string[] {
     const storageKey = isDashboard
       ? 'recentlyDashboardTagSearch'
@@ -100,12 +92,6 @@ class Storage {
   static setRefreshToken(refreshToken: string) {
     const preferences = getStorage();
     preferences.refreshToken = refreshToken;
-    setStorage(PREFERENCES, preferences);
-  }
-
-  static setQueryVisualizationHeight(queryVisualizationHeight: number) {
-    const preferences = getStorage();
-    preferences.queryVisualizationHeight = queryVisualizationHeight;
     setStorage(PREFERENCES, preferences);
   }
 
