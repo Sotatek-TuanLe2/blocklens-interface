@@ -127,18 +127,15 @@ const QueryPart: React.FC = () => {
     setStatusExecuteQuery('');
   };
 
-  const updateQuery = async (query: string) => {
+  const runQuery = async (query: string) => {
     try {
-      setIsLoadingQuery(true);
       setIsLoadingResult(true);
-      await rf.getRequest('DashboardsRequest').updateQuery({ query }, queryId);
-      await fetchQuery();
       const executionId = await executeQuery(query, queryId);
+      setAllowCancelExecution(true);
       currentExecutionId.current = executionId;
       await fetchQueryResult(executionId);
     } catch (error: any) {
       console.error(error);
-      setIsLoadingQuery(false);
       setIsLoadingResult(false);
       toastError({ message: getErrorMessage(error) });
     }
@@ -151,10 +148,6 @@ const QueryPart: React.FC = () => {
         executionId,
       });
       if (res.status === QUERY_RESULT_STATUS.WAITING) {
-        if (res.jobId) {
-          // cancelable
-          setAllowCancelExecution(true);
-        }
         fetchQueryResultTimeout.current = setTimeout(
           () => getExecutionResultById(executionId),
           2000,
@@ -280,7 +273,7 @@ const QueryPart: React.FC = () => {
         return;
       }
       if (queryId) {
-        await updateQuery(query);
+        await runQuery(query);
       } else {
         await runInitialQuery(query);
       }
@@ -303,11 +296,12 @@ const QueryPart: React.FC = () => {
         .getRequest('DashboardsRequest')
         .cancelQueryExecution(currentExecutionId.current);
       setIsTemporary(false);
-      setIsLoadingQuery(false);
       setIsLoadingResult(false);
       setAllowCancelExecution(false);
     } catch (error) {
       toastError({ message: getErrorMessage(error) });
+      setIsLoadingResult(false);
+      setAllowCancelExecution(false);
     }
   };
 
