@@ -21,6 +21,7 @@ interface IListItem {
   displayed?: string;
   isSaved?: boolean;
   onSaveSuccess?: () => Promise<void>;
+  onDeleteSuccess?: () => Promise<void>;
 }
 
 const ListItem: React.FC<IListItem> = (props) => {
@@ -32,6 +33,7 @@ const ListItem: React.FC<IListItem> = (props) => {
     isSaved = false,
     isLoading,
     onSaveSuccess,
+    onDeleteSuccess,
   } = props;
   const { user } = useUser();
 
@@ -86,6 +88,10 @@ const ListItem: React.FC<IListItem> = (props) => {
 
   const _renderDropdown = (isNavMenu?: boolean) => {
     const menu = [QUERY_MENU_LIST.SAVE, QUERY_MENU_LIST.SHARE];
+    if (!!user && user.getId() === itemClass.getUserId()) {
+      menu.push(QUERY_MENU_LIST.DELETE);
+    }
+
     return (
       !!item && (
         <>
@@ -101,6 +107,7 @@ const ListItem: React.FC<IListItem> = (props) => {
                   itemType={itemType}
                   isSaved={isSaved}
                   onSaveSuccess={onSaveSuccess}
+                  onDeleteSuccess={onDeleteSuccess}
                 />
               </Box>
               <Box display={{ lg: 'none' }}>
@@ -111,6 +118,7 @@ const ListItem: React.FC<IListItem> = (props) => {
                   isNavMenu={isNavMenu}
                   isSaved={isSaved}
                   onSaveSuccess={onSaveSuccess}
+                  onDeleteSuccess={onDeleteSuccess}
                 />
               </Box>
             </>
@@ -122,6 +130,7 @@ const ListItem: React.FC<IListItem> = (props) => {
               isNavMenu={isNavMenu}
               isSaved={isSaved}
               onSaveSuccess={onSaveSuccess}
+              onDeleteSuccess={onDeleteSuccess}
             />
           )}
         </>

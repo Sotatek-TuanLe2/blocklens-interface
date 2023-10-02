@@ -211,6 +211,15 @@ const DashboardsPage: React.FC = () => {
     );
   };
 
+  const onDeleteSuccess = async () => {
+    // trigger AppDataTable's params prop to re-fetch
+    if (itemType === ITEM_TYPE.DASHBOARDS) {
+      setDashboardParams((prevState) => ({ ...prevState }));
+    } else {
+      setQueryParams((prevState) => ({ ...prevState }));
+    }
+  };
+
   const fetchAllDashboards = useCallback(
     async (params: RequestParams) => {
       try {
@@ -456,6 +465,7 @@ const DashboardsPage: React.FC = () => {
                 displayed={displayed}
                 isSaved={isSaved}
                 onSaveSuccess={() => onSaveSuccess(item.id, isSaved)}
+                onDeleteSuccess={onDeleteSuccess}
               />
             );
           });
