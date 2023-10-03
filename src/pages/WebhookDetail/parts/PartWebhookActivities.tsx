@@ -53,7 +53,10 @@ const PartWebhookActivities: FC<IPartRecentActivities> = () => {
     <AppCard className="list-table-wrap">
       <Flex className="title-list-app">
         <Text className="text-title">Recent Activities</Text>
-        {!isMobile && !!activities.length && _renderLinkShowAll()}
+        {!isMobile &&
+          !!activities.length &&
+          activities.length === 5 &&
+          _renderLinkShowAll()}
       </Flex>
 
       <ActivityDatatable
