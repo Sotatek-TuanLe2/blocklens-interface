@@ -192,6 +192,7 @@ export interface IMessages {
 }
 
 export interface IActivityResponse {
+  id: string;
   hash: string;
   userId: number;
   registrationId: number;

@@ -34,12 +34,16 @@ export const formatLargeNumber = (number?: number) => {
   if (number >= 1e12) return +(number / 1e12).toFixed(1) + 'T';
 };
 
-export const formatShortText = (text: string, digits = 6): string => {
+export const formatShortText = (
+  text: string,
+  digits = 6,
+  endDigits = 3,
+): string => {
   if (!text) {
     return '--';
   }
   return `${text.substring(0, digits)}...${text.substring(
-    text.length - 3,
+    text.length - endDigits,
     text.length,
   )}`;
 };
