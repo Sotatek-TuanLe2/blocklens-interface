@@ -287,6 +287,12 @@ const AddressList: FC<IAddressListProps> = ({
       updatedAddresses = updatedAddresses.filter((input) => input !== '');
     }
 
+    if (
+      updatedAddresses.filter((address) => address === newValue).length >= 2
+    ) {
+      toastError({ message: 'Duplicated address!' });
+    }
+
     setAddressInputs(_.uniq(updatedAddresses));
     setIsPristine(true);
   };
