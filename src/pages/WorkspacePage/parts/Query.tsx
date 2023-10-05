@@ -85,9 +85,23 @@ const QueryPart: React.FC = () => {
       }
     });
 
+    const onSpellcheck = () => {
+      editorRef.current.refEditor.firstChild.blur();
+      editorRef.current.refEditor.firstChild.focus();
+    };
+
+    editorRef?.current?.refEditor?.firstChild?.addEventListener(
+      'input',
+      onSpellcheck,
+    );
+
     return () => {
       AppBroadcast.remove(BROADCAST_FETCH_QUERY);
       AppBroadcast.remove(BROADCAST_ADD_TO_EDITOR);
+      editorRef?.current?.refEditor?.firstChild?.removeEventListener(
+        'input',
+        onSpellcheck,
+      );
     };
   }, []);
 
