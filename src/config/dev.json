@@ -18,34 +18,6 @@
     "publishableKey": "pk_test_51Ljx2qF4Iczr6ngs4zx9wLMG1wlxVR2RrGGMkeGQndyZSoidulS0aLSETfQQoOAmL7tfJHQfWPsBUzIdykgJm6y400SL9AErt9"
   },
   "chains": {
-    "APTOS": {
-      "family": "BTC",
-      "name": "Aptos",
-      "id": "APTOS",
-      "icon": "icon-aptos",
-      "networks": {
-        "MAINNET": {
-          "name": "Mainnet",
-          "id": "MAINNET",
-          "icon": "icon-aptos",
-          "chainId": 1,
-          "rpcUrls": [
-            "https://mainnet.infura.io/v3/706f50c257ba4ca9883d0aa14ae57434",
-            "https://mainnet.infura.io/v3/9ddb0f7769a347948bfacd789a9a714f"
-          ],
-          "blockExplorer": {
-            "name": "Apscan",
-            "icon": "/images/etherscan.png",
-            "url": "https://explorer.aptoslabs.com/txn"
-          },
-          "nativeCurrency": {
-            "name": "APTOS",
-            "symbol": "APTOS",
-            "decimals": 18
-          }
-        }
-      }
-    },
     "ETH": {
       "family": "ETH",
       "name": "Ethereum",
@@ -69,6 +41,34 @@
           "nativeCurrency": {
             "name": "ETH",
             "symbol": "ETH",
+            "decimals": 18
+          }
+        }
+      }
+    },
+    "APTOS": {
+      "family": "BTC",
+      "name": "Aptos",
+      "id": "APTOS",
+      "icon": "icon-aptos",
+      "networks": {
+        "MAINNET": {
+          "name": "Mainnet",
+          "id": "MAINNET",
+          "icon": "icon-aptos",
+          "chainId": 1,
+          "rpcUrls": [
+            "https://mainnet.infura.io/v3/706f50c257ba4ca9883d0aa14ae57434",
+            "https://mainnet.infura.io/v3/9ddb0f7769a347948bfacd789a9a714f"
+          ],
+          "blockExplorer": {
+            "name": "Apscan",
+            "icon": "/images/etherscan.png",
+            "url": "https://explorer.aptoslabs.com/txn"
+          },
+          "nativeCurrency": {
+            "name": "APTOS",
+            "symbol": "APTOS",
             "decimals": 18
           }
         }
