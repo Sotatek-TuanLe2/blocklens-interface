@@ -60,25 +60,6 @@ const QueryPart: React.FC = () => {
     };
   }, [queryId]);
 
-  useEffect(() => {
-    const onSpellcheck = () => {
-      editorRef.current.refEditor.firstChild.blur();
-      editorRef.current.refEditor.firstChild.focus();
-    };
-
-    editorRef?.current?.refEditor?.firstChild?.addEventListener(
-      'input',
-      onSpellcheck,
-    );
-
-    return () => {
-      editorRef?.current?.refEditor?.firstChild?.removeEventListener(
-        'input',
-        onSpellcheck,
-      );
-    };
-  }, []);
-
   const getExecutionResultById = async (executionId: string) => {
     try {
       clearTimeout(fetchQueryResultTimeout.current);
