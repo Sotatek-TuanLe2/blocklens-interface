@@ -242,23 +242,16 @@ const QueryPart: React.FC = () => {
 
   const executeSelectedQuery = async () => {
     setIsLoadingResult(true);
-    try {
-      const executedResponse: QueryExecutedResponse = await rf
-        .getRequest('DashboardsRequest')
-        .executeQuery({ statement: selectedQuery });
-      const executionId = executedResponse.id;
-      await fetchQueryResult(executionId);
-      setIsLoadingResult(false);
-    } catch (error) {
-      setIsLoadingResult(false);
-      console.error(error);
-    }
+    const executionId = await executeQuery(selectedQuery);
+    setAllowCancelExecution(true);
+    await fetchQueryResult(executionId);
   };
 
   const runInitialQuery = async (query: string) => {
     setIsTemporary(true);
     setIsLoadingResult(true);
     const executionId = await executeQuery(query, queryId);
+    setAllowCancelExecution(true);
     await fetchQueryResult(executionId);
   };
 

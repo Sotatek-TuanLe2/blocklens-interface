@@ -343,8 +343,11 @@
       position: relative;
 
       .ace_text-input {
-        top: 18px !important;
-        left: 14px !important;
+        margin-left: 14px;
+        color: var(--chakra-colors-bg-100);
+        font: inherit !important;
+        white-space: pre;
+        letter-spacing: 0.2px;
       }
 
       .ace_gutter {

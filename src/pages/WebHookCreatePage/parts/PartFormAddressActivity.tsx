@@ -287,6 +287,12 @@ const AddressList: FC<IAddressListProps> = ({
       updatedAddresses = updatedAddresses.filter((input) => input !== '');
     }
 
+    if (
+      updatedAddresses.filter((address) => address === newValue).length >= 2
+    ) {
+      toastError({ message: 'Duplicated address!' });
+    }
+
     setAddressInputs(_.uniq(updatedAddresses));
     setIsPristine(true);
   };
@@ -429,16 +435,21 @@ const AddressInput: FC<IAddressInputProps> = ({
           ml="12px"
         />
       ) : (
-        <Flex justifyContent="space-between" ml="12px" w="100%">
-          <Text className={`${isInvalid ? 'text-address-error' : ''}`}>
+        <>
+          <Text
+            ml="12px"
+            maxW="100%"
+            wordBreak="break-word"
+            className={`${isInvalid ? 'text-address-error' : ''}`}
+          >
             {inputValue}
           </Text>
-          {isInvalid ? (
-            <Text className="invalid-card">Invalid</Text>
-          ) : (
-            <Box w="10px" h="10px"></Box>
+          {isInvalid && (
+            <Text ml="auto" className="invalid-card">
+              Invalid
+            </Text>
           )}
-        </Flex>
+        </>
       )}
     </Flex>
   );

@@ -74,7 +74,7 @@ const SignUpPage: FC = () => {
     if (!userId) return;
     try {
       await rf.getRequest('AuthRequest').resendMailVerify(dataForm.email);
-      toastSuccess({ message: 'Successfully!' });
+      toastSuccess({ message: 'Resent email successfully!' });
     } catch (e) {
       console.error(e);
     }
