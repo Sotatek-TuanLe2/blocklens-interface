@@ -85,6 +85,7 @@ const QueryPart: React.FC = () => {
       }
     });
     const onSpellcheck = () => {
+      // for fixing typing issue in editor only in MacOS
       editorRef.current.refEditor.firstChild.blur();
       editorRef.current.refEditor.firstChild.focus();
     };
