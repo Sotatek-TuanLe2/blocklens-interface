@@ -84,7 +84,6 @@ const QueryPart: React.FC = () => {
         editorRef.current.editor.focus();
       }
     });
-
     const onSpellcheck = () => {
       editorRef.current.refEditor.firstChild.blur();
       editorRef.current.refEditor.firstChild.focus();
