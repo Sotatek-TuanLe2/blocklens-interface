@@ -20,6 +20,7 @@ import {
   IVisualizationWidget,
 } from 'src/utils/query.type';
 import { Dashboard } from 'src/utils/utils-dashboard';
+import { toastError } from 'src/utils/utils-notify';
 
 interface ILayout extends Layout {
   id: string;
@@ -87,8 +88,11 @@ const DashboardPart: React.FC = () => {
         setDataLayouts(layouts);
         setIsEmptyDashboard(!layouts.length);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
+      if (error.message === 'Dashboard does not exists') {
+        toastError({ message: error.message });
+      }
     } finally {
       setIsLoading(false);
     }
