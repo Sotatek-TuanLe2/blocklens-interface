@@ -75,7 +75,7 @@ const DashboardPart: React.FC = () => {
     useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isSavingDashboard, setIsSavingDashboard] = useState<boolean>(false);
-  const [isEmptyDashboard, setIsEmptyDashboard] = useState<boolean>(true);
+  const [isEmptyDashboard, setIsEmptyDashboard] = useState<boolean>(false);
 
   const userName =
     `${user?.getFirstName() || ''}` + `${user?.getLastName() || ''}`;
@@ -124,8 +124,11 @@ const DashboardPart: React.FC = () => {
         setDataLayouts(layouts);
         setIsEmptyDashboard(!layouts.length);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
+      if (error.message === 'No dashboard found') {
+        toastError({ message: error.message });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -267,7 +270,7 @@ const DashboardPart: React.FC = () => {
   };
 
   const _renderDashboard = () => {
-    if (!dataLayouts.length) {
+    if (isEmptyDashboard) {
       return _renderEmptyDashboard();
     }
 
