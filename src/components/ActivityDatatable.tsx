@@ -27,6 +27,7 @@ import ModalUpgradeMessage from '../modals/ModalUpgradeMessage';
 import {
   formatShortText,
   formatTimestamp,
+  formatUpperCaseFirstLetter,
   shortAddressType,
 } from '../utils/utils-helper';
 
@@ -265,12 +266,18 @@ const ActivityDesktop: FC<IActivity> = ({ activity, webhook }) => {
       return null;
     }
 
-    const result = '';
+    if (!activity.notifyOf) {
+      return <Td>--</Td>;
+    }
+
+    const notifyOf = `${formatUpperCaseFirstLetter(
+      activity.notifyOf.type,
+    )}: ${formatUpperCaseFirstLetter(activity.notifyOf.name)}`;
 
     return (
       <Td>
-        <Tooltip hasArrow placement="top" label={result}>
-          {result.length > 30 ? formatShortText(result, 30, 0) : result}
+        <Tooltip hasArrow placement="top" label={notifyOf}>
+          {notifyOf.length > 30 ? formatShortText(notifyOf, 30, 0) : notifyOf}
         </Tooltip>
       </Td>
     );

@@ -48,6 +48,10 @@ export const formatShortText = (
   )}`;
 };
 
+export const formatUpperCaseFirstLetter = (value: string) => {
+  return `${value.charAt(0).toUpperCase()}${value.slice(1)}`;
+};
+
 export const isValidAddressEVM = (address: string) => {
   try {
     const addressChecksum = toChecksumAddress(address);
