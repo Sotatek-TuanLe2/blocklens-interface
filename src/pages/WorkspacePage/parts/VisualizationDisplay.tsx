@@ -627,38 +627,36 @@ const AddVisualization = ({
   };
 
   return (
-    <Box>
-      <div className="main-item">
-        {isConfiguring && (
-          <div className="visual-container__visualization__loading">
-            <Spinner size={'sm'} />
+    <div className="main-item">
+      {isConfiguring && (
+        <div className="visual-container__visualization__loading">
+          <Spinner size={'sm'} />
+        </div>
+      )}
+      <div className="top-items">
+        {visualizationConfigs.slice(0, 3).map((i) => (
+          <div
+            className="item-visual"
+            key={i.value}
+            onClick={() => onAddVisualize(i.value)}
+          >
+            {getIcon(i.type)}
+            {i.label}
           </div>
-        )}
-        <div className="top-items">
-          {visualizationConfigs.slice(0, 3).map((i) => (
-            <div
-              className="item-visual"
-              key={i.value}
-              onClick={() => onAddVisualize(i.value)}
-            >
-              {getIcon(i.type)}
-              {i.label}
-            </div>
-          ))}
-        </div>
-        <div className="bottom-items">
-          {visualizationConfigs.slice(3).map((i) => (
-            <div
-              className="item-visual"
-              key={i.value}
-              onClick={() => onAddVisualize(i.value)}
-            >
-              {getIcon(i.type)}
-              {i.label}
-            </div>
-          ))}
-        </div>
+        ))}
       </div>
-    </Box>
+      <div className="bottom-items">
+        {visualizationConfigs.slice(3).map((i) => (
+          <div
+            className="item-visual"
+            key={i.value}
+            onClick={() => onAddVisualize(i.value)}
+          >
+            {getIcon(i.type)}
+            {i.label}
+          </div>
+        ))}
+      </div>
+    </div>
   );
 };

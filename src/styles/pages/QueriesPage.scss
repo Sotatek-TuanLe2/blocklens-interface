@@ -140,6 +140,7 @@
 
     .btn-expand-full {
       height: 100%;
+
       &:hover {
         cursor: pointer;
       }
@@ -190,6 +191,7 @@
     .ace_print-margin {
       display: none;
     }
+
     .ace_text-layer {
       width: 100%;
     }
@@ -208,7 +210,7 @@
       flex-direction: row;
       position: relative;
 
-      & > button {
+      &>button {
         margin-right: 4px;
         border-radius: 8px;
         padding: 8px;
@@ -218,7 +220,7 @@
         margin-right: 4px;
         border-radius: 8px;
 
-        & > button {
+        &>button {
           padding: 0;
         }
 
@@ -282,46 +284,6 @@
       width: 100%;
     }
 
-    .splitter-layout {
-      position: unset !important;
-
-      .layout-splitter {
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background-color: $bg;
-
-        &::after {
-          content: '...';
-          color: $title;
-          font-size: 25px;
-          position: absolute;
-          z-index: 1;
-          height: 100%;
-          top: -20px;
-          font-weight: bold;
-        }
-
-        &:hover {
-          background-color: $line;
-          &::after {
-            color: $white;
-          }
-        }
-      }
-
-      &.splitter-layout-vertical > .layout-splitter {
-        height: 10px;
-      }
-
-      .layout-pane {
-        &:first-child {
-          overflow: hidden !important;
-        }
-      }
-    }
-
     .btn-expand-public {
       top: 15px;
       width: fit-content;
@@ -365,6 +327,11 @@
         display: none;
       }
     }
+    
+    .visualization-wrapper {
+      width: 100%;
+      background-color: $white;
+    }
 
     .empty-query {
       height: 100%;
@@ -390,6 +357,7 @@
       align-items: center;
       justify-content: center;
       text-align: center;
+
       .execution-error {
         font-weight: 700;
         font-size: 18px;
@@ -400,9 +368,77 @@
 
     .visual-table {
       margin-top: 20px;
+
       .tr-list {
         td {
           border-bottom: none;
+        }
+      }
+    }
+
+
+    // used for react-split-pane
+    .Pane {
+      overflow: hidden;
+    }
+
+    .Pane2 {
+      min-height: 0;
+    }
+
+    .Resizer {
+      position: relative;
+      flex: 0 0 auto;
+      background: #0003;
+      z-index: 1;
+      -moz-box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+      box-sizing: border-box;
+      -moz-background-clip: padding;
+      -webkit-background-clip: padding;
+      background-clip: padding-box;
+
+      &:after {
+        content: "…";
+        display: block;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 30px;
+        height: 10px;
+        background-color: white;
+        border: 1px solid $line;
+        border-radius: 20px;
+        color: $bg1;
+        text-align: center;
+        line-height: 0px;
+        font-size: 16px;
+        z-index: 12;
+        transform: translate(-50%, -50%);
+      }
+
+      &:hover {
+        -webkit-transition: border-color 200ms ease;
+        transition: border-color 200ms ease;
+      }
+      
+      & .Resizer:hover:after {
+        background: #fff;
+      }
+
+      &.horizontal {
+        height: 11px;
+        margin: -5px 0;
+        border-top: 5px solid transparent;
+        border-bottom: 5px solid transparent;
+        cursor: row-resize;
+        width: 100%;
+
+        &:hover, &:active {
+          &::after {
+            background-color: $line;
+            color: $white;
+          }
         }
       }
     }
@@ -422,6 +458,8 @@
   }
 
   .visual-container {
+    height: 100%;
+
     .tab-name-content {
       max-width: 250px;
       white-space: nowrap;
@@ -435,6 +473,7 @@
       align-items: baseline;
       padding: 10px 14px;
       border-bottom: 1px solid rgba(0, 2, 36, 0.1);
+      background-color: $white;
 
       .btn-expand {
         &:hover {
@@ -573,6 +612,7 @@
         @include text-small-regular;
         color: $paragraph;
         white-space: nowrap;
+
         @media (max-width: 992px) {
           padding: 0 14px;
         }
@@ -581,6 +621,7 @@
       .app-pagination {
         margin: 0;
         padding: 14px 20px 16px;
+
         @media (max-width: 992px) {
           padding-right: 14px;
         }
@@ -598,6 +639,7 @@
           border: 1px solid $line;
           border-radius: 6px;
         }
+
         .chakra-input__left-element {
           top: 2px;
         }
@@ -605,6 +647,8 @@
     }
 
     .app-tab {
+      height: 100%;
+
       .tabs-container {
         border-radius: 4px;
         width: 90%;
@@ -635,6 +679,7 @@
         span svg {
           color: #0060db;
         }
+
         .chakra-icon {
           color: rgba(0, 2, 36, 0.5);
         }
@@ -672,6 +717,7 @@
           .resizer {
             display: none;
           }
+
           tr {
             th {
               font-size: 14px;
@@ -688,9 +734,10 @@
       }
 
       .main-item {
-        padding: 168px 0px;
+        height: 100%;
         display: flex;
         flex-direction: column;
+        justify-content: center;
         gap: 20px;
         position: relative;
 
@@ -725,9 +772,11 @@
 
       .select-visual-type {
         width: 40%;
+
         ::-webkit-scrollbar {
           display: none;
         }
+
         .visual-type-content {
           .app-select {
             &__menu {
