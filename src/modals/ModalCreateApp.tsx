@@ -157,7 +157,7 @@ const ModalCreateApp: FC<IModalCreateApp> = ({ open, onClose, reloadData }) => {
           <Box width={isMobile ? '100%' : '49%'} zIndex={99}>
             <AppField label={'Chain'} customWidth={'100%'} isRequired>
               <AppSelect2
-                size="large"
+                size="medium"
                 onChange={(value: string) => {
                   setChainSelected(
                     CHAINS_CONFIG.find((chain) => chain.value === value),
@@ -176,7 +176,7 @@ const ModalCreateApp: FC<IModalCreateApp> = ({ open, onClose, reloadData }) => {
           <Box width={isMobile ? '100%' : '49%'}>
             <AppField label={'Network'} customWidth={'100%'} isRequired>
               <AppSelect2
-                size="large"
+                size="medium"
                 onChange={(value: string) => {
                   setNetworkSelected(
                     chainSelected.networks.find(
