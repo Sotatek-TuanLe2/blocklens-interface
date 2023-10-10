@@ -289,7 +289,11 @@ const AddressList: FC<IAddressListProps> = ({
         ? updatedAddresses.push('')
         : updatedAddresses.splice(index + 1, 0, '');
     }
-    if (!!updatedAddresses[0].length && filterEmpty) {
+    if (
+      filterEmpty &&
+      (!!updatedAddresses[0].length || updatedAddresses.length > 1)
+    ) {
+      // delete an empty row, including first empty row
       updatedAddresses = updatedAddresses.filter((input) => input !== '');
     }
 
@@ -337,22 +341,23 @@ const AddressList: FC<IAddressListProps> = ({
             />
           );
         })}
-        {isPristine && !!firstValue.length && !!invalidAddresses.length && (
-          <Flex alignItems="center" mt="28px" ml="16px">
-            <Text fontStyle="italic">
-              Invalid address: {invalidAddresses.length}
-            </Text>
-            <Box
-              className="btn-delete-address"
-              onClick={onClearAddressInvalid}
-              onMouseDown={(e) => {
-                e.preventDefault();
-              }}
-            >
-              Delete all invalid
-            </Box>
-          </Flex>
-        )}
+        {((isPristine && !!firstValue.length) || !!fileSelected.name) &&
+          !!invalidAddresses.length && (
+            <Flex alignItems="center" mt="28px" ml="16px">
+              <Text fontStyle="italic">
+                Invalid address: {invalidAddresses.length}
+              </Text>
+              <Box
+                className="btn-delete-address"
+                onClick={onClearAddressInvalid}
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                }}
+              >
+                Delete all invalid
+              </Box>
+            </Flex>
+          )}
       </Box>
       {isPristine && !firstValue.length && (
         <Text className="text-error">The addresses field is required</Text>
