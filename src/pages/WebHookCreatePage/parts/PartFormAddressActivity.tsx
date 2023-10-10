@@ -120,11 +120,17 @@ const PartFormAddressActivity: FC<IPartFormAddressActivity> = ({
     reader.onload = (e: any) => {
       const data = e.target.result;
       const dataFormat = data?.split('\n').filter((item: string) => !!item);
-      const uploadedAddresses = dataFormat.map((item: string) =>
-        item.replace('\r', ''),
-      );
+      const uploadedAddresses = dataFormat
+        .map((item: string) => item.replace('\r', ''))
+        .filter((item: string) => !!item);
       if (!uploadedAddresses) {
         toastError({ message: 'The Addresses file must be correct format' });
+        return;
+      }
+      if (!uploadedAddresses.length) {
+        toastError({
+          message: 'The file is empty. Please review the Upload file',
+        });
         return;
       }
       setAddressInputs(_.uniq(uploadedAddresses));
