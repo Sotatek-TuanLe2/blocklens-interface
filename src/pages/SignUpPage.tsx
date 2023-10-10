@@ -213,7 +213,7 @@ const SignUpPage: FC = () => {
         {_renderFormSignUp()}
 
         <ModalResendMail
-          type={SendMailType.SING_UP}
+          type={SendMailType.SIGN_UP}
           email={dataForm.email}
           open={openModalResendEmail}
           onClose={() => setOpenModalResendEmail(false)}
