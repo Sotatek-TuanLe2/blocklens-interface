@@ -1,7 +1,6 @@
-import React, { useCallback, useEffect, useMemo, useState, FC } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import rf from 'src/requests/RequestFactory';
 import moment from 'moment';
-import _ from 'lodash';
 import { RESOLUTION_TIME } from 'src/utils/utils-webhook';
 
 import {
@@ -29,7 +28,7 @@ const PartUserStats = ({
   totalWebhook?: number;
 }) => {
   const [userStatsToday, setUserStatsToday] = useState<IUserStats | any>({});
-  const [dataChart, setDataChart] = useState<IUserStats[] | any>([]);
+  const [dataChart, setDataChart] = useState<IUserStats[]>([]);
 
   const getUserStats = useCallback(async () => {
     const formTime = moment().utc().subtract(24, 'hour').valueOf();

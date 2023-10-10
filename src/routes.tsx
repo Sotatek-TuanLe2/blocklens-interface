@@ -68,7 +68,7 @@ export const PRIVATE_PATH = [
 
 const Routes: FC<RouteComponentProps> = () => {
   const { pathname } = useLocation();
-  const dispatch = useDispatch<any>();
+  const dispatch = useDispatch();
   const accessToken = Storage.getAccessToken();
   const location = useLocation();
   const { goWithOriginPath } = useOriginPath();
@@ -169,7 +169,7 @@ const Routes: FC<RouteComponentProps> = () => {
   );
 };
 
-const PublicRoute = ({ component: Component, path, ...rest }: any) => {
+const PublicRoute = ({ component: Component, ...rest }: any) => {
   const accessToken = Storage.getAccessToken();
 
   return (

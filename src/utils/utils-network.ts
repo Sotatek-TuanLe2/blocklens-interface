@@ -150,7 +150,11 @@ export const getChainConfig = (networkId?: string): Chain => {
 
 export const getNetworkByEnv = (chain?: Chain | null): Network => {
   const env = process.env.REACT_APP_ENV || 'prod';
-  const networks: any = {
+  const networks: {
+    [key: string]: {
+      [key: string]: string;
+    };
+  } = {
     ETH: {
       prod: 'MAINNET',
       dev: 'GOERLI',

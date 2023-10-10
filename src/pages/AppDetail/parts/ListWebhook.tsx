@@ -1,15 +1,10 @@
 import React, { useCallback, useEffect, FC, useState } from 'react';
 import { IListAppResponse } from 'src/utils/common';
 import rf from 'src/requests/RequestFactory';
-import {
-  IWebhook,
-  WEBHOOK_STATUS,
-  WEBHOOK_TYPES,
-  formatTokenData,
-} from 'src/utils/utils-webhook';
+import { IWebhook, WEBHOOK_STATUS } from 'src/utils/utils-webhook';
 import { Th, Thead, Tr, Tbody, Td, Box, Flex, Tooltip } from '@chakra-ui/react';
 import { AppDataTable, AppLoadingTable } from 'src/components';
-import { formatShortText, shortAddressType } from 'src/utils/utils-helper';
+import { formatShortText } from 'src/utils/utils-helper';
 import _ from 'lodash';
 import { IAppResponse } from 'src/utils/utils-app';
 import { useHistory } from 'react-router';

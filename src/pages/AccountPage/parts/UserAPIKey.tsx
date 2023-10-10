@@ -1,6 +1,6 @@
 import 'src/styles/pages/AccountPage.scss';
 import { Box, Flex } from '@chakra-ui/react';
-import { AppCard, AppInput, AppLink } from 'src/components';
+import { AppCard, AppInput } from 'src/components';
 import { CopyIcon, RetryIcon } from 'src/assets/icons';
 import { copyToClipboard } from 'src/utils/utils-helper';
 import React, { useCallback, useEffect, useState } from 'react';

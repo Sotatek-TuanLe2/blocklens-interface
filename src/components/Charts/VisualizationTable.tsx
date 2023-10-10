@@ -314,7 +314,6 @@ const VisualizationTable = <T,>({
                 coloredPositive,
                 coloredNegative,
                 type,
-                format,
                 coloredProgress,
               } = cells.column.columnDef;
               const value = cells.getValue();
