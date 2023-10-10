@@ -70,7 +70,7 @@
     "react-select": "^5.7.4",
     "react-share": "^4.4.1",
     "react-spinners": "^0.13.8",
-    "react-splitter-layout": "^4.0.0",
+    "react-split-pane": "^0.1.92",
     "react-text-mask": "^5.5.0",
     "recaptcha-v3": "^1.10.0",
     "recharts": "^2.1.16",
