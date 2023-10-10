@@ -22,7 +22,6 @@ import { PRIVATE_PATH } from 'src/routes';
 import { clearUser } from 'src/store/user';
 import { ROUTES } from 'src/utils/common';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
-import { toastError } from '../utils/utils-notify';
 
 const menus = [
   {

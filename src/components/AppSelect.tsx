@@ -29,7 +29,6 @@ const AppSelect: FC<AppSelectPops> = ({
   defaultValue,
   options,
   isSearchable = false,
-  children,
   ...props
 }: AppSelectPops) => {
   return (

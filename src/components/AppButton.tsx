@@ -136,7 +136,7 @@ export const appButtonStyles = {
         bg: mode('rgba(0, 2, 36, 0.1)', 'rgba(0, 2, 36, 0.1)')(props),
       },
     }),
-    red: (_props: StyleProps) => ({
+    red: () => ({
       bg: 'red.400',
       color: 'white',
       _hover: {

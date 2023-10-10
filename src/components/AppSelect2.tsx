@@ -54,7 +54,6 @@ const AppSelect2: FC<IAppSelectPops> = ({
   validate,
   readOnly,
   fontWeight,
-  ...props
 }) => {
   const [open, setOpen] = useState<boolean>(false);
   const forceRender = useForceRender();

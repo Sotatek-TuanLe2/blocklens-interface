@@ -67,7 +67,7 @@ export const isValidAddressSUIAndAptos = (address: string) => {
 };
 
 export const filterParams = (params: any) => {
-  return Object.fromEntries(Object.entries(params).filter(([_, v]) => v));
+  return Object.fromEntries(Object.entries(params).filter(([, v]) => v));
 };
 
 export const convertCurrencyToNumber = (value: string) => {

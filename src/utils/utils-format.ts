@@ -249,7 +249,7 @@ export function formatWeiNumber(
 export function formatNumber(
   value: string | number | BigNumber,
   decimalPlaces = 4,
-  defaultValue: any = null,
+  defaultValue?: string,
 ): string {
   if (!value || new BigNumber(value || 0).isZero()) {
     return defaultValue ? defaultValue : NOT_AVAILABLE_TEXT;
@@ -294,9 +294,7 @@ export const formatNumberWithDecimalDigits = (
   number: number,
   format: string,
 ): string => {
-  const [_integerPartFormat, decimalPartFormat] = format
-    .replace('a', '')
-    .split('.');
+  const [, decimalPartFormat] = format.replace('a', '').split('.');
   const decimalNumber = new Decimal(number);
   const integerPart = decimalNumber.floor().toString();
   let decimalPart = decimalNumber

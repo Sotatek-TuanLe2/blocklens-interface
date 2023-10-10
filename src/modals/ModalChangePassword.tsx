@@ -1,11 +1,12 @@
 import { Box, Text } from '@chakra-ui/react';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router';
 import { AppButton, AppField, AppInput } from 'src/components';
+import { useForceRender } from 'src/hooks/useForceRender';
 import rf from 'src/requests/RequestFactory';
 import { ROUTES } from 'src/utils/common';
 import { getErrorMessage } from 'src/utils/utils-helper';
-import { toastError, toastSuccess } from 'src/utils/utils-notify';
+import { toastSuccess } from 'src/utils/utils-notify';
 import Storage from 'src/utils/utils-storage';
 import { createValidator } from 'src/utils/utils-validator';
 import BaseModal from './BaseModal';
@@ -34,8 +35,7 @@ const ModalChangePassword: React.FC<IChangePasswordModal> = ({
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const history = useHistory();
-  const [, updateState] = useState<any>();
-  const forceUpdate = useCallback(() => updateState({}), []);
+  const forceUpdate = useForceRender();
   const validators = useRef(
     createValidator({
       element: (message: string) => (

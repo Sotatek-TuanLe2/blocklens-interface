@@ -17,7 +17,7 @@ import {
   getLogoChainByChainId,
   isEVMNetwork,
   isAptosNetwork,
-  isSuiNetwork,
+  // isSuiNetwork,
 } from 'src/utils/utils-network';
 import { isMobile } from 'react-device-detect';
 import { APP_STATUS, IAppResponse } from 'src/utils/utils-app';
@@ -239,19 +239,19 @@ const AppDetail = () => {
     );
   };
 
-  const _renderTabPanelsSui = () => {
-    return (
-      <TabPanels>
-        <TabPanel className={`content-tab-app`}>
-          <PartWebhooks
-            appInfo={appInfo}
-            type={WEBHOOK_TYPES.ADDRESS_ACTIVITY}
-            description={'Get notified whenever an address occurs activity'}
-          />
-        </TabPanel>
-      </TabPanels>
-    );
-  };
+  // const _renderTabPanelsSui = () => {
+  //   return (
+  //     <TabPanels>
+  //       <TabPanel className={`content-tab-app`}>
+  //         <PartWebhooks
+  //           appInfo={appInfo}
+  //           type={WEBHOOK_TYPES.ADDRESS_ACTIVITY}
+  //           description={'Get notified whenever an address occurs activity'}
+  //         />
+  //       </TabPanel>
+  //     </TabPanels>
+  //   );
+  // };
 
   const _renderListWebhook = () => {
     return (
