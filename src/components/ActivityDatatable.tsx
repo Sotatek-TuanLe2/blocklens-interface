@@ -27,6 +27,7 @@ import ModalUpgradeMessage from '../modals/ModalUpgradeMessage';
 import {
   formatShortText,
   formatTimestamp,
+  formatUpperCaseFirstLetter,
   shortAddressType,
 } from '../utils/utils-helper';
 
@@ -67,28 +68,11 @@ const _renderStatus = (activity: IActivityResponse) => {
   );
 };
 
-// const onRetry = async (
-//   e: MouseEvent<SVGSVGElement | HTMLButtonElement>,
-//   activity: IActivityResponse,
-//   webhook: IWebhook,
-//   onReload: () => void,
-// ) => {
-//   e.stopPropagation();
-//   if (webhook.status === WEBHOOK_STATUS.DISABLED) return;
-//   await rf.getRequest('NotificationRequest').retryActivity(activity.hash);
-//   toastSuccess({ message: 'Retried!' });
-//   onReload();
-// };
-
-// const handlerRetryError = (error: any, handleLimitError: any) => {
-//   if (getErrorMessage(error) === 'Limit of daily messages is reached') {
-//     handleLimitError();
-//   } else console.error(error);
-// };
-
 const ActivityMobile: FC<IActivity> = ({ activity, webhook }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [openModalUpgradeMessage, setOpenUpgradeMessage] = useState(false);
+
+  const isAddressActivity = webhook.type === WEBHOOK_TYPES.ADDRESS_ACTIVITY;
 
   const _renderInfos = () => {
     const _renderInfoContractActivity = () => {
@@ -108,7 +92,7 @@ const ActivityMobile: FC<IActivity> = ({ activity, webhook }) => {
       );
     };
 
-    if (webhook.type === WEBHOOK_TYPES.ADDRESS_ACTIVITY) {
+    if (isAddressActivity) {
       return (
         <Flex
           justifyContent="space-between"
@@ -250,28 +234,6 @@ const ActivityMobile: FC<IActivity> = ({ activity, webhook }) => {
             {_renderInfos()}
 
             <Flex flexWrap={'wrap'} my={2} justifyContent={'center'}>
-              {/*{activity?.lastStatus !== STATUS.DONE && (*/}
-              {/*  <Box width={'48%'}>*/}
-              {/*    <AppButton*/}
-              {/*      variant="cancel"*/}
-              {/*      size="sm"*/}
-              {/*      onClick={async (e) => {*/}
-              {/*        try {*/}
-              {/*          await onRetry(e, activity, webhook, onReload);*/}
-              {/*        } catch (error) {*/}
-              {/*          handlerRetryError(error, () =>*/}
-              {/*            setOpenUpgradeMessage(true),*/}
-              {/*          );*/}
-              {/*        }*/}
-              {/*      }}*/}
-              {/*      w={'100%'}*/}
-              {/*      isDisabled={webhook.status === WEBHOOK_STATUS.DISABLED}*/}
-              {/*    >*/}
-              {/*      Retry Now*/}
-              {/*    </AppButton>*/}
-              {/*  </Box>*/}
-              {/*)}*/}
-
               <Box width={'48%'}>
                 <AppLink
                   to={`/webhook/${webhook.registrationId}/activities/${activity?.hash}`}
@@ -297,15 +259,34 @@ const ActivityDesktop: FC<IActivity> = ({ activity, webhook }) => {
   const history = useHistory();
   const [openModalUpgradeMessage, setOpenModalUpgradeMessage] = useState(false);
 
-  const _renderContentContract = () => {
-    return <Td w="15%">{activity?.metadata?.method || '--'}</Td>;
+  const isAddressActivity = webhook.type === WEBHOOK_TYPES.ADDRESS_ACTIVITY;
+
+  const _renderContentNotifyOf = () => {
+    if (isAddressActivity) {
+      return null;
+    }
+
+    if (!activity.notifyOf) {
+      return <Td>--</Td>;
+    }
+
+    const notifyOf = `${formatUpperCaseFirstLetter(
+      activity.notifyOf.type,
+    )}: ${formatUpperCaseFirstLetter(activity.notifyOf.name)}`;
+
+    return (
+      <Td>
+        <Tooltip hasArrow placement="top" label={notifyOf}>
+          {notifyOf.length > 30 ? formatShortText(notifyOf, 30, 0) : notifyOf}
+        </Tooltip>
+      </Td>
+    );
   };
 
-  const _renderContentNFT = () => {
-    const content = activity?.metadata?.tx?.tokenIds?.join(', ');
-    return (
-      <>
-        <Td w="13%">{activity?.metadata?.method || '--'}</Td>
+  const _renderContentTokenInfo = () => {
+    if (webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY) {
+      const content = activity?.metadata?.tx?.tokenIds?.join(', ');
+      return (
         <Td textAlign="center" w="10%">
           <Tooltip hasArrow placement="top" label={content}>
             <Box overflow={'hidden'} textOverflow={'ellipsis'}>
@@ -313,60 +294,21 @@ const ActivityDesktop: FC<IActivity> = ({ activity, webhook }) => {
             </Box>
           </Tooltip>
         </Td>
-      </>
-    );
-  };
-
-  const _renderContentAddress = () => {
-    return (
-      <Td w="15%">{formatShortText(activity?.metadata?.trackingAddress)}</Td>
-    );
-  };
-
-  const _renderContentAptosCoin = () => {
-    return (
-      <Td w="15%" isTruncated>
-        <Tooltip
-          hasArrow
-          placement="top"
-          label={webhook?.metadata?.coinType || ''}
-        >
-          {shortAddressType(webhook?.metadata?.coinType || '')}
-        </Tooltip>
-      </Td>
-    );
-  };
-
-  const _renderContentAptosToken = () => {
-    const content = formatTokenData(webhook);
-
-    return (
-      <Td w="15%" isTruncated>
-        <Tooltip hasArrow placement="top" label={content}>
-          {content}
-        </Tooltip>
-      </Td>
-    );
-  };
-
-  const _renderContentActivities = () => {
-    if (webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY) {
-      return _renderContentNFT();
-    }
-
-    if (webhook.type === WEBHOOK_TYPES.CONTRACT_ACTIVITY) {
-      return _renderContentContract();
-    }
-
-    if (webhook.type === WEBHOOK_TYPES.APTOS_COIN_ACTIVITY) {
-      return _renderContentAptosCoin();
+      );
     }
 
     if (webhook.type === WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY) {
-      return _renderContentAptosToken();
+      const content = formatTokenData(webhook);
+      return (
+        <Td textAlign="center" w="15%" isTruncated>
+          <Tooltip hasArrow placement="top" label={content}>
+            {content}
+          </Tooltip>
+        </Td>
+      );
     }
 
-    return _renderContentAddress();
+    return null;
   };
 
   const onRedirectToBlockExplorer = (e: MouseEvent<HTMLAnchorElement>) => {
@@ -385,17 +327,16 @@ const ActivityDesktop: FC<IActivity> = ({ activity, webhook }) => {
             );
           }}
         >
-          <Td w="25%">
-            {formatTimestamp(
-              activity?.metadata?.tx?.timestamp,
-              'YYYY-MM-DD HH:mm:ss',
-            )}{' '}
-            UTC
+          <Td w={isAddressActivity ? '25%' : '12%'}>
+            <Tooltip hasArrow placement="top" label={activity.id}>
+              {activity.id.length > 8
+                ? formatShortText(activity.id, 4, 4)
+                : activity.id}
+            </Tooltip>
           </Td>
-          <Td w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '12%' : '15%'}>
-            {activity?.metadata?.tx?.block || '--'}
-          </Td>
-          <Td w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '15%' : '20%'}>
+          {_renderContentNotifyOf()}
+          {_renderContentTokenInfo()}
+          <Td w={isAddressActivity ? '25%' : '15%'}>
             <Flex alignItems="center">
               {formatShortText(activity?.transactionHash)}
               {activity?.transactionHash && (
@@ -416,36 +357,17 @@ const ActivityDesktop: FC<IActivity> = ({ activity, webhook }) => {
               )}
             </Flex>
           </Td>
-          {_renderContentActivities()}
-          <Td w="15%" textAlign={'center'}>
+          <Td w={isAddressActivity ? '25%' : '20%'}>
+            {formatTimestamp(
+              activity?.metadata?.tx?.timestamp,
+              'YYYY-MM-DD HH:mm:ss',
+            )}
+          </Td>
+          <Td w={isAddressActivity ? '20%' : '10%'} textAlign={'center'}>
             {_renderStatus(activity)}
           </Td>
-          <Td w="15%">
+          <Td w="5%">
             <Flex justifyContent={'flex-end'}>
-              {/*{activity?.lastStatus !== STATUS.DONE && (*/}
-              {/*  <Box*/}
-              {/*    className="link-redirect"*/}
-              {/*    mr={3}*/}
-              {/*    cursor={*/}
-              {/*      webhook.status === WEBHOOK_STATUS.DISABLED*/}
-              {/*        ? 'not-allowed'*/}
-              {/*        : 'pointer'*/}
-              {/*    }*/}
-              {/*  >*/}
-              {/*    <RetryIcon*/}
-              {/*      onClick={async (e) => {*/}
-              {/*        try {*/}
-              {/*          await onRetry(e, activity, webhook, onReload);*/}
-              {/*        } catch (error) {*/}
-              {/*          handlerRetryError(error, () =>*/}
-              {/*            setOpenModalUpgradeMessage(true),*/}
-              {/*          );*/}
-              {/*        }*/}
-              {/*      }}*/}
-              {/*    />*/}
-              {/*  </Box>*/}
-              {/*)}*/}
-
               <Box className="link-redirect">
                 <LinkDetail />
               </Box>
@@ -483,118 +405,72 @@ const ActivityDatatable: FC<IActivityDatatable> = ({
   const forceUpdate = useCallback(() => updateState({}), []);
   const { webhook } = useWebhookDetails(webhookId);
 
+  const isAddressActivity = webhook.type === WEBHOOK_TYPES.ADDRESS_ACTIVITY;
+
   const _renderHeader = () => {
     if (isMobile) return;
 
-    const _renderHeaderContract = () => {
+    const _renderHeaderNotifyOf = () => {
+      if (isAddressActivity) {
+        return null;
+      }
+
       return (
-        <Th
-          textAlign="center"
-          w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '13%' : '15%'}
-        >
+        <Th>
           <Flex alignItems="center">
-            method
-            {isFilter && (
-              <AppFilter
-                value={params?.method}
-                onChange={(method) => {
-                  setParams && setParams({ ...params, method });
-                }}
-                type="method"
-              />
-            )}
+            NOTIFY OF
+            <Tooltip
+              placement={'top'}
+              hasArrow
+              p={2}
+              className="tooltip-app"
+              label="The function/event of which the message notify you, according to your Notification filter setups"
+            >
+              <Box className="icon-info" ml={2} cursor={'pointer'} />
+            </Tooltip>
           </Flex>
         </Th>
       );
     };
 
-    const _renderHeaderAptosCoin = () => {
-      return (
-        <Th textAlign="center" w={'15%'}>
-          <Flex alignItems="center">Coin Type</Flex>
-        </Th>
-      );
-    };
-
-    const _renderHeaderAptosToken = () => {
-      return (
-        <Th textAlign="center" w={'15%'}>
-          <Flex alignItems="center">Token Data</Flex>
-        </Th>
-      );
-    };
-
-    const _renderHeaderAddress = () => {
-      return (
-        <Th w="15%">
-          <Flex alignItems="center">
-            Address
-            {isFilter && (
-              <AppFilter
-                value={params.address}
-                onChange={(address) => {
-                  setParams && setParams({ ...params, address });
-                }}
-                type="address"
-              />
-            )}
-          </Flex>
-        </Th>
-      );
-    };
-
-    const _renderHeaderNFT = () => {
-      return (
-        <>
-          {_renderHeaderContract()}
-          <Th textAlign="center" w="10%">
-            <Flex alignItems="center" justifyContent={'center'}>
-              token id
-              {isFilter && (
-                <AppFilter
-                  value={params.tokenId}
-                  onChange={(tokenId) => {
-                    setParams && setParams({ ...params, tokenId });
-                  }}
-                  type="token ID"
-                />
-              )}
-            </Flex>
-          </Th>
-        </>
-      );
-    };
-
-    const _renderHeaderActivities = () => {
+    const _renderHeaderTokenInfo = () => {
       if (webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY) {
-        return _renderHeaderNFT();
-      }
-
-      if (webhook.type === WEBHOOK_TYPES.CONTRACT_ACTIVITY) {
-        return _renderHeaderContract();
-      }
-
-      if (webhook.type === WEBHOOK_TYPES.APTOS_COIN_ACTIVITY) {
-        return _renderHeaderAptosCoin();
+        return (
+          <Th textAlign="center" w="10%">
+            TOKEN ID
+            {isFilter && (
+              <AppFilter
+                value={params.tokenId}
+                onChange={(tokenId) => {
+                  setParams && setParams({ ...params, tokenId });
+                }}
+                type="token ID"
+              />
+            )}
+          </Th>
+        );
       }
 
       if (webhook.type === WEBHOOK_TYPES.APTOS_TOKEN_ACTIVITY) {
-        return _renderHeaderAptosToken();
+        return (
+          <Th textAlign="center" w="15%">
+            TOKEN NAME
+          </Th>
+        );
       }
 
-      return _renderHeaderAddress();
+      return null;
     };
 
     return (
       <Thead className="header-list">
         <Tr>
-          <Th w="25%">Created At</Th>
-          <Th w={webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY ? '12%' : '15%'}>
-            Block
-          </Th>
-          <Th w={'15%'}>
+          <Th w={isAddressActivity ? '25%' : '12%'}>MESSAGE ID</Th>
+          {_renderHeaderNotifyOf()}
+          {_renderHeaderTokenInfo()}
+          <Th w={isAddressActivity ? '25%' : '15%'}>
             <Flex alignItems="center">
-              txn id
+              TXN ID
               {isFilter && (
                 <AppFilter
                   value={params.txHash}
@@ -606,10 +482,10 @@ const ActivityDatatable: FC<IActivityDatatable> = ({
               )}
             </Flex>
           </Th>
-          {_renderHeaderActivities()}
-          <Th w="15%">
+          <Th w={isAddressActivity ? '25%' : '20%'}>CREATED AT (UTC)</Th>
+          <Th w={isAddressActivity ? '20%' : '10%'}>
             <Flex alignItems={'center'} justifyContent={'center'}>
-              Status
+              STATUS
               {isFilter && (
                 <AppFilter
                   value={params.status}
@@ -620,21 +496,9 @@ const ActivityDatatable: FC<IActivityDatatable> = ({
                   options={optionsFilter}
                 />
               )}
-              {/* <Tooltip
-                p={2}
-                label="Messages for each activity will retry 5 times if send failed, each auto-retry occurs after one minute.
-                 The status shows Failed if all retries failed or user’s daily limit is reached."
-                placement={'top'}
-                hasArrow
-                className={'tooltip-app'}
-              >
-                <Box ml={2} cursor="pointer">
-                  <InfoIcon />
-                </Box>
-              </Tooltip> */}
             </Flex>
           </Th>
-          <Th w="15%" />
+          <Th w="5%" />
         </Tr>
       </Thead>
     );

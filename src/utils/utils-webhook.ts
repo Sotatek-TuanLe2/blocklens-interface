@@ -192,6 +192,7 @@ export interface IMessages {
 }
 
 export interface IActivityResponse {
+  id: string;
   hash: string;
   userId: number;
   registrationId: number;
@@ -200,6 +201,10 @@ export interface IActivityResponse {
   statusCode: number;
   webhook: string;
   metadata: any;
+  notifyOf: {
+    name: string;
+    type: string;
+  };
   errs: string[];
   tokenIds: string[];
   method: string;

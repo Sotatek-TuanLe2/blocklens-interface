@@ -5,6 +5,7 @@ import 'ace-builds/src-noconflict/theme-tomorrow';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import AceEditor from 'react-ace';
 import { useParams } from 'react-router-dom';
+import SplitPane from 'react-split-pane';
 import { QueryResultIcon } from 'src/assets/icons';
 import { AppLoadingTable } from 'src/components';
 import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
@@ -20,13 +21,10 @@ import { IErrorExecuteQuery, IQuery } from 'src/utils/query.type';
 import { toastError } from 'src/utils/utils-notify';
 import { Query } from 'src/utils/utils-query';
 import { STATUS } from 'src/utils/utils-webhook';
-import SplitterLayout from 'react-splitter-layout';
-import 'react-splitter-layout/lib/index.css';
 
 const QueryPart: React.FC = () => {
   const { queryId } = useParams<{ queryId: string }>();
   const editorRef = useRef<any>();
-  const visualizationHeightRef = useRef<number>();
 
   const [queryResult, setQueryResult] = useState<any>([]);
   const [queryValue, setQueryValue] = useState<IQuery | null>(null);
@@ -158,15 +156,13 @@ const QueryPart: React.FC = () => {
       statusExecuteQuery === STATUS.DONE
     ) {
       return (
-        <Box>
-          <VisualizationDisplay
-            queryResult={queryResult}
-            queryValue={queryValue}
-            needAuthentication={false}
-            containerHeight={visualizationHeight}
-            onReload={fetchQuery}
-          />
-        </Box>
+        <VisualizationDisplay
+          queryResult={queryResult}
+          queryValue={queryValue}
+          needAuthentication={false}
+          containerHeight={visualizationHeight}
+          onReload={fetchQuery}
+        />
       );
     }
 
@@ -198,18 +194,7 @@ const QueryPart: React.FC = () => {
       return null;
     }
 
-    return <>{_renderContent()}</>;
-  };
-
-  const onChangeVisualizationHeight = (secondaryPanelSize: number) => {
-    visualizationHeightRef.current = secondaryPanelSize;
-  };
-
-  const onDragEnd = () => {
-    if (!visualizationHeightRef.current) {
-      return;
-    }
-    setVisualizationHeight(visualizationHeightRef.current);
+    return _renderContent();
   };
 
   return (
@@ -227,14 +212,13 @@ const QueryPart: React.FC = () => {
       />
       <div className="query-container queries-page">
         <Box className="queries-page__right-side">
-          <SplitterLayout
-            primaryIndex={0}
-            primaryMinSize={30}
-            secondaryMinSize={140}
-            vertical
-            secondaryInitialSize={visualizationHeight}
-            onSecondaryPaneSizeChange={onChangeVisualizationHeight}
-            onDragEnd={onDragEnd}
+          <SplitPane
+            split="horizontal"
+            size={visualizationHeight}
+            primary="second"
+            minSize={140}
+            maxSize={-30}
+            onDragFinished={(newSize) => setVisualizationHeight(newSize)}
           >
             <Box className="editor-wrapper">
               <div
@@ -265,8 +249,10 @@ const QueryPart: React.FC = () => {
                 }}
               />
             </Box>
-            {_renderVisualizations()}
-          </SplitterLayout>
+            <Box className="visualization-wrapper">
+              {_renderVisualizations()}
+            </Box>
+          </SplitPane>
         </Box>
       </div>
     </div>
