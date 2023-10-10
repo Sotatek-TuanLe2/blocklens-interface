@@ -2,9 +2,11 @@ import { Box, Flex, Text } from '@chakra-ui/react';
 import React, { FC } from 'react';
 import BaseModal from './BaseModal';
 import AppButton from 'src/components/AppButton';
+import { useHistory } from 'react-router-dom';
+import { ROUTES } from 'src/utils/common';
 
 export enum SendMailType {
-  SING_UP,
+  SIGN_UP,
   RESET_PASS,
 }
 
@@ -18,11 +20,13 @@ interface ModalUpgradeCreateApp {
 
 const ModalResendMail: FC<ModalUpgradeCreateApp> = ({
   open,
-  onClose,
   type,
   email,
   onResend,
+  onClose,
 }) => {
+  const history = useHistory();
+
   const SignUpComp = (
     <Box className={'modal__description-email'}>
       Check your email <span className="email">{email}</span> for the
@@ -37,6 +41,11 @@ const ModalResendMail: FC<ModalUpgradeCreateApp> = ({
     </Box>
   );
 
+  const onFinish = () => {
+    onClose();
+    history.push(ROUTES.LOGIN);
+  };
+
   return (
     <BaseModal size="xl" icon="icon-sent-mail" isOpen={open} onClose={onClose}>
       <Box mt={7}>
@@ -48,7 +57,7 @@ const ModalResendMail: FC<ModalUpgradeCreateApp> = ({
           One last step!
         </Text>
         <Box className={'modal__description-email'}>
-          {type === SendMailType.SING_UP ? SignUpComp : ResetPassComp}
+          {type === SendMailType.SIGN_UP ? SignUpComp : ResetPassComp}
           <Flex justify={'center'}>
             Didn’t receive it?
             <Text
@@ -65,7 +74,7 @@ const ModalResendMail: FC<ModalUpgradeCreateApp> = ({
       </Box>
 
       <Flex flexWrap={'wrap'} justifyContent={'center'} pt={4}>
-        <AppButton size={'lg'} onClick={onClose} showSubmitting>
+        <AppButton size={'lg'} onClick={onFinish} showSubmitting>
           Finish
         </AppButton>
       </Flex>
