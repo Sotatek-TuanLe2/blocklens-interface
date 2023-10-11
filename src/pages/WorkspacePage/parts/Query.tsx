@@ -46,7 +46,7 @@ const QueryPart: React.FC = () => {
   const DEBOUNCE_TIME = 500;
   const editorRef = useRef<any>();
 
-  const [isTemporary, setIsTemporary] = useState<boolean>(false);
+  const [isFirstRun, setIsFirstRun] = useState<boolean>(false);
   const [createQueryId, setCreateQueryId] = useState<string>('');
   const [queryResult, setQueryResult] = useState<any>([]);
   const [queryValue, setQueryValue] = useState<IQuery | null>(null);
@@ -115,7 +115,7 @@ const QueryPart: React.FC = () => {
       editorRef.current.editor.setValue('');
       editorRef.current.editor.focus();
     }
-    setIsTemporary(false);
+    setIsFirstRun(false);
     setQueryResult([]);
     setQueryValue(null);
     setCreateQueryId('');
@@ -224,7 +224,7 @@ const QueryPart: React.FC = () => {
   };
 
   const fetchInitialData = async () => {
-    setIsTemporary(false);
+    setIsFirstRun(false);
     setIsLoadingQuery(true);
     const dataQuery = await fetchQuery();
     await fetchQueryResult(
@@ -233,9 +233,7 @@ const QueryPart: React.FC = () => {
   };
 
   const onSelectQuery = debounce((value) => {
-    if (queryId) {
-      setSelectedQuery(value.session.getTextRange());
-    }
+    setSelectedQuery(value.session.getTextRange());
   }, DEBOUNCE_TIME);
 
   const executeSelectedQuery = async () => {
@@ -246,7 +244,7 @@ const QueryPart: React.FC = () => {
   };
 
   const runInitialQuery = async (query: string) => {
-    setIsTemporary(true);
+    setIsFirstRun(true);
     setIsLoadingResult(true);
     const executionId = await executeQuery(query, queryId);
     setAllowCancelExecution(true);
@@ -286,7 +284,7 @@ const QueryPart: React.FC = () => {
       await rf
         .getRequest('DashboardsRequest')
         .cancelQueryExecution(currentExecutionId.current);
-      setIsTemporary(false);
+      setIsFirstRun(false);
       setIsLoadingResult(false);
       setAllowCancelExecution(false);
     } catch (error) {
@@ -297,6 +295,8 @@ const QueryPart: React.FC = () => {
   };
 
   const onSuccessCreateQuery = async (queryResponse: any) => {
+    // execute query again for making sure the query statement is synchronized
+    await executeQuery(queryResponse.query, queryResponse.id);
     goWithOriginPath(`${ROUTES.MY_QUERY}/${queryResponse.id}`);
     AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
   };
@@ -360,7 +360,7 @@ const QueryPart: React.FC = () => {
   };
 
   const _renderVisualizations = () => {
-    if (!isTemporary && !queryId) {
+    if (!queryResult.length && !errorExecuteQuery) {
       return (
         <div className="empty-query">
           <Flex
@@ -401,7 +401,7 @@ const QueryPart: React.FC = () => {
         data={queryValue}
         isLoadingRun={isLoadingQuery}
         isLoadingResult={isLoadingResult}
-        isTemporaryQuery={isTemporary}
+        isFirstRunQuery={isFirstRun}
         allowCancelExecution={allowCancelExecution}
         onRunQuery={onRunQuery}
         onCancelExecution={onCancelExecution}

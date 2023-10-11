@@ -40,7 +40,7 @@ interface IHeaderProps {
   isLoadingRun?: boolean;
   isLoadingResult?: boolean;
   isEmptyDashboard?: boolean;
-  isTemporaryQuery?: boolean;
+  isFirstRunQuery?: boolean;
   allowCancelExecution?: boolean;
   onRunQuery?: () => Promise<void>;
   onCancelExecution?: () => Promise<void>;
@@ -60,7 +60,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
     isLoadingRun = false,
     isLoadingResult = false,
     isEmptyDashboard = false,
-    isTemporaryQuery = false,
+    isFirstRunQuery = false,
     allowCancelExecution = false,
     onRunQuery,
     onCancelExecution,
@@ -232,7 +232,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
       // Query button
       return (
         <Flex display={{ base: 'none', lg: 'flex' }}>
-          {isTemporaryQuery && !isLoadingResult && (
+          {isFirstRunQuery && !isLoadingResult && (
             <AppButton
               className="btn-primary"
               onClick={onSaveQuery}
