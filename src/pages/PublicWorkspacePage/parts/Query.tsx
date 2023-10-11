@@ -219,6 +219,9 @@ const QueryPart: React.FC = () => {
             minSize={140}
             maxSize={-30}
             onDragFinished={(newSize) => setVisualizationHeight(newSize)}
+            onResizerDoubleClick={() =>
+              setVisualizationHeight(DEFAULT_QUERY_VISUALIZATION_HEIGHT)
+            }
           >
             <Box className="editor-wrapper">
               <div
