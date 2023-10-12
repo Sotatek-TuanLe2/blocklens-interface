@@ -535,11 +535,16 @@
           min-width: 72%;
           width: 72%;
           margin-top: 20px;
-          padding: 0 20px 0 30px;
+          padding: 0 15px;
           transition: all 0.15s linear;
 
-          &--table {
+          &--no-padding {
             padding: 0;
+          }
+
+          &--full-visual {
+            width: 100% !important;
+            min-width: 100%;
           }
 
           .main-table {
@@ -566,11 +571,6 @@
               background: transparent;
             }
           }
-        }
-
-        .show-full-visual {
-          width: 100% !important;
-          min-width: 100%;
         }
 
         .main-config {
