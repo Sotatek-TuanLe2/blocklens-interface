@@ -41,8 +41,8 @@ const DashboardPart: React.FC = () => {
 
   const [dataLayouts, setDataLayouts] = useState<ILayout[]>([]);
   const [dataDashboard, setDataDashboard] = useState<IDashboardDetail>();
-  const [isEmptyDashboard, setIsEmptyDashboard] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [hasErrorFetching, setHasErrorFetching] = useState<boolean>(false);
 
   const fetchLayoutData = useCallback(async () => {
     try {
@@ -86,10 +86,11 @@ const DashboardPart: React.FC = () => {
         const layouts = visualization.concat(textWidgets);
         setDataDashboard(res);
         setDataLayouts(layouts);
-        setIsEmptyDashboard(!layouts.length);
+        setHasErrorFetching(false);
       }
     } catch (error: any) {
       console.error(error);
+      setHasErrorFetching(true);
       if (error.message === 'Dashboard does not exists') {
         toastError({ message: error.message });
       }
@@ -122,9 +123,14 @@ const DashboardPart: React.FC = () => {
   );
 
   const _renderDashboard = () => {
-    if (isEmptyDashboard) {
+    if (hasErrorFetching) {
+      return null;
+    }
+
+    if (!dataLayouts.length) {
       return _renderEmptyDashboard();
     }
+
     return (
       <ResponsiveGridLayout
         className="main-grid-layout"
