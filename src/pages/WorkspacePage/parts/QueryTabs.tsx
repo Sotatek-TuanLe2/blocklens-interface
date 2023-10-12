@@ -8,6 +8,7 @@ interface IQueryTab {
   id: string;
   name: string;
   isUnsaved?: boolean;
+  results?: any[];
 }
 
 interface IQueryTabsProps {

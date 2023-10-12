@@ -5,6 +5,11 @@ const env = process.env.REACT_APP_ENV || 'prod';
 
 const PREFERENCES = `blocklens-preferences-${env}`;
 
+export interface IEditorTab {
+  queryId: string;
+  queryName: string;
+}
+
 type StorageInterface = {
   accessToken?: string;
   refreshToken?: string;
@@ -14,6 +19,7 @@ type StorageInterface = {
   account?: string;
   expireTime?: number;
   listTagHistory?: string[];
+  editorTabs?: IEditorTab[];
 };
 
 const defaultPreferences: StorageInterface = {
