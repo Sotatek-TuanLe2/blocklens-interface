@@ -337,7 +337,7 @@ const ActivityDesktop: FC<IActivity> = ({ activity, webhook }) => {
           {_renderContentNotifyOf()}
           {_renderContentTokenInfo()}
           <Td w={isAddressActivity ? '25%' : '15%'}>
-            <Flex alignItems="center">
+            <Flex alignItems="center" justifyContent="center">
               {formatShortText(activity?.transactionHash)}
               {activity?.transactionHash && (
                 <Box ml={2}>
@@ -437,16 +437,18 @@ const ActivityDatatable: FC<IActivityDatatable> = ({
       if (webhook.type === WEBHOOK_TYPES.NFT_ACTIVITY) {
         return (
           <Th textAlign="center" w="10%">
-            TOKEN ID
-            {isFilter && (
-              <AppFilter
-                value={params.tokenId}
-                onChange={(tokenId) => {
-                  setParams && setParams({ ...params, tokenId });
-                }}
-                type="token ID"
-              />
-            )}
+            <Flex alignItems={'center'} justifyContent={'center'}>
+              TOKEN ID
+              {isFilter && (
+                <AppFilter
+                  value={params.tokenId}
+                  onChange={(tokenId) => {
+                    setParams && setParams({ ...params, tokenId });
+                  }}
+                  type="token ID"
+                />
+              )}
+            </Flex>
           </Th>
         );
       }
@@ -469,7 +471,7 @@ const ActivityDatatable: FC<IActivityDatatable> = ({
           {_renderHeaderNotifyOf()}
           {_renderHeaderTokenInfo()}
           <Th w={isAddressActivity ? '25%' : '15%'}>
-            <Flex alignItems="center">
+            <Flex alignItems={'center'} justifyContent={'center'}>
               TXN ID
               {isFilter && (
                 <AppFilter
