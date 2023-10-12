@@ -35,6 +35,7 @@ import { AddChartIcon, QueryResultIcon } from 'src/assets/icons';
 import { STATUS } from 'src/utils/utils-webhook';
 import useOriginPath from 'src/hooks/useOriginPath';
 import { isMobile } from 'react-device-detect';
+import QueryTabs from './QueryTabs';
 
 export const BROADCAST_FETCH_QUERY = 'FETCH_QUERY';
 export const BROADCAST_ADD_TO_EDITOR = 'ADD_TO_EDITOR';
@@ -391,6 +392,7 @@ const QueryPart: React.FC = () => {
 
   return (
     <div className="workspace-page__editor__query">
+      <QueryTabs queryValue={queryValue} />
       <Header
         type={LIST_ITEM_TYPE.QUERIES}
         author={
