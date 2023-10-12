@@ -75,7 +75,7 @@ const DashboardPart: React.FC = () => {
     useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isSavingDashboard, setIsSavingDashboard] = useState<boolean>(false);
-  const [isEmptyDashboard, setIsEmptyDashboard] = useState<boolean>(false);
+  const [hasErrorFetching, setHasErrorFetching] = useState<boolean>(false);
 
   const userName =
     `${user?.getFirstName() || ''}` + `${user?.getLastName() || ''}`;
@@ -122,10 +122,11 @@ const DashboardPart: React.FC = () => {
         const layouts = visualization.concat(textWidgets);
         setDataDashboard(res);
         setDataLayouts(layouts);
-        setIsEmptyDashboard(!layouts.length);
+        setHasErrorFetching(false);
       }
     } catch (error: any) {
       console.error(error);
+      setHasErrorFetching(true);
       if (error.message === 'No dashboard found') {
         toastError({ message: error.message });
       }
@@ -270,7 +271,11 @@ const DashboardPart: React.FC = () => {
   };
 
   const _renderDashboard = () => {
-    if (isEmptyDashboard) {
+    if (hasErrorFetching) {
+      return null;
+    }
+
+    if (!dataLayouts.length) {
       return _renderEmptyDashboard();
     }
 
@@ -350,7 +355,7 @@ const DashboardPart: React.FC = () => {
         data={dataDashboard}
         isEdit={editMode}
         isLoadingRun={isLoading || isSavingDashboard}
-        isEmptyDashboard={isEmptyDashboard && !dataLayouts.length}
+        isEmptyDashboard={!dataLayouts.length}
         onChangeEditMode={onChangeEditMode}
       />
       {isLoading ? (

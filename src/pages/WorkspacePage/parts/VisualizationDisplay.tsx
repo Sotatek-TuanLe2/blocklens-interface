@@ -377,6 +377,8 @@ const VisualizationDisplay = ({
     const yAxisKeys =
       visualizationClass.getConfigs()?.columnMapping?.yAxis || [];
 
+    let isChartType = true;
+
     switch (type) {
       case TYPE_VISUALIZATION.table:
         visualizationDisplay = (
@@ -386,6 +388,7 @@ const VisualizationDisplay = ({
             visualization={visualization}
           />
         );
+        isChartType = false;
         break;
       case TYPE_VISUALIZATION.counter:
         visualizationDisplay = (
@@ -394,6 +397,7 @@ const VisualizationDisplay = ({
             visualization={visualization}
           />
         );
+        isChartType = false;
         break;
       case TYPE_VISUALIZATION.pie:
         visualizationDisplay = (
@@ -404,6 +408,7 @@ const VisualizationDisplay = ({
             configs={visualizationClass.getConfigs()}
           />
         );
+        isChartType = false;
         break;
       default:
         visualizationDisplay = (
@@ -434,8 +439,10 @@ const VisualizationDisplay = ({
                 lg: containerHeight - 195,
               }}
               className={`main-visualization ${
-                !toggleCloseConfig || isMobile ? 'show-full-visual' : ''
-              }`}
+                !toggleCloseConfig || isMobile
+                  ? 'main-visualization--full-visual'
+                  : ''
+              } ${isChartType ? '' : 'main-visualization--no-padding'}`}
             >
               {errorMessage ? (
                 <Flex
