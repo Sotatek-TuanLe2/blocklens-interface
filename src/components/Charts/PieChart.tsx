@@ -265,8 +265,6 @@ const CustomLegend = (props: any) => {
     }
   }
 
-  console.log('newData', newData);
-
   return (
     <div>
       {newData.map((entry: any, index: number) => (
