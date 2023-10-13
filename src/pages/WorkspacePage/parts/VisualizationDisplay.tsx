@@ -436,7 +436,7 @@ const VisualizationDisplay = ({
             <Box
               height={{
                 base: containerHeight - 200,
-                lg: containerHeight - 195,
+                lg: containerHeight - 200,
               }}
               className={`main-visualization ${
                 !toggleCloseConfig || isMobile

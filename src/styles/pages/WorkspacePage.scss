@@ -354,6 +354,9 @@
       margin-bottom: 12px;
       align-items: center;
       gap: 10px;
+      max-width: 100%;
+      overflow-x: auto;
+      white-space: nowrap;
 
       &__tab {
         padding: 10px;
