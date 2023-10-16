@@ -329,7 +329,7 @@ const VisualizationDisplay = ({
     const ConfigOnDesktop = (
       <Box
         height={{
-          lg: containerHeight - 160,
+          lg: containerHeight - 205,
         }}
         className={`main-config`}
       >
@@ -436,7 +436,7 @@ const VisualizationDisplay = ({
             <Box
               height={{
                 base: containerHeight - 200,
-                lg: containerHeight - 150,
+                lg: containerHeight - 200,
               }}
               className={`main-visualization ${
                 !toggleCloseConfig || isMobile

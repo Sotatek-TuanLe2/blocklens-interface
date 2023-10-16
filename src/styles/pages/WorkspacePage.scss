@@ -350,6 +350,35 @@
       width: 100%;
     }
 
+    &__tabs {
+      margin-bottom: 12px;
+      align-items: center;
+      gap: 10px;
+      max-width: 100%;
+      overflow-x: auto;
+      white-space: nowrap;
+
+      &__tab {
+        padding: 10px;
+        align-items: center;
+        background-color: $white;
+        border-radius: 6px;
+        cursor: pointer;
+
+        span {
+          margin-right: 10px;
+        }
+
+        &--active {
+          background-color: rgba(229, 238, 255, 1);
+          
+          span {
+            color: rgba(28, 95, 226, 1);
+          }
+        }
+      }
+    }
+
     .empty-dashboard {
       width: 100%;
       height: calc(100vh - 235px);
@@ -466,13 +495,13 @@
     &__header {
       position: relative;
       z-index: 6;
-      box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.04);
-      margin-bottom: 8px;
       padding: 9px 20px 9px 10px;
       background: $card;
-      border-radius: 6px;
+      border-top-left-radius: 6px;
+      border-top-right-radius: 6px;
       display: flex;
       align-items: center;
+      border-bottom: 1px solid $disable;
 
       @media (max-width: 992px) {
         flex-direction: column;
@@ -691,7 +720,8 @@
     width: 100%;
   }
   .workspace-page__editor__header {
-    border-radius: 10px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
     .workspace-page__editor__header__left {
       flex-grow: 1;
       .item-desc {

@@ -5,7 +5,7 @@ import AceEditor from 'react-ace';
 import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/mode-sql';
 import 'ace-builds/src-noconflict/theme-tomorrow';
-import { useParams } from 'react-router-dom';
+import { useHistory, useLocation, useParams } from 'react-router-dom';
 import SplitPane from 'react-split-pane';
 import { AppLoadingTable } from 'src/components';
 import { getErrorMessage } from 'src/utils/utils-helper';
@@ -35,29 +35,45 @@ import { AddChartIcon, QueryResultIcon } from 'src/assets/icons';
 import { STATUS } from 'src/utils/utils-webhook';
 import useOriginPath from 'src/hooks/useOriginPath';
 import { isMobile } from 'react-device-detect';
+import QueryTabs from './QueryTabs';
+import Storage from 'src/utils/utils-storage';
 
 export const BROADCAST_FETCH_QUERY = 'FETCH_QUERY';
 export const BROADCAST_ADD_TO_EDITOR = 'ADD_TO_EDITOR';
+export const UNSAVED_QUERY = 'unsaved_query';
+export const UNSAVED_QUERY_TITLE = 'Unsaved query';
+
+export interface IQueryTab {
+  id: string;
+  name: string;
+  isUnsaved?: boolean;
+  query?: string;
+  results?: any[];
+  isFirstRun?: boolean;
+  statusExecuteQuery?: string;
+  errorExecuteQuery?: IErrorExecuteQuery;
+}
 
 const QueryPart: React.FC = () => {
   const { queryId } = useParams<{ queryId: string }>();
+  const { search: searchUrl } = useLocation();
   const { goWithOriginPath } = useOriginPath();
+  const history = useHistory();
 
   const DEBOUNCE_TIME = 500;
   const editorRef = useRef<any>();
+  const searchParams = new URLSearchParams(searchUrl);
 
-  const [isFirstRun, setIsFirstRun] = useState<boolean>(false);
+  // states for using tabs
+  const [tabs, setTabs] = useState<IQueryTab[]>(Storage.getEditorTabs());
+
   const [createQueryId, setCreateQueryId] = useState<string>('');
-  const [queryResult, setQueryResult] = useState<any>([]);
   const [queryValue, setQueryValue] = useState<IQuery | null>(null);
   const [visualizationHeight, setVisualizationHeight] = useState<number>(
     DEFAULT_QUERY_VISUALIZATION_HEIGHT,
   );
   const [isLoadingQuery, setIsLoadingQuery] = useState<boolean>(!!queryId);
   const [isLoadingResult, setIsLoadingResult] = useState<boolean>(!!queryId);
-  const [errorExecuteQuery, setErrorExecuteQuery] =
-    useState<IErrorExecuteQuery | null>(null);
-  const [statusExecuteQuery, setStatusExecuteQuery] = useState<string>();
   const [selectedQuery, setSelectedQuery] = useState<string>('');
   const [openModalSettingQuery, setOpenModalSettingQuery] =
     useState<boolean>(false);
@@ -71,6 +87,7 @@ const QueryPart: React.FC = () => {
   useEffect(() => {
     AppBroadcast.on(BROADCAST_FETCH_QUERY, async (id: string) => {
       setIsLoadingQuery(true);
+      editorRef.current.editor.setValue('');
       await fetchQuery(id);
     });
     AppBroadcast.on(BROADCAST_ADD_TO_EDITOR, (text: string) => {
@@ -101,7 +118,20 @@ const QueryPart: React.FC = () => {
         clearTimeout(fetchQueryResultTimeout.current);
       }
     };
-  }, [queryId]);
+  }, [queryId, searchUrl]);
+
+  useEffect(() => {
+    debounce(() => {
+      Storage.setEditorTabs(
+        tabs
+          .filter((item) => !item.isUnsaved)
+          .map((item) => ({
+            id: item.id,
+            name: item.name,
+          })),
+      );
+    }, DEBOUNCE_TIME)();
+  }, [tabs]);
 
   const queryClass = useMemo(() => {
     if (!queryValue) {
@@ -110,19 +140,46 @@ const QueryPart: React.FC = () => {
     return new Query(queryValue);
   }, [queryValue]);
 
+  const activeTabId = useMemo(
+    () => queryId || searchParams.get(UNSAVED_QUERY) || '',
+    [queryId, searchUrl],
+  );
+  const currentTab = useMemo(
+    () => tabs.find((item) => item.id === activeTabId),
+    [activeTabId, tabs],
+  );
+
+  const addTabWithUnsavedQuery = () => {
+    const unsavedQueryId = searchParams.get(UNSAVED_QUERY);
+    if (unsavedQueryId) {
+      if (!tabs.some((item) => item.id === unsavedQueryId)) {
+        setTabs((prevState) => [
+          ...prevState,
+          { id: unsavedQueryId, name: UNSAVED_QUERY_TITLE, isUnsaved: true },
+        ]);
+      }
+    } else {
+      const intialId = new Date().valueOf().toString();
+      history.push(`${ROUTES.MY_QUERY}?${UNSAVED_QUERY}=${intialId}`);
+    }
+  };
+
   const resetEditor = () => {
+    addTabWithUnsavedQuery();
     if (editorRef.current) {
       editorRef.current.editor.setValue('');
+      const position = editorRef.current.editor.getCursorPosition();
+      editorRef.current.editor.session.insert(
+        position,
+        currentTab?.query || '',
+      );
       editorRef.current.editor.focus();
     }
-    setIsFirstRun(false);
-    setQueryResult([]);
+
     setQueryValue(null);
     setCreateQueryId('');
     setIsLoadingResult(false);
-    setErrorExecuteQuery(null);
     setSelectedQuery('');
-    setStatusExecuteQuery('');
   };
 
   const runQuery = async (query: string) => {
@@ -139,7 +196,10 @@ const QueryPart: React.FC = () => {
     }
   };
 
-  const getExecutionResultById = async (executionId: string) => {
+  const getExecutionResultById = async (
+    executionId: string,
+    queryValue?: IQuery | null,
+  ) => {
     try {
       clearTimeout(fetchQueryResultTimeout.current);
       const res = await rf.getRequest('DashboardsRequest').getQueryResult({
@@ -152,12 +212,37 @@ const QueryPart: React.FC = () => {
         );
       } else {
         clearTimeout(fetchQueryResultTimeout.current);
-        setQueryResult(res.result);
-        setErrorExecuteQuery(res?.error || null);
-        setStatusExecuteQuery(res?.status);
         setCreateQueryId(res.queryId);
         setIsLoadingResult(false);
         setAllowCancelExecution(false);
+        setTabs((prevState) => {
+          const newTabs = [...prevState];
+          const currentTabIndex = tabs.findIndex(
+            (item) => item.id === activeTabId,
+          );
+          if (currentTabIndex < 0) {
+            return [
+              ...newTabs,
+              {
+                id: activeTabId,
+                name: queryValue?.name || '',
+                results: res.result,
+                errorExecuteQuery: res?.error || null,
+                statusExecuteQuery: res?.status,
+              },
+            ];
+          }
+
+          newTabs[currentTabIndex] = {
+            ...newTabs[currentTabIndex],
+            results: res.result,
+            errorExecuteQuery: res?.error || null,
+            statusExecuteQuery: res?.status,
+            isFirstRun: newTabs[currentTabIndex].isUnsaved ? true : undefined,
+          };
+
+          return newTabs;
+        });
       }
     } catch (error) {
       console.error(error);
@@ -181,13 +266,16 @@ const QueryPart: React.FC = () => {
     return executionId;
   };
 
-  const fetchQueryResult = async (executionId?: string) => {
+  const fetchQueryResult = async (
+    executionId?: string,
+    queryValue?: IQuery | null,
+  ) => {
     if (!executionId) {
       return;
     }
     setIsLoadingResult(true);
     currentExecutionId.current = executionId;
-    await getExecutionResultById(executionId);
+    await getExecutionResultById(executionId, queryValue);
   };
 
   const fetchQuery = async (id?: string): Promise<IQuery | null> => {
@@ -203,13 +291,17 @@ const QueryPart: React.FC = () => {
       }
       if (!dataQuery) {
         setIsLoadingResult(false);
-        editorRef.current.editor.setValue('');
         toastError({ message: 'Query does not exists' });
         return null;
       }
+      const tab = tabs.find((item) => item.id === (id || queryId));
+      const tabQuery = tab?.query;
       const position = editorRef.current.editor.getCursorPosition();
-      editorRef.current.editor.setValue('');
-      editorRef.current.editor.session.insert(position, dataQuery?.query);
+      editorRef.current.editor.session.insert(
+        position,
+        tabQuery || dataQuery?.query,
+      );
+      editorRef.current.editor.focus();
       return dataQuery;
     } catch (error: any) {
       setIsLoadingQuery(false);
@@ -224,16 +316,28 @@ const QueryPart: React.FC = () => {
   };
 
   const fetchInitialData = async () => {
-    setIsFirstRun(false);
     setIsLoadingQuery(true);
+    editorRef.current.editor.setValue('');
     const dataQuery = await fetchQuery();
     await fetchQueryResult(
       dataQuery?.pendingExecutionId || dataQuery?.executedId,
+      dataQuery,
     );
   };
 
   const onSelectQuery = debounce((value) => {
     setSelectedQuery(value.session.getTextRange());
+  }, DEBOUNCE_TIME);
+
+  const onChangeEditor = debounce((value: string) => {
+    setTabs((prevState) => {
+      const newTabs = [...prevState];
+      const tab = newTabs.find((item) => item.id === activeTabId);
+      if (tab) {
+        tab.query = value;
+      }
+      return newTabs;
+    });
   }, DEBOUNCE_TIME);
 
   const executeSelectedQuery = async () => {
@@ -244,7 +348,6 @@ const QueryPart: React.FC = () => {
   };
 
   const runInitialQuery = async (query: string) => {
-    setIsFirstRun(true);
     setIsLoadingResult(true);
     const executionId = await executeQuery(query, queryId);
     setAllowCancelExecution(true);
@@ -284,7 +387,6 @@ const QueryPart: React.FC = () => {
       await rf
         .getRequest('DashboardsRequest')
         .cancelQueryExecution(currentExecutionId.current);
-      setIsFirstRun(false);
       setIsLoadingResult(false);
       setAllowCancelExecution(false);
     } catch (error) {
@@ -294,9 +396,21 @@ const QueryPart: React.FC = () => {
     }
   };
 
+  const updateCurrentTabWithQuery = (queryValue: IQuery) => {
+    setTabs((prevState) => {
+      const newTabs = [...prevState];
+      const index = newTabs.findIndex((item) => item.id === activeTabId);
+      if (index > -1) {
+        newTabs[index] = { id: queryValue.id, name: queryValue.name };
+      }
+      return newTabs;
+    });
+  };
+
   const onSuccessCreateQuery = async (queryResponse: any) => {
     // execute query again for making sure the query statement is synchronized
     await executeQuery(queryResponse.query, queryResponse.id);
+    updateCurrentTabWithQuery(queryResponse);
     goWithOriginPath(`${ROUTES.MY_QUERY}/${queryResponse.id}`);
     AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
   };
@@ -313,22 +427,13 @@ const QueryPart: React.FC = () => {
   };
 
   const _renderContent = () => {
-    if (isLoading) {
-      return (
-        <>
-          {_renderAddChart()}
-          <AppLoadingTable
-            widthColumns={[36, 22, 22, 22]}
-            className="visual-table"
-          />
-        </>
-      );
-    }
-
-    if (!!queryResult.length && statusExecuteQuery === STATUS.DONE) {
+    if (
+      !!currentTab?.results?.length &&
+      currentTab.statusExecuteQuery === STATUS.DONE
+    ) {
       return (
         <VisualizationDisplay
-          queryResult={queryResult}
+          queryResult={currentTab?.results}
           queryValue={queryValue}
           containerHeight={visualizationHeight}
           onReload={fetchQuery}
@@ -345,13 +450,13 @@ const QueryPart: React.FC = () => {
           alignItems="center"
           flexDirection="column"
         >
-          {statusExecuteQuery === STATUS.DONE &&
-            !queryResult.length &&
+          {currentTab?.statusExecuteQuery === STATUS.DONE &&
+            !currentTab.results?.length &&
             'No data...'}
-          {statusExecuteQuery === STATUS.FAILED && (
+          {currentTab?.statusExecuteQuery === STATUS.FAILED && (
             <>
               <span className="execution-error">Execution Error</span>
-              {errorExecuteQuery?.message || 'No data...'}
+              {currentTab?.errorExecuteQuery?.message || 'No data...'}
             </>
           )}
         </Flex>
@@ -360,7 +465,19 @@ const QueryPart: React.FC = () => {
   };
 
   const _renderVisualizations = () => {
-    if (!queryResult.length && !errorExecuteQuery) {
+    if (isLoading) {
+      return (
+        <>
+          {_renderAddChart()}
+          <AppLoadingTable
+            widthColumns={[36, 22, 22, 22]}
+            className="visual-table"
+          />
+        </>
+      );
+    }
+
+    if (!currentTab?.results?.length && !currentTab?.errorExecuteQuery) {
       return (
         <div className="empty-query">
           <Flex
@@ -391,6 +508,7 @@ const QueryPart: React.FC = () => {
 
   return (
     <div className="workspace-page__editor__query">
+      <QueryTabs tabs={tabs} activeTab={activeTabId} onChangeTabs={setTabs} />
       <Header
         type={LIST_ITEM_TYPE.QUERIES}
         author={
@@ -401,7 +519,7 @@ const QueryPart: React.FC = () => {
         data={queryValue}
         isLoadingRun={isLoadingQuery}
         isLoadingResult={isLoadingResult}
-        isFirstRunQuery={isFirstRun}
+        isFirstRunQuery={currentTab?.isFirstRun}
         allowCancelExecution={allowCancelExecution}
         onRunQuery={onRunQuery}
         onCancelExecution={onCancelExecution}
@@ -411,7 +529,7 @@ const QueryPart: React.FC = () => {
       <EditorContext.Provider
         value={{
           editor: editorRef,
-          queryResult: queryResult,
+          queryResult: currentTab?.results || [],
         }}
       >
         <div className="query-container queries-page">
@@ -447,6 +565,7 @@ const QueryPart: React.FC = () => {
                     showLineNumbers: true,
                     tabSize: 2,
                   }}
+                  onChange={onChangeEditor}
                   onSelectionChange={onSelectQuery}
                 />
               </Box>

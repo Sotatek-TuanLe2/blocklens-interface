@@ -1,5 +1,6 @@
 import config from 'src/config';
 import { WALLET_CONNECT } from 'src/connectors';
+import { IQueryTab } from 'src/pages/WorkspacePage/parts/Query';
 
 const env = process.env.REACT_APP_ENV || 'prod';
 
@@ -14,6 +15,7 @@ type StorageInterface = {
   account?: string;
   expireTime?: number;
   listTagHistory?: string[];
+  editorTabs?: IQueryTab[];
 };
 
 const defaultPreferences: StorageInterface = {
@@ -82,6 +84,11 @@ class Storage {
     return savedTagHistory ? JSON.parse(savedTagHistory) : [];
   }
 
+  static getEditorTabs(): IQueryTab[] {
+    const { editorTabs } = getStorage();
+    return editorTabs || [];
+  }
+
   static setAccessToken(accessToken: string, expireTime: number) {
     const preferences = getStorage();
     preferences.accessToken = accessToken;
@@ -125,6 +132,13 @@ class Storage {
       : 'recentlyQueryTagSearch';
     localStorage.setItem(storageKey, JSON.stringify(updatedTagHistory));
   }
+
+  static setEditorTabs(tabs: IQueryTab[]) {
+    const preferences = getStorage();
+    preferences.editorTabs = tabs;
+    setStorage(PREFERENCES, preferences);
+  }
+
   static clearAccessToken() {
     const preferences = getStorage();
     delete preferences.accessToken;
@@ -158,10 +172,17 @@ class Storage {
     Storage.clearAccountAddress();
   }
 
+  static clearEditorTabs() {
+    const preferences = getStorage();
+    delete preferences.editorTabs;
+    setStorage(PREFERENCES, preferences);
+  }
+
   static logout() {
     Storage.clearAccessToken();
     Storage.clearRefreshToken();
     Storage.clearWallet();
+    Storage.clearEditorTabs();
   }
 }
 
