@@ -45,18 +45,17 @@
           }
         },
         "TESTNET": {
-          "name": "Testnet - Goerli",
+          "name": "Testnet - Sepolia",
           "id": "TESTNET",
           "icon": "icon-ethereum",
-          "chainId": 5,
+          "chainId": 11155111,
           "rpcUrls": [
-            "https://goerli.infura.io/v3/0a0240fffebd4aacbd90a78aa9b79808",
-            "https://goerli.infura.io/v3/9ddb0f7769a347948bfacd789a9a714f"
+            "https://rpc.sepolia.org"
           ],
           "blockExplorer": {
             "name": "Etherscan",
             "icon": "/images/etherscan.png",
-            "url": "https://goerli.etherscan.io/"
+            "url": "https://sepolia.etherscan.io"
           },
           "nativeCurrency": {
             "name": "ETH",
