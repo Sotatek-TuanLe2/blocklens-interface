@@ -149,7 +149,7 @@ const ModalDashboard: React.FC<IModelNewDashboard> = ({
               })
             }
             validate={{
-              name: `dashboard`,
+              name: `dashboard title`,
               validator: validator.current,
               rule: ['required', 'max:150'],
             }}
