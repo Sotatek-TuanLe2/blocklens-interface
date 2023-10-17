@@ -296,6 +296,7 @@ const QueryPart: React.FC = () => {
       }
       const tab = tabs.find((item) => item.id === (id || queryId));
       const tabQuery = tab?.query;
+      editorRef.current.editor.setValue('');
       const position = editorRef.current.editor.getCursorPosition();
       editorRef.current.editor.session.insert(
         position,
@@ -538,7 +539,7 @@ const QueryPart: React.FC = () => {
               split="horizontal"
               size={visualizationHeight}
               primary="second"
-              minSize={140}
+              minSize={180}
               maxSize={-30}
               onDragFinished={(newSize) => setVisualizationHeight(newSize)}
               onResizerDoubleClick={() =>

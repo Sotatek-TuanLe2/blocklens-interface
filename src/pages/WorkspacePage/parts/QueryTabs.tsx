@@ -12,6 +12,8 @@ interface IQueryTab {
   results?: any[];
 }
 
+const MAXIMUM_TABS = 10;
+
 interface IQueryTabsProps {
   tabs: IQueryTab[];
   activeTab: string;
@@ -57,8 +59,9 @@ const QueryTabs: React.FC<IQueryTabsProps> = (props) => {
 
   return (
     <Flex className="workspace-page__editor__tabs">
-      {tabs.map((tab) => (
-        <Tooltip hasArrow placement="bottom" label={tab.name}>
+      {tabs
+        .filter((_, index) => index >= tabs.length - MAXIMUM_TABS)
+        .map((tab) => (
           <Flex
             key={tab.id}
             className={`workspace-page__editor__tabs__tab ${
@@ -68,11 +71,13 @@ const QueryTabs: React.FC<IQueryTabsProps> = (props) => {
             }`}
             onClick={() => onClickTab(tab.id, tab.isUnsaved)}
           >
-            <span>
-              {tab.name.length > 25
-                ? formatShortText(tab.name, 25, 0)
-                : tab.name}
-            </span>
+            <Tooltip hasArrow placement="bottom" label={tab.name}>
+              <span>
+                {tab.name.length > 25
+                  ? formatShortText(tab.name, 25, 0)
+                  : tab.name}
+              </span>
+            </Tooltip>
             {tabs.length > 1 && (
               <Box
                 onClick={(e) => onDeleteTab(e)(tab.id)}
@@ -80,12 +85,12 @@ const QueryTabs: React.FC<IQueryTabsProps> = (props) => {
               />
             )}
           </Flex>
-        </Tooltip>
-      ))}
-      {tabs.length <= 10 && (
+        ))}
+      {tabs.length < MAXIMUM_TABS && (
         <Box
+          mr="20px"
           cursor={'pointer'}
-          className="icon-plus-light"
+          className="icon-plus-light workspace-page__editor__tabs__tab"
           onClick={onAddTab}
         />
       )}

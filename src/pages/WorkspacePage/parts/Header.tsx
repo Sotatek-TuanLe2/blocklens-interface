@@ -377,6 +377,40 @@ const Header: React.FC<IHeaderProps> = (props) => {
     );
   };
 
+  const _renderAvatar = () => {
+    if (dataClass?.getUserAvatar()) {
+      return <Image src={dataClass?.getUserAvatar()} alt="avatar" />;
+    }
+
+    return (
+      <Jazzicon
+        diameter={26}
+        paperStyles={{ minWidth: '26px' }}
+        seed={jsNumberForAddress(
+          generateAvatarFromId(dataClass?.getUserId() || user?.getId()),
+        )}
+      />
+    );
+  };
+
+  const _renderTitle = () => {
+    const owner = isCreatingQuery
+      ? `${user?.getFirstName()} ${user?.getLastName()}`
+      : author;
+    const title = isCreatingQuery ? 'Unsaved query' : dataClass?.getName();
+
+    return (
+      <span className="item-desc__name">
+        <Tooltip label={owner} hasArrow placement="top">
+          <span className="user-name">{`${owner} / `}</span>
+        </Tooltip>
+        <Tooltip label={title} hasArrow placement="top">
+          <span>{title}</span>
+        </Tooltip>
+      </span>
+    );
+  };
+
   return (
     <>
       {_renderDrawerSidebar()}
@@ -404,36 +438,11 @@ const Header: React.FC<IHeaderProps> = (props) => {
                 <Skeleton w={'350px'} h={'14px'} rounded={'7px'} />
               </Flex>
             ) : (
-              <>
-                {!isCreatingQuery && (
-                  <div className="item-desc">
-                    {dataClass?.getUserAvatar() ? (
-                      <Image src={dataClass?.getUserAvatar()} alt="avatar" />
-                    ) : (
-                      <Jazzicon
-                        diameter={26}
-                        paperStyles={{ minWidth: '26px' }}
-                        seed={jsNumberForAddress(
-                          generateAvatarFromId(dataClass?.getUserId()),
-                        )}
-                      />
-                    )}
-                    <span className="item-desc__name">
-                      <Tooltip label={author} hasArrow placement="top">
-                        <span className="user-name">{`${author} / `}</span>
-                      </Tooltip>
-                      <Tooltip
-                        label={dataClass?.getName()}
-                        hasArrow
-                        placement="top"
-                      >
-                        <span>{dataClass?.getName()}</span>
-                      </Tooltip>
-                    </span>
-                    {_renderForkedQuery()}
-                  </div>
-                )}
-              </>
+              <div className="item-desc">
+                {_renderAvatar()}
+                {_renderTitle()}
+                {_renderForkedQuery()}
+              </div>
             )}
           </div>
           <div className="workspace-page__editor__header__right">
