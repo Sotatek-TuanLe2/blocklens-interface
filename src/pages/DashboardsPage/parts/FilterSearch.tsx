@@ -235,9 +235,9 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
 
   const _generatePlaceHolder = () => {
     if (isDashboard) {
-      return 'Search #hastag or dashboard name';
+      return 'Search #hashtag or dashboard name';
     }
-    return 'Search #hastag or query name';
+    return 'Search #hashtag or query name';
   };
 
   const _renderSuggestTags = () => {
