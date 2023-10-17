@@ -16,6 +16,7 @@ import { createValidator } from 'src/utils/utils-validator';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { isMobile } from 'react-device-detect';
+import { ROUTES } from 'src/utils/common';
 
 interface IDataFormContact {
   email: string;
@@ -87,7 +88,7 @@ const ContactUs = () => {
       <>
         <Flex className={`title-wrap ${isMobile ? 'title-wrap-mobile' : ''}`}>
           <Box className="icon-arrow-wrap">
-            <AppLink to={`/billing`}>
+            <AppLink to={ROUTES.BILLING}>
               <Box className="icon-arrow-left" mr={3.5} />
             </AppLink>
           </Box>

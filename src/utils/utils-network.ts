@@ -157,7 +157,7 @@ export const getNetworkByEnv = (chain?: Chain | null): Network => {
   } = {
     ETH: {
       prod: 'MAINNET',
-      dev: 'GOERLI',
+      dev: 'TESTNET',
     },
     BSC: {
       prod: 'MAINNET',

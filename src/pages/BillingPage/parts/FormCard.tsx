@@ -163,11 +163,12 @@ const FormCard: FC<IFormCard> = ({ isEdit, onClose, onSuccess }) => {
                 '.Label': {
                   marginBottom: '5px',
                   fontSize: '16px',
+                  color: 'rgba(0, 2, 36, 0.8)',
                 },
                 '.Input': {
-                  border: '1px solid #69758C',
+                  border: '1px solid rgba(199, 210, 225, 1)',
                   boxShadow: 'none',
-                  color: '#ffffff',
+                  color: 'rgba(0, 2, 36, 1)',
                 },
                 '.Input:focus': {
                   borderColor: '#226CFF',
@@ -177,12 +178,11 @@ const FormCard: FC<IFormCard> = ({ isEdit, onClose, onSuccess }) => {
                   display: 'none !important',
                 },
               },
-              theme: 'night',
+              theme: 'none',
               variables: {
                 colorText: '#B4B7BD',
                 fontSizeBase: '16px',
                 colorTextPlaceholder: '#69758C',
-                colorBackground: '#101530',
               },
             },
           }}

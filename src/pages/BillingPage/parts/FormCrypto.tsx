@@ -10,6 +10,7 @@ import { ConnectWalletIcon } from 'src/assets/icons';
 import { MetadataPlan } from 'src/store/metadata';
 import { useHistory } from 'react-router';
 import AppAlertWarning from 'src/components/AppAlertWarning';
+import { ROUTES } from 'src/utils/common';
 
 interface IFormCrypto {
   onSuccess: () => void;
@@ -62,7 +63,7 @@ const FormCrypto: FC<IFormCrypto> = ({ onSuccess, planSelected }) => {
           <AppButton
             width={'100%'}
             size="lg"
-            onClick={() => history.push('/top-up')}
+            onClick={() => history.push(ROUTES.TOP_UP)}
           >
             Top Up
           </AppButton>
@@ -79,7 +80,7 @@ const FormCrypto: FC<IFormCrypto> = ({ onSuccess, planSelected }) => {
         _renderWalletInfo()
       ) : (
         <AppCard className="box-connect-wallet">
-          <ConnectWalletIcon />
+          <ConnectWalletIcon width={126} />
           <Box className="box-connect-wallet__description">
             Connect wallet to top up your balance amount and perform payment
             with cryptocurrencies.

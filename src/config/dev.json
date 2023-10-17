@@ -50,7 +50,7 @@
           "icon": "icon-ethereum",
           "chainId": 11155111,
           "rpcUrls": [
-            "https://rpc.sepolia.org"
+            "https://ethereum-sepolia.publicnode.com"
           ],
           "blockExplorer": {
             "name": "Etherscan",

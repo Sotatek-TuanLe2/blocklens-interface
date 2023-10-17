@@ -10,6 +10,7 @@ import useWallet from 'src/hooks/useWallet';
 import rf from 'src/requests/RequestFactory';
 import { MetadataPlan } from 'src/store/metadata';
 import { getUserPlan } from 'src/store/user';
+import { ROUTES } from 'src/utils/common';
 import { formatShortText } from 'src/utils/utils-helper';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { paymentMethods, PAYMENT_METHOD } from '..';
@@ -65,7 +66,7 @@ const PartCheckout: FC<IPartCheckout> = ({
         .updateBillingPlan({ code: planSelected.code });
       toastSuccess({ message: 'Update Successfully!' });
       dispatch(getUserPlan());
-      history.push('/billing-history');
+      history.push(ROUTES.BILLING_HISTORY);
     } catch (e: any) {
       toastError({ message: e?.message || 'Oops. Something went wrong!' });
     }

@@ -394,7 +394,7 @@ const BillingPage = () => {
                 className="link"
                 alignItems="center"
                 mb={5}
-                onClick={() => history.push('/billing-history')}
+                onClick={() => history.push(ROUTES.BILLING_HISTORY)}
               >
                 <Box mr={2}>Billing History</Box>
                 <ArrowRightIcon />
@@ -404,7 +404,7 @@ const BillingPage = () => {
 
         <AppCard className="list-table-wrap">
           <Flex className="box-title">
-            <Box className={'text-title'}>Change Your Plan</Box>
+            <Box className={'text-title'}>Select Your Plan</Box>
 
             {user?.getPlan().price !== 0 && (
               <Box className="box-btn-cancel">
@@ -429,7 +429,6 @@ const BillingPage = () => {
             flexDirection={isMobile ? 'column' : 'row'}
           >
             <Flex alignItems={'center'}>
-              <NoticeIcon />
               <Box textAlign={'center'} ml={2}>
                 If you need more apps or higher limits, please{' '}
                 <AppLink to={ROUTES.CONTACT_US} className="link">

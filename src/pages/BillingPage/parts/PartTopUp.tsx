@@ -5,6 +5,7 @@ import { ConnectWalletIcon } from 'src/assets/icons';
 import { useHistory } from 'react-router';
 import useUser from 'src/hooks/useUser';
 import { MetadataPlan } from 'src/store/metadata';
+import { ROUTES } from 'src/utils/common';
 
 interface IPartTopUp {
   planSelected: MetadataPlan;
@@ -67,7 +68,7 @@ const PartTopUp: FC<IPartTopUp> = ({ onBack, planSelected }) => {
           width={'100%'}
           size="lg"
           mb={10}
-          onClick={() => history.push('/top-up')}
+          onClick={() => history.push(ROUTES.TOP_UP)}
         >
           Top Up
         </AppButton>

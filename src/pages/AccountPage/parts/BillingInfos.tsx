@@ -4,6 +4,7 @@ import { AppCard, AppLink } from 'src/components';
 import { formatTimestamp } from 'src/utils/utils-helper';
 import { CheckedIcon, ArrowRightIcon } from 'src/assets/icons';
 import useUser from 'src/hooks/useUser';
+import { ROUTES } from 'src/utils/common';
 
 const BillingInfos = () => {
   const { user } = useUser();
@@ -11,7 +12,7 @@ const BillingInfos = () => {
 
   const _renderLinkDetail = () => {
     return (
-      <AppLink to={'/billing'}>
+      <AppLink to={ROUTES.BILLING}>
         <Flex className={'link'} alignItems={'center'}>
           <Box className="link" mr={2}>
             Change Plan{' '}

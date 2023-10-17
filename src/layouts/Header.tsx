@@ -37,6 +37,10 @@ const menus = [
     path: 'https://stg-docs.blocklens.io/',
   },
   {
+    name: 'Billing',
+    path: ROUTES.BILLING,
+  },
+  {
     name: 'Account',
     path: ROUTES.ACCOUNT,
   },
@@ -137,7 +141,7 @@ const Header: FC = () => {
       return location.pathname === path;
     }
 
-    if (path === '/billing') {
+    if (path === ROUTES.BILLING) {
       return location.pathname.includes('billing');
     }
 
