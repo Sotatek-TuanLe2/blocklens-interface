@@ -46,7 +46,7 @@
         },
         "TESTNET": {
           "name": "Testnet - Sepolia",
-          "id": "TESTNET",
+          "id": "SEPOLIA",
           "icon": "icon-ethereum",
           "chainId": 11155111,
           "rpcUrls": [
