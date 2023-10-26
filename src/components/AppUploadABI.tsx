@@ -646,23 +646,25 @@ const AppUploadABI: FC<IAppUploadABI> = ({
               : 'ABI of NFT must meet erc721 standard',
             { mb: 2 },
           )}
-          <Box className="download-template">
-            <Link
-              as={ReactLink}
-              to={
-                type !== TYPE_ABI.NFT
-                  ? FILE_TEMPLATE_CONTRACT
-                  : FILE_TEMPLATE_NFT
-              }
-              target="_blank"
-              download
-            >
-              <Flex>
-                <DownloadIcon />
-                <Box ml={2}>Download Example</Box>
-              </Flex>
-            </Link>
-          </Box>
+          {!fileSelected?.name && (
+            <Box className="download-template">
+              <Link
+                as={ReactLink}
+                to={
+                  type !== TYPE_ABI.NFT
+                    ? FILE_TEMPLATE_CONTRACT
+                    : FILE_TEMPLATE_NFT
+                }
+                target="_blank"
+                download
+              >
+                <Flex>
+                  <DownloadIcon />
+                  <Box ml={2}>Download Example</Box>
+                </Flex>
+              </Link>
+            </Box>
+          )}
         </>
       )}
 
