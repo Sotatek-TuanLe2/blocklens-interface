@@ -79,9 +79,10 @@ export class User implements UserInterface {
   };
   public billing: UserBillingType = {
     plan: {
-      code: 'STARTER',
+      code: 'PLAN1',
       name: 'STARTER',
-      description: '',
+      description:
+        'Features:\n    • 2 projects\n    • 100 messages/day\n    • 24/7 Telegram support (Response time < 72 hours)\n    ',
       price: 0,
       currency: '',
       from: 0,
