@@ -6,12 +6,24 @@ import {
   Td,
   Table,
   TableContainer,
+  Tooltip,
+  Text,
+  Thead,
+  Th,
 } from '@chakra-ui/react';
 import { FC, useEffect, useMemo, useState } from 'react';
 import BigNumber from 'bignumber.js';
 import 'src/styles/pages/BillingPage.scss';
 import { BasePage } from 'src/layouts';
-import { AppButton, AppCard, AppLink, AppHeading } from 'src/components';
+import {
+  AppButton,
+  AppCard,
+  AppLink,
+  AppHeading,
+  AppButtonLarge,
+  AppDataTable,
+  AppLoadingTable,
+} from 'src/components';
 import { useDispatch } from 'react-redux';
 import {
   CheckedIcon,
@@ -23,7 +35,7 @@ import {
   CircleCheckedIcon,
   CryptoIcon,
   ReloadIcon,
-  NoticeIcon,
+  ChevronRightIcon,
 } from 'src/assets/icons';
 import { isMobile } from 'react-device-detect';
 import PartCheckout from './parts/PartCheckout';
@@ -40,8 +52,9 @@ import { getUserPlan, getUserProfile } from 'src/store/user';
 import { MetadataPlan } from 'src/store/metadata';
 import useMetadata from 'src/hooks/useMetadata';
 import ModalChangePaymentMethod from 'src/modals/ModalChangePaymentMethod';
-import { getErrorMessage } from '../../utils/utils-helper';
+import { formatCapitalize, getErrorMessage } from '../../utils/utils-helper';
 import { ROUTES } from 'src/utils/common';
+import { Link } from 'react-router-dom';
 
 export const PAYMENT_METHOD = {
   CARD: 'STRIPE',
@@ -381,13 +394,236 @@ const BillingPage = () => {
   };
 
   const _renderStep1 = () => {
+    const _renderCurrentPlan = () => (
+      <AppCard className="list-table-wrap current-plan">
+        <Box className="list-table-wrap__title">CURRENT PLAN</Box>
+        <Flex className="list-table-wrap__content">
+          <Box className="name-plan">{user?.getPlan().name.toLowerCase()}</Box>
+          <Box className="detail">
+            <Box className="detail__title">Renews on</Box>
+            <Box className="detail__content">Nov 1, 2023 (UTC)</Box>
+          </Box>
+          <Box className="detail">
+            <Box className="detail__title">Compute Units</Box>
+            <Box className="detail__content">150,000 CUs/day</Box>
+          </Box>
+          <Box className="detail">
+            <Box className="detail__title">Throughput</Box>
+            <Box className="detail__content">30 CUs/second</Box>
+          </Box>
+          <Box className="detail">
+            <Box className="detail__title">
+              <Flex>
+                <span>Extra CUs</span>
+                <Tooltip
+                  placement={'top'}
+                  hasArrow
+                  p={2}
+                  className="tooltip-app"
+                  label={``}
+                >
+                  <Box className="icon-info" ml={2} cursor={'pointer'} />
+                </Tooltip>
+              </Flex>
+            </Box>
+            <Box className="detail__content">1$/100K CUs</Box>
+          </Box>
+          <Box className="current-plan__button">
+            <AppButtonLarge>
+              <Box mr={2}>Upgrade</Box>
+              <ArrowRightIcon />
+            </AppButtonLarge>
+          </Box>
+        </Flex>
+      </AppCard>
+    );
+
+    const _renderWarning = () => (
+      <Flex
+        justifyContent="space-between"
+        alignItems="center"
+        className="plan-warning"
+      >
+        <Flex>
+          <span>
+            Renewal of <b>Scale</b> plan is on hold due to lack of payment.
+          </span>
+          &nbsp;
+          <Link to={'/'}>
+            <Flex alignItems="center">
+              <Text mr="6px" color="#1979FF">
+                Retry payment
+              </Text>
+              <ChevronRightIcon width={14} height={14} stroke="#1979FF" />
+            </Flex>
+          </Link>
+        </Flex>
+        <AppButton variant="no-effects" className="dismiss-button">
+          Dismiss
+        </AppButton>
+      </Flex>
+    );
+
+    const _renderBillings = () => (
+      <AppCard className="list-table-wrap billings">
+        <Box className="list-table-wrap__title">BILLINGS</Box>
+        <AppDataTable
+          wrapperClassName="billings__table"
+          requestParams={{}}
+          fetchData={() => {
+            return Promise.resolve({
+              totalDocs: 3,
+              totalPages: 1,
+              currentPage: 1,
+              itemsPerPage: 3,
+              page: 1,
+              limit: 3,
+              docs: [1, 2, 3],
+            });
+          }}
+          renderBody={(billingsData) => (
+            <Tbody>
+              {billingsData.map((_billing, index) => (
+                <Tr key={index} className="tr-list">
+                  <Td>225362</Td>
+                  <Td>11:22 09-30-2023</Td>
+                  <Td>Growth plan</Td>
+                  <Td>40$</Td>
+                  <Td>Credit card</Td>
+                  <Td>
+                    <Box className={`status ${true ? 'active' : 'inactive'}`}>
+                      {true ? 'Active' : 'Inactive'}
+                    </Box>
+                  </Td>
+                </Tr>
+              ))}
+            </Tbody>
+          )}
+          renderLoading={() => (
+            <AppLoadingTable
+              widthColumns={[
+                100 / 6,
+                100 / 6,
+                100 / 6,
+                100 / 6,
+                100 / 6,
+                100 / 6,
+              ]}
+            />
+          )}
+          renderHeader={() => (
+            <Thead className="header-list">
+              <Tr>
+                <Th>Billing ID</Th>
+                <Th>Issue time (UTC)</Th>
+                <Th>Billing detail</Th>
+                <Th>Amount</Th>
+                <Th>Payment method</Th>
+                <Th>Status</Th>
+              </Tr>
+            </Thead>
+          )}
+          limit={10}
+        />
+      </AppCard>
+    );
+
+    const _renderAllPlans = () => (
+      <AppCard className="list-table-wrap all-plans">
+        <Box className="list-table-wrap__title">ALL PLANS</Box>
+        <Flex
+          className="list-table-wrap__content"
+          justifyContent="space-between"
+        >
+          {billingPlans?.map((plan: MetadataPlan) => (
+            <Flex
+              className="all-plans__plan"
+              key={plan.code}
+              flexDirection="column"
+            >
+              <Flex
+                className="all-plans__plan__title"
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <span>{plan.name}</span>
+                <span className="all-plans__plan__title__price">FREE</span>
+              </Flex>
+              <Flex
+                className="all-plans__plan__descriptions"
+                alignItems="center"
+              >
+                <CheckedIcon stroke="#28c76f" />
+                <span className="all-plans__plan__descriptions__info">
+                  1000 CUs/day
+                </span>
+              </Flex>
+              <Flex
+                className="all-plans__plan__descriptions"
+                alignItems="center"
+              >
+                <CheckedIcon stroke="#28c76f" />
+                <span className="all-plans__plan__descriptions__info">
+                  Throughput 30 CUs/sec
+                </span>
+              </Flex>
+              <Flex
+                className="all-plans__plan__descriptions"
+                alignItems="center"
+              >
+                <CheckedIcon stroke="#28c76f" />
+                <span className="all-plans__plan__descriptions__info">
+                  All APIs
+                </span>
+              </Flex>
+              <Flex
+                className="all-plans__plan__descriptions"
+                alignItems="center"
+              >
+                <CheckedIcon stroke="#28c76f" />
+                <span className="all-plans__plan__descriptions__info">
+                  All supported chains
+                </span>
+              </Flex>
+              <Flex
+                className="all-plans__plan__descriptions"
+                alignItems="center"
+              >
+                <CheckedIcon stroke="#28c76f" />
+                <span className="all-plans__plan__descriptions__info">
+                  10 projects
+                </span>
+              </Flex>
+              <Flex
+                className="all-plans__plan__descriptions"
+                alignItems="center"
+              >
+                <CheckedIcon stroke="#28c76f" />
+                <span className="all-plans__plan__descriptions__info">
+                  24/7 Discord support
+                </span>
+              </Flex>
+              {user?.getPlan().code === plan.code ? (
+                <Text className="all-plans__plan__current-plan">
+                  Your current plan
+                </Text>
+              ) : (
+                <AppButtonLarge className="all-plans__plan__button">{`Switch to ${formatCapitalize(
+                  plan.name,
+                )}`}</AppButtonLarge>
+              )}
+            </Flex>
+          ))}
+        </Flex>
+      </AppCard>
+    );
+
     return (
       <>
         <Flex justifyContent={'space-between'}>
           <Box mb={7}>
-            <AppHeading title="Billing" />
+            <AppHeading title="Plan &amp; billing" />
           </Box>
-
           {user?.isPaymentMethodIntegrated() &&
             !!user?.getActivePaymentMethod() && (
               <Flex
@@ -401,8 +637,11 @@ const BillingPage = () => {
               </Flex>
             )}
         </Flex>
-
-        <AppCard className="list-table-wrap">
+        {_renderCurrentPlan()}
+        {_renderWarning()}
+        {_renderBillings()}
+        {_renderAllPlans()}
+        {/* <AppCard className="list-table-wrap">
           <Flex className="box-title">
             <Box className={'text-title'}>Select Your Plan</Box>
 
@@ -438,7 +677,7 @@ const BillingPage = () => {
             </Flex>
             <Box mb={isMobile ? 4 : 0} width={isMobile ? '100%' : 'auto'}>
               {user?.isPaymentMethodIntegrated() &&
-              !!user?.getActivePaymentMethod()
+                !!user?.getActivePaymentMethod()
                 ? _renderButtonUpdatePlan()
                 : _renderButton()}
             </Box>
@@ -468,9 +707,8 @@ const BillingPage = () => {
             </Box>
             <Flex flexWrap={'wrap'} justifyContent={'space-between'} mt={5}>
               <Box
-                className={`${
-                  paymentMethod === PAYMENT_METHOD.CARD ? 'active' : ''
-                } box-method`}
+                className={`${paymentMethod === PAYMENT_METHOD.CARD ? 'active' : ''
+                  } box-method`}
               >
                 <Flex justifyContent={'space-between'}>
                   <Box className="icon-checked-active">
@@ -495,8 +733,8 @@ const BillingPage = () => {
                       {!user.getStripePayment()
                         ? '---'
                         : user.getStripePayment()?.card?.brand +
-                          ' - ' +
-                          user.getStripePayment().card?.last4}
+                        ' - ' +
+                        user.getStripePayment().card?.last4}
                       )
                     </Box>
                     <Box
@@ -513,9 +751,8 @@ const BillingPage = () => {
               </Box>
 
               <Box
-                className={`${
-                  paymentMethod === PAYMENT_METHOD.CRYPTO ? 'active' : ''
-                } box-method`}
+                className={`${paymentMethod === PAYMENT_METHOD.CRYPTO ? 'active' : ''
+                  } box-method`}
               >
                 <Box
                   className="icon-checked-active"
@@ -567,7 +804,7 @@ const BillingPage = () => {
               )}
             </Flex>
           </AppCard>
-        )}
+        )} */}
       </>
     );
   };

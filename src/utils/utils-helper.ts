@@ -48,8 +48,8 @@ export const formatShortText = (
   )}`;
 };
 
-export const formatUpperCaseFirstLetter = (value: string) => {
-  return `${value.charAt(0).toUpperCase()}${value.slice(1)}`;
+export const formatCapitalize = (value: string) => {
+  return `${value.charAt(0).toUpperCase()}${value.toLowerCase().slice(1)}`;
 };
 
 export const isValidAddressEVM = (address: string) => {

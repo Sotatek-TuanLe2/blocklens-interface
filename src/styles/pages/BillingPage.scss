@@ -32,6 +32,17 @@
 
   .list-table-wrap {
     padding: 0;
+    margin-bottom: 20px;
+
+    &__title {
+      margin: 30px 0 10px 40px;
+      @include text-medium-bold;
+      color: $title;
+    }
+
+    &__content {
+      margin: 0 40px;
+    }
 
     .box-title {
       justify-content: space-between;
@@ -53,9 +64,10 @@
     }
 
     .text-title {
-      @include heading-6;
+      @include text-medium-bold;
       color: $title;
       padding: 30px 40px 22px 40px;
+      margin-bottom: 10px;
 
       @include tablet {
         @include heading-8;
@@ -96,6 +108,129 @@
         padding: 4px 10px;
         background: $tag;
         border-radius: 14px;
+      }
+    }
+  }
+
+  .current-plan {
+
+    .list-table-wrap__content > div {
+      width: calc(100%/6);
+    }
+
+    .name-plan {
+      color: $main;
+      @include heading-6;
+      text-transform: capitalize;
+    }
+
+    .detail {
+      @include text-medium-regular;
+      
+      &__title {
+        color: $paragraph;
+        margin-bottom: 18px;
+        
+        & span {
+          color: $paragraph;
+        }
+      }
+
+      &__content {
+        color: $paragraph1;
+      }
+    }
+
+    &__button {
+      text-align: right;
+    }
+  }
+
+  .plan-warning {
+    margin-bottom: 20px;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.04);
+    border-radius: 18px;
+    padding: 20px 40px;
+    background-color: #FCE7E7;
+
+    .dismiss-button {
+      @include text-medium-regular;
+      color: #E02323;
+    }
+  }
+
+  .billings {
+
+    &__table {
+      .header-list {
+        th {
+          @include text-medium-regular;
+          text-transform: capitalize;
+        }
+      }
+
+      .tr-list {
+        td {
+          @include text-medium-regular;
+          border-bottom: none;
+        }
+      }
+    }
+  }
+
+  .all-plans {
+    padding: 25px;
+
+    .list-table-wrap__content {
+      gap: 25px;
+    }
+
+    &__plan {
+      width: 25%;
+      height: 376px;
+      border-radius: 14px;
+      padding: 24px;
+      border: 1px solid #D9D9D9;
+
+      &:hover {
+        border: 1px solid $paragraph;
+        margin-top: -5px;
+        transition: margin 0.2s ease-out;
+      }
+
+      &__title {
+        @include text-medium-bold;
+        margin-bottom: 30px;
+
+        &__price {
+          @include heading-8;
+          color: $main;
+        }
+      }
+
+      &__descriptions {
+        &:not(&:last-child) {
+          margin-bottom: 10px;
+        }
+
+        &__info {
+          @include text-medium-regular;
+          margin-left: 10px;
+        }
+      }
+
+      &__current-plan {
+        @include text-medium-bold;
+        line-height: 48px;
+        color: $main;
+        text-align: center;
+        margin-top: auto;
+      }
+
+      &__button {
+        margin-top: auto;
+        width: fit-content;
+        align-self: center;
       }
     }
   }
