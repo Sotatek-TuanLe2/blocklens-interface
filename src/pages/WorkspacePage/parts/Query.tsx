@@ -144,6 +144,7 @@ const QueryPart: React.FC = () => {
     () => queryId || searchParams.get(UNSAVED_QUERY) || '',
     [queryId, searchUrl],
   );
+
   const currentTab = useMemo(
     () => tabs.find((item) => item.id === activeTabId),
     [activeTabId, tabs],
@@ -199,6 +200,7 @@ const QueryPart: React.FC = () => {
   const getExecutionResultById = async (
     executionId: string,
     queryValue?: IQuery | null,
+    tabs?: IQueryTab[],
   ) => {
     try {
       clearTimeout(fetchQueryResultTimeout.current);
@@ -207,7 +209,7 @@ const QueryPart: React.FC = () => {
       });
       if (res.status === QUERY_RESULT_STATUS.WAITING) {
         fetchQueryResultTimeout.current = setTimeout(
-          () => getExecutionResultById(executionId),
+          () => getExecutionResultById(executionId, queryValue),
           2000,
         );
       } else {
@@ -216,10 +218,11 @@ const QueryPart: React.FC = () => {
         setIsLoadingResult(false);
         setAllowCancelExecution(false);
         setTabs((prevState) => {
-          const newTabs = [...prevState];
-          const currentTabIndex = tabs.findIndex(
+          const newTabs = tabs ? [...tabs] : [...prevState];
+          const currentTabIndex = newTabs.findIndex(
             (item) => item.id === activeTabId,
           );
+
           if (currentTabIndex < 0) {
             return [
               ...newTabs,
@@ -231,15 +234,15 @@ const QueryPart: React.FC = () => {
                 statusExecuteQuery: res?.status,
               },
             ];
+          } else {
+            newTabs[currentTabIndex] = {
+              ...newTabs[currentTabIndex],
+              results: res.result,
+              errorExecuteQuery: res?.error || null,
+              statusExecuteQuery: res?.status,
+              isFirstRun: newTabs[currentTabIndex].isUnsaved ? true : undefined,
+            };
           }
-
-          newTabs[currentTabIndex] = {
-            ...newTabs[currentTabIndex],
-            results: res.result,
-            errorExecuteQuery: res?.error || null,
-            statusExecuteQuery: res?.status,
-            isFirstRun: newTabs[currentTabIndex].isUnsaved ? true : undefined,
-          };
 
           return newTabs;
         });
@@ -269,13 +272,14 @@ const QueryPart: React.FC = () => {
   const fetchQueryResult = async (
     executionId?: string,
     queryValue?: IQuery | null,
+    tabs?: IQueryTab[],
   ) => {
     if (!executionId) {
       return;
     }
     setIsLoadingResult(true);
     currentExecutionId.current = executionId;
-    await getExecutionResultById(executionId, queryValue);
+    await getExecutionResultById(executionId, queryValue, tabs);
   };
 
   const fetchQuery = async (id?: string): Promise<IQuery | null> => {
@@ -320,9 +324,11 @@ const QueryPart: React.FC = () => {
     setIsLoadingQuery(true);
     editorRef.current.editor.setValue('');
     const dataQuery = await fetchQuery();
+    const newTabs = updateCurrentTabWithQuery(dataQuery);
     await fetchQueryResult(
       dataQuery?.pendingExecutionId || dataQuery?.executedId,
       dataQuery,
+      newTabs,
     );
   };
 
@@ -397,15 +403,20 @@ const QueryPart: React.FC = () => {
     }
   };
 
-  const updateCurrentTabWithQuery = (queryValue: IQuery) => {
-    setTabs((prevState) => {
-      const newTabs = [...prevState];
-      const index = newTabs.findIndex((item) => item.id === activeTabId);
-      if (index > -1) {
-        newTabs[index] = { id: queryValue.id, name: queryValue.name };
-      }
-      return newTabs;
-    });
+  const updateCurrentTabWithQuery = (queryValue: IQuery | null) => {
+    if (!queryValue) {
+      return;
+    }
+
+    const newTabs = [...tabs];
+    const index = newTabs.findIndex((item) => item.id === activeTabId);
+    if (index > -1) {
+      newTabs[index] = { id: queryValue.id, name: queryValue.name };
+    } else {
+      newTabs.push({ id: queryValue.id, name: queryValue.name });
+    }
+    setTabs(newTabs);
+    return newTabs;
   };
 
   const onSuccessCreateQuery = async (queryResponse: any) => {

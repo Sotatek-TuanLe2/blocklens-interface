@@ -7,6 +7,7 @@ import {
   MenuList,
 } from '@chakra-ui/react';
 import { useMemo, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import useOriginPath from 'src/hooks/useOriginPath';
 import useUser from 'src/hooks/useUser';
 import ModalDashboard from 'src/modals/querySQL/ModalDashboard';
@@ -69,6 +70,7 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
 
   const { user } = useUser();
   const { goWithOriginPath } = useOriginPath();
+  const history = useHistory();
   const location = window.location;
 
   const [openModalSetting, setOpenModalSetting] = useState<boolean>(false);
@@ -122,14 +124,21 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
     }
 
     try {
+      console.log('location.pathname', location.pathname);
       const res = await rf
         .getRequest('DashboardsRequest')
         .forkQueries(item.id, { newQueryName: item.name });
-      window.open(
-        `${ROUTES.MY_QUERY}/${res.id}`,
-        '_blank',
-        'noopener,noreferrer',
-      );
+
+      if (location.pathname.includes(ROUTES.MY_QUERY)) {
+        history.push(`${ROUTES.MY_QUERY}/${res.id}`);
+      } else {
+        window.open(
+          `${ROUTES.MY_QUERY}/${res.id}`,
+          '_blank',
+          'noopener,noreferrer',
+        );
+      }
+
       toastSuccess({ message: 'Fork query successfully!' });
       onForkSuccess && (await onForkSuccess(res, itemType));
     } catch (error) {
