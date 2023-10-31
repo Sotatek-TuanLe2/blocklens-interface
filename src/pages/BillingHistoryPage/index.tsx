@@ -56,7 +56,8 @@ const BillingHistory = () => {
         return {
           ...invoice,
           activePaymentMethod: listReceipt[index]?.activePaymentMethod || null,
-          stripePaymentMethod: listReceipt[index]?.stripePaymentMethod || null,
+          stripePaymentMethod:
+            listReceipt[index]?.resReference.stripePaymentMethod || null,
         };
       });
 
