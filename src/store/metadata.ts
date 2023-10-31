@@ -6,7 +6,10 @@ export type MetadataPlan = {
   name: string;
   description: string;
   price: number;
-  appLimitation: number;
+  capacity: {
+    cu: number;
+    project: number;
+  };
   notificationLimitation: number;
 };
 

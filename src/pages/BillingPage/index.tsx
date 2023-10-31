@@ -58,7 +58,7 @@ import { Link } from 'react-router-dom';
 
 export const PAYMENT_METHOD = {
   CARD: 'STRIPE',
-  CRYPTO: 'CRYPTO',
+  CRYPTO: 'BLOCKLENS',
 };
 
 enum STEPS {
@@ -140,7 +140,7 @@ const PlanMobile: FC<IPlanMobile> = ({
           <Box className="plan-detail">
             <Flex alignItems={'center'} my={2}>
               <CheckedIcon />
-              <Box ml={3}> {plan.appLimitation} apps </Box>
+              <Box ml={3}> {plan.capacity.project} apps </Box>
             </Flex>
             <Flex alignItems={'center'} my={2}>
               <CheckedIcon />
@@ -205,7 +205,7 @@ const BillingPage = () => {
   }, [paymentMethod]);
 
   const isSufficientBalance = useMemo(() => {
-    if (!user) {
+    if (!user || !planSelected) {
       return false;
     }
     return new BigNumber(user.getBalance()).isGreaterThanOrEqualTo(
@@ -250,7 +250,7 @@ const BillingPage = () => {
                 <Td>
                   <Flex alignItems={'center'}>
                     <CheckedIcon />
-                    <Box ml={3}> {plan.appLimitation} apps </Box>
+                    <Box ml={3}> {plan.capacity.project} apps </Box>
                   </Flex>
                 </Td>
                 <Td>
@@ -340,7 +340,8 @@ const BillingPage = () => {
     }
   };
 
-  const onReloadUserInfo = async () => {
+  const onReloadUserInfo = async (e: React.MouseEvent) => {
+    e.stopPropagation();
     setIsReloadingUserInfo(true);
     await dispatch(getUserProfile());
     setIsReloadingUserInfo(false);
@@ -394,6 +395,17 @@ const BillingPage = () => {
   };
 
   const _renderStep1 = () => {
+    const onChangePaymentMethod = (
+      method: typeof PAYMENT_METHOD[keyof typeof PAYMENT_METHOD],
+    ) => {
+      if (paymentMethod === method) {
+        return;
+      }
+
+      setIsOpenChangePayMethodModal(true);
+      setPaymentMethodSelected(method);
+    };
+
     const _renderCurrentPlan = () => (
       <AppCard className="list-table-wrap current-plan">
         <Box className="list-table-wrap__title">CURRENT PLAN</Box>
@@ -707,20 +719,16 @@ const BillingPage = () => {
             </Box>
             <Flex flexWrap={'wrap'} justifyContent={'space-between'} mt={5}>
               <Box
-                className={`${paymentMethod === PAYMENT_METHOD.CARD ? 'active' : ''
-                  } box-method`}
+                className={`${
+                  paymentMethod === PAYMENT_METHOD.CARD ? 'active' : ''
+                } box-method`}
               >
                 <Flex justifyContent={'space-between'}>
                   <Box className="icon-checked-active">
                     {paymentMethod === PAYMENT_METHOD.CARD ? (
                       <CircleCheckedIcon />
                     ) : (
-                      <RadioNoCheckedIcon
-                        onClick={() => {
-                          setIsOpenChangePayMethodModal(true);
-                          setPaymentMethodSelected(PAYMENT_METHOD.CARD);
-                        }}
-                      />
+                      <RadioNoCheckedIcon />
                     )}
                   </Box>
                 </Flex>
@@ -740,7 +748,10 @@ const BillingPage = () => {
                     <Box
                       ml={4}
                       mt={1}
-                      onClick={() => setIsOpenEditCardModal(true)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsOpenEditCardModal(true);
+                      }}
                       className={'box-method__btn-edit'}
                     >
                       <EditIcon />
@@ -751,8 +762,10 @@ const BillingPage = () => {
               </Box>
 
               <Box
-                className={`${paymentMethod === PAYMENT_METHOD.CRYPTO ? 'active' : ''
-                  } box-method`}
+                className={`${
+                  paymentMethod === PAYMENT_METHOD.CRYPTO ? 'active' : ''
+                } box-method`}
+                onClick={() => onChangePaymentMethod(PAYMENT_METHOD.CRYPTO)}
               >
                 <Box
                   className="icon-checked-active"
@@ -762,12 +775,7 @@ const BillingPage = () => {
                   {paymentMethod === PAYMENT_METHOD.CRYPTO ? (
                     <CircleCheckedIcon />
                   ) : (
-                    <RadioNoCheckedIcon
-                      onClick={() => {
-                        setIsOpenChangePayMethodModal(true);
-                        setPaymentMethodSelected(PAYMENT_METHOD.CRYPTO);
-                      }}
-                    />
+                    <RadioNoCheckedIcon />
                   )}
                 </Box>
                 <Flex flexDirection={'column'} alignItems={'center'}>

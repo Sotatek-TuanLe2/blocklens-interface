@@ -87,7 +87,10 @@ export class User implements UserInterface {
       currency: '',
       from: 0,
       to: 0,
-      appLimitation: 0,
+      capacity: {
+        cu: 1000000,
+        project: 2,
+      },
       notificationLimitation: 0,
     },
     payment: {

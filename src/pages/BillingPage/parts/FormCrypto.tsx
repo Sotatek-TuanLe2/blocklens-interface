@@ -1,5 +1,5 @@
 import { Box } from '@chakra-ui/react';
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useMemo } from 'react';
 import BigNumber from 'bignumber.js';
 import 'src/styles/pages/AppDetail.scss';
 import { AppButton, AppCard } from 'src/components';
@@ -18,25 +18,19 @@ interface IFormCrypto {
 }
 
 const FormCrypto: FC<IFormCrypto> = ({ onSuccess, planSelected }) => {
-  const [isSufficientBalance, setIsSufficientBalance] =
-    useState<boolean>(false);
   const { wallet, isUserLinked } = useWallet();
   const { user } = useUser();
   const history = useHistory();
 
-  useEffect(() => {
-    if (user?.getBalance() && planSelected) {
-      if (
-        new BigNumber(user.getBalance()).isGreaterThanOrEqualTo(
-          new BigNumber(planSelected.price || 0),
-        )
-      ) {
-        setIsSufficientBalance(true);
-      } else {
-        setIsSufficientBalance(false);
-      }
+  const isSufficientBalance = useMemo(() => {
+    if (!user || !planSelected) {
+      return false;
     }
-  }, [user?.getBalance()]);
+
+    return new BigNumber(user.getBalance()).isGreaterThanOrEqualTo(
+      new BigNumber(planSelected.price || 0),
+    );
+  }, [user?.getBalance(), planSelected]);
 
   const _renderWalletInfo = () => {
     if (wallet?.getAddress() !== user?.getLinkedAddress()) {
