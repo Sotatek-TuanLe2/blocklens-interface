@@ -327,7 +327,7 @@ const BillingPage = () => {
     }
   };
 
-  const onReloadUserInfo = async (e) => {
+  const onReloadUserInfo = async (e: React.MouseEvent) => {
     e.stopPropagation();
     setIsReloadingUserInfo(true);
     await dispatch(getUserProfile());
