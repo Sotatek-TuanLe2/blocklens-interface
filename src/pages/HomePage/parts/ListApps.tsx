@@ -30,9 +30,9 @@ const ButtonCreateApp: FC<IButtonCreateApp> = ({ onReload }) => {
 
   const _renderModalCreateApp = () => {
     // const isLimitApp =
-    //   userPlan?.appLimitation &&
+    //   userPlan?.capacity.project &&
     //   !!userStats?.totalApp &&
-    //   userStats?.totalApp >= userPlan?.appLimitation;
+    //   userStats?.totalApp >= userPlan?.capacity.project;
     // return isLimitApp ? (
     //   <ModalUpgradeCreateApp
     //     open={openCreateApp}

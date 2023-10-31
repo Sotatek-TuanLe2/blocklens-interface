@@ -1,18 +1,18 @@
+import React from 'react';
 import { BasePage } from 'src/layouts';
 import { Box, Flex } from '@chakra-ui/react';
 import BasicDetail from './parts/BasicDetail';
-//import BillingInfos from './parts/BillingInfos';
+import BillingInfos from './parts/BillingInfos';
 import 'src/styles/pages/AccountPage.scss';
 import { isMobile } from 'react-device-detect';
-import { AppHeading } from 'src/components';
+import { AppCard, AppHeading } from 'src/components';
 import Notifications from './parts/Notifications';
 import AppConnectWalletButton from 'src/components/AppConnectWalletButton';
 import useUser from 'src/hooks/useUser';
 import { formatShortText, copyToClipboard } from 'src/utils/utils-helper';
-//import TopUpHistory from './parts/TopUpHistory';
+import TopUpHistory from './parts/TopUpHistory';
 import useWallet from 'src/hooks/useWallet';
 import { CopyIcon } from 'src/assets/icons';
-import React from 'react';
 import UserAPIKey from './parts/UserAPIKey';
 
 const AccountPage = () => {
@@ -66,40 +66,37 @@ const AccountPage = () => {
           <Box className={'box-account'}>
             <BasicDetail />
           </Box>
-          {/*<Box className={'box-account'} mt={isMobile ? 5 : 0}>*/}
-          {/*  <BillingInfos />*/}
-          {/*</Box>*/}
-          {/*<Box mt={5} className={'box-account'}>*/}
-          {/*  <AppCard*/}
-          {/*    className="box-info-account accounts"*/}
-          {/*    justifyContent={'space-between'}*/}
-          {/*  >*/}
-          {/*    <Flex justifyContent={'space-between'}>*/}
-          {/*      <Box className="info-item">*/}
-          {/*        <Box className="title">Linked Accounts</Box>*/}
-          {/*      </Box>*/}
-          {/*      {isMobile && user?.getLinkedAddress() && (*/}
-          {/*        <Box className={'link'} onClick={unlinkWallet}>*/}
-          {/*          Unlink*/}
-          {/*        </Box>*/}
-          {/*      )}*/}
-          {/*    </Flex>*/}
-          {/*    {_renderLinkedAccounts()}*/}
-          {/*  </AppCard>*/}
-          {/*</Box>*/}
-
-          <Box className={'box-account'} mt={{ base: 5, md: 0 }}>
+          <Box className={'box-account'} mt={isMobile ? 5 : 0}>
+            <BillingInfos />
+          </Box>
+          <Box mt={5} className={'box-account'}>
+            <AppCard
+              className="box-info-account accounts"
+              justifyContent={'space-between'}
+            >
+              <Flex justifyContent={'space-between'}>
+                <Box className="info-item">
+                  <Box className="title">Linked Accounts</Box>
+                </Box>
+                {isMobile && user?.getLinkedAddress() && (
+                  <Box className={'link'} onClick={unlinkWallet}>
+                    Unlink
+                  </Box>
+                )}
+              </Flex>
+              {_renderLinkedAccounts()}
+            </AppCard>
+          </Box>
+          <Box className={'box-account'} mt={5}>
             <Notifications />
           </Box>
         </Flex>
-
         <Box mt={5}>
           <UserAPIKey />
         </Box>
-
-        {/*<Box mt={5}>*/}
-        {/*  <TopUpHistory />*/}
-        {/*</Box>*/}
+        <Box mt={5}>
+          <TopUpHistory />
+        </Box>
       </>
     </BasePage>
   );

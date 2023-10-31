@@ -50,7 +50,7 @@
           "icon": "icon-ethereum",
           "chainId": 11155111,
           "rpcUrls": [
-            "https://rpc.sepolia.org"
+            "https://ethereum-sepolia.publicnode.com"
           ],
           "blockExplorer": {
             "name": "Etherscan",
@@ -145,61 +145,6 @@
             "id": "629dc9f014a8be7577e1cce0",
             "coingeckoId": "usd-coin",
             "address": "0xE78181D342cC44E4c67f72fBc2f2Ba5337f168bc",
-            "name": "USDC",
-            "symbol": "USDC",
-            "decimals": 6,
-            "icon": "icon-usdc"
-          }
-        }
-      },
-      "BSC": {
-        "contractAddress": "0xD7B49476810EC3edb9676b9313c1E32736d7b7a7",
-        "currencies": {
-          "usdt": {
-            "id": "629dc9f014a8be7577e1cce8",
-            "coingeckoId": "tether",
-            "address": "0xa6F387881000761d8130Bf04423Fa71d634d867B",
-            "name": "USDT",
-            "symbol": "USDT",
-            "decimals": 18,
-            "icon": "icon-usdt"
-          },
-          "busd": {
-            "id": "629dc9f014a8be7577e1cce4",
-            "coingeckoId": "binance-usd",
-            "address": "0xc399a946A67994c8Abf194A697Dafd075CB9F341",
-            "name": "BUSD",
-            "symbol": "BUSD",
-            "decimals": 18,
-            "icon": "icon-busd"
-          },
-          "usdc": {
-            "id": "629dc9f014a8be7577e1cce6",
-            "coingeckoId": "usd-coin",
-            "address": "0x840754e2879a5b678d0419E660524ef6dAb15748",
-            "name": "USDC",
-            "symbol": "USDC",
-            "decimals": 18,
-            "icon": "icon-usdc"
-          }
-        }
-      },
-      "POLYGON": {
-        "contractAddress": "0x48183fAAB3a9Cc770Fd00fb6ACC65486bAE1bB4F",
-        "currencies": {
-          "usdt": {
-            "id": "629dc9f114a8be7577e1ccec",
-            "coingeckoId": "tether",
-            "address": "0xF7F730fFAEC85455E3Ba44F488c2bD2A741953b3",
-            "name": "USDT",
-            "symbol": "USDT",
-            "decimals": 6,
-            "icon": "icon-usdt"
-          },
-          "usdc": {
-            "id": "629dc9f114a8be7577e1ccee",
-            "coingeckoId": "usd-coin",
-            "address": "0x0675A944CbEa834cddA62F24a08cE42d0fbb83A3",
             "name": "USDC",
             "symbol": "USDC",
             "decimals": 6,

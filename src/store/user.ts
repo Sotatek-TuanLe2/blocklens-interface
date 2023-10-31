@@ -39,7 +39,10 @@ export type UserPlanType = {
   name: string;
   description: string;
   price: number;
-  appLimitation: number;
+  capacity: {
+    cu: number;
+    project: number;
+  };
   notificationLimitation: number;
   currency: string;
   from: number;
@@ -106,14 +109,18 @@ const initialState: UserState = {
   },
   billing: {
     plan: {
-      code: 'STARTER',
+      code: 'PLAN1',
       name: 'STARTER',
-      description: '',
+      description:
+        'Features:\n    • 2 projects\n    • 100 messages/day\n    • 24/7 Telegram support (Response time < 72 hours)\n    ',
       price: 0,
       currency: '',
       from: 0,
       to: 0,
-      appLimitation: 0,
+      capacity: {
+        cu: 1000000,
+        project: 2,
+      },
       notificationLimitation: 0,
     },
     payment: {
@@ -139,7 +146,7 @@ export const getUser = createAsyncThunk(
   async (_params, thunkApi) => {
     thunkApi.dispatch(getUserProfile());
     thunkApi.dispatch(getUserStats());
-    //thunkApi.dispatch(getUserPlan());
+    thunkApi.dispatch(getUserPlan());
   },
 );
 
@@ -217,18 +224,17 @@ const userSlice = createSlice({
       state.stats = action.payload;
     },
     setUserPlan: (state, action) => {
-      state.billing.plan = action.payload;
+      state.billing.plan = action.payload.currentPlan;
     },
     setIsLoadingStat: (state, action) => {
       state.isLoadingGetStatisticsUser = action.payload;
     },
     setUserPayment: (state, action) => {
       const {
-        activePaymentMethod,
+        payment: { activePaymentMethod, walletAddress },
         balance,
         isPaymentMethodIntegrated,
-        stripePaymentMethod,
-        walletAddress,
+        stripe: { paymentMethod: stripePaymentMethod },
       } = action.payload;
       state.billing.payment = {
         activePaymentMethod,

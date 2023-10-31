@@ -7,6 +7,7 @@ import { isMobile } from 'react-device-detect';
 import { MetadataPlan } from 'src/store/metadata';
 import useUser from 'src/hooks/useUser';
 import useMetadata from 'src/hooks/useMetadata';
+import { ROUTES } from 'src/utils/common';
 
 interface ModalUpgradeCreateAppProps {
   open: boolean;
@@ -35,15 +36,15 @@ const ModalUpgradeCreateApp: FC<ModalUpgradeCreateAppProps> = ({
       onClose={onClose}
     >
       <Box className={'modal__description'}>
-        You can only create {user?.getPlan().appLimitation} active apps in your
-        current plan, upgrade to{' '}
+        You can only create {user?.getPlan().capacity.project} active apps in
+        your current plan, upgrade to{' '}
         <Box as={'span'} textTransform="lowercase">
           {nextPlan?.name}
         </Box>{' '}
-        to enjoy {nextPlan?.appLimitation} active apps in maximum.
+        to enjoy {nextPlan?.capacity.project} active apps in maximum.
       </Box>
       <Flex flexWrap={'wrap'} justifyContent={'center'}>
-        <AppButton size={'lg'} onClick={() => history.push('/billing')}>
+        <AppButton size={'lg'} onClick={() => history.push(ROUTES.BILLING)}>
           Upgrade Now
         </AppButton>
       </Flex>

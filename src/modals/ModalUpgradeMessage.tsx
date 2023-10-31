@@ -7,6 +7,7 @@ import { isMobile } from 'react-device-detect';
 import { MetadataPlan } from 'src/store/metadata';
 import useUser from 'src/hooks/useUser';
 import useMetadata from 'src/hooks/useMetadata';
+import { ROUTES } from 'src/utils/common';
 
 interface Props {
   open: boolean;
@@ -34,10 +35,10 @@ const ModalUpgradeMessage: FC<Props> = ({ open, onClose }) => {
       <Box className={'modal__description'}>
         You have reached the limit of {user?.getPlan()?.notificationLimitation}{' '}
         messages/day in your current plan.Upgrade to <b>Growth</b> to enjoy{' '}
-        {nextPlan?.appLimitation} messages/day
+        {nextPlan?.notificationLimitation} messages/day
       </Box>
       <Flex flexWrap={'wrap'} justifyContent={'center'}>
-        <AppButton size={'lg'} onClick={() => history.push('/billing')}>
+        <AppButton size={'lg'} onClick={() => history.push(ROUTES.BILLING)}>
           Upgrade Now
         </AppButton>
       </Flex>

@@ -1,5 +1,5 @@
 import { Box } from '@chakra-ui/react';
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useMemo } from 'react';
 import BigNumber from 'bignumber.js';
 import 'src/styles/pages/AppDetail.scss';
 import { AppButton, AppCard } from 'src/components';
@@ -10,6 +10,7 @@ import { ConnectWalletIcon } from 'src/assets/icons';
 import { MetadataPlan } from 'src/store/metadata';
 import { useHistory } from 'react-router';
 import AppAlertWarning from 'src/components/AppAlertWarning';
+import { ROUTES } from 'src/utils/common';
 
 interface IFormCrypto {
   onSuccess: () => void;
@@ -17,25 +18,19 @@ interface IFormCrypto {
 }
 
 const FormCrypto: FC<IFormCrypto> = ({ onSuccess, planSelected }) => {
-  const [isSufficientBalance, setIsSufficientBalance] =
-    useState<boolean>(false);
   const { wallet, isUserLinked } = useWallet();
   const { user } = useUser();
   const history = useHistory();
 
-  useEffect(() => {
-    if (user?.getBalance() && planSelected) {
-      if (
-        new BigNumber(user.getBalance()).isGreaterThanOrEqualTo(
-          new BigNumber(planSelected.price || 0),
-        )
-      ) {
-        setIsSufficientBalance(true);
-      } else {
-        setIsSufficientBalance(false);
-      }
+  const isSufficientBalance = useMemo(() => {
+    if (!user || !planSelected) {
+      return false;
     }
-  }, [user?.getBalance()]);
+
+    return new BigNumber(user.getBalance()).isGreaterThanOrEqualTo(
+      new BigNumber(planSelected.price || 0),
+    );
+  }, [user?.getBalance(), planSelected]);
 
   const _renderWalletInfo = () => {
     if (wallet?.getAddress() !== user?.getLinkedAddress()) {
@@ -62,7 +57,7 @@ const FormCrypto: FC<IFormCrypto> = ({ onSuccess, planSelected }) => {
           <AppButton
             width={'100%'}
             size="lg"
-            onClick={() => history.push('/top-up')}
+            onClick={() => history.push(ROUTES.TOP_UP)}
           >
             Top Up
           </AppButton>
@@ -79,7 +74,7 @@ const FormCrypto: FC<IFormCrypto> = ({ onSuccess, planSelected }) => {
         _renderWalletInfo()
       ) : (
         <AppCard className="box-connect-wallet">
-          <ConnectWalletIcon />
+          <ConnectWalletIcon width={126} />
           <Box className="box-connect-wallet__description">
             Connect wallet to top up your balance amount and perform payment
             with cryptocurrencies.

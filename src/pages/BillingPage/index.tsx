@@ -45,7 +45,7 @@ import { ROUTES } from 'src/utils/common';
 
 export const PAYMENT_METHOD = {
   CARD: 'STRIPE',
-  CRYPTO: 'CRYPTO',
+  CRYPTO: 'BLOCKLENS',
 };
 
 enum STEPS {
@@ -127,7 +127,7 @@ const PlanMobile: FC<IPlanMobile> = ({
           <Box className="plan-detail">
             <Flex alignItems={'center'} my={2}>
               <CheckedIcon />
-              <Box ml={3}> {plan.appLimitation} apps </Box>
+              <Box ml={3}> {plan.capacity.project} apps </Box>
             </Flex>
             <Flex alignItems={'center'} my={2}>
               <CheckedIcon />
@@ -192,7 +192,7 @@ const BillingPage = () => {
   }, [paymentMethod]);
 
   const isSufficientBalance = useMemo(() => {
-    if (!user) {
+    if (!user || !planSelected) {
       return false;
     }
     return new BigNumber(user.getBalance()).isGreaterThanOrEqualTo(
@@ -237,7 +237,7 @@ const BillingPage = () => {
                 <Td>
                   <Flex alignItems={'center'}>
                     <CheckedIcon />
-                    <Box ml={3}> {plan.appLimitation} apps </Box>
+                    <Box ml={3}> {plan.capacity.project} apps </Box>
                   </Flex>
                 </Td>
                 <Td>
@@ -381,6 +381,17 @@ const BillingPage = () => {
   };
 
   const _renderStep1 = () => {
+    const onChangePaymentMethod = (
+      method: typeof PAYMENT_METHOD[keyof typeof PAYMENT_METHOD],
+    ) => {
+      if (paymentMethod === method) {
+        return;
+      }
+
+      setIsOpenChangePayMethodModal(true);
+      setPaymentMethodSelected(method);
+    };
+
     return (
       <>
         <Flex justifyContent={'space-between'}>
@@ -394,7 +405,7 @@ const BillingPage = () => {
                 className="link"
                 alignItems="center"
                 mb={5}
-                onClick={() => history.push('/billing-history')}
+                onClick={() => history.push(ROUTES.BILLING_HISTORY)}
               >
                 <Box mr={2}>Billing History</Box>
                 <ArrowRightIcon />
@@ -404,7 +415,7 @@ const BillingPage = () => {
 
         <AppCard className="list-table-wrap">
           <Flex className="box-title">
-            <Box className={'text-title'}>Change Your Plan</Box>
+            <Box className={'text-title'}>Select Your Plan</Box>
 
             {user?.getPlan().price !== 0 && (
               <Box className="box-btn-cancel">
@@ -429,7 +440,6 @@ const BillingPage = () => {
             flexDirection={isMobile ? 'column' : 'row'}
           >
             <Flex alignItems={'center'}>
-              <NoticeIcon />
               <Box textAlign={'center'} ml={2}>
                 If you need more apps or higher limits, please{' '}
                 <AppLink to={ROUTES.CONTACT_US} className="link">
@@ -472,18 +482,14 @@ const BillingPage = () => {
                 className={`${
                   paymentMethod === PAYMENT_METHOD.CARD ? 'active' : ''
                 } box-method`}
+                onClick={() => onChangePaymentMethod(PAYMENT_METHOD.CARD)}
               >
                 <Flex justifyContent={'space-between'}>
                   <Box className="icon-checked-active">
                     {paymentMethod === PAYMENT_METHOD.CARD ? (
                       <CircleCheckedIcon />
                     ) : (
-                      <RadioNoCheckedIcon
-                        onClick={() => {
-                          setIsOpenChangePayMethodModal(true);
-                          setPaymentMethodSelected(PAYMENT_METHOD.CARD);
-                        }}
-                      />
+                      <RadioNoCheckedIcon />
                     )}
                   </Box>
                 </Flex>
@@ -517,6 +523,7 @@ const BillingPage = () => {
                 className={`${
                   paymentMethod === PAYMENT_METHOD.CRYPTO ? 'active' : ''
                 } box-method`}
+                onClick={() => onChangePaymentMethod(PAYMENT_METHOD.CRYPTO)}
               >
                 <Box
                   className="icon-checked-active"
@@ -526,12 +533,7 @@ const BillingPage = () => {
                   {paymentMethod === PAYMENT_METHOD.CRYPTO ? (
                     <CircleCheckedIcon />
                   ) : (
-                    <RadioNoCheckedIcon
-                      onClick={() => {
-                        setIsOpenChangePayMethodModal(true);
-                        setPaymentMethodSelected(PAYMENT_METHOD.CRYPTO);
-                      }}
-                    />
+                    <RadioNoCheckedIcon />
                   )}
                 </Box>
                 <Flex flexDirection={'column'} alignItems={'center'}>

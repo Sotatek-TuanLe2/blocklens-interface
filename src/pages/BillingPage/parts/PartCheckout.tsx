@@ -10,6 +10,7 @@ import useWallet from 'src/hooks/useWallet';
 import rf from 'src/requests/RequestFactory';
 import { MetadataPlan } from 'src/store/metadata';
 import { getUserPlan } from 'src/store/user';
+import { ROUTES } from 'src/utils/common';
 import { formatShortText } from 'src/utils/utils-helper';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { paymentMethods, PAYMENT_METHOD } from '..';
@@ -46,10 +47,13 @@ const PartCheckout: FC<IPartCheckout> = ({
         </Flex>
         <Box className="name-plan">{`$${planSelected.price}/month`}</Box>
         <Flex className="info">
-          <CheckedIcon /> {planSelected.appLimitation} apps
+          <CheckedIcon /> {planSelected.capacity.project} apps
         </Flex>
         <Flex className="info">
           <CheckedIcon /> {planSelected.notificationLimitation} messages/day
+        </Flex>
+        <Flex className="info">
+          <CheckedIcon /> All supported chains
         </Flex>
       </Box>
     );
@@ -65,7 +69,7 @@ const PartCheckout: FC<IPartCheckout> = ({
         .updateBillingPlan({ code: planSelected.code });
       toastSuccess({ message: 'Update Successfully!' });
       dispatch(getUserPlan());
-      history.push('/billing-history');
+      history.push(ROUTES.BILLING_HISTORY);
     } catch (e: any) {
       toastError({ message: e?.message || 'Oops. Something went wrong!' });
     }
@@ -111,7 +115,13 @@ const PartCheckout: FC<IPartCheckout> = ({
           month until you cancel.
         </AppAlertWarning>
 
-        <AppButton size="lg" onClick={onPay} width={'100%'} mt={3}>
+        <AppButton
+          size="lg"
+          showSubmitting
+          onClick={onPay}
+          width={'100%'}
+          mt={3}
+        >
           Pay
         </AppButton>
       </Box>

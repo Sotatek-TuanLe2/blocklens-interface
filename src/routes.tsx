@@ -19,13 +19,13 @@ import { useDispatch } from 'react-redux';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import WebhookDetail from './pages/WebhookDetail';
 import MessagesHistory from './pages/MessagesHistoryPage';
-// import BillingPage from './pages/BillingPage';
+import BillingPage from './pages/BillingPage';
 import AccountPage from './pages/AccountPage';
-// import BillingInfoPage from './pages/BillingInfoPage';
+import BillingInfoPage from './pages/BillingInfoPage';
 import ContactUs from './pages/ContactUs';
-// import BillingHistory from './pages/BillingHistoryPage';
+import BillingHistory from './pages/BillingHistoryPage';
 import AllActivitiesPage from './pages/AllActivitiesPage';
-// import TopUpPage from './pages/TopUp';
+import TopUpPage from './pages/TopUp';
 import AppSettingsPage from './pages/AppSettingsPage';
 import WebhookSettingsPage from './pages/WebhookSettingsPage';
 import { clearUser, getUser } from './store/user';
@@ -64,6 +64,7 @@ export const PRIVATE_PATH = [
   ROUTES.WEBHOOKS,
   ROUTES.ACCOUNT,
   ROUTES.CREATE_WEBHOOK,
+  ROUTES.BILLING,
 ];
 
 const Routes: FC<RouteComponentProps> = () => {
@@ -108,10 +109,13 @@ const Routes: FC<RouteComponentProps> = () => {
           component={ResetPasswordPage}
         />
         <PrivateRoute path={ROUTES.ACCOUNT} component={AccountPage} />
-        {/* <PrivateRoute path={'/billing'} component={BillingPage} /> */}
-        {/*<PrivateRoute path={'/billing-info'} component={BillingInfoPage} />*/}
-        {/*<PrivateRoute path={'/billing-history'} component={BillingHistory} />*/}
-        {/*<PrivateRoute path={'/top-up'} component={TopUpPage} /> *!/*/}
+        <PrivateRoute path={ROUTES.BILLING} component={BillingPage} />
+        <PrivateRoute path={ROUTES.BILLING_INFO} component={BillingInfoPage} />
+        <PrivateRoute
+          path={ROUTES.BILLING_HISTORY}
+          component={BillingHistory}
+        />
+        <PrivateRoute path={ROUTES.TOP_UP} component={TopUpPage} />
         <PrivateRoute
           path={`/webhook/:webhookId/activities/:id`}
           component={MessagesHistory}

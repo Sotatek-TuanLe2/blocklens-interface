@@ -6,6 +6,7 @@ import { AppCard, AppDataTable, AppLoadingTable } from 'src/components';
 import { BasePage } from 'src/layouts';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/pages/AppDetail.scss';
+import { ROUTES } from 'src/utils/common';
 import { getErrorMessage } from 'src/utils/utils-helper';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import BillingItem from './parts/BillingItem';
@@ -152,7 +153,7 @@ const BillingHistory = () => {
               cursor={'pointer'}
               className="icon-arrow-left"
               mr={6}
-              onClick={() => history.push('/billing')}
+              onClick={() => history.push(ROUTES.BILLING)}
             />
             <Box className={'title-mobile'}>Billing History</Box>
           </Flex>
