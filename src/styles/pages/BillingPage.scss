@@ -205,6 +205,11 @@
         &__price {
           @include heading-8;
           color: $main;
+
+          .month-text {
+            @include text-medium-regular;
+            color: $paragraph;
+          }
         }
       }
 

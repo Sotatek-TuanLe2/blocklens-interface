@@ -91,7 +91,12 @@ const _renderPrice = (price: number | null) => {
     return 'Free';
   }
 
-  return `$${price}/month`;
+  return (
+    <>
+      ${price}
+      <span className="month-text">/mo</span>
+    </>
+  );
 };
 
 const PlanMobile: FC<IPlanMobile> = ({
@@ -410,18 +415,30 @@ const BillingPage = () => {
       <AppCard className="list-table-wrap current-plan">
         <Box className="list-table-wrap__title">CURRENT PLAN</Box>
         <Flex className="list-table-wrap__content">
-          <Box className="name-plan">{user?.getPlan().name.toLowerCase()}</Box>
+          <Box className="name-plan">
+            {!!user ? user.getPlan().name.toLowerCase() : ''}
+          </Box>
           <Box className="detail">
             <Box className="detail__title">Renews on</Box>
             <Box className="detail__content">Nov 1, 2023 (UTC)</Box>
           </Box>
           <Box className="detail">
             <Box className="detail__title">Compute Units</Box>
-            <Box className="detail__content">150,000 CUs/day</Box>
+            <Box className="detail__content">
+              {!!user
+                ? `${Math.ceil(user.getPlan().capacity.cu / 30)} CUs/day`
+                : ''}
+            </Box>
           </Box>
           <Box className="detail">
             <Box className="detail__title">Throughput</Box>
-            <Box className="detail__content">30 CUs/second</Box>
+            <Box className="detail__content">
+              {!!user
+                ? `${Math.ceil(
+                    user.getPlan().capacity.cu / (30 * 24 * 60 * 60),
+                  )} CUs/second`
+                : ''}
+            </Box>
           </Box>
           <Box className="detail">
             <Box className="detail__title">
@@ -559,15 +576,8 @@ const BillingPage = () => {
                 alignItems="center"
               >
                 <span>{plan.name}</span>
-                <span className="all-plans__plan__title__price">FREE</span>
-              </Flex>
-              <Flex
-                className="all-plans__plan__descriptions"
-                alignItems="center"
-              >
-                <CheckedIcon stroke="#28c76f" />
-                <span className="all-plans__plan__descriptions__info">
-                  1000 CUs/day
+                <span className="all-plans__plan__title__price">
+                  {_renderPrice(plan.price)}
                 </span>
               </Flex>
               <Flex
@@ -576,7 +586,17 @@ const BillingPage = () => {
               >
                 <CheckedIcon stroke="#28c76f" />
                 <span className="all-plans__plan__descriptions__info">
-                  Throughput 30 CUs/sec
+                  {Math.ceil(plan.capacity.cu / 30)} CUs/day
+                </span>
+              </Flex>
+              <Flex
+                className="all-plans__plan__descriptions"
+                alignItems="center"
+              >
+                <CheckedIcon stroke="#28c76f" />
+                <span className="all-plans__plan__descriptions__info">
+                  Throughput {Math.ceil(plan.capacity.cu / (30 * 24 * 60 * 60))}{' '}
+                  CUs/sec
                 </span>
               </Flex>
               <Flex
@@ -603,7 +623,7 @@ const BillingPage = () => {
               >
                 <CheckedIcon stroke="#28c76f" />
                 <span className="all-plans__plan__descriptions__info">
-                  10 projects
+                  {plan.capacity.project} projects
                 </span>
               </Flex>
               <Flex
