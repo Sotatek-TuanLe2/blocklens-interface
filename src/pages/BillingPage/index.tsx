@@ -327,7 +327,8 @@ const BillingPage = () => {
     }
   };
 
-  const onReloadUserInfo = async () => {
+  const onReloadUserInfo = async (e) => {
+    e.stopPropagation();
     setIsReloadingUserInfo(true);
     await dispatch(getUserProfile());
     setIsReloadingUserInfo(false);
@@ -509,7 +510,10 @@ const BillingPage = () => {
                     <Box
                       ml={4}
                       mt={1}
-                      onClick={() => setIsOpenEditCardModal(true)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsOpenEditCardModal(true);
+                      }}
                       className={'box-method__btn-edit'}
                     >
                       <EditIcon />
