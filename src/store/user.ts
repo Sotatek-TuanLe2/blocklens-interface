@@ -146,7 +146,7 @@ export const getUser = createAsyncThunk(
   async (_params, thunkApi) => {
     thunkApi.dispatch(getUserProfile());
     thunkApi.dispatch(getUserStats());
-    //thunkApi.dispatch(getUserPlan());
+    thunkApi.dispatch(getUserPlan());
   },
 );
 
@@ -224,7 +224,7 @@ const userSlice = createSlice({
       state.stats = action.payload;
     },
     setUserPlan: (state, action) => {
-      state.billing.plan = action.payload;
+      state.billing.plan = action.payload.currentPlan;
     },
     setIsLoadingStat: (state, action) => {
       state.isLoadingGetStatisticsUser = action.payload;

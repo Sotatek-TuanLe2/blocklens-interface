@@ -122,7 +122,13 @@ const PartCheckout: FC<IPartCheckout> = ({
           month until you cancel.
         </AppAlertWarning>
 
-        <AppButton size="lg" onClick={onPay} width={'100%'} mt={3}>
+        <AppButton
+          size="lg"
+          showSubmitting
+          onClick={onPay}
+          width={'100%'}
+          mt={3}
+        >
           Pay
         </AppButton>
       </Box>

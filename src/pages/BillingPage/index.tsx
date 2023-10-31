@@ -381,6 +381,17 @@ const BillingPage = () => {
   };
 
   const _renderStep1 = () => {
+    const onChangePaymentMethod = (
+      method: typeof PAYMENT_METHOD[keyof typeof PAYMENT_METHOD],
+    ) => {
+      if (paymentMethod === method) {
+        return;
+      }
+
+      setIsOpenChangePayMethodModal(true);
+      setPaymentMethodSelected(method);
+    };
+
     return (
       <>
         <Flex justifyContent={'space-between'}>
@@ -471,18 +482,14 @@ const BillingPage = () => {
                 className={`${
                   paymentMethod === PAYMENT_METHOD.CARD ? 'active' : ''
                 } box-method`}
+                onClick={() => onChangePaymentMethod(PAYMENT_METHOD.CARD)}
               >
                 <Flex justifyContent={'space-between'}>
                   <Box className="icon-checked-active">
                     {paymentMethod === PAYMENT_METHOD.CARD ? (
                       <CircleCheckedIcon />
                     ) : (
-                      <RadioNoCheckedIcon
-                        onClick={() => {
-                          setIsOpenChangePayMethodModal(true);
-                          setPaymentMethodSelected(PAYMENT_METHOD.CARD);
-                        }}
-                      />
+                      <RadioNoCheckedIcon />
                     )}
                   </Box>
                 </Flex>
@@ -516,6 +523,7 @@ const BillingPage = () => {
                 className={`${
                   paymentMethod === PAYMENT_METHOD.CRYPTO ? 'active' : ''
                 } box-method`}
+                onClick={() => onChangePaymentMethod(PAYMENT_METHOD.CRYPTO)}
               >
                 <Box
                   className="icon-checked-active"
@@ -525,12 +533,7 @@ const BillingPage = () => {
                   {paymentMethod === PAYMENT_METHOD.CRYPTO ? (
                     <CircleCheckedIcon />
                   ) : (
-                    <RadioNoCheckedIcon
-                      onClick={() => {
-                        setIsOpenChangePayMethodModal(true);
-                        setPaymentMethodSelected(PAYMENT_METHOD.CRYPTO);
-                      }}
-                    />
+                    <RadioNoCheckedIcon />
                   )}
                 </Box>
                 <Flex flexDirection={'column'} alignItems={'center'}>

@@ -17,7 +17,7 @@ export default class BillingRequest extends BaseRequest {
   }
 
   getCurrentPlan() {
-    const url = '/my/plan';
+    const url = '/my/subscriptions';
     return this.get(url);
   }
 
@@ -32,17 +32,17 @@ export default class BillingRequest extends BaseRequest {
   }
 
   updateBillingPlan(params: { code: string }) {
-    const url = '/my/plan';
+    const url = '/my/subscriptions';
     return this.put(url, params);
   }
 
   cancelSubscription() {
-    const url = '/my/plan/cancel-subscription';
+    const url = '/my/subscriptions/cancel-subscription';
     return this.put(url);
   }
 
   getInvoiceList(params: any) {
-    const url = '/my/payment/invoice';
+    const url = '/my/invoices';
     return this.get(url, { ...params });
   }
 
@@ -52,12 +52,12 @@ export default class BillingRequest extends BaseRequest {
   }
 
   retryPendingInvoice(id: string) {
-    const url = `/my/plan/retry-payment/invoice-${id}`;
+    const url = `/my/subscriptions/retry-payment/invoice-${id}`;
     return this.put(url);
   }
 
   getListReceipt(receiptIds: string) {
-    const url = `/my/payment/receipt`;
+    const url = `/my/receipts`;
     return this.get(url, { receiptIds });
   }
 }
