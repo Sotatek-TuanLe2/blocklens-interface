@@ -45,7 +45,7 @@ import { ROUTES } from 'src/utils/common';
 
 export const PAYMENT_METHOD = {
   CARD: 'STRIPE',
-  CRYPTO: 'CRYPTO',
+  CRYPTO: 'BLOCKLENS',
 };
 
 enum STEPS {
