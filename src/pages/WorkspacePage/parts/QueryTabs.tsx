@@ -1,5 +1,5 @@
 import { Box, Flex, Tooltip } from '@chakra-ui/react';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { ROUTES } from 'src/utils/common';
 import { formatShortText } from 'src/utils/utils-helper';
@@ -12,8 +12,6 @@ interface IQueryTab {
   results?: any[];
 }
 
-const MAXIMUM_TABS = 10;
-
 interface IQueryTabsProps {
   tabs: IQueryTab[];
   activeTab: string;
@@ -23,6 +21,13 @@ interface IQueryTabsProps {
 const QueryTabs: React.FC<IQueryTabsProps> = (props) => {
   const { tabs, activeTab, onChangeTabs } = props;
   const history = useHistory();
+
+  useEffect(() => {
+    const activeTabElement = document.getElementById(activeTab);
+    if (activeTabElement) {
+      activeTabElement.scrollIntoView(true);
+    }
+  }, [activeTab, tabs]);
 
   const navigateQuery = (queryId?: string, isUnsaved = false) => {
     if (queryId) {
@@ -59,41 +64,38 @@ const QueryTabs: React.FC<IQueryTabsProps> = (props) => {
 
   return (
     <Flex className="workspace-page__editor__tabs">
-      {tabs
-        .filter((_, index) => index >= tabs.length - MAXIMUM_TABS)
-        .map((tab) => (
-          <Flex
-            key={tab.id}
-            className={`workspace-page__editor__tabs__tab ${
-              activeTab === tab.id
-                ? 'workspace-page__editor__tabs__tab--active'
-                : ''
-            }`}
-            onClick={() => onClickTab(tab.id, tab.isUnsaved)}
-          >
-            <Tooltip hasArrow placement="bottom" label={tab.name}>
-              <span>
-                {tab.name.length > 25
-                  ? formatShortText(tab.name, 25, 0)
-                  : tab.name}
-              </span>
-            </Tooltip>
-            {tabs.length > 1 && (
-              <Box
-                onClick={(e) => onDeleteTab(e)(tab.id)}
-                className="bg-CloseBtnIcon"
-              />
-            )}
-          </Flex>
-        ))}
-      {tabs.length < MAXIMUM_TABS && (
-        <Box
-          mr="20px"
-          cursor={'pointer'}
-          className="icon-plus-light workspace-page__editor__tabs__tab"
-          onClick={onAddTab}
-        />
-      )}
+      {tabs.map((tab) => (
+        <Flex
+          id={tab.id}
+          key={tab.id}
+          className={`workspace-page__editor__tabs__tab ${
+            activeTab === tab.id
+              ? 'workspace-page__editor__tabs__tab--active'
+              : ''
+          }`}
+          onClick={() => onClickTab(tab.id, tab.isUnsaved)}
+        >
+          <Tooltip hasArrow placement="bottom" label={tab.name}>
+            <span>
+              {tab.name.length > 25
+                ? formatShortText(tab.name, 25, 0)
+                : tab.name}
+            </span>
+          </Tooltip>
+          {tabs.length > 1 && (
+            <Box
+              onClick={(e) => onDeleteTab(e)(tab.id)}
+              className="bg-CloseBtnIcon"
+            />
+          )}
+        </Flex>
+      ))}
+      <Box
+        mr="20px"
+        cursor={'pointer'}
+        className="icon-plus-light workspace-page__editor__tabs__tab"
+        onClick={onAddTab}
+      />
     </Flex>
   );
 };
