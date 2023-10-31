@@ -35,6 +35,13 @@ const PartCheckout: FC<IPartCheckout> = ({
     (item) => item.code === paymentMethodCode,
   );
 
+  console.log(
+    'paymentMethod',
+    paymentMethod,
+    'paymentMethodCode',
+    paymentMethodCode,
+  );
+
   const _renderOrder = () => {
     return (
       <Box className="billing-checkout__order">
@@ -51,6 +58,9 @@ const PartCheckout: FC<IPartCheckout> = ({
         </Flex>
         <Flex className="info">
           <CheckedIcon /> {planSelected.notificationLimitation} messages/day
+        </Flex>
+        <Flex className="info">
+          <CheckedIcon /> All supported chains
         </Flex>
       </Box>
     );

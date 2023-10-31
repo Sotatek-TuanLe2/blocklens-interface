@@ -306,7 +306,7 @@
 
     &__payment-method {
       padding-bottom: 30px;
-      border-bottom: 1px dashed #2f3b58;
+      border-bottom: 1px dashed rgba(0, 2, 36, 0.1);
 
       .title {
         @include text-medium-bold;
