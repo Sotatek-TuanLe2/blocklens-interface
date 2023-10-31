@@ -47,7 +47,7 @@ const PartCheckout: FC<IPartCheckout> = ({
         </Flex>
         <Box className="name-plan">{`$${planSelected.price}/month`}</Box>
         <Flex className="info">
-          <CheckedIcon /> {planSelected.appLimitation} apps
+          <CheckedIcon /> {planSelected.capacity.project} apps
         </Flex>
         <Flex className="info">
           <CheckedIcon /> {planSelected.notificationLimitation} messages/day

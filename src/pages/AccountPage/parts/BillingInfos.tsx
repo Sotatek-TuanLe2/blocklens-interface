@@ -46,7 +46,8 @@ const BillingInfos = () => {
         </Box>
         <Box className="detail-plan">
           <Flex alignItems={'center'}>
-            <CheckedIcon /> <Box ml={3}>{currentPlan?.appLimitation} apps</Box>
+            <CheckedIcon />{' '}
+            <Box ml={3}>{currentPlan?.capacity.project} apps</Box>
           </Flex>
           <Flex alignItems={'center'}>
             <CheckedIcon />{' '}

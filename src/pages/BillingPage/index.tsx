@@ -127,7 +127,7 @@ const PlanMobile: FC<IPlanMobile> = ({
           <Box className="plan-detail">
             <Flex alignItems={'center'} my={2}>
               <CheckedIcon />
-              <Box ml={3}> {plan.appLimitation} apps </Box>
+              <Box ml={3}> {plan.capacity.project} apps </Box>
             </Flex>
             <Flex alignItems={'center'} my={2}>
               <CheckedIcon />
@@ -237,7 +237,7 @@ const BillingPage = () => {
                 <Td>
                   <Flex alignItems={'center'}>
                     <CheckedIcon />
-                    <Box ml={3}> {plan.appLimitation} apps </Box>
+                    <Box ml={3}> {plan.capacity.project} apps </Box>
                   </Flex>
                 </Td>
                 <Td>

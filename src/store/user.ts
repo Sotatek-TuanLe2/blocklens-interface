@@ -39,7 +39,10 @@ export type UserPlanType = {
   name: string;
   description: string;
   price: number;
-  appLimitation: number;
+  capacity: {
+    cu: number;
+    project: number;
+  };
   notificationLimitation: number;
   currency: string;
   from: number;
@@ -114,7 +117,10 @@ const initialState: UserState = {
       currency: '',
       from: 0,
       to: 0,
-      appLimitation: 0,
+      capacity: {
+        cu: 1000000,
+        project: 2,
+      },
       notificationLimitation: 0,
     },
     payment: {
