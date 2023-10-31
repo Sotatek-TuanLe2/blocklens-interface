@@ -64,6 +64,7 @@ export const PRIVATE_PATH = [
   ROUTES.WEBHOOKS,
   ROUTES.ACCOUNT,
   ROUTES.CREATE_WEBHOOK,
+  ROUTES.BILLING,
 ];
 
 const Routes: FC<RouteComponentProps> = () => {

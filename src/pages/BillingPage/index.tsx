@@ -192,7 +192,7 @@ const BillingPage = () => {
   }, [paymentMethod]);
 
   const isSufficientBalance = useMemo(() => {
-    if (!user) {
+    if (!user || !planSelected) {
       return false;
     }
     return new BigNumber(user.getBalance()).isGreaterThanOrEqualTo(

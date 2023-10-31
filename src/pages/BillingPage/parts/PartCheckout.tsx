@@ -35,13 +35,6 @@ const PartCheckout: FC<IPartCheckout> = ({
     (item) => item.code === paymentMethodCode,
   );
 
-  console.log(
-    'paymentMethod',
-    paymentMethod,
-    'paymentMethodCode',
-    paymentMethodCode,
-  );
-
   const _renderOrder = () => {
     return (
       <Box className="billing-checkout__order">

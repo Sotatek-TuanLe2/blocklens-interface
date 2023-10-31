@@ -234,45 +234,58 @@
       }
     }
 
-    .amount-options {
-      margin-top: 42px;
+    .top-up-input {
+      position: relative;
 
-      @include tablet {
-        margin-top: 0;
-      }
-
-      .amount-option {
-        @include text-medium-regular;
-        padding: 4px 16px;
-        background-color: $disable;
-        margin-left: 6px;
-        border-radius: 6px;
-        border: 1px solid $disable;
-        color: $paragraph;
-        cursor: pointer;
-        height: max-content;
-
-        &:hover {
-          border: 1px solid $link;
-        }
-
-        &:first-child {
-          margin-left: 10px;
-        }
+      &__input {
+        padding-right: 250px;
 
         @include tablet {
-          @include text-small-regular;
-          padding: 4px 8px;
-
-          &:first-child {
-            margin-left: 0;
-          }
+          padding-right: 200px;
         }
+      }
+      
+      &__amount-options {
+        position: absolute;
+        right: 16px;
+        top: 7px;
 
-        &.active {
-          background: rgba(3, 202, 255, 0.14);
-          border: 1px solid $link;
-          color: $link;
+        @include tablet {
+          margin-top: 0;
+        }
+  
+        &__item {
+          @include text-medium-regular;
+          padding: 4px 16px;
+          background-color: $bg;
+          border-radius: 6px;
+          border: 1px solid $line;
+          color: $bg1;
+          cursor: pointer;
+          height: max-content;
+  
+          &:hover {
+            border: 1px solid $main;
+          }
+  
+          &:not(&:first-child) {
+            margin-left: 10px;
+          }
+  
+          @include tablet {
+            @include text-small-regular;
+            padding: 4px 8px;
+  
+            &:first-child {
+              margin-left: 0;
+            }
+          }
+  
+          &--active {
+            background: $main;
+            border: 1px solid $main;
+            color: $white;
+          }
         }
       }
     }
@@ -415,9 +428,10 @@
       height: 26px;
     }
 
-    .is-reloading {
-      animation: spin 1s infinite linear;
-    }
+  }
+  
+  .is-reloading {
+    animation: spin 1s infinite linear;
   }
 }
 

@@ -231,11 +231,10 @@ const userSlice = createSlice({
     },
     setUserPayment: (state, action) => {
       const {
-        payment: { activePaymentMethod },
+        payment: { activePaymentMethod, walletAddress },
         balance,
         isPaymentMethodIntegrated,
         stripe: { paymentMethod: stripePaymentMethod },
-        walletAddress,
       } = action.payload;
       state.billing.payment = {
         activePaymentMethod,

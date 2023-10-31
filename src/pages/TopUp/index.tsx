@@ -311,42 +311,47 @@ const TopUpPage = () => {
                     )}
                   </Flex>
                 </Flex>
-                <AppCurrencyInput
-                  onChange={(e) => setAmount(e.target.value.trim())}
-                  disabled={fetchingInfo}
-                  render={(ref, props) => (
-                    <AppInput
-                      ref={ref}
-                      value={amount}
-                      validate={{
-                        name: 'amount',
-                        validator: validator.current,
-                        rule: [`insufficientBalance:${balanceToken}`],
-                      }}
-                      {...props}
-                    />
-                  )}
-                />
+                <Box className="top-up-input">
+                  <AppCurrencyInput
+                    className="top-up-input__input"
+                    onChange={(e) => setAmount(e.target.value.trim())}
+                    disabled={fetchingInfo}
+                    render={(ref, props) => (
+                      <AppInput
+                        ref={ref}
+                        value={amount}
+                        validate={{
+                          name: 'amount',
+                          validator: validator.current,
+                          rule: [`insufficientBalance:${balanceToken}`],
+                        }}
+                        {...props}
+                      />
+                    )}
+                  />
+                  <Flex className="top-up-input__amount-options">
+                    {AMOUNT_OPTIONS.map((item: number, index: number) => {
+                      return (
+                        <Button
+                          disabled={fetchingInfo || processing}
+                          className={`top-up-input__amount-options__item ${
+                            +amount === item
+                              ? 'top-up-input__amount-options__item--active'
+                              : ''
+                          }`}
+                          key={index}
+                          onClick={() => {
+                            setAmount(item.toString());
+                            validator.current.showMessages();
+                          }}
+                        >
+                          {item}
+                        </Button>
+                      );
+                    })}
+                  </Flex>
+                </Box>
               </AppField>
-              <Flex className="amount-options">
-                {AMOUNT_OPTIONS.map((item: number, index: number) => {
-                  return (
-                    <Button
-                      disabled={fetchingInfo || processing}
-                      className={`amount-option ${
-                        +amount === item ? 'active' : ''
-                      }`}
-                      key={index}
-                      onClick={() => {
-                        setAmount(item.toString());
-                        validator.current.showMessages();
-                      }}
-                    >
-                      {item}
-                    </Button>
-                  );
-                })}
-              </Flex>
             </Flex>
           </Flex>
           {fetchingInfo && (
