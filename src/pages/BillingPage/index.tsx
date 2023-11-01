@@ -59,6 +59,7 @@ import {
 } from '../../utils/utils-helper';
 import { ROUTES } from 'src/utils/common';
 import { Link } from 'react-router-dom';
+import moment from 'moment';
 
 interface ILineItems {
   amount: number;
@@ -472,7 +473,13 @@ const BillingPage = () => {
           </Box>
           <Box className="detail">
             <Box className="detail__title">Renews on</Box>
-            <Box className="detail__content">Nov 1, 2023 (UTC)</Box>
+            <Box className="detail__content">
+              {!!user
+                ? `${moment(user.getNextPlan().createdAt)
+                    .utc()
+                    .format('MMM D, YYYY')} (UTC)`
+                : ''}
+            </Box>
           </Box>
           <Box className="detail">
             <Box className="detail__title">Compute Units</Box>
@@ -570,12 +577,21 @@ const BillingPage = () => {
           wrapperClassName="billings__table"
           limit={15}
           fetchData={fetchBillingHistory}
+          renderNoData={() => (
+            <div
+              style={{ marginTop: '25px', width: '100%', textAlign: 'center' }}
+            >
+              No billing history
+            </div>
+          )}
           renderBody={(billingsData) => (
             <Tbody>
               {billingsData.map((billing, index) => (
                 <Tr key={index} className="tr-list">
                   <Td>{billing.id}</Td>
-                  <Td>{formatTimestamp(billing?.createdAt, 'MMMM DD YYYY')}</Td>
+                  <Td>
+                    {formatTimestamp(billing?.createdAt, 'HH:mm MM-DD-YYYY')}
+                  </Td>
                   <Td>{billing.type}</Td>
                   <Td>${billing.totalAmount}</Td>
                   <Td>{_renderMethodBilling(billing)}</Td>

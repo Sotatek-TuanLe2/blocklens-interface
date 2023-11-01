@@ -43,6 +43,8 @@ export type UserPlanType = {
     cu: number;
     project: number;
   };
+  createdAt: string;
+  updatedAt: string;
   notificationLimitation: number;
   currency: string;
   from: number;
@@ -70,6 +72,7 @@ export type UserSettingsType = {
 
 export type UserBillingType = {
   plan: UserPlanType;
+  nextPlan: UserPlanType;
   payment: UserPaymentType;
 };
 
@@ -121,6 +124,25 @@ const initialState: UserState = {
         cu: 1000000,
         project: 2,
       },
+      createdAt: '',
+      updatedAt: '',
+      notificationLimitation: 0,
+    },
+    nextPlan: {
+      code: 'PLAN1',
+      name: 'STARTER',
+      description:
+        'Features:\n    • 2 projects\n    • 100 messages/day\n    • 24/7 Telegram support (Response time < 72 hours)\n    ',
+      price: 0,
+      currency: '',
+      from: 0,
+      to: 0,
+      capacity: {
+        cu: 1000000,
+        project: 2,
+      },
+      createdAt: '',
+      updatedAt: '',
       notificationLimitation: 0,
     },
     payment: {
@@ -225,6 +247,7 @@ const userSlice = createSlice({
     },
     setUserPlan: (state, action) => {
       state.billing.plan = action.payload.currentPlan;
+      state.billing.nextPlan = action.payload.nextPlan;
     },
     setIsLoadingStat: (state, action) => {
       state.isLoadingGetStatisticsUser = action.payload;
