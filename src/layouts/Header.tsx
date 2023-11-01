@@ -37,10 +37,6 @@ const menus = [
     path: 'https://stg-docs.blocklens.io/',
   },
   {
-    name: 'Billing',
-    path: ROUTES.BILLING,
-  },
-  {
     name: 'Account',
     path: ROUTES.ACCOUNT,
   },
@@ -93,6 +89,11 @@ const Header: FC = () => {
   }, [isOpenMenuMobile]);
 
   const _renderAvatar = () => {
+    const menus: { title: string; url: string }[] = [
+      { title: 'Account', url: ROUTES.ACCOUNT },
+      { title: 'Plan & billing', url: ROUTES.BILLING },
+    ];
+
     return (
       <Box>
         <Menu>
@@ -106,18 +107,20 @@ const Header: FC = () => {
               </div>
 
               <div className="user-email">{user?.getEmail()}</div>
-
-              <Box
-                className={`user-account ${
-                  isActiveMenu(ROUTES.ACCOUNT) ? 'active' : ''
-                }`}
-                textAlign={'left'}
-                mt={3}
-                fontWeight={500}
-                onClick={() => history.push(ROUTES.ACCOUNT)}
-              >
-                Account
-              </Box>
+              {menus.map((item, index) => (
+                <Box
+                  key={index}
+                  className={`user-account ${
+                    isActiveMenu(item.url) ? 'active' : ''
+                  }`}
+                  textAlign={'left'}
+                  mt={3}
+                  fontWeight={500}
+                  onClick={() => history.push(item.url)}
+                >
+                  {item.title}
+                </Box>
+              ))}
               <div className="user-divider"></div>
               <div className="user-logout" onClick={onLogout}>
                 {' '}

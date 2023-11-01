@@ -189,6 +189,11 @@ const PlanMobile: FC<IPlanMobile> = ({
 };
 
 const BillingPage = () => {
+  const { user } = useUser();
+  const { billingPlans } = useMetadata();
+  const dispatch = useDispatch();
+  const history = useHistory();
+
   const [paymentMethodSelected, setPaymentMethodSelected] = useState<
     string | any
   >(null);
@@ -202,10 +207,7 @@ const BillingPage = () => {
   const [isReloadingUserInfo, setIsReloadingUserInfo] =
     useState<boolean>(false);
   const [step, setStep] = useState<number>(STEPS.LIST);
-  const { user } = useUser();
-  const { billingPlans } = useMetadata();
-  const dispatch = useDispatch();
-  const history = useHistory();
+  const [billingHistory, setBillingHistory] = useState<any[] | null>(null);
 
   useEffect(() => {
     setPaymentMethodSelected(user?.getActivePaymentMethod());
@@ -261,6 +263,7 @@ const BillingPage = () => {
             listReceipt[index]?.resReference.stripePaymentMethod || null,
         };
       });
+      setBillingHistory(dataTable);
 
       return {
         ...res,
@@ -575,7 +578,7 @@ const BillingPage = () => {
         <Box className="list-table-wrap__title">BILLINGS</Box>
         <AppDataTable
           wrapperClassName="billings__table"
-          limit={15}
+          limit={5}
           fetchData={fetchBillingHistory}
           renderNoData={() => (
             <div
@@ -614,18 +617,24 @@ const BillingPage = () => {
               ]}
             />
           )}
-          renderHeader={() => (
-            <Thead className="header-list">
-              <Tr>
-                <Th>Billing ID</Th>
-                <Th>Issue time (UTC)</Th>
-                <Th>Billing detail</Th>
-                <Th>Amount</Th>
-                <Th>Payment method</Th>
-                <Th>Status</Th>
-              </Tr>
-            </Thead>
-          )}
+          renderHeader={() => {
+            if (!billingHistory || billingHistory.length === 0) {
+              return null;
+            }
+
+            return (
+              <Thead className="header-list">
+                <Tr>
+                  <Th>Billing ID</Th>
+                  <Th>Issue time (UTC)</Th>
+                  <Th>Billing detail</Th>
+                  <Th>Amount</Th>
+                  <Th>Payment method</Th>
+                  <Th>Status</Th>
+                </Tr>
+              </Thead>
+            );
+          }}
         />
       </AppCard>
     );
