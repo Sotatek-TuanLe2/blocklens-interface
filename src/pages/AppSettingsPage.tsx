@@ -191,23 +191,7 @@ const AppSettingsPage: FC<IAppSettings> = () => {
             </AppButton>
           </Flex>
         </Flex>
-
         {_renderBasicSettings()}
-
-        <AppCard className="app-status">
-          <Flex justifyContent={'space-between'}>
-            <Flex className="box-status">
-              <Box className="title-status">Project Status</Box>
-              <Flex alignItems={'center'}>
-                <Box
-                  className={isActive ? 'icon-active' : 'icon-inactive'}
-                  mr={2}
-                />
-                <Box>{isActive ? 'ACTIVE' : 'INACTIVE'}</Box>
-              </Flex>
-            </Flex>
-          </Flex>
-        </AppCard>
         {isOpenDeleteAppModal && (
           <ModalDeleteApp
             open={isOpenDeleteAppModal}
