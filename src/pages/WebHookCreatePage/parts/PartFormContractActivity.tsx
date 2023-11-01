@@ -12,6 +12,8 @@ interface IPartFormContractActivity {
   setDataForm: (value: any) => void;
   type: string;
   validator: any;
+  chain: string;
+  network: string;
 }
 
 const PartFormContractActivity: FC<IPartFormContractActivity> = ({
@@ -19,6 +21,8 @@ const PartFormContractActivity: FC<IPartFormContractActivity> = ({
   setDataForm,
   type,
   validator,
+  chain,
+  network,
 }) => {
   const [dataContractABI, setDataContractABI] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -28,7 +32,7 @@ const PartFormContractActivity: FC<IPartFormContractActivity> = ({
       setIsLoading(true);
       const res = await rf
         .getRequest('RegistrationRequest')
-        .getContractABI(address);
+        .getContractABI(address, chain, network);
 
       if (res && res.result) {
         setDataContractABI(JSON.parse(res?.result));

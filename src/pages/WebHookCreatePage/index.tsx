@@ -262,6 +262,8 @@ const WebHookCreatePage: React.FC = () => {
         setDataForm={setDataForm}
         type={typeSelected}
         validator={validator}
+        chain={chainSelected.value}
+        network={networkSelected.value}
       />
     );
   };

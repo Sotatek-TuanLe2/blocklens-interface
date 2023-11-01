@@ -46,9 +46,20 @@ export default class RegistrationRequest extends BaseRequest {
     return this.get(url);
   }
 
-  getContractABI(address: string) {
-    const url = `/api.etherscan.io/api?module=contract&action=getabi&address=${address}&apikey=3CVYQVYCIFFT6VM8W3IZCPDKUYJMU23WRY`;
-    return this.get(url);
+  getContractABI(address: string, chain: string, network: string) {
+    const URL: { [key: string]: { [key: string]: string } } = {
+      ETH: {
+        MAINNET: '/api.etherscan.io/api',
+        SEPOLIA: '/api-sepolia.etherscan.io/api',
+      },
+    };
+
+    return this.get(URL[chain][network], {
+      module: 'contract',
+      action: 'getabi',
+      address,
+      apikey: '3CVYQVYCIFFT6VM8W3IZCPDKUYJMU23WRY',
+    });
   }
 
   sendDemoWebhook(params: {
