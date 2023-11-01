@@ -11,7 +11,7 @@ import {
   Thead,
   Th,
 } from '@chakra-ui/react';
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import BigNumber from 'bignumber.js';
 import 'src/styles/pages/BillingPage.scss';
 import { BasePage } from 'src/layouts';
@@ -52,9 +52,34 @@ import { getUserPlan, getUserProfile } from 'src/store/user';
 import { MetadataPlan } from 'src/store/metadata';
 import useMetadata from 'src/hooks/useMetadata';
 import ModalChangePaymentMethod from 'src/modals/ModalChangePaymentMethod';
-import { formatCapitalize, getErrorMessage } from '../../utils/utils-helper';
+import {
+  formatCapitalize,
+  formatTimestamp,
+  getErrorMessage,
+} from '../../utils/utils-helper';
 import { ROUTES } from 'src/utils/common';
 import { Link } from 'react-router-dom';
+
+interface ILineItems {
+  amount: number;
+  description: string;
+  price: number;
+  title: string;
+  unit: number;
+}
+
+interface IBilling {
+  createdAt: number;
+  id: string;
+  lineItems: ILineItems[];
+  receiptId: string;
+  status: string;
+  totalAmount: number;
+  type: string;
+  userId: string;
+  activePaymentMethod?: string;
+  stripePaymentMethod?: any;
+}
 
 export const PAYMENT_METHOD = {
   CARD: 'STRIPE',
@@ -217,6 +242,33 @@ const BillingPage = () => {
       new BigNumber(planSelected.price),
     );
   }, [user?.getBalance(), planSelected]);
+
+  const fetchBillingHistory: any = useCallback(async (params: any) => {
+    try {
+      const res = await rf.getRequest('BillingRequest').getInvoiceList(params);
+      const receiptIds =
+        res.docs.map((item: any) => item?.receiptId || -1) || [];
+      const listReceipt = await rf
+        .getRequest('BillingRequest')
+        .getListReceipt(receiptIds.join(',').toString());
+
+      const dataTable = res?.docs.map((invoice: any, index: number) => {
+        return {
+          ...invoice,
+          activePaymentMethod: listReceipt[index]?.activePaymentMethod || null,
+          stripePaymentMethod:
+            listReceipt[index]?.resReference.stripePaymentMethod || null,
+        };
+      });
+
+      return {
+        ...res,
+        docs: dataTable,
+      };
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
 
   const isCurrentPlan = new BigNumber(planSelected.price).isEqualTo(
     new BigNumber(user?.getPlan().price || 0),
@@ -493,36 +545,42 @@ const BillingPage = () => {
       </Flex>
     );
 
+    const _renderMethodBilling = (billing: IBilling) => {
+      if (billing?.activePaymentMethod === 'CRYPTO') {
+        return 'Crypto balance';
+      }
+
+      if (billing?.activePaymentMethod === 'STRIPE') {
+        return (
+          <Flex>
+            <Box textTransform="capitalize">
+              {billing?.stripePaymentMethod?.card?.brand}
+            </Box>
+            <Box ml={2}>{billing?.stripePaymentMethod?.card?.last4}</Box>
+          </Flex>
+        );
+      }
+      return '---';
+    };
+
     const _renderBillings = () => (
       <AppCard className="list-table-wrap billings">
         <Box className="list-table-wrap__title">BILLINGS</Box>
         <AppDataTable
           wrapperClassName="billings__table"
-          requestParams={{}}
-          fetchData={() => {
-            return Promise.resolve({
-              totalDocs: 3,
-              totalPages: 1,
-              currentPage: 1,
-              itemsPerPage: 3,
-              page: 1,
-              limit: 3,
-              docs: [1, 2, 3],
-            });
-          }}
+          limit={15}
+          fetchData={fetchBillingHistory}
           renderBody={(billingsData) => (
             <Tbody>
-              {billingsData.map((_billing, index) => (
+              {billingsData.map((billing, index) => (
                 <Tr key={index} className="tr-list">
-                  <Td>225362</Td>
-                  <Td>11:22 09-30-2023</Td>
-                  <Td>Growth plan</Td>
-                  <Td>40$</Td>
-                  <Td>Credit card</Td>
+                  <Td>{billing.id}</Td>
+                  <Td>{formatTimestamp(billing?.createdAt, 'MMMM DD YYYY')}</Td>
+                  <Td>{billing.type}</Td>
+                  <Td>${billing.totalAmount}</Td>
+                  <Td>{_renderMethodBilling(billing)}</Td>
                   <Td>
-                    <Box className={`status ${true ? 'active' : 'inactive'}`}>
-                      {true ? 'Active' : 'Inactive'}
-                    </Box>
+                    <StatusBilling billing={billing} />
                   </Td>
                 </Tr>
               ))}
@@ -552,7 +610,6 @@ const BillingPage = () => {
               </Tr>
             </Thead>
           )}
-          limit={10}
         />
       </AppCard>
     );
@@ -894,6 +951,18 @@ const BillingPage = () => {
     <BasePage className="billing-page">
       <>{_renderContent()}</>
     </BasePage>
+  );
+};
+
+const StatusBilling: FC<{ billing: IBilling }> = ({ billing }) => {
+  return (
+    <Box
+      className={`status ${
+        billing.status === 'SUCCESS' ? 'active' : 'inactive'
+      }`}
+    >
+      <Box textTransform="capitalize">{billing.status.toLowerCase()}</Box>
+    </Box>
   );
 };
 
