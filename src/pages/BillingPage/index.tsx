@@ -11,7 +11,14 @@ import {
   Thead,
   Th,
 } from '@chakra-ui/react';
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  FC,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import BigNumber from 'bignumber.js';
 import 'src/styles/pages/BillingPage.scss';
 import { BasePage } from 'src/layouts';
@@ -79,7 +86,7 @@ interface IBilling {
   type: string;
   userId: string;
   activePaymentMethod?: string;
-  stripePaymentMethod?: any;
+  // stripePaymentMethod?: any;
 }
 
 export const PAYMENT_METHOD = {
@@ -104,6 +111,10 @@ export const paymentMethods = [
     code: PAYMENT_METHOD.CRYPTO,
   },
 ];
+
+const BILLING_STATUS = {
+  SUCCESS: 'SUCCESS',
+};
 
 interface IPlanMobile {
   plan: MetadataPlan;
@@ -259,8 +270,8 @@ const BillingPage = () => {
         return {
           ...invoice,
           activePaymentMethod: listReceipt[index]?.activePaymentMethod || null,
-          stripePaymentMethod:
-            listReceipt[index]?.resReference.stripePaymentMethod || null,
+          // stripePaymentMethod:
+          //   listReceipt[index]?.resReference.stripePaymentMethod || null,
         };
       });
       setBillingHistory(dataTable);
@@ -467,6 +478,51 @@ const BillingPage = () => {
       setPaymentMethodSelected(method);
     };
 
+    const currentPlanDetails: {
+      title: ReactNode;
+      content: string;
+    }[] = [
+      {
+        title: 'Renews on',
+        content: !!user
+          ? `${moment(user.getNextPlan().createdAt)
+              .utc()
+              .format('MMM D, YYYY')} (UTC)`
+          : '',
+      },
+      {
+        title: 'Compute Units',
+        content: !!user
+          ? `${Math.ceil(user.getPlan().capacity.cu / 30)} CUs/day`
+          : '',
+      },
+      {
+        title: 'Throughput',
+        content: !!user
+          ? `${Math.ceil(
+              user.getPlan().capacity.cu / (30 * 24 * 60 * 60),
+            )} CUs/second`
+          : '',
+      },
+      {
+        title: (
+          <Flex>
+            <span>Extra CUs</span>
+            <Tooltip
+              placement={'top'}
+              hasArrow
+              p={2}
+              className="tooltip-app"
+              label={``}
+            >
+              <Box className="icon-info" ml={2} cursor={'pointer'} />
+            </Tooltip>
+          </Flex>
+        ),
+        content: '1$/100K CUs',
+      },
+    ];
+
     const _renderCurrentPlan = () => (
       <AppCard className="list-table-wrap current-plan">
         <Box className="list-table-wrap__title">CURRENT PLAN</Box>
@@ -474,56 +530,19 @@ const BillingPage = () => {
           <Box className="name-plan">
             {!!user ? user.getPlan().name.toLowerCase() : ''}
           </Box>
-          <Box className="detail">
-            <Box className="detail__title">Renews on</Box>
-            <Box className="detail__content">
-              {!!user
-                ? `${moment(user.getNextPlan().createdAt)
-                    .utc()
-                    .format('MMM D, YYYY')} (UTC)`
-                : ''}
+          {currentPlanDetails.map((item, index) => (
+            <Box className="detail" key={index}>
+              <Box className="detail__title">{item.title}</Box>
+              <Box className="detail__content">{item.content}</Box>
             </Box>
-          </Box>
-          <Box className="detail">
-            <Box className="detail__title">Compute Units</Box>
-            <Box className="detail__content">
-              {!!user
-                ? `${Math.ceil(user.getPlan().capacity.cu / 30)} CUs/day`
-                : ''}
-            </Box>
-          </Box>
-          <Box className="detail">
-            <Box className="detail__title">Throughput</Box>
-            <Box className="detail__content">
-              {!!user
-                ? `${Math.ceil(
-                    user.getPlan().capacity.cu / (30 * 24 * 60 * 60),
-                  )} CUs/second`
-                : ''}
-            </Box>
-          </Box>
-          <Box className="detail">
-            <Box className="detail__title">
-              <Flex>
-                <span>Extra CUs</span>
-                <Tooltip
-                  placement={'top'}
-                  hasArrow
-                  p={2}
-                  className="tooltip-app"
-                  label={``}
-                >
-                  <Box className="icon-info" ml={2} cursor={'pointer'} />
-                </Tooltip>
-              </Flex>
-            </Box>
-            <Box className="detail__content">1$/100K CUs</Box>
-          </Box>
+          ))}
           <Box className="current-plan__button">
-            <AppButtonLarge>
-              <Box mr={2}>Upgrade</Box>
-              <ArrowRightIcon />
-            </AppButtonLarge>
+            <Link to="#all-plans">
+              <AppButtonLarge>
+                <Box mr={2}>Upgrade</Box>
+                <ArrowRightIcon />
+              </AppButtonLarge>
+            </Link>
           </Box>
         </Flex>
       </AppCard>
@@ -556,19 +575,12 @@ const BillingPage = () => {
     );
 
     const _renderMethodBilling = (billing: IBilling) => {
-      if (billing?.activePaymentMethod === 'CRYPTO') {
-        return 'Crypto balance';
+      if (billing?.activePaymentMethod === PAYMENT_METHOD.CRYPTO) {
+        return 'Crypto transfer';
       }
 
-      if (billing?.activePaymentMethod === 'STRIPE') {
-        return (
-          <Flex>
-            <Box textTransform="capitalize">
-              {billing?.stripePaymentMethod?.card?.brand}
-            </Box>
-            <Box ml={2}>{billing?.stripePaymentMethod?.card?.last4}</Box>
-          </Flex>
-        );
+      if (billing?.activePaymentMethod === PAYMENT_METHOD.CARD) {
+        return 'Credit card';
       }
       return '---';
     };
@@ -607,14 +619,7 @@ const BillingPage = () => {
           )}
           renderLoading={() => (
             <AppLoadingTable
-              widthColumns={[
-                100 / 6,
-                100 / 6,
-                100 / 6,
-                100 / 6,
-                100 / 6,
-                100 / 6,
-              ]}
+              widthColumns={[1, 2, 3, 4, 5, 6].map(() => 100 / 6)}
             />
           )}
           renderHeader={() => {
@@ -625,12 +630,16 @@ const BillingPage = () => {
             return (
               <Thead className="header-list">
                 <Tr>
-                  <Th>Billing ID</Th>
-                  <Th>Issue time (UTC)</Th>
-                  <Th>Billing detail</Th>
-                  <Th>Amount</Th>
-                  <Th>Payment method</Th>
-                  <Th>Status</Th>
+                  {[
+                    'Billing ID',
+                    'Issue time (UTC)',
+                    'Billing detail',
+                    'Amount',
+                    'Payment method',
+                    'Status',
+                  ].map((header) => (
+                    <Th key={header}>{header}</Th>
+                  ))}
                 </Tr>
               </Thead>
             );
@@ -640,7 +649,7 @@ const BillingPage = () => {
     );
 
     const _renderAllPlans = () => (
-      <AppCard className="list-table-wrap all-plans">
+      <AppCard id="all-plans" className="list-table-wrap all-plans">
         <Box className="list-table-wrap__title">ALL PLANS</Box>
         <Flex
           className="list-table-wrap__content"
@@ -982,8 +991,8 @@ const BillingPage = () => {
 const StatusBilling: FC<{ billing: IBilling }> = ({ billing }) => {
   return (
     <Box
-      className={`status ${
-        billing.status === 'SUCCESS' ? 'active' : 'inactive'
+      className={`billing-status billing-status--${
+        billing.status === BILLING_STATUS.SUCCESS ? 'active' : 'inactive'
       }`}
     >
       <Box textTransform="capitalize">{billing.status.toLowerCase()}</Box>

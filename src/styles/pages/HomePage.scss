@@ -215,23 +215,23 @@
   }
 }
 
-.status {
+.billing-status {
   padding: 6px 10px;
   @include text-tiny-regular;
   border-radius: 14px;
   display: inline-block;
 
-  &.inactive {
+  &--inactive {
     background: rgba(234, 84, 85, 0.14);
     color: $red;
   }
 
-  &.active {
+  &--active {
     background: rgba(40, 199, 111, 0.14);
     color: $green;
   }
 
-  &.waiting {
+  &--waiting {
     background: rgba(255, 181, 71, 0.14);
     color: $yellow;
   }
