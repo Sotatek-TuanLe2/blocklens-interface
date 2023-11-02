@@ -1,4 +1,6 @@
 {
+  "homePage": "https://dev-console.blocklens.io/",
+  "docsPage": "https://stg-docs.blocklens.io/",
   "auth": {
     "domain": "Blocklens",
     "message": "Join Blocklens",
@@ -7,10 +9,10 @@
     "reCaptchaKey": "6LcchvMjAAAAAG9Bqt0aP3KBWI9Gg-UtCVg6DGRH"
   },
   "api": {
-    "baseUrlApi": "https://stg-api.blocklens.io/api/blocklens-users",
-    "notificationsApi": "https://stg-api.blocklens.io/api/blocklens-insights",
-    "authApi": "https://stg-api.blocklens.io/api/blocklens-auth",
-    "dashboard": "https://stg-api.blocklens.io/api/blocklens-query-executor"
+    "baseUrlApi": "https://dev-api.blocklens.io/api/blocklens-users",
+    "notificationsApi": "https://dev-api.blocklens.io/api/blocklens-insights",
+    "authApi": "https://dev-api.blocklens.io/api/blocklens-auth",
+    "dashboard": "https://dev-api.blocklens.io/api/blocklens-query-executor"
   },
   "defaultNetwork": "ETH",
   "defaultChainId": 5,

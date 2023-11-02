@@ -1,4 +1,6 @@
 {
+  "homePage": "https://blocklens.io/",
+  "docsPage": "https://stg-docs.blocklens.io/",
   "auth": {
     "domain": "Blocklens",
     "message": "Join Blocklens",
