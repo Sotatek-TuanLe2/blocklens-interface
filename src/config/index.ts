@@ -79,6 +79,8 @@ export type ChainTopUpConfigType = {
 };
 
 export interface Config {
+  homePage: string;
+  docsPage: string;
   auth: {
     domain: string;
     message: string;
@@ -97,7 +99,6 @@ export interface Config {
   stripe: {
     publishableKey: string;
   };
-
   chains: {
     [key: string]: Chain;
   };
