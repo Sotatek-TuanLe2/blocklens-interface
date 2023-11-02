@@ -9,10 +9,10 @@
     "reCaptchaKey": "6LcchvMjAAAAAG9Bqt0aP3KBWI9Gg-UtCVg6DGRH"
   },
   "api": {
-    "baseUrlApi": "https://blocksniper-api.sotatek.works/api/blocklens-users",
-    "notificationsApi": "https://blocksniper-api.sotatek.works/api/blocklens-notifications",
-    "authApi": "https://blocksniper-api.sotatek.works/api/blocklens-auth",
-    "dashboard": ""
+    "baseUrlApi": "https://api.blocklens.io/api/blocklens-users",
+    "notificationsApi": "https://api.blocklens.io/api/blocklens-notifications",
+    "authApi": "https://api.blocklens.io/api/blocklens-auth",
+    "dashboard": "https://api.blocklens.io/api/blocklens-query-executor"
   },
   "defaultNetwork": "ETH",
   "defaultChainId": 1,
