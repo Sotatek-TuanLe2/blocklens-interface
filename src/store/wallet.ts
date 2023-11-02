@@ -2,11 +2,7 @@ import { ExternalProvider } from '@ethersproject/providers';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import config from 'src/config';
 import BaseConnector from 'src/connectors/BaseConnector';
-import {
-  getNetworkByEnv,
-  getChainConfig,
-  getNetworkProvider,
-} from 'src/utils/utils-network';
+import { getChainConfig, getNetworkProvider } from 'src/utils/utils-network';
 import Storage from 'src/utils/utils-storage';
 import { RootState } from '.';
 
@@ -26,7 +22,7 @@ const initialState: IWalletState = {
   network: Storage.getNetwork() || config.defaultNetwork,
   chainId:
     Storage.getChainId() ||
-    String(getNetworkByEnv(getChainConfig(config.defaultNetwork))?.chainId),
+    String(getChainConfig(config.defaultNetwork)?.chainId),
   connector: null,
   provider: null,
   address: '',
@@ -62,7 +58,7 @@ const walletSlice = createSlice({
     setNetwork: (state, action) => {
       const network = action.payload || config.defaultNetwork;
       state.network = network;
-      state.chainId = String(getNetworkByEnv(getChainConfig(network)).chainId);
+      state.chainId = String(getChainConfig(network).chainId);
       Storage.setNetwork(state.network);
       Storage.setChainId(state.chainId);
     },

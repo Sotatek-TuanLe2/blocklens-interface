@@ -1,4 +1,6 @@
 {
+  "homePage": "https://staging-console.blocklens.io/",
+  "docsPage": "https://stg-docs.blocklens.io/",
   "auth": {
     "domain": "Blocklens",
     "message": "Join Blocklens",
@@ -7,10 +9,10 @@
     "reCaptchaKey": "6LcchvMjAAAAAG9Bqt0aP3KBWI9Gg-UtCVg6DGRH"
   },
   "api": {
-    "baseUrlApi": "https://preprod-api.blocklens.io/api/blocklens-users",
-    "notificationsApi": "https://preprod-api.blocklens.io/api/blocklens-insights",
-    "authApi": "https://preprod-api.blocklens.io/api/blocklens-auth",
-    "dashboard": "https://preprod-api.blocklens.io/api/blocklens-query-executor"
+    "baseUrlApi": "https://staging-api.blocklens.io/api/blocklens-users",
+    "notificationsApi": "https://staging-api.blocklens.io/api/blocklens-insights",
+    "authApi": "https://staging-api.blocklens.io/api/blocklens-auth",
+    "dashboard": "https://staging-api.blocklens.io/api/blocklens-query-executor"
   },
   "defaultNetwork": "ETH",
   "defaultChainId": 5,
@@ -18,34 +20,6 @@
     "publishableKey": "pk_test_51Ljx2qF4Iczr6ngs4zx9wLMG1wlxVR2RrGGMkeGQndyZSoidulS0aLSETfQQoOAmL7tfJHQfWPsBUzIdykgJm6y400SL9AErt9"
   },
   "chains": {
-    "APTOS": {
-      "family": "BTC",
-      "name": "Aptos",
-      "id": "APTOS",
-      "icon": "icon-aptos",
-      "networks": {
-        "MAINNET": {
-          "name": "Mainnet",
-          "id": "MAINNET",
-          "icon": "icon-aptos",
-          "chainId": 1,
-          "rpcUrls": [
-            "https://mainnet.infura.io/v3/706f50c257ba4ca9883d0aa14ae57434",
-            "https://mainnet.infura.io/v3/9ddb0f7769a347948bfacd789a9a714f"
-          ],
-          "blockExplorer": {
-            "name": "Apscan",
-            "icon": "/images/etherscan.png",
-            "url": "https://explorer.aptoslabs.com/txn"
-          },
-          "nativeCurrency": {
-            "name": "APTOS",
-            "symbol": "APTOS",
-            "decimals": 18
-          }
-        }
-      }
-    },
     "ETH": {
       "family": "ETH",
       "name": "Ethereum",
@@ -69,6 +43,53 @@
           "nativeCurrency": {
             "name": "ETH",
             "symbol": "ETH",
+            "decimals": 18
+          }
+        },
+        "TESTNET": {
+          "name": "Testnet - Sepolia",
+          "id": "SEPOLIA",
+          "icon": "icon-ethereum",
+          "chainId": 11155111,
+          "rpcUrls": [
+            "https://ethereum-sepolia.publicnode.com"
+          ],
+          "blockExplorer": {
+            "name": "Etherscan",
+            "icon": "/images/etherscan.png",
+            "url": "https://sepolia.etherscan.io"
+          },
+          "nativeCurrency": {
+            "name": "ETH",
+            "symbol": "ETH",
+            "decimals": 18
+          }
+        }
+      }
+    },
+    "APTOS": {
+      "family": "BTC",
+      "name": "Aptos",
+      "id": "APTOS",
+      "icon": "icon-aptos",
+      "networks": {
+        "MAINNET": {
+          "name": "Mainnet",
+          "id": "MAINNET",
+          "icon": "icon-aptos",
+          "chainId": 1,
+          "rpcUrls": [
+            "https://mainnet.infura.io/v3/706f50c257ba4ca9883d0aa14ae57434",
+            "https://mainnet.infura.io/v3/9ddb0f7769a347948bfacd789a9a714f"
+          ],
+          "blockExplorer": {
+            "name": "Apscan",
+            "icon": "/images/etherscan.png",
+            "url": "https://explorer.aptoslabs.com/txn"
+          },
+          "nativeCurrency": {
+            "name": "APTOS",
+            "symbol": "APTOS",
             "decimals": 18
           }
         }
@@ -111,12 +132,12 @@
   "topUp": {
     "supportChains": {
       "ETH": {
-        "contractAddress": "0xE66E07c149fbE6B5e385c1e6eA5c3A722E985A11",
+        "contractAddress": "0x3351f73117F78e07400B3e59EDD55753fe3be2D0",
         "currencies": {
           "usdt": {
             "id": "629dc9f014a8be7577e1ccde",
             "coingeckoId": "tether",
-            "address": "0xb347aa50A880C4920e86C2C4A77a6b5809D0A645",
+            "address": "0x3BCa10eA9Ed68b8F0F904b713a44543136dB8989",
             "name": "USDT",
             "symbol": "USDT",
             "decimals": 6,
@@ -125,7 +146,7 @@
           "usdc": {
             "id": "629dc9f014a8be7577e1cce0",
             "coingeckoId": "usd-coin",
-            "address": "0xE78181D342cC44E4c67f72fBc2f2Ba5337f168bc",
+            "address": "0xD9a51C88E4588A026a7FFEd53ea61bc6a372a093",
             "name": "USDC",
             "symbol": "USDC",
             "decimals": 6,
@@ -139,18 +160,17 @@
   },
   "networks": {
     "ETH": {
-      "name": "Ethereum",
-      "id": "ETHEREUM",
+      "name": "Sepolia",
+      "id": "SEPOLIA",
       "icon": "icon-ethereum",
-      "chainId": 1,
+      "chainId": 11155111,
       "rpcUrls": [
-        "https://mainnet.infura.io/v3/706f50c257ba4ca9883d0aa14ae57434",
-        "https://mainnet.infura.io/v3/9ddb0f7769a347948bfacd789a9a714f"
+        "https://ethereum-sepolia.publicnode.com"
       ],
       "blockExplorer": {
         "name": "Etherscan",
         "icon": "/images/etherscan.png",
-        "url": "https://etherscan.io/tx"
+        "url": "https://sepolia.etherscan.io"
       },
       "nativeCurrency": {
         "name": "ETH",

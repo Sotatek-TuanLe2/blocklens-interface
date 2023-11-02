@@ -9,10 +9,10 @@
     "reCaptchaKey": "6LcchvMjAAAAAG9Bqt0aP3KBWI9Gg-UtCVg6DGRH"
   },
   "api": {
-    "baseUrlApi": "https://blocksniper-api.sotatek.works/api/blocklens-users",
-    "notificationsApi": "https://blocksniper-api.sotatek.works/api/blocklens-notifications",
-    "authApi": "https://blocksniper-api.sotatek.works/api/blocklens-auth",
-    "dashboard": ""
+    "baseUrlApi": "https://api.blocklens.io/api/blocklens-users",
+    "notificationsApi": "https://api.blocklens.io/api/blocklens-notifications",
+    "authApi": "https://api.blocklens.io/api/blocklens-auth",
+    "dashboard": "https://api.blocklens.io/api/blocklens-query-executor"
   },
   "defaultNetwork": "ETH",
   "defaultChainId": 1,
@@ -155,6 +155,28 @@
     },
     "appId": 1,
     "confirmations": 30
+  },
+  "networks": {
+    "ETH": {
+      "name": "Ethereum",
+      "id": "ETHEREUM",
+      "icon": "icon-ethereum",
+      "chainId": 1,
+      "rpcUrls": [
+        "https://mainnet.infura.io/v3/706f50c257ba4ca9883d0aa14ae57434",
+        "https://mainnet.infura.io/v3/9ddb0f7769a347948bfacd789a9a714f"
+      ],
+      "blockExplorer": {
+        "name": "Etherscan",
+        "icon": "/images/etherscan.png",
+        "url": "https://etherscan.io/tx"
+      },
+      "nativeCurrency": {
+        "name": "ETH",
+        "symbol": "ETH",
+        "decimals": 18
+      }
+    }
   },
   "connectors": {
     "metamask-connector": {
