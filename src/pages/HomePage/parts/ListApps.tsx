@@ -187,16 +187,13 @@ const ListApps: React.FC = () => {
           <Th w="20%" textAlign={'center'}>
             number of webhook
           </Th>
-          <Th w="15%" textAlign={'right'}>
-            Status
-          </Th>
         </Tr>
       </Thead>
     );
   };
 
   const _renderLoading = () => {
-    const widthColumns = [25, 20, 20, 20, 15];
+    const widthColumns = [25, 20, 20, 20];
     return <AppLoadingTable widthColumns={widthColumns} />;
   };
 
@@ -230,9 +227,6 @@ const ListApps: React.FC = () => {
               </Td>
               <Td w="20%" textAlign={'center'}>
                 {app?.totalWebhook}
-              </Td>
-              <Td w="15%" textAlign={'right'}>
-                <AppStatus status={app.status} />
               </Td>
             </Tr>
           );
