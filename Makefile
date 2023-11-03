@@ -38,18 +38,6 @@ deploy-stg:
         --distribution-id E2T117AFUGE3RH \
         --paths "/*"
 
-deploy-preprod:
-	cp .env.preprod.example .env
-	npm run build
-	echo "Uploading to s3"
-	aws s3 sync ./build s3://preprod-console.blocklens.io
-	aws s3 sync ./build s3://preprod-console.blocklens.io
-	  rm -f ./build/index.html
-	echo "Deploy client finished!"
-	aws cloudfront create-invalidation \
-        --distribution-id E1SEFJBVE3V3VX \
-        --paths "/*"
-
 
 deploy-prod:
 	cp .env.prod.example .env

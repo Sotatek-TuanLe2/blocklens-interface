@@ -14,6 +14,7 @@ import BaseModal from '../BaseModal';
 import { INPUT_DEBOUNCE } from 'src/utils/common';
 import { RadioChecked, RadioNoCheckedIcon } from '../../assets/icons';
 import { WIDTH_DASHBOARD, TOTAL_COL } from './ModalAddVisualization';
+import config from 'src/config';
 
 interface IModalAddTextWidget {
   open: boolean;
@@ -29,7 +30,7 @@ interface IMarkdown {
   mark: JSX.Element;
 }
 
-const linkBlocklens = 'https://stg-console.blocklens.io/';
+const linkBlocklens = config.homePage;
 const randomImage = 'https://unsplash.it/600/400';
 
 const MarkdownSupport: IMarkdown[] = [

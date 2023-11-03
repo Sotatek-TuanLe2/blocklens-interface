@@ -140,42 +140,12 @@ export const getChainByChainId = (chainId: string | number): Chain | null => {
   return config.chains[chainKey];
 };
 
-export const getChainConfig = (networkId?: string): Chain => {
-  const defaultChain = config.chains[config.defaultNetwork];
+export const getChainConfig = (networkId?: string): Network => {
+  const defaultChain = config.networks[config.defaultNetwork];
   if (!networkId) {
     return defaultChain;
   }
-  return config.chains[networkId] || defaultChain;
-};
-
-export const getNetworkByEnv = (chain?: Chain | null): Network => {
-  const env = process.env.REACT_APP_ENV || 'prod';
-  const networks: {
-    [key: string]: {
-      [key: string]: string;
-    };
-  } = {
-    ETH: {
-      prod: 'MAINNET',
-      dev: 'TESTNET',
-    },
-    BSC: {
-      prod: 'MAINNET',
-      dev: 'TESTNET',
-    },
-    POLYGON: {
-      prod: 'MAINNET',
-      dev: 'MUMBAI',
-    },
-  };
-  const defaultChain = getChainConfig();
-  const defaultNetworkByEnv =
-    defaultChain.networks[networks[defaultChain.id][env]];
-  if (!chain) {
-    return defaultNetworkByEnv;
-  }
-
-  return chain.networks[networks[chain.id][env]];
+  return config.networks[networkId];
 };
 
 export const getNetworkProvider = (network = ''): FallbackProvider => {
@@ -186,7 +156,7 @@ export const getNetworkProvider = (network = ''): FallbackProvider => {
       `[getNetworkProvider] throw error: networkConfig ${network} not found`,
     );
   }
-  const rpcUrls = _.shuffle(getNetworkByEnv(chainConfig).rpcUrls);
+  const rpcUrls = _.shuffle(chainConfig.rpcUrls);
 
   const providers: {
     provider: BaseProvider;
@@ -196,7 +166,7 @@ export const getNetworkProvider = (network = ''): FallbackProvider => {
   rpcUrls.forEach((rpcUrl, index) => {
     const provider: BaseProvider = new StaticJsonRpcProvider(
       rpcUrl,
-      getNetworkByEnv(chainConfig).chainId,
+      chainConfig.chainId,
     );
     const priority = index + 1;
     providers.push({
@@ -216,7 +186,7 @@ export const switchNetwork = async (
   if (!provider) {
     throw new Error('[Switch Network] No provider was found');
   }
-  const chainId = getNetworkByEnv(getChainConfig(network)).chainId;
+  const chainId = getChainConfig(network).chainId;
   if (!chainId) {
     throw new Error('[Switch Network] No chainId was found');
   }
@@ -242,7 +212,7 @@ export const switchNetwork = async (
 
 const addNewNetwork = (network: string, provider: JsonRpcProvider) => {
   try {
-    const networkConfig = getNetworkByEnv(getChainConfig(network));
+    const networkConfig = getChainConfig(network);
     if (!networkConfig) {
       return;
     }

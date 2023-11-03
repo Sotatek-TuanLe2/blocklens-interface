@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import prod from './prod.json';
 import dev from './dev.json';
-import preprod from './preprod.json';
+import staging from './staging.json';
 
 const env = process.env.REACT_APP_ENV || 'prod';
 const configs: any = {
   prod,
   dev,
-  preprod,
+  staging,
 };
 const config: Config = configs[env];
 
@@ -79,6 +79,8 @@ export type ChainTopUpConfigType = {
 };
 
 export interface Config {
+  homePage: string;
+  docsPage: string;
   auth: {
     domain: string;
     message: string;
@@ -97,7 +99,6 @@ export interface Config {
   stripe: {
     publishableKey: string;
   };
-
   chains: {
     [key: string]: Chain;
   };

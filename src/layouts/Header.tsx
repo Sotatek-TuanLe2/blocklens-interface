@@ -22,6 +22,7 @@ import { PRIVATE_PATH } from 'src/routes';
 import { clearUser } from 'src/store/user';
 import { ROUTES } from 'src/utils/common';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
+import config from 'src/config';
 
 const menus = [
   {
@@ -34,7 +35,7 @@ const menus = [
   },
   {
     name: 'APIs',
-    path: 'https://stg-docs.blocklens.io/',
+    path: config.docsPage,
   },
   {
     name: 'Account',
