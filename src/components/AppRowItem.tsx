@@ -13,7 +13,7 @@ import { Link, useLocation } from 'react-router-dom';
 import AppTag from './AppTag';
 import { ChevronRightIcon } from '@chakra-ui/icons';
 import { FC, ReactNode } from 'react';
-import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
+import { INSIGHTS_TABS } from 'src/pages/DashboardsPage';
 import Jazzicon, { jsNumberForAddress } from 'react-jazzicon';
 import { generateAvatarFromId } from 'src/utils/common';
 import { IconEye } from 'src/assets/icons';
@@ -68,8 +68,8 @@ const AppRowItem: FC<AppRowItemProps> = ({
       >
         <Flex align={'center'} w={'calc(100% - 24px)'}>
           <Flex align={'center'} w={'24%'} pr={2.5}>
-            {(type === LIST_ITEM_TYPE.DASHBOARDS ||
-              itemType === LIST_ITEM_TYPE.DASHBOARDS) && (
+            {(type === INSIGHTS_TABS.DASHBOARDS ||
+              itemType === INSIGHTS_TABS.DASHBOARDS) && (
               <Skeleton w={'74px'} h={'48px'} mr={'10px'} rounded={'6px'} />
             )}
             <Skeleton h={'18px'} w={'150px'} rounded={'9px'} />
@@ -120,8 +120,8 @@ const AppRowItem: FC<AppRowItemProps> = ({
         >
           <Flex align={'center'} py={'16px'}>
             <Flex align={'center'} w={'24%'} pr={2.5} overflow={'hidden'}>
-              {(type === LIST_ITEM_TYPE.DASHBOARDS ||
-                itemType === LIST_ITEM_TYPE.DASHBOARDS) && (
+              {(type === INSIGHTS_TABS.DASHBOARDS ||
+                itemType === INSIGHTS_TABS.DASHBOARDS) && (
                 <Box
                   style={{ aspectRatio: '74 / 48' }}
                   w={'74px'}
@@ -224,8 +224,8 @@ const AppRowItem: FC<AppRowItemProps> = ({
         <Flex align={'center'}>
           <Box flexGrow={1}>
             <Flex align={'center'}>
-              {(type === LIST_ITEM_TYPE.DASHBOARDS ||
-                itemType === LIST_ITEM_TYPE.DASHBOARDS) && (
+              {(type === INSIGHTS_TABS.DASHBOARDS ||
+                itemType === INSIGHTS_TABS.DASHBOARDS) && (
                 <Skeleton w={'74px'} h={'48px'} mr={'10px'} rounded={'6px'} />
               )}
               <Box flexGrow={1}>
@@ -268,8 +268,8 @@ const AppRowItem: FC<AppRowItemProps> = ({
               style={{ width: '100%', display: 'block' }}
             >
               <Flex align={'center'}>
-                {(type === LIST_ITEM_TYPE.DASHBOARDS ||
-                  itemType === LIST_ITEM_TYPE.DASHBOARDS) && (
+                {(type === INSIGHTS_TABS.DASHBOARDS ||
+                  itemType === INSIGHTS_TABS.DASHBOARDS) && (
                   <Box
                     style={{ aspectRatio: '74 / 48' }}
                     w={'74px'}
@@ -292,8 +292,8 @@ const AppRowItem: FC<AppRowItemProps> = ({
                     <Text
                       className="article-name"
                       mb={
-                        type === LIST_ITEM_TYPE.DASHBOARDS ||
-                        itemType === LIST_ITEM_TYPE.DASHBOARDS
+                        type === INSIGHTS_TABS.DASHBOARDS ||
+                        itemType === INSIGHTS_TABS.DASHBOARDS
                           ? '2px'
                           : '4px'
                       }

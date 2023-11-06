@@ -108,19 +108,19 @@ const ModalQuery = ({
         switch (type) {
           case TYPE_OF_MODAL.SETTING:
             res = await rf
-              .getRequest('DashboardsRequest')
+              .getRequest('InsightsRequest')
               .updateQuery(submitData, id);
             toastSuccess({ message: 'Update query successfully!' });
             break;
           case TYPE_OF_MODAL.CREATE:
             res = await rf
-              .getRequest('DashboardsRequest')
+              .getRequest('InsightsRequest')
               .createNewQuery({ ...submitData, query, id: createQueryId });
             toastSuccess({ message: 'Create new query successfully!' });
             break;
           case TYPE_OF_MODAL.FORK:
             res = await rf
-              .getRequest('DashboardsRequest')
+              .getRequest('InsightsRequest')
               .forkQueries(id, submitData);
             history.push(`${ROUTES.MY_QUERY}/${res.id}`);
             toastSuccess({ message: 'Fork query successfully!' });

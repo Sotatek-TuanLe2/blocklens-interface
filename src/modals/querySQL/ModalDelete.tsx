@@ -1,6 +1,6 @@
 import { Flex } from '@chakra-ui/react';
 import { AppButton } from 'src/components';
-import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
+import { INSIGHTS_TABS } from 'src/pages/DashboardsPage';
 import BaseModal from '../BaseModal';
 import rf from 'src/requests/RequestFactory';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
@@ -14,8 +14,8 @@ export interface IModalDelete {
 }
 
 const ModalDelete = ({ open, onClose, type, onSuccess, id }: IModalDelete) => {
-  const isDashboard = type === LIST_ITEM_TYPE.DASHBOARDS;
-  const isQuery = type === LIST_ITEM_TYPE.QUERIES;
+  const isDashboard = type === INSIGHTS_TABS.DASHBOARDS;
+  const isQuery = type === INSIGHTS_TABS.QUERIES;
 
   const getTitleModal = () => {
     if (isQuery) return 'Query';
@@ -40,7 +40,7 @@ const ModalDelete = ({ open, onClose, type, onSuccess, id }: IModalDelete) => {
     };
 
     try {
-      await rf.getRequest('DashboardsRequest')[action](id);
+      await rf.getRequest('InsightsRequest')[action](id);
       onSuccess();
       onClose();
       toastSuccess(successMessage);
