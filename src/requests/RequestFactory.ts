@@ -5,7 +5,7 @@ import RegistrationRequest from './RegistrationRequest';
 import NotificationRequest from './NotificationRequest';
 import BillingRequest from './BillingRequest';
 import AuthServiceRequest from './AuthServiceRequest';
-import DashboardsRequest from './DashboardsRequest';
+import InsightsRequest from './InsightsRequest';
 import AptosRequest from './AptosRequest';
 
 const requestMap = {
@@ -16,7 +16,7 @@ const requestMap = {
   NotificationRequest,
   BillingRequest,
   AuthServiceRequest,
-  DashboardsRequest,
+  InsightsRequest,
   AptosRequest,
 };
 

@@ -102,7 +102,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
   const fetchInfiniteScrollVisual = async () => {
     try {
       const res = await rf
-        .getRequest('DashboardsRequest')
+        .getRequest('InsightsRequest')
         .getListMyQueriesVisualizations(
           _.omitBy(
             {
@@ -134,7 +134,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
     setIsLoading(true);
     try {
       const res = await rf
-        .getRequest('DashboardsRequest')
+        .getRequest('InsightsRequest')
         .getListMyQueriesVisualizations(params);
       if (res) {
         const { itemsPerPage, totalPages, totalItems, currentPage } = res;

@@ -26,8 +26,8 @@ const FilterTags: React.FC<IFilterTags> = (props) => {
   const fetchTags = async (type: string) => {
     const tags =
       type === LIST_ITEM_TYPE.DASHBOARDS
-        ? await rf.getRequest('DashboardsRequest').getPopularDashboardTags()
-        : await rf.getRequest('DashboardsRequest').getPopularQueryTags();
+        ? await rf.getRequest('InsightsRequest').getPopularDashboardTags()
+        : await rf.getRequest('InsightsRequest').getPopularQueryTags();
     setTags(tags);
   };
 

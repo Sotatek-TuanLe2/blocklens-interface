@@ -248,7 +248,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   const fetchQueries = async (params = {}) => {
     try {
       const res: any = await rf
-        .getRequest('DashboardsRequest')
+        .getRequest('InsightsRequest')
         .getMyListQueries(params);
       return { ...res, docs: res.data };
     } catch (error) {
@@ -297,7 +297,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
   const fetchDataExploreData = async () => {
     try {
-      const listChain = await rf.getRequest('DashboardsRequest').getSchemas();
+      const listChain = await rf.getRequest('InsightsRequest').getSchemas();
       setExploreData(listChain);
     } catch (error) {
       console.error(error);

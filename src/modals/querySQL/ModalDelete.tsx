@@ -40,7 +40,7 @@ const ModalDelete = ({ open, onClose, type, onSuccess, id }: IModalDelete) => {
     };
 
     try {
-      await rf.getRequest('DashboardsRequest')[action](id);
+      await rf.getRequest('InsightsRequest')[action](id);
       onSuccess();
       onClose();
       toastSuccess(successMessage);

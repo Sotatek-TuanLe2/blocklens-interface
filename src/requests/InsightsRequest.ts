@@ -94,7 +94,7 @@ export interface IGetBrowse {
   page?: number;
 }
 
-export default class DashboardsRequest extends BaseRequest {
+export default class InsightsRequest extends BaseRequest {
   getUrlPrefix(): string {
     return config.api.dashboard;
   }

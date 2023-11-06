@@ -80,7 +80,7 @@ const VisualizationItem = React.memo(
       clearTimeout(fetchQueryResultTimeout.current);
       const executionId = visualizationClass.getQuery()?.getExecutionId();
       const res = await rf
-        .getRequest('DashboardsRequest')
+        .getRequest('InsightsRequest')
         .getQueryResult({ executionId });
       if (res.status === QUERY_RESULT_STATUS.WAITING) {
         fetchQueryResultTimeout.current = setTimeout(fetchQueryResult, 2000);

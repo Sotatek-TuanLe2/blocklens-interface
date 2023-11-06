@@ -84,7 +84,7 @@ const DashboardPart: React.FC = () => {
     try {
       setIsLoading(true);
       const res = await rf
-        .getRequest('DashboardsRequest')
+        .getRequest('InsightsRequest')
         .getMyDashboardById({ dashboardId: id || dashboardId });
       if (res) {
         const visualization: ILayout[] = res.dashboardVisuals.map(
@@ -248,7 +248,7 @@ const DashboardPart: React.FC = () => {
         textWidgets: dataTextWidget,
       };
       await rf
-        .getRequest('DashboardsRequest')
+        .getRequest('InsightsRequest')
         .updateDashboardItem(payload, dashboardId);
       setIsSavingDashboard(false);
       await fetchLayoutData();

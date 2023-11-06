@@ -103,19 +103,19 @@ const ModalDashboard: React.FC<IModelNewDashboard> = ({
       switch (type) {
         case TYPE_OF_MODAL.CREATE:
           result = await rf
-            .getRequest('DashboardsRequest')
+            .getRequest('InsightsRequest')
             .createNewDashboard(submitData);
           toastSuccess({ message: 'Create new dashboard successfully!' });
           break;
         case TYPE_OF_MODAL.SETTING:
           result = await rf
-            .getRequest('DashboardsRequest')
+            .getRequest('InsightsRequest')
             .updateDashboardItem(submitData, id);
           toastSuccess({ message: 'Update dashboard successfully!' });
           break;
         case TYPE_OF_MODAL.FORK:
           result = await rf
-            .getRequest('DashboardsRequest')
+            .getRequest('InsightsRequest')
             .forkDashboard(submitData, id);
           toastSuccess({ message: 'Fork dashboard successfully!' });
           break;

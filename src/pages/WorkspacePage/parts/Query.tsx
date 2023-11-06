@@ -204,7 +204,7 @@ const QueryPart: React.FC = () => {
   ) => {
     try {
       clearTimeout(fetchQueryResultTimeout.current);
-      const res = await rf.getRequest('DashboardsRequest').getQueryResult({
+      const res = await rf.getRequest('InsightsRequest').getQueryResult({
         executionId,
       });
       if (res.status === QUERY_RESULT_STATUS.WAITING) {
@@ -260,7 +260,7 @@ const QueryPart: React.FC = () => {
     queryId?: string,
   ): Promise<any> => {
     const executedResponse: QueryExecutedResponse = await rf
-      .getRequest('DashboardsRequest')
+      .getRequest('InsightsRequest')
       .executeQuery({ id: queryId, statement });
     if (!executedResponse || !executedResponse.id) {
       throw new Error('Execute query failed!');
@@ -285,7 +285,7 @@ const QueryPart: React.FC = () => {
   const fetchQuery = async (id?: string): Promise<IQuery | null> => {
     try {
       const dataQuery = await rf
-        .getRequest('DashboardsRequest')
+        .getRequest('InsightsRequest')
         .getMyQueryById({ queryId: id || queryId });
       setQueryValue(dataQuery);
       setIsLoadingQuery(false);
@@ -392,7 +392,7 @@ const QueryPart: React.FC = () => {
         clearTimeout(fetchQueryResultTimeout.current);
       }
       await rf
-        .getRequest('DashboardsRequest')
+        .getRequest('InsightsRequest')
         .cancelQueryExecution(currentExecutionId.current);
       setIsLoadingResult(false);
       setAllowCancelExecution(false);

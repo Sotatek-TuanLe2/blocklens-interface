@@ -106,10 +106,10 @@ const Header: React.FC<IHeaderProps> = (props) => {
   const checkSavedStatus = async (dataClass: Dashboard | Query) => {
     const response = isDashboard
       ? await rf
-          .getRequest('DashboardsRequest')
+          .getRequest('InsightsRequest')
           .filterSavedDashboardsByIds([dataClass.getId()])
       : await rf
-          .getRequest('DashboardsRequest')
+          .getRequest('InsightsRequest')
           .filterSavedQueriesByIds([dataClass.getId()]);
     setIsDataSaved(!!response.length);
   };

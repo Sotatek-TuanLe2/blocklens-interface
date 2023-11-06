@@ -13,10 +13,7 @@ import AppTabs, { ITabs } from 'src/components/AppTabs';
 import { DisplayType } from 'src/constants';
 import useUser from 'src/hooks/useUser';
 import { BasePage } from 'src/layouts';
-import {
-  DashboardsParams,
-  QueriesParams,
-} from 'src/requests/DashboardsRequest';
+import { DashboardsParams, QueriesParams } from 'src/requests/InsightsRequest';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/pages/DashboardsPage.scss';
 import { ROUTES } from 'src/utils/common';
@@ -172,7 +169,7 @@ const DashboardsPage: React.FC = () => {
       return;
     }
     const savedDashboards = await rf
-      .getRequest('DashboardsRequest')
+      .getRequest('InsightsRequest')
       .filterSavedDashboardsByIds(dashboardIds);
     if (!savedDashboards) {
       return;
@@ -191,7 +188,7 @@ const DashboardsPage: React.FC = () => {
       return;
     }
     const savedQueries = await rf
-      .getRequest('DashboardsRequest')
+      .getRequest('InsightsRequest')
       .filterSavedQueriesByIds(queryIds);
     if (!savedQueries) {
       return;
@@ -223,7 +220,7 @@ const DashboardsPage: React.FC = () => {
   const fetchAllDashboards = useCallback(
     async (params: RequestParams) => {
       try {
-        const res = await rf.getRequest('DashboardsRequest').getAllDashboards({
+        const res = await rf.getRequest('InsightsRequest').getAllDashboards({
           ...params,
           search: getSearchParam(params.search),
         });
@@ -239,12 +236,10 @@ const DashboardsPage: React.FC = () => {
   const fetchMyDashboards = useCallback(
     async (params: RequestParams) => {
       try {
-        const res = await rf
-          .getRequest('DashboardsRequest')
-          .getMyListDashboards({
-            ...params,
-            search: getSearchParam(params.search),
-          });
+        const res = await rf.getRequest('InsightsRequest').getMyListDashboards({
+          ...params,
+          search: getSearchParam(params.search),
+        });
         await getSavedDashboardIds(res.data);
         return { ...res, docs: res.data };
       } catch (error) {
@@ -258,7 +253,7 @@ const DashboardsPage: React.FC = () => {
     async (params: RequestParams) => {
       try {
         const res = await rf
-          .getRequest('DashboardsRequest')
+          .getRequest('InsightsRequest')
           .getMySavedDashboards({
             ...params,
             search: getSearchParam(params.search),
@@ -281,7 +276,7 @@ const DashboardsPage: React.FC = () => {
     async (params: RequestParams) => {
       try {
         const res = await rf
-          .getRequest('DashboardsRequest')
+          .getRequest('InsightsRequest')
           .getAllQueries({ ...params, search: getSearchParam(params.search) });
         await getSavedQueryIds(res.data);
         return { ...res, docs: res.data };
@@ -295,7 +290,7 @@ const DashboardsPage: React.FC = () => {
   const fetchMyQueries = useCallback(
     async (params: RequestParams) => {
       try {
-        const res = await rf.getRequest('DashboardsRequest').getMyListQueries({
+        const res = await rf.getRequest('InsightsRequest').getMyListQueries({
           ...params,
           search: getSearchParam(params.search),
         });
@@ -311,7 +306,7 @@ const DashboardsPage: React.FC = () => {
   const fetchMySavedQueries = useCallback(
     async (params: RequestParams) => {
       try {
-        const res = await rf.getRequest('DashboardsRequest').getMySavedQueries({
+        const res = await rf.getRequest('InsightsRequest').getMySavedQueries({
           ...params,
           search: getSearchParam(params.search),
         });

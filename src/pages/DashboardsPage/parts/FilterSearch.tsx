@@ -126,12 +126,12 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
     try {
       if (isDashboardTab || (hasTypeSelection && isDashboard)) {
         const res: any = await rf
-          .getRequest('DashboardsRequest')
+          .getRequest('InsightsRequest')
           .getPublicDashboardTagsTrending();
         setListTagsTrending(res?.tags || []);
       } else {
         const res: any = await rf
-          .getRequest('DashboardsRequest')
+          .getRequest('InsightsRequest')
           .getPublicQueryTagsTrending();
         setListTagsTrending(res?.tags || []);
       }
@@ -150,10 +150,10 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
     }
     const res = isDashboard
       ? await rf
-          .getRequest('DashboardsRequest')
+          .getRequest('InsightsRequest')
           .getDashboardTags({ search: tagSearch, limit: SUGGEST_TAGS_LIMIT })
       : await rf
-          .getRequest('DashboardsRequest')
+          .getRequest('InsightsRequest')
           .getQueryTags({ search: tagSearch, limit: SUGGEST_TAGS_LIMIT });
     if (res && res.data) {
       setSuggestTags(res.data);

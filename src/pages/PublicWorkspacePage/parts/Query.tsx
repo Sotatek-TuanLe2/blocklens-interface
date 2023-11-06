@@ -61,7 +61,7 @@ const QueryPart: React.FC = () => {
   const getExecutionResultById = async (executionId: string) => {
     try {
       clearTimeout(fetchQueryResultTimeout.current);
-      const res = await rf.getRequest('DashboardsRequest').getQueryResult({
+      const res = await rf.getRequest('InsightsRequest').getQueryResult({
         executionId,
       });
       if (res.status === QUERY_RESULT_STATUS.WAITING) {
@@ -93,7 +93,7 @@ const QueryPart: React.FC = () => {
     setIsLoadingQuery(true);
     try {
       const dataQuery = await rf
-        .getRequest('DashboardsRequest')
+        .getRequest('InsightsRequest')
         .getPublicQueryById({ queryId });
       setQueryValue(dataQuery);
       setIsLoadingQuery(false);

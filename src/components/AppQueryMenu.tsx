@@ -100,13 +100,13 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
     try {
       if (isSaved) {
         itemType === ITEM_TYPE.DASHBOARDS
-          ? await rf.getRequest('DashboardsRequest').unSaveDashboard(item.id)
-          : await rf.getRequest('DashboardsRequest').unSaveQuery(item.id);
+          ? await rf.getRequest('InsightsRequest').unSaveDashboard(item.id)
+          : await rf.getRequest('InsightsRequest').unSaveQuery(item.id);
         toastSuccess({ message: 'Removed from saved list' });
       } else {
         itemType === ITEM_TYPE.DASHBOARDS
-          ? await rf.getRequest('DashboardsRequest').saveDashboard(item.id)
-          : await rf.getRequest('DashboardsRequest').saveQuery(item.id);
+          ? await rf.getRequest('InsightsRequest').saveDashboard(item.id)
+          : await rf.getRequest('InsightsRequest').saveQuery(item.id);
         toastSuccess({ message: 'Added to saved list' });
       }
       onSaveSuccess();
@@ -126,7 +126,7 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
     try {
       console.log('location.pathname', location.pathname);
       const res = await rf
-        .getRequest('DashboardsRequest')
+        .getRequest('InsightsRequest')
         .forkQueries(item.id, { newQueryName: item.name });
 
       if (location.pathname.includes(ROUTES.MY_QUERY)) {
