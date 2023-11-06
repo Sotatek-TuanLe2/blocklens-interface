@@ -118,6 +118,12 @@
       width: calc(100%/6);
     }
 
+    &--highest-plan {
+      .list-table-wrap__content > div {
+        width: 20%;
+      }
+    }
+
     .name-plan {
       color: $main;
       @include heading-6;
@@ -221,6 +227,10 @@
         &__info {
           @include text-medium-regular;
           margin-left: 10px;
+
+          &--cu {
+            @include text-medium-bold;
+          }
         }
       }
 

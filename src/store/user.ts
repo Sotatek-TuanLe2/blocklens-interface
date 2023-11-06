@@ -49,6 +49,7 @@ export type UserPlanType = {
   currency: string;
   from: number;
   to: number;
+  expireTime?: number;
 };
 
 export interface StripePayment {
@@ -246,7 +247,10 @@ const userSlice = createSlice({
       state.stats = action.payload;
     },
     setUserPlan: (state, action) => {
-      state.billing.plan = action.payload.currentPlan;
+      state.billing.plan = {
+        ...action.payload.currentPlan,
+        expireTime: action.payload.expireTime,
+      };
       state.billing.nextPlan = action.payload.nextPlan;
     },
     setIsLoadingStat: (state, action) => {

@@ -11,7 +11,7 @@ import {
   Thead,
   Th,
 } from '@chakra-ui/react';
-import {
+import React, {
   FC,
   ReactNode,
   useCallback,
@@ -492,7 +492,7 @@ const BillingPage = () => {
   //   );
   // };
 
-  const _renderStep1 = () => {
+  const _renderPlanBilling = () => {
     const onChangePaymentMethod = (
       method: typeof PAYMENT_METHOD[keyof typeof PAYMENT_METHOD],
     ) => {
@@ -511,8 +511,8 @@ const BillingPage = () => {
       {
         title: 'Renews on',
         content:
-          !!user && user.getNextPlan()
-            ? `${moment(user.getNextPlan().createdAt)
+          !!user && user.getPlan()
+            ? `${moment(user.getPlan().expireTime)
                 .utc()
                 .format('MMM D, YYYY')} (UTC)`
             : '',
@@ -540,7 +540,7 @@ const BillingPage = () => {
               hasArrow
               p={2}
               className="tooltip-app"
-              label={``}
+              label="When running out of CU, extra CU will be automatically added"
             >
               <Box className="icon-info" ml={2} cursor={'pointer'} />
             </Tooltip>
@@ -550,28 +550,42 @@ const BillingPage = () => {
       },
     ];
 
-    const _renderCurrentPlan = () => (
-      <AppCard className="list-table-wrap current-plan">
-        <Box className="list-table-wrap__title">CURRENT PLAN</Box>
-        <Flex className="list-table-wrap__content">
-          <Box className="name-plan">
-            {!!user ? user.getPlan().name.toLowerCase() : ''}
-          </Box>
-          {currentPlanDetails.map((item, index) => (
-            <Box className="detail" key={index}>
-              <Box className="detail__title">{item.title}</Box>
-              <Box className="detail__content">{item.content}</Box>
+    const _renderCurrentPlan = () => {
+      const isHighestPlan =
+        !!billingPlans.length &&
+        user?.getPlan().code === billingPlans[billingPlans.length - 1].code;
+
+      return (
+        <AppCard
+          className={`list-table-wrap current-plan ${
+            isHighestPlan ? 'current-plan--highest-plan' : ''
+          }`}
+        >
+          <Box className="list-table-wrap__title">CURRENT PLAN</Box>
+          <Flex className="list-table-wrap__content">
+            <Box className="name-plan">
+              {!!user ? user.getPlan().name.toLowerCase() : ''}
             </Box>
-          ))}
-          <Box className="current-plan__button">
-            <AppButtonLarge onClick={() => scrollIntoElementById('all-plans')}>
-              <Box mr={2}>Upgrade</Box>
-              <ArrowRightIcon />
-            </AppButtonLarge>
-          </Box>
-        </Flex>
-      </AppCard>
-    );
+            {currentPlanDetails.map((item, index) => (
+              <Box key={index} className="detail">
+                <Box className="detail__title">{item.title}</Box>
+                <Box className="detail__content">{item.content}</Box>
+              </Box>
+            ))}
+            {!isHighestPlan && (
+              <Box className="current-plan__button">
+                <AppButtonLarge
+                  onClick={() => scrollIntoElementById('all-plans')}
+                >
+                  <Box mr={2}>Upgrade</Box>
+                  <ArrowRightIcon />
+                </AppButtonLarge>
+              </Box>
+            )}
+          </Flex>
+        </AppCard>
+      );
+    };
 
     const _renderWarning = () => (
       <Flex
@@ -599,7 +613,7 @@ const BillingPage = () => {
       </Flex>
     );
 
-    const _renderMethodBilling = (billing: IBilling) => {
+    const generateBillingMethod = (billing: IBilling) => {
       if (billing?.activePaymentMethod === PAYMENT_METHOD.CRYPTO) {
         return 'Crypto transfer';
       }
@@ -610,7 +624,7 @@ const BillingPage = () => {
       return '---';
     };
 
-    const _renderBillingPlan = (billing: IBilling) => {
+    const generateBillingPlan = (billing: IBilling) => {
       switch (billing.type) {
         case INVOICE_TYPES.DOWNGRADE_PLAN:
         case INVOICE_TYPES.UPGRADE_PLAN:
@@ -646,11 +660,20 @@ const BillingPage = () => {
                   <Td>
                     {formatTimestamp(billing?.createdAt, 'HH:mm MM-DD-YYYY')}
                   </Td>
-                  <Td>{_renderBillingPlan(billing)}</Td>
+                  <Td>{generateBillingPlan(billing)}</Td>
                   <Td>${billing.totalAmount}</Td>
-                  <Td>{_renderMethodBilling(billing)}</Td>
+                  <Td>{generateBillingMethod(billing)}</Td>
                   <Td>
-                    <StatusBilling billing={billing} />
+                    <Box
+                      className={`billing-status billing-status--${
+                        billing.status === BILLING_STATUS.SUCCESS
+                          ? 'active'
+                          : 'inactive'
+                      }`}
+                      textTransform="capitalize"
+                    >
+                      {billing.status.toLowerCase()}
+                    </Box>
                   </Td>
                 </Tr>
               ))}
@@ -715,7 +738,7 @@ const BillingPage = () => {
                 alignItems="center"
               >
                 <CheckedIcon stroke="#28c76f" />
-                <span className="all-plans__plan__descriptions__info">
+                <span className="all-plans__plan__descriptions__info all-plans__plan__descriptions__info--cu">
                   {Math.ceil(plan.capacity.cu / 30)} CUs/day
                 </span>
               </Flex>
@@ -975,7 +998,7 @@ const BillingPage = () => {
   const _renderContent = () => {
     switch (step) {
       case STEPS.LIST:
-        return _renderStep1();
+        return _renderPlanBilling();
       case STEPS.FORM:
         return (
           <PartPaymentInfo
@@ -1027,18 +1050,6 @@ const BillingPage = () => {
     <BasePage className="billing-page">
       <>{_renderContent()}</>
     </BasePage>
-  );
-};
-
-const StatusBilling: FC<{ billing: IBilling }> = ({ billing }) => {
-  return (
-    <Box
-      className={`billing-status billing-status--${
-        billing.status === BILLING_STATUS.SUCCESS ? 'active' : 'inactive'
-      }`}
-    >
-      <Box textTransform="capitalize">{billing.status.toLowerCase()}</Box>
-    </Box>
   );
 };
 
