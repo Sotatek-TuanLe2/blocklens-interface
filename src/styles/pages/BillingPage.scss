@@ -437,7 +437,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      max-width: 430px;
+      max-width: 575px;
       margin: 0 auto;
 
       @include tablet {
@@ -447,7 +447,7 @@
 
     &__bill-info {
       background-image: url('../../assets/icons/bg-billing.png');
-      padding: 50px;
+      padding: 40px 45px;
       background-repeat: no-repeat;
       width: 100%;
 
@@ -475,8 +475,6 @@
     }
 
     &__order {
-      margin-top: 30px;
-      margin-bottom: 40px;
 
       @include tablet {
         margin-bottom: 60px;
@@ -491,7 +489,12 @@
 
       .name-plan {
         @include text-large-bold;
-        margin-bottom: 4px;
+        text-align: center;
+
+        .period {
+          @include text-medium-regular;
+          color: $paragraph;
+        }
       }
 
       .info {

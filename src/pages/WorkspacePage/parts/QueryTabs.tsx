@@ -2,7 +2,7 @@ import { Box, Flex, Tooltip } from '@chakra-ui/react';
 import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { ROUTES } from 'src/utils/common';
-import { formatShortText } from 'src/utils/utils-helper';
+import { formatShortText, scrollIntoElementById } from 'src/utils/utils-helper';
 import { UNSAVED_QUERY } from './Query';
 
 interface IQueryTab {
@@ -22,12 +22,7 @@ const QueryTabs: React.FC<IQueryTabsProps> = (props) => {
   const { tabs, activeTab, onChangeTabs } = props;
   const history = useHistory();
 
-  useEffect(() => {
-    const activeTabElement = document.getElementById(activeTab);
-    if (activeTabElement) {
-      activeTabElement.scrollIntoView(true);
-    }
-  }, [activeTab, tabs]);
+  useEffect(() => scrollIntoElementById(activeTab), [activeTab, tabs]);
 
   const navigateQuery = (queryId?: string, isUnsaved = false) => {
     if (queryId) {

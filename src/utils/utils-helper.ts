@@ -124,3 +124,10 @@ export const shortAddressType = (address: string, separator = ':') => {
 
 export const generatePositiveRandomNumber = (maxValue: number) =>
   Math.floor(Math.random() * maxValue) + 1;
+
+export const scrollIntoElementById = (id: string) => {
+  const ele = document.getElementById(id);
+  if (ele) {
+    ele.scrollIntoView(true);
+  }
+};

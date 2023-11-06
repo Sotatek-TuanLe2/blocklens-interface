@@ -25,7 +25,6 @@ import { BasePage } from 'src/layouts';
 import {
   AppButton,
   AppCard,
-  AppLink,
   AppHeading,
   AppButtonLarge,
   AppDataTable,
@@ -63,6 +62,7 @@ import {
   formatCapitalize,
   formatTimestamp,
   getErrorMessage,
+  scrollIntoElementById,
 } from '../../utils/utils-helper';
 import { ROUTES } from 'src/utils/common';
 import { Link } from 'react-router-dom';
@@ -114,6 +114,13 @@ export const paymentMethods = [
 
 const BILLING_STATUS = {
   SUCCESS: 'SUCCESS',
+};
+
+const INVOICE_TYPES = {
+  UPGRADE_PLAN: 'UPGRADE_PLAN',
+  DOWNGRADE_PLAN: 'DOWNGRADE_PLAN',
+  RECURRING_CHARGE: 'RECURRING_CHARGE',
+  EXTEND_PLAN: 'EXTEND_PLAN',
 };
 
 interface IPlanMobile {
@@ -378,11 +385,11 @@ const BillingPage = () => {
     );
   };
 
-  const onUpdatePlan = async () => {
+  const onUpdatePlan = async (plan: MetadataPlan) => {
     try {
       await rf
         .getRequest('BillingRequest')
-        .updateBillingPlan({ code: planSelected.code });
+        .updateBillingPlan({ code: plan.code });
       toastSuccess({ message: 'Downgrade Plan Successfully!' });
       dispatch(getUserPlan());
     } catch (error) {
@@ -390,26 +397,45 @@ const BillingPage = () => {
     }
   };
 
-  const onClickButton = async () => {
-    if (isCurrentPlan || isDownGrade) {
-      await onUpdatePlan();
-      return;
-    }
-    // isUpgrade
-    if (paymentMethod === PAYMENT_METHOD.CARD && !user?.getStripePayment()) {
-      toastError({ message: 'Please add your credit card for payment!' });
+  const onChangePlan = async (plan: MetadataPlan) => {
+    // if (isCurrentPlan || isDownGrade) {
+    //   await onUpdatePlan();
+    //   return;
+    // }
+    // // isUpgrade
+    // if (paymentMethod === PAYMENT_METHOD.CARD && !user?.getStripePayment()) {
+    //   toastError({ message: 'Please add your credit card for payment!' });
+    //   return;
+    // }
+
+    // if (paymentMethod === PAYMENT_METHOD.CRYPTO) {
+    //   if (isSufficientBalance) {
+    //     setStep(STEPS.CHECKOUT);
+    //   } else {
+    //     setStep(STEPS.TOPUP);
+    //   }
+    // } else {
+    //   setStep(STEPS.CHECKOUT);
+    // }
+
+    if (!user) {
       return;
     }
 
-    if (paymentMethod === PAYMENT_METHOD.CRYPTO) {
-      if (isSufficientBalance) {
-        setStep(STEPS.CHECKOUT);
-      } else {
-        setStep(STEPS.TOPUP);
-      }
-    } else {
-      setStep(STEPS.CHECKOUT);
+    const isCurrentPlan = new BigNumber(plan.price).isEqualTo(
+      new BigNumber(user.getPlan().price || 0),
+    );
+
+    const isDownGrade = new BigNumber(plan.price).isLessThan(
+      new BigNumber(user.getPlan().price || 0),
+    );
+
+    if (isCurrentPlan || isDownGrade) {
+      return onUpdatePlan(plan);
     }
+
+    setPlanSelected(plan);
+    setStep(STEPS.CHECKOUT);
   };
 
   const onReloadUserInfo = async (e: React.MouseEvent) => {
@@ -420,51 +446,51 @@ const BillingPage = () => {
     toastSuccess({ message: 'Reload balance successfully!' });
   };
 
-  const _renderButtonUpdatePlan = () => {
-    if (isCurrentPlan) return;
-    const getTextButton = () => {
-      if (isDownGrade) return 'Downgrade';
-      return 'Upgrade';
-    };
+  // const _renderButtonUpdatePlan = () => {
+  //   if (isCurrentPlan) return;
+  //   const getTextButton = () => {
+  //     if (isDownGrade) return 'Downgrade';
+  //     return 'Upgrade';
+  //   };
 
-    return (
-      <>
-        <Flex
-          justifyContent={isMobile ? 'center' : 'flex-end'}
-          width={isMobile ? '100%' : 'auto'}
-        >
-          <AppButton
-            width={isMobile ? '100%' : 'auto'}
-            size="lg"
-            mt={3}
-            isDisabled={isCurrentPlan}
-            onClick={onClickButton}
-          >
-            {getTextButton()}
-          </AppButton>
-        </Flex>
-      </>
-    );
-  };
+  //   return (
+  //     <>
+  //       <Flex
+  //         justifyContent={isMobile ? 'center' : 'flex-end'}
+  //         width={isMobile ? '100%' : 'auto'}
+  //       >
+  //         <AppButton
+  //           width={isMobile ? '100%' : 'auto'}
+  //           size="lg"
+  //           mt={3}
+  //           isDisabled={isCurrentPlan}
+  //           onClick={onChangePlan}
+  //         >
+  //           {getTextButton()}
+  //         </AppButton>
+  //       </Flex>
+  //     </>
+  //   );
+  // };
 
-  const _renderButton = () => {
-    const isDisabled = planSelected.price === 0;
-    return (
-      <>
-        <Flex justifyContent={isMobile ? 'center' : 'flex-end'}>
-          <AppButton
-            width={isMobile ? '100%' : 'auto'}
-            size="lg"
-            mt={isMobile ? 3 : 0}
-            isDisabled={isDisabled}
-            onClick={() => setStep(STEPS.FORM)}
-          >
-            Continue
-          </AppButton>
-        </Flex>
-      </>
-    );
-  };
+  // const _renderButton = () => {
+  //   const isDisabled = planSelected.price === 0;
+  //   return (
+  //     <>
+  //       <Flex justifyContent={isMobile ? 'center' : 'flex-end'}>
+  //         <AppButton
+  //           width={isMobile ? '100%' : 'auto'}
+  //           size="lg"
+  //           mt={isMobile ? 3 : 0}
+  //           isDisabled={isDisabled}
+  //           onClick={() => setStep(STEPS.FORM)}
+  //         >
+  //           Continue
+  //         </AppButton>
+  //       </Flex>
+  //     </>
+  //   );
+  // };
 
   const _renderStep1 = () => {
     const onChangePaymentMethod = (
@@ -484,11 +510,12 @@ const BillingPage = () => {
     }[] = [
       {
         title: 'Renews on',
-        content: !!user
-          ? `${moment(user.getNextPlan().createdAt)
-              .utc()
-              .format('MMM D, YYYY')} (UTC)`
-          : '',
+        content:
+          !!user && user.getNextPlan()
+            ? `${moment(user.getNextPlan().createdAt)
+                .utc()
+                .format('MMM D, YYYY')} (UTC)`
+            : '',
       },
       {
         title: 'Compute Units',
@@ -537,12 +564,10 @@ const BillingPage = () => {
             </Box>
           ))}
           <Box className="current-plan__button">
-            <Link to="#all-plans">
-              <AppButtonLarge>
-                <Box mr={2}>Upgrade</Box>
-                <ArrowRightIcon />
-              </AppButtonLarge>
-            </Link>
+            <AppButtonLarge onClick={() => scrollIntoElementById('all-plans')}>
+              <Box mr={2}>Upgrade</Box>
+              <ArrowRightIcon />
+            </AppButtonLarge>
           </Box>
         </Flex>
       </AppCard>
@@ -585,6 +610,20 @@ const BillingPage = () => {
       return '---';
     };
 
+    const _renderBillingPlan = (billing: IBilling) => {
+      switch (billing.type) {
+        case INVOICE_TYPES.DOWNGRADE_PLAN:
+        case INVOICE_TYPES.UPGRADE_PLAN:
+        case INVOICE_TYPES.EXTEND_PLAN:
+          const plan = billingPlans.find(
+            (item) => item.price === billing.totalAmount,
+          );
+          return plan ? `${formatCapitalize(plan.name)} plan` : billing.type;
+        default:
+          return '';
+      }
+    };
+
     const _renderBillings = () => (
       <AppCard className="list-table-wrap billings">
         <Box className="list-table-wrap__title">BILLINGS</Box>
@@ -607,7 +646,7 @@ const BillingPage = () => {
                   <Td>
                     {formatTimestamp(billing?.createdAt, 'HH:mm MM-DD-YYYY')}
                   </Td>
-                  <Td>{billing.type}</Td>
+                  <Td>{_renderBillingPlan(billing)}</Td>
                   <Td>${billing.totalAmount}</Td>
                   <Td>{_renderMethodBilling(billing)}</Td>
                   <Td>
@@ -731,9 +770,12 @@ const BillingPage = () => {
                   Your current plan
                 </Text>
               ) : (
-                <AppButtonLarge className="all-plans__plan__button">{`Switch to ${formatCapitalize(
-                  plan.name,
-                )}`}</AppButtonLarge>
+                <AppButtonLarge
+                  className="all-plans__plan__button"
+                  onClick={() => onChangePlan(plan)}
+                >
+                  {`Switch to ${formatCapitalize(plan.name)}`}
+                </AppButtonLarge>
               )}
             </Flex>
           ))}

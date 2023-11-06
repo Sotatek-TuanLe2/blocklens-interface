@@ -1,4 +1,5 @@
-import { Box, Flex } from '@chakra-ui/react';
+import { Box, Flex, Text } from '@chakra-ui/react';
+import moment from 'moment';
 import { FC } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -11,7 +12,7 @@ import rf from 'src/requests/RequestFactory';
 import { MetadataPlan } from 'src/store/metadata';
 import { getUserPlan } from 'src/store/user';
 import { ROUTES } from 'src/utils/common';
-import { formatShortText } from 'src/utils/utils-helper';
+import { formatCapitalize, formatShortText } from 'src/utils/utils-helper';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import { paymentMethods, PAYMENT_METHOD } from '..';
 
@@ -39,14 +40,30 @@ const PartCheckout: FC<IPartCheckout> = ({
     return (
       <Box className="billing-checkout__order">
         <Box className="title">Order</Box>
-        <Flex className="name-plan">
-          <Box textTransform="capitalize" mr={1}>
-            {planSelected.name.toLowerCase()}
-          </Box>{' '}
-          monthly plan
+        <Flex className="name-plan" alignItems="flex-end">
+          <Text textTransform="capitalize" mr={2}>
+            {planSelected.name.toLowerCase()} plan
+          </Text>
+          <Text className="period">
+            {`period ${moment().format('YYYY/MM/DD')}-${moment()
+              .add(30, 'day')
+              .format('YYYY/MM/DD')}`}
+          </Text>
         </Flex>
-        <Box className="name-plan">{`$${planSelected.price}/month`}</Box>
-        <Flex className="info">
+        <Flex alignItems="flex-end" justifyContent="space-between">
+          <Text>
+            {`Upgrade to ${formatCapitalize(planSelected.name)} plan`}
+          </Text>
+          <Text>{planSelected.price}$</Text>
+        </Flex>
+        <Flex alignItems="flex-end" justifyContent="space-between">
+          <Text>
+            <b>Total amount</b>
+          </Text>
+          <Text>{planSelected.price}$</Text>
+        </Flex>
+        {/* <Box className="name-plan">{`$${planSelected.price}/month`}</Box> */}
+        {/* <Flex className="info">
           <CheckedIcon /> {planSelected.capacity.project} apps
         </Flex>
         <Flex className="info">
@@ -54,7 +71,7 @@ const PartCheckout: FC<IPartCheckout> = ({
         </Flex>
         <Flex className="info">
           <CheckedIcon /> All supported chains
-        </Flex>
+        </Flex> */}
       </Box>
     );
   };
@@ -98,13 +115,13 @@ const PartCheckout: FC<IPartCheckout> = ({
 
       <Box className="billing-checkout__bill">
         <Box className="billing-checkout__bill-info">
-          <Box className="billing-checkout__payment-method">
+          {/* <Box className="billing-checkout__payment-method">
             <Box className="title">Payment method</Box>
             <Flex justifyContent={'space-between'}>
               <Box className="type">{paymentMethod?.name}</Box>
               <Box className="address">{_renderInfoPayment()}</Box>
             </Flex>
-          </Box>
+          </Box> */}
 
           {_renderOrder()}
         </Box>
