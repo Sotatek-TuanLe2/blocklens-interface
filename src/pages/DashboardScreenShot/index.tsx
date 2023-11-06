@@ -83,7 +83,7 @@ const DashboardScreenShot: React.FC = () => {
     try {
       setIsLoading(true);
       const res = await rf
-        .getRequest('DashboardsRequest')
+        .getRequest('InsightsRequest')
         .getPublicDashboardById(dashboardId);
 
       if (!res || !res.dashboardVisuals.length) {

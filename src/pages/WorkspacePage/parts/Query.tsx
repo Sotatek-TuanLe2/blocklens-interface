@@ -27,7 +27,7 @@ import { AppBroadcast } from 'src/utils/utils-broadcast';
 import { EditorContext } from '../context/EditorContext';
 import Header from './Header';
 import VisualizationDisplay from './VisualizationDisplay';
-import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
+import { INSIGHTS_TABS } from 'src/pages/DashboardsPage';
 import { BROADCAST_FETCH_WORKPLACE_DATA } from './Sidebar';
 import ModalQuery from 'src/modals/querySQL/ModalQuery';
 import { Query } from 'src/utils/utils-query';
@@ -204,7 +204,7 @@ const QueryPart: React.FC = () => {
   ) => {
     try {
       clearTimeout(fetchQueryResultTimeout.current);
-      const res = await rf.getRequest('DashboardsRequest').getQueryResult({
+      const res = await rf.getRequest('InsightsRequest').getQueryResult({
         executionId,
       });
       if (res.status === QUERY_RESULT_STATUS.WAITING) {
@@ -260,7 +260,7 @@ const QueryPart: React.FC = () => {
     queryId?: string,
   ): Promise<any> => {
     const executedResponse: QueryExecutedResponse = await rf
-      .getRequest('DashboardsRequest')
+      .getRequest('InsightsRequest')
       .executeQuery({ id: queryId, statement });
     if (!executedResponse || !executedResponse.id) {
       throw new Error('Execute query failed!');
@@ -285,7 +285,7 @@ const QueryPart: React.FC = () => {
   const fetchQuery = async (id?: string): Promise<IQuery | null> => {
     try {
       const dataQuery = await rf
-        .getRequest('DashboardsRequest')
+        .getRequest('InsightsRequest')
         .getMyQueryById({ queryId: id || queryId });
       setQueryValue(dataQuery);
       setIsLoadingQuery(false);
@@ -392,7 +392,7 @@ const QueryPart: React.FC = () => {
         clearTimeout(fetchQueryResultTimeout.current);
       }
       await rf
-        .getRequest('DashboardsRequest')
+        .getRequest('InsightsRequest')
         .cancelQueryExecution(currentExecutionId.current);
       setIsLoadingResult(false);
       setAllowCancelExecution(false);
@@ -522,7 +522,7 @@ const QueryPart: React.FC = () => {
     <div className="workspace-page__editor__query">
       <QueryTabs tabs={tabs} activeTab={activeTabId} onChangeTabs={setTabs} />
       <Header
-        type={LIST_ITEM_TYPE.QUERIES}
+        type={INSIGHTS_TABS.QUERIES}
         author={
           queryClass
             ? `${queryClass?.getUserFirstName()} ${queryClass?.getUserLastName()}`

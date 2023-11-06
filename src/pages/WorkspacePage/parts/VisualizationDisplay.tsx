@@ -214,7 +214,7 @@ const VisualizationDisplay = ({
     );
     setIsConfiguring(true);
     try {
-      await rf.getRequest('DashboardsRequest').insertVisualization({
+      await rf.getRequest('InsightsRequest').insertVisualization({
         ...newVisualization,
         queryId: queryId,
       });
@@ -243,7 +243,7 @@ const VisualizationDisplay = ({
     setIsConfiguring(true);
     try {
       await rf
-        .getRequest('DashboardsRequest')
+        .getRequest('InsightsRequest')
         .deleteVisualization({ visualId: visualizationId });
       await onReload();
       toastSuccess({ message: 'Delete visualization successfully!' });
@@ -260,7 +260,7 @@ const VisualizationDisplay = ({
       setIsConfiguring(true);
       try {
         await rf
-          .getRequest('DashboardsRequest')
+          .getRequest('InsightsRequest')
           .editVisualization(visualization, visualization.id);
         await onReload();
         setIsConfiguring(false);

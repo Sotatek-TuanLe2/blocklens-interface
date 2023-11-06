@@ -16,7 +16,7 @@ import {
 import { useParams, Link } from 'react-router-dom';
 import { AppButton, AppTag } from 'src/components';
 import AppQueryMenu, { QUERY_MENU_LIST } from 'src/components/AppQueryMenu';
-import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
+import { INSIGHTS_TABS } from 'src/pages/DashboardsPage';
 import { ROUTES, generateAvatarFromId } from 'src/utils/common';
 import { IDashboardDetail, IQuery } from 'src/utils/query.type';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
@@ -77,9 +77,9 @@ const Header: React.FC<IHeaderProps> = (props) => {
     dashboardId: string;
   }>();
 
-  const isDashboard = type === LIST_ITEM_TYPE.DASHBOARDS;
-  const isQuery = type === LIST_ITEM_TYPE.QUERIES;
-  const isCreatingQuery = type === LIST_ITEM_TYPE.QUERIES && !queryId;
+  const isDashboard = type === INSIGHTS_TABS.DASHBOARDS;
+  const isQuery = type === INSIGHTS_TABS.QUERIES;
+  const isCreatingQuery = type === INSIGHTS_TABS.QUERIES && !queryId;
 
   const dataClass = useMemo(() => {
     if (!data) {
@@ -106,10 +106,10 @@ const Header: React.FC<IHeaderProps> = (props) => {
   const checkSavedStatus = async (dataClass: Dashboard | Query) => {
     const response = isDashboard
       ? await rf
-          .getRequest('DashboardsRequest')
+          .getRequest('InsightsRequest')
           .filterSavedDashboardsByIds([dataClass.getId()])
       : await rf
-          .getRequest('DashboardsRequest')
+          .getRequest('InsightsRequest')
           .filterSavedQueriesByIds([dataClass.getId()]);
     setIsDataSaved(!!response.length);
   };
@@ -129,7 +129,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
   };
 
   const onSettingSuccess = async (res: any) => {
-    if (type === LIST_ITEM_TYPE.DASHBOARDS) {
+    if (type === INSIGHTS_TABS.DASHBOARDS) {
       AppBroadcast.dispatch(BROADCAST_FETCH_DASHBOARD, res.id);
     } else {
       AppBroadcast.dispatch(BROADCAST_FETCH_WORKPLACE_DATA);
@@ -144,7 +144,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
   };
 
   const menuAppQuery = () => {
-    if (type === LIST_ITEM_TYPE.DASHBOARDS) {
+    if (type === INSIGHTS_TABS.DASHBOARDS) {
       return !needAuthentication
         ? [QUERY_MENU_LIST.SAVE, QUERY_MENU_LIST.SHARE]
         : [

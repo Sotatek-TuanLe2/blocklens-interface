@@ -86,7 +86,7 @@ export interface IEditVisualization {
   options: any;
 }
 
-export interface IGetBrowse {
+export interface IGetParams {
   search?: string;
   tags?: string[];
   orderBy?: string;
@@ -94,48 +94,59 @@ export interface IGetBrowse {
   page?: number;
 }
 
-export default class DashboardsRequest extends BaseRequest {
+export default class InsightsRequest extends BaseRequest {
   getUrlPrefix(): string {
     return config.api.dashboard;
   }
 
   /* Dashboards page */
 
-  getAllDashboards(params: IGetBrowse) {
+  getAllDashboards(params: IGetParams) {
     const url = `/public/dashboards`;
     return this.get(url, params);
   }
 
-  getAllQueries(params: IGetBrowse) {
+  getAllQueries(params: IGetParams) {
     const url = `/public/queries`;
     return this.get(url, params);
   }
 
-  getMyListDashboards(params: IGetBrowse) {
+  getAllDashboardTags(params: IGetParams) {
+    const url = `/public/dashboards/tags`;
+    return this.get(url, params);
+  }
+
+  getAllQueryTags(params: IGetParams) {
+    const url = `/public/queries/tags`;
+    return this.get(url, params);
+  }
+
+  getMyListDashboards(params: IGetParams) {
     const url = `/dashboards/list-browse-dashboards`;
     return this.get(url, params);
   }
 
-  getDashboardTags(params: IGetBrowse) {
+  getMyDashboardTags(params: IGetParams) {
     const url = `/dashboards/tags`;
     return this.get(url, params);
   }
 
-  getMyListQueries(params: IGetBrowse) {
-    const url = `/queries/list-browse-queries`;
-    return this.get(url, params);
-  }
-  getQueryTags(params: IGetBrowse) {
-    const url = `/queries/tags`;
-    return this.get(url, params);
-  }
-
-  getMySavedDashboards(params: IGetBrowse) {
+  getMySavedDashboards(params: IGetParams) {
     const url = `/dashboard-saveds`;
     return this.get(url, params);
   }
 
-  getMySavedQueries(params: IGetBrowse) {
+  getMyListQueries(params: IGetParams) {
+    const url = `/queries/list-browse-queries`;
+    return this.get(url, params);
+  }
+
+  getMyQueryTags(params: IGetParams) {
+    const url = '/queries/tags';
+    return this.get(url, params);
+  }
+
+  getMySavedQueries(params: IGetParams) {
     const url = `/query-saveds`;
     return this.get(url, params);
   }
@@ -269,7 +280,10 @@ export default class DashboardsRequest extends BaseRequest {
 
   forkQueries(queryId: string, params: IUpdateQuery) {
     const url = `/queries/fork-query/${queryId}`;
-    return this.post(url, { ...params, queryId });
+    return this.post(url, {
+      ...params,
+      queryId,
+    });
   }
 
   getQueryExecutionId(params: DataQuery) {
@@ -317,7 +331,7 @@ export default class DashboardsRequest extends BaseRequest {
     return this.get(url);
   }
 
-  getListMyQueriesVisualizations(params: IGetBrowse) {
+  getListMyQueriesVisualizations(params: IGetParams) {
     const url = '/visualizations/list-my-queries-visualizations';
     return this.get(url, params);
   }
