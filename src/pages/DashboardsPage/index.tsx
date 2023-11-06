@@ -21,21 +21,21 @@ import { IDashboardDetail, IQuery } from 'src/utils/query.type';
 import FilterSearch from './parts/FilterSearch';
 import ListItem from './parts/ListItem';
 
-export const LIST_ITEM_TYPE = {
+export const INSIGHTS_TABS = {
   DASHBOARDS: 'dashboards',
   QUERIES: 'queries',
   MYWORK: 'my-work',
   SAVED: 'saved',
 };
 
-export const ITEM_TYPE = {
+export const INSIGHTS_ITEM_TYPE = {
   DASHBOARDS: 'dashboards',
   QUERIES: 'queries',
 };
 
-export const HOME_URL_PARAMS = {
+export const INSIGHTS_URL_PARAMS = {
   TAB: 'tab',
-  ITEM_TYPE: 'type',
+  TYPE: 'type',
   SEARCH: 'search',
   SORT: 'sort',
   CHAIN: 'chain',
@@ -53,31 +53,34 @@ const DashboardsPage: React.FC = () => {
 
   const searchParams = new URLSearchParams(searchUrl);
 
-  const [tab, setTab] = useState<string>(LIST_ITEM_TYPE.DASHBOARDS);
+  const [tab, setTab] = useState<string>(INSIGHTS_TABS.DASHBOARDS);
   const [tabIndex, setTabIndex] = useState<number>(0);
   const [dashboardParams, setDashboardParams] = useState<IDashboardParams>({});
   const [queryParams, setQueryParams] = useState<IQueriesParams>({});
   const [savedDashboardIds, setSavedDashboardIds] = useState<string[]>([]);
   const [savedQueryIds, setSavedQueryIds] = useState<string[]>([]);
-  const [itemType, setItemType] = useState<string>(ITEM_TYPE.DASHBOARDS);
+  const [itemType, setItemType] = useState<string>(
+    INSIGHTS_ITEM_TYPE.DASHBOARDS,
+  );
   const [displayed, setDisplayed] = useState<string>(DisplayType.Grid);
 
   useEffect(() => {
     const tabId =
-      searchParams.get(HOME_URL_PARAMS.TAB) || LIST_ITEM_TYPE.DASHBOARDS;
+      searchParams.get(INSIGHTS_URL_PARAMS.TAB) || INSIGHTS_TABS.DASHBOARDS;
     const type =
-      searchParams.get(HOME_URL_PARAMS.ITEM_TYPE) || ITEM_TYPE.DASHBOARDS;
-    const search = searchParams.get(HOME_URL_PARAMS.SEARCH) || '';
-    const orderBy = searchParams.get(HOME_URL_PARAMS.ORDERBY) || '';
-    const chain = searchParams.get(HOME_URL_PARAMS.CHAIN) || '';
-    const tag = searchParams.get(HOME_URL_PARAMS.TAG) || '';
+      searchParams.get(INSIGHTS_URL_PARAMS.TYPE) ||
+      INSIGHTS_ITEM_TYPE.DASHBOARDS;
+    const search = searchParams.get(INSIGHTS_URL_PARAMS.SEARCH) || '';
+    const orderBy = searchParams.get(INSIGHTS_URL_PARAMS.ORDERBY) || '';
+    const chain = searchParams.get(INSIGHTS_URL_PARAMS.CHAIN) || '';
+    const tag = searchParams.get(INSIGHTS_URL_PARAMS.TAG) || '';
 
     setTab(tabId);
 
     switch (tabId) {
-      case LIST_ITEM_TYPE.DASHBOARDS:
+      case INSIGHTS_TABS.DASHBOARDS:
         setTabIndex(0);
-        setItemType(ITEM_TYPE.DASHBOARDS);
+        setItemType(INSIGHTS_ITEM_TYPE.DASHBOARDS);
         setDashboardParams(() =>
           _.omitBy(
             {
@@ -91,9 +94,9 @@ const DashboardsPage: React.FC = () => {
         );
         setSavedDashboardIds([]);
         break;
-      case LIST_ITEM_TYPE.QUERIES:
+      case INSIGHTS_TABS.QUERIES:
         setTabIndex(1);
-        setItemType(ITEM_TYPE.QUERIES);
+        setItemType(INSIGHTS_ITEM_TYPE.QUERIES);
         setQueryParams(() =>
           _.omitBy(
             {
@@ -107,15 +110,15 @@ const DashboardsPage: React.FC = () => {
         );
         setSavedQueryIds([]);
         break;
-      case LIST_ITEM_TYPE.MYWORK:
-      case LIST_ITEM_TYPE.SAVED:
+      case INSIGHTS_TABS.MYWORK:
+      case INSIGHTS_TABS.SAVED:
         if (!user) {
-          setTab(LIST_ITEM_TYPE.DASHBOARDS);
+          setTab(INSIGHTS_TABS.DASHBOARDS);
           break;
         }
         setItemType(type);
-        setTabIndex(tabId === LIST_ITEM_TYPE.MYWORK ? 2 : 3);
-        if (type === ITEM_TYPE.DASHBOARDS) {
+        setTabIndex(tabId === INSIGHTS_TABS.MYWORK ? 2 : 3);
+        if (type === INSIGHTS_ITEM_TYPE.DASHBOARDS) {
           setDashboardParams(() =>
             _.omitBy(
               {
@@ -150,7 +153,7 @@ const DashboardsPage: React.FC = () => {
     // user logs out when in My Work tab or Saved tab
     if (
       !user &&
-      (tab === LIST_ITEM_TYPE.MYWORK || tab === LIST_ITEM_TYPE.SAVED)
+      (tab === INSIGHTS_TABS.MYWORK || tab === INSIGHTS_TABS.SAVED)
     ) {
       history.push(ROUTES.HOME);
     }
@@ -198,7 +201,7 @@ const DashboardsPage: React.FC = () => {
 
   const onSaveSuccess = async (id: string, isSaved: boolean) => {
     const setState =
-      itemType === ITEM_TYPE.DASHBOARDS
+      itemType === INSIGHTS_ITEM_TYPE.DASHBOARDS
         ? setSavedDashboardIds
         : setSavedQueryIds;
     setState((prevState) =>
@@ -210,7 +213,7 @@ const DashboardsPage: React.FC = () => {
 
   const onDeleteSuccess = async () => {
     // trigger AppDataTable's params prop to re-fetch
-    if (itemType === ITEM_TYPE.DASHBOARDS) {
+    if (itemType === INSIGHTS_ITEM_TYPE.DASHBOARDS) {
       setDashboardParams((prevState) => ({ ...prevState }));
     } else {
       setQueryParams((prevState) => ({ ...prevState }));
@@ -407,11 +410,11 @@ const DashboardsPage: React.FC = () => {
   };
 
   const getSavedStatus = (id: string) => {
-    if (tab === LIST_ITEM_TYPE.SAVED) {
+    if (tab === INSIGHTS_TABS.SAVED) {
       return true;
     }
 
-    return itemType === ITEM_TYPE.DASHBOARDS
+    return itemType === INSIGHTS_ITEM_TYPE.DASHBOARDS
       ? savedDashboardIds.includes(id)
       : savedQueryIds.includes(id);
   };
@@ -429,9 +432,9 @@ const DashboardsPage: React.FC = () => {
       renderBody={(data) =>
         _renderBody(() => {
           let displayedData = [...data];
-          if (tab === LIST_ITEM_TYPE.SAVED) {
+          if (tab === INSIGHTS_TABS.SAVED) {
             displayedData = displayedData.filter((item) =>
-              itemType === ITEM_TYPE.DASHBOARDS
+              itemType === INSIGHTS_ITEM_TYPE.DASHBOARDS
                 ? savedDashboardIds.includes(item.id)
                 : savedQueryIds.includes(item.id),
             );
@@ -485,7 +488,7 @@ const DashboardsPage: React.FC = () => {
   const generateTabs = (): ITabs[] => {
     const tabs: ITabs[] = [
       {
-        id: LIST_ITEM_TYPE.DASHBOARDS,
+        id: INSIGHTS_TABS.DASHBOARDS,
         name: 'Dashboards',
         icon: <DashboardListIcon />,
         content: _renderContentTable(
@@ -493,7 +496,7 @@ const DashboardsPage: React.FC = () => {
         ),
       },
       {
-        id: LIST_ITEM_TYPE.QUERIES,
+        id: INSIGHTS_TABS.QUERIES,
         name: 'Queries',
         icon: <QueriesIcon />,
         content: _renderContentTable(
@@ -506,32 +509,32 @@ const DashboardsPage: React.FC = () => {
       tabs.push(
         ...[
           {
-            id: LIST_ITEM_TYPE.MYWORK,
+            id: INSIGHTS_TABS.MYWORK,
             name: 'My Work',
             icon: <IconMywork />,
             content: _renderContentTable(
               <>
-                {itemType === ITEM_TYPE.DASHBOARDS && (
+                {itemType === INSIGHTS_ITEM_TYPE.DASHBOARDS && (
                   <Box>{_renderTable(dashboardParams, fetchMyDashboards)}</Box>
                 )}
-                {itemType === ITEM_TYPE.QUERIES && (
+                {itemType === INSIGHTS_ITEM_TYPE.QUERIES && (
                   <Box>{_renderTable(queryParams, fetchMyQueries)}</Box>
                 )}
               </>,
             ),
           },
           {
-            id: LIST_ITEM_TYPE.SAVED,
+            id: INSIGHTS_TABS.SAVED,
             name: 'Saved',
             icon: <SavedListIcon />,
             content: _renderContentTable(
               <>
-                {itemType === ITEM_TYPE.DASHBOARDS && (
+                {itemType === INSIGHTS_ITEM_TYPE.DASHBOARDS && (
                   <Box>
                     {_renderTable(dashboardParams, fetchMySavedDashboards)}
                   </Box>
                 )}
-                {itemType === ITEM_TYPE.QUERIES && (
+                {itemType === INSIGHTS_ITEM_TYPE.QUERIES && (
                   <Box>{_renderTable(queryParams, fetchMySavedQueries)}</Box>
                 )}
               </>,
@@ -544,13 +547,13 @@ const DashboardsPage: React.FC = () => {
   };
 
   const onChangeTab = (tabId: string) => {
-    searchParams.delete(HOME_URL_PARAMS.TAB);
-    searchParams.delete(HOME_URL_PARAMS.ITEM_TYPE);
-    searchParams.delete(HOME_URL_PARAMS.SEARCH);
-    searchParams.delete(HOME_URL_PARAMS.ORDERBY);
-    searchParams.delete(HOME_URL_PARAMS.TAG);
-    if (tabId !== LIST_ITEM_TYPE.DASHBOARDS) {
-      searchParams.set(HOME_URL_PARAMS.TAB, tabId);
+    searchParams.delete(INSIGHTS_URL_PARAMS.TAB);
+    searchParams.delete(INSIGHTS_URL_PARAMS.TYPE);
+    searchParams.delete(INSIGHTS_URL_PARAMS.SEARCH);
+    searchParams.delete(INSIGHTS_URL_PARAMS.ORDERBY);
+    searchParams.delete(INSIGHTS_URL_PARAMS.TAG);
+    if (tabId !== INSIGHTS_TABS.DASHBOARDS) {
+      searchParams.set(INSIGHTS_URL_PARAMS.TAB, tabId);
     }
     history.push({
       pathname: ROUTES.HOME,

@@ -6,7 +6,7 @@ import { ROUTES } from 'src/utils/common';
 import { IDashboardDetail, IQuery } from 'src/utils/query.type';
 import { Dashboard } from 'src/utils/utils-dashboard';
 import { Query } from 'src/utils/utils-query';
-import { LIST_ITEM_TYPE, ITEM_TYPE } from '..';
+import { INSIGHTS_TABS, INSIGHTS_ITEM_TYPE } from '..';
 import { Box } from '@chakra-ui/react';
 import { useMemo } from 'react';
 import { formatNumber } from 'src/utils/utils-format';
@@ -15,8 +15,8 @@ import useUser from 'src/hooks/useUser';
 
 interface IListItem {
   isLoading?: boolean;
-  type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
-  itemType: typeof ITEM_TYPE[keyof typeof ITEM_TYPE];
+  type: typeof INSIGHTS_TABS[keyof typeof INSIGHTS_TABS];
+  itemType: typeof INSIGHTS_ITEM_TYPE[keyof typeof INSIGHTS_ITEM_TYPE];
   item?: IDashboardDetail | IQuery;
   displayed?: string;
   isSaved?: boolean;
@@ -51,7 +51,7 @@ const ListItem: React.FC<IListItem> = (props) => {
   }
 
   const itemClass =
-    type === LIST_ITEM_TYPE.DASHBOARDS
+    type === INSIGHTS_TABS.DASHBOARDS
       ? new Dashboard(item as IDashboardDetail)
       : new Query(item as IQuery);
   const userName = `${itemClass.getUserFirstName()} ${itemClass.getUserLastName()}`;
@@ -59,21 +59,21 @@ const ListItem: React.FC<IListItem> = (props) => {
   const getTitleUrl = (): string => {
     const isUserOwner = itemClass.getUserId() === user?.getId();
     switch (type) {
-      case LIST_ITEM_TYPE.DASHBOARDS:
+      case INSIGHTS_TABS.DASHBOARDS:
         return `${
           isUserOwner ? ROUTES.MY_DASHBOARD : ROUTES.DASHBOARD
         }/${itemClass.getId()}/`;
-      case LIST_ITEM_TYPE.QUERIES:
+      case INSIGHTS_TABS.QUERIES:
         return `${
           isUserOwner ? ROUTES.MY_QUERY : ROUTES.QUERY
         }/${itemClass.getId()}`;
-      case LIST_ITEM_TYPE.MYWORK:
-        if (itemType === ITEM_TYPE.DASHBOARDS) {
+      case INSIGHTS_TABS.MYWORK:
+        if (itemType === INSIGHTS_ITEM_TYPE.DASHBOARDS) {
           return `${ROUTES.MY_DASHBOARD}/${itemClass.getId()}`;
         }
         return `${ROUTES.MY_QUERY}/${itemClass.getId()}`;
-      case LIST_ITEM_TYPE.SAVED:
-        if (itemType === ITEM_TYPE.DASHBOARDS) {
+      case INSIGHTS_TABS.SAVED:
+        if (itemType === INSIGHTS_ITEM_TYPE.DASHBOARDS) {
           return `${
             isUserOwner ? ROUTES.MY_DASHBOARD : ROUTES.DASHBOARD
           }/${itemClass.getId()}`;

@@ -14,7 +14,7 @@ import ModalDashboard from 'src/modals/querySQL/ModalDashboard';
 import ModalDelete from 'src/modals/querySQL/ModalDelete';
 import ModalQuery from 'src/modals/querySQL/ModalQuery';
 import ModalShareDomain from 'src/modals/querySQL/ModalShareDomain';
-import { ITEM_TYPE, LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
+import { INSIGHTS_ITEM_TYPE, INSIGHTS_TABS } from 'src/pages/DashboardsPage';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/AppQueryMenu.scss';
 import { ROUTES, TYPE_OF_MODAL } from 'src/utils/common';
@@ -35,11 +35,11 @@ import AppButton from './AppButton';
 interface IAppQueryMenu {
   menu: string[];
   item: IQuery | IDashboardDetail;
-  itemType: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
+  itemType: typeof INSIGHTS_TABS[keyof typeof INSIGHTS_TABS];
   onDeleteSuccess?: (item: IQuery | IDashboardDetail) => Promise<void>;
   onForkSuccess?: (
     response: any,
-    type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE],
+    type: typeof INSIGHTS_TABS[keyof typeof INSIGHTS_TABS],
   ) => Promise<void>;
   onSettingSuccess?: (response: any) => Promise<void>;
   onSaveSuccess?: () => Promise<void>;
@@ -99,12 +99,12 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
     }
     try {
       if (isSaved) {
-        itemType === ITEM_TYPE.DASHBOARDS
+        itemType === INSIGHTS_ITEM_TYPE.DASHBOARDS
           ? await rf.getRequest('InsightsRequest').unSaveDashboard(item.id)
           : await rf.getRequest('InsightsRequest').unSaveQuery(item.id);
         toastSuccess({ message: 'Removed from saved list' });
       } else {
-        itemType === ITEM_TYPE.DASHBOARDS
+        itemType === INSIGHTS_ITEM_TYPE.DASHBOARDS
           ? await rf.getRequest('InsightsRequest').saveDashboard(item.id)
           : await rf.getRequest('InsightsRequest').saveQuery(item.id);
         toastSuccess({ message: 'Added to saved list' });
@@ -200,7 +200,7 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
       `${location.protocol}//${location.hostname}${
         location.port ? `:${location.port}` : ''
       }${
-        itemType === LIST_ITEM_TYPE.DASHBOARDS ? ROUTES.DASHBOARD : ROUTES.QUERY
+        itemType === INSIGHTS_TABS.DASHBOARDS ? ROUTES.DASHBOARD : ROUTES.QUERY
       }/${item.id}`,
     [item],
   );
@@ -246,7 +246,7 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
           ))}
         </Flex>
       )}
-      {itemType === LIST_ITEM_TYPE.DASHBOARDS && openModalSetting && (
+      {itemType === INSIGHTS_TABS.DASHBOARDS && openModalSetting && (
         <ModalDashboard
           open={openModalSetting}
           id={item.id}
@@ -257,7 +257,7 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
         />
       )}
 
-      {itemType === LIST_ITEM_TYPE.DASHBOARDS && openModalFork && (
+      {itemType === INSIGHTS_TABS.DASHBOARDS && openModalFork && (
         <ModalDashboard
           open={openModalFork}
           id={item.id}
@@ -267,7 +267,7 @@ const AppQueryMenu: React.FC<IAppQueryMenu> = (props) => {
         />
       )}
 
-      {itemType === LIST_ITEM_TYPE.QUERIES && openModalSetting && (
+      {itemType === INSIGHTS_TABS.QUERIES && openModalSetting && (
         <ModalQuery
           type={TYPE_OF_MODAL.SETTING}
           open={openModalSetting}

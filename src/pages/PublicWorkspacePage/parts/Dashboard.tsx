@@ -5,7 +5,7 @@ import 'react-grid-layout/css/styles.css';
 import ReactMarkdown from 'react-markdown';
 import 'react-resizable/css/styles.css';
 import { useParams } from 'react-router-dom';
-import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
+import { INSIGHTS_TABS } from 'src/pages/DashboardsPage';
 import { LoadingFullPage } from 'src/pages/LoadingFullPage';
 import Header from 'src/pages/WorkspacePage/parts/Header';
 import VisualizationItem from 'src/pages/WorkspacePage/parts/VisualizationItem';
@@ -166,7 +166,7 @@ const DashboardPart: React.FC = () => {
   return (
     <div className="workspace-page__editor__dashboard">
       <Header
-        type={LIST_ITEM_TYPE.DASHBOARDS}
+        type={INSIGHTS_TABS.DASHBOARDS}
         author={
           dashboardClass
             ? `${dashboardClass?.getUserFirstName()} ${dashboardClass?.getUserLastName()}`

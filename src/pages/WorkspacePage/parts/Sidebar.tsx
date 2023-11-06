@@ -27,7 +27,7 @@ import { Link, useLocation, useParams } from 'react-router-dom';
 import { CloseMenuIcon } from 'src/assets/icons';
 import { AppButton, AppInput } from 'src/components';
 import AppQueryMenu, { QUERY_MENU_LIST } from 'src/components/AppQueryMenu';
-import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
+import { INSIGHTS_TABS } from 'src/pages/DashboardsPage';
 import rf from 'src/requests/RequestFactory';
 import { IPagination, ROUTES, SchemaType } from 'src/utils/common';
 import { IDashboardDetail, IQuery } from 'src/utils/query.type';
@@ -355,7 +355,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
   const onForkSuccess = async (response: any, type: string) => {
     await fetchDataWorkPlace();
-    type === LIST_ITEM_TYPE.DASHBOARDS
+    type === INSIGHTS_TABS.DASHBOARDS
       ? AppBroadcast.dispatch(BROADCAST_FETCH_DASHBOARD, response.id)
       : AppBroadcast.dispatch(BROADCAST_FETCH_QUERY, response.id);
   };
@@ -513,7 +513,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                   </Tooltip>
                   <AppQueryMenu
                     menu={[QUERY_MENU_LIST.DELETE]}
-                    itemType={LIST_ITEM_TYPE.QUERIES}
+                    itemType={INSIGHTS_TABS.QUERIES}
                     item={query}
                     onForkSuccess={onForkSuccess}
                     onDeleteSuccess={onDeleteSuccess}

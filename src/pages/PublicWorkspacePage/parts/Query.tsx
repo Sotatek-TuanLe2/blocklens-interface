@@ -8,7 +8,7 @@ import { useParams } from 'react-router-dom';
 import SplitPane from 'react-split-pane';
 import { QueryResultIcon } from 'src/assets/icons';
 import { AppLoadingTable } from 'src/components';
-import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
+import { INSIGHTS_TABS } from 'src/pages/DashboardsPage';
 import Header from 'src/pages/WorkspacePage/parts/Header';
 import VisualizationDisplay from 'src/pages/WorkspacePage/parts/VisualizationDisplay';
 import rf from 'src/requests/RequestFactory';
@@ -200,7 +200,7 @@ const QueryPart: React.FC = () => {
   return (
     <div className="workspace-page__editor__query">
       <Header
-        type={LIST_ITEM_TYPE.QUERIES}
+        type={INSIGHTS_TABS.QUERIES}
         author={
           queryClass
             ? `${queryClass?.getUserFirstName()} ${queryClass?.getUserLastName()}`

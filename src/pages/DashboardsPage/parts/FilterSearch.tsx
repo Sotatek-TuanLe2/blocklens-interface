@@ -21,12 +21,12 @@ import useUser from 'src/hooks/useUser';
 import ModalCreateNew from 'src/modals/querySQL/ModalCreateNew';
 import rf from 'src/requests/RequestFactory';
 import { ROUTES } from 'src/utils/common';
-import { HOME_URL_PARAMS, LIST_ITEM_TYPE, ITEM_TYPE } from '..';
+import { INSIGHTS_URL_PARAMS, INSIGHTS_TABS, INSIGHTS_ITEM_TYPE } from '..';
 import { AddIcon } from '@chakra-ui/icons';
 import Storage from 'src/utils/utils-storage';
 
 interface IFilterSearch {
-  type: typeof LIST_ITEM_TYPE[keyof typeof LIST_ITEM_TYPE];
+  type: typeof INSIGHTS_TABS[keyof typeof INSIGHTS_TABS];
   displayed: string;
   setDisplayed: (display: string) => void;
   itemType: string;
@@ -48,10 +48,10 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   const { user } = useUser();
   const ref = useRef<any>(null);
 
-  const isDashboardTab = type === LIST_ITEM_TYPE.DASHBOARDS;
-  const isDashboard = itemType === ITEM_TYPE.DASHBOARDS;
+  const isDashboardTab = type === INSIGHTS_TABS.DASHBOARDS;
+  const isDashboard = itemType === INSIGHTS_ITEM_TYPE.DASHBOARDS;
   const hasTypeSelection =
-    type === LIST_ITEM_TYPE.MYWORK || type === LIST_ITEM_TYPE.SAVED;
+    type === INSIGHTS_TABS.MYWORK || type === INSIGHTS_TABS.SAVED;
   const { search: searchUrl } = useLocation();
 
   const [search, setSearch] = useState<string>('');
@@ -66,15 +66,16 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   const [listTagsTrending, setListTagsTrending] = useState<string[]>([]);
 
   const searchParams = new URLSearchParams(searchUrl);
+  const debounceTagSearch = useRef<ReturnType<typeof setTimeout>>();
 
   const menuDashboardQueries: IOption[] = [
     {
-      value: ITEM_TYPE.DASHBOARDS,
+      value: INSIGHTS_ITEM_TYPE.DASHBOARDS,
       label: 'Dashboard',
       icon: <DashboardListIcon />,
     },
     {
-      value: ITEM_TYPE.QUERIES,
+      value: INSIGHTS_ITEM_TYPE.QUERIES,
       label: 'Queries',
       icon: <QueriesIcon />,
     },
@@ -94,10 +95,10 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   ];
 
   useEffect(() => {
-    const search = searchParams.get(HOME_URL_PARAMS.SEARCH) || '';
+    const search = searchParams.get(INSIGHTS_URL_PARAMS.SEARCH) || '';
     const orderBy =
-      searchParams.get(HOME_URL_PARAMS.ORDERBY) || 'created_at:desc';
-    const tag = searchParams.get(HOME_URL_PARAMS.TAG) || '';
+      searchParams.get(INSIGHTS_URL_PARAMS.ORDERBY) || 'created_at:desc';
+    const tag = searchParams.get(INSIGHTS_URL_PARAMS.TAG) || '';
     setSearch(search);
     setOrderBy(orderBy);
     setTag(tag);
@@ -148,13 +149,39 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
     if (!tagSearch) {
       return;
     }
-    const res = isDashboard
-      ? await rf
+
+    let res = null;
+    switch (type) {
+      case INSIGHTS_TABS.MYWORK:
+      case INSIGHTS_TABS.SAVED:
+        res = isDashboard
+          ? await rf
+              .getRequest('InsightsRequest')
+              .getMyDashboardTags({
+                search: tagSearch,
+                limit: SUGGEST_TAGS_LIMIT,
+              })
+          : await rf
+              .getRequest('InsightsRequest')
+              .getMyQueryTags({ search: tagSearch, limit: SUGGEST_TAGS_LIMIT });
+        break;
+      case INSIGHTS_TABS.DASHBOARDS:
+        res = await rf
           .getRequest('InsightsRequest')
-          .getDashboardTags({ search: tagSearch, limit: SUGGEST_TAGS_LIMIT })
-      : await rf
+          .getAllDashboardTags({
+            search: tagSearch,
+            limit: SUGGEST_TAGS_LIMIT,
+          });
+        break;
+      case INSIGHTS_TABS.QUERIES:
+        res = await rf
           .getRequest('InsightsRequest')
-          .getQueryTags({ search: tagSearch, limit: SUGGEST_TAGS_LIMIT });
+          .getAllQueryTags({ search: tagSearch, limit: SUGGEST_TAGS_LIMIT });
+        break;
+      default:
+        break;
+    }
+
     if (res && res.data) {
       setSuggestTags(res.data);
       setIsOpenSuggestTags(true);
@@ -175,20 +202,25 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   const onChangeSearch = (e: ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
     if (inputValue.startsWith('#')) {
-      setTagSearch(inputValue.slice(1, inputValue.length));
+      if (debounceTagSearch.current) {
+        clearTimeout(debounceTagSearch.current);
+      }
       setInputSearch(inputValue);
-      setIsOpenSuggestTags(true);
+      debounceTagSearch.current = setTimeout(() => {
+        setTagSearch(inputValue.slice(1, inputValue.length));
+      }, 1000);
     } else {
       setTagSearch('');
       setInputSearch(inputValue);
       setIsOpenSuggestTags(false);
-      searchParams.delete(HOME_URL_PARAMS.SEARCH);
-      inputValue && searchParams.set(HOME_URL_PARAMS.SEARCH, inputValue);
+      searchParams.delete(INSIGHTS_URL_PARAMS.SEARCH);
+      inputValue && searchParams.set(INSIGHTS_URL_PARAMS.SEARCH, inputValue);
+
+      history.push({
+        pathname: ROUTES.HOME,
+        search: `${searchParams.toString()}`,
+      });
     }
-    history.push({
-      pathname: ROUTES.HOME,
-      search: `${searchParams.toString()}`,
-    });
   };
 
   const onClickSearch = () => {
@@ -198,8 +230,8 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   };
 
   const onChangeOrderBy = (value: string) => {
-    searchParams.delete(HOME_URL_PARAMS.ORDERBY);
-    searchParams.set(HOME_URL_PARAMS.ORDERBY, value);
+    searchParams.delete(INSIGHTS_URL_PARAMS.ORDERBY);
+    searchParams.set(INSIGHTS_URL_PARAMS.ORDERBY, value);
     history.push({
       pathname: ROUTES.HOME,
       search: `${searchParams.toString()}`,
@@ -207,11 +239,11 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   };
 
   const onChangeTag = (value: string) => {
-    const currentTag = searchParams.get(HOME_URL_PARAMS.TAG);
-    searchParams.delete(HOME_URL_PARAMS.TAG);
-    searchParams.delete(HOME_URL_PARAMS.SEARCH);
+    const currentTag = searchParams.get(INSIGHTS_URL_PARAMS.TAG);
+    searchParams.delete(INSIGHTS_URL_PARAMS.TAG);
+    searchParams.delete(INSIGHTS_URL_PARAMS.SEARCH);
     if (currentTag !== value) {
-      searchParams.set(HOME_URL_PARAMS.TAG, value);
+      searchParams.set(INSIGHTS_URL_PARAMS.TAG, value);
     }
     history.push({
       pathname: ROUTES.HOME,
@@ -220,12 +252,12 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
   };
 
   const onChangeItemType = (value: string) => {
-    searchParams.delete(HOME_URL_PARAMS.ITEM_TYPE);
-    searchParams.delete(HOME_URL_PARAMS.SEARCH);
-    searchParams.delete(HOME_URL_PARAMS.ORDERBY);
-    searchParams.delete(HOME_URL_PARAMS.TAG);
-    if (value !== ITEM_TYPE.DASHBOARDS) {
-      searchParams.set(HOME_URL_PARAMS.ITEM_TYPE, value);
+    searchParams.delete(INSIGHTS_URL_PARAMS.TYPE);
+    searchParams.delete(INSIGHTS_URL_PARAMS.SEARCH);
+    searchParams.delete(INSIGHTS_URL_PARAMS.ORDERBY);
+    searchParams.delete(INSIGHTS_URL_PARAMS.TAG);
+    if (value !== INSIGHTS_ITEM_TYPE.DASHBOARDS) {
+      searchParams.set(INSIGHTS_URL_PARAMS.TYPE, value);
     }
     history.push({
       pathname: ROUTES.HOME,

@@ -27,7 +27,7 @@ import { AppBroadcast } from 'src/utils/utils-broadcast';
 import { EditorContext } from '../context/EditorContext';
 import Header from './Header';
 import VisualizationDisplay from './VisualizationDisplay';
-import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
+import { INSIGHTS_TABS } from 'src/pages/DashboardsPage';
 import { BROADCAST_FETCH_WORKPLACE_DATA } from './Sidebar';
 import ModalQuery from 'src/modals/querySQL/ModalQuery';
 import { Query } from 'src/utils/utils-query';
@@ -522,7 +522,7 @@ const QueryPart: React.FC = () => {
     <div className="workspace-page__editor__query">
       <QueryTabs tabs={tabs} activeTab={activeTabId} onChangeTabs={setTabs} />
       <Header
-        type={LIST_ITEM_TYPE.QUERIES}
+        type={INSIGHTS_TABS.QUERIES}
         author={
           queryClass
             ? `${queryClass?.getUserFirstName()} ${queryClass?.getUserLastName()}`

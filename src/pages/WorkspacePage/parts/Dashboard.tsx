@@ -18,7 +18,7 @@ import useUser from 'src/hooks/useUser';
 import ModalAddTextWidget from 'src/modals/querySQL/ModalAddTextWidget';
 import ModalAddVisualization from 'src/modals/querySQL/ModalAddVisualization';
 import ModalDeleteWidget from 'src/modals/querySQL/ModalDeleteWidget ';
-import { LIST_ITEM_TYPE } from 'src/pages/DashboardsPage';
+import { INSIGHTS_TABS } from 'src/pages/DashboardsPage';
 import { LoadingFullPage } from 'src/pages/LoadingFullPage';
 import rf from 'src/requests/RequestFactory';
 import 'src/styles/components/AppQueryMenu.scss';
@@ -346,7 +346,7 @@ const DashboardPart: React.FC = () => {
   return (
     <div className="workspace-page__editor__dashboard">
       <Header
-        type={LIST_ITEM_TYPE.DASHBOARDS}
+        type={INSIGHTS_TABS.DASHBOARDS}
         author={
           dashboardClass
             ? `${dashboardClass?.getUserFirstName()} ${dashboardClass?.getUserLastName()}`
