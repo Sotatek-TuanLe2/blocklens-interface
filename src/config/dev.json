@@ -1,6 +1,6 @@
 {
   "homePage": "https://dev-console.blocklens.io/",
-  "docsPage": "https://stg-docs.blocklens.io/",
+  "docsPage": "https://dev-docs.blocklens.io/",
   "auth": {
     "domain": "Blocklens",
     "message": "Join Blocklens",

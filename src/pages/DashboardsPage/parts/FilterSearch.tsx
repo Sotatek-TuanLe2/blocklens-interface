@@ -155,23 +155,19 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
       case INSIGHTS_TABS.MYWORK:
       case INSIGHTS_TABS.SAVED:
         res = isDashboard
-          ? await rf
-              .getRequest('InsightsRequest')
-              .getMyDashboardTags({
-                search: tagSearch,
-                limit: SUGGEST_TAGS_LIMIT,
-              })
+          ? await rf.getRequest('InsightsRequest').getMyDashboardTags({
+              search: tagSearch,
+              limit: SUGGEST_TAGS_LIMIT,
+            })
           : await rf
               .getRequest('InsightsRequest')
               .getMyQueryTags({ search: tagSearch, limit: SUGGEST_TAGS_LIMIT });
         break;
       case INSIGHTS_TABS.DASHBOARDS:
-        res = await rf
-          .getRequest('InsightsRequest')
-          .getAllDashboardTags({
-            search: tagSearch,
-            limit: SUGGEST_TAGS_LIMIT,
-          });
+        res = await rf.getRequest('InsightsRequest').getAllDashboardTags({
+          search: tagSearch,
+          limit: SUGGEST_TAGS_LIMIT,
+        });
         break;
       case INSIGHTS_TABS.QUERIES:
         res = await rf
