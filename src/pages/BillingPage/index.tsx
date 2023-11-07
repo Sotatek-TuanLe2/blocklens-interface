@@ -67,6 +67,7 @@ import {
 import { ROUTES } from 'src/utils/common';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
+import PartPlan from './parts/PartPlan';
 
 interface ILineItems {
   amount: number;
@@ -397,7 +398,7 @@ const BillingPage = () => {
     }
   };
 
-  const onChangePlan = async (plan: MetadataPlan) => {
+  const onChangePlan = (plan: MetadataPlan) => {
     // if (isCurrentPlan || isDownGrade) {
     //   await onUpdatePlan();
     //   return;
@@ -717,91 +718,16 @@ const BillingPage = () => {
           className="list-table-wrap__content"
           justifyContent="space-between"
         >
-          {billingPlans?.map((plan: MetadataPlan) => (
-            <Flex
-              className="all-plans__plan"
-              key={plan.code}
-              flexDirection="column"
-            >
-              <Flex
-                className="all-plans__plan__title"
-                justifyContent="space-between"
-                alignItems="center"
-              >
-                <span>{plan.name}</span>
-                <span className="all-plans__plan__title__price">
-                  {_renderPrice(plan.price)}
-                </span>
-              </Flex>
-              <Flex
-                className="all-plans__plan__descriptions"
-                alignItems="center"
-              >
-                <CheckedIcon stroke="#28c76f" />
-                <span className="all-plans__plan__descriptions__info all-plans__plan__descriptions__info--cu">
-                  {Math.ceil(plan.capacity.cu / 30)} CUs/day
-                </span>
-              </Flex>
-              <Flex
-                className="all-plans__plan__descriptions"
-                alignItems="center"
-              >
-                <CheckedIcon stroke="#28c76f" />
-                <span className="all-plans__plan__descriptions__info">
-                  Throughput {Math.ceil(plan.capacity.cu / (30 * 24 * 60 * 60))}{' '}
-                  CUs/sec
-                </span>
-              </Flex>
-              <Flex
-                className="all-plans__plan__descriptions"
-                alignItems="center"
-              >
-                <CheckedIcon stroke="#28c76f" />
-                <span className="all-plans__plan__descriptions__info">
-                  All APIs
-                </span>
-              </Flex>
-              <Flex
-                className="all-plans__plan__descriptions"
-                alignItems="center"
-              >
-                <CheckedIcon stroke="#28c76f" />
-                <span className="all-plans__plan__descriptions__info">
-                  All supported chains
-                </span>
-              </Flex>
-              <Flex
-                className="all-plans__plan__descriptions"
-                alignItems="center"
-              >
-                <CheckedIcon stroke="#28c76f" />
-                <span className="all-plans__plan__descriptions__info">
-                  {plan.capacity.project} projects
-                </span>
-              </Flex>
-              <Flex
-                className="all-plans__plan__descriptions"
-                alignItems="center"
-              >
-                <CheckedIcon stroke="#28c76f" />
-                <span className="all-plans__plan__descriptions__info">
-                  24/7 Discord support
-                </span>
-              </Flex>
-              {user?.getPlan().code === plan.code ? (
-                <Text className="all-plans__plan__current-plan">
-                  Your current plan
-                </Text>
-              ) : (
-                <AppButtonLarge
-                  className="all-plans__plan__button"
-                  onClick={() => onChangePlan(plan)}
-                >
-                  {`Switch to ${formatCapitalize(plan.name)}`}
-                </AppButtonLarge>
-              )}
-            </Flex>
-          ))}
+          {billingPlans?.map((plan: MetadataPlan, index: number) => {
+            const hasYearlyPlan = index === billingPlans.length - 1;
+            return (
+              <PartPlan
+                plan={plan}
+                hasYearlyPlan={hasYearlyPlan}
+                onChangePlan={onChangePlan}
+              />
+            );
+          })}
         </Flex>
       </AppCard>
     );
