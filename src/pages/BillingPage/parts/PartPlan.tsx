@@ -31,6 +31,27 @@ const PartPlan: React.FC<IPlanProps> = (props) => {
     );
   };
 
+  const _renderButton = () => {
+    if (user?.getPlan().code === plan.code) {
+      return (
+        <Text className="all-plans__plan__current-plan">Your current plan</Text>
+      );
+    }
+    if (user?.getNextPlan().code === plan.code) {
+      return (
+        <Text className="all-plans__plan__current-plan">Your next plan</Text>
+      );
+    }
+    return (
+      <AppButtonLarge
+        className="all-plans__plan__button"
+        onClick={() => onChangePlan(plan)}
+      >
+        {`Switch to ${formatCapitalize(plan.name)}`}
+      </AppButtonLarge>
+    );
+  };
+
   const showYearlySelect = hasYearlyPlan && user?.getPlan().code !== plan.code;
 
   return (
@@ -99,18 +120,7 @@ const PartPlan: React.FC<IPlanProps> = (props) => {
             24/7 Discord support
           </span>
         </Flex>
-        {user?.getPlan().code === plan.code ? (
-          <Text className="all-plans__plan__current-plan">
-            Your current plan
-          </Text>
-        ) : (
-          <AppButtonLarge
-            className="all-plans__plan__button"
-            onClick={() => onChangePlan(plan)}
-          >
-            {`Switch to ${formatCapitalize(plan.name)}`}
-          </AppButtonLarge>
-        )}
+        {_renderButton()}
       </Flex>
     </Box>
   );

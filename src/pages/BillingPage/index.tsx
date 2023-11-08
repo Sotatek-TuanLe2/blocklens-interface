@@ -68,6 +68,7 @@ import { ROUTES } from 'src/utils/common';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 import PartPlan from './parts/PartPlan';
+import PartNotification, { NOTIFICATION_TYPE } from './parts/PartNotification';
 
 interface ILineItems {
   amount: number;
@@ -552,15 +553,22 @@ const BillingPage = () => {
     ];
 
     const _renderCurrentPlan = () => {
+      const isLowestPlan =
+        !!billingPlans.length && user?.getPlan().code === billingPlans[0].code;
       const isHighestPlan =
         !!billingPlans.length &&
         user?.getPlan().code === billingPlans[billingPlans.length - 1].code;
+
+      if (isLowestPlan) {
+        // remove Renews on
+        currentPlanDetails.shift();
+      }
 
       return (
         <AppCard
           className={`list-table-wrap current-plan ${
             isHighestPlan ? 'current-plan--highest-plan' : ''
-          }`}
+          } ${isLowestPlan ? 'current-plan--lowest-plan' : ''}`}
         >
           <Box className="list-table-wrap__title">CURRENT PLAN</Box>
           <Flex className="list-table-wrap__content">
@@ -588,32 +596,6 @@ const BillingPage = () => {
       );
     };
 
-    const _renderWarning = () => (
-      <Flex
-        justifyContent="space-between"
-        alignItems="center"
-        className="plan-warning"
-      >
-        <Flex>
-          <span>
-            Renewal of <b>Scale</b> plan is on hold due to lack of payment.
-          </span>
-          &nbsp;
-          <Link to={'/'}>
-            <Flex alignItems="center">
-              <Text mr="6px" color="#1979FF">
-                Retry payment
-              </Text>
-              <ChevronRightIcon width={14} height={14} stroke="#1979FF" />
-            </Flex>
-          </Link>
-        </Flex>
-        <AppButton variant="no-effects" className="dismiss-button">
-          Dismiss
-        </AppButton>
-      </Flex>
-    );
-
     const generateBillingMethod = (billing: IBilling) => {
       if (billing?.activePaymentMethod === PAYMENT_METHOD.CRYPTO) {
         return 'Crypto transfer';
@@ -622,7 +604,7 @@ const BillingPage = () => {
       if (billing?.activePaymentMethod === PAYMENT_METHOD.CARD) {
         return 'Credit card';
       }
-      return '---';
+      return '--';
     };
 
     const generateBillingPlan = (billing: IBilling) => {
@@ -752,7 +734,7 @@ const BillingPage = () => {
             )}
         </Flex>
         {_renderCurrentPlan()}
-        {_renderWarning()}
+        <PartNotification variant={NOTIFICATION_TYPE.WARNING_DOWNGRADE} />
         {_renderBillings()}
         {_renderAllPlans()}
         {/* <AppCard className="list-table-wrap">

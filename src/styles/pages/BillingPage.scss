@@ -118,7 +118,7 @@
       width: calc(100%/6);
     }
 
-    &--highest-plan {
+    &--lowest-plan, &--highest-plan {
       .list-table-wrap__content > div {
         width: 20%;
       }
@@ -152,16 +152,30 @@
     }
   }
 
-  .plan-warning {
+  .plan-notification {
     margin-bottom: 20px;
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.04);
     border-radius: 18px;
     padding: 20px 40px;
-    background-color: #FCE7E7;
+  
+    &--notification {
+      background-color: #E5EEFF;
+    }
 
-    .dismiss-button {
-      @include text-medium-regular;
-      color: #E02323;
+    &--warning {
+      background-color: #FCE7E7;    
+    }
+
+    &__button {
+      @include text-medium-medium;
+
+      &--notification {
+        color: #1979FF;
+      }
+
+      &--warning {
+        color: #E02323;
+      }
     }
   }
 
