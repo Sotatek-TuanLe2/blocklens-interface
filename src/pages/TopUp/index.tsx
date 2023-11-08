@@ -79,7 +79,8 @@ const TopUpPage = () => {
     ? getTopUpConfigByNetworkId(chainId).contractAddress
     : null;
   const isDifferentWalletAddressLinked =
-    wallet?.getAddress() !== user?.getLinkedAddress();
+    user?.isUserLinked() &&
+    wallet?.getAddress() !== user?.getLinkedAddresses()[0];
   const chainOptions = getSupportChainsTopUp();
   const inValidAmount =
     +amount <= 0 || convertCurrencyToNumber(amount) > balanceToken;
@@ -227,9 +228,10 @@ const TopUpPage = () => {
   };
 
   const _renderTopUpForm = () => {
-    if (!(wallet && user)) {
+    if (!(wallet && user && user.isUserLinked())) {
       return null;
     }
+
     const _renderAlert = () => (
       <Alert
         status="warning"
@@ -239,7 +241,7 @@ const TopUpPage = () => {
       >
         <AlertIcon />
         <AlertDescription color={'yellow.100'}>
-          You linked wallet: {user?.getLinkedAddress()} not{' '}
+          You linked wallet: {user?.getLinkedAddresses()[0]} not{' '}
           {wallet?.getAddress()}
         </AlertDescription>
       </Alert>

@@ -314,6 +314,7 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
           const hasYearlyPlan = index === billingPlans.length - 1;
           return (
             <PartPlan
+              key={plan.code}
               plan={plan}
               hasYearlyPlan={hasYearlyPlan}
               onChangePlan={onChangePlan}

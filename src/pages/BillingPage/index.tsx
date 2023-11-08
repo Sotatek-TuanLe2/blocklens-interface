@@ -83,17 +83,6 @@ enum STEPS {
   CHECKOUT,
 }
 
-export const paymentMethods = [
-  {
-    name: 'Credit Card',
-    code: PAYMENT_METHOD.CARD,
-  },
-  {
-    name: 'Crypto',
-    code: PAYMENT_METHOD.CRYPTO,
-  },
-];
-
 interface IPlanMobile {
   plan: MetadataPlan;
   planSelected: MetadataPlan;

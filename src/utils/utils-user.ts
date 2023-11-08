@@ -43,7 +43,7 @@ export interface UserInterface {
   getLastName: () => string;
 
   getBalance: () => number;
-  getLinkedAddress: () => string;
+  getLinkedAddresses: () => string[];
   getStripePayment: () => StripePayment;
   getActivePaymentMethod: () => string;
 
@@ -123,7 +123,7 @@ export class User implements UserInterface {
         id: '',
         livemode: false,
       },
-      walletAddress: '',
+      walletAddresses: [],
     },
   };
   public settings: UserSettingsType = {
@@ -234,8 +234,8 @@ export class User implements UserInterface {
     return this.billing.payment.balance;
   }
 
-  getLinkedAddress(): string {
-    return this.billing.payment.walletAddress;
+  getLinkedAddresses(): string[] {
+    return this.billing.payment.walletAddresses;
   }
 
   getStripePayment(): StripePayment {
@@ -251,7 +251,7 @@ export class User implements UserInterface {
   }
 
   isUserLinked(): boolean {
-    return !!this.billing.payment.walletAddress;
+    return !!this.billing.payment.walletAddresses.length;
   }
 
   isUserStriped(): boolean {

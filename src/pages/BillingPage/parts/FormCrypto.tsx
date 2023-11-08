@@ -33,14 +33,17 @@ const FormCrypto: FC<IFormCrypto> = ({ onSuccess, planSelected }) => {
   }, [user?.getBalance(), planSelected]);
 
   const _renderWalletInfo = () => {
-    if (wallet?.getAddress() !== user?.getLinkedAddress()) {
+    if (
+      user?.isUserLinked() &&
+      wallet?.getAddress() !== user?.getLinkedAddresses()[0]
+    ) {
       return (
         <AppAlertWarning>
           <Box>
             You are connecting with different address: {wallet?.getAddress()}.
           </Box>
           <Box>
-            Please connect with linked address: {user?.getLinkedAddress()}.
+            Please connect with linked address: {user?.getLinkedAddresses()[0]}.
           </Box>
         </AppAlertWarning>
       );

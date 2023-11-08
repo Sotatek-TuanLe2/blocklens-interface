@@ -516,7 +516,7 @@
       }
     }
 
-    &__order {
+    &__order, &__payment {
 
       @include tablet {
         margin-bottom: 60px;
@@ -532,11 +532,17 @@
       .name-plan {
         @include text-large-bold;
         text-align: center;
+        margin-bottom: 30px;
 
         .period {
           @include text-medium-regular;
           color: $paragraph;
         }
+      }
+
+      .plan-action {
+        @include text-medium-regular;
+        color: $paragraph;
       }
 
       .info {
@@ -547,6 +553,48 @@
         svg {
           color: $green;
           margin-right: 12px;
+        }
+      }
+
+      &__methods {
+        .chakra-radio {
+          height: 50px;
+          border-radius: 6px;
+
+          &__control {
+            width: 20px;
+            height: 20px;
+          }
+
+          &[data-checked] {
+            background-color: #E5EEFF;
+
+            .chakra-radio__control {
+              background-color: $white;
+              &::before {
+                background-color: $main;
+              }
+            }
+          }
+
+          &[data-disabled] {
+            .chakra-radio__control {
+              border-color: $line;
+            }
+          }
+        }
+
+        .chakra-radio__label {
+          width: 100%;
+        }
+
+        .chakra-radio {
+          padding: 10px 18px;
+        }
+
+        .connect-wallet-btn {
+          @include text-medium-medium;
+          color: $main;
         }
       }
     }

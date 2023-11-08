@@ -62,7 +62,7 @@ export type UserPaymentType = {
   isPaymentMethodIntegrated: boolean;
   activePaymentMethod: string;
   stripePaymentMethod: StripePayment;
-  walletAddress: string;
+  walletAddresses: string[];
   balance: number;
 };
 
@@ -155,7 +155,7 @@ const initialState: UserState = {
         id: '',
         livemode: false,
       },
-      walletAddress: '',
+      walletAddresses: [],
     },
   },
   settings: {
@@ -258,7 +258,7 @@ const userSlice = createSlice({
     },
     setUserPayment: (state, action) => {
       const {
-        payment: { activePaymentMethod, walletAddress },
+        payment: { activePaymentMethod, walletAddresses },
         balance,
         isPaymentMethodIntegrated,
         stripe: { paymentMethod: stripePaymentMethod },
@@ -268,7 +268,7 @@ const userSlice = createSlice({
         balance,
         isPaymentMethodIntegrated,
         stripePaymentMethod,
-        walletAddress,
+        walletAddresses,
       };
     },
     setUserSettings: (state, action) => {
