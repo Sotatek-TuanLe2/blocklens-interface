@@ -368,7 +368,7 @@ const ModalAddVisualization: React.FC<IModalAddVisualization> = ({
             })}
           </Flex>
         </Flex>
-        <Flex className="modal-footer">
+        <Flex className="modal-footer" justifyContent="space-between">
           <AppButton
             variant="cancel"
             mr={2.5}

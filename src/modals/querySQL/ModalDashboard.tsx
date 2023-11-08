@@ -128,7 +128,7 @@ const ModalDashboard: React.FC<IModelNewDashboard> = ({
   };
 
   return (
-    <BaseModal isOpen={open} onClose={onClose} size="md">
+    <BaseModal isOpen={open} onClose={onClose}>
       <Flex
         flexDirection={'column'}
         rowGap={'2rem'}
@@ -174,7 +174,7 @@ const ModalDashboard: React.FC<IModelNewDashboard> = ({
           />
         </AppField>
 
-        <Flex className="modal-footer">
+        <Flex className="modal-footer" justifyContent="space-between">
           <AppButton
             mr={2.5}
             onClick={() => {

@@ -57,7 +57,7 @@ const ModalDelete = ({ open, onClose, type, onSuccess, id }: IModalDelete) => {
         </div>
         <div className="modal-delete__title">Delete {getTitleModal()}</div>
         <div className="modal-delete__content">{getContentModal()}</div>
-        <Flex className="modal-footer">
+        <Flex className="modal-footer" justifyContent="space-between">
           <AppButton
             py={'12px'}
             onClick={onClose}

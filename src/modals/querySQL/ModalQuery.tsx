@@ -135,12 +135,7 @@ const ModalQuery = ({
   };
 
   return (
-    <BaseModal
-      size="xl"
-      isOpen={open}
-      onClose={onClose}
-      className="modal-setting"
-    >
+    <BaseModal isOpen={open} onClose={onClose} className="modal-setting">
       <Flex direction={'column'}>
         <div className="modal-setting__title">
           {generateTitleModal(type)} Query
@@ -170,7 +165,7 @@ const ModalQuery = ({
             />
           </AppField>
         </Box>
-        <Flex className="modal-footer">
+        <Flex className="modal-footer" justifyContent="space-between">
           <AppButton
             py={'12px'}
             onClick={onClose}

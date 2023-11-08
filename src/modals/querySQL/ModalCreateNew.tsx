@@ -33,7 +33,7 @@ const ModalCreateNew: React.FC<IModalCreateNew> = ({ open, onClose }) => {
   };
 
   return (
-    <BaseModal isOpen={open} onClose={onClose} size="md">
+    <BaseModal isOpen={open} onClose={onClose}>
       <Flex
         flexDirection={'column'}
         rowGap={'2rem'}
