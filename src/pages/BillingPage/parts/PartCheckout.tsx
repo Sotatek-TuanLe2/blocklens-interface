@@ -4,7 +4,7 @@ import moment from 'moment';
 import { FC, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { AppButton, AppRadio } from 'src/components';
+import { AppButton, AppRadio, AppSelect2 } from 'src/components';
 import AppAlertWarning from 'src/components/AppAlertWarning';
 import config from 'src/config';
 import useUser from 'src/hooks/useUser';
@@ -15,22 +15,22 @@ import { MetadataPlan } from 'src/store/metadata';
 import { getUserPlan } from 'src/store/user';
 import { ROUTES } from 'src/utils/common';
 import { formatShortAddress } from 'src/utils/utils-format';
-import { formatCapitalize, formatShortText } from 'src/utils/utils-helper';
+import { formatCapitalize } from 'src/utils/utils-helper';
+import {
+  getSupportChainsTopUp,
+  getTopUpCurrencyOptions,
+  getTopUpCurrenciesByChainId,
+} from 'src/utils/utils-network';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import Storage from 'src/utils/utils-storage';
 import { PAYMENT_METHOD } from '..';
 
 interface IPartCheckout {
   planSelected: MetadataPlan;
-  paymentMethodCode: any;
   onBack: () => void;
 }
 
-const PartCheckout: FC<IPartCheckout> = ({
-  planSelected,
-  paymentMethodCode,
-  onBack,
-}) => {
+const PartCheckout: FC<IPartCheckout> = ({ planSelected, onBack }) => {
   const { wallet, connectWallet } = useWallet();
   const dispatch = useDispatch();
   const history = useHistory();
@@ -39,8 +39,12 @@ const PartCheckout: FC<IPartCheckout> = ({
   const [paymentMethod, setPaymentMethod] = useState<
     typeof PAYMENT_METHOD[keyof typeof PAYMENT_METHOD]
   >(PAYMENT_METHOD.CRYPTO);
+  const [chainId, setChainId] = useState<string>('');
+  const [tokenAddress, setTokenAddress] = useState<string>('');
   const [openConnectWalletModal, setOpenConnectWalletModal] =
     useState<boolean>(false);
+
+  const chainOptions = getSupportChainsTopUp();
 
   useEffect(() => {
     const connectorId = Storage.getConnectorId();
@@ -50,6 +54,21 @@ const PartCheckout: FC<IPartCheckout> = ({
       await connectWallet(connectorId, network);
     })();
   }, [wallet?.getNework()]);
+
+  useEffect(() => {
+    if (!!chainOptions.length) {
+      setChainId(chainOptions[0].value);
+    }
+  }, [chainOptions]);
+
+  useEffect(() => {
+    if (!chainId) {
+      return;
+    }
+
+    const currencies = getTopUpCurrenciesByChainId(chainId);
+    setTokenAddress(currencies[0].address);
+  }, [chainId]);
 
   const generatePlanAction = () => {
     if (!user) {
@@ -66,6 +85,10 @@ const PartCheckout: FC<IPartCheckout> = ({
       return `Downgrade to ${formatCapitalize(planSelected.name)} plan`;
     }
   };
+
+  const onChangeTokenAddress = (value: string) => setTokenAddress(value);
+
+  const onChangeChainId = (value: string) => setChainId(value);
 
   const _renderOrder = () => {
     return (
@@ -90,6 +113,7 @@ const PartCheckout: FC<IPartCheckout> = ({
           <Text className="plan-action">{generatePlanAction()}</Text>
           <Text>{planSelected.price}$</Text>
         </Flex>
+        <Divider w="330px" my="25px" mx="auto" />
         <Flex alignItems="flex-end" justifyContent="space-between" px={10}>
           <Text>
             <b>Total amount</b>
@@ -98,7 +122,7 @@ const PartCheckout: FC<IPartCheckout> = ({
             <b>{planSelected.price}$</b>
           </Text>
         </Flex>
-        <Divider w="330px" my="25px" mx="auto" borderStyle="dashed" />
+        <Divider w="330px" my="30px" mx="auto" borderStyle="dashed" />
       </Box>
     );
   };
@@ -141,6 +165,42 @@ const PartCheckout: FC<IPartCheckout> = ({
                 )}
               </Flex>
             </AppRadio>
+            {!!wallet && user?.isUserLinked() && (
+              <Flex
+                justifyContent="space-between"
+                alignItems="center"
+                className="billing-checkout__payment__selects"
+              >
+                <Flex alignItems="center">
+                  <Text
+                    mr={3}
+                    className="billing-checkout__payment__selects__field-text"
+                  >
+                    Pay by
+                  </Text>
+                  <AppSelect2
+                    size="medium"
+                    onChange={onChangeTokenAddress}
+                    options={getTopUpCurrencyOptions(chainId)}
+                    value={tokenAddress}
+                  />
+                </Flex>
+                <Flex alignItems="center">
+                  <Text
+                    mr={3}
+                    className="billing-checkout__payment__selects__field-text"
+                  >
+                    Chain
+                  </Text>
+                  <AppSelect2
+                    size="medium"
+                    onChange={onChangeChainId}
+                    options={chainOptions}
+                    value={chainId}
+                  />
+                </Flex>
+              </Flex>
+            )}
             <AppRadio value={PAYMENT_METHOD.CARD} isDisabled>
               Credit Card <i>(Coming soon)</i>
             </AppRadio>
@@ -166,20 +226,6 @@ const PartCheckout: FC<IPartCheckout> = ({
     }
   };
 
-  // const _renderInfoPayment = () => {
-  //   if (paymentMethod?.code === PAYMENT_METHOD.CARD) {
-  //     return (
-  //       user?.getStripePayment()?.card?.brand +
-  //       ' - ' +
-  //       user?.getStripePayment()?.card?.last4
-  //     );
-  //   }
-
-  //   return formatShortText(
-  //     wallet?.getAddress() || user?.getLinkedAddresses()[0] || '',
-  //   );
-  // };
-
   return (
     <Box className="form-card">
       <Flex alignItems={'center'} mb={7}>
@@ -188,13 +234,6 @@ const PartCheckout: FC<IPartCheckout> = ({
       </Flex>
       <Box className="billing-checkout__bill">
         <Box className="billing-checkout__bill-info">
-          {/* <Box className="billing-checkout__payment-method">
-            <Box className="title">Payment method</Box>
-            <Flex justifyContent={'space-between'}>
-              <Box className="type">{paymentMethod?.name}</Box>
-              <Box className="address">{_renderInfoPayment()}</Box>
-            </Flex>
-          </Box> */}
           {_renderOrder()}
           {_renderPaymentMethod()}
         </Box>

@@ -77,7 +77,7 @@ export const PAYMENT_METHOD = {
 };
 
 enum STEPS {
-  LIST,
+  BILLING,
   FORM,
   TOPUP,
   CHECKOUT,
@@ -182,16 +182,16 @@ const BillingPage = () => {
     useState<boolean>(false);
   const [isReloadingUserInfo, setIsReloadingUserInfo] =
     useState<boolean>(false);
-  const [step, setStep] = useState<number>(STEPS.LIST);
+  const [step, setStep] = useState<number>(STEPS.BILLING);
 
   // useEffect(() => {
   //   setPaymentMethodSelected(user?.getActivePaymentMethod());
   // }, []);
 
-  const paymentMethod = useMemo(
-    () => user?.getActivePaymentMethod(),
-    [user?.getActivePaymentMethod()],
-  );
+  // const paymentMethod = useMemo(
+  //   () => user?.getActivePaymentMethod(),
+  //   [user?.getActivePaymentMethod()],
+  // );
 
   // useEffect(() => {
   //   if (user) {
@@ -372,7 +372,7 @@ const BillingPage = () => {
 
   const _renderContent = () => {
     switch (step) {
-      case STEPS.LIST:
+      case STEPS.BILLING:
         return (
           <PartBilling
             onUpgradePlan={(plan) => {
@@ -395,19 +395,14 @@ const BillingPage = () => {
       //   return (
       //     <PartTopUp
       //       planSelected={selectedPlan}
-      //       onBack={() => setStep(STEPS.LIST)}
+      //       onBack={() => setStep(STEPS.BILLING)}
       //     />
       //   );
       case STEPS.CHECKOUT:
         return (
           <PartCheckout
             planSelected={selectedPlan}
-            paymentMethodCode={paymentMethod}
-            onBack={
-              user?.isPaymentMethodIntegrated()
-                ? () => setStep(STEPS.LIST)
-                : () => setStep(STEPS.FORM)
-            }
+            onBack={() => setStep(STEPS.BILLING)}
           />
         );
       default:

@@ -597,6 +597,20 @@
           color: $main;
         }
       }
+
+      &__selects {
+        padding: 18px 0;
+        margin: 0;
+        
+        &__field-text {
+          @include text-medium-regular;
+          color: $paragraph;
+        }
+        
+        .app-select__btn-select {
+          min-width: 165px;
+        }
+      }
     }
   }
 }
