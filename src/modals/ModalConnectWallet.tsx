@@ -56,7 +56,7 @@ const ModalConnectWallet: FC<IModalConnectWallet> = ({ open, onClose }) => {
   };
 
   return (
-    <BaseModal size="xl" title="Choose Wallet" isOpen={open} onClose={onClose}>
+    <BaseModal size="md" title="Choose Wallet" isOpen={open} onClose={onClose}>
       <Flex justifyContent={'center'}>{_renderWallets()}</Flex>
     </BaseModal>
   );

@@ -23,6 +23,7 @@ import { clearUser } from 'src/store/user';
 import { ROUTES } from 'src/utils/common';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
 import config from 'src/config';
+import { clearWallet } from 'src/store/wallet';
 
 const menus = [
   {
@@ -76,6 +77,7 @@ const Header: FC = () => {
 
   const onLogout = () => {
     dispatch(clearUser());
+    dispatch(clearWallet());
     if (PRIVATE_PATH.some((path) => location.pathname.includes(path))) {
       history.push(ROUTES.LOGIN);
     }

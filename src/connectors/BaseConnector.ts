@@ -62,6 +62,20 @@ class BaseConnector {
   }
 
   /**
+   * get account list and network of the logged in wallet
+   * @returns account
+   */
+  async getAccounts(provider: any = this.provider): Promise<any> {
+    try {
+      const web3Provider = new Web3Provider(provider);
+      const accounts = await web3Provider.listAccounts();
+      return accounts;
+    } catch (error) {
+      throw new Error('Wallet has not been connected yet!');
+    }
+  }
+
+  /**
    * sign a signature and save token into localStorage
    */
   async signMessage(): Promise<any> {

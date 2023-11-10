@@ -612,3 +612,11 @@
     }
   }
 }
+
+wcm-modal {
+  .wcm-overlay { // wallet connect modal
+    &.wcm-active {
+      z-index: 9999;
+    }
+  }
+}

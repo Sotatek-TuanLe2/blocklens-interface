@@ -1,6 +1,7 @@
 import config from 'src/config';
 import MetamaskConnector from './MetamaskConnector';
-import WalletConnectConnector from './WalletConnectConnector';
+// import WalletConnectConnector from './WalletConnectConnector';
+import WalletConnectConnector from './WalletConnectConnector2';
 
 export const METAMASK_WALLET = 'metamask-connector';
 export const WALLET_CONNECT = 'wallet-connect-connector';
