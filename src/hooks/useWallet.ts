@@ -80,7 +80,7 @@ const useWallet = (): ReturnType => {
     await connectWallet(connectorId, selectedChain.id);
   };
 
-  const _onAccountsChanged = async () => {
+  const _onAccountsChanged = async (changedAccount: string) => {
     const connectorId = Storage.getConnectorId() || '';
     const network = Storage.getNetwork();
     if (!connectorId) {
@@ -93,7 +93,7 @@ const useWallet = (): ReturnType => {
       );
       return;
     }
-    await connectWallet(connectorId, network);
+    await connectWallet(connectorId, network, changedAccount);
   };
 
   const _saveProvider = (provider: BaseProvider) => {
@@ -115,11 +115,15 @@ const useWallet = (): ReturnType => {
           return;
         }
       }
-      await _onAccountsChanged();
+      await _onAccountsChanged(changedAccount);
     });
   };
 
-  const connectWallet = async (connectorId: string, network: string) => {
+  const connectWallet = async (
+    connectorId: string,
+    network: string,
+    connectedAccount?: string,
+  ) => {
     const connector = ConnectorFactory.getConnector(connectorId, network);
     if (!connector) {
       return;
@@ -132,7 +136,22 @@ const useWallet = (): ReturnType => {
       }
       dispatch(setConnector(connector));
 
-      const account = await connector.getAccount(provider);
+      let account = '';
+      if (connectedAccount) {
+        // used when change account
+        const listedAccounts = await connector.getAccounts();
+        if (
+          listedAccounts.some(
+            (account: string) =>
+              account.toLowerCase() === connectedAccount.toLowerCase(),
+          )
+        ) {
+          account = connectedAccount;
+          connector.account = connectedAccount;
+        }
+      } else {
+        account = await connector.getAccount(provider);
+      }
       if (!account) {
         throw new Error('Not found connected account from provider');
       }

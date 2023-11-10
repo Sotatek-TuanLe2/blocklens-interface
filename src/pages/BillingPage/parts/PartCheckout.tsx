@@ -13,6 +13,7 @@ import ModalConnectWallet from 'src/modals/ModalConnectWallet';
 import rf from 'src/requests/RequestFactory';
 import { MetadataPlan } from 'src/store/metadata';
 import { getUserPlan } from 'src/store/user';
+import { setOpenModalSignatureRequired } from 'src/store/wallet';
 import { ROUTES } from 'src/utils/common';
 import { formatShortAddress } from 'src/utils/utils-format';
 import { formatCapitalize } from 'src/utils/utils-helper';
@@ -35,6 +36,25 @@ const PartCheckout: FC<IPartCheckout> = ({ planSelected, onBack }) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { user } = useUser();
+
+  useEffect(() => {
+    if (!user || !wallet) {
+      return;
+    }
+
+    const didWalletSignMessage = user
+      .getLinkedAddresses()
+      .some(
+        (address) =>
+          address.toLowerCase() === wallet.getAddress().toLowerCase(),
+      );
+
+    if (!user.isUserLinked() || !didWalletSignMessage) {
+      dispatch(setOpenModalSignatureRequired(true));
+    } else {
+      dispatch(setOpenModalSignatureRequired(false));
+    }
+  }, [user?.getLinkedAddresses(), wallet?.getAddress()]);
 
   const [paymentMethod, setPaymentMethod] = useState<
     typeof PAYMENT_METHOD[keyof typeof PAYMENT_METHOD]
@@ -142,7 +162,7 @@ const PartCheckout: FC<IPartCheckout> = ({ planSelected, onBack }) => {
             >
               <Flex justifyContent="space-between" alignItems="center" w="100%">
                 <Text>Crypto</Text>
-                {!!wallet && user?.isUserLinked() ? (
+                {!!wallet ? (
                   <Flex className="connect-wallet-btn">
                     <img
                       src={config.connectors[wallet.getConnectorId()].icon}
@@ -150,7 +170,7 @@ const PartCheckout: FC<IPartCheckout> = ({ planSelected, onBack }) => {
                       width="16px"
                     />
                     <Text ml={2}>
-                      {formatShortAddress(user.getLinkedAddresses()[0])}
+                      {formatShortAddress(wallet.getAddress())}
                     </Text>
                   </Flex>
                 ) : (
@@ -165,7 +185,7 @@ const PartCheckout: FC<IPartCheckout> = ({ planSelected, onBack }) => {
                 )}
               </Flex>
             </AppRadio>
-            {!!wallet && user?.isUserLinked() && (
+            {!!wallet && (
               <Flex
                 justifyContent="space-between"
                 alignItems="center"
@@ -211,19 +231,19 @@ const PartCheckout: FC<IPartCheckout> = ({ planSelected, onBack }) => {
   };
 
   const onPay = async () => {
-    try {
-      await rf
-        .getRequest('UserRequest')
-        .editInfoUser({ activePaymentMethod: paymentMethod });
-      await rf
-        .getRequest('BillingRequest')
-        .updateBillingPlan({ code: planSelected.code });
-      toastSuccess({ message: 'Update Successfully!' });
-      dispatch(getUserPlan());
-      history.push(ROUTES.BILLING_HISTORY);
-    } catch (e: any) {
-      toastError({ message: e?.message || 'Oops. Something went wrong!' });
-    }
+    // try {
+    //   await rf
+    //     .getRequest('UserRequest')
+    //     .editInfoUser({ activePaymentMethod: paymentMethod });
+    //   await rf
+    //     .getRequest('BillingRequest')
+    //     .updateBillingPlan({ code: planSelected.code });
+    //   toastSuccess({ message: 'Update Successfully!' });
+    //   dispatch(getUserPlan());
+    //   history.push(ROUTES.BILLING_HISTORY);
+    // } catch (e: any) {
+    //   toastError({ message: e?.message || 'Oops. Something went wrong!' });
+    // }
   };
 
   return (
@@ -248,6 +268,7 @@ const PartCheckout: FC<IPartCheckout> = ({ planSelected, onBack }) => {
           onClick={onPay}
           width={'100%'}
           mt={3}
+          isDisabled={!wallet}
         >
           Pay
         </AppButton>

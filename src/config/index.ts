@@ -28,6 +28,7 @@ interface Connector {
   options: {
     [key: string]: any;
   };
+  projectId?: string; // used for Wallet Connect v2
   extensionLink?: {
     chrome: string;
     firefox: string;

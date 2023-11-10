@@ -167,3 +167,9 @@ input::-ms-clear {
 .input-password{
   padding-right: 42px !important;
 }
+
+// walletconnect modal
+wcm-modal {
+  position: relative;
+  z-index: 9999;
+}

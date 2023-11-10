@@ -32,6 +32,9 @@ const PartPlan: React.FC<IPlanProps> = (props) => {
   };
 
   const _renderButton = () => {
+    if (!user) {
+      return null;
+    }
     if (user?.getPlan().code === plan.code) {
       return (
         <Text className="all-plans__plan__current-plan">Your current plan</Text>
