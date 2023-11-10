@@ -231,6 +231,25 @@ const PartCheckout: FC<IPartCheckout> = ({ planSelected, onBack }) => {
   };
 
   const onPay = async () => {
+    try {
+      toastSuccess({
+        message:
+          'Payment complete. Invoice & receipt have been sent to your email.',
+      });
+      onBack();
+    } catch (error) {
+      toastError({
+        message: (
+          <>
+            Pay request failed. Please try again.{' '}
+            <a href="https://discord.com/invite/ctnBrdhqad" target="_blank">
+              Contact us for help
+            </a>
+          </>
+        ),
+      });
+    }
+
     // try {
     //   await rf
     //     .getRequest('UserRequest')

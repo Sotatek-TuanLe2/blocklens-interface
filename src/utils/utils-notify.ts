@@ -1,8 +1,9 @@
 import { createStandaloneToast } from '@chakra-ui/toast';
+import { ReactNode } from 'react';
 
 type ToastContentType = {
   title?: string;
-  message: string;
+  message: string | ReactNode;
 };
 
 type NOTIFY_TYPE = 'success' | 'error' | 'warning' | 'info';
