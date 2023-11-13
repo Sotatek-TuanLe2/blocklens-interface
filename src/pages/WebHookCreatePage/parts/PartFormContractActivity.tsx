@@ -5,13 +5,13 @@ import AppUploadABI from 'src/components/AppUploadABI';
 import React, { FC, useEffect, useState } from 'react';
 import { IDataForm } from '../index';
 import rf from 'src/requests/RequestFactory';
-import { isAddress } from 'ethers/lib/utils';
+import SimpleReactValidator from 'simple-react-validator';
 
 interface IPartFormContractActivity {
   dataForm: IDataForm;
   setDataForm: (value: any) => void;
   type: string;
-  validator: any;
+  validator: React.MutableRefObject<SimpleReactValidator>;
   chain: string;
   network: string;
 }
@@ -25,6 +25,9 @@ const PartFormContractActivity: FC<IPartFormContractActivity> = ({
   network,
 }) => {
   const [dataContractABI, setDataContractABI] = useState<any>(null);
+  const [isContractVerified, setContractVerified] = useState<boolean>(false);
+  const [isValidContractAddress, setIsValidContractAddress] =
+    useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const getContractVerify = async (address: string) => {
@@ -34,8 +37,15 @@ const PartFormContractActivity: FC<IPartFormContractActivity> = ({
         .getRequest('RegistrationRequest')
         .getContractABI(address, chain, network);
 
-      if (res && res.result) {
-        setDataContractABI(JSON.parse(res?.result));
+      if (res) {
+        if (res.message === 'NOTOK') {
+          setDataContractABI([]);
+          setContractVerified(false);
+        } else {
+          setContractVerified(true);
+          setDataContractABI(JSON.parse(res?.result));
+        }
+
         setIsLoading(false);
         return;
       }
@@ -49,31 +59,38 @@ const PartFormContractActivity: FC<IPartFormContractActivity> = ({
   };
 
   useEffect(() => {
-    if (dataForm.metadata?.address && isAddress(dataForm?.metadata?.address)) {
+    if (validator.current.fieldValid('contractAddress')) {
       getContractVerify(dataForm.metadata?.address || '').then();
     }
+    setIsValidContractAddress(validator.current.fieldValid('contractAddress'));
   }, [dataForm.metadata?.address]);
 
   const _renderNotificationFilter = () => {
-    if (!!dataContractABI.length) {
+    if (!isContractVerified) {
       return (
-        <AppUploadABI
-          onChange={(abi, abiFilter) =>
-            setDataForm({
-              ...dataForm,
-              metadata: {
-                ...dataForm.metadata,
-                abi,
-                abiFilter,
-              },
-            })
-          }
-          abiContract={dataContractABI}
-        />
+        <Text className="text-error">The Contract Address is not verified</Text>
       );
     }
 
-    return <Text className="text-error">The Contract Address is invalid.</Text>;
+    if (!dataContractABI.length) {
+      return null;
+    }
+
+    return (
+      <AppUploadABI
+        onChange={(abi, abiFilter) =>
+          setDataForm({
+            ...dataForm,
+            metadata: {
+              ...dataForm.metadata,
+              abi,
+              abiFilter,
+            },
+          })
+        }
+        abiContract={dataContractABI}
+      />
+    );
   };
 
   return (
@@ -101,9 +118,7 @@ const PartFormContractActivity: FC<IPartFormContractActivity> = ({
       {isLoading ? (
         <Box>Loading...</Box>
       ) : (
-        isAddress(dataForm.metadata?.address || '') &&
-        dataContractABI &&
-        _renderNotificationFilter()
+        isValidContractAddress && dataContractABI && _renderNotificationFilter()
       )}
     </Flex>
   );

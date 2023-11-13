@@ -1,6 +1,5 @@
 import SimpleReactValidator from 'simple-react-validator';
-import { convertCurrencyToNumber } from './utils-helper';
-import { isAddress } from 'ethers/lib/utils';
+import { convertCurrencyToNumber, isValidAddressEVM } from './utils-helper';
 
 type IRule =
   | 'accepted'
@@ -124,7 +123,7 @@ export const createValidator = (options?: IOptions | undefined) => {
       isAddress: {
         message: 'The value is wrong format address.',
         rule: (value: string) => {
-          return isAddress(value);
+          return isValidAddressEVM(value);
         },
       },
       isAddressAptos: {

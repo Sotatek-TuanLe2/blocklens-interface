@@ -4,7 +4,7 @@ import { isValidChecksumAddress, toChecksumAddress } from 'ethereumjs-util';
 import copy from 'copy-to-clipboard';
 import { COMMON_ERROR_MESSAGE } from '../constants';
 import BigNumber from 'bignumber.js';
-import { isAddress, isHexString } from 'ethers/lib/utils';
+import { isHexString } from 'ethers/lib/utils';
 
 export const copyToClipboard = (message: string) => {
   try {
@@ -80,7 +80,10 @@ export const isString = (value: unknown) => {
 
 export const isNumber = (value: any) => {
   return (
-    !isAddress(value) && !isHexString(value) && !new BigNumber(value).isNaN()
+    !isValidAddressEVM(value) &&
+    !isValidAddressSUIAndAptos(value) &&
+    !isHexString(value) &&
+    !new BigNumber(value).isNaN()
   );
 };
 

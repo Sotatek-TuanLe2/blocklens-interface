@@ -235,33 +235,15 @@ const ListApps: React.FC = () => {
     );
   };
 
-  const _renderTotalApp = () => {
-    if (!userStats?.totalProject) return;
-    return (
-      <Box className="number-app">
-        <Text as={'span'}>Active Projects: </Text>
-        {userStats?.totalProjectActive}/{userStats?.totalProject}
-      </Box>
-    );
-  };
-
   return (
     <Box className="list-app-hp">
       <AppCard className="list-table-wrap">
         <Flex className="title-list-app">
           <Text className="text-title">Projects</Text>
           <Flex alignItems={'center'}>
-            {!isMobile && _renderTotalApp()}
             <ButtonCreateApp onReload={() => setParams({ ...params })} />
           </Flex>
         </Flex>
-
-        {isMobile && (
-          <Box px={5} mb={3}>
-            {_renderTotalApp()}
-          </Box>
-        )}
-
         <AppDataTable
           requestParams={{ ...params }}
           renderLoading={_renderLoading}
