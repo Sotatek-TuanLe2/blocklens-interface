@@ -57,7 +57,7 @@
           "blockExplorer": {
             "name": "Etherscan",
             "icon": "/images/etherscan.png",
-            "url": "https://sepolia.etherscan.io"
+            "url": "https://sepolia.etherscan.io/tx"
           },
           "nativeCurrency": {
             "name": "ETH",
