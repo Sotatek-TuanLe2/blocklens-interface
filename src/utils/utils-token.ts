@@ -1,7 +1,7 @@
-import { isAddress } from 'ethers/lib/utils';
 import BigNumber from 'bignumber.js';
 import { erc20Contract } from './utils-contract';
 import { getNetworkProvider } from './utils-network';
+import { isValidAddressEVM } from './utils-helper';
 
 const getBalanceNumber = (balance: number, decimals: number) => {
   return balance / Math.pow(10, decimals);
@@ -14,9 +14,9 @@ export const getAllowance = async (
   spenderAddress: string,
 ) => {
   if (
-    !isAddress(contractAddress) ||
-    !isAddress(userAddress) ||
-    !isAddress(spenderAddress)
+    !isValidAddressEVM(contractAddress) ||
+    !isValidAddressEVM(userAddress) ||
+    !isValidAddressEVM(spenderAddress)
   ) {
     return null;
   }

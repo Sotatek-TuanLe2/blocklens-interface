@@ -1,8 +1,12 @@
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import Decimal from 'decimal.js';
-import { isAddress, isHexString } from 'ethers/lib/utils';
-import { isNumber } from './utils-helper';
+import { isHexString } from 'ethers/lib/utils';
+import {
+  isNumber,
+  isValidAddressEVM,
+  isValidAddressSUIAndAptos,
+} from './utils-helper';
 import { isNull, isUndefined } from 'lodash';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -314,7 +318,12 @@ export const formatDefaultValueChart = (value: string) => {
   if (isNumber(value)) {
     return formatNumber(value, 2, '0');
   }
-  if (isAddress(value) || isHexString(value) || value.length >= 10) {
+  if (
+    isValidAddressEVM(value) ||
+    isValidAddressSUIAndAptos(value) ||
+    isHexString(value) ||
+    value.length >= 10
+  ) {
     return formatShortAddress(value);
   }
   return value;

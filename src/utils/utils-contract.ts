@@ -1,14 +1,15 @@
-import { Contract, ethers } from 'ethers';
+import { Contract } from 'ethers';
 import abi from 'src/abi';
 import { Interface as AbiInterface } from '@ethersproject/abi';
 import { BaseProvider } from '@ethersproject/providers';
+import { isValidAddressEVM } from './utils-helper';
 
 export function getContract(
   address: string,
   ABI: AbiInterface,
   provider: BaseProvider,
 ): Contract {
-  if (!ethers.utils.isAddress(address)) {
+  if (!isValidAddressEVM(address)) {
     throw Error(`Invalid 'address' parameter '${address}'.`);
   }
   return new Contract(address, ABI, provider);
