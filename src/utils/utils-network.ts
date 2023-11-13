@@ -64,9 +64,15 @@ export const getExplorerTxUrl = (
   }
 
   const chain = config.chains[chainId];
-  const network = chain.networks[networkId];
+  const networkKey = objectKeys(chain.networks).find(
+    (key) => chain.networks[key].id === networkId,
+  );
 
-  return `${network?.blockExplorer.url}/${txHash}`;
+  if (networkKey) {
+    return `${chain.networks[networkKey].blockExplorer.url}/${txHash}`;
+  }
+
+  return '';
 };
 
 export const objectKeys = (obj: any) => {
