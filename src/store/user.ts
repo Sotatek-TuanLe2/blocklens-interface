@@ -200,8 +200,10 @@ export const getUserStats = createAsyncThunk(
 export const getUserPlan = createAsyncThunk(
   'user/getUserPlan',
   async (_params, thunkApi) => {
-    const res = await rf.getRequest('BillingRequest').getCurrentPlan();
-    thunkApi.dispatch(setUserPlan(res));
+    const res = await rf.getRequest('BillingRequest').getCurrentSubscription();
+    if (!!res) {
+      thunkApi.dispatch(setUserPlan(res));
+    }
   },
 );
 
@@ -241,6 +243,10 @@ const userSlice = createSlice({
     },
     setUserStats: (state, action) => {
       state.stats = action.payload;
+    },
+    setInitialUserPlan: (state, action) => {
+      state.billing.plan = action.payload;
+      state.billing.nextPlan = action.payload;
     },
     setUserPlan: (state, action) => {
       state.billing.plan = {
@@ -288,6 +294,7 @@ export const {
   setUserAuth,
   setUserInfo,
   setUserStats,
+  setInitialUserPlan,
   setUserPlan,
   setUserPayment,
   setUserSettings,

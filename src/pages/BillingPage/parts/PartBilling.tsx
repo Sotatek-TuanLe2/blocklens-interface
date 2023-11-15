@@ -24,6 +24,7 @@ import PartPlan from './PartPlan';
 import rf from 'src/requests/RequestFactory';
 import { useDispatch } from 'react-redux';
 import ModalDowngradePlan from 'src/modals/billing/ModalDowngradePlan';
+import commaNumber from 'comma-number';
 
 interface IPartBillingProps {
   onUpgradePlan: (plan: MetadataPlan) => void;
@@ -108,7 +109,7 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
   }[] = useMemo(
     () => [
       {
-        title: 'Renews on',
+        title: 'Expire',
         content: !!userPlan
           ? `${moment(userPlan.expireTime).utc().format('MMM D, YYYY')} (UTC)`
           : '',
@@ -116,14 +117,15 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
       {
         title: 'Compute Units',
         content: !!userPlan
-          ? `${Math.ceil(userPlan.capacity.cu / 30)} CUs/day`
+          ? `${commaNumber(userPlan.capacity.cu)} CUs/mo`
           : '',
       },
       {
         title: 'Throughput',
         content: !!userPlan
-          ? `${Math.ceil(
-              userPlan.capacity.cu / (30 * 24 * 60 * 60),
+          ? `${commaNumber(
+              userPlan.rateLimit.find((item) => item.type === 'SECOND')
+                ?.limit || 0,
             )} CUs/second`
           : '',
       },
@@ -158,11 +160,6 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
     // TODO: hide Upgrade button if user confirms downgrade
     const isDowngrade = false;
 
-    if (isLowestPlan) {
-      // remove Renews on
-      currentPlanDetails.shift();
-    }
-
     return (
       <AppCard
         className={`list-table-wrap current-plan ${
@@ -172,12 +169,15 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
         <Box className="list-table-wrap__title">CURRENT PLAN</Box>
         <Flex className="list-table-wrap__content">
           <Box className="name-plan">{userPlan?.name.toLowerCase() || ''}</Box>
-          {currentPlanDetails.map((item, index) => (
-            <Box key={index} className="detail">
-              <Box className="detail__title">{item.title}</Box>
-              <Box className="detail__content">{item.content}</Box>
-            </Box>
-          ))}
+          {currentPlanDetails
+            // remove Expire
+            .filter((_item, index) => (isLowestPlan ? index !== 0 : true))
+            .map((item, index) => (
+              <Box key={index} className="detail">
+                <Box className="detail__title">{item.title}</Box>
+                <Box className="detail__content">{item.content}</Box>
+              </Box>
+            ))}
           {!isHighestPlan && (
             <Box className="current-plan__button">
               <AppButtonLarge

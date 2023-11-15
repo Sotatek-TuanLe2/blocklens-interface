@@ -16,7 +16,7 @@ export default class BillingRequest extends BaseRequest {
     return this.put(url, params);
   }
 
-  getCurrentPlan() {
+  getCurrentSubscription() {
     const url = '/my/subscriptions/current-subscription';
     return this.get(url);
   }

@@ -26,7 +26,7 @@ const PartPlan: React.FC<IPlanProps> = (props) => {
 
   const getCUsPerSecond = () => {
     const rateLimitPerSecond = plan.rateLimit.find(
-      (item) => item.duration === 1,
+      (item) => item.type === 'SECOND',
     );
     if (!rateLimitPerSecond) {
       return 0;
@@ -75,7 +75,7 @@ const PartPlan: React.FC<IPlanProps> = (props) => {
   const descriptions: string[] = useMemo(() => {
     const result = [
       `${commaNumber(Math.ceil(plan.capacity.cu))} CUs/mo`,
-      `Throughput ${commaNumber(getCUsPerSecond())} CUs/sec`,
+      `Throughput ${commaNumber(getCUsPerSecond())} CUs/s`,
       'All supported chains',
       `${
         plan.capacity.project
