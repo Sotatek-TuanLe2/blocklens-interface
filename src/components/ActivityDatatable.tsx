@@ -23,7 +23,6 @@ import {
   STATUS,
   WEBHOOK_TYPES,
 } from 'src/utils/utils-webhook';
-import ModalUpgradeMessage from '../modals/ModalUpgradeMessage';
 import {
   formatShortText,
   formatTimestamp,
@@ -70,7 +69,6 @@ const _renderStatus = (activity: IActivityResponse) => {
 
 const ActivityMobile: FC<IActivity> = ({ activity, webhook }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [openModalUpgradeMessage, setOpenUpgradeMessage] = useState(false);
 
   const isAddressActivity = webhook.type === WEBHOOK_TYPES.ADDRESS_ACTIVITY;
 
@@ -247,17 +245,12 @@ const ActivityMobile: FC<IActivity> = ({ activity, webhook }) => {
           </Box>
         )}
       </Box>
-      <ModalUpgradeMessage
-        open={openModalUpgradeMessage}
-        onClose={() => setOpenUpgradeMessage(false)}
-      />
     </>
   );
 };
 
 const ActivityDesktop: FC<IActivity> = ({ activity, webhook }) => {
   const history = useHistory();
-  const [openModalUpgradeMessage, setOpenModalUpgradeMessage] = useState(false);
 
   const isAddressActivity = webhook.type === WEBHOOK_TYPES.ADDRESS_ACTIVITY;
 
@@ -375,10 +368,6 @@ const ActivityDesktop: FC<IActivity> = ({ activity, webhook }) => {
           </Td>
         </Tr>
       </Tbody>
-      <ModalUpgradeMessage
-        open={openModalUpgradeMessage}
-        onClose={() => setOpenModalUpgradeMessage(false)}
-      />
     </>
   );
 };

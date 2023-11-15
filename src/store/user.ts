@@ -6,6 +6,7 @@ import {
 } from 'src/utils/utils-auth';
 import Storage from 'src/utils/utils-storage';
 import { parseJWT } from 'src/utils/utils-format';
+import { MetadataPlan } from './metadata';
 
 export type UserAuthType = {
   accessToken: string;
@@ -34,23 +35,14 @@ export type UserInfoType = {
   address?: string;
 };
 
-export type UserPlanType = {
-  code: string;
-  name: string;
-  description: string;
-  price: number;
-  capacity: {
-    cu: number;
-    project: number;
-  };
+export interface UserPlanType extends MetadataPlan {
   createdAt: string;
   updatedAt: string;
-  notificationLimitation: number;
   currency: string;
   from: number;
   to: number;
   expireTime?: number;
-};
+}
 
 export interface StripePayment {
   card: any;
@@ -125,9 +117,11 @@ const initialState: UserState = {
         cu: 1000000,
         project: 2,
       },
+      rateLimit: [],
+      subscribeOptions: [],
+      webhookRetry: 0,
       createdAt: '',
       updatedAt: '',
-      notificationLimitation: 0,
     },
     nextPlan: {
       code: 'PLAN1',
@@ -142,9 +136,11 @@ const initialState: UserState = {
         cu: 1000000,
         project: 2,
       },
+      rateLimit: [],
+      subscribeOptions: [],
+      webhookRetry: 0,
       createdAt: '',
       updatedAt: '',
-      notificationLimitation: 0,
     },
     payment: {
       activePaymentMethod: 'STRIPE',

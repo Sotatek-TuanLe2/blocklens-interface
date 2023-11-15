@@ -10,7 +10,16 @@ export type MetadataPlan = {
     cu: number;
     project: number;
   };
-  notificationLimitation: number;
+  rateLimit: {
+    duration: number;
+    limit: number;
+  }[];
+  subscribeOptions: {
+    code?: string;
+    discount?: number;
+    numOfMonths?: number;
+  }[];
+  webhookRetry: number;
 };
 
 export type MetadataState = {
