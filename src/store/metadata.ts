@@ -8,7 +8,7 @@ export type MetadataPlan = {
   price: number;
   capacity: {
     cu: number;
-    project: number;
+    project: number | null;
   };
   rateLimit: {
     duration: number;

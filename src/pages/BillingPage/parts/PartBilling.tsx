@@ -310,17 +310,9 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
     <AppCard id="all-plans" className="list-table-wrap all-plans">
       <Box className="list-table-wrap__title">ALL PLANS</Box>
       <Flex className="list-table-wrap__content" justifyContent="space-between">
-        {billingPlans?.map((plan: MetadataPlan, index: number) => {
-          const hasYearlyPlan = index === billingPlans.length - 1;
-          return (
-            <PartPlan
-              key={plan.code}
-              plan={plan}
-              hasYearlyPlan={hasYearlyPlan}
-              onChangePlan={onChangePlan}
-            />
-          );
-        })}
+        {billingPlans?.map((plan: MetadataPlan) => (
+          <PartPlan key={plan.code} plan={plan} onChangePlan={onChangePlan} />
+        ))}
       </Flex>
     </AppCard>
   );

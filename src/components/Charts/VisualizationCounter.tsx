@@ -1,12 +1,12 @@
 import { Box, Flex, Skeleton, Text, Tooltip } from '@chakra-ui/react';
 import BigNumber from 'bignumber.js';
+import commaNumber from 'comma-number';
 import React, { useMemo } from 'react';
 import 'src/styles/components/CounterConfigurations.scss';
 import { VISUALIZATION_COLORS } from 'src/utils/common';
 import { VisualizationType } from 'src/utils/query.type';
 import { isNumber } from 'src/utils/utils-helper';
 import { Visualization } from 'src/utils/utils-query';
-const commaNumber = require('comma-number');
 
 type Props = {
   data: unknown[];
