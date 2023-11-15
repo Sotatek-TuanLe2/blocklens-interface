@@ -161,3 +161,5 @@ export const ABI_TYPES = {
   STRUCT: 'struct',
   EVENT: 'event',
 };
+
+export const YEARLY_SUBSCRIPTION_CODE = 'YEARLY_SUBSCRIPTION';

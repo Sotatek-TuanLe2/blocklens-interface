@@ -155,6 +155,9 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
       !!billingPlans.length &&
       userPlan?.code === billingPlans[billingPlans.length - 1].code;
 
+    // TODO: hide Upgrade button if user confirms downgrade
+    const isDowngrade = false;
+
     if (isLowestPlan) {
       // remove Renews on
       currentPlanDetails.shift();
