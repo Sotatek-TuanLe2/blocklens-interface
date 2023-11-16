@@ -10,6 +10,7 @@ import AppAlertWarning from 'src/components/AppAlertWarning';
 import config from 'src/config';
 import useUser from 'src/hooks/useUser';
 import useWallet from 'src/hooks/useWallet';
+import BaseModal from 'src/modals/BaseModal';
 import ModalConnectWallet from 'src/modals/ModalConnectWallet';
 import rf from 'src/requests/RequestFactory';
 import { MetadataPlan } from 'src/store/metadata';
@@ -51,6 +52,7 @@ const PartCheckout: FC<IPartCheckout> = ({
   const [tokenAddress, setTokenAddress] = useState<string>('');
   const [openConnectWalletModal, setOpenConnectWalletModal] =
     useState<boolean>(false);
+  const [openConfirmingModal, setOpenConfirmingModal] = useState<boolean>(true);
 
   const userPlan = useMemo(() => user?.getPlan(), [user?.getPlan()]);
   const chainOptions = getSupportChainsTopUp();
@@ -344,7 +346,7 @@ const PartCheckout: FC<IPartCheckout> = ({
   };
 
   const confirmTransaction = async (txn: string) => {
-    //
+    setOpenConfirmingModal(true);
   };
 
   const updateSubscription = async () => {
@@ -423,8 +425,34 @@ const PartCheckout: FC<IPartCheckout> = ({
         open={openConnectWalletModal}
         onClose={() => setOpenConnectWalletModal(false)}
       />
+      <ConfirmingTransactionModal
+        isOpen={openConfirmingModal}
+        onClose={() => setOpenConfirmingModal(false)}
+      />
     </Box>
   );
 };
 
 export default PartCheckout;
+
+interface ConfirmingTransactionModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const ConfirmingTransactionModal: FC<ConfirmingTransactionModalProps> = ({
+  isOpen,
+  onClose,
+}) => {
+  return (
+    <BaseModal
+      size="2xl"
+      title="Your payment is being confirmed"
+      isOpen={isOpen}
+      isHideCloseIcon
+      onClose={onClose}
+    >
+      <Box textAlign={'center'}>Wait a second...</Box>
+    </BaseModal>
+  );
+};
