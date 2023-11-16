@@ -1,41 +1,106 @@
 import { AddIcon } from '@chakra-ui/icons';
 import { Box, Divider, Flex, RadioGroup, Stack, Text } from '@chakra-ui/react';
+import BigNumber from 'bignumber.js';
 import moment from 'moment';
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import abi from 'src/abi';
 import { AppButton, AppRadio, AppSelect2 } from 'src/components';
 import AppAlertWarning from 'src/components/AppAlertWarning';
 import config from 'src/config';
 import useUser from 'src/hooks/useUser';
 import useWallet from 'src/hooks/useWallet';
+import BaseModal from 'src/modals/BaseModal';
 import ModalConnectWallet from 'src/modals/ModalConnectWallet';
 import rf from 'src/requests/RequestFactory';
 import { MetadataPlan } from 'src/store/metadata';
+import { executeTransaction } from 'src/store/transaction';
 import { getUserPlan } from 'src/store/user';
 import { setOpenModalSignatureRequired } from 'src/store/wallet';
-import { ROUTES } from 'src/utils/common';
-import { formatShortAddress } from 'src/utils/utils-format';
+import { convertDecToWei, formatShortAddress } from 'src/utils/utils-format';
 import { formatCapitalize } from 'src/utils/utils-helper';
 import {
   getSupportChainsTopUp,
   getTopUpCurrencyOptions,
   getTopUpCurrenciesByChainId,
+  getTopUpConfigByNetworkId,
 } from 'src/utils/utils-network';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import Storage from 'src/utils/utils-storage';
 import { PAYMENT_METHOD } from '..';
 
 interface IPartCheckout {
-  planSelected: MetadataPlan;
+  selectedPlan: MetadataPlan;
+  subscriptionPeriod: string;
   onBack: () => void;
 }
 
-const PartCheckout: FC<IPartCheckout> = ({ planSelected, onBack }) => {
+const PartCheckout: FC<IPartCheckout> = ({
+  selectedPlan,
+  subscriptionPeriod,
+  onBack,
+}) => {
   const { wallet, connectWallet } = useWallet();
   const dispatch = useDispatch();
-  const history = useHistory();
   const { user } = useUser();
+
+  const [totalAmount, setTotalAmount] = useState<number>(0);
+  const [paymentMethod, setPaymentMethod] = useState<
+    typeof PAYMENT_METHOD[keyof typeof PAYMENT_METHOD]
+  >(PAYMENT_METHOD.CRYPTO);
+  const [chainId, setChainId] = useState<string>('');
+  const [tokenAddress, setTokenAddress] = useState<string>('');
+  const [openConnectWalletModal, setOpenConnectWalletModal] =
+    useState<boolean>(false);
+  const [openConfirmingModal, setOpenConfirmingModal] = useState<boolean>(true);
+
+  const userPlan = useMemo(() => user?.getPlan(), [user?.getPlan()]);
+  const chainOptions = getSupportChainsTopUp();
+  const tokenOptions = useMemo(
+    () => getTopUpCurrencyOptions(chainId),
+    [chainId],
+  );
+
+  const isDownGrade = useMemo(
+    () =>
+      userPlan
+        ? new BigNumber(selectedPlan.price).isLessThan(
+            new BigNumber(userPlan.price),
+          )
+        : false,
+    [userPlan, selectedPlan],
+  );
+  const isRenewal = useMemo(
+    () =>
+      userPlan
+        ? new BigNumber(selectedPlan.price).isEqualTo(
+            new BigNumber(userPlan.price),
+          )
+        : false,
+    [userPlan, selectedPlan],
+  );
+  const isUpgrade = useMemo(
+    () =>
+      userPlan
+        ? new BigNumber(selectedPlan.price).isGreaterThan(
+            new BigNumber(userPlan.price),
+          )
+        : false,
+    [userPlan, selectedPlan],
+  );
+
+  useEffect(() => {
+    estimatePrice();
+  }, [selectedPlan]);
+
+  useEffect(() => {
+    const connectorId = Storage.getConnectorId();
+    const network = Storage.getNetwork();
+    if (!connectorId) return;
+    (async () => {
+      await connectWallet(connectorId, network);
+    })();
+  }, [wallet?.getNework()]);
 
   useEffect(() => {
     if (!user || !wallet) {
@@ -56,25 +121,6 @@ const PartCheckout: FC<IPartCheckout> = ({ planSelected, onBack }) => {
     }
   }, [user?.getLinkedAddresses(), wallet?.getAddress()]);
 
-  const [paymentMethod, setPaymentMethod] = useState<
-    typeof PAYMENT_METHOD[keyof typeof PAYMENT_METHOD]
-  >(PAYMENT_METHOD.CRYPTO);
-  const [chainId, setChainId] = useState<string>('');
-  const [tokenAddress, setTokenAddress] = useState<string>('');
-  const [openConnectWalletModal, setOpenConnectWalletModal] =
-    useState<boolean>(false);
-
-  const chainOptions = getSupportChainsTopUp();
-
-  useEffect(() => {
-    const connectorId = Storage.getConnectorId();
-    const network = Storage.getNetwork();
-    if (!connectorId) return;
-    (async () => {
-      await connectWallet(connectorId, network);
-    })();
-  }, [wallet?.getNework()]);
-
   useEffect(() => {
     if (!!chainOptions.length) {
       setChainId(chainOptions[0].value);
@@ -90,20 +136,37 @@ const PartCheckout: FC<IPartCheckout> = ({ planSelected, onBack }) => {
     setTokenAddress(currencies[0].address);
   }, [chainId]);
 
+  const estimatePrice = async () => {
+    if (!userPlan) {
+      return;
+    }
+
+    try {
+      const res =
+        isDownGrade || isRenewal
+          ? await rf
+              .getRequest('BillingRequest')
+              .estimatePriceForRenewOrDowngrade()
+          : await rf
+              .getRequest('BillingRequest')
+              .estimatePriceForUpgrade(selectedPlan.code, subscriptionPeriod);
+
+      setTotalAmount(res.amount);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const generatePlanAction = () => {
-    if (!user) {
-      return '';
+    if (isUpgrade) {
+      return `Upgrade to ${formatCapitalize(selectedPlan.name)} plan`;
+    } else if (isRenewal) {
+      return `Renewal of ${formatCapitalize(selectedPlan.name)} plan`;
+    } else if (isDownGrade) {
+      return `Downgrade to ${formatCapitalize(selectedPlan.name)} plan`;
     }
 
-    const userPlan = user.getPlan();
-
-    if (planSelected.price > userPlan.price) {
-      return `Upgrade to ${formatCapitalize(planSelected.name)} plan`;
-    } else if (planSelected.price === userPlan.price) {
-      return `Renewal of ${formatCapitalize(planSelected.name)} plan`;
-    } else {
-      return `Downgrade to ${formatCapitalize(planSelected.name)} plan`;
-    }
+    return '';
   };
 
   const onChangeTokenAddress = (value: string) => setTokenAddress(value);
@@ -111,12 +174,21 @@ const PartCheckout: FC<IPartCheckout> = ({ planSelected, onBack }) => {
   const onChangeChainId = (value: string) => setChainId(value);
 
   const _renderOrder = () => {
+    if (!user) {
+      return;
+    }
+
+    const showAmountPaid =
+      user?.getNextPlan().price !== 0 && // next plan has fee
+      selectedPlan.price > user?.getNextPlan().price && // selected plan is higher than next plan
+      selectedPlan.price > totalAmount; // user did purchase next plan
+
     return (
       <Box className="billing-checkout__order">
         <Box className="title">Order</Box>
         <Flex className="name-plan" alignItems="flex-end" px={10}>
           <Text textTransform="capitalize" mr={2}>
-            {planSelected.name.toLowerCase()} plan
+            {selectedPlan.name.toLowerCase()} plan
           </Text>
           <Text className="period">
             {`period ${moment().format('YYYY/MM/DD')}-${moment()
@@ -127,22 +199,36 @@ const PartCheckout: FC<IPartCheckout> = ({ planSelected, onBack }) => {
         <Flex
           alignItems="flex-end"
           justifyContent="space-between"
-          mb="15px"
+          mb="10px"
           px={10}
         >
           <Text className="plan-action">{generatePlanAction()}</Text>
-          <Text>{planSelected.price}$</Text>
+          <Text>{selectedPlan.price}$</Text>
         </Flex>
-        <Divider w="330px" my="25px" mx="auto" />
+        {showAmountPaid && (
+          <Flex
+            alignItems="center"
+            justifyContent="space-between"
+            mb="10px"
+            px={10}
+          >
+            <Text className="plan-action">
+              Amount paid
+              <br />
+              (For {formatCapitalize(user?.getNextPlan().name)} plan - no longer
+              use)
+            </Text>
+            <Text>{selectedPlan.price}$</Text>
+          </Flex>
+        )}
         <Flex alignItems="flex-end" justifyContent="space-between" px={10}>
           <Text>
             <b>Total amount</b>
           </Text>
           <Text>
-            <b>{planSelected.price}$</b>
+            <b>{!!totalAmount ? totalAmount : '--'}$</b>
           </Text>
         </Flex>
-        <Divider w="330px" my="30px" mx="auto" borderStyle="dashed" />
       </Box>
     );
   };
@@ -201,7 +287,7 @@ const PartCheckout: FC<IPartCheckout> = ({ planSelected, onBack }) => {
                   <AppSelect2
                     size="medium"
                     onChange={onChangeTokenAddress}
-                    options={getTopUpCurrencyOptions(chainId)}
+                    options={tokenOptions}
                     value={tokenAddress}
                   />
                 </Flex>
@@ -230,12 +316,68 @@ const PartCheckout: FC<IPartCheckout> = ({ planSelected, onBack }) => {
     );
   };
 
+  const purchasePlan = async (): Promise<string> => {
+    const decimal = tokenOptions.find(
+      (option) => option.value === tokenAddress,
+    )?.decimals;
+
+    const transactionPayload: any = await dispatch(
+      executeTransaction({
+        provider: wallet?.getProvider(),
+        params: {
+          contractAddress: getTopUpConfigByNetworkId(chainId).contractAddress,
+          abi: abi['topup'],
+          action: 'topup',
+          transactionArgs: [
+            config.topUp.appId,
+            tokenAddress,
+            convertDecToWei(totalAmount.toString(), decimal),
+          ],
+        },
+        confirmation: config.topUp.confirmations,
+      }),
+    );
+
+    if (!transactionPayload) {
+      throw new Error('Creating transaction failed');
+    }
+
+    return transactionPayload.payload.hash;
+  };
+
+  const confirmTransaction = async (txn: string) => {
+    setOpenConfirmingModal(true);
+  };
+
+  const updateSubscription = async () => {
+    if (isUpgrade) {
+      return rf
+        .getRequest('BillingRequest')
+        .upgradeSubscription(selectedPlan.code, subscriptionPeriod);
+    } else if (isDownGrade) {
+      return rf
+        .getRequest('BillingRequest')
+        .downgradeSubscription(selectedPlan.code);
+    } else {
+      return;
+    }
+  };
+
   const onPay = async () => {
+    if (!wallet) {
+      return;
+    }
+
     try {
+      const txn = await purchasePlan();
+      await confirmTransaction(txn);
+      await updateSubscription();
+
       toastSuccess({
         message:
           'Payment complete. Invoice & receipt have been sent to your email.',
       });
+      dispatch(getUserPlan());
       onBack();
     } catch (error) {
       toastError({
@@ -249,20 +391,6 @@ const PartCheckout: FC<IPartCheckout> = ({ planSelected, onBack }) => {
         ),
       });
     }
-
-    // try {
-    //   await rf
-    //     .getRequest('UserRequest')
-    //     .editInfoUser({ activePaymentMethod: paymentMethod });
-    //   await rf
-    //     .getRequest('BillingRequest')
-    //     .updateBillingPlan({ code: planSelected.code });
-    //   toastSuccess({ message: 'Update Successfully!' });
-    //   dispatch(getUserPlan());
-    //   history.push(ROUTES.BILLING_HISTORY);
-    // } catch (e: any) {
-    //   toastError({ message: e?.message || 'Oops. Something went wrong!' });
-    // }
   };
 
   return (
@@ -274,6 +402,7 @@ const PartCheckout: FC<IPartCheckout> = ({ planSelected, onBack }) => {
       <Box className="billing-checkout__bill">
         <Box className="billing-checkout__bill-info">
           {_renderOrder()}
+          <Divider w="330px" mx="auto" borderStyle="dashed" />
           {_renderPaymentMethod()}
         </Box>
         <AppAlertWarning>
@@ -287,7 +416,7 @@ const PartCheckout: FC<IPartCheckout> = ({ planSelected, onBack }) => {
           onClick={onPay}
           width={'100%'}
           mt={3}
-          isDisabled={!wallet}
+          isDisabled={!wallet || !totalAmount}
         >
           Pay
         </AppButton>
@@ -296,8 +425,34 @@ const PartCheckout: FC<IPartCheckout> = ({ planSelected, onBack }) => {
         open={openConnectWalletModal}
         onClose={() => setOpenConnectWalletModal(false)}
       />
+      <ConfirmingTransactionModal
+        isOpen={openConfirmingModal}
+        onClose={() => setOpenConfirmingModal(false)}
+      />
     </Box>
   );
 };
 
 export default PartCheckout;
+
+interface ConfirmingTransactionModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const ConfirmingTransactionModal: FC<ConfirmingTransactionModalProps> = ({
+  isOpen,
+  onClose,
+}) => {
+  return (
+    <BaseModal
+      size="2xl"
+      title="Your payment is being confirmed"
+      isOpen={isOpen}
+      isHideCloseIcon
+      onClose={onClose}
+    >
+      <Box textAlign={'center'}>Wait a second...</Box>
+    </BaseModal>
+  );
+};

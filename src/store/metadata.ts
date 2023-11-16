@@ -1,5 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import rf from 'src/requests/RequestFactory';
+import { RootState } from '.';
+import { setInitialUserPlan } from './user';
 
 export type MetadataPlan = {
   code: string;
@@ -8,9 +10,18 @@ export type MetadataPlan = {
   price: number;
   capacity: {
     cu: number;
-    project: number;
+    project: number | null;
   };
-  notificationLimitation: number;
+  rateLimit: {
+    type: 'SECOND' | 'MINUTE' | 'HOUR' | 'DAY';
+    limit: number;
+  }[];
+  subscribeOptions: {
+    code?: string;
+    discount?: number;
+    numOfMonths?: number;
+  }[];
+  webhookRetry: number;
 };
 
 export type MetadataState = {
@@ -32,7 +43,15 @@ export const getMetadataPlans = createAsyncThunk(
   'metadata/getPlans',
   async (_params, thunkApi) => {
     const res = await rf.getRequest('BillingRequest').getPlans();
-    thunkApi.dispatch(setPlans(res));
+    if (!!res && !!res.length) {
+      thunkApi.dispatch(setPlans(res));
+
+      const currentPlan = (thunkApi.getState() as RootState).user.billing.plan;
+      // if user does not have subscription = free plan
+      if (currentPlan.code === res[0].code) {
+        thunkApi.dispatch(setInitialUserPlan(res[0]));
+      }
+    }
   },
 );
 

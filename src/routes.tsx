@@ -89,8 +89,8 @@ const Routes: FC<RouteComponentProps> = () => {
       }
       return;
     }
-    dispatch(getUser());
     dispatch(initMetadata());
+    dispatch(getUser());
   }, [accessToken]);
 
   return (

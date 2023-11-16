@@ -22,11 +22,11 @@ import { PAYMENT_METHOD } from '..';
 import PartNotification, { NOTIFICATION_TYPE } from './PartNotification';
 import PartPlan from './PartPlan';
 import rf from 'src/requests/RequestFactory';
-import { useDispatch } from 'react-redux';
 import ModalDowngradePlan from 'src/modals/billing/ModalDowngradePlan';
+import commaNumber from 'comma-number';
 
 interface IPartBillingProps {
-  onUpgradePlan: (plan: MetadataPlan) => void;
+  onUpgradePlan: (plan: MetadataPlan, isYearly: boolean) => void;
 }
 
 interface ILineItems {
@@ -66,10 +66,9 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
 
   const { user } = useUser();
   const { billingPlans } = useMetadata();
-  const dispatch = useDispatch();
 
   const [billingHistory, setBillingHistory] = useState<any[] | null>(null);
-  const [selectedPlan, setSelectedPlan] = useState<MetadataPlan | null>(null);
+  const [downgradePlan, setDowngradePlan] = useState<MetadataPlan | null>(null);
   const [openDowngradeModal, setOpenDowngradeModal] = useState<boolean>(false);
 
   const userPlan = useMemo(() => user?.getPlan(), [user?.getPlan()]);
@@ -108,7 +107,7 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
   }[] = useMemo(
     () => [
       {
-        title: 'Renews on',
+        title: 'Expire',
         content: !!userPlan
           ? `${moment(userPlan.expireTime).utc().format('MMM D, YYYY')} (UTC)`
           : '',
@@ -116,14 +115,15 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
       {
         title: 'Compute Units',
         content: !!userPlan
-          ? `${Math.ceil(userPlan.capacity.cu / 30)} CUs/day`
+          ? `${commaNumber(userPlan.capacity.cu)} CUs/mo`
           : '',
       },
       {
         title: 'Throughput',
         content: !!userPlan
-          ? `${Math.ceil(
-              userPlan.capacity.cu / (30 * 24 * 60 * 60),
+          ? `${commaNumber(
+              userPlan.rateLimit.find((item) => item.type === 'SECOND')
+                ?.limit || 0,
             )} CUs/second`
           : '',
       },
@@ -155,10 +155,8 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
       !!billingPlans.length &&
       userPlan?.code === billingPlans[billingPlans.length - 1].code;
 
-    if (isLowestPlan) {
-      // remove Renews on
-      currentPlanDetails.shift();
-    }
+    // TODO: hide Upgrade button if user confirms downgrade
+    const isDowngrade = false;
 
     return (
       <AppCard
@@ -169,12 +167,15 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
         <Box className="list-table-wrap__title">CURRENT PLAN</Box>
         <Flex className="list-table-wrap__content">
           <Box className="name-plan">{userPlan?.name.toLowerCase() || ''}</Box>
-          {currentPlanDetails.map((item, index) => (
-            <Box key={index} className="detail">
-              <Box className="detail__title">{item.title}</Box>
-              <Box className="detail__content">{item.content}</Box>
-            </Box>
-          ))}
+          {currentPlanDetails
+            // remove Expire
+            .filter((_item, index) => (isLowestPlan ? index !== 0 : true))
+            .map((item, index) => (
+              <Box key={index} className="detail">
+                <Box className="detail__title">{item.title}</Box>
+                <Box className="detail__content">{item.content}</Box>
+              </Box>
+            ))}
           {!isHighestPlan && (
             <Box className="current-plan__button">
               <AppButtonLarge
@@ -215,7 +216,7 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
     }
   };
 
-  const onChangePlan = (plan: MetadataPlan) => {
+  const onChangePlan = (plan: MetadataPlan, isYearly: boolean) => {
     if (!user) {
       return;
     }
@@ -225,10 +226,10 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
     );
 
     if (isDownGrade) {
-      setSelectedPlan(plan);
+      setDowngradePlan(plan);
       setOpenDowngradeModal(true);
     } else {
-      onUpgradePlan(plan);
+      onUpgradePlan(plan, isYearly);
     }
   };
 
@@ -310,17 +311,9 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
     <AppCard id="all-plans" className="list-table-wrap all-plans">
       <Box className="list-table-wrap__title">ALL PLANS</Box>
       <Flex className="list-table-wrap__content" justifyContent="space-between">
-        {billingPlans?.map((plan: MetadataPlan, index: number) => {
-          const hasYearlyPlan = index === billingPlans.length - 1;
-          return (
-            <PartPlan
-              key={plan.code}
-              plan={plan}
-              hasYearlyPlan={hasYearlyPlan}
-              onChangePlan={onChangePlan}
-            />
-          );
-        })}
+        {billingPlans?.map((plan: MetadataPlan) => (
+          <PartPlan key={plan.code} plan={plan} onChangePlan={onChangePlan} />
+        ))}
       </Flex>
     </AppCard>
   );
@@ -336,169 +329,9 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
       <PartNotification variant={NOTIFICATION_TYPE.WARNING_DOWNGRADE} />
       {_renderBillings()}
       {_renderAllPlans()}
-      {/* <AppCard className="list-table-wrap">
-        <Flex className="box-title">
-          <Box className={'text-title'}>Select Your Plan</Box>
-
-          {user?.getPlan().price !== 0 && (
-            <Box className="box-btn-cancel">
-              <AppButton
-                variant="cancel"
-                size="sm"
-                onClick={() => setIsOpenCancelSubscriptionModal(true)}
-              >
-                Cancel Subscription
-              </AppButton>
-            </Box>
-          )}
-        </Flex>
-
-        {isMobile ? _renderPlansMobile() : _renderPlansDesktop()}
-
-        <Flex
-          justifyContent={'space-between'}
-          alignItems={'center'}
-          mx={isMobile ? 5 : 10}
-          mt={5}
-          flexDirection={isMobile ? 'column' : 'row'}
-        >
-          <Flex alignItems={'center'}>
-            <Box textAlign={'center'} ml={2}>
-              If you need more apps or higher limits, please{' '}
-              <AppLink to={ROUTES.CONTACT_US} className="link">
-                Contact Us
-              </AppLink>
-            </Box>
-          </Flex>
-          <Box mb={isMobile ? 4 : 0} width={isMobile ? '100%' : 'auto'}>
-            {user?.isPaymentMethodIntegrated() &&
-              !!user?.getActivePaymentMethod()
-              ? _renderButtonUpdatePlan()
-              : _renderButton()}
-          </Box>
-        </Flex>
-
-        {!isCurrentPlan && user?.isPaymentMethodIntegrated() && (
-          <Box
-            px={isMobile ? 5 : 10}
-            mb={isMobile ? 3 : 0}
-            mt={isMobile ? 0 : 3}
-          >
-            {_renderWarning()}
-          </Box>
-        )}
-        {isOpenCancelSubscriptionModal && (
-          <ModalCancelSubscription
-            open={isOpenCancelSubscriptionModal}
-            onClose={() => setIsOpenCancelSubscriptionModal(false)}
-          />
-        )}
-      </AppCard>
-
-      {user?.isPaymentMethodIntegrated() && !!user?.getActivePaymentMethod() && (
-        <AppCard className={'box-change-plan'}>
-          <Box className={'box-change-plan__title'}>
-            Change Payment Method
-          </Box>
-          <Flex flexWrap={'wrap'} justifyContent={'space-between'} mt={5}>
-            <Box
-              className={`${
-                paymentMethod === PAYMENT_METHOD.CARD ? 'active' : ''
-              } box-method`}
-            >
-              <Flex justifyContent={'space-between'}>
-                <Box className="icon-checked-active">
-                  {paymentMethod === PAYMENT_METHOD.CARD ? (
-                    <CircleCheckedIcon />
-                  ) : (
-                    <RadioNoCheckedIcon />
-                  )}
-                </Box>
-              </Flex>
-
-              <Flex flexDirection={'column'} alignItems={'center'}>
-                <Box className="box-method__name">Payment with card</Box>
-                <Flex alignItems={'flex-start'}>
-                  <Box className="box-method__value">
-                    (
-                    {!user.getStripePayment()
-                      ? '---'
-                      : user.getStripePayment()?.card?.brand +
-                      ' - ' +
-                      user.getStripePayment().card?.last4}
-                    )
-                  </Box>
-                  <Box
-                    ml={4}
-                    mt={1}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setIsOpenEditCardModal(true);
-                    }}
-                    className={'box-method__btn-edit'}
-                  >
-                    <EditIcon />
-                  </Box>
-                </Flex>
-                <ListCardIcon />
-              </Flex>
-            </Box>
-
-            <Box
-              className={`${
-                paymentMethod === PAYMENT_METHOD.CRYPTO ? 'active' : ''
-              } box-method`}
-              onClick={() => onChangePaymentMethod(PAYMENT_METHOD.CRYPTO)}
-            >
-              <Box
-                className="icon-checked-active"
-                display="flex"
-                justifyContent="space-between"
-              >
-                {paymentMethod === PAYMENT_METHOD.CRYPTO ? (
-                  <CircleCheckedIcon />
-                ) : (
-                  <RadioNoCheckedIcon />
-                )}
-              </Box>
-              <Flex flexDirection={'column'} alignItems={'center'}>
-                <Box className="box-method__name">Payment with crypto</Box>
-                <Flex>
-                  <Box className="box-method__value" mr={3}>
-                    (Total: ${user?.getBalance()})
-                  </Box>
-                  <Box mt={1}>
-                    <ReloadIcon
-                      className={isReloadingUserInfo ? 'is-reloading' : ''}
-                      onClick={onReloadUserInfo}
-                    />
-                  </Box>
-                </Flex>
-                <CryptoIcon />
-              </Flex>
-            </Box>
-            {isOpenEditCardModal && (
-              <ModalEditCreditCard
-                open={isOpenEditCardModal}
-                onClose={() => setIsOpenEditCardModal(false)}
-              />
-            )}
-
-            {isOpenChangePayMethodModal && (
-              <ModalChangePaymentMethod
-                paymentMethodSelected={paymentMethodSelected}
-                open={isOpenChangePayMethodModal}
-                onClose={() => {
-                  setIsOpenChangePayMethodModal(false);
-                }}
-              />
-            )}
-          </Flex>
-        </AppCard>
-      )} */}
-      {openDowngradeModal && selectedPlan && (
+      {openDowngradeModal && downgradePlan && (
         <ModalDowngradePlan
-          downgradePlan={selectedPlan}
+          downgradePlan={downgradePlan}
           onClose={onCloseDowngradeModal}
         />
       )}

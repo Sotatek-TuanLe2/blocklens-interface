@@ -516,6 +516,14 @@
       }
     }
 
+    &__order {
+      height: 220px;
+    }
+
+    &__payment {
+      margin-top: 20px;
+    }
+
     &__order, &__payment {
 
       @include tablet {
