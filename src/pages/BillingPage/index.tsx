@@ -64,7 +64,7 @@ import {
   getErrorMessage,
   scrollIntoElementById,
 } from '../../utils/utils-helper';
-import { ROUTES } from 'src/utils/common';
+import { ROUTES, YEARLY_SUBSCRIPTION_CODE } from 'src/utils/common';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 import PartPlan from './parts/PartPlan';
@@ -175,7 +175,6 @@ const BillingPage = () => {
   >(null);
   const [isOpenCancelSubscriptionModal, setIsOpenCancelSubscriptionModal] =
     useState<boolean>(false);
-  const [selectedPlan, setSelectedPlan] = useState<MetadataPlan>({} as any);
   const [isOpenEditCardModal, setIsOpenEditCardModal] =
     useState<boolean>(false);
   const [isOpenChangePayMethodModal, setIsOpenChangePayMethodModal] =
@@ -183,6 +182,8 @@ const BillingPage = () => {
   const [isReloadingUserInfo, setIsReloadingUserInfo] =
     useState<boolean>(false);
   const [step, setStep] = useState<number>(STEPS.BILLING);
+  const [selectedPlan, setSelectedPlan] = useState<MetadataPlan>({} as any);
+  const [subscriptionPeriod, setSubscriptionPeriod] = useState<string>('');
 
   // useEffect(() => {
   //   setPaymentMethodSelected(user?.getActivePaymentMethod());
@@ -370,17 +371,16 @@ const BillingPage = () => {
 
   const onBackStep = () => setStep((prevState) => prevState - 1);
 
+  const onUpgradePlan = (plan: MetadataPlan, isYearly: boolean) => {
+    setSelectedPlan(plan);
+    setSubscriptionPeriod(isYearly ? YEARLY_SUBSCRIPTION_CODE : '');
+    setStep(STEPS.CHECKOUT);
+  };
+
   const _renderContent = () => {
     switch (step) {
       case STEPS.BILLING:
-        return (
-          <PartBilling
-            onUpgradePlan={(plan) => {
-              setSelectedPlan(plan);
-              setStep(STEPS.CHECKOUT);
-            }}
-          />
-        );
+        return <PartBilling onUpgradePlan={onUpgradePlan} />;
       // case STEPS.FORM:
       //   return (
       //     <PartPaymentInfo
@@ -401,7 +401,8 @@ const BillingPage = () => {
       case STEPS.CHECKOUT:
         return (
           <PartCheckout
-            planSelected={selectedPlan}
+            selectedPlan={selectedPlan}
+            subscriptionPeriod={subscriptionPeriod}
             onBack={() => setStep(STEPS.BILLING)}
           />
         );

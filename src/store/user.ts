@@ -200,9 +200,15 @@ export const getUserStats = createAsyncThunk(
 export const getUserPlan = createAsyncThunk(
   'user/getUserPlan',
   async (_params, thunkApi) => {
-    const res = await rf.getRequest('BillingRequest').getCurrentSubscription();
-    if (!!res) {
-      thunkApi.dispatch(setUserPlan(res));
+    try {
+      const res = await rf
+        .getRequest('BillingRequest')
+        .getCurrentSubscription();
+      if (!!res) {
+        thunkApi.dispatch(setUserPlan(res));
+      }
+    } catch (error) {
+      console.error(error);
     }
   },
 );

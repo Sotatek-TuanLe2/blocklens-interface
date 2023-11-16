@@ -10,7 +10,7 @@ import { formatCapitalize } from 'src/utils/utils-helper';
 
 interface IPlanProps {
   plan: MetadataPlan;
-  onChangePlan: (plan: MetadataPlan) => void;
+  onChangePlan: (plan: MetadataPlan, isYearly: boolean) => void;
 }
 
 const PartPlan: React.FC<IPlanProps> = (props) => {
@@ -65,7 +65,7 @@ const PartPlan: React.FC<IPlanProps> = (props) => {
     return (
       <AppButtonLarge
         className="all-plans__plan__button"
-        onClick={() => onChangePlan(plan)}
+        onClick={() => onChangePlan(plan, isYearly)}
       >
         {`Switch to ${formatCapitalize(plan.name)}`}
       </AppButtonLarge>

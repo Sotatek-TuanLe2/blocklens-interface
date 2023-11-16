@@ -112,7 +112,7 @@ export default class BillingRequest extends BaseRequest {
    * @param code required - plan
    * @param subscribeOptionCode - for yearly upgrading YEARLY_SUBSCRIPTION
    */
-  estimatePriceForUpgrading(code: string, subscribeOptionCode?: string) {
+  estimatePriceForUpgrade(code: string, subscribeOptionCode?: string) {
     const url = '/subscription/estimate-upgrade-subscription-price';
     return this.put(url, { code, subscribeOptionCode });
   }
