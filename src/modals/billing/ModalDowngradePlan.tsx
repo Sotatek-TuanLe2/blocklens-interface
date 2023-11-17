@@ -11,6 +11,7 @@ import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import BaseModal from '../BaseModal';
 import rf from 'src/requests/RequestFactory';
 import moment from 'moment';
+import { generatePlanDescriptions } from 'src/pages/BillingPage/parts/PartPlan';
 
 interface IModalDowngradePlanProps {
   downgradePlan: MetadataPlan;
@@ -73,41 +74,22 @@ const ModalDowngradePlan: React.FC<IModalDowngradePlanProps> = (props) => {
           >
             <Text className="plan-title">{item.title}</Text>
             <Text className="plan-name">{item.plan.name}</Text>
-            <Flex className="plan-descriptions" alignItems="center">
-              <CheckedIcon stroke="#28c76f" />
-              <span className="plan-descriptions__info plan-descriptions__info--cu">
-                {Math.ceil(item.plan.capacity.cu / 30)} CUs/day
-              </span>
-            </Flex>
-            <Flex className="plan-descriptions" alignItems="center">
-              <CheckedIcon stroke="#28c76f" />
-              <span className="plan-descriptions__info">
-                Throughput{' '}
-                {Math.ceil(item.plan.capacity.cu / (30 * 24 * 60 * 60))} CUs/sec
-              </span>
-            </Flex>
-            <Flex className="plan-descriptions" alignItems="center">
-              <CheckedIcon stroke="#28c76f" />
-              <span className="plan-descriptions__info">All APIs</span>
-            </Flex>
-            <Flex className="plan-descriptions" alignItems="center">
-              <CheckedIcon stroke="#28c76f" />
-              <span className="plan-descriptions__info">
-                All supported chains
-              </span>
-            </Flex>
-            <Flex className="plan-descriptions" alignItems="center">
-              <CheckedIcon stroke="#28c76f" />
-              <span className="plan-descriptions__info">
-                {item.plan.capacity.project} projects
-              </span>
-            </Flex>
-            <Flex className="plan-descriptions" alignItems="center">
-              <CheckedIcon stroke="#28c76f" />
-              <span className="plan-descriptions__info">
-                24/7 Discord support
-              </span>
-            </Flex>
+            {generatePlanDescriptions(item.plan).map((des, index) => (
+              <Flex
+                key={index}
+                className="plan-descriptions"
+                alignItems="center"
+              >
+                <CheckedIcon stroke="#28c76f" />
+                <span
+                  className={`plan-descriptions__info ${
+                    index === 0 ? 'plan-descriptions__info--cu' : ''
+                  }`}
+                >
+                  {des}
+                </span>
+              </Flex>
+            ))}
           </Box>
         ))}
       </Flex>

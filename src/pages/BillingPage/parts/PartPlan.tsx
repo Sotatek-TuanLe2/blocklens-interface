@@ -13,17 +13,7 @@ interface IPlanProps {
   onChangePlan: (plan: MetadataPlan, isYearly: boolean) => void;
 }
 
-const PartPlan: React.FC<IPlanProps> = (props) => {
-  const { plan, onChangePlan } = props;
-
-  const yearlyOptions = plan.subscribeOptions.find(
-    (item) => item.code === YEARLY_SUBSCRIPTION_CODE,
-  );
-
-  const [isYearly, setIsYearly] = useState<boolean>(!!yearlyOptions);
-
-  const { user } = useUser();
-
+export const generatePlanDescriptions = (plan: MetadataPlan): string[] => {
   const getCUsPerSecond = () => {
     const rateLimitPerSecond = plan.rateLimit.find(
       (item) => item.type === 'SECOND',
@@ -34,6 +24,35 @@ const PartPlan: React.FC<IPlanProps> = (props) => {
 
     return rateLimitPerSecond.limit;
   };
+
+  const result = [
+    `${commaNumber(Math.ceil(plan.capacity.cu))} CUs/mo`,
+    `Throughput ${commaNumber(getCUsPerSecond())} CUs/s`,
+    'All supported chains',
+    `${
+      plan.capacity.project
+        ? `${plan.capacity.project} projects`
+        : 'Unlimited projects'
+    }`,
+    '24/7 Discord support',
+  ];
+  if (plan.price > 0) {
+    result.push('Extra CUs in demand');
+  }
+
+  return result;
+};
+
+const PartPlan: React.FC<IPlanProps> = (props) => {
+  const { plan, onChangePlan } = props;
+
+  const yearlyOptions = plan.subscribeOptions.find(
+    (item) => item.code === YEARLY_SUBSCRIPTION_CODE,
+  );
+
+  const [isYearly, setIsYearly] = useState<boolean>(!!yearlyOptions);
+
+  const { user } = useUser();
 
   const _renderPrice = (price: number | null) => {
     if (price === 0) {
@@ -72,25 +91,6 @@ const PartPlan: React.FC<IPlanProps> = (props) => {
     );
   };
 
-  const descriptions: string[] = useMemo(() => {
-    const result = [
-      `${commaNumber(Math.ceil(plan.capacity.cu))} CUs/mo`,
-      `Throughput ${commaNumber(getCUsPerSecond())} CUs/s`,
-      'All supported chains',
-      `${
-        plan.capacity.project
-          ? `${plan.capacity.project} projects`
-          : 'Unlimited projects'
-      }`,
-      '24/7 Discord support',
-    ];
-    if (plan.price > 0) {
-      result.push('Extra CUs in demand');
-    }
-
-    return result;
-  }, [plan]);
-
   return (
     <Box className="all-plans__plan-container">
       {!!yearlyOptions && (
@@ -122,7 +122,7 @@ const PartPlan: React.FC<IPlanProps> = (props) => {
             {_renderPrice(plan.price)}
           </span>
         </Flex>
-        {descriptions.map((des, index) => (
+        {generatePlanDescriptions(plan).map((des, index) => (
           <Flex
             key={index}
             className="all-plans__plan__descriptions"
