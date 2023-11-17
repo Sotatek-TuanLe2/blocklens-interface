@@ -81,7 +81,7 @@ const Routes: FC<RouteComponentProps> = () => {
     window.scrollTo(0, 0);
   }, [pathname]);
 
-  useEffect(() => {
+  const initiateData = async () => {
     if (!accessToken) {
       dispatch(clearUser());
       if (!GUEST_PATH.some((path) => pathname.includes(path))) {
@@ -89,8 +89,12 @@ const Routes: FC<RouteComponentProps> = () => {
       }
       return;
     }
-    dispatch(initMetadata());
-    dispatch(getUser());
+    await dispatch(initMetadata());
+    await dispatch(getUser());
+  };
+
+  useEffect(() => {
+    initiateData();
   }, [accessToken]);
 
   return (

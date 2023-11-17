@@ -7,6 +7,7 @@ import {
 import Storage from 'src/utils/utils-storage';
 import { parseJWT } from 'src/utils/utils-format';
 import { MetadataPlan } from './metadata';
+import { RootState } from '.';
 
 export type UserAuthType = {
   accessToken: string;
@@ -200,15 +201,20 @@ export const getUserStats = createAsyncThunk(
 export const getUserPlan = createAsyncThunk(
   'user/getUserPlan',
   async (_params, thunkApi) => {
-    try {
-      const res = await rf
-        .getRequest('BillingRequest')
-        .getCurrentSubscription();
-      if (!!res) {
-        thunkApi.dispatch(setUserPlan(res));
-      }
-    } catch (error) {
-      console.error(error);
+    const res = await rf.getRequest('BillingRequest').getCurrentSubscription();
+    if (!!res) {
+      const { plans } = (thunkApi.getState() as RootState).metadata;
+      const currentPlan = plans.find(
+        (plan) => plan.code === res.subscribedPlan.code,
+      );
+      /**
+       * TODO
+       * change planCode to code
+       */
+      const nextPlan = plans.find(
+        (plan) => plan.code === res.nextSubscribePlan.planCode,
+      );
+      thunkApi.dispatch(setUserPlan({ currentPlan, nextPlan }));
     }
   },
 );
@@ -256,10 +262,10 @@ const userSlice = createSlice({
     },
     setUserPlan: (state, action) => {
       state.billing.plan = {
-        ...action.payload.subscribedPlan,
+        ...action.payload.currentPlan,
         expireTime: action.payload.expireTime,
       };
-      state.billing.nextPlan = action.payload.nextSubscribePlan;
+      state.billing.nextPlan = action.payload.nextPlan;
     },
     setIsLoadingStat: (state, action) => {
       state.isLoadingGetStatisticsUser = action.payload;

@@ -19,14 +19,14 @@ import {
   scrollIntoElementById,
 } from 'src/utils/utils-helper';
 import { PAYMENT_METHOD } from '..';
-import PartNotification, { NOTIFICATION_TYPE } from './PartNotification';
+import PartNotification from './PartNotification';
 import PartPlan from './PartPlan';
 import rf from 'src/requests/RequestFactory';
 import ModalDowngradePlan from 'src/modals/billing/ModalDowngradePlan';
 import commaNumber from 'comma-number';
 
 interface IPartBillingProps {
-  onUpgradePlan: (plan: MetadataPlan, isYearly: boolean) => void;
+  onCheckout: (plan: MetadataPlan, isYearly: boolean) => void;
 }
 
 interface ILineItems {
@@ -62,7 +62,7 @@ const BILLING_STATUS = {
 };
 
 const PartBilling: React.FC<IPartBillingProps> = (props) => {
-  const { onUpgradePlan } = props;
+  const { onCheckout } = props;
 
   const { user } = useUser();
   const { billingPlans } = useMetadata();
@@ -78,24 +78,29 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
       const res = await rf.getRequest('BillingRequest').getInvoiceList(params);
       const receiptIds =
         res.docs.map((item: any) => item?.receiptId || -1) || [];
-      const listReceipt = await rf
-        .getRequest('BillingRequest')
-        .getListReceipt(receiptIds.join(',').toString());
 
-      const dataTable = res?.docs.map((invoice: any, index: number) => {
+      if (!!receiptIds.length) {
+        const listReceipt = await rf
+          .getRequest('BillingRequest')
+          .getListReceipt(receiptIds.join(',').toString());
+
+        const dataTable = res?.docs.map((invoice: any, index: number) => {
+          return {
+            ...invoice,
+            activePaymentMethod:
+              listReceipt[index]?.activePaymentMethod || null,
+          };
+        });
+        setBillingHistory(dataTable);
+
         return {
-          ...invoice,
-          activePaymentMethod: listReceipt[index]?.activePaymentMethod || null,
-          // stripePaymentMethod:
-          //   listReceipt[index]?.resReference.stripePaymentMethod || null,
+          ...res,
+          docs: dataTable,
         };
-      });
-      setBillingHistory(dataTable);
+      }
 
-      return {
-        ...res,
-        docs: dataTable,
-      };
+      setBillingHistory(res.docs);
+      return res;
     } catch (error) {
       console.error(error);
     }
@@ -229,7 +234,7 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
       setDowngradePlan(plan);
       setOpenDowngradeModal(true);
     } else {
-      onUpgradePlan(plan, isYearly);
+      onCheckout(plan, isYearly);
     }
   };
 
@@ -326,7 +331,7 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
         </Box>
       </Flex>
       {_renderCurrentPlan()}
-      <PartNotification variant={NOTIFICATION_TYPE.WARNING_DOWNGRADE} />
+      <PartNotification onCheckout={onCheckout} />
       {_renderBillings()}
       {_renderAllPlans()}
       {openDowngradeModal && downgradePlan && (
