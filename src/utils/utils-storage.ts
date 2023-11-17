@@ -164,10 +164,14 @@ class Storage {
     setStorage(PREFERENCES, preferences);
   }
 
+  static clearWalletConnect() {
+    Object.keys(localStorage)
+      .filter((key) => key.includes('wc@2'))
+      .forEach((item) => localStorage.removeItem(item));
+  }
+
   static clearWallet() {
-    if (this.getConnectorId() === WALLET_CONNECT) {
-      localStorage.removeItem('walletconnect');
-    }
+    Storage.clearWalletConnect();
     Storage.clearConnectorId();
     Storage.clearAccountAddress();
   }

@@ -111,6 +111,7 @@ export const executeTransaction = createAsyncThunk(
       await dispatch(
         handleTransaction({ transaction, provider, confirmation }),
       );
+      return transaction;
     } catch (error: any) {
       if (error.code === 'ACTION_REJECTED') {
         toastError({ message: 'User denied transaction signature.' });

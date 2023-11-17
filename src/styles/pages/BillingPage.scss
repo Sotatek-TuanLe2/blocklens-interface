@@ -32,6 +32,17 @@
 
   .list-table-wrap {
     padding: 0;
+    margin-bottom: 20px;
+
+    &__title {
+      margin: 30px 0 10px 40px;
+      @include text-medium-bold;
+      color: $title;
+    }
+
+    &__content {
+      margin: 0 40px;
+    }
 
     .box-title {
       justify-content: space-between;
@@ -53,9 +64,10 @@
     }
 
     .text-title {
-      @include heading-6;
+      @include text-medium-bold;
       color: $title;
       padding: 30px 40px 22px 40px;
+      margin-bottom: 10px;
 
       @include tablet {
         @include heading-8;
@@ -96,6 +108,176 @@
         padding: 4px 10px;
         background: $tag;
         border-radius: 14px;
+      }
+    }
+  }
+
+  .current-plan {
+
+    .list-table-wrap__content > div {
+      width: calc(100%/6);
+    }
+
+    &--lowest-plan, &--highest-plan {
+      .list-table-wrap__content > div {
+        width: 20%;
+      }
+    }
+
+    .name-plan {
+      color: $main;
+      @include heading-6;
+      text-transform: capitalize;
+    }
+
+    .detail {
+      @include text-medium-regular;
+      
+      &__title {
+        color: $paragraph;
+        margin-bottom: 18px;
+        
+        & span {
+          color: $paragraph;
+        }
+      }
+
+      &__content {
+        color: $paragraph1;
+      }
+    }
+
+    &__button {
+      text-align: right;
+    }
+  }
+
+  .plan-notification {
+    margin-bottom: 20px;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.04);
+    border-radius: 18px;
+    padding: 20px 40px;
+  
+    &--notification {
+      background-color: #E5EEFF;
+    }
+
+    &--warning {
+      background-color: #FCE7E7;    
+    }
+
+    &__button {
+      @include text-medium-medium;
+
+      &--notification {
+        color: #1979FF;
+      }
+
+      &--warning {
+        color: #E02323;
+      }
+    }
+  }
+
+  .billings {
+
+    &__table {
+      .header-list {
+        th {
+          @include text-medium-regular;
+          text-transform: capitalize;
+        }
+      }
+
+      .tr-list {
+        td {
+          @include text-medium-regular;
+          border-bottom: none;
+        }
+      }
+    }
+  }
+
+  .all-plans {
+    padding: 25px;
+
+    .list-table-wrap__content {
+      gap: 25px;
+    }
+
+    &__plan-container {
+      width: 25%;
+      align-self: flex-end;
+    }
+
+    &__yearly-select {
+      width: 100%;
+      height: 41px;
+      background-color: #E5EEFF;
+      border-top-left-radius: 14px;
+      border-top-right-radius: 14px;
+      border: 1px solid #D9D9D9;
+      border-bottom: none;
+      padding: 0 24px;
+      @include text-small-regular;
+      text-decoration-color: $paragraph;
+    }
+
+    &__plan {
+      width: 100%;
+      height: 376px;
+      border-radius: 14px;
+      padding: 24px;
+      border: 1px solid #D9D9D9;
+
+      &--yearly {
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+        border-top: none;
+      }
+
+      &__title {
+        @include text-medium-bold;
+        margin-bottom: 30px;
+
+        &__price {
+          @include heading-8;
+          color: $main;
+
+          .month-text {
+            @include text-medium-regular;
+            color: $paragraph;
+          }
+        }
+      }
+
+      &__descriptions {
+        &:not(&:last-child) {
+          margin-bottom: 10px;
+        }
+
+        &__info {
+          @include text-medium-regular;
+          margin-left: 10px;
+
+          &--cu {
+            @include text-medium-bold;
+          }
+        }
+      }
+
+      &__current-plan {
+        @include text-medium-bold;
+        line-height: 48px;
+        color: $main;
+        text-align: center;
+        margin-top: auto;
+      }
+
+      &__button {
+        margin-top: auto;
+        width: fit-content;
+        align-self: center;
       }
     }
   }
@@ -297,7 +479,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      max-width: 430px;
+      max-width: 575px;
       margin: 0 auto;
 
       @include tablet {
@@ -307,7 +489,7 @@
 
     &__bill-info {
       background-image: url('../../assets/icons/bg-billing.png');
-      padding: 50px;
+      padding: 40px 45px;
       background-repeat: no-repeat;
       width: 100%;
 
@@ -335,8 +517,14 @@
     }
 
     &__order {
-      margin-top: 30px;
-      margin-bottom: 40px;
+      height: 220px;
+    }
+
+    &__payment {
+      margin-top: 20px;
+    }
+
+    &__order, &__payment {
 
       @include tablet {
         margin-bottom: 60px;
@@ -351,7 +539,18 @@
 
       .name-plan {
         @include text-large-bold;
-        margin-bottom: 4px;
+        text-align: center;
+        margin-bottom: 30px;
+
+        .period {
+          @include text-medium-regular;
+          color: $paragraph;
+        }
+      }
+
+      .plan-action {
+        @include text-medium-regular;
+        color: $paragraph;
       }
 
       .info {
@@ -362,6 +561,63 @@
         svg {
           color: $green;
           margin-right: 12px;
+        }
+      }
+
+      &__methods {
+        .chakra-radio {
+          height: 50px;
+          border-radius: 6px;
+          margin: 0;
+
+          &__control {
+            width: 20px;
+            height: 20px;
+          }
+
+          &[data-checked] {
+            background-color: #E5EEFF;
+
+            .chakra-radio__control {
+              background-color: $white;
+              &::before {
+                background-color: $main;
+              }
+            }
+          }
+
+          &[data-disabled] {
+            .chakra-radio__control {
+              border-color: $line;
+            }
+          }
+        }
+
+        .chakra-radio__label {
+          width: 100%;
+        }
+
+        .chakra-radio {
+          padding: 10px 18px;
+        }
+
+        .connect-wallet-btn {
+          @include text-medium-medium;
+          color: $main;
+        }
+      }
+
+      &__selects {
+        padding: 18px 0;
+        margin: 0;
+        
+        &__field-text {
+          @include text-medium-regular;
+          color: $paragraph;
+        }
+        
+        .app-select__btn-select {
+          min-width: 165px;
         }
       }
     }

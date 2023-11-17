@@ -91,6 +91,7 @@ import { ReactComponent as IconEye } from './IconEye.svg';
 import { ReactComponent as IconEdit } from './icon-edit.svg';
 import { ReactComponent as IconRun } from './icon-run.svg';
 import { ReactComponent as HistoryTagsIcon } from './HistoryTagsIcon.svg';
+import { ReactComponent as ChevronRightIcon } from './ChevronRightIcon.svg';
 
 export {
   CalendarIcon,
@@ -186,4 +187,5 @@ export {
   IconEdit,
   IconRun,
   HistoryTagsIcon,
+  ChevronRightIcon,
 };

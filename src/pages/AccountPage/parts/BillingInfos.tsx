@@ -49,10 +49,10 @@ const BillingInfos = () => {
             <CheckedIcon />{' '}
             <Box ml={3}>{currentPlan?.capacity.project} apps</Box>
           </Flex>
-          <Flex alignItems={'center'}>
+          {/* <Flex alignItems={'center'}>
             <CheckedIcon />{' '}
             <Box ml={3}> {currentPlan?.notificationLimitation} message/day</Box>
-          </Flex>
+          </Flex> */}
           <Flex alignItems={'center'}>
             <CheckedIcon /> <Box ml={3}> All supported chains</Box>
           </Flex>

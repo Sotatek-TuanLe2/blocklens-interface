@@ -20,18 +20,18 @@ const AccountPage = () => {
   const { unlinkWallet } = useWallet();
 
   const _renderLinkedAccounts = () => {
-    if (user?.getLinkedAddress()) {
+    if (user?.isUserLinked()) {
       return (
         <Flex justifyContent={'space-between'} mb={5} className="info-item">
           <Flex>
             <Box className={'label'}>Addresses:</Box>
             <Box className={'value'}>
-              {formatShortText(user.getLinkedAddress())}
+              {formatShortText(user.getLinkedAddresses()[0])}
             </Box>
             <Box
               ml={2}
               className={'btn-copy'}
-              onClick={() => copyToClipboard(user.getLinkedAddress())}
+              onClick={() => copyToClipboard(user.getLinkedAddresses()[0])}
             >
               <CopyIcon />
             </Box>
@@ -78,7 +78,7 @@ const AccountPage = () => {
                 <Box className="info-item">
                   <Box className="title">Linked Accounts</Box>
                 </Box>
-                {isMobile && user?.getLinkedAddress() && (
+                {isMobile && user?.isUserLinked() && (
                   <Box className={'link'} onClick={unlinkWallet}>
                     Unlink
                   </Box>

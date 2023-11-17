@@ -33,8 +33,8 @@ export interface BaseModalProps extends ModalProps {
   isCentered?: boolean;
   isHideCloseIcon?: boolean;
   closeOnOverlayClick?: boolean;
-  onActionLeft?: () => void;
-  onActionRight?: () => void;
+  onActionLeft?: () => void | Promise<void>;
+  onActionRight?: () => void | Promise<void>;
   textActionLeft?: string;
   textActionRight?: string | ReactNode;
   className?: string;
@@ -51,7 +51,7 @@ const BaseModal: FC<BaseModalProps> = ({
   isOpen,
   onClose,
   icon,
-  size = 'md',
+  size = 'lg',
   isCentered = true,
   isBack = false,
   isHideCloseIcon = false,
@@ -111,8 +111,9 @@ const BaseModal: FC<BaseModalProps> = ({
                 <Box mr={2}>
                   <AppButton
                     onClick={onActionLeft}
-                    variant="outline"
+                    variant="cancel"
                     fontWeight={400}
+                    size="lg"
                   >
                     {textActionLeft}
                   </AppButton>
@@ -124,6 +125,7 @@ const BaseModal: FC<BaseModalProps> = ({
                   isLoading={isLoadingButtonRight}
                   onClick={onActionRight}
                   fontWeight={400}
+                  size="lg"
                 >
                   {textActionRight}
                 </AppButton>

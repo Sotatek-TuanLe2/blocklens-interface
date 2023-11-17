@@ -4,7 +4,7 @@
 .modal {
   border-radius: 20px !important;
   padding: 8px;
-  max-width: 500px !important;
+  // min-width: 500px !important;
 
   @include tablet {
     margin: auto 16px !important;
@@ -103,6 +103,7 @@
       font-weight: bold;
     }
   }
+
   &__title-send-mail {
     font-size: 24px;
     font-weight: 700;
@@ -130,7 +131,7 @@
   .modal-footer {
     margin-top: 20px;
 
-    & > button {
+    &>button {
       width: 213px;
     }
   }
@@ -547,6 +548,75 @@
 
     button {
       height: max-content;
+    }
+  }
+}
+
+.modal-downgrade-plan {
+  .chakra-modal__body {
+    padding: 0 30px;
+  }
+
+  &__comparision {
+    margin-bottom: 40px;
+
+    &__plan {
+      width: 275px;
+
+      .plan-title {
+        @include text-medium-regular;
+        color: $paragraph;
+        margin-bottom: 10px;
+      }
+
+      .plan-name {
+        @include text-medium-bold;
+        margin-bottom: 8px;
+      }
+
+      .plan-descriptions {
+        &:not(&:last-child) {
+          margin-bottom: 8px;
+        }
+
+        &__info {
+          margin-left: 8px;
+
+          &--cu {
+            @include text-medium-bold;
+          }
+        }
+      }
+    }
+  }
+
+  &__period {
+    margin-bottom: 24px;
+
+    .period-title {
+      @include text-medium-regular;
+      color: $paragraph;
+    }
+
+    .period-time {
+      @include text-medium-bold;
+    }
+  }
+
+  .chakra-modal__footer {
+    gap: 25px;
+    justify-content: center;
+
+    button {
+      width: 222px;
+    }
+  }
+}
+
+wcm-modal {
+  .wcm-overlay { // wallet connect modal
+    &.wcm-active {
+      z-index: 9999;
     }
   }
 }

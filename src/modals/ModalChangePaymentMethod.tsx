@@ -63,7 +63,7 @@ const ModalChangePaymentMethod: FC<IModalChangePaymentMethod> = ({
           <Flex className="info-payment">
             <Box className="label">Linked Address</Box>
             <Box className="value">
-              {formatShortText(user?.getLinkedAddress() || '')}
+              {formatShortText(user?.getLinkedAddresses()[0] || '')}
             </Box>
           </Flex>
         </>

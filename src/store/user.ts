@@ -6,6 +6,8 @@ import {
 } from 'src/utils/utils-auth';
 import Storage from 'src/utils/utils-storage';
 import { parseJWT } from 'src/utils/utils-format';
+import { MetadataPlan } from './metadata';
+import { RootState } from '.';
 
 export type UserAuthType = {
   accessToken: string;
@@ -34,20 +36,14 @@ export type UserInfoType = {
   address?: string;
 };
 
-export type UserPlanType = {
-  code: string;
-  name: string;
-  description: string;
-  price: number;
-  capacity: {
-    cu: number;
-    project: number;
-  };
-  notificationLimitation: number;
+export interface UserPlanType extends MetadataPlan {
+  createdAt: string;
+  updatedAt: string;
   currency: string;
   from: number;
   to: number;
-};
+  expireTime?: number;
+}
 
 export interface StripePayment {
   card: any;
@@ -59,7 +55,7 @@ export type UserPaymentType = {
   isPaymentMethodIntegrated: boolean;
   activePaymentMethod: string;
   stripePaymentMethod: StripePayment;
-  walletAddress: string;
+  walletAddresses: string[];
   balance: number;
 };
 
@@ -70,6 +66,7 @@ export type UserSettingsType = {
 
 export type UserBillingType = {
   plan: UserPlanType;
+  nextPlan: UserPlanType;
   payment: UserPaymentType;
 };
 
@@ -121,7 +118,30 @@ const initialState: UserState = {
         cu: 1000000,
         project: 2,
       },
-      notificationLimitation: 0,
+      rateLimit: [],
+      subscribeOptions: [],
+      webhookRetry: 0,
+      createdAt: '',
+      updatedAt: '',
+    },
+    nextPlan: {
+      code: 'PLAN1',
+      name: 'STARTER',
+      description:
+        'Features:\n    • 2 projects\n    • 100 messages/day\n    • 24/7 Telegram support (Response time < 72 hours)\n    ',
+      price: 0,
+      currency: '',
+      from: 0,
+      to: 0,
+      capacity: {
+        cu: 1000000,
+        project: 2,
+      },
+      rateLimit: [],
+      subscribeOptions: [],
+      webhookRetry: 0,
+      createdAt: '',
+      updatedAt: '',
     },
     payment: {
       activePaymentMethod: 'STRIPE',
@@ -132,7 +152,7 @@ const initialState: UserState = {
         id: '',
         livemode: false,
       },
-      walletAddress: '',
+      walletAddresses: [],
     },
   },
   settings: {
@@ -181,8 +201,21 @@ export const getUserStats = createAsyncThunk(
 export const getUserPlan = createAsyncThunk(
   'user/getUserPlan',
   async (_params, thunkApi) => {
-    const res = await rf.getRequest('BillingRequest').getCurrentPlan();
-    thunkApi.dispatch(setUserPlan(res));
+    const res = await rf.getRequest('BillingRequest').getCurrentSubscription();
+    if (!!res) {
+      const { plans } = (thunkApi.getState() as RootState).metadata;
+      const currentPlan = plans.find(
+        (plan) => plan.code === res.subscribedPlan.code,
+      );
+      /**
+       * TODO
+       * change planCode to code
+       */
+      const nextPlan = plans.find(
+        (plan) => plan.code === res.nextSubscribePlan.planCode,
+      );
+      thunkApi.dispatch(setUserPlan({ currentPlan, nextPlan }));
+    }
   },
 );
 
@@ -223,15 +256,23 @@ const userSlice = createSlice({
     setUserStats: (state, action) => {
       state.stats = action.payload;
     },
+    setInitialUserPlan: (state, action) => {
+      state.billing.plan = action.payload;
+      state.billing.nextPlan = action.payload;
+    },
     setUserPlan: (state, action) => {
-      state.billing.plan = action.payload.currentPlan;
+      state.billing.plan = {
+        ...action.payload.currentPlan,
+        expireTime: action.payload.expireTime,
+      };
+      state.billing.nextPlan = action.payload.nextPlan;
     },
     setIsLoadingStat: (state, action) => {
       state.isLoadingGetStatisticsUser = action.payload;
     },
     setUserPayment: (state, action) => {
       const {
-        payment: { activePaymentMethod, walletAddress },
+        payment: { activePaymentMethod, walletAddresses },
         balance,
         isPaymentMethodIntegrated,
         stripe: { paymentMethod: stripePaymentMethod },
@@ -241,7 +282,7 @@ const userSlice = createSlice({
         balance,
         isPaymentMethodIntegrated,
         stripePaymentMethod,
-        walletAddress,
+        walletAddresses,
       };
     },
     setUserSettings: (state, action) => {
@@ -265,6 +306,7 @@ export const {
   setUserAuth,
   setUserInfo,
   setUserStats,
+  setInitialUserPlan,
   setUserPlan,
   setUserPayment,
   setUserSettings,

@@ -48,8 +48,8 @@ export const formatShortText = (
   )}`;
 };
 
-export const formatUpperCaseFirstLetter = (value: string) => {
-  return `${value.charAt(0).toUpperCase()}${value.slice(1)}`;
+export const formatCapitalize = (value: string) => {
+  return `${value.charAt(0).toUpperCase()}${value.toLowerCase().slice(1)}`;
 };
 
 export const isValidAddressEVM = (address: string) => {
@@ -127,3 +127,10 @@ export const shortAddressType = (address: string, separator = ':') => {
 
 export const generatePositiveRandomNumber = (maxValue: number) =>
   Math.floor(Math.random() * maxValue) + 1;
+
+export const scrollIntoElementById = (id: string) => {
+  const ele = document.getElementById(id);
+  if (ele) {
+    ele.scrollIntoView(true);
+  }
+};

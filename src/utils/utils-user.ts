@@ -23,6 +23,7 @@ export interface UserInterface {
   setStats: (stats: UserStatsType) => void;
   setBilling: (billing: UserBillingType) => void;
   setPlan: (plan: UserPlanType) => void;
+  setNextPlan: (plan: UserPlanType) => void;
   setPayment: (payment: UserPaymentType) => void;
   setSettings: (settings: UserSettingsType) => void;
 
@@ -32,6 +33,7 @@ export interface UserInterface {
   getStats: () => UserStatsType;
   getBilling: () => UserBillingType;
   getPlan: () => UserPlanType;
+  getNextPlan: () => UserPlanType;
   getPayment: () => UserPaymentType;
   getSettings: () => UserSettingsType;
 
@@ -41,7 +43,7 @@ export interface UserInterface {
   getLastName: () => string;
 
   getBalance: () => number;
-  getLinkedAddress: () => string;
+  getLinkedAddresses: () => string[];
   getStripePayment: () => StripePayment;
   getActivePaymentMethod: () => string;
 
@@ -91,7 +93,30 @@ export class User implements UserInterface {
         cu: 1000000,
         project: 2,
       },
-      notificationLimitation: 0,
+      rateLimit: [],
+      subscribeOptions: [],
+      webhookRetry: 0,
+      createdAt: '',
+      updatedAt: '',
+    },
+    nextPlan: {
+      code: 'PLAN1',
+      name: 'STARTER',
+      description:
+        'Features:\n    • 2 projects\n    • 100 messages/day\n    • 24/7 Telegram support (Response time < 72 hours)\n    ',
+      price: 0,
+      currency: '',
+      from: 0,
+      to: 0,
+      capacity: {
+        cu: 1000000,
+        project: 2,
+      },
+      rateLimit: [],
+      subscribeOptions: [],
+      webhookRetry: 0,
+      createdAt: '',
+      updatedAt: '',
     },
     payment: {
       activePaymentMethod: 'STRIPE',
@@ -102,7 +127,7 @@ export class User implements UserInterface {
         id: '',
         livemode: false,
       },
-      walletAddress: '',
+      walletAddresses: [],
     },
   };
   public settings: UserSettingsType = {
@@ -142,6 +167,10 @@ export class User implements UserInterface {
     this.billing.plan = plan;
   }
 
+  setNextPlan(nextPlan: UserPlanType): void {
+    this.billing.nextPlan = nextPlan;
+  }
+
   setPayment(payment: UserPaymentType): void {
     this.billing.payment = payment;
   }
@@ -171,6 +200,10 @@ export class User implements UserInterface {
 
   getPlan(): UserPlanType {
     return this.billing.plan;
+  }
+
+  getNextPlan(): UserPlanType {
+    return this.billing.nextPlan;
   }
 
   getPayment(): UserPaymentType {
@@ -205,8 +238,8 @@ export class User implements UserInterface {
     return this.billing.payment.balance;
   }
 
-  getLinkedAddress(): string {
-    return this.billing.payment.walletAddress;
+  getLinkedAddresses(): string[] {
+    return this.billing.payment.walletAddresses;
   }
 
   getStripePayment(): StripePayment {
@@ -222,7 +255,7 @@ export class User implements UserInterface {
   }
 
   isUserLinked(): boolean {
-    return !!this.billing.payment.walletAddress;
+    return !!this.billing.payment.walletAddresses.length;
   }
 
   isUserStriped(): boolean {

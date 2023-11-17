@@ -178,7 +178,6 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
       title={type === TYPE_MODAL.ADD ? 'Add Text Widget' : 'Edit Text Widget'}
       isOpen={open}
       onClose={onClose}
-      size="md"
     >
       <div className="main-modal-dashboard-details">
         <AppField label={'Text widget context'}>
@@ -241,7 +240,7 @@ const ModalAddTextWidget: React.FC<IModalAddTextWidget> = ({
           </Flex>
         </Flex>
 
-        <Flex className="modal-footer">
+        <Flex className="modal-footer" justifyContent="space-between">
           <AppButton
             mr={2.5}
             size="lg"

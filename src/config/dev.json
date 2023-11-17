@@ -207,6 +207,7 @@
       "description": "Connect to Trust Wallet, Rainbow Wallet and more...",
       "href": null,
       "mobile": true,
+      "projectId": "4543468a08b0b4f934d6a4f8fc45dd35",
       "options": {
         "ETH": {
           "rpc": {

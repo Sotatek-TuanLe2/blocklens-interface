@@ -8,9 +8,7 @@ import {
   isValidAddressSUIAndAptos,
 } from './utils-helper';
 import { isNull, isUndefined } from 'lodash';
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const commaNumber = require('comma-number');
+import commaNumber from 'comma-number';
 
 const NOT_AVAILABLE_TEXT = '--';
 
