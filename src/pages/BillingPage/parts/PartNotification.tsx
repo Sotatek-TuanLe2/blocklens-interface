@@ -1,5 +1,8 @@
 import { Flex } from '@chakra-ui/react';
+import BigNumber from 'bignumber.js';
+import { useMemo } from 'react';
 import { AppButton } from 'src/components';
+import useUser from 'src/hooks/useUser';
 
 export const NOTIFICATION_TYPE = {
   FAILED_RENEWAL: 'FAILED_RENEWAL',
@@ -12,7 +15,42 @@ interface INotification {
 }
 
 const PartNotification: React.FC<INotification> = (props) => {
+  const { user } = useUser();
   const { variant } = props;
+
+  const userCurrentPlan = useMemo(() => user?.getPlan(), [user?.getPlan()]);
+  const userNextPlan = useMemo(
+    () => user?.getNextPlan(),
+    [user?.getNextPlan()],
+  );
+
+  const isDownGrade = useMemo(
+    () =>
+      userCurrentPlan && userNextPlan
+        ? new BigNumber(userCurrentPlan.price).isLessThan(
+            new BigNumber(userNextPlan.price),
+          )
+        : false,
+    [userCurrentPlan, userNextPlan],
+  );
+  const isRenewal = useMemo(
+    () =>
+      userCurrentPlan && userNextPlan
+        ? new BigNumber(userCurrentPlan.price).isEqualTo(
+            new BigNumber(userNextPlan.price),
+          )
+        : false,
+    [userCurrentPlan, userNextPlan],
+  );
+  const isUpgrade = useMemo(
+    () =>
+      userCurrentPlan && userNextPlan
+        ? new BigNumber(userCurrentPlan.price).isGreaterThan(
+            new BigNumber(userNextPlan.price),
+          )
+        : false,
+    [userCurrentPlan, userNextPlan],
+  );
 
   const _renderContent = () => {
     switch (variant) {

@@ -4,6 +4,7 @@ import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import { FC, useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import retry from 'async-retry';
 import abi from 'src/abi';
 import { AppButton, AppRadio, AppSelect2 } from 'src/components';
 import AppAlertWarning from 'src/components/AppAlertWarning';
@@ -14,7 +15,10 @@ import BaseModal from 'src/modals/BaseModal';
 import ModalConnectWallet from 'src/modals/ModalConnectWallet';
 import rf from 'src/requests/RequestFactory';
 import { MetadataPlan } from 'src/store/metadata';
-import { executeTransaction } from 'src/store/transaction';
+import {
+  executeTransaction,
+  toggleFinishTransactionModal,
+} from 'src/store/transaction';
 import { getUserPlan } from 'src/store/user';
 import { setOpenModalSignatureRequired } from 'src/store/wallet';
 import { convertDecToWei, formatShortAddress } from 'src/utils/utils-format';
@@ -24,10 +28,12 @@ import {
   getTopUpCurrencyOptions,
   getTopUpCurrenciesByChainId,
   getTopUpConfigByNetworkId,
+  getChainConfig,
 } from 'src/utils/utils-network';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import Storage from 'src/utils/utils-storage';
 import { PAYMENT_METHOD } from '..';
+import { YEARLY_SUBSCRIPTION_CODE } from 'src/utils/common';
 
 interface IPartCheckout {
   selectedPlan: MetadataPlan;
@@ -52,7 +58,8 @@ const PartCheckout: FC<IPartCheckout> = ({
   const [tokenAddress, setTokenAddress] = useState<string>('');
   const [openConnectWalletModal, setOpenConnectWalletModal] =
     useState<boolean>(false);
-  const [openConfirmingModal, setOpenConfirmingModal] = useState<boolean>(true);
+  const [openConfirmingModal, setOpenConfirmingModal] =
+    useState<boolean>(false);
 
   const userPlan = useMemo(() => user?.getPlan(), [user?.getPlan()]);
   const chainOptions = getSupportChainsTopUp();
@@ -183,6 +190,12 @@ const PartCheckout: FC<IPartCheckout> = ({
       selectedPlan.price > user?.getNextPlan().price && // selected plan is higher than next plan
       selectedPlan.price > totalAmount; // user did purchase next plan
 
+    const period = `period ${moment().format('YYYY/MM/DD')}-${
+      subscriptionPeriod === YEARLY_SUBSCRIPTION_CODE
+        ? moment().add(1, 'year').subtract(1, 'day').format('YYYY/MM/DD')
+        : moment().add(29, 'day').format('YYYY/MM/DD')
+    }`;
+
     return (
       <Box className="billing-checkout__order">
         <Box className="title">Order</Box>
@@ -190,11 +203,7 @@ const PartCheckout: FC<IPartCheckout> = ({
           <Text textTransform="capitalize" mr={2}>
             {selectedPlan.name.toLowerCase()} plan
           </Text>
-          <Text className="period">
-            {`period ${moment().format('YYYY/MM/DD')}-${moment()
-              .add(30, 'day')
-              .format('YYYY/MM/DD')}`}
-          </Text>
+          <Text className="period">{period}</Text>
         </Flex>
         <Flex
           alignItems="flex-end"
@@ -346,21 +355,50 @@ const PartCheckout: FC<IPartCheckout> = ({
   };
 
   const confirmTransaction = async (txn: string) => {
+    dispatch(toggleFinishTransactionModal(false));
     setOpenConfirmingModal(true);
+    await retry(
+      async (bail) => {
+        if (!wallet) {
+          // don't retry if wallet is not connected
+          bail(new Error('Wallet is not connected!'));
+          return;
+        }
+
+        const network = wallet.getNework();
+        const chain = getChainConfig(network).id;
+
+        try {
+          const response = await rf
+            .getRequest('BillingRequest')
+            .checkPaymentTransaction(txn, network, chain);
+
+          if (response === 'PROCESSING') {
+            throw new Error('Transaction is being proceeded');
+          }
+
+          setOpenConfirmingModal(false);
+        } catch (error) {
+          throw new Error('Transaction failed to confirm');
+        }
+      },
+      {
+        retries: 40,
+        minTimeout: 100,
+        maxTimeout: 3000,
+      },
+    );
+    setOpenConfirmingModal(false);
   };
 
   const updateSubscription = async () => {
-    if (isUpgrade) {
-      return rf
-        .getRequest('BillingRequest')
-        .upgradeSubscription(selectedPlan.code, subscriptionPeriod);
-    } else if (isDownGrade) {
-      return rf
-        .getRequest('BillingRequest')
-        .downgradeSubscription(selectedPlan.code);
-    } else {
+    if (!isUpgrade) {
       return;
     }
+
+    return rf
+      .getRequest('BillingRequest')
+      .upgradeSubscription(selectedPlan.code, subscriptionPeriod);
   };
 
   const onPay = async () => {
@@ -380,13 +418,22 @@ const PartCheckout: FC<IPartCheckout> = ({
       dispatch(getUserPlan());
       onBack();
     } catch (error) {
+      console.error(error);
       toastError({
         message: (
           <>
             Pay request failed. Please try again.{' '}
-            <a href="https://discord.com/invite/ctnBrdhqad" target="_blank">
-              Contact us for help
-            </a>
+            <a
+              href="https://discord.com/invite/ctnBrdhqad"
+              target="_blank"
+              style={{
+                textDecoration: 'underline',
+                fontWeight: 'bold',
+              }}
+            >
+              Contact us
+            </a>{' '}
+            for help
           </>
         ),
       });

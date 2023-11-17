@@ -134,8 +134,8 @@ export default class BillingRequest extends BaseRequest {
    * @param chain
    * @param network
    */
-  getPaymentTransaction(tx: string, chain?: string, network?: string) {
-    const url = '/my/users/topup-transaction';
+  checkPaymentTransaction(tx: string, chain: string, network: string) {
+    const url = '/my/users/confim-topup-transaction';
     return this.get(url, { tx, chain, network });
   }
 }

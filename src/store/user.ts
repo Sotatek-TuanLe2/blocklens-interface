@@ -256,10 +256,10 @@ const userSlice = createSlice({
     },
     setUserPlan: (state, action) => {
       state.billing.plan = {
-        ...action.payload.currentPlan,
+        ...action.payload.subscribedPlan,
         expireTime: action.payload.expireTime,
       };
-      state.billing.nextPlan = action.payload.nextPlan;
+      state.billing.nextPlan = action.payload.nextSubscribePlan;
     },
     setIsLoadingStat: (state, action) => {
       state.isLoadingGetStatisticsUser = action.payload;
