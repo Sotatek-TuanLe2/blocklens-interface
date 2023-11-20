@@ -127,9 +127,7 @@ const PartNotification: React.FC<INotification> = (props) => {
                   <>
                     Downgrade to <b>{formatCapitalize(nextPlan.name)}</b> plan
                     will start on{' '}
-                    {moment(currentPlan.expireTime)
-                      .add(1, 'day')
-                      .format('MMM DD, YYYY')}{' '}
+                    {moment(currentPlan.expireTime).format('MMM DD, YYYY')}{' '}
                     (UTC)
                   </>
                 )}
@@ -164,9 +162,7 @@ const PartNotification: React.FC<INotification> = (props) => {
           >
             Current plan will be reduced to{' '}
             <b>{formatCapitalize(nextPlan.name)}</b> plan on{' '}
-            {moment(currentPlan.expireTime)
-              .add(1, 'day')
-              .format('MMM DD, YYYY')}
+            {moment(currentPlan.expireTime).format('MMM DD, YYYY')}
           </Flex>
         );
       default:
