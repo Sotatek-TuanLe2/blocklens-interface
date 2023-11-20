@@ -81,7 +81,9 @@ const ModalDowngradePlan: React.FC<IModalDowngradePlanProps> = (props) => {
                 className="plan-descriptions"
                 alignItems="center"
               >
-                <CheckedIcon stroke="#28c76f" />
+                <Box w="14px">
+                  <CheckedIcon stroke="#28c76f" />
+                </Box>
                 <span
                   className={`plan-descriptions__info ${
                     index === 0 ? 'plan-descriptions__info--cu' : ''

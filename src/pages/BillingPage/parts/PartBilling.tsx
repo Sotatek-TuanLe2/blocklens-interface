@@ -13,11 +13,7 @@ import {
 import useMetadata from 'src/hooks/useMetadata';
 import useUser from 'src/hooks/useUser';
 import { MetadataPlan } from 'src/store/metadata';
-import {
-  formatCapitalize,
-  formatTimestamp,
-  scrollIntoElementById,
-} from 'src/utils/utils-helper';
+import { formatTimestamp, scrollIntoElementById } from 'src/utils/utils-helper';
 import { PAYMENT_METHOD } from '..';
 import PartNotification from './PartNotification';
 import PartPlan from './PartPlan';
@@ -205,20 +201,6 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
     return '--';
   };
 
-  const generateBillingPlan = (billing: IBilling) => {
-    switch (billing.type) {
-      case INVOICE_TYPES.DOWNGRADE_PLAN:
-      case INVOICE_TYPES.UPGRADE_PLAN:
-      case INVOICE_TYPES.EXTEND_PLAN:
-        const plan = billingPlans.find(
-          (item) => item.price === billing.totalAmount,
-        );
-        return plan ? `${formatCapitalize(plan.name)} plan` : billing.type;
-      default:
-        return '';
-    }
-  };
-
   const onChangePlan = (plan: MetadataPlan, isYearly: boolean) => {
     if (!user) {
       return;
@@ -260,7 +242,7 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
                 <Td>
                   {formatTimestamp(billing?.createdAt, 'HH:mm MM-DD-YYYY')}
                 </Td>
-                <Td>{generateBillingPlan(billing)}</Td>
+                <Td>{billing.description}</Td>
                 <Td>${billing.totalAmount}</Td>
                 <Td>{generateBillingMethod(billing)}</Td>
                 <Td>
