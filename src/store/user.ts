@@ -43,6 +43,7 @@ export interface UserPlanType extends MetadataPlan {
   from: number;
   to: number;
   expireTime?: number;
+  subscribeOptionCode?: string;
 }
 
 export interface StripePayment {
@@ -166,7 +167,6 @@ export const getUser = createAsyncThunk(
   async (_params, thunkApi) => {
     thunkApi.dispatch(getUserProfile());
     thunkApi.dispatch(getUserStats());
-    thunkApi.dispatch(getUserPlan());
   },
 );
 
@@ -198,23 +198,31 @@ export const getUserStats = createAsyncThunk(
   },
 );
 
-export const getUserPlan = createAsyncThunk(
+export const getUserPlan = createAsyncThunk<void, MetadataPlan[] | undefined>(
   'user/getUserPlan',
-  async (_params, thunkApi) => {
+  async (plans, thunkApi) => {
+    const billingPlans =
+      plans || (thunkApi.getState() as RootState).metadata.plans;
     const res = await rf.getRequest('BillingRequest').getCurrentSubscription();
-    if (!!res) {
-      const { plans } = (thunkApi.getState() as RootState).metadata;
-      const currentPlan = plans.find(
+    if (!res) {
+      // if user does not have subscription = free plan
+      thunkApi.dispatch(setInitialUserPlan(billingPlans[0]));
+    } else {
+      const currentPlan = billingPlans.find(
         (plan) => plan.code === res.subscribedPlan.code,
       );
-      /**
-       * TODO
-       * change planCode to code
-       */
-      const nextPlan = plans.find(
-        (plan) => plan.code === res.nextSubscribePlan.planCode,
+      const nextPlan = billingPlans.find(
+        (plan) => plan.code === res.nextSubscribePlan.code,
       );
-      thunkApi.dispatch(setUserPlan({ currentPlan, nextPlan }));
+      thunkApi.dispatch(
+        setUserPlan({
+          currentPlan,
+          nextPlan,
+          expireTime: res.expireTime,
+          nextSubscribeOptionCode:
+            res.nextSubscribePlan.subscribeOptionCode || '',
+        }),
+      );
     }
   },
 );
@@ -265,7 +273,10 @@ const userSlice = createSlice({
         ...action.payload.currentPlan,
         expireTime: action.payload.expireTime,
       };
-      state.billing.nextPlan = action.payload.nextPlan;
+      state.billing.nextPlan = {
+        ...action.payload.nextPlan,
+        subscribeOptionCode: action.payload.nextSubscribeOptionCode,
+      };
     },
     setIsLoadingStat: (state, action) => {
       state.isLoadingGetStatisticsUser = action.payload;

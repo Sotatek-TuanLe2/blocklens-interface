@@ -13,17 +13,14 @@ import {
 import useMetadata from 'src/hooks/useMetadata';
 import useUser from 'src/hooks/useUser';
 import { MetadataPlan } from 'src/store/metadata';
-import {
-  formatCapitalize,
-  formatTimestamp,
-  scrollIntoElementById,
-} from 'src/utils/utils-helper';
+import { formatTimestamp, scrollIntoElementById } from 'src/utils/utils-helper';
 import { PAYMENT_METHOD } from '..';
 import PartNotification from './PartNotification';
 import PartPlan from './PartPlan';
 import rf from 'src/requests/RequestFactory';
 import ModalDowngradePlan from 'src/modals/billing/ModalDowngradePlan';
 import commaNumber from 'comma-number';
+import useBilling from 'src/hooks/useBilling';
 
 interface IPartBillingProps {
   onCheckout: (plan: MetadataPlan, isYearly: boolean) => void;
@@ -65,13 +62,13 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
   const { onCheckout } = props;
 
   const { user } = useUser();
+  const { currentPlan, isLowestPlan, isHighestPlan, isDowngrade } =
+    useBilling();
   const { billingPlans } = useMetadata();
 
   const [billingHistory, setBillingHistory] = useState<any[] | null>(null);
   const [downgradePlan, setDowngradePlan] = useState<MetadataPlan | null>(null);
   const [openDowngradeModal, setOpenDowngradeModal] = useState<boolean>(false);
-
-  const userPlan = useMemo(() => user?.getPlan(), [user?.getPlan()]);
 
   const fetchBillingHistory: any = useCallback(async (params: any) => {
     try {
@@ -113,21 +110,23 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
     () => [
       {
         title: 'Expire',
-        content: !!userPlan
-          ? `${moment(userPlan.expireTime).utc().format('MMM D, YYYY')} (UTC)`
+        content: !!currentPlan
+          ? `${moment(currentPlan.expireTime)
+              .utc()
+              .format('MMM D, YYYY')} (UTC)`
           : '',
       },
       {
         title: 'Compute Units',
-        content: !!userPlan
-          ? `${commaNumber(userPlan.capacity.cu)} CUs/mo`
+        content: !!currentPlan
+          ? `${commaNumber(currentPlan.capacity.cu)} CUs/mo`
           : '',
       },
       {
         title: 'Throughput',
-        content: !!userPlan
+        content: !!currentPlan
           ? `${commaNumber(
-              userPlan.rateLimit.find((item) => item.type === 'SECOND')
+              currentPlan.rateLimit.find((item) => item.type === 'SECOND')
                 ?.limit || 0,
             )} CUs/second`
           : '',
@@ -150,28 +149,23 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
         content: '1$/100K CUs',
       },
     ],
-    [userPlan],
+    [currentPlan],
   );
 
   const _renderCurrentPlan = () => {
-    const isLowestPlan =
-      !!billingPlans.length && userPlan?.code === billingPlans[0].code;
-    const isHighestPlan =
-      !!billingPlans.length &&
-      userPlan?.code === billingPlans[billingPlans.length - 1].code;
-
-    // TODO: hide Upgrade button if user confirms downgrade
-    const isDowngrade = false;
-
+    const showUpgradeButton = !isDowngrade && !isHighestPlan;
     return (
       <AppCard
+        id="current-plan"
         className={`list-table-wrap current-plan ${
-          isHighestPlan ? 'current-plan--highest-plan' : ''
+          !showUpgradeButton ? 'current-plan--no-upgrade' : ''
         } ${isLowestPlan ? 'current-plan--lowest-plan' : ''}`}
       >
         <Box className="list-table-wrap__title">CURRENT PLAN</Box>
         <Flex className="list-table-wrap__content">
-          <Box className="name-plan">{userPlan?.name.toLowerCase() || ''}</Box>
+          <Box className="name-plan">
+            {currentPlan?.name.toLowerCase() || ''}
+          </Box>
           {currentPlanDetails
             // remove Expire
             .filter((_item, index) => (isLowestPlan ? index !== 0 : true))
@@ -181,7 +175,7 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
                 <Box className="detail__content">{item.content}</Box>
               </Box>
             ))}
-          {!isHighestPlan && (
+          {showUpgradeButton && (
             <Box className="current-plan__button">
               <AppButtonLarge
                 onClick={() => scrollIntoElementById('all-plans')}
@@ -207,27 +201,13 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
     return '--';
   };
 
-  const generateBillingPlan = (billing: IBilling) => {
-    switch (billing.type) {
-      case INVOICE_TYPES.DOWNGRADE_PLAN:
-      case INVOICE_TYPES.UPGRADE_PLAN:
-      case INVOICE_TYPES.EXTEND_PLAN:
-        const plan = billingPlans.find(
-          (item) => item.price === billing.totalAmount,
-        );
-        return plan ? `${formatCapitalize(plan.name)} plan` : billing.type;
-      default:
-        return '';
-    }
-  };
-
   const onChangePlan = (plan: MetadataPlan, isYearly: boolean) => {
     if (!user) {
       return;
     }
 
     const isDownGrade = new BigNumber(plan.price).isLessThan(
-      new BigNumber(userPlan?.price || 0),
+      new BigNumber(currentPlan?.price || 0),
     );
 
     if (isDownGrade) {
@@ -262,7 +242,7 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
                 <Td>
                   {formatTimestamp(billing?.createdAt, 'HH:mm MM-DD-YYYY')}
                 </Td>
-                <Td>{generateBillingPlan(billing)}</Td>
+                <Td>{billing.description}</Td>
                 <Td>${billing.totalAmount}</Td>
                 <Td>{generateBillingMethod(billing)}</Td>
                 <Td>

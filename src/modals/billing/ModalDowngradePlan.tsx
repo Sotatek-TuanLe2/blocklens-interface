@@ -6,7 +6,7 @@ import useMetadata from 'src/hooks/useMetadata';
 import useUser from 'src/hooks/useUser';
 import { MetadataPlan } from 'src/store/metadata';
 import { getUserPlan } from 'src/store/user';
-import { getErrorMessage } from 'src/utils/utils-helper';
+import { getErrorMessage, scrollIntoElementById } from 'src/utils/utils-helper';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import BaseModal from '../BaseModal';
 import rf from 'src/requests/RequestFactory';
@@ -45,6 +45,7 @@ const ModalDowngradePlan: React.FC<IModalDowngradePlanProps> = (props) => {
         .downgradeSubscription(downgradePlan.code);
       toastSuccess({ message: 'Downgrade Plan Successfully!' });
       dispatch(getUserPlan());
+      scrollIntoElementById('current-plan');
       onClose();
     } catch (error) {
       toastError({ message: getErrorMessage(error) });
@@ -80,7 +81,9 @@ const ModalDowngradePlan: React.FC<IModalDowngradePlanProps> = (props) => {
                 className="plan-descriptions"
                 alignItems="center"
               >
-                <CheckedIcon stroke="#28c76f" />
+                <Box w="14px">
+                  <CheckedIcon stroke="#28c76f" />
+                </Box>
                 <span
                   className={`plan-descriptions__info ${
                     index === 0 ? 'plan-descriptions__info--cu' : ''
