@@ -1,6 +1,6 @@
 import { Box, Flex, Text, Switch } from '@chakra-ui/react';
 import commaNumber from 'comma-number';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { CheckedIcon } from 'src/assets/icons';
 import { AppButtonLarge } from 'src/components';
 import useUser from 'src/hooks/useUser';

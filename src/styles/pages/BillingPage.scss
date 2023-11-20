@@ -118,7 +118,7 @@
       width: calc(100%/6);
     }
 
-    &--lowest-plan, &--highest-plan {
+    &--lowest-plan, &--no-upgrade {
       .list-table-wrap__content > div {
         width: 20%;
       }

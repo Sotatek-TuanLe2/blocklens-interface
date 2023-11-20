@@ -43,6 +43,7 @@ export interface UserPlanType extends MetadataPlan {
   from: number;
   to: number;
   expireTime?: number;
+  subscribeOptionCode?: string;
 }
 
 export interface StripePayment {
@@ -207,14 +208,18 @@ export const getUserPlan = createAsyncThunk(
       const currentPlan = plans.find(
         (plan) => plan.code === res.subscribedPlan.code,
       );
-      /**
-       * TODO
-       * change planCode to code
-       */
       const nextPlan = plans.find(
-        (plan) => plan.code === res.nextSubscribePlan.planCode,
+        (plan) => plan.code === res.nextSubscribePlan.code,
       );
-      thunkApi.dispatch(setUserPlan({ currentPlan, nextPlan }));
+      thunkApi.dispatch(
+        setUserPlan({
+          currentPlan,
+          nextPlan,
+          expireTime: res.expireTime,
+          nextSubscribeOptionCode:
+            res.nextSubscribePlan.subscribeOptionCode || '',
+        }),
+      );
     }
   },
 );
@@ -265,7 +270,10 @@ const userSlice = createSlice({
         ...action.payload.currentPlan,
         expireTime: action.payload.expireTime,
       };
-      state.billing.nextPlan = action.payload.nextPlan;
+      state.billing.nextPlan = {
+        ...action.payload.nextPlan,
+        subscribeOptionCode: action.payload.nextSubscribeOptionCode,
+      };
     },
     setIsLoadingStat: (state, action) => {
       state.isLoadingGetStatisticsUser = action.payload;

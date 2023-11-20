@@ -1,10 +1,15 @@
 import { Flex } from '@chakra-ui/react';
-import BigNumber from 'bignumber.js';
-import { useEffect, useMemo, useState } from 'react';
+import moment from 'moment';
+import { useEffect, useState } from 'react';
 import { AppButton } from 'src/components';
-import useUser from 'src/hooks/useUser';
+import useBilling from 'src/hooks/useBilling';
 import { MetadataPlan } from 'src/store/metadata';
+import { YEARLY_SUBSCRIPTION_CODE } from 'src/utils/common';
 import { formatCapitalize } from 'src/utils/utils-helper';
+import { toastError } from 'src/utils/utils-notify';
+import rf from 'src/requests/RequestFactory';
+import { useDispatch } from 'react-redux';
+import { getUserPlan } from 'src/store/user';
 
 const NOTIFICATION_TYPE = {
   RENEWAL: 'RENEWAL',
@@ -17,97 +22,67 @@ interface INotification {
 }
 
 const PartNotification: React.FC<INotification> = (props) => {
-  const { user } = useUser();
+  const {
+    currentPlan,
+    nextPlan,
+    isUpgrade,
+    isRenew,
+    isDowngrade,
+    isBefore5Days,
+    hasPurchased,
+  } = useBilling();
+  const dispatch = useDispatch();
   const { onCheckout } = props;
 
   const [variant, setVariant] =
     useState<typeof NOTIFICATION_TYPE[keyof typeof NOTIFICATION_TYPE]>('');
 
-  const userCurrentPlan = useMemo(() => user?.getPlan(), [user?.getPlan()]);
-  const userNextPlan = useMemo(
-    () => user?.getNextPlan(),
-    [user?.getNextPlan()],
-  );
-  /**
-   * TODO
-   * get expireTime of current plan
-   */
-  const isBefore5Days = useMemo(() => true, [userCurrentPlan]);
-
-  const isDownGrade = useMemo(
-    () =>
-      userCurrentPlan && userNextPlan
-        ? new BigNumber(userCurrentPlan.price).isLessThan(
-            new BigNumber(userNextPlan.price),
-          )
-        : false,
-    [userCurrentPlan, userNextPlan],
-  );
-  const isRenewal = useMemo(
-    () =>
-      userCurrentPlan && userNextPlan
-        ? new BigNumber(userCurrentPlan.price).isEqualTo(
-            new BigNumber(userNextPlan.price),
-          )
-        : false,
-    [userCurrentPlan, userNextPlan],
-  );
-  const isUpgrade = useMemo(
-    () =>
-      userCurrentPlan && userNextPlan
-        ? new BigNumber(userCurrentPlan.price).isGreaterThan(
-            new BigNumber(userNextPlan.price),
-          )
-        : false,
-    [userCurrentPlan, userNextPlan],
-  );
-
   const calculateVariant = () => {
-    if (!userCurrentPlan || !userNextPlan || isUpgrade) {
+    if (!currentPlan || !nextPlan || isUpgrade) {
       return;
     }
 
-    switch (true) {
-      case isDownGrade:
-        if (isBefore5Days) {
-          /**
-           * TODO
-           * if isBefore5Days
-           * call API getPurchasedSubscription to check if user has purchased the next plan
-           */
-        } else {
-          setVariant(NOTIFICATION_TYPE.WARNING_DOWNGRADE);
-        }
-        break;
-      case isRenewal:
-        if (isBefore5Days) {
-          setVariant(NOTIFICATION_TYPE.RENEWAL);
-        }
-        break;
-      default:
-        return;
+    if (isDowngrade) {
+      setVariant(
+        hasPurchased
+          ? NOTIFICATION_TYPE.SUCCEEDED_DOWNGRADE
+          : NOTIFICATION_TYPE.WARNING_DOWNGRADE,
+      );
+    } else if (isRenew) {
+      setVariant(
+        isBefore5Days && !hasPurchased ? NOTIFICATION_TYPE.RENEWAL : '',
+      );
+    } else {
+      setVariant('');
     }
   };
 
   useEffect(() => {
     calculateVariant();
-  }, [userCurrentPlan, userNextPlan]);
+  }, [currentPlan, nextPlan]);
 
   const onPay = () => {
-    if (!userNextPlan) {
+    if (!nextPlan) {
       return;
     }
+    onCheckout(
+      nextPlan,
+      nextPlan.subscribeOptionCode === YEARLY_SUBSCRIPTION_CODE,
+    );
+  };
 
-    /**
-     * TODO
-     * need to examine the next plan is yearly or not
-     */
-
-    onCheckout(userNextPlan, false);
+  const onCancelDowngrade = async () => {
+    try {
+      await rf.getRequest('BillingRequest').cancelDowngrade();
+      dispatch(getUserPlan());
+    } catch (error) {
+      toastError({ message: 'Cancel downgrade failed! ' });
+      console.error(error);
+    }
   };
 
   const _renderContent = () => {
-    if (!userCurrentPlan || !userNextPlan || isUpgrade || !variant) {
+    if (!currentPlan || !nextPlan || isUpgrade || !variant) {
       return null;
     }
 
@@ -121,8 +96,8 @@ const PartNotification: React.FC<INotification> = (props) => {
           >
             <Flex>
               <span>
-                Renewal of <b>{formatCapitalize(userNextPlan.name)}</b> plan is
-                on hold due to lack of payment.
+                Renewal of <b>{formatCapitalize(nextPlan.name)}</b> plan is on
+                hold due to lack of payment.
               </span>
             </Flex>
             <AppButton
@@ -145,13 +120,17 @@ const PartNotification: React.FC<INotification> = (props) => {
               <span>
                 {isBefore5Days ? (
                   <>
-                    Downgrading to <b>{formatCapitalize(userNextPlan.name)}</b>{' '}
-                    plan is on hold due to lack of payment
+                    Downgrading to <b>{formatCapitalize(nextPlan.name)}</b> plan
+                    is on hold due to lack of payment
                   </>
                 ) : (
                   <>
-                    Downgrade to <b>{formatCapitalize(userNextPlan.name)}</b>{' '}
-                    plan will start on {''} (UTC)
+                    Downgrade to <b>{formatCapitalize(nextPlan.name)}</b> plan
+                    will start on{' '}
+                    {moment(currentPlan.expireTime)
+                      .add(1, 'day')
+                      .format('MMM DD, YYYY')}{' '}
+                    (UTC)
                   </>
                 )}
               </span>
@@ -169,8 +148,9 @@ const PartNotification: React.FC<INotification> = (props) => {
               <AppButton
                 variant="no-effects"
                 className="plan-notification__button plan-notification__button--warning"
+                onClick={onCancelDowngrade}
               >
-                Dismiss
+                Cancel downgrade
               </AppButton>
             </Flex>
           </Flex>
@@ -183,7 +163,10 @@ const PartNotification: React.FC<INotification> = (props) => {
             className="plan-notification plan-notification--notification"
           >
             Current plan will be reduced to{' '}
-            <b>{formatCapitalize(userNextPlan.name)}</b> plan on {''}
+            <b>{formatCapitalize(nextPlan.name)}</b> plan on{' '}
+            {moment(currentPlan.expireTime)
+              .add(1, 'day')
+              .format('MMM DD, YYYY')}
           </Flex>
         );
       default:

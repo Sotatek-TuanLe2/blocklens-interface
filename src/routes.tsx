@@ -89,6 +89,10 @@ const Routes: FC<RouteComponentProps> = () => {
       }
       return;
     }
+    /**
+     * TODO
+     * issue when getUser finishes before initiating metadata
+     */
     await dispatch(initMetadata());
     await dispatch(getUser());
   };
