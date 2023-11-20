@@ -1,5 +1,4 @@
 import { Box, Flex, Text, Switch } from '@chakra-ui/react';
-import commaNumber from 'comma-number';
 import { useState } from 'react';
 import { CheckedIcon } from 'src/assets/icons';
 import { AppButtonLarge } from 'src/components';
@@ -14,33 +13,7 @@ interface IPlanProps {
 }
 
 export const generatePlanDescriptions = (plan: MetadataPlan): string[] => {
-  const getCUsPerSecond = () => {
-    const rateLimitPerSecond = plan.rateLimit.find(
-      (item) => item.type === 'SECOND',
-    );
-    if (!rateLimitPerSecond) {
-      return 0;
-    }
-
-    return rateLimitPerSecond.limit;
-  };
-
-  const result = [
-    `${commaNumber(Math.ceil(plan.capacity.cu))} CUs/mo`,
-    `Throughput ${commaNumber(getCUsPerSecond())} CUs/s`,
-    'All supported chains',
-    `${
-      plan.capacity.project
-        ? `${plan.capacity.project} projects`
-        : 'Unlimited projects'
-    }`,
-    '24/7 Discord support',
-  ];
-  if (plan.price > 0) {
-    result.push('Extra CUs in demand');
-  }
-
-  return result;
+  return plan.description.split('\n').map((description) => description.trim());
 };
 
 const PartPlan: React.FC<IPlanProps> = (props) => {
@@ -128,7 +101,9 @@ const PartPlan: React.FC<IPlanProps> = (props) => {
             className="all-plans__plan__descriptions"
             alignItems="center"
           >
-            <CheckedIcon stroke="#28c76f" />
+            <Box w="14px">
+              <CheckedIcon stroke="#28c76f" />
+            </Box>
             <span
               className={`all-plans__plan__descriptions__info ${
                 index === 0 ? 'all-plans__plan__descriptions__info--cu' : ''

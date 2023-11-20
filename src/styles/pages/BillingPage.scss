@@ -259,6 +259,7 @@
         &__info {
           @include text-medium-regular;
           margin-left: 10px;
+          line-height: 22px;
 
           &--cu {
             @include text-medium-bold;

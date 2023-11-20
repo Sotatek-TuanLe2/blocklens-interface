@@ -167,7 +167,6 @@ export const getUser = createAsyncThunk(
   async (_params, thunkApi) => {
     thunkApi.dispatch(getUserProfile());
     thunkApi.dispatch(getUserStats());
-    thunkApi.dispatch(getUserPlan());
   },
 );
 
@@ -199,16 +198,20 @@ export const getUserStats = createAsyncThunk(
   },
 );
 
-export const getUserPlan = createAsyncThunk(
+export const getUserPlan = createAsyncThunk<void, MetadataPlan[] | undefined>(
   'user/getUserPlan',
-  async (_params, thunkApi) => {
+  async (plans, thunkApi) => {
+    const billingPlans =
+      plans || (thunkApi.getState() as RootState).metadata.plans;
     const res = await rf.getRequest('BillingRequest').getCurrentSubscription();
-    if (!!res) {
-      const { plans } = (thunkApi.getState() as RootState).metadata;
-      const currentPlan = plans.find(
+    if (!res) {
+      // if user does not have subscription = free plan
+      thunkApi.dispatch(setInitialUserPlan(billingPlans[0]));
+    } else {
+      const currentPlan = billingPlans.find(
         (plan) => plan.code === res.subscribedPlan.code,
       );
-      const nextPlan = plans.find(
+      const nextPlan = billingPlans.find(
         (plan) => plan.code === res.nextSubscribePlan.code,
       );
       thunkApi.dispatch(
