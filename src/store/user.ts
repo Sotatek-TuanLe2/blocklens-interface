@@ -294,9 +294,9 @@ const userSlice = createSlice({
         isPaymentMethodIntegrated,
         walletAddresses,
       };
-      if (action.payload.isPaymentMethodIntegrated) {
+      if (action.payload.stripe?.paymentMethod) {
         state.billing.payment.stripePaymentMethod =
-          action.payload.stripe.paymentMethod;
+          action.payload.stripe?.paymentMethod;
       }
     },
     setUserSettings: (state, action) => {
