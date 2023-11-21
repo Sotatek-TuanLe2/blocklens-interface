@@ -1,4 +1,5 @@
 import { AddIcon } from '@chakra-ui/icons';
+import { MaxUint256 } from '@ethersproject/constants';
 import { Box, Divider, Flex, RadioGroup, Stack, Text } from '@chakra-ui/react';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
@@ -30,10 +31,11 @@ import {
   getTopUpConfigByNetworkId,
   getChainConfig,
 } from 'src/utils/utils-network';
-import { toastError, toastSuccess } from 'src/utils/utils-notify';
+import { toastError, toastSuccess, toastWarning } from 'src/utils/utils-notify';
 import Storage from 'src/utils/utils-storage';
 import { PAYMENT_METHOD } from '..';
 import { YEARLY_SUBSCRIPTION_CODE } from 'src/utils/common';
+import { isTokenApproved } from 'src/utils/utils-token';
 
 interface IPartCheckout {
   selectedPlan: MetadataPlan;
@@ -62,6 +64,10 @@ const PartCheckout: FC<IPartCheckout> = ({
     useState<boolean>(false);
 
   const userPlan = useMemo(() => user?.getPlan(), [user?.getPlan()]);
+  const topUpContractAddress = useMemo(
+    () => (chainId ? getTopUpConfigByNetworkId(chainId).contractAddress : ''),
+    [chainId],
+  );
   const chainOptions = getSupportChainsTopUp();
   const tokenOptions = useMemo(
     () => getTopUpCurrencyOptions(chainId),
@@ -325,6 +331,41 @@ const PartCheckout: FC<IPartCheckout> = ({
     );
   };
 
+  const checkTokenApproved = async (): Promise<boolean> => {
+    if (!wallet) {
+      return false;
+    }
+
+    const result = await isTokenApproved(
+      chainId,
+      tokenAddress,
+      wallet.getAddress(),
+      topUpContractAddress,
+    );
+
+    return result;
+  };
+
+  const approveToken = async (isTokenApproved: boolean): Promise<void> => {
+    if (isTokenApproved) {
+      return;
+    }
+
+    toastWarning({ message: 'You need to approve token before purchasing' });
+
+    await dispatch(
+      executeTransaction({
+        provider: wallet?.getProvider(),
+        params: {
+          contractAddress: tokenAddress,
+          abi: abi['erc20'],
+          action: 'approve',
+          transactionArgs: [topUpContractAddress, MaxUint256.toString()],
+        },
+      }),
+    );
+  };
+
   const purchasePlan = async (): Promise<string> => {
     const decimal = tokenOptions.find(
       (option) => option.value === tokenAddress,
@@ -334,7 +375,7 @@ const PartCheckout: FC<IPartCheckout> = ({
       executeTransaction({
         provider: wallet?.getProvider(),
         params: {
-          contractAddress: getTopUpConfigByNetworkId(chainId).contractAddress,
+          contractAddress: topUpContractAddress,
           abi: abi['topup'],
           action: 'topup',
           transactionArgs: [
@@ -347,8 +388,10 @@ const PartCheckout: FC<IPartCheckout> = ({
       }),
     );
 
-    if (!transactionPayload) {
-      throw new Error('Creating transaction failed');
+    if (!transactionPayload || !transactionPayload.payload) {
+      throw new Error(
+        transactionPayload.error.message || 'Creating transaction failed',
+      );
     }
 
     return transactionPayload.payload.hash;
@@ -383,12 +426,11 @@ const PartCheckout: FC<IPartCheckout> = ({
         }
       },
       {
-        retries: 40,
+        retries: 60,
         minTimeout: 100,
         maxTimeout: 3000,
       },
     );
-    setOpenConfirmingModal(false);
   };
 
   const updateSubscription = async () => {
@@ -407,6 +449,8 @@ const PartCheckout: FC<IPartCheckout> = ({
     }
 
     try {
+      const isTokenApproved = await checkTokenApproved();
+      await approveToken(isTokenApproved);
       const txn = await purchasePlan();
       await confirmTransaction(txn);
       await updateSubscription();
@@ -418,6 +462,7 @@ const PartCheckout: FC<IPartCheckout> = ({
       dispatch(getUserPlan());
       onBack();
     } catch (error) {
+      setOpenConfirmingModal(false);
       console.error(error);
       toastError({
         message: (

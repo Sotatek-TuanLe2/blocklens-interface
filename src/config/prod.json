@@ -159,7 +159,7 @@
   "networks": {
     "ETH": {
       "name": "Ethereum",
-      "id": "ETHEREUM",
+      "id": "ETH",
       "icon": "icon-ethereum",
       "chainId": 1,
       "rpcUrls": [
