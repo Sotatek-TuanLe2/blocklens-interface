@@ -428,7 +428,7 @@ const PartCheckout: FC<IPartCheckout> = ({
       {
         retries: 60,
         minTimeout: 100,
-        maxTimeout: 3000,
+        maxTimeout: 5000,
       },
     );
   };

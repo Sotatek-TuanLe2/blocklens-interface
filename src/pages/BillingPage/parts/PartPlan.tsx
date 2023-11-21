@@ -27,14 +27,18 @@ const PartPlan: React.FC<IPlanProps> = (props) => {
 
   const { user } = useUser();
 
-  const _renderPrice = (price: number | null) => {
-    if (price === 0) {
+  const _renderPrice = (plan: MetadataPlan) => {
+    if (plan.price === 0) {
       return 'Free';
     }
 
     return (
       <>
-        ${price}
+        $
+        {isYearly
+          ? plan.price -
+            (yearlyOptions?.discount || 0) / (yearlyOptions?.numOfMonths || 1)
+          : plan.price}
         <span className="month-text">/mo</span>
       </>
     );
@@ -92,7 +96,7 @@ const PartPlan: React.FC<IPlanProps> = (props) => {
         >
           <span>{plan.name}</span>
           <span className="all-plans__plan__title__price">
-            {_renderPrice(plan.price)}
+            {_renderPrice(plan)}
           </span>
         </Flex>
         {generatePlanDescriptions(plan).map((des, index) => (
