@@ -434,13 +434,11 @@ const PartCheckout: FC<IPartCheckout> = ({
   };
 
   const updateSubscription = async () => {
-    if (!isUpgrade) {
-      return;
-    }
-
-    return rf
-      .getRequest('BillingRequest')
-      .upgradeSubscription(selectedPlan.code, subscriptionPeriod);
+    return isUpgrade
+      ? rf
+          .getRequest('BillingRequest')
+          .upgradeSubscription(selectedPlan.code, subscriptionPeriod)
+      : rf.getRequest('BillingRequest').purchaseRenewalOrDowngrade();
   };
 
   const onPay = async () => {
