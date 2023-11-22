@@ -198,9 +198,10 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
       return;
     }
 
-    const isSelectinUpgrade = new BigNumber(plan.price).isGreaterThan(
-      new BigNumber(currentPlan?.price || 0),
-    );
+    const isSelectinUpgrade =
+      new BigNumber(plan.price).isGreaterThan(
+        new BigNumber(currentPlan?.price || 0),
+      ) || isYearly;
 
     // upgrade
     if (isSelectinUpgrade) {

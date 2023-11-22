@@ -156,7 +156,8 @@ const PartCheckout: FC<IPartCheckout> = ({
 
     try {
       const res =
-        isDownGrade || isRenewal
+        isDownGrade ||
+        (isRenewal && subscriptionPeriod !== YEARLY_SUBSCRIPTION_CODE)
           ? await rf
               .getRequest('BillingRequest')
               .estimatePriceForRenewOrDowngrade()
