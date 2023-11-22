@@ -161,7 +161,7 @@
   "networks": {
     "ETH": {
       "name": "Sepolia",
-      "id": "ETH",
+      "id": "SEPOLIA",
       "icon": "icon-ethereum",
       "chainId": 11155111,
       "rpcUrls": [

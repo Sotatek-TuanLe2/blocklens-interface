@@ -2,7 +2,7 @@ import { BaseProvider, Web3Provider } from '@ethersproject/providers';
 import _ from 'lodash';
 import { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import config, { Network } from 'src/config';
+import config from 'src/config';
 import ConnectorFactory, { WALLET_CONNECT } from 'src/connectors';
 import BaseConnector from 'src/connectors/BaseConnector';
 import rf from 'src/requests/RequestFactory';
@@ -18,7 +18,7 @@ import {
   setOpenModalConnectWallet,
   setProvider,
 } from 'src/store/wallet';
-import { switchNetwork } from 'src/utils/utils-network';
+import { objectKeys, switchNetwork } from 'src/utils/utils-network';
 import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import Storage from 'src/utils/utils-storage';
 import { IWallet, Wallet } from 'src/utils/utils-wallet';
@@ -68,11 +68,10 @@ const useWallet = (): ReturnType => {
 
   const _onChainChanged = async (hexChainId: string) => {
     const chainId = web3.utils.hexToNumber(hexChainId);
-    const selectedNetwork: Network | undefined = _.find(
-      config.networks,
-      (network) => Number(network.chainId) === Number(chainId),
+    const networkId = objectKeys(config.networks).find(
+      (key) => Number(config.networks[key].chainId) === Number(chainId),
     );
-    if (!selectedNetwork) {
+    if (!networkId) {
       console.error('[onChainChanged] throw warning: Not found network');
       toastError({ message: 'Network is not supported!' });
       return;
@@ -82,7 +81,7 @@ const useWallet = (): ReturnType => {
       console.error('[onChainChanged] throw warning: Not found connector');
       return;
     }
-    await connectWallet(connectorId, selectedNetwork.id);
+    await connectWallet(connectorId, networkId);
   };
 
   const _onAccountsChanged = async (changedAccount: string) => {

@@ -42,7 +42,7 @@ export interface UserPlanType extends MetadataPlan {
   currency: string;
   from: number;
   to: number;
-  expireTime?: number;
+  expireAt?: number;
   subscribeOptionCode?: string;
 }
 
@@ -218,7 +218,7 @@ export const getUserPlan = createAsyncThunk<void, MetadataPlan[] | undefined>(
         setUserPlan({
           currentPlan,
           nextPlan,
-          expireTime: res.expireTime,
+          expireAt: res.expireAt,
           nextSubscribeOptionCode:
             res.nextSubscribePlan.subscribeOptionCode || '',
         }),
@@ -271,7 +271,7 @@ const userSlice = createSlice({
     setUserPlan: (state, action) => {
       state.billing.plan = {
         ...action.payload.currentPlan,
-        expireTime: action.payload.expireTime,
+        expireAt: action.payload.expireAt,
       };
       state.billing.nextPlan = {
         ...action.payload.nextPlan,

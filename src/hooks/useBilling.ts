@@ -67,11 +67,11 @@ const useBilling = (): ReturnType => {
   );
 
   const isBefore5Days = useMemo(() => {
-    if (!currentPlan || !currentPlan.expireTime) {
+    if (!currentPlan || !currentPlan.expireAt) {
       return false;
     }
-    const expireTime = currentPlan.expireTime;
-    const duration = moment(expireTime).diff(moment(), 'days');
+    const expireAt = currentPlan.expireAt;
+    const duration = moment(expireAt).diff(moment(), 'days');
 
     return duration >= 0 && duration <= 5;
   }, [currentPlan]);
