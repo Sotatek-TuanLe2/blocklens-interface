@@ -15,25 +15,6 @@ export const getLogoChainByChainId = (ChainId?: string) => {
   return config.chains[ChainId]?.icon || '';
 };
 
-export const getNetworkConfig = (
-  networkId: string | undefined,
-): Network | null => {
-  if (!networkId) {
-    return null;
-  }
-
-  const network =
-    config.networks[networkId] ||
-    _.find(
-      config.networks,
-      (network) => network.id.toUpperCase() === networkId.toUpperCase(),
-    );
-  if (!network) {
-    return null;
-  }
-  return network;
-};
-
 export const getNameChainByChainId = (chainId?: string) => {
   if (!chainId) return '--';
   return config.chains[chainId]?.name || chainId;
@@ -146,23 +127,23 @@ export const getChainByChainId = (chainId: string | number): Chain | null => {
   return config.chains[chainKey];
 };
 
-export const getChainConfig = (networkId?: string): Network => {
-  const defaultChain = config.networks[config.defaultNetwork];
+export const getNetworkConfig = (networkId?: string): Network => {
+  const defaultNetwork = config.networks[config.defaultNetwork];
   if (!networkId) {
-    return defaultChain;
+    return defaultNetwork;
   }
   return config.networks[networkId];
 };
 
 export const getNetworkProvider = (network = ''): FallbackProvider => {
   network = network ? network : config.defaultNetwork;
-  const chainConfig = getChainConfig(network);
-  if (!chainConfig) {
+  const networkConfig = getNetworkConfig(network);
+  if (!networkConfig) {
     console.error(
       `[getNetworkProvider] throw error: networkConfig ${network} not found`,
     );
   }
-  const rpcUrls = _.shuffle(chainConfig.rpcUrls);
+  const rpcUrls = _.shuffle(networkConfig.rpcUrls);
 
   const providers: {
     provider: BaseProvider;
@@ -172,7 +153,7 @@ export const getNetworkProvider = (network = ''): FallbackProvider => {
   rpcUrls.forEach((rpcUrl, index) => {
     const provider: BaseProvider = new StaticJsonRpcProvider(
       rpcUrl,
-      chainConfig.chainId,
+      networkConfig.chainId,
     );
     const priority = index + 1;
     providers.push({
@@ -192,7 +173,7 @@ export const switchNetwork = async (
   if (!provider) {
     throw new Error('[Switch Network] No provider was found');
   }
-  const chainId = getChainConfig(network).chainId;
+  const chainId = getNetworkConfig(network).chainId;
   if (!chainId) {
     throw new Error('[Switch Network] No chainId was found');
   }
@@ -218,7 +199,7 @@ export const switchNetwork = async (
 
 const addNewNetwork = (network: string, provider: JsonRpcProvider) => {
   try {
-    const networkConfig = getChainConfig(network);
+    const networkConfig = getNetworkConfig(network);
     if (!networkConfig) {
       return;
     }

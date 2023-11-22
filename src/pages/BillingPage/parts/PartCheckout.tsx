@@ -29,7 +29,7 @@ import {
   getTopUpCurrencyOptions,
   getTopUpCurrenciesByChainId,
   getTopUpConfigByNetworkId,
-  getChainConfig,
+  getNetworkConfig,
 } from 'src/utils/utils-network';
 import { toastError, toastSuccess, toastWarning } from 'src/utils/utils-notify';
 import Storage from 'src/utils/utils-storage';
@@ -409,7 +409,7 @@ const PartCheckout: FC<IPartCheckout> = ({
         }
 
         const network = wallet.getNework();
-        const chain = getChainConfig(network).id;
+        const chain = getNetworkConfig(network).id;
 
         try {
           const response = await rf

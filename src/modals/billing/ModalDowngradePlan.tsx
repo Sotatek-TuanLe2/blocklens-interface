@@ -100,14 +100,14 @@ const ModalDowngradePlan: React.FC<IModalDowngradePlanProps> = (props) => {
         <span className="period-title">{`${user
           ?.getPlan()
           .name.toUpperCase()} plan will remain until end of this period: `}</span>
-        <span className="period-time">{`${moment(user?.getPlan().expireTime)
+        <span className="period-time">{`${moment(user?.getPlan().expireAt)
           .utc()
           .format('MMM DD, YYYY')} (UTC)`}</span>
       </Text>
       {!!billingPlans.length && downgradePlan.code !== billingPlans[0].code && (
         <Text className="modal-downgrade-plan__period">
           <span className="period-title">{`Payment for new plan ${downgradePlan.name.toUpperCase()} required from: `}</span>
-          <span className="period-time">{`${moment(user?.getPlan().expireTime)
+          <span className="period-time">{`${moment(user?.getPlan().expireAt)
             .subtract(5, 'day')
             .utc()
             .format('MMM DD, YYYY')} (UTC)`}</span>

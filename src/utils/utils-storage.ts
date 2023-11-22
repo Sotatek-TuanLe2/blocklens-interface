@@ -1,5 +1,4 @@
 import config from 'src/config';
-import { WALLET_CONNECT } from 'src/connectors';
 import { IQueryTab } from 'src/pages/WorkspacePage/parts/Query';
 
 const env = process.env.REACT_APP_ENV || 'prod';
