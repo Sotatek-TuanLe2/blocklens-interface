@@ -21,6 +21,7 @@ import rf from 'src/requests/RequestFactory';
 import ModalDowngradePlan from 'src/modals/billing/ModalDowngradePlan';
 import commaNumber from 'comma-number';
 import useBilling from 'src/hooks/useBilling';
+import { toastError } from 'src/utils/utils-notify';
 
 interface IPartBillingProps {
   onCheckout: (plan: MetadataPlan, isYearly: boolean) => void;
@@ -46,13 +47,6 @@ interface IBilling {
   activePaymentMethod?: string;
   // stripePaymentMethod?: any;
 }
-
-const INVOICE_TYPES = {
-  UPGRADE_PLAN: 'UPGRADE_PLAN',
-  DOWNGRADE_PLAN: 'DOWNGRADE_PLAN',
-  RECURRING_CHARGE: 'RECURRING_CHARGE',
-  EXTEND_PLAN: 'EXTEND_PLAN',
-};
 
 const BILLING_STATUS = {
   SUCCESS: 'SUCCESS',
@@ -204,15 +198,25 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
       return;
     }
 
-    const isDownGrade = new BigNumber(plan.price).isLessThan(
+    const isSelectinUpgrade = new BigNumber(plan.price).isGreaterThan(
       new BigNumber(currentPlan?.price || 0),
     );
 
-    if (isDownGrade) {
+    // upgrade
+    if (isSelectinUpgrade) {
+      onCheckout(plan, isYearly);
+      return;
+    }
+
+    // downgrade
+    if (isDowngrade) {
+      toastError({
+        message:
+          "You've alraeady confirmed to downgrade your subcription. Cancel your confirm first to switch to another plan",
+      });
+    } else {
       setDowngradePlan(plan);
       setOpenDowngradeModal(true);
-    } else {
-      onCheckout(plan, isYearly);
     }
   };
 
