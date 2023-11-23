@@ -19,8 +19,14 @@ export const generatePlanDescriptions = (plan: MetadataPlan): string[] => {
 const PartPlan: React.FC<IPlanProps> = (props) => {
   const { plan, onChangePlan } = props;
 
-  const { currentPlan, nextPlan, isDowngrade, hasPurchased, comparePlan } =
-    useBilling();
+  const {
+    currentPlan,
+    nextPlan,
+    isDowngrade,
+    isRenew,
+    hasPurchased,
+    comparePlan,
+  } = useBilling();
 
   const yearlyOptions = plan.subscribeOptions.find(
     (item) => item.code === YEARLY_SUBSCRIPTION_CODE,
@@ -67,7 +73,9 @@ const PartPlan: React.FC<IPlanProps> = (props) => {
     if (
       !currentPlan ||
       !nextPlan ||
-      (isDowngrade && hasPurchased && comparePlan(plan, nextPlan) < 0)
+      ((isDowngrade || isRenew) &&
+        hasPurchased &&
+        comparePlan(plan, nextPlan) < 0) // if downgrad/renew and purchased, hide lower plans
     ) {
       return null;
     }
