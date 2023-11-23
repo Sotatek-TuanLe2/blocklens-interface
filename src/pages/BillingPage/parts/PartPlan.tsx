@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { CheckedIcon } from 'src/assets/icons';
 import { AppButtonLarge } from 'src/components';
 import useBilling from 'src/hooks/useBilling';
-import useUser from 'src/hooks/useUser';
 import { MetadataPlan } from 'src/store/metadata';
 import { YEARLY_SUBSCRIPTION_CODE } from 'src/utils/common';
 import { formatCapitalize } from 'src/utils/utils-helper';
@@ -20,8 +19,8 @@ export const generatePlanDescriptions = (plan: MetadataPlan): string[] => {
 const PartPlan: React.FC<IPlanProps> = (props) => {
   const { plan, onChangePlan } = props;
 
-  const { user } = useUser();
-  const { currentPlan, nextPlan } = useBilling();
+  const { currentPlan, nextPlan, isDowngrade, hasPurchased, comparePlan } =
+    useBilling();
 
   const yearlyOptions = plan.subscribeOptions.find(
     (item) => item.code === YEARLY_SUBSCRIPTION_CODE,
@@ -65,7 +64,11 @@ const PartPlan: React.FC<IPlanProps> = (props) => {
   };
 
   const _renderButton = () => {
-    if (!user) {
+    if (
+      !currentPlan ||
+      !nextPlan ||
+      (isDowngrade && hasPurchased && comparePlan(plan, nextPlan) < 0)
+    ) {
       return null;
     }
     if (currentPlan?.code === plan.code && !isYearly) {
