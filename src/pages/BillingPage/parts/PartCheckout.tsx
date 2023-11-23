@@ -52,7 +52,7 @@ const PartCheckout: FC<IPartCheckout> = ({
   const { wallet, connectWallet } = useWallet();
   const dispatch = useDispatch();
   const { user } = useUser();
-  const { currentPlan } = useBilling();
+  const { currentPlan, nextPlan, hasPurchased, comparePlan } = useBilling();
 
   const [totalAmount, setTotalAmount] = useState<number>(0);
   const [paymentMethod, setPaymentMethod] = useState<
@@ -64,6 +64,11 @@ const PartCheckout: FC<IPartCheckout> = ({
     useState<boolean>(false);
   const [openConfirmingModal, setOpenConfirmingModal] =
     useState<boolean>(false);
+
+  const isYearlyPurchase = subscriptionPeriod === YEARLY_SUBSCRIPTION_CODE;
+  const isUpdateYearly =
+    currentPlan?.subscribeOptionCode !== YEARLY_SUBSCRIPTION_CODE &&
+    isYearlyPurchase;
 
   const topUpContractAddress = useMemo(
     () => (chainId ? getTopUpConfigByNetworkId(chainId).contractAddress : ''),
@@ -155,10 +160,6 @@ const PartCheckout: FC<IPartCheckout> = ({
       return;
     }
 
-    const isUpdateYearly =
-      currentPlan.subscribeOptionCode !== YEARLY_SUBSCRIPTION_CODE &&
-      subscriptionPeriod === YEARLY_SUBSCRIPTION_CODE;
-
     try {
       const res =
         isDownGrade || (isRenewal && !isUpdateYearly)
@@ -187,22 +188,36 @@ const PartCheckout: FC<IPartCheckout> = ({
     return '';
   };
 
+  const generatePrice = () => {
+    if (isYearlyPurchase) {
+      const discount =
+        selectedPlan.subscribeOptions.find(
+          (option) => option.code === YEARLY_SUBSCRIPTION_CODE,
+        )?.discount || 0;
+      return selectedPlan.price * 12 - discount;
+    }
+
+    return selectedPlan.price;
+  };
+
   const onChangeTokenAddress = (value: string) => setTokenAddress(value);
 
   const onChangeChainId = (value: string) => setChainId(value);
 
   const _renderOrder = () => {
-    if (!user) {
+    if (!nextPlan) {
       return;
     }
 
+    const planComparision = comparePlan(selectedPlan, nextPlan);
     const showAmountPaid =
-      user?.getNextPlan().price !== 0 && // next plan has fee
-      selectedPlan.price > user?.getNextPlan().price && // selected plan is higher than next plan
-      selectedPlan.price > totalAmount; // user did purchase next plan
+      nextPlan.price !== 0 && // next plan has fee
+      (planComparision > 0 || // selected plan is higher than next plan
+        (planComparision === 0 && isUpdateYearly)) && // upgrade to yearly plan
+      hasPurchased; // user did purchase next plan
 
     const period = `period ${moment().format('YYYY/MM/DD')}-${
-      subscriptionPeriod === YEARLY_SUBSCRIPTION_CODE
+      isYearlyPurchase
         ? moment().add(1, 'year').subtract(1, 'day').format('YYYY/MM/DD')
         : moment().add(29, 'day').format('YYYY/MM/DD')
     }`;
@@ -223,7 +238,7 @@ const PartCheckout: FC<IPartCheckout> = ({
           px={10}
         >
           <Text className="plan-action">{generatePlanAction()}</Text>
-          <Text>{selectedPlan.price}$</Text>
+          <Text>{generatePrice()}$</Text>
         </Flex>
         {showAmountPaid && (
           <Flex
@@ -235,10 +250,10 @@ const PartCheckout: FC<IPartCheckout> = ({
             <Text className="plan-action">
               Amount paid
               <br />
-              (For {formatCapitalize(user?.getNextPlan().name)} plan - no longer
-              use)
+              (For {formatCapitalize(nextPlan.name)} plan
+              {isUpdateYearly ? ' monthly' : ''} - no longer use)
             </Text>
-            <Text>{selectedPlan.price}$</Text>
+            <Text>{generatePrice() - totalAmount}$</Text>
           </Flex>
         )}
         <Flex alignItems="flex-end" justifyContent="space-between" px={10}>

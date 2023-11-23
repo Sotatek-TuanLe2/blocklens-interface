@@ -12,7 +12,8 @@ import { useDispatch } from 'react-redux';
 import { getUserPlan } from 'src/store/user';
 
 const NOTIFICATION_TYPE = {
-  RENEWAL: 'RENEWAL',
+  WARNING_RENEWAL: 'WARNING_RENEWAL',
+  SUCCEEDED_RENEWAL: 'SUCCEEDED_RENEWAL',
   WARNING_DOWNGRADE: 'WARNING_DOWNGRADE',
   SUCCEEDED_DOWNGRADE: 'SUCCEEDED_DOWNGRADE',
 };
@@ -48,9 +49,11 @@ const PartNotification: React.FC<INotification> = (props) => {
           ? NOTIFICATION_TYPE.SUCCEEDED_DOWNGRADE
           : NOTIFICATION_TYPE.WARNING_DOWNGRADE,
       );
-    } else if (isRenew) {
+    } else if (isRenew && isBefore5Days) {
       setVariant(
-        isBefore5Days && !hasPurchased ? NOTIFICATION_TYPE.RENEWAL : '',
+        !hasPurchased
+          ? NOTIFICATION_TYPE.WARNING_RENEWAL
+          : NOTIFICATION_TYPE.SUCCEEDED_RENEWAL,
       );
     } else {
       setVariant('');
@@ -88,7 +91,7 @@ const PartNotification: React.FC<INotification> = (props) => {
     }
 
     switch (variant) {
-      case NOTIFICATION_TYPE.RENEWAL:
+      case NOTIFICATION_TYPE.WARNING_RENEWAL:
         return (
           <Flex
             justifyContent="space-between"
@@ -108,6 +111,20 @@ const PartNotification: React.FC<INotification> = (props) => {
             >
               Pay now
             </AppButton>
+          </Flex>
+        );
+      case NOTIFICATION_TYPE.SUCCEEDED_RENEWAL:
+        return (
+          <Flex
+            justifyContent="space-between"
+            alignItems="center"
+            className="plan-notification plan-notification--notification"
+          >
+            <span>
+              Current plan will be renewed to{' '}
+              <b>{formatCapitalize(nextPlan.name)}</b> plan on{' '}
+              {moment(currentPlan.expireAt).format('MMM DD, YYYY')}
+            </span>
           </Flex>
         );
       case NOTIFICATION_TYPE.WARNING_DOWNGRADE:
