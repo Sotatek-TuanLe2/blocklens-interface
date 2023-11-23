@@ -5,6 +5,7 @@ import useUser from './useUser';
 import rf from 'src/requests/RequestFactory';
 import moment from 'moment';
 import useMetadata from './useMetadata';
+import { MetadataPlan } from 'src/store/metadata';
 
 interface ReturnType {
   currentPlan?: UserPlanType;
@@ -16,6 +17,10 @@ interface ReturnType {
   isUpgrade: boolean;
   isBefore5Days: boolean;
   hasPurchased: boolean;
+  comparePlan: (
+    planA: UserPlanType | MetadataPlan,
+    planB: UserPlanType | MetadataPlan,
+  ) => number;
 }
 
 const useBilling = (): ReturnType => {
@@ -99,6 +104,19 @@ const useBilling = (): ReturnType => {
     checkHasPurchased();
   }, [isBefore5Days]);
 
+  const comparePlan = (
+    planA: UserPlanType | MetadataPlan,
+    planB: UserPlanType | MetadataPlan,
+  ) => {
+    if (new BigNumber(planA.price).isEqualTo(new BigNumber(planB.price))) {
+      return 0;
+    }
+
+    return new BigNumber(planA.price).isLessThan(new BigNumber(planB.price))
+      ? -1
+      : 1;
+  };
+
   return {
     currentPlan,
     nextPlan,
@@ -109,6 +127,7 @@ const useBilling = (): ReturnType => {
     isUpgrade,
     isBefore5Days,
     hasPurchased,
+    comparePlan,
   };
 };
 

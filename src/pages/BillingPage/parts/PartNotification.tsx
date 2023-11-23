@@ -59,7 +59,7 @@ const PartNotification: React.FC<INotification> = (props) => {
 
   useEffect(() => {
     calculateVariant();
-  }, [currentPlan, nextPlan]);
+  }, [currentPlan, nextPlan, hasPurchased]);
 
   const onPay = () => {
     if (!nextPlan) {
@@ -160,9 +160,11 @@ const PartNotification: React.FC<INotification> = (props) => {
             alignItems="center"
             className="plan-notification plan-notification--notification"
           >
-            Current plan will be reduced to{' '}
-            <b>{formatCapitalize(nextPlan.name)}</b> plan on{' '}
-            {moment(currentPlan.expireAt).format('MMM DD, YYYY')}
+            <span>
+              Current plan will be reduced to{' '}
+              <b>{formatCapitalize(nextPlan.name)}</b> plan on{' '}
+              {moment(currentPlan.expireAt).format('MMM DD, YYYY')}
+            </span>
           </Flex>
         );
       default:
