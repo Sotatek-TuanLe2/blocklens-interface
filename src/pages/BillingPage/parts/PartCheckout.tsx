@@ -36,6 +36,7 @@ import Storage from 'src/utils/utils-storage';
 import { PAYMENT_METHOD } from '..';
 import { YEARLY_SUBSCRIPTION_CODE } from 'src/utils/common';
 import { isTokenApproved } from 'src/utils/utils-token';
+import useBilling from 'src/hooks/useBilling';
 
 interface IPartCheckout {
   selectedPlan: MetadataPlan;
@@ -51,6 +52,7 @@ const PartCheckout: FC<IPartCheckout> = ({
   const { wallet, connectWallet } = useWallet();
   const dispatch = useDispatch();
   const { user } = useUser();
+  const { currentPlan } = useBilling();
 
   const [totalAmount, setTotalAmount] = useState<number>(0);
   const [paymentMethod, setPaymentMethod] = useState<
@@ -63,7 +65,6 @@ const PartCheckout: FC<IPartCheckout> = ({
   const [openConfirmingModal, setOpenConfirmingModal] =
     useState<boolean>(false);
 
-  const userPlan = useMemo(() => user?.getPlan(), [user?.getPlan()]);
   const topUpContractAddress = useMemo(
     () => (chainId ? getTopUpConfigByNetworkId(chainId).contractAddress : ''),
     [chainId],
@@ -76,30 +77,30 @@ const PartCheckout: FC<IPartCheckout> = ({
 
   const isDownGrade = useMemo(
     () =>
-      userPlan
+      currentPlan
         ? new BigNumber(selectedPlan.price).isLessThan(
-            new BigNumber(userPlan.price),
+            new BigNumber(currentPlan.price),
           )
         : false,
-    [userPlan, selectedPlan],
+    [currentPlan, selectedPlan],
   );
   const isRenewal = useMemo(
     () =>
-      userPlan
+      currentPlan
         ? new BigNumber(selectedPlan.price).isEqualTo(
-            new BigNumber(userPlan.price),
+            new BigNumber(currentPlan.price),
           )
         : false,
-    [userPlan, selectedPlan],
+    [currentPlan, selectedPlan],
   );
   const isUpgrade = useMemo(
     () =>
-      userPlan
+      currentPlan
         ? new BigNumber(selectedPlan.price).isGreaterThan(
-            new BigNumber(userPlan.price),
+            new BigNumber(currentPlan.price),
           )
         : false,
-    [userPlan, selectedPlan],
+    [currentPlan, selectedPlan],
   );
 
   useEffect(() => {
@@ -150,14 +151,17 @@ const PartCheckout: FC<IPartCheckout> = ({
   }, [chainId]);
 
   const estimatePrice = async () => {
-    if (!userPlan) {
+    if (!currentPlan) {
       return;
     }
 
+    const isUpdateYearly =
+      currentPlan.subscribeOptionCode !== YEARLY_SUBSCRIPTION_CODE &&
+      subscriptionPeriod === YEARLY_SUBSCRIPTION_CODE;
+
     try {
       const res =
-        isDownGrade ||
-        (isRenewal && subscriptionPeriod !== YEARLY_SUBSCRIPTION_CODE)
+        isDownGrade || (isRenewal && !isUpdateYearly)
           ? await rf
               .getRequest('BillingRequest')
               .estimatePriceForRenewOrDowngrade()
