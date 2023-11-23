@@ -117,7 +117,12 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
       {
         title: 'Compute Units',
         content: !!currentPlan
-          ? `${commaNumber(currentPlan.capacity.cu)} CUs/mo`
+          ? isLowestPlan
+            ? `${commaNumber(
+                currentPlan.rateLimit.find((item) => item.type === 'DAY')
+                  ?.limit || 0,
+              )} CUs/day`
+            : `${commaNumber(currentPlan.capacity.cu)} CUs/mo`
           : '',
       },
       {
@@ -144,7 +149,7 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
             </Tooltip>
           </Flex>
         ),
-        content: '1$/100K CUs',
+        content: isLowestPlan ? 'Unavailable' : '1$/100K CUs',
       },
     ],
     [currentPlan],
