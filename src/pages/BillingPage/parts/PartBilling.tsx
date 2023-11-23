@@ -57,8 +57,13 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
   const { onCheckout } = props;
 
   const { user } = useUser();
-  const { currentPlan, isLowestPlan, isHighestPlan, isDowngrade } =
-    useBilling();
+  const {
+    currentPlan,
+    isLowestPlan,
+    isHighestPlan,
+    isDowngrade,
+    isBefore5Days,
+  } = useBilling();
   const { billingPlans } = useMetadata();
 
   const [billingHistory, setBillingHistory] = useState<any[] | null>(null);
@@ -104,7 +109,7 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
   }[] = useMemo(
     () => [
       {
-        title: 'Expire',
+        title: isBefore5Days ? 'Expire' : 'Renew on',
         content: !!currentPlan
           ? `${moment(currentPlan.expireAt).utc().format('MMM D, YYYY')} (UTC)`
           : '',
