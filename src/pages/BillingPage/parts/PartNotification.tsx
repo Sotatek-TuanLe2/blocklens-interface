@@ -6,7 +6,7 @@ import useBilling from 'src/hooks/useBilling';
 import { MetadataPlan } from 'src/store/metadata';
 import { YEARLY_SUBSCRIPTION_CODE } from 'src/utils/common';
 import { formatCapitalize } from 'src/utils/utils-helper';
-import { toastError } from 'src/utils/utils-notify';
+import { toastError, toastSuccess } from 'src/utils/utils-notify';
 import rf from 'src/requests/RequestFactory';
 import { useDispatch } from 'react-redux';
 import { getUserPlan } from 'src/store/user';
@@ -74,7 +74,8 @@ const PartNotification: React.FC<INotification> = (props) => {
   const onCancelDowngrade = async () => {
     try {
       await rf.getRequest('BillingRequest').cancelDowngrade();
-      dispatch(getUserPlan());
+      await dispatch(getUserPlan());
+      toastSuccess({ message: 'Cancel downgrade successfully!' });
     } catch (error) {
       toastError({ message: 'Cancel downgrade failed! ' });
       console.error(error);
