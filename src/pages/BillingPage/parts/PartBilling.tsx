@@ -22,6 +22,7 @@ import ModalDowngradePlan from 'src/modals/billing/ModalDowngradePlan';
 import commaNumber from 'comma-number';
 import useBilling from 'src/hooks/useBilling';
 import { toastError } from 'src/utils/utils-notify';
+import { YEARLY_SUBSCRIPTION_CODE } from 'src/utils/common';
 
 interface IPartBillingProps {
   onCheckout: (plan: MetadataPlan, isYearly: boolean) => void;
@@ -198,9 +199,12 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
       return;
     }
 
-    const isSelectinUpgrade = new BigNumber(plan.price).isGreaterThan(
+    const isPlanHigher = new BigNumber(plan.price).isGreaterThan(
       new BigNumber(currentPlan?.price || 0),
     );
+    const isUpdateYearly =
+      currentPlan?.subscribeOptionCode !== YEARLY_SUBSCRIPTION_CODE && isYearly;
+    const isSelectinUpgrade = isPlanHigher || isUpdateYearly;
 
     // upgrade
     if (isSelectinUpgrade) {

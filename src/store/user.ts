@@ -219,6 +219,7 @@ export const getUserPlan = createAsyncThunk<void, MetadataPlan[] | undefined>(
           currentPlan,
           nextPlan,
           expireAt: res.expireAt,
+          subscribeOptionCode: res.subscribeOptionCode || '',
           nextSubscribeOptionCode:
             res.nextSubscribePlan.subscribeOptionCode || '',
         }),
@@ -272,6 +273,7 @@ const userSlice = createSlice({
       state.billing.plan = {
         ...action.payload.currentPlan,
         expireAt: action.payload.expireAt,
+        subscribeOptionCode: action.payload.subscribeOptionCode,
       };
       state.billing.nextPlan = {
         ...action.payload.nextPlan,
