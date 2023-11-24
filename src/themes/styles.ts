@@ -120,7 +120,7 @@ export const globalStyles = {
     global: (props: StyleFunctionProps) => ({
       body: {
         bg: mode('bg.300', 'bg.100')(props),
-        fontFamily: 'DM Sans',
+        fontFamily: 'Plex Mono',
         letterSpacing: '0.2px',
       },
       '.chakra-ui-light': {
