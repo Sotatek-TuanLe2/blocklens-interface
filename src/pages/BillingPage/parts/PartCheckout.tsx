@@ -49,7 +49,7 @@ const PartCheckout: FC<IPartCheckout> = ({
   subscriptionPeriod,
   onBack,
 }) => {
-  const { wallet, connectWallet } = useWallet();
+  const { wallet, connectWallet, changeNetwork } = useWallet();
   const dispatch = useDispatch();
   const { user } = useUser();
   const { currentPlan, nextPlan, hasPurchased, comparePlan } = useBilling();
@@ -468,6 +468,7 @@ const PartCheckout: FC<IPartCheckout> = ({
     }
 
     try {
+      await changeNetwork(wallet.getNework());
       const isTokenApproved = await checkTokenApproved();
       await approveToken(isTokenApproved);
       const txn = await purchasePlan();
