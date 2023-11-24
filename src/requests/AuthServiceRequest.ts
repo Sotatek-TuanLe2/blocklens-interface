@@ -7,12 +7,12 @@ export default class AuthServiceRequest extends BaseRequest {
   }
 
   getAPIKey() {
-    const url = `/my/users/api-key`;
+    const url = `/users/my/api-key`;
     return this.get(url);
   }
 
   updateAPIKey() {
-    const url = `/my/users/api-key`;
+    const url = `/users/my/api-key`;
     return this.put(url);
   }
 }

@@ -132,7 +132,7 @@ export default class BaseRequest {
 
     try {
       const response = await axios.post(
-        config.api.baseUrlApi + '/public/users/refresh-token',
+        config.api.baseUrlApi + '/users/refresh-token',
         { refreshToken },
       );
       store().store.dispatch(setUserAuth(response.data));

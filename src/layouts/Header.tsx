@@ -24,6 +24,7 @@ import { ROUTES } from 'src/utils/common';
 import { AppBroadcast } from 'src/utils/utils-broadcast';
 import config from 'src/config';
 import { clearWallet } from 'src/store/wallet';
+import rf from 'src/requests/RequestFactory';
 
 const menus = [
   {
@@ -55,31 +56,29 @@ const Header: FC = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    AppBroadcast.on('LOGOUT_USER', onLogout);
-    return () => {
-      AppBroadcast.remove('LOGOUT_USER');
-    };
-  }, []);
-
-  useEffect(() => {
     AppBroadcast.on('REQUEST_SIGN_IN', onSignInRequest);
     return () => {
       AppBroadcast.remove('REQUEST_SIGN_IN');
     };
   }, []);
 
-  const onSignInRequest = () => {
+  const onSignInRequest = async () => {
     if (!isOpenSignInRequestModal) {
-      onLogout();
+      await onLogout();
       setIsOpenSignInRequestModal(true);
     }
   };
 
-  const onLogout = () => {
-    dispatch(clearUser());
-    dispatch(clearWallet());
-    if (PRIVATE_PATH.some((path) => location.pathname.includes(path))) {
-      history.push(ROUTES.LOGIN);
+  const onLogout = async () => {
+    try {
+      await rf.getRequest('AuthRequest').logout();
+      dispatch(clearUser());
+      dispatch(clearWallet());
+      if (PRIVATE_PATH.some((path) => location.pathname.includes(path))) {
+        history.push(ROUTES.LOGIN);
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 

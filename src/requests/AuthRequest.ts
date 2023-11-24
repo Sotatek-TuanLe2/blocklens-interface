@@ -8,52 +8,57 @@ export default class AuthRequest extends BaseRequest {
   }
 
   signUp(params: any) {
-    const url = `/public/users/signup`;
+    const url = `/users/signup`;
     return this.post(url, params, RECAPTCHA_ACTIONS.HOMEPAGE);
   }
 
   login(params: any) {
-    const url = `/public/users/signin`;
+    const url = `/users/signin`;
     return this.post(url, params, RECAPTCHA_ACTIONS.LOGIN);
   }
 
+  logout() {
+    const url = '/users/logout';
+    return this.post(url);
+  }
+
   loginByGoogle(params: any) {
-    const url = `/public/users/signin-gg`;
+    const url = `/users/signin-gg`;
     return this.post(url, params);
   }
 
   resendMailVerify(email: string) {
-    const url = `/public/users/resend-email`;
+    const url = `/users/resend-email`;
     return this.post(url, { email });
   }
 
   verifyMail(token: string) {
-    const url = `/public/users/verify-email/?token=${token}`;
+    const url = `/users/verify-email/?token=${token}`;
     return this.get(url);
   }
 
   changePassword(params: { newPassword: string; oldPassword: string }) {
-    const url = '/my/users/change-password';
+    const url = '/users/change-password';
     return this.put(url, params);
   }
 
   forgotPassword(data: any) {
-    const url = '/public/users/forgot-password';
+    const url = '/users/forgot-password';
     return this.post(url, data, RECAPTCHA_ACTIONS.HOMEPAGE);
   }
 
   resetPassword(data: any) {
-    const url = '/public/users/reset-password';
+    const url = '/users/reset-password';
     return this.put(url, data);
   }
 
   attachWalletAddress(data: { address: string; signature: string }) {
-    const url = '/my/users/wallet';
+    const url = '/users/my/wallet';
     return this.put(url, data);
   }
 
   unlinkWallet() {
-    const url = '/my/users/unlink-wallet';
+    const url = '/users/my/unlink-wallet';
     return this.put(url);
   }
 }
