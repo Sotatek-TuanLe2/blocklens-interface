@@ -216,10 +216,11 @@ const PartCheckout: FC<IPartCheckout> = ({
         (planComparision === 0 && isUpdateYearly)) && // upgrade to yearly plan
       hasPurchased; // user did purchase next plan
 
-    const period = `period ${moment().format('YYYY/MM/DD')}-${
+    const startDate = isUpgrade ? moment() : moment(currentPlan?.expireAt); // purchase for extending downgrade or renew
+    const period = `period ${startDate.format('YYYY/MM/DD')}-${
       isYearlyPurchase
-        ? moment().add(1, 'year').subtract(1, 'day').format('YYYY/MM/DD')
-        : moment().add(29, 'day').format('YYYY/MM/DD')
+        ? startDate.add(1, 'year').subtract(1, 'day').format('YYYY/MM/DD')
+        : startDate.add(29, 'day').format('YYYY/MM/DD')
     }`;
 
     return (
