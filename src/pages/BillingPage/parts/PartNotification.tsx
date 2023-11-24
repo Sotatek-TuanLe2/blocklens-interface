@@ -123,7 +123,9 @@ const PartNotification: React.FC<INotification> = (props) => {
             <span>
               Current plan will be renewed to{' '}
               <b>{formatCapitalize(nextPlan.name)}</b> plan on{' '}
-              {moment(currentPlan.expireAt).format('MMM DD, YYYY')}
+              {moment(currentPlan.expireAt)
+                .add(1, 'day')
+                .format('MMM DD, YYYY')}
             </span>
           </Flex>
         );
@@ -180,7 +182,9 @@ const PartNotification: React.FC<INotification> = (props) => {
             <span>
               Current plan will be reduced to{' '}
               <b>{formatCapitalize(nextPlan.name)}</b> plan on{' '}
-              {moment(currentPlan.expireAt).format('MMM DD, YYYY')}
+              {moment(currentPlan.expireAt)
+                .add(1, 'day')
+                .format('MMM DD, YYYY')}
             </span>
           </Flex>
         );
