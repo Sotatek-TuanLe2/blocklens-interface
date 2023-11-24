@@ -251,8 +251,7 @@ const VisualizationTable = <T,>({
               {...{
                 key: header.id,
                 style: {
-                  textTransform: 'uppercase',
-                  color: '#465065',
+                  color: 'rgba(0, 2, 36, 0.8)',
                   width: header.getSize(),
                   textAlign: header.column.columnDef.align,
                   display: header.column.columnDef.isHidden
