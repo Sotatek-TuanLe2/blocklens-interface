@@ -25,31 +25,32 @@ const initialState: ITransactionState = {
 const GAS_LIMIT_BUFFER = 0.1;
 const DEFAULT_CONFIRMATION = 5;
 
+const TRANSACTION_ERROR_CODES = {
+  UNPREDICTABLE_GAS_LIMIT: 'UNPREDICTABLE_GAS_LIMIT',
+  ACTION_REJECTED: 'ACTION_REJECTED',
+};
+
 const createTransaction = async (provider: any, params: ITransactionParams) => {
-  try {
-    const {
-      contractAddress,
-      abi,
-      action,
-      transactionArgs,
-      overrides = {},
-    } = params;
-    const contractWithSigner = new Contract(
-      contractAddress,
-      abi,
-      new Web3Provider(provider).getSigner(),
-    );
-    // Gas estimation
-    const gasLimitNumber = await contractWithSigner.estimateGas[action](
-      ...transactionArgs,
-      overrides,
-    );
-    const gasLimit = gasLimitNumber.toNumber();
-    overrides.gasLimit = Math.floor(gasLimit * (1 + GAS_LIMIT_BUFFER));
-    return contractWithSigner[action](...transactionArgs, overrides);
-  } catch (error: any) {
-    throw new Error(error);
-  }
+  const {
+    contractAddress,
+    abi,
+    action,
+    transactionArgs,
+    overrides = {},
+  } = params;
+  const contractWithSigner = new Contract(
+    contractAddress,
+    abi,
+    new Web3Provider(provider).getSigner(),
+  );
+  // Gas estimation
+  const gasLimitNumber = await contractWithSigner.estimateGas[action](
+    ...transactionArgs,
+    overrides,
+  );
+  const gasLimit = gasLimitNumber.toNumber();
+  overrides.gasLimit = Math.floor(gasLimit * (1 + GAS_LIMIT_BUFFER));
+  return contractWithSigner[action](...transactionArgs, overrides);
 };
 
 const handleTransaction = createAsyncThunk(
@@ -113,8 +114,17 @@ export const executeTransaction = createAsyncThunk(
       );
       return transaction;
     } catch (error: any) {
-      if (error.code === 'ACTION_REJECTED') {
-        toastError({ message: 'User denied transaction signature.' });
+      switch (error.code) {
+        case TRANSACTION_ERROR_CODES.UNPREDICTABLE_GAS_LIMIT:
+          toastError({
+            message: 'Insufficient balance. Please check your balance!',
+          });
+          break;
+        case TRANSACTION_ERROR_CODES.ACTION_REJECTED:
+          toastError({ message: 'User denied transaction signature.' });
+          break;
+        default:
+          break;
       }
       throw new Error(error);
     }
