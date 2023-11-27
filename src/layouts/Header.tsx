@@ -62,21 +62,30 @@ const Header: FC = () => {
     };
   }, []);
 
-  const onSignInRequest = async () => {
+  const onSignInRequest = () => {
     if (!isOpenSignInRequestModal) {
-      await onLogout();
+      clearAuthentication();
+      navigateToLoginPage();
       setIsOpenSignInRequestModal(true);
+    }
+  };
+
+  const clearAuthentication = () => {
+    dispatch(clearUser());
+    dispatch(clearWallet());
+  };
+
+  const navigateToLoginPage = () => {
+    if (PRIVATE_PATH.some((path) => location.pathname.includes(path))) {
+      history.push(ROUTES.LOGIN);
     }
   };
 
   const onLogout = async () => {
     try {
       await rf.getRequest('AuthRequest').logout();
-      dispatch(clearUser());
-      dispatch(clearWallet());
-      if (PRIVATE_PATH.some((path) => location.pathname.includes(path))) {
-        history.push(ROUTES.LOGIN);
-      }
+      clearAuthentication();
+      navigateToLoginPage();
     } catch (error) {
       console.error(error);
     }

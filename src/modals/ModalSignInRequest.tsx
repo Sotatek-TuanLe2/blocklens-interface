@@ -2,8 +2,6 @@ import { Flex } from '@chakra-ui/react';
 import React, { FC } from 'react';
 import BaseModal from './BaseModal';
 import AppButton from 'src/components/AppButton';
-import { useDispatch } from 'react-redux';
-import { clearUser } from 'src/store/user';
 import { ROUTES } from 'src/utils/common';
 import { useHistory } from 'react-router-dom';
 
@@ -13,16 +11,10 @@ interface IModalSignInRequest {
 }
 
 const ModalSignInRequest: FC<IModalSignInRequest> = ({ open, onClose }) => {
-  const dispatch = useDispatch();
   const history = useHistory();
-
-  const onCloseModal = () => {
-    onClose();
-  };
 
   const onLogin = async () => {
     onClose();
-    dispatch(clearUser());
     history.push(ROUTES.LOGIN);
   };
 
@@ -33,7 +25,7 @@ const ModalSignInRequest: FC<IModalSignInRequest> = ({ open, onClose }) => {
       isOpen={open}
       isHideCloseIcon
       description="The work session has expired. Please sign-in again!"
-      onClose={onCloseModal}
+      onClose={onClose}
     >
       <Flex flexWrap={'wrap'} justifyContent={'center'} mt={2}>
         <AppButton size={'lg'} onClick={onLogin}>
