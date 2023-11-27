@@ -67,8 +67,11 @@ const PartCheckout: FC<IPartCheckout> = ({
 
   const isYearlyPurchase = subscriptionPeriod === YEARLY_SUBSCRIPTION_CODE;
   const isUpdateYearly =
-    currentPlan?.subscribeOptionCode !== YEARLY_SUBSCRIPTION_CODE &&
-    isYearlyPurchase;
+    isYearlyPurchase &&
+    currentPlan?.subscribeOptions.some(
+      (item) => item.code === YEARLY_SUBSCRIPTION_CODE,
+    ) &&
+    currentPlan?.subscribeOptionCode !== YEARLY_SUBSCRIPTION_CODE;
 
   const topUpContractAddress = useMemo(
     () => (chainId ? getTopUpConfigByNetworkId(chainId).contractAddress : ''),
