@@ -78,7 +78,7 @@ const useBilling = (): ReturnType => {
     const expireAt = currentPlan.expireAt;
     const duration = moment(expireAt).diff(moment(), 'days');
 
-    return duration >= 0 && duration <= 5;
+    return duration > 0 && duration <= 5;
   }, [currentPlan]);
 
   const checkHasPurchased = async () => {
