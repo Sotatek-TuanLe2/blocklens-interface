@@ -63,6 +63,7 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
     isHighestPlan,
     isDowngrade,
     isBefore5Days,
+    hasPurchased,
   } = useBilling();
   const { billingPlans } = useMetadata();
 
@@ -109,9 +110,16 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
   }[] = useMemo(
     () => [
       {
-        title: isBefore5Days ? 'Expire' : 'Renew on',
+        title: isBefore5Days && hasPurchased ? 'Renew on' : 'Expire',
         content: !!currentPlan
-          ? `${moment(currentPlan.expireAt).utc().format('MMM D, YYYY')} (UTC)`
+          ? isBefore5Days && hasPurchased
+            ? `${moment(currentPlan.expireAt)
+                .add(1, 'day')
+                .utc()
+                .format('MMM D, YYYY')} (UTC)`
+            : `${moment(currentPlan.expireAt)
+                .utc()
+                .format('MMM D, YYYY')} (UTC)`
           : '',
       },
       {
@@ -152,7 +160,7 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
         content: isLowestPlan ? 'Unavailable' : '1$/100K CUs',
       },
     ],
-    [currentPlan],
+    [currentPlan, hasPurchased],
   );
 
   const _renderCurrentPlan = () => {
