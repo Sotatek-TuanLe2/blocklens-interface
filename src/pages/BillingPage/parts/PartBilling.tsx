@@ -234,7 +234,7 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
     if (isDowngrade) {
       toastError({
         message:
-          "You've alraeady confirmed to downgrade your subcription. Cancel your confirm first to switch to another plan",
+          "You've already confirmed to downgrade your subscription. Cancel your confirm first to switch to another plan",
       });
     } else {
       setDowngradePlan(plan);
