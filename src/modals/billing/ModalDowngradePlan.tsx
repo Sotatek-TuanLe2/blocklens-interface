@@ -43,7 +43,6 @@ const ModalDowngradePlan: React.FC<IModalDowngradePlanProps> = (props) => {
       await rf
         .getRequest('BillingRequest')
         .downgradeSubscription(downgradePlan.code);
-      toastSuccess({ message: 'Downgrade Plan Successfully!' });
       dispatch(getUserPlan());
       scrollIntoElementById('current-plan');
       onClose();
