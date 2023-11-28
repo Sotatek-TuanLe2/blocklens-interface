@@ -110,7 +110,11 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
   }[] = useMemo(
     () => [
       {
-        title: isBefore5Days && hasPurchased ? 'Renew on' : 'Expire',
+        title: isBefore5Days
+          ? hasPurchased
+            ? 'Renew on'
+            : 'Expire'
+          : 'Renew on',
         content: !!currentPlan
           ? isBefore5Days && hasPurchased
             ? `${moment(currentPlan.expireAt)
