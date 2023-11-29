@@ -379,17 +379,19 @@ const PartCheckout: FC<IPartCheckout> = ({
 
     toastWarning({ message: 'You need to approve token before purchasing' });
 
-    await dispatch(
-      executeTransaction({
-        provider: wallet?.getProvider(),
-        params: {
-          contractAddress: tokenAddress,
-          abi: abi['erc20'],
-          action: 'approve',
-          transactionArgs: [topUpContractAddress, MaxUint256.toString()],
-        },
-      }),
-    );
+    await (
+      dispatch(
+        executeTransaction({
+          provider: wallet?.getProvider(),
+          params: {
+            contractAddress: tokenAddress,
+            abi: abi['erc20'],
+            action: 'approve',
+            transactionArgs: [topUpContractAddress, MaxUint256.toString()],
+          },
+        }),
+      ) as any
+    ).unwrap();
   };
 
   const purchasePlan = async (): Promise<string> => {
@@ -397,22 +399,24 @@ const PartCheckout: FC<IPartCheckout> = ({
       (option) => option.value === tokenAddress,
     )?.decimals;
 
-    const transactionPayload: any = await dispatch(
-      executeTransaction({
-        provider: wallet?.getProvider(),
-        params: {
-          contractAddress: topUpContractAddress,
-          abi: abi['topup'],
-          action: 'topup',
-          transactionArgs: [
-            config.topUp.appId,
-            tokenAddress,
-            convertDecToWei(totalAmount.toString(), decimal),
-          ],
-        },
-        confirmation: config.topUp.confirmations,
-      }),
-    );
+    const transactionPayload: any = await (
+      dispatch(
+        executeTransaction({
+          provider: wallet?.getProvider(),
+          params: {
+            contractAddress: topUpContractAddress,
+            abi: abi['topup'],
+            action: 'topup',
+            transactionArgs: [
+              config.topUp.appId,
+              tokenAddress,
+              convertDecToWei(totalAmount.toString(), decimal),
+            ],
+          },
+          confirmation: config.topUp.confirmations,
+        }),
+      ) as any
+    ).unwrap();
 
     if (!transactionPayload || !transactionPayload.payload) {
       throw new Error(
@@ -423,7 +427,7 @@ const PartCheckout: FC<IPartCheckout> = ({
     return transactionPayload.payload.hash;
   };
 
-  const confirmTransaction = async (txn: string) => {
+  const checkPaymentTransaction = async (txn: string) => {
     dispatch(toggleFinishTransactionModal(false));
     setOpenConfirmingModal(true);
     await retry(
@@ -467,28 +471,11 @@ const PartCheckout: FC<IPartCheckout> = ({
       : rf.getRequest('BillingRequest').purchaseRenewalOrDowngrade();
   };
 
-  const onPay = async () => {
-    if (!wallet) {
-      return;
-    }
-
+  const confirmTransaction = async (txn: string) => {
     try {
-      await changeNetwork(wallet.getNework());
-      const isTokenApproved = await checkTokenApproved();
-      await approveToken(isTokenApproved);
-      const txn = await purchasePlan();
-      await confirmTransaction(txn);
+      await checkPaymentTransaction(txn);
       await updateSubscription();
-
-      toastSuccess({
-        message:
-          'Payment complete. Invoice & receipt have been sent to your email.',
-      });
-      dispatch(getUserPlan());
-      onBack();
-    } catch (error) {
-      setOpenConfirmingModal(false);
-      console.error(error);
+    } catch (error: any) {
       toastError({
         message: (
           <>
@@ -507,6 +494,31 @@ const PartCheckout: FC<IPartCheckout> = ({
           </>
         ),
       });
+      throw new Error(error);
+    }
+  };
+
+  const onPay = async () => {
+    if (!wallet) {
+      return;
+    }
+
+    try {
+      await changeNetwork(wallet.getNework());
+      const isTokenApproved = await checkTokenApproved();
+      await approveToken(isTokenApproved);
+      const txn = await purchasePlan();
+      await confirmTransaction(txn);
+
+      toastSuccess({
+        message:
+          'Payment complete. Invoice & receipt have been sent to your email.',
+      });
+      dispatch(getUserPlan());
+      onBack();
+    } catch (error) {
+      setOpenConfirmingModal(false);
+      console.error(error);
     }
   };
 
