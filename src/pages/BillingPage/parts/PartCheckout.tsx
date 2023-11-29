@@ -399,24 +399,22 @@ const PartCheckout: FC<IPartCheckout> = ({
       (option) => option.value === tokenAddress,
     )?.decimals;
 
-    const transactionPayload: any = await (
-      dispatch(
-        executeTransaction({
-          provider: wallet?.getProvider(),
-          params: {
-            contractAddress: topUpContractAddress,
-            abi: abi['topup'],
-            action: 'topup',
-            transactionArgs: [
-              config.topUp.appId,
-              tokenAddress,
-              convertDecToWei(totalAmount.toString(), decimal),
-            ],
-          },
-          confirmation: config.topUp.confirmations,
-        }),
-      ) as any
-    ).unwrap();
+    const transactionPayload: any = await dispatch(
+      executeTransaction({
+        provider: wallet?.getProvider(),
+        params: {
+          contractAddress: topUpContractAddress,
+          abi: abi['topup'],
+          action: 'topup',
+          transactionArgs: [
+            config.topUp.appId,
+            tokenAddress,
+            convertDecToWei(totalAmount.toString(), decimal),
+          ],
+        },
+        confirmation: config.topUp.confirmations,
+      }),
+    );
 
     if (!transactionPayload || !transactionPayload.payload) {
       throw new Error(
