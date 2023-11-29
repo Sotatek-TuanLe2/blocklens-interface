@@ -124,7 +124,6 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
       .utc()
       .format('MMM D, YYYY')} (UTC)`;
     const expireDate = `${moment(currentPlan.expireAt)
-      .add(1, 'day')
       .utc()
       .format('MMM D, YYYY')} (UTC)`;
 
