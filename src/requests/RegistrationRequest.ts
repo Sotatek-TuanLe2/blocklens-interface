@@ -52,6 +52,9 @@ export default class RegistrationRequest extends BaseRequest {
         MAINNET: '/api.etherscan.io/api',
         SEPOLIA: '/api-sepolia.etherscan.io/api',
       },
+      AVAX: {
+        MAINNET: '/api.snowtrace.io/api',
+      },
     };
 
     return this.get(URL[chain][network], {

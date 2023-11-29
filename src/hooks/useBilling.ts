@@ -76,7 +76,9 @@ const useBilling = (): ReturnType => {
       return false;
     }
     const expireAt = currentPlan.expireAt;
-    const duration = moment(expireAt).diff(moment(), 'days');
+    const duration = moment(expireAt).utc().diff(moment().utc(), 'days');
+
+    console.log('duration', duration);
 
     return duration > 0 && duration <= 5;
   }, [currentPlan]);

@@ -222,6 +222,10 @@ const WebHookCreatePage: React.FC = () => {
       return optionsWebhookAptosType;
     }
 
+    if (chainSelected.value === CHAINS.AVAX) {
+      return optionsWebhookType;
+    }
+
     if (!isEVMNetwork(chainSelected.value)) {
       return optionsWebhookType.filter(
         (item) => item.value === WEBHOOK_TYPES.ADDRESS_ACTIVITY,

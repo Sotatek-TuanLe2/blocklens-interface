@@ -22,7 +22,8 @@ export const getNameChainByChainId = (chainId?: string) => {
 
 export const isEVMNetwork = (chainId?: string) => {
   if (!chainId) return false;
-  return config.chains[chainId]?.family === CHAINS.ETH;
+  return config.chains[chainId]?.family === CHAINS.ETH
+    || config.chains[chainId]?.family === CHAINS.AVAX;
 };
 
 export const isAptosNetwork = (chainId?: string) => {

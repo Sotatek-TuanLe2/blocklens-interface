@@ -231,6 +231,7 @@ export const CHAINS = {
   APTOS: 'APTOS',
   ETH: 'ETH',
   SUI: 'SUI',
+  AVAX: 'AVAX',
 };
 
 export interface ExposedFunctionType {
