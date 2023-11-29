@@ -104,27 +104,47 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
     }
   }, []);
 
+  const generateTitleDisplayDate = () => {
+    if (!isBefore5Days) {
+      return 'Renew on';
+    }
+    if (isDowngrade) {
+      return 'Expire';
+    }
+    return hasPurchased ? 'Renew on' : 'Expire';
+  };
+
+  const generateDisplayDate = () => {
+    if (!currentPlan) {
+      return '';
+    }
+
+    const renewDate = `${moment(currentPlan.expireAt)
+      .add(1, 'day')
+      .utc()
+      .format('MMM D, YYYY')} (UTC)`;
+    const expireDate = `${moment(currentPlan.expireAt)
+      .add(1, 'day')
+      .utc()
+      .format('MMM D, YYYY')} (UTC)`;
+
+    if (!isBefore5Days) {
+      return renewDate;
+    }
+    if (isDowngrade) {
+      return expireDate;
+    }
+    return hasPurchased ? renewDate : expireDate;
+  };
+
   const currentPlanDetails: {
     title: ReactNode;
     content: string;
   }[] = useMemo(
     () => [
       {
-        title: isBefore5Days
-          ? hasPurchased
-            ? 'Renew on'
-            : 'Expire'
-          : 'Renew on',
-        content: !!currentPlan
-          ? isBefore5Days && hasPurchased
-            ? `${moment(currentPlan.expireAt)
-                .add(1, 'day')
-                .utc()
-                .format('MMM D, YYYY')} (UTC)`
-            : `${moment(currentPlan.expireAt)
-                .utc()
-                .format('MMM D, YYYY')} (UTC)`
-          : '',
+        title: generateTitleDisplayDate(),
+        content: generateDisplayDate(),
       },
       {
         title: 'Compute Units',
