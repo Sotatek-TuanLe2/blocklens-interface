@@ -84,7 +84,7 @@ const useBilling = (): ReturnType => {
     const seconds = duration.seconds();
     const milliseconds = duration.milliseconds();
 
-    if (days <= 0 || days > 5) {
+    if (days < 0 || days > 5) {
       return false;
     }
 
