@@ -51,9 +51,8 @@ const PartNotification: React.FC<INotification> = (props) => {
       );
     } else if (isRenew && isBefore5Days) {
       setVariant(
-        !hasPurchased
-          ? NOTIFICATION_TYPE.WARNING_RENEWAL
-          : NOTIFICATION_TYPE.SUCCEEDED_RENEWAL,
+        !hasPurchased ? NOTIFICATION_TYPE.WARNING_RENEWAL : '',
+        // : NOTIFICATION_TYPE.SUCCEEDED_RENEWAL, // remove successful renew
       );
     } else {
       setVariant('');
