@@ -8,6 +8,7 @@ import {
   formatTokenData,
 } from 'src/utils/utils-webhook';
 import {
+  formatCapitalize,
   formatShortText,
   formatTimestamp,
   shortAddressType,
@@ -16,18 +17,21 @@ import { LinkIcon, ArrowDown } from 'src/assets/icons';
 import ReactJson from 'react-json-view';
 import { getExplorerTxUrl } from 'src/utils/utils-network';
 import { Scrollbars } from 'react-custom-scrollbars';
+import { AppStatus } from 'src/components';
+import { APP_STATUS } from 'src/utils/utils-app';
 
 export const StatusMessages = ({ message }: any) => {
   if (!!message.status) {
     return (
-      <Box
-        textTransform={'capitalize'}
-        className={`status ${
-          message.status === STATUS.FAILED ? 'inactive' : 'active'
-        }`}
-      >
-        {message?.status?.toLowerCase()}
-      </Box>
+      <AppStatus
+        status={
+          message.status === STATUS.FAILED
+            ? APP_STATUS.DISABLED
+            : APP_STATUS.ENABLE
+        }
+        activeText={formatCapitalize(message?.status)}
+        inactiveText={formatCapitalize(message?.status)}
+      />
     );
   }
 

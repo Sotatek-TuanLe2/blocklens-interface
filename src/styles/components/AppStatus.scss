@@ -1,0 +1,25 @@
+@import '../color-variables.scss';
+
+.app-status-tag {
+  padding: 6px 10px;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  border-radius: 14px;
+  display: inline-block;
+
+  &--active {
+    background: rgba(40, 199, 111, 0.14);
+    color: $green;
+  }
+
+  &--inactive {
+    background: rgba(234, 84, 85, 0.14);
+    color: $red;
+  }
+
+  &--waiting {
+    background: rgba(255, 181, 71, 0.14);
+    color: $yellow;
+  }
+}

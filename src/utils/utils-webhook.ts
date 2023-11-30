@@ -216,17 +216,6 @@ export interface IActivityResponse {
   transactionHash: string;
 }
 
-export const getColorBrandStatus = (status: string) => {
-  switch (status) {
-    case STATUS.DONE:
-      return 'active';
-    case STATUS.FAILED:
-      return 'inactive';
-    default:
-      return 'inactive';
-  }
-};
-
 export const CHAINS = {
   APTOS: 'APTOS',
   ETH: 'ETH',

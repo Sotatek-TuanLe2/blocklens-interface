@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, FC, useState } from 'react';
 import { IListAppResponse } from 'src/utils/common';
 import rf from 'src/requests/RequestFactory';
-import { IWebhook, WEBHOOK_STATUS } from 'src/utils/utils-webhook';
+import { IWebhook } from 'src/utils/utils-webhook';
 import { Th, Thead, Tr, Tbody, Td, Box, Flex, Tooltip } from '@chakra-ui/react';
-import { AppDataTable, AppLoadingTable } from 'src/components';
+import { AppDataTable, AppLoadingTable, AppStatus } from 'src/components';
 import { formatShortText } from 'src/utils/utils-helper';
 import _ from 'lodash';
 import { IAppResponse } from 'src/utils/utils-app';
@@ -23,16 +23,6 @@ interface IListWebhook {
 interface IWebhookItem {
   webhook: IWebhook;
 }
-
-const _renderStatus = (status?: WEBHOOK_STATUS) => {
-  const isActive = status === WEBHOOK_STATUS.ENABLE;
-
-  return (
-    <Box className={`status ${isActive ? 'active' : 'inactive'}`}>
-      {isActive ? 'Active' : 'Inactive'}
-    </Box>
-  );
-};
 
 // const _renderDetailWebhook = (type: string, webhook: IWebhook) => {
 //   if (type === WEBHOOK_TYPES.ADDRESS_ACTIVITY) {
@@ -125,7 +115,9 @@ const WebhookMobile: FC<IWebhookItem> = ({ webhook }) => {
           className="info"
         >
           <Box>Status</Box>
-          <Box>{_renderStatus(webhook.status)}</Box>
+          <Box>
+            <AppStatus status={webhook.status} />
+          </Box>
         </Flex>
 
         {isOpen && (
@@ -179,7 +171,9 @@ const WebhookItem: FC<IWebhookItem> = ({ webhook }) => {
           </Tooltip>
         </Td>
         <Td>{formatNumber(webhook.messageToday)}</Td>
-        <Td textAlign={'right'}>{_renderStatus(webhook.status)}</Td>
+        <Td textAlign={'right'}>
+          <AppStatus status={webhook.status} />
+        </Td>
       </Tr>
     </Tbody>
   );

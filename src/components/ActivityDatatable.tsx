@@ -10,13 +10,14 @@ import {
   AppLink,
   AppLoadingTable,
   RequestParams,
+  AppStatus,
 } from 'src/components';
 import useWebhookDetails from 'src/hooks/useWebhook';
 import 'src/styles/pages/AppDetail.scss';
+import 'src/styles/components/AppStatus.scss';
 import { getExplorerTxUrl } from 'src/utils/utils-network';
 import {
   formatTokenData,
-  getColorBrandStatus,
   IActivityResponse,
   IWebhook,
   optionsFilter,
@@ -29,6 +30,7 @@ import {
   formatCapitalize,
   shortAddressType,
 } from '../utils/utils-helper';
+import { APP_STATUS } from 'src/utils/utils-app';
 
 interface IActivity {
   activity: IActivityResponse;
@@ -48,22 +50,36 @@ export const getWidthColumns = (webhook: IWebhook) => {
   return [25, 15, 15, 15, 15, 15];
 };
 
+const getColorBrandStatus = (status: string) => {
+  switch (status) {
+    case STATUS.DONE:
+      return 'active';
+    case STATUS.FAILED:
+      return 'inactive';
+    default:
+      return 'inactive';
+  }
+};
+
 const _renderStatus = (activity: IActivityResponse) => {
   if (!activity?.lastStatus) return '--';
 
   if (activity?.lastStatus === STATUS.PROCESSING) {
     return (
-      <Box className="status waiting">
-        Processing
-        {/*{activity?.retryTime}/5*/}
-      </Box>
+      <Box className="app-status-tag app-status-tag--waiting">Processing</Box>
     );
   }
 
   return (
-    <Box className={`status ${getColorBrandStatus(activity?.lastStatus)}`}>
-      {activity?.lastStatus === STATUS.DONE ? 'Successful' : 'Failed'}
-    </Box>
+    <AppStatus
+      status={
+        activity?.lastStatus === STATUS.DONE
+          ? APP_STATUS.ENABLE
+          : APP_STATUS.DISABLED
+      }
+      activeText="Successful"
+      inactiveText="Failed"
+    />
   );
 };
 
