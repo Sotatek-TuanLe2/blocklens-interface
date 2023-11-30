@@ -57,6 +57,7 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
   const { onCheckout } = props;
 
   const { user } = useUser();
+  const billingHook = useBilling();
   const {
     currentPlan,
     isLowestPlan,
@@ -64,7 +65,7 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
     isDowngrade,
     isBefore5Days,
     hasPurchased,
-  } = useBilling();
+  } = billingHook;
   const { billingPlans } = useMetadata();
 
   const [billingHistory, setBillingHistory] = useState<any[] | null>(null);
@@ -344,7 +345,12 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
       <Box className="list-table-wrap__title">ALL PLANS</Box>
       <Flex className="list-table-wrap__content" justifyContent="space-between">
         {billingPlans?.map((plan: MetadataPlan) => (
-          <PartPlan key={plan.code} plan={plan} onChangePlan={onChangePlan} />
+          <PartPlan
+            key={plan.code}
+            plan={plan}
+            onChangePlan={onChangePlan}
+            {...billingHook}
+          />
         ))}
       </Flex>
     </AppCard>
@@ -358,7 +364,7 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
         </Box>
       </Flex>
       {_renderCurrentPlan()}
-      <PartNotification onCheckout={onCheckout} />
+      <PartNotification onCheckout={onCheckout} {...billingHook} />
       {_renderBillings()}
       {_renderAllPlans()}
       {openDowngradeModal && downgradePlan && (

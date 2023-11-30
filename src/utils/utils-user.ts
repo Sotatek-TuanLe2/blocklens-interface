@@ -255,7 +255,10 @@ export class User implements UserInterface {
   }
 
   isUserLinked(): boolean {
-    return !!this.billing.payment.walletAddresses.length;
+    return (
+      !!this.billing.payment.walletAddresses &&
+      !!this.billing.payment.walletAddresses.length
+    );
   }
 
   isUserStriped(): boolean {

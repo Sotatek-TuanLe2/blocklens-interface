@@ -17,7 +17,6 @@ import { useDispatch } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { ArrowLogout, DoorLogout } from 'src/assets/icons';
 import useUser from 'src/hooks/useUser';
-import ModalSignInRequest from 'src/modals/ModalSignInRequest';
 import { PRIVATE_PATH } from 'src/routes';
 import { clearUser } from 'src/store/user';
 import { ROUTES } from 'src/utils/common';
@@ -46,8 +45,6 @@ const menus = [
 ];
 
 const Header: FC = () => {
-  const [isOpenSignInRequestModal, setIsOpenSignInRequestModal] =
-    useState<boolean>(false);
   const [isOpenMenuMobile, setIsOpenMenuMobile] = useState<boolean>(false);
   const history = useHistory();
   const { user } = useUser();
@@ -63,11 +60,8 @@ const Header: FC = () => {
   }, []);
 
   const onSignInRequest = () => {
-    if (!isOpenSignInRequestModal) {
-      clearAuthentication();
-      navigateToLoginPage();
-      setIsOpenSignInRequestModal(true);
-    }
+    clearAuthentication();
+    navigateToLoginPage();
   };
 
   const clearAuthentication = () => {
@@ -280,12 +274,6 @@ const Header: FC = () => {
           </AppButton>
         )}
       </Flex>
-
-      <ModalSignInRequest
-        open={isOpenSignInRequestModal}
-        onClose={() => setIsOpenSignInRequestModal(false)}
-      />
-
       {isOpenMenuMobile && (
         <Box className="header-mobile">
           {_renderMenu()}

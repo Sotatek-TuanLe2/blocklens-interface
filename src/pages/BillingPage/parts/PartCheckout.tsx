@@ -222,10 +222,10 @@ const PartCheckout: FC<IPartCheckout> = ({
     const startDate = isUpgrade
       ? moment()
       : moment(currentPlan?.expireAt).add(1, 'day'); // purchase for extending downgrade or renew
-    const period = `period ${startDate.format('YYYY/MM/DD')}-${
+    const period = `period ${startDate.utc().format('YYYY/MM/DD')}-${
       isYearlyPurchase
-        ? startDate.add(1, 'year').subtract(1, 'day').format('YYYY/MM/DD')
-        : startDate.add(29, 'day').format('YYYY/MM/DD')
+        ? startDate.add(1, 'year').subtract(1, 'day').utc().format('YYYY/MM/DD')
+        : startDate.add(29, 'day').utc().format('YYYY/MM/DD')
     }`;
 
     return (
@@ -399,24 +399,22 @@ const PartCheckout: FC<IPartCheckout> = ({
       (option) => option.value === tokenAddress,
     )?.decimals;
 
-    const transactionPayload: any = await (
-      dispatch(
-        executeTransaction({
-          provider: wallet?.getProvider(),
-          params: {
-            contractAddress: topUpContractAddress,
-            abi: abi['topup'],
-            action: 'topup',
-            transactionArgs: [
-              config.topUp.appId,
-              tokenAddress,
-              convertDecToWei(totalAmount.toString(), decimal),
-            ],
-          },
-          confirmation: config.topUp.confirmations,
-        }),
-      ) as any
-    ).unwrap();
+    const transactionPayload: any = await dispatch(
+      executeTransaction({
+        provider: wallet?.getProvider(),
+        params: {
+          contractAddress: topUpContractAddress,
+          abi: abi['topup'],
+          action: 'topup',
+          transactionArgs: [
+            config.topUp.appId,
+            tokenAddress,
+            convertDecToWei(totalAmount.toString(), decimal),
+          ],
+        },
+        confirmation: config.topUp.confirmations,
+      }),
+    );
 
     if (!transactionPayload || !transactionPayload.payload) {
       throw new Error(
