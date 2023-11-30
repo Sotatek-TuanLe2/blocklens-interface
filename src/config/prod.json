@@ -84,12 +84,40 @@
           ],
           "blockExplorer": {
             "name": "Apscan",
-            "icon": "/images/etherscan.png",
+            "icon": "",
             "url": "https://explorer.aptoslabs.com/txn"
           },
           "nativeCurrency": {
             "name": "APTOS",
             "symbol": "APTOS",
+            "decimals": 18
+          }
+        }
+      }
+    },
+    "AVAX": {
+      "family": "AVAX",
+      "name": "Avalanche",
+      "id": "AVAX",
+      "icon": "icon-avax",
+      "networks": {
+        "MAINNET": {
+          "name": "Mainnet",
+          "id": "MAINNET",
+          "icon": "icon-avax",
+          "chainId": 43114,
+          "rpcUrls": [
+            "https://api.avax.network/ext/bc/C/rpc",
+            "https://rpc.ankr.com/avalanche"
+          ],
+          "blockExplorer": {
+            "name": "Snowtrace",
+            "icon": "/images/snowtrace.png",
+            "url": "https://snowtrace.io/"
+          },
+          "nativeCurrency": {
+            "name": "AVAX",
+            "symbol": "AVAX",
             "decimals": 18
           }
         }
