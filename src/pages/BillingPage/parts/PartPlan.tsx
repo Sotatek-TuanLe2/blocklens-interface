@@ -2,12 +2,12 @@ import { Box, Flex, Text, Switch } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { CheckedIcon } from 'src/assets/icons';
 import { AppButtonLarge } from 'src/components';
-import useBilling from 'src/hooks/useBilling';
+import { HookBillingReturnType } from 'src/hooks/useBilling';
 import { MetadataPlan } from 'src/store/metadata';
 import { YEARLY_SUBSCRIPTION_CODE } from 'src/utils/common';
 import { formatCapitalize } from 'src/utils/utils-helper';
 
-interface IPlanProps {
+interface IPlanProps extends HookBillingReturnType {
   plan: MetadataPlan;
   onChangePlan: (plan: MetadataPlan, isYearly: boolean) => void;
 }
@@ -17,16 +17,16 @@ export const generatePlanDescriptions = (plan: MetadataPlan): string[] => {
 };
 
 const PartPlan: React.FC<IPlanProps> = (props) => {
-  const { plan, onChangePlan } = props;
-
   const {
+    plan,
+    onChangePlan,
     currentPlan,
     nextPlan,
     isDowngrade,
     isRenew,
     hasPurchased,
     comparePlan,
-  } = useBilling();
+  } = props;
 
   const yearlyOptions = plan.subscribeOptions.find(
     (item) => item.code === YEARLY_SUBSCRIPTION_CODE,

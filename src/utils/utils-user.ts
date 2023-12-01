@@ -41,6 +41,7 @@ export interface UserInterface {
   getBillingEmail: () => string;
   getFirstName: () => string;
   getLastName: () => string;
+  getAvatar: () => string;
 
   getBalance: () => number;
   getLinkedAddresses: () => string[];
@@ -62,6 +63,7 @@ export class User implements UserInterface {
     refreshToken: '',
   };
   public info: UserInfoType = {
+    avatar: '',
     authProviders: [],
     email: '',
     firstName: '',
@@ -230,6 +232,10 @@ export class User implements UserInterface {
     return this.info.lastName;
   }
 
+  getAvatar(): string {
+    return this.info.avatar || '';
+  }
+
   getAuthProviders(): string[] {
     return this.info.authProviders;
   }
@@ -255,7 +261,10 @@ export class User implements UserInterface {
   }
 
   isUserLinked(): boolean {
-    return !!this.billing.payment.walletAddresses.length;
+    return (
+      !!this.billing.payment.walletAddresses &&
+      !!this.billing.payment.walletAddresses.length
+    );
   }
 
   isUserStriped(): boolean {

@@ -1,8 +1,8 @@
 import { Flex } from '@chakra-ui/react';
 import moment from 'moment';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { AppButton } from 'src/components';
-import useBilling from 'src/hooks/useBilling';
+import { HookBillingReturnType } from 'src/hooks/useBilling';
 import { MetadataPlan } from 'src/store/metadata';
 import { YEARLY_SUBSCRIPTION_CODE } from 'src/utils/common';
 import { formatCapitalize } from 'src/utils/utils-helper';
@@ -18,12 +18,14 @@ const NOTIFICATION_TYPE = {
   SUCCEEDED_DOWNGRADE: 'SUCCEEDED_DOWNGRADE',
 };
 
-interface INotification {
+interface INotification extends HookBillingReturnType {
   onCheckout: (plan: MetadataPlan, isYearly: boolean) => void;
 }
 
 const PartNotification: React.FC<INotification> = (props) => {
+  const dispatch = useDispatch();
   const {
+    onCheckout,
     currentPlan,
     nextPlan,
     isUpgrade,
@@ -31,12 +33,18 @@ const PartNotification: React.FC<INotification> = (props) => {
     isDowngrade,
     isBefore5Days,
     hasPurchased,
-  } = useBilling();
-  const dispatch = useDispatch();
-  const { onCheckout } = props;
+  } = props;
 
   const [variant, setVariant] =
     useState<typeof NOTIFICATION_TYPE[keyof typeof NOTIFICATION_TYPE]>('');
+
+  const isNextPlanFree = useMemo(() => {
+    if (!nextPlan || !isDowngrade) {
+      return false;
+    }
+
+    return nextPlan?.price === 0;
+  }, [isDowngrade, nextPlan]);
 
   const calculateVariant = () => {
     if (!currentPlan || !nextPlan || isUpgrade) {
@@ -51,9 +59,8 @@ const PartNotification: React.FC<INotification> = (props) => {
       );
     } else if (isRenew && isBefore5Days) {
       setVariant(
-        !hasPurchased
-          ? NOTIFICATION_TYPE.WARNING_RENEWAL
-          : NOTIFICATION_TYPE.SUCCEEDED_RENEWAL,
+        !hasPurchased ? NOTIFICATION_TYPE.WARNING_RENEWAL : '',
+        // : NOTIFICATION_TYPE.SUCCEEDED_RENEWAL, // remove successful renew
       );
     } else {
       setVariant('');
@@ -62,7 +69,7 @@ const PartNotification: React.FC<INotification> = (props) => {
 
   useEffect(() => {
     calculateVariant();
-  }, [currentPlan, nextPlan, hasPurchased]);
+  }, [currentPlan, nextPlan, isBefore5Days, hasPurchased]);
 
   const onPay = () => {
     if (!nextPlan) {
@@ -123,7 +130,9 @@ const PartNotification: React.FC<INotification> = (props) => {
             <span>
               Current plan will be renewed to{' '}
               <b>{formatCapitalize(nextPlan.name)}</b> plan on{' '}
-              {moment(currentPlan.expireAt).format('MMM DD, YYYY')}
+              {moment(currentPlan.expireAt)
+                .add(1, 'day')
+                .format('MMM DD, YYYY')}
             </span>
           </Flex>
         );
@@ -136,7 +145,7 @@ const PartNotification: React.FC<INotification> = (props) => {
           >
             <Flex>
               <span>
-                {isBefore5Days ? (
+                {isBefore5Days && !isNextPlanFree ? (
                   <>
                     Downgrading to <b>{formatCapitalize(nextPlan.name)}</b> plan
                     is on hold due to lack of payment
@@ -145,13 +154,17 @@ const PartNotification: React.FC<INotification> = (props) => {
                   <>
                     Downgrade to <b>{formatCapitalize(nextPlan.name)}</b> plan
                     will start on{' '}
-                    {moment(currentPlan.expireAt).format('MMM DD, YYYY')} (UTC)
+                    {moment(currentPlan.expireAt)
+                      .utc()
+                      .add(1, 'day')
+                      .format('MMM DD, YYYY')}{' '}
+                    (UTC)
                   </>
                 )}
               </span>
             </Flex>
             <Flex>
-              {isBefore5Days && (
+              {isBefore5Days && !isNextPlanFree && (
                 <AppButton
                   variant="no-effects"
                   className="plan-notification__button plan-notification__button--notification"
@@ -180,7 +193,9 @@ const PartNotification: React.FC<INotification> = (props) => {
             <span>
               Current plan will be reduced to{' '}
               <b>{formatCapitalize(nextPlan.name)}</b> plan on{' '}
-              {moment(currentPlan.expireAt).format('MMM DD, YYYY')}
+              {moment(currentPlan.expireAt)
+                .add(1, 'day')
+                .format('MMM DD, YYYY')}
             </span>
           </Flex>
         );

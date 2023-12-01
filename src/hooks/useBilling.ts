@@ -7,7 +7,7 @@ import moment from 'moment';
 import useMetadata from './useMetadata';
 import { MetadataPlan } from 'src/store/metadata';
 
-interface ReturnType {
+export interface HookBillingReturnType {
   currentPlan?: UserPlanType;
   nextPlan?: UserPlanType;
   isLowestPlan: boolean;
@@ -23,7 +23,7 @@ interface ReturnType {
   ) => number;
 }
 
-const useBilling = (): ReturnType => {
+const useBilling = (): HookBillingReturnType => {
   const { user } = useUser();
   const { billingPlans } = useMetadata();
 
@@ -76,9 +76,22 @@ const useBilling = (): ReturnType => {
       return false;
     }
     const expireAt = currentPlan.expireAt;
-    const duration = moment(expireAt).diff(moment(), 'days');
+    const duration = moment.duration(moment(expireAt).diff(moment()));
+    const days = duration.days();
+    const hours = duration.hours();
+    const minutes = duration.minutes();
+    const seconds = duration.seconds();
+    const milliseconds = duration.milliseconds();
 
-    return duration >= 0 && duration <= 5;
+    if (days < 0 || days > 5) {
+      return false;
+    }
+
+    if (days < 5) {
+      return true;
+    }
+
+    return hours === 0 && minutes === 0 && seconds === 0 && milliseconds === 0; // days === 5
   }, [currentPlan]);
 
   const checkHasPurchased = async () => {

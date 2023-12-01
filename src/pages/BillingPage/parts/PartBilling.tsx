@@ -57,13 +57,15 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
   const { onCheckout } = props;
 
   const { user } = useUser();
+  const billingHook = useBilling();
   const {
     currentPlan,
     isLowestPlan,
     isHighestPlan,
     isDowngrade,
     isBefore5Days,
-  } = useBilling();
+    hasPurchased,
+  } = billingHook;
   const { billingPlans } = useMetadata();
 
   const [billingHistory, setBillingHistory] = useState<any[] | null>(null);
@@ -103,16 +105,46 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
     }
   }, []);
 
+  const generateTitleDisplayDate = () => {
+    if (!isBefore5Days) {
+      return 'Renew on';
+    }
+    if (isDowngrade) {
+      return 'Expire';
+    }
+    return hasPurchased ? 'Renew on' : 'Expire';
+  };
+
+  const generateDisplayDate = () => {
+    if (!currentPlan) {
+      return '';
+    }
+
+    const renewDate = `${moment(currentPlan.expireAt)
+      .add(1, 'day')
+      .utc()
+      .format('MMM D, YYYY')} (UTC)`;
+    const expireDate = `${moment(currentPlan.expireAt)
+      .utc()
+      .format('MMM D, YYYY')} (UTC)`;
+
+    if (!isBefore5Days) {
+      return renewDate;
+    }
+    if (isDowngrade) {
+      return expireDate;
+    }
+    return hasPurchased ? renewDate : expireDate;
+  };
+
   const currentPlanDetails: {
     title: ReactNode;
     content: string;
   }[] = useMemo(
     () => [
       {
-        title: isBefore5Days ? 'Expire' : 'Renew on',
-        content: !!currentPlan
-          ? `${moment(currentPlan.expireAt).utc().format('MMM D, YYYY')} (UTC)`
-          : '',
+        title: generateTitleDisplayDate(),
+        content: generateDisplayDate(),
       },
       {
         title: 'Compute Units',
@@ -152,7 +184,7 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
         content: isLowestPlan ? 'Unavailable' : '1$/100K CUs',
       },
     ],
-    [currentPlan],
+    [currentPlan, hasPurchased],
   );
 
   const _renderCurrentPlan = () => {
@@ -226,7 +258,7 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
     if (isDowngrade) {
       toastError({
         message:
-          "You've alraeady confirmed to downgrade your subcription. Cancel your confirm first to switch to another plan",
+          "You've already confirmed to downgrade your subscription. Cancel your confirm first to switch to another plan",
       });
     } else {
       setDowngradePlan(plan);
@@ -313,7 +345,12 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
       <Box className="list-table-wrap__title">ALL PLANS</Box>
       <Flex className="list-table-wrap__content" justifyContent="space-between">
         {billingPlans?.map((plan: MetadataPlan) => (
-          <PartPlan key={plan.code} plan={plan} onChangePlan={onChangePlan} />
+          <PartPlan
+            key={plan.code}
+            plan={plan}
+            onChangePlan={onChangePlan}
+            {...billingHook}
+          />
         ))}
       </Flex>
     </AppCard>
@@ -327,7 +364,7 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
         </Box>
       </Flex>
       {_renderCurrentPlan()}
-      <PartNotification onCheckout={onCheckout} />
+      <PartNotification onCheckout={onCheckout} {...billingHook} />
       {_renderBillings()}
       {_renderAllPlans()}
       {openDowngradeModal && downgradePlan && (

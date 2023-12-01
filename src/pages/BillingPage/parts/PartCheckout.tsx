@@ -49,7 +49,7 @@ const PartCheckout: FC<IPartCheckout> = ({
   subscriptionPeriod,
   onBack,
 }) => {
-  const { wallet, connectWallet } = useWallet();
+  const { wallet, connectWallet, changeNetwork } = useWallet();
   const dispatch = useDispatch();
   const { user } = useUser();
   const { currentPlan, nextPlan, hasPurchased, comparePlan } = useBilling();
@@ -67,8 +67,11 @@ const PartCheckout: FC<IPartCheckout> = ({
 
   const isYearlyPurchase = subscriptionPeriod === YEARLY_SUBSCRIPTION_CODE;
   const isUpdateYearly =
-    currentPlan?.subscribeOptionCode !== YEARLY_SUBSCRIPTION_CODE &&
-    isYearlyPurchase;
+    isYearlyPurchase &&
+    currentPlan?.subscribeOptions.some(
+      (item) => item.code === YEARLY_SUBSCRIPTION_CODE,
+    ) &&
+    currentPlan?.subscribeOptionCode !== YEARLY_SUBSCRIPTION_CODE;
 
   const topUpContractAddress = useMemo(
     () => (chainId ? getTopUpConfigByNetworkId(chainId).contractAddress : ''),
@@ -216,10 +219,13 @@ const PartCheckout: FC<IPartCheckout> = ({
         (planComparision === 0 && isUpdateYearly)) && // upgrade to yearly plan
       hasPurchased; // user did purchase next plan
 
-    const period = `period ${moment().format('YYYY/MM/DD')}-${
+    const startDate = isUpgrade
+      ? moment()
+      : moment(currentPlan?.expireAt).add(1, 'day'); // purchase for extending downgrade or renew
+    const period = `period ${startDate.utc().format('YYYY/MM/DD')}-${
       isYearlyPurchase
-        ? moment().add(1, 'year').subtract(1, 'day').format('YYYY/MM/DD')
-        : moment().add(29, 'day').format('YYYY/MM/DD')
+        ? startDate.add(1, 'year').subtract(1, 'day').utc().format('YYYY/MM/DD')
+        : startDate.add(29, 'day').utc().format('YYYY/MM/DD')
     }`;
 
     return (
@@ -373,17 +379,19 @@ const PartCheckout: FC<IPartCheckout> = ({
 
     toastWarning({ message: 'You need to approve token before purchasing' });
 
-    await dispatch(
-      executeTransaction({
-        provider: wallet?.getProvider(),
-        params: {
-          contractAddress: tokenAddress,
-          abi: abi['erc20'],
-          action: 'approve',
-          transactionArgs: [topUpContractAddress, MaxUint256.toString()],
-        },
-      }),
-    );
+    await (
+      dispatch(
+        executeTransaction({
+          provider: wallet?.getProvider(),
+          params: {
+            contractAddress: tokenAddress,
+            abi: abi['erc20'],
+            action: 'approve',
+            transactionArgs: [topUpContractAddress, MaxUint256.toString()],
+          },
+        }),
+      ) as any
+    ).unwrap();
   };
 
   const purchasePlan = async (): Promise<string> => {
@@ -417,7 +425,7 @@ const PartCheckout: FC<IPartCheckout> = ({
     return transactionPayload.payload.hash;
   };
 
-  const confirmTransaction = async (txn: string) => {
+  const checkPaymentTransaction = async (txn: string) => {
     dispatch(toggleFinishTransactionModal(false));
     setOpenConfirmingModal(true);
     await retry(
@@ -461,27 +469,11 @@ const PartCheckout: FC<IPartCheckout> = ({
       : rf.getRequest('BillingRequest').purchaseRenewalOrDowngrade();
   };
 
-  const onPay = async () => {
-    if (!wallet) {
-      return;
-    }
-
+  const confirmTransaction = async (txn: string) => {
     try {
-      const isTokenApproved = await checkTokenApproved();
-      await approveToken(isTokenApproved);
-      const txn = await purchasePlan();
-      await confirmTransaction(txn);
+      await checkPaymentTransaction(txn);
       await updateSubscription();
-
-      toastSuccess({
-        message:
-          'Payment complete. Invoice & receipt have been sent to your email.',
-      });
-      dispatch(getUserPlan());
-      onBack();
-    } catch (error) {
-      setOpenConfirmingModal(false);
-      console.error(error);
+    } catch (error: any) {
       toastError({
         message: (
           <>
@@ -500,6 +492,31 @@ const PartCheckout: FC<IPartCheckout> = ({
           </>
         ),
       });
+      throw new Error(error);
+    }
+  };
+
+  const onPay = async () => {
+    if (!wallet) {
+      return;
+    }
+
+    try {
+      await changeNetwork(wallet.getNework());
+      const isTokenApproved = await checkTokenApproved();
+      await approveToken(isTokenApproved);
+      const txn = await purchasePlan();
+      await confirmTransaction(txn);
+
+      toastSuccess({
+        message:
+          'Payment complete. Invoice & receipt have been sent to your email.',
+      });
+      dispatch(getUserPlan());
+      onBack();
+    } catch (error) {
+      setOpenConfirmingModal(false);
+      console.error(error);
     }
   };
 

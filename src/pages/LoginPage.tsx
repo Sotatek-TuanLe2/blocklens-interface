@@ -127,6 +127,11 @@ const LoginPage: FC = () => {
                   validator: validator.current,
                   rule: ['required', 'min:8', 'max:50'],
                 }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    onLogin();
+                  }
+                }}
               />
               <div>
                 <AppLink to={ROUTES.FORGOT_PASSWORD}>

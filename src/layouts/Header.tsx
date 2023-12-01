@@ -11,13 +11,13 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  Image,
 } from '@chakra-ui/react';
 import { isMobile } from 'react-device-detect';
 import { useDispatch } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { ArrowLogout, DoorLogout } from 'src/assets/icons';
 import useUser from 'src/hooks/useUser';
-import ModalSignInRequest from 'src/modals/ModalSignInRequest';
 import { PRIVATE_PATH } from 'src/routes';
 import { clearUser } from 'src/store/user';
 import { ROUTES } from 'src/utils/common';
@@ -46,8 +46,6 @@ const menus = [
 ];
 
 const Header: FC = () => {
-  const [isOpenSignInRequestModal, setIsOpenSignInRequestModal] =
-    useState<boolean>(false);
   const [isOpenMenuMobile, setIsOpenMenuMobile] = useState<boolean>(false);
   const history = useHistory();
   const { user } = useUser();
@@ -62,21 +60,27 @@ const Header: FC = () => {
     };
   }, []);
 
-  const onSignInRequest = async () => {
-    if (!isOpenSignInRequestModal) {
-      await onLogout();
-      setIsOpenSignInRequestModal(true);
+  const onSignInRequest = () => {
+    clearAuthentication();
+    navigateToLoginPage();
+  };
+
+  const clearAuthentication = () => {
+    dispatch(clearUser());
+    dispatch(clearWallet());
+  };
+
+  const navigateToLoginPage = () => {
+    if (PRIVATE_PATH.some((path) => location.pathname.includes(path))) {
+      history.push(ROUTES.LOGIN);
     }
   };
 
   const onLogout = async () => {
     try {
       await rf.getRequest('AuthRequest').logout();
-      dispatch(clearUser());
-      dispatch(clearWallet());
-      if (PRIVATE_PATH.some((path) => location.pathname.includes(path))) {
-        history.push(ROUTES.LOGIN);
-      }
+      clearAuthentication();
+      navigateToLoginPage();
     } catch (error) {
       console.error(error);
     }
@@ -100,7 +104,19 @@ const Header: FC = () => {
       <Box>
         <Menu>
           <MenuButton>
-            <Avatar name={user?.getFirstName()} size="sm" />
+            {user?.getAvatar() ? (
+              <Image
+                src={user?.getAvatar()}
+                alt="avatar"
+                w={'32px'}
+                h={'32px'}
+                borderRadius={'50%'}
+                objectFit={'cover'}
+                objectPosition={'center'}
+              />
+            ) : (
+              <Avatar name={user?.getFirstName()} size="sm" />
+            )}
           </MenuButton>
           <MenuList className="menu-header">
             <MenuItem className="user-info">
@@ -271,12 +287,6 @@ const Header: FC = () => {
           </AppButton>
         )}
       </Flex>
-
-      <ModalSignInRequest
-        open={isOpenSignInRequestModal}
-        onClose={() => setIsOpenSignInRequestModal(false)}
-      />
-
       {isOpenMenuMobile && (
         <Box className="header-mobile">
           {_renderMenu()}
