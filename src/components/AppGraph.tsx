@@ -74,7 +74,7 @@ export const AppFilterGraph: FC<IAppFilterGraph> = ({
   return (
     <Flex>
       <AppSelect2
-        width={'170px'}
+        width={'200px'}
         value={duration}
         onChange={setDuration}
         options={optionsFilterByDuration}

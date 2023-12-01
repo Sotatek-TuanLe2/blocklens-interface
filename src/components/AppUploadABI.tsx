@@ -697,7 +697,7 @@ const AppUploadABI: FC<IAppUploadABI> = ({
 
               <Flex>
                 {!isMobile && (
-                  <Box width={'100px'}>
+                  <Box width={'120px'}>
                     <AppSelect2
                       onChange={setValueSort}
                       options={options}

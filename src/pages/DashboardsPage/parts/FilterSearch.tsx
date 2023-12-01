@@ -469,7 +469,7 @@ const FilterSearch: React.FC<IFilterSearch> = (props) => {
                 options={optionType}
                 className="dashboard-filter__search__select"
                 sxWrapper={{
-                  w: { base: '100% !important', lg: '200px !important' },
+                  w: { base: '100% !important', lg: '220px !important' },
                   h: '44px',
                 }}
               />

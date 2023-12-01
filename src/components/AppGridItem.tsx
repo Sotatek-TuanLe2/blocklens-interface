@@ -189,7 +189,7 @@ const AppGridItem: FC<AppGridItemProps> = ({
           colorScheme="rgba(0, 2, 36, 0.1)"
         />
         <Flex w={'full'}>
-          <Flex align={'center'} flexGrow={1}>
+          <Flex align={'center'} flexGrow={1} w="80%">
             <Box w={'34px'} h={'34px'} borderRadius={'17px'} mr={2.5}>
               {srcAvatar ? (
                 <Image src={srcAvatar} alt="avatar" />
@@ -200,14 +200,19 @@ const AppGridItem: FC<AppGridItemProps> = ({
                 />
               )}
             </Box>
-            <Box>
-              <Text className="item-creator" mb={{ base: '2px', lg: 0 }}>
-                {creator}
+            <Box maxW="70%">
+              <Text
+                isTruncated
+                className="item-creator"
+                mb={{ base: '2px', lg: 0 }}
+              >
+                <Tooltip p={2} hasArrow placement="top" label={creator}>
+                  {creator}
+                </Tooltip>
               </Text>
               <Text className="item-date">{date && date}</Text>
             </Box>
           </Flex>
-
           <Flex alignSelf={'flex-start'} alignItems={'center'}>
             <IconEye />
             <Text textAlign={'right'} className="item-view" ml={'4px'}>

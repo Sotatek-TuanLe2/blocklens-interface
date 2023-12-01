@@ -345,9 +345,15 @@ const ActivityDesktop: FC<IActivity> = ({ activity, webhook }) => {
           </Td>
           {_renderContentNotifyOf()}
           {_renderContentTokenInfo()}
-          <Td w={isAddressActivity ? '25%' : '15%'}>
+          <Td w="25%">
             <Flex alignItems="center" justifyContent="center">
-              {formatShortText(activity?.transactionHash)}
+              <Tooltip
+                hasArrow
+                placement="top"
+                label={activity?.transactionHash}
+              >
+                {formatShortText(activity?.transactionHash, 15, 5)}
+              </Tooltip>
               {activity?.transactionHash && (
                 <Box ml={2}>
                   <a
@@ -475,7 +481,7 @@ const ActivityDatatable: FC<IActivityDatatable> = ({
           <Th w={isAddressActivity ? '25%' : '12%'}>MESSAGE ID</Th>
           {_renderHeaderNotifyOf()}
           {_renderHeaderTokenInfo()}
-          <Th w={isAddressActivity ? '25%' : '15%'}>
+          <Th w="25%">
             <Flex alignItems={'center'} justifyContent={'center'}>
               TXN ID
               {isFilter && (
