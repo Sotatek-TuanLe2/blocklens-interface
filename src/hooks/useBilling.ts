@@ -21,6 +21,8 @@ export interface HookBillingReturnType {
     planA: UserPlanType | MetadataPlan,
     planB: UserPlanType | MetadataPlan,
   ) => number;
+  getCurrentPlanExpireDateTitle: () => string;
+  getCurrentPlanExpireDate: () => string;
 }
 
 const useBilling = (): HookBillingReturnType => {
@@ -130,6 +132,38 @@ const useBilling = (): HookBillingReturnType => {
       : 1;
   };
 
+  const getCurrentPlanExpireDateTitle = () => {
+    if (!isBefore5Days) {
+      return 'Renew on';
+    }
+    if (isDowngrade) {
+      return 'Expire';
+    }
+    return hasPurchased ? 'Renew on' : 'Expire';
+  };
+
+  const getCurrentPlanExpireDate = () => {
+    if (!currentPlan) {
+      return '';
+    }
+
+    const renewDate = `${moment(currentPlan.expireAt)
+      .add(1, 'day')
+      .utc()
+      .format('MMM D, YYYY')} (UTC)`;
+    const expireDate = `${moment(currentPlan.expireAt)
+      .utc()
+      .format('MMM D, YYYY')} (UTC)`;
+
+    if (!isBefore5Days) {
+      return renewDate;
+    }
+    if (isDowngrade) {
+      return expireDate;
+    }
+    return hasPurchased ? renewDate : expireDate;
+  };
+
   return {
     currentPlan,
     nextPlan,
@@ -141,6 +175,8 @@ const useBilling = (): HookBillingReturnType => {
     isBefore5Days,
     hasPurchased,
     comparePlan,
+    getCurrentPlanExpireDateTitle,
+    getCurrentPlanExpireDate,
   };
 };
 
