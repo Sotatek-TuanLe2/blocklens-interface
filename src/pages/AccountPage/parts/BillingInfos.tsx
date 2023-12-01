@@ -1,14 +1,17 @@
 import 'src/styles/pages/AccountPage.scss';
 import { Box, Flex } from '@chakra-ui/react';
 import { AppCard, AppLink } from 'src/components';
-import { formatTimestamp } from 'src/utils/utils-helper';
 import { CheckedIcon, ArrowRightIcon } from 'src/assets/icons';
-import useUser from 'src/hooks/useUser';
 import { ROUTES } from 'src/utils/common';
+import { generatePlanDescriptions } from 'src/pages/BillingPage/parts/PartPlan';
+import useBilling from 'src/hooks/useBilling';
 
 const BillingInfos = () => {
-  const { user } = useUser();
-  const currentPlan = user?.getPlan();
+  const {
+    currentPlan,
+    getCurrentPlanExpireDateTitle,
+    getCurrentPlanExpireDate,
+  } = useBilling();
 
   const _renderLinkDetail = () => {
     return (
@@ -45,20 +48,14 @@ const BillingInfos = () => {
           )}
         </Box>
         <Box className="detail-plan">
-          <Flex alignItems={'center'}>
-            <CheckedIcon />{' '}
-            <Box ml={3}>{currentPlan?.capacity.project} apps</Box>
-          </Flex>
-          {/* <Flex alignItems={'center'}>
-            <CheckedIcon />{' '}
-            <Box ml={3}> {currentPlan?.notificationLimitation} message/day</Box>
-          </Flex> */}
-          <Flex alignItems={'center'}>
-            <CheckedIcon /> <Box ml={3}> All supported chains</Box>
-          </Flex>
+          {!!currentPlan &&
+            generatePlanDescriptions(currentPlan).map((des, index) => (
+              <Flex key={index} alignItems={'center'}>
+                <CheckedIcon /> <Box ml={3}>{des}</Box>
+              </Flex>
+            ))}
           <Box>
-            Period: {formatTimestamp(currentPlan?.from || 0, 'MMM DD, YYYY')} -{' '}
-            {formatTimestamp(currentPlan?.to || 0, 'MMM DD, YYYY')} (UTC)
+            {getCurrentPlanExpireDateTitle()}: {getCurrentPlanExpireDate()}
           </Box>
         </Box>
       </Box>
