@@ -41,6 +41,7 @@ export interface UserInterface {
   getBillingEmail: () => string;
   getFirstName: () => string;
   getLastName: () => string;
+  getAvatar: () => string;
 
   getBalance: () => number;
   getLinkedAddresses: () => string[];
@@ -62,6 +63,7 @@ export class User implements UserInterface {
     refreshToken: '',
   };
   public info: UserInfoType = {
+    avatar: '',
     authProviders: [],
     email: '',
     firstName: '',
@@ -228,6 +230,10 @@ export class User implements UserInterface {
 
   getLastName(): string {
     return this.info.lastName;
+  }
+
+  getAvatar(): string {
+    return this.info.avatar || '';
   }
 
   getAuthProviders(): string[] {

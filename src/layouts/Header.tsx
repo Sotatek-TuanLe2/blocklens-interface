@@ -11,6 +11,7 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  Image,
 } from '@chakra-ui/react';
 import { isMobile } from 'react-device-detect';
 import { useDispatch } from 'react-redux';
@@ -103,7 +104,19 @@ const Header: FC = () => {
       <Box>
         <Menu>
           <MenuButton>
-            <Avatar name={user?.getFirstName()} size="sm" />
+            {user?.getAvatar() ? (
+              <Image
+                src={user?.getAvatar()}
+                alt="avatar"
+                w={'32px'}
+                h={'32px'}
+                borderRadius={'50%'}
+                objectFit={'cover'}
+                objectPosition={'center'}
+              />
+            ) : (
+              <Avatar name={user?.getFirstName()} size="sm" />
+            )}
           </MenuButton>
           <MenuList className="menu-header">
             <MenuItem className="user-info">
