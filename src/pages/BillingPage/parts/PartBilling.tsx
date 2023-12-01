@@ -1,6 +1,5 @@
 import { Box, Flex, Tbody, Td, Th, Thead, Tooltip, Tr } from '@chakra-ui/react';
 import BigNumber from 'bignumber.js';
-import moment from 'moment';
 import { ReactNode, useCallback, useMemo, useState } from 'react';
 import { ArrowRightIcon } from 'src/assets/icons';
 import {
@@ -63,8 +62,9 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
     isLowestPlan,
     isHighestPlan,
     isDowngrade,
-    isBefore5Days,
     hasPurchased,
+    getCurrentPlanExpireDateTitle,
+    getCurrentPlanExpireDate,
   } = billingHook;
   const { billingPlans } = useMetadata();
 
@@ -105,46 +105,14 @@ const PartBilling: React.FC<IPartBillingProps> = (props) => {
     }
   }, []);
 
-  const generateTitleDisplayDate = () => {
-    if (!isBefore5Days) {
-      return 'Renew on';
-    }
-    if (isDowngrade) {
-      return 'Expire';
-    }
-    return hasPurchased ? 'Renew on' : 'Expire';
-  };
-
-  const generateDisplayDate = () => {
-    if (!currentPlan) {
-      return '';
-    }
-
-    const renewDate = `${moment(currentPlan.expireAt)
-      .add(1, 'day')
-      .utc()
-      .format('MMM D, YYYY')} (UTC)`;
-    const expireDate = `${moment(currentPlan.expireAt)
-      .utc()
-      .format('MMM D, YYYY')} (UTC)`;
-
-    if (!isBefore5Days) {
-      return renewDate;
-    }
-    if (isDowngrade) {
-      return expireDate;
-    }
-    return hasPurchased ? renewDate : expireDate;
-  };
-
   const currentPlanDetails: {
     title: ReactNode;
     content: string;
   }[] = useMemo(
     () => [
       {
-        title: generateTitleDisplayDate(),
-        content: generateDisplayDate(),
+        title: getCurrentPlanExpireDateTitle(),
+        content: getCurrentPlanExpireDate(),
       },
       {
         title: 'Compute Units',
